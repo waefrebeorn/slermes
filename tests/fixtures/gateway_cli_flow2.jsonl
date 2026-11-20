@@ -1,0 +1,113 @@
+{"func": "systemd_command", "in": {"argv": ["ls", "-la"], "seams": {}}}
+{"func": "systemd_command", "in": {"argv": ["a b", "c"], "seams": {}}}
+{"func": "systemd_command", "in": {"argv": ["a\\b"], "seams": {}}}
+{"func": "systemd_command", "in": {"argv": ["a\"b"], "seams": {}}}
+{"func": "systemd_command", "in": {"argv": ["100%", "$x"], "seams": {}}}
+{"func": "systemd_command", "in": {"argv": [], "seams": {}}}
+{"func": "systemd_command", "in": {"argv": ["mix\\%\"$"], "seams": {}}}
+{"func": "systemd_command", "in": {"argv": null, "seams": {}}}
+{"func": "systemd_command", "in": {"argv": 5, "seams": {}}}
+{"func": "systemd_command", "in": {"argv": ["ok", 7], "seams": {}}}
+{"func": "completed_process_detail", "in": {"result": {"stderr": "err\n", "stdout": "out", "returncode": 1}, "seams": {}}}
+{"func": "completed_process_detail", "in": {"result": {"stderr": "", "stdout": "out\n", "returncode": 0}, "seams": {}}}
+{"func": "completed_process_detail", "in": {"result": {"stderr": "", "stdout": "", "returncode": 3}, "seams": {}}}
+{"func": "completed_process_detail", "in": {"result": {"stderr": "  ", "stdout": "x", "returncode": 0}, "seams": {}}}
+{"func": "completed_process_detail", "in": {"result": {"stderr": null, "stdout": "out", "returncode": 0}, "seams": {}}}
+{"func": "completed_process_detail", "in": {"result": {"stderr": null, "stdout": null, "returncode": 0}, "seams": {}}}
+{"func": "completed_process_detail", "in": {"result": null, "seams": {}}}
+{"func": "completed_process_detail", "in": {"result": 5, "seams": {}}}
+{"func": "hermes_home_pinned_by_unit", "in": {"unit_path": "/etc/systemd/system/hermes-gateway.service", "seams": {"unit_environment_value": "/home/u/.hermes"}}}
+{"func": "hermes_home_pinned_by_unit", "in": {"unit_path": "/etc/systemd/system/hermes-gateway.service", "seams": {"unit_environment_value": null}}}
+{"func": "hermes_home_pinned_by_unit", "in": {"unit_path": "/etc/systemd/system/hermes-gateway.service", "seams": {"unit_environment_value": ""}}}
+{"func": "hermes_home_pinned_by_unit", "in": {"unit_path": "/etc/systemd/system/hermes-gateway.service", "seams": {"unit_environment_value": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "hermes_home_pinned_by_unit", "in": {"unit_path": "/etc/systemd/system/hermes-gateway.service", "seams": {"unit_environment_value": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "hermes_home_pinned_by_unit", "in": {"unit_path": "/etc/systemd/system/hermes-gateway.service", "seams": {}}}
+{"func": "installed_unit_ld_library_path", "in": {"system": false, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "unit_environment_value": "/lib"}}}
+{"func": "installed_unit_ld_library_path", "in": {"system": true, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "unit_environment_value": null}}}
+{"func": "installed_unit_ld_library_path", "in": {"system": false, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "unit_environment_value": ""}}}
+{"func": "installed_unit_ld_library_path", "in": {"system": false, "seams": {"get_systemd_unit_path": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "installed_unit_ld_library_path", "in": {"system": false, "seams": {"get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "unit_environment_value": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "installed_unit_ld_library_path", "in": {"system": false, "seams": {}}}
+{"func": "ld_library_path_line", "in": {"system": false, "seams": {"environ_get": "/a:/b", "systemd_env_line": "Environment=LD_LIBRARY_PATH=/a:/b"}}}
+{"func": "ld_library_path_line", "in": {"system": false, "seams": {"environ_get": "", "get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "unit_environment_value": "/lib", "systemd_env_line": "ENV"}}}
+{"func": "ld_library_path_line", "in": {"system": false, "seams": {"environ_get": "", "get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "unit_environment_value": null}}}
+{"func": "ld_library_path_line", "in": {"system": false, "seams": {"environ_get": "/a::b:", "systemd_env_line": "ENV"}}}
+{"func": "ld_library_path_line", "in": {"system": true, "target_home_dir": "/home/t", "seams": {"environ_get": "/a:/b", "remap_path_for_user": ["/home/t/a", "/home/t/b"], "systemd_env_line": "ENV"}}}
+{"func": "ld_library_path_line", "in": {"system": false, "seams": {"environ_get": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "ld_library_path_line", "in": {"system": false, "target_home_dir": "/home/t", "seams": {"environ_get": "/a", "remap_path_for_user": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "ld_library_path_line", "in": {"system": false, "seams": {"environ_get": "/a", "systemd_env_line": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "ld_library_path_line", "in": {"system": false, "seams": {}}}
+{"func": "loginctl_enable_linger", "in": {"username": "u", "seams": {"subprocess_run": {"stdout": "", "stderr": "", "returncode": 0}}}}
+{"func": "loginctl_enable_linger", "in": {"username": "alice", "seams": {"subprocess_run": null}}}
+{"func": "loginctl_enable_linger", "in": {"username": "u", "seams": {"subprocess_run": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "loginctl_enable_linger", "in": {"username": "u", "seams": {"subprocess_run": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "loginctl_enable_linger", "in": {"username": "u", "seams": {}}}
+{"func": "loginctl_enable_linger", "in": {"username": "bob", "seams": {"subprocess_run": {"returncode": 1}}}}
+{"func": "wait_for_target_user_bus", "in": {"uid": 1000, "seams": {"poll_until": true}}}
+{"func": "wait_for_target_user_bus", "in": {"uid": 1000, "seams": {"poll_until": false}}}
+{"func": "wait_for_target_user_bus", "in": {"uid": 0, "timeout": 3.0, "seams": {"poll_until": true}}}
+{"func": "wait_for_target_user_bus", "in": {"uid": 1000, "seams": {"poll_until": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "wait_for_target_user_bus", "in": {"uid": 1000, "seams": {"poll_until": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "wait_for_target_user_bus", "in": {"uid": 1000, "seams": {}}}
+{"func": "user_systemd_unit_dir", "in": {"seams": {"environ_get": "/custom/config"}}}
+{"func": "user_systemd_unit_dir", "in": {"seams": {"environ_get": "", "get_real_home": "/home/u"}}}
+{"func": "user_systemd_unit_dir", "in": {"seams": {"environ_get": "  ", "get_real_home": "/home/u"}}}
+{"func": "user_systemd_unit_dir", "in": {"seams": {"environ_get": null}}}
+{"func": "user_systemd_unit_dir", "in": {"seams": {"environ_get": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "user_systemd_unit_dir", "in": {"seams": {"environ_get": "", "get_real_home": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "user_systemd_unit_dir", "in": {"seams": {}}}
+{"func": "user_runtime_dir", "in": {"seams": {"environ_get": "/run/user/1000"}}}
+{"func": "user_runtime_dir", "in": {"seams": {"environ_get": null, "getuid": 1000}}}
+{"func": "user_runtime_dir", "in": {"seams": {"environ_get": "", "getuid": 0}}}
+{"func": "user_runtime_dir", "in": {"seams": {"environ_get": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "user_runtime_dir", "in": {"seams": {"environ_get": null, "getuid": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "user_runtime_dir", "in": {"seams": {}}}
+{"func": "ensure_system_service_linger", "in": {"username": "u", "seams": {"ensure_linger_enabled": false}}}
+{"func": "ensure_system_service_linger", "in": {"username": "u", "seams": {"ensure_linger_enabled": true, "pwd_getpwnam": {"pw_uid": 1000}, "poll_until": true, "systemd_unit_is_active": false, "print": null}}}
+{"func": "ensure_system_service_linger", "in": {"username": "u", "seams": {"ensure_linger_enabled": true, "pwd_getpwnam": {"pw_uid": 1000}, "poll_until": false, "systemd_unit_is_active": false, "print": null}}}
+{"func": "ensure_system_service_linger", "in": {"username": "root", "seams": {"ensure_linger_enabled": true, "pwd_getpwnam": {"pw_uid": 0}, "poll_until": true, "systemd_unit_is_active": true, "get_service_name": "hermes-gateway", "print": null}}}
+{"func": "ensure_system_service_linger", "in": {"username": "u", "seams": {"ensure_linger_enabled": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "ensure_system_service_linger", "in": {"username": "u", "seams": {"ensure_linger_enabled": true, "pwd_getpwnam": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "ensure_system_service_linger", "in": {"username": "u", "seams": {"ensure_linger_enabled": true, "pwd_getpwnam": {"pw_uid": 1000}, "poll_until": true, "systemd_unit_is_active": false, "print": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "ensure_system_service_linger", "in": {"username": "u", "seams": {}}}
+{"func": "refuses_container_user_scope_install", "in": {"system": true, "seams": {}}}
+{"func": "refuses_container_user_scope_install", "in": {"system": false, "seams": {"is_container": false}}}
+{"func": "refuses_container_user_scope_install", "in": {"system": false, "seams": {"is_container": true, "print_error": null, "print_info_lines": null}}}
+{"func": "refuses_container_user_scope_install", "in": {"system": false, "seams": {"is_container": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "refuses_container_user_scope_install", "in": {"system": false, "seams": {"is_container": true, "print_error": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "refuses_container_user_scope_install", "in": {"system": false, "seams": {}}}
+{"func": "is_apt_termux_install", "in": {"seams": {"sealed_steward": "apt-termux"}}}
+{"func": "is_apt_termux_install", "in": {"seams": {"sealed_steward": "other"}}}
+{"func": "is_apt_termux_install", "in": {"seams": {"sealed_steward": null}}}
+{"func": "is_apt_termux_install", "in": {"seams": {"sealed_steward": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "is_apt_termux_install", "in": {"seams": {"sealed_steward": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "is_apt_termux_install", "in": {"seams": {}}}
+{"func": "print_service_not_installed", "in": {"system": true, "seams": {"systemd_cli_bits": [["sudo ", " --system", ""]], "print": null}}}
+{"func": "print_service_not_installed", "in": {"system": false, "seams": {"systemd_cli_bits": [["", "", "--user "]], "print": null}}}
+{"func": "print_service_not_installed", "in": {"system": false, "seams": {"systemd_cli_bits": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "print_service_not_installed", "in": {"system": false, "seams": {"systemd_cli_bits": [["", "", "--user "]], "print": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "print_service_not_installed", "in": {"system": false, "seams": {}}}
+{"func": "print_service_not_installed", "in": {"system": true, "seams": {"systemd_cli_bits": [["sudo ", " --system", ""]], "print": [null, null]}}}
+{"func": "print_runtime_health", "in": {"seams": {"runtime_health_lines": [["a", "b"]], "print": null}}}
+{"func": "print_runtime_health", "in": {"seams": {"runtime_health_lines": [[]]}}}
+{"func": "print_runtime_health", "in": {"seams": {"runtime_health_lines": [["one"]], "print": null}}}
+{"func": "print_runtime_health", "in": {"seams": {"runtime_health_lines": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "print_runtime_health", "in": {"seams": {"runtime_health_lines": [["a"]], "print": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "print_runtime_health", "in": {"seams": {}}}
+{"func": "systemd_unit_belongs_to_current_home", "in": {"system": true, "seams": {"foreign_systemd_unit_home": "/other", "get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "get_hermes_home": "/home/u/.hermes", "print_warning": null}}}
+{"func": "systemd_unit_belongs_to_current_home", "in": {"system": false, "seams": {"foreign_systemd_unit_home": null, "sync_hermes_home_from_systemd_unit": null, "hermes_home_from_systemd_unit_file": null}}}
+{"func": "systemd_unit_belongs_to_current_home", "in": {"system": false, "seams": {"foreign_systemd_unit_home": null, "sync_hermes_home_from_systemd_unit": null, "hermes_home_from_systemd_unit_file": "/home/u/.hermes", "path_expanduser": "/home/u/.hermes", "path_resolve": ["/home/u/.hermes", "/home/u/.hermes"], "get_hermes_home": "/home/u/.hermes"}}}
+{"func": "systemd_unit_belongs_to_current_home", "in": {"system": false, "seams": {"foreign_systemd_unit_home": null, "sync_hermes_home_from_systemd_unit": null, "hermes_home_from_systemd_unit_file": "/other", "path_expanduser": "/other", "path_resolve": ["/other", "/home/u/.hermes"], "get_hermes_home": ["/home/u/.hermes", "/home/u/.hermes"], "get_systemd_unit_path": "/etc/systemd/system/hermes-gateway.service", "print_warning": null}}}
+{"func": "systemd_unit_belongs_to_current_home", "in": {"system": false, "seams": {"foreign_systemd_unit_home": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "systemd_unit_belongs_to_current_home", "in": {"system": false, "seams": {"foreign_systemd_unit_home": null, "sync_hermes_home_from_systemd_unit": null, "hermes_home_from_systemd_unit_file": "/home/u/.hermes", "path_expanduser": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "systemd_unit_belongs_to_current_home", "in": {"system": false, "seams": {}}}
+{"func": "bare_unit_pinned_home", "in": {"seams": {"is_linux": false}}}
+{"func": "bare_unit_pinned_home", "in": {"seams": {"is_linux": true, "geteuid": 0, "unit_environment_value": null}}}
+{"func": "bare_unit_pinned_home", "in": {"seams": {"is_linux": true, "geteuid": 0, "unit_environment_value": "/home/u/.hermes", "path_expanduser": "/home/u/.hermes", "path_resolve": "/home/u/.hermes"}}}
+{"func": "bare_unit_pinned_home", "in": {"seams": {"is_linux": true, "geteuid": 1000, "environ_get": "/cfg", "unit_environment_value": "/home/u/.hermes", "path_expanduser": "/home/u/.hermes", "path_resolve": "/home/u/.hermes"}}}
+{"func": "bare_unit_pinned_home", "in": {"seams": {"is_linux": true, "geteuid": 0, "unit_environment_value": "~/x", "path_expanduser": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "bare_unit_pinned_home", "in": {"seams": {"is_linux": true, "geteuid": 0, "unit_environment_value": "~/x", "path_expanduser": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "bare_unit_pinned_home", "in": {"seams": {"is_linux": true, "geteuid": 0, "unit_environment_value": "~/x", "path_expanduser": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "bare_unit_pinned_home", "in": {"seams": {"is_linux": true, "geteuid": 0, "unit_environment_value": "~/x", "path_expanduser": {"__raise__": "TypeError", "msg": "boom"}}}}
+{"func": "bare_unit_pinned_home", "in": {"seams": {"is_linux": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "bare_unit_pinned_home", "in": {"seams": {}}}

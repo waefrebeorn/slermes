@@ -1,0 +1,77 @@
+{"func": "tool_call_init", "in": {"fields": {"id": "x", "name": "n", "arguments": "{}"}, "seams": {}}}
+{"func": "tool_call_init", "in": {"fields": {"id": "x", "name": "n", "arguments": "{}", "provider_data": {"call_id": "c1"}}, "seams": {}}}
+{"func": "tool_call_init", "in": {"fields": {"id": null, "name": "n", "arguments": "{}"}, "seams": {}}}
+{"func": "tool_call_init", "in": {"fields": {"id": "x", "name": "n", "arguments": "{}", "provider_data": null}, "seams": {}}}
+{"func": "tool_call_init", "in": {"fields": {"id": "a", "name": "b", "arguments": "{\"k\": 1}", "provider_data": {"extra_content": {"google": {"thought_signature": "s"}}}}, "seams": {}}}
+{"func": "tool_call_init", "in": {"fields": {"id": "", "name": "", "arguments": ""}, "seams": {}}}
+{"func": "tool_call_repr", "in": {"fields": {"id": "x", "name": "n", "arguments": "{}"}, "seams": {}}}
+{"func": "tool_call_repr", "in": {"fields": {"id": null, "name": "n", "arguments": "{}"}, "seams": {}}}
+{"func": "tool_call_repr", "in": {"fields": {"id": "a'b", "name": "n", "arguments": "{}"}, "seams": {}}}
+{"func": "tool_call_repr", "in": {"fields": {"id": "x", "name": "n", "arguments": "{}", "provider_data": {"a": 1}}, "seams": {}}}
+{"func": "tool_call_repr", "in": {"fields": {"id": "x", "name": "n", "arguments": "{\"k\": 1}"}, "seams": {}}}
+{"func": "tool_call_repr", "in": {"fields": {"id": "x", "name": "n", "arguments": "{}", "provider_data": null}, "seams": {}}}
+{"func": "tool_call_eq", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "other": {"id": "x", "name": "n", "arguments": "{}"}, "seams": {}}}
+{"func": "tool_call_eq", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "other": {"id": "x", "name": "n", "arguments": "{}", "provider_data": {"a": 1}}, "seams": {}}}
+{"func": "tool_call_eq", "in": {"self": {"id": "x", "name": "n", "arguments": "{}", "provider_data": {"a": 1}}, "other": {"id": "x", "name": "n", "arguments": "{}", "provider_data": {"a": 1}}, "seams": {}}}
+{"func": "tool_call_eq", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "other": {"id": "y", "name": "n", "arguments": "{}"}, "seams": {}}}
+{"func": "tool_call_eq", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "other_class": "Usage", "other": {}, "seams": {}}}
+{"func": "tool_call_eq", "in": {"self": {"id": "x", "name": "n", "arguments": "{}", "provider_data": {"a": [1, 2]}}, "other": {"id": "x", "name": "n", "arguments": "{}", "provider_data": {"a": [1, 2]}}, "seams": {}}}
+{"func": "tool_call_eq", "in": {"self": {"id": "x", "name": "n", "arguments": "{}", "provider_data": {"a": 1}}, "other": {"id": "x", "name": "n", "arguments": "{}", "provider_data": {"a": 1.0}}, "seams": {}}}
+{"func": "tool_call_replace", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "changes": {"name": "n2"}, "seams": {"ToolCall.__init__": null}}}
+{"func": "tool_call_replace", "in": {"self": {"id": "x", "name": "n", "arguments": "{}", "provider_data": {"call_id": "c"}}, "changes": {"provider_data": null, "id": "y"}, "seams": {"ToolCall.__init__": null}}}
+{"func": "tool_call_replace", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "changes": {}, "seams": {"ToolCall.__init__": null}}}
+{"func": "tool_call_replace", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "changes": {"name": "z"}, "seams": {}}}
+{"func": "tool_call_replace", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "changes": {"name": "z"}, "seams": {"ToolCall.__init__": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "tool_call_replace", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "changes": {"name": "z"}, "seams": {"ToolCall.__init__": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "tool_call_replace", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "changes": {"name": "z"}, "seams": {"ToolCall.__init__": {"__raise__": "GeneratorExit", "msg": "ge"}}}}
+{"func": "tool_call_replace", "in": {"self": {"id": "x", "name": "n", "arguments": "{}"}, "changes": {"bogus": 1}, "seams": {"ToolCall.__init__": null}}}
+{"func": "usage_init", "in": {"fields": {}, "seams": {}}}
+{"func": "usage_init", "in": {"fields": {"prompt_tokens": 1, "completion_tokens": 2, "total_tokens": 3, "cached_tokens": 4}, "seams": {}}}
+{"func": "usage_init", "in": {"fields": {"prompt_tokens": null}, "seams": {}}}
+{"func": "usage_init", "in": {"fields": {"prompt_tokens": 1.5}, "seams": {}}}
+{"func": "usage_init", "in": {"fields": {"total_tokens": 10}, "seams": {}}}
+{"func": "usage_init", "in": {"fields": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0, "cached_tokens": 0}, "seams": {}}}
+{"func": "usage_repr", "in": {"fields": {}, "seams": {}}}
+{"func": "usage_repr", "in": {"fields": {"prompt_tokens": 1, "completion_tokens": 2, "total_tokens": 3, "cached_tokens": 4}, "seams": {}}}
+{"func": "usage_repr", "in": {"fields": {"prompt_tokens": 1.5, "completion_tokens": 2.5}, "seams": {}}}
+{"func": "usage_repr", "in": {"fields": {"prompt_tokens": null}, "seams": {}}}
+{"func": "usage_repr", "in": {"fields": {"total_tokens": 100}, "seams": {}}}
+{"func": "usage_repr", "in": {"fields": {"cached_tokens": 7}, "seams": {}}}
+{"func": "usage_eq", "in": {"self": {}, "other": {}, "seams": {}}}
+{"func": "usage_eq", "in": {"self": {"prompt_tokens": 1}, "other": {"prompt_tokens": 1}, "seams": {}}}
+{"func": "usage_eq", "in": {"self": {"prompt_tokens": 1}, "other": {"prompt_tokens": 2}, "seams": {}}}
+{"func": "usage_eq", "in": {"self": {"prompt_tokens": 1}, "other": {"prompt_tokens": 1.0}, "seams": {}}}
+{"func": "usage_eq", "in": {"self": {"prompt_tokens": 1}, "other_class": "ToolCall", "other": {"id": "x", "name": "n", "arguments": "{}"}, "seams": {}}}
+{"func": "usage_eq", "in": {"self": {"prompt_tokens": 1, "completion_tokens": 2, "total_tokens": 3, "cached_tokens": 4}, "other": {"prompt_tokens": 1, "completion_tokens": 2, "total_tokens": 3, "cached_tokens": 4}, "seams": {}}}
+{"func": "usage_replace", "in": {"self": {"prompt_tokens": 1, "completion_tokens": 2, "total_tokens": 3, "cached_tokens": 4}, "changes": {"prompt_tokens": 9}, "seams": {"Usage.__init__": null}}}
+{"func": "usage_replace", "in": {"self": {}, "changes": {"cached_tokens": 5}, "seams": {"Usage.__init__": null}}}
+{"func": "usage_replace", "in": {"self": {"prompt_tokens": 1}, "changes": {}, "seams": {"Usage.__init__": null}}}
+{"func": "usage_replace", "in": {"self": {}, "changes": {"prompt_tokens": 2}, "seams": {}}}
+{"func": "usage_replace", "in": {"self": {}, "changes": {"prompt_tokens": 2}, "seams": {"Usage.__init__": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "usage_replace", "in": {"self": {}, "changes": {"bogus": 1}, "seams": {"Usage.__init__": null}}}
+{"func": "usage_replace", "in": {"self": {}, "changes": {"prompt_tokens": 2}, "seams": {"Usage.__init__": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "normalized_response_init", "in": {"fields": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "seams": {}}}
+{"func": "normalized_response_init", "in": {"fields": {"content": "hi", "tool_calls": [], "finish_reason": "stop", "reasoning": "r", "usage": {"prompt_tokens": 1}, "provider_data": {"reasoning_details": [1]}}, "seams": {}}}
+{"func": "normalized_response_init", "in": {"fields": {"content": null, "tool_calls": null, "finish_reason": "length"}, "seams": {}}}
+{"func": "normalized_response_init", "in": {"fields": {"content": "c", "tool_calls": [{"id": "i", "name": "nm", "arguments": "{}"}], "finish_reason": "tool_calls"}, "seams": {}}}
+{"func": "normalized_response_init", "in": {"fields": {"content": "c", "tool_calls": null, "finish_reason": "stop", "usage": null, "reasoning": null}, "seams": {}}}
+{"func": "normalized_response_init", "in": {"fields": {"content": "", "tool_calls": [], "finish_reason": "content_filter", "provider_data": {"anthropic_content_blocks": [{"type": "text"}]}}, "seams": {}}}
+{"func": "normalized_response_repr", "in": {"fields": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "seams": {}}}
+{"func": "normalized_response_repr", "in": {"fields": {"content": "c", "tool_calls": [], "finish_reason": "stop"}, "seams": {}}}
+{"func": "normalized_response_repr", "in": {"fields": {"content": "c", "tool_calls": [{"id": "i", "name": "nm", "arguments": "{}"}], "finish_reason": "tool_calls"}, "seams": {}}}
+{"func": "normalized_response_repr", "in": {"fields": {"content": "c", "tool_calls": null, "finish_reason": "stop", "usage": {"prompt_tokens": 1, "completion_tokens": 2, "total_tokens": 3, "cached_tokens": 0}}, "seams": {}}}
+{"func": "normalized_response_repr", "in": {"fields": {"content": null, "tool_calls": null, "finish_reason": "length", "reasoning": "r"}, "seams": {}}}
+{"func": "normalized_response_repr", "in": {"fields": {"content": "c", "tool_calls": null, "finish_reason": "stop", "provider_data": {"x": 1}}, "seams": {}}}
+{"func": "normalized_response_eq", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "other": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "seams": {}}}
+{"func": "normalized_response_eq", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "other": {"content": "c", "tool_calls": null, "finish_reason": "length"}, "seams": {}}}
+{"func": "normalized_response_eq", "in": {"self": {"content": "c", "tool_calls": [{"id": "i", "name": "n", "arguments": "{}"}], "finish_reason": "stop"}, "other": {"content": "c", "tool_calls": [{"id": "i", "name": "n", "arguments": "{}"}], "finish_reason": "stop"}, "seams": {}}}
+{"func": "normalized_response_eq", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop", "usage": {"prompt_tokens": 1}}, "other": {"content": "c", "tool_calls": null, "finish_reason": "stop", "usage": {"prompt_tokens": 1.0}}, "seams": {}}}
+{"func": "normalized_response_eq", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "other_class": "Usage", "other": {}, "seams": {}}}
+{"func": "normalized_response_eq", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop", "provider_data": {"a": 1}}, "other": {"content": "c", "tool_calls": null, "finish_reason": "stop", "provider_data": {"a": 1}}, "seams": {}}}
+{"func": "normalized_response_replace", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "changes": {"finish_reason": "length"}, "seams": {"NormalizedResponse.__init__": null}}}
+{"func": "normalized_response_replace", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop", "reasoning": "r"}, "changes": {"usage": null}, "seams": {"NormalizedResponse.__init__": null}}}
+{"func": "normalized_response_replace", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "changes": {}, "seams": {"NormalizedResponse.__init__": null}}}
+{"func": "normalized_response_replace", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "changes": {"content": "d"}, "seams": {}}}
+{"func": "normalized_response_replace", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "changes": {"content": "d"}, "seams": {"NormalizedResponse.__init__": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "normalized_response_replace", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "changes": {"bogus": 1}, "seams": {"NormalizedResponse.__init__": null}}}
+{"func": "normalized_response_replace", "in": {"self": {"content": "c", "tool_calls": null, "finish_reason": "stop"}, "changes": {"reasoning": "new", "provider_data": {"k": "v"}}, "seams": {"NormalizedResponse.__init__": null}}}

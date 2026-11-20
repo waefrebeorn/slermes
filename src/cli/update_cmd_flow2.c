@@ -1163,14 +1163,14 @@ static json_t *uc2_complete_source_update(const uc2_seams_t *sp, json_t *request
     tmp = uc2_call(sp, "record_stage", rsa);
     json_free(rsa);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     /* publish_stage("Updating dependencies") */
     json_t *psa = json_object();
     uc2_aset_s(psa, "stage", "Updating dependencies");
     tmp = uc2_call(sp, "publish_stage", psa);
     json_free(psa);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     current = uc2_call0(sp, "receipt_current_get");
     if (uc2_is_raise(current)) { ret = current; current = NULL; goto done; }
     if (!uc2_is_null(current)) {
@@ -1198,7 +1198,7 @@ static json_t *uc2_complete_source_update(const uc2_seams_t *sp, json_t *request
     tmp = uc2_call(sp, "write_fleet_restart_pending_marker", wfa);
     json_free(wfa); free(esbuf);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     /* run_completion(request) with KeyboardInterrupt / Exception handlers */
     json_t *rca = json_object();
     uc2_aset_j(rca, "request", request);
@@ -1212,7 +1212,7 @@ static json_t *uc2_complete_source_update(const uc2_seams_t *sp, json_t *request
             tmp = uc2_call(sp, "finalize_interrupted_update_receipt", fa);
             json_free(fa);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             ret = uc2_raise_spec("SystemExit", "130");
             goto done;
         }
@@ -1243,7 +1243,7 @@ static json_t *uc2_complete_source_update(const uc2_seams_t *sp, json_t *request
         tmp = uc2_call(sp, "finalize_interrupted_update_receipt", fa);
         json_free(fa);
         if (uc2_is_raise(tmp)) { json_free(rcpt); json_free(ec); ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     } else if (!lost && uc2_is_null(rcpt) && uc2_jtruth(ec)) {
         json_t *err = uc2_dget(result, "error", NULL);
         if (uc2_is_raise(err)) { json_free(rcpt); json_free(ec); ret = err; goto done; }
@@ -1281,7 +1281,7 @@ static json_t *uc2_complete_source_update(const uc2_seams_t *sp, json_t *request
     tmp = uc2_call(sp, "accept_completion_pm_receipt", aca);
     json_free(aca);
     if (uc2_is_raise(tmp)) { json_free(ec); ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     /* if result.get("receipt") is not None: adopt_terminal_receipt + reset */
     rcpt = uc2_dget(result, "receipt", NULL);
     if (uc2_is_raise(rcpt)) { json_free(ec); ret = rcpt; goto done; }
@@ -1291,7 +1291,7 @@ static json_t *uc2_complete_source_update(const uc2_seams_t *sp, json_t *request
         tmp = uc2_call(sp, "adopt_terminal_receipt", ata);
         json_free(ata);
         if (uc2_is_raise(tmp)) { json_free(rcpt); json_free(ec); ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         json_free(current);
         current = uc2_call0(sp, "receipt_current_get");
         if (uc2_is_raise(current)) { json_free(rcpt); json_free(ec); ret = current; current = NULL; goto done; }
@@ -1304,7 +1304,7 @@ static json_t *uc2_complete_source_update(const uc2_seams_t *sp, json_t *request
             tmp = uc2_call(sp, "receipt_current_reset", rsta);
             json_free(rsta);
             if (uc2_is_raise(tmp)) { json_free(rcpt); json_free(ec); ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
     }
     json_free(rcpt);
@@ -1350,7 +1350,7 @@ static json_t *uc2_complete_source_update(const uc2_seams_t *sp, json_t *request
                     if (uc2_is_raise(or)) { json_free(ec); ret = or; goto done; }
                     json_free(or);
                 } else { json_free(ec); ret = tmp; tmp = NULL; goto done; }
-            } else json_free(tmp);
+            } else json_free(tmp); tmp = NULL;
             json_t *sr = uc2_settle_windows_resume(sp, request);
             if (uc2_is_raise(sr)) { json_free(ec); ret = sr; goto done; }
             json_free(sr);
@@ -1469,7 +1469,7 @@ static json_t *uc2_reconcile_diverged_checkout(const uc2_seams_t *sp, const json
                           " merging origin/%s instead of resetting so local commits survive...", cur, br);
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         json_t *ta = json_object(); uc2_aset_s(ta, "fmt", "%Y%m%d-%H%M%S");
         json_t *ts = uc2_call(sp, "time_strftime", ta); json_free(ta);
         if (uc2_is_raise(ts)) { ret = ts; goto done; }
@@ -1485,7 +1485,7 @@ static json_t *uc2_reconcile_diverged_checkout(const uc2_seams_t *sp, const json
         rec = uc2_git_run(sp, git_cmd, ga, false); json_free(ga);
         if (uc2_is_raise(rec)) { ret = rec; rec = NULL; goto done; }
         rcf = uc2_rec_field(rec, "returncode");
-        if (uc2_is_raise(rcf)) { json_free(rec); ret = rcf; rcf = NULL; goto done; }
+        if (uc2_is_raise(rcf)) { json_free(rec); rec = NULL; ret = rcf; rcf = NULL; goto done; }
         bool nonzero = !(uc2_is_num(rcf) && rcf->num_val == 0.0);
         json_free(rcf); rcf = NULL; json_free(rec); rec = NULL;
         if (nonzero) {
@@ -1496,7 +1496,7 @@ static json_t *uc2_reconcile_diverged_checkout(const uc2_seams_t *sp, const json
             json_free(rec); rec = NULL;
             tmp = uc2_print(sp, UC2_CROSS " Merge conflict between local commits and upstream " UC2_EMDASH " update stopped, nothing was changed.");
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             root = uc2_project_root(sp);
             if (uc2_is_raise(root)) { ret = root; root = NULL; goto done; }
             m = uc2_xsf("  Resolve manually: cd %s && git merge origin/%s", uc2_jstr_def(root, ""), br);
@@ -1508,7 +1508,7 @@ static json_t *uc2_reconcile_diverged_checkout(const uc2_seams_t *sp, const json
             json_free(tmp);
             tmp = uc2_record_stop(sp, "merge_conflict", NULL);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             ret = uc2_raise_spec("SystemExit", "1"); goto done;
         }
         ret = NULL; goto done;
@@ -1519,13 +1519,13 @@ static json_t *uc2_reconcile_diverged_checkout(const uc2_seams_t *sp, const json
     rec = uc2_git_run(sp, git_cmd, a, false); json_free(a);
     if (uc2_is_raise(rec)) { ret = rec; rec = NULL; goto done; }
     rcf = uc2_rec_field(rec, "returncode");
-    if (uc2_is_raise(rcf)) { json_free(rec); ret = rcf; rcf = NULL; goto done; }
+    if (uc2_is_raise(rcf)) { json_free(rec); rec = NULL; ret = rcf; rcf = NULL; goto done; }
     bool rc0 = uc2_is_num(rcf) && rcf->num_val == 0.0;
     json_free(rcf); rcf = NULL;
     bool has_common = false;
     if (rc0) {
         s = uc2_stdout_strip(rec);
-        if (uc2_is_raise(s)) { json_free(rec); ret = s; s = NULL; goto done; }
+        if (uc2_is_raise(s)) { json_free(rec); rec = NULL; ret = s; s = NULL; goto done; }
         has_common = uc2_jtruth(s);
         json_free(s); s = NULL;
     }
@@ -1548,7 +1548,7 @@ static json_t *uc2_reconcile_diverged_checkout(const uc2_seams_t *sp, const json
         rec = uc2_git_run(sp, git_cmd, ga, false); json_free(ga);
         if (uc2_is_raise(rec)) { free(rescue_ref); free(head); ret = rec; rec = NULL; goto done; }
         rcf = uc2_rec_field(rec, "returncode");
-        if (uc2_is_raise(rcf)) { json_free(rec); free(rescue_ref); free(head); ret = rcf; rcf = NULL; goto done; }
+        if (uc2_is_raise(rcf)) { json_free(rec); rec = NULL; free(rescue_ref); free(head); ret = rcf; rcf = NULL; goto done; }
         bool urc0 = uc2_is_num(rcf) && rcf->num_val == 0.0;
         json_free(rcf); rcf = NULL; json_free(rec); rec = NULL;
         if (urc0) {
@@ -1556,7 +1556,7 @@ static json_t *uc2_reconcile_diverged_checkout(const uc2_seams_t *sp, const json
                               head, rescue_ref, UC2_ORPHAN_RESCUE_REF_MAX_AGE_DAYS);
             tmp = uc2_print(sp, m); free(m);
             if (uc2_is_raise(tmp)) { free(rescue_ref); free(head); ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             if (has_common) {
                 char *spec = uc2_xsf("origin/%s..%s", br, pre);
                 ga = json_array();
@@ -1571,14 +1571,14 @@ static json_t *uc2_reconcile_diverged_checkout(const uc2_seams_t *sp, const json
                             dv, br, br, rescue_ref);
                 tmp = uc2_print(sp, m); free(m);
                 if (uc2_is_raise(tmp)) { free(rescue_ref); free(head); ret = tmp; tmp = NULL; goto done; }
-                json_free(tmp);
+                json_free(tmp); tmp = NULL;
             }
         } else {
             char *m = uc2_xsf("%sattempted to back up current HEAD to %s before resetting, but the backup write failed (pre-reset SHA was %s).",
                               head, rescue_ref, pre);
             tmp = uc2_print(sp, m); free(m);
             if (uc2_is_raise(tmp)) { free(rescue_ref); free(head); ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
         free(rescue_ref); free(head);
         root = uc2_project_root(sp);
@@ -1589,42 +1589,42 @@ static json_t *uc2_reconcile_diverged_checkout(const uc2_seams_t *sp, const json
         uc2_aset_s(pra, "branch", br);
         tmp = uc2_call(sp, "prune_orphan_rescue_refs", pra); json_free(pra);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     tmp = uc2_print(sp, "  " UC2_WARN " Fast-forward not possible (history diverged), resetting to match remote...");
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     a = json_array();
     json_append(a, json_string("reset")); json_append(a, json_string("--hard"));
     json_append(a, json_string(merge_ref));
     rec = uc2_git_run(sp, git_cmd, a, false); json_free(a);
     if (uc2_is_raise(rec)) { ret = rec; rec = NULL; goto done; }
     rcf = uc2_rec_field(rec, "returncode");
-    if (uc2_is_raise(rcf)) { json_free(rec); ret = rcf; rcf = NULL; goto done; }
+    if (uc2_is_raise(rcf)) { json_free(rec); rec = NULL; ret = rcf; rcf = NULL; goto done; }
     bool reset_bad = !(uc2_is_num(rcf) && rcf->num_val == 0.0);
     json_free(rcf); rcf = NULL;
     if (reset_bad) {
         char *m = uc2_xsf(UC2_CROSS " Failed to reset to origin/%s.", br);
         tmp = uc2_print(sp, m); free(m);
-        if (uc2_is_raise(tmp)) { json_free(rec); ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        if (uc2_is_raise(tmp)) { json_free(rec); rec = NULL; ret = tmp; tmp = NULL; goto done; }
+        json_free(tmp); tmp = NULL;
         s = uc2_field_strip(rec, "stderr");
-        if (uc2_is_raise(s)) { json_free(rec); ret = s; s = NULL; goto done; }
+        if (uc2_is_raise(s)) { json_free(rec); rec = NULL; ret = s; s = NULL; goto done; }
         if (uc2_jtruth(s)) {
             m = uc2_xsf("  %s", uc2_jstr_def(s, ""));
             tmp = uc2_print(sp, m); free(m);
-            if (uc2_is_raise(tmp)) { json_free(rec); ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            if (uc2_is_raise(tmp)) { json_free(rec); rec = NULL; ret = tmp; tmp = NULL; goto done; }
+            json_free(tmp); tmp = NULL;
         }
         json_free(s); s = NULL;
         m = uc2_xsf("  Try manually: git fetch origin && git reset --hard origin/%s", br);
         tmp = uc2_print(sp, m); free(m);
-        if (uc2_is_raise(tmp)) { json_free(rec); ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        if (uc2_is_raise(tmp)) { json_free(rec); rec = NULL; ret = tmp; tmp = NULL; goto done; }
+        json_free(tmp); tmp = NULL;
         json_free(rec); rec = NULL;
         tmp = uc2_record_stop(sp, "checkout_move_failed", NULL);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         ret = uc2_raise_spec("SystemExit", "1"); goto done;
     }
     json_free(rec); rec = NULL;
@@ -1652,9 +1652,9 @@ static json_t *uc2_roll_back_broken_update(const uc2_seams_t *sp, const json_t *
     json_t *tsha = NULL;
     char *root_s = NULL;
     tmp = uc2_print(sp, ""); if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; } json_free(tmp);
-    tmp = uc2_print(sp, header ? header : ""); if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; } json_free(tmp);
+    tmp = uc2_print(sp, header ? header : ""); if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; } json_free(tmp); tmp = NULL;
     char *fp = uc2_xsf("  %s", failing_path ? failing_path : "");
-    tmp = uc2_print(sp, fp); free(fp); if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; } json_free(tmp);
+    tmp = uc2_print(sp, fp); free(fp); if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; } json_free(tmp); tmp = NULL;
     if (uc2_jtruth(syntax_error)) {
         char *se = uc2_pystr(syntax_error);
         size_t nl; char **lines = uc2_splitlines(se, &nl); free(se);
@@ -1662,11 +1662,11 @@ static json_t *uc2_roll_back_broken_update(const uc2_seams_t *sp, const json_t *
             char *ln = uc2_xsf("    %s", lines[i]);
             tmp = uc2_print(sp, ln); free(ln);
             if (uc2_is_raise(tmp)) { uc2_free_lines(lines, nl); ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
         uc2_free_lines(lines, nl);
     }
-    tmp = uc2_print(sp, ""); if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; } json_free(tmp);
+    tmp = uc2_print(sp, ""); if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; } json_free(tmp); tmp = NULL;
     if (uc2_jtruth(pre_pull_sha)) {
         const char *pre = uc2_jstr_def(pre_pull_sha, "");
         root = uc2_project_root(sp);
@@ -1676,7 +1676,7 @@ static json_t *uc2_roll_back_broken_update(const uc2_seams_t *sp, const json_t *
         bool parked = !uc2_is_null(rollback_branch) && !(rb && !strcmp(rb, "HEAD"));
         char *rollto = parked ? strdup(rb ? rb : "") : uc2_slice(pre, 10);
         char *m = uc2_xsf(UC2_ARROW " Rolling back to %s...", rollto); free(rollto);
-        tmp = uc2_print(sp, m); free(m); if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; } json_free(tmp);
+        tmp = uc2_print(sp, m); free(m); if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; } json_free(tmp); tmp = NULL;
         const char *mode = uc2_is_null(rollback_branch) ? "branch" : "detach";
         tsha = uc2_capture_head_sha(sp, git_cmd, root_s);
         if (uc2_is_raise(tsha)) { ret = tsha; tsha = NULL; goto done; }
@@ -1697,12 +1697,12 @@ static json_t *uc2_roll_back_broken_update(const uc2_seams_t *sp, const json_t *
                 if (uc2_is_raise(pr)) { ret = pr; goto done; }
                 json_free(pr);
             } else { ret = tmp; tmp = NULL; goto done; }
-        } else json_free(tmp);
+        } else json_free(tmp); tmp = NULL;
         targets = json_array(); json_append(targets, json_copy(pre_pull_sha));
         paths = json_array();
         tmp = uc2_cm_enter(sp, token, targets, paths, false);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         json_t *fa = json_object();
         uc2_aset_j(fa, "git_cmd", git_cmd);
         uc2_aset_s(fa, "root", root_s);
@@ -1740,7 +1740,7 @@ static json_t *uc2_roll_back_broken_update(const uc2_seams_t *sp, const json_t *
                 uc2_aset_j(da, "added", added);
                 tmp = uc2_call(sp, "drop_added_files", da); json_free(da);
                 if (uc2_is_raise(tmp)) { body_raise = tmp; tmp = NULL; goto cm_exit; }
-                bool dropped = uc2_jtruth(tmp); json_free(tmp);
+                bool dropped = uc2_jtruth(tmp); json_free(tmp); tmp = NULL;
                 if (!dropped) {
                     json_free(rr);
                     rr = uc2_completed(1, "", "could not remove the broken release's added files");
@@ -1754,7 +1754,7 @@ static json_t *uc2_roll_back_broken_update(const uc2_seams_t *sp, const json_t *
             uc2_aset_j(tw, "sha", pre_pull_sha);
             tmp = uc2_call(sp, "tree_whole_at", tw); json_free(tw);
             if (uc2_is_raise(tmp)) { body_raise = tmp; tmp = NULL; goto cm_exit; }
-            bool whole = uc2_jtruth(tmp); json_free(tmp);
+            bool whole = uc2_jtruth(tmp); json_free(tmp); tmp = NULL;
             if (!whole) {
                 char *pre10 = uc2_slice(pre, 10);
                 char *em = uc2_xsf("the checkout is not whole at %s", pre10); free(pre10);
@@ -1765,7 +1765,7 @@ static json_t *uc2_roll_back_broken_update(const uc2_seams_t *sp, const json_t *
         if (uc2_rc_val(rr) != 0.0) {
             tmp = uc2_settle_failed_tree_move(sp, root_s);
             if (uc2_is_raise(tmp)) { body_raise = tmp; tmp = NULL; goto cm_exit; }
-            bool settled = uc2_jtruth(tmp); json_free(tmp);
+            bool settled = uc2_jtruth(tmp); json_free(tmp); tmp = NULL;
             if (settled) { json_free(rr); rr = uc2_completed(0, "", ""); }
         }
         if (uc2_rc_val(rr) == 0.0 && parked) {
@@ -1784,7 +1784,7 @@ static json_t *uc2_roll_back_broken_update(const uc2_seams_t *sp, const json_t *
 cm_exit:
         exitr = uc2_cm_exit(sp, token, targets, paths, false, body_raise);
         if (uc2_is_raise(exitr)) { ret = exitr; exitr = NULL; goto done; }
-        json_free(exitr);
+        json_free(exitr); exitr = NULL;
         if (body_raise) { ret = body_raise; body_raise = NULL; goto done; }
         if (uc2_rc_val(rr) == 0.0) {
             json_t *mk = uc2_marker(sp, root_s);
@@ -1800,16 +1800,16 @@ cm_exit:
             json_free(tmp);
             tmp = uc2_print(sp, "  Try ``hermes update`` again later once a fix lands.");
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         } else {
             tmp = uc2_print(sp, "  " UC2_CROSS " Rollback failed. Recover manually with:");
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             char *joined = uc2_shlex_join(rargs);
             m = uc2_xsf("    cd %s && git %s", root_s, joined); free(joined);
             tmp = uc2_print(sp, m); free(m);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             json_t *se = uc2_field_strip(rr, "stderr");
             if (uc2_is_raise(se)) { ret = se; goto done; }
             if (uc2_jtruth(se)) {
@@ -1817,7 +1817,7 @@ cm_exit:
                 m = uc2_xsf("    (%s)", fl ? fl : ""); free(fl);
                 tmp = uc2_print(sp, m); free(m);
                 if (uc2_is_raise(tmp)) { json_free(se); ret = tmp; tmp = NULL; goto done; }
-                json_free(tmp);
+                json_free(tmp); tmp = NULL;
             }
             json_free(se);
             json_t *mk = uc2_marker(sp, root_s);
@@ -1828,28 +1828,28 @@ cm_exit:
             if (isfile) {
                 tmp = uc2_owe_restore_of(sp, root_s, pre_pull_sha);
                 if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-                json_free(tmp);
+                json_free(tmp); tmp = NULL;
                 char *pre10 = uc2_slice(pre, 10);
                 m = uc2_xsf("  The next `hermes` launch also finishes the rollback to %s on its own.", pre10); free(pre10);
                 tmp = uc2_print(sp, m); free(m);
                 if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-                json_free(tmp);
+                json_free(tmp); tmp = NULL;
             }
         }
     } else {
         tmp = uc2_print(sp, "  Could not capture pre-pull SHA " UC2_EMDASH " recover manually with:");
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         root = uc2_project_root(sp);
         if (uc2_is_raise(root)) { ret = root; root = NULL; goto done; }
         char *m = uc2_xsf("    cd %s && git reflog && git reset --hard <prev-sha>", uc2_jstr_def(root, ""));
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     tmp = uc2_record_stop(sp, stop_class ? stop_class : "syntax_rollback", NULL);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     ret = uc2_raise_spec("SystemExit", "1");
 done:
     if (tmp) json_free(tmp);
@@ -1918,7 +1918,7 @@ static json_t *uc2_move_checkout_to(const uc2_seams_t *sp, const json_t *git_cmd
         uc2_aset_s(pa, "branch", br);
         tmp = uc2_call(sp, "park_detached_head", pa); json_free(pa);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         json_t *ca = json_array();
         json_append(ca, json_string("checkout")); json_append(ca, json_string("--detach"));
         json_append(ca, json_string(target_sha ? target_sha : ""));
@@ -1932,12 +1932,12 @@ static json_t *uc2_move_checkout_to(const uc2_seams_t *sp, const json_t *git_cmd
     json_append(ma, json_string(target_sha ? target_sha : ""));
     rec = uc2_git_run(sp, git_cmd, ma, false); json_free(ma);
     if (uc2_is_raise(rec)) { ret = rec; rec = NULL; goto done; }
-    if (uc2_rc_val(rec) == 0.0) { json_free(rec); ret = NULL; goto done; }
+    if (uc2_rc_val(rec) == 0.0) { json_free(rec); rec = NULL; ret = NULL; goto done; }
     json_t *aa = json_array();
     json_append(aa, json_string("merge-base")); json_append(aa, json_string("--is-ancestor"));
     json_append(aa, json_string("HEAD")); json_append(aa, json_string(target_sha ? target_sha : ""));
     anc = uc2_git_run(sp, git_cmd, aa, false); json_free(aa);
-    if (uc2_is_raise(anc)) { json_free(rec); ret = anc; anc = NULL; goto done; }
+    if (uc2_is_raise(anc)) { json_free(rec); rec = NULL; ret = anc; anc = NULL; goto done; }
     double anc_rc = uc2_rc_val(anc);
     if (anc_rc == 1.0) {
         json_free(anc); anc = NULL; json_free(rec); rec = NULL;
@@ -1948,7 +1948,7 @@ static json_t *uc2_move_checkout_to(const uc2_seams_t *sp, const json_t *git_cmd
     }
     tmp = uc2_print(sp, UC2_CROSS " Fast-forward failed; refusing to reset because history divergence was not proven.");
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     s = uc2_or_strip(rec, "stderr", "stdout");
     if (uc2_is_raise(s)) { ret = s; s = NULL; goto done; }
     const char *detail = uc2_jstr_def(s, "");
@@ -1956,31 +1956,31 @@ static json_t *uc2_move_checkout_to(const uc2_seams_t *sp, const json_t *git_cmd
         char *m = uc2_xsf("  %s", detail);
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     if (anc_rc == 0.0) {
         char *m = uc2_xsf("  HEAD is still an ancestor of %s.", merge_ref ? merge_ref : "");
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     } else {
         char *m = uc2_xsf("  Could not verify whether HEAD is an ancestor of %s.", merge_ref ? merge_ref : "");
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         json_t *ad = uc2_or_strip(anc, "stderr", "stdout");
         if (uc2_is_raise(ad)) { ret = ad; goto done; }
         if (uc2_jtruth(ad)) {
             m = uc2_xsf("  %s", uc2_jstr_def(ad, ""));
             tmp = uc2_print(sp, m); free(m);
             if (uc2_is_raise(tmp)) { json_free(ad); ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
         json_free(ad);
     }
     tmp = uc2_print(sp, "  Resolve the Git error and re-run `hermes update`; no reset was attempted.");
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     json_t *cmds = json_array(); json_append(cmds, json_string("merge"));
     json_t *ga = json_object();
     uc2_aset_s(ga, "detail", detail);
@@ -1993,7 +1993,7 @@ static json_t *uc2_move_checkout_to(const uc2_seams_t *sp, const json_t *git_cmd
     tmp = uc2_record_stop(sp, stop, NULL);
     json_free(gsc);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     ret = uc2_raise_spec("SystemExit", "1");
 done:
     free(origin_ref);
@@ -2053,7 +2053,7 @@ static json_t *uc2_pull_updates(const uc2_seams_t *sp, const json_t *git_cmd, co
         json_free(tmp);
         tmp = uc2_record_stop(sp, "target_unresolved", NULL);
         if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         pending = uc2_raise_spec("SystemExit", "1"); goto finally;
     }
     /* movement_baseline = _update_movement_baseline(...) */
@@ -2076,7 +2076,7 @@ static json_t *uc2_pull_updates(const uc2_seams_t *sp, const json_t *git_cmd, co
         json_free(tmp);
         tmp = uc2_record_stop(sp, "head_moved", NULL);
         if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         pending = uc2_raise_spec("SystemExit", "1"); goto finally;
     }
     /* refused = _commit.arm_commit_point(git_cmd, root, target_sha, pre=pre, target=target_sha, stash=auto_stash_ref) */
@@ -2092,7 +2092,7 @@ static json_t *uc2_pull_updates(const uc2_seams_t *sp, const json_t *git_cmd, co
         json_free(tmp);
         tmp = uc2_record_stop(sp, "commit_point_refused", NULL);
         if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         pending = uc2_raise_spec("SystemExit", "1"); goto finally;
     }
     /* inner try: with _checkout_move(token, target_sha): move; THEN
@@ -2102,7 +2102,7 @@ static json_t *uc2_pull_updates(const uc2_seams_t *sp, const json_t *git_cmd, co
     paths = json_array();
     tmp = uc2_cm_enter(sp, token, targets, paths, false);
     if (uc2_is_raise(tmp)) { body_raise = tmp; tmp = NULL; goto inner_handler; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     mv = uc2_move_checkout_to(sp, git_cmd, br, merge_ref, uc2_jstr_def(tsha, ""), pre);
     if (uc2_is_raise(mv)) { body_raise = mv; mv = NULL; }
     else { json_free(mv); mv = NULL; }
@@ -2111,11 +2111,11 @@ static json_t *uc2_pull_updates(const uc2_seams_t *sp, const json_t *git_cmd, co
         if (body_raise) json_free(body_raise);
         body_raise = exitr; exitr = NULL; goto inner_handler;
     }
-    json_free(exitr);
+    json_free(exitr); exitr = NULL;
     if (body_raise) goto inner_handler;
     tmp = uc2_refuse_unselected_head(sp, git_cmd, uc2_jstr_def(tsha, ""), pre);
     if (uc2_is_raise(tmp)) { body_raise = tmp; tmp = NULL; goto inner_handler; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     goto inner_done;
 inner_handler:
     if (uc2_caught(body_raise, "KeyboardInterrupt")) { pending = body_raise; body_raise = NULL; goto finally; }
@@ -2125,29 +2125,29 @@ inner_handler:
     tmp = uc2_settle_failed_tree_move(sp, uc2_jstr_def(root, ""));
     json_free(root); root = NULL;
     if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-    bool settled = uc2_jtruth(tmp); json_free(tmp);
+    bool settled = uc2_jtruth(tmp); json_free(tmp); tmp = NULL;
     if (settled) {
         tmp = uc2_disarm(sp);
         if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     } else {
         root = uc2_project_root(sp);
         if (uc2_is_raise(root)) { pending = root; root = NULL; goto finally; }
         tmp = uc2_owe_restore_of(sp, uc2_jstr_def(root, ""), pre);
         json_free(root); root = NULL;
         if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     pending = body_raise; body_raise = NULL; goto finally;
 inner_done:
     /* pull_marker.unlink(missing_ok=True) */
     tmp = uc2_marker_unlink(sp, marker_s);
     if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     if (sync_upstream) {
         tmp = uc2_verify_head_after_pull(sp, git_cmd, br, baseline, in_place_update, token);
         if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         /* try: sync except UpstreamTargetBroken */
         root = uc2_project_root(sp);
         if (uc2_is_raise(root)) { pending = root; root = NULL; goto finally; }
@@ -2161,7 +2161,7 @@ inner_done:
                 json_t *broken = sync; sync = NULL;
                 tmp = uc2_verify_head_after_pull(sp, git_cmd, br, baseline, in_place_update, token);
                 if (uc2_is_raise(tmp)) { json_free(broken); pending = tmp; tmp = NULL; goto finally; }
-                json_free(tmp);
+                json_free(tmp); tmp = NULL;
                 hdr = uc2_upstream_broken_header(sp, broken);
                 if (uc2_is_raise(hdr)) { json_free(broken); pending = hdr; hdr = NULL; goto finally; }
                 const json_t *bpath = json_obj_get(broken, "path");
@@ -2181,13 +2181,13 @@ inner_done:
     /* _verify_head_after_pull(...) */
     tmp = uc2_verify_head_after_pull(sp, git_cmd, br, baseline, in_place_update, token);
     if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     /* _rollback_if_pulled_syntax_error(git_cmd, pre_sync_sha or pre_pull_sha, ...) */
     {
         const json_t *rollpre = uc2_jtruth(pre_sync_sha) ? pre_sync_sha : pre;
         tmp = uc2_rollback_if_pulled_syntax_error(sp, git_cmd, rollpre, rollback_branch, token);
         if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     if (sync_upstream) {
         root = uc2_project_root(sp);
@@ -2198,43 +2198,44 @@ inner_done:
         json_free(root); root = NULL;
         tmp = uc2_call(sp, "push_synced_fork", pfa); json_free(pfa);
         if (uc2_is_raise(tmp)) { pending = tmp; tmp = NULL; goto finally; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     update_succeeded = true;
 finally:
     if (!uc2_is_null(auto_stash_ref)) {
         if (!update_succeeded) {
             tmp = uc2_stash_preserved_notice(sp, auto_stash_ref);
-            if (uc2_is_raise(tmp)) { if (pending) json_free(pending); pending = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            if (uc2_is_raise(tmp)) { if (pending) json_free(pending); pending = tmp; tmp = NULL; goto fin_exit; }
+            json_free(tmp); tmp = NULL;
         } else if (discard_local_changes) {
             root = uc2_project_root(sp);
-            if (uc2_is_raise(root)) { if (pending) json_free(pending); pending = root; root = NULL; goto done; }
+            if (uc2_is_raise(root)) { if (pending) json_free(pending); pending = root; root = NULL; goto fin_exit; }
             json_t *da = json_object();
             uc2_aset_j(da, "git_cmd", git_cmd);
             uc2_aset_s(da, "root", uc2_jstr_def(root, ""));
             uc2_aset_j(da, "ref", auto_stash_ref);
             json_free(root); root = NULL;
             tmp = uc2_call(sp, "discard_stashed_changes", da); json_free(da);
-            if (uc2_is_raise(tmp)) { if (pending) json_free(pending); pending = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            if (uc2_is_raise(tmp)) { if (pending) json_free(pending); pending = tmp; tmp = NULL; goto fin_exit; }
+            json_free(tmp); tmp = NULL;
         } else if (keep_stash) {
             json_t *ka = json_object(); uc2_aset_j(ka, "ref", auto_stash_ref);
             tmp = uc2_call(sp, "park_stashed_changes", ka); json_free(ka);
-            if (uc2_is_raise(tmp)) { if (pending) json_free(pending); pending = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            if (uc2_is_raise(tmp)) { if (pending) json_free(pending); pending = tmp; tmp = NULL; goto fin_exit; }
+            json_free(tmp); tmp = NULL;
         } else {
             root = uc2_project_root(sp);
-            if (uc2_is_raise(root)) { if (pending) json_free(pending); pending = root; root = NULL; goto done; }
+            if (uc2_is_raise(root)) { if (pending) json_free(pending); pending = root; root = NULL; goto fin_exit; }
             root_s = strdup(uc2_jstr_def(root, "")); json_free(root); root = NULL;
             cm = uc2_moves_for(sp, token);
-            if (uc2_is_raise(cm)) { if (pending) json_free(pending); pending = cm; cm = NULL; goto done; }
+            if (uc2_is_raise(cm)) { if (pending) json_free(pending); pending = cm; cm = NULL; goto fin_exit; }
             tmp = uc2_restore_stashed_changes(sp, git_cmd, root_s, auto_stash_ref, prompt_for_restore, gw_input_fn, cm);
             json_free(cm); cm = NULL;
-            if (uc2_is_raise(tmp)) { if (pending) json_free(pending); pending = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            if (uc2_is_raise(tmp)) { if (pending) json_free(pending); pending = tmp; tmp = NULL; goto fin_exit; }
+            json_free(tmp); tmp = NULL;
         }
     }
+fin_exit:
     ret = pending ? pending : baseline;
     pending = NULL; baseline = NULL;
 done:
@@ -2302,7 +2303,7 @@ static json_t *uc2_switch_branch_at_commit_point(const uc2_seams_t *sp, const js
             if (i == 0) { json_free(args); continue; }
             tmp = uc2_disarm(sp);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; json_free(args); free(lref); free(rref); goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             ret = uc2_git_run(sp, git_cmd, args, false);
             json_free(args); free(lref); free(rref); goto done;
         }
@@ -2325,41 +2326,41 @@ static json_t *uc2_switch_branch_at_commit_point(const uc2_seams_t *sp, const js
         if (uc2_is_raise(result)) {
             if (uc2_caught(result, "KeyboardInterrupt")) { ret = result; result = NULL; free(lref); free(rref); goto done; }
             tmp = uc2_settle_failed_tree_move(sp, root_s);
-            if (uc2_is_raise(tmp)) { json_free(result); ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
-            bool settled = uc2_jtruth(tmp); json_free(tmp);
+            if (uc2_is_raise(tmp)) { json_free(result); result = NULL; ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
+            bool settled = uc2_jtruth(tmp); json_free(tmp); tmp = NULL;
             if (settled) {
                 tmp = uc2_disarm(sp);
-                if (uc2_is_raise(tmp)) { json_free(result); ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
-                json_free(tmp);
+                if (uc2_is_raise(tmp)) { json_free(result); result = NULL; ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
+                json_free(tmp); tmp = NULL;
             } else {
                 tmp = uc2_owe_restore_of(sp, root_s, pre);
-                if (uc2_is_raise(tmp)) { json_free(result); ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
-                json_free(tmp);
+                if (uc2_is_raise(tmp)) { json_free(result); result = NULL; ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
+                json_free(tmp); tmp = NULL;
             }
             ret = result; result = NULL; free(lref); free(rref); goto done;
         }
         /* if result.rc==0 and landed_off_target(git_cmd, target, merged=False) is not None */
         if (uc2_rc_val(result) == 0.0) {
             landed = uc2_landed_off_target(sp, git_cmd, uc2_jstr_def(target, ""), false);
-            if (uc2_is_raise(landed)) { ret = landed; landed = NULL; json_free(result); free(lref); free(rref); goto done; }
+            if (uc2_is_raise(landed)) { ret = landed; landed = NULL; json_free(result); result = NULL; free(lref); free(rref); goto done; }
             if (!uc2_is_null(landed)) {
                 char *l10 = uc2_slice(uc2_jstr_def(landed, ""), 10);
                 char *t10 = uc2_slice(uc2_jstr_def(target, ""), 10);
                 char *m = uc2_xsf("  " UC2_CROSS " The branch moved to %s after %s was selected.", l10, t10);
                 tmp = uc2_print(sp, m); free(m);
-                if (uc2_is_raise(tmp)) { free(l10); free(t10); json_free(landed); json_free(result); ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
+                if (uc2_is_raise(tmp)) { free(l10); free(t10); json_free(landed); landed = NULL; json_free(result); result = NULL; ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
                 json_free(tmp);
                 tmp = uc2_settle_failed_tree_move(sp, root_s);
-                if (uc2_is_raise(tmp)) { free(l10); free(t10); json_free(landed); json_free(result); ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
-                bool settled = uc2_jtruth(tmp); json_free(tmp);
+                if (uc2_is_raise(tmp)) { free(l10); free(t10); json_free(landed); landed = NULL; json_free(result); result = NULL; ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
+                bool settled = uc2_jtruth(tmp); json_free(tmp); tmp = NULL;
                 if (settled) {
                     tmp = uc2_disarm(sp);
-                    if (uc2_is_raise(tmp)) { free(l10); free(t10); json_free(landed); json_free(result); ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
-                    json_free(tmp);
+                    if (uc2_is_raise(tmp)) { free(l10); free(t10); json_free(landed); landed = NULL; json_free(result); result = NULL; ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
+                    json_free(tmp); tmp = NULL;
                 } else {
                     tmp = uc2_owe_restore_of(sp, root_s, pre);
-                    if (uc2_is_raise(tmp)) { free(l10); free(t10); json_free(landed); json_free(result); ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
-                    json_free(tmp);
+                    if (uc2_is_raise(tmp)) { free(l10); free(t10); json_free(landed); landed = NULL; json_free(result); result = NULL; ret = tmp; tmp = NULL; free(lref); free(rref); goto done; }
+                    json_free(tmp); tmp = NULL;
                 }
                 ret = json_object();
                 json_t *aa = json_array(); json_append(aa, json_string("ref_moved"));
@@ -2374,20 +2375,20 @@ static json_t *uc2_switch_branch_at_commit_point(const uc2_seams_t *sp, const js
             json_free(landed); landed = NULL;
             /* interrupted_pull_marker(root).unlink */
             json_t *mk = uc2_marker(sp, root_s);
-            if (uc2_is_raise(mk)) { ret = mk; json_free(result); free(lref); free(rref); goto done; }
+            if (uc2_is_raise(mk)) { ret = mk; json_free(result); result = NULL; free(lref); free(rref); goto done; }
             tmp = uc2_marker_unlink(sp, uc2_jstr_def(mk, "")); json_free(mk);
-            if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; json_free(result); free(lref); free(rref); goto done; }
-            json_free(tmp);
+            if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; json_free(result); result = NULL; free(lref); free(rref); goto done; }
+            json_free(tmp); tmp = NULL;
             ret = result; result = NULL; free(lref); free(rref); goto done;
         }
         /* if not settle_failed_tree_move(root): owe_restore_of(root, pre); return result */
         tmp = uc2_settle_failed_tree_move(sp, root_s);
-        if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; json_free(result); free(lref); free(rref); goto done; }
-        bool settled = uc2_jtruth(tmp); json_free(tmp);
+        if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; json_free(result); result = NULL; free(lref); free(rref); goto done; }
+        bool settled = uc2_jtruth(tmp); json_free(tmp); tmp = NULL;
         if (!settled) {
             tmp = uc2_owe_restore_of(sp, root_s, pre);
-            if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; json_free(result); free(lref); free(rref); goto done; }
-            json_free(tmp);
+            if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; json_free(result); result = NULL; free(lref); free(rref); goto done; }
+            json_free(tmp); tmp = NULL;
             ret = result; result = NULL; free(lref); free(rref); goto done;
         }
         /* else loop continues (result kept) */
@@ -2395,7 +2396,7 @@ static json_t *uc2_switch_branch_at_commit_point(const uc2_seams_t *sp, const js
     free(lref); free(rref);
     tmp = uc2_disarm(sp);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     ret = result; result = NULL;
 done:
     free(root_s);
@@ -2442,7 +2443,7 @@ static json_t *uc2_refuse_before_commit_point(const uc2_seams_t *sp, const json_
         if (!uc2_is_null(reason)) {
             tmp = uc2_record_stop(sp, "downgrade_refused", NULL);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
     }
     if (uc2_is_null(reason)) { ret = NULL; goto done; }
@@ -2454,7 +2455,7 @@ static json_t *uc2_refuse_before_commit_point(const uc2_seams_t *sp, const json_
     json_free(tmp);
     tmp = uc2_resume_gateways(sp, token);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     ret = uc2_raise_spec("SystemExit", "1");
 done:
     if (root) json_free(root);
@@ -2490,22 +2491,22 @@ static json_t *uc2_exit_after_failed_branch_switch(const uc2_seams_t *sp, const 
         char *m = uc2_xsf(UC2_CROSS " Switching to '%s' stopped part-way; the next `hermes` launch puts the checkout back.", br);
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         if (detail[0]) {
             char *fl = uc2_first_line(detail);
             m = uc2_xsf("  %s", fl ? fl : ""); free(fl);
             tmp = uc2_print(sp, m); free(m);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
         if (!uc2_is_null(auto_stash_ref)) {
             tmp = uc2_stash_preserved_notice(sp, auto_stash_ref);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
         tmp = uc2_record_stop(sp, "checkout_move_failed", NULL);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         ret = uc2_raise_spec("SystemExit", "1"); goto done;
     }
     if (!uc2_is_null(auto_stash_ref)) {
@@ -2516,7 +2517,7 @@ static json_t *uc2_exit_after_failed_branch_switch(const uc2_seams_t *sp, const 
         tmp = uc2_restore_stashed_changes(sp, git_cmd, uc2_jstr_def(root, ""), auto_stash_ref, false, gw_input_fn, cm);
         json_free(cm); cm = NULL; json_free(root); root = NULL;
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     /* track_result.args in (_ARM_REFUSED, _REF_MOVED) — identity projected by value */
     const json_t *targs = uc2_is_obj(track_result) ? json_obj_get(track_result, "args") : NULL;
@@ -2531,18 +2532,18 @@ static json_t *uc2_exit_after_failed_branch_switch(const uc2_seams_t *sp, const 
         json_free(tmp);
         tmp = uc2_record_stop(sp, is_arm ? "commit_point_refused" : "head_moved", NULL);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     } else {
         char *m = uc2_xsf(UC2_CROSS " Branch '%s' does not exist locally or on origin.", br);
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         if (detail[0]) {
             char *fl = uc2_first_line(detail);
             m = uc2_xsf("  %s", fl ? fl : ""); free(fl);
             tmp = uc2_print(sp, m); free(m);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
         json_t *mba = json_object();
         uc2_aset_j(mba, "git_cmd", git_cmd);
@@ -2550,7 +2551,7 @@ static json_t *uc2_exit_after_failed_branch_switch(const uc2_seams_t *sp, const 
         tmp = uc2_call(sp, "missing_branch_stop", mba); json_free(mba);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
         json_t *rs = uc2_record_stop(sp, uc2_jstr_def(tmp, ""), NULL);
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         if (uc2_is_raise(rs)) { ret = rs; goto done; }
         json_free(rs);
     }
@@ -2625,7 +2626,7 @@ static json_t *uc2_apply_parked_branch_guard(const uc2_seams_t *sp, const json_t
     assess = uc2_call(sp, "assess_parked_branch_switch", aa); json_free(aa);
     if (uc2_is_raise(assess)) { ret = assess; assess = NULL; goto done; }
     if (!uc2_is_arr(assess) || json_len(assess) != 2) {
-        json_free(assess);
+        json_free(assess); assess = NULL;
         ret = uc2_typeerror("cannot unpack non-iterable or wrong-length assess result");
         goto done;
     }
@@ -2647,7 +2648,7 @@ static json_t *uc2_apply_parked_branch_guard(const uc2_seams_t *sp, const json_t
         json_free(tmp);
         tmp = uc2_print(sp, "");
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         json_free(root);
         root = uc2_project_root(sp);
         if (uc2_is_raise(root)) { ret = root; root = NULL; goto done; }
@@ -2665,14 +2666,14 @@ static json_t *uc2_apply_parked_branch_guard(const uc2_seams_t *sp, const json_t
         json_free(tmp);
         tmp = uc2_record_stop(sp, "parked_branch_blocked", NULL);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         ret = uc2_raise_spec("SystemExit", "1"); goto done;
     }
     if (!uc2_startswith(reason, "unmerged:")) {
         char *m = uc2_xsf("  " UC2_WARN " Checkout was parked on '%s' (fully merged) " UC2_EMDASH " switching back to %s...", cur, br);
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         ret = json_array();
         json_append(ret, json_bool(true)); json_append(ret, json_bool(false)); json_append(ret, json_string(reason));
         goto done;
@@ -2688,7 +2689,7 @@ static json_t *uc2_apply_parked_branch_guard(const uc2_seams_t *sp, const json_t
         uc2_aset_s(ka, "detail", detail);
         tmp = uc2_call(sp, "print_parked_branch_kept_notice", ka); json_free(ka);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         ret = json_array();
         json_append(ret, json_bool(true)); json_append(ret, json_bool(false)); json_append(ret, json_string(reason));
         goto done;
@@ -2700,7 +2701,7 @@ static json_t *uc2_apply_parked_branch_guard(const uc2_seams_t *sp, const json_t
     tmp = uc2_git_run(sp, git_cmd, ga, false); json_free(ga);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
     bool missing = uc2_rc_val(tmp) != 0.0;
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     if (missing) {
         char *m = uc2_xsf(UC2_CROSS " Branch '%s' does not exist locally or on origin.", br);
         tmp = uc2_print(sp, m); free(m);
@@ -2708,13 +2709,13 @@ static json_t *uc2_apply_parked_branch_guard(const uc2_seams_t *sp, const json_t
         json_free(tmp);
         tmp = uc2_record_stop(sp, "branch_missing", NULL);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         ret = uc2_raise_spec("SystemExit", "1"); goto done;
     }
     char *m = uc2_xsf("  " UC2_INFO " On branch '%s' " UC2_EMDASH " updating it in place from origin/%s (no branch switch; local commits preserved).", cur, br);
     tmp = uc2_print(sp, m); free(m);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     ret = json_array();
     json_append(ret, json_bool(false)); json_append(ret, json_bool(true)); json_append(ret, json_string(reason));
 done:
@@ -2765,7 +2766,7 @@ static json_t *uc2_prepare_checkout_for_update(const uc2_seams_t *sp, const json
         char *m = uc2_xsf("  " UC2_WARN " Currently on detached HEAD " UC2_EMDASH " switching to %s for update...", br);
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         root = uc2_project_root(sp);
         if (uc2_is_raise(root)) { ret = root; root = NULL; goto done; }
         json_t *pa = json_object();
@@ -2775,7 +2776,7 @@ static json_t *uc2_prepare_checkout_for_update(const uc2_seams_t *sp, const json
         json_free(root); root = NULL;
         tmp = uc2_call(sp, "park_detached_head", pa); json_free(pa);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     /* prompt_for_restore = not assume_yes and (gateway_mode or (stdin.isatty() and stdout.isatty())) */
     prompt_for_restore = false;
@@ -2807,7 +2808,7 @@ static json_t *uc2_prepare_checkout_for_update(const uc2_seams_t *sp, const json
             json_free(root); root = NULL;
             tmp = uc2_call(sp, "target_would_move_head", ta); json_free(ta);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            ask_first = uc2_jtruth(tmp); json_free(tmp);
+            ask_first = uc2_jtruth(tmp); json_free(tmp); tmp = NULL;
         }
     }
     /* auto_stash_ref = _stash_local_changes_if_needed(git_cmd, root, checkout_move=moves_for(token), ask_first, untracked_targets) */
@@ -2843,7 +2844,7 @@ static json_t *uc2_prepare_checkout_for_update(const uc2_seams_t *sp, const json
         rollback_branch = cur;
         tmp = uc2_call0(sp, "pause_at_commit_point");
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         /* with _checkout_move(token, *(resolved_commit(ref) for ref in (refs/heads/br, origin/br))) */
         targets = json_array();
         for (int i = 0; i < 2; i++) {
@@ -2855,13 +2856,13 @@ static json_t *uc2_prepare_checkout_for_update(const uc2_seams_t *sp, const json
         paths = json_array();
         tmp = uc2_cm_enter(sp, token, targets, paths, false);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         track = uc2_switch_branch_at_commit_point(sp, git_cmd, br, tref, moved, stash);
         if (uc2_is_raise(track)) { body_raise = track; track = NULL; goto pc_cm_exit; }
 pc_cm_exit:
         exitr = uc2_cm_exit(sp, token, targets, paths, false, body_raise);
         if (uc2_is_raise(exitr)) { ret = exitr; exitr = NULL; goto done; }
-        json_free(exitr);
+        json_free(exitr); exitr = NULL;
         if (body_raise) { ret = body_raise; body_raise = NULL; goto done; }
         if (uc2_rc_val(track) != 0.0) {
             tmp = uc2_exit_after_failed_branch_switch(sp, git_cmd, br, track, stash, gw_input_fn, token);
@@ -2955,7 +2956,7 @@ pc_cm_exit:
                 if (!uc2_is_null(stash)) {
                     tmp = uc2_stash_preserved_notice(sp, stash);
                     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-                    json_free(tmp);
+                    json_free(tmp); tmp = NULL;
                 }
                 hdr = uc2_upstream_broken_header(sp, broken);
                 if (uc2_is_raise(hdr)) { ret = hdr; hdr = NULL; goto done; }
@@ -3151,7 +3152,7 @@ static json_t *uc2_begin_update_receipt_and_plan(const uc2_seams_t *sp) {
         if (uc2_is_raise(tmp)) {
             if (!uc2_is_exception(tmp)) { ret = tmp; tmp = NULL; goto done; }
             json_free(tmp); tmp = NULL;
-        } else json_free(tmp);
+        } else json_free(tmp); tmp = NULL;
     }
     /* with _best_effort('Update plan phase failed'): collect; record_plan; if runtimes print */
     plan = uc2_call0(sp, "collect_runtime_inventory");
@@ -3165,7 +3166,7 @@ static json_t *uc2_begin_update_receipt_and_plan(const uc2_seams_t *sp) {
             if (!uc2_is_exception(tmp)) { ret = tmp; tmp = NULL; goto done; }
             json_free(tmp); tmp = NULL;
         } else {
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             runtimes = uc2_attr(plan, "runtimes");
             if (uc2_is_raise(runtimes)) {
                 if (!uc2_is_exception(runtimes)) { ret = runtimes; runtimes = NULL; goto done; }
@@ -3173,14 +3174,43 @@ static json_t *uc2_begin_update_receipt_and_plan(const uc2_seams_t *sp) {
             } else {
                 if (uc2_jtruth(runtimes)) {
                     size_t n = uc2_is_arr(runtimes) ? json_len(runtimes) : 0;
-                    char *profiles = uc2_sorted_unique_join(runtimes, ", ");
-                    char *m = uc2_xsf(UC2_ARROW " Fleet: %zu running service(s) across profiles: %s", n, profiles);
-                    free(profiles);
-                    tmp = uc2_print(sp, m); free(m);
-                    if (uc2_is_raise(tmp)) {
-                        if (!uc2_is_exception(tmp)) { ret = tmp; tmp = NULL; goto done; }
-                        json_free(tmp); tmp = NULL;
-                    } else json_free(tmp);
+                    /* live: ", ".join(sorted({r.profile for r in runtimes}))
+                     * — attribute projection inside the best-effort try. A
+                     * non-str profile makes join() raise TypeError (swallowed,
+                     * no print); a missing .profile raises AttributeError
+                     * (swallowed); BaseException propagates. A truthy
+                     * non-array is not iterable / yields str keys whose
+                     * .profile raises — also swallowed, no print. */
+                    json_t *projs = json_array();
+                    json_t *perr = NULL;
+                    bool all_str = true;
+                    if (uc2_is_arr(runtimes)) {
+                        for (size_t i = 0; i < runtimes->c.count; i++) {
+                            json_t *p = uc2_attr(runtimes->c.items[i], "profile");
+                            if (uc2_is_raise(p)) { perr = p; break; }
+                            if (!uc2_is_str(p)) all_str = false;
+                            json_append(projs, p);
+                        }
+                    } else {
+                        all_str = false;
+                    }
+                    if (perr) {
+                        json_free(projs);
+                        if (!uc2_is_exception(perr)) { ret = perr; goto done; }
+                        json_free(perr);
+                    } else if (all_str) {
+                        char *profiles = uc2_sorted_unique_join(projs, ", ");
+                        json_free(projs);
+                        char *m = uc2_xsf(UC2_ARROW " Fleet: %zu running service(s) across profiles: %s", n, profiles);
+                        free(profiles);
+                        tmp = uc2_print(sp, m); free(m);
+                        if (uc2_is_raise(tmp)) {
+                            if (!uc2_is_exception(tmp)) { ret = tmp; tmp = NULL; goto done; }
+                            json_free(tmp); tmp = NULL;
+                        } else { json_free(tmp); tmp = NULL; }
+                    } else {
+                        json_free(projs);
+                    }
                 }
                 json_free(runtimes); runtimes = NULL;
             }
@@ -3192,7 +3222,7 @@ static json_t *uc2_begin_update_receipt_and_plan(const uc2_seams_t *sp) {
     uc2_aset_s(rsa, "status", uc2_is_null(plan) ? "failed" : "success");
     tmp = uc2_call(sp, "record_stage", rsa); json_free(rsa);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     ret = plan; plan = NULL;
 done:
     if (tmp) json_free(tmp);
@@ -3227,7 +3257,7 @@ static json_t *uc2_prepare_git_command(const uc2_seams_t *sp, const json_t *chec
         json_free(tmp);
         tmp = uc2_record_stop(sp, "not_git_checkout", NULL);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         ret = uc2_raise_spec("SystemExit", "1"); goto done;
     }
     /* expose_pm_git(_m().PROJECT_ROOT) */
@@ -3237,7 +3267,7 @@ static json_t *uc2_prepare_git_command(const uc2_seams_t *sp, const json_t *chec
     json_t *pa = json_object(); uc2_aset_s(pa, "root", uc2_jstr_def(root, ""));
     tmp = uc2_call(sp, "expose_pm_git", pa); json_free(pa);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     git_cmd = uc2_call0(sp, "base_git_cmd");
     if (uc2_is_raise(git_cmd)) { ret = git_cmd; git_cmd = NULL; goto done; }
     if (!strcmp(plat, "win32")) {
@@ -3251,14 +3281,14 @@ static json_t *uc2_prepare_git_command(const uc2_seams_t *sp, const json_t *chec
             json_append(ca, json_string("false"));
             tmp = uc2_git_run(sp, git_cmd, ca, false); json_free(ca);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
     }
     /* _map_ssl_cert_file_for_git(git_cmd) */
     json_t *ma = json_object(); uc2_aset_j(ma, "git_cmd", git_cmd);
     tmp = uc2_call(sp, "map_ssl_cert_file_for_git", ma); json_free(ma);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     /* git_cmd = _ensure_non_trampoline_git(git_cmd) */
     json_t *na = json_object(); uc2_aset_j(na, "git_cmd", git_cmd);
     json_free(git_cmd);
@@ -3283,7 +3313,7 @@ static json_t *uc2_prepare_git_command(const uc2_seams_t *sp, const json_t *chec
                               uc2_jstr_def(enc, ""));
             tmp = uc2_print(sp, m); free(m);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             json_free(root);
             root = uc2_project_root(sp);
             if (uc2_is_raise(root)) { ret = root; root = NULL; goto done; }
@@ -3295,7 +3325,7 @@ static json_t *uc2_prepare_git_command(const uc2_seams_t *sp, const json_t *chec
             json_free(tmp);
             tmp = uc2_record_stop(sp, "not_git_checkout", NULL);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             ret = uc2_raise_spec("SystemExit", "1"); goto done;
         }
         json_free(enc); enc = NULL;
@@ -3310,7 +3340,7 @@ static json_t *uc2_prepare_git_command(const uc2_seams_t *sp, const json_t *chec
     uc2_aset_j(dla, "checkout_move", checkout_move);
     tmp = uc2_call(sp, "discard_lockfile_churn", dla); json_free(dla);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     json_free(root);
     root = uc2_project_root(sp);
     if (uc2_is_raise(root)) { ret = root; root = NULL; goto done; }
@@ -3320,7 +3350,7 @@ static json_t *uc2_prepare_git_command(const uc2_seams_t *sp, const json_t *chec
     uc2_aset_j(nla, "checkout_move", checkout_move);
     tmp = uc2_call(sp, "normalize_managed_eol", nla); json_free(nla);
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     /* origin_url = _m()._get_origin_url(git_cmd, root); is_fork = _is_fork(origin_url) */
     json_free(root);
     root = uc2_project_root(sp);
@@ -3337,14 +3367,14 @@ static json_t *uc2_prepare_git_command(const uc2_seams_t *sp, const json_t *chec
     if (is_fork) {
         tmp = uc2_print(sp, UC2_WARN " Updating from fork:");
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         char *m = uc2_xsf("  %s", uc2_jstr_def(origin, ""));
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
         json_free(tmp);
         tmp = uc2_print(sp, "");
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     ret = json_array();
     json_append(ret, json_bool(use_zip));
@@ -3376,7 +3406,7 @@ static json_t *uc2_handle_update_called_process_error(const uc2_seams_t *sp, con
     if (uc2_jtruth(unrestored)) {
         tmp = uc2_print(sp, uc2_jstr_def(unrestored, ""));
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     ep = uc2_e_proj(e);
     json_t *sa = json_object(); uc2_aset_j(sa, "e", ep);
@@ -3397,7 +3427,7 @@ static json_t *uc2_handle_update_called_process_error(const uc2_seams_t *sp, con
         json_free(tmp);
         tmp = uc2_print(sp, "");
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         json_t *ua = json_object();
         uc2_aset_j(ua, "args", args);
         uc2_aset_b(ua, "had_desktop_app_before_update", had_desktop);
@@ -3406,7 +3436,7 @@ static json_t *uc2_handle_update_called_process_error(const uc2_seams_t *sp, con
         if (uc2_jtruth(target_repository)) uc2_aset_j(ua, "target_repository", target_repository);
         tmp = uc2_call(sp, "update_via_zip", ua); json_free(ua);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         ret = NULL; goto done;
     }
     json_t *da = json_object(); uc2_aset_j(da, "e", ep);
@@ -3417,7 +3447,7 @@ static json_t *uc2_handle_update_called_process_error(const uc2_seams_t *sp, con
         char *m = uc2_xsf(UC2_CROSS " %s (the code update itself succeeded).", uc2_jstr_def(stage, ""));
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         json_t *ta = json_object(); uc2_aset_j(ta, "e", ep);
         tmp = uc2_call(sp, "print_called_process_error_tail", ta); json_free(ta);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
@@ -3430,7 +3460,7 @@ static json_t *uc2_handle_update_called_process_error(const uc2_seams_t *sp, con
         json_free(tmp);
         tmp = uc2_print(sp, "  (usually network or disk space), then run `hermes update` again.");
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         json_t *iw = uc2_call0(sp, "is_windows");
         if (uc2_is_raise(iw)) { ret = iw; goto done; }
         bool win = uc2_jtruth(iw); json_free(iw);
@@ -3440,22 +3470,22 @@ static json_t *uc2_handle_update_called_process_error(const uc2_seams_t *sp, con
             json_free(tmp);
             tmp = uc2_print(sp, "    venv\\Scripts\\python.exe -c \"from hermes_cli.main import main; main()\" update --yes");
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
     } else {
         char *m = uc2_xsf(UC2_CROSS " %s.", uc2_jstr_def(stage, ""));
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         char *es = uc2_cpe_str(e);
         m = uc2_xsf("  Details: %s", es); free(es);
         tmp = uc2_print(sp, m); free(m);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
         json_t *ta = json_object(); uc2_aset_j(ta, "e", ep);
         tmp = uc2_call(sp, "print_called_process_error_tail", ta); json_free(ta);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     json_t *ga = json_object(); uc2_aset_j(ga, "e", ep);
     stop = uc2_call(sp, "git_error_stop_class", ga); json_free(ga);
@@ -3463,11 +3493,11 @@ static json_t *uc2_handle_update_called_process_error(const uc2_seams_t *sp, con
     if (uc2_jtruth(stop)) {
         tmp = uc2_record_stop(sp, uc2_jstr_def(stop, ""), NULL);
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     tmp = uc2_finalize_receipt(sp, "failed", "Update receipt finalize failed: %s");
     if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-    json_free(tmp);
+    json_free(tmp); tmp = NULL;
     ret = uc2_raise_spec("SystemExit", "1");
 done:
     if (tmp) json_free(tmp);
@@ -3503,7 +3533,7 @@ static json_t *uc2_finish_already_up_to_date(const uc2_seams_t *sp, const json_t
         tmp = uc2_restore_stashed_changes(sp, git_cmd, uc2_jstr_def(root, ""), asr, uc2_jtruth(pfr), gw_input_fn, cm);
         json_free(cm); cm = NULL; json_free(root); root = NULL;
         if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-        json_free(tmp);
+        json_free(tmp); tmp = NULL;
     }
     pbs = uc2_attr(plan, "parked_branch_switched");
     if (uc2_is_raise(pbs)) { ret = pbs; pbs = NULL; goto done; }
@@ -3518,12 +3548,12 @@ static json_t *uc2_finish_already_up_to_date(const uc2_seams_t *sp, const json_t
                               cur, br, count, cur);
             tmp = uc2_print(sp, m); free(m);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         } else {
             char *m = uc2_xsf("  " UC2_CHECK " Checkout was parked on '%s' (fully merged) " UC2_EMDASH " switched back to %s.", cur, br);
             tmp = uc2_print(sp, m); free(m);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
         }
     }
     if (!uc2_is_null(completion_request)) {
@@ -3589,7 +3619,7 @@ static json_t *uc2_apply_pulled_update(const uc2_seams_t *sp, const json_t *git_
             json_free(tmp);
             tmp = uc2_record_stop(sp, "head_moved", NULL);
             if (uc2_is_raise(tmp)) { ret = tmp; tmp = NULL; goto done; }
-            json_free(tmp);
+            json_free(tmp); tmp = NULL;
             ret = uc2_raise_spec("SystemExit", "1"); goto done;
         }
         const char *newexp = uc2_jtruth(pinned) ? uc2_jstr_def(pinned, "") : observed;

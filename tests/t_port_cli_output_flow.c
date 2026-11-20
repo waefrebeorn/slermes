@@ -137,7 +137,9 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         json_t *outobj = (oj && oj->type == JSON_OBJECT) ? json_copy(oj) : NULL;
         r = co2_flatten(J("node"), SD("prefix", ""), outobj);
         state = json_object();
-        json_set(state, "out", r);   /* r IS outobj (mutated in place) */
+        /* r IS outobj (mutated in place) and is ALSO adopted into out.ret by
+         * ret_json below — copy it here or teardown double-frees it. */
+        json_set(state, "out", json_copy(r));
     } else if (!strcmp(func, "non_text_leaves")) {
         r = co2_non_text_leaves(J("node"), SD("prefix", ""));
     } else if (!strcmp(func, "overlay_dir")) {

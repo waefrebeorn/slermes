@@ -151,10 +151,10 @@ class CaseCtx:
     def peek(self, name):
         entry = self.io.get(name)
         if entry is None:
-            return None
+            return _UNSCRIPTED
         if isinstance(entry, list):
             idx = self.cursors.get(name, 0)
-            return entry[idx] if idx < len(entry) else None
+            return entry[idx] if idx < len(entry) else _UNSCRIPTED
         return entry
 
     def consume(self, name):
@@ -168,7 +168,7 @@ class CaseCtx:
         def call(*args, **kwargs):
             ctx.trace.append(name)
             entry = ctx.peek(name)
-            if entry is None:
+            if entry is _UNSCRIPTED:
                 raise RuntimeError("unscripted seam: " + name)
             ctx.consume(name)
             if isinstance(entry, dict):
@@ -187,6 +187,12 @@ class CaseCtx:
 
 
 CURRENT = {"ctx": None}
+
+# Sentinel: a seam with NO script (missing key, scalar null, or exhausted
+# queue). Distinct from a scripted JSON null QUEUE ELEMENT, which is a real
+# None return (e.g. os.environ.get for an unset var) — the C harness returns
+# it as a JSON_NULL node and only raises fail-closed on missing/exhausted.
+_UNSCRIPTED = object()
 
 
 def convert_seam_ret(name, ret):

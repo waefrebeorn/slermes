@@ -205,7 +205,11 @@ int main(void) {
         json_free(empty);
         char *in_s = json_serialize(in);
         char *out_s = json_serialize(out);
-        char *func_s = json_escape_string(func);
+        /* json_escape_string has a 1-byte heap overflow (libjson, not owned
+         * here) — use the bounds-safe serializer path instead. */
+        json_t *func_node = json_string(func);
+        char *func_s = json_serialize(func_node);
+        json_free(func_node);
         printf("{\"func\":%s,\"in\":%s,\"out\":%s}\n", func_s,
                in_s ? in_s : "null", out_s ? out_s : "null");
         free(in_s); free(out_s); free(func_s);

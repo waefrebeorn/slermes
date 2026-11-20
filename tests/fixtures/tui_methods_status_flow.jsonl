@@ -1,0 +1,184 @@
+{"func": "_wait_agent", "in": {"args": {"session": {}, "rid": "r1"}, "io": {}}}
+{"func": "_wait_agent", "in": {"args": {"session": {"agent_ready": {"__event__": "agent_ready"}}, "rid": "r1"}, "io": {"agent_ready.wait": true}}}
+{"func": "_wait_agent", "in": {"args": {"session": {"agent_ready": {"__event__": "agent_ready"}}, "rid": "r1"}, "io": {"agent_ready.wait": false, "_err": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 5032, "message": "x"}}}}}
+{"func": "_wait_agent", "in": {"args": {"session": {"agent_error": "boom"}, "rid": "r1"}, "io": {"_err": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 5032, "message": "x"}}}}}
+{"func": "_wait_agent", "in": {"args": {"session": {"agent_ready": {"__event__": "agent_ready"}}, "rid": "r1"}, "io": {}}, "fail_closed": true}
+{"func": "_wait_agent", "in": {"args": {"session": {"agent_ready": {"__event__": "agent_ready"}}, "rid": "r1"}, "io": {"agent_ready.wait": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_wait_agent", "in": {"args": {"session": {"agent_ready": {"__event__": "agent_ready"}, "agent_error": "e"}, "rid": "r1", "timeout": 10}, "io": {"agent_ready.wait": true, "_err": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 5032, "message": "x"}}}}}
+{"func": "_agent_build_wait_cap", "in": {"args": {}, "io": {"_load_cfg": {"agent": {"build_wait_timeout": 90}}}}}
+{"func": "_agent_build_wait_cap", "in": {"args": {}, "io": {"_load_cfg": {}}}}
+{"func": "_agent_build_wait_cap", "in": {"args": {}, "io": {"_load_cfg": {"agent": {"build_wait_timeout": "120"}}}}}
+{"func": "_agent_build_wait_cap", "in": {"args": {}, "io": {"_load_cfg": {"agent": {"build_wait_timeout": -5}}}}}
+{"func": "_agent_build_wait_cap", "in": {"args": {}, "io": {"_load_cfg": {"agent": {"build_wait_timeout": "abc"}}}}}
+{"func": "_agent_build_wait_cap", "in": {"args": {}, "io": {"_load_cfg": {"agent": "notadict"}}}}
+{"func": "_agent_build_wait_cap", "in": {"args": {}, "io": {"_load_cfg": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_agent_build_wait_cap", "in": {"args": {}, "io": {}}}
+{"func": "_bind_build_profile_scopes", "in": {"args": {"profile_home": "/h/p1"}, "io": {"_profile_runtime_scope_tokens": "tok"}}}
+{"func": "_bind_build_profile_scopes", "in": {"args": {"profile_home": "/h/p1"}, "io": {"_profile_runtime_scope_tokens": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}, "scope_for_profile": "sc", "bind_state": "tok2"}}}
+{"func": "_bind_build_profile_scopes", "in": {"args": {"profile_home": null}, "io": {"_profile_runtime_scope_tokens": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "_bind_build_profile_scopes", "in": {"args": {"profile_home": "/h/p1"}, "io": {"_profile_runtime_scope_tokens": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}, "scope_for_profile": {"__script__": true, "raise": {"type": "ValueError", "message": "y"}}}}}
+{"func": "_bind_build_profile_scopes", "in": {"args": {"profile_home": "/h/p1"}, "io": {"_profile_runtime_scope_tokens": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}, "scope_for_profile": "sc", "bind_state": {"__script__": true, "raise": {"type": "ValueError", "message": "z"}}}}}
+{"func": "_bind_build_profile_scopes", "in": {"args": {"profile_home": "/h/p1"}, "io": {"_profile_runtime_scope_tokens": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_bind_build_profile_scopes", "in": {"args": {"profile_home": null}, "io": {}}, "fail_closed": true}
+{"func": "_release_build_profile_scopes", "in": {"args": {"scopes": "tok"}, "io": {"_release_profile_runtime_scope_tokens": null}}}
+{"func": "_release_build_profile_scopes", "in": {"args": {"scopes": "tok"}, "io": {"_release_profile_runtime_scope_tokens": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "_release_build_profile_scopes", "in": {"args": {"scopes": "tok"}, "io": {"_release_profile_runtime_scope_tokens": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_release_build_profile_scopes", "in": {"args": {"scopes": "tok"}, "io": {}}, "fail_closed": true}
+{"func": "_release_build_profile_scopes", "in": {"args": {"scopes": null}, "io": {"_release_profile_runtime_scope_tokens": null}}}
+{"func": "_release_build_profile_scopes", "in": {"args": {"scopes": {"a": 1}}, "io": {"_release_profile_runtime_scope_tokens": null}}}
+{"func": "_deferred_build_agent_kwargs", "in": {"args": {"current": {"resume_session_id": "rs", "resume_runtime_overrides": {"model_override": "X", "provider": "p"}}, "session_db": "db"}, "io": {"_context_cwd_is_launch_artifact": false, "_session_source": "tui", "_session_cwd": "/w", "_overrides_have_routable_provider": true}}}
+{"func": "_deferred_build_agent_kwargs", "in": {"args": {"current": {"resume_runtime_overrides": {"provider": "p"}, "model_override": "M", "create_reasoning_override": {"effort": "high"}, "create_service_tier_override": "flex"}, "session_db": null}, "io": {"_context_cwd_is_launch_artifact": false, "_session_source": "tui", "_session_cwd": "/w", "_overrides_have_routable_provider": false}}}
+{"func": "_deferred_build_agent_kwargs", "in": {"args": {"current": {"model_override": "M"}, "session_db": "db"}, "io": {"_context_cwd_is_launch_artifact": false, "_session_source": "tui", "_session_cwd": "/w"}}}
+{"func": "_deferred_build_agent_kwargs", "in": {"args": {"current": {"resume_session_id": "rs", "resume_runtime_overrides": {}}, "session_db": "db"}, "io": {"_context_cwd_is_launch_artifact": false, "_session_source": "tui", "_session_cwd": "/w"}}}
+{"func": "_deferred_build_agent_kwargs", "in": {"args": {"current": {}, "session_db": "db"}, "io": {}}, "fail_closed": true}
+{"func": "_deferred_build_agent_kwargs", "in": {"args": {"current": {}, "session_db": "db"}, "io": {"_context_cwd_is_launch_artifact": false, "_session_source": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_deferred_build_agent_kwargs", "in": {"args": {"current": {"resume_runtime_overrides": ["not", "dict"], "create_service_tier_override": "flex"}, "session_db": "db"}, "io": {"_context_cwd_is_launch_artifact": false, "_session_source": "tui", "_session_cwd": "/w"}}}
+{"func": "_await_resume_history", "in": {"args": {"sid": "s1", "current": {}}, "io": {}}}
+{"func": "_await_resume_history", "in": {"args": {"sid": "s1", "current_sid": "s1"}, "io": {"resume_history.wait": true}, "state": {"sessions": {"s1": {"resume_history_ready": {"__event__": "resume_history"}}}}}}
+{"func": "_await_resume_history", "in": {"args": {"sid": "s1", "current": {"resume_history_ready": {"__event__": "resume_history"}}}, "io": {"resume_history.wait": true}, "state": {"sessions": {"s1": {"session_key": "k"}}}}}
+{"func": "_await_resume_history", "in": {"args": {"sid": "s1", "current": {"resume_history_ready": {"__event__": "resume_history"}}}, "io": {"resume_history.wait": false}}}
+{"func": "_await_resume_history", "in": {"args": {"sid": "s1", "current": {"resume_history_ready": {"__event__": "resume_history"}, "resume_history_error": "bad"}}, "io": {"resume_history.wait": true}}}
+{"func": "_await_resume_history", "in": {"args": {"sid": "s1", "current": {"resume_history_ready": {"__event__": "resume_history"}}}, "io": {}}, "fail_closed": true}
+{"func": "_await_resume_history", "in": {"args": {"sid": "s1", "current": {"resume_history_ready": {"__event__": "resume_history"}}}, "io": {"resume_history.wait": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_attach_built_agent", "in": {"args": {"sid": "s1", "current_sid": "s1", "agent": {"model": "m"}}, "io": {"_register_session_cwd": null, "_session_todo_state": null, "_config_model_target": "cfg"}, "state": {"sessions": {"s1": {"pending_title": " T ", "session_key": "k"}}}}}
+{"func": "_attach_built_agent", "in": {"args": {"sid": "s1", "current_sid": "s1", "agent": {"model": "m"}}, "io": {"_register_session_cwd": null, "_session_todo_state": null, "_config_model_target": "cfg"}, "state": {"sessions": {"s1": {"session_key": "k"}}}}}
+{"func": "_attach_built_agent", "in": {"args": {"sid": "s1", "current": {"pending_title": "T"}, "agent": {"model": "m"}}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k"}}}}}
+{"func": "_attach_built_agent", "in": {"args": {"sid": "s1", "current_sid": "s1", "agent": {"model": "m"}}, "io": {}, "state": {"sessions": {"s1": {"pending_title": "T"}}}}, "fail_closed": true}
+{"func": "_attach_built_agent", "in": {"args": {"sid": "s1", "current_sid": "s1", "agent": {"model": "m"}}, "io": {"_register_session_cwd": null, "_session_todo_state": null, "_config_model_target": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"sessions": {"s1": {"session_key": "k"}}}}}
+{"func": "_attach_built_agent", "in": {"args": {"sid": "s1", "current_sid": "s1", "agent": {"model": "m"}}, "io": {"_register_session_cwd": null, "_session_todo_state": null, "_config_model_target": "cfg"}, "state": {"sessions": {"s1": {"pending_title": "   ", "session_key": "k"}}}}}
+{"func": "_start_session_services", "in": {"args": {"sid": "s1", "key": "k1", "current": {"session_key": "k1"}}, "io": {"old_stop.set": null, "_start_notification_poller": "stop2", "_session_source": "tui", "_notify_session_boundary": null}, "state": {"sessions": {"s1": {"_notif_stop": {"__event__": "old_stop"}, "session_key": "k1"}}}}}
+{"func": "_start_session_services", "in": {"args": {"sid": "s1", "key": "k1", "current": {"session_key": "k1"}}, "io": {"_start_notification_poller": "stop2", "_session_source": "tui", "_notify_session_boundary": null}, "state": {"sessions": {"s1": {"session_key": "k1"}}}}}
+{"func": "_start_session_services", "in": {"args": {"sid": "s1", "key": "k1", "current": {"session_key": "k1"}}, "io": {"_session_source": "tui", "_notify_session_boundary": null}, "state": {"sessions": {}}}}
+{"func": "_start_session_services", "in": {"args": {"sid": "s1", "key": "k1", "current": {}}, "io": {"_session_source": "tui", "_notify_session_boundary": null}, "state": {"sessions": {"s1": {"session_key": "k1"}}}}, "fail_closed": true}
+{"func": "_start_session_services", "in": {"args": {"sid": "s1", "key": "k1", "current": {}}, "io": {"_start_notification_poller": "stop2", "_session_source": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"sessions": {"s1": {"session_key": "k1"}}}}}
+{"func": "_start_session_services", "in": {"args": {"sid": "s1", "key": "k1", "current": {"source": "cli"}}, "io": {"old_stop.set": null, "_start_notification_poller": "stop2", "_session_source": "tui", "_notify_session_boundary": null}, "state": {"sessions": {"s1": {"_notif_stop": {"__event__": "old_stop"}}}}}}
+{"func": "_finish_agent_build", "in": {"args": {"sid": "s1", "key": "k1", "current_sid": "s1", "notify_registered": true, "scopes": "tok", "session_db": {"__db__": true}, "persistence": {"__persistence__": true}}, "io": {"_release_build_profile_scopes": null, "_transfer_db_to_agent": false, "db.close": null, "_release_persistence": null}, "state": {"sessions": {"s1": {"agent": {"model": "m"}, "session_key": "k1"}}}}}
+{"func": "_finish_agent_build", "in": {"args": {"sid": "s1", "key": "k1", "current": {"session_key": "k1"}, "notify_registered": true, "scopes": null, "session_db": {"__db__": true}}, "io": {"unregister_gateway_notify": null, "_transfer_db_to_agent": true}, "state": {"sessions": {"s1": {"session_key": "k1"}}}}}
+{"func": "_finish_agent_build", "in": {"args": {"sid": "s1", "key": "k1", "current_sid": "s1", "notify_registered": false, "scopes": null, "session_db": {"__db__": true}}, "io": {"_transfer_db_to_agent": true}, "state": {"sessions": {"s1": {"agent": {"model": "m"}}}}}}
+{"func": "_finish_agent_build", "in": {"args": {"sid": "s1", "key": "k1", "current_sid": "s1", "notify_registered": false, "scopes": null, "session_db": null}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k1"}}}}}
+{"func": "_finish_agent_build", "in": {"args": {"sid": "s1", "key": "k1", "current_sid": "s1", "scopes": "tok", "session_db": null}, "io": {}, "state": {"sessions": {"s1": {}}}}, "fail_closed": true}
+{"func": "_finish_agent_build", "in": {"args": {"sid": "s1", "key": "k1", "current_sid": "s1", "notify_registered": false, "scopes": null, "session_db": {"__db__": true}}, "io": {"_transfer_db_to_agent": false, "db.close": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"sessions": {"s1": {"agent": {"model": "m"}}}}}}
+{"func": "_finish_agent_build", "in": {"args": {"sid": "s1", "key": "k1", "current": {"session_key": "k1"}, "notify_registered": true, "scopes": null, "session_db": {"__db__": true}}, "io": {"unregister_gateway_notify": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}, "_transfer_db_to_agent": true}, "state": {"sessions": {"s1": {"session_key": "k1"}}}}}
+{"func": "_sess_nowait", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k"}}}}}
+{"func": "_sess_nowait", "in": {"args": {"params": {"session_id": "nope"}, "rid": 7}, "io": {"_current_rpc_method.get": "session.status", "log.warning": null, "_err": {"E": 4001}}, "state": {"sessions": {}}}}
+{"func": "_sess_nowait", "in": {"args": {"params": {"session_id": "nope"}, "rid": "r1"}, "io": {"_current_rpc_method.get": null, "log.warning": null, "_err": {"E": 4001}}, "state": {"sessions": {}}}}
+{"func": "_sess_nowait", "in": {"args": {"params": {"session_id": "nope"}, "rid": "r1"}, "io": {}, "state": {"sessions": {}}}, "fail_closed": true}
+{"func": "_sess_nowait", "in": {"args": {"params": {"session_id": "nope"}, "rid": "r1"}, "io": {"_current_rpc_method.get": "m", "log.warning": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"sessions": {}}}}
+{"func": "_sess_nowait", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {"_current_rpc_method.get": "m", "log.warning": null, "_err": {"E": 4001}}, "state": {"sessions": {"s1": {}}}}}
+{"func": "_sess_building", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {"_sess_nowait": {"__script__": true, "ret": [{"session_key": "k"}, null]}, "_start_agent_build": null}}}
+{"func": "_sess_building", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {"_sess_nowait": {"__script__": true, "ret": [null, {"E": 4001}]}}}}
+{"func": "_sess_building", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {}}, "fail_closed": true}
+{"func": "_sess_building", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {"_sess_nowait": {"__script__": true, "ret": [{"session_key": "k"}, null]}, "_start_agent_build": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_sess_building", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {"_sess_nowait": {"__script__": true, "ret": [{"session_key": "k"}, null]}, "_start_agent_build": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "_sess_building", "in": {"args": {"params": {}, "rid": "r1"}, "io": {"_sess_nowait": {"__script__": true, "ret": [{"session_key": "k"}, null]}, "_start_agent_build": null}}}
+{"func": "_sess", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {"_sess_building": {"__script__": true, "ret": [{"session_key": "k"}, null]}, "_wait_agent": null}}}
+{"func": "_sess", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {"_sess_building": {"__script__": true, "ret": [{"session_key": "k"}, null]}, "_wait_agent": {"E": 5032}}}}
+{"func": "_sess", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {"_sess_building": {"__script__": true, "ret": [null, {"E": 4001}]}}}}
+{"func": "_sess", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {}}, "fail_closed": true}
+{"func": "_sess", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {"_sess_building": {"__script__": true, "ret": [{"session_key": "k"}, null]}, "_wait_agent": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_sess", "in": {"args": {"params": {"session_id": "s1"}, "rid": "r1"}, "io": {"_sess_building": {"__script__": true, "ret": [{"session_key": "k"}, {"E": 1}]}}}}
+{"func": "_new_session_key", "in": {"args": {}, "io": {"new_session_id": "20261118_120000_abc123"}}}
+{"func": "_new_session_key", "in": {"args": {}, "io": {"new_session_id": "20261118_120000_def456"}}}
+{"func": "_new_session_key", "in": {"args": {}, "io": {}}, "fail_closed": true}
+{"func": "_new_session_key", "in": {"args": {}, "io": {"new_session_id": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_new_session_key", "in": {"args": {}, "io": {"new_session_id": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "_new_session_key", "in": {"args": {}, "io": {"new_session_id": ""}}}
+{"func": "_is_server_minted_key", "in": {"args": {"value": "20261118_120000_abc123"}, "io": {}}}
+{"func": "_is_server_minted_key", "in": {"args": {"value": "20261118_120000_ABC123"}, "io": {}}}
+{"func": "_is_server_minted_key", "in": {"args": {"value": "20261118_120000_abc12"}, "io": {}}}
+{"func": "_is_server_minted_key", "in": {"args": {"value": null}, "io": {}}}
+{"func": "_is_server_minted_key", "in": {"args": {"value": ""}, "io": {}}}
+{"func": "_is_server_minted_key", "in": {"args": {"value": "abcd1234"}, "io": {}}}
+{"func": "_is_server_minted_key", "in": {"args": {"value": "20261118_120000_000000"}, "io": {}}}
+{"func": "_any_live_session_claims_key", "in": {"args": {"target": "k1"}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k1"}}}}}
+{"func": "_any_live_session_claims_key", "in": {"args": {"target": "kX"}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k1"}}}}}
+{"func": "_any_live_session_claims_key", "in": {"args": {"target": "k1"}, "io": {}, "state": {"sessions": {}}}}
+{"func": "_any_live_session_claims_key", "in": {"args": {"target": "k1"}, "io": {}, "state": {"sessions": {"s1": "notadict", "s2": {"session_key": "k1"}}}}}
+{"func": "_any_live_session_claims_key", "in": {"args": {"target": ""}, "io": {}, "state": {"sessions": {"s1": {"session_key": null}}}}}
+{"func": "_any_live_session_claims_key", "in": {"args": {"target": "k2"}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k1"}, "s2": {"session_key": "k2"}}}}}
+{"func": "_live_profile_matches", "in": {"args": {"session": {"profile_home": "/h/p1"}, "profile_home": "__ANY_PROFILE__"}, "io": {}}}
+{"func": "_live_profile_matches", "in": {"args": {"session": {"profile_home": "/h/p1"}, "profile_home": "/h/p1"}, "io": {}}}
+{"func": "_live_profile_matches", "in": {"args": {"session": {"profile_home": "/h/p1"}, "profile_home": "/h/p2"}, "io": {}}}
+{"func": "_live_profile_matches", "in": {"args": {"session": {"profile_home": null}, "profile_home": null}, "io": {}}}
+{"func": "_live_profile_matches", "in": {"args": {"session": {"profile_home": null}, "profile_home": "/h/p1"}, "io": {}}}
+{"func": "_live_profile_matches", "in": {"args": {"session": {"profile_home": "/h/p1"}, "profile_home": null}, "io": {}}}
+{"func": "_live_profile_matches", "in": {"args": {"session": {}, "profile_home": "__ANY_PROFILE__"}, "io": {}}}
+{"func": "_session_lookup_key", "in": {"args": {"session": {"agent": {"session_id": "A"}, "session_key": "K"}, "fallback": "F"}, "io": {}}}
+{"func": "_session_lookup_key", "in": {"args": {"session": {"session_key": "K"}, "fallback": "F"}, "io": {}}}
+{"func": "_session_lookup_key", "in": {"args": {"session": {}, "fallback": "F"}, "io": {}}}
+{"func": "_session_lookup_key", "in": {"args": {"session": {}, "fallback": ""}, "io": {}}}
+{"func": "_session_lookup_key", "in": {"args": {"session": {"agent": {}, "session_key": "K"}, "fallback": "F"}, "io": {}}}
+{"func": "_session_lookup_key", "in": {"args": {"session": {"agent": null, "session_key": "K"}, "fallback": "F"}, "io": {}}}
+{"func": "_find_live_session_by_key", "in": {"args": {"session_key": "k1"}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k1", "agent": {"session_id": "k1"}}}}}}
+{"func": "_find_live_session_by_key", "in": {"args": {"session_key": "kX"}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k1"}}}}}
+{"func": "_find_live_session_by_key", "in": {"args": {"session_key": "k1"}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k1", "_finalized": true}}}}}
+{"func": "_find_live_session_by_key", "in": {"args": {"session_key": "k1", "profile_home": "/h/p2"}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k1", "profile_home": "/h/p1"}}}}}
+{"func": "_find_live_session_by_key", "in": {"args": {"session_key": "k1", "profile_home": "/h/p1"}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k1", "profile_home": "/h/p1"}}}}}
+{"func": "_find_live_session_by_key", "in": {"args": {"session_key": "A"}, "io": {}, "state": {"sessions": {"s1": {"session_key": "k1", "agent": {"session_id": "A"}}}}}}
+{"func": "_claim_parked_runtimes", "in": {"args": {"session_key": "k1", "keep_sid": "keep"}, "io": {"_cancel_ws_orphan_reap": null, "_pop_session_by_id": {"__script__": true, "ret": {"session_key": "k1"}}}, "state": {"sessions": {"old1": {"session_key": "k1", "transport": "__DETACHED_WS__", "agent": {"session_id": "k1"}}, "old2": {"session_key": "k1", "transport": "other"}}}}}
+{"func": "_claim_parked_runtimes", "in": {"args": {"session_key": "k1", "keep_sid": "keep"}, "io": {}, "state": {"sessions": {"old1": {"session_key": "k1", "transport": "other"}}}}}
+{"func": "_claim_parked_runtimes", "in": {"args": {"session_key": "k1", "keep_sid": "old1"}, "io": {}, "state": {"sessions": {"old1": {"session_key": "k1", "transport": "__DETACHED_WS__", "agent": {"session_id": "k1"}}}}}}
+{"func": "_claim_parked_runtimes", "in": {"args": {"session_key": "k1", "keep_sid": "keep"}, "io": {"_cancel_ws_orphan_reap": null, "_pop_session_by_id": null}, "state": {"sessions": {"old1": {"session_key": "k1", "transport": "__DETACHED_WS__", "agent": {"session_id": "k1"}}}}}}
+{"func": "_claim_parked_runtimes", "in": {"args": {"session_key": "k1", "keep_sid": "keep"}, "io": {}, "state": {"sessions": {"old1": {"session_key": "k1", "transport": "__DETACHED_WS__", "agent": {"session_id": "k1"}}}}}, "fail_closed": true}
+{"func": "_claim_parked_runtimes", "in": {"args": {"session_key": "k1", "keep_sid": "keep"}, "io": {"_cancel_ws_orphan_reap": null, "_pop_session_by_id": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"sessions": {"old1": {"session_key": "k1", "transport": "__DETACHED_WS__", "agent": {"session_id": "k1"}}}}}}
+{"func": "_claim_parked_runtimes", "in": {"args": {"session_key": "k1", "keep_sid": "keep"}, "io": {}, "state": {"sessions": {"old1": {"session_key": "k1", "transport": "__DETACHED_WS__", "agent": {"session_id": "k1"}, "_finalized": true}}}}}
+{"func": "_finalize_superseded_runtimes", "in": {"args": {"stale": []}, "io": {}}}
+{"func": "_finalize_superseded_runtimes", "in": {"args": {"stale": [["s1", {"session_key": "k"}]]}, "io": {"_teardown_popped_session": null}}}
+{"func": "_finalize_superseded_runtimes", "in": {"args": {"stale": [["s1", {"session_key": "k"}]]}, "io": {"_teardown_popped_session": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}, "log.exception": null}}}
+{"func": "_finalize_superseded_runtimes", "in": {"args": {"stale": [["s1", {"session_key": "k"}]]}, "io": {"_teardown_popped_session": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_finalize_superseded_runtimes", "in": {"args": {"stale": [["s1", {"session_key": "k"}]]}, "io": {"log.exception": null}}, "fail_closed": true}
+{"func": "_finalize_superseded_runtimes", "in": {"args": {"stale": [["s1", {"a": 1}], ["s2", {"b": 2}]]}, "io": {"_teardown_popped_session": [null, {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}], "log.exception": null}}}
+{"func": "_claim_or_reuse_live", "in": {"args": {"sid": "s2", "session_key": "k1", "record": {"profile_home": "/h/p1"}, "lease": {"__lease__": true}}, "io": {"_find_live_session_by_key": {"__script__": true, "ret": ["s1", {"session_key": "k1"}]}, "lease.release": null}}}
+{"func": "_claim_or_reuse_live", "in": {"args": {"sid": "s2", "session_key": "k1", "record": {"profile_home": "/h/p1"}, "lease": null}, "io": {"_find_live_session_by_key": {"__script__": true, "ret": ["s1", {"session_key": "k1"}]}}}}
+{"func": "_claim_or_reuse_live", "in": {"args": {"sid": "s2", "session_key": "k1", "record": {"profile_home": "/h/p1"}}, "io": {"_find_live_session_by_key": null, "_register_session_cwd": null, "_cancel_ws_orphan_reap": null, "_claim_parked_runtimes": {"__script__": true, "ret": []}, "_finalize_superseded_runtimes": null}, "state": {"sessions": {}}}}
+{"func": "_claim_or_reuse_live", "in": {"args": {"sid": "s2", "session_key": "k1", "record": {"profile_home": "/h/p1"}}, "io": {}, "state": {"sessions": {}}}, "fail_closed": true}
+{"func": "_claim_or_reuse_live", "in": {"args": {"sid": "s2", "session_key": "k1", "record": {"profile_home": "/h/p1"}}, "io": {"_find_live_session_by_key": null, "_register_session_cwd": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}, "state": {"sessions": {}}}}
+{"func": "_claim_or_reuse_live", "in": {"args": {"sid": "s2", "session_key": "k1", "record": {"profile_home": null}}, "io": {"_find_live_session_by_key": null, "_register_session_cwd": null, "_cancel_ws_orphan_reap": null, "_claim_parked_runtimes": {"__script__": true, "ret": [["old", {"x": 1}]]}, "_finalize_superseded_runtimes": null}, "state": {"sessions": {}}}}
+{"func": "_session_pending_kind", "in": {"args": {"sid": "s1"}, "io": {"pending_kind": "approval"}}}
+{"func": "_session_pending_kind", "in": {"args": {"sid": "s1"}, "io": {"pending_kind": ""}}}
+{"func": "_session_pending_kind", "in": {"args": {"sid": "s1"}, "io": {}}, "fail_closed": true}
+{"func": "_session_pending_kind", "in": {"args": {"sid": "s1"}, "io": {"pending_kind": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_session_pending_kind", "in": {"args": {"sid": "s1"}, "io": {"pending_kind": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "_session_pending_kind", "in": {"args": {"sid": "s2"}, "io": {"pending_kind": "connection"}}}
+{"func": "_session_live_status", "in": {"args": {"sid": "s1", "session": {}}, "io": {"_session_pending_kind": "approval"}}}
+{"func": "_session_live_status", "in": {"args": {"sid": "s1", "session": {"running": true}}, "io": {"_session_pending_kind": ""}}}
+{"func": "_session_live_status", "in": {"args": {"sid": "s1", "session": {"running": false}}, "io": {"_session_pending_kind": ""}}}
+{"func": "_session_live_status", "in": {"args": {"sid": "s1", "session": {"agent_ready": {"__event__": "agent_ready"}, "agent_build_started": true}}, "io": {"_session_pending_kind": "", "agent_ready.is_set": false}}}
+{"func": "_session_live_status", "in": {"args": {"sid": "s1", "session": {"agent_ready": {"__event__": "agent_ready"}, "agent_build_started": true, "running": true}}, "io": {"_session_pending_kind": "", "agent_ready.is_set": true}}}
+{"func": "_session_live_status", "in": {"args": {"sid": "s1", "session": {}}, "io": {}}, "fail_closed": true}
+{"func": "_session_live_status", "in": {"args": {"sid": "s1", "session": {"agent_ready": {"__event__": "agent_ready"}}}, "io": {"_session_pending_kind": "", "agent_ready.is_set": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_session_live_title", "in": {"args": {"session": {"pending_title": "  hi  "}, "key": "k1"}, "io": {"session_db": "db", "persistence_for": {"__persistence__": true}, "get_title": "  Stored Title "}}}
+{"func": "_session_live_title", "in": {"args": {"session": {"pending_title": "hi"}, "key": "k1"}, "io": {"session_db": "db", "persistence_for": null}}}
+{"func": "_session_live_title", "in": {"args": {"session": {"pending_title": "hi"}, "key": "k1"}, "io": {"session_db": "db", "persistence_for": {"__persistence__": true}, "get_title": null}}}
+{"func": "_session_live_title", "in": {"args": {"session": {"pending_title": "hi"}, "key": "k1"}, "io": {"session_db": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "_session_live_title", "in": {"args": {"session": {"pending_title": "hi"}, "key": "k1"}, "io": {"session_db": "db", "persistence_for": {"__persistence__": true}, "get_title": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_session_live_title", "in": {"args": {"session": {"pending_title": "hi"}, "key": "k1"}, "io": {}}, "fail_closed": true}
+{"func": "_session_live_title", "in": {"args": {"session": {"pending_title": null}, "key": "k1"}, "io": {"session_db": "db", "persistence_for": {"__persistence__": true}, "get_title": "T"}}}
+{"func": "_durable_ids", "in": {"args": {"msg": {"message_uid": "u1", "_row_id": 5}}, "io": {}}}
+{"func": "_durable_ids", "in": {"args": {"msg": {"message_uid": "u1", "_absorbed_message_uids": ["u2", "u3"], "_row_id": 2}}, "io": {}}}
+{"func": "_durable_ids", "in": {"args": {"msg": "notadict"}, "io": {}}}
+{"func": "_durable_ids", "in": {"args": {"msg": {"_row_id": true}}, "io": {}}}
+{"func": "_durable_ids", "in": {"args": {"msg": {}}, "io": {}}}
+{"func": "_durable_ids", "in": {"args": {"msg": {"message_uid": "", "_row_id": 7}}, "io": {}}}
+{"func": "_durable_ids", "in": {"args": {"msg": {"_row_id": 7.5}}, "io": {}}}
+{"func": "_durable_ids", "in": {"args": {"msg": {"message_uid": "u1", "_absorbed_message_uids": ["u1", "u2"]}}, "io": {}}}
+{"func": "_legacy_display_anchor", "in": {"args": {"display": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}], "memory": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}]}, "io": {"_coerce_message_text": ["a", "b", "a", "b"]}}}
+{"func": "_legacy_display_anchor", "in": {"args": {"display": [{"role": "user", "content": "a"}], "memory": [{"role": "user", "content": "z"}]}, "io": {"_coerce_message_text": ["a", "z"]}}}
+{"func": "_legacy_display_anchor", "in": {"args": {"display": [], "memory": [{"role": "user", "content": "a"}]}, "io": {"_coerce_message_text": ["a"]}}}
+{"func": "_legacy_display_anchor", "in": {"args": {"display": [{"role": "user", "content": "a"}], "memory": ["x", {"role": "user", "content": "a"}]}, "io": {"_coerce_message_text": ["a", "a"]}}}
+{"func": "_legacy_display_anchor", "in": {"args": {"display": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}, {"role": "user", "content": "c"}], "memory": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}, {"role": "user", "content": "c"}]}, "io": {"_coerce_message_text": ["a", "b", "c", "a", "b", "c"]}}}
+{"func": "_legacy_display_anchor", "in": {"args": {"display": [{"role": "user", "content": "a"}], "memory": [{"role": "user", "content": "a"}]}, "io": {}}, "fail_closed": true}
+{"func": "_reconcile_display_with_live", "in": {"args": {"db_display": [], "in_memory": [{"role": "user", "content": "a"}]}, "io": {}}}
+{"func": "_reconcile_display_with_live", "in": {"args": {"db_display": [{"role": "user", "content": "a"}], "in_memory": []}, "io": {}}}
+{"func": "_reconcile_display_with_live", "in": {"args": {"db_display": [{"role": "user", "content": "a", "_row_id": 1}], "in_memory": [{"role": "user", "content": "a", "_row_id": 1}, {"role": "assistant", "content": "b", "_row_id": 2}]}, "io": {}}}
+{"func": "_reconcile_display_with_live", "in": {"args": {"db_display": [{"role": "user", "content": "a", "_row_id": 1}], "in_memory": [{"role": "user", "content": "a", "_row_id": 9}]}, "io": {}}}
+{"func": "_reconcile_display_with_live", "in": {"args": {"db_display": [{"role": "user", "content": "a"}], "in_memory": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}]}, "io": {"_coerce_message_text": ["a", "a"]}}}
+{"func": "_reconcile_display_with_live", "in": {"args": {"db_display": [{"role": "user", "content": "a"}], "in_memory": [{"role": "user", "content": "z"}]}, "io": {"_coerce_message_text": ["a", "z"]}}}
+{"func": "_reconcile_display_with_live", "in": {"args": {"db_display": [{"role": "user", "content": "a"}], "in_memory": [{"role": "user", "content": "a"}]}, "io": {}}, "fail_closed": true}
+{"func": "_main_runtime_from_agent", "in": {"args": {"agent": {"provider": " p ", "model": "m", "base_url": "u", "api_key": "k", "api_mode": "chat", "auth_mode": "oauth", "session_id": "s"}}, "io": {}}}
+{"func": "_main_runtime_from_agent", "in": {"args": {"agent": null}, "io": {}}}
+{"func": "_main_runtime_from_agent", "in": {"args": {"agent": {}}, "io": {}}}
+{"func": "_main_runtime_from_agent", "in": {"args": {"agent": {"model": " m1 ", "api_key": {"__callable__": true}}}, "io": {}}}
+{"func": "_main_runtime_from_agent", "in": {"args": {"agent": {"model": "   ", "provider": "\t"}}, "io": {}}}
+{"func": "_main_runtime_from_agent", "in": {"args": {"agent": {"model": 5, "provider": null, "session_id": "s"}}, "io": {}}}
+{"func": "_main_runtime_from_agent", "in": {"args": {"agent": {"api_key": {"__callable__": true}}}, "io": {}}}

@@ -922,10 +922,14 @@ static json_t *ml3_mcc_record_late(const json_t *in, const ml3_io_t *io,
 static json_t *ml3_mcc_consume_and_save_trace(const json_t *in,
                                               const ml3_io_t *io,
                                               json_t *state, json_t **exc) {
-    const json_t *pending = ml3_self_get(state, "_pending_trace", exc);
+    const json_t *pj = ml3_self_get(state, "_pending_trace", exc);
     if (*exc) return NULL;
+    /* self._pending_trace = None frees the slot's OLD value; the live local
+     * `pending` keeps the dict alive. Snapshot BEFORE the reset or every
+     * later pending read is a use-after-free. */
+    json_t *pending = pj ? json_copy(pj) : NULL;
     json_set(state, "_pending_trace", json_null());
-    if (!ml3_truth(pending)) return json_null();
+    if (!ml3_truth(pending)) { json_free(pending); return json_null(); }
     /* "aggregator_input_messages" not in pending — py3.14 containment */
     bool contains = false;
     if (ml3_is_dict(pending)) {
@@ -941,9 +945,10 @@ static json_t *ml3_mcc_consume_and_save_trace(const json_t *in,
         ml3_raise_fmt(exc, "TypeError",
                       "argument of type '%s' is not a container or iterable",
                       ml3_type_name(pending));
+        json_free(pending);
         return NULL;
     }
-    if (!contains) return json_null();
+    if (!contains) { json_free(pending); return json_null(); }
 
     json_t *e2 = NULL;
     json_t *agg_slot = NULL;
@@ -1004,10 +1009,12 @@ caught:
     if (!ml3_swallow(&e2)) {
         *exc = e2;
         json_free(agg_slot); json_free(out_v); json_free(sa);
+        json_free(pending);
         return NULL;
     }
 done:
     json_free(agg_slot); json_free(out_v); json_free(sa);
+    json_free(pending);
     return json_null();
 }
 
@@ -1136,9 +1143,11 @@ static json_t *ml3_mcc_create_core(json_t *ak, const ml3_io_t *io,
     json_t *ret = NULL;
     char *ds = NULL;
 
-    /* prepared_request = api_kwargs.pop("_moa_prepared_request", None) */
+    /* prepared_request = api_kwargs.pop("_moa_prepared_request", None) —
+     * a PRESENT null is None too: `if prepared_request is not None` skips
+     * the prepared path for absent AND null (only non-null takes it). */
     const json_t *pr = json_obj_get(ak, "_moa_prepared_request");
-    json_t *prep_copy = pr ? json_copy(pr) : NULL;
+    json_t *prep_copy = (pr && pr->type != JSON_NULL) ? json_copy(pr) : NULL;
     json_obj_del(ak, "_moa_prepared_request");
     if (prep_copy) {
         if (!ml3_is_dict(prep_copy)) {
@@ -1457,7 +1466,9 @@ static json_t *ml3_mcc_call_prepared_core(const json_t *prepared,
     json_t *stream_kwargs = NULL, *send_kwargs = NULL;
     json_t *agg_extra_body = NULL, *destination = NULL;
     json_t *agg_response = NULL, *ret = NULL;
-    json_t *plan = NULL;
+    json_t *plan = NULL, *reasoning = NULL;   /* reasoning: init HERE — early
+                                               * goto cleanup jumps over its
+                                               * old mid-function initializer */
 
     const json_t *aggregator = ml3_subscript(prepared, "aggregator", exc);
     if (*exc) return NULL;
@@ -1609,7 +1620,6 @@ static json_t *ml3_mcc_call_prepared_core(const json_t *prepared,
     if (*exc) goto cleanup;
     const json_t *mt = ml3_dict_get(ak, "max_tokens", exc);
     if (*exc) goto cleanup;
-    json_t *reasoning = NULL;
     {
         json_t *a = json_object();
         ml3_arg_j(a, "aggregator", aggregator);

@@ -936,34 +936,39 @@ static json_t *sct2_list_sessions(sct2_ctx_t *c, const json_t *args) {
         json_t *root0 = sct2_call(c, "store.sessions.get", ga2);
         if (sct2_is_raise(root0)) { json_free(found); json_free(row); return root0; }
         json_t *root;
-        if (sct2_truthy(root0)) { root = root0; json_free(row); }
-        else { root = row; json_free(root0); }
-        /* The reply dict, in live literal evaluation order. */
+        bool row_is_root;
+        if (sct2_truthy(root0)) { root = root0; row_is_root = false; }
+        else { root = row; json_free(root0); row_is_root = true; }
+        /* The reply dict, in live literal evaluation order. row stays LIVE
+         * even when root replaced it: live reads row.title/source/
+         * started_at/message_count AFTER the root lookup — freeing row
+         * here dangles every later row read (UAF). */
         json_t *sess = json_object();
         json_set_hdr(sess, "session_id", fsid);
         const json_t *rid = sct2_is_null(root) ? NULL : sct2_attr(root, "session_id", &err);
-        if (err) { json_free(found); json_free(root); json_free(sess); return err; }
+        if (err) { json_free(found); json_free(root); if (!row_is_root) json_free(row); json_free(sess); return err; }
         if (!sct2_truthy(rid)) rid = fsidv;
         json_set(sess, "id", json_copy(rid));
         json_set_hdr(sess, "resolved_id", fsid);
         const json_t *rtitle = sct2_is_null(row) ? NULL : sct2_attr(row, "title", &err);
-        if (err) { json_free(found); json_free(root); json_free(sess); return err; }
+        if (err) { json_free(found); json_free(root); if (!row_is_root) json_free(row); json_free(sess); return err; }
         json_set(sess, "title", sct2_truthy(rtitle) ? json_copy(rtitle) : json_string(""));
         const json_t *rotitle = sct2_is_null(root) ? NULL : sct2_attr(root, "title", &err);
-        if (err) { json_free(found); json_free(root); json_free(sess); return err; }
+        if (err) { json_free(found); json_free(root); if (!row_is_root) json_free(row); json_free(sess); return err; }
         json_set(sess, "root_title", sct2_truthy(rotitle) ? json_copy(rotitle) : json_string(""));
         const json_t *rsource = sct2_is_null(row) ? NULL : sct2_attr(row, "source", &err);
-        if (err) { json_free(found); json_free(root); json_free(sess); return err; }
+        if (err) { json_free(found); json_free(root); if (!row_is_root) json_free(row); json_free(sess); return err; }
         json_set(sess, "source", sct2_copy_or_null(rsource));
         const json_t *rstarted = sct2_is_null(row) ? NULL : sct2_attr(row, "started_at", &err);
-        if (err) { json_free(found); json_free(root); json_free(sess); return err; }
+        if (err) { json_free(found); json_free(root); if (!row_is_root) json_free(row); json_free(sess); return err; }
         json_set(sess, "started_at", sct2_copy_or_null(rstarted));
         const json_t *rmc = sct2_is_null(row) ? NULL : sct2_attr(row, "message_count", &err);
-        if (err) { json_free(found); json_free(root); json_free(sess); return err; }
+        if (err) { json_free(found); json_free(root); if (!row_is_root) json_free(row); json_free(sess); return err; }
         json_set(sess, "message_count", rmc ? json_copy(rmc) : json_number(0));
         json_set(sess, "running", json_bool(sct2_dict_has(sct2_sub(c, "sessions"), fsid)));
         json_free(found);
         json_free(root);
+        if (!row_is_root) json_free(row);
         json_t *out = json_object();
         json_t *arr = json_array();
         json_append(arr, sess);

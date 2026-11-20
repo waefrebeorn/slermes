@@ -1229,13 +1229,13 @@ static json_t *co2_scan_locale_dir(co2_io_t *io, const char *directory) {
         char *surf = surface ? surface : strdup(CO2_CORE_SURFACE);
         int known = 0;
         for (size_t s = 0; s < CO2_N_SURFACES; s++) if (strcmp(surf, co2_SURFACES[s]) == 0) { known = 1; break; }
-        if (!known) { free(lang); free(surface); free(surf); continue; }
+        if (!known) { free(lang); free(surface); if (surf != surface) free(surf); continue; }
         json_t *triple = json_array();
         json_append(triple, json_string(lang));
         json_append(triple, json_string(surf));
         json_append(triple, json_string(paths[i]));
         json_append(found, triple);
-        free(lang); free(surface); free(surf);
+        free(lang); free(surface); if (surf != surface) free(surf);
     }
     co2_free_vec(paths, n);
     return found;

@@ -1,0 +1,137 @@
+{"func": "boot_start", "in": {"proc": {"_proc": {}}, "psutil": {"LINUX": false}, "seams": {}}}
+{"func": "boot_start", "in": {"proc": {"_proc": {}}, "psutil": {}, "seams": {}}}
+{"func": "boot_start", "in": {"proc": {"_proc": {}}, "psutil": {"LINUX": true}, "seams": {"proc._proc.create_time": 123.5}}}
+{"func": "boot_start", "in": {"proc": {"_proc": {}}, "psutil": {"LINUX": true}, "seams": {"proc._proc.create_time": "100.25"}}}
+{"func": "boot_start", "in": {"proc": null, "psutil": {"LINUX": true}, "seams": {}}}
+{"func": "boot_start", "in": {"proc": {}, "psutil": {"LINUX": true}, "seams": {}}}
+{"func": "boot_start", "in": {"proc": {"_proc": null}, "psutil": {"LINUX": true}, "seams": {}}}
+{"func": "boot_start", "in": {"proc": {"_proc": {}}, "psutil": {"LINUX": true}, "seams": {"proc._proc.create_time": {"__raise__": "NoSuchProcess", "msg": "boom"}}}}
+{"func": "boot_start", "in": {"proc": {"_proc": {}}, "psutil": {"LINUX": true}, "seams": {"proc._proc.create_time": "abc"}}}
+{"func": "boot_start", "in": {"proc": {"_proc": {}}, "psutil": {"LINUX": true}, "seams": {}}}
+{"func": "process_create_time", "in": {"pid": null, "seams": {"os.getpid": 42, "psutil.Process": {"_proc": {}}, "process_birth": 100.0}}}
+{"func": "process_create_time", "in": {"pid": 5, "seams": {"psutil.Process": {"_proc": {}}, "process_birth": 100.0}}}
+{"func": "process_create_time", "in": {"pid": 5, "seams": {"psutil.Process": {"__raise__": "NoSuchProcess", "msg": "boom"}}}}
+{"func": "process_create_time", "in": {"pid": 5, "seams": {"psutil.Process": {"_proc": {}}, "process_birth": {"__raise__": "Error", "msg": "boom"}}}}
+{"func": "process_create_time", "in": {"pid": null, "seams": {"os.getpid": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "process_create_time", "in": {"pid": 5, "seams": {"psutil.Process": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "process_create_time", "in": {"pid": 5, "seams": {}}}
+{"func": "process_create_time", "in": {"pid": 5, "seams": {"psutil.Process": {"_proc": {}}, "process_birth": 0}}}
+{"func": "live_boot_id", "in": {"calls": 1, "seams": {"path.read_text": "  abc-def  "}}}
+{"func": "live_boot_id", "in": {"calls": 1, "seams": {"path.read_text": ""}}}
+{"func": "live_boot_id", "in": {"calls": 1, "seams": {"path.read_text": "   "}}}
+{"func": "live_boot_id", "in": {"calls": 1, "seams": {"path.read_text": "boot-1\n"}}}
+{"func": "live_boot_id", "in": {"calls": 1, "seams": {"path.read_text": {"__raise__": "FileNotFoundError", "msg": "boom"}}}}
+{"func": "live_boot_id", "in": {"calls": 1, "seams": {"path.read_text": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "live_boot_id", "in": {"calls": 2, "seams": {"path.read_text": "boot-2"}}}
+{"func": "live_boot_id", "in": {"calls": 2, "seams": {"path.read_text": {"__raise__": "PermissionError", "msg": "boom"}}}}
+{"func": "live_boot_id", "in": {"calls": 1, "seams": {}}}
+{"func": "entry_boot", "in": {"entry": {"boot_id": "b1", "boot_start": 50}, "key": "boot_start", "seams": {"live_boot_id": "b1"}}}
+{"func": "entry_boot", "in": {"entry": {"boot_id": "b1", "boot_start": 50}, "key": "boot_start", "seams": {"live_boot_id": "b2"}}}
+{"func": "entry_boot", "in": {"entry": {"boot_id": null, "boot_start": 50}, "key": "boot_start", "seams": {"live_boot_id": "b1"}}}
+{"func": "entry_boot", "in": {"entry": {}, "key": "boot_start", "seams": {"live_boot_id": "b1"}}}
+{"func": "entry_boot", "in": {"entry": {"boot_id": "b1"}, "key": "boot_start", "seams": {"live_boot_id": null}}}
+{"func": "entry_boot", "in": {"entry": {"boot_id": "b1", "spawner_boot": 7}, "key": "spawner_boot", "seams": {"live_boot_id": "b1"}}}
+{"func": "entry_boot", "in": {"entry": {"boot_id": "b1", "boot_start": null}, "key": "boot_start", "seams": {"live_boot_id": "b1"}}}
+{"func": "entry_boot", "in": {"entry": {"boot_id": "b1"}, "key": "boot_start", "seams": {"live_boot_id": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "verified_boot_start", "in": {"pid": null, "create_time": 100, "psutil": {"LINUX": true}, "seams": {}}}
+{"func": "verified_boot_start", "in": {"pid": 0, "create_time": 100, "psutil": {"LINUX": true}, "seams": {}}}
+{"func": "verified_boot_start", "in": {"pid": 5, "create_time": null, "psutil": {"LINUX": true}, "seams": {}}}
+{"func": "verified_boot_start", "in": {"pid": 5, "create_time": 100, "psutil": {"LINUX": true}, "seams": {"live_boot_id": null}}}
+{"func": "verified_boot_start", "in": {"pid": 5, "create_time": 100, "psutil": {"LINUX": true}, "seams": {"live_boot_id": "b1", "psutil.Process": {"__raise__": "NoSuchProcess", "msg": "boom"}}}}
+{"func": "verified_boot_start", "in": {"pid": 5, "create_time": 100, "psutil": {"LINUX": true}, "seams": {"live_boot_id": "b1", "psutil.Process": {"_proc": {}}, "process_birth": 100, "proc._proc.create_time": 100}}}
+{"func": "verified_boot_start", "in": {"pid": 5, "create_time": 100, "psutil": {"LINUX": true}, "seams": {"live_boot_id": "b1", "psutil.Process": {"_proc": {}}, "process_birth": 200}}}
+{"func": "verified_boot_start", "in": {"pid": 5, "create_time": 100, "psutil": {"LINUX": true}, "seams": {"live_boot_id": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "same_incarnation", "in": {"proc": {"_proc": {}}, "create_time": null, "boot": null, "psutil": {"LINUX": false}, "seams": {}}}
+{"func": "same_incarnation", "in": {"proc": {"_proc": {}}, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"process_birth": 100}}}
+{"func": "same_incarnation", "in": {"proc": {"_proc": {}}, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"process_birth": 101.5}}}
+{"func": "same_incarnation", "in": {"proc": {"_proc": {}}, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"process_birth": 103}}}
+{"func": "same_incarnation", "in": {"proc": {"_proc": {}}, "create_time": 100, "boot": 50, "psutil": {"LINUX": true}, "seams": {"proc._proc.create_time": 50}}}
+{"func": "same_incarnation", "in": {"proc": {"_proc": {}}, "create_time": 100, "boot": 50, "psutil": {"LINUX": true}, "seams": {"proc._proc.create_time": 60}}}
+{"func": "same_incarnation", "in": {"proc": {"_proc": {}}, "create_time": 100, "boot": 50, "psutil": {"LINUX": false}, "seams": {"process_birth": 100}}}
+{"func": "same_incarnation", "in": {"proc": {"_proc": {}}, "create_time": 100, "boot": "abc", "psutil": {"LINUX": true}, "seams": {"proc._proc.create_time": 50}}}
+{"func": "same_incarnation", "in": {"proc": {"_proc": {}}, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"process_birth": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "spawned_by_this_process", "in": {"pid": "5", "seams": {"psutil.Process": {"_proc": {}}, "proc.environ": {"HERMES_SPAWN": "v1:inst:serve:5:100.000"}, "parse_spawn_tag": {"spawner_pid": 5, "spawner_create": 100.0}, "os.getpid": 5, "process_birth": 100.0}}}
+{"func": "spawned_by_this_process", "in": {"pid": 5, "seams": {"psutil.Process": {"_proc": {}}, "proc.environ": {}, "parse_spawn_tag": null, "os.getpid": 5}}}
+{"func": "spawned_by_this_process", "in": {"pid": 5, "seams": {"psutil.Process": {"_proc": {}}, "proc.environ": {"HERMES_SPAWN": "v1:inst:serve:5:100.000"}, "parse_spawn_tag": {"spawner_pid": 5, "spawner_create": 100.0}, "os.getpid": 999}}}
+{"func": "spawned_by_this_process", "in": {"pid": 5, "seams": {"psutil.Process": {"__raise__": "NoSuchProcess", "msg": "boom"}}}}
+{"func": "spawned_by_this_process", "in": {"pid": 5, "seams": {"psutil.Process": {"_proc": {}}, "proc.environ": {"__raise__": "AccessDenied", "msg": "boom"}}}}
+{"func": "spawned_by_this_process", "in": {"pid": "abc", "seams": {}}}
+{"func": "spawned_by_this_process", "in": {"pid": 5, "seams": {"psutil.Process": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "spawned_by_this_process", "in": {"pid": 5, "seams": {"psutil.Process": {"_proc": {}}, "proc.environ": {"HERMES_SPAWN": "v1:inst:serve:5:100.000"}, "parse_spawn_tag": {"spawner_pid": 5, "spawner_create": null}, "os.getpid": 5, "process_birth": 100.0}}}
+{"func": "spawned_by_this_process", "in": {"pid": 5, "seams": {"psutil.Process": {"_proc": {}}, "proc.environ": {"HERMES_SPAWN": "v1:inst:serve:5:100.000"}, "parse_spawn_tag": {"spawner_pid": 5, "spawner_create": 100.0}, "os.getpid": 5, "process_birth": {"__raise__": "Error", "msg": "boom"}}}}
+{"func": "read_ledger_or_quarantine", "in": {"path": "/h/spawn-ledger.json", "seams": {"_read_ledger": [{"pid": 5}]}}}
+{"func": "read_ledger_or_quarantine", "in": {"path": "/h/spawn-ledger.json", "seams": {"_read_ledger": []}}}
+{"func": "read_ledger_or_quarantine", "in": {"path": "/h/spawn-ledger.json", "seams": {"_read_ledger": null, "os.replace": null, "logger.warning": null}}}
+{"func": "read_ledger_or_quarantine", "in": {"path": "/h/spawn-ledger.json", "seams": {"_read_ledger": null, "os.replace": {"__raise__": "PermissionError", "msg": "boom"}}}}
+{"func": "read_ledger_or_quarantine", "in": {"path": "/h/spawn-ledger.json", "seams": {"_read_ledger": null, "os.replace": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "read_ledger_or_quarantine", "in": {"path": "/h/spawn-ledger.json", "seams": {"_read_ledger": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "read_ledger_or_quarantine", "in": {"path": "/h\\spawn-ledger.json", "seams": {"_read_ledger": null, "os.replace": null, "logger.warning": null}}}
+{"func": "is_desktop_owned_backend", "in": {"env": {}, "seams": {}}}
+{"func": "is_desktop_owned_backend", "in": {"env": {"HERMES_DESKTOP": "0"}, "seams": {}}}
+{"func": "is_desktop_owned_backend", "in": {"env": {"HERMES_DESKTOP": "1", "HERMES_DASHBOARD_SESSION_TOKEN": "tok"}, "seams": {}}}
+{"func": "is_desktop_owned_backend", "in": {"env": {"HERMES_DESKTOP": "1"}, "argv": ["x", "--token-file", "f"], "seams": {"is_desktop_ssh_backend_argv": true}}}
+{"func": "is_desktop_owned_backend", "in": {"env": {"HERMES_DESKTOP": "1"}, "argv": null, "sys_argv": ["hermes", "serve"], "seams": {"is_desktop_ssh_backend_argv": false}}}
+{"func": "is_desktop_owned_backend", "in": {"env": {"HERMES_DESKTOP": "1"}, "argv": ["x"], "seams": {"is_desktop_ssh_backend_argv": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "local_desktop_client", "in": {"identity": {"provider": "local", "native_bootstrap": true}, "declared": true, "seams": {}}}
+{"func": "local_desktop_client", "in": {"identity": {"provider": "local", "native_bootstrap": true}, "declared": false, "seams": {}}}
+{"func": "local_desktop_client", "in": {"identity": {"provider": "local", "native_bootstrap": true}, "declared": 1, "seams": {}}}
+{"func": "local_desktop_client", "in": {"identity": null, "declared": true, "seams": {}}}
+{"func": "local_desktop_client", "in": {"identity": {"provider": "remote", "native_bootstrap": true}, "declared": true, "seams": {}}}
+{"func": "local_desktop_client", "in": {"identity": {"provider": "local", "native_bootstrap": false}, "declared": true, "seams": {}}}
+{"func": "local_desktop_client", "in": {"identity": {"provider": "local"}, "declared": true, "seams": {}}}
+{"func": "desktop_spawner_identity", "in": {"env": {}, "seams": {}}}
+{"func": "desktop_spawner_identity", "in": {"env": {"HERMES_PARENT_PID": "5"}, "seams": {}}}
+{"func": "desktop_spawner_identity", "in": {"env": {"HERMES_PARENT_PID": "5", "HERMES_PARENT_START_MARKER": "winms:1500"}, "seams": {}}}
+{"func": "desktop_spawner_identity", "in": {"env": {"HERMES_PARENT_PID": "5", "HERMES_PARENT_START_MARKER": "other:1500"}, "seams": {}}}
+{"func": "desktop_spawner_identity", "in": {"env": {"HERMES_PARENT_PID": "5", "HERMES_PARENT_START_MARKER": "winms:abc"}, "seams": {}}}
+{"func": "desktop_spawner_identity", "in": {"env": {"HERMES_PARENT_PID": "0"}, "seams": {}}}
+{"func": "desktop_spawner_identity", "in": {"env": {"HERMES_PARENT_PID": "-3"}, "seams": {}}}
+{"func": "desktop_spawner_identity", "in": {"env": {"HERMES_PARENT_PID": "5", "HERMES_PARENT_START_MARKER": "winms:"}, "seams": {}}}
+{"func": "new_entry", "in": {"pid": 5, "create_time": 100, "purpose": "serve", "project_root": "/h", "spawner_pid": 1, "spawner_create": 50, "psutil": {"LINUX": true}, "seams": {"install_id": "inst", "time.time": 1000, "live_boot_id": "b1", "psutil.Process": {"_proc": {}}, "process_birth": 100, "proc._proc.create_time": 100}}}
+{"func": "new_entry", "in": {"pid": null, "create_time": null, "purpose": "gateway", "project_root": null, "spawner_pid": null, "spawner_create": null, "psutil": {"LINUX": false}, "seams": {"install_id": "inst", "time.time": 1000, "live_boot_id": null}}}
+{"func": "new_entry", "in": {"pid": 5, "create_time": 100, "purpose": "serve", "project_root": "/h", "spawner_pid": 1, "spawner_create": 50, "psutil": {"LINUX": false}, "seams": {"install_id": "inst", "time.time": 1000, "live_boot_id": "b1", "process_birth": 100}}}
+{"func": "new_entry", "in": {"pid": 5, "create_time": 100, "purpose": "serve", "project_root": "/h", "spawner_pid": 1, "spawner_create": 50, "psutil": {"LINUX": true}, "seams": {"install_id": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "new_entry", "in": {"pid": 5, "create_time": 100, "purpose": "serve", "project_root": "/h", "spawner_pid": 1, "spawner_create": 50, "psutil": {"LINUX": true}, "seams": {"install_id": "inst", "time.time": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "new_entry", "in": {"pid": 5, "create_time": 100, "purpose": "serve", "project_root": "/h", "spawner_pid": 1, "spawner_create": 50, "psutil": {"LINUX": true}, "seams": {"install_id": "inst", "time.time": 1000, "live_boot_id": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "entry_still_running", "in": {"entry": {"pid": 5, "create_time": 100, "boot_id": "b1", "boot_start": 50}, "seams": {"live_boot_id": "b1", "_pid_alive_matches": true}}}
+{"func": "entry_still_running", "in": {"entry": {"pid": 5, "create_time": 100, "boot_id": "b1", "boot_start": 50}, "seams": {"live_boot_id": "b1", "_pid_alive_matches": false}}}
+{"func": "entry_still_running", "in": {"entry": {"pid": 5, "create_time": 100, "boot_id": "b1", "boot_start": 50}, "seams": {"live_boot_id": "b1", "_pid_alive_matches": null}}}
+{"func": "entry_still_running", "in": {"entry": {"pid": 0}, "seams": {}}}
+{"func": "entry_still_running", "in": {"entry": {"pid": "x"}, "seams": {}}}
+{"func": "entry_still_running", "in": {"entry": {}, "seams": {}}}
+{"func": "entry_still_running", "in": {"entry": {"pid": 5, "create_time": 100}, "seams": {"live_boot_id": null, "_pid_alive_matches": true}}}
+{"func": "entry_still_running", "in": {"entry": {"pid": 5, "create_time": 100}, "seams": {"live_boot_id": null, "_pid_alive_matches": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "is_owner_death_supervisor", "in": {"argv": ["sh", "/h/process_supervisor.sh", "123"], "script_path": "/h/process_supervisor.sh", "seams": {}}}
+{"func": "is_owner_death_supervisor", "in": {"argv": ["sh", "/other.sh"], "script_path": "/h/process_supervisor.sh", "seams": {}}}
+{"func": "is_owner_death_supervisor", "in": {"argv": ["sh"], "script_path": "/h/process_supervisor.sh", "seams": {}}}
+{"func": "is_owner_death_supervisor", "in": {"argv": [], "script_path": "/h/process_supervisor.sh", "seams": {}}}
+{"func": "is_owner_death_supervisor", "in": {"argv": ["sh", "/h/process_supervisor.sh"], "script_path": "/h/process_supervisor.sh", "seams": {}}}
+{"func": "is_owner_death_supervisor", "in": {"argv": ["sh", "/h\\process_supervisor.sh"], "script_path": "/h/process_supervisor.sh", "seams": {}}}
+{"func": "terminate_then_kill", "in": {"pid": 5, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"psutil.Process": {"_proc": {}}, "process_birth": 100, "proc.terminate": null, "proc.wait": 0}}}
+{"func": "terminate_then_kill", "in": {"pid": 5, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"psutil.Process": {"_proc": {}}, "process_birth": 100, "proc.terminate": null, "proc.wait": {"__raise__": "TimeoutExpired", "msg": "boom"}, "proc.kill": null}}}
+{"func": "terminate_then_kill", "in": {"pid": 5, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"psutil.Process": {"_proc": {}}, "process_birth": 200}}}
+{"func": "terminate_then_kill", "in": {"pid": 5, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"psutil.Process": {"__raise__": "NoSuchProcess", "msg": "boom"}, "logger.debug": null}}}
+{"func": "terminate_then_kill", "in": {"pid": 5, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"psutil.Process": {"_proc": {}}, "process_birth": 100, "proc.terminate": {"__raise__": "AccessDenied", "msg": "boom"}, "logger.debug": null}}}
+{"func": "terminate_then_kill", "in": {"pid": 5, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"psutil.Process": {"_proc": {}}, "process_birth": 100, "proc.terminate": null, "proc.wait": {"__raise__": "Error", "msg": "boom"}, "logger.debug": null}}}
+{"func": "terminate_then_kill", "in": {"pid": 5, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"psutil.Process": {"_proc": {}}, "process_birth": 100, "proc.terminate": null, "proc.wait": {"__raise__": "TimeoutExpired", "msg": "boom"}, "proc.kill": {"__raise__": "AccessDenied", "msg": "boom"}, "logger.debug": null}}}
+{"func": "terminate_then_kill", "in": {"pid": 5, "create_time": 100, "boot": null, "psutil": {"LINUX": false}, "seams": {"psutil.Process": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "terminate_then_kill", "in": {"pid": 5, "create_time": 100, "boot": 50, "psutil": {"LINUX": true}, "seams": {"psutil.Process": {"_proc": {}}, "proc._proc.create_time": 50, "proc.terminate": null, "proc.wait": 0}}}
+{"func": "reparented_orphan", "in": {"pid": 5, "reap_min_age": 180, "seams": {"_process_ppid": 1, "_lock_owned_serve_pids": [], "time.time": 1000, "psutil.Process": {"_proc": {}}, "proc.create_time": 100}}}
+{"func": "reparented_orphan", "in": {"pid": 5, "reap_min_age": 180, "seams": {"_process_ppid": 5}}}
+{"func": "reparented_orphan", "in": {"pid": 5, "reap_min_age": 180, "seams": {"_process_ppid": 1, "_lock_owned_serve_pids": [[5]]}}}
+{"func": "reparented_orphan", "in": {"pid": 5, "reap_min_age": 180, "seams": {"_process_ppid": 0, "_lock_owned_serve_pids": [[]], "time.time": 1000, "psutil.Process": {"_proc": {}}, "proc.create_time": 900}}}
+{"func": "reparented_orphan", "in": {"pid": 5, "reap_min_age": 180, "seams": {"_process_ppid": {"__raise__": "Error", "msg": "boom"}}}}
+{"func": "reparented_orphan", "in": {"pid": 5, "reap_min_age": 180, "seams": {"_process_ppid": 1, "_lock_owned_serve_pids": [[]], "time.time": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "reparented_orphan", "in": {"pid": 5, "reap_min_age": 180, "seams": {"_process_ppid": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "reparented_orphan", "in": {"pid": 5, "reap_min_age": 180, "seams": {}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": 5, "create_time": 100, "kill_fn": null, "psutil": {"LINUX": false}, "seams": {"os.getpid": 999, "ledger_entries": [{"pid": 5, "purpose": "serve", "create_time": 100, "spawner_pid": 1}], "spawner_is_dead": true, "live_boot_id": null, "psutil.Process": {"_proc": {}}, "process_birth": 100, "proc.terminate": null, "proc.wait": 0, "logger.info": null}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": 5, "create_time": 100, "kill_fn": null, "psutil": {"LINUX": false}, "reap_min_age": 180, "seams": {"os.getpid": 999, "ledger_entries": [{"pid": 5, "purpose": "serve", "create_time": 100, "spawner_pid": null}], "spawner_is_dead": false, "live_boot_id": null, "_process_ppid": 1, "_lock_owned_serve_pids": [[]], "time.time": 1000, "psutil.Process": {"_proc": {}}, "proc.create_time": 100, "process_birth": 100, "proc.terminate": null, "proc.wait": 0, "logger.info": null}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": 5, "create_time": 100, "kill_fn": null, "psutil": {"LINUX": false}, "seams": {"os.getpid": 999, "ledger_entries": [{"pid": 5, "purpose": "serve", "create_time": 100, "spawner_pid": 1}], "spawner_is_dead": false}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": 5, "create_time": 100, "kill_fn": null, "psutil": {"LINUX": false}, "seams": {"os.getpid": 999, "ledger_entries": []}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": 0, "create_time": 100, "seams": {}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": 5, "create_time": 100, "seams": {"os.getpid": 5}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": 5, "create_time": 100, "kill_fn": true, "psutil": {"LINUX": false}, "seams": {"os.getpid": 999, "ledger_entries": [{"pid": 5, "purpose": "serve", "create_time": 100, "spawner_pid": 1}], "spawner_is_dead": true, "kill_fn": null, "logger.info": null}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": 5, "create_time": 100, "kill_fn": true, "psutil": {"LINUX": false}, "seams": {"os.getpid": 999, "ledger_entries": [{"pid": 5, "purpose": "serve", "create_time": 100, "spawner_pid": 1}], "spawner_is_dead": true, "kill_fn": {"__raise__": "Error", "msg": "boom"}, "logger.debug": null}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": "abc", "create_time": 100, "seams": {}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": 5, "create_time": 100, "psutil": {"LINUX": false}, "seams": {"os.getpid": 999, "ledger_entries": {"__raise__": "Error", "msg": "boom"}}}}
+{"func": "reap_orphaned_backend_owner", "in": {"pid": 5, "create_time": 100, "psutil": {"LINUX": false}, "seams": {"os.getpid": 999, "ledger_entries": [{"pid": 5, "purpose": "mcp-helper", "create_time": 100}]}}}

@@ -93,6 +93,8 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
     const ge2_seams_t *sp = &seams;
     json_t *state = json_object();
     json_t *cfg = NULL;    /* working config copy for the config-mutating funcs */
+    bool config_func = !strcmp(func, "standalone_launcher_decision")
+        || !strcmp(func, "resolve_multiplex_mode");
     bool pending_func = !strcmp(func, "record_multiplex_decision")
         || !strcmp(func, "publish_pending_multiplex_decision")
         || !strcmp(func, "log_multiplex_decision");
@@ -117,6 +119,10 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         ret_json(out, ge2_flow_standalone_launcher(sp));
     } else if (!strcmp(func, "standalone_launcher_decision")) {
         cfg = json_copy(J("config"));   /* NULL stays NULL (None carrier) */
+        /* NULL == None: an explicit JSON null must materialize as a NULL
+         * pointer, never a JSON_NULL node (the port's !config raise guard
+         * and the oracle's None carrier both read pointer-NULL). */
+        if (cfg && cfg->type == JSON_NULL) { json_free(cfg); cfg = NULL; }
         ret_json(out, ge2_flow_standalone_launcher_decision(cfg, sp));
     } else if (!strcmp(func, "implicit_multiplex_blocker")) {
         ret_json(out, ge2_flow_implicit_multiplex_blocker(sp));
@@ -132,6 +138,7 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         ret_json(out, ge2_flow_box(J("body")));
     } else if (!strcmp(func, "resolve_multiplex_mode")) {
         cfg = json_copy(J("config"));
+        if (cfg && cfg->type == JSON_NULL) { json_free(cfg); cfg = NULL; }
         ret_json(out, ge2_flow_resolve_multiplex_mode(cfg, sp));
     } else if (!strcmp(func, "record_multiplex_decision")) {
         pending_func = true;
@@ -155,7 +162,9 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         ret_json(out, NULL);
     }
 
-    if (cfg) { json_free(state); state = cfg; }
+    /* Config funcs echo the working config copy as state — including NULL
+     * (None config -> state null, matching the oracle's None-state echo). */
+    if (config_func) { json_free(state); state = cfg; }
     /* json_set ignores a NULL val — a null config state must emit JSON null. */
     json_set(out, "state", state ? state : json_null());
     json_set(out, "trace", trace.events ? trace.events : json_array());
