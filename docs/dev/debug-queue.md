@@ -88,8 +88,13 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 59 wired 807->809, HEAD `119ff5f2c8`;
-  build health 2116/2116 clean, port gate PASS.
+- Parent working set (committed): wave 60 wired 809->810, HEAD `8def487693`;
+  build health 2117/2117 clean, port gate PASS.
+  Wave 60 RESOLVED: tui_server_flow3 honestly scoped from 62 over-scoped
+  fns (374/287, 50 red) to the 12 faithful ones, parent gate 74/0, wired.
+  The 50 removed fns are real gaps again. Scanner perf fix committed
+  separately (`7fae0e9970`) — bounded return-type search, full scan now
+  advances past the old quadratic phase.
   Wave 59 RESOLVED: acp_gateway_server_flow parent 126/0 (JSON object vs
   array-only accessor bugs + BaseException passthrough), api_server_runs_flow2
   parent 98/0 (borrowed-node double-free + `in` / exact exception contracts).
