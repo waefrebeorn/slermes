@@ -137,3 +137,13 @@ Next wave `deleg_20edbe62` (4 code-only agents) owns the verified
 remainders: tui_hosted_room_service_flow2 (59 unclaimed),
 executions_worker_flow2 (50), acp_gateway_server_flow2 (44),
 matrix_adapter_flow3 (102). Parent gates them before any wire.
+THAT WAVE landed; parent battery 4/4 RED again (child shadow claims all
+false) — debuggers `deleg_aaf9d094` active, NONE wired:
+- tui_hosted_room_service_flow2: 101 cases, 20 mismatches (`live_room_services`).
+- executions_worker_flow2: oracle SELFTEST fault — touch_session_activity
+  seeded a plain dict where live needs `.ts` attribute; oracle-side fix.
+- acp_gateway_server_flow2: 266 cases, 261 mismatches — over-scoped 44-fn
+  class port; honest scope-down required (flow1's 20 fns are committed,
+  untouched).
+- matrix_adapter_flow3: 126 cases, 31 mismatches (_handle_approval_reaction
+  cluster). Parent re-gates before any wire.
