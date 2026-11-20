@@ -1,0 +1,118 @@
+{"func": "_retry_after_from_exc", "in": {"args": {"e": {"__obj__": {"response": {"__obj__": {"headers": {"Retry-After": "120"}}}}}}, "state": {"extra": {}}, "io": {"parse_retry_after_seconds": 120}}}
+{"func": "_retry_after_from_exc", "in": {"args": {"e": {"__obj__": {"response": {"__obj__": {"headers": {"Retry-After": "Wed, 21 Oct 2015 07:28:00 GMT"}}}}}}, "state": {"extra": {}}, "io": {"parse_retry_after_seconds": "Wed, 21 Oct 2015 07:28:00 GMT"}}}
+{"func": "_retry_after_from_exc", "in": {"args": {"e": {"__obj__": {"response": {"__obj__": {"headers": {}}}}}}, "state": {"extra": {}}, "io": {"parse_retry_after_seconds": null}}}
+{"func": "_retry_after_from_exc", "in": {"args": {"e": {"__obj__": {}}}, "state": {"extra": {}}, "io": {"parse_retry_after_seconds": 5}}}
+{"func": "_retry_after_from_exc", "in": {"args": {"e": null}, "state": {"extra": {}}, "io": {"parse_retry_after_seconds": 0}}}
+{"func": "_retry_after_from_exc", "in": {"args": {"e": {"__obj__": {"response": {"__obj__": {"headers": {"x": "y"}}}}}}, "state": {"extra": {}}, "io": {"parse_retry_after_seconds": {"__script__": true, "raise": {"type": "ValueError", "message": "bad retry-after"}}}}, "expect_raise": "ValueError"}
+{"func": "_retry_after_from_exc", "in": {"args": {"e": {"__obj__": {"response": {"__obj__": {"headers": {}}}}}}, "state": {"extra": {}}, "io": {}}, "expect_raise": "RuntimeError"}
+{"func": "_standalone_post_text", "in": {"args": {"chat_id": "C1", "text": "hello", "unfurl_kwargs": {"unfurl_links": false}, "thread_id": null}, "state": {"extra": {}}, "io": {"standalone_post_kwargs": {"channel": "C1", "text": "hello"}, "chat_postMessage": {"ok": true, "ts": "1"}, "slack_response_payload": {"success": true}}}}
+{"func": "_standalone_post_text", "in": {"args": {"chat_id": "C2", "text": "world", "unfurl_kwargs": {"unfurl_links": false}, "thread_id": "111.2"}, "state": {"extra": {}}, "io": {"standalone_post_kwargs": {"channel": "C2", "text": "world"}, "chat_postMessage": {"ok": true}, "slack_response_payload": {"success": true}}}}
+{"func": "_standalone_post_text", "in": {"args": {"chat_id": "D3", "text": "dm", "unfurl_kwargs": {"unfurl_links": false}, "thread_id": null}, "state": {"extra": {}}, "io": {"standalone_post_kwargs": {"channel": "D3", "text": "dm"}, "chat_postMessage": {"ok": false}, "slack_response_payload": {"success": false}}}}
+{"func": "_standalone_post_text", "in": {"args": {"chat_id": "C1", "text": "x", "unfurl_kwargs": {}, "thread_id": null}, "state": {"extra": {}}, "io": {"standalone_post_kwargs": {"__script__": true, "raise": {"type": "RuntimeError", "message": "kwargs boom"}}}}, "expect_raise": "RuntimeError"}
+{"func": "_standalone_post_text", "in": {"args": {"chat_id": "C1", "text": "x", "unfurl_kwargs": {}, "thread_id": null}, "state": {"extra": {}}, "io": {"standalone_post_kwargs": {"channel": "C1"}, "chat_postMessage": {"__script__": true, "raise": {"type": "SystemExit", "message": "base"}}}}, "expect_raise": "SystemExit"}
+{"func": "_standalone_post_text", "in": {"args": {"chat_id": "C1", "text": "x", "unfurl_kwargs": {}, "thread_id": null}, "state": {"extra": {}}, "io": {"standalone_post_kwargs": {"channel": "C1"}, "chat_postMessage": {"ok": true}}}, "expect_raise": "RuntimeError"}
+{"func": "slack_deps_present", "in": {"args": {}, "state": {"extra": {"probe": 0}}}}
+{"func": "slack_deps_present", "in": {"args": {}, "state": {"extra": {"probe": 1}}}}
+{"func": "slack_deps_present", "in": {"args": {}, "state": {"extra": {"probe": 2}}}}
+{"func": "slack_deps_present", "in": {"args": {}, "state": {"extra": {"probe": 3}}}}
+{"func": "slack_deps_present", "in": {"args": {}, "state": {"extra": {"probe": 4}}}}
+{"func": "slack_deps_present", "in": {"args": {}, "state": {"extra": {"probe": 5}}}}
+{"func": "_stream_key", "in": {"args": {"chat_id": "C1", "metadata": {"thread_id": "T9"}}, "state": {"extra": {}}, "io": {"metadata_team_id": "T9", "resolve_thread_ts": "111.2", "workspace_thread_key": {"__script__": true, "ret": ["T9", "C1", "111.2"]}}}}
+{"func": "_stream_key", "in": {"args": {"chat_id": "C2", "metadata": null}, "state": {"extra": {}}, "io": {"metadata_team_id": null, "scope_id_for_chat": "T1", "resolve_thread_ts": null, "workspace_thread_key": ["T1", "C2", ""]}}}
+{"func": "_stream_key", "in": {"args": {"chat_id": "D3", "metadata": {}}, "state": {"extra": {}}, "io": {"metadata_team_id": "", "scope_id_for_chat": null, "resolve_thread_ts": 0, "workspace_thread_key": ["", "D3", ""]}}}
+{"func": "_stream_key", "in": {"args": {"chat_id": "C4", "metadata": {"a": 1}}, "state": {"extra": {}}, "io": {"metadata_team_id": "T2", "resolve_thread_ts": [123], "workspace_thread_key": {"k": 1}}}}
+{"func": "_stream_key", "in": {"args": {"chat_id": "C5", "metadata": {"a": 2}}, "state": {"extra": {}}, "io": {"metadata_team_id": {"__script__": true, "raise": {"type": "SystemExit", "message": "base passes"}}, "scope_id_for_chat": "T3"}}, "expect_raise": "SystemExit"}
+{"func": "_stream_key", "in": {"args": {"chat_id": "C6", "metadata": {"a": 3}}, "state": {"extra": {}}, "io": {"metadata_team_id": null, "scope_id_for_chat": "T4"}}, "expect_raise": "RuntimeError"}
+{"func": "_stream_key", "in": {"args": {"chat_id": "C7", "metadata": {"a": 4}}, "state": {"extra": {}}, "io": {"metadata_team_id": "T5", "resolve_thread_ts": "9", "workspace_thread_key": {"__script__": true, "raise": {"type": "ValueError", "message": "bad key"}}}}, "expect_raise": "ValueError"}
+{"func": "_evict_oldest_by_ts", "in": {"args": {"entries": [1, 2, 3, 4], "cap": 2}, "state": {"extra": {}}, "io": {"discard_oldest_by_thread_ts": null}}}
+{"func": "_evict_oldest_by_ts", "in": {"args": {"entries": [1, 2, 3], "cap": 3}, "state": {"extra": {}}, "io": {"discard_oldest_by_thread_ts": null}}}
+{"func": "_evict_oldest_by_ts", "in": {"args": {"entries": ["a", "b", "c", "d", "e"], "cap": 3}, "state": {"extra": {}}, "io": {"discard_oldest_by_thread_ts": "dropped"}}}
+{"func": "_evict_oldest_by_ts", "in": {"args": {"entries": [], "cap": 0}, "state": {"extra": {}}, "io": {"discard_oldest_by_thread_ts": null}}}
+{"func": "_evict_oldest_by_ts", "in": {"args": {"entries": {"a": 1, "b": 2, "c": 3}, "cap": 1}, "state": {"extra": {}}, "io": {"discard_oldest_by_thread_ts": null}}}
+{"func": "_evict_oldest_by_ts", "in": {"args": {"entries": [1, 2, 3, 4], "cap": 2}, "state": {"extra": {}}, "io": {"discard_oldest_by_thread_ts": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "base"}}}}, "expect_raise": "KeyboardInterrupt"}
+{"func": "_evict_oldest_by_ts", "in": {"args": {"entries": [1, 2, 3, 4], "cap": 2}, "state": {"extra": {}}, "io": {}}, "expect_raise": "RuntimeError"}
+{"func": "_trim_bot_message_timestamps", "in": {"args": {}, "state": {"_bot_message_ts": [1, 2, 3, 4], "_BOT_TS_MAX": 2, "extra": {}}, "io": {"evict_oldest_by_ts": null}}}
+{"func": "_trim_bot_message_timestamps", "in": {"args": {}, "state": {"_bot_message_ts": [1, 2], "_BOT_TS_MAX": 4, "extra": {}}, "io": {"evict_oldest_by_ts": null}}}
+{"func": "_trim_bot_message_timestamps", "in": {"args": {}, "state": {"_bot_message_ts": [], "_BOT_TS_MAX": 0, "extra": {}}, "io": {"evict_oldest_by_ts": null}}}
+{"func": "_trim_bot_message_timestamps", "in": {"args": {}, "state": {"_bot_message_ts": [0, 1, 2, 3, 4, 5, 6], "_BOT_TS_MAX": 3, "extra": {}}, "io": {"evict_oldest_by_ts": "ok"}}}
+{"func": "_trim_bot_message_timestamps", "in": {"args": {}, "state": {"_bot_message_ts": [1, 2, 3], "_BOT_TS_MAX": 1, "extra": {}}, "io": {"evict_oldest_by_ts": {"__script__": true, "raise": {"type": "SystemExit", "message": "base"}}}}, "expect_raise": "SystemExit"}
+{"func": "_trim_bot_message_timestamps", "in": {"args": {}, "state": {"_bot_message_ts": [1, 2, 3], "_BOT_TS_MAX": 1, "extra": {}}, "io": {}}, "expect_raise": "RuntimeError"}
+{"func": "_trim_mentioned_threads", "in": {"args": {}, "state": {"_mentioned_threads": [1, 2, 3, 4], "_MENTIONED_THREADS_MAX": 2, "extra": {}}, "io": {"discard_oldest_by_thread_ts": null}}}
+{"func": "_trim_mentioned_threads", "in": {"args": {}, "state": {"_mentioned_threads": [1, 2], "_MENTIONED_THREADS_MAX": 4, "extra": {}}, "io": {"discard_oldest_by_thread_ts": null}}}
+{"func": "_trim_mentioned_threads", "in": {"args": {}, "state": {"_mentioned_threads": [], "_MENTIONED_THREADS_MAX": 0, "extra": {}}, "io": {"discard_oldest_by_thread_ts": null}}}
+{"func": "_trim_mentioned_threads", "in": {"args": {}, "state": {"_mentioned_threads": [0, 1, 2, 3, 4, 5, 6, 7, 8], "_MENTIONED_THREADS_MAX": 4, "extra": {}}, "io": {"discard_oldest_by_thread_ts": "ok"}}}
+{"func": "_trim_mentioned_threads", "in": {"args": {}, "state": {"_mentioned_threads": [1, 2, 3], "_MENTIONED_THREADS_MAX": 1, "extra": {}}, "io": {"discard_oldest_by_thread_ts": {"__script__": true, "raise": {"type": "GeneratorExit", "message": "base"}}}}, "expect_raise": "GeneratorExit"}
+{"func": "_trim_mentioned_threads", "in": {"args": {}, "state": {"_mentioned_threads": [1, 2, 3], "_MENTIONED_THREADS_MAX": 1, "extra": {}}, "io": {}}, "expect_raise": "RuntimeError"}
+{"func": "_EA_HEADER", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": "Approval required"}}}
+{"func": "_EA_HEADER", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": ":warning: already"}}}
+{"func": "_EA_HEADER", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": ""}}}
+{"func": "_EA_HEADER", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": "A: B"}}}
+{"func": "_EA_HEADER", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": "xxxxxxxxxxxx"}}}
+{"func": "_EA_HEADER", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": "None"}}}
+{"func": "_EA_HEADER", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": {"__script__": true, "raise": {"type": "RuntimeError", "message": "translate fail"}}}}, "expect_raise": "RuntimeError"}
+{"func": "_EA_SMART_DENY_LINE", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": "Denied: by other"}}}
+{"func": "_EA_SMART_DENY_LINE", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": "no colon here"}}}
+{"func": "_EA_SMART_DENY_LINE", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": "a:b:c"}}}
+{"func": "_EA_SMART_DENY_LINE", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": ""}}}
+{"func": "_EA_SMART_DENY_LINE", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": "label: "}}}
+{"func": "_EA_SMART_DENY_LINE", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": "OnlyLabel"}}}
+{"func": "_EA_SMART_DENY_LINE", "in": {"args": {}, "state": {"extra": {}}, "io": {"t": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}, "expect_raise": "ValueError"}
+{"func": "_slash_channel_gated", "in": {"args": {"channel_id": "C1"}, "state": {"extra": {}}, "io": {"is_ignored_channel": true, "slack_allowed_channels": null}}}
+{"func": "_slash_channel_gated", "in": {"args": {"channel_id": "C1"}, "state": {"extra": {}}, "io": {"is_ignored_channel": false, "slack_allowed_channels": {"__script__": true, "ret": ["C2", "C3"]}}}}
+{"func": "_slash_channel_gated", "in": {"args": {"channel_id": "C1"}, "state": {"extra": {}}, "io": {"is_ignored_channel": false, "slack_allowed_channels": {"__script__": true, "ret": ["C1", "C2"]}}}}
+{"func": "_slash_channel_gated", "in": {"args": {"channel_id": "D9"}, "state": {"extra": {}}, "io": {"is_ignored_channel": false, "slack_allowed_channels": ["C1"]}}}
+{"func": "_slash_channel_gated", "in": {"args": {"channel_id": "C1"}, "state": {"extra": {}}, "io": {"is_ignored_channel": false, "slack_allowed_channels": {"__script__": true, "ret": []}}}}
+{"func": "_slash_channel_gated", "in": {"args": {"channel_id": "C1"}, "state": {"extra": {}}, "io": {"is_ignored_channel": {"__script__": true, "raise": {"type": "SystemExit", "message": "base"}}}}, "expect_raise": "SystemExit"}
+{"func": "_slash_channel_gated", "in": {"args": {"channel_id": "C1"}, "state": {"extra": {}}, "io": {"is_ignored_channel": false}}, "expect_raise": "RuntimeError"}
+{"func": "_is_slack_cdn_url", "in": {"args": {"url": "https://files.slack.com/a"}, "state": {"extra": {}}, "io": {"urlparse": {"__obj__": {"hostname": "files.slack.com", "scheme": "https"}}}}}
+{"func": "_is_slack_cdn_url", "in": {"args": {"url": "https://slack.com/"}, "state": {"extra": {}}, "io": {"urlparse": {"__obj__": {"hostname": "SLACK.COM.", "scheme": "https"}}}}}
+{"func": "_is_slack_cdn_url", "in": {"args": {"url": "https://evil.example/"}, "state": {"extra": {}}, "io": {"urlparse": {"__obj__": {"hostname": "evil.example", "scheme": "https"}}}}}
+{"func": "_is_slack_cdn_url", "in": {"args": {"url": "http://files.slack.com/"}, "state": {"extra": {}}, "io": {"urlparse": {"__obj__": {"hostname": "files.slack.com", "scheme": "http"}}}}}
+{"func": "_is_slack_cdn_url", "in": {"args": {"url": "not a url"}, "state": {"extra": {}}, "io": {"urlparse": {"__script__": true, "raise": {"type": "ValueError", "message": "malformed"}}}}}
+{"func": "_is_slack_cdn_url", "in": {"args": {"url": "https://x/"}, "state": {"extra": {}}, "io": {"urlparse": {"__obj__": {"hostname": null, "scheme": "https"}}}}}
+{"func": "_is_slack_cdn_url", "in": {"args": {"url": "https://x/"}, "state": {"extra": {}}, "io": {"urlparse": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "base"}}}}, "expect_raise": "KeyboardInterrupt"}
+{"func": "_format_chunks", "in": {"args": {"content": "hello"}, "state": {"extra": {}}, "io": {"format_message": "*hello*", "truncate_message": {"__script__": true, "ret": ["*hello*"]}}}}
+{"func": "_format_chunks", "in": {"args": {"content": "long"}, "state": {"extra": {}}, "io": {"format_message": "*long*", "truncate_message": {"__script__": true, "ret": ["*lo", "ng*"]}}}}
+{"func": "_format_chunks", "in": {"args": {"content": "empty"}, "state": {"extra": {}}, "io": {"format_message": "*empty*", "truncate_message": {"__script__": true, "ret": []}}}}
+{"func": "_format_chunks", "in": {"args": {"content": "x"}, "state": {"extra": {}}, "io": {"format_message": {"__script__": true, "raise": {"type": "ValueError", "message": "fmt"}}}}, "expect_raise": "ValueError"}
+{"func": "_format_chunks", "in": {"args": {"content": "y"}, "state": {"extra": {}}, "io": {"format_message": "y", "truncate_message": {"__script__": true, "raise": {"type": "SystemExit", "message": "base"}}}}, "expect_raise": "SystemExit"}
+{"func": "_format_chunks", "in": {"args": {"content": "z"}, "state": {"extra": {}}, "io": {"format_message": "z"}}, "expect_raise": "RuntimeError"}
+{"func": "_team_in_install_set", "in": {"args": {"team_id": "T1"}, "state": {"_team_clients": {"T1": {"__obj__": {"token": "x"}}}, "extra": {}}}}
+{"func": "_team_in_install_set", "in": {"args": {"team_id": "T2"}, "state": {"_team_clients": {"T1": {"__obj__": {"token": "x"}}}, "extra": {}}}}
+{"func": "_team_in_install_set", "in": {"args": {"team_id": ""}, "state": {"_team_clients": {"T1": {"__obj__": {"token": "x"}}}, "extra": {}}}}
+{"func": "_team_in_install_set", "in": {"args": {"team_id": null}, "state": {"_team_clients": {}, "extra": {}}}}
+{"func": "_team_in_install_set", "in": {"args": {"team_id": "T3"}, "state": {"_team_clients": {}, "extra": {}}}}
+{"func": "_team_in_install_set", "in": {"args": {"team_id": "T4"}, "state": {"extra": {}}}}
+{"func": "_build_thread_session_key", "in": {"args": {"channel_id": "C1", "thread_ts": "111.2", "user_id": "U1", "team_id": "T1", "chat_type": "group"}, "state": {"_session_store": true, "extra": {}}, "io": {"thread_session_source": "source-A", "source_session_key": "session-A"}}}
+{"func": "_build_thread_session_key", "in": {"args": {"channel_id": "C1", "thread_ts": "111.2", "user_id": "U1", "team_id": "T1", "chat_type": "group"}, "state": {"_session_store": true, "extra": {}}, "io": {"thread_session_source": "source-B", "source_session_key": "session-B"}}}
+{"func": "_build_thread_session_key", "in": {"args": {"channel_id": "C1", "thread_ts": "111.2", "user_id": "U1", "team_id": "T1", "chat_type": "group"}, "state": {"_session_store": true, "extra": {}}, "io": {"thread_session_source": 123, "source_session_key": 456}}}
+{"func": "_build_thread_session_key", "in": {"args": {"channel_id": "C1", "thread_ts": "111.2", "user_id": "U1", "team_id": "T1", "chat_type": "group"}, "state": {"_session_store": true, "extra": {}}, "io": {"thread_session_source": null, "source_session_key": null}}}
+{"func": "_build_thread_session_key", "in": {"args": {"channel_id": "C1", "thread_ts": "111.2", "user_id": "U1"}, "state": {"_session_store": false, "extra": {}}}}
+{"func": "_build_thread_session_key", "in": {"args": {"channel_id": "C1", "thread_ts": "111.2", "user_id": "U1"}, "state": {"_session_store": true, "extra": {}}, "io": {"thread_session_source": {"__script__": true, "raise": {"type": "RuntimeError", "message": "bad source"}}}}}
+{"func": "_build_thread_session_key", "in": {"args": {"channel_id": "C1", "thread_ts": "111.2", "user_id": "U1"}, "state": {"_session_store": true, "extra": {}}, "io": {"thread_session_source": "s", "source_session_key": {"__script__": true, "raise": {"type": "SystemExit", "message": "base"}}}}, "expect_raise": "SystemExit"}
+{"func": "_warn_if_inchannel_without_flat_reply", "in": {"args": {"team_name": "Acme"}, "state": {"extra": {"reply_in_thread": true}}, "io": {"cron_continuable_surface": "in_channel", "logger.warning": null}}}
+{"func": "_warn_if_inchannel_without_flat_reply", "in": {"args": {"team_name": "Beta"}, "state": {"extra": {"reply_in_thread": false}}, "io": {"cron_continuable_surface": "in_channel", "logger.warning": null}}}
+{"func": "_warn_if_inchannel_without_flat_reply", "in": {"args": {"team_name": "Gamma"}, "state": {"extra": {}}, "io": {"cron_continuable_surface": "threaded", "logger.warning": null}}}
+{"func": "_warn_if_inchannel_without_flat_reply", "in": {"args": {"team_name": "Delta"}, "state": {"extra": {}}, "io": {"cron_continuable_surface": "in_channel", "logger.warning": null}}}
+{"func": "_warn_if_inchannel_without_flat_reply", "in": {"args": {"team_name": "Eps"}, "state": {"extra": {}}, "io": {"cron_continuable_surface": {"__script__": true, "raise": {"type": "ValueError", "message": "surface"}}}}}
+{"func": "_warn_if_inchannel_without_flat_reply", "in": {"args": {"team_name": "Zeta"}, "state": {"extra": {"reply_in_thread": true}}, "io": {"cron_continuable_surface": "in_channel", "logger.warning": {"__script__": true, "raise": {"type": "SystemExit", "message": "base"}}}}, "expect_raise": "SystemExit"}
+{"func": "_warn_if_inchannel_without_flat_reply", "in": {"args": {"team_name": "Eta"}, "state": {"extra": {}}, "io": {}}}
+{"func": "_esc", "in": {"args": {"text": "plain"}, "state": {"extra": {}}}}
+{"func": "_esc", "in": {"args": {"text": "a&b"}, "state": {"extra": {}}}}
+{"func": "_esc", "in": {"args": {"text": "<tag>"}, "state": {"extra": {}}}}
+{"func": "_esc", "in": {"args": {"text": "a&b<c>d"}, "state": {"extra": {}}}}
+{"func": "_esc", "in": {"args": {"text": "x>y&z<w"}, "state": {"extra": {}}}}
+{"func": "_esc", "in": {"args": {"text": ""}, "state": {"extra": {}}}}
+{"func": "_unseen", "in": {"args": {"piece": "ping", "base": "hello world"}, "state": {"extras": ["alpha", "beta"], "extra": {}}}}
+{"func": "_unseen", "in": {"args": {"piece": "ping", "base": "ping here"}, "state": {"extras": ["alpha"], "extra": {}}}}
+{"func": "_unseen", "in": {"args": {"piece": "x", "base": "abc"}, "state": {"extras": ["axb", "yyy"], "extra": {}}}}
+{"func": "_unseen", "in": {"args": {"piece": "x", "base": "abc"}, "state": {"extras": [], "extra": {}}}}
+{"func": "_unseen", "in": {"args": {"piece": "key", "base": "value"}, "state": {"extra": {}}}}
+{"func": "_unseen", "in": {"args": {"piece": "ab", "base": "xxabxx", "": ""}, "state": {"extras": ["zz"], "extra": {}}}}
+{"func": "_append_line", "in": {"args": {"text": "hello"}, "state": {"parts": [], "extra": {}}}}
+{"func": "_append_line", "in": {"args": {"text": "  spaced  "}, "state": {"parts": [], "extra": {}}}}
+{"func": "_append_line", "in": {"args": {"text": "quoted", "quote_depth": 2}, "state": {"parts": ["first"], "extra": {}}}}
+{"func": "_append_line", "in": {"args": {"text": "bulleted", "bullet": "- "}, "state": {"parts": [], "extra": {}}}}
+{"func": "_append_line", "in": {"args": {"text": "both", "quote_depth": 1, "bullet": "* "}, "state": {"parts": [], "extra": {}}}}
+{"func": "_append_line", "in": {"args": {"text": "   "}, "state": {"parts": [], "extra": {}}}}
+{"func": "_append_line", "in": {"args": {"text": "", "quote_depth": 3}, "state": {"parts": [], "extra": {}}}}
