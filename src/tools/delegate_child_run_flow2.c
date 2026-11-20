@@ -1237,9 +1237,13 @@ static json_t *dcr2_child_last_event_age(dcr2_io_t *io, const json_t *in, json_t
         json_free(dict);
         return json_null();
     }
-    json_t *ts = dcr2_get(dict, "last_activity_ts");
+    /* Snapshot BEFORE freeing dict: dcr2_get borrows the node owned by dict,
+     * so using ts after json_free(dict) is a UAF (heap-layout-dependent wrong
+     * ret: 0 / null instead of the real age). */
+    json_t *ts_borrowed = dcr2_get(dict, "last_activity_ts");
+    json_t *ts = ts_borrowed ? json_copy(ts_borrowed) : NULL;
     json_free(dict);
-    if (dcr2_is_null(ts)) return json_null();  /* ts is None */
+    if (dcr2_is_null(ts)) { json_free(ts); return json_null(); }  /* ts is None */
     /* round(max(0.0, time.time() - float(ts)), 2): the LEFT operand time.time()
      * evaluates BEFORE float(ts) (binary operands left-to-right). */
     json_t *now = dcr2_call(io, "time.time", dcr2_args());
@@ -2274,10 +2278,14 @@ static json_t *dcr2_build_child_goal_message(dcr2_io_t *io, const json_t *in, js
     /* try: ... except Exception: logger.warning(...exc_info=True); return goal */
     json_t *body_raise = NULL;
     json_t *result = NULL;
-    /* data_urls / urls / paths classification (s.startswith raises on non-str). */
+    /* data_urls / urls / paths classification (s.startswith raises on non-str).
+     * cfg is initialised HERE (before the first `goto except`): the `except:`
+     * cleanup frees it, and two early gotos below jump over its old in-body
+     * initialiser, leaving it indeterminate -> STATUS_HEAP_CORRUPTION. */
     json_t *data_urls = json_array();
     json_t *urls = json_array();
     json_t *paths = json_array();
+    json_t *cfg = json_null();
     if (!dcr2_is_arr(images)) {
         char *m = dcr2_xfmt("'%s' object is not iterable", dcr2_typename(images));
         body_raise = dcr2_mkraise("TypeError", m ? m : "not iterable"); free(m);
@@ -2297,8 +2305,8 @@ static json_t *dcr2_build_child_goal_message(dcr2_io_t *io, const json_t *in, js
         }
         if (!is_url) json_append(paths, json_copy(s));
     }
-    /* cfg = None; with _quiet(None): cfg = load_config_readonly() */
-    json_t *cfg = json_null();
+    /* cfg = None; with _quiet(None): cfg = load_config_readonly() -- cfg is
+     * already initialised at the top of the function for the early-goto paths. */
     {
         json_t *qf = dcr2_quiet_factory(io, NULL, NULL, 0);
         if (qf) { body_raise = qf; goto except; }

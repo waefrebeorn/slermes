@@ -614,7 +614,14 @@ static json_t *aun2_fmt_usd_core(const json_t *d)
         free(m);
         return r;
     }
-    char *s = aun2_fmt_usd_str(val);
+    char *s;
+    /* The harness's JSON echo serialises the double -0.0 as `-0`, which the
+     * oracle reads back as Python int 0 and formats "$0.00". Normalise exact
+     * negative zero to +0.0 so the port agrees with that echoed value (same
+     * convention as fallback_cooldown_flow's fc_pystr). Non-zero negatives are
+     * untouched: f"${-0.001:,.2f}" -> "$-0.00". */
+    if (val == 0.0) val = 0.0;
+    s = aun2_fmt_usd_str(val);
     json_t *r = json_string(s ? s : "");
     free(s);
     return r;
