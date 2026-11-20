@@ -1,0 +1,97 @@
+{"func": "_lerp", "in": {"a": 0.0, "b": 1.0, "t": 0.5}}
+{"func": "_lerp", "in": {"a": 2.0, "b": 4.0, "t": 0.25}}
+{"func": "_lerp", "in": {"a": 10.0, "b": 0.0, "t": 0.3}}
+{"func": "_lerp", "in": {"a": -1.0, "b": 1.0, "t": 1.0}}
+{"func": "_lerp", "in": {"a": 5.0, "b": 5.0, "t": 0.9}}
+{"func": "_lerp", "in": {"a": 0.0, "b": 3.0, "t": 0.1}}
+{"func": "_is_memory", "in": {"node": {"id": "a", "kind": "memory"}}}
+{"func": "_is_memory", "in": {"node": {"id": "a", "kind": "skill"}}}
+{"func": "_is_memory", "in": {"node": {"id": "a"}}}
+{"func": "_is_memory", "in": {"node": {"id": "a", "kind": "MEMORY"}}}
+{"func": "_is_memory", "in": {"node": {"id": "a", "kind": "memory", "label": "x"}}}
+{"func": "_is_memory", "in": {"node": {}}}
+{"func": "_node_id", "in": {"node": {"id": "abc", "kind": "skill"}}}
+{"func": "_node_id", "in": {"node": {"id": ""}}}
+{"func": "_node_id", "in": {"node": {}}}
+{"func": "_node_id", "in": {"node": {"id": null}}}
+{"func": "_node_id", "in": {"node": {"id": "memory:memory:0:fp", "kind": "memory"}}}
+{"func": "_node_id", "in": {"node": {"id": "x y", "kind": "skill"}}}
+{"func": "_utc", "in": {"ts": 0.0}}
+{"func": "_utc", "in": {"ts": 1700000000.0}}
+{"func": "_utc", "in": {"ts": 1000000000.0}}
+{"func": "_utc", "in": {"ts": 86400.0}}
+{"func": "_utc", "in": {"ts": -1.0}}
+{"func": "_utc", "in": {"ts": 1609459200.0}}
+{"func": "_utc", "in": {"ts": 1700000000.75}}
+{"func": "_lead_in", "in": {"ratio": 0.0}}
+{"func": "_lead_in", "in": {"ratio": 0.5}}
+{"func": "_lead_in", "in": {"ratio": 1.0}}
+{"func": "_lead_in", "in": {"ratio": 0.25}}
+{"func": "_lead_in", "in": {"ratio": 0.75}}
+{"func": "_lead_in", "in": {"ratio": 2.0}}
+{"func": "_visible_count", "in": {"reveal": 0.0, "n": 10}}
+{"func": "_visible_count", "in": {"reveal": 1.0, "n": 10}}
+{"func": "_visible_count", "in": {"reveal": 0.5, "n": 5}}
+{"func": "_visible_count", "in": {"reveal": 0.33, "n": 10}}
+{"func": "_visible_count", "in": {"reveal": 1.5, "n": 4}}
+{"func": "_visible_count", "in": {"reveal": -0.2, "n": 7}}
+{"func": "_node_raw_label", "in": {"node": {"id": "id1", "kind": "skill", "label": "  Hello  "}}}
+{"func": "_node_raw_label", "in": {"node": {"id": "id1", "kind": "skill"}}}
+{"func": "_node_raw_label", "in": {"node": {"id": "fallback"}}}
+{"func": "_node_raw_label", "in": {"node": {}}}
+{"func": "_node_raw_label", "in": {"node": {"id": "id1", "kind": "skill", "label": ""}}}
+{"func": "_node_raw_label", "in": {"node": {"id": "id1", "kind": "skill", "label": "\t spaced \n"}}}
+{"func": "_node_ts", "in": {"node": {"id": "a", "kind": "skill", "timestamp": 1700000000.5}}}
+{"func": "_node_ts", "in": {"node": {"id": "a", "kind": "skill", "timestamp": "1700000000.25"}}}
+{"func": "_node_ts", "in": {"node": {"id": "a", "kind": "skill"}}}
+{"func": "_node_ts", "in": {"node": {"id": "a", "kind": "skill"}}}
+{"func": "_node_ts", "in": {"node": {"id": "a", "kind": "skill", "timestamp": "not-a-number"}}}
+{"func": "_node_ts", "in": {"node": {"id": "a", "kind": "skill", "timestamp": true}}}
+{"func": "_node_ts", "in": {"node": {"id": "a", "kind": "skill", "timestamp": "  12.5  "}}}
+{"func": "_node_card", "in": {"node": {"id": "a", "kind": "skill", "category": "coding"}, "io": {"format_date": "14 Nov 2023"}}}
+{"func": "_node_card", "in": {"node": {"id": "m", "kind": "memory"}, "io": {"format_date": "14 Nov 2023"}}}
+{"func": "_node_card", "in": {"node": {"id": "p", "kind": "memory", "memorySource": "profile"}, "io": {"format_date": "14 Nov 2023"}}}
+{"func": "_node_card", "in": {"node": {"id": "a", "kind": "skill", "category": "cat", "useCount": 5, "pinned": true}, "io": {"format_date": "14 Nov 2023"}}}
+{"func": "_node_card", "in": {"node": {"id": "a", "kind": "skill", "label": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}, "io": {"format_date": "14 Nov 2023"}}}
+{"func": "_node_card", "in": {"node": {"id": "a", "kind": "skill"}, "io": {"format_date": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad date"}}}}}
+{"func": "_node_card", "in": {"node": {"id": "a", "kind": "skill"}, "io": {"format_date": {"__script__": true, "ret": null, "raise": {"type": "KeyboardInterrupt", "message": "halt"}}}}}
+{"func": "_skill_category_counts", "in": {"nodes": [{"id": "a", "kind": "skill", "category": "coding"}, {"id": "b", "kind": "skill", "category": "coding"}, {"id": "c", "kind": "skill", "category": "music"}]}}
+{"func": "_skill_category_counts", "in": {"nodes": [{"id": "a", "kind": "skill"}, {"id": "b", "kind": "skill"}]}}
+{"func": "_skill_category_counts", "in": {"nodes": [{"id": "a", "kind": "memory", "category": "coding"}, {"id": "b", "kind": "skill", "category": "music"}]}}
+{"func": "_skill_category_counts", "in": {"nodes": []}}
+{"func": "_skill_category_counts", "in": {"nodes": [{"id": "a", "kind": "skill", "category": "c1"}, {"id": "b", "kind": "skill", "category": "c2"}, {"id": "c", "kind": "skill", "category": "c3"}]}}
+{"func": "_skill_category_counts", "in": {"nodes": [{"id": "a", "kind": "skill", "category": ""}, {"id": "b", "kind": "skill", "category": "x"}]}}
+{"func": "category", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "skill", "category": "coding"}, {"id": "b", "kind": "skill", "category": "coding"}, {"id": "c", "kind": "skill", "category": "music"}]}}}
+{"func": "category", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "skill", "category": "music"}, {"id": "b", "kind": "skill", "category": "coding"}, {"id": "c", "kind": "skill", "category": "music"}]}}}
+{"func": "category", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "memory", "category": "coding"}, {"id": "b", "kind": "skill", "category": "music"}]}}}
+{"func": "category", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "memory"}]}}}
+{"func": "category", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": []}}}
+{"func": "category", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "skill"}, {"id": "b", "kind": "skill", "category": "music"}]}}}
+{"func": "_period", "in": {"ts": 1700000000.0, "granularity": "day"}}
+{"func": "_period", "in": {"ts": 1700000000.0, "granularity": "month"}}
+{"func": "_period", "in": {"ts": 1700000000.0, "granularity": "year"}}
+{"func": "_period", "in": {"ts": 0.0, "granularity": "day"}}
+{"func": "_period", "in": {"ts": 1609459200.0, "granularity": "month"}}
+{"func": "_period", "in": {"ts": 1700000000.0, "granularity": "week"}}
+{"func": "_fill_even_bins", "in": {"buckets": [{"label": "#1", "ts": 0, "rec": 1.0, "nodes": []}, {"label": "#2", "ts": 1, "rec": 1.0, "nodes": []}, {"label": "#3", "ts": 2, "rec": 1.0, "nodes": []}], "nodes": [{"id": "a", "kind": "skill"}, {"id": "b", "kind": "skill"}, {"id": "c", "kind": "skill"}, {"id": "d", "kind": "skill"}], "rec": {"rec": {"a": 0.0, "b": 0.5, "c": 0.9, "d": 1.0}, "timed": true}}}
+{"func": "_fill_even_bins", "in": {"buckets": [{"label": "#1", "ts": 0, "rec": 1.0, "nodes": []}, {"label": "#2", "ts": 1, "rec": 1.0, "nodes": []}], "nodes": [{"id": "a", "kind": "skill"}, {"id": "b", "kind": "skill"}], "rec": {"rec": {"a": 0.0, "b": 1.0}, "timed": true}}}
+{"func": "_fill_even_bins", "in": {"buckets": [{"label": "#1", "ts": 0, "rec": 1.0, "nodes": []}], "nodes": [{"id": "a", "kind": "skill"}, {"id": "b", "kind": "skill"}], "rec": {"rec": {}, "timed": false}}}
+{"func": "_fill_even_bins", "in": {"buckets": [{"label": "#1", "ts": 0, "rec": 1.0, "nodes": []}, {"label": "#2", "ts": 1, "rec": 1.0, "nodes": []}, {"label": "#3", "ts": 2, "rec": 1.0, "nodes": []}, {"label": "#4", "ts": 3, "rec": 1.0, "nodes": []}], "nodes": [{"id": "a", "kind": "skill"}, {"id": "b", "kind": "skill"}, {"id": "c", "kind": "skill"}], "rec": {"rec": {"a": 0.1, "b": 0.4, "c": 0.6}, "timed": true}}}
+{"func": "_fill_even_bins", "in": {"buckets": [{"label": "#1", "ts": 0, "rec": 1.0, "nodes": [{"id": "seed", "kind": "skill"}]}, {"label": "#2", "ts": 1, "rec": 1.0, "nodes": []}], "nodes": [{"id": "x", "kind": "skill"}], "rec": {"rec": {"x": 0.99}, "timed": true}}}
+{"func": "node_row", "in": {"node": {"id": "a", "kind": "skill", "label": "Alpha", "category": "coding"}, "memory_lookup": {"a": {"body": "alpha body"}, "m": {"body": "memory text"}}, "io": {"format_date": "14 Nov 2023"}}}
+{"func": "node_row", "in": {"node": {"id": "m", "kind": "memory", "label": "Memo"}, "memory_lookup": {"a": {"body": "alpha body"}, "m": {"body": "memory text"}}, "io": {"format_date": "14 Nov 2023"}}}
+{"func": "node_row", "in": {"node": {"id": "zz", "kind": "skill", "label": "No memo"}, "memory_lookup": {"a": {"body": "alpha body"}, "m": {"body": "memory text"}}, "io": {"format_date": "14 Nov 2023"}}}
+{"func": "node_row", "in": {"node": {"id": "a", "kind": "skill", "label": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}, "memory_lookup": {"a": {"body": "alpha body"}, "m": {"body": "memory text"}}, "io": {"format_date": "14 Nov 2023"}}}
+{"func": "node_row", "in": {"node": {"id": "a", "kind": "skill"}, "memory_lookup": {}, "io": {"format_date": "14 Nov 2023"}}}
+{"func": "node_row", "in": {"node": {"id": "a", "kind": "skill"}, "memory_lookup": {"a": {"body": "alpha body"}, "m": {"body": "memory text"}}, "io": {"format_date": {"__script__": true, "ret": null, "raise": {"type": "ValueError", "message": "bad date"}}}}}
+{"func": "bucket_row", "in": {"idx": 0, "bucket": {"label": "14 Nov", "ts": 1700000000.0, "rec": 1.0, "nodes": [{"id": "n1", "kind": "skill", "category": "coding", "timestamp": 50.0}, {"id": "n2", "kind": "skill", "category": "music", "timestamp": 200.0}]}, "cmap": {"coding": "#FF0000", "music": "#00FF00"}, "memory_lookup": {"a": {"body": "alpha body"}, "m": {"body": "memory text"}}, "io": {"format_date": ["14 Nov 2023", "1 Jan 2020", "2 Feb 2021"]}}}
+{"func": "bucket_row", "in": {"idx": 2, "bucket": {"label": "15 Nov", "ts": 1700000008.0, "rec": 1.0, "nodes": [{"id": "m", "kind": "memory", "timestamp": 100.0}]}, "cmap": {}, "memory_lookup": {"a": {"body": "alpha body"}, "m": {"body": "memory text"}}, "io": {"format_date": ["14 Nov 2023", "14 Nov 2023"]}}}
+{"func": "bucket_row", "in": {"idx": 1, "bucket": {"label": "empty", "ts": 1700000000.0, "rec": 1.0, "nodes": []}, "cmap": {"coding": "#FF0000"}, "memory_lookup": {"a": {"body": "alpha body"}, "m": {"body": "memory text"}}, "io": {"format_date": ["14 Nov 2023"]}}}
+{"func": "bucket_row", "in": {"idx": 0, "bucket": {"label": "14 Nov", "ts": 1700000000.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "skill", "category": "coding", "timestamp": 100.0}]}, "cmap": {"coding": "#FF0000"}, "memory_lookup": {}, "io": {"format_date": ["14 Nov 2023", "14 Nov 2023"]}}}
+{"func": "bucket_row", "in": {"idx": 3, "bucket": {"label": "16 Nov", "ts": 1700000016.0, "rec": 1.0, "nodes": [{"id": "x", "kind": "skill", "category": "z", "timestamp": 10.0}, {"id": "y", "kind": "skill", "category": "a", "timestamp": 20.0}]}, "cmap": {"a": "#ABCDEF"}, "memory_lookup": {"a": {"body": "alpha body"}, "m": {"body": "memory text"}}, "io": {"format_date": ["14 Nov 2023", "14 Nov 2023", "14 Nov 2023"]}}}
+{"func": "_bar_lengths", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "skill"}, {"id": "b", "kind": "skill"}, {"id": "c", "kind": "skill"}]}, "max_total": 6, "bar_w": 20}}
+{"func": "_bar_lengths", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": []}, "max_total": 4, "bar_w": 12}}
+{"func": "_bar_lengths", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "memory"}, {"id": "b", "kind": "memory"}]}, "max_total": 4, "bar_w": 10}}
+{"func": "_bar_lengths", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "skill"}, {"id": "b", "kind": "skill"}, {"id": "c", "kind": "skill"}]}, "max_total": 6, "bar_w": 7}}
+{"func": "_bar_lengths", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "skill"}, {"id": "b", "kind": "memory"}, {"id": "c", "kind": "memory"}]}, "max_total": 5, "bar_w": 9}}
+{"func": "_bar_lengths", "in": {"bucket": {"label": "#1", "ts": 100.0, "rec": 1.0, "nodes": [{"id": "a", "kind": "skill"}]}, "max_total": 1, "bar_w": 14}}

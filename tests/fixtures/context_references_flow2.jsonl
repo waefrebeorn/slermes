@@ -1,0 +1,87 @@
+{"func": "format_reference_value", "in": {"value": "plain", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "simple_path.py", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "with space", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "a(b)", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "x[y]", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "a{b}", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "a<b>", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "say \"hi\"", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "it's", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "`tick`", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "`both'\"`", "seams": {}}}
+{"func": "format_reference_value", "in": {"value": "", "seams": {}}}
+{"func": "strip_trailing_punctuation", "in": {"value": "hello,", "seams": {}}}
+{"func": "strip_trailing_punctuation", "in": {"value": "world.", "seams": {}}}
+{"func": "strip_trailing_punctuation", "in": {"value": "abc?!;", "seams": {}}}
+{"func": "strip_trailing_punctuation", "in": {"value": "(see x)", "seams": {}}}
+{"func": "strip_trailing_punctuation", "in": {"value": "(see x))", "seams": {}}}
+{"func": "strip_trailing_punctuation", "in": {"value": "[a]", "seams": {}}}
+{"func": "strip_trailing_punctuation", "in": {"value": "text}", "seams": {}}}
+{"func": "strip_trailing_punctuation", "in": {"value": "no punctuation", "seams": {}}}
+{"func": "strip_trailing_punctuation", "in": {"value": "a)!", "seams": {}}}
+{"func": "strip_trailing_punctuation", "in": {"value": "((x))", "seams": {}}}
+{"func": "strip_reference_wrappers", "in": {"value": "`quoted`", "seams": {}}}
+{"func": "strip_reference_wrappers", "in": {"value": "\"dq\"", "seams": {}}}
+{"func": "strip_reference_wrappers", "in": {"value": "'sq'", "seams": {}}}
+{"func": "strip_reference_wrappers", "in": {"value": "bare", "seams": {}}}
+{"func": "strip_reference_wrappers", "in": {"value": "``", "seams": {}}}
+{"func": "strip_reference_wrappers", "in": {"value": "a`", "seams": {}}}
+{"func": "strip_reference_wrappers", "in": {"value": "`a", "seams": {}}}
+{"func": "strip_reference_wrappers", "in": {"value": "", "seams": {}}}
+{"func": "strip_reference_wrappers", "in": {"value": "x'y'", "seams": {}}}
+{"func": "parse_file_reference_value", "in": {"value": "file.py", "seams": {}}}
+{"func": "parse_file_reference_value", "in": {"value": "`file.py`", "seams": {}}}
+{"func": "parse_file_reference_value", "in": {"value": "\"my file.py\"", "seams": {}}}
+{"func": "parse_file_reference_value", "in": {"value": "file.py:10", "seams": {}}}
+{"func": "parse_file_reference_value", "in": {"value": "file.py:10-20", "seams": {}}}
+{"func": "parse_file_reference_value", "in": {"value": "`a b.py`:5-9", "seams": {}}}
+{"func": "parse_file_reference_value", "in": {"value": "dir/file.py:3", "seams": {}}}
+{"func": "parse_file_reference_value", "in": {"value": "", "seams": {}}}
+{"func": "parse_file_reference_value", "in": {"value": "plain", "seams": {}}}
+{"func": "parse_file_reference_value", "in": {"value": "'quoted.md':7", "seams": {}}}
+{"func": "get_providers", "in": {"providers": {}, "seams": {}}}
+{"func": "get_providers", "in": {"providers": {"issue": {"prefix": "issue"}}, "seams": {}}}
+{"func": "get_providers", "in": {"providers": {"a": {"x": 1}, "b": {"y": 2}}, "seams": {}}}
+{"func": "get_providers", "in": {"providers": {"nil": null}, "seams": {}}}
+{"func": "get_providers", "in": {"seams": {}}}
+{"func": "is_binary_file", "in": {"name": "a.png", "path": "/w/a.png", "seams": {"guess_type": "image/png", "sniff": [137, 80, 78, 71]}}}
+{"func": "is_binary_file", "in": {"name": "a.png", "path": "/w/a.png", "seams": {"guess_type": "image/png", "sniff": [1, 0, 3]}}}
+{"func": "is_binary_file", "in": {"name": "a.py", "path": "/w/a.py", "seams": {"guess_type": "text/x-python", "sniff": [0, 10]}}}
+{"func": "is_binary_file", "in": {"name": "weird.pyc", "path": "/w/weird.pyc", "seams": {"guess_type": "application/octet-stream", "sniff": [1, 2, 3]}}}
+{"func": "is_binary_file", "in": {"name": "a.bin", "path": "/w/a.bin", "seams": {"guess_type": {"__raise__": "SystemExit", "msg": "bye"}, "sniff": [1, 2]}}}
+{"func": "is_binary_file", "in": {"name": "a.bin", "path": "/w/a.bin", "seams": {}}}
+{"func": "agent_visible_path", "in": {"path": "/h/x", "seams": {}}}
+{"func": "agent_visible_path", "in": {"path": "/h/x", "seams": {"ensure_bridged": null, "to_cache": "/mnt/cache/x"}}}
+{"func": "agent_visible_path", "in": {"path": "/h/x", "seams": {"ensure_bridged": null, "to_cache": {"__raise__": "RuntimeError", "msg": "no backend"}}}}
+{"func": "agent_visible_path", "in": {"path": "/h/x", "seams": {"ensure_bridged": null, "to_cache": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "agent_visible_path", "in": {"path": "/h/x", "seams": {"ensure_bridged": null, "to_cache": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "agent_visible_path", "in": {"path": "/h/x", "seams": {"ensure_bridged": null, "to_cache": {"__raise__": "KeyboardInterrupt", "msg": "stop"}}}}
+{"func": "agent_visible_path", "in": {"path": "/h/x", "seams": {"ensure_bridged": null, "to_cache": {"__raise__": "GeneratorExit", "msg": "g"}}}}
+{"func": "binary_reference_block", "in": {"raw": "@file:img.png", "name": "img.png", "seams": {"guess_type": "image/png", "on_disk": "BLOCK png"}}}
+{"func": "binary_reference_block", "in": {"raw": "@file:x.unknown", "name": "x.unknown", "seams": {"guess_type": null, "on_disk": "BLOCK octet"}}}
+{"func": "binary_reference_block", "in": {"raw": "@file:a.bin", "name": "a.bin", "seams": {"guess_type": "application/octet-stream", "on_disk": {"__raise__": "ValueError", "msg": "stat fail"}}}}
+{"func": "binary_reference_block", "in": {"raw": "@file:a.bin", "name": "a.bin", "seams": {"guess_type": {"__raise__": "SystemExit", "msg": "bye"}, "on_disk": "never"}}}
+{"func": "binary_reference_block", "in": {"raw": "@file:a.bin", "name": "a.bin", "seams": {}}}
+{"func": "file_metadata", "in": {"path": "/w/f.txt", "seams": {"stat": {"size": 42}, "cm_enter": null, "is_binary": false, "read": ["hello\n", "world\n"]}}}
+{"func": "file_metadata", "in": {"path": "/w/f.txt", "seams": {"stat": {"size": 42}, "cm_enter": null, "is_binary": false, "read": "one line"}}}
+{"func": "file_metadata", "in": {"path": "/w/f.txt", "seams": {"stat": {"size": 42}, "cm_enter": null, "is_binary": true, "read": ""}}}
+{"func": "file_metadata", "in": {"path": "/w/big.txt", "seams": {"stat": {"size": 5000000}, "cm_enter": null, "is_binary": false, "read": ""}}}
+{"func": "file_metadata", "in": {"path": "/w/no.txt", "seams": {"stat": {"__raise__": "FileNotFoundError", "msg": "gone"}}}}
+{"func": "file_metadata", "in": {"path": "/w/no.txt", "seams": {"stat": {"__raise__": "PermissionError", "msg": "denied"}}}}
+{"func": "file_metadata", "in": {"path": "/w/no.txt", "seams": {"stat": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "file_metadata", "in": {"path": "/w/live.db", "seams": {"stat": {"size": 7}, "cm_enter": {"__raise__": "LiveConnectionError", "msg": "live"}}}}
+{"func": "file_metadata", "in": {"path": "/w/x.txt", "seams": {"stat": {"size": 7}, "cm_enter": {"__raise__": "RuntimeError", "msg": "unexpected"}}}}
+{"func": "file_metadata", "in": {"path": "/w/x.txt", "seams": {"stat": {"size": 7}, "cm_enter": null, "is_binary": {"__raise__": "ConnectionResetError", "msg": "reset"}}}}
+{"func": "file_metadata", "in": {"path": "/w/x.txt", "seams": {"stat": {"size": 7}, "cm_enter": null, "is_binary": {"__raise__": "UnicodeDecodeError", "msg": "bad"}}}}
+{"func": "file_metadata", "in": {"path": "/w/x.txt", "seams": {"stat": {"size": 7}, "cm_enter": null, "is_binary": false, "read": {"__raise__": "NotADirectoryError", "msg": "nope"}}}}
+{"func": "file_metadata", "in": {"path": "/w/x.txt", "seams": {}}}
+{"func": "register_provider", "in": {"prefix": "issue", "is_provider": true, "owner": "p1", "seams": {}, "state": {"providers": {}, "owners": {}}}}
+{"func": "register_provider", "in": {"prefix": "  ISSUE  ", "is_provider": true, "owner": "p1", "seams": {}, "state": {"providers": {}, "owners": {}}}}
+{"func": "register_provider", "in": {"prefix": "diff", "is_provider": true, "owner": "p1", "seams": {}, "state": {"providers": {}, "owners": {}}}}
+{"func": "register_provider", "in": {"prefix": "", "is_provider": true, "owner": "p1", "seams": {}, "state": {"providers": {}, "owners": {}}}}
+{"func": "register_provider", "in": {"prefix": "issue", "is_provider": false, "owner": "p1", "seams": {}, "state": {"providers": {}, "owners": {}}}}
+{"func": "register_provider", "in": {"prefix": "issue", "is_provider": true, "owner": "p1", "seams": {}, "state": {"providers": {"issue": {"id": 1}}, "owners": {"issue": "p1"}}}}
+{"func": "register_provider", "in": {"prefix": "issue", "is_provider": true, "owner": "p2", "reclaim": true, "seams": {}, "state": {"providers": {"issue": {"id": 1}}, "owners": {"issue": "p1"}}}}
+{"func": "register_provider", "in": {"prefix": "issue", "is_provider": true, "owner": "p1", "reclaim": true, "seams": {}, "state": {"providers": {"issue": {"id": 1}}, "owners": {"issue": "p1"}}}}
+{"func": "register_provider", "in": {"prefix": "issue", "is_provider": true, "owner": "p1", "reclaim": true, "publish": true, "seams": {}, "state": {"providers": {"issue": {"id": 1}}, "owners": {"issue": "p1"}}}}
+{"func": "register_provider", "in": {"prefix": "issue", "is_provider": true, "owner": "p1", "reclaim": true, "publish": true, "publish_changed": true, "seams": {}, "state": {"providers": {"issue": {"id": 1}}, "owners": {"issue": "p1"}}}}
