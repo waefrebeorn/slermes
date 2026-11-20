@@ -410,15 +410,20 @@ static json_t *tmv_voice_emit(tmv_ctx_t *ctx, const json_t *args) {
         if (tmv_is_raise(token)) return token;
     }
     r = tmv_emit_call(ctx, event, sid, payload);
+    /* Python: _emit is the try body, reset_transport is the finally.
+     * A raise in the finally overrides a raise from _emit; otherwise an
+     * _emit raise propagates (the call is in statement position only for
+     * the success path, which returns None). */
     if (token && token->type != JSON_NULL) {
         json_t *a = tmv_args0();
         tmv_aset(a, "token", token);
         json_t *rr = tmv_call(ctx, "reset_transport", a);
         if (tmv_is_raise(rr)) { json_free(token); json_free(r); return rr; }
+        json_free(rr);
     }
     json_free(token);
+    if (tmv_is_raise(r)) return r;  /* _emit raise propagates through finally */
     json_free(r);
-    /* statement-position: emits nothing, resets nothing, returns None */
     return json_null();
 }
 
@@ -764,7 +769,8 @@ static json_t *tmv_wake_owner_snapshot(tmv_ctx_t *ctx, const json_t *args) {
     json_t *arr = json_array();
     json_t *owner = tmv_state_get(ctx, "wake_owner_transport");
     json_append(arr, owner ? json_copy(owner) : json_null());
-    json_append(arr, json_string(tmv_state_str(ctx, "wake_owner_surface", "")));
+    const json_t *surf = tmv_state_get(ctx, "wake_owner_surface");
+    json_append(arr, surf ? json_copy(surf) : json_null());
     return arr;
 }
 
