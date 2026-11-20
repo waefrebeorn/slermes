@@ -96,12 +96,12 @@
 {"func": "action_idle_tasks", "in": {"args": {"name": "x", "pause": true, "resume": false}, "seams": {"cmd_idle_tasks": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
 {"func": "action_idle_tasks", "in": {"args": {"name": "x", "pause": false, "resume": true}, "seams": {"cmd_idle_tasks": {"r": 1}}, "env": {}}}
 {"func": "action_idle_tasks", "in": {"args": {"name": "x", "pause": true, "resume": false}, "seams": {}, "env": {}}}
-{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": {}, "seams": {"fail": {"__raise__": "SystemExit", "msg": "1"}}}}
-{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "other", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": {}, "seams": {}}}
-{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": {}, "seams": {"fail": {"__raise__": "RuntimeError", "msg": "boom"}}}}
-{"func": "refuse_legacy_relay", "in": {"console": null, "plugin": "observability/nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": {}, "seams": {"fail": {"__raise__": "SystemExit", "msg": "1"}}}}
-{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": [], "env": {}, "seams": {}}}
-{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": {}, "seams": {}}}
+{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": "HERMES_NEMO_RELAY_PLUGINS_TOML", "seams": {"fail": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "other", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": "HERMES_NEMO_RELAY_PLUGINS_TOML", "seams": {}}}
+{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": "HERMES_NEMO_RELAY_PLUGINS_TOML", "seams": {"fail": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "refuse_legacy_relay", "in": {"console": null, "plugin": "observability/nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": "HERMES_NEMO_RELAY_PLUGINS_TOML", "seams": {"fail": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": [], "env": "HERMES_NEMO_RELAY_PLUGINS_TOML", "seams": {}}}
+{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": "HERMES_NEMO_RELAY_PLUGINS_TOML", "seams": {}}}
 {"func": "first_toolset", "in": {"tool_names": ["t1", "t2"], "seams": {"registry_get_entry": [{"toolset": "ts1"}]}, "env": {}}}
 {"func": "first_toolset", "in": {"tool_names": ["t1", "t2"], "seams": {"registry_get_entry": [null, {"toolset": "ts2"}]}, "env": {}}}
 {"func": "first_toolset", "in": {"tool_names": ["t1", "t2"], "seams": {"registry_get_entry": [{"toolset": ""}, {"toolset": "ts"}]}, "env": {}}}

@@ -607,8 +607,11 @@ static json_t *tmc2_wrapped_handler(tmc2_ctx_t *ctx, const json_t *rid,
                 return home;
             }
             const char *m = json_get_str(home, "message", "");
+            char *mo = tmc2_strdup(m ? m : "");   /* snapshot before freeing home */
             json_free(home); free(profile_cstr); json_free(session_owned);
-            return tmc2_err(ctx, rid, cfg->fail_code, m, NULL);
+            json_t *e = tmc2_err(ctx, rid, cfg->fail_code, mo, NULL);
+            free(mo);
+            return e;
         }
         /* scope = _session_profile_runtime_scope({"profile_home": str(home) if home else None}) */
         json_t *scope_arg = json_object();
@@ -627,8 +630,11 @@ static json_t *tmc2_wrapped_handler(tmc2_ctx_t *ctx, const json_t *rid,
                 return scope;
             }
             const char *m = json_get_str(scope, "message", "");
+            char *mo = tmc2_strdup(m ? m : "");   /* snapshot before freeing scope */
             json_free(scope); free(profile_cstr); json_free(session_owned);
-            return tmc2_err(ctx, rid, cfg->fail_code, m, NULL);
+            json_t *e = tmc2_err(ctx, rid, cfg->fail_code, mo, NULL);
+            free(mo);
+            return e;
         }
         json_free(scope);   /* the `with scope:` enter/exit are silent */
         free(profile_cstr);
@@ -1299,7 +1305,10 @@ handle:
         }
         if (tmc2_is_base_exc(kind)) return r;
         const char *m = json_get_str(r, "message", "");
+        char *mo = tmc2_strdup(m ? m : "");   /* snapshot before freeing r (UAF) */
         json_free(r);
-        return tmc2_err(ctx, rid, fail_code, m, NULL);
+        json_t *e = tmc2_err(ctx, rid, fail_code, mo, NULL);
+        free(mo);
+        return e;
     }
 }
