@@ -79,3 +79,22 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
   When landed: regenerate docs/dev/parity-gap-map.md totals.
 - Fleet retry run: doc_watercup7.log (was 66%); scripts/watercup_truth.py
   reports VERIFIED/MISMATCH/BROKEN vs claimed PORTED.
+
+## 2026-11-20 wave 56+ open debug state (authoritative until verdicts land)
+
+- **memory_manager_flow3** — 59 cases, 2 mismatches, both `initialize_for_agent`.
+  Debugger `sa-0-1b52292a` (deleg_1fa5e1f7). Repro (winlibs env sourced):
+  `ORACLE_REBUILD=1 timeout 400 bash tests/run_one_oracle.sh memory_manager_flow3 oracle_memory_manager_flow3.py "" "lib/libjson/json.o"`.
+  Rebuild `src/agent/memory_manager_flow3.o` before re-gating.
+- **runtime_provider_flow2** — 245 cases, 163 mismatches across ~41 defs
+  (`PoolChoice.*`, `_anthropic_*`, `_explicit_*`, `_resolve_*`, ...).
+  Classified OVER-SCOPED seam approximation, not a single-root debug.
+  Debugger `sa-1-4c2d1658`: scope DOWN to faithfully-transcribed defs,
+  remove the rest from all five deliverables + PoP tags, re-gate to 0.
+  Repro: `ORACLE_REBUILD=1 timeout 500 bash tests/run_one_oracle.sh runtime_provider_flow2 oracle_runtime_provider_flow2.py "" "lib/libjson/json.o"`.
+- Parent working set (committed): wave 56 wired 795->802, HEAD `c627784e13`.
+  Full `make parity` scan hangs in parity_truth.py (>600s); docs were
+  stamped with `gen_parity_walkway.py --from-scan live_parity_scan.json`.
+- Six code-only port agents (deleg_2848c18e) own: tui_hosted_room_service_flow,
+  executions_worker_flow, acp_gateway_server_flow, tui_server_flow3,
+  api_server_runs_flow2, feishu_adapter_flow5. Parent gates + wires on landing.
