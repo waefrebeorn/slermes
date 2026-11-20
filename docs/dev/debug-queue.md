@@ -120,3 +120,18 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
   Repro for all: rebuild the port .o, then `ORACLE_REBUILD=1 bash
   tests/run_one_oracle.sh <name> oracle_<name>.py "" "lib/libjson/json.o"`
   with winlibs env sourced. Parent re-gates before any wire.
+
+## 2026-11-20 adapter wave (deleg_b577dbff) — parent battery = 3/3 RED
+
+All three children claimed shadow 0; all three failed the real parent gate.
+None are wired. Debuggers `deleg_8589e8fd` active:
+- **telegram_adapter_flow6** — parent harness rc127 (17 fns / 116 cases).
+  Heap corruption; debugger `sa-0-f8aca04c`.
+- **discord_adapter_flow5** — parent 118 cases, 1 mismatch in
+  `_message_reference_from_ids`. Debugger `sa-1-2baa1d48`.
+- **slack_adapter_flow4** — CRITICAL: this is an existing wave-50
+  COMMITTED + WIRED port (9 fns). A code-only agent extended it in place
+  with 16 more; parent gate now rc127 (200 cases). A wired source must not
+  stay broken — debugger `sa-2-6d7a34a5` must preserve the original 9
+  green functions and honestly scope down the additions, or the parent
+  restores the file from HEAD.
