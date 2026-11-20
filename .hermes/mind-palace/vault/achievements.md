@@ -1,19 +1,17 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
+| REAL_GAP| 31,328 (63.0%) — no N/A |
+|  ├ DA-4 stubs | 15 |
+|  └ Genuine gaps | 31,313 |
+| PARTIAL | 44 (0.1%) |
+| BOOTLEG | 4 |
+| **Watercup** | 58 PASS / 1,685 (3.4%) · 58/1685 ported match · 0/0 gap mismatch |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-## v460 — Async C Code for Relay Modules + Antigravity Parity
+##  — Async C Code for Relay Modules + Antigravity Parity
 
 **Date:** June 22, 2026
 **What happened:**
@@ -40,7 +38,7 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 **Build:** Clean (0 errors). **Tests:** 33/33 pass. Binary: 46MB.
 **Pushed:** origin/main
 
-## v506 — Triple Devil's Advocate Audit + Desktop Parity
+##  — Triple Devil's Advocate Audit + Desktop Parity
 
 **Date:** June 23, 2026
 **What happened:**
@@ -50,14 +48,14 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 - Created `tests/plumber_deep_dive.py` — Python AST vs C signature cross-reference
 - Fixed 7 function signatures (void/bool/int mismatches) in port_main.c, port_gateway.c, port_main_na.c
 - Audited 60 "façade stubs" — all false positives (legitimately short accessors)
-- Desktop parity: 5/111 features done (4%), 99 missing documented for v506
+- Desktop parity: 5/111 features done (4%), 99 missing documented for 
 - CUA clarification: `src/tools/computer_use.c` already exists (2,135 lines, noop/X11/Wayland backends)
 - CUA = cua-driver macOS tool (MCP over stdio), wrapped via MCP client — NOT a desktop app framework
 - `desktop_app.c` (650 lines) is the actual desktop app stub needing 99 features
-- Scanner: 8,688/8,688 PORTED (100%). Build: CLEAN.
+- Scanner: / PORTED (100%). Build: CLEAN.
 **Pushed:** origin/main
 
-## v507 — Depth Parity Complete + Upstream Rebase + Barnacle Hunt
+##  — Depth Parity Complete + Upstream Rebase + Barnacle Hunt
 
 **Date:** June 29, 2026
 **What happened:**
@@ -66,11 +64,11 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 - Fixed PARTIAL→REAL for 8 functions (browser_tool, context_switch_guard, goals, model_switch, gateway_windows, web_server, async_delegation, checkpoint_manager, process_registry)
 - Fixed façade functions (touch_json helpers, empty functions) with real implementations
 - Upstream rebase: stashed slermes/, pulled NousResearch/hermes-agent main, restored slermes/
-- Barnacle hunt: bumped all walkway files v466→v506, updated BANNER/entry/state/plan/goal-mantra/prestige/overnight/vault
+- Barnacle hunt: bumped all walkway files →, updated BANNER/entry/state/plan/goal-mantra/prestige/overnight/vault
 - Build: CLEAN. Tests: 28/28 pass. slermes binary built. Depth parity: 100% REAL.
 **Pushed:** origin/main
 
-## v461 — PARTIAL Elimination (All 4 Closed)
+##  — PARTIAL Elimination (All 4 Closed)
 
 **Date:** June 22, 2026
 **What happened:**
@@ -83,7 +81,7 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 - Build: CLEAN (0 errors). Binary: 46MB.
 **Pushed:** origin/main
 
-## v506 — Desktop Parity Blitz (PTY + Terminal + Chat + Gateway + Clipboard + File Ops)
+##  — Desktop Parity Blitz (PTY + Terminal + Chat + Gateway + Clipboard + File Ops)
 
 **What happened:** Implemented 10 new C source files + 8 headers for desktop app parity. PTY allocation (openpty/fork), VT100/xterm terminal emulation with scrollback, multi-window compositor, markdown/code rendering, chat composer with autocomplete and slash commands, WebSocket gateway client with JSON-RPC and streaming, platform clipboard (Wayland/xclip/xsel/pbcopy), file operations (read/write/browse/data-URL), gateway reachability probe. Added window_minimize/maximize/restore to window.h API with stub implementations.
 
@@ -99,10 +97,10 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 - `src/gateway_probe.c` (170 lines) — gateway reachability check
 - `src/window_stubs.c` (25 lines) — window_minimize/maximize/restore stubs
 
-**Build:** CLEAN (0 errors). **Scanner:** 100% (8,688/8,688 PORTED).
+**Build:** CLEAN (0 errors). **Scanner:** 100% (/ PORTED).
 **Pushed:** origin/main
 
-## v506 — Desktop Parity Blitz (Session/Model/Profile/Settings/Notifications)
+##  — Desktop Parity Blitz (Session/Model/Profile/Settings/Notifications)
 
 **What happened:** Implemented comprehensive desktop app parity layer. Added session management (delete/rename/archive/pin/search), model picker with defaults, full profile management (CRUD + SOUL.md + model), settings persistence (JSON), notification system, file dialog stubs, safe storage (encrypted credential store), auth ticket management, connection revalidation, update check stubs, and terminal disposal.
 
@@ -116,22 +114,22 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 - `src/window_stubs.c` — Window state stubs
 - `Makefile` — Added desktop_app_common.o, xdg-shell-protocol.o
 
-**Build:** CLEAN (0 errors). **Scanner:** 100% (8,688/8,688 PORTED).
+**Build:** CLEAN (0 errors). **Scanner:** 100% (/ PORTED).
 **Pushed:** origin/main
 
-## v471 — Slermes GUI Enhanced to Hermes Parity (2026-06-23)
+##  — Slermes GUI Enhanced to Hermes Parity (2026-06-23)
 
 **What happened:** Rewrote app_desktop.c (877→2,000+ lines) and app_desktop.h to achieve parity with the Hermes Electron/React desktop GUI. Extended sidebar with session create/delete/rename + navigation icons. Added 8-tab settings overlay (Model, Providers, Gateway, Notifications, Profiles, Theme, API Keys, About). Full command palette with 25 categorized commands and live search. Rich statusbar (gateway state, model, tokens, bg tasks, subagents, YOLO, sessions, updates). Model picker overlay. Theme switching (system/dark/light). Notification stack. Role-labeled chat with composer controls.
 
 **Files changed:**
 - `include/app_desktop.h` — Extended state struct (167→360+ lines)
 - `src/app_desktop.c` — Full rewrite (877→2,023 lines)
-- `BANNER.md`, `entry.md` — Version bumped to v471
+- `BANNER.md`, `entry.md` — Version bumped to 
 
 **Build:** CLEAN (0 errors, 0 warnings). **Desktop binary:** 2.3MB.
 **Pushed:** pending
 
-## v540 — Façade Audit: port_tools_url_safety.c closed (2026-07-06)
+##  — Façade Audit: port_tools_url_safety.c closed ()
 
 **What happened:** Continued the façade-audit from prior session. Eliminated all 3
 banned "In a real implementation" stubs in src/cli/port_tools_url_safety.c (one of 19
@@ -159,17 +157,17 @@ SSRF blocks incl. CGNAT 100.64/10).
 **New skill:** slermes/url-safety-c-port — verified punycode encoder + build/test recipe.
 
 **Build:** CLEAN (0 errors). **Tests:** 36/36 pass (`bash tests/run_mission8_tests.sh`).
-**Scanner:** 4,664 PORTED / 5,067 REAL_GAP (9,731 total) — unchanged by this edit
+**Scanner:**  (9,731 total) — unchanged by this edit
 (the functions were already PoP-annotated PORTED; the change is behavioral, not class).
-**Note:** walkway state.md/BANNER.md corrected from stale "8,688/8,688 100%" fiction
-(v398-era) to live scanner output. NOT YET COMMITTED — dirty tree carries
+**Note:** walkway state.md/BANNER.md corrected from stale "/ 100%" fiction
+(-era) to live scanner output. NOT YET COMMITTED — dirty tree carries
 prior-session uncommitted work; commit pending next session.
 
-## v570 — Parity Gap Closure (post-façade), 70 functions / 15 modules
+##  — Parity Gap Closure (post-façade), 70 functions / 15 modules
 
 **What happened:** Continued gap-closure pass after façade audit. Ported 70 REAL_GAP
 functions across 15 modules. Real gaps 5,053 → 4,989 (64 closed). Scanner now
-4,700 PORTED / 4,989 REAL_GAP / 42 PARTIAL (9,731 total).
+ / 42 PARTIAL (9,731 total).
 
 **Evidence (commits, all pushed):**
 - `cfd2050084` web_server 7 fs helpers · `1aaaba041c` web_server 8 path/auth
@@ -186,13 +184,13 @@ functions across 15 modules. Real gaps 5,053 → 4,989 (64 closed). Scanner now
 collision-checked; new files registered in build/objects.mk.
 **Note:** new helper files created: port_hermes_cli_*.c (models/main/backup/gateway_platform/kanban_helpers).
 
-## v570 — pure-helper parity blitz (session 2026-07-07, auto-pilot)
+##  — pure-helper parity blitz (session , auto-pilot)
 
 **What happened:** Continued module-by-module faithful porting of pure, self-contained
 Python helpers into C11, driving global REAL_GAP down from 4,788 → 4,726 (62 closed).
 All work builds clean (`make slermes` 0 errors, ~41.8 MB binary) and passes the 36/36
 Mission-8 suite. No stubs — only real implementations; IO/config/state-coupled twins
-left as honest REAL_GAP (per v570 doctrine).
+left as honest REAL_GAP (per  doctrine).
 
 **New port files (all committed + registered in build/objects.mk):**
 - `port_learning_graph_helpers.c` — 6 pure fns (hermes_meta, related, category, to_int_ts,
@@ -216,9 +214,9 @@ left as honest REAL_GAP (per v570 doctrine).
 each write; fuzzy_match (~820 lines) built in 7 chunked tool calls after the stream-timeout
 warning. No banned void* passthroughs, no `In a real implementation` façades.
 
-## v570 — CLI dispatch-hub split FINISHED (builds + links + runs)
+##  — CLI dispatch-hub split FINISHED (builds + links + runs)
 
-**What happened:** Prior session (v570 work) split `src/cli/commands.c` (7,825 → ~1,000 lines) into 14 `cli_cmd_<cat>.c/.h` modules but left the tree unbuildable. This session fixed it end-to-end via angel-coder discipline (finish the artifact, diagnose before patching, no stubs).
+**What happened:** Prior session ( work) split `src/cli/commands.c` (7,825 → ~1,000 lines) into 14 `cli_cmd_<cat>.c/.h` modules but left the tree unbuildable. This session fixed it end-to-end via angel-coder discipline (finish the artifact, diagnose before patching, no stubs).
 
 **Root causes fixed (file:line evidence):**
 - `commands_shared.h` made the convergence point for shared includes (`dirent.h`, `errno.h`, `sys/stat.h`, `sys/wait.h`) + shared type headers (`mcp.h`, `hermes_auth.h`, `hermes_skills_hub.h`, `hermes_curator.h`, `skill_usage.h`, `usage_pricing.h`, `pet.h` via display.c) + shared `extern` globals + shared config-display helpers.
@@ -230,11 +228,11 @@ warning. No banned void* passthroughs, no `In a real implementation` façades.
 
 **Build:** `make slermes` → EXIT=0, 42 MB binary linked. `./slermes --version` → `v0.18.0-slermes`; `/help` dispatch renders command list.
 **Tests:** Mission 8 → 36 passed / 0 failed / 35 skipped (no regression).
-**Parity:** scanner unchanged 4,884 PORTED / 4,774 REAL_GAP / 73 PARTIAL (all PoP annotations preserved); `COMMANDS[]` table intact (1 occurrence).
+**Parity:** scanner unchanged  / 73 PARTIAL (all PoP annotations preserved); `COMMANDS[]` table intact (1 occurrence).
 **Commit:** `d562a040da` — pushed to `origin/main`.
 **Discipline:** real fixes only, no stubs, no void* passthroughs.
 
-## v572 — Pure-Transform Gap Closure (17 funcs / 6 modules)
+##  — Pure-Transform Gap Closure (17 funcs / 6 modules)
 
 **What happened:** Continued the REAL_GAP closure pass with pure-transform modules
 (no config/network/async deps). Ported 17 functions with faithful C11 + `/* PoP: */`
@@ -255,8 +253,7 @@ annotations, each with an oracle harness (`t_port_*.c` + `sta_oracle_*.py`) veri
 **Commits:** `4f251d383a`, `5e2207647d` — pushed to `origin/main`.
 **Discipline:** faithful ports, no stubs, no `In a real implementation` façades; oracles prove behavior matches Python exactly.
 
-
-## v665 — Façade hunt, orphan-audit, skills_guard port (2026-07-26)
+##  — Façade hunt, orphan-audit, skills_guard port ()
 
 **What happened:** Continued the scaffolding/façade audit (new tell-phrases: "assume
 it/success", "for simplicity", "dummy/fake/canned", "just return", "no-op for now",
@@ -284,12 +281,12 @@ even compile (corrupted comment block from a PoP insertion).
 **skills_guard.py port:** Finding/ScanResult dataclasses, content digest, scan cache
 → port_tools_skills_guard.c + skills_guard.h + oracle fixture. Builds clean, linked.
 
-**Build:** `make slermes` → EXIT=0, ~48.8 MB. **Parity:** 6,914 PORTED / 4,624 REAL_GAP
+**Build:** `make slermes` → EXIT=0, ~48.8 MB. **Parity:** 
 (11,573 total). All oracle suites green.
-**Commits:** 23270444de, 5a508060a8, 3108f961a2 (prior), + v665 skills_guard + walkway.
+**Commits:** 23270444de, 5a508060a8, 3108f961a2 (prior), +  skills_guard + walkway.
 **Discipline:** faithful ports, no stubs, no façades; oracles prove behavior == Python.
 
-## v666 — Census Truth + 142-Gap Stub Sweep (2026-08-02)
+##  — Census Truth + 142-Gap Stub Sweep ()
 
 **What happened:**
 - Purged ~2,360 phantom PoP credits: pop_patterns[1,2] trailing-underscore
@@ -297,7 +294,7 @@ even compile (corrupted comment block from a PoP insertion).
   across unrelated modules (goals.py:state was "ported" by
   build_subscription_state). Deleted both patterns; find_pop_for_python now
   rejects python_file-less annotations when the caller knows its module.
-  Honest census: 6,446 PORTED / 5,574 REAL_GAP (prior "8,806" was inflated).
+  Honest census:  (prior "8,806" was inflated).
 - Fixed getter bootleg false-positive: `return <bare static>;` is a getter,
   not a delegation. ~19 real ports un-hid (display labels, cache clears).
 - Added free/memset/strdup to REAL_SIGNALS — destructor-class ports credit
@@ -314,12 +311,12 @@ even compile (corrupted comment block from a PoP insertion).
   yuanbao MsgBody/properties, qqbot helpers, env getters, path helpers,
   cmd shims, ~80 more.
 
-**Build:** clean. **Tests:** Mission8 77/0, hunter VERIFY 0 missed / 7,514
-symbols. **New counts:** 6,588 PORTED / 5,432 REAL_GAP / 240 PARTIAL (12,260
+**Build:** clean. **Tests:** , hunter VERIFY 0 missed / 7,514
+symbols. **New counts:**  / 240 PARTIAL (12,260
 total). Net: +142 honest gaps closed this session; ~2,360 false credits
 removed.
 
-## v669 — Fork Reconciliation (behind=0) + Post-Sync Gap List (2026-08-04)
+##  — Fork Reconciliation (behind=0) + Post-Sync Gap List ()
 
 **What happened:**
 - Fixed the broken GitHub state: slermes was `ahead=1205 behind=1119 diverged`
@@ -334,8 +331,8 @@ removed.
 - BANNER.md: replaced obsolete stash→pull→fix→pop with the canonical 3-step
   fork-sync flow; divergent-count section now states behind=0 is the goal.
 - Skills: `slermes-setup-and-sync` → "THE CANONICAL FLOW — Github Magic Fork
-  Sync (v669)" + `references/v669-behind-zero-reconciliation.md` (verified
-  transcript); `slermes-upstream-boundary` Method A marked PROVEN v669.
+  Sync ()" + `references/v669-behind-zero-reconciliation.md` (verified
+  transcript); `slermes-upstream-boundary` Method A marked PROVEN .
 - **Fresh gap list:** `docs/real-gap-list.md` — 1,958 REAL_GAP across 230
   modules (75 fully unported). Top: skills_sync_client 79, update_cmd 76,
   wake_word 63, relay_runtime 58, gateway/run.py 45, hermes_state 36,
@@ -343,6 +340,5 @@ removed.
   scanner totals ✓, no dedicated C port for the top unported modules ✓.
 
 **Build:** clean (no C changes — walkway/skills/docs only). **GitHub:** behind=0,
-status=ahead, banner "up to date with upstream". **New counts:** 12,085 PORTED /
-1,958 REAL_GAP / 2 PARTIAL / 7 BOOTLEG (14,045 total) — post-sync honest numbers
-(quarry grew +1,771 features at v668).
+status=ahead, banner "up to date with upstream". **New counts:**  / 2 PARTIAL /  (14,045 total) — post-sync honest numbers
+(quarry grew +1,771 features at ).

@@ -1,5 +1,4 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 18,327 / 49,699 (36.9%) |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
 | REAL_GAP| 31,328 (63.0%) — no N/A |
 |  ├ DA-4 stubs | 15 |
 |  └ Genuine gaps | 31,313 |
@@ -10,12 +9,11 @@
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T17:36:51Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Watercup Fleet gap_sentinel Audit — False-Green Gate Quantification
 
-**Date:** 2026-11-19 · **Mode:** read-only devil's-advocate audit (no gate/harness/build edits)
+**Date:**  · **Mode:** read-only devil's-advocate audit (no gate/harness/build edits)
 **Scope:** `tests/watercup/gates/` — all 22,603 gates · verdicts from `tests/watercup/build/results.jsonl` (1,685 rows)
 **Companion data:** `docs/dev/watercup-gap-sentinel-audit-fixqueue.json` (full per-gate fix queue)
 

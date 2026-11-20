@@ -1,21 +1,19 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
+| REAL_GAP| 31,328 (63.0%) — no N/A |
+|  ├ DA-4 stubs | 15 |
+|  └ Genuine gaps | 31,313 |
+| PARTIAL | 44 (0.1%) |
+| BOOTLEG | 4 |
+| **Watercup** | 58 PASS / 1,685 (3.4%) · 58/1685 ported match · 0/0 gap mismatch |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-# State — Slermes C Translation (v289)
+# State — Slermes C Translation ()
 
-Build v289. ALL GAP/PARTIAL modules cleared!
+Build . ALL GAP/PARTIAL modules cleared!
 86 PORTED, 0 PARTIAL, 0 GAP, ~45 N/A.
 turn_context → PORTED (INLINE), skill_utils → PORTED (95%), tool_dispatch_helpers → PORTED (100%).
 Build: clean. Milestone: zero GAP, zero PARTIAL.

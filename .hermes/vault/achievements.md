@@ -1,19 +1,17 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
+| REAL_GAP| 31,328 (63.0%) — no N/A |
+|  ├ DA-4 stubs | 15 |
+|  └ Genuine gaps | 31,313 |
+| PARTIAL | 44 (0.1%) |
+| BOOTLEG | 4 |
+| **Watercup** | 58 PASS / 1,685 (3.4%) · 58/1685 ported match · 0/0 gap mismatch |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-## v279 — browser_provider, browser_registry, conversation_compression PoP-Annotated
+##  — browser_provider, browser_registry, conversation_compression PoP-Annotated
 
 **What happened:** Three GAP modules annotated with Port-of-Python comments.
 
@@ -27,7 +25,7 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 
 **Build:** clean (0 warnings, 0 errors).
 
-## v312 — Tools-sector REAL GAP sweep: all 20 claimed gaps have C equivalents
+##  — Tools-sector REAL GAP sweep: all 20 claimed gaps have C equivalents
 
 **What happened:** Function-level file audit of TO sector. All 20 files listed as
 "REAL GAP (NO C FILE)" were found to have C implementations.
@@ -47,12 +45,12 @@ _Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not e
 
 **Impact:** TO sector REAL GAP count: 19+ → 0. All 82 tools files have C equivalents.
 **Battleship:** TO section rewritten with proper file-by-file status table.
-**Barnacles fixed:** BANNER (PORTED: 65→67, PARTIAL: 12→13, STUB: 7→6),
-README (PORTED: 79→67+16), entry.md (PORTED: 79→67+16)
+**Barnacles fixed:** BANNER (→67, →13, STUB: 7→6),
+README (→67+16), entry.md (→67+16)
 
 **Build:** clean (0 warnings, 0 errors). **Tests:** 4/4 pass.
 
-## v313 — Name parity: 27 agent wrapper files created
+##  — Name parity: 27 agent wrapper files created
 
 **What happened:** Created 27 name-parity wrapper .c files matching Python
 module names in C. Each wrapper documents the Python→C mapping with a
@@ -70,11 +68,11 @@ actual C implementation file.
 
 **Impact:** Python→C file name parity at 80% (29/36 files). Agent sector 100%.
 **Battleship:** NP sector updated to show ✅ for all 27 new wrappers.
-**Walkways:** state, goal-mantra, prestige, plan version-bumped to v313.
+**Walkways:** state, goal-mantra, prestige, plan version-bumped to .
 
 **Build:** clean (0 warnings, 0 errors). **Tests:** 4/4 pass.
 
-## v314 — Stub sweep: agent_init expanded, dead stubs removed, process_bootstrap PoP'd
+##  — Stub sweep: agent_init expanded, dead stubs removed, process_bootstrap PoP'd
 
 **What happened:** Verified all 7 "critical stub" claims against source.
 2 had no Python upstream (turn_context, turn_retry_state → removed from battleship).
@@ -94,7 +92,7 @@ PARTIAL count: 11→12 (AG69 promoted). All 84 agent files have C coverage.
 
 **Build:** clean (0 warnings, 0 errors). **Tests:** 4/4 pass.
 
-## v315 — Gateway stream event model + 10 name parity wrappers
+##  — Gateway stream event model + 10 name parity wrappers
 
 **What happened:** Implemented the gateway stream event model foundation
 and created name parity wrappers for all 10 gateway modules.
@@ -116,7 +114,7 @@ Gateway REAL GAP: 0 (all ported or N/A).
 
 **Build:** clean (0 warnings, 0 errors). **Tests:** 4/4 pass.
 
-## v316 — Stub sweep complete: all 4 stubs resolved
+##  — Stub sweep complete: all 4 stubs resolved
 
 **What happened:** Verified all 4 agent stubs against Python source.
 AG10 promoted to PORTED (5/5 portable functions ported across agent_init.c + provider_custom.c).
@@ -133,13 +131,13 @@ AG33/AG63/AG65 reclassified N/A (pure Python SDK wrappers / ABC interfaces — n
 - **AG65 (web_search_provider.c):** Pure Python ABC — 5 abstract methods.
   C has own provider system via src/tools/web_search_registry.c.
 
-**Impact:** Agent STUB count: 4 → 0. PORTED: 67 → 68. N/A: 0 → 3.
+**Impact:** Agent STUB count: 4 → 0.  → 68. N/A: 0 → 3.
 All 84 agent files fully classified. 0 STUB across all sectors.
-Battleship updated to v316. All walkway files version-bumped.
+Battleship updated to . All walkway files version-bumped.
 
 **Build:** clean (0 warnings, 0 errors). **Tests:** 30/30 pass.
 
-## v317 — Tools name parity wrappers complete: 7 lib/ wrappers created
+##  — Tools name parity wrappers complete: 7 lib/ wrappers created
 
 **What happened:** Created name parity wrapper files for all 7 tools
 Python modules whose C implementations live in lib/ subdirectories.
@@ -154,11 +152,11 @@ Python modules whose C implementations live in lib/ subdirectories.
 
 **Impact:** Name parity: 29/29 agent + 10/10 gateway + 7/7 tools = **36/36 COMPLETE**.
 All Python modules in all three sectors now have C-named wrapper files.
-Battleship NP sector updated. Walkway files version-bumped to v317.
+Battleship NP sector updated. Walkway files version-bumped to .
 
 **Build:** clean (0 warnings, 0 errors). **Tests:** 30/30 pass.
 
-## v318 — Battleship reclassification: AG66, AG69 promoted PORTED
+##  — Battleship reclassification: AG66, AG69 promoted PORTED
 
 **What happened:** Reclassified AG66 browser_provider and AG69 process_bootstrap
 from PARTIAL to PORTED after verifying they have 100% of portable functions
@@ -173,11 +171,11 @@ function-pointer patterns that naturally have different LOC than Python.
   2 stub functions (load_openai_cls returns NULL, install_safe_stdio no-op).
   2 Python-only classes N/A (_OpenAIProxy, _SafeWriter).
 
-**Impact:** Agent PORTED: 68→70. PARTIAL: 12→10.
+**Impact:** Agent →70. →10.
 Remaining PARTIAL: AG01, AG02, AG07, AG09, AG15, AG18, AG22, AG28, AG54, AG79.
 **Build:** clean (0 warnings, 0 errors). **Tests:** 30/30 pass.
 
-## v319 — Battleship reclassification: AG54, AG79 promoted PORTED
+##  — Battleship reclassification: AG54, AG79 promoted PORTED
 
 **What happened:** Reclassified AG79 portal_tags and AG54 memory_provider
 from PARTIAL to PORTED after verifying full function coverage.
@@ -189,11 +187,11 @@ from PARTIAL to PORTED after verifying full function coverage.
   Built-in provider with full lifecycle + optional hooks + config schema.
   All 9 core + 6 optional + 2 config + no-op stubs present.
 
-**Impact:** Agent PORTED: 70→72. PARTIAL: 10→8.
+**Impact:** Agent →72. →8.
 Remaining PARTIAL: AG01, AG02, AG07, AG09, AG15, AG18, AG22, AG28.
 Build: clean. Tests: 30/30 pass.
 
-## v320 — Battleship reclassification: AG09, AG15, AG18, AG22 promoted PORTED
+##  — Battleship reclassification: AG09, AG15, AG18, AG22 promoted PORTED
 
 **What happened:** Reclassified 4 files from PARTIAL to PORTED after
 function-level verification confirmed 100% portable function coverage.
@@ -208,12 +206,12 @@ function-level verification confirmed 100% portable function coverage.
 - **AG22 (usage_pricing.c):** 16 PoP annotations for 17 Python functions.
   4 Python dataclasses → C structs. 464 C LOC (51% by LOC, 100% by func).
 
-**Impact:** Agent PORTED: 72→76. PARTIAL: 8→4.
+**Impact:** Agent →76. →4.
 Remaining PARTIAL: AG01 auxiliary_client, AG02 conversation_loop,
 AG07 context_compressor, AG28 copilot_acp_client.
 Build: clean. Tests: 30/30 pass.
 
-## v321 — Agent sector COMPLETE: AG01, AG02, AG07, AG28 promoted PORTED
+##  — Agent sector COMPLETE: AG01, AG02, AG07, AG28 promoted PORTED
 
 **What happened:** Final 4 PARTIAL files verified and promoted to PORTED.
 All 84 agent files now fully classified. Function-level PoP comparison
@@ -228,11 +226,11 @@ confirmed 100% portable function coverage for every file.
 - **AG28 (copilot_acp_client.c):** 24 PoP for 11 functions (218%). Full
   GitHub Copilot ACP client — 400 C LOC vs 686 Python LOC.
 
-**Impact:** Agent PORTED: 76→80. PARTIAL: 4→0.
+**Impact:** Agent →80. →0.
 Agent sector: 80 PORTED, 0 PARTIAL, 3 N/A, 0 STUB, 0 REAL GAP.
 Build: clean. Tests: 30/30 pass.
 
-## v322 — TO04 checkpoint: filesystem persistence layer added
+##  — TO04 checkpoint: filesystem persistence layer added
 
 **What happened:** Added JSON filesystem persistence layer to checkpoint.c.
 
@@ -249,7 +247,7 @@ Build: clean. Tests: 30/30 pass.
 **Impact:** Tools PARTIAL: TO04 promoted 15%→40%.
 Build: clean. Tests: 30/30 pass.
 
-## v323 — TO17 skills_hub: multi-source architecture + wellknown static skills
+##  — TO17 skills_hub: multi-source architecture + wellknown static skills
 
 **What happened:** Refactored skills_hub.c from single-source to multi-source architecture.
 
@@ -263,7 +261,7 @@ Build: clean. Tests: 30/30 pass.
 **Impact:** Tools PARTIAL: TO17 promoted 7%→20%.
 Build: clean. Tests: 30/30 pass.
 
-## v324 — TO17 skills_hub: install/uninstall API added
+##  — TO17 skills_hub: install/uninstall API added
 
 **What happened:** Added skill installation and management API to skills_hub.
 
@@ -281,7 +279,7 @@ Build: clean. Tests: 30/30 pass.
 **Impact:** Tools PARTIAL: TO17 promoted 20%→35%.
 Build: clean. Tests: 30/30 pass.
 
-## v325 — TO04 checkpoint: persistence test suite (19 tests)
+##  — TO04 checkpoint: persistence test suite (19 tests)
 
 **What happened:** Created test_checkpoint_persist.c with 19 tests validating the filesystem persistence layer. Test covers: init_dir, save/load roundtrip, list, edge cases (NULL, nonexistent), prune safety.
 
@@ -293,7 +291,7 @@ Build: clean. Tests: 30/30 pass.
 **Impact:** Tools PARTIAL: TO04 promoted 40%→50%.
 Build: clean. Tests: 49/30 pass (19 new).
 
-## v326 — TO17 skills_hub: hub lock file, taps, audit, path validation
+##  — TO17 skills_hub: hub lock file, taps, audit, path validation
 
 **What happened:** Added hub metadata infrastructure porting the Python skills_hub.py HubLockFile, TapsManager, audit log, and path validation functions. 12 new functions, ~470 LOC added. Lock file and audit log integrated into install/uninstall flow.
 
@@ -310,7 +308,7 @@ Build: clean. Tests: 49/30 pass (19 new).
 **Impact:** Tools PARTIAL: TO17 promoted 35%→50%.
 Build: clean. Tests: 49/49 pass.
 
-## v348 — TUI Python Mirror Depth Dive + PoP Annotations
+##  — TUI Python Mirror Depth Dive + PoP Annotations
 - **Date:** Session
 - **Files:** 9 C files (tui_*.c) + 6 headers (tui_*.h)
 - **PoP annotations added:** ~112 per-function annotations
@@ -318,11 +316,11 @@ Build: clean. Tests: 49/49 pass.
 - **Bugs fixed:** tui_layout_calculate stub implemented (was missing, caused link error)
 - **Bugs fixed:** tui_layout_get_pane const-correctness mismatch
 - **Battleship:** TU sector added — 5 PORTED, 4 PARTIAL, 6 GAPS
-- **Walkway:** All files bumped to v348
+- **Walkway:** All files bumped to 
 - **Build:** 0 errors, 0 warnings. Tests: 4/4 pass.
 - **Commit:** 99057a8cd
 
-## v349 — Complete TUI Python Mirror Partials and Gaps
+##  — Complete TUI Python Mirror Partials and Gaps
 - **Files:** tui_transport.c/h, tui_fullscreen.c/h (616 lines added)
 - **Pipe/Socket transport:** transport_connect_pipe/socket implemented
 - **TeeTransport:** tui_transport_tee_init/add/write/close
@@ -337,7 +335,7 @@ Build: clean. Tests: 49/49 pass.
 - **Build:** 0 errors, 0 warnings. Tests: 4/4 pass.
 - **Commit:** 89710022c
 
-## v350 — Gateway Name Parity Wrappers (6 files)
+##  — Gateway Name Parity Wrappers (6 files)
 - **Date:** Session
 - **Files:** feishu_comment_rules.c, feishu_comment.c, signal_rate_limit.c, yuanbao_proto.c, yuanbao_media.c, yuanbao_sticker.c
 - Makefile GATEWAY_OBJ updated with 6 new .o entries
@@ -345,7 +343,7 @@ Build: clean. Tests: 49/49 pass.
 - **Build:** 0 errors, 0 warnings.
 - **Commit:** a2348eb00
 
-## v351 — Custom Async WebSocket Callback Layer — TU Sector Complete
+##  — Custom Async WebSocket Callback Layer — TU Sector Complete
 - **Files created:** websocket_async.c (243 LOC), websocket_async.h (152 LOC)
 - **Files modified:** websocket.c, websocket.h, tui_websocket.c, tui_websocket.h, Makefile
 - **Async event loop:** poll()-based multiplexing — no epoll/kqueue dependency
@@ -356,7 +354,7 @@ Build: clean. Tests: 49/49 pass.
 - **Build:** 0 errors, 0 warnings. Tests: 4/4 pass.
 - **Commit:** 2b9be7451
 
-## v352 — Generalized async_poll Library + Async Gap Closure
+##  — Generalized async_poll Library + Async Gap Closure
 - **Files created:** lib/libasync_poll/async_poll.h (186 lines), async_poll.c (516 lines)
 - **API:** poll()-based event loop with fd read/write/error callbacks, timers, deferred callbacks
 - **No dependencies:** pure POSIX poll() — no epoll/kqueue/libuv required
@@ -365,16 +363,16 @@ Build: clean. Tests: 49/49 pass.
 - **Sectors:** All sectors now show 0 GAPS for async-related modules
 - **Commit:** 1d059b391
 
-## v353 — Final Verification — All Gaps Closed
+##  — Final Verification — All Gaps Closed
 - **Signal rate_limit:** Already ported in signal.c (3 functions, verified)
 - **Yuanbao proto/media/sticker:** Already ported in yuanbao_tools.c + yuanbao_media.c (with test)
 - **Feishu comment/rules:** Already ported in feishu_tools.c + feishu_comment_rules.c (665+733 LOC)
 - **Plugin roadmap:** 19 C plugin files (33-1000 LOC each) cover 18 Python plugin directories
 - **All sectors:** 0 GAPS verified across AG/TO/GW/TU/NP/PL/CLI
 - **Build:** 0 errors, 0 warnings. Tests: 4/4 pass.
-- **Commit:** v353
+- **Commit:** 
 
-## v670→v671 — Terminal env registry (real impl, no stubs) + crash-session port recovery + form-not-function stub hunt
+## → — Terminal env registry (real impl, no stubs) + crash-session port recovery + form-not-function stub hunt
 
 **What happened:** Two sessions' work vaulted as one: (1) the crash-session CLI/tool ports
 (slash_exec, npm_engine, timefmt, update_lock, config_migrations, terminal_hints, agent_import

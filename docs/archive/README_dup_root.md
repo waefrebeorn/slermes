@@ -1,17 +1,15 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
+| REAL_GAP| 31,328 (63.0%) — no N/A |
+|  ├ DA-4 stubs | 15 |
+|  └ Genuine gaps | 31,313 |
+| PARTIAL | 44 (0.1%) |
+| BOOTLEG | 4 |
+| **Watercup** | 58 PASS / 1,685 (3.4%) · 58/1685 ported match · 0/0 gap mismatch |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Slermes — We SLERMEd Hermes Agent into C11
 
@@ -33,12 +31,12 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 | Mission | Description | Status |
 |---------|-------------|--------|
 | Mission 1-4 | Function parity foundation (C11 reimplementation + desktop GUI + app shell); ~4,663 PoP annotations wired | 🟡 In progress — function parity ~65.3% (6,357/9,733), 3,376 REAL_GAP remain |
-| Mission 5 | Documentation serving (`/api/docs*`) | ✅ Complete (v501) |
-| Mission 6 | Skills parser + `/api/skills` | ✅ Complete (v502) |
-| Mission 7 | Distribution (AppImage, Homebrew, NSIS, Docker, Nix, make install) | ✅ Complete (v503) |
-| Mission 8 | Tests (API, CLI, state_db, UI) | ✅ Complete (v504) |
+| Mission 5 | Documentation serving (`/api/docs*`) | ✅ Complete () |
+| Mission 6 | Skills parser + `/api/skills` | ✅ Complete () |
+| Mission 7 | Distribution (AppImage, Homebrew, NSIS, Docker, Nix, make install) | ✅ Complete () |
+| Mission 8 | Tests (API, CLI, state_db, UI) | ✅ Complete () |
 
-**Current version: v506** (Missions 5-8 complete — full app parity achieved 🎉)
+**Current version: ** (Missions 5-8 complete — full app parity achieved 🎉)
 
 ## Quick Start
 
@@ -395,7 +393,7 @@ We run a triple-pass audit on every component:
 2. **Pass 2 (Attack):** Assume the code is broken. What's the worst that could happen?
 3. **Pass 3 (Synthesize):** What's actually true? What needs fixing?
 
-**Latest audit (v506):**
+**Latest audit ():**
 
 | Component | LOC | strcpy | sprintf | Hardcoded paths | Hermes branding | Status |
 |-----------|-----|--------|---------|-----------------|-----------------|--------|

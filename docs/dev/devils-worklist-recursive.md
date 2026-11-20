@@ -1,5 +1,4 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 18,327 / 49,699 (36.9%) |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
 | REAL_GAP| 31,328 (63.0%) — no N/A |
 |  ├ DA-4 stubs | 15 |
 |  └ Genuine gaps | 31,313 |
@@ -10,8 +9,7 @@
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T17:36:51Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Devil's-advocate RECURSIVE audit (auditing the auditor)
 

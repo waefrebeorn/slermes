@@ -1,5 +1,4 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 18,327 / 49,699 (36.9%) |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
 | REAL_GAP| 31,328 (63.0%) — no N/A |
 |  ├ DA-4 stubs | 15 |
 |  └ Genuine gaps | 31,313 |
@@ -10,8 +9,7 @@
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T17:36:51Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Parity gap map (measured, not estimated)
 
@@ -22,7 +20,7 @@ walks the real upstream tree at `C:/Users/eman5/hermes-agent` and matches
 PoP annotations against actual definitions. Annotation-only claims do not
 count as ports (PoP annotation != parity).
 
-**Totals at honest-universe scan (2026-11-19, DA-6d):** 15,496 ported /
+**Totals at honest-universe scan (, DA-6d):** 15,496 ported /
 49,699 live functions (**31.2%**); **34,154 real gaps**; **2,987 modules**.
 
 ## DA-6: the universe was selection-biased (recursive audit finding)

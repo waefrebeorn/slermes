@@ -31,7 +31,7 @@ dependency front and [Roadmap](ROADMAP.md) for the battle order.
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T17:36:51Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 The block above is generator-owned: `make parity` recomputes it from the live
 scanner and the watercup oracle and stamps every copy in the repo. Never
@@ -184,7 +184,7 @@ The full contract lives in [soul.md](soul.md).
 
 Slermes pulls Python source from upstream (`NousResearch/hermes-agent`) into
 the quarry and ports the delta to C11; C work is never pushed back upstream.
-Port commits land on the `integrate` branch and push to `origin integrate`.
+Port commits land directly on `main` and push to `origin main` (main-only; stale branch tips are preserved under `archive/*` tags).
 The canonical sync workflow is in [BANNER.md](BANNER.md).
 
 ## License

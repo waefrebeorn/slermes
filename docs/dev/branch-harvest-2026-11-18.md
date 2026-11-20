@@ -1,5 +1,4 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 18,327 / 49,699 (36.9%) |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
 | REAL_GAP| 31,328 (63.0%) — no N/A |
 |  ├ DA-4 stubs | 15 |
 |  └ Genuine gaps | 31,313 |
@@ -10,10 +9,9 @@
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T17:36:51Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-# Branch harvest & main-only consolidation — 2026-11-18
+# Branch harvest & main-only consolidation — 
 
 **Policy (user directive):** slermes is a **main-only** project. No feature
 branches, no integrate branch. All work lands on `main` directly. Stale
@@ -28,8 +26,8 @@ they hold history, then deleted.
 | `main` (old local) | 0 — direct ancestor of integrate | Fast-forwarded |
 | `local-port-work` | 0 — same commit as old local main | Deleted |
 | `waefrebeorn/slermes` | 0 | Deleted |
-| `backup-pre-sift` | 14,679 (pre-sift v632 lineage; work already in integrate via the sift) | Tag `archive/pre-sift-v632`, deleted |
-| `vault` | orphan museum snapshot (v457 era) | Tag `archive/vault-museum`, deleted |
+| `backup-pre-sift` | 14,679 (pre-sift  lineage; work already in integrate via the sift) | Tag `archive/pre-sift-`, deleted |
+| `vault` | orphan museum snapshot ( era) | Tag `archive/vault-museum`, deleted |
 | `bot/js-autofix` | 1 — `npm run fix` formatting of apps/desktop (cosmetic, no behavior) | Tag `archive/js-autofix`, deleted |
 | `fix/credits-free-tier-suffix-trust` | 1 — Python credits fix | **Harvested** (see below) |
 | `fix/config-context-length-survives-model-switch` | 1 — Python agent fix | Backlog (see below) |

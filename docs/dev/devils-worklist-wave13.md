@@ -1,5 +1,4 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 18,327 / 49,699 (36.9%) |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
 | REAL_GAP| 31,328 (63.0%) — no N/A |
 |  ├ DA-4 stubs | 15 |
 |  └ Genuine gaps | 31,313 |
@@ -10,12 +9,11 @@
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T17:36:51Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Devil's-advocate worklist — waves 10–13 flow ports (recursive PoP-tag + stub audit)
 
-**Snapshot:** 2026-11-19 13:03:33 EST · **Scope:** `src/**/*flow*.c`, `*flow2*.c`, `*revive*.c` (122 files, 2999 PoP claims) · **Quarry:** `C:/Users/eman5/hermes-agent` (read-only)
+**Snapshot:**  13:03:33 EST · **Scope:** `src/**/*flow*.c`, `*flow2*.c`, `*revive*.c` (122 files, 2999 PoP claims) · **Quarry:** `C:/Users/eman5/hermes-agent` (read-only)
 
 > **Moving-tree caveat:** ports were being landed by concurrent workers DURING this audit (86 target files modified <6h; claim count grew 2828→2999 across passes; one first-wave harness `t_port_cch_flow.c` appeared mid-audit and cleared 24 dead-credit findings; 21 corrupted tag fragments in `auth_flow.c` seen at 12:57 were repaired by the worker by 12:59). This document is a timestamped snapshot — re-run `scratch/wave13_audit.py` before acting on any line item.
 

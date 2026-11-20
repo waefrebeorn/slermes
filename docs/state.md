@@ -9,7 +9,7 @@
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T17:36:51Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Slermes — Project State
 
@@ -24,7 +24,7 @@ are written. For the ranked work list see
 - **One native C11 binary** (`slermes` / `slermes.exe`), zero Python at
   runtime. Entry point `src/main.c` dispatches CLI / gateway / cron / acp /
   mcp-serve / api-server.
-- **Port branch `integrate`** → `origin integrate`. Python quarry:
+- **Main-only port** → `origin main` (no feature branches; stale tips under `archive/*`). Python quarry:
   `C:/Users/eman5/hermes-agent` (upstream `NousResearch/hermes-agent`). C
   work is never pushed back upstream.
 - **Whole-ecosystem mission** — agent, tools, platforms, plugins, and every

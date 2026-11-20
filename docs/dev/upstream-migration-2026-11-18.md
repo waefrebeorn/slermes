@@ -1,5 +1,4 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 18,327 / 49,699 (36.9%) |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
 | REAL_GAP| 31,328 (63.0%) — no N/A |
 |  ├ DA-4 stubs | 15 |
 |  └ Genuine gaps | 31,313 |
@@ -10,10 +9,9 @@
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T17:36:51Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-# Upstream migration checkpoint — 2026-11-18 (pluggable-DB day)
+# Upstream migration checkpoint —  (pluggable-DB day)
 
 ## Trigger
 Nous announcement (teknium, Discord): Hermes' DB architecture is now
@@ -117,7 +115,7 @@ quarry's CURRENT package layout, driven by each file's PoP claims:
 - Parallel porting agents' files were excluded from moves/rewrites.
 
 ## Backups taken before the pull
-- Pre-migration watercup verdicts: scratch/checkpoint-2026-11-18/
+- Pre-migration watercup verdicts: scratch/checkpoint-/
   watercup-results-pre-migration.jsonl (23 streamed verdicts).
 - Quarry pre-state recoverable at `944799abc0` (git).
 - slermes checkpoint commits on main before the pull.

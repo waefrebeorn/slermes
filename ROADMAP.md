@@ -11,7 +11,7 @@
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T17:36:51Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 > Rewriting from scratch in C11 is the point. There is no N/A, no "out of
 > scope", no "not doable" — every feature of the Python ecosystem, and every

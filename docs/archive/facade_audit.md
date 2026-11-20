@@ -1,22 +1,20 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
+| REAL_GAP| 31,328 (63.0%) — no N/A |
+|  ├ DA-4 stubs | 15 |
+|  └ Genuine gaps | 31,313 |
+| PARTIAL | 44 (0.1%) |
+| BOOTLEG | 4 |
+| **Watercup** | 58 PASS / 1,685 (3.4%) · 58/1685 ported match · 0/0 gap mismatch |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-# Slermes Façade Audit (v547, ERADICATED)
+# Slermes Façade Audit (, ERADICATED)
 
-**Date:** 2026-07-09
-**Status:** ✅ All 110 fraudulent façades ERADICATED in v547 (deleted fake `PoP:` + no-op body → honest REAL_GAP). 23 honest-limitation façades retained.
+**Date:** 
+**Status:** ✅ All 110 fraudulent façades ERADICATED in  (deleted fake `PoP:` + no-op body → honest REAL_GAP). 23 honest-limitation façades retained.
 
 ## Definition
 PoP-annotated C fn whose entire body (after stripping comments, `hermes_log`, `(void)arg`) is a single `return <hardcoded const>`. Passes scanner + depth-check, does none of the Python's real work.
@@ -28,14 +26,14 @@ PoP-annotated C fn whose entire body (after stripping comments, `hermes_log`, `(
 > only the oracle harness (`tests/oracle/`, see `docs/fap.md`) can. When triaging,
 > call the behavioral-divergence class a **FAP**, never "drift" or "desync".
 
-## Totals (as measured v546)
+## Totals (as measured )
 - TRUE FAÇADES found: **133**
-  - **fraudulent** (caller lied to / real work skipped): **110** → **ALL ERADICATED in v547**
+  - **fraudulent** (caller lied to / real work skipped): **110** → **ALL ERADICATED in **
   - honest-limitation (const return is truthful in C, e.g. SDK getter -> NULL): **23** (retained)
 - Thin wrappers (return var/expr): 42
 - No-return bodies: 37
 
-## Eradication method (v547)
+## Eradication method ()
 Per edict §2: each façade's Python body was read. Every one was either
 (a) a live network/cloud/SDK call against skills.sh / clawhub / browse.sh /
 GitHub / MCP servers or browser audio capture with no C SDK — genuinely
@@ -250,12 +248,12 @@ for the eradicated names. Build clean (0 errors). `run_mission8_tests.sh`:
 
 ---
 
-# Slermes Façade Audit — v548 ADDENDUM (ERADICATED)
+# Slermes Façade Audit —  ADDENDUM (ERADICATED)
 
-**Date:** 2026-07-09
-**Status:** ✅ 95 additional fraudulent/dormant façades eradicated in v548 (residual façades + no-return `(void)arg` + thin-wrapper frauds). 0 `PoP:` comments remain for any eradicated name. 26 honest-limitation façades retained total (v547: 23 + v548: 3).
+**Date:** 
+**Status:** ✅ 95 additional fraudulent/dormant façades eradicated in  (residual façades + no-return `(void)arg` + thin-wrapper frauds). 0 `PoP:` comments remain for any eradicated name. 26 honest-limitation façades retained total (: 23 + : 3).
 
-## Method (same as v547, hardened)
+## Method (same as , hardened)
 A fresh mechanical scan (`tests/v548_detect.py`) extracted every `/* PoP: */`
 function body from all 233 `port_*.c` files and classified its *shape*:
 `FACADE_SHAPE` (returns const / void no-op), `NORET_SHAPE` (void, no real stmt),
@@ -277,7 +275,7 @@ function. Façade count collapsed 109 → 53 after the fix. Lesson reinforced:
 | NORET_SHAPE (`(void)arg`) | 25 | 25 | 0 |
 | THIN_SHAPE | 54 | 17 | 37 |
 
-The v546 hand-counts (42 thin / 37 no-return) were **wrong**; rebuilt from scratch.
+The  hand-counts (42 thin / 37 no-return) were **wrong**; rebuilt from scratch.
 
 ## FACADE_SHAPE retained (3, honest SDK-getters)
 - `cli_agent_anthropic_adapter__get_anthropic_sdk` -> NULL (returns SDK module)

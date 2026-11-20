@@ -9,7 +9,7 @@
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T17:36:51Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Development Guide
 
@@ -118,7 +118,7 @@ refuses to write unless the expanded object multiset is identical).
    (`tests/watercup/gates/<fn>/`: gate.json + harness.c + twin.py).
 5. Register the object in the right cupboard; register the oracle in
    `tests/oracle/registry.json`.
-6. Build, run the gates, commit the bite to `integrate`.
+6. Build, run the gates, commit the bite to `main`.
 
 ## Adding a CLI command / tool
 
@@ -161,12 +161,12 @@ python scripts/parity_coverage.py --dirs                # per-area rollup
 
 ## Contributing
 
-1. Work on `integrate`; one self-contained bite per commit.
+1. Work on `main` (main-only); one self-contained bite per commit.
 2. Behavior first, annotations last; prove with an oracle, not a comment.
 3. Run the gates above; a red gate is the next task, not something to build
    on top of.
 4. Commit source only — never rebuilt binaries, `.testbin/` artifacts, or
-   gate logs. Push to `origin integrate` (never the port branch to `main`).
+   gate logs. Push to `origin main` (main-only; no feature branches).
 
 ## CI/CD
 

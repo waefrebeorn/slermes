@@ -1,38 +1,36 @@
-<!-- PARITY:AUTO -->
-| PORTED  | 8,778 / 34,262 (25.6%) |
-| REAL_GAP| 25,451 (74.3%) — no N/A |
-|  ├ DA-4 stubs | 43 |
-|  └ Genuine gaps | 25,408 |
-| PARTIAL | 33 (0.1%) |
-| BOOTLEG | 0 |
-| **Watercup** | not run — no results under tests/watercup/build/; the scanner counts above are current |
+<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
+| REAL_GAP| 31,328 (63.0%) — no N/A |
+|  ├ DA-4 stubs | 15 |
+|  └ Genuine gaps | 31,313 |
+| PARTIAL | 44 (0.1%) |
+| BOOTLEG | 4 |
+| **Watercup** | 58 PASS / 1,685 (3.4%) · 58/1685 ported match · 0/0 gap mismatch |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-15T07:30:31Z from live scanner + watercup oracle — do not edit by hand._
-<!-- /PARITY:AUTO -->
+_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
-# Slermes v622 Session Prompt — RESUME PUSH + CONTINUE GAP CLOSURE
+# Slermes  Session Prompt — RESUME PUSH + CONTINUE GAP CLOSURE
 
-Branch: main (v621 HEAD 68f30e842c recovered; v620 = f0c7ebf3955)
+Branch: main ( HEAD 68f30e842c recovered;  = f0c7ebf3955)
 Working dir: /home/wubu/hermes-agent-dev/slermes
 Python sources: /home/wubu/hermes-agent-dev/  (parent repo — NOT inside slermes/)
-Date anchor: 2026-07-23
+Date anchor: 
 
-## Context (what v621 delivered / recovered)
+## Context (what  delivered / recovered)
 The prior auto-pilot session committed real work but crashed BEFORE it could
-(a) renumber 49 placeholder `vXXX`/`v572` commit messages, (b) refresh
-BANNER/STATE/parity-summary, and (c) push. v622's recovery step:
+(a) renumber 49 placeholder `vXXX`/`` commit messages, (b) refresh
+BANNER/STATE/parity-summary, and (c) push. 's recovery step:
 
 - Restored byte-identical history via `git filter-repo` `--commit-callback`,
-  renumbering the 49 mislabeled commits to **v573..v621** (monotonic; the 5
+  renumbering the 49 mislabeled commits to **..** (monotonic; the 5
   descriptive intermediate commits like `port_web_server_auth:` / `pop
   annotations:` were kept verbatim).
 - The 49 renumbered commits cover: god-header purge (hermes.h umbrella off all
   sources), web_server.py / weixin.py heavy pure-helper ports, batch PoP
   annotation closure (hundreds of REAL_GAP/ PARTIAL solved by annotation
-  matching), and 14 local oracle-verified REAL_GAP closures (v608..v621:
+  matching), and 14 local oracle-verified REAL_GAP closures (..:
   model_normalize, provider_catalog, skills_tool, dashboard_auth/cookies,
   kanban_diagnostics, moa_config, azure_detect, fallback_cmd, session_recap,
   middleware, lazy_deps, curses_ui, security_audit, doctor) — net 75 RG closed.
@@ -43,7 +41,7 @@ BANNER/STATE/parity-summary, and (c) push. v622's recovery step:
   (had regressed to 2). Runner include-path fixed so libjson/json.h etc.
   resolve. Running `tests/oracle/run_oracles.sh` is now the FAP detector —
   see docs/fap.md.
-- Docs synced (BANNER, parity-summary, STATE v621 checkpoint). NO push was
+- Docs synced (BANNER, parity-summary, STATE  checkpoint). NO push was
   done — see PUSH below (the fork `origin` remote is missing from .git/config;
   only `upstream`=NousResearch/hermes-agent is configured, and local `main`
   diverges from real upstream/main by 14k/17k commits — a fork branch, NOT to
@@ -57,7 +55,7 @@ On resume, confirm the fork remote with the user:
 - If upstream is the only option, push to a dedicated `slermes` branch only.
 - Safety: `backup-pre-recovery` branch holds the pre-filter-repo HEAD.
 
-## Continue gap closure (v622+)
+## Continue gap closure (+)
 With the recovery merged, resume the honest REAL_GAP closure doctrine:
 - Reuse the oracle harness (tests/oracle/ + run_one_oracle.sh); add fixtures
   under tests/oracle/fixtures/<port>/, never scatter inputs in /tmp.
@@ -86,19 +84,19 @@ With the recovery merged, resume the honest REAL_GAP closure doctrine:
 - No god header; opaque struct in .h, private fields in .c.
 - Every public function gets a PoP annotation. Reuse, don't duplicate.
 
-## Done-when for v622
+## Done-when for 
 - Push target resolved + renumbered history pushed to the fork (NOT upstream/main).
 - ≥1 more honest REAL_GAP batch closed (oracle-verified) and docs updated.
 - Build clean, mission8 green, parity summary regenerated to live numbers.
 
 ## Prestige (session end)
-Update BANNER.md + docs/parity-summary.md + append v622 to STATE.md + write
-NEXT_SESSION_PROMPT.md (v622→v623) + commit + push.
+Update BANNER.md + docs/parity-summary.md + append  to STATE.md + write
+NEXT_SESSION_PROMPT.md (→) + commit + push.
 Report: push target used, gaps closed, build/test/oracle, remaining RG.
 
 ## Copy-paste ready
-Slermes v622: resolve fork-push target (never upstream/main), push the
-renumbered v573..v621 history, then resume honest oracle-verified REAL_GAP
+Slermes : resolve fork-push target (never upstream/main), push the
+renumbered .. history, then resume honest oracle-verified REAL_GAP
 closure on dense pure Python helpers; build 0 errors, 77/0/0 mission8, no
 god headers, no fake success. Run tests/oracle/run_oracles.sh after any port
 touch — a MATCH is the behavioral-done signal; a MISMATCH is a FAP.
