@@ -1,0 +1,191 @@
+{"func": "_number", "in": {"value": 5, "io": {"contract._non_negative_number": [5]}}}
+{"func": "_number", "in": {"value": 0, "io": {"contract._non_negative_number": [0]}}}
+{"func": "_number", "in": {"value": -3, "io": {"contract._non_negative_number": [null]}}}
+{"func": "_number", "in": {"value": "x", "io": {"contract._non_negative_number": [null]}}}
+{"func": "_number", "in": {"value": null, "io": {"contract._non_negative_number": [null]}}}
+{"func": "_number", "in": {"value": true, "io": {"contract._non_negative_number": [null]}}}
+{"func": "_number", "in": {"value": 5, "io": {"contract._non_negative_number": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_number", "in": {"value": 5, "io": {}}}
+{"func": "provider_identifier", "in": {"value": "openai", "io": {"catalog.provider_metric_name": ["openai"]}}}
+{"func": "provider_identifier", "in": {"value": "custom:acme", "io": {"catalog.provider_metric_name": ["custom"]}}}
+{"func": "provider_identifier", "in": {"value": "", "io": {"catalog.provider_metric_name": ["unknown"]}}}
+{"func": "provider_identifier", "in": {"value": null, "io": {"catalog.provider_metric_name": ["unknown"]}}}
+{"func": "provider_identifier", "in": {"value": " Nous ", "io": {"catalog.provider_metric_name": ["nous"]}}}
+{"func": "provider_identifier", "in": {"value": "openai", "io": {"catalog.provider_metric_name": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "provider_identifier", "in": {"value": "openai", "io": {}}}
+{"func": "session_fields", "in": {"start_fields": {"entrypoint": "cli", "execution_surface": "tui", "platform": "none"}, "turns": 3, "failed_turns": 0, "last_outcome": "success", "active_ms": 120000, "io": {"_bucket": ["1m_to_5m"], "contract.count_bucket": ["0"], "contract.size_bucket": ["3_to_5"]}}}
+{"func": "session_fields", "in": {"start_fields": {}, "turns": 0, "failed_turns": 0, "last_outcome": "unknown", "active_ms": 0, "io": {"_bucket": ["lt_1m"], "contract.count_bucket": ["0"], "contract.size_bucket": ["0"]}}}
+{"func": "session_fields", "in": {"start_fields": {"entrypoint": "scheduled_task"}, "turns": 25, "failed_turns": 7, "last_outcome": "timed_out", "active_ms": -5, "io": {"_bucket": ["lt_1m"], "contract.count_bucket": ["6_to_10"], "contract.size_bucket": ["11_to_25"]}}}
+{"func": "session_fields", "in": {"start_fields": {"entrypoint": null, "platform": null}, "turns": 1, "failed_turns": 0, "last_outcome": "success", "active_ms": 60000, "io": {"_bucket": ["1m_to_5m"], "contract.count_bucket": ["0"], "contract.size_bucket": ["1"]}}}
+{"func": "session_fields", "in": {"start_fields": {}, "turns": 2, "failed_turns": 1, "last_outcome": "bogus", "active_ms": 300000, "io": {"_bucket": ["5m_to_30m"], "contract.count_bucket": ["1"], "contract.size_bucket": ["2"]}}}
+{"func": "session_fields", "in": {"start_fields": {}, "turns": 2, "failed_turns": 1, "last_outcome": null, "active_ms": 300000, "io": {"_bucket": ["5m_to_30m"], "contract.count_bucket": ["1"], "contract.size_bucket": ["2"]}}}
+{"func": "session_fields", "in": {"start_fields": null, "turns": 1, "failed_turns": 0, "last_outcome": "success", "active_ms": 5, "io": {"_bucket": ["lt_1m"]}}}
+{"func": "session_fields", "in": {"start_fields": {}, "turns": 1, "failed_turns": 0, "last_outcome": ["x"], "active_ms": 5, "io": {"_bucket": ["lt_1m"], "contract.count_bucket": ["0"]}}}
+{"func": "session_fields", "in": {"start_fields": {}, "turns": 1, "failed_turns": 0, "last_outcome": "success", "active_ms": 5, "io": {"_bucket": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "session_fields", "in": {"start_fields": {}, "turns": 1, "failed_turns": 0, "last_outcome": "success", "active_ms": 5, "io": {}}}
+{"func": "install_age_bucket", "in": {"age_seconds": 7200, "io": {"contract._non_negative_number": [7200], "_bucket": ["1h_to_1d"]}}}
+{"func": "install_age_bucket", "in": {"age_seconds": 0, "io": {"contract._non_negative_number": [0], "_bucket": ["lt_1h"]}}}
+{"func": "install_age_bucket", "in": {"age_seconds": 3600, "io": {"contract._non_negative_number": [3600], "_bucket": ["1h_to_1d"]}}}
+{"func": "install_age_bucket", "in": {"age_seconds": 7776000, "io": {"contract._non_negative_number": [7776000], "_bucket": ["gte_90d"]}}}
+{"func": "install_age_bucket", "in": {"age_seconds": null, "io": {"contract._non_negative_number": [null]}}}
+{"func": "install_age_bucket", "in": {"age_seconds": "x", "io": {"contract._non_negative_number": [null]}}}
+{"func": "install_age_bucket", "in": {"age_seconds": -5, "io": {"contract._non_negative_number": [null]}}}
+{"func": "install_age_bucket", "in": {"age_seconds": 5, "io": {"contract._non_negative_number": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "install_age_bucket", "in": {"age_seconds": 5, "io": {}}}
+{"func": "ttft_bucket", "in": {"event": {"started_at": 10, "first_chunk_at": 10.5}, "io": {"contract._non_negative_number": [10, 10.5], "_bucket": ["500ms_to_1s"]}}}
+{"func": "ttft_bucket", "in": {"event": {"started_at": 10}, "io": {"contract._non_negative_number": [10, null]}}}
+{"func": "ttft_bucket", "in": {"event": {"first_chunk_at": 10.5}, "io": {"contract._non_negative_number": [null, 10.5]}}}
+{"func": "ttft_bucket", "in": {"event": {}, "io": {"contract._non_negative_number": [null, null]}}}
+{"func": "ttft_bucket", "in": {"event": {"started_at": 2.5, "first_chunk_at": 1.25}, "io": {"contract._non_negative_number": [2.5, 1.25], "_bucket": ["lt_500ms"]}}}
+{"func": "ttft_bucket", "in": {"event": {"started_at": 0.5, "first_chunk_at": 1.75}, "io": {"contract._non_negative_number": [0.5, 1.75], "_bucket": ["1s_to_2s"]}}}
+{"func": "ttft_bucket", "in": {"event": {"started_at": 1, "first_chunk_at": 16}, "io": {"contract._non_negative_number": [1, 16], "_bucket": ["gte_15s"]}}}
+{"func": "ttft_bucket", "in": {"event": null, "io": {}}}
+{"func": "ttft_bucket", "in": {"event": {"started_at": 1, "first_chunk_at": 2}, "io": {"contract._non_negative_number": [{"__raise__": "RuntimeError", "message": "boom"}]}}}
+{"func": "ttft_bucket", "in": {"event": {"started_at": 1, "first_chunk_at": 2}, "io": {}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": 25, "context_length": 200, "io": {"contract._non_negative_number": [25, 200], "_bucket": ["lt_50"]}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": 150, "context_length": 200, "io": {"contract._non_negative_number": [150, 200], "_bucket": ["75_to_90"]}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": 180, "context_length": 200, "io": {"contract._non_negative_number": [180, 200], "_bucket": ["90_to_100"]}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": 200, "context_length": 200, "io": {"contract._non_negative_number": [200, 200], "_bucket": ["gte_100"]}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": 250, "context_length": 200, "io": {"contract._non_negative_number": [250, 200], "_bucket": ["gte_100"]}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": null, "context_length": 200, "io": {"contract._non_negative_number": [null, 200]}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": 25, "context_length": 0, "io": {"contract._non_negative_number": [25, 0]}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": 25, "context_length": null, "io": {"contract._non_negative_number": [25, null]}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": 0, "context_length": 200, "io": {"contract._non_negative_number": [0, 200], "_bucket": ["lt_50"]}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": 25, "context_length": 200, "io": {"contract._non_negative_number": [{"__raise__": "ValueError", "message": "boom"}]}}}
+{"func": "context_fill_bucket", "in": {"tokens_before": 25, "context_length": 200, "io": {}}}
+{"func": "model_token_fields", "in": {"usage": {"input_tokens": 5, "output_tokens": 7}, "model": "gpt-4", "provider": "openai", "call_role": "primary", "io": {"catalog.provider_metric_name": ["openai", "openai"], "catalog.model_metric_name": ["gpt-4"]}}}
+{"func": "model_token_fields", "in": {"usage": {"input_tokens": 5}, "model": "gpt-4", "provider": "openai", "call_role": "auxiliary", "aux_task": "title", "io": {"catalog.aux_task_metric_name": ["other"], "catalog.provider_metric_name": ["openai", "openai"], "catalog.model_metric_name": ["gpt-4"]}}}
+{"func": "model_token_fields", "in": {"usage": {"input_tokens": 0}, "model": "m", "provider": "p", "call_role": "primary", "io": {}}}
+{"func": "model_token_fields", "in": {"usage": {"input_tokens": true, "output_tokens": -3, "cache_read": "x"}, "model": "m", "provider": "p", "call_role": "primary", "io": {}}}
+{"func": "model_token_fields", "in": {"usage": {"input_tokens": 5.5}, "model": "m", "provider": "p", "call_role": "primary", "io": {}}}
+{"func": "model_token_fields", "in": {"usage": "x", "model": "m", "provider": "p", "call_role": "primary", "io": {}}}
+{"func": "model_token_fields", "in": {"usage": {"reasoning_tokens": 2}, "model": "m", "provider": "p", "call_role": "auxiliary", "aux_task": null, "io": {"catalog.aux_task_metric_name": ["none"], "catalog.provider_metric_name": ["custom", "custom"], "catalog.model_metric_name": ["custom"]}}}
+{"func": "model_token_fields", "in": {"usage": {"output_tokens": 1}, "model": null, "provider": null, "call_role": "primary", "io": {"catalog.provider_metric_name": ["unknown", "unknown"], "catalog.model_metric_name": ["unknown"]}}}
+{"func": "model_token_fields", "in": {"usage": {"input_tokens": 5}, "model": "m", "provider": "p", "call_role": "primary", "io": {"catalog.provider_metric_name": [{"__raise__": "RuntimeError", "message": "boom"}]}}}
+{"func": "model_token_fields", "in": {"usage": {"input_tokens": 5}, "model": "m", "provider": "p", "call_role": "primary", "io": {}}}
+{"func": "setup_completed_fields", "in": {"surface": " CLI ", "provider": "openai", "io": {"_norm": ["cli"], "catalog.provider_metric_name": ["openai"]}}}
+{"func": "setup_completed_fields", "in": {"surface": "desktop", "provider": "", "io": {"_norm": ["desktop"]}}}
+{"func": "setup_completed_fields", "in": {"surface": "bogus", "provider": null, "io": {"_norm": ["bogus"]}}}
+{"func": "setup_completed_fields", "in": {"surface": null, "provider": "openai", "io": {"_norm": [""], "catalog.provider_metric_name": ["openai"]}}}
+{"func": "setup_completed_fields", "in": {"surface": "cli", "provider": 0, "io": {"_norm": ["cli"]}}}
+{"func": "setup_completed_fields", "in": {"surface": "cli", "provider": "p", "io": {"_norm": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "setup_completed_fields", "in": {"surface": "cli", "provider": "p", "io": {}}}
+{"func": "compression_failure_class", "in": {"outcome": "failed", "failure_class": "exception:ValueError", "io": {"_norm": ["exception:valueerror"]}}}
+{"func": "compression_failure_class", "in": {"outcome": "success", "failure_class": null, "io": {"_norm": [""]}}}
+{"func": "compression_failure_class", "in": {"outcome": "success", "failure_class": "summary_model_benched", "io": {"_norm": ["summary_model_benched"]}}}
+{"func": "compression_failure_class", "in": {"outcome": "success", "failure_class": "none", "io": {"_norm": ["none"]}}}
+{"func": "compression_failure_class", "in": {"outcome": "failed", "failure_class": "", "io": {"_norm": [""]}}}
+{"func": "compression_failure_class", "in": {"outcome": "failed", "failure_class": "bogus", "io": {"_norm": ["bogus"]}}}
+{"func": "compression_failure_class", "in": {"outcome": "failed", "failure_class": "rollback:TimeoutError", "io": {"_norm": ["rollback:timeouterror"]}}}
+{"func": "compression_failure_class", "in": {"outcome": "skipped", "failure_class": "lock_contended", "io": {"_norm": ["lock_contended"]}}}
+{"func": "compression_failure_class", "in": {"outcome": "failed", "failure_class": 5, "io": {"_norm": [""]}}}
+{"func": "compression_failure_class", "in": {"outcome": "failed", "failure_class": "x", "io": {"_norm": [null]}}}
+{"func": "compression_failure_class", "in": {"outcome": "failed", "failure_class": "x", "io": {"_norm": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "compression_failure_class", "in": {"outcome": "failed", "failure_class": "x", "io": {}}}
+{"func": "compression_fields", "in": {"trigger": "auto", "outcome": "success", "tokens_before": 25, "context_length": 200, "failure_class": null, "io": {"_norm": ["success", "", "auto"], "contract._non_negative_number": [25, 200], "_bucket": ["lt_50"]}}}
+{"func": "compression_fields", "in": {"trigger": "manual", "outcome": "ok", "tokens_before": 150, "context_length": 200, "failure_class": "exception:X", "io": {"_norm": ["ok", "exception:x", "manual"], "contract._non_negative_number": [150, 200], "_bucket": ["75_to_90"]}}}
+{"func": "compression_fields", "in": {"trigger": "idle", "outcome": "skipped", "tokens_before": 180, "context_length": 200, "failure_class": "lock_contended", "io": {"_norm": ["skipped", "lock_contended", "idle"], "contract._non_negative_number": [180, 200], "_bucket": ["90_to_100"]}}}
+{"func": "compression_fields", "in": {"trigger": "bogus", "outcome": "bogus", "tokens_before": 25, "context_length": 200, "io": {"_norm": ["bogus", "", "bogus"], "contract._non_negative_number": [25, 200], "_bucket": ["lt_50"]}}}
+{"func": "compression_fields", "in": {"trigger": "overflow", "outcome": "failed", "tokens_before": null, "context_length": 200, "failure_class": "no_progress", "io": {"_norm": ["failed", "no_progress", "overflow"], "contract._non_negative_number": [null, 200]}}}
+{"func": "compression_fields", "in": {"trigger": "auto", "outcome": "success", "tokens_before": 25, "context_length": 200, "io": {"_norm": [{"__raise__": "RuntimeError", "message": "boom"}]}}}
+{"func": "compression_fields", "in": {"trigger": "auto", "outcome": "success", "tokens_before": 25, "context_length": 200, "io": {}}}
+{"func": "model_switch_fields", "in": {"from_provider": "openai", "to_provider": "anthropic", "surface": "tui", "io": {"contract.execution_surface": ["tui"], "catalog.provider_metric_name": ["openai", "anthropic"]}}}
+{"func": "model_switch_fields", "in": {"from_provider": "openai", "to_provider": "anthropic", "surface": null, "io": {"contract.execution_surface": ["unknown"], "catalog.provider_metric_name": ["openai", "anthropic"]}}}
+{"func": "model_switch_fields", "in": {"from_provider": null, "to_provider": null, "surface": "cli", "io": {"contract.execution_surface": ["cli"], "catalog.provider_metric_name": ["unknown", "unknown"]}}}
+{"func": "model_switch_fields", "in": {"from_provider": "a", "to_provider": "b", "surface": "cli", "io": {"contract.execution_surface": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "model_switch_fields", "in": {"from_provider": "a", "to_provider": "b", "surface": "cli", "io": {"contract.execution_surface": "cli", "catalog.provider_metric_name": ["a", {"__raise__": "ValueError", "message": "boom"}]}}}
+{"func": "model_switch_fields", "in": {"from_provider": "a", "to_provider": "b", "surface": "cli", "io": {}}}
+{"func": "fallback_fields", "in": {"from_provider": "openai", "to_provider": "anthropic", "reason": "rate_limit", "io": {"contract.model_error_class": ["rate_limit"], "catalog.provider_metric_name": ["openai", "anthropic"]}}}
+{"func": "fallback_fields", "in": {"from_provider": "openai", "to_provider": "anthropic", "reason": {"value": "rate_limit"}, "io": {"contract.model_error_class": ["rate_limit"], "catalog.provider_metric_name": ["openai", "anthropic"]}}}
+{"func": "fallback_fields", "in": {"from_provider": "a", "to_provider": "b", "reason": {"value": null}, "io": {"contract.model_error_class": ["unknown"], "catalog.provider_metric_name": ["custom", "custom"]}}}
+{"func": "fallback_fields", "in": {"from_provider": "a", "to_provider": "b", "reason": null, "io": {"contract.model_error_class": ["unknown"], "catalog.provider_metric_name": ["custom", "custom"]}}}
+{"func": "fallback_fields", "in": {"from_provider": "a", "to_provider": "b", "reason": {"value": "bogus"}, "io": {"contract.model_error_class": ["unknown"], "catalog.provider_metric_name": ["custom", "custom"]}}}
+{"func": "fallback_fields", "in": {"from_provider": "a", "to_provider": "b", "reason": "rate_limit", "io": {"contract.model_error_class": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "fallback_fields", "in": {"from_provider": "a", "to_provider": "b", "reason": "rate_limit", "io": {}}}
+{"func": "slash_command_fields", "in": {"command": "/help", "surface": "cli", "io": {"catalog.slash_command_metric_name": ["help"], "contract.execution_surface": ["cli"]}}}
+{"func": "slash_command_fields", "in": {"command": "bogus", "surface": "tui", "io": {"catalog.slash_command_metric_name": ["unknown"], "contract.execution_surface": ["tui"]}}}
+{"func": "slash_command_fields", "in": {"command": null, "surface": null, "io": {"catalog.slash_command_metric_name": ["unknown"], "contract.execution_surface": ["unknown"]}}}
+{"func": "slash_command_fields", "in": {"command": "/help", "surface": "cli", "io": {"catalog.slash_command_metric_name": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "slash_command_fields", "in": {"command": "/help", "surface": "cli", "io": {"catalog.slash_command_metric_name": "help", "contract.execution_surface": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "slash_command_fields", "in": {"command": "/help", "surface": "cli", "io": {}}}
+{"func": "extension_install_fields", "in": {"kind": "skill", "source": "hub", "name": "my-skill", "outcome": "success", "registry": "skills.sh", "failure_class": null, "io": {"_norm": ["skill", "hub", "success", "skills.sh"], "catalog.extension_metric_name": ["custom"]}}}
+{"func": "extension_install_fields", "in": {"kind": "plugin", "source": "local", "name": "p", "outcome": "failed", "failure_class": "clone_failed", "io": {"_norm": ["plugin", "local", "failed", "clone_failed"], "catalog.extension_metric_name": ["custom"]}}}
+{"func": "extension_install_fields", "in": {"kind": "mcp_server", "source": "url", "name": "m", "outcome": "ok", "failure_class": null, "error": {"__exc__": true, "type": "ValueError", "module": "builtins", "message": "x"}, "io": {"_norm": ["mcp_server", "url", "ok"], "catalog.extension_metric_name": ["custom"]}}}
+{"func": "extension_install_fields", "in": {"kind": "bogus", "source": "hub", "name": "x", "outcome": "success", "io": {"_norm": ["bogus"]}}}
+{"func": "extension_install_fields", "in": {"kind": "skill", "source": "bogus", "name": "x", "outcome": "installed", "io": {"_norm": ["skill", "bogus", "installed", ""], "catalog.extension_metric_name": ["custom"]}}}
+{"func": "extension_install_fields", "in": {"kind": "skill", "source": "hub", "name": "x", "outcome": "failed", "failure_class": null, "error": {"__exc__": true, "type": "PermissionError", "module": "builtins", "message": "x"}, "io": {"_norm": ["skill", "hub", "failed", "permission", ""], "catalog.extension_metric_name": ["custom"]}}}
+{"func": "extension_install_fields", "in": {"kind": "skill", "source": "hub", "name": "x", "outcome": "success", "io": {"_norm": [{"__raise__": "RuntimeError", "message": "boom"}]}}}
+{"func": "extension_install_fields", "in": {"kind": "skill", "source": "hub", "name": "x", "outcome": "success", "io": {"_norm": ["skill", "hub", "success"], "catalog.extension_metric_name": {"__raise__": "ValueError", "message": "boom"}}}}
+{"func": "extension_install_fields", "in": {"kind": "skill", "source": "hub", "name": "x", "outcome": "success", "io": {}}}
+{"func": "tagged_failure_class", "in": {"error": {"__exc__": true, "type": "ValueError", "module": "builtins", "message": "x", "failure_class": "tagged"}, "io": {}}}
+{"func": "tagged_failure_class", "in": {"error": {"__exc__": true, "type": "ValueError", "module": "builtins", "message": "x"}, "io": {}}}
+{"func": "tagged_failure_class", "in": {"error": {"__exc__": true, "type": "ValueError", "module": "builtins", "message": "x", "failure_class": ""}, "io": {}}}
+{"func": "tagged_failure_class", "in": {"error": {"__exc__": true, "type": "ValueError", "module": "builtins", "message": "x", "failure_class": 5}, "io": {}}}
+{"func": "tagged_failure_class", "in": {"error": {"__exc__": true, "type": "HookError", "module": "probe", "message": "x", "mro": [{"name": "HookError", "module": "probe"}, {"name": "Exception", "module": "builtins"}, {"name": "BaseException", "module": "builtins"}, {"name": "object", "module": "builtins"}], "hook": true}, "io": {}}}
+{"func": "tagged_failure_class", "in": {"error": {"__exc__": true, "type": "HookError", "module": "probe", "message": "x", "mro": [{"name": "HookError", "module": "probe"}, {"name": "Exception", "module": "builtins"}, {"name": "BaseException", "module": "builtins"}, {"name": "object", "module": "builtins"}], "hook": true, "failure_class": "tagged"}, "io": {}}}
+{"func": "tagged_failure_class", "in": {"error": {"__exc__": true, "type": "PropError", "module": "probe", "message": "x", "mro": [{"name": "PropError", "module": "probe"}, {"name": "Exception", "module": "builtins"}, {"name": "BaseException", "module": "builtins"}, {"name": "object", "module": "builtins"}], "failure_class_property": true}, "io": {}}}
+{"func": "tagged_failure_class", "in": {"error": null, "io": {}}}
+{"func": "tagged_failure_class", "in": {"error": {"failure_class": "x"}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "PermissionError", "module": "builtins", "message": "x"}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "ConnectionResetError", "module": "builtins", "message": "x"}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "TimeoutError", "module": "builtins", "message": "x"}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "gaierror", "module": "socket", "message": "x", "mro": [{"name": "gaierror", "module": "socket"}, {"name": "OSError", "module": "builtins"}, {"name": "Exception", "module": "builtins"}, {"name": "BaseException", "module": "builtins"}, {"name": "object", "module": "builtins"}]}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "URLError", "module": "urllib.error", "message": "x", "mro": [{"name": "URLError", "module": "urllib.error"}, {"name": "OSError", "module": "builtins"}, {"name": "Exception", "module": "builtins"}, {"name": "BaseException", "module": "builtins"}, {"name": "object", "module": "builtins"}]}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "FileNotFoundError", "module": "builtins", "message": "x"}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "InterruptedError", "module": "builtins", "message": "x"}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "ValueError", "module": "builtins", "message": "x"}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "KeyboardInterrupt", "module": "builtins", "message": "x"}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "ExceptionGroup", "module": "builtins", "message": "x"}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "ClientError", "module": "httpx", "message": "x", "mro": [{"name": "ClientError", "module": "httpx"}, {"name": "Exception", "module": "builtins"}, {"name": "BaseException", "module": "builtins"}, {"name": "object", "module": "builtins"}]}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "PermErr", "module": "requests", "message": "x", "mro": [{"name": "PermErr", "module": "requests"}, {"name": "PermissionError", "module": "builtins"}, {"name": "OSError", "module": "builtins"}, {"name": "Exception", "module": "builtins"}, {"name": "BaseException", "module": "builtins"}, {"name": "object", "module": "builtins"}]}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "NetOSError", "module": "aiohttp", "message": "x", "mro": [{"name": "NetOSError", "module": "aiohttp"}, {"name": "OSError", "module": "builtins"}, {"name": "Exception", "module": "builtins"}, {"name": "BaseException", "module": "builtins"}, {"name": "object", "module": "builtins"}]}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "ValueError", "module": "builtins", "message": "x", "failure_class": "tagged"}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"__exc__": true, "type": "H", "module": "probe", "message": "x", "mro": [{"name": "H", "module": "probe"}, {"name": "Exception", "module": "builtins"}, {"name": "BaseException", "module": "builtins"}, {"name": "object", "module": "builtins"}], "hook": true}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": {"attr": 1}, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": null, "io": {}}}
+{"func": "exception_failure_class", "in": {"error": "plainstr", "io": {}}}
+{"func": "extension_failure_class", "in": {"kind": "skill", "outcome": "success", "failure_class": "x", "io": {}}}
+{"func": "extension_failure_class", "in": {"kind": "skill", "outcome": "failed", "failure_class": "not_found", "io": {"_norm": ["not_found"]}}}
+{"func": "extension_failure_class", "in": {"kind": "skill", "outcome": "failed", "failure_class": "exception:ValueError", "io": {"_norm": ["exception:valueerror"]}}}
+{"func": "extension_failure_class", "in": {"kind": "skill", "outcome": "failed", "failure_class": null, "error": {"__exc__": true, "type": "ValueError", "module": "builtins", "message": "x"}, "io": {"_norm": ["exception:valueerror"]}}}
+{"func": "extension_failure_class", "in": {"kind": "skill", "outcome": "failed", "failure_class": "", "error": {"__exc__": true, "type": "PermissionError", "module": "builtins", "message": "x"}, "io": {"_norm": ["permission"]}}}
+{"func": "extension_failure_class", "in": {"kind": "skill", "outcome": "failed", "failure_class": "bogus", "io": {"_norm": ["bogus"]}}}
+{"func": "extension_failure_class", "in": {"kind": "bogus", "outcome": "failed", "failure_class": "x", "io": {"_norm": ["x"]}}}
+{"func": "extension_failure_class", "in": {"kind": "plugin", "outcome": "failed", "failure_class": "deps_failed", "io": {"_norm": ["deps_failed"]}}}
+{"func": "extension_failure_class", "in": {"kind": "mcp_server", "outcome": "failed", "failure_class": "auth_required", "io": {"_norm": ["auth_required"]}}}
+{"func": "extension_failure_class", "in": {"kind": "skill", "outcome": "failed", "failure_class": "x", "io": {"_norm": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "extension_failure_class", "in": {"kind": "skill", "outcome": "failed", "failure_class": "x", "io": {}}}
+{"func": "extension_registry", "in": {"kind": "plugin", "registry": "skills.sh", "io": {}}}
+{"func": "extension_registry", "in": {"kind": "skill", "registry": "skills.sh", "io": {"_norm": ["skills.sh"]}}}
+{"func": "extension_registry", "in": {"kind": "skill", "registry": "SKILLS.SH ", "io": {"_norm": ["skills.sh"]}}}
+{"func": "extension_registry", "in": {"kind": "skill", "registry": "github", "io": {"_norm": ["github"]}}}
+{"func": "extension_registry", "in": {"kind": "skill", "registry": null, "io": {"_norm": [""]}}}
+{"func": "extension_registry", "in": {"kind": "skill", "registry": "bogus", "io": {"_norm": ["bogus"]}}}
+{"func": "extension_registry", "in": {"kind": "skill", "registry": "", "io": {"_norm": [""]}}}
+{"func": "extension_registry", "in": {"kind": "skill", "registry": "github", "io": {"_norm": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "extension_registry", "in": {"kind": "skill", "registry": "github", "io": {}}}
+{"func": "_long_session", "in": {"d": {"turn_count_bucket": "0"}, "io": {}}}
+{"func": "_long_session", "in": {"d": {"turn_count_bucket": "3_to_5"}, "io": {}}}
+{"func": "_long_session", "in": {"d": {"turn_count_bucket": "6_to_10"}, "io": {}}}
+{"func": "_long_session", "in": {"d": {}, "io": {}}}
+{"func": "_long_session", "in": {"d": {"turn_count_bucket": null}, "io": {}}}
+{"func": "_long_session", "in": {"d": {"turn_count_bucket": 5}, "io": {}}}
+{"func": "_long_session", "in": {"d": {"turn_count_bucket": {}}, "io": {}}}
+{"func": "_long_session", "in": {"d": null, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.task_run.started", "dimensions": {"platform": "telegram", "entrypoint": "scheduled_task"}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.task_run.started", "dimensions": {"platform": "none"}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.task_run.started", "dimensions": {}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.task_run.finished", "dimensions": {"outcome": "success"}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.tool.usage.count", "dimensions": {"outcome": "success", "tool_name": "mcp"}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.tool.usage.count", "dimensions": {"outcome": "success", "tool_name": "delegate_task"}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.skill.lifecycle.count", "dimensions": {"action": "created", "provenance": "user"}, "io": {"user_created_skill": [true]}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.skill.lifecycle.count", "dimensions": {"action": "created", "provenance": "user"}, "io": {"user_created_skill": [false]}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.skill.load.count", "dimensions": {"reuse_state": "reused"}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.session.count", "dimensions": {"turn_count_bucket": "6_to_10"}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.setup.completed", "dimensions": {}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "nope", "dimensions": {}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.task_run.started", "dimensions": {"platform": []}, "io": {}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.skill.lifecycle.count", "dimensions": {}, "io": {"user_created_skill": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.skill.lifecycle.count", "dimensions": {}, "io": {"user_created_skill": {"__raise__": "KeyboardInterrupt", "message": "boom"}}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.skill.lifecycle.count", "dimensions": {}, "io": {"user_created_skill": {"__raise__": "GeneratorExit", "message": "boom"}}}}
+{"func": "milestones_for", "in": {"metric_name": "hermes.skill.lifecycle.count", "dimensions": {}, "io": {}}}

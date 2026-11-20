@@ -440,16 +440,18 @@ static size_t sig2_cp_count(const char *s) {
 /* codepoint-indexed substring [a,b) of a UTF-8 string (ASCII: byte slice). */
 static char *sig2_cp_slice(const char *s, size_t a, size_t b) {
     if (!s) s = "";
-    size_t i = 0, cp = 0, n = strlen(s), start = 0, end = n;
+    size_t i = 0, cp = 0, n = strlen(s);
+    /* Defaults: a beyond length -> start=n; b beyond length -> end=n.
+     * a==0 / b==0 are boundary 0 (the loop's cp starts at 1, so handle here). */
+    size_t start = (a == 0) ? 0 : n;
+    size_t end = (b == 0) ? 0 : n;
     while (i < n) {
-        if (cp == a) start = i;
         unsigned char c = (unsigned char)s[i];
         size_t adv = (c < 0x80) ? 1 : (c < 0xE0) ? 2 : (c < 0xF0) ? 3 : 4;
         i += adv; cp++;
+        if (cp == a) start = i;
         if (cp == b) { end = i; break; }
     }
-    if (a >= cp) start = n;
-    if (b >= cp) end = n;
     if (end < start) end = start;
     char *o = malloc(end - start + 1);
     if (o) { memcpy(o, s + start, end - start); o[end - start] = '\0'; }

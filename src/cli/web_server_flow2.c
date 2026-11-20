@@ -456,9 +456,16 @@ static int ws2_float_str(const char *s, double *out) {
         while (isdigit((unsigned char)*d)) { d++; exp_digits++; }
         if (exp_digits == 0) { free(body); return -1; }
     }
+    const char *num_end = d;   /* span ends BEFORE the trailing-ws skip:
+                                * strtod stops at the first ws char, so the
+                                * string handed to it must not carry the tail */
     while (ws2_float_ws((unsigned char)*d)) d++;
     if (*d != '\0') { free(body); return -1; }
-    char *full = neg ? ws2_xsf("-%s", body) : strdup(body);
+    size_t span = (size_t)(num_end - body);
+    char *full = (char *)malloc(span + 2);
+    if (!full) { free(body); return -1; }
+    if (neg) { full[0] = '-'; memcpy(full + 1, body, span); full[span + 1] = '\0'; }
+    else { memcpy(full, body, span); full[span] = '\0'; }
     free(body);
     char *end = NULL;
     double v = strtod(full, &end);

@@ -1,0 +1,113 @@
+{"func": "aux", "in": {"timeout": 120, "seams": {}}}
+{"func": "aux", "in": {"timeout": 30, "reasoning_effort": false, "seams": {}}}
+{"func": "aux", "in": {"timeout": 8, "reasoning_effort": null, "seams": {}}}
+{"func": "aux", "in": {"timeout": 120, "reasoning_effort": true, "seams": {}}}
+{"func": "aux", "in": {"timeout": 120, "extra": {"download_timeout": 30}, "seams": {}}}
+{"func": "aux", "in": {"timeout": 120, "extra": {"no_progress_timeout": null}, "seams": {}}}
+{"func": "aux", "in": {"timeout": 0, "reasoning_effort": 0, "seams": {}}}
+{"func": "aux", "in": {"timeout": 120, "reasoning_effort": "", "seams": {}}}
+{"func": "aux", "in": {"timeout": 120, "reasoning_effort": "x", "seams": {}}}
+{"func": "aux", "in": {"timeout": 900, "extra": {"a": 1, "b": 2}, "seams": {}}}
+{"func": "aux", "in": {"timeout": null, "reasoning_effort": 1, "seams": {}}}
+{"func": "env", "in": {"description": "d", "prompt": "p", "seams": {}}}
+{"func": "env", "in": {"description": "d", "prompt": "p", "keys": {"url": "http://x"}, "seams": {}}}
+{"func": "env", "in": {"description": "d", "prompt": "p", "keys": {"password": true, "category": "provider"}, "seams": {}}}
+{"func": "env", "in": {"description": "d", "prompt": "p", "keys": {"tools": ["web_search"], "advanced": true}, "seams": {}}}
+{"func": "env", "in": {"description": "d", "prompt": "p", "keys": {"url": null, "help": "h"}, "seams": {}}}
+{"func": "env", "in": {"description": "", "prompt": "", "keys": {"a": 1}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "provider", "password": true, "advanced": true}, "call": {"description": "d", "prompt": "p"}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "provider", "password": true, "advanced": true}, "call": {"description": "d", "prompt": "p", "url": null}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "provider", "password": true, "advanced": true}, "call": {"description": "d", "prompt": "p", "url": "http://x", "help": "h", "tools": ["t"]}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "provider", "password": true, "advanced": true}, "call": {"description": "d", "prompt": "p", "password": false}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "provider", "password": true, "advanced": true}, "call": {"description": "d", "prompt": "p", "password": null}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "provider", "password": true, "advanced": true}, "call": {"description": "d", "prompt": "p", "advanced": false}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "provider", "password": true, "advanced": true}, "call": {"description": "d", "prompt": "p", "advanced": null}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "messaging", "password": false, "advanced": false}, "call": {"description": "d", "prompt": "p"}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "setting", "password": null, "advanced": false}, "call": {"description": "d", "prompt": "p"}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "provider", "password": true, "advanced": true}, "call": {"description": "d", "prompt": "p", "help": null, "url": null, "tools": null}, "seams": {}}}
+{"func": "make", "in": {"bound": {"category": "tool", "password": false, "advanced": false}, "call": {"description": "d", "prompt": "p", "password": true, "advanced": true, "url": "u"}, "seams": {}}}
+{"func": "base_url", "in": {"name": "Nous", "seams": {"prov": {"description": "Nous base URL override", "prompt": "Nous base URL (leave empty for default)", "url": null, "password": false, "category": "provider", "advanced": true}}}}
+{"func": "base_url", "in": {"name": "Gemini", "prompt_name": "Gemini Portal", "seams": {"prov": {"description": "Nous base URL override", "prompt": "Nous base URL (leave empty for default)", "url": null, "password": false, "category": "provider", "advanced": true}}}}
+{"func": "base_url", "in": {"name": "X", "prompt_name": null, "seams": {"prov": {"description": "Nous base URL override", "prompt": "Nous base URL (leave empty for default)", "url": null, "password": false, "category": "provider", "advanced": true}}}}
+{"func": "base_url", "in": {"name": "X", "prompt_name": "", "seams": {"prov": {"description": "Nous base URL override", "prompt": "Nous base URL (leave empty for default)", "url": null, "password": false, "category": "provider", "advanced": true}}}}
+{"func": "base_url", "in": {"name": "Nous", "seams": {"prov": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "base_url", "in": {"name": "Nous", "seams": {"prov": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "base_url", "in": {"name": "Nous", "seams": {}}}
+{"func": "base_url", "in": {"name": "", "seams": {"prov": {"description": "Nous base URL override", "prompt": "Nous base URL (leave empty for default)", "url": null, "password": false, "category": "provider", "advanced": true}}}}
+{"func": "arm", "in": {"state": {"data": {}, "fill": null, "published": null, "filling_active": false}, "fill": "F", "published": "P", "seams": {}}}
+{"func": "arm", "in": {"state": {"data": {}, "fill": null, "published": null, "filling_active": false}, "fill": "F", "published": null, "seams": {}}}
+{"func": "arm", "in": {"state": {"data": {}, "fill": null, "published": null, "filling_active": false}, "fill": null, "published": "P", "seams": {}}}
+{"func": "arm", "in": {"state": {"data": {}, "fill": null, "published": null, "filling_active": false}, "fill": null, "published": null, "seams": {}}}
+{"func": "arm", "in": {"state": {"data": {"a": 1}, "fill": null, "published": null, "filling_active": false}, "fill": "G", "published": "Q", "seams": {}}}
+{"func": "arm", "in": {"state": {"data": {}, "fill": "OLD", "published": "OLDP", "filling_active": false}, "fill": "F", "published": null, "seams": {}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": true}, "seams": {}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"B": "2"}}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": "P", "filling_active": false}, "seams": {"fill": {"B": "2"}, "published": null}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": "P", "filling_active": false}, "seams": {"fill": {"B": "2"}, "published": {"__raise__": "RuntimeError", "msg": "pub"}}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": "P", "filling_active": false}, "seams": {"fill": {"B": "2"}, "published": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": null}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": [[1, 2]]}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": "x"}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": 5}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": true}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": 5.5}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {}}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": [{"B": "2"}, {"C": "3"}]}}}
+{"func": "ready", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"A": "9"}}}}
+{"func": "getitem", "in": {"state": {"data": {"A": "1"}, "fill": null, "published": null, "filling_active": false}, "key": "A", "seams": {}}}
+{"func": "getitem", "in": {"state": {"data": {"A": "1"}, "fill": null, "published": null, "filling_active": false}, "key": "Z", "seams": {}}}
+{"func": "getitem", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "key": "B", "seams": {"fill": {"B": "2"}}}}
+{"func": "getitem", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "key": "Z", "seams": {"fill": {"B": "2"}}}}
+{"func": "getitem", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "key": "A", "seams": {"fill": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "getitem", "in": {"state": {"data": {"A": null}, "fill": null, "published": null, "filling_active": false}, "key": "A", "seams": {}}}
+{"func": "getitem", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": true}, "key": "A", "seams": {}}}
+{"func": "get", "in": {"state": {"data": {"A": "1"}, "fill": null, "published": null, "filling_active": false}, "key": "A", "seams": {}}}
+{"func": "get", "in": {"state": {"data": {"A": "1"}, "fill": null, "published": null, "filling_active": false}, "key": "Z", "seams": {}}}
+{"func": "get", "in": {"state": {"data": {"A": "1"}, "fill": null, "published": null, "filling_active": false}, "key": "Z", "default": "dflt", "seams": {}}}
+{"func": "get", "in": {"state": {"data": {"A": "1"}, "fill": null, "published": null, "filling_active": false}, "key": "Z", "default": null, "seams": {}}}
+{"func": "get", "in": {"state": {"data": {"A": "1"}, "fill": null, "published": null, "filling_active": false}, "key": "Z", "default": 0, "seams": {}}}
+{"func": "get", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "key": "B", "seams": {"fill": {"B": "2"}}}}
+{"func": "get", "in": {"state": {"data": {"A": null}, "fill": null, "published": null, "filling_active": false}, "key": "A", "default": "x", "seams": {}}}
+{"func": "get", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "key": "A", "seams": {"fill": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "contains", "in": {"state": {"data": {"A": "1"}, "fill": null, "published": null, "filling_active": false}, "key": "A", "seams": {}}}
+{"func": "contains", "in": {"state": {"data": {"A": "1"}, "fill": null, "published": null, "filling_active": false}, "key": "Z", "seams": {}}}
+{"func": "contains", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "key": "B", "seams": {"fill": {"B": "2"}}}}
+{"func": "contains", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "key": "Z", "seams": {"fill": {"B": "2"}}}}
+{"func": "contains", "in": {"state": {"data": {"A": "1"}, "fill": "F", "published": null, "filling_active": false}, "key": "A", "seams": {"fill": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "contains", "in": {"state": {"data": {"A": null}, "fill": null, "published": null, "filling_active": false}, "key": "A", "seams": {}}}
+{"func": "iter", "in": {"state": {"data": {"A": 1, "B": 2}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "iter", "in": {"state": {"data": {}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "iter", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"C": 3}}}}
+{"func": "iter", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "iter", "in": {"state": {"data": {"B": 2, "A": 1}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "iter", "in": {"state": {"data": {"A": 1, "B": 2}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"A": 9}}}}
+{"func": "len", "in": {"state": {"data": {"A": 1, "B": 2}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "len", "in": {"state": {"data": {}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "len", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"C": 3}}}}
+{"func": "len", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "len", "in": {"state": {"data": {"A": 1, "B": 2, "C": 3}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "keys", "in": {"state": {"data": {"A": 1, "B": 2}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "keys", "in": {"state": {"data": {}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "keys", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"C": 3}}}}
+{"func": "keys", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "keys", "in": {"state": {"data": {"B": 2, "A": 1}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "items", "in": {"state": {"data": {"A": 1, "B": 2}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "items", "in": {"state": {"data": {}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "items", "in": {"state": {"data": {"A": null}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "items", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"B": 2}}}}
+{"func": "items", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "values", "in": {"state": {"data": {"A": 1, "B": 2}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "values", "in": {"state": {"data": {}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "values", "in": {"state": {"data": {"A": null, "B": 2}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "values", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"B": 2}}}}
+{"func": "values", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "copy", "in": {"state": {"data": {"A": 1, "B": 2}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "copy", "in": {"state": {"data": {}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}
+{"func": "copy", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"B": 2}}}}
+{"func": "copy", "in": {"state": {"data": {"A": 1}, "fill": "F", "published": null, "filling_active": false}, "seams": {"fill": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "copy", "in": {"state": {"data": {"A": null}, "fill": null, "published": null, "filling_active": false}, "seams": {}}}

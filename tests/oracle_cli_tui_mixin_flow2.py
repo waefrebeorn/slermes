@@ -197,10 +197,12 @@ for _node in _tree.body:
         _exec_node(_node)
 
 _wanted = set(PY.values())
+# LIVE-bound collaborator claimed in flow1 (real staticmethod; C inlines it)
+_wanted_helpers = {"_tui_set_filter"}
 _found = set()
 _cls = next(n for n in _tree.body if isinstance(n, ast.ClassDef) and n.name == "CLITuiMixin")
 for _node in _cls.body:
-    if isinstance(_node, ast.FunctionDef) and _node.name in _wanted:
+    if isinstance(_node, ast.FunctionDef) and _node.name in (_wanted | _wanted_helpers):
         _exec_node(_node)
         _found.add(_node.name)
     elif isinstance(_node, ast.Assign) and all(isinstance(t, ast.Name) for t in _node.targets):
@@ -304,10 +306,20 @@ class AppDouble:
         self.current_buffer = buf
         self._rec = rec
         self._style_mirror = style_mirror
-        self.style = style_mirror.get("style") if isinstance(style_mirror, dict) else None
 
     def __bool__(self):
         return bool(self._style_mirror)
+
+    @property
+    def style(self):
+        return self._style_mirror.get("style") if isinstance(self._style_mirror, dict) else None
+
+    @style.setter
+    def style(self, v):
+        # live assigns self._app.style only on the apply-success path; write
+        # through to the state mirror in place (no post-hoc fabrication)
+        if isinstance(self._style_mirror, dict):
+            self._style_mirror["style"] = v
 
     def invalidate(self):
         self._rec("app.invalidate", {}, None)
@@ -579,8 +591,6 @@ def run_case(func, inp):
     for k in SELF_FIELDS:
         if k not in NO_COLLECT:
             state[k] = getattr(sd, k)
-    if isinstance(state.get("_app"), dict):
-        state["_app"]["style"] = app.style
     return {"ret": ret, "trace": trace, "state": norm(state)}
 
 

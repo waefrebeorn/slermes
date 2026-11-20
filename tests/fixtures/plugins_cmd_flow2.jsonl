@@ -1,0 +1,133 @@
+{"func": "admit_and_save_plugin_sets", "in": {"enabled": ["a"], "disabled": ["b"], "extra_dirs": [], "console": {"console": 1}, "action": "enable", "expected_config": "v1", "plugin": "a", "settled": ["a"], "seams": {"_plugins_dir": "/user", "admit_plugin_set_change": null}, "env": {}}}
+{"func": "admit_and_save_plugin_sets", "in": {"enabled": ["a"], "disabled": [], "console": {"console": 1}, "action": "enable", "settled": ["a"], "seams": {"_plugins_dir": "/user", "admit_plugin_set_change": {"__raise__": "DependencyConflict", "msg": "conflict"}, "markup_escape": "esc", "console_print": null}, "env": {}}}
+{"func": "admit_and_save_plugin_sets", "in": {"enabled": [], "disabled": ["b"], "console": {"console": 1}, "action": "disable", "settled": ["b"], "seams": {"_plugins_dir": "/user", "admit_plugin_set_change": {"__raise__": "AdmissionRefused", "msg": "refused"}, "console_print": null}, "env": {}}}
+{"func": "admit_and_save_plugin_sets", "in": {"enabled": [], "disabled": [], "console": null, "action": "enable", "settled": [], "seams": {"_plugins_dir": "/user", "admit_plugin_set_change": {"__raise__": "AdmissionRefused", "msg": "refused"}}, "env": {}}}
+{"func": "admit_and_save_plugin_sets", "in": {"enabled": ["a"], "console": {"console": 1}, "settled": ["a"], "seams": {"_plugins_dir": "/user", "admit_plugin_set_change": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "admit_and_save_plugin_sets", "in": {"enabled": ["a"], "console": {"console": 1}, "settled": ["a"], "seams": {"_plugins_dir": "/user", "admit_plugin_set_change": {"__raise__": "SystemExit", "msg": "1"}}, "env": {}}}
+{"func": "admit_and_save_plugin_sets", "in": {"enabled": ["a"], "console": {"console": 1}, "settled": ["a"], "seams": {"_plugins_dir": "/user", "admit_plugin_set_change": {"__raise__": "DependencyConflict", "msg": "c"}, "markup_escape": {"__raise__": "RuntimeError", "msg": "escfail"}}, "env": {}}}
+{"func": "admit_and_save_plugin_sets", "in": {"enabled": ["a"], "console": null, "settled": ["a"], "seams": {"_plugins_dir": "/user", "admit_plugin_set_change": {"__raise__": "DependencyConflict", "msg": "c"}}, "env": {}}}
+{"func": "admit_and_save_plugin_sets", "in": {"enabled": ["z", "a", "z"], "disabled": ["m", "b"], "extra_dirs": ["/e"], "console": {"console": 1}, "expected_config": null, "plugin": null, "settled": ["z", "a"], "seams": {"_plugins_dir": "/user", "admit_plugin_set_change": null}, "env": {}}}
+{"func": "admit_and_save_plugin_sets", "in": {"enabled": ["a"], "console": {"console": 1}, "settled": ["a"], "seams": {}, "env": {}}}
+{"func": "selection_lock", "in": {"locks": {}, "seams": {"hermes_home_key": "/h", "threading_lock": {"lock": 1}}, "env": {}}}
+{"func": "selection_lock", "in": {"locks": {"/h": {"lock": 9}}, "seams": {"hermes_home_key": "/h", "threading_lock": {"lock": 1}}, "env": {}}}
+{"func": "selection_lock", "in": {"locks": {}, "seams": {"hermes_home_key": {"__raise__": "RuntimeError", "msg": "boom"}, "threading_lock": {"lock": 1}}, "env": {}}}
+{"func": "selection_lock", "in": {"locks": {}, "seams": {"hermes_home_key": "/h", "threading_lock": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "selection_lock", "in": {"locks": {"/other": {"lock": 5}}, "seams": {"hermes_home_key": "/h", "threading_lock": {"lock": 2}}, "env": {}}}
+{"func": "selection_lock", "in": {"locks": {}, "seams": {}, "env": {}}}
+{"func": "set_plugin_enabled", "in": {"name": "web/exa", "enable": true, "aliases": ["exa"], "console": {"console": 1}, "locks": {}, "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}, "refuse_recalled_entry": null, "hermes_home_key": "/h", "threading_lock": {"lock": 1}, "plugin_selection_version": "v1", "get_hermes_home": "/home", "read_home_selection": {"plugins": {"enabled": ["x"], "disabled": ["y"]}}, "apply_activation": {"state": {"enabled": ["x", "web/exa"], "disabled": []}}, "_plugins_dir": "/user", "admit_plugin_set_change": null}, "env": {}}}
+{"func": "set_plugin_enabled", "in": {"name": "web/exa", "enable": false, "aliases": ["exa"], "console": {"console": 1}, "locks": {}, "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}, "refuse_recalled_entry": null, "hermes_home_key": "/h", "threading_lock": {"lock": 1}, "plugin_selection_version": "v1", "get_hermes_home": "/home", "read_home_selection": {"plugins": {"enabled": ["web/exa"], "disabled": []}}, "apply_activation": {"state": {"enabled": [], "disabled": ["web/exa"]}}, "_plugins_dir": "/user", "admit_plugin_set_change": null}, "env": {}}}
+{"func": "set_plugin_enabled", "in": {"name": "web/exa", "enable": true, "aliases": ["exa"], "console": {"console": 1}, "locks": {}, "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}, "refuse_recalled_entry": {"__raise__": "PluginOperationError", "msg": "recalled"}, "hermes_home_key": "/h", "threading_lock": {"lock": 1}, "plugin_selection_version": "v1", "get_hermes_home": "/home", "read_home_selection": {"plugins": {"enabled": ["x"], "disabled": ["y"]}}, "apply_activation": {"state": {"enabled": ["x", "web/exa"], "disabled": []}}, "_plugins_dir": "/user", "admit_plugin_set_change": null}, "env": {}}}
+{"func": "set_plugin_enabled", "in": {"name": "web/exa", "enable": false, "aliases": [], "console": {"console": 1}, "locks": {}, "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}, "refuse_recalled_entry": null, "hermes_home_key": "/h", "threading_lock": {"lock": 1}, "plugin_selection_version": "v1", "get_hermes_home": "/home", "read_home_selection": "notdict", "apply_activation": {"state": {"enabled": ["x", "web/exa"], "disabled": []}}, "_plugins_dir": "/user", "admit_plugin_set_change": null}, "env": {}}}
+{"func": "set_plugin_enabled", "in": {"name": "web/exa", "enable": false, "aliases": [], "console": {"console": 1}, "locks": {}, "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}, "refuse_recalled_entry": null, "hermes_home_key": "/h", "threading_lock": {"lock": 1}, "plugin_selection_version": "v1", "get_hermes_home": "/home", "read_home_selection": {"plugins": {"enabled": ["x"], "disabled": ["y"]}}, "apply_activation": null, "_plugins_dir": "/user", "admit_plugin_set_change": null}, "env": {}}}
+{"func": "set_plugin_enabled", "in": {"name": "web/exa", "enable": false, "aliases": ["exa"], "console": {"console": 1}, "locks": {}, "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}, "refuse_recalled_entry": null, "hermes_home_key": "/h", "threading_lock": {"lock": 1}, "plugin_selection_version": "v1", "get_hermes_home": "/home", "read_home_selection": {"plugins": {"enabled": ["x"], "disabled": ["y"]}}, "apply_activation": {"state": {"enabled": ["x", "web/exa"], "disabled": []}}, "_plugins_dir": "/user", "admit_plugin_set_change": {"__raise__": "AdmissionRefused", "msg": "refused"}, "console_print": null}, "env": {}}}
+{"func": "set_plugin_enabled", "in": {"name": "web/exa", "enable": true, "aliases": ["exa"], "console": {"console": 1}, "locks": {}, "seams": {"discover_all_plugins": [[["web-exa", "1.0", "d", "user", "/u/web-exa", "web/exa"]]], "legacy_plugin_alias": null, "read_install_metadata": {}, "refuse_recalled_entry": null, "hermes_home_key": "/h", "threading_lock": {"lock": 1}, "plugin_selection_version": "v1", "get_hermes_home": "/home", "read_home_selection": {"plugins": {"enabled": ["x"], "disabled": ["y"]}}, "apply_activation": {"state": {"enabled": ["x", "web/exa"], "disabled": []}}, "_plugins_dir": "/user", "admit_plugin_set_change": null}, "env": {}}}
+{"func": "set_plugin_enabled", "in": {"name": "web/exa", "enable": false, "aliases": [], "console": {"console": 1}, "locks": {}, "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}, "refuse_recalled_entry": null, "hermes_home_key": "/h", "threading_lock": {"lock": 1}, "plugin_selection_version": "v1", "get_hermes_home": "/home", "read_home_selection": {"plugins": {"enabled": ["x"], "disabled": ["y"]}}, "apply_activation": {"state": {"enabled": ["x", "web/exa"], "disabled": []}}, "_plugins_dir": "/user", "admit_plugin_set_change": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}, "env": {}}}
+{"func": "set_plugin_enabled", "in": {"name": "web/exa", "enable": false, "aliases": [], "console": null, "locks": {"/h": {"lock": 9}}, "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}, "refuse_recalled_entry": null, "hermes_home_key": "/h", "threading_lock": {"lock": 1}, "plugin_selection_version": "v1", "get_hermes_home": "/home", "read_home_selection": null, "apply_activation": {"state": {"enabled": ["x", "web/exa"], "disabled": []}}, "_plugins_dir": "/user", "admit_plugin_set_change": null}, "env": {}}}
+{"func": "set_plugin_enabled", "in": {"name": "web/exa", "enable": false, "aliases": [], "console": {"console": 1}, "locks": {}, "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}, "refuse_recalled_entry": null, "hermes_home_key": "/h", "threading_lock": {"lock": 1}, "plugin_selection_version": "v1", "get_hermes_home": "/home", "read_home_selection": {"plugins": {"enabled": ["x"], "disabled": ["y"]}}, "_plugins_dir": "/user", "admit_plugin_set_change": null}, "env": {}}}
+{"func": "catalog_installed_dir", "in": {"name": "target", "seams": {"read_install_metadata": {"k1": {}}, "_plugins_dir": "/user", "is_dir": true, "catalog_install_record": {"catalog_name": "target"}}, "env": {}}}
+{"func": "catalog_installed_dir", "in": {"name": "target", "seams": {"read_install_metadata": {"k1": {}}, "_plugins_dir": "/user", "is_dir": true, "catalog_install_record": {"catalog_name": "other"}}, "env": {}}}
+{"func": "catalog_installed_dir", "in": {"name": "target", "seams": {"read_install_metadata": {"k1": {}, "k2": {}}, "_plugins_dir": "/user", "is_dir": true, "catalog_install_record": {"catalog_name": "target"}}, "env": {}}}
+{"func": "catalog_installed_dir", "in": {"name": "target", "seams": {"read_install_metadata": {"__raise__": "PluginOperationError", "msg": "bad"}}, "env": {}}}
+{"func": "catalog_installed_dir", "in": {"name": "target", "seams": {"read_install_metadata": {"k1": {}}, "_plugins_dir": "/user", "is_dir": false}, "env": {}}}
+{"func": "catalog_installed_dir", "in": {"name": "target", "seams": {"read_install_metadata": {"k1": {}}, "_plugins_dir": "/user", "is_dir": true, "catalog_install_record": {"no_name": 1}}, "env": {}}}
+{"func": "catalog_installed_dir", "in": {"name": "target", "seams": {"read_install_metadata": {"k1": {}}, "_plugins_dir": "/user", "is_dir": true, "catalog_install_record": null}, "env": {}}}
+{"func": "catalog_installed_dir", "in": {"name": "target", "seams": {"read_install_metadata": {"k1": {}}, "_plugins_dir": "/user", "is_dir": true, "catalog_install_record": "notdict"}, "env": {}}}
+{"func": "catalog_installed_dir", "in": {"name": "target", "seams": {"read_install_metadata": null}, "env": {}}}
+{"func": "catalog_installed_dir", "in": {"name": "target", "seams": {}, "env": {}}}
+{"func": "find_plugin_entry", "in": {"name": "web/exa", "seams": {"discover_all_plugins": [[["web-exa", "1.0", "d", "user", "/u/web-exa", "web/exa"]]], "legacy_plugin_alias": null}, "env": {}}}
+{"func": "find_plugin_entry", "in": {"name": "old", "seams": {"discover_all_plugins": [[["web-exa", "1.0", "d", "user", "/u/web-exa", "web/exa"]]], "legacy_plugin_alias": "web/exa"}, "env": {}}}
+{"func": "find_plugin_entry", "in": {"name": "exa", "seams": {"discover_all_plugins": [[["web-exa", "1.0", "d", "user", "/u/web-exa", "web/exa"]]], "legacy_plugin_alias": null}, "env": {}}}
+{"func": "find_plugin_entry", "in": {"name": "exa", "seams": {"discover_all_plugins": [[["a", "1.0", "d", "user", "/u/a", "web/exa"], ["b", "1.0", "d", "user", "/u/b", "other/exa"]]], "legacy_plugin_alias": null}, "env": {}}}
+{"func": "find_plugin_entry", "in": {"name": "memory-wiki", "seams": {"discover_all_plugins": [[["mw", "1.0", "d", "user", "/user/memory-wiki", "memory-wiki"]]], "legacy_plugin_alias": null, "read_install_metadata": {"memory-wiki": {}}, "_plugins_dir": "/user", "is_dir": true, "catalog_install_record": {"catalog_name": "memory-wiki"}}, "env": {}}}
+{"func": "find_plugin_entry", "in": {"name": "nope", "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}}, "env": {}}}
+{"func": "find_plugin_entry", "in": {"name": "x", "seams": {"discover_all_plugins": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "find_plugin_entry", "in": {"name": "x", "seams": {"discover_all_plugins": [[["n", "1", "d", "user", "/u", 5]]], "legacy_plugin_alias": null}, "env": {}}}
+{"func": "find_plugin_entry", "in": {"name": "x", "seams": {}, "env": {}}}
+{"func": "enable_consent", "in": {"console": {"console": 1}, "key": "web/exa", "allow_tool_override": true, "seams": {"declared_capabilities_for_key": [["c1"]], "run_capability_consent": null, "resolve_tool_override_grant": null}, "env": {}}}
+{"func": "enable_consent", "in": {"console": {"console": 1}, "key": "web/exa", "allow_tool_override": null, "seams": {"declared_capabilities_for_key": [[]]}, "env": {}}}
+{"func": "enable_consent", "in": {"console": {"console": 1}, "key": "web/exa", "allow_tool_override": false, "seams": {"declared_capabilities_for_key": [["c1"]], "run_capability_consent": null, "resolve_tool_override_grant": null}, "env": {}}}
+{"func": "enable_consent", "in": {"console": null, "key": "web/exa", "allow_tool_override": true, "seams": {"declared_capabilities_for_key": [[]], "resolve_tool_override_grant": null}, "env": {}}}
+{"func": "enable_consent", "in": {"console": {"console": 1}, "key": "k", "allow_tool_override": true, "seams": {"declared_capabilities_for_key": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "enable_consent", "in": {"console": {"console": 1}, "key": "k", "allow_tool_override": null, "seams": {"declared_capabilities_for_key": [["c1"]], "run_capability_consent": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "enable_consent", "in": {"console": {"console": 1}, "key": "k", "allow_tool_override": null, "seams": {"declared_capabilities_for_key": [["c1"]], "run_capability_consent": null}, "env": {}}}
+{"func": "enable_consent", "in": {"console": {"console": 1}, "key": "k", "allow_tool_override": true, "seams": {}, "env": {}}}
+{"func": "resolved_user_plugin_dir", "in": {"name": "web/x", "seams": {"discover_all_plugins": [[["x", "1.0", "d", "user", "/u/x", "web/x"]]], "legacy_plugin_alias": null, "is_dir": true}, "env": {}}}
+{"func": "resolved_user_plugin_dir", "in": {"name": "web/x", "seams": {"discover_all_plugins": [[["x", "1.0", "d", "bundled", "/b/x", "web/x"]]], "legacy_plugin_alias": null}, "env": {}}}
+{"func": "resolved_user_plugin_dir", "in": {"name": "web/x", "seams": {"discover_all_plugins": [[["x", "1.0", "d", "user", "/u/x", "web/x"]]], "legacy_plugin_alias": null, "is_dir": false}, "env": {}}}
+{"func": "resolved_user_plugin_dir", "in": {"name": "nope", "seams": {"discover_all_plugins": [[]], "legacy_plugin_alias": null, "read_install_metadata": {}}, "env": {}}}
+{"func": "resolved_user_plugin_dir", "in": {"name": "web/x", "seams": {"discover_all_plugins": [[["x", "1.0", "d", "git", "/u/x", "web/x"]]], "legacy_plugin_alias": null, "is_dir": true}, "env": {}}}
+{"func": "resolved_user_plugin_dir", "in": {"name": "web/x", "seams": {"discover_all_plugins": [[["x", "1.0", "d", "user", "/u/x", "web/x"]]], "legacy_plugin_alias": null, "is_dir": {"__raise__": "OSError", "msg": "boom"}}, "env": {}}}
+{"func": "resolved_user_plugin_dir", "in": {"name": "x", "seams": {}, "env": {}}}
+{"func": "catalog", "in": {"seams": {"catalog_module": {"mod": 1}}, "env": {}}}
+{"func": "catalog", "in": {"seams": {"catalog_module": "catalog"}, "env": {}}}
+{"func": "catalog", "in": {"seams": {"catalog_module": null}, "env": {}}}
+{"func": "catalog", "in": {"seams": {"catalog_module": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "catalog", "in": {"seams": {}, "env": {}}}
+{"func": "action_update", "in": {"args": {"name": "x"}, "seams": {"cmd_update": null}, "env": {}}}
+{"func": "action_update", "in": {"args": {"name": "x", "yes": true}, "seams": {"Console": {"console": 1}, "fail": {"__raise__": "SystemExit", "msg": "1"}}, "env": {}}}
+{"func": "action_update", "in": {"args": {"name": "", "force": true}, "seams": {"Console": {"console": 1}, "fail": {"__raise__": "SystemExit", "msg": "1"}}, "env": {}}}
+{"func": "action_update", "in": {"args": {"name": ""}, "seams": {"cmd_update_all": null}, "env": {}}}
+{"func": "action_update", "in": {"args": {"name": "", "yes": true}, "seams": {"cmd_update_all": null}, "env": {}}}
+{"func": "action_update", "in": {"args": {"name": "x", "force": true}, "seams": {"cmd_update": null}, "env": {}}}
+{"func": "action_update", "in": {"args": {"name": "x"}, "seams": {"cmd_update": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "action_update", "in": {"args": {}, "seams": {}, "env": {}}}
+{"func": "action_update", "in": {"args": {"name": "x", "yes": true}, "seams": {"Console": {"console": 1}, "fail": null, "cmd_update": null}, "env": {}}}
+{"func": "action_update", "in": {"args": {"name": ""}, "seams": {}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {}, "seams": {"Console": {"console": 1}, "auto_update_state": {"auto_apply": true, "check_hours": 24}, "console_print": null}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {"state": "on"}, "seams": {"Console": {"console": 1}, "set_auto_update": {"auto_apply": false, "check_hours": 0}, "console_print": null}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {"state": "off"}, "seams": {"Console": {"console": 1}, "set_auto_update": {"auto_apply": true, "check_hours": 6}, "console_print": null}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {}, "seams": {"Console": {"console": 1}, "auto_update_state": {"__raise__": "PluginOperationError", "msg": "bad"}, "fail": {"__raise__": "SystemExit", "msg": "1"}}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {}, "seams": {"Console": {"console": 1}, "auto_update_state": {"check_hours": 24}, "console_print": null}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {}, "seams": {"Console": {"console": 1}, "auto_update_state": {"auto_apply": false, "check_hours": 0}, "console_print": null}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {}, "seams": {"Console": {"console": 1}, "auto_update_state": {"auto_apply": true, "check_hours": 24}, "console_print": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {}, "seams": {"Console": {"console": 1}, "auto_update_state": "notdict"}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {}, "seams": {"Console": {"console": 1}, "auto_update_state": {"auto_apply": true, "check_hours": "x"}}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {}, "seams": {"Console": {"console": 1}, "auto_update_state": {"__raise__": "PluginOperationError", "msg": "bad"}, "fail": null}, "env": {}}}
+{"func": "action_auto_update", "in": {"args": {}, "seams": {}, "env": {}}}
+{"func": "action_pack", "in": {"args": {"a": 1}, "seams": {"pack_command": null}, "env": {}}}
+{"func": "action_pack", "in": {"args": {}, "seams": {"pack_command": null}, "env": {}}}
+{"func": "action_pack", "in": {"args": {"a": 1}, "seams": {"pack_command": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "action_pack", "in": {"args": {"a": 1}, "seams": {"pack_command": {"result": 1}}, "env": {}}}
+{"func": "action_pack", "in": {"args": {"a": 1}, "seams": {}, "env": {}}}
+{"func": "action_idle_tasks", "in": {"args": {"name": "x", "pause": true, "resume": false}, "seams": {"cmd_idle_tasks": null}, "env": {}}}
+{"func": "action_idle_tasks", "in": {"args": {"name": "x", "pause": null, "resume": null}, "seams": {"cmd_idle_tasks": null}, "env": {}}}
+{"func": "action_idle_tasks", "in": {"args": {"pause": true, "resume": false}, "seams": {}, "env": {}}}
+{"func": "action_idle_tasks", "in": {"args": {"name": "x", "resume": false}, "seams": {}, "env": {}}}
+{"func": "action_idle_tasks", "in": {"args": {"name": "x", "pause": true, "resume": false}, "seams": {"cmd_idle_tasks": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "action_idle_tasks", "in": {"args": {"name": "x", "pause": false, "resume": true}, "seams": {"cmd_idle_tasks": {"r": 1}}, "env": {}}}
+{"func": "action_idle_tasks", "in": {"args": {"name": "x", "pause": true, "resume": false}, "seams": {}, "env": {}}}
+{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": {}, "seams": {"fail": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "other", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": {}, "seams": {}}}
+{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": {}, "seams": {"fail": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "refuse_legacy_relay", "in": {"console": null, "plugin": "observability/nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": {}, "seams": {"fail": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": [], "env": {}, "seams": {}}}
+{"func": "refuse_legacy_relay", "in": {"console": {"console": 1}, "plugin": "nemo_relay", "legacy_keys": ["nemo_relay", "observability/nemo_relay"], "env": {}, "seams": {}}}
+{"func": "first_toolset", "in": {"tool_names": ["t1", "t2"], "seams": {"registry_get_entry": [{"toolset": "ts1"}]}, "env": {}}}
+{"func": "first_toolset", "in": {"tool_names": ["t1", "t2"], "seams": {"registry_get_entry": [null, {"toolset": "ts2"}]}, "env": {}}}
+{"func": "first_toolset", "in": {"tool_names": ["t1", "t2"], "seams": {"registry_get_entry": [{"toolset": ""}, {"toolset": "ts"}]}, "env": {}}}
+{"func": "first_toolset", "in": {"tool_names": ["t1", "t2"], "seams": {"registry_get_entry": [null]}, "env": {}}}
+{"func": "first_toolset", "in": {"tool_names": ["t1"], "seams": {"registry_get_entry": [{"no_ts": 1}]}, "env": {}}}
+{"func": "first_toolset", "in": {"tool_names": ["t1"], "seams": {"registry_get_entry": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "first_toolset", "in": {"tool_names": [], "seams": {}, "env": {}}}
+{"func": "first_toolset", "in": {"tool_names": ["t1"], "seams": {"registry_get_entry": ["str"]}, "env": {}}}
+{"func": "first_toolset", "in": {"tool_names": ["t1"], "seams": {}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "web/exa", "seams": {"discover_plugins": null, "get_plugin_manager": {"_plugins": {"web/exa": {"manifest": {"name": "web-exa"}, "tools_registered": ["t1"]}}}, "registry_get_entry": [{"toolset": "ts"}]}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "web-exa", "seams": {"discover_plugins": null, "get_plugin_manager": {"_plugins": {"web/exa": {"manifest": {"name": "web-exa"}, "tools_registered": ["t1"]}}}, "registry_get_entry": [{"toolset": "ts"}]}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "nope", "seams": {"discover_plugins": null, "get_plugin_manager": {"_plugins": {"web/exa": {"manifest": {"name": "web-exa"}, "tools_registered": ["t1"]}}}, "registry_get_entry": [{"toolset": "ts"}]}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "x", "seams": {"discover_plugins": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "x", "seams": {"discover_plugins": null, "get_plugin_manager": null}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "x", "seams": {"discover_plugins": null, "get_plugin_manager": {"no_plugins": 1}}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "k", "seams": {"discover_plugins": null, "get_plugin_manager": {"_plugins": {"k": {"no_manifest": 1}}}}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "k", "seams": {"discover_plugins": null, "get_plugin_manager": {"_plugins": {"k": {"manifest": null}}}}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "k", "seams": {"discover_plugins": null, "get_plugin_manager": {"_plugins": {"k": {"manifest": {"name": "k"}}}}}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "x", "seams": {"discover_plugins": null, "get_plugin_manager": {"_plugins": []}}, "env": {}}}
+{"func": "from_loaded_plugin", "in": {"name": "x", "seams": {}, "env": {}}}
+{"func": "from_manifest_on_disk", "in": {"name": "x", "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": [true, true], "read_manifest": {"provides_tools": ["t1"]}, "registry_get_entry": [{"toolset": "ts"}]}, "env": {}}}
+{"func": "from_manifest_on_disk", "in": {"name": "x", "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": [false, true, true], "read_manifest": {"provides_tools": ["t1"]}, "registry_get_entry": [{"toolset": "ts"}]}, "env": {}}}
+{"func": "from_manifest_on_disk", "in": {"name": "x", "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": [false, false]}, "env": {}}}
+{"func": "from_manifest_on_disk", "in": {"name": "x", "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": [true, true], "read_manifest": {}}, "env": {}}}
+{"func": "from_manifest_on_disk", "in": {"name": "x", "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": [true, true], "read_manifest": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "from_manifest_on_disk", "in": {"name": "x", "seams": {"get_bundled_plugins_dir": {"__raise__": "RuntimeError", "msg": "boom"}}, "env": {}}}
+{"func": "from_manifest_on_disk", "in": {"name": "x", "seams": {"get_bundled_plugins_dir": null, "_plugins_dir": "/user"}, "env": {}}}
+{"func": "from_manifest_on_disk", "in": {"name": "x", "seams": {"get_bundled_plugins_dir": "/bundled", "_plugins_dir": "/user", "is_dir": [true, true], "read_manifest": {"provides_tools": []}}, "env": {}}}
+{"func": "from_manifest_on_disk", "in": {"name": "x", "seams": {}, "env": {}}}

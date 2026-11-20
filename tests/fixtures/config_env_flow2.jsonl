@@ -1,0 +1,183 @@
+{"func": "provider_card", "in": {"d": {"slug": "openai", "label": "OpenAI"}, "description": "OpenAI API key", "url": "https://x.ai", "is_password": true, "advanced": false, "seams": {}}}
+{"func": "provider_card", "in": {"d": {"slug": "vertex", "label": "Vertex"}, "description": "", "url": null, "is_password": false, "advanced": true, "seams": {}}}
+{"func": "provider_card", "in": {"d": {"slug": "", "label": ""}, "description": "d", "url": "", "is_password": false, "advanced": false, "seams": {}}}
+{"func": "provider_card", "in": {"d": {"label": "NoSlug"}, "description": "d", "url": null, "is_password": true, "advanced": false, "seams": {}}}
+{"func": "provider_card", "in": {"d": {"slug": "nolabel"}, "description": "d", "url": null, "is_password": true, "advanced": false, "seams": {}}}
+{"func": "provider_card", "in": {"d": null, "description": "d", "url": null, "is_password": false, "advanced": false, "seams": {}}}
+{"func": "endpoint_api_mode", "in": {"entry": {"api_mode": "chat_completions"}, "seams": {"_canonical_api_mode": "chat_completions"}}}
+{"func": "endpoint_api_mode", "in": {"entry": {"api_mode": "", "transport": "codex_responses"}, "seams": {"_canonical_api_mode": "codex_responses"}}}
+{"func": "endpoint_api_mode", "in": {"entry": {"api_mode": null, "transport": null}, "seams": {"_canonical_api_mode": ""}}}
+{"func": "endpoint_api_mode", "in": {"entry": {"api_mode": "responses"}, "seams": {"_canonical_api_mode": "codex_responses"}}}
+{"func": "endpoint_api_mode", "in": {"entry": {"api_mode": "x"}, "seams": {"_canonical_api_mode": "CHAT_COMPLETIONS"}}}
+{"func": "endpoint_api_mode", "in": {"entry": {"api_mode": "x"}, "seams": {"_canonical_api_mode": "unknown_mode"}}}
+{"func": "endpoint_api_mode", "in": {"entry": {"api_mode": 0, "transport": "anthropic_messages"}, "seams": {"_canonical_api_mode": "anthropic_messages"}}}
+{"func": "endpoint_api_mode", "in": {"entry": {"api_mode": "x"}, "seams": {"_canonical_api_mode": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "endpoint_api_mode", "in": {"entry": {"api_mode": "x"}, "seams": {}}}
+{"func": "endpoint_api_mode", "in": {"entry": {"api_mode": "x"}, "seams": {"_canonical_api_mode": 5}}}
+{"func": "endpoint_api_mode", "in": {"entry": null, "seams": {"_canonical_api_mode": ""}}}
+{"func": "endpoint_row", "in": {"endpoint_id": "p1", "name": "Prov One", "base_url": "http://h/v1", "model": "m1", "models": ["m1", "m2"], "context_length": 128, "discover_models": true, "is_current": true, "source": "providers", "key_entry": {"api_key": "sk-1"}, "seams": {"_api_key_display": [[true, "sk-1***"]], "_canonical_api_mode": "chat_completions"}}}
+{"func": "endpoint_row", "in": {"endpoint_id": "p1", "name": "Prov One", "base_url": "http://h/v1", "model": "m1", "models": [], "context_length": null, "discover_models": false, "is_current": false, "source": "providers", "key_entry": {}, "seams": {"_api_key_display": [[false, null]], "_canonical_api_mode": ""}}}
+{"func": "endpoint_row", "in": {"endpoint_id": "p1", "name": "Prov One", "base_url": "http://h/v1", "model": "m1", "models": ["m1", "m2"], "context_length": 128, "discover_models": true, "is_current": true, "source": "providers", "key_entry": {"key_env": "E"}, "seams": {"_api_key_display": [[true, "${E}"]], "_canonical_api_mode": "anthropic_messages"}}}
+{"func": "endpoint_row", "in": {"endpoint_id": "p1", "name": "Prov One", "base_url": "http://h/v1", "model": "m1", "models": ["m1", "m2"], "context_length": 128, "discover_models": true, "is_current": true, "source": "providers", "key_entry": {"transport": "codex_responses"}, "seams": {"_api_key_display": [[false, null]], "_canonical_api_mode": "codex_responses"}}}
+{"func": "endpoint_row", "in": {"endpoint_id": "p1", "name": "Prov One", "base_url": "http://h/v1", "model": "m1", "models": ["m1", "m2"], "context_length": 128, "discover_models": true, "is_current": true, "source": "providers", "key_entry": {}, "seams": {"_api_key_display": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "endpoint_row", "in": {"endpoint_id": "p1", "name": "Prov One", "base_url": "http://h/v1", "model": "m1", "models": ["m1", "m2"], "context_length": 128, "discover_models": true, "is_current": true, "source": "providers", "key_entry": {}, "seams": {}}}
+{"func": "endpoint_row", "in": {"endpoint_id": "p1", "name": "Prov One", "base_url": "http://h/v1", "model": "m1", "models": ["m1", "m2"], "context_length": 128, "discover_models": true, "is_current": true, "source": "providers", "key_entry": {}, "seams": {"_api_key_display": [[true, "x"]], "_canonical_api_mode": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "endpoint_row", "in": {"endpoint_id": "p1", "name": "Prov One", "base_url": "http://h/v1", "model": "m1", "models": ["m1", "m2"], "context_length": 128, "discover_models": true, "is_current": true, "source": "providers", "key_entry": {}, "seams": {"_api_key_display": [[true]]}}}
+{"func": "endpoint_row", "in": {"endpoint_id": "p1", "name": "Prov One", "base_url": "http://h/v1", "model": "m1", "models": ["m1", "m2"], "context_length": 128, "discover_models": true, "is_current": true, "source": "providers", "key_entry": {}, "seams": {"_api_key_display": null}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": "custom:myprov"}, "provider_key": "MyProv", "entry": null, "seams": {"coerce_provider_id": ["MyProv"]}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": "MyProv"}, "provider_key": "myprov", "entry": {"name": "Other"}, "seams": {"coerce_provider_id": ["myprov", "Other", "Other"]}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": "other"}, "provider_key": "myprov", "entry": {"name": ""}, "seams": {"coerce_provider_id": ["myprov", ""]}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": "other"}, "provider_key": "myprov", "entry": {"name": null}, "seams": {"coerce_provider_id": ["myprov", ""]}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": "myprov"}, "provider_key": "myprov", "entry": "x", "seams": {"coerce_provider_id": ["myprov"]}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": " Custom:X "}, "provider_key": "X", "entry": null, "seams": {"coerce_provider_id": ["X"]}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": "myprov"}, "provider_key": "myprov", "entry": null, "seams": {"coerce_provider_id": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": "myprov"}, "provider_key": "myprov", "entry": null, "seams": {}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": "same"}, "provider_key": "same", "entry": {"name": "Same"}, "seams": {"coerce_provider_id": ["same", "Same", "Same"]}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": "custom:custom:x"}, "provider_key": "custom:x", "entry": null, "seams": {"coerce_provider_id": ["custom:x"]}}}
+{"func": "model_names_provider", "in": {"model_cfg": null, "provider_key": "p", "entry": null, "seams": {"coerce_provider_id": ["p"]}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": "p"}, "provider_key": "p", "entry": null, "seams": {"coerce_provider_id": 5}}}
+{"func": "model_names_provider", "in": {"model_cfg": {"provider": null}, "provider_key": "p", "entry": {"name": "N"}, "seams": {"coerce_provider_id": ["p", "N", "N"]}}}
+{"func": "resolve_custom_endpoint_entry", "in": {"providers": {"local-127.0.0.1:8283": {"base_url": "http://127.0.0.1:8283/v1"}}, "endpoint_id": "local-127.0.0.1:8283", "seams": {"find_provider_entry": [["local-127.0.0.1:8283", {"base_url": "http://127.0.0.1:8283/v1"}]]}}}
+{"func": "resolve_custom_endpoint_entry", "in": {"providers": {"local-127.0.0.1:8283": {"base_url": "http://127.0.0.1:8283/v1"}}, "endpoint_id": "My Prov", "seams": {"find_provider_entry": [[null, null], ["myprov", {"base_url": "http://x"}]], "_custom_endpoint_id": "myprov"}}}
+{"func": "resolve_custom_endpoint_entry", "in": {"providers": {"local-127.0.0.1:8283": {"base_url": "http://127.0.0.1:8283/v1"}}, "endpoint_id": "myprov", "seams": {"find_provider_entry": [[null, null]], "_custom_endpoint_id": "myprov"}}}
+{"func": "resolve_custom_endpoint_entry", "in": {"providers": {"local-127.0.0.1:8283": {"base_url": "http://127.0.0.1:8283/v1"}}, "endpoint_id": "x", "seams": {"find_provider_entry": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "resolve_custom_endpoint_entry", "in": {"providers": {"local-127.0.0.1:8283": {"base_url": "http://127.0.0.1:8283/v1"}}, "endpoint_id": "x", "seams": {"find_provider_entry": [[null, null]], "_custom_endpoint_id": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "resolve_custom_endpoint_entry", "in": {"providers": {"local-127.0.0.1:8283": {"base_url": "http://127.0.0.1:8283/v1"}}, "endpoint_id": "x", "seams": {}}}
+{"func": "resolve_custom_endpoint_entry", "in": {"providers": {"local-127.0.0.1:8283": {"base_url": "http://127.0.0.1:8283/v1"}}, "endpoint_id": "x", "seams": {"find_provider_entry": [[null, {}]]}}}
+{"func": "resolve_custom_endpoint_entry", "in": {"providers": {"local-127.0.0.1:8283": {"base_url": "http://127.0.0.1:8283/v1"}}, "endpoint_id": "x", "seams": {"find_provider_entry": null}}}
+{"func": "resolve_custom_endpoint_entry", "in": {"providers": null, "endpoint_id": "x", "seams": {"find_provider_entry": [[null, null]], "_custom_endpoint_id": "x"}}}
+{"func": "resolve_custom_endpoint_entry", "in": {"providers": {"local-127.0.0.1:8283": {"base_url": "http://127.0.0.1:8283/v1"}}, "endpoint_id": "x", "seams": {"find_provider_entry": [[null, null], {"__raise__": "KeyboardInterrupt", "msg": "ki"}], "_custom_endpoint_id": "slug"}}}
+{"func": "raw_provider_api_key", "in": {"endpoint_id": "p", "seams": {"read_raw_config": {"providers": {"p": {"api_key": "sk"}}}, "find_provider_entry": [["p", {"api_key": "sk"}]]}}}
+{"func": "raw_provider_api_key", "in": {"endpoint_id": "p", "seams": {"read_raw_config": {"providers": {"p": {"api_key": null}}}, "find_provider_entry": [["p", {"api_key": null}]]}}}
+{"func": "raw_provider_api_key", "in": {"endpoint_id": "p", "seams": {"read_raw_config": {"providers": {"p": {}}}, "find_provider_entry": [["p", {}]]}}}
+{"func": "raw_provider_api_key", "in": {"endpoint_id": "p", "seams": {"read_raw_config": {"providers": {}}, "find_provider_entry": [[null, null]]}}}
+{"func": "raw_provider_api_key", "in": {"endpoint_id": "p", "seams": {"read_raw_config": null}}}
+{"func": "raw_provider_api_key", "in": {"endpoint_id": "p", "seams": {"read_raw_config": {"providers": {}}, "find_provider_entry": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "raw_provider_api_key", "in": {"endpoint_id": "p", "seams": {}}}
+{"func": "raw_provider_api_key", "in": {"endpoint_id": "p", "seams": {"read_raw_config": {"providers": null}, "find_provider_entry": [[null, null]]}}}
+{"func": "raw_provider_api_key", "in": {"endpoint_id": "p", "seams": {"read_raw_config": {"providers": {"p": "s"}}, "find_provider_entry": [["p", "s"]]}}}
+{"func": "raw_provider_api_key", "in": {"endpoint_id": "p", "seams": {"read_raw_config": {"providers": {"p": {"api_key": ""}}}, "find_provider_entry": [["p", {"api_key": ""}]]}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {"custom_providers": [{"name": "My Prov", "base_url": "http://a"}, {"name": "other", "base_url": "http://b"}], "model": {"default": "m"}}, "provider_key": "myprov", "seams": {"_custom_endpoint_id": ["myprov", "other"]}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {"custom_providers": [{"name": "My Prov", "base_url": "http://a"}, {"name": "other", "base_url": "http://b"}], "model": {"default": "m"}}, "provider_key": "other", "seams": {"_custom_endpoint_id": ["myprov", "other"]}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {"custom_providers": [{"name": "My Prov", "base_url": "http://a"}, {"name": "other", "base_url": "http://b"}], "model": {"default": "m"}}, "provider_key": "zzz", "seams": {"_custom_endpoint_id": ["myprov", "other"]}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {"custom_providers": {"name": "x"}}, "provider_key": "x", "seams": {"_custom_endpoint_id": "x"}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {}, "provider_key": "x", "seams": {}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {"custom_providers": [null, "s", 5, {"name": "a"}]}, "provider_key": "a", "seams": {"_custom_endpoint_id": ["a"]}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {"custom_providers": [{"name": "My Prov", "base_url": "http://a"}, {"name": "other", "base_url": "http://b"}], "model": {"default": "m"}}, "provider_key": "myprov", "seams": {"_custom_endpoint_id": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {"custom_providers": [{"name": "My Prov", "base_url": "http://a"}, {"name": "other", "base_url": "http://b"}], "model": {"default": "m"}}, "provider_key": "myprov", "seams": {}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {"custom_providers": [{"name": null}]}, "provider_key": "", "seams": {"_custom_endpoint_id": [""]}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {"custom_providers": [{"name": 5}]}, "provider_key": "5", "seams": {"_custom_endpoint_id": ["5"]}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": null, "provider_key": "x", "seams": {}}}
+{"func": "pop_legacy_custom_provider", "in": {"cfg": {"custom_providers": []}, "provider_key": "x", "seams": {}}}
+{"func": "detach_main_model_from_provider", "in": {"cfg": {"model": {"provider": "custom:myprov", "base_url": "http://a", "api_key": "sk", "key_env": "E", "default": "m"}}, "provider_key": "myprov", "entry": null, "seams": {"coerce_provider_id": ["myprov"]}}}
+{"func": "detach_main_model_from_provider", "in": {"cfg": {"model": {"provider": "other", "default": "m"}}, "provider_key": "myprov", "entry": null, "seams": {"coerce_provider_id": ["myprov"]}}}
+{"func": "detach_main_model_from_provider", "in": {"cfg": {"model": null}, "provider_key": "p", "entry": null, "seams": {}}}
+{"func": "detach_main_model_from_provider", "in": {"cfg": {}, "provider_key": "p", "entry": null, "seams": {}}}
+{"func": "detach_main_model_from_provider", "in": {"cfg": {"model": {"provider": "custom:myprov", "api_key": "sk"}}, "provider_key": "x", "entry": {"name": "MyProv"}, "seams": {"coerce_provider_id": ["x", "MyProv", "MyProv"]}}}
+{"func": "detach_main_model_from_provider", "in": {"cfg": {"model": {"provider": "custom:myprov", "base_url": "http://a", "api_key": "sk", "key_env": "E", "default": "m"}}, "provider_key": "myprov", "entry": null, "seams": {"coerce_provider_id": {"__raise__": "GeneratorExit", "msg": "ge"}}}}
+{"func": "detach_main_model_from_provider", "in": {"cfg": {"model": {"provider": "custom:myprov", "base_url": "http://a", "api_key": "sk", "key_env": "E", "default": "m"}}, "provider_key": "myprov", "entry": null, "seams": {}}}
+{"func": "detach_main_model_from_provider", "in": {"cfg": {"model": {"provider": "myprov"}}, "provider_key": "myprov", "entry": null, "seams": {"coerce_provider_id": ["myprov"]}}}
+{"func": "detach_main_model_from_provider", "in": {"cfg": null, "provider_key": "p", "entry": null, "seams": {}}}
+{"func": "drop_stale_addresses", "in": {"entry": {"base_url": "http://a", "url": "http://b", "api": "http://c", "baseUrl": "http://d", "name": "n"}, "seams": {}}}
+{"func": "drop_stale_addresses", "in": {"entry": {"base_url": "http://a"}, "seams": {}}}
+{"func": "drop_stale_addresses", "in": {"entry": {}, "seams": {}}}
+{"func": "drop_stale_addresses", "in": {"entry": {"url": null, "api": null}, "seams": {}}}
+{"func": "drop_stale_addresses", "in": {"entry": {"baseUrl": "x", "api_mode": "m"}, "seams": {}}}
+{"func": "drop_stale_addresses", "in": {"entry": null, "seams": {}}}
+{"func": "store_endpoint_key", "in": {"entry": {"api_key": "old"}, "env_var": "E", "key": "sk", "base_url": "http://a", "own_provider": null, "seams": {"store_secret": "E"}}}
+{"func": "store_endpoint_key", "in": {"entry": {"api_key": "old"}, "env_var": "E", "key": "sk", "base_url": "http://a", "own_provider": null, "seams": {"store_secret": {"__raise__": "ValueError", "msg": "bad name"}}}}
+{"func": "store_endpoint_key", "in": {"entry": {"api_key": "old"}, "env_var": "E", "key": "sk", "base_url": "http://a", "own_provider": null, "seams": {"store_secret": {"__raise__": "UnicodeError", "msg": "utf8"}}}}
+{"func": "store_endpoint_key", "in": {"entry": {"api_key": "old"}, "env_var": "E", "key": "sk", "base_url": "http://a", "own_provider": null, "seams": {"store_secret": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "store_endpoint_key", "in": {"entry": {"api_key": "old"}, "env_var": "E", "key": "sk", "base_url": "http://a", "own_provider": null, "seams": {"store_secret": {"__raise__": "HTTPException", "msg": "no", "status_code": 403}}}}
+{"func": "store_endpoint_key", "in": {"entry": {"api_key": "old"}, "env_var": "E", "key": "sk", "base_url": "http://a", "own_provider": null, "seams": {}}}
+{"func": "store_endpoint_key", "in": {"entry": {"api_key": null, "key_env": "OLD"}, "env_var": "E", "key": "sk", "base_url": "http://a", "own_provider": "p", "seams": {"store_secret": "E"}}}
+{"func": "store_endpoint_key", "in": {"entry": {"api_key": "old"}, "env_var": "E", "key": "sk", "base_url": "http://a", "own_provider": null, "seams": {"store_secret": {"__raise__": "PermissionError", "msg": "denied"}}}}
+{"func": "store_endpoint_key", "in": {"entry": {}, "env_var": null, "key": "sk", "base_url": "http://a", "own_provider": null, "seams": {"store_secret": null}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": "old", "key_env": "OLD"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": " sk-new "}, "seams": {"dashboard_endpoint_key_env": "E", "is_redacted_credential_preview": false, "store_secret": "E"}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": "old", "key_env": "OLD"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": "${KEY_ENV}"}, "seams": {"dashboard_endpoint_key_env": "E"}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": "old", "key_env": "OLD"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": "***"}, "seams": {"dashboard_endpoint_key_env": "E", "is_redacted_credential_preview": true}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": "old", "key_env": "OLD"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": "sk"}, "seams": {"dashboard_endpoint_key_env": "E", "is_redacted_credential_preview": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"key_env": "E", "api_key": "old"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p", "body": {"api_key": "  "}, "seams": {"dashboard_endpoint_key_env": "E", "read_raw_config": {"providers": {"p": {}}}, "env_reference_owners": [[]], "remove_env_value": true}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"key_env": "E"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p", "body": {"api_key": ""}, "seams": {"dashboard_endpoint_key_env": "E", "read_raw_config": {"providers": {"p": {}}}, "env_reference_owners": [[{"__own__": true}]], "remove_env_value": true}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"key_env": "E"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p", "body": {"api_key": ""}, "seams": {"dashboard_endpoint_key_env": "E", "read_raw_config": {"providers": {"p": {}}}, "env_reference_owners": [[{"model": "x"}]]}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"key_env": "E"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p", "body": {"api_key": ""}, "seams": {"dashboard_endpoint_key_env": "E", "read_raw_config": {"providers": {}}, "env_reference_owners": [[null]], "remove_env_value": true}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"key_env": "E"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p", "body": {"api_key": ""}, "seams": {"dashboard_endpoint_key_env": "E", "read_raw_config": {"providers": {}}, "env_reference_owners": [["x"]]}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"key_env": "E"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p", "body": {"api_key": ""}, "seams": {"dashboard_endpoint_key_env": "E", "read_raw_config": {"providers": {"p": {}}}, "env_reference_owners": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": " sk-old "}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": null}, "seams": {"dashboard_endpoint_key_env": "E", "_config_api_key_is_env_ref": false, "store_secret": "E"}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": "sk-old"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": null}, "seams": {"dashboard_endpoint_key_env": "E", "_config_api_key_is_env_ref": true}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": ""}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": null}, "seams": {"dashboard_endpoint_key_env": "E"}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": "old", "key_env": "OLD"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": "sk"}, "seams": {}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": "old", "key_env": "OLD"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": "sk"}, "seams": {"dashboard_endpoint_key_env": "E", "is_redacted_credential_preview": false, "store_secret": {"__raise__": "ValueError", "msg": "denylisted"}}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"key_env": "E"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p", "body": {"api_key": ""}, "seams": {"dashboard_endpoint_key_env": "E", "read_raw_config": {"providers": {"p": {}}}, "env_reference_owners": [[]], "remove_env_value": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "apply_endpoint_key", "in": {"entry": {}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": null}, "seams": {"dashboard_endpoint_key_env": "E"}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"key_env": "E"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p", "body": {"api_key": ""}, "seams": {"dashboard_endpoint_key_env": "E", "read_raw_config": null}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": "sk"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": null}, "seams": {"dashboard_endpoint_key_env": "E", "_config_api_key_is_env_ref": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"key_env": "E"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p", "body": {"api_key": ""}, "seams": {"dashboard_endpoint_key_env": "E", "read_raw_config": {"providers": null}, "env_reference_owners": [[{"__own__": true}]], "remove_env_value": true}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"key_env": "E", "api_key": "old"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p", "body": {"api_key": ""}, "seams": {"dashboard_endpoint_key_env": "E", "read_raw_config": {"providers": {"p": {}}}, "env_reference_owners": [[{"__own__": true}, {"other": 1}]]}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": "old", "key_env": "OLD"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": "${}"}, "seams": {"dashboard_endpoint_key_env": "E", "is_redacted_credential_preview": false, "store_secret": "E"}}}
+{"func": "apply_endpoint_key", "in": {"entry": {"api_key": "sk", "key_env": "OLD"}, "endpoint_id": "p1", "base_url": "http://a/v1", "stored_key": "p1", "body": {"api_key": "ab...yz"}, "seams": {"dashboard_endpoint_key_env": "E", "is_redacted_credential_preview": true}}}
+{"func": "save_env_credential", "in": {"key": "K", "value": "v", "provider_setup": false, "seams": {"load_env": {"K": "old"}, "save_provider_env_credential": {"ok": true}, "web_setup_surface": "web", "record_api_key_saved": null}}}
+{"func": "save_env_credential", "in": {"key": "K", "value": "v", "seams": {"load_env": {}, "save_provider_env_credential": {"ok": true}, "web_setup_surface": "web", "record_api_key_saved": null}}}
+{"func": "save_env_credential", "in": {"key": "K", "value": "v", "seams": {"load_env": {"K": null}, "save_provider_env_credential": {"ok": true}, "web_setup_surface": "web", "record_api_key_saved": null}}}
+{"func": "save_env_credential", "in": {"key": "K", "value": "v", "seams": {"load_env": {"K": "old"}, "save_provider_env_credential": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "save_env_credential", "in": {"key": "K", "value": "v", "seams": {"load_env": {}, "save_provider_env_credential": {"ok": true}, "web_setup_surface": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "save_env_credential", "in": {"key": "K", "value": "v", "seams": {"load_env": {}, "save_provider_env_credential": {"ok": true}, "web_setup_surface": "web", "record_api_key_saved": {"__raise__": "RuntimeError", "msg": "m"}}}}
+{"func": "save_env_credential", "in": {"key": "K", "value": "v", "seams": {}}}
+{"func": "save_env_credential", "in": {"key": "K", "value": "v", "provider_setup": true, "seams": {"load_env": {"K": "old"}, "save_provider_env_credential": {"ok": true}, "web_setup_surface": "web", "record_api_key_saved": null}}}
+{"func": "save_env_credential", "in": {"key": "K", "value": "v", "seams": {"load_env": null}}}
+{"func": "save_env_credential", "in": {"key": "K", "value": "v", "seams": {"load_env": {}, "save_provider_env_credential": null, "web_setup_surface": "web", "record_api_key_saved": null}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"model": {"provider": "a", "base_url": "http://a"}}, "merged": {"model": {"provider": "b", "base_url": "http://b"}}, "seams": {"drop_carried_route_state": null}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"model": {"provider": "a", "base_url": "http://a"}, "delegation": {"provider": "a", "base_url": "http://a"}}, "merged": {"model": {"provider": "b", "base_url": "http://b"}, "delegation": {"base_url": "http://d", "provider": "named"}}, "seams": {"drop_carried_route_state": [null, null]}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"model": {"provider": "a", "base_url": "http://a"}, "delegation": {"provider": "a", "base_url": "http://a"}}, "merged": {"model": {"provider": "b", "base_url": "http://b"}, "delegation": {"base_url": "http://d", "provider": "custom"}}, "seams": {"drop_carried_route_state": null}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"delegation": {"provider": "a", "base_url": "http://a"}}, "merged": {"delegation": {"base_url": "http://d", "provider": " Auto "}}, "seams": {"drop_carried_route_state": null}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"delegation": {"provider": "a", "base_url": "http://a"}}, "merged": {"delegation": {"base_url": "", "provider": "custom"}}, "seams": {"drop_carried_route_state": [null, null]}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"delegation": {"provider": "a", "base_url": "http://a"}}, "merged": {"delegation": "x"}, "seams": {"drop_carried_route_state": [null, null]}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"auxiliary": {"t1": {"provider": "a", "base_url": "http://a"}, "t2": {"provider": "b", "base_url": "http://b"}}}, "merged": {"auxiliary": {"t1": {"provider": "b", "base_url": "http://b"}, "t3": {"provider": "a", "base_url": "http://a"}}}, "seams": {"drop_carried_route_state": [null, null, null]}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"model": {"provider": "a", "base_url": "http://a"}, "delegation": {"provider": "a", "base_url": "http://a"}}, "merged": {"model": {"provider": "b", "base_url": "http://b"}, "delegation": {"provider": "named"}}, "seams": {"drop_carried_route_state": [null, {"__raise__": "ValueError", "msg": "bad"}]}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"model": {"provider": "a", "base_url": "http://a"}}, "merged": {"model": {"provider": "b", "base_url": "http://b"}}, "seams": {}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"model": {"provider": "a", "base_url": "http://a"}}, "merged": {"model": {"provider": "b", "base_url": "http://b"}}, "seams": {"drop_carried_route_state": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "drop_carried_route_state", "in": {"existing": null, "merged": {"model": {"provider": "b", "base_url": "http://b"}}, "seams": {"drop_carried_route_state": null}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"auxiliary": "x"}, "merged": {"auxiliary": {"t1": {"provider": "a", "base_url": "http://a"}}}, "seams": {"drop_carried_route_state": null}}}
+{"func": "drop_carried_route_state", "in": {"existing": {}, "merged": {"delegation": {"base_url": "http://d", "provider": null}}, "seams": {"drop_carried_route_state": null}}}
+{"func": "drop_carried_route_state", "in": {"existing": {"auxiliary": {"t1": {"provider": "a", "base_url": "http://a"}}}, "merged": {"auxiliary": {"t1": {"provider": "b", "base_url": "http://b"}, "t2": {"provider": "a", "base_url": "http://a"}}, "model": {"provider": "b", "base_url": "http://b"}}, "seams": {"drop_carried_route_state": [null, null, {"__raise__": "KeyboardInterrupt", "msg": "ki"}]}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {"content-type": "text/html; charset=utf-8"}}, "base_url": "http://h/v1", "seams": {"resp_json": {"__raise__": "ValueError", "msg": "not json"}}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {}}, "base_url": "http://h/v1", "seams": {"resp_json": {"__raise__": "ValueError", "msg": "not json"}}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {"content-type": "application/json"}}, "base_url": "http://h/v1", "seams": {"resp_json": {"data": []}}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {"content-type": "application/json"}}, "base_url": "http://h/v1", "seams": {"resp_json": {"data": "x"}}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {"content-type": "application/json"}}, "base_url": "http://h/v1", "seams": {"resp_json": {"other": 1}}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {"content-type": "application/json"}}, "base_url": "http://h/v1", "seams": {"resp_json": [[1, 2]]}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {"content-type": "text/plain"}}, "base_url": "http://h/v1", "seams": {"resp_json": "text"}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {"content-type": "text/html"}}, "base_url": "http://h/v1", "seams": {"resp_json": {"__raise__": "UnicodeDecodeError", "msg": "utf8"}}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {}}, "base_url": "http://h/v1", "seams": {"resp_json": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {}}, "base_url": "http://h/v1", "seams": {}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {"content-type": "  application/json ; x"}}, "base_url": "http://h/v1", "seams": {"resp_json": null}}}
+{"func": "no_models_probe_message", "in": {"resp": null, "base_url": "http://h/v1", "seams": {"resp_json": null}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {"content-type": "application/json"}}, "base_url": "http://h/v1", "seams": {"resp_json": {"data": [{"id": "m"}]}}}}
+{"func": "no_models_probe_message", "in": {"resp": {"headers": {"content-type": 5}}, "base_url": "http://h/v1", "seams": {"resp_json": null}}}
+{"func": "auto_api_mode", "in": {"base_url": "http://h", "seams": {"_detect_api_mode_for_url": "anthropic_messages"}}}
+{"func": "auto_api_mode", "in": {"base_url": "http://h", "seams": {"_detect_api_mode_for_url": null}}}
+{"func": "auto_api_mode", "in": {"base_url": "http://h", "seams": {"_detect_api_mode_for_url": ""}}}
+{"func": "auto_api_mode", "in": {"base_url": "http://h", "seams": {"_detect_api_mode_for_url": 0}}}
+{"func": "auto_api_mode", "in": {"base_url": "http://h", "seams": {"_detect_api_mode_for_url": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "auto_api_mode", "in": {"base_url": "http://h", "seams": {}}}
+{"func": "auto_api_mode", "in": {"base_url": "http://h/v1/responses", "seams": {"_detect_api_mode_for_url": "codex_responses"}}}
+{"func": "env_write_errors", "in": {"log_msg": "PUT /api/env failed", "body_raise": null, "seams": {}}}
+{"func": "env_write_errors", "in": {"log_msg": "PUT /api/env failed", "body_raise": {"__raise__": "ValueError", "msg": "bad name"}, "seams": {}}}
+{"func": "env_write_errors", "in": {"log_msg": "x", "body_raise": {"__raise__": "HTTPException", "msg": "not found", "status_code": 404}, "seams": {}}}
+{"func": "env_write_errors", "in": {"log_msg": "PUT /api/env failed", "body_raise": {"__raise__": "RuntimeError", "msg": "boom"}, "seams": {"_log.exception": null}}}
+{"func": "env_write_errors", "in": {"log_msg": "x", "body_raise": {"__raise__": "SystemExit", "msg": "bye"}, "seams": {}}}
+{"func": "env_write_errors", "in": {"log_msg": "x", "body_raise": {"__raise__": "KeyboardInterrupt", "msg": "ki"}, "seams": {}}}
+{"func": "env_write_errors", "in": {"log_msg": "x", "body_raise": {"__raise__": "GeneratorExit", "msg": "ge"}, "seams": {}}}
+{"func": "env_write_errors", "in": {"log_msg": "x", "body_raise": {"__raise__": "UnicodeError", "msg": "u"}, "seams": {}}}
+{"func": "env_write_errors", "in": {"log_msg": "x", "body_raise": {"__raise__": "RuntimeError", "msg": "boom"}, "seams": {}}}
+{"func": "env_write_errors", "in": {"log_msg": "x", "body_raise": {"__raise__": "CustomKind", "msg": "x"}, "seams": {"_log.exception": null}}}
+{"func": "env_write_errors", "in": {"log_msg": "x", "body_raise": {"__raise__": "Exception", "msg": "e"}, "seams": {"_log.exception": null}}}
+{"func": "env_write_errors", "in": {"log_msg": "x", "body_raise": {"__raise__": "BaseExceptionGroup", "msg": "g"}, "seams": {}}}
+{"func": "env_write_errors", "in": {"log_msg": "x", "body_raise": {"__raise__": "RuntimeError", "msg": "boom"}, "seams": {"_log.exception": {"__raise__": "ValueError", "msg": "log fail"}}}}
+{"func": "env_write_errors", "in": {"log_msg": "DELETE /api/env failed", "body_raise": {"__raise__": "PermissionError", "msg": "p"}, "seams": {"_log.exception": null}}}
+{"func": "record_custom_endpoint_setup", "in": {"home": "/h/u", "seams": {"web_setup_surface": "web", "record_provider_setup_done": null}}}
+{"func": "record_custom_endpoint_setup", "in": {"home": null, "seams": {"web_setup_surface": "web", "record_provider_setup_done": null}}}
+{"func": "record_custom_endpoint_setup", "in": {"home": "/h/u", "seams": {"web_setup_surface": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "record_custom_endpoint_setup", "in": {"home": "/h/u", "seams": {"web_setup_surface": "web", "record_provider_setup_done": {"__raise__": "RuntimeError", "msg": "m"}}}}
+{"func": "record_custom_endpoint_setup", "in": {"home": "/h/u", "seams": {}}}
+{"func": "record_custom_endpoint_setup", "in": {"home": "", "seams": {"web_setup_surface": "desktop", "record_provider_setup_done": null}}}

@@ -931,8 +931,9 @@ static json_t *te2_route_single_query_images(const te2_seams_t *s, const json_t 
                 char *ms = te2_strip(te2_jtruth(mv) ? te2_jstr(mv) : "");
                 json_t *cfg = te2_call0(s, "load_config");
                 if (te2_is_raise(cfg)) {
-                    free(ps); free(ms);
-                    if (!te2_caught(cfg, "Exception")) return cfg;
+                    /* ps/ms freed ONCE: propagate returns here, swallow falls
+                     * through to the post-branch free below. */
+                    if (!te2_caught(cfg, "Exception")) { free(ps); free(ms); return cfg; }
                     json_free(cfg);
                 } else {
                     char *rs = te2_strip(te2_jtruth(rv) ? te2_jstr(rv) : "");

@@ -475,11 +475,17 @@ static double ctm2_to_float(const json_t *v, json_t **err) {
     *err = ctm2_raise_new("TypeError", buf);
     return 0.0;
 }
-/* a - b with Python TypeError on non-number operands */
+/* a - b with Python TypeError on non-number operands (bool IS int in Python) */
+static double ctm2_num_of(const json_t *v, bool *ok) {
+    if (v && v->type == JSON_NUMBER) { *ok = true; return v->num_val; }
+    if (v && v->type == JSON_BOOL)   { *ok = true; return v->bool_val ? 1.0 : 0.0; }
+    *ok = false; return 0.0;
+}
 static double ctm2_sub(const json_t *a, const json_t *b, json_t **err) {
     *err = NULL;
-    if (a && a->type == JSON_NUMBER && b && b->type == JSON_NUMBER)
-        return a->num_val - b->num_val;
+    bool oa = false, ob = false;
+    double va = ctm2_num_of(a, &oa), vb = ctm2_num_of(b, &ob);
+    if (oa && ob) return va - vb;
     char buf[192];
     snprintf(buf, sizeof buf, "unsupported operand type(s) for -: '%s' and '%s'",
              ctm2_py_type_name(a), ctm2_py_type_name(b));
@@ -705,14 +711,15 @@ json_t *ctm2_get_tui_prompt_symbols(ctm2_io_t *io) {
     return ret;
 }
 
-/* the nested _state_fragment closure (compact / extra / state_suffix captured) */
-static json_t *ctm2_state_fragment(bool compact, const char *style, const char *icon,
+/* the nested _state_fragment closure (compact / extra / state_suffix captured).
+ * icon is the ORIGINAL value: the compact no-extra path does a real `icon + " "`
+ * concatenation (TypeError on a non-str), the f-string paths str() it. */
+static json_t *ctm2_state_fragment(bool compact, const char *style, const json_t *icon,
                                    const json_t *extra, const char *state_suffix,
                                    json_t **err) {
     *err = NULL;
     ctm2_sb b; ctm2_sb_init(&b);
     if (compact) {
-        ctm2_sb_puts(&b, icon);
         if (ctm2_truthy(extra)) {
             if (!extra || extra->type != JSON_STRING) {
                 char buf[160];
@@ -722,10 +729,12 @@ static json_t *ctm2_state_fragment(bool compact, const char *style, const char *
                 free(ctm2_sb_take(&b));
                 return NULL;
             }
+            char *is = ctm2_py_str(icon);
             char *es = ctm2_strip(extra->str_val ? extra->str_val : "");
+            ctm2_sb_puts(&b, is);
             ctm2_sb_puts(&b, " ");
             ctm2_sb_puts(&b, es);
-            free(es);
+            free(is); free(es);
             /* f"{text} {extra.strip()}".rstrip() */
             char *whole = ctm2_sb_take(&b);
             char *rs = ctm2_rstrip(whole);
@@ -733,20 +742,35 @@ static json_t *ctm2_state_fragment(bool compact, const char *style, const char *
             ctm2_sb_init(&b);
             ctm2_sb_puts(&b, rs);
             free(rs);
+            ctm2_sb_puts(&b, " ");
+        } else {
+            /* text = icon ; return [(style, text + " ")] */
+            if (!icon || icon->type != JSON_STRING) {
+                char buf[192];
+                snprintf(buf, sizeof buf, "unsupported operand type(s) for +: '%s' and 'str'",
+                         ctm2_py_type_name(icon));
+                *err = ctm2_raise_new("TypeError", buf);
+                free(ctm2_sb_take(&b));
+                return NULL;
+            }
+            ctm2_sb_puts(&b, icon->str_val ? icon->str_val : "");
+            ctm2_sb_puts(&b, " ");
         }
-        ctm2_sb_puts(&b, " ");
     } else if (ctm2_truthy(extra)) {
+        char *is = ctm2_py_str(icon);
         char *es = ctm2_py_str(extra);
-        ctm2_sb_puts(&b, icon);
+        ctm2_sb_puts(&b, is);
         ctm2_sb_puts(&b, " ");
         ctm2_sb_puts(&b, es);
         ctm2_sb_puts(&b, " ");
         ctm2_sb_puts(&b, state_suffix);
-        free(es);
+        free(is); free(es);
     } else {
-        ctm2_sb_puts(&b, icon);
+        char *is = ctm2_py_str(icon);
+        ctm2_sb_puts(&b, is);
         ctm2_sb_puts(&b, " ");
         ctm2_sb_puts(&b, state_suffix);
+        free(is);
     }
     json_t *ret = json_array();
     json_append(ret, ctm2_frag(style, ctm2_sb_take(&b)));
@@ -777,50 +801,46 @@ json_t *ctm2_get_tui_prompt_fragments(ctm2_io_t *io) {
     json_t *ret = NULL;
     json_t *err = NULL;
     const char *style = NULL;
-    const char *icon = NULL;
+    json_t *icon_node = NULL;  /* owned: fixed icon string or spinner frame value */
     json_t *extra = NULL;      /* owned when set */
-    char *icon_dyn = NULL;     /* owned when set (spinner frame) */
 
     if (ctm2_truthy(ctm2_st(io, "_voice_recording"))) {
-        style = "class:voice-recording"; icon = CTM2_ICON_RECORD;
+        style = "class:voice-recording"; icon_node = json_string(CTM2_ICON_RECORD);
         extra = ctm2_seam(io, "self._audio_level_bar", json_object());
         if (ctm2_raised(extra)) { ret = extra; extra = NULL; goto done; }
     } else if (ctm2_truthy(ctm2_st(io, "_voice_processing"))) {
-        style = "class:voice-processing"; icon = CTM2_ICON_PROCESS;
+        style = "class:voice-processing"; icon_node = json_string(CTM2_ICON_PROCESS);
     } else if (ctm2_truthy(ctm2_st(io, "_sudo_state"))) {
-        style = "class:sudo-prompt"; icon = CTM2_ICON_SUDO;
+        style = "class:sudo-prompt"; icon_node = json_string(CTM2_ICON_SUDO);
     } else if (ctm2_truthy(ctm2_st(io, "_secret_state"))) {
-        style = "class:sudo-prompt"; icon = CTM2_ICON_SECRET;
+        style = "class:sudo-prompt"; icon_node = json_string(CTM2_ICON_SECRET);
     } else if (ctm2_truthy(ctm2_st(io, "_connection_state"))) {
-        style = "class:prompt-working"; icon = CTM2_ICON_CONN;
+        style = "class:prompt-working"; icon_node = json_string(CTM2_ICON_CONN);
     } else if (ctm2_truthy(ctm2_st(io, "_approval_state")) ||
                ctm2_truthy(ctm2_st(io, "_slash_confirm_state"))) {
-        style = "class:prompt-working"; icon = CTM2_ICON_WARN;
+        style = "class:prompt-working"; icon_node = json_string(CTM2_ICON_WARN);
     } else if (ctm2_truthy(ctm2_st(io, "_clarify_freetext"))) {
-        style = "class:clarify-selected"; icon = CTM2_ICON_EDIT;
+        style = "class:clarify-selected"; icon_node = json_string(CTM2_ICON_EDIT);
     } else if (ctm2_truthy(ctm2_st(io, "_clarify_state"))) {
-        style = "class:prompt-working"; icon = "?";
+        style = "class:prompt-working"; icon_node = json_string("?");
     } else if (ctm2_truthy(ctm2_st(io, "_command_running"))) {
         style = "class:prompt-working";
-        json_t *frame = ctm2_seam(io, "self._command_spinner_frame", json_object());
-        if (ctm2_raised(frame)) { ret = frame; goto done; }
-        icon_dyn = ctm2_py_str(frame);
-        json_free(frame);
-        icon = icon_dyn;
+        icon_node = ctm2_seam(io, "self._command_spinner_frame", json_object());
+        if (ctm2_raised(icon_node)) { ret = icon_node; icon_node = NULL; goto done; }
     } else if (ctm2_truthy(ctm2_st(io, "_agent_running"))) {
-        style = "class:prompt-working"; icon = CTM2_ICON_AGENT;
+        style = "class:prompt-working"; icon_node = json_string(CTM2_ICON_AGENT);
     } else if (ctm2_truthy(ctm2_st(io, "_voice_mode"))) {
-        style = "class:voice-prompt"; icon = CTM2_ICON_MIC;
+        style = "class:voice-prompt"; icon_node = json_string(CTM2_ICON_MIC);
     } else {
         ret = json_array();
         json_append(ret, ctm2_frag("class:prompt", symbol));
         goto done;
     }
-    ret = ctm2_state_fragment(compact, style, icon, extra, suffix, &err);
+    ret = ctm2_state_fragment(compact, style, icon_node, extra, suffix, &err);
     if (err) { ret = err; }
 done:
     json_free(extra);
-    free(icon_dyn);
+    json_free(icon_node);
     free(symbol); free(suffix);
     return ret;
 }

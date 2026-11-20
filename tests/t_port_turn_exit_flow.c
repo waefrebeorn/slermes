@@ -115,7 +115,8 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         echo_state = true;
     } else if (!strcmp(func, "run_kanban_goal_loop_chat")) {
         const json_t *cli = J("cli");
-        if (!cli) { empty_obj = json_object(); cli = empty_obj; }
+        /* oracle: null cli materializes to an empty double */
+        if (te2_is_null(cli)) { empty_obj = json_object(); cli = empty_obj; }
         ret = te2_run_kanban_goal_loop_chat(sp, cli,
                                             json_get_str(in, "first_response", ""));
     } else if (!strcmp(func, "collect_kanban_task_images")) {
@@ -167,7 +168,8 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         echo_state = true;
     } else if (!strcmp(func, "oneshot_exit_code")) {
         const json_t *result = J("result");
-        if (!result) { empty_obj = json_object(); result = empty_obj; }
+        /* oracle drives f(response, result or {}) — null result -> {} */
+        if (te2_is_null(result)) { empty_obj = json_object(); result = empty_obj; }
         ret = te2_oneshot_exit_code(J("response"), result);
     } else {
         fprintf(stderr, "unknown func: %s\n", func);

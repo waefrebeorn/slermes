@@ -280,8 +280,13 @@ def mk_exc_double(j):
             base = cls
         if cls is None:
             cls = type(t, (Exception,), {"__module__": mod})
-    e = cls.__new__(cls)
-    Exception.__init__(e, j.get("message", ""))
+    if issubclass(cls, BaseExceptionGroup):
+        # BaseExceptionGroup.__new__ requires (message, exceptions); the str
+        # form is never read by the classifiers (type/mro/tag only).
+        e = cls(j.get("message", ""), [ValueError("inner")])
+    else:
+        e = cls.__new__(cls)
+        Exception.__init__(e, j.get("message", ""))
     if "failure_class" in j:
         e.__dict__["failure_class"] = j["failure_class"]
     return e

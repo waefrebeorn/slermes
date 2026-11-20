@@ -1079,8 +1079,9 @@ static json_t *om_extension_registry_core(om_io_t *io, const char *kind,
     bool ok = false;
     for (size_t i = 0; i < OM_N(OM_EXTENSION_REGISTRIES); i++)
         if (om_str_eq(value, OM_EXTENSION_REGISTRIES[i])) { ok = true; break; }
+    json_t *r = json_string(ok ? value : "other");   /* copy BEFORE freeing nv */
     json_free(nv);
-    return json_string(ok ? value : "other");
+    return r;
 }
 
 /* PoP: om_extension_registry @ hermes_cli/observability/shared_metrics_fields.py:extension_registry */

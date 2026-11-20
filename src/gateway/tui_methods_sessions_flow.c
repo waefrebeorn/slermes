@@ -1,6 +1,6 @@
 /*
- * tui_methods_sessions_flow.c — FLOW + leaf port of tui_gateway/methods_session.py
- * (hermes-agent): the session JSON-RPC helper surface — handler plumbing
+ * tui_methods_sessions_flow.c -- FLOW + leaf port of tui_gateway/methods_session.py
+ * (hermes-agent): the session JSON-RPC helper surface -- handler plumbing
  * (_session_arg / _session_method / _with_db), runtime-id minting, profile
  * build scopes, agent-in-context builds, cwd info, listing row summaries,
  * record/row projections, deny-listed listings, live-session snapshots, the
@@ -9,7 +9,7 @@
  * exact-title session lookup, live-unpersisted lookup, status rows, title
  * reads, auto-reload and legacy spawn-tree entries.
  *
- * NOTE: the quarry module is tui_gateway/methods_session.py (SINGULAR — there
+ * NOTE: the quarry module is tui_gateway/methods_session.py (SINGULAR -- there
  * is no methods_sessions.py); the PoP annotations name the REAL defining
  * module. The deliverable keeps the task's "sessions" spelling.
  *
@@ -19,23 +19,23 @@
  * (methods_profiles.py) and seamed ("display_count_field", handle omitted).
  * Ported siblings compose LIVE where they are leaf-flows (_row_of,
  * _unarchive_recoverable, _session_row_summary, _try_get_session,
- * _billing_invalid, _billing_call) — their seams fire from inside the
+ * _billing_invalid, _billing_call) -- their seams fire from inside the
  * composer. Decorator factories (_session_arg / _session_method / _with_db /
  * _pet_method / _billing_route) are ported as their generated HANDLER flow;
  * the registry decorators (method / _profile_scoped) are identity at
  * decoration time and fire no events (name / scoped are accepted for
  * fidelity but never seamed).
  *
- * Ports the DECISION SEQUENCES — branch order, error-code/message composition,
- * seam call order, caller-dict mutation history and exception paths — not just
+ * Ports the DECISION SEQUENCES -- branch order, error-code/message composition,
+ * seam call order, caller-dict mutation history and exception paths -- not just
  * leaf outputs. Every live external call enters through ONE universal seam:
- * tms_call(ctx, name, args). The harness wires it to a recording stub fed the
+ * tms2_call(ctx, name, args). The harness wires it to a recording stub fed the
  * case's scripted results (in.io); the oracle installs recording stubs
  * emitting the identical event shape {"name","args","ret"} from the SAME
  * scripts.
  *
  * Self-contained: the harness #includes this .c directly; libjson only.
- * All symbols are static and tms_-prefixed.
+ * All symbols are static and tms2_-prefixed.
  *
  * Server globals are seams: methods_session bodies are rebound onto
  * server.py's globals at install time (method_ctx.bind_module), so _ok / _err
@@ -165,8 +165,8 @@
  *   alone.
  * - Seam args drop None-valued keys on both sides (absent-vs-null parity).
  *
- * Ownership: tms_call ADOPTS args into the trace event; its return is a fresh
- * owned node. json_set ADOPTS its value and frees the replaced node — borrowed
+ * Ownership: tms2_call ADOPTS args into the trace event; its return is a fresh
+ * owned node. json_set ADOPTS its value and frees the replaced node -- borrowed
  * pointers to a replaced key are copied first. Seam results are caller-freed.
  */
 #ifndef _GNU_SOURCE
@@ -180,31 +180,31 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ── universal seam context ── */
-typedef struct tms_ctx {
+/* -- universal seam context -- */
+typedef struct tms2_ctx {
     json_t *state;      /* owned; mutated in place, emitted as out.state */
     const json_t *io;   /* borrowed scripted seam results */
     json_t *cursors;    /* owned; per-name array cursors */
     json_t *trace;      /* owned; ordered seam events */
-} tms_ctx_t;
+} tms2_ctx_t;
 
-/* ── basic helpers ── */
-static bool tms_is_raise(const json_t *v) {
+/* -- basic helpers -- */
+static bool tms2_is_raise(const json_t *v) {
     return v && v->type == JSON_OBJECT && json_obj_get(v, "__raise__") != NULL;
 }
 
-static const char *tms_raise_kind(const json_t *v) {
-    return tms_is_raise(v) ? json_get_str(v, "__raise__", "") : NULL;
+static const char *tms2_raise_kind(const json_t *v) {
+    return tms2_is_raise(v) ? json_get_str(v, "__raise__", "") : NULL;
 }
 
 /* BaseException-only kinds pass through every except-Exception site. */
-static bool tms_is_base_exc(const char *kind) {
+static bool tms2_is_base_exc(const char *kind) {
     return kind && (!strcmp(kind, "SystemExit") || !strcmp(kind, "KeyboardInterrupt")
                     || !strcmp(kind, "GeneratorExit") || !strcmp(kind, "CancelledError"));
 }
 
 /* Python truthiness: None/False/0/""/empty containers are falsy. */
-static bool tms_truthy(const json_t *v) {
+static bool tms2_truthy(const json_t *v) {
     if (!v || v->type == JSON_NULL) return false;
     switch (v->type) {
         case JSON_BOOL: return v->bool_val;
@@ -215,11 +215,11 @@ static bool tms_truthy(const json_t *v) {
     }
 }
 
-static const char *tms_str(const json_t *v) {
+static const char *tms2_str(const json_t *v) {
     return (v && v->type == JSON_STRING) ? v->str_val : NULL;
 }
 
-static json_t *tms_err_spec(const char *type, const char *message) {
+static json_t *tms2_err_spec(const char *type, const char *message) {
     json_t *e = json_object();
     json_set_hdr(e, "__raise__", type);
     json_set_hdr(e, "message", message ? message : "");
@@ -227,7 +227,7 @@ static json_t *tms_err_spec(const char *type, const char *message) {
 }
 
 /* Python type name for a JSON value (fixture scalar/container domain). */
-static const char *tms_type_name(const json_t *v) {
+static const char *tms2_type_name(const json_t *v) {
     if (!v || v->type == JSON_NULL) return "NoneType";
     switch (v->type) {
         case JSON_BOOL: return "bool";
@@ -242,7 +242,7 @@ static const char *tms_type_name(const json_t *v) {
     }
 }
 
-static char *tms_strdup(const char *s) {
+static char *tms2_strdup(const char *s) {
     if (!s) s = "";
     size_t n = strlen(s);
     char *o = malloc(n + 1);
@@ -252,11 +252,11 @@ static char *tms_strdup(const char *s) {
 
 /* Python str() for scalars (containers are outside the str()-projection
  * fixture domain). */
-static char *tms_pystr(const json_t *v) {
-    if (!v || v->type == JSON_NULL) return tms_strdup("None");
+static char *tms2_pystr(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return tms2_strdup("None");
     switch (v->type) {
-        case JSON_BOOL: return tms_strdup(v->bool_val ? "True" : "False");
-        case JSON_STRING: return tms_strdup(v->str_val ? v->str_val : "");
+        case JSON_BOOL: return tms2_strdup(v->bool_val ? "True" : "False");
+        case JSON_STRING: return tms2_strdup(v->str_val ? v->str_val : "");
         case JSON_NUMBER: {
             char buf[64];
             double d = v->num_val;
@@ -264,14 +264,14 @@ static char *tms_pystr(const json_t *v) {
                 snprintf(buf, sizeof buf, "%lld", (long long)d);
             else
                 snprintf(buf, sizeof buf, "%.17g", d);
-            return tms_strdup(buf);
+            return tms2_strdup(buf);
         }
         default: return json_serialize(v);
     }
 }
 
 /* Python repr() for a string (KeyError str() / single-arg repr; ASCII). */
-static char *tms_repr(const char *s) {
+static char *tms2_repr(const char *s) {
     if (!s) s = "";
     bool has_sq = strchr(s, '\'') != NULL;
     bool has_dq = strchr(s, '"') != NULL;
@@ -300,22 +300,22 @@ static char *tms_repr(const char *s) {
 }
 
 /* str(exc) for a raise spec: the message already IS str(exc) (KeyError
- * specs carry the repr'd key — see tms_make_exc / tms_sub). */
-static char *tms_exc_str(const json_t *raise) {
-    return tms_strdup(json_get_str(raise, "message", ""));
+ * specs carry the repr'd key -- see tms2_make_exc / tms2_sub). */
+static char *tms2_exc_str(const json_t *raise) {
+    return tms2_strdup(json_get_str(raise, "message", ""));
 }
 
 /* Python str.strip() whitespace: ASCII White_Space INCLUDING \x1c-\x1f. */
-static bool tms_is_ws(unsigned char c) {
+static bool tms2_is_ws(unsigned char c) {
     return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f'
         || c == '\v' || (c >= 0x1c && c <= 0x1f);
 }
 
-static char *tms_strip(const char *s) {
+static char *tms2_strip(const char *s) {
     if (!s) s = "";
-    while (*s && tms_is_ws((unsigned char)*s)) s++;
+    while (*s && tms2_is_ws((unsigned char)*s)) s++;
     const char *end = s + strlen(s);
-    while (end > s && tms_is_ws((unsigned char)end[-1])) end--;
+    while (end > s && tms2_is_ws((unsigned char)end[-1])) end--;
     size_t n = (size_t)(end - s);
     char *o = malloc(n + 1);
     if (!o) return NULL;
@@ -324,29 +324,29 @@ static char *tms_strip(const char *s) {
     return o;
 }
 
-static char *tms_lower(const char *s) {
-    char *o = tms_strdup(s);
+static char *tms2_lower(const char *s) {
+    char *o = tms2_strdup(s);
     if (!o) return NULL;
     for (char *p = o; *p; p++) *p = (char)tolower((unsigned char)*p);
     return o;
 }
 
-/* ── the one universal seam (fail-closed) ── */
+/* -- the one universal seam (fail-closed) -- */
 /* Raise-spec messages are str(exc): a scripted KeyError's message is repr'd
  * at materialization (single-arg KeyError str() == repr(arg)). */
-static json_t *tms_make_exc(const json_t *spec) {
+static json_t *tms2_make_exc(const json_t *spec) {
     const char *type = json_get_str(spec, "type", "RuntimeError");
     const char *msg = json_get_str(spec, "message", "");
     if (!strcmp(type, "KeyError")) {
-        char *r = tms_repr(msg);
-        json_t *e = tms_err_spec(type, r ? r : msg);
+        char *r = tms2_repr(msg);
+        json_t *e = tms2_err_spec(type, r ? r : msg);
         free(r);
         return e;
     }
-    return tms_err_spec(type, msg);
+    return tms2_err_spec(type, msg);
 }
 
-static json_t *tms_call(tms_ctx_t *ctx, const char *name, json_t *args) {
+static json_t *tms2_call(tms2_ctx_t *ctx, const char *name, json_t *args) {
     json_t *ev = json_object();
     json_set_hdr(ev, "name", name);
     /* drop null-valued arg keys on both sides (absent-vs-null parity) */
@@ -366,13 +366,13 @@ static json_t *tms_call(tms_ctx_t *ctx, const char *name, json_t *args) {
     if (!entry) {
         char msg[256];
         snprintf(msg, sizeof msg, "no script for %s", name);
-        ret = tms_err_spec("RuntimeError", msg);
+        ret = tms2_err_spec("RuntimeError", msg);
     } else if (entry->type == JSON_ARRAY) {
         size_t idx = (size_t)json_get_num(ctx->cursors, name, 0);
         if (idx >= json_len(entry)) {
             char msg[256];
             snprintf(msg, sizeof msg, "script exhausted for %s", name);
-            ret = tms_err_spec("RuntimeError", msg);
+            ret = tms2_err_spec("RuntimeError", msg);
         } else {
             json_set(ctx->cursors, name, json_number((double)(idx + 1)));
             used = json_get(entry, idx);
@@ -382,7 +382,7 @@ static json_t *tms_call(tms_ctx_t *ctx, const char *name, json_t *args) {
         if (used && used->type == JSON_OBJECT && json_get_bool(used, "__script__", false)) {
             json_t *raise = json_obj_get(used, "raise");
             if (raise && raise->type == JSON_OBJECT) {
-                ret = tms_make_exc(raise);
+                ret = tms2_make_exc(raise);
             } else {
                 json_t *r = json_obj_get(used, "ret");
                 ret = r ? json_copy(r) : json_null();
@@ -397,43 +397,43 @@ static json_t *tms_call(tms_ctx_t *ctx, const char *name, json_t *args) {
 }
 
 /* args builders (values borrowed; copied into the args object) */
-static json_t *tms_args0(void) { return json_object(); }
-static void tms_aset(json_t *a, const char *k, const json_t *v) {
+static json_t *tms2_args0(void) { return json_object(); }
+static void tms2_aset(json_t *a, const char *k, const json_t *v) {
     json_set(a, k, v ? json_copy(v) : json_null());
 }
-static void tms_asets(json_t *a, const char *k, const char *v) {
+static void tms2_asets(json_t *a, const char *k, const char *v) {
     json_set(a, k, v ? json_string(v) : json_null());
 }
-static void tms_asetb(json_t *a, const char *k, bool v) { json_set(a, k, json_bool(v)); }
-static void tms_asetn(json_t *a, const char *k, double v) { json_set(a, k, json_number(v)); }
+static void tms2_asetb(json_t *a, const char *k, bool v) { json_set(a, k, json_bool(v)); }
+static void tms2_asetn(json_t *a, const char *k, double v) { json_set(a, k, json_number(v)); }
 
-/* _err(rid, code, msg) / _ok(rid, payload) — server-global envelope seams. */
-static json_t *tms_err(tms_ctx_t *ctx, const json_t *rid, int code, const char *msg) {
-    json_t *a = tms_args0();
-    tms_aset(a, "rid", rid);
-    tms_asetn(a, "code", (double)code);
-    tms_asets(a, "message", msg);
-    return tms_call(ctx, "err", a);
+/* _err(rid, code, msg) / _ok(rid, payload) -- server-global envelope seams. */
+static json_t *tms2_err(tms2_ctx_t *ctx, const json_t *rid, int code, const char *msg) {
+    json_t *a = tms2_args0();
+    tms2_aset(a, "rid", rid);
+    tms2_asetn(a, "code", (double)code);
+    tms2_asets(a, "message", msg);
+    return tms2_call(ctx, "err", a);
 }
 
-static json_t *tms_ok(tms_ctx_t *ctx, const json_t *rid, json_t *payload) {
-    json_t *a = tms_args0();
-    tms_aset(a, "rid", rid);
+static json_t *tms2_ok(tms2_ctx_t *ctx, const json_t *rid, json_t *payload) {
+    json_t *a = tms2_args0();
+    tms2_aset(a, "rid", rid);
     json_set(a, "payload", payload ? payload : json_null());
-    return tms_call(ctx, "ok", a);
+    return tms2_call(ctx, "ok", a);
 }
 
-/* ── caller-dict state mirrors ── */
-static json_t *tms_state_key(tms_ctx_t *ctx, const char *key) {
+/* -- caller-dict state mirrors -- */
+static json_t *tms2_state_key(tms2_ctx_t *ctx, const char *key) {
     if (!json_has(ctx->state, key)) json_set(ctx->state, key, json_object());
     return json_obj_get(ctx->state, key);
 }
 
-/* ── attribute access on SimpleNamespace doubles ── */
+/* -- attribute access on SimpleNamespace doubles -- */
 /* Returns a BORROWED value (or the borrowed default when has_default and the
  * key is absent); a missing required attribute sets *raise to the live
  * AttributeError spec. */
-static const json_t *tms_attr(const json_t *obj, const char *key,
+static const json_t *tms2_attr(const json_t *obj, const char *key,
                               bool has_default, const json_t *def,
                               json_t **raise) {
     *raise = NULL;
@@ -444,26 +444,26 @@ static const json_t *tms_attr(const json_t *obj, const char *key,
         char msg[192];
         snprintf(msg, sizeof msg,
                  "'types.SimpleNamespace' object has no attribute '%s'", key);
-        *raise = tms_err_spec("AttributeError", msg);
+        *raise = tms2_err_spec("AttributeError", msg);
         return NULL;
     }
     if (has_default) return def;
     char msg[192];
     snprintf(msg, sizeof msg, "'%s' object has no attribute '%s'",
-             tms_type_name(obj), key);
-    *raise = tms_err_spec("AttributeError", msg);
+             tms2_type_name(obj), key);
+    *raise = tms2_err_spec("AttributeError", msg);
     return NULL;
 }
 
 /* dict subscript row[key]: KeyError on a missing key (message is str(exc) ==
  * repr(key)), TypeError on a non-dict receiver. BORROWED. */
-static const json_t *tms_sub(const json_t *obj, const char *key, json_t **raise) {
+static const json_t *tms2_sub(const json_t *obj, const char *key, json_t **raise) {
     *raise = NULL;
     if (obj && obj->type == JSON_OBJECT) {
         const json_t *v = json_obj_get(obj, key);
         if (v) return v;
-        char *r = tms_repr(key);
-        *raise = tms_err_spec("KeyError", r ? r : key);
+        char *r = tms2_repr(key);
+        *raise = tms2_err_spec("KeyError", r ? r : key);
         free(r);
         return NULL;
     }
@@ -472,14 +472,14 @@ static const json_t *tms_sub(const json_t *obj, const char *key, json_t **raise)
         snprintf(msg, sizeof msg, "string indices must be integers, not 'str'");
     else
         snprintf(msg, sizeof msg, "'%s' object is not subscriptable",
-                 tms_type_name(obj));
-    *raise = tms_err_spec("TypeError", msg);
+                 tms2_type_name(obj));
+    *raise = tms2_err_spec("TypeError", msg);
     return NULL;
 }
 
 /* dict.get(key) / .get(key, default) on a plain dict receiver; a non-dict
  * raises the live AttributeError naming 'get'. BORROWED. */
-static const json_t *tms_dict_get(const json_t *obj, const char *key,
+static const json_t *tms2_dict_get(const json_t *obj, const char *key,
                                   bool has_default, const json_t *def,
                                   json_t **raise) {
     *raise = NULL;
@@ -490,32 +490,32 @@ static const json_t *tms_dict_get(const json_t *obj, const char *key,
     }
     char msg[192];
     snprintf(msg, sizeof msg, "'%s' object has no attribute 'get'",
-             tms_type_name(obj));
-    *raise = tms_err_spec("AttributeError", msg);
+             tms2_type_name(obj));
+    *raise = tms2_err_spec("AttributeError", msg);
     return NULL;
 }
 
-/* `with <non-dict>:` — the py3.14 context-manager protocol TypeError. */
-static json_t *tms_cm_check(const json_t *v) {
+/* `with <non-dict>:` -- the py3.14 context-manager protocol TypeError. */
+static json_t *tms2_cm_check(const json_t *v) {
     if (v && v->type == JSON_OBJECT) return NULL;
     char msg[192];
     snprintf(msg, sizeof msg,
              "'%s' object does not support the context manager protocol "
-             "(missed __exit__ method)", tms_type_name(v));
-    return tms_err_spec("TypeError", msg);
+             "(missed __exit__ method)", tms2_type_name(v));
+    return tms2_err_spec("TypeError", msg);
 }
 
 /* list(x) / for x in <v> iteration gate (fixture domain: list or null). */
-static json_t *tms_iter_check(const json_t *v) {
+static json_t *tms2_iter_check(const json_t *v) {
     if (v && v->type == JSON_ARRAY) return NULL;
     char msg[192];
-    snprintf(msg, sizeof msg, "'%s' object is not iterable", tms_type_name(v));
-    return tms_err_spec("TypeError", msg);
+    snprintf(msg, sizeof msg, "'%s' object is not iterable", tms2_type_name(v));
+    return tms2_err_spec("TypeError", msg);
 }
 
 /* Unpack v into n OWNED items (lists and strings are iterable). Returns a
  * raise spec on failure (out untouched), NULL on success. */
-static json_t *tms_unpack(const json_t *v, size_t n, json_t **out) {
+static json_t *tms2_unpack(const json_t *v, size_t n, json_t **out) {
     size_t len;
     bool is_str = false;
     if (v && v->type == JSON_ARRAY) len = v->c.count;
@@ -523,14 +523,14 @@ static json_t *tms_unpack(const json_t *v, size_t n, json_t **out) {
     else {
         char msg[192];
         snprintf(msg, sizeof msg, "cannot unpack non-iterable %s object",
-                 tms_type_name(v));
-        return tms_err_spec("TypeError", msg);
+                 tms2_type_name(v));
+        return tms2_err_spec("TypeError", msg);
     }
     if (len != n) {
         char msg[192];
         snprintf(msg, sizeof msg, "%s values to unpack (expected %zu, got %zu)",
                  len > n ? "too many" : "not enough", n, len);
-        return tms_err_spec("ValueError", msg);
+        return tms2_err_spec("ValueError", msg);
     }
     for (size_t i = 0; i < n; i++) {
         if (is_str) {
@@ -544,12 +544,12 @@ static json_t *tms_unpack(const json_t *v, size_t n, json_t **out) {
 }
 
 /* {**a, **b}: a must be a dict; b NULL means {}. Returns an owned merge. */
-static json_t *tms_splat_merge(const json_t *a, const json_t *b, json_t **raise) {
+static json_t *tms2_splat_merge(const json_t *a, const json_t *b, json_t **raise) {
     *raise = NULL;
     if (!a || a->type != JSON_OBJECT) {
         char msg[192];
-        snprintf(msg, sizeof msg, "'%s' object is not a mapping", tms_type_name(a));
-        *raise = tms_err_spec("TypeError", msg);
+        snprintf(msg, sizeof msg, "'%s' object is not a mapping", tms2_type_name(a));
+        *raise = tms2_err_spec("TypeError", msg);
         return NULL;
     }
     json_t *out = json_copy(a);
@@ -561,14 +561,14 @@ static json_t *tms_splat_merge(const json_t *a, const json_t *b, json_t **raise)
 }
 
 /* a | b (dict union): a must be a dict. Returns an owned merge. */
-static json_t *tms_dict_union(const json_t *a, const json_t *b, json_t **raise) {
+static json_t *tms2_dict_union(const json_t *a, const json_t *b, json_t **raise) {
     *raise = NULL;
     if (!a || a->type != JSON_OBJECT) {
         char msg[192];
         snprintf(msg, sizeof msg,
                  "unsupported operand type(s) for |: '%s' and 'dict'",
-                 tms_type_name(a));
-        *raise = tms_err_spec("TypeError", msg);
+                 tms2_type_name(a));
+        *raise = tms2_err_spec("TypeError", msg);
         return NULL;
     }
     json_t *out = json_copy(a);
@@ -579,50 +579,50 @@ static json_t *tms_dict_union(const json_t *a, const json_t *b, json_t **raise) 
     return out;
 }
 
-/* ── claimed-sibling seams ── */
-/* _str_param(params, key) — default "" (every live call site). */
-static json_t *tms_str_param(tms_ctx_t *ctx, const json_t *params, const char *key) {
-    json_t *a = tms_args0();
-    tms_aset(a, "params", params);
-    tms_asets(a, "key", key);
-    tms_asets(a, "default", "");
-    return tms_call(ctx, "str_param", a);
+/* -- claimed-sibling seams -- */
+/* _str_param(params, key) -- default "" (every live call site). */
+static json_t *tms2_str_param(tms2_ctx_t *ctx, const json_t *params, const char *key) {
+    json_t *a = tms2_args0();
+    tms2_aset(a, "params", params);
+    tms2_asets(a, "key", key);
+    tms2_asets(a, "default", "");
+    return tms2_call(ctx, "str_param", a);
 }
 
-/* _denied_source(row) — claimed by port_methods_session.c. */
-static json_t *tms_denied_source(tms_ctx_t *ctx, const json_t *row) {
-    json_t *a = tms_args0();
-    tms_aset(a, "row", row);
-    return tms_call(ctx, "denied_source", a);
+/* _denied_source(row) -- claimed by port_methods_session.c. */
+static json_t *tms2_denied_source(tms2_ctx_t *ctx, const json_t *row) {
+    json_t *a = tms2_args0();
+    tms2_aset(a, "row", row);
+    return tms2_call(ctx, "denied_source", a);
 }
 
-/* _display_count_field(persistence, sid) — claimed by tui_methods_flow.c;
+/* _display_count_field(persistence, sid) -- claimed by tui_methods_flow.c;
  * the persistence handle is omitted from the projection. */
-static json_t *tms_display_count_field(tms_ctx_t *ctx, const json_t *sid) {
-    json_t *a = tms_args0();
-    tms_aset(a, "session_id", sid);
-    return tms_call(ctx, "display_count_field", a);
+static json_t *tms2_display_count_field(tms2_ctx_t *ctx, const json_t *sid) {
+    json_t *a = tms2_args0();
+    tms2_aset(a, "session_id", sid);
+    return tms2_call(ctx, "display_count_field", a);
 }
 
-/* ── CM enter: fire the seam, project the entered handle marker ── */
+/* -- CM enter: fire the seam, project the entered handle marker -- */
 /* Returns an OWNED entered marker dict, or NULL when the enter value is None
  * (cm_enter_none). *raise carries a seam raise or the with-site TypeError. */
-static json_t *tms_cm_enter(tms_ctx_t *ctx, const char *seam, json_t *args,
+static json_t *tms2_cm_enter(tms2_ctx_t *ctx, const char *seam, json_t *args,
                             json_t **raise) {
     *raise = NULL;
-    json_t *r = tms_call(ctx, seam, args);
-    if (tms_is_raise(r)) { *raise = r; return NULL; }
+    json_t *r = tms2_call(ctx, seam, args);
+    if (tms2_is_raise(r)) { *raise = r; return NULL; }
     if (r && r->type == JSON_OBJECT) {
         if (json_get_bool(r, "cm_enter_none", false)) { json_free(r); return NULL; }
         return r;
     }
-    *raise = tms_cm_check(r);
+    *raise = tms2_cm_check(r);
     json_free(r);
     return NULL;
 }
 
 /* persistence.sessions / persistence.lineage sub-object presence gate. */
-static json_t *tms_persist_sub(const json_t *p, const char *sub) {
+static json_t *tms2_persist_sub(const json_t *p, const char *sub) {
     if (p && p->type == JSON_OBJECT && json_obj_get(p, sub)) return NULL;
     char msg[192];
     if (p && p->type == JSON_OBJECT)
@@ -630,48 +630,48 @@ static json_t *tms_persist_sub(const json_t *p, const char *sub) {
                  "'types.SimpleNamespace' object has no attribute '%s'", sub);
     else
         snprintf(msg, sizeof msg, "'%s' object has no attribute '%s'",
-                 tms_type_name(p), sub);
-    return tms_err_spec("AttributeError", msg);
+                 tms2_type_name(p), sub);
+    return tms2_err_spec("AttributeError", msg);
 }
 
-/* ── persistence method seams (sub-object gated) ── */
-static json_t *tms_sessions_get(tms_ctx_t *ctx, const json_t *p, const json_t *sid) {
-    json_t *bad = tms_persist_sub(p, "sessions");
+/* -- persistence method seams (sub-object gated) -- */
+static json_t *tms2_sessions_get(tms2_ctx_t *ctx, const json_t *p, const json_t *sid) {
+    json_t *bad = tms2_persist_sub(p, "sessions");
     if (bad) return bad;
-    json_t *a = tms_args0();
-    tms_aset(a, "session_id", sid);
-    return tms_call(ctx, "sessions_get", a);
+    json_t *a = tms2_args0();
+    tms2_aset(a, "session_id", sid);
+    return tms2_call(ctx, "sessions_get", a);
 }
 
-static json_t *tms_get_by_title(tms_ctx_t *ctx, const json_t *p, const char *title) {
-    json_t *bad = tms_persist_sub(p, "sessions");
+static json_t *tms2_get_by_title(tms2_ctx_t *ctx, const json_t *p, const char *title) {
+    json_t *bad = tms2_persist_sub(p, "sessions");
     if (bad) return bad;
-    json_t *a = tms_args0();
-    tms_asets(a, "title", title);
-    return tms_call(ctx, "get_by_title", a);
+    json_t *a = tms2_args0();
+    tms2_asets(a, "title", title);
+    return tms2_call(ctx, "get_by_title", a);
 }
 
-static json_t *tms_lineage_tip(tms_ctx_t *ctx, const json_t *p, const json_t *sid) {
-    json_t *bad = tms_persist_sub(p, "lineage");
+static json_t *tms2_lineage_tip(tms2_ctx_t *ctx, const json_t *p, const json_t *sid) {
+    json_t *bad = tms2_persist_sub(p, "lineage");
     if (bad) return bad;
-    json_t *a = tms_args0();
-    tms_aset(a, "session_id", sid);
-    return tms_call(ctx, "lineage_tip", a);
+    json_t *a = tms2_args0();
+    tms2_aset(a, "session_id", sid);
+    return tms2_call(ctx, "lineage_tip", a);
 }
 
-/* record.as_session_row() — the _row_of projection seam. */
-static json_t *tms_as_session_row(tms_ctx_t *ctx, const json_t *record) {
+/* record.as_session_row() -- the _row_of projection seam. */
+static json_t *tms2_as_session_row(tms2_ctx_t *ctx, const json_t *record) {
     if (!record || record->type != JSON_OBJECT) {
         char msg[192];
         snprintf(msg, sizeof msg, "'%s' object has no attribute 'as_session_row'",
-                 tms_type_name(record));
-        return tms_err_spec("AttributeError", msg);
+                 tms2_type_name(record));
+        return tms2_err_spec("AttributeError", msg);
     }
-    return tms_call(ctx, "as_session_row", tms_args0());
+    return tms2_call(ctx, "as_session_row", tms2_args0());
 }
 
-/* ── base64 (standard alphabet, padded) ── */
-static char *tms_b64_encode(const char *data) {
+/* -- base64 (standard alphabet, padded) -- */
+static char *tms2_b64_encode(const char *data) {
     static const char enc[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     size_t n = strlen(data);
@@ -692,13 +692,13 @@ static char *tms_b64_encode(const char *data) {
     return o;
 }
 
-/* ── strict Python json.loads grammar pre-validator ── */
+/* -- strict Python json.loads grammar pre-validator -- */
 /* libjson's parser is lenient (leading zeros, bad escapes, ...); Python
  * json.loads is strict. Validate the grammar FIRST, then parse. Fixture
  * domain: ASCII, no lone-surrogate \u escapes, no NaN/Infinity. */
-typedef struct tms_jv { const char *s; size_t i, n; } tms_jv_t;
+typedef struct tms2_jv { const char *s; size_t i, n; } tms2_jv_t;
 
-static void tms_jv_ws(tms_jv_t *p) {
+static void tms2_jv_ws(tms2_jv_t *p) {
     while (p->i < p->n) {
         char c = p->s[p->i];
         if (c == ' ' || c == '\t' || c == '\n' || c == '\r') p->i++;
@@ -706,9 +706,9 @@ static void tms_jv_ws(tms_jv_t *p) {
     }
 }
 
-static bool tms_jv_value(tms_jv_t *p);
+static bool tms2_jv_value(tms2_jv_t *p);
 
-static bool tms_jv_string(tms_jv_t *p) {
+static bool tms2_jv_string(tms2_jv_t *p) {
     if (p->i >= p->n || p->s[p->i] != '"') return false;
     p->i++;
     while (p->i < p->n) {
@@ -733,7 +733,7 @@ static bool tms_jv_string(tms_jv_t *p) {
     return false;
 }
 
-static bool tms_jv_number(tms_jv_t *p) {
+static bool tms2_jv_number(tms2_jv_t *p) {
     size_t start = p->i;
     if (p->i < p->n && p->s[p->i] == '-') p->i++;
     if (p->i >= p->n) return false;
@@ -757,30 +757,30 @@ static bool tms_jv_number(tms_jv_t *p) {
     return p->i > start;
 }
 
-static bool tms_jv_lit(tms_jv_t *p, const char *lit) {
+static bool tms2_jv_lit(tms2_jv_t *p, const char *lit) {
     size_t n = strlen(lit);
     if (p->i + n > p->n || memcmp(p->s + p->i, lit, n) != 0) return false;
     p->i += n;
     return true;
 }
 
-static bool tms_jv_value(tms_jv_t *p) {
-    tms_jv_ws(p);
+static bool tms2_jv_value(tms2_jv_t *p) {
+    tms2_jv_ws(p);
     if (p->i >= p->n) return false;
     char c = p->s[p->i];
-    if (c == '"') return tms_jv_string(p);
+    if (c == '"') return tms2_jv_string(p);
     if (c == '{') {
         p->i++;
-        tms_jv_ws(p);
+        tms2_jv_ws(p);
         if (p->i < p->n && p->s[p->i] == '}') { p->i++; return true; }
         for (;;) {
-            tms_jv_ws(p);
-            if (!tms_jv_string(p)) return false;
-            tms_jv_ws(p);
+            tms2_jv_ws(p);
+            if (!tms2_jv_string(p)) return false;
+            tms2_jv_ws(p);
             if (p->i >= p->n || p->s[p->i] != ':') return false;
             p->i++;
-            if (!tms_jv_value(p)) return false;
-            tms_jv_ws(p);
+            if (!tms2_jv_value(p)) return false;
+            tms2_jv_ws(p);
             if (p->i < p->n && p->s[p->i] == ',') { p->i++; continue; }
             if (p->i < p->n && p->s[p->i] == '}') { p->i++; return true; }
             return false;
@@ -788,60 +788,60 @@ static bool tms_jv_value(tms_jv_t *p) {
     }
     if (c == '[') {
         p->i++;
-        tms_jv_ws(p);
+        tms2_jv_ws(p);
         if (p->i < p->n && p->s[p->i] == ']') { p->i++; return true; }
         for (;;) {
-            if (!tms_jv_value(p)) return false;
-            tms_jv_ws(p);
+            if (!tms2_jv_value(p)) return false;
+            tms2_jv_ws(p);
             if (p->i < p->n && p->s[p->i] == ',') { p->i++; continue; }
             if (p->i < p->n && p->s[p->i] == ']') { p->i++; return true; }
             return false;
         }
     }
-    if (c == 't') return tms_jv_lit(p, "true");
-    if (c == 'f') return tms_jv_lit(p, "false");
-    if (c == 'n') return tms_jv_lit(p, "null");
-    if (c == '-' || isdigit((unsigned char)c)) return tms_jv_number(p);
+    if (c == 't') return tms2_jv_lit(p, "true");
+    if (c == 'f') return tms2_jv_lit(p, "false");
+    if (c == 'n') return tms2_jv_lit(p, "null");
+    if (c == '-' || isdigit((unsigned char)c)) return tms2_jv_number(p);
     return false;
 }
 
 /* json.loads(text): 0 on success (*out owned), -1 on JSONDecodeError. */
-static int tms_json_loads(const char *text, json_t **out) {
+static int tms2_json_loads(const char *text, json_t **out) {
     *out = NULL;
     if (!text) return -1;
-    tms_jv_t p = { text, 0, strlen(text) };
-    if (!tms_jv_value(&p)) return -1;
-    tms_jv_ws(&p);
+    tms2_jv_t p = { text, 0, strlen(text) };
+    if (!tms2_jv_value(&p)) return -1;
+    tms2_jv_ws(&p);
     if (p.i != p.n) return -1;
     json_t *v = json_parse(text, NULL);
     if (!v) return -1;
     *out = v;
     return 0;
-}/* ═══════════════════════ ported handler plumbing ═══════════════════════ */
+}/* ======================= ported handler plumbing ======================= */
 
 /* _session_arg's generated handler: session, err = resolve(params, rid);
  * return err or fn(rid, params, session). The resolve lambda is the
  * "resolve" seam; fn is the "session_fn" callback seam. */
-/* PoP: tms_session_arg @ tui_gateway/methods_session.py:_session_arg */
-static json_t *tms_session_arg(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_session_arg @ tui_gateway/methods_session.py:_session_arg */
+static json_t *tms2_session_arg(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
     const json_t *params = json_obj_get(args, "params");
-    json_t *ra = tms_args0();
-    tms_aset(ra, "params", params);
-    tms_aset(ra, "rid", rid);
-    json_t *pair = tms_call(ctx, "resolve", ra);
-    if (tms_is_raise(pair)) return pair;
+    json_t *ra = tms2_args0();
+    tms2_aset(ra, "params", params);
+    tms2_aset(ra, "rid", rid);
+    json_t *pair = tms2_call(ctx, "resolve", ra);
+    if (tms2_is_raise(pair)) return pair;
     json_t *u[2];
-    json_t *bad = tms_unpack(pair, 2, u);
+    json_t *bad = tms2_unpack(pair, 2, u);
     json_free(pair);
     if (bad) return bad;
-    if (tms_truthy(u[1])) { json_free(u[0]); return u[1]; }
+    if (tms2_truthy(u[1])) { json_free(u[0]); return u[1]; }
     json_free(u[1]);
-    json_t *fa = tms_args0();
-    tms_aset(fa, "rid", rid);
-    tms_aset(fa, "params", params);
-    tms_aset(fa, "session", u[0]);
-    json_t *r = tms_call(ctx, "session_fn", fa);
+    json_t *fa = tms2_args0();
+    tms2_aset(fa, "rid", rid);
+    tms2_aset(fa, "params", params);
+    tms2_aset(fa, "session", u[0]);
+    json_t *r = tms2_call(ctx, "session_fn", fa);
     json_free(u[0]);
     return r;
 }
@@ -849,27 +849,27 @@ static json_t *tms_session_arg(tms_ctx_t *ctx, const json_t *args) {
 /* _session_method's generated handler: live picks _sess (waits for the agent
  * build) over _sess_nowait; the rest is _session_arg's flow. name is the
  * decoration-time registry key (identity decorator; no event). */
-/* PoP: tms_session_method @ tui_gateway/methods_session.py:_session_method */
-static json_t *tms_session_method(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_session_method @ tui_gateway/methods_session.py:_session_method */
+static json_t *tms2_session_method(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
     const json_t *params = json_obj_get(args, "params");
     bool live = json_get_bool(args, "live", false);
-    json_t *ra = tms_args0();
-    tms_aset(ra, "params", params);
-    tms_aset(ra, "rid", rid);
-    json_t *pair = tms_call(ctx, live ? "sess" : "sess_nowait", ra);
-    if (tms_is_raise(pair)) return pair;
+    json_t *ra = tms2_args0();
+    tms2_aset(ra, "params", params);
+    tms2_aset(ra, "rid", rid);
+    json_t *pair = tms2_call(ctx, live ? "sess" : "sess_nowait", ra);
+    if (tms2_is_raise(pair)) return pair;
     json_t *u[2];
-    json_t *bad = tms_unpack(pair, 2, u);
+    json_t *bad = tms2_unpack(pair, 2, u);
     json_free(pair);
     if (bad) return bad;
-    if (tms_truthy(u[1])) { json_free(u[0]); return u[1]; }
+    if (tms2_truthy(u[1])) { json_free(u[0]); return u[1]; }
     json_free(u[1]);
-    json_t *fa = tms_args0();
-    tms_aset(fa, "rid", rid);
-    tms_aset(fa, "params", params);
-    tms_aset(fa, "session", u[0]);
-    json_t *r = tms_call(ctx, "session_fn", fa);
+    json_t *fa = tms2_args0();
+    tms2_aset(fa, "rid", rid);
+    tms2_aset(fa, "params", params);
+    tms2_aset(fa, "session", u[0]);
+    json_t *r = tms2_call(ctx, "session_fn", fa);
     json_free(u[0]);
     return r;
 }
@@ -878,50 +878,50 @@ static json_t *tms_session_method(tms_ctx_t *ctx, const json_t *args) {
  * `with db_cm as db, _persistence_for(db) as persistence:`; None persistence
  * -> _db_unavailable_error(rid, code=code); else fn(rid, params, *session,
  * persistence). */
-/* PoP: tms_with_db @ tui_gateway/methods_session.py:_with_db */
-static json_t *tms_with_db(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_with_db @ tui_gateway/methods_session.py:_with_db */
+static json_t *tms2_with_db(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
     const json_t *params = json_obj_get(args, "params");
     bool scoped = json_get_bool(args, "session_scoped", false);
     int code = (int)json_get_num(args, "code", 0);
     json_t *session = NULL;
     if (scoped) {
-        json_t *ra = tms_args0();
-        tms_aset(ra, "params", params);
-        tms_aset(ra, "rid", rid);
-        json_t *pair = tms_call(ctx, "sess_nowait", ra);
-        if (tms_is_raise(pair)) return pair;
+        json_t *ra = tms2_args0();
+        tms2_aset(ra, "params", params);
+        tms2_aset(ra, "rid", rid);
+        json_t *pair = tms2_call(ctx, "sess_nowait", ra);
+        if (tms2_is_raise(pair)) return pair;
         json_t *u[2];
-        json_t *bad = tms_unpack(pair, 2, u);
+        json_t *bad = tms2_unpack(pair, 2, u);
         json_free(pair);
         if (bad) return bad;
-        if (tms_truthy(u[1])) { json_free(u[0]); return u[1]; }
+        if (tms2_truthy(u[1])) { json_free(u[0]); return u[1]; }
         json_free(u[1]);
         session = u[0];
     }
-    json_t *da = tms_args0();
-    if (scoped) tms_aset(da, "session", session);
-    else tms_aset(da, "params", params);
+    json_t *da = tms2_args0();
+    if (scoped) tms2_aset(da, "session", session);
+    else tms2_aset(da, "params", params);
     json_t *raise = NULL;
-    json_t *db = tms_cm_enter(ctx, scoped ? "session_db" : "profile_db", da, &raise);
+    json_t *db = tms2_cm_enter(ctx, scoped ? "session_db" : "profile_db", da, &raise);
     if (raise) { json_free(session); return raise; }
-    json_t *pa = tms_args0();
-    tms_aset(pa, "db", db);
-    json_t *p = tms_cm_enter(ctx, "persistence_for", pa, &raise);
+    json_t *pa = tms2_args0();
+    tms2_aset(pa, "db", db);
+    json_t *p = tms2_cm_enter(ctx, "persistence_for", pa, &raise);
     if (raise) { json_free(db); json_free(session); return raise; }
     json_t *ret;
     if (!p) {
-        json_t *ua = tms_args0();
-        tms_aset(ua, "rid", rid);
-        tms_asetn(ua, "code", (double)code);
-        ret = tms_call(ctx, "db_unavailable_error", ua);
+        json_t *ua = tms2_args0();
+        tms2_aset(ua, "rid", rid);
+        tms2_asetn(ua, "code", (double)code);
+        ret = tms2_call(ctx, "db_unavailable_error", ua);
     } else {
-        json_t *fa = tms_args0();
-        tms_aset(fa, "rid", rid);
-        tms_aset(fa, "params", params);
-        if (scoped) tms_aset(fa, "session", session);
-        tms_aset(fa, "persistence", p);
-        ret = tms_call(ctx, "db_fn", fa);
+        json_t *fa = tms2_args0();
+        tms2_aset(fa, "rid", rid);
+        tms2_aset(fa, "params", params);
+        if (scoped) tms2_aset(fa, "session", session);
+        tms2_aset(fa, "persistence", p);
+        ret = tms2_call(ctx, "db_fn", fa);
     }
     json_free(db);
     json_free(p);
@@ -929,22 +929,22 @@ static json_t *tms_with_db(tms_ctx_t *ctx, const json_t *args) {
     return ret;
 }
 
-/* ═══════════════════════ session mint / build helpers ═══════════════════════ */
+/* ======================= session mint / build helpers ======================= */
 
 /* (uuid.uuid4().hex[:8], _resolve_session_source(_str_param(params, "source")
  * or None)) */
-/* PoP: tms_new_runtime_ids @ tui_gateway/methods_session.py:_new_runtime_ids */
-static json_t *tms_new_runtime_ids(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_new_runtime_ids @ tui_gateway/methods_session.py:_new_runtime_ids */
+static json_t *tms2_new_runtime_ids(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *params = json_obj_get(args, "params");
-    json_t *hex = tms_call(ctx, "uuid4_hex", tms_args0());
-    if (tms_is_raise(hex)) return hex;
-    const char *hs = tms_str(hex);
+    json_t *hex = tms2_call(ctx, "uuid4_hex", tms2_args0());
+    if (tms2_is_raise(hex)) return hex;
+    const char *hs = tms2_str(hex);
     if (!hs) {
         char msg[192];
         snprintf(msg, sizeof msg, "'%s' object is not subscriptable",
-                 tms_type_name(hex));
+                 tms2_type_name(hex));
         json_free(hex);
-        return tms_err_spec("TypeError", msg);
+        return tms2_err_spec("TypeError", msg);
     }
     char sid8[9];
     size_t n = strlen(hs);
@@ -952,15 +952,15 @@ static json_t *tms_new_runtime_ids(tms_ctx_t *ctx, const json_t *args) {
     memcpy(sid8, hs, n);
     sid8[n] = '\0';
     json_free(hex);
-    json_t *sp = tms_str_param(ctx, params, "source");
-    if (tms_is_raise(sp)) return sp;
-    json_t *source = tms_truthy(sp) ? sp : json_null();
+    json_t *sp = tms2_str_param(ctx, params, "source");
+    if (tms2_is_raise(sp)) return sp;
+    json_t *source = tms2_truthy(sp) ? sp : json_null();
     if (source != sp) json_free(sp);
-    json_t *sa = tms_args0();
-    tms_aset(sa, "source", source);
-    json_t *rs = tms_call(ctx, "resolve_session_source", sa);
+    json_t *sa = tms2_args0();
+    tms2_aset(sa, "source", source);
+    json_t *rs = tms2_call(ctx, "resolve_session_source", sa);
     json_free(source);
-    if (tms_is_raise(rs)) return rs;
+    if (tms2_is_raise(rs)) return rs;
     json_t *out = json_array();
     json_append(out, json_string(sid8));
     json_append(out, rs);
@@ -969,77 +969,77 @@ static json_t *tms_new_runtime_ids(tms_ctx_t *ctx, const json_t *args) {
 
 /* _session_profile_runtime_scope({"profile_home": str(profile_home) if
  * profile_home else None}) */
-/* PoP: tms_profile_build_scope @ tui_gateway/methods_session.py:_profile_build_scope */
-static json_t *tms_profile_build_scope(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_profile_build_scope @ tui_gateway/methods_session.py:_profile_build_scope */
+static json_t *tms2_profile_build_scope(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *home = json_obj_get(args, "profile_home");
-    char *ph = tms_truthy(home) ? tms_pystr(home) : NULL;
-    json_t *a = tms_args0();
-    tms_asets(a, "profile_home", ph);
+    char *ph = tms2_truthy(home) ? tms2_pystr(home) : NULL;
+    json_t *a = tms2_args0();
+    tms2_asets(a, "profile_home", ph);
     free(ph);
-    return tms_call(ctx, "session_profile_runtime_scope", a);
+    return tms2_call(ctx, "session_profile_runtime_scope", a);
 }
 
 /* tokens = _set_session_context(key, cwd=kwargs.get("cwd_override"));
  * try: return _make_agent(sid, key, session_id=key, **kwargs)
  * finally: _clear_session_context(tokens) */
-/* PoP: tms_make_agent_in_context @ tui_gateway/methods_session.py:_make_agent_in_context */
-static json_t *tms_make_agent_in_context(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_make_agent_in_context @ tui_gateway/methods_session.py:_make_agent_in_context */
+static json_t *tms2_make_agent_in_context(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *sid = json_obj_get(args, "sid");
     const json_t *key = json_obj_get(args, "key");
     const json_t *kwargs = json_obj_get(args, "kwargs");
     if (kwargs && kwargs->type != JSON_OBJECT) kwargs = NULL;
     const json_t *cwd = kwargs ? json_obj_get(kwargs, "cwd_override") : NULL;
-    json_t *ca = tms_args0();
-    tms_aset(ca, "key", key);
-    tms_aset(ca, "cwd", cwd);
-    json_t *tokens = tms_call(ctx, "set_session_context", ca);
-    if (tms_is_raise(tokens)) return tokens;
-    json_t *ma = tms_args0();
-    tms_aset(ma, "sid", sid);
-    tms_aset(ma, "key", key);
-    tms_aset(ma, "session_id", key);
-    tms_aset(ma, "kwargs", kwargs);
-    json_t *r = tms_call(ctx, "make_agent", ma);
+    json_t *ca = tms2_args0();
+    tms2_aset(ca, "key", key);
+    tms2_aset(ca, "cwd", cwd);
+    json_t *tokens = tms2_call(ctx, "set_session_context", ca);
+    if (tms2_is_raise(tokens)) return tokens;
+    json_t *ma = tms2_args0();
+    tms2_aset(ma, "sid", sid);
+    tms2_aset(ma, "key", key);
+    tms2_aset(ma, "session_id", key);
+    tms2_aset(ma, "kwargs", kwargs);
+    json_t *r = tms2_call(ctx, "make_agent", ma);
     /* finally: the clear fires on EVERY path; its own raise replaces r. */
-    json_t *cla = tms_args0();
-    tms_aset(cla, "tokens", tokens);
-    json_t *c = tms_call(ctx, "clear_session_context", cla);
+    json_t *cla = tms2_args0();
+    tms2_aset(cla, "tokens", tokens);
+    json_t *c = tms2_call(ctx, "clear_session_context", cla);
     json_free(tokens);
-    if (tms_is_raise(c)) { json_free(r); return c; }
+    if (tms2_is_raise(c)) { json_free(r); return c; }
     json_free(c);
     return r;
 }
 
 /* session.info after a cwd change: the full agent view, or the lazy shape. */
-/* PoP: tms_cwd_info @ tui_gateway/methods_session.py:_cwd_info */
-static json_t *tms_cwd_info(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_cwd_info @ tui_gateway/methods_session.py:_cwd_info */
+static json_t *tms2_cwd_info(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *session = json_obj_get(args, "session");
     const json_t *cwd = json_obj_get(args, "cwd");
     const json_t *branch = json_obj_get(args, "branch");
     json_t *raise = NULL;
-    const json_t *agent = tms_dict_get(session, "agent", false, NULL, &raise);
+    const json_t *agent = tms2_dict_get(session, "agent", false, NULL, &raise);
     if (raise) return raise;
     if (agent && agent->type != JSON_NULL) {
-        json_t *a = tms_args0();
-        tms_aset(a, "agent", agent);
-        tms_aset(a, "session", session);
-        return tms_call(ctx, "session_info", a);
+        json_t *a = tms2_args0();
+        tms2_aset(a, "agent", agent);
+        tms2_aset(a, "session", session);
+        return tms2_call(ctx, "session_info", a);
     }
     json_t *out = json_object();
     json_set(out, "cwd", cwd ? json_copy(cwd) : json_null());
     if (branch && branch->type != JSON_NULL) {
         json_set(out, "branch", json_copy(branch));
     } else {
-        json_t *ba = tms_args0();
-        tms_aset(ba, "cwd", cwd);
-        json_t *b = tms_call(ctx, "git_branch", ba);
-        if (tms_is_raise(b)) { json_free(out); return b; }
+        json_t *ba = tms2_args0();
+        tms2_aset(ba, "cwd", cwd);
+        json_t *b = tms2_call(ctx, "git_branch", ba);
+        if (tms2_is_raise(b)) { json_free(out); return b; }
         json_set(out, "branch", b);
     }
-    json_t *pa = tms_args0();
-    tms_aset(pa, "cwd", cwd);
-    json_t *pj = tms_call(ctx, "project_info_for_cwd", pa);
-    if (tms_is_raise(pj)) { json_free(out); return pj; }
+    json_t *pa = tms2_args0();
+    tms2_aset(pa, "cwd", cwd);
+    json_t *pj = tms2_call(ctx, "project_info_for_cwd", pa);
+    if (tms2_is_raise(pj)) { json_free(out); return pj; }
     json_set(out, "project", pj);
     json_set(out, "lazy", json_bool(true));
     /* DESKTOP_BACKEND_CONTRACT (tui_gateway/server.py) */
@@ -1047,49 +1047,49 @@ static json_t *tms_cwd_info(tms_ctx_t *ctx, const json_t *args) {
     return out;
 }
 
-/* ═══════════════════════ listing rows / summaries ═══════════════════════ */
+/* ======================= listing rows / summaries ======================= */
 
 /* Compact session.list row; tip_row/resolved_id from the compression tip;
  * persistence adds _display_count_field (claimed sibling seam). */
-/* PoP: tms_session_row_summary @ tui_gateway/methods_session.py:_session_row_summary */
-static json_t *tms_session_row_summary(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_session_row_summary @ tui_gateway/methods_session.py:_session_row_summary */
+static json_t *tms2_session_row_summary(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *row = json_obj_get(args, "row");
     const json_t *tip_row = json_obj_get(args, "tip_row");
     const json_t *resolved_id = json_obj_get(args, "resolved_id");
     const json_t *persistence = json_obj_get(args, "persistence");
     json_t *raise = NULL;
-    const json_t *id = tms_sub(row, "id", &raise);
+    const json_t *id = tms2_sub(row, "id", &raise);
     if (raise) return raise;
-    const json_t *tip = tms_truthy(tip_row) ? tip_row : row;
+    const json_t *tip = tms2_truthy(tip_row) ? tip_row : row;
     bool has_resolved = resolved_id && resolved_id->type != JSON_NULL;
     json_t *out = json_object();
     json_set(out, "id", json_copy(id));
     if (has_resolved) json_set(out, "resolved_id", json_copy(resolved_id));
-    const json_t *title = tms_dict_get(row, "title", false, NULL, &raise);
+    const json_t *title = tms2_dict_get(row, "title", false, NULL, &raise);
     if (raise) { json_free(out); return raise; }
-    json_set(out, "title", tms_truthy(title) ? json_copy(title) : json_string(""));
-    const json_t *preview = tms_dict_get(tip, "preview", false, NULL, &raise);
+    json_set(out, "title", tms2_truthy(title) ? json_copy(title) : json_string(""));
+    const json_t *preview = tms2_dict_get(tip, "preview", false, NULL, &raise);
     if (raise) { json_free(out); return raise; }
-    json_set(out, "preview", tms_truthy(preview) ? json_copy(preview) : json_string(""));
+    json_set(out, "preview", tms2_truthy(preview) ? json_copy(preview) : json_string(""));
     const json_t *started = json_obj_get(row, "started_at");
-    json_set(out, "started_at", tms_truthy(started) ? json_copy(started) : json_number(0));
+    json_set(out, "started_at", tms2_truthy(started) ? json_copy(started) : json_number(0));
     const json_t *mcount = json_obj_get(tip, "message_count");
-    json_set(out, "message_count", tms_truthy(mcount) ? json_copy(mcount) : json_number(0));
+    json_set(out, "message_count", tms2_truthy(mcount) ? json_copy(mcount) : json_number(0));
     const json_t *source = json_obj_get(row, "source");
-    json_set(out, "source", tms_truthy(source) ? json_copy(source) : json_string(""));
+    json_set(out, "source", tms2_truthy(source) ? json_copy(source) : json_string(""));
     const json_t *root = json_obj_get(row, "_lineage_root_id");
     json_set(out, "_lineage_root_id", root ? json_copy(root) : json_null());
     if (persistence && persistence->type == JSON_OBJECT) {
         const json_t *sid = has_resolved ? resolved_id : id;
-        json_t *dcf = tms_display_count_field(ctx, sid);
-        if (tms_is_raise(dcf)) { json_free(out); return dcf; }
+        json_t *dcf = tms2_display_count_field(ctx, sid);
+        if (tms2_is_raise(dcf)) { json_free(out); return dcf; }
         if (!dcf || dcf->type != JSON_OBJECT) {
             char msg[192];
             snprintf(msg, sizeof msg, "'%s' object is not a mapping",
-                     tms_type_name(dcf));
+                     tms2_type_name(dcf));
             json_free(dcf);
             json_free(out);
-            return tms_err_spec("TypeError", msg);
+            return tms2_err_spec("TypeError", msg);
         }
         for (size_t i = 0; i < dcf->c.count; i++)
             json_set(out, dcf->c.keys[i], json_copy(dcf->c.items[i]));
@@ -1099,29 +1099,29 @@ static json_t *tms_session_row_summary(tms_ctx_t *ctx, const json_t *args) {
 }
 
 /* None if record is None else record.as_session_row(). */
-/* PoP: tms_row_of @ tui_gateway/methods_session.py:_row_of */
-static json_t *tms_row_of(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_row_of @ tui_gateway/methods_session.py:_row_of */
+static json_t *tms2_row_of(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *record = json_obj_get(args, "record");
     if (!record || record->type == JSON_NULL) return json_null();
-    return tms_as_session_row(ctx, record);
+    return tms2_as_session_row(ctx, record);
 }
 
 /* Human-facing listing rows (most recent first), deny-list applied. */
-/* PoP: tms_listing_rows @ tui_gateway/methods_session.py:_listing_rows */
-static json_t *tms_listing_rows(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_listing_rows @ tui_gateway/methods_session.py:_listing_rows */
+static json_t *tms2_listing_rows(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *limit = json_obj_get(args, "limit");
     const json_t *kwargs = json_obj_get(args, "kwargs");
-    json_t *a = tms_args0();
-    tms_asets(a, "order", "LAST_ACTIVE");
-    tms_asetn(a, "limit", limit ? json_get_num(args, "limit", 0) : 0);
-    tms_asetb(a, "compact_rows", true);
+    json_t *a = tms2_args0();
+    tms2_asets(a, "order", "LAST_ACTIVE");
+    tms2_asetn(a, "limit", limit ? json_get_num(args, "limit", 0) : 0);
+    tms2_asetb(a, "compact_rows", true);
     if (kwargs && kwargs->type == JSON_OBJECT) {
         for (size_t i = 0; i < kwargs->c.count; i++)
             json_set(a, kwargs->c.keys[i], json_copy(kwargs->c.items[i]));
     }
-    json_t *entries = tms_call(ctx, "list_sessions", a);
-    if (tms_is_raise(entries)) return entries;
-    json_t *bad = tms_iter_check(entries);
+    json_t *entries = tms2_call(ctx, "list_sessions", a);
+    if (tms2_is_raise(entries)) return entries;
+    json_t *bad = tms2_iter_check(entries);
     if (bad) { json_free(entries); return bad; }
     json_t *out = json_array();
     for (size_t i = 0; i < entries->c.count; i++) {
@@ -1129,19 +1129,19 @@ static json_t *tms_listing_rows(tms_ctx_t *ctx, const json_t *args) {
         if (!entry || entry->type != JSON_OBJECT) {
             char msg[192];
             snprintf(msg, sizeof msg, "'%s' object has no attribute 'as_list_row'",
-                     tms_type_name(entry));
+                     tms2_type_name(entry));
             json_free(out);
             json_free(entries);
-            return tms_err_spec("AttributeError", msg);
+            return tms2_err_spec("AttributeError", msg);
         }
-        json_t *row = tms_call(ctx, "as_list_row", tms_args0());
-        if (tms_is_raise(row)) { json_free(out); json_free(entries); return row; }
-        json_t *denied = tms_denied_source(ctx, row);
-        if (tms_is_raise(denied)) {
+        json_t *row = tms2_call(ctx, "as_list_row", tms2_args0());
+        if (tms2_is_raise(row)) { json_free(out); json_free(entries); return row; }
+        json_t *denied = tms2_denied_source(ctx, row);
+        if (tms2_is_raise(denied)) {
             json_free(row); json_free(out); json_free(entries);
             return denied;
         }
-        if (!tms_truthy(denied)) json_append(out, row);
+        if (!tms2_truthy(denied)) json_append(out, row);
         else json_free(row);
         json_free(denied);
     }
@@ -1150,30 +1150,30 @@ static json_t *tms_listing_rows(tms_ctx_t *ctx, const json_t *args) {
 }
 
 /* (list(_sessions.items()), None) under the silent lock, or
- * (None, _err(rid, 5036, ...)) — fail CLOSED. */
-/* PoP: tms_snapshot_sessions @ tui_gateway/methods_session.py:_snapshot_sessions */
-static json_t *tms_snapshot_sessions(tms_ctx_t *ctx, const json_t *args) {
+ * (None, _err(rid, 5036, ...)) -- fail CLOSED. */
+/* PoP: tms2_snapshot_sessions @ tui_gateway/methods_session.py:_snapshot_sessions */
+static json_t *tms2_snapshot_sessions(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
-    json_t *items = tms_call(ctx, "sessions_items", tms_args0());
+    json_t *items = tms2_call(ctx, "sessions_items", tms2_args0());
     json_t *exc = NULL;
-    if (tms_is_raise(items)) {
-        if (tms_is_base_exc(tms_raise_kind(items))) return items;
+    if (tms2_is_raise(items)) {
+        if (tms2_is_base_exc(tms2_raise_kind(items))) return items;
         exc = items;
         items = NULL;
     } else {
-        json_t *bad = tms_iter_check(items);
+        json_t *bad = tms2_iter_check(items);
         if (bad) { exc = bad; json_free(items); items = NULL; }
     }
     if (exc) {
-        char *es = tms_exc_str(exc);
+        char *es = tms2_exc_str(exc);
         json_free(exc);
         size_t mn = strlen(es) + 48;
         char *msg = malloc(mn);
         if (msg) snprintf(msg, mn, "could not enumerate active sessions: %s", es);
         free(es);
-        json_t *err = tms_err(ctx, rid, 5036, msg ? msg : "");
+        json_t *err = tms2_err(ctx, rid, 5036, msg ? msg : "");
         free(msg);
-        if (tms_is_raise(err)) return err;
+        if (tms2_is_raise(err)) return err;
         json_t *out = json_array();
         json_append(out, json_null());
         json_append(out, err);
@@ -1185,20 +1185,20 @@ static json_t *tms_snapshot_sessions(tms_ctx_t *ctx, const json_t *args) {
     return out;
 }
 
-/* ═══════════════════════ pet helpers ═══════════════════════ */
+/* ======================= pet helpers ======================= */
 
 /* display.pet config block, {} when config is unreadable. */
-/* PoP: tms_pet_display_cfg @ tui_gateway/methods_session.py:_pet_display_cfg */
-static json_t *tms_pet_display_cfg(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_pet_display_cfg @ tui_gateway/methods_session.py:_pet_display_cfg */
+static json_t *tms2_pet_display_cfg(tms2_ctx_t *ctx, const json_t *args) {
     (void)args;
-    json_t *cfg = tms_call(ctx, "load_config", tms_args0());
-    if (tms_is_raise(cfg)) {
-        if (tms_is_base_exc(tms_raise_kind(cfg))) return cfg;
+    json_t *cfg = tms2_call(ctx, "load_config", tms2_args0());
+    if (tms2_is_raise(cfg)) {
+        if (tms2_is_base_exc(tms2_raise_kind(cfg))) return cfg;
         json_free(cfg);
         return json_object();
     }
     json_t *raise = NULL;
-    const json_t *disp = tms_dict_get(cfg, "display", false, NULL, &raise);
+    const json_t *disp = tms2_dict_get(cfg, "display", false, NULL, &raise);
     if (raise) { json_free(cfg); json_free(raise); return json_object(); }
     const json_t *pet = (disp && disp->type == JSON_OBJECT)
                         ? json_obj_get(disp, "pet") : NULL;
@@ -1208,29 +1208,29 @@ static json_t *tms_pet_display_cfg(tms_ctx_t *ctx, const json_t *args) {
 }
 
 /* Best-effort progress emit: a transport hiccup must never abort generation. */
-/* PoP: tms_pet_emit @ tui_gateway/methods_session.py:_pet_emit */
-static json_t *tms_pet_emit(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_pet_emit @ tui_gateway/methods_session.py:_pet_emit */
+static json_t *tms2_pet_emit(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *event = json_obj_get(args, "event");
     const json_t *payload = json_obj_get(args, "payload");
     const char *what = json_get_str(args, "what", "");
-    json_t *a = tms_args0();
-    tms_aset(a, "event", event);
-    tms_asets(a, "session_id", "");
-    tms_aset(a, "payload", payload);
-    json_t *r = tms_call(ctx, "emit", a);
-    if (tms_is_raise(r)) {
-        if (tms_is_base_exc(tms_raise_kind(r))) return r;
-        char *es = tms_exc_str(r);
+    json_t *a = tms2_args0();
+    tms2_aset(a, "event", event);
+    tms2_asets(a, "session_id", "");
+    tms2_aset(a, "payload", payload);
+    json_t *r = tms2_call(ctx, "emit", a);
+    if (tms2_is_raise(r)) {
+        if (tms2_is_base_exc(tms2_raise_kind(r))) return r;
+        char *es = tms2_exc_str(r);
         json_free(r);
         size_t mn = strlen(what) + strlen(es) + 24;
         char *msg = malloc(mn);
         if (msg) snprintf(msg, mn, "%s emit failed: %s", what, es);
         free(es);
-        json_t *la = tms_args0();
-        tms_asets(la, "msg", msg ? msg : "");
-        json_t *lg = tms_call(ctx, "logger_debug", la);
+        json_t *la = tms2_args0();
+        tms2_asets(la, "msg", msg ? msg : "");
+        json_t *lg = tms2_call(ctx, "logger_debug", la);
         free(msg);
-        if (tms_is_raise(lg)) return lg;
+        if (tms2_is_raise(lg)) return lg;
         json_free(lg);
     } else {
         json_free(r);
@@ -1239,25 +1239,25 @@ static json_t *tms_pet_emit(tms_ctx_t *ctx, const json_t *args) {
 }
 
 /* Release the cancel arm for token and return _err. */
-/* PoP: tms_pet_gen_abort @ tui_gateway/methods_session.py:_pet_gen_abort */
-static json_t *tms_pet_gen_abort(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_pet_gen_abort @ tui_gateway/methods_session.py:_pet_gen_abort */
+static json_t *tms2_pet_gen_abort(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
     const json_t *token = json_obj_get(args, "token");
     int code = (int)json_get_num(args, "code", 0);
     const char *message = json_get_str(args, "message", "");
-    json_t *ta = tms_args0();
-    tms_aset(ta, "token", token);
-    json_t *r = tms_call(ctx, "pet_cancel_release", ta);
-    if (tms_is_raise(r)) return r;
+    json_t *ta = tms2_args0();
+    tms2_aset(ta, "token", token);
+    json_t *r = tms2_call(ctx, "pet_cancel_release", ta);
+    if (tms2_is_raise(r)) return r;
     json_free(r);
-    return tms_err(ctx, rid, code, message);
+    return tms2_err(ctx, rid, code, message);
 }
 
 /* _pet_method's generated handler: slug gate (4004), fn call, except ->
  * logger.debug + fail_open (payload or params->payload) or _err(5031).
  * name/scoped are decoration-time only (identity registry; no events). */
-/* PoP: tms_pet_method @ tui_gateway/methods_session.py:_pet_method */
-static json_t *tms_pet_method(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_pet_method @ tui_gateway/methods_session.py:_pet_method */
+static json_t *tms2_pet_method(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
     const json_t *params = json_obj_get(args, "params");
     const char *name = json_get_str(args, "name", "");
@@ -1267,85 +1267,85 @@ static json_t *tms_pet_method(tms_ctx_t *ctx, const json_t *args) {
     json_t *r = NULL;
     bool raised = false;
     if (slug) {
-        value = tms_str_param(ctx, params, "slug");
-        if (tms_is_raise(value)) { r = value; value = NULL; raised = true; }
-        else if (!tms_truthy(value)) {
+        value = tms2_str_param(ctx, params, "slug");
+        if (tms2_is_raise(value)) { r = value; value = NULL; raised = true; }
+        else if (!tms2_truthy(value)) {
             json_free(value);
-            return tms_err(ctx, rid, 4004, "missing slug");
+            return tms2_err(ctx, rid, 4004, "missing slug");
         }
     }
     if (!raised) {
-        json_t *fa = tms_args0();
-        tms_aset(fa, "rid", rid);
-        tms_aset(fa, "params", params);
-        if (slug) tms_aset(fa, "slug", value);
-        r = tms_call(ctx, "pet_fn", fa);
+        json_t *fa = tms2_args0();
+        tms2_aset(fa, "rid", rid);
+        tms2_aset(fa, "params", params);
+        if (slug) tms2_aset(fa, "slug", value);
+        r = tms2_call(ctx, "pet_fn", fa);
         if (slug) { json_free(value); value = NULL; }
-        if (!tms_is_raise(r)) return r;
+        if (!tms2_is_raise(r)) return r;
         raised = true;
     }
     /* except Exception as exc */
-    if (tms_is_base_exc(tms_raise_kind(r))) return r;
-    char *es = tms_exc_str(r);
+    if (tms2_is_base_exc(tms2_raise_kind(r))) return r;
+    char *es = tms2_exc_str(r);
     json_free(r);
     size_t mn = strlen(name) + strlen(es) + 16;
     char *msg = malloc(mn);
     if (msg) snprintf(msg, mn, "%s failed: %s", name, es);
     free(es);
-    json_t *la = tms_args0();
-    tms_asets(la, "msg", msg ? msg : "");
-    json_t *lg = tms_call(ctx, "logger_debug", la);
-    if (tms_is_raise(lg)) { free(msg); return lg; }
+    json_t *la = tms2_args0();
+    tms2_asets(la, "msg", msg ? msg : "");
+    json_t *lg = tms2_call(ctx, "logger_debug", la);
+    if (tms2_is_raise(lg)) { free(msg); return lg; }
     json_free(lg);
     if (fail_open && fail_open->type != JSON_NULL) {
         json_t *payload;
         if (fail_open->type == JSON_OBJECT
             && json_get_bool(fail_open, "__callable__", false)) {
-            json_t *foa = tms_args0();
-            tms_aset(foa, "params", params);
-            payload = tms_call(ctx, "fail_open_fn", foa);
-            if (tms_is_raise(payload)) { free(msg); return payload; }
+            json_t *foa = tms2_args0();
+            tms2_aset(foa, "params", params);
+            payload = tms2_call(ctx, "fail_open_fn", foa);
+            if (tms2_is_raise(payload)) { free(msg); return payload; }
         } else if (fail_open->type == JSON_OBJECT) {
             payload = json_copy(fail_open);   /* dict(fail_open) */
         } else {
             /* outside the fixture domain (null/dict/callable only) */
             char m2[160];
             snprintf(m2, sizeof m2, "'%s' object is not iterable",
-                     tms_type_name(fail_open));
+                     tms2_type_name(fail_open));
             free(msg);
-            return tms_err_spec("TypeError", m2);
+            return tms2_err_spec("TypeError", m2);
         }
         free(msg);
-        return tms_ok(ctx, rid, payload);
+        return tms2_ok(ctx, rid, payload);
     }
-    json_t *er = tms_err(ctx, rid, 5031, msg ? msg : "");
+    json_t *er = tms2_err(ctx, rid, 5031, msg ? msg : "");
     free(msg);
     return er;
 }
 
 /* (pet, scale) when enabled and the pet exists, else None. */
-/* PoP: tms_active_pet @ tui_gateway/methods_session.py:_active_pet */
-static json_t *tms_active_pet(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_active_pet @ tui_gateway/methods_session.py:_active_pet */
+static json_t *tms2_active_pet(tms2_ctx_t *ctx, const json_t *args) {
     (void)args;
-    json_t *sel = tms_call(ctx, "pet_active_selection", tms_args0());
-    if (tms_is_raise(sel)) return sel;
+    json_t *sel = tms2_call(ctx, "pet_active_selection", tms2_args0());
+    if (tms2_is_raise(sel)) return sel;
     json_t *u[3];
-    json_t *bad = tms_unpack(sel, 3, u);
+    json_t *bad = tms2_unpack(sel, 3, u);
     json_free(sel);
     if (bad) return bad;
     json_t *out = NULL;
-    if (!tms_truthy(u[0])) {
+    if (!tms2_truthy(u[0])) {
         out = json_null();
     } else if (!u[1] || u[1]->type == JSON_NULL) {
         out = json_null();
     } else {
         json_t *raise = NULL;
-        const json_t *exists = tms_attr(u[1], "exists", false, NULL, &raise);
+        const json_t *exists = tms2_attr(u[1], "exists", false, NULL, &raise);
         if (raise) {
             json_free(u[0]); json_free(u[1]); json_free(u[2]);
             return raise;
         }
-        if (!tms_truthy(exists)) {
+        if (!tms2_truthy(exists)) {
             out = json_null();
         } else {
             out = json_array();
@@ -1358,45 +1358,45 @@ static json_t *tms_active_pet(tms_ctx_t *ctx, const json_t *args) {
     return out;
 }
 
-/* base64.standard_b64encode(data).decode("ascii") — ASCII bytes domain. */
-/* PoP: tms_b64 @ tui_gateway/methods_session.py:_b64 */
-static json_t *tms_b64(tms_ctx_t *ctx, const json_t *args) {
+/* base64.standard_b64encode(data).decode("ascii") -- ASCII bytes domain. */
+/* PoP: tms2_b64 @ tui_gateway/methods_session.py:_b64 */
+static json_t *tms2_b64(tms2_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     const json_t *data = json_obj_get(args, "data");
-    const char *s = tms_str(data);
+    const char *s = tms2_str(data);
     if (!s) {
         char msg[192];
         snprintf(msg, sizeof msg, "a bytes-like object is required, not '%s'",
-                 tms_type_name(data));
-        return tms_err_spec("TypeError", msg);
+                 tms2_type_name(data));
+        return tms2_err_spec("TypeError", msg);
     }
-    char *enc = tms_b64_encode(s);
+    char *enc = tms2_b64_encode(s);
     json_t *out = json_string(enc ? enc : "");
     free(enc);
     return out;
 }
 
 /* Best-effort fn(*args); except -> logger.debug. */
-/* PoP: tms_pet_config_followup @ tui_gateway/methods_session.py:_pet_config_followup */
-static json_t *tms_pet_config_followup(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_pet_config_followup @ tui_gateway/methods_session.py:_pet_config_followup */
+static json_t *tms2_pet_config_followup(tms2_ctx_t *ctx, const json_t *args) {
     const char *what = json_get_str(args, "what", "");
     const json_t *fargs = json_obj_get(args, "args");
-    json_t *a = tms_args0();
+    json_t *a = tms2_args0();
     json_set(a, "args", (fargs && fargs->type == JSON_ARRAY) ? json_copy(fargs) : json_array());
-    json_t *r = tms_call(ctx, "followup_fn", a);
-    if (tms_is_raise(r)) {
-        if (tms_is_base_exc(tms_raise_kind(r))) return r;
-        char *es = tms_exc_str(r);
+    json_t *r = tms2_call(ctx, "followup_fn", a);
+    if (tms2_is_raise(r)) {
+        if (tms2_is_base_exc(tms2_raise_kind(r))) return r;
+        char *es = tms2_exc_str(r);
         json_free(r);
         size_t mn = strlen(what) + strlen(es) + 32;
         char *msg = malloc(mn);
         if (msg) snprintf(msg, mn, "%s config update failed: %s", what, es);
         free(es);
-        json_t *la = tms_args0();
-        tms_asets(la, "msg", msg ? msg : "");
-        json_t *lg = tms_call(ctx, "logger_debug", la);
+        json_t *la = tms2_args0();
+        tms2_asets(la, "msg", msg ? msg : "");
+        json_t *lg = tms2_call(ctx, "logger_debug", la);
         free(msg);
-        if (tms_is_raise(lg)) return lg;
+        if (tms2_is_raise(lg)) return lg;
         json_free(lg);
     } else {
         json_free(r);
@@ -1405,23 +1405,23 @@ static json_t *tms_pet_config_followup(tms_ctx_t *ctx, const json_t *args) {
 }
 
 /* Picker-chosen params.provider resolved up front; no pick -> None. */
-/* PoP: tms_pet_pick_provider @ tui_gateway/methods_session.py:_pet_pick_provider */
-static json_t *tms_pet_pick_provider(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_pet_pick_provider @ tui_gateway/methods_session.py:_pet_pick_provider */
+static json_t *tms2_pet_pick_provider(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *params = json_obj_get(args, "params");
     bool req = json_get_bool(args, "require_references", false);
-    json_t *name = tms_str_param(ctx, params, "provider");
-    if (tms_is_raise(name)) return name;
-    if (!tms_truthy(name)) { json_free(name); return json_null(); }
-    json_t *a = tms_args0();
-    tms_asetb(a, "require_references", req);
-    tms_aset(a, "prefer", name);
-    json_t *r = tms_call(ctx, "resolve_provider", a);
+    json_t *name = tms2_str_param(ctx, params, "provider");
+    if (tms2_is_raise(name)) return name;
+    if (!tms2_truthy(name)) { json_free(name); return json_null(); }
+    json_t *a = tms2_args0();
+    tms2_asetb(a, "require_references", req);
+    tms2_aset(a, "prefer", name);
+    json_t *r = tms2_call(ctx, "resolve_provider", a);
     json_free(name);
     return r;
-}/* ═══════════════════════ billing envelopes ═══════════════════════ */
+}/* ======================= billing envelopes ======================= */
 
 /* Deep scalar equality (Python == on the fixture domain; bool==int cross). */
-static bool tms_json_eq(const json_t *a, const json_t *b) {
+static bool tms2_json_eq(const json_t *a, const json_t *b) {
     if (!a || a->type == JSON_NULL) return !b || b->type == JSON_NULL;
     if (!b || b->type == JSON_NULL) return false;
     if (a->type == JSON_NUMBER && b->type == JSON_NUMBER) return a->num_val == b->num_val;
@@ -1436,14 +1436,14 @@ static bool tms_json_eq(const json_t *a, const json_t *b) {
     if (a->type == JSON_ARRAY) {
         if (a->c.count != b->c.count) return false;
         for (size_t i = 0; i < a->c.count; i++)
-            if (!tms_json_eq(a->c.items[i], b->c.items[i])) return false;
+            if (!tms2_json_eq(a->c.items[i], b->c.items[i])) return false;
         return true;
     }
     if (a->type == JSON_OBJECT) {
         if (a->c.count != b->c.count) return false;
         for (size_t i = 0; i < a->c.count; i++) {
             const json_t *bv = json_obj_get(b, a->c.keys[i]);
-            if (!bv || !tms_json_eq(a->c.items[i], bv)) return false;
+            if (!bv || !tms2_json_eq(a->c.items[i], bv)) return false;
         }
         return true;
     }
@@ -1451,7 +1451,7 @@ static bool tms_json_eq(const json_t *a, const json_t *b) {
 }
 
 /* FULL builtin OSError hierarchy (except OSError catches every subclass). */
-static bool tms_is_oserror(const char *kind) {
+static bool tms2_is_oserror(const char *kind) {
     static const char *const fam[] = {
         "OSError", "BlockingIOError", "ChildProcessError", "ConnectionError",
         "BrokenPipeError", "ConnectionAbortedError", "ConnectionRefusedError",
@@ -1468,23 +1468,23 @@ static bool tms_is_oserror(const char *kind) {
 /* _billing_call core. fn_mode 0: the "billing_fn" callback seam.
  * fn_mode 1 (_billing_route's lambda): the "route_call" seam, then
  * `result | (extra or {})` INSIDE the try. extra NULL means {}. */
-static json_t *tms_billing_call_core(tms_ctx_t *ctx, const json_t *rid,
+static json_t *tms2_billing_call_core(tms2_ctx_t *ctx, const json_t *rid,
                                      int fn_mode, const json_t *params,
                                      const json_t *key, const json_t *extra) {
     json_t *result = NULL;
     json_t *exc = NULL;
     if (fn_mode == 0) {
-        result = tms_call(ctx, "billing_fn", tms_args0());
-        if (tms_is_raise(result)) { exc = result; result = NULL; }
+        result = tms2_call(ctx, "billing_fn", tms2_args0());
+        if (tms2_is_raise(result)) { exc = result; result = NULL; }
     } else {
-        json_t *ca = tms_args0();
-        tms_aset(ca, "params", params);
-        tms_aset(ca, "key", key);
-        result = tms_call(ctx, "route_call", ca);
-        if (tms_is_raise(result)) { exc = result; result = NULL; }
+        json_t *ca = tms2_args0();
+        tms2_aset(ca, "params", params);
+        tms2_aset(ca, "key", key);
+        result = tms2_call(ctx, "route_call", ca);
+        if (tms2_is_raise(result)) { exc = result; result = NULL; }
         else {
             json_t *raise = NULL;
-            json_t *merged = tms_dict_union(result, extra, &raise);
+            json_t *merged = tms2_dict_union(result, extra, &raise);
             json_free(result);
             result = NULL;
             if (raise) exc = raise;
@@ -1492,21 +1492,21 @@ static json_t *tms_billing_call_core(tms_ctx_t *ctx, const json_t *rid,
         }
     }
     if (exc) {
-        if (tms_is_base_exc(tms_raise_kind(exc))) return exc;
-        const char *kind = tms_raise_kind(exc);
+        if (tms2_is_base_exc(tms2_raise_kind(exc))) return exc;
+        const char *kind = tms2_raise_kind(exc);
         if (kind && !strcmp(kind, "BillingError")) {
-            json_t *sa = tms_args0();
-            tms_aset(sa, "exc", exc);
-            json_t *ser = tms_call(ctx, "serialize_billing_error", sa);
+            json_t *sa = tms2_args0();
+            tms2_aset(sa, "exc", exc);
+            json_t *ser = tms2_call(ctx, "serialize_billing_error", sa);
             json_free(exc);
-            if (tms_is_raise(ser)) return ser;
+            if (tms2_is_raise(ser)) return ser;
             json_t *raise = NULL;
-            json_t *payload = tms_splat_merge(ser, extra, &raise);
+            json_t *payload = tms2_splat_merge(ser, extra, &raise);
             json_free(ser);
             if (raise) return raise;
-            return tms_ok(ctx, rid, payload);
+            return tms2_ok(ctx, rid, payload);
         }
-        char *es = tms_exc_str(exc);
+        char *es = tms2_exc_str(exc);
         json_free(exc);
         json_t *payload = json_object();
         json_set(payload, "ok", json_bool(false));
@@ -1517,23 +1517,23 @@ static json_t *tms_billing_call_core(tms_ctx_t *ctx, const json_t *rid,
             for (size_t i = 0; i < extra->c.count; i++)
                 json_set(payload, extra->c.keys[i], json_copy(extra->c.items[i]));
         }
-        return tms_ok(ctx, rid, payload);
+        return tms2_ok(ctx, rid, payload);
     }
-    return tms_ok(ctx, rid, result);
+    return tms2_ok(ctx, rid, result);
 }
 
 /* Portal call -> ok; BillingError -> serialized envelope, else generic;
  * extra rides both ERROR envelopes. */
-/* PoP: tms_billing_call @ tui_gateway/methods_session.py:_billing_call */
-static json_t *tms_billing_call(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_billing_call @ tui_gateway/methods_session.py:_billing_call */
+static json_t *tms2_billing_call(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
     const json_t *extra = json_obj_get(args, "extra");
-    return tms_billing_call_core(ctx, rid, 0, NULL, NULL, extra);
+    return tms2_billing_call_core(ctx, rid, 0, NULL, NULL, extra);
 }
 
 /* _ok(rid, {"ok": False, "error": error, "message": message}) */
-/* PoP: tms_billing_invalid @ tui_gateway/methods_session.py:_billing_invalid */
-static json_t *tms_billing_invalid(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_billing_invalid @ tui_gateway/methods_session.py:_billing_invalid */
+static json_t *tms2_billing_invalid(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
     const char *message = json_get_str(args, "message", "");
     const char *error = json_get_str(args, "error", "invalid_request");
@@ -1541,16 +1541,16 @@ static json_t *tms_billing_invalid(tms_ctx_t *ctx, const json_t *args) {
     json_set(payload, "ok", json_bool(false));
     json_set_hdr(payload, "error", error);
     json_set_hdr(payload, "message", message);
-    return tms_ok(ctx, rid, payload);
+    return tms2_ok(ctx, rid, payload);
 }
 
 /* {"ok": True, "message": result.get("message"), "payload": result} */
-/* PoP: tms_billing_pending_change @ tui_gateway/methods_session.py:_billing_pending_change */
-static json_t *tms_billing_pending_change(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_billing_pending_change @ tui_gateway/methods_session.py:_billing_pending_change */
+static json_t *tms2_billing_pending_change(tms2_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     const json_t *result = json_obj_get(args, "result");
     json_t *raise = NULL;
-    const json_t *msg = tms_dict_get(result, "message", false, NULL, &raise);
+    const json_t *msg = tms2_dict_get(result, "message", false, NULL, &raise);
     if (raise) return raise;
     json_t *out = json_object();
     json_set(out, "ok", json_bool(true));
@@ -1562,104 +1562,104 @@ static json_t *tms_billing_pending_change(tms_ctx_t *ctx, const json_t *args) {
 /* _billing_route's generated handler: invalid(params) -> _billing_invalid;
  * idempotent mints/echoes idempotency_key; call(nb, params, key) | extra
  * rides _billing_call. name is decoration-time only (no event). */
-/* PoP: tms_billing_route @ tui_gateway/methods_session.py:_billing_route */
-static json_t *tms_billing_route(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_billing_route @ tui_gateway/methods_session.py:_billing_route */
+static json_t *tms2_billing_route(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
     const json_t *params = json_obj_get(args, "params");
     const json_t *invalid = json_obj_get(args, "invalid");
     bool idempotent = json_get_bool(args, "idempotent", false);
     if (invalid && invalid->type != JSON_NULL) {
-        json_t *ia = tms_args0();
-        tms_aset(ia, "params", params);
-        json_t *iv = tms_call(ctx, "invalid_fn", ia);
-        if (tms_is_raise(iv)) return iv;
-        bool bad = tms_truthy(iv);
+        json_t *ia = tms2_args0();
+        tms2_aset(ia, "params", params);
+        json_t *iv = tms2_call(ctx, "invalid_fn", ia);
+        if (tms2_is_raise(iv)) return iv;
+        bool bad = tms2_truthy(iv);
         json_free(iv);
         if (bad) {
-            json_t *ba = tms_args0();
-            tms_aset(ba, "rid", rid);
-            tms_asets(ba, "message", json_get_str(args, "message", ""));
-            tms_asets(ba, "error", json_get_str(args, "error", "invalid_request"));
-            return tms_billing_invalid(ctx, ba);
+            json_t *ba = tms2_args0();
+            tms2_aset(ba, "rid", rid);
+            tms2_asets(ba, "message", json_get_str(args, "message", ""));
+            tms2_asets(ba, "error", json_get_str(args, "error", "invalid_request"));
+            return tms2_billing_invalid(ctx, ba);
         }
     }
     json_t *key = NULL;
     json_t *extra = NULL;
     if (idempotent) {
         json_t *raise = NULL;
-        const json_t *pk = tms_dict_get(params, "idempotency_key", false, NULL, &raise);
+        const json_t *pk = tms2_dict_get(params, "idempotency_key", false, NULL, &raise);
         if (raise) return raise;
-        if (tms_truthy(pk)) {
+        if (tms2_truthy(pk)) {
             key = json_copy(pk);
         } else {
-            key = tms_call(ctx, "new_idempotency_key", tms_args0());
-            if (tms_is_raise(key)) return key;
+            key = tms2_call(ctx, "new_idempotency_key", tms2_args0());
+            if (tms2_is_raise(key)) return key;
         }
         extra = json_object();
         json_set(extra, "idempotency_key", json_copy(key));
     }
-    json_t *r = tms_billing_call_core(ctx, rid, 1, params, key, extra);
+    json_t *r = tms2_billing_call_core(ctx, rid, 1, params, key, extra);
     json_free(key);
     json_free(extra);
     return r;
 }
 
-/* ═══════════════════════ unarchive / title lookup ═══════════════════════ */
+/* ======================= unarchive / title lookup ======================= */
 
 /* _row_of on a borrowed record node (composed sibling core). */
-static json_t *tms_row_of_v(tms_ctx_t *ctx, const json_t *record) {
+static json_t *tms2_row_of_v(tms2_ctx_t *ctx, const json_t *record) {
     if (!record || record->type == JSON_NULL) return json_null();
-    return tms_as_session_row(ctx, record);
+    return tms2_as_session_row(ctx, record);
 }
 
 /* unarchive_recoverable on a read-only listing handle escalates to a
  * short-lived writer handle; the writer close is suppress(Exception). */
-/* PoP: tms_unarchive_recoverable @ tui_gateway/methods_session.py:_unarchive_recoverable */
-static json_t *tms_unarchive_recoverable(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_unarchive_recoverable @ tui_gateway/methods_session.py:_unarchive_recoverable */
+static json_t *tms2_unarchive_recoverable(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *p = json_obj_get(args, "persistence");
     const json_t *sid = json_obj_get(args, "session_id");
     json_t *raise = NULL;
-    const json_t *ro = tms_attr(p, "read_only", false, NULL, &raise);
+    const json_t *ro = tms2_attr(p, "read_only", false, NULL, &raise);
     if (raise) return raise;
-    if (!tms_truthy(ro)) {
-        json_t *bad = tms_persist_sub(p, "sessions");
+    if (!tms2_truthy(ro)) {
+        json_t *bad = tms2_persist_sub(p, "sessions");
         if (bad) return bad;
-        json_t *a = tms_args0();
-        tms_aset(a, "session_id", sid);
-        return tms_call(ctx, "unarchive_recoverable", a);
+        json_t *a = tms2_args0();
+        tms2_aset(a, "session_id", sid);
+        return tms2_call(ctx, "unarchive_recoverable", a);
     }
     /* try: writer = open_persistence(persistence.scope, eager=True) */
     json_t *writer = NULL;
     json_t *exc = NULL;
-    const json_t *scope = tms_attr(p, "scope", false, NULL, &raise);
+    const json_t *scope = tms2_attr(p, "scope", false, NULL, &raise);
     if (raise) {
         exc = raise;
     } else {
-        json_t *oa = tms_args0();
-        tms_aset(oa, "scope", scope);
-        tms_asetb(oa, "eager", true);
-        writer = tms_call(ctx, "open_persistence", oa);
-        if (tms_is_raise(writer)) { exc = writer; writer = NULL; }
+        json_t *oa = tms2_args0();
+        tms2_aset(oa, "scope", scope);
+        tms2_asetb(oa, "eager", true);
+        writer = tms2_call(ctx, "open_persistence", oa);
+        if (tms2_is_raise(writer)) { exc = writer; writer = NULL; }
     }
     if (exc) {
-        if (tms_is_base_exc(tms_raise_kind(exc))) return exc;
+        if (tms2_is_base_exc(tms2_raise_kind(exc))) return exc;
         json_free(exc);
-        /* logger.warning(... persistence.scope.profile_dir ...) — re-read */
-        const json_t *scope2 = tms_attr(p, "scope", false, NULL, &raise);
+        /* logger.warning(... persistence.scope.profile_dir ...) -- re-read */
+        const json_t *scope2 = tms2_attr(p, "scope", false, NULL, &raise);
         if (raise) return raise;
-        const json_t *pd = tms_attr(scope2, "profile_dir", false, NULL, &raise);
+        const json_t *pd = tms2_attr(scope2, "profile_dir", false, NULL, &raise);
         if (raise) return raise;
-        char *pds = tms_pystr(pd);
+        char *pds = tms2_pystr(pd);
         size_t mn = strlen(pds) + 64;
         char *msg = malloc(mn);
         if (msg) snprintf(msg, mn,
                           "Bot Chat unarchive skipped: writer unavailable for %s", pds);
         free(pds);
-        json_t *la = tms_args0();
-        tms_asets(la, "msg", msg ? msg : "");
-        json_t *lg = tms_call(ctx, "logger_warning", la);
+        json_t *la = tms2_args0();
+        tms2_asets(la, "msg", msg ? msg : "");
+        json_t *lg = tms2_call(ctx, "logger_warning", la);
         free(msg);
-        if (tms_is_raise(lg)) return lg;
+        if (tms2_is_raise(lg)) return lg;
         json_free(lg);
         return json_bool(false);
     }
@@ -1670,26 +1670,26 @@ static json_t *tms_unarchive_recoverable(tms_ctx_t *ctx, const json_t *args) {
     if (!writer || writer->type != JSON_OBJECT) {
         char msg[192];
         snprintf(msg, sizeof msg, "'%s' object has no attribute 'sessions'",
-                 tms_type_name(writer));
-        wexc = tms_err_spec("AttributeError", msg);
+                 tms2_type_name(writer));
+        wexc = tms2_err_spec("AttributeError", msg);
     } else {
-        json_t *a = tms_args0();
-        tms_aset(a, "session_id", sid);
-        ret = tms_call(ctx, "writer_unarchive", a);
-        if (tms_is_raise(ret)) { wexc = ret; ret = NULL; }
+        json_t *a = tms2_args0();
+        tms2_aset(a, "session_id", sid);
+        ret = tms2_call(ctx, "writer_unarchive", a);
+        if (tms2_is_raise(ret)) { wexc = ret; ret = NULL; }
     }
     json_t *cexc = NULL;
     if (!writer || writer->type != JSON_OBJECT) {
         char msg[192];
         snprintf(msg, sizeof msg, "'%s' object has no attribute 'close'",
-                 tms_type_name(writer));
-        cexc = tms_err_spec("AttributeError", msg);
+                 tms2_type_name(writer));
+        cexc = tms2_err_spec("AttributeError", msg);
     } else {
-        cexc = tms_call(ctx, "writer_close", tms_args0());
-        if (!tms_is_raise(cexc)) { json_free(cexc); cexc = NULL; }
+        cexc = tms2_call(ctx, "writer_close", tms2_args0());
+        if (!tms2_is_raise(cexc)) { json_free(cexc); cexc = NULL; }
     }
     if (cexc) {
-        if (tms_is_base_exc(tms_raise_kind(cexc))) {
+        if (tms2_is_base_exc(tms2_raise_kind(cexc))) {
             json_free(wexc); json_free(ret); json_free(writer);
             return cexc;
         }
@@ -1702,88 +1702,88 @@ static json_t *tms_unarchive_recoverable(tms_ctx_t *ctx, const json_t *args) {
 
 /* EXACT-title lookup: archived Bot Chat resurrects recoverable archives;
  * archived / deny-listed rows hide; lineages resolve to the live tip. */
-/* PoP: tms_session_list_by_title @ tui_gateway/methods_session.py:_session_list_by_title */
-static json_t *tms_session_list_by_title(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_session_list_by_title @ tui_gateway/methods_session.py:_session_list_by_title */
+static json_t *tms2_session_list_by_title(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
     const json_t *p = json_obj_get(args, "persistence");
     const char *title = json_get_str(args, "title_lookup", "");
-    json_t *rec = tms_get_by_title(ctx, p, title);
-    if (tms_is_raise(rec)) return rec;
-    json_t *row = tms_row_of_v(ctx, rec);
+    json_t *rec = tms2_get_by_title(ctx, p, title);
+    if (tms2_is_raise(rec)) return rec;
+    json_t *row = tms2_row_of_v(ctx, rec);
     json_free(rec);
-    if (tms_is_raise(row)) return row;
+    if (tms2_is_raise(row)) return row;
     json_t *raise = NULL;
     bool archived0 = false;
-    if (tms_truthy(row)) {
-        const json_t *arch0 = tms_dict_get(row, "archived", false, NULL, &raise);
+    if (tms2_truthy(row)) {
+        const json_t *arch0 = tms2_dict_get(row, "archived", false, NULL, &raise);
         if (raise) { json_free(row); return raise; }
-        archived0 = tms_truthy(arch0);
+        archived0 = tms2_truthy(arch0);
     }
     if (archived0 && !strcmp(title, "Bot Chat")) {
-        const json_t *id = tms_sub(row, "id", &raise);
+        const json_t *id = tms2_sub(row, "id", &raise);
         if (raise) { json_free(row); return raise; }
-        json_t *ua = tms_args0();
-        tms_aset(ua, "persistence", p);
-        tms_aset(ua, "session_id", id);
-        json_t *un = tms_unarchive_recoverable(ctx, ua);
-        if (tms_is_raise(un)) { json_free(row); return un; }
-        bool ok = tms_truthy(un);
+        json_t *ua = tms2_args0();
+        tms2_aset(ua, "persistence", p);
+        tms2_aset(ua, "session_id", id);
+        json_t *un = tms2_unarchive_recoverable(ctx, ua);
+        if (tms2_is_raise(un)) { json_free(row); return un; }
+        bool ok = tms2_truthy(un);
         json_free(un);
         if (ok) {
-            /* Re-fetch by ID — title is not UNIQUE. */
-            json_t *rec2 = tms_sessions_get(ctx, p, id);
-            if (tms_is_raise(rec2)) { json_free(row); return rec2; }
-            json_t *row2 = tms_row_of_v(ctx, rec2);
+            /* Re-fetch by ID -- title is not UNIQUE. */
+            json_t *rec2 = tms2_sessions_get(ctx, p, id);
+            if (tms2_is_raise(rec2)) { json_free(row); return rec2; }
+            json_t *row2 = tms2_row_of_v(ctx, rec2);
             json_free(rec2);
-            if (tms_is_raise(row2)) { json_free(row); return row2; }
+            if (tms2_is_raise(row2)) { json_free(row); return row2; }
             json_free(row);
             row = row2;
         }
     }
-    bool hide = !tms_truthy(row);
+    bool hide = !tms2_truthy(row);
     if (!hide) {
-        const json_t *arch1 = tms_dict_get(row, "archived", false, NULL, &raise);
+        const json_t *arch1 = tms2_dict_get(row, "archived", false, NULL, &raise);
         if (raise) { json_free(row); return raise; }
-        if (tms_truthy(arch1)) hide = true;
+        if (tms2_truthy(arch1)) hide = true;
     }
     if (!hide) {
-        json_t *denied = tms_denied_source(ctx, row);
-        if (tms_is_raise(denied)) { json_free(row); return denied; }
-        hide = tms_truthy(denied);
+        json_t *denied = tms2_denied_source(ctx, row);
+        if (tms2_is_raise(denied)) { json_free(row); return denied; }
+        hide = tms2_truthy(denied);
         json_free(denied);
     }
     if (hide) {
         json_free(row);
         json_t *payload = json_object();
         json_set(payload, "sessions", json_array());
-        return tms_ok(ctx, rid, payload);
+        return tms2_ok(ctx, rid, payload);
     }
     raise = NULL;
-    const json_t *id = tms_sub(row, "id", &raise);
+    const json_t *id = tms2_sub(row, "id", &raise);
     if (raise) { json_free(row); return raise; }
     json_t *tip = json_copy(id);
     /* with suppress(Exception): tip = lineage.tip(row["id"]) or row["id"] */
-    json_t *lt = tms_lineage_tip(ctx, p, id);
-    if (tms_is_raise(lt)) {
-        if (tms_is_base_exc(tms_raise_kind(lt))) {
+    json_t *lt = tms2_lineage_tip(ctx, p, id);
+    if (tms2_is_raise(lt)) {
+        if (tms2_is_base_exc(tms2_raise_kind(lt))) {
             json_free(tip); json_free(row);
             return lt;
         }
         json_free(lt);
-    } else if (tms_truthy(lt)) {
+    } else if (tms2_truthy(lt)) {
         json_free(tip);
         tip = lt;
     } else {
         json_free(lt);
     }
     json_t *tip_row;
-    if (!tms_json_eq(tip, id)) {
-        json_t *rec3 = tms_sessions_get(ctx, p, tip);
-        if (tms_is_raise(rec3)) { json_free(tip); json_free(row); return rec3; }
-        json_t *row3 = tms_row_of_v(ctx, rec3);
+    if (!tms2_json_eq(tip, id)) {
+        json_t *rec3 = tms2_sessions_get(ctx, p, tip);
+        if (tms2_is_raise(rec3)) { json_free(tip); json_free(row); return rec3; }
+        json_t *row3 = tms2_row_of_v(ctx, rec3);
         json_free(rec3);
-        if (tms_is_raise(row3)) { json_free(tip); json_free(row); return row3; }
-        if (tms_truthy(row3)) {
+        if (tms2_is_raise(row3)) { json_free(tip); json_free(row); return row3; }
+        if (tms2_truthy(row3)) {
             tip_row = row3;
         } else {
             json_free(row3);
@@ -1792,40 +1792,40 @@ static json_t *tms_session_list_by_title(tms_ctx_t *ctx, const json_t *args) {
     } else {
         tip_row = json_copy(row);
     }
-    json_t *sa = tms_args0();
-    tms_aset(sa, "row", row);
-    tms_aset(sa, "tip_row", tip_row);
-    tms_aset(sa, "resolved_id", tip);
-    tms_aset(sa, "persistence", p);
-    json_t *summary = tms_session_row_summary(ctx, sa);
+    json_t *sa = tms2_args0();
+    tms2_aset(sa, "row", row);
+    tms2_aset(sa, "tip_row", tip_row);
+    tms2_aset(sa, "resolved_id", tip);
+    tms2_aset(sa, "persistence", p);
+    json_t *summary = tms2_session_row_summary(ctx, sa);
     json_free(tip_row);
     json_free(tip);
     json_free(row);
-    if (tms_is_raise(summary)) return summary;
+    if (tms2_is_raise(summary)) return summary;
     json_t *sessions = json_array();
     json_append(sessions, summary);
     json_t *payload = json_object();
     json_set(payload, "sessions", sessions);
-    return tms_ok(ctx, rid, payload);
+    return tms2_ok(ctx, rid, payload);
 }
 
-/* ═══════════════════════ live lookup / status / title ═══════════════════════ */
+/* ======================= live lookup / status / title ======================= */
 
 /* Runtime sid of a live, not-yet-persisted session matched by stored key or
  * pending title (profile_home gate first). */
-/* PoP: tms_find_live_unpersisted @ tui_gateway/methods_session.py:_find_live_unpersisted */
-static json_t *tms_find_live_unpersisted(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_find_live_unpersisted @ tui_gateway/methods_session.py:_find_live_unpersisted */
+static json_t *tms2_find_live_unpersisted(tms2_ctx_t *ctx, const json_t *args) {
     const char *needle = json_get_str(args, "needle", "");
     const json_t *home = json_obj_get(args, "home");
-    char *want_home = (home && home->type != JSON_NULL) ? tms_pystr(home) : NULL;
-    json_t *items = tms_call(ctx, "sessions_items", tms_args0());
-    if (tms_is_raise(items)) { free(want_home); return items; }
-    json_t *bad = tms_iter_check(items);
+    char *want_home = (home && home->type != JSON_NULL) ? tms2_pystr(home) : NULL;
+    json_t *items = tms2_call(ctx, "sessions_items", tms2_args0());
+    if (tms2_is_raise(items)) { free(want_home); return items; }
+    json_t *bad = tms2_iter_check(items);
     if (bad) { json_free(items); free(want_home); return bad; }
     json_t *out = json_string("");
     for (size_t i = 0; i < items->c.count; i++) {
         json_t *u[2];
-        json_t *ubad = tms_unpack(items->c.items[i], 2, u);
+        json_t *ubad = tms2_unpack(items->c.items[i], 2, u);
         if (ubad) {
             json_free(out); json_free(items); free(want_home);
             return ubad;
@@ -1834,17 +1834,17 @@ static json_t *tms_find_live_unpersisted(tms_ctx_t *ctx, const json_t *args) {
         if (u[1] && u[1]->type == JSON_OBJECT) {
             const json_t *ph = json_obj_get(u[1], "profile_home");
             bool ph_match;
-            if (!tms_truthy(ph)) ph_match = (want_home == NULL);
-            else ph_match = want_home && tms_str(ph)
-                            && !strcmp(tms_str(ph), want_home);
+            if (!tms2_truthy(ph)) ph_match = (want_home == NULL);
+            else ph_match = want_home && tms2_str(ph)
+                            && !strcmp(tms2_str(ph), want_home);
             if (ph_match) {
                 const json_t *sk = json_obj_get(u[1], "session_key");
-                char *sks = tms_truthy(sk) ? tms_pystr(sk) : tms_strdup("");
+                char *sks = tms2_truthy(sk) ? tms2_pystr(sk) : tms2_strdup("");
                 match = sks && !strcmp(sks, needle);
                 free(sks);
                 if (!match) {
                     const json_t *pt = json_obj_get(u[1], "pending_title");
-                    const char *pts = tms_truthy(pt) ? tms_str(pt) : "";
+                    const char *pts = tms2_truthy(pt) ? tms2_str(pt) : "";
                     match = pts && !strcmp(pts, needle);
                 }
             }
@@ -1863,57 +1863,57 @@ static json_t *tms_find_live_unpersisted(tms_ctx_t *ctx, const json_t *args) {
 }
 
 /* _try_get_session core: suppress(Exception) over the persistence read. */
-static json_t *tms_try_get_session_v(tms_ctx_t *ctx, const json_t *db,
+static json_t *tms2_try_get_session_v(tms2_ctx_t *ctx, const json_t *db,
                                      const json_t *key) {
-    json_t *pa = tms_args0();
-    tms_aset(pa, "db", db);
+    json_t *pa = tms2_args0();
+    tms2_aset(pa, "db", db);
     json_t *raise = NULL;
-    json_t *p = tms_cm_enter(ctx, "persistence_for", pa, &raise);
+    json_t *p = tms2_cm_enter(ctx, "persistence_for", pa, &raise);
     if (raise) {
-        if (tms_is_base_exc(tms_raise_kind(raise))) return raise;
+        if (tms2_is_base_exc(tms2_raise_kind(raise))) return raise;
         json_free(raise);
         return json_object();
     }
-    json_t *rec = tms_sessions_get(ctx, p, key);
+    json_t *rec = tms2_sessions_get(ctx, p, key);
     json_free(p);
-    if (tms_is_raise(rec)) {
-        if (tms_is_base_exc(tms_raise_kind(rec))) return rec;
+    if (tms2_is_raise(rec)) {
+        if (tms2_is_base_exc(tms2_raise_kind(rec))) return rec;
         json_free(rec);
         return json_object();
     }
-    json_t *row = tms_row_of_v(ctx, rec);
+    json_t *row = tms2_row_of_v(ctx, rec);
     json_free(rec);
-    if (tms_is_raise(row)) {
-        if (tms_is_base_exc(tms_raise_kind(row))) return row;
+    if (tms2_is_raise(row)) {
+        if (tms2_is_base_exc(tms2_raise_kind(row))) return row;
         json_free(row);
         return json_object();
     }
-    if (!tms_truthy(row)) { json_free(row); return json_object(); }
+    if (!tms2_truthy(row)) { json_free(row); return json_object(); }
     return row;
 }
 
 /* Stored row for key: the live session's bound profile db first, else
  * params.profile / launch. */
-/* PoP: tms_status_row @ tui_gateway/methods_session.py:_status_row */
-static json_t *tms_status_row(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_status_row @ tui_gateway/methods_session.py:_status_row */
+static json_t *tms2_status_row(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *session = json_obj_get(args, "session");
     const json_t *params = json_obj_get(args, "params");
     const json_t *key = json_obj_get(args, "key");
-    if (!tms_truthy(key)) return json_object();
-    json_t *da = tms_args0();
-    tms_aset(da, "session", session);
+    if (!tms2_truthy(key)) return json_object();
+    json_t *da = tms2_args0();
+    tms2_aset(da, "session", session);
     json_t *raise = NULL;
-    json_t *db = tms_cm_enter(ctx, "session_db", da, &raise);
+    json_t *db = tms2_cm_enter(ctx, "session_db", da, &raise);
     if (raise) return raise;
     json_t *ret;
     if (db) {
-        ret = tms_try_get_session_v(ctx, db, key);
+        ret = tms2_try_get_session_v(ctx, db, key);
     } else {
-        json_t *pa = tms_args0();
-        tms_aset(pa, "params", params);
-        json_t *db2 = tms_cm_enter(ctx, "profile_db", pa, &raise);
+        json_t *pa = tms2_args0();
+        tms2_aset(pa, "params", params);
+        json_t *db2 = tms2_cm_enter(ctx, "profile_db", pa, &raise);
         if (raise) { json_free(db); return raise; }
-        if (db2) ret = tms_try_get_session_v(ctx, db2, key);
+        if (db2) ret = tms2_try_get_session_v(ctx, db2, key);
         else ret = json_object();
         json_free(db2);
     }
@@ -1924,74 +1924,74 @@ static json_t *tms_status_row(tms_ctx_t *ctx, const json_t *args) {
 /* with suppress(Exception), _persistence_for(db) as persistence:
  *     return _row_of(persistence.sessions.get(key)) or {}
  * return {} */
-/* PoP: tms_try_get_session @ tui_gateway/methods_session.py:_try_get_session */
-static json_t *tms_try_get_session(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_try_get_session @ tui_gateway/methods_session.py:_try_get_session */
+static json_t *tms2_try_get_session(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *db = json_obj_get(args, "db");
     const json_t *key = json_obj_get(args, "key");
-    return tms_try_get_session_v(ctx, db, key);
+    return tms2_try_get_session_v(ctx, db, key);
 }
 
 /* session.title without title: read it, applying a queued pending_title if
  * possible. The session dict is the caller-state mirror (mutated in place). */
-/* PoP: tms_title_read @ tui_gateway/methods_session.py:_title_read */
-static json_t *tms_title_read(tms_ctx_t *ctx, const json_t *args) {
-    json_t *session = tms_state_key(ctx, "session");
+/* PoP: tms2_title_read @ tui_gateway/methods_session.py:_title_read */
+static json_t *tms2_title_read(tms2_ctx_t *ctx, const json_t *args) {
+    json_t *session = tms2_state_key(ctx, "session");
     const json_t *p = json_obj_get(args, "persistence");
     const json_t *key = json_obj_get(args, "key");
     json_t *raise = NULL;
-    const json_t *pt = tms_dict_get(session, "pending_title", false, NULL, &raise);
+    const json_t *pt = tms2_dict_get(session, "pending_title", false, NULL, &raise);
     if (raise) return raise;
-    json_t *fallback = tms_truthy(pt) ? json_copy(pt) : json_string("");
+    json_t *fallback = tms2_truthy(pt) ? json_copy(pt) : json_string("");
     json_t *resolved = NULL;
     json_t *exc = NULL;
     /* resolved_title = persistence.sessions.get_title(key) or "" */
-    json_t *bad = tms_persist_sub(p, "sessions");
+    json_t *bad = tms2_persist_sub(p, "sessions");
     if (bad) {
         exc = bad;
     } else {
-        json_t *ga = tms_args0();
-        tms_aset(ga, "key", key);
-        json_t *gt = tms_call(ctx, "get_title", ga);
-        if (tms_is_raise(gt)) { exc = gt; }
+        json_t *ga = tms2_args0();
+        tms2_aset(ga, "key", key);
+        json_t *gt = tms2_call(ctx, "get_title", ga);
+        if (tms2_is_raise(gt)) { exc = gt; }
         else {
-            resolved = tms_truthy(gt) ? gt : json_string("");
+            resolved = tms2_truthy(gt) ? gt : json_string("");
             if (resolved != gt) json_free(gt);
         }
     }
     if (!exc) {
-        if (!tms_truthy(fallback)) {
-            if (tms_truthy(resolved))
+        if (!tms2_truthy(fallback)) {
+            if (tms2_truthy(resolved))
                 json_set(session, "pending_title", json_null());
         } else {
             bool set_ok = false;
-            json_t *sa = tms_args0();
-            tms_aset(sa, "key", key);
-            tms_aset(sa, "title", fallback);
-            json_t *st = tms_call(ctx, "set_title", sa);
-            if (tms_is_raise(st)) { exc = st; }
-            else { set_ok = tms_truthy(st); json_free(st); }
+            json_t *sa = tms2_args0();
+            tms2_aset(sa, "key", key);
+            tms2_aset(sa, "title", fallback);
+            json_t *st = tms2_call(ctx, "set_title", sa);
+            if (tms2_is_raise(st)) { exc = st; }
+            else { set_ok = tms2_truthy(st); json_free(st); }
             if (!exc && !set_ok) {
-                json_t *rec = tms_sessions_get(ctx, p, key);
-                if (tms_is_raise(rec)) { exc = rec; }
+                json_t *rec = tms2_sessions_get(ctx, p, key);
+                if (tms2_is_raise(rec)) { exc = rec; }
                 else {
-                    json_t *row = tms_row_of_v(ctx, rec);
+                    json_t *row = tms2_row_of_v(ctx, rec);
                     json_free(rec);
-                    if (tms_is_raise(row)) { exc = row; }
+                    if (tms2_is_raise(row)) { exc = row; }
                     else {
                         json_t *empty = json_object();
-                        const json_t *rd = tms_truthy(row) ? row : empty;
-                        const json_t *title = tms_dict_get(rd, "title", false, NULL, &raise);
+                        const json_t *rd = tms2_truthy(row) ? row : empty;
+                        const json_t *title = tms2_dict_get(rd, "title", false, NULL, &raise);
                         if (raise) { exc = raise; }
-                        else if (tms_truthy(title) && title->type != JSON_STRING) {
+                        else if (tms2_truthy(title) && title->type != JSON_STRING) {
                             char msg[192];
                             snprintf(msg, sizeof msg,
                                      "'%s' object has no attribute 'strip'",
-                                     tms_type_name(title));
-                            exc = tms_err_spec("AttributeError", msg);
+                                     tms2_type_name(title));
+                            exc = tms2_err_spec("AttributeError", msg);
                         } else {
-                            const char *ts = tms_truthy(title) ? tms_str(title) : "";
-                            char *tstrip = tms_strip(ts);
-                            const char *fs = tms_str(fallback);
+                            const char *ts = tms2_truthy(title) ? tms2_str(title) : "";
+                            char *tstrip = tms2_strip(ts);
+                            const char *fs = tms2_str(fallback);
                             set_ok = fs && tstrip && !strcmp(tstrip, fs);
                             free(tstrip);
                         }
@@ -2005,7 +2005,7 @@ static json_t *tms_title_read(tms_ctx_t *ctx, const json_t *args) {
                     json_set(session, "pending_title", json_null());
                     json_free(resolved);
                     resolved = json_copy(fallback);
-                } else if (!tms_truthy(resolved)) {
+                } else if (!tms2_truthy(resolved)) {
                     json_free(resolved);
                     resolved = json_copy(fallback);
                 }
@@ -2013,7 +2013,7 @@ static json_t *tms_title_read(tms_ctx_t *ctx, const json_t *args) {
         }
     }
     if (exc) {
-        if (tms_is_base_exc(tms_raise_kind(exc))) {
+        if (tms2_is_base_exc(tms2_raise_kind(exc))) {
             json_free(fallback); json_free(resolved);
             return exc;
         }
@@ -2025,25 +2025,25 @@ static json_t *tms_title_read(tms_ctx_t *ctx, const json_t *args) {
     return resolved;
 }
 
-/* ═══════════════════════ auto-reload / spawn-tree ═══════════════════════ */
+/* ======================= auto-reload / spawn-tree ======================= */
 
 /* PATCH /api/billing/auto-top-up; returns {"ok": True}. */
-/* PoP: tms_auto_reload @ tui_gateway/methods_session.py:_auto_reload */
-static json_t *tms_auto_reload(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_auto_reload @ tui_gateway/methods_session.py:_auto_reload */
+static json_t *tms2_auto_reload(tms2_ctx_t *ctx, const json_t *args) {
     const json_t *p = json_obj_get(args, "p");
     json_t *raise = NULL;
-    const json_t *en = tms_dict_get(p, "enabled", false, NULL, &raise);
+    const json_t *en = tms2_dict_get(p, "enabled", false, NULL, &raise);
     if (raise) return raise;
-    const json_t *th = tms_dict_get(p, "threshold", false, NULL, &raise);
+    const json_t *th = tms2_dict_get(p, "threshold", false, NULL, &raise);
     if (raise) return raise;
-    const json_t *ta = tms_dict_get(p, "top_up_amount", false, NULL, &raise);
+    const json_t *ta = tms2_dict_get(p, "top_up_amount", false, NULL, &raise);
     if (raise) return raise;
-    json_t *a = tms_args0();
-    tms_asetb(a, "enabled", tms_truthy(en));
-    tms_aset(a, "threshold", th);
-    tms_aset(a, "top_up_amount", ta);
-    json_t *r = tms_call(ctx, "patch_auto_top_up", a);
-    if (tms_is_raise(r)) return r;
+    json_t *a = tms2_args0();
+    tms2_asetb(a, "enabled", tms2_truthy(en));
+    tms2_aset(a, "threshold", th);
+    tms2_aset(a, "top_up_amount", ta);
+    json_t *r = tms2_call(ctx, "patch_auto_top_up", a);
+    if (tms2_is_raise(r)) return r;
     json_free(r);
     json_t *out = json_object();
     json_set(out, "ok", json_bool(true));
@@ -2051,34 +2051,34 @@ static json_t *tms_auto_reload(tms_ctx_t *ctx, const json_t *args) {
 }
 
 /* Index-shaped entry for a pre-index snapshot file (None when unreadable). */
-/* PoP: tms_legacy_spawn_tree_entry @ tui_gateway/methods_session.py:_legacy_spawn_tree_entry */
-static json_t *tms_legacy_spawn_tree_entry(tms_ctx_t *ctx, const json_t *args) {
+/* PoP: tms2_legacy_spawn_tree_entry @ tui_gateway/methods_session.py:_legacy_spawn_tree_entry */
+static json_t *tms2_legacy_spawn_tree_entry(tms2_ctx_t *ctx, const json_t *args) {
     const char *path = json_get_str(args, "path", "");
     const char *dirname = json_get_str(args, "session_dir_name", "");
     /* try: stat = p.stat() except OSError: return None */
-    json_t *sa = tms_args0();
-    tms_asets(sa, "path", path);
-    json_t *stat = tms_call(ctx, "stat", sa);
-    if (tms_is_raise(stat)) {
-        if (tms_is_oserror(tms_raise_kind(stat))) { json_free(stat); return json_null(); }
+    json_t *sa = tms2_args0();
+    tms2_asets(sa, "path", path);
+    json_t *stat = tms2_call(ctx, "stat", sa);
+    if (tms2_is_raise(stat)) {
+        if (tms2_is_oserror(tms2_raise_kind(stat))) { json_free(stat); return json_null(); }
         return stat;
     }
     /* raw = {}; with suppress(Exception): raw = json.loads(p.read_text(...)) */
     json_t *raw = json_object();
-    json_t *ra = tms_args0();
-    tms_asets(ra, "path", path);
-    tms_asets(ra, "encoding", "utf-8");
-    json_t *txt = tms_call(ctx, "read_text", ra);
-    if (tms_is_raise(txt)) {
-        if (tms_is_base_exc(tms_raise_kind(txt))) {
+    json_t *ra = tms2_args0();
+    tms2_asets(ra, "path", path);
+    tms2_asets(ra, "encoding", "utf-8");
+    json_t *txt = tms2_call(ctx, "read_text", ra);
+    if (tms2_is_raise(txt)) {
+        if (tms2_is_base_exc(tms2_raise_kind(txt))) {
             json_free(raw); json_free(stat);
             return txt;
         }
         json_free(txt);
     } else {
-        const char *ts = tms_str(txt);
+        const char *ts = tms2_str(txt);
         json_t *parsed = NULL;
-        if (ts && tms_json_loads(ts, &parsed) == 0) {
+        if (ts && tms2_json_loads(ts, &parsed) == 0) {
             json_free(raw);
             raw = parsed;
         }
@@ -2089,20 +2089,20 @@ static json_t *tms_legacy_spawn_tree_entry(tms_ctx_t *ctx, const json_t *args) {
     json_t *out = json_object();
     json_set_hdr(out, "path", path);
     const json_t *sid = json_obj_get(raw, "session_id");
-    json_set(out, "session_id", tms_truthy(sid) ? json_copy(sid) : json_string(dirname));
+    json_set(out, "session_id", tms2_truthy(sid) ? json_copy(sid) : json_string(dirname));
     const json_t *fin = json_obj_get(raw, "finished_at");
-    if (tms_truthy(fin)) {
+    if (tms2_truthy(fin)) {
         json_set(out, "finished_at", json_copy(fin));
     } else {
         json_t *raise = NULL;
-        const json_t *mt = tms_attr(stat, "st_mtime", false, NULL, &raise);
+        const json_t *mt = tms2_attr(stat, "st_mtime", false, NULL, &raise);
         if (raise) { json_free(out); json_free(raw); json_free(stat); return raise; }
         json_set(out, "finished_at", json_copy(mt));
     }
     const json_t *st = json_obj_get(raw, "started_at");
     json_set(out, "started_at", st ? json_copy(st) : json_null());
     const json_t *label = json_obj_get(raw, "label");
-    json_set(out, "label", tms_truthy(label) ? json_copy(label) : json_string(""));
+    json_set(out, "label", tms2_truthy(label) ? json_copy(label) : json_string(""));
     double count = (subs && subs->type == JSON_ARRAY) ? (double)subs->c.count : 0.0;
     json_set(out, "count", json_number(count));
     json_free(raw);

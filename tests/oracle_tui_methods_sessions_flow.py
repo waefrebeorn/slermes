@@ -2,7 +2,7 @@
 """Oracle for the tui_gateway/methods_session.py FLOW port
 (src/gateway/tui_methods_sessions_flow.c).
 
-NOTE: the quarry module is tui_gateway/methods_session.py (SINGULAR — there is
+NOTE: the quarry module is tui_gateway/methods_session.py (SINGULAR -- there is
 no methods_sessions.py); the PoP annotations name the REAL defining module.
 The deliverable keeps the task's "sessions" spelling.
 
@@ -18,7 +18,7 @@ return ("ret") and the mutated caller-dict mirror ("state": session).
 
 Live defs are AST-extracted from methods_session.py (module Assign constants
 seeded, plain-Name targets only; UNDECORATED FunctionDefs exec'd with the
-future-annotations flag into a registered sys.modules module — py3.14). The
+future-annotations flag into a registered sys.modules module -- py3.14). The
 heavy quarry import chain is never imported. DESKTOP_BACKEND_CONTRACT is
 AST-extracted from tui_gateway/server.py, BOT_CHAT_TITLE from
 tools/bot_mode_probe.py, INTERNAL_LISTING_SOURCES from
@@ -155,7 +155,7 @@ PORTED = [
 ]
 
 
-# ── methods_session.py namespace (live defs + seeded constants) ──
+# -- methods_session.py namespace (live defs + seeded constants) --
 # The registry stub CAPTURES decorated handlers: _billing_route registers its
 # handler via @method(name) and returns None (the real HandlerRegistry keeps
 # it); drive() fetches the captured handler by name.
@@ -206,7 +206,7 @@ NS = extract()
 BOT_CHAT_TITLE = extract_assign(BOTPROBE_SRC, "BOT_CHAT_TITLE")
 
 
-# ── exception materialization / projection ──
+# -- exception materialization / projection --
 BillingError = type("BillingError", (Exception,), {})
 
 EXC_CLASSES = {
@@ -240,7 +240,7 @@ def proj_exc(exc):
     return {"__raise__": type(exc).__name__, "message": str(exc)}
 
 
-# ── canonical projection (compare parsed JSON, never raw strings) ──
+# -- canonical projection (compare parsed JSON, never raw strings) --
 class SilentCM:
     """Silent context-manager double carrying its script marker."""
     def __init__(self, marker):
@@ -299,7 +299,7 @@ def canon(v):
     return json.loads(json.dumps(conv(v), ensure_ascii=False, default=str))
 
 
-# ── Path filesystem methods are seams (stat / read_text) ──
+# -- Path filesystem methods are seams (stat / read_text) --
 _CUR_CTX = None
 
 
@@ -317,7 +317,7 @@ Path.read_text = _path_read_text
 # str(Path) on the Windows gate host is ntpath (backslashes); the port's
 # representation contract projects Paths to POSIX strings. Normalize at the
 # source so the live `str(p)` in _legacy_spawn_tree_entry matches the C port.
-# (as_posix itself calls str(self) — wrap the ORIGINAL __str__, no recursion.)
+# (as_posix itself calls str(self) -- wrap the ORIGINAL __str__, no recursion.)
 _orig_path_str = Path.__str__
 
 
@@ -328,7 +328,7 @@ def _path_str_posix(self):
 Path.__str__ = _path_str_posix
 
 
-# ── per-case script backend (mirrors the C tms_call exactly) ──
+# -- per-case script backend (mirrors the C tms2_call exactly) --
 _MISSING = object()
 
 
@@ -374,7 +374,7 @@ def rec(ctx, name, args_fn=None, build=None):
     return f
 
 
-# ── attribute doubles ──
+# -- attribute doubles --
 def row_build(raw, ctx):
     if isinstance(raw, dict):
         return types.SimpleNamespace(
@@ -486,7 +486,7 @@ class RecLogger:
         return self.ctx.call("logger_warning", {"msg": fmt % args})
 
 
-# ── in-function import stub modules (registered once, rebound per case) ──
+# -- in-function import stub modules (registered once, rebound per case) --
 def stub_pkg(name):
     if name not in sys.modules:
         new_module(name)
@@ -532,7 +532,7 @@ SESSIONS_MOD.SessionQuery = SessionQuery
 SESSIONS_MOD.SessionWindow = SessionWindow
 
 
-# ── real defs restored before every case (seam slots are per-case) ──
+# -- real defs restored before every case (seam slots are per-case) --
 REAL = {nm: NS[nm] for nm in PORTED}
 
 
@@ -754,7 +754,7 @@ def drive(func, inp):
     return {"ret": canon(ret), "trace": canon(ctx.trace), "state": canon(state_out)}
 
 
-# ── three-way seam-name cross-check (C port <-> oracle stubs <-> fixture io) ──
+# -- three-way seam-name cross-check (C port <-> oracle stubs <-> fixture io) --
 SEAM_NAMES = [
     "resolve", "sess_nowait", "sess", "session_fn", "session_db", "profile_db",
     "persistence_for", "db_unavailable_error", "db_fn", "uuid4_hex", "str_param",

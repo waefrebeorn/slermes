@@ -648,7 +648,7 @@ SEAM_NAMES = [
     # as strings in C, not literals)
     "stream_delta_callback", "stream_callback", "interim_assistant_callback",
     "tool_gen_callback", "tool_progress_callback", "tool_complete_callback",
-    "thinking_callback", "reasoning_callback", "notice_callback",
+    "thinking_callback", "_reasoning_callback", "notice_callback",
     "notice_clear_callback", "reaction_callback", "control_update_callback",
     "connection_callback", "connection_update_callback", "modal_withdraw_callback",
     "clarify_callback", "sudo_password_callback", "vault_unlock_callback",
@@ -657,7 +657,7 @@ SEAM_NAMES = [
 DYNAMIC_SEAMS = {
     "stream_delta_callback", "stream_callback", "interim_assistant_callback",
     "tool_gen_callback", "tool_progress_callback", "tool_complete_callback",
-    "thinking_callback", "reasoning_callback", "notice_callback",
+    "thinking_callback", "_reasoning_callback", "notice_callback",
     "notice_clear_callback", "reaction_callback", "control_update_callback",
     "connection_callback", "connection_update_callback", "modal_withdraw_callback",
     "clarify_callback", "sudo_password_callback", "vault_unlock_callback",

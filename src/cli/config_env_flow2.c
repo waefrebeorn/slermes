@@ -531,8 +531,9 @@ static json_t *ce3_model_names_provider(const ce3_seams_t *s, const json_t *mode
      *     names.add(coerce_provider_id(entry.get("name")).lower())
      * current = str(model_cfg.get("provider") or "").strip().lower()
      * return current.removeprefix("custom:") in names
-     * NOTE: entry.name is coerced TWICE when the guard passes (two seam events). */
-    if (!ce3_is_obj(model_cfg)) return ce3_attr_err(model_cfg, "get");
+     * NOTE: entry.name is coerced TWICE when the guard passes (two seam events).
+     * model_cfg is first touched at the `current = str(model_cfg.get(...))` line —
+     * AFTER the coerce calls — so a non-dict model_cfg raises only once they fire. */
     char *names[2] = {NULL, NULL};
     size_t n_names = 0;
     json_t *args = json_object();
@@ -571,6 +572,11 @@ static json_t *ce3_model_names_provider(const ce3_seams_t *s, const json_t *mode
         } else {
             json_free(r2);
         }
+    }
+    if (!ce3_is_obj(model_cfg)) {
+        free(names[0]);
+        if (n_names > 1) free(names[1]);
+        return ce3_attr_err(model_cfg, "get");
     }
     char *cur0 = ce3_str_or_empty(ce3_get(model_cfg, "provider"));
     char *cur1 = ce3_strip(cur0);

@@ -257,6 +257,17 @@ static const pb3_exc_ent_t PB3_EXC_TREE[] = {
     {"BytesWarning", "Warning"},
     {"EncodingWarning", "Warning"},
     {"ResourceWarning", "Warning"},
+    {"PythonFinalizationError", "RuntimeError"},
+    {"_IncompleteInputError", "SyntaxError"},
+    {"BaseExceptionGroup", "BaseException"},
+    /* ExceptionGroup's first direct base is BaseExceptionGroup, but the
+     * single-parent walk routes it through Exception to keep the
+     * `except Exception` contract (it IS an Exception subclass). */
+    {"ExceptionGroup", "Exception"},
+    /* OSError aliases (errno-catch walks). */
+    {"IOError", "OSError"},
+    {"EnvironmentError", "OSError"},
+    {"WindowsError", "OSError"},
 };
 static const char *pb3_exc_parent(const char *kind) {
     if (!kind) return NULL;
@@ -286,7 +297,7 @@ static bool pb3_is_base_exc(const char *kind) {
 static bool pb3_exc_matches(const char *kind, const char *handler) {
     if (!kind || !handler) return false;
     if (strcmp(handler, "BaseException") == 0) return true;
-    if (strcmp(handler, "Exception") == 0) return !pb3_is_base_exc(kind);
+    if (strcmp(handler, "Exception") == 0) return pb3_exc_is_subclass(kind, "Exception");
     const char *p = handler;
     while (*p) {
         const char *bar = strchr(p, '|');

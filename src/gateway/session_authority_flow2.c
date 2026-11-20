@@ -743,7 +743,9 @@ static json_t *sau2_admit_native_write(sau2_ctx_t *c, const json_t *args) {
     }
     json_t *co = sau2_current_owner(c, session_id);
     SAU2_CHK(co);
-    const char *sid = sau2_str(co);
+    /* OWNED snapshot: sau2_str borrows into co, which is freed right away;
+     * sid is read again when building the admit args below. */
+    char *sid = sau2_strdup(sau2_str(co));
     json_free(co);
     json_t *err = NULL;  /* the try-block exception, if any */
     json_t *result = NULL;
@@ -782,20 +784,23 @@ cleanup:
     if (err) {
         if (sau2_is_exception(err)) {
             json_t *dcl = sau2_call(c, "drop_capture_lease", json_object());
-            if (sau2_is_raise(dcl)) { json_free(err); json_free(fresh); return dcl; }
+            if (sau2_is_raise(dcl)) { json_free(err); json_free(fresh); free(sid); return dcl; }
             json_free(dcl);
             json_t *ua = json_object();
             json_set(ua, "fresh", fresh);  /* owned */
             json_set(ua, "retain_history", json_bool(false));
             json_t *rum = sau2_call(c, "release_unheld_media", ua);
-            if (sau2_is_raise(rum)) { json_free(err); return rum; }
+            if (sau2_is_raise(rum)) { json_free(err); free(sid); return rum; }
             json_free(rum);
+            free(sid);
             return err;  /* re-raise the original */
         }
         json_free(fresh);
+        free(sid);
         return err;  /* BaseException propagates without cleanup */
     }
     json_free(fresh);
+    free(sid);
     return result;
 }
 
@@ -1108,10 +1113,8 @@ static json_t *sau2_interrupt(sau2_ctx_t *c, const json_t *args) {
                 agent = sau2_agent(c, aa);
                 json_free(aa);
                 SAU2_CHK(agent);
-                json_t *ra = json_object();
-                json_set(ra, "ref", sau2_ref_arg(ref));
-                json_t *roa = sau2_runs_own_agent(c, ra);
-                json_free(ra);
+                /* sau2_runs_own_agent takes the RAW ref and wraps it itself. */
+                json_t *roa = sau2_runs_own_agent(c, ref);
                 if (sau2_is_raise(roa)) { if (agent) json_free(agent); return roa; }
                 bool own = sau2_truthy(roa);
                 json_free(roa);

@@ -331,7 +331,7 @@ class RecLogger:
     def error(self, msg, *a, **k): self._emit("error", msg, *a, **k)
 
 
-def _build_auto_tts_output_path(*a, **k):
+def build_auto_tts_output_path(*a, **k):
     return None
 
 
@@ -446,7 +446,7 @@ def install_stubs(ns, inp, func):
         "footer_onto_photo_caption",
         lambda slf, extracted, image_exts: {"self": {"name": slf.name}, "extracted": asdict(extracted),
                                             "image_exts": sorted(image_exts)})
-    ns["build_auto_tts_output_path"] = _build_auto_tts_output_path
+    ns["build_auto_tts_output_path"] = build_auto_tts_output_path
     ns["MEDIA_TAG_CLEANUP_RE"] = RegexDouble("cleanup_finditer")
     ns["MEDIA_EXTENSIONLESS_TAG_RE"] = RegexDouble("extensionless_finditer")
     # ported siblings seamed when they are NOT the current target
@@ -541,9 +541,9 @@ def drive(ns, func, inp):
     if func == "_validated_delivery_path":
         dropped = inp.get("dropped")
         dcopy = copy.deepcopy(dropped) if isinstance(dropped, list) else None
+        CUR["state_out"]["dropped"] = dcopy   # echoed even when the call raises
         r = ns["_validated_delivery_path"](inp.get("raw_path", ""), inp.get("session_key", ""),
                                            inp.get("label", "MEDIA directive path"), dcopy)
-        CUR["state_out"]["dropped"] = dcopy
         return {"ret": r}
     if func == "_deliverable_tag_spans":
         return {"ret": project_ret(ns["_deliverable_tag_spans"](inp.get("text", "")))}

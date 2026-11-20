@@ -1474,9 +1474,12 @@ static json_t *irc2_interactive_setup(irc2_ctx_t *ctx, const json_t *args) {
  * ================================================================ */
 /* PoP: irc2_conn_init @ plugins/platforms/irc/adapter.py:__init__ */
 static json_t *irc2_conn_init(irc2_ctx_t *ctx, const json_t *args) {
-    /* self.reader, self.writer = reader, writer */
-    irc2_set_self(ctx, "reader", json_copy(json_obj_get(args, "reader")));
-    irc2_set_self(ctx, "writer", json_copy(json_obj_get(args, "writer")));
+    /* self.reader, self.writer = reader, writer (None must survive as null:
+     * json_set drops a NULL value, losing the state key entirely). */
+    json_t *rd = json_obj_get(args, "reader");
+    irc2_set_self(ctx, "reader", rd ? json_copy(rd) : json_null());
+    json_t *wr = json_obj_get(args, "writer");
+    irc2_set_self(ctx, "writer", wr ? json_copy(wr) : json_null());
     /* self._loop = asyncio.get_running_loop() */
     json_t *loop = irc2_call(ctx, "asyncio.get_running_loop", irc2_args());
     IA2_PROP(loop);

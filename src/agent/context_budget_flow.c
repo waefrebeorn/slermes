@@ -369,19 +369,19 @@ static json_t *cbg_sorted_unique(const json_t *arr, json_t **err)
 }
 
 /* ── unpack helpers: live `a, b = seq` / `a, b, c = seq` ── */
-static json_t *cbg_unpack(const json_t *seq, size_t want, json_t ***items, json_t **err)
+static void cbg_unpack(const json_t *seq, size_t want, json_t ***items, json_t **err)
 {
     *err = NULL;
     *items = NULL;
     if (cbg_is_null(seq)) {
         *err = cbg_type_raise("TypeError", "'%s' object is not iterable", seq);
-        return NULL;
+        return;
     }
     if (!cbg_is_arr(seq)) {
         /* str iterates chars / dict iterates keys: outside the scripted domain;
          * numbers and other scalars raise the live not-iterable TypeError. */
         *err = cbg_type_raise("TypeError", "'%s' object is not iterable", seq);
-        return NULL;
+        return;
     }
     size_t got = seq->c.count;
     if (got != want) {
@@ -389,12 +389,11 @@ static json_t *cbg_unpack(const json_t *seq, size_t want, json_t ***items, json_
                            got < want ? "not enough" : "too many", want, got);
         *err = cbg_mkraise("ValueError", m ? m : "");
         free(m);
-        return NULL;
+        return;
     }
     json_t **it = (json_t **)malloc(want * sizeof(json_t *));
     for (size_t i = 0; i < want; i++) it[i] = json_copy(seq->c.items[i]);
     *items = it;
-    return seq;
 }
 
 static void cbg_unpack_free(json_t **items, size_t n)
@@ -1022,12 +1021,12 @@ static json_t *cbg_offload_window_results(cbg_io_t *io, json_t *st,
     json_t *ae = NULL;
     json_t *stubbed = cbg_arith(json_number(changed), kept, '-', &ae);
     if (ae) { json_free(min_chars); json_free(rows); json_free(written); json_free(kept); return ae; }
-    json_free(min_chars); json_free(kept);
+    json_free(min_chars);
     json_t *out = json_array();
     json_append(out, rows);
     json_append(out, stubbed);
     json_append(out, written);
-    json_append(out, json_number(0));   /* failed writes == kept (reverted) */
+    json_append(out, kept);   /* live returns (rows, changed-kept, written, kept): failed == kept */
     return out;
 }
 
