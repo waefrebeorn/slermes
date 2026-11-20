@@ -1,0 +1,141 @@
+{"func":"_csv","in":{"args":{"value":["a","b","c"]},"io":{}}}
+{"func":"_csv","in":{"args":{"value":[1,2,3]},"io":{}}}
+{"func":"_csv","in":{"args":{"value":[true,false,null]},"io":{}}}
+{"func":"_csv","in":{"args":{"value":"solo"},"io":{}}}
+{"func":"_csv","in":{"args":{"value":null},"io":{}}}
+{"func":"_csv","in":{"args":{"value":42},"io":{}}}
+{"func":"_csv","in":{"args":{"value":[]},"io":{}}}
+{"func":"_t_discord","in":{"args":{"key":"x","limit":10},"io":{"t":"Hello","_truncate_discord_component_text":"Hello"}}}
+{"func":"_t_discord","in":{"args":{"key":"y","limit":5},"io":{"t":"abcdefgh","_truncate_discord_component_text":"abcde"}}}
+{"func":"_t_discord","in":{"args":{"key":"z","limit":8,"kwargs":{"n":1}},"io":{"t":"value","_truncate_discord_component_text":"value"}}}
+{"func":"_t_discord","in":{"args":{"key":"q","limit":3},"io":{}},"fc":true,"tag":"fail-closed: no t script"}
+{"func":"_t_discord","in":{"args":{"key":"q","limit":3},"io":{"t":{"__script__":true,"raise":{"type":"ValueError","message":"bad"}}}}}
+{"func":"_t_discord","in":{"args":{"key":"q","limit":3},"io":{"t":"abc","_truncate_discord_component_text":{"__script__":true,"raise":{"type":"RuntimeError","message":"trunc"}}}}}
+{"func":"_t_discord","in":{"args":{"key":"unicode","limit":4,"kwargs":{"x":"é"}},"io":{"t":"café","_truncate_discord_component_text":"café"}}}
+{"func":"_text","in":{"args":{"key":"a.b"},"io":{"_t_discord":"AB"}}}
+{"func":"_text","in":{"args":{"key":""},"io":{"_t_discord":"EMPTY"}}}
+{"func":"_text","in":{"args":{"key":"platform.discord.command.btw"},"io":{"_t_discord":"BT"}}}
+{"func":"_text","in":{"args":{"key":"k1"},"io":{}},"fc":true,"tag":"fail-closed: no _t_discord script"}
+{"func":"_text","in":{"args":{"key":"k2"},"io":{"_t_discord":{"__script__":true,"raise":{"type":"TypeError","message":"boom"}}}}}
+{"func":"_text","in":{"args":{"key":"k3"},"io":{"_t_discord":123}}}
+{"func":"_text","in":{"args":{"key":"k4"},"io":{"_t_discord":"é"}}}
+{"func":"_choice_label","in":{"args":{"label":"NoDotHere"},"io":{}}}
+{"func":"_choice_label","in":{"args":{"label":""},"io":{}}}
+{"func":"_choice_label","in":{"args":{"label":"a.b"},"io":{"_text":"T"}}}
+{"func":"_choice_label","in":{"args":{"label":".leading"},"io":{"_text":"L"}}}
+{"func":"_choice_label","in":{"args":{"label":"a.b.c"},"io":{"_text":"M"}}}
+{"func":"_choice_label","in":{"args":{"label":"x.y"},"io":{}},"fc":true,"tag":"fail-closed: no _text script"}
+{"func":"_choice_label","in":{"args":{"label":"x.y"},"io":{"_text":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_default_voice_ack_phrases","in":{"args":{},"io":{"t":["1","2","3","4","5"]}}}
+{"func":"_default_voice_ack_phrases","in":{"args":{},"io":{"t":"same"}}}
+{"func":"_default_voice_ack_phrases","in":{"args":{},"io":{"t":["","","","",""]}}}
+{"func":"_default_voice_ack_phrases","in":{"args":{},"io":{}},"fc":true,"tag":"fail-closed: no t script"}
+{"func":"_default_voice_ack_phrases","in":{"args":{},"io":{"t":["a","b",{"__script__":true,"raise":{"type":"ValueError","message":"third"}},"d","e"]}}}
+{"func":"_default_voice_ack_phrases","in":{"args":{},"io":{"t":["é","ü","ö","ñ","ç"]}}}
+{"func":"_unauthorized","in":{"args":{},"io":{"unauthorized_action_notice":"denied"}}}
+{"func":"_unauthorized","in":{"args":{},"io":{"unauthorized_action_notice":{"msg":"x"}}}}
+{"func":"_unauthorized","in":{"args":{},"io":{"unauthorized_action_notice":null}}}
+{"func":"_unauthorized","in":{"args":{},"io":{"unauthorized_action_notice":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_unauthorized","in":{"args":{},"io":{"unauthorized_action_notice":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}}}
+{"func":"_unauthorized","in":{"args":{},"io":{}},"fc":true,"tag":"fail-closed: no notice script"}
+{"func":"_unauthorized","in":{"args":{},"io":{"unauthorized_action_notice":"private"}}}
+{"func":"_standalone_warn_missing_media","in":{"args":{"media_path":"/a/b.png"},"io":{"logger.warning":null}}}
+{"func":"_standalone_warn_missing_media","in":{"args":{"media_path":""},"io":{"logger.warning":null}}}
+{"func":"_standalone_warn_missing_media","in":{"args":{"media_path":"café.png"},"io":{"logger.warning":null}}}
+{"func":"_standalone_warn_missing_media","in":{"args":{"media_path":"/x"},"io":{"logger.warning":{"__script__":true,"raise":{"type":"RuntimeError","message":"logfail"}}}}}
+{"func":"_standalone_warn_missing_media","in":{"args":{"media_path":"/x"},"io":{"logger.warning":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}}}
+{"func":"_standalone_warn_missing_media","in":{"args":{"media_path":"/x"},"io":{}},"fc":true,"tag":"fail-closed: no logger script"}
+{"func":"_env_bool","in":{"args":{"name":"X","default":false},"io":{"_scoped_gate_env":"true"}}}
+{"func":"_env_bool","in":{"args":{"name":"X","default":false},"io":{"_scoped_gate_env":"YES"}}}
+{"func":"_env_bool","in":{"args":{"name":"X","default":true},"io":{"_scoped_gate_env":"no"}}}
+{"func":"_env_bool","in":{"args":{"name":"X","default":true},"io":{"_scoped_gate_env":""}}}
+{"func":"_env_bool","in":{"args":{"name":"X","default":false},"io":{"_scoped_gate_env":"On"}}}
+{"func":"_env_bool","in":{"args":{"name":"X","default":false},"io":{"_scoped_gate_env":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_env_bool","in":{"args":{"name":"X","default":false},"io":{}},"fc":true,"tag":"fail-closed: no gate script"}
+{"func":"_EA_REASON_LABEL","in":{"args":{},"io":{"t":"Reason"}}}
+{"func":"_EA_REASON_LABEL","in":{"args":{},"io":{"t":"Why"}}}
+{"func":"_EA_REASON_LABEL","in":{"args":{},"io":{"t":"Motivo"}}}
+{"func":"_EA_REASON_LABEL","in":{"args":{},"io":{"t":"A: B"}}}
+{"func":"_EA_REASON_LABEL","in":{"args":{},"io":{"t":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_EA_REASON_LABEL","in":{"args":{},"io":{}},"fc":true,"tag":"fail-closed: no t script"}
+{"func":"_EA_HEADER","in":{"args":{},"io":{"t":["Header","Question","Command"]}}}
+{"func":"_EA_HEADER","in":{"args":{},"io":{"t":"X"}}}
+{"func":"_EA_HEADER","in":{"args":{},"io":{"t":["A","B","C"]}}}
+{"func":"_EA_HEADER","in":{"args":{},"io":{"t":["é","ü","ñ"]}}}
+{"func":"_EA_HEADER","in":{"args":{},"io":{"t":["a",{"__script__":true,"raise":{"type":"TypeError","message":"second"}},"c"]}}}
+{"func":"_EA_HEADER","in":{"args":{},"io":{}},"fc":true,"tag":"fail-closed: no t script"}
+{"func":"_EA_SMART_DENY_LINE","in":{"args":{},"io":{"t":"Do not: allow"}}}
+{"func":"_EA_SMART_DENY_LINE","in":{"args":{},"io":{"t":"no colon here"}}}
+{"func":"_EA_SMART_DENY_LINE","in":{"args":{},"io":{"t":"a:b:c"}}}
+{"func":"_EA_SMART_DENY_LINE","in":{"args":{},"io":{"t":""}}}
+{"func":"_EA_SMART_DENY_LINE","in":{"args":{},"io":{"t":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_EA_SMART_DENY_LINE","in":{"args":{},"io":{}},"fc":true,"tag":"fail-closed: no t script"}
+{"func":"_discord_channel_ids_allowed","in":{"args":{"channel_ids":[]},"io":{}}}
+{"func":"_discord_channel_ids_allowed","in":{"args":{"channel_ids":["1"]},"io":{"_get_allowed_channels":{"__script__":true,"ret":["1"]}}}}
+{"func":"_discord_channel_ids_allowed","in":{"args":{"channel_ids":["1","2"]},"io":{"_get_allowed_channels":{"__script__":true,"ret":["9"]}}}}
+{"func":"_discord_channel_ids_allowed","in":{"args":{"channel_ids":["1"]},"io":{"_get_allowed_channels":{"__script__":true,"ret":["*"]}}}}
+{"func":"_discord_channel_ids_allowed","in":{"args":{"channel_ids":["1"]},"io":{"_get_allowed_channels":{"__script__":true,"ret":[]}}}}
+{"func":"_discord_channel_ids_allowed","in":{"args":{"channel_ids":["5"]},"io":{}},"fc":true,"tag":"fail-closed: no channels script"}
+{"func":"_discord_channel_ids_allowed","in":{"args":{"channel_ids":["5"]},"io":{"_get_allowed_channels":{"__script__":true,"raise":{"type":"ValueError","message":"boom"}}}}}
+{"func":"_is_pairing_approved_user","in":{"args":{"user_id":""},"io":{}}}
+{"func":"_is_pairing_approved_user","in":{"args":{"user_id":null},"io":{}}}
+{"func":"_is_pairing_approved_user","in":{"args":{"user_id":" 42 "},"io":{"PairingStore.is_approved":true}}}
+{"func":"_is_pairing_approved_user","in":{"args":{"user_id":"abc"},"io":{"PairingStore.is_approved":false}}}
+{"func":"_is_pairing_approved_user","in":{"args":{"user_id":"5"},"io":{"PairingStore.is_approved":{"__script__":true,"raise":{"type":"ValueError","message":"bad"}}}}}
+{"func":"_is_pairing_approved_user","in":{"args":{"user_id":"5"},"io":{"PairingStore.is_approved":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}}}
+{"func":"_is_pairing_approved_user","in":{"args":{"user_id":"5"},"io":{}},"tag":"missing script caught by except Exception -> False"}
+{"func":"_missed_message_backfill_enabled","in":{"args":{},"io":{"_scoped_gate_env":"true"},"state":{"config_extra":{"missed_message_backfill":{"enabled":true}}}}}
+{"func":"_missed_message_backfill_enabled","in":{"args":{},"io":{},"state":{"config_extra":{"missed_message_backfill":{"enabled":"YES"}}}}}
+{"func":"_missed_message_backfill_enabled","in":{"args":{},"io":{},"state":{"config_extra":{"missed_message_backfill":{"enabled":"no"}}}}}
+{"func":"_missed_message_backfill_enabled","in":{"args":{},"io":{},"state":{"config_extra":{"missed_message_backfill":{"enabled":0}}}}}
+{"func":"_missed_message_backfill_enabled","in":{"args":{},"io":{"_scoped_gate_env":"true"},"state":{"config_extra":{}}}}
+{"func":"_missed_message_backfill_enabled","in":{"args":{},"io":{"_scoped_gate_env":"false"},"state":{"config_extra":{}}}}
+{"func":"_missed_message_backfill_enabled","in":{"args":{},"io":{},"state":{"config_extra":{}}},"fc":true,"tag":"fail-closed: no gate script"}
+{"func":"_missed_message_backfill_enabled","in":{"args":{},"io":{"_scoped_gate_env":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}},"state":{"config_extra":{}}}}
+{"func":"_get_effective_topic","in":{"args":{"channel":{"topic":"t"},"is_thread":false},"io":{}}}
+{"func":"_get_effective_topic","in":{"args":{"channel":{"topic":""},"is_thread":false},"io":{}}}
+{"func":"_get_effective_topic","in":{"args":{"channel":{"topic":null,"parent":{"topic":"p"}},"is_thread":true},"io":{"_is_forum_parent":true}}}
+{"func":"_get_effective_topic","in":{"args":{"channel":{"topic":null,"parent":{"topic":"p"}},"is_thread":true},"io":{"_is_forum_parent":false}}}
+{"func":"_get_effective_topic","in":{"args":{"channel":{"topic":null,"parent":{}},"is_thread":true},"io":{"_is_forum_parent":true}}}
+{"func":"_get_effective_topic","in":{"args":{"channel":{"topic":null},"is_thread":true},"io":{}}}
+{"func":"_get_effective_topic","in":{"args":{"channel":{"topic":null,"parent":{"topic":"p"}},"is_thread":true},"io":{}},"fc":true,"tag":"fail-closed: no forum-parent script"}
+{"func":"_get_effective_topic","in":{"args":{"channel":{"topic":null,"parent":{"topic":"p"}},"is_thread":true},"io":{"_is_forum_parent":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_approval_mention_content","in":{"args":{},"io":{"_extra_or_env_flag":false},"state":{"_allowed_user_ids":["1","2"]}}}
+{"func":"_approval_mention_content","in":{"args":{},"io":{"_extra_or_env_flag":true},"state":{"_allowed_user_ids":["1","2"]}}}
+{"func":"_approval_mention_content","in":{"args":{},"io":{"_extra_or_env_flag":true},"state":{"_allowed_user_ids":["05","3","10"]}}}
+{"func":"_approval_mention_content","in":{"args":{},"io":{"_extra_or_env_flag":true},"state":{"_allowed_user_ids":["abc","1"]}}}
+{"func":"_approval_mention_content","in":{"args":{},"io":{"_extra_or_env_flag":true},"state":{"_allowed_user_ids":[]}}}
+{"func":"_approval_mention_content","in":{"args":{},"io":{"_extra_or_env_flag":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_approval_mention_content","in":{"args":{},"io":{},"state":{"_allowed_user_ids":["1"]}},"fc":true,"tag":"fail-closed: no flag script"}
+{"func":"_missed_message_backfill_number","in":{"args":{"key":"k","env_key":"ENV_K","cast":"int","default":5,"lo":1,"hi":10},"io":{},"state":{"config_extra":{"missed_message_backfill":{"k":"3"}}}}}
+{"func":"_missed_message_backfill_number","in":{"args":{"key":"k","env_key":"ENV_K","cast":"int","default":5,"lo":1,"hi":10},"io":{},"state":{"config_extra":{"missed_message_backfill":{"k":"bad"}}}}}
+{"func":"_missed_message_backfill_number","in":{"args":{"key":"k","env_key":"ENV_K","cast":"int","default":5,"lo":1,"hi":10},"io":{"_scoped_gate_env":"20"},"state":{"config_extra":{}}}}
+{"func":"_missed_message_backfill_number","in":{"args":{"key":"k","env_key":"ENV_K","cast":"int","default":5,"lo":1,"hi":10},"io":{"_scoped_gate_env":"0"},"state":{"config_extra":{}}}}
+{"func":"_missed_message_backfill_number","in":{"args":{"key":"k","env_key":"ENV_K","cast":"int","default":5,"lo":1,"hi":10},"io":{"_scoped_gate_env":"bad"},"state":{"config_extra":{}}}}
+{"func":"_missed_message_backfill_number","in":{"args":{"key":"k","env_key":"ENV_K","cast":"float","default":5,"lo":0,"hi":null},"io":{"_scoped_gate_env":"3.7"},"state":{"config_extra":{}}}}
+{"func":"_missed_message_backfill_number","in":{"args":{"key":"k","env_key":"ENV_K","cast":"int","default":5,"lo":1,"hi":10},"io":{},"state":{"config_extra":{}}},"fc":true,"tag":"fail-closed: no gate script"}
+{"func":"_missed_message_backfill_number","in":{"args":{"key":"k","env_key":"ENV_K","cast":"int","default":5,"lo":1,"hi":10},"io":{"_scoped_gate_env":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}},"state":{"config_extra":{}}}}
+{"func":"_missed_message_backfill_limit","in":{"args":{},"io":{"_missed_message_backfill_number":{"r":1}}}}
+{"func":"_missed_message_backfill_limit","in":{"args":{},"io":{"_missed_message_backfill_number":50}}}
+{"func":"_missed_message_backfill_limit","in":{"args":{},"io":{"_missed_message_backfill_number":null}}}
+{"func":"_missed_message_backfill_limit","in":{"args":{},"io":{"_missed_message_backfill_number":"x"}}}
+{"func":"_missed_message_backfill_limit","in":{"args":{},"io":{"_missed_message_backfill_number":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_missed_message_backfill_limit","in":{"args":{},"io":{}},"fc":true,"tag":"fail-closed: no number script"}
+{"func":"_missed_message_backfill_window_seconds","in":{"args":{},"io":{"_missed_message_backfill_number":{"r":1}}}}
+{"func":"_missed_message_backfill_window_seconds","in":{"args":{},"io":{"_missed_message_backfill_number":50}}}
+{"func":"_missed_message_backfill_window_seconds","in":{"args":{},"io":{"_missed_message_backfill_number":null}}}
+{"func":"_missed_message_backfill_window_seconds","in":{"args":{},"io":{"_missed_message_backfill_number":"x"}}}
+{"func":"_missed_message_backfill_window_seconds","in":{"args":{},"io":{"_missed_message_backfill_number":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_missed_message_backfill_window_seconds","in":{"args":{},"io":{}},"fc":true,"tag":"fail-closed: no number script"}
+{"func":"_missed_message_backfill_max_dispatches","in":{"args":{},"io":{"_missed_message_backfill_number":{"r":1}}}}
+{"func":"_missed_message_backfill_max_dispatches","in":{"args":{},"io":{"_missed_message_backfill_number":50}}}
+{"func":"_missed_message_backfill_max_dispatches","in":{"args":{},"io":{"_missed_message_backfill_number":null}}}
+{"func":"_missed_message_backfill_max_dispatches","in":{"args":{},"io":{"_missed_message_backfill_number":"x"}}}
+{"func":"_missed_message_backfill_max_dispatches","in":{"args":{},"io":{"_missed_message_backfill_number":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_missed_message_backfill_max_dispatches","in":{"args":{},"io":{}},"fc":true,"tag":"fail-closed: no number script"}
+{"func":"_missed_message_backfill_max_attempts","in":{"args":{},"io":{"_missed_message_backfill_number":{"r":1}}}}
+{"func":"_missed_message_backfill_max_attempts","in":{"args":{},"io":{"_missed_message_backfill_number":50}}}
+{"func":"_missed_message_backfill_max_attempts","in":{"args":{},"io":{"_missed_message_backfill_number":null}}}
+{"func":"_missed_message_backfill_max_attempts","in":{"args":{},"io":{"_missed_message_backfill_number":"x"}}}
+{"func":"_missed_message_backfill_max_attempts","in":{"args":{},"io":{"_missed_message_backfill_number":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}}}
+{"func":"_missed_message_backfill_max_attempts","in":{"args":{},"io":{}},"fc":true,"tag":"fail-closed: no number script"}
