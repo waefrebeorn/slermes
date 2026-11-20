@@ -1,0 +1,74 @@
+{"func": "_DropTransport.write", "in": {"obj": {"x": 1}}}
+{"func": "_DropTransport.write", "in": {"obj": {"x": 1}}}
+{"func": "_DropTransport.write", "in": {"obj": {"x": 1}}}
+{"func": "_DropTransport.write", "in": {"obj": {"x": 1}}}
+{"func": "_DropTransport.write", "in": {"obj": {"x": 1}}}
+{"func": "_DropTransport.write", "in": {"obj": {"x": 1}}}
+{"func": "_DropTransport.close", "in": {}}
+{"func": "_DropTransport.close", "in": {}}
+{"func": "_DropTransport.close", "in": {}}
+{"func": "_DropTransport.close", "in": {}}
+{"func": "_DropTransport.close", "in": {}}
+{"func": "_DropTransport.close", "in": {}}
+{"func": "_enable_gateway_prompts", "in": {}}
+{"func": "_enable_gateway_prompts", "in": {}}
+{"func": "_enable_gateway_prompts", "in": {}}
+{"func": "_enable_gateway_prompts", "in": {}}
+{"func": "_enable_gateway_prompts", "in": {}}
+{"func": "_enable_gateway_prompts", "in": {}}
+{"func": "_clear_pending", "in": {"sid": null, "io": {"cancel": null}}}
+{"func": "_clear_pending", "in": {"sid": "s1", "io": {"cancel": null}}}
+{"func": "_clear_pending", "in": {"sid": null, "io": {"cancel": null}}}
+{"func": "_clear_pending", "in": {"sid": "s1", "io": {"cancel": null}}}
+{"func": "_clear_pending", "in": {"sid": null, "io": {"cancel": null}}}
+{"func": "_clear_pending", "in": {"sid": "s1", "io": {"cancel": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "register_method", "in": {"name": "m0", "fn": {"__fn__": "h0"}}}
+{"func": "register_method", "in": {"name": "m1", "fn": {"__fn__": "h1"}}}
+{"func": "register_method", "in": {"name": "m2", "fn": {"__fn__": "h2"}}}
+{"func": "register_method", "in": {"name": "m3", "fn": {"__fn__": "h3"}}}
+{"func": "register_method", "in": {"name": "m4", "fn": {"__fn__": "h4"}}}
+{"func": "register_method", "in": {"name": "m5", "fn": {"__fn__": "h5"}}}
+{"func": "register_live_transport", "in": {"transport": "a", "io": {}}}
+{"func": "register_live_transport", "in": {"transport": "b", "io": {}}}
+{"func": "register_live_transport", "in": {"transport": "c", "io": {}}}
+{"func": "register_live_transport", "in": {"transport": "d", "io": {}}}
+{"func": "register_live_transport", "in": {"transport": "e", "io": {}}}
+{"func": "register_live_transport", "in": {"transport": "f", "io": {}}}
+{"func": "register_live_transport", "in": {"transport": null}}
+{"func": "unregister_live_transport", "in": {"transport": "a", "io": {"forget": null}}}
+{"func": "unregister_live_transport", "in": {"transport": "b", "io": {"forget": null}}}
+{"func": "unregister_live_transport", "in": {"transport": "c", "io": {"forget": null}}}
+{"func": "unregister_live_transport", "in": {"transport": "d", "io": {"forget": null}}}
+{"func": "unregister_live_transport", "in": {"transport": "e", "io": {"forget": null}}}
+{"func": "unregister_live_transport", "in": {"transport": "f", "io": {"forget": {"__raise__": "RuntimeError", "message": "x"}}}}
+{"func": "_tool_ctx", "in": {"name": "shell", "args": {"path": "/x"}, "io": {"build_tool_preview": "preview-shell"}}}
+{"func": "_tool_ctx", "in": {"name": "read", "args": {"path": "/x"}, "io": {"build_tool_preview": "preview-read"}}}
+{"func": "_tool_ctx", "in": {"name": "write", "args": {"path": "/x"}, "io": {"build_tool_preview": "preview-write"}}}
+{"func": "_tool_ctx", "in": {"name": "grep", "args": {"path": "/x"}, "io": {"build_tool_preview": "preview-grep"}}}
+{"func": "_tool_ctx", "in": {"name": "view", "args": {"path": "/x"}, "io": {"build_tool_preview": "preview-view"}}}
+{"func": "_tool_ctx", "in": {"name": "edit", "args": {"path": "/x"}, "io": {"build_tool_preview": "preview-edit"}}}
+{"func": "_tool_ctx", "in": {"name": "x", "args": {}, "io": {"build_tool_preview": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "_probe_credentials", "in": {"agent": {"api_key": "", "provider": "openai"}}}
+{"func": "_probe_credentials", "in": {"agent": {"api_key": "k1", "provider": "openai"}}}
+{"func": "_probe_credentials", "in": {"agent": {"api_key": "k2", "provider": "openai"}}}
+{"func": "_probe_credentials", "in": {"agent": {"api_key": "k3", "provider": "openai"}}}
+{"func": "_probe_credentials", "in": {"agent": {"api_key": "k4", "provider": "openai"}}}
+{"func": "_probe_credentials", "in": {"agent": {"api_key": "k5", "provider": "openai"}}}
+{"func": "_probe_config_health", "in": {"cfg": {}, "io": {"available_personalities": ["default", "none"]}}}
+{"func": "_probe_config_health", "in": {"cfg": {"a": null}, "io": {"available_personalities": ["default", "none"]}}}
+{"func": "_probe_config_health", "in": {"cfg": {"b": null, "a": null}, "io": {"available_personalities": ["default", "none"]}}}
+{"func": "_probe_config_health", "in": {"cfg": {"display": {"personality": "weird"}}, "io": {"available_personalities": ["default", "none"]}}}
+{"func": "_probe_config_health", "in": {"cfg": {"display": {"personality": " DEFAULT "}}, "io": {"available_personalities": ["default", "none"]}}}
+{"func": "_probe_config_health", "in": {"cfg": "not-a-dict", "io": {"available_personalities": ["default", "none"]}}}
+{"func": "_approval_request_payload", "in": {"data": {}, "io": {"redact_approval": "[redacted]"}}}
+{"func": "_approval_request_payload", "in": {"data": {"smart_denied": true}, "io": {"redact_approval": "[redacted]"}}}
+{"func": "_approval_request_payload", "in": {"data": {"allow_session": false}, "io": {"redact_approval": "[redacted]"}}}
+{"func": "_approval_request_payload", "in": {"data": {"allow_permanent": false}, "io": {"redact_approval": "[redacted]"}}}
+{"func": "_approval_request_payload", "in": {"data": {"choices": ["once"]}, "io": {"redact_approval": "[redacted]"}}}
+{"func": "_approval_request_payload", "in": {"data": {"command": "secret", "description": "vault"}, "io": {"redact_approval": "[redacted]"}}}
+{"func": "_open_requests", "in": {"sid": "s1", "state": {"sessions": {"s1": {"session_key": "s1", "token": "s1"}}}, "io": {"open_requests": []}}}
+{"func": "_open_requests", "in": {"sid": "s1", "state": {"sessions": {"s1": {"session_key": "s1", "token": "s1"}}}, "io": {"open_requests": [{"id": "r"}]}}}
+{"func": "_open_requests", "in": {"sid": "s1", "state": {"sessions": {"s1": {"session_key": "s1", "token": "s1"}}}, "io": {"open_requests": []}}}
+{"func": "_open_requests", "in": {"sid": "s1", "state": {"sessions": {"s1": {"session_key": "s1", "token": "s1"}}}, "io": {"open_requests": [{"id": "r"}]}}}
+{"func": "_open_requests", "in": {"sid": "s1", "state": {"sessions": {"s1": {"session_key": "s1", "token": "s1"}}}, "io": {"open_requests": []}}}
+{"func": "_open_requests", "in": {"sid": "s1", "state": {"sessions": {"s1": {"session_key": "s1", "token": "s1"}}}, "io": {"open_requests": {"__raise__": "RuntimeError", "message": "x"}}}}
