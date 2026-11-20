@@ -1,0 +1,82 @@
+{"func": "_effective_input_window", "in": {"context_length": 100000, "max_tokens": 2000}}
+{"func": "_effective_input_window", "in": {"context_length": 100000, "max_tokens": null}}
+{"func": "_effective_input_window", "in": {"context_length": 1000, "max_tokens": 2000}}
+{"func": "_effective_input_window", "in": {"context_length": 100000, "max_tokens": 0}}
+{"func": "_effective_input_window", "in": {"context_length": 500, "max_tokens": -100}}
+{"func": "_effective_input_window", "in": {"context_length": 100, "max_tokens": 100}}
+{"func": "_effective_input_window", "in": {"context_length": 0, "max_tokens": 0}}
+{"func": "_model_threshold_key_rank", "in": {"key": "astra", "model": "gpt-astra-x", "provider": "codex"}}
+{"func": "_model_threshold_key_rank", "in": {"key": "codex:astra", "model": "astra-1", "provider": "codex"}}
+{"func": "_model_threshold_key_rank", "in": {"key": "codex:astra", "model": "astra-1", "provider": "openrouter"}}
+{"func": "_model_threshold_key_rank", "in": {"key": "astra", "model": "no-match", "provider": "codex"}}
+{"func": "_model_threshold_key_rank", "in": {"key": "", "model": "anything", "provider": "codex"}}
+{"func": "_model_threshold_key_rank", "in": {"key": "codex:big", "model": "big-model", "provider": "CODEX"}}
+{"func": "_model_threshold_key_rank", "in": {"key": "codex:a:b", "model": "has a:b here", "provider": "codex"}}
+{"func": "_is_text_only_content", "in": {"content": "hello"}}
+{"func": "_is_text_only_content", "in": {"content": []}}
+{"func": "_is_text_only_content", "in": {"content": ["a", "b"]}}
+{"func": "_is_text_only_content", "in": {"content": [{"type": "text", "text": "x"}]}}
+{"func": "_is_text_only_content", "in": {"content": [{"type": "image_url"}]}}
+{"func": "_is_text_only_content", "in": {"content": [{"type": "text", "text": 5}]}}
+{"func": "_is_text_only_content", "in": {"content": 42}}
+{"func": "_is_text_only_content", "in": {"content": [{"type": "input_text", "text": "y"}]}}
+{"func": "_is_clarify_non_response", "in": {"item": "The user cancelled. Use your best judgement to proceed."}}
+{"func": "_is_clarify_non_response", "in": {"item": "   The user did not provide a response because X"}}
+{"func": "_is_clarify_non_response", "in": {"item": 123}}
+{"func": "_is_clarify_non_response", "in": {"item": "  a real answer  ", "io": {"_clarify_headless_fullmatch": false}}}
+{"func": "_is_clarify_non_response", "in": {"item": "headless answer", "io": {"_clarify_headless_fullmatch": true}}}
+{"func": "_is_clarify_non_response", "in": {"item": "  [oneshot mode: no user available. done]  "}}
+{"func": "_is_clarify_non_response", "in": {"item": "", "io": {"_clarify_headless_fullmatch": false}}}
+{"func": "_is_clarify_non_response", "in": {"item": "normal", "io": {"_clarify_headless_fullmatch": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_restated_request_text", "in": {"content": "any", "io": {"_content_text_for_contains": "  hello world  "}}}
+{"func": "_restated_request_text", "in": {"content": "any", "io": {"_content_text_for_contains": "[STILL IN PROGRESS — this is the active request, restated after the compaction boundary because it was not finished yet. Continue it; do not start over.]\n do it now  "}}}
+{"func": "_restated_request_text", "in": {"content": "any", "io": {"_content_text_for_contains": "[STILL IN PROGRESS — this is the active request, restated after the compaction boundary because it was not finished yet. Continue it; do not start over.] first [STILL IN PROGRESS — this is the active request, restated after the compaction boundary because it was not finished yet. Continue it; do not start over.]  final task  "}}}
+{"func": "_restated_request_text", "in": {"content": "any", "io": {"_content_text_for_contains": "   "}}}
+{"func": "_restated_request_text", "in": {"content": "any", "io": {"_content_text_for_contains": "x[STILL IN PROGRESS — this is the active request, restated after the compaction boundary because it was not finished yet. Continue it; do not start over.]"}}}
+{"func": "_restated_request_text", "in": {"content": "any", "io": {"_content_text_for_contains": {"__raise__": "KeyboardInterrupt", "message": "stop"}}}}
+{"func": "_authored_request_text", "in": {"content": "x", "io": {"_content_text_for_contains": " task text ", "_gateway_reply_pointer_sub": " task text "}}}
+{"func": "_authored_request_text", "in": {"content": "x", "io": {"_content_text_for_contains": "[STILL IN PROGRESS — this is the active request, restated after the compaction boundary because it was not finished yet. Continue it; do not start over.]  do thing  ", "_gateway_reply_pointer_sub": "real task  "}}}
+{"func": "_authored_request_text", "in": {"content": "x", "io": {"_content_text_for_contains": "[Replying to: \"old\"]\n\nnew ask  ", "_gateway_reply_pointer_sub": "new ask  "}}}
+{"func": "_authored_request_text", "in": {"content": "x", "io": {"_content_text_for_contains": "   ", "_gateway_reply_pointer_sub": ""}}}
+{"func": "_authored_request_text", "in": {"content": "x", "io": {"_content_text_for_contains": "plain", "_gateway_reply_pointer_sub": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "_pending_tool_round", "in": {"messages": []}}
+{"func": "_pending_tool_round", "in": {"messages": [{"role": "user"}, {"role": "assistant"}]}}
+{"func": "_pending_tool_round", "in": {"messages": [{"role": "user"}, {"role": "assistant"}, {"role": "tool"}, {"role": "tool"}]}}
+{"func": "_pending_tool_round", "in": {"messages": [{"role": "user"}, {"role": "assistant"}, {"role": "tool"}, {"display_kind": "steer"}]}}
+{"func": "_pending_tool_round", "in": {"messages": [{"role": "user"}, {"role": "assistant"}, {"role": "tool"}, {"display_kind": "steer"}, {"display_kind": "steer"}]}}
+{"func": "_pending_tool_round", "in": {"messages": [{"role": "user"}, {"role": "tool", "display_kind": "steer"}, {"role": "tool"}]}}
+{"func": "_pending_tool_round", "in": {"messages": [{"role": "tool"}, {"role": "tool"}, {"role": "user"}]}}
+{"func": "_image_payload", "in": {"msg": {"content": "plain"}}}
+{"func": "_image_payload", "in": {"msg": {"content": {"_multimodal": true, "content": []}}, "io": {"_tool_result_parts": []}}}
+{"func": "_image_payload", "in": {"msg": {"content": "m"}, "io": {"_tool_result_parts": [{"type": "image_url", "image_url": {"url": "data:image/png;base64,AAAA"}}, {"type": "text", "text": "hi"}], "_is_image_part": [true, false]}}}
+{"func": "_image_payload", "in": {"msg": {"content": "m"}, "io": {"_tool_result_parts": [{"type": "input_image", "source": {"data": "BASE64DATA"}}, {"type": "image", "image_url": "https://x.io/img.png"}], "_is_image_part": [true, true]}}}
+{"func": "_image_payload", "in": {"msg": {"content": "m"}, "io": {"_tool_result_parts": [{"type": "image_url"}, {"type": "image"}], "_is_image_part": [true, true]}}}
+{"func": "_image_payload", "in": {"msg": {"content": "m"}, "io": {"_tool_result_parts": [{"type": "text"}], "_is_image_part": {"__raise__": "FileNotFoundError", "message": "missing"}}}}
+{"func": "_sum_skill_view", "in": {"name": "skill-a", "args": {"name": "skill-a"}, "content": "ok", "content_len": 100, "line_count": 1, "io": {"_result_failure_suffix": "", "_skill_view_failed": false, "_is_summary_stub": false, "_skill_pruned_marker": "[SKILL_PRUNED: skill-a] lost"}}}
+{"func": "_sum_skill_view", "in": {"name": "anon", "args": {}, "content": "ok", "content_len": 5, "line_count": 1, "io": {"_result_failure_suffix": "", "_skill_view_failed": false, "_is_summary_stub": false}}}
+{"func": "_sum_skill_view", "in": {"name": "fail", "args": {"name": "fail"}, "content": "bad", "content_len": 10, "line_count": 1, "io": {"_result_failure_suffix": " FAILED: boom", "_is_summary_stub": false}}}
+{"func": "_sum_skill_view", "in": {"name": "stub", "args": {"name": "stub"}, "content": "stub", "content_len": 7, "line_count": 1, "io": {"_result_failure_suffix": "", "_skill_view_failed": true, "_is_summary_stub": false}}}
+{"func": "_sum_skill_view", "in": {"name": "stub2", "args": {"name": "stub2"}, "content": "[SKILL_PRUNED: stub2]  (9 chars)", "content_len": 9, "line_count": 1, "io": {"_result_failure_suffix": "", "_skill_view_failed": false, "_is_summary_stub": true, "_skill_pruned_marker": "[SKILL_PRUNED: stub2] lost"}}}
+{"func": "_sum_skill_view", "in": {"name": "num", "args": {"name": 7}, "content": "ok", "content_len": 9, "line_count": 1, "io": {"_result_failure_suffix": "", "_skill_view_failed": false, "_is_summary_stub": false, "_skill_pruned_marker": "[SKILL_PRUNED: 7] lost"}}}
+{"func": "_sum_skill_view", "in": {"name": "exc", "args": {"name": "exc"}, "content": "x", "content_len": 1, "line_count": 1, "io": {"_result_failure_suffix": {"__raise__": "ModuleNotFoundError", "message": "no module"}}}}
+{"func": "_collect_paths_from_jsonish", "in": {"obj": {"path": "/a/b.txt", "nested": {"workdir": " /repo ", "x": [1, "see /tmp/x.py"]}}, "relevant_files": [], "io": {"_path_mention_findall": {"__script__": true, "ret": []}}}}
+{"func": "_collect_paths_from_jsonish", "in": {"obj": {"other": "/no", "file_path": "/yes.py"}, "relevant_files": [], "io": {"_path_mention_findall": {"__script__": true, "ret": []}}}}
+{"func": "_collect_paths_from_jsonish", "in": {"obj": [" /one.py ", {"output_path": "/two.py"}], "relevant_files": ["/seed.py"], "io": {"_path_mention_findall": {"__script__": true, "ret": []}}}}
+{"func": "_collect_paths_from_jsonish", "in": {"obj": "look at /docs/readme.md and ~/.ssh/id_rsa", "relevant_files": [], "io": {"_path_mention_findall": {"__script__": true, "ret": ["/docs/readme.md.", "~/.ssh/id_rsa"]}}}}
+{"func": "_collect_paths_from_jsonish", "in": {"obj": {"path": "/dup.py"}, "relevant_files": ["/dup.py"], "io": {"_path_mention_findall": {"__script__": true, "ret": []}}}}
+{"func": "_collect_paths_from_jsonish", "in": {"obj": {"path": "/p"}, "relevant_files": [], "io": {"_path_mention_findall": {"__raise__": "PermissionError", "message": "denied"}}}}
+{"func": "_sum_clarify", "in": {"name": "clarify", "args": {}, "content": "{\"responses\":[{\"status\":\"answered\",\"user_response\":\"yes\"}]}", "content_len": 40, "line_count": 1, "io": {"_json_dict": {"responses": [{"status": "answered", "user_response": "yes"}]}, "_json_dumps": "\"yes\"", "_elide": "[clarify] user responded: \"yes\""}}}
+{"func": "_sum_clarify", "in": {"name": "clarify", "args": {}, "content": "{\"responses\":[{\"status\":\"answered\",\"user_response\":\"a\"},{\"status\":\"answered\",\"user_response\":\"b\"}]}", "content_len": 80, "line_count": 1, "io": {"_json_dict": {"responses": [{"status": "answered", "user_response": "a"}, {"status": "answered", "user_response": "b"}]}, "_json_dumps": "[\"a\", \"b\"]", "_elide": "[clarify] user responded: [\"a\", \"b\"]"}}}
+{"func": "_sum_clarify", "in": {"name": "clarify", "args": {}, "content": "{\"user_response\":\"legacy\"}", "content_len": 20, "line_count": 1, "io": {"_json_dict": {"user_response": "legacy"}, "_filter_legacy_clarify_answers": ["legacy"], "_json_dumps": "\"legacy\"", "_elide": "[clarify] user responded: \"legacy\""}}}
+{"func": "_sum_clarify", "in": {"name": "clarify", "args": {}, "content": "{\"responses\":[]}", "content_len": 2, "line_count": 1, "io": {"_json_dict": {"responses": []}}}}
+{"func": "_sum_clarify", "in": {"name": "clarify", "args": {}, "content": "{}", "content_len": 0, "line_count": 0, "io": {"_json_dict": {}}}}
+{"func": "_sum_clarify", "in": {"name": "clarify", "args": {}, "content": "{\"responses\":[{\"status\":\"answered\",\"user_response\":123}]}", "content_len": 30, "line_count": 1, "io": {"_json_dict": {"responses": [{"status": "answered", "user_response": 123}]}, "_filter_legacy_clarify_answers": [123], "_elide": "[clarify] asked user a question"}}}
+{"func": "_sum_clarify", "in": {"name": "clarify", "args": {}, "content": "{\"responses\":[]}", "content_len": 2, "line_count": 1, "io": {"_json_dict": {"__raise__": "CancelledError", "message": "cancelled"}}}}
+{"func": "_effective_input_window", "in": {"context_length": 10, "max_tokens": 1, "io": {"_unused": {"__raise__": "GeneratorExit", "message": "gen"}}}}
+{"func": "_is_clarify_non_response", "in": {"item": "x", "io": {"_clarify_headless_fullmatch": {"__raise__": "CancelledError", "message": "cancelled"}}}}
+{"func": "_restated_request_text", "in": {"content": "x", "io": {"_content_text_for_contains": {"__raise__": "CancelledError", "message": "cancelled"}}}}
+{"func": "_image_payload", "in": {"msg": {"content": "m"}, "io": {"_tool_result_parts": {"__script__": true, "ret": [{"type": "image_url"}]}, "_is_image_part": {"__raise__": "ZeroDivisionError", "message": "div0"}}}}
+{"func": "_sum_skill_view", "in": {"name": "e", "args": {"name": "e"}, "content": "x", "content_len": 1, "line_count": 1, "io": {"_result_failure_suffix": "", "_skill_view_failed": {"__raise__": "PermissionError", "message": "denied"}}}}
+{"func": "_image_payload", "in": {"msg": {"content": "m"}, "io": {"_tool_result_parts": {"__raise__": "TimeoutError", "message": "timeout"}}}}
+{"func": "_sum_clarify", "in": {"name": "c", "args": {}, "content": "{}", "content_len": 0, "line_count": 0, "io": {"_json_dict": {}, "_filter_legacy_clarify_answers": {"__raise__": "RuntimeError", "message": "rt"}}}}
+{"func": "_sum_clarify", "in": {"name": "c", "args": {}, "content": "{}", "content_len": 0, "line_count": 0, "io": {"_json_dict": {}, "_filter_legacy_clarify_answers": ["ok"], "_json_dumps": "\"ok\"", "_elide": {"__raise__": "ValueError", "message": "elide bad"}}}}

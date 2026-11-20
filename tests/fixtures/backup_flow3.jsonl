@@ -1,0 +1,148 @@
+{"func": "is_non_regular_path", "in": {"path": "a.txt", "seams": {"lstat": {"mode": 33188}}}}
+{"func": "is_non_regular_path", "in": {"path": "dir", "seams": {"lstat": {"mode": 16877}}}}
+{"func": "is_non_regular_path", "in": {"path": "link", "seams": {"lstat": {"mode": 41471}}}}
+{"func": "is_non_regular_path", "in": {"path": "sock", "seams": {"lstat": {"mode": 49536}}}}
+{"func": "is_non_regular_path", "in": {"path": "gone", "seams": {"lstat": {"__raise__": "FileNotFoundError", "msg": "gone"}}}}
+{"func": "is_non_regular_path", "in": {"path": "odd", "seams": {"lstat": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "is_link_path", "in": {"path": "a.txt", "os_name_nt": false, "seams": {"lstat": {"mode": 33188}}}}
+{"func": "is_link_path", "in": {"path": "link", "os_name_nt": false, "seams": {"lstat": {"mode": 41471}}}}
+{"func": "is_link_path", "in": {"path": "junction", "os_name_nt": true, "seams": {"lstat": {"mode": 16877, "st_file_attributes": 1024}}}}
+{"func": "is_link_path", "in": {"path": "junction", "os_name_nt": false, "seams": {"lstat": {"mode": 16877, "st_file_attributes": 1024}}}}
+{"func": "is_link_path", "in": {"path": "gone", "os_name_nt": true, "seams": {"lstat": {"__raise__": "PermissionError", "msg": "no"}}}}
+{"func": "is_link_path", "in": {"path": "odd", "os_name_nt": true, "seams": {"lstat": {"__raise__": "RuntimeError", "msg": "r"}}}}
+{"func": "snapshot_db", "in": {"src": "s", "dst": "d", "seams": {"is_store_file": false, "safe_copy_db": true}}}
+{"func": "snapshot_db", "in": {"src": "s", "dst": "d", "seams": {"is_store_file": false, "safe_copy_db": false}}}
+{"func": "snapshot_db", "in": {"src": "s", "dst": "d", "seams": {"is_store_file": true, "open_store_admin": {"unsupported": false}, "admin_backup_to": true}}}
+{"func": "snapshot_db", "in": {"src": "s", "dst": "d", "seams": {"is_store_file": true, "open_store_admin": {"unsupported": false}, "admin_backup_to": false}}}
+{"func": "snapshot_db", "in": {"src": "s", "dst": "d", "seams": {"is_store_file": true, "open_store_admin": {"unsupported": true}}}}
+{"func": "snapshot_db", "in": {"src": "s", "dst": "d", "seams": {"is_store_file": {"__raise__": "OSError", "msg": "stat"}}}}
+{"func": "discard_failed_zip_members", "in": {"zf": "z", "filelist_len": 3, "seams": {"filelist_len": 3}}}
+{"func": "discard_failed_zip_members", "in": {"zf": "z", "filelist_len": 1, "entries": [{"name": "a.txt"}, {"name": "b.txt"}, {"name": "c.txt"}], "seams": {"filelist_len": 3, "header_offset": 4096, "fp_seek": null, "fp_truncate": null, "nametoinfo": null}}}
+{"func": "discard_failed_zip_members", "in": {"zf": "z", "filelist_len": 0, "entries": [{"name": "a.txt"}, {"name": "b.txt"}, {"name": "c.txt"}], "seams": {"filelist_len": {"__raise__": "OSError", "msg": "len"}}}}
+{"func": "discard_failed_zip_members", "in": {"zf": "z", "filelist_len": 1, "entries": [{"name": "a.txt"}, {"name": "b.txt"}, {"name": "c.txt"}], "seams": {"filelist_len": 3, "header_offset": {"__raise__": "ValueError", "msg": "off"}}}}
+{"func": "discard_failed_zip_members", "in": {"zf": "z", "filelist_len": 1, "entries": [{"name": "a.txt"}, {"name": "b.txt"}, {"name": "c.txt"}], "seams": {"filelist_len": 3, "header_offset": 7, "fp_seek": {"__raise__": "OSError", "msg": "seek"}}}}
+{"func": "discard_failed_zip_members", "in": {"zf": "z", "filelist_len": 1, "entries": [{"name": "a.txt"}, {"name": "b.txt"}, {"name": "c.txt"}], "seams": {"filelist_len": 3, "header_offset": 7, "fp_seek": null, "fp_truncate": null, "nametoinfo": {"__raise__": "RuntimeError", "msg": "nti"}}}}
+{"func": "zip_sqlite_snapshot", "in": {"abs_path": "/h/state.db", "rel_path": "state.db", "out_path": "/h/out.zip", "seams": {"staged_backup": "/tmp/s.db", "snapshot_db": true, "write_zip_file": null, "stat_size": 1234}}}
+{"func": "zip_sqlite_snapshot", "in": {"abs_path": "/h/state.db", "rel_path": "state.db", "out_path": "/h/out.zip", "seams": {"staged_backup": "/tmp/s.db", "snapshot_db": false, "warn_legacy": null}}}
+{"func": "zip_sqlite_snapshot", "in": {"abs_path": "/h/state.db", "rel_path": "state.db", "out_path": "/h/out.zip", "seams": {"staged_backup": {"__raise__": "OSError", "msg": "stage"}}}}
+{"func": "zip_sqlite_snapshot", "in": {"abs_path": "/h/state.db", "rel_path": "state.db", "out_path": "/h/out.zip", "seams": {"staged_backup": "/tmp/s.db", "snapshot_db": true, "write_zip_file": {"__raise__": "OSError", "msg": "write"}}}}
+{"func": "zip_sqlite_snapshot", "in": {"abs_path": "/h/state.db", "rel_path": "state.db", "out_path": "/h/out.zip", "seams": {"staged_backup": "/tmp/s.db", "snapshot_db": true, "write_zip_file": null, "stat_size": {"__raise__": "OSError", "msg": "stat"}}}}
+{"func": "zip_sqlite_snapshot", "in": {"abs_path": "/h/state.db", "rel_path": "state.db", "out_path": "/h/out.zip", "seams": {"staged_backup": "/tmp/s.db", "snapshot_db": {"__raise__": "ValueError", "msg": "snap"}}}}
+{"func": "write_zip_entries", "in": {"files": [["/h/a.txt", "a.txt"]], "track_bytes": false, "seams": {"warn_legacy": null, "write_zip_file": null}}}
+{"func": "write_zip_entries", "in": {"files": [["/h/a.txt", "a.txt"]], "track_bytes": true, "seams": {"warn_legacy": null, "write_zip_file": null, "stat_size": 50}}}
+{"func": "write_zip_entries", "in": {"files": [["/h/s.db", "s.db"]], "track_bytes": false, "seams": {"zip_sqlite_snapshot": 100}}}
+{"func": "write_zip_entries", "in": {"files": [["/h/s.db", "s.db"]], "track_bytes": false, "seams": {"zip_sqlite_snapshot": null, "db_failure": null}}}
+{"func": "write_zip_entries", "in": {"files": [["/h/s.db", "s.db"]], "track_bytes": false, "seams": {"zip_sqlite_snapshot": null, "db_failure": {"__raise__": "ValueError", "msg": "db fail"}, "on_error": null}}}
+{"func": "write_zip_entries", "in": {"files": [["/h/a.txt", "a.txt"]], "track_bytes": false, "seams": {"warn_legacy": null, "write_zip_file": {"__raise__": "OSError", "msg": "read fail"}, "on_error": null}}}
+{"func": "write_zip_entries", "in": {"files": [["/h/a.txt", "a.txt"], ["/h/s.db", "s.db"]], "track_bytes": true, "seams": {"warn_legacy": null, "write_zip_file": null, "stat_size": [10, null], "zip_sqlite_snapshot": 200}}}
+{"func": "resolve_backup_output_path", "in": {"output": "/h/x.zip", "suffix": ".zip", "default_name": "snap.zip", "seams": {"resolve_output": "/h/x.zip", "is_dir": false, "mkdir": null}}}
+{"func": "resolve_backup_output_path", "in": {"output": "/h/backups", "suffix": ".zip", "default_name": "snap.zip", "seams": {"resolve_output": "/h/backups", "is_dir": true, "mkdir": null}}}
+{"func": "resolve_backup_output_path", "in": {"output": "/h/x.tar", "suffix": ".tar", "default_name": "snap.zip", "seams": {"resolve_output": "/h/x.tar", "is_dir": false, "with_suffix": "/h/x.tar.zip", "mkdir": null}}}
+{"func": "resolve_backup_output_path", "in": {"output": "/no/x.zip", "suffix": ".zip", "default_name": "snap.zip", "seams": {"resolve_output": {"__raise__": "PermissionError", "msg": "denied"}, "print": null}}}
+{"func": "resolve_backup_output_path", "in": {"output": "/h/x.zip", "suffix": ".zip", "default_name": "snap.zip", "seams": {"resolve_output": "/h/x.zip", "is_dir": false, "mkdir": {"__raise__": "OSError", "msg": "mkdir fail"}, "print": null}}}
+{"func": "resolve_backup_output_path", "in": {"output": "/h/x.zip", "suffix": ".zip", "default_name": "snap.zip", "seams": {"resolve_output": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "collect_external_entries", "in": {"seams": {"home_resolve": "/h", "external_paths": [["/h/.honcho"]], "base_resolve": true, "iter_external_files": [["honcho/config.json"]], "fpath_resolve": "honcho/config.json"}}}
+{"func": "collect_external_entries", "in": {"seams": {"home_resolve": "/h", "external_paths": [["/outside"]], "base_resolve": {"__raise__": "ValueError", "msg": "outside"}}}}
+{"func": "collect_external_entries", "in": {"seams": {"home_resolve": "/h", "external_paths": [["/h/.honcho"]], "base_resolve": true, "iter_external_files": [["a", "b"]], "fpath_resolve": ["honcho/a", "honcho/b"]}}}
+{"func": "collect_external_entries", "in": {"seams": {"home_resolve": "/h", "external_paths": [["/h/.honcho"]], "base_resolve": true, "iter_external_files": [["a"]], "fpath_resolve": {"__raise__": "OSError", "msg": "skip"}}}}
+{"func": "collect_external_entries", "in": {"seams": {"home_resolve": "/h", "external_paths": {"__arr__": []}}}}
+{"func": "collect_external_entries", "in": {"seams": {"home_resolve": "/h", "external_paths": [["/h/.honcho"]], "base_resolve": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "run_import", "in": {"zipfile": "b.zip", "seams": {"require_file_tooling": null, "expanduser_resolve": "/h/b.zip", "is_file": false, "print": null}}}
+{"func": "run_import", "in": {"zipfile": "b.zip", "seams": {"require_file_tooling": null, "expanduser_resolve": "/h/b.zip", "is_file": true, "is_zipfile": false, "print": null}}}
+{"func": "run_import", "in": {"zipfile": "b.zip", "seams": {"require_file_tooling": null, "expanduser_resolve": "/h/b.zip", "is_file": true, "is_zipfile": true, "validate_zip": {"ok": false, "reason": "bad manifest"}, "print": null}}}
+{"func": "run_import", "in": {"zipfile": "b.zip", "seams": {"require_file_tooling": {"__raise__": "OSError", "msg": "no tool"}}}}
+{"func": "run_import", "in": {"zipfile": "b.zip", "seams": {"require_file_tooling": null, "expanduser_resolve": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "run_import", "in": {"zipfile": "b.zip", "seams": {"require_file_tooling": null, "expanduser_resolve": "/h/b.zip", "is_file": true, "is_zipfile": true, "validate_zip": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "import_members", "in": {"hermes_root": "/h", "members": [], "file_count": 0, "seams": {"resolve_root": "/h", "keep_host_homes": [], "import_members_exclusive": [1, 0, [], [], []]}}}
+{"func": "import_members", "in": {"hermes_root": "/h", "members": ["config.yaml"], "file_count": 1, "seams": {"resolve_root": "/h", "member_parts": ["config.yaml"], "keep_host_homes": [], "import_members_exclusive": [1, 0, [], [], []]}}}
+{"func": "import_members", "in": {"hermes_root": "/h", "members": ["a/b/c.txt"], "file_count": 1, "seams": {"resolve_root": "/h", "member_parts": ["a", "b", "c.txt"], "keep_host_homes": [], "import_members_exclusive": [1, 0, [], [], []]}}}
+{"func": "import_members", "in": {"hermes_root": "/h", "members": ["_external/x"], "file_count": 1, "seams": {"resolve_root": "/h", "keep_host_homes": [], "import_members_exclusive": [0, 1, [], [], []]}}}
+{"func": "import_members", "in": {"hermes_root": "/h", "members": ["config.yaml"], "file_count": 1, "keep_host": true, "seams": {"resolve_root": "/h", "member_parts": ["config.yaml"], "keep_host_homes": ["/h/p1"], "import_members_exclusive": [2, 0, [], [], []]}}}
+{"func": "import_members", "in": {"hermes_root": "/h", "members": ["config.yaml"], "file_count": 1, "seams": {"resolve_root": "/h", "member_parts": {"__raise__": "ValueError", "msg": "traversal"}}}}
+{"func": "import_external_member", "in": {"member": "_external/honcho/config.json", "home_dir": "/h", "secret": true, "seams": {"relative_to": true, "mkdir": null, "extract": null, "chmod": null}}}
+{"func": "import_external_member", "in": {"member": "_external/notes.txt", "home_dir": "/h", "secret": false, "seams": {"relative_to": true, "mkdir": null, "extract": null}}}
+{"func": "import_external_member", "in": {"member": "_external/../x", "home_dir": "/h", "secret": false, "seams": {"relative_to": {"__raise__": "ValueError", "msg": "traversal"}}}}
+{"func": "import_external_member", "in": {"member": "_external/a/b", "home_dir": "/h", "secret": false, "seams": {"relative_to": true, "mkdir": {"__raise__": "OSError", "msg": "denied"}}}}
+{"func": "import_external_member", "in": {"member": "_external/a/b", "home_dir": "/h", "secret": false, "seams": {"relative_to": true, "mkdir": null, "extract": {"__raise__": "OSError", "msg": "bad member"}}}}
+{"func": "import_external_member", "in": {"member": "_external/config.json", "home_dir": "/h", "secret": true, "seams": {"relative_to": true, "mkdir": null, "extract": null, "chmod": {"__raise__": "OSError", "msg": "chmod"}}}}
+{"func": "import_members_exclusive", "in": {"hermes_root": "/h", "members": [], "file_count": 0, "seams": {"home_resolve": "/h", "default_mode": 384}}}
+{"func": "import_members_exclusive", "in": {"hermes_root": "/h", "members": ["_external/a"], "file_count": 1, "seams": {"home_resolve": "/h", "default_mode": 384, "import_external_member": [[true, null]]}}}
+{"func": "import_members_exclusive", "in": {"hermes_root": "/h", "members": ["_external/a"], "file_count": 1, "seams": {"home_resolve": "/h", "default_mode": 384, "import_external_member": [[false, "err"]]}}}
+{"func": "import_members_exclusive", "in": {"hermes_root": "/h", "members": ["_external/a", "_external/b"], "file_count": 2, "seams": {"home_resolve": "/h", "default_mode": 384, "import_external_member": [[true, null], [true, null]]}}}
+{"func": "import_members_exclusive", "in": {"hermes_root": "/h", "members": [], "file_count": 0, "seams": {"home_resolve": {"__raise__": "OSError", "msg": "home"}}}}
+{"func": "revive_gateway_after_import", "in": {"hermes_root": "/h", "native_default": "/h", "seams": {"native_default": "/h", "service_running": true}}}
+{"func": "revive_gateway_after_import", "in": {"hermes_root": "/h", "native_default": "/h", "seams": {"native_default": "/h", "service_running": false, "print": null, "ensure_service": null}}}
+{"func": "revive_gateway_after_import", "in": {"hermes_root": "/sandbox", "native_default": "/h", "seams": {"native_default": "/h", "marker_exists": true, "print": null}}}
+{"func": "revive_gateway_after_import", "in": {"hermes_root": "/sandbox", "native_default": "/h", "seams": {"native_default": "/h", "marker_exists": false, "store_exists": false, "service_running": true}}}
+{"func": "revive_gateway_after_import", "in": {"hermes_root": "/h", "native_default": "/h", "seams": {"native_default": "/h", "service_running": {"__raise__": "RuntimeError", "msg": "boom"}, "logger_debug": null, "print": null}}}
+{"func": "revive_gateway_after_import", "in": {"hermes_root": "/h", "native_default": "/h", "seams": {"native_default": "/h", "service_running": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "newest_first", "in": {"root": "/h/backups", "entries_map": {"a.zip": {"keep": true}, "b.txt": {"keep": false}, "c.zip": {"keep": true}}, "seams": {"path_exists": true, "path_iterdir": {"__arr__": [{"name": "a.zip", "keep": true}, {"name": "b.txt", "keep": false}, {"name": "c.zip", "keep": true}]}}}}
+{"func": "newest_first", "in": {"root": "/h/backups", "entries_map": {}, "seams": {"path_exists": false}}}
+{"func": "newest_first", "in": {"root": "/h/backups", "entries_map": {}, "seams": {"path_exists": {"__raise__": "OSError", "msg": "exists"}}}}
+{"func": "newest_first", "in": {"root": "/h/backups", "entries_map": {}, "seams": {"path_exists": true, "path_iterdir": {"__raise__": "OSError", "msg": "iter"}}}}
+{"func": "newest_first", "in": {"root": "/h/backups", "entries_map": {"only": {"keep": true}}, "seams": {"path_exists": true, "path_iterdir": {"__arr__": [{"name": "only", "keep": true}]}}}}
+{"func": "prune_oldest", "in": {"names": ["c.zip", "b.zip", "a.zip"], "keep": 1, "what": "backup", "seams": {"unlink": null}}}
+{"func": "prune_oldest", "in": {"names": ["c.zip", "b.zip", "a.zip"], "keep": 0, "what": "backup", "seams": {"unlink": {"__raise__": "PermissionError", "msg": "locked"}, "logger_warning": null}}}
+{"func": "prune_oldest", "in": {"names": ["b.zip", "a.zip"], "keep": 1, "what": "backup", "seams": {}}}
+{"func": "prune_oldest", "in": {"names": ["b.zip", "a.zip"], "keep": 0, "what": "backup", "seams": {"unlink": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "prune_oldest", "in": {"names": [], "keep": 0, "what": "x", "seams": {}}}
+{"func": "create_prefixed_full_backup", "in": {"hermes_home": "/h", "prefix": "pre-", "keep": 2, "what": "update", "prune_what": "backup", "seams": {"is_dir": true, "mkdir": null, "chmod": null, "write_full_zip": "/h", "prune_prefixed": null}}}
+{"func": "create_prefixed_full_backup", "in": {"hermes_home": "/h", "prefix": "pre-", "keep": 2, "what": "update", "prune_what": "backup", "seams": {"is_dir": false}}}
+{"func": "create_prefixed_full_backup", "in": {"hermes_home": "/h", "prefix": "pre-", "keep": 2, "what": "update", "prune_what": "backup", "seams": {"is_dir": true, "mkdir": {"__raise__": "OSError", "msg": "no dir"}, "logger_warning": null}}}
+{"func": "create_prefixed_full_backup", "in": {"hermes_home": "/h", "prefix": "pre-", "keep": 2, "what": "update", "prune_what": "backup", "seams": {"is_dir": true, "mkdir": null, "chmod": null, "write_full_zip": null, "prune_incomplete": null}}}
+{"func": "create_prefixed_full_backup", "in": {"hermes_home": "/h", "prefix": "pre-", "keep": 2, "what": "update", "prune_what": "backup", "seams": {"is_dir": {"__raise__": "OSError", "msg": "dir"}}}}
+{"func": "too_large", "in": {"path": "/h/a", "rel_name": "a", "max_file_size": 100, "fmt_size": "50", "fmt_max": "100", "seams": {"stat_size": 50}}}
+{"func": "too_large", "in": {"path": "/h/a", "rel_name": "a", "max_file_size": 100, "fmt_size": "200", "fmt_max": "100", "seams": {"stat_size": 200, "print": null, "logger_warning": null}}}
+{"func": "too_large", "in": {"path": "/h/a", "rel_name": "a", "max_file_size": null, "seams": {}}}
+{"func": "too_large", "in": {"path": "/h/a", "rel_name": "a", "max_file_size": 100, "seams": {"stat_size": {"__raise__": "OSError", "msg": "no stat"}}}}
+{"func": "too_large", "in": {"path": "/h/a", "rel_name": "a", "max_file_size": 100, "seams": {"stat_size": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "too_large", "in": {"path": "/h/a", "rel_name": "a", "max_file_size": 100, "fmt_size": "200", "fmt_max": "100", "seams": {"stat_size": 200, "print": {"__raise__": "RuntimeError", "msg": "print"}}}}
+{"func": "is_trusted_root_auth_alias", "in": {"path": "/p/auth.json", "home": "/p", "seams": {"is_symlink": false}}}
+{"func": "is_trusted_root_auth_alias", "in": {"path": "/p/auth.json", "home": "/p", "seams": {"is_symlink": true, "get_default_root": "/root", "resolve_equal": true}}}
+{"func": "is_trusted_root_auth_alias", "in": {"path": "/p/auth.json", "home": "/p", "seams": {"is_symlink": true, "get_default_root": "/root", "resolve_equal": false, "resolve_equal_trusted": true}}}
+{"func": "is_trusted_root_auth_alias", "in": {"path": "/p/auth.json", "home": "/p", "seams": {"is_symlink": true, "get_default_root": "/root", "resolve_equal": false, "resolve_equal_trusted": false}}}
+{"func": "is_trusted_root_auth_alias", "in": {"path": "/p/auth.json", "home": "/p", "seams": {"is_symlink": true, "get_default_root": {"__raise__": "OSError", "msg": "root"}}}}
+{"func": "is_trusted_root_auth_alias", "in": {"path": "/p/auth.json", "home": "/p", "seams": {"is_symlink": true, "get_default_root": "/root", "resolve_equal": {"__raise__": "ValueError", "msg": "rel"}}}}
+{"func": "quick_snapshot_dir", "in": {"snapshot_id": "snap1", "hermes_home": "/h", "seams": {"snapshot_root": "ROOT", "relative_to": true, "is_dir": true, "manifest_exists": true}}}
+{"func": "quick_snapshot_dir", "in": {"snapshot_id": "snap1", "hermes_home": "/h", "seams": {"snapshot_root": "ROOT", "relative_to": true, "is_dir": false}}}
+{"func": "quick_snapshot_dir", "in": {"snapshot_id": "snap1", "hermes_home": "/h", "seams": {"snapshot_root": "ROOT", "relative_to": true, "is_dir": true, "manifest_exists": false}}}
+{"func": "quick_snapshot_dir", "in": {"snapshot_id": "../evil", "hermes_home": "/h", "seams": {"snapshot_root": "ROOT", "logger_error": null}}}
+{"func": "quick_snapshot_dir", "in": {"snapshot_id": "", "hermes_home": "/h", "seams": {"snapshot_root": "ROOT", "logger_error": null}}}
+{"func": "quick_snapshot_dir", "in": {"snapshot_id": "snap1", "hermes_home": "/h", "seams": {"snapshot_root": "ROOT", "relative_to": {"__raise__": "ValueError", "msg": "traversal"}, "logger_error": null}}}
+{"func": "restore_quick_snapshot_exclusive", "in": {"snapshot_id": "none", "home": "/h", "seams": {"quick_snapshot_dir": null}}}
+{"func": "restore_quick_snapshot_exclusive", "in": {"snapshot_id": "", "home": "/h", "seams": {"quick_snapshot_dir": null}}}
+{"func": "restore_quick_snapshot_exclusive", "in": {"snapshot_id": "../x", "home": "/h", "seams": {"quick_snapshot_dir": null}}}
+{"func": "restore_quick_snapshot_exclusive", "in": {"snapshot_id": "z", "home": "/p", "seams": {"quick_snapshot_dir": null}}}
+{"func": "restore_quick_snapshot_exclusive", "in": {"snapshot_id": "a", "home": "/h", "seams": {"quick_snapshot_dir": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "entry_paths", "in": {"rel": "config.yaml", "seams": {"resolve_src": true, "resolve_dst": true}}}
+{"func": "entry_paths", "in": {"rel": "profiles/a/state.db", "seams": {"resolve_src": true, "resolve_dst": true}}}
+{"func": "entry_paths", "in": {"rel": "../evil", "seams": {"resolve_src": false}}}
+{"func": "entry_paths", "in": {"rel": "auth.json", "seams": {"resolve_src": true, "resolve_dst": false, "trusted_alias": true}}}
+{"func": "entry_paths", "in": {"rel": "auth.json", "seams": {"resolve_src": true, "resolve_dst": false, "trusted_alias": false}}}
+{"func": "entry_paths", "in": {"rel": "x", "seams": {"resolve_src": {"__raise__": "OSError", "msg": "src"}}}}
+{"func": "restore_config_model_settings_if_rewritten", "in": {"snapshot_id": "", "hermes_home": "/h", "protected": ["model.provider", "model.default", "moa"], "seams": {}}}
+{"func": "restore_config_model_settings_if_rewritten", "in": {"snapshot_id": "s1", "hermes_home": "/h", "protected": ["model.provider", "model.default", "moa"], "seams": {"supports_file_tooling": false}}}
+{"func": "restore_config_model_settings_if_rewritten", "in": {"snapshot_id": "s1", "hermes_home": "/h", "protected": ["model.provider", "model.default", "moa"], "seams": {"supports_file_tooling": true, "read_yaml": {}}}}
+{"func": "restore_config_model_settings_if_rewritten", "in": {"snapshot_id": "s1", "hermes_home": "/h", "protected": ["model.provider", "model.default", "moa"], "seams": {"supports_file_tooling": true, "read_yaml": [{"v": 1}, null]}}}
+{"func": "restore_config_model_settings_if_rewritten", "in": {"snapshot_id": "s1", "hermes_home": "/h", "protected": ["model.provider", "model.default", "moa"], "seams": {"supports_file_tooling": true, "read_yaml": [{"v": 1}, {"v": 1}], "get_config_value": ["anthropic", "anthropic"]}}}
+{"func": "restore_config_model_settings_if_rewritten", "in": {"snapshot_id": "s1", "hermes_home": "/h", "protected": ["model.provider", "model.default", "moa"], "seams": {"supports_file_tooling": true, "read_yaml": [{"v": 1}, {"v": 2}], "get_config_value": ["anthropic", "openai"], "set_config_value": null, "atomic_write": null, "logger_warning": null}}}
+{"func": "db_failure", "in": {"rel_path": "state.db", "seams": {"logger_warning": null}}}
+{"func": "db_failure", "in": {"rel_path": "profiles/a/state.db", "seams": {"logger_warning": null}}}
+{"func": "db_failure", "in": {"rel_path": "x.db", "seams": {"logger_warning": {"__raise__": "OSError", "msg": "log"}}}}
+{"func": "db_failure", "in": {"rel_path": "a.db", "seams": {"logger_warning": [null, null]}}}
+{"func": "db_failure", "in": {"rel_path": "b.db", "seams": {"logger_warning": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "capped_errors", "in": {"errors": [], "seams": {}}}
+{"func": "capped_errors", "in": {"errors": ["e1", "e2"], "seams": {}}}
+{"func": "capped_errors", "in": {"errors": ["e0", "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8", "e9"], "seams": {}}}
+{"func": "capped_errors", "in": {"errors": ["e0", "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8", "e9", "e10"], "seams": {}}}
+{"func": "capped_errors", "in": {"errors": ["e0", "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8", "e9", "e10", "e11", "e12", "e13", "e14"], "seams": {}}}
+{"func": "publish_path", "in": {"errors": [], "nfiles": 5, "out_path": "/h/out.zip", "salvage_path": "/h/s.zip", "seams": {}}}
+{"func": "publish_path", "in": {"errors": ["e1"], "nfiles": 5, "out_path": "/h/out.zip", "salvage_path": "/h/s.zip", "seams": {}}}
+{"func": "publish_path", "in": {"errors": ["e1", "e2"], "nfiles": 2, "out_path": "/h/out.zip", "salvage_path": "/h/s.zip", "seams": {}}}
+{"func": "publish_path", "in": {"errors": ["e1"], "nfiles": 1, "out_path": "/h/out.zip", "salvage_path": "/h/s.zip", "seams": {}}}
+{"func": "publish_path", "in": {"errors": [], "nfiles": 0, "out_path": "/h/out.zip", "salvage_path": "/h/s.zip", "seams": {}}}
+{"func": "progress", "in": {"i": 1, "file_count": 10, "seams": {"print": null, "logger_info": null}}}
+{"func": "progress", "in": {"i": 500, "file_count": 1000, "seams": {"print": null, "logger_info": null}}}
+{"func": "progress", "in": {"i": 2, "file_count": 3, "seams": {"print": {"__raise__": "OSError", "msg": "print"}}}}
+{"func": "progress", "in": {"i": 3, "file_count": 3, "seams": {"print": null, "logger_info": {"__raise__": "RuntimeError", "msg": "log"}}}}
+{"func": "progress", "in": {"i": 10, "file_count": 10, "seams": {"print": null, "logger_info": null}}}
