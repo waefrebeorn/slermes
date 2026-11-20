@@ -152,4 +152,20 @@ tui_hosted_room_service_flow2 101/0, executions_worker_flow2 351/0,
 acp_gateway_server_flow2 187/0 (13 divergent fns honestly removed),
 matrix_adapter_flow3 126/0. Next wave uses SELF-GATING port agents
 (agent runs the real run_one_oracle.sh and reaches 0 before reporting)
-to eliminate the repeated false-green debug round trip.
+to eliminate the repeated false-green debug round trip. Wave 63 wired
+4 self-gated swaths (816->820, HEAD `5a5a94f61c`), parent gates
+106/0, 141/0, 128/0, 137/0; build health 2127/2127.
+
+## STRUCTURAL HONESTY FINDING (2026-11-20) — "wired" != "in the binary"
+Audit of objects.mk: 2091 referenced objects, 19 missing files, 694 under
+2 KB. Sampled port objects (telegram_adapter_flow7.o 491 B,
+memory_manager_flow3.o 489 B) contain ONLY section symbols — no text
+symbols. The harnesses `#include` the port `.c`, so the oracle gates DO
+verify the ported behavior, but the production `slermes` link gets an
+empty translation unit. Compare real ports: `gateway_run_flow3.o` 41992 B,
+`lib/libjson/json.o` 45129 B. Therefore the "linked objects" / PoP
+counts are NOT evidence of production parity. Only oracle-verified
+behavior and real non-empty objects count. Do not cite wired-object
+counts as progress. Fixing this structurally requires giving port sources
+externally visible entry points and production call sites — a separate
+large task, not a wave-style port.
