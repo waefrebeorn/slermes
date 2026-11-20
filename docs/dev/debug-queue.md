@@ -88,8 +88,8 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 61 wired 810->812, HEAD `60bfbbc467`;
-  build health 2119/2119 clean, port gate PASS.
+- Parent working set (committed): wave 62 wired 812->816, HEAD `7cc1503427`;
+  build health 2123/2123 clean, port gate PASS.
   Wave 60 RESOLVED: tui_server_flow3 honestly scoped from 62 over-scoped
   fns (374/287, 50 red) to the 12 faithful ones, parent gate 74/0, wired.
   The 50 removed fns are real gaps again. Scanner perf fix committed
@@ -147,3 +147,9 @@ false) — debuggers `deleg_aaf9d094` active, NONE wired:
   untouched).
 - matrix_adapter_flow3: 126 cases, 31 mismatches (_handle_approval_reaction
   cluster). Parent re-gates before any wire.
+RESOLVED in wave 62 (`7cc1503427`, all wired, parent-verified):
+tui_hosted_room_service_flow2 101/0, executions_worker_flow2 351/0,
+acp_gateway_server_flow2 187/0 (13 divergent fns honestly removed),
+matrix_adapter_flow3 126/0. Next wave uses SELF-GATING port agents
+(agent runs the real run_one_oracle.sh and reaches 0 before reporting)
+to eliminate the repeated false-green debug round trip.
