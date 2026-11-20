@@ -735,10 +735,8 @@ static json_t *sig2_styles_for_chunk_c(sig2_ctx_t *ctx, const json_t *text_style
             }
         }
         if (malformed) {
-            char *rp = sig2_repr_ascii(ss);
             json_t *la = json_array();
-            json_append(la, json_string(rp ? rp : ""));
-            free(rp);
+            json_append(la, json_string(ss));   /* %r applied at render time (seamed); arg is raw */
             json_t *lr = sig2_log(ctx, "debug", "[Signal] Ignoring malformed textStyle range: %r", la);
             free(style_type);
             if (sig2_is_raise(lr)) { json_free(adjusted); return lr; }

@@ -60,6 +60,7 @@ Representation contract (shared with the C port):
 """
 import ast
 import asyncio
+import builtins
 import contextlib
 import copy
 import json
@@ -235,6 +236,7 @@ EXC_CLASSES = {
     "MemoryError": MemoryError, "NameError": NameError,
     "UnboundLocalError": UnboundLocalError,
     "OSError": OSError, "BlockingIOError": BlockingIOError,
+    "IOError": OSError, "EnvironmentError": OSError, "WindowsError": OSError,
     "ChildProcessError": ChildProcessError, "ConnectionError": ConnectionError,
     "BrokenPipeError": BrokenPipeError,
     "ConnectionAbortedError": ConnectionAbortedError,
@@ -246,8 +248,11 @@ EXC_CLASSES = {
     "ProcessLookupError": ProcessLookupError, "TimeoutError": TimeoutError,
     "ReferenceError": ReferenceError, "RuntimeError": RuntimeError,
     "NotImplementedError": NotImplementedError, "RecursionError": RecursionError,
+    "PythonFinalizationError": getattr(builtins, "PythonFinalizationError", RuntimeError),
     "SyntaxError": SyntaxError, "IndentationError": IndentationError,
-    "TabError": TabError, "SystemError": SystemError, "TypeError": TypeError,
+    "TabError": TabError,
+    "_IncompleteInputError": getattr(builtins, "_IncompleteInputError", SyntaxError),
+    "SystemError": SystemError, "TypeError": TypeError,
     "ValueError": ValueError, "UnicodeError": UnicodeError,
     "UnicodeDecodeError": UnicodeDecodeError,
     "UnicodeEncodeError": UnicodeEncodeError,
@@ -477,7 +482,7 @@ def install_stubs(ctx, args):
     NS["_load_cfg"] = rec(ctx, "load_cfg", lambda: {})
     NS["_completion_cwd"] = rec(ctx, "completion_cwd", lambda arg: {"arg": arg})
     NS["_persistence_for"] = rec(ctx, "persistence_for", lambda db: {"db": db},
-                                 build=lambda raw: YieldCM(raw))
+                                 build=lambda raw: YieldCM(persistence_build(raw, ctx)))
     NS["logger"] = types.SimpleNamespace(
         debug=rec(ctx, "logger.debug",
                   lambda fmt, *a, exc_info=None:
@@ -673,7 +678,7 @@ def cross_check():
         print(f"FATAL oracle_tui_methods_projects_flow: seams absent from C port: {missing_c}")
         sys.exit(2)
     c_seams = set(re.findall(r'tmp_call\(ctx,\s*"([^"]+)"', csrc))
-    for a, b in re.findall(r'\?\s*"([^"]+)"\s*:\s*"([^"]+)"', csrc):
+    for a, b in re.findall(r'tmp_call\(ctx,\s*\w+\s*\?\s*"([^"]+)"\s*:\s*"([^"]+)"', csrc):
         c_seams.add(a)
         c_seams.add(b)
     unknown_c = c_seams - registry
@@ -839,7 +844,7 @@ def selftest():
     assert spot["ret"] == {"enabled": False, "roots": ["/a"], "exclude_paths": ["/x"]}, spot
     spot = drive("_repo_discovery_policy_key", {
         "args": {"policy": {"enabled": True, "roots": ["/a", "/a"], "exclude_paths": []}},
-        "io": {"os.path.expanduser": {"__script__": True, "ret": "/home/u"}}})
+        "io": {"os.path.expanduser": ["/home/u", "/a", "/a", "/home/u"]}})
     assert spot["ret"] == '{"enabled":true,"exclude_paths":[],"roots":["/a"]}', spot
     spot = drive("_project_tree_row", {"args": {"entry": {
         "session": {"session_id": "s1", "parent_session_id": None, "reset_from": None,

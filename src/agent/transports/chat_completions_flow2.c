@@ -150,7 +150,6 @@ static bool cc3_is_arr(const json_t *v) { return v && v->type == JSON_ARRAY; }
 static bool cc3_is_str(const json_t *v) { return v && v->type == JSON_STRING; }
 static bool cc3_is_num(const json_t *v) { return v && v->type == JSON_NUMBER; }
 static bool cc3_is_bool(const json_t *v) { return v && v->type == JSON_BOOL; }
-static bool cc3_is_true(const json_t *v) { return v && v->type == JSON_BOOL && v->bool_val; }
 static bool cc3_is_false(const json_t *v) { return v && v->type == JSON_BOOL && !v->bool_val; }
 
 /* opaque-object markers (_static_prompt_instructions content position) */

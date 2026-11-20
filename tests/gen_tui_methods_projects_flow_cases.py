@@ -50,6 +50,12 @@ def script(ret):
     return {"__script__": True, "ret": ret}
 
 
+def dio(base, updates):
+    d = dict(base)
+    d.update(updates)
+    return d
+
+
 def raise_script(kind, message):
     return {"__script__": True, "raise": {"type": kind, "message": message}}
 
@@ -108,7 +114,7 @@ def junk_io_many(root_reals, hh=HH, home=HOME):
     return io
 
 
-def leaf(name, dirs=None, files=None):
+def leaf(dirs=None, files=None):
     return {"dirs": dirs or {}, "files": files or []}
 
 
@@ -254,7 +260,8 @@ case("_repo_discovery_policy_is_default",
      {"policy": {"enabled": False, "roots": [], "exclude_paths": []}},
      io={"default_config": EMPTY_DEFAULTS,
          "os.path.expanduser": eu_queue([[], []]) + eu_queue([[], []])})
-case("_repo_discovery_policy_is_default", {"policy": {}})   # KeyError 'enabled'
+case("_repo_discovery_policy_is_default", {"policy": {}},
+     io={"default_config": DEFAULTS})                       # KeyError 'enabled'
 case("_repo_discovery_policy_is_default", {"policy": POL_DEFAULT}, fail_closed=True)
 case("_repo_discovery_policy_is_default",
      {"policy": {"enabled": True, "roots": [], "exclude_paths": []}},
@@ -450,21 +457,21 @@ CREATE_IO = {
     "ok": ok_env(RID, {"project": {"id": "p9", "name": "N"}}),
 }
 case("_h_projects_create", {"rid": RID, "params": {"name": "N", "use": True}, "conn": "c1"},
-     io=dict(CREATE_IO, pdb.set_active=None))
+     io=dio(CREATE_IO, {"pdb.set_active": None}))
 case("_h_projects_create", {"rid": RID, "params": {"name": "N"}, "conn": "c1"}, io=CREATE_IO)
 case("_h_projects_create", {"rid": RID, "params": {"name": 5, "folders": None,
                                                    "slug": "s", "color": None}, "conn": "c1"},
-     io=dict(CREATE_IO, pdb.create_project="p9"))
+     io=dio(CREATE_IO, {"pdb.create_project": "p9"}))
 case("_h_projects_create", {"rid": RID, "params": {"name": "N"}, "conn": "c1"},
-     io=dict(CREATE_IO, pdb.get_project=None,
-             ok=ok_env(RID, {"project": None})))            # proj null -> None
+     io=dio(CREATE_IO, {"pdb.get_project": None,
+                        "ok": ok_env(RID, {"project": None})}))  # proj null -> None
 case("_h_projects_create", {"rid": RID, "params": {"name": "N"}, "conn": "c1"},
-     io=dict(CREATE_IO, pdb.get_project={}, to_dict={"id": ""},
-             ok=ok_env(RID, {"project": {"id": ""}})))      # {} double is TRUTHY
+     io=dio(CREATE_IO, {"pdb.get_project": {}, "to_dict": {"id": ""},
+                        "ok": ok_env(RID, {"project": {"id": ""}})}))  # {} double TRUTHY
 case("_h_projects_create", {"rid": RID, "params": {"name": "N"}, "conn": "c1"},
      io={"pdb.create_project": raise_script("ValueError", "dup slug")})
 case("_h_projects_create", {"rid": RID, "params": {"name": "N", "use": True}, "conn": "c1"},
-     io=dict(CREATE_IO, pdb.set_active=raise_script("RuntimeError", "active fail")))
+     io=dio(CREATE_IO, {"pdb.set_active": raise_script("RuntimeError", "active fail")}))
 case("_h_projects_create", {"rid": RID, "params": {"name": "N"}, "conn": "c1"},
      io=dict(CREATE_IO, record_feature_used=raise_script("SystemExit", "bye")))
 case("_h_projects_create", {"rid": RID, "params": {"name": "N"}, "conn": "c1"}, fail_closed=True)
@@ -480,13 +487,13 @@ ARCH_IO = {
 }
 case("_h_projects_archive", {"rid": RID, "params": {"id": "p1"}, "conn": "c1"}, io=ARCH_IO)
 case("_h_projects_archive", {"rid": RID, "params": {"id": "p1", "restore": True}, "conn": "c1"},
-     io=dict(ARCH_IO, pdb.restore_project=True))
+     io=dio(ARCH_IO, {"pdb.restore_project": True}))
 case("_h_projects_archive", {"rid": RID, "params": {"id": "p1", "restore": 1}, "conn": "c1"},
-     io=dict(ARCH_IO, pdb.restore_project=True))
+     io=dio(ARCH_IO, {"pdb.restore_project": True}))
 case("_h_projects_archive", {"rid": RID, "params": {"id": "nope"}, "conn": "c1"},
      io={"pdb.get_project": None})
 case("_h_projects_archive", {"rid": RID, "params": {"id": "p1"}, "conn": "c1"},
-     io=dict(ARCH_IO, pdb.archive_project=raise_script("RuntimeError", "locked")))
+     io=dio(ARCH_IO, {"pdb.archive_project": raise_script("RuntimeError", "locked")}))
 case("_h_projects_archive", {"rid": RID, "params": {"id": "p1"}, "conn": "c1"}, fail_closed=True)
 
 # ── _h_projects_delete ──
@@ -501,12 +508,12 @@ case("_h_projects_delete", {"rid": RID, "params": {"id": "p1"}, "conn": "c1"}, i
 case("_h_projects_delete", {"rid": RID, "params": {"id": "nope"}, "conn": "c1"},
      io={"pdb.get_project": None})
 case("_h_projects_delete", {"rid": RID, "params": {"id": "p1"}, "conn": "c1"},
-     io=dict(DEL_IO, pdb.delete_project=raise_script("RuntimeError", "locked")))
+     io=dio(DEL_IO, {"pdb.delete_project": raise_script("RuntimeError", "locked")}))
 case("_h_projects_delete", {"rid": RID, "params": {"id": "p1"}, "conn": "c1"},
-     io=dict(DEL_IO, pdb.list_projects=raise_script("RuntimeError", "db down")))
+     io=dio(DEL_IO, {"pdb.list_projects": raise_script("RuntimeError", "db down")}))
 case("_h_projects_delete", {"rid": RID, "params": {"id": "p1"}, "conn": "c1"}, fail_closed=True)
 case("_h_projects_delete", {"rid": RID, "params": {"id": 7}, "conn": "c1"},
-     io=dict(DEL_IO, pdb.get_project={"id": "7"}))
+     io=dio(DEL_IO, {"pdb.get_project": {"id": "7"}}))
 
 # ── _h_projects_set_active ──
 SA_IO = {
@@ -525,7 +532,7 @@ case("_h_projects_set_active", {"rid": RID, "params": {"id": ""}, "conn": "c1"},
 case("_h_projects_set_active", {"rid": RID, "params": {"id": "nope"}, "conn": "c1"},
      io={"pdb.get_project": None})
 case("_h_projects_set_active", {"rid": RID, "params": {"id": "p1"}, "conn": "c1"},
-     io=dict(SA_IO, pdb.set_active=raise_script("RuntimeError", "fail")))
+     io=dio(SA_IO, {"pdb.set_active": raise_script("RuntimeError", "fail")}))
 case("_h_projects_set_active", {"rid": RID, "params": {"id": "p1"}, "conn": "c1"}, fail_closed=True)
 
 # ── _h_projects_for_cwd ──
@@ -542,19 +549,19 @@ case("_h_projects_for_cwd", {"rid": RID, "params": {}, "conn": "c1"},
 case("_h_projects_for_cwd", {"rid": RID, "params": {"cwd": None}, "conn": "c1"},
      io=dict(FC_IO, completion_cwd="/default"))
 case("_h_projects_for_cwd", {"rid": RID, "params": {"cwd": "/w/a"}, "conn": "c1"},
-     io=dict(FC_IO, pdb.project_for_path=None,
-             ok=ok_env(RID, {"project": None, "cwd": "/w/a", "branch": "main"})))
+     io=dio(FC_IO, {"pdb.project_for_path": None,
+                    "ok": ok_env(RID, {"project": None, "cwd": "/w/a", "branch": "main"})}))
 case("_h_projects_for_cwd", {"rid": RID, "params": {"cwd": "/w/a"}, "conn": "c1"},
-     io=dict(FC_IO, pdb.project_for_path={}, to_dict={"id": ""},
-             ok=ok_env(RID, {"project": {"id": ""}, "cwd": "/w/a", "branch": "main"})))
+     io=dio(FC_IO, {"pdb.project_for_path": {}, "to_dict": {"id": ""},
+                    "ok": ok_env(RID, {"project": {"id": ""}, "cwd": "/w/a", "branch": "main"})}))
 case("_h_projects_for_cwd", {"rid": RID, "params": {"cwd": "/w/a"}, "conn": "c1"},
-     io=dict(FC_IO, git_probe_branch=None, **{"git_probe.branch": raise_script("RuntimeError", "no git")}))
+     io=dio(FC_IO, {"git_probe.branch": raise_script("RuntimeError", "no git")}))
 case("_h_projects_for_cwd", {"rid": RID, "params": {"cwd": "/w/a"}, "conn": "c1"},
      io={"completion_cwd": raise_script("RuntimeError", "cwd fail")})
 case("_h_projects_for_cwd", {"rid": RID, "params": {"cwd": "/w/a"}, "conn": "c1"}, fail_closed=True)
 
 # ── _scan_discovered_repos_remote ──
-SCAN_POL = {"roots": ["/r"], "exclude_paths": []}
+SCAN_POL = {"enabled": True, "roots": ["/r"], "exclude_paths": []}
 SCAN_TREE = leaf({
     "repoA": leaf({".git": leaf(), "nested": gitdir()}, ["f.txt"]),
     "plain": leaf({"z": leaf()}),
@@ -573,7 +580,7 @@ case("_scan_discovered_repos_remote", {"conn": "c1", "policy": SCAN_POL},
          "os.walk": raise_script("OSError", "walk fail"),
          "logger.debug": None})
 case("_scan_discovered_repos_remote",
-     {"conn": "c1", "policy": {"roots": ["/r"], "exclude_paths": ["/r/skip"]}},
+     {"conn": "c1", "policy": {"enabled": True, "roots": ["/r"], "exclude_paths": ["/r/skip"]}},
      io={"os.path.isdir": [True],
          "os.walk": script(leaf({"skip": gitdir(), "ok": gitdir()})),
          "os.path.expanduser": eu_queue([["/r"], ["/r/skip"]]),
@@ -590,7 +597,7 @@ case("_scan_discovered_repos_remote", {"conn": "c1", "policy": SCAN_POL},
          "os.path.expanduser": eu_queue([["/r"], []]),
          "pdb.record_discovered_repos": raise_script("KeyboardInterrupt", "")})
 case("_scan_discovered_repos_remote",
-     {"conn": "c1", "policy": {"roots": ["/r", "/r2"], "exclude_paths": []}},
+     {"conn": "c1", "policy": {"enabled": True, "roots": ["/r", "/r2"], "exclude_paths": []}},
      io={"os.path.isdir": [False, True],
          "logger.debug": None,
          "os.walk": script(leaf({"repoB": gitdir()})),
@@ -599,18 +606,18 @@ case("_scan_discovered_repos_remote",
 case("_scan_discovered_repos_remote", {"conn": "c1", "policy": SCAN_POL}, fail_closed=True)
 case("_scan_discovered_repos_remote", {"conn": "c1", "policy": SCAN_POL},
      io={"os.path.isdir": [False], "logger.debug": raise_script("RuntimeError", "log fail")})
-case("_scan_discovered_repos_remote", {"conn": "c1", "policy": {"roots": [], "exclude_paths": []}},
+case("_scan_discovered_repos_remote", {"conn": "c1", "policy": {"enabled": True, "roots": [], "exclude_paths": []}},
      io={})                                                 # no roots -> True, no seams
 # cap-500 case: 500 git dirs under /r, second root never probed
 CAP_TREE = leaf({f"r{i:03d}": gitdir() for i in range(500)})
 case("_scan_discovered_repos_remote",
-     {"conn": "c1", "policy": {"roots": ["/r", "/r2"], "exclude_paths": []}},
+     {"conn": "c1", "policy": {"enabled": True, "roots": ["/r", "/r2"], "exclude_paths": []}},
      io={"os.path.isdir": [True], "os.walk": script(CAP_TREE),
          "os.path.expanduser": eu_queue([["/r", "/r2"], []]),
          "pdb.record_discovered_repos": None})
 # exclude with trailing slashes/backslashes (rstrip("/\\") + sep)
 case("_scan_discovered_repos_remote",
-     {"conn": "c1", "policy": {"roots": ["/r"], "exclude_paths": ["/r/skip/\\"]}},
+     {"conn": "c1", "policy": {"enabled": True, "roots": ["/r"], "exclude_paths": ["/r/skip/\\"]}},
      io={"os.path.isdir": [True],
          "os.walk": script(leaf({"skip": gitdir(), "ok": gitdir()})),
          "os.path.expanduser": eu_queue([["/r"], ["/r/skip/\\"]]),
@@ -629,29 +636,28 @@ DISC_IO = {
 DISC_IO.update(junk_io_many(["/w/a", "/w/b", "/w/c"]))
 case("_discover_repos_payload",
      {"db": None, "conn": "c1", "backfill": True, "include_cached": True,
-      "persistence": {"read_only": False}}, io=DISC_IO)
+      "persistence": {"read_only": False, "sessions": {}}}, io=DISC_IO)
 case("_discover_repos_payload",
      {"db": "db1", "conn": "c1", "persistence": None},
-     io=dict(DISC_IO, persistence_for={"read_only": True}))  # yielded read-only handle
+     io=dict(DISC_IO, persistence_for={"read_only": True, "sessions": {}}))  # yielded read-only handle
 case("_discover_repos_payload",
      {"db": "db1", "conn": "c1", "persistence": None},
      io={"persistence_for": None, "git_probe.warm_roots": None,
          "pdb.list_discovered_repos": script([])})           # no handle -> [] rows
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": False}},
-     io=dict(DISC_IO, persistence_backfill=None,
-             **{"persistence.backfill_repo_roots": raise_script("RuntimeError", "bf fail"),
-                "logger.debug": None}))
+     {"db": None, "conn": "c1", "persistence": {"read_only": False, "sessions": {}}},
+     io=dio(DISC_IO, {"persistence.backfill_repo_roots": raise_script("RuntimeError", "bf fail"),
+                      "logger.debug": None}))
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": False}},
+     {"db": None, "conn": "c1", "persistence": {"read_only": False, "sessions": {}}},
      io=dict(DISC_IO, **{"persistence.backfill_repo_roots": raise_script("SystemExit", "bye")}))
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": True}},
+     {"db": None, "conn": "c1", "persistence": {"read_only": True, "sessions": {}}},
      io=dict(DISC_IO, **{"pdb.list_discovered_repos": raise_script("RuntimeError", "cache fail"),
                          "logger.debug": None}))
 case("_discover_repos_payload",
      {"db": None, "conn": "c1", "backfill": True, "include_cached": False,
-      "persistence": {"read_only": False}},
+      "persistence": {"read_only": False, "sessions": {}}},
      io={k: v for k, v in DISC_IO.items() if k != "pdb.list_discovered_repos"})
 # junk root: cwd_to_root keeps it, agg drops it
 J_IO = {
@@ -663,22 +669,23 @@ J_IO = {
 }
 J_IO.update(junk_io_many(["/home/u"]))
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": False}}, io=J_IO)
+     {"db": None, "conn": "c1", "persistence": {"read_only": False, "sessions": {}}}, io=J_IO)
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": False}},
+     {"db": None, "conn": "c1", "persistence": {"read_only": False, "sessions": {}}},
      io={"persistence.distinct_session_cwds": script([{"sessions": 1, "last_active": 0}]),
          "git_probe.warm_roots": None})                      # row missing cwd
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": False}},
-     io={"persistence.distinct_session_cwds": script([{"cwd": "/w/a", "sessions": "abc", "last_active": 0}]),
-         "git_probe.warm_roots": None, "git_probe.common_repo_root": ["/w/a"]})
+     {"db": None, "conn": "c1", "persistence": {"read_only": False, "sessions": {}}},
+     io=dio({"persistence.distinct_session_cwds": script([{"cwd": "/w/a", "sessions": "abc", "last_active": 0}]),
+             "git_probe.warm_roots": None, "git_probe.common_repo_root": ["/w/a"]},
+            junk_io_many(["/w/a"])))
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": False}}, fail_closed=True)
+     {"db": None, "conn": "c1", "persistence": {"read_only": False, "sessions": {}}}, fail_closed=True)
 case("_discover_repos_payload",
-     {"db": None, "conn": None, "persistence": {"read_only": True}},
+     {"db": None, "conn": None, "persistence": {"read_only": True, "sessions": {}}},
      io=dict(DISC_IO, connect_closing="c2"))                 # nullcontext -> connect_closing
 case("_discover_repos_payload",
-     {"db": None, "conn": None, "persistence": {"read_only": True}},
+     {"db": None, "conn": None, "persistence": {"read_only": True, "sessions": {}}},
      io=dict(DISC_IO, connect_closing=raise_script("RuntimeError", "conn fail"),
              **{"logger.debug": None}))
 # cached entry: falsy label keeps session label; empty root skipped; junk cached root
@@ -693,7 +700,7 @@ C_IO = {
 }
 C_IO.update(junk_io_many(["/w/a", "/w/a", "/home/u"]))
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": False}}, io=C_IO)
+     {"db": None, "conn": "c1", "persistence": {"read_only": False, "sessions": {}}}, io=C_IO)
 # last_active tie -> stable insertion order; string coercion
 T_IO = {
     "persistence.distinct_session_cwds": script([{"cwd": "/w/a", "sessions": "2", "last_active": "5"},
@@ -705,18 +712,18 @@ T_IO = {
 }
 T_IO.update(junk_io_many(["/w/a", "/w/b"]))
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": False}}, io=T_IO)
+     {"db": None, "conn": "c1", "persistence": {"read_only": False, "sessions": {}}}, io=T_IO)
 # persistence missing read_only -> AttributeError OUTSIDE the try
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "backfill": True, "persistence": {}},
+     {"db": None, "conn": "c1", "backfill": True, "persistence": {"sessions": {}}},
      io={"persistence.distinct_session_cwds": script([]), "git_probe.warm_roots": None})
-# persistence missing sessions attr
+# no scripts at all: the sessions recorder fires fail-closed
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": False}},
-     io={})                                                  # fail-closed on sessions? no: attr first
+     {"db": None, "conn": "c1", "persistence": {"read_only": False, "sessions": {}}},
+     io={}, fail_closed=True)
 # cached entries not iterable -> caught inside try
 case("_discover_repos_payload",
-     {"db": None, "conn": "c1", "persistence": {"read_only": True}},
+     {"db": None, "conn": "c1", "persistence": {"read_only": True, "sessions": {}}},
      io={"persistence.distinct_session_cwds": script([]), "git_probe.warm_roots": None,
          "pdb.list_discovered_repos": None, "logger.debug": None})
 
@@ -736,7 +743,7 @@ TI_IO = {
     "pdb.get_active_id": "p1",
 }
 case("_project_tree_inputs",
-     {"persistence": {"read_only": True}, "session_limit": 50, "include_discovered": False},
+     {"persistence": {"read_only": True, "sessions": {}}, "session_limit": 50, "include_discovered": False},
      io=TI_IO)
 TI_DISC_IO = dict(TI_IO)
 TI_DISC_IO.update({
@@ -746,27 +753,27 @@ TI_DISC_IO.update({
     "os.path.expanduser": HOME,   # all expanduser calls are "~" here
 })
 case("_project_tree_inputs",
-     {"persistence": {"read_only": True}, "session_limit": 50, "include_discovered": True},
+     {"persistence": {"read_only": True, "sessions": {}}, "session_limit": 50, "include_discovered": True},
      io=TI_DISC_IO)
 case("_project_tree_inputs",
-     {"persistence": {"read_only": True}, "include_discovered": True,
+     {"persistence": {"read_only": True, "sessions": {}}, "include_discovered": True,
       "session_limit": 10},
      io=dict(TI_DISC_IO, load_cfg={"desktop": {"repo_scan_enabled": False,
                                                "repo_scan_roots": [],
                                                "repo_scan_exclude_paths": []}}))
 case("_project_tree_inputs",
-     {"persistence": {"read_only": True}, "include_discovered": False},
+     {"persistence": {"read_only": True, "sessions": {}}, "include_discovered": False},
      io=dict(TI_IO, **{"persistence.list_sessions": script([{"lineage_root_id": "s1"}])}))
 case("_project_tree_inputs",
-     {"persistence": {"read_only": True}, "include_discovered": False},
+     {"persistence": {"read_only": True, "sessions": {}}, "include_discovered": False},
      io=dict(TI_IO, SessionQuery=raise_script("RuntimeError", "query fail")))
 case("_project_tree_inputs",
-     {"persistence": {"read_only": True}, "include_discovered": False}, fail_closed=True)
+     {"persistence": {"read_only": True, "sessions": {}}, "include_discovered": False}, fail_closed=True)
 case("_project_tree_inputs",
-     {"persistence": {"read_only": True}, "include_discovered": False},
+     {"persistence": {"read_only": True, "sessions": {}}, "include_discovered": False},
      io=dict(TI_IO, connect_closing=raise_script("SystemExit", "bye")))
 case("_project_tree_inputs",
-     {"persistence": {"read_only": True}, "include_discovered": False},
+     {"persistence": {"read_only": True, "sessions": {}}, "include_discovered": False},
      io=dict(TI_IO, **{"persistence.list_sessions": script([]),
                        "pdb.list_projects": script([]), "pdb.get_active_id": None}))
 
@@ -778,16 +785,16 @@ BT_IO.update({
 })
 case("_build_project_tree",
      {"db": None, "preview_limit": 3, "hydrate": False, "session_limit": 50,
-      "include_discovered": False, "persistence": {"read_only": True}},
+      "include_discovered": False, "persistence": {"read_only": True, "sessions": {}}},
      io=BT_IO, state={"_DIR_EXISTS_CACHE": {"/stale": True}})
 case("_build_project_tree",
      {"db": "db1", "include_discovered": False, "persistence": None},
-     io=dict(BT_IO, persistence_for={"read_only": True}))
+     io=dict(BT_IO, persistence_for={"read_only": True, "sessions": {}}))
 case("_build_project_tree",
-     {"db": None, "include_discovered": False, "persistence": {"read_only": True}},
+     {"db": None, "include_discovered": False, "persistence": {"read_only": True, "sessions": {}}},
      io=dict(BT_IO, **{"project_tree.build_tree": raise_script("RuntimeError", "tree fail")}))
 case("_build_project_tree",
-     {"db": None, "include_discovered": False, "persistence": {"read_only": True}},
+     {"db": None, "include_discovered": False, "persistence": {"read_only": True, "sessions": {}}},
      fail_closed=True)
 BT_DISC_IO = dict(TI_DISC_IO)
 BT_DISC_IO.update({
@@ -796,10 +803,10 @@ BT_DISC_IO.update({
 })
 case("_build_project_tree",
      {"db": None, "preview_limit": 5, "hydrate": True, "session_limit": 20,
-      "include_discovered": True, "persistence": {"read_only": True}},
+      "include_discovered": True, "persistence": {"read_only": True, "sessions": {}}},
      io=BT_DISC_IO)
 case("_build_project_tree",
-     {"db": None, "include_discovered": False, "persistence": {"read_only": True}},
+     {"db": None, "include_discovered": False, "persistence": {"read_only": True, "sessions": {}}},
      io=dict(BT_IO, **{"persistence.list_sessions": script([]),
                        "pdb.list_projects": script([]), "pdb.get_active_id": None,
                        "project_tree.build_tree": {"projects": [], "scoped_session_ids": []}}))

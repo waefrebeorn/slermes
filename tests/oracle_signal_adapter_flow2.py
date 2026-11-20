@@ -170,10 +170,11 @@ def extract():
     ns = mod.__dict__
     import time as _time
     import uuid as _uuid
+    from contextlib import suppress
     from dataclasses import dataclass, field
     from typing import Any, Optional, Dict, List, Tuple
     ns.update({"re": re, "json": json, "os": os, "time": _time, "logging": logging,
-               "asyncio": asyncio, "itertools": itertools, "uuid": _uuid,
+               "asyncio": asyncio, "itertools": itertools, "uuid": _uuid, "suppress": suppress,
                "OrderedDict": OrderedDict, "dataclass": dataclass, "field": field,
                "Any": Any, "Optional": Optional, "Dict": Dict, "List": List,
                "Tuple": Tuple, "enum": enum, "Enum": enum.Enum, "logger": _SilentLogger()})

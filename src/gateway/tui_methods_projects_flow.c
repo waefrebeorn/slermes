@@ -123,8 +123,10 @@
  * - Object doubles (project / entry / row / persistence) are scripted dicts read
  *   as attributes: a MISSING key raises AttributeError "'types.SimpleNamespace'
  *   object has no attribute '<key>'"; a null receiver raises the NoneType form.
- *   An EMPTY dict project double is TRUTHY (SimpleNamespace(**{}) is truthy);
- *   only null is falsy for the `if proj` gates in create/for_cwd.
+ *   The persistence double ALWAYS carries its seamed sessions sub-object, so
+ *   persistence scripts carry a "sessions": {} presence marker alongside
+ *   read_only. An EMPTY dict project double is TRUTHY (SimpleNamespace(**{}) is
+ *   truthy); only null is falsy for the `if proj` gates in create/for_cwd.
  * - Tuples project to lists; sets to sorted lists; integral floats to ints.
  * - str()-projected values (params id/name/path/cwd, row.cwd, entry root, folder
  *   path, get_hermes_home) are str|int|null in the fixture corpus; str() folds
@@ -207,6 +209,9 @@ static const tmp_exc_parent_t TMP_EXC_PARENTS[] = {
     {"NameError", "Exception"},
     {"UnboundLocalError", "NameError"},
     {"OSError", "Exception"},
+    {"IOError", "OSError"},             /* py3.14 OSError aliases */
+    {"EnvironmentError", "OSError"},
+    {"WindowsError", "OSError"},
     {"BlockingIOError", "OSError"},
     {"ChildProcessError", "OSError"},
     {"ConnectionError", "OSError"},
@@ -226,9 +231,11 @@ static const tmp_exc_parent_t TMP_EXC_PARENTS[] = {
     {"RuntimeError", "Exception"},
     {"NotImplementedError", "RuntimeError"},
     {"RecursionError", "RuntimeError"},
+    {"PythonFinalizationError", "RuntimeError"},
     {"SyntaxError", "Exception"},
     {"IndentationError", "SyntaxError"},
     {"TabError", "IndentationError"},
+    {"_IncompleteInputError", "SyntaxError"},
     {"SystemError", "Exception"},
     {"TypeError", "Exception"},
     {"ValueError", "Exception"},
@@ -470,15 +477,19 @@ static char *tmp_posix_join2(const char *a, const char *b) {
     return o;
 }
 
-/* posixpath.dirname (POSIX). */
+/* posixpath.dirname (POSIX): head through the last slash; rstrip slashes
+ * UNLESS the head is all slashes (then keep it verbatim, incl. "//"). */
 static char *tmp_posix_dirname(const char *s) {
     if (!s) s = "";
     const char *slash = strrchr(s, '/');
     if (!slash) return tmp_strdup("");
-    size_t n = (size_t)(slash - s);
-    /* strip trailing slashes of the head, keep a leading root slash */
-    while (n > 0 && s[n - 1] == '/') n--;
-    if (n == 0 && s[0] == '/') n = 1;
+    size_t i = (size_t)(slash - s) + 1;
+    bool all_slashes = true;
+    for (size_t k = 0; k < i; k++)
+        if (s[k] != '/') { all_slashes = false; break; }
+    size_t n = i;
+    if (!all_slashes)
+        while (n > 0 && s[n - 1] == '/') n--;
     char *o = malloc(n + 1);
     if (!o) return NULL;
     memcpy(o, s, n);

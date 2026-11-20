@@ -423,19 +423,19 @@ case("get_chat_info", {"chat_id": ACCT}, state=rpc_state(),
 
 # ── send_image ──
 case("send_image", {"chat_id": ACCT, "image_url": "http://x/a.png", "caption": "hi"}, state=send_state(),
-     io=sio({"_resolve_image_path": ["/cache/a.png", None, None], "_send_file": sr(True)}))
+     io=sio({"_resolve_image_path": sc(["/cache/a.png", None, None]), "_send_file": sr(True)}))
 case("send_image", {"chat_id": ACCT, "image_url": "http://x/a.png", "caption": None}, state=send_state(),
-     io=sio({"_resolve_image_path": [None, "missing", None]}))
+     io=sio({"_resolve_image_path": sc([None, "missing", None])}))
 case("send_image", {"chat_id": ACCT, "image_url": "http://x/a.png", "caption": None}, state=send_state(),
-     io=sio({"_resolve_image_path": [None, "download", "net down"], "logger.warning": None}))
+     io=sio({"_resolve_image_path": sc([None, "download", "net down"]), "logger.warning": None}))
 case("send_image", {"chat_id": ACCT, "image_url": "http://x/a.png", "caption": None}, state=send_state(),
-     io=sio({"_resolve_image_path": [None, "oversize", 200000000]}))
+     io=sio({"_resolve_image_path": sc([None, "oversize", 200000000])}))
 case("send_image", {"chat_id": ACCT, "image_url": "http://x/a.png", "caption": None}, state=send_state(),
      io=sio({"_resolve_image_path": raise_spec("SystemExit", "bye")}))
 case("send_image", {"chat_id": ACCT, "image_url": "http://x/a.png", "caption": None}, state=send_state(),
      io={"cancel_task": raise_spec("RuntimeError", "cancel down")})
 case("send_image", {"chat_id": ACCT, "image_url": "http://x/a.png", "caption": None}, state=send_state(),
-     io=sio({"_resolve_image_path": [None, "bogus", None]}))
+     io=sio({"_resolve_image_path": sc([None, "bogus", None])}))
 
 # ── _send_attachment ──
 case("_send_attachment", {"chat_id": ACCT, "file_path": "/f.png", "media_label": "Image", "caption": None},
@@ -455,17 +455,17 @@ case("_send_attachment", {"chat_id": ACCT, "file_path": "/f.png", "media_label":
 
 # ── send ──
 case("send", {"chat_id": ACCT, "content": "hi"}, state=send_state(),
-     io=sio({"markdown_to_signal": ["hi", []], "logger.info": None, "_rpc_send": [{"timestamp": 5}, None]}))
+     io=sio({"markdown_to_signal": sc(["hi", []]), "logger.info": None, "_rpc_send": sc([{"timestamp": 5}, None])}))
 case("send", {"chat_id": ACCT, "content": ""}, state=send_state(), io=dict(STOP_IO))
 case("send", {"chat_id": ACCT, "content": "   "}, state=send_state(), io=dict(STOP_IO))
 case("send", {"chat_id": ACCT, "content": "hi"}, state=send_state(),
-     io=sio({"markdown_to_signal": ["hi", []], "logger.info": None, "_rpc_send": [None, sr(False, error="RPC send failed")]}))
+     io=sio({"markdown_to_signal": sc(["hi", []]), "logger.info": None, "_rpc_send": sc([None, sr(False, error="RPC send failed")])}))
 case("send", {"chat_id": ACCT, "content": "hi"}, state=send_state(),
      io=sio({"markdown_to_signal": raise_spec("SystemExit", "bye")}))
 case("send", {"chat_id": ACCT, "content": "hi"}, state=send_state(),
-     io=sio({"markdown_to_signal": ["hi", []], "logger.info": None, "_rpc_send": raise_spec("RuntimeError", "send down")}))
+     io=sio({"markdown_to_signal": sc(["hi", []]), "logger.info": None, "_rpc_send": raise_spec("RuntimeError", "send down")}))
 case("send", {"chat_id": ACCT, "content": "abcdefghijklm"}, state=send_state(MAX_MESSAGE_LENGTH=12),
-     io=sio({"markdown_to_signal": ["abcdefghijklm", []], "logger.info": None, "_rpc_send": [{"timestamp": 5}, None]}))
+     io=sio({"markdown_to_signal": sc(["abcdefghijklm", []]), "logger.info": None, "_rpc_send": sc([{"timestamp": 5}, None])}))
 case("send", {"chat_id": ACCT, "content": None}, state=send_state(), io=dict(STOP_IO))
 
 

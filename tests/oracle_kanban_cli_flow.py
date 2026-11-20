@@ -421,7 +421,7 @@ def drive(ns, func, inp):
     if func == "print_diagnostics":
         diags = g("diags")
         if isinstance(diags, list):
-            diags = [ns_double(d) for d in diags]
+            diags = [diag_double(d) for d in diags]
         ns["_print_diagnostics"](diags, g("indent", ""),
                                  with_kind=g("with_kind", False))
         return None, None

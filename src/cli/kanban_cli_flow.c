@@ -66,12 +66,14 @@
  *    conn, reason, author, prefix}; the harness drives it through
  *    kc_commented_run(io, closure, tid) which fires kb.add_comment (when
  *    reason is truthy) then the "op" seam — exactly the live run(tid).
- *  - str()/repr() of scalars follow Python (None/True/False, integral
- *    floats render N.0 in repr, shortest-round-trip float str); the fixture
- *    domain keeps floats NON-integral and inside [1e-4, 1e16) in str()
- *    positions, strings ASCII, and data-dict values scalar-or-list-of-
- *    scalars. Unicode*Error scripted raises str() to "" (their __str__
- *    reads ctor attributes the bypass does not set) — modeled identically.
+ *  - str()/repr() of scalars follow Python (None/True/False, shortest-round-
+ *    trip float str); integral numbers render as ints (JSON int literals are
+ *    Python ints live; integral FLOAT literals are out of the str()/repr()
+ *    fixture domain — libjson cannot tell them apart). The fixture domain
+ *    keeps floats NON-integral and inside [1e-4, 1e16) in str() positions,
+ *    strings ASCII, and data-dict values scalar-or-list-of-scalars.
+ *    Unicode*Error scripted raises str() to "" (their __str__ reads ctor
+ *    attributes the bypass does not set) — modeled identically.
  *  - integral floats normalize to ints on both sides before comparison.
  *
  * Seam name table (name -> live call):
@@ -345,17 +347,15 @@ static char *kc_py_str(const json_t *v) {
 
 /* repr() of a scalar JSON value. Strings use Python's quote choice: double
  * quotes when the text contains ' but no ", else single quotes with ' and \
- * escaped; control chars render \n / \r / \t / \xNN. */
+ * escaped; control chars render \n / \r / \t / \xNN. Integral numbers render
+ * as ints (JSON int literals are Python ints live; integral FLOAT literals
+ * are out of the repr/str fixture domain — libjson cannot tell them apart). */
 static char *kc_py_repr(const json_t *v) {
     if (!v || v->type != JSON_STRING) {
         if (v && v->type == JSON_NUMBER) {
             double d = v->num_val;
-            if (d == floor(d) && fabs(d) < 1e16) {
-                char *s = kc_fmt("%.0f", d);
-                char *out = kc_fmt("%s.0", s);
-                free(s);
-                return out;
-            }
+            if (d == floor(d) && fabs(d) < 1e16)
+                return kc_fmt("%.0f", d);
             return kc_float_str(d);
         }
         return kc_py_str(v);

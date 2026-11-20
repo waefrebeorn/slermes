@@ -418,10 +418,10 @@ static int ws2_float_str(const char *s, double *out) {
     while (ws2_float_ws(*p)) p++;
     int neg = 0;
     if (*p == '+' || *p == '-') { neg = (*p == '-'); p++; }
-    /* inf / infinity / nan (case-insensitive) */
-    const unsigned char *q = p;
+    /* inf / infinity / nan (case-insensitive); word stops at whitespace */
     char word[16]; size_t wn = 0;
-    while (q[wn] && wn < 15) { word[wn] = (char)tolower(q[wn]); wn++; }
+    const unsigned char *q = p;
+    while (q[wn] && wn < 15 && !ws2_float_ws(q[wn])) { word[wn] = (char)tolower(q[wn]); wn++; }
     word[wn] = 0;
     const unsigned char *tail = q + wn;
     while (ws2_float_ws(*tail)) tail++;
@@ -437,25 +437,27 @@ static int ws2_float_str(const char *s, double *out) {
             if (u == p || !isdigit(u[-1]) || !isdigit(u[1])) return -1;
         }
     }
-    /* build clean buffer (strip '_'), validate grammar */
+    /* strip '_' (placement validated), then grammar-validate the clean body */
     ws2_buf clean; ws2_binit(&clean);
-    const unsigned char *d = p;
-    int int_digits = 0, frac_digits = 0, exp_digits = 0;
-    while (isdigit(*d)) { char c[2] = {(char)*d, 0}; ws2_bputs(&clean, c); d++; int_digits++; }
-    if (*d == '.') {
-        ws2_bputs(&clean, "."); d++;
-        while (isdigit(*d)) { char c[2] = {(char)*d, 0}; ws2_bputs(&clean, c); d++; frac_digits++; }
+    for (const unsigned char *u = p; *u; u++) {
+        if (*u == '_') continue;
+        char c[2] = {(char)*u, 0};
+        ws2_bputs(&clean, c);
     }
-    if (int_digits + frac_digits == 0) { ws2_bfree(&clean); return -1; }
-    if (*d == 'e' || *d == 'E') {
-        ws2_bputs(&clean, "e"); d++;
-        if (*d == '+' || *d == '-') { char c[2] = {(char)*d, 0}; ws2_bputs(&clean, c); d++; }
-        while (isdigit(*d)) { char c[2] = {(char)*d, 0}; ws2_bputs(&clean, c); d++; exp_digits++; }
-        if (exp_digits == 0) { ws2_bfree(&clean); return -1; }
-    }
-    while (ws2_float_ws(*d)) d++;
-    if (*d != '\0') { ws2_bfree(&clean); return -1; }
     char *body = ws2_btake(&clean);
+    const char *d = body;
+    int int_digits = 0, frac_digits = 0, exp_digits = 0;
+    while (isdigit((unsigned char)*d)) { d++; int_digits++; }
+    if (*d == '.') { d++; while (isdigit((unsigned char)*d)) { d++; frac_digits++; } }
+    if (int_digits + frac_digits == 0) { free(body); return -1; }
+    if (*d == 'e' || *d == 'E') {
+        d++;
+        if (*d == '+' || *d == '-') d++;
+        while (isdigit((unsigned char)*d)) { d++; exp_digits++; }
+        if (exp_digits == 0) { free(body); return -1; }
+    }
+    while (ws2_float_ws((unsigned char)*d)) d++;
+    if (*d != '\0') { free(body); return -1; }
     char *full = neg ? ws2_xsf("-%s", body) : strdup(body);
     free(body);
     char *end = NULL;

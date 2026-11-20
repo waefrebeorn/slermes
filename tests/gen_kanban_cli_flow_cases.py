@@ -34,10 +34,19 @@ OUTPUT_SEAMS = {"print": None, "sys.stdout.write": None, "_err": 1,
                 "json.dumps": "{}"}
 
 
+def _sweep_args_default(d):
+    # argparse always sets task_id (default None); a SimpleNamespace without
+    # it would die at `args.task_id` before the sweep logic on BOTH sides.
+    if isinstance(d.get("args"), dict):
+        d["args"].setdefault("task_id", None)
+
+
 def case(func, seams=None, **inp):
     s = dict(OUTPUT_SEAMS)
     s.update(seams or {})
     d = dict(inp)
+    if func == "run_triage_sweep":
+        _sweep_args_default(d)
     d["seams"] = s
     return {"func": func, "in": d}
 
@@ -45,6 +54,8 @@ def case(func, seams=None, **inp):
 def bare(func, seams=None, **inp):
     """Case WITHOUT the default output scripts (fail-closed probes)."""
     d = dict(inp)
+    if func == "run_triage_sweep":
+        _sweep_args_default(d)
     d["seams"] = dict(seams or {})
     return {"func": func, "in": d}
 
@@ -361,7 +372,9 @@ CASES += [
     case("run_triage_sweep", {"_profile_author": "alice", "run_one": OK_OUT,
          "human_ok": "Specified t1 -> todo"},
          args={"task_id": "t1", "author": ""}, **SW),
-    case("run_triage_sweep", {"_err": 2}, args={"task_id": None}, **SW),
+    case("run_triage_sweep", {"_profile_author": "alice", "_err": 2},
+         args={"task_id": None}, **SW),
+    bare("run_triage_sweep", args={"task_id": "t1"}, **SW),  # fail-closed _profile_author
 ]
 
 # ── _retitled_suffix ──
