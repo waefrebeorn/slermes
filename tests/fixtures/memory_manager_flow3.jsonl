@@ -1,0 +1,59 @@
+{"func": "redact_for_provider", "in": {"state": {}, "values": ["hello world"], "urls": true, "seams": {"redact_for_egress": "hello world"}}}
+{"func": "redact_for_provider", "in": {"state": {}, "values": ["hello world"], "urls": false, "seams": {"redact_for_egress": "hello world"}}}
+{"func": "redact_for_provider", "in": {"state": {}, "values": ["data:image/png;base64,AAAA"], "seams": {}}}
+{"func": "redact_for_provider", "in": {"state": {}, "values": [""], "seams": {"redact_for_egress": "unused"}}}
+{"func": "redact_for_provider", "in": {"state": {}, "values": [{"a": "same", "d": ["same2", 3, true, null]}], "seams": {"redact_for_egress": ["same", "same2"]}}}
+{"func": "redact_for_provider", "in": {"state": {}, "values": ["my secret ABCDEFGHIJKLMNOP"], "seams": {"redact_for_egress": "masked", "tokenize": [{"tokens": ["ABCDEFGHIJKLMNOP"]}, {"tokens": []}], "redact_match": true, "redact_sub": "[REDACTED]"}}}
+{"func": "redact_for_provider", "in": {"state": {}, "values": ["a", "b"], "seams": {"redact_for_egress": ["a", "b"]}}}
+{"func": "redact_for_provider", "in": {"state": {}, "values": ["x"], "seams": {"redact_for_egress": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "redact_for_provider", "in": {"state": {}, "values": ["x"], "seams": {}}}
+{"func": "redact_messages", "in": {"state": {}, "messages": null, "seams": {}}}
+{"func": "redact_messages", "in": {"state": {}, "messages": [], "seams": {"without_withheld_prompts": [[]]}}}
+{"func": "redact_messages", "in": {"state": {}, "messages": [{"role": "user", "content": "hi"}], "seams": {"without_withheld_prompts": [[{"role": "user", "content": "hi"}]], "redact_for_egress": ["HI"]}}}
+{"func": "redact_messages", "in": {"state": {}, "messages": [{"role": "user"}], "seams": {"without_withheld_prompts": {"__raise__": "RuntimeError", "msg": "strip"}}}}
+{"func": "redact_messages", "in": {"state": {}, "messages": [{"role": "user"}], "seams": {"without_withheld_prompts": [[{"role": "user"}]], "redact_for_egress": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "redact_messages", "in": {"state": {}, "messages": [{"role": "user"}], "seams": {}}}
+{"func": "gate_init", "in": {"state": {}, "seams": {}}}
+{"func": "gate_init", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["t", 1, 2]]}]}, "seams": {}}}
+{"func": "gate_init", "in": {"state": {"gate": [], "note": "x"}, "seams": {}}}
+{"func": "gate_init", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [], "last_ok": 5, "probe_at": 5, "skips": 2}]}, "seams": {}}}
+{"func": "gate_init", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["t", 1, 2]]}, {"key": ["h", "q"], "calls": []}]}, "seams": {}}}
+{"func": "gate_enter", "in": {"state": {"gate": []}, "key": ["h", "p"], "token": "t1", "timeout": 10, "now": 100, "seams": {}}}
+{"func": "gate_enter", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["c0", 100, 200], ["c1", 100, 200], ["c2", 100, 200], ["c3", 100, 200], ["c4", 100, 200], ["c5", 100, 200], ["c6", 100, 200], ["c7", 100, 200], ["c8", 100, 200], ["c9", 100, 200], ["c10", 100, 200], ["c11", 100, 200], ["c12", 100, 200], ["c13", 100, 200], ["c14", 100, 200], ["c15", 100, 200]]}]}, "key": ["h", "p"], "token": "new", "timeout": 10, "now": 100, "seams": {}}}
+{"func": "gate_enter", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["c0", 10, 20], ["c1", 10, 20], ["c2", 10, 20], ["c3", 10, 20]]}]}, "key": ["h", "p"], "token": "new", "timeout": 10, "now": 100, "seams": {}}}
+{"func": "gate_enter", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["c0", 10, 20], ["c1", 10, 20], ["c2", 10, 20], ["c3", 10, 20]], "probe_at": 100, "skips": 5}]}, "key": ["h", "p"], "token": "probe", "timeout": 10, "now": 200, "seams": {}}}
+{"func": "gate_enter", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["c0", 90, 200]], "probe_at": 10, "skips": 3}]}, "key": ["h", "p"], "token": "t2", "timeout": 10, "now": 100, "seams": {}}}
+{"func": "gate_enter", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["c0", 10, 20], ["c1", 10, 20], ["c2", 10, 20], ["c3", 10, 20]], "last_ok": 50}]}, "key": ["h", "p"], "token": "t3", "timeout": 10, "now": 100, "seams": {}}}
+{"func": "gate_leave", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["t1", 1, 2]]}]}, "key": ["h", "p"], "token": "missing", "ok": true, "now": 100, "seams": {}}}
+{"func": "gate_leave", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["t1", 1, 2], ["t2", 3, 4]]}]}, "key": ["h", "p"], "token": "t1", "ok": false, "now": 100, "seams": {}}}
+{"func": "gate_leave", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["t1", 1, 2], ["t2", 3, 4]]}]}, "key": ["h", "p"], "token": "t1", "ok": true, "now": 100, "seams": {}}}
+{"func": "gate_leave", "in": {"state": {"gate": [{"key": ["h", "p"], "calls": [["t1", 1, 2]], "last_ok": 1, "probe_at": 1, "skips": 2}]}, "key": ["h", "p"], "token": "t1", "ok": true, "now": 100, "seams": {}}}
+{"func": "gate_leave", "in": {"state": {"gate": []}, "key": ["h", "p"], "token": "t1", "ok": true, "now": 100, "seams": {}}}
+{"func": "manager_init", "in": {"state": {}, "external_prefetch_timeout": null, "seams": {"hermes_home_key": "h"}}}
+{"func": "manager_init", "in": {"state": {}, "external_prefetch_timeout": 3, "seams": {"hermes_home_key": "h"}}}
+{"func": "manager_init", "in": {"state": {}, "external_prefetch_timeout": 0, "seams": {"hermes_home_key": "h"}}}
+{"func": "manager_init", "in": {"state": {}, "external_prefetch_timeout": -1, "seams": {"hermes_home_key": "h"}}}
+{"func": "manager_init", "in": {"state": {}, "external_prefetch_timeout": 2.5, "seams": {"hermes_home_key": "h"}}}
+{"func": "manager_init", "in": {"state": {}, "external_prefetch_timeout": null, "seams": {"hermes_home_key": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "manager_init", "in": {"state": {}, "external_prefetch_timeout": null, "seams": {"hermes_home_key": {"__raise__": "RuntimeError", "msg": "no home"}}}}
+{"func": "manager_init", "in": {"state": {}, "external_prefetch_timeout": null, "seams": {}}}
+{"func": "tool_call_keywords", "in": {"state": {"tool_call_keywords_cache": {}}, "provider": {"id": "1", "name": "p1", "handle_tool_call": "fn1"}, "seams": {"signature": {"a": {"kind": "KEYWORD_ONLY"}, "b": {"kind": "POSITIONAL_ONLY"}}}}}
+{"func": "tool_call_keywords", "in": {"state": {"tool_call_keywords_cache": {}}, "provider": {"id": "1", "name": "p1", "handle_tool_call": "fn1"}, "seams": {"signature": {"kw": {"kind": "VAR_KEYWORD"}}}}}
+{"func": "tool_call_keywords", "in": {"state": {"tool_call_keywords_cache": {}}, "provider": {"id": "1", "name": "p1", "handle_tool_call": "fn1"}, "seams": {"signature": {"__raise__": "TypeError", "msg": "boom"}}}}
+{"func": "tool_call_keywords", "in": {"state": {"tool_call_keywords_cache": {}}, "provider": {"id": "1", "name": "p1", "handle_tool_call": "fn1"}, "seams": {"signature": {"__raise__": "UnicodeDecodeError", "msg": "boom"}}}}
+{"func": "tool_call_keywords", "in": {"state": {"tool_call_keywords_cache": {}}, "provider": {"id": "1", "name": "p1", "handle_tool_call": "fn1"}, "seams": {"signature": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "tool_call_keywords", "in": {"state": {"tool_call_keywords_cache": {}}, "provider": {"id": "1", "name": "p1", "handle_tool_call": "fn1"}, "seams": {"signature": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "tool_call_keywords", "in": {"state": {"tool_call_keywords_cache": {"1": ["b", "a"]}}, "provider": {"id": "1", "name": "p1", "handle_tool_call": "fn1"}, "seams": {}}}
+{"func": "tool_call_keywords", "in": {"state": {"tool_call_keywords_cache": {}}, "provider": {"id": "1", "name": "p1", "handle_tool_call": "fn1"}, "seams": {}}}
+{"func": "drop_provider", "in": {"state": {"providers": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "ext"}], "tool_to_provider": {"tool_a": {"id": "1", "name": "builtin"}, "tool_b": {"id": "2", "name": "ext"}}, "has_external": true, "tool_call_keywords_cache": {"2": ["x"]}}, "provider": {"id": "2", "name": "ext"}, "seams": {}}}
+{"func": "drop_provider", "in": {"state": {"providers": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "ext"}], "tool_to_provider": {"tool_a": {"id": "1", "name": "builtin"}, "tool_b": {"id": "2", "name": "ext"}}, "has_external": true, "tool_call_keywords_cache": {"2": ["x"]}}, "provider": {"id": "1", "name": "builtin"}, "seams": {}}}
+{"func": "drop_provider", "in": {"state": {"providers": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "ext"}], "tool_to_provider": {"tool_a": {"id": "1", "name": "builtin"}, "tool_b": {"id": "2", "name": "ext"}}, "has_external": true, "tool_call_keywords_cache": {"2": ["x"]}}, "provider": {"id": "9", "name": "gone"}, "seams": {}}}
+{"func": "drop_provider", "in": {"state": {"providers": [{"id": "1", "name": "builtin"}], "tool_to_provider": {}, "has_external": false, "tool_call_keywords_cache": {}}, "provider": {"id": "1", "name": "builtin"}, "seams": {}}}
+{"func": "drop_provider", "in": {"state": {"providers": [{"id": "2", "name": "ext2"}, {"id": "3", "name": "ext3"}], "tool_to_provider": {"tb": {"id": "3", "name": "ext3"}}, "has_external": true, "tool_call_keywords_cache": {"3": null}}, "provider": {"id": "3", "name": "ext3"}, "seams": {}}}
+{"func": "initialize_for_agent", "in": {"state": {"providers": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}]}, "kwargs": {"session_id": "s"}, "say": true, "before": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}], "seams": {"initialize_all": {"providers": [{"id": "1", "name": "builtin"}], "has_external": false}, "say": null}}}
+{"func": "initialize_for_agent", "in": {"state": {"providers": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}]}, "kwargs": {"session_id": "s"}, "say": true, "before": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}], "seams": {"initialize_all": {"providers": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}], "has_external": true}, "say": "unexpected"}}}
+{"func": "initialize_for_agent", "in": {"state": {"providers": [{"id": "2", "name": "p1"}, {"id": "3", "name": "p2"}]}, "kwargs": {"session_id": "s"}, "say": true, "before": [{"id": "2", "name": "p1"}, {"id": "3", "name": "p2"}], "seams": {"initialize_all": {"providers": [], "has_external": false}, "say": [null, null]}}}
+{"func": "initialize_for_agent", "in": {"state": {"providers": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}]}, "kwargs": {"session_id": "s"}, "say": false, "before": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}], "seams": {"initialize_all": {"providers": [{"id": "1", "name": "builtin"}], "has_external": false}, "logger.warning": null}}}
+{"func": "initialize_for_agent", "in": {"state": {"providers": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}]}, "kwargs": {"session_id": "s"}, "say": true, "before": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}], "seams": {"initialize_all": {"__raise__": "RuntimeError", "msg": "init failed"}}}}
+{"func": "initialize_for_agent", "in": {"state": {"providers": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}]}, "kwargs": {"session_id": "s"}, "say": true, "before": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}], "seams": {"initialize_all": {"providers": [], "has_external": false}, "say": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "initialize_for_agent", "in": {"state": {"providers": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}]}, "kwargs": {"session_id": "s"}, "say": true, "before": [{"id": "1", "name": "builtin"}, {"id": "2", "name": "p1"}], "seams": {}}}
