@@ -88,7 +88,14 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 58 wired 804->807, HEAD `64f1875b43`.
+- Parent working set (committed): wave 59 wired 807->809, HEAD `119ff5f2c8`;
+  build health 2116/2116 clean, port gate PASS.
+  Wave 59 RESOLVED: acp_gateway_server_flow parent 126/0 (JSON object vs
+  array-only accessor bugs + BaseException passthrough), api_server_runs_flow2
+  parent 98/0 (borrowed-node double-free + `in` / exact exception contracts).
+  Both wired. tui_server_flow3 crash fixed (3 double-frees) but 374/287
+  mismatches across 50/62 fns from incompatible seam models — scope-down
+  agent `sa-0-e2986bc8` (deleg_c4759951) is reducing it honestly.
   Full `make parity` scan hangs in parity_truth.py (>600s); docs were
   stamped with `gen_parity_walkway.py --from-scan live_parity_scan.json`.
 - Six code-only port agents (deleg_2848c18e) own: tui_hosted_room_service_flow,
