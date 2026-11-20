@@ -88,9 +88,23 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 57 wired 802->804, HEAD `fe321f4170`.
+- Parent working set (committed): wave 58 wired 804->807, HEAD `64f1875b43`.
   Full `make parity` scan hangs in parity_truth.py (>600s); docs were
   stamped with `gen_parity_walkway.py --from-scan live_parity_scan.json`.
 - Six code-only port agents (deleg_2848c18e) own: tui_hosted_room_service_flow,
   executions_worker_flow, acp_gateway_server_flow, tui_server_flow3,
   api_server_runs_flow2, feishu_adapter_flow5. Parent gates + wires on landing.
+  LANDED wave 58 (`64f1875b43`): only 3 were parent-green and are wired
+  (804): tui_hosted_room_service_flow 151/0, executions_worker_flow 168/0,
+  feishu_adapter_flow5 134/0. The other three were FALSE GREENS in child
+  self-reports (shadow-diff / 1-case gate) and are NOT wired:
+  - **acp_gateway_server_flow** — parent 126 cases, 8 mismatches
+    (`_editor_id` alias cases, `_answer_permission`). Debugger `sa-0-4ebef4c3`.
+  - **tui_server_flow3** — parent harness rc127 (child claimed a fake
+    1-case green); 62 fns / 374 fixture cases must actually run.
+    Debugger `sa-1-d1095c0e`.
+  - **api_server_runs_flow2** — parent harness rc139; 14 fns / 98 cases.
+    Debugger `sa-2-2776008c`.
+  Repro for all: rebuild the port .o, then `ORACLE_REBUILD=1 bash
+  tests/run_one_oracle.sh <name> oracle_<name>.py "" "lib/libjson/json.o"`
+  with winlibs env sourced. Parent re-gates before any wire.
