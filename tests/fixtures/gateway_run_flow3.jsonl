@@ -186,3 +186,10 @@
 {"func":"get_housekeeping_executor","in":{"runner":{},"io":{}}}
 {"func":"get_housekeeping_executor","in":{"runner":{"x":1},"io":{"_get_or_create_pool":"exec9"}}}
 {"func":"get_housekeeping_executor","in":{"runner":null,"io":{"_get_or_create_pool":"exec1"}}}
+{"func":"migrate_command","in":{"io":{"MIGRATE_COMMAND":"hermes gateway migrate --owner"}}}
+{"func":"migrate_command","in":{"io":{"MIGRATE_COMMAND":""}}}
+{"func":"migrate_command","in":{"io":{"MIGRATE_COMMAND":["cmd-a","cmd-b"]}}}
+{"func":"migrate_command","in":{"io":{"MIGRATE_COMMAND":null}}}
+{"func":"migrate_command","in":{"io":{}}}
+{"func":"migrate_command","in":{"io":{"MIGRATE_COMMAND":{"__raise__":"RuntimeError","msg":"boom"}}}}
+{"func":"migrate_command","in":{"io":{"MIGRATE_COMMAND":{"__raise__":"SystemExit","msg":""}}}}

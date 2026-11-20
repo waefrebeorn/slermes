@@ -160,6 +160,8 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         r = gr3_run_housekeeping_in_executor(J("runner"), S("func"), J("args"), sp);
     } else if (strcmp(func, "get_housekeeping_executor") == 0) {
         r = gr3_get_housekeeping_executor(J("runner"), sp);
+    } else if (strcmp(func, "migrate_command") == 0) {
+        r = gr3_migrate_command(sp);
     } else {
         json_set(out, "error", json_string("unknown func"));
     }

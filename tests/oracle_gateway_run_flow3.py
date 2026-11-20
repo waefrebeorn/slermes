@@ -39,6 +39,7 @@ Summary: ORACLE gateway_run_flow3: N cases, M mismatches. Fail-closed on 0.
 """
 import ast
 import asyncio
+import builtins
 import contextlib
 import copy
 import importlib.util as _importlib_util_real
@@ -96,6 +97,11 @@ _BUILTIN_EXC = {
     "UnicodeTranslateError": UnicodeTranslateError, "Warning": Warning,
     "DeprecationWarning": DeprecationWarning,
     "PendingDeprecationWarning": PendingDeprecationWarning,
+    "PythonFinalizationError": getattr(builtins, "PythonFinalizationError", RuntimeError),
+    "_IncompleteInputError": getattr(builtins, "_IncompleteInputError", SyntaxError),
+    "BaseExceptionGroup": BaseExceptionGroup, "ExceptionGroup": ExceptionGroup,
+    # OSError aliases (py3.14): keep script names resolving to the real class.
+    "EnvironmentError": OSError, "IOError": OSError, "WindowsError": OSError,
     "RuntimeWarning": RuntimeWarning, "SyntaxWarning": SyntaxWarning,
     "UserWarning": UserWarning, "FutureWarning": FutureWarning,
     "ImportWarning": ImportWarning, "UnicodeWarning": UnicodeWarning,
@@ -112,6 +118,12 @@ def make_exc(v):
     cls = _BUILTIN_EXC.get(kind)
     if cls is None:
         cls = type(str(kind), (Exception,), {})
+    # Groups need (msg, exceptions); an Exception-sub keeps ExceptionGroup,
+    # a BaseException-only sub keeps BaseExceptionGroup (py3.14 auto-narrows).
+    if kind == "ExceptionGroup":
+        return cls(msg, [ValueError(msg)])
+    if kind == "BaseExceptionGroup":
+        return cls(msg, [SystemExit(msg)])
     return cls(msg)
 
 
@@ -391,6 +403,7 @@ WANTED_TOPS = (
     "_housekeeping_channel_directory", "_housekeeping_curator",
     "_housekeeping_state_db_maintenance", "_housekeeping_deferred_fts_retry",
     "_start_gateway_make_restart_signal_handler",
+    "_migrate_command",
 )
 WANTED_METHODS = (
     "_running_agent_ids", "_admit_bot_message_for_source",
@@ -658,6 +671,15 @@ mod("session_retention",
              **{k: denorm(v) for k, v in kw.items()})))
 
 
+class _MigrateCmdModule(types.ModuleType):
+    """Stub for hermes_cli.gateway_migrate: the in-function `from ... import
+    MIGRATE_COMMAND` fires one seam on attribute access, once per call."""
+    def __getattr__(self, name):
+        if name == "MIGRATE_COMMAND":
+            return seam("MIGRATE_COMMAND", {})
+        raise AttributeError(name)
+
+
 def install_case():
     CUR["idx"] = {}
     NS["logger"] = RecLogger()
@@ -667,6 +689,13 @@ def install_case():
         mod("hermes_cli.commands_platforms",
             _sanitize_telegram_name=lambda name: seam("sanitize_telegram_name",
                                                       {"name": name}))
+    # _migrate_command does `from hermes_cli.gateway_migrate import
+    # MIGRATE_COMMAND` INSIDE the call; the name lookup is the only I/O and
+    # fires exactly one MIGRATE_COMMAND seam per call (value or raise spec).
+    gm = _MigrateCmdModule("hermes_cli.gateway_migrate")
+    sys.modules["hermes_cli.gateway_migrate"] = gm
+    if "hermes_cli" in sys.modules:
+        setattr(sys.modules["hermes_cli"], "gateway_migrate", gm)
 
 
 FUNC_NAMES = {
@@ -685,6 +714,7 @@ FUNC_NAMES = {
     "_session_env_scope": "session_env_scope",
     "_run_housekeeping_in_executor": "run_housekeeping_in_executor",
     "_get_housekeeping_executor": "get_housekeeping_executor",
+    "_migrate_command": "migrate_command",
 }
 FIXTURE_TO_LIVE = {v: k for k, v in FUNC_NAMES.items()}
 
@@ -789,6 +819,8 @@ def drive(func, inp):
     if func == "get_housekeeping_executor":
         rd = build_runner(inp)
         return run_flow(lambda: fn(rd))
+    if func == "migrate_command":
+        return run_flow(lambda: fn())
     raise ValueError("unknown func: %s" % func)
 
 

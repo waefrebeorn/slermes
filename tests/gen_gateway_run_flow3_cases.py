@@ -633,11 +633,21 @@ C("get_housekeeping_executor", {"_get_or_create_pool": "exec9"}, runner={"x": 1}
 C("get_housekeeping_executor", {"_get_or_create_pool": "exec1"}, runner=None)
 
 
+# ── migrate_command ──
+C("migrate_command", {"MIGRATE_COMMAND": "hermes gateway migrate --owner"})
+C("migrate_command", {"MIGRATE_COMMAND": ""})
+C("migrate_command", {"MIGRATE_COMMAND": ["cmd-a", "cmd-b"]})
+C("migrate_command", {"MIGRATE_COMMAND": None})
+C("migrate_command", {})  # fail-closed: missing script -> RuntimeError
+C("migrate_command", {"MIGRATE_COMMAND": R("RuntimeError", "boom")})
+C("migrate_command", {"MIGRATE_COMMAND": R("SystemExit")})
+
+
 def main():
     counts = {}
     for c in CASES:
         counts[c["func"]] = counts.get(c["func"], 0) + 1
-    assert len(counts) == 15, counts
+    assert len(counts) == 16, counts
     for f, n in sorted(counts.items()):
         assert n >= 5, (f, n)
     os.makedirs(os.path.dirname(OUT), exist_ok=True)

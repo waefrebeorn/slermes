@@ -2,11 +2,12 @@
  * gateway_run_flow3.c — gateway/run.py FLOW cores + leaves, third wave
  * (universal-seam convention, twin of gateway_run_flow2 / run_adapters_flow).
  *
- * Ports 15 UNCLAIMED gateway/run.py functions: the Telegram command-mention
+ * Ports 16 UNCLAIMED gateway/run.py functions: the Telegram command-mention
  * rewriter, the turn-inactivity watchdog loop, the builtin-adapter lazy
  * import + instantiation pair, the channel-directory / curator / state.db
  * maintenance / deferred-FTS housekeeping flows, the SIGUSR1 restart-handler
- * factory, and six GatewayRunner methods (running-agent id set, bot-message
+ * factory, the migration-command constant leaf, and six GatewayRunner
+ * methods (running-agent id set, bot-message
  * admission under the authorization profile, the authorization-profile scope
  * wrapper, the session-env context scope, the housekeeping executor offload
  * and the housekeeping pool getter). Every live I/O (logging, importlib,
@@ -59,6 +60,7 @@
  *   ThreadPoolExecutor            concurrent.futures.ThreadPoolExecutor(max_workers=4, thread_name_prefix="hermes-gateway-hk")
  *   copy_context                  contextvars.copy_context()
  *   loop.run_in_executor          loop.run_in_executor(executor, ctx.run, func, *args)
+ *   MIGRATE_COMMAND               from hermes_cli.gateway_migrate import MIGRATE_COMMAND
  *
  * Modeling notes (differential oracle tests/oracle_gateway_run_flow3.py):
  *  - Callable markers: a JSON string "cls:<Name>" / "fn:<Name>" models a
@@ -958,4 +960,13 @@ json_t *gr3_run_housekeeping_in_executor(const json_t *runner, const char *func,
     json_free(exec);
     json_free(loop);
     return gr3_call(s, "loop.run_in_executor", a);
+}
+
+/* PoP: gr3_migrate_command @ gateway/run.py:_migrate_command */
+/* Live: `from hermes_cli.gateway_migrate import MIGRATE_COMMAND; return
+ * MIGRATE_COMMAND`. The in-function import is the only I/O; it enters as the
+ * MIGRATE_COMMAND seam. Its result is returned verbatim (value or raise spec,
+ * including BaseException kinds which pass through every caller). */
+json_t *gr3_migrate_command(const gr3_seams_t *s) {
+    return gr3_call(s, "MIGRATE_COMMAND", gr3_args());
 }
