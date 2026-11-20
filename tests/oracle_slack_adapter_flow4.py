@@ -2,7 +2,7 @@
 """Oracle for the Slack plugin-adapter FLOW port, wave 4
 (src/gateway/platforms/slack_adapter_flow4.c).
 
-Drives the LIVE plugins/platforms/slack/adapter.py UNCLAIMED remainder (9 funcs:
+Drives the LIVE plugins/platforms/slack/adapter.py UNCLAIMED remainder (25 funcs:
 SDK-probe global with except-Exception, static tuple/dict leaves, a claimed
 sibling compositor, scoped policy gates and an exception classifier) with
 SCRIPTED seams. Every injected callable (sdk_agent_sessions_probe,
@@ -88,10 +88,22 @@ def seed_constants(src, ns, path):
 
 MODULE_FUNCS = ["_sdk_supports_agent_sessions"]
 STATIC_METHODS = ["_interaction_fields", "_section_text",
-                  "_parse_users_info", "_slack_file_kind"]
+                  "_parse_users_info", "_slack_file_kind",
+                  "_button", "_event_team_id", "_context_channel_id", "_first_file_share"]
 INSTANCE_METHODS = ["_cron_continuable_surface", "_slack_allow_bots",
-                    "_reactions_enabled", "_is_retryable_upload_error"]
+                    "_reactions_enabled", "_is_retryable_upload_error",
+                    "_markdown_block_payload", "_feedback_block",
+                    "_append_feedback_block", "_build_identity_prompt",
+                    "_is_foreign_author", "_agent_view_event_fields",
+                    "_extract_assistant_thread_metadata", "_event_declares_bot_sender",
+                    "_resolve_thread_ts", "_session_thread_ts",
+                    "_normalize_changed_message", "_assistant_thread_title_enabled"]
 TARGETS = MODULE_FUNCS + STATIC_METHODS + INSTANCE_METHODS
+# Claimed pure leaves transcribed inline in C (no PoP, no seam) -- seeded REAL
+# here so the live reference can run them.
+PURE_LEAVES = ["_str_or_empty", "_first_truthy"]
+INLINE_METHODS = ["_extra_flag", "_team_in_install_set",
+                  "_dm_top_level_threads_as_sessions"]
 CONSTS = ["_TRANSIENT_UPLOAD_MARKERS"]
 
 
@@ -106,17 +118,18 @@ def extract_adapter():
     tree = ast.parse(src)
     seed_constants(src, ns, A_SRC)
     for node in tree.body:
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in MODULE_FUNCS:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and \
+                node.name in (MODULE_FUNCS + PURE_LEAVES):
             exec_node(src, node, ns, A_SRC)
     cls = next((n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == "SlackAdapter"), None)
     if cls is None:
         print("FATAL oracle_slack_adapter_flow4: SlackAdapter class not found")
         sys.exit(2)
-    method_names = set(STATIC_METHODS) | set(INSTANCE_METHODS)
+    method_names = set(STATIC_METHODS) | set(INSTANCE_METHODS) | set(INLINE_METHODS)
     for node in cls.body:
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in method_names:
             exec_node(src, node, ns, A_SRC)
-    missing = [k for k in TARGETS + CONSTS if k not in ns]
+    missing = [k for k in TARGETS + CONSTS + PURE_LEAVES + INLINE_METHODS if k not in ns]
     if missing:
         print(f"FATAL oracle_slack_adapter_flow4: adapter missing: {missing}")
         sys.exit(2)
@@ -300,6 +313,7 @@ class LoggerDouble:
 # ── per-case seam installation ──
 def install_case(ctx):
     NS["logger"] = LoggerDouble(ctx)
+    NS["t"] = rec(ctx, "t", lambda key: {"key": key})
     NS["_extra_or_secret"] = rec(
         ctx, "_extra_or_secret",
         lambda extra, key, env_var, default: {
@@ -332,9 +346,23 @@ def install_case(ctx):
 def mk_self(ctx, state):
     extra = materialize(state.get("extra"))
     self = types.SimpleNamespace(config=types.SimpleNamespace(extra=extra))
+    # Static targets resolve via self as plain functions (no descriptor binding).
+    for nm in STATIC_METHODS:
+        setattr(self, nm, REAL[nm])
+    # Instance targets bind as methods.
     for nm in INSTANCE_METHODS:
         setattr(self, nm, types.MethodType(REAL[nm], self))
+    # Claimed helpers transcribed inline in C run REAL on the live side.
+    for nm in INLINE_METHODS:
+        setattr(self, nm, types.MethodType(NS[nm], self))
+    self._MARKDOWN_BLOCK_MAX = 11500
+    self._team_bot_names = materialize(state.get("_team_bot_names")) or {}
+    self._bot_display_name = materialize(state.get("_bot_display_name")) or ""
+    self._processed_message_ts = materialize(state.get("_processed_message_ts")) or set()
+    if "_team_clients" in state:
+        self._team_clients = materialize(state["_team_clients"])
     self._is_retryable_error = rec(ctx, "_is_retryable_error", lambda body: {"body": body})
+    self._slack_api_human_users = rec(ctx, "slack_api_human_users")
     return self
 
 
@@ -365,6 +393,16 @@ def drive(func, inp):
                 ret = NS[func](args.get("payload"), args.get("user_id"))
             elif func == "_slack_file_kind":
                 ret = NS[func](args.get("f"), args.get("mimetype"))
+            elif func == "_button":
+                ret = NS[func](args.get("text"), args.get("action_id"), args.get("value"),
+                               style=args.get("style", ""), emoji=args.get("emoji", False))
+            elif func == "_event_team_id":
+                ret = NS[func](args.get("event"), args.get("body"),
+                               install_set=args.get("install_set"))
+            elif func == "_context_channel_id":
+                ret = NS[func](args.get("context"))
+            elif func == "_first_file_share":
+                ret = NS[func](args.get("file_obj"), args.get("channel_id"))
             else:
                 raise RuntimeError(f"unbound static target {func}")
         elif func in INSTANCE_METHODS:
@@ -378,6 +416,31 @@ def drive(func, inp):
             elif func == "_is_retryable_upload_error":
                 ret = self._is_retryable_upload_error(
                     make_exc_instance(args["exc"]["__exc__"], ctx))
+            elif func == "_markdown_block_payload":
+                ret = self._markdown_block_payload(args.get("content"))
+            elif func == "_feedback_block":
+                ret = self._feedback_block()
+            elif func == "_append_feedback_block":
+                ret = self._append_feedback_block(args.get("blocks"))
+            elif func == "_build_identity_prompt":
+                ret = self._build_identity_prompt(args.get("team_id", ""))
+            elif func == "_is_foreign_author":
+                ret = self._is_foreign_author(args.get("author_team"), args.get("resolved_team"))
+            elif func == "_agent_view_event_fields":
+                ret = self._agent_view_event_fields(args.get("event"), args.get("body"))
+            elif func == "_extract_assistant_thread_metadata":
+                ret = self._extract_assistant_thread_metadata(args.get("event"), args.get("body"))
+            elif func == "_event_declares_bot_sender":
+                ret = self._event_declares_bot_sender(args.get("event"))
+            elif func == "_resolve_thread_ts":
+                ret = self._resolve_thread_ts(args.get("reply_to"), args.get("metadata"))
+            elif func == "_session_thread_ts":
+                ret = self._session_thread_ts(args.get("event"), args.get("ts"),
+                                              args.get("is_dm"), args.get("assistant_meta") or {})
+            elif func == "_normalize_changed_message":
+                ret = self._normalize_changed_message(args.get("event"))
+            elif func == "_assistant_thread_title_enabled":
+                ret = self._assistant_thread_title_enabled()
             else:
                 raise RuntimeError(f"unbound instance target {func}")
         else:
@@ -389,7 +452,8 @@ def drive(func, inp):
 
 # ── seam-name cross-check ──
 SEAM_NAMES = ["sdk_agent_sessions_probe", "is_slack_voice_clip",
-              "_extra_or_secret", "logger.warning", "_is_retryable_error"]
+              "_extra_or_secret", "logger.warning", "_is_retryable_error",
+              "t", "slack_api_human_users"]
 
 
 def cross_check():

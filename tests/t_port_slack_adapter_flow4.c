@@ -34,6 +34,23 @@ static const sa4_case_t CASES[] = {
     { "_slack_allow_bots",             sa4_slack_allow_bots },
     { "_reactions_enabled",            sa4_reactions_enabled },
     { "_is_retryable_upload_error",    sa4_is_retryable_upload_error },
+    /* Coherent block-building / event-field-extraction remainder (16). */
+    { "_button",                        sa4_button },
+    { "_markdown_block_payload",        sa4_markdown_block_payload },
+    { "_feedback_block",                sa4_feedback_block },
+    { "_append_feedback_block",         sa4_append_feedback_block },
+    { "_build_identity_prompt",         sa4_build_identity_prompt },
+    { "_event_team_id",                 sa4_event_team_id },
+    { "_context_channel_id",            sa4_context_channel_id },
+    { "_first_file_share",              sa4_first_file_share },
+    { "_is_foreign_author",             sa4_is_foreign_author },
+    { "_agent_view_event_fields",       sa4_agent_view_event_fields },
+    { "_extract_assistant_thread_metadata", sa4_extract_assistant_thread_metadata },
+    { "_event_declares_bot_sender",     sa4_event_declares_bot_sender },
+    { "_resolve_thread_ts",             sa4_resolve_thread_ts },
+    { "_session_thread_ts",             sa4_session_thread_ts },
+    { "_normalize_changed_message",     sa4_normalize_changed_message },
+    { "_assistant_thread_title_enabled", sa4_assistant_thread_title_enabled },
 };
 #define CASE_COUNT (sizeof(CASES) / sizeof(CASES[0]))
 
