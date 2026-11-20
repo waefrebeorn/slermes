@@ -1,0 +1,123 @@
+{"func": "command_requires_pipe_stdin", "in": {"command": "gh auth login --with-token"}}
+{"func": "command_requires_pipe_stdin", "in": {"command": "GH AUTH LOGIN   --with-token"}}
+{"func": "command_requires_pipe_stdin", "in": {"command": "  gh\tauth\nlogin  --with-token  "}}
+{"func": "command_requires_pipe_stdin", "in": {"command": "gh auth login"}}
+{"func": "command_requires_pipe_stdin", "in": {"command": "git auth login --with-token"}}
+{"func": "command_requires_pipe_stdin", "in": {"command": "gh auth login --with-token extra"}}
+{"func": "command_requires_pipe_stdin", "in": {"command": "gh auth login --with-token=x"}}
+{"func": "command_requires_pipe_stdin", "in": {"command": ""}}
+{"func": "command_requires_pipe_stdin", "in": {"command": "GH AUTH LOGIN --WITH-TOKEN"}}
+{"func": "resolve_notification_flag_conflict", "in": {"background": true, "notify_on_complete": true, "watch_patterns": ["x"]}}
+{"func": "resolve_notification_flag_conflict", "in": {"background": false, "notify_on_complete": true, "watch_patterns": ["x"]}}
+{"func": "resolve_notification_flag_conflict", "in": {"background": true, "notify_on_complete": false, "watch_patterns": ["x"]}}
+{"func": "resolve_notification_flag_conflict", "in": {"background": true, "notify_on_complete": true, "watch_patterns": []}}
+{"func": "resolve_notification_flag_conflict", "in": {"background": true, "notify_on_complete": true, "watch_patterns": null}}
+{"func": "resolve_notification_flag_conflict", "in": {"background": true, "notify_on_complete": true, "watch_patterns": "pat"}}
+{"func": "resolve_notification_flag_conflict", "in": {"background": true, "notify_on_complete": true, "watch_patterns": {}}}
+{"func": "resolve_notification_flag_conflict", "in": {"background": true, "notify_on_complete": true, "watch_patterns": [1, 2]}}
+{"func": "isolation_key", "in": {"key": "env_type"}}
+{"func": "isolation_key", "in": {"key": "docker_image"}}
+{"func": "isolation_key", "in": {"key": "modal_image"}}
+{"func": "isolation_key", "in": {"key": "_image"}}
+{"func": "isolation_key", "in": {"key": "image"}}
+{"func": "isolation_key", "in": {"key": "env"}}
+{"func": "isolation_key", "in": {"key": "IMAGE"}}
+{"func": "session_isolated", "in": {"env_type": "docker", "persistent": false, "io": {}}}
+{"func": "session_isolated", "in": {"env_type": "docker", "persistent": true, "io": {}}}
+{"func": "session_isolated", "in": {"env_type": "local", "persistent": false, "io": {"plugin_env_flag": true}}}
+{"func": "session_isolated", "in": {"env_type": "local", "persistent": true, "io": {"plugin_env_flag": false}}}
+{"func": "session_isolated", "in": {"env_type": "ssh", "persistent": false, "io": {"plugin_env_flag": {"__seq__": [false, true]}}}}
+{"func": "session_isolated", "in": {"env_type": "", "persistent": false, "io": {"plugin_env_flag": true}}}
+{"func": "session_isolated", "in": {"env_type": "local", "persistent": false, "io": {"plugin_env_flag": {"__raise__": "ValueError", "msg": "p"}}}}
+{"func": "session_isolated", "in": {"env_type": "local", "persistent": false, "io": {"plugin_env_flag": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "docker_session_isolated", "in": {"env_type": "docker", "persistent": false, "io": {}}}
+{"func": "docker_session_isolated", "in": {"env_type": "docker", "persistent": true, "io": {}}}
+{"func": "docker_session_isolated", "in": {"env_type": "local", "persistent": false, "io": {"plugin_env_flag": true}}}
+{"func": "docker_session_isolated", "in": {"env_type": "local", "persistent": false, "io": {"plugin_env_flag": false}}}
+{"func": "docker_session_isolated", "in": {"env_type": "", "persistent": false, "io": {"plugin_env_flag": true}}}
+{"func": "docker_session_isolated", "in": {"env_type": "local", "persistent": false, "io": {"plugin_env_flag": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "docker_profile_scoped", "in": {"env_type": "docker", "persistent": true, "io": {}}}
+{"func": "docker_profile_scoped", "in": {"env_type": "docker", "persistent": false, "io": {}}}
+{"func": "docker_profile_scoped", "in": {"env_type": "local", "persistent": true, "io": {}}}
+{"func": "docker_profile_scoped", "in": {"env_type": "", "persistent": true, "io": {}}}
+{"func": "docker_profile_scoped", "in": {"env_type": "ssh", "persistent": false, "io": {}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "docker", "tenv_bool": true}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "local", "tenv_bool": false}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": {"__raise__": "RuntimeError", "msg": "bridge"}, "tenv": "docker", "tenv_bool": true}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": {"__raise__": "ValueError", "msg": "t"}, "tenv_bool": true}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "docker", "tenv_bool": {"__raise__": "SystemExit", "msg": "s"}}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": null, "tenv_bool": null}}}
+{"func": "session_scope", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "ssh", "tenv_bool": false}}}
+{"func": "docker_session_isolation_enabled", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "docker", "tenv_bool": false}}}
+{"func": "docker_session_isolation_enabled", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "docker", "tenv_bool": true}}}
+{"func": "docker_session_isolation_enabled", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "local", "tenv_bool": false, "plugin_env_flag": true}}}
+{"func": "docker_session_isolation_enabled", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "local", "tenv_bool": false, "plugin_env_flag": false}}}
+{"func": "docker_session_isolation_enabled", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "local", "tenv_bool": false, "plugin_env_flag": {"__raise__": "RuntimeError", "msg": "p"}}}}
+{"func": "docker_session_isolation_enabled", "in": {"io": {"ensure_terminal_env_bridged": {"__raise__": "OSError", "msg": "b"}, "tenv": "docker", "tenv_bool": false}}}
+{"func": "docker_session_isolation_enabled", "in": {"io": {"ensure_terminal_env_bridged": null, "tenv": "docker", "tenv_bool": {"__raise__": "KeyboardInterrupt", "msg": "k"}}}}
+{"func": "has_isolation_overrides", "in": {"task_id": null, "io": {}}}
+{"func": "has_isolation_overrides", "in": {"task_id": "t", "state": {"task_env_overrides": {"t": {"docker_image": "x"}}}, "io": {"qualify_task_key": "t"}}}
+{"func": "has_isolation_overrides", "in": {"task_id": "t", "state": {"task_env_overrides": {"t": {"env_type": "docker"}}}, "io": {"qualify_task_key": "t"}}}
+{"func": "has_isolation_overrides", "in": {"task_id": "t", "state": {"task_env_overrides": {"t": {"foo": 1}}}, "io": {"qualify_task_key": "t"}}}
+{"func": "has_isolation_overrides", "in": {"task_id": "t", "state": {"task_env_overrides": {}}, "io": {"qualify_task_key": "t"}}}
+{"func": "has_isolation_overrides", "in": {"task_id": "t", "state": {"task_env_overrides": {"t": {"a": 1, "b_image": "y"}}}, "io": {"qualify_task_key": "t"}}}
+{"func": "has_isolation_overrides", "in": {"task_id": "t", "io": {"qualify_task_key": {"__raise__": "RuntimeError", "msg": "q"}}}}
+{"func": "has_isolation_overrides", "in": {"task_id": "t", "io": {"qualify_task_key": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "has_isolation_overrides", "in": {"task_id": "t", "io": {"qualify_task_key": {"__seq__": ["a", "b"]}}}}
+{"func": "register_container_alias", "in": {"child": "", "parent": "p", "io": {}}}
+{"func": "register_container_alias", "in": {"child": "c", "parent": "p", "io": {}}}
+{"func": "register_container_alias", "in": {"child": "c", "parent": null, "io": {}}}
+{"func": "register_container_alias", "in": {"child": "c", "parent": "", "io": {}}}
+{"func": "register_container_alias", "in": {"child": "c", "parent": 5, "io": {}}}
+{"func": "register_container_alias", "in": {"child": "c", "parent": false, "io": {}}}
+{"func": "register_container_alias", "in": {"child": "c", "parent": true, "io": {}}}
+{"func": "register_container_alias", "in": {"child": "c", "parent": "p", "state": {"container_aliases": {"old": "x"}}, "io": {}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": null, "tenv": "300", "container_identity": "prof", "reap_orphan_containers": 2}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {"docker_orphan_reaper": false}, "io": {"import_docker": null, "tenv": "300", "container_identity": "prof", "reap_orphan_containers": 2}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "state": {"docker_orphan_reaper_ran": true}, "io": {"import_docker": null, "tenv": "300", "container_identity": "prof", "reap_orphan_containers": 2}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": null, "tenv": "0", "container_identity": "prof", "reap_orphan_containers": 2}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": null, "tenv": "abc", "container_identity": "prof", "reap_orphan_containers": 2}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": null, "tenv": {"__raise__": "ValueError", "msg": "bad"}, "container_identity": "prof", "reap_orphan_containers": 2}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": null, "tenv": {"__raise__": "SystemExit", "msg": "bye"}, "container_identity": "prof", "reap_orphan_containers": 2}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": {"__raise__": "ModuleNotFoundError", "msg": "import of tools.environments.docker halted; None in sys.modules"}, "tenv": "300", "container_identity": "prof", "reap_orphan_containers": 2}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": null, "tenv": "300", "container_identity": {"__raise__": "RuntimeError", "msg": "ci"}, "reap_orphan_containers": 2}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": null, "tenv": "300", "container_identity": "prof", "reap_orphan_containers": {"__raise__": "ValueError", "msg": "reap"}}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": null, "tenv": "300", "container_identity": "prof", "reap_orphan_containers": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": null, "tenv": "300", "container_identity": "prof", "reap_orphan_containers": 0}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {}, "io": {"import_docker": null, "tenv": "300", "container_identity": "prof", "reap_orphan_containers": 3, "logger.info": {"__raise__": "RuntimeError", "msg": "log"}}}}
+{"func": "maybe_reap_docker_orphans", "in": {"config": {"docker_shared_container_key": "shared"}, "io": {"import_docker": null, "tenv": "300", "container_identity": "prof", "reap_orphan_containers": 2}}}
+{"func": "refuse_missing_local_workdir", "in": {"workdir": "/w", "env": {}, "io": {}}}
+{"func": "refuse_missing_local_workdir", "in": {"workdir": "/w", "env": {"__local_env__": true}, "io": {"usable_cwd": ["/w", false]}}}
+{"func": "refuse_missing_local_workdir", "in": {"workdir": "/w", "env": {"__local_env__": true}, "io": {"usable_cwd": ["/w", "/f"], "error_json": "err-json"}}}
+{"func": "refuse_missing_local_workdir", "in": {"workdir": "/x", "env": {"__local_env__": true}, "io": {"usable_cwd": ["/x", 1], "error_json": "j"}}}
+{"func": "refuse_missing_local_workdir", "in": {"workdir": "/w", "env": {"__local_env__": true}, "io": {"usable_cwd": {"__raise__": "ValueError", "msg": "u"}}}}
+{"func": "refuse_missing_local_workdir", "in": {"workdir": "/w", "env": {"__local_env__": true}, "io": {"usable_cwd": ["/w", "/f"], "error_json": {"__raise__": "RuntimeError", "msg": "e"}}}}
+{"func": "refuse_missing_local_workdir", "in": {"workdir": "/w", "env": {"__local_env__": true}, "io": {"usable_cwd": ["/w", "/f"], "error_json": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "resolve_command_cwd", "in": {"workdir": "/w", "io": {"get_session_cwd": null, "is_container_backend": false, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final", "container_visible_cwd": "/vis"}}}
+{"func": "resolve_command_cwd", "in": {"workdir": "", "io": {"get_session_cwd": null, "is_container_backend": false, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final"}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": false, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final"}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": true, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final", "is_unusable_container_cwd": false}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": true, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final", "is_unusable_container_cwd": true, "in_sandbox_home": true}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": true, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final", "is_unusable_container_cwd": true, "in_sandbox_home": false, "container_visible_cwd": "/v"}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": true, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final", "is_unusable_container_cwd": true, "in_sandbox_home": false, "container_visible_cwd": "/r", "is_mounted_host_cwd": true}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": true, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final", "is_unusable_container_cwd": true, "in_sandbox_home": false, "container_visible_cwd": "/r", "is_mounted_host_cwd": false}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": {"__raise__": "RuntimeError", "msg": "g"}, "is_container_backend": false, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final"}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": {"__raise__": "ValueError", "msg": "b"}, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final"}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": true, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final", "is_unusable_container_cwd": {"__raise__": "TypeError", "msg": "u"}}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": true, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final", "is_unusable_container_cwd": true, "in_sandbox_home": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": true, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final", "is_unusable_container_cwd": true, "in_sandbox_home": false, "container_visible_cwd": "/r", "is_mounted_host_cwd": {"__raise__": "RuntimeError", "msg": "m"}}}}
+{"func": "resolve_command_cwd", "in": {"io": {"get_session_cwd": "/r", "is_container_backend": true, "container_visible_default": "/def", "coerce_ssh_remote_cwd": "/final", "is_unusable_container_cwd": true, "in_sandbox_home": false, "container_visible_cwd": "/r", "is_mounted_host_cwd": true, "logger.info": {"__raise__": "RuntimeError", "msg": "log"}}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "local", "docker_mount_cwd_to_workspace": true}, "task_id": "t", "io": {}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker"}, "task_id": "t", "io": {}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": false}, "task_id": "t", "io": {}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true, "host_cwd": "/host"}, "task_id": "t", "io": {"docker_session_isolation_enabled": false, "resolve_container_task_id": "default", "container_profile": "p", "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": "/src", "workspace_key_for": "h"}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true}, "task_id": "t", "io": {"docker_session_isolation_enabled": true, "resolve_container_task_id": "p:ws:h", "container_profile": "p", "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": "/src", "workspace_key_for": "h"}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true, "host_cwd": "/host"}, "task_id": "t", "io": {"docker_session_isolation_enabled": false, "resolve_container_task_id": "default", "container_profile": "p", "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": null, "workspace_key_for": "h"}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true, "host_cwd": "/host"}, "task_id": "t", "io": {"docker_session_isolation_enabled": false, "resolve_container_task_id": "p:ws:other", "container_profile": "p", "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": "/src", "workspace_key_for": "h"}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true}, "task_id": "t", "io": {"docker_session_isolation_enabled": true, "resolve_container_task_id": {"__seq__": ["default", "p:ws:h"]}, "container_profile": "p", "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": "/src", "workspace_key_for": "h"}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true}, "task_id": "t", "io": {"docker_session_isolation_enabled": {"__raise__": "RuntimeError", "msg": "d"}, "resolve_container_task_id": "default", "container_profile": "p", "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": "/src", "workspace_key_for": "h"}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true}, "task_id": "t", "io": {"docker_session_isolation_enabled": false, "resolve_container_task_id": {"__raise__": "ValueError", "msg": "r"}, "container_profile": "p", "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": "/src", "workspace_key_for": "h"}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true}, "task_id": "t", "io": {"docker_session_isolation_enabled": false, "resolve_container_task_id": "default", "container_profile": {"__raise__": "OSError", "msg": "c"}, "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": "/src", "workspace_key_for": "h"}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true}, "task_id": "t", "io": {"docker_session_isolation_enabled": false, "resolve_container_task_id": "default", "container_profile": "p", "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": {"__raise__": "SystemExit", "msg": "bye"}, "workspace_key_for": "h"}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true}, "task_id": "t", "io": {"docker_session_isolation_enabled": false, "resolve_container_task_id": "default", "container_profile": "p", "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": "/src", "workspace_key_for": {"__raise__": "RuntimeError", "msg": "w"}}}}
+{"func": "resolve_task_host_cwd", "in": {"config": {"env_type": "docker", "docker_mount_cwd_to_workspace": true}, "task_id": null, "io": {"docker_session_isolation_enabled": false, "resolve_container_task_id": "default", "container_profile": "p", "profile_container_key": "p", "resolve_container_alias": "c", "session_workspace_mount_source": "/src", "workspace_key_for": "h"}}}

@@ -1,0 +1,82 @@
+{"func": "count_rows", "in": {"table": "sessions", "seams": {"count_rows": [[5]]}}}
+{"func": "count_rows", "in": {"table": "messages", "seams": {"count_rows": [[0]]}}}
+{"func": "count_rows", "in": {"table": "state_meta", "seams": {"count_rows": [[12.9]]}}}
+{"func": "count_rows", "in": {"table": "sessions", "seams": {"count_rows": [["7"]]}}}
+{"func": "count_rows", "in": {"table": "sessions", "seams": {"count_rows": [[null]]}}}
+{"func": "count_rows", "in": {"table": "sessions", "seams": {"count_rows": [[[]]]}}}
+{"func": "count_rows", "in": {"table": "sessions", "seams": {"count_rows": {"__raise__": "DatabaseError", "msg": "db down"}}}}
+{"func": "count_rows", "in": {"table": "sessions", "seams": {"count_rows": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "count_rows", "in": {"table": "sessions", "seams": {}}}
+{"func": "quoted_columns", "in": {"columns": ["id", "value"], "seams": {}}}
+{"func": "quoted_columns", "in": {"columns": [], "seams": {}}}
+{"func": "quoted_columns", "in": {"columns": ["key"], "seams": {}}}
+{"func": "quoted_columns", "in": {"columns": ["a b", "c\"d"], "seams": {}}}
+{"func": "quoted_columns", "in": {"columns": [1, true, null], "seams": {}}}
+{"func": "quoted_columns", "in": {"columns": ["x", "y", "z"], "seams": {}}}
+{"func": "journal_mode", "in": {"seams": {"journal_mode": [["WAL"]]}}}
+{"func": "journal_mode", "in": {"seams": {"journal_mode": [["DELETE"]]}}}
+{"func": "journal_mode", "in": {"seams": {"journal_mode": [["MeMoRy"]]}}}
+{"func": "journal_mode", "in": {"seams": {"journal_mode": [[null]]}}}
+{"func": "journal_mode", "in": {"seams": {"journal_mode": [[]]}}}
+{"func": "journal_mode", "in": {"seams": {"journal_mode": [[42]]}}}
+{"func": "journal_mode", "in": {"seams": {"journal_mode": {"__raise__": "DatabaseError", "msg": "prag broken"}}}}
+{"func": "journal_mode", "in": {"seams": {}}}
+{"func": "compatible_columns", "in": {"table": "sessions", "result": {"source_rows": 5}, "seams": {"table_columns": [["id", "value"], ["id", "value", "extra"]]}}}
+{"func": "compatible_columns", "in": {"table": "sessions", "result": {}, "seams": {"table_columns": [[], ["id"]]}}}
+{"func": "compatible_columns", "in": {"table": "sessions", "result": {"x": 1}, "seams": {"table_columns": [["a"], ["b"]]}}}
+{"func": "compatible_columns", "in": {"table": "sessions", "result": {}, "seams": {"table_columns": [["b", "a"], ["a", "c", "b"]]}}}
+{"func": "compatible_columns", "in": {"table": "sessions", "result": {}, "seams": {"table_columns": [{"__raise__": "DatabaseError", "msg": "src schema"}, ["id"]]}}}
+{"func": "compatible_columns", "in": {"table": "sessions", "result": {}, "seams": {"table_columns": [["id"], {"__raise__": "DatabaseError", "msg": "dst schema"}]}}}
+{"func": "compatible_columns", "in": {"table": "sessions", "result": {}, "seams": {}}}
+{"func": "state_meta_result", "in": {"source_rows": 9, "extra": {}, "seams": {}}}
+{"func": "state_meta_result", "in": {"source_rows": null, "extra": {"status": "missing"}, "seams": {}}}
+{"func": "state_meta_result", "in": {"source_rows": 0, "extra": {"mode": "rowid_range_salvage", "status": "failed", "error": "destination state_meta schema is incomplete"}, "seams": {}}}
+{"func": "state_meta_result", "in": {"source_rows": 3, "extra": {"status": "complete", "copied_rows": 3}, "seams": {}}}
+{"func": "state_meta_result", "in": {"source_rows": 1, "extra": {"custom": [1, 2]}, "seams": {}}}
+{"func": "state_meta_precheck", "in": {"source_rows": 4, "salvage": false, "seams": {"table_columns": [["key", "value"], ["key", "value"]]}}}
+{"func": "state_meta_precheck", "in": {"source_rows": 4, "salvage": false, "seams": {"table_columns": [[]]}}}
+{"func": "state_meta_precheck", "in": {"source_rows": 4, "salvage": true, "seams": {"table_columns": [[]]}}}
+{"func": "state_meta_precheck", "in": {"source_rows": 4, "salvage": true, "seams": {"table_columns": [["key"]]}}}
+{"func": "state_meta_precheck", "in": {"source_rows": 4, "salvage": true, "seams": {"table_columns": [["key", "foo"], ["key"]]}}}
+{"func": "state_meta_precheck", "in": {"source_rows": 4, "salvage": true, "seams": {"table_columns": [["value", "key"], ["value", "key"]]}}}
+{"func": "state_meta_precheck", "in": {"source_rows": 4, "salvage": false, "seams": {"table_columns": [{"__raise__": "DatabaseError", "msg": "src schema"}]}}}
+{"func": "state_meta_precheck", "in": {"source_rows": 4, "salvage": false, "seams": {}}}
+{"func": "reconcile", "in": {"table": "sessions", "where": "a = 1", "mutation": "DELETE FROM sessions", "seams": {"reconcile_count": [[3]], "reconcile_mutate": [[null]]}}}
+{"func": "reconcile", "in": {"table": "sessions", "where": "a = 1", "mutation": "DELETE FROM sessions", "seams": {"reconcile_count": [[0]], "reconcile_mutate": [[null]]}}}
+{"func": "reconcile", "in": {"table": "sessions", "where": "b = 2", "mutation": "UPDATE sessions SET a = NULL", "seams": {"reconcile_count": [["4"]], "reconcile_mutate": [[null]]}}}
+{"func": "reconcile", "in": {"table": "sessions", "where": "a = 1", "mutation": "DELETE FROM sessions", "seams": {"reconcile_count": {"__raise__": "DatabaseError", "msg": "count failed"}, "reconcile_mutate": [[null]]}}}
+{"func": "reconcile", "in": {"table": "sessions", "where": "a = 1", "mutation": "DELETE FROM sessions", "seams": {"reconcile_count": [[2]], "reconcile_mutate": {"__raise__": "SystemExit", "msg": "mutate aborted"}}}}
+{"func": "reconcile", "in": {"table": "sessions", "where": "a = 1", "mutation": "DELETE FROM sessions", "seams": {"reconcile_count": [[null]]}}}
+{"func": "reconcile", "in": {"table": "sessions", "where": "a = 1", "mutation": "DELETE FROM sessions", "seams": {}}}
+{"func": "immediate_transaction", "in": {"outcome": null, "seams": {"begin": null, "commit": null, "rollback": null}}}
+{"func": "immediate_transaction", "in": {"outcome": {"__raise__": "ValueError", "msg": "body failed"}, "seams": {"begin": null, "commit": null, "rollback": null}}}
+{"func": "immediate_transaction", "in": {"outcome": {"__raise__": "SystemExit", "msg": "body exits"}, "seams": {"begin": null, "commit": null, "rollback": null}}}
+{"func": "immediate_transaction", "in": {"outcome": {"__raise__": "KeyboardInterrupt", "msg": "ctrl-c"}, "seams": {"begin": null, "commit": null, "rollback": null}}}
+{"func": "immediate_transaction", "in": {"outcome": null, "seams": {"begin": null, "commit": {"__raise__": "DatabaseError", "msg": "commit failed"}, "rollback": null}}}
+{"func": "immediate_transaction", "in": {"outcome": null, "seams": {"begin": {"__raise__": "DatabaseError", "msg": "begin failed"}, "commit": null, "rollback": null}}}
+{"func": "immediate_transaction", "in": {"outcome": null, "seams": {}}}
+{"func": "verify_fts_indexes", "in": {"verification": {"errors": []}, "seams": {"table_columns": [["id"], ["id"]], "fts_insert": null, "fts_match": null}}}
+{"func": "verify_fts_indexes", "in": {"verification": {"errors": []}, "seams": {"table_columns": [[], ["id"]], "fts_insert": null, "fts_match": null}}}
+{"func": "verify_fts_indexes", "in": {"verification": {"errors": ["existing"]}, "seams": {"table_columns": [{"__raise__": "DatabaseError", "msg": "schema gone"}, []]}}}
+{"func": "verify_fts_indexes", "in": {"verification": {"errors": []}, "seams": {"table_columns": [["id"], []], "fts_insert": [{"__raise__": "DatabaseError", "msg": "fts broken"}]}}}
+{"func": "verify_fts_indexes", "in": {"verification": {"errors": []}, "seams": {"table_columns": [["id"], []], "fts_insert": [[null]], "fts_match": [{"__raise__": "OperationalError", "msg": "match broken"}]}}}
+{"func": "verify_fts_indexes", "in": {"verification": {"errors": []}, "seams": {"table_columns": [["id"], []], "fts_insert": [{"__raise__": "ValueError", "msg": "not a db error"}]}}}
+{"func": "verify_fts_indexes", "in": {"verification": {"errors": []}, "seams": {}}}
+{"func": "verify_structure", "in": {"verification": {"errors": []}, "seams": {"integrity_check": [[["ok"]]], "foreign_key_check": [[]], "journal_mode": [["wal"]], "schema_version": [[33]], "fts_meta": [[["fts_storage_version", "3"]]]}}}
+{"func": "verify_structure", "in": {"verification": {"errors": []}, "seams": {"integrity_check": [[["ok"], ["corrupt"]]], "foreign_key_check": [[["sessions", "m", "sid"]]], "journal_mode": [["delete"]], "schema_version": [[31]], "fts_meta": [[["fts_storage_version", "2"], ["fts_rebuild_progress", "1"]]]}}}
+{"func": "verify_structure", "in": {"verification": {"errors": []}, "seams": {"integrity_check": [[["ok"]]], "foreign_key_check": [[]], "journal_mode": [[null]], "schema_version": [[]], "fts_meta": [[]]}}}
+{"func": "verify_structure", "in": {"verification": {"errors": []}, "seams": {"integrity_check": {"__raise__": "DatabaseError", "msg": "integrity failed"}, "foreign_key_check": [[]], "journal_mode": [["wal"]], "schema_version": [[33]], "fts_meta": [[["fts_storage_version", "3"]]]}}}
+{"func": "verify_structure", "in": {"verification": {"errors": ["pre"]}, "seams": {"integrity_check": [[["ok"]]], "foreign_key_check": {"__raise__": "SystemExit", "msg": "fk aborts"}, "journal_mode": [["wal"]], "schema_version": [[33]], "fts_meta": [[["fts_storage_version", "3"]]]}}}
+{"func": "verify_structure", "in": {"verification": {"errors": []}, "seams": {}}}
+{"func": "sanitize_session_model_config", "in": {"seams": {"table_columns": [["id"]]}}}
+{"func": "sanitize_session_model_config", "in": {"seams": {"table_columns": [["id", "model_config"]], "begin": null, "commit": null, "reconcile_count": [[2]], "reconcile_mutate": [[null]]}}}
+{"func": "sanitize_session_model_config", "in": {"seams": {"table_columns": [["model_config"]], "begin": null, "commit": null, "reconcile_count": [[0]], "reconcile_mutate": [[null]]}}}
+{"func": "sanitize_session_model_config", "in": {"seams": {"table_columns": [["model_config"]], "begin": null, "rollback": null, "reconcile_count": {"__raise__": "DatabaseError", "msg": "count failed"}}}}
+{"func": "sanitize_session_model_config", "in": {"seams": {"table_columns": [["model_config"]], "begin": {"__raise__": "DatabaseError", "msg": "begin failed"}}}}
+{"func": "sanitize_session_model_config", "in": {"seams": {"table_columns": {"__raise__": "SystemExit", "msg": "schema aborted"}}}}
+{"func": "sanitize_session_model_config", "in": {"seams": {}}}
+{"func": "recovery_report", "in": {"source": "/h/a.db", "output": "/h/out.db", "inspection": {"journal_mode": "wal", "tables": {"sessions": {"rows": 2}}, "errors": [], "warnings": ["w1"], "source_bundle": ["a.db", "a.db-wal"], "source_fingerprint": {"main": {"size": 10, "mtime_ns": 1}}}, "disk_space": {"source_bundle_bytes": 10}, "verification": {"errors": [], "healthy": true, "complete": true, "loss_detected": false}, "on_source_change": "healthy", "fields": {"mode": "full"}, "seams": {"source_fingerprint": {"main": {"size": 10, "mtime_ns": 1}}}}}
+{"func": "recovery_report", "in": {"source": "/h/a.db", "output": "/h/out.db", "inspection": {"journal_mode": "wal", "tables": {"sessions": {"rows": 2}}, "errors": [], "warnings": ["w1"], "source_bundle": ["a.db", "a.db-wal"], "source_fingerprint": {"main": {"size": 10, "mtime_ns": 1}}}, "disk_space": {"source_bundle_bytes": 10}, "verification": {"errors": [], "healthy": true, "complete": true, "loss_detected": false}, "on_source_change": "healthy", "fields": {}, "seams": {"source_fingerprint": {"main": {"size": 99, "mtime_ns": 2}}}}}
+{"func": "recovery_report", "in": {"source": "/h/a.db", "output": "/h/out.db", "inspection": {"journal_mode": "wal", "tables": {"sessions": {"rows": 2}}, "errors": [], "warnings": ["w1"], "source_bundle": ["a.db", "a.db-wal"], "source_fingerprint": {"main": {"size": 10, "mtime_ns": 1}}}, "disk_space": {}, "verification": {"errors": [], "healthy": false, "complete": false, "loss_detected": true}, "on_source_change": "complete", "fields": {"best_effort": true}, "seams": {"source_fingerprint": {"main": {"size": 10, "mtime_ns": 1}}}}}
+{"func": "recovery_report", "in": {"source": "/h/a.db", "output": "/h/out.db", "inspection": {"journal_mode": "wal", "tables": {"sessions": {"rows": 2}}, "errors": [], "warnings": ["w1"], "source_bundle": ["a.db", "a.db-wal"], "source_fingerprint": {"main": {"size": 10, "mtime_ns": 1}}}, "disk_space": {}, "verification": {"errors": [], "healthy": true, "complete": false, "loss_detected": false}, "on_source_change": "healthy", "fields": {"copied": {"sessions": 1}}, "seams": {"source_fingerprint": {"__raise__": "OSError", "msg": "stat failed"}}}}
+{"func": "recovery_report", "in": {"source": "/h/a.db", "output": "/h/out.db", "inspection": {"journal_mode": "wal", "tables": {"sessions": {"rows": 2}}, "errors": [], "warnings": ["w1"], "source_bundle": ["a.db", "a.db-wal"], "source_fingerprint": {"main": {"size": 10, "mtime_ns": 1}}}, "disk_space": {}, "verification": {"errors": [], "healthy": true, "complete": true, "loss_detected": false}, "on_source_change": "healthy", "fields": {}, "seams": {}}}
