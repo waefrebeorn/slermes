@@ -1,0 +1,253 @@
+{"func": "_live_or_column", "in": {"args": {"msg": {"_tool_call_uids": {"a": "u"}, "tool_call_uids": {"b": "v"}}, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": {"tool_call_uids": {"b": "v"}}, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": {}, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": {"_tool_call_uids": null, "tool_call_uids": "col"}, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": {"tool_call_uids": null}, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": null, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": 5, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": "abc", "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": [1], "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": {"__tuple__": true, "v": [1]}, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": {"__float__": true, "v": 1.5}, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": true, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": {"_tool_call_uids": ""}, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_live_or_column", "in": {"args": {"msg": {"_tool_call_uids": [], "tool_call_uids": ["x"]}, "live_key": "_tool_call_uids", "column": "tool_call_uids"}}}
+{"func": "_uid_list", "in": {"args": {"value": ["a", "b", "a", "", "c", 5, null]}, "io": {"uid_list": [["a", "b", "c"]]}}}
+{"func": "_uid_list", "in": {"args": {"value": []}, "io": {"uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": null}, "io": {"uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": 5}, "io": {"uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": {"__tuple__": true, "v": ["a", "b"]}}, "io": {"uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": {"a": 1}}, "io": {"uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": "[\"a\",\"b\",\"a\"]"}, "io": {"uid_list": [["a", "b"]]}}}
+{"func": "_uid_list", "in": {"args": {"value": "[1,2]"}, "io": {"uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": "bad json"}, "io": {"logger.warning": [null], "uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": "{\"a\":1}"}, "io": {"uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": ""}, "io": {"logger.warning": [null], "uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": "null"}, "io": {"uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": "5"}, "io": {"uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": "5.0"}, "io": {"uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": ["a"]}}, "fail_closed": true}
+{"func": "_uid_list", "in": {"args": {"value": ["a"]}, "io": {"uid_list": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "uid boom"}}]}}}
+{"func": "_uid_list", "in": {"args": {"value": ["a"]}, "io": {"uid_list": [{"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}]}}}
+{"func": "_uid_list", "in": {"args": {"value": "[\"a\\u0001b\"]"}, "io": {"uid_list": [["a\u0001b"]]}}}
+{"func": "_uid_list", "in": {"args": {"value": "  [\"a\"]  "}, "io": {"uid_list": [["a"]]}}}
+{"func": "_uid_list", "in": {"args": {"value": "\u000b5"}, "io": {"logger.warning": [null], "uid_list": [[]]}}}
+{"func": "_uid_list", "in": {"args": {"value": "[\"x\", \"x\", \"x\"]"}, "io": {"uid_list": [["x"]]}}}
+{"func": "_uid_list", "in": {"args": {"value": [true, "t"]}, "io": {"uid_list": [["t"]]}}}
+{"func": "_uid_map", "in": {"args": {"value": {"a": "u1", "b": ["u2", "u3"], "c": "", "d": [], "e": [1], "f": ["x", ""], "g": 5, "h": true, "i": {}, "j": null, "": "u"}}}}
+{"func": "_uid_map", "in": {"args": {"value": {}}}}
+{"func": "_uid_map", "in": {"args": {"value": null}}}
+{"func": "_uid_map", "in": {"args": {"value": [1]}}}
+{"func": "_uid_map", "in": {"args": {"value": 5}}}
+{"func": "_uid_map", "in": {"args": {"value": {"__tuple__": true, "v": ["a"]}}}}
+{"func": "_uid_map", "in": {"args": {"value": "{\"a\":\"u1\",\"b\":[\"u2\"]}"}}}
+{"func": "_uid_map", "in": {"args": {"value": "bad"}, "io": {"logger.warning": [null]}}}
+{"func": "_uid_map", "in": {"args": {"value": "[1]"}}}
+{"func": "_uid_map", "in": {"args": {"value": "{\"a\":5,\"b\":\"u\"}"}}}
+{"func": "_uid_map", "in": {"args": {"value": "{\"a\":[\"u\",\"u\"]}"}}}
+{"func": "_uid_map", "in": {"args": {"value": {"a": {"__tuple__": true, "v": ["u"]}}}}}
+{"func": "_uid_map", "in": {"args": {"value": "bad"}}, "fail_closed": true}
+{"func": "_uid_map", "in": {"args": {"value": "bad"}, "io": {"logger.warning": [{"__script__": true, "raise": {"type": "ValueError", "message": "log boom"}}]}}}
+{"func": "_uid_map", "in": {"args": {"value": "{\"a\":\"u\",\"a\":\"v\"}"}}}
+{"func": "_uid_map", "in": {"args": {"value": "{\"\": \"u\", \"a\": \"v\"}"}}}
+{"func": "_uid_map", "in": {"args": {"value": "{\"a\": []}"}}}
+{"func": "_uid_map", "in": {"args": {"value": "{\"a\": [\"x\", 5]}"}}}
+{"func": "_uid_map", "in": {"args": {"value": "{\"a\": \"u\", \"b\": {\"c\": \"v\"}}"}}}
+{"func": "_uid_map", "in": {"args": {"value": "{\"a\": false}"}}}
+{"func": "_uid_map", "in": {"args": {"value": {"a": "u", "b": ["v"], "c": [null]}}}}
+{"func": "_tool_call_uid_map", "in": {"args": {"msg": {"_tool_call_uids": {"a": "u"}}}}}
+{"func": "_tool_call_uid_map", "in": {"args": {"msg": {"tool_call_uids": {"b": "v"}}}}}
+{"func": "_tool_call_uid_map", "in": {"args": {"msg": {}}}}
+{"func": "_tool_call_uid_map", "in": {"args": {"msg": {"_tool_call_uids": "bad", "tool_call_uids": {"x": "y"}}}, "io": {"logger.warning": [null]}}}
+{"func": "_tool_call_uid_map", "in": {"args": {"msg": null}}}
+{"func": "_tool_call_uid_map", "in": {"args": {"msg": {"_tool_call_uids": null}}}}
+{"func": "_tool_call_uid_map", "in": {"args": {"msg": {"_tool_call_uids": "{\"a\":\"u\"}"}}}}
+{"func": "_tool_call_uid_map", "in": {"args": {"msg": "s"}}}
+{"func": "_tool_call_uid_map", "in": {"args": {"msg": {"_tool_call_uids": {"a": ""}, "tool_call_uids": {"b": "v"}}}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"_absorbed_message_uids": ["u1", "u2"]}}, "io": {"uid_list": [["u1", "u2"]]}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"absorbed_message_uids": ["u3"]}}, "io": {"uid_list": [["u3"]]}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {}}, "io": {"uid_list": [[]]}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"_absorbed_message_uids": []}}, "io": {"uid_list": [[]]}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"_absorbed_message_uids": "[\"u1\",\"u1\",\"u2\"]"}}, "io": {"uid_list": [["u1", "u2"]]}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"_absorbed_message_uids": "bad"}}, "io": {"logger.warning": [null], "uid_list": [[]]}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"_absorbed_message_uids": ["a\u0001b", "c\"d", "e\\f"]}}, "io": {"uid_list": [["a\u0001b", "c\"d", "e\\f"]]}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": null}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"_absorbed_message_uids": ["u"]}}, "io": {"uid_list": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "uid boom"}}]}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"_absorbed_message_uids": ["x"], "absorbed_message_uids": ["y"]}}, "io": {"uid_list": [["x"]]}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"_absorbed_message_uids": "[\"\\u007f\"]"}}, "io": {"uid_list": [[""]]}}}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"_absorbed_message_uids": ["u"]}}}, "fail_closed": true}
+{"func": "_absorbed_uids_json", "in": {"args": {"msg": {"_absorbed_message_uids": ["\t\n\r\b\f"]}}, "io": {"uid_list": [["\t\n\r\b\f"]]}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {"_tool_call_uids": {"b": "u2", "a": "u1"}}}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {"_tool_call_uids": {"a": ["u1", "u2"]}}}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {}}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {"_tool_call_uids": {}}}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {"_tool_call_uids": {"a": "", "b": "u"}}}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {"tool_call_uids": "{\"z\":\"u9\",\"A\":\"u0\"}"}}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {"_tool_call_uids": "bad"}}, "io": {"logger.warning": [null]}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {"_tool_call_uids": {"a": "x\u0001y"}}}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": null}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {"_tool_call_uids": {"B": "u", "a": "v", "A": "w"}}}}}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {"_tool_call_uids": "bad"}}}, "fail_closed": true}
+{"func": "_tool_call_uids_json", "in": {"args": {"msg": {"_tool_call_uids": {"a": ["x\"y", "z\\w"]}}}}}
+{"func": "_tool_call_uid_or_none", "in": {"args": {"msg": {"_tool_call_uid": "u"}}}}
+{"func": "_tool_call_uid_or_none", "in": {"args": {"msg": {"tool_call_uid": "v"}}}}
+{"func": "_tool_call_uid_or_none", "in": {"args": {"msg": {}}}}
+{"func": "_tool_call_uid_or_none", "in": {"args": {"msg": {"_tool_call_uid": ""}}}}
+{"func": "_tool_call_uid_or_none", "in": {"args": {"msg": {"_tool_call_uid": 5}}}}
+{"func": "_tool_call_uid_or_none", "in": {"args": {"msg": {"_tool_call_uid": null}}}}
+{"func": "_tool_call_uid_or_none", "in": {"args": {"msg": null}}}
+{"func": "_tool_call_uid_or_none", "in": {"args": {"msg": {"_tool_call_uid": "u", "tool_call_uid": "v"}}}}
+{"func": "_tool_call_uid_or_none", "in": {"args": {"msg": {"_tool_call_uid": ["u"]}}}}
+{"func": "_tool_call_uid_or_none", "in": {"args": {"msg": {"_tool_call_uid": true}}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": ["u1", "u2"], "stored_uid": "u1"}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": ["u1", "u2"], "stored_uid": ["u1", "u2"]}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": ["u1"], "stored_uid": ["u1", "u2"]}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": ["u2"], "stored_uid": "u1"}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": "u1", "stored_uid": "u1"}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": null, "stored_uid": "u1"}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": {"__tuple__": true, "v": ["u1"]}, "stored_uid": "u1"}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": ["u1", "u2"], "stored_uid": []}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": [], "stored_uid": "u1"}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": [1, 2], "stored_uid": {"__float__": true, "v": 1.0}}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": [true], "stored_uid": 1}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": ["u1", "u2"], "stored_uid": null}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": [null], "stored_uid": null}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": [{"a": 1}], "stored_uid": {"a": 1}}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": [[1]], "stored_uid": {"__tuple__": true, "v": [1]}}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": ["u1", "u2", "u3"], "stored_uid": ["u1", "u2"]}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": [{"__float__": true, "v": 1.5}], "stored_uid": {"__float__": true, "v": 1.5}}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": {"a": 1}, "stored_uid": "a"}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": [], "stored_uid": []}}}
+{"func": "_live_extends", "in": {"args": {"live_uid": ["u1"], "stored_uid": {"__tuple__": true, "v": ["u1"]}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"a": "u1", "b": "u2"}}, "msg": {"tool_calls": [{"id": "a"}, {"id": "b"}]}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {}}, "msg": {"tool_calls": [{"id": "a"}]}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": null}, "msg": {}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"a": "u"}}, "msg": {"tool_calls": "not-list"}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"a": "u"}}, "msg": null}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"a": "u", "b": "u2"}}, "msg": {"tool_calls": [{"id": "a"}], "_tool_call_uids": {"a": "live"}}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"a": "u1"}}, "msg": {"tool_calls": [{"id": "a"}], "_tool_call_uids": {"z": "keep"}}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": "{\"a\":\"u1\"}"}, "msg": {"tool_calls": [{"id": "a"}]}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": "bad"}, "msg": {"tool_calls": [{"id": "a"}]}}, "io": {"logger.warning": [null]}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {}, "msg": {"tool_calls": [{"id": "a"}]}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": null, "msg": {}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": [1], "msg": {}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": "s", "msg": {}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"a": "u"}}, "msg": {"tool_calls": [{"call_id": "x|y", "id": "a"}]}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"x": "u"}}, "msg": {"tool_calls": [{"call_id": "x|y"}]}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"a": "u"}}, "msg": {"tool_calls": ["a", null, 5]}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"": "u", "a": "v"}}, "msg": {"tool_calls": [{"id": "a"}]}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"a": ["u1", "u2"]}}, "msg": {"tool_calls": [{"id": "a"}, {"id": "a"}]}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": "bad"}, "msg": {"tool_calls": [{"id": "a"}]}}, "io": {"logger.warning": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "log boom"}}]}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"a": "u"}}, "msg": {"tool_calls": {"__tuple__": true, "v": [{"id": "a"}]}}}}}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": "bad"}, "msg": {"tool_calls": [{"id": "a"}]}}}, "fail_closed": true}
+{"func": "_fill_missing_tool_call_uids", "in": {"args": {"row": {"tool_call_uids": {"a": "u"}}, "msg": {"tool_calls": [{"id": "a"}], "_tool_call_uids": "not-dict"}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u1"}, "tool_call_uid": "t"}, "msg": {}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "", "tool_call_uids": {}, "tool_call_uid": ""}, "msg": {"x": 1}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u1"}, "tool_call_uid": "t"}, "msg": {"_tool_call_uids": {"a": ["u1", "u2"]}}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u1"}, "tool_call_uid": "t"}, "msg": {"_tool_call_uids": {"a": ["other"]}}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": null, "tool_call_uids": {"a": "u"}, "tool_call_uid": null}, "msg": {"_tool_call_uids": "not-dict"}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {}, "tool_call_uid": "t"}, "msg": {}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": "bad", "tool_call_uid": "t"}, "msg": {}}, "io": {"logger.warning": [null]}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m"}, "msg": {}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u"}, "tool_call_uid": null}, "msg": {}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u1"}, "tool_call_uid": "t"}, "msg": null}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "", "tool_call_uids": {"a": "u"}, "tool_call_uid": ""}, "msg": null}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u1"}, "tool_call_uid": "t"}, "msg": {"message_uid": "old", "_tool_call_uids": {"z": "keep"}, "_tool_call_uid": "oldt"}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": "{\"a\":\"u\"}", "tool_call_uid": "t"}, "msg": {}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u1"}, "tool_call_uid": "t"}, "msg": 5}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u1"}, "tool_call_uid": "t"}, "msg": {"_tool_call_uids": {"a": ["u1", "u2"], "b": "keep"}}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": "bad", "tool_call_uid": "t"}, "msg": {}}, "io": {"logger.warning": [{"__script__": true, "raise": {"type": "SystemExit", "message": "log exit"}}]}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": 0, "tool_call_uids": 0, "tool_call_uid": 0}, "msg": {"k": "v"}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u", "b": "v"}, "tool_call_uid": "t"}, "msg": {"_tool_call_uids": {"a": ["u"]}}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u"}, "tool_call_uid": "t"}, "msg": {"_tool_call_uids": {}}}}}
+{"func": "_restore_row_identity", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": "bad", "tool_call_uid": "t"}, "msg": {}}}, "fail_closed": true}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u"}, "tool_call_uid": "t", "absorbed_message_uids": ["x", "y"]}, "msg": {}}, "io": {"uid_list": [["x", "y"]]}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u"}, "tool_call_uid": "t", "absorbed_message_uids": []}, "msg": {}}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {}, "tool_call_uid": "t", "absorbed_message_uids": "[\"x\",\"x\",\"y\"]"}, "msg": {}}, "io": {"uid_list": [["x", "y"]]}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {}, "tool_call_uid": "t", "absorbed_message_uids": "bad"}, "msg": {}}, "io": {"logger.warning": [null], "uid_list": [[]]}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {}, "tool_call_uid": "t"}, "msg": {}}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u"}, "tool_call_uid": "t", "absorbed_message_uids": ["x", "y"]}, "msg": null}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u"}, "tool_call_uid": "t", "absorbed_message_uids": ["x", "y"]}, "msg": {}}, "io": {"uid_list": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "uid boom"}}]}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {}, "tool_call_uid": "t", "absorbed_message_uids": null}, "msg": {}}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "", "tool_call_uids": {}, "tool_call_uid": "", "absorbed_message_uids": ["x"]}, "msg": {"_absorbed_message_uids": ["old"]}}, "io": {"uid_list": [["x"]]}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u"}, "tool_call_uid": "t", "absorbed_message_uids": ["x", "y"]}, "msg": {"message_uid": "old"}}, "io": {"uid_list": [["x", "y"]]}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u"}, "tool_call_uid": "t", "absorbed_message_uids": ["x", "y"]}, "msg": {}}}, "fail_closed": true}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {"a": "u"}, "tool_call_uid": "t", "absorbed_message_uids": ["x", "y"]}, "msg": {}}, "io": {"uid_list": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "kb"}}]}}}
+{"func": "_restore_identity_columns", "in": {"args": {"row": {"message_uid": "m", "tool_call_uids": {}, "tool_call_uid": "t", "absorbed_message_uids": "[\"\\u0001\"]"}, "msg": {}}, "io": {"uid_list": [["\u0001"]]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "user", "tool_calls": null, "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"id": "a"}, {"id": "b"}], "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [], "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": null, "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "[{\"id\":\"a\"}]", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "bad", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"id": ""}], "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"id": "a"}, {"id": ""}], "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"call_id": "x|y"}], "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": 5, "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [1], "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "5", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "5.0", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "true", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "\"ab\"", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "{\"a\":1}", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "0", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "null", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": null}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"id": "a"}]}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"id": "a"}], "timestamp": 1}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"id": "a"}], "timestamp": 1, "tool_call_id": "t"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"id": "a"}], "timestamp": {"__float__": true, "v": 1.5}, "tool_call_id": null, "tool_name": "f"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "bad", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}, "fail_closed": true}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "bad", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}, "io": {"logger.warning": [{"__script__": true, "raise": {"type": "SystemExit", "message": "log exit"}}]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"id": "  a  "}], "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"id": "|lead"}], "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}, "io": {"logger.warning": [null]}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": 0, "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "[{\"id\":\"a\"},{\"call_id\":\"b|c\",\"id\":\"d\"}]", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "[null,5,\"x\"]", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "[\"a\"]", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": "1e2", "timestamp": 100, "tool_call_id": "t", "tool_name": "f"}}}}
+{"func": "_stable_tool_key", "in": {"args": {"row": {"role": "assistant", "tool_calls": [{"id": "a"}], "timestamp": 0, "tool_call_id": "", "tool_name": ""}}, "io": {"logger.warning": [null]}}}
+{"func": "_json_or", "in": {"args": {"raw": "[1,2]", "fallback": [], "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "bad", "fallback": [], "warning": "w"}, "io": {"logger.warning": [null]}}}
+{"func": "_json_or", "in": {"args": {"raw": 5, "fallback": {}, "warning": "w"}, "io": {"logger.warning": [null]}}}
+{"func": "_json_or", "in": {"args": {"raw": null, "fallback": [], "warning": "w"}, "io": {"logger.warning": [null]}}}
+{"func": "_json_or", "in": {"args": {"raw": "{\"a\":1}", "fallback": {}, "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "5.0", "fallback": [], "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "", "fallback": [], "warning": "w"}, "io": {"logger.warning": [null]}}}
+{"func": "_json_or", "in": {"args": {"raw": "bad", "fallback": [], "warning": "w"}, "io": {"logger.warning": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "log boom"}}]}}}
+{"func": "_json_or", "in": {"args": {"raw": "bad", "fallback": [], "warning": "w"}}, "fail_closed": true}
+{"func": "_json_or", "in": {"args": {"raw": "null", "fallback": [1], "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": [1], "fallback": [], "warning": "w"}, "io": {"logger.warning": [null]}}}
+{"func": "_json_or", "in": {"args": {"raw": "  {\"a\": [1, 2.5, \"x\"]}  ", "fallback": {}, "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "01", "fallback": [], "warning": "w"}, "io": {"logger.warning": [null]}}}
+{"func": "_json_or", "in": {"args": {"raw": "\"\\u0041\"", "fallback": [], "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "[1,]", "fallback": [], "warning": "w"}, "io": {"logger.warning": [null]}}}
+{"func": "_json_or", "in": {"args": {"raw": "bad", "fallback": [], "warning": "w"}, "io": {"logger.warning": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "kb"}}]}}}
+{"func": "_json_or", "in": {"args": {"raw": "{\"a\":1,\"a\":2}", "fallback": {}, "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "\"\\ud83d\\ude00\"", "fallback": [], "warning": "w"}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"id": "a"}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"call_id": "b"}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"call_id": "x|y", "id": "z"}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"id": "  c  "}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"id": ""}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"call_id": "|lead"}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"call_id": "  ", "id": "d"}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": null}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": "str"}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": 5}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": [1]}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"id": 5}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"id": "a|b|c"}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"id": " |x"}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"call_id": "\u001ca\u001c"}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"id": "a| "}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"id": " | "}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"__tuple__": true, "v": [1]}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"call_id": null, "id": "e"}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"call_id": "a|", "id": "z"}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": {"__float__": true, "v": 1.5}}}}
+{"func": "coalesce_tool_call_id", "in": {"args": {"tc": true}}}

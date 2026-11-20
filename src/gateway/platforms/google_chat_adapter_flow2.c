@@ -283,6 +283,39 @@ static json_t *gca2_err(const char *type, const char *message) {
     return e;
 }
 
+/* CPython OSError(errno, msg) PROMOTES to the errno's subclass when the
+ * constructed class is OSError itself (IOError alias included). Map measured
+ * against the quarry interpreter (Windows errno values; POSIX values like
+ * ECONNRESET=104 do NOT promote on this build). */
+static const char *gca2_oserror_subclass(double en) {
+    long long e = (long long)en;
+    switch (e) {
+        case 1: case 13: return "PermissionError";
+        case 2: return "FileNotFoundError";
+        case 3: return "ProcessLookupError";
+        case 4: return "InterruptedError";
+        case 10: return "ChildProcessError";
+        case 11: case 10035: case 10036: case 10037: return "BlockingIOError";
+        case 17: return "FileExistsError";
+        case 20: return "NotADirectoryError";
+        case 21: return "IsADirectoryError";
+        case 32: case 10058: return "BrokenPipeError";
+        case 10053: return "ConnectionAbortedError";
+        case 10054: return "ConnectionResetError";
+        case 10061: return "ConnectionRefusedError";
+        case 138: case 10060: return "TimeoutError";
+        default: return "OSError";
+    }
+}
+/* Kinds the oracle's EXC_CLASSES maps to a REAL OSError subclass.
+ * EnvironmentError/WindowsError are ABSENT there -> dynamic Exception
+ * subclasses (no errno formatting, no errno projection). */
+static bool gca2_oserror_kind(const char *type) {
+    if (strcmp(type, "EnvironmentError") == 0 || strcmp(type, "WindowsError") == 0)
+        return false;
+    return gca2_isa(type, "OSError");
+}
+
 /* Materialize a scripted raise spec exactly as the oracle's make_exc does. */
 static json_t *gca2_make_exc(const json_t *spec) {
     const char *type = json_get_str(spec, "type", "RuntimeError");
@@ -290,19 +323,54 @@ static json_t *gca2_make_exc(const json_t *spec) {
     if (strcmp(type, "ParkedRouteRefused") == 0)
         return gca2_err(type, GCA2_PARKED_MSG);
     if (strcmp(type, "_SACredentialError") == 0) {
-        json_t *e = gca2_err(type, msg);
+        /* live: super().__init__(kind) -> str(exc) == kind (spec kind, else msg) */
+        json_t *e = gca2_err(type, json_get_str(spec, "kind", msg));
         const json_t *kind = json_obj_get(spec, "kind");
         json_set(e, "kind", kind ? json_copy(kind) : json_string(msg));
         const json_t *detail = json_obj_get(spec, "detail");
-        json_set(e, "detail", detail ? json_copy(detail) : json_null());
+        if (detail && detail->type == JSON_OBJECT) {
+            /* oracle: e.detail = make_exc({type: det.__raise__, message:
+             * det.message}) — the inner exception is MATERIALIZED (a
+             * JSONDecodeError detail gains its ": line L column C (char P)"
+             * suffix), then projected back to an envelope. */
+            json_t *dspec = json_object();
+            json_set_hdr(dspec, "type", json_get_str(detail, "__raise__", "Exception"));
+            json_set_hdr(dspec, "message", json_get_str(detail, "message", ""));
+            json_t *mat = gca2_make_exc(dspec);
+            json_free(dspec);
+            json_set(e, "detail", mat);
+        } else {
+            json_set(e, "detail", json_null());
+        }
         return e;
     }
     json_t *en = json_obj_get(spec, "errno");
-    if (en && en->type == JSON_NUMBER && gca2_isa(type, "OSError")) {
+    if (en && en->type == JSON_NUMBER && gca2_oserror_kind(type)) {
+        const char *cls = gca2_exc_alias(type);
+        if (strcmp(cls, "OSError") == 0) cls = gca2_oserror_subclass(en->num_val);
         char buf[512];
         snprintf(buf, sizeof buf, "[Errno %.0f] %s", en->num_val, msg);
-        json_t *e = gca2_err(type, buf);
+        json_t *e = gca2_err(cls, buf);
         json_set(e, "errno", json_copy(en));
+        return e;
+    }
+    if (strcmp(type, "JSONDecodeError") == 0) {
+        /* str(JSONDecodeError(msg, doc, pos)) appends ": line L column C
+         * (char P)" with L = doc.count('\n', 0, pos) + 1 and
+         * C = pos - doc.rfind('\n', 0, pos) (rfind -1 when absent). */
+        const char *doc = json_get_str(spec, "doc", "");
+        long long pos = (long long)json_get_num(spec, "pos", 0);
+        long long lineno = 1, lastnl = -1;
+        for (long long i = 0; i < pos && doc[i]; i++)
+            if (doc[i] == '\n') { lineno++; lastnl = i; }
+        long long colno = pos - lastnl;
+        size_t need = strlen(msg) + 96;
+        char *buf = malloc(need);
+        if (!buf) return gca2_err(type, msg);
+        snprintf(buf, need, "%s: line %lld column %lld (char %lld)",
+                 msg, lineno, colno, pos);
+        json_t *e = gca2_err(type, buf);
+        free(buf);
         return e;
     }
     return gca2_err(type, msg);
@@ -1842,20 +1910,23 @@ static json_t *gca2__build_message_event(gca2_ctx_t *ctx, const json_t *args) {
             json_free(lr);
             continue;
         }
-        json_free(r);
-        if (!gca2_truthy(lp)) continue;
+        /* lp/mime BORROW into r (gca2_unpack2) — keep r alive until the
+         * last use of both (freeing it here was a UAF: the mime seam arg
+         * read reused heap garbage on unlucky layouts). */
+        if (!gca2_truthy(lp)) { json_free(r); continue; }
         json_append(media_urls, json_copy(lp));
         json_append(media_types, json_string(gca2_str_or(mime, "application/octet-stream")));
         if (strcmp(message_type, "text") == 0 && !text[0]) {
             json_t *ma = json_object();
             json_set_hdr(ma, "mime", gca2_str_or(mime, ""));
             json_t *mr = gca2_call(ctx, "_mime_for_message_type", ma);
-            if (gca2_is_raise(mr)) { free(text); json_free(media_urls); json_free(media_types); json_free(attachments); return mr; }
+            if (gca2_is_raise(mr)) { json_free(r); free(text); json_free(media_urls); json_free(media_types); json_free(attachments); return mr; }
             const char *ms = gca2_str(mr);
             snprintf(mt_buf, sizeof mt_buf, "%s", ms ? ms : "text");
             message_type = mt_buf;
             json_free(mr);
         }
+        json_free(r);
     }
     json_free(attachments);
     if (has_slash) message_type = "command";

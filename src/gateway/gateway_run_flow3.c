@@ -76,7 +76,11 @@
  *    (?<![\w:/])/([A-Za-z0-9][A-Za-z0-9_-]*) is transcribed as a left-to-
  *    right scanner over the ORIGINAL text (lookbehind reads the original
  *    preceding byte; ASCII \w domain). import_fail models the in-function
- *    import halting (sys.modules None -> ImportError, empty trace).
+ *    import halting (sys.modules None -> ModuleNotFoundError, empty trace).
+ *  - None-returning live flows (watchdog abandon-and-return, channel
+ *    directory fut.result, restart closure, session-env CM block) DISCARD
+ *    the last seam's non-raise result: the port checks it for a raise spec
+ *    then returns NULL. Fixtures script non-null results to prove it.
  *  - _instantiate_builtin_adapter: Platform enums travel as value strings;
  *    the harness/oracle validate membership before dispatch (ValueError
  *    otherwise). _BUILTIN_ADAPTERS is the live 3-entry table. Ported
@@ -316,7 +320,7 @@ json_t *gr3_telegramize_command_mentions(const json_t *platform, const char *tex
     bool is_tg = pv && strcmp(pv, "telegram") == 0;
     if (!is_tg) return json_string(text);
     if (import_fail)
-        return gr3_raise("ImportError",
+        return gr3_raise("ModuleNotFoundError",
             "import of hermes_cli.commands_platforms halted; None in sys.modules");
     size_t n = strlen(text);
     size_t cap = n + 64;
@@ -453,7 +457,10 @@ json_t *gr3_watch_gateway_turn_inactivity(const json_t *agent_holder,
         gr3_s(aa, "timeout_fired", timeout_fired);
         gr3_s(aa, "cleanup_lock", cleanup_lock);
         gr3_s(aa, "is_still_current", is_still_current);
-        return gr3_call(s, "_abandon_timed_out_gateway_turn", aa);
+        json_t *ar = gr3_call(s, "_abandon_timed_out_gateway_turn", aa);
+        if (gr3_raised(ar)) return ar;
+        json_free(ar);
+        return NULL; /* live: _abandon(...); return -> None */
     }
 }
 
@@ -576,7 +583,10 @@ json_t *gr3_housekeeping_channel_directory(const json_t *adapters, const char *l
     json_free(fut);
     json_t *fa = gr3_args();
     gr3_n(fa, "timeout", 30);
-    return gr3_call(s, "fut.result", fa);
+    json_t *fr = gr3_call(s, "fut.result", fa);
+    if (gr3_raised(fr)) return fr;
+    json_free(fr);
+    return NULL; /* live: fut.result(timeout=30) then implicit None */
 }
 
 /* PoP: gr3_housekeeping_curator @ gateway/run.py:_housekeeping_curator */
@@ -618,12 +628,12 @@ json_t *gr3_housekeeping_state_db_maintenance(const json_t *launch, const gr3_se
     if (!auto_archive && !auto_prune) { json_free(cfg); return NULL; }
 
     json_t *scope = gr3_call(s, "profile_scope", gr3_args());
-    if (gr3_raised(scope)) return scope;
+    if (gr3_raised(scope)) { json_free(cfg); return scope; }
     json_t *pa = gr3_args();
     gr3_j(pa, "scope", scope);
     gr3_b(pa, "eager", true);
     json_t *store = gr3_call(s, "open_persistence", pa);
-    if (gr3_raised(store)) { json_free(scope); return store; }
+    if (gr3_raised(store)) { json_free(scope); json_free(cfg); return store; }
 
     json_t *ret = NULL;
     /* try: */
@@ -777,7 +787,10 @@ json_t *gr3_start_gateway_make_restart_signal_handler(const json_t *runner,
     json_t *a = gr3_args();
     gr3_b(a, "detached", false);
     gr3_b(a, "via_service", true);
-    return gr3_runner_method(runner, "request_restart", a, s);
+    json_t *rr = gr3_runner_method(runner, "request_restart", a, s);
+    if (gr3_raised(rr)) return rr;
+    json_free(rr);
+    return NULL; /* the closure body ends with the call -> None */
 }
 
 /* PoP: gr3_running_agent_ids @ gateway/run.py:GatewayRunner._running_agent_ids */
@@ -902,7 +915,9 @@ json_t *gr3_session_env_scope(const json_t *runner, const json_t *context,
     json_t *cr = gr3_runner_method(runner, "_clear_session_env", ca, s);
     if (gr3_raised(cr)) { json_free(body); return cr; }
     json_free(cr);
-    return body;
+    if (gr3_raised(body)) return body; /* body raise propagates through finally */
+    json_free(body);
+    return NULL; /* the CM drives the block; the flow ret is None */
 }
 
 /* PoP: gr3_get_housekeeping_executor @ gateway/run.py:GatewayRunner._get_housekeeping_executor */

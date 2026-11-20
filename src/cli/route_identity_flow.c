@@ -1092,7 +1092,10 @@ json_t *rid_base_url_origin(rid_io_t *io, const json_t *in, json_t *st)
     json_t *p = rid_parse_base_url(io, in, st);
     if (rid_is_raise(p)) return p;
     json_t *in2 = json_object();
-    json_set(in2, "parsed", p ? p : json_null());
+    /* COPY into in2: json_free(in2) below would otherwise free p, which is
+     * still read (scheme/netloc) and freed again at every exit path — a
+     * UAF read + double free (0xC0000374 on the origin cases). */
+    json_set(in2, "parsed", p ? json_copy(p) : json_null());
     json_t *hj = rid_hostname_of(io, in2, st);
     json_free(in2);
     const char *hostname = rid_str(hj);

@@ -521,7 +521,6 @@ static const double KTR2_RECOVERY_DELAYS[] = { 15.0, 45.0, 90.0 };
 
 /* ════════════════ agent/kanban_turn_recovery.py ════════════════ */
 
-/* PoP: ktr2_kanban_task_id @ agent/kanban_turn_recovery.py:kanban_task_id */
 static json_t *ktr2_kanban_task_id(ktr2_ctx_t *ctx, const json_t *args) {
     (void)args;
     const json_t *e = ktr2_env_get(ctx, "HERMES_KANBAN_TASK");
@@ -535,7 +534,6 @@ static json_t *ktr2_kanban_task_id(ktr2_ctx_t *ctx, const json_t *args) {
     return stripped;
 }
 
-/* PoP: ktr2_resolve_task_id @ agent/kanban_turn_recovery.py:_resolve_task_id */
 static json_t *ktr2_resolve_task_id(ktr2_ctx_t *ctx, const json_t *args) {
     const json_t *tid = json_obj_get(args, "task_id");
     if (!tid || tid->type == JSON_NULL)
@@ -547,7 +545,6 @@ static json_t *ktr2_resolve_task_id(ktr2_ctx_t *ctx, const json_t *args) {
     return stripped;
 }
 
-/* PoP: ktr2_kanban_turn_recovery_enabled @ agent/kanban_turn_recovery.py:kanban_turn_recovery_enabled */
 static json_t *ktr2_kanban_turn_recovery_enabled(ktr2_ctx_t *ctx, const json_t *args) {
     json_t *a = ktr2_args0();
     ktr2_aset(a, "task_id", json_obj_get(args, "task_id"));
@@ -563,7 +560,6 @@ static json_t *ktr2_kanban_turn_recovery_enabled(ktr2_ctx_t *ctx, const json_t *
     return json_bool(gt);
 }
 
-/* PoP: ktr2_max_recovery_attempts @ agent/kanban_turn_recovery.py:max_recovery_attempts */
 static json_t *ktr2_max_recovery_attempts(ktr2_ctx_t *ctx, const json_t *args) {
     (void)args;
     const json_t *e = ktr2_env_get(ctx, "HERMES_KANBAN_TURN_RECOVERY");
@@ -590,7 +586,6 @@ static json_t *ktr2_max_recovery_attempts(ktr2_ctx_t *ctx, const json_t *args) {
     return json_number(clamped);
 }
 
-/* PoP: ktr2_recovery_delay_seconds @ agent/kanban_turn_recovery.py:recovery_delay_seconds */
 static json_t *ktr2_recovery_delay_seconds(ktr2_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     const json_t *at = json_obj_get(args, "attempt");
@@ -605,7 +600,6 @@ static json_t *ktr2_recovery_delay_seconds(ktr2_ctx_t *ctx, const json_t *args) 
     return json_number(KTR2_RECOVERY_DELAYS[(size_t)idx]);
 }
 
-/* PoP: ktr2_turn_exit_is_terminal @ agent/kanban_turn_recovery.py:_turn_exit_is_terminal */
 static json_t *ktr2_turn_exit_is_terminal(ktr2_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     const json_t *result = json_obj_get(args, "result");
@@ -621,7 +615,6 @@ static json_t *ktr2_turn_exit_is_terminal(ktr2_ctx_t *ctx, const json_t *args) {
     return json_bool(term);
 }
 
-/* PoP: ktr2_should_recover_turn @ agent/kanban_turn_recovery.py:should_recover_turn */
 static json_t *ktr2_should_recover_turn(ktr2_ctx_t *ctx, const json_t *args) {
     if (!json_has(args, "attempt"))
         return ktr2_err_spec("TypeError",
@@ -667,7 +660,6 @@ static json_t *ktr2_should_recover_turn(ktr2_ctx_t *ctx, const json_t *args) {
     return json_bool(true);
 }
 
-/* PoP: ktr2_kanban_db_path @ agent/kanban_turn_recovery.py:_kanban_db_path */
 static json_t *ktr2_kanban_db_path(ktr2_ctx_t *ctx, const json_t *args) {
     (void)args;
     const json_t *e = ktr2_env_get(ctx, "HERMES_KANBAN_DB");
@@ -679,7 +671,6 @@ static json_t *ktr2_kanban_db_path(ktr2_ctx_t *ctx, const json_t *args) {
     return stripped;
 }
 
-/* PoP: ktr2_now @ agent/kanban_turn_recovery.py:_now */
 static json_t *ktr2_now(ktr2_ctx_t *ctx, const json_t *args) {
     (void)args;
     json_t *t = ktr2_call(ctx, "time.time", ktr2_args0());
@@ -689,7 +680,6 @@ static json_t *ktr2_now(ktr2_ctx_t *ctx, const json_t *args) {
     return json_number(trunc(d));   /* int(time.time()) */
 }
 
-/* PoP: ktr2_truncate @ agent/kanban_turn_recovery.py:_truncate */
 static json_t *ktr2_truncate(ktr2_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     const json_t *text = json_obj_get(args, "text");
@@ -739,7 +729,6 @@ static json_t *ktr2_truncate(ktr2_ctx_t *ctx, const json_t *args) {
     "3. End with a terminal `kanban_complete(summary=..., artifacts=[...])` if the work " \
     "is done, or `kanban_block(reason=...)` if you are blocked.]"
 
-/* PoP: ktr2_build_recovery_nudge @ agent/kanban_turn_recovery.py:build_recovery_nudge */
 static json_t *ktr2_build_recovery_nudge(ktr2_ctx_t *ctx, const json_t *args) {
     bool has_attempt = json_has(args, "attempt");
     bool has_max = json_has(args, "max_attempts");
@@ -800,7 +789,6 @@ static json_t *ktr2_build_recovery_nudge(ktr2_ctx_t *ctx, const json_t *args) {
     "(attempt %lld/%lld) after %llds; session context preserved"
 #define KTR2_EMIT_FAIL_FMT "kanban turn-recovery emit failed"
 
-/* PoP: ktr2_emit_recovery_skipped @ agent/kanban_turn_recovery.py:_emit_recovery_skipped */
 static json_t *ktr2_emit_recovery_skipped(ktr2_ctx_t *ctx, const json_t *args) {
     if (!json_has(args, "emit"))
         return ktr2_err_spec("TypeError",
@@ -840,7 +828,6 @@ static json_t *ktr2_emit_recovery_skipped(ktr2_ctx_t *ctx, const json_t *args) {
     return json_null();
 }
 
-/* PoP: ktr2_worker_claim_is_live @ agent/kanban_turn_recovery.py:worker_claim_is_live */
 static json_t *ktr2_worker_claim_is_live(ktr2_ctx_t *ctx, const json_t *args) {
     /* task_id = _resolve_task_id(task_id) */
     json_t *ra = ktr2_args0();
@@ -1069,7 +1056,6 @@ outer_except:
     return json_bool(false);
 }
 
-/* PoP: ktr2_recover_failed_kanban_turns @ agent/kanban_turn_recovery.py:recover_failed_kanban_turns */
 static json_t *ktr2_recover_failed_kanban_turns(ktr2_ctx_t *ctx, const json_t *args) {
     bool has_turn = json_has(args, "turn_fn");
     bool has_get = json_has(args, "get_result");

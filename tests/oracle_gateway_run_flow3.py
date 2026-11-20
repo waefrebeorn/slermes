@@ -18,7 +18,8 @@ KeyboardInterrupt / CancelledError / GeneratorExit) pass through every
 {"__raise__": kind, "msg": str(exc)} ret spec.
 
 Modeling (twin of the port header): callable markers "cls:X"/"fn:X" fire
-seam X when called (cls: carries {config}, fn: carries {}); threading
+seam X when called (cls: carries {config}, fn: carries {}) and denorm back
+to the FULL marker string; threading
 events/locks, futures, stores, executors, loops and agents travel as marker
 strings with attribute doubles; id(a) projects to the agent marker; the
 pending sentinel is {"__sentinel__": true}; float("inf") projects to "inf";
@@ -40,6 +41,7 @@ import ast
 import asyncio
 import contextlib
 import copy
+import importlib.util as _importlib_util_real
 import json
 import os
 import sys
@@ -189,16 +191,20 @@ class MarkerDouble:
 
 
 class CallableDouble(MarkerDouble):
+    """Marker keeps the FULL "cls:X"/"fn:X" string (denorm projects it back
+    unchanged, matching the C raw-value passthrough); the seam name is the
+    suffix."""
     def __init__(self, marker, shape):
         super().__init__(marker)
         self._shape = shape
 
     def __call__(self, *a, **k):
+        name = self._marker.split(":", 1)[1]
         if self._shape == "config":
             args = {"config": denorm(a[0]) if a else None}
         else:
             args = {}
-        return seam(self._marker, args)
+        return seam(name, args)
 
 
 class EventDouble(MarkerDouble):
@@ -317,9 +323,9 @@ def mat_item_agent(a):
 
 def mat_callable(v):
     if isinstance(v, str) and v.startswith("cls:"):
-        return CallableDouble(v[4:], "config")
+        return CallableDouble(v, "config")
     if isinstance(v, str) and v.startswith("fn:"):
-        return CallableDouble(v[3:], "none")
+        return CallableDouble(v, "none")
     return v
 
 
@@ -498,6 +504,7 @@ def tpe_ctor(**kw):
 
 
 def copy_context_stub():
+    seam("copy_context", {})
     return types.SimpleNamespace(run=CallableDouble("copy_context.run", "none"))
 
 
@@ -586,6 +593,10 @@ def import_module_stub(full):
 
 
 mod("importlib", import_module=import_module_stub)
+# keep the REAL importlib.util reachable: the stub parent must not break
+# later `import importlib.util` in the same process (self-tests, tooling).
+sys.modules["importlib.util"] = _importlib_util_real
+sys.modules["importlib"].util = _importlib_util_real
 mod("gateway.channel_directory",
     build_channel_directory=lambda adapters: seam("build_channel_directory",
                                                   {"adapters": denorm(adapters)}))
@@ -725,7 +736,15 @@ def drive(func, inp):
         return run_flow(lambda: fn(inp.get("module", ""), inp.get("adapter_name", ""),
                                    inp.get("requirement", "")))
     if func == "instantiate_builtin_adapter":
-        return run_flow(lambda: fn(Platform(inp.get("platform")), inp.get("config")))
+        # Platform has a dynamic _missing_ (plugin pseudo-members, filesystem
+        # scan); the fixture domain is the STATIC enum values, validated
+        # before dispatch exactly like the harness (ValueError otherwise).
+        pv = inp.get("platform")
+        def go():
+            if pv not in {m.value for m in Platform}:
+                raise ValueError("'%s' is not a valid Platform" % pv)
+            return fn(Platform(pv), inp.get("config"))
+        return run_flow(go)
     if func == "housekeeping_channel_directory":
         return run_flow(lambda: fn(inp.get("adapters"), inp.get("loop")))
     if func == "housekeeping_curator":

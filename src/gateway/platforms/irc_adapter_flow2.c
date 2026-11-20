@@ -167,7 +167,6 @@ static bool irc2_truthy(const json_t *v) {
     }
 }
 static bool irc2_is_none(const json_t *v) { return !v || v->type == JSON_NULL; }
-static bool irc2_is_true(const json_t *v) { return v && v->type == JSON_BOOL && v->bool_val; }
 static const char *irc2_str(const json_t *v) {
     return (v && v->type == JSON_STRING) ? v->str_val : NULL;
 }
@@ -347,15 +346,6 @@ static bool irc2_exc_is_base(const char *kind) { return !irc2_exc_is_exception(k
 static bool irc2_exc_is_timeout(const char *kind) {
     for (int depth = 0; kind && depth < 64; depth++) {
         if (!strcmp(kind, "TimeoutError")) return true;
-        const char *p = irc2_exc_parent(kind);
-        if (!p) return false;
-        kind = p;
-    }
-    return false;
-}
-static bool irc2_exc_is_value(const char *kind) {
-    for (int depth = 0; kind && depth < 64; depth++) {
-        if (!strcmp(kind, "ValueError")) return true;
         const char *p = irc2_exc_parent(kind);
         if (!p) return false;
         kind = p;
@@ -1150,20 +1140,21 @@ static json_t *irc2_info(irc2_ctx_t *ctx, const json_t *args) {
 }
 
 /* _required(label, env, default, what): prompt; falsy -> warn + False;
- * save_env_value(env, value.strip()); True. */
-static json_t *irc2__required_c(irc2_ctx_t *ctx, const char *label, const char *env,
-                                const json_t *deflt, const char *what) {
+ * save_env_value(env, value.strip()); True. label/env/what travel as raw nodes
+ * (seam args record them verbatim); the warning f-string str()-projects what. */
+static json_t *irc2__required_c(irc2_ctx_t *ctx, const json_t *label, const json_t *env,
+                                const json_t *deflt, const json_t *what) {
     json_t *pa = irc2_args();
-    irc2_set_s(pa, "question", label);
+    irc2_set_copy(pa, "question", label);
     irc2_set_copy(pa, "default", deflt);
     json_t *value = irc2_call(ctx, "prompt", pa);
     IA2_PROP(value);
     if (!irc2_truthy(value)) {
         json_free(value);
-        char *what_s = irc2_pystr(NULL);   /* what is a str literal at call sites */
+        char *what_s = irc2_pystr(what);
+        char *msg = malloc(strlen(what_s) + 64);
+        sprintf(msg, "%s is required \xe2\x80\x94 skipping IRC setup", what_s);
         free(what_s);
-        char *msg = malloc(strlen(what) + 64);
-        sprintf(msg, "%s is required \xe2\x80\x94 skipping IRC setup", what);
         json_t *wa = irc2_args();
         irc2_set_s(wa, "text", msg);
         free(msg);
@@ -1181,7 +1172,7 @@ static json_t *irc2__required_c(irc2_ctx_t *ctx, const char *label, const char *
     char *stripped = irc2_strip(vs);
     json_free(value);
     json_t *sa = irc2_args();
-    irc2_set_s(sa, "key", env);
+    irc2_set_copy(sa, "key", env);
     irc2_set_s(sa, "value", stripped);
     free(stripped);
     json_t *sr = irc2_call(ctx, "save_env_value", sa);
@@ -1191,8 +1182,8 @@ static json_t *irc2__required_c(irc2_ctx_t *ctx, const char *label, const char *
 }
 /* PoP: irc2__required @ plugins/platforms/irc/adapter.py:_required */
 static json_t *irc2__required(irc2_ctx_t *ctx, const json_t *args) {
-    return irc2__required_c(ctx, json_get_str(args, "label", ""), json_get_str(args, "env", ""),
-                            json_obj_get(args, "default"), json_get_str(args, "what", ""));
+    return irc2__required_c(ctx, json_obj_get(args, "label"), json_obj_get(args, "env"),
+                            json_obj_get(args, "default"), json_obj_get(args, "what"));
 }
 
 /* ================================================================
@@ -1262,7 +1253,11 @@ static json_t *irc2_interactive_setup(irc2_ctx_t *ctx, const json_t *args) {
     /* if not _required("IRC server hostname (e.g. irc.libera.chat)", "IRC_SERVER", existing_server or "", "Server"): return */
     json_t *def_srv = irc2_truthy(existing_server) ? json_copy(existing_server) : json_string("");
     json_free(existing_server);
-    json_t *req1 = irc2__required_c(ctx, "IRC server hostname (e.g. irc.libera.chat)", "IRC_SERVER", def_srv, "Server");
+    json_t *lbl1 = json_string("IRC server hostname (e.g. irc.libera.chat)");
+    json_t *env1 = json_string("IRC_SERVER");
+    json_t *what1 = json_string("Server");
+    json_t *req1 = irc2__required_c(ctx, lbl1, env1, def_srv, what1);
+    json_free(lbl1); json_free(env1); json_free(what1);
     json_free(def_srv);
     IA2_PROP(req1);
     bool ok1 = irc2_truthy(req1);
@@ -1333,7 +1328,11 @@ static json_t *irc2_interactive_setup(irc2_ctx_t *ctx, const json_t *args) {
         IA2_PROP(gv);
         json_t *deflt = irc2_truthy(gv) ? json_copy(gv) : json_string("");
         json_free(gv);
-        json_t *req = irc2__required_c(ctx, "Bot nickname (e.g. hermes-bot)", "IRC_NICKNAME", deflt, "Nickname");
+        json_t *lbl = json_string("Bot nickname (e.g. hermes-bot)");
+        json_t *envn = json_string("IRC_NICKNAME");
+        json_t *whatn = json_string("Nickname");
+        json_t *req = irc2__required_c(ctx, lbl, envn, deflt, whatn);
+        json_free(lbl); json_free(envn); json_free(whatn);
         json_free(deflt);
         IA2_PROP(req);
         bool ok = irc2_truthy(req);
@@ -1345,7 +1344,11 @@ static json_t *irc2_interactive_setup(irc2_ctx_t *ctx, const json_t *args) {
         IA2_PROP(gv);
         json_t *deflt = irc2_truthy(gv) ? json_copy(gv) : json_string("");
         json_free(gv);
-        json_t *req = irc2__required_c(ctx, "Channel to join (e.g. #hermes \xe2\x80\x94 comma-separate for multiple)", "IRC_CHANNEL", deflt, "Channel");
+        json_t *lbl = json_string("Channel to join (e.g. #hermes \xe2\x80\x94 comma-separate for multiple)");
+        json_t *envn = json_string("IRC_CHANNEL");
+        json_t *whatn = json_string("Channel");
+        json_t *req = irc2__required_c(ctx, lbl, envn, deflt, whatn);
+        json_free(lbl); json_free(envn); json_free(whatn);
         json_free(deflt);
         IA2_PROP(req);
         bool ok = irc2_truthy(req);
@@ -1374,9 +1377,11 @@ static json_t *irc2_interactive_setup(irc2_ctx_t *ctx, const json_t *args) {
             json_t *secret = irc2_call(ctx, "prompt", sa);
             IA2_PROP(secret);
             if (irc2_truthy(secret)) {
-                const char *ss = irc2_str(secret);
-                r = irc2_save_env(ctx, "IRC_SERVER_PASSWORD", ss ? ss : "");
+                json_t *sva = irc2_args();
+                irc2_set_s(sva, "key", "IRC_SERVER_PASSWORD");
+                irc2_set_copy(sva, "value", secret);
                 json_free(secret);
+                r = irc2_call(ctx, "save_env_value", sva);
                 IA2_PROP(r); json_free(r);
             } else json_free(secret);
         }
@@ -1393,9 +1398,11 @@ static json_t *irc2_interactive_setup(irc2_ctx_t *ctx, const json_t *args) {
             json_t *secret = irc2_call(ctx, "prompt", sa);
             IA2_PROP(secret);
             if (irc2_truthy(secret)) {
-                const char *ss = irc2_str(secret);
-                r = irc2_save_env(ctx, "IRC_NICKSERV_PASSWORD", ss ? ss : "");
+                json_t *sva = irc2_args();
+                irc2_set_s(sva, "key", "IRC_NICKSERV_PASSWORD");
+                irc2_set_copy(sva, "value", secret);
                 json_free(secret);
+                r = irc2_call(ctx, "save_env_value", sva);
                 IA2_PROP(r); json_free(r);
             } else json_free(secret);
         }

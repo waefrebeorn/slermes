@@ -1055,7 +1055,9 @@ static json_t *wa2__bridge_token_lock(wa2_ctx_t *ctx, const json_t *args) {
             json_t *wra = json_object();
             json_t *bytes = json_array();
             json_append(bytes, json_number(0));
-            json_set(wra, "data", bytes);
+            json_t *benv = json_object();
+            json_set(benv, "__bytes__", bytes);
+            json_set(wra, "data", benv);
             json_t *wr = wa2_call(ctx, "handle.write", wra);
             if (wa2_is_raise(wr)) { pending = wr; goto close; }
             json_free(wr);
@@ -2382,9 +2384,12 @@ cm_exit:
             bool suppressed = false;
             json_t *final = wa2_cm_exit(ctx, "resp.exit", pending, &suppressed);
             if (final) {
+                /* aexit did not suppress: the raise leaves the `async with`
+                 * and lands in `except Exception` (handled), not raw out. */
                 if (ret) json_free(ret);
                 json_free(br);
-                return final;
+                pending = final;
+                goto handled;
             }
             if (suppressed) {
                 if (ret) json_free(ret);
@@ -2490,12 +2495,18 @@ static json_t *wa2__log_delivery_status(wa2_ctx_t *ctx, const json_t *args) {
     json_t *a = json_object();
     wa2_set_s(a, "msg", "[%s] WhatsApp delivery status: message=%s chat=%s status=%s%s at=%s%s");
     json_t *arr = json_array();
+    /* json_append(NULL) is a no-op: missing keys must emit explicit nulls
+     * (data.get(...) -> None), never drop the positional slot. */
+    const json_t *mid = data ? json_obj_get(data, "messageId") : NULL;
+    const json_t *cid = data ? json_obj_get(data, "chatId") : NULL;
+    const json_t *st = data ? json_obj_get(data, "status") : NULL;
+    const json_t *ts = data ? json_obj_get(data, "timestamp") : NULL;
     json_append(arr, json_copy(name));
-    json_append(arr, json_copy(data ? json_obj_get(data, "messageId") : NULL));
-    json_append(arr, json_copy(data ? json_obj_get(data, "chatId") : NULL));
-    json_append(arr, json_copy(data ? json_obj_get(data, "status") : NULL));
+    json_append(arr, mid ? json_copy(mid) : json_null());
+    json_append(arr, cid ? json_copy(cid) : json_null());
+    json_append(arr, st ? json_copy(st) : json_null());
     json_append(arr, json_string(recip));
-    json_append(arr, json_copy(data ? json_obj_get(data, "timestamp") : NULL));
+    json_append(arr, ts ? json_copy(ts) : json_null());
     json_append(arr, json_string(errpart));
     json_set(a, "args", arr);
     free(recip);

@@ -1220,7 +1220,7 @@ static json_t *si_restore_row_identity_impl(si_ctx_t *ctx, const json_t *row, js
         }
         json_free(stored);
     }
-    const json_t *tcuid = si_subscript(row, SI_TOOL_CALL_UID, &err);
+    const json_t *tcuid = si_subscript(row, "tool_call_uid", &err);
     if (err) return err;
     if (si_truthy(tcuid)) {
         si_item_assign(msg, SI_TOOL_CALL_UID, tcuid, &err);

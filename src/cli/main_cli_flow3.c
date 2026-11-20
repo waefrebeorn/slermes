@@ -29,9 +29,10 @@
  *     collapse to ints on both sides; Path -> POSIX str.
  *   - the args double's "func" field is a STRING handler marker (live: a
  *     callable). norm() drops callables from SimpleNamespace projections,
- *     so EVERY seam arg carrying the args double omits "func" (mc3_arg_args).
- *     func null -> hasattr True -> TypeError 'NoneType' object is not
- *     callable; func non-str non-null -> TypeError '<type>' ... callable.
+ *     so seam args carrying the args double omit a STRING func; a
+ *     present-null func survives as null (mc3_arg_args). func null ->
+ *     hasattr True -> TypeError 'NoneType' object is not callable; func
+ *     non-str non-null -> TypeError '<type>' ... callable.
  *   - uncaught exception -> {"__raise__": cls}; an exception passed as a
  *     logger arg projects to {"__raise__": cls, "msg": str(e)}.
  *   - scripts (FAIL-CLOSED): absent key -> RuntimeError("no script for
@@ -333,13 +334,15 @@ static void mc3_arg_str(json_t *args, const char *key, const char *val) {
     json_set(args, key, json_string(val));
 }
 /* the args-double projection: live norm() drops the callable "func" field
- * from every SimpleNamespace echo, so seam args carrying args omit it. */
+ * (a STRING handler marker materializes to a callable) from every
+ * SimpleNamespace echo; a present-NULL func is NOT callable and survives as
+ * null inside the projected record. */
 static void mc3_arg_args(json_t *args, const char *key, const json_t *args_node) {
     if (!args_node || args_node->type == JSON_NULL) return;
     if (args_node->type != JSON_OBJECT) { json_set(args, key, json_copy(args_node)); return; }
     json_t *proj = json_object();
     for (size_t i = 0; i < args_node->c.count; i++) {
-        if (mc3_str_eq(args_node->c.keys[i], "func")) continue;
+        if (mc3_str_eq(args_node->c.keys[i], "func") && mc3_is_str(args_node->c.items[i])) continue;
         json_set(proj, args_node->c.keys[i], json_copy(args_node->c.items[i]));
     }
     json_set(args, key, proj);
@@ -453,14 +456,16 @@ static json_t *mc3_skills_dir_is_unseeded(mc3_ctx *ctx, json_t *in) {
     result = mc3_is_none(first);
     goto done;
 suppress:
-    /* except Exception: return False (BaseException propagates) */
-    if (mc3_exc_is_exception(ctx)) {
-        mc3_exc_clear(ctx);
-        result = false;
-        goto done;
+    /* except Exception: return False (BaseException propagates). Reached
+     * with a pending Exception marker OR with no pending exc at all (the
+     * Path(non-str) / next(non-iterator) TypeError paths) — both -> False. */
+    if (mc3_exc_pending(ctx) && !mc3_exc_is_exception(ctx)) {
+        json_free(home); json_free(r);
+        return NULL;
     }
-    json_free(home); json_free(r);
-    return NULL;
+    mc3_exc_clear(ctx);
+    result = false;
+    goto done;
 done:
     json_free(home); json_free(r);
     return json_bool(result);

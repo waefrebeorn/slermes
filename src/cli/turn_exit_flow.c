@@ -349,6 +349,10 @@ static const char *te2_exc_parent(const char *k) {
 /* caught(r, cls): cls appears anywhere in r's parent chain */
 static bool te2_caught(const json_t *r, const char *cls) {
     const char *k = te2_raise_class(r);
+    /* IOError / EnvironmentError / WindowsError are OSError aliases: catching
+     * by an alias name is catching OSError (normalize the catch target). */
+    if (!strcmp(cls, "IOError") || !strcmp(cls, "EnvironmentError") ||
+        !strcmp(cls, "WindowsError")) cls = "OSError";
     /* ExceptionGroup multiply-inherits (BaseExceptionGroup, Exception):
      * the single-parent walk must still honor `except Exception`. */
     if (k && !strcmp(k, "ExceptionGroup") && !strcmp(cls, "Exception")) return true;
@@ -512,9 +516,9 @@ static json_t *te2_print(const te2_seams_t *s, const char *text,
 }
 
 /* os.environ.get — a direct STATE read (no seam). */
-static const json_t *te2_env_get(const json_t *environ, const char *key) {
-    if (!environ || environ->type != JSON_OBJECT) return NULL;
-    return json_obj_get(environ, key);
+static const json_t *te2_env_get(const json_t *env, const char *key) {
+    if (!env || env->type != JSON_OBJECT) return NULL;
+    return json_obj_get(env, key);
 }
 
 /* ── hermes_cli/cli_single_query.py ── */
@@ -696,17 +700,31 @@ static json_t *te2_run_kanban_goal_loop_chat(const te2_seams_t *s, const json_t 
  * __enter__/__exit__ semantics. Returns the task node (owned) or a raise
  * spec; *exit_raised marks an exit raise that masks the body raise. */
 static json_t *te2_connect_get_task(const te2_seams_t *s, const char *task_id) {
-    /* with _kbc.connect_closing() as _conn: task = _kb.get_task(_conn, task_id) */
+    /* with _kbc.connect_closing() as _conn: task = _kb.get_task(_conn, task_id)
+     * _kbc.connect_closing / _kb.get_task are LEAF attribute accesses: each
+     * fires an import seam before its call. */
+    json_t *ic = te2_call0(s, "import_connect_closing");
+    if (te2_is_raise(ic)) return ic;   /* attr raise: no factory/enter/exit */
+    json_free(ic);
     json_t *fac = te2_call0(s, "connect_closing");
     if (te2_is_raise(fac)) return fac;   /* factory raise: no enter/exit */
     json_free(fac);
     json_t *conn = te2_call0(s, "connect_closing_enter");
     if (te2_is_raise(conn)) return conn; /* enter raise: no exit */
-    json_t *ga = json_object();
-    if (conn) json_set(ga, "conn", json_copy(conn));
-    json_set(ga, "task_id", json_string(task_id ? task_id : ""));
-    json_t *task = te2_call(s, "get_task", ga);
-    json_free(ga);
+    /* body: _kb.get_task attribute access (import seam) then the call; an
+     * import raise here is a BODY raise (the __exit__ still runs). */
+    json_t *task = NULL;
+    json_t *ig = te2_call0(s, "import_get_task");
+    if (te2_is_raise(ig)) {
+        task = ig;
+    } else {
+        json_free(ig);
+        json_t *ga = json_object();
+        if (conn) json_set(ga, "conn", json_copy(conn));
+        json_set(ga, "task_id", json_string(task_id ? task_id : ""));
+        task = te2_call(s, "get_task", ga);
+        json_free(ga);
+    }
     /* finally: __exit__ runs on EVERY body path (success or raise) */
     json_t *ex = te2_call0(s, "connect_closing_exit");
     if (te2_is_raise(ex)) {
@@ -727,10 +745,10 @@ static json_t *te2_connect_get_task(const te2_seams_t *s, const char *task_id) {
 
 /* PoP: te2_collect_kanban_task_images @ hermes_cli/cli_single_query.py:_collect_kanban_task_images */
 static json_t *te2_collect_kanban_task_images(const te2_seams_t *s, json_t *images,
-                                              const json_t *environ) {
+                                              const json_t *env) {
     json_t *urls_out = json_array();
     /* _kanban_task_id = os.environ.get("HERMES_KANBAN_TASK", "").strip() */
-    const json_t *ev = te2_env_get(environ, "HERMES_KANBAN_TASK");
+    const json_t *ev = te2_env_get(env, "HERMES_KANBAN_TASK");
     const char *evs = te2_jstr(ev);
     char *task_id = te2_strip(evs ? evs : "");
     if (!task_id[0]) { free(task_id); return urls_out; }
@@ -1079,9 +1097,7 @@ static json_t *te2_quoted(const te2_seams_t *s, const json_t *row, const char *f
     const char *ps = te2_jstr(pv);
     json_t *out;
     if (ps && ps[0]) {
-        out = json_string(te2_xsf("    \"%s\"", ps));
         char *tmp = te2_xsf("    \"%s\"", ps);
-        json_free(out);
         out = json_string(tmp);
         free(tmp);
     } else {
@@ -1225,14 +1241,16 @@ static json_t *te2_lost_admission(const json_t *snapshot, const char *admission_
         for (size_t i = 0; i < json_len(pending); i++) {
             const json_t *row = json_get(pending, i);
             const json_t *aid = row ? json_obj_get(row, "admission_id") : NULL;
-            const json_t *st = row ? json_obj_get(row, "status") : NULL;
             if (!aid) return te2_raise_spec("KeyError", "'admission_id'");
-            if (!st) return te2_raise_spec("KeyError", "'status'");
             const char *as = te2_jstr(aid);
-            const char *ss = te2_jstr(st);
-            if (as && !strcmp(as, admission_id ? admission_id : "") &&
-                ss && !strcmp(ss, "unknown"))
-                return json_copy(row);
+            /* short-circuit: row["status"] is read ONLY for a matching id */
+            if (as && !strcmp(as, admission_id ? admission_id : "")) {
+                const json_t *st = json_obj_get(row, "status");
+                if (!st) return te2_raise_spec("KeyError", "'status'");
+                const char *ss = te2_jstr(st);
+                if (ss && !strcmp(ss, "unknown"))
+                    return json_copy(row);
+            }
         }
     }
     /* if lost is None: raise GatewayClientError(...) */
@@ -1303,18 +1321,24 @@ static json_t *te2_resume_footer(const te2_seams_t *s, const char *session_id) {
 }
 
 /* unknown_admissions comprehension (unclaimed real helper in the oracle;
- * inlined here): [row["admission_id"] for row in self.pending if row["status"] == "unknown"] */
-static bool te2_has_unknown_admissions(const json_t *self) {
+ * inlined here): [row["admission_id"] for row in self.pending
+ * if row["status"] == "unknown"]. Returns 1 when any unknown row exists,
+ * 0 when none, -1 on a missing status key (KeyError "'status'"). The
+ * filter reads status on EVERY row (no short-circuit); admission_id is
+ * read only for unknown rows (present in the fixture domain). */
+static int te2_unknown_admissions(const json_t *self) {
     const json_t *pending = json_obj_get(self, "pending");
+    int has = 0;
     if (pending && pending->type == JSON_ARRAY) {
         for (size_t i = 0; i < json_len(pending); i++) {
             const json_t *row = json_get(pending, i);
             const json_t *st = row ? json_obj_get(row, "status") : NULL;
+            if (!st) return -1;
             const char *ss = te2_jstr(st);
-            if (ss && !strcmp(ss, "unknown")) return true;
+            if (ss && !strcmp(ss, "unknown")) has = 1;
         }
     }
-    return false;
+    return has;
 }
 
 /* PoP: te2_finite_block @ hermes_cli/gateway_chat_view.py:GatewayChatView._finite_block */
@@ -1327,11 +1351,12 @@ static json_t *te2_finite_block(json_t *self, const char *admission) {
         for (size_t i = 0; i < json_len(pending); i++) {
             const json_t *row = json_get(pending, i);
             const json_t *aid = row ? json_obj_get(row, "admission_id") : NULL;
-            const json_t *st = row ? json_obj_get(row, "status") : NULL;
             if (!aid) return te2_raise_spec("KeyError", "'admission_id'");
-            if (!st) return te2_raise_spec("KeyError", "'status'");
             const char *as = te2_jstr(aid);
+            /* the generator yields row["status"] ONLY for a matching id */
             if (as && !strcmp(as, admission ? admission : "")) {
+                const json_t *st = json_obj_get(row, "status");
+                if (!st) return te2_raise_spec("KeyError", "'status'");
                 own = te2_jstr(st);
                 break;
             }
@@ -1354,11 +1379,15 @@ static json_t *te2_finite_block(json_t *self, const char *admission) {
         return NULL;
     }
     /* if own == "queued" and self.unknown_admissions(): return "..." */
-    if (own && !strcmp(own, "queued") && te2_has_unknown_admissions(self))
-        return json_string(
-            "This chat is paused behind a turn whose ending Hermes couldn't confirm. "
-            "Your message is saved and will run once you resume this session and /discard "
-            "that turn; don't send it again.");
+    if (own && !strcmp(own, "queued")) {
+        int u = te2_unknown_admissions(self);
+        if (u < 0) return te2_raise_spec("KeyError", "'status'");
+        if (u > 0)
+            return json_string(
+                "This chat is paused behind a turn whose ending Hermes couldn't confirm. "
+                "Your message is saved and will run once you resume this session and /discard "
+                "that turn; don't send it again.");
+    }
     /* if self.prompts and (own or not self.gaps): return "..." */
     const json_t *prompts = json_obj_get(self, "prompts");
     double gaps = json_get_num(self, "gaps", 0);
@@ -1371,9 +1400,9 @@ static json_t *te2_finite_block(json_t *self, const char *admission) {
 /* ── hermes_cli/quiet_single_query.py ── */
 
 /* PoP: te2_exit_single_query @ hermes_cli/quiet_single_query.py:exit_single_query */
-static json_t *te2_exit_single_query(const te2_seams_t *s, const json_t *environ, double code) {
+static json_t *te2_exit_single_query(const te2_seams_t *s, const json_t *env, double code) {
     /* if os.environ.get("HERMES_KANBAN_TASK"): */
-    if (te2_jtruth(te2_env_get(environ, "HERMES_KANBAN_TASK"))) {
+    if (te2_jtruth(te2_env_get(env, "HERMES_KANBAN_TASK"))) {
         /* with contextlib.suppress(Exception):
          *     print(f"\n{KANBAN_WORKER_EXIT_TRAILER}{int(code)}", file=sys.stderr, flush=True) */
         char *trailer = te2_xsf("\n[kanban-worker-exit] rc=%.0f", code);
@@ -1395,11 +1424,11 @@ static json_t *te2_exit_single_query(const te2_seams_t *s, const json_t *environ
 }
 
 /* PoP: te2_take_turn_report_path @ hermes_cli/quiet_single_query.py:take_turn_report_path */
-static json_t *te2_take_turn_report_path(json_t *environ) {
+static json_t *te2_take_turn_report_path(json_t *env) {
     /* return environ.pop(TURN_REPORT_FILE_ENV, None) or None */
-    const json_t *v = json_obj_get(environ, "HERMES_QUIET_TURN_REPORT_FILE");
+    const json_t *v = json_obj_get(env, "HERMES_QUIET_TURN_REPORT_FILE");
     json_t *popped = v ? json_copy(v) : NULL;
-    json_obj_del(environ, "HERMES_QUIET_TURN_REPORT_FILE");
+    json_obj_del(env, "HERMES_QUIET_TURN_REPORT_FILE");
     if (!te2_jtruth(popped)) {   /* `or None`: falsy -> None */
         json_free(popped);
         return NULL;

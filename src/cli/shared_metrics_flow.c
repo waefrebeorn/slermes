@@ -677,7 +677,7 @@ static json_t *shm_write_entry(shm_io_t *io, const json_t *in, json_t *st)
 /* PoP: shm_install_snapshot_due @ hermes_cli/observability/shared_metrics.py:install_snapshot_due */
 static json_t *shm_install_snapshot_due(shm_io_t *io, const json_t *in, json_t *st)
 {
-    (void)in;
+    (void)in; (void)st;
     json_t *ret = NULL, *conn = NULL, *now = NULL, *last = NULL;
     conn = shm_connection(io, SM_BUSY_TIMEOUT_MS);
     if (shm_is_raise(conn)) { ret = conn; conn = NULL; goto done; }
@@ -1062,7 +1062,7 @@ done:
  * 16. _update_rollup_state — read-modify-write one JSON rollup state
  * ══════════════════════════════════════════════════════════════════════════ */
 /* unpack a 2-sequence result into (new_state, rows); exact py3.14 messages.
- * result owned (consumed). On success *ns/*rows owned copies. */
+ * result owned (consumed). On success ns and rows are owned copies. */
 static json_t *shm_unpack2(json_t *result, json_t **ns, json_t **rows)
 {
     *ns = NULL; *rows = NULL;
@@ -1225,7 +1225,7 @@ static json_t *shm_write_or_defer_core(shm_io_t *io, json_t *st, const json_t *w
     json_append(pending, json_copy(write_cb));
     json_set(st, "_deferred", json_array());
 
-    json_t *ret = NULL, *conn = NULL, *err = NULL;
+    json_t *conn = NULL, *err = NULL;
     json_t *w = shm_write(io, st, SM_BUSY_TIMEOUT_MS, &conn);
     if (w) { err = w; goto except_op; }
     for (size_t i = 0; i < pending->c.count; i++) {
@@ -1363,6 +1363,7 @@ static json_t *shm_mark_packaged(shm_io_t *io, const json_t *in, json_t *st)
     const json_t *rows = shm_get(in, "rows");
     const char *period_value = json_get_str(in, "period_value", "");
     const json_t *rv = shm_get(in, "resource_values");
+    (void)conn;   /* receiver of db.execute; implicit in the seam model */
     if (!shm_is_arr(rows)) return NULL;
     for (size_t i = 0; i < rows->c.count; i++) {
         const json_t *row = rows->c.items[i];

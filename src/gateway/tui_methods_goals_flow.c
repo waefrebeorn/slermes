@@ -792,9 +792,6 @@ static json_t *tmg_status(tmg_ctx_t *ctx, json_t *mgr) {
     return tmg_result_simple(sl);
 }
 
-/* PoP: tmg_show @ hermes_cli/goal_command.py:_show */
-static json_t *tmg_show(tmg_ctx_t *ctx, json_t *mgr);
-
 /* PoP: tmg_pause @ hermes_cli/goal_command.py:_pause */
 static json_t *tmg_pause(tmg_ctx_t *ctx, json_t *mgr) {
     json_t *ck = tmg_mgr_check(mgr, "pause");
@@ -906,16 +903,16 @@ static json_t *tmg_wait(tmg_ctx_t *ctx, json_t *mgr, const json_t *arg) {
     }
     char *reason = nt > 1 ? tmg_strip(t1) : tmg_strdup("");
     free(t1);
-    ck_wait:;
     json_t *ck = tmg_mgr_check(mgr, "wait_on");
     if (ck) { json_free(pidn); free(reason); return ck; }
     json_t *a = tmg_args0();
-    json_set(a, "pid", pidn); /* adopted */
+    tmg_aset(a, "pid", pidn);
     tmg_asets(a, "reason", reason);
     json_t *st = tmg_call(ctx, "wait_on", a);
-    if (tmg_is_raise(st)) { free(reason); return st; }
+    if (tmg_is_raise(st)) { json_free(pidn); free(reason); return st; }
     json_free(st);
     char *ps = tmg_pystr(pidn);
+    json_free(pidn);
     size_t cap = strlen(ps) + strlen(reason) + 128;
     char *out = malloc(cap);
     if (out) {
@@ -930,6 +927,8 @@ static json_t *tmg_wait(tmg_ctx_t *ctx, json_t *mgr, const json_t *arg) {
 }
 
 /* the goals.py gate leaves (below) compose here */
+static json_t *tmg_show(tmg_ctx_t *ctx, json_t *mgr);
+static json_t *tmg_mgr_render_contract(tmg_ctx_t *ctx, json_t *mgr);
 static json_t *tmg_mgr_add_gate(tmg_ctx_t *ctx, json_t *mgr, const json_t *command,
                                 const json_t *timeout_seconds, const json_t *max_retries);
 static json_t *tmg_mgr_remove_gate(tmg_ctx_t *ctx, json_t *mgr, const json_t *index);
@@ -1122,9 +1121,11 @@ static json_t *tmg_gate(tmg_ctx_t *ctx, json_t *mgr, const json_t *arg) {
         json_free(denial);
     }
     json_t *ret;
-    if (handler == 1) ret = tmg_gate_add(ctx, mgr, json_string(rest));
-    else if (handler == 2) ret = tmg_gate_remove(ctx, mgr, json_string(rest));
-    else ret = tmg_gate_clear(ctx, mgr, json_string(rest));
+    json_t *restnode = json_string(rest);
+    if (handler == 1) ret = tmg_gate_add(ctx, mgr, restnode);
+    else if (handler == 2) ret = tmg_gate_remove(ctx, mgr, restnode);
+    else ret = tmg_gate_clear(ctx, mgr, restnode);
+    json_free(restnode);
     if (tmg_is_raise(ret)) {
         const char *kind = tmg_raise_kind(ret);
         if (tmg_exc_is_rvi(kind)) {
@@ -1189,7 +1190,9 @@ static json_t *tmg_set(tmg_ctx_t *ctx, json_t *mgr, const json_t *arg, bool draf
         /* contract = contract if not contract.is_empty() else None */
         if (!contract || contract->type != JSON_OBJECT) {
             json_free(headline);
-            return tmg_carrier_error(contract, "is_empty");
+            json_t *ce = tmg_carrier_error(contract, "is_empty");
+            json_free(contract);
+            return ce;
         }
         json_t *ie = tmg_call(ctx, "contract_is_empty", tmg_args0());
         if (tmg_is_raise(ie)) { json_free(headline); json_free(contract); return ie; }
@@ -1415,7 +1418,9 @@ static json_t *tmg_dispatch(tmg_ctx_t *ctx, json_t *mgr, const json_t *arg,
     const char *prefix = "Invalid goal";
     json_t *ret = NULL;
     if (!strcmp(verb, "--")) {
-        ret = tmg_set(ctx, mgr, json_string(rest), false, last_user_message, has_progress);
+        json_t *rn = json_string(rest);
+        ret = tmg_set(ctx, mgr, rn, false, last_user_message, has_progress);
+        json_free(rn);
     } else {
         char *arglo = tmg_lower(stripped);
         tmg_handler_id h = tmg_exact_handler(arglo);
@@ -1423,17 +1428,24 @@ static json_t *tmg_dispatch(tmg_ctx_t *ctx, json_t *mgr, const json_t *arg,
         if (h != TMG_H_NONE) {
             ret = tmg_run_exact(ctx, mgr, h);
         } else if (tmg_in_set(verb, TMG_BARE_VERBS)) {
-            ret = tmg_bare_control(ctx, mgr, json_string(verb), json_string(rest));
+            json_t *vn = json_string(verb), *rn = json_string(rest);
+            ret = tmg_bare_control(ctx, mgr, vn, rn);
+            json_free(vn); json_free(rn);
         } else if (!strcmp(verb, "wait")) {
             prefix = "/goal wait";
-            ret = tmg_wait(ctx, mgr, json_string(rest));
+            json_t *rn = json_string(rest);
+            ret = tmg_wait(ctx, mgr, rn);
+            json_free(rn);
         } else if (!strcmp(verb, "gate")) {
             prefix = "/goal gate";
-            ret = tmg_gate(ctx, mgr, json_string(rest));
+            json_t *rn = json_string(rest);
+            ret = tmg_gate(ctx, mgr, rn);
+            json_free(rn);
         } else {
             bool drafting = !strcmp(verb, "draft");
-            ret = tmg_set(ctx, mgr, json_string(drafting ? rest : stripped), drafting,
-                          last_user_message, has_progress);
+            json_t *an = json_string(drafting ? rest : stripped);
+            ret = tmg_set(ctx, mgr, an, drafting, last_user_message, has_progress);
+            json_free(an);
         }
     }
     free(stripped); free(verb); free(rest);
@@ -1795,7 +1807,7 @@ static json_t *tmg_mgr_check_gates(tmg_ctx_t *ctx, json_t *mgr) {
         }
         if (!mr || mr->type != JSON_NUMBER) {
             char msg[160];
-            snprintf(msg, sizeof msg, "'>' not supported between instances of 'float' and '%s'",
+            snprintf(msg, sizeof msg, "'>' not supported between instances of 'int' and '%s'",
                      tmg_type_name(mr));
             json_free(exit_code); json_free(tail); json_free(cwd); json_free(refusal);
             return tmg_err_spec("TypeError", msg);
@@ -1815,7 +1827,9 @@ static json_t *tmg_mgr_check_gates(tmg_ctx_t *ctx, json_t *mgr) {
         tmg_aset(fv, "exit_code", exit_code);
         tmg_asetn(fv, "attempt", an);
         tmg_aset(fv, "max_retries", mr);
-        tmg_aset(fv, "output", tmg_truthy(tail) ? tail : json_string("(no output)"));
+        json_t *outv = tmg_truthy(tail) ? json_copy(tail) : json_string("(no output)");
+        tmg_aset(fv, "output", outv);
+        json_free(outv);
         json_t *fraise = NULL;
         char *prompt = tmg_format(TMG_GATE_FAILED_TEMPLATE, fv, &fraise);
         json_free(fv);
@@ -1944,8 +1958,11 @@ static json_t *tmg_mgr_render_contract_case(tmg_ctx_t *ctx, const json_t *args) 
 }
 static json_t *tmg_mgr_wait_on_session_case(tmg_ctx_t *ctx, const json_t *args) {
     const json_t *reason = json_obj_get(args, "reason");
-    return tmg_mgr_wait_on_session(ctx, tmg_mgr(ctx), json_obj_get(args, "session_id"),
-                                   reason ? reason : json_string(""));
+    json_t *defreason = reason ? NULL : json_string("");
+    json_t *ret = tmg_mgr_wait_on_session(ctx, tmg_mgr(ctx), json_obj_get(args, "session_id"),
+                                          reason ? reason : defreason);
+    json_free(defreason);
+    return ret;
 }
 static json_t *tmg_mgr_check_gates_case(tmg_ctx_t *ctx, const json_t *args) {
     (void)args;

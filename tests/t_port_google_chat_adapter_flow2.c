@@ -55,6 +55,28 @@ static const gca2_case_t CASES[] = {
 };
 #define CASE_COUNT (sizeof(CASES) / sizeof(CASES[0]))
 
+/* setup_case/drive mirror: the oracle seeds the import-time globals into
+ * EVERY case's state (state.setdefault(key, {})) and drive() syncs the six
+ * adapter attrs (null when absent) for non-store targets. Seed BEFORE
+ * dispatch so untouched globals still appear in out.state. */
+static void gca2_seed_state(json_t *state, const char *func) {
+    static const char *dicts[] = {
+        "_counts", "_typing_messages", "_last_sender_by_chat", "_last_inbound_thread"
+    };
+    for (size_t i = 0; i < sizeof(dicts) / sizeof(dicts[0]); i++)
+        if (!json_has(state, dicts[i]))
+            json_set(state, dicts[i], json_object());
+    if (strncmp(func, "store.", 6) != 0) {
+        static const char *attrs[] = {
+            "_shutting_down", "_debug_raw", "_bot_user_id",
+            "_user_credentials", "_user_chat_api", "_subscriber"
+        };
+        for (size_t i = 0; i < sizeof(attrs) / sizeof(attrs[0]); i++)
+            if (!json_has(state, attrs[i]))
+                json_set(state, attrs[i], json_null());
+    }
+}
+
 static char *read_line(FILE *f) {
     size_t cap = 4096, len = 0;
     char *buf = malloc(cap);
@@ -101,6 +123,7 @@ int main(void) {
             json_t *state = in ? json_obj_get(in, "state") : NULL;
             gca2_ctx_t ctx;
             ctx.state = (state && state->type == JSON_OBJECT) ? json_copy(state) : json_object();
+            gca2_seed_state(ctx.state, func);
             ctx.io = in ? json_obj_get(in, "io") : NULL;
             ctx.cursors = json_object();
             ctx.trace = json_array();

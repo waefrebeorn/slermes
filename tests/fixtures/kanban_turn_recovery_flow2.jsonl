@@ -1,0 +1,118 @@
+{"func": "kanban_task_id", "in": {"state": {}}}
+{"func": "kanban_task_id", "in": {"state": {"environ": {"HERMES_KANBAN_TASK": "t1"}}}}
+{"func": "kanban_task_id", "in": {"state": {"environ": {"HERMES_KANBAN_TASK": "  t2  "}}}}
+{"func": "kanban_task_id", "in": {"state": {"environ": {"HERMES_KANBAN_TASK": "   "}}}}
+{"func": "kanban_task_id", "in": {"state": {"environ": {"HERMES_KANBAN_TASK": ""}}}}
+{"func": "kanban_task_id", "in": {"state": {"environ": {"HERMES_KANBAN_TASK": "\u001ct3\u001f"}}}}
+{"func": "_resolve_task_id", "in": {"args": {"task_id": null}, "io": {"kanban_task_id": "t1"}}}
+{"func": "_resolve_task_id", "in": {"args": {"task_id": "t2"}}}
+{"func": "_resolve_task_id", "in": {"args": {"task_id": "  "}}}
+{"func": "_resolve_task_id", "in": {"args": {"task_id": " t3 "}}}
+{"func": "_resolve_task_id", "in": {"args": {"task_id": null}, "io": {"kanban_task_id": null}}}
+{"func": "_resolve_task_id", "in": {"args": {"task_id": 5}}}
+{"func": "kanban_turn_recovery_enabled", "in": {"args": {"task_id": "t1"}, "io": {"_resolve_task_id": "t1", "max_recovery_attempts": 3}}}
+{"func": "kanban_turn_recovery_enabled", "in": {"args": {"task_id": null}, "io": {"_resolve_task_id": null}}}
+{"func": "kanban_turn_recovery_enabled", "in": {"args": {"task_id": "t1"}, "io": {"_resolve_task_id": "t1", "max_recovery_attempts": 0}}}
+{"func": "kanban_turn_recovery_enabled", "in": {"args": {"task_id": "t1"}, "io": {"_resolve_task_id": {"__script__": true, "raise": {"type": "ValueError", "message": "x"}}}}}
+{"func": "kanban_turn_recovery_enabled", "in": {"args": {"task_id": "t1"}, "io": {"_resolve_task_id": "t1", "max_recovery_attempts": {"__script__": true, "raise": {"type": "OSError", "message": "y"}}}}}
+{"func": "kanban_turn_recovery_enabled", "in": {"args": {"task_id": "t1"}, "io": {"_resolve_task_id": "t1", "max_recovery_attempts": 10}}}
+{"func": "max_recovery_attempts", "in": {"state": {}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": "5"}}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": "0"}}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": "false"}}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": "OFF"}}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": " 7 "}}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": "12"}}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": "-3"}}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": "abc"}}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": "1_0"}}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": ""}}}}
+{"func": "max_recovery_attempts", "in": {"state": {"environ": {"HERMES_KANBAN_TURN_RECOVERY": "+4"}}}}
+{"func": "recovery_delay_seconds", "in": {"args": {"attempt": 1}}}
+{"func": "recovery_delay_seconds", "in": {"args": {"attempt": 2}}}
+{"func": "recovery_delay_seconds", "in": {"args": {"attempt": 3}}}
+{"func": "recovery_delay_seconds", "in": {"args": {"attempt": 4}}}
+{"func": "recovery_delay_seconds", "in": {"args": {"attempt": 0}}}
+{"func": "recovery_delay_seconds", "in": {"args": {"attempt": -5}}}
+{"func": "recovery_delay_seconds", "in": {"args": {}}}
+{"func": "_turn_exit_is_terminal", "in": {"args": {"result": {"turn_exit_reason": "max_iterations_reached(3/5)"}}}}
+{"func": "_turn_exit_is_terminal", "in": {"args": {"result": {"turn_exit_reason": "other"}}}}
+{"func": "_turn_exit_is_terminal", "in": {"args": {"result": {}}}}
+{"func": "_turn_exit_is_terminal", "in": {"args": {"result": {"turn_exit_reason": null}}}}
+{"func": "_turn_exit_is_terminal", "in": {"args": {"result": {"turn_exit_reason": "max_iterations_reached"}}}}
+{"func": "_turn_exit_is_terminal", "in": {"args": {"result": null}}}
+{"func": "_turn_exit_is_terminal", "in": {"args": {"result": {"turn_exit_reason": 0}}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": true, "failure_retryable": true}, "attempt": 0}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": true, "failure_retryable": true}, "attempt": 0}, "io": {"kanban_turn_recovery_enabled": false, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": true, "failure_retryable": true}, "attempt": 3}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "should_recover_turn", "in": {"args": {"result": null, "attempt": 0}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": true, "failure_retryable": true, "interrupted": true}, "attempt": 0}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": true, "failure_retryable": true}, "attempt": 0}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": true}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": false, "failure_retryable": true}, "attempt": 0}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": true, "failure_retryable": false}, "attempt": 0}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": true, "failure_retryable": true, "failure_reason": "rate_limit"}, "attempt": 0}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": true, "failure_retryable": true, "failure_reason": "timeout"}, "attempt": 0}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": true, "failure_retryable": true}}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "should_recover_turn", "in": {"args": {"result": {"failed": 1, "failure_retryable": true}, "attempt": 0}, "io": {"kanban_turn_recovery_enabled": true, "max_recovery_attempts": 3, "_turn_exit_is_terminal": false}}}
+{"func": "_kanban_db_path", "in": {"state": {}}}
+{"func": "_kanban_db_path", "in": {"state": {"environ": {"HERMES_KANBAN_DB": "/boards/main.db"}}}}
+{"func": "_kanban_db_path", "in": {"state": {"environ": {"HERMES_KANBAN_DB": "  /b.db  "}}}}
+{"func": "_kanban_db_path", "in": {"state": {"environ": {"HERMES_KANBAN_DB": "   "}}}}
+{"func": "_kanban_db_path", "in": {"state": {"environ": {"HERMES_KANBAN_DB": ""}}}}
+{"func": "_now", "in": {"io": {"time.time": 1000.9}}}
+{"func": "_now", "in": {"io": {"time.time": 0}}}
+{"func": "_now", "in": {"io": {"time.time": -5.5}}}
+{"func": "_now", "in": {"io": {"time.time": {"__script__": true, "raise": {"type": "OSError", "message": "clock"}}}}}
+{"func": "_now", "in": {"io": {"time.time": 1234567890.123}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": null, "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null, "_kanban_db_path": null, "log.warning": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": false, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null, "log.warning": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/b.db", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null, "log.warning": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [null], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "blocked", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 8, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 6, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "X", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 500}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, null], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": 123, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L", "verify_pid": false}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": {"__script__": true, "raise": {"type": "ValueError", "message": "db"}}, "os.getpid": 9, "conn.close": null, "log.warning": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": {"__script__": true, "raise": {"type": "OSError", "message": "open"}}, "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null, "log.warning": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": "abc", "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null, "log.warning": null}}}
+{"func": "worker_claim_is_live", "in": {"args": {}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": [{"status": "running", "worker_pid": 9, "current_run_id": 5, "claim_lock": "L", "claim_expires": 2000}, {"ended_at": null, "worker_pid": 9, "claim_expires": 2000}], "os.getpid": 9, "conn.close": null, "_kanban_db_path": "/b.db"}, "state": {"environ": {"HERMES_KANBAN_TASK": "t1", "HERMES_KANBAN_DB": "/b.db", "HERMES_KANBAN_RUN_ID": "5", "HERMES_KANBAN_CLAIM_LOCK": "L"}}}}
+{"func": "worker_claim_is_live", "in": {"args": {"task_id": "t1", "db_path": "/boards/main.db", "run_id": "5", "claim_lock": "L"}, "io": {"_resolve_task_id": "t1", "path.exists": true, "_now": 1000, "path.as_uri": "file:///boards/main.db", "sqlite3.connect": "conn", "conn.execute": {"__script__": true, "raise": {"type": "SystemExit", "message": "1"}}, "os.getpid": 9, "conn.close": null}}}
+{"func": "_truncate", "in": {"args": {"text": "a\nb"}}}
+{"func": "_truncate", "in": {"args": {"text": "  hi  "}}}
+{"func": "_truncate", "in": {"args": {"text": null}}}
+{"func": "_truncate", "in": {"args": {"text": "abcdefgh", "limit": 5}}}
+{"func": "_truncate", "in": {"args": {"text": "abc", "limit": 5}}}
+{"func": "_truncate", "in": {"args": {"text": "abcde", "limit": 5}}}
+{"func": "_truncate", "in": {"args": {"text": "abcdef", "limit": 1}}}
+{"func": "_truncate", "in": {"args": {"text": 5}}}
+{"func": "build_recovery_nudge", "in": {"args": {"result": {"error": "boom"}, "attempt": 1, "max_attempts": 3, "task_id": "t1"}, "io": {"_truncate": "boom", "_resolve_task_id": "t1"}}}
+{"func": "build_recovery_nudge", "in": {"args": {"result": {}, "attempt": 1, "max_attempts": 3}, "io": {"_truncate": "", "_resolve_task_id": null}}}
+{"func": "build_recovery_nudge", "in": {"args": {"result": {"final_response": "resp"}, "attempt": 2, "max_attempts": 3, "task_id": "t2"}, "io": {"_truncate": "resp", "_resolve_task_id": "t2"}}}
+{"func": "build_recovery_nudge", "in": {"args": {"result": null, "attempt": 1, "max_attempts": 3, "task_id": "t3"}, "io": {"_resolve_task_id": "t3"}}}
+{"func": "build_recovery_nudge", "in": {"args": {"result": {}}}}
+{"func": "build_recovery_nudge", "in": {"args": {"result": {}, "attempt": 1}}}
+{"func": "build_recovery_nudge", "in": {"args": {"result": {"error": "x"}, "attempt": 1, "max_attempts": 3}, "io": {"_truncate": {"__script__": true, "raise": {"type": "ValueError", "message": "t"}}}}}
+{"func": "build_recovery_nudge", "in": {"args": {"result": {"error": "a\nb"}, "attempt": 1, "max_attempts": 3, "task_id": "t1"}, "io": {"_truncate": "a b", "_resolve_task_id": "t1"}}}
+{"func": "_emit_recovery_skipped", "in": {"args": {"emit": null, "task_id": "t1"}, "io": {"_resolve_task_id": "t1", "log.warning": null}}}
+{"func": "_emit_recovery_skipped", "in": {"args": {"emit": true, "task_id": "t1"}, "io": {"_resolve_task_id": "t1", "log.warning": null, "emit": null}}}
+{"func": "_emit_recovery_skipped", "in": {"args": {"emit": true, "task_id": "t1"}, "io": {"_resolve_task_id": "t1", "log.warning": null, "emit": {"__script__": true, "raise": {"type": "ValueError", "message": "e"}}, "log.debug": null}}}
+{"func": "_emit_recovery_skipped", "in": {"args": {"emit": true, "task_id": "t1"}, "io": {"_resolve_task_id": "t1", "log.warning": null, "emit": {"__script__": true, "raise": {"type": "SystemExit", "message": "1"}}}}}
+{"func": "_emit_recovery_skipped", "in": {"args": {"emit": null, "task_id": null}, "io": {"_resolve_task_id": null, "log.warning": null}}}
+{"func": "_emit_recovery_skipped", "in": {"args": {"emit": null, "task_id": "t1"}, "io": {"_resolve_task_id": "t1", "log.warning": {"__script__": true, "raise": {"type": "OSError", "message": "log"}}}}}
+{"func": "_emit_recovery_skipped", "in": {"args": {"task_id": "t1"}}}
+{"func": "recover_failed_kanban_turns", "in": {"args": {"turn_fn": true, "get_result": true}, "io": {"get_result": null, "should_recover_turn": false}}}
+{"func": "recover_failed_kanban_turns", "in": {"args": {"turn_fn": true, "get_result": true, "claim_check": true, "task_id": "t1"}, "io": {"get_result": {"failed": true, "failure_retryable": true}, "should_recover_turn": true, "claim_check": false, "_emit_recovery_skipped": null}}}
+{"func": "recover_failed_kanban_turns", "in": {"args": {"turn_fn": true, "get_result": true, "claim_check": true, "task_id": "t1"}, "io": {"get_result": [{"failed": true, "failure_retryable": true}, {"failed": true, "failure_retryable": true}], "should_recover_turn": [true, false], "claim_check": [true, true], "recovery_delay_seconds": 15, "_resolve_task_id": "t1", "max_recovery_attempts": [3, 3], "log.warning": null, "time.sleep": null, "build_recovery_nudge": "nudge", "turn_fn": null}}}
+{"func": "recover_failed_kanban_turns", "in": {"args": {"turn_fn": true, "get_result": true, "task_id": "t1"}, "io": {"get_result": [{"failed": true, "failure_retryable": true}, {"failed": true, "failure_retryable": true}], "should_recover_turn": [true, false], "worker_claim_is_live": [true, true], "recovery_delay_seconds": 15, "_resolve_task_id": "t1", "max_recovery_attempts": [3, 3], "log.warning": null, "time.sleep": null, "build_recovery_nudge": "nudge", "turn_fn": null}}}
+{"func": "recover_failed_kanban_turns", "in": {"args": {"turn_fn": true, "get_result": true, "claim_check": true, "task_id": "t1"}, "io": {"get_result": {"failed": true, "failure_retryable": true}, "should_recover_turn": true, "claim_check": [true, false], "recovery_delay_seconds": 15, "_resolve_task_id": "t1", "max_recovery_attempts": 3, "log.warning": null, "time.sleep": null, "_emit_recovery_skipped": null}}}
+{"func": "recover_failed_kanban_turns", "in": {"args": {"turn_fn": true, "get_result": true, "claim_check": true, "emit": true, "task_id": "t1"}, "io": {"get_result": [{"failed": true, "failure_retryable": true}, {"failed": true, "failure_retryable": true}], "should_recover_turn": [true, false], "claim_check": [true, true], "recovery_delay_seconds": 15, "_resolve_task_id": "t1", "max_recovery_attempts": [3, 3], "log.warning": null, "emit": {"__script__": true, "raise": {"type": "ValueError", "message": "e"}}, "log.debug": null, "time.sleep": null, "build_recovery_nudge": "nudge", "turn_fn": null}}}
+{"func": "recover_failed_kanban_turns", "in": {"args": {"turn_fn": true, "get_result": true, "claim_check": true, "sleep_fn": true, "task_id": "t1"}, "io": {"get_result": [{"failed": true, "failure_retryable": true}, {"failed": true, "failure_retryable": true}], "should_recover_turn": [true, false], "claim_check": [true, true], "recovery_delay_seconds": 15, "_resolve_task_id": "t1", "max_recovery_attempts": [3, 3], "log.warning": null, "sleep_fn": null, "build_recovery_nudge": "nudge", "turn_fn": null}}}
+{"func": "recover_failed_kanban_turns", "in": {"args": {}}}
+{"func": "recover_failed_kanban_turns", "in": {"args": {"turn_fn": true, "get_result": true}, "io": {"get_result": {"failed": true, "failure_retryable": true}, "should_recover_turn": {"__script__": true, "raise": {"type": "ValueError", "message": "s"}}}}}
+{"func": "recover_failed_kanban_turns", "in": {"args": {"turn_fn": true, "get_result": true, "claim_check": true, "task_id": "t1"}, "io": {"get_result": [{"failed": true, "failure_retryable": true}, {"failed": true, "failure_retryable": true}, {"failed": true, "failure_retryable": true}], "should_recover_turn": [true, true, false], "claim_check": [true, true, true, true], "recovery_delay_seconds": [15, 45], "_resolve_task_id": ["t1", "t1"], "max_recovery_attempts": [3, 3, 3, 3], "log.warning": [null, null], "time.sleep": [null, null], "build_recovery_nudge": ["n1", "n2"], "turn_fn": [null, null]}}}

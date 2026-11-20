@@ -834,8 +834,10 @@ static json_t *ma2_refresh_dm_cache(ma2_ctx_t *ctx, const json_t *args) {
     json_set(ctx->state, "_dm_rooms", dm_rooms);
     json_free(idset);
     json_free(dm);
-    json_t *inv = ma2_call(ctx, "self._invalidate_room_identities", json_object());
     /* room_id defaults None -> args {room_id: null} */
+    json_t *ia = json_object();
+    json_set(ia, "room_id", json_null());
+    json_t *inv = ma2_call(ctx, "self._invalidate_room_identities", ia);
     if (ma2_is_raise(inv)) return inv;
     json_free(inv);
     return json_null();

@@ -1,0 +1,151 @@
+{"func": "refuse_redacted_sets", "in": {"config_path": "/h/u/config.yaml", "sets": {"model": "x"}, "seams": {"refuse_redacted_config_sets": null}}}
+{"func": "refuse_redacted_sets", "in": {"config_path": "/h/u/config.yaml", "sets": {}, "seams": {"refuse_redacted_config_sets": null}}}
+{"func": "refuse_redacted_sets", "in": {"config_path": "/h/u/config.yaml", "sets": {"a.b": 1, "c": "s"}, "seams": {"refuse_redacted_config_sets": null}}}
+{"func": "refuse_redacted_sets", "in": {"config_path": "/h/u/config.yaml", "sets": {"model": "x"}, "seams": {"refuse_redacted_config_sets": {"__raise__": "ConfigValueError", "msg": "redacted"}}}}
+{"func": "refuse_redacted_sets", "in": {"config_path": "/h/u/config.yaml", "sets": {"model": "x"}, "seams": {"refuse_redacted_config_sets": {"__raise__": "ConfigLockedError", "msg": "model is locked by the managed level"}}}}
+{"func": "refuse_redacted_sets", "in": {"config_path": "/h/u/config.yaml", "sets": {"model": "x"}, "seams": {"refuse_redacted_config_sets": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "refuse_redacted_sets", "in": {"config_path": "/h/u/config.yaml", "sets": {"model": "x"}, "seams": {"refuse_redacted_config_sets": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "refuse_redacted_sets", "in": {"config_path": "/h/u/config.yaml", "sets": {"model": "x"}, "seams": {}}}
+{"func": "refuse_redacted_sets", "in": {"config_path": "/h/u/config.yaml", "sets": null, "seams": {"refuse_redacted_config_sets": null}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": {"model": "x"}}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": null}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": {}}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": {"__raise__": "FileNotFoundError", "msg": "absent"}}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": {"__raise__": "PermissionError", "msg": "denied"}}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": ""}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": 0}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": [1, 2]}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": "doc"}}}
+{"func": "read_old", "in": {"config_path": "/h/u/config.yaml", "seams": {"keeping_read_base": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "config_write_error_init", "in": {"message": "boom", "seams": {}}}
+{"func": "config_write_error_init", "in": {"message": "boom", "code": "custom", "seams": {}}}
+{"func": "config_write_error_init", "in": {"message": "boom", "code": null, "seams": {}}}
+{"func": "config_write_error_init", "in": {"message": "", "seams": {}}}
+{"func": "config_write_error_init", "in": {"message": "x y z", "seams": {}}}
+{"func": "config_write_error_init", "in": {"message": "locked", "code": "config_key_locked", "seams": {}}}
+{"func": "config_locked_error_init", "in": {"path": "model", "locked_by": "managed", "seams": {}}}
+{"func": "config_locked_error_init", "in": {"path": "model", "locked_by": "managed", "message": null, "seams": {}}}
+{"func": "config_locked_error_init", "in": {"path": "model", "locked_by": "managed", "message": "", "seams": {}}}
+{"func": "config_locked_error_init", "in": {"path": "model", "locked_by": "managed", "message": "custom msg", "seams": {}}}
+{"func": "config_locked_error_init", "in": {"path": "a.b", "locked_by": "remote", "message": null, "seams": {}}}
+{"func": "config_locked_error_init", "in": {"path": "p", "locked_by": "q", "message": "override", "seams": {}}}
+{"func": "config_value_error_init", "in": {"message": "bad", "seams": {}}}
+{"func": "config_value_error_init", "in": {"message": "bad", "code": "custom", "seams": {}}}
+{"func": "config_value_error_init", "in": {"message": "bad", "code": null, "seams": {}}}
+{"func": "config_value_error_init", "in": {"message": "", "seams": {}}}
+{"func": "config_value_error_init", "in": {"message": "yaml type", "seams": {}}}
+{"func": "explicit_file_init", "in": {"path": "/h/u/other.yaml", "seams": {}}}
+{"func": "explicit_file_init", "in": {"path": "/h/u\\other.yaml", "seams": {}}}
+{"func": "explicit_file_init", "in": {"path": "/h/u/other.yaml/", "seams": {}}}
+{"func": "explicit_file_init", "in": {"path": "rel.yaml", "seams": {}}}
+{"func": "explicit_file_init", "in": {"path": "/a///", "seams": {}}}
+{"func": "explicit_file_init", "in": {"path": "/", "seams": {}}}
+{"func": "user_layer_init", "in": {"fields": {"doc": {"model": "x"}, "version": [1, 2, 3]}, "seams": {}}}
+{"func": "user_layer_init", "in": {"fields": {"doc": null, "version": [], "locks": {"a": "b"}, "provenance": "p"}, "seams": {}}}
+{"func": "user_layer_init", "in": {"fields": {"doc": {}, "version": [0], "locks": null, "provenance": null}, "seams": {}}}
+{"func": "user_layer_init", "in": {"fields": {"doc": "s", "version": [1], "locks": {}, "provenance": ""}, "seams": {}}}
+{"func": "user_layer_init", "in": {"fields": {"doc": {"nested": {"k": 1}}, "version": [5, 6], "provenance": "diag"}, "seams": {}}}
+{"func": "user_layer_init", "in": {"fields": {"doc": null, "version": null}, "seams": {}}}
+{"func": "changes_init", "in": {"fields": {}, "seams": {}}}
+{"func": "changes_init", "in": {"fields": {"document": {"a": 1}, "set": {"k": "v"}, "unset": ["x"], "extra_content_on_create": "# hi"}, "seams": {}}}
+{"func": "changes_init", "in": {"fields": {"document": null, "set": null, "unset": null, "extra_content_on_create": null}, "seams": {}}}
+{"func": "changes_init", "in": {"fields": {"set": {"model": "y"}}, "seams": {}}}
+{"func": "changes_init", "in": {"fields": {"unset": ["a", "b"], "extra_content_on_create": "c"}, "seams": {}}}
+{"func": "changes_init", "in": {"fields": {"document": {}, "set": {}, "unset": [], "extra_content_on_create": ""}, "seams": {}}}
+{"func": "proto_read_user_doc", "in": {"home": "/h/u", "seams": {}}}
+{"func": "proto_read_user_doc", "in": {"home": "/h/v", "seams": {}}}
+{"func": "proto_read_user_doc", "in": {"home": "", "seams": {}}}
+{"func": "proto_read_user_doc", "in": {"home": "rel", "seams": {}}}
+{"func": "proto_read_user_doc", "in": {"home": "/x/y", "seams": {}}}
+{"func": "proto_read_user_doc_readonly", "in": {"home": "/h/u", "seams": {}}}
+{"func": "proto_read_user_doc_readonly", "in": {"home": "/h/v", "seams": {}}}
+{"func": "proto_read_user_doc_readonly", "in": {"home": "", "seams": {}}}
+{"func": "proto_read_user_doc_readonly", "in": {"home": "rel", "seams": {}}}
+{"func": "proto_read_user_doc_readonly", "in": {"home": "/x/y", "seams": {}}}
+{"func": "proto_version", "in": {"home": "/h/u", "seams": {}}}
+{"func": "proto_version", "in": {"home": "/h/v", "seams": {}}}
+{"func": "proto_version", "in": {"home": "", "seams": {}}}
+{"func": "proto_version", "in": {"home": "rel", "seams": {}}}
+{"func": "proto_version", "in": {"home": "/x/y", "seams": {}}}
+{"func": "proto_cache_version", "in": {"home": "/h/u", "version": [0, 1], "seams": {}}}
+{"func": "proto_cache_version", "in": {"home": "/h/v", "version": [1, 2], "seams": {}}}
+{"func": "proto_cache_version", "in": {"home": "", "version": [2, 3], "seams": {}}}
+{"func": "proto_cache_version", "in": {"home": "rel", "version": [3, 4], "seams": {}}}
+{"func": "proto_cache_version", "in": {"home": "/x/y", "version": [4, 5], "seams": {}}}
+{"func": "proto_exists", "in": {"home": "/h/u", "seams": {}}}
+{"func": "proto_exists", "in": {"home": "/h/v", "seams": {}}}
+{"func": "proto_exists", "in": {"home": "", "seams": {}}}
+{"func": "proto_exists", "in": {"home": "rel", "seams": {}}}
+{"func": "proto_exists", "in": {"home": "/x/y", "seams": {}}}
+{"func": "proto_probe_readable", "in": {"home": "/h/u", "seams": {}}}
+{"func": "proto_probe_readable", "in": {"home": "/h/v", "seams": {}}}
+{"func": "proto_probe_readable", "in": {"home": "", "seams": {}}}
+{"func": "proto_probe_readable", "in": {"home": "rel", "seams": {}}}
+{"func": "proto_probe_readable", "in": {"home": "/x/y", "seams": {}}}
+{"func": "proto_write_changes", "in": {"home": "/h/u", "changes": {"document": null, "set": {"k": 0}, "unset": [], "extra_content_on_create": null}, "seams": {}}}
+{"func": "proto_write_changes", "in": {"home": "/h/v", "changes": {"document": null, "set": {"k": 1}, "unset": [], "extra_content_on_create": null}, "seams": {}}}
+{"func": "proto_write_changes", "in": {"home": "", "changes": {"document": null, "set": {"k": 2}, "unset": [], "extra_content_on_create": null}, "seams": {}}}
+{"func": "proto_write_changes", "in": {"home": "rel", "changes": {"document": null, "set": {"k": 3}, "unset": [], "extra_content_on_create": null}, "seams": {}}}
+{"func": "proto_write_changes", "in": {"home": "/x/y", "changes": {"document": null, "set": {"k": 4}, "unset": [], "extra_content_on_create": null}, "seams": {}}}
+{"func": "proto_locked", "in": {"home": "/h/u", "dotted": "model.0", "seams": {}}}
+{"func": "proto_locked", "in": {"home": "/h/v", "dotted": "model.1", "seams": {}}}
+{"func": "proto_locked", "in": {"home": "", "dotted": "model.2", "seams": {}}}
+{"func": "proto_locked", "in": {"home": "rel", "dotted": "model.3", "seams": {}}}
+{"func": "proto_locked", "in": {"home": "/x/y", "dotted": "model.4", "seams": {}}}
+{"func": "proto_supports_file_tooling", "in": {"seams": {}}}
+{"func": "proto_supports_file_tooling", "in": {"seams": {}}}
+{"func": "proto_supports_file_tooling", "in": {"seams": {}}}
+{"func": "proto_supports_file_tooling", "in": {"seams": {}}}
+{"func": "proto_supports_file_tooling", "in": {"seams": {}}}
+{"func": "proto_honors_managed_config", "in": {"seams": {}}}
+{"func": "proto_honors_managed_config", "in": {"seams": {}}}
+{"func": "proto_honors_managed_config", "in": {"seams": {}}}
+{"func": "proto_honors_managed_config", "in": {"seams": {}}}
+{"func": "proto_honors_managed_config", "in": {"seams": {}}}
+{"func": "proto_boot", "in": {"home": "/h/u", "seams": {}}}
+{"func": "proto_boot", "in": {"home": "/h/v", "seams": {}}}
+{"func": "proto_boot", "in": {"home": "", "seams": {}}}
+{"func": "proto_boot", "in": {"home": "rel", "seams": {}}}
+{"func": "proto_boot", "in": {"home": "/x/y", "seams": {}}}
+{"func": "proto_protected_env_names", "in": {"seams": {}}}
+{"func": "proto_protected_env_names", "in": {"seams": {}}}
+{"func": "proto_protected_env_names", "in": {"seams": {}}}
+{"func": "proto_protected_env_names", "in": {"seams": {}}}
+{"func": "proto_protected_env_names", "in": {"seams": {}}}
+{"func": "proto_deployment_env_names", "in": {"seams": {}}}
+{"func": "proto_deployment_env_names", "in": {"seams": {}}}
+{"func": "proto_deployment_env_names", "in": {"seams": {}}}
+{"func": "proto_deployment_env_names", "in": {"seams": {}}}
+{"func": "proto_deployment_env_names", "in": {"seams": {}}}
+{"func": "proto_bootstrap_env_names", "in": {"seams": {}}}
+{"func": "proto_bootstrap_env_names", "in": {"seams": {}}}
+{"func": "proto_bootstrap_env_names", "in": {"seams": {}}}
+{"func": "proto_bootstrap_env_names", "in": {"seams": {}}}
+{"func": "proto_bootstrap_env_names", "in": {"seams": {}}}
+{"func": "proto_preserve_read_base", "in": {"seams": {}}}
+{"func": "proto_preserve_read_base", "in": {"seams": {}}}
+{"func": "proto_preserve_read_base", "in": {"seams": {}}}
+{"func": "proto_preserve_read_base", "in": {"seams": {}}}
+{"func": "proto_preserve_read_base", "in": {"seams": {}}}
+{"func": "proto_doctor_warnings", "in": {"home": "/h/u", "seams": {}}}
+{"func": "proto_doctor_warnings", "in": {"home": "/h/v", "seams": {}}}
+{"func": "proto_doctor_warnings", "in": {"home": "", "seams": {}}}
+{"func": "proto_doctor_warnings", "in": {"home": "rel", "seams": {}}}
+{"func": "proto_doctor_warnings", "in": {"home": "/x/y", "seams": {}}}
+{"func": "proto_apply_in_memory", "in": {"home": "/h/u", "doc": {"a": 0}, "seams": {}}}
+{"func": "proto_apply_in_memory", "in": {"home": "/h/v", "doc": {"a": 1}, "seams": {}}}
+{"func": "proto_apply_in_memory", "in": {"home": "", "doc": {"a": 2}, "seams": {}}}
+{"func": "proto_apply_in_memory", "in": {"home": "rel", "doc": {"a": 3}, "seams": {}}}
+{"func": "proto_apply_in_memory", "in": {"home": "/x/y", "doc": {"a": 4}, "seams": {}}}
+{"func": "proto_describe", "in": {"home": "/h/u", "seams": {}}}
+{"func": "proto_describe", "in": {"home": "/h/v", "seams": {}}}
+{"func": "proto_describe", "in": {"home": "", "seams": {}}}
+{"func": "proto_describe", "in": {"home": "rel", "seams": {}}}
+{"func": "proto_describe", "in": {"home": "/x/y", "seams": {}}}
+{"func": "proto_destination", "in": {"home": "/h/u", "seams": {}}}
+{"func": "proto_destination", "in": {"home": "/h/v", "seams": {}}}
+{"func": "proto_destination", "in": {"home": "", "seams": {}}}
+{"func": "proto_destination", "in": {"home": "rel", "seams": {}}}
+{"func": "proto_destination", "in": {"home": "/x/y", "seams": {}}}
