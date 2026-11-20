@@ -1,0 +1,122 @@
+{"func": "window_spans", "in": {"content": "abc\ndef\nghi", "content_lines": ["abc", "def", "ghi"], "n": 1, "io": {"accept": {"__seq__": [true, false, true]}}}}
+{"func": "window_spans", "in": {"content": "abc\ndef\nghi", "content_lines": ["abc", "def", "ghi"], "n": 2, "io": {"accept": {"__seq__": [true, false]}}}}
+{"func": "window_spans", "in": {"content": "abc\ndef\nghi", "content_lines": ["abc", "def", "ghi"], "n": 4, "io": {}}}
+{"func": "window_spans", "in": {"content": "", "content_lines": [""], "n": 1, "io": {"accept": {"__seq__": [false]}}}}
+{"func": "window_spans", "in": {"content": "a\nb", "content_lines": ["a", "b"], "n": 1, "io": {"accept": {"__seq__": [1, 0]}}}}
+{"func": "window_spans", "in": {"content": "a\nb\nc", "content_lines": ["a", "b", "c"], "n": 1, "io": {"accept": {"__raise__": "ValueError", "msg": "bad accept"}}}}
+{"func": "window_spans", "in": {"content": "a\nb\nc", "content_lines": ["a", "b", "c"], "n": 1, "io": {"accept": {"__seq__": [true, true, true]}}}}
+{"func": "window_spans", "in": {"content": "a\nb", "content_lines": ["a", "b"], "n": 1, "io": {}}}
+{"func": "match_transformed_lines", "in": {"content": "A\nB\nC", "pattern": "B", "io": {"transform": {"__seq__": [["B"], ["A"], ["B"], ["C"]]}}}}
+{"func": "match_transformed_lines", "in": {"content": "A\nB\nC", "pattern": "A\nB", "io": {"transform": {"__seq__": [["A", "B"], ["A", "B"], ["B", "C"]]}}}}
+{"func": "match_transformed_lines", "in": {"content": "A\nB\nC", "pattern": "Z", "io": {"transform": {"__seq__": [["Z"], ["X"], ["Y"], ["W"]]}}}}
+{"func": "match_transformed_lines", "in": {"content": "", "pattern": "", "io": {"transform": {"__seq__": [[""], [""]]}}}}
+{"func": "match_transformed_lines", "in": {"content": "A\nB", "pattern": "B", "io": {"transform": {"__raise__": "RuntimeError", "msg": "tf boom"}}}}
+{"func": "match_transformed_lines", "in": {"content": "a\nb", "pattern": "b", "io": {}}}
+{"func": "match_transformed_lines", "in": {"content": "x\ny\nz", "pattern": "x", "io": {"transform": {"__seq__": [["x"], ["x"], ["y"], ["z"]]}}}}
+{"func": "strip_boundary", "in": {"lines": ["  a  ", " b ", "c  "]}}
+{"func": "strip_boundary", "in": {"lines": ["  a  "]}}
+{"func": "strip_boundary", "in": {"lines": []}}
+{"func": "strip_boundary", "in": {"lines": ["\tX\t", "Y", "  Z  "]}}
+{"func": "strip_boundary", "in": {"lines": ["   "]}}
+{"func": "strip_boundary", "in": {"lines": ["a", "b"]}}
+{"func": "strip_boundary", "in": {"lines": [" a ", " b ", " c "]}}
+{"func": "invert_norm_map", "in": {"orig_to_norm": [0, 1, 2, 3]}}
+{"func": "invert_norm_map", "in": {"orig_to_norm": [0, 0, 1, 1]}}
+{"func": "invert_norm_map", "in": {"orig_to_norm": [5, 5, 9]}}
+{"func": "invert_norm_map", "in": {"orig_to_norm": [0]}}
+{"func": "invert_norm_map", "in": {"orig_to_norm": []}}
+{"func": "invert_norm_map", "in": {"orig_to_norm": [2, 2, 2, 2, 2]}}
+{"func": "invert_norm_map", "in": {"orig_to_norm": [0, 2, 4, 6]}}
+{"func": "norm_end_to_orig", "in": {"orig_to_norm": [0, 1, 2, 3], "orig_start": 0, "norm_end": 2}}
+{"func": "norm_end_to_orig", "in": {"orig_to_norm": [0, 0, 1, 2], "orig_start": 0, "norm_end": 1}}
+{"func": "norm_end_to_orig", "in": {"orig_to_norm": [0, 1, 2, 3], "orig_start": 2, "norm_end": 9}}
+{"func": "norm_end_to_orig", "in": {"orig_to_norm": [0, 1, 2, 3], "orig_start": 0, "norm_end": 0}}
+{"func": "norm_end_to_orig", "in": {"orig_to_norm": [0, 0, 0], "orig_start": 1, "norm_end": 1}}
+{"func": "norm_end_to_orig", "in": {"orig_to_norm": [], "orig_start": 0, "norm_end": 5}}
+{"func": "boundary_note", "in": {"strategies": ["block_anchor"]}}
+{"func": "boundary_note", "in": {"strategies": ["exact", "context_aware"]}}
+{"func": "boundary_note", "in": {"strategies": ["block_anchor", "block_anchor", "context_aware"]}}
+{"func": "boundary_note", "in": {"strategies": ["exact"]}}
+{"func": "boundary_note", "in": {"strategies": []}}
+{"func": "boundary_note", "in": {"strategies": ["block_anchor"], "target": "X", "where": " HERE"}}
+{"func": "boundary_note", "in": {"strategies": [null, "context_aware", "line_trimmed"]}}
+{"func": "boundary_note", "in": {"strategies": ["context_aware", "block_anchor"]}}
+{"func": "matched_regions", "in": {"content": "abcdef", "matches": [[0, 2], [4, 6]]}}
+{"func": "matched_regions", "in": {"content": "abcdef", "matches": []}}
+{"func": "matched_regions", "in": {"content": "abcdef", "matches": [[1, 5]]}}
+{"func": "matched_regions", "in": {"content": "abcdef", "matches": [[4, 6], [0, 2]]}}
+{"func": "matched_regions", "in": {"content": "abc", "matches": [[0, 3], [1, 2]]}}
+{"func": "matched_regions", "in": {"content": "", "matches": []}}
+{"func": "run_strategy_chain", "in": {"content": "old text", "old_string": "old", "new_string": "XYZ", "replace_all": false, "strategies": ["exact"], "io": {"exact": [[0, 3]], "maybe_unescape_new_string": "XYZ", "apply_replacements": "XYZ text", "import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "run_strategy_chain", "in": {"content": "old text", "old_string": "old", "new_string": "X", "replace_all": false, "strategies": ["exact"], "io": {"exact": []}}}
+{"func": "run_strategy_chain", "in": {"content": "ab xx", "old_string": "x", "new_string": "y", "replace_all": false, "strategies": ["exact"], "io": {"exact": [[0, 1], [3, 4]], "format_match_locations": "  L1: ab", "import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "run_strategy_chain", "in": {"content": "ab xx", "old_string": "x", "new_string": "y", "replace_all": true, "strategies": ["block_anchor"], "io": {"block_anchor": [[0, 1], [3, 4]], "import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "run_strategy_chain", "in": {"content": "  old", "old_string": "old", "new_string": "NEW", "replace_all": false, "strategies": ["line_trimmed"], "io": {"line_trimmed": [[2, 5]], "detect_escape_drift": "DRIFT-ERR"}}}
+{"func": "run_strategy_chain", "in": {"content": "  old", "old_string": "old", "new_string": "NEW", "replace_all": false, "strategies": ["line_trimmed"], "io": {"line_trimmed": [[2, 5]], "detect_escape_drift": null, "maybe_unescape_new_string": "Q", "apply_replacements": "  Q", "import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "run_strategy_chain", "in": {"content": "a\u2014b", "old_string": "a\u2014b", "new_string": "a-b", "replace_all": false, "strategies": ["unicode_normalized"], "io": {"unicode_normalized": [[0, 3]], "detect_escape_drift": null, "maybe_unescape_new_string": "a-b", "opcodes": [["equal", 0, 3, 0, 3]], "apply_replacements": "a-b", "import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "run_strategy_chain", "in": {"content": "abc", "old_string": "a", "new_string": "b", "replace_all": false, "strategies": ["exact"], "io": {"exact": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "run_strategy_chain", "in": {"content": "abc", "old_string": "a", "new_string": "b", "replace_all": false, "strategies": ["exact"], "io": {"exact": [[0, 1]], "maybe_unescape_new_string": "b", "apply_replacements": "bbc", "import_note_edit_match": {"__raise__": "ValueError", "msg": "no metrics"}}}}
+{"func": "run_strategy_chain", "in": {"content": "abc", "old_string": "a", "new_string": "b", "replace_all": false, "strategies": ["exact"], "io": {"exact": [[0, 1]], "maybe_unescape_new_string": "b", "apply_replacements": "bbc", "import_note_edit_match": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "run_strategy_chain", "in": {"content": "abc", "old_string": "a", "new_string": "b", "replace_all": false, "strategies": ["exact"], "io": {"exact": [[0, 1]], "maybe_unescape_new_string": "b", "apply_replacements": {"__raise__": "TypeError", "msg": "apply boom"}}}}
+{"func": "run_strategy_chain", "in": {"content": "aaaa", "old_string": "a", "new_string": "b", "replace_all": true, "strategies": ["exact"], "io": {"exact": [[0, 1], [1, 2], [2, 3], [3, 4]], "maybe_unescape_new_string": "b", "apply_replacements": "bbbb", "import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "strip_line_number_gutter", "in": {"text": "1|hello\n2|world"}}
+{"func": "strip_line_number_gutter", "in": {"text": "1|hello"}}
+{"func": "strip_line_number_gutter", "in": {"text": "1|hello", "min_numbered": 1}}
+{"func": "strip_line_number_gutter", "in": {"text": "1|a\n3|b"}}
+{"func": "strip_line_number_gutter", "in": {"text": "hello"}}
+{"func": "strip_line_number_gutter", "in": {"text": "1|a\n2|\n3|b"}}
+{"func": "strip_line_number_gutter", "in": {"text": "10|a\n11|b"}}
+{"func": "strip_line_number_gutter", "in": {"text": "1|a\n2|b", "min_numbered": 3}}
+{"func": "strip_line_number_gutter", "in": {"text": ""}}
+{"func": "gutter_stripped_old", "in": {"content": "hello world", "old_string": "1|hello\n2|world"}}
+{"func": "gutter_stripped_old", "in": {"content": "hello", "old_string": "1|hello"}}
+{"func": "gutter_stripped_old", "in": {"content": "hello", "old_string": "hello"}}
+{"func": "gutter_stripped_old", "in": {"content": "1|hello", "old_string": "1|hello\n2|world"}}
+{"func": "gutter_stripped_old", "in": {"content": "hello world", "old_string": "1| \n2| "}}
+{"func": "gutter_stripped_old", "in": {"content": "hello world", "old_string": "4|hello\n5|world"}}
+{"func": "gutter_recovery", "in": {"content": "hello world", "stripped_old": "hello world", "strategies": ["exact"], "new_string": "bye world", "replace_all": false, "correction_notes": [], "io": {"exact": [[0, 5]], "maybe_unescape_new_string": "bye world", "apply_replacements": "bye world", "import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "gutter_recovery", "in": {"content": "hello world", "stripped_old": "hello world", "strategies": ["exact"], "new_string": "1|bye\n2|world", "replace_all": false, "correction_notes": [], "io": {"exact": [[0, 5]], "maybe_unescape_new_string": "bye\nworld", "apply_replacements": "bye\nworld", "import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "gutter_recovery", "in": {"content": "hello world", "stripped_old": "hello world", "strategies": ["exact"], "new_string": "1|bye\n3|world", "replace_all": false, "correction_notes": [], "io": {"import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "gutter_recovery", "in": {"content": "hello world", "stripped_old": "hello world", "strategies": ["exact"], "new_string": "hello world", "replace_all": false, "correction_notes": []}}
+{"func": "gutter_recovery", "in": {"content": "hello world", "stripped_old": "hello world", "strategies": ["exact"], "new_string": "bye world", "replace_all": false, "correction_notes": null, "io": {"exact": [[0, 5]], "maybe_unescape_new_string": "bye world", "apply_replacements": "bye world", "import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "gutter_recovery", "in": {"content": "hello world", "stripped_old": "zzz", "strategies": ["exact"], "new_string": "bye", "replace_all": false, "correction_notes": [], "io": {"exact": []}}}
+{"func": "gutter_recovery", "in": {"content": "hello world", "stripped_old": "hello world", "strategies": ["exact"], "new_string": "bye", "replace_all": false, "correction_notes": [], "io": {"exact": {"__raise__": "ValueError", "msg": "chain boom"}}}}
+{"func": "gutter_recovery", "in": {"content": "hello world", "stripped_old": "hello world", "strategies": ["exact"], "new_string": "1|bye\n3|world", "replace_all": false, "correction_notes": [], "io": {"import_note_edit_match": {"__raise__": "ValueError", "msg": "swallowed"}}}}
+{"func": "note_edit_match", "in": {"strategy": "exact", "miss": null, "io": {"import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "note_edit_match", "in": {"strategy": null, "miss": "ambiguous", "io": {"import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "note_edit_match", "in": {"strategy": "line_trimmed", "miss": null, "io": {"import_note_edit_match": {"__raise__": "ValueError", "msg": "no metrics"}}}}
+{"func": "note_edit_match", "in": {"strategy": "exact", "miss": null, "io": {"import_note_edit_match": {"__raise__": "RuntimeError", "msg": "broken"}}}}
+{"func": "note_edit_match", "in": {"strategy": "exact", "miss": null, "io": {"import_note_edit_match": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "note_edit_match", "in": {"strategy": "exact", "miss": null, "io": {"import_note_edit_match": {"__raise__": "KeyboardInterrupt", "msg": "ctrl-c"}}}}
+{"func": "note_edit_match", "in": {"strategy": "exact", "miss": null, "io": {"import_note_edit_match": null, "note_edit_match": {"__raise__": "TypeError", "msg": "note boom"}}}}
+{"func": "note_edit_match", "in": {"strategy": "block_anchor", "miss": "no_match", "io": {"import_note_edit_match": null, "note_edit_match": null}}}
+{"func": "note_edit_match", "in": {"strategy": "exact", "miss": null, "io": {}}}
+{"func": "detect_newline_literal_drift", "in": {"content": "a\nb", "matches": [[0, 3]], "old_string": "a\\nb", "new_string": "a\\nc"}}
+{"func": "detect_newline_literal_drift", "in": {"content": "a\nb", "matches": [[0, 3]], "old_string": "a\\nb", "new_string": "x"}}
+{"func": "detect_newline_literal_drift", "in": {"content": "abc", "matches": [[0, 3]], "old_string": "a\\nb", "new_string": "a\\nc"}}
+{"func": "detect_newline_literal_drift", "in": {"content": "a\nb\nc\nd", "matches": [[0, 3], [4, 7]], "old_string": "a\\nb\\nc\\nd", "new_string": "x\\ny"}}
+{"func": "detect_newline_literal_drift", "in": {"content": "ab", "matches": [[0, 2]], "old_string": "x", "new_string": "p\\nq"}}
+{"func": "detect_newline_literal_drift", "in": {"content": "a\nb", "matches": [[0, 3]], "old_string": "a\\nb\\nb", "new_string": "a\\nc"}}
+{"func": "backslash_runs", "in": {"s": "a\\\\b\\\\\\c"}}
+{"func": "backslash_runs", "in": {"s": "no backslash"}}
+{"func": "backslash_runs", "in": {"s": "\\"}}
+{"func": "backslash_runs", "in": {"s": "\\\\"}}
+{"func": "backslash_runs", "in": {"s": "a\\b\\c"}}
+{"func": "backslash_runs", "in": {"s": ""}}
+{"func": "detect_backslash_doubling", "in": {"matched_regions": "\\\\", "old_string": "\\\\\\\\", "new_string": "x"}}
+{"func": "detect_backslash_doubling", "in": {"matched_regions": "\\\\", "old_string": "\\\\\\\\", "new_string": "\\\\"}}
+{"func": "detect_backslash_doubling", "in": {"matched_regions": "\\", "old_string": "\\\\", "new_string": "x"}}
+{"func": "detect_backslash_doubling", "in": {"matched_regions": "\\a\\", "old_string": "\\\\a\\\\", "new_string": "x"}}
+{"func": "detect_backslash_doubling", "in": {"matched_regions": "\\\\", "old_string": "\\\\\\", "new_string": "x"}}
+{"func": "detect_backslash_doubling", "in": {"matched_regions": "plain", "old_string": "plain", "new_string": "x"}}
+{"func": "match_starts_mid_line", "in": {"content": "abc def\nghi", "start": 4, "end": 7}}
+{"func": "match_starts_mid_line", "in": {"content": "  def\nghi", "start": 2, "end": 5}}
+{"func": "match_starts_mid_line", "in": {"content": "\n\ndef\nx", "start": 2, "end": 5}}
+{"func": "match_starts_mid_line", "in": {"content": "\ndef\nx", "start": 0, "end": 4}}
+{"func": "match_starts_mid_line", "in": {"content": "aaaa", "start": 1, "end": 3}}
+{"func": "match_starts_mid_line", "in": {"content": "x y", "start": 2, "end": 3}}
+{"func": "unicode_edit_plan", "in": {"old_string": "hi", "new_string": "bye", "io": {"opcodes": [["equal", 0, 2, 0, 2], ["insert", 2, 2, 2, 3]]}}}
+{"func": "unicode_edit_plan", "in": {"old_string": "\u201cx\u201d", "new_string": "\"x\"", "io": {"opcodes": [["replace", 0, 3, 0, 3]]}}}
+{"func": "unicode_edit_plan", "in": {"old_string": "abc", "new_string": "abc", "io": {"opcodes": [["equal", 0, 3, 0, 3]]}}}
+{"func": "unicode_edit_plan", "in": {"old_string": "a", "new_string": "b", "io": {"opcodes": {"__raise__": "ValueError", "msg": "opcode boom"}}}}
+{"func": "unicode_edit_plan", "in": {"old_string": "a", "new_string": "b", "io": {}}}

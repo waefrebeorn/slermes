@@ -1,0 +1,200 @@
+{"func": "resolve_profile_policy", "in": {"home": "/home/u", "io": {"bind_profile_scope_enter": {"ret": {}}, "hermes_home_key": {"ret": "HOME"}, "load_env": {"ret": {"HERMES_REDACT_SECRETS": "true"}}, "note_env_policy": {"ret": null}, "load_config_readonly": {"ret": {"security": {"redact_secrets": false}}}, "note_config_policy": {"ret": null}, "bind_profile_scope_exit": {"ret": null}}}}
+{"func": "resolve_profile_policy", "in": {"home": "/home/a", "io": {"bind_profile_scope_enter": {"ret": {}}, "hermes_home_key": {"raise": {"type": "ValueError", "message": "no home"}}, "bind_profile_scope_exit": {"ret": null}, "logger_debug": {"ret": null}}}}
+{"func": "resolve_profile_policy", "in": {"home": "/home/b", "io": {"bind_profile_scope_enter": {"ret": {}}, "hermes_home_key": {"ret": "HOME"}, "load_env": {"raise": {"type": "SystemExit", "message": "bye"}}, "bind_profile_scope_exit": {"ret": null}, "logger_debug": {"ret": null}}}}
+{"func": "resolve_profile_policy", "in": {"home": "/home/c", "io": {"bind_profile_scope_enter": {"ret": {}}, "hermes_home_key": {"ret": "HOME"}, "load_env": {"raise": {"type": "KeyboardInterrupt", "message": "ctrl-c"}}, "bind_profile_scope_exit": {"ret": null}}}}
+{"func": "resolve_profile_policy", "in": {"home": "/home/d", "io": {"bind_profile_scope_enter": {"ret": {}}, "hermes_home_key": {"ret": "HOME"}, "load_env": {"ret": {}}, "note_env_policy": {"ret": null}, "load_config_readonly": {"raise": {"type": "OSError", "message": "disk"}}, "bind_profile_scope_exit": {"ret": null}, "logger_debug": {"ret": null}}}}
+{"func": "has_word_bounded_keyword", "in": {"key": "token", "io": {"finditer": [[{"start": 0, "end": 5}]]}}}
+{"func": "has_word_bounded_keyword", "in": {"key": "dbtoken", "io": {"finditer": [[{"start": 2, "end": 7}]]}}}
+{"func": "has_word_bounded_keyword", "in": {"key": "APIToken", "io": {"finditer": [[{"start": 0, "end": 8}]]}}}
+{"func": "has_word_bounded_keyword", "in": {"key": "foo", "io": {"finditer": [[]]}}}
+{"func": "has_word_bounded_keyword", "in": {"key": "clientSecret", "io": {"finditer": [[{"start": 6, "end": 12}]]}}}
+{"func": "has_password_keyword", "in": {"key": "dbpassword", "io": {"finditer": [[{"end": 10}]]}}}
+{"func": "has_password_keyword", "in": {"key": "passwordless", "io": {"finditer": [[{"end": 8}]]}}}
+{"func": "has_password_keyword", "in": {"key": "mypasswd", "io": {"finditer": [[{"end": 8}]]}}}
+{"func": "has_password_keyword", "in": {"key": "foo", "io": {"finditer": [[]]}}}
+{"func": "has_password_keyword", "in": {"key": "secret", "io": {"finditer": [[{"end": 6}]]}}}
+{"func": "is_glued_credential_env", "in": {"key": "AWS_SECRET_ACCESS_KEY", "io": {"fullmatch": {"ret": "m"}}}}
+{"func": "is_glued_credential_env", "in": {"key": "\"PGPASSWORD\"", "io": {"fullmatch": {"ret": null}}}}
+{"func": "is_glued_credential_env", "in": {"key": "foo", "io": {"fullmatch": {"ret": null}}}}
+{"func": "is_glued_credential_env", "in": {"key": "OPENAI_API_KEY", "io": {"fullmatch": {"ret": "m"}}}}
+{"func": "is_glued_credential_env", "in": {"key": "", "io": {"fullmatch": {"ret": null}}}}
+{"func": "redact_telegram_token", "in": {"m": {"g0": "123:ABC", "g": {"boundary": ":", "id": "123", "bot": "ABC"}, "start": 0, "end": 0, "string": ""}}}
+{"func": "redact_telegram_token", "in": {"m": {"g0": "%41x:1", "g": {"boundary": "%41", "csi": null, "id": "1", "bot": null}, "start": 0, "end": 0, "string": ""}}}
+{"func": "redact_telegram_token", "in": {"m": {"g0": "%2fx:1", "g": {"boundary": "%2f", "csi": null, "id": "1", "bot": null}, "start": 0, "end": 0, "string": ""}}}
+{"func": "redact_telegram_token", "in": {"m": {"g0": "x%41:1", "g": {"boundary": "%41", "csi": "y", "id": "1", "bot": "B"}, "start": 0, "end": 0, "string": ""}}}
+{"func": "redact_telegram_token", "in": {"m": {"g0": "%110000x:1", "g": {"boundary": "%110000", "csi": null, "id": "1"}, "start": 0, "end": 0, "string": ""}}}
+{"func": "is_b64_pem_key", "in": {"blob": "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQ", "io": {"b64decode": {"ret": "-----BEGIN RSA PRIVATE KEY-----"}}}}
+{"func": "is_b64_pem_key", "in": {"blob": "aGVsbG8=", "io": {"b64decode": {"ret": "hello"}}}}
+{"func": "is_b64_pem_key", "in": {"blob": "!!!!", "io": {"b64decode": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "is_b64_pem_key", "in": {"blob": "", "io": {"b64decode": {"ret": ""}}}}
+{"func": "is_b64_pem_key", "in": {"blob": "Y2VydA==", "io": {"b64decode": {"ret": "-----BEGIN CERTIFICATE-----"}}}}
+{"func": "is_basic_pair_password", "in": {"password": "hunter2abc", "io": {"version_tag_search": {"ret": null}, "word_tag_fullmatch": {"ret": null}}}}
+{"func": "is_basic_pair_password", "in": {"password": "v1.2.3", "io": {"version_tag_search": {"ret": "m"}}}}
+{"func": "is_basic_pair_password", "in": {"password": "12345678", "io": {"version_tag_search": {"ret": null}, "word_tag_fullmatch": {"ret": null}}}}
+{"func": "is_basic_pair_password", "in": {"password": "TAG", "io": {"version_tag_search": {"ret": null}, "word_tag_fullmatch": {"ret": "m"}}}}
+{"func": "is_basic_pair_password", "in": {"password": "abc", "io": {"version_tag_search": {"ret": null}, "word_tag_fullmatch": {"ret": null}}}}
+{"func": "last_char_class", "in": {"pattern": "ghp_[A-Za-z0-9]{10,}"}}
+{"func": "last_char_class", "in": {"pattern": "abc"}}
+{"func": "last_char_class", "in": {"pattern": "sk-[a-z]\\d+"}}
+{"func": "last_char_class", "in": {"pattern": "[^_]foo[0-9]"}}
+{"func": "last_char_class", "in": {"pattern": "x\\[y\\]"}}
+{"func": "trailing_guard", "in": {"pattern": "abc", "io": {"fullmatch": []}}}
+{"func": "trailing_guard", "in": {"pattern": "x[A-Za-z0-9_]+", "io": {"fullmatch": [{"ret": true}, {"ret": false}]}}}
+{"func": "trailing_guard", "in": {"pattern": "x[a-z]+", "io": {"fullmatch": [{"ret": false}, {"ret": false}]}}}
+{"func": "trailing_guard", "in": {"pattern": "x[a-z-]+", "io": {"fullmatch": [{"ret": false}, {"ret": true}]}}}
+{"func": "trailing_guard", "in": {"pattern": "x[0-9_]+", "io": {"fullmatch": [{"ret": true}, {"ret": false}]}}}
+{"func": "compile_prefix_matcher", "in": {"patterns": ["ghp_[A-Za-z0-9]+"], "io": {"trailing_guard": {"ret": "(?![A-Za-z0-9])"}, "compile": {"ret": "RX"}}}}
+{"func": "compile_prefix_matcher", "in": {"patterns": ["sk-[a-z]+", "xoxb-[0-9]+"], "io": {"trailing_guard": [{"ret": "G1"}, {"ret": "G2"}], "compile": {"ret": "RX"}}}}
+{"func": "compile_prefix_matcher", "in": {"patterns": [], "io": {"compile": {"ret": "RX"}}}}
+{"func": "compile_prefix_matcher", "in": {"patterns": ["ya29\\.[A-Za-z0-9_-]+"], "io": {"trailing_guard": {"ret": "G"}, "compile": {"ret": "RX"}}}}
+{"func": "compile_prefix_matcher", "in": {"patterns": ["a", "b", "c"], "io": {"trailing_guard": [{"ret": "A"}, {"ret": "B"}, {"ret": "C"}], "compile": {"ret": "RX"}}}}
+{"func": "compile_prefix_sub_matcher", "in": {"patterns": ["ghp_[A-Za-z0-9]+"], "io": {"trailing_guard": {"ret": "G"}, "compile": {"ret": "RX"}}}}
+{"func": "compile_prefix_sub_matcher", "in": {"patterns": ["sk-[a-z]+", "gho_[0-9]+"], "io": {"trailing_guard": [{"ret": "G1"}, {"ret": "G2"}], "compile": {"ret": "RX"}}}}
+{"func": "compile_prefix_sub_matcher", "in": {"patterns": [], "io": {"compile": {"ret": "RX"}}}}
+{"func": "compile_prefix_sub_matcher", "in": {"patterns": ["a+b", "a.c"], "io": {"trailing_guard": [{"ret": "G1"}, {"ret": "G2"}], "compile": {"ret": "RX"}}}}
+{"func": "compile_prefix_sub_matcher", "in": {"patterns": ["x[0-9]+", "y[a-z]+", "z-foo"], "io": {"trailing_guard": [{"ret": "A"}, {"ret": "B"}, {"ret": "C"}], "compile": {"ret": "RX"}}}}
+{"func": "is_opaque_prefixed_token", "in": {"token": "abc", "io": {"finditer": [[{"g0": "abc"}]]}}}
+{"func": "is_opaque_prefixed_token", "in": {"token": "123", "io": {"finditer": [[{"g0": "123"}]]}}}
+{"func": "is_opaque_prefixed_token", "in": {"token": "aB3", "io": {"finditer": [[{"g0": "aB3"}]]}}}
+{"func": "is_opaque_prefixed_token", "in": {"token": "abc", "io": {"finditer": [[]]}}}
+{"func": "is_opaque_prefixed_token", "in": {"token": "foo_1", "io": {"finditer": [[{"g0": "foo"}, {"g0": "1"}]]}}}
+{"func": "is_glued_identifier", "in": {"m": {"g0": "", "g": {"1": "skh"}, "start": 5, "end": 0, "string": "backup-skh"}, "io": {"is_opaque_prefixed_token": {"ret": false}}}}
+{"func": "is_glued_identifier", "in": {"m": {"g0": "", "g": {"1": "skh"}, "start": 0, "end": 0, "string": "skh"}}}
+{"func": "is_glued_identifier", "in": {"m": {"g0": "", "g": {"1": "GOCSPX-abc"}, "start": 5, "end": 0, "string": "backup-GOCSPX-abc"}}}
+{"func": "is_glued_identifier", "in": {"m": {"g0": "", "g": {"1": "aB3"}, "start": 5, "end": 0, "string": "backup-aB3"}, "io": {"is_opaque_prefixed_token": {"ret": true}}}}
+{"func": "is_glued_identifier", "in": {"m": {"g0": "", "g": {"1": "ya29.x"}, "start": 5, "end": 0, "string": "backup-ya29.x"}, "token": "ya29.x"}}
+{"func": "redact_approval_display", "in": {"text": "--password=secret", "force": true, "prose": false, "io": {"redact_sensitive_text": {"ret": "--password=***"}, "sanitize_command_for_display": {"ret": "SAN"}}}}
+{"func": "redact_approval_display", "in": {"text": null, "io": {"redact_sensitive_text": {"ret": ""}, "sanitize_command_for_display": {"ret": ""}}}}
+{"func": "redact_approval_display", "in": {"text": "hello", "io": {"redact_sensitive_text": {"ret": "hello"}, "sanitize_command_for_display": {"ret": "hello"}}}}
+{"func": "redact_approval_display", "in": {"text": "x", "force": true, "prose": true, "io": {"redact_sensitive_text": {"ret": "x"}, "sanitize_command_for_display": {"ret": "P"}}}}
+{"func": "redact_approval_display", "in": {"text": "y", "io": {"redact_sensitive_text": {"raise": {"type": "ValueError", "message": "boom"}}}}}
+{"func": "is_redaction_marker", "in": {"value": "[REDACTED", "m": {"g0": "", "g": {}, "start": 0, "end": 0, "string": "[REDACTED PRIVATE KEY]", "ends": {"value": 9}}}}
+{"func": "is_redaction_marker", "in": {"value": "[REDACTED", "m": {"g0": "", "g": {}, "start": 0, "end": 0, "string": "[REDACTED OTHER]", "ends": {"value": 9}}}}
+{"func": "is_redaction_marker", "in": {"value": "[redacted]", "io": {"fullmatch": {"ret": "m"}}}}
+{"func": "is_redaction_marker", "in": {"value": "hello", "io": {"fullmatch": {"ret": null}}}}
+{"func": "is_redaction_marker", "in": {"value": "", "io": {"fullmatch": {"ret": null}}}}
+{"func": "mask_flag_value", "in": {"m": {"g0": "--password=secret", "g": {"value": "secret", "sep": "=", "flag": "--password"}, "start": 0, "end": 0, "string": "", "starts": {"value": 11}, "ends": {"value": 17}, "is_cli_flag": true}, "io": {"is_redaction_marker": {"ret": false}, "mask": {"ret": "***"}}}}
+{"func": "mask_flag_value", "in": {"m": {"g0": "--token $VAR", "g": {"value": "$VAR", "sep": " ", "flag": "--token"}, "start": 0, "end": 0, "string": "", "starts": {"value": 8}, "ends": {"value": 12}, "is_cli_flag": true}, "io": {"is_redaction_marker": {"ret": false}}}}
+{"func": "mask_flag_value", "in": {"m": {"g0": "--token 123", "g": {"value": "123", "sep": " ", "flag": "--token"}, "start": 0, "end": 0, "string": "", "starts": {"value": 8}, "ends": {"value": 11}, "is_cli_flag": true}, "io": {"is_redaction_marker": {"ret": false}}}}
+{"func": "mask_flag_value", "in": {"m": {"g0": "--token placeholder", "g": {"value": "placeholder", "sep": " ", "flag": "--token"}, "start": 0, "end": 0, "string": "", "starts": {"value": 8}, "ends": {"value": 19}, "is_cli_flag": true}, "io": {"is_redaction_marker": {"ret": false}, "is_flag_placeholder": {"ret": true}}}}
+{"func": "mask_flag_value", "in": {"m": {"g0": "--password=secret", "g": {"value": "secret", "sep": "=", "flag": "--password"}, "start": 0, "end": 0, "string": "", "starts": {"value": 11}, "ends": {"value": 17}}, "io": {"is_redaction_marker": {"ret": true}}}}
+{"func": "is_flag_placeholder", "in": {"value": "placeholder", "io": {"fullmatch": {"ret": "m"}}}}
+{"func": "is_flag_placeholder", "in": {"value": "secret123", "io": {"fullmatch": {"ret": null}}}}
+{"func": "is_flag_placeholder", "in": {"value": "'quoted'", "io": {"fullmatch": {"ret": "m"}}}}
+{"func": "is_flag_placeholder", "in": {"value": "", "io": {"fullmatch": {"ret": null}}}}
+{"func": "is_flag_placeholder", "in": {"value": "word", "io": {"fullmatch": {"ret": "m"}}}}
+{"func": "is_flag_path_reference", "in": {"flag": "--password", "value": "~/.config/creds.json", "io": {"password_key_search": {"ret": null}, "opaque_segment_fullmatch": [{"ret": false}, {"ret": false}, {"ret": false}]}}}
+{"func": "is_flag_path_reference", "in": {"flag": "--token", "value": "abc", "io": {"password_key_search": {"ret": null}}}}
+{"func": "is_flag_path_reference", "in": {"flag": "--credentials", "value": "~/.config/x", "io": {"password_key_search": {"ret": null}, "opaque_segment_fullmatch": [{"ret": false}, {"ret": false}, {"ret": true}]}}}
+{"func": "is_flag_path_reference", "in": {"flag": "--password", "value": "/x", "io": {"password_key_search": {"ret": "m"}}}}
+{"func": "is_flag_path_reference", "in": {"flag": "--token", "value": "../a/b", "io": {"password_key_search": {"ret": null}, "opaque_segment_fullmatch": [{"ret": false}, {"ret": false}, {"ret": false}]}}}
+{"func": "redact_cli_secrets", "in": {"text": "--password=secret", "io": {"cli_secret_flag_gate": {"ret": true}, "cli_secret_flag_sub": {"ret": "--password=***"}, "cli_login_gate": {"ret": false}, "connstr_gate": {"ret": false}}}}
+{"func": "redact_cli_secrets", "in": {"text": "hello", "io": {"connstr_gate": {"ret": false}}}}
+{"func": "redact_cli_secrets", "in": {"text": "login --token abc", "io": {"cli_secret_flag_gate": {"ret": false}, "cli_login_gate": {"ret": true}, "cli_login_sub": {"ret": "login --token ***"}, "connstr_gate": {"ret": false}}}}
+{"func": "redact_cli_secrets", "in": {"text": "Password=abc;", "io": {"connstr_gate": {"ret": true}, "connstr_sub": {"ret": "Password=***;"}}}}
+{"func": "redact_cli_secrets", "in": {"text": "--password=s", "io": {"cli_secret_flag_gate": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "redact_private_key_blocks", "in": {"text": "-----BEGIN X-----\nbody\n-----END X-----", "io": {"private_key_sub": {"ret": "[REDACTED PRIVATE KEY]"}}}}
+{"func": "redact_private_key_blocks", "in": {"text": "PRIVATE KEY----- partial", "io": {"redact_partial_private_keys": {"ret": "clean"}}}}
+{"func": "redact_private_key_blocks", "in": {"text": "LS0tLS1CRUdJTi", "io": {"b64_pem_sub": {"ret": "[REDACTED PRIVATE KEY]"}}}}
+{"func": "redact_private_key_blocks", "in": {"text": "END PGP PRIVATE KEY BLOCK", "io": {"pgp_private_key_sub": {"ret": "[REDACTED PRIVATE KEY]"}}}}
+{"func": "redact_private_key_blocks", "in": {"text": "Private-Lines: abc", "io": {"putty_private_lines_sub": {"ret": "clean"}}}}
+{"func": "redact_python_repr_fields", "in": {"text": "{'API_KEY': 'secret'}", "io": {"python_repr_field_sub": {"ret": "{'API_KEY': '***'}"}}}}
+{"func": "redact_python_repr_fields", "in": {"text": "hello", "io": {"python_repr_field_sub": {"ret": "hello"}}}}
+{"func": "redact_python_repr_fields", "in": {"text": "{'x': 'y'}", "io": {"python_repr_field_sub": {"ret": "{'x': 'y'}"}}}}
+{"func": "redact_python_repr_fields", "in": {"text": "", "io": {"python_repr_field_sub": {"ret": ""}}}}
+{"func": "redact_python_repr_fields", "in": {"text": "a", "io": {"python_repr_field_sub": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "redact_python_diagnostic_repr_fields", "in": {"text": "assert 1 == 2\n", "io": {"diag_line_match": [{"ret": {"prefix": "assert ", "body": "1 == 2"}}], "diag_line_repr": {"ret": "REDACTED"}}}}
+{"func": "redact_python_diagnostic_repr_fields", "in": {"text": "plain line\n", "io": {"diag_line_match": [{"ret": null}]}}}
+{"func": "redact_python_diagnostic_repr_fields", "in": {"text": "E   AssertionError: x\r\n", "io": {"diag_line_match": [{"ret": {"prefix": "E   ", "body": "AssertionError: x"}}], "diag_line_repr": {"ret": "E   MASK"}}}}
+{"func": "redact_python_diagnostic_repr_fields", "in": {"text": "", "io": {}}}
+{"func": "redact_python_diagnostic_repr_fields", "in": {"text": "a\nb\n", "io": {"diag_line_match": [{"ret": null}, {"ret": {"prefix": "", "body": "b"}}], "diag_line_repr": {"ret": "Z"}}}}
+{"func": "redact_strict_url_credentials", "in": {"text": "http://h/?token=abc", "io": {"strict_url_param_sub": {"ret": "http://h/?token=***"}, "strict_url_userinfo_sub": {"ret": "http://h/?token=***"}}}}
+{"func": "redact_strict_url_credentials", "in": {"text": "http://u:p@h", "io": {"strict_url_param_sub": {"ret": "http://u:p@h"}, "strict_url_userinfo_sub": {"ret": "//***:***@h"}}}}
+{"func": "redact_strict_url_credentials", "in": {"text": "hello", "io": {"strict_url_param_sub": {"ret": "hello"}, "strict_url_userinfo_sub": {"ret": "hello"}}}}
+{"func": "redact_strict_url_credentials", "in": {"text": "", "io": {"strict_url_param_sub": {"ret": ""}, "strict_url_userinfo_sub": {"ret": ""}}}}
+{"func": "redact_strict_url_credentials", "in": {"text": "x", "io": {"strict_url_param_sub": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "redact_json_string_value", "in": {"m": {"g0": "\"api_key\": \"secret\"", "g": {"1": "\"api_key\"", "2": "secret", "3": "\""}, "start": 0, "end": 0, "string": ""}, "io": {"json_loads": {"ret": "secret"}, "json_header_value_is_credential": {"ret": true}, "mask": {"ret": "***"}}}}
+{"func": "redact_json_string_value", "in": {"m": {"g0": "\"page\": \"1\"", "g": {"1": "\"page\"", "2": "1", "3": "\""}, "start": 0, "end": 0, "string": ""}, "io": {"json_loads": {"ret": "1"}, "json_header_value_is_credential": {"ret": false}}}}
+{"func": "redact_json_string_value", "in": {"m": {"g0": "\"api_key\": \"bad\\q\"", "g": {"1": "\"api_key\"", "2": "bad\\q", "3": "\""}, "start": 0, "end": 0, "string": ""}, "io": {"json_loads": {"raise": {"type": "JSONDecodeError", "message": "bad"}}, "json_header_value_is_credential": {"ret": true}, "mask": {"ret": "***"}}}}
+{"func": "redact_json_string_value", "in": {"m": {"g0": "a", "g": {"1": "\"token\"", "2": "x", "3": "\""}, "start": 0, "end": 0, "string": ""}, "io": {"json_loads": {"ret": "x"}, "json_header_value_is_credential": {"ret": true}, "mask": {"ret": "M"}}}}
+{"func": "redact_json_string_value", "in": {"m": {"g0": "b", "g": {"1": "\"k\"", "2": "v", "3": "\""}, "start": 0, "end": 0, "string": ""}, "io": {"json_loads": {"ret": "v"}, "json_header_value_is_credential": {"ret": false}}}}
+{"func": "redact_unterminated_json_string_value", "in": {"m": {"g0": "\"api_key\": \"secret", "g": {"1": "\"api_key\": \"", "2": "secret"}, "start": 0, "end": 0, "string": ""}, "io": {"json_loads": {"ret": "secret"}, "mask": {"ret": "***"}}}}
+{"func": "redact_unterminated_json_string_value", "in": {"m": {"g0": "a", "g": {"1": "P", "2": "v"}, "start": 0, "end": 0, "string": ""}, "io": {"json_loads": {"raise": {"type": "JSONDecodeError", "message": "bad"}}, "mask": {"ret": "***"}}}}
+{"func": "redact_unterminated_json_string_value", "in": {"m": {"g0": "b", "g": {"1": "P", "2": "x"}, "start": 0, "end": 0, "string": ""}, "io": {"json_loads": {"ret": "x"}, "mask": {"ret": "M"}}}}
+{"func": "redact_unterminated_json_string_value", "in": {"m": {"g0": "c", "g": {"1": "P", "2": ""}, "start": 0, "end": 0, "string": ""}, "io": {"json_loads": {"ret": ""}, "mask": {"ret": ""}}}}
+{"func": "redact_unterminated_json_string_value", "in": {"m": {"g0": "d", "g": {"1": "P", "2": "abc"}, "start": 0, "end": 0, "string": ""}, "io": {"json_loads": {"ret": "abc"}, "mask": {"ret": "R"}}}}
+{"func": "assignment_sub", "in": {"check_keyword": true, "matches": [{"g0": "API_KEY=abc", "g": {"0": "API_KEY", "1": "abc", "last": "abc"}, "has_render": true}], "io": {"should_redact_assignment": {"ret": true}, "render": {"ret": "API_KEY=***"}}}}
+{"func": "assignment_sub", "in": {"check_keyword": true, "matches": [{"g0": "NAME=abc", "g": {"0": "NAME", "1": "abc", "last": "abc"}}], "io": {"should_redact_assignment": {"ret": false}}}}
+{"func": "assignment_sub", "in": {"check_keyword": false, "matches": [{"g0": "a=1", "g": {"0": "a", "1": "1", "last": "1"}, "has_render": true}, {"g0": "b=2", "g": {"0": "b", "1": "2", "last": "2"}}], "io": {"should_redact_assignment": [{"ret": true}, {"ret": false}], "render": {"ret": "a=***"}}}}
+{"func": "assignment_sub", "in": {"matches": [], "io": {}}}
+{"func": "assignment_sub", "in": {"check_keyword": true, "matches": [{"g0": "K=v", "g": {"0": "K", "1": "v", "last": "v"}, "has_render": true}], "io": {"should_redact_assignment": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "redact_json_affixed_key", "in": {"m": {"g0": "\"apiKey\": \"v\"", "g": {"1": "\"apiKey\"", "2": "apiKey", "3": "v"}, "start": 0, "end": 0, "string": ""}, "io": {"json_affixed_key_secret": {"ret": true}, "mask": {"ret": "***"}}}}
+{"func": "redact_json_affixed_key", "in": {"m": {"g0": "\"foo\": \"v\"", "g": {"1": "\"foo\"", "2": "foo", "3": "v"}, "start": 0, "end": 0, "string": ""}, "io": {"json_affixed_key_secret": {"ret": false}}}}
+{"func": "redact_json_affixed_key", "in": {"m": {"g0": "a", "g": {"1": "K", "2": "token", "3": "s"}, "start": 0, "end": 0, "string": ""}, "io": {"json_affixed_key_secret": {"ret": true}, "mask": {"ret": "M"}}}}
+{"func": "redact_json_affixed_key", "in": {"m": {"g0": "b", "g": {"1": "K", "2": "k", "3": ""}, "start": 0, "end": 0, "string": ""}, "io": {"json_affixed_key_secret": {"ret": false}}}}
+{"func": "redact_json_affixed_key", "in": {"m": {"g0": "c", "g": {"1": "K", "2": "api_key", "3": "x"}, "start": 0, "end": 0, "string": ""}, "io": {"json_affixed_key_secret": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "redact_json_affixed_key_escaped", "in": {"m": {"g0": "\"apiKey\": \\\"v\\\"", "g": {"1": "\"apiKey\"", "2": "\\\"", "3": "apiKey", "4": "v"}, "start": 0, "end": 0, "string": ""}, "io": {"json_affixed_key_secret": {"ret": true}, "mask": {"ret": "***"}}}}
+{"func": "redact_json_affixed_key_escaped", "in": {"m": {"g0": "\"foo\": \\\"v\\\"", "g": {"1": "\"foo\"", "2": "\\\"", "3": "foo", "4": "v"}, "start": 0, "end": 0, "string": ""}, "io": {"json_affixed_key_secret": {"ret": false}}}}
+{"func": "redact_json_affixed_key_escaped", "in": {"m": {"g0": "a", "g": {"1": "K", "2": "\\\"", "3": "token", "4": "s"}, "start": 0, "end": 0, "string": ""}, "io": {"json_affixed_key_secret": {"ret": true}, "mask": {"ret": "M"}}}}
+{"func": "redact_json_affixed_key_escaped", "in": {"m": {"g0": "b", "g": {"1": "K", "2": "\\\"", "3": "k", "4": ""}, "start": 0, "end": 0, "string": ""}, "io": {"json_affixed_key_secret": {"ret": false}}}}
+{"func": "redact_json_affixed_key_escaped", "in": {"m": {"g0": "c", "g": {"1": "K", "2": "\\\"", "3": "secret", "4": "x"}, "start": 0, "end": 0, "string": ""}, "io": {"json_affixed_key_secret": {"ret": true}, "mask": {"ret": "R"}}}}
+{"func": "redact_assignments", "in": {"text": "API_KEY=abc", "io": {"cookie_assignments_sub": {"ret": "API_KEY=abc"}, "cfg_secret_word_search": [{"ret": false}, {"ret": false}], "env_assign_sub": {"ret": "API_KEY=***"}, "env_assign_lower_sub": {"ret": "API_KEY=***"}, "cfg_secret_word_search2": {"ret": false}}}}
+{"func": "redact_assignments", "in": {"text": "http://h/?token=abc", "io": {"cookie_assignments_sub": {"ret": "http://h/?token=abc"}, "env_assign_sub": {"ret": "http://h/?token=abc"}}}}
+{"func": "redact_assignments", "in": {"text": "{\"api_key\": \"secret\"}", "io": {"secret_header_json_sub": {"ret": "X"}, "cookie_header_json_sub": {"ret": "X"}, "secret_header_json_unterminated_sub": {"ret": "X"}, "cookie_header_json_unterminated_sub": {"ret": "X"}, "json_field_sub": {"ret": "X"}, "json_any_key_sub": {"ret": "X"}, "yaml_assign_sub": {"ret": "X"}}}}
+{"func": "redact_assignments", "in": {"text": "{'API_KEY': 'x'}", "io": {"python_repr_fields_sub": {"ret": "X"}, "yaml_assign_sub": {"ret": "X"}}}}
+{"func": "redact_assignments", "in": {"text": "TOKEN=abc", "mask_nonreusable": true, "io": {"cookie_assignments_sub": {"ret": "TOKEN=abc"}, "cfg_secret_word_search": [{"ret": true}, {"ret": true}], "spaced_cfg_sub": [{"ret": "TOKEN=abc"}, {"ret": "TOKEN=abc"}], "env_assign_sub": {"ret": "TOKEN=«redacted:x»"}, "env_assign_lower_sub": {"ret": "TOKEN=«redacted:x»"}, "cfg_dotted_sub": {"ret": "TOKEN=«redacted:x»"}, "cfg_anchored_sub": {"ret": "TOKEN=«redacted:x»"}}}}
+{"func": "redact_userinfo_passwords", "in": {"text": "http://u:p@h", "io": {"url_userinfo_pair_sub": {"ret": "http://u:***@h"}}}}
+{"func": "redact_userinfo_passwords", "in": {"text": "hello", "io": {"url_userinfo_pair_sub": {"ret": "hello"}}}}
+{"func": "redact_userinfo_passwords", "in": {"text": "", "io": {"url_userinfo_pair_sub": {"ret": ""}}}}
+{"func": "redact_userinfo_passwords", "in": {"text": "x", "io": {"url_userinfo_pair_sub": {"ret": "x"}}}}
+{"func": "redact_userinfo_passwords", "in": {"text": "y", "io": {"url_userinfo_pair_sub": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "redact_credential_store_lines", "in": {"text": "password=abc", "mask_nonreusable": true, "io": {"credential_store_lines_sub": {"ret": "password=***"}}}}
+{"func": "redact_credential_store_lines", "in": {"text": "hello", "io": {"credential_store_lines_sub": {"ret": "hello"}}}}
+{"func": "redact_credential_store_lines", "in": {"text": "", "io": {"credential_store_lines_sub": {"ret": ""}}}}
+{"func": "redact_credential_store_lines", "in": {"text": "x", "io": {"credential_store_lines_sub": {"ret": "x"}}}}
+{"func": "redact_credential_store_lines", "in": {"text": "y", "io": {"credential_store_lines_sub": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "redact_url_credentials", "in": {"text": "postgres://u:p@h/db", "code_file": false, "io": {"db_connstr_sub": {"ret": "postgres://u:***@h/db"}, "db_url_query_passwords_sub": {"ret": "X"}, "webhook_url_sub": {"ret": "X"}, "url_bare_token_sub": {"ret": "X"}, "userinfo_passwords_sub": {"ret": "X"}}}}
+{"func": "redact_url_credentials", "in": {"text": "hello", "code_file": false, "io": {"db_connstr_sub": {"ret": "hello"}, "db_url_query_passwords_sub": {"ret": "hello"}, "webhook_url_sub": {"ret": "hello"}, "url_bare_token_sub": {"ret": "hello"}, "userinfo_passwords_sub": {"ret": "hello"}}}}
+{"func": "redact_url_credentials", "in": {"text": "", "code_file": false, "io": {"db_connstr_sub": {"ret": ""}, "db_url_query_passwords_sub": {"ret": ""}, "webhook_url_sub": {"ret": ""}, "url_bare_token_sub": {"ret": ""}, "userinfo_passwords_sub": {"ret": ""}}}}
+{"func": "redact_url_credentials", "in": {"text": "x", "code_file": true, "file_read": true, "io": {"db_connstr_sub": {"ret": "x"}, "db_url_query_passwords_sub": {"ret": "x"}, "webhook_url_sub": {"ret": "x"}, "url_bare_token_sub": {"ret": "x"}, "userinfo_passwords_sub": {"ret": "x"}}}}
+{"func": "redact_url_credentials", "in": {"text": "y", "code_file": false, "io": {"db_connstr_sub": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "mask_network_path_userinfo", "in": {"m": {"g0": "//u:p@h", "g": {"1": "//", "2": "u", "3": "p"}, "start": 0, "end": 0, "string": ""}, "io": {"is_userinfo_placeholder": {"ret": false}}}}
+{"func": "mask_network_path_userinfo", "in": {"m": {"g0": "//u:{pw}@h", "g": {"1": "//", "2": "u", "3": "{pw}"}, "start": 0, "end": 0, "string": ""}, "io": {"is_userinfo_placeholder": {"ret": true}}}}
+{"func": "mask_network_path_userinfo", "in": {"m": {"g0": "//u:password@h", "g": {"1": "//", "2": "u", "3": "password"}, "start": 0, "end": 0, "string": ""}, "io": {"is_userinfo_placeholder": {"ret": true}}}}
+{"func": "mask_network_path_userinfo", "in": {"m": {"g0": "//u:x@h", "g": {"1": "//", "2": "u", "3": "x"}, "start": 0, "end": 0, "string": ""}, "io": {"is_userinfo_placeholder": {"ret": false}}}}
+{"func": "mask_network_path_userinfo", "in": {"m": {"g0": "//u:y@h", "g": {"1": "//", "2": "u", "3": "y"}, "start": 0, "end": 0, "string": ""}, "io": {"is_userinfo_placeholder": {"ret": false}}}}
+{"func": "redact_phone", "in": {"m": {"g0": "12345678", "g": {"1": "12345678"}, "start": 0, "end": 0, "string": ""}}}
+{"func": "redact_phone", "in": {"m": {"g0": "123456789", "g": {"1": "123456789"}, "start": 0, "end": 0, "string": ""}}}
+{"func": "redact_phone", "in": {"m": {"g0": "1234567890", "g": {"1": "1234567890"}, "start": 0, "end": 0, "string": ""}}}
+{"func": "redact_phone", "in": {"m": {"g0": "123", "g": {"1": "123"}, "start": 0, "end": 0, "string": ""}}}
+{"func": "redact_phone", "in": {"m": {"g0": "1234567890123", "g": {"1": "1234567890123"}, "start": 0, "end": 0, "string": ""}}}
+{"func": "redact_credential_shapes", "in": {"text": "hello", "io": {"private_key_blocks_sub": {"ret": "hello"}, "has_known_prefix_substring": {"ret": false}, "redact_assignments_sub": {"ret": "hello"}, "cli_secrets_sub": {"ret": "hello"}, "auth_gate_search": {"ret": null}, "kv_connstr_gate_search": {"ret": null}}}}
+{"func": "redact_credential_shapes", "in": {"text": "a.b", "force": true, "io": {"private_key_blocks_sub": {"ret": "a.b"}, "has_known_prefix_substring": {"ret": false}, "zhipu_api_key_sub": {"ret": "a.b"}, "discord_tokens_sub": {"ret": "a.b"}, "redact_assignments_sub": {"ret": "a.b"}, "cli_secrets_sub": {"ret": "a.b"}, "auth_gate_search": {"ret": null}, "kv_connstr_gate_search": {"ret": null}}}}
+{"func": "redact_credential_shapes", "in": {"text": "--password=secret", "force": true, "code_file": true, "io": {"private_key_blocks_sub": {"ret": "--password=secret"}, "has_known_prefix_substring": {"ret": false}, "cli_secrets_sub": {"ret": "--password=***"}, "basic_pair_assign_sub": {"ret": "X"}, "auth_gate_search": {"ret": null}, "kv_connstr_gate_search": {"ret": null}}}}
+{"func": "redact_credential_shapes", "in": {"text": "eyJtoken", "io": {"private_key_blocks_sub": {"ret": "eyJtoken"}, "has_known_prefix_substring": {"ret": false}, "redact_assignments_sub": {"ret": "eyJtoken"}, "cli_secrets_sub": {"ret": "eyJtoken"}, "auth_gate_search": {"ret": null}, "kv_connstr_gate_search": {"ret": null}, "jwt_sub": {"ret": "eyJ***"}}}}
+{"func": "redact_credential_shapes", "in": {"text": "user:pass@h", "secret_file": true, "io": {"private_key_blocks_sub": {"ret": "user:pass@h"}, "has_known_prefix_substring": {"ret": false}, "credential_store_lines_sub": {"ret": "user:pass@h"}, "aws_credential_process_keys": {"ret": null}, "redact_assignments_sub": {"ret": "X"}, "cli_secrets_sub": {"ret": "X"}, "auth_gate_search": {"ret": null}, "header_credentials_sub": {"ret": "X"}, "telegram_sub": {"ret": "X"}, "kv_connstr_gate_search": {"ret": null}}}}
+{"func": "mask_env_dump_line", "in": {"m": {"g0": "DB_PASSWORD=secret", "g": {"1": "", "2": "DB_PASSWORD", "3": "secret"}, "start": 0, "end": 0, "string": ""}, "io": {"should_redact_assignment": {"ret": true}, "mask": {"ret": "***"}}}}
+{"func": "mask_env_dump_line", "in": {"m": {"g0": "NAME=abc", "g": {"1": "", "2": "NAME", "3": "abc"}, "start": 0, "end": 0, "string": ""}, "io": {"should_redact_assignment": {"ret": false}, "env_assign_sub": {"ret": "NAME=abc"}}}}
+{"func": "mask_env_dump_line", "in": {"m": {"g0": "K=\"a b\"", "g": {"1": "", "2": "K", "3": "\"a b\""}, "start": 0, "end": 0, "string": ""}, "io": {"should_redact_assignment": {"ret": true}, "mask": {"ret": "***"}}}}
+{"func": "mask_env_dump_line", "in": {"m": {"g0": "export TOKEN=x", "g": {"1": "export ", "2": "TOKEN", "3": "x"}, "start": 0, "end": 0, "string": ""}, "io": {"should_redact_assignment": {"ret": true}, "mask": {"ret": "M"}}}}
+{"func": "mask_env_dump_line", "in": {"m": {"g0": "K=v", "g": {"1": "", "2": "K", "3": "v"}, "start": 0, "end": 0, "string": ""}, "io": {"should_redact_assignment": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "plugin_patterns", "in": {"io": {"plugin_patterns": [["a", "b"]]}}}
+{"func": "plugin_patterns", "in": {"io": {"plugin_patterns": [[]]}}}
+{"func": "plugin_patterns", "in": {"io": {"plugin_patterns": [["solo"]]}}}
+{"func": "plugin_patterns", "in": {"io": {"plugin_patterns": [["x", "y", "z"]]}}}
+{"func": "plugin_patterns", "in": {"io": {"plugin_patterns": [["ghp_[A-Za-z0-9]+"]]}}}
+{"func": "rebuild_prefix_matcher", "in": {"patterns": ["ghp_[A-Za-z0-9]+"], "io": {"plugin_patterns": [[]], "compile_prefix_matcher": {"ret": null}, "compile_prefix_sub_matcher": {"ret": null}, "extract_literal_prefix": {"ret": "ghp_"}}}}
+{"func": "rebuild_prefix_matcher", "in": {"patterns": ["a", "b"], "io": {"plugin_patterns": [["c"]], "compile_prefix_matcher": {"ret": null}, "compile_prefix_sub_matcher": {"ret": null}, "extract_literal_prefix": [{"ret": "a"}, {"ret": "b"}, {"ret": "c"}]}}}
+{"func": "rebuild_prefix_matcher", "in": {"patterns": [], "io": {"plugin_patterns": [[]], "compile_prefix_matcher": {"ret": null}, "compile_prefix_sub_matcher": {"ret": null}}}}
+{"func": "rebuild_prefix_matcher", "in": {"patterns": [], "io": {"plugin_patterns": [["x", "y"]], "compile_prefix_matcher": {"ret": null}, "compile_prefix_sub_matcher": {"ret": null}, "extract_literal_prefix": [{"ret": "x"}, {"ret": "y"}]}}}
+{"func": "rebuild_prefix_matcher", "in": {"patterns": ["solo"], "io": {"plugin_patterns": [[]], "compile_prefix_matcher": {"raise": {"type": "ValueError", "message": "bad"}}, "compile_prefix_sub_matcher": {"ret": null}, "extract_literal_prefix": {"ret": "s"}}}}
+{"func": "register_redaction_patterns", "in": {"patterns": [], "io": {}}}
+{"func": "register_redaction_patterns", "in": {"patterns": ["ghp_[A-Za-z0-9]+"], "io": {"compile": {"ret": "RX"}, "pattern_reject": {"ret": ""}, "is_duplicate": {"ret": false}, "registry_lock_enter": {"ret": null}, "registry_extend": {"ret": null}, "rebuild_prefix_matcher": {"ret": null}, "registry_lock_exit": {"ret": null}, "log_info_registered": {"ret": null}}}}
+{"func": "register_redaction_patterns", "in": {"patterns": [""], "io": {"log_warning_empty": {"ret": null}}}}
+{"func": "register_redaction_patterns", "in": {"patterns": ["bad("], "io": {"compile": {"raise": {"type": "re_error", "message": "bad"}}, "log_warning_invalid": {"ret": null}}}}
+{"func": "register_redaction_patterns", "in": {"patterns": ["dup", "dup"], "io": {"compile": [{"ret": "RX"}, {"ret": "RX"}], "pattern_reject": [{"ret": ""}, {"ret": ""}], "is_duplicate": [{"ret": false}, {"ret": true}], "log_debug_dup": {"ret": null}, "registry_lock_enter": {"ret": null}, "registry_extend": {"ret": null}, "rebuild_prefix_matcher": {"ret": null}, "registry_lock_exit": {"ret": null}, "log_info_registered": {"ret": null}}}}
+{"func": "reset_plugin_redaction_patterns", "in": {"io": {"registry_lock_enter": {"ret": null}, "registry_clear": {"ret": null}, "rebuild_prefix_matcher": {"ret": null}, "registry_lock_exit": {"ret": null}}}}
+{"func": "reset_plugin_redaction_patterns", "in": {"io": {"registry_lock_enter": {"ret": null}, "registry_clear": {"ret": null}, "rebuild_prefix_matcher": {"ret": null}, "registry_lock_exit": {"ret": null}}}}
+{"func": "reset_plugin_redaction_patterns", "in": {"io": {"registry_lock_enter": {"ret": null}, "registry_clear": {"ret": null}, "rebuild_prefix_matcher": {"ret": null}, "registry_lock_exit": {"ret": null}}}}
+{"func": "reset_plugin_redaction_patterns", "in": {"io": {"registry_lock_enter": {"ret": null}, "registry_clear": {"ret": null}, "rebuild_prefix_matcher": {"ret": null}, "registry_lock_exit": {"ret": null}}}}
+{"func": "reset_plugin_redaction_patterns", "in": {"io": {"registry_lock_enter": {"ret": null}, "registry_clear": {"ret": null}, "rebuild_prefix_matcher": {"ret": null}, "registry_lock_exit": {"ret": null}}}}

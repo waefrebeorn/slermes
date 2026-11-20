@@ -1,0 +1,249 @@
+{"func": "js_string", "in": {"value": null}}
+{"func": "js_string", "in": {"value": true}}
+{"func": "js_string", "in": {"value": false}}
+{"func": "js_string", "in": {"value": 0}}
+{"func": "js_string", "in": {"value": 3}}
+{"func": "js_string", "in": {"value": "x"}}
+{"func": "js_string", "in": {"value": ""}}
+{"func": "js_string", "in": {"value": [1, null, "a"]}}
+{"func": "js_string", "in": {"value": {"a": 1}}}
+{"func": "js_string", "in": {"value": 3.0}}
+{"func": "js_string", "in": {"value": 2.5}}
+{"func": "js_falsy", "in": {"value": null}}
+{"func": "js_falsy", "in": {"value": false}}
+{"func": "js_falsy", "in": {"value": true}}
+{"func": "js_falsy", "in": {"value": 0}}
+{"func": "js_falsy", "in": {"value": 5}}
+{"func": "js_falsy", "in": {"value": ""}}
+{"func": "js_falsy", "in": {"value": "x"}}
+{"func": "js_falsy", "in": {"value": []}}
+{"func": "js_falsy", "in": {"value": {}}}
+{"func": "js_falsy", "in": {"value": 2.5}}
+{"func": "js_str", "in": {"value": null}}
+{"func": "js_str", "in": {"value": false}}
+{"func": "js_str", "in": {"value": 0}}
+{"func": "js_str", "in": {"value": ""}}
+{"func": "js_str", "in": {"value": "abc"}}
+{"func": "js_str", "in": {"value": []}}
+{"func": "js_str", "in": {"value": {}}}
+{"func": "js_str", "in": {"value": 7}}
+{"func": "label_key", "in": {"value": "  Hello World  "}}
+{"func": "label_key", "in": {"value": "MiXeD  Case"}}
+{"func": "label_key", "in": {"value": ""}}
+{"func": "label_key", "in": {"value": 5}}
+{"func": "label_key", "in": {"value": null}}
+{"func": "label_key", "in": {"value": "a-b_C"}}
+{"func": "unique_label", "in": {"candidate": "Work", "taken": []}}
+{"func": "unique_label", "in": {"candidate": "work", "taken": ["work"]}}
+{"func": "unique_label", "in": {"candidate": "Home", "taken": ["home", "home 2"]}}
+{"func": "unique_label", "in": {"candidate": "", "taken": []}}
+{"func": "unique_label", "in": {"candidate": "A", "taken": ["a", "a 2", "a 3"]}}
+{"func": "unique_label", "in": {"candidate": "X", "taken": ["x 2"]}}
+{"func": "label_slug", "in": {"label": "Hello, World!"}}
+{"func": "label_slug", "in": {"label": "foo_bar"}}
+{"func": "label_slug", "in": {"label": "!!!"}}
+{"func": "label_slug", "in": {"label": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"func": "label_slug", "in": {"label": "A B"}}
+{"func": "label_slug", "in": {"label": "  --x--  "}}
+{"func": "connection_id_for_label", "in": {"label": "Home", "taken": []}}
+{"func": "connection_id_for_label", "in": {"label": "Home", "taken": ["home", "home-2"]}}
+{"func": "connection_id_for_label", "in": {"label": "local", "taken": []}}
+{"func": "connection_id_for_label", "in": {"label": "Work Box", "taken": ["work-box"]}}
+{"func": "connection_id_for_label", "in": {"label": "!!!", "taken": ["connection"]}}
+{"func": "connection_id_for_label", "in": {"label": "x", "taken": ["local"]}}
+{"func": "norm_auth_mode", "in": {"mode": "oauth"}}
+{"func": "norm_auth_mode", "in": {"mode": "token"}}
+{"func": "norm_auth_mode", "in": {"mode": null}}
+{"func": "norm_auth_mode", "in": {"mode": 5}}
+{"func": "norm_auth_mode", "in": {"mode": "OAUTH"}}
+{"func": "stored_auth_mode", "in": {"kind": "cloud", "auth_mode": "token", "token": null}}
+{"func": "stored_auth_mode", "in": {"kind": "cloud", "auth_mode": "oauth", "token": null}}
+{"func": "stored_auth_mode", "in": {"kind": "cloud", "auth_mode": "token", "token": "t"}}
+{"func": "stored_auth_mode", "in": {"kind": "remote", "auth_mode": "oauth", "token": "t"}}
+{"func": "stored_auth_mode", "in": {"kind": "ssh", "auth_mode": "token", "token": null}}
+{"func": "_url_host", "in": {"url": "http://Host:123/x"}}
+{"func": "_url_host", "in": {"url": "http://[::1]/x"}}
+{"func": "_url_host", "in": {"url": "https://example.com"}}
+{"func": "_url_host", "in": {"url": "ftp://Foo"}}
+{"func": "_url_host", "in": {"url": "http://user@HOST/p"}}
+{"func": "_url_host", "in": {"url": "host"}}
+{"func": "normalize_remote_base_url", "in": {"raw": "example.com/path"}}
+{"func": "normalize_remote_base_url", "in": {"raw": "http://host"}}
+{"func": "normalize_remote_base_url", "in": {"raw": "https://host:443/a/b/"}}
+{"func": "normalize_remote_base_url", "in": {"raw": "http://host:8080/a/b/"}}
+{"func": "normalize_remote_base_url", "in": {"raw": "https://[::1]:8443/x"}}
+{"func": "normalize_remote_base_url", "in": {"raw": "   "}}
+{"func": "normalize_remote_base_url", "in": {"raw": "ftp://x/y"}}
+{"func": "normalize_remote_base_url", "in": {"raw": "http://host:abc/x"}}
+{"func": "normalize_remote_base_url", "in": {"raw": "http://host:99999/x"}}
+{"func": "normalize_remote_base_url", "in": {"raw": "http://user:pass@Host:1234/p?q#f"}}
+{"func": "host_label_from_base_url", "in": {"base_url": "http://host:8080/x"}}
+{"func": "host_label_from_base_url", "in": {"base_url": "http://host/x"}}
+{"func": "host_label_from_base_url", "in": {"base_url": "ws://host:1234/x"}}
+{"func": "host_label_from_base_url", "in": {"base_url": "https://[::1]/x"}}
+{"func": "host_label_from_base_url", "in": {"base_url": ""}}
+{"func": "host_label_from_base_url", "in": {"base_url": "ftp://x/y"}}
+{"func": "host_label_from_base_url", "in": {"base_url": "http://host:abc/x"}}
+{"func": "host_label_from_base_url", "in": {"base_url": "host:9000"}}
+{"func": "sanitize_header_value", "in": {"value": "a\r\nb"}}
+{"func": "sanitize_header_value", "in": {"value": "  x  "}}
+{"func": "sanitize_header_value", "in": {"value": null}}
+{"func": "sanitize_header_value", "in": {"value": 5}}
+{"func": "sanitize_header_value", "in": {"value": "clean"}}
+{"func": "sanitize_header_value", "in": {"value": true}}
+{"func": "normalize_remote_headers", "in": {"raw": {"X-Test": "abc", "Authorization": "secret", "bad name": "v", "Host": "h"}}}
+{"func": "normalize_remote_headers", "in": {"raw": {"X-Ok": {"encoding": "plain", "value": "v"}, "X-Safe": {"encoding": "safeStorage", "value": "s"}}}}
+{"func": "normalize_remote_headers", "in": {"raw": {"X-Empty": "", "X-BadEnc": {"encoding": "bogus", "value": "v"}}}}
+{"func": "normalize_remote_headers", "in": {"raw": "not-a-dict"}}
+{"func": "normalize_remote_headers", "in": {"raw": {}}}
+{"func": "normalize_remote_headers", "in": {"raw": {"A-B": "yes", "te": "no", "x-hermes-session-token": "no"}}}
+{"func": "normalize_remote_headers", "in": {"raw": {"UPGRADE": "v", "X_C": "ok", "dot.name": "ok"}}}
+{"func": "_split_ssh_host", "in": {"host": "user@host:2222"}}
+{"func": "_split_ssh_host", "in": {"host": "[::1]:2200"}}
+{"func": "_split_ssh_host", "in": {"host": "host"}}
+{"func": "_split_ssh_host", "in": {"host": "a@b@c:22"}}
+{"func": "_split_ssh_host", "in": {"host": "host:abc"}}
+{"func": "_split_ssh_host", "in": {"host": ""}}
+{"func": "_explicit_port", "in": {"raw": null}}
+{"func": "_explicit_port", "in": {"raw": 22}}
+{"func": "_explicit_port", "in": {"raw": "2222"}}
+{"func": "_explicit_port", "in": {"raw": "abc"}}
+{"func": "_explicit_port", "in": {"raw": 0}}
+{"func": "_explicit_port", "in": {"raw": "007"}}
+{"func": "normalize_ssh_config", "in": {"entry": {"mode": "ssh", "host": "user@myhost:2222"}}}
+{"func": "normalize_ssh_config", "in": {"entry": {"mode": "ssh", "host": "SSH  myhost", "user": "bob", "keyPath": "/k"}}}
+{"func": "normalize_ssh_config", "in": {"entry": {"mode": "remote", "host": "x"}}}
+{"func": "normalize_ssh_config", "in": {"entry": {"mode": "ssh", "host": ""}}}
+{"func": "normalize_ssh_config", "in": {"entry": {"mode": "ssh", "host": "[::1]:2200", "port": 3000, "remoteProfile": "dev-1"}}}
+{"func": "normalize_ssh_config", "in": {"entry": {"mode": "ssh", "host": "h", "port": 22, "remoteProfile": "root"}}}
+{"func": "_ssh_fields", "in": {"ssh": {"mode": "ssh", "host": "h", "user": "u"}}}
+{"func": "_ssh_fields", "in": {"ssh": {"mode": "ssh"}}}
+{"func": "_ssh_fields", "in": {"ssh": {}}}
+{"func": "_ssh_fields", "in": {"ssh": {"mode": "ssh", "host": "h", "port": 22, "user": "u", "keyPath": "/k"}}}
+{"func": "_ssh_fields", "in": {"ssh": {"mode": "remote", "host": "h"}}}
+{"func": "_local_entry", "in": {"label": null}}
+{"func": "_local_entry", "in": {"label": "My Device"}}
+{"func": "_local_entry", "in": {"label": ""}}
+{"func": "_local_entry", "in": {"label": "A"}}
+{"func": "_local_entry", "in": {"label": 5}}
+{"func": "_remote_like_clean", "in": {"state": {"clean": {"id": "c", "kind": "remote", "label": "L"}}, "entry": {"url": "https://h/x", "authMode": "oauth", "token": "t"}, "kind": "remote"}}
+{"func": "_remote_like_clean", "in": {"state": {"clean": {"id": "c", "kind": "cloud", "label": "L"}}, "entry": {"url": "", "name": "N"}, "kind": "cloud"}}
+{"func": "_remote_like_clean", "in": {"state": {"clean": {"id": "c", "kind": "cloud", "label": "L"}}, "entry": {"url": "h/x", "headers": {"X-A": "v"}, "name": "C", "org": "O"}, "kind": "cloud"}}
+{"func": "_remote_like_clean", "in": {"state": {"clean": {"id": "c", "kind": "remote", "label": "L"}}, "entry": {"url": "h", "authMode": "token"}, "kind": "remote"}}
+{"func": "_remote_like_clean", "in": {"state": {"clean": {"id": "c", "kind": "remote", "label": "L"}}, "entry": {"url": "https://h", "token": null}, "kind": "remote"}}
+{"func": "_ssh_clean", "in": {"state": {"clean": {"id": "c", "kind": "ssh", "label": "L"}}, "entry": {"mode": "ssh", "host": "h", "user": "u"}}}
+{"func": "_ssh_clean", "in": {"state": {"clean": {"id": "c", "kind": "ssh", "label": "L"}}, "entry": {"host": "myhost:2222", "keyPath": "/k"}}}
+{"func": "_ssh_clean", "in": {"state": {"clean": {"id": "c", "kind": "ssh", "label": "L"}}, "entry": {"host": ""}}}
+{"func": "_ssh_clean", "in": {"state": {"clean": {"id": "c", "kind": "ssh", "label": "L"}}, "entry": {"mode": "ssh", "host": "h", "token": "t"}}}
+{"func": "_ssh_clean", "in": {"state": {"clean": {"id": "c", "kind": "ssh", "label": "L"}}, "entry": {"mode": "remote", "host": "h"}}}
+{"func": "quarantine", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "reason": "why", "entry": {"a": 1}}}
+{"func": "quarantine", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "reason": "r2", "entry": [1, 2]}}
+{"func": "quarantine", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "reason": "r3", "entry": 5}}
+{"func": "quarantine", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "reason": "r4", "entry": null}}
+{"func": "quarantine", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "reason": "r5", "entry": "text"}}
+{"func": "add", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "item": {"kind": "local", "label": "Here"}}}
+{"func": "add", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "item": {"kind": "remote", "url": "h/x", "label": "R"}}}
+{"func": "add", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "item": {"kind": "weird"}}}
+{"func": "add", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "item": [1, 2]}}
+{"func": "add", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "item": 5}}
+{"func": "add", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "item": null}}
+{"func": "add", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "item": {"kind": "ssh", "host": "u@h:2222", "label": "S"}}}
+{"func": "add", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "item": {"kind": "cloud", "url": "https://h", "label": "C"}}}
+{"func": "_add_entry", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "entry": {"kind": "local", "label": "Here"}}}
+{"func": "_add_entry", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "entry": {"kind": "local", "label": "Here"}}}
+{"func": "_add_entry", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "entry": {"kind": "remote", "url": "h/x", "label": "R"}}}
+{"func": "_add_entry", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "entry": {"kind": "ssh", "host": "h:22", "label": "S"}}}
+{"func": "_add_entry", "in": {"state": {"labels": [], "ids": [], "connections": [], "quarantined": []}, "entry": {"kind": "unknown", "label": "U"}}}
+{"func": "normalize_registry", "in": {"raw": {}}}
+{"func": "normalize_registry", "in": {"raw": "not-dict"}}
+{"func": "normalize_registry", "in": {"raw": {"connections": [{"kind": "local"}, {"kind": "remote", "url": "example.com:8080/x"}]}}}
+{"func": "normalize_registry", "in": {"raw": {"connections": [{"kind": "remote", "url": "h/x", "label": "A"}, {"kind": "remote", "url": "h/y", "label": "B"}], "primary": "r", "lastUsed": "local", "launchMode": "last-used"}}}
+{"func": "normalize_registry", "in": {"raw": {"connections": [{"kind": "ssh", "host": "u@h", "label": "S"}], "primary": "s"}}}
+{"func": "normalize_registry", "in": {"raw": {"connections": [{"kind": "weird"}, [1], 7]}}}
+{"func": "normalize_registry", "in": {"raw": {"connections": [{"kind": "local", "label": "L"}], "quarantined": [{"reason": "old", "entry": {"x": 1}}]}}}
+{"func": "normalize_registry", "in": {"raw": {"connections": [{"kind": "cloud", "url": "https://h", "label": "C", "name": "N"}]}}}
+{"func": "_url_key", "in": {"value": "  HTTPS://H/x/  "}}
+{"func": "_url_key", "in": {"value": "http://a/b///"}}
+{"func": "_url_key", "in": {"value": ""}}
+{"func": "_url_key", "in": {"value": "X/Y"}}
+{"func": "_url_key", "in": {"value": "  "}}
+{"func": "_url_key", "in": {"value": "A/B/"}}
+{"func": "_ssh_key", "in": {"conn": {"user": "U@H", "host": "H", "port": 2222, "remoteProfile": "dev"}}}
+{"func": "_ssh_key", "in": {"conn": {"host": "h"}}}
+{"func": "_ssh_key", "in": {"conn": {"user": "u", "host": "h", "port": 22}}}
+{"func": "_ssh_key", "in": {"conn": {"user": null, "host": null, "remoteProfile": " x "}}}
+{"func": "_ssh_key", "in": {"conn": {"user": "u", "host": "h", "port": 2200, "remoteProfile": ""}}}
+{"func": "_check_label", "in": {"label": "Work", "input_id": "b", "registry": {"connections": [{"id": "a", "kind": "remote", "label": "Home", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_check_label", "in": {"label": "home", "input_id": "a", "registry": {"connections": [{"id": "a", "kind": "remote", "label": "Home", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_check_label", "in": {"label": "home", "input_id": "b", "registry": {"connections": [{"id": "a", "kind": "remote", "label": "Home", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_check_label", "in": {"label": "", "input_id": "b", "registry": {"connections": [{"id": "a", "kind": "remote", "label": "Home", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_check_label", "in": {"label": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "input_id": "b", "registry": {"connections": [{"id": "a", "kind": "remote", "label": "Home", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_check_label", "in": {"label": "WORK", "input_id": null, "registry": {"connections": [{"id": "a", "kind": "remote", "label": "Home", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_check_label", "in": {"label": " Unique ", "input_id": "z", "registry": {"connections": [{"id": "a", "kind": "remote", "label": "other"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_ssh_input", "in": {"data": {"_label": "New", "host": "u@h2:2222"}, "cid": "s2", "registry": {"connections": [{"id": "s1", "kind": "ssh", "label": "Old", "host": "h1", "user": "u1", "port": 2200}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_ssh_input", "in": {"data": {"_label": "Dup", "host": "u1@h1:2200"}, "cid": "s2", "registry": {"connections": [{"id": "s1", "kind": "ssh", "label": "Old", "host": "h1", "user": "u1", "port": 2200}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_ssh_input", "in": {"data": {"_label": "Bad", "host": ""}, "cid": "s2", "registry": {"connections": [{"id": "s1", "kind": "ssh", "label": "Old", "host": "h1", "user": "u1", "port": 2200}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_ssh_input", "in": {"data": {"_label": "Tok", "host": "h3", "token": "t"}, "cid": "s3", "registry": {"connections": [], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_ssh_input", "in": {"data": {"_label": "P", "host": "h4", "keyPath": "/k", "remoteProfile": "dev"}, "cid": "s4", "registry": {"connections": [], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_remote_input", "in": {"data": {"_label": "New", "url": "http://h2/x"}, "cid": "r2", "kind": "remote", "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Old", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_remote_input", "in": {"data": {"_label": "Dup", "url": "http://h1/x/"}, "cid": "r2", "kind": "remote", "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Old", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_remote_input", "in": {"data": {"_label": "C", "url": "https://h3", "name": "N", "org": "O"}, "cid": "c2", "kind": "cloud", "registry": {"connections": [], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_remote_input", "in": {"data": {"_label": "T", "url": "http://h4", "authMode": "oauth", "token": "t"}, "cid": "r3", "kind": "remote", "registry": {"connections": [], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "_remote_input", "in": {"data": {"_label": "H", "url": "h5", "headers": {"X-A": "v"}}, "cid": "r4", "kind": "remote", "registry": {"connections": [], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "normalize_connection_input", "in": {"data": {"label": "Local", "kind": "local"}, "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Home", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "normalize_connection_input", "in": {"data": {"label": "New", "kind": "remote", "url": "http://h2/x"}, "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Home", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "normalize_connection_input", "in": {"data": {"label": "Dup", "kind": "remote", "url": "http://h1/x"}, "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Home", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "normalize_connection_input", "in": {"data": {"label": "S", "kind": "ssh", "host": "u@h:2222"}, "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Home", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "normalize_connection_input", "in": {"data": {"label": "C", "kind": "cloud", "url": "https://h3", "name": "N"}, "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Home", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "normalize_connection_input", "in": {"data": {"label": "", "kind": "remote", "url": "h"}, "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Home", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "normalize_connection_input", "in": {"data": {"label": "X", "kind": "local", "id": "local"}, "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Home", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "normalize_connection_input", "in": {"data": {"label": "U", "kind": "weird"}, "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Home", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "normalize_connection_input", "in": {"data": {"label": "WithId", "kind": "remote", "url": "http://h9", "id": "custom"}, "registry": {"connections": [{"id": "r1", "kind": "remote", "label": "Home", "url": "http://h1/x"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}}}
+{"func": "merge_connection_input", "in": {"data": {"kind": "remote", "url": "http://h"}, "existing": {"kind": "remote", "authMode": "oauth", "org": "O"}}}
+{"func": "merge_connection_input", "in": {"data": {"kind": "ssh", "host": "h"}, "existing": {"kind": "ssh", "user": "u", "port": 22, "host": "old"}}}
+{"func": "merge_connection_input", "in": {"data": {"kind": "remote", "url": "http://h"}, "existing": null}}
+{"func": "merge_connection_input", "in": {"data": {"kind": "remote", "url": "http://h"}, "existing": {"kind": "cloud", "org": "O"}}}
+{"func": "merge_connection_input", "in": {"data": {"kind": "cloud", "url": "http://h/"}, "existing": {"kind": "cloud", "url": "http://h", "name": "N"}}}
+{"func": "merge_connection_input", "in": {"data": {"kind": "cloud", "url": "http://other"}, "existing": {"kind": "cloud", "url": "http://h", "name": "N"}}}
+{"func": "merge_connection_input", "in": {"data": {"kind": "ssh", "host": ""}, "existing": {"kind": "ssh", "user": "u", "port": 2200}}}
+{"func": "_same_url", "in": {"a": "http://h/x/", "b": "http://h/x"}}
+{"func": "_same_url", "in": {"a": "http://a", "b": "http://b"}}
+{"func": "_same_url", "in": {"a": "https://h:443", "b": "https://h"}}
+{"func": "_same_url", "in": {"a": "bad://x", "b": "http://y"}}
+{"func": "_same_url", "in": {"a": "", "b": ""}}
+{"func": "connection_dial_fields_changed", "in": {"before": {"id": "r1", "kind": "remote", "label": "Home", "url": "http://h", "authMode": "token"}, "after": {"id": "r1", "kind": "remote", "label": "Home", "url": "http://h", "authMode": "token"}}}
+{"func": "connection_dial_fields_changed", "in": {"before": {"id": "r1", "kind": "remote", "label": "Home", "url": "http://h", "authMode": "token"}, "after": {"id": "r1", "kind": "remote", "label": "Home", "url": "http://h2", "authMode": "token"}}}
+{"func": "connection_dial_fields_changed", "in": {"before": {"id": "r1", "kind": "remote", "label": "Home", "url": "http://h", "authMode": "token"}, "after": {"id": "r1", "kind": "ssh", "label": "Home", "url": "http://h", "authMode": "token"}}}
+{"func": "connection_dial_fields_changed", "in": {"before": {"id": "r1", "kind": "remote", "label": "Home", "url": "http://h", "authMode": "token"}, "after": {"id": "r1", "kind": "remote", "label": "Home", "url": "http://h", "authMode": "token", "token": "t"}}}
+{"func": "connection_dial_fields_changed", "in": {"before": {"id": "r1", "kind": "remote", "label": "Home", "url": "http://h", "authMode": "token"}, "after": {"id": "r1", "kind": "remote", "label": "Home", "url": "http://h", "authMode": "token", "headers": {"X": "1"}}}}
+{"func": "connection_dial_fields_changed", "in": {"before": {"id": "s", "kind": "ssh", "label": "S", "host": "h"}, "after": {"id": "s", "kind": "ssh", "label": "S", "host": "h", "port": 2200}}}
+{"func": "upsert_connection", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "entry": {"id": "r1", "kind": "remote", "label": "R1-new", "url": "http://h2"}}}
+{"func": "upsert_connection", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "entry": {"id": "r2", "kind": "remote", "label": "R2", "url": "http://h3"}}}
+{"func": "upsert_connection", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "entry": {"id": "l", "kind": "local", "label": "Local"}}}
+{"func": "upsert_connection", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "entry": {"id": "r3", "kind": "remote", "label": "R3", "url": "http://h4"}}}
+{"func": "upsert_connection", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1", "url": "http://h"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "entry": {"id": "r1", "kind": "remote", "label": "R1"}}}
+{"func": "remove_connection", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1", "url": "http://h"}], "primary": "r1", "lastUsed": "r1", "launchMode": "primary"}, "cid": "r1"}}
+{"func": "remove_connection", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1", "url": "http://h"}], "primary": "r1", "lastUsed": "r1", "launchMode": "primary"}, "cid": "l"}}
+{"func": "remove_connection", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1", "url": "http://h"}], "primary": "r1", "lastUsed": "r1", "launchMode": "primary"}, "cid": "missing"}}
+{"func": "remove_connection", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1", "url": "http://h"}], "primary": "r1", "lastUsed": "r1", "launchMode": "primary"}, "cid": "r1"}}
+{"func": "remove_connection", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1", "url": "http://h"}], "primary": "r1", "lastUsed": "r1", "launchMode": "primary"}, "cid": "l"}}
+{"func": "_require", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "r1"}}
+{"func": "_require", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "missing"}}
+{"func": "_require", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "l"}}
+{"func": "_require", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "r1"}}
+{"func": "_require", "in": {"registry": {"connections": [{"id": "l", "kind": "local", "label": "Local"}, {"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "missing"}}
+{"func": "set_primary_connection", "in": {"registry": {"connections": [{"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "r1"}}
+{"func": "set_primary_connection", "in": {"registry": {"connections": [{"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "missing"}}
+{"func": "set_primary_connection", "in": {"registry": {"connections": [{"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "l"}}
+{"func": "set_primary_connection", "in": {"registry": {"connections": [{"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "r1"}}
+{"func": "set_primary_connection", "in": {"registry": {"connections": [{"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "missing"}}
+{"func": "set_last_used_connection", "in": {"registry": {"connections": [{"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "r1"}}
+{"func": "set_last_used_connection", "in": {"registry": {"connections": [{"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "missing"}}
+{"func": "set_last_used_connection", "in": {"registry": {"connections": [{"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "l"}}
+{"func": "set_last_used_connection", "in": {"registry": {"connections": [{"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "r1"}}
+{"func": "set_last_used_connection", "in": {"registry": {"connections": [{"id": "r1", "kind": "remote", "label": "R1"}], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "cid": "missing"}}
+{"func": "set_connection_launch_mode", "in": {"registry": {"connections": [], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "mode": "last-used"}}
+{"func": "set_connection_launch_mode", "in": {"registry": {"connections": [], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "mode": "primary"}}
+{"func": "set_connection_launch_mode", "in": {"registry": {"connections": [], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "mode": "bogus"}}
+{"func": "set_connection_launch_mode", "in": {"registry": {"connections": [], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "mode": "last-used"}}
+{"func": "set_connection_launch_mode", "in": {"registry": {"connections": [], "primary": "local", "lastUsed": "local", "launchMode": "primary"}, "mode": "primary"}}

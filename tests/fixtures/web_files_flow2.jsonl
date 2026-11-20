@@ -1,0 +1,54 @@
+{"func": "media_proxy_host_allowed", "in": {"host": "fal.media", "seams": {}}}
+{"func": "media_proxy_host_allowed", "in": {"host": "FAL.MEDIA.", "seams": {}}}
+{"func": "media_proxy_host_allowed", "in": {"host": "v3.fal.media", "seams": {}}}
+{"func": "media_proxy_host_allowed", "in": {"host": "storage.googleapis.com", "seams": {}}}
+{"func": "media_proxy_host_allowed", "in": {"host": "a.fal.media", "seams": {}}}
+{"func": "media_proxy_host_allowed", "in": {"host": "b.fal.run", "seams": {}}}
+{"func": "media_proxy_host_allowed", "in": {"host": "evil.example.com", "seams": {}}}
+{"func": "media_proxy_host_allowed", "in": {"host": "fal.media.evil.com", "seams": {}}}
+{"func": "media_proxy_host_allowed", "in": {"host": "", "seams": {}}}
+{"func": "fs_looks_binary", "in": {"data": [], "seams": {}}}
+{"func": "fs_looks_binary", "in": {"data": [72, 105], "seams": {}}}
+{"func": "fs_looks_binary", "in": {"data": [72, 0, 105], "seams": {}}}
+{"func": "fs_looks_binary", "in": {"data": [1, 2, 3], "seams": {}}}
+{"func": "fs_looks_binary", "in": {"data": [9, 10, 13, 32, 65, 90], "seams": {}}}
+{"func": "fs_looks_binary", "in": {"data": [65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 1], "seams": {}}}
+{"func": "fs_looks_binary", "in": {"data": [65, 65, 65, 65, 65, 65, 65, 1], "seams": {}}}
+{"func": "fs_looks_binary", "in": {"data": [65, 65, 65, 65, 65, 65, 65, 65, 1], "seams": {}}}
+{"func": "fs_looks_binary", "in": {"data": [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 127], "seams": {}}}
+{"func": "sanitize_chat_image_filename", "in": {"filename": "photo.png", "seams": {}}}
+{"func": "sanitize_chat_image_filename", "in": {"filename": null, "seams": {}}}
+{"func": "sanitize_chat_image_filename", "in": {"filename": "  spaced name.png  ", "seams": {}}}
+{"func": "sanitize_chat_image_filename", "in": {"filename": "a\u0000b\u001fc.png", "seams": {}}}
+{"func": "sanitize_chat_image_filename", "in": {"filename": "..hidden..", "seams": {}}}
+{"func": "sanitize_chat_image_filename", "in": {"filename": "/tmp/evil.png", "seams": {}}}
+{"func": "sanitize_chat_image_filename", "in": {"filename": "C:\\secret\\x.png", "seams": {}}}
+{"func": "sanitize_chat_image_filename", "in": {"filename": "...", "seams": {}}}
+{"func": "sanitize_chat_image_filename", "in": {"filename": ".", "seams": {}}}
+{"func": "sanitize_chat_image_filename", "in": {"filename": "\u0001\u0002name.png", "seams": {}}}
+{"func": "decode_data_url", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {}}}
+{"func": "decode_data_url", "in": {"data_url": "data:text/plain;base64,SGk=", "seams": {}}}
+{"func": "decode_data_url", "in": {"data_url": "data:;base64,SGk=", "seams": {}}}
+{"func": "decode_data_url", "in": {"data_url": "data:image/png;base64,", "seams": {}}}
+{"func": "decode_data_url", "in": {"data_url": "", "seams": {}}}
+{"func": "decode_data_url", "in": {"data_url": "hello world", "seams": {}}}
+{"func": "decode_data_url", "in": {"data_url": "data:image/png,SGk=", "seams": {}}}
+{"func": "decode_data_url", "in": {"data_url": "data:image/png;base64,!!!!", "seams": {}}}
+{"func": "decode_data_url", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "manage_max_bytes": 4, "seams": {}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": ".png"}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/jpeg;base64,/9j/", "seams": {"_chat_image_extension": ".jpg"}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/webp;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": ".webp"}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:text/plain;base64,SGk=", "seams": {}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": ".xyz"}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": null}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": {"__raise__": "KeyboardInterrupt", "msg": "ki"}}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": {"__raise__": "GeneratorExit", "msg": "ge"}}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": {"__raise__": "BaseExceptionGroup", "msg": "beg"}}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": {"__raise__": "ExceptionGroup", "msg": "eg"}}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": {"__raise__": "ValueError", "msg": "v"}}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": {"__raise__": "ModuleNotFoundError", "msg": "m"}}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {"_chat_image_extension": {"__raise__": "UnicodeDecodeError", "msg": "u"}}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "seams": {}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "chat_max_bytes": 2, "seams": {"_chat_image_extension": ".png"}}}
+{"func": "decode_chat_image_upload", "in": {"data_url": "data:image/png;base64,iVBORw0KGgo=", "manage_max_bytes": 4, "seams": {}}}

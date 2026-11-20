@@ -1,0 +1,91 @@
+{"func": "_mrkdwn_insensitive", "in": {"args": {"text": "plain text"}}}
+{"func": "_mrkdwn_insensitive", "in": {"args": {"text": "*bold* _em_ ~del~"}}}
+{"func": "_mrkdwn_insensitive", "in": {"args": {"text": "a  b\t\tc\n\nd"}}}
+{"func": "_mrkdwn_insensitive", "in": {"args": {"text": "***mix*** ~~x~~ __y__"}}}
+{"func": "_mrkdwn_insensitive", "in": {"args": {"text": ""}}}
+{"func": "_mrkdwn_insensitive", "in": {"args": {"text": "   "}}}
+{"func": "_mrkdwn_insensitive", "in": {"args": {"text": "  *  leading  "}}}
+{"func": "_workspace_thread_key", "in": {"args": {"team_id": "T1", "channel_id": "C1", "thread_ts": "123.4"}}}
+{"func": "_workspace_thread_key", "in": {"args": {"team_id": null, "channel_id": "C2", "thread_ts": "555.1"}}}
+{"func": "_workspace_thread_key", "in": {"args": {"team_id": "T3", "channel_id": "", "thread_ts": "1.0"}}}
+{"func": "_workspace_thread_key", "in": {"args": {"team_id": "T4", "channel_id": "C4", "thread_ts": 0}}}
+{"func": "_workspace_thread_key", "in": {"args": {"team_id": 7, "channel_id": 8, "thread_ts": 9}}}
+{"func": "_workspace_thread_key", "in": {"args": {"team_id": true, "channel_id": false, "thread_ts": "9.9"}}}
+{"func": "_workspace_thread_key", "in": {"args": {"team_id": "T7", "channel_id": "C7", "thread_ts": null}}}
+{"func": "_agent_view_context_key", "in": {"args": {"team_id": "T1", "user_id": "U1"}}}
+{"func": "_agent_view_context_key", "in": {"args": {"team_id": "", "user_id": "U2"}}}
+{"func": "_agent_view_context_key", "in": {"args": {"team_id": "T3", "user_id": null}}}
+{"func": "_agent_view_context_key", "in": {"args": {"team_id": 4, "user_id": 5}}}
+{"func": "_agent_view_context_key", "in": {"args": {"team_id": true, "user_id": false}}}
+{"func": "_agent_view_context_key", "in": {"args": {"team_id": "T6", "user_id": 0}}}
+{"func": "_agent_view_context_key", "in": {"args": {"team_id": null, "user_id": "U7"}}}
+{"func": "_thread_cache_key", "in": {"args": {"channel_id": "C1", "thread_ts": "111.1", "team_id": "T1"}}}
+{"func": "_thread_cache_key", "in": {"args": {"channel_id": "C2", "thread_ts": "222.2", "team_id": ""}}}
+{"func": "_thread_cache_key", "in": {"args": {"channel_id": 3, "thread_ts": 4, "team_id": 5}}}
+{"func": "_thread_cache_key", "in": {"args": {"channel_id": true, "thread_ts": false, "team_id": null}}}
+{"func": "_thread_cache_key", "in": {"args": {"channel_id": "", "thread_ts": "5.5", "team_id": "T5"}}}
+{"func": "_thread_cache_key", "in": {"args": {"channel_id": "C6", "thread_ts": 0, "team_id": "T6"}}}
+{"func": "_thread_root_message", "in": {"args": {"messages": [{"ts": "1.0", "text": "a"}, {"ts": "2.0", "text": "b"}], "thread_ts": "2.0"}}}
+{"func": "_thread_root_message", "in": {"args": {"messages": [{"ts": "1.0"}, {"ts": "2.0"}], "thread_ts": "9.9"}}}
+{"func": "_thread_root_message", "in": {"args": {"messages": [], "thread_ts": "1.0"}}}
+{"func": "_thread_root_message", "in": {"args": {"messages": [{"text": "no-ts"}], "thread_ts": ""}}}
+{"func": "_thread_root_message", "in": {"args": {"messages": [1, {"ts": "1.0"}], "thread_ts": "1.0"}}, "expect_raise": "AttributeError"}
+{"func": "_thread_root_message", "in": {"args": {"messages": [{"ts": 1.0}, {"ts": "1.0"}], "thread_ts": 1.0}}}
+{"func": "_thread_root_message", "in": {"args": {"messages": [{"ts": "1.0"}], "thread_ts": null}}}
+{"func": "_default_status_text", "in": {"args": {"started": null}, "io": {"time.monotonic": 100.5, "t": "thinking"}}}
+{"func": "_default_status_text", "in": {"args": {}, "io": {"time.monotonic": 10.25, "t": "thinking"}}}
+{"func": "_default_status_text", "in": {"args": {"started": 70.2}, "io": {"time.monotonic": 100.7, "t": "still"}}}
+{"func": "_default_status_text", "in": {"args": {"started": 10.0}, "io": {"time.monotonic": 125.9, "t": "still"}}}
+{"func": "_default_status_text", "in": {"args": {"started": 0.0}, "io": {"time.monotonic": 60.3, "t": "still"}}}
+{"func": "_default_status_text", "in": {"args": {"started": 100.9}, "io": {"time.monotonic": 100.1, "t": "thinking"}}}
+{"func": "_default_status_text", "in": {"args": {"started": null}, "io": {"time.monotonic": 100.5, "t": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}, "expect_raise": "RuntimeError"}
+{"func": "_default_status_text", "in": {"args": {"started": null}, "io": {"time.monotonic": 100.5, "t": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}, "expect_raise": "SystemExit"}
+{"func": "_is_block_payload_rejection", "in": {"args": {"exc": {"__exc__": {"type": "SlackApiError", "message": "boom", "response": {"__obj__": {"get": {"__callable__": "response.get"}}}}}}, "io": {"response.get": "invalid_blocks"}}}
+{"func": "_is_block_payload_rejection", "in": {"args": {"exc": {"__exc__": {"type": "SlackApiError", "message": "boom", "response": {"__obj__": {"get": {"__callable__": "response.get"}}}}}}, "io": {"response.get": "other_error"}}}
+{"func": "_is_block_payload_rejection", "in": {"args": {"exc": {"__exc__": {"type": "SlackApiError", "message": "boom", "response": {"__obj__": {"get": {"__callable__": "response.get"}}}}}}, "io": {"response.get": "msg_too_long"}}}
+{"func": "_is_block_payload_rejection", "in": {"args": {"exc": {"__exc__": {"type": "SlackApiError", "message": "boom", "response": {"__obj__": {"get": {"__callable__": "response.get"}}}}}}, "io": {"response.get": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
+{"func": "_is_block_payload_rejection", "in": {"args": {"exc": {"__exc__": {"type": "SlackApiError", "message": "boom", "response": {"__obj__": {"get": {"__callable__": "response.get"}}}}}}, "io": {"response.get": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}, "expect_raise": "SystemExit"}
+{"func": "_is_block_payload_rejection", "in": {"args": {"exc": {"__exc__": {"type": "SlackApiError", "message": "has too_many_blocks inside", "response": {"__obj__": {}}}}}}}
+{"func": "_is_block_payload_rejection", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "invalid_blocks at server"}}}}}
+{"func": "_is_block_payload_rejection", "in": {"args": {"exc": {"__exc__": {"type": "RuntimeError", "message": "plain failure"}}}}}
+{"func": "_strip_stream_cursor", "in": {"args": {"text": "hello▉"}}}
+{"func": "_strip_stream_cursor", "in": {"args": {"text": "hello▍"}}}
+{"func": "_strip_stream_cursor", "in": {"args": {"text": "hello▌"}}}
+{"func": "_strip_stream_cursor", "in": {"args": {"text": "hello…"}}}
+{"func": "_strip_stream_cursor", "in": {"args": {"text": "plain text"}}}
+{"func": "_strip_stream_cursor", "in": {"args": {"text": "hello▌  "}}}
+{"func": "_strip_stream_cursor", "in": {"args": {"text": "▉"}}}
+{"func": "_strip_stream_cursor", "in": {"args": {"text": ""}}}
+{"func": "_extra_flag", "in": {"args": {"key": "a"}, "state": {"extra": {"a": "true"}}}}
+{"func": "_extra_flag", "in": {"args": {"key": "a"}, "state": {"extra": {"a": "YES"}}}}
+{"func": "_extra_flag", "in": {"args": {"key": "a"}, "state": {"extra": {"a": "on"}}}}
+{"func": "_extra_flag", "in": {"args": {"key": "a"}, "state": {"extra": {"a": "false"}}}}
+{"func": "_extra_flag", "in": {"args": {"key": "a"}, "state": {"extra": {"a": 5}}}}
+{"func": "_extra_flag", "in": {"args": {"key": "a"}, "state": {"extra": {"a": true}}}}
+{"func": "_extra_flag", "in": {"args": {"key": "a"}, "state": {"extra": {"a": null}, "default": true}}}
+{"func": "_extra_flag", "in": {"args": {"key": "a", "default": true}, "state": {"extra": {}}}}
+{"func": "_extra_flag", "in": {"args": {"key": "a", "default": false}, "state": {"extra": {"a": null}}}}
+{"func": "_slack_require_mention", "in": {"args": {}, "io": {"_get_scoped_secret": "true"}, "state": {"extra": {"require_mention": "false"}}}}
+{"func": "_slack_require_mention", "in": {"args": {}, "io": {"_get_scoped_secret": "true"}, "state": {"extra": {"require_mention": "0"}}}}
+{"func": "_slack_require_mention", "in": {"args": {}, "io": {"_get_scoped_secret": "true"}, "state": {"extra": {"require_mention": "NO"}}}}
+{"func": "_slack_require_mention", "in": {"args": {}, "io": {"_get_scoped_secret": "true"}, "state": {"extra": {"require_mention": "off"}}}}
+{"func": "_slack_require_mention", "in": {"args": {}, "io": {"_get_scoped_secret": "false"}, "state": {"extra": {"require_mention": "true"}}}}
+{"func": "_slack_require_mention", "in": {"args": {}, "io": {"_get_scoped_secret": "true"}, "state": {"extra": {"require_mention": false}}}}
+{"func": "_slack_require_mention", "in": {"args": {}, "io": {"_get_scoped_secret": "false"}, "state": {"extra": {"require_mention": null}}}}
+{"func": "_slack_require_mention", "in": {"args": {}, "io": {"_get_scoped_secret": "true"}, "state": {"extra": {"require_mention": " FALSE "}}}}
+{"func": "_extra_or_env_flag", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": "true"}, "state": {"extra": {"k": "true"}}}}
+{"func": "_extra_or_env_flag", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": " yes "}, "state": {"extra": {"k": "yes"}}}}
+{"func": "_extra_or_env_flag", "in": {"args": {"key": "k", "env_var": "SLACK_K", "strip": true}, "io": {"_extra_or_secret": " yes "}, "state": {"extra": {"k": "yes"}}}}
+{"func": "_extra_or_env_flag", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": "off"}, "state": {"extra": {"k": "off"}}}}
+{"func": "_extra_or_env_flag", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": false}, "state": {"extra": {"k": false}}}}
+{"func": "_extra_or_env_flag", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": true}, "state": {"extra": {"k": true}}}}
+{"func": "_extra_or_env_flag", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": 5}, "state": {"extra": {"k": 5}}}}
+{"func": "_extra_or_env_flag", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": null}, "state": {"extra": {"k": null}}}}
+{"func": "_extra_or_env_channel_set", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": ["C1", " C2 ", "", "C3"]}, "state": {"extra": {"k": ["C1"]}}}}
+{"func": "_extra_or_env_channel_set", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": "C1, C2,,C3"}, "state": {"extra": {"k": "x"}}}}
+{"func": "_extra_or_env_channel_set", "in": {"args": {"key": "k", "env_var": "SLACK_K", "coerce_scalar": true}, "io": {"_extra_or_secret": 123}, "state": {"extra": {"k": 123}}}}
+{"func": "_extra_or_env_channel_set", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": null}, "state": {"extra": {"k": null}}}}
+{"func": "_extra_or_env_channel_set", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": ""}, "state": {"extra": {"k": ""}}}}
+{"func": "_extra_or_env_channel_set", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": [5, "C2"]}, "state": {"extra": {"k": [5]}}}}
+{"func": "_extra_or_env_channel_set", "in": {"args": {"key": "k", "env_var": "SLACK_K", "coerce_scalar": true}, "io": {"_extra_or_secret": null}, "state": {"extra": {"k": null}}}}
+{"func": "_extra_or_env_channel_set", "in": {"args": {"key": "k", "env_var": "SLACK_K"}, "io": {"_extra_or_secret": "  ,  ,"}, "state": {"extra": {"k": "  ,  ,"}}}}

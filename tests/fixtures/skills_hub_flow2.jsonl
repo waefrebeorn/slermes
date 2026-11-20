@@ -1,0 +1,80 @@
+{"func": "_trust_cell", "in": {"trust_level": "builtin", "source": "official"}}
+{"func": "_trust_cell", "in": {"trust_level": "trusted", "source": "github"}}
+{"func": "_trust_cell", "in": {"trust_level": "community", "source": "official"}}
+{"func": "_trust_cell", "in": {"trust_level": "local", "source": "well-known"}}
+{"func": "_trust_cell", "in": {"trust_level": "mystery", "source": "clawhub"}}
+{"func": "_trust_cell", "in": {"trust_level": "builtin", "source": "official", "official_label": "official optional"}}
+{"func": "_truncate", "in": {"text": "abcdefghij", "width": 5}}
+{"func": "_truncate", "in": {"text": "abc", "width": 10}}
+{"func": "_truncate", "in": {"text": "abcd", "width": 4}}
+{"func": "_truncate", "in": {"text": "anything", "width": 0}}
+{"func": "_truncate", "in": {"text": "abcdef", "width": -2}}
+{"func": "_truncate", "in": {"text": "", "width": 3}}
+{"func": "_ident_col", "in": {"style": "bold cyan"}}
+{"func": "_ident_col", "in": {"style": "dim"}}
+{"func": "_ident_col", "in": {"style": ""}}
+{"func": "_ident_col", "in": {"style": "red"}}
+{"func": "_ident_col", "in": {"style": "bold"}}
+{"func": "_row", "in": {"r": {"name": "alpha", "identifier": "@org/alpha", "source": "official", "installs": 0}, "fields": ["name", "identifier", "source"]}}
+{"func": "_row", "in": {"r": {"name": "alpha", "identifier": "@org/alpha", "source": "official", "installs": 0}, "fields": ["name"]}}
+{"func": "_row", "in": {"r": {"name": "alpha", "identifier": "@org/alpha", "source": "official", "installs": 0}, "fields": []}}
+{"func": "_row", "in": {"r": {"name": "beta", "note": null}, "fields": ["name", "note"]}}
+{"func": "_row", "in": {"r": {"name": "gamma", "flag": true, "count": 7}, "fields": ["flag", "count"]}}
+{"func": "_slug_key", "in": {"text": "Blender Bpy Enhanced"}}
+{"func": "_slug_key", "in": {"text": "my-skill_2.0"}}
+{"func": "_slug_key", "in": {"text": "  A B  "}}
+{"func": "_slug_key", "in": {"text": "123"}}
+{"func": "_slug_key", "in": {"text": ""}}
+{"func": "_slug_key", "in": {"text": null}}
+{"func": "_identifier_slug", "in": {"identifier": "skills-sh/org/repo/blender-animation"}}
+{"func": "_identifier_slug", "in": {"identifier": "@org/my-skill"}}
+{"func": "_identifier_slug", "in": {"identifier": "plain"}}
+{"func": "_identifier_slug", "in": {"identifier": "trailing/"}}
+{"func": "_identifier_slug", "in": {"identifier": ""}}
+{"func": "_identifier_slug", "in": {"identifier": null}}
+{"func": "_exact_name_hits", "in": {"name": "my-skill", "results": [{"name": "Blender Bpy Enhanced", "identifier": "@org/blender-bpy-enhanced", "source": "clawhub"}, {"name": "my-skill", "identifier": "skills-sh/org/repo/my-skill", "source": "official"}, {"name": "Other", "identifier": "@org/other", "source": "community"}]}}
+{"func": "_exact_name_hits", "in": {"name": "Blender Bpy Enhanced", "results": [{"name": "Blender Bpy Enhanced", "identifier": "@org/blender-bpy-enhanced", "source": "clawhub"}, {"name": "my-skill", "identifier": "skills-sh/org/repo/my-skill", "source": "official"}, {"name": "Other", "identifier": "@org/other", "source": "community"}]}}
+{"func": "_exact_name_hits", "in": {"name": "blender-bpy-enhanced", "results": [{"name": "Blender Bpy Enhanced", "identifier": "@org/blender-bpy-enhanced", "source": "clawhub"}, {"name": "my-skill", "identifier": "skills-sh/org/repo/my-skill", "source": "official"}, {"name": "Other", "identifier": "@org/other", "source": "community"}]}}
+{"func": "_exact_name_hits", "in": {"name": "my-skill", "results": [{"name": "Blender Bpy Enhanced", "identifier": "@org/blender-bpy-enhanced", "source": "clawhub"}, {"name": "Other", "identifier": "@org/other", "source": "community"}]}}
+{"func": "_exact_name_hits", "in": {"name": "does-not-exist", "results": [{"name": "Blender Bpy Enhanced", "identifier": "@org/blender-bpy-enhanced", "source": "clawhub"}, {"name": "my-skill", "identifier": "skills-sh/org/repo/my-skill", "source": "official"}, {"name": "Other", "identifier": "@org/other", "source": "community"}]}}
+{"func": "_exact_name_hits", "in": {"name": "!!!", "results": [{"name": "Blender Bpy Enhanced", "identifier": "@org/blender-bpy-enhanced", "source": "clawhub"}, {"name": "my-skill", "identifier": "skills-sh/org/repo/my-skill", "source": "official"}, {"name": "Other", "identifier": "@org/other", "source": "community"}]}}
+{"func": "_exact_name_hits", "in": {"name": "Other", "results": [{"name": "Blender Bpy Enhanced", "identifier": "@org/blender-bpy-enhanced", "source": "clawhub"}, {"name": "Other", "identifier": "@org/other", "source": "community"}]}}
+{"func": "_hub_rate_limited", "in": {"sources": []}}
+{"func": "_hub_rate_limited", "in": {"sources": [{"is_rate_limited": true}]}}
+{"func": "_hub_rate_limited", "in": {"sources": [{"github": {"is_rate_limited": true}}]}}
+{"func": "_hub_rate_limited", "in": {"sources": [{"is_rate_limited": false, "github": {"is_rate_limited": false}}]}}
+{"func": "_hub_rate_limited", "in": {"sources": [{"is_rate_limited": false}, {"github": {"is_rate_limited": true}}]}}
+{"func": "_hub_rate_limited", "in": {"sources": [{}]}}
+{"func": "_hub_rejected_credentials", "in": {"sources": []}}
+{"func": "_hub_rejected_credentials", "in": {"sources": [{"auth": {"rejected": ["token-a"]}}]}}
+{"func": "_hub_rejected_credentials", "in": {"sources": [{"auth": {"rejected": []}}, {"auth": {"rejected": ["token-b", "token-c"]}}]}}
+{"func": "_hub_rejected_credentials", "in": {"sources": [{}]}}
+{"func": "_hub_rejected_credentials", "in": {"sources": [{"auth": {"rejected": "not-a-list"}}]}}
+{"func": "_upstream_repo", "in": {"bundle": {"source": "official", "metadata": {"upstream_repo": "NousResearch/hermes-agent"}}}}
+{"func": "_upstream_repo", "in": {"bundle": {"source": "official", "metadata": {"note": "vendored"}}}}
+{"func": "_upstream_repo", "in": {"bundle": {"source": "official"}}}
+{"func": "_upstream_repo", "in": {"bundle": {"source": "github", "metadata": {"upstream_repo": "x/y"}}}}
+{"func": "_upstream_repo", "in": {"bundle": {"source": "official", "metadata": {"upstream_repo": null}}}}
+{"func": "_opt_value", "in": {"args": ["install", "foo"], "flag": "--category", "default": ""}}
+{"func": "_opt_value", "in": {"args": ["--category", "tools", "foo"], "flag": "--category", "default": ""}}
+{"func": "_opt_value", "in": {"args": ["--page", "1", "--page", "9"], "flag": "--page", "default": "3"}}
+{"func": "_opt_value", "in": {"args": ["--page", "1", "--page", "9"], "flag": "--page", "default": "3", "last": true}}
+{"func": "_opt_value", "in": {"args": ["--page"], "flag": "--page", "default": "7"}}
+{"func": "_opt_value", "in": {"args": [], "flag": "--source", "default": "all"}}
+{"func": "_int_or", "in": {"text": "42", "default": 10}}
+{"func": "_int_or", "in": {"text": "-7", "default": 10}}
+{"func": "_int_or", "in": {"text": " 12 ", "default": 10}}
+{"func": "_int_or", "in": {"text": "abc", "default": 10}}
+{"func": "_int_or", "in": {"text": "3.5", "default": 10}}
+{"func": "_int_or", "in": {"text": "", "default": 10}}
+{"func": "_opt_int", "in": {"args": ["--page", "3"], "flag": "--page", "default": 1}}
+{"func": "_opt_int", "in": {"args": ["--limit", "abc"], "flag": "--limit", "default": 25}}
+{"func": "_opt_int", "in": {"args": ["--page", "1", "--page", "9"], "flag": "--page", "default": 1}}
+{"func": "_opt_int", "in": {"args": [], "flag": "--page", "default": 1}}
+{"func": "_opt_int", "in": {"args": ["--page", "-2"], "flag": "--page", "default": 1}}
+{"func": "_opt_int", "in": {"args": ["--page", " 4 "], "flag": "--page", "default": 1}}
+{"func": "_first_positional", "in": {"args": ["install", "foo"]}}
+{"func": "_first_positional", "in": {"args": ["--force"]}}
+{"func": "_first_positional", "in": {"args": []}}
+{"func": "_first_positional", "in": {"args": ["--source", "all", "x"]}}
+{"func": "_first_positional", "in": {"args": ["foo"]}}

@@ -1,0 +1,166 @@
+{"func": "_uid_occurrences", "in": {"args": {"value": "u1"}}}
+{"func": "_uid_occurrences", "in": {"args": {"value": ["u1", "u2"]}}}
+{"func": "_uid_occurrences", "in": {"args": {"value": 5}}}
+{"func": "_uid_occurrences", "in": {"args": {"value": null}}}
+{"func": "_uid_occurrences", "in": {"args": {"value": {"a": 1}}}}
+{"func": "_uid_occurrences", "in": {"args": {"value": []}}}
+{"func": "_uid_occurrences", "in": {"args": {"value": true}}}
+{"func": "_uid_occurrences", "in": {"args": {"value": ["a", 2, null]}}}
+{"func": "merge_tool_call_uids", "in": {"args": {"into": {}, "extra": {}}}}
+{"func": "merge_tool_call_uids", "in": {"args": {"into": {"c1": "u1"}, "extra": {"c2": "u2"}}}}
+{"func": "merge_tool_call_uids", "in": {"args": {"into": {"c1": "u1"}, "extra": {"c1": "u2"}}}}
+{"func": "merge_tool_call_uids", "in": {"args": {"into": {"c1": ["u0", "u1"]}, "extra": {"c1": "u2"}}}}
+{"func": "merge_tool_call_uids", "in": {"args": {"into": {"c1": "u1"}, "extra": {"c1": ["u2", "u3"]}}}}
+{"func": "merge_tool_call_uids", "in": {"args": {"into": null, "extra": {"c1": "u1"}}}}
+{"func": "merge_tool_call_uids", "in": {"args": {"into": {"c1": null}, "extra": {"c1": "u2"}}}}
+{"func": "merge_tool_call_uids", "in": {"args": {"into": {"c1": "u1"}, "extra": null}}}
+{"func": "_tc_field", "in": {"args": {"tc": {"call_id": "c1"}, "key": "call_id"}}}
+{"func": "_tc_field", "in": {"args": {"tc": {"call_id": "c1"}, "key": "id"}}}
+{"func": "_tc_field", "in": {"args": {"tc": {"call_id": null}, "key": "call_id"}}}
+{"func": "_tc_field", "in": {"args": {"tc": "a string", "key": "call_id"}}}
+{"func": "_tc_field", "in": {"args": {"tc": 5, "key": "call_id"}}}
+{"func": "_tc_field", "in": {"args": {"tc": null, "key": "call_id"}}}
+{"func": "_tc_field", "in": {"args": {"tc": {"x": [1, 2]}, "key": "x"}}}
+{"func": "_expand_tool_id_variants", "in": {"args": {"values": ["c1"]}}}
+{"func": "_expand_tool_id_variants", "in": {"args": {"values": [" c1 ", "c2"]}}}
+{"func": "_expand_tool_id_variants", "in": {"args": {"values": ["a|b"]}}}
+{"func": "_expand_tool_id_variants", "in": {"args": {"values": [""]}}}
+{"func": "_expand_tool_id_variants", "in": {"args": {"values": [5, null, "x"]}}}
+{"func": "_expand_tool_id_variants", "in": {"args": {"values": ["  x|y  "]}}}
+{"func": "_expand_tool_id_variants", "in": {"args": {"values": ["dup", "dup"]}}}
+{"func": "_expand_tool_id_variants", "in": {"args": {"values": []}}}
+{"func": "tool_call_id_variants", "in": {"args": {"tc": {"call_id": "c1", "id": "i1"}}}}
+{"func": "tool_call_id_variants", "in": {"args": {"tc": {"id": "i1", "response_item_id": "r1"}}}}
+{"func": "tool_call_id_variants", "in": {"args": {"tc": {"call_id": "a|b"}}}}
+{"func": "tool_call_id_variants", "in": {"args": {"tc": {"call_id": " c ", "id": ""}}}}
+{"func": "tool_call_id_variants", "in": {"args": {"tc": {}}}}
+{"func": "tool_call_id_variants", "in": {"args": {"tc": "not a dict"}}}
+{"func": "tool_call_id_variants", "in": {"args": {"tc": {"call_id": 5, "id": null}}}}
+{"func": "tool_result_id_variants", "in": {"args": {"tool_call_id": "c1"}}}
+{"func": "tool_result_id_variants", "in": {"args": {"tool_call_id": "a|b"}}}
+{"func": "tool_result_id_variants", "in": {"args": {"tool_call_id": " c "}}}
+{"func": "tool_result_id_variants", "in": {"args": {"tool_call_id": ""}}}
+{"func": "tool_result_id_variants", "in": {"args": {"tool_call_id": null}}}
+{"func": "tool_result_id_variants", "in": {"args": {"tool_call_id": 5}}}
+{"func": "per_occurrence_tool_call_uids", "in": {"args": {"uids": {}, "tool_calls": []}}}
+{"func": "per_occurrence_tool_call_uids", "in": {"args": {"uids": {"c1": "u1"}, "tool_calls": [{"call_id": "c1"}]}}}
+{"func": "per_occurrence_tool_call_uids", "in": {"args": {"uids": {"c1": "u1"}, "tool_calls": [{"call_id": "c1"}, {"id": "c1"}]}}}
+{"func": "per_occurrence_tool_call_uids", "in": {"args": {"uids": {"c1": "u1"}, "tool_calls": [{"call_id": "c1"}, {"call_id": "c1"}, {"call_id": "c2"}]}}}
+{"func": "per_occurrence_tool_call_uids", "in": {"args": {"uids": {"c1": ["u0", "u1"]}, "tool_calls": [{"call_id": "c1"}, {"call_id": "c1"}]}}}
+{"func": "per_occurrence_tool_call_uids", "in": {"args": {"uids": {}, "tool_calls": [{"call_id": "c1"}, {"call_id": "c1"}]}}}
+{"func": "per_occurrence_tool_call_uids", "in": {"args": {"uids": {"c1": "u1"}, "tool_calls": [{"call_id": " c1|r "}, {"id": "c1"}]}}}
+{"func": "per_occurrence_tool_call_uids", "in": {"args": {"uids": {"c1": "u1"}, "tool_calls": [{}]}}}
+{"func": "index_tool_call_uids", "in": {"args": {"index": {}, "assistant": {}}}}
+{"func": "index_tool_call_uids", "in": {"args": {"index": {}, "assistant": {"tool_calls": [{"call_id": "c1", "id": "i1"}], "_tool_call_uids": {"c1": "u1"}}}}}
+{"func": "index_tool_call_uids", "in": {"args": {"index": {"c1": "old"}, "assistant": {"tool_calls": [{"call_id": "c1"}]}}}}
+{"func": "index_tool_call_uids", "in": {"args": {"index": {"keep": "v"}, "assistant": {"tool_calls": [{"call_id": "c1"}], "_tool_call_uids": {}}}}}
+{"func": "index_tool_call_uids", "in": {"args": {"index": {}, "assistant": {"tool_calls": [{"call_id": "c1", "id": "i1"}, {"call_id": "c1", "id": "i2"}], "_tool_call_uids": {"c1": ["u0", "u1"]}}}}}
+{"func": "index_tool_call_uids", "in": {"args": {"index": {}, "assistant": {"tool_calls": [{"call_id": "a|b", "id": "r"}], "_tool_call_uids": {"a": "ua"}}}}}
+{"func": "index_tool_call_uids", "in": {"args": {"index": {"c1": "stale"}, "assistant": {"_tool_call_uids": {"c1": "u1"}}}}}
+{"func": "resolve_tool_call_uid", "in": {"args": {"index": {"c1": "u1"}, "tool_call_id": "c1"}}}
+{"func": "resolve_tool_call_uid", "in": {"args": {"index": {"i1": "u1"}, "tool_call_id": "c1|i1"}}}
+{"func": "resolve_tool_call_uid", "in": {"args": {"index": {"c1": "u1"}, "tool_call_id": "a|b"}}}
+{"func": "resolve_tool_call_uid", "in": {"args": {"index": {}, "tool_call_id": "c1"}}}
+{"func": "resolve_tool_call_uid", "in": {"args": {"index": {"c1": "u1"}, "tool_call_id": ""}}}
+{"func": "resolve_tool_call_uid", "in": {"args": {"index": {"c1": "u1"}, "tool_call_id": 5}}}
+{"func": "resolve_tool_call_uid", "in": {"args": {"index": {"c1": "u1"}, "tool_call_id": null}}}
+{"func": "resolve_tool_call_uid", "in": {"args": {"index": {"c1": "u1", "i1": "u1"}, "tool_call_id": "c1|i1"}}}
+{"func": "retired_row_payload", "in": {"args": {"message": {"role": "user", "content": "hi"}}}}
+{"func": "retired_row_payload", "in": {"args": {"message": {"role": "tool", "content": null, "tool_call_id": "tc1"}}}}
+{"func": "retired_row_payload", "in": {"args": {"message": {"role": "assistant", "content": "", "tool_calls": [{"id": "c1"}, {"id": "c2"}]}}}}
+{"func": "retired_row_payload", "in": {"args": {"message": {"tool_call_id": ""}}}}
+{"func": "retired_row_payload", "in": {"args": {"message": {}}}}
+{"func": "retired_row_payload", "in": {"args": {"message": null}}}
+{"func": "retired_row_payload", "in": {"args": {"message": {"tool_calls": [{"no": "id"}]}}}}
+{"func": "retired_row_payload", "in": {"args": {"message": {"tool_calls": "not a list"}}}}
+{"func": "_is_multimodal_tool_result", "in": {"args": {"value": {"_multimodal": true, "content": []}}}}
+{"func": "_is_multimodal_tool_result", "in": {"args": {"value": {"_multimodal": true, "content": "x"}}}}
+{"func": "_is_multimodal_tool_result", "in": {"args": {"value": {"_multimodal": 1, "content": []}}}}
+{"func": "_is_multimodal_tool_result", "in": {"args": {"value": {"_multimodal": false, "content": []}}}}
+{"func": "_is_multimodal_tool_result", "in": {"args": {"value": {}}}}
+{"func": "_is_multimodal_tool_result", "in": {"args": {"value": null}}}
+{"func": "_is_multimodal_tool_result", "in": {"args": {"value": {"_multimodal": true}}}}
+{"func": "_is_text_part", "in": {"args": {"p": {"type": "text"}}}}
+{"func": "_is_text_part", "in": {"args": {"p": {"type": "image"}}}}
+{"func": "_is_text_part", "in": {"args": {"p": {"type": "text", "text": "x"}}}}
+{"func": "_is_text_part", "in": {"args": {"p": {}}}}
+{"func": "_is_text_part", "in": {"args": {"p": "text"}}}
+{"func": "_is_text_part", "in": {"args": {"p": {"type": 5}}}}
+{"func": "_is_text_part", "in": {"args": {"p": null}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": "plain"}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": {"_multimodal": true, "content": [], "text_summary": "sum"}}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": {"_multimodal": true, "content": [], "text_summary": 5}}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": {"_multimodal": true, "content": [{"type": "text", "text": "a"}, {"type": "image"}, {"type": "text", "text": "b"}]}}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": {"_multimodal": true, "content": [{"type": "image"}]}}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": {"_multimodal": true, "content": []}}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": 5}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": [1, 2]}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": {"a": 1}}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": true}}}
+{"func": "_multimodal_text_summary", "in": {"args": {"value": null}}}
+{"func": "_is_ephemeral_scaffolding", "in": {"args": {"msg": {}}}}
+{"func": "_is_ephemeral_scaffolding", "in": {"args": {"msg": {"_thinking_prefill": true}}}}
+{"func": "_is_ephemeral_scaffolding", "in": {"args": {"msg": {"_thinking_prefill": false}}}}
+{"func": "_is_ephemeral_scaffolding", "in": {"args": {"msg": {"_empty_recovery_synthetic": "x"}}}}
+{"func": "_is_ephemeral_scaffolding", "in": {"args": {"msg": {"_verification_stop_synthetic": 1}}}}
+{"func": "_is_ephemeral_scaffolding", "in": {"args": {"msg": {"other": true}}}}
+{"func": "_is_ephemeral_scaffolding", "in": {"args": {"msg": null}}}
+{"func": "_is_ephemeral_scaffolding", "in": {"args": {"msg": {"_dropped_toolcall_nudge": []}}}}
+{"func": "_image_marker", "in": {"args": {"part": {}}}}
+{"func": "_image_marker", "in": {"args": {"part": {"image_url": {"url": "u"}}}}}
+{"func": "_image_marker", "in": {"args": {"part": {"detail": "low"}}}}
+{"func": "_image_marker", "in": {"args": {"part": {"detail": "high", "image_url": {}}}}}
+{"func": "_image_marker", "in": {"args": {"part": {"image_url": {"detail": "auto"}}}}}
+{"func": "_image_marker", "in": {"args": {"part": {"detail": "weird"}}}}
+{"func": "_image_marker", "in": {"args": {"part": {"detail": "low", "image_url": {"detail": "high"}}}}}
+{"func": "_image_marker", "in": {"args": {"part": null}}}
+{"func": "_durable_content", "in": {"args": {"content": null}}}
+{"func": "_durable_content", "in": {"args": {"content": "text"}}}
+{"func": "_durable_content", "in": {"args": {"content": {"_multimodal": true, "content": [], "text_summary": "sum"}}}}
+{"func": "_durable_content", "in": {"args": {"content": []}}}
+{"func": "_durable_content", "in": {"args": {"content": [{"type": "text", "text": "a"}, {"type": "image_url", "image_url": {"url": "u"}}]}}}
+{"func": "_durable_content", "in": {"args": {"content": [{"type": "image", "image_url": {"detail": "high"}}]}}}
+{"func": "_durable_content", "in": {"args": {"content": [{"type": "text"}]}}}
+{"func": "_durable_content", "in": {"args": {"content": [{"type": "audio"}]}}}
+{"func": "_durable_content", "in": {"args": {"content": {"a": 1}}}}
+{"func": "_content_has_payload", "in": {"args": {"content": null}}}
+{"func": "_content_has_payload", "in": {"args": {"content": ""}}}
+{"func": "_content_has_payload", "in": {"args": {"content": "  "}}}
+{"func": "_content_has_payload", "in": {"args": {"content": "x"}}}
+{"func": "_content_has_payload", "in": {"args": {"content": 0}}}
+{"func": "_content_has_payload", "in": {"args": {"content": []}}}
+{"func": "_content_has_payload", "in": {"args": {"content": [{}]}}}
+{"func": "_content_has_payload", "in": {"args": {"content": [{"type": "text", "text": ""}]}}}
+{"func": "_content_has_payload", "in": {"args": {"content": [{"type": "text", "text": "x"}]}}}
+{"func": "_content_has_payload", "in": {"args": {"content": [{"type": "image"}]}}}
+{"func": "_content_has_payload", "in": {"args": {"content": [5]}}}
+{"func": "_content_has_payload", "in": {"args": {"content": [null]}}}
+{"func": "_content_has_payload", "in": {"args": {"content": [{"type": "text"}]}}}
+{"func": "_msg_has_payload", "in": {"args": {"msg": {}}}}
+{"func": "_msg_has_payload", "in": {"args": {"msg": {"content": "x"}}}}
+{"func": "_msg_has_payload", "in": {"args": {"msg": {"content": ""}}}}
+{"func": "_msg_has_payload", "in": {"args": {"msg": {"content": null, "tool_calls": [{}]}}}}
+{"func": "_msg_has_payload", "in": {"args": {"msg": {"content": null, "reasoning_content": "  "}}}}
+{"func": "_msg_has_payload", "in": {"args": {"msg": {"content": null, "reasoning_content": "x"}}}}
+{"func": "_msg_has_payload", "in": {"args": {"msg": {"content": null, "reasoning_details": [1]}}}}
+{"func": "_msg_has_payload", "in": {"args": {"msg": {"content": null, "codex_message_items": []}}}}
+{"func": "_msg_has_payload", "in": {"args": {"msg": {"content": null, "codex_reasoning_items": [1]}}}}
+{"func": "_msg_has_payload", "in": {"args": {"msg": {"content": [{"type": "image"}]}}}}
+{"func": "_is_codex_interim", "in": {"args": {"m": {}}}}
+{"func": "_is_codex_interim", "in": {"args": {"m": {"finish_reason": "incomplete"}}}}
+{"func": "_is_codex_interim", "in": {"args": {"m": {"finish_reason": "stop"}}}}
+{"func": "_is_codex_interim", "in": {"args": {"m": {"codex_message_items": [1]}}}}
+{"func": "_is_codex_interim", "in": {"args": {"m": {"codex_reasoning_items": []}}}}
+{"func": "_is_codex_interim", "in": {"args": {"m": null}}}
+{"func": "_is_codex_interim", "in": {"args": {"m": {"finish_reason": "INCOMPLETE"}}}}
+{"func": "_json_or", "in": {"args": {"raw": "{\"a\":1}", "fallback": "raw", "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "5", "fallback": null, "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "\"hi\"", "fallback": null, "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "[1,2]", "fallback": null, "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "true", "fallback": null, "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "null", "fallback": null, "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "not json", "fallback": "raw", "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": 5, "fallback": "raw", "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": null, "fallback": "raw", "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "", "fallback": "raw", "warning": "w"}}}
+{"func": "_json_or", "in": {"args": {"raw": "{\"a\": 1}", "fallback": null, "warning": "w"}}}

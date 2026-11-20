@@ -1,0 +1,86 @@
+{"func": "_ws_orphan_setting", "in": {"env_var": "EV", "cfg_key": "g", "default": 20.0, "io": {"environ_get": "12"}}}
+{"func": "_ws_orphan_setting", "in": {"env_var": "EV", "cfg_key": "g", "default": 20.0, "io": {"environ_get": "", "load_config": {"dashboard": {"g": "5"}}}}}
+{"func": "_ws_orphan_setting", "in": {"env_var": "EV", "cfg_key": "g", "default": 20.0, "io": {"environ_get": null, "load_config": null}}}
+{"func": "_ws_orphan_setting", "in": {"env_var": "EV", "cfg_key": "g", "default": 15.0, "io": {"environ_get": "   ", "load_config": {"dashboard": {}}}}}
+{"func": "_ws_orphan_setting", "in": {"env_var": "EV", "cfg_key": "g", "default": 20.0, "io": {"environ_get": "-5"}}}
+{"func": "_ws_orphan_setting", "in": {"env_var": "EV", "cfg_key": "g", "default": 20.0, "io": {"environ_get": "abc"}}}
+{"func": "_ws_orphan_setting", "in": {"env_var": "EV", "cfg_key": "g", "default": 20.0, "io": {"environ_get": null, "load_config": {"__raise__": "RuntimeError", "message": "no cfg"}}}}
+{"func": "_ws_orphan_setting", "in": {"env_var": "EV", "cfg_key": "g", "default": 20.0, "io": {"environ_get": null, "load_config": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_ws_orphan_setting", "in": {"env_var": "EV", "cfg_key": "g", "default": 20.0, "io": {"environ_get": " 7 "}}}
+{"func": "_ws_orphan_setting", "in": {"env_var": "EV", "cfg_key": "g", "default": 9.0, "io": {"environ_get": null, "load_config": {"dashboard": "bad"}}}}
+{"func": "_resolve_ws_orphan_reap_grace", "in": {"io": {"_ws_orphan_setting": 20.0}}}
+{"func": "_resolve_ws_orphan_reap_grace", "in": {"io": {"_ws_orphan_setting": 0}}}
+{"func": "_resolve_ws_orphan_reap_grace", "in": {"io": {"_ws_orphan_setting": 1.5}}}
+{"func": "_resolve_ws_orphan_reap_grace", "in": {"io": {"_ws_orphan_setting": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_resolve_ws_orphan_reap_grace", "in": {"io": {"_ws_orphan_setting": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "_resolve_ws_orphan_reap_grace", "in": {"io": {"_ws_orphan_setting": null}}}
+{"func": "_configured_cwd_from_cfg", "in": {"cfg": {"terminal": {"cwd": " /work "}}, "io": {"expanduser": "/work", "abspath": "/work2", "isdir": true}}}
+{"func": "_configured_cwd_from_cfg", "in": {"cfg": {"terminal": {"cwd": "."}}, "io": {}}}
+{"func": "_configured_cwd_from_cfg", "in": {"cfg": {"terminal": {"cwd": ""}}, "io": {}}}
+{"func": "_configured_cwd_from_cfg", "in": {"cfg": {}, "io": {}}}
+{"func": "_configured_cwd_from_cfg", "in": {"cfg": {"terminal": {"cwd": "~/proj"}}, "io": {"expanduser": "/home/u/proj", "abspath": "/h/p", "isdir": false}}}
+{"func": "_configured_cwd_from_cfg", "in": {"cfg": {"terminal": {"cwd": "/x"}}, "io": {"expanduser": {"__raise__": "RuntimeError", "message": "e"}}}}
+{"func": "_configured_cwd_from_cfg", "in": {"cfg": {"terminal": {"cwd": "/x"}}, "io": {"expanduser": "/x", "abspath": {"__raise__": "ValueError", "message": "e"}}}}
+{"func": "_configured_cwd_from_cfg", "in": {"cfg": {"terminal": {"cwd": "/x"}}, "io": {"expanduser": "/x", "abspath": "/x", "isdir": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_configured_cwd_from_cfg", "in": {"cfg": {"terminal": {"cwd": "auto"}}, "io": {}}}
+{"func": "_configured_cwd_from_cfg", "in": {"cfg": null, "io": {}}}
+{"func": "_default_session_cwd", "in": {"io": {"launch_configured_cwd": "/a"}}}
+{"func": "_default_session_cwd", "in": {"io": {"launch_configured_cwd": null, "getenv": "/b"}}}
+{"func": "_default_session_cwd", "in": {"io": {"launch_configured_cwd": "", "getenv": "", "getcwd": "/c"}}}
+{"func": "_default_session_cwd", "in": {"io": {"launch_configured_cwd": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_default_session_cwd", "in": {"io": {"launch_configured_cwd": null, "getenv": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "_default_session_cwd", "in": {"io": {"launch_configured_cwd": null, "getenv": null, "getcwd": {"__raise__": "RuntimeError", "message": "cwd"}}}}
+{"func": "_default_session_cwd", "in": {"io": {"launch_configured_cwd": 0, "getenv": null, "getcwd": "/d"}}}
+{"func": "_pet_cfg", "in": {"io": {"load_config": {"display": {"pet": {"enabled": true}}}}}}
+{"func": "_pet_cfg", "in": {"io": {"load_config": {}}}}
+{"func": "_pet_cfg", "in": {"io": {"load_config": {"display": "bad"}}}}
+{"func": "_pet_cfg", "in": {"io": {"load_config": {"display": {"pet": "bad"}}}}}
+{"func": "_pet_cfg", "in": {"io": {"load_config": {"__raise__": "RuntimeError", "message": "cfg"}}}}
+{"func": "_pet_cfg", "in": {"io": {"load_config": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_pet_cfg", "in": {"io": {"load_config": null}}}
+{"func": "_pet_config_scale", "in": {"io": {"pet_cfg": {"scale": 0.5}}}}
+{"func": "_pet_config_scale", "in": {"io": {"pet_cfg": {}}}}
+{"func": "_pet_config_scale", "in": {"io": {"pet_cfg": {"scale": 0}}}}
+{"func": "_pet_config_scale", "in": {"io": {"pet_cfg": {"__raise__": "RuntimeError", "message": "cfg"}}}}
+{"func": "_pet_config_scale", "in": {"io": {"pet_cfg": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_pet_config_scale", "in": {"io": {"pet_cfg": {"scale": "0.75"}}}}
+{"func": "_pet_config_scale", "in": {"io": {"pet_cfg": {"scale": "bad"}}}}
+{"func": "_pet_cancel_arm", "in": {"token": "a", "state": {"cancel": ["a", "b"]}}}
+{"func": "_pet_cancel_arm", "in": {"token": "x", "state": {"cancel": []}}}
+{"func": "_pet_cancel_arm", "in": {"token": "z", "state": {"cancel": ["a"]}}}
+{"func": "_pet_cancel_arm", "in": {"token": "b", "state": {"cancel": ["a", "b", "c"]}}}
+{"func": "_pet_cancel_arm", "in": {"token": "a", "state": {"cancel": ["a"]}}}
+{"func": "_pet_cancel_request", "in": {"token": "a", "state": {"cancel": []}}}
+{"func": "_pet_cancel_request", "in": {"token": "a", "state": {"cancel": ["a"]}}}
+{"func": "_pet_cancel_request", "in": {"token": "a", "state": {"cancel": ["b"]}}}
+{"func": "_pet_cancel_request", "in": {"token": "", "state": {"cancel": []}}}
+{"func": "_pet_cancel_request", "in": {"token": "c", "state": {"cancel": ["a", "b"]}}}
+{"func": "_pet_is_cancelled", "in": {"token": "a", "state": {"cancel": ["a", "b"]}}}
+{"func": "_pet_is_cancelled", "in": {"token": "a", "state": {"cancel": []}}}
+{"func": "_pet_is_cancelled", "in": {"token": "b", "state": {"cancel": ["a"]}}}
+{"func": "_pet_is_cancelled", "in": {"token": "a", "state": {"cancel": ["a"]}}}
+{"func": "_pet_is_cancelled", "in": {"token": "", "state": {"cancel": []}}}
+{"func": "_response_profile_name", "in": {"profile": "foo", "io": {"canonical_profile_request": "foo", "profile_home": "/h/foo"}}}
+{"func": "_response_profile_name", "in": {"profile": "  foo  ", "io": {"canonical_profile_request": "foo", "profile_home": null, "current_profile_name": "launch"}}}
+{"func": "_response_profile_name", "in": {"profile": "", "io": {"canonical_profile_request": "", "current_profile_name": "launch"}}}
+{"func": "_response_profile_name", "in": {"profile": null, "io": {"canonical_profile_request": null, "current_profile_name": "def"}}}
+{"func": "_response_profile_name", "in": {"profile": "foo", "io": {"canonical_profile_request": "foo", "profile_home": {"__raise__": "ProfileUnavailableError", "message": "gone"}, "current_profile_name": "launch"}}}
+{"func": "_response_profile_name", "in": {"profile": "foo", "io": {"canonical_profile_request": "foo", "profile_home": {"__raise__": "RuntimeError", "message": "boom"}}}}
+{"func": "_response_profile_name", "in": {"profile": "foo", "io": {"canonical_profile_request": "foo", "profile_home": null, "current_profile_name": "cur"}}}
+{"func": "_pet_gen_root", "in": {"io": {"get_hermes_home": "/h", "mkdir": null}}}
+{"func": "_pet_gen_root", "in": {"io": {"get_hermes_home": "/h/", "mkdir": null}}}
+{"func": "_pet_gen_root", "in": {"io": {"get_hermes_home": "/", "mkdir": null}}}
+{"func": "_pet_gen_root", "in": {"io": {"get_hermes_home": {"__raise__": "RuntimeError", "message": "home"}}}}
+{"func": "_pet_gen_root", "in": {"io": {"get_hermes_home": "/h", "mkdir": {"__raise__": "ValueError", "message": "mkdir"}}}}
+{"func": "_pet_gen_root", "in": {"io": {"get_hermes_home": "/h", "mkdir": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_spawn_trees_root", "in": {"io": {"get_hermes_home": "/h", "mkdir": null}}}
+{"func": "_spawn_trees_root", "in": {"io": {"get_hermes_home": "/h/", "mkdir": null}}}
+{"func": "_spawn_trees_root", "in": {"io": {"get_hermes_home": "/", "mkdir": null}}}
+{"func": "_spawn_trees_root", "in": {"io": {"get_hermes_home": {"__raise__": "RuntimeError", "message": "home"}}}}
+{"func": "_spawn_trees_root", "in": {"io": {"get_hermes_home": "/h", "mkdir": {"__raise__": "OSError", "message": "mkdir"}}}}
+{"func": "_spawn_tree_session_dir", "in": {"session_id": "abc123", "io": {"spawn_trees_root": "/h/spawn-trees", "mkdir": null}}}
+{"func": "_spawn_tree_session_dir", "in": {"session_id": "a b/c", "io": {"spawn_trees_root": "/h/spawn-trees", "mkdir": null}}}
+{"func": "_spawn_tree_session_dir", "in": {"session_id": "", "io": {"spawn_trees_root": "/h/spawn-trees", "mkdir": null}}}
+{"func": "_spawn_tree_session_dir", "in": {"session_id": "A-1_z", "io": {"spawn_trees_root": "/h/spawn-trees", "mkdir": null}}}
+{"func": "_spawn_tree_session_dir", "in": {"session_id": "x", "io": {"spawn_trees_root": {"__raise__": "RuntimeError", "message": "root"}}}}
+{"func": "_spawn_tree_session_dir", "in": {"session_id": "x", "io": {"spawn_trees_root": "/h/spawn-trees", "mkdir": {"__raise__": "ValueError", "message": "mkdir"}}}}
