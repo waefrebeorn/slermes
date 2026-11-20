@@ -156,16 +156,16 @@ to eliminate the repeated false-green debug round trip. Wave 63 wired
 4 self-gated swaths (816->820, HEAD `5a5a94f61c`), parent gates
 106/0, 141/0, 128/0, 137/0; build health 2127/2127.
 
-## STRUCTURAL HONESTY FINDING (2026-11-20) — "wired" != "in the binary"
+## Wired credit is registration, not production code (re-confirmed)
 Audit of objects.mk: 2091 referenced objects, 19 missing files, 694 under
 2 KB. Sampled port objects (telegram_adapter_flow7.o 491 B,
-memory_manager_flow3.o 489 B) contain ONLY section symbols — no text
-symbols. The harnesses `#include` the port `.c`, so the oracle gates DO
-verify the ported behavior, but the production `slermes` link gets an
-empty translation unit. Compare real ports: `gateway_run_flow3.o` 41992 B,
-`lib/libjson/json.o` 45129 B. Therefore the "linked objects" / PoP
-counts are NOT evidence of production parity. Only oracle-verified
-behavior and real non-empty objects count. Do not cite wired-object
-counts as progress. Fixing this structurally requires giving port sources
-externally visible entry points and production call sites — a separate
-large task, not a wave-style port.
+memory_manager_flow3.o 489 B) contain only section symbols. This is the
+ALREADY-DOCUMENTED expected shape for all-static flow ports (see
+slermes-windows-build references/fleet-oracle-workflow.md): the harness
+`#include`s the port `.c`, so the oracle gates verify real behavior, but
+the production link gets an empty translation unit. "Wired" therefore
+buys PoP credit, NOT production parity — report oracle-verified behavior,
+not wired-object counts, as progress. The genuinely open question is the
+19 objects referenced by objects.mk that are MISSING on disk (e.g.
+src/wubuoxml/*.o) — audit those separately; a missing object is not the
+same as the expected empty all-static one.
