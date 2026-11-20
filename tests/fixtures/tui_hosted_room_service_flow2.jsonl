@@ -1,0 +1,101 @@
+{"func": "live_room_services", "in": {"seams": {"live_services.snapshot": ["svc1", "svc2"]}}}
+{"func": "live_room_services", "in": {"seams": {"live_services.snapshot": []}}}
+{"func": "live_room_services", "in": {"seams": {"live_services.snapshot": ["only"]}}}
+{"func": "live_room_services", "in": {"seams": {"live_services.snapshot": {"__raise__": "RuntimeError", "msg": "weakset"}}}}
+{"func": "live_room_services", "in": {"seams": {"live_services.snapshot": [1, 2, 3]}}}
+{"func": "live_room_services", "in": {"seams": {"live_services.snapshot": ["a", "b", "a"]}}}
+{"func": "live_room_services", "in": {"seams": {"live_services.snapshot": ["s"]}}}
+{"func": "member_is_peer", "in": {"room_id": "r1", "member_id": "m1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3, "members": [{"member_id": "m1", "target": {"kind": "peer"}}]}}}}
+{"func": "member_is_peer", "in": {"room_id": "r1", "member_id": "m1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3, "members": [{"member_id": "m1", "target": {"kind": "local"}}]}}}}
+{"func": "member_is_peer", "in": {"room_id": "r1", "member_id": "m1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3, "members": [{"profile": "m1", "target": {"kind": "peer"}}]}}}}
+{"func": "member_is_peer", "in": {"room_id": "r1", "member_id": "nope", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3, "members": [{"member_id": "m1", "target": {"kind": "peer"}}]}}}}
+{"func": "member_is_peer", "in": {"room_id": "r1", "member_id": "m1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3, "members": [{"member_id": "m1"}]}}}}
+{"func": "member_is_peer", "in": {"room_id": "r1", "member_id": "m1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3, "members": ["not-a-mapping", {"member_id": "m1", "target": {"kind": "peer"}}]}}}}
+{"func": "member_is_peer", "in": {"room_id": "r1", "member_id": "m1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3, "members": []}}}}
+{"func": "member_is_peer", "in": {"room_id": "r1", "member_id": "m1", "seams": {"self._room": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "member_is_peer", "in": {"room_id": "r1", "member_id": "7", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3, "members": [{"member_id": 7, "target": {"kind": "peer"}}]}}}}
+{"func": "owned_authority", "in": {"room_id": "r1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3}, "local_authority_gateway_id": "gw1"}}}
+{"func": "owned_authority", "in": {"room_id": "r1", "seams": {"self._room": {"authority_gateway_id": "gw2", "authority_epoch": 3}, "local_authority_gateway_id": "gw1"}}}
+{"func": "owned_authority", "in": {"room_id": "r1", "seams": {"self._room": {"authority_epoch": 3}, "local_authority_gateway_id": "gw1"}}}
+{"func": "owned_authority", "in": {"room_id": "r1", "seams": {"self._room": {"authority_gateway_id": "gw1"}, "local_authority_gateway_id": "gw1"}}}
+{"func": "owned_authority", "in": {"room_id": "r1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": "bad"}, "local_authority_gateway_id": "gw1"}}}
+{"func": "owned_authority", "in": {"room_id": "r1", "seams": {"self._room": {"authority_gateway_id": 5, "authority_epoch": 2}, "local_authority_gateway_id": "5"}}}
+{"func": "owned_authority", "in": {"room_id": "r1", "seams": {"self._room": {"__raise__": "RuntimeError", "msg": "down"}}}}
+{"func": "route_authority", "in": {"self": {"_disbanding_rooms": ["r1"]}, "room_id": "r1", "seams": {}}}
+{"func": "route_authority", "in": {"self": {"_disbanding_rooms": ["r2"]}, "room_id": "r1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3}, "local_authority_gateway_id": "gw1"}}}
+{"func": "route_authority", "in": {"self": {"_disbanding_rooms": []}, "room_id": "r1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3}, "local_authority_gateway_id": "gw1"}}}
+{"func": "route_authority", "in": {"self": {}, "room_id": "r1", "seams": {"self._room": {"authority_gateway_id": "gw2", "authority_epoch": 3}, "local_authority_gateway_id": "gw1"}}}
+{"func": "route_authority", "in": {"self": {}, "room_id": "r1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": "x"}, "local_authority_gateway_id": "gw1"}}}
+{"func": "route_authority", "in": {"self": {"_disbanding_rooms": ["r2", "r3"]}, "room_id": "r1", "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 1}, "local_authority_gateway_id": "gw1"}}}
+{"func": "route_authority", "in": {"self": {"_disbanding_rooms": ["r1"]}, "room_id": "r1", "seams": {"self._room": {"__raise__": "RuntimeError", "msg": "should-not-fire"}}}}
+{"func": "bindings", "in": {"seams": {"local_authority_gateway_id": "gw1", "list_rooms": [{"room_id": "r1", "authority_gateway_id": "gw1", "authority_epoch": 3}, {"room_id": "r2", "authority_gateway_id": "gw2", "authority_epoch": 1}]}}}
+{"func": "bindings", "in": {"seams": {"local_authority_gateway_id": "gw1", "list_rooms": [{"room_id": "r1", "authority_gateway_id": "gw1", "authority_epoch": 3}]}}}
+{"func": "bindings", "in": {"seams": {"local_authority_gateway_id": "gw1", "list_rooms": [{"room_id": "r2", "authority_gateway_id": "gw2", "authority_epoch": 1}]}}}
+{"func": "bindings", "in": {"seams": {"local_authority_gateway_id": "gw1", "list_rooms": []}}}
+{"func": "bindings", "in": {"seams": {"local_authority_gateway_id": "gw1", "list_rooms": [{"room_id": "r1", "authority_epoch": 3}]}}}
+{"func": "bindings", "in": {"seams": {"local_authority_gateway_id": "gw1", "list_rooms": [{"room_id": "r1", "authority_gateway_id": "gw1"}]}}}
+{"func": "bindings", "in": {"seams": {"local_authority_gateway_id": "gw1", "list_rooms": [{"room_id": "r1", "authority_gateway_id": "gw1", "authority_epoch": "bad"}]}}}
+{"func": "bindings", "in": {"seams": {"local_authority_gateway_id": "gw1", "list_rooms": {"__raise__": "OSError", "msg": "list"}}}}
+{"func": "list_tasks", "in": {"room_id": "r1", "statuses": ["running", "deferred"], "seams": {"driver.list_tasks": [[{"task_id": "a"}], [{"task_id": "b"}, {"task_id": "c"}]]}}}
+{"func": "list_tasks", "in": {"room_id": "r1", "statuses": [], "seams": {"driver.list_tasks": [[{"task_id": "a"}]]}}}
+{"func": "list_tasks", "in": {"room_id": "r1", "statuses": ["running"], "seams": {"driver.list_tasks": [[{"task_id": "a"}]]}}}
+{"func": "list_tasks", "in": {"room_id": "r1", "statuses": ["running", "deferred"], "seams": {"driver.list_tasks": [{"__raise__": "RuntimeError", "msg": "driver"}]}}}
+{"func": "list_tasks", "in": {"room_id": "r1", "statuses": ["a", "b", "c"], "seams": {"driver.list_tasks": [[], [{"task_id": "x"}], []]}}}
+{"func": "list_tasks", "in": {"room_id": "r2", "statuses": ["queued"], "seams": {"driver.list_tasks": [[{"task_id": "q", "status": "queued"}]]}}}
+{"func": "list_tasks", "in": {"room_id": "r1", "statuses": ["running", "deferred"], "seams": {"driver.list_tasks": [[{"task_id": "a"}], {"__raise__": "ValueError", "msg": "second"}]}}}
+{"func": "turn_lock", "in": {"self": {"root": "/home/u"}, "profile": "default", "seams": {"acquire_turn_lock": "LOCK1"}}}
+{"func": "turn_lock", "in": {"self": {"root": "/home/u"}, "profile": "alpha", "seams": {"acquire_turn_lock": null}}}
+{"func": "turn_lock", "in": {"self": {"root": "/home/u"}, "profile": "default", "seams": {"acquire_turn_lock": {"__raise__": "RuntimeError", "msg": "busy"}}}}
+{"func": "turn_lock", "in": {"self": {"root": "/srv/root"}, "profile": "beta", "seams": {"acquire_turn_lock": {"id": 1}}}}
+{"func": "turn_lock", "in": {"self": {"root": "/home/u"}, "profile": "", "seams": {"acquire_turn_lock": "LOCK2"}}}
+{"func": "turn_lock", "in": {"self": {"root": "/home/u"}, "profile": "gamma", "seams": {"acquire_turn_lock": {"__raise__": "KeyboardInterrupt", "msg": "stop"}}}}
+{"func": "start", "in": {"seams": {"self.runtime.start": null}}}
+{"func": "start", "in": {"seams": {"self.runtime.start": {"__raise__": "RuntimeError", "msg": "start"}}}}
+{"func": "start", "in": {"seams": {"self.runtime.start": "ignored"}}}
+{"func": "start", "in": {"seams": {"self.runtime.start": {"__raise__": "KeyboardInterrupt", "msg": "stop"}}}}
+{"func": "start", "in": {"seams": {"self.runtime.start": true}}}
+{"func": "start", "in": {"seams": {"self.runtime.start": {"__raise__": "SystemExit", "msg": "bye", "code": "bye"}}}}
+{"func": "stop", "in": {"seams": {"self.runtime.stop": true}}}
+{"func": "stop", "in": {"seams": {"self.runtime.stop": false}}}
+{"func": "stop", "in": {"timeout": 0.5, "seams": {"self.runtime.stop": true}}}
+{"func": "stop", "in": {"timeout": 9, "seams": {"self.runtime.stop": false}}}
+{"func": "stop", "in": {"seams": {"self.runtime.stop": {"__raise__": "RuntimeError", "msg": "stop"}}}}
+{"func": "stop", "in": {"seams": {"self.runtime.stop": null}}}
+{"func": "stop", "in": {"timeout": 2.5, "seams": {"self.runtime.stop": {"__raise__": "KeyboardInterrupt", "msg": "stop"}}}}
+{"func": "wakeup", "in": {"seams": {"self.runtime.wakeup": null}}}
+{"func": "wakeup", "in": {"seams": {"self.runtime.wakeup": {"__raise__": "RuntimeError", "msg": "wake"}}}}
+{"func": "wakeup", "in": {"seams": {"self.runtime.wakeup": "ignored"}}}
+{"func": "wakeup", "in": {"seams": {"self.runtime.wakeup": {"__raise__": "KeyboardInterrupt", "msg": "stop"}}}}
+{"func": "wakeup", "in": {"seams": {"self.runtime.wakeup": 1}}}
+{"func": "wakeup", "in": {"seams": {"self.runtime.wakeup": {"__raise__": "GeneratorExit", "msg": "gen"}}}}
+{"func": "save_link", "in": {"link": {"room_id": "r1", "grant": "g1"}, "seams": {"hosted_room_links.make_stored_link": "S1", "hosted_room_links.save_room_link": null}}}
+{"func": "save_link", "in": {"link": {}, "seams": {"hosted_room_links.make_stored_link": "S2", "hosted_room_links.save_room_link": null}}}
+{"func": "save_link", "in": {"link": {"room_id": "r2"}, "seams": {"hosted_room_links.make_stored_link": {"__raise__": "ValueError", "msg": "make"}, "hosted_room_links.save_room_link": null}}}
+{"func": "save_link", "in": {"link": {"room_id": "r3"}, "seams": {"hosted_room_links.make_stored_link": "S3", "hosted_room_links.save_room_link": {"__raise__": "OSError", "msg": "save"}}}}
+{"func": "save_link", "in": {"link": {"room_id": "r4", "grant": "g4"}, "seams": {"hosted_room_links.make_stored_link": {"id": 7}, "hosted_room_links.save_room_link": {"ok": true}}}}
+{"func": "save_link", "in": {"link": {"room_id": "r5"}, "seams": {"hosted_room_links.make_stored_link": {"__raise__": "KeyboardInterrupt", "msg": "stop"}}}}
+{"func": "dispatch_approval", "in": {"task_id": "t1", "execution_generation": 2, "request_id": "req1", "choice": "once", "route": {"grant": "g1"}, "client": {"approve_receipt": {"__callable__": "approve_receipt"}}, "action": {"session_id": "s1"}, "seams": {"approve_receipt": {"ok": true}}}}
+{"func": "dispatch_approval", "in": {"task_id": "t1", "execution_generation": 2, "request_id": "req1", "choice": "once", "route": {"grant": "g1"}, "client": {"approve_receipt": {"__callable__": "approve_receipt"}}, "action": {"session_id": "s1"}, "seams": {"approve_receipt": {"__raise__": "RuntimeError", "msg": "approve"}}}}
+{"func": "dispatch_approval", "in": {"task_id": "t1", "execution_generation": 2, "request_id": "req1", "choice": "once", "route": null, "client": null, "action": {"session_id": "s1"}, "seams": {"rpc.approve": {"ok": 1}}}}
+{"func": "dispatch_approval", "in": {"task_id": "t1", "execution_generation": 2, "request_id": "req1", "choice": "once", "route": null, "client": {"approve_receipt": "plain"}, "action": {"session_id": "s2"}, "seams": {"rpc.approve": {"__raise__": "ValueError", "msg": "rpc"}}}}
+{"func": "dispatch_approval", "in": {"task_id": "t1", "execution_generation": 2, "request_id": "req1", "choice": "once", "route": null, "client": null, "action": {}, "seams": {"rpc.approve": null}}}
+{"func": "dispatch_approval", "in": {"task_id": "t1", "execution_generation": 2, "request_id": "req1", "choice": "once", "route": null, "client": null, "action": {"session_id": ""}, "seams": {"rpc.approve": null}}}
+{"func": "dispatch_approval", "in": {"task_id": "t1", "execution_generation": 2, "request_id": "req1", "choice": "once", "route": {"grant": "g2"}, "client": {"approve_receipt": {"__callable__": "approve_receipt"}}, "action": {"session_id": "s1"}, "seams": {"approve_receipt": null}}}
+{"func": "room_profiles", "in": {"seams": {"self.local_profiles": ["default", "alpha"]}}}
+{"func": "room_profiles", "in": {"seams": {"self.local_profiles": []}}}
+{"func": "room_profiles", "in": {"seams": {"self.local_profiles": {"__raise__": "RuntimeError", "msg": "profiles"}}}}
+{"func": "room_profiles", "in": {"seams": {"self.local_profiles": ["default"]}}}
+{"func": "room_profiles", "in": {"seams": {"self.local_profiles": "not-a-list"}}}
+{"func": "room_profiles", "in": {"seams": {"self.local_profiles": ["a", "b", "default"]}}}
+{"func": "make_rpc", "in": {"self": {"db_path": "/db", "root": "/home/u", "placement": "shared"}, "server": "srv1", "seams": {"HostedRoomServerRPC": "RPC1"}}}
+{"func": "make_rpc", "in": {"self": {"db_path": "/db", "root": "/home/u", "placement": "local"}, "server": "srv2", "seams": {"HostedRoomServerRPC": null}}}
+{"func": "make_rpc", "in": {"self": {"db_path": "/db", "root": "/home/u", "placement": "shared"}, "server": "srv1", "seams": {"HostedRoomServerRPC": {"__raise__": "RuntimeError", "msg": "rpc"}}}}
+{"func": "make_rpc", "in": {"self": {"db_path": "/db2", "root": "/srv/r", "placement": "shared"}, "server": {"host": "h"}, "seams": {"HostedRoomServerRPC": {"id": 1}}}}
+{"func": "make_rpc", "in": {"self": {"db_path": "", "root": "/home/u", "placement": "shared"}, "server": "srv3", "seams": {"HostedRoomServerRPC": "RPC3"}}}
+{"func": "make_rpc", "in": {"self": {"db_path": "/db", "root": "/home/u", "placement": "shared"}, "server": "srv4", "seams": {"HostedRoomServerRPC": {"__raise__": "KeyboardInterrupt", "msg": "stop"}}}}
+{"func": "set_route_status", "in": {"self": {"_peer_route_status": [{"room_id": "r1", "member_id": "m1", "status": "ready"}]}, "room_id": "r1", "member_id": "m1", "status": "ready", "seams": {"mark_room_link_status": null}}}
+{"func": "set_route_status", "in": {"self": {"_peer_route_status": [{"room_id": "r1", "member_id": "m1", "status": "ready"}]}, "room_id": "r1", "member_id": "m1", "status": "unavailable", "seams": {"mark_room_link_status": null}}}
+{"func": "set_route_status", "in": {"self": {"_peer_route_status": [{"room_id": "r1", "member_id": "m1", "status": "ready"}]}, "room_id": "r1", "member_id": "m2", "status": "ready", "seams": {"mark_room_link_status": null}}}
+{"func": "set_route_status", "in": {"self": {}, "room_id": "r1", "member_id": "m1", "status": "ready", "seams": {"mark_room_link_status": null}}}
+{"func": "set_route_status", "in": {"self": {"_peer_route_status": [{"room_id": "r1", "member_id": "m1", "status": "ready"}]}, "room_id": "r1", "member_id": "m1", "status": "ready", "seams": {"mark_room_link_status": {"__raise__": "OSError", "msg": "should-not-fire"}}}}
+{"func": "set_route_status", "in": {"self": {"_peer_route_status": [{"room_id": "r1", "member_id": "m1", "status": "ready"}]}, "room_id": "r2", "member_id": "m1", "status": "ready", "seams": {"mark_room_link_status": {"__raise__": "RuntimeError", "msg": "mark"}}}}

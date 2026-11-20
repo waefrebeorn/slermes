@@ -1,0 +1,187 @@
+{"func":"__init__","in":{"argv":[{}],"kw":{},"seams":{"get_hermes_home":["/h"],"gateway_profile_home":["/h"]}}}
+{"func":"__init__","in":{"argv":[{}],"kw":{},"seams":{"get_hermes_home":["/h"],"gateway_profile_home":["/h"]}}}
+{"func":"__init__","in":{"argv":[{}],"kw":{},"seams":{"get_hermes_home":["/h"],"gateway_profile_home":["/h"]}}}
+{"func":"__init__","in":{"argv":[{}],"kw":{},"seams":{"get_hermes_home":["/h"],"gateway_profile_home":["/h"]}}}
+{"func":"__init__","in":{"argv":[{}],"kw":{},"seams":{"get_hermes_home":["/h"],"gateway_profile_home":["/h"]}}}
+{"func":"__init__","in":{"argv":[{}],"kw":{},"seams":{"get_hermes_home":["/h"],"gateway_profile_home":["/h"]}}}
+{"func":"on_connect","in":{"argv":[{"_conn":null},{"_conn":{"add_observer":true}}],"kw":{},"seams":{}}}
+{"func":"on_connect","in":{"argv":[{"_conn":null},{"_conn":{"add_observer":false}}],"kw":{},"seams":{}}}
+{"func":"on_connect","in":{"argv":[{"_conn":null},{}],"kw":{},"seams":{}}}
+{"func":"on_connect","in":{"argv":[{"_conn":null},{"_conn":null}],"kw":{},"seams":{}}}
+{"func":"on_connect","in":{"argv":[{"_conn":null},{"_conn":{"add_observer":true}}],"kw":{},"seams":{}}}
+{"func":"on_connect","in":{"argv":[{"_conn":true},{"_conn":{"add_observer":true}}],"kw":{},"seams":{}}}
+{"func":"_observe_client_message","in":{"argv":[{"_form_elicitation":false},{"message":{"method":"initialize","params":{}},"direction":"incoming"}],"kw":{},"seams":{}}}
+{"func":"_observe_client_message","in":{"argv":[{"_form_elicitation":true},{"message":{"method":"initialize","params":{"x":1}},"direction":"incoming"}],"kw":{},"seams":{}}}
+{"func":"_observe_client_message","in":{"argv":[{},{"message":{"method":"initialize","params":{}},"direction":"outgoing"}],"kw":{},"seams":{}}}
+{"func":"_observe_client_message","in":{"argv":[{},{"message":{"method":"prompt","params":{}},"direction":"incoming"}],"kw":{},"seams":{}}}
+{"func":"_observe_client_message","in":{"argv":[{},{"direction":"incoming","message":null}],"kw":{},"seams":{}}}
+{"func":"_observe_client_message","in":{"argv":[{"_form_elicitation":false},{"message":{"method":"initialize","params":{}},"direction":"incoming"}],"kw":{},"seams":{}}}
+{"func":"initialize","in":{"argv":[{}],"kw":{},"seams":{"build_auth_methods":[[]]}}}
+{"func":"initialize","in":{"argv":[{}],"kw":{},"seams":{"build_auth_methods":[["m"]]}}}
+{"func":"initialize","in":{"argv":[{}],"kw":{},"seams":{"build_auth_methods":[null]}}}
+{"func":"initialize","in":{"argv":[{}],"kw":{},"seams":{"build_auth_methods":[{"__raise__":"SystemExit","message":"die"}]}}}
+{"func":"initialize","in":{"argv":[{}],"kw":{},"seams":{"build_auth_methods":[{"__raise__":"CancelledError","message":"cancelled"}]}}}
+{"func":"initialize","in":{"argv":[{}],"kw":{},"seams":{"build_auth_methods":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"authenticate","in":{"argv":[{},"m1"],"kw":{},"seams":{"authenticate":[{"ok":true}]}}}
+{"func":"authenticate","in":{"argv":[{},"m2"],"kw":{},"seams":{"authenticate":[{"ok":true}]}}}
+{"func":"authenticate","in":{"argv":[{},""],"kw":{},"seams":{"authenticate":[{"ok":true}]}}}
+{"func":"authenticate","in":{"argv":[{},null],"kw":{},"seams":{"authenticate":[{"ok":true}]}}}
+{"func":"authenticate","in":{"argv":[{},"m1"],"kw":{},"seams":{"authenticate":[{"__raise__":"SystemExit","message":"die"}]}}}
+{"func":"authenticate","in":{"argv":[{},"m1"],"kw":{},"seams":{"authenticate":[{"__raise__":"GatewayClientError","message":"x"}]}}}
+{"func":"new_session","in":{"argv":[{},"/a"],"kw":{},"seams":{"client":[null],"rpc":[{"session_create":{"sources":["acp"]},"capabilities":["acp-editor-policy-v1"],"session_id":"s1","info":{"title":"T"}}],"env_launch_flags":[{}],"uuid":[{"__raise__":"RuntimeError","message":"no script for uuid"}]}}}
+{"func":"new_session","in":{"argv":[{},"/a",[{"m":1}]],"kw":{},"seams":{"client":[null],"rpc":[{"session_create":{"sources":["acp"]},"capabilities":["acp-editor-policy-v1"],"session_id":"s1","info":{"title":"T"}}],"env_launch_flags":[{"safe_mode":true}],"_bypass_route":[{"model":"m","provider":"p"}],"uuid":[{"__raise__":"RuntimeError","message":"no script for uuid"}]}}}
+{"func":"new_session","in":{"argv":[{},"/a"],"kw":{},"seams":{"client":[null],"rpc":[{"session_create":{},"capabilities":[]}]}}}
+{"func":"new_session","in":{"argv":[{},"/a"],"kw":{},"seams":{"client":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"new_session","in":{"argv":[{},"/a"],"kw":{},"seams":{"client":[null],"rpc":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"new_session","in":{"argv":[{},"/a"],"kw":{},"seams":{"client":[null],"rpc":[{"session_create":{"sources":["acp"]},"capabilities":["acp-editor-policy-v1"],"session_id":"s1"}],"env_launch_flags":[{}],"uuid":[{"__raise__":"RuntimeError","message":"no script for uuid"}]}}}
+{"func":"_client","in":{"argv":[{"_failure":null,"_gateway":true,"_transport_closed":false}],"kw":{},"seams":{"_transport_closed":[{"__raise__":"RuntimeError","message":"no script for _transport_closed"}]}}}
+{"func":"_client","in":{"argv":[{"_failure":"stale","_gateway":true}],"kw":{},"seams":{"_teardown":[null]}}}
+{"func":"_client","in":{"argv":[{"_failure":null,"_gateway":null,"_home":"/h","_transport_closed":false}],"kw":{},"seams":{"_transport_closed":[{"__raise__":"RuntimeError","message":"no script for _transport_closed"}]}}}
+{"func":"_client","in":{"argv":[{"_failure":null,"_gateway":null,"_home":"/h","_transport_closed":false}],"kw":{},"seams":{"_transport_closed":[{"__raise__":"RuntimeError","message":"no script for _transport_closed"}]}}}
+{"func":"_client","in":{"argv":[{"_failure":null,"_gateway":true,"_transport_closed":true}],"kw":{},"seams":{"_transport_closed":[true],"_teardown":[null]}}}
+{"func":"_client","in":{"argv":[{"_failure":null,"_gateway":true}],"kw":{},"seams":{"_transport_closed":[{"__raise__":"SystemExit","message":"die"}]}}}
+{"func":"_adopt","in":{"argv":[{},"s1",{"info":{"x":1}}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_adopt","in":{"argv":[{},"s1",{},2],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_adopt","in":{"argv":[{},"s1",{"info":null},null,"GW"],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_adopt","in":{"argv":[{},"s1",{},null,"GW"],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_adopt","in":{"argv":[{},"s1",{}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_adopt","in":{"argv":[{},"s1",{"info":{"title":"t"}}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_move_workspace","in":{"argv":[{},"GW","s1","/a"],"kw":{},"seams":{"_translate_acp_cwd":[{"__raise__":"RuntimeError","message":"no script for _translate_acp_cwd"}]}}}
+{"func":"_move_workspace","in":{"argv":[{"_unacked":{"s1":1}},"GW","s1","/a"],"kw":{},"seams":{"_translate_acp_cwd":[{"__raise__":"RuntimeError","message":"no script for _translate_acp_cwd"}]}}}
+{"func":"_move_workspace","in":{"argv":[{},"GW","s1","/a"],"kw":{},"seams":{"_translate_acp_cwd":[{"__raise__":"RuntimeError","message":"no script for _translate_acp_cwd"}]}}}
+{"func":"_move_workspace","in":{"argv":[{},"GW","s1","/a"],"kw":{},"seams":{"_translate_acp_cwd":[{"__raise__":"RuntimeError","message":"no script for _translate_acp_cwd"}]}}}
+{"func":"_move_workspace","in":{"argv":[{},"GW","s1","/a"],"kw":{},"seams":{"_translate_acp_cwd":[{"__raise__":"RuntimeError","message":"no script for _translate_acp_cwd"}]}}}
+{"func":"_move_workspace","in":{"argv":[{},"GW","s1","/a"],"kw":{},"seams":{"_translate_acp_cwd":[{"__raise__":"RuntimeError","message":"no script for _translate_acp_cwd"}]}}}
+{"func":"_rebind_editor_mcp","in":{"argv":[{},"GW","s1",{"m":1}],"kw":{},"seams":{"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"_rebind_editor_mcp","in":{"argv":[{"_unacked":{"s1":1}},"GW","s1",{"m":1}],"kw":{},"seams":{"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"_rebind_editor_mcp","in":{"argv":[{},"GW","s1",{}],"kw":{},"seams":{"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"_rebind_editor_mcp","in":{"argv":[{},"GW","s1",{}],"kw":{},"seams":{"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"_rebind_editor_mcp","in":{"argv":[{},"GW","s1",{}],"kw":{},"seams":{"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"_rebind_editor_mcp","in":{"argv":[{},"GW","s1",null],"kw":{},"seams":{"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"load_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"_resume":[{"session_id":"s1"}]}}}
+{"func":"load_session","in":{"argv":[{},"/a","s1",[{"x":1}]],"kw":{},"seams":{"_resume":[{"session_id":"s1"}]}}}
+{"func":"load_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"_resume":[{"__raise__":"SystemExit","message":"die"}]}}}
+{"func":"load_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"_resume":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"load_session","in":{"argv":[{},"/a","s1",[]],"kw":{},"seams":{"_resume":[{}]}}}
+{"func":"load_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"_resume":[{"session_id":"s2"}]}}}
+{"func":"resume_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"_resume":[{"session_id":"s1"}]}}}
+{"func":"resume_session","in":{"argv":[{},"/a","s1",[{"x":1}]],"kw":{},"seams":{"_resume":[{"session_id":"s1"}]}}}
+{"func":"resume_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"_resume":[{"__raise__":"SystemExit","message":"die"}]}}}
+{"func":"resume_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"_resume":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"resume_session","in":{"argv":[{},"/a","s1",[]],"kw":{},"seams":{"_resume":[{}]}}}
+{"func":"resume_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"_resume":[{"session_id":"s2"}]}}}
+{"func":"cancel","in":{"argv":[{"_snapshots":{"s1":{}},"_admissions":{"s1":"a1"}},"s1"],"kw":{},"seams":{"_cancel_admission":[null]}}}
+{"func":"cancel","in":{"argv":[{"_snapshots":{"s1":{}},"_aliases":{"h":"s1"},"_admissions":{"s1":"a1"}},"h"],"kw":{},"seams":{"_cancel_admission":[null]}}}
+{"func":"cancel","in":{"argv":[{"_snapshots":{"s1":{}}},"s1"],"kw":{},"seams":{}}}
+{"func":"cancel","in":{"argv":[{"_snapshots":{"s1":{}},"_submitting":["s1"]},"s1"],"kw":{},"seams":{}}}
+{"func":"cancel","in":{"argv":[{"_snapshots":{"s1":{}},"_admissions":{"s1":"a1"}},"s1"],"kw":{},"seams":{"_cancel_admission":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"cancel","in":{"argv":[{"_snapshots":{}},"missing"],"kw":{},"seams":{}}}
+{"func":"fork_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"fork_session","in":{"argv":[{},"/a","s1",[{"m":1}]],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"fork_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"fork_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"fork_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"fork_session","in":{"argv":[{},"/a","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"set_session_model","in":{"argv":[{},"m1","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"set_session_model","in":{"argv":[{},"m1","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"set_session_model","in":{"argv":[{},"m1","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"set_session_model","in":{"argv":[{},"m1","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"set_session_model","in":{"argv":[{},"m1","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"set_session_model","in":{"argv":[{},"m1","s1"],"kw":{},"seams":{"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"_confirm_deferred_pick","in":{"argv":[{},"s1","e1",{"target_model":"m2","committed_model":"m1","committed_provider":"p","confirm":"TOKEN","payload":{"model":"m2"}}],"kw":{},"seams":{"_model_confirmer":[null],"refused_pick_text":["refused"]}}}
+{"func":"_confirm_deferred_pick","in":{"argv":[{},"s1","e1",{"target_model":"m2","committed_model":"m1","committed_provider":"p","confirm":"TOKEN","payload":{"model":"m2"}}],"kw":{},"seams":{"_model_confirmer":[false]}}}
+{"func":"_confirm_deferred_pick","in":{"argv":[{},"s1","e1",{"target_model":"m2","committed_model":"m1","committed_provider":"p","confirm":"TOKEN","payload":{"model":"m2"}}],"kw":{},"seams":{"_model_confirmer":[true]}}}
+{"func":"_confirm_deferred_pick","in":{"argv":[{"_snapshots":{"s1":{}}},"s1","e1",{"target_model":"m2","committed_model":"m1","committed_provider":"p","confirm":"TOKEN","payload":{"model":"m2"}}],"kw":{},"seams":{"_model_confirmer":[true]}}}
+{"func":"_confirm_deferred_pick","in":{"argv":[{},"s1","e1",{"target_model":"m2","committed_model":"m1","committed_provider":"p","confirm":"TOKEN","payload":{"model":"m2"}}],"kw":{},"seams":{"_model_confirmer":[{"__raise__":"GatewayClientError","message":"bad"}]}}}
+{"func":"_confirm_deferred_pick","in":{"argv":[{},"s1","e1",{"target_model":"m2","committed_model":"m1","committed_provider":"p","confirm":"TOKEN","payload":{"model":"m2"}}],"kw":{},"seams":{"_model_confirmer":[true]}}}
+{"func":"_model_confirmer","in":{"argv":[{"_conn":null},"s1"],"kw":{},"seams":{}}}
+{"func":"_model_confirmer","in":{"argv":[{"_conn":true},"s1"],"kw":{},"seams":{}}}
+{"func":"_model_confirmer","in":{"argv":[{"_conn":true},"s1"],"kw":{},"seams":{}}}
+{"func":"_model_confirmer","in":{"argv":[{"_conn":true},"s1"],"kw":{},"seams":{}}}
+{"func":"_model_confirmer","in":{"argv":[{"_conn":true},"s1"],"kw":{},"seams":{}}}
+{"func":"_model_confirmer","in":{"argv":[{"_conn":true},"s1"],"kw":{},"seams":{}}}
+{"func":"set_session_mode","in":{"argv":[{},"default","s1"],"kw":{},"seams":{"_held_session":["s1"],"_set_edit_policy":[null]}}}
+{"func":"set_session_mode","in":{"argv":[{},"ask","s1"],"kw":{},"seams":{"_held_session":["s1"],"_set_edit_policy":[null]}}}
+{"func":"set_session_mode","in":{"argv":[{},"acceptEdits","s1"],"kw":{},"seams":{"_held_session":["s1"],"_set_edit_policy":[null]}}}
+{"func":"set_session_mode","in":{"argv":[{},"bypassPermissions","s1"],"kw":{},"seams":{"_held_session":["s1"],"_set_edit_policy":[null]}}}
+{"func":"set_session_mode","in":{"argv":[{},"bogus","s1"],"kw":{},"seams":{}}}
+{"func":"set_session_mode","in":{"argv":[{},"ask","h"],"kw":{},"seams":{"_held_session":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"set_config_option","in":{"argv":[{"_modes":{"s1":"ask"}},"other","s1","v"],"kw":{},"seams":{"_held_session":["s1"],"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"set_config_option","in":{"argv":[{},"model","s1","m1"],"kw":{},"seams":{"_held_session":["s1"],"set_session_model":[null],"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"set_config_option","in":{"argv":[{},"reasoning_effort","s1","high"],"kw":{},"seams":{"_held_session":["s1"],"reasoning_choices":[["high"]],"_idle_control":[null],"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"set_config_option","in":{"argv":[{},"service_tier","s1","fast"],"kw":{},"seams":{"_held_session":["s1"],"client":[{"__raise__":"RuntimeError","message":"no script for client"}]}}}
+{"func":"set_config_option","in":{"argv":[{},"edit_approval_policy","s1","bogus"],"kw":{},"seams":{"_held_session":["s1"]}}}
+{"func":"set_config_option","in":{"argv":[{},"model","s1",42],"kw":{},"seams":{"_held_session":["s1"]}}}
+{"func":"_idle_control","in":{"argv":[{},"s1","edit_policy",{"policy":"ask"},"Mode"],"kw":{},"seams":{"client":[null],"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"_idle_control","in":{"argv":[{},"s1","reasoning",{"effort":null},"Reasoning effort"],"kw":{},"seams":{"client":[null],"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"_idle_control","in":{"argv":[{},"s1","reasoning",{"effort":"high"},"Reasoning effort"],"kw":{},"seams":{"client":[null],"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"_idle_control","in":{"argv":[{},"s1","x",{},"X"],"kw":{},"seams":{"client":[null],"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"_idle_control","in":{"argv":[{},"s1","x",{},"X"],"kw":{},"seams":{"client":[{"__raise__":"SystemExit","message":"die"}]}}}
+{"func":"_idle_control","in":{"argv":[{"_conn":null},"s1","x",{},"X"],"kw":{},"seams":{"client":[null],"mutations.apply":[{"__raise__":"RuntimeError","message":"no script for mutations.apply"}]}}}
+{"func":"list_sessions","in":{"argv":[{"_home":"/h"}],"kw":{},"seams":{"catalog_sessions":[[{"session_id":"a","cwd":"/a"}]]}}}
+{"func":"list_sessions","in":{"argv":[{"_home":"/h"},null,"/a"],"kw":{},"seams":{"catalog_sessions":[[{"session_id":"a","cwd":"/a"},{"session_id":"b","cwd":"/b"}]]}}}
+{"func":"list_sessions","in":{"argv":[{"_home":"/h"},"b"],"kw":{},"seams":{"catalog_sessions":[[{"session_id":"a","cwd":"/a"},{"session_id":"b","cwd":"/b"}]]}}}
+{"func":"list_sessions","in":{"argv":[{"_home":"/h"},"zz"],"kw":{},"seams":{"catalog_sessions":[[{"session_id":"a","cwd":"/a"}]]}}}
+{"func":"list_sessions","in":{"argv":[{"_home":"/h"}],"kw":{},"seams":{"catalog_sessions":[[{"title":"t"}]]}}}
+{"func":"list_sessions","in":{"argv":[{"_home":"/h"}],"kw":{},"seams":{"catalog_sessions":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"prompt","in":{"argv":[{"_aliases":{},"_snapshots":{"s1":{}},"_conn":true,"_usage":{}},{"text":"hi"},"s1"],"kw":{},"seams":{"_has_unknown":[false,{"__raise__":"RuntimeError","message":"no script for _has_unknown"}]}}}
+{"func":"prompt","in":{"argv":[{"_aliases":{},"_snapshots":{"s1":{}},"_conn":true,"_usage":{}},{"text":"hi"},"h"],"kw":{},"seams":{}}}
+{"func":"prompt","in":{"argv":[{"_snapshots":{}},{"text":"hi"},"s1"],"kw":{},"seams":{}}}
+{"func":"prompt","in":{"argv":[{"_aliases":{},"_snapshots":{"s1":{}},"_conn":true,"_usage":{}},{"text":"hi"},"s1"],"kw":{},"seams":{"_has_unknown":[true],"_refresh_unknown_for_prompt":[true]}}}
+{"func":"prompt","in":{"argv":[{"_aliases":{},"_snapshots":{"s1":{}},"_conn":true,"_usage":{}},{"text":"hi"},"s1"],"kw":{},"seams":{"_has_unknown":[false,{"__raise__":"RuntimeError","message":"no script for _has_unknown"}]}}}
+{"func":"prompt","in":{"argv":[{"_aliases":{},"_snapshots":{"s1":{}},"_conn":true,"_usage":{}},{"text":"hi"},"s1"],"kw":{},"seams":{"_has_unknown":[false,{"__raise__":"RuntimeError","message":"no script for _has_unknown"}]}}}
+{"func":"prompt","in":{"argv":[{"_aliases":{},"_snapshots":{"s1":{}},"_conn":true,"_usage":{}},{"text":"hi"},"s1"],"kw":{},"seams":{"_has_unknown":[false,{"__raise__":"RuntimeError","message":"no script for _has_unknown"}]}}}
+{"func":"_prepare_submit","in":{"argv":[{"_unacked":{}},"s1",{"text":"hi"}],"kw":{},"seams":{"_content_blocks_to_openai_user_content":[{"__raise__":"RuntimeError","message":"no script for _content_blocks_to_openai_user_content"}]}}}
+{"func":"_prepare_submit","in":{"argv":[{"_unacked":{"s1":["k","i",["hi",[]]]}},"s1",{"text":"hi"}],"kw":{},"seams":{"_content_blocks_to_openai_user_content":[{"__raise__":"RuntimeError","message":"no script for _content_blocks_to_openai_user_content"}]}}}
+{"func":"_prepare_submit","in":{"argv":[{"_unacked":{"s1":["other","i",["hi",[]]]}},"s1",{"text":"hi"}],"kw":{},"seams":{"_content_blocks_to_openai_user_content":[{"__raise__":"RuntimeError","message":"no script for _content_blocks_to_openai_user_content"}]}}}
+{"func":"_prepare_submit","in":{"argv":[{"_unacked":{},"_pending_cancels":["s1"]},"s1",{"text":"hi"}],"kw":{},"seams":{"_content_blocks_to_openai_user_content":[{"__raise__":"RuntimeError","message":"no script for _content_blocks_to_openai_user_content"}]}}}
+{"func":"_prepare_submit","in":{"argv":[{"_unacked":{}},"s1",{"text":"hi"}],"kw":{},"seams":{"_content_blocks_to_openai_user_content":[{"__raise__":"RuntimeError","message":"no script for _content_blocks_to_openai_user_content"}]}}}
+{"func":"_prepare_submit","in":{"argv":[{"_unacked":{}},"s1",{"text":"hi"}],"kw":{},"seams":{"_content_blocks_to_openai_user_content":[{"__raise__":"RuntimeError","message":"no script for _content_blocks_to_openai_user_content"}]}}}
+{"func":"_refresh_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"status":"unknown"}],"replay_epoch":1,"last_sequence":2}}},"s1"],"kw":{},"seams":{"client":[null],"_has_unknown":[{"__raise__":"RuntimeError","message":"no script for _has_unknown"}]}}}
+{"func":"_refresh_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[]}}},"s1"],"kw":{},"seams":{"client":[null],"_has_unknown":[{"__raise__":"RuntimeError","message":"no script for _has_unknown"}]}}}
+{"func":"_refresh_unknown","in":{"argv":[{"_snapshots":{}},"s1"],"kw":{},"seams":{"client":[null]}}}
+{"func":"_refresh_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"status":"unknown"}]}}},"s1"],"kw":{},"seams":{"client":[null],"_has_unknown":[{"__raise__":"RuntimeError","message":"no script for _has_unknown"}]}}}
+{"func":"_refresh_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"status":"unknown"}]}}},"s1"],"kw":{},"seams":{"client":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"_refresh_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"status":"unknown"}]}}},"s1"],"kw":{},"seams":{"client":[null],"_has_unknown":[{"__raise__":"RuntimeError","message":"no script for _has_unknown"}]}}}
+{"func":"_events","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.events.get":[{"__raise__":"RuntimeError","message":"no script for gateway.events.get"}],"logger.debug":[{"__raise__":"RuntimeError","message":"no script for logger.debug"}]}}}
+{"func":"_events","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.events.get":[{"__raise__":"RuntimeError","message":"no script for gateway.events.get"}],"logger.debug":[{"__raise__":"RuntimeError","message":"no script for logger.debug"}]}}}
+{"func":"_events","in":{"argv":[{"_gateway":true,"_snapshots":{"s1":{"replay_epoch":1,"last_sequence":1}}}],"kw":{},"seams":{"gateway.events.get":[{"__raise__":"RuntimeError","message":"no script for gateway.events.get"}],"logger.debug":[{"__raise__":"RuntimeError","message":"no script for logger.debug"}]}}}
+{"func":"_events","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.events.get":[{"__raise__":"RuntimeError","message":"no script for gateway.events.get"}],"logger.debug":[{"__raise__":"RuntimeError","message":"no script for logger.debug"}]}}}
+{"func":"_events","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.events.get":[{"__raise__":"RuntimeError","message":"no script for gateway.events.get"}],"logger.debug":[{"__raise__":"RuntimeError","message":"no script for logger.debug"}]}}}
+{"func":"_events","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.events.get":[{"__raise__":"RuntimeError","message":"no script for gateway.events.get"}],"logger.debug":[{"__raise__":"RuntimeError","message":"no script for logger.debug"}]}}}
+{"func":"_project","in":{"argv":[{},{"type":"session.info","session_id":"s1","payload":{}}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_project","in":{"argv":[{},{"type":"approval.request","session_id":"s1","payload":{"prompt_id":"p"}}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_project","in":{"argv":[{},{"type":"message.delta","session_id":"s1","payload":{"text":"hi"}}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_project","in":{"argv":[{},{"type":"message.complete","session_id":"s1","payload":{"outcome":"ok"}}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_project","in":{"argv":[{},{"type":"reasoning.delta","session_id":"s1","payload":{}}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_project","in":{"argv":[{},{"type":"x","session_id":"s1"}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_gap_guard","in":{"argv":[{},"x","s1","a1"],"kw":{},"seams":{}}}
+{"func":"_gap_guard","in":{"argv":[{"_editor_mcp":{"s1":{"m":1}},"_resumes":{},"_inflight":[]},"session.replay_gap","s1",null],"kw":{},"seams":{}}}
+{"func":"_gap_guard","in":{"argv":[{"_cut":{"a1":"  old  "},"_segments":{}},"tool.start","s1","a1"],"kw":{},"seams":{"_end_message":[null]}}}
+{"func":"_gap_guard","in":{"argv":[{"_cut":{"a1":""}},"message.delta","s1","a1"],"kw":{},"seams":{}}}
+{"func":"_gap_guard","in":{"argv":[{"_cut":{"a1":"x"}},"message.interim","s1","a1"],"kw":{},"seams":{"_end_message":[null]}}}
+{"func":"_gap_guard","in":{"argv":[{"_editor_mcp":{},"_resumes":{}},"session.replay_gap","s1",null],"kw":{},"seams":{}}}
+{"func":"_answer_clarify","in":{"argv":[{"_form_elicitation":false,"_conn":true},"s1",{"prompt_id":"p","execution_generation":1}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_answer_clarify","in":{"argv":[{"_form_elicitation":true,"_conn":true},"s1",{"prompt_id":"p","execution_generation":1}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_answer_clarify","in":{"argv":[{"_form_elicitation":false,"_conn":true},"s1",{"prompt_id":"p","execution_generation":1}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_answer_clarify","in":{"argv":[{"_form_elicitation":true,"_conn":true},"s1",{"prompt_id":"p"}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_answer_clarify","in":{"argv":[{"_form_elicitation":false,"_conn":true},"s1",{"prompt_id":"p","execution_generation":1}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_answer_clarify","in":{"argv":[{"_form_elicitation":false,"_conn":null},"s1",{"prompt_id":"p","execution_generation":1}],"kw":{},"seams":{"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_session_fields","in":{"argv":[{"_home":"/h","_modes":{},"_gateway":true,"_conn":null},"s1",{"title":"T"},"e1"],"kw":{},"seams":{"model_state":[[]],"provenance_meta":[{}],"session_modes":[{"current_mode_id":"ask"},{"__raise__":"RuntimeError","message":"no script for session_modes"}],"session_config_options":[[]]}}}
+{"func":"_session_fields","in":{"argv":[{"_home":"/h","_modes":{"s1":"ask"},"_gateway":true,"_conn":null},"s1",{"title":"  "},"e1"],"kw":{},"seams":{"model_state":[[]],"provenance_meta":[{}],"session_modes":[{"current_mode_id":"ask"},{"__raise__":"RuntimeError","message":"no script for session_modes"}],"session_config_options":[[]]}}}
+{"func":"_session_fields","in":{"argv":[{"_home":"/h","_modes":{},"_gateway":true,"_conn":true},"s1",{"title":"T"},"e1"],"kw":{},"seams":{"model_state":[[]],"provenance_meta":[{}],"session_modes":[{"current_mode_id":"ask"},{"__raise__":"RuntimeError","message":"no script for session_modes"}],"session_config_options":[[]]}}}
+{"func":"_session_fields","in":{"argv":[{"_home":"/h","_modes":{},"_gateway":true},"s1",{},"e1"],"kw":{},"seams":{"model_state":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"_session_fields","in":{"argv":[{"_home":"/h","_modes":{},"_gateway":true},"s1",{},"e1"],"kw":{},"seams":{"model_state":[[]],"provenance_meta":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"_session_fields","in":{"argv":[{"_home":"/h","_modes":{},"_gateway":true},"s1",{},"e1"],"kw":{},"seams":{"model_state":[[]],"provenance_meta":[{}],"session_modes":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"_teardown","in":{"argv":[{"_event_task":null,"_connection":null}],"kw":{},"seams":{}}}
+{"func":"_teardown","in":{"argv":[{"_event_task":"T","_connection":"C","_streamed":{"a":1},"_segments":{"a":1},"_message_ids":{"a":1},"_cut":{"a":1},"_failure":"F","_link":0}],"kw":{},"seams":{"connection.__aexit__":[null]}}}
+{"func":"_teardown","in":{"argv":[{"_event_task":"T","_connection":null}],"kw":{},"seams":{}}}
+{"func":"_teardown","in":{"argv":[{"_event_task":null,"_connection":"C"}],"kw":{},"seams":{"connection.__aexit__":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"_teardown","in":{"argv":[{"_event_task":null,"_connection":"C"}],"kw":{},"seams":{"connection.__aexit__":[{"__raise__":"SystemExit","message":"die"}]}}}
+{"func":"_teardown","in":{"argv":[{"_event_task":"T","_connection":"C"}],"kw":{},"seams":{"connection.__aexit__":[null]}}}
+{"func":"_notify_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"status":"unknown"}]}},"_conn":true},"s1"],"kw":{},"seams":{"_has_unknown":[true],"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_notify_unknown","in":{"argv":[{"_snapshots":{"s1":{}},"_conn":true},"s1"],"kw":{},"seams":{"_has_unknown":[false]}}}
+{"func":"_notify_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"status":"unknown"}]}},"_conn":null},"s1"],"kw":{},"seams":{"_has_unknown":[true]}}}
+{"func":"_notify_unknown","in":{"argv":[{"_snapshots":{},"_conn":true},"s1"],"kw":{},"seams":{"_has_unknown":[{"__raise__":"ValueError","message":"bad"}]}}}
+{"func":"_notify_unknown","in":{"argv":[{"_conn":true},"s1"],"kw":{},"seams":{"_has_unknown":[true],"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
+{"func":"_notify_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"status":"unknown"}]}},"_conn":true},"s1"],"kw":{},"seams":{"_has_unknown":[true],"_editor_id":[{"__raise__":"RuntimeError","message":"no script for _editor_id"}]}}}
