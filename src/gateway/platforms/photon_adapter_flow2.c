@@ -1016,11 +1016,13 @@ static json_t *ph2_gate_stt_chat(ph2_ctx_t *ctx, const json_t *event) {
     const json_t *space = json_obj_get(event, "space");
     if (!ph2_truthy(space)) space = NULL;
     const json_t *craw = json_obj_get(event, "content");
-    if (!ph2_truthy(craw)) craw = NULL;
+    json_t *craw_def = NULL;
+    if (!ph2_truthy(craw)) { craw_def = json_object(); craw = craw_def; }
     json_t *ca = ph2_args();
     ph2_set_copy(ca, "content", craw);
     json_t *content = ph2_call(ctx, "reply_inner", ca);
-    if (ph2_is_raise(content)) return content;
+    if (ph2_is_raise(content)) { if (craw_def) json_free(craw_def); return content; }
+    if (craw_def) json_free(craw_def);
     char *space_id = ph2_get_str_or(space, "id", "");
     bool transcribes = false;
     if (ph2_str_eq(json_obj_get(space, "type"), "group")

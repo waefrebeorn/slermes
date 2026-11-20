@@ -852,8 +852,12 @@ static json_t *bt2_resolve_inference_profile_model_id(bt2_ctx *ctx, const json_t
     free(arn_region);
     json_free(region_node);
     if (caught) {
-        /* except Exception as exc: logger.debug(fmt, profile_arn, exc) */
+        /* except Exception as exc: logger.debug(fmt, profile_arn, exc).
+         * Snapshot str(exc), then SWALLOW the caught exception BEFORE the
+         * logger seam: bt2_call does not clear a pre-existing pending exc,
+         * so the post-logger pending check must see only a logger raise. */
         char *exc_str = bt2_dup_span(bt2_exc_msg(ctx), strlen(bt2_exc_msg(ctx)));
+        bt2_exc_clear(ctx);
         json_t *a3 = json_object();
         json_set(a3, "msg", json_string(BT2_PROFILE_SKIP_FMT));
         json_set(a3, "arg1", json_copy(profile_arn));
@@ -862,7 +866,6 @@ static json_t *bt2_resolve_inference_profile_model_id(bt2_ctx *ctx, const json_t
         json_t *lr = bt2_call(ctx, "logger_debug", a3);
         if (lr) json_free(lr);
         if (bt2_exc_pending(ctx)) { json_free(resolved); return NULL; }   /* logger raise propagates */
-        bt2_exc_clear(ctx);
     }
     json_set(cache, bt2_jstr(profile_arn), json_copy(resolved));
     return resolved;

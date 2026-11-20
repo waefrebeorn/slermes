@@ -212,20 +212,27 @@ NS = extract()
 
 # ── attribute / path / task / resp doubles ──
 class FakePath:
-    def __init__(self, s):
+    def __init__(self, s, ctx=None):
         self.p = PurePosixPath(s if s is not None else "")
         self.s = str(self.p)
+        self._ctx = ctx
 
     def __truediv__(self, name):
-        return FakePath(str(self.p / name))
+        return FakePath(str(self.p / name), self._ctx)
 
     @property
     def parent(self):
-        return FakePath(str(self.p.parent))
+        return FakePath(str(self.p.parent), self._ctx)
 
     @property
     def name(self):
         return self.p.name
+
+    def unlink(self, missing_ok=False):
+        return self._ctx.call("unlink", {"path": self.s, "missing_ok": missing_ok})
+
+    def read_text(self, encoding=None, **k):
+        return self._ctx.call("read_text", {"path": self.s, "encoding": encoding})
 
     def __str__(self):
         return self.s
@@ -449,7 +456,7 @@ def install_recorders(ctx, args):
 
     def get_hermes_home_rec():
         raw = ctx.call("get_hermes_home", {})
-        return FakePath(raw)
+        return FakePath(raw, ctx)
     HC_MOD.get_hermes_home = get_hermes_home_rec
     RSS_MOD.record_async = rec_async(ctx, "rich_sent_store.record_async",
                                      ARGMAP["rich_sent_store.record_async"])

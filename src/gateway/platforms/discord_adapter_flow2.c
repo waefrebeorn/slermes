@@ -969,7 +969,10 @@ static json_t *da2_record_bot_tag_debounce(da2_ctx_t *ctx, const json_t *args) {
     json_set(a, "message", json_copy(json_obj_get(args, "message")));
     json_t *key = da2_call(ctx, "_bot_tag_debounce_key", a);
     if (da2_is_raise(key)) return key;
-    json_t *err = da2_deb_set(ctx, json_get_str(key, "", ""), sum);
+    /* key is a scalar STRING seam result; json_get_str is an object-key
+     * accessor and would return "" on it. Read str_val directly. */
+    const char *ks = da2_str(key);
+    json_t *err = da2_deb_set(ctx, ks ? ks : "", sum);
     json_free(key);
     if (err) return err;
     return NULL;
@@ -989,6 +992,8 @@ static json_t *da2_is_bot_tag_debounce_continuation(da2_ctx_t *ctx, const json_t
     json_set(a, "message", json_copy(json_obj_get(args, "message")));
     json_t *key = da2_call(ctx, "_bot_tag_debounce_key", a);
     if (da2_is_raise(key)) return key;
+    const char *ks = da2_str(key); /* scalar string, NOT json_get_str(key,...) */
+    if (!ks) ks = "";
     json_t *now = da2_call(ctx, "time.monotonic", json_object());
     if (da2_is_raise(now)) { json_free(key); return now; }
     /* self._bot_tag_debounce_until.get(key, 0.0) <= now */
@@ -999,7 +1004,7 @@ static json_t *da2_is_bot_tag_debounce_continuation(da2_ctx_t *ctx, const json_t
         json_free(key); json_free(now);
         return da2_err("AttributeError", buf);
     }
-    const json_t *stored = deb ? json_obj_get(deb, json_get_str(key, "", "")) : NULL;
+    const json_t *stored = deb ? json_obj_get(deb, ks) : NULL;
     double sval = 0.0;
     if (stored && stored->type != JSON_NUMBER) {
         char buf[192];
@@ -1011,7 +1016,7 @@ static json_t *da2_is_bot_tag_debounce_continuation(da2_ctx_t *ctx, const json_t
     }
     if (stored) sval = stored->num_val;
     if (sval <= now->num_val) {
-        da2_deb_pop(ctx, json_get_str(key, "", ""));
+        da2_deb_pop(ctx, ks);
         json_free(key); json_free(now);
         return json_bool(false);
     }
@@ -1019,7 +1024,7 @@ static json_t *da2_is_bot_tag_debounce_continuation(da2_ctx_t *ctx, const json_t
     if (da2_is_raise(win)) { json_free(key); json_free(now); return win; }
     double sum = now->num_val + win->num_val;
     json_free(win);
-    json_t *err = da2_deb_set(ctx, json_get_str(key, "", ""), sum);
+    json_t *err = da2_deb_set(ctx, ks, sum);
     json_free(key); json_free(now);
     if (err) return err;
     return json_bool(true);

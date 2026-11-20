@@ -216,6 +216,10 @@ static const char *ba2_arr_str(const json_t *arr, size_t i, const char *def) {
     const json_t *v = json_get(arr, i);
     return (v && v->type == JSON_STRING && v->str_val) ? v->str_val : def;
 }
+static double ba2_arr_num(const json_t *arr, size_t i, double def) {
+    const json_t *v = json_get(arr, i);
+    return (v && v->type == JSON_NUMBER) ? v->num_val : def;
+}
 static json_t *ba2_err(const char *type, const char *message) {
     json_t *e = json_object();
     json_set_hdr(e, "__raise__", type);
@@ -749,16 +753,16 @@ static json_t *ba2__escape_unresolved_presentation_mention(ba2_ctx_t *ctx, const
     return r;
 }
 
-/* Path(name).suffix: rfind('.'); 0 < i < len-1 -> name[i:] else "". */
+/* Path(name).suffix (py3.14): name.lstrip('.') then rfind('.'); if found,
+ * the suffix is name[dot:] (trailing-dot counts; leading dots stripped). */
 static char *ba2_path_suffix(const char *name) {
     size_t n = strlen(name);
+    size_t s = 0;
+    while (s < n && name[s] == '.') s++;
     size_t i = n;
-    while (i > 0 && name[i - 1] != '.') i--;
-    /* i is index AFTER the last dot; dot index = i-1 */
-    if (i == 0) return ba2_strdup("");
-    size_t dot = i - 1;
-    if (dot == 0 || dot >= n - 1) return ba2_strdup("");
-    return ba2_strdup(name + dot);
+    while (i > s && name[i - 1] != '.') i--;
+    if (i == s) return ba2_strdup("");
+    return ba2_strdup(name + (i - 1));
 }
 /* PoP: ba2__safe_attachment_filename @ plugins/platforms/buzz/adapter.py:_safe_attachment_filename */
 static json_t *ba2__safe_attachment_filename(ba2_ctx_t *ctx, const json_t *args) {
@@ -996,8 +1000,8 @@ static json_t *ba2__replace_media_refs(ba2_ctx_t *ctx, const json_t *args) {
     ba2_repl_t *rs = malloc((rn ? rn : 1) * sizeof *rs);
     for (size_t i = 0; i < rn; i++) {
         const json_t *r = json_get(repls, i);
-        rs[i].start = (long long)json_get_num(r, "0", 0);
-        rs[i].end = (long long)json_get_num(r, "1", 0);
+        rs[i].start = (long long)ba2_arr_num(r, 0, 0);
+        rs[i].end = (long long)ba2_arr_num(r, 1, 0);
         rs[i].repl = ba2_strdup(ba2_arr_str(r, 2, ""));
     }
     ba2_sort_repls(rs, rn);
@@ -1636,7 +1640,7 @@ static json_t *ba2_send_reaction(ba2_ctx_t *ctx, const json_t *args) {
     json_t *res = ba2_run_cli_c(ctx, cargs, NULL);
     json_free(cargs);
     if (ba2_is_raise(res)) return res;
-    long long code = (long long)json_get_num(res, "0", 0);
+    long long code = (long long)ba2_arr_num(res, 0, 0);
     if (code != 0) {
         const char *errs = ba2_arr_str(res, 2, "");
         json_t *cem = ba2_cli_err_msg(ctx, errs, code);
@@ -1685,7 +1689,7 @@ static json_t *ba2_edit_message(ba2_ctx_t *ctx, const json_t *args) {
     json_t *res = ba2_run_cli_c(ctx, cargs, NULL);
     json_free(cargs);
     if (ba2_is_raise(res)) return res;
-    long long code = (long long)json_get_num(res, "0", 0);
+    long long code = (long long)ba2_arr_num(res, 0, 0);
     if (code != 0) {
         json_t *cem = ba2_cli_err_msg(ctx, ba2_arr_str(res, 2, ""), code);
         if (ba2_is_raise(cem)) { json_free(res); return cem; }
@@ -1736,7 +1740,7 @@ static json_t *ba2_delete_message(ba2_ctx_t *ctx, const json_t *args) {
     json_t *res = ba2_run_cli_c(ctx, cargs, NULL);
     json_free(cargs);
     if (ba2_is_raise(res)) return res;
-    long long code = (long long)json_get_num(res, "0", 0);
+    long long code = (long long)ba2_arr_num(res, 0, 0);
     if (code != 0) { json_free(res); return json_bool(false); }
     const char *out = ba2_arr_str(res, 1, "");
     json_free(res);
@@ -1835,7 +1839,7 @@ static json_t *ba2__resolve_user_name(ba2_ctx_t *ctx, const json_t *args) {
     json_t *res = ba2_run_cli_c(ctx, cargs, NULL);
     json_free(cargs);
     if (ba2_is_raise(res)) return res;
-    long long code = (long long)json_get_num(res, "0", 0);
+    long long code = (long long)ba2_arr_num(res, 0, 0);
     json_t *profiles = NULL;
     if (code == 0) {
         json_t *a = ba2_args();

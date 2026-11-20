@@ -50,8 +50,8 @@
  *   handle raises AttributeError before the call (no seam token).
  * - call_llm's resp is materialized as nested SimpleNamespace doubles on
  *   the oracle side; attribute-error type names on OBJECT nodes read
- *   'SimpleNamespace' on BOTH sides (scalar nodes keep their JSON type
- *   name: NoneType/bool/int/float/str/list).
+ *   'types.SimpleNamespace' on BOTH sides (py3.14 module-qualifies;
+ *   scalar nodes keep their JSON type name: NoneType/bool/int/float/str/list).
  * - Paths are posix strings; Path.expanduser is a no-op (fixture domain
  *   excludes '~'); Path(non-str) raises the CPython 3.14 TypeError.
  * - str()-computed fixture positions carry str/int/bool/None only
@@ -454,6 +454,33 @@ static char *gl_py_str(const json_t *v) {
     }
 }
 
+/* repr(s) for an ASCII str: quote selection + escapes (used by the int()
+ * ValueError message). malloc'd. */
+static char *gl_repr_str(const char *s) {
+    const char *p = s ? s : "";
+    bool has_sq = strchr(p, '\'') != NULL;
+    bool has_dq = strchr(p, '"') != NULL;
+    char q = (has_sq && !has_dq) ? '"' : '\'';
+    size_t n = strlen(p);
+    char *out = malloc(n * 4 + 3);
+    if (!out) return NULL;
+    size_t o = 0;
+    out[o++] = q;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = (unsigned char)p[i];
+        if (c == (unsigned char)q || c == '\\') { out[o++] = '\\'; out[o++] = (char)c; }
+        else if (c == '\n') { out[o++] = '\\'; out[o++] = 'n'; }
+        else if (c == '\r') { out[o++] = '\\'; out[o++] = 'r'; }
+        else if (c == '\t') { out[o++] = '\\'; out[o++] = 't'; }
+        else if (c < 0x20 || c == 0x7f) {
+            o += (size_t)snprintf(out + o, 5, "\\x%02x", c);
+        } else out[o++] = (char)c;
+    }
+    out[o++] = q;
+    out[o] = '\0';
+    return out;
+}
+
 /* int(x) for number/bool/decimal-string. Returns a NEW number node or a
  * raise sentinel. String domain: optional sign, digits with underscores
  * BETWEEN digits, int-strip whitespace padding; base 10 only. */
@@ -493,7 +520,9 @@ static json_t *gl_to_int(const json_t *v) {
         } else ok = false;
     }
     if (!ok || !any || !prev_digit) {
-        char *m = gl_fmt("invalid literal for int() with base 10: '%s'", s);
+        char *rs = gl_repr_str(s);
+        char *m = gl_fmt("invalid literal for int() with base 10: %s", rs ? rs : "''");
+        free(rs);
         json_t *r = gl_make_raise("ValueError", m);
         free(m);
         return r;
@@ -632,7 +661,11 @@ json_t *gl_decision(const json_t *status, bool should_continue, const json_t *pr
 
 /* PoP: gl_render_extra_criteria @ hermes_cli/goals.py:_render_extra_criteria */
 json_t *gl_render_extra_criteria(const json_t *subgoals) {
-    if (!gl_is_arr(subgoals)) {
+    /* enumerate() accepts any iterable: list items, str chars, dict keys. */
+    size_t n = 0;
+    if (gl_is_arr(subgoals) || gl_is_obj(subgoals)) n = subgoals->c.count;
+    else if (gl_is_str(subgoals)) n = strlen(gl_sval(subgoals));
+    else {
         char *m = gl_fmt("'%s' object is not iterable", gl_type_name(subgoals));
         json_t *r = gl_make_raise("TypeError", m);
         free(m);
@@ -643,8 +676,11 @@ json_t *gl_render_extra_criteria(const json_t *subgoals) {
     if (!out) return json_null();
     size_t o = 0;
     out[0] = '\0';
-    for (size_t i = 0; i < subgoals->c.count; i++) {
-        char *t = gl_py_str(subgoals->c.items[i]);
+    for (size_t i = 0; i < n; i++) {
+        char *t = NULL;
+        if (gl_is_arr(subgoals)) t = gl_py_str(subgoals->c.items[i]);
+        else if (gl_is_obj(subgoals)) t = gl_join(subgoals->c.keys[i], "");
+        else { char two[2] = {gl_sval(subgoals)[i], '\0'}; t = gl_join(two, ""); }
         char *line = gl_fmt("%s- Extra criterion %zu: %s", i ? "\n" : "", i + 1, t ? t : "");
         free(t);
         if (!line) { free(out); return json_null(); }
@@ -905,9 +941,10 @@ json_t *gl_goal_judge_setting(gl_flow_io_t *io, const json_t *key, const json_t 
 }
 
 /* resp attribute-chain navigation over SimpleNamespace-materialized dicts.
- * OBJECT nodes read type name 'SimpleNamespace' (the oracle double). */
+ * OBJECT nodes read type name 'types.SimpleNamespace' (CPython 3.14
+ * module-qualifies the name in attribute/subscript errors). */
 static const char *gl_resp_type_name(const json_t *v) {
-    if (gl_is_obj(v)) return "SimpleNamespace";
+    if (gl_is_obj(v)) return "types.SimpleNamespace";
     return gl_type_name(v);
 }
 
@@ -1164,7 +1201,9 @@ json_t *gl_manager_require_active(gl_flow_io_t *io) {
 /* PoP: gl_manager_pause_state @ hermes_cli/goals.py:_pause_state */
 json_t *gl_manager_pause_state(gl_flow_io_t *io, const json_t *reason) {
     json_t *st = gl_mgr_state(io);
-    if (gl_is_null(st)) return gl_attr_raise("NoneType", "status");
+    if (gl_is_null(st))
+        return gl_make_raise("AttributeError",
+            "'NoneType' object has no attribute 'status' and no __dict__ for setting new attributes");
     json_set(st, "status", json_string("paused"));
     json_set(st, "paused_reason", reason ? json_copy(reason) : json_null());
     json_t *r = gl_manager_save(io);

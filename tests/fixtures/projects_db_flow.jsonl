@@ -1,0 +1,209 @@
+{"func": "_slugify", "in": {"name": null, "io": {}}}
+{"func": "_slugify", "in": {"name": "", "io": {}}}
+{"func": "_slugify", "in": {"name": "  ", "io": {}}}
+{"func": "_slugify", "in": {"name": "Hello World", "io": {}}}
+{"func": "_slugify", "in": {"name": "--__--", "io": {}}}
+{"func": "_slugify", "in": {"name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "io": {}}}
+{"func": "_slugify", "in": {"name": "A-B_C", "io": {}}}
+{"func": "_slugify", "in": {"name": 5, "io": {}}}
+{"func": "_slugify", "in": {"name": true, "io": {}}}
+{"func": "_slugify", "in": {"name": 0, "io": {}}}
+{"func": "_slugify", "in": {"name": false, "io": {}}}
+{"func": "_slugify", "in": {"name": "  MiXeD  Case  ", "io": {}}}
+{"func": "_slugify", "in": {"name": "-lead", "io": {}}}
+{"func": "_slugify", "in": {"name": "trail-", "io": {}}}
+{"func": "_slugify", "in": {"name": "a.b/c", "io": {}}}
+{"func": "_slugify", "in": {"name": "___", "io": {}}}
+{"func": "_slugify", "in": {"name": "2fast", "io": {}}}
+{"func": "_slugify", "in": {"name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa--y", "io": {}}}
+{"func": "_slugify", "in": {"name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-", "io": {}}}
+{"func": "_slugify", "in": {"name": "x_y-z0", "io": {}}}
+{"func": "_slugify", "in": {"name": "\t\r\n", "io": {}}}
+{"func": "_slugify", "in": {"name": "a\nb", "io": {}}}
+{"func": "_slugify", "in": {"name": 5.5, "io": {}}}
+{"func": "_slugify", "in": {"name": "it's", "io": {}}}
+{"func": "_slugify", "in": {"name": " x ", "io": {}}}
+{"func": "_now", "in": {"io": {"time.time": {"ret": 123.7}}}}
+{"func": "_now", "in": {"io": {"time.time": {"ret": 0}}}}
+{"func": "_now", "in": {"io": {"time.time": {"ret": -0.5}}}}
+{"func": "_now", "in": {"io": {"time.time": {"ret": 1000000000.9}}}}
+{"func": "_now", "in": {"io": {"time.time": {"ret": true}}}}
+{"func": "_now", "in": {"io": {"time.time": {"ret": false}}}}
+{"func": "_now", "in": {"io": {"time.time": {"ret": null}}}}
+{"func": "_now", "in": {"io": {"time.time": {"ret": 5}}}}
+{"func": "_now", "in": {"io": {"time.time": {"raise": {"type": "OSError", "message": "clock"}}}}}
+{"func": "_now", "in": {"io": {"time.time": {"raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"ret": "/home/u"}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"ret": ""}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"ret": "/"}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"ret": "//x"}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"ret": "rel"}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"ret": "/a//b/"}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"ret": "."}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"ret": "/home/u/"}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"raise": {"type": "OSError", "message": "home"}}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"raise": {"type": "SystemExit", "message": "sx"}}}}}
+{"func": "projects_db_path", "in": {"io": {"get_hermes_home": {"ret": 5}}}}
+{"func": "_primary_path_key", "in": {"path": "/a/b", "io": {"normalize_path": {"ret": "/norm/x"}}}}
+{"func": "_primary_path_key", "in": {"path": "", "io": {"normalize_path": {"ret": ""}}}}
+{"func": "_primary_path_key", "in": {"path": "x", "io": {"normalize_path": {"ret": 5}}}}
+{"func": "_primary_path_key", "in": {"path": "x", "io": {"normalize_path": {"ret": null}}}}
+{"func": "_primary_path_key", "in": {"path": "x", "io": {"normalize_path": {"raise": {"type": "ValueError", "message": "np"}}}}}
+{"func": "_primary_path_key", "in": {"path": "x", "io": {"normalize_path": {"raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "_primary_path_key", "in": {"path": null, "io": {"normalize_path": {"ret": "/n"}}}}
+{"func": "owns", "in": {"folder": "/a/b", "target": "/a/b", "io": {}}}
+{"func": "owns", "in": {"folder": "/a/b", "target": "/a/b/c", "io": {}}}
+{"func": "owns", "in": {"folder": "/a/b/", "target": "/a/b/c", "io": {}}}
+{"func": "owns", "in": {"folder": "/a/b\\", "target": "/a/b/c", "io": {}}}
+{"func": "owns", "in": {"folder": "/a/b", "target": "/a/bc", "io": {}}}
+{"func": "owns", "in": {"folder": "/a/b", "target": "/a/b/", "io": {}}}
+{"func": "owns", "in": {"folder": "", "target": "", "io": {}}}
+{"func": "owns", "in": {"folder": "", "target": "x", "io": {}}}
+{"func": "owns", "in": {"folder": "/", "target": "/x", "io": {}}}
+{"func": "owns", "in": {"folder": "//x", "target": "//x/y", "io": {}}}
+{"func": "owns", "in": {"folder": "/a/b", "target": "", "io": {}}}
+{"func": "owns", "in": {"folder": "a", "target": "a/b", "io": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "color"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}, "add_column_if_missing": [{"ret": true}, {"ret": true}]}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": []}}, "add_column_if_missing": [{"ret": true}, {"ret": true}, {"ret": true}, {"ret": true}]}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {}, "state": {"initialized_paths": ["/r/x"]}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"raise": {"type": "OSError", "message": "schema"}}}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"raise": {"type": "OperationalError", "message": "pragma"}}}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"other": "x"}]}}}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}]}}, "add_column_if_missing": {"raise": {"type": "ValueError", "message": "dup"}}}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}]}}, "add_column_if_missing": {"raise": {"type": "KeyboardInterrupt", "message": "ki"}}}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": 5}}}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": 5}}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "id"}]}}, "add_column_if_missing": [{"ret": true}, {"ret": true}, {"ret": true}, {"ret": true}]}, "state": {}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}}, "state": {"initialized_paths": ["/other"]}}}
+{"func": "_initialize", "in": {"conn": "c1", "resolved": "/r/x", "io": {"conn.executescript": {"ret": null}, "conn.execute": {"ret": {}}}, "state": {}}}
+{"func": "connect", "in": {"db_path": null, "io": {"path.resolve": {"ret": "/home/u/projects.db"}, "open_db": {"ret": "conn-1"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}, "get_hermes_home": {"ret": "/home/u"}}}}
+{"func": "connect", "in": {"db_path": "/x//y", "io": {"path.resolve": {"ret": "/resolved"}, "open_db": {"ret": "c2"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}}}}
+{"func": "connect", "in": {"db_path": "/x", "io": {"path.resolve": {"raise": {"type": "OSError", "message": "resolve"}}}}}
+{"func": "connect", "in": {"db_path": "/x", "io": {"path.resolve": {"ret": "/r"}, "open_db": {"raise": {"type": "OSError", "message": "open"}}}}}
+{"func": "connect", "in": {"db_path": "/x", "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"raise": {"type": "ValueError", "message": "schema"}}, "conn.close": {"ret": null}}}}
+{"func": "connect", "in": {"db_path": "/x", "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"raise": {"type": "ValueError", "message": "schema"}}, "conn.close": {"raise": {"type": "OSError", "message": "close"}}}}}
+{"func": "connect", "in": {"db_path": "/x", "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"raise": {"type": "ValueError", "message": "schema"}}, "conn.close": {"raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "connect", "in": {"db_path": 5, "io": {}}}
+{"func": "connect", "in": {"db_path": null, "io": {"get_hermes_home": {"raise": {"type": "RuntimeError", "message": "home"}}}}}
+{"func": "connect", "in": {"db_path": "/x", "io": {"path.resolve": {"ret": 5}}}}
+{"func": "connect", "in": {"db_path": "", "io": {"path.resolve": {"ret": "/cwd"}, "open_db": {"ret": "c3"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}}}}
+{"func": "connect", "in": {"db_path": "/x", "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c4"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": []}}, "add_column_if_missing": [{"ret": true}, {"ret": true}, {"ret": true}, {"ret": true}]}}}
+{"func": "connect_closing", "in": {"db_path": "/x", "body": null, "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}, "conn.close": {"ret": null}}}}
+{"func": "connect_closing", "in": {"db_path": "/x", "body": {"raise": {"type": "ValueError", "message": "body"}}, "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}, "conn.close": {"ret": null}}}}
+{"func": "connect_closing", "in": {"db_path": "/x", "body": {"raise": {"type": "SystemExit", "message": "sx"}}, "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}, "conn.close": {"ret": null}}}}
+{"func": "connect_closing", "in": {"db_path": "/x", "body": {"raise": {"type": "ValueError", "message": "body"}}, "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}, "conn.close": {"raise": {"type": "OSError", "message": "close"}}}}}
+{"func": "connect_closing", "in": {"db_path": "/x", "body": {"raise": {"type": "ValueError", "message": "body"}}, "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}, "conn.close": {"raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "connect_closing", "in": {"db_path": "/x", "body": null, "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}, "conn.close": {"raise": {"type": "SystemExit", "message": "sx"}}}}}
+{"func": "connect_closing", "in": {"db_path": "/x", "body": null, "io": {"path.resolve": {"ret": "/r"}, "open_db": {"raise": {"type": "OSError", "message": "open"}}}}}
+{"func": "connect_closing", "in": {"db_path": null, "body": null, "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}, "conn.close": {"ret": null}, "get_hermes_home": {"ret": "/home/u"}}}}
+{"func": "connect_closing", "in": {"db_path": "/x", "body": {"raise": {"type": "GeneratorExit", "message": ""}}, "io": {"path.resolve": {"ret": "/r"}, "open_db": {"ret": "c1"}, "conn.executescript": {"ret": null}, "conn.execute": {"ret": {"fetchall": [{"name": "id"}, {"name": "slug"}, {"name": "name"}, {"name": "description"}, {"name": "icon"}, {"name": "color"}, {"name": "board_slug"}, {"name": "primary_path"}, {"name": "created_at"}, {"name": "archived"}]}}, "conn.close": {"ret": null}}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": {"path": "/a", "label": "L", "is_primary": true, "added_at": 5}, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": {"path": "/a"}, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": {}, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": {"path": "/a", "is_primary": "yes"}, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": {"path": "/a", "is_primary": 0}, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": {"path": "/a", "is_primary": null}, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": {"path": "/a", "is_primary": []}, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": {"path": "/a", "is_primary": {}}, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": {"path": "/a", "is_primary": [1]}, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": "x", "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": 5, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": null, "io": {}}}
+{"func": "ProjectFolder.to_dict", "in": {"folder": {"path": "/a", "label": "L", "added_at": 9}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "archived": false, "folders": []}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "slug": "s", "name": "n", "created_at": 5}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "description": "d", "icon": "i", "color": "c", "board_slug": "b", "primary_path": "/p", "archived": true, "folders": [{"path": "/a", "label": "L", "is_primary": 1, "added_at": 7}]}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "name": "n", "created_at": 5, "folders": []}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "folders": [5]}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "folders": null}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "folders": 5}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "folders": [{"path": "/a"}]}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "folders": [{"label": "x"}]}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "archived": "yes", "folders": []}, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": "x", "io": {}}}
+{"func": "Project.to_dict", "in": {"project": null, "io": {}}}
+{"func": "Project.to_dict", "in": {"project": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "folders": [{"path": "/a", "label": null, "is_primary": 1, "added_at": 7}]}, "io": {}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "archived": 0, "description": "d", "icon": "i", "color": "c", "board_slug": "b", "primary_path": "/p"}, "io": {"conn.execute": {"ret": {"fetchall": []}}}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "slug": "s", "name": "n", "created_at": 5}, "io": {"conn.execute": {"ret": {"fetchall": []}}}}}
+{"func": "_load_project", "in": {"row": {"slug": "s", "name": "n", "created_at": 5}, "io": {}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "name": "n", "created_at": 5}, "io": {"conn.execute": {"ret": {"fetchall": []}}}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "slug": "s", "name": "n", "created_at": 5}, "io": {"conn.execute": {"ret": {"fetchall": [{"path": "/a", "label": "L", "is_primary": 1, "added_at": 7}, {"path": "/b", "label": null, "is_primary": 0, "added_at": 8}]}}}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "slug": "s", "name": "n", "created_at": 5}, "io": {"conn.execute": {"ret": {"fetchall": [{"path": "/a", "is_primary": 1, "added_at": 7}]}}}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "slug": "s", "name": "n", "created_at": 5}, "io": {"conn.execute": {"raise": {"type": "OperationalError", "message": "db"}}}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "slug": "s", "name": "n", "created_at": 5}, "io": {"conn.execute": {"ret": {"fetchall": 5}}}}}
+{"func": "_load_project", "in": {"row": null, "io": {}}}
+{"func": "_load_project", "in": {"row": {}, "io": {}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "archived": "x"}, "io": {"conn.execute": {"ret": {"fetchall": []}}}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "slug": "s", "name": "n", "created_at": 5}, "io": {"conn.execute": {"ret": {"fetchall": [{"path": "/a", "label": null, "is_primary": 0, "added_at": 0}]}}}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "slug": "s", "name": "n", "created_at": 5}, "io": {"conn.execute": {"ret": {}}}}}
+{"func": "_load_project", "in": {"row": {"id": "p1", "slug": "s", "name": "n", "created_at": 5, "description": null, "icon": null}, "io": {"conn.execute": {"ret": {"fetchall": []}}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": {"ret": ""}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}], "list_projects": {"ret": []}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}, {"ret": "/key"}], "list_projects": {"ret": [{"primary_path": "/key", "folders": []}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}, {"ret": "/key"}], "list_projects": {"ret": [{"primary_path": null, "folders": [{"path": "/key", "is_primary": true}]}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}, {"ret": "/first"}], "list_projects": {"ret": [{"primary_path": null, "folders": [{"path": "/first", "is_primary": false}, {"path": "/key", "is_primary": false}]}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}], "list_projects": {"ret": [{"primary_path": null, "folders": []}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}], "list_projects": {"ret": [{"folders": []}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}], "list_projects": {"ret": [{"primary_path": null}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}], "list_projects": {"ret": [{"primary_path": null, "folders": [{}]}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}], "list_projects": {"ret": [{"primary_path": null, "folders": [{"is_primary": true}]}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}, {"ret": "/key"}], "list_projects": {"ret": [{"primary_path": null, "folders": [{"path": "/first", "is_primary": false}, {"path": "/key", "is_primary": true}]}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}], "list_projects": {"raise": {"type": "OSError", "message": "db"}}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": {"raise": {"type": "ValueError", "message": "np"}}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}, {"ret": "/key"}], "list_projects": {"ret": [{"primary_path": 5, "folders": []}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": true, "io": {"normalize_path": [{"ret": "/key"}, {"ret": "/key"}], "list_projects": {"ret": [{"primary_path": "/key", "folders": []}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}], "list_projects": {"ret": [{"primary_path": null, "folders": null}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}, {"ret": "/key"}], "list_projects": {"ret": [{"primary_path": "", "folders": [{"path": "/key", "is_primary": true}]}]}}}}
+{"func": "find_by_primary_path", "in": {"path": "/target", "include_archived": false, "io": {"normalize_path": [{"ret": "/key"}], "list_projects": {"ret": null}}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"ret": {}}, {"ret": {"rowcount": 1}}, {"ret": {}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"ret": {}}, {"ret": {"rowcount": 0}}, {"ret": {}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"ret": {}}, {"raise": {"type": "ValueError", "message": "upd"}}, {"ret": {}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"ret": {}}, {"raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"ret": {}}, {"raise": {"type": "ValueError", "message": "upd"}}, {"raise": {"type": "OperationalError", "message": "no txn"}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"ret": {}}, {"raise": {"type": "ValueError", "message": "upd"}}, {"raise": {"type": "RuntimeError", "message": "rb"}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"raise": {"type": "OSError", "message": "begin"}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"ret": {}}, {"ret": {"rowcount": 1}}, {"raise": {"type": "OSError", "message": "commit"}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"ret": {}}, {"ret": {}}, {"ret": {}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "io": {"conn.execute": [{"ret": {}}, {"ret": {}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"ret": {}}, {"ret": 5}, {"ret": {}}]}}}
+{"func": "_execute_rowcount", "in": {"sql": "UPDATE projects SET name = ? WHERE id = ?", "params": ["p1"], "io": {"conn.execute": [{"ret": {}}, {"raise": {"type": "OperationalError", "message": "upd"}}, {"ret": {}}]}}}
+{"func": "_upsert_meta_locked", "in": {"key": "active_id", "value": "p1", "io": {"conn.execute": {"ret": {}}}}}
+{"func": "_upsert_meta_locked", "in": {"key": "active_id", "value": null, "io": {"conn.execute": {"ret": {}}}}}
+{"func": "_upsert_meta_locked", "in": {"key": "active_id", "value": "p1", "io": {"conn.execute": {"raise": {"type": "IntegrityError", "message": "dup"}}}}}
+{"func": "_upsert_meta_locked", "in": {"key": null, "value": "p1", "io": {"conn.execute": {"ret": {}}}}}
+{"func": "_upsert_meta_locked", "in": {"key": "active_id", "value": "p1", "io": {"conn.execute": {"raise": {"type": "KeyboardInterrupt", "message": "ki"}}}}}
+{"func": "_get_meta", "in": {"key": "active_id", "io": {"conn.execute": {"ret": {"fetchone": {"value": "p1"}}}}}}
+{"func": "_get_meta", "in": {"key": "active_id", "io": {"conn.execute": {"ret": {"fetchone": {"value": null}}}}}}
+{"func": "_get_meta", "in": {"key": "active_id", "io": {"conn.execute": {"ret": {}}}}}
+{"func": "_get_meta", "in": {"key": "active_id", "io": {"conn.execute": {"ret": {"fetchone": {"other": "x"}}}}}}
+{"func": "_get_meta", "in": {"key": "active_id", "io": {"conn.execute": {"raise": {"type": "OperationalError", "message": "db"}}}}}
+{"func": "_get_meta", "in": {"key": "active_id", "io": {"conn.execute": {"ret": {}}}}}
+{"func": "_get_meta", "in": {"key": "active_id", "io": {"conn.execute": {"ret": {"fetchone": {}}}}}}
+{"func": "_get_meta", "in": {"key": "active_id", "io": {"conn.execute": {"ret": {"fetchone": 5}}}}}
+{"func": "_clear_repos_locked", "in": {"clear": true, "policy_key": null, "io": {"conn.execute": {"ret": {}}}}}
+{"func": "_clear_repos_locked", "in": {"clear": false, "policy_key": "k", "io": {"conn.execute": {"ret": {}}}}}
+{"func": "_clear_repos_locked", "in": {"clear": true, "policy_key": "k", "io": {"conn.execute": [{"ret": {}}, {"ret": {}}]}}}
+{"func": "_clear_repos_locked", "in": {"clear": false, "policy_key": null, "io": {}}}
+{"func": "_clear_repos_locked", "in": {"clear": true, "policy_key": null, "io": {"conn.execute": {"raise": {"type": "OSError", "message": "del"}}}}}
+{"func": "_clear_repos_locked", "in": {"clear": false, "policy_key": "k", "io": {"conn.execute": {"raise": {"type": "IntegrityError", "message": "dup"}}}}}
+{"func": "_clear_repos_locked", "in": {"clear": true, "policy_key": "", "io": {"conn.execute": [{"ret": {}}, {"ret": {}}]}}}
+{"func": "get_discovery_policy_key", "in": {"io": {"conn.execute": {"ret": {"fetchone": {"value": "pol"}}}}}}
+{"func": "get_discovery_policy_key", "in": {"io": {"conn.execute": {"ret": {}}}}}
+{"func": "get_discovery_policy_key", "in": {"io": {"conn.execute": {"ret": {"fetchone": {"value": null}}}}}}
+{"func": "get_discovery_policy_key", "in": {"io": {"conn.execute": {"raise": {"type": "OSError", "message": "db"}}}}}
+{"func": "get_discovery_policy_key", "in": {"io": {"conn.execute": {"ret": {"fetchone": {"other": 1}}}}}}
+{"func": "reconcile_discovered_repos_policy", "in": {"policy_key": "new", "io": {"conn.execute": {"ret": {"fetchone": {"value": "new"}}}}}}
+{"func": "reconcile_discovered_repos_policy", "in": {"policy_key": "new", "preserve_unversioned": false, "io": {"conn.execute": [{"ret": {}}, {"ret": {}}, {"ret": {}}, {"ret": {}}, {"ret": {}}]}}}
+{"func": "reconcile_discovered_repos_policy", "in": {"policy_key": "new", "preserve_unversioned": true, "io": {"conn.execute": [{"ret": {}}, {"ret": {}}, {"ret": {}}, {"ret": {}}]}}}
+{"func": "reconcile_discovered_repos_policy", "in": {"policy_key": "new", "preserve_unversioned": true, "io": {"conn.execute": [{"ret": {"fetchone": {"value": "old"}}}, {"ret": {}}, {"ret": {}}, {"ret": {}}, {"ret": {}}]}}}
+{"func": "reconcile_discovered_repos_policy", "in": {"policy_key": "new", "io": {"conn.execute": [{"ret": {}}, {"raise": {"type": "OSError", "message": "begin"}}]}}}
+{"func": "reconcile_discovered_repos_policy", "in": {"policy_key": "new", "io": {"conn.execute": [{"ret": {}}, {"ret": {}}, {"raise": {"type": "ValueError", "message": "del"}}, {"ret": {}}]}}}
+{"func": "reconcile_discovered_repos_policy", "in": {"policy_key": null, "io": {"conn.execute": {"ret": {}}}}}
+{"func": "reconcile_discovered_repos_policy", "in": {"policy_key": "new", "preserve_unversioned": false, "io": {"conn.execute": [{"ret": {"fetchone": {"value": "old"}}}, {"ret": {}}, {"ret": {}}, {"ret": {}}, {"ret": {}}]}}}
+{"func": "clear_discovered_repos", "in": {"policy_key": null, "io": {"conn.execute": [{"ret": {}}, {"ret": {}}, {"ret": {}}]}}}
+{"func": "clear_discovered_repos", "in": {"policy_key": "k", "io": {"conn.execute": [{"ret": {}}, {"ret": {}}, {"ret": {}}, {"ret": {}}]}}}
+{"func": "clear_discovered_repos", "in": {"policy_key": null, "io": {"conn.execute": [{"ret": {}}, {"raise": {"type": "OSError", "message": "del"}}, {"ret": {}}]}}}
+{"func": "clear_discovered_repos", "in": {"policy_key": "k", "io": {"conn.execute": [{"ret": {}}, {"ret": {}}, {"raise": {"type": "IntegrityError", "message": "dup"}}, {"ret": {}}]}}}
+{"func": "clear_discovered_repos", "in": {"policy_key": null, "io": {"conn.execute": [{"ret": {}}, {"ret": {}}, {"raise": {"type": "OSError", "message": "commit"}}]}}}
+{"func": "clear_discovered_repos", "in": {"policy_key": "", "io": {"conn.execute": [{"ret": {}}, {"ret": {}}, {"ret": {}}, {"ret": {}}]}}}

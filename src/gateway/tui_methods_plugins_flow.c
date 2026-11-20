@@ -1285,11 +1285,15 @@ static json_t *tmp_dispatch_plugin(tmp_ctx_t *ctx, const json_t *args) {
         json_free(raise);
         return NULL;
     }
+    /* params.get("session_id", "") — absent defaults to "", NOT None. */
+    json_t *sid_def = NULL;
+    if (!sid_v) sid_v = sid_def = json_string("");
     json_t *sa = tmp_args0();
     tmp_aset(sa, "params", params);
     tmp_asets(sa, "key", "profile");
     json_t *prof = tmp_call(ctx, "str_arg", sa);
     if (tmp_is_raise(prof)) {
+        json_free(sid_def);
         if (tmp_is_base_exc(tmp_raise_kind(prof))) return prof;
         json_free(prof);
         return NULL;
@@ -1299,6 +1303,7 @@ static json_t *tmp_dispatch_plugin(tmp_ctx_t *ctx, const json_t *args) {
     tmp_aset(da, "arg", arg);
     tmp_aset(da, "session", session);
     tmp_aset(da, "sid", sid_v);
+    json_free(sid_def);
     tmp_aset(da, "profile", tmp_truthy(prof) ? prof : NULL);
     json_free(prof);
     json_t *out = tmp_call(ctx, "dispatch_plugin_in_profile_scope", da);
