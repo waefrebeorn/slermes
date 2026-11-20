@@ -88,8 +88,8 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 62 wired 812->816, HEAD `7cc1503427`;
-  build health 2123/2123 clean, port gate PASS.
+- Parent working set (committed): wave 64 wired 820->824, HEAD `47372b2b92`;
+  build health 2131/2131 clean, port gate PASS.
   Wave 60 RESOLVED: tui_server_flow3 honestly scoped from 62 over-scoped
   fns (374/287, 50 red) to the 12 faithful ones, parent gate 74/0, wired.
   The 50 removed fns are real gaps again. Scanner perf fix committed
@@ -169,3 +169,13 @@ not wired-object counts, as progress. The genuinely open question is the
 19 objects referenced by objects.mk that are MISSING on disk (e.g.
 src/wubuoxml/*.o) — audit those separately; a missing object is not the
 same as the expected empty all-static one.
+FOLLOW-UP: the 18 wubu "missing" were a regex artifact (real paths are
+lib/libwubuoffice/src/...). The only genuinely unbuilt object,
+src/agent/account_usage_nous_flow2.o, has a source and was built as a
+real 43228-byte object with 26 text symbols; .o files are gitignored, so
+make regenerates it. No repo defect there.
+Wave 64 (`47372b2b92`) wired 4 self-gated swaths, parent gates
+128/0, 122/0, 118/0, 105/0. Next wave `deleg_d05146fd` (4 self-gating
+agents) owns freshly verified unclaimed sets: feishu_adapter_flow6 (175),
+context_compressor_flow5 (65), whatsapp_adapter_flow2 (38),
+session_policy_flow2 (31).
