@@ -1,0 +1,97 @@
+{"func": "cmd_run", "in": {"args": {"verbose": 1, "quiet": true, "replace": false, "force": false, "idle_exit": true, "external_supervisor": false}, "seams": {"redirect_s6": true}}}
+{"func": "cmd_run", "in": {"args": {"verbose": 0, "quiet": false, "replace": true, "force": false, "idle_exit": false, "external_supervisor": true}, "seams": {"redirect_s6": false, "setenv": null, "run_gateway": null}}}
+{"func": "cmd_run", "in": {"args": {"verbose": 2, "quiet": true, "replace": false, "force": true, "idle_exit": false, "external_supervisor": false}, "seams": {"redirect_s6": false, "run_gateway": null}}}
+{"func": "cmd_run", "in": {"args": {}, "seams": {"redirect_s6": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "cmd_run", "in": {"args": {"external_supervisor": true}, "seams": {"redirect_s6": false, "setenv": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "cmd_run", "in": {"args": {}, "seams": {"redirect_s6": false, "run_gateway": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "cmd_run", "in": {"args": {}, "seams": {"redirect_s6": false, "run_gateway": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "cmd_run", "in": {"args": {"verbose": 3, "external_supervisor": true}, "seams": {"redirect_s6": false, "setenv": null, "run_gateway": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "wait_for_api_server_port_free", "in": {"seams": {"load_config": {"platforms": {}}}}}
+{"func": "wait_for_api_server_port_free", "in": {"seams": {"load_config": {"platforms": {"api_server": {"enabled": false}}}}}}
+{"func": "wait_for_api_server_port_free", "in": {"seams": {"load_config": {"platforms": {"api_server": {"enabled": true, "extra": {"port": 9000}}}}, "listen_address": {"host": "127.0.0.1", "port": 9000}, "wait_port": true}}}
+{"func": "wait_for_api_server_port_free", "in": {"seams": {"load_config": {"platforms": {"api_server": {"enabled": true, "extra": {}}}}, "listen_address": {"host": "0.0.0.0", "port": 8080}, "wait_port": false, "print": null}}}
+{"func": "wait_for_api_server_port_free", "in": {"seams": {"load_config": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "wait_for_api_server_port_free", "in": {"seams": {"load_config": {"platforms": {"api_server": {"enabled": true, "extra": {}}}}, "listen_address": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "wait_for_api_server_port_free", "in": {"seams": {"load_config": {"platforms": {"api_server": {"enabled": true, "extra": {}}}}, "listen_address": ["h", 1], "wait_port": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "wait_for_api_server_port_free", "in": {"seams": {"load_config": {"platforms": {"api_server": {"enabled": true, "extra": {}}}}, "listen_address": {"host": "h", "port": 2}, "wait_port": false, "print": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "pm_managed_node_dirs", "in": {"home": "/data/h", "seams": {"Facts_new": null, "env_for": {"PATH": ["/n1", "/n2"]}, "is_dir": true}}}
+{"func": "pm_managed_node_dirs", "in": {"home": "/data/h", "seams": {"Facts_new": null, "env_for": {"PATH": ["/a", "/b", "/c"]}, "is_dir": [true, false, true]}}}
+{"func": "pm_managed_node_dirs", "in": {"home": "/data/h", "seams": {"Facts_new": null, "env_for": {"PATH": []}, "is_dir": true}}}
+{"func": "pm_managed_node_dirs", "in": {"home": "/data/h", "seams": {"Facts_new": null, "env_for": {"PATH": null}, "is_dir": true}}}
+{"func": "pm_managed_node_dirs", "in": {"home": "/data/h", "seams": {"Facts_new": null, "env_for": {"PATH": ["", "/x"]}, "is_dir": true}}}
+{"func": "pm_managed_node_dirs", "in": {"home": "/data/h", "seams": {"Facts_new": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "pm_managed_node_dirs", "in": {"home": "/data/h", "seams": {"Facts_new": null, "env_for": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "pm_managed_node_dirs", "in": {"home": "/data/h", "seams": {"Facts_new": null, "env_for": {"PATH": ["/x"]}, "is_dir": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "native_service_homes", "in": {"seams": {"account_home": "/h/account", "sudo_home": "/h/sudo"}}}
+{"func": "native_service_homes", "in": {"seams": {"account_home": "/h/account", "sudo_home": null}}}
+{"func": "native_service_homes", "in": {"seams": {"account_home": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "native_service_homes", "in": {"seams": {"account_home": "/h/a", "sudo_home": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "native_service_homes", "in": {"seams": {"account_home": "/h/a", "sudo_home": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "windows_process_listing", "in": {"seams": {"which": "/bin/wmic", "bounded_probe_run": {"returncode": 0, "stdout": "CommandLine=x\nProcessId=1\n"}}}}
+{"func": "windows_process_listing", "in": {"seams": {"which": "/bin/wmic", "bounded_probe_run": [{"returncode": 1, "stdout": ""}, {"returncode": 0, "stdout": "ProcessId=2\n"}]}}}
+{"func": "windows_process_listing", "in": {"seams": {"which": [null, "/bin/powershell"], "bounded_probe_run": {"returncode": 0, "stdout": "ok"}}}}
+{"func": "windows_process_listing", "in": {"seams": {"which": [null, null, "/bin/pwsh"], "bounded_probe_run": {"returncode": 0, "stdout": "pwsh-ok"}}}}
+{"func": "windows_process_listing", "in": {"seams": {"which": null}}}
+{"func": "windows_process_listing", "in": {"seams": {"which": "/bin/wmic", "bounded_probe_run": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "windows_process_listing", "in": {"seams": {"which": [null, "/bin/powershell"], "bounded_probe_run": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "windows_process_listing", "in": {"seams": {"which": "/bin/wmic", "bounded_probe_run": {"returncode": 0, "stdout": null}}}}
+{"func": "s6_gateway_snapshot", "in": {"gateway_pids": [1, 2], "seams": {"detect_manager": "systemd"}}}
+{"func": "s6_gateway_snapshot", "in": {"gateway_pids": [], "seams": {"detect_manager": "s6", "profile_name": "default", "get_manager": null, "mgr_scandir": null}}}
+{"func": "s6_gateway_snapshot", "in": {"gateway_pids": [7], "seams": {"detect_manager": "s6", "profile_name": "work", "get_manager": null, "mgr_scandir": "/etc/s6", "dir_isdir": true, "mgr_is_running": true}}}
+{"func": "s6_gateway_snapshot", "in": {"gateway_pids": [], "seams": {"detect_manager": "s6", "profile_name": "work", "get_manager": null, "mgr_scandir": "/etc/s6", "dir_isdir": false}}}
+{"func": "s6_gateway_snapshot", "in": {"gateway_pids": [], "seams": {"detect_manager": "s6", "profile_name": "w", "get_manager": null, "mgr_scandir": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "s6_gateway_snapshot", "in": {"gateway_pids": [], "seams": {"detect_manager": "s6", "profile_name": "w", "get_manager": null, "mgr_scandir": "/s6", "dir_isdir": true, "mgr_is_running": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "s6_gateway_snapshot", "in": {"gateway_pids": [9], "seams": {"detect_manager": "s6", "profile_name": "w", "get_manager": null, "mgr_scandir": "/s6", "dir_isdir": true, "mgr_is_running": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "reaper_exclusion_pids", "in": {"extra_exclude": [100], "seams": {"getpid": 1, "service_pids": [200], "read_pid_record": "r1", "read_lock_record": "r2", "pid_from_record": [300, 0], "running_pid": 0, "psutil_parent": [600, null]}}}
+{"func": "reaper_exclusion_pids", "in": {"seams": {"getpid": 1, "service_pids": {"__raise__": "OSError", "msg": "boom"}, "read_pid_record": "r1", "read_lock_record": "r2", "pid_from_record": 300, "running_pid": null}}}
+{"func": "reaper_exclusion_pids", "in": {"seams": {"getpid": 1, "service_pids": null, "read_pid_record": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "reaper_exclusion_pids", "in": {"seams": {"getpid": 1, "service_pids": null, "read_pid_record": "r1", "read_lock_record": "r2", "pid_from_record": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "reaper_exclusion_pids", "in": {"seams": {"getpid": 1, "service_pids": null, "read_pid_record": "r1", "read_lock_record": "r2", "pid_from_record": 300, "running_pid": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "reaper_exclusion_pids", "in": {"seams": {"getpid": 1, "service_pids": null, "read_pid_record": "r1", "read_lock_record": "r2", "pid_from_record": 300, "running_pid": null, "psutil_parent": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "reaper_exclusion_pids", "in": {"seams": {"getpid": 1, "service_pids": null, "read_pid_record": "r1", "read_lock_record": "r2", "pid_from_record": 300, "running_pid": null, "psutil_parent": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "apply_startup_watchdog_config", "in": {"env": {}, "seams": {"load_config": {"gateway": {"startup_watchdog": false, "startup_watchdog_timeout_seconds": 45}}, "setenv": null, "sw_disabled": false, "sw_disarm": null, "sw_arm": null}}}
+{"func": "apply_startup_watchdog_config", "in": {"env": {}, "seams": {"load_config": {"gateway": {"startup_watchdog_timeout_seconds": 30}}, "setenv": null, "sw_disabled": false, "sw_disarm": null, "sw_arm": null}}}
+{"func": "apply_startup_watchdog_config", "in": {"env": {}, "seams": {"load_config": {"gateway": {}}, "sw_disabled": true, "sw_disarm": null}}}
+{"func": "apply_startup_watchdog_config", "in": {"env": {}, "seams": {"load_config": {"__raise__": "OSError", "msg": "boom"}, "sw_disabled": false, "sw_arm": null}}}
+{"func": "apply_startup_watchdog_config", "in": {"env": {}, "seams": {"load_config": {"gateway": {"startup_watchdog": false}}, "setenv": {"__raise__": "ValueError", "msg": "boom"}, "sw_disabled": false, "sw_arm": null}}}
+{"func": "apply_startup_watchdog_config", "in": {"env": {}, "seams": {"load_config": {"gateway": {}}, "sw_disabled": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "apply_startup_watchdog_config", "in": {"env": {}, "seams": {"load_config": {"gateway": {}}, "sw_disabled": false, "sw_arm": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "exit_diag", "in": {"env": {"HERMES_GATEWAY_EXIT_DIAG": "0"}, "tag": "start", "seams": {}}}
+{"func": "exit_diag", "in": {"env": {}, "tag": "run", "python": "3.14.9", "platform": "win32", "extra": {"phase": "boot"}, "seams": {"get_hermes_home": "/h", "mkdir": null, "timestamp": "2026-01-01T00:00:00+00:00", "getpid": 42, "json_dumps": "LINEJSON", "write": null}}}
+{"func": "exit_diag", "in": {"env": {}, "tag": "run", "python": "3.14.9", "platform": "win32", "seams": {"get_hermes_home": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "exit_diag", "in": {"env": {}, "tag": "run", "python": "3.14.9", "platform": "win32", "seams": {"get_hermes_home": "/h", "mkdir": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "exit_diag", "in": {"env": {}, "tag": "run", "python": "3.14.9", "platform": "win32", "seams": {"get_hermes_home": "/h", "mkdir": null, "timestamp": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "exit_diag", "in": {"env": {}, "tag": "run", "python": "3.14.9", "platform": "win32", "seams": {"get_hermes_home": "/h", "mkdir": null, "timestamp": "T", "getpid": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "exit_diag", "in": {"env": {}, "tag": "run", "python": "3.14.9", "platform": "win32", "seams": {"get_hermes_home": "/h", "mkdir": null, "timestamp": "T", "getpid": 1, "json_dumps": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "exit_diag", "in": {"env": {}, "tag": "run", "python": "3.14.9", "platform": "win32", "seams": {"get_hermes_home": "/h", "mkdir": null, "timestamp": "T", "getpid": 1, "json_dumps": "L", "write": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "respawn_storm_backoff", "in": {"env": {}, "seams": {"load_config": {}, "record_storm": null}}}
+{"func": "respawn_storm_backoff", "in": {"env": {}, "seams": {"load_config": {}, "record_storm": {"count": 6, "window_s": 120.0, "backoff_s": 30.0}, "logger_warning": null, "kick_watchdog": null, "sleep": null}}}
+{"func": "respawn_storm_backoff", "in": {"env": {}, "seams": {"load_config": {"gateway": {"respawn_storm": {"max_starts": 0}}}}}}
+{"func": "respawn_storm_backoff", "in": {"env": {"HERMES_GATEWAY_MAX_STARTS": "3", "HERMES_GATEWAY_START_WINDOW_S": "60.5"}, "seams": {"load_config": {}, "record_storm": {"count": 4, "window_s": 60.5, "backoff_s": 10.0}, "logger_warning": null, "kick_watchdog": null, "sleep": null}}}
+{"func": "respawn_storm_backoff", "in": {"env": {"HERMES_GATEWAY_MAX_STARTS": "abc"}, "seams": {"load_config": {}, "record_storm": null}}}
+{"func": "respawn_storm_backoff", "in": {"env": {}, "seams": {"load_config": {}, "record_storm": {"__raise__": "ValueError", "msg": "boom"}, "logger_debug": null}}}
+{"func": "respawn_storm_backoff", "in": {"env": {}, "seams": {"load_config": {}, "record_storm": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "respawn_storm_backoff", "in": {"env": {}, "seams": {"load_config": {}, "record_storm": {"count": 6, "window_s": 120.0, "backoff_s": 30.0}, "logger_warning": null, "kick_watchdog": {"__raise__": "OSError", "msg": "boom"}, "sleep": null}}}
+{"func": "install_systemd_from_cli", "in": {"force": false, "system": false, "run_as_user": null, "info_lines": ["  a", "  b"], "stdin_kind": "none", "args": {"start_now": true, "start_on_login": true}, "seams": {"is_wsl": true, "print_warning": null, "info_lines": null, "print": null, "systemd_install": null, "systemd_start": null}}}
+{"func": "install_systemd_from_cli", "in": {"force": true, "system": false, "run_as_user": null, "stdin_kind": "tty", "stdin_isatty": true, "args": {"start_now": null, "start_on_login": null, "force_unit_path": true}, "seams": {"is_wsl": false, "prompt_yes_no": true, "systemd_install": null, "systemd_start": null}}}
+{"func": "install_systemd_from_cli", "in": {"force": false, "system": true, "run_as_user": "bob", "stdin_kind": "none", "args": {"start_now": false, "start_on_login": true}, "seams": {"is_wsl": false, "systemd_install": null}}}
+{"func": "install_systemd_from_cli", "in": {"force": false, "system": false, "run_as_user": null, "stdin_kind": "no_isatty", "args": {}, "seams": {"is_wsl": false, "systemd_install": null, "systemd_start": null}}}
+{"func": "install_systemd_from_cli", "in": {"force": false, "system": false, "seams": {"is_wsl": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "install_systemd_from_cli", "in": {"force": false, "system": false, "stdin_kind": "tty", "stdin_isatty": true, "args": {"start_now": null}, "seams": {"is_wsl": false, "prompt_yes_no": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "install_systemd_from_cli", "in": {"force": false, "system": false, "stdin_kind": "none", "args": {"start_now": true, "start_on_login": true}, "seams": {"is_wsl": false, "systemd_install": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "install_systemd_from_cli", "in": {"force": false, "system": false, "stdin_kind": "none", "args": {"start_now": true, "start_on_login": true}, "seams": {"is_wsl": false, "systemd_install": null, "systemd_start": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "legacy_launchd_labels_for_install", "in": {"exclude": [], "seams": {"pw_dir": "/home/u", "root": "/hermes", "agents_isdir": false}}}
+{"func": "legacy_launchd_labels_for_install", "in": {"exclude": [], "seams": {"pw_dir": "/home/u", "root": "/hermes", "agents_isdir": true, "glob": {"paths": ["/home/u/Library/LaunchAgents/ai.hermes.gateway.plist"]}, "read_plist": {"Label": "ai.hermes.gateway", "EnvironmentVariables": {"HERMES_HOME": "/hermes"}}, "relative_to": {"parts": []}}}}
+{"func": "legacy_launchd_labels_for_install", "in": {"exclude": [], "seams": {"pw_dir": "/home/u", "root": "/hermes", "agents_isdir": true, "glob": {"paths": ["/home/u/Library/LaunchAgents/ai.hermes.gateway-work.plist"]}, "read_plist": {"Label": "ai.hermes.gateway-work", "EnvironmentVariables": {"HERMES_HOME": "/hermes/profiles/work"}}, "relative_to": {"parts": ["profiles", "work"]}}}}
+{"func": "legacy_launchd_labels_for_install", "in": {"exclude": ["ai.hermes.gateway"], "seams": {"pw_dir": "/home/u", "root": "/hermes", "agents_isdir": true, "glob": {"paths": ["/home/u/Library/LaunchAgents/ai.hermes.gateway.plist"]}, "read_plist": {"Label": "ai.hermes.gateway", "EnvironmentVariables": {"HERMES_HOME": "/hermes"}}, "relative_to": {"parts": []}}}}
+{"func": "legacy_launchd_labels_for_install", "in": {"exclude": [], "seams": {"pw_dir": "/home/u", "root": "/hermes", "agents_isdir": true, "glob": {"paths": ["/home/u/Library/LaunchAgents/ai.hermes.gateway-bad.plist"]}, "read_plist": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "legacy_launchd_labels_for_install", "in": {"exclude": [], "seams": {"pw_dir": "/home/u", "root": "/hermes", "agents_isdir": true, "glob": {"paths": ["/home/u/Library/LaunchAgents/ai.hermes.gateway-out.plist"]}, "read_plist": {"Label": "ai.hermes.gateway-out", "EnvironmentVariables": {"HERMES_HOME": "/other"}}, "relative_to": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "legacy_launchd_labels_for_install", "in": {"exclude": [], "seams": {"pw_dir": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "prepare_service_launcher", "in": {"system": false, "seams": {"get_hermes_home": "/h", "set_override": "tok", "publishes": true, "ensure_launchers": {"paths": ["/p1", "/p2"]}, "reset_override": null}}}
+{"func": "prepare_service_launcher", "in": {"system": false, "seams": {"get_hermes_home": "/h", "set_override": "tok", "publishes": false, "reset_override": null}}}
+{"func": "prepare_service_launcher", "in": {"system": false, "seams": {"get_hermes_home": "/h", "set_override": "tok", "publishes": true, "ensure_launchers": {"paths": ["/p1"]}, "reset_override": null}}}
+{"func": "prepare_service_launcher", "in": {"system": true, "run_as_user": "bob", "seams": {"get_hermes_home": "/h", "sys_identity": {"values": ["bob", "bob", "/home/bob", 1000]}, "remap_path": "/remapped", "target_home": "/home/bob/.hermes", "set_override": "tok", "publishes": true, "ensure_launchers": {"paths": ["/p1", "/p2"]}, "pwnam_gid": 1000, "chown": null, "reset_override": null}}}
+{"func": "prepare_service_launcher", "in": {"system": false, "seams": {"get_hermes_home": "/h", "set_override": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "prepare_service_launcher", "in": {"system": false, "seams": {"get_hermes_home": "/h", "set_override": "tok", "publishes": {"__raise__": "OSError", "msg": "boom"}, "reset_override": null}}}
+{"func": "prepare_service_launcher", "in": {"system": false, "seams": {"get_hermes_home": "/h", "set_override": "tok", "publishes": true, "ensure_launchers": {"__raise__": "ValueError", "msg": "boom"}, "reset_override": null}}}
+{"func": "prepare_service_launcher", "in": {"system": true, "run_as_user": "bob", "seams": {"get_hermes_home": "/h", "sys_identity": {"values": ["bob", "bob", "/home/bob", 1000]}, "remap_path": "/r", "target_home": "/home/bob/.hermes", "set_override": "tok", "publishes": true, "ensure_launchers": {"paths": ["/p1", "/p2"]}, "pwnam_gid": 1000, "chown": {"__raise__": "KeyboardInterrupt", "msg": "boom"}, "reset_override": null}}}
