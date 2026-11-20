@@ -530,7 +530,7 @@ static json_t *sp3_adopt_stored_policy(const json_t *data, const sp3_seams_t *s)
     for (size_t i = 0; i < nkeys; i++)
         if (!sp3_is_policy_field(keys[i])) unknown[nu++] = keys[i];
     if (nu == 0) {
-        sp3_free_keys(unknown, 0); free(unknown);
+        free(unknown);   /* array only; unknown[] holds borrowed keys[i] pointers */
         sp3_free_keys(keys, nkeys);
         return json_copy(data);
     }
@@ -943,14 +943,15 @@ static json_t *sp3_rebind_launch_key(json_t *authority, const json_t *session,
     json_t *pol = sp3_call(s, "restore_policy", ra);
     json_free(ap);
     if (sp3_raised(pol)) return pol;
-    const char *ref = sp3_sval(sp3_oget(pol, "credential_ref"));
+    const char *ref_borrow = sp3_sval(sp3_oget(pol, "credential_ref"));
+    char *ref = ref_borrow ? strdup(ref_borrow) : NULL;   /* own it: pol is freed below */
     json_free(pol);
     if (!ref) return sp3_ar_raise("admission_conflict", NULL, NULL);
     json_t *keys = json_obj_get(authority, "_local_launch_keys");
     if (!keys) { keys = json_object(); json_set(authority, "_local_launch_keys", keys); }
     json_t *ka = sp3_args(); sp3_s(ka, "credential_ref", ref);
     json_t *sl = sp3_call(s, "_key_slot", ka);
-    if (sp3_raised(sl)) return sl;
+    if (sp3_raised(sl)) { ret = sl; goto out; }
     slot = sp3_pystr(sl); json_free(sl);
     const json_t *held = json_obj_get(keys, slot);
     if (held) {
@@ -981,7 +982,7 @@ static json_t *sp3_rebind_launch_key(json_t *authority, const json_t *session,
     json_set(keys, slot2, json_copy(api_key));
     ret = NULL;
 out:
-    free(slot); free(slot2);
+    free(slot); free(slot2); free(ref);
     return ret;
 }
 
@@ -1069,7 +1070,7 @@ static json_t *sp3_release_launch_secrets(json_t *authority, const json_t *sessi
     json_free(kept);
     char *iid = sp3_pystr(sp3_oget(authority, "instance_id"));
     char *ep = sp3_pystr(sp3_oget(authority, "epoch"));
-    size_t pcap = strlen(iid) + strlen(ep) + 2;
+    size_t pcap = strlen(iid) + strlen(ep) + 3;   /* "i:e:" + NUL (2 colons + terminator) */
     char *prefix = malloc(pcap);
     snprintf(prefix, pcap, "%s:%s:", iid, ep);
     free(iid); free(ep);

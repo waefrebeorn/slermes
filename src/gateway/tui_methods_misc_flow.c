@@ -1016,9 +1016,9 @@ static json_t *tmm_usage_route(tmm_ctx_t *ctx, const json_t *args) {
     if (err) return err;
     if (tmm_agent_present(agent)) {
         json_t *ret = json_object();
-        json_set(ret, "provider", json_copy(tmm_getattr_def(agent, "provider", NULL)));
-        json_set(ret, "base_url", json_copy(tmm_getattr_def(agent, "base_url", NULL)));
-        json_set(ret, "api_key", json_copy(tmm_getattr_def(agent, "api_key", NULL)));
+        tmm_aset(ret, "provider", tmm_getattr_def(agent, "provider", NULL));
+        tmm_aset(ret, "base_url", tmm_getattr_def(agent, "base_url", NULL));
+        tmm_aset(ret, "api_key", tmm_getattr_def(agent, "api_key", NULL));
         return ret;
     }
     json_t *build = tmm_sib_session(ctx, "deferred_build_agent_kwargs", session);
@@ -1228,6 +1228,7 @@ static json_t *tmm_format_live_usage_tokens(tmm_ctx_t *ctx, const json_t *args) 
     bool have_reasoning = false, have_context = false;
     long long pct = 0;
     const char *mark = "";
+    json_t *ret = NULL;   /* declared before any `goto` so no path skips it */
     TMM_N("input", n_input);
     TMM_N("output", n_output);
     {
@@ -1319,14 +1320,14 @@ static json_t *tmm_format_live_usage_tokens(tmm_ctx_t *ctx, const json_t *args) 
         free(mc); free(model_str);
         char *joined = tmm_sb_take(&sb);
         err = NULL;
-        json_t *ret = json_string(joined);
+        ret = json_string(joined);
         free(joined);
         goto done_free;
     }
 done:
     /* err set (or a seam raise parked in err) */
     ;
-    json_t *ret = err ? err : json_string("");
+    ret = err ? err : json_string("");
 done_free:
     free(n_input); free(n_output); free(n_reasoning); free(n_prompt);
     free(n_completion); free(n_total); free(n_calls); free(n_ctx_used);
