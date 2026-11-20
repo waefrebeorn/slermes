@@ -1,0 +1,61 @@
+{"func": "handoff_row", "in": {"message": {"id": 5, "timestamp": 123}, "summary": {"summary": "sum text", "compacted_messages": 3}}}
+{"func": "handoff_row", "in": {"message": {"id": "r1"}, "summary": {"summary": "sum text", "compacted_messages": 3}}}
+{"func": "handoff_row", "in": {"message": {"id": 1, "timestamp": 0}, "summary": {"summary": "sum text", "compacted_messages": 3}}}
+{"func": "handoff_row", "in": {"message": {"id": 2, "timestamp": -5}, "summary": {"summary": "sum text", "compacted_messages": 3}}}
+{"func": "handoff_row", "in": {"message": {"id": 3, "timestamp": 2.5}, "summary": {"summary": "sum text", "compacted_messages": 3}}}
+{"func": "handoff_row", "in": {"message": {"id": 4, "timestamp": true}, "summary": {"summary": "sum text", "compacted_messages": 3}}}
+{"func": "handoff_row", "in": {"message": {"id": 6, "timestamp": null}, "summary": {"summary": "sum text", "compacted_messages": 3}}}
+{"func": "handoff_row", "in": {"message": {"id": 7, "timestamp": false}, "summary": {"summary": "sum text", "compacted_messages": 3}}}
+{"func": "handoff_row", "in": {"message": {"id": 8, "timestamp": 9223372036854775808}, "summary": {"summary": "sum text", "compacted_messages": 3}}}
+{"func": "handoff_row", "in": {"message": {}, "summary": {"summary": "sum text", "compacted_messages": 3}}}
+{"func": "handoff_row", "in": {"message": {"id": 1}, "summary": {"summary": "s"}}}
+{"func": "_mark_index", "in": {"row": {"role": "system", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": 1}}}}
+{"func": "_mark_index", "in": {"row": {"role": "user", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": 2}}}}
+{"func": "_mark_index", "in": {"row": {"role": "system", "content": "other", "display_metadata": {"__session_transcript_handoff__": 2}}}}
+{"func": "_mark_index", "in": {"row": {"role": "system", "content": "compaction handoff", "display_metadata": "not-a-dict"}}}
+{"func": "_mark_index", "in": {"row": {"role": "system", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": 2.5}}}}
+{"func": "_mark_index", "in": {"row": {"role": "system", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": true}}}}
+{"func": "_mark_index", "in": {"row": {"role": "system", "content": "compaction handoff"}}}
+{"func": "_mark_index", "in": {"row": {"role": "system", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": -1}}}}
+{"func": "_mark_index", "in": {"row": {"role": "system", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": 9223372036854775808}}}}
+{"func": "handoff_occurrence", "in": {"message": {"message_uid": "u1", "content": {"a": 1}}}}
+{"func": "handoff_occurrence", "in": {"message": {"content": [1, 2.5, "x"]}}}
+{"func": "handoff_occurrence", "in": {"message": {"message_uid": 0, "content": {"b": true, "a": null}}}}
+{"func": "handoff_occurrence", "in": {"message": {"message_uid": "u2", "content": {"n": {"deep": [true, false, null]}}}}}
+{"func": "handoff_occurrence", "in": {"message": {"message_uid": "u3"}}}
+{"func": "handoff_occurrence", "in": {"message": {"message_uid": 7, "content": "caf\u00e9"}}}
+{"func": "handoff_occurrence", "in": {"message": {"message_uid": "", "content": []}}}
+{"func": "shown_occurrences", "in": {"messages": [{"message_uid": "u1", "content": {"a": 1}}, {"message_uid": "u2", "content": [1, 2]}], "io": {"compaction_summary": {"summary": "s", "compacted_messages": 1}}}}
+{"func": "shown_occurrences", "in": {"messages": [{"message_uid": "u1", "content": {"a": 1}}, {"message_uid": "u2", "content": [1, 2]}], "io": {"compaction_summary": [{"summary": "s"}, null]}}}
+{"func": "shown_occurrences", "in": {"messages": [{"message_uid": "u1", "content": {"a": 1}}], "io": {"compaction_summary": null}}}
+{"func": "shown_occurrences", "in": {"messages": [], "io": {}}}
+{"func": "shown_occurrences", "in": {"messages": [{"message_uid": "u1", "content": {"a": 1}}, {"message_uid": "u1", "content": {"a": 1}}], "io": {"compaction_summary": {"summary": "s"}}}}
+{"func": "shown_occurrences", "in": {"messages": [{"message_uid": "u1", "content": {"a": 1}}], "io": {"compaction_summary": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "shown_occurrences", "in": {"messages": [{"message_uid": "u1", "content": {"a": 1}}], "io": {"compaction_summary": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "shown_occurrences", "in": {"messages": [{"content": {"k": "v"}}], "io": {"compaction_summary": {"summary": "s"}}}}
+{"func": "handoff_rows", "in": {"shown_ids": [1, 2], "segments": ["s1"], "io": {"messages.transcript_handoff_rows": {"1": ["h1", "h2"]}, "row.as_wire_row": [{"w": 1}, {"w": 2}]}}}
+{"func": "handoff_rows", "in": {"shown_ids": [1], "segments": [], "io": {"messages.transcript_handoff_rows": {"7": ["h1"]}, "row.as_wire_row": [{"w": 1}]}}}
+{"func": "handoff_rows", "in": {"shown_ids": [], "segments": [], "io": {"messages.transcript_handoff_rows": {}}}}
+{"func": "handoff_rows", "in": {"shown_ids": [1], "segments": [], "io": {"messages.transcript_handoff_rows": {"1": ["h1", "h2"]}, "row.as_wire_row": [{"w": 1}, {"__raise__": "KeyError", "message": "mid"}]}}}
+{"func": "handoff_rows", "in": {"shown_ids": [1], "segments": [], "io": {"messages.transcript_handoff_rows": {"__raise__": "RuntimeError", "message": "db"}}}}
+{"func": "handoff_rows", "in": {"shown_ids": [1], "segments": [], "io": {"messages.transcript_handoff_rows": {"__raise__": "KeyboardInterrupt", "message": "ci"}}}}
+{"func": "handoff_rows", "in": {"shown_ids": [1], "segments": [], "io": {"messages.transcript_handoff_rows": {"abc": ["h1"]}, "row.as_wire_row": [{"w": 1}]}}}
+{"func": "handoff_rows", "in": {"shown_ids": [1], "segments": [], "io": {"messages.transcript_handoff_rows": {" 7 ": ["h1"]}, "row.as_wire_row": [{"w": 1}]}}}
+{"func": "page_handoffs", "in": {"rows": [{"_row_id": 1}], "segments": [], "io": {"messages.transcript_handoff_rows": {"1": ["h1"]}, "row.as_wire_row": [{"message_uid": "u1", "content": {"x": 1}, "id": 9}], "compaction_summary": {"summary": "S", "compacted_messages": 2}}}}
+{"func": "page_handoffs", "in": {"rows": [{"_row_id": 1}], "segments": [], "earlier_present": true, "io": {"messages.transcript_handoff_rows": {"1": ["h1"]}, "row.as_wire_row": [{"message_uid": "u1", "content": {"x": 1}, "id": 9}], "compaction_summary": {"summary": "S", "compacted_messages": 2}, "earlier": [[["u1", "{\"x\": 1}"]]]}}}
+{"func": "page_handoffs", "in": {"rows": [{"_row_id": 1}], "segments": [], "io": {"messages.transcript_handoff_rows": {"1": ["h1"]}, "row.as_wire_row": [{"message_uid": "u1", "content": {"x": 1}, "id": 9}], "compaction_summary": null}}}
+{"func": "page_handoffs", "in": {"rows": [{"_row_id": 1}], "segments": [], "io": {"messages.transcript_handoff_rows": {"1": ["h1"]}, "row.as_wire_row": [{"message_uid": "u1", "content": {"x": 1}, "id": 9}], "compaction_summary": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "page_handoffs", "in": {"rows": [{"_row_id": 1}], "segments": [], "io": {"messages.transcript_handoff_rows": {"1": ["h1"]}, "row.as_wire_row": [{"message_uid": "u1", "content": {"x": 1}, "id": 9}], "compaction_summary": {"summary": "S"}}}}
+{"func": "page_handoffs", "in": {"rows": [{"_row_id": "1"}], "segments": [], "earlier_present": true, "io": {"messages.transcript_handoff_rows": {}}}}
+{"func": "page_handoffs", "in": {"rows": [{"_row_id": 1}, {"_row_id": 2}], "segments": [], "io": {"messages.transcript_handoff_rows": {"1": ["h1"], "2": ["h2"]}, "row.as_wire_row": [{"message_uid": "u1", "content": {"x": 1}, "id": 9}, {"message_uid": "u2", "content": {"x": 1}, "id": 10}], "compaction_summary": {"summary": "S", "compacted_messages": 2}}}}
+{"func": "page_handoffs", "in": {"rows": [{"_row_id": 1}], "segments": [], "earlier_present": true, "io": {"messages.transcript_handoff_rows": {"1": ["h1"]}, "row.as_wire_row": [{"message_uid": "u1", "content": {"x": 1}, "id": 9}], "compaction_summary": {"summary": "S", "compacted_messages": 2}, "earlier": [[]]}}}
+{"func": "page_handoffs", "in": {"rows": [{"_row_id": 1}], "segments": [], "io": {"messages.transcript_handoff_rows": {"__raise__": "SystemExit", "message": "bye"}, "row.as_wire_row": [{"message_uid": "u1", "content": {"x": 1}, "id": 9}], "compaction_summary": {"summary": "S", "compacted_messages": 2}}}}
+{"func": "project_entries", "in": {"entries": [["compaction", {"kind": "handoff1"}], ["message", {"role": "user", "content": "hi"}]], "io": {"project": [[{"role": "system", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": 0}}, {"role": "user", "content": "hi"}]]}}}
+{"func": "project_entries", "in": {"entries": [["compaction", {"kind": "handoff1"}], ["compaction", {"kind": "handoff2"}], ["message", {"role": "user", "content": "hi"}]], "io": {"project": [[{"role": "system", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": 1}}, {"role": "user", "content": "hi"}]]}}}
+{"func": "project_entries", "in": {"entries": [["compaction", {"kind": "handoff1"}], ["message", {"role": "user", "content": "hi"}]], "io": {"project": [[{"role": "system", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": 5}}, {"role": "user", "content": "hi"}]]}}}
+{"func": "project_entries", "in": {"entries": [["compaction", {"kind": "handoff1"}], ["message", {"role": "user", "content": "hi"}]], "io": {"project": {"__raise__": "RuntimeError", "message": "proj"}}}}
+{"func": "project_entries", "in": {"entries": [], "io": {"project": [[]]}}}
+{"func": "project_entries", "in": {"entries": [["message", {"role": "user", "content": "hi"}]], "io": {"project": [[{"role": "user", "content": "hi"}]]}}}
+{"func": "project_entries", "in": {"entries": [["compaction", {"kind": "handoff1"}], ["compaction", {"kind": "handoff2"}]], "io": {"project": [[{"role": "system", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": -1}}]]}}}
+{"func": "project_entries", "in": {"entries": [["message", {"role": "user", "content": "hi"}]], "io": {"project": [[null]]}}}
+{"func": "project_entries", "in": {"entries": [["compaction", {"kind": "handoff1"}]], "io": {"project": [[{"role": "system", "content": "compaction handoff", "display_metadata": {"__session_transcript_handoff__": 0}}]]}}}

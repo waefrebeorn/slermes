@@ -1,0 +1,44 @@
+{"func": "rejected_init", "in": {"result_json": ""}}
+{"func": "rejected_init", "in": {"result_json": "{\"output\": \"ok\", \"exit_code\": 0, \"status\": \"success\"}"}}
+{"func": "rejected_init", "in": {"result_json": "{\"error\": \"denied: command not allowed\"}"}}
+{"func": "rejected_init", "in": {"result_json": "quote \" and backslash \\ inside"}}
+{"func": "rejected_init", "in": {"result_json": "unicode: café ☃ 中文"}}
+{"func": "rejected_init", "in": {"result_json": "line1\nline2\ttab"}}
+{"func": "rejected_init", "in": {"result_json": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "Exception"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "BaseException"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "_Rejected"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "ValueError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "OSError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "FileNotFoundError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "TypeError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "KeyboardInterrupt"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "SystemExit"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "GeneratorExit"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "ExceptionGroup"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "BaseExceptionGroup"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "CancelledError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "Warning"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "UnicodeEncodeError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "NotImplementedError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "UnboundLocalError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "WindowsError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "EnvironmentError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "IOError"}}
+{"func": "isinstance", "in": {"result_json": "rj", "kind": "__NotAnExc__"}}
+{"func": "hierarchy", "in": {"result_json": "rj", "names": ["BaseException", "Exception", "SystemExit", "KeyboardInterrupt", "GeneratorExit", "CancelledError", "BaseExceptionGroup", "ExceptionGroup", "TypeError", "ValueError", "AttributeError", "NameError", "LookupError", "ArithmeticError", "OSError", "EnvironmentError", "IOError", "WindowsError", "StopIteration", "StopAsyncIteration", "AssertionError", "SyntaxError", "SystemError", "ImportError", "Warning", "RuntimeError", "MemoryError", "BufferError", "EOFError", "ReferenceError", "_IncompleteInputError", "PythonFinalizationError", "NotImplementedError", "RecursionError", "UnboundLocalError", "UnicodeError", "UnicodeEncodeError", "UnicodeDecodeError", "UnicodeTranslateError", "IndexError", "KeyError", "ZeroDivisionError", "OverflowError", "FloatingPointError", "FileNotFoundError", "PermissionError", "IsADirectoryError", "NotADirectoryError", "InterruptedError", "TimeoutError", "ConnectionError", "ProcessLookupError", "FileExistsError", "ChildProcessError", "BlockingIOError", "BrokenPipeError", "ConnectionAbortedError", "ConnectionRefusedError", "ConnectionResetError", "ModuleNotFoundError", "IndentationError", "TabError", "UserWarning", "DeprecationWarning", "PendingDeprecationWarning", "SyntaxWarning", "RuntimeWarning", "FutureWarning", "ImportWarning", "UnicodeWarning", "BytesWarning", "ResourceWarning", "EncodingWarning", "_Rejected"]}}
+{"func": "hierarchy", "in": {"result_json": "rj", "names": ["BaseException", "Exception", "_Rejected", "ValueError", "OSError"]}}
+{"func": "hierarchy", "in": {"result_json": "rj", "names": ["SystemExit", "KeyboardInterrupt", "GeneratorExit", "CancelledError", "BaseExceptionGroup"]}}
+{"func": "hierarchy", "in": {"result_json": "rj", "names": ["FileNotFoundError", "PermissionError", "ConnectionError", "BrokenPipeError", "TabError"]}}
+{"func": "hierarchy", "in": {"result_json": "rj", "names": ["Warning", "UserWarning", "DeprecationWarning", "EncodingWarning", "ResourceWarning"]}}
+{"func": "hierarchy", "in": {"result_json": "rj", "names": ["__NotAnExc__", "Exception", "BaseException", "ValueError", "_Rejected"]}}
+{"func": "hierarchy", "in": {"result_json": "rj", "names": []}}
+{"func": "catch_dispatch", "in": {"result_json": "{\"error\":\"denied\"}", "clauses": ["Exception"]}}
+{"func": "catch_dispatch", "in": {"result_json": "{\"error\":\"denied\"}", "clauses": ["ValueError", "Exception", "BaseException"]}}
+{"func": "catch_dispatch", "in": {"result_json": "{\"error\":\"denied\"}", "clauses": ["ValueError", "TypeError", "OSError"]}}
+{"func": "catch_dispatch", "in": {"result_json": "{\"error\":\"denied\"}", "clauses": ["_Rejected", "Exception"]}}
+{"func": "catch_dispatch", "in": {"result_json": "{\"error\":\"denied\"}", "clauses": ["BaseException", "Exception"]}}
+{"func": "catch_dispatch", "in": {"result_json": "{\"error\":\"denied\"}", "clauses": ["KeyboardInterrupt", "SystemExit", "GeneratorExit"]}}
+{"func": "catch_dispatch", "in": {"result_json": "{\"error\":\"denied\"}", "clauses": ["__NotAnExc__", "FileNotFoundError", "Exception", "ValueError"]}}
+{"func": "catch_dispatch", "in": {"result_json": "{\"error\":\"denied\"}", "clauses": []}}
+{"func": "catch_dispatch", "in": {"result_json": "{\"error\":\"denied\"}", "clauses": ["RuntimeError", "ValueError", "TypeError"]}}
