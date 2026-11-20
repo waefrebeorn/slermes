@@ -1,0 +1,155 @@
+{"func": "paths", "in": {"spec": "list, *snapshot export"}}
+{"func": "paths", "in": {"spec": "."}}
+{"func": "paths", "in": {"spec": "*."}}
+{"func": "paths", "in": {"spec": "list, *enable, *disable, *post-setup"}}
+{"func": "paths", "in": {"spec": "  ,  ,"}}
+{"func": "paths", "in": {"spec": "*boards create, boards list"}}
+{"func": "paths", "in": {"spec": "a b c, *d"}}
+{"func": "sub", "in": {"module": "dump", "builder": "build_dump_parser", "handler": "cmd_dump"}}
+{"func": "sub", "in": {"module": "prompt_size", "builder": "build_prompt_size_parser", "handler": "cmd_prompt_size"}}
+{"func": "sub", "in": {"module": "cron", "builder": "build_cron_parser", "handler": "cmd_cron"}}
+{"func": "sub", "in": {"module": "import_cmd", "builder": "build_import_cmd_parser", "handler": "cmd_import"}}
+{"func": "sub", "in": {"module": "x", "builder": "b", "handler": "h"}}
+{"func": "reg", "in": {"module": "bundles", "handler": "bundles_command"}}
+{"func": "reg", "in": {"module": "checkpoints"}}
+{"func": "reg", "in": {"module": "curator"}}
+{"func": "reg", "in": {"module": "pets"}}
+{"func": "reg", "in": {"module": "bundles", "handler": null}}
+{"func": "drop_trailing_blank", "in": {"lines": ["a", "b"], "seams": {"strip_ansi": ["a", "b"]}}}
+{"func": "drop_trailing_blank", "in": {"lines": ["a", "  ", ""], "seams": {"strip_ansi": ["  ", "a"]}}}
+{"func": "drop_trailing_blank", "in": {"lines": ["", "", ""], "seams": {"strip_ansi": ["", "", ""]}}}
+{"func": "drop_trailing_blank", "in": {"lines": [], "seams": {"strip_ansi": []}}}
+{"func": "drop_trailing_blank", "in": {"lines": ["x"], "seams": {"strip_ansi": ["x"]}}}
+{"func": "drop_trailing_blank", "in": {"lines": ["a", "\t", " \n"], "seams": {"strip_ansi": [" \n", "\t", "a"]}}}
+{"func": "drop_trailing_blank", "in": {"lines": ["a", "b"], "seams": {}}}
+{"func": "shell_tokens", "in": {"token": "|"}}
+{"func": "shell_tokens", "in": {"token": "||"}}
+{"func": "shell_tokens", "in": {"token": "&"}}
+{"func": "shell_tokens", "in": {"token": "&&"}}
+{"func": "shell_tokens", "in": {"token": ";"}}
+{"func": "shell_tokens", "in": {"token": ">"}}
+{"func": "shell_tokens", "in": {"token": ">>"}}
+{"func": "shell_tokens", "in": {"token": "<"}}
+{"func": "shell_tokens", "in": {"token": "<<"}}
+{"func": "shell_tokens", "in": {"token": "2>"}}
+{"func": "shell_tokens", "in": {"token": "2>>"}}
+{"func": "shell_tokens", "in": {"token": "x"}}
+{"func": "shell_tokens", "in": {"token": ""}}
+{"func": "shell_tokens", "in": {"token": "2>"}}
+{"func": "confirmed_kinds", "in": {"kind": "extracted"}}
+{"func": "confirmed_kinds", "in": {"kind": "registered"}}
+{"func": "confirmed_kinds", "in": {"kind": "builder"}}
+{"func": "confirmed_kinds", "in": {"kind": "adder"}}
+{"func": "confirmed_kinds", "in": {"kind": ""}}
+{"func": "confirmed_kinds", "in": {"kind": "Extracted"}}
+{"func": "blocked_top", "in": {"token": "chat"}}
+{"func": "blocked_top", "in": {"token": "gateway"}}
+{"func": "blocked_top", "in": {"token": "login"}}
+{"func": "blocked_top", "in": {"token": "update"}}
+{"func": "blocked_top", "in": {"token": "whatsapp-cloud"}}
+{"func": "blocked_top", "in": {"token": "status"}}
+{"func": "blocked_top", "in": {"token": ""}}
+{"func": "blocked_top", "in": {"token": "moa"}}
+{"func": "blocked_top", "in": {"token": "oneshot"}}
+{"func": "blocked_pairs", "in": {"tokens": ["config", "edit"]}}
+{"func": "blocked_pairs", "in": {"tokens": ["profile", "alias"]}}
+{"func": "blocked_pairs", "in": {"tokens": ["kanban", "tail"]}}
+{"func": "blocked_pairs", "in": {"tokens": ["sessions", "delete"]}}
+{"func": "blocked_pairs", "in": {"tokens": ["sessions", "prune"]}}
+{"func": "blocked_pairs", "in": {"tokens": ["config", "show"]}}
+{"func": "blocked_pairs", "in": {"tokens": ["kanban"]}}
+{"func": "blocked_pairs", "in": {"tokens": []}}
+{"func": "blocked_pairs", "in": {"tokens": ["skills", "publish", "extra"]}}
+{"func": "send_surface", "in": {}}
+{"func": "send_surface", "in": {}}
+{"func": "send_surface", "in": {}}
+{"func": "send_surface", "in": {}}
+{"func": "send_surface", "in": {}}
+{"func": "parse", "in": {"prog": "logs", "args": ["agent", "-n", "10"], "specs": [{"flags": ["log_name"], "kwargs": {"nargs": "?", "default": "agent"}}, {"flags": ["-n", "--lines"], "kwargs": {"type": "int", "default": 50}}, {"bare": "--level"}], "seams": {"parser_new": {"id": "p1"}, "add_argument": [null, null, null], "parse_args": {"log_name": "agent", "lines": 10, "level": null}}}}
+{"func": "parse", "in": {"prog": "sessions list", "args": ["--limit", "5"], "specs": [{"flags": ["--limit"], "kwargs": {"type": "int", "default": 20}}], "seams": {"parser_new": {"id": "p1"}, "add_argument": null, "parse_args": {"limit": 5}}}}
+{"func": "parse", "in": {"prog": "cron list", "args": [], "specs": [{"flags": ["--all"], "kwargs": {"action": "store_true"}}], "seams": {"parser_new": {"id": "p1"}, "add_argument": null, "parse_args": {"all": false}}}}
+{"func": "parse", "in": {"prog": "logs", "args": ["-x"], "specs": [], "seams": {"parser_new": {"id": "p1"}, "parse_args": {"__raise__": "ConsoleCommandError", "msg": "logs: unrecognized arguments: -x"}}}}
+{"func": "parse", "in": {"prog": "p", "args": [], "specs": [], "seams": {"parser_new": {"id": "p1"}}}}
+{"func": "parse", "in": {"prog": "p", "args": [], "specs": [{"bare": "--force"}], "seams": {"parser_new": {"__raise__": "RuntimeError", "msg": "ctor boom"}, "add_argument": null, "parse_args": {}}}}
+{"func": "parse", "in": {"prog": "p", "args": [], "specs": [{"flags": ["a"], "kwargs": {}}], "seams": {"parser_new": {"id": "p1"}, "add_argument": {"__raise__": "ValueError", "msg": "bad spec"}, "parse_args": {}}}}
+{"func": "captured", "in": {"fn": {"__callable__": "handler"}}}
+{"func": "captured", "in": {"fn": {"__callable__": "h2"}}}
+{"func": "captured", "in": {"fn": null}}
+{"func": "captured", "in": {"fn": {"__callable__": "handler3"}}}
+{"func": "captured", "in": {"fn": {"__callable__": "x"}}}
+{"func": "captured_wrapper", "in": {"fn": {"__callable__": "handler"}, "engine": {"id": "e1"}, "args": ["a"], "seams": {"_capture_output": "text out"}}}
+{"func": "captured_wrapper", "in": {"fn": {"__callable__": "handler"}, "engine": {"id": "e1"}, "args": [], "seams": {"_capture_output": ""}}}
+{"func": "captured_wrapper", "in": {"fn": {"__callable__": "handler"}, "engine": null, "args": ["a", "b"], "seams": {"_capture_output": {"__raise__": "ConsoleCommandError", "msg": "boom"}}}}
+{"func": "captured_wrapper", "in": {"fn": {"__callable__": "handler"}, "engine": {"id": "e1"}, "args": ["a"], "seams": {}}}
+{"func": "captured_wrapper", "in": {"fn": {"__callable__": "handler"}, "engine": {"id": "e1"}, "args": ["a"], "seams": {"_capture_output": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "simple_command", "in": {"usage": "version", "module": "hermes_cli._startup_fast", "name": "print_fast_version_info", "kwargs": {"check_updates": true}}}
+{"func": "simple_command", "in": {"usage": "doctor", "module": "hermes_cli.doctor", "name": "run_doctor"}}
+{"func": "simple_command", "in": {"usage": "config show", "module": "hermes_cli.config_show", "name": "show_config"}}
+{"func": "simple_command", "in": {"usage": "cron status", "module": "hermes_cli.cron", "name": "cron_status"}}
+{"func": "simple_command", "in": {"usage": "x", "module": "m", "name": "n", "make_args": {"__callable__": "mk"}, "kwargs": {"a": 1}}}
+{"func": "simple_command_handler", "in": {"usage": "version", "module": "hermes_cli._startup_fast", "name": "print_fast_version_info", "args": [], "seams": {"_expect_no_args": null, "import_module": {"id": "m1"}, "getattr": {"__callable__": "print_fast_version_info"}, "_capture_output": "v1.0"}}}
+{"func": "simple_command_handler", "in": {"usage": "version", "module": "m", "name": "n", "args": ["extra"], "seams": {"_expect_no_args": {"__raise__": "ConsoleCommandError", "msg": "Usage: version"}}}}
+{"func": "simple_command_handler", "in": {"usage": "doctor", "module": "hermes_cli.doctor", "name": "run_doctor", "args": [], "seams": {"_expect_no_args": null, "import_module": {"__raise__": "ImportError", "msg": "no mod"}, "getattr": {"__callable__": "x"}, "_capture_output": "ok"}}}
+{"func": "simple_command_handler", "in": {"usage": "x", "module": "m", "name": "n", "args": [], "seams": {"_expect_no_args": null, "import_module": {"id": "m1"}, "getattr": {"__raise__": "AttributeError", "msg": "no attr"}, "_capture_output": "ok"}}}
+{"func": "simple_command_handler", "in": {"usage": "x", "module": "m", "name": "n", "args": [], "seams": {}}}
+{"func": "simple_command_handler", "in": {"usage": "config show", "module": "hermes_cli.config_show", "name": "show_config", "args": [], "seams": {"_expect_no_args": null, "import_module": {"id": "m1"}, "getattr": {"__callable__": "show_config"}, "_capture_output": {"__raise__": "RuntimeError", "msg": "cfg write guard"}}}}
+{"func": "dispatch", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "fixed": [], "args": ["--x"], "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "parse_args": {"func": {"__callable__": "handler"}, "yes": false}, "_capture_output": "dispatched"}}}
+{"func": "dispatch", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "fixed": ["a"], "args": ["b"], "namespace_update": null, "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "parse_args": {"func": {"__callable__": "handler"}}, "_capture_output": "dispatched"}}}
+{"func": "dispatch", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "fixed": [], "args": [], "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "parse_args": {"func": null}, "_capture_output": "dispatched"}}}
+{"func": "dispatch", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "fixed": [], "args": [], "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "parse_args": {"yes": true}, "_capture_output": "dispatched"}}}
+{"func": "dispatch", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "fixed": [], "args": [], "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "parse_args": {"func": "notcallable"}, "_capture_output": "dispatched"}}}
+{"func": "dispatch", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "fixed": [], "args": [], "namespace_update": {"__callable__": "nu"}, "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "parse_args": {"func": {"__callable__": "handler"}}, "_capture_output": "dispatched", "namespace_update": null}}}
+{"func": "dispatch", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "fixed": [], "args": [], "seams": {}}}
+{"func": "dispatch", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "fixed": [], "args": [], "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "parse_args": {"__raise__": "ConsoleCommandError", "msg": "dump: bad args"}, "_capture_output": "dispatched"}}}
+{"func": "dispatch", "in": {"surface": {"kind": "registered", "module": "hermes_cli.bundles", "builder": "register_cli", "handler": "bundles_command"}, "root": "bundles", "fixed": [], "args": ["list"], "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": [{"__callable__": "entry"}, {"__callable__": "bundles_command"}], "add_parser": {"id": "top1"}, "entry": null, "set_defaults": null, "parse_args": {"func": {"__callable__": "handler"}}, "_capture_output": "ok"}}}
+{"func": "dispatch_lambda", "in": {"func": {"__callable__": "handler"}, "namespace": {"a": 1}, "seams": {"func": "result"}}}
+{"func": "dispatch_lambda", "in": {"func": {"__callable__": "handler"}, "namespace": {}, "seams": {"func": null}}}
+{"func": "dispatch_lambda", "in": {"func": {"__callable__": "handler"}, "namespace": {"a": 1}, "seams": {"func": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "dispatch_lambda", "in": {"func": {"__callable__": "handler"}, "namespace": {"a": 1}, "seams": {}}}
+{"func": "dispatch_lambda", "in": {"func": {"__callable__": "handler"}, "namespace": {"a": 1}, "seams": {"func": {"__raise__": "SystemExit", "msg": "2"}}}}
+{"func": "surface_build", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "live": false, "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}}}}
+{"func": "surface_build", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "live": true, "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": [{"id": "m1"}, {"id": "main1"}], "getattr": [{"__callable__": "entry"}, {"__callable__": "cmd_dump"}], "entry": {"id": "top1"}}}}
+{"func": "surface_build", "in": {"surface": {"kind": "registered", "module": "hermes_cli.bundles", "builder": "register_cli", "handler": "bundles_command"}, "root": "bundles", "live": true, "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": [{"__callable__": "entry"}, {"__callable__": "bundles_command"}], "entry": null, "add_parser": {"id": "top1"}, "set_defaults": null}}}
+{"func": "surface_build", "in": {"surface": {"kind": "registered", "module": "hermes_cli.checkpoints", "builder": "register_cli", "handler": null}, "root": "checkpoints", "live": false, "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": null, "add_parser": {"id": "top1"}}}}
+{"func": "surface_build", "in": {"surface": {"kind": "builder", "module": "hermes_cli.projects_cmd", "builder": "build_parser", "handler": "cmd_project"}, "root": "project", "live": true, "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": [{"id": "m1"}, {"id": "main1"}], "getattr": [{"__callable__": "entry"}, {"__callable__": "cmd_project"}], "entry": {"id": "top1"}, "set_defaults": null}}}
+{"func": "surface_build", "in": {"surface": {"kind": "adder", "module": "hermes_cli.portal_cli", "builder": "add_parser", "handler": null}, "root": "portal", "live": false, "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": null}}}
+{"func": "surface_build", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "live": false, "seams": {}}}
+{"func": "surface_build", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "live": true, "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"__raise__": "ImportError", "msg": "no module"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}}}}
+{"func": "build_main_handler", "in": {"handler": "cmd_dump", "live": true, "seams": {"import_module": {"id": "main1"}, "getattr": {"__callable__": "cmd_dump"}}}}
+{"func": "build_main_handler", "in": {"handler": "cmd_dump", "live": false, "seams": {}}}
+{"func": "build_main_handler", "in": {"handler": "cmd_cron", "live": true, "seams": {"import_module": {"id": "main1"}, "getattr": {"__callable__": "cmd_cron"}}}}
+{"func": "build_main_handler", "in": {"handler": "cmd_dump", "live": true, "seams": {"import_module": {"__raise__": "ImportError", "msg": "no main"}}}}
+{"func": "build_main_handler", "in": {"handler": "cmd_dump", "live": true, "seams": {"import_module": {"id": "main1"}, "getattr": {"__raise__": "AttributeError", "msg": "no handler"}}}}
+{"func": "build_main_handler", "in": {"handler": "cmd_dump", "live": true, "seams": {}}}
+{"func": "surface_summaries", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "_summaries_from_parser": {"dump": "Dump stuff."}}}}
+{"func": "surface_summaries", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "_summaries_from_parser": {}}}}
+{"func": "surface_summaries", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "_summaries_from_parser": {"__raise__": "RuntimeError", "msg": "parse boom"}}}}
+{"func": "surface_summaries", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"id": "m1"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}, "_summaries_from_parser": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "surface_summaries", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "seams": {}}}
+{"func": "surface_summaries", "in": {"surface": {"kind": "extracted", "module": "hermes_cli.subcommands.dump", "builder": "build_dump_parser", "handler": "cmd_dump"}, "root": "dump", "seams": {"parser_new": {"id": "p1"}, "add_subparsers": {"id": "sp1"}, "import_module": {"__raise__": "ImportError", "msg": "no mod"}, "getattr": {"__callable__": "entry"}, "entry": {"id": "top1"}}}}
+{"func": "session_db", "in": {"read_only": true, "seams": {"profile_scope": {"profile_dir": "/h/p1"}, "open_persistence_reader": {"id": "store1"}}}}
+{"func": "session_db", "in": {"read_only": false, "seams": {"profile_scope": {"profile_dir": "/h/p1"}, "open_persistence": {"id": "store2"}}}}
+{"func": "session_db", "in": {"read_only": true, "seams": {"profile_scope": {"profile_dir": ""}, "open_persistence_reader": null}}}
+{"func": "session_db", "in": {"read_only": true, "seams": {"profile_scope": {"__raise__": "RuntimeError", "msg": "no scope"}}}}
+{"func": "session_db", "in": {"read_only": false, "seams": {"profile_scope": {"profile_dir": "/h/p1"}, "open_persistence": {"__raise__": "OSError", "msg": "locked"}}}}
+{"func": "session_db", "in": {"read_only": true, "seams": {}}}
+{"func": "guard_exports", "in": {"store": {"id": "s1"}, "session_ids": ["a", "b"], "seams": {"assert_exports_safe": null}}}
+{"func": "guard_exports", "in": {"store": {"id": "s1"}, "session_ids": ["a"], "seams": {"assert_exports_safe": {"__raise__": "ExportTooLarge", "msg": "session a too large"}}}}
+{"func": "guard_exports", "in": {"store": {"id": "s1"}, "session_ids": [], "seams": {"assert_exports_safe": {"__raise__": "RuntimeError", "msg": "other boom"}}}}
+{"func": "guard_exports", "in": {"store": {"id": "s1"}, "session_ids": ["a"], "seams": {"assert_exports_safe": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "guard_exports", "in": {"store": {"id": "s1"}, "session_ids": ["a"], "seams": {}}}
+{"func": "guard_exports", "in": {"store": null, "session_ids": ["a"], "seams": {"assert_exports_safe": null}}}
+{"func": "cron_job_action", "in": {"args": ["j1"], "usage": "cron pause <job>", "action": "Paused", "seams": {"run": {"id": "j1", "name": "N"}, "_format_job": "Paused job: N (j1) [paused]"}}}
+{"func": "cron_job_action", "in": {"args": [], "usage": "cron pause <job>", "action": "Paused", "seams": {}}}
+{"func": "cron_job_action", "in": {"args": ["j1", "j2"], "usage": "cron run <job>", "action": "Triggered", "seams": {}}}
+{"func": "cron_job_action", "in": {"args": ["j1"], "usage": "cron pause <job>", "action": "Paused", "seams": {"run": null}}}
+{"func": "cron_job_action", "in": {"args": ["j1"], "usage": "cron pause <job>", "action": "Paused", "seams": {"run": {"__raise__": "AmbiguousJobReference", "msg": "ambiguous j1"}}}}
+{"func": "cron_job_action", "in": {"args": ["j1"], "usage": "cron run <job>", "action": "Triggered", "seams": {"run": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "cron_job_action", "in": {"args": ["j1"], "usage": "cron pause <job>", "action": "Paused", "seams": {}}}
+{"func": "cron_job_action", "in": {"args": ["j1"], "usage": "cron pause <job>", "action": "Paused", "seams": {"run": {"id": "j1"}, "_format_job": {"__raise__": "ValueError", "msg": "fmt boom"}}}}
+{"func": "doctor", "in": {"args": [], "seams": {"_expect_no_args": null, "import_module": {"id": "m1"}, "getattr": {"__callable__": "run_doctor"}, "_capture_output": "doctor ok"}}}
+{"func": "doctor", "in": {"args": ["x"], "seams": {"_expect_no_args": {"__raise__": "ConsoleCommandError", "msg": "Usage: doctor"}}}}
+{"func": "doctor", "in": {"args": [], "seams": {"_expect_no_args": null, "import_module": {"id": "m1"}, "getattr": {"__callable__": "run_doctor"}, "_capture_output": ""}}}
+{"func": "doctor", "in": {"args": [], "seams": {"_expect_no_args": null, "import_module": {"__raise__": "ImportError", "msg": "no doctor"}}}}
+{"func": "doctor", "in": {"args": [], "seams": {}}}
+{"func": "doctor", "in": {"args": [], "seams": {"_expect_no_args": null, "import_module": {"id": "m1"}, "getattr": {"__callable__": "run_doctor"}, "_capture_output": {"__raise__": "RuntimeError", "msg": "guard"}}}}

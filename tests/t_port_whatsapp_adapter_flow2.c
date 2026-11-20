@@ -1,4 +1,4 @@
-/* t_port_whatsapp_adapter_flow2.c — harness for the WhatsApp adapter
+/* t_port_whatsapp_adapter_flow2.c -- harness for the WhatsApp adapter
  * session/token/auth/env FLOW remainder port
  * (src/gateway/platforms/whatsapp_adapter_flow2.c).
  *

@@ -188,7 +188,8 @@ add("_stash_pending_model_switch",
 add("_stash_pending_model_switch",
     {"rid": R, "key": "model", "value": "m", "confirmed": False,
      "parsed": dict(PARSED, is_global=True)},
-    {"resolve_persist_behavior": True, "managed_config_keys": None, "ok": OKEnvelope},
+    {"resolve_persist_behavior": True, "managed_config_keys": None,
+     "pending_switch_selection_warning": None, "ok": OKEnvelope},
     {"session": {"agent": None}})
 add("_stash_pending_model_switch",
     {"rid": R, "key": "model", "value": "m", "confirmed": False,
@@ -560,7 +561,8 @@ add("_set_fast", {"rid": R, "params": {}, "key": "fast", "value": "ultrafast"},
 add("_set_fast", {"rid": R, "params": {}, "key": "fast", "value": "bogus"},
     {"load_service_tier": None, "err": err(R, 4002, "unknown fast mode: bogus")})
 add("_set_fast", {"rid": R, "params": {}, "key": "fast", "value": "fast"},
-    {"resolve_model": None, "err": err(R, 4002, "fast mode is not available without a selected model")})
+    {"load_service_tier": None, "resolve_model": None,
+     "err": err(R, 4002, "fast mode is not available without a selected model")})
 add("_set_fast", {"rid": R, "params": {}, "key": "fast", "value": "status"},
     {"load_service_tier": rs("OSError", "x")})
 add("_set_fast", {"rid": R, "params": {}, "key": "fast", "value": "status"},
@@ -613,7 +615,7 @@ add("_h_config_set", {"rid": R, "params": {"key": "model", "value": "m", "sessio
 add("_h_config_set", {"rid": R, "params": {"key": "busy", "value": "queue", "session_id": "s1"}},
     {"sessions_get": {"state": True}, "write_config_key": None, "ok": OKEnvelope},
     {"session": {"session_key": "sk"}})
-add("_h_config_set", {"rid": R, "params": {"key": "details_mode.thinking", "value": "full",
+add("_h_config_set", {"rid": R, "params": {"key": "details_mode.thinking", "value": "expanded",
                                             "session_id": "s1"}},
     {"sessions_get": {"state": True}, "is_key_managed": False,
      "supports_file_tooling": False, "write_config_changes": None, "ok": OKEnvelope},
@@ -638,6 +640,43 @@ add("_h_config_set", {"rid": R, "params": {"key": "model", "value": "m", "sessio
                 "Settings -> Models (Desktop)")})
 add("_h_config_set", {"rid": R, "params": {"key": "busy", "value": "queue", "session_id": "s1"}},
     {"sessions_get": {"state": True}}, {"session": {}}, fail_closed=True)
+
+
+# -- extra complex-branch probes --
+add("_set_model", {"rid": R, "params": {"session_id": "s1"}, "key": "model", "value": "m"},
+    {"parse_model_switch_args": MPARSED, "event_wait": True, "event_is_set": True,
+     "session_profile_runtime_scope": [{"scope": 1}, {"scope": 1}],
+     "apply_model_switch": {"value": "m", "warning": "", "confirm_required": False},
+     "restart_failed_agent_build": None, "wait_agent": err(R, 5032, "agent initialization failed")},
+    {"session": {"agent": None, "agent_error": "boom", "agent_ready": {"id": "e1"}}})
+add("_set_model", {"rid": R, "params": {"session_id": "s1"}, "key": "model", "value": "m"},
+    {"parse_model_switch_args": MPARSED, "start_agent_build": None,
+     "wait_agent": err(R, 5032, "agent initialization failed")},
+    {"session": {"agent": None}})
+add("_set_fast", {"rid": R, "params": {}, "key": "fast", "value": "fast"},
+    {"resolve_fast_mode_overrides": {"service_tier": "priority", "speed": "fast"},
+     "persist_live_session_runtime": None, "session_info": {"model": "m"}, "emit": None,
+     "ok": OKEnvelope},
+    {"session": {"agent": {"model": "m", "request_overrides": {"service_tier": "old",
+                                                              "speed": "old", "keep": "z"}}}})
+add("_set_fast", {"rid": R, "params": {}, "key": "fast", "value": "fast"},
+    {"load_service_tier": None, "resolve_fast_mode_overrides": {"x": 1}, "ok": OKEnvelope},
+    {"session": {"model_override": {"model": "picked"}}})
+add("_set_yolo", {"rid": R, "params": {"scope": "global"}, "key": "yolo", "value": "off"},
+    {"load_cfg": {"approvals": {"mode": "manual"}}, "normalize_approval_mode": "manual",
+     "write_config_key": None, "sessions_items": [[]], "ok": OKEnvelope})
+add("_stash_pending_model_switch",
+    {"rid": R, "key": "model", "value": "m", "confirmed": False,
+     "parsed": dict(PARSED, explicit_provider=" nous ", model_input="picked")},
+    {"resolve_persist_behavior": False, "pending_switch_selection_warning": None,
+     "ok": OKEnvelope}, {"session": {"agent": None}})
+add("_set_reasoning", {"rid": R, "params": {}, "key": "reasoning", "value": "high"},
+    {"parse_reasoning_effort": "high", "ok": OKEnvelope},
+    {"session": {"create_reasoning_override": "low", "agent": None}})
+add("_h_config_set", {"rid": R, "params": {"key": "yolo", "value": "on", "session_id": "s1"}},
+    {"sessions_get": {"state": True}, "toggle_session_yolo": True,
+     "session_info": {"model": "m"}, "emit": None, "ok": OKEnvelope},
+    {"session": {"session_key": "sk", "agent": {"session_id": "sid"}}})
 
 
 def main():

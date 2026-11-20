@@ -1108,7 +1108,7 @@ static json_t *tset_guard_catch(tset_ctx_t *ctx, const json_t *rid, json_t *ret)
     return e;
 }
 
-/* PoP: tset_cfgset_guarded @ tui_gateway/methods_config_set.py:_cfgset_guarded */
+/* PoP: tset_cfgset_guarded_case @ tui_gateway/methods_config_set.py:_cfgset_guarded */
 static json_t *tset_cfgset_guarded_case(tset_ctx_t *ctx, const json_t *args) {
     const json_t *rid = json_obj_get(args, "rid");
     json_t *a = tset_args0();
@@ -1699,7 +1699,7 @@ static json_t *tset_set_verbose(tset_ctx_t *ctx, const json_t *args) {
     }
     json_t *wr = tset_write_config_key(ctx, "display.tool_progress", json_string(nv));
     if (wr) { free(nv); return wr; }
-    if (session) {
+    if (tset_truthy(session)) {
         json_set(session, "tool_progress_mode", json_string(nv));
         json_t *gr = NULL;
         const json_t *agent = tset_dict_get(session, "agent", NULL, &gr);
@@ -1814,7 +1814,7 @@ static json_t *tset_set_focus(tset_ctx_t *ctx, const json_t *args) {
         return wk;
     }
     json_free(wk);
-    if (session) {
+    if (tset_truthy(session)) {
         json_set(session, "focus_view", json_bool(target_truthy));
         json_set(session, "tool_progress_mode", json_string(effective));
         const json_t *agent = tset_dict_get(session, "agent", NULL, &gr);
@@ -1859,12 +1859,16 @@ static json_t *tset_set_prompt_body(tset_ctx_t *ctx, const json_t *args) {
                  && !strcmp(value->str_val, "clear");
     if (!ft) {
         json_t *sets = json_object();
-        json_t *drops = json_array();
-        if (clear) json_append(drops, json_string("custom_prompt"));
-        else json_set(sets, "custom_prompt", value ? json_copy(value) : json_null());
         json_t *a = tset_args0();
-        json_set(a, "sets", sets);
-        json_set(a, "drops", drops);
+        if (clear) {
+            json_t *drops = json_array();
+            json_append(drops, json_string("custom_prompt"));
+            json_set(a, "sets", sets);
+            json_set(a, "drops", drops);
+        } else {
+            json_set(sets, "custom_prompt", value ? json_copy(value) : json_null());
+            json_set(a, "sets", sets);
+        }
         json_t *wc = tset_call(ctx, "write_config_changes", a);
         if (tset_is_raise(wc)) return wc;
         json_free(wc);
@@ -2096,7 +2100,7 @@ static json_t *tset_set_yolo_body(tset_ctx_t *ctx, const json_t *args) {
         if (wr) { json_free(enable); free(scope); free(raw); return wr; }
         json_t *ea = tset_emit_all_session_info(ctx);
         if (ea) { json_free(enable); free(scope); free(raw); return ea; }
-    } else if (session) {
+    } else if (tset_truthy(session)) {
         const json_t *agent = tset_dict_get(session, "agent", NULL, &gr);
         if (gr) { free(scope); free(raw); return gr; }
         const json_t *asid = tset_attr(agent, "session_id", true, NULL, &gr);
@@ -2197,7 +2201,7 @@ static json_t *tset_set_reasoning_body(tset_ctx_t *ctx, const json_t *args) {
             json_t *wr = tset_write_display_sections(ctx, sections, NULL, fields);
             json_free(sections); json_free(fields);
             if (wr) { free(arg); free(scope); return wr; }
-            if (show[i] >= 0 && session)
+            if (show[i] >= 0 && tset_truthy(session))
                 json_set(session, "show_reasoning", json_bool(show[i] == 1));
             json_t *r = tset_kv(ctx, rid, key, json_string(reported[i]), NULL);
             free(arg); free(scope);
@@ -2226,7 +2230,7 @@ static json_t *tset_set_reasoning_body(tset_ctx_t *ctx, const json_t *args) {
     } else {
         json_set(session, "create_reasoning_override", json_copy(parsed));
     }
-    if (session) {
+    if (tset_truthy(session)) {
         const json_t *agent = tset_dict_get(session, "agent", NULL, &gr);
         if (gr) { json_free(parsed); free(arg); free(scope); return gr; }
         if (agent && agent->type != JSON_NULL) {
@@ -2275,7 +2279,7 @@ static json_t *tset_set_fast(tset_ctx_t *ctx, const json_t *args) {
     char *raw = tset_word_v(value);
     json_t *gr = NULL;
     const json_t *agent = NULL;
-    if (session) {
+    if (tset_truthy(session)) {
         agent = tset_dict_get(session, "agent", NULL, &gr);
         if (gr) { free(raw); return gr; }
     }
@@ -2341,7 +2345,7 @@ static json_t *tset_set_fast(tset_ctx_t *ctx, const json_t *args) {
             target_model = m ? json_copy(m) : json_null();
             owns_tm = true;
         } else {
-            const json_t *so0 = session ? tset_dict_get(session, "model_override", NULL, &gr) : NULL;
+            const json_t *so0 = tset_truthy(session) ? tset_dict_get(session, "model_override", NULL, &gr) : NULL;
             if (gr) { json_free(nv); free(nvs); if (owns_tier) json_free(current_tier); free(raw); return gr; }
             const json_t *so = tset_truthy(so0) ? so0 : NULL;
             const json_t *tm_cand = NULL;
@@ -2483,7 +2487,7 @@ static json_t *tset_set_model_body(tset_ctx_t *ctx, const json_t *args) {
     if (gr) return gr;
     bool confirmed = tset_truthy(cfm);
     json_t *result = NULL;
-    if (session) {
+    if (tset_truthy(session)) {
         const json_t *sid = tset_dict_get(params, "session_id", NULL, &gr);
         if (gr) return gr;
         json_t *pfa = tset_args0();

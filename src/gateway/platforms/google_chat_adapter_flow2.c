@@ -218,9 +218,18 @@ static const gca2_exc_ent_t *gca2_exc_ent(const char *name) {
 }
 
 /* issubclass(kind, ancestor) over the table; unknown kinds are Exception
- * subclasses (the oracle's dynamic type(kind,(Exception,),{})). */
+ * subclasses (the oracle's dynamic type(kind,(Exception,),{})). The aliases
+ * IOError/EnvironmentError/WindowsError ARE OSError in CPython, so normalize
+ * both sides to OSError before walking. */
+static const char *gca2_exc_alias(const char *n) {
+    if (strcmp(n, "IOError") == 0 || strcmp(n, "EnvironmentError") == 0 ||
+        strcmp(n, "WindowsError") == 0) return "OSError";
+    return n;
+}
 static bool gca2_isa(const char *kind, const char *ancestor) {
     if (!kind || !ancestor) return false;
+    kind = gca2_exc_alias(kind);
+    ancestor = gca2_exc_alias(ancestor);
     if (strcmp(kind, ancestor) == 0) return true;
     const char *cur = kind;
     for (int depth = 0; depth < 16 && cur; depth++) {
@@ -488,6 +497,25 @@ static const json_t *gca2_obj_attrs(const json_t *v) {
     }
     return NULL;
 }
+/* Direct attribute read on a carrier (self.config.home_channel etc.): absent
+ * attr / null carrier raises AttributeError, matching live SimpleNamespace. */
+static json_t *gca2_direct_attr(const json_t *node, const char *name) {
+    char buf[160];
+    if (gca2_is_null(node)) {
+        snprintf(buf, sizeof buf, "'NoneType' object has no attribute '%s'", name);
+        return gca2_err("AttributeError", buf);
+    }
+    const json_t *attrs = gca2_obj_attrs(node);
+    if (!attrs) {
+        snprintf(buf, sizeof buf, "'%s' object has no attribute '%s'", gca2_type_name(node), name);
+        return gca2_err("AttributeError", buf);
+    }
+    if (!json_has(attrs, name)) {
+        snprintf(buf, sizeof buf, "'types.SimpleNamespace' object has no attribute '%s'", name);
+        return gca2_err("AttributeError", buf);
+    }
+    return json_copy(json_obj_get(attrs, name));
+}
 static const json_t *gca2_state(const gca2_ctx_t *ctx, const char *key) {
     return ctx->state ? json_obj_get(ctx->state, key) : NULL;
 }
@@ -542,7 +570,12 @@ static char *gca2_path_join(const char *home, const char *name) {
     if (!home) home = "";
     if (!home[0]) return gca2_strdup(name);
     size_t n = strlen(home);
-    while (n > 1 && home[n - 1] == '/') n--;
+    while (n > 0 && home[n - 1] == '/') n--;
+    if (n == 0) {  /* home was all slashes -> root */
+        char *o = malloc(strlen(name) + 2);
+        if (o) { o[0] = '/'; strcpy(o + 1, name); }
+        return o;
+    }
     char *o = malloc(n + strlen(name) + 2);
     if (o) { memcpy(o, home, n); o[n] = '/'; strcpy(o + n + 1, name); }
     return o;
@@ -805,15 +838,26 @@ static json_t *gca2__load_sa_credentials_from(gca2_ctx_t *ctx, const json_t *arg
     json_append(scopes, json_string("https://www.googleapis.com/auth/chat.bot"));
     json_append(scopes, json_string("https://www.googleapis.com/auth/pubsub"));
     json_set(da, "scopes", scopes);
-    json_t *creds = gca2_call(ctx, "google_auth.default", da);
-    if (gca2_is_raise(creds)) {
-        if (gca2_raise_passes(creds)) return creds;
+    json_t *r = gca2_call(ctx, "google_auth.default", da);
+    json_t *exc = NULL;
+    json_t *credentials = NULL;
+    if (gca2_is_raise(r)) {
+        if (gca2_raise_passes(r)) return r;
+        exc = r;
+    } else {
+        json_t *project;
+        json_t *bad = gca2_unpack2(r, &credentials, &project);
+        if (bad) { json_free(r); exc = bad; }
+    }
+    if (exc) {
         json_t *e = gca2_err("_SACredentialError", "adc_failed");
         json_set_hdr(e, "kind", "adc_failed");
-        json_set(e, "detail", creds);
+        json_set(e, "detail", exc);
         return e;
     }
-    return creds;
+    json_t *out = json_copy(credentials);
+    json_free(r);
+    return out;
 }
 
 /* =====================================================================
@@ -846,7 +890,7 @@ static json_t *gca2_store_load(gca2_ctx_t *ctx, const json_t *args) {
                 : "[GoogleChat] could not read thread-count store at %s: %s";
             json_t *aa = json_array();
             json_append(aa, json_string(path));
-            json_append(aa, gca2_exc_double(raw));
+            json_append(aa, json_string(json_get_str(raw, "message", "")));
             json_free(raw);
             json_t *lr = gca2_log(ctx, "warning", fmt, aa);
             if (gca2_is_raise(lr)) return lr;
@@ -872,7 +916,7 @@ static json_t *gca2_store_load(gca2_ctx_t *ctx, const json_t *args) {
                     : "[GoogleChat] could not read thread-count store at %s: %s";
                 json_t *aa = json_array();
                 json_append(aa, json_string(path));
-                json_append(aa, gca2_exc_double(data));
+                json_append(aa, json_string(json_get_str(data, "message", "")));
                 json_free(data);
                 json_free(raw);
                 json_t *lr = gca2_log(ctx, "warning", fmt, aa);
@@ -995,7 +1039,7 @@ done:
         if (gca2_isa(kind, "OSError")) {
             json_t *aa = json_array();
             json_append(aa, json_string(path));
-            json_append(aa, gca2_exc_double(ret));
+            json_append(aa, json_string(json_get_str(ret, "message", "")));
             json_free(ret);
             json_t *lr = gca2_log(ctx, "warning",
                 "[GoogleChat] could not persist thread-count store to %s: %s", aa);
@@ -1037,13 +1081,18 @@ static char *gca2_sa_message(const char *kind, const char *detail_msg) {
 static json_t *gca2__load_sa_credentials(gca2_ctx_t *ctx, const json_t *args) {
     (void)args;
     const json_t *config = gca2_state(ctx, "config");
-    const json_t *cattrs = gca2_obj_attrs(config);
-    const json_t *extra = cattrs ? json_obj_get(cattrs, "extra") : NULL;
-    const json_t *sj = (extra && extra->type == JSON_OBJECT) ? json_obj_get(extra, "service_account_json") : NULL;
+    json_t *extra = gca2_direct_attr(config, "extra");
+    if (gca2_is_raise(extra)) return extra;
+    if (!extra || extra->type != JSON_OBJECT) {
+        json_t *e = gca2_get_attr_err(extra, "get");
+        json_free(extra);
+        return e;
+    }
+    const json_t *sj = json_obj_get(extra, "service_account_json");
     json_t *sa_path = NULL;
-    if (gca2_truthy(sj)) {
-        sa_path = json_copy(sj);
-    } else {
+    if (gca2_truthy(sj)) sa_path = json_copy(sj);
+    json_free(extra);
+    if (!sa_path) {
         json_t *sa = json_object();
         json_set_hdr(sa, "name", "GOOGLE_APPLICATION_CREDENTIALS");
         json_set(sa, "default", json_null());
@@ -1146,13 +1195,15 @@ static json_t *gca2__resolve_bot_user_id(gca2_ctx_t *ctx, const json_t *args) {
     (void)args;
     json_t *candidates = json_array();
     const json_t *config = gca2_state(ctx, "config");
-    const json_t *cattrs = gca2_obj_attrs(config);
-    const json_t *hc = cattrs ? json_obj_get(cattrs, "home_channel") : NULL;
+    json_t *hc = gca2_direct_attr(config, "home_channel");
+    if (gca2_is_raise(hc)) { json_free(candidates); return hc; }
     if (gca2_truthy(hc)) {
-        const json_t *hca = gca2_obj_attrs(hc);
-        const json_t *cid = hca ? json_obj_get(hca, "chat_id") : NULL;
+        json_t *cid = gca2_direct_attr(hc, "chat_id");
+        if (gca2_is_raise(cid)) { json_free(hc); json_free(candidates); return cid; }
         if (gca2_truthy(cid)) json_append(candidates, json_copy(cid));
+        json_free(cid);
     }
+    json_free(hc);
     const json_t *bs = gca2_state(ctx, "_bootstrap_spaces");
     if (gca2_truthy(bs)) {
         const char *s = gca2_str(bs);
@@ -2033,9 +2084,12 @@ static json_t *gca2__create_message(gca2_ctx_t *ctx, const json_t *args) {
     json_set(ka, "body", body ? json_copy(body) : json_null());
     json_t *kwargs = gca2_call(ctx, "_create_kwargs", ka);
     if (gca2_is_raise(kwargs)) return kwargs;
+    /* the live sync_fn is a bare lambda: proj_callable -> {"__callable__":
+     * "<lambda>", "args": {}} (closure kwargs are not projected). */
     json_t *sync_fn = json_object();
-    json_set_hdr(sync_fn, "__callable__", "messages.create");
-    json_set(sync_fn, "args", kwargs);
+    json_set_hdr(sync_fn, "__callable__", "<lambda>");
+    json_set(sync_fn, "args", json_object());
+    json_free(kwargs);
     json_t *ca = json_object();
     json_set(ca, "sync_fn", sync_fn);
     json_set_hdr(ca, "op_name", "messages.create");
@@ -2123,11 +2177,11 @@ static json_t *gca2_send(gca2_ctx_t *ctx, const json_t *args) {
     json_set(ra, "metadata", metadata ? json_copy(metadata) : json_null());
     json_set(ra, "chat_id", chat_id ? json_copy(chat_id) : json_null());
     json_t *thread_id = gca2_call(ctx, "_resolve_thread_id", ra);
-    if (gca2_is_raise(thread_id)) { ret = thread_id; goto finally; }
+    if (gca2_is_raise(thread_id)) return thread_id;  /* before try: no resume */
     json_t *pa = json_object();
     json_set(pa, "chat_id", chat_id ? json_copy(chat_id) : json_null());
     json_t *pr = gca2_call(ctx, "pause_typing_for_chat", pa);
-    if (gca2_is_raise(pr)) { json_free(thread_id); ret = pr; goto finally; }
+    if (gca2_is_raise(pr)) { json_free(thread_id); return pr; }  /* before try: no resume */
     json_free(pr);
     json_t *fa = json_object();
     json_set(fa, "content", content ? json_copy(content) : json_null());

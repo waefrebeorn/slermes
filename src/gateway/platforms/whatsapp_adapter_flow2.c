@@ -219,6 +219,14 @@ static const wa2_exc_parent_t WA2_EXC_PARENTS[] = {
     {"BytesWarning", "Warning"},
     {"ResourceWarning", "Warning"},
     {"EncodingWarning", "Warning"},
+    /* py3.14 aliases / groups / finalization */
+    {"IOError", "OSError"},
+    {"EnvironmentError", "OSError"},
+    {"WindowsError", "OSError"},
+    {"ExceptionGroup", "Exception"},
+    {"BaseExceptionGroup", "BaseException"},
+    {"PythonFinalizationError", "RuntimeError"},
+    {"_IncompleteInputError", "SyntaxError"},
     /* stub families (oracle-registered classes) */
     {"NoSuchProcess", "Exception"},
     {"SubprocessError", "Exception"},
@@ -689,7 +697,7 @@ static json_t *wa2_cm_exit(wa2_ctx_t *ctx, const char *name, json_t *pending, bo
     return pending;
 }
 
-/* ── module-level flows ── */
+/* -- module-level flows -- */
 
 /* PoP: wa2__session_dir @ plugins/platforms/whatsapp/adapter.py:_session_dir */
 static json_t *wa2__session_dir(wa2_ctx_t *ctx, const json_t *args) {
@@ -1426,7 +1434,7 @@ static json_t *wa2_ensure_aiohttp(wa2_ctx_t *ctx, const json_t *args) {
     return ia2;
 }
 
-/* ── decorator + aiohttp request flows ── */
+/* -- decorator + aiohttp request flows -- */
 
 /* PoP: wa2__needs_bridge @ plugins/platforms/whatsapp/adapter.py:_needs_bridge
  * PoP: wa2__guarded @ plugins/platforms/whatsapp/adapter.py:_guarded
@@ -1703,7 +1711,7 @@ exit2:
     return bodyret;
 }
 
-/* ── adapter method flows (self rides ctx.state["self"]) ── */
+/* -- adapter method flows (self rides ctx.state["self"]) -- */
 
 /* PoP: wa2__bridge_package_hash @ plugins/platforms/whatsapp/adapter.py:_bridge_package_hash */
 static json_t *wa2__bridge_package_hash(wa2_ctx_t *ctx, const json_t *args) {

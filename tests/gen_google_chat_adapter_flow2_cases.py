@@ -81,7 +81,7 @@ add("_load_sa_credentials_from", {"sa_value": None},
         "google_auth.default": rs("RuntimeError", "adc boom")})
 add("_load_sa_credentials_from", {"sa_value": None},
     io={"_adc_would_borrow_foreign_credentials": False, "import.google.auth": None,
-        "google_auth.default": obj({"token": "ADC"})})
+        "google_auth.default": ret([obj({"token": "ADC"}), "proj"])})
 add("_load_sa_credentials_from", {"sa_value": '{"a":1}'}, io={"json.loads": rs("SystemExit", "bye")})
 add("_load_sa_credentials_from", {"sa_value": '{"a":1}'}, fc=True)
 add("_load_sa_credentials_from", {"sa_value": "/sa.json"},

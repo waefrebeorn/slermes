@@ -1624,7 +1624,7 @@ static json_t *ut_nous_account_view_core(ut_io_t *io, int markdown, double timeo
         snapshot = ut_call(io, "snapshot_from_credits_state", sa);
         if (ut_is_raise(snapshot)) return snapshot;
         json_t *ra = ut_args();
-        json_set(ra, "snapshot", snapshot ? snapshot : json_null());
+        json_set(ra, "snapshot", snapshot ? json_copy(snapshot) : json_null()); /* copy: snapshot stays owned */
         json_set(ra, "markdown", json_bool(markdown));
         lines = ut_call(io, "render_account_usage_lines", ra);
         if (ut_is_raise(lines)) { json_free(snapshot); return lines; }
@@ -1658,7 +1658,7 @@ static json_t *ut_nous_account_view_core(ut_io_t *io, int markdown, double timeo
         goto fail_open;
     }
     json_t *ba = ut_args();
-    json_set(ba, "account", account ? account : json_null());
+    json_set(ba, "account", account ? json_copy(account) : json_null()); /* copy: account stays owned */
     json_set(ba, "cta", json_bool(nous_route));
     snapshot_raw = ut_call(io, "build_nous_credits_snapshot", ba);
     if (ut_is_raise(snapshot_raw)) {
@@ -1671,7 +1671,7 @@ static json_t *ut_nous_account_view_core(ut_io_t *io, int markdown, double timeo
         goto fail_open;
     }
     json_t *ra = ut_args();
-    json_set(ra, "snapshot", snapshot ? snapshot : json_null());
+    json_set(ra, "snapshot", snapshot ? json_copy(snapshot) : json_null()); /* copy: snapshot stays owned */
     json_set(ra, "markdown", json_bool(markdown));
     lines = ut_call(io, "render_account_usage_lines", ra);
     if (ut_is_raise(lines)) {
@@ -1829,7 +1829,7 @@ json_t *ut_nous_usage_view(ut_io_t *io, const json_t *in, json_t *st)
     } else {
         json_free(dev);
         json_t *ua = ut_args();
-        json_set(ua, "account", account ? account : json_null());
+        json_set(ua, "account", account ? json_copy(account) : json_null()); /* copy: account stays owned */
         model = ut_call(io, "usage_model_from_account", ua);
         if (ut_is_raise(model)) { json_free(lines); json_free(account); return model; }
     }

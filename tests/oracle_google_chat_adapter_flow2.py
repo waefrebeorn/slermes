@@ -339,6 +339,8 @@ def make_exc(spec):
     en = spec.get("errno")
     if en is not None and isinstance(cls, type) and issubclass(cls, OSError):
         return cls(en, msg)
+    if kind == "JSONDecodeError":
+        return cls(msg, spec.get("doc", ""), spec.get("pos", 0))
     return cls(msg)
 
 
@@ -576,6 +578,22 @@ class PathDouble:
                               {"path": self._path, "parents": parents, "exist_ok": exist_ok})
 
 
+class FileDouble:
+    """open(path, 'r', encoding=...) seam carrier: the path.read_text seam fires
+    at open(); read() returns the (utf-8-sig BOM-stripped) text for json.load."""
+    def __init__(self, text):
+        self._text = text
+
+    def read(self):
+        return self._text
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
 def message_double(spec, ctx):
     attrs = spec.get("__obj__", {}) if isinstance(spec, dict) else {}
     m = types.SimpleNamespace()
@@ -664,8 +682,10 @@ def identify_fn(fn):
 # ── import registry (in-function imports fire one seam each) ──
 def import_module_double(full, ctx):
     if full == "google.auth":
-        return types.SimpleNamespace(
+        d = types.SimpleNamespace(
             default=rec(ctx, "google_auth.default", lambda scopes=None: {"scopes": scopes}))
+        d.auth = d  # `import google.auth as X` does IMPORT_FROM auth on the result
+        return d
     if full == PKG + ".oauth":
         return types.SimpleNamespace(
             load_user_credentials=CallableDouble("oauth.load_user_credentials"),
@@ -768,8 +788,12 @@ def setup_case(func, inp, state):
         else:
             NS[nm] = fn
     NS["logger"] = RecLogger(ctx)
+    # the module seeds HttpError = Exception (initial alias); the model uses a
+    # stable HttpError class so except-HttpError catches ONLY HttpError raises.
+    NS["HttpError"] = HttpError
     NS["json"] = types.SimpleNamespace(
         loads=rec(ctx, "json.loads", lambda s: {"s": s}),
+        load=lambda fh: ctx.call("json.loads", {"s": fh.read()}),
         dumps=json.dumps, JSONDecodeError=json.JSONDecodeError)
     NS["os"] = types.SimpleNamespace(
         path=types.SimpleNamespace(exists=rec(ctx, "os.path.exists", lambda p: {"path": p})),
@@ -815,15 +839,9 @@ def setup_case(func, inp, state):
     slf = types.SimpleNamespace()
     slf.config = obj_double(state.get("config"))
     slf._LEGACY_USER_IDENTITY = "__legacy__"
-    slf._dedup = types.SimpleNamespace(
-        is_duplicate=rec(ctx, "dedup.is_duplicate", lambda name: {"name": name}),
-        discard=rec(ctx, "dedup.discard", lambda name: {"name": name}))
     slf._thread_count_store = types.SimpleNamespace(
         incr=rec(ctx, "thread_count_store.incr",
-                 lambda chat_id, thread_name: {"chat_id": chat_id, "thread_name": thread_name}),
-        decr=rec(ctx, "thread_count_store.decr",
-                 lambda chat_id, thread_name: {"chat_id": chat_id, "thread_name": thread_name}),
-        load=CallableDouble("thread_count_store.load"))
+                 lambda chat_id, thread_name: {"chat_id": chat_id, "thread_name": thread_name}))
     # per-method state attrs
     for key in ("_shutting_down", "_debug_raw", "_bot_user_id", "_bootstrap_spaces",
                 "_user_credentials", "_user_chat_api", "_subscriber"):
@@ -882,12 +900,26 @@ def drive(func, inp):
         return real_import(name, globals, locals, fromlist, level)
 
     builtins.__import__ = case_import
+    real_open = builtins.open
+
+    def case_open(file, mode="r", *a, **k):
+        encoding = k.get("encoding")
+        if isinstance(file, str) and "r" in mode and "b" not in mode:
+            raw = ctx.call("path.read_text", {"path": file, "encoding": encoding})
+            text = raw if isinstance(raw, str) else ""
+            if encoding == "utf-8-sig" and text.startswith("\ufeff"):
+                text = text[1:]
+            return FileDouble(text)
+        return real_open(file, mode, *a, **k)
+
+    builtins.open = case_open
     try:
         ret = dispatch(func, args, slf, store, ctx)
     except BaseException as exc:  # SystemExit included
         ret = proj_exc(exc)
     finally:
         builtins.__import__ = real_import
+        builtins.open = real_open
     # sync mutated state
     if func.startswith("store."):
         state["_counts"] = store._counts
@@ -972,8 +1004,7 @@ SEAM_NAMES = [
     "cache_image_from_bytes_async", "cache_audio_from_bytes_async",
     "cache_video_from_bytes_async", "cache_document_from_bytes_async",
     "MessageEvent", "store._save",
-    "thread_count_store.incr", "thread_count_store.decr",
-    "dedup.is_duplicate", "dedup.discard",
+    "thread_count_store.incr",
 ] + sorted(MODULE_SEAMED) + sorted(SELF_SEAMED)
 
 
@@ -982,12 +1013,16 @@ def cross_check():
                 encoding="utf-8").read()
     registry = set(SEAM_NAMES)
     c_names = set(re.findall(r'gca2_call\(\s*ctx,\s*"([^"]+)"', csrc))
+    # dynamically-fired seams: logger.<level> via gca2_log(snprintf), and the
+    # media cache seams via the cachers[] table (gca2_call(ctx, cachers[i].seam)).
+    c_names |= {f"logger.{lv}" for lv in ("debug", "info", "warning", "error", "exception")}
+    c_names |= {"cache_image_from_bytes_async", "cache_audio_from_bytes_async", "cache_video_from_bytes_async"}
     missing_c = registry - c_names
     if missing_c:
         print(f"FATAL oracle_google_chat_adapter_flow2: seams absent from C port: {sorted(missing_c)}")
         sys.exit(2)
     osrc = open(__file__, encoding="utf-8").read()
-    used = set(re.findall(r'rec\(\s*ctx,\s*"([^"]+)"', osrc))
+    used = set(re.findall(r'rec(?:_async)?\(\s*ctx,\s*"([^"]+)"', osrc))
     used |= set(re.findall(r'ctx\.call\(\s*"([^"]+)"', osrc))
     used |= set(IMPORT_SEAMS.values())
     used |= {f"logger.{lv}" for lv in ("debug", "warning", "error", "exception", "info")}
@@ -1139,7 +1174,7 @@ def selftest():
         ("_load_sa_credentials_from", {"args": {"sa_value": None},
                                        "io": {"_adc_would_borrow_foreign_credentials": False,
                                               "import.google.auth": None,
-                                              "google_auth.default": {"__obj__": {"token": "T"}}}},
+                                              "google_auth.default": {"__script__": True, "ret": [{"__obj__": {"token": "T"}}, "proj"]}}},
          {"__obj__": {"token": "T"}}),
         ("_bot_id_cache_path", {"io": {"import.hermes_constants": None, "get_hermes_home": "/home/u"}},
          "/home/u/google_chat_bot_id.json"),

@@ -1136,9 +1136,8 @@ json_t *doc_check_retired_session_reset(doc_flow_io_t *io, bool should_fix) {
     json_free(imp);
     json_t *cfg = doc_seam(io, "load_user_config_effective", json_object());
     if (doc_raised(cfg)) return cfg;
-    json_t *ra = json_object(); json_set(ra, "config", cfg);
-    json_t *found = doc_seam(io, "retired_reset_policy", ra);
-    json_free(cfg);
+    json_t *ra = json_object(); json_set(ra, "config", cfg);   /* adopts cfg */
+    json_t *found = doc_seam(io, "retired_reset_policy", ra); /* seam frees ra+cfg */
     if (doc_raised(found)) return found;
     if (doc_is_null(found)) {
         json_free(found);
@@ -1183,9 +1182,8 @@ json_t *doc_check_xai_retirement(doc_flow_io_t *io, bool should_fix, const char 
     json_free(imp);
     json_t *cfg = doc_seam(io, "load_config", json_object());
     if (doc_raised(cfg)) return cfg;
-    json_t *ra = json_object(); json_set(ra, "config", cfg);
-    json_t *refs = doc_seam(io, "find_retired_xai_refs", ra);
-    json_free(cfg);
+    json_t *ra = json_object(); json_set(ra, "config", cfg);   /* adopts cfg */
+    json_t *refs = doc_seam(io, "find_retired_xai_refs", ra); /* seam frees ra+cfg */
     if (doc_raised(refs)) return refs;
     if (!doc_truthy(refs)) {
         json_free(refs);

@@ -1106,25 +1106,29 @@ static json_t *ta2_note_bot_username(ta2_ctx_t *ctx, const json_t *args) {
         free(handle);
         return json_null();
     }
+    /* OWNED snapshot: the json_set below frees the displaced state slot, so
+     * the borrowed `previous` would dangle before the logger.info copy. */
+    json_t *prev = previous ? json_copy(previous) : NULL;
     json_set(ctx->state, "_bot_username_observed", json_string(handle));
     json_t *m = ta2_monotonic(ctx);
-    if (ta2_is_raise(m)) { free(handle); return m; }
+    if (ta2_is_raise(m)) { free(handle); json_free(prev); return m; }
     json_set(ctx->state, "_bot_identity_checked_at", m);
-    if (ta2_truthy(previous)) {
+    if (ta2_truthy(prev)) {
         json_t *err = NULL;
         char *name = ta2_name(ctx, &err);
-        if (err) { free(handle); return err; }
+        if (err) { free(handle); json_free(prev); return err; }
         json_t *la = json_array();
         json_append(la, json_string(name));
-        json_append(la, json_copy(previous));
+        json_append(la, json_copy(prev));
         json_append(la, json_string(handle));
         free(name);
         json_t *lg = ta2_log(ctx, "info",
                              "[%s] Telegram bot username changed: @%s -> @%s (mention routing now follows the new handle)",
                              la);
-        if (ta2_is_raise(lg)) { free(handle); return lg; }
+        if (ta2_is_raise(lg)) { free(handle); json_free(prev); return lg; }
         json_free(lg);
     }
+    json_free(prev);
     free(handle);
     return json_null();
 }

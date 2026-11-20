@@ -63,7 +63,7 @@ def self_base(**over):
     return d
 
 
-# ── _session_dir ──
+# -- _session_dir --
 add("_session_dir", {"extra": None},
     {"get_hermes_dir": script("/h/d"), "expanduser": script("/h/d"), "abspath": script("/h/d")})
 add("_session_dir", {"extra": {"session_path": "~/x"}},
@@ -80,7 +80,7 @@ add("_session_dir", {"extra": None},
     {"get_hermes_dir": script("/h/d"), "expanduser": raise_("OSError", "no home")})
 add("_session_dir", {"extra": None}, {}, fail_closed=True)
 
-# ── _owner_only_opener ──
+# -- _owner_only_opener --
 add("_owner_only_opener", {"path": "/h/bridge.log", "flags": 1089, "has_fchmod": True},
     {"os.open": script(7), "os.fchmod": script(None)})
 add("_owner_only_opener", {"path": "/h/bridge.log", "flags": 1089, "has_fchmod": False},
@@ -96,7 +96,7 @@ add("_owner_only_opener", {"path": "/h/bridge.log", "flags": 1089, "has_fchmod":
 add("_owner_only_opener", {"path": "/h/bridge.log", "flags": 1089, "has_fchmod": True},
     {}, fail_closed=True)
 
-# ── _open_bridge_log ──
+# -- _open_bridge_log --
 add("_open_bridge_log", {"path": "/h/bridge.log", "private": True},
     {"stat": script({"st_size": 10}), "open": script({"fd": 7})})
 add("_open_bridge_log", {"path": "/h/bridge.log", "private": True},
@@ -116,7 +116,7 @@ add("_open_bridge_log", {"path": "/h/bridge.log", "private": True},
     {"stat": raise_("SystemExit", "1")})
 add("_open_bridge_log", {"path": "/h/bridge.log", "private": True}, {}, fail_closed=True)
 
-# ── _terminate_bridge_process ──
+# -- _terminate_bridge_process --
 RUN_OK = {"returncode": 0, "stderr": "", "stdout": ""}
 add("_terminate_bridge_process", {"proc": {"pid": 100}, "force": False, "is_windows": True},
     {"subprocess.run": script(RUN_OK)})
@@ -158,7 +158,7 @@ add("_terminate_bridge_process", {"proc": {"pid": 100}, "force": False, "is_wind
 add("_terminate_bridge_process", {"proc": {"pid": 100}, "force": False, "is_windows": True},
     {}, fail_closed=True)
 
-# ── _is_allowed_bridge_path ──
+# -- _is_allowed_bridge_path --
 CD4 = script(["/h/img", "/h/aud", "/h/vid", "/h/doc"])
 add("_is_allowed_bridge_path", {"url": "/h/img/a.jpg"},
     {"resolve": ["/h/img/a.jpg", "/h/img"], "_cache_dirs": CD4,
@@ -185,7 +185,7 @@ add("_is_allowed_bridge_path", {"url": "/x"},
     {"resolve": raise_("SystemExit", "1")})
 add("_is_allowed_bridge_path", {"url": "/h/img/a.jpg"}, {}, fail_closed=True)
 
-# ── _bridge_token_lock ──
+# -- _bridge_token_lock --
 add("_bridge_token_lock", {"lock_path": "/h/sess/.bridge-token.lock", "os_name": "nt"},
     {"open": script({}), "handle.seek": [0, 0, 0], "handle.write": script(None),
      "handle.flush": script(None), "handle.fileno": script(5),
@@ -222,7 +222,7 @@ add("_bridge_token_lock", {"lock_path": "/h/sess/.bridge-token.lock", "os_name":
 add("_bridge_token_lock", {"lock_path": "/h/sess/.bridge-token.lock", "os_name": "nt"},
     {}, fail_closed=True)
 
-# ── _load_or_create_bridge_token ──
+# -- _load_or_create_bridge_token --
 TOK32 = "x" * 32
 MINT_IO = {
     "mkdir": script(None), "_bridge_token_lock": script(None),
@@ -279,7 +279,7 @@ add("_load_or_create_bridge_token", {"session_path": "/h/sess", "rotate": False}
 add("_load_or_create_bridge_token", {"session_path": "/h/sess", "rotate": False},
     {}, fail_closed=True)
 
-# ── _import_aiohttp ──
+# -- _import_aiohttp --
 add("_import_aiohttp", {"aiohttp": {"client_session": True}})
 add("_import_aiohttp", {"aiohttp": None})
 add("_import_aiohttp", {"aiohttp": {"client_session": False, "file": "/x/aiohttp.py"}})
@@ -289,7 +289,7 @@ add("_import_aiohttp", {"aiohttp": {"client_session": False, "file": "", "path":
 add("_import_aiohttp", {"aiohttp": {"client_session": False, "file": "/x/a.py", "path": ["/p1", "/p2"]}})
 add("_import_aiohttp", {"aiohttp": {"client_session": False, "file": None, "path": ["/x/it's", '/y/q"uote']}})
 
-# ── ensure_aiohttp ──
+# -- ensure_aiohttp --
 PM_IO = {"repo_root": script("/r"), "lazy_installs_allowed": script(True),
          "running_from_selected_environment": script(True),
          "ensure_import": script(None)}
@@ -319,7 +319,7 @@ add("ensure_aiohttp", {}, dict(PM_IO, repo_root=raise_("RuntimeError", "no root"
                                _import_aiohttp=raise_("ModuleNotFoundError", "no aiohttp")))
 add("ensure_aiohttp", {}, {}, fail_closed=True)
 
-# ── _needs_bridge ──
+# -- _needs_bridge --
 add("_needs_bridge", {"call_args": ["c1"], "call_kwargs": {"k": 1}},
     {"_bridge_unavailable": script(None), "method": script({"ok": True})})
 add("_needs_bridge", {"call_args": [], "call_kwargs": {}},
@@ -336,7 +336,7 @@ add("_needs_bridge", {"call_args": [], "call_kwargs": {}},
     {"_bridge_unavailable": script(""), "method": script(None)})
 add("_needs_bridge", {"call_args": [], "call_kwargs": {}}, {}, fail_closed=True)
 
-# ── _bridge_req ──
+# -- _bridge_req --
 REQ_SELF = {"_bridge_port": 3000, "_http_session": {"__session__": True}}
 add("_bridge_req", {"self": REQ_SELF, "session_methods": ["get", "post"],
                     "method": "get", "path": "health", "timeout": 2, "kwargs": {}},
@@ -360,7 +360,7 @@ add("_bridge_req", {"self": REQ_SELF, "session_methods": ["get"],
                     "method": "get", "path": "health", "timeout": 2, "kwargs": {}},
     {}, fail_closed=True)
 
-# ── _authenticated_bridge_health ──
+# -- _authenticated_bridge_health --
 def health_io(proof="PROOF", status1=200, status2=200, json1=None, json2=None,
               proof_result="PROOF", exit1=None, exit2=None):
     if json1 is None:
@@ -413,7 +413,7 @@ add("_authenticated_bridge_health", {"base_url": "http://127.0.0.1:3000", "token
 add("_authenticated_bridge_health", {"base_url": "http://127.0.0.1:3000", "token": "tok", "timeout": 2},
     {}, fail_closed=True)
 
-# ── _bridge_package_hash ──
+# -- _bridge_package_hash --
 add("_bridge_package_hash", {"self": self_base()},
     {"_file_content_hash": script("abc123")})
 add("_bridge_package_hash", {"self": self_base(_bridge_script="/h/bridge.js")},
@@ -425,7 +425,7 @@ add("_bridge_package_hash", {"self": self_base()},
 add("_bridge_package_hash", {"self": {"name": "whatsapp"}}, {})
 add("_bridge_package_hash", {"self": self_base()}, {}, fail_closed=True)
 
-# ── _bridge_env ──
+# -- _bridge_env --
 PASSTHROUGH = [
     "WHATSAPP_ALLOWED_USERS", "WHATSAPP_ALLOW_FROM", "WHATSAPP_DM_POLICY", "WHATSAPP_GROUP_POLICY",
     "WHATSAPP_GROUP_ALLOWED_USERS", "WHATSAPP_GROUP_ALLOW_FROM", "WHATSAPP_REQUIRE_MENTION",
@@ -468,7 +468,7 @@ add("_bridge_env", {"self": self_base()},
     dict(env_io(), _cache_dirs=raise_("OSError", "no dirs")))
 add("_bridge_env", {"self": self_base()}, {}, fail_closed=True)
 
-# ── _adopted_config_matches ──
+# -- _adopted_config_matches --
 ADOPT_IO = {"read_text": script("FP"), "_bridge_env": script({"E": 1}),
             "_bridge_package_hash": script("PH"),
             "_bridge_config_fingerprint": script("FP")}
@@ -486,7 +486,7 @@ add("_adopted_config_matches", {"self": self_base()},
     dict(ADOPT_IO, _bridge_env=raise_("RuntimeError", "env boom")))
 add("_adopted_config_matches", {"self": self_base()}, {}, fail_closed=True)
 
-# ── _bridge_died ──
+# -- _bridge_died --
 DIED_IO = {"proc.poll": script(None), "print": script(None),
            "_close_bridge_log": script(None), "_set_fatal_error": script(None)}
 add("_bridge_died", {"self": self_base(), "detail": "bridge exited"}, dict(DIED_IO))
@@ -505,7 +505,7 @@ add("_bridge_died", {"self": self_base(), "detail": "d", "code": "custom_code"},
 add("_bridge_died", {"self": self_base(), "detail": "d"},
     {k: v for k, v in DIED_IO.items() if k != "proc.poll"}, fail_closed=True)
 
-# ── _close_bridge_log ──
+# -- _close_bridge_log --
 add("_close_bridge_log", {"self": self_base(_bridge_log_fh={"__fh__": True})},
     {"fh.close": script(None)})
 add("_close_bridge_log", {"self": self_base(_bridge_log_fh=None)}, {})
@@ -518,7 +518,7 @@ add("_close_bridge_log", {"self": self_base(_bridge_log_fh={"__fh__": True})},
 add("_close_bridge_log", {"self": self_base(_bridge_log_fh={"__fh__": True})},
     {}, fail_closed=True)
 
-# ── _terminate_bridge ──
+# -- _terminate_bridge --
 add("_terminate_bridge", {"self": self_base(_bridge_process={"pid": 7}), "force": False},
     {"_terminate_bridge_process": script(None)})
 add("_terminate_bridge", {"self": self_base(_bridge_process={"pid": 7}), "force": False},
@@ -539,7 +539,7 @@ add("_terminate_bridge", {"self": self_base(_bridge_process={"pid": 7}), "force"
 add("_terminate_bridge", {"self": self_base(_bridge_process={"pid": 7}), "force": False},
     {}, fail_closed=True)
 
-# ── _check_managed_bridge_exit ──
+# -- _check_managed_bridge_exit --
 EXIT_IO = {"proc.poll": script(None)}
 add("_check_managed_bridge_exit", {"self": self_base()}, dict(EXIT_IO))
 add("_check_managed_bridge_exit", {"self": self_base(_shutting_down=True)},
@@ -569,7 +569,7 @@ add("_check_managed_bridge_exit", {"self": self_base(_shutting_down=True)},
 add("_check_managed_bridge_exit", {"self": self_base()},
     {k: v for k, v in EXIT_IO.items() if k != "proc.poll"}, fail_closed=True)
 
-# ── _inject_document_text ──
+# -- _inject_document_text --
 INJ_SELF = {"name": "whatsapp"}
 add("_inject_document_text", {"self": INJ_SELF, "cached_urls": ["/c/doc_abc_report.txt"], "body": "hi"},
     {"stat": script({"st_size": 10}), "read_text": script("hello"), "print": script(None)})
@@ -600,7 +600,7 @@ add("_inject_document_text", {"self": INJ_SELF, "cached_urls": [], "body": "b"},
 add("_inject_document_text", {"self": INJ_SELF, "cached_urls": ["/c/doc_abc_x.txt"], "body": "b"},
     {}, fail_closed=True)
 
-# ── _quoted_media ──
+# -- _quoted_media --
 QM_SELF = {"name": "whatsapp"}
 add("_quoted_media", {"self": QM_SELF, "data": {"quotedMediaType": "image",
                       "quotedMediaUrls": ["/c/a.jpg"], "chatId": "c1"}, "raw_reply_id": None},
@@ -636,7 +636,7 @@ add("_quoted_media", {"self": QM_SELF, "data": {"quotedMediaType": "image",
                       "quotedMediaUrls": ["/c/a.jpg"], "chatId": "c1"}, "raw_reply_id": None},
     {}, fail_closed=True)
 
-# ── _post_bridge_message ──
+# -- _post_bridge_message --
 def post_io(status=200, json_ret=None, text_ret="err", req=None, enter=None, exit_=None):
     if json_ret is None:
         json_ret = {"messageId": "m1"}
@@ -668,7 +668,7 @@ add("_post_bridge_message", {"path": "send", "payload": {}, "timeout": 30},
 add("_post_bridge_message", {"path": "send", "payload": {}, "timeout": 30},
     {}, fail_closed=True)
 
-# ── _apply_yaml_config ──
+# -- _apply_yaml_config --
 add("_apply_yaml_config", {"yaml_cfg": {}, "whatsapp_cfg": {"dm_policy": "open"}},
     {"_apply_yaml_bridge": script({"env": {"WHATSAPP_DM_POLICY": "open"}})})
 add("_apply_yaml_config", {"yaml_cfg": None, "whatsapp_cfg": {}},
@@ -681,7 +681,7 @@ add("_apply_yaml_config", {"yaml_cfg": {}, "whatsapp_cfg": {}},
     {"_apply_yaml_bridge": script({})})
 add("_apply_yaml_config", {"yaml_cfg": {}, "whatsapp_cfg": {}}, {}, fail_closed=True)
 
-# ── _may_transcribe_at_gate ──
+# -- _may_transcribe_at_gate --
 MT_SELF = {"name": "whatsapp", "config": {"extra": {"voice_mention_patterns": ["hey"]}}}
 add("_may_transcribe_at_gate", {"self": MT_SELF, "data": {"isGroup": True, "mediaType": "ptt"}},
     {"voice_mention_gate_enabled": script(True)})
@@ -697,7 +697,7 @@ add("_may_transcribe_at_gate", {"self": {"name": "whatsapp"},
 add("_may_transcribe_at_gate", {"self": MT_SELF, "data": {"isGroup": True, "mediaType": "ptt"}},
     {}, fail_closed=True)
 
-# ── _log_delivery_status ──
+# -- _log_delivery_status --
 LD_SELF = {"name": "whatsapp"}
 add("_log_delivery_status", {"self": LD_SELF, "data": {
     "messageId": "m1", "chatId": "c1", "status": "delivered", "timestamp": 123}},
@@ -723,7 +723,9 @@ def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
         for rec in CASES:
-            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+            # ensure_ascii keeps the fixture file pure ASCII (the BOM-test
+            # strings ride \ufeff escapes; libjson parses \uXXXX).
+            f.write(json.dumps(rec, ensure_ascii=True) + "\n")
     counts = {}
     for rec in CASES:
         counts[rec["func"]] = counts.get(rec["func"], 0) + 1

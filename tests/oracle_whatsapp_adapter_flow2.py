@@ -143,7 +143,7 @@ class MessageType(enum.Enum):
     COMMAND = "command"
 
 
-# ── Path double: PurePosixPath + recording file ops (universal seam) ──
+# -- Path double: PurePosixPath + recording file ops (universal seam) --
 class PathDouble(PurePosixPath):
     CTX = None
 
@@ -258,7 +258,7 @@ def extract():
 
 NS = extract()
 
-# ── stub modules for the in-function imports (attrs swapped per case) ──
+# -- stub modules for the in-function imports (attrs swapped per case) --
 _psutil = new_module("psutil")
 _psutil.NoSuchProcess = type("NoSuchProcess", (Exception,), {})
 _gw = new_module("gateway")
@@ -304,7 +304,7 @@ _aiohttp_mod.ClientResponseError = _ClientResponseError
 _aiohttp_mod.ServerTimeoutError = _ServerTimeoutError
 
 
-# ── SEAMED names: regex-extracted from the C port's wa2_call sites ──
+# -- SEAMED names: regex-extracted from the C port's wa2_call sites --
 def seam_names_from_c():
     csrc = open(_REPO / "src" / "gateway" / "platforms" / "whatsapp_adapter_flow2.c",
                 encoding="utf-8").read()
@@ -322,7 +322,7 @@ SEAMED = seam_names_from_c()
 REAL_DEFS = {nm: NS[nm] for nm in SEAMED if nm in NS}
 
 
-# ── canonical projection ──
+# -- canonical projection --
 def canon(v):
     def conv(x):
         if isinstance(x, MessageType):
@@ -354,7 +354,7 @@ def canon(v):
     return json.loads(json.dumps(conv(v), ensure_ascii=False, default=str))
 
 
-# ── exception materialization / projection ──
+# -- exception materialization / projection --
 EXC_CLASSES = {
     "ValueError": ValueError, "TypeError": TypeError, "RuntimeError": RuntimeError,
     "KeyError": KeyError, "AttributeError": AttributeError, "ImportError": ImportError,
@@ -389,7 +389,7 @@ def proj_exc(exc):
     return {"__raise__": type(exc).__name__, "message": str(exc)}
 
 
-# ── seam arg projections (live call -> trace args, mirrors the C sites) ──
+# -- seam arg projections (live call -> trace args, mirrors the C sites) --
 def _opener_proj(opener):
     if opener is None:
         return None
@@ -501,7 +501,7 @@ ARGMAP = {
 }
 
 
-# ── attribute / CM doubles ──
+# -- attribute / CM doubles --
 class HandleDouble:
     """open()/os.fdopen() result: a sync context manager whose __exit__
     records handle.close (the with-block close rides the same seam the C
@@ -655,7 +655,7 @@ BUILD = {
 BUILD_CTX = [None]  # per-case ctx for the BUILD closures
 
 
-# ── per-case script backend (mirrors the C wa2_call exactly) ──
+# -- per-case script backend (mirrors the C wa2_call exactly) --
 _MISSING = object()
 
 
@@ -832,7 +832,7 @@ def install_case(ctx, target, args):
     CURRENT["sd"] = make_self(ctx, target, args) if target in METHODS else None
 
 
-# ── exception spec projection ──
+# -- exception spec projection --
 def exc_spec(exc, ctx):
     for e, spec in ctx.scripted:
         if exc is e:
@@ -840,7 +840,7 @@ def exc_spec(exc, ctx):
     return proj_exc(exc)
 
 
-# ── per-case live call ──
+# -- per-case live call --
 def live_call(func, args, ctx):
     f = NS[func]
     sd = CURRENT["sd"]
@@ -908,7 +908,7 @@ def live_call(func, args, ctx):
     raise RuntimeError(f"unknown func {func}")
 
 
-# ── per-case drive ──
+# -- per-case drive --
 def drive(func, inp):
     args = inp.get("args") or {}
     ctx = Ctx(inp.get("io"))
@@ -928,7 +928,7 @@ def drive(func, inp):
         sys.modules["aiohttp"] = _aiohttp_mod
 
 
-# ── three-way seam-name cross-check ──
+# -- three-way seam-name cross-check --
 def cross_check():
     missing_argmap = sorted(SEAMED - set(ARGMAP))
     if missing_argmap:

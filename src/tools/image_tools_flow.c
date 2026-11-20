@@ -1410,7 +1410,9 @@ static json_t *img_declared_controls(it_io_t *io, json_t *in) {
         if (it_exc_is_exception(caps)) { json_free(caps); return json_null(); }
         return caps;   /* BaseException passthrough */
     }
-    const json_t *declared = NULL;
+    /* OWNED snapshot: caps is freed before the filter loop, so a borrowed
+     * creative_controls pointer would dangle (UAF -> silently empty filter). */
+    json_t *declared = NULL;
     if (jtruth(caps)) {
         if (!j_is_obj(caps)) {
             /* truthy non-dict: .get raises AttributeError -> caught -> None */
@@ -1418,7 +1420,7 @@ static json_t *img_declared_controls(it_io_t *io, json_t *in) {
             return json_null();
         }
         const json_t *cc = json_obj_get(caps, "creative_controls");
-        if (jtruth(cc)) declared = cc;
+        if (jtruth(cc)) declared = json_copy(cc);
     }
     json_free(caps);
     /* {name: value for controls.items() if name in declared} or None --
@@ -1427,6 +1429,7 @@ static json_t *img_declared_controls(it_io_t *io, json_t *in) {
         char *m = it_attr_msg(controls, "items");
         json_t *e = it_raise("AttributeError", m ? m : "");
         free(m);
+        json_free(declared);
         return e;
     }
     json_t *result = json_object();
@@ -1434,6 +1437,7 @@ static json_t *img_declared_controls(it_io_t *io, json_t *in) {
         if (it_in_arr(declared, controls->c.keys[i]))
             json_set(result, controls->c.keys[i], json_copy(controls->c.items[i]));
     }
+    json_free(declared);
     if (result->c.count == 0) { json_free(result); return json_null(); }
     return result;
 }
@@ -1714,6 +1718,10 @@ static json_t *img_maybe_route_managed_model(it_io_t *io, json_t *in) {
         if (it_raised(p)) {
             if (it_exc_is_exception(p)) exc = p;
             else { json_free(target); return p; }
+        } else if (j_is_null(p)) {
+            /* scripted None arrives as a JSON null node: provider is None
+             * -> the `if provider is None` branch below (error / fallthrough). */
+            json_free(p);
         } else {
             provider = p;
         }

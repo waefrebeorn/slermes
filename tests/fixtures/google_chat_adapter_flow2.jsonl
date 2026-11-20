@@ -6,7 +6,7 @@
 {"func": "_load_sa_credentials_from", "in": {"args": {"sa_value": null}, "state": {}, "io": {"_adc_would_borrow_foreign_credentials": true}}}
 {"func": "_load_sa_credentials_from", "in": {"args": {"sa_value": null}, "state": {}, "io": {"_adc_would_borrow_foreign_credentials": false, "import.google.auth": {"__script__": true, "raise": {"type": "ImportError", "message": "no module named google"}}}}}
 {"func": "_load_sa_credentials_from", "in": {"args": {"sa_value": null}, "state": {}, "io": {"_adc_would_borrow_foreign_credentials": false, "import.google.auth": null, "google_auth.default": {"__script__": true, "raise": {"type": "RuntimeError", "message": "adc boom"}}}}}
-{"func": "_load_sa_credentials_from", "in": {"args": {"sa_value": null}, "state": {}, "io": {"_adc_would_borrow_foreign_credentials": false, "import.google.auth": null, "google_auth.default": {"__obj__": {"token": "ADC"}}}}}
+{"func": "_load_sa_credentials_from", "in": {"args": {"sa_value": null}, "state": {}, "io": {"_adc_would_borrow_foreign_credentials": false, "import.google.auth": null, "google_auth.default": {"__script__": true, "ret": [{"__obj__": {"token": "ADC"}}, "proj"]}}}}
 {"func": "_load_sa_credentials_from", "in": {"args": {"sa_value": "{\"a\":1}"}, "state": {}, "io": {"json.loads": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
 {"func": "_load_sa_credentials_from", "in": {"args": {"sa_value": "{\"a\":1}"}, "state": {}, "io": {}}, "fc": true}
 {"func": "_load_sa_credentials_from", "in": {"args": {"sa_value": "/sa.json"}, "state": {}, "io": {"os.path.exists": true, "path.read_text": {"__script__": true, "raise": {"type": "OSError", "message": "permission denied", "errno": 13}}}}}
