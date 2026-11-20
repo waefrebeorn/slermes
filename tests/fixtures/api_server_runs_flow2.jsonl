@@ -1,0 +1,98 @@
+{"func":"listen_address","in":{"extra":{},"io":{"getenv":["127.0.0.1","8642"],"_coerce_port":8642}}}
+{"func":"listen_address","in":{"extra":{"host":"0.0.0.0","port":9000},"io":{"getenv":"127.0.0.1","_coerce_port":9000}}}
+{"func":"listen_address","in":{"extra":{"host":"","port":null},"io":{"getenv":["","7777"],"_coerce_port":7777}}}
+{"func":"listen_address","in":{"extra":{"port":"1234"},"io":{"getenv":"127.0.0.1","_coerce_port":1234}}}
+{"func":"listen_address","in":{"extra":{},"io":{"getenv":[{"__raise__":"RuntimeError","message":"env unavailable"},"8642"],"_coerce_port":8642}}}
+{"func":"listen_address","in":{"extra":{"port":5},"io":{"getenv":"127.0.0.1","_coerce_port":{"__raise__":"ValueError","message":"bad port"}}}}
+{"func":"listen_address","in":{"extra":{"host":"::1"},"io":{"getenv":"127.0.0.1","_coerce_port":8642}}}
+{"func":"content_has_visible_payload","in":{"content":"hello","io":{}}}
+{"func":"content_has_visible_payload","in":{"content":"   \t\n","io":{}}}
+{"func":"content_has_visible_payload","in":{"content":[],"io":{}}}
+{"func":"content_has_visible_payload","in":{"content":[{"type":"text","text":"hi"}],"io":{}}}
+{"func":"content_has_visible_payload","in":{"content":[{"type":" text ","text":"  "}],"io":{}}}
+{"func":"content_has_visible_payload","in":{"content":[{"type":"image_url","image_url":"x"}],"io":{}}}
+{"func":"content_has_visible_payload","in":{"content":[{"type":"audio","text":"x"},42],"io":{}}}
+{"func":"session_row","in":{"io":{"getattr":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,"sess-1",{"provider":"openai","model":"gpt"}]}}}
+{"func":"session_row","in":{"io":{"getattr":["api",1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,true,21,"sess-1",{}]}}}
+{"func":"session_row","in":{"entry":{"last_active":9,"preview":"hi","lineage_root_id":null},"io":{"getattr":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,"sess-1",{"provider":"openai","model":"gpt"},9,"hi",null]}}}
+{"func":"session_row","in":{"entry":{"last_active":9,"preview":"hi","lineage_root_id":"root-1"},"io":{"getattr":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,"sess-1",{"provider":"openai","model":"gpt"},9,"hi","root-1","root-1"]}}}
+{"func":"session_row","in":{"io":{"getattr":[0,1,2,{"__raise__":"AttributeError","message":"title missing"},4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,"sess-1",{"provider":"openai","model":"gpt"}]}}}
+{"func":"session_row","in":{"entry":{"last_active":1,"preview":"p","lineage_root_id":"r"},"io":{"getattr":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,"sess-1",{"provider":"openai","model":"gpt"},1,{"__raise__":"KeyError","message":"'preview'"},"r","r"]}}}
+{"func":"session_row","in":{"io":{"getattr":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,{}]}}}
+{"func":"normalize_chat_content","in":{"content":null,"io":{}}}
+{"func":"normalize_chat_content","in":{"content":"plain text","io":{}}}
+{"func":"normalize_chat_content","in":{"content":["a","b","c"],"io":{}}}
+{"func":"normalize_chat_content","in":{"content":[{"type":"text","text":"hello"},{"type":"image_url","image_url":"u"},{"type":"output_text","text":"world"}],"io":{}}}
+{"func":"normalize_chat_content","in":{"content":[["nested",{"type":"input_text","text":"deep"}]],"io":{}}}
+{"func":"normalize_chat_content","in":{"content":[{"type":"TEXT","text":"upper"},{"text":"no type"}],"io":{}}}
+{"func":"normalize_chat_content","in":{"content":"","io":{}}}
+{"func":"room_grant_delegate","in":{"name":"handle_approval","io":{"room_grant_call":{"status":200,"body":{"ok":true}}}}}
+{"func":"room_grant_delegate","in":{"name":"handle_runs","io":{"room_grant_call":null}}}
+{"func":"room_grant_delegate","in":{"name":"h","io":{"room_grant_call":[{"status":201},{"status":202}]}}}
+{"func":"room_grant_delegate","in":{"name":"h","io":{"room_grant_call":{"__raise__":"RuntimeError","message":"grant failed"}}}}
+{"func":"room_grant_delegate","in":{"name":"h","io":{"room_grant_call":{"__raise__":"KeyboardInterrupt","message":"user abort"}}}}
+{"func":"room_grant_delegate","in":{"name":"h","io":{"room_grant_call":{"__script__":true,"ret":{"x":1}}}}}
+{"func":"room_grant_delegate","in":{"name":"h","io":{"room_grant_call":{"__raise__":"SystemExit","message":"bye"}}}}
+{"func":"run_route_delegate","in":{"name":"handle_stop","io":{"run_route_call":{"status":204,"body":null}}}}
+{"func":"run_route_delegate","in":{"name":"handle_runs","io":{"run_route_call":null}}}
+{"func":"run_route_delegate","in":{"name":"h","io":{"run_route_call":["a","b"]}}}
+{"func":"run_route_delegate","in":{"name":"h","io":{"run_route_call":{"__raise__":"ValueError","message":"bad route"}}}}
+{"func":"run_route_delegate","in":{"name":"h","io":{"run_route_call":{"__raise__":"GeneratorExit","message":"gen closed"}}}}
+{"func":"run_route_delegate","in":{"name":"h","io":{"run_route_call":{"z":9}}}}
+{"func":"run_route_delegate","in":{"name":"h","io":{"run_route_call":{"__raise__":"CancelledError","message":"cancelled"}}}}
+{"func":"handle_skills","in":{"io":{"find_all_skills":[{"name":"a"}],"sort_skills":[{"name":"a"},{"name":"b"}],"web.json_response":{"status":200,"body":"ok"}}}}
+{"func":"handle_skills","in":{"io":{"find_all_skills":[],"sort_skills":[],"web.json_response":{"status":200}}}}
+{"func":"handle_skills","in":{"io":{"find_all_skills":{"__raise__":"RuntimeError","message":"scan failed"},"_error_response":{"status":500,"message":"Failed to enumerate skills"}}}}
+{"func":"handle_skills","in":{"io":{"find_all_skills":[],"sort_skills":{"__raise__":"ValueError","message":"sort failed"},"_error_response":{"status":500}}}}
+{"func":"handle_skills","in":{"io":{"find_all_skills":{"__raise__":"KeyboardInterrupt","message":"abort"}}}}
+{"func":"handle_skills","in":{"io":{"find_all_skills":[],"sort_skills":{"__raise__":"SystemExit","message":"bye"}}}}
+{"func":"handle_skills","in":{"io":{"find_all_skills":[],"sort_skills":[{"name":"x"}],"web.json_response":{"__raise__":"OSError","message":"write failed"}}}}
+{"func":"handle_toolsets","in":{"io":{"load_config":{"k":1},"_get_platform_tools":["alpha"],"get_nous_subscription_features":{"pro":true},"_get_effective_configurable_toolsets":{"__script__":true,"ret":[["alpha","Alpha","desc-a"],["beta","Beta","desc-b"]]},"resolve_toolset":[["t2","t1","t2"],["beta"]],"_toolset_has_keys":[true,false],"web.json_response":{"status":200}}}}
+{"func":"handle_toolsets","in":{"io":{"load_config":{},"_get_platform_tools":[],"get_nous_subscription_features":{},"_get_effective_configurable_toolsets":[],"web.json_response":{"status":200}}}}
+{"func":"handle_toolsets","in":{"io":{"load_config":{"__raise__":"RuntimeError","message":"config down"},"_error_response":{"status":500}}}}
+{"func":"handle_toolsets","in":{"io":{"load_config":{"__raise__":"KeyboardInterrupt","message":"abort"}}}}
+{"func":"handle_toolsets","in":{"io":{"load_config":{},"_get_platform_tools":["alpha"],"get_nous_subscription_features":{},"_get_effective_configurable_toolsets":{"__script__":true,"ret":[["alpha","Alpha","desc-a"],["beta","Beta","desc-b"]]},"resolve_toolset":[{"__raise__":"ValueError","message":"bad toolset"},["beta"]],"_toolset_has_keys":[false],"web.json_response":{"status":200}}}}
+{"func":"handle_toolsets","in":{"io":{"load_config":{},"_get_platform_tools":[],"get_nous_subscription_features":{},"_get_effective_configurable_toolsets":{"__script__":true,"ret":[["alpha","Alpha","desc-a"],["beta","Beta","desc-b"]]},"resolve_toolset":[{"__raise__":"SystemExit","message":"bye"}]}}}
+{"func":"handle_toolsets","in":{"io":{"load_config":{},"_get_platform_tools":[],"get_nous_subscription_features":{},"_get_effective_configurable_toolsets":{"__script__":true,"ret":[["alpha","Alpha","desc-a"],["beta","Beta","desc-b"]]},"resolve_toolset":[["x"],["y"]],"_toolset_has_keys":[{"__raise__":"RuntimeError","message":"keys failed"}],"_error_response":{"status":500}}}}
+{"func":"ensure_store","in":{"state":{"gateway_runner":{"g":1}},"io":{"get_hermes_home":"/home/a","selected_session_db":{"db":"selected"}}}}
+{"func":"ensure_store","in":{"state":{"gateway_runner":{"g":1}},"io":{"get_hermes_home":{"__raise__":"RuntimeError","message":"home failed"}}}}
+{"func":"ensure_store","in":{"state":{"_session_db":{"db":"cached"}},"io":{}}}
+{"func":"ensure_store","in":{"state":{},"io":{"get_hermes_home":"/home/b","_open_and_cache_session_db":{"db":"opened"}}}}
+{"func":"ensure_store","in":{"state":{},"io":{"get_hermes_home":"/home/b","_open_and_cache_session_db":{"__raise__":"RuntimeError","message":"open failed"}}}}
+{"func":"ensure_store","in":{"state":{},"io":{"get_hermes_home":"/home/b","_open_and_cache_session_db":{"__raise__":"KeyboardInterrupt","message":"abort"}}}}
+{"func":"ensure_store","in":{"state":{},"io":{"get_hermes_home":{"__raise__":"ValueError","message":"home bad"}}}}
+{"func":"store_beside","in":{"db":null,"io":{}}}
+{"func":"store_beside","in":{"db":{"db":"x"},"io":{"adapter_persistence":{"store":"P"}}}}
+{"func":"store_beside","in":{"db":"handle","io":{"adapter_persistence":null}}}
+{"func":"store_beside","in":{"db":0,"io":{"adapter_persistence":{"n":0}}}}
+{"func":"store_beside","in":{"db":{"db":"x"},"io":{"adapter_persistence":{"__raise__":"RuntimeError","message":"no adapter"}}}}
+{"func":"store_beside","in":{"db":{"db":"x"},"io":{"adapter_persistence":{"__raise__":"KeyboardInterrupt","message":"abort"}}}}
+{"func":"store_beside","in":{"db":[1,2],"io":{"adapter_persistence":[1,2]}}}
+{"func":"current_response_store","in":{"state":{"_response_store_home":"/home/same","_response_store":{"id":"current"}},"io":{"get_hermes_home":"/home/same"}}}
+{"func":"current_response_store","in":{"state":{"_response_store_home":"","_response_store":null,"_response_stores":{}},"io":{"get_hermes_home":"/home/new","ResponseStore":{"id":"new"}}}}
+{"func":"current_response_store","in":{"state":{"_response_store_home":"","_response_stores":{"/home/cached":{"id":"cached"}}},"io":{"get_hermes_home":"/home/cached"}}}
+{"func":"current_response_store","in":{"state":{"_response_store_home":""},"io":{"get_hermes_home":{"__raise__":"RuntimeError","message":"home down"}}}}
+{"func":"current_response_store","in":{"state":{"_response_store_home":"","_response_stores":{}},"io":{"get_hermes_home":"/home/x","ResponseStore":{"__raise__":"OSError","message":"cannot open"}}}}
+{"func":"current_response_store","in":{"state":{"_response_store_home":"/home/same","_response_store":null},"io":{"get_hermes_home":"/home/same"}}}
+{"func":"current_response_store","in":{"state":{"_response_store_home":"","_response_stores":{}},"io":{"get_hermes_home":"relative/path","ResponseStore":{"id":"rel"}}}}
+{"func":"check_run_auth","in":{"request":{"path":"/v1/runs"},"permission":"status","io":{"runs._check_run_auth":{"status":200}}}}
+{"func":"check_run_auth","in":{"request":{},"permission":"stop","io":{"runs._check_run_auth":null}}}
+{"func":"check_run_auth","in":{"request":{"path":"/x"},"permission":"status","io":{"runs._check_run_auth":[{"status":403}]}}}
+{"func":"check_run_auth","in":{"request":{},"permission":"status","io":{"runs._check_run_auth":{"__raise__":"RuntimeError","message":"auth failed"}}}}
+{"func":"check_run_auth","in":{"request":{},"permission":"status","io":{"runs._check_run_auth":{"__raise__":"KeyboardInterrupt","message":"abort"}}}}
+{"func":"check_run_auth","in":{"request":{},"permission":"status","io":{"runs._check_run_auth":{"__script__":true,"ret":{"allow":false}}}}}
+{"func":"check_run_auth","in":{"request":{},"permission":"status","io":{"runs._check_run_auth":{"__raise__":"SystemExit","message":"bye"}}}}
+{"func":"request_owns_run","in":{"request":{"path":"/x"},"run_id":"r1","io":{"runs._request_owns_run":true}}}
+{"func":"request_owns_run","in":{"request":{},"run_id":"r2","io":{"runs._request_owns_run":false}}}
+{"func":"request_owns_run","in":{"request":{},"run_id":"r3","io":{"runs._request_owns_run":null}}}
+{"func":"request_owns_run","in":{"request":{},"run_id":"r4","io":{"runs._request_owns_run":{"__raise__":"ValueError","message":"bad id"}}}}
+{"func":"request_owns_run","in":{"request":{},"run_id":"r5","io":{"runs._request_owns_run":{"__raise__":"KeyboardInterrupt","message":"abort"}}}}
+{"func":"request_owns_run","in":{"request":{},"run_id":"r6","io":{"runs._request_owns_run":[true,false]}}}
+{"func":"request_owns_run","in":{"request":{},"run_id":"r7","io":{"runs._request_owns_run":{"__raise__":"CancelledError","message":"cancelled"}}}}
+{"func":"track_background_task","in":{"task":"task-1","state":{"_background_tasks":[]},"io":{"bg.add":null,"bg.add_done_callback":null}}}
+{"func":"track_background_task","in":{"task":"task-2","state":{"_background_tasks":["task-0"]},"io":{"bg.add":null,"bg.add_done_callback":null}}}
+{"func":"track_background_task","in":{"task":"task-3","state":{"_background_tasks":[]},"io":{"bg.add":{"__raise__":"TypeError","message":"unhashable"},"bg.add_done_callback":null}}}
+{"func":"track_background_task","in":{"task":"task-4","tolerate_missing":true,"state":{"_background_tasks":[]},"io":{"bg.add":{"__raise__":"AttributeError","message":"no set"}}}}
+{"func":"track_background_task","in":{"task":"task-5","state":{"_background_tasks":[]},"io":{"bg.add":{"__raise__":"KeyboardInterrupt","message":"abort"}}}}
+{"func":"track_background_task","in":{"task":"task-6","state":{"_background_tasks":[]},"io":{"bg.add":null,"bg.add_done_callback":{"__raise__":"ValueError","message":"bad cb"}}}}
+{"func":"track_background_task","in":{"task":"task-7","state":{"_background_tasks":[]},"io":{"bg.add":null,"bg.add_done_callback":{"__raise__":"SystemExit","message":"bye"}}}}
