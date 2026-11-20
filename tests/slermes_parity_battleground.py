@@ -434,7 +434,15 @@ class CIndexer:
                             continue
                         line = bisect.bisect_right(self._line_offsets[rel_str], m.start())
                         is_static = 'static' in content[max(0, m.start()-50):m.start()]
-                        return_match = re.search(r'(?:^|\n)([a-zA-Z_]\w*(?:\s*\\*)?)\s+' + re.escape(name) + r'\s*\(', content[:m.start()], re.MULTILINE)
+                        # Bounded backward window: scanning content[:m.start()]
+                        # for every C function made the whole scan quadratic
+                        # (>10 min even with --module). A return type sits on
+                        # the signature line or a nearby forward declaration,
+                        # so an 8 KiB line-anchored window preserves the same
+                        # match at O(1) per function.
+                        wstart = content.rfind("\n", 0, max(0, m.start() - 8192))
+                        window = content[max(0, wstart):m.start()]
+                        return_match = re.search(r'(?:^|\n)([a-zA-Z_]\w*(?:\s*\\*)?)\s+' + re.escape(name) + r'\s*\(', window, re.MULTILINE)
                         return_type = return_match.group(1) if return_match else ""
                         self.functions[name].append(CFunction(name=name, file=rel_str, line=line, is_static=is_static, return_type=return_type))
 
