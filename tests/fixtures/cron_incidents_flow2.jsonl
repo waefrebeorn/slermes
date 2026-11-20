@@ -1,0 +1,63 @@
+{"func": "db_path", "in": {"io": {"executions_file": {"ret": "/override/exec.db"}}}}
+{"func": "db_path", "in": {"module_file": "/mod/exec.db", "io": {"executions_file": {"ret": null}}}}
+{"func": "db_path", "in": {"io": {"executions_file": {"ret": null}, "get_hermes_home": {"ret": "/home/u"}, "path.resolve": {"ret": "/home/u"}}}}
+{"func": "db_path", "in": {"io": {"executions_file": {"ret": null}, "get_hermes_home": {"ret": "/home/u/"}, "path.resolve": {"ret": "/home/u/"}}}}
+{"func": "db_path", "in": {"io": {"executions_file": {"raise": {"type": "RuntimeError", "message": "attr fail"}}}}}
+{"func": "db_path", "in": {"io": {"executions_file": {"ret": null}, "get_hermes_home": {"raise": {"type": "OSError", "message": "no home"}}}}}
+{"func": "db_path", "in": {"io": {"executions_file": {"ret": null}, "get_hermes_home": {"ret": "/h"}, "path.resolve": {"raise": {"type": "SystemExit", "message": "exit"}}}}}
+{"func": "connect", "in": {"io": {"_db_path": {"ret": "/h/cron/executions.db"}, "ensure_cron_dir": {"ret": null}, "open_db": {"ret": "conn1"}}}}
+{"func": "connect", "in": {"io": {"_db_path": {"raise": {"type": "OSError", "message": "path"}}}}}
+{"func": "connect", "in": {"io": {"_db_path": {"ret": "/h/cron/executions.db"}, "ensure_cron_dir": {"raise": {"type": "PermissionError", "message": "mkdir"}}}}}
+{"func": "connect", "in": {"io": {"_db_path": {"ret": "/h/cron/executions.db"}, "ensure_cron_dir": {"ret": null}, "open_db": {"raise": {"type": "OSError", "message": "open"}}}}}
+{"func": "connect", "in": {"io": {"_db_path": {"ret": "/h/cron/executions.db"}, "ensure_cron_dir": {"ret": null}, "open_db": {"ret": null}}}}
+{"func": "connect", "in": {"io": {"_db_path": {"ret": "C:/h/cron/executions.db"}, "ensure_cron_dir": {"ret": null}, "open_db": {"ret": "conn2"}}}}
+{"func": "initialize_schema", "in": {"io": {"sql.create_table": {"ret": null}, "add_column_if_missing": {"ret": null}, "sql.index_job": {"ret": null}, "sql.index_state": {"ret": null}}}}
+{"func": "initialize_schema", "in": {"io": {"sql.create_table": {"raise": {"type": "OSError", "message": "ddl"}}, "add_column_if_missing": {"ret": null}, "sql.index_job": {"ret": null}, "sql.index_state": {"ret": null}}}}
+{"func": "initialize_schema", "in": {"io": {"sql.create_table": {"ret": null}, "add_column_if_missing": {"raise": {"type": "ValueError", "message": "col"}}, "sql.index_job": {"ret": null}, "sql.index_state": {"ret": null}}}}
+{"func": "initialize_schema", "in": {"io": {"sql.create_table": {"ret": null}, "add_column_if_missing": {"ret": null}, "sql.index_job": {"raise": {"type": "OSError", "message": "idx"}}, "sql.index_state": {"ret": null}}}}
+{"func": "initialize_schema", "in": {"io": {"sql.create_table": {"ret": null}, "add_column_if_missing": {"ret": null}, "sql.index_job": {"ret": null}, "sql.index_state": {"raise": {"type": "OSError", "message": "idx2"}}}}}
+{"func": "initialize_schema", "in": {"io": {"sql.create_table": {"ret": null, "state": {"schema": 1}}, "add_column_if_missing": {"ret": null}, "sql.index_job": {"ret": null}, "sql.index_state": {"ret": null}}}}
+{"func": "transaction", "in": {"io": {"_connect": {"ret": "conn1"}, "transaction.enter": {"ret": "c1"}, "transaction.exit": {"ret": null}}}}
+{"func": "transaction", "in": {"io": {"_connect": {"raise": {"type": "OSError", "message": "connect"}}}}}
+{"func": "transaction", "in": {"io": {"_connect": {"ret": "conn1"}, "transaction.enter": {"raise": {"type": "RuntimeError", "message": "enter"}}}}}
+{"func": "transaction", "in": {"io": {"_connect": {"ret": "conn1"}, "transaction.enter": {"ret": "c1"}, "transaction.exit": {"raise": {"type": "RuntimeError", "message": "exit"}}}}}
+{"func": "transaction", "in": {"io": {"_connect": {"ret": "conn1"}, "transaction.enter": {"ret": null}, "transaction.exit": {"ret": null}}}}
+{"func": "transaction", "in": {"io": {"_connect": {"ret": "conn1"}, "transaction.enter": {"ret": "c1"}, "transaction.exit": {"ret": null, "state": {"tx": 1}}}}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "bogus"}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "detected", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.select": {"fetchone": {"state": "detected"}}}}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "alerted", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.select": {"fetchone": {"state": "detected"}}, "sql.update_alerted": {"ret": null}}}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "closed", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.select": {"fetchone": {"state": "alerted"}}, "sql.update_closed": {"ret": null}}}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "resolved", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.select": {"fetchone": {"state": "alerted"}}, "sql.update_state": {"ret": null}}}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "detected", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.select": {"ret": {"fetchone": null}}}}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "detected", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.select": {"fetchone": {"state": "closed"}}}}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "alerted", "io": {"hermes_now": {"raise": {"type": "OSError", "message": "clock"}}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}}}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "alerted", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.select": {"raise": {"type": "OSError", "message": "select"}}}}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "alerted", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"raise": {"type": "RuntimeError", "message": "exit"}}, "sql.select": {"fetchone": {"state": "detected"}}, "sql.update_alerted": {"raise": {"type": "ValueError", "message": "upd"}}}}}
+{"func": "set_incident_state", "in": {"incident_id": "j1", "inc_state": "alerted", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null, "state": {"seen": 1}}, "tx.exit": {"ret": null}, "sql.select": {"fetchone": {"state": "detected"}}, "sql.update_alerted": {"ret": null}}}}
+{"func": "ack_incident", "in": {"incident_id": "j1", "io": {"set_incident_state": {"ret": true}}}}
+{"func": "ack_incident", "in": {"incident_id": "j1", "io": {"set_incident_state": {"ret": false}}}}
+{"func": "ack_incident", "in": {"incident_id": "j1", "io": {"set_incident_state": {"raise": {"type": "OSError", "message": "db"}}}}}
+{"func": "ack_incident", "in": {"incident_id": "j1", "io": {"set_incident_state": {"ret": null}}}}
+{"func": "ack_incident", "in": {"incident_id": "j1", "io": {"set_incident_state": {"ret": true, "state": {"acked": 1}}}}}
+{"func": "close_incidents", "in": {"job_id": "j1", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.update_resolved": {"ret": {"rowcount": 3}}}}}
+{"func": "close_incidents", "in": {"job_id": "j1", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.update_resolved": {"ret": {"rowcount": 0}}}}}
+{"func": "close_incidents", "in": {"job_id": "j1", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.update_resolved": {"ret": {}}}}}
+{"func": "close_incidents", "in": {"job_id": "j1", "io": {"hermes_now": {"raise": {"type": "OSError", "message": "clock"}}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}}}}
+{"func": "close_incidents", "in": {"job_id": "j1", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.update_resolved": {"raise": {"type": "OSError", "message": "upd"}}}}}
+{"func": "close_incidents", "in": {"job_id": "j1", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"raise": {"type": "RuntimeError", "message": "exit"}}, "sql.update_resolved": {"ret": {"rowcount": 5}}}}}
+{"func": "close_incidents", "in": {"job_id": "j1", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.update_resolved": {"ret": {"rowcount": 2.7}}}}}
+{"func": "close_incidents", "in": {"job_id": "j1", "io": {"hermes_now": {"ret": "T"}, "tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.update_resolved": {"ret": {"rowcount": 1}, "state": {"closed": 1}}}}}
+{"func": "state_filter", "in": {}}
+{"func": "state_filter", "in": {"inc_state": null}}
+{"func": "state_filter", "in": {"inc_state": "detected"}}
+{"func": "state_filter", "in": {"inc_state": "closed"}}
+{"func": "state_filter", "in": {"inc_state": ""}}
+{"func": "state_filter", "in": {"inc_state": 5}}
+{"func": "count_incidents", "in": {"io": {"tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.count": {"ret": {"fetchone": {"n": 5}}}}}}
+{"func": "count_incidents", "in": {"inc_state": "detected", "io": {"tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.count_filtered": {"ret": {"fetchone": {"n": 2}}}}}}
+{"func": "count_incidents", "in": {"inc_state": "bogus"}}
+{"func": "count_incidents", "in": {"inc_state": null, "io": {"tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.count": {"ret": {"fetchone": null}}}}}
+{"func": "count_incidents", "in": {"io": {"tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.count": {"raise": {"type": "OSError", "message": "count"}}}}}
+{"func": "count_incidents", "in": {"io": {"tx.enter": {"ret": null}, "tx.exit": {"raise": {"type": "RuntimeError", "message": "exit"}}, "sql.count": {"ret": {"fetchone": {"n": 4}}}}}}
+{"func": "count_incidents", "in": {"io": {"tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.count": {"ret": {"fetchone": {"n": 0}}}}}}
+{"func": "count_incidents", "in": {"io": {"tx.enter": {"ret": null}, "tx.exit": {"ret": null}, "sql.count": {"ret": {"fetchone": {"n": 3}}, "state": {"cnt": 1}}}}}

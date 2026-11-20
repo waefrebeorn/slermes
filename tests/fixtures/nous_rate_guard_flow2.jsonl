@@ -1,0 +1,55 @@
+{"func": "_is_exhausted", "in": {"remaining": 0, "reset": 60.0, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": 0, "reset": 59.9, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": null, "reset": 100.0, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": 1, "reset": 100.0, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": -5, "reset": 60.0, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": false, "reset": 60.0, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": true, "reset": 60.0, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": 0, "reset": true, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": 0, "reset": null, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": 0.0, "reset": 1000000000.0, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": 2, "reset": 100.0, "io": {}}}
+{"func": "_is_exhausted", "in": {"remaining": 0, "reset": 60, "io": {}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": null, "io": {}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": "x", "io": {}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": 5, "io": {}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": [], "io": {}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {}, "io": {}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": "x"}, "io": {}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "at_capacity"}}, "io": {}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": null}}, "io": {}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "rate_limited", "retry_after": "120s"}}, "io": {"safe_float": 25.0}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "rate_limited", "retry_after": "120s"}}, "io": {"safe_float": 19.9}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "rate_limited", "retry_after": "120s"}}, "io": {"safe_float": 20.0}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "rate_limited", "retry_after": "120s"}}, "io": {"safe_float": 0}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "rate_limited", "retry_after": "120s"}}, "io": {"safe_float": -5}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "rate_limited", "retry_after": "120s"}}, "io": {"safe_float": null}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "rate_limited", "retry_after": "120s"}}, "io": {"safe_float": {"__raise__": "ValueError", "message": "bad"}}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "rate_limited", "retry_after": "120s"}}, "io": {"safe_float": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "rate_limited", "retry_after": "120s"}}, "io": {"safe_float": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "is_long_welcome_rate_limit", "in": {"error_context": {"welcome_refusal": {"reason": "rate_limited", "retry_after": "120s"}}, "io": {}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"tier": [0, 25.0]}, "io": {"parse_buckets_from_headers": {"tier": [0, 25.0]}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"tier": [0, 5.0]}, "io": {"parse_buckets_from_headers": {"tier": [0, 5.0]}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"a": [0, 10.0], "b": [0, 30.0]}, "io": {"parse_buckets_from_headers": {"a": [0, 10.0], "b": [0, 30.0]}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"tier": [0, 20.0]}, "io": {"parse_buckets_from_headers": {"tier": [0, 20.0]}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"tier": [0, 19.999]}, "io": {"parse_buckets_from_headers": {"tier": [0, 19.999]}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}, "lower_headers": {}, "parse_retry_after_seconds": 30}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": 12.5, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}, "lower_headers": {}, "parse_retry_after_seconds": null}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": -5.0, "io": {"parse_buckets_from_headers": {"h": [0, null]}, "lower_headers": {}, "parse_retry_after_seconds": null}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": true, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}, "lower_headers": {}, "parse_retry_after_seconds": null}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}, "lower_headers": {"retry-after": "120s"}, "parse_retry_after_seconds": 45}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {}, "body_wait": null, "io": {"parse_buckets_from_headers": {}, "lower_headers": {}, "parse_retry_after_seconds": null}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"tier": [0, 0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"tier": [0, 0]}, "lower_headers": {}, "parse_retry_after_seconds": null}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"__raise__": "ValueError", "message": "v"}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"__raise__": "BaseExceptionGroup", "message": "grp"}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": null}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": [1, 2]}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}, "lower_headers": null}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}, "lower_headers": {}, "parse_retry_after_seconds": {"__raise__": "TypeError", "message": "t"}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}, "lower_headers": {}, "parse_retry_after_seconds": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}, "lower_headers": {}, "parse_retry_after_seconds": {"__raise__": "FileNotFoundError", "message": "nf"}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}, "lower_headers": {}, "parse_retry_after_seconds": {"__raise__": "ZeroDivisionError", "message": "zd"}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}, "lower_headers": {}, "parse_retry_after_seconds": {"__raise__": "CustomSyntheticError", "message": "custom"}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {"parse_buckets_from_headers": {"h": [5, 100.0]}}}}
+{"func": "welcome_refusal_from_headers", "in": {"headers": {"h": [5, 100.0]}, "body_wait": null, "io": {}}}

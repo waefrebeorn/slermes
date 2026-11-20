@@ -1,0 +1,94 @@
+{"func": "recency", "in": {"s": {"last_active": 100}, "seams": {}}}
+{"func": "recency", "in": {"s": {"started_at": 200}, "seams": {}}}
+{"func": "recency", "in": {"s": {"last_active": 0, "started_at": 300}, "seams": {}}}
+{"func": "recency", "in": {"s": {}, "seams": {}}}
+{"func": "recency", "in": {"s": {"last_active": null, "started_at": "recent"}, "seams": {}}}
+{"func": "recency", "in": {"s": {"last_active": "la", "started_at": 5}, "seams": {}}}
+{"func": "recency", "in": {"s": {"last_active": [], "started_at": 9}, "seams": {}}}
+{"func": "recency", "in": {"s": {"last_active": false, "started_at": 7}, "seams": {}}}
+{"func": "csv_list", "in": {"value": "a,b,c", "seams": {}}}
+{"func": "csv_list", "in": {"value": " a , b ,, c ", "seams": {}}}
+{"func": "csv_list", "in": {"value": "", "seams": {}}}
+{"func": "csv_list", "in": {"value": null, "seams": {}}}
+{"func": "csv_list", "in": {"value": "  ", "seams": {}}}
+{"func": "csv_list", "in": {"value": "one", "seams": {}}}
+{"func": "csv_list", "in": {"value": "x,,y,", "seams": {}}}
+{"func": "csv_list", "in": {"value": 0, "seams": {}}}
+{"func": "csv_list", "in": {"value": " a\tb , c\n", "seams": {}}}
+{"func": "slice_has_rows", "in": {"slices": {"recents": [{"id": 1}]}, "seams": {}}}
+{"func": "slice_has_rows", "in": {"slices": {"cron": {}, "messaging": []}, "seams": {}}}
+{"func": "slice_has_rows", "in": {"slices": {}, "seams": {}}}
+{"func": "slice_has_rows", "in": {"slices": {"messaging": [1]}, "seams": {}}}
+{"func": "slice_has_rows", "in": {"slices": {"recents": null, "cron": 0, "messaging": false}, "seams": {}}}
+{"func": "slice_has_rows", "in": {"slices": {"recents": 0, "cron": "x"}, "seams": {}}}
+{"func": "failed_load_slice", "in": {"errors": [], "extra": {}, "seams": {}}}
+{"func": "failed_load_slice", "in": {"errors": [{"profile": "p", "error": "e"}], "extra": {}, "seams": {}}}
+{"func": "failed_load_slice", "in": {"errors": [{"profile": "p"}], "extra": {"hint": "h"}, "seams": {}}}
+{"func": "failed_load_slice", "in": {"errors": [], "extra": {"failed": false, "extra_key": 1}, "seams": {}}}
+{"func": "failed_load_slice", "in": {"errors": null, "extra": {}, "seams": {}}}
+{"func": "failed_load_slice", "in": {"errors": [{"profile": "p", "error": "e"}], "extra": {"hint": "h2", "sessions": null}, "seams": {}}}
+{"func": "profiles_failed", "in": {"errors": [], "seams": {}}}
+{"func": "profiles_failed", "in": {"errors": [{"profile": "p", "error": "e"}], "seams": {}}}
+{"func": "profiles_failed", "in": {"errors": [{"profile": "", "error": "e"}, {"profile": "q"}], "seams": {}}}
+{"func": "profiles_failed", "in": {"errors": [{"error": "x"}], "seams": {}}}
+{"func": "profiles_failed", "in": {"errors": [{"profile": "p", "error": null}], "seams": {}}}
+{"func": "profiles_failed", "in": {"errors": [{"profile": "p", "error": "a"}, {"profile": "p", "error": "b"}], "seams": {}}}
+{"func": "no_store_file", "in": {"name": "p", "errors": [], "seams": {}}}
+{"func": "no_store_file", "in": {"name": "p", "errors": [{"profile": "x", "error": "y"}], "seams": {}}}
+{"func": "no_store_file", "in": {"name": "p", "errors": null, "seams": {}}}
+{"func": "no_store_file", "in": {"name": "", "errors": [], "seams": {}}}
+{"func": "no_store_file", "in": {"name": "default", "errors": [{"profile": "a", "error": "b"}, {"profile": "c", "error": "d"}], "seams": {}}}
+{"func": "tag_rows", "in": {"rows": [], "name": "default", "now": 100, "seams": {}}}
+{"func": "tag_rows", "in": {"rows": [{"id": 1}], "name": "default", "now": 100, "seams": {}}}
+{"func": "tag_rows", "in": {"rows": [{"id": 1, "last_active": 90, "ended_at": null, "archived": 1, "pinned": 0}], "name": "p", "now": 100, "seams": {}}}
+{"func": "tag_rows", "in": {"rows": [{"id": 2, "started_at": 10, "ended_at": "2020"}], "name": "p", "now": 1000, "seams": {}}}
+{"func": "tag_rows", "in": {"rows": [{"id": 3, "last_active": 50, "ended_at": null}], "name": "p", "now": 400, "seams": {}}}
+{"func": "tag_rows", "in": {"rows": [{"id": 4, "archived": 0, "pinned": true}], "name": "default", "now": 10, "seams": {}}}
+{"func": "tag_rows", "in": {"rows": [{"id": 5, "ended_at": null}], "name": "x", "now": 5, "seams": {}}}
+{"func": "tag_rows", "in": {"rows": [{"id": 6, "last_active": 290, "pinned": 1}, {"id": 7, "started_at": 1, "archived": "yes"}], "name": "default", "now": 300, "seams": {}}}
+{"func": "pinned_window", "in": {"rows": [{"id": 0, "pinned": false}, {"id": 1, "pinned": false}, {"id": 2, "pinned": false}, {"id": 3, "pinned": true}, {"id": 4, "pinned": true}], "offset": 0, "cap": 2, "seams": {}}}
+{"func": "pinned_window", "in": {"rows": [{"id": 0, "pinned": false}, {"id": 1, "pinned": false}, {"id": 2, "pinned": false}, {"id": 3, "pinned": true}, {"id": 4, "pinned": true}], "offset": 1, "cap": 2, "seams": {}}}
+{"func": "pinned_window", "in": {"rows": [{"id": 0, "pinned": false}, {"id": 1, "pinned": false}, {"id": 2, "pinned": false}, {"id": 3, "pinned": true}, {"id": 4, "pinned": true}], "offset": 2, "cap": 10, "seams": {}}}
+{"func": "pinned_window", "in": {"rows": [{"id": 0, "pinned": false}, {"id": 1, "pinned": false}, {"id": 2, "pinned": false}, {"id": 3, "pinned": true}, {"id": 4, "pinned": true}], "offset": 5, "cap": 2, "seams": {}}}
+{"func": "pinned_window", "in": {"rows": [{"id": 0, "pinned": true}, {"id": 1, "pinned": false}], "offset": 0, "cap": 0, "seams": {}}}
+{"func": "pinned_window", "in": {"rows": [], "offset": 0, "cap": 3, "seams": {}}}
+{"func": "pinned_window", "in": {"rows": [{"id": 0}, {"id": 1, "pinned": 1}], "offset": 0, "cap": 1, "seams": {}}}
+{"func": "linux_terminal_commands", "in": {"command": "hermes setup", "seams": {}}}
+{"func": "linux_terminal_commands", "in": {"command": "", "seams": {}}}
+{"func": "linux_terminal_commands", "in": {"command": "a'b", "seams": {}}}
+{"func": "linux_terminal_commands", "in": {"command": "x; echo hi", "seams": {}}}
+{"func": "linux_terminal_commands", "in": {"command": "default setup", "seams": {}}}
+{"func": "profile_state_db", "in": {"home": "/h/p", "seams": {"store_location": "/db/path"}}}
+{"func": "profile_state_db", "in": {"home": "/h/p", "seams": {"store_location": null}}}
+{"func": "profile_state_db", "in": {"home": "/h/p", "seams": {"store_location": {"__raise__": "ValueError", "msg": "boom"}}}}
+{"func": "profile_state_db", "in": {"home": "/h/p", "seams": {"store_location": {"__raise__": "FileNotFoundError", "msg": "boom"}}}}
+{"func": "profile_state_db", "in": {"home": "", "seams": {"store_location": "db"}}}
+{"func": "corrupt_profile_stores", "in": {"targets": [["p", "/h"]], "seams": {"storage_health": {"state": "corrupt"}}}}
+{"func": "corrupt_profile_stores", "in": {"targets": [["p", "/h"]], "seams": {"storage_health": {"state": "ok"}}}}
+{"func": "corrupt_profile_stores", "in": {"targets": [["a", "/a"], ["b", "/b"]], "seams": {"storage_health": [{"state": "corrupt"}, {"state": "ok"}]}}}
+{"func": "corrupt_profile_stores", "in": {"targets": [["p", "/h"]], "seams": {"storage_health": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "corrupt_profile_stores", "in": {"targets": [], "seams": {}}}
+{"func": "corrupt_profile_stores", "in": {"targets": [["p", "/h"], ["q", "/q"]], "seams": {"storage_health": [{"state": "ok"}, {"state": "corrupt"}]}}}
+{"func": "retryable_profile_errors", "in": {"errors": [{"profile": "p", "error": "e"}, {"profile": "q", "error": "f"}], "scanned": [["p", "/h"]], "seams": {"storage_health": {"state": "corrupt"}}}}
+{"func": "retryable_profile_errors", "in": {"errors": [{"profile": "p"}, {"profile": "q"}], "scanned": [["p", "/h"]], "seams": {"storage_health": {"state": "ok"}}}}
+{"func": "retryable_profile_errors", "in": {"errors": [{"profile": "p"}, {"error": "no profile"}], "scanned": [], "seams": {}}}
+{"func": "retryable_profile_errors", "in": {"errors": [{"profile": "p"}], "scanned": [["p", "/h"]], "seams": {"storage_health": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "retryable_profile_errors", "in": {"errors": [{"profile": "p"}, {"profile": "q"}, {"profile": "r"}], "scanned": [["p", "/h"], ["r", "/r"]], "seams": {"storage_health": [{"state": "corrupt"}, {"state": "corrupt"}]}}}
+{"func": "scoped_profile_targets", "in": {"log_label": "scan", "profile": null, "seams": {"profile_targets": {"__arr__": [["default", "/d"], ["p", "/p"], ["q", "/q"]]}}}}
+{"func": "scoped_profile_targets", "in": {"log_label": "scan", "profile": "p", "seams": {"profile_targets": {"__arr__": [["default", "/d"], ["p", "/p"], ["q", "/q"]]}}}}
+{"func": "scoped_profile_targets", "in": {"log_label": "scan", "profile": "  p  ", "seams": {"profile_targets": {"__arr__": [["default", "/d"], ["p", "/p"], ["q", "/q"]]}}}}
+{"func": "scoped_profile_targets", "in": {"log_label": "scan", "profile": "", "seams": {"profile_targets": {"__arr__": [["default", "/d"], ["p", "/p"], ["q", "/q"]]}}}}
+{"func": "scoped_profile_targets", "in": {"log_label": "scan", "profile": "p", "seams": {"profile_targets": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "scoped_profile_targets", "in": {"log_label": "scan", "profile": null, "seams": {"profile_targets": {"__arr__": []}}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": ["x"], "default": {"d": 1}, "seams": {"fn": {"ok": 1}}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": [], "default": "unused", "seams": {"fn": null}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": ["a", "b"], "default": {"d": 1}, "seams": {"fn": {"__raise__": "ValueError", "msg": "boom"}, "log_exception": null}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": [], "default": null, "seams": {"fn": {"__raise__": "TypeError", "msg": "boom"}, "log_exception": null}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": [], "default": "fallback", "seams": {"fn": {"__raise__": "FileNotFoundError", "msg": "boom"}, "log_exception": null}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": [], "default": 0, "seams": {"fn": {"__raise__": "StopIteration", "msg": "boom"}, "log_exception": null}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": [], "default": 0, "seams": {"fn": {"__raise__": "ExceptionGroup", "msg": "boom"}, "log_exception": null}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": [], "default": 0, "seams": {"fn": {"__raise__": "KeyboardInterrupt", "msg": "boom"}}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": [], "default": 0, "seams": {"fn": {"__raise__": "SystemExit", "msg": "boom"}}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": [], "default": 0, "seams": {"fn": {"__raise__": "GeneratorExit", "msg": "boom"}}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": [], "default": 0, "seams": {"fn": {"__raise__": "BaseExceptionGroup", "msg": "boom"}}}}
+{"func": "best_effort", "in": {"log_msg": "m", "args": [], "default": "dflt", "seams": {"fn": [{"__raise__": "ValueError", "msg": "boom"}, {"ok": 2}], "log_exception": null}}}

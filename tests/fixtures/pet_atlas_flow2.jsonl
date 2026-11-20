@@ -1,0 +1,96 @@
+{"func": "_median", "in": {"values": [5], "io": {}}}
+{"func": "_median", "in": {"values": [3, 1, 2], "io": {}}}
+{"func": "_median", "in": {"values": [1, 2, 3, 4], "io": {}}}
+{"func": "_median", "in": {"values": [10, 20, 30, 40, 50], "io": {}}}
+{"func": "_median", "in": {"values": [-5, -1, -3], "io": {}}}
+{"func": "_median", "in": {"values": [], "io": {}}}
+{"func": "_median_box_size", "in": {"boxes": [[0, 0, 10, 20]], "io": {}}}
+{"func": "_median_box_size", "in": {"boxes": [[0, 0, 10, 20], [0, 0, 20, 40], [0, 0, 4, 8]], "io": {}}}
+{"func": "_median_box_size", "in": {"boxes": [[0, 0, 2, 2], [0, 0, 4, 4], [0, 0, 6, 6], [0, 0, 8, 8]], "io": {}}}
+{"func": "_median_box_size", "in": {"boxes": [[0, 0, 0, 0], [0, 0, 10, 10]], "io": {}}}
+{"func": "_median_box_size", "in": {"boxes": [[5, 5, 15, 25], [0, 0, 7, 9]], "io": {}}}
+{"func": "_median_box_size", "in": {"boxes": [[1, 2, 9, 30], [3, 4, 11, 40], [2, 1, 10, 20]], "io": {}}}
+{"func": "_blank", "in": {"size": [8, 5], "io": {"Image.new": {"handle": "blank0", "size": [8, 5]}}}}
+{"func": "_blank", "in": {"size": [192, 208], "io": {"Image.new": {"handle": "blank1", "size": [192, 208]}}}}
+{"func": "_blank", "in": {"size": [0, 0], "io": {"Image.new": {"handle": "blank2", "size": [0, 0]}}}}
+{"func": "_blank", "in": {"size": [1, 1], "io": {"Image.new": {"handle": "blank3", "size": [1, 1]}}}}
+{"func": "_blank", "in": {"size": [3, 7], "io": {"Image.new": {"handle": "blank4", "size": [3, 7]}}}}
+{"func": "_blank", "in": {"size": [10, 10], "io": {"Image.new": {"handle": "blank5", "size": [10, 10]}}}}
+{"func": "_place", "in": {"sprite": {"handle": "sp0", "size": [4, 3]}, "size": [8, 5], "offset": [0, 0], "io": {"Image.new": {"handle": "canv0", "size": [8, 5]}, "alpha_composite": null}}}
+{"func": "_place", "in": {"sprite": {"handle": "sp1", "size": [40, 50]}, "size": [192, 208], "offset": [10, 20], "io": {"Image.new": {"handle": "canv1", "size": [192, 208]}, "alpha_composite": null}}}
+{"func": "_place", "in": {"sprite": {"handle": "sp2", "size": [6, 6]}, "size": [10, 10], "offset": [2, 3], "io": {"Image.new": {"handle": "canv2", "size": [10, 10]}, "alpha_composite": null}}}
+{"func": "_place", "in": {"sprite": {"handle": "sp3", "size": [1, 1]}, "size": [1, 1], "offset": [0, 0], "io": {"Image.new": {"handle": "canv3", "size": [1, 1]}, "alpha_composite": null}}}
+{"func": "_place", "in": {"sprite": {"handle": "sp4", "size": [8, 9]}, "size": [20, 30], "offset": [5, 7], "io": {"Image.new": {"handle": "canv4", "size": [20, 30]}, "alpha_composite": null}}}
+{"func": "_place", "in": {"sprite": {"handle": "sp5", "size": [3, 3]}, "size": [7, 7], "offset": [1, 1], "io": {"Image.new": {"handle": "canv5", "size": [7, 7]}, "alpha_composite": null}}}
+{"func": "_clear_region", "in": {"image": {"handle": "im0", "size": [20, 20]}, "box": [0, 0, 5, 5], "io": {"Image.new": {"handle": "clr0", "size": [5, 5]}, "paste": null}}}
+{"func": "_clear_region", "in": {"image": {"handle": "im1", "size": [20, 20]}, "box": [2, 3, 10, 12], "io": {"Image.new": {"handle": "clr1", "size": [8, 9]}, "paste": null}}}
+{"func": "_clear_region", "in": {"image": {"handle": "im2", "size": [40, 30]}, "box": [10, 5, 30, 25], "io": {"Image.new": {"handle": "clr2", "size": [20, 20]}, "paste": null}}}
+{"func": "_clear_region", "in": {"image": {"handle": "im3", "size": [8, 8]}, "box": [0, 0, 8, 8], "io": {"Image.new": {"handle": "clr3", "size": [8, 8]}, "paste": null}}}
+{"func": "_clear_region", "in": {"image": {"handle": "im4", "size": [192, 208]}, "box": [50, 60, 100, 140], "io": {"Image.new": {"handle": "clr4", "size": [50, 80]}, "paste": null}}}
+{"func": "_clear_region", "in": {"image": {"handle": "im5", "size": [5, 5]}, "box": [1, 1, 2, 2], "io": {"Image.new": {"handle": "clr5", "size": [1, 1]}, "paste": null}}}
+{"func": "_load_rgba", "in": {"image": {"handle": "raw0", "size": [10, 20]}, "io": {"convert": {"handle": "rgba0", "size": [10, 20]}}}}
+{"func": "_load_rgba", "in": {"image": {"handle": "raw1", "size": [11, 21]}, "io": {"convert": {"handle": "rgba1", "size": [11, 21]}}}}
+{"func": "_load_rgba", "in": {"image": {"handle": "raw2", "size": [12, 22]}, "io": {"convert": {"handle": "rgba2", "size": [12, 22]}}}}
+{"func": "_load_rgba", "in": {"image": {"handle": "raw3", "size": [13, 23]}, "io": {"convert": {"handle": "rgba3", "size": [13, 23]}}}}
+{"func": "_load_rgba", "in": {"image": {"handle": "raw4", "size": [14, 24]}, "io": {"convert": {"handle": "rgba4", "size": [14, 24]}}}}
+{"func": "_load_rgba", "in": {"image": "C:/pics/strip.png", "io": {"Image.open": {"handle": "opened5", "size": [12, 12]}, "convert": {"handle": "rgba5", "size": [12, 12]}}}}
+{"func": "_flood", "in": {"w": 1, "h": 1, "visited": [0], "seeds": [[0, 0]], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false]}}}}
+{"func": "_flood", "in": {"w": 2, "h": 1, "visited": [0, 0], "seeds": [[0, 0]], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false]}}}}
+{"func": "_flood", "in": {"w": 3, "h": 3, "visited": [0, 0, 0, 0, 0, 0, 0, 0, 0], "seeds": [[1, 1]], "io": {"accept": {"$seq": [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]}}}}
+{"func": "_flood", "in": {"w": 3, "h": 3, "visited": [1, 1, 1, 1, 1, 1, 1, 1, 1], "seeds": [], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false]}}}}
+{"func": "_flood", "in": {"w": 3, "h": 2, "visited": [0, 0, 0, 0, 0, 0], "seeds": [[0, 0], [2, 1]], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false, true, true, false, true, false, true, true, false]}}}}
+{"func": "_flood", "in": {"w": 2, "h": 2, "visited": [0, 0, 0, 0], "seeds": [[0, 0]], "io": {"accept": {"__raise__": "ValueError", "msg": "no"}}}}
+{"func": "_border_flood", "in": {"w": 1, "h": 1, "visited": [0], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false]}}}}
+{"func": "_border_flood", "in": {"w": 2, "h": 2, "visited": [0, 0, 0, 0], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false, true, true, false, true, false, true, true, false, true, false, true, true]}}}}
+{"func": "_border_flood", "in": {"w": 3, "h": 2, "visited": [0, 0, 0, 0, 0, 0], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false, true, true, false, true, false, true, true, false, true, false, true, true]}}}}
+{"func": "_border_flood", "in": {"w": 3, "h": 3, "visited": [1, 1, 1, 1, 1, 1, 1, 1, 1], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false, true, true, false, true, false, true, true, false, true, false, true, true]}}}}
+{"func": "_border_flood", "in": {"w": 2, "h": 3, "visited": [0, 0, 0, 0, 0, 0], "io": {"accept": {"$seq": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]}}}}
+{"func": "_border_flood", "in": {"w": 2, "h": 2, "visited": [0, 0, 0, 0], "io": {"accept": {"__raise__": "SystemExit", "msg": "halt"}}}}
+{"func": "_unvisited_components", "in": {"w": 1, "h": 1, "visited": [0], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false]}}}}
+{"func": "_unvisited_components", "in": {"w": 1, "h": 1, "visited": [0], "io": {"accept": {"$seq": [false, true, false, true, true, false, true, false, true, true, false]}}}}
+{"func": "_unvisited_components", "in": {"w": 2, "h": 1, "visited": [0, 0], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false, true, true, false, true]}}}}
+{"func": "_unvisited_components", "in": {"w": 3, "h": 3, "visited": [1, 1, 1, 1, 1, 1, 1, 1, 1], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false]}}}}
+{"func": "_unvisited_components", "in": {"w": 2, "h": 2, "visited": [0, 1, 1, 0], "io": {"accept": {"$seq": [true, false, true, true, false, true, false, true, true, false, true, false, true, true, false, true, false, true, true, false]}}}}
+{"func": "_unvisited_components", "in": {"w": 2, "h": 2, "visited": [0, 0, 0, 0], "io": {"accept": {"__raise__": "KeyboardInterrupt", "msg": "int"}}}}
+{"func": "_remove_masked", "in": {"rgba": {"handle": "rgba0", "size": [8, 12]}, "mask": {"handle": "mask0", "size": [8, 12]}, "io": {"Image.new": {"handle": "rmblank0", "size": [8, 12]}, "composite": {"handle": "rmout0", "size": [8, 12]}, "getchannel": {"handle": "rmch0", "size": [8, 12]}, "filter": {"handle": "rmflt0", "size": [8, 12]}, "putalpha": null}}}
+{"func": "_remove_masked", "in": {"rgba": {"handle": "rgba1", "size": [9, 13]}, "mask": {"handle": "mask1", "size": [9, 13]}, "io": {"Image.new": {"handle": "rmblank1", "size": [9, 13]}, "composite": {"handle": "rmout1", "size": [9, 13]}, "getchannel": {"handle": "rmch1", "size": [9, 13]}, "filter": {"handle": "rmflt1", "size": [9, 13]}, "putalpha": null}}}
+{"func": "_remove_masked", "in": {"rgba": {"handle": "rgba2", "size": [10, 14]}, "mask": {"handle": "mask2", "size": [10, 14]}, "io": {"Image.new": {"handle": "rmblank2", "size": [10, 14]}, "composite": {"handle": "rmout2", "size": [10, 14]}, "getchannel": {"handle": "rmch2", "size": [10, 14]}, "filter": {"handle": "rmflt2", "size": [10, 14]}, "putalpha": null}}}
+{"func": "_remove_masked", "in": {"rgba": {"handle": "rgba3", "size": [11, 15]}, "mask": {"handle": "mask3", "size": [11, 15]}, "io": {"Image.new": {"handle": "rmblank3", "size": [11, 15]}, "composite": {"handle": "rmout3", "size": [11, 15]}, "getchannel": {"handle": "rmch3", "size": [11, 15]}, "filter": {"handle": "rmflt3", "size": [11, 15]}, "putalpha": null}}}
+{"func": "_remove_masked", "in": {"rgba": {"handle": "rgba4", "size": [12, 16]}, "mask": {"handle": "mask4", "size": [12, 16]}, "io": {"Image.new": {"handle": "rmblank4", "size": [12, 16]}, "composite": {"handle": "rmout4", "size": [12, 16]}, "getchannel": {"handle": "rmch4", "size": [12, 16]}, "filter": {"handle": "rmflt4", "size": [12, 16]}, "putalpha": null}}}
+{"func": "_remove_masked", "in": {"rgba": {"handle": "rgba5", "size": [13, 17]}, "mask": {"handle": "mask5", "size": [13, 17]}, "io": {"Image.new": {"handle": "rmblank5", "size": [13, 17]}, "composite": {"handle": "rmout5", "size": [13, 17]}, "getchannel": {"handle": "rmch5", "size": [13, 17]}, "filter": {"handle": "rmflt5", "size": [13, 17]}, "putalpha": null}}}
+{"func": "_thin_groups", "in": {"indices": [1, 2, 3], "io": {}}}
+{"func": "_thin_groups", "in": {"indices": [1, 2, 3, 4], "io": {}}}
+{"func": "_thin_groups", "in": {"indices": [1, 2, 3, 4, 5], "io": {}}}
+{"func": "_thin_groups", "in": {"indices": [1, 3, 4, 7, 8], "io": {}}}
+{"func": "_thin_groups", "in": {"indices": [], "io": {}}}
+{"func": "_thin_groups", "in": {"indices": [0, 1, 5, 6, 7], "io": {}}}
+{"func": "_has_margin", "in": {"size": [192, 208], "box": [12, 16, 180, 192], "fx": 0.01, "fy": 0.015, "io": {}}}
+{"func": "_has_margin", "in": {"size": [100, 100], "box": [5, 5, 95, 95], "fx": 0.01, "fy": 0.015, "io": {}}}
+{"func": "_has_margin", "in": {"size": [100, 100], "box": [2, 2, 98, 98], "fx": 0.01, "fy": 0.015, "io": {}}}
+{"func": "_has_margin", "in": {"size": [100, 100], "box": [0, 0, 100, 100], "fx": 0.01, "fy": 0.015, "io": {}}}
+{"func": "_has_margin", "in": {"size": [192, 208], "box": [50, 50, 150, 150], "fx": 0.01, "fy": 0.015, "io": {}}}
+{"func": "_has_margin", "in": {"size": [192, 208], "box": [10, 10, 180, 190], "fx": 0.5, "fy": 0.5, "io": {}}}
+{"func": "_is_multi_pose_outlier", "in": {"width": 300, "height": 50, "med_w": 60, "med_h": 40, "io": {}}}
+{"func": "_is_multi_pose_outlier", "in": {"width": 100, "height": 50, "med_w": 60, "med_h": 40, "io": {}}}
+{"func": "_is_multi_pose_outlier", "in": {"width": 200, "height": 100, "med_w": 60, "med_h": 40, "io": {}}}
+{"func": "_is_multi_pose_outlier", "in": {"width": 157, "height": 40, "med_w": 60, "med_h": 50, "io": {}}}
+{"func": "_is_multi_pose_outlier", "in": {"width": 0, "height": 0, "med_w": 0, "med_h": 0, "io": {}}}
+{"func": "_is_multi_pose_outlier", "in": {"width": 500, "height": 20, "med_w": 100, "med_h": 80, "io": {}}}
+{"func": "_clean_slot", "in": {"image": {"handle": "cs_in0", "size": [10, 10]}, "io": {"_isolate_slot_subject": {"handle": "cs_iso0", "size": [10, 10]}, "_drop_side_bleed": {"handle": "cs_out0", "size": [10, 10]}}}}
+{"func": "_clean_slot", "in": {"image": {"handle": "cs_in1", "size": [10, 10]}, "io": {"_isolate_slot_subject": {"handle": "cs_iso1", "size": [10, 10]}, "_drop_side_bleed": {"handle": "cs_out1", "size": [10, 10]}}}}
+{"func": "_clean_slot", "in": {"image": {"handle": "cs_in2", "size": [10, 10]}, "io": {"_isolate_slot_subject": {"handle": "cs_iso2", "size": [10, 10]}, "_drop_side_bleed": {"handle": "cs_out2", "size": [10, 10]}}}}
+{"func": "_clean_slot", "in": {"image": {"handle": "cs_in3", "size": [10, 10]}, "io": {"_isolate_slot_subject": {"handle": "cs_iso3", "size": [10, 10]}, "_drop_side_bleed": {"handle": "cs_out3", "size": [10, 10]}}}}
+{"func": "_clean_slot", "in": {"image": {"handle": "cs_in4", "size": [10, 10]}, "io": {"_isolate_slot_subject": {"handle": "cs_iso4", "size": [10, 10]}, "_drop_side_bleed": {"handle": "cs_out4", "size": [10, 10]}}}}
+{"func": "_clean_slot", "in": {"image": {"handle": "cs_in5", "size": [10, 10]}, "io": {"_isolate_slot_subject": {"handle": "cs_iso5", "size": [10, 10]}, "_drop_side_bleed": {"handle": "cs_out5", "size": [10, 10]}}}}
+{"func": "_salvage_frames", "in": {"strip": {"handle": "strip0", "size": [10, 4]}, "frame_count": 2, "io": {"_isolate_slot_subject": {"handle": "sl_iso"}, "_drop_side_bleed": {"handle": "sl_out"}, "_frame_x_ranges": [[0, 5], [5, 10]], "crop": {"$seq": [{"handle": "sl0a"}, {"handle": "sl0b"}]}}}}
+{"func": "_salvage_frames", "in": {"strip": {"handle": "strip1", "size": [8, 4]}, "frame_count": 2, "io": {"_isolate_slot_subject": {"handle": "sl_iso"}, "_drop_side_bleed": {"handle": "sl_out"}, "_frame_x_ranges": {"$seq": [null, [[0, 8]]]}, "_sever_expected_gutters": {"handle": "sev1", "size": [8, 4]}, "crop": {"handle": "sl1"}}}}
+{"func": "_salvage_frames", "in": {"strip": {"handle": "strip2", "size": [9, 4]}, "frame_count": 3, "io": {"_frame_x_ranges": {"$seq": [null, null]}, "_sever_expected_gutters": {"handle": "sev2", "size": [9, 4]}, "_slot_crops": [{"handle": "sc2a"}, {"handle": "sc2b"}, {"handle": "sc2c"}]}}}
+{"func": "_salvage_frames", "in": {"strip": {"handle": "strip3", "size": [9, 4]}, "frame_count": 3, "io": {"_frame_x_ranges": {"$seq": [null, null]}, "_sever_expected_gutters": {"handle": "sev3", "size": [9, 4]}, "_slot_crops": null}}}
+{"func": "_salvage_frames", "in": {"strip": {"handle": "strip4", "size": [6, 5]}, "frame_count": 1, "io": {"_isolate_slot_subject": {"handle": "sl_iso"}, "_drop_side_bleed": {"handle": "sl_out"}, "_frame_x_ranges": [[1, 5]], "crop": {"handle": "sl4"}}}}
+{"func": "_salvage_frames", "in": {"strip": {"handle": "strip5", "size": [6, 5]}, "frame_count": 2, "io": {"_frame_x_ranges": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "_check_atlas_cells", "in": {"atlas": {"handle": "atlas0", "size": [1536, 1872]}, "io": {"crop": {"handle": "cell"}, "getchannel": {"handle": "chA"}, "histogram": [0, 5], "getbbox": [10, 20, 50, 180], "tobytes": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}}
+{"func": "_check_atlas_cells", "in": {"atlas": {"handle": "atlas1", "size": [1536, 1872]}, "io": {"crop": {"handle": "cell"}, "getchannel": {"handle": "chA"}, "histogram": [0, 0], "getbbox": [10, 20, 50, 180], "tobytes": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}}
+{"func": "_check_atlas_cells", "in": {"atlas": {"handle": "atlas2", "size": [1536, 1872]}, "io": {"crop": {"handle": "cell"}, "getchannel": {"handle": "chA"}, "histogram": [0, 5], "getbbox": [10, 20, 50, 60], "tobytes": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}}
+{"func": "_check_atlas_cells", "in": {"atlas": {"handle": "atlas3", "size": [1536, 1872]}, "io": {"crop": {"handle": "cell"}, "getchannel": {"handle": "chA"}, "histogram": [0, 5], "getbbox": [10, 20, 30, 40], "tobytes": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}}
+{"func": "_check_atlas_cells", "in": {"atlas": {"handle": "atlas4", "size": [1536, 1872]}, "io": {"crop": {"handle": "cell"}, "getchannel": {"handle": "chA"}, "histogram": [0, 5], "getbbox": [10, 20, 50, 180], "tobytes": [10, 20, 30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}}
+{"func": "_check_atlas_cells", "in": {"atlas": {"handle": "atlas5", "size": [1536, 1872]}, "io": {"crop": {"handle": "cell"}, "getchannel": {"handle": "chA"}, "histogram": [0, 5], "getbbox": null, "tobytes": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}}

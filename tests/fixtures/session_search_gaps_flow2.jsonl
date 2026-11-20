@@ -1,0 +1,97 @@
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": ""}, "state": {}, "io": {"db.get_session": null}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": null}, "state": {}, "io": {"db.get_session": null}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1"}, "state": {}, "io": {"db.get_session": null}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": null}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"end_reason": "idle"}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"end_reason": ""}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"end_reason": null}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"end_reason": "compression"}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"other": 1}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": "not-a-dict"}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "ValueError", "message": "boom"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "TypeError", "message": "boom"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "OSError", "message": "boom"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "ModuleNotFoundError", "message": "boom"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "EOFError", "message": "boom"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "UnicodeError", "message": "boom"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "SystemExit", "message": "bypass"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "bypass"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "GeneratorExit", "message": "bypass"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "CancelledError", "message": "bypass"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "BaseExceptionGroup", "message": "bypass"}}}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}}}
+{"func": "session_end_reason", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__raise__": "RuntimeError", "message": "bare"}}}}
+{"func": "session_left_live_context", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": null}}}
+{"func": "session_left_live_context", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"end_reason": "idle"}}}}
+{"func": "session_left_live_context", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"end_reason": null}}}}
+{"func": "session_left_live_context", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "session_left_live_context", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "session_left_live_context", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"__script__": true, "raise": {"type": "SystemExit", "message": "7"}}}}}
+{"func": "session_left_live_context", "in": {"args": {"db": "db1", "session_id": ""}, "state": {}, "io": {"db.get_session": null}}}
+{"func": "session_left_live_context", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}}}
+{"func": "session_left_live_context", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"db.get_session": {"end_reason": "compression"}}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": "session_reset"}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": "session_switch"}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": "idle"}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": "daily"}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": "suspended"}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": "resume_pending_expired"}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": "new_session"}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": "compression"}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": ""}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": null}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": 42}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": true}, "state": {}, "io": {}}}
+{"func": "is_fresh_reset_session", "in": {"args": {"end_reason": "SESSION_RESET"}, "state": {}, "io": {}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1"}, "state": {}, "io": {"_list_recent_sessions": "browse-ok"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": null}, "state": {}, "io": {"_list_recent_sessions": "browse-null"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": ""}, "state": {}, "io": {"_list_recent_sessions": "browse-empty"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": "  "}, "state": {}, "io": {"_list_recent_sessions": "browse-blank"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": 5}, "state": {}, "io": {"_list_recent_sessions": "browse-int"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "limit": "7"}, "state": {}, "io": {"_list_recent_sessions": "l7"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "limit": "20"}, "state": {}, "io": {"_list_recent_sessions": "l10"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "limit": 0}, "state": {}, "io": {"_list_recent_sessions": "l1"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "limit": -5}, "state": {}, "io": {"_list_recent_sessions": "l1b"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "limit": "abc"}, "state": {}, "io": {"_list_recent_sessions": "l3"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "limit": null}, "state": {}, "io": {"_list_recent_sessions": "l3b"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "limit": true}, "state": {}, "io": {"_list_recent_sessions": "l1c"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "limit": 3.7}, "state": {}, "io": {"_list_recent_sessions": "l3c"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "limit": " 1_0 "}, "state": {}, "io": {"_list_recent_sessions": "l10b"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "limit": []}, "state": {}, "io": {"_list_recent_sessions": "l3d"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": "hello"}, "state": {}, "io": {"_discover": "disc-ok"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": "  hello  ", "role_filter": "a, b,,c", "sort": " NEWEST "}, "state": {}, "io": {"_discover": "disc-full"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": "x", "sort": "random"}, "state": {}, "io": {"_discover": "disc-sort"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": "x", "role_filter": 5}, "state": {}, "io": {"_discover": "disc-role"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": "x"}, "state": {}, "io": {"_discover": {"__script__": true, "raise": {"type": "RuntimeError", "message": "disc fail"}}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": "x"}, "state": {}, "io": {"_discover": {"__script__": true, "raise": {"type": "SystemExit", "message": "9"}}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "query": "x"}, "state": {}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1", "around_message_id": 5}, "state": {}, "io": {"_scroll": "scroll-ok"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": " s1 ", "around_message_id": 0, "window": 9, "current_session_id": "cur"}, "state": {}, "io": {"_scroll": {"__script__": true, "ret": {"slice": [1, 2]}}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1", "around_message_id": 5, "query": "ignored"}, "state": {}, "io": {"_scroll": {"__script__": true, "raise": {"type": "ValueError", "message": "scroll fail"}}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"_read_session": "{\"success\": true, \"text\": \"hi\"}"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": " s1 "}, "state": {}, "io": {"_read_session": "{\"success\": true, \"text\": \"hi\"}"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1", "profile": "p0"}, "state": {}, "io": {"_read_session": "{\"success\": true, \"text\": \"hi\"}"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"_read_session": "{\"success\": false}", "_locate_session_db": null}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"_read_session": "{\"success\": false}", "_locate_session_db": {"__script__": true, "raise": {"type": "RuntimeError", "message": "locate fail"}}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"_read_session": ["{\"success\": false}", "{\"success\": true, \"text\": \"hi\"}"], "_locate_session_db": {"__script__": true, "ret": ["db2", "p2"]}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"_read_session": ["{\"success\": false}", "{\"success\": false}"], "_locate_session_db": {"__script__": true, "ret": ["db2", "p2"]}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"_read_session": ["{\"success\": false}", "{\"success\": true}"], "_locate_session_db": {"__script__": true, "ret": ["db2", null]}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"_read_session": ["{\"success\": false}", {"__script__": true, "raise": {"type": "RuntimeError", "message": "second read"}}], "_locate_session_db": {"__script__": true, "ret": ["db2", "p2"]}, "session_db.close": {"__script__": true, "raise": {"type": "ValueError", "message": "close fail"}}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"_read_session": ["{\"success\": false}", "{\"success\": true, \"text\": \"hi\"}"], "_locate_session_db": {"__script__": true, "ret": ["db2", "p2"]}, "session_db.close": {"__script__": true, "ret": null}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"_read_session": null}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "s1"}, "state": {}, "io": {"_read_session": {"__script__": true, "raise": {"type": "RuntimeError", "message": "read fail"}}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "profile": "p1"}, "state": {"owned_dbs": []}, "io": {"_resolve_profile_db": "dbP", "_list_recent_sessions": "prof-browse"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "profile": "p1"}, "state": {"owned_dbs": ["seed"]}, "io": {"_resolve_profile_db": "dbP", "_list_recent_sessions": "prof-browse2"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "profile": "p1"}, "state": {}, "io": {"_resolve_profile_db": null, "_list_recent_sessions": "prof-null"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "profile": ""}, "state": {}, "io": {"_list_recent_sessions": "empty-prof"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "profile": "p1"}, "state": {}, "io": {"_resolve_profile_db": {"__script__": true, "raise": {"type": "ValueError", "message": "bad profile"}}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "profile": "p1"}, "state": {}, "io": {"_resolve_profile_db": {"__script__": true, "raise": {"type": "SystemExit", "message": "5"}}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "profile": "p1"}, "state": {}, "io": {"_resolve_profile_db": "dbP", "tool_error": {"__script__": true, "raise": {"type": "RuntimeError", "message": "tool fail"}}}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "p1/s1"}, "state": {}, "io": {"_read_session": "{\"success\": true, \"text\": \"hi\"}"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "p1/s1", "profile": "explicit"}, "state": {}, "io": {"_read_session": "{\"success\": true, \"text\": \"hi\"}"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "p1/s1", "profile": "  "}, "state": {}, "io": {"_resolve_profile_db": "dbP", "_read_session": "{\"success\": true, \"text\": \"hi\"}"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "/s1"}, "state": {}, "io": {"_read_session": "{\"success\": true, \"text\": \"hi\"}"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "p1/"}, "state": {}, "io": {"_read_session": "{\"success\": true, \"text\": \"hi\"}"}}}
+{"func": "session_search_impl", "in": {"args": {"db": "db1", "session_id": "a/b/c"}, "state": {}, "io": {"_read_session": "{\"success\": true, \"text\": \"hi\"}"}}}
