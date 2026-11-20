@@ -1,0 +1,132 @@
+{"func": "ledger_enabled", "in": {"io": {"host_feature_enabled": false}}}
+{"func": "ledger_enabled", "in": {"io": {"host_feature_enabled": true, "verify_on_stop_enabled": true}}}
+{"func": "ledger_enabled", "in": {"io": {"host_feature_enabled": true, "verify_on_stop_enabled": false}}}
+{"func": "ledger_enabled", "in": {"io": {"host_feature_enabled": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "ledger_enabled", "in": {"io": {"host_feature_enabled": true, "verify_on_stop_enabled": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "ledger_enabled", "in": {"io": {}}}
+{"func": "split_shell_segments", "in": {"command": "pytest -q", "io": {"shlex.split": ["pytest", "-q"]}}}
+{"func": "split_shell_segments", "in": {"command": "pytest && echo ok", "io": {"shlex.split": {"__seq__": [["pytest"], ["echo", "ok"]]}}}}
+{"func": "split_shell_segments", "in": {"command": "build | tail", "io": {"shlex.split": {"__seq__": [["build"], ["tail"]]}}}}
+{"func": "split_shell_segments", "in": {"command": "a ; b ; c", "io": {"shlex.split": {"__seq__": [["a"], ["b"], ["c"]]}}}}
+{"func": "split_shell_segments", "in": {"command": "a || b && c", "io": {"shlex.split": {"__seq__": [["a"], ["b"], ["c"]]}}}}
+{"func": "split_shell_segments", "in": {"command": "unterminated 'quote"}}
+{"func": "split_shell_segments", "in": {"command": "a ; b |", "io": {"shlex.split": ["a"]}}}
+{"func": "split_shell_segments", "in": {"command": "pytest", "io": {"shlex.split": {"__raise__": "ValueError", "msg": "no closing quotation"}}}}
+{"func": "split_shell_segments", "in": {"command": "pytest", "io": {"shlex.split": {"__raise__": "TypeError", "msg": "boom"}}}}
+{"func": "split_shell_segments", "in": {"command": "", "io": {}}}
+{"func": "segment_status", "in": {"segments": [{"tokens": ["x"], "following_operator": "&&"}], "match_index": 0, "exit_code": 0}}
+{"func": "segment_status", "in": {"segments": [{"tokens": ["x"], "following_operator": "&&"}], "match_index": 0, "exit_code": 3}}
+{"func": "segment_status", "in": {"segments": [{"tokens": ["x"], "following_operator": "||"}], "match_index": 0, "exit_code": 0}}
+{"func": "segment_status", "in": {"segments": [{"tokens": ["x"], "following_operator": ";"}, {"tokens": ["x"], "following_operator": null}], "match_index": 0, "exit_code": 0}}
+{"func": "segment_status", "in": {"segments": [{"tokens": ["x"], "following_operator": ";"}, {"tokens": ["x"], "following_operator": null}], "match_index": 1, "exit_code": 5}}
+{"func": "segment_status", "in": {"segments": [{"tokens": ["x"], "following_operator": "&"}, {"tokens": ["x"], "following_operator": null}], "match_index": 0, "exit_code": 0}}
+{"func": "segment_status", "in": {"segments": [{"tokens": ["x"], "following_operator": "|"}, {"tokens": ["x"], "following_operator": null}], "match_index": 0, "exit_code": 0, "pipeline_status": [7, 0]}}
+{"func": "segment_status", "in": {"segments": [{"tokens": ["x"], "following_operator": "|"}, {"tokens": ["x"], "following_operator": null}], "match_index": 1, "exit_code": 0, "pipeline_status": [7, 0]}}
+{"func": "segment_status", "in": {"segments": [{"tokens": ["x"], "following_operator": "&&"}, {"tokens": ["x"], "following_operator": "|"}, {"tokens": ["x"], "following_operator": null}], "match_index": 1, "exit_code": 0, "pipeline_status": [9, 0]}}
+{"func": "segment_status", "in": {"segments": [], "match_index": 0, "exit_code": 0}}
+{"func": "wrapper_option_width", "in": {"token": "-p", "flags": ["-p", "--preserve-status"], "valued": ["-s"]}}
+{"func": "wrapper_option_width", "in": {"token": "-s", "flags": ["-p"], "valued": ["-s", "--signal"]}}
+{"func": "wrapper_option_width", "in": {"token": "-n5", "flags": [], "valued": ["-n", "--adjustment"]}}
+{"func": "wrapper_option_width", "in": {"token": "--signal=KILL", "flags": [], "valued": ["-s", "--signal"]}}
+{"func": "wrapper_option_width", "in": {"token": "unknown", "flags": ["-p"], "valued": ["-s"]}}
+{"func": "wrapper_option_width", "in": {"token": "-verbose", "flags": [], "valued": ["-v"]}}
+{"func": "skip_wrapper", "in": {"tokens": ["timeout", "300", "pytest"], "i": 0}}
+{"func": "skip_wrapper", "in": {"tokens": ["timeout", "-p", "5m", "pytest"], "i": 0}}
+{"func": "skip_wrapper", "in": {"tokens": ["timeout", "--signal=KILL", "1.5h", "pytest"], "i": 0}}
+{"func": "skip_wrapper", "in": {"tokens": ["timeout", "--help"], "i": 0}}
+{"func": "skip_wrapper", "in": {"tokens": ["nice", "-n", "5", "pytest"], "i": 0}}
+{"func": "skip_wrapper", "in": {"tokens": ["nohup", "pytest"], "i": 0}}
+{"func": "skip_wrapper", "in": {"tokens": ["stdbuf", "-oL", "pytest"], "i": 0}}
+{"func": "skip_wrapper", "in": {"tokens": ["pytest"], "i": 0}}
+{"func": "interpreter_family", "in": {"token": "python3"}}
+{"func": "interpreter_family", "in": {"token": "/usr/bin/python3.12"}}
+{"func": "interpreter_family", "in": {"token": "./venv/bin/python"}}
+{"func": "interpreter_family", "in": {"token": "python.exe"}}
+{"func": "interpreter_family", "in": {"token": "py"}}
+{"func": "interpreter_family", "in": {"token": "node"}}
+{"func": "interpreter_family", "in": {"token": "bash"}}
+{"func": "interpreter_family", "in": {"token": "notaninterpreter"}}
+{"func": "is_harmless_interpreter_flag", "in": {"token": "-I"}}
+{"func": "is_harmless_interpreter_flag", "in": {"token": "-uEsS"}}
+{"func": "is_harmless_interpreter_flag", "in": {"token": "-3"}}
+{"func": "is_harmless_interpreter_flag", "in": {"token": "-3.12"}}
+{"func": "is_harmless_interpreter_flag", "in": {"token": "-Wignore"}}
+{"func": "is_harmless_interpreter_flag", "in": {"token": "-Xdev"}}
+{"func": "is_harmless_interpreter_flag", "in": {"token": "-m"}}
+{"func": "is_harmless_interpreter_flag", "in": {"token": "--"}}
+{"func": "is_harmless_interpreter_flag", "in": {"token": "-z"}}
+{"func": "normalize_tokens", "in": {"tokens": ["./pytest", "-q"]}}
+{"func": "normalize_tokens", "in": {"tokens": ["python3", "-W", "ignore", "script.py"]}}
+{"func": "normalize_tokens", "in": {"tokens": ["python", "-X", "dev", "-u", "-m", "pytest"]}}
+{"func": "normalize_tokens", "in": {"tokens": ["bash", "-s", "script.sh"]}}
+{"func": "normalize_tokens", "in": {"tokens": ["./venv/bin/python3.12", "test.py"]}}
+{"func": "normalize_tokens", "in": {"tokens": ["node", "-v"]}}
+{"func": "normalize_tokens", "in": {"tokens": []}}
+{"func": "is_under", "in": {"token": "/repo/src/a.py", "base": "/repo", "io": {"path.is_absolute": true, "path.resolve": {"__seq__": ["/repo/src/a.py", "/repo"]}}}}
+{"func": "is_under", "in": {"token": "/repo", "base": "/repo", "io": {"path.is_absolute": true, "path.resolve": {"__seq__": ["/repo", "/repo"]}}}}
+{"func": "is_under", "in": {"token": "/other/a.py", "base": "/repo", "io": {"path.is_absolute": true, "path.resolve": {"__seq__": ["/other/a.py", "/repo"]}}}}
+{"func": "is_under", "in": {"token": "rel/a.py", "base": "/repo", "io": {"path.is_absolute": false}}}
+{"func": "is_under", "in": {"token": "/repo/a.py", "base": null, "io": {"path.is_absolute": true}}}
+{"func": "is_under", "in": {"token": "/repo/a.py", "base": "/repo", "io": {"path.is_absolute": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "is_under", "in": {"token": "/repo/a.py", "base": "/repo", "io": {"path.is_absolute": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "is_under", "in": {"token": "/repo/a.py", "base": "/repo", "io": {}}}
+{"func": "is_temp_script_path", "in": {"token": "/tmp/hermes-verify-abc.py", "root": "/repo", "io": {"path.name": "hermes-verify-abc.py", "tempfile.gettempdir": "/tmp", "path.is_absolute": true, "path.resolve": {"__seq__": ["/tmp/hermes-verify-abc.py", "/tmp", "/repo"]}}}}
+{"func": "is_temp_script_path", "in": {"token": "/tmp/hermes-ad-hoc-x.sh", "root": null, "io": {"path.name": "hermes-ad-hoc-x.sh", "tempfile.gettempdir": "/tmp", "path.is_absolute": true, "path.resolve": {"__seq__": ["/tmp/hermes-ad-hoc-x.sh", "/tmp"]}}}}
+{"func": "is_temp_script_path", "in": {"token": "/tmp/normal.py", "root": "/repo", "io": {"path.name": "normal.py"}}}
+{"func": "is_temp_script_path", "in": {"token": "/repo/hermes-verify-x.py", "root": "/repo", "io": {"path.name": "hermes-verify-x.py", "tempfile.gettempdir": "/tmp", "path.is_absolute": true, "path.resolve": {"__seq__": ["/repo/hermes-verify-x.py", "/tmp", "/repo"]}}}}
+{"func": "is_temp_script_path", "in": {"token": "/tmp/hermes-verify-x.py", "root": "/repo", "io": {"path.name": {"__raise__": "OSError", "msg": "no name"}}}}
+{"func": "is_temp_script_path", "in": {"token": "/tmp/hermes-verify-x.py", "root": "/repo", "io": {}}}
+{"func": "is_interpreter_token", "in": {"token": "python3"}}
+{"func": "is_interpreter_token", "in": {"token": "/usr/bin/python3.12"}}
+{"func": "is_interpreter_token", "in": {"token": "python.exe"}}
+{"func": "is_interpreter_token", "in": {"token": "./venv/bin/py"}}
+{"func": "is_interpreter_token", "in": {"token": "node"}}
+{"func": "is_interpreter_token", "in": {"token": "bash"}}
+{"func": "is_interpreter_token", "in": {"token": "gcc"}}
+{"func": "ad_hoc_script_args", "in": {"tokens": ["/tmp/hermes-verify-x.py", "-q", "--all"], "root": "/repo", "io": {"strip_command_prefix": ["/tmp/hermes-verify-x.py", "-q", "--all"], "path.name": "hermes-verify-x.py", "tempfile.gettempdir": "/tmp", "path.is_absolute": true, "path.resolve": {"__seq__": ["/tmp/hermes-verify-x.py", "/tmp", "/repo"]}}}}
+{"func": "ad_hoc_script_args", "in": {"tokens": ["env", "FOO=1", "python3", "/tmp/hermes-ad-hoc-y.py", "arg"], "root": null, "io": {"strip_command_prefix": {"__seq__": [["env", "FOO=1", "python3", "/tmp/hermes-ad-hoc-y.py", "arg"], ["python3", "/tmp/hermes-ad-hoc-y.py", "arg"]]}, "tempfile.gettempdir": "/tmp", "path.is_absolute": true, "path.resolve": {"__seq__": ["/tmp/hermes-ad-hoc-y.py", "/tmp"]}}}}
+{"func": "ad_hoc_script_args", "in": {"tokens": ["python3", "script.py"], "root": "/repo", "io": {"strip_command_prefix": ["python3", "script.py"], "path.is_absolute": true}}}
+{"func": "ad_hoc_script_args", "in": {"tokens": ["python3", "/tmp/hermes-verify-z.py", "-k"], "root": "/repo", "io": {"strip_command_prefix": ["python3", "/tmp/hermes-verify-z.py", "-k"], "path.name": {"__seq__": ["python3", "hermes-verify-z.py"]}, "tempfile.gettempdir": "/tmp", "path.is_absolute": true, "path.resolve": {"__seq__": ["/tmp/hermes-verify-z.py", "/tmp", "/repo"]}}}}
+{"func": "ad_hoc_script_args", "in": {"tokens": [], "root": "/repo", "io": {"strip_command_prefix": []}}}
+{"func": "ad_hoc_script_args", "in": {"tokens": ["pytest"], "root": "/repo", "io": {}}}
+{"func": "root_for", "in": {"facts": {"root": "/repo"}, "cwd": "/elsewhere", "io": {}}}
+{"func": "root_for", "in": {"facts": {}, "cwd": "/repo", "io": {"path.resolve": "/repo"}}}
+{"func": "root_for", "in": {"facts": null, "cwd": null, "io": {"path.resolve": "."}}}
+{"func": "root_for", "in": {"facts": {"root": ""}, "cwd": "/repo", "io": {"path.resolve": "/repo"}}}
+{"func": "root_for", "in": {"facts": {"root": "/repo"}, "cwd": null, "io": {}}}
+{"func": "load_changed_paths", "in": {"raw": "[\"a.py\", \"b.py\"]", "io": {"json.loads": ["a.py", "b.py"]}}}
+{"func": "load_changed_paths", "in": {"raw": "[]", "io": {"json.loads": []}}}
+{"func": "load_changed_paths", "in": {"raw": null, "io": {"json.loads": []}}}
+{"func": "load_changed_paths", "in": {"raw": "bad", "io": {"json.loads": {"__raise__": "ValueError", "msg": "bad json"}}}}
+{"func": "load_changed_paths", "in": {"raw": "bad", "io": {"json.loads": {"__raise__": "TypeError", "msg": "bad type"}}}}
+{"func": "load_changed_paths", "in": {"raw": "bad", "io": {"json.loads": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "load_changed_paths", "in": {"raw": "x", "io": {}}}
+{"func": "classify_in_workspace", "in": {"command": "pytest -q", "facts": {"verifyCommands": ["pytest"]}, "cwd": "/repo", "session_id": "s1", "exit_code": 0, "output": "ok", "pipeline_status": null, "io": {"find_canonical_match": ["pytest", ["-q"], 0], "kind_for_command": "test", "looks_like_target": true, "path.resolve": "/repo", "summarize_output": "ok"}}}
+{"func": "classify_in_workspace", "in": {"command": "ruff check .", "facts": {"verifyCommands": ["ruff check"]}, "cwd": "/repo", "session_id": null, "exit_code": 2, "output": "err", "pipeline_status": null, "io": {"find_canonical_match": ["ruff check", ["."], 2], "kind_for_command": "lint", "looks_like_target": false, "path.resolve": "/repo", "summarize_output": "err"}}}
+{"func": "classify_in_workspace", "in": {"command": "pytest", "facts": {"verifyCommands": ["pytest"]}, "cwd": "/repo", "session_id": "s", "exit_code": 0, "output": "", "pipeline_status": null, "io": {"find_canonical_match": ["pytest", ["tests/test_x.py"], 0], "kind_for_command": "test", "looks_like_target": {"__seq__": [false, true]}, "path.resolve": "/repo", "summarize_output": ""}}}
+{"func": "classify_in_workspace", "in": {"command": "python -m pytest", "facts": {}, "cwd": "/repo", "session_id": "s", "exit_code": 0, "output": "", "pipeline_status": null, "io": {"find_canonical_match": null, "find_ad_hoc_match": null}}}
+{"func": "classify_in_workspace", "in": {"command": "python /tmp/hermes-verify-x.py", "facts": {"root": "/repo"}, "cwd": "/repo", "session_id": "s", "exit_code": 0, "output": "", "pipeline_status": null, "io": {"find_canonical_match": null, "find_ad_hoc_match": ["-q"], "path.resolve": "/repo", "summarize_output": ""}}}
+{"func": "classify_in_workspace", "in": {"command": "pytest", "facts": {"verifyCommands": ["pytest"]}, "cwd": "/repo", "session_id": "s", "exit_code": 0, "output": "", "pipeline_status": null, "io": {"find_canonical_match": null, "find_ad_hoc_match": null, "path.resolve": "/repo", "summarize_output": ""}}}
+{"func": "classify_in_workspace", "in": {"command": "pytest", "facts": {"verifyCommands": ["pytest"]}, "cwd": "/repo", "session_id": "s", "exit_code": 0, "output": "", "pipeline_status": null, "io": {"find_canonical_match": ["pytest", [], 0], "kind_for_command": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "last_unattributed_run", "in": {"session_id": "s1", "root": "/repo", "since": null, "unattributed": [{"session_id": "s1", "root": "/repo", "command": "pytest || true", "at": "2026-01-01T00:00:00"}, {"session_id": "s2", "root": "/repo", "command": "ruff || true", "at": "2026-01-02T00:00:00"}]}}
+{"func": "last_unattributed_run", "in": {"session_id": "s1", "root": "/repo", "since": "2026-01-01T00:00:00", "unattributed": [{"session_id": "s1", "root": "/repo", "command": "pytest || true", "at": "2026-01-01T00:00:00"}, {"session_id": "s2", "root": "/repo", "command": "ruff || true", "at": "2026-01-02T00:00:00"}]}}
+{"func": "last_unattributed_run", "in": {"session_id": "s1", "root": "/repo", "since": "2020-01-01T00:00:00", "unattributed": [{"session_id": "s1", "root": "/repo", "command": "pytest || true", "at": "2026-01-01T00:00:00"}, {"session_id": "s2", "root": "/repo", "command": "ruff || true", "at": "2026-01-02T00:00:00"}]}}
+{"func": "last_unattributed_run", "in": {"session_id": "nobody", "root": "/repo", "since": null, "unattributed": [{"session_id": "s1", "root": "/repo", "command": "pytest || true", "at": "2026-01-01T00:00:00"}, {"session_id": "s2", "root": "/repo", "command": "ruff || true", "at": "2026-01-02T00:00:00"}]}}
+{"func": "last_unattributed_run", "in": {"session_id": null, "root": "/repo", "since": null, "unattributed": []}}
+{"func": "last_unattributed_run", "in": {"session_id": "s2", "root": "/other", "since": null, "unattributed": [{"session_id": "s1", "root": "/repo", "command": "pytest || true", "at": "2026-01-01T00:00:00"}, {"session_id": "s2", "root": "/repo", "command": "ruff || true", "at": "2026-01-02T00:00:00"}]}}
+{"func": "insert_evidence", "in": {"command": "pytest", "canonical_command": "pytest", "kind": "test", "scope": "full", "status": "passed", "exit_code": 0, "cwd": "/repo", "root": "/repo", "session_id": "s1", "output_summary": "ok", "io": {"utc_now": "2026-01-01T00:00:00", "transaction": null, "db.execute": {"__seq__": [{"lastrowid": 7}, null, null]}, "prune_old_events": null, "db.commit": null}, "unattributed": [{"session_id": "s1", "root": "/repo", "command": "pytest || true", "at": "2026-01-01T00:00:00"}, {"session_id": "s2", "root": "/repo", "command": "ruff || true", "at": "2026-01-02T00:00:00"}]}}
+{"func": "insert_evidence", "in": {"command": "pytest", "canonical_command": "pytest", "kind": "verify", "scope": "full", "status": "passed", "exit_code": 0, "cwd": "/repo", "root": "/repo", "session_id": "s1", "output_summary": "ok", "io": {"utc_now": "2026-01-01T00:00:00", "transaction": null, "db.execute": {"__seq__": [{"lastrowid": 9}, null, null, null]}, "prune_old_events": null, "db.commit": null}, "unattributed": [{"session_id": "s1", "root": "/repo", "command": "pytest || true", "at": "2026-01-01T00:00:00"}, {"session_id": "s2", "root": "/repo", "command": "ruff || true", "at": "2026-01-02T00:00:00"}]}}
+{"func": "insert_evidence", "in": {"command": "pytest", "canonical_command": "pytest", "kind": "test", "scope": "full", "status": "failed", "exit_code": 0, "cwd": "/repo", "root": "/repo", "session_id": "s1", "output_summary": "ok", "io": {"utc_now": "2026-01-01T00:00:00", "transaction": null, "db.execute": {"__seq__": [{"lastrowid": 3}, null]}, "prune_old_events": null, "db.commit": null}}}
+{"func": "insert_evidence", "in": {"command": "pytest", "canonical_command": "pytest", "kind": "test", "scope": "full", "status": "passed", "exit_code": 0, "cwd": "/repo", "root": "/repo", "session_id": "s1", "output_summary": "ok", "io": {"utc_now": "2026-01-01T00:00:00", "transaction": null, "db.execute": {"__seq__": [null]}, "prune_old_events": null, "db.commit": null}}}
+{"func": "insert_evidence", "in": {"command": "pytest", "canonical_command": "pytest", "kind": "test", "scope": "full", "status": "passed", "exit_code": 0, "cwd": "/repo", "root": "/repo", "session_id": "s1", "output_summary": "ok", "io": {"utc_now": "2026-01-01T00:00:00", "transaction": null, "db.execute": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "insert_evidence", "in": {"command": "pytest", "canonical_command": "pytest", "kind": "test", "scope": "full", "status": "passed", "exit_code": 0, "cwd": "/repo", "root": "/repo", "session_id": "s1", "output_summary": "ok", "io": {}}}
+{"func": "record_verify_run", "in": {"root": "/repo", "session_id": "s1", "ok": true, "command": "hermes verify", "scope": "full", "output": "ok", "io": {"host_feature_enabled": true, "verify_on_stop_enabled": true, "path.resolve": "/repo", "project_facts": {"root": "/repo"}, "summarize_output": "ok", "utc_now": "2026-01-01T00:00:00", "transaction": null, "db.execute": {"__seq__": [{"lastrowid": 11}, null, null]}, "prune_old_events": null, "db.commit": null}, "unattributed": [{"session_id": "s1", "root": "/repo", "command": "pytest || true", "at": "2026-01-01T00:00:00"}, {"session_id": "s2", "root": "/repo", "command": "ruff || true", "at": "2026-01-02T00:00:00"}]}}
+{"func": "record_verify_run", "in": {"root": "/repo", "session_id": "s1", "ok": false, "command": "hermes verify", "scope": "full", "output": "bad", "io": {"host_feature_enabled": true, "verify_on_stop_enabled": true, "path.resolve": "/repo", "project_facts": null, "summarize_output": "bad", "utc_now": "2026-01-01T00:00:00", "transaction": null, "db.execute": {"__seq__": [{"lastrowid": 12}, null]}, "prune_old_events": null, "db.commit": null}}}
+{"func": "record_verify_run", "in": {"root": "/repo", "session_id": null, "ok": true, "command": "hermes verify", "scope": "unknown", "output": "", "io": {"host_feature_enabled": false, "verify_on_stop_enabled": true}}}
+{"func": "record_verify_run", "in": {"root": "/repo", "session_id": "s", "ok": true, "io": {"host_feature_enabled": true, "verify_on_stop_enabled": {"__raise__": "KeyboardInterrupt", "msg": "ctrl-c"}}}}
+{"func": "record_verify_run", "in": {"root": "/repo", "session_id": "s", "ok": true, "io": {}}}
+{"func": "newest_workspace_verify", "in": {"root": "/repo", "since": "2026-01-01T00:00:00", "io": {"db.execute": {"command": "pytest", "canonical_command": "pytest", "kind": "test", "scope": "full", "status": "passed", "exit_code": 0, "cwd": "/repo", "root": "/repo", "session_id": "s1", "output_summary": "ok", "id": 5, "created_at": "2026-01-02T00:00:00"}}}}
+{"func": "newest_workspace_verify", "in": {"root": "/repo", "since": null, "io": {"db.execute": {"command": "pytest", "canonical_command": "pytest", "kind": "test", "scope": "full", "status": "passed", "exit_code": 0, "cwd": "/repo", "root": "/repo", "session_id": "s1", "output_summary": "ok", "id": 6, "created_at": "2026-01-02T00:00:00"}}}}
+{"func": "newest_workspace_verify", "in": {"root": "/repo", "since": "2026-01-01T00:00:00", "io": {"db.execute": null}}}
+{"func": "newest_workspace_verify", "in": {"root": "/repo", "since": null, "io": {"db.execute": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "newest_workspace_verify", "in": {"root": "/repo", "since": null, "io": {}}}

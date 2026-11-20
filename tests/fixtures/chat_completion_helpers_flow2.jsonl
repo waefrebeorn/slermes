@@ -1,0 +1,63 @@
+{"func":"_live_route","in":{"self":{"agent":{"model":"gpt-5","provider":"openai","base_url":"https://api.openai.com","api_mode":"chat_completions"}},"io":{}}}
+{"func":"_live_route","in":{"self":{"agent":{"model":"m","provider":"","base_url":"https://x","api_mode":"codex_responses"}},"io":{}}}
+{"func":"_live_route","in":{"self":{"agent":{"model":"m2","provider":"xai","base_url":"https://api.x.ai"}},"io":{}}}
+{"func":"_live_route","in":{"self":{"agent":{"model":"","provider":null,"base_url":null,"api_mode":""}},"io":{}}}
+{"func":"_live_route","in":{"self":{"agent":{}},"io":{}}}
+{"func":"_visible_text_delivered","in":{"self":{"agent":{"_current_streamed_assistant_text":"hello"}},"io":{}}}
+{"func":"_visible_text_delivered","in":{"self":{"agent":{"_current_streamed_assistant_text":"   \t  "}},"io":{}}}
+{"func":"_visible_text_delivered","in":{"self":{"agent":{"_current_streamed_assistant_text":""}},"io":{}}}
+{"func":"_visible_text_delivered","in":{"self":{"agent":{"_current_streamed_assistant_text":"\t ok \n"}},"io":{}}}
+{"func":"_visible_text_delivered","in":{"self":{"agent":{}},"io":{}}}
+{"func":"_visible_text_delivered","in":{"self":{"agent":{"_current_streamed_assistant_text":null}},"io":{}}}
+{"func":"_route_switched_under_request","in":{"self":{"agent":{"model":"m","provider":"p","base_url":"u","api_mode":"chat_completions"},"_request_route":["m","p","u","chat_completions"]},"io":{"logger.warning":null}}}
+{"func":"_route_switched_under_request","in":{"self":{"agent":{"model":"m2","provider":"p","base_url":"u","api_mode":"chat_completions"},"_request_route":["m","p","u","chat_completions"]},"io":{"logger.warning":null}}}
+{"func":"_route_switched_under_request","in":{"self":{"agent":{"model":"m","provider":"","base_url":"https://new","api_mode":"chat_completions"},"_request_route":["m","","https://old","chat_completions"]},"io":{"logger.warning":null}}}
+{"func":"_route_switched_under_request","in":{"self":{"agent":{"model":"m","provider":"p","base_url":"u","api_mode":"codex_responses"},"_request_route":["m","p","u","chat_completions"]},"io":{"logger.warning":null}}}
+{"func":"_route_switched_under_request","in":{"self":{"agent":{"model":"m","provider":"p","base_url":"u","api_mode":"chat_completions"},"_request_route":["m","p"]},"io":{"logger.warning":null}}}
+{"func":"_route_switched_under_request","in":{"self":{"agent":{"model":"m","provider":null,"base_url":"https://new","api_mode":"chat_completions"},"_request_route":["m",null,"https://old","chat_completions"]},"io":{"logger.warning":null}}}
+{"func":"_set_managed_stream","in":{"self":{"managed_stream_holder":{"stream":null}},"stream":null,"io":{}}}
+{"func":"_set_managed_stream","in":{"self":{"managed_stream_holder":{"stream":null}},"stream":"stream-obj","io":{}}}
+{"func":"_set_managed_stream","in":{"self":{"managed_stream_holder":{"stream":null}},"stream":7,"io":{}}}
+{"func":"_set_managed_stream","in":{"self":{"managed_stream_holder":{"stream":null}},"stream":{"kind":"anthropic"},"io":{}}}
+{"func":"_set_managed_stream","in":{"self":{"managed_stream_holder":{"stream":null}},"stream":[1,2],"io":{}}}
+{"func":"_start_stream_attempt","in":{"self":{"stream_attempt_state":{"current":0,"cancelled":[]},"provider_tool_in_flight":{"yes":true},"prompt_progress":{"progress":"reading prompt"},"result":{"partial_tool_names":["old_tool"]}},"io":{}}}
+{"func":"_start_stream_attempt","in":{"self":{"stream_attempt_state":{"current":1,"cancelled":[]},"provider_tool_in_flight":{"yes":true},"prompt_progress":{"progress":"reading prompt"},"result":{"partial_tool_names":["old_tool"]}},"io":{}}}
+{"func":"_start_stream_attempt","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[]},"provider_tool_in_flight":{"yes":true},"prompt_progress":{"progress":"reading prompt"},"result":{"partial_tool_names":["old_tool"]}},"io":{}}}
+{"func":"_start_stream_attempt","in":{"self":{"stream_attempt_state":{"current":5,"cancelled":[]},"provider_tool_in_flight":{"yes":true},"prompt_progress":{"progress":"reading prompt"},"result":{"partial_tool_names":["old_tool"]}},"io":{}}}
+{"func":"_start_stream_attempt","in":{"self":{"stream_attempt_state":{"current":-1,"cancelled":[]},"provider_tool_in_flight":{"yes":true},"prompt_progress":{"progress":"reading prompt"},"result":{"partial_tool_names":["old_tool"]}},"io":{}}}
+{"func":"_cancel_current_stream_attempt","in":{"self":{"stream_attempt_state":{"current":0,"cancelled":[]}},"reason":"stopped by user","io":{}}}
+{"func":"_cancel_current_stream_attempt","in":{"self":{"stream_attempt_state":{"current":3,"cancelled":[]}},"reason":"stale kill","io":{"logger.debug":null}}}
+{"func":"_cancel_current_stream_attempt","in":{"self":{"stream_attempt_state":{"current":3,"cancelled":[3]}},"reason":"duplicate cancel","io":{"logger.debug":null}}}
+{"func":"_cancel_current_stream_attempt","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[1,5]}},"reason":"interrupt","io":{"logger.debug":null}}}
+{"func":"_cancel_current_stream_attempt","in":{"self":{"stream_attempt_state":{"current":-1,"cancelled":[]}},"reason":"negative attempt","io":{"logger.debug":null}}}
+{"func":"_cancel_current_stream_attempt","in":{"self":{"stream_attempt_state":{"current":1,"cancelled":[4,9,1]}},"reason":"already present","io":{"logger.debug":null}}}
+{"func":"_stream_attempt_is_active","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[]}},"stream_attempt_id":2,"io":{}}}
+{"func":"_stream_attempt_is_active","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[]}},"stream_attempt_id":3,"io":{}}}
+{"func":"_stream_attempt_is_active","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[2]}},"stream_attempt_id":2,"io":{}}}
+{"func":"_stream_attempt_is_active","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[1,3]}},"stream_attempt_id":2,"io":{}}}
+{"func":"_stream_attempt_is_active","in":{"self":{"stream_attempt_state":{"current":0,"cancelled":[]}},"stream_attempt_id":0,"io":{}}}
+{"func":"_stream_attempt_is_active","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[2,5]}},"stream_attempt_id":2,"io":{}}}
+{"func":"_stream_attempt_was_cancelled","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[2]}},"stream_attempt_id":2,"io":{}}}
+{"func":"_stream_attempt_was_cancelled","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[2]}},"stream_attempt_id":3,"io":{}}}
+{"func":"_stream_attempt_was_cancelled","in":{"self":{"stream_attempt_state":{"current":0,"cancelled":[1,5]}},"stream_attempt_id":5,"io":{}}}
+{"func":"_stream_attempt_was_cancelled","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[]}},"stream_attempt_id":4,"io":{}}}
+{"func":"_stream_attempt_was_cancelled","in":{"self":{"stream_attempt_state":{"current":2,"cancelled":[1,3,5]}},"stream_attempt_id":1,"io":{}}}
+{"func":"_mark_finish_seen","in":{"diag":{"chunks":2},"finish_reason":"stop","io":{}}}
+{"func":"_mark_finish_seen","in":{"diag":{"chunks":2,"finish_reason_seen":true},"finish_reason":"stop","io":{}}}
+{"func":"_mark_finish_seen","in":{"diag":{"chunks":0},"finish_reason":null,"io":{}}}
+{"func":"_mark_finish_seen","in":{"diag":{},"finish_reason":"length","io":{}}}
+{"func":"_mark_finish_seen","in":{"diag":"not-a-dict","finish_reason":"stop","io":{}}}
+{"func":"_mark_finish_seen","in":{"diag":null,"finish_reason":"stop","io":{}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":null}}}
+{"func":"_quiet","in":{"fn_args":["a",1,true],"io":{"fn":{"__raise__":"ValueError","message":"bad value"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"TypeError","message":"wrong type"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"RuntimeError","message":"boom"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"AttributeError","message":"no attr"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"ZeroDivisionError","message":"divide by zero"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"KeyError","message":"missing"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"FileNotFoundError","message":"no file"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"SystemExit","message":"bye"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"KeyboardInterrupt","message":"ctrl-c"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"GeneratorExit","message":"gen exit"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"BaseException","message":"base"}}}}
+{"func":"_quiet","in":{"fn_args":[],"io":{"fn":{"__raise__":"CancelledError","message":"cancelled"}}}}

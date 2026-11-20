@@ -1,0 +1,73 @@
+{"func": "snapshot_recovery_hint", "in": {"label": "s0", "seams": {}}}
+{"func": "snapshot_recovery_hint", "in": {"label": "s1", "seams": {}}}
+{"func": "snapshot_recovery_hint", "in": {"label": "s2", "seams": {}}}
+{"func": "snapshot_recovery_hint", "in": {"label": "s3", "seams": {}}}
+{"func": "snapshot_recovery_hint", "in": {"label": "s4", "seams": {}}}
+{"func": "snapshot_recovery_hint", "in": {"label": "s5", "seams": {}}}
+{"func": "print_capped", "in": {"header": "H", "indent": "  ", "lines": [], "seams": {}}}
+{"func": "print_capped", "in": {"header": "Files", "indent": "  ", "lines": ["a", "b"], "seams": {}}}
+{"func": "print_capped", "in": {"header": "Files", "indent": "", "lines": ["x", "x", "x", "x", "x", "x", "x", "x", "x", "x"], "seams": {}}}
+{"func": "print_capped", "in": {"header": "Files", "indent": "\t", "lines": ["x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x"], "seams": {}}}
+{"func": "print_capped", "in": {"header": "H", "indent": "  ", "lines": ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"], "seams": {}}}
+{"func": "print_capped", "in": {"header": "", "indent": " ", "lines": ["one", "", "three"], "seams": {}}}
+{"func": "import_skipped", "in": {"rel": "x/gateway_state.json", "seams": {"normalize_archive_parts": {"__arr__": ["x", "gateway_state.json"]}}}}
+{"func": "import_skipped", "in": {"rel": "models/v1/config.json", "seams": {"normalize_archive_parts": {"__arr__": ["models", "v1", "config.json"]}, "profile_root_entry": "models"}}}
+{"func": "import_skipped", "in": {"rel": "state.db-wal", "seams": {"normalize_archive_parts": {"__arr__": ["state.db-wal"]}}}}
+{"func": "import_skipped", "in": {"rel": "config.yaml", "seams": {"normalize_archive_parts": {"__arr__": ["config.yaml"]}}}}
+{"func": "import_skipped", "in": {"rel": "bad/../x", "seams": {"normalize_archive_parts": {"__raise__": "ValueError", "msg": "traversal"}}}}
+{"func": "import_skipped", "in": {"rel": "weird", "seams": {"normalize_archive_parts": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "import_skipped", "in": {"rel": "runtimes/py/bin", "seams": {"normalize_archive_parts": {"__arr__": ["runtimes", "py", "bin"]}, "profile_root_entry": {"__raise__": "OSError", "msg": "proot boom"}}}}
+{"func": "import_member_rel", "in": {"member": "_external/home/u/.env", "prefix": "", "seams": {}}}
+{"func": "import_member_rel", "in": {"member": "root/config.yaml", "prefix": "root/", "seams": {"normalize_archive_parts": {"__arr__": ["config.yaml"]}, "profile_root_entry": ""}}}
+{"func": "import_member_rel", "in": {"member": "config.yaml", "prefix": "other/", "seams": {"normalize_archive_parts": {"__arr__": ["config.yaml"]}, "profile_root_entry": ""}}}
+{"func": "import_member_rel", "in": {"member": "root/gateway_state.json", "prefix": "root/", "seams": {"normalize_archive_parts": {"__arr__": ["gateway_state.json"]}}}}
+{"func": "import_member_rel", "in": {"member": "root/models/x", "prefix": "root/", "seams": {"normalize_archive_parts": {"__arr__": ["models", "x"]}, "profile_root_entry": "models"}}}
+{"func": "import_member_rel", "in": {"member": "root/state.db-shm", "prefix": "root/", "seams": {"normalize_archive_parts": {"__arr__": ["state.db-shm"]}, "profile_root_entry": ""}}}
+{"func": "prune_prefixed_zips", "in": {"backup_dir": "/h/backups", "prefix": "hermes-backup-", "keep": 0, "what": "backup", "seams": {"path_exists": true, "path_iterdir": {"__arr__": [{"name": "hermes-backup-2.zip", "is_file": true}, {"name": "hermes-backup-1.zip", "is_file": true}]}}}}
+{"func": "prune_prefixed_zips", "in": {"backup_dir": "/h/backups", "prefix": "hermes-backup-", "keep": 1, "what": "backup", "seams": {"path_exists": true, "path_iterdir": {"__arr__": [{"name": "hermes-backup-2.zip", "is_file": true}, {"name": "hermes-backup-1.zip", "is_file": true}]}}}}
+{"func": "prune_prefixed_zips", "in": {"backup_dir": "/h/backups", "prefix": "hermes-backup-", "keep": 1, "what": "backup", "seams": {"path_exists": true, "path_iterdir": {"__arr__": [{"name": "hermes-backup-3.zip", "is_file": true}, {"name": "hermes-backup-2.zip", "is_file": true}, {"name": "hermes-backup-1.zip", "is_file": true}]}, "unlink": [null, {"__raise__": "OSError", "msg": "locked"}]}}}
+{"func": "prune_prefixed_zips", "in": {"backup_dir": "/h/backups", "prefix": "hermes-backup-", "keep": 0, "what": "backup", "seams": {"path_exists": true, "path_iterdir": {"__arr__": [{"name": "other.zip", "is_file": true}, {"name": "hermes-backup-1.ZIP", "is_file": true}, {"name": "hermes-backup-1.zip.incomplete.zip", "is_file": true}, {"name": "hermes-backup-1.zip", "is_file": false}]}}}}
+{"func": "prune_prefixed_zips", "in": {"backup_dir": "/h/backups", "prefix": "p-", "keep": 2, "what": "x", "seams": {"path_exists": false}}}
+{"func": "prune_prefixed_zips", "in": {"backup_dir": "/h/backups", "prefix": "p-", "keep": 0, "what": "x", "seams": {"path_exists": {"__raise__": "OSError", "msg": "no dir"}}}}
+{"func": "prune_incomplete_zips", "in": {"backup_dir": "/h/backups", "prefix": "hermes-backup-", "what": "backup", "seams": {"path_exists": true, "path_iterdir": {"__arr__": [{"name": "hermes-backup-2.incomplete.zip", "is_file": true}, {"name": "hermes-backup-1.incomplete.zip", "is_file": true}]}}}}
+{"func": "prune_incomplete_zips", "in": {"backup_dir": "/h/backups", "prefix": "hermes-backup-", "what": "backup", "seams": {"path_exists": true, "path_iterdir": {"__arr__": [{"name": "hermes-backup-1.incomplete.zip", "is_file": true}]}}}}
+{"func": "prune_incomplete_zips", "in": {"backup_dir": "/h/backups", "prefix": "hermes-backup-", "what": "backup", "seams": {"path_exists": true, "path_iterdir": {"__arr__": [{"name": "hermes-backup-3.incomplete.zip", "is_file": true}, {"name": "hermes-backup-2.incomplete.zip", "is_file": true}, {"name": "hermes-backup-1.incomplete.zip", "is_file": true}]}, "unlink": [null, {"__raise__": "PermissionError", "msg": "denied"}]}}}
+{"func": "prune_incomplete_zips", "in": {"backup_dir": "/h/backups", "prefix": "hermes-backup-", "what": "backup", "seams": {"path_exists": true, "path_iterdir": {"__arr__": [{"name": "hermes-backup-1.zip", "is_file": true}, {"name": "hermes-backup-1.incomplete.zip", "is_file": false}]}}}}
+{"func": "prune_incomplete_zips", "in": {"backup_dir": "/h/backups", "prefix": "p-", "what": "x", "seams": {"path_exists": false}}}
+{"func": "prune_incomplete_zips", "in": {"backup_dir": "/h/backups", "prefix": "p-", "what": "x", "seams": {"path_exists": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "write_zip_file", "in": {"zf": "zf1", "path": "/h/a.txt", "arcname": "a.txt", "seams": {"zip_filelist_len": 3}}}
+{"func": "write_zip_file", "in": {"zf": "zf1", "path": "/h/b.txt", "arcname": "b.txt", "seams": {"zip_filelist_len": 0}}}
+{"func": "write_zip_file", "in": {"zf": "zf1", "path": "/h/c.txt", "arcname": "c.txt", "seams": {"zip_filelist_len": 5, "zip_write": {"__raise__": "OSError", "msg": "read fail"}}}}
+{"func": "write_zip_file", "in": {"zf": "zf1", "path": "/h/d.txt", "arcname": "d.txt", "seams": {"zip_filelist_len": 5, "zip_write": {"__raise__": "ValueError", "msg": "bad zip"}, "discard_failed_zip_members": null}}}
+{"func": "write_zip_file", "in": {"zf": "zf1", "path": "/h/e.txt", "arcname": "e.txt", "seams": {"zip_filelist_len": 7, "zip_write": {"__raise__": "OSError", "msg": "read fail"}, "discard_failed_zip_members": {"__raise__": "RuntimeError", "msg": "discard boom"}}}}
+{"func": "write_zip_file", "in": {"zf": "zf1", "path": "/h/f.txt", "arcname": "f.txt", "seams": {"zip_filelist_len": {"__raise__": "RuntimeError", "msg": "len boom"}}}}
+{"func": "find_corrupt_members", "in": {"zf": "zf1", "members": ["a.txt"], "seams": {"zip_open": null, "zip_read": ["chunk", ""]}}}
+{"func": "find_corrupt_members", "in": {"zf": "zf1", "members": ["a.txt", "b.txt"], "seams": {"zip_open": [null, {"__raise__": "OSError", "msg": "bad member"}], "zip_read": ["x", ""]}}}
+{"func": "find_corrupt_members", "in": {"zf": "zf1", "members": ["a.txt"], "seams": {"zip_open": null, "zip_read": {"__raise__": "zlib.error", "msg": "crc mismatch"}}}}
+{"func": "find_corrupt_members", "in": {"zf": "zf1", "members": ["a.txt"], "seams": {"zip_open": null, "zip_read": [{"__raise__": "EOFError", "msg": "truncated"}], "zip_open_exit": null}}}
+{"func": "find_corrupt_members", "in": {"zf": "zf1", "members": ["a.txt"], "seams": {"zip_open": {"__raise__": "BadZipFile", "msg": "no member"}}}}
+{"func": "find_corrupt_members", "in": {"zf": "zf1", "members": ["a.txt", "b.txt"], "seams": {"zip_open": [null, null], "zip_read": ["x", "", "y", "", "z", ""]}}}
+{"func": "snapshot_epochs_restorable", "in": {"files": ["state.db", "config.yaml"], "seams": {"entry_paths": [[true, "state.db", "state.db"], [true, "config.yaml", "config.yaml"]]}}}
+{"func": "snapshot_epochs_restorable", "in": {"files": ["state.db"], "seams": {"entry_paths": {"__arr__": [true, "state.db", "state.db"]}}}}
+{"func": "snapshot_epochs_restorable", "in": {"files": ["profiles/p/state.db"], "seams": {"entry_paths": {"__arr__": [true, "other.db", "state.db"]}, "restore_destination_epoch": {"__raise__": "OSError", "msg": "epoch mismatch"}}}}
+{"func": "snapshot_epochs_restorable", "in": {"files": ["state.db"], "seams": {"entry_paths": {"__arr__": [false, "state.db", "state.db"]}}}}
+{"func": "snapshot_epochs_restorable", "in": {"files": ["state.db"], "seams": {"entry_paths": {"__arr__": [true, "state.db", "state.db"]}, "restore_destination_epoch": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "snapshot_epochs_restorable", "in": {"files": ["config.yaml"], "seams": {"entry_paths": {"__raise__": "ValueError", "msg": "traversal"}}}}
+{"func": "create_pre_update_snapshots_all_profiles", "in": {"invoking_home": "/h", "keep": 3, "max_file_size": 1000000, "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "create_quick_snapshot": "snap-1"}}}
+{"func": "create_pre_update_snapshots_all_profiles", "in": {"invoking_home": "/h", "keep": null, "max_file_size": null, "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "create_quick_snapshot": [null, "snap-2"]}}}
+{"func": "create_pre_update_snapshots_all_profiles", "in": {"invoking_home": "/h", "keep": 3, "max_file_size": 1, "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "create_quick_snapshot": {"__raise__": "RuntimeError", "msg": "snap boom"}}}}
+{"func": "create_pre_update_snapshots_all_profiles", "in": {"invoking_home": "/h", "keep": 3, "max_file_size": 1, "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "create_quick_snapshot": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "create_pre_update_snapshots_all_profiles", "in": {"invoking_home": "/h", "keep": 3, "max_file_size": 1, "seams": {"sibling_profile_homes": {"__arr__": []}}}}
+{"func": "create_pre_update_snapshots_all_profiles", "in": {"invoking_home": "/h", "keep": 3, "max_file_size": 1, "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "create_quick_snapshot": "x"}}}
+{"func": "restore_config_model_settings_all_profiles", "in": {"profile_snapshots": {"alpha": "snap-a", "beta": "snap-b", "ghost": "snap-g"}, "invoking_home": "/h", "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "restore_config_model_settings_if_rewritten": {"restored": true, "keys": ["model.provider"]}}}}
+{"func": "restore_config_model_settings_all_profiles", "in": {"profile_snapshots": {"alpha": "snap-a", "beta": "snap-b", "ghost": "snap-g"}, "invoking_home": "/h", "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "restore_config_model_settings_if_rewritten": [null, {"restored": true, "keys": ["moa"]}]}}}
+{"func": "restore_config_model_settings_all_profiles", "in": {"profile_snapshots": {"alpha": "snap-a", "beta": "snap-b", "ghost": "snap-g"}, "invoking_home": "/h", "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "restore_config_model_settings_if_rewritten": {"__raise__": "ValueError", "msg": "cfg boom"}}}}
+{"func": "restore_config_model_settings_all_profiles", "in": {"profile_snapshots": {"alpha": "snap-a", "beta": "snap-b", "ghost": "snap-g"}, "invoking_home": "/h", "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "restore_config_model_settings_if_rewritten": {"__raise__": "SystemExit", "msg": ""}}}}
+{"func": "restore_config_model_settings_all_profiles", "in": {"profile_snapshots": {}, "invoking_home": "/h", "seams": {}}}
+{"func": "restore_config_model_settings_all_profiles", "in": {"profile_snapshots": {"alpha": "snap-a", "beta": "snap-b", "ghost": "snap-g"}, "invoking_home": "/h", "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "restore_config_model_settings_if_rewritten": {"__raise__": "TypeError", "msg": "t"}}}}
+{"func": "restore_cron_jobs_all_profiles", "in": {"profile_snapshots": {"alpha": "snap-a", "beta": "snap-b", "ghost": "snap-g"}, "invoking_home": "/h", "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "restore_cron_jobs_if_emptied": {"restored": true, "count": 2}}}}
+{"func": "restore_cron_jobs_all_profiles", "in": {"profile_snapshots": {"alpha": "snap-a", "beta": "snap-b", "ghost": "snap-g"}, "invoking_home": "/h", "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "restore_cron_jobs_if_emptied": [null, {"restored": true, "count": 1}]}}}
+{"func": "restore_cron_jobs_all_profiles", "in": {"profile_snapshots": {"alpha": "snap-a", "beta": "snap-b", "ghost": "snap-g"}, "invoking_home": "/h", "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "restore_cron_jobs_if_emptied": {"__raise__": "OSError", "msg": "cron boom"}}}}
+{"func": "restore_cron_jobs_all_profiles", "in": {"profile_snapshots": {"alpha": "snap-a", "beta": "snap-b", "ghost": "snap-g"}, "invoking_home": "/h", "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "restore_cron_jobs_if_emptied": {"__raise__": "GeneratorExit", "msg": ""}}}}
+{"func": "restore_cron_jobs_all_profiles", "in": {"profile_snapshots": {}, "invoking_home": "/h", "seams": {}}}
+{"func": "restore_cron_jobs_all_profiles", "in": {"profile_snapshots": {"alpha": "snap-a", "beta": "snap-b", "ghost": "snap-g"}, "invoking_home": "/h", "seams": {"sibling_profile_homes": {"__arr__": [["alpha", "/h/alpha"], ["beta", "/h/beta"]]}, "restore_cron_jobs_if_emptied": {"__raise__": "AttributeError", "msg": "a"}}}}
