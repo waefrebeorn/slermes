@@ -9,7 +9,8 @@
  *   {"func", "in", "ret", "trace", "st"}
  * ret is the projected return OR a raise spec {"__raise__":kind,"message":...};
  * trace the ordered seam events {ev,args,ret}; st the final state window
- * (no ported def writes a self attribute, so st echoes in.state).
+ * (no ported def writes a self attribute, so st echoes in.state — except a
+ * RAISING case reports st={}, matching the oracle's run_case contract).
  *
  * Fail-closed: an absent / exhausted script returns a RuntimeError raise spec
  * ("no script for <name>"), recorded as the event ret BEFORE propagation. A
@@ -156,6 +157,11 @@ static void cbg_h_run(const char *func, const json_t *in)
     }
     if (!found) ret = cbg_mkraise("RuntimeError", "unknown func");
     else if (!ret) ret = json_null();
+
+    /* oracle run_case contract: a case that RAISES reports st={} (the live
+     * exception escapes before any state projection); only non-raising cases
+     * echo the pristine in.state. */
+    if (cbg_is_raise(ret)) { json_free(st); st = json_object(); }
 
     json_t *out = json_object();
     json_set(out, "func", json_string(func));

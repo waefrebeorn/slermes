@@ -397,6 +397,31 @@ add("with_pruned_row_skill_safety_rule", original=[], pruned=[], io={})
 add("with_pruned_row_skill_safety_rule", original=[msg("tool", content=LONG)],
     pruned=[msg("tool", content=PREFIX + " a]")], io={"_content_text_for_contains": 5})
 
+# ── extra edge coverage ──
+# zip truncates to the shorter list (original shorter than pruned)
+add("with_pruned_row_skill_safety_rule", original=[msg("tool", content=LONG)],
+    pruned=[msg("tool", content=PREFIX + " a]"), msg("tool", content=PREFIX + " b]")],
+    io={"_content_text_for_contains": [PREFIX + " a]", PREFIX + " b]"]})
+# duplicate tool-call id: dict overwrite keeps first insertion position
+add("skill_view_names_by_call_id",
+    messages=[msg("assistant", tool_calls=[tc("c1", "skill_view", '{"name":"alpha"}'),
+                                           tc("c1", "skill_view", '{"name":"beta"}')])],
+    io={"_tc_get": [FN_ALPHA, "skill_view", '{"name":"alpha"}', "c1",
+                    {"name": "skill_view", "arguments": '{"name":"beta"}'}, "skill_view", '{"name":"beta"}', "c1"],
+        "_json_dict": [{"name": "alpha"}, {"name": "beta"}]})
+# rejected truthy non-list (string) still drives the strip loop
+add("prices", rejected="sig", messages=[ROW],
+    io={"strip_rejected_thinking": 1, "native_anthropic_row_costs": script([[ROW, 0]]),
+        "_estimate_msg_budget_tokens": 10})
+# present-null api_mode -> getattr returns None -> falsy -> gate fails (no seam)
+add("native_anthropic_tail_prices", compressor=attr(api_mode=None, base_url="u", model="m"), messages=[ROW])
+# elide null result on the suffix path -> None + str TypeError
+add("elide_keeping_skill_safety_rule", content="body" + SUFFIX, limit=400, io={"elide": None})
+# with_skill_safety_rule null text on a LATER row (texts[0] summary survives)
+add("with_skill_safety_rule", summary="sum",
+    head=[msg("user", content="plain"), msg("tool", content=PREFIX + " a]")], tail=[],
+    io={"_content_text_for_contains": ["plain", None]})
+
 
 def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)

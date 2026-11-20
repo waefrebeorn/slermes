@@ -525,12 +525,14 @@ static json_t *sct2_sorted_strs(const json_t *arr) {
         json_t *node = json_string(s);
         if (pos == json_len(out)) { json_append(out, node); }
         else {
-            /* insert at pos: shift tail */
-            json_append(out, json_copy(json_get(out, json_len(out) - 1)));
-            for (size_t j = json_len(out) - 1; j > pos; j--) {
-                json_free(out->c.items[j]);
+            /* insert at pos: grow one slot, then shift the tail RIGHT by
+             * pointer moves only. Freeing each slot as it is vacated frees
+             * nodes the slot above still references (double-free at teardown). */
+            size_t m = json_len(out);
+            json_append(out, json_null());   /* placeholder grows the array */
+            json_free(out->c.items[m]);      /* discard the placeholder */
+            for (size_t j = m; j > pos; j--)
                 out->c.items[j] = out->c.items[j - 1];
-            }
             out->c.items[pos] = node;
         }
     }

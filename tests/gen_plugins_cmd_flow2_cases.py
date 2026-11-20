@@ -30,14 +30,14 @@ FAIL_EXIT = {"__raise__": "SystemExit", "msg": "1"}
 def case(func, seams=None, **inp):
     d = dict(inp)
     d["seams"] = dict(seams or {})
-    d["env"] = {}
+    d.setdefault("env", {})
     return {"func": func, "in": d}
 
 
 def pure(func, **inp):
     d = dict(inp)
     d["seams"] = {}
-    d["env"] = {}
+    d.setdefault("env", {})
     return {"func": func, "in": d}
 
 
