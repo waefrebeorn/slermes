@@ -395,6 +395,15 @@ static const gm2_exc_rel_t GM2_EXC_PARENTS[] = {
     {"SystemExit", "BaseException"},
     {"KeyboardInterrupt", "BaseException"},
     {"GeneratorExit", "BaseException"},
+    {"BaseExceptionGroup", "BaseException"},
+    /* ExceptionGroup inherits (BaseExceptionGroup, Exception) — `except
+     * Exception` DOES catch it, so model its Exception lineage directly. */
+    {"ExceptionGroup", "Exception"},
+    {"PythonFinalizationError", "RuntimeError"},
+    {"_IncompleteInputError", "SyntaxError"},
+    {"EnvironmentError", "Exception"},
+    {"IOError", "Exception"},
+    {"WindowsError", "Exception"},
     {"StopIteration", "Exception"},
     {"StopAsyncIteration", "Exception"},
     {"ArithmeticError", "Exception"},

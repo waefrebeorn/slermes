@@ -1,0 +1,78 @@
+{"func": "approval_input_words", "in": {"input_key": "approve", "io": {"t": ["Yes, YES, tak , yes", "yEs,ja"]}}}
+{"func": "approval_input_words", "in": {"input_key": "deny", "io": {"t": ["no, Nie ,no", "NIE, nope"]}}}
+{"func": "approval_input_words", "in": {"input_key": "approve", "io": {"t": ["approval.inputs.approve", "yes"]}}}
+{"func": "approval_input_words", "in": {"input_key": "approve", "io": {"t": ["yes", "approval.inputs.approve"]}}}
+{"func": "approval_input_words", "in": {"input_key": "always", "io": {"t": ["always, ALWAYS", ""]}}}
+{"func": "approval_input_words", "in": {"input_key": "session", "io": {"t": [" , , session", "session"]}}}
+{"func": "approval_input_words", "in": {"input_key": "approve", "io": {"t": ["Tak, TAK, yes", "tak"]}}}
+{"func": "_tail_has_slot", "in": {"tail": "c1:t1", "slot": "c1"}}
+{"func": "_tail_has_slot", "in": {"tail": "c1", "slot": "c1"}}
+{"func": "_tail_has_slot", "in": {"tail": "", "slot": "c1"}}
+{"func": "_tail_has_slot", "in": {"tail": "c1x:t1", "slot": "c1"}}
+{"func": "_tail_has_slot", "in": {"tail": "c1extra", "slot": "c1"}}
+{"func": "_tail_has_slot", "in": {"tail": ":t1", "slot": ""}}
+{"func": "_tail_has_slot", "in": {"tail": "", "slot": ""}}
+{"func": "_destructive_optout_note", "in": {"persisted": true, "io": {"t": "gateway.confirm.destructive_optout"}}}
+{"func": "_destructive_optout_note", "in": {"persisted": false, "io": {"t": "gateway.confirm.destructive_optout_save_failed"}}}
+{"func": "_destructive_optout_note", "in": {"persisted": 1, "io": {"t": "note-true"}}}
+{"func": "_destructive_optout_note", "in": {"persisted": 0, "io": {"t": "note-false"}}}
+{"func": "_destructive_optout_note", "in": {"persisted": null, "io": {"t": "note-none"}}}
+{"func": "_destructive_optout_note", "in": {"persisted": true, "io": {"t": {"__raise__": "ValueError", "message": "i18n down"}}}}
+{"func": "_busy_reply_to", "in": {"event": {"source": {"platform": "telegram", "thread_id": "t1", "chat_type": "dm"}, "internal": false, "message_id": "m1"}, "reply_anchor": "anchor-1"}}
+{"func": "_busy_reply_to", "in": {"event": {"source": {"platform": "telegram", "thread_id": "t1", "chat_type": "group"}, "internal": false, "message_id": "m1"}, "reply_anchor": "anchor-1"}}
+{"func": "_busy_reply_to", "in": {"event": {"source": {"platform": "telegram", "thread_id": null, "chat_type": "group"}, "internal": false, "message_id": "m1"}, "reply_anchor": "anchor-1"}}
+{"func": "_busy_reply_to", "in": {"event": {"source": {"platform": "discord", "thread_id": "t1", "chat_type": "dm"}, "internal": false, "message_id": "m1"}, "reply_anchor": "anchor-1"}}
+{"func": "_busy_reply_to", "in": {"event": {"source": {"platform": "telegram", "thread_id": null, "chat_type": "group"}, "internal": true, "message_id": "m1"}, "reply_anchor": "anchor-1"}}
+{"func": "_busy_reply_to", "in": {"event": {"source": {"platform": "telegram", "thread_id": "t1", "chat_type": "dm"}, "internal": true, "message_id": "m1"}, "reply_anchor": null}}
+{"func": "_busy_reply_to", "in": {"event": {"source": {"platform": "telegram", "thread_id": null, "chat_type": "group"}, "internal": false, "message_id": 42}, "reply_anchor": "x"}}
+{"func": "_busy_reply_to", "in": {"event": {"source": {"platform": "telegram", "thread_id": 0, "chat_type": "dm"}, "internal": false, "message_id": "m1"}, "reply_anchor": "anchor-1"}}
+{"func": "_demote_interrupt", "in": {"session_key": "k1", "why": "subagents active"}}
+{"func": "_demote_interrupt", "in": {"session_key": "k2", "why": "compression in flight"}}
+{"func": "_demote_interrupt", "in": {"session_key": "", "why": ""}}
+{"func": "_demote_interrupt", "in": {"session_key": "k3", "why": "reason with spaces(#123)"}}
+{"func": "_demote_interrupt", "in": {"session_key": "k4", "why": "unicode \u00fcn\u00efcode \u2713"}}
+{"func": "_demote_interrupt", "in": {"session_key": "k5", "why": ""}}
+{"func": "_command_handler_table", "in": {"names": ["status", "bg", "codex-runtime"], "aliases": {"bg": "_handle_background_command", "sethome": "_handle_set_home_command"}, "io": {"getattr_handler": ["h_status", "h_background", "h_codex"]}}}
+{"func": "_command_handler_table", "in": {"names": ["sethome"], "aliases": {"bg": "_handle_background_command", "sethome": "_handle_set_home_command"}, "io": {"getattr_handler": ["h_set_home"]}}}
+{"func": "_command_handler_table", "in": {"names": ["a", "b"], "aliases": {}, "io": {"getattr_handler": ["h_a", "h_b"]}}}
+{"func": "_command_handler_table", "in": {"names": [], "aliases": {"bg": "_handle_background_command", "sethome": "_handle_set_home_command"}, "io": {}}}
+{"func": "_command_handler_table", "in": {"names": ["model", "approve"], "aliases": {"bg": "_handle_background_command", "sethome": "_handle_set_home_command"}, "io": {"getattr_handler": ["h_model", "h_approve"]}}}
+{"func": "_command_handler_table", "in": {"names": ["status"], "aliases": {"bg": "_handle_background_command", "sethome": "_handle_set_home_command"}, "io": {"getattr_handler": [{"__raise__": "AttributeError", "message": "no attribute"}]}}}
+{"func": "_gateway_idle_command_handlers", "in": {"idle_commands": ["topic", "sethome", "codex-runtime", "reload-mcp", "goal"], "aliases": {"bg": "_handle_background_command", "sethome": "_handle_set_home_command"}, "io": {"getattr_handler": ["h_topic", "h_set_home", "h_codex", "h_reload", "h_goal"]}}}
+{"func": "_gateway_idle_command_handlers", "in": {"idle_commands": ["stop", "bg"], "aliases": {"bg": "_handle_background_command", "sethome": "_handle_set_home_command"}, "io": {"getattr_handler": ["h_stop", "h_background"]}}}
+{"func": "_gateway_idle_command_handlers", "in": {"idle_commands": [], "aliases": {"bg": "_handle_background_command", "sethome": "_handle_set_home_command"}, "io": {}}}
+{"func": "_gateway_idle_command_handlers", "in": {"idle_commands": ["model", "voice"], "aliases": {}, "io": {"getattr_handler": ["h_model", "h_voice"]}}}
+{"func": "_gateway_idle_command_handlers", "in": {"idle_commands": ["x"], "aliases": {"bg": "_handle_background_command", "sethome": "_handle_set_home_command"}, "io": {"getattr_handler": [{"__raise__": "RuntimeError", "message": "handler missing"}]}}}
+{"func": "_plaintext_approval_words", "in": {"io": {"t": ["yes, YES", "tak", "no, NO", "nie", "always", "always", "session", "session"]}}}
+{"func": "_plaintext_approval_words", "in": {"io": {"t": ["approval.inputs.approve", "yEs", "deny", "approval.inputs.deny", "", "", ", ", "ok"]}}}
+{"func": "_plaintext_approval_words", "in": {"io": {"t": ["yeah, yes, YES", "tak", "nope, no", "NIE", "always, always", "stale", "session", "session"]}}}
+{"func": "_plaintext_approval_words", "in": {"io": {"t": ["yes", "yes", "no", "no", "always", "always", "session", "session"]}}}
+{"func": "_plaintext_approval_words", "in": {"io": {"t": ["yes", {"__raise__": "RuntimeError", "message": "i18n fail"}]}}}
+{"func": "_plaintext_approval_words", "in": {"io": {"t": ["YES , yes", "yes", "NO", "no", "always", "always", "session", "SESSION"]}}}
+{"func": "_get_max_concurrent_sessions", "in": {"config": {"max": 3}, "io": {"resolve_max_concurrent_sessions": 5}}}
+{"func": "_get_max_concurrent_sessions", "in": {"config": null, "io": {"resolve_max_concurrent_sessions": null}}}
+{"func": "_get_max_concurrent_sessions", "in": {"config": {"x": 1}, "io": {"resolve_max_concurrent_sessions": {"__raise__": "ValueError", "message": "bad config"}}}}
+{"func": "_get_max_concurrent_sessions", "in": {"config": {"x": 1}, "io": {"resolve_max_concurrent_sessions": {"__raise__": "FileNotFoundError", "message": "no module"}}}}
+{"func": "_get_max_concurrent_sessions", "in": {"config": null, "io": {"resolve_max_concurrent_sessions": {"__raise__": "ModuleNotFoundError", "message": "no module"}}}}
+{"func": "_get_max_concurrent_sessions", "in": {"config": null, "io": {"resolve_max_concurrent_sessions": {"__raise__": "SystemExit", "message": "bye"}}}}
+{"func": "_get_max_concurrent_sessions", "in": {"config": null, "io": {"resolve_max_concurrent_sessions": {"__raise__": "CancelledError", "message": "cancelled"}}}}
+{"func": "_get_max_concurrent_sessions", "in": {"config": null, "io": {"resolve_max_concurrent_sessions": {"__raise__": "BaseException", "message": "raw"}}}}
+{"func": "_active_session_limit_message", "in": {"session_key": "k1", "config": {"max": 2}, "io": {"resolve_max_concurrent_sessions": null, "is_session_running": false, "running_agent_count": 0, "active_session_limit_message": "LIMIT"}}}
+{"func": "_active_session_limit_message", "in": {"session_key": "k1", "config": {"max": 2}, "io": {"resolve_max_concurrent_sessions": 3, "is_session_running": true, "running_agent_count": 9, "active_session_limit_message": "LIMIT"}}}
+{"func": "_active_session_limit_message", "in": {"session_key": "k1", "config": {"max": 2}, "io": {"resolve_max_concurrent_sessions": 3, "is_session_running": false, "running_agent_count": 1, "active_session_limit_message": "LIMIT"}}}
+{"func": "_active_session_limit_message", "in": {"session_key": "k1", "config": {"max": 2}, "io": {"resolve_max_concurrent_sessions": 3, "is_session_running": false, "running_agent_count": 3, "active_session_limit_message": "Session limit reached (3/3)"}}}
+{"func": "_active_session_limit_message", "in": {"session_key": "k1", "config": {"max": 2}, "io": {"resolve_max_concurrent_sessions": 3, "is_session_running": false, "running_agent_count": 9, "active_session_limit_message": {"__raise__": "ValueError", "message": "i18n fail"}}}}
+{"func": "_active_session_limit_message", "in": {"session_key": "k1", "config": {"max": 2}, "io": {"resolve_max_concurrent_sessions": {"__raise__": "RuntimeError", "message": "resolve failed"}, "is_session_running": false, "running_agent_count": 9, "active_session_limit_message": "LIMIT"}}}
+{"func": "_active_session_limit_message", "in": {"session_key": "k1", "config": {"max": 2}, "io": {"resolve_max_concurrent_sessions": {"__raise__": "SystemExit", "message": "bye"}, "is_session_running": false, "running_agent_count": 9, "active_session_limit_message": "LIMIT"}}}
+{"func": "_route_stop_epoch", "in": {"session_key": "k1", "io": {"active_authority": null}}}
+{"func": "_route_stop_epoch", "in": {"session_key": "k1", "io": {"active_authority": {"id": "auth"}, "route_epoch": 7}}}
+{"func": "_route_stop_epoch", "in": {"session_key": "k2", "io": {"active_authority": {"id": "auth"}, "route_epoch": 0}}}
+{"func": "_route_stop_epoch", "in": {"session_key": "k1", "io": {"active_authority": {"id": "auth"}, "route_epoch": {"__raise__": "RuntimeError", "message": "route"}}}}
+{"func": "_route_stop_epoch", "in": {"session_key": "k1", "io": {"active_authority": {"__raise__": "ValueError", "message": "no authority"}}}}
+{"func": "_route_stop_epoch", "in": {"session_key": "k1", "io": {"active_authority": {"__raise__": "KeyboardInterrupt", "message": "ki"}}}}
+{"func": "_send_busy_ack_reply", "in": {"event_id": "e1", "adapter_id": "ad1", "message": "ACK", "io": {"send_busy_reply": null}}}
+{"func": "_send_busy_ack_reply", "in": {"event_id": "e1", "adapter_id": null, "message": "ACK", "io": {"send_busy_reply": null}}}
+{"func": "_send_busy_ack_reply", "in": {"event_id": "e1", "adapter_id": "ad1", "message": "", "io": {"send_busy_reply": {"__raise__": "RuntimeError", "message": "send failed"}}}}
+{"func": "_send_busy_ack_reply", "in": {"event_id": "e2", "adapter_id": "ad2", "message": "ACK", "io": {"send_busy_reply": {"__raise__": "OSError", "message": "offline"}}}}
+{"func": "_send_busy_ack_reply", "in": {"event_id": "e2", "adapter_id": "ad2", "message": "ACK", "io": {"send_busy_reply": {"__raise__": "GeneratorExit", "message": "gen"}}}}
+{"func": "_send_busy_ack_reply", "in": {"event_id": "e3", "adapter_id": "ad3", "message": "ACK", "io": {"send_busy_reply": {"__raise__": "BaseException", "message": "raw"}}}}

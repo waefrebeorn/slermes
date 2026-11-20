@@ -1,0 +1,79 @@
+{"func": "plural", "in": {"n": 0}}
+{"func": "plural", "in": {"n": 1}}
+{"func": "plural", "in": {"n": 2}}
+{"func": "plural", "in": {"n": 3}}
+{"func": "plural", "in": {"n": 10}}
+{"func": "plural", "in": {"n": -1}}
+{"func": "setup_gated", "in": {"item": {}}}
+{"func": "setup_gated", "in": {"item": {"name": "image_gen"}}}
+{"func": "setup_gated", "in": {"item": {"missing_vars": ["OPENAI_API_KEY"]}}}
+{"func": "setup_gated", "in": {"item": {"env_vars": []}}}
+{"func": "setup_gated", "in": {"item": {"name": "other", "env_vars": []}}}
+{"func": "setup_gated", "in": {"item": {"missing_vars": [], "env_vars": ["K"]}}}
+{"func": "pm_tool_path", "in": {"name": "node", "io": {"installed_package": {"ret": {"binary": "/store/node"}}}}}
+{"func": "pm_tool_path", "in": {"name": "node", "io": {"installed_package": {"ret": null}}}}
+{"func": "pm_tool_path", "in": {"name": "rg", "io": {"installed_package": {"ret": {"binary": "/opt/ripgrep.exe"}}}}}
+{"func": "pm_tool_path", "in": {"name": "rg", "io": {"installed_package": {"raise": {"type": "ValueError", "message": "bad"}}}}}
+{"func": "pm_tool_path", "in": {"name": "rg", "io": {"installed_package": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "pm_tool_path", "in": {"name": "rg", "io": {"installed_package": {"raise": {"type": "SystemExit", "message": "1", "code": 1}}}}}
+{"func": "pm_package_for_command", "in": {"command": "node", "io": {"current_target": {"ret": "linux"}, "all_packages": {"ret": ["node", "ripgrep"]}, "get_package": [{"ret": {"binary": true}}, {"ret": {"binary": true}}], "_rel": [{"ret": "/store/n/bin/node.exe"}, {"ret": "/store/rg"}]}}}
+{"func": "pm_package_for_command", "in": {"command": "rg", "io": {"current_target": {"ret": "linux"}, "all_packages": {"ret": ["node", "ripgrep"]}, "get_package": [{"ret": {"binary": true}}, {"ret": {"binary": true}}], "_rel": [{"ret": "/store/n/bin/node.exe"}, {"ret": "/store/rg"}]}}}
+{"func": "pm_package_for_command", "in": {"command": "npm", "io": {"current_target": {"ret": "linux"}, "all_packages": {"ret": ["node", "ripgrep"]}, "get_package": [{"ret": {"binary": true}}, {"ret": {"binary": true}}], "_rel": [{"ret": "/store/node"}, {"ret": "/store/rg"}]}}}
+{"func": "pm_package_for_command", "in": {"command": "node", "io": {"current_target": {"ret": "linux"}, "all_packages": {"ret": ["node", "ripgrep"]}, "get_package": [{"ret": {"binary": false}}, {"ret": {"binary": true}}], "_rel": [{"ret": "/store/rg"}]}}}
+{"func": "pm_package_for_command", "in": {"command": "node", "io": {"current_target": {"ret": "linux"}, "all_packages": {"ret": []}, "get_package": {"ret": null}, "_rel": {"ret": null}}}}
+{"func": "pm_package_for_command", "in": {"command": "node", "io": {"current_target": {"raise": {"type": "RuntimeError", "message": "t"}}, "all_packages": {"ret": ["node", "ripgrep"]}, "get_package": {"ret": null}, "_rel": {"ret": null}}}}
+{"func": "pm_package_for_command", "in": {"command": "node", "io": {"current_target": {"ret": "linux"}, "all_packages": {"ret": ["node", "ripgrep"]}, "get_package": {"raise": {"type": "OSError", "message": "g"}}, "_rel": {"ret": null}}}}
+{"func": "pm_package_for_command", "in": {"command": "node", "io": {"current_target": {"ret": "linux"}, "all_packages": {"ret": ["node", "ripgrep"]}, "get_package": [{"ret": {"binary": true}}], "_rel": {"raise": {"type": "ValueError", "message": "r"}}}}}
+{"func": "pm_package_for_command", "in": {"command": "node", "io": {"current_target": {"raise": {"type": "KeyboardInterrupt", "message": ""}}, "all_packages": {"ret": ["node", "ripgrep"]}, "get_package": {"ret": null}, "_rel": {"ret": null}}}}
+{"func": "require", "in": {"cond": true, "ok": ["ok", "detail"], "bad": ["bad", "d"], "issue": "fix it", "state": {"issues": []}, "io": {"check_bool": {"ret": true}}}}
+{"func": "require", "in": {"cond": false, "ok": "ok", "bad": "bad", "issue": "fix it", "state": {"issues": []}, "io": {"check_bool": {"ret": false}}}}
+{"func": "require", "in": {"cond": false, "ok": "ok", "bad": "bad", "issue": "add issue", "state": {"issues": ["existing"]}, "io": {"check_bool": {"ret": false}}}}
+{"func": "require", "in": {"cond": "x", "ok": ["a", "b"], "bad": ["c", "d"], "issue": "i2", "state": {"issues": []}, "io": {"check_bool": {"ret": true}}}}
+{"func": "require", "in": {"cond": false, "ok": "ok", "bad": "bad", "issue": "i3", "state": {"issues": []}, "io": {"check_bool": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "require", "in": {"cond": 0, "ok": "ok", "bad": "bad", "issue": "i4", "state": {"issues": []}, "io": {"check_bool": {"ret": false}}}}
+{"func": "chromium_not_needed_reason", "in": {"io": {"load_config_readonly": {"ret": {}}, "environ_get": {"ret": "http://cdp"}, "cfg_get": []}}}
+{"func": "chromium_not_needed_reason", "in": {"io": {"load_config_readonly": {"ret": {}}, "environ_get": {"ret": null}, "cfg_get": [{"ret": true}]}}}
+{"func": "chromium_not_needed_reason", "in": {"io": {"load_config_readonly": {"ret": {}}, "environ_get": {"ret": ""}, "cfg_get": [{"ret": false}, {"ret": "lightpanda"}]}}}
+{"func": "chromium_not_needed_reason", "in": {"io": {"load_config_readonly": {"ret": {}}, "environ_get": {"ret": null}, "cfg_get": [{"ret": false}, {"ret": "  LIGHTPANDA  "}]}}}
+{"func": "chromium_not_needed_reason", "in": {"io": {"load_config_readonly": {"ret": {}}, "environ_get": {"ret": null}, "cfg_get": [{"ret": null}, {"ret": "auto"}, {"ret": " AWS "}]}}}
+{"func": "chromium_not_needed_reason", "in": {"io": {"load_config_readonly": {"ret": {}}, "environ_get": {"ret": null}, "cfg_get": [{"ret": null}, {"ret": "auto"}, {"ret": "local"}]}}}
+{"func": "chromium_not_needed_reason", "in": {"io": {"load_config_readonly": {"ret": {}}, "environ_get": {"raise": {"type": "RuntimeError", "message": "e"}}}}}
+{"func": "failing_boot_migration", "in": {"io": {"install_root": {"ret": "/inst"}, "record_path": {"ret": "/inst/.last"}, "read_last_known": {"ret": {"step": 3}}, "owed_config_migration": {"ret": {"failed_warning": "boom"}}}}}
+{"func": "failing_boot_migration", "in": {"io": {"install_root": {"ret": "/inst"}, "record_path": {"ret": "/inst/.last"}, "read_last_known": {"ret": {"step": 3}}, "owed_config_migration": {"ret": {"error": "oops"}}}}}
+{"func": "failing_boot_migration", "in": {"io": {"install_root": {"ret": "/inst"}, "record_path": {"ret": "/inst/.last"}, "read_last_known": {"ret": {"step": 3}}, "owed_config_migration": {"ret": null}}}}
+{"func": "failing_boot_migration", "in": {"io": {"install_root": {"raise": {"type": "ImportError", "message": "no"}}, "record_path": {"ret": "/inst/.last"}, "read_last_known": {"ret": {"step": 3}}, "owed_config_migration": {"ret": {"failed_warning": "boom"}}}}}
+{"func": "failing_boot_migration", "in": {"io": {"install_root": {"ret": "/inst"}, "record_path": {"raise": {"type": "FileNotFoundError", "message": "gone"}}, "read_last_known": {"ret": {"step": 3}}, "owed_config_migration": {"ret": {"failed_warning": "boom"}}}}}
+{"func": "failing_boot_migration", "in": {"io": {"install_root": {"ret": "/inst"}, "record_path": {"ret": "/inst/.last"}, "read_last_known": {"raise": {"type": "ValueError", "message": "v"}}, "owed_config_migration": {"ret": {"failed_warning": "boom"}}}}}
+{"func": "failing_boot_migration", "in": {"io": {"install_root": {"ret": "/inst"}, "record_path": {"ret": "/inst/.last"}, "read_last_known": {"ret": {"step": 3}}, "owed_config_migration": {"raise": {"type": "RuntimeError", "message": "unexpected"}}}}}
+{"func": "failing_boot_migration", "in": {"io": {"install_root": {"ret": "/inst"}, "record_path": {"ret": "/inst/.last"}, "read_last_known": {"ret": {"step": 3}}, "owed_config_migration": {"raise": {"type": "ModuleNotFoundError", "message": "m"}}}}}
+{"func": "drift_deprecations", "in": {"config_path": "/home/cfg.yaml", "io": {"read_user_config_raw": {"ret": {"old": 1}}, "load_env": {"ret": {"X": "1"}}, "report_deprecated_config_and_env": {"ret": null}}}}
+{"func": "drift_deprecations", "in": {"config_path": null, "io": {"load_env": {"ret": {}}, "report_deprecated_config_and_env": {"ret": null}}}}
+{"func": "drift_deprecations", "in": {"config_path": "/home/cfg.yaml", "io": {"read_user_config_raw": {"ret": {}}, "load_env": {"raise": {"type": "ValueError", "message": "bad"}}, "report_deprecated_config_and_env": {"ret": null}}}}
+{"func": "drift_deprecations", "in": {"config_path": "/home/cfg.yaml", "io": {"read_user_config_raw": {"ret": {}}, "load_env": {"raise": {"type": "SystemExit", "message": "9", "code": 9}}}}}
+{"func": "drift_deprecations", "in": {"config_path": "/home/cfg.yaml", "io": {"read_user_config_raw": {"raise": {"type": "OSError", "message": "unreadable"}}}}}
+{"func": "drift_structure", "in": {"state": {"issues": []}, "io": {"validate_config_structure": {"ret": []}}}}
+{"func": "drift_structure", "in": {"state": {"issues": []}, "io": {"validate_config_structure": {"ret": [{"severity": "error", "message": "bad thing", "hint": "line a\nline b"}]}}}}
+{"func": "drift_structure", "in": {"state": {"issues": []}, "io": {"validate_config_structure": {"ret": [{"severity": "warn", "message": "careful", "hint": ""}]}}}}
+{"func": "drift_structure", "in": {"state": {"issues": ["pre"]}, "io": {"validate_config_structure": {"ret": [{"severity": "error", "message": "E1", "hint": "h1"}, {"severity": "warn", "message": "W1", "hint": "x\ny\nz"}]}}}}
+{"func": "drift_structure", "in": {"state": {"issues": []}, "io": {"validate_config_structure": {"raise": {"type": "RuntimeError", "message": "v"}}}}}
+{"func": "provider_has_credentials", "in": {"provider": "openrouter", "io": {"get_env_value": [{"ret": ""}, {"ret": "sk-x"}]}}}
+{"func": "provider_has_credentials", "in": {"provider": "openrouter", "io": {"get_env_value": [{"ret": "sk-1"}]}}}
+{"func": "provider_has_credentials", "in": {"provider": "openrouter", "io": {"get_env_value": [{"ret": ""}, {"ret": ""}]}}}
+{"func": "provider_has_credentials", "in": {"provider": "openai", "io": {"provider_registry": {"ret": {"openai": {"auth_type": "api_key"}}}, "get_auth_status": {"ret": {"configured": false, "logged_in": true, "api_key": null}}}}}
+{"func": "provider_has_credentials", "in": {"provider": "openai", "io": {"provider_registry": {"ret": {"openai": {"auth_type": "api_key"}}}, "get_auth_status": {"ret": {"configured": false}}}}}
+{"func": "provider_has_credentials", "in": {"provider": "custom", "io": {"provider_registry": {"ret": {}}}}}
+{"func": "provider_has_credentials", "in": {"provider": "xai", "io": {"provider_registry": {"ret": {"xai": {"auth_type": "oauth"}}}}}}
+{"func": "provider_has_credentials", "in": {"provider": "openai", "io": {"provider_registry": {"raise": {"type": "RuntimeError", "message": "r"}}}}}
+{"func": "python_repair_hint", "in": {"io": {"detect_install_method": {"ret": "nix"}, "is_nix_install_method": {"ret": true}, "recommended_update_command_for_method": {"ret": "nix shell nixpkgs#hermes"}}}}
+{"func": "python_repair_hint", "in": {"io": {"detect_install_method": {"ret": "docker"}, "is_nix_install_method": {"ret": false}, "recommended_update_command_for_method": {"ret": "docker pull hermes"}}}}
+{"func": "python_repair_hint", "in": {"io": {"detect_install_method": {"ret": "apt"}, "is_nix_install_method": {"ret": false}, "recommended_update_command_for_method": {"ret": "sudo apt install hermes-agent"}}}}
+{"func": "python_repair_hint", "in": {"io": {"detect_install_method": {"ret": "pip"}, "is_nix_install_method": {"ret": false}, "recommended_update_command_for_method": {"ret": "hermes update"}}}}
+{"func": "python_repair_hint", "in": {"io": {"detect_install_method": {"ret": "nix"}, "is_nix_install_method": {"ret": true}, "recommended_update_command_for_method": {"ret": "nix profile install"}}}}
+{"func": "python_repair_hint", "in": {"io": {"detect_install_method": {"raise": {"type": "OSError", "message": "d"}}}}}
+{"func": "python_repair_hint", "in": {"io": {"detect_install_method": {"ret": "docker"}, "is_nix_install_method": {"raise": {"type": "RuntimeError", "message": "i"}}}}}
+{"func": "unreadable_reason", "in": {"path": "/h/state.db", "io": {"path_stat": {"ret": null}, "os_access": {"ret": true}}}}
+{"func": "unreadable_reason", "in": {"path": "/h/state.db", "io": {"path_stat": {"ret": null}, "os_access": {"ret": false}}}}
+{"func": "unreadable_reason", "in": {"path": "/h/state.db", "io": {"path_stat": {"raise": {"type": "FileNotFoundError", "message": "missing"}}}}}
+{"func": "unreadable_reason", "in": {"path": "/h/state.db", "io": {"path_stat": {"raise": {"type": "PermissionError", "message": "denied"}}}}}
+{"func": "unreadable_reason", "in": {"path": "/h/state.db", "io": {"path_stat": {"raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "unreadable_reason", "in": {"path": "/h/state.db", "io": {"path_stat": {"raise": {"type": "SystemExit", "message": "1", "code": 1}}}}}

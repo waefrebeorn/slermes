@@ -1,0 +1,174 @@
+{"func": "_caller_transport", "in": {"args": {}, "io": {"current_transport": "t1"}}}
+{"func": "_caller_transport", "in": {"args": {}, "io": {"current_transport": null}}}
+{"func": "_caller_transport", "in": {"args": {}, "io": {"current_transport": ""}}}
+{"func": "_caller_transport", "in": {"args": {}, "io": {"current_transport": {"__script__": true, "raise": {"type": "RuntimeError", "message": "transport down"}}}}}
+{"func": "_caller_transport", "in": {"args": {}, "io": {"current_transport": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
+{"func": "_caller_transport", "in": {"args": {}, "io": {}}, "fail_closed": true}
+{"func": "_voice_emit", "in": {"args": {"event": "voice.transcript", "payload": {"text": "hi"}}, "io": {"emit": null}, "state": {"voice_event_sid": "s1", "voice_event_transport": null}}}
+{"func": "_voice_emit", "in": {"args": {"event": "voice.status", "payload": {"state": "idle"}}, "io": {"bind_transport": "tok1", "emit": null, "reset_transport": null}, "state": {"voice_event_sid": "s2", "voice_event_transport": "t1"}}}
+{"func": "_voice_emit", "in": {"args": {"event": "x"}, "io": {"bind_transport": {"__script__": true, "raise": {"type": "RuntimeError", "message": "bind fail"}}}, "state": {"voice_event_transport": "t1"}}}
+{"func": "_voice_emit", "in": {"args": {"event": "x"}, "io": {"bind_transport": "tok", "emit": {"__script__": true, "raise": {"type": "RuntimeError", "message": "emit fail"}}, "reset_transport": null}, "state": {"voice_event_transport": "t1"}}}
+{"func": "_voice_emit", "in": {"args": {"event": "x"}, "io": {"bind_transport": "tok", "emit": {"__script__": true, "raise": {"type": "RuntimeError", "message": "emit fail"}}, "reset_transport": {"__script__": true, "raise": {"type": "SystemExit", "message": "reset fail"}}}, "state": {"voice_event_transport": "t1"}}}
+{"func": "_voice_emit", "in": {"args": {"event": "x"}, "io": {}, "state": {"voice_event_transport": null}}, "fail_closed": true}
+{"func": "_resume_voice_wake", "in": {"args": {}, "io": {}, "state": {"voice_wake_owner": null}}}
+{"func": "_resume_voice_wake", "in": {"args": {}, "io": {"wake_resume_if_owner": true}, "state": {"voice_wake_owner": "t1"}}}
+{"func": "_resume_voice_wake", "in": {"args": {}, "io": {"wake_resume_if_owner": {"__script__": true, "raise": {"type": "RuntimeError", "message": "resume"}}}, "state": {"voice_wake_owner": "t1"}}}
+{"func": "_resume_voice_wake", "in": {"args": {}, "io": {"wake_resume_if_owner": {"__script__": true, "raise": {"type": "SystemExit", "message": "stop"}}}, "state": {"voice_wake_owner": "t1"}}}
+{"func": "_resume_voice_wake", "in": {"args": {}, "io": {}, "state": {"voice_wake_owner": "t1"}}, "fail_closed": true}
+{"func": "_voice_mode_enabled", "in": {"args": {}, "io": {"env_get": "1"}}}
+{"func": "_voice_mode_enabled", "in": {"args": {}, "io": {"env_get": " 1 "}}}
+{"func": "_voice_mode_enabled", "in": {"args": {}, "io": {"env_get": "0"}}}
+{"func": "_voice_mode_enabled", "in": {"args": {}, "io": {"env_get": {"__script__": true, "raise": {"type": "RuntimeError", "message": "env fail"}}}}}
+{"func": "_voice_mode_enabled", "in": {"args": {}, "io": {"env_get": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_voice_mode_enabled", "in": {"args": {}, "io": {}}, "fail_closed": true}
+{"func": "_voice_tts_enabled", "in": {"args": {}, "io": {"env_get": "1"}}}
+{"func": "_voice_tts_enabled", "in": {"args": {}, "io": {"env_get": "0"}}}
+{"func": "_voice_tts_enabled", "in": {"args": {}, "io": {"env_get": " 1\t"}}}
+{"func": "_voice_tts_enabled", "in": {"args": {}, "io": {"env_get": {"__script__": true, "raise": {"type": "RuntimeError", "message": "env fail"}}}}}
+{"func": "_voice_tts_enabled", "in": {"args": {}, "io": {}}, "fail_closed": true}
+{"func": "_voice_tts_enabled", "in": {"args": {}, "io": {"env_get": {"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": ""}}}}}
+{"func": "_session_voice_enabled", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "local_voice_enabled": true}}}
+{"func": "_session_voice_enabled", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "local_voice_enabled": null, "env_get": "1"}}}
+{"func": "_session_voice_enabled", "in": {"args": {"session_id": "s1"}, "io": {"import": {"__script__": true, "raise": {"type": "ImportError", "message": "no module"}}, "env_get": "0"}}}
+{"func": "_session_voice_enabled", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "local_voice_enabled": {"__script__": true, "raise": {"type": "ImportError", "message": "gone"}}, "env_get": "1"}}}
+{"func": "_session_voice_enabled", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "local_voice_enabled": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_session_voice_enabled", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "local_voice_enabled": {"__script__": true, "raise": {"type": "SystemExit", "message": "quit"}}}}}
+{"func": "_session_voice_enabled", "in": {"args": {"session_id": "s1"}, "io": {}}, "fail_closed": true}
+{"func": "_set_session_voice_off", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "set_local_voice_mode": true}}}
+{"func": "_set_session_voice_off", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "set_local_voice_mode": false}}}
+{"func": "_set_session_voice_off", "in": {"args": {"session_id": "s1"}, "io": {"import": {"__script__": true, "raise": {"type": "ImportError", "message": "no module"}}}}}
+{"func": "_set_session_voice_off", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "set_local_voice_mode": {"__script__": true, "raise": {"type": "ImportError", "message": "gone"}}}}}
+{"func": "_set_session_voice_off", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "set_local_voice_mode": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_set_session_voice_off", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "set_local_voice_mode": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_set_session_voice_off", "in": {"args": {"session_id": "s1"}, "io": {}}, "fail_closed": true}
+{"func": "_capture_live", "in": {"args": {}, "io": {"import": "mod", "is_continuous_active": true}}}
+{"func": "_capture_live", "in": {"args": {}, "io": {"import": "mod", "is_continuous_active": false}}}
+{"func": "_capture_live", "in": {"args": {}, "io": {"import": {"__script__": true, "raise": {"type": "ImportError", "message": "old wrapper"}}}}}
+{"func": "_capture_live", "in": {"args": {}, "io": {"import": {"__script__": true, "raise": {"type": "RuntimeError", "message": "broken"}}}}}
+{"func": "_capture_live", "in": {"args": {}, "io": {"import": "mod", "is_continuous_active": {"__script__": true, "raise": {"type": "RuntimeError", "message": "probe"}}}}}
+{"func": "_capture_live", "in": {"args": {}, "io": {"import": "mod", "is_continuous_active": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_capture_live", "in": {"args": {}, "io": {}}, "fail_closed": true}
+{"func": "_end_voice_chat", "in": {"args": {"stop_loop": false, "stop_tts": false}, "io": {"env_set": null}}}
+{"func": "_end_voice_chat", "in": {"args": {"stop_loop": true, "stop_tts": false}, "io": {"env_set": null, "import": "mod", "stop_continuous": null}}}
+{"func": "_end_voice_chat", "in": {"args": {"stop_loop": false, "stop_tts": true}, "io": {"env_set": null, "tts_stream_stop": null}}}
+{"func": "_end_voice_chat", "in": {"args": {"stop_loop": true, "stop_tts": true}, "io": {"env_set": null, "import": "mod", "stop_continuous": null, "tts_stream_stop": null}}}
+{"func": "_end_voice_chat", "in": {"args": {"stop_loop": true, "stop_tts": true}, "io": {"env_set": null, "import": "mod", "stop_continuous": {"__script__": true, "raise": {"type": "RuntimeError", "message": "no loop"}}, "tts_stream_stop": {"__script__": true, "raise": {"type": "RuntimeError", "message": "no tts"}}}}}
+{"func": "_end_voice_chat", "in": {"args": {"stop_loop": true}, "io": {"env_set": null, "import": "mod", "stop_continuous": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_end_voice_chat", "in": {"args": {"stop_tts": true}, "io": {"env_set": {"__script__": true, "raise": {"type": "RuntimeError", "message": "env write"}}}}}
+{"func": "_end_voice_chat", "in": {"args": {"stop_loop": false, "stop_tts": false}, "io": {}}, "fail_closed": true}
+{"func": "_end_session_voice_chat", "in": {"args": {"session_id": "s1", "stop_loop": false, "stop_tts": false}, "io": {"import": "mod", "set_local_voice_mode": false, "env_set": null}}}
+{"func": "_end_session_voice_chat", "in": {"args": {"session_id": "s1", "stop_loop": true, "stop_tts": true}, "io": {"import": "mod", "set_local_voice_mode": false, "env_set": null, "tts_stream_stop": null}}}
+{"func": "_end_session_voice_chat", "in": {"args": {"session_id": "s1", "stop_loop": false, "stop_tts": true}, "io": {"import": "mod", "set_local_voice_mode": true, "tts_stream_stop": null}}}
+{"func": "_end_session_voice_chat", "in": {"args": {"session_id": "s1", "stop_loop": false, "stop_tts": false}, "io": {"import": "mod", "set_local_voice_mode": true}}}
+{"func": "_end_session_voice_chat", "in": {"args": {"session_id": "s1"}, "io": {"import": {"__script__": true, "raise": {"type": "ImportError", "message": "no config"}}, "env_set": null}}}
+{"func": "_end_session_voice_chat", "in": {"args": {"session_id": "s1"}, "io": {"import": "mod", "set_local_voice_mode": {"__script__": true, "raise": {"type": "RuntimeError", "message": "boom"}}}}}
+{"func": "_end_session_voice_chat", "in": {"args": {"session_id": "s1", "stop_tts": true}, "io": {"import": "mod", "set_local_voice_mode": true, "tts_stream_stop": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_end_session_voice_chat", "in": {"args": {"session_id": "s1"}, "io": {}}, "fail_closed": true}
+{"func": "_running_sessions", "in": {"args": {}, "io": {}, "state": {"sessions": {}}}}
+{"func": "_running_sessions", "in": {"args": {}, "io": {}, "state": {"sessions": {"a": {"running": true}}}}}
+{"func": "_running_sessions", "in": {"args": {}, "io": {}, "state": {"sessions": {"a": {"running": false}, "b": {"running": true}}}}}
+{"func": "_running_sessions", "in": {"args": {}, "io": {}, "state": {"sessions": {"a": {"running": 0}, "b": {"running": 1}}}}}
+{"func": "_running_sessions", "in": {"args": {}, "io": {}}}
+{"func": "_running_sessions", "in": {"args": {}, "io": {}, "state": {"sessions": {"a": {"running": []}, "b": {"running": "yes"}}}}}
+{"func": "_any_session_running", "in": {"args": {}, "io": {}, "state": {"sessions": {}}}}
+{"func": "_any_session_running", "in": {"args": {}, "io": {}, "state": {"sessions": {"a": {"running": true}}}}}
+{"func": "_any_session_running", "in": {"args": {}, "io": {}, "state": {"sessions": {"a": {"running": false}}}}}
+{"func": "_any_session_running", "in": {"args": {}, "io": {}, "state": {"sessions": {"a": {"running": true}, "b": {"running": false}}}}}
+{"func": "_any_session_running", "in": {"args": {}, "io": {}}}
+{"func": "_any_session_running", "in": {"args": {}, "io": {}, "state": {"sessions": {"a": {"running": 0}}}}}
+{"func": "_arm_barge_listener_if_enabled", "in": {"args": {}, "io": {"env_get": "0"}}}
+{"func": "_arm_barge_listener_if_enabled", "in": {"args": {}, "io": {"env_get": "1", "load_cfg": {"voice": {"barge_in": true}}, "arm_full_duplex_listener": null}}}
+{"func": "_arm_barge_listener_if_enabled", "in": {"args": {}, "io": {"env_get": "1", "load_cfg": {"voice": {"barge_in": false}}}}}
+{"func": "_arm_barge_listener_if_enabled", "in": {"args": {}, "io": {"env_get": "1", "load_cfg": {"voice": {}}, "arm_full_duplex_listener": null}}}
+{"func": "_arm_barge_listener_if_enabled", "in": {"args": {}, "io": {"env_get": "1", "load_cfg": {"voice": {"barge_in": null}}}}}
+{"func": "_arm_barge_listener_if_enabled", "in": {"args": {}, "io": {"env_get": {"__script__": true, "raise": {"type": "RuntimeError", "message": "env"}}}}}
+{"func": "_arm_barge_listener_if_enabled", "in": {"args": {}, "io": {"env_get": "1", "load_cfg": {"__script__": true, "raise": {"type": "RuntimeError", "message": "cfg"}}}}}
+{"func": "_arm_barge_listener_if_enabled", "in": {"args": {}, "io": {"env_get": "1"}}, "fail_closed": true}
+{"func": "_fd_barge_params", "in": {"args": {"barge_in_threshold_multiplier": 0.5, "barge_in_grace_seconds": 0.25}, "io": {}}}
+{"func": "_fd_barge_params", "in": {"args": {}, "io": {}}}
+{"func": "_fd_barge_params", "in": {"args": {"barge_in_threshold_multiplier": 2, "barge_in_grace_seconds": 1}, "io": {}}}
+{"func": "_fd_barge_params", "in": {"args": {"barge_in_threshold_multiplier": "bad", "barge_in_grace_seconds": "bad"}, "io": {}}}
+{"func": "_fd_barge_params", "in": {"args": {"barge_in_threshold_multiplier": 0, "barge_in_grace_seconds": 0}, "io": {}}}
+{"func": "_fd_barge_params", "in": {"args": {"barge_in_threshold_multiplier": "1.5", "barge_in_grace_seconds": "0.75"}, "io": {}}}
+{"func": "_fd_barge_params", "in": {"args": {"barge_in_grace_seconds": -1}, "io": {}}}
+{"func": "_fd_barge_params", "in": {"args": {"barge_in_threshold_multiplier": true, "barge_in_grace_seconds": false}, "io": {}}}
+{"func": "_voice_cfg_dict", "in": {"args": {}, "io": {"load_cfg": {"voice": {"record_key": "cmd+r"}}}}}
+{"func": "_voice_cfg_dict", "in": {"args": {}, "io": {"load_cfg": {"voice": null}}}}
+{"func": "_voice_cfg_dict", "in": {"args": {}, "io": {"load_cfg": 5}}}
+{"func": "_voice_cfg_dict", "in": {"args": {}, "io": {"load_cfg": {"other": 1}}}}
+{"func": "_voice_cfg_dict", "in": {"args": {}, "io": {"load_cfg": [1, 2]}}}
+{"func": "_voice_cfg_dict", "in": {"args": {}, "io": {"load_cfg": {"__script__": true, "raise": {"type": "RuntimeError", "message": "cfg"}}}}}
+{"func": "_voice_cfg_dict", "in": {"args": {}, "io": {}}, "fail_closed": true}
+{"func": "_voice_cfg_number", "in": {"args": {"value": 120, "default": 200}, "io": {}}}
+{"func": "_voice_cfg_number", "in": {"args": {"value": "120", "default": 200}, "io": {}}}
+{"func": "_voice_cfg_number", "in": {"args": {"value": true, "default": 200}, "io": {}}}
+{"func": "_voice_cfg_number", "in": {"args": {"value": null, "default": 3.0}, "io": {}}}
+{"func": "_voice_cfg_number", "in": {"args": {"default": 3.0}, "io": {}}}
+{"func": "_voice_cfg_number", "in": {"args": {"value": 10.5, "default": 200}, "io": {}}}
+{"func": "_voice_status_payload", "in": {"args": {}, "io": {"load_cfg": {"voice": {"record_key": "cmd+r"}}, "env_get": ["1", "0"]}}}
+{"func": "_voice_status_payload", "in": {"args": {"extra": {"stop_hint": "say stop"}}, "io": {"load_cfg": {"voice": {"record_key": ""}}, "env_get": ["0", "1"]}}}
+{"func": "_voice_status_payload", "in": {"args": {}, "io": {"load_cfg": {"voice": {"record_key": 5}}, "env_get": ["0", "0"]}}}
+{"func": "_voice_status_payload", "in": {"args": {}, "io": {"load_cfg": 7, "env_get": ["1", "1"]}}}
+{"func": "_voice_status_payload", "in": {"args": {}, "io": {"load_cfg": {"__script__": true, "raise": {"type": "RuntimeError", "message": "cfg"}}}}}
+{"func": "_voice_status_payload", "in": {"args": {}, "io": {"load_cfg": {"voice": {}}, "env_get": {"__script__": true, "raise": {"type": "RuntimeError", "message": "env"}}}}}
+{"func": "_voice_status_payload", "in": {"args": {}, "io": {}}, "fail_closed": true}
+{"func": "_wake_owner_snapshot", "in": {"args": {}, "io": {}, "state": {"wake_owner_transport": "t1", "wake_owner_surface": "tui"}}}
+{"func": "_wake_owner_snapshot", "in": {"args": {}, "io": {}, "state": {"wake_owner_transport": null, "wake_owner_surface": ""}}}
+{"func": "_wake_owner_snapshot", "in": {"args": {}, "io": {}, "state": {"wake_owner_transport": "t2", "wake_owner_surface": "gui"}}}
+{"func": "_wake_owner_snapshot", "in": {"args": {}, "io": {}}}
+{"func": "_wake_owner_snapshot", "in": {"args": {}, "io": {}, "state": {"wake_owner_surface": 5}}}
+{"func": "_release_wake_for_transport", "in": {"args": {"transport": "t1"}, "io": {"import": "mod", "stop_listening": null}, "state": {"wake_owner_transport": "t1", "wake_owner_surface": "tui"}}}
+{"func": "_release_wake_for_transport", "in": {"args": {"transport": "t1"}, "io": {}, "state": {"wake_owner_transport": "t2", "wake_owner_surface": "tui"}}}
+{"func": "_release_wake_for_transport", "in": {"args": {"transport": "t1"}, "io": {}, "state": {"wake_owner_transport": null, "wake_owner_surface": ""}}}
+{"func": "_release_wake_for_transport", "in": {"args": {"transport": "t1"}, "io": {"import": "mod", "stop_listening": {"__script__": true, "raise": {"type": "RuntimeError", "message": "stop"}}}, "state": {"wake_owner_transport": "t1"}}}
+{"func": "_release_wake_for_transport", "in": {"args": {"transport": "t1"}, "io": {"import": "mod", "stop_listening": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}, "state": {"wake_owner_transport": "t1"}}}
+{"func": "_release_wake_for_transport", "in": {"args": {"transport": "t1"}, "io": {"import": {"__script__": true, "raise": {"type": "ImportError", "message": "no wake"}}}, "state": {"wake_owner_transport": "t1"}}}
+{"func": "_release_wake_for_transport", "in": {"args": {"transport": "t1"}, "io": {}, "state": {"wake_owner_transport": "t1"}}, "fail_closed": true}
+{"func": "_release_gateway_wake_owner", "in": {"args": {}, "io": {"import": "mod", "stop_listening": null}, "state": {"wake_owner_transport": "t1"}}}
+{"func": "_release_gateway_wake_owner", "in": {"args": {}, "io": {}, "state": {"wake_owner_transport": null}}}
+{"func": "_release_gateway_wake_owner", "in": {"args": {}, "io": {"import": "mod", "stop_listening": {"__script__": true, "raise": {"type": "RuntimeError", "message": "stop"}}}, "state": {"wake_owner_transport": "t2"}}}
+{"func": "_release_gateway_wake_owner", "in": {"args": {}, "io": {"import": "mod", "stop_listening": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}, "state": {"wake_owner_transport": "t3"}}}
+{"func": "_release_gateway_wake_owner", "in": {"args": {}, "io": {}, "state": {"wake_owner_transport": "t1"}}, "fail_closed": true}
+{"func": "_persist_wake_enabled", "in": {"args": {"enabled": true}, "io": {"import": "mod", "save_config_value": 1}}}
+{"func": "_persist_wake_enabled", "in": {"args": {"enabled": false}, "io": {"import": "mod", "save_config_value": 0}}}
+{"func": "_persist_wake_enabled", "in": {"args": {"enabled": true}, "io": {"import": {"__script__": true, "raise": {"type": "ImportError", "message": "no cli"}}}}}
+{"func": "_persist_wake_enabled", "in": {"args": {"enabled": true}, "io": {"import": "mod", "save_config_value": {"__script__": true, "raise": {"type": "RuntimeError", "message": "write"}}}}}
+{"func": "_persist_wake_enabled", "in": {"args": {"enabled": true}, "io": {"import": "mod", "save_config_value": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_persist_wake_enabled", "in": {"args": {"enabled": true}, "io": {}}, "fail_closed": true}
+{"func": "_owner_result", "in": {"args": {"rid": "r1", "field": "stopped", "ok": true}, "io": {"ok": {"jsonrpc": "2.0", "id": "r1", "result": {"stopped": true}}}}}
+{"func": "_owner_result", "in": {"args": {"rid": "r1", "field": "paused", "ok": false}, "io": {"ok": {"jsonrpc": "2.0", "id": "r1", "result": {"paused": false}}}}}
+{"func": "_owner_result", "in": {"args": {"rid": "r1", "field": "fed", "ok": true, "extra": {"disabled_persisted": false}}, "io": {"ok": {"jsonrpc": "2.0", "id": "r1", "result": {"fed": true}}}}}
+{"func": "_owner_result", "in": {"args": {"rid": "r1", "field": "resumed", "ok": true}, "io": {"ok": {"__script__": true, "raise": {"type": "RuntimeError", "message": "ok fail"}}}}}
+{"func": "_owner_result", "in": {"args": {"rid": "r1", "field": "resumed", "ok": true}, "io": {"ok": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_owner_result", "in": {"args": {"rid": "r1", "field": "stopped", "ok": true}, "io": {}}, "fail_closed": true}
+{"func": "_deliver_fd_transcript", "in": {"args": {"text": "hello"}, "io": {"import": "mod", "is_voice_stop_phrase": false, "emit": null}}}
+{"func": "_deliver_fd_transcript", "in": {"args": {"text": "stop"}, "io": {"import": "mod", "is_voice_stop_phrase": true, "set_local_voice_mode": false, "env_set": null, "emit": null}}}
+{"func": "_deliver_fd_transcript", "in": {"args": {"text": "hello"}, "io": {"import": {"__script__": true, "raise": {"type": "RuntimeError", "message": "no transcript module"}}, "emit": null}}}
+{"func": "_deliver_fd_transcript", "in": {"args": {"text": "hello"}, "io": {"import": "mod", "is_voice_stop_phrase": {"__script__": true, "raise": {"type": "RuntimeError", "message": "probe"}}, "emit": null}}}
+{"func": "_deliver_fd_transcript", "in": {"args": {"text": "hello"}, "io": {"import": "mod", "is_voice_stop_phrase": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_deliver_fd_transcript", "in": {"args": {"text": "hello"}, "io": {"import": "mod", "is_voice_stop_phrase": false, "emit": {"__script__": true, "raise": {"type": "RuntimeError", "message": "emit"}}}}}
+{"func": "_deliver_fd_transcript", "in": {"args": {"text": "hello"}, "io": {}}, "fail_closed": true}
+{"func": "_voice_toggle_status", "in": {"args": {"rid": "r1"}, "io": {"load_cfg": {"voice": {"record_key": "ctrl+b"}}, "env_get": ["1", "1"], "import": "mod", "check_voice_requirements": {"available": true, "audio_available": true, "stt_available": false, "details": "ok"}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {}}}}}
+{"func": "_voice_toggle_status", "in": {"args": {"rid": "r1"}, "io": {"load_cfg": {"voice": {}}, "env_get": ["0", "0"], "import": "mod", "check_voice_requirements": {"__script__": true, "raise": {"type": "RuntimeError", "message": "deps"}}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {}}}}}
+{"func": "_voice_toggle_status", "in": {"args": {"rid": "r1"}, "io": {"load_cfg": {"voice": {}}, "env_get": ["1", "1"], "import": "mod", "check_voice_requirements": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_voice_toggle_status", "in": {"args": {"rid": "r1"}, "io": {"load_cfg": {"__script__": true, "raise": {"type": "RuntimeError", "message": "cfg"}}}}}
+{"func": "_voice_toggle_status", "in": {"args": {"rid": "r1"}, "io": {"load_cfg": {"voice": {}}, "env_get": ["1", "1"], "import": "mod", "check_voice_requirements": {}, "ok": {"__script__": true, "raise": {"type": "RuntimeError", "message": "ok"}}}}}
+{"func": "_voice_toggle_status", "in": {"args": {"rid": "r1"}, "io": {}}, "fail_closed": true}
+{"func": "_set_voice_tts", "in": {"args": {"on": true}, "io": {"env_set": null, "tts_lease_async": null}}}
+{"func": "_set_voice_tts", "in": {"args": {"on": false}, "io": {"env_set": null, "tts_stream_stop": null, "tts_lease_async": null}}}
+{"func": "_set_voice_tts", "in": {"args": {"on": true}, "io": {"env_set": {"__script__": true, "raise": {"type": "RuntimeError", "message": "env"}}}}}
+{"func": "_set_voice_tts", "in": {"args": {"on": false}, "io": {"env_set": null, "tts_stream_stop": {"__script__": true, "raise": {"type": "RuntimeError", "message": "stop"}}}}}
+{"func": "_set_voice_tts", "in": {"args": {"on": true}, "io": {"env_set": null, "tts_lease_async": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_set_voice_tts", "in": {"args": {"on": true}, "io": {}}, "fail_closed": true}
+{"func": "_voice_toggle_tts", "in": {"args": {"rid": "r1"}, "io": {"env_get": ["1", "0", "1", "1"], "env_set": null, "tts_lease_async": null, "load_cfg": {"voice": {}}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {}}}}}
+{"func": "_voice_toggle_tts", "in": {"args": {"rid": "r1"}, "io": {"env_get": ["0"], "err": {"jsonrpc": "2.0", "id": "r1", "error": {"code": 4014, "message": "enable voice mode first: /voice on"}}}}}
+{"func": "_voice_toggle_tts", "in": {"args": {"rid": "r1"}, "io": {"env_get": ["1", "1", "1", "0"], "env_set": null, "tts_stream_stop": null, "tts_lease_async": null, "load_cfg": {"voice": {}}, "ok": {"jsonrpc": "2.0", "id": "r1", "result": {"record_key": "ctrl+b"}}}}}
+{"func": "_voice_toggle_tts", "in": {"args": {"rid": "r1"}, "io": {"env_get": {"__script__": true, "raise": {"type": "RuntimeError", "message": "env"}}}}}
+{"func": "_voice_toggle_tts", "in": {"args": {"rid": "r1"}, "io": {"env_get": ["1", "0", "1", "1"], "env_set": null, "tts_lease_async": null, "load_cfg": {"__script__": true, "raise": {"type": "RuntimeError", "message": "cfg"}}}}}
+{"func": "_voice_toggle_tts", "in": {"args": {"rid": "r1"}, "io": {"env_get": ["1", "0", "1", "1"], "env_set": null, "tts_lease_async": null, "load_cfg": {"voice": {}}, "ok": {"__script__": true, "raise": {"type": "SystemExit", "message": "x"}}}}}
+{"func": "_voice_toggle_tts", "in": {"args": {"rid": "r1"}, "io": {}}, "fail_closed": true}
+{"func": "_vr_transcript", "in": {"args": {"payload": {"text": "hi"}}, "io": {"emit": null}, "state": {"voice_event_sid": "s1", "voice_wake_owner": null}}}
+{"func": "_vr_transcript", "in": {"args": {"payload": {"no_speech_limit": true}}, "io": {"emit": null, "wake_resume_if_owner": true}, "state": {"voice_event_sid": "s1", "voice_wake_owner": "t1"}}}
+{"func": "_vr_transcript", "in": {"args": {"payload": {"text": "hi"}}, "io": {"emit": {"__script__": true, "raise": {"type": "RuntimeError", "message": "emit"}}}}}
+{"func": "_vr_transcript", "in": {"args": {"payload": {"text": "hi"}}, "io": {"emit": null, "wake_resume_if_owner": {"__script__": true, "raise": {"type": "RuntimeError", "message": "resume"}}}, "state": {"voice_wake_owner": "t1"}}}
+{"func": "_vr_transcript", "in": {"args": {"payload": {"text": "hi"}}, "io": {}}, "fail_closed": true}

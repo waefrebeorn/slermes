@@ -1,0 +1,84 @@
+{"func": "_field", "in": {"args": {"value": {"text": "hello", "type": "text"}, "key": "text"}}}
+{"func": "_field", "in": {"args": {"value": {"type": "text"}, "key": "missing"}}}
+{"func": "_field", "in": {"args": {"value": "a string", "key": "text"}}}
+{"func": "_field", "in": {"args": {"value": null, "key": "text"}}}
+{"func": "_field", "in": {"args": {"value": [1, 2], "key": "text"}}}
+{"func": "_field", "in": {"args": {"value": {"type": "image", "url": "u"}, "key": "type"}}}
+{"func": "_field", "in": {"args": {"value": 42, "key": "text"}}}
+{"func": "_field", "in": {"args": {"value": {"text": null}, "key": "text"}}}
+{"func": "_part_text", "in": {"args": {"item": "plain string"}}}
+{"func": "_part_text", "in": {"args": {"item": {"type": "text", "text": "body"}}}}
+{"func": "_part_text", "in": {"args": {"item": {"type": "image"}}}}
+{"func": "_part_text", "in": {"args": {"item": {"text": 5}}}}
+{"func": "_part_text", "in": {"args": {"item": null}}}
+{"func": "_part_text", "in": {"args": {"item": [1, 2]}}}
+{"func": "_part_text", "in": {"args": {"item": {"text": ""}}}}
+{"func": "_with_part_text", "in": {"args": {"item": {"type": "text", "text": "old"}, "text": "new"}}}
+{"func": "_with_part_text", "in": {"args": {"item": {"type": "text"}, "text": "new"}}}
+{"func": "_with_part_text", "in": {"args": {"item": {"type": "text", "text": "old", "extra": 1}, "text": "x"}}}
+{"func": "_with_part_text", "in": {"args": {"item": "old", "text": "new"}}}
+{"func": "_with_part_text", "in": {"args": {"item": null, "text": "new"}}}
+{"func": "_with_part_text", "in": {"args": {"item": 5, "text": "new"}}}
+{"func": "_with_part_text", "in": {"args": {"item": {}, "text": ""}}}
+{"func": "_content_text_for_contains", "in": {"args": {"content": "plain text"}}}
+{"func": "_content_text_for_contains", "in": {"args": {"content": null}}}
+{"func": "_content_text_for_contains", "in": {"args": {"content": ""}}}
+{"func": "_content_text_for_contains", "in": {"args": {"content": [{"text": "a"}, {"text": "b"}]}}}
+{"func": "_content_text_for_contains", "in": {"args": {"content": [{"text": "a"}, "b", {"type": "image"}]}}}
+{"func": "_content_text_for_contains", "in": {"args": {"content": []}}}
+{"func": "_content_text_for_contains", "in": {"args": {"content": [{"text": ""}, {"text": "x"}]}}}
+{"func": "_content_text_for_contains", "in": {"args": {"content": ["first", {"text": "second"}, 5]}}}
+{"func": "is_content_blank", "in": {"args": {"content": null}}}
+{"func": "is_content_blank", "in": {"args": {"content": ""}}}
+{"func": "is_content_blank", "in": {"args": {"content": "   \t\n "}}}
+{"func": "is_content_blank", "in": {"args": {"content": "x"}}}
+{"func": "is_content_blank", "in": {"args": {"content": " \u001c "}}}
+{"func": "is_content_blank", "in": {"args": {"content": [{"type": "text", "text": "   "}]}}}
+{"func": "is_content_blank", "in": {"args": {"content": [{"type": "text", "text": "hi"}]}}}
+{"func": "is_content_blank", "in": {"args": {"content": []}}}
+{"func": "is_content_blank", "in": {"args": {"content": [{"type": "image"}]}}}
+{"func": "is_content_blank", "in": {"args": {"content": {"a": 1}}}}
+{"func": "is_content_blank", "in": {"args": {"content": 5}}}
+{"func": "is_content_blank", "in": {"args": {"content": [{"type": "text", "text": ""}]}}}
+{"func": "drop_stale_api_content", "in": {"args": {"msg": {"role": "user", "api_content": [1]}}}}
+{"func": "drop_stale_api_content", "in": {"args": {"msg": {"role": "user"}}}}
+{"func": "drop_stale_api_content", "in": {"args": {"msg": {}}}}
+{"func": "drop_stale_api_content", "in": {"args": {"msg": {"api_content": null, "content": "x"}}}}
+{"func": "drop_stale_api_content", "in": {"args": {"msg": null}}}
+{"func": "drop_stale_api_content", "in": {"args": {"msg": 42}}}
+{"func": "drop_stale_api_content", "in": {"args": {"msg": "a string"}}}
+{"func": "_display_metadata_str", "in": {"args": {"message": {"display_metadata": {"withheld_prompt": "real ask"}}, "key": "withheld_prompt"}}}
+{"func": "_display_metadata_str", "in": {"args": {"message": {"display_metadata": {"withheld_prompt": 5}}, "key": "withheld_prompt"}}}
+{"func": "_display_metadata_str", "in": {"args": {"message": {"display_metadata": {"other": "x"}}, "key": "withheld_prompt"}}}
+{"func": "_display_metadata_str", "in": {"args": {"message": {"display_metadata": "not-a-dict"}, "key": "withheld_prompt"}}}
+{"func": "_display_metadata_str", "in": {"args": {"message": {"role": "user"}, "key": "withheld_prompt"}}}
+{"func": "_display_metadata_str", "in": {"args": {"message": null, "key": "withheld_prompt"}}}
+{"func": "_display_metadata_str", "in": {"args": {"message": [1], "key": "withheld_prompt"}}}
+{"func": "withheld_prompt_text", "in": {"args": {"message": {"display_metadata": {"withheld_prompt": "real ask"}}}}}
+{"func": "withheld_prompt_text", "in": {"args": {"message": {"display_metadata": {"withheld_prompt": ""}}}}}
+{"func": "withheld_prompt_text", "in": {"args": {"message": {"display_metadata": {"withheld_prompt": 5}}}}}
+{"func": "withheld_prompt_text", "in": {"args": {"message": {"display_metadata": {"other": "x"}}}}}
+{"func": "withheld_prompt_text", "in": {"args": {"message": null}}}
+{"func": "withheld_prompt_text", "in": {"args": {"message": {"role": "user"}}}}
+{"func": "typed_prompt_content", "in": {"args": {"content": "before [Message withheld: a pre_llm_call policy hook blocked it.] after", "message": {"display_metadata": {"withheld_prompt": "REAL"}}}}}
+{"func": "typed_prompt_content", "in": {"args": {"content": "no placeholder", "message": {"display_metadata": {"withheld_prompt": "REAL"}}}}}
+{"func": "typed_prompt_content", "in": {"args": {"content": "[Message withheld: a pre_llm_call policy hook blocked it.][Message withheld: a pre_llm_call policy hook blocked it.]", "message": {"display_metadata": {"withheld_prompt": "X"}}}}}
+{"func": "typed_prompt_content", "in": {"args": {"content": [{"type": "text", "text": "p [Message withheld: a pre_llm_call policy hook blocked it.]"}, "tail"], "message": {"display_metadata": {"withheld_prompt": "REAL"}}}}}
+{"func": "typed_prompt_content", "in": {"args": {"content": [{"type": "image"}, {"text": "[Message withheld: a pre_llm_call policy hook blocked it.]"}], "message": {"display_metadata": {"withheld_prompt": "REAL"}}}}}
+{"func": "typed_prompt_content", "in": {"args": {"content": "unchanged", "message": {"display_metadata": {}}}}}
+{"func": "typed_prompt_content", "in": {"args": {"content": 5, "message": {"display_metadata": {"withheld_prompt": "REAL"}}}}}
+{"func": "typed_prompt_content", "in": {"args": {"content": null, "message": {"display_metadata": {"withheld_prompt": "REAL"}}}}}
+{"func": "typed_prompt_content", "in": {"args": {"content": "[Message withheld: a pre_llm_call policy hook blocked it.]", "message": {"display_metadata": {"withheld_prompt": ""}}}}}
+{"func": "retryable_user_text", "in": {"args": {"content": "hello"}}}
+{"func": "retryable_user_text", "in": {"args": {"content": "  leading and trailing  "}}}
+{"func": "retryable_user_text", "in": {"args": {"content": "   "}}}
+{"func": "retryable_user_text", "in": {"args": {"content": ""}}}
+{"func": "retryable_user_text", "in": {"args": {"content": ["a", "b", "c"]}}}
+{"func": "retryable_user_text", "in": {"args": {"content": [{"type": "text", "text": "one"}, {"type": "input_text", "text": "two"}]}}}
+{"func": "retryable_user_text", "in": {"args": {"content": [{"type": "image", "image_url": "u"}]}}}
+{"func": "retryable_user_text", "in": {"args": {"content": [{"type": "text", "text": "x", "extra": 1}]}}}
+{"func": "retryable_user_text", "in": {"args": {"content": [{"type": "text", "text": 5}]}}}
+{"func": "retryable_user_text", "in": {"args": {"content": 5}}}
+{"func": "retryable_user_text", "in": {"args": {"content": ["a", 5]}}}
+{"func": "retryable_user_text", "in": {"args": {"content": []}}}
+{"func": "retryable_user_text", "in": {"args": {"content": [{"type": "output_text", "text": "ok"}]}}}

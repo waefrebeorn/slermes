@@ -1,0 +1,83 @@
+{"func":"_model_matches","in":{"model":"claude-opus-4-7","substrings":["claude-opus-4-6","claude-opus-4-7"]}}
+{"func":"_model_matches","in":{"model":"CLAUDE-OPUS-4.7","substrings":["claude-opus"]}}
+{"func":"_model_matches","in":{"model":"gpt-4o","substrings":["claude-3","haiku"]}}
+{"func":"_model_matches","in":{"model":"","substrings":["claude"]}}
+{"func":"_model_matches","in":{"model":"claude-3-5-sonnet","substrings":["claude-3-5-sonnet","claude-3-opus"]}}
+{"func":"_model_matches","in":{"model":"minimax","substrings":[]}}
+{"func":"_beta_header","in":{"betas":[]}}
+{"func":"_beta_header","in":{"betas":["interleaved-thinking-2025-05-14"]}}
+{"func":"_beta_header","in":{"betas":["a","b","c"]}}
+{"func":"_beta_header","in":{"betas":["context-1m-2025-08-07","fine-grained-tool-streaming-2025-05-14"]}}
+{"func":"_beta_header","in":{"betas":["single-with-dashes"]}}
+{"func":"_normalize_to_mcp_wire","in":{"name":"read_file"}}
+{"func":"_normalize_to_mcp_wire","in":{"name":"mcp_foo"}}
+{"func":"_normalize_to_mcp_wire","in":{"name":"mcp__foo"}}
+{"func":"_normalize_to_mcp_wire","in":{"name":"mcp_server_tool"}}
+{"func":"_normalize_to_mcp_wire","in":{"name":""}}
+{"func":"_normalize_to_mcp_wire","in":{"name":"memory"}}
+{"func":"_apply_oauth_prose_aliases","in":{"text":"Use session_search to find things."}}
+{"func":"_apply_oauth_prose_aliases","in":{"text":"session_search"}}
+{"func":"_apply_oauth_prose_aliases","in":{"text":"The tools/session_search_tool.py file"}}
+{"func":"_apply_oauth_prose_aliases","in":{"text":"session_search and session_search"}}
+{"func":"_apply_oauth_prose_aliases","in":{"text":"xsession_search"}}
+{"func":"_apply_oauth_prose_aliases","in":{"text":"session_search."}}
+{"func":"_attribution_headers","in":{"io":{"get_version_info":{"base_version":"2.1.74"}}}}
+{"func":"_attribution_headers","in":{"io":{"get_version_info":{"base_version":"1.0"}}}}
+{"func":"_attribution_headers","in":{"io":{"get_version_info":{"base_version":""}}}}
+{"func":"_attribution_headers","in":{"io":{"get_version_info":{"base_version":"9.9.9-beta"}}}}
+{"func":"_attribution_headers","in":{"io":{"get_version_info":[{"base_version":"1.0"},{"base_version":"2.0"}]}}}
+{"func":"_attribution_headers","in":{"io":{}}}
+{"func":"_client_timeout","in":{"timeout":30.0,"io":{"httpx.Timeout":{"kind":"Timeout"}}}}
+{"func":"_client_timeout","in":{"timeout":0,"io":{"httpx.Timeout":{"kind":"Timeout"}}}}
+{"func":"_client_timeout","in":{"timeout":-5,"io":{"httpx.Timeout":{"kind":"Timeout"}}}}
+{"func":"_client_timeout","in":{"timeout":null,"io":{"httpx.Timeout":{"kind":"Timeout"}}}}
+{"func":"_client_timeout","in":{"timeout":"abc","io":{"httpx.Timeout":{"kind":"Timeout"}}}}
+{"func":"_client_timeout","in":{"timeout":0.5,"io":{"httpx.Timeout":[{"kind":"T"},{"kind":"U"}]}}}
+{"func":"_client_timeout","in":{"timeout":10,"io":{"httpx.Timeout":{"__raise__":"ValueError","msg":"bad timeout"}}}}
+{"func":"_auth_style","in":{"api_key":"sk-ant-api03-x","base_url":"https://x","normalized_base_url":"https://x","io":{"is_kimi_coding_endpoint":true}}}
+{"func":"_auth_style","in":{"api_key":"sk-ant-api03-x","base_url":"https://x","normalized_base_url":"https://x","io":{"is_kimi_coding_endpoint":false,"requires_bearer_auth":true}}}
+{"func":"_auth_style","in":{"api_key":"k","base_url":"https://x","normalized_base_url":"https://x","io":{"is_kimi_coding_endpoint":false,"requires_bearer_auth":false,"is_third_party_anthropic_endpoint":true}}}
+{"func":"_auth_style","in":{"api_key":"sk-ant-oat01-x","base_url":"https://x","normalized_base_url":"https://x","io":{"is_kimi_coding_endpoint":false,"requires_bearer_auth":false,"is_third_party_anthropic_endpoint":false,"is_oauth_token":true}}}
+{"func":"_auth_style","in":{"api_key":"sk-ant-api03-x","base_url":"https://x","normalized_base_url":"https://x","io":{"is_kimi_coding_endpoint":false,"requires_bearer_auth":false,"is_third_party_anthropic_endpoint":false,"is_oauth_token":false}}}
+{"func":"_auth_style","in":{"api_key":"k","base_url":"https://x","normalized_base_url":"https://x","io":{"is_kimi_coding_endpoint":[false,true],"requires_bearer_auth":true}}}
+{"func":"_auth_style","in":{"api_key":"k","base_url":"https://x","normalized_base_url":"https://x","io":{"is_kimi_coding_endpoint":false,"requires_bearer_auth":{"__raise__":"RuntimeError","msg":"bearer probe failed"}}}}
+{"func":"_thinking_kwargs","in":{"reasoning_config":{"enabled":false},"model":"claude-sonnet-5-5","effective_max_tokens":8000,"io":{"model_matches":true}}}
+{"func":"_thinking_kwargs","in":{"reasoning_config":{"enabled":false},"model":"claude-opus-4-7","effective_max_tokens":8000,"io":{"model_matches":false,"accepts_thinking_disable":true}}}
+{"func":"_thinking_kwargs","in":{"reasoning_config":{"enabled":false},"model":"claude-fable","effective_max_tokens":8000,"io":{"model_matches":false,"accepts_thinking_disable":false}}}
+{"func":"_thinking_kwargs","in":{"reasoning_config":{},"model":"claude-haiku-4-5","effective_max_tokens":8000,"io":{"is_pre_thinking_haiku":true}}}
+{"func":"_thinking_kwargs","in":{"reasoning_config":{"effort":"high"},"model":"claude-opus-4-7","effective_max_tokens":20000,"io":{"is_pre_thinking_haiku":false,"supports_adaptive_thinking":true}}}
+{"func":"_thinking_kwargs","in":{"reasoning_config":{"effort":"xhigh"},"model":"claude-sonnet-4-6","effective_max_tokens":20000,"io":{"is_pre_thinking_haiku":false,"supports_adaptive_thinking":true,"supports_xhigh_effort":false}}}
+{"func":"_thinking_kwargs","in":{"reasoning_config":{"effort":"xhigh"},"model":"claude-opus-4-7","effective_max_tokens":20000,"io":{"is_pre_thinking_haiku":false,"supports_adaptive_thinking":true,"supports_xhigh_effort":true}}}
+{"func":"_thinking_kwargs","in":{"reasoning_config":{"effort":"low"},"model":"minimax","effective_max_tokens":1000,"io":{"is_pre_thinking_haiku":false,"supports_adaptive_thinking":false}}}
+{"func":"_thinking_kwargs","in":{"reasoning_config":{"effort":"weird"},"model":"qwen3","effective_max_tokens":50000,"io":{"is_pre_thinking_haiku":false,"supports_adaptive_thinking":false}}}
+{"func":"_thinking_kwargs","in":{"reasoning_config":{"effort":"high"},"model":"claude-opus-4-7","effective_max_tokens":8000,"io":{"is_pre_thinking_haiku":false,"supports_adaptive_thinking":{"__raise__":"ValueError","msg":"thinking probe failed"}}}}
+{"func":"_is_pre_thinking_haiku","in":{"model":"claude-3-5-haiku","io":{"claude_family_version":[["haiku",[3,5]]]}}}
+{"func":"_is_pre_thinking_haiku","in":{"model":"claude-haiku-4-5","io":{"claude_family_version":[["haiku",[4,5]]]}}}
+{"func":"_is_pre_thinking_haiku","in":{"model":"claude-haiku-5-5","io":{"claude_family_version":[["haiku",[5,5]]]}}}
+{"func":"_is_pre_thinking_haiku","in":{"model":"claude-haiku-5-6","io":{"claude_family_version":[["haiku",[5,6]]]}}}
+{"func":"_is_pre_thinking_haiku","in":{"model":"claude-haiku-6-0","io":{"claude_family_version":[["haiku",[6,0]]]}}}
+{"func":"_is_pre_thinking_haiku","in":{"model":"claude-fable","io":{}}}
+{"func":"_is_pre_thinking_haiku","in":{"model":"claude-haiku-x","io":{"claude_family_version":null}}}
+{"func":"_is_pre_thinking_haiku","in":{"model":"claude-haiku-4","io":{"claude_family_version":[["opus",[4,0]]]}}}
+{"func":"_is_pre_thinking_haiku","in":{"model":"claude-haiku-4-5","io":{"claude_family_version":{"__raise__":"RuntimeError","msg":"family parse failed"}}}}
+{"func":"_base_client_kwargs","in":{"base_url":"http://localhost:1234/v1","timeout":10,"io":{"client_timeout":{"kind":"Timeout"},"normalize_base_url_text":"http://localhost:1234/v1","is_azure_anthropic_endpoint":false}}}
+{"func":"_base_client_kwargs","in":{"base_url":"https://api.anthropic.com","timeout":30,"io":{"client_timeout":{"kind":"Timeout"},"normalize_base_url_text":"https://api.anthropic.com/","is_azure_anthropic_endpoint":false}}}
+{"func":"_base_client_kwargs","in":{"base_url":"https://x.openai.azure.com","timeout":20,"io":{"client_timeout":{"kind":"Timeout"},"normalize_base_url_text":"https://x.openai.azure.com/","is_azure_anthropic_endpoint":true}}}
+{"func":"_base_client_kwargs","in":{"base_url":"https://x/v1","timeout":15,"io":{"client_timeout":{"kind":"Timeout"},"normalize_base_url_text":"https://x?api-version=2024","is_azure_anthropic_endpoint":true}}}
+{"func":"_base_client_kwargs","in":{"base_url":"https://x","timeout":5,"io":{"client_timeout":{"kind":"Timeout"},"normalize_base_url_text":"","is_azure_anthropic_endpoint":false}}}
+{"func":"_base_client_kwargs","in":{"base_url":"https://x","timeout":5,"io":{"client_timeout":[{"kind":"T"},{"kind":"U"}],"normalize_base_url_text":"https://x","is_azure_anthropic_endpoint":false}}}
+{"func":"_base_client_kwargs","in":{"base_url":"https://x","timeout":5,"io":{"client_timeout":{"kind":"Timeout"},"normalize_base_url_text":{"__raise__":"ValueError","msg":"normalize failed"}}}}
+{"func":"_custom_provider_extra_headers","in":{"io":{}}}
+{"func":"_custom_provider_extra_headers","in":{"base_url":"","io":{}}}
+{"func":"_custom_provider_extra_headers","in":{"base_url":"https://x","io":{"get_custom_provider_extra_headers":{"HTTP-Referer":"https://ref","X-Title":"T"}}}}
+{"func":"_custom_provider_extra_headers","in":{"base_url":"https://x","io":{"get_custom_provider_extra_headers":{}}}}
+{"func":"_custom_provider_extra_headers","in":{"base_url":"https://x","io":{"get_custom_provider_extra_headers":{"__raise__":"ValueError","msg":"cfg error"},"logger.debug":null}}}
+{"func":"_custom_provider_extra_headers","in":{"base_url":"https://x","io":{"get_custom_provider_extra_headers":{"__raise__":"KeyError","msg":"missing"},"logger.debug":null}}}
+{"func":"_custom_provider_extra_headers","in":{"base_url":"https://x","io":{"get_custom_provider_extra_headers":{"__raise__":"SystemExit","msg":"shutdown"}}}}
+{"func":"_custom_provider_extra_headers","in":{"base_url":"https://x","io":{"get_custom_provider_extra_headers":{"__raise__":"ValueError","msg":"cfg error"},"logger.debug":{"__raise__":"RuntimeError","msg":"logger failed"}}}}
+{"func":"buffer_anthropic_tool_input","in":{"api_kwargs":{"tools":[{"name":"a"},{"name":"b"}]},"base_url":"https://x","io":{"common_betas_for_base_url":[["interleaved-thinking-2025-05-14","fine-grained-tool-streaming-2025-05-14"]]}}}
+{"func":"buffer_anthropic_tool_input","in":{"api_kwargs":{"tools":[{"name":"a"}]},"base_url":"https://x","io":{"common_betas_for_base_url":[["interleaved-thinking-2025-05-14"]]}}}
+{"func":"buffer_anthropic_tool_input","in":{"api_kwargs":{"tools":[]},"base_url":"https://x","io":{"common_betas_for_base_url":[["fine-grained-tool-streaming-2025-05-14"]]}}}
+{"func":"buffer_anthropic_tool_input","in":{"api_kwargs":{"max_tokens":100},"base_url":"https://x","io":{"common_betas_for_base_url":[["fine-grained-tool-streaming-2025-05-14"]]}}}
+{"func":"buffer_anthropic_tool_input","in":{"api_kwargs":{"tools":[{"name":"a"}]},"io":{"common_betas_for_base_url":[["fine-grained-tool-streaming-2025-05-14"]]}}}
+{"func":"buffer_anthropic_tool_input","in":{"api_kwargs":{"tools":[{"name":"a"}]},"base_url":"https://x","io":{"common_betas_for_base_url":{"__raise__":"RuntimeError","msg":"betas failed"}}}}

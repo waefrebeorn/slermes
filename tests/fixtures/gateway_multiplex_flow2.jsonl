@@ -1,0 +1,83 @@
+{"func": "live_default_gateway_pid", "in": {"seams": {"get_default_hermes_root": "/h", "live_gateway_pid_for_home": 1234}}}
+{"func": "live_default_gateway_pid", "in": {"seams": {"get_default_hermes_root": null, "live_gateway_pid_for_home": null}}}
+{"func": "live_default_gateway_pid", "in": {"seams": {"get_default_hermes_root": "//srv/profiles/p1/", "live_gateway_pid_for_home": 7}}}
+{"func": "live_default_gateway_pid", "in": {"seams": {"get_default_hermes_root": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "live_default_gateway_pid", "in": {"seams": {"get_default_hermes_root": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "live_default_gateway_pid", "in": {"seams": {"get_default_hermes_root": "/h", "live_gateway_pid_for_home": {"__raise__": "FileNotFoundError", "msg": "gone"}}}}
+{"func": "recorded_served_profiles", "in": {"default_root": "/h", "seams": {"live_gateway_pid_for_home": null}}}
+{"func": "recorded_served_profiles", "in": {"default_root": "/h", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": ["p1", "default", null, 0, true]}}}}
+{"func": "recorded_served_profiles", "in": {"default_root": null, "seams": {"get_default_hermes_root": "/h/x/", "live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": "notalist"}}}}
+{"func": "recorded_served_profiles", "in": {"default_root": "/h", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": null}}}
+{"func": "recorded_served_profiles", "in": {"default_root": "/h", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": 5}}}
+{"func": "recorded_served_profiles", "in": {"default_root": "/h", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "recorded_served_profiles", "in": {"default_root": "", "seams": {"get_default_hermes_root": "/d", "live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": []}}}}
+{"func": "recorded_served_profiles", "in": {"default_root": "/h", "seams": {"live_gateway_pid_for_home": {"__raise__": "ValueError", "msg": "pid"}}}}
+{"func": "recorded_served_profiles", "in": {"default_root": "/h", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": {"p1": 1}}}}}
+{"func": "multiplexer_served_secondaries", "in": {"seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": ["p1", "default", "p2", "", null]}}}}
+{"func": "multiplexer_served_secondaries", "in": {"seams": {"live_gateway_pid_for_home": null}}}
+{"func": "multiplexer_served_secondaries", "in": {"seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": []}}}}
+{"func": "multiplexer_served_secondaries", "in": {"seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": "ab"}}}}
+{"func": "multiplexer_served_secondaries", "in": {"seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": ["default"]}}}}
+{"func": "multiplexer_served_secondaries", "in": {"seams": {"live_gateway_pid_for_home": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "served_profile_unserved_platforms", "in": {"profile": "", "seams": {}}}
+{"func": "served_profile_unserved_platforms", "in": {"profile": null, "seams": {}}}
+{"func": "served_profile_unserved_platforms", "in": {"profile": "p1", "seams": {"live_gateway_pid_for_home": null}}}
+{"func": "served_profile_unserved_platforms", "in": {"profile": "p1", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"platforms": {"p1:telegram": {"error_code": "whatsapp_unpaired", "error_message": "pair me"}, "p1:wa": {"error_code": "multiplex_shared_ingress"}, "p1:ok": {"error_code": "other"}, "p2:telegram": {"error_code": "whatsapp_unpaired"}}}}}}
+{"func": "served_profile_unserved_platforms", "in": {"profile": "p1", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"platforms": {"p1:a": {"error_code": "whatsapp_unpaired", "error_message": ""}, "p1:b": {"error_code": "whatsapp_unpaired", "error_message": 0}, "p1:c": {"error_code": "whatsapp_unpaired", "error_message": ["x"]}}}}}}
+{"func": "served_profile_unserved_platforms", "in": {"profile": "p1", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"platforms": {"p1:a": {"error_code": ["unhashable"]}}}}}}
+{"func": "served_profile_unserved_platforms", "in": {"profile": "p1", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": 7}}}
+{"func": "served_profile_unserved_platforms", "in": {"profile": "p1", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"platforms": "nope"}}}}
+{"func": "served_profile_unserved_platforms", "in": {"profile": "p1", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "served_profile_ingress_urls", "in": {"seams": {"live_gateway_pid_for_home": null}}}
+{"func": "served_profile_ingress_urls", "in": {"seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"platforms": {"p1:telegram": {"ingress_url": "https://t"}, "p1:wa": {"ingress_url": "https://w", "state": "fatal"}, "default:api": {"ingress_url": "https://a"}, "bad": {"ingress_url": "https://b"}, "p1:no": {"state": "stopped"}}}}}}
+{"func": "served_profile_ingress_urls", "in": {"profile": "p1", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"platforms": {"p1:telegram": {"ingress_url": "https://t"}, "p2:telegram": {"ingress_url": "https://x"}}}}}}
+{"func": "served_profile_ingress_urls", "in": {"seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": ["p2"], "platforms": {}}, "shared_listener_mirror_platforms": {"api": {"ingress_url": "https://api"}, "none": {}}}}}
+{"func": "served_profile_ingress_urls", "in": {"seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": ["p2"]}, "shared_listener_mirror_platforms": "notadict"}}}
+{"func": "served_profile_ingress_urls", "in": {"seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": 5}}}}
+{"func": "served_profile_ingress_urls", "in": {"seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "served_profile_ingress_urls", "in": {"profile": "p1", "seams": {"live_gateway_pid_for_home": 1, "read_runtime_status": {"served_profiles": ["p1"], "platforms": {"p1:x": {"ingress_url": 42}}}, "shared_listener_mirror_platforms": {"__raise__": "RuntimeError", "msg": "mirror"}}}}
+{"func": "format_ingress_url_lines", "in": {"urls": {"telegram": "https://t", "api": "https://a"}}}
+{"func": "format_ingress_url_lines", "in": {"urls": {"b": "2", "a": "1"}, "indent": ""}}
+{"func": "format_ingress_url_lines", "in": {"urls": {"z": "z", "y": "y"}, "indent": "    "}}
+{"func": "format_ingress_url_lines", "in": {"urls": {}}}
+{"func": "format_ingress_url_lines", "in": {"urls": ["not", "a", "dict"]}}
+{"func": "format_ingress_url_lines", "in": {"urls": {"n": 5, "t": true, "z": null}}}
+{"func": "format_ingress_url_lines", "in": {"urls": {"a": "b"}, "indent": null}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": null}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": 1, "rescan_gateway_profiles": {"multiplex": true, "served_profiles": ["p1", "p2"]}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": 1, "rescan_gateway_profiles": {"multiplex": false, "served_profiles": ["p1"]}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": 1, "rescan_gateway_profiles": "nope"}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": 1, "rescan_gateway_profiles": {"multiplex": true, "served_profiles": "no"}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": 1, "rescan_gateway_profiles": {"__raise__": "RuntimeError", "msg": "fail"}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"get_default_hermes_root": {"__raise__": "ValueError", "msg": "bad"}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": {"__raise__": "FileNotFoundError", "msg": "gone"}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": {"__raise__": "SystemExit", "msg": "1"}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": {"__raise__": "KeyboardInterrupt", "msg": ""}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "timeout": 3.5, "seams": {"live_gateway_pid_for_home": 1, "rescan_gateway_profiles": {"multiplex": true, "served_profiles": []}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": {"__raise__": "RuntimeError", "msg": "x"}, "logger_debug": {"__raise__": "RuntimeError", "msg": "handler"}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": {"__raise__": "ExceptionGroup", "msg": "groups"}}}}
+{"func": "notify_multiplexer_profiles_changed", "in": {"profile_name": "p1", "seams": {"live_gateway_pid_for_home": {"__raise__": "BaseExceptionGroup", "msg": "groups"}}}}
+{"func": "multiplexer_root_for", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1"}}}
+{"func": "multiplexer_root_for", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": null}}}
+{"func": "multiplexer_root_for", "in": {"home": null, "seams": {}}}
+{"func": "multiplexer_root_for", "in": {"home": "/h", "seams": {"named_profile_home": true}}}
+{"func": "multiplexer_root_for", "in": {"home": "//srv/profiles/p1", "seams": {"named_profile_home": 1}}}
+{"func": "multiplexer_root_for", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": {"__raise__": "RuntimeError", "msg": "x"}}}}
+{"func": "multiplexer_root_for", "in": {"home": ".", "seams": {"named_profile_home": "x"}}}
+{"func": "multiplexer_root_for", "in": {"home": "/h/profiles/p1/./", "seams": {"named_profile_home": "p1"}}}
+{"func": "implied_host_root", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": false}}}
+{"func": "implied_host_root", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": true}}}
+{"func": "implied_host_root", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": null}}}
+{"func": "implied_host_root", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": null}}}
+{"func": "implied_host_root", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": 0}}}
+{"func": "implied_host_root", "in": {"home": null, "seams": {}}}
+{"func": "implied_host_root", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": {"__raise__": "OSError", "msg": "x"}}}}
+{"func": "multiplexer_serves_home", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": true}}}
+{"func": "multiplexer_serves_home", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": false}}}
+{"func": "multiplexer_serves_home", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": null, "read_runtime_status": {"served_profiles": ["p1", "p2"]}, "normalize_profile_name": ["p1", "p2", "p1"]}}}
+{"func": "multiplexer_serves_home", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": null, "read_runtime_status": {"served_profiles": ["other"]}, "normalize_profile_name": ["other", "p1"]}}}
+{"func": "multiplexer_serves_home", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": null, "read_runtime_status": {"served_profiles": "notalist"}}}}
+{"func": "multiplexer_serves_home", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": null, "read_runtime_status": {"served_profiles": ["p1"]}, "normalize_profile_name": {"__raise__": "RuntimeError", "msg": "norm"}}}}
+{"func": "multiplexer_serves_home", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": null, "read_runtime_status": {"served_profiles": ["p1"]}, "normalize_profile_name": ["p1", {"unhashable": 1}]}}}
+{"func": "multiplexer_serves_home", "in": {"home": "/h/profiles/p1", "seams": {"named_profile_home": "p1", "host_serves_named_profile": 0}}}
+{"func": "multiplexer_serves_home", "in": {"home": null, "seams": {}}}

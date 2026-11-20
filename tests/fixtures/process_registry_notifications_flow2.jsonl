@@ -1,0 +1,110 @@
+{"func": "is_child_process_notification", "in": {"evt": {"type": "async_delegation", "owner_task_id": "sa-5"}, "seams": {}}}
+{"func": "is_child_process_notification", "in": {"evt": {"type": "async_delegation_work_closeout", "task_id": "sa-9"}, "seams": {}}}
+{"func": "is_child_process_notification", "in": {"evt": {"owner_task_id": "sa-123"}, "seams": {}}}
+{"func": "is_child_process_notification", "in": {"evt": {"task_id": "sa-7"}, "seams": {}}}
+{"func": "is_child_process_notification", "in": {"evt": {"owner_task_id": "ordinary"}, "seams": {}}}
+{"func": "is_child_process_notification", "in": {"evt": {"owner_task_id": null, "task_id": "sa-7"}, "seams": {}}}
+{"func": "is_child_process_notification", "in": {"evt": {}, "seams": {}}}
+{"func": "is_child_process_notification", "in": {"evt": {"owner_task_id": 123}, "seams": {}}}
+{"func": "is_child_process_notification", "in": {"evt": {"owner_task_id": "sa-x", "type": "completion"}, "seams": {}}}
+{"func": "should_surface_notification", "in": {"evt": {"type": "completion"}, "seams": {}}}
+{"func": "should_surface_notification", "in": {"evt": {"owner_task_id": "sa-1"}, "surface_child": true, "seams": {}}}
+{"func": "should_surface_notification", "in": {"evt": {"owner_task_id": "sa-1"}, "surface_child": false, "seams": {}}}
+{"func": "should_surface_notification", "in": {"evt": {"owner_task_id": "sa-1"}, "seams": {"surface_child": true}}}
+{"func": "should_surface_notification", "in": {"evt": {"owner_task_id": "sa-1"}, "seams": {"surface_child": false}}}
+{"func": "should_surface_notification", "in": {"evt": {"owner_task_id": "sa-1"}, "seams": {"surface_child": null}}}
+{"func": "should_surface_notification", "in": {"evt": {"owner_task_id": "sa-1"}, "seams": {"surface_child": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "should_surface_notification", "in": {"evt": {"owner_task_id": "sa-1"}, "seams": {"surface_child": {"__raise__": "FileNotFoundError", "msg": "gone"}}}}
+{"func": "should_surface_notification", "in": {"evt": {"owner_task_id": "sa-1"}, "seams": {"surface_child": {"__raise__": "KeyboardInterrupt", "msg": "int"}}}}
+{"func": "should_surface_notification", "in": {"evt": {"owner_task_id": "sa-1"}, "seams": {}}}
+{"func": "is_truncated", "in": {"entry": {"truncated": true}, "seams": {}}}
+{"func": "is_truncated", "in": {"entry": {"exit_reason": "max_iterations"}, "seams": {}}}
+{"func": "is_truncated", "in": {"entry": {"truncated": false, "exit_reason": "done"}, "seams": {}}}
+{"func": "is_truncated", "in": {"entry": {}, "seams": {}}}
+{"func": "is_truncated", "in": {"entry": {"truncated": false, "exit_reason": "max_iterations"}, "seams": {}}}
+{"func": "is_truncated", "in": {"entry": {"truncated": 0, "exit_reason": "max_iterations"}, "seams": {}}}
+{"func": "is_truncated", "in": {"entry": {"exit_reason": null}, "seams": {}}}
+{"func": "is_truncated", "in": {"entry": {"truncated": "yes"}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "completion"}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "task_failure_notice": true}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "_sibling_failed": true}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "role": "cron_run"}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "results": [{"status": "completed"}]}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "results": [{"status": "failed", "error": "x"}]}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "results": [{"status": "interrupted"}]}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "results": [{"status": "interrupted"}], "stalled_after_quiet_seconds": 0}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "results": []}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "results": [{"error": "boom"}]}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "results": [{"status": "success"}]}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "results": [{"status": "cancelled"}]}, "seams": {}}}
+{"func": "delegation_wakes_parent", "in": {"evt": {"type": "async_delegation", "results": [5, {"status": "failed"}]}, "seams": {}}}
+{"func": "completion_resumes_parent", "in": {"evt": {"type": "completion"}, "seams": {}}}
+{"func": "completion_resumes_parent", "in": {"evt": {"type": "watch_match"}, "seams": {}}}
+{"func": "completion_resumes_parent", "in": {"evt": {"type": "async_delegation", "task_failure_notice": true}, "seams": {}}}
+{"func": "completion_resumes_parent", "in": {"evt": {"type": "async_delegation"}, "seams": {}}}
+{"func": "completion_resumes_parent", "in": {"evt": {"type": "async_delegation", "role": "cron_run"}, "seams": {}}}
+{"func": "completion_resumes_parent", "in": {"evt": {"type": "async_delegation", "_sibling_resumes": true}, "seams": {}}}
+{"func": "completion_resumes_parent", "in": {"evt": {"type": "async_delegation", "_sibling_resumes": false, "role": "cron_run"}, "seams": {}}}
+{"func": "completion_resumes_parent", "in": {"evt": {}, "seams": {}}}
+{"func": "group_process_notifications", "in": {"notifications": [], "seams": {}}}
+{"func": "group_process_notifications", "in": {"notifications": [[{"type": "completion"}, "A"], [{"type": "completion"}, "B"]], "seams": {}}}
+{"func": "group_process_notifications", "in": {"notifications": [[{"type": "watch_match"}, "W"]], "seams": {}}}
+{"func": "group_process_notifications", "in": {"notifications": [[{"type": "completion"}, "A"], [{"type": "completion"}, "B"], [{"type": "watch_match"}, "W"], [{"type": "completion"}, "C"]], "seams": {}}}
+{"func": "group_process_notifications", "in": {"notifications": [[{"type": "completion"}, "A"], [{"type": "async_delegation"}, "D"]], "seams": {}}}
+{"func": "group_process_notifications", "in": {"notifications": [[{}, "A"]], "seams": {}}}
+{"func": "group_process_notifications", "in": {"notifications": [[{"type": null}, "A"]], "seams": {}}}
+{"func": "group_process_notifications", "in": {"notifications": [[{"type": "watch_disabled"}, "W"], [{"type": "completion"}, "C"]], "seams": {}}}
+{"func": "short_title", "in": {"title": "hello", "seams": {}}}
+{"func": "short_title", "in": {"title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "seams": {}}}
+{"func": "short_title", "in": {"title": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "seams": {}}}
+{"func": "short_title", "in": {"title": "ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "seams": {}}}
+{"func": "short_title", "in": {"title": "", "seams": {}}}
+{"func": "short_title", "in": {"title": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "seams": {}}}
+{"func": "short_title", "in": {"title": "a b c", "seams": {}}}
+{"func": "short_command", "in": {"command": "  ls   -la  ", "seams": {}}}
+{"func": "short_command", "in": {"command": "a\tb\nc", "seams": {}}}
+{"func": "short_command", "in": {"command": "", "seams": {}}}
+{"func": "short_command", "in": {"command": null, "seams": {}}}
+{"func": "short_command", "in": {"command": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "seams": {}}}
+{"func": "short_command", "in": {"command": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", "seams": {}}}
+{"func": "short_command", "in": {"command": "git   status", "seams": {}}}
+{"func": "short_command", "in": {"command": 5, "seams": {}}}
+{"func": "process_completion_display_text", "in": {"events": [], "seams": {}}}
+{"func": "process_completion_display_text", "in": {"events": [{"exit_code": 0}, {"exit_code": 1}], "seams": {}}}
+{"func": "process_completion_display_text", "in": {"events": [{"exit_code": 0, "command": "ls"}], "seams": {}}}
+{"func": "process_completion_display_text", "in": {"events": [{"exit_code": 1, "command": "ls"}], "seams": {}}}
+{"func": "process_completion_display_text", "in": {"events": [{"completion_reason": "killed", "exit_code": -15, "command": "ls"}], "seams": {}}}
+{"func": "process_completion_display_text", "in": {"events": [{"completion_reason": "lost", "command": "ls"}], "seams": {}}}
+{"func": "process_completion_display_text", "in": {"events": [{"exit_code": 0}], "seams": {}}}
+{"func": "process_completion_display_text", "in": {"events": [{"exit_code": 1, "command": ""}], "seams": {}}}
+{"func": "process_completion_display_text", "in": {"events": [{"completion_reason": "killed", "command": "  ls   -l "}], "seams": {}}}
+{"func": "process_completion_display_text", "in": {"events": [{"exit_code": "?"}], "seams": {}}}
+{"func": "completion_status", "in": {"evt": {}, "seams": {}}}
+{"func": "completion_status", "in": {"evt": {"exit_code": 0}, "seams": {}}}
+{"func": "completion_status", "in": {"evt": {"exit_code": 1}, "seams": {}}}
+{"func": "completion_status", "in": {"evt": {"completion_reason": "killed"}, "seams": {}}}
+{"func": "completion_status", "in": {"evt": {"completion_reason": "killed", "termination_source": "user"}, "seams": {}}}
+{"func": "completion_status", "in": {"evt": {"completion_reason": "lost"}, "seams": {}}}
+{"func": "completion_status", "in": {"evt": {"completion_reason": "timeout", "exit_code": 0}, "seams": {}}}
+{"func": "completion_status", "in": {"evt": {"completion_reason": "killed", "termination_source": ""}, "seams": {}}}
+{"func": "heartbeat_output_tail", "in": {"output": "abc", "omitted": 0, "seams": {}}}
+{"func": "heartbeat_output_tail", "in": {"output": "abc", "seams": {}}}
+{"func": "heartbeat_output_tail", "in": {"output": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "omitted": 3, "seams": {}}}
+{"func": "heartbeat_output_tail", "in": {"output": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "omitted": 0, "seams": {}}}
+{"func": "heartbeat_output_tail", "in": {"output": "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq", "omitted": 5, "seams": {}}}
+{"func": "heartbeat_output_tail", "in": {"output": "", "omitted": 0, "seams": {}}}
+{"func": "heartbeat_output_tail", "in": {"output": "xyz", "omitted": 7, "seams": {}}}
+{"func": "heartbeat_output_text", "in": {"evt": {"output": "hello"}, "seams": {}}}
+{"func": "heartbeat_output_text", "in": {"evt": {"omitted": 5, "output": "tail"}, "seams": {}}}
+{"func": "heartbeat_output_text", "in": {"evt": {"omitted": 0, "output": "tail"}, "seams": {}}}
+{"func": "heartbeat_output_text", "in": {"evt": {"output": ""}, "seams": {}}}
+{"func": "heartbeat_output_text", "in": {"evt": {"omitted": "3", "output": "x"}, "seams": {}}}
+{"func": "heartbeat_output_text", "in": {"evt": {"omitted": null, "output": "x"}, "seams": {}}}
+{"func": "heartbeat_output_text", "in": {"evt": {"omitted": -2, "output": "y"}, "seams": {}}}
+{"func": "join_heartbeat_outputs", "in": {"earlier": {"output": "abc", "omitted": 0}, "later": {"output": "def", "omitted": 0}, "seams": {}}}
+{"func": "join_heartbeat_outputs", "in": {"earlier": {"output": "abc", "omitted": 5}, "later": {"output": "def", "omitted": 0}, "seams": {}}}
+{"func": "join_heartbeat_outputs", "in": {"earlier": {"output": "abc", "omitted": 2}, "later": {"output": "de", "omitted": 3}, "seams": {}}}
+{"func": "join_heartbeat_outputs", "in": {"earlier": {}, "later": {}, "seams": {}}}
+{"func": "join_heartbeat_outputs", "in": {"earlier": {"output": "abc", "omitted": null}, "later": {"output": "de"}, "seams": {}}}
+{"func": "join_heartbeat_outputs", "in": {"earlier": {"output": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "omitted": 1}, "later": {"output": "bb", "omitted": 0}, "seams": {}}}
+{"func": "join_heartbeat_outputs", "in": {"earlier": {"output": "abc", "omitted": 1}, "later": {"output": "de", "omitted": "4"}, "seams": {}}}
