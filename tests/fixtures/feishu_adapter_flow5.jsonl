@@ -1,0 +1,134 @@
+{"func": "_build_get_message_request", "in": {"args": {"message_id": "om_1"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "get_message", "id": "om_1"}}]}}}
+{"func": "_build_get_message_request", "in": {"args": {"message_id": ""}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_get_message_request", "in": {"args": {"message_id": "om_2"}, "io": {"_sdk_build": [{"__script__": true, "ret": "REQUEST"}]}}}
+{"func": "_build_get_message_request", "in": {"args": {"message_id": "om_3"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_get_message_request", "in": {"args": {"message_id": "om_4"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "ValueError", "message": "bad id"}}]}}}
+{"func": "_build_get_message_request", "in": {"args": {"message_id": "om_5"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_build_get_message_request", "in": {"args": {"message_id": "om_6"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "TypeError", "message": "t"}}]}}}
+{"func": "_build_get_message_request", "in": {"args": {"message_id": "om_7"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "_build_message_resource_request", "in": {"args": {"message_id": "om_1", "file_key": "fk_1", "resource_type": "image"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "resource"}}]}}}
+{"func": "_build_message_resource_request", "in": {"args": {"message_id": "", "file_key": "", "resource_type": ""}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_message_resource_request", "in": {"args": {"message_id": "om_2", "file_key": "fk_2", "resource_type": "file"}, "io": {"_sdk_build": [{"__script__": true, "ret": "REQ"}]}}}
+{"func": "_build_message_resource_request", "in": {"args": {"message_id": "om_3", "file_key": "fk_3", "resource_type": "media"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_message_resource_request", "in": {"args": {"message_id": "om_4", "file_key": "fk_4", "resource_type": "image"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "sdk down"}}]}}}
+{"func": "_build_message_resource_request", "in": {"args": {"message_id": "om_5", "file_key": "fk_5", "resource_type": "image"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "GeneratorExit", "message": "ge"}}]}}}
+{"func": "_build_message_resource_request", "in": {"args": {"message_id": "om_6", "file_key": "fk_6", "resource_type": "file"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "OSError", "message": "os"}}]}}}
+{"func": "_build_get_application_request", "in": {"args": {"app_id": "cli_a", "lang": "en_us"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "app"}}]}}}
+{"func": "_build_get_application_request", "in": {"args": {"app_id": "", "lang": ""}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_get_application_request", "in": {"args": {"app_id": "cli_b", "lang": "zh_cn"}, "io": {"_sdk_build": [{"__script__": true, "ret": "APP"}]}}}
+{"func": "_build_get_application_request", "in": {"args": {"app_id": "cli_c", "lang": "ja_jp"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"x": 1}}, {"__script__": true, "ret": {"x": 2}}]}}}
+{"func": "_build_get_application_request", "in": {"args": {"app_id": "cli_d", "lang": "en_us"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "LookupError", "message": "lookup"}}]}}}
+{"func": "_build_get_application_request", "in": {"args": {"app_id": "cli_e", "lang": "en_us"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "BaseException", "message": "be"}}]}}}
+{"func": "_build_get_application_request", "in": {"args": {"app_id": "cli_f", "lang": "en_us"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "AttributeError", "message": "attr"}}]}}}
+{"func": "_build_reply_message_body", "in": {"args": {"content": "{\"text\":\"hi\"}", "msg_type": "text", "reply_in_thread": true, "uuid_value": "u-1"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "reply_body"}}]}}}
+{"func": "_build_reply_message_body", "in": {"args": {"content": "", "msg_type": "", "reply_in_thread": false, "uuid_value": ""}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_reply_message_body", "in": {"args": {"content": "c", "msg_type": "post", "reply_in_thread": true, "uuid_value": "u-2"}, "io": {"_sdk_build": [{"__script__": true, "ret": "BODY"}]}}}
+{"func": "_build_reply_message_body", "in": {"args": {"content": "c", "msg_type": "text", "reply_in_thread": false, "uuid_value": "u-3"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_reply_message_body", "in": {"args": {"content": "c", "msg_type": "text", "reply_in_thread": true, "uuid_value": "u-4"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "ValueError", "message": "bad body"}}]}}}
+{"func": "_build_reply_message_body", "in": {"args": {"content": "c", "msg_type": "text", "reply_in_thread": true, "uuid_value": "u-5"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_build_reply_message_body", "in": {"args": {"content": "c", "msg_type": "text", "reply_in_thread": null, "uuid_value": "u-6"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"ok": true}}]}}}
+{"func": "_build_reply_message_request", "in": {"args": {"message_id": "om_1", "request_body": {"b": 1}}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "reply_req"}}]}}}
+{"func": "_build_reply_message_request", "in": {"args": {"message_id": "", "request_body": null}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_reply_message_request", "in": {"args": {"message_id": "om_2", "request_body": "BODY"}, "io": {"_sdk_build": [{"__script__": true, "ret": "REQ"}]}}}
+{"func": "_build_reply_message_request", "in": {"args": {"message_id": "om_3", "request_body": [1, 2]}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_reply_message_request", "in": {"args": {"message_id": "om_4", "request_body": {"b": 2}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "TypeError", "message": "bad req"}}]}}}
+{"func": "_build_reply_message_request", "in": {"args": {"message_id": "om_5", "request_body": {"b": 3}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "_build_reply_message_request", "in": {"args": {"message_id": "om_6", "request_body": 7}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "rt"}}]}}}
+{"func": "_build_update_message_body", "in": {"args": {"msg_type": "text", "content": "c"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "update_body"}}]}}}
+{"func": "_build_update_message_body", "in": {"args": {"msg_type": "", "content": ""}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_update_message_body", "in": {"args": {"msg_type": "post", "content": "c2"}, "io": {"_sdk_build": [{"__script__": true, "ret": "BODY"}]}}}
+{"func": "_build_update_message_body", "in": {"args": {"msg_type": "text", "content": "c3"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_update_message_body", "in": {"args": {"msg_type": "text", "content": "c4"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "ValueError", "message": "v"}}]}}}
+{"func": "_build_update_message_body", "in": {"args": {"msg_type": "text", "content": "c5"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_build_update_message_body", "in": {"args": {"msg_type": "text", "content": "c6"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "OSError", "message": "o"}}]}}}
+{"func": "_build_update_message_request", "in": {"args": {"message_id": "om_1", "request_body": {"b": 1}}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "update_req"}}]}}}
+{"func": "_build_update_message_request", "in": {"args": {"message_id": "", "request_body": null}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_update_message_request", "in": {"args": {"message_id": "om_2", "request_body": "BODY"}, "io": {"_sdk_build": [{"__script__": true, "ret": "REQ"}]}}}
+{"func": "_build_update_message_request", "in": {"args": {"message_id": "om_3", "request_body": {"b": 2}}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_update_message_request", "in": {"args": {"message_id": "om_4", "request_body": {"b": 3}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "TypeError", "message": "t"}}]}}}
+{"func": "_build_update_message_request", "in": {"args": {"message_id": "om_5", "request_body": {"b": 4}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "GeneratorExit", "message": "ge"}}]}}}
+{"func": "_build_update_message_request", "in": {"args": {"message_id": "om_6", "request_body": {"b": 5}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "LookupError", "message": "l"}}]}}}
+{"func": "_build_delete_message_request", "in": {"args": {"message_id": "om_1"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "delete"}}]}}}
+{"func": "_build_delete_message_request", "in": {"args": {"message_id": ""}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_delete_message_request", "in": {"args": {"message_id": "om_2"}, "io": {"_sdk_build": [{"__script__": true, "ret": "REQ"}]}}}
+{"func": "_build_delete_message_request", "in": {"args": {"message_id": "om_3"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_delete_message_request", "in": {"args": {"message_id": "om_4"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "rt"}}]}}}
+{"func": "_build_delete_message_request", "in": {"args": {"message_id": "om_5"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_build_delete_message_request", "in": {"args": {"message_id": "om_6"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "ValueError", "message": "v"}}]}}}
+{"func": "_build_create_message_body", "in": {"args": {"receive_id": "ou_1", "msg_type": "text", "content": "c", "uuid_value": "u-1"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "create_body"}}]}}}
+{"func": "_build_create_message_body", "in": {"args": {"receive_id": "", "msg_type": "", "content": "", "uuid_value": ""}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_create_message_body", "in": {"args": {"receive_id": "ou_2", "msg_type": "post", "content": "c2", "uuid_value": "u-2"}, "io": {"_sdk_build": [{"__script__": true, "ret": "BODY"}]}}}
+{"func": "_build_create_message_body", "in": {"args": {"receive_id": "ou_3", "msg_type": "text", "content": "c3", "uuid_value": "u-3"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_create_message_body", "in": {"args": {"receive_id": "ou_4", "msg_type": "text", "content": "c4", "uuid_value": "u-4"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "ValueError", "message": "v"}}]}}}
+{"func": "_build_create_message_body", "in": {"args": {"receive_id": "ou_5", "msg_type": "text", "content": "c5", "uuid_value": "u-5"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "BaseException", "message": "be"}}]}}}
+{"func": "_build_create_message_body", "in": {"args": {"receive_id": "ou_6", "msg_type": "text", "content": "c6", "uuid_value": "u-6"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "OSError", "message": "o"}}]}}}
+{"func": "_build_create_message_request", "in": {"args": {"receive_id_type": "open_id", "request_body": {"b": 1}}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "create_req"}}]}}}
+{"func": "_build_create_message_request", "in": {"args": {"receive_id_type": "", "request_body": null}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_create_message_request", "in": {"args": {"receive_id_type": "chat_id", "request_body": "BODY"}, "io": {"_sdk_build": [{"__script__": true, "ret": "REQ"}]}}}
+{"func": "_build_create_message_request", "in": {"args": {"receive_id_type": "user_id", "request_body": {"b": 2}}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_create_message_request", "in": {"args": {"receive_id_type": "open_id", "request_body": {"b": 3}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "TypeError", "message": "t"}}]}}}
+{"func": "_build_create_message_request", "in": {"args": {"receive_id_type": "open_id", "request_body": {"b": 4}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "_build_create_message_request", "in": {"args": {"receive_id_type": "open_id", "request_body": {"b": 5}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "r"}}]}}}
+{"func": "_build_image_upload_body", "in": {"args": {"image_type": "message", "image": "B64"}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "image_body"}}]}}}
+{"func": "_build_image_upload_body", "in": {"args": {"image_type": "", "image": null}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_image_upload_body", "in": {"args": {"image_type": "message", "image": {"bytes": 3}}, "io": {"_sdk_build": [{"__script__": true, "ret": "BODY"}]}}}
+{"func": "_build_image_upload_body", "in": {"args": {"image_type": "message", "image": [1, 2]}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_image_upload_body", "in": {"args": {"image_type": "message", "image": "B64"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "ValueError", "message": "v"}}]}}}
+{"func": "_build_image_upload_body", "in": {"args": {"image_type": "message", "image": "B64"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_build_image_upload_body", "in": {"args": {"image_type": "message", "image": "B64"}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "OSError", "message": "o"}}]}}}
+{"func": "_build_image_upload_request", "in": {"args": {"request_body": {"b": 1}}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "image_req"}}]}}}
+{"func": "_build_image_upload_request", "in": {"args": {"request_body": null}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_image_upload_request", "in": {"args": {"request_body": "BODY"}, "io": {"_sdk_build": [{"__script__": true, "ret": "REQ"}]}}}
+{"func": "_build_image_upload_request", "in": {"args": {"request_body": [1]}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_image_upload_request", "in": {"args": {"request_body": {"b": 2}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "TypeError", "message": "t"}}]}}}
+{"func": "_build_image_upload_request", "in": {"args": {"request_body": {"b": 3}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "GeneratorExit", "message": "ge"}}]}}}
+{"func": "_build_image_upload_request", "in": {"args": {"request_body": {"b": 4}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "LookupError", "message": "l"}}]}}}
+{"func": "_build_file_upload_request", "in": {"args": {"request_body": {"b": 1}}, "io": {"_sdk_build": [{"__script__": true, "ret": {"kind": "file_req"}}]}}}
+{"func": "_build_file_upload_request", "in": {"args": {"request_body": null}, "io": {"_sdk_build": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_file_upload_request", "in": {"args": {"request_body": "BODY"}, "io": {"_sdk_build": [{"__script__": true, "ret": "REQ"}]}}}
+{"func": "_build_file_upload_request", "in": {"args": {"request_body": [1]}, "io": {"_sdk_build": [{"__script__": true, "ret": {"a": 1}}, {"__script__": true, "ret": {"a": 2}}]}}}
+{"func": "_build_file_upload_request", "in": {"args": {"request_body": {"b": 2}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "ValueError", "message": "v"}}]}}}
+{"func": "_build_file_upload_request", "in": {"args": {"request_body": {"b": 3}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_build_file_upload_request", "in": {"args": {"request_body": {"b": 4}}, "io": {"_sdk_build": [{"__script__": true, "raise": {"type": "OSError", "message": "o"}}]}}}
+{"func": "_response_succeeded", "in": {"args": {"response": null}, "io": {}}}
+{"func": "_response_succeeded", "in": {"args": {"response": {}}, "io": {}}}
+{"func": "_response_succeeded", "in": {"args": {"response": {"success": true, "code": 0, "msg": "ok"}}, "io": {}}}
+{"func": "_response_succeeded", "in": {"args": {"response": {"success": false, "code": 1, "msg": "bad"}}, "io": {}}}
+{"func": "_response_succeeded", "in": {"args": {"response": {"success": 0}}, "io": {}}}
+{"func": "_response_succeeded", "in": {"args": {"response": {"success": "yes"}}, "io": {}}}
+{"func": "_response_succeeded", "in": {"args": {"response": {"success": []}}, "io": {}}}
+{"func": "_response_succeeded", "in": {"args": {"response": {"success": 1, "data": {"message_id": "m1"}}}, "io": {}}}
+{"func": "_extract_response_field", "in": {"args": {"response": {"success": true, "data": {"message_id": "m1"}}, "field_name": "message_id"}, "io": {"_response_succeeded": [{"__script__": true, "ret": true}]}}}
+{"func": "_extract_response_field", "in": {"args": {"response": {"success": true, "data": {"message_id": "m1"}}, "field_name": "missing"}, "io": {"_response_succeeded": [{"__script__": true, "ret": true}]}}}
+{"func": "_extract_response_field", "in": {"args": {"response": {"success": true, "data": null}, "field_name": "message_id"}, "io": {"_response_succeeded": [{"__script__": true, "ret": true}]}}}
+{"func": "_extract_response_field", "in": {"args": {"response": {"success": true}, "field_name": "message_id"}, "io": {"_response_succeeded": [{"__script__": true, "ret": true}]}}}
+{"func": "_extract_response_field", "in": {"args": {"response": {"success": false, "data": {"message_id": "m1"}}, "field_name": "message_id"}, "io": {"_response_succeeded": [{"__script__": true, "ret": false}]}}}
+{"func": "_extract_response_field", "in": {"args": {"response": null, "field_name": "message_id"}, "io": {"_response_succeeded": [{"__script__": true, "ret": false}]}}}
+{"func": "_extract_response_field", "in": {"args": {"response": {"success": true, "data": {"message_id": "m1"}}, "field_name": "message_id"}, "io": {"_response_succeeded": [{"__script__": true, "raise": {"type": "ValueError", "message": "gate down"}}]}}}
+{"func": "_extract_response_field", "in": {"args": {"response": {"success": true, "data": {"message_id": "m2", "code": 0}}, "field_name": "code"}, "io": {"_response_succeeded": [{"__script__": true, "ret": 1}]}}}
+{"func": "_response_error_result", "in": {"args": {"response": {"code": 14, "msg": "rate limited"}, "default_message": "fail"}, "io": {}}}
+{"func": "_response_error_result", "in": {"args": {"response": {"code": 0, "msg": "ok"}, "default_message": "fail", "override_error": "OVERRIDE"}, "io": {}}}
+{"func": "_response_error_result", "in": {"args": {"response": {}, "default_message": "fallback"}, "io": {}}}
+{"func": "_response_error_result", "in": {"args": {"response": null, "default_message": "fallback"}, "io": {}}}
+{"func": "_response_error_result", "in": {"args": {"response": {"code": null, "msg": null}, "default_message": "d"}, "io": {}}}
+{"func": "_response_error_result", "in": {"args": {"response": {"code": "X", "msg": "why"}, "default_message": "d", "override_error": ""}, "io": {}}}
+{"func": "_response_error_result", "in": {"args": {"response": {"code": 7, "msg": "seven"}, "default_message": "d"}, "io": {}}}
+{"func": "_response_error_result", "in": {"args": {"response": {"code": true, "msg": false}, "default_message": "d"}, "io": {}}}
+{"func": "_finalize_send_result", "in": {"args": {"response": {"success": true, "data": {"message_id": "m1"}}, "default_message": "fail"}, "io": {"_response_succeeded": [{"__script__": true, "ret": true}], "_extract_response_field": [{"__script__": true, "ret": "m1"}]}}}
+{"func": "_finalize_send_result", "in": {"args": {"response": {"success": false, "code": 9, "msg": "nope"}, "default_message": "fail"}, "io": {"_response_succeeded": [{"__script__": true, "ret": false}], "_response_error_result": [{"__script__": true, "ret": {"success": false, "error": "[9] nope"}}]}}}
+{"func": "_finalize_send_result", "in": {"args": {"response": null, "default_message": "d"}, "io": {"_response_succeeded": [{"__script__": true, "ret": true}], "_extract_response_field": [{"__script__": true, "ret": null}]}}}
+{"func": "_finalize_send_result", "in": {"args": {"response": {"success": true}, "default_message": "d"}, "io": {"_response_succeeded": [{"__script__": true, "ret": true}], "_extract_response_field": [{"__script__": true, "ret": "X-1"}]}}}
+{"func": "_finalize_send_result", "in": {"args": {"response": {"success": true}, "default_message": "d"}, "io": {"_response_succeeded": [{"__script__": true, "ret": true}], "_extract_response_field": [{"__script__": true, "raise": {"type": "ValueError", "message": "extract failed"}}]}}}
+{"func": "_finalize_send_result", "in": {"args": {"response": {"success": false}, "default_message": "d"}, "io": {"_response_succeeded": [{"__script__": true, "ret": false}], "_response_error_result": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "err failed"}}]}}}
+{"func": "_finalize_send_result", "in": {"args": {"response": {"success": true}, "default_message": "d"}, "io": {"_response_succeeded": [{"__script__": true, "raise": {"type": "SystemExit", "message": "gate exit"}}]}}}
+{"func": "_finalize_send_result", "in": {"args": {"response": {"success": true}, "default_message": "d"}, "io": {"_response_succeeded": [{"__script__": true, "ret": 1}], "_extract_response_field": [{"__script__": true, "ret": 42}]}}}
+{"func": "_resolve_outbound_file_routing", "in": {"args": {"file_path": "voice.ogg", "requested_message_type": "audio"}, "io": {}}}
+{"func": "_resolve_outbound_file_routing", "in": {"args": {"file_path": "v.OPUS", "requested_message_type": "audio"}, "io": {}}}
+{"func": "_resolve_outbound_file_routing", "in": {"args": {"file_path": "voice.ogg", "requested_message_type": "file"}, "io": {}}}
+{"func": "_resolve_outbound_file_routing", "in": {"args": {"file_path": "clip.mp4", "requested_message_type": "file"}, "io": {}}}
+{"func": "_resolve_outbound_file_routing", "in": {"args": {"file_path": "dir/clip.MOV", "requested_message_type": "x"}, "io": {}}}
+{"func": "_resolve_outbound_file_routing", "in": {"args": {"file_path": "report.pdf", "requested_message_type": "file"}, "io": {}}}
+{"func": "_resolve_outbound_file_routing", "in": {"args": {"file_path": "sheet.xlsx", "requested_message_type": "file"}, "io": {}}}
+{"func": "_resolve_outbound_file_routing", "in": {"args": {"file_path": "noext", "requested_message_type": "file"}, "io": {}}}
+{"func": "_resolve_outbound_file_routing", "in": {"args": {"file_path": "doc.docx", "requested_message_type": "file"}, "io": {}}}
+{"func": "_resolve_outbound_file_routing", "in": {"args": {"file_path": "a.b.avi", "requested_message_type": "audio"}, "io": {}}}

@@ -1,0 +1,151 @@
+{"func": "task_member_id", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "mem1"}}, "seams": {}}}
+{"func": "task_member_id", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "", "target_profile": "prof"}}, "seams": {}}}
+{"func": "task_member_id", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_profile": "prof2"}}, "seams": {}}}
+{"func": "task_member_id", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": 0, "target_profile": "prof3"}}, "seams": {}}}
+{"func": "task_member_id", "in": {"task": {"status": "running"}, "seams": {}}}
+{"func": "task_member_id", "in": {"task": {"payload": {}}, "seams": {}}}
+{"func": "task_member_id", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": 42}}, "seams": {}}}
+{"func": "task_member_id", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": true}}, "seams": {}}}
+{"func": "approvable_attempts", "in": {"tasks": [{"identity": {"task_id": "a", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, {"identity": {"task_id": "b", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "deferred", "execution_generation": 3, "payload": {"target_member_id": "m2"}}, {"identity": {"task_id": "c", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "settled", "execution_generation": 2, "payload": {"target_member_id": "m3"}}], "seams": {}}}
+{"func": "approvable_attempts", "in": {"tasks": [{"identity": {"task_id": "a", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, {"identity": {"task_id": "a", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}], "seams": {}}}
+{"func": "approvable_attempts", "in": {"tasks": [{"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "settled", "execution_generation": 2, "payload": {"target_member_id": "m1"}}], "seams": {}}}
+{"func": "approvable_attempts", "in": {"tasks": [{"identity": {}, "payload": {}}], "seams": {}}}
+{"func": "approvable_attempts", "in": {"tasks": [{"status": "running", "payload": {}, "execution_generation": 1}], "seams": {}}}
+{"func": "approvable_attempts", "in": {"tasks": [{"identity": {"task_id": "z", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "indeterminate", "execution_generation": 9, "payload": {"target_profile": "p1"}}], "seams": {}}}
+{"func": "approvable_attempts", "in": {"tasks": [], "seams": {}}}
+{"func": "approvable_attempts", "in": {"tasks": [{"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m"}}], "seams": {}}}
+{"func": "attempt_action", "in": {"kind": "retry", "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {}}}
+{"func": "attempt_action", "in": {"kind": "discard", "task": {"identity": {"task_id": "t2", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 4, "payload": {"target_member_id": "m2"}}, "seams": {}}}
+{"func": "attempt_action", "in": {"kind": "retry", "task": {"payload": {}, "execution_generation": 1}, "seams": {}}}
+{"func": "attempt_action", "in": {"kind": "retry", "task": {"payload": {}, "identity": {}, "execution_generation": 1}, "seams": {}}}
+{"func": "attempt_action", "in": {"kind": "retry", "task": {"payload": {}, "identity": {"task_id": "t"}}, "seams": {}}}
+{"func": "attempt_action", "in": {"kind": "retry", "task": {"identity": {"task_id": "t3", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_profile": "p"}}, "seams": {}}}
+{"func": "attempt_action", "in": {"kind": "retry", "task": {"status": "running", "execution_generation": 1}, "seams": {}}}
+{"func": "member_of", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {}}}
+{"func": "member_of", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "", "target_profile": "p1"}}, "seams": {}}}
+{"func": "member_of", "in": {"task": {"status": "running"}, "seams": {}}}
+{"func": "member_of", "in": {"task": {"payload": null, "status": "running"}, "seams": {}}}
+{"func": "member_of", "in": {"task": {"payload": {}, "status": "running"}, "seams": {}}}
+{"func": "member_of", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": 7}}, "seams": {}}}
+{"func": "member_of", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": false, "target_profile": "p2"}}, "seams": {}}}
+{"func": "authority", "in": {"room": {"authority_gateway_id": "gw1", "authority_epoch": 3}, "seams": {}}}
+{"func": "authority", "in": {"room": {"authority_gateway_id": 5, "authority_epoch": 2}, "seams": {}}}
+{"func": "authority", "in": {"room": {"authority_gateway_id": "gw1", "authority_epoch": "7"}, "seams": {}}}
+{"func": "authority", "in": {"room": {"authority_epoch": 1}, "seams": {}}}
+{"func": "authority", "in": {"room": {"authority_gateway_id": "gw1"}, "seams": {}}}
+{"func": "authority", "in": {"room": {"authority_gateway_id": "gw1", "authority_epoch": "abc"}, "seams": {}}}
+{"func": "authority", "in": {"room": {"authority_gateway_id": "gw1", "authority_epoch": 2.9}, "seams": {}}}
+{"func": "authority", "in": {"room": {"authority_gateway_id": "gw1", "authority_epoch": true}, "seams": {}}}
+{"func": "grant_revoke_is_terminal", "in": {"exc": {"status_code": 401, "error_code": "invalid_room_grant"}, "seams": {}}}
+{"func": "grant_revoke_is_terminal", "in": {"exc": {"status_code": 403, "error_code": "room_reauthorization_required"}, "seams": {}}}
+{"func": "grant_revoke_is_terminal", "in": {"exc": {"status_code": 500, "error_code": "invalid_room_grant"}, "seams": {}}}
+{"func": "grant_revoke_is_terminal", "in": {"exc": {"status_code": 401, "error_code": "other"}, "seams": {}}}
+{"func": "grant_revoke_is_terminal", "in": {"exc": {"status_code": "401", "error_code": "invalid_room_grant"}, "seams": {}}}
+{"func": "grant_revoke_is_terminal", "in": {"exc": {"error_code": "invalid_room_grant"}, "seams": {}}}
+{"func": "grant_revoke_is_terminal", "in": {"exc": {"status_code": 401}, "seams": {}}}
+{"func": "grant_revoke_is_terminal", "in": {"exc": {"status_code": 403.0, "error_code": "invalid_room_grant"}, "seams": {}}}
+{"func": "hosted_room_turn_timeout_seconds", "in": {"seams": {"os.getenv": "1800"}}}
+{"func": "hosted_room_turn_timeout_seconds", "in": {"seams": {"os.getenv": "60"}}}
+{"func": "hosted_room_turn_timeout_seconds", "in": {"seams": {"os.getenv": "0"}}}
+{"func": "hosted_room_turn_timeout_seconds", "in": {"seams": {"os.getenv": "-5"}}}
+{"func": "hosted_room_turn_timeout_seconds", "in": {"seams": {"os.getenv": "abc"}}}
+{"func": "hosted_room_turn_timeout_seconds", "in": {"seams": {"os.getenv": null}}}
+{"func": "hosted_room_turn_timeout_seconds", "in": {"seams": {"os.getenv": {"__raise__": "ValueError", "msg": "bad env"}}}}
+{"func": "hosted_room_turn_timeout_seconds", "in": {"seams": {"os.getenv": {"__raise__": "KeyboardInterrupt", "msg": "stop"}}}}
+{"func": "hosted_room_turn_timeout_seconds", "in": {"seams": {"os.getenv": {"__raise__": "ImportError", "msg": "sibling"}}}}
+{"func": "hook", "in": {"obj": {"on_ready": {"__callable__": "ready"}}, "name": "on_ready", "seams": {}}}
+{"func": "hook", "in": {"obj": {"on_ready": {"__callable__": "ready"}}, "name": "missing", "seams": {}}}
+{"func": "hook", "in": {"obj": {"on_ready": "plain"}, "name": "on_ready", "seams": {}}}
+{"func": "hook", "in": {"obj": {}, "name": "x", "seams": {}}}
+{"func": "hook", "in": {"obj": {"x": {"__callable__": "c1"}, "y": {"__callable__": "c2"}}, "name": "y", "seams": {}}}
+{"func": "hook", "in": {"obj": null, "name": "x", "seams": {}}}
+{"func": "hook", "in": {"obj": {"x": {"__callable__": "c3"}}, "name": "x", "seams": {}}}
+{"func": "disband_fence", "in": {"service": {"disbanding": {"__callable__": "disbanding"}}, "room_id": "r1", "seams": {"disbanding": "fence-ok"}}}
+{"func": "disband_fence", "in": {"service": {}, "room_id": "r1", "seams": {}}}
+{"func": "disband_fence", "in": {"service": {"disbanding": null}, "room_id": "r1", "seams": {}}}
+{"func": "disband_fence", "in": {"service": {"disbanding": "plain"}, "room_id": "r1", "seams": {}}}
+{"func": "disband_fence", "in": {"service": {"disbanding": {"__callable__": "disbanding"}}, "room_id": "r2", "seams": {"disbanding": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "disband_fence", "in": {"service": {"disbanding": {"__callable__": "disbanding"}}, "room_id": "r3", "seams": {"disbanding": {"__raise__": "KeyboardInterrupt", "msg": "stop"}}}}
+{"func": "disband_fence", "in": {"service": {"disbanding": {"__callable__": "disbanding"}}, "room_id": "r4", "seams": {"disbanding": "ok4"}}}
+{"func": "route_publication_lock", "in": {"service": {"peer_route_lock": "L1"}, "seams": {}}}
+{"func": "route_publication_lock", "in": {"service": {}, "seams": {}}}
+{"func": "route_publication_lock", "in": {"service": {"peer_route_lock": null}, "seams": {}}}
+{"func": "route_publication_lock", "in": {"service": {"peer_route_lock": {"id": 1}}, "seams": {}}}
+{"func": "route_publication_lock", "in": {"service": {"peer_route_lock": false}, "seams": {}}}
+{"func": "route_publication_lock", "in": {"service": {"peer_route_lock": 0}, "seams": {}}}
+{"func": "route_publication_lock", "in": {"service": {"peer_route_lock": "L2"}, "seams": {}}}
+{"func": "member_activity", "in": {"task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {"discussion.turn_round": 2, "task_progress": {"tool": "x"}}}}
+{"func": "member_activity", "in": {"task": {"identity": {"task_id": "t2", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m2"}}, "seams": {"discussion.turn_round": null, "task_progress": {"tool": "y", "n": 3}}}}
+{"func": "member_activity", "in": {"task": {"identity": {"task_id": "t3", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m3"}, "started_at": null}, "seams": {"discussion.turn_round": 1, "task_progress": {}}}}
+{"func": "member_activity", "in": {"task": {"identity": {"task_id": "t4", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m4"}}, "seams": {"discussion.turn_round": 0, "task_progress": {"k": "v"}}}}
+{"func": "member_activity", "in": {"task": {"identity": {"task_id": "t5", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m5"}}, "seams": {"discussion.turn_round": {"__raise__": "RuntimeError", "msg": "turn"}, "task_progress": {}}}}
+{"func": "member_activity", "in": {"task": {"identity": {"task_id": "t6", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m6"}}, "seams": {"discussion.turn_round": 1, "task_progress": {"__raise__": "ValueError", "msg": "progress"}}}}
+{"func": "member_activity", "in": {"task": {"status": "running", "execution_generation": 1, "payload": {}}, "seams": {}}}
+{"func": "member_activity", "in": {"task": {"identity": {"task_id": "t"}, "execution_generation": 1, "payload": {}}, "seams": {}}}
+{"func": "member_activity", "in": {"task": {"identity": {"task_id": "t9", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": "3", "payload": {"target_member_id": "m9"}}, "seams": {"discussion.turn_round": 2, "task_progress": {}}}}
+{"func": "attempt_actions", "in": {"tasks_shown": [{"identity": {"task_id": "a", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "deferred", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, {"identity": {"task_id": "b", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "settled", "execution_generation": 2, "payload": {"target_member_id": "m2"}}, {"identity": {"task_id": "c", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "indeterminate", "execution_generation": 4, "payload": {"target_member_id": "m3"}}, {"identity": {"task_id": "d", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m4"}}], "seams": {}}}
+{"func": "attempt_actions", "in": {"tasks_shown": [], "seams": {}}}
+{"func": "attempt_actions", "in": {"tasks_shown": [{"identity": {}, "payload": {}}], "seams": {}}}
+{"func": "attempt_actions", "in": {"tasks_shown": [{"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "deferred", "execution_generation": 2, "payload": {"target_member_id": "m1"}}], "seams": {}}}
+{"func": "attempt_actions", "in": {"tasks_shown": [{"identity": {"task_id": "z", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "deferred", "execution_generation": 2, "payload": {"target_profile": "p1"}}], "seams": {}}}
+{"func": "attempt_actions", "in": {"tasks_shown": [{"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m2"}}], "seams": {}}}
+{"func": "attempt_actions", "in": {"tasks_shown": [{"identity": {"task_id": "a", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "indeterminate", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, {"identity": {"task_id": "b", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "deferred", "execution_generation": 2, "payload": {"target_member_id": "m2"}}], "seams": {}}}
+{"func": "stop_pending_refusal", "in": {"room_id": "r0", "deferred": [{"status": "deferred"}], "seams": {}}}
+{"func": "stop_pending_refusal", "in": {"room_id": "r1", "deferred": [{"status": "deferred"}], "seams": {}}}
+{"func": "stop_pending_refusal", "in": {"room_id": "r2", "deferred": [{"status": "deferred"}], "seams": {}}}
+{"func": "stop_pending_refusal", "in": {"room_id": "r3", "deferred": [{"status": "deferred"}], "seams": {}}}
+{"func": "stop_pending_refusal", "in": {"room_id": "r4", "deferred": [{"status": "deferred"}], "seams": {}}}
+{"func": "stop_pending_refusal", "in": {"room_id": "r5", "deferred": [{"status": "deferred"}], "seams": {}}}
+{"func": "policy_snapshot", "in": {"room": {"room_id": "r1", "latest_seq": 5}, "seams": {"policy_checkpoint.snapshot": {"a": 1}}}}
+{"func": "policy_snapshot", "in": {"room": {"room_id": "r2", "latest_seq": "7"}, "seams": {"policy_checkpoint.snapshot": {"b": 2}}}}
+{"func": "policy_snapshot", "in": {"room": {"latest_seq": 5}, "seams": {}}}
+{"func": "policy_snapshot", "in": {"room": {"room_id": "r1"}, "seams": {}}}
+{"func": "policy_snapshot", "in": {"room": {"room_id": "r1", "latest_seq": "x"}, "seams": {}}}
+{"func": "policy_snapshot", "in": {"room": {"room_id": "r1", "latest_seq": 5}, "seams": {"policy_checkpoint.snapshot": {"__raise__": "RuntimeError", "msg": "snap"}}}}
+{"func": "policy_snapshot", "in": {"room": {"room_id": 9, "latest_seq": 1}, "seams": {"policy_checkpoint.snapshot": null}}}
+{"func": "profile_homes", "in": {"self": {"root": "/home/u"}, "seams": {"self.local_profiles": [["default", "alpha"]]}}}
+{"func": "profile_homes", "in": {"self": {"root": ""}, "seams": {"self.local_profiles": [["default", "alpha"]]}}}
+{"func": "profile_homes", "in": {"self": {"root": "/home/u"}, "seams": {"self.local_profiles": [[]]}}}
+{"func": "profile_homes", "in": {"self": {"root": "/home/u"}, "seams": {"self.local_profiles": [["default"]]}}}
+{"func": "profile_homes", "in": {"self": {"root": "/home/u"}, "seams": {"self.local_profiles": {"__raise__": "RuntimeError", "msg": "profiles"}}}}
+{"func": "profile_homes", "in": {"self": {"root": "/home/u"}, "seams": {"self.local_profiles": [["beta", "gamma"]]}}}
+{"func": "profile_homes", "in": {"self": {"root": "/home/u/"}, "seams": {"self.local_profiles": [["default", "alpha"]]}}}
+{"func": "route_statuses", "in": {"self": {"_peer_route_status": [{"room_id": "r2", "member_id": "b", "status": "ready"}, {"room_id": "r1", "member_id": "z", "status": "unavailable"}, {"room_id": "r1", "member_id": "a", "status": "ready"}]}, "seams": {}}}
+{"func": "route_statuses", "in": {"self": {"_peer_route_status": [{"room_id": "r2", "member_id": "b", "status": "ready"}, {"room_id": "r1", "member_id": "z", "status": "unavailable"}, {"room_id": "r1", "member_id": "a", "status": "ready"}]}, "room_id": "r1", "seams": {}}}
+{"func": "route_statuses", "in": {"self": {"_peer_route_status": [{"room_id": "r2", "member_id": "b", "status": "ready"}, {"room_id": "r1", "member_id": "z", "status": "unavailable"}, {"room_id": "r1", "member_id": "a", "status": "ready"}]}, "room_id": null, "seams": {}}}
+{"func": "route_statuses", "in": {"self": {"_peer_route_status": []}, "seams": {}}}
+{"func": "route_statuses", "in": {"self": {"_peer_route_status": [{"room_id": "r2", "member_id": "b", "status": "ready"}, {"room_id": "r1", "member_id": "z", "status": "unavailable"}, {"room_id": "r1", "member_id": "a", "status": "ready"}]}, "room_id": "r9", "seams": {}}}
+{"func": "route_statuses", "in": {"self": {}, "seams": {}}}
+{"func": "route_statuses", "in": {"self": {"_peer_route_status": [{"room_id": "r2", "member_id": "b", "status": "ready"}, {"room_id": "r1", "member_id": "z", "status": "unavailable"}, {"room_id": "r1", "member_id": "a", "status": "ready"}]}, "room_id": "r2", "seams": {}}}
+{"func": "events", "in": {"room_id": "r1", "seams": {"hosted_rooms.read_events": {"events": [{"seq": 1}], "cursor": 1, "has_more": false}}}}
+{"func": "events", "in": {"room_id": "r2", "seams": {"hosted_rooms.read_events": [{"events": [{"seq": 1}], "cursor": 2, "has_more": true}, {"events": [{"seq": 2}], "cursor": 2, "has_more": false}]}}}
+{"func": "events", "in": {"room_id": "r3", "seams": {"hosted_rooms.read_events": {"events": "bad", "cursor": 1, "has_more": false}}}}
+{"func": "events", "in": {"room_id": "r4", "seams": {"hosted_rooms.read_events": {"events": [{"seq": 1}, 5], "cursor": 1, "has_more": false}}}}
+{"func": "events", "in": {"room_id": "r5", "seams": {"hosted_rooms.read_events": {"events": [], "cursor": 0, "has_more": true}}}}
+{"func": "events", "in": {"room_id": "r6", "seams": {"hosted_rooms.read_events": {"__raise__": "OSError", "msg": "io"}}}}
+{"func": "events", "in": {"room_id": "r7", "seams": {"hosted_rooms.read_events": {"events": [{"seq": 1}], "cursor": "2", "has_more": false}}}}
+{"func": "events", "in": {"room_id": "r8", "seams": {"hosted_rooms.read_events": {"events": [{"seq": 1}], "cursor": null, "has_more": false}}}}
+{"func": "append_room_status", "in": {"room": {"room_id": "r1", "authority_gateway_id": "gw1", "authority_epoch": 3}, "decision": {"discussion_event_id": "d1", "continues": 0, "reason": "settled", "status": "settled", "thread_id": "thr1"}, "seams": {"hosted_rooms.append_event": null}}}
+{"func": "append_room_status", "in": {"room": {"room_id": "r1", "authority_gateway_id": "gw1", "authority_epoch": 3}, "decision": {"discussion_event_id": "d2", "continues": 2, "reason": "bounded", "status": "bounded", "thread_id": "thr2"}, "seams": {"hosted_rooms.append_event": null}}}
+{"func": "append_room_status", "in": {"room": {"room_id": "r1", "authority_gateway_id": "gw1", "authority_epoch": 3}, "decision": {"discussion_event_id": null, "continues": 0, "reason": "x", "status": "settled", "thread_id": "thr1"}, "seams": {}}}
+{"func": "append_room_status", "in": {"room": {"room_id": "r1"}, "decision": {"discussion_event_id": "d1", "continues": 0, "reason": "x", "status": "settled", "thread_id": "thr1"}, "seams": {}}}
+{"func": "append_room_status", "in": {"room": {"room_id": "r1", "authority_gateway_id": "gw1", "authority_epoch": "bad"}, "decision": {"discussion_event_id": "d1", "continues": 0, "reason": "x", "status": "settled", "thread_id": "thr1"}, "seams": {}}}
+{"func": "append_room_status", "in": {"room": {"room_id": "r1", "authority_gateway_id": "gw1", "authority_epoch": 3}, "decision": {"discussion_event_id": "d3", "continues": 0, "reason": "x", "status": "settled", "thread_id": "thr1"}, "seams": {"hosted_rooms.append_event": {"__raise__": "RuntimeError", "msg": "append"}}}}
+{"func": "append_room_status", "in": {"room": {"room_id": "r1", "authority_gateway_id": "gw1", "authority_epoch": 3}, "decision": {"discussion_event_id": "d4", "continues": true, "reason": "x", "status": "settled", "thread_id": "thr1"}, "seams": {"hosted_rooms.append_event": null}}}
+{"func": "publish_terminal", "in": {"binding": {"room_id": "r1"}, "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "deferred", "execution_generation": 2, "payload": {"target_member_id": "m1", "target_profile": "p1"}}, "seams": {"self._member_is_peer": true, "forget_task_progress": null, "self._prepare_tracked": null, "self.runtime.wakeup": null}}}
+{"func": "publish_terminal", "in": {"binding": {"room_id": "r1"}, "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "deferred", "execution_generation": 2, "payload": {"target_member_id": "m1", "target_profile": "p1"}}, "seams": {"self._member_is_peer": false, "forget_task_progress": null, "self._prepare_tracked": null, "self.runtime.wakeup": null}}}
+{"func": "publish_terminal", "in": {"binding": {"room_id": "r1"}, "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {"forget_task_progress": null, "self._prepare_tracked": null, "self.runtime.wakeup": null}}}
+{"func": "publish_terminal", "in": {"binding": {"room_id": "r1"}, "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "settled", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {"forget_task_progress": null, "self._prepare_tracked": null, "self.runtime.wakeup": null}}}
+{"func": "publish_terminal", "in": {"binding": {"room_id": "r1"}, "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "deferred", "execution_generation": 2, "payload": {"target_member_id": "m1", "target_profile": "p1"}}, "seams": {"self._member_is_peer": {"__raise__": "RuntimeError", "msg": "peer"}}}}
+{"func": "publish_terminal", "in": {"binding": {"room_id": "r1"}, "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "deferred", "execution_generation": 2, "payload": {"target_member_id": "m1", "target_profile": "p1"}}, "seams": {"self._member_is_peer": false, "forget_task_progress": {"__raise__": "ValueError", "msg": "forget"}}}}
+{"func": "publish_terminal", "in": {"binding": {"room_id": "r1"}, "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {"forget_task_progress": null, "self._prepare_tracked": {"__raise__": "RuntimeError", "msg": "prep"}}}}
+{"func": "publish_terminal", "in": {"binding": {"room_id": "r1"}, "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {"forget_task_progress": null, "self._prepare_tracked": null, "self.runtime.wakeup": {"__raise__": "RuntimeError", "msg": "wake"}}}}
+{"func": "publish_terminal", "in": {"binding": {"room_id": "r1"}, "task": {"identity": {"task_id": "t"}, "execution_generation": 1, "payload": {}}, "seams": {}}}
+{"func": "peer_admission_receipt", "in": {"self": {"peer_routes": [{"room_id": "r1", "member_id": "m1", "home_install_id": "home1", "target_install_id": "tgt1", "target_profile": "p1"}]}, "room_id": "r1", "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3}, "hosted_rooms.remote_run_receipt": {"run_id": "run1"}}}}
+{"func": "peer_admission_receipt", "in": {"self": {"peer_routes": []}, "room_id": "r1", "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {}}}
+{"func": "peer_admission_receipt", "in": {"self": {"peer_routes": [{"room_id": "r1", "member_id": "m1", "home_install_id": "home1", "target_install_id": "tgt1", "target_profile": "p1"}]}, "room_id": "r1", "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {"self._room": {"__raise__": "RuntimeError", "msg": "room"}}}}
+{"func": "peer_admission_receipt", "in": {"self": {"peer_routes": [{"room_id": "r1", "member_id": "m1", "home_install_id": "home1", "target_install_id": "tgt1", "target_profile": "p1"}]}, "room_id": "r1", "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3}, "hosted_rooms.remote_run_receipt": {"__raise__": "ValueError", "msg": "receipt"}}}}
+{"func": "peer_admission_receipt", "in": {"self": {"peer_routes": [{"room_id": "r1", "member_id": "m1", "home_install_id": "home1", "target_install_id": "tgt1", "target_profile": "p1"}]}, "room_id": "r1", "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_profile": "p1"}}, "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3}, "hosted_rooms.remote_run_receipt": null}}}
+{"func": "peer_admission_receipt", "in": {"self": {"peer_routes": [{"room_id": "r1", "member_id": "m1", "home_install_id": "home1", "target_install_id": "tgt1", "target_profile": "p1"}]}, "room_id": "r1", "task": {"identity": {}, "execution_generation": 1, "payload": {"target_member_id": "m1"}}, "seams": {}}}
+{"func": "peer_admission_receipt", "in": {"self": {"peer_routes": [{"room_id": "r1", "member_id": "m1", "home_install_id": "home1", "target_install_id": "tgt1", "target_profile": "p1"}]}, "room_id": "r1", "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": 2, "payload": {"target_member_id": "m1"}}, "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": "bad"}, "hosted_rooms.remote_run_receipt": null}}}
+{"func": "peer_admission_receipt", "in": {"self": {"peer_routes": [{"room_id": "r1", "member_id": "m1", "home_install_id": "home1", "target_install_id": "tgt1", "target_profile": "p1"}]}, "room_id": "r1", "task": {"identity": {"task_id": "t1", "thread_id": "thr1", "turn_id": "turn1", "room_id": "r1"}, "status": "running", "execution_generation": "2", "payload": {"target_member_id": "m1"}}, "seams": {"self._room": {"authority_gateway_id": "gw1", "authority_epoch": 3}, "hosted_rooms.remote_run_receipt": null}}}
