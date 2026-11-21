@@ -91,6 +91,11 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - Parent working set (committed): wave 76 wired 863->867, HEAD pending;
   build health 2174/2174 clean, port gate PASS. Wave 75 was `0745f23679`
   and is pushed to origin/main.
+- **2026-11-21 REORGANIZATION:** adapter-remainder flow waves are stopped.
+  See `docs/dev/REORGANIZATION.md`: 264 wired PoP objects are dead
+  (static-only, zero exported symbols), 398 placeholders and 21,849
+  entirely-missing features remain, watercup 3.4%. New work starts from
+  `parity_reality.py` + `check_dead_ports.py`, not the scanner count.
   2026-11-20 23:04Z gateway watchdog killed the session (ws write stall,
   event loop missed 3 liveness probes, exit 75); its 4 in-flight flows were
   lost and re-dispatched as deleg_d9b3bff1. Slack flow12 was banked alone
