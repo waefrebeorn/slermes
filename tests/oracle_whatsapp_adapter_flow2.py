@@ -99,6 +99,8 @@ TARGETS = [
     "send", "interactive_setup",
     # extension wave 2e
     "_preflight", "_unidentified_holder_remains", "_wait_bridge_port_free",
+    # final whatsapp remainder (12 defs)
+    "__init__", "_build_message_event", "_collect_bridge_media", "_ensure_bridge_deps", "_mint_bridge_token", "_poll_bridge_health", "_poll_messages", "_process_inbound", "_reuse_running_bridge", "_spoken_mention_clips", "disconnect", "register",
 ]
 METHODS = {
     "_bridge_req", "_bridge_package_hash", "_bridge_env", "_adopted_config_matches",
@@ -116,6 +118,8 @@ METHODS = {
     "_attach_to_bridge", "send_typing", "_probe_bridge_health",
     "send",
     "_preflight", "_unidentified_holder_remains", "_wait_bridge_port_free",
+    # final whatsapp remainder (method targets)
+    "__init__", "_build_message_event", "_collect_bridge_media", "_ensure_bridge_deps", "_mint_bridge_token", "_poll_bridge_health", "_poll_messages", "_process_inbound", "_reuse_running_bridge", "_spoken_mention_clips", "disconnect",
 }
 # seamed instance-method collaborators (installed on the self double);
 # _terminate_bridge_process is MODULE-level (composed via the NS global by
@@ -132,6 +136,13 @@ SEAMED_METHODS = {
     "_poll_messages",
     # extension wave 2d (self-seamed format/chunk helpers)
     "format_message", "_outgoing_chunk_limit", "truncate_message",
+    # final remainder self-seamed methods
+    "_build_message_event", "_should_process_message", "_spoken_mention_clips",
+    "_release_platform_lock", "_mark_disconnected",
+    "_probe_bridge_health",
+    # __init__ self helpers
+    "_select_dm_allowlist", "_select_allowlist", "_coerce_allow_list",
+    "_compile_mention_patterns", "_configure_text_batch_delays",
 }
 ASYNC_SEAMS = {"_notify_fatal_error", "_bridge_unavailable", "_post_bridge_message",
                "_check_managed_bridge_exit", "method", "resp.json", "resp.text",
@@ -139,7 +150,10 @@ ASYNC_SEAMS = {"_notify_fatal_error", "_bridge_unavailable", "_post_bridge_messa
                # extension wave 2b
                "cache_image_from_url", "_base_send_clarify", "_base_send_image",
                "_poll_bridge_health", "_authenticated_bridge_health",
-               "asyncio.sleep"}
+               "asyncio.sleep",
+               # final remainder async seams
+               "_build_message_event", "asyncio.shield", "session.close",
+               "cancel_task", "_probe_bridge_health", "_spoken_mention_clips"}
 REAL_ALWAYS = {"_owner_only_opener"}
 
 
@@ -363,7 +377,24 @@ def seam_names_from_c():
     names |= {"session.get", "session.post", "proc.kill", "proc.terminate",
               "child.kill", "child.terminate", "resp.exit", "token_lock.exit",
               "session.exit",  # fired via wa2_cm_exit (variable name)
-              "print_header", "print_info", "print_success"}  # fired via WS macro (variable name)
+              "print_header", "print_info", "print_success",  # fired via WS macro (variable name)
+              "_unlink_quietly"}  # seamed module helper in the final remainder
+    names |= {
+        # all ARGMAP names introduced by the final remainder
+        "_build_message_event", "_should_process_message", "cache_image_from_url",
+        "cache_audio_from_url", "build_source", "spoken_mention_clips",
+        "cancel_task", "session.close", "_release_platform_lock",
+        "_mark_disconnected", "_mark_connected", "_attach_to_bridge",
+        "_wire_plugin_handlers", "_bridge_source_hash", "_fmt_uptime",
+        "asyncio.get_running_loop", "asyncio.to_thread", "loop.create_task",
+        "asyncio.shield", "asyncio.Queue", "find_node_executable", "env_int",
+        "write_text", "get_hermes_home", "standalone_bridge_port",
+        "_extra_or_secret", "_select_dm_allowlist", "_select_allowlist",
+        "_coerce_allow_list", "_compile_mention_patterns",
+        "_configure_text_batch_delays", "_base___init__",
+        "regex_stripped_parser", "StandaloneSendPolicy", "ctx.register_platform",
+        "_session_dir",
+    }
     names |= SEAMED_METHODS | {"logger.warning", "logger.debug"}
     return names
 
@@ -603,7 +634,67 @@ ARGMAP = {
     "port_is_free": lambda port: {"port": port},
     "time.monotonic": lambda: {},
     "exists": lambda path: {"path": str(path)},
+    # -- final whatsapp remainder seams --
+    "_build_message_event": lambda data: {"data": data},
+    "_should_process_message": lambda data, **kw: {"data": data, "kwargs": kw},
+    "cache_image_from_url": lambda url, **kw: {"url": url, **kw},
+    "cache_audio_from_url": lambda url, *, ext: {"url": url, "ext": ext},
+    "build_source": lambda **kw: dict(kw),
+    "spoken_mention_clips": lambda paths, patterns, *, adapter, keep, source: {
+        "paths": list(paths), "patterns": list(patterns), "adapter": "self",
+        "keep": sorted(keep), "source": source},
+    "_unlink_quietly": lambda path: {"path": str(path)},
+    "cancel_task": lambda task: {"task": task},
+    "session.close": lambda: {},
+    "_release_platform_lock": lambda: {},
+    "_mark_disconnected": lambda: {},
+    "_mark_connected": lambda: {},
+    "_attach_to_bridge": lambda proc: {"proc": _proc_proj(proc)},
+    "_wire_plugin_handlers": lambda h: {"handler": h},
+    "_bridge_source_hash": lambda path: {"path": str(path)},
+    "_fmt_uptime": lambda secs: {"secs": secs},
+    "asyncio.get_running_loop": lambda: {},
+    "asyncio.to_thread": lambda fn, *a, **k: {"args": list(a), "kwargs": k},
+    "loop.create_task": lambda coro: {"coro": coro},
+    "asyncio.shield": lambda fut: {"fut": fut},
+    "asyncio.Queue": lambda: {},
+    "find_node_executable": lambda name: {"name": name},
+    "env_int": lambda name, default: {"name": name, "default": default},
+    "write_text": lambda path, text, encoding=None: {
+        "path": str(path), "text": text, "encoding": encoding},
+    "get_hermes_home": lambda: {},
+    "standalone_bridge_port": lambda home, configured: {
+        "home": home, "configured": configured},
+    "_extra_or_secret": lambda extra, key, env, default: {
+        "extra": extra, "key": key, "env": env, "default": default},
+    "_select_dm_allowlist": lambda extra, envs, wenv: {
+        "extra": extra, "envs": list(envs), "wenv": "wenv"},
+    "_select_allowlist": lambda extra, keys, envs, wenv: {
+        "extra": extra, "keys": list(keys), "envs": list(envs), "wenv": "wenv"},
+    "_coerce_allow_list": lambda raw: {"raw": raw},
+    "_compile_mention_patterns": lambda: {},
+    "_configure_text_batch_delays": lambda: {},
+    "_base___init__": lambda config, platform: {"config": "config", "platform": platform},
+    "regex_stripped_parser": lambda pat: {"pat": "send_jid_re"},
+    "StandaloneSendPolicy": lambda **kw: dict(kw),
+    "ctx.register_platform": lambda **kw: {k: _wa2_stable(v) for k, v in kw.items()},
+    "_session_dir": lambda extra: {"extra": extra},
+    "_probe_bridge_health": lambda: {},
+    "_spoken_mention_clips": lambda data: {"data": data},
 }
+
+def _wa2_stable(v):
+    """Project register() kwarg values to deterministic, canon-safe values."""
+    if callable(v):
+        return getattr(v, "_wa2_name", getattr(v, "__name__", "callable"))
+    if isinstance(v, tuple):
+        return [_wa2_stable(x) for x in v]
+    if isinstance(v, list):
+        return [_wa2_stable(x) for x in v]
+    if isinstance(v, dict):
+        return {k: _wa2_stable(x) for k, x in v.items()}
+    return v
+
 
 
 # -- attribute / CM doubles --
@@ -764,6 +855,12 @@ BUILD = {
     # aiohttp.ClientSession: sync builder used as a plain value (_attach_to_bridge)
     # or as an async CM (_probe_bridge_health); projects to its fixture spec.
     "aiohttp.ClientSession": lambda r: SessionCM(BUILD_CTX[0], r),
+    # final remainder: loop double whose .create_task is a sync recorder
+    "asyncio.get_running_loop": lambda r: types.SimpleNamespace(
+        create_task=make_recorder(BUILD_CTX[0], "loop.create_task")),
+    "_collect_bridge_media": lambda r: tuple(r) if isinstance(r, list) else r,
+    "_build_message_event": lambda r: r,
+    "standalone_bridge_port": lambda r: r,
 }
 BUILD_CTX = [None]  # per-case ctx for the BUILD closures
 
@@ -785,6 +882,10 @@ class SessionCM:
 class _BaseSuper:
     """Zero-arg ``super()`` stand-in for AST-extracted methods: ``super().f(...)``
     records as the ``_base_f`` seam with the same args."""
+    def __getattribute__(self, nm):
+        if nm == "__init__":
+            return make_recorder(BUILD_CTX[0], "_base___init__")
+        return object.__getattribute__(self, nm)
     def __getattr__(self, nm):
         return make_recorder(BUILD_CTX[0], "_base_" + nm)
 
@@ -837,10 +938,12 @@ def make_recorder(ctx, nm):
     def f(*a, **k):
         raw = ctx.call(nm, argfn(*a, **k))
         return build(raw) if build else raw
+    f._wa2_name = nm
 
     if nm in ASYNC_SEAMS:
         async def af(*a, **k):
             return f(*a, **k)
+        af._wa2_name = nm
         return af
     return f
 
@@ -879,16 +982,42 @@ def make_self(ctx, target, args):
         setattr(sd, nm, make_recorder(ctx, nm))
     import types as _t
     sd._bridge_url = _t.MethodType(NS["_bridge_url"], sd)
+    if target == "disconnect" and getattr(sd, "_http_session", None) is not None:
+        sd._http_session.closed = False
+        sd._http_session.close = make_recorder(ctx, "session.close")
+    if target == "__init__":
+        sd._DEFAULT_BRIDGE_DIR = PathDouble("/h/bridge")
     return sd
 
 
 def install_case(ctx, target, args):
     BUILD_CTX[0] = ctx
     NS["super"] = _BaseSuper
+    # final remainder: module-level names referenced by extracted defs
+    NS["Platform"] = types.SimpleNamespace(WHATSAPP="whatsapp")
+    class _WAFactory:
+        _wa2_name = "WhatsAppAdapter"
+        _DEFAULT_BRIDGE_DIR = PathDouble("/h/bridge")
+    NS["WhatsAppAdapter"] = _WAFactory
+    NS["regex_stripped_parser"] = make_recorder(ctx, "regex_stripped_parser")
+    NS["StandaloneSendPolicy"] = make_recorder(ctx, "StandaloneSendPolicy")
+    NS["find_node_executable"] = make_recorder(ctx, "find_node_executable")
+    NS["env_int"] = make_recorder(ctx, "env_int")
+    _hc = new_module("hermes_constants")
+    _hc.get_hermes_home = make_recorder(ctx, "get_hermes_home")
+    sys.modules["hermes_constants"] = _hc
+    _bo2 = sys.modules["plugins.platforms.whatsapp.bridge_ownership"]
+    _bo2.standalone_bridge_port = make_recorder(ctx, "standalone_bridge_port")
+    sys.modules["plugins.platforms.whatsapp"].gateway_env = types.SimpleNamespace(
+        ENV_OVERRIDES=[], ENV_ENABLE_CREDENTIALS=[], AUTHZ={})
     # asyncio is the real module in extract(); stub the per-case seam surface
     NS["asyncio"] = types.SimpleNamespace(
         create_task=make_recorder(ctx, "asyncio.create_task"),
-        sleep=make_recorder(ctx, "asyncio.sleep"))
+        sleep=make_recorder(ctx, "asyncio.sleep"),
+        get_running_loop=make_recorder(ctx, "asyncio.get_running_loop"),
+        to_thread=make_recorder(ctx, "asyncio.to_thread"),
+        shield=make_recorder(ctx, "asyncio.shield"),
+        Queue=make_recorder(ctx, "asyncio.Queue"))
     for _nm, _mod in (("get_env_value", _hcc), ("remove_env_value", _hcc),
                       ("save_env_value", _hcc), ("prompt", _hco),
                       ("prompt_yes_no", _hco), ("print_header", _hco),
@@ -1120,6 +1249,33 @@ def live_call(func, args, ctx):
         return asyncio.run(f(sd))
     if func == "_wait_bridge_port_free":
         return asyncio.run(f(sd))
+    # -- final whatsapp remainder --
+    if func == "_build_message_event":
+        return asyncio.run(f(sd, args["data"]))
+    if func == "_process_inbound":
+        return asyncio.run(f(sd, args["data"]))
+    if func == "_poll_messages":
+        return asyncio.run(f(sd))
+    if func == "_reuse_running_bridge":
+        return asyncio.run(f(sd, PathDouble(args["bridge_path"])))
+    if func == "_spoken_mention_clips":
+        return asyncio.run(f(sd, args["data"]))
+    if func == "_collect_bridge_media":
+        return asyncio.run(f(sd, args["data"], MessageType(args["msg_type"])))
+    if func == "_poll_bridge_health":
+        return asyncio.run(f(sd, args["died_msg"]))
+    if func == "_mint_bridge_token":
+        return asyncio.run(f(sd, rotate=args.get("rotate", False)))
+    if func == "disconnect":
+        return asyncio.run(f(sd))
+    if func == "_ensure_bridge_deps":
+        return f(sd, PathDouble(args["bridge_dir"]))
+    if func == "__init__":
+        return f(sd, types.SimpleNamespace(extra=args.get("config", {}).get("extra", {})))
+    if func == "register":
+        rsd = types.SimpleNamespace(
+            register_platform=make_recorder(ctx, "ctx.register_platform"))
+        return f(rsd)
     raise RuntimeError(f"unknown func {func}")
 
 

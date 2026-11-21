@@ -78,6 +78,19 @@ static const wa2_case_t CASES[] = {
     { "_preflight", wa2__preflight, 1 },
     { "_unidentified_holder_remains", wa2__unidentified_holder_remains, 1 },
     { "_wait_bridge_port_free", wa2__wait_bridge_port_free, 1 },
+    /* final whatsapp remainder: 12 more unclaimed defs */
+    { "__init__", wa2___init__, 1 },
+    { "_build_message_event", wa2__build_message_event, 1 },
+    { "_collect_bridge_media", wa2__collect_bridge_media, 1 },
+    { "_ensure_bridge_deps", wa2__ensure_bridge_deps, 1 },
+    { "_mint_bridge_token", wa2__mint_bridge_token, 1 },
+    { "_poll_bridge_health", wa2__poll_bridge_health, 1 },
+    { "_poll_messages", wa2__poll_messages, 1 },
+    { "_process_inbound", wa2__process_inbound, 1 },
+    { "_reuse_running_bridge", wa2__reuse_running_bridge, 1 },
+    { "_spoken_mention_clips", wa2__spoken_mention_clips, 1 },
+    { "disconnect", wa2_disconnect, 1 },
+    { "register", wa2_register, 0 },
 };
 #define CASE_COUNT (sizeof(CASES) / sizeof(CASES[0]))
 

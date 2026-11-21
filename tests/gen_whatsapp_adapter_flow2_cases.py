@@ -1225,6 +1225,178 @@ add("_wait_bridge_port_free", {"self": WP_SELF},
 add("_wait_bridge_port_free", {"self": WP_SELF}, {}, fail_closed=True)
 
 
+# ============================================================================
+# final whatsapp remainder (12 defs) -- extended in place
+# ============================================================================
+
+
+# -- _build_message_event (filtered: should_process false, no spoken clips) --
+for _i, _d in enumerate([
+    {}, {"chatId": "1@s.whatsapp.net", "body": "hi"},
+    {"isGroup": False, "messageId": "m1"},
+    {"isGroup": True, "body": "hello"},
+    {"mediaType": "image", "hasMedia": True},
+    {"event": "message", "body": ""},
+]):
+    add("_build_message_event", {"self": self_base(), "data": _d},
+        {"_should_process_message": script(False), "_spoken_mention_clips": script([])})
+
+# -- _process_inbound (skip path: event is None) --
+for _i, _d in enumerate([
+    {}, {"event": "message"}, {"messageType": "text"},
+    {"chatId": "1@s.whatsapp.net"}, {"body": "hi", "isGroup": False}, {"mediaType": "ptt"},
+]):
+    add("_process_inbound", {"data": _d}, {"_build_message_event": script(None)})
+
+# -- _poll_messages (loop guard false / no session) --
+for _i, (_run, _sess) in enumerate([
+    (False, {"__session__": True}), (False, {"__session__": True}), (0, {"__session__": True}),
+    (None, {"__session__": True}), ("", {"__session__": True}), (False, {"__session__": True}),
+]):
+    _sf = self_base(_running=_run, _http_session=_sess)
+    add("_poll_messages", {"self": _sf}, {})
+
+# -- _reuse_running_bridge --
+_RB_SELF = dict(self_base())
+_RB_SELF.update({"_foreign_bridge_session": None, "_bridge_probe_timed_out": False,
+                 "_bridge_holder_unproven": False, "_session_path": "/h/sess",
+                 "_send_read_receipts": True})
+add("_reuse_running_bridge", {"self": _RB_SELF, "bridge_path": "/h/bridge/bridge.js"},
+    {"_probe_bridge_health": script([False, None])})
+add("_reuse_running_bridge", {"self": _RB_SELF, "bridge_path": "/h/bridge/bridge.js"},
+    {"_probe_bridge_health": script([True, None])})
+add("_reuse_running_bridge", {"self": _RB_SELF, "bridge_path": "/h/bridge/bridge.js"},
+    {"_probe_bridge_health": script([True, {"session": "/h/other"}])})
+add("_reuse_running_bridge", {"self": _RB_SELF, "bridge_path": "/h/bridge/bridge.js"},
+    {"_probe_bridge_health": script([True, {"status": "connecting"}]),
+     "print": script(None)})
+add("_reuse_running_bridge", {"self": _RB_SELF, "bridge_path": "/h/bridge/bridge.js"},
+    {"_probe_bridge_health": raise_("TimeoutError", "no answer")})
+add("_reuse_running_bridge", {"self": _RB_SELF, "bridge_path": "/h/bridge/bridge.js"},
+    {"_probe_bridge_health": raise_("ClientConnectorError", "refused")})
+
+# -- _spoken_mention_clips (gate rejects: mediaType != ptt) --
+for _i, _mt in enumerate(["image", "video", "audio", "document", "text", "sticker"]):
+    add("_spoken_mention_clips",
+        {"data": {"body": "", "mediaType": _mt, "chatId": "1@s.whatsapp.net"}}, {})
+
+# -- _collect_bridge_media --
+_CM_SELF = self_base()
+add("_collect_bridge_media", {"self": _CM_SELF, "data": {"mediaUrls": []}, "msg_type": "photo"}, {})
+add("_collect_bridge_media",
+    {"self": _CM_SELF, "data": {"mediaUrls": ["http://h/a.jpg"], "mime": "image/png"},
+     "msg_type": "photo"},
+    {"cache_image_from_url": script("/h/cache/a.jpg"), "print": script(None)})
+add("_collect_bridge_media",
+    {"self": _CM_SELF, "data": {"mediaUrls": ["http://h/a.ogg"]}, "msg_type": "voice"},
+    {"cache_audio_from_url": script("/h/cache/a.ogg"), "print": script(None)})
+add("_collect_bridge_media",
+    {"self": _CM_SELF, "data": {"mediaUrls": ["/h/cache/f.jpg"]}, "msg_type": "photo"},
+    {"_is_allowed_bridge_path": script(True), "print": script(None)})
+add("_collect_bridge_media",
+    {"self": _CM_SELF, "data": {"mediaUrls": ["/etc/passwd"]}, "msg_type": "photo"},
+    {"_is_allowed_bridge_path": script(False), "print": script(None)})
+add("_collect_bridge_media",
+    {"self": _CM_SELF, "data": {"mediaUrls": ["rel.jpg"]}, "msg_type": "photo"}, {})
+
+# -- _poll_bridge_health --
+_PH_SELF = self_base()
+_PH_SELF.update({"_bridge_process": {"pid": 4242, "returncode": 1}, "_session_path": "/h/sess",
+                 "_bridge_log": "/h/bridge.log"})
+for _i in range(3):
+    add("_poll_bridge_health",
+        {"self": _PH_SELF, "died_msg": "Bridge died (code {code})"},
+        {"asyncio.sleep": script(None), "proc.poll": script(1),
+         "_unlink_quietly": script(None), "_bridge_died": script(False)})
+for _i in range(3):
+    add("_poll_bridge_health",
+        {"self": _PH_SELF, "died_msg": "Bridge died (code {code})"},
+        {"asyncio.sleep": script(None), "proc.poll": script(None),
+         "_probe_bridge_health": script([True, {"status": "connected"}]),
+         "print": script(None)})
+
+# -- _mint_bridge_token --
+for _i, _rot in enumerate([False, True, False, True, False, True]):
+    add("_mint_bridge_token",
+        {"self": self_base(_session_path="/h/sess"), "rotate": _rot},
+        {"asyncio.get_running_loop": script(None),
+         "asyncio.to_thread": script("coro"),
+         "loop.create_task": script("task"),
+         "asyncio.shield": script("tok%d" % _i)})
+
+# -- disconnect --
+for _i, _key in enumerate([None, None, None, "whatsapp", "whatsapp", "whatsapp"]):
+    _ds = self_base(_bridge_process=None, _poll_task="task", _http_session={"__session__": True},
+                    _bridge_log="/h/bridge.log", _shutting_down=False)
+    _io = {"print": [script(None), script(None)], "cancel_task": script(None),
+           "_release_platform_lock": script(None),
+           "_mark_disconnected": script(None), "_close_bridge_log": script(None),
+           "session.close": script(None)}
+    if _key is not None:
+        _ds["_runtime_status_platform_key"] = _key
+    else:
+        _io["_unlink_quietly"] = script(None)
+    add("disconnect", {"self": _ds}, _io)
+
+# -- _ensure_bridge_deps --
+for _i in range(4):
+    add("_ensure_bridge_deps",
+        {"self": self_base(), "bridge_dir": "/h/bridge"},
+        {"_file_content_hash": script("HASH"), "exists": script(True),
+         "read_text": script("HASH")})
+add("_ensure_bridge_deps",
+    {"self": self_base(), "bridge_dir": "/h/bridge"},
+    {"_file_content_hash": script("HASH"), "exists": script(True),
+     "read_text": script("OLD"),
+     "print": [script(None), script(None)],
+     "find_node_executable": script("/usr/bin/npm"),
+     "with_hermes_node_path": script({}),
+     "env_int": script(300),
+     "subprocess.run": script({"returncode": 1, "stderr": "ERR"}),
+     "_set_fatal_error": script(None)})
+add("_ensure_bridge_deps",
+    {"self": self_base(), "bridge_dir": "/h/bridge"},
+    {"_file_content_hash": script("HASH"), "exists": script(True),
+     "read_text": script("OLD"),
+     "print": [script(None), script(None)],
+     "find_node_executable": script("/usr/bin/npm"),
+     "with_hermes_node_path": script({}),
+     "env_int": script(300),
+     "subprocess.run": script({"returncode": 2, "stderr": "ERR2"}),
+     "_set_fatal_error": script(None)})
+
+# -- __init__ --
+for _i, (_port, _dm, _gp) in enumerate([
+    (3001, "pairing", "open"), (3002, "open", "allowlist"),
+    (3003, "disabled", "pairing"), (3004, "allowlist", "disabled"),
+    (3005, "pairing", "pairing"), (3006, "open", "open"),
+]):
+    add("__init__",
+        {"config": {"extra": {"bridge_port": _port,
+                              "bridge_script": "/h/bridge/bridge.js"}}},
+        {"_base___init__": script(None),
+         "get_hermes_home": script("/h/profile"),
+         "standalone_bridge_port": script(_port),
+         "_session_dir": script("/h/sess"),
+         "_extra_or_secret": [script(_dm), script(_gp)],
+         "_select_dm_allowlist": script("raw1"),
+         "_coerce_allow_list": [script(["1@s.whatsapp.net"]), script(["2@s.whatsapp.net"])],
+         "_select_allowlist": script([None, "raw2"]),
+         "_compile_mention_patterns": script([]),
+         "asyncio.Queue": script("queue"),
+         "_configure_text_batch_delays": script(None)})
+
+# -- register --
+for _i in range(6):
+    add("register", {"ctx": _i},
+        {"regex_stripped_parser": script("parser"),
+         "StandaloneSendPolicy": script({"label": "WhatsApp", "media": True,
+                                         "captionable": True,
+                                         "forward_force_document": True,
+                                         "mentions": True, "text_direct": True}),
+         "ctx.register_platform": script(None)})
+
+
 def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
