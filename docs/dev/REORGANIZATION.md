@@ -15,9 +15,10 @@ for the binary. This document re-anchors the loop.
   where one exists, plus build/link.
 - `tests/check_dead_ports.py` (new): 2,061 PoP-tagged C files; **283 have
   only static PoP functions and no external entry point — 264 of them are
-  wired into `build/objects.mk`**. `nm -g --defined-only` on the recent
-  adapter-flow objects shows zero exported symbols: the linker drops them.
-  These raise the scanner count with zero runtime effect.
+  wired into `build/objects.mk`**. All 264 have `.o` files on disk and
+  `nm -g --defined-only` reports **zero exported symbols on all 264** —
+  binary-level confirmation, not just a source heuristic. The recent
+  adapter-flow objects were individually verified the same way.
 - No `slermes.exe` exists in the tree; full-link is SAC-blocked. Source ≠
   binary is not a theoretical concern here.
 - `docs/dev/devils-worklist.md` already named the priorities: false-green
