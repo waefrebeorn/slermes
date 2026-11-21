@@ -95,12 +95,23 @@ def is_placeholder(body):
 
 
 def c_definitions():
-    """name -> (file, body, is_placeholder) for the first def of each name."""
+    """name -> (file, body, is_placeholder) for the first def of each name.
+
+    infrastructure_stubs.c defines 166 no-op fallbacks that are #define-renamed
+    to `stub_shadowed_*` so a REAL port elsewhere wins the link. Reading raw
+    text (no preprocessor) made this scanner see the pre-rename name and pick
+    the stub first (sorted early), reclassifying 156 real ports as placeholders.
+    Skip a definition whose name is renamed in the same file.
+    """
     defs = {}
     for p in sorted(SLERMES.glob("src/**/*.c")) + sorted(SLERMES.glob("src/*.c")):
         text = p.read_text(encoding="utf-8", errors="replace")
+        shadowed = set(re.findall(
+            r"^#define\s+(\w+)\s+stub_shadowed_\w+", text, re.M))
         for m in C_FUNC_RE.finditer(text):
             name = m.group(1)
+            if name in shadowed:
+                continue  # the preprocessor renames this stub; it cannot be the real def
             if name in defs:
                 continue
             body = extract_body(text, m.end() - 1)
