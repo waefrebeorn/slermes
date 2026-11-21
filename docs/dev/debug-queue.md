@@ -88,8 +88,8 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 66 wired 826->829, HEAD `eda97ca4ed`;
-  build health 2136/2136 clean, port gate PASS.
+- Parent working set (committed): wave 67 wired 829->832, HEAD `af1e5c4dee`;
+  build health 2139/2139 clean, port gate PASS.
   Wave 60 RESOLVED: tui_server_flow3 honestly scoped from 62 over-scoped
   fns (374/287, 50 red) to the 12 faithful ones, parent gate 74/0, wired.
   The 50 removed fns are real gaps again. Scanner perf fix committed
@@ -189,4 +189,11 @@ THAT WAVE: parent 314/0, 132/0, 87/0, 119/0; wave 66 (`eda97ca4ed`)
 wired 826->829. gateway_run_flow4.o is a real 14-symbol object.
 Next wave `deleg_e983d189` (explicit names): feishu_adapter_flow7 (174),
 matrix_adapter_flow6 (69), context_compressor_flow7 (38), and a second
-whatsapp_adapter_flow2 extension (26 remaining).
+whatsapp_adapter_flow2 (26 remaining). THAT WAVE: parent 138/0, 106/0,
+98/0, 394/0; wave 67 (`af1e5c4dee`) wired 829->832.
+Claim-parser fix: PoP names can be DOTTED (e.g. Class.method); derive on
+the last segment or already-ported class methods look unclaimed. With the
+fix gateway/run.py dropped from 24 to 0 unclaimed — a refused slot was
+avoided. Next wave `deleg_7af52fe7` (accurate explicit names):
+feishu_adapter_flow8 (121), matrix_adapter_flow7 (53),
+context_compressor_flow8 (24), final whatsapp extension (14).
