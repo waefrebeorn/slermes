@@ -88,8 +88,8 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 72 wired 847->851, HEAD `17b3ef528b`;
-  build health 2158/2158 clean, port gate PASS.
+- Parent working set (committed): wave 73 wired 851->855, HEAD `0b0997f27d`;
+  build health 2162/2162 clean, port gate PASS.
   Wave 60 RESOLVED: tui_server_flow3 honestly scoped from 62 over-scoped
   fns (374/287, 50 red) to the 12 faithful ones, parent gate 74/0, wired.
   The 50 removed fns are real gaps again. Scanner perf fix committed
@@ -213,3 +213,6 @@ slermes-windows-port/references/flow-oracle-seeding.md.
 THAT WAVE: parent 140/0, 121/0, 102/0, 103/0; wave 72 (`17b3ef528b`)
 wired 847->851. More seeding pitfalls written into flow-oracle-seeding.md
 and c-port-pitfalls.md by the agents.
+THAT WAVE: parent 140/0, 118/0, 108/0, 93/0; wave 73 (`0b0997f27d`)
+wired 851->855. Full parity_truth.py refresh launched in background
+after the scanner perf fix; stale sentinels await its result.
