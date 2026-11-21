@@ -15,7 +15,14 @@
 char *web_config(void) { return strdup("{}"); }
 
 /* PoP: bucket_limit @ tools/web_result_cache.py:bucket_limit */
-int bucket_limit(void) { return 100; }
+/* Python: next((b for b in (10,20,50,100) if limit <= b), 100). Any limit
+ * above the last bucket clamps to 100; a limit at/below a bucket rounds up. */
+int bucket_limit(int limit) {
+    static const int buckets[] = {10, 20, 50, 100};
+    for (size_t i = 0; i < sizeof(buckets)/sizeof(buckets[0]); i++)
+        if (limit <= buckets[i]) return buckets[i];
+    return 100;
+}
 
 /* PoP: normalize_query @ tools/web_result_cache.py:normalize_query */
 char *normalize_query(const char *query) { return query ? strdup(query) : strdup(""); }
