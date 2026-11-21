@@ -88,8 +88,8 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 67 wired 829->832, HEAD `af1e5c4dee`;
-  build health 2139/2139 clean, port gate PASS.
+- Parent working set (committed): wave 68 wired 832->835, HEAD `b8cf9d2b2e`;
+  build health 2142/2142 clean, port gate PASS.
   Wave 60 RESOLVED: tui_server_flow3 honestly scoped from 62 over-scoped
   fns (374/287, 50 red) to the 12 faithful ones, parent gate 74/0, wired.
   The 50 removed fns are real gaps again. Scanner perf fix committed
@@ -197,3 +197,8 @@ fix gateway/run.py dropped from 24 to 0 unclaimed — a refused slot was
 avoided. Next wave `deleg_7af52fe7` (accurate explicit names):
 feishu_adapter_flow8 (121), matrix_adapter_flow7 (53),
 context_compressor_flow8 (24), final whatsapp extension (14).
+THAT WAVE: parent 125/0, 106/0, 107/0, 466/0; wave 68 (`b8cf9d2b2e`)
+wired 832->835. whatsapp_adapter_flow2 is now effectively complete
+(62 PoP, 466 cases). Next wave `deleg_b2b144da` (all NEW flows):
+telegram_adapter_flow9 (214 unclaimed), discord_adapter_flow8 (168),
+slack_adapter_flow7 (175), feishu_adapter_flow9 (105).
