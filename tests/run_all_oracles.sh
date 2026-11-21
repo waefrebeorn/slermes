@@ -39,6 +39,7 @@ declare -A DEPS=(
   [aux_event_has_content]="src/agent/port_auxiliary_client.o src/hermes_cli/port_version_info.o lib/libjson/json.o"
   [cron_delivery_preds]="src/cron/scheduler_gaps.o lib/libjson/json.o"
   [bucket_limit]="src/tools/web_result_cache_gaps.o lib/libjson/json.o"
+  [cache_point_allowed]="src/agent/bedrock_adapter_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
   [callbacks_skip]="src/cli/port_callbacks.o lib/libjson/json.o"
   # backfilled: harness/object name differs from the oracle discovery name.

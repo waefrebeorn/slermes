@@ -360,7 +360,28 @@ json_t *cache_point_rejection_placement(ba_io_t *io, json_t *in) {
 }
 
 /* PoP: cache_point_allowed @ agent/bedrock_adapter.py:cache_point_allowed */
-int cache_point_allowed(void) { return 1; }
+/* Python: placement not in _CACHE_POINT_REJECTIONS.get(model_id.lower(), ()).
+ * The rejection map is process state, so it is passed in as a JSON object
+ * mapping lowercased model_id -> array of rejected placement strings. */
+int cache_point_allowed(const char *model_id, const char *placement,
+                        const json_t *rejections) {
+    if (!placement) return 1;
+    if (!model_id || !rejections || rejections->type != JSON_OBJECT) return 1;
+    /* Python str.lower() on the model id. */
+    char key[512]; size_t n = 0;
+    for (const char *p = model_id; *p && n < sizeof(key) - 1; p++) {
+        unsigned char c = (unsigned char)*p;
+        key[n++] = (c >= 'A' && c <= 'Z') ? (char)(c + 32) : (char)c;
+    }
+    key[n] = '\0';
+    const json_t *list = json_obj_get(rejections, key);
+    if (!list || list->type != JSON_ARRAY) return 1;
+    for (size_t i = 0; i < json_array_count(list); i++) {
+        const char *v = json_string_value(json_array_get(list, i));
+        if (v && strcmp(v, placement) == 0) return 0;
+    }
+    return 1;
+}
 
 /* PoP: is_cache_point_block @ agent/bedrock_adapter.py:is_cache_point_block */
 int is_cache_point_block(void) { return 0; }

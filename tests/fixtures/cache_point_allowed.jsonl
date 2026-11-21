@@ -1,0 +1,8 @@
+{"model_id": "anthropic.claude-3", "placement": "#/tools/1", "rejections": {}}
+{"model_id": "anthropic.claude-3", "placement": "#/tools/1", "rejections": {"anthropic.claude-3": ["#/tools/1"]}}
+{"model_id": "ANTHROPIC.CLAUDE-3", "placement": "#/tools/1", "rejections": {"anthropic.claude-3": ["#/tools/1"]}}
+{"model_id": "anthropic.claude-3", "placement": "#/tools/2", "rejections": {"anthropic.claude-3": ["#/tools/1"]}}
+{"model_id": "other", "placement": "#/tools/1", "rejections": {"anthropic.claude-3": ["#/tools/1"]}}
+{"model_id": "anthropic.claude-3", "placement": "#/tools/1", "rejections": {"anthropic.claude-3": ["#/tools/2", "#/tools/3"]}}
+{"model_id": "", "placement": "x", "rejections": {"": ["x"]}}
+{"model_id": "m", "placement": "x", "rejections": {"m": []}}
