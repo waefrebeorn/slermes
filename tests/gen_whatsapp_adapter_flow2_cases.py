@@ -951,6 +951,278 @@ add("get_chat_info", {"self": GCI_SELF, "chat_id": "c7"},
     {"_check_managed_bridge_exit": raise_("SystemExit", "1")})
 add("get_chat_info", {"self": GCI_SELF, "chat_id": "c8"}, {}, fail_closed=True)
 
+# -- _bridge_url (extension wave 2) --
+add("_bridge_url", {"self": self_base(_bridge_port=3000), "path": "typing"})
+add("_bridge_url", {"self": self_base(_bridge_port=45678), "path": "messages"})
+add("_bridge_url", {"self": self_base(_bridge_port=80), "path": "chat/1@s.whatsapp.net"})
+add("_bridge_url", {"self": self_base(_bridge_port=0), "path": ""})
+add("_bridge_url", {"self": self_base(_bridge_port=-1), "path": "send"})
+add("_bridge_url", {"self": self_base(_bridge_port=3001), "path": "health"})
+
+# -- send_clarify (extension wave 2b) --
+SC_SELF = self_base()
+add("send_clarify", {"self": SC_SELF, "chat_id": "c1", "question": " Pick one ", "choices": [" a ", "b", "", "  "],
+                     "clarify_id": "q1", "session_key": "s1", "metadata": None},
+    {"send_poll": script({"success": True, "message_id": "m1"})})
+add("send_clarify", {"self": SC_SELF, "chat_id": "c2", "question": "Q", "choices": ["a", "b"],
+                     "clarify_id": "q2", "session_key": "s2", "metadata": None},
+    {"send_poll": script({"success": False, "error": "poll failed"}),
+     "logger.warning": script(None),
+     "_base_send_clarify": script({"success": True, "message_id": "base1"})})
+add("send_clarify", {"self": SC_SELF, "chat_id": "c3", "question": "Q", "choices": ["a"],
+                     "clarify_id": "q3", "session_key": "s3", "metadata": {"x": 1}},
+    {"_base_send_clarify": script({"success": True, "message_id": "base2"})})
+add("send_clarify", {"self": SC_SELF, "chat_id": "c4", "question": None, "choices": [str(i) for i in range(13)],
+                     "clarify_id": "q4", "session_key": "s4", "metadata": None},
+    {"_base_send_clarify": script({"success": False, "error": "base no"})})
+add("send_clarify", {"self": SC_SELF, "chat_id": "c5", "question": 42, "choices": [1, 2, None],
+                     "clarify_id": "q5", "session_key": "s5", "metadata": None},
+    {"send_poll": script({"success": True, "message_id": "m5"})})
+add("send_clarify", {"self": SC_SELF, "chat_id": "c6", "question": "Q", "choices": ["a", "b"],
+                     "clarify_id": "q6", "session_key": "s6", "metadata": None},
+    {"send_poll": raise_("RuntimeError", "poll boom")})
+add("send_clarify", {"self": SC_SELF, "chat_id": "c7", "question": "Q", "choices": ["a", "b"],
+                     "clarify_id": "q7", "session_key": "s7", "metadata": None}, {}, fail_closed=True)
+
+# -- send_image (extension wave 2b) --
+SI_SELF = self_base()
+add("send_image", {"self": SI_SELF, "chat_id": "c1", "image_url": "http://x/a.jpg", "caption": "cap",
+                   "reply_to": None, "metadata": None},
+    {"cache_image_from_url": script("/cache/a.jpg"),
+     "_send_media_to_bridge": script({"success": True, "message_id": "im1"})})
+add("send_image", {"self": SI_SELF, "chat_id": "c2", "image_url": "bad", "caption": None,
+                   "reply_to": "r1", "metadata": {"m": 2}},
+    {"cache_image_from_url": raise_("ValueError", "bad url"),
+     "_base_send_image": script({"success": False, "error": "fallback"})})
+add("send_image", {"self": SI_SELF, "chat_id": "c3", "image_url": "http://x/b.jpg", "caption": "c",
+                   "reply_to": None, "metadata": None},
+    {"cache_image_from_url": script("/cache/b.jpg"),
+     "_send_media_to_bridge": raise_("OSError", "media boom"),
+     "_base_send_image": script({"success": True, "message_id": "ib3"})})
+add("send_image", {"self": SI_SELF, "chat_id": "c4", "image_url": "http://x/c.jpg", "caption": None,
+                   "reply_to": None, "metadata": None},
+    {"cache_image_from_url": raise_("SystemExit", "1")})
+add("send_image", {"self": SI_SELF, "chat_id": "c5", "image_url": "http://x/d.jpg", "caption": None,
+                   "reply_to": None, "metadata": None}, {}, fail_closed=True)
+
+# -- _wait_for_bridge (extension wave 2b) --
+WF_SELF = self_base()
+add("_wait_for_bridge", {"self": WF_SELF},
+    {"_poll_bridge_health": script([True, True, {"status": "connected"}])})
+add("_wait_for_bridge", {"self": WF_SELF},
+    {"_poll_bridge_health": script([False, False, {}])})
+add("_wait_for_bridge", {"self": WF_SELF},
+    {"_poll_bridge_health": script([None, False, {}]),
+     "_bridge_died": script("Bridge HTTP server did not start in 15s")})
+add("_wait_for_bridge", {"self": WF_SELF},
+    {"_poll_bridge_health": [script([True, True, {"status": "connecting"}]),
+                            script([True, True, {"status": "connected"}])],
+     "print": script(None)})
+add("_wait_for_bridge", {"self": WF_SELF},
+    {"_poll_bridge_health": [script([True, True, {"status": "connecting"}]),
+                            script([False, True, {"status": "connecting"}])],
+     "print": script(None)})
+add("_wait_for_bridge", {"self": WF_SELF},
+    {"_poll_bridge_health": raise_("SystemExit", "1")})
+add("_wait_for_bridge", {"self": WF_SELF}, {}, fail_closed=True)
+
+# -- _attach_to_bridge (extension wave 2c) --
+AT_SELF = self_base()
+AT_MP = {"pid": 5555}
+add("_attach_to_bridge", {"self": AT_SELF, "managed_process": AT_MP},
+    {"_bridge_auth_headers": script({"Authorization": "Bearer tok"}),
+     "aiohttp.ClientSession": script({"__session__": True, "headers": {"Authorization": "Bearer tok"}}),
+     "_poll_messages": script("pollbody"),
+     "asyncio.create_task": script({"handle": "t1"})})
+add("_attach_to_bridge", {"self": AT_SELF, "managed_process": AT_MP},
+    {"_bridge_auth_headers": raise_("RuntimeError", "hdr boom")})
+add("_attach_to_bridge", {"self": AT_SELF, "managed_process": AT_MP},
+    {"_bridge_auth_headers": script({"Authorization": "Bearer tok"}),
+     "aiohttp.ClientSession": raise_("OSError", "session boom")})
+add("_attach_to_bridge", {"self": AT_SELF, "managed_process": AT_MP},
+    {"_bridge_auth_headers": script({"Authorization": "Bearer tok"}),
+     "aiohttp.ClientSession": script({"__session__": True}),
+     "_poll_messages": raise_("RuntimeError", "poll boom")})
+add("_attach_to_bridge", {"self": AT_SELF, "managed_process": AT_MP},
+    {"_bridge_auth_headers": script({"Authorization": "Bearer tok"}),
+     "aiohttp.ClientSession": script({"__session__": True}),
+     "_poll_messages": script("pollbody"),
+     "asyncio.create_task": raise_("SystemExit", "1")})
+add("_attach_to_bridge", {"self": AT_SELF, "managed_process": AT_MP}, {}, fail_closed=True)
+
+# -- send_typing (extension wave 2c) --
+ST_SELF = self_base()
+ST_IO = {"_bridge_unavailable": script(False),
+         "to_whatsapp_jid": script("1@s.whatsapp.net"),
+         "ClientTimeout": script({"total": 5}),
+         "session.post": script({"status": 200}),
+         "resp.enter": script(None), "resp.exit": script(None)}
+add("send_typing", {"self": ST_SELF, "session_methods": ["post"], "chat_id": "c1", "metadata": None}, ST_IO)
+add("send_typing", {"self": ST_SELF, "session_methods": ["post"], "chat_id": "c2", "metadata": {"m": 1}},
+    {"_bridge_unavailable": script(True)})
+add("send_typing", {"self": ST_SELF, "session_methods": ["post"], "chat_id": "c3", "metadata": None},
+    {"_bridge_unavailable": script(False), "to_whatsapp_jid": raise_("ValueError", "bad jid")})
+add("send_typing", {"self": ST_SELF, "session_methods": ["post"], "chat_id": "c4", "metadata": None},
+    {"_bridge_unavailable": script(False), "to_whatsapp_jid": script("j"),
+     "ClientTimeout": raise_("OSError", "timeout boom")})
+add("send_typing", {"self": ST_SELF, "session_methods": ["post"], "chat_id": "c5", "metadata": None},
+    {"_bridge_unavailable": script(False), "to_whatsapp_jid": script("j"),
+     "ClientTimeout": script({"total": 5}), "session.post": raise_("OSError", "post boom")})
+add("send_typing", {"self": ST_SELF, "session_methods": ["post"], "chat_id": "c6", "metadata": None},
+    {"_bridge_unavailable": script(False), "to_whatsapp_jid": script("j"),
+     "ClientTimeout": script({"total": 5}), "session.post": script({"status": 200}),
+     "resp.enter": raise_("RuntimeError", "enter boom"), "resp.exit": script(None)})
+add("send_typing", {"self": ST_SELF, "session_methods": ["post"], "chat_id": "c7", "metadata": None},
+    {"_bridge_unavailable": script(False), "to_whatsapp_jid": script("j"),
+     "ClientTimeout": script({"total": 5}), "session.post": raise_("SystemExit", "1")})
+add("send_typing", {"self": ST_SELF, "session_methods": ["post"], "chat_id": "c8", "metadata": None}, {}, fail_closed=True)
+
+# -- _probe_bridge_health (extension wave 2c) --
+PB_SELF = self_base()
+add("_probe_bridge_health", {"self": PB_SELF},
+    {"aiohttp.ClientSession": script({"__session__": True}),
+     "session.enter": script(None), "ClientTimeout": script({"total": 2}),
+     "_authenticated_bridge_health": script([True, {"status": "connected"}]),
+     "session.exit": script(None)})
+add("_probe_bridge_health", {"self": PB_SELF},
+    {"aiohttp.ClientSession": script({"__session__": True}),
+     "session.enter": script(None), "ClientTimeout": script({"total": 2}),
+     "_authenticated_bridge_health": script([False, None]),
+     "session.exit": script(None)})
+add("_probe_bridge_health", {"self": PB_SELF},
+    {"aiohttp.ClientSession": script({"__session__": True}),
+     "session.enter": script(None), "ClientTimeout": script({"total": 2}),
+     "_authenticated_bridge_health": raise_("ClientError", "health boom"),
+     "session.exit": script(None)})
+add("_probe_bridge_health", {"self": PB_SELF},
+    {"aiohttp.ClientSession": script({"__session__": True}),
+     "session.enter": script(None), "ClientTimeout": raise_("ValueError", "timeout boom"),
+     "session.exit": script(None)})
+add("_probe_bridge_health", {"self": PB_SELF},
+    {"aiohttp.ClientSession": script({"__session__": True}),
+     "session.enter": raise_("OSError", "enter boom")})
+add("_probe_bridge_health", {"self": PB_SELF},
+    {"aiohttp.ClientSession": script({"__session__": True}),
+     "session.enter": script(None), "ClientTimeout": script({"total": 2}),
+     "_authenticated_bridge_health": raise_("ClientError", "health boom"),
+     "session.exit": script(True)})
+add("_probe_bridge_health", {"self": PB_SELF},
+    {"aiohttp.ClientSession": script({"__session__": True}),
+     "session.enter": script(None), "ClientTimeout": script({"total": 2}),
+     "_authenticated_bridge_health": script([True, {}]),
+     "session.exit": raise_("SystemExit", "1")})
+add("_probe_bridge_health", {"self": PB_SELF}, {}, fail_closed=True)
+
+# -- send (extension wave 2d) --
+SEND_SELF = self_base()
+add("send", {"self": SEND_SELF, "chat_id": "c1", "content": "  ", "reply_to": None, "metadata": None}, {})
+add("send", {"self": SEND_SELF, "chat_id": "c2", "content": "hello", "reply_to": None, "metadata": None},
+    {"to_whatsapp_jid": script("2@s.whatsapp.net"), "format_message": script("hello"),
+     "_outgoing_chunk_limit": script(4096), "truncate_message": script(["hello"]),
+     "_post_bridge_message": script({"success": True, "message_id": 100})})
+add("send", {"self": SEND_SELF, "chat_id": "c3", "content": "a\nb", "reply_to": "r1", "metadata": {"m": 1}},
+    {"to_whatsapp_jid": script("3@s.whatsapp.net"), "format_message": script("a\nb"),
+     "_outgoing_chunk_limit": script(5), "truncate_message": script(["a", "b"]),
+     "_post_bridge_message": [script({"success": True, "message_id": "m1"}),
+                              script({"success": True, "message_id": "m2"})],
+     "asyncio.sleep": script(None)})
+add("send", {"self": SEND_SELF, "chat_id": "c4", "content": "hello", "reply_to": None, "metadata": None},
+    {"to_whatsapp_jid": script("4@s.whatsapp.net"), "format_message": script("hello"),
+     "_outgoing_chunk_limit": script(4096), "truncate_message": script(["hello"]),
+     "_post_bridge_message": script({"success": False, "error": "post failed"})})
+add("send", {"self": SEND_SELF, "chat_id": "c5", "content": "hello", "reply_to": None, "metadata": None},
+    {"to_whatsapp_jid": script("5@s.whatsapp.net"), "format_message": raise_("ValueError", "fmt boom")})
+add("send", {"self": SEND_SELF, "chat_id": "c6", "content": "hello", "reply_to": None, "metadata": None},
+    {"to_whatsapp_jid": raise_("SystemExit", "1")})
+add("send", {"self": SEND_SELF, "chat_id": "c7", "content": "hello", "reply_to": "r1", "metadata": None},
+    {"to_whatsapp_jid": script("7@s.whatsapp.net"), "format_message": script("hello"),
+     "_outgoing_chunk_limit": script(2), "truncate_message": script(["a", "b"]),
+     "_post_bridge_message": [script({"success": True, "message_id": "x1"}),
+                              raise_("RuntimeError", "second post boom")],
+     "asyncio.sleep": script(None)})
+
+# -- interactive_setup (extension wave 2d) --
+add("interactive_setup", {},
+    {"print_header": script(None), "print_info": script(None), "get_env_value": script(None),
+     "prompt_yes_no": script(True), "print_success": script(None),
+     "prompt": [script("11 @x.com 22"), script(" c1 ")],
+     "save_env_value": script(None), "remove_env_value": script(False)})
+add("interactive_setup", {},
+    {"print_header": script(None), "print_info": script(None), "get_env_value": script("true"),
+     "prompt_yes_no": [script(True), script(False)]})
+add("interactive_setup", {},
+    {"print_header": script(None), "print_info": script(None), "get_env_value": script("YES"),
+     "prompt_yes_no": [script(True), script(True)], "print_success": script(None),
+     "prompt": [script(""), script("")], "save_env_value": script(None),
+     "remove_env_value": script(True)})
+add("interactive_setup", {},
+    {"print_header": script(None), "print_info": script(None), "get_env_value": script("false"),
+     "prompt_yes_no": script(False), "save_env_value": script(None)})
+add("interactive_setup", {},
+    {"print_header": script(None), "print_info": script(None), "get_env_value": raise_("OSError", "env boom")})
+add("interactive_setup", {},
+    {"print_header": script(None), "print_info": script(None), "get_env_value": script(None),
+     "prompt_yes_no": script(True), "print_success": script(None),
+     "prompt": [script("u1"), script("home1")], "save_env_value": script(None)})
+add("interactive_setup", {}, {}, fail_closed=True)
+
+# -- _preflight (extension wave 2e) --
+PF_SELF = self_base()
+add("_preflight", {"self": PF_SELF},
+    {"check_whatsapp_requirements": script(True), "exists": [script(True), script(True)],
+     "ensure_aiohttp": script(None), "logger.info": script(None)})
+add("_preflight", {"self": PF_SELF},
+    {"check_whatsapp_requirements": script(False), "logger.warning": script(None),
+     "_set_fatal_error": script(None)})
+add("_preflight", {"self": PF_SELF},
+    {"check_whatsapp_requirements": script(True), "exists": [script(False)],
+     "logger.warning": script(None), "_set_fatal_error": script(None)})
+add("_preflight", {"self": PF_SELF},
+    {"check_whatsapp_requirements": script(True), "exists": [script(True), script(False)],
+     "logger.warning": script(None), "_set_fatal_error": script(None)})
+add("_preflight", {"self": PF_SELF},
+    {"check_whatsapp_requirements": script(True), "exists": [script(True), script(True)],
+     "ensure_aiohttp": script(["no aiohttp", True]), "logger.warning": script(None),
+     "_set_fatal_error": script(None)})
+add("_preflight", {"self": PF_SELF},
+    {"check_whatsapp_requirements": raise_("SystemExit", "1")})
+add("_preflight", {"self": PF_SELF}, {}, fail_closed=True)
+
+# -- _unidentified_holder_remains (extension wave 2e) --
+UH_SELF = self_base(_bridge_probe_timed_out=False)
+add("_unidentified_holder_remains", {"self": UH_SELF},
+    {"asyncio.sleep": script(None), "_port_listener_pids": script([])})
+add("_unidentified_holder_remains", {"self": self_base(_bridge_probe_timed_out=False)},
+    {"asyncio.sleep": script(None), "_port_listener_pids": script([4242]),
+     "_set_fatal_error": script(None)})
+add("_unidentified_holder_remains", {"self": self_base(_bridge_probe_timed_out=True)},
+    {"asyncio.sleep": script(None), "_port_listener_pids": script([9]),
+     "_set_fatal_error": script(None)})
+add("_unidentified_holder_remains", {"self": UH_SELF},
+    {"asyncio.sleep": script(None), "_port_listener_pids": raise_("OSError", "no netstat"),
+     "_set_fatal_error": script(None)})
+add("_unidentified_holder_remains", {"self": UH_SELF},
+    {"asyncio.sleep": script(None), "_port_listener_pids": raise_("SystemExit", "1")})
+add("_unidentified_holder_remains", {"self": UH_SELF}, {}, fail_closed=True)
+
+# -- _wait_bridge_port_free (extension wave 2e) --
+WP_SELF = self_base()
+add("_wait_bridge_port_free", {"self": WP_SELF},
+    {"time.monotonic": script(100.0), "port_is_free": script(True)})
+add("_wait_bridge_port_free", {"self": WP_SELF},
+    {"time.monotonic": [script(100.0), script(100.5)],
+     "port_is_free": [script(False), script(True)], "asyncio.sleep": script(None)})
+add("_wait_bridge_port_free", {"self": WP_SELF},
+    {"time.monotonic": [script(100.0), script(115.0)],
+     "port_is_free": script(False), "_port_listener_pids": script([77, 88]),
+     "_set_fatal_error": script(None)})
+add("_wait_bridge_port_free", {"self": WP_SELF},
+    {"time.monotonic": [script(100.0), script(115.0)],
+     "port_is_free": script(False), "_port_listener_pids": raise_("OSError", "no lsof"),
+     "_set_fatal_error": script(None)})
+add("_wait_bridge_port_free", {"self": WP_SELF},
+    {"time.monotonic": raise_("SystemExit", "1")})
+add("_wait_bridge_port_free", {"self": WP_SELF}, {}, fail_closed=True)
 
 
 def main():

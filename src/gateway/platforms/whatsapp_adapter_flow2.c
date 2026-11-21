@@ -2975,3 +2975,785 @@ gci_cm:
         return ret ? ret : wa2_gci_fallback(args);
     }
 }
+
+/* ---- extension wave 2: unclaimed defs (PoP-claimed in place) ---- */
+
+/* PoP: wa2__bridge_url @ plugins/platforms/whatsapp/adapter.py:_bridge_url */
+static json_t *wa2__bridge_url(wa2_ctx_t *ctx, const json_t *args) {
+    (void)ctx;
+    const json_t *self = json_obj_get(args, "self");
+    const json_t *port = self ? json_obj_get(self, "_bridge_port") : NULL;
+    const json_t *pv = json_obj_get(args, "path");
+    const char *path = (pv && pv->type == JSON_STRING) ? pv->str_val :
+                       ((pv && pv->type == JSON_NULL) ? "None" : "None");
+    char buf[256];
+    if (port && port->type == JSON_STRING)
+        snprintf(buf, sizeof buf, "http://127.0.0.1:%s/%s", port->str_val, path);
+    else if (port && port->type == JSON_NUMBER)
+        snprintf(buf, sizeof buf, "http://127.0.0.1:%.0f/%s", port->num_val, path);
+    else
+        snprintf(buf, sizeof buf, "http://127.0.0.1:None/%s", path);
+    return json_string(buf);
+}
+
+/* -- extension wave 2: shared helpers -- */
+static char *wa2_py_str(const json_t *v) {
+    if (!v) return wa2_strdup("None");
+    switch (v->type) {
+    case JSON_NULL: return wa2_strdup("None");
+    case JSON_BOOL: return wa2_strdup(v->bool_val ? "True" : "False");
+    case JSON_NUMBER: { char b[64]; snprintf(b, sizeof b, "%.0f", v->num_val); return wa2_strdup(b); }
+    case JSON_STRING: return wa2_strdup(v->str_val);
+    default: return wa2_strdup("");
+    }
+}
+static char *wa2_py_str_or_empty(const json_t *v) {
+    return (v && wa2_truthy(v)) ? wa2_py_str(v) : wa2_strdup("");
+}
+static const json_t *wa2_arr_get(const json_t *a, size_t i) {
+    return (a && a->type == JSON_ARRAY && i < json_len(a)) ? json_get(a, i) : NULL;
+}
+
+/* PoP: wa2_send_clarify @ plugins/platforms/whatsapp/adapter.py:send_clarify */
+static json_t *wa2_send_clarify(wa2_ctx_t *ctx, const json_t *args) {
+    const json_t *choices = json_obj_get(args, "choices");
+    json_t *clean = json_array();
+    if (choices && choices->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(choices); i++) {
+            char *s = wa2_py_str(json_get(choices, i));
+            char *t = wa2_strip(s);
+            free(s);
+            if (t[0]) json_append(clean, json_string(t));
+            free(t);
+        }
+    }
+    size_t nc = json_len(clean);
+    const json_t *self = json_obj_get(args, "self");
+    const json_t *nmv = self ? json_obj_get(self, "name") : NULL;
+    char *qs = wa2_py_str_or_empty(json_obj_get(args, "question"));
+    char *qt = wa2_strip(qs);
+    free(qs);
+    json_t *result = NULL;
+    if (nc >= 2 && nc <= 12) {
+        json_t *pa = json_object();
+        wa2_set_copy(pa, "chat_id", json_obj_get(args, "chat_id"));
+        wa2_set_s(pa, "question", qt);
+        json_set(pa, "options", clean);  /* adopt */
+        clean = NULL;
+        wa2_set_n(pa, "selectable_count", 1);
+        result = wa2_call(ctx, "send_poll", pa);
+        if (wa2_is_raise(result)) goto sc_done;
+        if (wa2_truthy(json_obj_get(result, "success"))) goto sc_done;
+        json_t *wa = json_object();
+        wa2_set_s(wa, "msg", "[%s] Native WhatsApp clarify poll failed; falling back to text: %s");
+        json_t *wargs = json_array();
+        json_append(wargs, nmv ? json_copy(nmv) : json_null());
+        const json_t *ev = json_obj_get(result, "error");
+        json_append(wargs, ev ? json_copy(ev) : json_null());
+        json_set(wa, "args", wargs);
+        json_t *lr = wa2_call(ctx, "logger.warning", wa);
+        if (wa2_is_raise(lr)) { json_free(result); result = lr; goto sc_done; }
+        json_free(lr);
+    }
+    {
+        json_t *ba = json_object();
+        wa2_set_copy(ba, "chat_id", json_obj_get(args, "chat_id"));
+        wa2_set_copy(ba, "question", json_obj_get(args, "question"));
+        wa2_set_copy(ba, "choices", choices);
+        wa2_set_copy(ba, "clarify_id", json_obj_get(args, "clarify_id"));
+        wa2_set_copy(ba, "session_key", json_obj_get(args, "session_key"));
+        wa2_set_copy(ba, "metadata", json_obj_get(args, "metadata"));
+        result = wa2_call(ctx, "_base_send_clarify", ba);
+    }
+sc_done:
+    free(qt);
+    if (clean) json_free(clean);
+    return result;
+}
+
+/* PoP: wa2_send_image @ plugins/platforms/whatsapp/adapter.py:send_image */
+static json_t *wa2__base_send_image(wa2_ctx_t *ctx, const json_t *args) {
+    json_t *ba = json_object();
+    wa2_set_copy(ba, "chat_id", json_obj_get(args, "chat_id"));
+    wa2_set_copy(ba, "image_url", json_obj_get(args, "image_url"));
+    wa2_set_copy(ba, "caption", json_obj_get(args, "caption"));
+    wa2_set_copy(ba, "reply_to", json_obj_get(args, "reply_to"));
+    wa2_set_copy(ba, "metadata", json_obj_get(args, "metadata"));
+    return wa2_call(ctx, "_base_send_image", ba);
+}
+static json_t *wa2_send_image(wa2_ctx_t *ctx, const json_t *args) {
+    json_t *ca = json_object();
+    wa2_set_copy(ca, "url", json_obj_get(args, "image_url"));
+    json_t *lp = wa2_call(ctx, "cache_image_from_url", ca);
+    if (wa2_is_raise(lp)) {
+        const char *k = wa2_kind(lp);
+        if (wa2_kind_is(k, "Exception") && !wa2_is_base_exc(k)) { json_free(lp); return wa2__base_send_image(ctx, args); }
+        return lp;
+    }
+    json_t *ma = json_object();
+    wa2_set_copy(ma, "chat_id", json_obj_get(args, "chat_id"));
+    json_set(ma, "file_path", lp);  /* adopt */
+    wa2_set_s(ma, "media_type", "image");
+    wa2_set_copy(ma, "caption", json_obj_get(args, "caption"));
+    wa2_set_null(ma, "file_name");
+    json_t *result = wa2_call(ctx, "_send_media_to_bridge", ma);
+    if (wa2_is_raise(result)) {
+        const char *k = wa2_kind(result);
+        if (wa2_kind_is(k, "Exception") && !wa2_is_base_exc(k)) { json_free(result); return wa2__base_send_image(ctx, args); }
+        return result;
+    }
+    return result;
+}
+
+/* PoP: wa2__wait_for_bridge @ plugins/platforms/whatsapp/adapter.py:_wait_for_bridge */
+static json_t *wa2__wait_for_bridge(wa2_ctx_t *ctx, const json_t *args) {
+    json_t *pa = json_object();
+    wa2_set_s(pa, "died_msg", "Bridge process died (exit code {code})");
+    json_t *r = wa2_call(ctx, "_poll_bridge_health", pa);
+    if (wa2_is_raise(r)) return r;
+    const json_t *conn = wa2_arr_get(r, 0);
+    const json_t *http_ready = wa2_arr_get(r, 1);
+    const json_t *data = wa2_arr_get(r, 2);
+    if (conn && conn->type == JSON_BOOL && !conn->bool_val) { json_free(r); return json_bool(false); }
+    if (!wa2_truthy(http_ready)) {
+        json_t *da = json_object();
+        wa2_set_s(da, "detail", "Bridge HTTP server did not start in 15s");
+        wa2_set_s(da, "code", "whatsapp_bridge_timeout");
+        json_t *d = wa2_call(ctx, "_bridge_died", da);
+        json_free(r);
+        return d;
+    }
+    const json_t *status = data ? json_obj_get(data, "status") : NULL;
+    if (!wa2_str(status) || strcmp(wa2_str(status), "connected") != 0) {
+        const json_t *self = json_obj_get(args, "self");
+        const char *nm = self ? wa2_str(json_obj_get(self, "name")) : NULL;
+        char msg[256];
+        snprintf(msg, sizeof msg, "[%s] Bridge HTTP ready, waiting for WhatsApp connection...", nm ? nm : "None");
+        json_t *p1 = json_object();
+        wa2_set_s(p1, "text", msg);
+        json_t *pr = wa2_call(ctx, "print", p1);
+        if (wa2_is_raise(pr)) { json_free(r); return pr; }
+        json_free(pr);
+        json_t *pa2 = json_object();
+        wa2_set_s(pa2, "died_msg", "Bridge process died during connection");
+        json_t *r2 = wa2_call(ctx, "_poll_bridge_health", pa2);
+        if (wa2_is_raise(r2)) { json_free(r); return r2; }
+        const json_t *conn2 = wa2_arr_get(r2, 0);
+        if (conn2 && conn2->type == JSON_BOOL && !conn2->bool_val) { json_free(r2); json_free(r); return json_bool(false); }
+        /* connected is None: unicode warning prints (fixture corpus avoids this branch) */
+        if (conn2 && conn2->type == JSON_NULL) {
+            char m2[256];
+            const char *bl = self ? wa2_str(json_obj_get(self, "_bridge_log")) : NULL;
+            snprintf(m2, sizeof m2, "[%s]   Bridge log: %s", nm ? nm : "None", bl ? bl : "None");
+            json_t *p2 = json_object(); wa2_set_s(p2, "text", m2);
+            json_t *p3 = json_object(); wa2_set_s(p3, "text", "[whatsapp]   If session expired, re-pair: hermes whatsapp");
+            json_free(wa2_call(ctx, "print", p2));
+            json_free(wa2_call(ctx, "print", p3));
+        }
+        json_free(r2);
+    }
+    json_free(r);
+    return json_bool(true);
+}
+
+/* PoP: wa2__attach_to_bridge @ plugins/platforms/whatsapp/adapter.py:_attach_to_bridge */
+static json_t *wa2__attach_to_bridge(wa2_ctx_t *ctx, const json_t *args) {
+    json_t *self = wa2_self(ctx);
+    const json_t *mp = json_obj_get(args, "managed_process");
+    if (self) json_set(self, "_bridge_process", mp ? json_copy(mp) : json_null());
+    /* headers = _bridge_auth_headers(self._bridge_token) */
+    json_t *ha = json_object();
+    const json_t *tok = self ? json_obj_get(self, "_bridge_token") : NULL;
+    wa2_set_copy(ha, "token", tok);
+    json_t *headers = wa2_call(ctx, "_bridge_auth_headers", ha);
+    if (wa2_is_raise(headers)) return headers;
+    /* self._http_session = aiohttp.ClientSession(headers=headers) */
+    json_t *ca = json_object();
+    json_set(ca, "headers", headers);  /* adopt */
+    json_t *sess = wa2_call(ctx, "aiohttp.ClientSession", ca);
+    if (wa2_is_raise(sess)) return sess;
+    if (self) json_set(self, "_http_session", json_copy(sess));
+    /* poll = self._poll_messages(); task = asyncio.create_task(poll) */
+    json_t *poll = wa2_call(ctx, "_poll_messages", json_object());
+    if (wa2_is_raise(poll)) { json_free(sess); return poll; }
+    json_t *ta = json_object();
+    json_set(ta, "coro", poll);  /* adopt */
+    json_t *task = wa2_call(ctx, "asyncio.create_task", ta);
+    if (wa2_is_raise(task)) { json_free(sess); return task; }
+    if (self && json_obj_get(self, "_poll_task") != NULL) json_set(self, "_poll_task", json_copy(task));
+    json_free(task);
+    json_free(sess);
+    return NULL;
+}
+
+/* PoP: wa2_send_typing @ plugins/platforms/whatsapp/adapter.py:send_typing */
+static json_t *wa2_send_typing(wa2_ctx_t *ctx, const json_t *args) {
+    /* if await self._bridge_unavailable(): return */
+    json_t *unav = wa2_call(ctx, "_bridge_unavailable", json_object());
+    if (wa2_is_raise(unav)) return unav;
+    if (wa2_truthy(unav)) { json_free(unav); return NULL; }
+    json_free(unav);
+    /* to_whatsapp_jid(chat_id) */
+    json_t *ja = json_object();
+    wa2_set_copy(ja, "value", json_obj_get(args, "chat_id"));
+    json_t *jid = wa2_call(ctx, "to_whatsapp_jid", ja);
+    if (wa2_is_raise(jid)) {
+        const char *k = wa2_kind(jid);
+        if (wa2_kind_is(k, "Exception") && !wa2_is_base_exc(k)) { json_free(jid); return NULL; }
+        return jid;
+    }
+    /* aiohttp.ClientTimeout(total=5) */
+    json_t *ta = json_object();
+    wa2_set_n(ta, "total", 5);
+    json_t *to = wa2_call(ctx, "ClientTimeout", ta);
+    if (wa2_is_raise(to)) {
+        const char *k = wa2_kind(to);
+        if (wa2_kind_is(k, "Exception") && !wa2_is_base_exc(k)) { json_free(to); json_free(jid); return NULL; }
+        json_free(jid);
+        return to;
+    }
+    /* url = self._bridge_url("typing") -- real leaf, no seam */
+    const json_t *self = json_obj_get(args, "self");
+    json_t *ua = json_object();
+    if (self) json_set(ua, "self", json_copy(self));
+    wa2_set_s(ua, "path", "typing");
+    json_t *url = wa2__bridge_url(ctx, ua);
+    json_free(ua);
+    /* async with self._http_session.post(url, json=..., timeout=...): pass */
+    json_t *pa = json_object();
+    json_set(pa, "url", url);  /* adopt */
+    json_t *pl = json_object();
+    json_set(pl, "chatId", jid);  /* adopt */
+    json_set(pa, "json", pl);
+    json_set(pa, "timeout", to);  /* adopt */
+    json_t *resp = wa2_call(ctx, "session.post", pa);
+    if (wa2_is_raise(resp)) {
+        const char *k = wa2_kind(resp);
+        if (wa2_kind_is(k, "Exception") && !wa2_is_base_exc(k)) { json_free(resp); return NULL; }
+        return resp;
+    }
+    json_t *en = wa2_call(ctx, "resp.enter", json_object());
+    if (wa2_is_raise(en)) {
+        /* __aenter__ raised: __aexit__ is NOT called; suppress(Exception) swallows */
+        const char *k = wa2_kind(en);
+        json_free(resp);
+        if (wa2_kind_is(k, "Exception") && !wa2_is_base_exc(k)) { json_free(en); return NULL; }
+        return en;
+    }
+    json_free(en);
+    bool suppressed = false;
+    json_t *fin = wa2_cm_exit(ctx, "resp.exit", NULL, &suppressed);
+    json_free(resp);
+    if (fin) {
+        const char *k = wa2_kind(fin);
+        if (wa2_kind_is(k, "Exception") && !wa2_is_base_exc(k)) { json_free(fin); return NULL; }
+        return fin;
+    }
+    (void)suppressed;
+    return NULL;
+}
+
+/* PoP: wa2__probe_bridge_health @ plugins/platforms/whatsapp/adapter.py:_probe_bridge_health */
+static json_t *wa2__probe_bridge_health(wa2_ctx_t *ctx, const json_t *args) {
+    const json_t *self = json_obj_get(args, "self");
+    /* async with aiohttp.ClientSession() as session: */
+    json_t *ca = json_object();
+    wa2_set_null(ca, "headers");
+    json_t *sess = wa2_call(ctx, "aiohttp.ClientSession", ca);
+    if (wa2_is_raise(sess)) return sess;
+    json_t *en = wa2_call(ctx, "session.enter", json_object());
+    if (wa2_is_raise(en)) { json_free(sess); return en; }
+    json_free(en);
+    json_t *pending = NULL, *bodyret = NULL;
+    const json_t *port = self ? json_obj_get(self, "_bridge_port") : NULL;
+    const json_t *tok = self ? json_obj_get(self, "_bridge_token") : NULL;
+    char url[128];
+    if (port && port->type == JSON_NUMBER) snprintf(url, sizeof url, "http://127.0.0.1:%.0f", port->num_val);
+    else if (port && port->type == JSON_STRING) snprintf(url, sizeof url, "http://127.0.0.1:%s", port->str_val);
+    else snprintf(url, sizeof url, "http://127.0.0.1:None");
+    json_t *ta = json_object();
+    wa2_set_n(ta, "total", 2);
+    json_t *to = wa2_call(ctx, "ClientTimeout", ta);
+    if (wa2_is_raise(to)) { pending = to; goto pbh_exit; }
+    {
+        json_t *ha = json_object();
+        json_set(ha, "session", json_copy(sess));
+        wa2_set_s(ha, "base_url", url);
+        wa2_set_copy(ha, "token", tok);
+        json_set(ha, "timeout", to);  /* adopt */
+        json_t *r = wa2_call(ctx, "_authenticated_bridge_health", ha);
+        if (wa2_is_raise(r)) pending = r; else bodyret = r;
+    }
+pbh_exit:
+    ;
+    {
+        bool supp = false;
+        json_t *fin = wa2_cm_exit(ctx, "session.exit", pending, &supp);
+        json_free(sess);
+        if (fin) { if (bodyret) json_free(bodyret); return fin; }
+        if (supp) { if (bodyret) json_free(bodyret); return NULL; }
+        return bodyret;
+    }
+}
+
+/* PoP: wa2_send @ plugins/platforms/whatsapp/adapter.py:send */
+static json_t *wa2_send_exc_result(const json_t *pending) {
+    if (wa2_is_base_exc(wa2_kind(pending))) return json_copy(pending);
+    json_t *e = json_string(json_get_str(pending, "message", ""));
+    json_t *r = wa2_send_result(false, NULL, e, NULL);
+    json_free(e);
+    return r;
+}
+static json_t *wa2_text_seam(wa2_ctx_t *ctx, const char *name, const char *text) {
+    json_t *a = json_object();
+    wa2_set_s(a, "text", text);
+    return wa2_call(ctx, name, a);
+}
+static json_t *wa2_send(wa2_ctx_t *ctx, const json_t *args) {
+    const json_t *content = json_obj_get(args, "content");
+    json_t *jid = NULL, *fmt = NULL, *lim = NULL, *chunks = NULL;
+    json_t *sent = NULL, *last = NULL, *pending = NULL, *ret = NULL;
+    if (!wa2_truthy(content)) return wa2_send_result(true, NULL, NULL, NULL);
+    {
+        char *cs = wa2_py_str(content), *ct = wa2_strip(cs);
+        free(cs);
+        if (!ct[0]) { free(ct); return wa2_send_result(true, NULL, NULL, NULL); }
+        free(ct);
+    }
+    {
+        json_t *ja = json_object();
+        wa2_set_copy(ja, "value", json_obj_get(args, "chat_id"));
+        jid = wa2_call(ctx, "to_whatsapp_jid", ja);
+        if (wa2_is_raise(jid)) return jid;
+    }
+    {
+        json_t *fa = json_object();
+        wa2_set_copy(fa, "content", content);
+        fmt = wa2_call(ctx, "format_message", fa);
+        if (wa2_is_raise(fmt)) { pending = fmt; fmt = NULL; goto snd_except; }
+        lim = wa2_call(ctx, "_outgoing_chunk_limit", json_object());
+        if (wa2_is_raise(lim)) { pending = lim; lim = NULL; goto snd_except; }
+        json_t *ta = json_object();
+        json_set(ta, "text", fmt); fmt = NULL;
+        json_set(ta, "limit", lim); lim = NULL;
+        chunks = wa2_call(ctx, "truncate_message", ta);
+        if (wa2_is_raise(chunks)) { pending = chunks; chunks = NULL; goto snd_except; }
+    }
+    {
+        size_t nch = (chunks && chunks->type == JSON_ARRAY) ? json_len(chunks) : 0;
+        const json_t *reply = json_obj_get(args, "reply_to");
+        sent = json_array();
+        for (size_t i = 0; i < nch; i++) {
+            json_t *payload = json_object();
+            json_set(payload, "chatId", json_copy(jid));
+            json_set(payload, "message", json_copy(json_get(chunks, i)));
+            if (wa2_truthy(reply) && i == 0) wa2_set_copy(payload, "replyTo", reply);
+            json_t *pa = json_object();
+            wa2_set_s(pa, "path", "send");
+            json_set(pa, "payload", payload);
+            wa2_set_n(pa, "timeout", 30);
+            json_t *res = wa2_call(ctx, "_post_bridge_message", pa);
+            if (wa2_is_raise(res)) { pending = res; goto snd_except; }
+            if (!wa2_truthy(json_obj_get(res, "success"))) {
+                ret = wa2_send_result(false, NULL, json_obj_get(res, "error"), NULL);
+                json_free(res);
+                goto snd_done;
+            }
+            const json_t *mid = json_obj_get(res, "message_id");
+            if (last) json_free(last);
+            last = mid ? json_copy(mid) : json_null();
+            if (wa2_truthy(mid)) {
+                char *ms = wa2_py_str(mid);
+                json_append(sent, json_string(ms));
+                free(ms);
+            }
+            json_free(res);
+            if (nch > 1) {
+                json_t *sa = json_object();
+                wa2_set_n(sa, "seconds", 0.3);
+                json_t *sl = wa2_call(ctx, "asyncio.sleep", sa);
+                if (wa2_is_raise(sl)) { pending = sl; goto snd_except; }
+                json_free(sl);
+            }
+        }
+        {
+            json_t *cont = json_array();
+            for (size_t i = 0; i + 1 < json_len(sent); i++)
+                json_append(cont, json_copy(json_get(sent, i)));
+            json_t *rr = json_object();
+            json_set(rr, "message_ids", sent);
+            sent = NULL;
+            ret = wa2_send_result(true, last, NULL, rr);
+            json_set(ret, "continuation_message_ids", cont);  /* adopt */
+            cont = NULL;
+            json_free(rr);
+        }
+        goto snd_done;
+    }
+snd_except:
+    ret = wa2_send_exc_result(pending);
+snd_done:
+    if (pending) json_free(pending);
+    if (jid) json_free(jid);
+    if (fmt) json_free(fmt);
+    if (lim) json_free(lim);
+    if (chunks) json_free(chunks);
+    if (sent) json_free(sent);
+    if (last) json_free(last);
+    return ret;
+}
+
+/* PoP: wa2_interactive_setup @ plugins/platforms/whatsapp/adapter.py:interactive_setup */
+static json_t *wa2_interactive_setup(wa2_ctx_t *ctx, const json_t *args) {
+    (void)args;
+    json_t *x;
+#define WS(name, text) do { x = wa2_text_seam(ctx, name, text); if (wa2_is_raise(x)) return x; json_free(x); } while (0)
+    WS("print_header", "WhatsApp");
+    WS("print_info", "WhatsApp uses a local Node.js bridge (WhatsApp Web client).");
+    WS("print_info", "Start the bridge separately; the gateway connects to it over HTTP.");
+    {
+        json_t *a = json_object(); wa2_set_s(a, "key", "WHATSAPP_ENABLED");
+        json_t *v = wa2_call(ctx, "get_env_value", a);
+        if (wa2_is_raise(v)) return v;
+        const char *s = wa2_str(v);
+        if (wa2_truthy(v) && s) {
+            char *lo = wa2_lower_ascii(s);
+            bool on = strcmp(lo, "true") == 0 || strcmp(lo, "1") == 0 || strcmp(lo, "yes") == 0;
+            free(lo);
+            if (on) {
+                WS("print_info", "WhatsApp: already enabled");
+                json_t *qa = json_object();
+                wa2_set_s(qa, "question", "Reconfigure WhatsApp?");
+                wa2_set_b(qa, "default", false);
+                json_t * answering = wa2_call(ctx, "prompt_yes_no", qa);
+                if (wa2_is_raise(answering)) return answering;
+                bool yes = wa2_truthy(answering);
+                json_free(answering);
+                if (!yes) return NULL;
+            }
+        }
+        json_free(v);
+    }
+    {
+        json_t *qa = json_object();
+        wa2_set_s(qa, "question", "Enable WhatsApp?");
+        wa2_set_b(qa, "default", true);
+        json_t *answering = wa2_call(ctx, "prompt_yes_no", qa);
+        if (wa2_is_raise(answering)) return answering;
+        bool yes = wa2_truthy(answering);
+        json_free(answering);
+        if (!yes) {
+            json_t *sa = json_object();
+            wa2_set_s(sa, "key", "WHATSAPP_ENABLED"); wa2_set_s(sa, "value", "false");
+            x = wa2_call(ctx, "save_env_value", sa);
+            if (wa2_is_raise(x)) return x;
+            json_free(x);
+            WS("print_info", "WhatsApp left disabled");
+            return NULL;
+        }
+    }
+    {
+        json_t *sa = json_object();
+        wa2_set_s(sa, "key", "WHATSAPP_ENABLED"); wa2_set_s(sa, "value", "true");
+        x = wa2_call(ctx, "save_env_value", sa);
+        if (wa2_is_raise(x)) return x;
+        json_free(x);
+    }
+    WS("print_success", "WhatsApp enabled");
+    {
+        const char *au = NULL;
+        json_t *pa = json_object();
+        wa2_set_s(pa, "question", "Allowed user IDs (comma-separated, leave empty for no allowlist)");
+        json_t *v = wa2_call(ctx, "prompt", pa);
+        if (wa2_is_raise(v)) return v;
+        au = wa2_str(v);
+        if (wa2_truthy(v) && au) {
+            char *clean = wa2_strdup(au);
+            for (char *p = clean; *p; p++) if (*p == ' ') *p = '_';
+            /* replace-then-strip-space sentinel: rebuild without spaces */
+            size_t n = 0;
+            for (const char *p = au; *p; p++) if (*p != ' ') n++;
+            char *out = malloc(n + 1);
+            size_t k = 0;
+            for (const char *p = au; *p; p++) if (*p != ' ') out[k++] = *p;
+            out[k] = '\0';
+            free(clean);
+            json_t *sa = json_object();
+            wa2_set_s(sa, "key", "WHATSAPP_ALLOWED_USERS"); wa2_set_s(sa, "value", out);
+            free(out);
+            x = wa2_call(ctx, "save_env_value", sa);
+            if (wa2_is_raise(x)) return x;
+            json_free(x);
+            WS("print_success", "WhatsApp allowlist configured");
+        }
+        json_free(v);
+    }
+    {
+        json_t *hc = NULL;
+        json_t *pa = json_object();
+        wa2_set_s(pa, "question", "Home chat ID for cron delivery (leave empty to skip)");
+        hc = wa2_call(ctx, "prompt", pa);
+        if (wa2_is_raise(hc)) return hc;
+        char *trim = wa2_strip(wa2_str(hc) ? wa2_str(hc) : "");
+        if (trim[0]) {
+            json_t *sa = json_object();
+            wa2_set_s(sa, "key", "WHATSAPP_HOME_CHANNEL"); wa2_set_s(sa, "value", trim);
+            x = wa2_call(ctx, "save_env_value", sa);
+            free(trim);
+            if (wa2_is_raise(x)) return x;
+            json_free(x);
+        } else {
+            json_t *ra = json_object(); wa2_set_s(ra, "key", "WHATSAPP_HOME_CHANNEL");
+            json_t *rv = wa2_call(ctx, "remove_env_value", ra);
+            free(trim);
+            if (wa2_is_raise(rv)) return rv;
+            if (wa2_truthy(rv)) {
+                json_free(rv);
+                WS("print_info", "Home channel cleared.");
+            } else json_free(rv);
+        }
+        json_free(hc);
+    }
+#undef WS
+    return NULL;
+}
+
+
+/* -- extension wave 2e: preflight / holder / port-free -- */
+static bool wa2_is_null(const json_t *v) { return v && v->type == JSON_NULL; }
+static json_t *wa2_pf_fail(wa2_ctx_t *ctx, const char *lmsg, const json_t *largs,
+                           const char *code, const char *message, bool retryable) {
+    json_t *la = json_object();
+    wa2_set_s(la, "msg", lmsg);
+    json_set(la, "args", json_copy(largs));
+    json_t *r = wa2_call(ctx, "logger.warning", la);
+    if (wa2_is_raise(r)) return r;
+    json_free(r);
+    json_t *fa = json_object();
+    wa2_set_s(fa, "code", code);
+    wa2_set_s(fa, "message", message);
+    wa2_set_b(fa, "retryable", retryable);
+    json_t *f = wa2_call(ctx, "_set_fatal_error", fa);
+    if (wa2_is_raise(f)) return f;
+    json_free(f);
+    return json_bool(false);
+}
+
+/* PoP: wa2__preflight @ plugins/platforms/whatsapp/adapter.py:_preflight */
+static json_t *wa2__preflight(wa2_ctx_t *ctx, const json_t *args) {
+    (void)args;
+    const json_t *sd = wa2_self(ctx);
+    const char *name = wa2_str(json_obj_get(sd, "name"));
+    const char *bsp = wa2_str(json_obj_get(sd, "_bridge_script"));
+    const char *sp = wa2_str(json_obj_get(sd, "_session_path"));
+    char *bp = wa2_posix_norm(bsp ? bsp : "");
+    char *cp = wa2_path_join(sp ? sp : "", "creds.json");
+    json_t *ret = NULL;
+    {
+        json_t *ok = wa2_call(ctx, "check_whatsapp_requirements", json_object());
+        if (wa2_is_raise(ok)) { ret = ok; goto pf_done; }
+        if (!wa2_truthy(ok)) {
+            json_t *wa = json_array();
+            json_append(wa, json_string(name ? name : "None"));
+            ret = wa2_pf_fail(ctx, "[%s] Node.js not found. WhatsApp requires Node.js.", wa,
+                "whatsapp_node_missing",
+                "Node.js is not installed \xE2\x80\x94 install Node.js and re-run `hermes gateway`.", false);
+            json_free(wa);
+            json_free(ok);
+            goto pf_done;
+        }
+        json_free(ok);
+    }
+    {
+        json_t *ea = json_object();
+        wa2_set_s(ea, "path", bp);
+        json_t *ok = wa2_call(ctx, "exists", ea);
+        if (wa2_is_raise(ok)) { ret = ok; goto pf_done; }
+        if (!wa2_truthy(ok)) {
+            char msg[512];
+            snprintf(msg, sizeof msg, "WhatsApp bridge script missing at %s.", bp);
+            json_t *wa = json_array();
+            json_append(wa, json_string(name ? name : "None"));
+            json_append(wa, json_string(bp));
+            ret = wa2_pf_fail(ctx, "[%s] Bridge script not found: %s", wa,
+                "whatsapp_bridge_missing", msg, false);
+            json_free(wa);
+            json_free(ok);
+            goto pf_done;
+        }
+        json_free(ok);
+    }
+    {
+        json_t *ea = json_object();
+        wa2_set_s(ea, "path", cp);
+        json_t *ok = wa2_call(ctx, "exists", ea);
+        if (wa2_is_raise(ok)) { ret = ok; goto pf_done; }
+        if (!wa2_truthy(ok)) {
+            json_t *wa = json_array();
+            json_append(wa, json_string(name ? name : "None"));
+            json_append(wa, json_string(cp));
+            ret = wa2_pf_fail(ctx,
+                "[%s] WhatsApp is enabled but not paired (no creds.json at %s). Pair from the dashboard or run `hermes whatsapp`; remove WHATSAPP_ENABLED from your .env to disable.",
+                wa, "whatsapp_not_paired",
+                "WhatsApp enabled but not paired \xE2\x80\x94 pair from the dashboard or run `hermes whatsapp`.", false);
+            json_free(wa);
+            json_free(ok);
+            goto pf_done;
+        }
+        json_free(ok);
+    }
+    {
+        json_t *miss = wa2_call(ctx, "ensure_aiohttp", json_object());
+        if (wa2_is_raise(miss)) { ret = miss; goto pf_done; }
+        if (!wa2_is_null(miss)) {
+            const char *why = wa2_str(wa2_arr_get(miss, 0));
+            bool retryable = wa2_truthy(wa2_arr_get(miss, 1));
+            char msg[1024];
+            snprintf(msg, sizeof msg,
+                "aiohttp is unavailable (%s); the WhatsApp bridge client needs it. Run `hermes pm install --extra sms` (it ships aiohttp; `hermes pm repair` for a damaged install), then restart `hermes gateway`.",
+                why ? why : "None");
+            json_t *wa = json_array();
+            json_append(wa, json_string(name ? name : "None"));
+            json_append(wa, json_string(msg));
+            ret = wa2_pf_fail(ctx, "[%s] %s", wa, "whatsapp_aiohttp_missing", msg, retryable);
+            json_free(wa);
+        }
+        json_free(miss);
+        if (ret) goto pf_done;
+    }
+    {
+        json_t *ia = json_object();
+        wa2_set_s(ia, "msg", "[%s] Bridge found at %s");
+        json_t *ia_args = json_array();
+        json_append(ia_args, json_string(name ? name : "None"));
+        json_append(ia_args, json_string(bp));
+        json_set(ia, "args", ia_args);
+        ret = wa2_call(ctx, "logger.info", ia);
+        if (wa2_is_raise(ret)) goto pf_done;
+        json_free(ret);
+        ret = json_bool(true);
+    }
+pf_done:
+    free(bp);
+    free(cp);
+    return ret;
+}
+
+/* PoP: wa2__unidentified_holder_remains @ plugins/platforms/whatsapp/adapter.py:_unidentified_holder_remains */
+static json_t *wa2__unidentified_holder_remains(wa2_ctx_t *ctx, const json_t *args) {
+    (void)args;
+    const json_t *sd = wa2_self(ctx);
+    const json_t *port = sd ? json_obj_get(sd, "_bridge_port") : NULL;
+    json_t *sla = json_object(); wa2_set_n(sla, "seconds", 1);
+    json_t *to = wa2_call(ctx, "asyncio.sleep", sla);
+    if (wa2_is_raise(to)) return to;
+    json_free(to);
+    {
+        json_t *pa = json_object();
+        wa2_set_copy(pa, "port", port);
+        json_t *pids = wa2_call(ctx, "_port_listener_pids", pa);
+        bool held = true;
+        if (wa2_is_raise(pids)) {
+            const char *k = wa2_kind(pids);
+            if (!wa2_kind_is(k, "OSError") && !wa2_kind_is(k, "SubprocessError")
+                && !wa2_kind_is(k, "ValueError")) return pids;
+            json_free(pids);
+        } else {
+            held = wa2_truthy(pids);
+            json_free(pids);
+        }
+        if (!held) return json_bool(false);
+        {
+            char ps[64];
+            if (port && port->type == JSON_NUMBER) snprintf(ps, sizeof ps, "%.0f", port->num_val);
+            else if (port && port->type == JSON_STRING) snprintf(ps, sizeof ps, "%s", port->str_val);
+            else snprintf(ps, sizeof ps, "None");
+            const json_t *tv = sd ? json_obj_get(sd, "_bridge_probe_timed_out") : NULL;
+            char msg[1024];
+            if (wa2_truthy(tv)) {
+                snprintf(msg, sizeof msg,
+                    "Port %s is held by a process that did not answer /health in time, so Hermes cannot tell whose WhatsApp bridge it is; nothing on port %s was stopped. Stop that process, or give this profile its own port via platforms.whatsapp.extra.bridge_port.",
+                    ps, ps);
+            } else {
+                snprintf(msg, sizeof msg,
+                    "Port %s is held by a WhatsApp bridge (or another process) that cannot prove this session's token, most likely another profile's bridge; nothing on port %s was stopped. Give this profile its own port via platforms.whatsapp.extra.bridge_port (one distinct bridge_port per profile).",
+                    ps, ps);
+            }
+            json_t *fa = json_object();
+            wa2_set_s(fa, "code", wa2_truthy(tv) ? "whatsapp_bridge_unresponsive" : "whatsapp_bridge_foreign_session");
+            wa2_set_s(fa, "message", msg);
+            wa2_set_b(fa, "retryable", wa2_truthy(tv));
+            json_t *r = wa2_call(ctx, "_set_fatal_error", fa);
+            if (wa2_is_raise(r)) return r;
+            json_free(r);
+            return json_bool(true);
+        }
+    }
+}
+
+/* PoP: wa2__wait_bridge_port_free @ plugins/platforms/whatsapp/adapter.py:_wait_bridge_port_free */
+static json_t *wa2__wait_bridge_port_free(wa2_ctx_t *ctx, const json_t *args) {
+    (void)args;
+    const json_t *sd = wa2_self(ctx);
+    const json_t *port = sd ? json_obj_get(sd, "_bridge_port") : NULL;
+    json_t *m0 = wa2_call(ctx, "time.monotonic", json_object());
+    if (wa2_is_raise(m0)) return m0;
+    double deadline = (m0->type == JSON_NUMBER ? m0->num_val : 0.0) + 10.0;
+    json_free(m0);
+    for (;;) {
+        json_t *pa = json_object();
+        wa2_set_copy(pa, "port", port);
+        json_t *freev = wa2_call(ctx, "port_is_free", pa);
+        if (wa2_is_raise(freev)) return freev;
+        bool isfree = wa2_truthy(freev);
+        json_free(freev);
+        if (isfree) return json_bool(true);
+        json_t *mn = wa2_call(ctx, "time.monotonic", json_object());
+        if (wa2_is_raise(mn)) return mn;
+        double now = (mn->type == JSON_NUMBER) ? mn->num_val : 0.0;
+        json_free(mn);
+        if (now >= deadline) {
+            json_t *ha = json_object();
+            wa2_set_copy(ha, "port", port);
+            json_t *holders = wa2_call(ctx, "_port_listener_pids", ha);
+            if (wa2_is_raise(holders)) { json_free(holders); holders = json_array(); }
+            char ps[64], hs[512];
+            if (port && port->type == JSON_NUMBER) snprintf(ps, sizeof ps, "%.0f", port->num_val);
+            else if (port && port->type == JSON_STRING) snprintf(ps, sizeof ps, "%s", port->str_val);
+            else snprintf(ps, sizeof ps, "None");
+            if (wa2_truthy(holders) && holders->type == JSON_ARRAY) {
+                size_t pos = 0;
+                hs[pos++] = '[';
+                for (size_t i = 0; i < json_len(holders) && pos + 40 < sizeof hs; i++) {
+                    if (i) { hs[pos++] = ','; hs[pos++] = ' '; }
+                    const json_t *h = json_get(holders, i);
+                    if (h && h->type == JSON_NUMBER)
+                        pos += (size_t)snprintf(hs + pos, sizeof hs - pos, "%.0f", h->num_val);
+                    else if (h && h->type == JSON_STRING)
+                        pos += (size_t)snprintf(hs + pos, sizeof hs - pos, "'%s'", h->str_val);
+                    else
+                        pos += (size_t)snprintf(hs + pos, sizeof hs - pos, "None");
+                }
+                hs[pos++] = ']';
+                hs[pos] = '\0';
+            } else snprintf(hs, sizeof hs, "unknown");
+            char msg[1024];
+            snprintf(msg, sizeof msg,
+                "Port %s is still held by PID(s) %s after the previous bridge was stopped and 10s of waiting; no new bridge was spawned. Stop the holder, or set platforms.whatsapp.extra.bridge_port to a free port.",
+                ps, hs);
+            json_t *fa = json_object();
+            wa2_set_s(fa, "code", "whatsapp_bridge_port_busy");
+            wa2_set_s(fa, "message", msg);
+            wa2_set_b(fa, "retryable", true);
+            json_t *r = wa2_call(ctx, "_set_fatal_error", fa);
+            json_free(holders);
+            if (wa2_is_raise(r)) return r;
+            json_free(r);
+            return json_bool(false);
+        }
+        json_t *sla = json_object(); wa2_set_n(sla, "seconds", 0.2);
+        json_t *sl = wa2_call(ctx, "asyncio.sleep", sla);
+        if (wa2_is_raise(sl)) return sl;
+        json_free(sl);
+    }
+}

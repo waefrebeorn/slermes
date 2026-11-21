@@ -65,6 +65,19 @@ static const wa2_case_t CASES[] = {
     { "_send_media_to_bridge", wa2__send_media_to_bridge, 1 },
     { "_send_read_receipt", wa2__send_read_receipt, 1 },
     { "get_chat_info", wa2_get_chat_info, 1 },
+    /* extension wave 2: unclaimed defs */
+    { "_bridge_url", wa2__bridge_url, 1 },
+    { "send_clarify", wa2_send_clarify, 1 },
+    { "send_image", wa2_send_image, 1 },
+    { "_wait_for_bridge", wa2__wait_for_bridge, 1 },
+    { "_attach_to_bridge", wa2__attach_to_bridge, 1 },
+    { "send_typing", wa2_send_typing, 1 },
+    { "_probe_bridge_health", wa2__probe_bridge_health, 1 },
+    { "send", wa2_send, 1 },
+    { "interactive_setup", wa2_interactive_setup, 0 },
+    { "_preflight", wa2__preflight, 1 },
+    { "_unidentified_holder_remains", wa2__unidentified_holder_remains, 1 },
+    { "_wait_bridge_port_free", wa2__wait_bridge_port_free, 1 },
 };
 #define CASE_COUNT (sizeof(CASES) / sizeof(CASES[0]))
 

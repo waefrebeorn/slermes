@@ -1,0 +1,138 @@
+{"func": "__getattr__", "in": {"args": {"name": "x"}, "io": {"_target": [{"__script__": true, "ret": "T1"}], "getattr_target": [{"__script__": true, "ret": "V1"}]}}}
+{"func": "__getattr__", "in": {"args": {"name": ""}, "io": {"_target": [{"__script__": true, "ret": "T2"}], "getattr_target": [{"__script__": true, "ret": ""}]}}}
+{"func": "__getattr__", "in": {"args": {"name": "n"}, "io": {"_target": [{"__script__": true, "ret": {"a": 1}}], "getattr_target": [{"__script__": true, "ret": null}]}}}
+{"func": "__getattr__", "in": {"args": {"name": "x"}, "io": {"_target": [{"__script__": true, "raise": {"type": "ValueError", "message": "target down"}}]}}}
+{"func": "__getattr__", "in": {"args": {"name": "x"}, "io": {"_target": [{"__script__": true, "ret": "T"}], "getattr_target": [{"__script__": true, "raise": {"type": "AttributeError", "message": "no attr"}}]}}}
+{"func": "__getattr__", "in": {"args": {"name": "x"}, "io": {"_target": [{"__script__": true, "ret": "T"}], "getattr_target": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "__getattr__", "in": {"args": {"name": "x"}, "io": {"_target": []}}, "_note": "fail-closed"}
+{"func": "__repr__", "in": {"args": {}, "io": {"_target": [{"__script__": true, "ret": "T1"}], "repr_target": [{"__script__": true, "ret": "<Inst>"}]}}}
+{"func": "__repr__", "in": {"args": {}, "io": {"_target": [{"__script__": true, "ret": "T2"}], "repr_target": [{"__script__": true, "ret": ""}]}}}
+{"func": "__repr__", "in": {"args": {}, "io": {"_target": [{"__script__": true, "ret": 7}], "repr_target": [{"__script__": true, "ret": "<N>"}]}}}
+{"func": "__repr__", "in": {"args": {}, "io": {"_target": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "target down"}}]}}}
+{"func": "__repr__", "in": {"args": {}, "io": {"_target": [{"__script__": true, "ret": "T"}], "repr_target": [{"__script__": true, "raise": {"type": "ValueError", "message": "repr down"}}]}}}
+{"func": "__repr__", "in": {"args": {}, "io": {"_target": [{"__script__": true, "ret": "T"}], "repr_target": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "__repr__", "in": {"args": {}, "io": {"_target": []}}, "_note": "fail-closed"}
+{"func": "_accounts_base_url", "in": {"args": {"domain": "feishu"}, "io": {}}}
+{"func": "_accounts_base_url", "in": {"args": {"domain": "lark"}, "io": {}}}
+{"func": "_accounts_base_url", "in": {"args": {"domain": "other"}, "io": {}}}
+{"func": "_accounts_base_url", "in": {"args": {"domain": ""}, "io": {}}}
+{"func": "_accounts_base_url", "in": {"args": {"domain": null}, "io": {}}}
+{"func": "_accounts_base_url", "in": {"args": {"domain": 7}, "io": {}}}
+{"func": "_accounts_base_url", "in": {"args": {"domain": "LARK"}, "io": {}}}
+{"func": "_onboard_open_base_url", "in": {"args": {"domain": "feishu"}, "io": {}}}
+{"func": "_onboard_open_base_url", "in": {"args": {"domain": "lark"}, "io": {}}}
+{"func": "_onboard_open_base_url", "in": {"args": {"domain": "other"}, "io": {}}}
+{"func": "_onboard_open_base_url", "in": {"args": {"domain": ""}, "io": {}}}
+{"func": "_onboard_open_base_url", "in": {"args": {"domain": null}, "io": {}}}
+{"func": "_onboard_open_base_url", "in": {"args": {"domain": false}, "io": {}}}
+{"func": "_onboard_open_base_url", "in": {"args": {"domain": "lark"}, "io": {}}}
+{"func": "_parse_bot_response", "in": {"args": {"data": {"code": 0, "bot": {"app_name": "A", "open_id": "O"}}}, "io": {}}}
+{"func": "_parse_bot_response", "in": {"args": {"data": {"code": 1}}, "io": {}}}
+{"func": "_parse_bot_response", "in": {"args": {"data": {"code": 0}}, "io": {}}}
+{"func": "_parse_bot_response", "in": {"args": {"data": {"code": 0, "bot": {"bot_name": "B"}}}, "io": {}}}
+{"func": "_parse_bot_response", "in": {"args": {"data": {"code": 0, "data": {"bot": {"app_name": "C", "open_id": "D"}}}}, "io": {}}}
+{"func": "_parse_bot_response", "in": {"args": {"data": {"code": 0, "bot": {}, "data": {"bot": {"app_name": "E"}}}}, "io": {}}}
+{"func": "_parse_bot_response", "in": {"args": {"data": {}}, "io": {}}}
+{"func": "_parse_bot_response", "in": {"args": {"data": {"code": 0, "bot": {"app_name": "", "bot_name": "F", "open_id": null}}}, "io": {}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_get_scoped_secret": [{"__script__": true, "ret": "true"}]}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_get_scoped_secret": [{"__script__": true, "ret": " FALSE "}]}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_get_scoped_secret": [{"__script__": true, "ret": "0"}]}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_get_scoped_secret": [{"__script__": true, "ret": "no"}]}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_get_scoped_secret": [{"__script__": true, "ret": null}]}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_get_scoped_secret": [{"__script__": true, "ret": "YES"}]}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_get_scoped_secret": [{"__script__": true, "ret": ""}]}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_get_scoped_secret": [{"__script__": true, "raise": {"type": "ValueError", "message": "secret down"}}]}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {"_get_scoped_secret": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_reactions_enabled", "in": {"args": {}, "io": {}}, "_note": "fail-closed"}
+{"func": "_text_batch_is_compatible", "in": {"args": {"existing": {"reply_to_message_id": "m", "reply_to_text": "t", "source": {"thread_id": "s"}}, "incoming": {"reply_to_message_id": "m", "reply_to_text": "t", "source": {"thread_id": "s"}}}, "io": {}}}
+{"func": "_text_batch_is_compatible", "in": {"args": {"existing": {"reply_to_message_id": "m", "reply_to_text": "t", "source": {"thread_id": "s"}}, "incoming": {"reply_to_message_id": "x", "reply_to_text": "t", "source": {"thread_id": "s"}}}, "io": {}}}
+{"func": "_text_batch_is_compatible", "in": {"args": {"existing": {"reply_to_message_id": "m", "reply_to_text": "t", "source": {"thread_id": "s"}}, "incoming": {"reply_to_message_id": "m", "reply_to_text": "x", "source": {"thread_id": "s"}}}, "io": {}}}
+{"func": "_text_batch_is_compatible", "in": {"args": {"existing": {"reply_to_message_id": "m", "reply_to_text": "t", "source": {"thread_id": "s"}}, "incoming": {"reply_to_message_id": "m", "reply_to_text": "t", "source": {"thread_id": "x"}}}, "io": {}}}
+{"func": "_text_batch_is_compatible", "in": {"args": {"existing": {"reply_to_message_id": null, "reply_to_text": null, "source": {"thread_id": null}}, "incoming": {"reply_to_message_id": null, "reply_to_text": null, "source": {"thread_id": null}}}, "io": {}}}
+{"func": "_text_batch_is_compatible", "in": {"args": {"existing": {"reply_to_message_id": 1, "reply_to_text": "t", "source": {"thread_id": "s"}}, "incoming": {"reply_to_message_id": 1.0, "reply_to_text": "t", "source": {"thread_id": "s"}}}, "io": {}}}
+{"func": "_begin_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "https://accounts.feishu.cn"}], "_post_registration": [{"__script__": true, "ret": {"device_code": "d1", "verification_uri_complete": "https://x?a=1", "user_code": "u1", "interval": 9, "expire_in": 99}}]}}}
+{"func": "_begin_registration", "in": {"args": {"domain": "lark"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "https://accounts.larksuite.com"}], "_post_registration": [{"__script__": true, "ret": {"device_code": "d2", "verification_uri_complete": "https://x"}}]}}}
+{"func": "_begin_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "ret": {"device_code": "d3"}}]}}}
+{"func": "_begin_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "ret": {}}]}}}
+{"func": "_begin_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "ret": {"device_code": ""}}]}}}
+{"func": "_begin_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "base down"}}]}}}
+{"func": "_begin_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "raise": {"type": "ValueError", "message": "post down"}}]}}}
+{"func": "_begin_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_begin_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}]}}, "_note": "fail-closed"}
+{"func": "_init_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "ret": {"supported_auth_methods": ["client_secret"]}}]}}}
+{"func": "_init_registration", "in": {"args": {"domain": "lark"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "ret": {"supported_auth_methods": ["sms"]}}]}}}
+{"func": "_init_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "ret": {"supported_auth_methods": []}}]}}}
+{"func": "_init_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "ret": {}}]}}}
+{"func": "_init_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "raise": {"type": "OSError", "message": "base down"}}]}}}
+{"func": "_init_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "raise": {"type": "ValueError", "message": "post down"}}]}}}
+{"func": "_init_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}], "_post_registration": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "_init_registration", "in": {"args": {"domain": "feishu"}, "io": {"_accounts_base_url": [{"__script__": true, "ret": "B"}]}}, "_note": "fail-closed"}
+{"func": "_apply_yaml_config", "in": {"args": {"yaml_cfg": {}, "feishu_cfg": {"allow_bots": true}}, "io": {"_apply_yaml_bridge": [{"__script__": true, "ret": {"allow_bots": true}}]}}}
+{"func": "_apply_yaml_config", "in": {"args": {"yaml_cfg": {}, "feishu_cfg": {"allow_bots": "TRUE"}}, "io": {"_apply_yaml_bridge": [{"__script__": true, "ret": {"allow_bots": "TRUE"}}]}}}
+{"func": "_apply_yaml_config", "in": {"args": {"yaml_cfg": {}, "feishu_cfg": {}}, "io": {"_apply_yaml_bridge": [{"__script__": true, "ret": {"allow_bots": 1}}]}}}
+{"func": "_apply_yaml_config", "in": {"args": {"yaml_cfg": {}, "feishu_cfg": {}}, "io": {"_apply_yaml_bridge": [{"__script__": true, "ret": null}]}}}
+{"func": "_apply_yaml_config", "in": {"args": {"yaml_cfg": {}, "feishu_cfg": {}}, "io": {"_apply_yaml_bridge": [{"__script__": true, "ret": {}}]}}}
+{"func": "_apply_yaml_config", "in": {"args": {"yaml_cfg": {}, "feishu_cfg": {}}, "io": {"_apply_yaml_bridge": [{"__script__": true, "raise": {"type": "ValueError", "message": "bridge down"}}]}}}
+{"func": "_apply_yaml_config", "in": {"args": {"yaml_cfg": {}, "feishu_cfg": {}}, "io": {"_apply_yaml_bridge": [{"__script__": true, "raise": {"type": "BaseException", "message": "be"}}]}}}
+{"func": "_apply_yaml_config", "in": {"args": {"yaml_cfg": {}, "feishu_cfg": {}}, "io": {}}, "_note": "fail-closed"}
+{"func": "_build_onboard_client", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_sdk_domain": [{"__script__": true, "ret": "DOM"}], "_build_lark_client": [{"__script__": true, "ret": "CLIENT"}]}}}
+{"func": "_build_onboard_client", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_sdk_domain": [{"__script__": true, "ret": "DOM"}], "_build_lark_client": [{"__script__": true, "ret": null}]}}}
+{"func": "_build_onboard_client", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_sdk_domain": [{"__script__": true, "raise": {"type": "ValueError", "message": "domain down"}}]}}}
+{"func": "_build_onboard_client", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_sdk_domain": [{"__script__": true, "ret": "DOM"}], "_build_lark_client": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "client down"}}]}}}
+{"func": "_build_onboard_client", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_sdk_domain": [{"__script__": true, "ret": "DOM"}], "_build_lark_client": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_build_onboard_client", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {}}, "_note": "fail-closed"}
+{"func": "probe_bot", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_load_lark_oapi": [{"__script__": true, "ret": true}], "_probe_bot_sdk": [{"__script__": true, "ret": {"bot_name": "SDK"}}]}}}
+{"func": "probe_bot", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_load_lark_oapi": [{"__script__": true, "ret": false}], "_probe_bot_http": [{"__script__": true, "ret": {"bot_name": "HTTP"}}]}}}
+{"func": "probe_bot", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_load_lark_oapi": [{"__script__": true, "ret": null}], "_probe_bot_http": [{"__script__": true, "ret": null}]}}}
+{"func": "probe_bot", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_load_lark_oapi": [{"__script__": true, "raise": {"type": "OSError", "message": "load down"}}]}}}
+{"func": "probe_bot", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_load_lark_oapi": [{"__script__": true, "ret": true}], "_probe_bot_sdk": [{"__script__": true, "raise": {"type": "ValueError", "message": "sdk down"}}]}}}
+{"func": "probe_bot", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_load_lark_oapi": [{"__script__": true, "ret": false}], "_probe_bot_http": [{"__script__": true, "raise": {"type": "BaseException", "message": "be"}}]}}}
+{"func": "probe_bot", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {}}, "_note": "fail-closed"}
+{"func": "_add_reaction", "in": {"args": {"client": "C", "message_id": "m1", "emoji_type": "thumbup"}, "io": {"_reaction_call": [{"__script__": true, "ret": {"reaction_id": "r1"}}], "getattr_reaction": [{"__script__": true, "ret": "r1"}]}}}
+{"func": "_add_reaction", "in": {"args": {"client": null, "message_id": "m1", "emoji_type": "e"}, "io": {}}}
+{"func": "_add_reaction", "in": {"args": {"client": "C", "message_id": "", "emoji_type": "e"}, "io": {}}}
+{"func": "_add_reaction", "in": {"args": {"client": "C", "message_id": "m1", "emoji_type": ""}, "io": {}}}
+{"func": "_add_reaction", "in": {"args": {"client": "C", "message_id": "m1", "emoji_type": "thumbup"}, "io": {"_reaction_call": [{"__script__": true, "ret": null}]}}}
+{"func": "_add_reaction", "in": {"args": {"client": "C", "message_id": "m1", "emoji_type": "thumbup"}, "io": {"_reaction_call": [{"__script__": true, "raise": {"type": "ValueError", "message": "call down"}}]}}}
+{"func": "_add_reaction", "in": {"args": {"client": "C", "message_id": "m1", "emoji_type": "thumbup"}, "io": {"_reaction_call": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_add_reaction", "in": {"args": {"client": "C", "message_id": "m1", "emoji_type": "thumbup"}, "io": {"_reaction_call": [{"__script__": true, "ret": {"reaction_id": "r"}}], "getattr_reaction": [{"__script__": true, "raise": {"type": "AttributeError", "message": "no id"}}]}}}
+{"func": "_add_reaction", "in": {"args": {"client": "C", "message_id": "m1", "emoji_type": "thumbup"}, "io": {}}, "_note": "fail-closed"}
+{"func": "_remove_reaction", "in": {"args": {"client": "C", "message_id": "m1", "reaction_id": "r1"}, "io": {"_reaction_call": [{"__script__": true, "ret": {"reaction_id": "r1"}}]}}}
+{"func": "_remove_reaction", "in": {"args": {"client": "C", "message_id": "m1", "reaction_id": "r1"}, "io": {"_reaction_call": [{"__script__": true, "ret": null}]}}}
+{"func": "_remove_reaction", "in": {"args": {"client": null, "message_id": "m1", "reaction_id": "r1"}, "io": {}}}
+{"func": "_remove_reaction", "in": {"args": {"client": "C", "message_id": "", "reaction_id": "r1"}, "io": {}}}
+{"func": "_remove_reaction", "in": {"args": {"client": "C", "message_id": "m1", "reaction_id": ""}, "io": {}}}
+{"func": "_remove_reaction", "in": {"args": {"client": "C", "message_id": "m1", "reaction_id": "r1"}, "io": {"_reaction_call": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "call down"}}]}}}
+{"func": "_remove_reaction", "in": {"args": {"client": "C", "message_id": "m1", "reaction_id": "r1"}, "io": {"_reaction_call": [{"__script__": true, "raise": {"type": "GeneratorExit", "message": "ge"}}]}}}
+{"func": "_remove_reaction", "in": {"args": {"client": "C", "message_id": "m1", "reaction_id": "r1"}, "io": {}}, "_note": "fail-closed"}
+{"func": "_media_batch_key", "in": {"args": {"event": {"message_type": {"value": "image"}}}, "io": {"_text_batch_key": [{"__script__": true, "ret": "k"}]}}}
+{"func": "_media_batch_key", "in": {"args": {"event": {"message_type": {"value": "image"}}}, "io": {"_text_batch_key": [{"__script__": true, "ret": ""}]}}}
+{"func": "_media_batch_key", "in": {"args": {"event": {"message_type": {"value": 5}}}, "io": {"_text_batch_key": [{"__script__": true, "ret": "k"}]}}}
+{"func": "_media_batch_key", "in": {"args": {"event": {"message_type": {"value": "image"}}}, "io": {"_text_batch_key": [{"__script__": true, "raise": {"type": "ValueError", "message": "key down"}}]}}}
+{"func": "_media_batch_key", "in": {"args": {"event": {"message_type": {"value": "image"}}}, "io": {"_text_batch_key": [{"__script__": true, "raise": {"type": "KeyboardInterrupt", "message": "ki"}}]}}}
+{"func": "_media_batch_key", "in": {"args": {"event": {"message_type": {"value": "image"}}}, "io": {}}, "_note": "fail-closed"}
+{"func": "_media_batch_is_compatible", "in": {"args": {"existing": {"message_type": {"value": "image"}}, "incoming": {"message_type": {"value": "image"}}}, "io": {"_text_batch_is_compatible": [{"__script__": true, "ret": true}]}}}
+{"func": "_media_batch_is_compatible", "in": {"args": {"existing": {"message_type": {"value": "image"}}, "incoming": {"message_type": {"value": "video"}}}, "io": {}}}
+{"func": "_media_batch_is_compatible", "in": {"args": {"existing": {"message_type": {"value": "image"}}, "incoming": {"message_type": {"value": "image"}}}, "io": {"_text_batch_is_compatible": [{"__script__": true, "ret": false}]}}}
+{"func": "_media_batch_is_compatible", "in": {"args": {"existing": {"message_type": {"value": "image"}}, "incoming": {"message_type": {"value": "image"}}}, "io": {"_text_batch_is_compatible": [{"__script__": true, "raise": {"type": "ValueError", "message": "cmp down"}}]}}}
+{"func": "_media_batch_is_compatible", "in": {"args": {"existing": {"message_type": {"value": "image"}}, "incoming": {"message_type": {"value": "image"}}}, "io": {"_text_batch_is_compatible": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_media_batch_is_compatible", "in": {"args": {"existing": {"message_type": {"value": "image"}}, "incoming": {"message_type": {"value": "image"}}}, "io": {}}, "_note": "fail-closed"}
+{"func": "_get_cached_sender_name", "in": {"args": {"sender_id": "u1"}, "io": {"cache_get": [{"__script__": true, "ret": ["Alice", 100]}], "time_now": [{"__script__": true, "ret": 50}]}}}
+{"func": "_get_cached_sender_name", "in": {"args": {"sender_id": "u2"}, "io": {"cache_get": [{"__script__": true, "ret": ["Bob", 100]}], "time_now": [{"__script__": true, "ret": 150}], "cache_pop": [{"__script__": true, "ret": null}]}}}
+{"func": "_get_cached_sender_name", "in": {"args": {"sender_id": null}, "io": {}}}
+{"func": "_get_cached_sender_name", "in": {"args": {"sender_id": ""}, "io": {}}}
+{"func": "_get_cached_sender_name", "in": {"args": {"sender_id": "u3"}, "io": {"cache_get": [{"__script__": true, "ret": null}]}}}
+{"func": "_get_cached_sender_name", "in": {"args": {"sender_id": "u1"}, "io": {"cache_get": [{"__script__": true, "raise": {"type": "ValueError", "message": "get down"}}]}}}
+{"func": "_get_cached_sender_name", "in": {"args": {"sender_id": "u1"}, "io": {"cache_get": [{"__script__": true, "ret": ["A", 100]}], "time_now": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "time down"}}]}}}
+{"func": "_get_cached_sender_name", "in": {"args": {"sender_id": "u1"}, "io": {"cache_get": [{"__script__": true, "ret": ["A", 100]}], "time_now": [{"__script__": true, "ret": 150}], "cache_pop": [{"__script__": true, "raise": {"type": "ValueError", "message": "pop down"}}]}}}
+{"func": "_get_cached_sender_name", "in": {"args": {"sender_id": "u1"}, "io": {}}, "_note": "fail-closed"}
+{"func": "_probe_bot_sdk", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_build_onboard_client": [{"__script__": true, "ret": "CLIENT"}], "_tenant_get_request": [{"__script__": true, "ret": "REQ"}], "client_request": [{"__script__": true, "ret": {"raw": "RAW"}}], "getattr_raw": [{"__script__": true, "ret": {"content": "CONTENT"}}], "getattr_content": [{"__script__": true, "ret": "CONTENT"}], "json_loads": [{"__script__": true, "ret": {"code": 0, "bot": {"app_name": "BOT", "open_id": "OID"}}}], "_parse_bot_response": [{"__script__": true, "ret": {"bot_name": "BOT", "bot_open_id": "OID"}}]}}}
+{"func": "_probe_bot_sdk", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_build_onboard_client": [{"__script__": true, "ret": "CLIENT"}], "_tenant_get_request": [{"__script__": true, "ret": "REQ"}], "client_request": [{"__script__": true, "ret": {"raw": "RAW"}}], "getattr_raw": [{"__script__": true, "ret": {"content": "CONTENT"}}], "getattr_content": [{"__script__": true, "ret": null}], "json_loads": [{"__script__": true, "ret": {"code": 0, "bot": {"app_name": "BOT", "open_id": "OID"}}}], "_parse_bot_response": [{"__script__": true, "ret": {"bot_name": "BOT", "bot_open_id": "OID"}}]}}}
+{"func": "_probe_bot_sdk", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_build_onboard_client": [{"__script__": true, "raise": {"type": "ValueError", "message": "client down"}}], "logger_debug": [{"__script__": true, "ret": null}]}}}
+{"func": "_probe_bot_sdk", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_build_onboard_client": [{"__script__": true, "ret": "C"}], "_tenant_get_request": [{"__script__": true, "ret": "REQ"}], "client_request": [{"__script__": true, "raise": {"type": "OSError", "message": "net down"}}], "logger_debug": [{"__script__": true, "ret": null}]}}}
+{"func": "_probe_bot_sdk", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_build_onboard_client": [{"__script__": true, "ret": "C"}], "_tenant_get_request": [{"__script__": true, "ret": "REQ"}], "client_request": [{"__script__": true, "ret": {"raw": "R"}}], "getattr_raw": [{"__script__": true, "raise": {"type": "ValueError", "message": "raw down"}}], "logger_debug": [{"__script__": true, "ret": null}]}}}
+{"func": "_probe_bot_sdk", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_build_onboard_client": [{"__script__": true, "ret": "C"}], "_tenant_get_request": [{"__script__": true, "ret": "REQ"}], "client_request": [{"__script__": true, "ret": {"raw": "R"}}], "getattr_raw": [{"__script__": true, "ret": "RAW"}], "getattr_content": [{"__script__": true, "raise": {"type": "SystemExit", "message": "sx"}}]}}}
+{"func": "_probe_bot_sdk", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_build_onboard_client": [{"__script__": true, "ret": "C"}], "_tenant_get_request": [{"__script__": true, "ret": "REQ"}], "client_request": [{"__script__": true, "ret": {"raw": "R"}}], "getattr_raw": [{"__script__": true, "ret": "RAW"}], "getattr_content": [{"__script__": true, "ret": "C"}], "json_loads": [{"__script__": true, "raise": {"type": "ValueError", "message": "bad json"}}], "logger_debug": [{"__script__": true, "ret": null}]}}}
+{"func": "_probe_bot_sdk", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_build_onboard_client": [{"__script__": true, "ret": "C"}], "_tenant_get_request": [{"__script__": true, "ret": "REQ"}], "client_request": [{"__script__": true, "ret": {"raw": "R"}}], "getattr_raw": [{"__script__": true, "ret": "RAW"}], "getattr_content": [{"__script__": true, "ret": "C"}], "json_loads": [{"__script__": true, "ret": {"code": 0}}], "_parse_bot_response": [{"__script__": true, "raise": {"type": "RuntimeError", "message": "parse down"}}], "logger_debug": [{"__script__": true, "ret": null}]}}}
+{"func": "_probe_bot_sdk", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {"_build_onboard_client": [{"__script__": true, "raise": {"type": "ValueError", "message": "client down"}}], "logger_debug": [{"__script__": true, "raise": {"type": "ValueError", "message": "handler"}}]}}}
+{"func": "_probe_bot_sdk", "in": {"args": {"app_id": "cli", "app_secret": "sec", "domain": "feishu"}, "io": {}}, "_note": "fail-closed"}

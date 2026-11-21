@@ -89,6 +89,16 @@ TARGETS = [
     "_bridge_unavailable", "_report_bridge_exit", "send_image_file", "send_video",
     "send_voice", "send_document", "send_poll", "send_location", "edit_message",
     "_send_media_to_bridge", "_send_read_receipt", "get_chat_info",
+    # extension wave 2: unclaimed defs
+    "_bridge_url",
+    # extension wave 2b
+    "send_clarify", "send_image", "_wait_for_bridge",
+    # extension wave 2c
+    "_attach_to_bridge", "send_typing", "_probe_bridge_health",
+    # extension wave 2d
+    "send", "interactive_setup",
+    # extension wave 2e
+    "_preflight", "_unidentified_holder_remains", "_wait_bridge_port_free",
 ]
 METHODS = {
     "_bridge_req", "_bridge_package_hash", "_bridge_env", "_adopted_config_matches",
@@ -99,6 +109,13 @@ METHODS = {
     "_bridge_unavailable", "_report_bridge_exit", "send_image_file", "send_video",
     "send_voice", "send_document", "send_poll", "send_location", "edit_message",
     "_send_media_to_bridge", "_send_read_receipt", "get_chat_info",
+    # extension wave 2 (all method targets read instance state)
+    "_bridge_url",
+    # extension wave 2b (all method targets read instance state)
+    "send_clarify", "send_image", "_wait_for_bridge",
+    "_attach_to_bridge", "send_typing", "_probe_bridge_health",
+    "send",
+    "_preflight", "_unidentified_holder_remains", "_wait_bridge_port_free",
 }
 # seamed instance-method collaborators (installed on the self double);
 # _terminate_bridge_process is MODULE-level (composed via the NS global by
@@ -110,10 +127,19 @@ SEAMED_METHODS = {
     "_bridge_unavailable",
     # extension wave: delegate methods seamed on the self double
     "_send_media_to_bridge", "send_document", "send_poll",
+    # extension wave 2b: self-seamed ported siblings
+    "_poll_bridge_health",
+    "_poll_messages",
+    # extension wave 2d (self-seamed format/chunk helpers)
+    "format_message", "_outgoing_chunk_limit", "truncate_message",
 }
 ASYNC_SEAMS = {"_notify_fatal_error", "_bridge_unavailable", "_post_bridge_message",
                "_check_managed_bridge_exit", "method", "resp.json", "resp.text",
-               "_send_media_to_bridge", "send_document", "send_poll", "record_media_async"}
+               "_send_media_to_bridge", "send_document", "send_poll", "record_media_async",
+               # extension wave 2b
+               "cache_image_from_url", "_base_send_clarify", "_base_send_image",
+               "_poll_bridge_health", "_authenticated_bridge_health",
+               "asyncio.sleep"}
 REAL_ALWAYS = {"_owner_only_opener"}
 
 
@@ -191,6 +217,11 @@ class PathDouble(PurePosixPath):
 def extract():
     mod = new_module("wa2_oracle_adapter")
     ns = mod.__dict__
+    _pkg = new_module("plugins.platforms.whatsapp")
+    _pkg.__path__ = []
+    _bo = new_module("plugins.platforms.whatsapp.bridge_ownership")
+    _pkg.bridge_ownership = _bo
+    ns["__package__"] = "plugins.platforms.whatsapp"
     import contextlib
     import functools
     import hashlib
@@ -294,6 +325,12 @@ _tenv = new_module("tools.environments")
 _tools.environments = _tenv
 _tlocal = new_module("tools.environments.local")
 _tenv.local = _tlocal
+_hermes_cli = new_module("hermes_cli")
+_hermes_cli.__path__ = []
+_hcc = new_module("hermes_cli.config")
+_hco = new_module("hermes_cli.cli_output")
+_hermes_cli.config = _hcc
+_hermes_cli.cli_output = _hco
 _secrets_mod = new_module("secrets")
 _tempfile_mod = new_module("tempfile")
 _msvcrt_mod = new_module("msvcrt")
@@ -324,7 +361,9 @@ def seam_names_from_c():
     # oracle-only install names (seamed instance collaborators that no
     # ported target composes, and the generic logger-level recorders)
     names |= {"session.get", "session.post", "proc.kill", "proc.terminate",
-              "child.kill", "child.terminate", "resp.exit", "token_lock.exit"}
+              "child.kill", "child.terminate", "resp.exit", "token_lock.exit",
+              "session.exit",  # fired via wa2_cm_exit (variable name)
+              "print_header", "print_info", "print_success"}  # fired via WS macro (variable name)
     names |= SEAMED_METHODS | {"logger.warning", "logger.debug"}
     return names
 
@@ -346,6 +385,8 @@ def canon(v):
             return conv(x.spec)
         if isinstance(x, HandleDouble):
             return conv(x.__handle__)
+        if isinstance(x, SessionCM):
+            return conv(x.__spec__)
         if isinstance(x, types.ModuleType):
             return {"__module__": x.__name__}
         if isinstance(x, types.SimpleNamespace):
@@ -525,6 +566,43 @@ ARGMAP = {
     "record_media_async": lambda chat_id, message_id, media: {
         "chat_id": chat_id, "message_id": message_id,
         "media": [[p, m] for p, m in media]},
+    # extension wave 2b seams
+    "_base_send_clarify": lambda chat_id, question, choices, clarify_id, session_key, metadata=None: {
+        "chat_id": chat_id, "question": question, "choices": choices,
+        "clarify_id": clarify_id, "session_key": session_key, "metadata": metadata},
+    "cache_image_from_url": lambda url: {"url": url},
+    "_base_send_image": lambda chat_id, image_url, caption=None, reply_to=None, metadata=None: {
+        "chat_id": chat_id, "image_url": image_url, "caption": caption,
+        "reply_to": reply_to, "metadata": metadata},
+    "_poll_bridge_health": lambda died_msg: {"died_msg": died_msg},
+    # extension wave 2c seams
+    "aiohttp.ClientSession": lambda headers=None: {"headers": headers},
+    "asyncio.create_task": lambda coro: {"coro": coro},
+    "_poll_messages": lambda: {},
+    "session.enter": lambda: {},
+    "session.exit": lambda exc: {"exc": exc},
+    "_authenticated_bridge_health": lambda session, base_url, token, timeout: {
+        "session": session, "base_url": base_url, "token": token, "timeout": timeout},
+    # extension wave 2d seams
+    "format_message": lambda content: {"content": content},
+    "_outgoing_chunk_limit": lambda: {},
+    "truncate_message": lambda text, limit: {"text": text, "limit": limit},
+    "asyncio.sleep": lambda seconds: {"seconds": seconds},
+    "print_header": lambda text: {"text": text},
+    "print_info": lambda text: {"text": text},
+    "print_success": lambda text: {"text": text},
+    "get_env_value": lambda key: {"key": key},
+    "prompt_yes_no": lambda question, default=False: {"question": question, "default": default},
+    "prompt": lambda question: {"question": question},
+    "save_env_value": lambda key, value: {"key": key, "value": value},
+    "remove_env_value": lambda key: {"key": key},
+    # extension wave 2e seams
+    "check_whatsapp_requirements": lambda: {},
+    "ensure_aiohttp": lambda: {},
+    "_port_listener_pids": lambda port: {"port": port},
+    "port_is_free": lambda port: {"port": port},
+    "time.monotonic": lambda: {},
+    "exists": lambda path: {"path": str(path)},
 }
 
 
@@ -679,8 +757,36 @@ BUILD = {
     "session.get": lambda r: RespCM(BUILD_CTX[0], r),
     "session.post": lambda r: RespCM(BUILD_CTX[0], r),
     "resolve": lambda r: PathDouble(r) if isinstance(r, str) else r,
+    # extension wave 2b: base-send results are SendResult-like attribute carriers
+    "send_poll": lambda r: types.SimpleNamespace(**r) if isinstance(r, dict) else r,
+    "_base_send_clarify": lambda r: types.SimpleNamespace(**r) if isinstance(r, dict) else r,
+    "_base_send_image": lambda r: types.SimpleNamespace(**r) if isinstance(r, dict) else r,
+    # aiohttp.ClientSession: sync builder used as a plain value (_attach_to_bridge)
+    # or as an async CM (_probe_bridge_health); projects to its fixture spec.
+    "aiohttp.ClientSession": lambda r: SessionCM(BUILD_CTX[0], r),
 }
 BUILD_CTX = [None]  # per-case ctx for the BUILD closures
+
+
+class SessionCM:
+    def __init__(self, ctx, spec):
+        self._ctx = ctx
+        self.__spec__ = spec
+
+    async def __aenter__(self):
+        self._ctx.call("session.enter", {})
+        return self
+
+    async def __aexit__(self, et, ev, tb):
+        r = self._ctx.call("session.exit", {"exc": et.__name__ if et else None})
+        return bool(r)
+
+
+class _BaseSuper:
+    """Zero-arg ``super()`` stand-in for AST-extracted methods: ``super().f(...)``
+    records as the ``_base_f`` seam with the same args."""
+    def __getattr__(self, nm):
+        return make_recorder(BUILD_CTX[0], "_base_" + nm)
 
 
 # -- per-case script backend (mirrors the C wa2_call exactly) --
@@ -778,6 +884,16 @@ def make_self(ctx, target, args):
 
 def install_case(ctx, target, args):
     BUILD_CTX[0] = ctx
+    NS["super"] = _BaseSuper
+    # asyncio is the real module in extract(); stub the per-case seam surface
+    NS["asyncio"] = types.SimpleNamespace(
+        create_task=make_recorder(ctx, "asyncio.create_task"),
+        sleep=make_recorder(ctx, "asyncio.sleep"))
+    for _nm, _mod in (("get_env_value", _hcc), ("remove_env_value", _hcc),
+                      ("save_env_value", _hcc), ("prompt", _hco),
+                      ("prompt_yes_no", _hco), ("print_header", _hco),
+                      ("print_info", _hco), ("print_success", _hco)):
+        setattr(_mod, _nm, make_recorder(ctx, _nm))
     for nm in REAL_DEFS:
         NS[nm] = REAL_DEFS[nm]
     NS["_IS_WINDOWS"] = args.get("is_windows", True)
@@ -823,6 +939,12 @@ def install_case(ctx, target, args):
     _pmpaths.repo_root = make_recorder(ctx, "repo_root")
     _tlocal.hermes_subprocess_env = make_recorder(ctx, "hermes_subprocess_env")
     _aiohttp_mod.ClientTimeout = make_recorder(ctx, "ClientTimeout")
+    _aiohttp_mod.ClientSession = make_recorder(ctx, "aiohttp.ClientSession")
+    sys.modules["plugins.platforms.whatsapp.bridge_ownership"].port_is_free = make_recorder(ctx, "port_is_free")
+    NS["time"] = types.SimpleNamespace(monotonic=make_recorder(ctx, "time.monotonic"))
+    _tm = types.ModuleType("time")
+    _tm.monotonic = make_recorder(ctx, "time.monotonic")
+    sys.modules["time"] = _tm
     if target == "_import_aiohttp":
         ah = args.get("aiohttp")
         if ah is None:
@@ -970,6 +1092,34 @@ def live_call(func, args, ctx):
         return asyncio.run(f(sd, args["data"]))
     if func == "get_chat_info":
         return asyncio.run(f(sd, args["chat_id"]))
+    # extension wave 2: unclaimed defs
+    if func == "_bridge_url":
+        return f(sd, args["path"])
+    if func == "send_clarify":
+        return asyncio.run(f(sd, args["chat_id"], args["question"], args["choices"],
+                             args["clarify_id"], args["session_key"], args.get("metadata")))
+    if func == "send_image":
+        return asyncio.run(f(sd, args["chat_id"], args["image_url"], args.get("caption"),
+                             args.get("reply_to"), args.get("metadata")))
+    if func == "_wait_for_bridge":
+        return asyncio.run(f(sd))
+    if func == "_attach_to_bridge":
+        return f(sd, make_proc(ctx, args["managed_process"]))
+    if func == "send_typing":
+        return asyncio.run(f(sd, args["chat_id"], args.get("metadata")))
+    if func == "_probe_bridge_health":
+        return asyncio.run(f(sd))
+    if func == "send":
+        return asyncio.run(f(sd, args["chat_id"], args["content"],
+                             args.get("reply_to"), args.get("metadata")))
+    if func == "interactive_setup":
+        return f()
+    if func == "_preflight":
+        return f(sd)
+    if func == "_unidentified_holder_remains":
+        return asyncio.run(f(sd))
+    if func == "_wait_bridge_port_free":
+        return asyncio.run(f(sd))
     raise RuntimeError(f"unknown func {func}")
 
 
