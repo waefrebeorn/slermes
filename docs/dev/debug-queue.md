@@ -88,8 +88,8 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 70 wired 839->843, HEAD `59b5c3c6c0`;
-  build health 2150/2150 clean, port gate PASS.
+- Parent working set (committed): wave 71 wired 843->847, HEAD `0d7fb69585`;
+  build health 2154/2154 clean, port gate PASS.
   Wave 60 RESOLVED: tui_server_flow3 honestly scoped from 62 over-scoped
   fns (374/287, 50 red) to the 12 faithful ones, parent gate 74/0, wired.
   The 50 removed fns are real gaps again. Scanner perf fix committed
@@ -207,3 +207,6 @@ wired 835->839. Continue with the next remaining flow numbers on each
 adapter after re-deriving with the dotted-name-aware parser.
 THAT WAVE: parent 114/0, 129/0, 110/0, 130/0; wave 70 (`59b5c3c6c0`)
 wired 839->843. Keep advancing the per-adapter flow numbers.
+THAT WAVE: parent 110/0, 98/0, 117/0, 106/0; wave 71 (`0d7fb69585`)
+wired 843->847. Agent-discovered seeding pitfalls were written back into
+slermes-windows-port/references/flow-oracle-seeding.md.
