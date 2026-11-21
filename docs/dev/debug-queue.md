@@ -88,8 +88,8 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 69 wired 835->839, HEAD `2bea8d2223`;
-  build health 2146/2146 clean, port gate PASS.
+- Parent working set (committed): wave 70 wired 839->843, HEAD `59b5c3c6c0`;
+  build health 2150/2150 clean, port gate PASS.
   Wave 60 RESOLVED: tui_server_flow3 honestly scoped from 62 over-scoped
   fns (374/287, 50 red) to the 12 faithful ones, parent gate 74/0, wired.
   The 50 removed fns are real gaps again. Scanner perf fix committed
@@ -205,3 +205,5 @@ slack_adapter_flow7 (175), feishu_adapter_flow9 (105).
 THAT WAVE: parent 132/0, 124/0, 99/0, 127/0; wave 69 (`2bea8d2223`)
 wired 835->839. Continue with the next remaining flow numbers on each
 adapter after re-deriving with the dotted-name-aware parser.
+THAT WAVE: parent 114/0, 129/0, 110/0, 130/0; wave 70 (`59b5c3c6c0`)
+wired 839->843. Keep advancing the per-adapter flow numbers.
