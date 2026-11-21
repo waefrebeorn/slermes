@@ -167,8 +167,14 @@ def stage_walkway(check=False):
     The generator discovers all sources live (scanner -> live_parity_scan.json,
     watercup results, git sync) and regenerates the canonical PARITY:AUTO
     count block everywhere. No hand-typed content is preserved.
+
+    Reuses the live_parity_scan.json written by stage_scan via --from-scan
+    instead of paying for a second full battleground scan (the generator
+    otherwise re-runs parity_truth.py internally — ~17 wasted minutes).
     """
     cmd = [sys.executable, WALKWAY]
+    if os.path.isfile(os.path.join(REPO, "live_parity_scan.json")):
+        cmd += ["--from-scan", os.path.join(REPO, "live_parity_scan.json")]
     if check:
         cmd += ["--check"]
     run(cmd, check=False)

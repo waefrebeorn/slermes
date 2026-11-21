@@ -1,15 +1,15 @@
-<!-- PARITY:AUTO -->| PORTED  | 18,327 / 49,699 (36.9%) |
-| REAL_GAP| 31,328 (63.0%) — no N/A |
-|  ├ DA-4 stubs | 15 |
-|  └ Genuine gaps | 31,313 |
-| PARTIAL | 44 (0.1%) |
+<!-- PARITY:AUTO -->| PORTED  | 21,129 / 49,699 (42.5%) |
+| REAL_GAP| 28,532 (57.4%) — no N/A |
+|  ├ DA-4 stubs | 26 |
+|  └ Genuine gaps | 28,506 |
+| PARTIAL | 38 (0.1%) |
 | BOOTLEG | 4 |
-| **Watercup** | 58 PASS / 1,685 (3.4%) · 58/1685 ported match · 0/0 gap mismatch |
+| **Watercup** | unavailable — partial sweep only: 24 of ~1685 port gates completed before the pipeline's 120s stage timeout; a full watercup sweep is required to refresh this number (results.jsonl is untracked build output) |
 **Phase (v673):** PORT phase
 
 **Upstream sync:** 0 ahead / 0 behind (last merge unknown)
 
-_Generated 2026-11-20T19:55:54Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
+_Generated 2026-11-21T21:16:55Z from live scanner + watercup oracle — do not edit by hand._<!-- /PARITY:AUTO -->
 
 # Slermes Parity — Sync Checkpoint ()
 

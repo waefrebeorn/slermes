@@ -59,8 +59,10 @@ STALE_PATTERNS = [
     (r'(?i)\*\*Version:\*\*\s*v\d+', 'stale version line'),
     # "Last updated: YYYY-MM-DD" standalone lines
     (r'(?i)\*\*Last updated:\*\*\s*\d{4}-\d{2}-\d{2}', 'stale date line'),
-    # Dates from older sessions (2026-07, 2026-08, 2026-09)
-    (r'\b2026-(?:0[7-9]|1[0-2])-\d{2}\b', 'stale date from older session'),
+    # Dates from genuinely old sessions ONLY (2026-07/08/09). Do NOT include
+    # 1[0-2]: that sweeps current Oct/Nov/Dec dates out of hand-written
+    # headings and prose (e.g. "Decision record, 2026-11-21" -> "Decision record, ").
+    (r'\b2026-0[7-9]-\d{2}\b', 'stale date from older session'),
     # Old total counts that drift as upstream grows
     (r'\|\s*TOTAL\s*\|\s*\d{4,5}\s*\|', 'stale TOTAL count row'),
     # "99.8%" completion claim
@@ -230,7 +232,14 @@ def compute_parity(scan_file=None):
                 "unavailable": False, "reason": ""}
     wc_results = os.path.join(REPO, "tests", "watercup", "build", "results.jsonl")
     meta_path = os.path.join(REPO, "tests", "watercup", "build", "wc_meta.json")
-    if os.path.isfile(meta_path):
+    # A stale wc_meta.json from an earlier blocked run must NOT mask fresh
+    # verdicts: the meta marker is only authoritative when there are no
+    # verdicts to read. Check results first, fall back to the marker.
+    wc_has_verdicts = False
+    if os.path.isfile(wc_results):
+        with open(wc_results, encoding="utf-8") as f:
+            wc_has_verdicts = any(line.strip() for line in f)
+    if not wc_has_verdicts and os.path.isfile(meta_path):
         try:
             wc_meta = json.load(open(meta_path))
             watercup["unavailable"] = True
