@@ -1,0 +1,129 @@
+{"func":"_clean_discord_id","in":{"args":{"entry":"  <@123>  "},"io":{}}}
+{"func":"_clean_discord_id","in":{"args":{"entry":"user:Alice"},"io":{}}}
+{"func":"_clean_discord_id","in":{"args":{"entry":"  USER:Bob  "},"io":{}}}
+{"func":"_clean_discord_id","in":{"args":{"entry":"<@!456>"},"io":{}}}
+{"func":"_clean_discord_id","in":{"args":{"entry":"plain"},"io":{}}}
+{"func":"_clean_discord_id","in":{"args":{"entry":""},"io":{}}}
+{"func":"_clean_discord_id","in":{"args":{"entry":"user:"},"io":{}}}
+{"func":"_clean_discord_id","in":{"args":{"entry":"<@>"},"io":{}}}
+{"func":"_clean_discord_id","in":{"args":{"entry":"<@!abc>"},"io":{}}}
+{"func":"_clean_discord_id","in":{"args":{"entry":"User:123 "},"io":{}}}
+{"func":"_clean_discord_id","in":{"args":{"entry":"  spaced name  "},"io":{}}}
+{"func":"_command_sync_state_path","in":{"args":{},"io":{"get_hermes_home":"/home/u/.hermes","mkdir":null}}}
+{"func":"_command_sync_state_path","in":{"args":{},"io":{"get_hermes_home":"","mkdir":null}}}
+{"func":"_command_sync_state_path","in":{"args":{},"io":{"get_hermes_home":"C:/h","mkdir":{"__script__":true,"raise":{"type":"RuntimeError","message":"nope"}}}}}
+{"func":"_command_sync_state_path","in":{"args":{},"io":{"get_hermes_home":"C:/h","mkdir":{"__script__":true,"raise":{"type":"ValueError","message":"bad"}}}}}
+{"func":"_command_sync_state_path","in":{"args":{},"io":{"get_hermes_home":null,"mkdir":null}}}
+{"func":"_command_sync_state_path","in":{"args":{},"io":{"get_hermes_home":"C:/h","mkdir":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_command_sync_state_path","in":{"args":{},"io":{"mkdir":null}},"fc":true,"tag":"fail-closed: no home script"}
+{"func":"_cancel_bot_task","in":{"args":{},"io":{},"state":{}}}
+{"func":"_cancel_bot_task","in":{"args":{},"io":{},"state":{"_bot_task":false}}}
+{"func":"_cancel_bot_task","in":{"args":{},"io":{"bot_task.done":true},"state":{"_bot_task":{"id":"1"}}}}
+{"func":"_cancel_bot_task","in":{"args":{},"io":{"bot_task.done":false,"bot_task.cancel":null,"bot_task.await":null},"state":{"_bot_task":{"id":"1"}}}}
+{"func":"_cancel_bot_task","in":{"args":{},"io":{"bot_task.done":false,"bot_task.cancel":null,"bot_task.await":{"__script__":true,"raise":{"type":"CancelledError","message":"c"}}},"state":{"_bot_task":{"id":"1"}}}}
+{"func":"_cancel_bot_task","in":{"args":{},"io":{"bot_task.done":false,"bot_task.cancel":null,"bot_task.await":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}},"state":{"_bot_task":{"id":"1"}}}}
+{"func":"_cancel_bot_task","in":{"args":{},"io":{"bot_task.done":false,"bot_task.cancel":null,"bot_task.await":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}},"state":{"_bot_task":{"id":"1"}}},"fc":true}
+{"func":"_cancel_bot_task","in":{"args":{},"io":{},"state":{"_bot_task":{"id":"1"}}},"fc":true,"tag":"fail-closed: no done script"}
+{"func":"_cancel_bot_task","in":{"args":{},"io":{"bot_task.done":false,"bot_task.cancel":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}},"state":{"_bot_task":{"id":"1"}}},"fc":true}
+{"func":"_cancel_liveness_task","in":{"args":{},"io":{"asyncio.current_task":"x"},"state":{"name":"d"}}}
+{"func":"_cancel_liveness_task","in":{"args":{},"io":{"asyncio.current_task":"x","liveness.done":true,"liveness.await":null},"state":{"name":"d","_liveness_task":{"id":"1"}}}}
+{"func":"_cancel_liveness_task","in":{"args":{},"io":{"asyncio.current_task":"x","liveness.done":false,"liveness.cancel":null,"liveness.await":{"__script__":true,"raise":{"type":"CancelledError","message":"c"}}},"state":{"name":"d","_liveness_task":{"id":"1"}}}}
+{"func":"_cancel_liveness_task","in":{"args":{},"io":{"asyncio.current_task":"x","liveness.done":false,"liveness.cancel":null,"liveness.await":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}},"logger.debug":null},"state":{"name":"d","_liveness_task":{"id":"1"}}}}
+{"func":"_cancel_liveness_task","in":{"args":{},"io":{"asyncio.current_task":"x","liveness.done":false,"liveness.cancel":null,"liveness.await":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}},"state":{"name":"d","_liveness_task":{"id":"1"}}},"fc":true}
+{"func":"_cancel_liveness_task","in":{"args":{},"io":{"asyncio.current_task":"1","liveness.done":true,"liveness.await":null},"state":{"name":"d","_liveness_task":{"id":"1"}}},"tag":"task is current: skipped"}
+{"func":"_cancel_liveness_task","in":{"args":{},"io":{"asyncio.current_task":"x","liveness.done":[false,true],"liveness.cancel":[null,null],"liveness.await":[null,null]},"state":{"name":"d","_liveness_task":{"id":"1"},"_liveness_notification_task":{"id":"2"}}}}
+{"func":"_cancel_liveness_task","in":{"args":{},"io":{},"state":{"name":"d"}},"fc":true,"tag":"fail-closed: no current_task script"}
+{"func":"_advance_discord_recovery_cursor","in":{"args":{"channel_id":"c1","message_id":"m1"},"io":{"_utc_now_iso":"now1","conn.execute":null}}}
+{"func":"_advance_discord_recovery_cursor","in":{"args":{"channel_id":"","message_id":"m1"},"io":{}}}
+{"func":"_advance_discord_recovery_cursor","in":{"args":{"channel_id":"c1","message_id":""},"io":{}}}
+{"func":"_advance_discord_recovery_cursor","in":{"args":{"channel_id":"c1","message_id":"m1"},"io":{"_utc_now_iso":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}},"fc":true}
+{"func":"_advance_discord_recovery_cursor","in":{"args":{"channel_id":"c1","message_id":"m1"},"io":{"_utc_now_iso":"now","conn.execute":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_advance_discord_recovery_cursor","in":{"args":{"channel_id":"c1","message_id":"m1"},"io":{"_utc_now_iso":"now","conn.execute":{"__script__":true,"raise":{"type":"ValueError","message":"bad"}}}},"fc":true}
+{"func":"_advance_discord_recovery_cursor","in":{"args":{"channel_id":"c1","message_id":"m1"},"io":{"conn.execute":null}},"fc":true,"tag":"fail-closed: no now script"}
+{"func":"_alert_adapters_and_config","in":{"args":{},"io":{},"state":{"adapters":["a"],"config":{"k":1}}}}
+{"func":"_alert_adapters_and_config","in":{"args":{"profile":""},"io":{},"state":{"adapters":["a"],"config":{"k":1}}}}
+{"func":"_alert_adapters_and_config","in":{"args":{"profile":"p"},"io":{"_adapters_for_profile":"SAME"},"state":{"adapters":["a"],"config":{"k":1}}}}
+{"func":"_alert_adapters_and_config","in":{"args":{"profile":"p"},"io":{"_adapters_for_profile":"other","get_profile_dir":"/d","load_gateway_config":{"cfg":2}},"state":{"adapters":["a"],"config":{"k":1}}}}
+{"func":"_alert_adapters_and_config","in":{"args":{"profile":"p"},"io":{"_adapters_for_profile":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}},"state":{"adapters":["a"],"config":{"k":1}}},"fc":true}
+{"func":"_alert_adapters_and_config","in":{"args":{"profile":"p"},"io":{"_adapters_for_profile":"o","get_profile_dir":"/d","load_gateway_config":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}},"state":{"adapters":["a"],"config":{"k":1}}},"fc":true}
+{"func":"_alert_adapters_and_config","in":{"args":{"profile":"p"},"io":{"_adapters_for_profile":"o","get_profile_dir":{"__script__":true,"raise":{"type":"RuntimeError","message":"no"}}},"state":{"adapters":["a"],"config":{"k":1}}},"fc":true}
+{"func":"_alert_adapters_and_config","in":{"args":{"profile":"p"},"io":{},"state":{"adapters":["a"],"config":{"k":1}}},"fc":true,"tag":"fail-closed: no adapters script"}
+{"func":"_apply_owner_only_visibility","in":{"args":{},"io":{"discord.Permissions":"perm","tree.get_commands":{"__script__":true,"ret":[{"name":"a"}]},"set.default_permissions":null,"logger.info":null}}}
+{"func":"_apply_owner_only_visibility","in":{"args":{},"io":{"discord.Permissions":"perm","tree.get_commands":{"__script__":true,"ret":[]},"logger.info":null}}}
+{"func":"_apply_owner_only_visibility","in":{"args":{},"io":{"discord.Permissions":"perm","tree.get_commands":{"__script__":true,"ret":[{"name":"a"},{"name":"b"}]},"set.default_permissions":null,"logger.info":null}}}
+{"func":"_apply_owner_only_visibility","in":{"args":{},"io":{"discord.Permissions":{"__script__":true,"raise":{"type":"ValueError","message":"no"}},"logger.warning":null}}}
+{"func":"_apply_owner_only_visibility","in":{"args":{},"io":{"discord.Permissions":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_apply_owner_only_visibility","in":{"args":{},"io":{"discord.Permissions":"perm","tree.get_commands":{"__script__":true,"ret":[{"name":"a"}]},"set.default_permissions":{"__script__":true,"raise":{"type":"ValueError","message":"bad"}},"logger.debug":null,"logger.info":null}}}
+{"func":"_apply_owner_only_visibility","in":{"args":{},"io":{"discord.Permissions":"perm","tree.get_commands":{"__script__":true,"ret":[{"name":"a"}]},"set.default_permissions":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_apply_owner_only_visibility","in":{"args":{},"io":{"discord.Permissions":"perm","tree.get_commands":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}},"fc":true}
+{"func":"_apply_owner_only_visibility","in":{"args":{},"io":{"tree.get_commands":[]}},"fc":true,"tag":"fail-closed: no permissions script"}
+{"func":"_build_slash_event","in":{"args":{"interaction":{"channel":{"__kind__":"dm","name":"dm-c"},"user":{"name":"Alice","id":7,"display_name":"Al"},"channel_id":123},"text":"hello"},"io":{"_get_effective_topic":"topic","_interaction_guild_id":"g1","_slash_role_grant":true,"build_source":"src","_resolve_channel_prompt":"prompt","_resolve_channel_skills":{"__script__":true,"ret":["s1"]},"MessageEvent":"evt"}}}
+{"func":"_build_slash_event","in":{"args":{"interaction":{"channel":{"__kind__":"dm","name":"dm-c"},"user":{"name":"Alice","id":7,"display_name":"Al"},"channel_id":123},"text":"/x"},"io":{"_get_effective_topic":"topic","_interaction_guild_id":"g1","_slash_role_grant":true,"build_source":"src","_resolve_channel_prompt":"prompt","_resolve_channel_skills":{"__script__":true,"ret":["s1"]},"MessageEvent":"cmd-evt"}}}
+{"func":"_build_slash_event","in":{"args":{"interaction":{"channel":{"__kind__":"thread","id":9},"user":{"name":"Bob","id":8,"display_name":"Bo"},"channel_id":456},"text":"hi"},"io":{"_get_effective_topic":"topic","_interaction_guild_id":"g1","_slash_role_grant":true,"build_source":"src","_resolve_channel_prompt":"prompt","_resolve_channel_skills":{"__script__":true,"ret":["s1"]},"MessageEvent":"evt","_format_thread_chat_name":"tc","_get_parent_channel_id":"p1"}}}
+{"func":"_build_slash_event","in":{"args":{"interaction":{"channel":{"__kind__":"thread","id":9},"user":{"name":"Bob","id":8,"display_name":"Bo"},"channel_id":456},"text":"hi"},"io":{"_get_effective_topic":"topic","_interaction_guild_id":"g1","_slash_role_grant":true,"build_source":"src","_resolve_channel_prompt":"prompt","_resolve_channel_skills":{"__script__":true,"ret":["s1"]},"MessageEvent":"evt","_format_thread_chat_name":"tc","_get_parent_channel_id":null}}}
+{"func":"_build_slash_event","in":{"args":{"interaction":{"channel":{"__kind__":"group","name":"gen","guild":{"name":"G"}},"user":{"name":"C","id":9,"display_name":"Cy"},"channel_id":789},"text":"yo"},"io":{"_get_effective_topic":"topic","_interaction_guild_id":"g1","_slash_role_grant":true,"build_source":"src","_resolve_channel_prompt":"prompt","_resolve_channel_skills":{"__script__":true,"ret":["s1"]},"MessageEvent":"evt"}}}
+{"func":"_build_slash_event","in":{"args":{"interaction":{"channel":{"__kind__":"group"},"user":{"id":1,"display_name":1},"channel_id":1},"text":"z"},"io":{"_get_effective_topic":"topic","_interaction_guild_id":"g1","_slash_role_grant":true,"build_source":"src","_resolve_channel_prompt":"prompt","_resolve_channel_skills":{"__script__":true,"ret":["s1"]},"MessageEvent":"evt"}}}
+{"func":"_build_slash_event","in":{"args":{"interaction":{"channel":{"__kind__":"thread","id":9},"user":{"name":"Bob","id":8,"display_name":"Bo"},"channel_id":456},"text":"hi"},"io":{"_get_effective_topic":"topic","_interaction_guild_id":"g1","_slash_role_grant":true,"build_source":"src","_resolve_channel_prompt":"prompt","_resolve_channel_skills":{"__script__":true,"ret":["s1"]},"MessageEvent":"evt","_format_thread_chat_name":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}},"fc":true}
+{"func":"_build_slash_event","in":{"args":{"interaction":{"channel":{"__kind__":"dm","name":"dm-c"},"user":{"name":"Alice","id":7,"display_name":"Al"},"channel_id":123},"text":"hello"},"io":{"_get_effective_topic":"topic","_interaction_guild_id":"g1","_slash_role_grant":true,"build_source":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}},"_resolve_channel_prompt":"prompt","_resolve_channel_skills":{"__script__":true,"ret":["s1"]},"MessageEvent":"evt"}},"fc":true}
+{"func":"_build_slash_event","in":{"args":{"interaction":{"channel":{"__kind__":"dm","name":"dm-c"},"user":{"name":"Alice","id":7,"display_name":"Al"},"channel_id":123},"text":"hello"},"io":{"_interaction_guild_id":"g1","_slash_role_grant":true,"build_source":"src","_resolve_channel_prompt":"prompt","_resolve_channel_skills":{"__script__":true,"ret":["s1"]},"MessageEvent":"evt"}},"fc":true,"tag":"fail-closed: no topic script"}
+{"func":"_component_live_auth","in":{"args":{"interaction":{"user":{"id":"1"}}},"io":{"component_chat_context":{"__script__":true,"ret":["dm","c1",null]},"_is_sender_authorized":true}}}
+{"func":"_component_live_auth","in":{"args":{"interaction":{"user":{"id":5}}},"io":{"component_chat_context":{"__script__":true,"ret":["thread","c2","t1"]},"_is_sender_authorized":false}}}
+{"func":"_component_live_auth","in":{"args":{"interaction":{}},"io":{"component_chat_context":{"__script__":true,"ret":["group","g",null]},"_is_sender_authorized":null}}}
+{"func":"_component_live_auth","in":{"args":{"interaction":{"user":{"id":"1"}}},"io":{"component_chat_context":{"__script__":true,"ret":[]},"_is_sender_authorized":true}}}
+{"func":"_component_live_auth","in":{"args":{"interaction":{"user":{"id":"1"}}},"io":{"component_chat_context":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}},"fc":true}
+{"func":"_component_live_auth","in":{"args":{"interaction":{"user":{"id":"1"}}},"io":{"component_chat_context":{"__script__":true,"ret":["dm","c1",null]},"_is_sender_authorized":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_component_live_auth","in":{"args":{"interaction":{"user":{"id":"1"}}},"io":{}},"fc":true,"tag":"fail-closed: no context script"}
+{"func":"_auto_create_thread","in":{"args":{"message":{"content":"hi","author":{"display_name":"Al"}}},"io":{"_derive_auto_thread_name":"thname","create_thread":"thr","stamp":"stamped"}}}
+{"func":"_auto_create_thread","in":{"args":{"message":{"content":"hi","author":{"display_name":"Al"}}},"io":{"_derive_auto_thread_name":"thname","create_thread":[{"__script__":true,"raise":{"type":"RuntimeError","message":"direct"}},"thr2"],"t":"seed text","channel.send":"seedmsg","seed.create_thread":"fthr","stamp":"stamped"}}}
+{"func":"_auto_create_thread","in":{"args":{"message":{"content":"hi","author":{"display_name":"Al"}}},"io":{"_derive_auto_thread_name":"thname","create_thread":[{"__script__":true,"raise":{"type":"RuntimeError","message":"d1"}},{"__script__":true,"raise":{"type":"RuntimeError","message":"d2"}}],"t":"seed text","channel.send":[{"__script__":true,"raise":{"type":"RuntimeError","message":"s1"}},{"__script__":true,"raise":{"type":"RuntimeError","message":"s2"}}],"seed.create_thread":[{"__script__":true,"raise":{"type":"RuntimeError","message":"f1"}},{"__script__":true,"raise":{"type":"RuntimeError","message":"f2"}}],"sleep":null,"logger.warning":null}}}
+{"func":"_auto_create_thread","in":{"args":{"message":{"content":"hi","author":{"display_name":"Al"}}},"io":{"_derive_auto_thread_name":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}},"fc":true}
+{"func":"_auto_create_thread","in":{"args":{"message":{"content":"hi","author":{"display_name":"Al"}}},"io":{"_derive_auto_thread_name":"n","create_thread":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_auto_create_thread","in":{"args":{"message":{"content":"hi","author":{"display_name":"Al"}}},"io":{"_derive_auto_thread_name":"n","create_thread":"thr","stamp":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_auto_create_thread","in":{"args":{"message":{"content":"","author":{}}},"io":{"_derive_auto_thread_name":"n","create_thread":"thr","stamp":"s"}}}
+{"func":"_auto_create_thread","in":{"args":{"message":{"content":"hi","author":{"display_name":"Al"}}},"io":{"_derive_auto_thread_name":"n"}},"fc":true,"tag":"fail-closed: no create_thread script"}
+{"func":"_cache_discord_image","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":"data","cache_bytes":"/cached"}}}
+{"func":"_cache_discord_image","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":null,"cache_url":"/url"}}}
+{"func":"_cache_discord_image","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":"data","cache_bytes":{"__script__":true,"raise":{"type":"ValueError","message":"bad"}},"logger.debug":null,"cache_url":"/url"}}}
+{"func":"_cache_discord_image","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":"data","cache_bytes":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_cache_discord_image","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}},"fc":true}
+{"func":"_cache_discord_image","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":"data"}},"fc":true,"tag":"fail-closed: no cache script"}
+{"func":"_cache_discord_image","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":null,"cache_url":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_cache_discord_audio","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":"data","cache_bytes":"/cached"}}}
+{"func":"_cache_discord_audio","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":null,"cache_url":"/url"}}}
+{"func":"_cache_discord_audio","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":"data","cache_bytes":{"__script__":true,"raise":{"type":"ValueError","message":"bad"}},"logger.debug":null,"cache_url":"/url"}}}
+{"func":"_cache_discord_audio","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":"data","cache_bytes":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_cache_discord_audio","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}},"fc":true}
+{"func":"_cache_discord_audio","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":"data"}},"fc":true,"tag":"fail-closed: no cache script"}
+{"func":"_cache_discord_audio","in":{"args":{"att":{"url":"http://x"},"ext":".png"},"io":{"_read_attachment_bytes":null,"cache_url":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_cache_discord_document","in":{"args":{"att":{"url":"http://x/file"},"ext":""},"io":{"_read_attachment_bytes":"data"}}}
+{"func":"_cache_discord_document","in":{"args":{"att":{"url":"http://x/file"},"ext":""},"io":{"is_safe_url":true,"resolve_proxy_url":"proxy","proxy_kwargs":{"__script__":true,"ret":[{"p":1},{"r":2}]},"_read_attachment_bytes":null,"session.get":{"status":200},"resp.read":"raw-bytes"}}}
+{"func":"_cache_discord_document","in":{"args":{"att":{"url":"http://x/file"},"ext":""},"io":{"_read_attachment_bytes":null,"is_safe_url":false}},"fc":true}
+{"func":"_cache_discord_document","in":{"args":{"att":{"url":"http://x/file"},"ext":""},"io":{"is_safe_url":true,"resolve_proxy_url":"proxy","proxy_kwargs":{"__script__":true,"ret":[{"p":1},{"r":2}]},"_read_attachment_bytes":null,"session.get":{"status":403}}},"fc":true}
+{"func":"_cache_discord_document","in":{"args":{"att":{"url":"http://x/file"},"ext":""},"io":{"_read_attachment_bytes":null,"is_safe_url":{"__script__":true,"raise":{"type":"RuntimeError","message":"boom"}}}},"fc":true}
+{"func":"_cache_discord_document","in":{"args":{"att":{"url":"http://x/file"},"ext":""},"io":{"is_safe_url":true,"resolve_proxy_url":"proxy","proxy_kwargs":{"__script__":true,"ret":[{"p":1},{"r":2}]},"_read_attachment_bytes":null,"session.get":{"status":200},"resp.read":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_cache_discord_document","in":{"args":{"att":{"url":"http://x/file"},"ext":""},"io":{"_read_attachment_bytes":null}},"fc":true,"tag":"fail-closed: no safe-url script"}
+{"func":"_cache_simple_media","in":{"args":{"att":{"url":"http://cdn/x"},"content_type":"image/png","kind":"image","exts":[".jpg",".png"],"default_ext":".jpg"},"io":{"cache_media":"/c","print":null}}}
+{"func":"_cache_simple_media","in":{"args":{"att":{"url":"http://cdn/x"},"content_type":"image/x","kind":"image","exts":[".jpg"],"default_ext":".jpg"},"io":{"cache_media":"/c","print":null}}}
+{"func":"_cache_simple_media","in":{"args":{"att":{"url":"http://cdn/x"},"content_type":"audio/ogg; codecs=opus","kind":"audio","exts":[".ogg"],"default_ext":".ogg"},"io":{"cache_media":"/a","print":null}}}
+{"func":"_cache_simple_media","in":{"args":{"att":{"url":"http://cdn/x"},"content_type":"image/png","kind":"image","exts":[".png"],"default_ext":".jpg"},"io":{"cache_media":{"__script__":true,"raise":{"type":"ValueError","message":"bad"}},"print":null}}}
+{"func":"_cache_simple_media","in":{"args":{"att":{"url":"http://cdn/x"},"content_type":"image/png","kind":"image","exts":[".png"],"default_ext":".jpg"},"io":{"cache_media":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_cache_simple_media","in":{"args":{"att":{"url":"http://cdn/x"},"content_type":"","kind":"image","exts":[".png"],"default_ext":".jpg"},"io":{"cache_media":"/c","print":null}}}
+{"func":"_cache_simple_media","in":{"args":{"att":{"url":"http://cdn/x"},"content_type":"image/png","kind":"image","exts":[".png"],"default_ext":".jpg"},"io":{}},"fc":true,"tag":"fail-closed: no cache script"}
+{"func":"_collect_attachment_media","in":{"args":{"all_attachments":[]},"io":{}}}
+{"func":"_collect_attachment_media","in":{"args":{"all_attachments":[{"content_type":"image/png","url":"u"}]},"io":{"cache_simple":"/img"}}}
+{"func":"_collect_attachment_media","in":{"args":{"all_attachments":[{"content_type":"audio/ogg","url":"u2"}]},"io":{"cache_simple":"/aud"}}}
+{"func":"_collect_attachment_media","in":{"args":{"all_attachments":[{"content_type":"text/plain","filename":"notes.txt","size":100}]},"io":{"max_doc_bytes":1000,"cache_document":"hello","cache_doc_bytes":"/doc","logger.info":null,"re.sub":"notes.txt"}}}
+{"func":"_collect_attachment_media","in":{"args":{"all_attachments":[{"content_type":"text/plain","filename":"big.txt","size":10000000}]},"io":{"max_doc_bytes":1000,"logger.warning":null}}}
+{"func":"_collect_attachment_media","in":{"args":{"all_attachments":[{"content_type":"text/plain","filename":"notes.txt","size":100}]},"io":{"max_doc_bytes":1000,"cache_document":{"__script__":true,"raise":{"type":"ValueError","message":"bad"}},"logger.warning":null}},"fc":true}
+{"func":"_collect_attachment_media","in":{"args":{"all_attachments":[{"content_type":"text/plain","filename":"notes.txt","size":100}]},"io":{"max_doc_bytes":1000,"cache_document":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_collect_attachment_media","in":{"args":{"all_attachments":[{"content_type":"image/png","url":"u"},{"content_type":"text/plain","filename":"notes.txt","size":100}]},"io":{"cache_simple":"/img","max_doc_bytes":1000,"cache_document":"hello","cache_doc_bytes":"/doc","logger.info":null,"re.sub":"notes.txt"}}}
+{"func":"_collect_attachment_media","in":{"args":{"all_attachments":[{"content_type":"text/plain","filename":"notes.txt","size":100}]},"io":{}},"fc":true,"tag":"fail-closed: no max-doc script"}
+{"func":"_apply_yaml_config","in":{"args":{"yaml_cfg":{},"discord_cfg":{}},"io":{"env.set":null}}}
+{"func":"_apply_yaml_config","in":{"args":{"yaml_cfg":{},"discord_cfg":{"require_mention":true,"thread_require_mention":false}},"io":{"env.set":null}}}
+{"func":"_apply_yaml_config","in":{"args":{"yaml_cfg":{"platforms":{"discord":{"extra":{"allow_from":["u1","u2"],"allow_all_users":true}}}},"discord_cfg":{"allowed_roles":"r"}},"io":{"env.set":null}}}
+{"func":"_apply_yaml_config","in":{"args":{"yaml_cfg":{},"discord_cfg":{"approval_mentions":true,"auto_thread":false,"reactions":true}},"io":{"env.set":null}}}
+{"func":"_apply_yaml_config","in":{"args":{"yaml_cfg":{},"discord_cfg":{"reply_to_mode":false}},"io":{"env.set":null}}}
+{"func":"_apply_yaml_config","in":{"args":{"yaml_cfg":{},"discord_cfg":{"history_backfill":true,"history_backfill_limit":50}},"io":{"env.set":null}}}
+{"func":"_apply_yaml_config","in":{"args":{"yaml_cfg":{},"discord_cfg":{"allow_mentions":{"everyone":true,"roles":false},"websocket_liveness_interval_seconds":10,"liveness_failure_threshold":3}},"io":{"env.set":null}}}
+{"func":"_apply_yaml_config","in":{"args":{"yaml_cfg":{},"discord_cfg":{"require_mention":true}},"io":{"env.set":{"__script__":true,"raise":{"type":"SystemExit","message":"bye"}}}},"fc":true}
+{"func":"_apply_yaml_config","in":{"args":{"yaml_cfg":{},"discord_cfg":{"require_mention":true}},"io":{}},"fc":true,"tag":"fail-closed: no env script"}
