@@ -549,7 +549,30 @@ json_t *windows_gateway_breakaway_state(const gw2_seams_t *s) {
 }
 
 /* PoP: get_cron_drain_timeout @ hermes_cli/gateway.py:_get_cron_drain_timeout */
-int get_cron_drain_timeout(void) { return 30; }
+/* Composed with parse_cron_drain_timeout / _parse_timeout_keeping_zero:
+ * None or blank-string -> 30.0 default; else float(raw) if numeric, else
+ * 30.0; clamp to >= 0. A 0 is a deliberate opt-out and is PRESERVED (not
+ * replaced by the default), unlike blank/non-numeric. The already-resolved
+ * raw env/config value is passed in as JSON (process state). */
+double get_cron_drain_timeout(const json_t *raw) {
+    const double DEFAULT = 30.0;
+    if (!raw || raw->type == JSON_NULL) return DEFAULT;
+    double v;
+    if (raw->type == JSON_NUMBER) v = raw->num_val;
+    else if (raw->type == JSON_STRING) {
+        const char *s = raw->str_val;
+        if (!s) return DEFAULT;
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+        if (*s == '\0') return DEFAULT;
+        char *end = NULL;
+        v = strtod(s, &end);
+        while (end && (*end == ' ' || *end == '\t' || *end == '\n' || *end == '\r')) end++;
+        if (!end || *end != '\0') return DEFAULT;  /* non-numeric */
+    } else if (raw->type == JSON_BOOL) {
+        v = raw->bool_val ? 1.0 : 0.0;  /* Python float(True/False) */
+    } else return DEFAULT;
+    return v < 0 ? 0.0 : v;
+}
 
 /* PoP: probe_launchd_domain_for_label @ hermes_cli/gateway_launchd.py:_probe_launchd_domain_for_label */
 char *probe_launchd_domain_for_label(const char *label) {
