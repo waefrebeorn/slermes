@@ -298,8 +298,6 @@ static void cm3_park_import_halt(const char *mod) {
 }
 
 /* ══ hermes_cli/commands.py (remainder) ══ */
-
-/* PoP: cm3_infer_argument_mode @ hermes_cli/commands.py:infer_argument_mode */
 static json_t *cm3_infer_argument_mode(const json_t *cmd) {
     const json_t *am = json_obj_get(cmd, "argument_mode");
     const char *a = jstr(am);
@@ -325,8 +323,6 @@ static json_t *cm3_infer_argument_mode(const json_t *cmd) {
     free(hint);
     return ret;  /* NULL == None */
 }
-
-/* PoP: cm3_command_desktop_meta @ hermes_cli/commands.py:command_desktop_meta */
 static json_t *cm3_command_desktop_meta(const json_t *cmd) {
     json_t *meta = json_object();
     json_t *am = cm3_infer_argument_mode(cmd);
@@ -338,8 +334,6 @@ static json_t *cm3_command_desktop_meta(const json_t *cmd) {
         json_set(meta, "desktop_subcommands", is_arr(ds) ? json_copy(ds) : json_null());
     return meta;
 }
-
-/* PoP: cm3_resolve_command @ hermes_cli/commands.py:resolve_command */
 static json_t *cm3_resolve_command(const char *name, const json_t *registry) {
     char *q = cm3_query_key(name);
     json_t *ret = NULL;
@@ -360,8 +354,6 @@ static json_t *cm3_resolve_command(const char *name, const json_t *registry) {
     free(q);
     return ret;
 }
-
-/* PoP: cm3_build_description @ hermes_cli/commands.py:_build_description */
 static json_t *cm3_build_description(const json_t *cmd, const cm3_seams_t *s) {
     const json_t *ah = json_obj_get(cmd, "args_hint");
     json_t *da = a0();
@@ -381,8 +373,6 @@ static json_t *cm3_build_description(const json_t *cmd, const cm3_seams_t *s) {
     if (CM3_RAISED(r)) { cm3_park(r); return NULL; }
     return r;
 }
-
-/* PoP: cm3_is_gateway_known_command @ hermes_cli/commands.py:is_gateway_known_command */
 static bool cm3_is_gateway_known_command(const char *name, const json_t *registry,
                                           const cm3_seams_t *s) {
     if (!name || !name[0]) return false;
@@ -418,8 +408,6 @@ static bool cm3_is_gateway_known_command(const char *name, const json_t *registr
     json_free(r);
     return found;
 }
-
-/* PoP: cm3_is_interrupt_then_dispatch @ hermes_cli/commands.py:is_interrupt_then_dispatch */
 static bool cm3_is_interrupt_then_dispatch(const char *name, const json_t *registry) {
     if (!name || !name[0]) return false;
     json_t *cmd = cm3_resolve_command(name, registry);
@@ -429,8 +417,6 @@ static bool cm3_is_interrupt_then_dispatch(const char *name, const json_t *regis
     json_free(cmd);
     return hit;
 }
-
-/* PoP: cm3_should_bypass_active_session @ hermes_cli/commands.py:should_bypass_active_session */
 static bool cm3_should_bypass_active_session(const char *name, const json_t *registry) {
     if (!name || !name[0]) return false;
     json_t *cmd = cm3_resolve_command(name, registry);
@@ -438,8 +424,6 @@ static bool cm3_should_bypass_active_session(const char *name, const json_t *reg
     json_free(cmd);
     return true;
 }
-
-/* PoP: cm3_resolve_config_gates @ hermes_cli/commands.py:_resolve_config_gates */
 static json_t *cm3_resolve_config_gates(const json_t *registry, const json_t *inp,
                                          const cm3_seams_t *s) {
     json_t *out = json_array();
@@ -505,8 +489,6 @@ static char *cm3_join(const json_t *arr, const char *sep) {
     out[k] = '\0';
     return out;
 }
-
-/* PoP: cm3_gateway_help_lines @ hermes_cli/commands.py:gateway_help_lines */
 static json_t *cm3_gateway_help_lines(const json_t *allowed, const json_t *registry,
                                        const cm3_seams_t *s) {
     json_t *lines = json_array();
@@ -575,8 +557,6 @@ static json_t *cm3_gateway_help_lines(const json_t *allowed, const json_t *regis
     json_free(ov);
     return lines;
 }
-
-/* PoP: cm3_iter_plugin_command_entries @ hermes_cli/commands.py:_iter_plugin_command_entries */
 static json_t *cm3_iter_plugin_command_entries(const json_t *inp, const cm3_seams_t *s) {
     json_t *out = json_array();
     /* `from hermes_cli.plugins import ...` sits INSIDE the try. */

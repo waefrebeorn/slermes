@@ -591,8 +591,6 @@ static char *cc3_urlparse_hostname(const char *s, cc3_ctx *ctx) {
     return low;
 }
 /* ── Gemini thinking-config cluster ──────────────────────────────────────── */
-
-/* PoP: cc3_build_gemini_thinking_config @ agent/transports/chat_completions.py:_build_gemini_thinking_config */
 static json_t *cc3_build_gemini_thinking_config(cc3_ctx *ctx, const json_t *model,
                                                 const json_t *reasoning_config) {
     if (!cc3_is_obj(reasoning_config)) return json_null();
@@ -681,8 +679,6 @@ done:
     free(normalized); free(effort);
     return out;
 }
-
-/* PoP: cc3_snake_case_gemini_thinking_config @ agent/transports/chat_completions.py:_snake_case_gemini_thinking_config */
 static json_t *cc3_snake_case_gemini_thinking_config(const json_t *config) {
     if (!cc3_is_obj(config) || config->c.count == 0) return json_null();
     json_t *out = json_object();
@@ -706,8 +702,6 @@ static json_t *cc3_snake_case_gemini_thinking_config(const json_t *config) {
     if (out->c.count == 0) { json_free(out); return json_null(); }
     return out;
 }
-
-/* PoP: cc3_raise_gemini_thinking_max_tokens @ agent/transports/chat_completions.py:_raise_gemini_thinking_max_tokens */
 static json_t *cc3_raise_gemini_thinking_max_tokens(cc3_ctx *ctx, const json_t *model,
                                                     const json_t *reasoning_config,
                                                     const json_t *requested) {
@@ -722,8 +716,6 @@ static json_t *cc3_raise_gemini_thinking_max_tokens(cc3_ctx *ctx, const json_t *
     if (cc3_exc_pending(ctx)) { if (r) json_free(r); return NULL; }
     return r ? r : json_null();
 }
-
-/* PoP: cc3_is_gemini_openai_compat_base_url @ agent/transports/chat_completions.py:_is_gemini_openai_compat_base_url */
 static json_t *cc3_is_gemini_openai_compat_base_url(const json_t *base_url) {
     char *s = cc3_str_or_empty(base_url);
     char *st = cc3_py_strip(s);
@@ -738,8 +730,6 @@ static json_t *cc3_is_gemini_openai_compat_base_url(const json_t *base_url) {
     free(lo);
     return json_bool(hit);
 }
-
-/* PoP: cc3_is_openai_api_base_url @ agent/transports/chat_completions.py:_is_openai_api_base_url */
 static json_t *cc3_is_openai_api_base_url(cc3_ctx *ctx, const json_t *base_url) {
     char *s = cc3_str_or_empty(base_url);
     char *st = cc3_py_strip(s);
@@ -755,8 +745,6 @@ static json_t *cc3_is_openai_api_base_url(cc3_ctx *ctx, const json_t *base_url) 
     free(host);
     return json_bool(hit);
 }
-
-/* PoP: cc3_model_consumes_thought_signature @ agent/transports/chat_completions.py:_model_consumes_thought_signature */
 static json_t *cc3_model_consumes_thought_signature(cc3_ctx *ctx, const json_t *model,
                                                     const json_t *base_url, const json_t *provider) {
     char *ms = cc3_str_or_empty(model);
@@ -792,8 +780,6 @@ static json_t *cc3_model_consumes_thought_signature(cc3_ctx *ctx, const json_t *
 }
 
 /* ── prompt-cache cluster ────────────────────────────────────────────────── */
-
-/* PoP: cc3_static_prompt_instructions @ agent/transports/chat_completions.py:_static_prompt_instructions */
 static json_t *cc3_static_prompt_instructions(cc3_ctx *ctx, const json_t *messages) {
     json_t *first = NULL;
     if (cc3_truthy(messages) && cc3_is_arr(messages) && messages->c.count > 0) {
@@ -826,8 +812,6 @@ static json_t *cc3_static_prompt_instructions(cc3_ctx *ctx, const json_t *messag
     free(dumps);
     return out;
 }
-
-/* PoP: cc3_add_prompt_cache_key @ agent/transports/chat_completions.py:_add_prompt_cache_key */
 static void cc3_add_prompt_cache_key(cc3_ctx *ctx, json_t *api_kwargs, const json_t *messages,
                                      const json_t *tools, const json_t *supports,
                                      const json_t *session_id, const json_t *cache_scope_id) {
@@ -887,8 +871,6 @@ static void cc3_add_prompt_cache_key(cc3_ctx *ctx, json_t *api_kwargs, const jso
 }
 
 /* ── transport methods: convert_messages / convert_tools / api_mode ──────── */
-
-/* PoP: cc3_convert_messages @ agent/transports/chat_completions.py:convert_messages */
 static json_t *cc3_convert_messages(cc3_ctx *ctx, const json_t *messages, const json_t *kwargs) {
     json_t *profile = cc3_get(kwargs, "provider_profile");
     json_t *pname = cc3_getattr_def(profile, "name");
@@ -979,13 +961,9 @@ static json_t *cc3_convert_messages(cc3_ctx *ctx, const json_t *messages, const 
     json_free(pairs);
     return out;
 }
-
-/* PoP: cc3_convert_tools @ agent/transports/chat_completions.py:convert_tools */
 static json_t *cc3_convert_tools(const json_t *tools) {
     return tools ? json_copy(tools) : json_null();
 }
-
-/* PoP: cc3_api_mode @ agent/transports/chat_completions.py:api_mode */
 static json_t *cc3_api_mode(void) {
     return json_string("chat_completions");
 }
@@ -1011,8 +989,6 @@ static json_t *cc3_dump_extra_content_seam(cc3_ctx *ctx, const json_t *extra) {
 
 static json_t *cc3_build_kwargs_from_profile(cc3_ctx *ctx, const json_t *profile, const json_t *model,
                                              const json_t *sanitized_in, const json_t *tools, json_t *params);
-
-/* PoP: cc3_build_kwargs @ agent/transports/chat_completions.py:build_kwargs */
 static json_t *cc3_build_kwargs(cc3_ctx *ctx, const json_t *model, const json_t *messages,
                                 const json_t *tools, json_t *params) {
     json_t *sanitized = NULL, *api_kwargs = NULL, *reasoning_config = NULL, *e = NULL;
@@ -1253,8 +1229,6 @@ cleanup:
 }
 
 /* ── _build_kwargs_from_profile (profile-object path) ────────────────────── */
-
-/* PoP: cc3_build_kwargs_from_profile @ agent/transports/chat_completions.py:_build_kwargs_from_profile */
 static json_t *cc3_build_kwargs_from_profile(cc3_ctx *ctx, const json_t *profile, const json_t *model,
                                              const json_t *sanitized_in, const json_t *tools, json_t *params) {
     json_t *sanitized = NULL, *api_kwargs = NULL, *reasoning_config = NULL, *extra_body = NULL, *final = NULL;
@@ -1425,8 +1399,6 @@ cleanup:
 }
 
 /* ── normalize_response ──────────────────────────────────────────────────── */
-
-/* PoP: cc3_normalize_response @ agent/transports/chat_completions.py:normalize_response */
 static json_t *cc3_normalize_response(cc3_ctx *ctx, const json_t *response) {
     json_t *finish_reason = NULL, *tool_calls = NULL, *usage = NULL, *provider_data = NULL;
     json_t *final_content = NULL, *final_reasoning = NULL, *text_keys = NULL, *opaque_keys = NULL;
@@ -1631,8 +1603,6 @@ cleanup:
 }
 
 /* ── validate_response / extract_cache_stats ─────────────────────────────── */
-
-/* PoP: cc3_validate_response @ agent/transports/chat_completions.py:validate_response */
 static json_t *cc3_validate_response(cc3_ctx *ctx, const json_t *response) {
     if (cc3_is_none(response)) return json_bool(false);
     json_t *choices = cc3_getattr_def(response, "choices");
@@ -1645,8 +1615,6 @@ static json_t *cc3_validate_response(cc3_ctx *ctx, const json_t *response) {
     if (shim) json_free(shim);
     return json_bool(!is_shim);
 }
-
-/* PoP: cc3_extract_cache_stats @ agent/transports/chat_completions.py:extract_cache_stats */
 static json_t *cc3_extract_cache_stats(const json_t *response) {
     json_t *usage = cc3_getattr_def(response, "usage");
     if (cc3_is_none(usage)) return json_null();

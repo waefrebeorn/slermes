@@ -632,8 +632,6 @@ static bool acv2_unpack_ok(acv2_ctx *ctx, const json_t *r, size_t n) {
 }
 
 /* ── ported functions ────────────────────────────────────────────────────── */
-
-/* PoP: acv2_fix_blank_text_blocks_in_list @ agent/anthropic_message_convert.py:_fix_blank_text_blocks_in_list */
 static json_t *acv2_fix_blank_text_blocks_in_list(acv2_ctx *ctx, const json_t *blocks,
                                                   const char *placeholder_text, double msg_index,
                                                   const json_t *role, const char *location) {
@@ -685,8 +683,6 @@ static json_t *acv2_fix_blank_text_blocks_in_list(acv2_ctx *ctx, const json_t *b
     if (acv2_exc_pending(ctx)) { json_free(kept); return NULL; }
     return kept;
 }
-
-/* PoP: acv2_extract_preserved_thinking_blocks @ agent/anthropic_message_convert.py:_extract_preserved_thinking_blocks */
 static json_t *acv2_extract_preserved_thinking_blocks(acv2_ctx *ctx, const json_t *message) {
     if (!acv2_is_obj(message)) { acv2_raise_attr_get(ctx, message); return NULL; }
     json_t *raw = json_obj_get(message, "reasoning_details");
@@ -717,8 +713,6 @@ static json_t *acv2_extract_preserved_thinking_blocks(acv2_ctx *ctx, const json_
     json_free(empty_str);
     return out;
 }
-
-/* PoP: acv2_convert_content_to_anthropic @ agent/anthropic_message_convert.py:_convert_content_to_anthropic */
 static json_t *acv2_convert_content_to_anthropic(acv2_ctx *ctx, const json_t *content) {
     if (!acv2_is_arr(content)) return content ? json_copy(content) : json_null();
     json_t *out = json_array();
@@ -732,8 +726,6 @@ static json_t *acv2_convert_content_to_anthropic(acv2_ctx *ctx, const json_t *co
     }
     return out;
 }
-
-/* PoP: acv2_content_parts_to_anthropic_blocks @ agent/anthropic_message_convert.py:_content_parts_to_anthropic_blocks */
 static json_t *acv2_content_parts_to_anthropic_blocks(acv2_ctx *ctx, const json_t *parts) {
     json_t *out = json_array();
     if (!acv2_is_arr(parts)) return out;
@@ -769,8 +761,6 @@ static json_t *acv2_content_parts_to_anthropic_blocks(acv2_ctx *ctx, const json_
     }
     return out;
 }
-
-/* PoP: acv2_convert_user_message @ agent/anthropic_message_convert.py:_convert_user_message */
 static json_t *acv2_convert_user_message(acv2_ctx *ctx, const json_t *content) {
     json_t *c = NULL;
     if (acv2_is_arr(content)) {
@@ -793,8 +783,6 @@ static json_t *acv2_convert_user_message(acv2_ctx *ctx, const json_t *content) {
     json_set(o, "content", c);
     return o;
 }
-
-/* PoP: acv2_convert_tools_to_anthropic @ agent/anthropic_message_convert.py:convert_tools_to_anthropic */
 static json_t *acv2_convert_tools_to_anthropic(acv2_ctx *ctx, const json_t *tools) {
     json_t *result = json_array();
     json_t *seen = json_array();
@@ -858,8 +846,6 @@ static json_t *acv2_convert_tools_to_anthropic(acv2_ctx *ctx, const json_t *tool
     json_free(seen); json_free(empty_obj); json_free(empty_str);
     return result;
 }
-
-/* PoP: acv2_convert_tool_message_to_result @ agent/anthropic_message_convert.py:_convert_tool_message_to_result */
 static void acv2_convert_tool_message_to_result(acv2_ctx *ctx, json_t *result, const json_t *m) {
     if (!acv2_is_obj(m)) { acv2_raise_attr_get(ctx, m); return; }
     json_t *empty_str = json_string("");
@@ -905,8 +891,6 @@ static void acv2_convert_tool_message_to_result(acv2_ctx *ctx, json_t *result, c
     json_set(um, "content", ua);
     json_append(result, um);
 }
-
-/* PoP: acv2_convert_assistant_message @ agent/anthropic_message_convert.py:_convert_assistant_message */
 static json_t *acv2_convert_assistant_message(acv2_ctx *ctx, const json_t *m) {
     if (!acv2_is_obj(m)) { acv2_raise_attr_get(ctx, m); return NULL; }
     json_t *empty_str = json_string("");
@@ -1118,8 +1102,6 @@ static json_t *acv2_convert_assistant_message(acv2_ctx *ctx, const json_t *m) {
     json_free(empty_str); json_free(empty_obj); json_free(empty_arr);
     return o;
 }
-
-/* PoP: acv2_strip_orphaned_tool_blocks @ agent/anthropic_message_convert.py:_strip_orphaned_tool_blocks */
 static void acv2_strip_orphaned_tool_blocks(acv2_ctx *ctx, json_t *result) {
     /* Pass 1: tool_use without an adjacent result. */
     json_t *pairs = acv2_abl_seam(ctx, result);
@@ -1282,8 +1264,6 @@ static void acv2_strip_orphaned_tool_blocks(acv2_ctx *ctx, json_t *result) {
     }
     json_free(surviving);
 }
-
-/* PoP: acv2_merge_consecutive_roles @ agent/anthropic_message_convert.py:_merge_consecutive_roles */
 static json_t *acv2_merge_consecutive_roles(acv2_ctx *ctx, json_t *result) {
     if (!acv2_is_arr(result)) { acv2_raise_not_iterable(ctx, result); return NULL; }
     size_t n = result->c.count;
@@ -1341,8 +1321,6 @@ static json_t *acv2_merge_consecutive_roles(acv2_ctx *ctx, json_t *result) {
     free(fx);
     return out;
 }
-
-/* PoP: acv2_manage_thinking_signatures @ agent/anthropic_message_convert.py:_manage_thinking_signatures */
 static void acv2_manage_thinking_signatures(acv2_ctx *ctx, json_t *result,
                                             const json_t *base_url, const json_t *model) {
     json_t *ra = json_object();
@@ -1497,8 +1475,6 @@ static void acv2_manage_thinking_signatures(acv2_ctx *ctx, json_t *result,
     json_free(pairs);
     json_free(route);
 }
-
-/* PoP: acv2_evict_old_screenshots @ agent/anthropic_message_convert.py:_evict_old_screenshots */
 typedef struct acv2_img_ref { json_t *block; json_t *data; } acv2_img_ref;
 typedef struct acv2_carrier { json_t *block; acv2_img_ref *images; size_t n; } acv2_carrier;
 
@@ -1708,8 +1684,6 @@ static void acv2_evict_old_screenshots(acv2_ctx *ctx, json_t *result) {
     }
     acv2_evict_cleanup(reserved, rn, carriers, cn);
 }
-
-/* PoP: acv2_ensure_leading_user_turn @ agent/anthropic_message_convert.py:_ensure_leading_user_turn */
 static void acv2_ensure_leading_user_turn(acv2_ctx *ctx, json_t *result) {
     if (!acv2_truthy(result)) return;
     if (!acv2_is_arr(result)) { acv2_raise_not_subscriptable(ctx, result); return; }
@@ -1729,8 +1703,6 @@ static void acv2_ensure_leading_user_turn(acv2_ctx *ctx, json_t *result) {
     json_set(um, "content", ua);
     acv2_array_insert0(result, um);
 }
-
-/* PoP: acv2_scrub_blank_text_blocks @ agent/anthropic_message_convert.py:_scrub_blank_text_blocks */
 static void acv2_scrub_blank_text_blocks(acv2_ctx *ctx, json_t *result) {
     if (!acv2_is_arr(result)) { acv2_raise_not_iterable(ctx, result); return; }
     for (size_t mi = 0; mi < result->c.count; mi++) {
@@ -1762,8 +1734,6 @@ static void acv2_scrub_blank_text_blocks(acv2_ctx *ctx, json_t *result) {
         }
     }
 }
-
-/* PoP: acv2_convert_messages_to_anthropic @ agent/anthropic_message_convert.py:convert_messages_to_anthropic */
 static json_t *acv2_convert_messages_to_anthropic(acv2_ctx *ctx, const json_t *messages,
                                                   const json_t *base_url, const json_t *model) {
     if (!acv2_is_arr(messages)) { acv2_raise_not_iterable(ctx, messages); return NULL; }

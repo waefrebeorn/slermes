@@ -13,6 +13,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 if Path(r'C:\msys64\usr\bin\sh.exe').exists():
     os.environ['PATH'] = r'C:\msys64\usr\bin;C:\winlibs\mingw64\bin;' + os.environ.get('PATH', '')
+    os.environ.setdefault('WINLIBS', '/c/winlibs/mingw64')
+    os.environ.setdefault('CFLAGS_EXTRA', '-I C:/winlibs/extra-inc')
+    os.environ.setdefault('LIBRARY_PATH', 'C:/winlibs/extra-libs')
+    os.environ.setdefault('ORACLE_LIBDIR', 'C:/winlibs/extra-libs')
 
 STEPS = [
     [sys.executable, str(ROOT / 'tests' / 'parity_reality.py')],

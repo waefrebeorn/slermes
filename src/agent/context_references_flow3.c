@@ -451,7 +451,6 @@ static const char *cr3_ref_get(const json_t *r, const char *k) { return json_get
 static double cr3_ref_num(const json_t *r, const char *k) { return json_get_num(r, k, 0); }
 
 /* ══════════════════ F1: parse_context_references ══════════════════ */
-/* PoP: cr3_parse_context_references @ agent/context_references.py:parse_context_references */
 static json_t *cr3_parse_context_references(cr3_seams_t *sp, const char *message,
                                             const json_t *providers, bool plugins) {
     json_t *refs = json_array();
@@ -544,7 +543,6 @@ static json_t *cr3_result(const char *message, const char *original,
 static bool cr3_has_refs(const json_t *refs) { return cr3_is_arr(refs) && refs->c.count > 0; }
 
 /* ══════════════════ F3: preprocess_context_references_async ══════════ */
-/* PoP: cr3_preprocess_async @ agent/context_references.py:preprocess_context_references_async */
 static json_t *cr3_preprocess_async(cr3_seams_t *sp, const char *message, const char *cwd,
                                     double context_length, const json_t *allowed_root, bool plugins) {
     /* parse_context_references -> seam parse_refs */
@@ -672,7 +670,6 @@ static json_t *cr3_preprocess_async(cr3_seams_t *sp, const char *message, const 
 }
 
 /* ══════════════════ F2: preprocess_context_references (sync wrapper) ══ */
-/* PoP: cr3_preprocess @ agent/context_references.py:preprocess_context_references */
 static json_t *cr3_preprocess(cr3_seams_t *sp, const char *message, const char *cwd,
                               double context_length, const json_t *allowed_root) {
     (void)cwd; (void)context_length; (void)allowed_root;
@@ -692,7 +689,6 @@ static json_t *cr3_preprocess(cr3_seams_t *sp, const char *message, const char *
 }
 
 /* ══════════════════ F7: _default_url_fetcher ══════════════════ */
-/* PoP: cr3_default_url_fetcher @ agent/context_references.py:_default_url_fetcher */
 static json_t *cr3_default_url_fetcher(cr3_seams_t *sp, const char *url) {
     json_t *a = json_object();
     json_t *urls = json_array(); json_append(urls, json_string(url ? url : ""));
@@ -736,7 +732,6 @@ static json_t *cr3_default_url_fetcher(cr3_seams_t *sp, const char *url) {
 }
 
 /* ══════════════════ F6: _fetch_url_content ══════════════════ */
-/* PoP: cr3_fetch_url_content @ agent/context_references.py:_fetch_url_content */
 static json_t *cr3_fetch_url_content(cr3_seams_t *sp, const char *url) {
     json_t *a = json_object(); cr3_set_str(a, "url", url ? url : "");
     json_t *raw = cr3_call(sp, "fetch", a);
@@ -752,7 +747,6 @@ static json_t *cr3_fetch_url_content(cr3_seams_t *sp, const char *url) {
 }
 
 /* ══════════════════ F4: _expand_reference ══════════════════ */
-/* PoP: cr3_expand_reference @ agent/context_references.py:_expand_reference */
 static json_t *cr3_expand_reference(cr3_seams_t *sp, const json_t *ref, const char *cwd,
                                     const json_t *allowed_root, const json_t *max_inline,
                                     const json_t *providers) {
@@ -871,7 +865,6 @@ static json_t *cr3_expand_reference(cr3_seams_t *sp, const json_t *ref, const ch
 }
 
 /* ══════════════════ F5: _expand_git_reference ══════════════════ */
-/* PoP: cr3_expand_git_reference @ agent/context_references.py:_expand_git_reference */
 static json_t *cr3_expand_git_reference(cr3_seams_t *sp, const json_t *ref, const char *cwd,
                                         const json_t *args, const char *label) {
     const char *raw = cr3_ref_get(ref, "raw");
@@ -918,7 +911,6 @@ static json_t *cr3_expand_git_reference(cr3_seams_t *sp, const json_t *ref, cons
 }
 
 /* ══════════════════ F8: _resolve_path ══════════════════ */
-/* PoP: cr3_resolve_path @ agent/context_references.py:_resolve_path */
 static json_t *cr3_resolve_path(cr3_seams_t *sp, const char *cwd, const char *target,
                                 const json_t *allowed_root) {
     json_t *na = json_object(); cr3_set_str(na, "target", target ? target : "");
@@ -970,7 +962,6 @@ static bool cr3_deny_under(const char *p, const char *base) {
     size_t n = strlen(base);
     return strncmp(p, base, n) == 0 && (p[n] == '\0' || p[n] == '/');
 }
-/* PoP: cr3_ensure_path_allowed @ agent/context_references.py:_ensure_reference_path_allowed */
 static json_t *cr3_ensure_path_allowed(cr3_seams_t *sp, const char *path,
                                        const json_t *constants, const char *home_in, const char *hermes_in) {
     /* live: Path(expanduser("~")).resolve(), get_hermes_home().resolve() */
@@ -1055,7 +1046,6 @@ static json_t *cr3_entry(json_t *out, const char *path, cr3_seams_t *sp) {
     json_append(out, o);
     return NULL;
 }
-/* PoP: cr3_iter_visible_entries @ agent/context_references.py:_iter_visible_entries */
 static json_t *cr3_iter_visible_entries(cr3_seams_t *sp, const char *path, const char *cwd, double limit) {
     json_t *qa = json_object();
     json_t *cmd = json_array(); json_append(cmd, json_string("rg")); json_append(cmd, json_string("--files")); json_append(cmd, json_string(path ? path : ""));
@@ -1169,7 +1159,6 @@ static json_t *cr3_iter_visible_entries(cr3_seams_t *sp, const char *path, const
 }
 
 /* ══════════════════ F10: _build_folder_listing ═══════════════ */
-/* PoP: cr3_build_folder_listing @ agent/context_references.py:_build_folder_listing */
 static json_t *cr3_build_folder_listing(cr3_seams_t *sp, const char *path, const char *cwd,
                                         double limit, const json_t *display_base) {
     char *shown = NULL;

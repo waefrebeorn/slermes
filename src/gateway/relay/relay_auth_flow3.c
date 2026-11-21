@@ -68,11 +68,6 @@
 #include <stdbool.h>
 #include <math.h>
 #include "json.h"
-
-/* PoP: ra3_sign @ gateway/relay/auth.py:sign */
-/* PoP: ra3_make_token @ gateway/relay/auth.py:make_token */
-/* PoP: ra3_make_upgrade_token @ gateway/relay/auth.py:make_upgrade_token */
-
 /* ── universal seam + trace ── */
 
 typedef struct ra3_trace { json_t *events; } ra3_trace_t;

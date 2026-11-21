@@ -759,7 +759,6 @@ static void ml3_norm_facade(json_t *state) {
  *   self._merge_same_role_destinations = set()
  * The harness hands a FRESH state window (live constructs a new object).
  */
-/* PoP: ml3_mcc_init @ agent/moa_loop.py:__init__ */
 static json_t *ml3_mcc_init(const json_t *in, const ml3_io_t *io,
                             json_t *state, json_t **exc) {
     (void)io; (void)exc;
@@ -795,7 +794,6 @@ static json_t *ml3_mcc_init(const json_t *in, const ml3_io_t *io,
  *       self._pending_reference_cost = None
  *   return usage, cost
  */
-/* PoP: ml3_mcc_consume_reference_usage @ agent/moa_loop.py:consume_reference_usage */
 static json_t *ml3_mcc_consume_reference_usage(const json_t *in,
                                                const ml3_io_t *io,
                                                json_t *state, json_t **exc) {
@@ -817,7 +815,6 @@ static json_t *ml3_mcc_consume_reference_usage(const json_t *in,
 /* ── 3. MoAChatCompletions.last_reference_metrics ───────────────────────────
  *   return self._last_reference_metrics
  */
-/* PoP: ml3_mcc_last_reference_metrics @ agent/moa_loop.py:last_reference_metrics */
 static json_t *ml3_mcc_last_reference_metrics(const json_t *in,
                                               const ml3_io_t *io,
                                               json_t *state, json_t **exc) {
@@ -836,7 +833,6 @@ static json_t *ml3_mcc_last_reference_metrics(const json_t *in,
  * method (flow1, strict (self, usage, cost) signature) are seamed. The *
  * unpack replicates py3.14 call-binding errors.
  */
-/* PoP: ml3_mcc_record_late @ agent/moa_loop.py:_record_late_reference_accounting */
 static json_t *ml3_mcc_record_late(const json_t *in, const ml3_io_t *io,
                                    json_t *state, json_t **exc) {
     (void)state;
@@ -918,7 +914,6 @@ static json_t *ml3_mcc_record_late(const json_t *in, const ml3_io_t *io,
  *           aggregator_streamed=bool(pending.get("aggregator_streamed")))
  *   except Exception as exc: logger.debug(...)   (silent)
  */
-/* PoP: ml3_mcc_consume_and_save_trace @ agent/moa_loop.py:consume_and_save_trace */
 static json_t *ml3_mcc_consume_and_save_trace(const json_t *in,
                                               const ml3_io_t *io,
                                               json_t *state, json_t **exc) {
@@ -1023,7 +1018,6 @@ done:
  *   try: self.reference_callback(event, **kwargs)
  *   except Exception as exc: logger.debug(...)   (silent)
  */
-/* PoP: ml3_mcc_emit @ agent/moa_loop.py:_emit */
 static json_t *ml3_mcc_emit(const json_t *in, const ml3_io_t *io,
                             json_t *state, json_t **exc) {
     const json_t *cb = ml3_self_get(state, "reference_callback", exc);
@@ -1055,7 +1049,6 @@ static json_t *ml3_mcc_create_core(json_t *ak, const ml3_io_t *io,
 /* ── 7. MoAChatCompletions.prepare ──────────────────────────────────────────
  *   return self.create(messages=messages, _moa_prepare_only=True)
  */
-/* PoP: ml3_mcc_prepare @ agent/moa_loop.py:prepare */
 static json_t *ml3_mcc_prepare(const json_t *in, const ml3_io_t *io,
                                json_t *state, json_t **exc) {
     json_t *ak = json_object();
@@ -1071,7 +1064,6 @@ static json_t *ml3_mcc_prepare(const json_t *in, const ml3_io_t *io,
  *   if guidance: _attach_reference_guidance(agg_messages, str(guidance))
  *   return {**prepared, "messages": agg_messages}
  */
-/* PoP: ml3_mcc_rebase @ agent/moa_loop.py:rebase_prepared_request */
 static json_t *ml3_mcc_rebase(const json_t *in, const ml3_io_t *io,
                               json_t *state, json_t **exc) {
     (void)state;
@@ -1133,7 +1125,6 @@ static json_t *ml3_mcc_rebase(const json_t *in, const ml3_io_t *io,
  *   return self._call_prepared_aggregator(prepared_request, api_kwargs)
  * create_core OWNS ak (the caller's api_kwargs working copy).
  */
-/* PoP: ml3_mcc_create @ agent/moa_loop.py:create */
 static json_t *ml3_mcc_create_core(json_t *ak, const ml3_io_t *io,
                                    json_t *state, json_t **exc) {
     json_t *res = NULL, *messages = NULL, *ref_models = NULL;
@@ -1457,7 +1448,6 @@ static void ml3_trace_set(json_t *trace, const char *key, json_t *val,
  * Borrows prepared + ak (read-only). The merge seam's {"__echo__":"messages"}
  * ret models the live callee returning its input object itself (identity).
  */
-/* PoP: ml3_mcc_call_prepared @ agent/moa_loop.py:_call_prepared_aggregator */
 static json_t *ml3_mcc_call_prepared_core(const json_t *prepared,
                                           const json_t *ak,
                                           const ml3_io_t *io, json_t *state,
@@ -1849,7 +1839,6 @@ static json_t *ml3_client_method_carrier(const json_t *comp, const char *name,
  *       reference_callback=reference_callback, agent=agent)
  * Fresh client window; composes the ported MoAChatCompletions.__init__ REAL.
  */
-/* PoP: ml3_client_init @ agent/moa_loop.py:__init__ */
 static json_t *ml3_client_init(const json_t *in, const ml3_io_t *io,
                                json_t *state, json_t **exc) {
     json_t *comp = json_object();
@@ -1865,7 +1854,6 @@ static json_t *ml3_client_init(const json_t *in, const ml3_io_t *io,
 /* ── 12. MoAClient.consume_reference_usage ──────────────────────────────────
  *   return self.chat.completions.consume_reference_usage()
  */
-/* PoP: ml3_client_consume_reference_usage @ agent/moa_loop.py:consume_reference_usage */
 static json_t *ml3_client_consume_reference_usage(const json_t *in,
                                                   const ml3_io_t *io,
                                                   json_t *state, json_t **exc) {
@@ -1879,7 +1867,6 @@ static json_t *ml3_client_consume_reference_usage(const json_t *in,
 /* ── 13. MoAClient.last_aggregator_slot (property) ──────────────────────────
  *   return getattr(self.chat.completions, "last_aggregator_slot", None)
  */
-/* PoP: ml3_client_last_aggregator_slot @ agent/moa_loop.py:last_aggregator_slot */
 static json_t *ml3_client_last_aggregator_slot(const json_t *in,
                                                const ml3_io_t *io,
                                                json_t *state, json_t **exc) {
@@ -1896,7 +1883,6 @@ static json_t *ml3_client_last_aggregator_slot(const json_t *in,
  *   return self.chat.completions.consume_and_save_trace(session_id,
  *       aggregator_output_fallback=aggregator_output_fallback)
  */
-/* PoP: ml3_client_consume_and_save_trace @ agent/moa_loop.py:consume_and_save_trace */
 static json_t *ml3_client_consume_and_save_trace(const json_t *in,
                                                  const ml3_io_t *io,
                                                  json_t *state, json_t **exc) {
@@ -1910,7 +1896,6 @@ static json_t *ml3_client_consume_and_save_trace(const json_t *in,
 /* ── 15. MoAClient.last_reference_metrics ───────────────────────────────────
  *   return self.chat.completions.last_reference_metrics()
  */
-/* PoP: ml3_client_last_reference_metrics @ agent/moa_loop.py:last_reference_metrics */
 static json_t *ml3_client_last_reference_metrics(const json_t *in,
                                                  const ml3_io_t *io,
                                                  json_t *state, json_t **exc) {

@@ -238,8 +238,6 @@ static bool cr2_digits(const char *s, size_t n) {
     for (size_t i = 0; i < n; i++) if (s[i] < '0' || s[i] > '9') return false;
     return true;
 }
-
-/* PoP: cr2_format_reference_value @ agent/context_references.py:format_reference_value */
 static json_t *cr2_format_reference_value(const json_t *value) {
     const char *s = cr2_sval(value);
     /* _NEEDS_QUOTING = re.compile(r"""[\s()\[\]{}<>"'`]""") */
@@ -259,8 +257,6 @@ static json_t *cr2_format_reference_value(const json_t *value) {
     }
     return json_string(s);
 }
-
-/* PoP: cr2_strip_trailing_punctuation @ agent/context_references.py:_strip_trailing_punctuation */
 static json_t *cr2_strip_trailing_punctuation(const json_t *value) {
     const char *src = cr2_sval(value);
     char *s = strdup(src);
@@ -286,8 +282,6 @@ static json_t *cr2_strip_trailing_punctuation(const json_t *value) {
     free(s);
     return r;
 }
-
-/* PoP: cr2_strip_reference_wrappers @ agent/context_references.py:_strip_reference_wrappers */
 static json_t *cr2_strip_reference_wrappers(const json_t *value) {
     const char *s = cr2_sval(value);
     size_t n = strlen(s);
@@ -301,8 +295,6 @@ static json_t *cr2_strip_reference_wrappers(const json_t *value) {
     }
     return json_string(s);
 }
-
-/* PoP: cr2_parse_file_reference_value @ agent/context_references.py:_parse_file_reference_value */
 static json_t *cr2_parse_file_reference_value(const json_t *value) {
     const char *s = cr2_sval(value);
     size_t n = strlen(s);
@@ -369,8 +361,6 @@ static json_t *cr2_parse_file_reference_value(const json_t *value) {
     json_append(out, json_number((double)end));
     return out;
 }
-
-/* PoP: cr2_get_providers @ agent/context_references.py:get_context_reference_providers */
 static json_t *cr2_get_providers(const json_t *providers) {
     json_t *o = json_object();
     if (cr2_is_obj(providers)) {
@@ -379,8 +369,6 @@ static json_t *cr2_get_providers(const json_t *providers) {
     }
     return o;
 }
-
-/* PoP: cr2_is_binary_file @ agent/context_references.py:_is_binary_file */
 static json_t *cr2_is_binary_file(cr2_seams_t *sp, const char *name, const char *path) {
     json_t *a = json_object();
     cr2_set_str(a, "name", name);
@@ -412,8 +400,6 @@ static json_t *cr2_is_binary_file(cr2_seams_t *sp, const char *name, const char 
     json_free(sample);
     return json_bool(has_nul);
 }
-
-/* PoP: cr2_agent_visible_path @ agent/context_references.py:_agent_visible_path */
 static json_t *cr2_agent_visible_path(cr2_seams_t *sp, const char *path) {
     json_t *a = json_object();
     json_t *r = cr2_call(sp, "ensure_bridged", a);
@@ -438,8 +424,6 @@ static json_t *cr2_agent_visible_path(cr2_seams_t *sp, const char *path) {
     if (!c || c->type == JSON_NULL) { json_free(c); return json_string("None"); }
     return c; /* string */
 }
-
-/* PoP: cr2_binary_reference_block @ agent/context_references.py:_binary_reference_block */
 static json_t *cr2_binary_reference_block(cr2_seams_t *sp, const char *raw,
                                           const char *name) {
     json_t *a = json_object();
@@ -460,8 +444,6 @@ static json_t *cr2_binary_reference_block(cr2_seams_t *sp, const char *raw,
     free(desc);
     return cr2_call(sp, "on_disk", b);
 }
-
-/* PoP: cr2_file_metadata @ agent/context_references.py:_file_metadata */
 static json_t *cr2_file_metadata(cr2_seams_t *sp, const char *path) {
     /* try: size = path.stat().st_size  except OSError: return "unknown size" */
     json_t *a = json_object();
@@ -543,8 +525,6 @@ static json_t *cr2_file_metadata(cr2_seams_t *sp, const char *path) {
     free(lbuf);
     return lr;
 }
-
-/* PoP: cr2_register_provider @ agent/context_references.py:register_context_reference_provider */
 /* state: {"providers": {prefix: {"id":int,...}}, "owners": {prefix: owner|null}} */
 static json_t *cr2_register_provider(json_t *state, const char *raw_prefix,
                                      bool is_provider, const json_t *owner,

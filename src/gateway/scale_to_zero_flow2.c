@@ -760,8 +760,6 @@ static json_t *stz2_touch_dashboard_client_heartbeat(const json_t *path,
                                                      const stz2_seams_t *s);
 static json_t *stz2_dashboard_client_last_seen(const json_t *path, const json_t *now,
                                                const stz2_seams_t *s);
-
-/* PoP: stz2_scale_to_zero_enabled @ gateway/scale_to_zero.py:scale_to_zero_enabled */
 static json_t *stz2_scale_to_zero_enabled(const json_t *env, const stz2_seams_t *s) {
     (void)s;
     json_t *v = stz2_env_str(env, "HERMES_SCALE_TO_ZERO", s);
@@ -774,8 +772,6 @@ static json_t *stz2_scale_to_zero_enabled(const json_t *env, const stz2_seams_t 
     free(low);
     return json_bool(on);
 }
-
-/* PoP: stz2_parse_idle_timeout_seconds @ gateway/scale_to_zero.py:parse_idle_timeout_seconds */
 static json_t *stz2_parse_idle_timeout_seconds(const json_t *cfg_value,
                                                const json_t *default_minutes,
                                                const stz2_seams_t *s) {
@@ -807,8 +803,6 @@ static json_t *stz2_parse_idle_timeout_seconds(const json_t *cfg_value,
     }
     return json_number(chosen * 60.0);
 }
-
-/* PoP: stz2_messaging_is_relay_only_or_absent @ gateway/scale_to_zero.py:messaging_is_relay_only_or_absent */
 static json_t *stz2_messaging_is_relay_only_or_absent(const json_t *platforms,
                                                       const stz2_seams_t *s) {
     (void)s;
@@ -883,16 +877,12 @@ static json_t *stz2_messaging_is_relay_only_or_absent(const json_t *platforms,
     if (failed) return fail_raise;
     return json_bool(only_relay);
 }
-
-/* PoP: stz2_should_arm @ gateway/scale_to_zero.py:should_arm */
 static json_t *stz2_should_arm(const json_t *enabled, const json_t *relay_only_or_absent,
                                const json_t *wake_url, const stz2_seams_t *s) {
     (void)s;
     return json_bool(stz2_truth(enabled) && stz2_truth(relay_only_or_absent)
                      && stz2_truth(wake_url));
 }
-
-/* PoP: stz2_is_idle @ gateway/scale_to_zero.py:is_idle */
 static json_t *stz2_is_idle(const json_t *active_work_count,
                             const json_t *seconds_since_last_inbound,
                             const json_t *idle_timeout_seconds,
@@ -905,8 +895,6 @@ static json_t *stz2_is_idle(const json_t *active_work_count,
     if (stz2_truth(has_live_background_work)) return json_bool(false);
     return stz2_ge(seconds_since_last_inbound, idle_timeout_seconds);
 }
-
-/* PoP: stz2_dashboard_client_heartbeat_path @ gateway/scale_to_zero.py:dashboard_client_heartbeat_path */
 static json_t *stz2_dashboard_client_heartbeat_path(const json_t *hermes_home,
                                                     const stz2_seams_t *s) {
     json_t *home = NULL;
@@ -940,8 +928,6 @@ static json_t *stz2_dashboard_client_heartbeat_path(const json_t *hermes_home,
     if (home_owned) json_free(home);
     return r;
 }
-
-/* PoP: stz2_touch_dashboard_client_heartbeat @ gateway/scale_to_zero.py:touch_dashboard_client_heartbeat */
 static json_t *stz2_touch_dashboard_client_heartbeat(const json_t *path,
                                                      const stz2_seams_t *s) {
     json_t *p = NULL;
@@ -1028,8 +1014,6 @@ static json_t *stz2_touch_dashboard_client_heartbeat(const json_t *path,
     if (caught) json_free(caught);
     return json_bool(false);
 }
-
-/* PoP: stz2_dashboard_client_last_seen @ gateway/scale_to_zero.py:dashboard_client_last_seen */
 static json_t *stz2_dashboard_client_last_seen(const json_t *path, const json_t *now,
                                                const stz2_seams_t *s) {
     /* current = time.time() if now is None else now  [OUTSIDE try] */
