@@ -88,8 +88,8 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 65 wired 824->826, HEAD `c15077de77`;
-  build health 2133/2133 clean, port gate PASS.
+- Parent working set (committed): wave 66 wired 826->829, HEAD `eda97ca4ed`;
+  build health 2136/2136 clean, port gate PASS.
   Wave 60 RESOLVED: tui_server_flow3 honestly scoped from 62 over-scoped
   fns (374/287, 50 red) to the 12 faithful ones, parent gate 74/0, wired.
   The 50 removed fns are real gaps again. Scanner perf fix committed
@@ -185,3 +185,8 @@ flow2 was a stale-brief no-op — its file existed but 38 OTHER funcs
 remain unclaimed). Next wave `deleg_db0d6770` uses EXPLICIT unclaimed
 name lists: extend whatsapp_adapter_flow2 (>=12 of 38), google_chat_flow2
 (35), gateway_run_flow4 (24), context_compressor_flow6 (56).
+THAT WAVE: parent 314/0, 132/0, 87/0, 119/0; wave 66 (`eda97ca4ed`)
+wired 826->829. gateway_run_flow4.o is a real 14-symbol object.
+Next wave `deleg_e983d189` (explicit names): feishu_adapter_flow7 (174),
+matrix_adapter_flow6 (69), context_compressor_flow7 (38), and a second
+whatsapp_adapter_flow2 extension (26 remaining).
