@@ -54,9 +54,10 @@ correction and the repo mantra both forbid.
 
 - **Phase 0 (done):** stop the in-flight adapter-remainder wave; it was more
   of the same dead credit.
-- **Phase 1:** land `tests/check_dead_ports.py` as a reporting gate. Once the
-  264 wired-dead objects are triaged (wire a caller, SAC-exclude, or strip
-  the PoP claim), switch it on with `--fail-on-wired-dead` in CI (DA-5).
+- **Phase 1 (done):** `tests/check_dead_ports.py` is wired into
+  `make workflow-check` (reality → dead-credit guard → build health). The
+  guard fails on any NEW dead wired object against the tracked baseline of
+  283 inherited dead files; the 264 wired ones await connect-or-strip triage.
 - **Phase 2:** placeholder-cluster revival waves, one cluster per agent,
   with leaf oracles and the in-place-body rule.
 - **Phase 3:** the binary front — get an image that links and runs under the

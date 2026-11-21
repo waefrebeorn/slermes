@@ -44,6 +44,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--fail-on-wired-dead', action='store_true')
     ap.add_argument('--json-out', default=None)
+    ap.add_argument('--baseline', default=None,
+                    help='JSON baseline of known-dead files; only NEW dead objects fail the gate')
     args = ap.parse_args()
 
     objects = set()
@@ -71,10 +73,23 @@ def main() -> int:
             if obj in objects:
                 wired_dead.append(rec)
 
+    known = set()
+    if args.baseline:
+        base = json.loads(Path(args.baseline).read_text(encoding='utf-8'))
+        rows = base['dead'] if isinstance(base, dict) else base
+        known = {r['file'] if isinstance(r, dict) else r for r in rows}
+    new_dead = [r for r in dead if r['file'] not in known]
+    new_wired = [r for r in wired_dead if r['file'] not in known]
+
     dead.sort(key=lambda r: (-r['claims'], r['file']))
     print(f'PoP-tagged C files: {files}')
     print(f'dead (all PoP fns static, no external entry): {len(dead)}')
     print(f'  of those wired into objects.mk: {len(wired_dead)}')
+    if args.baseline:
+        print(f'baseline: {len(known)} known-dead; NEW dead: {len(new_dead)}, '
+              f'NEW wired-dead: {len(new_wired)}')
+        for r in new_wired[:20]:
+            print(f"  NEW WIRED DEAD: {r['file']} ({r['claims']} claims)")
     print(f'claims with unresolved definitions: {sum(n for _, n, _ in unresolved)} '
           f'in {len(unresolved)} files')
     print('\nTop dead files by claim count:')
@@ -87,7 +102,8 @@ def main() -> int:
         Path(args.json_out).write_text(json.dumps({
             'pop_files': files, 'dead': dead, 'wired_dead': wired_dead,
             'unresolved': unresolved}, indent=2), encoding='utf-8')
-    return 1 if (args.fail_on_wired_dead and wired_dead) else 0
+    blocking = new_wired if args.baseline else wired_dead
+    return 1 if (args.fail_on_wired_dead and blocking) else 0
 
 
 if __name__ == '__main__':

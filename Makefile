@@ -117,6 +117,20 @@ org-parity:
 gap-triage:
 	@python3 scripts/gap_triage.py --top 25
 
+# ── Workflow guard: no NEW dead PoP credit ───────────────────────────
+# A PoP-tagged port with only static functions and no external entry cannot
+# execute — wiring its object raises the scanner count without touching the
+# binary. Baseline holds the 283 inherited dead files; the gate fails on any
+# NEW one. Triage the baseline to zero, then drop --baseline to make it absolute.
+check-dead-ports:
+	@python3 tests/check_dead_ports.py --baseline docs/dev/dead-ports-baseline.json --fail-on-wired-dead
+
+# The pre-dispatch / pre-commit check. Run this BEFORE choosing work or
+# wiring an object: reality scoreboard first, dead-credit guard second,
+# build health third. Never pick the next port from the scanner count alone.
+workflow-check:
+	@python3 scripts/workflow_check.py
+
 # ── Watercup: self-describing verification, any OS ─────────────────────
 # The C modules self-refer via /* PoP: c_fn @ py_module:py_fn */ tags.
 # watercup-index derives the symbol/signature index from THIS tree at
