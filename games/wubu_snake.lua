@@ -169,11 +169,22 @@ local score_s = "score " .. score
 local len_s = "len " .. len
 local s1 = " " .. score_s .. "  " .. len_s
 term.put(1, H - 1, s1)
+-- Rank + energy bar: a small arcade touch derived from the score.
+local rank = "C"
+if score >= 12 then rank = "S"
+elseif score >= 8 then rank = "A"
+elseif score >= 5 then rank = "B" end
+local filled = score
+if filled > 16 then filled = 16 end
+local bar = string.rep("#", filled) .. string.rep(".", 16 - filled)
 local st = dead and "GAME OVER" or "alive"
 local steps_s = "steps " .. steps
 local s2 = steps_s .. "  " .. st
+local s3 = "rank " .. rank .. "  [" .. bar .. "]"
 if #s1 + #s2 + 3 <= W then
     term.put(W - #s2 - 1, H - 1, s2)
+    if #s3 + 2 <= W then term.put(W - #s3 - 1, 0, s3) end
 else
     term.put(1, H - 2, s2)
+    if #s3 + 2 <= W then term.put(1, H - 3, s3) end
 end
