@@ -2516,3 +2516,462 @@ static json_t *wa2__log_delivery_status(wa2_ctx_t *ctx, const json_t *args) {
     json_free(li);
     return NULL;
 }
+
+/* =====================================================================
+ * EXTENSION: send-family + lifecycle leaves (second extension wave).
+ * PoP-mirrored method flows: to_whatsapp_jid / delegate methods / bridge
+ * CMs / rich_sent_store are universal-seam calls; C mirrors only the
+ * decision sequence the live Python executes for the fixture domain.
+ * ===================================================================== */
+
+/* PoP: wa2__bridge_unavailable @ plugins/platforms/whatsapp/adapter.py:_bridge_unavailable */
+static json_t *wa2__bridge_unavailable(wa2_ctx_t *ctx, const json_t *args) {
+    (void)args;
+    json_t *slf = wa2_self(ctx);
+    const json_t *running = slf ? json_obj_get(slf, "_running") : NULL;
+    const json_t *hs = slf ? json_obj_get(slf, "_http_session") : NULL;
+    if (!wa2_truthy(running) || !wa2_truthy(hs))
+        return json_string("Not connected");
+    json_t *x = wa2_call(ctx, "_check_managed_bridge_exit", json_object());
+    if (wa2_is_raise(x)) return x;
+    if (wa2_truthy(x)) return x;
+    json_free(x);
+    return json_null();
+}
+
+/* PoP: wa2__report_bridge_exit @ plugins/platforms/whatsapp/adapter.py:_report_bridge_exit */
+static json_t *wa2__report_bridge_exit(wa2_ctx_t *ctx, const json_t *args) {
+    (void)args;
+    json_t *slf = wa2_self(ctx);
+    json_t *be = wa2_call(ctx, "_check_managed_bridge_exit", json_object());
+    if (wa2_is_raise(be)) return be;
+    bool truthy = wa2_truthy(be);
+    if (truthy) {
+        char *nm = wa2_str_proj(json_obj_get(slf, "name"));
+        char *bs = wa2_str_proj(be);
+        size_t n = strlen(nm) + strlen(bs) + 8;
+        char *msg = malloc(n);
+        snprintf(msg, n, "[%s] %s", nm, bs);
+        json_t *pa = json_object();
+        wa2_set_s(pa, "text", msg);
+        json_t *pr = wa2_call(ctx, "print", pa);
+        if (wa2_is_raise(pr)) { json_free(be); free(msg); free(nm); free(bs); return pr; }
+        json_free(pr);
+        free(msg); free(nm); free(bs);
+    }
+    json_free(be);
+    return json_bool(truthy);
+}
+
+/* delegate: self._send_media_to_bridge(chat_id, file_path, media_type, caption) */
+static json_t *wa2_media_delegate(wa2_ctx_t *ctx, const json_t *chat, const json_t *fp,
+                                  const char *media_type, const json_t *cap) {
+    json_t *a = json_object();
+    wa2_set_copy(a, "chat_id", chat);
+    wa2_set_copy(a, "file_path", fp);
+    wa2_set_s(a, "media_type", media_type);
+    wa2_set_copy(a, "caption", cap);
+    wa2_set_null(a, "file_name");
+    return wa2_call(ctx, "_send_media_to_bridge", a);
+}
+
+/* PoP: wa2_send_image_file @ plugins/platforms/whatsapp/adapter.py:send_image_file */
+static json_t *wa2_send_image_file(wa2_ctx_t *ctx, const json_t *args) {
+    return wa2_media_delegate(ctx, json_obj_get(args, "chat_id"),
+                              json_obj_get(args, "image_path"), "image",
+                              json_obj_get(args, "caption"));
+}
+
+/* PoP: wa2_send_video @ plugins/platforms/whatsapp/adapter.py:send_video */
+static json_t *wa2_send_video(wa2_ctx_t *ctx, const json_t *args) {
+    return wa2_media_delegate(ctx, json_obj_get(args, "chat_id"),
+                              json_obj_get(args, "video_path"), "video",
+                              json_obj_get(args, "caption"));
+}
+
+/* PoP: wa2_send_voice @ plugins/platforms/whatsapp/adapter.py:send_voice */
+static json_t *wa2_send_voice(wa2_ctx_t *ctx, const json_t *args) {
+    const json_t *iv = json_obj_get(args, "is_voice");
+    if (iv && iv->type == JSON_BOOL && !iv->bool_val) {
+        /* is_voice is False -> send_document(chat_id, audio_path, caption=, reply_to=) */
+        json_t *a = json_object();
+        wa2_set_copy(a, "chat_id", json_obj_get(args, "chat_id"));
+        wa2_set_copy(a, "file_path", json_obj_get(args, "audio_path"));
+        wa2_set_copy(a, "caption", json_obj_get(args, "caption"));
+        wa2_set_copy(a, "reply_to", json_obj_get(args, "reply_to"));
+        return wa2_call(ctx, "send_document", a);
+    }
+    return wa2_media_delegate(ctx, json_obj_get(args, "chat_id"),
+                              json_obj_get(args, "audio_path"), "audio",
+                              json_obj_get(args, "caption"));
+}
+
+/* PoP: wa2_send_document @ plugins/platforms/whatsapp/adapter.py:send_document */
+static json_t *wa2_send_document(wa2_ctx_t *ctx, const json_t *args) {
+    const json_t *chat = json_obj_get(args, "chat_id");
+    const json_t *fp = json_obj_get(args, "file_path");
+    const json_t *cap = json_obj_get(args, "caption");
+    const json_t *fn = json_obj_get(args, "file_name");
+    json_t *fname = NULL;
+    if (wa2_truthy(fn)) {
+        fname = json_copy(fn);
+    } else {
+        const char *p = wa2_str(fp) ? wa2_str(fp) : "";
+        json_t *ba = json_object();
+        wa2_set_s(ba, "path", p);
+        fname = wa2_call(ctx, "os.path.basename", ba);
+        if (wa2_is_raise(fname)) return fname;
+    }
+    json_t *a = json_object();
+    wa2_set_copy(a, "chat_id", chat);
+    wa2_set_copy(a, "file_path", fp);
+    wa2_set_s(a, "media_type", "document");
+    wa2_set_copy(a, "caption", cap);
+    json_set(a, "file_name", fname);  /* adopt */
+    return wa2_call(ctx, "_send_media_to_bridge", a);
+}
+
+/* PoP: wa2_send_poll @ plugins/platforms/whatsapp/adapter.py:send_poll */
+static json_t *wa2_send_poll(wa2_ctx_t *ctx, const json_t *args) {
+    json_t *ja = json_object();
+    wa2_set_copy(ja, "value", json_obj_get(args, "chat_id"));
+    json_t *jid = wa2_call(ctx, "to_whatsapp_jid", ja);
+    if (wa2_is_raise(jid)) return jid;
+    json_t *payload = json_object();
+    wa2_set_copy(payload, "chatId", jid);
+    wa2_set_copy(payload, "question", json_obj_get(args, "question"));
+    json_t *arr = json_array();
+    const json_t *opts = json_obj_get(args, "options");
+    if (opts && opts->type == JSON_ARRAY && opts->c.count > 0)
+        for (size_t i = 0; i < json_len(opts); i++) json_append(arr, json_copy(json_get(opts, i)));
+    json_set(payload, "options", arr);
+    const json_t *sc = json_obj_get(args, "selectable_count");
+    json_t *one = json_number(1);
+    wa2_set_copy(payload, "selectableCount", sc ? sc : one);
+    json_free(one);
+    json_free(jid);
+    json_t *pa = json_object();
+    wa2_set_s(pa, "path", "send-poll");
+    json_set(pa, "payload", payload);
+    wa2_set_n(pa, "timeout", 30);
+    return wa2_call(ctx, "_post_bridge_message", pa);
+}
+
+/* PoP: wa2_send_location @ plugins/platforms/whatsapp/adapter.py:send_location */
+static json_t *wa2_send_location(wa2_ctx_t *ctx, const json_t *args) {
+    json_t *ja = json_object();
+    wa2_set_copy(ja, "value", json_obj_get(args, "chat_id"));
+    json_t *jid = wa2_call(ctx, "to_whatsapp_jid", ja);
+    if (wa2_is_raise(jid)) {
+        if (wa2_kind_is(wa2_kind(jid), "Exception") && !wa2_is_base_exc(wa2_kind(jid))) {
+            json_t *r = wa2_send_result(false, NULL, NULL, NULL);
+            json_set(r, "error", json_string(json_get_str(jid, "message", "")));
+            json_free(jid);
+            return r;
+        }
+        return jid;
+    }
+    json_t *payload = json_object();
+    wa2_set_copy(payload, "chatId", jid);
+    /* float(lat/lon): fixture domain uses JSON numbers (float() identity). */
+    wa2_set_copy(payload, "latitude", json_obj_get(args, "latitude"));
+    wa2_set_copy(payload, "longitude", json_obj_get(args, "longitude"));
+    const json_t *nm = json_obj_get(args, "name");
+    const json_t *ad = json_obj_get(args, "address");
+    if (wa2_truthy(nm)) wa2_set_copy(payload, "name", nm);
+    if (wa2_truthy(ad)) wa2_set_copy(payload, "address", ad);
+    json_free(jid);
+    json_t *pa = json_object();
+    wa2_set_s(pa, "path", "send-location");
+    json_set(pa, "payload", payload);
+    wa2_set_n(pa, "timeout", 30);
+    return wa2_call(ctx, "_post_bridge_message", pa);
+}
+
+/* PoP: wa2_edit_message @ plugins/platforms/whatsapp/adapter.py:edit_message */
+static json_t *wa2_edit_message(wa2_ctx_t *ctx, const json_t *args) {
+    json_t *pending = NULL, *ret = NULL;
+    json_t *ja = json_object();
+    wa2_set_copy(ja, "value", json_obj_get(args, "chat_id"));
+    json_t *jid = wa2_call(ctx, "to_whatsapp_jid", ja);
+    if (wa2_is_raise(jid)) { pending = jid; goto em_handled; }
+    json_t *payload = json_object();
+    wa2_set_copy(payload, "chatId", jid);
+    wa2_set_copy(payload, "messageId", json_obj_get(args, "message_id"));
+    wa2_set_copy(payload, "message", json_obj_get(args, "content"));
+    json_free(jid);
+    json_t *kw = json_object();
+    json_set(kw, "json", payload);
+    json_t *ba = json_object();
+    wa2_set_s(ba, "method", "post");
+    wa2_set_s(ba, "path", "edit");
+    wa2_set_n(ba, "timeout", 15);
+    json_set(ba, "kwargs", kw);
+    json_t *br = wa2_call(ctx, "_bridge_req", ba);
+    if (wa2_is_raise(br)) { pending = br; goto em_handled; }
+    {
+        json_t *en = wa2_call(ctx, "resp.enter", json_object());
+        if (wa2_is_raise(en)) { pending = en; goto em_cm; }
+        json_free(en);
+        json_t *err = NULL;
+        const json_t *st = wa2_attr(br, "status", &err);
+        if (err) { pending = err; goto em_cm; }
+        if (st->type == JSON_NUMBER && st->num_val == 200.0) {
+            ret = wa2_send_result(true, json_obj_get(args, "message_id"), NULL, NULL);
+        } else {
+            json_t *tx = wa2_call(ctx, "resp.text", json_object());
+            if (wa2_is_raise(tx)) { pending = tx; goto em_cm; }
+            ret = wa2_send_result(false, NULL, tx, NULL);
+            json_free(tx);
+        }
+em_cm:
+        ;
+        bool supp = false;
+        json_t *fin = wa2_cm_exit(ctx, "resp.exit", pending, &supp);
+        json_free(br);
+        if (fin) { pending = fin; goto em_handled; }
+        if (supp) return NULL;
+        return ret;
+    }
+em_handled:
+    if (pending && wa2_kind_is(wa2_kind(pending), "Exception") && !wa2_is_base_exc(wa2_kind(pending))) {
+        json_t *r = wa2_send_result(false, NULL, NULL, NULL);
+        json_set(r, "error", json_string(json_get_str(pending, "message", "")));
+        json_free(pending);
+        return r;
+    }
+    return pending;
+}
+
+/* PoP: wa2__send_media_to_bridge @ plugins/platforms/whatsapp/adapter.py:_send_media_to_bridge */
+static json_t *wa2__send_media_to_bridge(wa2_ctx_t *ctx, const json_t *args) {
+    const json_t *fp = json_obj_get(args, "file_path");
+    const char *p = wa2_str(fp) ? wa2_str(fp) : "";
+    json_t *ea = json_object();
+    wa2_set_s(ea, "path", p);
+    json_t *ex = wa2_call(ctx, "os.path.exists", ea);
+    if (wa2_is_raise(ex)) return ex;
+    if (!wa2_truthy(ex)) {
+        json_free(ex);
+        size_t n = strlen(p) + 40;
+        char *m = malloc(n);
+        snprintf(m, n, "File not found: %s", p);
+        json_t *r = wa2_send_result(false, NULL, json_string(m), NULL);
+        free(m);
+        return r;
+    }
+    json_free(ex);
+    json_t *ja = json_object();
+    wa2_set_copy(ja, "value", json_obj_get(args, "chat_id"));
+    json_t *jid = wa2_call(ctx, "to_whatsapp_jid", ja);
+    if (wa2_is_raise(jid)) return jid;
+    json_t *payload = json_object();
+    wa2_set_copy(payload, "chatId", jid);
+    wa2_set_copy(payload, "filePath", fp);
+    wa2_set_s(payload, "mediaType", json_get_str(args, "media_type", ""));
+    const json_t *cap = json_obj_get(args, "caption");
+    const json_t *fn = json_obj_get(args, "file_name");
+    if (wa2_truthy(cap)) wa2_set_copy(payload, "caption", cap);
+    if (wa2_truthy(fn)) wa2_set_copy(payload, "fileName", fn);
+    json_t *pa = json_object();
+    wa2_set_s(pa, "path", "send-media");
+    json_set(pa, "payload", payload);
+    wa2_set_n(pa, "timeout", 120);
+    json_t *res = wa2_call(ctx, "_post_bridge_message", pa);
+    if (wa2_is_raise(res)) { json_free(jid); return res; }
+    if (wa2_truthy(json_obj_get(res, "success")) && wa2_truthy(json_obj_get(res, "message_id"))) {
+        json_t *ga = json_object();
+        wa2_set_s(ga, "file_path", p);
+        json_t *g = wa2_call(ctx, "mimetypes.guess_type", ga);
+        if (wa2_is_raise(g)) { json_free(res); json_free(jid); return g; }
+        const json_t *mime = (g && g->type == JSON_ARRAY && json_len(g) > 0) ? json_get(g, 0) : NULL;
+        const char *ms = wa2_str(mime);
+        if (!ms || !ms[0]) {
+            const char *mt = json_get_str(args, "media_type", "");
+            ms = strcmp(mt, "image") == 0 ? "image/jpeg" : strcmp(mt, "video") == 0 ? "video/mp4"
+               : strcmp(mt, "audio") == 0 ? "audio/ogg" : "";
+        }
+        if (!ms[0]) ms = "application/octet-stream";
+        json_t *media = json_array();
+        json_t *pair = json_array();
+        json_append(pair, json_string(p));
+        json_append(pair, json_string(ms));
+        json_append(media, pair);
+        json_t *ra = json_object();
+        wa2_set_copy(ra, "chat_id", jid);
+        wa2_set_copy(ra, "message_id", json_obj_get(res, "message_id"));
+        json_set(ra, "media", media);
+        json_free(g);
+        json_t *rr = wa2_call(ctx, "record_media_async", ra);
+        if (wa2_is_raise(rr)) { json_free(res); json_free(jid); return rr; }
+        json_free(rr);
+    }
+    json_free(jid);
+    return res;
+}
+
+/* PoP: wa2__send_read_receipt @ plugins/platforms/whatsapp/adapter.py:_send_read_receipt */
+static json_t *wa2__send_read_receipt(wa2_ctx_t *ctx, const json_t *args) {
+    json_t *slf = wa2_self(ctx);
+    const json_t *data = json_obj_get(args, "data");
+    const json_t *key = data ? json_obj_get(data, "readReceiptKey") : NULL;
+    const json_t *srr = json_obj_get(slf, "_send_read_receipts");
+    const json_t *hs = json_obj_get(slf, "_http_session");
+    if (!wa2_truthy(srr) || !wa2_truthy(hs) || !key || key->type != JSON_OBJECT)
+        return json_null();
+    json_t *kw = json_object();
+    json_t *ko = json_object();
+    json_set(ko, "key", json_copy(key));
+    json_set(kw, "json", ko);
+    json_t *ba = json_object();
+    wa2_set_s(ba, "method", "post");
+    wa2_set_s(ba, "path", "read");
+    wa2_set_n(ba, "timeout", 5);
+    json_set(ba, "kwargs", kw);
+    char *nm = wa2_str_proj(json_obj_get(slf, "name"));
+    json_t *pending = NULL;
+    json_t *br = wa2_call(ctx, "_bridge_req", ba);
+    if (wa2_is_raise(br)) { pending = br; goto srr_except; }
+    {
+        json_t *en = wa2_call(ctx, "resp.enter", json_object());
+        if (wa2_is_raise(en)) { pending = en; goto srr_cm; }
+        json_free(en);
+        json_t *err = NULL;
+        const json_t *st = wa2_attr(br, "status", &err);
+        if (err) { pending = err; goto srr_cm; }
+        double sv = (st && st->type == JSON_NUMBER) ? st->num_val : -1.0;
+        if (sv != 200.0) {
+            json_t *da = json_array();
+                json_append(da, json_string(nm));
+            json_append(da, json_copy(st));
+            json_t *lg = json_object();
+            wa2_set_s(lg, "msg", "[%s] WhatsApp read receipt failed with HTTP %s");
+            json_set(lg, "args", da);
+            json_t *lr = wa2_call(ctx, "logger.warning", lg);
+            if (wa2_is_raise(lr)) { json_free(br); free(nm); return lr; }
+            json_free(lr);
+        }
+srr_cm:
+        ;
+        bool supp = false;
+        json_t *fin = wa2_cm_exit(ctx, "resp.exit", pending, &supp);
+        json_free(br);
+        if (fin) { pending = fin; goto srr_except; }
+        if (supp) { free(nm); return json_null(); }
+        pending = NULL;
+    }
+    free(nm);
+    return json_null();
+srr_except:
+    if (pending && wa2_kind_is(wa2_kind(pending), "Exception") && !wa2_is_base_exc(wa2_kind(pending))) {
+        json_t *da = json_array();
+        json_append(da, json_string(nm));
+        json_append(da, json_string(json_get_str(pending, "message", "")));
+        json_t *lg = json_object();
+        wa2_set_s(lg, "msg", "[%s] WhatsApp read receipt failed: %s");
+        json_set(lg, "args", da);
+        json_t *lr = wa2_call(ctx, "logger.warning", lg);
+        if (wa2_is_raise(lr)) { json_free(pending); free(nm); return lr; }
+        json_free(lr);
+        json_free(pending);
+        pending = NULL;
+    }
+    free(nm);
+    return pending ? pending : json_null();
+}
+
+/* get_chat_info fallbacks */
+static json_t *wa2_gci_fallback(const json_t *args) {
+    json_t *r = json_object();
+    wa2_set_copy(r, "name", json_obj_get(args, "chat_id"));
+    wa2_set_s(r, "type", "dm");
+    return r;
+}
+static json_t *wa2_gci_except(wa2_ctx_t *ctx, const json_t *args, json_t *exc) {
+    if (exc && wa2_kind_is(wa2_kind(exc), "Exception") && !wa2_is_base_exc(wa2_kind(exc))) {
+        json_t *da = json_array();
+        const json_t *cid = json_obj_get(args, "chat_id");
+        json_append(da, cid ? json_copy(cid) : json_null());
+        json_append(da, json_string(json_get_str(exc, "message", "")));
+        json_t *lg = json_object();
+        wa2_set_s(lg, "msg", "Could not get WhatsApp chat info for %s: %s");
+        json_set(lg, "args", da);
+        json_t *lr = wa2_call(ctx, "logger.debug", lg);
+        if (wa2_is_raise(lr)) { json_free(exc); return lr; }
+        json_free(lr);
+        json_free(exc);
+        return wa2_gci_fallback(args);
+    }
+    return exc;
+}
+
+/* PoP: wa2_get_chat_info @ plugins/platforms/whatsapp/adapter.py:get_chat_info */
+static json_t *wa2_get_chat_info(wa2_ctx_t *ctx, const json_t *args) {
+    json_t *slf = wa2_self(ctx);
+    const json_t *running = slf ? json_obj_get(slf, "_running") : NULL;
+    const json_t *hs = slf ? json_obj_get(slf, "_http_session") : NULL;
+    if (!wa2_truthy(running) || !wa2_truthy(hs)) {
+        json_t *r = json_object();
+        wa2_set_s(r, "name", "Unknown");
+        wa2_set_s(r, "type", "dm");
+        return r;
+    }
+    json_t *ce = wa2_call(ctx, "_check_managed_bridge_exit", json_object());
+    if (wa2_is_raise(ce)) return ce;
+    if (wa2_truthy(ce)) { json_free(ce); return wa2_gci_fallback(args); }
+    json_free(ce);
+    json_t *ja = json_object();
+    wa2_set_copy(ja, "value", json_obj_get(args, "chat_id"));
+    json_t *jid = wa2_call(ctx, "to_whatsapp_jid", ja);
+    if (wa2_is_raise(jid)) return wa2_gci_except(ctx, args, jid);
+    const char *js = wa2_str(jid) ? wa2_str(jid) : "";
+    size_t pn = strlen(js) + 8;
+    char *path = malloc(pn);
+    snprintf(path, pn, "chat/%s", js);
+    json_free(jid);
+    json_t *ba = json_object();
+    wa2_set_s(ba, "method", "get");
+    wa2_set_s(ba, "path", path);
+    wa2_set_n(ba, "timeout", 10);
+    json_set(ba, "kwargs", json_object());
+    free(path);
+    json_t *br = wa2_call(ctx, "_bridge_req", ba);
+    if (wa2_is_raise(br)) return wa2_gci_except(ctx, args, br);
+    json_t *pending = NULL, *ret = NULL;
+    json_t *en = wa2_call(ctx, "resp.enter", json_object());
+    if (wa2_is_raise(en)) { pending = en; goto gci_cm; }
+    json_free(en);
+    {
+        json_t *err = NULL;
+        const json_t *st = wa2_attr(br, "status", &err);
+        if (err) { pending = err; goto gci_cm; }
+        if (st->type == JSON_NUMBER && st->num_val == 200.0) {
+            json_t *dj = wa2_call(ctx, "resp.json", json_object());
+            if (wa2_is_raise(dj)) { pending = dj; goto gci_cm; }
+            if (!dj || dj->type != JSON_OBJECT) {
+                char msg[200];
+                snprintf(msg, sizeof msg, "'%s' object has no attribute 'get'", wa2_type_name(dj));
+                if (dj) json_free(dj);
+                pending = wa2_err("AttributeError", msg);
+                goto gci_cm;
+            }
+            ret = json_object();
+            const json_t *nmv = json_obj_get(dj, "name");
+            wa2_set_copy(ret, "name", nmv ? nmv : json_obj_get(args, "chat_id"));
+            wa2_set_s(ret, "type", wa2_truthy(json_obj_get(dj, "isGroup")) ? "group" : "dm");
+            const json_t *pp = json_obj_get(dj, "participants");
+            json_set(ret, "participants", pp ? json_copy(pp) : json_array());
+            json_free(dj);
+        }
+    }
+gci_cm:
+    ;
+    {
+        bool supp = false;
+        json_t *fin = wa2_cm_exit(ctx, "resp.exit", pending, &supp);
+        json_free(br);
+        if (fin) return wa2_gci_except(ctx, args, fin);
+        if (supp) return wa2_gci_fallback(args);
+        return ret ? ret : wa2_gci_fallback(args);
+    }
+}

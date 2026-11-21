@@ -1,0 +1,87 @@
+{"func":"status_action_label","in":{"state":{"_restart_requested":true},"io":{}}}
+{"func":"status_action_label","in":{"state":{"_restart_requested":false},"io":{}}}
+{"func":"status_action_label","in":{"state":{"_restart_requested":1},"io":{}}}
+{"func":"status_action_label","in":{"state":{"_restart_requested":0},"io":{}}}
+{"func":"status_action_label","in":{"state":{"_restart_requested":null},"io":{}}}
+{"func":"status_action_label","in":{"state":{},"io":{}}}
+{"func":"status_action_gerund","in":{"state":{"_restart_requested":true},"io":{"t":"restarting"}}}
+{"func":"status_action_gerund","in":{"state":{"_restart_requested":false},"io":{"t":"shutting"}}}
+{"func":"status_action_gerund","in":{"state":{"_restart_requested":true},"io":{"t":null}}}
+{"func":"status_action_gerund","in":{"state":{"_restart_requested":true},"io":{"t":{"__raise__":"RuntimeError","msg":"t down"}}}}
+{"func":"status_action_gerund","in":{"state":{"_restart_requested":true},"io":{"t":{"__raise__":"SystemExit","msg":""}}}}
+{"func":"status_action_gerund","in":{"state":{"_restart_requested":true},"io":{}}}
+{"func":"sessions_map","in":{"state":{},"io":{}}}
+{"func":"sessions_map","in":{"state":{"_sessions":null},"io":{}}}
+{"func":"sessions_map","in":{"state":{"_sessions":{}},"io":{}}}
+{"func":"sessions_map","in":{"state":{"_sessions":{"t1":{"k":1}}},"io":{}}}
+{"func":"sessions_map","in":{"state":{"_sessions":{"t1":1,"t2":2}},"io":{}}}
+{"func":"sessions_map","in":{"state":{"_sessions":"notadict"},"io":{}}}
+{"func":"peek_session_state","in":{"state":{"_sessions":{"t1":{"turn":{"agent":"a1"}},"t2":{"turn":{"agent":"a2"}}}},"session_key":"t1","io":{}}}
+{"func":"peek_session_state","in":{"state":{"_sessions":{"t1":{"turn":{"agent":"a1"}},"t2":{"turn":{"agent":"a2"}}}},"session_key":"missing","io":{}}}
+{"func":"peek_session_state","in":{"state":{"_sessions":{}},"session_key":"t1","io":{}}}
+{"func":"peek_session_state","in":{"state":{"_sessions":null},"session_key":"t1","io":{}}}
+{"func":"peek_session_state","in":{"state":{"_sessions":"notadict"},"session_key":"t1","io":{}}}
+{"func":"peek_session_state","in":{"state":{"_sessions":{"t1":{"turn":{"agent":"a1"}},"t2":{"turn":{"agent":"a2"}}}},"io":{}}}
+{"func":"session_state","in":{"state":{},"session_key":"t1","runner":{"_sessions_map":true},"io":{"_sessions_map":{"t1":{"turn":{"agent":"a1"}},"t2":{"turn":{"agent":"a2"}}}}}}
+{"func":"session_state","in":{"state":{},"session_key":"t2","runner":{"_sessions_map":true},"io":{"_sessions_map":{"t1":{"turn":{"agent":"a1"}},"t2":{"turn":{"agent":null}}},"SessionState":{"turn":{"agent":null}}}}}
+{"func":"session_state","in":{"state":{},"session_key":"new","runner":{"_sessions_map":true},"io":{"_sessions_map":{},"SessionState":{"turn":{"agent":"x"}}}}}
+{"func":"session_state","in":{"state":{},"session_key":"t1","runner":{"_sessions_map":true},"io":{}}}
+{"func":"session_state","in":{"state":{},"session_key":"t1","runner":{"_sessions_map":true},"io":{"_sessions_map":{"__raise__":"RuntimeError","msg":"map down"}}}}
+{"func":"session_state","in":{"state":{},"session_key":"new","runner":{"_sessions_map":true},"io":{"_sessions_map":{"t1":{"turn":{"agent":"a1"}},"t2":{"turn":{"agent":"a2"}}},"SessionState":{"__raise__":"SystemExit","msg":""}}}}
+{"func":"is_session_running","in":{"session_key":"t1","runner":{"_peek_session_state":true},"io":{"_peek_session_state":{"turn":{"agent":"a1"}}}}}
+{"func":"is_session_running","in":{"session_key":"t2","runner":{"_peek_session_state":true},"io":{"_peek_session_state":{"turn":{"agent":null}}}}}
+{"func":"is_session_running","in":{"session_key":"t1","runner":{"_peek_session_state":true},"io":{"_peek_session_state":null}}}
+{"func":"is_session_running","in":{"session_key":"t1","runner":{"_peek_session_state":true},"io":{"_peek_session_state":{"x":1}}}}
+{"func":"is_session_running","in":{"session_key":"t1","runner":{"_peek_session_state":true},"io":{"_peek_session_state":{"__raise__":"RuntimeError","msg":"peek"}}}}
+{"func":"is_session_running","in":{"session_key":"t1","runner":{"_peek_session_state":true},"io":{}}}
+{"func":"running_agent_items","in":{"runner":{"_sessions_map":true},"io":{"_sessions_map":{"t1":{"turn":{"agent":"a1"}},"t2":{"turn":{"agent":"a2"}}}}}}
+{"func":"running_agent_items","in":{"runner":{"_sessions_map":true},"io":{"_sessions_map":{"t1":{"turn":{"agent":"a1"}},"t2":{"turn":{"agent":null}}}}}}
+{"func":"running_agent_items","in":{"runner":{"_sessions_map":true},"io":{"_sessions_map":{}}}}
+{"func":"running_agent_items","in":{"runner":{"_sessions_map":true},"io":{"_sessions_map":{"t1":{"x":1}}}}}
+{"func":"running_agent_items","in":{"runner":{"_sessions_map":true},"io":{"_sessions_map":{"__raise__":"RuntimeError","msg":"map"}}}}
+{"func":"running_agent_items","in":{"runner":{"_sessions_map":true},"io":{}}}
+{"func":"running_agent_count","in":{"state":{"_running_agents":["a","b"]},"io":{}}}
+{"func":"running_agent_count","in":{"state":{"_running_agents":[]},"io":{}}}
+{"func":"running_agent_count","in":{"state":{"_running_agents":{"a":1,"b":2,"c":3}},"io":{}}}
+{"func":"running_agent_count","in":{"state":{"_running_agents":"abcd"},"io":{}}}
+{"func":"running_agent_count","in":{"state":{"_running_agents":null},"io":{}}}
+{"func":"running_agent_count","in":{"state":{},"io":{}}}
+{"func":"resolve_session_key_or_none","in":{"session_key":"given","source":{"platform":"telegram"},"io":{}}}
+{"func":"resolve_session_key_or_none","in":{"session_key":null,"source":null,"io":{}}}
+{"func":"resolve_session_key_or_none","in":{"session_key":"","source":{"platform":"telegram"},"runner":{"_session_key_for_source":true},"io":{"_session_key_for_source":"derived"}}}
+{"func":"resolve_session_key_or_none","in":{"session_key":"","source":{"platform":"telegram"},"runner":{"_session_key_for_source":true},"io":{"_session_key_for_source":{"__raise__":"RuntimeError","msg":"cannot derive"}}}}
+{"func":"resolve_session_key_or_none","in":{"session_key":"","source":{"platform":"telegram"},"runner":{"_session_key_for_source":true},"io":{"_session_key_for_source":{"__raise__":"SystemExit","msg":""}}}}
+{"func":"resolve_session_key_or_none","in":{"session_key":"","source":{"platform":"telegram"},"runner":{"_session_key_for_source":true},"io":{}}}
+{"func":"get_cached_session_source","in":{"state":{"_session_sources":{"s1":{"platform":"telegram","user_id":"u1"}}},"session_key":"s1","io":{"move_to_end":null}}}
+{"func":"get_cached_session_source","in":{"state":{"_session_sources":{"s1":{"platform":"telegram","user_id":"u1"}}},"session_key":"missing","io":{}}}
+{"func":"get_cached_session_source","in":{"state":{"_session_sources":{}},"session_key":"s1","io":{}}}
+{"func":"get_cached_session_source","in":{"state":{},"session_key":"s1","io":{}}}
+{"func":"get_cached_session_source","in":{"state":{"_session_sources":{"s1":{"platform":"telegram","user_id":"u1"}}},"session_key":"s1","io":{"move_to_end":{"__raise__":"RuntimeError","msg":"ordered down"}}}}
+{"func":"get_cached_session_source","in":{"state":{"_session_sources":{"s1":{"platform":"telegram","user_id":"u1"}}},"session_key":"s1","io":{"move_to_end":{"__raise__":"SystemExit","msg":""}}}}
+{"func":"get_cached_session_source","in":{"state":{"_session_sources":{"s1":{"platform":"telegram","user_id":"u1"}}},"session_key":"","io":{}}}
+{"func":"stop_pool","in":{"executor":{"_threads":["t1","t2"]},"io":{"shutdown":null}}}
+{"func":"stop_pool","in":{"executor":{"_threads":[]},"io":{"shutdown":null}}}
+{"func":"stop_pool","in":{"executor":{"_threads":["t1"]},"io":{"shutdown":[{"__raise__":"TypeError","msg":"no cancel_futures"},null]}}}
+{"func":"stop_pool","in":{"executor":{"_threads":["t1"]},"io":{"shutdown":{"__raise__":"ValueError","msg":"bad"}}}}
+{"func":"stop_pool","in":{"executor":{"_threads":["t1"]},"io":{"shutdown":{"__raise__":"SystemExit","msg":""}}}}
+{"func":"stop_pool","in":{"executor":{"_threads":["t1"]},"io":{}}}
+{"func":"stop_pool","in":{"executor":null,"io":{"shutdown":null}}}
+{"func":"get_or_create_pool","in":{"state":{"_executor_lock":"lk","_executor":{"tag":"pool1"}},"runner":{},"attr":"_executor","io":{"lock.enter":null,"lock.exit":null}}}
+{"func":"get_or_create_pool","in":{"state":{"_executor_lock":"lk","_executor_closing":true},"runner":{},"attr":"_executor","io":{"lock.enter":null,"lock.exit":null}}}
+{"func":"get_or_create_pool","in":{"state":{},"runner":{},"attr":"_executor","io":{"Lock":"lk2","lock.enter":null,"lock.exit":null,"make_pool":"pool2"}}}
+{"func":"get_or_create_pool","in":{"state":{"_executor_lock":"lk"},"runner":{},"attr":"_executor","io":{"lock.enter":{"__raise__":"RuntimeError","msg":"enter down"}}}}
+{"func":"get_or_create_pool","in":{"state":{"_executor_lock":"lk","_executor":{"tag":"p"}},"runner":{},"attr":"_executor","io":{"lock.enter":null,"lock.exit":{"__raise__":"OSError","msg":"exit down"}}}}
+{"func":"get_or_create_pool","in":{"state":{"_executor":{"_shutdown":true}},"runner":{},"attr":"_executor","io":{"Lock":"lk2","lock.enter":null,"lock.exit":null}}}
+{"func":"update_runtime_status","in":{"state":{"_startup_cleanup_only":false,"_restart_requested":true},"runner":{"_describe_active_work":true,"_active_work_count":true},"gateway_state":"draining","exit_reason":"restart","io":{"_describe_active_work":{"turn":1},"_active_work_count":2,"_write_runtime_status_quiet":null}}}
+{"func":"update_runtime_status","in":{"state":{"_startup_cleanup_only":false,"_restart_requested":false},"runner":{"_describe_active_work":true,"_active_work_count":true},"gateway_state":"stopping","exit_reason":null,"io":{"_active_work_count":0,"_write_runtime_status_quiet":null}}}
+{"func":"update_runtime_status","in":{"state":{"_startup_cleanup_only":true,"_restart_requested":false},"runner":{"_describe_active_work":true,"_active_work_count":true},"gateway_state":"draining","exit_reason":null,"io":{}}}
+{"func":"update_runtime_status","in":{"state":{"_startup_cleanup_only":false,"_restart_requested":true},"runner":{"_describe_active_work":true,"_active_work_count":true},"gateway_state":"draining","exit_reason":null,"io":{"_describe_active_work":{"__raise__":"RuntimeError","msg":"work down"}}}}
+{"func":"update_runtime_status","in":{"state":{"_startup_cleanup_only":false,"_restart_requested":true},"runner":{"_describe_active_work":true,"_active_work_count":true},"gateway_state":null,"exit_reason":null,"io":{"_active_work_count":{"__raise__":"RuntimeError","msg":"count down"}}}}
+{"func":"update_runtime_status","in":{"state":{"_startup_cleanup_only":false,"_restart_requested":true},"runner":{"_describe_active_work":true,"_active_work_count":true},"gateway_state":null,"exit_reason":"bye","io":{"_active_work_count":1,"_write_runtime_status_quiet":{"__raise__":"SystemExit","msg":""}}}}
+{"func":"session_db_get","in":{"state":{"_session_db_pinned":null},"runner":{},"io":{}}}
+{"func":"session_db_get","in":{"state":{"_session_db_pinned":{"tag":"fake"}},"runner":{},"io":{}}}
+{"func":"session_db_get","in":{"state":{"_session_db_pinned":{"__unpinned__":true}},"runner":{"_open_session_db_for_active_scope":true},"io":{"_open_session_db_for_active_scope":"handle1"}}}
+{"func":"session_db_get","in":{"state":{"_session_db_pinned":{"__unpinned__":true}},"runner":{"_open_session_db_for_active_scope":true},"io":{"_open_session_db_for_active_scope":{"__raise__":"RuntimeError","msg":"open"}}}}
+{"func":"session_db_get","in":{"state":{"_session_db_pinned":{"__unpinned__":true}},"runner":{"_open_session_db_for_active_scope":true},"io":{"_open_session_db_for_active_scope":{"__raise__":"SystemExit","msg":""}}}}
+{"func":"session_db_get","in":{"state":{"_session_db_pinned":{"__unpinned__":true}},"runner":{"_open_session_db_for_active_scope":true},"io":{}}}
+{"func":"session_db_get","in":{"state":{},"runner":{},"io":{}}}

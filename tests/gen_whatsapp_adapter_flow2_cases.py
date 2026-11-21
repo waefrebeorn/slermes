@@ -719,6 +719,240 @@ add("_log_delivery_status", {"self": LD_SELF, "data": {"messageId": "m1"}},
 add("_log_delivery_status", {"self": LD_SELF, "data": {}}, {}, fail_closed=True)
 
 
+# =====================================================================
+# extension wave: send-family + lifecycle leaves
+# =====================================================================
+
+def srun(**over):
+    """self double for send-family method targets."""
+    d = dict(self_base())
+    d["_running"] = True
+    d["_http_session"] = {"__session__": True}
+    d.update(over)
+    return d
+
+
+# -- _bridge_unavailable --
+BU_SELF = {"_running": True, "_http_session": {"__session__": True}, "name": "whatsapp"}
+add("_bridge_unavailable", {"self": dict(BU_SELF, _running=False)}, {})
+add("_bridge_unavailable", {"self": BU_SELF},
+    {"_check_managed_bridge_exit": script("still running")})
+add("_bridge_unavailable", {"self": BU_SELF},
+    {"_check_managed_bridge_exit": script(None)})
+add("_bridge_unavailable", {"self": BU_SELF},
+    {"_check_managed_bridge_exit": script("")})
+add("_bridge_unavailable", {"self": BU_SELF},
+    {"_check_managed_bridge_exit": raise_("RuntimeError", "check boom")})
+add("_bridge_unavailable", {"self": BU_SELF}, {}, fail_closed=True)
+
+# -- _report_bridge_exit --
+RE_SELF = {"name": "whatsapp"}
+add("_report_bridge_exit", {"self": RE_SELF},
+    {"_check_managed_bridge_exit": script("bridge gone"), "print": script(None)})
+add("_report_bridge_exit", {"self": RE_SELF},
+    {"_check_managed_bridge_exit": script(None)})
+add("_report_bridge_exit", {"self": RE_SELF},
+    {"_check_managed_bridge_exit": script(""), "print": script(None)})
+add("_report_bridge_exit", {"self": RE_SELF},
+    {"_check_managed_bridge_exit": script(5), "print": script(None)})
+add("_report_bridge_exit", {"self": RE_SELF},
+    {"_check_managed_bridge_exit": raise_("SystemExit", "1")})
+add("_report_bridge_exit", {"self": RE_SELF}, {}, fail_closed=True)
+
+# -- send_image_file / send_video (pure delegates) --
+for _fn, _pathk in (("send_image_file", "image_path"), ("send_video", "video_path")):
+    add(_fn, {"self": srun(), "chat_id": "c1", _pathk: "/c/pic.png", "caption": "cap"},
+        {"_send_media_to_bridge": script({"success": True, "message_id": "m1"})})
+    add(_fn, {"self": srun(), "chat_id": "c2", _pathk: "/c/v.mp4"},
+        {"_send_media_to_bridge": script({"success": False, "error": "no"})})
+    add(_fn, {"self": srun(), "chat_id": "c3", _pathk: "/c/p.png", "caption": None},
+        {"_send_media_to_bridge": script({"success": True, "message_id": "m2"})})
+    add(_fn, {"self": srun(), "chat_id": "c4", _pathk: "/c/p.png"},
+        {"_send_media_to_bridge": raise_("RuntimeError", "bridge boom")})
+    add(_fn, {"self": srun(), "chat_id": "c5", _pathk: "/c/p.png"},
+        {"_send_media_to_bridge": raise_("SystemExit", "1")})
+    add(_fn, {"self": srun(), "chat_id": "c6", _pathk: "/c/p.png"}, {}, fail_closed=True)
+
+# -- send_voice --
+add("send_voice", {"self": srun(), "chat_id": "c1", "audio_path": "/c/a.ogg", "caption": None},
+    {"_send_media_to_bridge": script({"success": True, "message_id": "m1"})})
+add("send_voice", {"self": srun(), "chat_id": "c2", "audio_path": "/c/a.ogg",
+                   "is_voice": True},
+    {"_send_media_to_bridge": script({"success": True, "message_id": "m2"})})
+add("send_voice", {"self": srun(), "chat_id": "c3", "audio_path": "/c/m.mp3",
+                   "caption": "song", "reply_to": "r1", "is_voice": False},
+    {"send_document": script({"success": True, "message_id": "m3"})})
+add("send_voice", {"self": srun(), "chat_id": "c4", "audio_path": "/c/a.ogg",
+                   "is_voice": False},
+    {"send_document": raise_("RuntimeError", "doc boom")})
+add("send_voice", {"self": srun(), "chat_id": "c5", "audio_path": "/c/a.ogg"},
+    {"_send_media_to_bridge": raise_("SystemExit", "1")})
+add("send_voice", {"self": srun(), "chat_id": "c6", "audio_path": "/c/a.ogg"}, {}, fail_closed=True)
+
+# -- send_document --
+add("send_document", {"self": srun(), "chat_id": "c1", "file_path": "/c/rep.pdf",
+                      "caption": "rep", "file_name": "custom.pdf"},
+    {"_send_media_to_bridge": script({"success": True, "message_id": "m1"})})
+add("send_document", {"self": srun(), "chat_id": "c2", "file_path": "/c/rep.pdf"},
+    {"os.path.basename": script("rep.pdf"),
+     "_send_media_to_bridge": script({"success": True, "message_id": "m2"})})
+add("send_document", {"self": srun(), "chat_id": "c3", "file_path": "/c/x.bin",
+                      "file_name": "y.bin"},
+    {"_send_media_to_bridge": script({"success": False, "error": "nope"})})
+add("send_document", {"self": srun(), "chat_id": "c4", "file_path": "/c/x.bin"},
+    {"os.path.basename": raise_("RuntimeError", "base boom")})
+add("send_document", {"self": srun(), "chat_id": "c5", "file_path": "/c/x.bin"},
+    {"os.path.basename": script("x.bin"),
+     "_send_media_to_bridge": raise_("SystemExit", "1")})
+add("send_document", {"self": srun(), "chat_id": "c6", "file_path": "/c/x.bin",
+                      "file_name": "z.bin"}, {}, fail_closed=True)
+
+# -- send_poll --
+add("send_poll", {"self": srun(), "chat_id": "c1", "question": "pick?",
+                  "options": ["a", "b"], "selectable_count": 1},
+    {"to_whatsapp_jid": script("1@s.whatsapp.net"),
+     "_post_bridge_message": script({"success": True, "message_id": "m1"})})
+add("send_poll", {"self": srun(), "chat_id": "c2", "question": "q2", "options": []},
+    {"to_whatsapp_jid": script("2@s.whatsapp.net"),
+     "_post_bridge_message": script({"success": True, "message_id": "m2"})})
+add("send_poll", {"self": srun(), "chat_id": "c3", "question": "q3", "options": None,
+                  "selectable_count": 2},
+    {"to_whatsapp_jid": script("3@s.whatsapp.net"),
+     "_post_bridge_message": script({"success": False, "error": "bad"})})
+add("send_poll", {"self": srun(), "chat_id": "c4", "question": "q4", "options": ["x"]},
+    {"to_whatsapp_jid": raise_("RuntimeError", "jid boom")})
+add("send_poll", {"self": srun(), "chat_id": "c5", "question": "q5", "options": ["x"]},
+    {"to_whatsapp_jid": script("5@s.whatsapp.net"),
+     "_post_bridge_message": raise_("SystemExit", "1")})
+add("send_poll", {"self": srun(), "chat_id": "c6", "question": "q6", "options": ["x"]},
+    {}, fail_closed=True)
+
+# -- send_location --
+add("send_location", {"self": srun(), "chat_id": "c1", "latitude": 12.5, "longitude": 7.25,
+                      "name": "home", "address": "street"},
+    {"to_whatsapp_jid": script("1@s.whatsapp.net"),
+     "_post_bridge_message": script({"success": True, "message_id": "m1"})})
+add("send_location", {"self": srun(), "chat_id": "c2", "latitude": 0, "longitude": 0},
+    {"to_whatsapp_jid": script("2@s.whatsapp.net"),
+     "_post_bridge_message": script({"success": True, "message_id": "m2"})})
+add("send_location", {"self": srun(), "chat_id": "c3", "latitude": -3, "longitude": 4,
+                      "name": "", "address": None},
+    {"to_whatsapp_jid": script("3@s.whatsapp.net"),
+     "_post_bridge_message": script({"success": False, "error": "nope"})})
+add("send_location", {"self": srun(), "chat_id": "c4", "latitude": 1, "longitude": 2},
+    {"to_whatsapp_jid": raise_("ValueError", "jid boom")})
+add("send_location", {"self": srun(), "chat_id": "c5", "latitude": 1, "longitude": 2},
+    {"to_whatsapp_jid": script("5@s.whatsapp.net"),
+     "_post_bridge_message": raise_("SystemExit", "1")})
+add("send_location", {"self": srun(), "chat_id": "c6", "latitude": 1, "longitude": 2},
+    {}, fail_closed=True)
+
+# -- edit_message --
+add("edit_message", {"self": srun(), "chat_id": "c1", "message_id": "mid1", "content": "new"},
+    {"to_whatsapp_jid": script("1@s.whatsapp.net"),
+     "_bridge_req": script({"status": 200}), "resp.enter": script(None),
+     "resp.exit": script(None)})
+add("edit_message", {"self": srun(), "chat_id": "c2", "message_id": "mid2", "content": "new"},
+    {"to_whatsapp_jid": script("2@s.whatsapp.net"),
+     "_bridge_req": script({"status": 500}), "resp.enter": script(None),
+     "resp.text": script("edit failed"), "resp.exit": script(None)})
+add("edit_message", {"self": srun(), "chat_id": "c3", "message_id": "mid3", "content": "new"},
+    {"to_whatsapp_jid": script("3@s.whatsapp.net"),
+     "_bridge_req": raise_("RuntimeError", "req boom")})
+add("edit_message", {"self": srun(), "chat_id": "c4", "message_id": "mid4", "content": "new"},
+    {"to_whatsapp_jid": script("4@s.whatsapp.net"),
+     "_bridge_req": script({"status": 200}), "resp.enter": script(None),
+     "resp.exit": raise_("RuntimeError", "exit boom")})
+add("edit_message", {"self": srun(), "chat_id": "c5", "message_id": "mid5", "content": "new"},
+    {"to_whatsapp_jid": raise_("SystemExit", "1")})
+add("edit_message", {"self": srun(), "chat_id": "c6", "message_id": "mid6", "content": "new"},
+    {}, fail_closed=True)
+
+# -- _send_media_to_bridge --
+SM_SELF = srun()
+add("_send_media_to_bridge", {"self": SM_SELF, "chat_id": "c1", "file_path": "/c/a.jpg",
+                              "media_type": "image", "caption": "cap"},
+    {"os.path.exists": script(True), "to_whatsapp_jid": script("1@s.whatsapp.net"),
+     "_post_bridge_message": script({"success": True, "message_id": "m1"}),
+     "mimetypes.guess_type": script(["image/png", None]),
+     "record_media_async": script(None)})
+add("_send_media_to_bridge", {"self": SM_SELF, "chat_id": "c2", "file_path": "/c/nope.jpg",
+                              "media_type": "image"},
+    {"os.path.exists": script(False)})
+add("_send_media_to_bridge", {"self": SM_SELF, "chat_id": "c3", "file_path": "/c/v.mp4",
+                              "media_type": "video", "file_name": "v.mp4"},
+    {"os.path.exists": script(True), "to_whatsapp_jid": script("3@s.whatsapp.net"),
+     "_post_bridge_message": script({"success": True, "message_id": "m3"}),
+     "mimetypes.guess_type": script([None, None]),
+     "record_media_async": script(None)})
+add("_send_media_to_bridge", {"self": SM_SELF, "chat_id": "c4", "file_path": "/c/d.bin",
+                              "media_type": "document"},
+    {"os.path.exists": script(True), "to_whatsapp_jid": script("4@s.whatsapp.net"),
+     "_post_bridge_message": script({"success": False, "error": "no"})})
+add("_send_media_to_bridge", {"self": SM_SELF, "chat_id": "c5", "file_path": "/c/a.jpg",
+                              "media_type": "image"},
+    {"os.path.exists": raise_("RuntimeError", "exists boom")})
+add("_send_media_to_bridge", {"self": SM_SELF, "chat_id": "c6", "file_path": "/c/a.jpg",
+                              "media_type": "image"},
+    {"os.path.exists": script(True), "to_whatsapp_jid": script("6@s.whatsapp.net"),
+     "_post_bridge_message": script({"success": True, "message_id": "m6"}),
+     "mimetypes.guess_type": script(["image/jpeg", None]),
+     "record_media_async": raise_("RuntimeError", "record boom")})
+add("_send_media_to_bridge", {"self": SM_SELF, "chat_id": "c7", "file_path": "/c/a.jpg",
+                              "media_type": "image"}, {}, fail_closed=True)
+
+# -- _send_read_receipt --
+SRR_SELF = srun(_send_read_receipts=True)
+add("_send_read_receipt", {"self": SRR_SELF, "data": {"readReceiptKey": {"id": "k1"}}},
+    {"_bridge_req": script({"status": 200}), "resp.enter": script(None),
+     "resp.exit": script(None)})
+add("_send_read_receipt", {"self": SRR_SELF, "data": {"readReceiptKey": {"id": "k1"}}},
+    {"_bridge_req": script({"status": 500}), "resp.enter": script(None),
+     "resp.exit": script(None), "logger.warning": script(None)})
+add("_send_read_receipt", {"self": srun(_send_read_receipts=False),
+                           "data": {"readReceiptKey": {"id": "k1"}}}, {})
+add("_send_read_receipt", {"self": SRR_SELF, "data": {}}, {})
+add("_send_read_receipt", {"self": SRR_SELF, "data": {"readReceiptKey": "not-a-dict"}}, {})
+add("_send_read_receipt", {"self": SRR_SELF, "data": {"readReceiptKey": {"id": "k1"}}},
+    {"_bridge_req": raise_("RuntimeError", "req boom"),
+     "logger.warning": script(None)})
+add("_send_read_receipt", {"self": SRR_SELF, "data": {"readReceiptKey": {"id": "k1"}}},
+    {"_bridge_req": raise_("SystemExit", "1")})
+add("_send_read_receipt", {"self": SRR_SELF, "data": {"readReceiptKey": {"id": "k1"}}},
+    {}, fail_closed=True)
+
+# -- get_chat_info --
+GCI_SELF = srun()
+add("get_chat_info", {"self": srun(_running=False), "chat_id": "c1"}, {})
+add("get_chat_info", {"self": GCI_SELF, "chat_id": "c2"},
+    {"_check_managed_bridge_exit": script("dead")})
+add("get_chat_info", {"self": GCI_SELF, "chat_id": "c3"},
+    {"_check_managed_bridge_exit": script(None),
+     "to_whatsapp_jid": script("3@s.whatsapp.net"),
+     "_bridge_req": script({"status": 200}), "resp.enter": script(None),
+     "resp.json": script({"name": "Group", "isGroup": True, "participants": ["a", "b"]}),
+     "resp.exit": script(None)})
+add("get_chat_info", {"self": GCI_SELF, "chat_id": "c4"},
+    {"_check_managed_bridge_exit": script(None),
+     "to_whatsapp_jid": script("4@s.whatsapp.net"),
+     "_bridge_req": script({"status": 404}), "resp.enter": script(None),
+     "resp.exit": script(None)})
+add("get_chat_info", {"self": GCI_SELF, "chat_id": "c5"},
+    {"_check_managed_bridge_exit": script(None),
+     "to_whatsapp_jid": script("5@s.whatsapp.net"),
+     "_bridge_req": raise_("RuntimeError", "req boom"),
+     "logger.debug": script(None)})
+add("get_chat_info", {"self": GCI_SELF, "chat_id": "c6"},
+    {"_check_managed_bridge_exit": script(None),
+     "to_whatsapp_jid": script("6@s.whatsapp.net"),
+     "_bridge_req": script({"status": 200}), "resp.enter": script(None),
+     "resp.json": script({"isGroup": False}), "resp.exit": script(None)})
+add("get_chat_info", {"self": GCI_SELF, "chat_id": "c7"},
+    {"_check_managed_bridge_exit": raise_("SystemExit", "1")})
+add("get_chat_info", {"self": GCI_SELF, "chat_id": "c8"}, {}, fail_closed=True)
+
+
+
 def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:

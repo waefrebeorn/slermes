@@ -85,12 +85,20 @@ TARGETS = [
     "_check_managed_bridge_exit", "_inject_document_text", "_quoted_media",
     "_post_bridge_message", "_apply_yaml_config", "_may_transcribe_at_gate",
     "_log_delivery_status",
+    # extension wave: send-family + lifecycle leaves
+    "_bridge_unavailable", "_report_bridge_exit", "send_image_file", "send_video",
+    "send_voice", "send_document", "send_poll", "send_location", "edit_message",
+    "_send_media_to_bridge", "_send_read_receipt", "get_chat_info",
 ]
 METHODS = {
     "_bridge_req", "_bridge_package_hash", "_bridge_env", "_adopted_config_matches",
     "_bridge_died", "_close_bridge_log", "_terminate_bridge",
     "_check_managed_bridge_exit", "_inject_document_text", "_quoted_media",
     "_may_transcribe_at_gate", "_log_delivery_status",
+    # extension wave (all send-family / lifecycle leaves read instance state)
+    "_bridge_unavailable", "_report_bridge_exit", "send_image_file", "send_video",
+    "send_voice", "send_document", "send_poll", "send_location", "edit_message",
+    "_send_media_to_bridge", "_send_read_receipt", "get_chat_info",
 }
 # seamed instance-method collaborators (installed on the self double);
 # _terminate_bridge_process is MODULE-level (composed via the NS global by
@@ -100,9 +108,12 @@ SEAMED_METHODS = {
     "_bridge_req", "_check_managed_bridge_exit",
     "_post_bridge_message", "_set_fatal_error", "_notify_fatal_error",
     "_bridge_unavailable",
+    # extension wave: delegate methods seamed on the self double
+    "_send_media_to_bridge", "send_document", "send_poll",
 }
 ASYNC_SEAMS = {"_notify_fatal_error", "_bridge_unavailable", "_post_bridge_message",
-               "_check_managed_bridge_exit", "method", "resp.json", "resp.text"}
+               "_check_managed_bridge_exit", "method", "resp.json", "resp.text",
+               "_send_media_to_bridge", "send_document", "send_poll", "record_media_async"}
 REAL_ALWAYS = {"_owner_only_opener"}
 
 
@@ -498,6 +509,22 @@ ARGMAP = {
     "_check_managed_bridge_exit": lambda: {},
     "_post_bridge_message": lambda path, payload, timeout: {
         "path": path, "payload": payload, "timeout": timeout},
+    # extension wave seams
+    "to_whatsapp_jid": lambda value: {"value": value},
+    "_send_media_to_bridge": lambda chat_id, file_path, media_type, caption=None, file_name=None: {
+        "chat_id": chat_id, "file_path": file_path, "media_type": media_type,
+        "caption": caption, "file_name": file_name},
+    "send_document": lambda chat_id, file_path, caption=None, reply_to=None, **kw: {
+        "chat_id": chat_id, "file_path": file_path, "caption": caption, "reply_to": reply_to},
+    "send_poll": lambda chat_id, question, options, selectable_count=1: {
+        "chat_id": chat_id, "question": question, "options": options,
+        "selectable_count": selectable_count},
+    "os.path.exists": lambda path: {"path": str(path)},
+    "os.path.basename": lambda path: {"path": str(path)},
+    "mimetypes.guess_type": lambda file_path: {"file_path": file_path},
+    "record_media_async": lambda chat_id, message_id, media: {
+        "chat_id": chat_id, "message_id": message_id,
+        "media": [[p, m] for p, m in media]},
 }
 
 
@@ -647,6 +674,7 @@ BUILD = {
     "tempfile.mkstemp": lambda r: tuple(r) if isinstance(r, list) else r,
     "_cache_dirs": lambda r: tuple(r) if isinstance(r, list) else r,
     "_bridge_token_lock": lambda r: TokenLockCM(BUILD_CTX[0]),
+    "_post_bridge_message": lambda r: types.SimpleNamespace(**r) if isinstance(r, dict) else r,
     "_bridge_req": lambda r: RespCM(BUILD_CTX[0], r),
     "session.get": lambda r: RespCM(BUILD_CTX[0], r),
     "session.post": lambda r: RespCM(BUILD_CTX[0], r),
@@ -759,7 +787,9 @@ def install_case(ctx, target, args):
     osdbl = types.SimpleNamespace(
         path=types.SimpleNamespace(abspath=make_recorder(ctx, "abspath"),
                                    expanduser=make_recorder(ctx, "expanduser"),
-                                   isabs=posixpath.isabs),
+                                   isabs=posixpath.isabs,
+                                   exists=make_recorder(ctx, "os.path.exists"),
+                                   basename=make_recorder(ctx, "os.path.basename")),
         name=args.get("os_name", "nt"), SEEK_END=2,
         open=make_recorder(ctx, "os.open"),
         fdopen=make_recorder(ctx, "os.fdopen"),
@@ -782,6 +812,10 @@ def install_case(ctx, target, args):
     _fcntl_mod.flock = make_recorder(ctx, "fcntl.flock")
     _psutil.Process = make_recorder(ctx, "psutil.Process")
     _rss.lookup_media = make_recorder(ctx, "lookup_media")
+    # extension wave: in-function import doubles
+    NS["mimetypes"] = types.SimpleNamespace(
+        guess_type=make_recorder(ctx, "mimetypes.guess_type"))
+    _rss.record_media_async = make_recorder(ctx, "record_media_async")
     _pmenv.running_from_selected_environment = make_recorder(ctx, "running_from_selected_environment")
     _pmadopt.restart_needed = make_recorder(ctx, "restart_needed")
     _pmextras.ensure_import = make_recorder(ctx, "ensure_import")
@@ -905,6 +939,37 @@ def live_call(func, args, ctx):
         return f(sd, args["data"])
     if func == "_log_delivery_status":
         return f(sd, args["data"])
+    # extension wave: send-family + lifecycle leaves
+    if func == "_bridge_unavailable":
+        return asyncio.run(f(sd))
+    if func == "_report_bridge_exit":
+        return asyncio.run(f(sd))
+    if func == "send_image_file":
+        return asyncio.run(f(sd, args["chat_id"], args["image_path"], args.get("caption")))
+    if func == "send_video":
+        return asyncio.run(f(sd, args["chat_id"], args["video_path"], args.get("caption")))
+    if func == "send_voice":
+        return asyncio.run(f(sd, args["chat_id"], args["audio_path"], args.get("caption"),
+                              args.get("reply_to"), is_voice=args.get("is_voice")))
+    if func == "send_document":
+        return asyncio.run(f(sd, args["chat_id"], args["file_path"], args.get("caption"),
+                             args.get("file_name"), args.get("reply_to")))
+    if func == "send_poll":
+        return asyncio.run(f(sd, args["chat_id"], args["question"], args.get("options"),
+                             selectable_count=args.get("selectable_count", 1)))
+    if func == "send_location":
+        return asyncio.run(f(sd, args["chat_id"], args["latitude"], args["longitude"],
+                             name=args.get("name"), address=args.get("address")))
+    if func == "edit_message":
+        return asyncio.run(f(sd, args["chat_id"], args["message_id"], args["content"],
+                             finalize=args.get("finalize", False)))
+    if func == "_send_media_to_bridge":
+        return asyncio.run(f(sd, args["chat_id"], args["file_path"], args["media_type"],
+                             args.get("caption"), args.get("file_name")))
+    if func == "_send_read_receipt":
+        return asyncio.run(f(sd, args["data"]))
+    if func == "get_chat_info":
+        return asyncio.run(f(sd, args["chat_id"]))
     raise RuntimeError(f"unknown func {func}")
 
 

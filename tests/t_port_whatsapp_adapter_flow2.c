@@ -52,6 +52,19 @@ static const wa2_case_t CASES[] = {
     { "_apply_yaml_config", wa2__apply_yaml_config, 0 },
     { "_may_transcribe_at_gate", wa2__may_transcribe_at_gate, 1 },
     { "_log_delivery_status", wa2__log_delivery_status, 1 },
+    /* extension wave: send-family + lifecycle leaves */
+    { "_bridge_unavailable", wa2__bridge_unavailable, 1 },
+    { "_report_bridge_exit", wa2__report_bridge_exit, 1 },
+    { "send_image_file", wa2_send_image_file, 1 },
+    { "send_video", wa2_send_video, 1 },
+    { "send_voice", wa2_send_voice, 1 },
+    { "send_document", wa2_send_document, 1 },
+    { "send_poll", wa2_send_poll, 1 },
+    { "send_location", wa2_send_location, 1 },
+    { "edit_message", wa2_edit_message, 1 },
+    { "_send_media_to_bridge", wa2__send_media_to_bridge, 1 },
+    { "_send_read_receipt", wa2__send_read_receipt, 1 },
+    { "get_chat_info", wa2_get_chat_info, 1 },
 };
 #define CASE_COUNT (sizeof(CASES) / sizeof(CASES[0]))
 
