@@ -120,7 +120,7 @@ void gna_version(const char *model, int *major, int *minor)
  *  The four version-gated predicates.
  * =========================================================================== */
 
-/* PoP: gemini_requires_tool_call_ids @ agent/gemini_native_adapter.py:gemini_requires_tool_call_ids */
+/* PoP: gna_requires_tool_call_ids @ agent/gemini_native_adapter.py:gemini_requires_tool_call_ids */
 int gna_requires_tool_call_ids(const char *model)
 {
     int maj, min; gna_version(model, &maj, &min);

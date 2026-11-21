@@ -12,6 +12,7 @@
 /* PoP: gemini_major_version @ agent/gemini_native_adapter.py:gemini_major_version */
 int gemini_major_version(void) { return 0; }
 
-int gemini_requires_tool_call_ids(void) { return 0; }
+/* gemini_requires_tool_call_ids: real port is gna_requires_tool_call_ids
+ * in port_gemini_native_adapter.c (dead stub removed; oracle 63/0). */
 
 int looks_like_json_schema(void) { return 0; }
