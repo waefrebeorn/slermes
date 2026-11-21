@@ -164,11 +164,72 @@ static int bm_is_oserror(const char *t) {
     return 0;
 }
 
+/* ── re-port wave (placeholders -> real seam ports) ──────────────────────
+ * These six bodies were stubbed (`(void)x` / constant).  They are re-ported
+ * IN PLACE here using the file's existing bm_io_t seam: `json_t *fn(bm_io_t
+ * *io, json_t *in)` returns a JSON value (NULL == None) and records every
+ * collaborator call as {ev,args,ret} in io->trace.  Exported symbol NAMES are
+ * unchanged.  A {"__raise__":...} seam result models a Python exception. */
+
 /* PoP: consume_detached_handler_exception @ gateway/platforms/base.py:_consume_detached_handler_exception */
-void consume_detached_handler_exception(const char *handler) { (void)handler; }
+json_t *consume_detached_handler_exception(bm_io_t *io, json_t *in) {
+    /* if task.cancelled(): return */
+    json_t *c_args = json_object();
+    const json_t *task = json_obj_get(in, "task");
+    json_set(c_args, "task", task ? json_copy(task) : json_null());
+    json_t *c = bm_seam(io, "task.cancelled", c_args);
+    int cancelled = bm_truthy(c);
+    json_free(c);
+    if (cancelled) return NULL;
+    /* exc = task.exception(); if exc is not None: logger.error(...) */
+    json_t *e_args = json_object();
+    json_set(e_args, "task", task ? json_copy(task) : json_null());
+    json_t *exc = bm_seam(io, "task.exception", e_args);
+    if (!exc || exc->type == JSON_NULL) { json_free(exc); return NULL; }
+    json_t *l_args = json_object();
+    json_set_hdr(l_args, "msg", "Detached fatal-error handler task failed: %s");
+    json_t *l_argv = json_array();
+    json_append(l_argv, json_copy(exc));
+    json_set(l_args, "args", l_argv);
+    json_set(l_args, "exc_info", json_copy(exc));
+    json_t *r = bm_seam(io, "log.error", l_args);
+    json_free(r);
+    json_free(exc);
+    return NULL;
+}
 
 /* PoP: gateway_trust_env @ gateway/platforms/base.py:gateway_trust_env */
-int gateway_trust_env(void) { return 1; }
+json_t *gateway_trust_env(bm_io_t *io, json_t *in) {
+    (void)in;
+    /* value = _config_section("gateway").get("trust_env", True) -- fail-open */
+    json_t *a = json_object();
+    json_set_hdr(a, "name", "gateway");
+    json_t *sec = bm_seam(io, "config_section", a);
+    int result = 1;  /* default True (fail-open) */
+    if (sec && sec->type == JSON_OBJECT && !bm_is_raise(sec)) {
+        const json_t *v = json_obj_get(sec, "trust_env");
+        if (!v || v->type == JSON_NULL) {
+            result = 1;
+        } else if (v->type == JSON_BOOL) {
+            result = v->bool_val ? 1 : 0;
+        } else if (v->type == JSON_NUMBER) {
+            result = v->num_val != 0.0 ? 1 : 0;
+        } else if (v->type == JSON_STRING) {
+            char *t = bm_strip(v->str_val ? v->str_val : "");
+            for (char *p = t; *p; p++) *p = (char)tolower((unsigned char)*p);
+            static const char *falsy[] = {"0", "false", "no", "off", NULL};
+            result = 1;
+            for (int i = 0; falsy[i]; i++) {
+                if (strcmp(t, falsy[i]) == 0) { result = 0; break; }
+            }
+            free(t);
+        } else {
+            result = 1;
+        }
+    }
+    json_free(sec);
+    return json_bool(result ? true : false);
+}
 
 /* PoP: tenv @ gateway/platforms/base.py:_tenv */
 char *tenv(const char *key) {
@@ -180,19 +241,83 @@ char *tenv(const char *key) {
 char *docker_persistent_home_host_roots(void) { return strdup("[]"); }
 
 /* PoP: warn_unresolved_docker_media @ gateway/platforms/base.py:_warn_unresolved_docker_media */
-void warn_unresolved_docker_media(const char *path) { (void)path; }
+json_t *warn_unresolved_docker_media(bm_io_t *io, json_t *in) {
+    /* if quiet or not _docker_env_active(): return */
+    if (json_get_bool(in, "quiet", false)) return NULL;
+    json_t *d = bm_seam(io, "docker_env_active", json_object());
+    int active = bm_truthy(d);
+    json_free(d);
+    if (!active) return NULL;
+    /* logger.warning("Docker MEDIA path %s did not resolve to a host sandbox file (%s%s); ...",
+     *                _log_safe_path(str(candidate)), reason,
+     *                f", session_key={session_key}" if session_key else "") */
+    const char *cand = json_get_str(in, "candidate", "");
+    const char *reason = json_get_str(in, "reason", "");
+    const char *sk = json_get_str(in, "session_key", "");
+    json_t *sp_args = json_object();
+    json_set_hdr(sp_args, "path", cand);
+    json_t *safe = bm_seam(io, "log_safe_path", sp_args);
+    const char *safe_s = (safe && safe->type == JSON_STRING && safe->str_val) ? safe->str_val : cand;
+    char suffix[256];
+    suffix[0] = '\0';
+    if (sk && sk[0]) {
+        strcat(suffix, ", session_key=");
+        strncat(suffix, sk, sizeof(suffix) - strlen(suffix) - 1);
+    }
+    /* Embed the template with literal %s placeholders (mirrors Python logger args). */
+    const char *tmpl = "Docker MEDIA path %s did not resolve to a host sandbox file (%s%s); "
+                       "the producing container's sandbox directory may not exist yet or was pruned";
+    json_t *w = json_object();
+    json_set_hdr(w, "msg", tmpl);
+    json_t *wv = json_array();
+    json_append(wv, json_string(safe_s));
+    json_append(wv, json_string(reason));
+    json_append(wv, json_string(suffix));
+    json_set(w, "args", wv);
+    json_t *r = bm_seam(io, "log.warning", w);
+    json_free(r);
+    json_free(safe);
+    return NULL;
+}
 
 /* PoP: send_path_degraded @ gateway/platforms/base.py:send_path_degraded */
-void send_path_degraded(const char *path) { (void)path; }
+json_t *send_path_degraded(bm_io_t *io, json_t *in) {
+    (void)io; (void)in;
+    /* Default adapter is either connected or not: the property is always False. */
+    return json_bool(false);
+}
 
 /* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 void mark_degraded(const char *path) { (void)path; }
 
 /* PoP: set_platform_event_handler @ gateway/platforms/base.py:set_platform_event_handler */
-void set_platform_event_handler(const char *handler) { (void)handler; }
+json_t *set_platform_event_handler(bm_io_t *io, json_t *in) {
+    /* self._platform_event_handler = handler (no callback = fail closed) */
+    json_t *a = json_object();
+    json_set_hdr(a, "name", "_platform_event_handler");
+    const json_t *h = json_obj_get(in, "handler");
+    json_set(a, "value", h ? json_copy(h) : json_null());
+    json_t *r = bm_seam(io, "setattr", a);
+    json_free(r);
+    return NULL;
+}
 
 /* PoP: set_owner_profile @ gateway/platforms/base.py:set_owner_profile */
-void set_owner_profile(const char *profile) { (void)profile; }
+json_t *set_owner_profile(bm_io_t *io, json_t *in) {
+    /* self._owner_profile = None if (name := (profile_name or "").strip() or None)
+     *                       == "default" else name */
+    const char *raw = json_get_str(in, "profile", "");
+    char *name = bm_strip(raw ? raw : "");
+    if (!name[0]) { free(name); name = NULL; }
+    int is_default = name && strcmp(name, "default") == 0;
+    json_t *a = json_object();
+    json_set_hdr(a, "name", "_owner_profile");
+    json_set(a, "value", (name && !is_default) ? json_string(name) : json_null());
+    json_t *r = bm_seam(io, "setattr", a);
+    json_free(r);
+    free(name);
+    return NULL;
+}
 
 /* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *session_key_profile(const char *profile) {

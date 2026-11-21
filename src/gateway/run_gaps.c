@@ -385,7 +385,43 @@ json_t *active_deferred_agent_worker_count(const json_t *runner, const grg_seams
 
 /* PoP: track_deferred_agent_worker @ gateway/run_shutdown.py:_track_deferred_agent_worker */
 void track_deferred_agent_worker(void *worker) {
-    (void)worker;
+    /* void* is the grg_seams_t gateway context (universal-seam convention).
+     * Live _track_deferred_agent_worker(future, agent): dict.setdefault on
+     * self._deferred_agent_workers, workers[future] = agent, then
+     * future.add_done_callback(_discard_worker).  Params enter as param.* seams. */
+    const grg_seams_t *s = (const grg_seams_t *)worker;
+    if (!s || !s->call) return;
+    json_t *ga = grg_args();
+    grg_aset_s(ga, "obj", "self");
+    grg_aset_s(ga, "name", "_deferred_agent_workers");
+    json_t *w = grg_call(s, "getattr", ga);
+    if (grg_raised(w)) { json_free(w); return; }
+    if (gflow_is_null(w)) {
+        json_free(w);
+        json_t *a = grg_args();
+        grg_aset_s(a, "obj", "self");
+        grg_aset_s(a, "name", "_deferred_agent_workers");
+        json_set(a, "value", json_object());
+        json_t *r = grg_call(s, "setattr", a);
+        json_free(r);
+    } else json_free(w);
+    json_t *sa = grg_args();
+    grg_aset_s(sa, "dict", "workers");
+    json_t *fut = grg_call(s, "param.future", grg_args());
+    grg_aset_j(sa, "future", fut);
+    json_free(fut);
+    json_t *ag = grg_call(s, "param.agent", grg_args());
+    grg_aset_j(sa, "agent", ag);
+    json_free(ag);
+    json_t *r = grg_call(s, "dict.setitem", sa);
+    json_free(r);
+    json_t *ca = grg_args();
+    fut = grg_call(s, "param.future", grg_args());
+    grg_aset_j(ca, "future", fut);
+    json_free(fut);
+    grg_aset_s(ca, "callback", "_discard_worker");
+    json_t *cr = grg_call(s, "future.add_done_callback", ca);
+    json_free(cr);
 }
 
 /* PoP: interrupt_deferred_agent_workers @ gateway/run_shutdown.py:_interrupt_deferred_agent_workers */
@@ -466,12 +502,74 @@ float post_interrupt_grace_timeout(void) {
 
 /* PoP: start_startup_warmup @ gateway/run_startup.py:_start_startup_warmup */
 void start_startup_warmup(void *gateway) {
-    (void)gateway;
+    /* _startup_warmup_timeout_secs() <= 0 -> task = None, return;
+     * else self._startup_warmup_task = ensure_future(self._warm_turn_prerequisites()). */
+    const grg_seams_t *s = (const grg_seams_t *)gateway;
+    if (!s || !s->call) return;
+    json_t *to = grg_call(s, "_startup_warmup_timeout_secs", grg_args());
+    if (grg_raised(to)) { json_free(to); return; }
+    double timeout = (to && to->type == JSON_NUMBER) ? to->num_val : 0.0;
+    json_free(to);
+    if (timeout <= 0.0) {
+        json_t *a = grg_args();
+        grg_aset_s(a, "obj", "self");
+        grg_aset_s(a, "name", "_startup_warmup_task");
+        json_set(a, "value", json_null());
+        json_t *r = grg_call(s, "setattr", a);
+        json_free(r);
+        return;
+    }
+    json_t *a = grg_args();
+    grg_aset_s(a, "fn", "_warm_turn_prerequisites");
+    json_t *task = grg_call(s, "asyncio.ensure_future", a);
+    json_t *sa = grg_args();
+    grg_aset_s(sa, "obj", "self");
+    grg_aset_s(sa, "name", "_startup_warmup_task");
+    grg_aset_j(sa, "value", task);
+    json_t *r = grg_call(s, "setattr", sa);
+    json_free(r);
+    json_free(task);
 }
 
 /* PoP: warm_turn_prerequisites @ gateway/run_startup.py:_warm_turn_prerequisites */
 void warm_turn_prerequisites(void *gateway) {
-    (void)gateway;
+    /* with _log_suppressed(WARNING, fmt, exc_info=True):
+     *   t0 = monotonic(); tool_count = await _run_boot_probe_in_launch_scope(_warm_turn_machinery_sync)
+     *   logger.info("Turn machinery warmed in %.1fs (%d tool schema(s) materialized)",
+     *               monotonic() - t0, tool_count) */
+    const grg_seams_t *s = (const grg_seams_t *)gateway;
+    if (!s || !s->call) return;
+    json_t *ea = grg_args();
+    grg_aset_n(ea, "level", 30);  /* logging.WARNING */
+    grg_aset_s(ea, "fmt", "Turn-machinery warm-up failed; first inbound turn will initialize lazily");
+    grg_aset_b(ea, "exc_info", true);
+    json_t *er = grg_call(s, "log_suppressed.enter", ea);
+    if (grg_raised(er)) { json_free(er); return; }
+    json_free(er);
+    json_t *t0r = grg_call(s, "time.monotonic", grg_args());
+    double t0 = (t0r && t0r->type == JSON_NUMBER) ? t0r->num_val : 0.0;
+    json_free(t0r);
+    json_t *pa = grg_args();
+    grg_aset_s(pa, "fn", "_warm_turn_machinery_sync");
+    json_t *tc = grg_call(s, "_run_boot_probe_in_launch_scope", pa);
+    bool probe_ok = !grg_raised(tc);
+    double tool_count = (tc && tc->type == JSON_NUMBER) ? tc->num_val : 0.0;
+    json_free(tc);
+    json_t *t1r = grg_call(s, "time.monotonic", grg_args());
+    double t1 = (t1r && t1r->type == JSON_NUMBER) ? t1r->num_val : t0;
+    json_free(t1r);
+    if (probe_ok) {
+        json_t *ia = grg_args();
+        grg_aset_s(ia, "fmt", "Turn machinery warmed in %.1fs (%d tool schema(s) materialized)");
+        json_t *args = json_array();
+        json_append(args, json_number(t1 - t0));
+        json_append(args, json_number(tool_count));
+        json_set(ia, "args", args);
+        json_t *ir = grg_call(s, "logger.info", ia);
+        json_free(ir);
+    }
+    json_t *xr = grg_call(s, "log_suppressed.exit", grg_args());
+    json_free(xr);
 }
 
 /* PoP: await_startup_warmup @ gateway/run_startup.py:_await_startup_warmup */
@@ -650,27 +748,187 @@ done:
 
 /* PoP: start_hosted_room_worker_sync @ gateway/run_startup.py:_start_hosted_room_worker_sync */
 void start_hosted_room_worker_sync(void *gateway) {
-    (void)gateway;
+    /* staticmethod: service = get_hosted_room_service(); if None: start it;
+     * if still None: raise RuntimeError(no backend);
+     * status = service.runtime.status();
+     * if not status.running or status.stopping: raise RuntimeError(did not start). */
+    const grg_seams_t *s = (const grg_seams_t *)gateway;
+    if (!s || !s->call) return;
+    json_t *service = grg_call(s, "methods_groups.get_hosted_room_service", grg_args());
+    if (grg_raised(service)) { json_free(service); return; }
+    if (gflow_is_null(service)) {
+        json_free(service);
+        service = grg_call(s, "methods_groups.start_hosted_room_service", grg_args());
+        if (grg_raised(service)) { json_free(service); return; }
+    }
+    if (gflow_is_null(service)) {
+        json_free(service);
+        json_t *e = grg_raise("RuntimeError", "Group Chat worker has no bound session backend");
+        json_t *r = grg_call(s, "raise", e);
+        json_free(r);
+        return;
+    }
+    json_t *st = grg_call(s, "service.runtime.status", grg_args());
+    if (grg_raised(st)) { json_free(service); json_free(st); return; }
+    bool running = gflow_truth(grg_oget(st, "running"));
+    bool stopping = gflow_truth(grg_oget(st, "stopping"));
+    json_free(st);
+    json_free(service);
+    if (!running || stopping) {
+        json_t *e = grg_raise("RuntimeError", "Group Chat worker did not start");
+        json_t *r = grg_call(s, "raise", e);
+        json_free(r);
+    }
 }
 
 /* PoP: ensure_hosted_room_worker @ gateway/run_startup.py:_ensure_hosted_room_worker */
 void ensure_hosted_room_worker(void *gateway) {
-    (void)gateway;
+    /* if getattr(self, 'session_authority', None) is not None:
+     *     return await ensure_hosted_service(self)
+     * return await asyncio.to_thread(self._start_hosted_room_worker_sync) */
+    const grg_seams_t *s = (const grg_seams_t *)gateway;
+    if (!s || !s->call) return;
+    json_t *a = grg_args();
+    grg_aset_s(a, "obj", "self");
+    grg_aset_s(a, "name", "session_authority");
+    json_t *sa = grg_call(s, "getattr", a);
+    if (grg_raised(sa)) { json_free(sa); return; }
+    bool has = !gflow_is_null(sa);
+    json_free(sa);
+    if (has) {
+        json_t *r = grg_call(s, "ensure_hosted_service", grg_args());
+        json_free(r);
+        return;
+    }
+    json_t *ta = grg_args();
+    grg_aset_s(ta, "fn", "_start_hosted_room_worker_sync");
+    json_t *r = grg_call(s, "asyncio.to_thread", ta);
+    json_free(r);
 }
 
 /* PoP: hosted_room_worker_watcher @ gateway/run_startup.py:_hosted_room_worker_watcher */
 void hosted_room_worker_watcher(void *gateway) {
-    (void)gateway;
+    /* while self._running:
+     *     await self._ensure_hosted_room_worker()
+     *     await asyncio.sleep(interval=1.0)
+     * _running / sleep are scripted seams so the loop is bounded in the oracle. */
+    const grg_seams_t *s = (const grg_seams_t *)gateway;
+    if (!s || !s->call) return;
+    for (int guard = 0; guard < 64; guard++) {
+        json_t *a = grg_args();
+        grg_aset_s(a, "obj", "self");
+        grg_aset_s(a, "name", "_running");
+        json_t *run = grg_call(s, "getattr", a);
+        if (grg_raised(run)) { json_free(run); return; }
+        bool running = gflow_truth(run);
+        json_free(run);
+        if (!running) return;
+        json_t *er = grg_call(s, "_ensure_hosted_room_worker", grg_args());
+        if (grg_raised(er)) { json_free(er); return; }
+        json_free(er);
+        json_t *sa = grg_args();
+        grg_aset_n(sa, "seconds", 1.0);
+        json_t *sr = grg_call(s, "asyncio.sleep", sa);
+        if (grg_raised(sr)) { json_free(sr); return; }
+        json_free(sr);
+    }
 }
 
 /* PoP: stop_hosted_room_worker @ gateway/run_startup.py:_stop_hosted_room_worker */
 void stop_hosted_room_worker(void *gateway) {
-    (void)gateway;
+    /* if getattr(self, 'session_authority', None) is not None:
+     *     return await stop_hosted_service(self, timeout=timeout)
+     * return await asyncio.to_thread(methods_groups.stop_hosted_room_service, timeout=timeout)
+     * timeout is the Python default 5.0 (C signature carries no param). */
+    const grg_seams_t *s = (const grg_seams_t *)gateway;
+    if (!s || !s->call) return;
+    double timeout = 5.0;
+    json_t *a = grg_args();
+    grg_aset_s(a, "obj", "self");
+    grg_aset_s(a, "name", "session_authority");
+    json_t *sa = grg_call(s, "getattr", a);
+    if (grg_raised(sa)) { json_free(sa); return; }
+    bool has = !gflow_is_null(sa);
+    json_free(sa);
+    if (has) {
+        json_t *ta = grg_args();
+        grg_aset_n(ta, "timeout", timeout);
+        json_t *r = grg_call(s, "stop_hosted_service", ta);
+        json_free(r);
+        return;
+    }
+    json_t *ta = grg_args();
+    grg_aset_s(ta, "fn", "stop_hosted_room_service");
+    grg_aset_n(ta, "timeout", timeout);
+    json_t *r = grg_call(s, "asyncio.to_thread", ta);
+    json_free(r);
 }
 
 /* PoP: model_catalog_refresh_watcher @ gateway/run_watchers.py:_model_catalog_refresh_watcher */
 void model_catalog_refresh_watcher(void *gateway) {
-    (void)gateway;
+    /* await asyncio.sleep(30); while self._running:
+     *   try: await asyncio.to_thread(refresh_catalogs)
+     *   except Exception as exc: logger.debug("Model catalog refresh failed: %s", exc)
+     *   try: interval = refresh_interval_seconds() except Exception: interval = 1200.0
+     *   deadline = monotonic()+interval
+     *   while self._running and monotonic() < deadline:
+     *       await asyncio.sleep(min(30.0, max(0.0, deadline-monotonic())))
+     * All awaits/state are seams; guards bound an otherwise-forever watcher. */
+    const grg_seams_t *s = (const grg_seams_t *)gateway;
+    if (!s || !s->call) return;
+    json_t *sa = grg_args();
+    grg_aset_n(sa, "seconds", 30.0);
+    json_t *r = grg_call(s, "asyncio.sleep", sa);
+    if (grg_raised(r)) { json_free(r); return; }
+    json_free(r);
+    for (int guard = 0; guard < 64; guard++) {
+        json_t *a = grg_args();
+        grg_aset_s(a, "obj", "self"); grg_aset_s(a, "name", "_running");
+        json_t *run = grg_call(s, "getattr", a);
+        if (grg_raised(run)) { json_free(run); return; }
+        bool running = gflow_truth(run); json_free(run);
+        if (!running) return;
+        json_t *ra = grg_args();
+        grg_aset_s(ra, "fn", "refresh_catalogs");
+        json_t *rr = grg_call(s, "asyncio.to_thread", ra);
+        if (grg_raised(rr)) {
+            json_t *la = grg_args();
+            grg_aset_s(la, "fmt", "Model catalog refresh failed: %s");
+            json_t *args = json_array();
+            json_append(args, json_copy(rr));
+            json_set(la, "args", args);
+            json_t *lr = grg_call(s, "logger.debug", la);
+            json_free(lr); json_free(rr);
+        } else json_free(rr);
+        json_t *iv = grg_call(s, "refresh_interval_seconds", grg_args());
+        double interval;
+        if (grg_raised(iv)) { json_free(iv); interval = 1200.0; }
+        else { interval = (iv && iv->type == JSON_NUMBER) ? iv->num_val : 1200.0; json_free(iv); }
+        json_t *m1 = grg_call(s, "time.monotonic", grg_args());
+        double now = (m1 && m1->type == JSON_NUMBER) ? m1->num_val : 0.0;
+        json_free(m1);
+        double deadline = now + interval;
+        for (int g2 = 0; g2 < 64; g2++) {
+            json_t *a2 = grg_args();
+            grg_aset_s(a2, "obj", "self"); grg_aset_s(a2, "name", "_running");
+            json_t *run2 = grg_call(s, "getattr", a2);
+            if (grg_raised(run2)) { json_free(run2); return; }
+            bool running2 = gflow_truth(run2); json_free(run2);
+            if (!running2) return;
+            json_t *m2 = grg_call(s, "time.monotonic", grg_args());
+            double now2 = (m2 && m2->type == JSON_NUMBER) ? m2->num_val : 0.0;
+            json_free(m2);
+            if (!(now2 < deadline)) break;
+            double nap = deadline - now2;
+            if (nap > 30.0) nap = 30.0;
+            if (nap < 0.0) nap = 0.0;
+            json_t *na = grg_args();
+            grg_aset_n(na, "seconds", nap);
+            json_t *nr = grg_call(s, "asyncio.sleep", na);
+            if (grg_raised(nr)) { json_free(nr); return; }
+            json_free(nr);
+        }
+    }
 }
 
 /* PoP: schedule_secondary_profile_startup_reconnect @ gateway/run_adapters.py:schedule_secondary_profile_startup_reconnect */
@@ -901,5 +1159,83 @@ done:
 
 /* PoP: shutdown_mcp_servers_nonblocking @ gateway/run.py:_shutdown_mcp_servers_nonblocking */
 void shutdown_mcp_servers_nonblocking(void *gateway) {
-    (void)gateway;
+    /* profile_homes = _multiplex_profile_homes(config) if config.multiplex_profiles else []
+     * pass_timeout = max(1.0, timeout/(len(homes)+1))
+     * for each profile: with _profile_runtime_scope(home, hydrate_secrets=False):
+     *     shutdown_mcp_servers(scope=..., timeout=pass_timeout)  (except: debug)
+     * trailing under launch-profile scope: shutdown_mcp_servers(timeout=pass_timeout) (except: debug)
+     * done = await _await_thread_exit(thread, timeout=timeout); if not done: warning.
+     * timeout / config arrive as invisible param.* seams; thread start is implicit. */
+    const grg_seams_t *s = (const grg_seams_t *)gateway;
+    if (!s || !s->call) return;
+    json_t *tr = grg_call(s, "param.timeout", grg_args());
+    double timeout = (tr && tr->type == JSON_NUMBER) ? tr->num_val : 5.0;
+    json_free(tr);
+    json_t *mpa = grg_args();
+    grg_aset_s(mpa, "obj", "config"); grg_aset_s(mpa, "name", "multiplex_profiles");
+    grg_aset_b(mpa, "default", false);
+    json_t *mp = grg_call(s, "getattr", mpa);
+    if (grg_raised(mp)) { json_free(mp); return; }
+    bool multiplex = gflow_truth(mp); json_free(mp);
+    json_t *homes = multiplex ? grg_call(s, "_multiplex_profile_homes", grg_args()) : NULL;
+    if (grg_raised(homes)) { json_free(homes); return; }
+    size_t n = (homes && homes->type == JSON_ARRAY) ? homes->c.count : 0;
+    double pass_timeout = timeout / (double)(n + 1);
+    if (pass_timeout < 1.0) pass_timeout = 1.0;
+    for (size_t i = 0; i < n; i++) {
+        json_t *row = homes->c.items[i];
+        const json_t *ph = (row && row->type == JSON_ARRAY && json_len(row) > 1) ? json_get(row, 1) : NULL;
+        char *phs = gflow_str(ph) ? strdup(gflow_str(ph)) : (ph ? json_serialize(ph) : strdup(""));
+        json_t *ea = grg_args();
+        grg_aset_s(ea, "profile_home", phs);
+        grg_aset_b(ea, "hydrate_secrets", false);
+        free(phs);
+        json_t *er = grg_call(s, "profile_runtime_scope.enter", ea);
+        if (grg_raised(er)) {
+            json_t *la = grg_args();
+            grg_aset_s(la, "fmt", "MCP shutdown raised for profile '%s'");
+            json_set(la, "exc_info", json_bool(true));
+            json_t *lr = grg_call(s, "logger.debug", la);
+            json_free(lr); json_free(er); continue;
+        }
+        json_free(er);
+        json_t *da = grg_args();
+        grg_aset_n(da, "timeout", pass_timeout);
+        json_t *dr = grg_call(s, "shutdown_mcp_servers", da);
+        if (grg_raised(dr)) {
+            json_t *la = grg_args();
+            grg_aset_s(la, "fmt", "MCP shutdown raised for profile '%s'");
+            json_set(la, "exc_info", json_bool(true));
+            json_t *lr = grg_call(s, "logger.debug", la);
+            json_free(lr); json_free(dr);
+        } else json_free(dr);
+        json_t *xr = grg_call(s, "profile_runtime_scope.exit", grg_args());
+        json_free(xr);
+    }
+    json_free(homes);
+    json_t *la = grg_args();
+    grg_aset_s(la, "fmt", "MCP shutdown raised");
+    json_set(la, "exc_info", json_bool(true));
+    /* trailing wildcard under launch scope */
+    json_t *leen = grg_call(s, "launch_profile_scope.enter", grg_args());
+    json_free(leen);
+    json_t *td = grg_call(s, "shutdown_mcp_servers", grg_args());
+    bool trailing_ok = !grg_raised(td);
+    json_free(td);
+    json_t *lex = grg_call(s, "launch_profile_scope.exit", grg_args());
+    json_free(lex);
+    if (!trailing_ok) { json_t *lr = grg_call(s, "logger.debug", la); json_free(lr); }
+    else json_free(la);
+    json_t *ea2 = grg_args();
+    grg_aset_n(ea2, "timeout", timeout);
+    json_t *done = grg_call(s, "_await_thread_exit", ea2);
+    if (grg_raised(done)) { json_free(done); return; }
+    bool finished = gflow_truth(done); json_free(done);
+    if (!finished) {
+        json_t *wa = grg_args();
+        grg_aset_s(wa, "fmt", "MCP shutdown did not finish within %.1fs; continuing gateway teardown (background thread will be reaped at process exit)");
+        json_t *args = json_array(); json_append(args, json_number(timeout)); json_set(wa, "args", args);
+        json_t *wr = grg_call(s, "logger.warning", wa);
+        json_free(wr);
+    }
 }

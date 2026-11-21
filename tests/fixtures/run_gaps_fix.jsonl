@@ -1,0 +1,8 @@
+{"func":"start_startup_warmup","in":{"io":{"_startup_warmup_timeout_secs":30.0,"asyncio.ensure_future":"task-1"}}}
+{"func":"start_startup_warmup","in":{"io":{"_startup_warmup_timeout_secs":0}}}
+{"func":"ensure_hosted_room_worker","in":{"io":{"getattr":"auth","ensure_hosted_service":true}}}
+{"func":"ensure_hosted_room_worker","in":{"io":{"getattr":null,"asyncio.to_thread":"svc"}}}
+{"func":"stop_hosted_room_worker","in":{"io":{"getattr":"auth","stop_hosted_service":true}}}
+{"func":"stop_hosted_room_worker","in":{"io":{"getattr":null,"asyncio.to_thread":true}}}
+{"func":"hosted_room_worker_watcher","in":{"io":{"getattr":{"__seq__":[true,true,false]},"_ensure_hosted_room_worker":null,"asyncio.sleep":null}}}
+{"func":"hosted_room_worker_watcher","in":{"io":{"getattr":false}}}

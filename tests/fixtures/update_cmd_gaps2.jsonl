@@ -1,0 +1,28 @@
+{"func": "service_unit_supports_graceful_sigusr1_restart", "in": {"args": {"unit": "hermes-gateway"}, "io": {}}}
+{"func": "service_unit_supports_graceful_sigusr1_restart", "in": {"args": {"unit": "hermes-gateway-default"}, "io": {}}}
+{"func": "service_unit_supports_graceful_sigusr1_restart", "in": {"args": {"unit": "hermes-gateway-"}, "io": {}}}
+{"func": "service_unit_supports_graceful_sigusr1_restart", "in": {"args": {"unit": "hermes-gatewayd"}, "io": {}}}
+{"func": "service_unit_supports_graceful_sigusr1_restart", "in": {"args": {"unit": "hermes-serve-default"}, "io": {}}}
+{"func": "service_unit_supports_graceful_sigusr1_restart", "in": {"args": {"unit": ""}, "io": {}}}
+{"func": "warn_pending_fleet_restart", "in": {"args": {"startup": false}, "io": {}}}
+{"func": "warn_pending_fleet_restart", "in": {"args": {"startup": true}, "io": {}}}
+{"func": "park_stashed_changes", "in": {"args": {"stash_ref": "stash@{0}"}, "io": {"_record_stash_disposition": null}}}
+{"func": "park_stashed_changes", "in": {"args": {"stash_ref": "refs/stash@{2}"}, "io": {"_record_stash_disposition": null}}}
+{"func": "post_update_sqlite_runtime_status", "in": {"args": {}, "io": {"probe_sqlite_runtime": {"wal_reset_vulnerable": false, "sqlite_version_string": "3.45.0"}}}}
+{"func": "post_update_sqlite_runtime_status", "in": {"args": {}, "io": {"probe_sqlite_runtime": {"wal_reset_vulnerable": true, "sqlite_version_string": "3.40.0"}}}}
+{"func": "post_update_sqlite_runtime_status", "in": {"args": {}, "io": {"probe_sqlite_runtime": null}}}
+{"func": "print_verified_update_completion", "in": {"args": {"message": "Update failed"}, "io": {"_print_update_completion": null}}}
+{"func": "print_verified_update_completion", "in": {"args": {"message": "✓ Update complete!"}, "io": {"_post_update_sqlite_runtime_status": {"ok": true, "info": {"sqlite_version_string": "3.45.0"}}, "_print_update_completion": null}}}
+{"func": "print_verified_update_completion", "in": {"args": {"message": "✓ Update complete!"}, "io": {"_post_update_sqlite_runtime_status": {"ok": false, "info": null}, "_print_update_completion": null}}}
+{"func": "print_verified_update_completion", "in": {"args": {"message": "✓ Update complete!"}, "io": {"_post_update_sqlite_runtime_status": {"ok": false, "info": {"sqlite_version_string": "3.40.0"}}, "_sqlite_partial_completion_lines": {"__const__": ["⚠ Update partially complete — your Python's SQLite (3.40.0) has a known corruption bug.", "  Fix: run the installer again."]}}}}
+{"func": "print_verified_update_completion", "in": {"args": {"message": "✓ Update complete!"}, "io": {"_post_update_sqlite_runtime_status": {"__raise__": "SystemExit", "msg": "bye"}}}}
+{"func": "write_fleet_restart_pending_marker", "in": {"args": {"expected_sha": "abc123"}, "ctx": {"runtimes": []}, "io": {}}}
+{"func": "write_fleet_restart_pending_marker", "in": {"args": {"expected_sha": "abc123"}, "ctx": {"runtimes": null}, "io": {"_pytest_owns_live_checkout": true}}}
+{"func": "write_fleet_restart_pending_marker", "in": {"args": {"expected_sha": "abc123"}, "ctx": {"runtimes": [{"name": "hermes-gateway"}], "owner": "me"}, "io": {"_pytest_owns_live_checkout": false, "current_profile_name": "default", "arm_host_obligation": null}}}
+{"func": "write_fleet_restart_pending_marker", "in": {"args": {"expected_sha": ""}, "ctx": {"runtimes": null, "owner": ""}, "io": {"_pytest_owns_live_checkout": false, "current_profile_name": "work", "arm_host_obligation": null}}}
+{"func": "relaunch_stopped_serves", "in": {"args": {"token": {"pending": false}}, "io": {}}}
+{"func": "relaunch_stopped_serves", "in": {"args": {"token": {"pending": true, "entries": []}}, "io": {"_run_child": {"code": 0, "completed": {"serves_handled": true}}}}}
+{"func": "relaunch_stopped_serves", "in": {"args": {"token": {"pending": true, "entries": []}}, "io": {"_run_child": {"code": 1, "completed": {"serves_handled": true}}}}}
+{"func": "relaunch_stopped_serves", "in": {"args": {"token": {"pending": true, "entries": []}}, "io": {"_run_child": {"code": 0, "completed": {"serves_handled": false}}}}}
+{"func": "relaunch_stopped_serves", "in": {"args": {"token": {"pending": true, "entries": []}}, "io": {"_run_child": {"__raise__": "OSError", "msg": "boom"}}}}
+{"func": "relaunch_stopped_serves", "in": {"args": {"token": {"pending": true, "entries": []}}, "io": {"_run_child": {"__raise__": "SystemExit", "msg": "bye"}}}}

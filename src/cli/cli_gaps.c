@@ -1261,11 +1261,7 @@ json_t *doctor_checks(const json_t *in, const cg1_io *io, json_t *state, cg1_exc
 /* DEFERRED (no PoP credit): faithful port pending — internal stub only. */
 void build_plugin_blueprint(void) { }
 
-/* DEFERRED (no PoP credit): faithful port pending — internal stub only. */
-void plugin_blueprints(void) { }
-
-/* DEFERRED (no PoP credit): faithful port pending — internal stub only. */
-void load_settings(void) { }
+/* (re-port block moved below the cg2 seam utilities) */
 
 /* PoP: blocked @ gateway/bot_loop_guard.py:blocked */
 json_t *blocked(const json_t *in, const cg1_io *io, json_t *state, cg1_exc *e) {
@@ -1913,6 +1909,73 @@ void detach(void) { }
 void receipt(void) { }
 void respond(void) { }
 void mutate(void) { }
+
+/* ── re-port wave: cli_gaps placeholders -> real seam ports ──────────────
+ * Exported NAMES unchanged; bodies now use the cg2_io_t universal seam that
+ * the rest of this file already uses (`json_t *fn(cg2_io_t *io, json_t *in)`).
+ * Placed after the cg2 utilities so the typedef/helpers are in scope.
+ */
+/* Python str.strip() over ASCII whitespace (fixtures are ASCII here). */
+static char *cgap_strip(const char *s) {
+    if (!s) return NULL;
+    while (*s == ' ' || (*s >= '\t' && *s <= '\r')) s++;
+    size_t n = strlen(s);
+    while (n > 0 && (s[n-1] == ' ' || (s[n-1] >= '\t' && s[n-1] <= '\r'))) n--;
+    char *out = malloc(n + 1);
+    if (!out) return NULL;
+    memcpy(out, s, n);
+    out[n] = '\0';
+    return out;
+}
+
+/* BotLoopGuardSettings() defaults, as JSON (gateway/bot_loop_guard.py:28-35). */
+static json_t *cgap_blg_defaults(void) {
+    json_t *d = json_object();
+    json_set(d, "enabled", json_bool(true));
+    json_set(d, "max_events", json_number(20));
+    json_set(d, "window_seconds", json_number(300.0));
+    json_set(d, "cooldown_seconds", json_number(600.0));
+    json_set(d, "max_hops", json_number(4));
+    json_set(d, "bot_replies_expect_reply", json_bool(false));
+    return d;
+}
+
+/* PoP: plugin_blueprints @ cron/blueprint_plugins.py:plugin_blueprints */
+json_t *plugin_blueprints(cg2_io_t *io, json_t *in) {
+    (void)in;
+    /* try: discover_plugins(); return get_plugin_manager().list_automation_blueprints()
+     * except Exception: logger.warning(...); return [] */
+    json_t *d = cg2_seam(io, "discover_plugins", json_object());
+    if (cg2_is_raise(d)) { json_free(d); goto unavailable; }
+    json_free(d);
+    json_t *mgr = cg2_seam(io, "get_plugin_manager", json_object());
+    if (cg2_is_raise(mgr)) { json_free(mgr); goto unavailable; }
+    json_t *a = json_object();
+    json_set(a, "manager", json_copy(mgr));
+    json_free(mgr);
+    json_t *r = cg2_seam(io, "list_automation_blueprints", a);
+    if (cg2_is_raise(r)) { json_free(r); goto unavailable; }
+    return r;
+unavailable:
+    json_t *w = json_object();
+    json_set_hdr(w, "msg", "plugin automation blueprints unavailable");
+    json_t *lr = cg2_seam(io, "log.warning", w);
+    json_free(lr);
+    return json_array();
+}
+
+/* PoP: load_settings @ gateway/bot_loop_guard.py:load_settings */
+json_t *load_settings(cg2_io_t *io, json_t *in) {
+    (void)in;
+    /* try: return settings_from_config(load_config_readonly())
+     * except Exception: return BotLoopGuardSettings() */
+    json_t *cfg = cg2_seam(io, "load_config_readonly", json_object());
+    if (cg2_is_raise(cfg)) { json_free(cfg); return cgap_blg_defaults(); }
+    json_t *r = cg2_seam(io, "settings_from_config", cfg);
+    json_free(cfg);
+    if (cg2_is_raise(r)) { json_free(r); return cgap_blg_defaults(); }
+    return r;
+}
 
 /* PoP: publish_health @ gateway/session_db_recovery.py:_publish_health */
 json_t *publish_health(cg2_io_t *io, json_t *in) {
@@ -2926,8 +2989,56 @@ void _cmd_show(void) { }
 /* deferred: interactive skill prompt + save_bundle file flow. */
 void cmd_create(void) { }
 
-/* deferred: delete_bundle file flow + rich Console rendering. */
-void cmd_delete(void) { }
+/* PoP: _cmd_delete @ hermes_cli/moa_cmd.py:_cmd_delete */
+json_t *cmd_delete(cg2_io_t *io, json_t *in) {
+    /* moa = _moa_section(cfg) */
+    json_t *sec_args = json_object();
+    const json_t *cfg = json_obj_get(in, "cfg");
+    json_set(sec_args, "cfg", cfg ? json_copy(cfg) : json_object());
+    json_t *sec = cg2_seam(io, "moa_section", sec_args);
+    json_free(sec);  /* cfg["moa"] is the live section; operate on in-place state below */
+    /* preset_name = (name or "").strip(); validate */
+    char *pn = cgap_strip(json_get_str(in, "name", ""));
+    if (!pn || !pn[0]) {
+        free(pn);
+        return cg2_raise_spec("SystemExit", "Usage: hermes moa delete <name>");
+    }
+    json_t *moa = json_obj_get(json_obj_get(in, "cfg"), "moa");
+    json_t *presets = moa ? json_obj_get(moa, "presets") : NULL;
+    if (!presets || presets->type != JSON_OBJECT || !json_obj_get(presets, pn)) {
+        char msg[256];
+        snprintf(msg, sizeof msg, "Unknown MoA preset: %s", pn);
+        free(pn);
+        return cg2_raise_spec("SystemExit", msg);
+    }
+    if (presets->c.count <= 1) {
+        free(pn);
+        return cg2_raise_spec("SystemExit", "Cannot delete the only MoA preset");
+    }
+    /* del moa["presets"][preset_name] */
+    json_obj_del(presets, pn);
+    /* if moa["default_preset"] == name: moa["default_preset"] = next(iter(presets)) */
+    const char *defp = json_get_str(moa, "default_preset", "");
+    if (defp && strcmp(defp, pn) == 0 && presets->c.count > 0) {
+        json_set(moa, "default_preset", json_string(presets->c.keys[0] ? presets->c.keys[0] : ""));
+    }
+    /* if moa.get("active_preset") == name: moa["active_preset"] = "" */
+    const char *actp = json_get_str(moa, "active_preset", "");
+    if (actp && strcmp(actp, pn) == 0) json_set_hdr(moa, "active_preset", "");
+    /* _save(cfg, moa) + print(...) */
+    json_t *sv = json_object();
+    json_set(sv, "cfg", json_copy(json_obj_get(in, "cfg")));
+    json_t *r = cg2_seam(io, "save", sv);
+    json_free(r);
+    json_t *pa = json_object();
+    char pm[256];
+    snprintf(pm, sizeof pm, "Deleted MoA preset: %s", pn);
+    json_set_hdr(pa, "text", pm);
+    r = cg2_seam(io, "print", pa);
+    json_free(r);
+    free(pn);
+    return NULL;
+}
 
 /* deferred: argparse subcommand tree construction — parser wiring, not logic. */
 void register_cli(void) { }

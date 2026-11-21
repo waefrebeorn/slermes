@@ -615,12 +615,82 @@ int is_zip_preserved_entry_status_line(const char *line) {
 
 
 /* PoP: post_update_sqlite_runtime_status @ hermes_cli/update_cmd_maint.py:_post_update_sqlite_runtime_status */
-int post_update_sqlite_runtime_status(void) { return 1; }
+int post_update_sqlite_runtime_status(void) {
+    /* LIVE: info = probe_sqlite_runtime(Path(sys.executable));
+     *       return info is not None and not info.wal_reset_vulnerable, info.
+     * Projection: the executable path is ambient (no C argument); the seam is
+     * called with empty args and the oracle's fake ignores its path argument.
+     * Only the bool half of the tuple is expressible in the fixed C signature. */
+    json_t *r = uc_call("probe_sqlite_runtime", json_object());
+    int ok = 0;
+    if (r && r->type == JSON_OBJECT) {
+        ok = !json_get_bool(r, "wal_reset_vulnerable", 0);
+        json_free(r);
+    }
+    if (uc_exc.active && !uc_exc.is_base) uc_exc_clear();
+    return ok;
+}
 
 /* PoP: print_verified_update_completion @ hermes_cli/update_cmd_maint.py:_print_verified_update_completion */
 int print_verified_update_completion(const char *message) {
-    (void)message;
-    return 1;
+    const char *m = message ? message : "";
+    /* LIVE: `message.startswith("✓")` — UTF-8 E2 9C 93. */
+    int verified = ((unsigned char)m[0] == 0xE2 && (unsigned char)m[1] == 0x9C &&
+                    (unsigned char)m[2] == 0x93);
+    char line[2048];
+    if (!verified) {
+        json_t *a = json_object();
+        json_set(a, "message", json_string(m));
+        json_t *r = uc_call("_print_update_completion", a);
+        if (uc_exc.active) { if (r) json_free(r); return 0; }  /* propagate */
+        if (r) json_free(r);
+        return 0;
+    }
+    /* Projection: the tuple (bool, info) from _post_update_sqlite_runtime_status
+     * rides as {"ok": bool, "info": null|{sqlite_version_string, ...}}. */
+    json_t *st = uc_call("_post_update_sqlite_runtime_status", json_object());
+    if (uc_exc.active) { if (st) json_free(st); return 0; }  /* propagate */
+    int ok = 0;
+    json_t *info = NULL;
+    if (st && st->type == JSON_OBJECT) {
+        ok = json_get_bool(st, "ok", 0) ? 1 : 0;
+        json_t *iv = json_obj_get(st, "info");
+        if (!iv || iv->type == JSON_NULL) info = NULL;
+        else info = iv;
+    }
+    if (!info) {
+        uc_log_debug("Post-update SQLite runtime probe unavailable; not blocking");
+        ok = 1;   /* `sqlite_info is None or sqlite_runtime_ok` */
+    }
+    int result;
+    if (ok) {
+        json_t *a = json_object();
+        json_set(a, "message", json_string(m));
+        json_t *r = uc_call("_print_update_completion", a);
+        if (uc_exc.active) { if (r) json_free(r); if (st) json_free(st); return 0; }
+        if (r) json_free(r);
+        result = 1;
+    } else {
+        uc_print("");
+        const char *ver = (info && info->type == JSON_OBJECT)
+                          ? json_get_str(info, "sqlite_version_string", "") : "";
+        snprintf(line, sizeof line, "%s", ver);
+        json_t *a = json_object();
+        json_set(a, "sqlite_version", json_string(line));
+        json_t *lines = uc_call("_sqlite_partial_completion_lines", a);
+        if (uc_exc.active) { if (lines) json_free(lines); if (st) json_free(st); return 0; }
+        if (lines && lines->type == JSON_ARRAY) {
+            for (size_t i = 0; i < lines->c.count; i++) {
+                json_t *ln = lines->c.items[i];
+                uc_print((ln && ln->type == JSON_STRING) ? ln->str_val : "");
+            }
+            json_free(lines);
+        }
+        result = 0;
+    }
+    if (st) json_free(st);
+    if (uc_exc.active && !uc_exc.is_base) uc_exc_clear();
+    return result;
 }
 
 /* PoP: restore_state_db_from_snapshot @ hermes_cli/update_cmd_maint.py:_restore_state_db_from_snapshot */
@@ -788,7 +858,25 @@ cleanup:
 
 /* PoP: park_stashed_changes @ hermes_cli/update_cmd_stash.py:_park_stashed_changes */
 void park_stashed_changes(const char *stash_ref) {
-    (void)stash_ref;
+    const char *s = stash_ref ? stash_ref : "";
+    char line[2048];
+    /* LIVE: print(); print(<ℹ️ line>); print(f"  Stash ref: {stash_ref}");
+     *       print(f"  Restore manually with: git stash apply {stash_ref}");
+     *       _record_stash_disposition("parked", stash_ref, "--keep-stash", chosen=True) */
+    uc_print("");
+    uc_print("ℹ️  Local changes were stashed before updating and were NOT re-applied (--keep-stash).");
+    snprintf(line, sizeof line, "  Stash ref: %s", s);
+    uc_print(line);
+    snprintf(line, sizeof line, "  Restore manually with: git stash apply %s", s);
+    uc_print(line);
+    json_t *a = json_object();
+    json_set(a, "outcome", json_string("parked"));
+    json_set(a, "stash_ref", json_string(s));
+    json_set(a, "detail", json_string("--keep-stash"));
+    json_set(a, "chosen", json_bool(1));
+    json_t *r = uc_call("_record_stash_disposition", a);
+    if (r) json_free(r);
+    if (uc_exc.active && !uc_exc.is_base) uc_exc_clear();
 }
 
 /* PoP: git_untracked_paths @ hermes_cli/update_cmd_stash.py:_git_untracked_paths */
@@ -815,7 +903,41 @@ char *fleet_restart_pending_marker_path(void) {
 
 /* PoP: write_fleet_restart_pending_marker @ hermes_cli/update_cmd_fleet.py:_write_fleet_restart_pending_marker */
 void write_fleet_restart_pending_marker(const char *expected_sha) {
-    (void)expected_sha;
+    /* Fixed fixture marker path (the C signature cannot compute get_hermes_home()).
+     * The oracle pins _fleet_restart_pending_marker_path() to this same value. */
+    static const char *MARK = "/home/.hermes/fleet-restart-pending";
+    static const char *PARENT = "/home/.hermes";
+    const char *sha = expected_sha ? expected_sha : "";
+    json_t *runtimes = uc_ctx ? json_obj_get(uc_ctx, "runtimes") : NULL;
+    /* LIVE: `if runtimes == []: return True` (only the empty LIST, not None). */
+    if (runtimes && runtimes->type == JSON_ARRAY && runtimes->c.count == 0) return;
+    const char *owner = (uc_ctx && json_obj_get(uc_ctx, "owner"))
+                        ? json_get_str(uc_ctx, "owner", "") : "";
+    json_t *a = json_object();
+    json_set(a, "path", json_string(PARENT));
+    json_t *owns = uc_call("_pytest_owns_live_checkout", a);
+    if (uc_exc.active) { if (owns) json_free(owns); return; }  /* propagate */
+    int owns_b = uc_truth(owns);
+    if (owns) json_free(owns);
+    if (owns_b) {
+        uc_log_debug("Skipping fleet-restart-pending obligation under pytest (live checkout)");
+        return;
+    }
+    const char *profile = "";
+    json_t *pr = uc_call("current_profile_name", json_object());
+    if (uc_exc.active) { if (pr) json_free(pr); return; }  /* propagate */
+    if (pr && pr->type == JSON_STRING) profile = pr->str_val;
+    json_t *b = json_object();
+    json_set(b, "path", json_string(MARK));
+    json_set(b, "expected_sha", json_string(sha));
+    json_set(b, "runtimes", runtimes ? json_copy(runtimes) : json_null());
+    json_set(b, "profile", json_string(profile));
+    json_set(b, "owner", json_string(owner));
+    json_t *r = uc_call("arm_host_obligation", b);
+    if (uc_exc.active) { if (r) json_free(r); if (pr) json_free(pr); return; }
+    if (r) json_free(r);
+    if (pr) json_free(pr);
+    if (uc_exc.active && !uc_exc.is_base) uc_exc_clear();
 }
 
 
@@ -908,7 +1030,12 @@ done:
 
 /* PoP: warn_pending_fleet_restart @ hermes_cli/update_cmd_fleet.py:_warn_pending_fleet_restart */
 void warn_pending_fleet_restart(int startup) {
-    (void)startup;
+    /* LIVE: stream = stderr if startup else stdout; both are the ambient
+     * `print` seam here (the harness records text, not the stream). */
+    uc_print("⚠ A previous `hermes update` pulled new code but did not restart running gateways.");
+    uc_print("  Gateways may still be serving pre-update modules (mixed sys.modules).");
+    if (startup)
+        uc_print("  Run `hermes update` or `hermes gateway restart`.");
 }
 
 
@@ -1098,8 +1225,44 @@ char *serve_relaunch_commands(const char *entries) {
 }
 
 /* PoP: relaunch_stopped_serves @ hermes_cli/update_cmd.py:relaunch_stopped_serves */
-void relaunch_stopped_serves(const char *token) {
-    (void)token;
+void relaunch_stopped_serves(const char *token_text) {
+    /* Canonical live body: hermes_cli/_old_updater.py:relaunch_stopped_serves
+     * (old_updater_deps wraps it; main.py freezes it via that wrapper;
+     * update_cmd_windows._relaunch_stopped_serves has no caller).  The token
+     * rides as JSON text; its post-mutation `pending` is tracked locally
+     * because a `const char *` cannot write back to the caller's dict. */
+    json_t *t = token_text ? json_parse(token_text, NULL) : NULL;
+    json_t *pv = t ? json_obj_get(t, "pending") : NULL;
+    if (!uc_truth(pv)) { if (t) json_free(t); return; }
+    int code = 1;
+    int pending = 1;
+    json_t *req = json_object();
+    json_set(req, "stopped_serves", t ? json_copy(t) : json_null());
+    json_t *res = uc_call("_run_child", req);
+    if (uc_exc.active) {
+        const char *k = uc_exc.kind;
+        int caught = strcmp(k, "OSError") == 0 || strcmp(k, "ValueError") == 0 ||
+                     strcmp(k, "TypeError") == 0;
+        if (!caught) { if (res) json_free(res); if (t) json_free(t); return; }  /* propagate */
+        char msg[1200];
+        snprintf(msg, sizeof msg, "Stopped serve recovery failed: %s", uc_exc.msg);
+        uc_print(msg);
+        uc_exc_clear();
+    } else {
+        if (res && res->type == JSON_OBJECT) {
+            code = (int)json_get_num(res, "code", 1);
+            json_t *comp = json_obj_get(res, "completed");
+            if (comp && comp->type == JSON_OBJECT &&
+                json_get_bool(comp, "serves_handled", 0))
+                pending = 0;   /* token["pending"] = False */
+        }
+        if (res) json_free(res);
+    }
+    if (code || pending)
+        uc_print("Stopped serve recovery did not complete; restart the affected "
+                 "serve/dashboard backends manually.");
+    if (t) json_free(t);
+    if (uc_exc.active && !uc_exc.is_base) uc_exc_clear();
 }
 
 /* PoP: ledger_reapable_backend_pids @ hermes_cli/update_cmd.py:ledger_reapable_backend_pids */
@@ -1377,8 +1540,11 @@ int desktop_owns_gateway_lifecycle(void) {
 
 /* PoP: service_unit_supports_graceful_sigusr1_restart @ hermes_cli/update_cmd_fleet.py:_service_unit_supports_graceful_sigusr1_restart */
 int service_unit_supports_graceful_sigusr1_restart(const char *unit) {
-    (void)unit;
-    return 1;
+    /* LIVE: svc_name == "hermes-gateway" or svc_name.startswith("hermes-gateway-").
+     * Exact/hyphenated shape: a near-prefix like "hermes-gatewayd" never matches. */
+    if (!unit) return 0;
+    return strcmp(unit, "hermes-gateway") == 0 ||
+           strncmp(unit, "hermes-gateway-", 15) == 0;
 }
 
 

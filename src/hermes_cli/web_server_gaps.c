@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <unistd.h>
 #include "hermes_json.h"
 #include "hermes_logger.h"
 
@@ -188,8 +189,50 @@ char *forward_cron_fire_to_gateway(const char *payload) {
     return gateway_fire_endpoint("cron/fire", payload);
 }
 
+/* Resolve the default profile's HERMES_HOME (mirrors profiles.get_profile_dir
+ * for the "default" profile: HERMES_HOME / SLERMES_HOME / $HOME/.hermes). */
+static void ws2_hermes_home(char *out, size_t sz) {
+    const char *h = getenv("HERMES_HOME");
+    if (!h || !*h) h = getenv("SLERMES_HOME");
+    if (h && *h) { snprintf(out, sz, "%s", h); return; }
+    h = getenv("HOME");
+    snprintf(out, sz, "%s/.hermes", h && *h ? h : ".");
+}
+
+/* PoP: gateway_intentionally_stopped @ hermes_cli/web_server_cron.py:_gateway_intentionally_stopped */
 int gateway_intentionally_stopped(void) {
-    return 0;
+    /* data = json.loads((home / "gateway_state.json").read_text("utf-8-sig"))
+     * return isinstance(data, dict) and data.get("desired_state") == "stopped"
+     * Any resolution/parse failure -> False (fail open toward retry). */
+    char home[1024], path[1100];
+    ws2_hermes_home(home, sizeof(home));
+    snprintf(path, sizeof(path), "%s/gateway_state.json", home);
+    /* read_text(encoding="utf-8-sig") strips a leading UTF-8 BOM. */
+    FILE *fp = fopen(path, "rb");
+    if (!fp) return 0;
+    if (fseek(fp, 0, SEEK_END) != 0) { fclose(fp); return 0; }
+    long sz = ftell(fp);
+    if (sz < 0 || sz > 1024 * 1024) { fclose(fp); return 0; }
+    rewind(fp);
+    char *buf = (char *)malloc((size_t)sz + 1);
+    if (!buf) { fclose(fp); return 0; }
+    if (fread(buf, 1, (size_t)sz, fp) != (size_t)sz) { free(buf); fclose(fp); return 0; }
+    fclose(fp);
+    buf[sz] = 0;
+    const char *text = buf;
+    if (sz >= 3 && (unsigned char)buf[0] == 0xEF &&
+        (unsigned char)buf[1] == 0xBB && (unsigned char)buf[2] == 0xBF)
+        text += 3;
+    json_t *doc = json_parse(text, NULL);
+    free(buf);
+    if (!doc) return 0;
+    int result = 0;
+    if (json_is_object(doc)) {
+        const char *state = json_get_str(doc, "desired_state", "");
+        result = state && strcmp(state, "stopped") == 0;
+    }
+    json_free(doc);
+    return result;
 }
 
 /* PoP: plugin_terminal_backend_rows @ hermes_cli/web_server_profiles.py:_plugin_terminal_backend_rows */
@@ -207,7 +250,18 @@ char *gateway_ws_ticket_from_subprotocol(const char *subprotocol) {
 
 /* PoP: write_machine_sentinel_line @ hermes_cli/web_server_lifecycle.py:_write_machine_sentinel_line */
 void write_machine_sentinel_line(const char *line) {
-    (void)line;
+    /* os.write(1, (line + "\n").encode()); on OSError fall back to print()
+     * for humans only. Never raises. One write() call, no retry — same as
+     * Python's os.write, which does not loop on a short write. */
+    if (!line) return;
+    size_t n = strlen(line);
+    char *buf = (char *)malloc(n + 2);
+    if (!buf) { printf("%s\n", line); return; }
+    memcpy(buf, line, n);
+    buf[n] = '\n';
+    ssize_t w = write(1, buf, n + 1);
+    if (w < 0) printf("%s\n", line);
+    free(buf);
 }
 
 /* PoP: dashboard_forwarded_allow_ips @ hermes_cli/web_server_lifecycle.py:_dashboard_forwarded_allow_ips */
