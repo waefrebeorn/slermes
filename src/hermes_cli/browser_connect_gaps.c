@@ -117,7 +117,21 @@ char *resolve_source_profile(const char *browser) {
 }
 
 /* PoP: real_profile_autoclose @ hermes_cli/browser_connect.py:_real_profile_autoclose */
-int real_profile_autoclose(void) { return 1; }
+/* Python: bool(_browser_setting("real_profile_autoclose") or False) -- i.e.
+ * Python truthiness of the config value. Passed in as JSON (process state):
+ * null/false/0/""/empty containers -> 0; anything else -> 1. */
+int real_profile_autoclose(const json_t *setting) {
+    if (!setting) return 0;
+    switch (setting->type) {
+    case JSON_NULL:   return 0;
+    case JSON_BOOL:   return setting->bool_val ? 1 : 0;
+    case JSON_NUMBER: return setting->num_val != 0.0;
+    case JSON_STRING: return setting->str_val && setting->str_val[0] ? 1 : 0;
+    case JSON_ARRAY:  return json_len(setting) > 0;
+    case JSON_OBJECT: return json_object_size(setting) > 0;
+    }
+    return 0;
+}
 
 /* PoP: processes_holding_profile @ hermes_cli/browser_connect.py:_processes_holding_profile */
 char *processes_holding_profile(const char *profile_dir) {
