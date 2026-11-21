@@ -1,0 +1,13 @@
+{"expected": "alice", "data": {"owner": "alice"}}
+{"expected": "ALICE", "data": {"owner": "alice"}}
+{"expected": "alice", "data": {"owner": "  alice  "}}
+{"expected": "alice", "data": {"owner": {"handle": "alice"}}}
+{"expected": "bob", "data": {"owner": "alice"}}
+{"expected": "alice", "data": {}}
+{"expected": "alice", "data": {"owner": null}}
+{"expected": "alice", "data": {"owner": "   "}}
+{"expected": "", "data": {"owner": "alice"}}
+{"expected": null, "data": {"owner": "alice"}}
+{"expected": "alice", "data": null}
+{"expected": "alice", "data": {"owner": 123}}
+{"expected": "ALICE", "data": {"owner": {"handle": " Alice "}}}

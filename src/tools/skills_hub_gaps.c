@@ -59,10 +59,37 @@ int query_is_concrete(void) {
 }
 
 /* PoP: owner_from_payload @ tools/skills_hub_clawhub.py:_owner_from_payload */
-char *owner_from_payload(void) { return strdup(""); }
+/* Python: owner = data.get("owner") if dict else None; if dict -> .get("handle");
+ * return owner.strip() if str and strip non-empty else None. */
+char *owner_from_payload(const json_t *data) {
+    if (!data || data->type != JSON_OBJECT) return NULL;
+    const json_t *owner = json_obj_get(data, "owner");
+    if (owner && owner->type == JSON_OBJECT)
+        owner = json_obj_get(owner, "handle");
+    if (!owner || owner->type != JSON_STRING || !owner->str_val) return NULL;
+    const char *s = owner->str_val;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    const char *e = s + strlen(s);
+    while (e > s && (e[-1] == ' ' || e[-1] == '\t' || e[-1] == '\n' || e[-1] == '\r')) e--;
+    if (e == s) return NULL;
+    size_t n = (size_t)(e - s);
+    char *out = (char *)malloc(n + 1);
+    if (!out) return NULL;
+    memcpy(out, s, n); out[n] = '\0';
+    return out;
+}
 
 /* PoP: owner_matches @ tools/skills_hub_clawhub.py:_owner_matches */
-int owner_matches(void) { return 1; }
+/* Python: if not expected_owner: return True; actual = _owner_from_payload(data);
+ * return not actual or actual.lower() == expected_owner.lower(). */
+int owner_matches(const char *expected_owner, const json_t *data) {
+    if (!expected_owner || !*expected_owner) return 1;
+    char *actual = owner_from_payload(data);
+    if (!actual) return 1;
+    int match = (strcasecmp(actual, expected_owner) == 0);
+    free(actual);
+    return match;
+}
 
 /* PoP: list_local @ tools/skills_hub_official.py:list_local */
 char *list_local(void) { return strdup("[]"); }

@@ -41,6 +41,7 @@ declare -A DEPS=(
   [bucket_limit]="src/tools/web_result_cache_gaps.o lib/libjson/json.o"
   [cache_point_allowed]="src/agent/bedrock_adapter_gaps.o lib/libjson/json.o"
   [get_context_timeout]="src/agent/prompt_builder_gaps.o lib/libjson/json.o"
+  [owner_matches]="src/tools/skills_hub_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
   [callbacks_skip]="src/cli/port_callbacks.o lib/libjson/json.o"
   # backfilled: harness/object name differs from the oracle discovery name.
