@@ -9,8 +9,8 @@
 
 /* ── agent/turn_liveness.py: 7 missing functions ── */
 
-/* PoP: warn_invalid_value @ agent/turn_liveness.py:_warn_invalid_value */
-void warn_invalid_value(const char *val) { (void)val; }
+/* _warn_invalid_value: real port is turn_liveness_invalid_value_message in
+ * port_turn_liveness.c (dead stub removed; oracle 25/0). */
 
 int resolve_finite_seconds(void) { return 0; }
 
