@@ -76,7 +76,7 @@ TINFO_LIBS   := $(wildcard /usr/lib/x86_64-linux-gnu/libtinfo.so /usr/lib/x86_64
 SLERMES_OBJS = $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(PET_OBJ) $(DESKTOP_CORE_OBJ) $(LIB_OBJ_FILTERED) $(WHISPER_EXTRA_OBJ)
 slermes: $(SLERMES_OBJS)
 	@: > slermes.link.rsp; for o in $^; do echo $$o >> slermes.link.rsp; done
-	$(CC) $(CFLAGS) -o $@ @slermes.link.rsp $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -L C:/winlibs/extra-libs -lstdc++ -lws2_32 -lpcre2-8 -ltre -lSDL2main \
+	$(CC) $(CFLAGS) -o $@ @slermes.link.rsp $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -L C:/winlibs/extra-libs -lstdc++ -lws2_32 -lpcre2-8 -ltre -lSDL2 -lSDL2_ttf -lSDL2main -lgdi32 \
 		$(if $(NCURSES_LIBS),$(NCURSES_LIBS)) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS)) \
 		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
 	@rm -f slermes.link.rsp

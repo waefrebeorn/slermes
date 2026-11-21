@@ -60,8 +60,12 @@ correction and the repo mantra both forbid.
   283 inherited dead files; the 264 wired ones await connect-or-strip triage.
 - **Phase 2:** placeholder-cluster revival waves, one cluster per agent,
   with leaf oracles and the in-place-body rule.
-- **Phase 3:** the binary front — get an image that links and runs under the
-  SAC constraints; nothing counts as a finished port until it can execute.
+- **Phase 3 (first bite done):** `scripts/build_runnable.py` rebuilds the
+  three SAC-blocked units at -O0, dedupes the link closure, links and smoke-
+  tests `slermes_O0.exe`. Verified: `WuBu Slermes v0.0.0-slermes`, rc=0.
+  The ordinary `make slermes` now links too (5 missing objects wired, SDL2/
+  SDL2_ttf/gdi32 libs added, `slermes_init` shim) but its image still exits
+  127 under SAC — use the script until the -O0 objects are the build default.
 
 No new adapter-remainder flow is dispatched until phases 1–2 have produced
 verified, callable bodies.
