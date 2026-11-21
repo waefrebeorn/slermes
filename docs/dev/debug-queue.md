@@ -88,9 +88,9 @@ Harnesses that link (not include) the port need `src/cli/port_<name>.o` added.
 - **runtime_provider_flow2** — RESOLVED in wave 57 (`fe321f4170`, wired).
   Was 245 cases / 163 mismatches across ~41 defs; scoped down honestly to
   13 faithful defs, parent gate 65/0. Removed defs are real gaps again.
-- Parent working set (committed): wave 75 wired 859->863, HEAD pending;
-  build health 2170/2170 clean, port gate PASS. Wave 74 was `335bb45576`
-  and is pushed to origin/main (44-commit backlog cleared).
+- Parent working set (committed): wave 76 wired 863->867, HEAD pending;
+  build health 2174/2174 clean, port gate PASS. Wave 75 was `0745f23679`
+  and is pushed to origin/main.
   2026-11-20 23:04Z gateway watchdog killed the session (ws write stall,
   event loop missed 3 liveness probes, exit 75); its 4 in-flight flows were
   lost and re-dispatched as deleg_d9b3bff1. Slack flow12 was banked alone
@@ -225,5 +225,5 @@ THAT WAVE (re-dispatch after watchdog crash): parent 109/0, 149/0, 107/0,
 89/0; wave 74 wired 855->859. Slack flow12 banked early as `dec7f5aa3a`;
 the other three wired after. Full parity refresh completed 04:24Z
 (PARITY_TRUTH_RC=0) and refreshed unclaimed lists were used for dispatch.
-THAT WAVE: parent 106/0, 106/0, 110/0, 101/0; wave 75 wired 859->863.
-Feishu adapter is down to 11 unclaimed defs after flow15.
+THAT WAVE: parent 103/0, 124/0, 115/0, 105/0; wave 76 wired 863->867.
+Matrix adapter is down to 21 unclaimed defs after flow8.
