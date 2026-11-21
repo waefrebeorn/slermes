@@ -178,4 +178,10 @@ json_t *observed_lifetime_seconds(nk_io_t *io, json_t *in) {
 int tick_seconds(void) { return 60; }
 
 /* PoP: refresh_horizon_seconds @ hermes_cli/nous_auth_keepalive.py:_refresh_horizon_seconds */
-int refresh_horizon_seconds(void) { return 300; }
+/* Python: max(floor_seconds, tick_seconds + ACCESS_TOKEN_REFRESH_SKEW_SECONDS)
+ * with SKEW=120 (auth_constants.py): a credential must survive to the next
+ * tick, so the horizon is tick+120, never below the floor. */
+int refresh_horizon_seconds(int tick_seconds, int floor_seconds) {
+    int t = tick_seconds + 120;
+    return floor_seconds > t ? floor_seconds : t;
+}
