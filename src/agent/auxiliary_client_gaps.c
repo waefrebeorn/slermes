@@ -12,11 +12,8 @@
 
 
 
-/* PoP: anthropic_event_has_content @ agent/auxiliary_client.py:_anthropic_event_has_content */
-int anthropic_event_has_content(const char *event) {
-    (void)event;
-    return 0;
-}
+/* anthropic_event_has_content: real port is ac_anthropic_event_has_content
+ * in port_auxiliary_client.c (PoP moved there; dead stub removed). */
 
 /* PoP: anthropic_aux_stream_event_hook @ agent/auxiliary_client.py:_anthropic_aux_stream_event_hook */
 char *anthropic_aux_stream_event_hook(void) {

@@ -467,6 +467,7 @@ ac_json_truthy(const json_t *v)
     return 0;
 }
 
+/* PoP: ac_anthropic_event_has_content @ agent/auxiliary_client.py:_anthropic_event_has_content */
 int
 ac_anthropic_event_has_content(const json_t *event)
 {

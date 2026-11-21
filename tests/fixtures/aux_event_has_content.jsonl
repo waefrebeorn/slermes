@@ -1,0 +1,16 @@
+{"event": "{\"type\":\"content_block_delta\",\"delta\":{\"text\":\"hi\"}}"}
+{"event": "{\"type\":\"content_block_delta\",\"delta\":{\"text\":\"\"}}"}
+{"event": "{\"type\":\"content_block_delta\",\"delta\":{\"thinking\":\"x\"}}"}
+{"event": "{\"type\":\"content_block_delta\",\"delta\":{\"partial_json\":\"{}\"}}"}
+{"event": "{\"type\":\"content_block_delta\",\"delta\":{\"signature\":\"s\"}}"}
+{"event": "{\"type\":\"content_block_delta\",\"delta\":{\"citation\":\"c\"}}"}
+{"event": "{\"type\":\"content_block_delta\",\"delta\":{}}"}
+{"event": "{\"type\":\"content_block_start\",\"content_block\":{\"type\":\"tool_use\",\"id\":\"t1\",\"name\":\"n\"}}"}
+{"event": "{\"type\":\"content_block_start\",\"content_block\":{\"type\":\"tool_use\",\"id\":\"\",\"name\":\"\"}}"}
+{"event": "{\"type\":\"content_block_start\",\"content_block\":{\"type\":\"tool_use\",\"id\":\"t1\"}}"}
+{"event": "{\"type\":\"content_block_start\",\"content_block\":{\"type\":\"text\",\"id\":\"t1\"}}"}
+{"event": "{\"type\":\"content_block_stop\"}"}
+{"event": "{\"type\":\"message_start\"}"}
+{"event": "{\"delta\":{\"text\":\"orphan\"}}"}
+{"event": "{}"}
+{"event": "{\"type\":null}"}
