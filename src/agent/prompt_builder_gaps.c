@@ -10,7 +10,18 @@
 /* ── agent/prompt_builder.py: 11 missing functions ── */
 
 /* PoP: get_context_file_read_timeout @ agent/prompt_builder.py:_get_context_file_read_timeout */
-int get_context_file_read_timeout(void) { return 30; }
+/* Python: val = _config_readonly(...)["context_file_read_timeout"]; if
+ * isinstance(val,(int,float)) and val > 0: return float(val); else 5.0.
+ * The already-extracted config VALUE is passed in (process state), so C never
+ * reads config.yaml; JSON_NUMBER covers both Python int and float. */
+double get_context_file_read_timeout(const json_t *cfg) {
+    const double DEFAULT = 5.0;
+    if (!cfg) return DEFAULT;
+    if (cfg->type == JSON_NUMBER && cfg->num_val > 0) return cfg->num_val;
+    /* Python bool is a subclass of int: True -> 1.0 (passes >0), False -> 0.0. */
+    if (cfg->type == JSON_BOOL) return cfg->bool_val ? 1.0 : DEFAULT;
+    return DEFAULT;
+}
 
 /* PoP: read_text_with_timeout @ agent/prompt_builder.py:_read_text_with_timeout */
 char *read_text_with_timeout(const char *path) { return strdup(""); }
