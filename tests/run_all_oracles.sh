@@ -37,6 +37,7 @@ declare -A DEPS=(
   # aliased harness names: the object follows the HARNESS name, not the discovery
   # oracle name.
   [aux_event_has_content]="src/agent/port_auxiliary_client.o src/hermes_cli/port_version_info.o lib/libjson/json.o"
+  [cron_delivery_preds]="src/cron/scheduler_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
   [callbacks_skip]="src/cli/port_callbacks.o lib/libjson/json.o"
   # backfilled: harness/object name differs from the oracle discovery name.

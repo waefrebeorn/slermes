@@ -1,0 +1,17 @@
+{"fn": "seed", "is_dm": 1, "user_id": null}
+{"fn": "seed", "is_dm": 1, "user_id": "u1"}
+{"fn": "seed", "is_dm": 0, "user_id": "u1"}
+{"fn": "seed", "is_dm": 0, "user_id": ""}
+{"fn": "seed", "is_dm": 0, "user_id": null}
+{"fn": "notify", "cfg": null}
+{"fn": "notify", "cfg": {}}
+{"fn": "notify", "cfg": {"cron": null}}
+{"fn": "notify", "cfg": {"cron": {}}}
+{"fn": "notify", "cfg": {"cron": {"delivery": {}}}}
+{"fn": "notify", "cfg": {"cron": {"delivery": {"notify": false}}}}
+{"fn": "notify", "cfg": {"cron": {"delivery": {"notify": true}}}}
+{"fn": "notify", "cfg": {"cron": {"delivery": {"notify": 0}}}}
+{"fn": "notify", "cfg": {"cron": {"delivery": {"notify": "no"}}}}
+{"fn": "notify", "cfg": {"cron": {"delivery": {"notify": null}}}}
+{"fn": "notify", "cfg": {"cron": "bad"}}
+{"fn": "notify", "cfg": {"cron": {"delivery": "bad"}}}

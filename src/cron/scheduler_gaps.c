@@ -433,9 +433,10 @@ json_t *target_mirror_eligible(const json_t *in, const al_io *io, json_t *state,
 }
 
 /* PoP: inchannel_seed_allowed @ cron/scheduler_delivery.py:_inchannel_seed_allowed */
-int inchannel_seed_allowed(const char *channel) {
-    (void)channel;
-    return 1;
+/* Python: bool(is_dm or user_id). DM keys omit user_id (always seedable); a
+ * group seed needs a real user_id or it orphans the session. */
+int inchannel_seed_allowed(int is_dm, const char *user_id) {
+    return is_dm || (user_id != NULL && user_id[0] != '\0');
 }
 
 /* PoP: delivery_lane_value @ cron/scheduler_delivery.py:_delivery_lane_value */
@@ -445,7 +446,22 @@ char *delivery_lane_value(const char *lane) {
 }
 
 /* PoP: cron_delivery_notify_enabled @ cron/scheduler_delivery.py:_cron_delivery_notify_enabled */
-int cron_delivery_notify_enabled(void) { return 1; }
+/* Python: `(cfg or {}).get("cron")` -> if dict, `.get("delivery")`; notify is
+ * enabled unless delivery_cfg is a dict with an explicit `notify is False`.
+ * A missing/malformed section keeps the default True. cfg is a JSON object
+ * (NULL == None); parsed by the harness. */
+int cron_delivery_notify_enabled(const json_t *cfg) {
+    const json_t *cron_cfg = (cfg && cfg->type == JSON_OBJECT)
+                                 ? json_obj_get(cfg, "cron") : NULL;
+    const json_t *delivery = (cron_cfg && cron_cfg->type == JSON_OBJECT)
+                                 ? json_obj_get(cron_cfg, "delivery") : NULL;
+    if (!delivery || delivery->type != JSON_OBJECT)
+        return 1;  /* not a dict -> default True */
+    const json_t *notify = json_obj_get(delivery, "notify");
+    /* Only an explicit JSON_BOOL false disables. Missing -> True; any other
+     * value (incl. 0/"no"/null) is NOT `is False` -> stays True. */
+    return !(notify && notify->type == JSON_BOOL && !notify->bool_val);
+}
 
 /* PoP: record_delivery_verification @ cron/scheduler_delivery.py:_record_delivery_verification */
 void record_delivery_verification(const char *job_id, int success) {
