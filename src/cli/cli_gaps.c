@@ -2957,7 +2957,7 @@ json_t *rotate(cg2_io_t *io, json_t *in) {
     json_t *revokers = json_obj_get(in, "revokers");
     json_t *out = json_object();
     if (!revokers || revokers->type != JSON_OBJECT) return out;
-    for (size_t i = 0; i < json_len(revokers); i++) {
+    for (size_t i = 0; i < revokers->c.count; i++) {
         const char *name = revokers->c.keys[i];
         json_t *ra = json_object();
         json_set_hdr(ra, "name", name);
@@ -3134,8 +3134,18 @@ json_t *process_rows(cg2_io_t *io, json_t *in) {
         now = jn->num_val;
     }
     json_t *rows = json_array();
+    /* Python iterates entries; a string yields characters, and indexing a
+     * character with "session_id" raises TypeError. Mirror that. */
+    if (entries && entries->type == JSON_STRING && entries->str_val && entries->str_val[0]) {
+        json_free(rows); json_free(entries);
+        return cg2_raise_spec("TypeError", "string indices must be integers, not 'str'");
+    }
     for (size_t i = 0; i < json_len(entries); i++) {
         json_t *entry = json_get(entries, i);
+        if (entry && entry->type == JSON_STRING) {
+            json_free(rows); json_free(entries);
+            return cg2_raise_spec("TypeError", "string indices must be integers, not 'str'");
+        }
         const char *sid = json_get_str(entry, "session_id", "");
         json_t *ga = json_object();
         json_set_hdr(ga, "id", sid);

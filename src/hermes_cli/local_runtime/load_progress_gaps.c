@@ -154,7 +154,7 @@ json_t *composite_percent(void *io, json_t *in) {
             else if (value && value->type == JSON_BOOL) x = value->bool_val ? 1.0 : 0.0;
             else {
                 char msg[160];
-                snprintf(msg, sizeof msg, "unsupported operand type(s) for *: '%s' and 'int'",
+                snprintf(msg, sizeof msg, "unsupported operand type(s) for *: 'float' and '%s'",
                          lp_typename(value));
                 return lp_raise("TypeError", msg);
             }

@@ -113,8 +113,7 @@ static json_t *cmf_run_case(const char *func, json_t *in) {
     const cmf_feature_t *f = cmf_feature_lookup(cmf_str_or_null(in, "feature"));
     bool needs_feature =
         strcmp(func, "marked") == 0 || strcmp(func, "mark") == 0 ||
-        strcmp(func, "core_carried") == 0 || strcmp(func, "predates_split") == 0 ||
-        strcmp(func, "record_core_use") == 0 || strcmp(func, "turn_off_replaced") == 0 ||
+        strcmp(func, "core_carried") == 0 ||        strcmp(func, "predates_split") == 0 || strcmp(func, "turn_off_replaced") == 0 ||
         strcmp(func, "keep_legacy_disable") == 0 || strcmp(func, "record_migration") == 0 ||
         strcmp(func, "install_one") == 0;
     if (needs_feature && !f) {

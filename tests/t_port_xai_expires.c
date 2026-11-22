@@ -10,7 +10,7 @@
 #define HERMES_VERSION "0.15.1-slermes"
 #define HERMES_RELEASE_DATE "2026.5.29"
 #endif
-#include "cli/port_tools_xai_http.c"
+#include "tools/port_tools_xai_http.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

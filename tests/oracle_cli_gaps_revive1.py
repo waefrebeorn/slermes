@@ -136,6 +136,9 @@ def extract(module_rel):
         if isinstance(node, ast.ClassDef):
             for sub in node.body:
                 if isinstance(sub, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    # LIVE @property methods are invoked as plain functions by
+                    # the C harness (it passes a fake self), so strip decorators.
+                    sub.decorator_list = []
                     ex(sub)
     return ns
 

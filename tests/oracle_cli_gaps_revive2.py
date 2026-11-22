@@ -10,6 +10,9 @@ compares ordered trace + ret + post-state. BaseException is caught per case
 Gate:
   bash tests/run_one_oracle.sh cli_gaps_revive2 oracle_cli_gaps_revive2.py "" "src/cli/cli_gaps.o lib/libjson/json.o"
 """
+import sys
+sys.stdin.reconfigure(encoding="utf-8", errors="replace")
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 import ast
 import builtins
 import copy
@@ -140,6 +143,11 @@ def load_ns(relpath, seeds, want_funcs=(), want_classes=(), strict_consts=True):
     seed_consts(False)
     for n in tree.body:
         if isinstance(n, ast.ClassDef) and n.name in want_classes:
+            # The C harness tags each lease with cg_id; LIVE slots forbid it.
+            n.body = [b for b in n.body
+                      if not (isinstance(b, ast.Assign)
+                              and any(getattr(t, "id", "") == "__slots__"
+                                      for t in b.targets))]
             exec(compile_node(n, relpath), ns)
         if isinstance(n, ast.FunctionDef) and n.name in want_funcs:
             exec(compile_node(n, relpath), ns)
@@ -228,6 +236,7 @@ NS_SD = load_ns(
 
 NS_TL = load_ns(
     "gateway/turn_lease.py", base_seeds("quarry_cg2_tl"),
+    want_funcs=("_holder_desc",),
     want_classes=("TurnLeaseTimeoutError", "TurnLeaseToken", "_SessionLease",
                   "SessionTurnLeaseRegistry"))
 
@@ -269,11 +278,20 @@ NS_DOCK = load_ns(
 
 # ── recording seam factory ──────────────────────────────────────────────────
 
-def make_rec(script, trace, armed):
+def make_rec(script, trace, armed, trace_exhaust=False):
     def rec(name, argb, make=None):
         def call(*a, **k):
-            r = script.next(name)
             ev = {"ev": name, "args": argb(a, k), "ret": None}
+            if trace_exhaust:
+                try:
+                    r = script.next(name)
+                except RuntimeError as exc:
+                    ev["ret"] = {"__raise__": "RuntimeError", "message": str(exc)}
+                    if armed[0]:
+                        trace.append(ev)
+                    raise
+            else:
+                r = script.next(name)
             if isinstance(r, Raise):
                 ev["ret"] = r.spec
                 if armed[0]:
@@ -336,7 +354,7 @@ def d_publish_health(work, trace, script):
     src = sources.setdefault(work["source"], NS_DBREC["_HealthSource"]())
     mod = types.ModuleType("gateway.status")
     mod.publish_runtime_status = rec("publish_runtime_status",
-                                     lambda a, k: {"session_store": a[0]})
+                                     lambda a, k: {"session_store": k.get("session_store", a[0] if a else None)})
     sys.modules["gateway.status"] = mod
     pkg("gateway").status = mod
     try:
@@ -643,7 +661,7 @@ def d_prepare(work, trace, script):
 
 
 def d_custom_entries(work, trace, script):
-    rec = make_rec(script, trace, [True])
+    rec = make_rec(script, trace, [True], trace_exhaust=True)
     mod = types.ModuleType("hermes_cli.config")
     mod.load_config = rec("load_config", lambda a, k: {})
     mod.get_compatible_custom_providers = rec("get_compatible_custom_providers",

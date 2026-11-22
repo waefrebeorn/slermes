@@ -332,8 +332,16 @@ pkg("agent").codex_responses_adapter = _cra_mod
 def make_rec(script, trace, armed):
     def rec(name, argb, make=None):
         def call(*a, **k):
-            r = script.next(name)
             ev = {"ev": name, "args": argb(a, k), "ret": None}
+            try:
+                r = script.next(name)
+            except RuntimeError as exc:
+                # The C harness records a script-exhaustion seam event with a
+                # RuntimeError raise; record the same on the Python side.
+                ev["ret"] = {"__raise__": "RuntimeError", "message": str(exc)}
+                if armed[0]:
+                    trace.append(ev)
+                raise
             if isinstance(r, Raise):
                 ev["ret"] = r.spec
                 if armed[0]:
