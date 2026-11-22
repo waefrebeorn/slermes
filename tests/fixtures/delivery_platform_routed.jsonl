@@ -1,0 +1,10 @@
+{"platform": "telegram", "routes": ["Telegram"]}
+{"platform": "telegram", "routes": ["discord", "TELEGRAM"]}
+{"platform": "TELEGRAM", "routes": ["telegram"]}
+{"platform": "Telegram", "routes": ["telegram"]}
+{"platform": "discord", "routes": ["telegram"]}
+{"platform": "telegram", "routes": []}
+{"platform": "telegram", "routes": [null]}
+{"platform": "none", "routes": [null]}
+{"platform": "whatsapp", "routes": ["telegram", "whatsapp", "discord"]}
+{"platform": "Discord", "routes": ["discord"]}

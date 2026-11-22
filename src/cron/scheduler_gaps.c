@@ -524,7 +524,24 @@ char *primary_profile_routes_for_current_home(void) {
 }
 
 /* PoP: delivery_platform_routed_from_primary_gateway @ cron/scheduler_preflight.py:_delivery_platform_routed_from_primary_gateway */
-int delivery_platform_routed_from_primary_gateway(void) { return 1; }
+/* Python: platform_key = platform_name.lower(); return any(
+ *   str(route.platform).lower() == platform_key
+ *   for route in _primary_profile_routes_for_current_home()).
+ * The already-resolved routes are passed in as a JSON array of platform
+ * names (strings, or null -> "None" per Python str()). */
+int delivery_platform_routed_from_primary_gateway(const char *platform_name,
+                                                  const json_t *routes) {
+    if (!platform_name || !routes) return 0;
+    size_t nr = json_array_size(routes);
+    for (size_t i = 0; i < nr; i++) {
+        json_t *r = json_array_get(routes, i);
+        const char *p = NULL;
+        if (r && r->type == JSON_STRING) p = r->str_val;
+        else if (!r || r->type == JSON_NULL) p = "None";
+        if (p && strcasecmp(p, platform_name) == 0) return 1;
+    }
+    return 0;
+}
 
 /* PoP: wait_for_external_cron_worker_body @ cron/scheduler.py:_wait_for_external_cron_worker_body */
 char *wait_for_external_cron_worker_body(const char *payload) {
