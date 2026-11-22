@@ -707,10 +707,13 @@ json_t *pi2_spawned_by_this_process(const pi2_seams_t *s, const json_t *pid) {
     }
     json_free(proc);
     /* .environ().get(SPAWN_ENV_VAR) — environ is a dict; absent -> None */
-    const json_t *raw = pi2_is_obj(envr) ? json_obj_get(envr, "HERMES_SPAWN") : NULL;
+    const json_t *rawref = pi2_is_obj(envr) ? json_obj_get(envr, "HERMES_SPAWN") : NULL;
+    /* envr is freed before the seam reads raw: keep an owned copy. */
+    char *raw = rawref ? pi2_py_str(rawref) : NULL;
     json_free(envr);
     json_t *ta = pi2_args0();
-    pi2_set_node(ta, "raw", raw);
+    pi2_set_node(ta, "raw", raw ? json_string(raw) : NULL);
+    free(raw);
     json_t *tag = pi2_call(s, "parse_spawn_tag", ta);
     if (pi2_is_raise(tag)) {
         const char *k = pi2_raise_class(tag);

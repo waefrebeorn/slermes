@@ -133,8 +133,12 @@ bash tests/ensure_oracle_deps.sh $ALL_OBJS || { echo "dependency build failed" >
     # can go stale when the key content is rewritten identically, but a real
     # object rebuild must always invalidate the image.
     objdeps=$(awk -F '\t' -v k="$h" '$1 == k { print $2 }' "$WORK/inputs.tsv")
-    printf '%s/%s.exe: tests/t_port_%s.c %s/%s.key %s\n\t$(CC) $(CFLAGS) $< @%s -o $@ $(LDFLAGS) $(LIBS)\n\n' \
-      "$WORK" "$h" "$h" "$WORK" "$h" "$objdeps" "$rsp"
+    # When the symbol index cannot resolve any member (static functions), fall
+    # back to the same-named object so a rebuilt source still invalidates the
+    # image.
+    objfallback=$(find src lib -name "$h.o" -print -quit 2>/dev/null)
+    printf '%s/%s.exe: tests/t_port_%s.c %s/%s.key %s %s\n\t$(CC) $(CFLAGS) $< @%s -o $@ $(LDFLAGS) $(LIBS)\n\n' \
+      "$WORK" "$h" "$h" "$WORK" "$h" "$objdeps" "$objfallback" "$rsp"
   done
 } > "$MK"
 
