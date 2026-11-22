@@ -58,6 +58,7 @@ declare -A DEPS=(
   [same_auth_store]="src/hermes_cli/auth_gaps.o lib/libjson/json.o"
   [abort_complete]="src/hermes_cli/update_abort_recovery_gaps.o lib/libjson/json.o"
   [compress_fast_lane]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
+  [mcp_filter]="src/hermes_cli/mcp_startup_gaps.o lib/libjson/json.o"
   [systemd_stop_sec]="src/gateway/restart_gaps.o lib/libjson/json.o"
   [managed_local_endpoint]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"

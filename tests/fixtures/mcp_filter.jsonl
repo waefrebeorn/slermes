@@ -1,0 +1,13 @@
+{"toolsets": "a,b,c"}
+{"toolsets": " a , b ,, c "}
+{"toolsets": ""}
+{"toolsets": null}
+{"toolsets": "all"}
+{"toolsets": "a,ALL,b"}
+{"toolsets": "a,*,b"}
+{"toolsets": ["a", "b,c"]}
+{"toolsets": [" a ", ""]}
+{"toolsets": ["all"]}
+{"toolsets": []}
+{"toolsets": [true, 5, null]}
+{"toolsets": ["a,b", "c,d"]}
