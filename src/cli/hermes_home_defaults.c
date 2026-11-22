@@ -59,3 +59,52 @@ void hc_get_platform_default_hermes_home(char *out, size_t n)
                                    getenv("LOCALAPPDATA") ?: "",
                                    getenv("HOME") ?: "", 1, out, n);
 }
+
+/* Expand $VAR / ${VAR} then ~ / ~/ using the supplied home value. */
+void hc_expand_hermes_home(const char *path, const char *home, char *out, size_t n)
+{
+    const char *src = path ? path : "";
+    char expanded[4096];
+    size_t used = 0;
+    for (size_t i = 0; src[i] && used + 1 < sizeof(expanded); ) {
+        if (src[i] == '$') {
+            const char *name = NULL;
+            size_t len = 0;
+            int braces = 0;
+            if (src[i+1] == '{') { braces = 1; name = src + i + 2; }
+            else name = src + i + 1;
+            if ((name[0] >= 'A' && name[0] <= 'Z') ||
+                (name[0] >= 'a' && name[0] <= 'z') || name[0] == '_') {
+                len = 1;
+                while ((name[len] >= 'A' && name[len] <= 'Z') ||
+                       (name[len] >= 'a' && name[len] <= 'z') ||
+                       (name[len] >= '0' && name[len] <= '9') || name[len] == '_') len++;
+                char key[256];
+                size_t klen = len < sizeof(key)-1 ? len : sizeof(key)-1;
+                memcpy(key, name, klen); key[klen] = '\0';
+                const char *v = getenv(key);
+                if (v) {
+                    size_t vl = strlen(v);
+                    if (used + vl + 1 < sizeof(expanded)) {
+                        memcpy(expanded + used, v, vl); used += vl;
+                    }
+                }
+                i += 1 + len + (braces ? 2 : 0);
+                continue;
+            }
+        }
+        expanded[used++] = src[i++];
+    }
+    expanded[used] = '\0';
+    if (expanded[0] == '~' && (expanded[1] == '/' || !expanded[1]) && home && *home) {
+        snprintf(out, n, "%s%s", home, expanded + 1);
+    } else {
+        snprintf(out, n, "%s", expanded);
+    }
+}
+
+/* PoP: _expand_hermes_home @ hermes_constants.py:_expand_hermes_home */
+void hc_expand_hermes_home_at(const char *path, const char *home, char *out, size_t n)
+{
+    hc_expand_hermes_home(path, home, out, n);
+}

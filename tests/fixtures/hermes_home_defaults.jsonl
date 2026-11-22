@@ -3,3 +3,7 @@
 {"func": "_platform_default_hermes_home", "win32": 1, "suffix": "", "local_appdata": "   ", "user_home": "C:/Users/u"}
 {"func": "_platform_default_hermes_home", "win32": 0, "suffix": "", "local_appdata": "C:/Local", "user_home": "/home/u"}
 {"func": "_platform_default_hermes_home", "win32": 0, "suffix": "-x", "local_appdata": "C:/Local", "user_home": "/home/u/"}
+{"func": "_expand_hermes_home", "win32": 0, "suffix": "", "local_appdata": "", "user_home": "/home/u", "expand": "$MYVAR/sub", "myvar": "/data", "home": "/home/u"}
+{"func": "_expand_hermes_home", "win32": 0, "suffix": "", "local_appdata": "", "user_home": "/home/u", "expand": "${MYVAR}/sub", "myvar": "/data", "home": "/home/u"}
+{"func": "_expand_hermes_home", "win32": 0, "suffix": "", "local_appdata": "", "user_home": "/home/u", "expand": "~/x", "home": "/home/u"}
+{"func": "_expand_hermes_home", "win32": 0, "suffix": "", "local_appdata": "", "user_home": "/home/u", "expand": "~", "home": "/home/u"}

@@ -1,9 +1,10 @@
-/* t_port_hermes_home_defaults.c — platform default home gate. */
+/* t_port_hermes_home_defaults.c — platform default home gate (expand v3). */
 #include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+extern void hc_expand_hermes_home(const char *path, const char *home, char *out, size_t n);
 extern void hc_platform_default_hermes_home(const char *suffix, const char *local_appdata,
                                             const char *user_home, int win32,
                                             char *out, size_t n);
@@ -31,6 +32,14 @@ int main(void) {
         fputs(",\"user_home\":", stdout); { char *s = json_dumps(json_string(js(in, "user_home")), 0); fputs(s?s:"\"\"",stdout); free(s); }
         printf(",\"win32\":%d,\"out\":", ji(in, "win32"));
         { char *s = json_dumps(json_string(out), 0); fputs(s?s:"\"\"", stdout); free(s); }
+        const char *mv = js(in, "myvar");
+        if (mv && *mv) setenv("MYVAR", mv, 1); else unsetenv("MYVAR");
+        char expanded[2048];
+        hc_expand_hermes_home(js(in, "expand"), js(in, "home"), expanded, sizeof(expanded));
+        fputs(",\"home\":", stdout); { char *s=json_dumps(json_string(js(in,"home")),0); fputs(s?s:"\"\"",stdout); free(s); }
+        fputs(",\"myvar\":", stdout); { char *s=json_dumps(json_string(js(in,"myvar")),0); fputs(s?s:"\"\"",stdout); free(s); }
+        fputs(",\"expand\":", stdout); { char *s=json_dumps(json_string(js(in,"expand")),0); fputs(s?s:"\"\"",stdout); free(s); }
+        fputs(",\"expanded\":", stdout); { char *s=json_dumps(json_string(expanded),0); fputs(s?s:"\"\"",stdout); free(s); }
         fputs("}\n", stdout);
         json_free(in);
     }
