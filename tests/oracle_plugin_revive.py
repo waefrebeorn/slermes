@@ -626,6 +626,8 @@ def bind_manager_methods(m, ns, state):
     m.has_hook = types.MethodType(ns["mgr_has_hook"], m)
     if state.get("manager_has_middleware_method", True):
         m.has_middleware = types.MethodType(ns["mgr_has_middleware"], m)
+    # _load_directory_module calls self._directory_module_name(manifest).
+    m._directory_module_name = types.MethodType(ns["_directory_module_name"], m)
 
 
 MANIFEST_FNS = {"_load_directory_module", "_load_entrypoint_module",
