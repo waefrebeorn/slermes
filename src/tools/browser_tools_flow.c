@@ -627,7 +627,7 @@ static json_t *bt_use_gateway(bt_ctx *ctx, const json_t *browser_cfg) {
         if (bt_exc_is_exception(ctx)) { bt_exc_clear(ctx); json_free(prov); return json_bool(false); }
         json_free(prov); return NULL;
     }
-    const char *nous = bt_jstr(prov);
+    char *nous = strdup(bt_jstr(prov));  /* prov is freed before the compare */
     json_free(prov);
     /* str(browser_cfg.get("cloud_provider") or "").strip().lower() == NOUS... */
     json_t *cp = bt_get(browser_cfg, "cloud_provider");
@@ -636,7 +636,7 @@ static json_t *bt_use_gateway(bt_ctx *ctx, const json_t *browser_cfg) {
     free(raw);
     for (char *p = stripped; *p; p++) *p = (char)tolower((unsigned char)*p);
     bool eq = bt_str_eq(stripped, nous);
-    free(stripped);
+    free(stripped); free(nous);
     return json_bool(eq);
 }
 

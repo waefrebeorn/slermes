@@ -1521,7 +1521,7 @@ static json_t *sg_format_scan_report(sg_env *e, json_t *result) {
     json_t *allow = sg_should_allow(e, result, false);
     if (sg_is_raise(allow)) return allow;
     json_t *allowed = json_get(allow, 0);
-    const char *reason = sg_sval(json_get(allow, 1));
+    char *reason = sg_strdup(a, sg_sval(json_get(allow, 1)));  /* allow is freed below */
     const char *status;
     if (allowed && allowed->type == JSON_BOOL && allowed->bool_val) status = "ALLOWED";
     else if (sg_is_null(allowed)) status = "NEEDS CONFIRMATION";

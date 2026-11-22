@@ -129,8 +129,12 @@ bash tests/ensure_oracle_deps.sh $ALL_OBJS || { echo "dependency build failed" >
     # link is 1205 objects), so hand it to gcc through a response file.
     rsp="$WORK/$h.rsp"
     printf '%s\n' $o > "$rsp"
-    printf '%s/%s.exe: tests/t_port_%s.c %s/%s.key\n\t$(CC) $(CFLAGS) $< @%s -o $@ $(LDFLAGS) $(LIBS)\n\n' \
-      "$WORK" "$h" "$h" "$WORK" "$h" "$rsp"
+    # Direct prerequisites on the resolved objects: a digest-file mtime alone
+    # can go stale when the key content is rewritten identically, but a real
+    # object rebuild must always invalidate the image.
+    objdeps=$(awk -F '\t' -v k="$h" '$1 == k { print $2 }' "$WORK/inputs.tsv")
+    printf '%s/%s.exe: tests/t_port_%s.c %s/%s.key %s\n\t$(CC) $(CFLAGS) $< @%s -o $@ $(LDFLAGS) $(LIBS)\n\n' \
+      "$WORK" "$h" "$h" "$WORK" "$h" "$objdeps" "$rsp"
   done
 } > "$MK"
 
