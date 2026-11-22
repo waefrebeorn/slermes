@@ -19,6 +19,8 @@
 #     bash tests/run_all_oracles.sh idle_watch
 
 set -u
+# Failure-log artifacts must describe THIS run only.
+rm -f .testbin/oracle_fail_*.log .testbin/retried_gates.*.txt
 cd "$(dirname "$0")/.." || exit 1
 mkdir -p .testbin/ao
 RUNNING_FULL=0
@@ -442,9 +444,11 @@ fi
 # Batch-built harness binaries can be refused by Smart App Control on this
 # host (rc=127, no ORACLE line). Retry every FAIL once with a forced relink;
 # individual relinks have consistently cleared these.
+# Clear stale retry logs on EVERY run: a green suite must not report retries
+# from an earlier run whose summary artifact was left behind.
+rm -f .testbin/retried_gates.*.txt
 if [ "${fail_n:-0}" -gt 0 ]; then
   fixed=""
-  rm -f .testbin/retried_gates.*.txt
   RETRY_LOG=".testbin/retried_gates.$$.txt"
   : > "$RETRY_LOG"
   while read -r line; do
