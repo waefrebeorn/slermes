@@ -94,6 +94,8 @@ From `slermes-windows-port`, `writing-plans`, `grounded-citations` and this sess
 - Coverage: `python scripts/check_gate_coverage.py <oracle.py> <fixture.jsonl> <source.py>`.
 - Health: `python tests/verify_build_health.py --no-link`.
 - Measured: gate 6.8s→1.37s, 8-harness batch 20.3s→13.4s, full suite ~12min→230–289s.
+- Suite18 254.08s, suite19 254.34s, suite20 835.47s (clean rebuild), suite22 464.72s — all 582 gates, with first-attempt defects now captured in `.testbin/oracle_fail_*.log`.
+- Per-harness keys are only correct when object basenames resolve deterministically: sort candidates and prefer `src/` / `lib/` over fixture copies, otherwise keys silently flip and stale binaries are trusted.
 - Registry: 13,622 Python functions ≥15 lines; 11,330 with no C reference.
 - Known wired gap: `lib/libplugin/plugin.c:897-973` stubs on a real CLI path.
 - Dead weight: 275 wired-dead PoP objects grandfathered by baseline.
