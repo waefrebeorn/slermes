@@ -94,6 +94,8 @@ From `slermes-windows-port`, `writing-plans`, `grounded-citations` and this sess
 - [x] Per-harness content-hash keys (`scripts/harness_key.py`): one `nm -A`
   pass over the archive builds a symbol index, each harness's reachable member
   set is hashed individually, and `make` relinks only changed gates.
-- [ ] Report retried gates in the full-suite summary
+- [x] Report retried gates in the full-suite summary; suite18 exposed
+  `browser_tools_flow` and `skills_guard_flow` as first-attempt infra failures.
+  Both now have a mitigation (explicit link pin + parallel SAC smoke).
 - [ ] Pin remaining archive-sensitive gates via full-suite diff
 - [ ] Wire the plugin registry stubs behind a real CLI oracle
