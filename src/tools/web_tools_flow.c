@@ -1025,11 +1025,13 @@ static json_t *wt_rescue_search(wt_ctx *ctx, const char *provider_name,
         if (wt_is_str(e)) rerr_s = wt_jstr(e);
         else if (wt_is_none(e)) rerr_s = "None";
     }
+    char rerr[301];
+    snprintf(rerr, sizeof(rerr), "%.300s", rerr_s);
     if (rescued) json_free(rescued);
     json_t *out = json_object();
     json_set(out, "success", json_bool(false));
     char err[700];
-    snprintf(err, sizeof(err), "%s (keyless rescue also failed: %s)", oe, rerr_s);
+    snprintf(err, sizeof(err), "%s (keyless rescue also failed: %s)", oe, rerr);
     json_set(out, "error", json_string(err));
     return out;
 }

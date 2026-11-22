@@ -28,6 +28,8 @@ Gate: bash tests/run_one_oracle.sh ws_revive1 oracle_ws_revive1.py "" \
 """
 import ast
 import asyncio
+import sys
+sys.stdin.reconfigure(encoding="utf-8", errors="replace")
 import builtins
 import copy
 import json

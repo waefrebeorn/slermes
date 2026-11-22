@@ -9,7 +9,7 @@ if not files:
     print("no first-attempt failure logs")
     sys.exit(0)
 for p in files:
-    name = os.path.basename(p)[15:-4]
+    name = os.path.basename(p)[13:-4]
     lines = open(p, encoding="utf-8", errors="replace").read().splitlines()
     interesting = [l for l in lines if l.startswith("MISMATCH")
                    or "ERROR" in l or "Traceback" in l
