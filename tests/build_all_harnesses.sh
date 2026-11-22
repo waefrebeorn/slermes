@@ -59,7 +59,7 @@ LIBINCS=$(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | t
 # Harnesses #include the port .c by bare name; add every src subdir.
 SRCINCS=$(find src -maxdepth 3 -type d | sed 's#^#-I #' | tr '\n' ' ')
 
-ARCHIVE_EXCLUDE="${ARCHIVE_EXCLUDE:-process_identity_flow2}"
+ARCHIVE_EXCLUDE="${ARCHIVE_EXCLUDE:-process_identity_flow2 skills_guard_flow}"
 # FULL harnesses link against a single static archive instead of ~2241 loose
 # objects; ld then pulls only what each harness actually references.
 ARCHIVE_PATH=$(bash tests/make_harness_archive.sh | tail -1)

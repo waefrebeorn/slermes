@@ -757,6 +757,7 @@ static json_t *ph_normalize_group_content(ph_ctx_t *ctx, const json_t *content) 
     char **parts = malloc((contents->c.count + 1) * sizeof(char *));
     size_t np = 0;
     const char *mtype = PH_MT_TEXT;
+    char *mtype_owned = NULL;  /* survives until ph_normalized consumes mtype */
     json_t *media_urls = json_array();
     json_t *media_types = json_array();
     for (size_t i = 0; i < contents->c.count; i++) {
@@ -766,14 +767,20 @@ static json_t *ph_normalize_group_content(ph_ctx_t *ctx, const json_t *content) 
         if (it && (strcmp(it, "attachment") == 0 || strcmp(it, "voice") == 0)) {
             json_t *norm = ph_normalize_binary_payload(ctx, ic);
             const char *marker = ph_str(json_get(norm, 0));
-            const char *imt = ph_str(json_get(norm, 1));
+            char *imt_copy = ph_strdup(ph_str(json_get(norm, 1)));
+            const char *imt = imt_copy;
             json_t *iurls = json_get(norm, 2);
             json_t *itypes = json_get(norm, 3);
-            if (strcmp(mtype, PH_MT_TEXT) == 0) mtype = imt;
+            if (strcmp(mtype, PH_MT_TEXT) == 0) {
+                free(mtype_owned);
+                mtype_owned = ph_strdup(imt);
+                mtype = mtype_owned;
+            }
             for (size_t j = 0; j < json_len(iurls); j++) json_append(media_urls, json_copy(json_get(iurls, j)));
             for (size_t j = 0; j < json_len(itypes); j++) json_append(media_types, json_copy(json_get(itypes, j)));
             if (json_len(iurls) == 0) parts[np++] = ph_strdup(marker ? marker : "");
             json_free(norm);
+            free(imt_copy);
         } else if (it && strcmp(it, "text") == 0) {
             parts[np++] = ph_strdup(ph_get_str_or(ic, "text", ""));
         } else if (it && strcmp(it, "richlink") == 0) {
@@ -803,7 +810,7 @@ static json_t *ph_normalize_group_content(ph_ctx_t *ctx, const json_t *content) 
         final = fallback;
     }
     json_t *r = ph_normalized(final, mtype, media_urls, media_types);
-    free(text); free(fallback);
+    free(text); free(fallback); free(mtype_owned);
     return r;
 }
 static json_t *ph_normalize_content(ph_ctx_t *ctx, const json_t *content) {

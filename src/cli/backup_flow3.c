@@ -587,14 +587,17 @@ static json_t *bk3_run_import(const bk3_seams_t *s, const json_t *inp) {
     if (bk3_is_raise(ok)) return ok;
     bool valid = json_get_bool(ok, "ok", true);
     const char *reason = bk3_jstr(json_obj_get(ok, "reason")) ?: "";
+    char *reason_copy = strdup(reason);  /* ok is freed before the message is built */
     json_free(ok);
     if (!valid) {
-        char *erm = bk3_xsf("Error: %s", reason);
+        char *erm = bk3_xsf("Error: %s", reason_copy);
         a = json_object(); bk3_aset_s(a, "msg", erm); free(erm);
         json_t *pr = bk3_seam(s, "print", a); json_free(a);
+        free(reason_copy);
         if (bk3_is_raise(pr)) return pr; json_free(pr);
         return bk3_raise_spec("SystemExit", "1");
     }
+    free(reason_copy);
     return json_null();
 }
 
