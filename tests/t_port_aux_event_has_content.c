@@ -63,7 +63,7 @@ int main(void)
         dec[d] = '\0';
 
         json_t *e = json_parse(dec, NULL);
-        int out = e ? ac_anthropic_event_has_content(e) : -1;
+        int out = ac_anthropic_event_has_content(e);
         if (e) json_free(e);
         printf("{\"event\":");
         jstr(dec);

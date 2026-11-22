@@ -14,3 +14,4 @@
 {"event": "{\"delta\":{\"text\":\"orphan\"}}"}
 {"event": "{}"}
 {"event": "{\"type\":null}"}
+{"event": "\\\\server\\share"}

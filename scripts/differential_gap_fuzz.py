@@ -29,9 +29,14 @@ EDGE = [
 ]
 
 
+SKIP_KEYS = {"func", "id", "case", "name", "_orig"}
+
+
 def strings(obj, path=()):
     if isinstance(obj, dict):
         for k, v in obj.items():
+            if k in SKIP_KEYS:
+                continue
             yield from strings(v, path + (k,))
     elif isinstance(obj, list):
         for i, v in enumerate(obj):
@@ -49,10 +54,10 @@ def setpath(obj, path, value):
 
 def mutate(rng, case):
     out = copy.deepcopy(case)
-    paths = [p for p, _ in strings(out.get("args", out))]
+    container = out.get("args", out.get("in", out))
+    paths = [p for p, _ in strings(container)]
     if not paths:
         return None
-    container = out.get("args", out)
     for _ in range(rng.choice((1, 1, 2))):
         path = rng.choice(paths)
         if rng.random() < 0.75:
@@ -96,9 +101,9 @@ def run(gate, cases, timeout=60):
 def shrink(gate, case):
     """Revert mutated fields one at a time while the case still mismatches."""
     current = case
-    for path, _ in list(strings(current.get("args", current))):
+    for path, _ in list(strings(current.get("args", current.get("in", current)))):
         trial = copy.deepcopy(current)
-        container = trial.get("args", trial)
+        container = trial.get("args", trial.get("in", trial))
         try:
             setpath(container, path, case["_orig"][json.dumps(path)])
         except Exception:
@@ -123,7 +128,7 @@ def main():
     generated = []
     for _ in range(n):
         base = copy.deepcopy(rng.choice(templates))
-        container = base.get("args", base)
+        container = base.get("args", base.get("in", base))
         paths = [p for p, _ in strings(container)]
         base["_orig"] = {json.dumps(p): _getpath(container, p) for p in paths}
         m = mutate(rng, base)

@@ -6,7 +6,7 @@
 {"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": false}}
 {"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "12345, 67890"}}
 {"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": " a b , c d "}}
-{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": " x , y"}}
+{"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "\u00a0x\u00a0,\u2003y"}}
 {"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "a,,b"}}
 {"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "solo"}}
 {"func": "ws_u_normalize_whatsapp_allowed_users", "in": {"value": "\t,\n"}}
@@ -35,7 +35,7 @@
 {"func": "ws_u_string_list", "in": {"value": [1, 2.5, true, null, " x "]}}
 {"func": "ws_u_string_list", "in": {"value": []}}
 {"func": "ws_u_string_list", "in": {"value": {"a": 1}}}
-{"func": "ws_u_string_list", "in": {"value": [" ", " z "]}}
+{"func": "ws_u_string_list", "in": {"value": ["\u00a0", "\u2003z\u00a0"]}}
 {"func": "ws_u_string_list", "in": {"value": [0, false]}}
 {"func": "ws_u_resolve_toolset_model_plugin", "in": {"ts_key": "image_gen", "provider_row": {"image_gen_plugin_name": "plug"}}}
 {"func": "ws_u_resolve_toolset_model_plugin", "in": {"ts_key": "image_gen", "provider_row": {"image_gen_plugin_name": "", "imagegen_backend": "fal"}}}
@@ -61,7 +61,7 @@
 {"func": "ws_u_api_key_display", "in": {"entry": {"api_key": 0, "key_env": "X"}}}
 {"func": "ws_u_api_key_display", "in": {"entry": {"api_key": "k", "key_env": "X"}, "io": {"redacted_credential_preview": {"__script__": true, "raise": {"type": "RuntimeError", "message": "nope"}}}}}
 {"func": "ws_u_api_key_display", "in": {"entry": {"api_key": "k"}, "io": {"redacted_credential_preview": null}}}
-{"func": "ws_u_api_key_display", "in": {"entry": {"api_key": " k "}, "io": {"redacted_credential_preview": "P2"}}}
+{"func": "ws_u_api_key_display", "in": {"entry": {"api_key": "\u00a0k\u00a0"}, "io": {"redacted_credential_preview": "P2"}}}
 {"func": "ws_u_api_key_display", "in": {"entry": {}}}
 {"func": "ws_u_api_key_display", "in": {"entry": {"api_key": "k"}, "io": {"redacted_credential_preview": {"__script__": true, "raise": {"type": "SystemExit", "message": "bye"}}}}}
 {"func": "ws_u_oauth_provider_disconnect_hint", "in": {"provider": {"flow": "external", "id": "claude-code"}, "status": {}}}
@@ -113,7 +113,7 @@
 {"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "text", "default": ""}, "value": 42}}
 {"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "text", "default": ""}, "value": 2.5}}
 {"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "text", "default": ""}, "value": true}}
-{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "json", "default": ""}, "value": {"u": "é"}}}
+{"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "json", "default": ""}, "value": {"u": "\u00e9"}}}
 {"func": "ws_u_serialize_field_value", "in": {"field": {"kind": "bool", "default": ""}, "value": "1"}}
 {"func": "ws_u_command_result", "in": {"kind": "setup", "name": "prov", "status": "ok"}}
 {"func": "ws_u_command_result", "in": {"kind": "setup", "name": "prov", "status": "ok", "command": "pip install x", "completed": {"returncode": 0, "stdout": "out", "stderr": "err"}}}
@@ -140,7 +140,7 @@
 {"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {"ssh_host": " ", "ssh_user": "u"}, "io": {"get_env_value": ""}}}
 {"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {}, "io": {"get_env_value": {"__script__": true, "raise": {"type": "RuntimeError", "message": "x"}}}}}
 {"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {}, "io": {"get_env_value": {"__script__": true, "raise": {"type": "SystemExit", "message": "stop"}}}}}
-{"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {"ssh_host": " h ", "ssh_user": "u"}}}
+{"func": "ws_u_probe_ssh_backend", "in": {"terminal_cfg": {"ssh_host": "\u00a0h\u00a0", "ssh_user": "u"}}}
 {"func": "ws_u_probe_modal_backend", "in": {"io": {"has_direct_modal_credentials": true}}}
 {"func": "ws_u_probe_modal_backend", "in": {"io": {"has_direct_modal_credentials": false, "get_env_value": ["id", "secret"]}}}
 {"func": "ws_u_probe_modal_backend", "in": {"io": {"has_direct_modal_credentials": false, "get_env_value": ["id", ""]}}}
@@ -186,7 +186,7 @@
 {"func": "ws_u_mcp_install_action_name", "in": {"name": "!!!", "action_log_files": {}}}
 {"func": "ws_u_mcp_install_action_name", "in": {"name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "action_log_files": {}}}
 {"func": "ws_u_mcp_install_action_name", "in": {"name": "x", "action_log_files": {"mcp-install-x-11f6ad8e": "custom.log"}}}
-{"func": "ws_u_mcp_install_action_name", "in": {"name": "Ünïcode", "action_log_files": {}}}
+{"func": "ws_u_mcp_install_action_name", "in": {"name": "\u00dcn\u00efcode", "action_log_files": {}}}
 {"func": "ws_u_mcp_install_action_name", "in": {"name": "", "action_log_files": {}}}
 {"func": "ws_u_mcp_install_action_name", "in": {"name": "a-b_c", "action_log_files": {}}}
 {"func": "ws_u_mcp_install_action_name", "in": {"name": "x"}}
@@ -247,3 +247,7 @@
 {"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": "x"}}}
 {"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": null}}}
 {"func": "ws_u_channel_managed_env_keys", "in": {"io": {"_messaging_platform_catalog": {"__script__": true, "ret": [{"env_vars": ["Z", "A"]}, {"env_vars": ["A", "M"]}]}}}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": ".."}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "abc"}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "ab cd"}}
+{"func": "ws_u_chat_image_extension", "in": {"data_hex": "0x"}}

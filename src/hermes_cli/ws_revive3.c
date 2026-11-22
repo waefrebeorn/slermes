@@ -592,13 +592,37 @@ json_t *ws_u_resolve_toolset_model_plugin(json_t *req) {
 /* PoP: ws_u_chat_image_extension @ hermes_cli/web_routers/files.py:_chat_image_extension */
 json_t *ws_u_chat_image_extension(json_t *req) {
     const char *hex = json_get_str(req, "data_hex", "");
-    size_t hn = strlen(hex), n = hn / 2;
+    size_t hn = strlen(hex), digits = 0;
+    for (size_t i = 0; i < hn; i++) {
+        unsigned char c = (unsigned char)hex[i];
+        if (c == ' ' || c == '\t' || c == '\n' || c == '\r') continue;
+        int ok = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') ||
+                 (c >= 'A' && c <= 'F');
+        if (!ok) {
+            char msg[128];
+            snprintf(msg, sizeof(msg),
+                     "non-hexadecimal number found in fromhex() arg at position %zu", i);
+            return w3_raise("ValueError", msg);
+        }
+        digits++;
+    }
+    if (digits % 2)
+        return w3_raise("ValueError",
+                        "fromhex() arg must contain an even number of hexadecimal digits");
+    size_t n = digits / 2;
     unsigned char *data = malloc(n ? n : 1);
     if (!data) return json_null();
+    size_t src = 0;
     for (size_t i = 0; i < n; i++) {
         unsigned char b = 0;
         for (int k = 0; k < 2; k++) {
-            char c = hex[2 * i + k];
+            unsigned char c = 0;
+            while (src < hn) {
+                unsigned char h = (unsigned char)hex[src++];
+                if (h == ' ' || h == '\t' || h == '\n' || h == '\r') continue;
+                c = h;
+                break;
+            }
             unsigned v = (c >= '0' && c <= '9') ? (unsigned)(c - '0') :
                          (c >= 'a' && c <= 'f') ? (unsigned)(c - 'a' + 10) :
                          (c >= 'A' && c <= 'F') ? (unsigned)(c - 'A' + 10) : 0;
