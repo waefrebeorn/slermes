@@ -41,6 +41,11 @@
 #include <ctype.h>
 #include <math.h>
 
+/* Native implementation of a seam the Python reference supplies as an
+ * injected callable. Used only when no script is installed for that name, so
+ * every scripted oracle case is untouched. */
+int codex_event_has_content(const json_t *event);
+
 /* ── context + seam plumbing ─────────────────────────────────────────────── */
 
 typedef struct ac3_ctx {
@@ -208,6 +213,13 @@ static json_t *ac3_call(ac3_ctx *ctx, const char *name, json_t *args) {
     if (!args) args = json_object();
     json_t *ret = NULL;
     json_t *script = ctx->io ? json_obj_get(ctx->io, name) : NULL;
+    /* Native fallback: with no injected script, call the C port that mirrors
+     * the Python function this seam names. Scripted cases take the old path. */
+    int native = 0;
+    if (!script && name && !ctx->exc && strcmp(name, "codex_event_has_content") == 0) {
+        ret = json_bool(codex_event_has_content(json_obj_get(args, "event")) ? true : false);
+        native = 1;
+    }
     const json_t *chosen = script;
     if (script && script->type == JSON_OBJECT) {
         json_t *seq = json_obj_get(script, "$seq");
@@ -228,7 +240,7 @@ static json_t *ac3_call(ac3_ctx *ctx, const char *name, json_t *args) {
             }
         }
     }
-    if (chosen != ctx->exc) ret = ac3_script_result(ctx, chosen);
+    if (!native && chosen != ctx->exc) ret = ac3_script_result(ctx, chosen);
     json_t *ev = json_object();
     json_set(ev, "ev", json_string(name));
     json_set(ev, "args", args);
