@@ -1,5 +1,5 @@
-{"func": "get_plugin_commands", "state": {"plugin_commands": {}}, "io": {"get_plugin_manager": null, "discover_and_load": {"set_discovered": true}}}
-{"func": "get_plugin_commands", "state": {"plugin_commands": {"foo": {"handler": "foo.handle", "description": "Do foo", "plugin": "foo"}}}, "io": {"get_plugin_manager": null, "discover_and_load": {"set_discovered": true}}}
-{"func": "get_plugin_commands", "state": {"plugin_commands": {"a": {"handler": "a", "description": "A", "plugin": "pa"}, "b": {"handler": "b", "description": "B", "plugin": "pb"}}}, "io": {"get_plugin_manager": null, "discover_and_load": {"set_discovered": true}}}
-{"func": "get_plugin_commands", "state": {"plugin_commands": {"x": {}}}, "io": {"get_plugin_manager": null, "discover_and_load": {"set_discovered": true}}}
-{"func": "get_plugin_commands", "state": {}, "io": {"get_plugin_manager": null, "discover_and_load": {"set_discovered": true}}}
+{"func": "get_plugin_commands", "state": {"plugin_commands": {}, "aux_tasks": {"z": {"key": "z", "label": "Z"}, "a": {"key": "a", "label": "A"}}}, "io": {"get_plugin_manager": null, "discover_and_load": {"set_discovered": true}}}
+{"func": "get_plugin_auxiliary_tasks", "state": {"plugin_commands": {"foo": {"handler": "foo.handle", "description": "Do foo", "plugin": "foo"}}, "aux_tasks": {}}, "io": {"get_plugin_manager": null, "discover_and_load": {"set_discovered": true}}}
+{"func": "get_plugin_commands", "state": {"plugin_commands": {"a": {"handler": "a", "description": "A", "plugin": "pa"}, "b": {"handler": "b", "description": "B", "plugin": "pb"}}, "aux_tasks": {"z": {"key": "z", "label": "Z"}, "a": {"key": "a", "label": "A"}}}, "io": {"get_plugin_manager": null, "discover_and_load": {"set_discovered": true}}}
+{"func": "get_plugin_auxiliary_tasks", "state": {"plugin_commands": {"x": {}}, "aux_tasks": {}}, "io": {"get_plugin_manager": null, "discover_and_load": {"set_discovered": true}}}
+{"func": "get_plugin_commands", "state": {"aux_tasks": {"z": {"key": "z", "label": "Z"}, "a": {"key": "a", "label": "A"}}}, "io": {"get_plugin_manager": null, "discover_and_load": {"set_discovered": true}}}

@@ -28,8 +28,10 @@ int main(void) {
         json_t *out = plugin_get_commands();
         fputs("{\"state\":", stdout); emit(json_obj_get(c, "state"));
         fputs(",\"out\":", stdout); emit(out);
+        json_t *aux = plugin_get_auxiliary_tasks();
+        fputs(",\"aux\":", stdout); emit(aux);
         fputs("}\n", stdout);
-        json_free(out); json_free(c);
+        json_free(aux); json_free(out); json_free(c);
     }
     return 0;
 }

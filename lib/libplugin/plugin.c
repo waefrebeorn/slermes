@@ -976,7 +976,11 @@ json_t *plugin_get_commands(void) {
     return py_commands_snapshot();
 }
 /* PoP: get_plugin_auxiliary_tasks @ hermes_cli/plugins.py:get_plugin_auxiliary_tasks */
-json_t *plugin_get_auxiliary_tasks(void) { return json_array(); }
+extern json_t *py_aux_tasks_snapshot(void);
+json_t *plugin_get_auxiliary_tasks(void) {
+    if (py_ensure_discovered(0)) return json_array();
+    return py_aux_tasks_snapshot();
+}
 /* PoP: get_plugin_toolsets @ hermes_cli/plugins.py:get_plugin_toolsets */
 json_t *plugin_get_toolsets(void) { return json_array(); }
 /* ================================================================
@@ -1434,6 +1438,7 @@ typedef struct {
     json_t *middleware;          /* kind -> [callback tokens] */
     json_t *plugin_skills;       /* qualified name -> entry dict */
     json_t *plugin_commands;     /* name -> entry dict */
+    json_t *aux_tasks;           /* key -> registration dict (sorted on read) */
     json_t *sys_modules;         /* module name -> module model dict */
     json_t *bare_module_scope;   /* bare module name -> scope key */
     json_t *context_engine;      /* engine token (string) or NULL */
@@ -1539,6 +1544,7 @@ static void py_reg_free_json(void) {
     json_free(g_py_reg.middleware);
     json_free(g_py_reg.plugin_skills);
     json_free(g_py_reg.plugin_commands);
+    json_free(g_py_reg.aux_tasks);
     json_free(g_py_reg.sys_modules);
     json_free(g_py_reg.bare_module_scope);
     json_free(g_py_reg.context_engine);
@@ -1558,6 +1564,7 @@ void py_plugin_reset(void) {
     g_py_reg.middleware = json_object();
     g_py_reg.plugin_skills = json_object();
     g_py_reg.plugin_commands = json_object();
+    g_py_reg.aux_tasks = json_object();
     g_py_reg.sys_modules = json_object();
     g_py_reg.bare_module_scope = json_object();
     g_py_reg.scope_key = py_strdup("/h/s1");
@@ -1593,6 +1600,30 @@ json_t *py_commands_snapshot(void) {
     return json_copy(cmds);
 }
 
+static int py_aux_cmp(const void *pa, const void *pb) {
+    size_t ia = *(const size_t *)pa, ib = *(const size_t *)pb;
+    return strcmp(json_object_get_key_at(g_py_reg.aux_tasks, ia),
+                  json_object_get_key_at(g_py_reg.aux_tasks, ib));
+}
+
+/* get_plugin_auxiliary_tasks: entries sorted by their dict key. */
+json_t *py_aux_tasks_snapshot(void) {
+    json_t *out = json_array();
+    size_t n = json_object_size(g_py_reg.aux_tasks);
+    if (!n) return out;
+    size_t *idx = (size_t *)calloc(n, sizeof(size_t));
+    if (!idx) return out;
+    for (size_t i = 0; i < n; i++) idx[i] = i;
+    qsort(idx, n, sizeof(size_t), py_aux_cmp);
+    for (size_t i = 0; i < n; i++) {
+        const char *k = json_object_get_key_at(g_py_reg.aux_tasks, idx[i]);
+        json_t *v = json_obj_get(g_py_reg.aux_tasks, k);
+        json_append(out, v ? json_copy(v) : json_object());
+    }
+    free(idx);
+    return out;
+}
+
 void py_plugin_install_state(const json_t *st) {
     if (!st || st->type != JSON_OBJECT) return;
     json_free(g_py_reg.hooks);
@@ -1603,6 +1634,8 @@ void py_plugin_install_state(const json_t *st) {
     g_py_reg.plugin_skills = py_state_obj(st, "plugin_skills");
     json_free(g_py_reg.plugin_commands);
     g_py_reg.plugin_commands = py_state_obj(st, "plugin_commands");
+    json_free(g_py_reg.aux_tasks);
+    g_py_reg.aux_tasks = py_state_obj(st, "aux_tasks");
     json_free(g_py_reg.sys_modules);
     g_py_reg.sys_modules = py_state_obj(st, "sys_modules");
     json_free(g_py_reg.bare_module_scope);
