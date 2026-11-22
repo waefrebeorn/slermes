@@ -1,0 +1,12 @@
+{"event": {"type": "response.output_text.delta", "delta": "hi"}}
+{"event": {"type": "response.output_text.delta", "delta": ""}}
+{"event": {"type": "response.output_text.delta", "delta": 0}}
+{"event": {"type": "response.audio.delta", "delta": "x"}}
+{"event": {"type": "response.completed"}}
+{"event": {"type": "response.output_item.added", "item": {"type": "function_call", "id": "1"}}}
+{"event": {"type": "response.output_item.added", "item": {"type": "function_call", "arguments": "{}"}}}
+{"event": {"type": "response.output_item.added", "item": {"type": "function_call"}}}
+{"event": {"type": "response.output_item.added", "item": {"type": "message", "id": "1"}}}
+{"event": {"type": "response.output_item.added", "item": {"type": "my_function_call_hook", "name": "f"}}}
+{"event": {"type": "response.refusal.delta", "delta": "no"}}
+{"event": {}}
