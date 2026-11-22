@@ -717,7 +717,7 @@ static json_t *bk3_revive_gateway_after_import(const bk3_seams_t *s, const json_
     json_t *a = json_object();
     json_t *native = bk3_seam(s, "native_default", a); json_free(a);
     if (bk3_is_raise(native)) return native;
-    const char *nd = bk3_jstr(native) ?: ""; json_free(native);
+    char *nd = strdup(bk3_jstr(native) ?: ""); json_free(native);
     bool same = !strcmp(root, nd);
     if (!same) {
         a = json_object(); bk3_aset_s(a, "root", nd);
@@ -735,9 +735,10 @@ static json_t *bk3_revive_gateway_after_import(const bk3_seams_t *s, const json_
                                "To start a gateway for this home, run:  hermes gateway run", nd);
             a = json_object(); bk3_aset_s(a, "msg", msg);
             json_t *pr = bk3_seam(s, "print", a); json_free(a); free(msg);
-            if (bk3_is_raise(pr)) return pr; json_free(pr); return NULL;
+            if (bk3_is_raise(pr)) { free(nd); return pr; } json_free(pr); free(nd); return NULL;
         }
     }
+    free(nd);
     json_t *run = bk3_seam(s, "service_running", json_object());
     if (bk3_is_raise(run)) {
         if (bk3_is_exception(run)) {
