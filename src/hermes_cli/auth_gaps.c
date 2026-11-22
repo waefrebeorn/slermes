@@ -10,7 +10,18 @@
 /* ── hermes_cli/auth.py: 14 missing functions ── */
 
 /* PoP: is_same_auth_store @ hermes_cli/auth.py:_is_same_auth_store */
-int is_same_auth_store(void) { return 1; }
+/* Python: if _same_path(left, right): return True;
+ * try: return left.samefile(right) except OSError: return False.
+ * Path resolution (symlinks, `..`, bind mounts) is filesystem-dependent, so
+ * the caller passes both paths ALREADY RESOLVED plus the precomputed samefile
+ * verdict. The parity decision captured here is the OR between resolved-path
+ * identity and samefile. */
+int is_same_auth_store(const char *left_resolved, const char *right_resolved, int samefile) {
+    const char *l = left_resolved ? left_resolved : "";
+    const char *r = right_resolved ? right_resolved : "";
+    if (strcmp(l, r) == 0) return 1;        /* _same_path on resolved paths */
+    return samefile ? 1 : 0;                /* samefile, OSError => False */
+}
 
 /* ── _is_oauth_pool_payload revival (tail_revive3) ──────────────────────────
  * Faithful port of hermes_cli/auth_oauth_grants.py:_is_oauth_pool_payload.

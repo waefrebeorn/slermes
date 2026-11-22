@@ -1,0 +1,8 @@
+{"left": "/home/u/.hermes/auth.json", "right": "/home/u/.hermes/auth.json", "samefile": false}
+{"left": "/home/u/.hermes/auth.json", "right": "/home/u/.hermes/auth2.json", "samefile": false}
+{"left": "/home/u/.hermes/auth.json", "right": "/home/u/.hermes/auth2.json", "samefile": true}
+{"left": "/a/auth.json", "right": "/b/auth.json", "samefile": true}
+{"left": "", "right": "", "samefile": false}
+{"left": "", "right": "/x", "samefile": false}
+{"left": "/x", "right": "/x", "samefile": false}
+{"left": "/x", "right": "/y", "samefile": false}
