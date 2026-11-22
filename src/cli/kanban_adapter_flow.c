@@ -1523,7 +1523,14 @@ json_t *ka_explicit_board_intent_pinned(ka_io_t *io) {
     json_t *imp = ka_seam(io, "import:agent.delegation_context", json_object());
     if (ka_raised(imp)) return imp;   /* no handler: propagates */
     json_free(imp);
-    return ka_seam(io, "explicit_board_intent_is_pinned", json_object());
+    json_t *pinned = ka_seam(io, "explicit_board_intent_is_pinned", json_object());
+    if (pinned && pinned->type == JSON_NULL) {
+        /* No dispatcher supplied the seam: use the LIVE-verified C predicate. */
+        extern bool explicit_board_intent_is_pinned(void);
+        json_free(pinned);
+        return json_bool(explicit_board_intent_is_pinned() ? true : false);
+    }
+    return pinned;
 }
 
 /* PoP: ka_board_path @ hermes_cli/kanban_db.py:_board_path */
