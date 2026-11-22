@@ -27,9 +27,13 @@ def main() -> int:
     mns = {}
     body = [n for n in ast.parse(md_src).body
             if (isinstance(n, ast.FunctionDef) and n.name in
-                ("_count_image_tokens", "_count_parts"))
-            or (isinstance(n, ast.Assign)
-                and getattr(n.targets[0], "id", "") == "_IMAGE_PART_TYPES")]
+                ("_count_image_tokens", "_count_parts"))]
+    # _IMAGE_PART_TYPES moved to session_rules/turns.py in the live tree.
+    turns_src = open("C:/Users/eman5/hermes-agent/session_rules/turns.py",
+                     encoding="utf-8").read()
+    body += [n for n in ast.parse(turns_src).body
+             if isinstance(n, ast.Assign)
+             and getattr(n.targets[0], "id", "") == "_IMAGE_PART_TYPES"]
     exec(compile(ast.Module(body=body, type_ignores=[]), "model_metadata", "exec"), mns)
 
     fake_md = types.ModuleType("agent.model_metadata")

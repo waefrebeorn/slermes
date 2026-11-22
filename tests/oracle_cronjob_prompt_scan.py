@@ -20,6 +20,9 @@ def main() -> int:
     for n in ast.parse(src).body:
         if isinstance(n, ast.FunctionDef) and n.name == "_first_pattern_error":
             exec(compile(ast.Module(body=[n], type_ignores=[]), SRC, "exec"), ns)
+        if isinstance(n, ast.Assign) and any(
+                getattr(t, "id", "") == "_CRON_PATTERN_REMEDIES" for t in n.targets):
+            exec(compile(ast.Module(body=[n], type_ignores=[]), SRC, "exec"), ns)
     FN = ns["_first_pattern_error"]
 
     cases = []

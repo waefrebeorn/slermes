@@ -14,6 +14,7 @@ generation_of and a SimpleNamespace {emoji,label} for _plugin_label.
 """
 import ast
 import hashlib
+import urllib.parse
 import json
 import sys
 import types
@@ -24,7 +25,7 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 def grab(path, names, method_of=None, seeds=None):
     src = open(path, encoding="utf-8").read()
-    ns = {"Any": object, "Optional": object, "hashlib": hashlib}
+    ns = {"Any": object, "Optional": object, "hashlib": hashlib, "urllib": urllib}
     if seeds:
         ns.update(seeds)
     wanted = set(names)
@@ -103,7 +104,8 @@ def main() -> int:
 
 
 class _self:
-    pass
+    # The harness fixes the connector base at http://x on both sides.
+    _base_url = "http://x"
 
 
 if __name__ == "__main__":

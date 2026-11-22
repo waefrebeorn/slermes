@@ -25,7 +25,7 @@ sys.stdin.reconfigure(encoding="utf-8", errors="replace")
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 SRC = "C:/Users/eman5/hermes-agent/agent/anthropic_credentials.py"
-UTILS = "C:/Users/eman5/hermes-agent/utils.py"
+UTILS = "C:/Users/eman5/hermes-agent/utils/urls.py"
 FUNS = ("_is_oauth_token", "is_native_anthropic_host", "anthropic_route_is_oauth")
 UFUNS = ("_parse_base_url", "_hostname_of", "base_url_hostname")
 

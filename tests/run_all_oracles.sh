@@ -26,6 +26,14 @@ RUNNING_FULL=0
 # legacy: discovery name -> harness basename (when the oracle filename and the
 # t_port_<name>.c differ for a pre-existing port).
 declare -A HARNESS_ALIAS=(
+  [audit_bounded]="audit"
+  [callbacks_skip]="callbacks"
+)
+
+# special deps: name -> FULL MINIMAL_OBJS (ports whose own code pulls extra lib
+# objects the default auto-set misses). Override any on the CLI with
+# ORACLE_OBJS_<NAME>.
+declare -A DEPS=(
   [api_server_flow]="FULL"
   [cch_flow]="FULL"
   [cli_gaps_revive2]="FULL"
@@ -42,14 +50,6 @@ declare -A HARNESS_ALIAS=(
   [setup_revive]="FULL"
   [skills_guard_flow]="FULL"
   [tail_revive4]="FULL"
-  [audit_bounded]="audit"
-  [callbacks_skip]="callbacks"
-)
-
-# special deps: name -> FULL MINIMAL_OBJS (ports whose own code pulls extra lib
-# objects the default auto-set misses). Override any on the CLI with
-# ORACLE_OBJS_<NAME>.
-declare -A DEPS=(
   # aliased harness names: the object follows the HARNESS name, not the discovery
   # oracle name.
   [aux_event_has_content]="src/agent/port_auxiliary_client.o src/hermes_cli/port_version_info.o lib/libjson/json.o"
