@@ -28,8 +28,8 @@ for line in sys.stdin:
     except Exception:
         continue
     ns["os"] = type("O", (), {"getpid": staticmethod(lambda _p=r["pid"]: _p)})()
-    py = bool(live(r.get("entry"), r.get("metadata")))
-    c = bool(r["out"])
+    py = 1 if live(r.get("entry"), r.get("metadata")) else 0
+    c = r["out"]
     cases += 1
     if py != c:
         mism += 1

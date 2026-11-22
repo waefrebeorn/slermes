@@ -36,8 +36,8 @@ for line in sys.stdin:
     except Exception:
         continue
     event = r.get("event")
-    py = bool(live(event))
-    c = bool(r["out"])
+    py = 1 if live(event) else 0
+    c = r["out"]
     cases += 1
     if py != c:
         mism += 1

@@ -63,7 +63,11 @@ for line in sys.stdin:
         py_ok, py_err = 1, ""
     except Exception as exc:
         py_ok, py_err = 0, f"{type(exc).__name__}: {exc}"
-    c_ok, c_err = int(r["ok"]), r.get("err", "")
+    try:
+        c_ok = int(r["ok"])
+    except (TypeError, ValueError):
+        c_ok = None
+    c_err = r.get("err", "")
     cases += 1
     if py_ok != c_ok or py_err != c_err:
         mism += 1

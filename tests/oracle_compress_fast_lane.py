@@ -44,8 +44,8 @@ for line in sys.stdin:
                   r.get("actual_model"), route_config={},
                   requested_provider=r.get("requested_provider"),
                   requested_model=r.get("requested_model"))
-    py = bool(getattr(result, "certified_non_reasoning", False))
-    c = bool(r["out"])
+    py = 1 if getattr(result, "certified_non_reasoning", False) else 0
+    c = r["out"]
     cases += 1
     if py != c:
         mism += 1

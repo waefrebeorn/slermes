@@ -48,25 +48,7 @@ def run(lines):
                        errors="replace", env=env)
     return p.returncode, p.stdout + p.stderr
 
-def mutate(obj):
-    if isinstance(obj, dict):
-        for k, v in obj.items():
-            if k == "out":
-                obj[k] = mutate(v)
-                return obj
-            if isinstance(v, (dict, list)):
-                r = mutate(v)
-                if r is not None:
-                    obj[k] = r
-                    return obj
-    elif isinstance(obj, list):
-        for i, v in enumerate(obj):
-            if isinstance(v, (dict, list)):
-                r = mutate(v)
-                if r is not None:
-                    obj[i] = r
-                    return obj
-    return None
+OUT_KEYS = ("out", "ret", "result", "value", "py", "c", "ok", "err")
 
 def flip(v):
     if isinstance(v, bool): return not v
@@ -77,6 +59,7 @@ def flip(v):
 def flip_first(obj):
     if isinstance(obj, dict):
         for k, v in obj.items():
+            if k == "func": continue
             if not isinstance(v, (dict, list)):
                 obj[k] = flip(v); return True
             if flip_first(v): return True
@@ -87,6 +70,27 @@ def flip_first(obj):
             if flip_first(v): return True
     return False
 
+def flip_output(obj):
+    """Change one scalar inside the first output field, preserving container type."""
+    if isinstance(obj, dict):
+        for k in OUT_KEYS:
+            if k in obj:
+                v = obj[k]
+                if not isinstance(v, (dict, list)):
+                    obj[k] = flip(v); return True
+                if flip_first(v): return True
+                # Empty/uniform container: append a scalar rather than replacing
+                # the whole output, so oracles that call .get() still work.
+                if isinstance(v, dict):
+                    v["__MUTANT__"] = 1; return True
+                v.append("__MUTANT__"); return True
+        for v in obj.values():
+            if isinstance(v, (dict, list)) and flip_output(v): return True
+    elif isinstance(obj, list):
+        for v in obj:
+            if isinstance(v, (dict, list)) and flip_output(v): return True
+    return False
+
 base = run(rows)
 rc0, out0 = base
 if rc0 != 0:
@@ -94,12 +98,9 @@ if rc0 != 0:
     sys.exit(1)
 
 m = json.loads(rows[0])
-target = mutate(m)
-if target is None:
-    flip_first(m)
-    target = m
-else:
-    flip_first(target["out"])
+if not flip_output(m):
+    print("no output field to mutate")
+    sys.exit(2)
 mutated = [json.dumps(m, ensure_ascii=False)] + rows[1:]
 rc1, out1 = run(mutated)
 if rc1 == 0 or "mismatches" not in out1:

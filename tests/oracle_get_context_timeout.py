@@ -29,7 +29,10 @@ for line in sys.stdin:
     val = r.get("val")
     ns["_config_readonly"] = lambda _key, _v=val: {"context_file_read_timeout": _v}
     py = float(live())
-    c = float(r["out"])
+    try:
+        c = float(r["out"])
+    except (TypeError, ValueError):
+        c = None
     cases += 1
     if py != c:
         mism += 1

@@ -33,7 +33,10 @@ for line in sys.stdin:
     except Exception as e:
         print(f"SKIP {raw!r}: {e}", file=sys.stderr)
         continue
-    c = float(r["out"])
+    try:
+        c = float(r["out"])
+    except (TypeError, ValueError):
+        c = None
     cases += 1
     if py != c:
         mism += 1

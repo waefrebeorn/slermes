@@ -29,8 +29,8 @@ for line in sys.stdin:
         continue
     flags = (bool(r["memory_enabled"]), bool(r["user_profile_enabled"]))
     ns["get_builtin_memory_store_flags"] = lambda _f=flags: _f
-    py = bool(live())
-    c = bool(r["out"])
+    py = 1 if live() else 0
+    c = r["out"]
     cases += 1
     if py != c:
         mism += 1

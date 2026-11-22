@@ -28,8 +28,8 @@ for line in sys.stdin:
         continue
     url, managed = r.get("url"), r.get("managed")
     ns["_managed_local_netloc"] = lambda _m=managed: _m
-    py = bool(live(url))
-    c = bool(r["out"])
+    py = 1 if live(url) else 0
+    c = r["out"]
     cases += 1
     if py != c:
         mism += 1

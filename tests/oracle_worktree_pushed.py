@@ -29,8 +29,8 @@ for line in sys.stdin:
         continue
     ns["_worktree_current_branch"] = lambda path, timeout, _b=r.get("branch"): _b or None
     ns["_git_out"] = lambda args, path, timeout=None, _h=r.get("local_head"): _h
-    py = bool(live("wt", r.get("remote_heads")))
-    c = bool(r["out"])
+    py = 1 if live("wt", r.get("remote_heads")) else 0
+    c = r["out"]
     cases += 1
     if py != c:
         mism += 1

@@ -48,8 +48,8 @@ for line in sys.stdin:
     except Exception:
         continue
     sf = bool(r.get("samefile"))
-    py = bool(live(P(r.get("left", ""), sf), P(r.get("right", ""), sf)))
-    c = bool(r["out"])
+    py = 1 if live(P(r.get("left", ""), sf), P(r.get("right", ""), sf)) else 0
+    c = r["out"]
     cases += 1
     if py != c:
         mism += 1

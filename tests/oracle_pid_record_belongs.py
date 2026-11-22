@@ -33,8 +33,8 @@ for line in sys.stdin:
     ph = r.get("process_home", "")
     ns["_same_hermes_home"] = same_home
     ns["_get_process_hermes_home"] = lambda _p=ph: _p
-    py = bool(live(rec))
-    c = bool(r["out"])
+    py = 1 if live(rec) else 0
+    c = r["out"]
     cases += 1
     if py != c:
         mism += 1

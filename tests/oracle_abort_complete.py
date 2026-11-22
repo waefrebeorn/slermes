@@ -30,11 +30,11 @@ for line in sys.stdin:
         r = json.loads(line)
     except Exception:
         continue
-    py = bool(live(planned_gateway_profiles=r.get("planned"),
+    py = 1 if live(planned_gateway_profiles=r.get("planned"),
                    covered_gateway_profiles=r.get("covered"),
                    recovery_result=r.get("result"),
-                   stale_runtime_rows=r.get("stale")))
-    c = bool(r["out"])
+                   stale_runtime_rows=r.get("stale")) else 0
+    c = r["out"]
     cases += 1
     if py != c:
         mism += 1

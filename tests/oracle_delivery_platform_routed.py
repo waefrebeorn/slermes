@@ -29,8 +29,8 @@ for line in sys.stdin:
     routes = r.get("routes") or []
     ns["_primary_profile_routes_for_current_home"] = lambda _rs=routes: [
         type("R", (), {"platform": x})() for x in _rs]
-    py = bool(live(r.get("platform", "")))
-    c = bool(r["out"])
+    py = 1 if live(r.get("platform", "")) else 0
+    c = r["out"]
     cases += 1
     if py != c:
         mism += 1
