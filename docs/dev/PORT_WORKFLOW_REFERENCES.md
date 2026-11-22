@@ -90,7 +90,9 @@ From `slermes-windows-port`, `writing-plans`, `grounded-citations` and this sess
 
 - [x] Wiring guardrail (`check_port_wiring.py`)
 - [x] Coverage-gap guardrail (`check_gate_coverage.py`)
-- [ ] Per-harness content-hash keys
+- [x] Per-harness content-hash keys (`scripts/harness_key.py`): one `nm -A`
+  pass over the archive builds a symbol index, each harness's reachable member
+  set is hashed individually, and `make` relinks only changed gates.
 - [ ] Report retried gates in the full-suite summary
 - [ ] Pin remaining archive-sensitive gates via full-suite diff
 - [ ] Wire the plugin registry stubs behind a real CLI oracle

@@ -41,7 +41,7 @@ for spec in "${SPECS[@]}"; do
 done
 SPECS=("${LIVE[@]}")
 
-WORK=".testbin/harnesses.$$"
+WORK=".testbin/harness_build"
 mkdir -p "$WORK"
 MK="$WORK/harnesses.mk"
 
@@ -64,6 +64,12 @@ ARCHIVE_EXCLUDE="${ARCHIVE_EXCLUDE:-process_identity_flow2 skills_guard_flow}"
 # objects; ld then pulls only what each harness actually references.
 ARCHIVE_PATH=$(bash tests/make_harness_archive.sh | tail -1)
 [ -f "$ARCHIVE_PATH" ] || { echo "harness archive unavailable" >&2; exit 1; }
+
+# Per-harness content keys: only gates whose reachable objects actually changed
+# are relinked. One Python process builds the symbol index and all digests.
+printf '%s\n' "${SPECS[@]}" > "$WORK/specs.tsv"
+python scripts/harness_key.py "$WORK/specs.tsv" "$ARCHIVE_PATH" "$WORK"
+[ -f "$WORK/inputs.tsv" ] || { echo "harness key generation failed" >&2; exit 1; }
 
 # Ensure every explicit dependency object exists (SAC-safe -O0 hash image,
 # local stubs, unbuilt port objects) before the batch link.
@@ -123,8 +129,8 @@ bash tests/ensure_oracle_deps.sh $ALL_OBJS || { echo "dependency build failed" >
     # link is 1205 objects), so hand it to gcc through a response file.
     rsp="$WORK/$h.rsp"
     printf '%s\n' $o > "$rsp"
-    printf '%s/%s.exe: tests/t_port_%s.c\n\t$(CC) $(CFLAGS) $< @%s -o $@ $(LDFLAGS) $(LIBS)\n\n' \
-      "$WORK" "$h" "$h" "$rsp"
+    printf '%s/%s.exe: tests/t_port_%s.c %s/%s.key\n\t$(CC) $(CFLAGS) $< @%s -o $@ $(LDFLAGS) $(LIBS)\n\n' \
+      "$WORK" "$h" "$h" "$WORK" "$h" "$rsp"
   done
 } > "$MK"
 
@@ -143,10 +149,10 @@ for spec in "${SPECS[@]}"; do
   # individually with their resolved deps.
   if [ -f "$WORK/$h.exe" ]; then
     cp "$WORK/$h.exe" ".testbin/harnesses/$h.exe"
+    [ -f "$WORK/$h.key" ] && cp "$WORK/$h.key" ".testbin/harnesses/$h.key"
   else
     echo "WARN: harness $h did not build; will retry per-oracle" >&2
   fi
 done
 : > .testbin/harnesses/.stamp
 echo "built ${#SPECS[@]} harnesses -> .testbin/harnesses/"
-rm -rf "$WORK"
