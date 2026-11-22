@@ -36,8 +36,19 @@ for dp, _, fs in os.walk(root):
                 if free_line is None:
                     continue
                 later = "\n".join(lines[free_line + 1:free_line + 12])
-                if re.search(r'\b' + re.escape(var) + r'\b', later):
-                    found.append(f"{p}:{i+1} {var} borrowed from {root_name}, freed at {free_line+1}, used later")
+                if not re.search(r'\b' + re.escape(var) + r'\b', later):
+                    continue
+                # A copy made before the free makes the later use safe.
+                between = "\n".join(lines[i + 1:free_line + 1])
+                copy_re = re.compile(r'\b(strdup|dup_str|[^\s]*str_or_empty|[^\s]*_pystr)\s*\([^)]*\b'
+                                     + re.escape(var) + r'\b')
+                if copy_re.search(between):
+                    continue
+                # Only report a use that consumes the borrowed pointer directly.
+                use_re = re.compile(r'(json_string|snprintf|json_set|[^\s]*_set_s|[^\s]*_set_copy)\s*\([^;]*\b'
+                                    + re.escape(var) + r'\b')
+                if use_re.search(later):
+                    found.append(f"{p}:{i+1} {var} borrowed from {root_name}, freed at {free_line+1}, consumed later")
                     break
 for f in found:
     print(f)
