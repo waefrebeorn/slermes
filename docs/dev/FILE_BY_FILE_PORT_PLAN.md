@@ -87,6 +87,27 @@ and writes results to disk rather than into chat.
 
 ---
 
+### 1.8 Additional evidence from the second research round
+
+A repository-level translation workflow that extracts every function/fragment
+and then has a validator perform **coverage-gap analysis** against the full
+function list — generating more differential tests for uncovered functions and
+feeding them back to the translator — matches our file-by-file loop exactly.[10]
+A related pipeline keeps a *fixed external oracle that agents may not edit*,
+checks each milestone against all earlier milestones, and runs a separate
+parity agent that reports missing or stubbed components after the tests pass.[11]
+For translated scientific code, the recommended evidence ladder is unit
+comparison function by function, then differential testing against upstream,
+then benchmarks; agents are told to implement correct processes rather than
+calibrate answers.[14] Coverage-guided fuzzing plus mutation testing finds
+divergences that ordinary tests miss, and multiple independent port candidates
+make coincident mistakes less likely.[12] Change-directed differential testing
+uses AST extraction of changed functions and a static call graph to reach them
+with generated tests — the same trick as our LIVE-AST oracles plus flow
+tracing.[13] Finally, giving a migration model the *diff* between dependency
+versions beats giving it only the new code, which argues for keeping a
+quarry-drift ledger rather than re-reading whole modules each time.[15]
+
 ## 2. Categorize gaps by Python file, not by feature counter
 
 Measured baseline: 13,622 Python functions with bodies >=15 lines in the
@@ -104,6 +125,8 @@ useful categorization is by **slice risk and helper reuse**, not by count:
 
 Tier A is where "file by file" pays fastest: a whole Python file of leaves is
 verifiable in one gate, as the 7-function `gateway_windows.py` batch proved.
+`cron/jobs.py:rewrite_skill_refs` and `_normalize_skill_list` are now also
+ported (10/0) and wired into `cronjobs_rewrite_skill_refs`.
 Tier E is where existing green oracles become product behavior; it must not be
 counted as *new* parity until a caller is shown by `check_port_wiring.py`.
 
@@ -180,3 +203,9 @@ the next file's batch from reintroducing an old divergence.
 [7] https://github.com/anvanvan/flows/blob/main/skills/strangler-fig-pattern/SKILL.md
 [8] https://aidlc.io/legacy-code
 [9] https://code.claude.com/docs/en/workflows
+[10] https://arxiv.org/html/2604.07341v2
+[11] https://arxiv.org/html/2610.34633
+[12] https://arxiv.org/html/2610.30188v1
+[13] https://arxiv.org/html/2607.16024
+[14] https://arxiv.org/html/2609.15258v3
+[15] https://arxiv.org/html/2511.00160v1

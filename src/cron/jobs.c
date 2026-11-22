@@ -2252,6 +2252,10 @@ json_t *cronjobs_referenced_skill_names(void) {
     return out;
 }
 
+
+/* Oracle-verified body: src/cron/cron_jobs_rewrite.c */
+extern json_t *cj_rewrite_skill_refs(const json_t *jobs, const json_t *consolidated, const json_t *pruned);
+
 /* PoP: cronjobs_rewrite_skill_refs @ cron/jobs.py:rewrite_skill_refs */
 json_t *cronjobs_rewrite_skill_refs(const json_t *consolidated, const json_t *pruned) {
     json_t *report = json_object();
@@ -2260,7 +2264,6 @@ json_t *cronjobs_rewrite_skill_refs(const json_t *consolidated, const json_t *pr
     json_set(report, "jobs_updated", json_number(0));
     json_set(report, "jobs_scanned", json_number(0));
 
-    /* Build pruned set minus consolidated keys. */
     bool has_cons = json_is_object(consolidated) && json_object_size(consolidated) > 0;
     bool has_pruned = json_is_array(pruned) && json_array_size(pruned) > 0;
     if (!has_cons && !has_pruned) return report;
@@ -2271,76 +2274,21 @@ json_t *cronjobs_rewrite_skill_refs(const json_t *consolidated, const json_t *pr
     free(err);
     if (!jobs) { cronjobs_unlock(lk); return report; }
 
-    bool changed = false;
-    size_t n = json_array_size(jobs);
-    int updated = 0;
-    for (size_t i = 0; i < n; i++) {
-        json_t *job = json_array_get(jobs, i);
-        json_t *before = cronjobs_normalize_skill_list(
-            json_object_get_string(job, "skill", NULL), json_object_get(job, "skills"));
-        size_t bn = json_array_size(before);
-        if (bn == 0) { json_free(before); continue; }
-
-        json_t *mapped = json_object();
-        json_t *dropped = json_array();
-        json_t *newsk = json_array();
-        for (size_t j = 0; j < bn; j++) {
-            const char *name = json_string_value(json_array_get(before, j));
-            const char *target = has_cons ? json_object_get_string(consolidated, name, NULL) : NULL;
-            bool is_pruned = false;
-            if (has_pruned && !target) {
-                size_t pn = json_array_size(pruned);
-                for (size_t k = 0; k < pn; k++)
-                    if (strcmp(json_string_value(json_array_get(pruned, k)), name) == 0) { is_pruned = true; break; }
-            }
-            if (target) {
-                json_set(mapped, name, json_string(target));
-                if (*target) {
-                    bool dup = false;
-                    size_t nn = json_array_size(newsk);
-                    for (size_t k = 0; k < nn; k++)
-                        if (strcmp(json_string_value(json_array_get(newsk, k)), target) == 0) { dup = true; break; }
-                    if (!dup) json_append(newsk, json_string(target));
-                }
-            } else if (is_pruned) {
-                json_append(dropped, json_string(name));
-            } else {
-                bool dup = false;
-                size_t nn = json_array_size(newsk);
-                for (size_t k = 0; k < nn; k++)
-                    if (strcmp(json_string_value(json_array_get(newsk, k)), name) == 0) { dup = true; break; }
-                if (!dup) json_append(newsk, json_string(name));
-            }
-        }
-
-        if (json_object_size(mapped) == 0 && json_array_size(dropped) == 0) {
-            json_free(before); json_free(mapped); json_free(dropped); json_free(newsk);
-            continue;
-        }
-
-        json_set(job, "skills", json_copy(newsk));
-        if (json_array_size(newsk) > 0)
-            json_set(job, "skill", json_string(json_string_value(json_array_get(newsk, 0))));
-        else json_set(job, "skill", json_null());
-        changed = true;
-        updated++;
-
-        json_t *entry = json_object();
-        json_set(entry, "job_id", json_string(json_object_get_string(job, "id", "")));
-        const char *nm = json_object_get_string(job, "name", NULL);
-        json_set(entry, "job_name", json_string(nm ? nm : json_object_get_string(job, "id", "")));
-        json_set(entry, "before", json_copy(before));
-        json_set(entry, "after", json_copy(newsk));
-        json_set(entry, "mapped", mapped);
-        json_set(entry, "dropped", dropped);
-        json_append(rewrites, entry);
-
-        json_free(before); json_free(newsk);
+    /* The decision logic is the oracle-verified body in cron_jobs_rewrite.c. */
+    json_t *out = cj_rewrite_skill_refs(jobs, consolidated, pruned);
+    json_t *res = json_obj_get(out, "result");
+    if (res) {
+        const json_t *rw = json_obj_get(res, "rewrites");
+        const json_t *up = json_obj_get(res, "jobs_updated");
+        const json_t *sc = json_obj_get(res, "jobs_scanned");
+        json_free(json_obj_get(report, "rewrites"));
+        json_set(report, "rewrites", rw ? json_copy(rw) : json_array());
+        json_set(report, "jobs_updated", up ? json_copy(up) : json_number(0));
+        json_set(report, "jobs_scanned", sc ? json_copy(sc) : json_number(0));
     }
-
-    if (changed) cronjobs_save_jobs(jobs);
-    json_set(report, "jobs_updated", json_number(updated));
-    json_set(report, "jobs_scanned", json_number((double)n));
+    json_t *after = json_obj_get(out, "jobs");
+    if (after && json_array_size(after) > 0) cronjobs_save_jobs(after);
+    json_free(out);
     json_free(jobs);
     cronjobs_unlock(lk);
     return report;

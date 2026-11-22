@@ -1,0 +1,10 @@
+{"jobs": [], "args": {"consolidated": {}, "pruned": []}}
+{"jobs": [{"id": "a", "skill": "alpha", "skills": ["alpha", "beta"]}], "args": {"consolidated": {}, "pruned": []}}
+{"jobs": [{"id": "a", "skills": ["old", "beta"]}], "args": {"consolidated": {"old": "new"}, "pruned": []}}
+{"jobs": [{"id": "a", "skills": ["gone", "beta"]}], "args": {"consolidated": {}, "pruned": ["gone"]}}
+{"jobs": [{"id": "a", "name": "A", "skill": "gone", "skills": ["gone", " beta ", "beta", "old"]}, {"id": "b", "skills": ["x"]}], "args": {"consolidated": {"old": "new"}, "pruned": ["gone"]}}
+{"jobs": [{"id": "a", "skills": ["dup", "dup", "z"]}], "args": {"consolidated": {}, "pruned": ["dup"]}}
+{"jobs": [{"id": "a", "skills": ["s1", "s2"]}], "args": {"consolidated": {"s1": "s2"}, "pruned": ["s1"]}}
+{"jobs": [{"id": "a", "skills": ["x"]}], "args": {"consolidated": {"x": ""}, "pruned": []}}
+{"jobs": [{"id": "a", "skills": []}], "args": {"consolidated": {"x": "y"}, "pruned": []}}
+{"jobs": [{"id": "a", "skill": "legacy", "skills": null}, {"id": "b", "skill": "legacy2"}], "args": {"consolidated": {"legacy": "u"}, "pruned": []}}
