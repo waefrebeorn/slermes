@@ -23,6 +23,29 @@ the four parallel audits in `docs/dev/PARITY_MAPPING.md`.
 | [13] | https://arxiv.org/html/2607.16024 | AST changed-function extraction + static call graph for test generation |
 | [14] | https://arxiv.org/html/2609.15258v3 | Function-by-function differential test, then upstream differential, then validation |
 | [15] | https://arxiv.org/html/2511.00160v1 | Migration context should include diffs between versions |
+| [16] | https://arxiv.org/html/2602.09944 | Migration loop: plan → auto env → test validation → feedback refinement |
+| [17] | https://arxiv.org/html/2607.28591v3 | Verified tasks require pass → fail → pass across three states |
+| [18] | https://arxiv.org/html/2607.28271 | Locksmith Loop: input-state + stub-state fingerprints, parity-preserving mutation, repair the migrator |
+| [19] | https://github.com/wallaceespindola/legacy-modernization-patterns | Pin behavior first including bugs; AI proposes, deterministic checks gate |
+| [20] | https://snowmanlabs.com/insights/modernize-legacy-systems-without-big-bang-rewrite | Slice by bounded context; characterize before touching; agents bulk-generate tests |
+
+### 1.9 Third research round: lock the seam, mutate to reach it
+
+The Locksmith Loop records a **behavioral fingerprint** from an input-state
+plus a stub-state — the paragraphs entered, branches taken, stub-operation log,
+and terminal observable state — and compares it against the migrated target.[18]
+That is exactly what our fixture `io` scripts plus emitted `trace` already
+produce; what is missing is its explicit "Locked Paragraph" analysis: when
+input-space search plateaus, a parity-preserving mutation should be used to
+ penetrate the blocker rather than adding more of the same inputs. A parallel
+migration workflow splits the loop into planning, environment, test-validation
+and feedback-refinement agents, routing configuration errors to the environment
+agent and semantic mismatches back to the translator.[16] Verified task
+construction insists on pass → fail → pass across healthy, task and restored
+states before admitting a case.[17] For legacy code, the discipline is to pin
+current behavior **including bugs** with characterization tests, put an
+abstraction in front of the legacy path, and let deterministic checks — not the
+generating model — decide acceptance.[19][20]
 
 ## 2. Research → our workflow
 
@@ -99,3 +122,26 @@ From `slermes-windows-port`, `writing-plans`, `grounded-citations` and this sess
   Both now have a mitigation (explicit link pin + parallel SAC smoke).
 - [ ] Pin remaining archive-sensitive gates via full-suite diff
 - [ ] Wire the plugin registry stubs behind a real CLI oracle
+
+## Sources
+
+[1] https://arxiv.org/html/2606.27416
+[2] https://arxiv.org/html/2611.21084v1
+[3] https://arxiv.org/html/2606.03115v1
+[4] https://arxiv.org/html/2405.00796v1
+[5] https://bazel.build/remote/caching
+[6] https://devops.com/your-ci-retries-are-hiding-real-bugs
+[7] https://github.com/anvanvan/flows/blob/main/skills/strangler-fig-pattern/SKILL.md
+[8] https://aidlc.io/legacy-code
+[9] https://code.claude.com/docs/en/workflows
+[10] https://arxiv.org/html/2604.07341v2
+[11] https://arxiv.org/html/2610.34633
+[12] https://arxiv.org/html/2610.30188v1
+[13] https://arxiv.org/html/2607.16024
+[14] https://arxiv.org/html/2609.15258v3
+[15] https://arxiv.org/html/2511.00160v1
+[16] https://arxiv.org/html/2602.09944
+[17] https://arxiv.org/html/2607.28591v3
+[18] https://arxiv.org/html/2607.28271
+[19] https://github.com/wallaceespindola/legacy-modernization-patterns
+[20] https://snowmanlabs.com/insights/modernize-legacy-systems-without-big-bang-rewrite
