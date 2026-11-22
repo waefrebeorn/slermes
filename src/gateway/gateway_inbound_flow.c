@@ -263,6 +263,9 @@ static size_t gif_utf8_prefix(const char *s, size_t n) {
         if (((unsigned char)s[i] & 0xc0) != 0x80) count++;
         i++;
     }
+    /* after the nth lead byte, consume its continuation bytes as well:
+     * Python's s[:n] ends at a codepoint boundary, not inside it. */
+    while (s[i] && ((unsigned char)s[i] & 0xc0) == 0x80) i++;
     return i;
 }
 
@@ -594,6 +597,11 @@ static json_t *gif_pending_rows(gif_ctx_t *c, const char *sid) {
             json_obj_del(row, "queued_owner_epoch");  /* admission_row */
             json_append(rows, row);
         }
+    } else if (listed && listed->type == JSON_OBJECT) {
+        /* a one-row script arrives as the row itself, not a list of rows */
+        json_t *row = json_copy(listed);
+        json_obj_del(row, "queued_owner_epoch");
+        json_append(rows, row);
     }
     json_free(listed);
     json_t *sessions = gif_sub(c, "sessions");
@@ -1003,13 +1011,7 @@ static json_t *gif_estop_turn_allowed(gif_ctx_t *c, const json_t *args) {
 static json_t *gif_estop_gate(gif_ctx_t *c, const json_t *args) {
     if (json_get_bool(args, "is_internal", false)) return NULL;
     json_t *notice = gif_call(c, "agent.estop.paused_reply", json_object());
-    if (gif_is_raise(notice)) {
-        if (gif_str_eq(json_obj_get(notice, "__raise__"), "ImportError")) {
-            json_free(notice);
-            return NULL;
-        }
-        return notice;
-    }
+    if (gif_is_raise(notice)) return notice;
     if (gif_is_null(notice)) return NULL;  /* notice is None: allowed NOT called */
     json_t *allowed = gif_estop_turn_allowed(c, args);
     if (gif_is_raise(allowed)) { json_free(notice); return allowed; }
@@ -1328,6 +1330,7 @@ static json_t *gif_admit_tuple(json_t *event, json_t *source, bool internal) {
 }
 
 /* PoP: gif_admit_event @ gateway/run_inbound.py:_hm_admit_event */
+static json_t *gif_send_unauthorized_decline(gif_ctx_t *c, const json_t *args);
 static json_t *gif_admit_event(gif_ctx_t *c, const json_t *args) {
     json_t *event = json_obj_get(args, "event");
     json_t *source = json_obj_get(event, "source");
@@ -1440,7 +1443,10 @@ static json_t *gif_admit_event(gif_ctx_t *c, const json_t *args) {
         } else if (b && strcmp(b, "decline") == 0) {
             json_t *a5 = json_object();
             json_set(a5, "source", source ? json_copy(source) : json_null());
-            r = gif_call(c, "self._hm_send_unauthorized_decline", a5);
+            /* self is the real mixin; _hm_send_unauthorized_decline runs its
+             * body (pairing-store dedupe) rather than being a script seam. */
+            r = gif_send_unauthorized_decline(c, a5);
+            json_free(a5);
         } else if (pairable) {
             json_t *a5 = json_object();
             json_set(a5, "source", source ? json_copy(source) : json_null());

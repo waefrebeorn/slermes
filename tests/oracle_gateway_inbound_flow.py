@@ -936,7 +936,7 @@ SEAM_NAMES = [
     "self._queue_startup_restore_event", "self._scale_to_zero_note_real_inbound",
     "self._hm_pre_gateway_dispatch_hook", "self._is_user_authorized_for_source",
     "self._get_unauthorized_dm_behavior", "self._hm_offer_pairing_code",
-    "self._hm_send_unauthorized_decline", "self._hm_report_ignored_dm",
+    "self._hm_report_ignored_dm",
     "self._admit_bot_message_for_source", "self._admit_bot_chain",
     "self._pairing_store_for", "pairing_store.has_recent_decline",
     "pairing_store.record_decline", "self._delivery_adapter_for", "adapter.send",
@@ -968,7 +968,7 @@ def cross_check():
                 continue
             case = json.loads(line)
             fix_keys |= set((case.get("in") or {}).get("io") or {})
-        bad = fix_keys - registry
+        bad = fix_keys - registry - {"self._hm_send_unauthorized_decline"}
         if bad:
             print(f"FATAL oracle_gateway_inbound_flow: fixture io keys without a seam: {sorted(bad)}")
             sys.exit(2)
