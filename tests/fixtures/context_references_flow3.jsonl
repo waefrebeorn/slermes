@@ -85,3 +85,5 @@
 {"func": "build_folder_listing", "in": {"path": "/x/dir", "cwd": "/w", "display_base": "/x", "limit": 2, "seams": {"relative_to": [{"__raise__": "ValueError", "msg": "a"}, {"__raise__": "ValueError", "msg": "b"}], "iter_entries": [[{"path": "/x/dir/a.py", "name": "a.py", "is_dir": false, "relparts": 2}, {"path": "/x/dir/b.py", "name": "b.py", "is_dir": false, "relparts": 2}]], "file_metadata": ["1 lines", "2 lines"]}}}
 {"func": "build_folder_listing", "in": {"path": "/w/dir", "cwd": "/w", "seams": {"relative_to": {"__raise__": "SystemExit", "msg": "bye"}}}}
 {"func": "build_folder_listing", "in": {"path": "/w/dir", "cwd": "/w", "seams": {}}}
+{"func": "default_url_fetcher", "in": {"url": "https://x", "seams": {"web_extract": "C:/"}}}
+{"func": "default_url_fetcher", "in": {"url": "https://x", "seams": {"web_extract": "\n"}}}

@@ -285,3 +285,4 @@
 {"func": "_is_discord_unknown_interaction", "in": {"args": {"exc": {"cls": "X", "msg": "unknown interaction", "discord_base": null, "attrs": {"response": {"status_code": 404}}}}, "state": {}, "io": {}}}
 {"func": "_is_discord_unknown_interaction", "in": {"args": {"exc": {"cls": "X", "msg": "", "discord_base": null, "attrs": {"code": 10008}}}, "state": {}, "io": {}}}
 {"func": "_is_discord_unknown_interaction", "in": {"args": {"exc": {"cls": "X", "msg": "", "discord_base": null, "attrs": {"code": true}}}, "state": {}, "io": {}}}
+{"func": "_liveness_knob", "in": {"args": {"key": "knob", "default": 1, "cast": "a", "env_key": null}, "state": {"name": "D"}, "io": {"_config_value": "15"}}}

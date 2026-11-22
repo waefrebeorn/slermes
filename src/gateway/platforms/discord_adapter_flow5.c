@@ -598,6 +598,20 @@ static json_t *da5_forum_thread_parts(da5_ctx_t *ctx, const json_t *args) {
     return arr;
 }
 
+static void da5_repr_escape(const char *in, char *out, size_t cap) {
+    size_t n = 0;
+    if (!in) in = "";
+    for (const char *p = in; *p && n + 2 < cap; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c == '\n') { out[n++] = '\\'; out[n++] = 'n'; }
+        else if (c == '\r') { out[n++] = '\\'; out[n++] = 'r'; }
+        else if (c == '\t') { out[n++] = '\\'; out[n++] = 't'; }
+        else if (c == '\\' || c == '\'') { out[n++] = '\\'; out[n++] = (char)c; }
+        else out[n++] = (char)c;
+    }
+    out[n] = '\0';
+}
+
 /* int error descriptor matching CPython exactly on the fixture corpus. */
 static json_t *da5_int_error(const json_t *v) {
     if (!v || v->type == JSON_NULL)
@@ -610,7 +624,8 @@ static json_t *da5_int_error(const json_t *v) {
         return da5_err("TypeError", "int() argument must be a string, a bytes-like object or a real number, not 'dict'");
     if (v->type == JSON_STRING) {
         char msg[512];
-        snprintf(msg, sizeof msg, "invalid literal for int() with base 10: '%s'", v->str_val ? v->str_val : "");
+        char esc[256]; da5_repr_escape(v->str_val, esc, sizeof(esc));
+        snprintf(msg, sizeof msg, "invalid literal for int() with base 10: '%s'", esc);
         return da5_err("ValueError", msg);
     }
     return da5_err("ValueError", "invalid literal for int() with base 10");

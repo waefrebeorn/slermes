@@ -1043,9 +1043,9 @@ static json_t *da_liveness_knob(da_ctx_t *ctx, const json_t *args) {
     const json_t *key = json_obj_get(args, "key");
     const json_t *def = json_obj_get(args, "default");
     const json_t *env_key = json_obj_get(args, "env_key");
+    /* Oracle maps every non-"int" cast name to float; it has no "unknown cast" path. */
     const char *cast = json_get_str(args, "cast", "float");
-    if (strcmp(cast, "int") != 0 && strcmp(cast, "float") != 0)
-        return da_err("RuntimeError", "unknown cast");
+    if (!cast || strcmp(cast, "int") != 0) cast = "float";
     json_t *a = json_object();
     json_set(a, "key", key ? json_copy(key) : json_null());
     json_set(a, "default", def ? json_copy(def) : json_null());

@@ -698,7 +698,20 @@ static json_t *cr3_default_url_fetcher(cr3_seams_t *sp, const char *url) {
     const char *txt = cr3_sval(raw);
     char *err = NULL;
     json_t *payload = json_parse(txt, &err);
-    if (err || !payload) { free(err); json_free(raw); return cr3_raise("JSONDecodeError", "Expecting value"); }
+    if (err || !payload) {
+        free(err);
+        size_t pos = 0, line = 1, col = 1;
+        while (txt && txt[pos] &&
+               (txt[pos] == ' ' || txt[pos] == '\t' || txt[pos] == '\n' || txt[pos] == '\r')) {
+            if (txt[pos] == '\n') { line++; col = 1; } else col++;
+            pos++;
+        }
+        char msg[160];
+        snprintf(msg, sizeof(msg), "Expecting value: line %zu column %zu (char %zu)",
+                 line, col, pos);
+        json_free(raw);
+        return cr3_raise("JSONDecodeError", msg);
+    }
     json_free(raw);
     json_t *docs = json_obj_get(payload, "results");
     if (!cr3_is_arr(docs) || docs->c.count == 0) {
