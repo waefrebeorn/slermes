@@ -310,6 +310,11 @@ def record_call(name, args, ret_fn=None):
         ret = result.get("ret")
     else:
         ret = result
+    # Scripted objects are reused across calls; LIVE mutates config in place.
+    # Return a fresh copy so earlier traced writes keep their own state,
+    # matching the C harness (which copies each scripted ret).
+    if isinstance(ret, (dict, list)):
+        ret = copy.deepcopy(ret)
     return ret_fn(ret) if ret_fn else ret
 
 
