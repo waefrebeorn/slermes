@@ -124,7 +124,12 @@ def materialize(v):
 
 
 def raise_spec(e):
-    return {"__raise__": type(e).__name__, "msg": str(e)}
+    name = type(e).__name__
+    # The C port reports the public builtin name; the oracle's scripted
+    # subclass exists only to control str(exc), so normalise it back.
+    if name == "_ScriptedTimeoutExpired":
+        name = "TimeoutExpired"
+    return {"__raise__": name, "msg": str(e)}
 
 
 class AttrDouble:

@@ -423,6 +423,11 @@ json_t *mcl_read_packed_ref(mcl_io_t *io, json_t *in) {
         return propagate(r);
     }
     const char *text = jstr(r);
+    /* utf-8-sig strips a leading BOM; the scripted seam returns the decoded
+     * string, so drop the BOM here to match Python's read_text. */
+    if (text && (unsigned char)text[0] == 0xEF &&
+            (unsigned char)text[1] == 0xBB && (unsigned char)text[2] == 0xBF)
+        text += 3;
     json_t *out = json_null();
     if (text) {
         size_t n = 0;
@@ -525,20 +530,22 @@ json_t *mcl_latest_session_id(mcl_io_t *io, json_t *in) {
 /* ── _first_run_setup_guard ────────────────────────────────────────────── */
 /* PoP: mcl_first_run_setup_guard @ hermes_cli/main.py:_first_run_setup_guard */
 json_t *mcl_first_run_setup_guard(mcl_io_t *io, json_t *in) {
-    json_t *pr = do_print(io, "", "\n", "stdout");
+    /* The oracle models Python print() as text including its trailing newline
+     * with end="\n" retained; mirror that exactly. */
+    json_t *pr = do_print(io, "\n", "\n", "stdout");
     if (mcl_raised(pr)) return propagate(pr);
     json_free(pr);
-    pr = do_print(io, "It looks like Hermes isn't configured yet -- no API keys or providers found.",
+    pr = do_print(io, "It looks like Hermes isn't configured yet -- no API keys or providers found.\n",
                   "\n", "stdout");
     if (mcl_raised(pr)) return propagate(pr);
     json_free(pr);
-    pr = do_print(io, "", "\n", "stdout");
+    pr = do_print(io, "\n", "\n", "stdout");
     if (mcl_raised(pr)) return propagate(pr);
     json_free(pr);
-    pr = do_print(io, "  Run:  hermes setup", "\n", "stdout");
+    pr = do_print(io, "  Run:  hermes setup\n", "\n", "stdout");
     if (mcl_raised(pr)) return propagate(pr);
     json_free(pr);
-    pr = do_print(io, "", "\n", "stdout");
+    pr = do_print(io, "\n", "\n", "stdout");
     if (mcl_raised(pr)) return propagate(pr);
     json_free(pr);
 

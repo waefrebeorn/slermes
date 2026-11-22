@@ -450,7 +450,12 @@ json_t *hermes_cli_gateway_side_connection_for(const json_t *cli, const gwg_seam
     const json_t *open = gwg_oget(cli, "_gateway_session_open");
     if (!gflow_truth(open)) { json_free(store); return NULL; }
     const json_t *conn = gwg_oget(store, "connection");
-    if (!conn) { json_free(store); return gwg_raise("AttributeError", "missing attribute 'connection'"); }
+    /* LIVE uses getattr(store, "connection", None) then reads .final, so a
+     * missing connection raises on None, not on the store. */
+    if (!conn || gflow_is_null(conn)) {
+        json_free(store);
+        return gwg_raise("AttributeError", "'NoneType' object has no attribute 'final'");
+    }
     const json_t *fin = gwg_oget(conn, "final");
     if (!fin) { json_free(store); return gwg_raise("AttributeError", "missing attribute 'final'"); }
     if (gflow_truth(fin)) { json_free(store); return NULL; }  /* final -> None */

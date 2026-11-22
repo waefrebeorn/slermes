@@ -135,10 +135,40 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
     } else if (strcmp(func, "warm_turn_machinery_sync") == 0) {
         r = warm_turn_machinery_sync(&sr);
     } else if (strcmp(func, "active_deferred_agent_worker_count") == 0) {
-        r = active_deferred_agent_worker_count(node(in, "runner"), &sr);
+        json_t *runner = json_copy(node(in, "runner"));
+        /* The oracle builds a dict keyed by future id; the fixture carries a
+         * list. Convert it so the C port sees the same shape. */
+        if (runner && runner->type == JSON_OBJECT) {
+            json_t *w = json_obj_get(runner, "_deferred_agent_workers");
+            if (w && w->type == JSON_ARRAY) {
+                json_t *map = json_object();
+                for (size_t i = 0; i < w->c.count; i++) {
+                    json_t *e = w->c.items[i];
+                    const char *fid = json_get_str(e, "future", "");
+                    json_set(map, fid, json_copy(json_obj_get(e, "agent")));
+                }
+                json_set(runner, "_deferred_agent_workers", map);
+            }
+        }
+        r = active_deferred_agent_worker_count(runner, &sr);
+        json_free(runner);
     } else if (strcmp(func, "interrupt_deferred_agent_workers") == 0) {
-        r = interrupt_deferred_agent_workers(node(in, "runner"),
+        json_t *runner = json_copy(node(in, "runner"));
+        if (runner && runner->type == JSON_OBJECT) {
+            json_t *w = json_obj_get(runner, "_deferred_agent_workers");
+            if (w && w->type == JSON_ARRAY) {
+                json_t *map = json_object();
+                for (size_t i = 0; i < w->c.count; i++) {
+                    json_t *e = w->c.items[i];
+                    json_set(map, json_get_str(e, "future", ""),
+                             json_copy(json_obj_get(e, "agent")));
+                }
+                json_set(runner, "_deferred_agent_workers", map);
+            }
+        }
+        r = interrupt_deferred_agent_workers(runner,
                                              json_get_str(in, "reason", ""), &sr);
+        json_free(runner);
     } else if (strcmp(func, "redeliver_failed_obligations_for_platform") == 0) {
         r = redeliver_failed_obligations_for_platform(node(in, "gateway"),
                                                       json_get_str(in, "platform", ""),
