@@ -25,11 +25,13 @@ static void msf_add_split(json_t *out, const char *s) {
         while (start < end && (*start == ' ' || *start == '\t' || *start == '\n' || *start == '\r')) start++;
         while (end > start && (*(end-1) == ' ' || *(end-1) == '\t' || *(end-1) == '\n' || *(end-1) == '\r')) end--;
         if (end > start) {
-            char buf[256];
             size_t n = (size_t)(end - start);
-            if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+            char *buf = malloc(n + 1);
+            if (!buf) return;
             memcpy(buf, start, n); buf[n] = '\0';
-            json_array_append(out, json_string(buf));
+            json_t *v = json_string(buf);
+            free(buf);
+            if (v) json_array_append(out, v);
         }
         if (*p == ',') p++;
     }

@@ -274,6 +274,21 @@ static char *ts_path_join(const char *base, const char *child) {
     return r;
 }
 
+/* Python repr() escape for an ASCII string used inside exception messages. */
+static void ts_repr_escape(const char *in, char *out, size_t cap) {
+    size_t n = 0;
+    if (!in) in = "";
+    for (const char *p = in; *p && n + 2 < cap; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c == '\n') { out[n++] = '\\'; out[n++] = 'n'; }
+        else if (c == '\r') { out[n++] = '\\'; out[n++] = 'r'; }
+        else if (c == '\t') { out[n++] = '\\'; out[n++] = 't'; }
+        else if (c == '\\' || c == '\'') { out[n++] = '\\'; out[n++] = (char)c; }
+        else out[n++] = (char)c;
+    }
+    out[n] = '\0';
+}
+
 /* ── int()/float() coercion (Python semantics) ────────────────────────────── */
 /* int(value): bool->0/1, number->truncate toward zero, str->base-10 parse with
  * underscores-between-digits; null/container -> TypeError (false). */
@@ -807,9 +822,10 @@ static json_t *ts_turn_started_at(ts_env *e, const json_t *in) {
         if (ts_truth(sa)) {
             double d;
             if (!ts_float_coerce(sa, &d)) {
-                char buf[160];
-                snprintf(buf, sizeof(buf), "could not convert string to float: '%s'",
-                         ts_str(sa) ? ts_str(sa) : "");
+                char esc[128];
+                ts_repr_escape(ts_str(sa), esc, sizeof(esc));
+                char buf[256];
+                snprintf(buf, sizeof(buf), "could not convert string to float: '%s'", esc);
                 return ts_prop(e, ts_raise_spec("ValueError", buf));
             }
             return json_number(d);

@@ -41,6 +41,23 @@ static const char *jstr(const json_t *v) {
     return (is_str(v) && v->str_val) ? v->str_val : NULL;
 }
 
+/* Python repr() escaping for an ASCII string embedded in an exception message. */
+static char *gsf_repr(const char *in) {
+    static char buf[512];
+    size_t n = 0;
+    if (!in) in = "";
+    for (const char *p = in; *p && n + 2 < sizeof(buf) - 1; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c == '\n') { buf[n++] = '\\'; buf[n++] = 'n'; }
+        else if (c == '\r') { buf[n++] = '\\'; buf[n++] = 'r'; }
+        else if (c == '\t') { buf[n++] = '\\'; buf[n++] = 't'; }
+        else if (c == '\\' || c == '\'') { buf[n++] = '\\'; buf[n++] = (char)c; }
+        else buf[n++] = (char)c;
+    }
+    buf[n] = '\0';
+    return buf;
+}
+
 static char *xsf(const char *fmt, ...) {
     va_list ap, ap2;
     va_start(ap, fmt);
@@ -481,7 +498,7 @@ json_t *gsf_runtime_status_heartbeat_age_s(const json_t *record, const gsf_seams
     }
     double epoch; bool has_tz;
     if (!parse_iso(us, &epoch, &has_tz)) {
-        char *m = xsf("Invalid isoformat string: '%s'", us);
+        char *m = xsf("Invalid isoformat string: '%s'", gsf_repr(us));
         json_t *r = raise_obj("ValueError", m);
         free(m); json_free(norm); json_free(nowr);
         return r;
@@ -520,9 +537,7 @@ json_t *gsf_emit_runtime_status_transition(const json_t *previous, const json_t 
 /* PoP: gsf_flow_merge_over_on_disk @ gateway/status.py:_merge_over_on_disk */
 json_t *gsf_flow_merge_over_on_disk(const char *path, const json_t *payload,
                                     const gsf_seams_t *s) {
-    char *pn = path_norm(path);
-    json_t *a = args0(); aset_s(a, "path", pn);
-    free(pn);
+    json_t *a = args0(); aset_s(a, "path", path ? path : "");
     json_t *existing = gsf_call(s, "read_json_file", a);
     json_free(a);
     GSF_PROP(existing);

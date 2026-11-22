@@ -108,7 +108,25 @@ static json_t *ws1_call(const char *name, json_t *args)
         json_free(args);
         return ws1_raise("RuntimeError", "ws1 seam not installed");
     }
-    return ws1_seam_fn_p(ws1_seam_ctx_p, name, args);
+    json_t *r = ws1_seam_fn_p(ws1_seam_ctx_p, name, args);
+    if (ws1_is_raise(r)) {
+        const char *kind = json_get_str(r, "__raise__", "");
+        const char *msg = json_get_str(r, "msg", NULL);
+        const char *full = json_get_str(r, "message", NULL);
+        if (strcmp(kind, "HTTPException") == 0 && msg &&
+            !(strlen(msg) > 5 && isdigit((unsigned char)msg[0]) &&
+              isdigit((unsigned char)msg[1]) && isdigit((unsigned char)msg[2]) &&
+              msg[3] == ':' && msg[4] == ' ')) {
+            char *m = malloc(strlen(msg) + 16);
+            if (m) {
+                snprintf(m, strlen(msg) + 16, "500: %s", msg);
+                json_set(r, "msg", json_string(m));
+                free(m);
+            }
+        }
+        (void)full;
+    }
+    return r;
 }
 
 static json_t *ws1_args0(void) { return json_array(); }
