@@ -1,3 +1,4 @@
+# coverage-targets: _normalize_windows_path, _quote_cmd_script_arg, _quote_vbs_string, _sanitize_filename, _gateway_run_argv, _is_access_denied, _should_fall_back
 #!/usr/bin/env python3
 """Oracle for the pure Windows-launcher helpers in hermes_cli/gateway_windows.py.
 

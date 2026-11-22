@@ -1,3 +1,4 @@
+# coverage-targets: rewrite_skill_refs
 #!/usr/bin/env python3
 """Oracle for cron/jobs.py:rewrite_skill_refs (LIVE bodies, stubbed I/O)."""
 import ast
