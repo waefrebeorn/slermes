@@ -48,5 +48,8 @@ if [ $rc -eq 0 ] && [ -n "$line" ]; then
   exit 0
 fi
 
-echo "FAIL $name  rc=$rc  ${line:-no ORACLE line}"
+# Preserve the failing output: a "no ORACLE line" can hide a mismatched case,
+# a crashed harness, or a missing binary. The retry path needs that evidence.
+printf '%s\n' "$out" > ".testbin/oracle_fail_${name}.log"
+echo "FAIL $name  rc=$rc  ${line:-no ORACLE line}  log=.testbin/oracle_fail_${name}.log"
 exit 1

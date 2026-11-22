@@ -147,6 +147,9 @@ for spec in "${SPECS[@]}"; do
   # A failed batch target must not abort the whole publish loop: publish the
   # ones that built, and let run_one_oracle compile the few missing ones
   # individually with their resolved deps.
+  # Remove the previously published image first: a failed batch target must
+  # never leave a stale exe that ORACLE_PREBUILT_OK=1 would silently trust.
+  rm -f ".testbin/harnesses/$h.exe" ".testbin/harnesses/$h.key"
   if [ -f "$WORK/$h.exe" ]; then
     cp "$WORK/$h.exe" ".testbin/harnesses/$h.exe"
     [ -f "$WORK/$h.key" ] && cp "$WORK/$h.key" ".testbin/harnesses/$h.key"
