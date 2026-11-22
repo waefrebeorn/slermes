@@ -584,9 +584,9 @@ def setup_authority(args, state, ctx):
                 ctx, "runner.session_store.lookup_by_session_key",
                 args_fn=lambda route: {"route": route},
                 build=lambda r: None if r is None else types.SimpleNamespace(**r))))
-    auth = NS_SA["SessionAuthority"](runner, profile_id=state["profile_id"],
-                                     instance_id=state["instance_id"],
-                                     epoch=state["epoch"], persistence=None)
+    auth = NS_SA["SessionAuthority"](runner, profile_id=state.get("profile_id", "p1"),
+                                     instance_id=state.get("instance_id", "i1"),
+                                     epoch=state.get("epoch", 1), persistence=None)
     auth.retiring = state.get("retiring", False)
     auth.sessions = {sid: make_live(spec, ctx, sid)
                      for sid, spec in (state.get("sessions") or {}).items()}
@@ -612,7 +612,7 @@ def setup_authority(args, state, ctx):
         admissions=types.SimpleNamespace(list=rec(
             ctx, "store.admissions.list",
             args_fn=lambda session_id: {"session_id": session_id},
-            build=lambda rows: [make_record(d) for d in rows])),
+            build=lambda rows: [make_record(d) for d in (rows if isinstance(rows, list) else [rows])])),
         lineage=types.SimpleNamespace(
             lineage=rec(ctx, "lineage.lineage",
                         args_fn=lambda session_id: {"session_id": session_id}),
@@ -788,8 +788,8 @@ def setup_inbound(args, state, ctx):
         {"platform": platform.value if isinstance(platform, enum.Enum) else platform,
          "profile": profile})
     self._hm_offer_pairing_code = arec(ctx, "self._hm_offer_pairing_code", args_fn=src_arg)
-    self._hm_send_unauthorized_decline = arec(ctx, "self._hm_send_unauthorized_decline",
-                                              args_fn=src_arg)
+    # _hm_send_unauthorized_decline is the real extracted LIVE method; the C
+    # port implements its body (pairing-store dedupe, stamp before send).
     self._hm_report_ignored_dm = arec(ctx, "self._hm_report_ignored_dm", args_fn=src_arg)
     self._admit_bot_message_for_source = lambda source: ctx.call(
         "self._admit_bot_message_for_source", src_arg(source))

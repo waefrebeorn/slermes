@@ -498,7 +498,11 @@ static json_t *gif_logical_owner(gif_ctx_t *c, const json_t *args) {
     json_t *out;
     if (gif_truthy(lin) && lin->type == JSON_ARRAY && json_len(lin) > 0)
         out = json_copy(json_get(lin, 0));
-    else
+    else if (lin && lin->type == JSON_STRING && lin->str_val && lin->str_val[0]) {
+        /* Python indexes a string too: lineage[0] is its first character. */
+        char one[2] = {lin->str_val[0], 0};
+        out = json_string(one);
+    } else
         out = json_copy(sid);
     json_free(lin);
     return out;

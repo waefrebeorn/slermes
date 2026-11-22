@@ -96,6 +96,24 @@ int main(void) {
             json_t *state = in ? json_obj_get(in, "state") : NULL;
             gif_ctx_t ctx;
             ctx.state = (state && state->type == JSON_OBJECT) ? json_copy(state) : json_object();
+            /* LIVE SessionAuthority.__init__ seeds these containers even when
+             * the fixture omits them; mirror for the authority funcs only. */
+            static const char *sa_funcs[] = {"admission_row", "_require_admission_open",
+                "gate_refusal", "logical_owner", "physical_target", "_current_owner",
+                "_receipt", "_handle", "authorize", "adopt_agent", "publish_execution"};
+            bool is_sa = false;
+            for (size_t fi = 0; fi < sizeof(sa_funcs) / sizeof(sa_funcs[0]); fi++)
+                if (strcmp(sa_funcs[fi], func) == 0) { is_sa = true; break; }
+            if (is_sa) {
+              static const char *seeded[] = {"adopted", "delivered_stops", "executing",
+                                             "pending_steers", "pending_stops",
+                                             "rotated_owners", "sessions"};
+              for (size_t si = 0; si < sizeof(seeded) / sizeof(seeded[0]); si++)
+                  if (!json_obj_get(ctx.state, seeded[si]))
+                      json_set(ctx.state, seeded[si], json_object());
+              if (!json_obj_get(ctx.state, "retiring"))
+                  json_set(ctx.state, "retiring", json_bool(false));
+            }
             ctx.io = in ? json_obj_get(in, "io") : NULL;
             ctx.cursors = json_object();
             ctx.trace = json_array();
