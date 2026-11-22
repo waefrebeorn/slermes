@@ -20,6 +20,8 @@ py = sys.executable
 cache = ".testbin/pytestbin.cache"
 if os.path.isfile(cache):
     cand = open(cache).read().strip()
+    if cand.startswith("/c/"):
+        cand = "C:/" + cand[3:]
     if cand and os.path.isfile(cand):
         py = cand
 
