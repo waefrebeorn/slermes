@@ -158,3 +158,7 @@ From `slermes-windows-port`, `writing-plans`, `grounded-citations` and this sess
 `python tests/verify_build_health.py --no-link` reports ok after switching its shell to MSYS bash.
 
 Serial mutation audit found no remaining oracle blind spots after fixing the transcription binary UAF; the remaining skips are harnesses that require the normal SLERMES_HOME layout and cannot run under an isolated HOME.
+
+## Wiring status of recent gates
+
+`delegation_context.c`, `hermes_home_override.c` and the three plugin facades are wired into production call paths. `hermes_home_defaults.c` and `hermes_time_ports.c` are LIVE-verified but currently harness-only; do not count them as product-parity claims until a production caller is added.
