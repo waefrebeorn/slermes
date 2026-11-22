@@ -12,7 +12,23 @@
 /* ── gateway/restart.py: 4 missing functions ── */
 
 /* PoP: resolve_systemd_timeout_stop_sec @ gateway/restart.py:resolve_systemd_timeout_stop_sec */
-int resolve_systemd_timeout_stop_sec(void) { return 30; }
+/* forward decls: helpers defined later in this file */
+static double rg_seconds(const json_t *value, double fallback);
+static double rg_py_max(double a, double b);
+/* Python: drain=_seconds(drain); cron=_seconds(cron);
+ * cron_budget=(cron+_seconds(cleanup_reserve)) if cron>0 else 0;
+ * return int(max(_seconds(floor), max(drain,cron_budget)+_seconds(headroom))).
+ * All five inputs are already-resolved JSON values. */
+int resolve_systemd_timeout_stop_sec(const json_t *drain, const json_t *cron,
+                                     const json_t *cleanup_reserve, const json_t *headroom,
+                                     const json_t *floor_s) {
+    double d = rg_seconds(drain, 0.0);
+    double c = rg_seconds(cron, 0.0);
+    double cron_budget = (c > 0.0) ? (c + rg_seconds(cleanup_reserve, 0.0)) : 0.0;
+    double peak = rg_py_max(d, cron_budget) + rg_seconds(headroom, 0.0);
+    double result = rg_py_max(rg_seconds(floor_s, 0.0), peak);
+    return (int)result;  /* non-negative, so int() == truncation */
+}
 
 /* ================================================================
  * tail_revive1 ports (wave 3) — pure functions, direct arguments.

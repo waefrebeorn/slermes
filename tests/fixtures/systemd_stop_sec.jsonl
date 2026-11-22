@@ -1,0 +1,14 @@
+{"drain": 0, "cron": 0, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": 30, "cron": 30, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": 300, "cron": 0, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": 10, "cron": 120, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": 0, "cron": 5, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": 100, "cron": 60, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": "abc", "cron": 30, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": null, "cron": null, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": true, "cron": false, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": -5, "cron": -10, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": 20, "cron": 0, "cleanup": 10.0, "headroom": 30.0, "floor": 120}
+{"drain": 20, "cron": 0, "cleanup": 10.0, "headroom": 0, "floor": 60.0}
+{"drain": 0, "cron": 0.1, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
+{"drain": 59.9, "cron": 1, "cleanup": 10.0, "headroom": 30.0, "floor": 60.0}
