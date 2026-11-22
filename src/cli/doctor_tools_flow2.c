@@ -430,8 +430,8 @@ json_t *dt2_doctor_web_capability_rows(dt2_io_t *io) {
             json_append(rows, row);
             continue;
         }
-        const char *pname = dt2_sval(json_obj_get(pv, "name"));
         bool name_ok = dt2_truthy(json_obj_get(pv, "name"));
+        char *pname = strdup(dt2_sval(json_obj_get(pv, "name")));  /* pv is freed below */
         json_free(pv);
         const char *nm = name_ok ? pname : "SimpleNamespace";
         json_t *ra = dt2_arg1("provider", nm);
@@ -445,7 +445,7 @@ json_t *dt2_doctor_web_capability_rows(dt2_io_t *io) {
         json_append(row, json_string(ok ? "ok" : "warn"));
         json_append(row, json_string(caps[i]));
         json_append(row, json_string(detail ? detail : ""));
-        free(detail);
+        free(detail); free(pname);
         json_append(rows, row);
     }
     return rows;
