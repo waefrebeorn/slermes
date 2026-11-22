@@ -1,0 +1,14 @@
+{"env": null, "config": null}
+{"env": "", "config": null}
+{"env": "0", "config": null}
+{"env": "30", "config": null}
+{"env": " 45 ", "config": null}
+{"env": "abc", "config": null}
+{"env": "abc", "config": "20"}
+{"env": null, "config": "20"}
+{"env": null, "config": 0}
+{"env": null, "config": 5.5}
+{"env": null, "config": "abc"}
+{"env": "bad", "config": "also-bad"}
+{"env": "-5", "config": "99"}
+{"env": true, "config": null}

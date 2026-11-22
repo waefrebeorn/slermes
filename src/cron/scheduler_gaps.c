@@ -470,7 +470,48 @@ void record_delivery_verification(const char *job_id, int success) {
 
 
 /* PoP: get_session_db_timeout @ cron/scheduler_script.py:_get_session_db_timeout */
-int get_session_db_timeout(void) { return 30; }
+/* Composed with _timeout_from_env_or_config: env HERMES_CRON_SESSION_DB_TIMEOUT
+ * (stripped) parsed as float; else cron.session_db_timeout_seconds config value
+ * parsed as float; else 10.0. Unlike sibling timeouts, 0 IS meaningful (passes
+ * through). Already-resolved env string + config value are passed in as JSON
+ * (process state). A parse failure falls through to the next source. */
+static double jparse_float(const json_t *v, int *ok, int is_env) {
+    *ok = 0;
+    if (!v) return 0;
+    if (is_env) {
+        /* Python: cron_env_setting(...).strip() is ALWAYS a string. */
+        if (v->type != JSON_STRING || !v->str_val) return 0;
+        const char *s = v->str_val;
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+        if (!*s) return 0;
+        char *end = NULL;
+        double d = strtod(s, &end);
+        while (end && (*end == ' ' || *end == '\t' || *end == '\n' || *end == '\r')) end++;
+        if (end && *end == '\0') { *ok = 1; return d; }
+        return 0;
+    }
+    if (v->type == JSON_NUMBER) { *ok = 1; return v->num_val; }
+    if (v->type == JSON_BOOL) { *ok = 1; return v->bool_val ? 1.0 : 0.0; }
+    if (v->type == JSON_STRING && v->str_val) {
+        const char *s = v->str_val;
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+        if (!*s) return 0;
+        char *end = NULL;
+        double d = strtod(s, &end);
+        while (end && (*end == ' ' || *end == '\t' || *end == '\n' || *end == '\r')) end++;
+        if (end && *end == '\0') { *ok = 1; return d; }
+    }
+    return 0;
+}
+
+double get_session_db_timeout(const json_t *env_value, const json_t *config_value) {
+    int ok = 0;
+    double v = jparse_float(env_value, &ok, 1);
+    if (ok) return v;           /* env won (0 is a valid answer) */
+    v = jparse_float(config_value, &ok, 0);
+    if (ok) return v;           /* config won */
+    return 10.0;                /* default */
+}
 
 /* PoP: terminate_cron_script_tree @ cron/scheduler_script.py:_terminate_cron_script_tree */
 void terminate_cron_script_tree(const char *pid) {
