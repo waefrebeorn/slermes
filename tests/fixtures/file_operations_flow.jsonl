@@ -111,7 +111,7 @@
 {"func": "_json_nonstandard_constant", "in": {"text": "{\"a\": NaN}", "seams": {"strip_bom": {"__raise__": "ValueError", "msg": "x"}}}}
 {"func": "_json_nonstandard_constant", "in": {"text": "{\"a\": NaN}", "seams": {"strip_bom": {"__raise__": "RuntimeError", "msg": "x"}}}}
 {"func": "_json_nonstandard_constant", "in": {"text": "01", "seams": {}}}
-{"func": "_json_nonstandard_constant", "in": {"text": "\ufeff{\"a\": Infinity}", "seams": {"strip_bom": [["{\"a\": Infinity}", true]]}}}
+{"func": "_json_nonstandard_constant", "in": {"text": "﻿{\"a\": Infinity}", "seams": {"strip_bom": [["{\"a\": Infinity}", true]]}}}
 {"func": "_refuse_introduced_json_constant", "in": {"path": "/f.json", "content": "{}", "pre_content": null, "seams": {}}}
 {"func": "_refuse_introduced_json_constant", "in": {"path": "/f.json", "content": "{\"a\": NaN}", "pre_content": null, "seams": {"strip_bom": [["{\"a\": NaN}", false]]}}}
 {"func": "_refuse_introduced_json_constant", "in": {"path": "/f.json", "content": "{\"a\": NaN}", "pre_content": "[Infinity]", "seams": {"strip_bom": [["{\"a\": NaN}", false], ["[Infinity]", false]]}}}
@@ -182,3 +182,4 @@
 {"func": "_read_exact_bytes", "in": {"path": "/f", "max_bytes": null, "seams": {"native_read_enabled": {"__raise__": "RuntimeError", "msg": "x"}}}}
 {"func": "_read_exact_bytes", "in": {"path": "/f", "max_bytes": null, "seams": {"native_read_enabled": true, "escape_shell_arg": "'p'", "new_sentinel": "__HERMES_RB_abc__", "exec": {"stdout": "raw", "exit_code": 0}, "split_segments": [["pre", "YWJj", "3", "0"]], "strip_fence": ["0", "3"], "decode_base64_sample": "616263", "os_open": 3, "os_fstat": {"st_mode": 33188}, "fh_open": {"__fh__": true}, "fh_read": {"__raise__": "OSError", "msg": "read fail"}, "os_close": null}}}
 {"func": "_read_exact_bytes", "in": {"path": "/f", "max_bytes": 2, "seams": {"native_read_enabled": false, "escape_shell_arg": "'p'", "new_sentinel": "__HERMES_RB_abc__", "exec": {"stdout": "raw", "exit_code": 0}, "split_segments": [["pre", "YWJjZA==", "4", "0"]], "strip_fence": ["0", "4"], "decode_base64_sample": "61626364"}}}
+{"func": "_verify_written_hash", "in": {"path": "/f", "content_bytes": "3.14", "seams": {"native_read_enabled": true, "native_sha256": {"__raise__": "RuntimeError", "msg": "x"}}}}

@@ -54,3 +54,5 @@
 {"func": "_auto_load_typed_text", "in": {"args": {"content": "x then run them with the terminal tool using the absolute path.\n[Skill config (\nkey=1\n]\nconf ask"}, "state": {"scaffolds": []}}}
 {"func": "_auto_load_typed_text", "in": {"args": {"content": "x then run them with the terminal tool using the absolute path.\n[This skill has supporting files see /scripts/foo.js`).\nsup ask"}, "state": {"scaffolds": []}}}
 {"func": "_auto_load_typed_text", "in": {"args": {"content": "x then run them with the terminal tool using the absolute path.  first then run them with the terminal tool using the absolute path.  last ask"}, "state": {"scaffolds": []}}}
+{"func": "_cut_after", "in": {"args": {"message": "before [START] pick me [STOP] after", "marker": "[START]", "stop_marker": "", "find": "find"}}}
+{"func": "decode_content", "in": {"args": {"content": "false"}}}

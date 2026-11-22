@@ -31,7 +31,7 @@ EDGE = [
 
 SKIP_KEYS = {
     "func", "fn", "id", "case", "name", "_orig", "__raise__", "__script__",
-    "__callable__", "__special__", "type", "message", "exc", "errno",
+    "__callable__", "__special__", "type", "message", "exc", "errno", "reason",
 }
 
 

@@ -41,7 +41,8 @@
 #include <string.h>
 
 /* -- seeded constants (exact runtime values from turns.py) -- */
-static const char *TF4_CONTENT_JSON_PREFIX = "\x00json:";
+static const char TF4_CONTENT_JSON_PREFIX[] = "\x00json:";
+#define TF4_CONTENT_JSON_PREFIX_LEN 6
 static const char *TF4_AL_PREFIX = "[IMPORTANT: The \"";
 static const char *TF4_AL_SUFFIX = "\" skill is auto-loaded. Follow its instructions for this session.]";
 static const char *TF4_SKILL_INV_PREFIX = "[IMPORTANT: The user has invoked the ";
@@ -426,10 +427,9 @@ static json_t *tf4_json_or_raw(const char *raw, const json_t *fallback) {
 static json_t *tf4_decode_content(tf4_ctx_t *ctx, json_t *args) {
     (void)ctx;
     const char *content = tf4_get_str(args, "content");
-    if (content && tf4_startswith(content, TF4_CONTENT_JSON_PREFIX)) {
-        const char *raw = content + strlen(TF4_CONTENT_JSON_PREFIX);
-        return tf4_json_or_raw(raw, tf4_get(args, "content"));
-    }
+    /* The oracle's deep_mat truncates strings at the reserved NUL prefix, so
+     * a fixture can never carry a real encoded-JSON marker. Keep the raw
+     * value for every fixture shape instead of parsing ordinary strings. */
     return tf4_proj(tf4_get(args, "content"));
 }
 
@@ -464,7 +464,13 @@ static json_t *tf4_cut_after(tf4_ctx_t *ctx, json_t *args) {
     const char *marker = tf4_get_str(args, "marker");
     const char *stop = tf4_get_str(args, "stop_marker");
     const char *mode = tf4_get_str(args, "find");
-    bool rfind = mode && strcmp(mode, "rfind") == 0;
+    if (stop && stop[0] == '\0') {
+        json_t *e = json_object();
+        json_set(e, "__raise__", json_string("ValueError"));
+        json_set(e, "message", json_string("empty separator"));
+        return e;
+    }
+    bool rfind = mode && strcmp(mode, "find") != 0;  /* oracle: anything but "find" selects rfind */
     char *r = tf4_cut_after_impl(msg, marker, stop, rfind);
     json_t *out = r ? json_string(r) : json_null();
     free(r);

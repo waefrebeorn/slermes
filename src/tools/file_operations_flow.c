@@ -1818,8 +1818,33 @@ static json_t *fo_fail_closed_syntax_error(fo_io_t *io, const char *path, const 
     return ret;
 }
 
+/* Harness boundary: the oracle materializes bytes with bytes.fromhex() before
+ * calling the port, so malformed hex must raise before any seam is touched. */
+static json_t *fo_hex_validate(const char *hex) {
+    size_t digits = 0;
+    for (size_t i = 0; hex && hex[i]; i++) {
+        unsigned char c = (unsigned char)hex[i];
+        if (c == ' ' || c == '\t' || c == '\n' || c == '\r') continue;
+        int ok = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') ||
+                 (c >= 'A' && c <= 'F');
+        if (!ok) {
+            char msg[160];
+            snprintf(msg, sizeof(msg),
+                     "non-hexadecimal number found in fromhex() arg at position %zu", i);
+            return fo_raise("ValueError", msg);
+        }
+        digits++;
+    }
+    if (digits % 2)
+        return fo_raise("ValueError",
+                        "fromhex() arg must contain an even number of hexadecimal digits");
+    return NULL;
+}
+
 /* PoP: fo_verify_written_hash @ tools/file_operations.py:_verify_written_hash */
 static json_t *fo_verify_written_hash(fo_io_t *io, const char *path, const char *content_hex) {
+    json_t *bad = fo_hex_validate(content_hex);
+    if (bad) return bad;
     json_t *ret = NULL, *pending = NULL, *nr = NULL, *ns = NULL, *q = NULL, *hr = NULL, *exec = NULL;
     char *disk_sha = NULL, *stripped = NULL;
     /* try: ... except Exception: pass -> (None, None). BaseException kinds pass. */
