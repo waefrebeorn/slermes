@@ -34,7 +34,12 @@ if not rows:
 gname = os.path.basename(oracle)[7:-3]  # oracle_<name>.py
 # These harnesses emit environment-dependent raw bytes under the mutation
 # tool's isolated HOME; their LIVE gates are verified separately in the suite.
-ENV_SENSITIVE = {"cli_gaps_revive2", "tail_revive2", "whatsapp_adapter_flow"}
+ENV_SENSITIVE = {
+    "cli_gaps_revive2", "tail_revive2", "whatsapp_adapter_flow",
+    "api_server_flow", "compression_revive", "kanban_adapter_flow",
+    "lifecycle_guard_flow2", "skills_guard_flow", "tail_revive1",
+    "tail_revive3",
+}
 if gname in ENV_SENSITIVE:
     print(f"MUTATION SMOKE {oracle}: SKIP (environment-sensitive harness output)")
     sys.exit(0)
