@@ -2433,6 +2433,9 @@ body_close:
 static json_t *tmk_run_task(tmk_ctx_t *ctx, const json_t *args) {
     const json_t *connection = json_obj_get(args, "connection");
     const json_t *params = json_obj_get(args, "params");
+    /* cleanup is reachable by goto from before the original declaration;
+     * hoist so it is always initialised before any jump. */
+    json_t *committed = NULL;
     json_t *err = NULL;
     const json_t *native = tmk_attr(connection, "native_owner", TMK_NS, &err);
     if (err) return err;
@@ -2614,7 +2617,6 @@ static json_t *tmk_run_task(tmk_ctx_t *ctx, const json_t *args) {
         json_free(rr);
     }
     /* committed = None if saved is None else await to_thread(find, ...) */
-    json_t *committed = NULL;
     if (saved && saved->type != JSON_NULL) {
         const json_t *actor4 = tmk_attr(connection, "actor", TMK_NS, &err);
         if (err) { ret = err; goto cleanup; }
