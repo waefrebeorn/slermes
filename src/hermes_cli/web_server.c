@@ -1514,10 +1514,7 @@ char *web_client_ip(const char *x_forwarded_for, const char *client_host)
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: profiles_warn_read_error @ hermes_cli/web_routers/profiles.py:_warn_profile_read_error */
-void profiles_warn_read_error(const char *error_msg) {
-    (void)error_msg;
-}
+/* profiles_warn_read_error lives in src/hermes_cli/profiles_warn_port.c */
 
 /* PoP: profiles_get_projects_tree @ hermes_cli/web_routers/profiles.py:get_profiles_projects_tree */
 void profiles_get_projects_tree(char *out_json, size_t out_sz) {

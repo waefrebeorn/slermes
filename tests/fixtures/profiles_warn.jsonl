@@ -1,0 +1,12 @@
+{"profile": "alice", "error": "timeout"}
+{"profile": "alice", "error": "timeout"}
+{"profile": "alice", "error": "refused"}
+{"profile": "bob", "error": "timeout"}
+{"profile": "bob", "error": "timeout"}
+{"profile": "alice", "error": "timeout"}
+{"profile": "bob", "error": "refused"}
+{"profile": "carol", "error": ""}
+{"profile": "carol", "error": ""}
+{"profile": "", "error": "generic"}
+{"profile": "", "error": "generic"}
+{"profile": "dave", "error": "parse error"}
