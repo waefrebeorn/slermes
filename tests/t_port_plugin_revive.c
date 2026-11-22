@@ -102,6 +102,29 @@ static char *read_line(FILE *f) {
     return buf;
 }
 
+/* LIVE Path objects serialise as plain strings; the C seam tags them
+ * {"__path__": s}. Normalise recursively before emitting. */
+static json_t *prv_unwrap_path(json_t *v) {
+    if (!v) return NULL;
+    if (v->type == JSON_OBJECT && v->c.count == 1 &&
+            strcmp(v->c.keys[0], "__path__") == 0) {
+        json_t *p = v->c.items[0];
+        if (p && p->type == JSON_STRING) return json_copy(p);
+    }
+    if (v->type == JSON_ARRAY) {
+        for (size_t i = 0; i < v->c.count; i++) {
+            json_t *n = prv_unwrap_path(v->c.items[i]);
+            if (n) { json_free(v->c.items[i]); v->c.items[i] = n; }
+        }
+    } else if (v->type == JSON_OBJECT) {
+        for (size_t i = 0; i < v->c.count; i++) {
+            json_t *n = prv_unwrap_path(v->c.items[i]);
+            if (n) { json_free(v->c.items[i]); v->c.items[i] = n; }
+        }
+    }
+    return NULL;
+}
+
 static void emit_str(json_t *out, const char *key, const char *v) {
     json_set(out, key, v ? json_string(v) : json_null());
 }
@@ -169,7 +192,12 @@ int main(void) {
             ret = json_bool(plugin_has_middleware(json_get_str(in, "name", "")));
         } else if (strcmp(fn, "find_plugin_skill") == 0) {
             json_t *hit = plugin_find_skill(json_get_str(in, "name", ""));
-            if (hit) { json_set(out, "ret", hit); ret = NULL; }
+            if (hit) {
+                prv_unwrap_path(hit);
+                json_t *path = json_obj_get(hit, "__path__");
+                json_set(out, "ret", path ? json_copy(path) : hit);
+                ret = NULL;
+            }
         } else if (strcmp(fn, "remove_plugin_skill") == 0) {
             ret = json_bool(plugin_remove_skill(json_get_str(in, "name", "")));
         } else if (strcmp(fn, "get_pre_tool_call_directive") == 0) {
@@ -238,7 +266,9 @@ int main(void) {
         }
         json_set(out, "extra", extra);
         json_set(out, "trace", g_trace);
-        json_set(out, "state", py_plugin_state_snapshot());
+        json_t *state_out = py_plugin_state_snapshot();
+        prv_unwrap_path(state_out);
+        json_set(out, "state", state_out);
         char *s = json_serialize(out);
         if (!s) {
             fprintf(stderr, "harness: serialize failed for fn '%s'\n", fn);

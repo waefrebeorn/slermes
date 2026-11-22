@@ -2266,7 +2266,7 @@ void *plugin_get_command_handler(const char *name) {
     if (!py_truthy(entry)) return NULL; /* `if entry` — {} is falsy */
     json_t *handler = json_obj_get(entry, "handler");
     if (!handler) {
-        py_raise_repr("KeyError", name ? name : "");
+        py_raise_repr("KeyError", "handler");
         return NULL;
     }
     if (handler->type != JSON_STRING) {
@@ -2308,7 +2308,7 @@ json_t *plugin_find_skill(const char *name) {
     if (!py_truthy(entry)) return NULL; /* `if entry` — {} is falsy */
     json_t *path = json_obj_get(entry, "path");
     if (!path) {
-        py_raise_repr("KeyError", name ? name : "");
+        py_raise_repr("KeyError", "path");
         return NULL;
     }
     return json_copy(path); /* caller frees */
