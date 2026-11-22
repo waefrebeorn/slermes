@@ -1530,10 +1530,13 @@ json_t *py_toolsets_snapshot(void) {
         char *sp = label; size_t cap = sizeof(label);
         memcpy(sp, "\xF0\x9F\x94\x8C", 4); sp += 4; cap -= 4; /* plug emoji */
         *sp++ = ' '; cap--;
+        int word_start = 1;
         for (const char *c = ts; *c && cap > 6; c++) {
-            char ch = *c == '_' ? ' ' : (c == ts ? (char)toupper((unsigned char)*c) : *c);
+            char ch;
+            if (*c == '_') { ch = ' '; word_start = 1; }
+            else if (word_start) { ch = (char)toupper((unsigned char)*c); word_start = 0; }
+            else { ch = (char)tolower((unsigned char)*c); }
             *sp++ = ch; cap--;
-            if (*c == '_' && c[1] && cap > 6) { *sp++ = (char)toupper((unsigned char)c[1]); c++; cap--; }
         }
         *sp = 0;
         const char *pid = py_jstr(json_obj_get(ts_plugin, ts));

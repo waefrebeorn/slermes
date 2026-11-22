@@ -34,7 +34,7 @@ for line in sys.stdin:
     got = r["out"]
     NS["_cfg"] = r.get("config_path") or ""
     py_ident = list(NS["_timezone_cache_identity"]())
-    got_ident = r.get("identity")
+    got_ident = [r.get("identity_kind"), r.get("identity_value")]
     cases += 1
     if py_ident != got_ident:
         mism += 1

@@ -22,11 +22,11 @@ const char *hc_env_timezone(int multiplex_active)
 
 /* PoP: _timezone_cache_identity @ hermes_time.py:_timezone_cache_identity */
 void hc_timezone_cache_identity(int multiplex_active, const char *config_path,
-                               char *out, size_t n)
+                               char *kind, size_t kn, char *value, size_t vn)
 {
     const char *tz = hc_env_timezone(multiplex_active);
-    if (tz && *tz)
-        snprintf(out, n, "[\"environment\",\"%s\"]", tz);
-    else
-        snprintf(out, n, "[\"config\",\"%s\"]", config_path ? config_path : "");
+    const char *k = (tz && *tz) ? "environment" : "config";
+    const char *v = (tz && *tz) ? tz : (config_path ? config_path : "");
+    strncpy(kind, k, kn - 1); kind[kn - 1] = '\0';
+    strncpy(value, v, vn - 1); value[vn - 1] = '\0';
 }

@@ -6,7 +6,7 @@
 
 extern const char *hc_env_timezone(int multiplex_active);
 extern void hc_timezone_cache_identity(int multiplex_active, const char *config_path,
-                                       char *out, size_t n);
+                                       char *kind, size_t kn, char *value, size_t vn);
 
 int main(void) {
     char line[8192];
@@ -23,15 +23,16 @@ int main(void) {
         const char *out = hc_env_timezone(multiplex);
         json_t *cp = json_obj_get(in, "config_path");
         const char *config_path = (cp && cp->type == JSON_STRING) ? cp->str_val : "";
-        char ident[2048];
-        hc_timezone_cache_identity(multiplex, config_path, ident, sizeof(ident));
+        char ikind[64], ival[2048];
+        hc_timezone_cache_identity(multiplex, config_path, ikind, sizeof(ikind), ival, sizeof(ival));
         fputs("{\"tz\":", stdout);
         if (tz) { char *s = json_dumps(tz, 0); fputs(s ? s : "null", stdout); free(s); }
         else fputs("null", stdout);
         printf(",\"multiplex\":%d,\"out\":", multiplex);
         { char *s = json_dumps(json_string(out), 0); fputs(s ? s : "\"\"", stdout); free(s); }
         fputs(",\"config_path\":", stdout); { char *s=json_dumps(json_string(config_path),0); fputs(s?s:"\"\"",stdout); free(s); }
-        fputs(",\"identity\":", stdout); fputs(ident, stdout);
+        fputs(",\"identity_kind\":", stdout); { char *s=json_dumps(json_string(ikind),0); fputs(s?s:"\"\"",stdout); free(s); }
+        fputs(",\"identity_value\":", stdout); { char *s=json_dumps(json_string(ival),0); fputs(s?s:"\"\"",stdout); free(s); }
         fputs("}\n", stdout);
         json_free(in);
     }
