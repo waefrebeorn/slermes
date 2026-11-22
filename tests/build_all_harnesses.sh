@@ -59,7 +59,7 @@ LIBINCS=$(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | t
 # Harnesses #include the port .c by bare name; add every src subdir.
 SRCINCS=$(find src -maxdepth 3 -type d | sed 's#^#-I #' | tr '\n' ' ')
 
-ARCHIVE_EXCLUDE="${ARCHIVE_EXCLUDE:-process_identity_flow2 skills_guard_flow}"
+ARCHIVE_EXCLUDE="${ARCHIVE_EXCLUDE:-process_identity_flow2 skills_guard_flow browser_tools_flow}"
 # FULL harnesses link against a single static archive instead of ~2241 loose
 # objects; ld then pulls only what each harness actually references.
 ARCHIVE_PATH=$(bash tests/make_harness_archive.sh | tail -1)
@@ -154,5 +154,20 @@ for spec in "${SPECS[@]}"; do
     echo "WARN: harness $h did not build; will retry per-oracle" >&2
   fi
 done
+# SAC can refuse a freshly linked image with rc 126/127. Smoke every published
+# harness in parallel so a refusal is caught here and the gate falls back to a
+# per-oracle rebuild, instead of surfacing as a first-attempt "no ORACLE line".
+{
+  for spec in "${SPECS[@]}"; do
+    IFS=$'\t' read -r _n h _o <<< "$spec"
+    [ -x ".testbin/harnesses/$h.exe" ] && printf '%s\n' "$h"
+  done
+} | xargs -P "${HARNESS_JOBS:-8}" -I{} bash -c \
+  'timeout 15 ".testbin/harnesses/{}.exe" </dev/null >/dev/null 2>&1; rc=$?; \
+   if [ "$rc" -eq 126 ] || [ "$rc" -eq 127 ]; then \
+     echo "SAC refusal: {} (rc=$rc); dropping prebuilt" >&2; \
+     rm -f ".testbin/harnesses/{}.exe"; \
+   fi'
+
 : > .testbin/harnesses/.stamp
 echo "built ${#SPECS[@]} harnesses -> .testbin/harnesses/"
