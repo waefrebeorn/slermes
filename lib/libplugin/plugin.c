@@ -982,7 +982,11 @@ json_t *plugin_get_auxiliary_tasks(void) {
     return py_aux_tasks_snapshot();
 }
 /* PoP: get_plugin_toolsets @ hermes_cli/plugins.py:get_plugin_toolsets */
-json_t *plugin_get_toolsets(void) { return json_array(); }
+extern json_t *py_toolsets_snapshot(void);
+json_t *plugin_get_toolsets(void) {
+    if (py_ensure_discovered(0)) return json_array();
+    return py_toolsets_snapshot();
+}
 /* ================================================================
  *  hermes_cli/plugins.py revival — faithful C11 ports
  * ================================================================
@@ -1439,6 +1443,10 @@ typedef struct {
     json_t *plugin_skills;       /* qualified name -> entry dict */
     json_t *plugin_commands;     /* name -> entry dict */
     json_t *aux_tasks;           /* key -> registration dict (sorted on read) */
+    json_t *plugin_tool_names;
+    json_t *plugins_tools;       /* plugin id -> [tool name] */
+    json_t *plugin_descriptions; /* plugin id -> manifest description */
+    json_t *tool_registry;       /* tool name -> {toolset, name} */
     json_t *sys_modules;         /* module name -> module model dict */
     json_t *bare_module_scope;   /* bare module name -> scope key */
     json_t *context_engine;      /* engine token (string) or NULL */
@@ -1465,6 +1473,100 @@ typedef struct {
 } py_registry_t;
 
 static py_registry_t g_py_reg;
+
+static const char *py_jstr(const json_t *v) {
+    return (v && v->type == JSON_STRING && v->str_val) ? v->str_val : "";
+}
+static int py_str_cmp(const void *a, const void *b) {
+    return strcmp(*(const char *const *)a, *(const char *const *)b);
+}
+
+static const json_t *g_ts_obj;
+static int py_ts_cmp(const void *pa, const void *pb) {
+    size_t ia = *(const size_t *)pa, ib = *(const size_t *)pb;
+    return strcmp(json_object_get_key_at(g_ts_obj, ia), json_object_get_key_at(g_ts_obj, ib));
+}
+
+/* get_plugin_toolsets: (key, label, description) triples, sorted by key. */
+json_t *py_toolsets_snapshot(void) {
+    json_t *out = json_array();
+    json_t *names = g_py_reg.plugin_tool_names;
+    if (!names || !json_array_size(names)) return out;
+    json_t *ts_tools = json_object();
+    for (size_t i = 0; i < json_array_size(names); i++) {
+        json_t *tnv = json_array_get(names, i);
+        const char *tn = py_jstr(tnv);
+        json_t *entry = json_obj_get(g_py_reg.tool_registry, tn);
+        json_t *tsv = entry ? json_obj_get(entry, "toolset") : NULL;
+        const char *ts = tsv ? py_jstr(tsv) : NULL;
+        if (!ts || !*ts) continue;
+        if (!json_obj_get(ts_tools, ts)) json_set(ts_tools, ts, json_array());
+        json_t *lst = json_obj_get(ts_tools, ts);
+        json_t *nm = entry ? json_obj_get(entry, "name") : NULL;
+        json_append(lst, json_string(nm ? py_jstr(nm) : tn));
+    }
+    json_t *ts_plugin = json_object();
+    size_t np = json_object_size(g_py_reg.plugins_tools);
+    for (size_t p = 0; p < np; p++) {
+        const char *pid = json_object_get_key_at(g_py_reg.plugins_tools, p);
+        json_t *tools = json_object_get_at(g_py_reg.plugins_tools, p);
+        for (size_t t = 0; tools && t < json_array_size(tools); t++) {
+            json_t *entry = json_obj_get(g_py_reg.tool_registry, py_jstr(json_array_get(tools, t)));
+            json_t *tsv = entry ? json_obj_get(entry, "toolset") : NULL;
+            const char *ts = tsv ? py_jstr(tsv) : NULL;
+            if (!ts || !json_obj_get(ts_tools, ts) || json_obj_get(ts_plugin, ts)) continue;
+            json_set(ts_plugin, ts, json_string(pid));
+        }
+    }
+    size_t n = json_object_size(ts_tools);
+    size_t *idx = (size_t *)calloc(n ? n : 1, sizeof(size_t));
+    if (!idx) { json_free(ts_plugin); json_free(ts_tools); return out; }
+    for (size_t i = 0; i < n; i++) idx[i] = i;
+    g_ts_obj = ts_tools;
+    qsort(idx, n, sizeof(size_t), py_ts_cmp);
+    for (size_t i = 0; i < n; i++) {
+        const char *ts = json_object_get_key_at(ts_tools, idx[i]);
+        char label[512];
+        char *sp = label; size_t cap = sizeof(label);
+        memcpy(sp, "\xF0\x9F\x94\x8C", 4); sp += 4; cap -= 4; /* plug emoji */
+        *sp++ = ' '; cap--;
+        for (const char *c = ts; *c && cap > 6; c++) {
+            char ch = *c == '_' ? ' ' : (c == ts ? (char)toupper((unsigned char)*c) : *c);
+            *sp++ = ch; cap--;
+            if (*c == '_' && c[1] && cap > 6) { *sp++ = (char)toupper((unsigned char)c[1]); c++; cap--; }
+        }
+        *sp = 0;
+        const char *pid = py_jstr(json_obj_get(ts_plugin, ts));
+        json_t *desc = pid ? json_obj_get(g_py_reg.plugin_descriptions, pid) : NULL;
+        const char *ds = desc && py_jstr(desc)[0] ? py_jstr(desc) : "";
+        if (!ds[0]) {
+            /* fall back to ", ".join(sorted(tool names)) */
+            json_t *lst = json_obj_get(ts_tools, ts);
+            size_t m = json_array_size(lst);
+            const char **tn = (const char **)calloc(m ? m : 1, sizeof(char *));
+            if (tn) {
+                for (size_t k = 0; k < m; k++) tn[k] = py_jstr(json_array_get(lst, k));
+                qsort(tn, m, sizeof(char *), py_str_cmp);
+                char buf[1024]; size_t used = 0;
+                for (size_t k = 0; k < m; k++) {
+                    size_t len = strlen(tn[k]);
+                    if (used + len + 2 >= sizeof(buf)) break;
+                    if (used) { buf[used++] = ','; buf[used++] = ' '; }
+                    memcpy(buf + used, tn[k], len); used += len;
+                }
+                buf[used] = 0; ds = strdup(buf);
+            }
+        }
+        json_t *row = json_array();
+        json_append(row, json_string(ts));
+        json_append(row, json_string(label));
+        json_append(row, json_string(ds));
+        json_append(out, row);
+        if (ds != py_jstr(desc)) free((void *)ds);
+    }
+    free(idx); json_free(ts_plugin); json_free(ts_tools); return out;
+}
+
 
 /* ── universal seam ── */
 
@@ -1545,6 +1647,10 @@ static void py_reg_free_json(void) {
     json_free(g_py_reg.plugin_skills);
     json_free(g_py_reg.plugin_commands);
     json_free(g_py_reg.aux_tasks);
+    json_free(g_py_reg.plugin_tool_names);
+    json_free(g_py_reg.plugins_tools);
+    json_free(g_py_reg.plugin_descriptions);
+    json_free(g_py_reg.tool_registry);
     json_free(g_py_reg.sys_modules);
     json_free(g_py_reg.bare_module_scope);
     json_free(g_py_reg.context_engine);
@@ -1565,6 +1671,10 @@ void py_plugin_reset(void) {
     g_py_reg.plugin_skills = json_object();
     g_py_reg.plugin_commands = json_object();
     g_py_reg.aux_tasks = json_object();
+    g_py_reg.plugin_tool_names = json_array();
+    g_py_reg.plugins_tools = json_object();
+    g_py_reg.plugin_descriptions = json_object();
+    g_py_reg.tool_registry = json_object();
     g_py_reg.sys_modules = json_object();
     g_py_reg.bare_module_scope = json_object();
     g_py_reg.scope_key = py_strdup("/h/s1");
@@ -1585,6 +1695,11 @@ static json_t *py_state_obj(const json_t *st, const char *key) {
     json_t *v = json_obj_get(st, key);
     if (v && v->type == JSON_OBJECT) return json_copy(v);
     return json_object();
+}
+
+static json_t *py_state_arr(const json_t *st, const char *key) {
+    json_t *v = json_obj_get(st, key);
+    return (v && v->type == JSON_ARRAY) ? json_copy(v) : json_array();
 }
 
 static int py_state_bool(const json_t *st, const char *key, int def) {
@@ -1636,6 +1751,14 @@ void py_plugin_install_state(const json_t *st) {
     g_py_reg.plugin_commands = py_state_obj(st, "plugin_commands");
     json_free(g_py_reg.aux_tasks);
     g_py_reg.aux_tasks = py_state_obj(st, "aux_tasks");
+    json_free(g_py_reg.plugin_tool_names);
+    g_py_reg.plugin_tool_names = py_state_arr(st, "plugin_tool_names");
+    json_free(g_py_reg.plugins_tools);
+    g_py_reg.plugins_tools = py_state_obj(st, "plugins_tools");
+    json_free(g_py_reg.plugin_descriptions);
+    g_py_reg.plugin_descriptions = py_state_obj(st, "plugin_descriptions");
+    json_free(g_py_reg.tool_registry);
+    g_py_reg.tool_registry = py_state_obj(st, "tool_registry");
     json_free(g_py_reg.sys_modules);
     g_py_reg.sys_modules = py_state_obj(st, "sys_modules");
     json_free(g_py_reg.bare_module_scope);

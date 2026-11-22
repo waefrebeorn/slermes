@@ -30,8 +30,10 @@ int main(void) {
         fputs(",\"out\":", stdout); emit(out);
         json_t *aux = plugin_get_auxiliary_tasks();
         fputs(",\"aux\":", stdout); emit(aux);
+        json_t *ts = plugin_get_toolsets();
+        fputs(",\"ts\":", stdout); emit(ts);
         fputs("}\n", stdout);
-        json_free(aux); json_free(out); json_free(c);
+        json_free(ts); json_free(aux); json_free(out); json_free(c);
     }
     return 0;
 }
