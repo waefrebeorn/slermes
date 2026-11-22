@@ -48,7 +48,7 @@ def run(lines):
                        errors="replace", env=env)
     return p.returncode, p.stdout + p.stderr
 
-OUT_KEYS = ("out", "ret", "result", "value", "py", "c", "ok", "err")
+OUT_KEYS = ("trace", "out", "ret", "result", "value", "py", "c", "ok", "err")
 
 def flip(v):
     if isinstance(v, bool): return not v
@@ -78,6 +78,7 @@ def flip_output(obj):
                 v = obj[k]
                 if not isinstance(v, (dict, list)):
                     obj[k] = flip(v); return True
+                if flip_output(v): return True
                 if flip_first(v): return True
                 # Empty/uniform container: append a scalar rather than replacing
                 # the whole output, so oracles that call .get() still work.
