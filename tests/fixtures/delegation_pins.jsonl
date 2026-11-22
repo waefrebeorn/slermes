@@ -1,0 +1,8 @@
+{"func": "explicit_board_intent_is_pinned", "env": {}, "in_process": 0}
+{"func": "explicit_board_intent_is_pinned", "env": {}, "in_process": 1}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "1"}, "in_process": 0}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/fenced"}, "in_process": 0}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": ""}, "in_process": 0}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": "   "}, "in_process": 0}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": "task-1"}, "in_process": 0}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": "\t"}, "in_process": 0}

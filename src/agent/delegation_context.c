@@ -114,6 +114,24 @@ bool is_delegated_child_context(void)
     return (depth && *depth > 0) ? true : false;
 }
 
+/* PoP: explicit_board_intent_is_pinned @ agent/delegation_context.py:explicit_board_intent_is_pinned */
+bool explicit_board_intent_is_pinned(void)
+{
+    if (is_delegated_child_context())
+        return true;
+    const char *marker = getenv("HERMES_DELEGATED_CHILD_CONTEXT");
+    if (marker && *marker)
+        return true;
+    const char *task = getenv("HERMES_KANBAN_TASK");
+    if (task) {
+        while (*task == ' ' || *task == '\t' || *task == '\n' || *task == '\r')
+            task++;
+        if (*task)
+            return true;
+    }
+    return false;
+}
+
 /* PoP: is_delegated_child_process_context @ agent/delegation_context.py:is_delegated_child_process_context */
 bool is_delegated_child_process_context(void)
 {

@@ -20,6 +20,11 @@ extern bool is_delegated_child_context(void);
 /* True in this process or any subprocess spawned by a delegated child. */
 extern bool is_delegated_child_process_context(void);
 
+/* An explicit board= argument must still use dispatcher env pins when this
+ * is an in-process delegate child, a spawned descendant carrying the marker,
+ * or a dispatched worker with HERMES_KANBAN_TASK set. */
+extern bool explicit_board_intent_is_pinned(void);
+
 /* Scrubbed env: removes HERMES_KANBAN_* keys, adds lineage marker.
  * Caller frees the returned NULL-terminated array with scrub_kanban_env_free(). */
 extern char **scrub_kanban_env(char **env);

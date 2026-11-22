@@ -86,6 +86,7 @@ declare -A DEPS=(
   [gateway_windows_pure]="src/cli/gateway_windows_pure.o lib/libjson/json.o"
   [cron_jobs_rewrite]="src/cron/cron_jobs_rewrite.o lib/libjson/json.o"
   [plugin_commands_gap]="lib/libjson/json.o"
+  [delegation_pins]="src/agent/delegation_context.o lib/libjson/json.o"
   [systemd_stop_sec]="src/gateway/restart_gaps.o lib/libjson/json.o"
   [managed_local_endpoint]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
