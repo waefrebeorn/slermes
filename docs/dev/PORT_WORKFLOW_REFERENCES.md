@@ -94,7 +94,7 @@ From `slermes-windows-port`, `writing-plans`, `grounded-citations` and this sess
 - Coverage: `python scripts/check_gate_coverage.py <oracle.py> <fixture.jsonl> <source.py>`.
 - Health: `python tests/verify_build_health.py --no-link`.
 - Measured: gate 6.8s→1.37s, 8-harness batch 20.3s→13.4s, full suite ~12min→230–289s.
-- Suite18 254.08s, suite19 254.34s, suite20 835.47s (clean rebuild), suite22 464.72s, suite24 475.66s, suite25 493.14s, suite26 536.52s, suite27 526.62s — all 582 gates, with first-attempt defects now captured in `.testbin/oracle_fail_*.log`. Most single-gate retries were real borrower-after-free defects, not SAC infrastructure.
+- Suite18 254.08s, suite19 254.34s, suite20 835.47s (clean rebuild), suite22 464.72s, suite24 475.66s, suite25 493.14s, suite26 536.52s, suite27 526.62s, suite29 281.90s, suite33 585.98s, suite34 586.01s, suite35 599.96s, suite36 310.37s, suite37 314.25s, suite38 311.56s, suite39 313.68s, suite40 320.22s, suite41 319.24s, suite42 625.75s, suite43 636.36s, suite44 648.23s, suite45 658.32s, suite46 671.81s, suite47 362.06s, suite48 694.41s, suite49 702.86s, suite50 701.83s, suite51 711.71s, suite52 737.38s, suite53 728.45s, suite54 740.67s, suite55 743.98s, suite56 761.31s, suite57 770.53s, suite58 781.17s — 582→586 gates, with first-attempt defects now captured in `.testbin/oracle_fail_*.log`. Most single-gate retries were real borrower-after-free defects, not SAC infrastructure.
 - Per-harness keys are only correct when object basenames resolve deterministically: sort candidates and prefer `src/` / `lib/` over fixture copies, otherwise keys silently flip and stale binaries are trusted.
 - Registry: 13,622 Python functions ≥15 lines; 11,330 with no C reference.
 - Known wired gap: `lib/libplugin/plugin.c:897-973` stubs on a real CLI path.
@@ -156,3 +156,5 @@ From `slermes-windows-port`, `writing-plans`, `grounded-citations` and this sess
 `build/winlibs-env.sh` is active; without it the loader reports missing
 `api-ms-win-crt-utility-l1-1-0.dll`, which is an environment issue, not a port regression.
 `python tests/verify_build_health.py --no-link` reports ok after switching its shell to MSYS bash.
+
+Serial mutation audit found no remaining oracle blind spots after fixing the transcription binary UAF; the remaining skips are harnesses that require the normal SLERMES_HOME layout and cannot run under an isolated HOME.
