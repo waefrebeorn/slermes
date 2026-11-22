@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <ctype.h>
 #include "hermes_json.h"
 #include "hermes_logger.h"
 
@@ -137,9 +138,31 @@ int managed_local_netloc(const char *netloc) {
 }
 
 /* PoP: is_managed_local_endpoint @ agent/auxiliary_managed_local.py:_is_managed_local_endpoint */
-int is_managed_local_endpoint(const char *url) {
-    (void)url;
-    return 0;
+/* Python: if not base_url: return False; managed=_managed_local_netloc();
+ * if not managed: return False;
+ * return urlparse(str(base_url)).netloc.lower() == managed.
+ * Both the URL and the resolved managed netloc are passed in. */
+static const char *ac_netloc_start(const char *u) {
+    const char *p = u;
+    if (isalpha((unsigned char)*p)) {
+        const char *q = p;
+        while (*q && (isalnum((unsigned char)*q) || *q=='+' || *q=='-' || *q=='.')) q++;
+        if (*q == ':') p = q + 1;   /* scheme consumed */
+    }
+    if (p[0] == '/' && p[1] == '/') return p + 2;
+    return "";                      /* no authority component */
+}
+int is_managed_local_endpoint(const char *base_url, const char *managed_netloc) {
+    if (!base_url || !*base_url) return 0;
+    if (!managed_netloc || !*managed_netloc) return 0;
+    const char *s = ac_netloc_start(base_url);
+    const char *e = s;
+    while (*e && *e != '/' && *e != '?' && *e != '#') e++;
+    size_t n = (size_t)(e - s);
+    if (n != strlen(managed_netloc)) return 0;
+    for (size_t i = 0; i < n; i++)
+        if (tolower((unsigned char)s[i]) != tolower((unsigned char)managed_netloc[i])) return 0;
+    return 1;
 }
 
 /* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
