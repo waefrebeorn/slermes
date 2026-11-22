@@ -85,6 +85,7 @@ declare -A DEPS=(
   [prune_rooms]="src/gateway/hosted_rooms_gaps3.o lib/libjson/json.o lib/libdb/sqlite3.o"
   [gateway_windows_pure]="src/cli/gateway_windows_pure.o lib/libjson/json.o"
   [cron_jobs_rewrite]="src/cron/cron_jobs_rewrite.o lib/libjson/json.o"
+  [kanban_adapter_flow]="FULL"
   [plugin_commands_gap]="lib/libjson/json.o"
   [delegation_pins]="FULL"
   [hermes_home_defaults]="src/cli/hermes_home_defaults.o lib/libjson/json.o"
