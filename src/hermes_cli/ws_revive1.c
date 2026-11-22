@@ -2111,11 +2111,13 @@ json_t *ws_u_resolve_provider_status(json_t *req)
     json_free(raw);
 wrap:
     if (ws1_is_raise(out) && !ws1_is_base_exc(out)) {
-        const char *msg = json_get_str(out, "msg", "");
+        const char *msg_ref = json_get_str(out, "msg", "");
+        char *msg = strdup(msg_ref ? msg_ref : "");  /* copy before out is freed */
         json_free(out);
         out = json_object();
         json_set(out, "logged_in", json_bool(false));
         json_set(out, "error", json_string(msg));
+        free(msg);
     }
     return out;
 }/* ================================================================
