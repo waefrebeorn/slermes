@@ -444,10 +444,14 @@ fi
 # individual relinks have consistently cleared these.
 if [ "${fail_n:-0}" -gt 0 ]; then
   fixed=""
+  rm -f .testbin/retried_gates.*.txt
+  RETRY_LOG=".testbin/retried_gates.$$.txt"
+  : > "$RETRY_LOG"
   while read -r line; do
     case "$line" in
       FAIL\ *)
         n=${line#FAIL }; n=${n%% *}
+        printf '%s\n' "$n" >> "$RETRY_LOG"
         retry=$(ORACLE_REBUILD=1 bash tests/_oracle_one.sh "$(resolve_one "$n")" 2>/dev/null || true)
         case "$retry" in
           PASS\ *) fixed="$fixed$retry"$'\n' ;;
@@ -467,6 +471,10 @@ if [ "${fail_n:-0}" -gt 0 ]; then
 fi
 
 echo "----"
+if [ -s .testbin/retried_gates.*.txt ]; then
+  echo "retried gates (infrastructure defects, not clean passes):"
+  cat .testbin/retried_gates.*.txt | sort -u | sed 's/^/  /'
+fi
 if [ "${fail:-0}" -eq 0 ]; then
   echo "oracles run: $count  (exit 0 = all green, no drift)"
 else
