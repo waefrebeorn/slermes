@@ -115,9 +115,42 @@ char *fast_lane_config_fields(void) {
 }
 
 /* PoP: resolve_compression_fast_lane @ agent/auxiliary_client.py:resolve_compression_fast_lane */
-int resolve_compression_fast_lane(const char *config) {
-    (void)config;
-    return 0;
+/* Python: provider = str(requested_provider or "").strip().lower() or cfg_provider;
+ * model = str(requested_model or "").strip().lower() or cfg_model;
+ * explicit_route = provider not in {"","auto"} and model.lower() not in {"","auto"};
+ * provider_matches = actual_norm == normalize(provider);
+ * model_matches = str(actual_model or "").strip().lower() == model.lower();
+ * if explicit_route && provider_matches && model_matches && non_reasoning:
+ *     return certified fast lane; else not certified.
+ * Provider normalization / config parsing / label fallback are caller-owned
+ * facts: actual_norm and provider_norm are passed already-normalized. */
+static void arc_lower_trim(const char *s, char *out, size_t cap) {
+    if (!s) { out[0] = '\0'; return; }
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t n = 0;
+    for (; *s && n + 1 < cap; s++, n++) out[n] = (char)tolower((unsigned char)*s);
+    while (n && (out[n-1] == ' ' || out[n-1] == '\t' || out[n-1] == '\n' || out[n-1] == '\r')) n--;
+    out[n] = '\0';
+}
+int resolve_compression_fast_lane(const char *actual_provider_norm, const char *actual_model,
+                                  const char *provider_norm, const char *cfg_provider,
+                                  const char *cfg_model, int non_reasoning,
+                                  const char *requested_provider, const char *requested_model) {
+    char prov[256], model[256], req[256];
+    arc_lower_trim(requested_provider, req, sizeof(req));
+    if (req[0]) arc_lower_trim(req, prov, sizeof(prov));
+    else arc_lower_trim(cfg_provider, prov, sizeof(prov));
+    arc_lower_trim(requested_model, req, sizeof(req));
+    if (req[0]) arc_lower_trim(req, model, sizeof(model));
+    else arc_lower_trim(cfg_model, model, sizeof(model));
+    if (!prov[0] || strcmp(prov, "auto") == 0) return 0;
+    if (!model[0] || strcmp(model, "auto") == 0) return 0;
+    if (!actual_provider_norm || !provider_norm ||
+        strcmp(actual_provider_norm, provider_norm) != 0) return 0;
+    char act[256];
+    arc_lower_trim(actual_model, act, sizeof(act));
+    if (strcmp(act, model) != 0) return 0;
+    return non_reasoning ? 1 : 0;
 }
 
 /* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
