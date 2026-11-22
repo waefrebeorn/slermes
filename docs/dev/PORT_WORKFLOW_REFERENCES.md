@@ -148,3 +148,11 @@ From `slermes-windows-port`, `writing-plans`, `grounded-citations` and this sess
 [18] https://arxiv.org/html/2607.28271
 [19] https://github.com/wallaceespindola/legacy-modernization-patterns
 [20] https://snowmanlabs.com/insights/modernize-legacy-systems-without-big-bang-rewrite
+
+## Native verification (2026-11-22)
+
+`make -j8 slermes` with `source build/winlibs-env.sh`: rc=0, 19,096,667-byte `slermes.exe`.
+`./slermes.exe --help` and `--version` both exit 0 when the UCRT downlevel DLL path from
+`build/winlibs-env.sh` is active; without it the loader reports missing
+`api-ms-win-crt-utility-l1-1-0.dll`, which is an environment issue, not a port regression.
+`python tests/verify_build_health.py --no-link` reports ok after switching its shell to MSYS bash.
