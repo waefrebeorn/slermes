@@ -61,6 +61,7 @@ declare -A DEPS=(
   [compress_fast_lane]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
   [mcp_filter]="src/hermes_cli/mcp_startup_gaps.o lib/libjson/json.o"
   [validate_page]="src/gateway/hosted_room_replicas_gaps.o lib/libjson/json.o"
+  [worktree_pushed]="src/cli_gaps.o lib/libjson/json.o"
   [systemd_stop_sec]="src/gateway/restart_gaps.o lib/libjson/json.o"
   [managed_local_endpoint]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
@@ -325,6 +326,18 @@ resolve_one() {
   # entries below still win for harnesses that need extra objects.
   if grep -qE '^#include "[A-Za-z0-9_/]+\.c"' "tests/t_port_${harness}.c" 2>/dev/null; then
     deps="lib/libjson/json.o"
+  elif [ ! -f "src/cli/port_$name.c" ]; then
+    # Linked (not included) harness: derive its object from the first header
+    # whose basename matches an object registered in build/objects.mk.
+    for hdr in $(grep -oE '^#include "[A-Za-z0-9_/]+\.h"' "tests/t_port_${harness}.c" 2>/dev/null \
+                 | sed -e 's/^#include "//' -e 's/"$//'); do
+      case "$hdr" in
+        hermes_json.h|hermes_core_types.h|hermes_logger.h|hermes_win32.h|libjson/json.h|sqlite3.h) continue ;;
+      esac
+      base=$(basename "$hdr" .h)
+      cand=$(grep -hoE "[A-Za-z0-9_/]*${base}\.o" build/objects.mk 2>/dev/null | sort -u | head -1)
+      if [ -n "$cand" ]; then deps="$cand lib/libjson/json.o"; break; fi
+    done
   fi
   if grep -q 'hermes_regex.h' "tests/t_port_${harness}.c" 2>/dev/null \
      || grep -q 'hermes_regex.h' "src/cli/port_$name.c" 2>/dev/null \

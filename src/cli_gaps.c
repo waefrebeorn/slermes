@@ -13,7 +13,21 @@
 char *fetch_remote_branch_heads(void) { return strdup("[]"); }
 
 /* PoP: worktree_branch_pushed_exact @ hermes_cli/worktree_ops.py:_worktree_branch_pushed_exact */
-int worktree_branch_pushed_exact(void) { return 1; }
+/* Python: if not remote_heads: return False;
+ * branch = _worktree_current_branch(path, timeout);
+ * remote_sha = remote_heads.get(branch) if branch is not None else None;
+ * return bool(remote_sha) and (_git_out(["rev-parse","HEAD"],...) == remote_sha).
+ * Subprocess results are caller-owned facts: branch, local HEAD and the
+ * remote_heads map are passed in. Exception paths return False. */
+int worktree_branch_pushed_exact(const char *branch, const char *local_head,
+                                 const json_t *remote_heads) {
+    if (!remote_heads || remote_heads->type != JSON_OBJECT) return 0;
+    if (!branch || !*branch) return 0;
+    json_t *sha = json_obj_get(remote_heads, branch);
+    if (!sha || sha->type != JSON_STRING || !*sha->str_val) return 0;
+    if (!local_head) return 0;
+    return strcmp(local_head, sha->str_val) == 0 ? 1 : 0;
+}
 
 int should_seed_interactive(void) { return 0; }
 
