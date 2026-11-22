@@ -967,7 +967,14 @@ json_t *plugin_get_pre_tool_call_directive_details(void) { return json_object();
 /* PoP: resolve_plugin_command_result @ hermes_cli/plugins.py:resolve_plugin_command_result */
 json_t *plugin_resolve_command_result(json_t *result) { return result ? result : json_object(); }
 /* PoP: get_plugin_commands @ hermes_cli/plugins.py:get_plugin_commands */
-json_t *plugin_get_commands(void) { return json_array(); }
+/* The real facade returns the discovered registry's _plugin_commands dict,
+ * not an empty array. Both helpers are defined in the revival section below. */
+extern int py_ensure_discovered(int force);
+extern json_t *py_commands_snapshot(void);
+json_t *plugin_get_commands(void) {
+    if (py_ensure_discovered(0)) return json_object();
+    return py_commands_snapshot();
+}
 /* PoP: get_plugin_auxiliary_tasks @ hermes_cli/plugins.py:get_plugin_auxiliary_tasks */
 json_t *plugin_get_auxiliary_tasks(void) { return json_array(); }
 /* PoP: get_plugin_toolsets @ hermes_cli/plugins.py:get_plugin_toolsets */
@@ -1579,6 +1586,13 @@ static int py_state_bool(const json_t *st, const char *key, int def) {
     return v->bool_val ? 1 : 0;
 }
 
+/* Snapshot of the revived registry's command table for the public facade. */
+json_t *py_commands_snapshot(void) {
+    json_t *cmds = g_py_reg.plugin_commands;
+    if (!cmds || cmds->type != JSON_OBJECT) return json_object();
+    return json_copy(cmds);
+}
+
 void py_plugin_install_state(const json_t *st) {
     if (!st || st->type != JSON_OBJECT) return;
     json_free(g_py_reg.hooks);
@@ -1735,7 +1749,7 @@ static int py_delivery_manager(void) {
     return 0;
 }
 
-static int py_ensure_discovered(int force) {
+int py_ensure_discovered(int force) {
     json_t *r = py_seam0("get_plugin_manager");
     if (py_check_raise(r)) return 1;
     json_free(r);
