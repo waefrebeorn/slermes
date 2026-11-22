@@ -41,7 +41,7 @@ rc=$?
 
 # One grep capturing the whole matching line. `|| true` keeps an empty result
 # from tripping `set -u`.
-line=$(printf '%s\n' "$out" | grep -E "ORACLE [A-Za-z0-9_]+: [0-9]+ cases, 0 mismatches" | head -1 || true)
+line=$(printf '%s\n' "$out" | grep -E "ORACLE [A-Za-z0-9_.:]+: [0-9]+ cases, 0 mismatches" | head -1 || true)
 
 if [ $rc -eq 0 ] && [ -n "$line" ]; then
   echo "PASS $name  (${line#ORACLE *: })"
