@@ -1119,6 +1119,8 @@ static json_t *ka_explicit_board_intent_pinned(ka_io_t *io);
  * PoP-ported functions (all UNCLAIMED hermes_cli/kanban_db.py defs)
  * ═══════════════════════════════════════════════════════════════════════════ */
 
+extern bool explicit_board_intent_is_pinned(void);
+
 /* PoP: ka_lossy_text @ hermes_cli/kanban_db.py:_lossy_text */
 json_t *ka_lossy_text(ka_io_t *io, const json_t *value) {
     (void)io;
@@ -1526,7 +1528,6 @@ json_t *ka_explicit_board_intent_pinned(ka_io_t *io) {
     json_t *pinned = ka_seam(io, "explicit_board_intent_is_pinned", json_object());
     if (pinned && pinned->type == JSON_NULL) {
         /* No dispatcher supplied the seam: use the LIVE-verified C predicate. */
-        extern bool explicit_board_intent_is_pinned(void);
         json_free(pinned);
         return json_bool(explicit_board_intent_is_pinned() ? true : false);
     }
