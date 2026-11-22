@@ -193,7 +193,8 @@ def check_many(paths):
     for cmd, files in by_cmd.items():
         for i in range(0, len(files), 64):
             chunk = files[i:i + 16]
-            argv = ["sh", "-c", cmd + " -fsyntax-only " +
+            shell = r"C:\msys64\usr\bin\bash.exe" if os.name == "nt" else "sh"
+            argv = [shell, "-c", cmd + " -fsyntax-only " +
                     " ".join(f'"{f}"' for f in chunk)]
             r = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True,
                                encoding="utf-8", errors="replace")
