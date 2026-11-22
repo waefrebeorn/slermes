@@ -28,6 +28,9 @@ extern bool explicit_board_intent_is_pinned(void);
 /* True when kanban mutations at path are denied by the dispatcher fence. */
 extern bool kanban_path_is_fenced(const char *path);
 
+/* The board task this execution owns, or "" when not a dispatcher worker. */
+extern const char *owned_kanban_task(void);
+
 /* Scrubbed env: removes HERMES_KANBAN_* keys, adds lineage marker.
  * Caller frees the returned NULL-terminated array with scrub_kanban_env_free(). */
 extern char **scrub_kanban_env(char **env);

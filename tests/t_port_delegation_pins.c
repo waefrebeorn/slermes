@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern void delegation_context_enter_non_dispatcher_owned(void);
+extern void delegation_context_exit_non_dispatcher_owned(void);
+
 static void setenv_json(const json_t *env, const char *key) {
     json_t *v = env ? json_obj_get(env, key) : NULL;
     if (!v || v->type == JSON_NULL) {
@@ -29,11 +32,17 @@ int main(void) {
         json_t *ip = json_obj_get(in, "in_process");
         int in_process = (ip && (ip->type == JSON_BOOL ? ip->bool_val :
                                  ip->type == JSON_NUMBER ? ip->num_val != 0 : 0)) ? 1 : 0;
+        json_t *ndj = json_obj_get(in, "non_dispatcher");
+        int non_dispatcher = (ndj && (ndj->type == JSON_BOOL ? ndj->bool_val :
+                                      ndj->type == JSON_NUMBER ? ndj->num_val != 0 : 0)) ? 1 : 0;
         if (in_process) delegated_child_context_enter();
+        if (non_dispatcher) delegation_context_enter_non_dispatcher_owned();
         int out = explicit_board_intent_is_pinned() ? 1 : 0;
         json_t *pathj = json_obj_get(in, "path");
         const char *path = (pathj && pathj->type == JSON_STRING) ? pathj->str_val : "";
         int fenced = kanban_path_is_fenced(path) ? 1 : 0;
+        const char *owned = owned_kanban_task();
+        if (non_dispatcher) delegation_context_exit_non_dispatcher_owned();
         if (in_process) delegated_child_context_exit();
         fputs("{\"env\":", stdout);
         if (env) { char *s = json_dumps(env, 0); fputs(s ? s : "null", stdout); free(s); }
@@ -41,7 +50,9 @@ int main(void) {
         fputs(",\"path\":", stdout);
         if (pathj) { char *s = json_dumps(pathj, 0); fputs(s ? s : "null", stdout); free(s); }
         else fputs("null", stdout);
-        printf(",\"in_process\":%d,\"out\":%d,\"fenced\":%d}\n", in_process, out, fenced);
+        fputs(",\"owned\":", stdout);
+        { char *s = json_dumps(json_string(owned ? owned : ""), 0); fputs(s ? s : "\"\"", stdout); free(s); }
+        printf(",\"non_dispatcher\":%d,\"in_process\":%d,\"out\":%d,\"fenced\":%d}\n", non_dispatcher, in_process, out, fenced);
         json_free(in);
     }
     return 0;

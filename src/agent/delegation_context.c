@@ -132,6 +132,25 @@ bool explicit_board_intent_is_pinned(void)
     return false;
 }
 
+extern bool delegation_context_is_dispatcher_owned_worker(void);
+
+/* PoP: owned_kanban_task @ agent/delegation_context.py:owned_kanban_task */
+const char *owned_kanban_task(void)
+{
+    static char task[4096];
+    task[0] = '\0';
+    if (!delegation_context_is_dispatcher_owned_worker()) return task;
+    const char *v = getenv("HERMES_KANBAN_TASK");
+    if (!v) return task;
+    while (*v == ' ' || *v == '\t' || *v == '\n' || *v == '\r') v++;
+    size_t n = strlen(v);
+    while (n && (v[n-1] == ' ' || v[n-1] == '\t' || v[n-1] == '\n' || v[n-1] == '\r')) n--;
+    if (n >= sizeof(task)) n = sizeof(task) - 1;
+    memcpy(task, v, n);
+    task[n] = '\0';
+    return task;
+}
+
 /* Lexical Path.expanduser().resolve() for POSIX-style absolute paths. */
 static char *dc_resolve(const char *p)
 {
@@ -214,7 +233,8 @@ bool kanban_path_is_fenced(const char *path)
 bool is_delegated_child_process_context(void)
 {
     if (is_delegated_child_context()) return true;
-    return getenv("HERMES_DELEGATED_CHILD_CONTEXT") != NULL ? true : false;
+    const char *m = getenv("HERMES_DELEGATED_CHILD_CONTEXT");
+    return (m && *m) ? true : false;
 }
 
 /* PoP: scrub_kanban_env @ agent/delegation_context.py:scrub_kanban_env */
@@ -317,7 +337,7 @@ void delegation_context_exit_non_dispatcher_owned(void)
  * fired in-process from a worker. */
 bool delegation_context_is_dispatcher_owned_worker(void)
 {
-    if (tld_delegated_child_context) return false;
+    if (is_delegated_child_process_context()) return false;
     return !tld_non_dispatcher_owned_context;
 }
 

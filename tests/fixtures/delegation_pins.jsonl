@@ -12,3 +12,8 @@
 {"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/h/fence"}, "path": "/h/fence/board.db", "in_process": 0}
 {"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/h/fence"}, "path": "/h/other/board.db", "in_process": 0}
 {"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/h/fence", "HERMES_KANBAN_DB": "/h/db/board.db"}, "path": "/h/db/board.db", "in_process": 0}
+{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "task-7"}, "in_process": 0}
+{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "  task-7  "}, "in_process": 0}
+{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "task-7"}, "in_process": 1}
+{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "task-7"}, "in_process": 0, "non_dispatcher": 1}
+{"func": "owned_kanban_task", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "1", "HERMES_KANBAN_TASK": "task-7"}, "in_process": 0}
