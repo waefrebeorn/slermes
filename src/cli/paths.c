@@ -21,6 +21,9 @@ static char active_profile[64] = "";
  * ================================================================ */
 
 static void resolve_slermes_home(char *buf, size_t sz) {
+    extern const char *hc_get_hermes_home_override(void);
+    const char *ov = hc_get_hermes_home_override();
+    if (ov && *ov) { snprintf(buf, sz, "%s", ov); return; }
     const char *env = getenv("SLERMES_HOME");
     if (env && env[0]) {
         snprintf(buf, sz, "%s", env);

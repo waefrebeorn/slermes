@@ -88,6 +88,7 @@ declare -A DEPS=(
   [plugin_commands_gap]="lib/libjson/json.o"
   [delegation_pins]="FULL"
   [hermes_home_defaults]="src/cli/hermes_home_defaults.o lib/libjson/json.o"
+  [hermes_home_override]="src/cli/hermes_home_override.o lib/libjson/json.o"
   [systemd_stop_sec]="src/gateway/restart_gaps.o lib/libjson/json.o"
   [managed_local_endpoint]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
