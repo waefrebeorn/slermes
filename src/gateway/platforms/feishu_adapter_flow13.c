@@ -304,19 +304,23 @@ static json_t *fa13__resolve_approval(fa13_ctx_t *ctx, const json_t *args) {
     /* if not count and choice != "deny": */
     if (!(count == 0) || strcmp(choice, "deny") == 0) { json_free(state); return json_null(); }
     const char *chat_state = fa13_str_or(json_obj_get(state, "chat_id"), "");
-    const char *chat = chat_state[0] ? chat_state
-                     : fa13_str_or(json_obj_get(args, "chat_id"), "");
+    const char *chat_ref = chat_state[0] ? chat_state
+                         : fa13_str_or(json_obj_get(args, "chat_id"), "");
+    size_t clen = strlen(chat_ref);
+    char *chat = malloc(clen + 1);
+    memcpy(chat, chat_ref, clen + 1);
     json_free(state);
-    if (!chat[0]) return json_null();
+    if (!chat[0]) { free(chat); return json_null(); }
     /* inner try: send(chat, t(...)) */
     json_t *ta = fa13_args(); fa13_set_s(ta, "key", "platform.shared.approval_expired");
     json_t *msg = fa13_call(ctx, "t", ta);
     if (fa13_is_raise(msg)) {
-        if (fa13_raise_is_base(msg)) return msg;
-        json_free(msg); return json_null();   /* inner except Exception: log */
+        if (fa13_raise_is_base(msg)) { free(chat); return msg; }
+        json_free(msg); free(chat); return json_null();   /* inner except Exception: log */
     }
     json_t *sa = fa13_args();
     fa13_set_s(sa, "chat_id", chat);
+    free(chat);
     fa13_set_copy(sa, "message", msg);
     json_t *s = fa13_call(ctx, "send", sa);
     if (fa13_is_raise(s)) {

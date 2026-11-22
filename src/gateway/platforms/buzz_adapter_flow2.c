@@ -1742,10 +1742,14 @@ static json_t *ba2_delete_message(ba2_ctx_t *ctx, const json_t *args) {
     if (ba2_is_raise(res)) return res;
     long long code = (long long)ba2_arr_num(res, 0, 0);
     if (code != 0) { json_free(res); return json_bool(false); }
-    const char *out = ba2_arr_str(res, 1, "");
+    const char *out_ref = ba2_arr_str(res, 1, "");
+    size_t olen = out_ref ? strlen(out_ref) : 0;
+    char *out = malloc(olen + 1);
+    memcpy(out, out_ref ? out_ref : "", olen + 1);
     json_free(res);
     /* try: data = json.loads(out or "{}") except ValueError: return True */
-    json_t *data = ba2_json_loads(out && out[0] ? out : "{}");
+    json_t *data = ba2_json_loads(out[0] ? out : "{}");
+    free(out);
     if (!data) return json_bool(true);
     if (data->type != JSON_OBJECT) {
         json_t *e = ba2_no_attr(data, "get");
