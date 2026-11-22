@@ -2066,14 +2066,19 @@ static char *py_resolve_block_from_details(const py_directive_t *d,
         }
     }
     if (request_base_only) {
+        /* SystemExit/KeyboardInterrupt/GeneratorExit escape `except Exception`. */
         json_free(tokens);
         return NULL;
     }
+    if (request_raised) memset(&g_py_exc, 0, sizeof(g_py_exc));
     char *fail_closed = NULL;
     if (request_raised) {
-        fail_closed = py_strdup("");
-    } else if (!r || r->type != JSON_OBJECT) {
-        /* result.get(...) on a non-dict: AttributeError -> except Exception */
+        fail_closed = py_strdup("");  /* caught by `except Exception` */
+    } else if (!r || r->type == JSON_NULL) {
+        /* LIVE's `result.get(...)` is OUTSIDE the try/finally: a None result
+         * raises AttributeError, it is not converted to a block message. */
+        py_raise("AttributeError", "'NoneType' object has no attribute 'get'");
+    } else if (r->type != JSON_OBJECT) {
         fail_closed = py_strdup("");
     }
     if (fail_closed) {
