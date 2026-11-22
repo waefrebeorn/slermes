@@ -113,6 +113,7 @@ From `slermes-windows-port`, `writing-plans`, `grounded-citations` and this sess
 
 - [x] Wiring guardrail (`check_port_wiring.py`)
 - [x] Coverage-gap guardrail (`check_gate_coverage.py`)
+- [x] Oracle mutation smoke (`scripts/check_oracle_mutation.py`) — pass→fail→pass
 - [x] Flow-trace ledger (`docs/dev/flow_trace.jsonl`) — verified caller→callee fixes
 - [x] Per-harness content-hash keys (`scripts/harness_key.py`): one `nm -A`
   pass over the archive builds a symbol index, each harness's reachable member
