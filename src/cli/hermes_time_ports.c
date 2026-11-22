@@ -19,3 +19,14 @@ const char *hc_env_timezone(int multiplex_active)
     out[n] = '\0';
     return out;
 }
+
+/* PoP: _timezone_cache_identity @ hermes_time.py:_timezone_cache_identity */
+void hc_timezone_cache_identity(int multiplex_active, const char *config_path,
+                               char *out, size_t n)
+{
+    const char *tz = hc_env_timezone(multiplex_active);
+    if (tz && *tz)
+        snprintf(out, n, "[\"environment\",\"%s\"]", tz);
+    else
+        snprintf(out, n, "[\"config\",\"%s\"]", config_path ? config_path : "");
+}

@@ -1,5 +1,5 @@
-{"func": "_env_timezone", "tz": "UTC", "multiplex": 0}
-{"func": "_env_timezone", "tz": "  America/New_York  ", "multiplex": 0}
-{"func": "_env_timezone", "tz": "", "multiplex": 0}
-{"func": "_env_timezone", "tz": null, "multiplex": 0}
-{"func": "_env_timezone", "tz": "UTC", "multiplex": 1}
+{"func": "_env_timezone", "tz": "UTC", "multiplex": 0, "config_path": "/h/config.yaml", "identity": ["environment", "UTC"]}
+{"func": "_env_timezone", "tz": "  America/New_York  ", "multiplex": 0, "config_path": "/h/config.yaml", "identity": ["environment", "America/New_York"]}
+{"func": "_timezone_cache_identity", "tz": "", "multiplex": 0, "config_path": "/h/config.yaml", "identity": ["config", "/h/config.yaml"]}
+{"func": "_env_timezone", "tz": null, "multiplex": 0, "config_path": "/h/config.yaml", "identity": ["config", "/h/config.yaml"]}
+{"func": "_env_timezone", "tz": "UTC", "multiplex": 1, "config_path": "/h/config.yaml", "identity": ["config", "/h/config.yaml"]}
