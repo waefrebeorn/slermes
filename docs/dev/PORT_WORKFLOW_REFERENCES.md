@@ -162,3 +162,10 @@ Serial mutation audit found no remaining oracle blind spots after fixing the tra
 ## Wiring status of recent gates
 
 `delegation_context.c`, `hermes_home_override.c` and the three plugin facades are wired into production call paths. `hermes_home_defaults.c` and `hermes_time_ports.c` are LIVE-verified but currently harness-only; do not count them as product-parity claims until a production caller is added.
+
+## Differential gap fuzzing sources (2026-11-22)
+
+- https://dev.to/dannyamah/140-bugs-were-hiding-in-one-function-and-my-tests-couldnt-see-any-of-them-a0p — differential fuzzing finds disagreements without a spec; shrink witnesses.
+- https://equivl.dev/differential-testing/ — generated inputs + seeded PRNG; property-based vs differential testing.
+- https://github.com/Dicklesworthstone/frankensqlite/issues/86 — boundary-biased generators and byte-for-byte agreement after canonicalization.
+- Applied as `scripts/differential_gap_fuzz.py`: fixture-seeded boundary mutation, harness-vs-LIVE diff, delta-debugged witness.
