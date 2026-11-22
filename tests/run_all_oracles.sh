@@ -81,6 +81,7 @@ declare -A DEPS=(
   [worktree_pushed]="src/cli_gaps.o lib/libjson/json.o"
   [effective_ttl]="src/agent/prompt_caching_gaps.o lib/libjson/json.o"
   [prune_rooms]="src/gateway/hosted_rooms_gaps3.o lib/libjson/json.o lib/libdb/sqlite3.o"
+  [gateway_windows_pure]="src/cli/gateway_windows_pure.o lib/libjson/json.o"
   [systemd_stop_sec]="src/gateway/restart_gaps.o lib/libjson/json.o"
   [managed_local_endpoint]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
@@ -446,7 +447,7 @@ if [ "${fail_n:-0}" -gt 0 ]; then
     case "$line" in
       FAIL\ *)
         n=${line#FAIL }; n=${n%% *}
-        retry=$(unset ORACLE_PREBUILT_OK; bash tests/_oracle_one.sh "$(resolve_one "$n")" 2>/dev/null || true)
+        retry=$(ORACLE_REBUILD=1 bash tests/_oracle_one.sh "$(resolve_one "$n")" 2>/dev/null || true)
         case "$retry" in
           PASS\ *) fixed="$fixed$retry"$'\n' ;;
           *) fixed="$fixed$line"$'\n' ;;

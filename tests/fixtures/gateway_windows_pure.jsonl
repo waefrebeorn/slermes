@@ -1,0 +1,46 @@
+{"func": "_normalize_windows_path", "args": {"value": ""}}
+{"func": "_normalize_windows_path", "args": {"value": "  "}}
+{"func": "_normalize_windows_path", "args": {"value": "  \"C:\\Users\\Name\"\\  "}}
+{"func": "_normalize_windows_path", "args": {"value": "C:\\Hermes\\"}}
+{"func": "_normalize_windows_path", "args": {"value": "\\\\srv\\share\\"}}
+{"func": "_normalize_windows_path", "args": {"value": "\"C:/x/\""}}
+{"func": "_normalize_windows_path", "args": {"value": "MiXeD/CASE"}}
+{"func": "_quote_cmd_script_arg", "args": {"value": ""}}
+{"func": "_quote_cmd_script_arg", "args": {"value": "abc"}}
+{"func": "_quote_cmd_script_arg", "args": {"value": "a b"}}
+{"func": "_quote_cmd_script_arg", "args": {"value": "say \"hi\""}}
+{"func": "_quote_cmd_script_arg", "args": {"value": "a\tb"}}
+{"func": "_quote_cmd_script_arg", "args": {"value": "a\nb"}}
+{"func": "_quote_cmd_script_arg", "args": {"value": "a\rb"}}
+{"func": "_quote_cmd_script_arg", "args": {"value": "C:\\Program Files\\x"}}
+{"func": "_quote_cmd_script_arg", "args": {"value": "a'b\nc"}}
+{"func": "_quote_vbs_string", "args": {"value": ""}}
+{"func": "_quote_vbs_string", "args": {"value": "abc"}}
+{"func": "_quote_vbs_string", "args": {"value": "a\"b"}}
+{"func": "_quote_vbs_string", "args": {"value": "a\nb"}}
+{"func": "_quote_vbs_string", "args": {"value": "C:\\x\\y"}}
+{"func": "_quote_vbs_string", "args": {"value": "a'b\nc"}}
+{"func": "_sanitize_filename", "args": {"value": ""}}
+{"func": "_sanitize_filename", "args": {"value": "plain_name"}}
+{"func": "_sanitize_filename", "args": {"value": "a<b>:\"/\\|?*z"}}
+{"func": "_sanitize_filename", "args": {"value": "a\u0001\u001fb"}}
+{"func": "_sanitize_filename", "args": {"value": "naïve✓.txt"}}
+{"func": "_gateway_run_argv", "args": {"python_exe": "python.exe", "profile_arg": ""}}
+{"func": "_gateway_run_argv", "args": {"python_exe": "python.exe", "profile_arg": "--profile alpha"}}
+{"func": "_gateway_run_argv", "args": {"python_exe": "py", "profile_arg": "--profile   a   b"}}
+{"func": "_is_access_denied", "args": {"detail": ""}}
+{"func": "_is_access_denied", "args": {"detail": "Access is denied"}}
+{"func": "_is_access_denied", "args": {"detail": "ACCESO DENEGADO"}}
+{"func": "_is_access_denied", "args": {"detail": "拒绝访问"}}
+{"func": "_is_access_denied", "args": {"detail": "拒絕存取"}}
+{"func": "_is_access_denied", "args": {"detail": "アクセスが拒否されました"}}
+{"func": "_is_access_denied", "args": {"detail": "액세스가 거부되었습니다"}}
+{"func": "_is_access_denied", "args": {"detail": "ok"}}
+{"func": "_is_access_denied", "args": {"detail": "přístup byl odepřen"}}
+{"func": "_should_fall_back", "args": {"code": 0, "detail": ""}}
+{"func": "_should_fall_back", "args": {"code": 124, "detail": ""}}
+{"func": "_should_fall_back", "args": {"code": 1, "detail": "schtasks timed out"}}
+{"func": "_should_fall_back", "args": {"code": 1, "detail": "SCHTASKS PRODUCED NO OUTPUT"}}
+{"func": "_should_fall_back", "args": {"code": 1, "detail": "Access is denied"}}
+{"func": "_should_fall_back", "args": {"code": 1, "detail": "ok"}}
+{"func": "_should_fall_back", "args": {"code": 124, "detail": "Access is denied"}}
