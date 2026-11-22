@@ -54,6 +54,7 @@ declare -A DEPS=(
   [profiles_warn]="src/hermes_cli/profiles_warn_port.o lib/libjson/json.o"
   [codex_event_content]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
   [ac3_native_fallback]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
+  [acp_tools_flow2]="lib/libjson/json.o"
   [same_writer]="src/hermes_cli/active_sessions_gaps.o lib/libjson/json.o"
   [same_auth_store]="src/hermes_cli/auth_gaps.o lib/libjson/json.o"
   [abort_complete]="src/hermes_cli/update_abort_recovery_gaps.o lib/libjson/json.o"

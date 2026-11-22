@@ -88,7 +88,24 @@ bash tests/ensure_oracle_deps.sh $ALL_OBJS || { echo "dependency build failed" >
     IFS=$'\t' read -r _n h o <<< "$spec"
     # A harness that needs the whole project object set passes "FULL".
     if [ "$o" = "FULL" ]; then
-      o=$(find src lib -name '*.o' ! -name 'main.o' | tr '\n' ' ')
+      # Registered objects only: a bare `find src lib -name '*.o'` also picks
+      # up stale/orphaned objects (109 on this tree) whose externs no longer
+      # exist, so FULL harnesses die at link with unrelated undefined refs.
+      # This mirrors run_one_oracle.sh's response-file construction.
+      {
+        grep -hoE '[A-Za-z0-9_./\\-]+\.o' build/*.mk \
+          | tr '\\' '/' | sed 's,^\./,,' | sort -u \
+          | while read -r obj; do
+              case "$obj" in
+                */main.o|*/hash.o|*/hermes_regex.o|*/auxiliary_client_runtime.o) continue ;;
+              esac
+              if [ -f "$obj" ]; then printf '%s ' "$obj"; fi
+            done
+        if [ -f .testbin/hash_O0.o ]; then printf '%s ' .testbin/hash_O0.o; fi
+        if [ -f .testbin/hermes_regex_O0.o ]; then printf '%s ' .testbin/hermes_regex_O0.o; fi
+        echo
+      } > "$WORK/full_objs.rsp"
+      o=$(cat "$WORK/full_objs.rsp")
     fi
     # The object list can exceed the Windows ~32k command-line limit (a FULL
     # link is 1205 objects), so hand it to gcc through a response file.
