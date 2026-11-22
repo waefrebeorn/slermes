@@ -106,8 +106,22 @@ int profile_is_locked(const char *profile_dir) {
 }
 
 /* PoP: real_profile_pin @ hermes_cli/browser_connect.py:_real_profile_pin */
-void real_profile_pin(const char *profile_dir) {
-    (void)profile_dir;
+/* Python: pin = _browser_setting("real_profile_pin");
+ * return pin.strip() if isinstance(pin, str) and pin.strip() else None.
+ * The already-resolved config value is passed in as JSON; only a string with
+ * non-whitespace content yields a pin. */
+const char *real_profile_pin(const json_t *value) {
+    static char buf[512];
+    if (!value || value->type != JSON_STRING || !value->str_val) return NULL;
+    const char *s = value->str_val;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t n = strlen(s);
+    while (n && (s[n-1] == ' ' || s[n-1] == '\t' || s[n-1] == '\n' || s[n-1] == '\r')) n--;
+    if (!n) return NULL;
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, s, n);
+    buf[n] = '\0';
+    return buf;
 }
 
 /* PoP: resolve_source_profile @ hermes_cli/browser_connect.py:_resolve_source_profile */

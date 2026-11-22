@@ -47,6 +47,7 @@ declare -A DEPS=(
   [cron_drain]="src/hermes_cli/gateway_gaps2.o lib/libjson/json.o"
   [whatsapp_identity]="src/hermes_cli/whatsapp_identity.o lib/libjson/json.o"
   [session_db_timeout]="src/cron/scheduler_gaps.o lib/libjson/json.o"
+  [real_profile_pin]="src/hermes_cli/browser_connect_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
   [callbacks_skip]="src/cli/port_callbacks.o lib/libjson/json.o"
   # backfilled: harness/object name differs from the oracle discovery name.
