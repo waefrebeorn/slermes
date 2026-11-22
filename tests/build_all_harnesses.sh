@@ -59,6 +59,11 @@ LIBINCS=$(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | t
 # Harnesses #include the port .c by bare name; add every src subdir.
 SRCINCS=$(find src -maxdepth 3 -type d | sed 's#^#-I #' | tr '\n' ' ')
 
+# FULL harnesses link against a single static archive instead of ~2241 loose
+# objects; ld then pulls only what each harness actually references.
+ARCHIVE_PATH=$(bash tests/make_harness_archive.sh | tail -1)
+[ -f "$ARCHIVE_PATH" ] || { echo "harness archive unavailable" >&2; exit 1; }
+
 # Ensure every explicit dependency object exists (SAC-safe -O0 hash image,
 # local stubs, unbuilt port objects) before the batch link.
 ALL_OBJS=""
@@ -87,11 +92,14 @@ bash tests/ensure_oracle_deps.sh $ALL_OBJS || { echo "dependency build failed" >
   for spec in "${SPECS[@]}"; do
     IFS=$'\t' read -r _n h o <<< "$spec"
     # A harness that needs the whole project object set passes "FULL".
-    if [ "$o" = "FULL" ]; then
-      # Registered objects only: a bare `find src lib -name '*.o'` also picks
-      # up stale/orphaned objects (109 on this tree) whose externs no longer
-      # exist, so FULL harnesses die at link with unrelated undefined refs.
-      # This mirrors run_one_oracle.sh's response-file construction.
+    if [ "$o" = "FULL" ] && [ "${HARNESS_LINK_MODE:-archive}" != "explicit" ]; then
+      # Static archive: ld pulls only the objects the harness references.
+      # Measured 2.5 s per link vs ~9 s, and 217 KB vs 19 MB images.
+      o="$ARCHIVE_PATH"
+    elif [ "$o" = "FULL" ]; then
+      # Legacy path: force every registered object into the image (~9 s link,
+      # 19 MB binary). Kept as a fallback if archive resolution ever misses a
+      # symbol a harness needs at runtime.
       {
         grep -hoE '[A-Za-z0-9_./\\-]+\.o' build/*.mk \
           | tr '\\' '/' | sed 's,^\./,,' | sort -u \

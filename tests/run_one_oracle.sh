@@ -142,8 +142,19 @@ if [ -x ".testbin/harnesses/$NAME.exe" ] && [ -z "${ORACLE_REBUILD:-}" ]; then
   if [ "${ORACLE_PREBUILT_OK:-0}" = "1" ]; then
     # The full gate validated the whole cache in one find before starting.
     prebuilt_fresh=1
-  elif [ -z "$(find src lib tests \( -name '*.o' -o -name 't_port_*.c' \) -newer ".testbin/harnesses/$NAME.exe" -print -quit 2>/dev/null)" ]; then
-    prebuilt_fresh=1
+  else
+    # Restrict the scan to src/lib: `tests` contains a fixture submodule with
+    # ~19k .o files and made this check cost 4.5 s *per gate*. Harness sources
+    # are checked with a cheap shell loop instead (no external find process).
+    stale=0
+    if [ -n "$(find src lib -name '*.o' -newer ".testbin/harnesses/$NAME.exe" -print -quit 2>/dev/null)" ]; then
+      stale=1
+    else
+      for f in tests/t_port_*.c; do
+        if [ "$f" -nt ".testbin/harnesses/$NAME.exe" ]; then stale=1; break; fi
+      done
+    fi
+    [ "$stale" = "0" ] && prebuilt_fresh=1
   fi
 fi
 if [ "$prebuilt_fresh" = "1" ]; then
