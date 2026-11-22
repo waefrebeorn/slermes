@@ -124,7 +124,7 @@ char *memory_tool_run(memory_store_t *store, const char *action,
 char *memory_tool_apply_pending(memory_store_t *store, const json_node_t *payload);
 
 /* Always available (no external requirements). */
-int memory_tool_available(void);
+int memory_tool_available(int memory_enabled, int user_profile_enabled);
 
 /* Build the recoverable "old_text required" error (current entry inventory +
  * retry instruction). Returns malloc'd JSON (caller frees). */

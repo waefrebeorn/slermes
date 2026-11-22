@@ -519,8 +519,8 @@ static char *gate_result_staged(memory_write_gate_decision_t *d) {
     return out;
 }
 
-/* PoP: memory_tool_available @ tools/memory_tool.py:check_memory_requirements */
-int memory_tool_available(void) { return 1; }
+/* memory_tool_available lives in src/tools/memory_available_port.c (split out
+ * so the dependency-free OR can be linked/oracle-verified in isolation). */
 
 /* PoP: memory_tool_missing_old_text_error @ tools/memory_tool.py:_missing_old_text_error */
 char *memory_tool_missing_old_text_error(memory_store_t *store,

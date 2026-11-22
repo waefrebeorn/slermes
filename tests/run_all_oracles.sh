@@ -50,6 +50,7 @@ declare -A DEPS=(
   [real_profile_pin]="src/hermes_cli/browser_connect_gaps.o lib/libjson/json.o"
   [delivery_platform_routed]="src/cron/scheduler_gaps.o lib/libjson/json.o"
   [pid_record_belongs]="src/gateway/status_gaps.o lib/libjson/json.o"
+  [memory_available]="src/tools/memory_available_port.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
   [callbacks_skip]="src/cli/port_callbacks.o lib/libjson/json.o"
   # backfilled: harness/object name differs from the oracle discovery name.

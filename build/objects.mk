@@ -330,7 +330,7 @@ CUPBOARD_PORT_TOOLS = src/tools/file_operations_gaps.o src/cron/blueprints.o \
  src/tools/slash_confirm.o \
  src/tools/todo_tool.o src/tools/tool_result_storage.o \
  src/tools/fuzzy_match.o src/tools/video_generation_tool.o \
- src/tools/website_policy.o src/tools/memory_tool.o src/skills_hub.o \
+ src/tools/website_policy.o src/tools/memory_tool.o src/tools/memory_available_port.o src/skills_hub.o \
  src/tools/skills_hub_ports.o src/tools/skill_manager_tool_ports.o \
  src/tools/skill_usage_ports.o src/tools/todo_tool_ports.o \
  src/tools/mcp_tool_ports.o src/tools/send_message_tool.o \
