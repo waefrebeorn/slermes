@@ -28,8 +28,16 @@ mk = ""
 for f in os.listdir("build"):
     if f.endswith(".mk"):
         mk += open(os.path.join("build", f), encoding="utf-8", errors="replace").read()
-for obj in set(re.findall(r"[A-Za-z0-9_./\\-]+\.o", mk)):
-    p = obj.replace("\\", "/").lstrip("./")
+# Deterministic resolution: sorted order, and prefer real src/lib objects over
+# any fixture-copy with the same basename. An unordered set here made the
+# cache key flip between objects and silently reuse stale harness binaries.
+objs = sorted(set(re.findall(r"[A-Za-z0-9_./\\-]+\.o", mk)),
+              key=lambda o: (0 if o.replace("\\", "/").startswith(("src/", "lib/")) else 1,
+                             o))
+for obj in objs:
+    p = obj.replace("\\", "/")
+    while p.startswith("./"):
+        p = p[2:]
     if os.path.isfile(p):
         registered.setdefault(os.path.basename(p), p)
 for extra in (".testbin/hash_O0.o", ".testbin/hermes_regex_O0.o"):
