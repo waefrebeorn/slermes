@@ -227,7 +227,9 @@ if [ "${1:-}" = "--changed" ] || [ "${ORACLE_ONLY:-}" = "changed" ]; then
   GIT="$(command -v git 2>/dev/null || true)"
   if [ -z "$GIT" ]; then
     for c in /mingw64/bin/git /mingw64/bin/git.exe /usr/bin/git /usr/bin/git.exe \
-             "/c/Program Files/Git/cmd/git.exe" "/c/Program Files/Git/bin/git.exe"; do
+             "/c/Program Files/Git/cmd/git.exe" "/c/Program Files/Git/bin/git.exe" \
+             "/c/Users/eman5/AppData/Local/hermes/tools/git-2.53.0-win32-x64/mingw64/bin/git.exe" \
+             "$(cygpath -u "$USERPROFILE" 2>/dev/null)/AppData/Local/hermes/tools/git-2.53.0-win32-x64/mingw64/bin/git.exe"; do
       [ -x "$c" ] && { GIT="$c"; break; }
     done
   fi
@@ -251,6 +253,20 @@ if [ "${1:-}" = "--changed" ] || [ "${ORACLE_ONLY:-}" = "changed" ]; then
       include/port_*.h)
         n="$(basename "$f" | sed -E 's/^port_//; s/\.h$//')"
         [ -f "tests/oracle_$n.py" ] && mapped+=("$n")
+        ;;
+      *.c)
+        # Any other changed .c (e.g. *_gaps.c, port_*.c with a prefixed name):
+        # find oracles whose DEPS link its object. Covers the in-place re-port
+        # pattern where the oracle name differs from the C file basename.
+        obj="${f%.c}.o"
+        for cand in "${!DEPS[@]}"; do
+          case "${DEPS[$cand]}" in
+            *"$obj"*) [ -f "tests/oracle_$cand.py" ] && mapped+=("$cand") ;;
+          esac
+        done
+        for cand in "${!HARNESS_ALIAS[@]}"; do
+          case "$f" in *"${HARNESS_ALIAS[$cand]}"*) [ -f "tests/oracle_$cand.py" ] && mapped+=("$cand") ;; esac
+        done
         ;;
     esac
   done <<< "$changed"
