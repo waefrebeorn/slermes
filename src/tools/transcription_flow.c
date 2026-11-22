@@ -1640,7 +1640,7 @@ static json_t *tr_whisper_cpp_command(tr_ctx *ctx) {
     if (tr_exc_pending(ctx)) { json_free(installed); return NULL; }
     if (tr_is_none(installed)) { json_free(installed); return NULL; }
     if (!tr_need_obj(ctx, installed, "binary")) { json_free(installed); return NULL; }
-    const char *binary = tr_jstr(tr_get(installed, "binary"));  /* present domain */
+    char *binary = strdup(tr_jstr(tr_get(installed, "binary")));  /* present domain */
     json_free(installed);
     json_t *models = tr_model_dir(ctx);
     if (tr_exc_pending(ctx)) { json_free(models); return NULL; }
@@ -1649,6 +1649,7 @@ static json_t *tr_whisper_cpp_command(tr_ctx *ctx) {
     json_free(models);
     /* binary is a Path live: .as_posix() normalizes ("" -> ".") */
     char *bnorm = tr_posix_norm(binary);
+    free(binary);
     char *qb = tr_shlex_quote(bnorm);
     free(bnorm);
     char *q1 = tr_shlex_quote(m1);
