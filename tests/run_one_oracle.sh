@@ -43,10 +43,24 @@ OBJARG="${4:-${MINIMAL_OBJS:-}}"
 if [ -z "$OBJARG" ] || [ "$OBJARG" = "FULL" ]; then
   # SAC refuses images containing these three objects (rc=127); the -O0 hash
   # object supplies the same symbols and is accepted.
-  find src lib -name '*.o' ! -name 'main.o' ! -name 'hash.o' ! -name 'hermes_regex.o' ! -name 'auxiliary_client_runtime.o' | tr '\n' ' ' > "$OBJSET"
-  [ -f .testbin/hash_O0.o ] && printf '%s ' .testbin/hash_O0.o >> "$OBJSET"
-  [ -f .testbin/hermes_regex_O0.o ] && printf '%s ' .testbin/hermes_regex_O0.o >> "$OBJSET"
-  echo >> "$OBJSET"
+  # Use ONLY objects registered in build/*.mk. A bare `find src lib -name '*.o'`
+  # also gathers stale/orphaned objects left by earlier builds (109 on this
+  # tree) whose externs no longer exist, poisoning the full link with
+  # undefined references that look like port regressions. Registered-only
+  # turned auxiliary_client_flow3 from link-error to 104 cases / 0 mismatches.
+  {
+    grep -hoE '[A-Za-z0-9_./\\-]+\.o' build/*.mk \
+      | tr '\\' '/' | sed 's,^\./,,' | sort -u \
+      | while read -r obj; do
+          case "$obj" in
+            */main.o|*/hash.o|*/hermes_regex.o|*/auxiliary_client_runtime.o) continue ;;
+          esac
+          if [ -f "$obj" ]; then printf '%s ' "$obj"; fi
+        done
+    [ -f .testbin/hash_O0.o ] && printf '%s ' .testbin/hash_O0.o
+    [ -f .testbin/hermes_regex_O0.o ] && printf '%s ' .testbin/hermes_regex_O0.o
+    echo
+  } > "$OBJSET"
   OBJARG="@$OBJSET"
 else
   # Explicit object list: build any missing dependency objects (SAC-safe -O0
