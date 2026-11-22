@@ -93,8 +93,116 @@ void assert_event_capacity(void *conn, const char *room, int additional_bytes, i
 }
 
 /* PoP: prune_disbanded_rooms_locked @ gateway/hosted_rooms.py:_prune_disbanded_rooms_locked */
-void prune_disbanded_rooms_locked(void *conn) {
-    (void)conn;
+/* Python candidate rules, ported over the vendored sqlite3 C API:
+ *   now != None -> rooms disbanded more than 90d ago;
+ *   all disbanded rooms past the 512-tombstone limit (newest kept);
+ *   if byte cap given and SUM(event_bytes) > cap -> oldest rooms until under cap.
+ * Then retire ids, delete from dependent tables that exist, delete from
+ * hosted_rooms, and return the number of ids. */
+#include "sqlite3.h"
+
+#define PRUNE_RETENTION_S 7776000.0
+#define PRUNE_MAX_TOMBSTONES 512
+#define PRUNE_MAX_IDS 8192
+static const char *const PRUNE_DEPENDENTS[] = {
+    "hosted_room_policy_transcript_state", "hosted_room_policy_transcript",
+    "hosted_room_policy_publications", "hosted_room_policy_watermarks",
+    "hosted_room_policy_events", "hosted_room_policy_threads",
+    "hosted_room_policy_cursors", "hosted_room_driver_tasks",
+    "hosted_room_driver_leases", "hosted_room_remote_runs", "hosted_room_links",
+    "hosted_room_peer_reservations", "hosted_room_events"};
+
+static void prune_add(char **ids, int *n, const char *s) {
+    if (!s || !*s) return;
+    for (int i = 0; i < *n; i++) if (strcmp(ids[i], s) == 0) return;
+    if (*n < PRUNE_MAX_IDS) ids[(*n)++] = strdup(s);
+}
+static int prune_cmp(const void *a, const void *b) {
+    return strcmp(*(const char *const *)a, *(const char *const *)b);
+}
+static char *prune_ph(int n) {
+    char *buf = malloc((size_t)n * 2 + 2);
+    if (!buf) return NULL;
+    buf[0] = '\0';
+    for (int i = 0; i < n; i++) strcat(buf, i ? ",?" : "?");
+    return buf;
+}
+static void prune_bind(sqlite3_stmt *st, char **ids, int n) {
+    for (int i = 0; i < n; i++)
+        sqlite3_bind_text(st, i + 1, ids[i], -1, SQLITE_TRANSIENT);
+}
+int prune_disbanded_rooms_locked(void *connp, double now, int has_now,
+                                 long long max_bytes, int has_max) {
+    sqlite3 *conn = (sqlite3 *)connp;
+    if (!conn) return 0;
+    char *ids[PRUNE_MAX_IDS];
+    int n = 0;
+    sqlite3_stmt *st = NULL;
+
+    if (has_now) {
+        if (sqlite3_prepare_v2(conn, "SELECT room_id FROM hosted_rooms WHERE disbanded_at IS NOT NULL AND disbanded_at<=?", -1, &st, NULL) == SQLITE_OK) {
+            sqlite3_bind_double(st, 1, now - PRUNE_RETENTION_S);
+            while (sqlite3_step(st) == SQLITE_ROW)
+                prune_add(ids, &n, (const char *)sqlite3_column_text(st, 0));
+        }
+        sqlite3_finalize(st); st = NULL;
+    }
+    if (sqlite3_prepare_v2(conn, "SELECT room_id FROM hosted_rooms WHERE disbanded_at IS NOT NULL ORDER BY disbanded_at DESC, room_id ASC LIMIT -1 OFFSET ?", -1, &st, NULL) == SQLITE_OK) {
+        sqlite3_bind_int(st, 1, PRUNE_MAX_TOMBSTONES);
+        while (sqlite3_step(st) == SQLITE_ROW)
+            prune_add(ids, &n, (const char *)sqlite3_column_text(st, 0));
+    }
+    sqlite3_finalize(st); st = NULL;
+
+    if (has_max) {
+        long long retained = 0;
+        if (sqlite3_prepare_v2(conn, "SELECT COALESCE(SUM(event_bytes), 0) FROM hosted_rooms", -1, &st, NULL) == SQLITE_OK) {
+            if (sqlite3_step(st) == SQLITE_ROW) retained = sqlite3_column_int64(st, 0);
+        }
+        sqlite3_finalize(st); st = NULL;
+        if (retained > max_bytes && sqlite3_prepare_v2(conn, "SELECT room_id, event_bytes FROM hosted_rooms WHERE disbanded_at IS NOT NULL ORDER BY disbanded_at ASC, room_id ASC", -1, &st, NULL) == SQLITE_OK) {
+            while (retained > max_bytes && sqlite3_step(st) == SQLITE_ROW) {
+                prune_add(ids, &n, (const char *)sqlite3_column_text(st, 0));
+                retained -= sqlite3_column_int64(st, 1);
+            }
+        }
+        sqlite3_finalize(st); st = NULL;
+    }
+    if (n == 0) return 0;
+    qsort(ids, (size_t)n, sizeof(ids[0]), prune_cmp);
+    char *ph = prune_ph(n);
+    if (!ph) return 0;
+
+    char sql[1024];
+    snprintf(sql, sizeof(sql), "INSERT OR IGNORE INTO hosted_room_retired_ids (room_id, retired_at) SELECT room_id, disbanded_at FROM hosted_rooms WHERE room_id IN (%s) AND disbanded_at IS NOT NULL", ph);
+    if (sqlite3_prepare_v2(conn, sql, -1, &st, NULL) == SQLITE_OK) {
+        prune_bind(st, ids, n);
+        sqlite3_step(st);
+    }
+    sqlite3_finalize(st); st = NULL;
+
+    for (size_t t = 0; t < sizeof(PRUNE_DEPENDENTS)/sizeof(PRUNE_DEPENDENTS[0]); t++) {
+        if (sqlite3_prepare_v2(conn, "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", -1, &st, NULL) == SQLITE_OK) {
+            sqlite3_bind_text(st, 1, PRUNE_DEPENDENTS[t], -1, SQLITE_TRANSIENT);
+            int exists = (sqlite3_step(st) == SQLITE_ROW);
+            sqlite3_finalize(st); st = NULL;
+            if (!exists) continue;
+        } else { sqlite3_finalize(st); st = NULL; continue; }
+        snprintf(sql, sizeof(sql), "DELETE FROM %s WHERE room_id IN (%s)", PRUNE_DEPENDENTS[t], ph);
+        if (sqlite3_prepare_v2(conn, sql, -1, &st, NULL) == SQLITE_OK) {
+            prune_bind(st, ids, n);
+            sqlite3_step(st);
+        }
+        sqlite3_finalize(st); st = NULL;
+    }
+    snprintf(sql, sizeof(sql), "DELETE FROM hosted_rooms WHERE room_id IN (%s)", ph);
+    if (sqlite3_prepare_v2(conn, sql, -1, &st, NULL) == SQLITE_OK) {
+        prune_bind(st, ids, n);
+        sqlite3_step(st);
+    }
+    sqlite3_finalize(st); st = NULL;
+    free(ph);
+    return n;
 }
 
 /* PoP: prune_disbanded_rooms @ gateway/hosted_rooms.py:prune_disbanded_rooms */

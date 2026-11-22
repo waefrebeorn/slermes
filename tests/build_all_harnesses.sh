@@ -116,7 +116,8 @@ bash tests/ensure_oracle_deps.sh $ALL_OBJS || { echo "dependency build failed" >
   done
 } > "$MK"
 
-make -f "$MK" -j"${HARNESS_JOBS:-8}" all >/dev/null
+make -f "$MK" -j"${HARNESS_JOBS:-8}" all > .testbin/build_all_harnesses.log 2>&1 || \
+  echo "WARNING: batch harness build had failures; see .testbin/build_all_harnesses.log" >&2
 
 # Publish the binaries where run_one_oracle.sh expects them (keyed by harness
 # name), then stamp the cache. run_one_oracle.sh treats any object or harness
@@ -125,7 +126,14 @@ make -f "$MK" -j"${HARNESS_JOBS:-8}" all >/dev/null
 mkdir -p .testbin/harnesses
 for spec in "${SPECS[@]}"; do
   IFS=$'\t' read -r _n h _o <<< "$spec"
-  cp "$WORK/$h.exe" ".testbin/harnesses/$h.exe"
+  # A failed batch target must not abort the whole publish loop: publish the
+  # ones that built, and let run_one_oracle compile the few missing ones
+  # individually with their resolved deps.
+  if [ -f "$WORK/$h.exe" ]; then
+    cp "$WORK/$h.exe" ".testbin/harnesses/$h.exe"
+  else
+    echo "WARN: harness $h did not build; will retry per-oracle" >&2
+  fi
 done
 : > .testbin/harnesses/.stamp
 echo "built ${#SPECS[@]} harnesses -> .testbin/harnesses/"
