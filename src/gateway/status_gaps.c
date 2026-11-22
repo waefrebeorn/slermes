@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <ctype.h>
 #include "hermes_json.h"
 #include "hermes_logger.h"
 
@@ -15,8 +16,39 @@ char *recorded_gateway_home_conflicts(void) { return strdup("[]"); }
 /* PoP: assert_process_start_time_matches @ gateway/status.py:assert_process_start_time_matches */
 int assert_process_start_time_matches(void) { return 1; }
 
+/* Windows normcase compare: Python os.path.normcase lower-cases and maps / -> \.
+ * Paths are passed already-resolved (canonicalization modeled by caller), so a
+ * direct char-wise normcase is sufficient and adds no link dependency. */
+static int sg_same_home(const char *a, const char *b) {
+    if (!a) a = "";
+    if (!b) b = "";
+    size_t la = strlen(a), lb = strlen(b);
+    if (la != lb) return 0;
+    for (size_t i = 0; i < la; i++) {
+        char ca = (a[i] == '/') ? '\\' : a[i];
+        char cb = (b[i] == '/') ? '\\' : b[i];
+        if (tolower((unsigned char)ca) != tolower((unsigned char)cb)) return 0;
+    }
+    return 1;
+}
+
 /* PoP: pid_record_belongs_to_current_profile @ gateway/status.py:_pid_record_belongs_to_current_profile */
-int pid_record_belongs_to_current_profile(void) { return 1; }
+/* Python: if not isinstance(record, dict): return False;
+ * record_home = record.get("hermes_home");
+ * return not record_home or _same_hermes_home(record_home, process_home).
+ * Legacy/falsy home -> True; otherwise a normcase-insensitive path compare. */
+int pid_record_belongs_to_current_profile(const json_t *record, const char *process_home) {
+    if (!record || record->type != JSON_OBJECT) return 0;
+    json_t *rh = json_obj_get(record, "hermes_home");
+    if (!rh) return 1;                          /* missing -> not record_home -> True */
+    if (rh->type == JSON_NULL) return 1;                    /* None -> True */
+    if (rh->type == JSON_BOOL && !rh->bool_val) return 1;    /* False -> True */
+    if (rh->type == JSON_NUMBER && rh->num_val == 0) return 1;
+    if (rh->type == JSON_STRING && (!rh->str_val || !*rh->str_val)) return 1;
+    const char *home = (rh->type == JSON_STRING) ? rh->str_val
+                     : (rh->type == JSON_NUMBER) ? "number" : "True";
+    return sg_same_home(home, process_home ? process_home : "");
+}
 
 int owns_gateway_runtime_lock(void) { return 0; }
 

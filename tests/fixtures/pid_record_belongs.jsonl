@@ -1,0 +1,12 @@
+{"record": null, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": {}, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": {"hermes_home": null}, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": {"hermes_home": ""}, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": {"hermes_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": {"hermes_home": "C:\\USERS\\EMAN5\\APPDATA\\ROAMING\\HERMES"}, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": {"hermes_home": "C:/Other"}, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": {"hermes_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": {"hermes_home": false}, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": {"hermes_home": "somewhere/else"}, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": {"other": 1}, "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
+{"record": [1, 2], "process_home": "C:\\Users\\eman5\\AppData\\Roaming\\Hermes"}
