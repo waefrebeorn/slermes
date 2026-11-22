@@ -1,0 +1,13 @@
+{"planned": ["g1"], "covered": ["g1"], "result": {}, "stale": []}
+{"planned": ["g1", "g2"], "covered": ["g1"], "result": {}, "stale": []}
+{"planned": [], "covered": ["g1"], "result": {}, "stale": []}
+{"planned": ["g1"], "covered": ["g1"], "result": {"failed": true}, "stale": []}
+{"planned": ["g1"], "covered": ["g1"], "result": {"relaunch_attempted": true}, "stale": []}
+{"planned": ["g1"], "covered": ["g1"], "result": {"serve_units": {"failed": true}}, "stale": []}
+{"planned": ["g1"], "covered": ["g1"], "result": {}, "stale": [{"supervisor": "desktop"}]}
+{"planned": ["g1"], "covered": ["g1"], "result": {}, "stale": [{"supervisor": "desktop-ssh"}]}
+{"planned": ["g1"], "covered": ["g1"], "result": {}, "stale": [{"supervisor": "systemd"}]}
+{"planned": ["g1"], "covered": ["g1"], "result": {}, "stale": [{}]}
+{"planned": ["g1"], "covered": ["g1", "g2"], "result": {"failed": false}, "stale": []}
+{"planned": null, "covered": null, "result": null, "stale": null}
+{"planned": ["g1"], "covered": ["g1"], "result": {"serve_units": {}}, "stale": []}

@@ -75,4 +75,56 @@ char *qualified_serve_skips(void) { return strdup("[]"); }
 
 
 /* PoP: abort_recovery_is_complete @ hermes_cli/update_abort_recovery.py:_abort_recovery_is_complete */
-int abort_recovery_is_complete(void) { return 1; }
+/* Python: result = recovery_result or {}; return bool(
+ *   planned and set(planned) <= set(covered)
+ *   and not (result.get("failed") or result.get("relaunch_attempted"))
+ *   and not (result.get("serve_units") or {}).get("failed")
+ *   and not _owed_stale_serve_rows(stale_runtime_rows))
+ * _owed_stale_serve_rows keeps rows whose supervisor is not in
+ * CLIENT_OWNED_SERVE_SUPERVISORS = {"desktop","desktop-ssh"}. */
+static int arc_truthy(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return 0;
+    if (v->type == JSON_BOOL) return v->bool_val ? 1 : 0;
+    if (v->type == JSON_NUMBER) return v->num_val != 0.0;
+    if (v->type == JSON_STRING) return v->str_val && *v->str_val;
+    if (v->type == JSON_ARRAY) return json_array_size(v) > 0;
+    if (v->type == JSON_OBJECT) return 1;
+    return 0;
+}
+static int arc_has_str(const json_t *arr, const char *s) {
+    if (!arr || arr->type != JSON_ARRAY) return 0;
+    size_t n = json_array_size(arr);
+    for (size_t i = 0; i < n; i++) {
+        json_t *v = json_array_get(arr, i);
+        if (v && v->type == JSON_STRING && strcmp(v->str_val, s) == 0) return 1;
+    }
+    return 0;
+}
+int abort_recovery_is_complete(const json_t *planned, const json_t *covered,
+                               const json_t *recovery_result, const json_t *stale_rows) {
+    if (!arc_truthy(planned) || planned->type != JSON_ARRAY) return 0;
+    size_t n = json_array_size(planned);
+    for (size_t i = 0; i < n; i++) {          /* set(planned) <= set(covered) */
+        json_t *v = json_array_get(planned, i);
+        if (!v || v->type != JSON_STRING) return 0;
+        if (!arc_has_str(covered, v->str_val)) return 0;
+    }
+    json_t *res = arc_truthy(recovery_result) && recovery_result->type == JSON_OBJECT
+                  ? recovery_result : NULL;
+    if (res) {
+        if (arc_truthy(json_obj_get(res, "failed"))) return 0;
+        if (arc_truthy(json_obj_get(res, "relaunch_attempted"))) return 0;
+        json_t *su = json_obj_get(res, "serve_units");
+        if (su && su->type == JSON_OBJECT && arc_truthy(json_obj_get(su, "failed"))) return 0;
+    }
+    if (stale_rows && stale_rows->type == JSON_ARRAY) {
+        size_t m = json_array_size(stale_rows);
+        for (size_t i = 0; i < m; i++) {
+            json_t *row = json_array_get(stale_rows, i);
+            json_t *sup = (row && row->type == JSON_OBJECT) ? json_obj_get(row, "supervisor") : NULL;
+            const char *s = (sup && sup->type == JSON_STRING) ? sup->str_val : "";
+            if (strcmp(s, "desktop") != 0 && strcmp(s, "desktop-ssh") != 0) return 0;
+        }
+    }
+    return 1;
+}
