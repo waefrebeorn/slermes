@@ -564,14 +564,38 @@ static void mo_urlparse(const char *url, mo_url_t *u) {
 /* ── _refresh_lock_path: path.with_suffix(path.suffix + ".refresh.lock") ── */
 /* PoP: mof_refresh_lock_path @ tools/mcp_oauth.py:_refresh_lock_path */
 json_t *mof_refresh_lock_path(const char *path) {
-    char *norm = mof_path_normalize(path);
+    size_t plen = strlen(path ? path : "");
+    char *slashed = malloc(plen + 1);
+    if (!slashed) return mof_raise("ValueError", "oom");
+    for (size_t i = 0; i < plen; i++)
+        slashed[i] = path[i] == '\\' ? '/' : path[i];
+    slashed[plen] = '\0';
+    if (slashed[0] == '/' && slashed[1] == '/') {
+        size_t comps = 0;
+        for (size_t i = 2; i < plen; ) {
+            while (i < plen && slashed[i] == '/') i++;
+            if (i >= plen) break;
+            comps++;
+            while (i < plen && slashed[i] != '/') i++;
+        }
+        if (comps <= 2) {
+            char msg[1024];
+            snprintf(msg, sizeof(msg), "WindowsPath('%s/') has an empty name", slashed);
+            free(slashed);
+            return mof_raise("ValueError", msg);
+        }
+    }
+    char *norm = mof_path_normalize(slashed);
+    free(slashed);
     if (!norm) return mof_raise("ValueError", "path normalization failed");
     /* empty name ('/', '.', '') raises in live; fixtures avoid those shapes */
     const char *slash = strrchr(norm, '/');
     const char *name = slash ? slash + 1 : norm;
     if (name[0] == '\0' || strcmp(name, ".") == 0) {
+        char msg[512];
+        snprintf(msg, sizeof(msg), "WindowsPath('%s') has an empty name", norm);
         free(norm);
-        return mof_raise("ValueError", "path has an empty name");
+        return mof_raise("ValueError", msg);
     }
     size_t n = strlen(norm);
     char *out = malloc(n + 16);

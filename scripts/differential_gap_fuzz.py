@@ -29,7 +29,10 @@ EDGE = [
 ]
 
 
-SKIP_KEYS = {"func", "id", "case", "name", "_orig"}
+SKIP_KEYS = {
+    "func", "fn", "id", "case", "name", "_orig", "__raise__", "__script__",
+    "__callable__", "__special__", "type", "message", "exc", "errno",
+}
 
 
 def strings(obj, path=()):

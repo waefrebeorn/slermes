@@ -182,3 +182,4 @@
 {"func": "login_connect_timeout", "in": {"config": {"connect_timeout": " 45.5 "}}}
 {"func": "login_connect_timeout", "in": {"config": {"oauth": {}}}}
 {"func": "login_connect_timeout", "in": {"config": {"connect_timeout": 400.5, "oauth": {"timeout": 100}}}}
+{"func": "refresh_lock_path", "in": {"path": "\\\\server\\share"}}
