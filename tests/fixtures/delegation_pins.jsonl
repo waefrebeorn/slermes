@@ -1,19 +1,22 @@
-{"func": "explicit_board_intent_is_pinned", "env": {}, "in_process": 0}
-{"func": "explicit_board_intent_is_pinned", "env": {}, "in_process": 1}
-{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "1"}, "in_process": 0}
-{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/fenced"}, "in_process": 0}
-{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": ""}, "in_process": 0}
-{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": "   "}, "in_process": 0}
-{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": "task-1"}, "in_process": 0}
-{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": "\t"}, "in_process": 0}
-{"func": "kanban_path_is_fenced", "env": {}, "path": "/h/board.db", "in_process": 0}
-{"func": "kanban_path_is_fenced", "env": {}, "path": "/h/board.db", "in_process": 1}
-{"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "1"}, "path": "/other", "in_process": 0}
-{"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/h/fence"}, "path": "/h/fence/board.db", "in_process": 0}
-{"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/h/fence"}, "path": "/h/other/board.db", "in_process": 0}
-{"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/h/fence", "HERMES_KANBAN_DB": "/h/db/board.db"}, "path": "/h/db/board.db", "in_process": 0}
-{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "task-7"}, "in_process": 0}
-{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "  task-7  "}, "in_process": 0}
-{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "task-7"}, "in_process": 1}
-{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "task-7"}, "in_process": 0, "non_dispatcher": 1}
-{"func": "owned_kanban_task", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "1", "HERMES_KANBAN_TASK": "task-7"}, "in_process": 0}
+{"func": "explicit_board_intent_is_pinned", "env": {}, "in_process": 0, "home": "1"}
+{"func": "explicit_board_intent_is_pinned", "env": {}, "in_process": 1, "home": "1"}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "1"}, "in_process": 0, "home": "1"}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/fenced"}, "in_process": 0, "home": "1"}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": ""}, "in_process": 0, "home": "1"}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": "   "}, "in_process": 0, "home": "1"}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": "task-1"}, "in_process": 0, "home": "1"}
+{"func": "explicit_board_intent_is_pinned", "env": {"HERMES_KANBAN_TASK": "\t"}, "in_process": 0, "home": "1"}
+{"func": "kanban_path_is_fenced", "env": {}, "path": "/h/board.db", "in_process": 0, "home": "1"}
+{"func": "kanban_path_is_fenced", "env": {}, "path": "/h/board.db", "in_process": 1, "home": "1"}
+{"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "1"}, "path": "/other", "in_process": 0, "home": "1"}
+{"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/h/fence"}, "path": "/h/fence/board.db", "in_process": 0, "home": "1"}
+{"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/h/fence"}, "path": "/h/other/board.db", "in_process": 0, "home": "1"}
+{"func": "kanban_path_is_fenced", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "/h/fence", "HERMES_KANBAN_DB": "/h/db/board.db"}, "path": "/h/db/board.db", "in_process": 0, "home": "1"}
+{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "task-7"}, "in_process": 0, "home": "1"}
+{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "  task-7  "}, "in_process": 0, "home": "1"}
+{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "task-7"}, "in_process": 1, "home": "1"}
+{"func": "owned_kanban_task", "env": {"HERMES_KANBAN_TASK": "task-7"}, "in_process": 0, "non_dispatcher": 1, "home": "1"}
+{"func": "owned_kanban_task", "env": {"HERMES_DELEGATED_CHILD_CONTEXT": "1", "HERMES_KANBAN_TASK": "task-7"}, "in_process": 0, "home": "1"}
+{"func": "_fenced_kanban_root", "env": {}, "home": "/h/kanban", "in_process": 0}
+{"func": "_fenced_kanban_root", "env": {}, "home": "1", "in_process": 0}
+{"func": "_fenced_kanban_root", "env": {}, "home_error": 1, "in_process": 0}

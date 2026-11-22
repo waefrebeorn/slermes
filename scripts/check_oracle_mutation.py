@@ -56,7 +56,7 @@ def run(lines):
                        errors="replace", env=env)
     return p.returncode, p.stdout + p.stderr
 
-OUT_KEYS = ("trace", "out", "ret", "result", "value", "py", "c", "ok", "err")
+OUT_KEYS = ("trace", "out", "ret", "result", "value", "py", "c", "ok", "err", "root", "owned", "fenced")
 
 def flip(v):
     if isinstance(v, bool): return not v

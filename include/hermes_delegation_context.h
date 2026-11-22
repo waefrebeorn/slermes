@@ -31,6 +31,11 @@ extern bool kanban_path_is_fenced(const char *path);
 /* The board task this execution owns, or "" when not a dispatcher worker. */
 extern const char *owned_kanban_task(void);
 
+/* Board root this process's Kanban lineage lives under, or "1" when it
+ * cannot be resolved. The _from variant accepts a seam for testing. */
+extern const char *fenced_kanban_root_from(char *(*home_fn)(void));
+extern const char *fenced_kanban_root(void);
+
 /* Scrubbed env: removes HERMES_KANBAN_* keys, adds lineage marker.
  * Caller frees the returned NULL-terminated array with scrub_kanban_env_free(). */
 extern char **scrub_kanban_env(char **env);

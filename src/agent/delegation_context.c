@@ -9,6 +9,7 @@
  */
 
 #include "hermes_delegation_context.h"
+#include "kanban_db.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -149,6 +150,23 @@ const char *owned_kanban_task(void)
     memcpy(task, v, n);
     task[n] = '\0';
     return task;
+}
+
+/* PoP: _fenced_kanban_root @ agent/delegation_context.py:_fenced_kanban_root */
+const char *fenced_kanban_root_from(char *(*home_fn)(void))
+{
+    static char root[4096];
+    snprintf(root, sizeof(root), "1");
+    char *home = home_fn ? home_fn() : NULL;
+    if (!home) return root;
+    snprintf(root, sizeof(root), "%s", home);
+    free(home);
+    return root;
+}
+
+const char *fenced_kanban_root(void)
+{
+    return fenced_kanban_root_from(kanban_home);
 }
 
 /* Lexical Path.expanduser().resolve() for POSIX-style absolute paths. */
