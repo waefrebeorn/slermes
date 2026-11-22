@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static json_t *gw_raise(const char *kind, const char *message) {
+static json_t *gwp_raise(const char *kind, const char *message) {
     json_t *e = json_object();
     json_set_hdr(e, "__raise__", kind);
     json_set_hdr(e, "message", message);
@@ -18,7 +18,7 @@ static json_t *gw_raise(const char *kind, const char *message) {
 }
 
 /* PoP: _normalize_windows_path @ hermes_cli/gateway_windows.py */
-json_t *gw_normalize_windows_path(const char *value) {
+json_t *gwp_normalize_windows_path(const char *value) {
     if (!value) value = "";
     size_t n = strlen(value);
     size_t a = 0, b = n;
@@ -63,13 +63,13 @@ static json_t *gw_reject_newline(const char *value, const char *label) {
     size_t cap = strlen(label) + strlen(repr) + 48;
     char *msg = malloc(cap);
     snprintf(msg, cap, "refusing to quote %s containing newline: %s", label, repr);
-    json_t *e = gw_raise("ValueError", msg);
+    json_t *e = gwp_raise("ValueError", msg);
     free(msg); free(repr);
     return e;
 }
 
 /* PoP: _quote_cmd_script_arg @ hermes_cli/gateway_windows.py */
-json_t *gw_quote_cmd_script_arg(const char *value) {
+json_t *gwp_quote_cmd_script_arg(const char *value) {
     json_t *bad = gw_reject_newline(value, "value");
     if (bad) return bad;
     if (!value || !*value) return json_string("\"\"");
@@ -87,7 +87,7 @@ json_t *gw_quote_cmd_script_arg(const char *value) {
 }
 
 /* PoP: _quote_vbs_string @ hermes_cli/gateway_windows.py */
-json_t *gw_quote_vbs_string(const char *value) {
+json_t *gwp_quote_vbs_string(const char *value) {
     json_t *bad = gw_reject_newline(value, "VBScript value");
     if (bad) return bad;
     const char *s = value ? value : "";
@@ -104,7 +104,7 @@ json_t *gw_quote_vbs_string(const char *value) {
 }
 
 /* PoP: _sanitize_filename @ hermes_cli/gateway_windows.py */
-json_t *gw_sanitize_filename(const char *value) {
+json_t *gwp_sanitize_filename(const char *value) {
     const char *s = value ? value : "";
     size_t n = strlen(s);
     char *out = malloc(n + 1);
@@ -118,7 +118,7 @@ json_t *gw_sanitize_filename(const char *value) {
 }
 
 /* PoP: _gateway_run_argv @ hermes_cli/gateway_windows.py */
-json_t *gw_gateway_run_argv(const char *python_exe, const char *profile_arg) {
+json_t *gwp_gateway_run_argv(const char *python_exe, const char *profile_arg) {
     json_t *a = json_array();
     json_append(a, json_string(python_exe ? python_exe : ""));
     json_append(a, json_string("-m"));
@@ -166,7 +166,7 @@ static const char *gw_denied_words[] = {
 };
 
 /* PoP: _is_access_denied @ hermes_cli/gateway_windows.py */
-json_t *gw_is_access_denied(const char *detail) {
+json_t *gwp_is_access_denied(const char *detail) {
     if (!detail) detail = "";
     for (int i = 0; gw_denied_words[i]; i++)
         if (gw_contains_ci(detail, gw_denied_words[i])) return json_bool(1);
@@ -174,11 +174,11 @@ json_t *gw_is_access_denied(const char *detail) {
 }
 
 /* PoP: _should_fall_back @ hermes_cli/gateway_windows.py */
-json_t *gw_should_fall_back(long code, const char *detail) {
+json_t *gwp_should_fall_back(long code, const char *detail) {
     if (code == 124) return json_bool(1);
     if (!detail) detail = "";
     if (gw_contains_ci(detail, "schtasks timed out") ||
         gw_contains_ci(detail, "schtasks produced no output"))
         return json_bool(1);
-    return gw_is_access_denied(detail);
+    return gwp_is_access_denied(detail);
 }

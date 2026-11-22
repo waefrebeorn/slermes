@@ -48,6 +48,24 @@ leaf helpers are now ported with a LIVE-AST oracle and 46 fixtures:
 `_sanitize_filename`, `_gateway_run_argv`, `_is_access_denied`,
 `_should_fall_back`.
 
+## Findings from the four parallel audits (2026-11-22)
+
+- `lib/libplugin/plugin.c:897-973` has ~20 PoP-annotated no-op bodies on a real
+  CLI path (`cli.c:914` → `plug_get_commands` → empty stub). The dispatched
+  plugin oracle covers a different function set. This is the highest-value
+  remaining *wired* gap.
+- Two disjoint oracle universes: `_oracle_one.sh` dispatches `oracle_*.py`,
+  while drift/fixture/registry validators glob `sta_oracle_*.py` (zero overlap).
+  A green drift gate does not validate the gates that actually run.
+- `canon_compare.py:66-87` treats a self-reported "0 mismatches" line plus rc=0
+  as MATCH; prose is being used as a verdict. Prefer structured per-case
+  results and case-count assertions.
+- Harnesses `#include` port `.c` files directly, so an oracle can be green for
+  code absent from the shipped binary. New ports should be checked with
+  `scripts/check_port_wiring.py` (objects.mk registration + a real caller).
+- 275 wired-dead PoP objects are grandfathered by `dead-ports-baseline.json`;
+  do not count them as product behavior.
+
 ## Devil's advocate: how a green suite can still lie
 
 - **Harness-only wiring.** A port called only by `tests/t_port_*.c` can be

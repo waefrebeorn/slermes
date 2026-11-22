@@ -7,13 +7,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-json_t *gw_normalize_windows_path(const char *value);
-json_t *gw_quote_cmd_script_arg(const char *value);
-json_t *gw_quote_vbs_string(const char *value);
-json_t *gw_sanitize_filename(const char *value);
-json_t *gw_gateway_run_argv(const char *python_exe, const char *profile_arg);
-json_t *gw_is_access_denied(const char *detail);
-json_t *gw_should_fall_back(long code, const char *detail);
+json_t *gwp_normalize_windows_path(const char *value);
+json_t *gwp_quote_cmd_script_arg(const char *value);
+json_t *gwp_quote_vbs_string(const char *value);
+json_t *gwp_sanitize_filename(const char *value);
+json_t *gwp_gateway_run_argv(const char *python_exe, const char *profile_arg);
+json_t *gwp_is_access_denied(const char *detail);
+json_t *gwp_should_fall_back(long code, const char *detail);
 
 static const char *jstr(json_t *o, const char *k) {
     json_t *v = json_obj_get(o, k);
@@ -40,19 +40,19 @@ int main(void) {
         if (!args) args = json_object();
         json_t *out = NULL;
         if (!strcmp(func, "_normalize_windows_path"))
-            out = gw_normalize_windows_path(jstr(args, "value"));
+            out = gwp_normalize_windows_path(jstr(args, "value"));
         else if (!strcmp(func, "_quote_cmd_script_arg"))
-            out = gw_quote_cmd_script_arg(jstr(args, "value"));
+            out = gwp_quote_cmd_script_arg(jstr(args, "value"));
         else if (!strcmp(func, "_quote_vbs_string"))
-            out = gw_quote_vbs_string(jstr(args, "value"));
+            out = gwp_quote_vbs_string(jstr(args, "value"));
         else if (!strcmp(func, "_sanitize_filename"))
-            out = gw_sanitize_filename(jstr(args, "value"));
+            out = gwp_sanitize_filename(jstr(args, "value"));
         else if (!strcmp(func, "_gateway_run_argv"))
-            out = gw_gateway_run_argv(jstr(args, "python_exe"), jstr(args, "profile_arg"));
+            out = gwp_gateway_run_argv(jstr(args, "python_exe"), jstr(args, "profile_arg"));
         else if (!strcmp(func, "_is_access_denied"))
-            out = gw_is_access_denied(jstr(args, "detail"));
+            out = gwp_is_access_denied(jstr(args, "detail"));
         else if (!strcmp(func, "_should_fall_back"))
-            out = gw_should_fall_back((long)jnum(args, "code"), jstr(args, "detail"));
+            out = gwp_should_fall_back((long)jnum(args, "code"), jstr(args, "detail"));
         if (!out) out = json_string("NO_SUCH_FUNC");
         fputs("{\"func\":", stdout); emit(json_string(func));
         fputs(",\"args\":", stdout); emit(args);

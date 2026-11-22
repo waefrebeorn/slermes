@@ -18,6 +18,11 @@
  */
 
 #include "hermes_json.h"
+
+/* Oracle-verified implementations in src/cli/gateway_windows_pure.c. */
+json_t *gwp_sanitize_filename(const char *value);
+json_t *gwp_should_fall_back(long code, const char *detail);
+json_t *gwp_is_access_denied(const char *detail);
 #include "hermes_regex.h"
 #include <ctype.h>
 #include <stdbool.h>
@@ -34,14 +39,6 @@
 
 #include <ctype.h>
 #include "hermes_regex.h"
-
-/* gateway_windows.py:_ACCESS_DENIED_WORDS (7 locales) */
-static const char *const GW_ACCESS_DENIED_WORDS =
-    "access is denied|acceso denegado|p\xc5\x99\xedstup byl odep\xc5\x99en|"
-    "\xe6\x8b\x92\xe7\xbb\x9d\xe8\xae\xbf\xe9\x97\xae|"
-    "\xe6\x8b\x92\xe7\xb5\x95\xe5\xad\x98\xe5\x8f\x96|"
-    "\xe3\x82\xa2\xe3\x82\xaf\xe3\x82\xbb\xe3\x82\xb9\xe3\x81\x8c\xe6\x8b\x92\xe5\x90\xa6\xe3\x81\x95\xe3\x82\x8c\xe3\x81\xbe\xe3\x81\x97\xe3\x81\x9f|"
-    "\xec\x95\xa1\xec\x84\xb8\xec\x8a\xa4\xea\xb0\x80 \xea\xb1\xb0\xeb\xb6\x80\xeb\x90\x98\xec\x97\x88\xec\x8a\xb5\xeb\x8b\x88\xeb\x8b\xa4";
 
 /* PoP: normalize_windows_path @ hermes_cli/gateway_windows.py:_normalize_windows_path */
 char *gw_normalize_path(const char *value)
@@ -73,21 +70,10 @@ char *gw_normalize_path(const char *value)
 /* PoP: _sanitize_filename @ hermes_cli/gateway_windows.py:_sanitize_filename */
 char *gw_sanitize_filename(const char *value)
 {
-    if (!value) return strdup("");
-    size_t n = strlen(value);
-    char *out = (char *)malloc(n + 1);
-    if (!out) return NULL;
-
-    size_t k = 0;
-    for (size_t i = 0; i < n; i++) {
-        unsigned char c = (unsigned char)value[i];
-        if (c == '<' || c == '>' || c == ':' || c == '"' || c == '/' ||
-            c == '\\' || c == '|' || c == '?' || c == '*' || c <= 0x1f)
-            out[k++] = '_';
-        else
-            out[k++] = (char)c;
-    }
-    out[k] = '\0';
+    json_t *r = gwp_sanitize_filename(value);
+    const char *v = (r && r->type == JSON_STRING) ? r->str_val : "";
+    char *out = strdup(v);
+    json_free(r);
     return out;
 }
 
@@ -127,29 +113,18 @@ char *gw_quote_vbs(const char *value, char **err)
 /* PoP: _is_access_denied @ hermes_cli/gateway_windows.py:_is_access_denied */
 int gw_is_access_denied(const char *detail)
 {
-    hregex_t *re = regex_compile(GW_ACCESS_DENIED_WORDS, 1 /* REG_ICASE */);
-    if (!re) return 0;
-    regex_match_t *m = regex_search(re, detail ? detail : "");
-    int hit = (m && m->matched);
-    if (m) regex_match_free(m);
-    regex_free(re);
+    json_t *r = gwp_is_access_denied(detail);
+    int hit = json_is_true(r) ? 1 : 0;
+    json_free(r);
     return hit;
 }
 
 /* PoP: _should_fall_back @ hermes_cli/gateway_windows.py:_should_fall_back */
 int gw_should_fall_back(int code, const char *detail)
 {
-    if (code == 124) return 1;
-
-    char pat[512];
-    snprintf(pat, sizeof(pat), "(%s|schtasks timed out|schtasks produced no output)",
-             GW_ACCESS_DENIED_WORDS);
-    hregex_t *re = regex_compile(pat, 1 /* REG_ICASE */);
-    if (!re) return 0;
-    regex_match_t *m = regex_search(re, detail ? detail : "");
-    int hit = (m && m->matched);
-    if (m) regex_match_free(m);
-    regex_free(re);
+    json_t *r = gwp_should_fall_back((long)code, detail);
+    int hit = json_is_true(r) ? 1 : 0;
+    json_free(r);
     return hit;
 }
 
