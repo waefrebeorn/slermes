@@ -727,7 +727,7 @@ def _dock_registry(work, trace, script, rec):
 
 
 def d_process_rows(work, trace, script):
-    rec = make_rec(script, trace, [True])
+    rec = make_rec(script, trace, [True], trace_exhaust=True)
     _dock_registry(work, trace, script, rec)
     NS_DOCK["time"] = types.SimpleNamespace(time=rec("time.time", lambda a, k: {}))
     NS_DOCK["t"] = rec("t", lambda a, k: {"key": a[0], **k})

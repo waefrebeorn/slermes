@@ -3117,26 +3117,30 @@ static json_t *cg2_t(cg2_io_t *io, const char *key) {
 
 /* PoP: process_rows @ hermes_cli/cli_process_dock.py:process_rows */
 json_t *process_rows(cg2_io_t *io, json_t *in) {
-    json_t *a = json_object();
-    json_t *entries = cg2_seam(io, "registry.list_sessions", a);
-    json_free(a);
-    if (cg2_is_raise(entries)) return entries;
+    /* LIVE resolves `now` before touching the registry; keep seam order. */
     double now;
     json_t *jn = json_obj_get(in, "now");
     if (cg2_is_null(jn)) {
         json_t *ta = json_object();
         json_t *tr = cg2_seam(io, "time.time", ta);
         json_free(ta);
-        if (cg2_is_raise(tr)) { json_free(entries); return tr; }
+        if (cg2_is_raise(tr)) return tr;
         now = (tr && tr->type == JSON_NUMBER) ? tr->num_val : 0.0;
         json_free(tr);
     } else {
         now = jn->num_val;
     }
+    json_t *a = json_object();
+    json_t *entries = cg2_seam(io, "registry.list_sessions", a);
+    json_free(a);
+    if (cg2_is_raise(entries)) return entries;
     json_t *rows = json_array();
     /* Python iterates entries; a string yields characters, and indexing a
      * character with "session_id" raises TypeError. Mirror that. */
-    if (entries && entries->type == JSON_STRING && entries->str_val && entries->str_val[0]) {
+    if (entries && ((entries->type == JSON_STRING && entries->str_val && entries->str_val[0]) ||
+                    (entries->type == JSON_OBJECT && entries->c.count > 0))) {
+        /* Python iterates a str (chars) or a dict (keys); indexing a key with
+         * "session_id" raises the same TypeError. */
         json_free(rows); json_free(entries);
         return cg2_raise_spec("TypeError", "string indices must be integers, not 'str'");
     }
@@ -3284,8 +3288,8 @@ json_t *process_tail(cg2_io_t *io, json_t *in) {
         json_free(proc);
         return cg2_t(io, "cli.dock.process_gone");
     }
+    /* Keep proc alive: buffer points into it. */
     const char *buffer = json_get_str(proc, "output_buffer", NULL);
-    json_free(proc);
     if (!buffer) buffer = "";
     /* (buffer or "")[-32768:] — codepoint tail */
     size_t L = cg2_cplen(buffer);
@@ -3305,6 +3309,7 @@ json_t *process_tail(cg2_io_t *io, json_t *in) {
         p = nx;
     }
     out[o] = '\0';
+    json_free(proc);
     if (!o) {
         free(out);
         return cg2_t(io, "cli.dock.no_output");
