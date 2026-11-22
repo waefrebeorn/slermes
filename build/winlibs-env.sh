@@ -37,7 +37,7 @@ export WINLIBS=/c/winlibs/mingw64
 # invisible until one file trips it. Always clear it here.
 unset GCC_EXEC_PREFIX
 unset COMPILER_PATH
-export PATH="/c/winlibs/mingw64/bin:/c/msys64/usr/bin:/c/msys64/mingw64/bin:/usr/bin:/bin:$PATH"
+export PATH="/c/winlibs/mingw64/bin:/c/msys64/usr/bin:/c/msys64/mingw64/bin:/usr/bin:/bin:/c/Windows/System32/downlevel:$PATH"
 
 # Headers and libraries are deliberately separated, and BOTH are isolated from
 # MSYS2's trees. MSYS2's <string.h> declares strndup() under _GNU_SOURCE (which

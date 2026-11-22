@@ -1351,10 +1351,11 @@ static json_t *gif_admit_event(gif_ctx_t *c, const json_t *args) {
         json_t *a2 = json_object();
         json_set(a2, "adapter", intake ? intake : json_null());
         json_set(a2, "source", source ? json_copy(source) : json_null());
+
         json_t *dr = gif_call(c, "drop_rejected_route", a2);
-        if (gif_is_raise(dr)) { json_free(intake); return dr; }
+        /* intake was moved into a2 by json_set; gif_call owns a2's nodes. */
+        if (gif_is_raise(dr)) return dr;
         json_free(dr);
-        json_free(intake);
         return NULL;
     }
     bool is_internal = gif_truthy(json_obj_get(event, "internal"));

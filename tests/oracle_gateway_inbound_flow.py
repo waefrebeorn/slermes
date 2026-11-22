@@ -274,6 +274,10 @@ def extract_ri():
     seed_constants(src, ns, RI_SRC)
     for node in class_nodes(src, ["GatewayInboundMixin"]):
         exec_node(src, node, ns, RI_SRC)
+    # These two live at module level in run_inbound.py, not on the mixin.
+    for node in func_nodes(src):
+        if node.name in ("discord_triggering_note", "strip_discord_triggering_note"):
+            exec_node(src, node, ns, RI_SRC)
     seed_constants(src, ns, RI_SRC)
     ns["logger"] = _SilentLogger()
     required = ["GatewayInboundMixin", "discord_triggering_note",
