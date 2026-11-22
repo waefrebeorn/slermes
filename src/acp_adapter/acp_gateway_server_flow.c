@@ -443,7 +443,7 @@ static json_t *agsf__admission_from_receipt(agsf_io_t *io,const json_t *argv,con
 static json_t *agsf__after_ack(agsf_io_t *io,const json_t *argv,const json_t *kw){
     (void)kw; json_t*st=json_get(argv,0); json_t*sid=json_get(argv,1); json_t*aid=json_get(argv,2); json_t*link=json_get(argv,3); json_t*resumes=json_get(argv,4);
     json_t*rs=agsf_get(st,"_resumes");
-    if(agsf_is_obj(rs)){ json_t*v=json_obj_get(rs,agsf_sarg(sid,"")); if(v&&agsf_json_eq(v,resumes)) return json_null(); }
+    if(agsf_is_obj(rs)){ json_t*v=json_obj_get(rs,agsf_sarg(sid,"")); if(agsf_num(v)==agsf_num(resumes)) return json_null(); }
     json_t*w=agsf_seam(io,"changed.wait_for",json_object()); if(agsf_is_raise(w)) return w;
     json_t*ad=agsf_get(st,"_adopted"); json_t*adv=agsf_is_obj(ad)?json_obj_get(ad,agsf_sarg(sid,"")):NULL;
     if(agsf_num(adv)>agsf_num(resumes)){
@@ -551,7 +551,19 @@ static json_t *agsf__answer_permission(agsf_io_t *io,const json_t *argv,const js
     json_t*raw=agsf_seam(io,"build_permission_options",agsf_A2("allow_permanent",json_bool(agsf_in_strs(choices,"always")?true:false),"allow_session",json_bool(agsf_in_strs(choices,"session")?true:false)));
     if(agsf_is_raise(raw)) return raw;
     json_t*opts=json_array();
-    if(agsf_is_arr(raw)) for(size_t i=0;i<json_len(raw);i++){ json_t*o=json_get(raw,i); const char*h=agsf_opt2hermes(agsf_getstr(o,"option_id","")); if(agsf_in_strs(choices,h)) json_append(opts,json_copy(o)); }
+    if(agsf_is_arr(raw)) for(size_t i=0;i<json_len(raw);i++){
+        json_t*o=json_get(raw,i);
+        const char*oid=agsf_getstr(o,"option_id","");
+        if(strcmp(oid,"allow_once")!=0 && strcmp(oid,"allow_session")!=0 &&
+           strcmp(oid,"allow_always")!=0 && strcmp(oid,"deny")!=0 &&
+           strcmp(oid,"deny_always")!=0){
+            char msg[512]; snprintf(msg,sizeof(msg),"'%s'",oid);
+            json_free(opts);
+            return agsf_mkraise("KeyError",msg);
+        }
+        const char*h=agsf_opt2hermes(oid);
+        if(agsf_in_strs(choices,h)) json_append(opts,json_copy(o));
+    }
     json_t*r; json_t*fail=NULL;
     json_t*edit=json_obj_get(prompt,"edit");
     if(edit){

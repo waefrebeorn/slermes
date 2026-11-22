@@ -1,126 +1,128 @@
-{"func":"_slash_command","in":{"argv":["/foo"],"kw":{},"seams":{"resolve_command":[{"name":"foo"}]}}}
-{"func":"_slash_command","in":{"argv":["/foo"],"kw":{},"seams":{"resolve_command":[null],"ROUTES":[["foo"]]}}}
-{"func":"_slash_command","in":{"argv":["/foo"],"kw":{},"seams":{"resolve_command":[null],"ROUTES":[[]]}}}
-{"func":"_slash_command","in":{"argv":["plain text"],"kw":{},"seams":{}}}
-{"func":"_slash_command","in":{"argv":["/etc/hosts"],"kw":{},"seams":{}}}
-{"func":"_slash_command","in":{"argv":["/"],"kw":{},"seams":{}}}
-{"func":"_slash_command","in":{"argv":["/  "],"kw":{},"seams":{}}}
-{"func":"_slash_command","in":{"argv":["/x"],"kw":{},"seams":{"resolve_command":[{"__raise__":"SystemExit","message":"die"}]}}}
-{"func":"_tools_changed_notice","in":{"argv":[{"mcp_servers":["a","b"]}],"kw":{},"seams":{}}}
-{"func":"_tools_changed_notice","in":{"argv":[{"mcp_servers":[]}],"kw":{},"seams":{}}}
-{"func":"_tools_changed_notice","in":{"argv":[{}],"kw":{},"seams":{}}}
-{"func":"_tools_changed_notice","in":{"argv":[{"mcp_servers":null}],"kw":{},"seams":{}}}
-{"func":"_tools_changed_notice","in":{"argv":[{"mcp_servers":["x"]}],"kw":{},"seams":{}}}
-{"func":"_tools_changed_notice","in":{"argv":[{"mcp_servers":["a","b","c"]}],"kw":{},"seams":{}}}
-{"func":"_bypass_route","in":{"argv":[],"kw":{},"seams":{"os.environ.get":["m","p"]}}}
-{"func":"_bypass_route","in":{"argv":[],"kw":{},"seams":{"os.environ.get":[null,"m2","p"]}}}
-{"func":"_bypass_route","in":{"argv":[],"kw":{},"seams":{"os.environ.get":["  spaced  ","  pv  "]}}}
-{"func":"_bypass_route","in":{"argv":[],"kw":{},"seams":{"os.environ.get":[null,null]}}}
-{"func":"_bypass_route","in":{"argv":[],"kw":{},"seams":{"os.environ.get":["m",""]}}}
-{"func":"_bypass_route","in":{"argv":[],"kw":{},"seams":{"os.environ.get":["m","   "]}}}
-{"func":"_bypass_route","in":{"argv":[],"kw":{},"seams":{"os.environ.get":[{"__raise__":"SystemExit","message":"die"}]}}}
-{"func":"_editor_id","in":{"argv":[{"_aliases":{"h1":"s1","h2":"s2"}},"s2"],"kw":{},"seams":{}}}
-{"func":"_editor_id","in":{"argv":[{"_aliases":{"h1":"s1"}},"s1"],"kw":{},"seams":{}}}
-{"func":"_editor_id","in":{"argv":[{"_aliases":{"h1":"s1"}},"zzz"],"kw":{},"seams":{}}}
-{"func":"_editor_id","in":{"argv":[{"_aliases":{}},"s1"],"kw":{},"seams":{}}}
-{"func":"_editor_id","in":{"argv":[{"_aliases":{"a":"x","b":"y","c":"x"}},"x"],"kw":{},"seams":{}}}
-{"func":"_editor_id","in":{"argv":[{"_aliases":{"h":"s"}},""],"kw":{},"seams":{}}}
-{"func":"_moved","in":{"argv":[{"cwd":"/a"},"/b"],"kw":{},"seams":{"_normalize_cwd_for_compare":["A","B"],"_translate_acp_cwd":["/b"]}}}
-{"func":"_moved","in":{"argv":[{"cwd":"/a"},"/a"],"kw":{},"seams":{"_normalize_cwd_for_compare":["A","A"],"_translate_acp_cwd":["/a"]}}}
-{"func":"_moved","in":{"argv":[{},"/b"],"kw":{},"seams":{}}}
-{"func":"_moved","in":{"argv":[{"cwd":null},"/b"],"kw":{},"seams":{"_normalize_cwd_for_compare":[null,"B"],"_translate_acp_cwd":["/b"]}}}
-{"func":"_moved","in":{"argv":[{"cwd":"/a"},"/b"],"kw":{},"seams":{"_normalize_cwd_for_compare":["A"],"_translate_acp_cwd":[{"__raise__":"SystemExit","message":"die"}]}}}
-{"func":"_moved","in":{"argv":[{"cwd":"/a"},"/b"],"kw":{},"seams":{"_normalize_cwd_for_compare":[{"__raise__":"ValueError","message":"bad"}]}}}
-{"func":"_transport_closed","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.reader":[{"is_future":true,"done":true}]}}}
-{"func":"_transport_closed","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.reader":[{"is_future":true,"done":false}]}}}
-{"func":"_transport_closed","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.reader":[{"is_future":false,"done":true}]}}}
-{"func":"_transport_closed","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.reader":[[null]]}}}
-{"func":"_transport_closed","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.reader":[{}]}}}
-{"func":"_transport_closed","in":{"argv":[{"_gateway":true}],"kw":{},"seams":{"gateway.reader":[{"is_future":true}]}}}
-{"func":"_held_session","in":{"argv":[{"_aliases":{"h":"s1"},"_snapshots":{"s1":{}}},"h"],"kw":{},"seams":{}}}
-{"func":"_held_session","in":{"argv":[{"_aliases":{},"_snapshots":{"s1":{}}},"s1"],"kw":{},"seams":{}}}
-{"func":"_held_session","in":{"argv":[{"_aliases":{},"_snapshots":{}},"s1"],"kw":{},"seams":{}}}
-{"func":"_held_session","in":{"argv":[{"_aliases":{"h":"gone"},"_snapshots":{"s1":{}}},"h"],"kw":{},"seams":{}}}
-{"func":"_held_session","in":{"argv":[{"_aliases":{"a":"x","b":"y"},"_snapshots":{"y":{}}},"a"],"kw":{},"seams":{}}}
-{"func":"_held_session","in":{"argv":[{"_aliases":{},"_snapshots":{"":{}}},""],"kw":{},"seams":{}}}
-{"func":"_has_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"status":"unknown"}]}}},"s1"],"kw":{},"seams":{}}}
-{"func":"_has_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"status":"queued"},{"status":"unknown"}]}}},"s1"],"kw":{},"seams":{}}}
-{"func":"_has_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"status":"queued"}]}}},"s1"],"kw":{},"seams":{}}}
-{"func":"_has_unknown","in":{"argv":[{"_snapshots":{"s1":{}}},"s1"],"kw":{},"seams":{}}}
-{"func":"_has_unknown","in":{"argv":[{"_snapshots":{"s1":{"pending":[]}}},"s1"],"kw":{},"seams":{}}}
-{"func":"_has_unknown","in":{"argv":[{"_snapshots":{}},"missing"],"kw":{},"seams":{}}}
-{"func":"_pending_event_is_new","in":{"argv":[{"_snapshots":{"s1":{"_pending_watermark":[1,10]}}},"s1",{"seq":5,"replay_epoch":1}],"kw":{},"seams":{}}}
-{"func":"_pending_event_is_new","in":{"argv":[{"_snapshots":{"s1":{"_pending_watermark":[1,10]}}},"s1",{"seq":11,"replay_epoch":1}],"kw":{},"seams":{}}}
-{"func":"_pending_event_is_new","in":{"argv":[{"_snapshots":{"s1":{"_pending_watermark":[1,10]}}},"s1",{"seq":5,"replay_epoch":2}],"kw":{},"seams":{}}}
-{"func":"_pending_event_is_new","in":{"argv":[{"_snapshots":{"s1":{}}},"s1",{"seq":5,"replay_epoch":1}],"kw":{},"seams":{}}}
-{"func":"_pending_event_is_new","in":{"argv":[{"_snapshots":{"s1":{"_pending_watermark":[1,10]}}},"s1",{"replay_epoch":1}],"kw":{},"seams":{}}}
-{"func":"_pending_event_is_new","in":{"argv":[{"_snapshots":{}},"s1",{"seq":1,"replay_epoch":1}],"kw":{},"seams":{}}}
-{"func":"_blocked_admission","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"admission_id":"a1","status":"unknown"}]}}},"s1","a1"],"kw":{},"seams":{}}}
-{"func":"_blocked_admission","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"admission_id":"a1","status":"queued"},{"admission_id":"a2","status":"unknown"}]}}},"s1","a1"],"kw":{},"seams":{}}}
-{"func":"_blocked_admission","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"admission_id":"a1","status":"terminal"},{"admission_id":"a2","status":"unknown"}]}}},"s1","a1"],"kw":{},"seams":{}}}
-{"func":"_blocked_admission","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"admission_id":"a1","status":"queued"}]}}},"s1","a1"],"kw":{},"seams":{}}}
-{"func":"_blocked_admission","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"admission_id":"a1","status":"unknown"}]}}},"s1","b9"],"kw":{},"seams":{}}}
-{"func":"_blocked_admission","in":{"argv":[{"_snapshots":{"s1":{}}},"s1","a1"],"kw":{},"seams":{}}}
-{"func":"_unknown_recovery","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"admission_id":"a1","status":"unknown"}]}},"_home":"/h"},"s1","a1"],"kw":{},"seams":{"profile_name_for_home":["default"]}}}
-{"func":"_unknown_recovery","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"admission_id":"a1","status":"unknown"},{"admission_id":"a2","status":"unknown"}]}},"_home":"/h"},"s1","a1"],"kw":{},"seams":{"profile_name_for_home":["p"]}}}
-{"func":"_unknown_recovery","in":{"argv":[{"_snapshots":{},"_home":"/h"},"s1","a1"],"kw":{},"seams":{"profile_name_for_home":["default"]}}}
-{"func":"_unknown_recovery","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"admission_id":"a1","status":"unknown"}]}},"_home":"/h"},"s1","a1"],"kw":{"submitted":false},"seams":{"profile_name_for_home":["default"]}}}
-{"func":"_unknown_recovery","in":{"argv":[{"_snapshots":{},"_home":"/h"},"s1","a1"],"kw":{},"seams":{"profile_name_for_home":[null]}}}
-{"func":"_unknown_recovery","in":{"argv":[{"_snapshots":{"s1":{"pending":[{"admission_id":"a1","status":"unknown"}]}},"_home":"/h"},"s1","a1"],"kw":{},"seams":{"profile_name_for_home":[{"__raise__":"SystemExit","message":"die"}]}}}
-{"func":"_request_live_reasoning","in":{"argv":[{"_conn":null},"CLIENT","s1"],"kw":{},"seams":{"rpc":[{"ok":true}]}}}
-{"func":"_request_live_reasoning","in":{"argv":[{"_conn":null},"CLIENT","s1"],"kw":{},"seams":{"rpc":[{"__raise__":"ValueError","message":"bad"}],"logger.debug":[null]}}}
-{"func":"_request_live_reasoning","in":{"argv":[{"_conn":null},"CLIENT","s1"],"kw":{},"seams":{"rpc":[{"__raise__":"GatewayClientError","message":"x"}],"logger.debug":[null]}}}
-{"func":"_request_live_reasoning","in":{"argv":[{"_conn":null},"CLIENT","s1"],"kw":{},"seams":{"rpc":[{"__raise__":"SystemExit","message":"die"}]}}}
-{"func":"_request_live_reasoning","in":{"argv":[{"_conn":null},"CLIENT","s1"],"kw":{},"seams":{"rpc":[{"__raise__":"CancelledError","message":"cancelled"}]}}}
-{"func":"_request_live_reasoning","in":{"argv":[{"_conn":null},"CLIENT","s1"],"kw":{},"seams":{"rpc":[{"__raise__":"RuntimeError","message":"boom"}],"logger.debug":[null]}}}
-{"func":"_after_attach","in":{"argv":[{"_conn":true,"_usage":{}},"s1","e1"],"kw":{},"seams":{"sleep":[0],"available_commands_update":[{"u":1}],"conn.session_update":[null,null],"client":["CLIENT"],"rpc":[{"stats":1}],"usage_update":[{"up":1}]}}}
-{"func":"_after_attach","in":{"argv":[{"_conn":true,"_usage":{}},"s1","e1"],"kw":{},"seams":{"sleep":[0],"available_commands_update":[{"__raise__":"SystemExit","message":"die"}]}}}
-{"func":"_after_attach","in":{"argv":[{"_conn":true,"_usage":{}},"s1","e1"],"kw":{},"seams":{"sleep":[0],"available_commands_update":[{"u":1}],"conn.session_update":[{"__raise__":"ValueError","message":"bad"}],"logger.debug":[null]}}}
-{"func":"_after_attach","in":{"argv":[{"_conn":true,"_usage":{}},"s1","e1"],"kw":{},"seams":{"sleep":[0],"available_commands_update":[{"u":1}],"conn.session_update":[null],"client":[{"__raise__":"SystemExit","message":"die"}]}}}
-{"func":"_after_attach","in":{"argv":[{"_conn":true,"_usage":{}},"s1","e1"],"kw":{},"seams":{"sleep":[0],"available_commands_update":[{"u":1}],"conn.session_update":[null],"client":["CLIENT"],"rpc":[{"__raise__":"ValueError","message":"bad"}],"logger.debug":[null]}}}
-{"func":"_after_attach","in":{"argv":[{"_conn":true,"_usage":{}},"s1","e1"],"kw":{},"seams":{"sleep":[0],"available_commands_update":[{"u":1}],"conn.session_update":[null,{"__raise__":"RuntimeError","message":"no script for conn.session_update"}],"client":["CLIENT"],"rpc":[{"stats":1}],"usage_update":[[null]],"logger.debug":[{"__raise__":"RuntimeError","message":"no script for logger.debug"}]}}}
-{"func":"_admission_from_receipt","in":{"argv":[{"_conn":true,"_pending_cancels":[],"_admissions":{}},"CLIENT","h1","s1",{"admission_id":"a1","status":"started"}],"kw":{},"seams":{}}}
-{"func":"_admission_from_receipt","in":{"argv":[{"_conn":true,"_pending_cancels":[],"_admissions":{}},"CLIENT","h1","s1",{"voice_stopped":true}],"kw":{},"seams":{"t":["STOP"],"update_agent_message_text":["txt"],"conn.session_update":[null]}}}
-{"func":"_admission_from_receipt","in":{"argv":[{"_conn":null,"_pending_cancels":[],"_admissions":{}},"CLIENT","h1","s1",{"voice_stopped":true}],"kw":{},"seams":{}}}
-{"func":"_admission_from_receipt","in":{"argv":[{"_conn":true,"_pending_cancels":[],"_admissions":{}},"CLIENT","h1","s1",{"admission_id":"a1","status":"terminal"}],"kw":{},"seams":{"settled_receipt":[null]}}}
-{"func":"_admission_from_receipt","in":{"argv":[{"_conn":true,"_pending_cancels":[],"_admissions":{},"_snapshots":{},"_home":"/h"},"CLIENT","h1","s1",{"admission_id":"a1","status":"unknown"}],"kw":{},"seams":{"profile_name_for_home":["default"]}}}
-{"func":"_admission_from_receipt","in":{"argv":[{"_conn":true,"_pending_cancels":[],"_admissions":{}},"CLIENT","h1","s1",{"admission_id":"a1","voice_stopped":1,"status":"started"}],"kw":{},"seams":{}}}
-{"func":"_after_ack","in":{"argv":[{"_resumes":{"s1":1},"_adopted":{"s1":2},"_failure":null,"_link":0,"_gateway":{"events":"EV"}},"s1","a1",0,1],"kw":{},"seams":{}}}
-{"func":"_after_ack","in":{"argv":[{"_resumes":{"s1":0},"_adopted":{"s1":2},"_failure":null,"_link":0,"_gateway":{"events":"EV"}},"s1","a1",0,1],"kw":{},"seams":{"changed.wait_for":[null],"put_behind":[null]}}}
-{"func":"_after_ack","in":{"argv":[{"_resumes":{"s1":0},"_adopted":{"s1":0},"_failure":null,"_link":0,"_gateway":{"events":"EV"}},"s1","a1",0,0],"kw":{},"seams":{}}}
-{"func":"_after_ack","in":{"argv":[{"_resumes":{"s1":0},"_adopted":{"s1":2},"_failure":null,"_link":0,"_gateway":{}},"s1","a1",0,0],"kw":{},"seams":{}}}
-{"func":"_after_ack","in":{"argv":[{"_resumes":{"s1":0},"_adopted":{"s1":2},"_failure":null,"_link":0,"_gateway":{}},"s1","a1",0,0],"kw":{},"seams":{}}}
-{"func":"_after_ack","in":{"argv":[{"_resumes":{"s1":0},"_adopted":{"s1":2},"_failure":null,"_link":0,"_gateway":{"events":"EV"}},"s1","a1",0,0],"kw":{},"seams":{}}}
-{"func":"_project_title","in":{"argv":[{"_titles":{},"_conn":true},"s1","e1","new"],"kw":{},"seams":{"title_update":[{"tu":1}],"conn.session_update":[null]}}}
-{"func":"_project_title","in":{"argv":[{"_titles":{"s1":"same"},"_conn":true},"s1","e1","same"],"kw":{},"seams":{}}}
-{"func":"_project_title","in":{"argv":[{"_titles":{},"_conn":true},"s1","e1","   "],"kw":{},"seams":{}}}
-{"func":"_project_title","in":{"argv":[{"_titles":{},"_conn":true},"s1","e1",42],"kw":{},"seams":{}}}
-{"func":"_project_title","in":{"argv":[{"_titles":{},"_conn":null},"s1","e1","new"],"kw":{},"seams":{}}}
-{"func":"_project_title","in":{"argv":[{"_titles":{},"_conn":true},"s1","e1","  padded  "],"kw":{},"seams":{"title_update":[{"tu":2}],"conn.session_update":[{"__raise__":"RuntimeError","message":"boom"}]}}}
-{"func":"_project_usage","in":{"argv":[{"_usage":{},"_conn":true},"s1","e1",{"a":1}],"kw":{},"seams":{"usage_update":[{"up":1}],"conn.session_update":[null]}}}
-{"func":"_project_usage","in":{"argv":[{"_usage":{},"_conn":true},"s1","e1",{"a":1}],"kw":{},"seams":{"usage_update":[[null]],"conn.session_update":[{"__raise__":"RuntimeError","message":"no script for conn.session_update"}]}}}
-{"func":"_project_usage","in":{"argv":[{"_usage":{},"_conn":null},"s1","e1",{"a":1}],"kw":{},"seams":{}}}
-{"func":"_project_usage","in":{"argv":[{"_usage":{},"_conn":true},"s1","e1",{}],"kw":{},"seams":{"usage_update":[{"__raise__":"SystemExit","message":"die"}]}}}
-{"func":"_project_usage","in":{"argv":[{"_usage":{},"_conn":true},"s1","e1",{"b":2}],"kw":{},"seams":{"usage_update":[{"up":2}],"conn.session_update":[{"__raise__":"ValueError","message":"bad"}]}}}
-{"func":"_project_usage","in":{"argv":[{"_usage":{},"_conn":true},"s1","e1",null],"kw":{},"seams":{"usage_update":[{"up":3}],"conn.session_update":[null]}}}
-{"func":"_permission","in":{"argv":[{"_conn":true,"_permissions":{}},"s1",{"kind":"approval","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{"answer.approval":["CORO"],"create_task":[{"t":1}]}}}
-{"func":"_permission","in":{"argv":[{"_conn":true,"_permissions":{}},"s1",{"kind":"clarify","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{"answer.clarify":["CORO"],"create_task":[{"t":1}]}}}
-{"func":"_permission","in":{"argv":[{"_conn":true,"_permissions":{}},"s1",{"kind":"other","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{}}}
-{"func":"_permission","in":{"argv":[{"_conn":null,"_permissions":{}},"s1",{"kind":"approval","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{}}}
-{"func":"_permission","in":{"argv":[{"_conn":true,"_permissions":{"s1|p1|1":0}},"s1",{"kind":"approval","prompt_id":"p1","execution_generation":"1"}],"kw":{},"seams":{}}}
-{"func":"_permission","in":{"argv":[{"_conn":true,"_permissions":{}},"s1",{"kind":"approval","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{"answer.approval":[{"__raise__":"SystemExit","message":"die"}]}}}
-{"func":"_permission","in":{"argv":[{"_conn":true,"_permissions":{}},"s1",{"kind":"approval","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{"answer.approval":["CORO"],"create_task":[{"__raise__":"ValueError","message":"bad"}]}}}
-{"func":"_project_config","in":{"argv":[{"_configs":{"s1":{"model":"m","mode":"ask"}},"_modes":{},"_conn":true},"s1","e1",{"model":"m"}],"kw":{},"seams":{"current_mode":[{"__raise__":"RuntimeError","message":"no script for current_mode"}]}}}
-{"func":"_project_config","in":{"argv":[{"_configs":{},"_modes":{},"_conn":true},"s1","e1",{}],"kw":{},"seams":{}}}
-{"func":"_project_config","in":{"argv":[{"_configs":{},"_modes":{},"_conn":true},"s1","e1",{"model":"m"}],"kw":{},"seams":{"current_mode":["ask"]}}}
-{"func":"_project_config","in":{"argv":[{"_configs":{"s1":{"model":"m","mode":"ask"}},"_modes":{},"_conn":null},"s1","e1",{"model":"m"}],"kw":{},"seams":{"current_mode":[{"__raise__":"RuntimeError","message":"no script for current_mode"}]}}}
-{"func":"_project_config","in":{"argv":[{"_configs":{"s1":{"model":"m","mode":"ask"}},"_modes":{},"_conn":true},"s1","e1",{"service_tier":"fast"}],"kw":{},"seams":{"current_mode":[{"__raise__":"RuntimeError","message":"no script for current_mode"}]}}}
-{"func":"_project_config","in":{"argv":[{"_configs":{"s1":{"model":"m","mode":"ask"}},"_modes":{},"_conn":true},"s1","e1",{"model":"m"}],"kw":{},"seams":{"current_mode":[{"__raise__":"RuntimeError","message":"no script for current_mode"}]}}}
-{"func":"_project_config","in":{"argv":[{"_configs":{},"_modes":{"s1":"ask"},"_conn":true},"s1","e1",{"model":"m"}],"kw":{},"seams":{}}}
-{"func":"_answer_permission","in":{"argv":[{"_conn":true,"_gateway":true},"s1",{"choices":["once"],"command":"cmd","description":"d","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{"build_permission_options":[[{"option_id":"allow_once","name":"Allow once"}]],"build_permission_tool_call":[{"tc":1}],"request_permission":[{"outcome":{"allowed_outcome":true,"option_id":"allow_once"}}],"close_card":[null],"rpc":[true]}}}
-{"func":"_answer_permission","in":{"argv":[{"_conn":true,"_gateway":true},"s1",{"choices":["once"],"command":"cmd","description":"d","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{"build_permission_options":[[{"option_id":"allow_once","name":"Allow once"}]],"build_permission_tool_call":[{"tc":1}],"request_permission":[{"outcome":{"allowed_outcome":false,"option_id":"deny"}}],"close_card":[null]}}}
-{"func":"_answer_permission","in":{"argv":[{"_conn":true,"_gateway":true},"s1",{"choices":["once"],"command":"cmd","description":"d","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{"build_permission_options":[[{"option_id":"allow_once","name":"Allow once"}]],"build_permission_tool_call":[{"tc":1}],"request_permission":[{"outcome":{"allowed_outcome":true,"option_id":"deny"}}],"close_card":[null]}}}
-{"func":"_answer_permission","in":{"argv":[{"_conn":true,"_gateway":true},"s1",{"choices":["once"],"command":"cmd","description":"d","prompt_id":"p1","execution_generation":1,"edit":{"path":"f"}}],"kw":{},"seams":{"build_permission_options":[[{"option_id":"allow_once","name":"Allow once"}]],"build_acp_edit_tool_call":[{"tc":2}],"request_permission":[{"outcome":{"allowed_outcome":true,"option_id":"allow_once"}}],"close_card":[null],"rpc":[true]}}}
-{"func":"_answer_permission","in":{"argv":[{"_conn":true,"_gateway":true},"s1",{"choices":["once"],"command":"cmd","description":"d","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{"build_permission_options":[[{"option_id":"allow_once","name":"Allow once"}]],"build_permission_tool_call":[{"tc":1}],"request_permission":[{"__raise__":"ValueError","message":"bad"}],"logger.info":[null]}}}
-{"func":"_answer_permission","in":{"argv":[{"_conn":true,"_gateway":true},"s1",{"choices":["once"],"command":"cmd","description":"d","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{"build_permission_options":[[{"option_id":"allow_once","name":"Allow once"}]],"build_permission_tool_call":[{"tc":1}],"request_permission":[{"outcome":{"allowed_outcome":true,"option_id":"allow_once"}}],"close_card":[null],"rpc":[{"__raise__":"SystemExit","message":"die"}]}}}
-{"func":"_answer_permission","in":{"argv":[{"_conn":true,"_gateway":true},"s1",{"choices":["once"],"command":"cmd","description":"d","prompt_id":"p1","execution_generation":1}],"kw":{},"seams":{"build_permission_options":[{"__raise__":"SystemExit","message":"die"}]}}}
+{"func": "_slash_command", "in": {"argv": ["/foo"], "kw": {}, "seams": {"resolve_command": [{"name": "foo"}]}}}
+{"func": "_slash_command", "in": {"argv": ["/foo"], "kw": {}, "seams": {"resolve_command": [null], "ROUTES": [["foo"]]}}}
+{"func": "_slash_command", "in": {"argv": ["/foo"], "kw": {}, "seams": {"resolve_command": [null], "ROUTES": [[]]}}}
+{"func": "_slash_command", "in": {"argv": ["plain text"], "kw": {}, "seams": {}}}
+{"func": "_slash_command", "in": {"argv": ["/etc/hosts"], "kw": {}, "seams": {}}}
+{"func": "_slash_command", "in": {"argv": ["/"], "kw": {}, "seams": {}}}
+{"func": "_slash_command", "in": {"argv": ["/  "], "kw": {}, "seams": {}}}
+{"func": "_slash_command", "in": {"argv": ["/x"], "kw": {}, "seams": {"resolve_command": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_tools_changed_notice", "in": {"argv": [{"mcp_servers": ["a", "b"]}], "kw": {}, "seams": {}}}
+{"func": "_tools_changed_notice", "in": {"argv": [{"mcp_servers": []}], "kw": {}, "seams": {}}}
+{"func": "_tools_changed_notice", "in": {"argv": [{}], "kw": {}, "seams": {}}}
+{"func": "_tools_changed_notice", "in": {"argv": [{"mcp_servers": null}], "kw": {}, "seams": {}}}
+{"func": "_tools_changed_notice", "in": {"argv": [{"mcp_servers": ["x"]}], "kw": {}, "seams": {}}}
+{"func": "_tools_changed_notice", "in": {"argv": [{"mcp_servers": ["a", "b", "c"]}], "kw": {}, "seams": {}}}
+{"func": "_bypass_route", "in": {"argv": [], "kw": {}, "seams": {"os.environ.get": ["m", "p"]}}}
+{"func": "_bypass_route", "in": {"argv": [], "kw": {}, "seams": {"os.environ.get": [null, "m2", "p"]}}}
+{"func": "_bypass_route", "in": {"argv": [], "kw": {}, "seams": {"os.environ.get": ["  spaced  ", "  pv  "]}}}
+{"func": "_bypass_route", "in": {"argv": [], "kw": {}, "seams": {"os.environ.get": [null, null]}}}
+{"func": "_bypass_route", "in": {"argv": [], "kw": {}, "seams": {"os.environ.get": ["m", ""]}}}
+{"func": "_bypass_route", "in": {"argv": [], "kw": {}, "seams": {"os.environ.get": ["m", "   "]}}}
+{"func": "_bypass_route", "in": {"argv": [], "kw": {}, "seams": {"os.environ.get": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_editor_id", "in": {"argv": [{"_aliases": {"h1": "s1", "h2": "s2"}}, "s2"], "kw": {}, "seams": {}}}
+{"func": "_editor_id", "in": {"argv": [{"_aliases": {"h1": "s1"}}, "s1"], "kw": {}, "seams": {}}}
+{"func": "_editor_id", "in": {"argv": [{"_aliases": {"h1": "s1"}}, "zzz"], "kw": {}, "seams": {}}}
+{"func": "_editor_id", "in": {"argv": [{"_aliases": {}}, "s1"], "kw": {}, "seams": {}}}
+{"func": "_editor_id", "in": {"argv": [{"_aliases": {"a": "x", "b": "y", "c": "x"}}, "x"], "kw": {}, "seams": {}}}
+{"func": "_editor_id", "in": {"argv": [{"_aliases": {"h": "s"}}, ""], "kw": {}, "seams": {}}}
+{"func": "_moved", "in": {"argv": [{"cwd": "/a"}, "/b"], "kw": {}, "seams": {"_normalize_cwd_for_compare": ["A", "B"], "_translate_acp_cwd": ["/b"]}}}
+{"func": "_moved", "in": {"argv": [{"cwd": "/a"}, "/a"], "kw": {}, "seams": {"_normalize_cwd_for_compare": ["A", "A"], "_translate_acp_cwd": ["/a"]}}}
+{"func": "_moved", "in": {"argv": [{}, "/b"], "kw": {}, "seams": {}}}
+{"func": "_moved", "in": {"argv": [{"cwd": null}, "/b"], "kw": {}, "seams": {"_normalize_cwd_for_compare": [null, "B"], "_translate_acp_cwd": ["/b"]}}}
+{"func": "_moved", "in": {"argv": [{"cwd": "/a"}, "/b"], "kw": {}, "seams": {"_normalize_cwd_for_compare": ["A"], "_translate_acp_cwd": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_moved", "in": {"argv": [{"cwd": "/a"}, "/b"], "kw": {}, "seams": {"_normalize_cwd_for_compare": [{"__raise__": "ValueError", "message": "bad"}]}}}
+{"func": "_transport_closed", "in": {"argv": [{"_gateway": true}], "kw": {}, "seams": {"gateway.reader": [{"is_future": true, "done": true}]}}}
+{"func": "_transport_closed", "in": {"argv": [{"_gateway": true}], "kw": {}, "seams": {"gateway.reader": [{"is_future": true, "done": false}]}}}
+{"func": "_transport_closed", "in": {"argv": [{"_gateway": true}], "kw": {}, "seams": {"gateway.reader": [{"is_future": false, "done": true}]}}}
+{"func": "_transport_closed", "in": {"argv": [{"_gateway": true}], "kw": {}, "seams": {"gateway.reader": [[null]]}}}
+{"func": "_transport_closed", "in": {"argv": [{"_gateway": true}], "kw": {}, "seams": {"gateway.reader": [{}]}}}
+{"func": "_transport_closed", "in": {"argv": [{"_gateway": true}], "kw": {}, "seams": {"gateway.reader": [{"is_future": true}]}}}
+{"func": "_held_session", "in": {"argv": [{"_aliases": {"h": "s1"}, "_snapshots": {"s1": {}}}, "h"], "kw": {}, "seams": {}}}
+{"func": "_held_session", "in": {"argv": [{"_aliases": {}, "_snapshots": {"s1": {}}}, "s1"], "kw": {}, "seams": {}}}
+{"func": "_held_session", "in": {"argv": [{"_aliases": {}, "_snapshots": {}}, "s1"], "kw": {}, "seams": {}}}
+{"func": "_held_session", "in": {"argv": [{"_aliases": {"h": "gone"}, "_snapshots": {"s1": {}}}, "h"], "kw": {}, "seams": {}}}
+{"func": "_held_session", "in": {"argv": [{"_aliases": {"a": "x", "b": "y"}, "_snapshots": {"y": {}}}, "a"], "kw": {}, "seams": {}}}
+{"func": "_held_session", "in": {"argv": [{"_aliases": {}, "_snapshots": {"": {}}}, ""], "kw": {}, "seams": {}}}
+{"func": "_has_unknown", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"status": "unknown"}]}}}, "s1"], "kw": {}, "seams": {}}}
+{"func": "_has_unknown", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"status": "queued"}, {"status": "unknown"}]}}}, "s1"], "kw": {}, "seams": {}}}
+{"func": "_has_unknown", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"status": "queued"}]}}}, "s1"], "kw": {}, "seams": {}}}
+{"func": "_has_unknown", "in": {"argv": [{"_snapshots": {"s1": {}}}, "s1"], "kw": {}, "seams": {}}}
+{"func": "_has_unknown", "in": {"argv": [{"_snapshots": {"s1": {"pending": []}}}, "s1"], "kw": {}, "seams": {}}}
+{"func": "_has_unknown", "in": {"argv": [{"_snapshots": {}}, "missing"], "kw": {}, "seams": {}}}
+{"func": "_pending_event_is_new", "in": {"argv": [{"_snapshots": {"s1": {"_pending_watermark": [1, 10]}}}, "s1", {"seq": 5, "replay_epoch": 1}], "kw": {}, "seams": {}}}
+{"func": "_pending_event_is_new", "in": {"argv": [{"_snapshots": {"s1": {"_pending_watermark": [1, 10]}}}, "s1", {"seq": 11, "replay_epoch": 1}], "kw": {}, "seams": {}}}
+{"func": "_pending_event_is_new", "in": {"argv": [{"_snapshots": {"s1": {"_pending_watermark": [1, 10]}}}, "s1", {"seq": 5, "replay_epoch": 2}], "kw": {}, "seams": {}}}
+{"func": "_pending_event_is_new", "in": {"argv": [{"_snapshots": {"s1": {}}}, "s1", {"seq": 5, "replay_epoch": 1}], "kw": {}, "seams": {}}}
+{"func": "_pending_event_is_new", "in": {"argv": [{"_snapshots": {"s1": {"_pending_watermark": [1, 10]}}}, "s1", {"replay_epoch": 1}], "kw": {}, "seams": {}}}
+{"func": "_pending_event_is_new", "in": {"argv": [{"_snapshots": {}}, "s1", {"seq": 1, "replay_epoch": 1}], "kw": {}, "seams": {}}}
+{"func": "_blocked_admission", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"admission_id": "a1", "status": "unknown"}]}}}, "s1", "a1"], "kw": {}, "seams": {}}}
+{"func": "_blocked_admission", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"admission_id": "a1", "status": "queued"}, {"admission_id": "a2", "status": "unknown"}]}}}, "s1", "a1"], "kw": {}, "seams": {}}}
+{"func": "_blocked_admission", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"admission_id": "a1", "status": "terminal"}, {"admission_id": "a2", "status": "unknown"}]}}}, "s1", "a1"], "kw": {}, "seams": {}}}
+{"func": "_blocked_admission", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"admission_id": "a1", "status": "queued"}]}}}, "s1", "a1"], "kw": {}, "seams": {}}}
+{"func": "_blocked_admission", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"admission_id": "a1", "status": "unknown"}]}}}, "s1", "b9"], "kw": {}, "seams": {}}}
+{"func": "_blocked_admission", "in": {"argv": [{"_snapshots": {"s1": {}}}, "s1", "a1"], "kw": {}, "seams": {}}}
+{"func": "_unknown_recovery", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"admission_id": "a1", "status": "unknown"}]}}, "_home": "/h"}, "s1", "a1"], "kw": {}, "seams": {"profile_name_for_home": ["default"]}}}
+{"func": "_unknown_recovery", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"admission_id": "a1", "status": "unknown"}, {"admission_id": "a2", "status": "unknown"}]}}, "_home": "/h"}, "s1", "a1"], "kw": {}, "seams": {"profile_name_for_home": ["p"]}}}
+{"func": "_unknown_recovery", "in": {"argv": [{"_snapshots": {}, "_home": "/h"}, "s1", "a1"], "kw": {}, "seams": {"profile_name_for_home": ["default"]}}}
+{"func": "_unknown_recovery", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"admission_id": "a1", "status": "unknown"}]}}, "_home": "/h"}, "s1", "a1"], "kw": {"submitted": false}, "seams": {"profile_name_for_home": ["default"]}}}
+{"func": "_unknown_recovery", "in": {"argv": [{"_snapshots": {}, "_home": "/h"}, "s1", "a1"], "kw": {}, "seams": {"profile_name_for_home": [null]}}}
+{"func": "_unknown_recovery", "in": {"argv": [{"_snapshots": {"s1": {"pending": [{"admission_id": "a1", "status": "unknown"}]}}, "_home": "/h"}, "s1", "a1"], "kw": {}, "seams": {"profile_name_for_home": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_request_live_reasoning", "in": {"argv": [{"_conn": null}, "CLIENT", "s1"], "kw": {}, "seams": {"rpc": [{"ok": true}]}}}
+{"func": "_request_live_reasoning", "in": {"argv": [{"_conn": null}, "CLIENT", "s1"], "kw": {}, "seams": {"rpc": [{"__raise__": "ValueError", "message": "bad"}], "logger.debug": [null]}}}
+{"func": "_request_live_reasoning", "in": {"argv": [{"_conn": null}, "CLIENT", "s1"], "kw": {}, "seams": {"rpc": [{"__raise__": "GatewayClientError", "message": "x"}], "logger.debug": [null]}}}
+{"func": "_request_live_reasoning", "in": {"argv": [{"_conn": null}, "CLIENT", "s1"], "kw": {}, "seams": {"rpc": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_request_live_reasoning", "in": {"argv": [{"_conn": null}, "CLIENT", "s1"], "kw": {}, "seams": {"rpc": [{"__raise__": "CancelledError", "message": "cancelled"}]}}}
+{"func": "_request_live_reasoning", "in": {"argv": [{"_conn": null}, "CLIENT", "s1"], "kw": {}, "seams": {"rpc": [{"__raise__": "RuntimeError", "message": "boom"}], "logger.debug": [null]}}}
+{"func": "_after_attach", "in": {"argv": [{"_conn": true, "_usage": {}}, "s1", "e1"], "kw": {}, "seams": {"sleep": [0], "available_commands_update": [{"u": 1}], "conn.session_update": [null, null], "client": ["CLIENT"], "rpc": [{"stats": 1}], "usage_update": [{"up": 1}]}}}
+{"func": "_after_attach", "in": {"argv": [{"_conn": true, "_usage": {}}, "s1", "e1"], "kw": {}, "seams": {"sleep": [0], "available_commands_update": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_after_attach", "in": {"argv": [{"_conn": true, "_usage": {}}, "s1", "e1"], "kw": {}, "seams": {"sleep": [0], "available_commands_update": [{"u": 1}], "conn.session_update": [{"__raise__": "ValueError", "message": "bad"}], "logger.debug": [null]}}}
+{"func": "_after_attach", "in": {"argv": [{"_conn": true, "_usage": {}}, "s1", "e1"], "kw": {}, "seams": {"sleep": [0], "available_commands_update": [{"u": 1}], "conn.session_update": [null], "client": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_after_attach", "in": {"argv": [{"_conn": true, "_usage": {}}, "s1", "e1"], "kw": {}, "seams": {"sleep": [0], "available_commands_update": [{"u": 1}], "conn.session_update": [null], "client": ["CLIENT"], "rpc": [{"__raise__": "ValueError", "message": "bad"}], "logger.debug": [null]}}}
+{"func": "_after_attach", "in": {"argv": [{"_conn": true, "_usage": {}}, "s1", "e1"], "kw": {}, "seams": {"sleep": [0], "available_commands_update": [{"u": 1}], "conn.session_update": [null, {"__raise__": "RuntimeError", "message": "no script for conn.session_update"}], "client": ["CLIENT"], "rpc": [{"stats": 1}], "usage_update": [[null]], "logger.debug": [{"__raise__": "RuntimeError", "message": "no script for logger.debug"}]}}}
+{"func": "_admission_from_receipt", "in": {"argv": [{"_conn": true, "_pending_cancels": [], "_admissions": {}}, "CLIENT", "h1", "s1", {"admission_id": "a1", "status": "started"}], "kw": {}, "seams": {}}}
+{"func": "_admission_from_receipt", "in": {"argv": [{"_conn": true, "_pending_cancels": [], "_admissions": {}}, "CLIENT", "h1", "s1", {"voice_stopped": true}], "kw": {}, "seams": {"t": ["STOP"], "update_agent_message_text": ["txt"], "conn.session_update": [null]}}}
+{"func": "_admission_from_receipt", "in": {"argv": [{"_conn": null, "_pending_cancels": [], "_admissions": {}}, "CLIENT", "h1", "s1", {"voice_stopped": true}], "kw": {}, "seams": {}}}
+{"func": "_admission_from_receipt", "in": {"argv": [{"_conn": true, "_pending_cancels": [], "_admissions": {}}, "CLIENT", "h1", "s1", {"admission_id": "a1", "status": "terminal"}], "kw": {}, "seams": {"settled_receipt": [null]}}}
+{"func": "_admission_from_receipt", "in": {"argv": [{"_conn": true, "_pending_cancels": [], "_admissions": {}, "_snapshots": {}, "_home": "/h"}, "CLIENT", "h1", "s1", {"admission_id": "a1", "status": "unknown"}], "kw": {}, "seams": {"profile_name_for_home": ["default"]}}}
+{"func": "_admission_from_receipt", "in": {"argv": [{"_conn": true, "_pending_cancels": [], "_admissions": {}}, "CLIENT", "h1", "s1", {"admission_id": "a1", "voice_stopped": 1, "status": "started"}], "kw": {}, "seams": {}}}
+{"func": "_after_ack", "in": {"argv": [{"_resumes": {"s1": 1}, "_adopted": {"s1": 2}, "_failure": null, "_link": 0, "_gateway": {"events": "EV"}}, "s1", "a1", 0, 1], "kw": {}, "seams": {}}}
+{"func": "_after_ack", "in": {"argv": [{"_resumes": {"s1": 0}, "_adopted": {"s1": 2}, "_failure": null, "_link": 0, "_gateway": {"events": "EV"}}, "s1", "a1", 0, 1], "kw": {}, "seams": {"changed.wait_for": [null], "put_behind": [null]}}}
+{"func": "_after_ack", "in": {"argv": [{"_resumes": {"s1": 0}, "_adopted": {"s1": 0}, "_failure": null, "_link": 0, "_gateway": {"events": "EV"}}, "s1", "a1", 0, 0], "kw": {}, "seams": {}}}
+{"func": "_after_ack", "in": {"argv": [{"_resumes": {"s1": 0}, "_adopted": {"s1": 2}, "_failure": null, "_link": 0, "_gateway": {}}, "s1", "a1", 0, 0], "kw": {}, "seams": {}}}
+{"func": "_after_ack", "in": {"argv": [{"_resumes": {"s1": 0}, "_adopted": {"s1": 2}, "_failure": null, "_link": 0, "_gateway": {}}, "s1", "a1", 0, 0], "kw": {}, "seams": {}}}
+{"func": "_after_ack", "in": {"argv": [{"_resumes": {"s1": 0}, "_adopted": {"s1": 2}, "_failure": null, "_link": 0, "_gateway": {"events": "EV"}}, "s1", "a1", 0, 0], "kw": {}, "seams": {}}}
+{"func": "_project_title", "in": {"argv": [{"_titles": {}, "_conn": true}, "s1", "e1", "new"], "kw": {}, "seams": {"title_update": [{"tu": 1}], "conn.session_update": [null]}}}
+{"func": "_project_title", "in": {"argv": [{"_titles": {"s1": "same"}, "_conn": true}, "s1", "e1", "same"], "kw": {}, "seams": {}}}
+{"func": "_project_title", "in": {"argv": [{"_titles": {}, "_conn": true}, "s1", "e1", "   "], "kw": {}, "seams": {}}}
+{"func": "_project_title", "in": {"argv": [{"_titles": {}, "_conn": true}, "s1", "e1", 42], "kw": {}, "seams": {}}}
+{"func": "_project_title", "in": {"argv": [{"_titles": {}, "_conn": null}, "s1", "e1", "new"], "kw": {}, "seams": {}}}
+{"func": "_project_title", "in": {"argv": [{"_titles": {}, "_conn": true}, "s1", "e1", "  padded  "], "kw": {}, "seams": {"title_update": [{"tu": 2}], "conn.session_update": [{"__raise__": "RuntimeError", "message": "boom"}]}}}
+{"func": "_project_usage", "in": {"argv": [{"_usage": {}, "_conn": true}, "s1", "e1", {"a": 1}], "kw": {}, "seams": {"usage_update": [{"up": 1}], "conn.session_update": [null]}}}
+{"func": "_project_usage", "in": {"argv": [{"_usage": {}, "_conn": true}, "s1", "e1", {"a": 1}], "kw": {}, "seams": {"usage_update": [[null]], "conn.session_update": [{"__raise__": "RuntimeError", "message": "no script for conn.session_update"}]}}}
+{"func": "_project_usage", "in": {"argv": [{"_usage": {}, "_conn": null}, "s1", "e1", {"a": 1}], "kw": {}, "seams": {}}}
+{"func": "_project_usage", "in": {"argv": [{"_usage": {}, "_conn": true}, "s1", "e1", {}], "kw": {}, "seams": {"usage_update": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_project_usage", "in": {"argv": [{"_usage": {}, "_conn": true}, "s1", "e1", {"b": 2}], "kw": {}, "seams": {"usage_update": [{"up": 2}], "conn.session_update": [{"__raise__": "ValueError", "message": "bad"}]}}}
+{"func": "_project_usage", "in": {"argv": [{"_usage": {}, "_conn": true}, "s1", "e1", null], "kw": {}, "seams": {"usage_update": [{"up": 3}], "conn.session_update": [null]}}}
+{"func": "_permission", "in": {"argv": [{"_conn": true, "_permissions": {}}, "s1", {"kind": "approval", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"answer.approval": ["CORO"], "create_task": [{"t": 1}]}}}
+{"func": "_permission", "in": {"argv": [{"_conn": true, "_permissions": {}}, "s1", {"kind": "clarify", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"answer.clarify": ["CORO"], "create_task": [{"t": 1}]}}}
+{"func": "_permission", "in": {"argv": [{"_conn": true, "_permissions": {}}, "s1", {"kind": "other", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {}}}
+{"func": "_permission", "in": {"argv": [{"_conn": null, "_permissions": {}}, "s1", {"kind": "approval", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {}}}
+{"func": "_permission", "in": {"argv": [{"_conn": true, "_permissions": {"s1|p1|1": 0}}, "s1", {"kind": "approval", "prompt_id": "p1", "execution_generation": "1"}], "kw": {}, "seams": {}}}
+{"func": "_permission", "in": {"argv": [{"_conn": true, "_permissions": {}}, "s1", {"kind": "approval", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"answer.approval": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_permission", "in": {"argv": [{"_conn": true, "_permissions": {}}, "s1", {"kind": "approval", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"answer.approval": ["CORO"], "create_task": [{"__raise__": "ValueError", "message": "bad"}]}}}
+{"func": "_project_config", "in": {"argv": [{"_configs": {"s1": {"model": "m", "mode": "ask"}}, "_modes": {}, "_conn": true}, "s1", "e1", {"model": "m"}], "kw": {}, "seams": {"current_mode": [{"__raise__": "RuntimeError", "message": "no script for current_mode"}]}}}
+{"func": "_project_config", "in": {"argv": [{"_configs": {}, "_modes": {}, "_conn": true}, "s1", "e1", {}], "kw": {}, "seams": {}}}
+{"func": "_project_config", "in": {"argv": [{"_configs": {}, "_modes": {}, "_conn": true}, "s1", "e1", {"model": "m"}], "kw": {}, "seams": {"current_mode": ["ask"]}}}
+{"func": "_project_config", "in": {"argv": [{"_configs": {"s1": {"model": "m", "mode": "ask"}}, "_modes": {}, "_conn": null}, "s1", "e1", {"model": "m"}], "kw": {}, "seams": {"current_mode": [{"__raise__": "RuntimeError", "message": "no script for current_mode"}]}}}
+{"func": "_project_config", "in": {"argv": [{"_configs": {"s1": {"model": "m", "mode": "ask"}}, "_modes": {}, "_conn": true}, "s1", "e1", {"service_tier": "fast"}], "kw": {}, "seams": {"current_mode": [{"__raise__": "RuntimeError", "message": "no script for current_mode"}]}}}
+{"func": "_project_config", "in": {"argv": [{"_configs": {"s1": {"model": "m", "mode": "ask"}}, "_modes": {}, "_conn": true}, "s1", "e1", {"model": "m"}], "kw": {}, "seams": {"current_mode": [{"__raise__": "RuntimeError", "message": "no script for current_mode"}]}}}
+{"func": "_project_config", "in": {"argv": [{"_configs": {}, "_modes": {"s1": "ask"}, "_conn": true}, "s1", "e1", {"model": "m"}], "kw": {}, "seams": {}}}
+{"func": "_answer_permission", "in": {"argv": [{"_conn": true, "_gateway": true}, "s1", {"choices": ["once"], "command": "cmd", "description": "d", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"build_permission_options": [[{"option_id": "allow_once", "name": "Allow once"}]], "build_permission_tool_call": [{"tc": 1}], "request_permission": [{"outcome": {"allowed_outcome": true, "option_id": "allow_once"}}], "close_card": [null], "rpc": [true]}}}
+{"func": "_answer_permission", "in": {"argv": [{"_conn": true, "_gateway": true}, "s1", {"choices": ["once"], "command": "cmd", "description": "d", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"build_permission_options": [[{"option_id": "allow_once", "name": "Allow once"}]], "build_permission_tool_call": [{"tc": 1}], "request_permission": [{"outcome": {"allowed_outcome": false, "option_id": "deny"}}], "close_card": [null]}}}
+{"func": "_answer_permission", "in": {"argv": [{"_conn": true, "_gateway": true}, "s1", {"choices": ["once"], "command": "cmd", "description": "d", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"build_permission_options": [[{"option_id": "allow_once", "name": "Allow once"}]], "build_permission_tool_call": [{"tc": 1}], "request_permission": [{"outcome": {"allowed_outcome": true, "option_id": "deny"}}], "close_card": [null]}}}
+{"func": "_answer_permission", "in": {"argv": [{"_conn": true, "_gateway": true}, "s1", {"choices": ["once"], "command": "cmd", "description": "d", "prompt_id": "p1", "execution_generation": 1, "edit": {"path": "f"}}], "kw": {}, "seams": {"build_permission_options": [[{"option_id": "allow_once", "name": "Allow once"}]], "build_acp_edit_tool_call": [{"tc": 2}], "request_permission": [{"outcome": {"allowed_outcome": true, "option_id": "allow_once"}}], "close_card": [null], "rpc": [true]}}}
+{"func": "_answer_permission", "in": {"argv": [{"_conn": true, "_gateway": true}, "s1", {"choices": ["once"], "command": "cmd", "description": "d", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"build_permission_options": [[{"option_id": "allow_once", "name": "Allow once"}]], "build_permission_tool_call": [{"tc": 1}], "request_permission": [{"__raise__": "ValueError", "message": "bad"}], "logger.info": [null]}}}
+{"func": "_answer_permission", "in": {"argv": [{"_conn": true, "_gateway": true}, "s1", {"choices": ["once"], "command": "cmd", "description": "d", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"build_permission_options": [[{"option_id": "allow_once", "name": "Allow once"}]], "build_permission_tool_call": [{"tc": 1}], "request_permission": [{"outcome": {"allowed_outcome": true, "option_id": "allow_once"}}], "close_card": [null], "rpc": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_answer_permission", "in": {"argv": [{"_conn": true, "_gateway": true}, "s1", {"choices": ["once"], "command": "cmd", "description": "d", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"build_permission_options": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_answer_permission", "in": {"argv": [{"_conn": true, "_gateway": true}, "s1", {"choices": ["once"], "command": "cmd", "description": "d", "prompt_id": "p1", "execution_generation": 1}], "kw": {}, "seams": {"build_permission_options": [[{"option_id": " ", "name": "Allow once"}]], "build_permission_tool_call": [{"tc": 1}], "request_permission": [{"outcome": {"allowed_outcome": true, "option_id": "allow_once"}}], "close_card": [null], "rpc": [{"__raise__": "SystemExit", "message": "die"}]}}}
+{"func": "_after_ack", "in": {"argv": [{"_resumes": {"s1": 0}, "_adopted": {"s1": 2}, "_failure": null, "_link": 0, "_gateway": {}}, "\\", "a1", 0, 0], "kw": {}, "seams": {}}}
