@@ -778,6 +778,26 @@ json_t *blf_log_tail(const json_t *in, const blf_io_t *io,
         return NULL;
     }
     const char *b64 = blf_is_obj(r) ? json_get_str(r, "b64", "") : "";
+    size_t blen = b64 ? strlen(b64) : 0;
+    size_t data_chars = 0;
+    int b64_bad = 0;
+    for (size_t i = 0; b64 && i < blen && !b64_bad; i++) {
+        unsigned char c = (unsigned char)b64[i];
+        int ok = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                 (c >= '0' && c <= '9') || c == '+' || c == '/' || c == '=' ||
+                 c == ' ' || c == '\t' || c == '\n' || c == '\r';
+        if (!ok) b64_bad = 1;
+        if (c != ' ' && c != '\t' && c != '\n' && c != '\r') data_chars++;
+    }
+    if (!b64_bad && data_chars % 4 != 0) b64_bad = 1;
+    if (b64_bad) {
+        json_free(r);
+        json_t *e = json_object();
+        json_set(e, "__raise__", json_string("Error"));
+        json_set(e, "msg", json_string("Incorrect padding"));
+        *exc = e;
+        return NULL;
+    }
     size_t n = 0;
     unsigned char *bytes = blf_b64_decode(b64 ? b64 : "", &n);
     json_free(r);
@@ -1062,8 +1082,13 @@ json_t *blf_default_user_data_dir(const json_t *in, const blf_io_t *io,
     const char *tag_s = blf_str(tag);
     if (!tag_s) tag_s = "None";  /* f-string of a scripted None */
 
-    char name[256];
-    snprintf(name, sizeof(name), "%s-%s%s", digest, owner, tag_s);
+    size_t tl = strlen(tag_s);
+    char *name = malloc(strlen(digest) + strlen(owner) + tl + 2);
+    if (!name) { json_free(tag); return json_null(); }
+    char *np = name;
+    np += sprintf(np, "%s-%s", digest, owner);
+    for (size_t i = 0; i < tl; i++) *np++ = tag_s[i] == '\\' ? '/' : tag_s[i];
+    *np = '\0';
     json_free(tag);
 
     /* _ephemeral_root(home_key) / name */
@@ -1077,6 +1102,7 @@ json_t *blf_default_user_data_dir(const json_t *in, const blf_io_t *io,
         free(t1); free(t2);
     }
     char *full = blf_posix_join(root ? root : "", name);
+    free(name);
     free(root);
     json_t *out = json_string(full ? full : "");
     free(full);

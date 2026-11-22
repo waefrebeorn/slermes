@@ -63,7 +63,7 @@
 {"func": "_spawn_kwargs", "in": {"os_name": "nt", "create_new_process_group": 0, "io": {"windows_hide_flags": 8}}}
 {"func": "_spawn_kwargs", "in": {"os_name": "nt", "io": {"windows_hide_flags": {"__raise__": "OSError", "msg": "x"}}}}
 {"func": "_read_devtools_file", "in": {"user_data_dir": "/h/cache/browser/chromium/d-1", "io": {"open": "1234\n/devtools/browser/abc\n"}}}
-{"func": "_read_devtools_file", "in": {"user_data_dir": "/h/cache/browser/chromium/d-1", "io": {"open": "\ufeff1234\n/devtools/browser/abc\n"}}}
+{"func": "_read_devtools_file", "in": {"user_data_dir": "/h/cache/browser/chromium/d-1", "io": {"open": "﻿1234\n/devtools/browser/abc\n"}}}
 {"func": "_read_devtools_file", "in": {"user_data_dir": "/h/cache/browser/chromium/d-1", "io": {"open": "1234\r\n/devtools/browser/abc\r\n"}}}
 {"func": "_read_devtools_file", "in": {"user_data_dir": "/h/cache/browser/chromium/d-1", "io": {"open": "abc\n/devtools/browser/abc\n"}}}
 {"func": "_read_devtools_file", "in": {"user_data_dir": "/h/cache/browser/chromium/d-1", "io": {"open": "1234\n/devtools/page/abc\n"}}}
@@ -132,3 +132,5 @@
 {"func": "launch_chromium", "in": {"key": "k8", "io": {"_key_lock": null, "get_browser": {"__raise__": "RuntimeError", "msg": "x"}}}}
 {"func": "launch_chromium", "in": {"key": "k9", "executable": null, "ephemeral": true, "io": {"_key_lock": null, "get_browser": null, "hermes_home_key": "/h/home", "chromium_ready": [true, ""], "_resolve_executable": "/bin/chrome", "_default_user_data_dir": "/h/home/cache/browser/chromium/d-4", "_launch_owned": {"__raise__": "OSError", "msg": "spawn"}}}}
 {"func": "launch_chromium", "in": {"key": "k10", "executable": "/usr/bin/chrome", "ephemeral": true, "headed": true, "env": {"DISPLAY": ":0"}, "timeout": 30.5, "extra_args": ["--proxy=x"], "sandbox_bypass": false, "io": {"_key_lock": null, "get_browser": null, "hermes_home_key": "/h/home", "_launch_owned": [{"key": "k10", "pid": 11}, null]}}}
+{"func": "_default_user_data_dir", "in": {"key": "browser-exec-default", "home_key": "/h/home", "io": {"getpid": 4242, "_start_time": null, "ns_tag": "a\\b\\..\\c"}}}
+{"func": "_log_tail", "in": {"user_data_dir": "/h/cache/browser/chromium/d-1", "io": {"read_bytes": {"b64": " leading"}}}}

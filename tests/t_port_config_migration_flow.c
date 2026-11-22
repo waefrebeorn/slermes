@@ -117,6 +117,8 @@ static json_t *cmf_run_case(const char *func, json_t *in) {
         strcmp(func, "keep_legacy_disable") == 0 || strcmp(func, "record_migration") == 0 ||
         strcmp(func, "install_one") == 0;
     if (needs_feature && !f) {
+        if (strcmp(func, "record_migration") != 0 && strcmp(func, "install_one") != 0)
+            config_out = cmf_config_from(in);
         ret = cmf_make_raise("StopIteration", "");
     } else if (strcmp(func, "marked") == 0) {
         config_out = cmf_config_from(in);
