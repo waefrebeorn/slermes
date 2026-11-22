@@ -236,12 +236,23 @@ static json_t *env_pop(mcl_io_t *io, const char *name) {
 }
 /* builtins.print(text, end=end, file=file) — effect seam. */
 static json_t *do_print(mcl_io_t *io, const char *text, const char *end, const char *file) {
+    /* Python's print(text) recorder folds the default newline into `text`
+     * while keeping end="\n". Normalise every default-end call here. */
+    char *folded = NULL;
+    if (end && strcmp(end, "\n") == 0 && text && text[0]) {
+        size_t tl = strlen(text);
+        if (text[tl - 1] != '\n') {
+            folded = (char *)malloc(tl + 2);
+            if (folded) { memcpy(folded, text, tl); folded[tl] = '\n'; folded[tl + 1] = 0; text = folded; }
+        }
+    }
     json_t *a = json_object();
     json_set_hdr(a, "text", text ? text : "");
     json_set_hdr(a, "end", end);
     json_set_hdr(a, "file", file);
     json_t *r = mcl_call(io, "print", a);
     json_free(a);
+    free(folded);
     return r;
 }
 /* {"args": <snapshot of in.args>} for sibling-call trace events. */
@@ -593,10 +604,10 @@ json_t *mcl_first_run_setup_guard(mcl_io_t *io, json_t *in) {
         json_free(r);
         return json_null();
     }
-    pr = do_print(io, "", "\n", "stdout");
+    pr = do_print(io, "\n", "\n", "stdout");
     if (mcl_raised(pr)) return propagate(pr);
     json_free(pr);
-    pr = do_print(io, "You can run 'hermes setup' at any time to configure.", "\n", "stdout");
+    pr = do_print(io, "You can run 'hermes setup' at any time to configure.\n", "\n", "stdout");
     if (mcl_raised(pr)) return propagate(pr);
     json_free(pr);
     return exit_node(1);
@@ -970,6 +981,20 @@ json_t *mcl_default_to_chat(mcl_io_t *io, json_t *in) {
  * for the call inside the redirect region); the harness routes the script's
  * "stdout"/"stderr" effects accordingly (speculative stderr is discarded).
  * stringio.getvalue is an echo seam returning the speculative buffer. */
+/* Python's recorder does list(argv): a string argv becomes a list of chars. */
+static json_t *mcl_argv_value(const json_t *v) {
+    if (v && v->type == JSON_STRING) {
+        json_t *arr = json_array();
+        const char *p = v->str_val ? v->str_val : "";
+        for (const unsigned char *c = (const unsigned char *)p; *c; c++) {
+            char one[2] = {(char)*c, 0};
+            json_append(arr, json_string(one));
+        }
+        return arr;
+    }
+    return v ? json_copy(v) : json_array();
+}
+
 /* PoP: mcl_parse_cli_args @ hermes_cli/main.py:_parse_cli_args */
 json_t *mcl_parse_cli_args(mcl_io_t *io, json_t *in) {
     json_t *argv = json_obj_get(in, "argv");
@@ -1000,7 +1025,7 @@ json_t *mcl_parse_cli_args(mcl_io_t *io, json_t *in) {
     if (!has_cmd_token) {
         if (j_is_obj(sp)) json_set(sp, "required", json_bool(false));
         a = json_object();
-        json_set(a, "argv", json_copy(processed));
+        json_set(a, "argv", mcl_argv_value(processed));
         json_set(a, "required", json_bool(false));
         json_set(a, "speculative", json_bool(false));
         json_t *r = mcl_call(io, "parser.parse_args", a);
@@ -1012,7 +1037,7 @@ json_t *mcl_parse_cli_args(mcl_io_t *io, json_t *in) {
 
     if (j_is_obj(sp)) json_set(sp, "required", json_bool(true));
     a = json_object();
-    json_set(a, "argv", json_copy(processed));
+    json_set(a, "argv", mcl_argv_value(processed));
     json_set(a, "required", json_bool(true));
     json_set(a, "speculative", json_bool(true));
     json_t *r = mcl_call(io, "parser.parse_args", a);
