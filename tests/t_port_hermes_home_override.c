@@ -20,14 +20,13 @@ int main(void) {
         const char *home = (h && h->type == JSON_STRING) ? h->str_val : NULL;
         unsigned token = hc_set_hermes_home_override(home);
         const char *got = hc_get_hermes_home_override();
-        const char *after_reset = hc_get_hermes_home_override();
-        hc_reset_hermes_home_override(token);
-        after_reset = hc_get_hermes_home_override();
         fputs("{\"home\":", stdout);
         if (h) { char *s = json_dumps(h, 0); fputs(s ? s : "null", stdout); free(s); }
         else fputs("null", stdout);
         fputs(",\"out\":", stdout);
         { char *s = json_dumps(json_string(got ? got : ""), 0); fputs(s ? s : "\"\"", stdout); free(s); }
+        hc_reset_hermes_home_override(token);
+        const char *after_reset = hc_get_hermes_home_override();
         fputs(",\"after_reset\":", stdout);
         { char *s = json_dumps(json_string(after_reset ? after_reset : ""), 0); fputs(s ? s : "\"\"", stdout); free(s); }
         fputs("}\n", stdout);
