@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <ctype.h>
 #include "hermes_json.h"
 #include "hermes_logger.h"
 
@@ -131,4 +132,32 @@ json_t *is_qwen_model(void *io, json_t *in) {
 char *_flat_model(void) { return strdup(""); }
 
 /* PoP: effective_cache_ttl @ agent/prompt_caching.py:effective_cache_ttl */
-int effective_cache_ttl(void) { return 300; }
+/* Python: if ttl != "1h": return ttl or "5m";
+ * provider_lower = (provider or "").lower();
+ * if auto and provider_lower == "bedrock": return "5m";
+ * if provider_lower in MEASURED_1H_PROVIDERS:
+ *     clamped = "5m" if _flat_model(model) in NO_1H_TIER_MODELS else "1h"
+ * elif _catalog_route(...): clamped = "1h"
+ * else: clamped = "5m" if is_qwen_model(model) or provider_lower in ALIBABA_FAMILY else "1h"
+ * return "5m" if clamped == "5m" or route_ttl_ceiling(...) == "5m" else "1h".
+ * The route/model predicates are caller-resolved facts (membership booleans),
+ * matching the Python-side stubs in the oracle. */
+const char *effective_cache_ttl(const char *ttl, const char *provider, int auto_flag,
+                                int measured_1h, int no_1h_tier, int catalog_route,
+                                int qwen_model, int alibaba_family, const char *route_ceiling) {
+    if (!ttl || strcmp(ttl, "1h") != 0) return (ttl && *ttl) ? ttl : "5m";
+    char pl[128] = "";
+    if (provider) {
+        size_t n = strlen(provider);
+        if (n >= sizeof(pl)) n = sizeof(pl) - 1;
+        for (size_t i = 0; i < n; i++) pl[i] = (char)tolower((unsigned char)provider[i]);
+        pl[n] = '\0';
+    }
+    if (auto_flag && strcmp(pl, "bedrock") == 0) return "5m";
+    const char *clamped;
+    if (measured_1h) clamped = no_1h_tier ? "5m" : "1h";
+    else if (catalog_route) clamped = "1h";
+    else clamped = (qwen_model || alibaba_family) ? "5m" : "1h";
+    if (strcmp(clamped, "5m") == 0) return "5m";
+    return (route_ceiling && strcmp(route_ceiling, "5m") == 0) ? "5m" : "1h";
+}

@@ -1,0 +1,17 @@
+{"ttl": "1h", "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "5m", "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "", "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": null, "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "2h", "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "1h", "provider": "bedrock", "auto": true, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "1h", "provider": "BEDROCK", "auto": true, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "1h", "provider": "bedrock", "auto": false, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "1h", "provider": "openai", "auto": false, "measured": true, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "1h", "provider": "openai", "auto": false, "measured": true, "no_1h": true, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "1h", "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": true, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "1h", "provider": "openai", "auto": false, "measured": true, "no_1h": false, "catalog": true, "qwen": false, "alibaba": false, "ceiling": "30m"}
+{"ttl": "1h", "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": false, "qwen": true, "alibaba": false, "ceiling": "30m"}
+{"ttl": "1h", "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": true, "ceiling": "30m"}
+{"ttl": "1h", "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "5m"}
+{"ttl": "1h", "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": true, "qwen": false, "alibaba": false, "ceiling": "5m"}
+{"ttl": "5m", "provider": "openai", "auto": false, "measured": false, "no_1h": false, "catalog": false, "qwen": false, "alibaba": false, "ceiling": "5m"}

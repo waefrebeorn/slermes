@@ -79,6 +79,7 @@ declare -A DEPS=(
   [mcp_filter]="src/hermes_cli/mcp_startup_gaps.o lib/libjson/json.o"
   [validate_page]="src/gateway/hosted_room_replicas_gaps.o lib/libjson/json.o"
   [worktree_pushed]="src/cli_gaps.o lib/libjson/json.o"
+  [effective_ttl]="src/agent/prompt_caching_gaps.o lib/libjson/json.o"
   [systemd_stop_sec]="src/gateway/restart_gaps.o lib/libjson/json.o"
   [managed_local_endpoint]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
