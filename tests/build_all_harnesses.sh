@@ -59,6 +59,7 @@ LIBINCS=$(grep -oE 'lib/lib[a-z0-9_]+' build/libs-config.mk | sed 's#^#-I #' | t
 # Harnesses #include the port .c by bare name; add every src subdir.
 SRCINCS=$(find src -maxdepth 3 -type d | sed 's#^#-I #' | tr '\n' ' ')
 
+ARCHIVE_EXCLUDE="${ARCHIVE_EXCLUDE:-process_identity_flow2}"
 # FULL harnesses link against a single static archive instead of ~2241 loose
 # objects; ld then pulls only what each harness actually references.
 ARCHIVE_PATH=$(bash tests/make_harness_archive.sh | tail -1)
@@ -92,7 +93,10 @@ bash tests/ensure_oracle_deps.sh $ALL_OBJS || { echo "dependency build failed" >
   for spec in "${SPECS[@]}"; do
     IFS=$'\t' read -r _n h o <<< "$spec"
     # A harness that needs the whole project object set passes "FULL".
-    if [ "$o" = "FULL" ] && [ "${HARNESS_LINK_MODE:-archive}" != "explicit" ]; then
+    excluded=0
+    case " ${ARCHIVE_EXCLUDE:-} " in *" $h "*) excluded=1 ;; esac
+    if [ "$o" = "FULL" ] && [ "${HARNESS_LINK_MODE:-archive}" != "explicit" ] \
+       && [ "$excluded" = "0" ]; then
       # Static archive: ld pulls only the objects the harness references.
       # Measured 2.5 s per link vs ~9 s, and 217 KB vs 19 MB images.
       o="$ARCHIVE_PATH"
