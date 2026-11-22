@@ -25,6 +25,9 @@ extern bool is_delegated_child_process_context(void);
  * or a dispatched worker with HERMES_KANBAN_TASK set. */
 extern bool explicit_board_intent_is_pinned(void);
 
+/* True when kanban mutations at path are denied by the dispatcher fence. */
+extern bool kanban_path_is_fenced(const char *path);
+
 /* Scrubbed env: removes HERMES_KANBAN_* keys, adds lineage marker.
  * Caller frees the returned NULL-terminated array with scrub_kanban_env_free(). */
 extern char **scrub_kanban_env(char **env);

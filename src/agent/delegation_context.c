@@ -132,6 +132,84 @@ bool explicit_board_intent_is_pinned(void)
     return false;
 }
 
+/* Lexical Path.expanduser().resolve() for POSIX-style absolute paths. */
+static char *dc_resolve(const char *p)
+{
+    if (!p || !*p) p = ".";
+    const char *src = p;
+    char homebuf[1024];
+    if (p[0] == '~' && (p[1] == '/' || !p[1])) {
+        const char *h = getenv("HOME");
+        if (h && *h) {
+            snprintf(homebuf, sizeof(homebuf), "%s%s", h, p + 1);
+            src = homebuf;
+        }
+    }
+    char cwdbuf[2048];
+    if (src[0] != '/') {
+        if (getcwd(cwdbuf, sizeof(cwdbuf))) {
+            char joined[4096];
+            snprintf(joined, sizeof(joined), "%s/%s", cwdbuf, src);
+            src = joined;
+        }
+    }
+    char buf[4096];
+    snprintf(buf, sizeof(buf), "%s", src);
+    char *parts[256];
+    int n = 0;
+    char *tok = strtok(buf, "/");
+    while (tok && n < 256) {
+        if (!strcmp(tok, ".")) { tok = strtok(NULL, "/"); continue; }
+        if (!strcmp(tok, "..")) {
+            if (n > 0) n--;
+            tok = strtok(NULL, "/"); continue;
+        }
+        parts[n++] = tok;
+        tok = strtok(NULL, "/");
+    }
+    size_t cap = 2;
+    for (int i = 0; i < n; i++) cap += strlen(parts[i]) + 1;
+    char *out = (char *)calloc(cap, 1);
+    if (!out) return NULL;
+    out[0] = '/';
+    size_t used = 1;
+    for (int i = 0; i < n; i++) {
+        if (used > 1) out[used++] = '/';
+        size_t len = strlen(parts[i]);
+        memcpy(out + used, parts[i], len);
+        used += len;
+    }
+    return out;
+}
+
+/* PoP: kanban_path_is_fenced @ agent/delegation_context.py:kanban_path_is_fenced */
+bool kanban_path_is_fenced(const char *path)
+{
+    if (is_delegated_child_context()) return true;
+    const char *marker = getenv("HERMES_DELEGATED_CHILD_CONTEXT");
+    if (!marker || !*marker) return false;
+    if (!strcmp(marker, "1")) return true;
+    char *target = dc_resolve(path);
+    const char *pin = getenv("HERMES_KANBAN_DB");
+    if (pin && *pin) {
+        while (*pin == ' ' || *pin == '\t' || *pin == '\n' || *pin == '\r') pin++;
+        if (*pin) {
+            char *pinned = dc_resolve(pin);
+            if (pinned && target && !strcmp(pinned, target)) { free(pinned); free(target); return true; }
+            free(pinned);
+        }
+    }
+    char *root = dc_resolve(marker);
+    bool fenced = false;
+    if (root && target) {
+        size_t n = strlen(root);
+        fenced = !strncmp(target, root, n) &&
+                 (target[n] == '\0' || target[n] == '/');
+    }
+    free(root); free(target);
+    return fenced;
+}
+
 /* PoP: is_delegated_child_process_context @ agent/delegation_context.py:is_delegated_child_process_context */
 bool is_delegated_child_process_context(void)
 {
