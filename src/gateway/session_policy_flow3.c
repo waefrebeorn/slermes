@@ -1184,11 +1184,14 @@ static json_t *sp3_policy_for_source(const json_t *runner, const json_t *source,
     const json_t *policies = sp3_oget(adapter, "policies");
     const char *chat = sp3_sval(sp3_oget(source, "chat_id"));
     const json_t *policy = (chat && sp3_is_obj(policies)) ? json_obj_get(policies, chat) : NULL;
+    json_t *policy_copy = policy ? json_copy(policy) : NULL;
     json_free(adapter);
-    if (!policy)
+    if (!policy_copy)
         return sp3_ar_raise("storage_unavailable", "policy",
             "the session has no restored policy (its receipt was refused or not yet recovered)");
-    return sp3_policy_norm(policy);
+    json_t *norm = sp3_policy_norm(policy_copy);
+    json_free(policy_copy);
+    return norm;
 }
 
 /* -- 13. workspace_unavailable_result -- */
