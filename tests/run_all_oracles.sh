@@ -60,6 +60,7 @@ declare -A DEPS=(
   [abort_complete]="src/hermes_cli/update_abort_recovery_gaps.o lib/libjson/json.o"
   [compress_fast_lane]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
   [mcp_filter]="src/hermes_cli/mcp_startup_gaps.o lib/libjson/json.o"
+  [validate_page]="src/gateway/hosted_room_replicas_gaps.o lib/libjson/json.o"
   [systemd_stop_sec]="src/gateway/restart_gaps.o lib/libjson/json.o"
   [managed_local_endpoint]="src/agent/auxiliary_client_gaps.o lib/libjson/json.o"
   [audit_bounded]="src/cli/port_audit.o lib/libjson/json.o"
@@ -318,6 +319,13 @@ resolve_one() {
   local name="$1"
   local harness="${HARNESS_ALIAS[$name]:-$name}"
   local deps="src/cli/port_$name.o lib/libjson/json.o"
+  # Flow harnesses #include their port .c directly (self-contained). Defaulting
+  # them to src/cli/port_<name>.o points at a file that does not exist and
+  # breaks the prebuild with "cannot find ... No such file". Explicit DEPS
+  # entries below still win for harnesses that need extra objects.
+  if grep -qE '^#include "[A-Za-z0-9_/]+\.c"' "tests/t_port_${harness}.c" 2>/dev/null; then
+    deps="lib/libjson/json.o"
+  fi
   if grep -q 'hermes_regex.h' "tests/t_port_${harness}.c" 2>/dev/null \
      || grep -q 'hermes_regex.h' "src/cli/port_$name.c" 2>/dev/null \
      || grep -q 'hermes_regex.h' "include/port_$name.h" 2>/dev/null; then

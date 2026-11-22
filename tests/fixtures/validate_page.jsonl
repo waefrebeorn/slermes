@@ -1,0 +1,15 @@
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}], "authority": {"gateway_id": "gw-1", "epoch": 1}}}
+{"page": {"authority": {"gateway_id": "gw-1", "epoch": 1}}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}]}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}], "authority": {"gateway_id": "gw 1", "epoch": 1}}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}], "authority": {"gateway_id": "", "epoch": 1}}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}], "authority": {"gateway_id": 5, "epoch": 1}}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}], "authority": {"gateway_id": "gw-1", "epoch": 0}}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}], "authority": {"gateway_id": "gw-1", "epoch": 1.5}}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}, {"seq": 3, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}], "authority": {"gateway_id": "gw-1", "epoch": 1}}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}, {"seq": 2, "event_id": "e1", "kind": "msg", "actor": {}, "payload": {"x": 1}}], "authority": {"gateway_id": "gw-1", "epoch": 1}}}
+{"page": {"events": ["notobj"], "authority": {"gateway_id": "gw-1", "epoch": 1}}}
+{"page": {"events": [{"seq": 1, "event_id": "", "kind": "msg", "actor": {}, "payload": {"x": 1}}], "authority": {"gateway_id": "gw-1", "epoch": 1}}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": 7, "actor": {}, "payload": {"x": 1}}], "authority": {"gateway_id": "gw-1", "epoch": 1}}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": [], "payload": {"x": 1}}], "authority": {"gateway_id": "gw-1", "epoch": 1}}}
+{"page": {"events": [{"seq": 1, "event_id": "e1", "kind": "msg", "actor": {}}], "authority": {"gateway_id": "gw-1", "epoch": 1}}}
