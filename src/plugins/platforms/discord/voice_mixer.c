@@ -1,0 +1,9 @@
+/*
+ * voice_mixer.c — C home for upstream Hermes plugins/platforms/discord/voice_mixer.py.
+ * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
+ *          not verified parity. It is deliberately not linked into the build.
+ * PoP: plugins_platforms_discord_voice_mixer_pending @ plugins/platforms/discord/voice_mixer.py:<module>
+ */
+#include <stddef.h>
+
+void plugins_platforms_discord_voice_mixer_port_pending(void) { (void)0; }

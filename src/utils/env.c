@@ -1,0 +1,9 @@
+/*
+ * env.c — C home for upstream Hermes utils/env.py.
+ * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
+ *          not verified parity. It is deliberately not linked into the build.
+ * PoP: utils_env_pending @ utils/env.py:<module>
+ */
+#include <stddef.h>
+
+void utils_env_port_pending(void) { (void)0; }

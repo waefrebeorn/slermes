@@ -1,0 +1,9 @@
+/*
+ * browser_vault_context.c — C home for upstream Hermes tools/browser_vault_context.py.
+ * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
+ *          not verified parity. It is deliberately not linked into the build.
+ * PoP: tools_browser_vault_context_pending @ tools/browser_vault_context.py:<module>
+ */
+#include <stddef.h>
+
+void tools_browser_vault_context_port_pending(void) { (void)0; }
