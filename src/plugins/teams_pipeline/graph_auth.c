@@ -9,6 +9,6 @@
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const plugins_teams_pipeline_graph_auth_CONST_DEFAULT_GRAPH_SCOPE = "https://graph.microsoft.com/.default";
 static const char *const plugins_teams_pipeline_graph_auth_CONST_DEFAULT_GRAPH_AUTHORITY_URL = "https://login.microsoftonline.com";
-static const char *const plugins_teams_pipeline_graph_auth_CONST_DEFAULT_TOKEN_SKEW_SECONDS = 120;
+static long long plugins_teams_pipeline_graph_auth_CONST_DEFAULT_TOKEN_SKEW_SECONDS = 120;
 
 void plugins_teams_pipeline_graph_auth_port_pending(void) { (void)0; }

@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_session_prompt_pin_CONST_PROMPT_PIN_VERSION = 1;
+static long long gateway_session_prompt_pin_CONST_PROMPT_PIN_VERSION = 1;
 
 void gateway_session_prompt_pin_port_pending(void) { (void)0; }

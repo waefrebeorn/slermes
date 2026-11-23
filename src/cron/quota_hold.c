@@ -9,6 +9,6 @@
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const cron_quota_hold_CONST_STATE_KEY = "quota_hold_until";
 static const char *const cron_quota_hold_CONST_SCHEDULE_EXPR_KEY = "quota_hold_cron_expr";
-static const char *const cron_quota_hold_CONST_HOLD_SLACK_SECONDS = 60;
+static long long cron_quota_hold_CONST_HOLD_SLACK_SECONDS = 60;
 
 void cron_quota_hold_port_pending(void) { (void)0; }

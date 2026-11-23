@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const session_rules_onboarding_flow_CONST_CARD_TIMEOUT_S = 300;
-static const char *const session_rules_onboarding_flow_CONST_MAX_PLUGINS = 5;
+static long long session_rules_onboarding_flow_CONST_CARD_TIMEOUT_S = 300;
+static long long session_rules_onboarding_flow_CONST_MAX_PLUGINS = 5;
 
 void session_rules_onboarding_flow_port_pending(void) { (void)0; }

@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_prompt_cache_lifecycle_economics_CONST_MIN_CACHEABLE_PREFIX_TOKENS = 1024;
+static long long agent_prompt_cache_lifecycle_economics_CONST_MIN_CACHEABLE_PREFIX_TOKENS = 1024;
 
 void agent_prompt_cache_lifecycle_economics_port_pending(void) { (void)0; }

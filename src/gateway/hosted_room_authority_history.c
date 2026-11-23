@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_hosted_room_authority_history_CONST_MAX_AUTHORITY_SPANS = 1024;
+static long long gateway_hosted_room_authority_history_CONST_MAX_AUTHORITY_SPANS = 1024;
 
 void gateway_hosted_room_authority_history_port_pending(void) { (void)0; }

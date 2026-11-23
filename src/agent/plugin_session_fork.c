@@ -8,7 +8,7 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const agent_plugin_session_fork_CONST_PLUGIN_FORK_TASK = "plugin_fork";
-static const char *const agent_plugin_session_fork_CONST_DEFAULT_MAX_ITERATIONS = 8;
-static const char *const agent_plugin_session_fork_CONST_MAX_PROMPT_CHARS = 8192;
+static long long agent_plugin_session_fork_CONST_DEFAULT_MAX_ITERATIONS = 8;
+static long long agent_plugin_session_fork_CONST_MAX_PROMPT_CHARS = 8192;
 
 void agent_plugin_session_fork_port_pending(void) { (void)0; }

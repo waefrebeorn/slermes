@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_web_tools_truncate_CONST_DEFAULT_EXTRACT_CHAR_LIMIT = 15000;
+static long long tools_web_tools_truncate_CONST_DEFAULT_EXTRACT_CHAR_LIMIT = 15000;
 
 void tools_web_tools_truncate_port_pending(void) { (void)0; }

@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_platforms_api_server_response_store_CONST_MAX_STORED_RESPONSES = 100;
-static const char *const gateway_platforms_api_server_response_store_CONST_IDENTITY_RETENTION_FACTOR = 10;
+static long long gateway_platforms_api_server_response_store_CONST_MAX_STORED_RESPONSES = 100;
+static long long gateway_platforms_api_server_response_store_CONST_IDENTITY_RETENTION_FACTOR = 10;
 
 void gateway_platforms_api_server_response_store_port_pending(void) { (void)0; }

@@ -71,11 +71,11 @@ static const char *const hermes_cli_observability_shared_metrics_contract_CONST_
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_ENGAGEMENT_SURFACE_METRIC = "hermes.engagement.surface_day.count";
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_MODEL_SWITCH_AFTER_MARK = "hermes.model_switch_after";
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_MODEL_SWITCH_AFTER_METRIC = "hermes.model_switch_after.count";
-static const char *const hermes_cli_observability_shared_metrics_contract_CONST_MODEL_IDENTIFIER_MAX_LENGTH = 256;
-static const char *const hermes_cli_observability_shared_metrics_contract_CONST_PROVIDER_IDENTIFIER_MAX_LENGTH = 64;
+static long long hermes_cli_observability_shared_metrics_contract_CONST_MODEL_IDENTIFIER_MAX_LENGTH = 256;
+static long long hermes_cli_observability_shared_metrics_contract_CONST_PROVIDER_IDENTIFIER_MAX_LENGTH = 64;
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_FEATURE_ADOPTION_METRIC = "hermes.feature_adoption.count";
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_FEATURE_USED_MARK = "hermes.feature.used";
-static const char *const hermes_cli_observability_shared_metrics_contract_CONST_FEATURE_DISABLED_NAME_MAX_LENGTH = 64;
+static long long hermes_cli_observability_shared_metrics_contract_CONST_FEATURE_DISABLED_NAME_MAX_LENGTH = 64;
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_FILE_EDIT_MARK = "hermes.file_edit";
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_LOOP_GUARD_MARK = "hermes.loop_guard";
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_TOOL_RECOVERY_MARK = "hermes.tool_recovery";
@@ -86,6 +86,6 @@ static const char *const hermes_cli_observability_shared_metrics_contract_CONST_
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_TOOL_RECOVERY_METRIC = "hermes.tool_recovery.count";
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_TERMINAL_OUTCOME_METRIC = "hermes.terminal.outcome.count";
 static const char *const hermes_cli_observability_shared_metrics_contract_CONST_MODEL_REPLY_ISSUE_METRIC = "hermes.model_reply_issue.count";
-static const char *const hermes_cli_observability_shared_metrics_contract_CONST_DESKTOP_SETTING_KEY_MAX_LENGTH = 96;
+static long long hermes_cli_observability_shared_metrics_contract_CONST_DESKTOP_SETTING_KEY_MAX_LENGTH = 96;
 
 void hermes_cli_observability_shared_metrics_contract_port_pending(void) { (void)0; }

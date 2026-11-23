@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_model_metadata_memo_bounds_CONST_CODEX_CACHE_MAX = 128;
+static long long agent_model_metadata_memo_bounds_CONST_CODEX_CACHE_MAX = 128;
 
 void agent_model_metadata_memo_bounds_port_pending(void) { (void)0; }

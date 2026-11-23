@@ -10,7 +10,7 @@
 static const char *const tools_tool_search_catalog_CONST_TOOL_SEARCH_NAME = "tool_search";
 static const char *const tools_tool_search_catalog_CONST_TOOL_DESCRIBE_NAME = "tool_describe";
 static const char *const tools_tool_search_catalog_CONST_TOOL_CALL_NAME = "tool_call";
-static const char *const tools_tool_search_catalog_CONST_MIN_ANSWERABLE_TERMS_FOR_COVERAGE = 4;
-static const char *const tools_tool_search_catalog_CONST_CATALOG_SUMMARY_MAX_CHARS = 80;
+static long long tools_tool_search_catalog_CONST_MIN_ANSWERABLE_TERMS_FOR_COVERAGE = 4;
+static long long tools_tool_search_catalog_CONST_CATALOG_SUMMARY_MAX_CHARS = 80;
 
 void tools_tool_search_catalog_port_pending(void) { (void)0; }

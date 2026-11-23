@@ -7,9 +7,9 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_wecom_callback_adapter_CONST_DEFAULT_PORT = 8645;
+static long long plugins_platforms_wecom_callback_adapter_CONST_DEFAULT_PORT = 8645;
 static const char *const plugins_platforms_wecom_callback_adapter_CONST_DEFAULT_PATH = "/wecom/callback";
-static const char *const plugins_platforms_wecom_callback_adapter_CONST_ACCESS_TOKEN_TTL_SECONDS = 7200;
-static const char *const plugins_platforms_wecom_callback_adapter_CONST_MESSAGE_DEDUP_TTL_SECONDS = 300;
+static long long plugins_platforms_wecom_callback_adapter_CONST_ACCESS_TOKEN_TTL_SECONDS = 7200;
+static long long plugins_platforms_wecom_callback_adapter_CONST_MESSAGE_DEDUP_TTL_SECONDS = 300;
 
 void plugins_platforms_wecom_callback_adapter_port_pending(void) { (void)0; }

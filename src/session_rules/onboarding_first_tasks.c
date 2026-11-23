@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const session_rules_onboarding_first_tasks_CONST_MAX_PICKS = 4;
-static const char *const session_rules_onboarding_first_tasks_CONST_MAX_LABEL = 32;
+static long long session_rules_onboarding_first_tasks_CONST_MAX_PICKS = 4;
+static long long session_rules_onboarding_first_tasks_CONST_MAX_LABEL = 32;
 static const char *const session_rules_onboarding_first_tasks_CONST_FIXED_ID = "hermes";
 static const char *const session_rules_onboarding_first_tasks_CONST_OWN_ID = "own";
 static const char *const session_rules_onboarding_first_tasks_CONST_EVERY_TASK_SKILL = "humanizer";

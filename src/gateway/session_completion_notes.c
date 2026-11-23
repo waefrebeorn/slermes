@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_session_completion_notes_CONST_UNATTENDED_WAKE_LIMIT = 3;
+static long long gateway_session_completion_notes_CONST_UNATTENDED_WAKE_LIMIT = 3;
 
 void gateway_session_completion_notes_port_pending(void) { (void)0; }

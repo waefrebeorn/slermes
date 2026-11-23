@@ -7,10 +7,10 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_slack_block_kit_CONST_MAX_BLOCKS = 50;
-static const char *const plugins_platforms_slack_block_kit_CONST_MAX_SECTION_TEXT = 3000;
-static const char *const plugins_platforms_slack_block_kit_CONST_MAX_HEADER_TEXT = 150;
-static const char *const plugins_platforms_slack_block_kit_CONST_MAX_TABLE_ROWS = 100;
-static const char *const plugins_platforms_slack_block_kit_CONST_MAX_TABLE_COLS = 20;
+static long long plugins_platforms_slack_block_kit_CONST_MAX_BLOCKS = 50;
+static long long plugins_platforms_slack_block_kit_CONST_MAX_SECTION_TEXT = 3000;
+static long long plugins_platforms_slack_block_kit_CONST_MAX_HEADER_TEXT = 150;
+static long long plugins_platforms_slack_block_kit_CONST_MAX_TABLE_ROWS = 100;
+static long long plugins_platforms_slack_block_kit_CONST_MAX_TABLE_COLS = 20;
 
 void plugins_platforms_slack_block_kit_port_pending(void) { (void)0; }

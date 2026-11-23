@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_observability_shared_metrics_fields_CONST_LONG_SESSION_TURNS = 6;
+static long long hermes_cli_observability_shared_metrics_fields_CONST_LONG_SESSION_TURNS = 6;
 
 void hermes_cli_observability_shared_metrics_fields_port_pending(void) { (void)0; }

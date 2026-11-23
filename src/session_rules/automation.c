@@ -7,10 +7,10 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const session_rules_automation_CONST_DEFAULT_MAX_TURNS = 20;
-static const char *const session_rules_automation_CONST_DEFAULT_GATE_TIMEOUT_SECONDS = 300;
-static const char *const session_rules_automation_CONST_DEFAULT_GATE_MAX_RETRIES = 3;
-static const char *const session_rules_automation_CONST_DEFAULT_MAX_TICKS = 100;
+static long long session_rules_automation_CONST_DEFAULT_MAX_TURNS = 20;
+static long long session_rules_automation_CONST_DEFAULT_GATE_TIMEOUT_SECONDS = 300;
+static long long session_rules_automation_CONST_DEFAULT_GATE_MAX_RETRIES = 3;
+static long long session_rules_automation_CONST_DEFAULT_MAX_TICKS = 100;
 static const char *const session_rules_automation_CONST_FOLDED_COMPLETION_TEXT = "[folded into a later completion batch]";
 
 void session_rules_automation_port_pending(void) { (void)0; }

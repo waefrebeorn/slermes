@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_telegram_telegram_chunking_CONST_ENTITY_CARRY_RESERVE = 20;
+static long long plugins_platforms_telegram_telegram_chunking_CONST_ENTITY_CARRY_RESERVE = 20;
 
 void plugins_platforms_telegram_telegram_chunking_port_pending(void) { (void)0; }

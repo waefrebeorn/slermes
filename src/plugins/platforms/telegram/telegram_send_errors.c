@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_telegram_telegram_send_errors_CONST_SAME_REQUEST_ATTEMPTS = 3;
+static long long plugins_platforms_telegram_telegram_send_errors_CONST_SAME_REQUEST_ATTEMPTS = 3;
 
 void plugins_platforms_telegram_telegram_send_errors_port_pending(void) { (void)0; }

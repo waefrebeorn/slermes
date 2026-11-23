@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_web_routers_webapp_CONST_WINDOW_TICKET_TTL_SECONDS = 30;
-static const char *const hermes_cli_web_routers_webapp_CONST_LAUNCH_TICKET_TTL_SECONDS = 60;
+static long long hermes_cli_web_routers_webapp_CONST_WINDOW_TICKET_TTL_SECONDS = 30;
+static long long hermes_cli_web_routers_webapp_CONST_LAUNCH_TICKET_TTL_SECONDS = 60;
 
 void hermes_cli_web_routers_webapp_port_pending(void) { (void)0; }

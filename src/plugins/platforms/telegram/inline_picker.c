@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_telegram_inline_picker_CONST_PAGE_SIZE = 50;
-static const char *const plugins_platforms_telegram_inline_picker_CONST_CACHE_TIME_SECONDS = 10;
+static long long plugins_platforms_telegram_inline_picker_CONST_PAGE_SIZE = 50;
+static long long plugins_platforms_telegram_inline_picker_CONST_CACHE_TIME_SECONDS = 10;
 
 void plugins_platforms_telegram_inline_picker_port_pending(void) { (void)0; }

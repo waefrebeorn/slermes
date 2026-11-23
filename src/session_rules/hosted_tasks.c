@@ -7,9 +7,9 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const session_rules_hosted_tasks_CONST_MAX_IDENTIFIER_CHARS = 128;
-static const char *const session_rules_hosted_tasks_CONST_MAX_RETAINED_TERMINAL_TASKS = 2048;
-static const char *const session_rules_hosted_tasks_CONST_MAX_TASK_PRUNE_BATCH = 1000;
-static const char *const session_rules_hosted_tasks_CONST_MAX_TASK_INPUT_EVENTS = 128;
+static long long session_rules_hosted_tasks_CONST_MAX_IDENTIFIER_CHARS = 128;
+static long long session_rules_hosted_tasks_CONST_MAX_RETAINED_TERMINAL_TASKS = 2048;
+static long long session_rules_hosted_tasks_CONST_MAX_TASK_PRUNE_BATCH = 1000;
+static long long session_rules_hosted_tasks_CONST_MAX_TASK_INPUT_EVENTS = 128;
 
 void session_rules_hosted_tasks_port_pending(void) { (void)0; }

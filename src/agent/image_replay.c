@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_image_replay_CONST_DEFAULT_REPLAY_RECENT_IMAGES = 3;
+static long long agent_image_replay_CONST_DEFAULT_REPLAY_RECENT_IMAGES = 3;
 
 void agent_image_replay_port_pending(void) { (void)0; }

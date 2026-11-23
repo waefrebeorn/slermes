@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_relay_descriptor_CONST_CONTRACT_VERSION = 1;
+static long long gateway_relay_descriptor_CONST_CONTRACT_VERSION = 1;
 
 void gateway_relay_descriptor_port_pending(void) { (void)0; }

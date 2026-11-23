@@ -8,7 +8,7 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const plugins_platforms_sms_adapter_CONST_TWILIO_API_BASE = "https://api.twilio.com/2010-04-01/Accounts";
-static const char *const plugins_platforms_sms_adapter_CONST_DEFAULT_WEBHOOK_PORT = 8080;
+static long long plugins_platforms_sms_adapter_CONST_DEFAULT_WEBHOOK_PORT = 8080;
 static const char *const plugins_platforms_sms_adapter_CONST_DEFAULT_WEBHOOK_HOST = "127.0.0.1";
 
 void plugins_platforms_sms_adapter_port_pending(void) { (void)0; }

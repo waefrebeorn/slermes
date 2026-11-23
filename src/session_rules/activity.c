@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const session_rules_activity_CONST_ACTIVITY_DESCRIPTION_MAX = 120;
+static long long session_rules_activity_CONST_ACTIVITY_DESCRIPTION_MAX = 120;
 
 void session_rules_activity_port_pending(void) { (void)0; }

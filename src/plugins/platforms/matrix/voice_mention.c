@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_matrix_voice_mention_CONST_MAX_PARKED_PER_SENDER = 4;
+static long long plugins_platforms_matrix_voice_mention_CONST_MAX_PARKED_PER_SENDER = 4;
 
 void plugins_platforms_matrix_voice_mention_port_pending(void) { (void)0; }

@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const persistence_authority_vocabulary_CONST_ADMISSION_QUEUE_MAX = 32;
+static long long persistence_authority_vocabulary_CONST_ADMISSION_QUEUE_MAX = 32;
 static const char *const persistence_authority_vocabulary_CONST_STEERING = "steering";
 static const char *const persistence_authority_vocabulary_CONST_CRON_PRINCIPAL_ID = "cron-owner";
 static const char *const persistence_authority_vocabulary_CONST_CRON_REQUEST_PREFIX = "cron:";

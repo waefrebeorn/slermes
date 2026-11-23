@@ -7,31 +7,31 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const session_rules_hosted_rooms_CONST_PROTOCOL_VERSION = 2;
-static const char *const session_rules_hosted_rooms_CONST_MAX_ROOM_ID_CHARS = 128;
-static const char *const session_rules_hosted_rooms_CONST_MAX_EVENT_ID_CHARS = 128;
-static const char *const session_rules_hosted_rooms_CONST_MAX_ROOM_NAME_CHARS = 200;
-static const char *const session_rules_hosted_rooms_CONST_MAX_EVENT_KIND_CHARS = 64;
-static const char *const session_rules_hosted_rooms_CONST_MAX_ACTOR_ID_CHARS = 128;
-static const char *const session_rules_hosted_rooms_CONST_MAX_ACTOR_LABEL_CHARS = 200;
-static const char *const session_rules_hosted_rooms_CONST_MAX_MEMBERS = 128;
-static const char *const session_rules_hosted_rooms_CONST_MAX_LOG_LIMIT = 500;
-static const char *const session_rules_hosted_rooms_CONST_MAX_ROOM_LIST_LIMIT = 500;
-static const char *const session_rules_hosted_rooms_CONST_MAX_ACTIVE_ROOMS = 256;
-static const char *const session_rules_hosted_rooms_CONST_MAX_DISBANDED_ROOM_TOMBSTONES = 512;
-static const char *const session_rules_hosted_rooms_CONST_CONTROL_EVENT_COUNT_RESERVE = 64;
+static long long session_rules_hosted_rooms_CONST_PROTOCOL_VERSION = 2;
+static long long session_rules_hosted_rooms_CONST_MAX_ROOM_ID_CHARS = 128;
+static long long session_rules_hosted_rooms_CONST_MAX_EVENT_ID_CHARS = 128;
+static long long session_rules_hosted_rooms_CONST_MAX_ROOM_NAME_CHARS = 200;
+static long long session_rules_hosted_rooms_CONST_MAX_EVENT_KIND_CHARS = 64;
+static long long session_rules_hosted_rooms_CONST_MAX_ACTOR_ID_CHARS = 128;
+static long long session_rules_hosted_rooms_CONST_MAX_ACTOR_LABEL_CHARS = 200;
+static long long session_rules_hosted_rooms_CONST_MAX_MEMBERS = 128;
+static long long session_rules_hosted_rooms_CONST_MAX_LOG_LIMIT = 500;
+static long long session_rules_hosted_rooms_CONST_MAX_ROOM_LIST_LIMIT = 500;
+static long long session_rules_hosted_rooms_CONST_MAX_ACTIVE_ROOMS = 256;
+static long long session_rules_hosted_rooms_CONST_MAX_DISBANDED_ROOM_TOMBSTONES = 512;
+static long long session_rules_hosted_rooms_CONST_CONTROL_EVENT_COUNT_RESERVE = 64;
 static const char *const session_rules_hosted_rooms_CONST_CONTEXT_EVENT_KIND = "room.context_set";
-static const char *const session_rules_hosted_rooms_CONST_MAX_PURPOSE_CHARS = 500;
-static const char *const session_rules_hosted_rooms_CONST_MAX_REPLICA_ROOMS = 256;
-static const char *const session_rules_hosted_rooms_CONST_VERSION = 1;
+static long long session_rules_hosted_rooms_CONST_MAX_PURPOSE_CHARS = 500;
+static long long session_rules_hosted_rooms_CONST_MAX_REPLICA_ROOMS = 256;
+static long long session_rules_hosted_rooms_CONST_VERSION = 1;
 static const char *const session_rules_hosted_rooms_CONST_PERMISSION = "work_records";
-static const char *const session_rules_hosted_rooms_CONST_MAX_TASKS = 128;
-static const char *const session_rules_hosted_rooms_CONST_MAX_RECEIPTS = 256;
-static const char *const session_rules_hosted_rooms_CONST_MAX_STORE_ROWS = 512;
+static long long session_rules_hosted_rooms_CONST_MAX_TASKS = 128;
+static long long session_rules_hosted_rooms_CONST_MAX_RECEIPTS = 256;
+static long long session_rules_hosted_rooms_CONST_MAX_STORE_ROWS = 512;
 static const char *const session_rules_hosted_rooms_CONST_SOURCE_TABLE = "hosted_room_work_records_source";
 static const char *const session_rules_hosted_rooms_CONST_TARGET_TABLE = "hosted_room_work_records_target";
 static const char *const session_rules_hosted_rooms_CONST_PENDING_TABLE = "hosted_room_work_records_pending";
 static const char *const session_rules_hosted_rooms_CONST_INVALID_TABLE = "hosted_room_work_records_invalid";
-static const char *const session_rules_hosted_rooms_CONST_MAX_AUTHORITY_SPANS = 1024;
+static long long session_rules_hosted_rooms_CONST_MAX_AUTHORITY_SPANS = 1024;
 
 void session_rules_hosted_rooms_port_pending(void) { (void)0; }

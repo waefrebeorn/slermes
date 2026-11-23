@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_session_vault_prompt_CONST_UNLOCK_TIMEOUT_S = 120;
-static const char *const gateway_session_vault_prompt_CONST_SAVE_LOGIN_TIMEOUT_S = 180;
-static const char *const gateway_session_vault_prompt_CONST_CODE_TIMEOUT_S = 180;
+static long long gateway_session_vault_prompt_CONST_UNLOCK_TIMEOUT_S = 120;
+static long long gateway_session_vault_prompt_CONST_SAVE_LOGIN_TIMEOUT_S = 180;
+static long long gateway_session_vault_prompt_CONST_CODE_TIMEOUT_S = 180;
 
 void gateway_session_vault_prompt_port_pending(void) { (void)0; }

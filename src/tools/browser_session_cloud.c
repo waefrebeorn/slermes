@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_browser_session_cloud_CONST_DEFAULT_COMMAND_TIMEOUT = 30;
+static long long tools_browser_session_cloud_CONST_DEFAULT_COMMAND_TIMEOUT = 30;
 
 void tools_browser_session_cloud_port_pending(void) { (void)0; }

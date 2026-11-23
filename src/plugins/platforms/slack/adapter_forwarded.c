@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_slack_adapter_forwarded_CONST_SLACK_FORWARDS_MAX_CHARS = 8000;
+static long long plugins_platforms_slack_adapter_forwarded_CONST_SLACK_FORWARDS_MAX_CHARS = 8000;
 
 void plugins_platforms_slack_adapter_forwarded_port_pending(void) { (void)0; }

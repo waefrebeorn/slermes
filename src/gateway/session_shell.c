@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_session_shell_CONST_TIMEOUT_SECONDS = 30;
+static long long gateway_session_shell_CONST_TIMEOUT_SECONDS = 30;
 
 void gateway_session_shell_port_pending(void) { (void)0; }

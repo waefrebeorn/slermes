@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const persistence_sqlite_admin__lost_and_found_CONST_SESSIONS_LEGACY_MINIMAL_NFIELD = 14;
-static const char *const persistence_sqlite_admin__lost_and_found_CONST_SESSION_MODEL_USAGE_NFIELD = 18;
-static const char *const persistence_sqlite_admin__lost_and_found_CONST_SQLITE_HEADER_LENGTH = 100;
+static long long persistence_sqlite_admin__lost_and_found_CONST_SESSIONS_LEGACY_MINIMAL_NFIELD = 14;
+static long long persistence_sqlite_admin__lost_and_found_CONST_SESSION_MODEL_USAGE_NFIELD = 18;
+static long long persistence_sqlite_admin__lost_and_found_CONST_SQLITE_HEADER_LENGTH = 100;
 
 void persistence_sqlite_admin__lost_and_found_port_pending(void) { (void)0; }

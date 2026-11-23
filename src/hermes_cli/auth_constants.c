@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_auth_constants_CONST_AUTH_STORE_VERSION = 1;
+static long long hermes_cli_auth_constants_CONST_AUTH_STORE_VERSION = 1;
 static const char *const hermes_cli_auth_constants_CONST_DEFAULT_NOUS_PORTAL_URL = "https://portal.nousresearch.com";
 static const char *const hermes_cli_auth_constants_CONST_DEFAULT_NOUS_INFERENCE_URL = "https://inference-api.nousresearch.com/v1";
 static const char *const hermes_cli_auth_constants_CONST_DEFAULT_NOUS_WELCOME_URL = "https://welcome-api.nousresearch.com/v1";
@@ -27,7 +27,7 @@ static const char *const hermes_cli_auth_constants_CONST_MINIMAX_OAUTH_GLOBAL_BA
 static const char *const hermes_cli_auth_constants_CONST_MINIMAX_OAUTH_CN_BASE = "https://api.minimaxi.com";
 static const char *const hermes_cli_auth_constants_CONST_MINIMAX_OAUTH_GLOBAL_INFERENCE = "https://api.minimax.io/anthropic";
 static const char *const hermes_cli_auth_constants_CONST_MINIMAX_OAUTH_CN_INFERENCE = "https://api.minimaxi.com/anthropic";
-static const char *const hermes_cli_auth_constants_CONST_MINIMAX_OAUTH_REFRESH_SKEW_SECONDS = 60;
+static long long hermes_cli_auth_constants_CONST_MINIMAX_OAUTH_REFRESH_SKEW_SECONDS = 60;
 static const char *const hermes_cli_auth_constants_CONST_DEFAULT_QWEN_BASE_URL = "https://portal.qwen.ai/v1";
 static const char *const hermes_cli_auth_constants_CONST_DEFAULT_OLLAMA_CLOUD_BASE_URL = "https://ollama.com/v1";
 static const char *const hermes_cli_auth_constants_CONST_DEFAULT_ACTUAL_BASE_URL = "https://api.actual.inc/v1";
@@ -36,14 +36,14 @@ static const char *const hermes_cli_auth_constants_CONST_STEPFUN_STEP_PLAN_INTL_
 static const char *const hermes_cli_auth_constants_CONST_STEPFUN_STEP_PLAN_CN_BASE_URL = "https://api.stepfun.com/step_plan/v1";
 static const char *const hermes_cli_auth_constants_CONST_CODEX_OAUTH_CLIENT_ID = "app_EMoamEEZ73f0CkXaXp7hrann";
 static const char *const hermes_cli_auth_constants_CONST_CODEX_OAUTH_TOKEN_URL = "https://auth.openai.com/oauth/token";
-static const char *const hermes_cli_auth_constants_CONST_CODEX_ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 120;
+static long long hermes_cli_auth_constants_CONST_CODEX_ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 120;
 static const char *const hermes_cli_auth_constants_CONST_XAI_OAUTH_ISSUER = "https://auth.x.ai";
 static const char *const hermes_cli_auth_constants_CONST_XAI_OAUTH_CLIENT_ID = "b1a00492-073a-47ea-816f-4c329264a828";
 static const char *const hermes_cli_auth_constants_CONST_XAI_OAUTH_SCOPE = "openid profile email offline_access grok-cli:access api:access";
-static const char *const hermes_cli_auth_constants_CONST_XAI_ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 3600;
+static long long hermes_cli_auth_constants_CONST_XAI_ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 3600;
 static const char *const hermes_cli_auth_constants_CONST_QWEN_OAUTH_CLIENT_ID = "f0304373b74a44d2b584a3fb70ca9e56";
 static const char *const hermes_cli_auth_constants_CONST_QWEN_OAUTH_TOKEN_URL = "https://chat.qwen.ai/api/v1/oauth2/token";
-static const char *const hermes_cli_auth_constants_CONST_QWEN_ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 120;
+static long long hermes_cli_auth_constants_CONST_QWEN_ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 120;
 static const char *const hermes_cli_auth_constants_CONST_OPENROUTER_AUTH_URL = "https://openrouter.ai/auth";
 static const char *const hermes_cli_auth_constants_CONST_OPENROUTER_AUTH_KEYS_URL = "https://openrouter.ai/api/v1/auth/keys";
 static const char *const hermes_cli_auth_constants_CONST_OPENROUTER_OAUTH_DOCS_URL = "https://openrouter.ai/docs/guides/overview/auth/oauth";

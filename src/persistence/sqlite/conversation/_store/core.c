@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const persistence_sqlite_conversation__store_core_CONST_MAX_TITLE_LENGTH = 100;
+static long long persistence_sqlite_conversation__store_core_CONST_MAX_TITLE_LENGTH = 100;
 static const char *const persistence_sqlite_conversation__store_core_CONST_CANONICAL_BOT_CHAT_TITLE = "Bot Chat";
 static const char *const persistence_sqlite_conversation__store_core_CONST_REACTIONS_METADATA_KEY = "reactions";
 

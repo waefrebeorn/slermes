@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_lsp_protocol_CONST_ERROR_CONTENT_MODIFIED = -32801;
-static const char *const agent_lsp_protocol_CONST_ERROR_METHOD_NOT_FOUND = -32601;
+static long long agent_lsp_protocol_CONST_ERROR_CONTENT_MODIFIED = -32801;
+static long long agent_lsp_protocol_CONST_ERROR_METHOD_NOT_FOUND = -32601;
 
 void agent_lsp_protocol_port_pending(void) { (void)0; }

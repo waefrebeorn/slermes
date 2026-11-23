@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const session_rules_route_entries_CONST_PROMPT_PIN_VERSION = 1;
+static long long session_rules_route_entries_CONST_PROMPT_PIN_VERSION = 1;
 
 void session_rules_route_entries_port_pending(void) { (void)0; }

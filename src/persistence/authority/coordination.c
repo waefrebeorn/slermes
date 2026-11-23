@@ -7,10 +7,10 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const persistence_authority_coordination_CONST_DELEGATION_MAX_DELIVERY_ATTEMPTS = 8;
-static const char *const persistence_authority_coordination_CONST_DELEGATION_MAX_RETAINED_TERMINAL = 50;
-static const char *const persistence_authority_coordination_CONST_DELEGATION_MAX_DURABLE_PENDING = 1000;
-static const char *const persistence_authority_coordination_CONST_OBLIGATION_MAX_ATTEMPTS = 3;
-static const char *const persistence_authority_coordination_CONST_OBLIGATION_MAX_ROWS = 500;
+static long long persistence_authority_coordination_CONST_DELEGATION_MAX_DELIVERY_ATTEMPTS = 8;
+static long long persistence_authority_coordination_CONST_DELEGATION_MAX_RETAINED_TERMINAL = 50;
+static long long persistence_authority_coordination_CONST_DELEGATION_MAX_DURABLE_PENDING = 1000;
+static long long persistence_authority_coordination_CONST_OBLIGATION_MAX_ATTEMPTS = 3;
+static long long persistence_authority_coordination_CONST_OBLIGATION_MAX_ROWS = 500;
 
 void persistence_authority_coordination_port_pending(void) { (void)0; }

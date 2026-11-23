@@ -9,6 +9,6 @@
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const plugins_video_gen_xai___init___CONST_DEFAULT_XAI_BASE_URL = "https://api.x.ai/v1";
 static const char *const plugins_video_gen_xai___init___CONST_DEFAULT_IMAGE_TO_VIDEO_MODEL = "grok-imagine-video-1.5";
-static const char *const plugins_video_gen_xai___init___CONST_MAX_REFERENCE_IMAGES = 7;
+static long long plugins_video_gen_xai___init___CONST_MAX_REFERENCE_IMAGES = 7;
 
 void plugins_video_gen_xai___init___port_pending(void) { (void)0; }

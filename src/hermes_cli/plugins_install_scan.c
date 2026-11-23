@@ -8,6 +8,6 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const hermes_cli_plugins_install_scan_CONST_PLUGIN_SCANNER_VERSION = "plugin-guard-v15";
-static const char *const hermes_cli_plugins_install_scan_CONST_MAX_PLUGIN_FILE_COUNT = 400;
+static long long hermes_cli_plugins_install_scan_CONST_MAX_PLUGIN_FILE_COUNT = 400;
 
 void hermes_cli_plugins_install_scan_port_pending(void) { (void)0; }

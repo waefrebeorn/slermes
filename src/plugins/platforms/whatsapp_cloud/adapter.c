@@ -8,9 +8,9 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const plugins_platforms_whatsapp_cloud_adapter_CONST_DEFAULT_API_VERSION = "v20.0";
-static const char *const plugins_platforms_whatsapp_cloud_adapter_CONST_DEFAULT_WEBHOOK_PORT = 8090;
+static long long plugins_platforms_whatsapp_cloud_adapter_CONST_DEFAULT_WEBHOOK_PORT = 8090;
 static const char *const plugins_platforms_whatsapp_cloud_adapter_CONST_DEFAULT_WEBHOOK_PATH = "/whatsapp/webhook";
 static const char *const plugins_platforms_whatsapp_cloud_adapter_CONST_GRAPH_API_BASE = "https://graph.facebook.com";
-static const char *const plugins_platforms_whatsapp_cloud_adapter_CONST_WAMID_DEDUP_CACHE_SIZE = 5000;
+static long long plugins_platforms_whatsapp_cloud_adapter_CONST_WAMID_DEDUP_CACHE_SIZE = 5000;
 
 void plugins_platforms_whatsapp_cloud_adapter_port_pending(void) { (void)0; }

@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_config_backends_remote_paths_CONST_MAX_SEGMENTS = 32;
-static const char *const plugins_config_backends_remote_paths_CONST_MAX_SEGMENT_BYTES = 256;
-static const char *const plugins_config_backends_remote_paths_CONST_MAX_ENCODED_BYTES = 2048;
+static long long plugins_config_backends_remote_paths_CONST_MAX_SEGMENTS = 32;
+static long long plugins_config_backends_remote_paths_CONST_MAX_SEGMENT_BYTES = 256;
+static long long plugins_config_backends_remote_paths_CONST_MAX_ENCODED_BYTES = 2048;
 
 void plugins_config_backends_remote_paths_port_pending(void) { (void)0; }

@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_cli_process_dock_CONST_RETAIN_SECONDS = 60;
+static long long hermes_cli_cli_process_dock_CONST_RETAIN_SECONDS = 60;
 
 void hermes_cli_cli_process_dock_port_pending(void) { (void)0; }

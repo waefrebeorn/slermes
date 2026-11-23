@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_plugin_host_wire_CONST_PROTOCOL_VERSION = 1;
+static long long hermes_cli_plugin_host_wire_CONST_PROTOCOL_VERSION = 1;
 
 void hermes_cli_plugin_host_wire_port_pending(void) { (void)0; }

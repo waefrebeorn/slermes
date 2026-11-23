@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const pm_lock_CONST_SCHEMA = 1;
+static long long pm_lock_CONST_SCHEMA = 1;
 static const char *const pm_lock_CONST_STORE_TOKEN = "{{store}}";
 
 void pm_lock_port_pending(void) { (void)0; }

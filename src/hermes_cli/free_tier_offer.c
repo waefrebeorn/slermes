@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_free_tier_offer_CONST_OFFER_DELAY_S = 180;
+static long long hermes_cli_free_tier_offer_CONST_OFFER_DELAY_S = 180;
 static const char *const hermes_cli_free_tier_offer_CONST_TRIAL = "trial";
 static const char *const hermes_cli_free_tier_offer_CONST_CONNECTOR = "connector";
 static const char *const hermes_cli_free_tier_offer_CONST_CONNECTED_APP_FLAG = "has_connected_app";

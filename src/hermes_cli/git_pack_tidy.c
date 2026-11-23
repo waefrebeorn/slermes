@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_git_pack_tidy_CONST_TIDY_BUDGET_SECONDS = 60;
-static const char *const hermes_cli_git_pack_tidy_CONST_PACK_COUNT_TARGET = 50;
+static long long hermes_cli_git_pack_tidy_CONST_TIDY_BUDGET_SECONDS = 60;
+static long long hermes_cli_git_pack_tidy_CONST_PACK_COUNT_TARGET = 50;
 
 void hermes_cli_git_pack_tidy_port_pending(void) { (void)0; }

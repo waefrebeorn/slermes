@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_managed_worker_CONST_ACTIVITY_FRAME_SECONDS = 30;
-static const char *const agent_managed_worker_CONST_ORPHAN_GRACE_SECONDS = 10;
-static const char *const agent_managed_worker_CONST_DELEGATION_DRAIN_SECONDS = 30;
+static long long agent_managed_worker_CONST_ACTIVITY_FRAME_SECONDS = 30;
+static long long agent_managed_worker_CONST_ORPHAN_GRACE_SECONDS = 10;
+static long long agent_managed_worker_CONST_DELEGATION_DRAIN_SECONDS = 30;
 
 void agent_managed_worker_port_pending(void) { (void)0; }

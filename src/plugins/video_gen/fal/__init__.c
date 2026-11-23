@@ -8,6 +8,6 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const plugins_video_gen_fal___init___CONST_UPSCALER_ENDPOINT = "fal-ai/seedvr/upscale/video";
-static const char *const plugins_video_gen_fal___init___CONST_UPSCALER_FACTOR = 2;
+static long long plugins_video_gen_fal___init___CONST_UPSCALER_FACTOR = 2;
 
 void plugins_video_gen_fal___init___port_pending(void) { (void)0; }

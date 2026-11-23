@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_boot_bootstrap_CONST_RECORD_SCHEMA_VERSION = 1;
-static const char *const hermes_cli_boot_bootstrap_CONST_LOCK_STALE_SECONDS = 600;
+static long long hermes_cli_boot_bootstrap_CONST_RECORD_SCHEMA_VERSION = 1;
+static long long hermes_cli_boot_bootstrap_CONST_LOCK_STALE_SECONDS = 600;
 
 void hermes_cli_boot_bootstrap_port_pending(void) { (void)0; }

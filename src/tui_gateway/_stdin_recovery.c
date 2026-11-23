@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tui_gateway__stdin_recovery_CONST_MAX_RECOVERIES_PER_MINUTE = 10;
+static long long tui_gateway__stdin_recovery_CONST_MAX_RECOVERIES_PER_MINUTE = 10;
 
 void tui_gateway__stdin_recovery_port_pending(void) { (void)0; }

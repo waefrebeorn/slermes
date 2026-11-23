@@ -12,6 +12,6 @@ static const char *const plugins_platforms_photon_auth_CONST_DEFAULT_SCOPE = "op
 static const char *const plugins_platforms_photon_auth_CONST_DEFAULT_DASHBOARD_HOST = "https://app.photon.codes";
 static const char *const plugins_platforms_photon_auth_CONST_DEFAULT_SPECTRUM_HOST = "https://spectrum.photon.codes";
 static const char *const plugins_platforms_photon_auth_CONST_DEFAULT_PROJECT_NAME = "Hermes Agent";
-static const char *const plugins_platforms_photon_auth_CONST_DEFAULT_POLL_TIMEOUT = 1800;
+static long long plugins_platforms_photon_auth_CONST_DEFAULT_POLL_TIMEOUT = 1800;
 
 void plugins_platforms_photon_auth_port_pending(void) { (void)0; }

@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_source_check_CONST_UPDATE_AVAILABLE_NO_COUNT = -1;
+static long long hermes_cli_source_check_CONST_UPDATE_AVAILABLE_NO_COUNT = -1;
 
 void hermes_cli_source_check_port_pending(void) { (void)0; }

@@ -8,6 +8,6 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const hermes_cli_dashboard_auth_peer_pass_CONST_PEER_PREFIX = "/api/peer/";
-static const char *const hermes_cli_dashboard_auth_peer_pass_CONST_PEER_ACCESS_CONTRACT = 1;
+static long long hermes_cli_dashboard_auth_peer_pass_CONST_PEER_ACCESS_CONTRACT = 1;
 
 void hermes_cli_dashboard_auth_peer_pass_port_pending(void) { (void)0; }

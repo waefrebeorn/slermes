@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tui_gateway_server_requests_CONST_NOT_SHOWN_CODE = 4404;
+static long long tui_gateway_server_requests_CONST_NOT_SHOWN_CODE = 4404;
 
 void tui_gateway_server_requests_port_pending(void) { (void)0; }

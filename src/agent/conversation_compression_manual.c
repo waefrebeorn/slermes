@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_conversation_compression_manual_CONST_MIN_MESSAGES = 4;
+static long long agent_conversation_compression_manual_CONST_MIN_MESSAGES = 4;
 
 void agent_conversation_compression_manual_port_pending(void) { (void)0; }

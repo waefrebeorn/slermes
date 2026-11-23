@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_session_managed_worker_CONST_HELLO_SECONDS = 60;
-static const char *const gateway_session_managed_worker_CONST_STOP_ACK_SECONDS = 30;
-static const char *const gateway_session_managed_worker_CONST_LOSS_RECORD_WAIT_S = 10;
+static long long gateway_session_managed_worker_CONST_HELLO_SECONDS = 60;
+static long long gateway_session_managed_worker_CONST_STOP_ACK_SECONDS = 30;
+static long long gateway_session_managed_worker_CONST_LOSS_RECORD_WAIT_S = 10;
 
 void gateway_session_managed_worker_port_pending(void) { (void)0; }

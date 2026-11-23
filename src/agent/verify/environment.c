@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_verify_environment_CONST_MANIFEST_VERSION = 1;
+static long long agent_verify_environment_CONST_MANIFEST_VERSION = 1;
 
 void agent_verify_environment_port_pending(void) { (void)0; }

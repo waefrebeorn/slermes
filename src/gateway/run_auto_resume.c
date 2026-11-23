@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_run_auto_resume_CONST_TICK_SECONDS = 15;
+static long long gateway_run_auto_resume_CONST_TICK_SECONDS = 15;
 
 void gateway_run_auto_resume_port_pending(void) { (void)0; }

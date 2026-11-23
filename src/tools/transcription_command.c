@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_transcription_command_CONST_DEFAULT_COMMAND_STT_TIMEOUT_SECONDS = 300;
+static long long tools_transcription_command_CONST_DEFAULT_COMMAND_STT_TIMEOUT_SECONDS = 300;
 static const char *const tools_transcription_command_CONST_DEFAULT_COMMAND_STT_LANGUAGE = "en";
 static const char *const tools_transcription_command_CONST_DEFAULT_COMMAND_STT_OUTPUT_FORMAT = "txt";
 

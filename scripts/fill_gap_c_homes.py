@@ -68,17 +68,17 @@ def cident(s):
 
 
 def literal(value):
-    """Return a C literal for a simple Python literal, or None."""
+    """Return (C literal, C type) for a simple Python literal, or None."""
     v = value.strip()
     if v.startswith('#'):
         return None
     if re.fullmatch(r'-?\d+', v):
-        return v
+        return (v, 'long long')
     if re.fullmatch(r'(?i)true|false', v):
-        return '1' if v.lower() == 'true' else '0'
+        return ('1' if v.lower() == 'true' else '0', 'int')
     if len(v) >= 2 and v[0] == v[-1] and v[0] in ('"', "'"):
         inner = v[1:-1].replace('\\', '\\\\').replace('"', '\\"')
-        return '"' + inner + '"'
+        return ('"' + inner + '"', 'const char *const')
     return None
 
 
@@ -89,11 +89,12 @@ def make_home(mod, src_text):
         m = LIT.match(line)
         if not m:
             continue
-        lit = literal(m.group(2))
-        if lit is None:
+        lit_pair = literal(m.group(2))
+        if lit_pair is None:
             continue
-        consts.append('static const char *const %s_CONST_%s = %s;' %
-                      (ident, m.group(1), lit))
+        lit, ctype = lit_pair
+        consts.append('static %s %s_CONST_%s = %s;' %
+                      (ctype, ident, m.group(1), lit))
     body = [
         '/*',
         ' * %s.c — C home for upstream Hermes %s.py.' % (mod.split('/')[-1], mod),

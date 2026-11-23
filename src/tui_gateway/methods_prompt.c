@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tui_gateway_methods_prompt_CONST_DEEP_TRUNCATE_ENFORCED = 0;
+static long long tui_gateway_methods_prompt_CONST_DEEP_TRUNCATE_ENFORCED = 0;
 static const char *const tui_gateway_methods_prompt_CONST_SESSION_OWNER_BUSY = "SESSION_OWNER_BUSY";
 static const char *const tui_gateway_methods_prompt_CONST_SESSION_OWNER_UNCONFIRMED = "SESSION_OWNER_UNCONFIRMED";
 

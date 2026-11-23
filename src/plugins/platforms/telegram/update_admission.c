@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_telegram_update_admission_CONST_DEFAULT_MAX_CONCURRENT_UPDATES = 32;
+static long long plugins_platforms_telegram_update_admission_CONST_DEFAULT_MAX_CONCURRENT_UPDATES = 32;
 
 void plugins_platforms_telegram_update_admission_port_pending(void) { (void)0; }

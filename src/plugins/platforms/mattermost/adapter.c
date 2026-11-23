@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_mattermost_adapter_CONST_MAX_POST_LENGTH = 4000;
+static long long plugins_platforms_mattermost_adapter_CONST_MAX_POST_LENGTH = 4000;
 
 void plugins_platforms_mattermost_adapter_port_pending(void) { (void)0; }

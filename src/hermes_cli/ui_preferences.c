@@ -8,7 +8,7 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const hermes_cli_ui_preferences_CONST_STORE_NAME = "ui-preferences.json";
-static const char *const hermes_cli_ui_preferences_CONST_MAX_KEY_CHARS = 256;
-static const char *const hermes_cli_ui_preferences_CONST_MAX_KEYS = 512;
+static long long hermes_cli_ui_preferences_CONST_MAX_KEY_CHARS = 256;
+static long long hermes_cli_ui_preferences_CONST_MAX_KEYS = 512;
 
 void hermes_cli_ui_preferences_port_pending(void) { (void)0; }

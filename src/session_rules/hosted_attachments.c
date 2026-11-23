@@ -7,11 +7,11 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const session_rules_hosted_attachments_CONST_MAX_ATTACHMENTS_PER_MESSAGE = 8;
-static const char *const session_rules_hosted_attachments_CONST_MAX_ROOM_UNCOMMITTED_COUNT = 64;
-static const char *const session_rules_hosted_attachments_CONST_MAX_TASK_ATTACHMENTS = 16;
-static const char *const session_rules_hosted_attachments_CONST_MAX_ATTACHMENT_NAME_CHARS = 255;
-static const char *const session_rules_hosted_attachments_CONST_MAX_ATTACHMENT_MIME_CHARS = 127;
-static const char *const session_rules_hosted_attachments_CONST_MAX_IDENTIFIER_CHARS = 128;
+static long long session_rules_hosted_attachments_CONST_MAX_ATTACHMENTS_PER_MESSAGE = 8;
+static long long session_rules_hosted_attachments_CONST_MAX_ROOM_UNCOMMITTED_COUNT = 64;
+static long long session_rules_hosted_attachments_CONST_MAX_TASK_ATTACHMENTS = 16;
+static long long session_rules_hosted_attachments_CONST_MAX_ATTACHMENT_NAME_CHARS = 255;
+static long long session_rules_hosted_attachments_CONST_MAX_ATTACHMENT_MIME_CHARS = 127;
+static long long session_rules_hosted_attachments_CONST_MAX_IDENTIFIER_CHARS = 128;
 
 void session_rules_hosted_attachments_port_pending(void) { (void)0; }

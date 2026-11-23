@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_connectors_gateway_config_CONST_MAX_CALLS_PER_DISPATCH = 10;
+static long long tools_connectors_gateway_config_CONST_MAX_CALLS_PER_DISPATCH = 10;
 
 void tools_connectors_gateway_config_port_pending(void) { (void)0; }

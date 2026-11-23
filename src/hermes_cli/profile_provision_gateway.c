@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_profile_provision_gateway_CONST_CREATE_RPC_TIMEOUT = 300;
+static long long hermes_cli_profile_provision_gateway_CONST_CREATE_RPC_TIMEOUT = 300;
 
 void hermes_cli_profile_provision_gateway_port_pending(void) { (void)0; }

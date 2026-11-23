@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_update_cmd_fleet_unit_budget_CONST_UNIT_JOB_STILL_RUNNING = 124;
+static long long hermes_cli_update_cmd_fleet_unit_budget_CONST_UNIT_JOB_STILL_RUNNING = 124;
 
 void hermes_cli_update_cmd_fleet_unit_budget_port_pending(void) { (void)0; }

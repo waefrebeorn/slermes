@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_cli_session_dock_CONST_QUEUE_ROWS = 3;
+static long long hermes_cli_cli_session_dock_CONST_QUEUE_ROWS = 3;
 
 void hermes_cli_cli_session_dock_port_pending(void) { (void)0; }

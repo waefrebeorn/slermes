@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_dashboard_auth__shared_CONST_JWKS_CACHE_SECONDS = 300;
+static long long plugins_dashboard_auth__shared_CONST_JWKS_CACHE_SECONDS = 300;
 
 void plugins_dashboard_auth__shared_port_pending(void) { (void)0; }

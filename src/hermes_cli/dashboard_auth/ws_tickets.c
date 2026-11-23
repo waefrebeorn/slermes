@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_dashboard_auth_ws_tickets_CONST_TTL_SECONDS = 30;
+static long long hermes_cli_dashboard_auth_ws_tickets_CONST_TTL_SECONDS = 30;
 static const char *const hermes_cli_dashboard_auth_ws_tickets_CONST_INTERNAL_USER_ID = "server-internal";
 static const char *const hermes_cli_dashboard_auth_ws_tickets_CONST_INTERNAL_PROVIDER = "server-internal";
 

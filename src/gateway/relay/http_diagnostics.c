@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_relay_http_diagnostics_CONST_BODY_EXCERPT_CHARS = 200;
+static long long gateway_relay_http_diagnostics_CONST_BODY_EXCERPT_CHARS = 200;
 
 void gateway_relay_http_diagnostics_port_pending(void) { (void)0; }

@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_connectors_catalog_tool_CONST_SEARCH_LIMIT = 10;
+static long long tools_connectors_catalog_tool_CONST_SEARCH_LIMIT = 10;
 
 void tools_connectors_catalog_tool_port_pending(void) { (void)0; }

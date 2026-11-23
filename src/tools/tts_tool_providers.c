@@ -17,16 +17,16 @@ static const char *const tools_tts_tool_providers_CONST_DEFAULT_MINIMAX_CN_BASE_
 static const char *const tools_tts_tool_providers_CONST_DEFAULT_MISTRAL_TTS_MODEL = "voxtral-mini-tts-2603";
 static const char *const tools_tts_tool_providers_CONST_DEFAULT_XAI_VOICE_ID = "eve";
 static const char *const tools_tts_tool_providers_CONST_DEFAULT_XAI_LANGUAGE = "en";
-static const char *const tools_tts_tool_providers_CONST_DEFAULT_XAI_SAMPLE_RATE = 24000;
-static const char *const tools_tts_tool_providers_CONST_DEFAULT_XAI_BIT_RATE = 128000;
-static const char *const tools_tts_tool_providers_CONST_DEFAULT_XAI_AUTO_SPEECH_TAGS = 0;
+static long long tools_tts_tool_providers_CONST_DEFAULT_XAI_SAMPLE_RATE = 24000;
+static long long tools_tts_tool_providers_CONST_DEFAULT_XAI_BIT_RATE = 128000;
+static long long tools_tts_tool_providers_CONST_DEFAULT_XAI_AUTO_SPEECH_TAGS = 0;
 static const char *const tools_tts_tool_providers_CONST_DEFAULT_XAI_BASE_URL = "https://api.x.ai/v1";
-static const char *const tools_tts_tool_providers_CONST_DEFAULT_XAI_OPTIMIZE_STREAMING_LATENCY_DEFAULT = 0;
-static const char *const tools_tts_tool_providers_CONST_DEFAULT_XAI_TEXT_NORMALIZATION_DEFAULT = 0;
+static long long tools_tts_tool_providers_CONST_DEFAULT_XAI_OPTIMIZE_STREAMING_LATENCY_DEFAULT = 0;
+static long long tools_tts_tool_providers_CONST_DEFAULT_XAI_TEXT_NORMALIZATION_DEFAULT = 0;
 static const char *const tools_tts_tool_providers_CONST_DEFAULT_GEMINI_TTS_MODEL = "gemini-2.5-flash-preview-tts";
 static const char *const tools_tts_tool_providers_CONST_DEFAULT_GEMINI_TTS_VOICE = "Kore";
 static const char *const tools_tts_tool_providers_CONST_DEFAULT_GEMINI_TTS_BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
-static const char *const tools_tts_tool_providers_CONST_DEFAULT_GEMINI_AUDIO_TAGS = 0;
+static long long tools_tts_tool_providers_CONST_DEFAULT_GEMINI_AUDIO_TAGS = 0;
 static const char *const tools_tts_tool_providers_CONST_GEMINI_AUDIO_TAG_REWRITE_TASK = "tts_audio_tags";
 
 void tools_tts_tool_providers_port_pending(void) { (void)0; }

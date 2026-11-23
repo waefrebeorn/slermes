@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const pm_progress_CONST_TAIL_LINES = 80;
-static const char *const pm_progress_CONST_MAX_LINE = 4096;
+static long long pm_progress_CONST_TAIL_LINES = 80;
+static long long pm_progress_CONST_MAX_LINE = 4096;
 
 void pm_progress_port_pending(void) { (void)0; }

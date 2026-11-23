@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_whatsapp_bridge_ownership_CONST_SECONDARY_PORT_FIRST = 3001;
-static const char *const plugins_platforms_whatsapp_bridge_ownership_CONST_SECONDARY_PORT_LAST = 3999;
+static long long plugins_platforms_whatsapp_bridge_ownership_CONST_SECONDARY_PORT_FIRST = 3001;
+static long long plugins_platforms_whatsapp_bridge_ownership_CONST_SECONDARY_PORT_LAST = 3999;
 
 void plugins_platforms_whatsapp_bridge_ownership_port_pending(void) { (void)0; }

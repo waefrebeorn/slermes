@@ -7,9 +7,9 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_gateway_connections_ssh_remote_CONST_LOCKFILE_SCHEMA_VERSION = 2;
-static const char *const hermes_cli_gateway_connections_ssh_remote_CONST_PROTOCOL_VERSION = 1;
+static long long hermes_cli_gateway_connections_ssh_remote_CONST_LOCKFILE_SCHEMA_VERSION = 2;
+static long long hermes_cli_gateway_connections_ssh_remote_CONST_PROTOCOL_VERSION = 1;
 static const char *const hermes_cli_gateway_connections_ssh_remote_CONST_REMOTE_LOCK_DIR = "~/.hermes/desktop-ssh";
-static const char *const hermes_cli_gateway_connections_ssh_remote_CONST_PROBE_VERDICT_ATTEMPTS = 3;
+static long long hermes_cli_gateway_connections_ssh_remote_CONST_PROBE_VERDICT_ATTEMPTS = 3;
 
 void hermes_cli_gateway_connections_ssh_remote_port_pending(void) { (void)0; }

@@ -13,7 +13,7 @@ static const char *const plugins_platforms_wecom_adapter_CONST_APP_CMD_CALLBACK 
 static const char *const plugins_platforms_wecom_adapter_CONST_APP_CMD_LEGACY_CALLBACK = "aibot_callback";
 static const char *const plugins_platforms_wecom_adapter_CONST_APP_CMD_EVENT_CALLBACK = "aibot_event_callback";
 static const char *const plugins_platforms_wecom_adapter_CONST_APP_CMD_PING = "ping";
-static const char *const plugins_platforms_wecom_adapter_CONST_MAX_MESSAGE_LENGTH = 4000;
-static const char *const plugins_platforms_wecom_adapter_CONST_DEDUP_MAX_SIZE = 1000;
+static long long plugins_platforms_wecom_adapter_CONST_MAX_MESSAGE_LENGTH = 4000;
+static long long plugins_platforms_wecom_adapter_CONST_DEDUP_MAX_SIZE = 1000;
 
 void plugins_platforms_wecom_adapter_port_pending(void) { (void)0; }

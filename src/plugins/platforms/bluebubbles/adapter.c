@@ -8,8 +8,8 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const plugins_platforms_bluebubbles_adapter_CONST_DEFAULT_WEBHOOK_HOST = "127.0.0.1";
-static const char *const plugins_platforms_bluebubbles_adapter_CONST_DEFAULT_WEBHOOK_PORT = 8645;
+static long long plugins_platforms_bluebubbles_adapter_CONST_DEFAULT_WEBHOOK_PORT = 8645;
 static const char *const plugins_platforms_bluebubbles_adapter_CONST_DEFAULT_WEBHOOK_PATH = "/bluebubbles-webhook";
-static const char *const plugins_platforms_bluebubbles_adapter_CONST_MAX_TEXT_LENGTH = 4000;
+static long long plugins_platforms_bluebubbles_adapter_CONST_MAX_TEXT_LENGTH = 4000;
 
 void plugins_platforms_bluebubbles_adapter_port_pending(void) { (void)0; }

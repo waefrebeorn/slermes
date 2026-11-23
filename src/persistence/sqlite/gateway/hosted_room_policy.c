@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const persistence_sqlite_gateway_hosted_room_policy_CONST_MAX_ACTIVE_POLICY_EVENTS = 64;
-static const char *const persistence_sqlite_gateway_hosted_room_policy_CONST_MAX_ACTIVE_RETRY_RECEIPTS = 64;
-static const char *const persistence_sqlite_gateway_hosted_room_policy_CONST_MAX_THREAD_TRANSCRIPT_EVENTS = 24;
+static long long persistence_sqlite_gateway_hosted_room_policy_CONST_MAX_ACTIVE_POLICY_EVENTS = 64;
+static long long persistence_sqlite_gateway_hosted_room_policy_CONST_MAX_ACTIVE_RETRY_RECEIPTS = 64;
+static long long persistence_sqlite_gateway_hosted_room_policy_CONST_MAX_THREAD_TRANSCRIPT_EVENTS = 24;
 
 void persistence_sqlite_gateway_hosted_room_policy_port_pending(void) { (void)0; }

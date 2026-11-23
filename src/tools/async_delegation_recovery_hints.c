@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_async_delegation_recovery_hints_CONST_TAIL_LINES = 20;
+static long long tools_async_delegation_recovery_hints_CONST_TAIL_LINES = 20;
 
 void tools_async_delegation_recovery_hints_port_pending(void) { (void)0; }

@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_startup_watchdog_CONST_SERVICE_RESTART_EXIT_CODE = 75;
+static long long hermes_startup_watchdog_CONST_SERVICE_RESTART_EXIT_CODE = 75;
 static const char *const hermes_startup_watchdog_CONST_ENV_STARTUP_WATCHDOG = "HERMES_STARTUP_WATCHDOG";
 static const char *const hermes_startup_watchdog_CONST_ENV_STARTUP_WATCHDOG_TIMEOUT_S = "HERMES_STARTUP_WATCHDOG_TIMEOUT_S";
 

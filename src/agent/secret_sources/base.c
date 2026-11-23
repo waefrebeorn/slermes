@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_secret_sources_base_CONST_SECRET_SOURCE_API_VERSION = 1;
+static long long agent_secret_sources_base_CONST_SECRET_SOURCE_API_VERSION = 1;
 
 void agent_secret_sources_base_port_pending(void) { (void)0; }

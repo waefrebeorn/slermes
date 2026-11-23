@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_auxiliary_rate_limit_backoff_CONST_RATE_LIMIT_RETRIES = 1;
+static long long agent_auxiliary_rate_limit_backoff_CONST_RATE_LIMIT_RETRIES = 1;
 
 void agent_auxiliary_rate_limit_backoff_port_pending(void) { (void)0; }

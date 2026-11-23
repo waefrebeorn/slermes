@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const persistence_sqlite__schema_ddl_CONST_SCHEMA_VERSION = 33;
-static const char *const persistence_sqlite__schema_ddl_CONST_FTS_STORAGE_VERSION = 3;
+static long long persistence_sqlite__schema_ddl_CONST_SCHEMA_VERSION = 33;
+static long long persistence_sqlite__schema_ddl_CONST_FTS_STORAGE_VERSION = 3;
 static const char *const persistence_sqlite__schema_ddl_CONST_SCHEMA_SQL = "\"";
 static const char *const persistence_sqlite__schema_ddl_CONST_DEFERRED_INDEX_SQL = "\"";
 static const char *const persistence_sqlite__schema_ddl_CONST_FTS_STALE_KEY = "fts_stale";

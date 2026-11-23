@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_delegate_tool_auto_resume_CONST_MAX_AUTO_ATTEMPTS = 2;
-static const char *const tools_delegate_tool_auto_resume_CONST_DEFAULT_DEADLINE_MINUTES = 360;
+static long long tools_delegate_tool_auto_resume_CONST_MAX_AUTO_ATTEMPTS = 2;
+static long long tools_delegate_tool_auto_resume_CONST_DEFAULT_DEADLINE_MINUTES = 360;
 static const char *const tools_delegate_tool_auto_resume_CONST_SUPERSEDED = "superseded";
 static const char *const tools_delegate_tool_auto_resume_CONST_CANCELLED = "Not continued: its parent cancelled the automatic resume";
 static const char *const tools_delegate_tool_auto_resume_CONST_STAND_IN_FAILED = "Not continued: the scheduler could not build the parent's stand-in";

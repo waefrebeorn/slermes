@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_kanban_watchers_notifier_CONST_MAX_SEND_FAILURES = 12;
+static long long gateway_kanban_watchers_notifier_CONST_MAX_SEND_FAILURES = 12;
 
 void gateway_kanban_watchers_notifier_port_pending(void) { (void)0; }

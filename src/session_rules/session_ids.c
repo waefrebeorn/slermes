@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const session_rules_session_ids_CONST_DEFAULT_HEX_LEN = 6;
+static long long session_rules_session_ids_CONST_DEFAULT_HEX_LEN = 6;
 
 void session_rules_session_ids_port_pending(void) { (void)0; }

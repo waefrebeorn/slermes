@@ -12,6 +12,6 @@ static const char *const hermes_cli_web_session_sockets_CONST_HOST_TERMINAL_SOCK
 static const char *const hermes_cli_web_session_sockets_CONST_SPEAK_STREAM_SOCKET = "speak-stream";
 static const char *const hermes_cli_web_session_sockets_CONST_TRANSCRIBE_STREAM_SOCKET = "transcribe-stream";
 static const char *const hermes_cli_web_session_sockets_CONST_RELAY_SOCKET = "relay";
-static const char *const hermes_cli_web_session_sockets_CONST_SIGNED_OUT_CODE = 4401;
+static long long hermes_cli_web_session_sockets_CONST_SIGNED_OUT_CODE = 4401;
 
 void hermes_cli_web_session_sockets_port_pending(void) { (void)0; }

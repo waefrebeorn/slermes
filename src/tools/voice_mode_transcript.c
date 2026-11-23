@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_voice_mode_transcript_CONST_MIN_FRAGMENT_LENGTH_FOR_ECHO = 10;
+static long long tools_voice_mode_transcript_CONST_MIN_FRAGMENT_LENGTH_FOR_ECHO = 10;
 
 void tools_voice_mode_transcript_port_pending(void) { (void)0; }

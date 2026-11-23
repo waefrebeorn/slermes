@@ -8,6 +8,6 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const gateway_control_resolve_CONST_RESOLVE_VERB = "resolve-profile";
-static const char *const gateway_control_resolve_CONST_RESOLVE_PROTOCOL = 1;
+static long long gateway_control_resolve_CONST_RESOLVE_PROTOCOL = 1;
 
 void gateway_control_resolve_port_pending(void) { (void)0; }

@@ -7,9 +7,9 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_file_operations_common_CONST_DEFAULT_READ_OFFSET = 1;
-static const char *const tools_file_operations_common_CONST_DEFAULT_READ_LIMIT = 2000;
-static const char *const tools_file_operations_common_CONST_DEFAULT_SEARCH_OFFSET = 0;
-static const char *const tools_file_operations_common_CONST_DEFAULT_SEARCH_LIMIT = 50;
+static long long tools_file_operations_common_CONST_DEFAULT_READ_OFFSET = 1;
+static long long tools_file_operations_common_CONST_DEFAULT_READ_LIMIT = 2000;
+static long long tools_file_operations_common_CONST_DEFAULT_SEARCH_OFFSET = 0;
+static long long tools_file_operations_common_CONST_DEFAULT_SEARCH_LIMIT = 50;
 
 void tools_file_operations_common_port_pending(void) { (void)0; }

@@ -9,6 +9,6 @@
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const persistence_housekeeping_maintenance_CONST_ORPHAN_REAP_END_REASON = "startup_orphan_reap";
 static const char *const persistence_housekeeping_maintenance_CONST_GHOST_SESSION_SOURCE = "tui";
-static const char *const persistence_housekeeping_maintenance_CONST_IMPORT_MAX_SESSIONS = 500;
+static long long persistence_housekeeping_maintenance_CONST_IMPORT_MAX_SESSIONS = 500;
 
 void persistence_housekeeping_maintenance_port_pending(void) { (void)0; }

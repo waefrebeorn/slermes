@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_nous_wire_CONST_GMI_NATIVE_WIRE_CLEARED = 0;
+static long long agent_nous_wire_CONST_GMI_NATIVE_WIRE_CLEARED = 0;
 
 void agent_nous_wire_port_pending(void) { (void)0; }

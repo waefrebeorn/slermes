@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_browser_supervisor_frames_CONST_FRAME_TREE_MAX_ENTRIES = 30;
-static const char *const tools_browser_supervisor_frames_CONST_FRAME_TREE_MAX_OOPIF_DEPTH = 2;
+static long long tools_browser_supervisor_frames_CONST_FRAME_TREE_MAX_ENTRIES = 30;
+static long long tools_browser_supervisor_frames_CONST_FRAME_TREE_MAX_OOPIF_DEPTH = 2;
 
 void tools_browser_supervisor_frames_port_pending(void) { (void)0; }

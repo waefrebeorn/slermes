@@ -9,6 +9,6 @@
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const agent_side_question_lease_CONST_SIDE_QUESTION_CAPABILITY = "llm.side_question";
 static const char *const agent_side_question_lease_CONST_SESSION_FORK_CAPABILITY = "llm.session_fork";
-static const char *const agent_side_question_lease_CONST_MAX_PROMPT_CHARS = 4096;
+static long long agent_side_question_lease_CONST_MAX_PROMPT_CHARS = 4096;
 
 void agent_side_question_lease_port_pending(void) { (void)0; }

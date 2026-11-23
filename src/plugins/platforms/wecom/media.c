@@ -11,6 +11,6 @@ static const char *const plugins_platforms_wecom_media_CONST_APP_CMD_SEND = "aib
 static const char *const plugins_platforms_wecom_media_CONST_APP_CMD_UPLOAD_MEDIA_INIT = "aibot_upload_media_init";
 static const char *const plugins_platforms_wecom_media_CONST_APP_CMD_UPLOAD_MEDIA_CHUNK = "aibot_upload_media_chunk";
 static const char *const plugins_platforms_wecom_media_CONST_APP_CMD_UPLOAD_MEDIA_FINISH = "aibot_upload_media_finish";
-static const char *const plugins_platforms_wecom_media_CONST_MAX_UPLOAD_CHUNKS = 100;
+static long long plugins_platforms_wecom_media_CONST_MAX_UPLOAD_CHUNKS = 100;
 
 void plugins_platforms_wecom_media_port_pending(void) { (void)0; }

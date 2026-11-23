@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_session_live_listing_CONST_LISTING_BATCH = 256;
+static long long gateway_session_live_listing_CONST_LISTING_BATCH = 256;
 
 void gateway_session_live_listing_port_pending(void) { (void)0; }

@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_host_rendezvous_CONST_HOST_PROTOCOL_VERSION = 1;
+static long long gateway_host_rendezvous_CONST_HOST_PROTOCOL_VERSION = 1;
 static const char *const gateway_host_rendezvous_CONST_HOST_IDENTITY_PATH = "/api/host/identity";
 static const char *const gateway_host_rendezvous_CONST_ROLE_GATEWAY = "gateway";
 static const char *const gateway_host_rendezvous_CONST_ROLE_SERVE = "serve";

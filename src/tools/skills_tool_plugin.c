@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_skills_tool_plugin_CONST_MAX_DESCRIPTION_LENGTH = 1024;
+static long long tools_skills_tool_plugin_CONST_MAX_DESCRIPTION_LENGTH = 1024;
 
 void tools_skills_tool_plugin_port_pending(void) { (void)0; }

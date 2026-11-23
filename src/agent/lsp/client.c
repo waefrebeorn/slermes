@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_lsp_client_CONST_MAX_CONTENT_MODIFIED_RETRIES = 3;
-static const char *const agent_lsp_client_CONST_STDERR_TAIL_LINES = 30;
-static const char *const agent_lsp_client_CONST_MAX_TRACKED_FILES = 64;
+static long long agent_lsp_client_CONST_MAX_CONTENT_MODIFIED_RETRIES = 3;
+static long long agent_lsp_client_CONST_STDERR_TAIL_LINES = 30;
+static long long agent_lsp_client_CONST_MAX_TRACKED_FILES = 64;
 
 void agent_lsp_client_port_pending(void) { (void)0; }

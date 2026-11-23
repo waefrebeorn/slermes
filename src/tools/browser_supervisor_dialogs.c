@@ -10,7 +10,7 @@
 static const char *const tools_browser_supervisor_dialogs_CONST_DIALOG_POLICY_MUST_RESPOND = "must_respond";
 static const char *const tools_browser_supervisor_dialogs_CONST_DIALOG_POLICY_AUTO_DISMISS = "auto_dismiss";
 static const char *const tools_browser_supervisor_dialogs_CONST_DIALOG_POLICY_AUTO_ACCEPT = "auto_accept";
-static const char *const tools_browser_supervisor_dialogs_CONST_RECENT_DIALOGS_MAX = 20;
+static long long tools_browser_supervisor_dialogs_CONST_RECENT_DIALOGS_MAX = 20;
 static const char *const tools_browser_supervisor_dialogs_CONST_DIALOG_BRIDGE_HOST = "hermes-dialog-bridge.invalid";
 
 void tools_browser_supervisor_dialogs_port_pending(void) { (void)0; }

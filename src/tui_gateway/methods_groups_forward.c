@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tui_gateway_methods_groups_forward_CONST_OWNER_LOST_CODE = 5124;
+static long long tui_gateway_methods_groups_forward_CONST_OWNER_LOST_CODE = 5124;
 
 void tui_gateway_methods_groups_forward_port_pending(void) { (void)0; }

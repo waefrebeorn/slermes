@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_prune_advisor_CONST_CLI_ADVICE_TTL = 86400;
+static long long hermes_cli_prune_advisor_CONST_CLI_ADVICE_TTL = 86400;
 static const char *const hermes_cli_prune_advisor_CONST_NOTICE_KEY = "sessions.auto_prune";
 
 void hermes_cli_prune_advisor_port_pending(void) { (void)0; }

@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_mcp_elicitation_form_CONST_MAX_REASKS = 2;
+static long long tools_mcp_elicitation_form_CONST_MAX_REASKS = 2;
 
 void tools_mcp_elicitation_form_port_pending(void) { (void)0; }

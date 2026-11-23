@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tui_gateway_notification_park_CONST_MAX_PARKED = 16;
-static const char *const tui_gateway_notification_park_CONST_MAX_PARKED_PER_KEY = 4;
+static long long tui_gateway_notification_park_CONST_MAX_PARKED = 16;
+static long long tui_gateway_notification_park_CONST_MAX_PARKED_PER_KEY = 4;
 
 void tui_gateway_notification_park_port_pending(void) { (void)0; }

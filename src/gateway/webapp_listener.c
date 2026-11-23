@@ -8,7 +8,7 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const gateway_webapp_listener_CONST_DEFAULT_HOST = "127.0.0.1";
-static const char *const gateway_webapp_listener_CONST_DEFAULT_PORT = 9120;
+static long long gateway_webapp_listener_CONST_DEFAULT_PORT = 9120;
 static const char *const gateway_webapp_listener_CONST_NOT_BUILT = "The Webapp is not built";
 
 void gateway_webapp_listener_port_pending(void) { (void)0; }

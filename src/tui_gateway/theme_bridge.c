@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tui_gateway_theme_bridge_CONST_THEME_TIMEOUT_S = 15;
-static const char *const tui_gateway_theme_bridge_CONST_THEME_PICK_TIMEOUT_S = 300;
+static long long tui_gateway_theme_bridge_CONST_THEME_TIMEOUT_S = 15;
+static long long tui_gateway_theme_bridge_CONST_THEME_PICK_TIMEOUT_S = 300;
 
 void tui_gateway_theme_bridge_port_pending(void) { (void)0; }

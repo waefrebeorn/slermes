@@ -9,7 +9,7 @@
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const hermes_cli_auth_codex_browser_CONST_CODEX_OAUTH_AUTHORIZE_URL = "https://auth.openai.com/oauth/authorize";
 static const char *const hermes_cli_auth_codex_browser_CONST_CODEX_OAUTH_BROWSER_SCOPE = "openid profile email offline_access";
-static const char *const hermes_cli_auth_codex_browser_CONST_CODEX_BROWSER_CALLBACK_PORT = 1455;
+static long long hermes_cli_auth_codex_browser_CONST_CODEX_BROWSER_CALLBACK_PORT = 1455;
 static const char *const hermes_cli_auth_codex_browser_CONST_CODEX_BROWSER_CALLBACK_PATH = "/auth/callback";
 static const char *const hermes_cli_auth_codex_browser_CONST_CODEX_BROWSER_PORT_BUSY_CODE = "codex_browser_port_busy";
 

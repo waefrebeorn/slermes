@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_gateway_runtime_tickets_CONST_TICKETS_PROTOCOL = 1;
+static long long hermes_cli_gateway_runtime_tickets_CONST_TICKETS_PROTOCOL = 1;
 static const char *const hermes_cli_gateway_runtime_tickets_CONST_PROFILE_NOT_SERVED = "profile_not_served";
 
 void hermes_cli_gateway_runtime_tickets_port_pending(void) { (void)0; }

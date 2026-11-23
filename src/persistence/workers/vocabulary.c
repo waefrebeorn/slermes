@@ -8,6 +8,6 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const persistence_workers_vocabulary_CONST_CHILD_SEPARATOR = "/child:";
-static const char *const persistence_workers_vocabulary_CONST_TRANSCRIPT_BATCH_MAX = 1000;
+static long long persistence_workers_vocabulary_CONST_TRANSCRIPT_BATCH_MAX = 1000;
 
 void persistence_workers_vocabulary_port_pending(void) { (void)0; }

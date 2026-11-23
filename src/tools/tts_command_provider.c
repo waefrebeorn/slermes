@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_tts_command_provider_CONST_DEFAULT_COMMAND_TTS_TIMEOUT_SECONDS = 120;
+static long long tools_tts_command_provider_CONST_DEFAULT_COMMAND_TTS_TIMEOUT_SECONDS = 120;
 static const char *const tools_tts_command_provider_CONST_DEFAULT_COMMAND_TTS_OUTPUT_FORMAT = "mp3";
-static const char *const tools_tts_command_provider_CONST_DEFAULT_COMMAND_TTS_MAX_TEXT_LENGTH = 5000;
+static long long tools_tts_command_provider_CONST_DEFAULT_COMMAND_TTS_MAX_TEXT_LENGTH = 5000;
 
 void tools_tts_command_provider_port_pending(void) { (void)0; }

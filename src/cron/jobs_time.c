@@ -9,6 +9,6 @@
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const cron_jobs_time_CONST_TIMEZONE_KEY = "timezone";
 static const char *const cron_jobs_time_CONST_GRACE_KEY = "grace_minutes";
-static const char *const cron_jobs_time_CONST_MIN_GRACE_MINUTES = 0;
+static long long cron_jobs_time_CONST_MIN_GRACE_MINUTES = 0;
 
 void cron_jobs_time_port_pending(void) { (void)0; }

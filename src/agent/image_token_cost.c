@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_image_token_cost_CONST_DEFAULT_IMAGE_TOKEN_COST = 1500;
+static long long agent_image_token_cost_CONST_DEFAULT_IMAGE_TOKEN_COST = 1500;
 
 void agent_image_token_cost_port_pending(void) { (void)0; }

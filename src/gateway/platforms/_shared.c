@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_platforms__shared_CONST_WEBHOOK_REPLAY_WINDOW_SECONDS = 300;
+static long long gateway_platforms__shared_CONST_WEBHOOK_REPLAY_WINDOW_SECONDS = 300;
 
 void gateway_platforms__shared_port_pending(void) { (void)0; }

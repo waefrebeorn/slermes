@@ -7,8 +7,8 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_gateway_connections_ssh_transport_CONST_REMOTE_PROBE_TIMEOUT_S = 15;
-static const char *const hermes_cli_gateway_connections_ssh_transport_CONST_CONTROL_PERSIST_S = 300;
-static const char *const hermes_cli_gateway_connections_ssh_transport_CONST_SUN_PATH_MAX = 104;
+static long long hermes_cli_gateway_connections_ssh_transport_CONST_REMOTE_PROBE_TIMEOUT_S = 15;
+static long long hermes_cli_gateway_connections_ssh_transport_CONST_CONTROL_PERSIST_S = 300;
+static long long hermes_cli_gateway_connections_ssh_transport_CONST_SUN_PATH_MAX = 104;
 
 void hermes_cli_gateway_connections_ssh_transport_port_pending(void) { (void)0; }

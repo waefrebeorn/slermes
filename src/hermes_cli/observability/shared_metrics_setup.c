@@ -8,6 +8,6 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const hermes_cli_observability_shared_metrics_setup_CONST_MARKER_DIRNAME = "provider_setup_markers";
-static const char *const hermes_cli_observability_shared_metrics_setup_CONST_STALE_AFTER_S = 3600;
+static long long hermes_cli_observability_shared_metrics_setup_CONST_STALE_AFTER_S = 3600;
 
 void hermes_cli_observability_shared_metrics_setup_port_pending(void) { (void)0; }

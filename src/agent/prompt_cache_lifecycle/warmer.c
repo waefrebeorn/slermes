@@ -7,9 +7,9 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_prompt_cache_lifecycle_warmer_CONST_WARM_BUDGET = 3;
+static long long agent_prompt_cache_lifecycle_warmer_CONST_WARM_BUDGET = 3;
 static const char *const agent_prompt_cache_lifecycle_warmer_CONST_WARMING_DISABLED = "prompt cache warming disabled for session: keep-alive missed";
-static const char *const agent_prompt_cache_lifecycle_warmer_CONST_REAL_MISSES_TO_STOP = 2;
-static const char *const agent_prompt_cache_lifecycle_warmer_CONST_ANY_MISSES_TO_STOP = 3;
+static long long agent_prompt_cache_lifecycle_warmer_CONST_REAL_MISSES_TO_STOP = 2;
+static long long agent_prompt_cache_lifecycle_warmer_CONST_ANY_MISSES_TO_STOP = 3;
 
 void agent_prompt_cache_lifecycle_warmer_port_pending(void) { (void)0; }

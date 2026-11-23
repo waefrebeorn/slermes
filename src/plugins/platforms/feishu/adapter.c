@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_feishu_adapter_CONST_FEISHU_AVAILABLE = 0;
+static long long plugins_platforms_feishu_adapter_CONST_FEISHU_AVAILABLE = 0;
 static const char *const plugins_platforms_feishu_adapter_CONST_FALLBACK_POST_TEXT = "[Rich text message]";
 static const char *const plugins_platforms_feishu_adapter_CONST_FALLBACK_FORWARD_TEXT = "[Merged forward message]";
 static const char *const plugins_platforms_feishu_adapter_CONST_FALLBACK_SHARE_CHAT_TEXT = "[Shared chat]";

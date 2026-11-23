@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_config_backups_CONST_DEFAULT_KEEP = 5;
+static long long hermes_cli_config_backups_CONST_DEFAULT_KEEP = 5;
 
 void hermes_cli_config_backups_port_pending(void) { (void)0; }

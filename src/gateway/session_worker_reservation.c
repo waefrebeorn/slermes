@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_session_worker_reservation_CONST_MAX_LAUNCHER_HOPS = 3;
+static long long gateway_session_worker_reservation_CONST_MAX_LAUNCHER_HOPS = 3;
 
 void gateway_session_worker_reservation_port_pending(void) { (void)0; }

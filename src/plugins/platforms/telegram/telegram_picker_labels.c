@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_telegram_telegram_picker_labels_CONST_MODEL_LABEL_BUDGET = 44;
+static long long plugins_platforms_telegram_telegram_picker_labels_CONST_MODEL_LABEL_BUDGET = 44;
 
 void plugins_platforms_telegram_telegram_picker_labels_port_pending(void) { (void)0; }

@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_process_registry_results_CONST_MAX_RETAINED_RESULTS = 64;
+static long long tools_process_registry_results_CONST_MAX_RETAINED_RESULTS = 64;
 
 void tools_process_registry_results_port_pending(void) { (void)0; }

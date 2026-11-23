@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_hermes_achievements_dashboard_plugin_api_CONST_SNAPSHOT_TTL_SECONDS = 120;
+static long long plugins_hermes_achievements_dashboard_plugin_api_CONST_SNAPSHOT_TTL_SECONDS = 120;
 static const char *const plugins_hermes_achievements_dashboard_plugin_api_CONST_SNAPSHOT_FILE = "scan_snapshot.json";
 static const char *const plugins_hermes_achievements_dashboard_plugin_api_CONST_CHECKPOINT_FILE = "scan_checkpoint.json";
 

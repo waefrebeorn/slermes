@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const cron_jobs_error_text_CONST_MAX_PERSISTED_ERROR_CHARS = 2000;
+static long long cron_jobs_error_text_CONST_MAX_PERSISTED_ERROR_CHARS = 2000;
 
 void cron_jobs_error_text_port_pending(void) { (void)0; }

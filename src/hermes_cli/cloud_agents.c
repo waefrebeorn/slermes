@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_cloud_agents_CONST_PORTAL_SIGNIN_STATUS = 409;
+static long long hermes_cli_cloud_agents_CONST_PORTAL_SIGNIN_STATUS = 409;
 
 void hermes_cli_cloud_agents_port_pending(void) { (void)0; }

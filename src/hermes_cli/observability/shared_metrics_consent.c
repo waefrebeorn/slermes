@@ -8,6 +8,6 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const hermes_cli_observability_shared_metrics_consent_CONST_DOCS_URL = "https://hermes-agent.nousresearch.com/docs/developer-guide/relay-shared-metrics";
-static const char *const hermes_cli_observability_shared_metrics_consent_CONST_OFFER_VERSION = 2;
+static long long hermes_cli_observability_shared_metrics_consent_CONST_OFFER_VERSION = 2;
 
 void hermes_cli_observability_shared_metrics_consent_port_pending(void) { (void)0; }

@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const agent_prompt_cache_routes_CONST_MAX_ENTRIES = 500;
-static const char *const agent_prompt_cache_routes_CONST_MIN_SAMPLES = 2;
+static long long agent_prompt_cache_routes_CONST_MAX_ENTRIES = 500;
+static long long agent_prompt_cache_routes_CONST_MIN_SAMPLES = 2;
 
 void agent_prompt_cache_routes_port_pending(void) { (void)0; }

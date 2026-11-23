@@ -7,11 +7,11 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_hosted_room_work_records_CONST_VERSION = 1;
+static long long gateway_hosted_room_work_records_CONST_VERSION = 1;
 static const char *const gateway_hosted_room_work_records_CONST_PERMISSION = "work_records";
-static const char *const gateway_hosted_room_work_records_CONST_MAX_TASKS = 128;
-static const char *const gateway_hosted_room_work_records_CONST_MAX_RECEIPTS = 256;
-static const char *const gateway_hosted_room_work_records_CONST_MAX_STORE_ROWS = 512;
+static long long gateway_hosted_room_work_records_CONST_MAX_TASKS = 128;
+static long long gateway_hosted_room_work_records_CONST_MAX_RECEIPTS = 256;
+static long long gateway_hosted_room_work_records_CONST_MAX_STORE_ROWS = 512;
 static const char *const gateway_hosted_room_work_records_CONST_SOURCE_TABLE = "hosted_room_work_records_source";
 static const char *const gateway_hosted_room_work_records_CONST_TARGET_TABLE = "hosted_room_work_records_target";
 static const char *const gateway_hosted_room_work_records_CONST_PENDING_TABLE = "hosted_room_work_records_pending";

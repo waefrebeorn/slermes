@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_model_picker_usage_CONST_BAR_WIDTH = 10;
+static long long hermes_cli_model_picker_usage_CONST_BAR_WIDTH = 10;
 static const char *const hermes_cli_model_picker_usage_CONST_BAR_FILL = "|";
 static const char *const hermes_cli_model_picker_usage_CONST_BAR_EMPTY = " ";
 static const char *const hermes_cli_model_picker_usage_CONST_TOP_TIER_FOOTNOTE = "Large models also use your monthly large-model limit.";

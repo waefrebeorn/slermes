@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_platforms_telegram_callback_answer_CONST_TOAST_LIMIT = 200;
+static long long plugins_platforms_telegram_callback_answer_CONST_TOAST_LIMIT = 200;
 
 void plugins_platforms_telegram_callback_answer_port_pending(void) { (void)0; }

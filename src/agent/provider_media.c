@@ -8,6 +8,6 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const agent_provider_media_CONST_GENERATED_SUBDIR = "generated";
-static const char *const agent_provider_media_CONST_MEDIA_CACHE_MAX_AGE_HOURS = 24;
+static long long agent_provider_media_CONST_MEDIA_CACHE_MAX_AGE_HOURS = 24;
 
 void agent_provider_media_port_pending(void) { (void)0; }

@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_bot_desktop_resources_CONST_DEFAULT_MIN_FREE_MB = 1536;
+static long long tools_bot_desktop_resources_CONST_DEFAULT_MIN_FREE_MB = 1536;
 
 void tools_bot_desktop_resources_port_pending(void) { (void)0; }

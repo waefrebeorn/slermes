@@ -8,6 +8,6 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const gateway_session_managed_worker_log_CONST_LOG_NAME = "managed-worker.log";
-static const char *const gateway_session_managed_worker_log_CONST_KEPT_LINE_CHARS = 4096;
+static long long gateway_session_managed_worker_log_CONST_KEPT_LINE_CHARS = 4096;
 
 void gateway_session_managed_worker_log_port_pending(void) { (void)0; }

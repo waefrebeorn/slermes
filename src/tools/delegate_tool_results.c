@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tools_delegate_tool_results_CONST_DEFAULT_MAX_SUMMARY_CHARS = 24000;
+static long long tools_delegate_tool_results_CONST_DEFAULT_MAX_SUMMARY_CHARS = 24000;
 
 void tools_delegate_tool_results_port_pending(void) { (void)0; }

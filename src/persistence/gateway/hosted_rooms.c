@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const persistence_gateway_hosted_rooms_CONST_MAX_OWED_REVOKES_PER_MEMBER = 4;
-static const char *const persistence_gateway_hosted_rooms_CONST_MAX_OWED_REVOKES = 512;
+static long long persistence_gateway_hosted_rooms_CONST_MAX_OWED_REVOKES_PER_MEMBER = 4;
+static long long persistence_gateway_hosted_rooms_CONST_MAX_OWED_REVOKES = 512;
 
 void persistence_gateway_hosted_rooms_port_pending(void) { (void)0; }

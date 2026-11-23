@@ -9,8 +9,8 @@
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const gateway_hosted_room_router_CONST_ROUTED_EVENT_KIND = "room.routed";
 static const char *const gateway_hosted_room_router_CONST_CONTINUED_EVENT_KIND = "room.continued";
-static const char *const gateway_hosted_room_router_CONST_MAX_DISCUSSION_CONTINUES = 5;
-static const char *const gateway_hosted_room_router_CONST_ROUTER_RECENT_MESSAGES = 5;
-static const char *const gateway_hosted_room_router_CONST_ROUTER_MESSAGE_CHARS = 600;
+static long long gateway_hosted_room_router_CONST_MAX_DISCUSSION_CONTINUES = 5;
+static long long gateway_hosted_room_router_CONST_ROUTER_RECENT_MESSAGES = 5;
+static long long gateway_hosted_room_router_CONST_ROUTER_MESSAGE_CHARS = 600;
 
 void gateway_hosted_room_router_port_pending(void) { (void)0; }

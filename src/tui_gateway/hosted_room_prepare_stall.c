@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const tui_gateway_hosted_room_prepare_stall_CONST_STALL_ATTEMPTS = 3;
+static long long tui_gateway_hosted_room_prepare_stall_CONST_STALL_ATTEMPTS = 3;
 static const char *const tui_gateway_hosted_room_prepare_stall_CONST_RETRY_TASK_PREFIX = "prepare:";
 
 void tui_gateway_hosted_room_prepare_stall_port_pending(void) { (void)0; }

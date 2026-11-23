@@ -9,6 +9,6 @@
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const persistence_sqlite__state_dbfile_CONST_RETIRED_GENERATION_DIR_SUFFIX = ".retired-wal-";
 static const char *const persistence_sqlite__state_dbfile_CONST_RETIRED_GENERATION_MANIFEST = "manifest.json";
-static const char *const persistence_sqlite__state_dbfile_CONST_RETIRED_GENERATION_MANIFEST_VERSION = 1;
+static long long persistence_sqlite__state_dbfile_CONST_RETIRED_GENERATION_MANIFEST_VERSION = 1;
 
 void persistence_sqlite__state_dbfile_port_pending(void) { (void)0; }

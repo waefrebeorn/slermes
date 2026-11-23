@@ -8,7 +8,7 @@
 
 /* Module-level literal constants mirrored from the Python source. */
 static const char *const tools_browser_session_CONST_LOCAL_SUFFIX = "::local";
-static const char *const tools_browser_session_CONST_BROWSER_ORPHAN_REAP_INTERVAL = 300;
-static const char *const tools_browser_session_CONST_MAX_INACTIVITY_CLEANUP_FAILURES = 3;
+static long long tools_browser_session_CONST_BROWSER_ORPHAN_REAP_INTERVAL = 300;
+static long long tools_browser_session_CONST_MAX_INACTIVITY_CLEANUP_FAILURES = 3;
 
 void tools_browser_session_port_pending(void) { (void)0; }

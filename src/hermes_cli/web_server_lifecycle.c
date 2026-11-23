@@ -7,6 +7,6 @@
 #include <stddef.h>
 
 /* Module-level literal constants mirrored from the Python source. */
-static const char *const hermes_cli_web_server_lifecycle_CONST_PORT_IN_USE_EXIT_CODE = 75;
+static long long hermes_cli_web_server_lifecycle_CONST_PORT_IN_USE_EXIT_CODE = 75;
 
 void hermes_cli_web_server_lifecycle_port_pending(void) { (void)0; }
