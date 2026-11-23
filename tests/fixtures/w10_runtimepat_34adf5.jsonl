@@ -1,0 +1,21 @@
+{"func": "install_key", "case": "proj a", "canonical": "/home/u/hermes-agent"}
+{"func": "install_key", "case": "proj b", "canonical": "/home/u/hermes-agent/"}
+{"func": "install_key", "case": "empty", "canonical": ""}
+{"func": "install_key", "case": "root", "canonical": "/"}
+{"func": "venv_bin_dir", "case": "posix", "venv": "/h/envs/gen1", "windows": false}
+{"func": "venv_bin_dir", "case": "win", "venv": "C:/h/envs/gen1", "windows": true}
+{"func": "venv_python", "case": "posix", "venv": "/h/envs/gen1", "windows": false}
+{"func": "venv_python", "case": "win", "venv": "C:/h/envs/gen1", "windows": true}
+{"func": "venv_python", "case": "relative bin", "venv": "venv", "windows": false}
+{"func": "site_packages", "case": "posix 3.11", "venv": "/h/envs/g", "windows": false, "major": 3, "minor": 11}
+{"func": "site_packages", "case": "posix 3.14", "venv": "/h/envs/g", "windows": false, "major": 3, "minor": 14}
+{"func": "site_packages", "case": "win", "venv": "C:/h/envs/g", "windows": true, "major": 3, "minor": 11}
+{"func": "install_state_dir", "case": "basic", "home_root": "/h/root", "key": "abc123"}
+{"func": "runtime_facts_path", "case": "basic", "home_root": "/h/root", "key": "abc123"}
+{"func": "cli_command_name", "case": "exe", "command": "C:/h/tools/hermes-canary.exe"}
+{"func": "cli_command_name", "case": "plain", "command": "/h/bin/hermes"}
+{"func": "cli_command_name", "case": "none", "command": ""}
+{"func": "shell_exports", "case": "sh simple", "dialect": "sh", "env": {"FOO": "bar", "PATH": "/a:/b", "EMPTY": "", "SPACED": "a b"}}
+{"func": "shell_exports", "case": "sh quote", "dialect": "sh", "env": {"Q": "it's", "DQ": "a\"b", "SAFE": "abc_09@%+=:,./-"}}
+{"func": "shell_exports", "case": "fish", "dialect": "fish", "env": {"FOO": "bar", "PATH": "/a:/b", "Q": "it's", "PWD": "/skip"}}
+{"func": "shell_exports", "case": "sh bad names", "dialect": "sh", "env": {"1BAD": "x", "GOOD": "y", "a-b": "z"}}

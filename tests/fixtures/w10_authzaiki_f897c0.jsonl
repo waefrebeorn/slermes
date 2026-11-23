@@ -1,0 +1,19 @@
+{"func":"kimi","case":1,"api_key":"sk-kimi-abc","default_url":"https://default","env_override":""}
+{"func":"kimi","case":2,"api_key":"sk-kimi-abc","default_url":"https://default","env_override":"https://override"}
+{"func":"kimi","case":3,"api_key":"sk-ant-abc","default_url":"https://default","env_override":""}
+{"func":"kimi","case":4,"api_key":"","default_url":"https://default","env_override":""}
+{"func":"kimi","case":5,"api_key":null,"default_url":"https://fallback","env_override":null}
+{"func":"kimi","case":6,"api_key":"prefix-sk-kimi-abc","default_url":"https://default","env_override":""}
+{"func":"kimi","case":7,"api_key":"sk-kimi-","default_url":"https://default","env_override":""}
+{"func":"kimi","case":8,"api_key":"SK-KIMI-abc","default_url":"https://default","env_override":""}
+{"func":"lm","case":9,"base_url":"http://127.0.0.1:1234"}
+{"func":"lm","case":10,"base_url":"http://x/api/v1"}
+{"func":"lm","case":11,"base_url":"http://x/api"}
+{"func":"lm","case":12,"base_url":"http://x/v1"}
+{"func":"lm","case":13,"base_url":"http://x/"}
+{"func":"lm","case":14,"base_url":"http://x/v1/"}
+{"func":"lm","case":15,"base_url":"  http://x/v1  "}
+{"func":"lm","case":16,"base_url":""}
+{"func":"lm","case":17,"base_url":null}
+{"func":"lm","case":18,"base_url":"http://x/apiv1"}
+{"func":"lm","case":19,"base_url":"http://x/api/v1///"}

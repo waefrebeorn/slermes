@@ -1,0 +1,11 @@
+{"case": 1, "func": "package_of", "path": "proj/node_modules/pkg/lib/x.node"}
+{"case": 2, "func": "package_of", "path": "proj/node_modules/@scope/pkg/lib/x.node"}
+{"case": 3, "func": "package_of", "path": "a/node_modules/x/node_modules/y.node"}
+{"case": 4, "func": "package_of", "path": "node_modules/pkg/x.node"}
+{"case": 5, "func": "package_of", "path": "no_modules/pkg/x.node"}
+{"case": 6, "func": "package_of", "path": "proj/node_modules/"}
+{"case": 7, "func": "package_of", "path": "proj/node_modules"}
+{"case": 8, "func": "package_of", "path": "a/b/c/node_modules/@s/p/node_modules/q.node"}
+{"case": 9, "func": "package_of", "path": "win\\path\\node_modules\\pkg\\x.node"}
+{"case": 10, "func": "package_of", "path": "x.node"}
+{"case": 11, "func": "package_of", "path": "p/node_modules/@scope"}

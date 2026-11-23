@@ -1,0 +1,25 @@
+{"func": "started_at", "entry": {}}
+{"func": "started_at", "entry": {"started_at": 123}}
+{"func": "started_at", "entry": {"started_at": 0}}
+{"func": "started_at", "entry": {"started_at": "45.5"}}
+{"func": "started_at", "entry": {"started_at": null}}
+{"func": "started_at", "entry": {"started_at": false}}
+{"func": "marker_writer_state", "entry": {}, "liveness": 1}
+{"func": "marker_writer_state", "entry": {"writer_pid": 123}, "liveness": 1}
+{"func": "marker_writer_state", "entry": {"writer_pid": 123}, "liveness": 2}
+{"func": "marker_writer_state", "entry": {"writer_pid": 123}, "liveness": 0}
+{"func": "marker_writer_state", "entry": {"writer_pid": 123}, "liveness": 3}
+{"func": "marker_writer_state", "entry": {"writer_pid": 0}, "liveness": 1}
+{"func": "marker_writer_state", "entry": {"writer_pid": -1}, "liveness": 1}
+{"func": "marker_writer_state", "entry": {"writer_pid": true}, "liveness": 1}
+{"func": "marker_writer_state", "entry": "not-a-dict", "liveness": 1}
+{"func": "marker_writer_state", "entry": {"writer_pid": "123"}, "liveness": 1}
+{"func": "prune", "entries": {}, "now": 1000}
+{"func": "prune", "entries": {"a": {"started_at": 900}, "b": {"started_at": 100}, "c": {"started_at": -90000}}, "now": 1000}
+{"func": "read_turn_marker", "session_key": "", "stored": {}}
+{"func": "read_turn_marker", "session_key": "s", "stored": {}}
+{"func": "read_turn_marker", "session_key": "s", "stored": {"s": {"prompt": "hello"}}}
+{"func": "read_turn_marker", "session_key": "s", "stored": {"s": {"prompt": "  hi there  ", "attempts": "2", "started_at": 50, "auto_continue": false, "writer_pid": 42, "writer_start_time": 10, "notification_category": "diagnostic"}}}
+{"func": "read_turn_marker", "session_key": "s", "stored": {"s": {"prompt": "   "}}}
+{"func": "read_turn_marker", "session_key": "s", "stored": {"s": {"attempts": 1}}}
+{"func": "prune", "entries": {"s00": {"started_at": 1000}, "s01": {"started_at": 999}, "s02": {"started_at": 998}, "s03": {"started_at": 997}, "s04": {"started_at": 996}, "s05": {"started_at": 995}, "s06": {"started_at": 994}, "s07": {"started_at": 993}, "s08": {"started_at": 992}, "s09": {"started_at": 991}, "s10": {"started_at": 990}, "s11": {"started_at": 989}, "s12": {"started_at": 988}, "s13": {"started_at": 987}, "s14": {"started_at": 986}, "s15": {"started_at": 985}, "s16": {"started_at": 984}, "s17": {"started_at": 983}, "s18": {"started_at": 982}, "s19": {"started_at": 981}, "s20": {"started_at": 980}, "s21": {"started_at": 979}, "s22": {"started_at": 978}, "s23": {"started_at": 977}, "s24": {"started_at": 976}, "s25": {"started_at": 975}, "s26": {"started_at": 974}, "s27": {"started_at": 973}, "s28": {"started_at": 972}, "s29": {"started_at": 971}, "s30": {"started_at": 970}, "s31": {"started_at": 969}, "s32": {"started_at": 968}, "s33": {"started_at": 967}}, "now": 1000}

@@ -1,0 +1,31 @@
+{"func": "remote", "case": "docker", "backend": "docker"}
+{"func": "remote", "case": "ssh", "backend": "ssh"}
+{"func": "remote", "case": "local", "backend": "local"}
+{"func": "remote", "case": "empty", "backend": ""}
+{"func": "remote", "case": "unknown", "backend": "myplugin"}
+{"func": "aslist", "case": "dict", "raw": {"a": 1}}
+{"func": "aslist", "case": "list", "raw": [1, 2]}
+{"func": "aslist", "case": "scalar", "raw": 5}
+{"func": "aslist", "case": "null", "raw": null}
+{"func": "clean", "case": "spaces", "value": "  hello  "}
+{"func": "clean", "case": "blank", "value": "   "}
+{"func": "clean", "case": "nonstring", "value": 123}
+{"func": "required", "case": "strlist", "fm": {"required_environment_variables": ["API_KEY", "TOKEN"]}}
+{"func": "required", "case": "dictlist", "fm": {"required_environment_variables": [{"name": "API_KEY", "prompt": "Key?", "required_for": "login", "optional": true}]}}
+{"func": "required", "case": "collect", "fm": {"setup": {"help": "See docs", "collect_secrets": [{"env_var": "GH_TOKEN", "provider_url": "https://gh", "prompt": "Token"}]}}}
+{"func": "required", "case": "legacy", "fm": {"prerequisites": {"env_vars": ["LEGACY_A", "LEGACY_B"]}}}
+{"func": "required", "case": "dedupe", "fm": {"required_environment_variables": ["A", "A"], "setup": {"collect_secrets": [{"env_var": "A", "prompt": "again"}]}}}
+{"func": "required", "case": "invalid", "fm": {"required_environment_variables": ["GOOD", "bad-name", "9BAD", ""]}}
+{"func": "required", "case": "empty", "fm": {}}
+{"func": "required", "case": "mixed", "fm": {"required_environment_variables": ["A"], "setup": {"help": "default help"}, "prerequisites": {"env_vars": "B"}}}
+{"func": "capture", "case": "plain", "missing": ["A", "B"], "skipped": false, "hint": null}
+{"func": "capture", "case": "skipped", "missing": ["A"], "skipped": true, "hint": "go to CLI"}
+{"func": "capture", "case": "empty", "missing": [], "skipped": false, "hint": null}
+{"func": "note", "case": "setup", "status": "setup_needed", "missing": ["A", "B"], "help": "See docs"}
+{"func": "note", "case": "setup_empty", "status": "setup_needed", "missing": [], "help": null}
+{"func": "note", "case": "available", "status": "available", "missing": ["A"], "help": "x"}
+{"func": "note", "case": "unsupported", "status": "unsupported", "missing": ["A"], "help": null}
+{"func": "persisted", "case": "present", "var": "A", "snapshot": {"A": "value"}, "secret": null}
+{"func": "persisted", "case": "blank", "var": "A", "snapshot": {"A": ""}, "secret": "fallback"}
+{"func": "persisted", "case": "missing_secret", "var": "B", "snapshot": {}, "secret": "secretval"}
+{"func": "persisted", "case": "missing_nosecret", "var": "B", "snapshot": {}, "secret": null}

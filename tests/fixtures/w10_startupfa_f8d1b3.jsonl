@@ -1,0 +1,32 @@
+{"func":"is_global_fast_version_argv","argv":["--version"]}
+{"func":"is_global_fast_version_argv","argv":["-V"]}
+{"func":"is_global_fast_version_argv","argv":["--version","x"]}
+{"func":"is_global_fast_version_argv","argv":[]}
+{"func":"is_global_fast_version_argv","argv":["version"]}
+{"func":"is_global_fast_version_argv","argv":null}
+{"func":"is_desktop_ssh_backend_argv","argv":["serve","--ssh-session-token-file"]}
+{"func":"is_desktop_ssh_backend_argv","argv":[]}
+{"func":"is_desktop_ssh_backend_argv","argv":["--version"]}
+{"func":"is_desktop_ssh_backend_argv","argv":"notalist"}
+{"func":"active_profile_may_override_home","active_text":"work"}
+{"func":"active_profile_may_override_home","active_text":"default"}
+{"func":"active_profile_may_override_home","active_text":"  default  "}
+{"func":"active_profile_may_override_home","active_text":""}
+{"func":"active_profile_may_override_home","active_text":null}
+{"func":"active_profile_may_override_home","active_text":"  "}
+{"func":"normalize_hermes_home_env","raw":"","env":{}}
+{"func":"normalize_hermes_home_env","raw":"  ","env":{}}
+{"func":"normalize_hermes_home_env","raw":null,"env":{}}
+{"func":"normalize_hermes_home_env","raw":"C:/home/u/.hermes","env":{}}
+{"func":"normalize_hermes_home_env","raw":"  C:/home/u/.hermes  ","env":{}}
+{"func":"normalize_hermes_home_env","raw":"$HOME/.hermes","env":{"HOME":"C:/H"}}
+{"func":"normalize_hermes_home_env","raw":"%USERPROFILE%/.hermes","env":{"USERPROFILE":"C:/U"}}
+{"func":"normalize_hermes_home_env","raw":"${MISSING}/.hermes","env":{}}
+{"func":"normalize_hermes_home_env","raw":"~/x","env":{"USERPROFILE":"C:/U"}}
+{"func":"normalize_hermes_home_env","raw":"$HOME/%HOME%/%MISSING%/%%","env":{"HOME":"C:/H"}}
+{"func":"normalize_hermes_home_env","raw":"$$","env":{}}
+{"func":"read_install_method","text":" PIP "}
+{"func":"read_install_method","text":"MANAGED"}
+{"func":"read_install_method","text":""}
+{"func":"read_install_method","text":null}
+{"func":"read_install_method","text":"  "}

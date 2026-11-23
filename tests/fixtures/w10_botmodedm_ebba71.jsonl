@@ -1,0 +1,17 @@
+{"case":1,"func":"definitely_not_sent","ack":{"error":"boom","status":"failed"}}
+{"case":2,"func":"definitely_not_sent","ack":{"error":"boom","status":"queued"}}
+{"case":3,"func":"definitely_not_sent","ack":{"error":"boom","status":"ambiguous"}}
+{"case":4,"func":"definitely_not_sent","ack":{"error":"boom"}}
+{"case":5,"func":"definitely_not_sent","ack":{"error":"boom","status":null}}
+{"case":6,"func":"definitely_not_sent","ack":{"error":"","status":"failed"}}
+{"case":7,"func":"definitely_not_sent","ack":{"error":null,"status":"failed"}}
+{"case":8,"func":"definitely_not_sent","ack":{}}
+{"case":9,"func":"definitely_not_sent","ack":{"error":false,"status":"queued"}}
+{"case":10,"func":"definitely_not_sent","ack":{"error":[],"status":null}}
+{"case":11,"func":"peer_key","peer_name":"alice","peer_profile":"default","turn_author":{},"peer_url":""}
+{"case":12,"func":"peer_key","peer_name":"Alice","peer_profile":"Default","turn_author":{"id":"bot:Host.Example.com/default","is_bot":true},"peer_url":"https://host.example.com:8443/x"}
+{"case":13,"func":"peer_key","peer_name":"alice","peer_profile":"default","turn_author":{"id":"bot:host.example.com/other","is_bot":true},"peer_url":"https://host.example.com/x"}
+{"case":14,"func":"peer_key","peer_name":"alice","peer_profile":"default","turn_author":{"id":"bot:HOST/default","is_bot":true},"peer_url":"https://host.example.com/x"}
+{"case":15,"func":"peer_key","peer_name":"alice","peer_profile":"default","turn_author":{"id":"bot:other.com/default","is_bot":true},"peer_url":"https://host.example.com/x"}
+{"case":16,"func":"peer_key","peer_name":"alice","peer_profile":"default","turn_author":{"id":"bot:host/default","is_bot":false},"peer_url":"https://host/x"}
+{"case":17,"func":"peer_key","peer_name":"bob","peer_profile":"prod","turn_author":null,"peer_url":""}

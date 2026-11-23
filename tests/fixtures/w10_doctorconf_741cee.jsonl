@@ -1,0 +1,16 @@
+{"func":"deprecated_config_keys","raw_config":{"display":{"tool_progress_overrides":1},"delegation":{"max_async_children":3},"compression":{"summary_model":"m","summary_provider":"p","summary_base_url":"u"}}}
+{"func":"deprecated_config_keys","raw_config":{"display":{},"compression":{}}}
+{"func":"deprecated_config_keys","raw_config":null}
+{"func":"deprecated_config_keys","raw_config":[1,2,3]}
+{"func":"deprecated_config_keys","raw_config":{"display":"not-a-dict","compression":{"other":1}}}
+{"func":"deprecated_env_vars","env_map":{"TERMINAL_CWD":"/x","QQ_HOME_CHANNEL":"abc","MESSAGING_CWD":"z"}}
+{"func":"deprecated_env_vars","env_map":{"HERMES_TOOL_PROGRESS":"","HERMES_TOOL_PROGRESS_MODE":"   ","QQ_HOME_CHANNEL_NAME":null}}
+{"func":"deprecated_env_vars","env_map":{}}
+{"func":"deprecated_env_vars","env_map":"not-a-dict"}
+{"func":"endpoint_url","entry":{"api":" https://EXAMPLE.com/path/ "}}
+{"func":"endpoint_url","entry":{"api":"","base_url":" HTTP://A/B// ","url":"http://c"}}
+{"func":"endpoint_url","entry":{"base_url":null,"url":" HTTPS://Z/X/ "}}
+{"func":"endpoint_url","entry":{}}
+{"func":"has_provider_env_config","content":"nothing configured here"}
+{"func":"has_provider_env_config","content":"export OPENROUTER_API_KEY=sk-1"}
+{"func":"has_provider_env_config","content":"TOKENPLAN_API_KEY=1"}

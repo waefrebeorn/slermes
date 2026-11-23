@@ -1,0 +1,18 @@
+{"func": "web_extract_url", "value": "  https://example.com  "}
+{"func": "web_extract_url", "value": {"url": "https://a.example"}}
+{"func": "web_extract_url", "value": {"href": " /b "}}
+{"func": "web_extract_url", "value": {"url": "", "href": "/c"}}
+{"func": "web_extract_url", "value": null}
+{"func": "web_extract_url", "value": {"url": 123}}
+{"func": "web_extract_url", "value": 123}
+{"func": "web_extract_url", "value": "   "}
+{"func": "disabled_plugin_error", "capability": "extract", "disabled_key": "community/firecrawl"}
+{"func": "disabled_plugin_error", "capability": "search", "disabled_key": "x"}
+{"func": "result_entry", "url": "https://x", "error": "boom"}
+{"func": "result_entry", "url": "https://y", "error": null}
+{"func": "extract_error_json", "error": "oops"}
+{"func": "extract_error_json", "error": ""}
+{"func": "merge_in_order", "total": 2, "fixed": {"0": {"url": "a", "title": "", "content": "", "error": null}}, "fetch_positions": [1], "fetch_urls": ["u1"], "results": [{"url": "r1", "title": "", "content": "", "error": null}]}
+{"func": "merge_in_order", "total": 2, "fixed": {}, "fetch_positions": [0, 1], "fetch_urls": ["u0", "u1"], "results": [{"url": "a", "title": "", "content": "", "error": null}]}
+{"func": "merge_in_order", "total": 0, "fixed": {}, "fetch_positions": [], "fetch_urls": [], "results": []}
+{"func": "merge_in_order", "total": 2, "fixed": {"0": {"url": "f0"}, "1": {"url": "f1"}}, "fetch_positions": [], "fetch_urls": [], "results": []}

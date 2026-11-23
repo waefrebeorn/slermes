@@ -1,0 +1,19 @@
+{"case":1,"func":"configured_names","config":{"terminal":{"client_env_passthrough":[" NODE_EXTRA ","","  ",5,"CARGO_BIN"]}},"secret":["TOKEN"]}
+{"case":2,"func":"configured_names","config":{},"secret":["TOKEN"]}
+{"case":3,"func":"client_env_rules","config":{"terminal":{"client_env_passthrough":["NODE_EXTRA"]}},"local":true,"secret":["TOKEN"]}
+{"case":4,"func":"client_env_rules","config":{"terminal":{"client_env_passthrough":["NODE_EXTRA"]}},"local":false,"secret":["TOKEN"]}
+{"case":5,"func":"travels","name":"PATH","secret":["TOKEN"]}
+{"case":6,"func":"travels","name":"NODE_AUTH_TOKEN","secret":["TOKEN"]}
+{"case":7,"func":"travels","name":"HERMES_FOO","secret":["TOKEN"]}
+{"case":8,"func":"travels","name":"NODE_EXTRA","secret":["TOKEN"]}
+{"case":9,"func":"normalise","value":{"PATH":"/bin","HERMES_X":"v","NODE_AUTH_TOKEN":"***"},"rules":{"behaviour":[],"names":["PATH"],"prefixes":["CONDA_","NODE_"],"secret":["TOKEN"]},"secret":["TOKEN"]}
+{"case":10,"func":"normalise","value":[1,2],"rules":null,"secret":["TOKEN"]}
+{"case":11,"func":"normalise","value":{"A":1},"rules":null,"secret":["TOKEN"]}
+{"case":12,"func":"normalise","value":{"A":"x","B":"y"},"rules":null,"secret":["TOKEN"]}
+{"case":13,"func":"accept","value":{"PATH":"/p","NODE_X":"1","HERMES_INFERENCE_PROVIDER":"x","NODE_AUTH_TOKEN":"***"},"config":{"terminal":{"client_env_passthrough":["NODE_X"]}},"local":true,"secret":["TOKEN"]}
+{"case":14,"func":"accept","value":{"HERMES_PREFILL_MESSAGES_FILE":"f","HERMES_INFERENCE_PROVIDER":"p","PATH":"/p"},"config":{},"local":false,"secret":["TOKEN"]}
+{"case":15,"func":"retry_matches","stored_env":{"PATH":"/p"},"rules":null,"has_client_env":true,"request_env":{"PATH":"/p"},"secret":["TOKEN"]}
+{"case":16,"func":"retry_matches","stored_env":{"PATH":"/p"},"rules":null,"has_client_env":true,"request_env":{"PATH":"/q"},"secret":["TOKEN"]}
+{"case":17,"func":"retry_matches","stored_env":null,"rules":null,"has_client_env":false,"request_env":{},"secret":["TOKEN"]}
+{"case":18,"func":"retry_matches","stored_env":{"PATH":"/p"},"rules":{"behaviour":[],"names":["PATH"],"prefixes":[],"secret":[]},"has_client_env":true,"request_env":{"PATH":"/p","HERMES_X":"v"},"secret":["TOKEN"]}
+{"case":19,"func":"retry_matches","stored_env":{"PATH":"/p"},"rules":null,"has_client_env":false,"request_env":{},"secret":["TOKEN"]}

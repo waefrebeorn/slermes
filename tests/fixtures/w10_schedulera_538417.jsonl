@@ -1,0 +1,15 @@
+{"func":"pause_identity","case":"empty_dict","paused":{}}
+{"func":"pause_identity","case":"null","paused":null}
+{"func":"pause_identity","case":"false","paused":false}
+{"func":"pause_identity","case":"zero","paused":0}
+{"func":"pause_identity","case":"empty_list","paused":[]}
+{"func":"pause_identity","case":"basic","paused":{"paused_at":"2026-01-01T00:00:00","paused_reason":"canonical unknown"}}
+{"func":"pause_identity","case":"only_at","paused":{"paused_at":123}}
+{"func":"pause_identity","case":"only_reason","paused":{"paused_reason":"operator"}}
+{"func":"pause_identity","case":"both_null","paused":{"paused_at":null,"paused_reason":null}}
+{"func":"pause_identity","case":"extra_keys","paused":{"paused_at":"t","paused_reason":"r","other":9}}
+{"func":"replayable","case":"null","job_id":"j","completions":null,"existing":[]}
+{"func":"replayable","case":"empty","job_id":"j","completions":[],"existing":["a"]}
+{"func":"replayable","case":"subset","job_id":"j","completions":["a","b","c"],"existing":["a","c"]}
+{"func":"replayable","case":"dupes","job_id":"j","completions":["a","a","b"],"existing":["a"]}
+{"func":"replayable","case":"none_exist","job_id":"j","completions":["x"],"existing":[]}

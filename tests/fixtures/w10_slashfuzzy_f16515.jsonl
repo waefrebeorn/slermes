@@ -1,0 +1,16 @@
+{"func": "tokenize", "value": ""}
+{"func": "tokenize", "value": "Hello, World!"}
+{"func": "tokenize", "value": "ABC123-DEF_456"}
+{"func": "tokenize", "value": "---"}
+{"func": "tokenize", "value": "  MiXeD  case 9 "}
+{"func": "normalize", "query": "/Model  "}
+{"func": "normalize", "query": "  /Foo/Bar"}
+{"func": "normalize", "query": "///X"}
+{"func": "normalize", "query": "  HELLO "}
+{"func": "score", "item": {"text": "/model"}, "query": "model"}
+{"func": "score", "item": {"text": "model"}, "query": "mod"}
+{"func": "score", "item": {"text": "deploy"}, "query": "ploy"}
+{"func": "score", "item": {"text": "xyz", "meta": "Shows a summary of state"}, "query": "summary"}
+{"func": "score", "item": {"text": "xyz", "meta": "nothing relevant"}, "query": "summary"}
+{"func": "rank", "items": [{"text": "/model"}], "catalog": [{"text": "/modeling"}, {"text": "compress", "meta": "model context"}], "query": "model"}
+{"func": "rank", "items": [{"text": "/help"}], "catalog": [{"text": "help"}, {"text": "helper"}, {"text": "unrelated"}], "query": "help"}

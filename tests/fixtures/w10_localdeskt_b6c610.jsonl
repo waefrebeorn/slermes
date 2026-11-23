@@ -1,0 +1,15 @@
+{"func":"theme","case":"apply_json","payload":{"value":"dark"},"apply_answer":"{\"success\":true,\"theme\":\"dark\"}","elapsed":0}
+{"func":"theme","case":"apply_text","payload":{"value":"dark"},"apply_answer":"not json","elapsed":0}
+{"func":"theme","case":"apply_empty","payload":{"value":"dark"},"apply_answer":"","elapsed":0}
+{"func":"theme","case":"pick_picked","payload":{"picker":true},"pick":{"picked":{"name":"midnight"}},"elapsed":10}
+{"func":"theme","case":"pick_said","payload":{"picker":true},"pick":{"said":"  hello  "},"elapsed":10}
+{"func":"theme","case":"pick_empty_obj","payload":{"picker":true},"pick":{},"elapsed":10}
+{"func":"theme","case":"pick_none_short","payload":{"picker":true},"pick":null,"elapsed":1}
+{"func":"theme","case":"pick_none_long","payload":{"picker":true},"pick":null,"elapsed":301}
+{"func":"theme","case":"pick_picked_not_dict","payload":{"picker":true},"pick":{"picked":"notadict","said":"x"},"elapsed":10}
+{"func":"read_block","case":"both_none"}
+{"func":"read_block","case":"start_zero","start":0}
+{"func":"read_block","case":"count_zero","count":0}
+{"func":"read_block","case":"both_values","start":5,"count":10}
+{"func":"read_block","case":"strings","start":"a","count":"b"}
+{"func":"read_block","case":"negative","start":-1,"count":0}

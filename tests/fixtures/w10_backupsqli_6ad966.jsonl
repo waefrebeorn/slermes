@@ -1,0 +1,15 @@
+{"func":"uses_wal","case":1,"head":[]}
+{"func":"uses_wal","case":2,"head":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
+{"func":"uses_wal","case":3,"head":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2]}
+{"func":"uses_wal","case":4,"head":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]}
+{"func":"uses_wal","case":5,"head":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2]}
+{"func":"uses_wal","case":6,"head":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,9]}
+{"func":"pages_per_second","case":7,"pages":100,"seconds":2.0}
+{"func":"pages_per_second","case":8,"pages":7,"seconds":2.0}
+{"func":"pages_per_second","case":9,"pages":0,"seconds":0.0}
+{"func":"pages_per_second","case":10,"pages":9,"seconds":0.5}
+{"func":"pages_per_second","case":11,"pages":100,"seconds":0.0000001}
+{"func":"rollback_hold","case":12,"total":50,"pages":100,"seconds":2.0}
+{"func":"rollback_hold","case":13,"total":50,"pages":7,"seconds":2.0}
+{"func":"rollback_hold","case":14,"total":100,"pages":0,"seconds":1.0}
+{"func":"rollback_hold","case":15,"total":0,"pages":100,"seconds":2.0}

@@ -1,0 +1,30 @@
+{"case": 1, "func": "nonnegative_int", "value": "30"}
+{"case": 2, "func": "nonnegative_int", "value": "0"}
+{"case": 3, "func": "nonnegative_int", "value": " 007 "}
+{"case": 4, "func": "nonnegative_int", "value": "+5"}
+{"case": 5, "func": "nonnegative_int", "value": "-0"}
+{"case": 6, "func": "nonnegative_int", "value": "-1"}
+{"case": 7, "func": "nonnegative_int", "value": "-12"}
+{"case": 8, "func": "nonnegative_int", "value": "abc"}
+{"case": 9, "func": "nonnegative_int", "value": ""}
+{"case": 10, "func": "nonnegative_int", "value": "  12\t"}
+{"case": 11, "func": "nonnegative_int", "value": "1_000"}
+{"case": 12, "func": "nonnegative_int", "value": "0_0"}
+{"case": 13, "func": "nonnegative_int", "value": "_10"}
+{"case": 14, "func": "nonnegative_int", "value": "10_"}
+{"case": 15, "func": "nonnegative_int", "value": "1__0"}
+{"case": 16, "func": "nonnegative_int", "value": "3.5"}
+{"case": 17, "func": "nonnegative_int", "value": "1e3"}
+{"case": 18, "func": "nonnegative_int", "value": "999999999999999999999999999"}
+{"case": 19, "func": "nonnegative_int", "value": "-999999999999999999999"}
+{"case": 20, "func": "nonnegative_int", "value": "0x10"}
+{"case": 21, "func": "nonnegative_int", "value": "  -0  "}
+{"case": 22, "func": "nonnegative_int", "value": "+00012"}
+{"case": 23, "func": "bulk_ids", "verb": "block"}
+{"case": 24, "func": "bulk_ids", "verb": "schedule"}
+{"case": 25, "func": "bulk_ids", "verb": "promote"}
+{"case": 26, "func": "reason", "help": "Human-readable reason (recorded on the reclaimed event)"}
+{"case": 27, "func": "reason", "help": ""}
+{"case": 28, "func": "json_flag", "kw": {}}
+{"case": 29, "func": "json_flag", "kw": {"help": "Emit JSON output"}}
+{"case": 30, "func": "json_flag", "kw": {"dest": "json", "help": "Emit machine-readable JSON result"}}

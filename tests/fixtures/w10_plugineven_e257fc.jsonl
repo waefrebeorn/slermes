@@ -1,0 +1,15 @@
+{"func": "event_name", "case": "simple", "plugin_id": "rss-reader", "event": "feed.updated"}
+{"func": "event_name", "case": "underscore digits", "plugin_id": "my_plugin2", "event": "x"}
+{"func": "event_name", "case": "nested event", "plugin_id": "a", "event": "display.install.done"}
+{"func": "event_name", "case": "uppercase id", "plugin_id": "RSS", "event": "feed"}
+{"func": "event_name", "case": "dotted id", "plugin_id": "other.x", "event": "feed"}
+{"func": "event_name", "case": "empty id", "plugin_id": "", "event": "feed"}
+{"func": "event_name", "case": "id too long", "plugin_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "event": "feed"}
+{"func": "event_name", "case": "leading dot", "plugin_id": "a", "event": ".x"}
+{"func": "event_name", "case": "double dot", "plugin_id": "a", "event": "a..b"}
+{"func": "event_name", "case": "slash event", "plugin_id": "a", "event": "a/b"}
+{"func": "event_name", "case": "event too long", "plugin_id": "a", "event": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "session_event_body", "case": "valid object payload", "session_id": "s1", "plugin_id": "rss", "event": "feed.updated", "payload": {"count": 3, "ok": true}}
+{"func": "session_event_body", "case": "null payload", "session_id": "s2", "plugin_id": "rss", "event": "feed", "payload": null}
+{"func": "session_event_body", "case": "empty session", "session_id": "", "plugin_id": "rss", "event": "feed", "payload": {}}
+{"func": "session_event_body", "case": "array payload", "session_id": "s3", "plugin_id": "rss", "event": "feed", "payload": [1, 2]}

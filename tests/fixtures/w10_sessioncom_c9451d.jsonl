@@ -1,0 +1,27 @@
+{"func":"first_word","arg":"pending it's here"}
+{"func":"first_word","arg":"   APPROVE  now"}
+{"func":"first_word","arg":""}
+{"func":"first_token","arg":"list --all"}
+{"func":"first_token","arg":"--board myboard show"}
+{"func":"first_token","arg":"--board=myboard  List"}
+{"func":"first_token","arg":"  'quoted verb' rest"}
+{"func":"command_verdict","name":"status","arg":""}
+{"func":"command_verdict","name":"usage","arg":""}
+{"func":"command_verdict","name":"usage","arg":"reset"}
+{"func":"command_verdict","name":"skills","arg":"pending"}
+{"func":"command_verdict","name":"skills","arg":"approve"}
+{"func":"command_verdict","name":"voice","arg":"TTS"}
+{"func":"command_verdict","name":"voice","arg":"list"}
+{"func":"command_verdict","name":"kanban","arg":"list --board main"}
+{"func":"command_verdict","name":"kanban","arg":"create"}
+{"func":"command_verdict","name":"cron","arg":""}
+{"func":"command_verdict","name":"cron","arg":"list -a"}
+{"func":"command_verdict","name":"cron","arg":"add daily"}
+{"func":"command_verdict","name":"title","arg":"x"}
+{"func":"command_verdict","name":"bogus","arg":""}
+{"func":"command_verdict","name":"memory","arg":"pending it's"}
+{"func":"refusal_hint","name":"export"}
+{"func":"refusal_hint","name":"status"}
+{"func":"text","output":{"text":"hello"}}
+{"func":"text","output":""}
+{"func":"text","output":null}

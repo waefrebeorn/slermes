@@ -1,0 +1,13 @@
+{"case":1,"func":"sign_managed_python","system":"Windows","codesign_available":1,"sign_rc":0,"verify_rc":0}
+{"case":2,"func":"sign_managed_python","system":"Darwin","codesign_available":0,"sign_rc":0,"verify_rc":0}
+{"case":3,"func":"sign_managed_python","system":"Darwin","codesign_available":1,"sign_rc":1,"verify_rc":0}
+{"case":4,"func":"sign_managed_python","system":"Darwin","codesign_available":1,"sign_rc":0,"verify_rc":1}
+{"case":5,"func":"sign_managed_python","system":"Darwin","codesign_available":1,"sign_rc":0,"verify_rc":0}
+{"case":6,"func":"sign_managed_python","system":"Darwin","codesign_available":1,"sign_raises":1,"sign_rc":0,"verify_rc":0}
+{"case":7,"func":"sign_managed_python","system":"Linux","codesign_available":1,"sign_rc":0,"verify_rc":0}
+{"case":8,"func":"sign_managed_python","system":"Darwin","codesign_available":0,"sign_rc":0,"verify_rc":1}
+{"case":9,"func":"sign_managed_python","system":"","codesign_available":1,"sign_rc":0,"verify_rc":0}
+{"case":10,"func":"sign_managed_python","system":"Darwin","codesign_available":1,"sign_rc":2,"verify_rc":0}
+{"case":11,"func":"sign_managed_python","system":"Darwin","codesign_available":1,"sign_rc":0,"verify_rc":2}
+{"case":12,"func":"sign_managed_python","system":"darwin","codesign_available":1,"sign_rc":0,"verify_rc":0}
+{"case":13,"func":"sign_managed_python","system":"Darwin","codesign_available":1,"sign_raises":1,"sign_rc":1,"verify_rc":1}

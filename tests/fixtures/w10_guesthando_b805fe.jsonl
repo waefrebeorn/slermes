@@ -1,0 +1,33 @@
+{"case": 1, "func": "classify", "status": 200, "payload": {"status": "claimed"}}
+{"case": 2, "func": "classify", "status": 200, "payload": {"status": "ok"}}
+{"case": 3, "func": "classify", "status": 200, "payload": {}}
+{"case": 4, "func": "classify", "status": 404, "payload": {"error": "unknown_token"}}
+{"case": 5, "func": "classify", "status": 410, "payload": {"error": "already_retired"}}
+{"case": 6, "func": "classify", "status": 403, "payload": {"error": "client_not_allowed"}}
+{"case": 7, "func": "classify", "status": 423, "payload": {"error": "account_locked"}}
+{"case": 8, "func": "classify", "status": 400, "payload": {"error": "invalid_request"}}
+{"case": 9, "func": "classify", "status": 500, "payload": {"error": "server_error"}}
+{"case": 10, "func": "classify", "status": 429, "payload": {}}
+{"case": 11, "func": "classify", "status": 200, "payload": {"status": null}}
+{"case": 12, "func": "classify", "status": 400, "payload": {"error": null}}
+{"case": 13, "func": "result_lines", "status_obj": {"state": "pending"}}
+{"case": 14, "func": "result_lines", "status_obj": {"state": "retrying"}}
+{"case": 15, "func": "result_lines", "status_obj": {"state": "failed", "error": "client_not_allowed"}}
+{"case": 16, "func": "result_lines", "status_obj": {"state": "failed", "error": "account_locked"}}
+{"case": 17, "func": "result_lines", "status_obj": {"state": "failed", "error": "other"}}
+{"case": 18, "func": "result_lines", "status_obj": {"state": "gone", "probably_moved": true}}
+{"case": 19, "func": "result_lines", "status_obj": {"state": "gone", "probably_moved": false}}
+{"case": 20, "func": "result_lines", "status_obj": {"state": "idle"}}
+{"case": 21, "func": "result_lines", "status_obj": {"state": "claimed", "connectors_kind": "moved", "moved_toolkits": ["github", "figma"], "account_email": "a@b.c"}}
+{"case": 22, "func": "result_lines", "status_obj": {"state": "claimed", "connectors_kind": "conflict"}}
+{"case": 23, "func": "result_lines", "status_obj": {"state": "claimed", "connectors_kind": "none", "moved_toolkits": []}}
+{"case": 24, "func": "result_lines", "status_obj": {"state": "claimed", "connectors_kind": "unknown"}}
+{"case": 25, "func": "result_lines", "status_obj": {"state": "claimed", "connectors_kind": "moved", "moved_toolkits": ["github"], "dropped_toolkits": ["slack"], "account_email": "x@y"}}
+{"case": 26, "func": "result_lines", "status_obj": {"state": "claimed", "connectors_kind": "swapped", "moved_toolkits": ["custom-app"]}}
+{"case": 27, "func": "result_lines", "status_obj": {"state": "claimed", "connectors_kind": "moved", "moved_toolkits": []}}
+{"case": 28, "func": "status_lines", "status_obj": {"state": "claimed", "connectors_kind": "moved", "moved_toolkits": ["github"], "account_email": "x@y"}}
+{"case": 29, "func": "status_lines", "status_obj": {"state": "claimed", "connectors_kind": "none", "account_email": "x@y"}}
+{"case": 30, "func": "status_lines", "status_obj": {"state": "claimed", "connectors_kind": "conflict"}}
+{"case": 31, "func": "status_lines", "status_obj": {"state": "pending"}}
+{"case": 32, "func": "status_lines", "status_obj": {"state": "claimed", "connectors_kind": "moved", "moved_toolkits": []}}
+{"case": 33, "func": "status_lines", "status_obj": {"state": "claimed", "connectors_kind": "moved", "moved_toolkits": ["stripe_mcp", "googledocs"], "account_email": "u@x"}}

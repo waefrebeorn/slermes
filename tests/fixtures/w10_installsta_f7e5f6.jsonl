@@ -1,0 +1,39 @@
+{"case": 1, "func": "unit_account", "unit": "User=alice"}
+{"case": 2, "func": "unit_account", "unit": "[Unit]\nDescription=x\n  User=bob  \nExecStart=/x"}
+{"case": 3, "func": "unit_account", "unit": "nothing here"}
+{"case": 4, "func": "unit_account", "unit": "  User=carol\t "}
+{"case": 5, "func": "unit_account", "unit": "User="}
+{"case": 6, "func": "unit_account", "unit": "prefix User=x"}
+{"case": 7, "func": "unit_account", "unit": "User=123  #"}
+{"case": 8, "func": "unit_account", "unit": "USER=alice"}
+{"case": 9, "func": "unit_account", "unit": "\tUser=dave\r\n"}
+{"case": 10, "func": "unit_account", "unit": "User=a-b_c"}
+{"case": 11, "func": "unit_account", "unit": "User=first\nUser=second"}
+{"case": 12, "func": "unit_account", "unit": "\n\nUser=zed\n"}
+{"case": 13, "func": "unit_account", "unit": "User = eve"}
+{"case": 14, "func": "onboarding_done", "config": {"onboarding": {"run": false}}}
+{"case": 15, "func": "onboarding_done", "config": {"onboarding": {"run": true}}}
+{"case": 16, "func": "onboarding_done", "config": {"onboarding": {"run": 0}}}
+{"case": 17, "func": "onboarding_done", "config": {"onboarding": null}}
+{"case": 18, "func": "onboarding_done", "config": {}}
+{"case": 19, "func": "onboarding_done", "config": {"onboarding": {"run": false, "extra": 1}}}
+{"case": 20, "func": "onboarding_done", "config": {"onboarding": []}}
+{"case": 21, "func": "provider_config", "config": {"model": {"provider": "openai"}}}
+{"case": 22, "func": "provider_config", "config": {"model": {"provider": "auto"}}}
+{"case": 23, "func": "provider_config", "config": {"model": {"provider": "  "}}}
+{"case": 24, "func": "provider_config", "config": {"model": {"provider": null}}}
+{"case": 25, "func": "provider_config", "config": {"model": "x"}}
+{"case": 26, "func": "provider_config", "config": {}}
+{"case": 27, "func": "provider_config", "config": {"model": {"provider": "ANTHROPIC"}}}
+{"case": 28, "func": "provider_config", "config": {"model": {"provider": " openai "}}}
+{"case": 29, "func": "provider_login", "auth_stores": [{"active_provider": "nous"}]}
+{"case": 30, "func": "provider_login", "auth_stores": [{"providers": {"nous": {"token": "x"}}}]}
+{"case": 31, "func": "provider_login", "auth_stores": [{"providers": {"nous": null}}]}
+{"case": 32, "func": "provider_login", "auth_stores": [{"auth_method": "password"}]}
+{"case": 33, "func": "provider_login", "auth_stores": [{"anon_token": "anon_123"}]}
+{"case": 34, "func": "provider_login", "auth_stores": [{"credential_pool": {"nous": [{"source": "manual:user"}]}}]}
+{"case": 35, "func": "provider_login", "auth_stores": [{"credential_pool": {"nous": [{"source": "shell:env"}]}}]}
+{"case": 36, "func": "provider_login", "auth_stores": [{}, {}]}
+{"case": 37, "func": "provider_login", "auth_stores": [{"active_provider": "", "providers": {}, "credential_pool": {}}]}
+{"case": 38, "func": "provider_login", "auth_stores": [{"credential_pool": {"nous": "notlist"}}]}
+{"case": 39, "func": "provider_login", "auth_stores": [{"auth_method": null, "anon_token": "", "refresh_token": 0}]}

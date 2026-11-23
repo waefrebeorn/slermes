@@ -1,0 +1,20 @@
+{"func": "reset"}
+{"func": "dedup", "case": "first", "task": "skill-alpha", "name": "alpha", "file_path": "SKILL.md", "payload": {}, "result": "Full content v1"}
+{"func": "dedup", "case": "repeat", "task": "skill-alpha", "name": "alpha", "file_path": "SKILL.md", "payload": {}, "result": "Full content v1"}
+{"func": "dedup", "case": "changed", "task": "skill-alpha", "name": "alpha", "file_path": "SKILL.md", "payload": {}, "result": "Full content v2"}
+{"func": "dedup", "case": "changed_repeat", "task": "skill-alpha", "name": "alpha", "file_path": "SKILL.md", "payload": {}, "result": "Full content v2"}
+{"func": "dedup", "case": "otherpath", "task": "skill-alpha", "name": "alpha", "file_path": "other.md", "payload": {}, "result": "Full content v2"}
+{"func": "dedup", "case": "othertask", "task": "task-beta", "name": "alpha", "file_path": "SKILL.md", "payload": {}, "result": "Full content v2"}
+{"func": "dedup", "case": "setupflag", "task": "skill-alpha", "name": "alpha", "file_path": "SKILL.md", "payload": {"setup_needed": true}, "result": "Full content v2"}
+{"func": "dedup", "case": "setupstatus", "task": "skill-alpha", "name": "alpha", "file_path": "SKILL.md", "payload": {"readiness_status": "setup_needed"}, "result": "Full content v2"}
+{"func": "dedup", "case": "notask", "name": "alpha", "file_path": "SKILL.md", "payload": {}, "result": "Full content v2"}
+{"func": "dedup", "case": "nameride", "task": "skill-alpha", "name": "fallback", "file_path": "SKILL.md", "payload": {"name": "resolved-name"}, "result": "unicode: café ☃"}
+{"func": "dedup", "case": "nameride_repeat", "task": "skill-alpha", "name": "fallback", "file_path": "SKILL.md", "payload": {"name": "resolved-name"}, "result": "unicode: café ☃"}
+{"func": "dedup", "case": "emptyresult", "task": "skill-alpha", "name": "empty", "file_path": "", "payload": {}, "result": ""}
+{"func": "dedup", "case": "emptyresult_repeat", "task": "skill-alpha", "name": "empty", "file_path": "", "payload": {}, "result": ""}
+{"func": "reset", "case": "onetask", "task": "skill-alpha"}
+{"func": "dedup", "case": "after_reset_task", "task": "skill-alpha", "name": "alpha", "file_path": "SKILL.md", "payload": {}, "result": "Full content v1"}
+{"func": "dedup", "case": "survived_other", "task": "task-beta", "name": "alpha", "file_path": "SKILL.md", "payload": {}, "result": "Full content v2"}
+{"func": "reset", "case": "all"}
+{"func": "dedup", "case": "after_reset_all", "task": "skill-alpha", "name": "alpha", "file_path": "SKILL.md", "payload": {}, "result": "Full content v1"}
+{"func": "dedup", "case": "emptyfile", "task": "skill-alpha", "name": "x", "file_path": null, "payload": {}, "result": "abc"}

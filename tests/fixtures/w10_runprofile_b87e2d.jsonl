@@ -1,0 +1,13 @@
+{"func":"served_names","case":"two","served":["alpha","beta"]}
+{"func":"served_names","case":"empty","served":[]}
+{"func":"served_names","case":"dupes","served":["a","a","b"]}
+{"func":"served_names","case":"unsorted","served":["zeta","alpha","mid"]}
+{"func":"resolve_source","case":"pinned_identity","identity_home":"/pinned","source_profile":"x","derived_name":"y","multiplexed":true}
+{"func":"resolve_source","case":"active_default","source_profile":"","derived_name":"","active_name":"default","multiplexed":false,"profiles":{"default":{"exists":true,"dir":"/d"}}}
+{"func":"resolve_source","case":"explicit_served","source_profile":" alpha ","derived_name":"","multiplexed":true,"profiles":{"alpha":{"exists":true,"dir":"/a","norm":"alpha"}},"served":["alpha"]}
+{"func":"resolve_source","case":"explicit_missing_reject","source_profile":"alpha","derived_name":"","multiplexed":true,"profiles":{"alpha":{"exists":false,"dir":"/a","norm":"alpha"}},"served":["alpha"],"home":"/global"}
+{"func":"resolve_source","case":"explicit_unserved_reject","source_profile":"alpha","derived_name":"","multiplexed":true,"profiles":{"alpha":{"exists":true,"dir":"/a","norm":"alpha"}},"served":[],"home":"/global"}
+{"func":"resolve_source","case":"missing_not_multiplex","source_profile":"alpha","derived_name":"","multiplexed":false,"profiles":{"alpha":{"exists":false,"dir":"/a","norm":"alpha"}},"home":"/global"}
+{"func":"resolve_source","case":"derived_served","source_profile":"","derived_name":"beta","multiplexed":true,"profiles":{"beta":{"exists":true,"dir":"/b","norm":"beta"}},"served":["beta"]}
+{"func":"resolve_source","case":"norm_not_served","source_profile":"alpha","derived_name":"","multiplexed":true,"profiles":{"alpha":{"exists":true,"dir":"/a","norm":"aliased"}},"served":["alpha"],"home":"/global"}
+{"func":"resolve_source","case":"no_explicit_multiplex","source_profile":"","derived_name":"","active_name":"default","multiplexed":true,"profiles":{"default":{"exists":true,"dir":"/d"}},"served":[]}

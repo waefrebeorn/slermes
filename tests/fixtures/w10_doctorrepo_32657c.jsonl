@@ -1,0 +1,14 @@
+{"func":"check_bool","cond":true,"fail":false,"ok":"ok text","bad":["bad text","bad detail"]}
+{"func":"check_bool","cond":false,"fail":false,"ok":"ok text","bad":["bad text","bad detail"]}
+{"func":"check_bool","cond":false,"fail":true,"ok":"ok text","bad":"failed text"}
+{"func":"check_bool","cond":null,"fail":false,"ok":"ok","bad":["bad","detail"]}
+{"func":"check_bool","cond":[],"fail":false,"ok":"ok","bad":"empty bad"}
+{"func":"check_bool","cond":{"x":1},"fail":true,"ok":"ok","bad":["truthy","d"]}
+{"func":"finding_merge","first":{"issues":["a"],"manual_issues":["m1"],"fixed":2},"second":{"issues":["b","c"],"manual_issues":[],"fixed":3}}
+{"func":"finding_merge","first":{},"second":{}}
+{"func":"finding_merge","first":{"issues":["x"]},"second":{"manual_issues":["y"],"fixed":7}}
+{"func":"finding_merge","first":null,"second":{"issues":[1,2],"fixed":0}}
+{"func":"ensure_dir","exists":true,"should_fix":false,"exists_msg":"exists","created_msg":"created","missing_msg":"missing"}
+{"func":"ensure_dir","exists":false,"should_fix":true,"exists_msg":"exists","created_msg":"created","missing_msg":"missing"}
+{"func":"ensure_dir","exists":false,"should_fix":false,"exists_msg":"exists","created_msg":"created","missing_msg":"missing"}
+{"func":"ensure_dir","exists":true,"should_fix":true,"exists_msg":"already here","created_msg":"made it","missing_msg":"gone"}

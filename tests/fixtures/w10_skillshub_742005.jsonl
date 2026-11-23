@@ -1,0 +1,33 @@
+{"func":"provider","case":"known_lower","repo":"openai/skills"}
+{"func":"provider","case":"known_mixed","repo":"NVIDIA/Skills"}
+{"func":"provider","case":"known_spaces","repo":"  wandb/skills  "}
+{"func":"provider","case":"unknown","repo":"foo/bar"}
+{"func":"provider","case":"empty","repo":""}
+{"func":"provfilter","case":"known","source":"NVIDIA"}
+{"func":"provfilter","case":"known_spaces","source":" Weights & Biases "}
+{"func":"provfilter","case":"unknown","source":"github"}
+{"func":"provfilter","case":"empty","source":""}
+{"func":"cachekey","case":"basic","repo":"openai/skills","path":"skills/.curated/","bucket":""}
+{"func":"cachekey","case":"bucket","repo":"K-Dense-AI/scientific-agent-skills","path":"skills/","bucket":"science"}
+{"func":"cachekey","case":"spaces","repo":"a b/c d","path":"x/y","bucket":"z z"}
+{"func":"splitid","case":"three","identifier":"openai/skills/skill-creator"}
+{"func":"splitid","case":"nested","identifier":"openai/skills/a/b/c"}
+{"func":"splitid","case":"short","identifier":"openai/skills"}
+{"func":"splitid","case":"one","identifier":"openai"}
+{"func":"skillpath","case":"normal","skill_path":"a/b","filename":"SKILL.md"}
+{"func":"skillpath","case":"root","skill_path":"","filename":"SKILL.md"}
+{"func":"skillpath","case":"customfn","skill_path":"a/b","filename":"references/x.md"}
+{"func":"skipbundle","case":"dot","rel_path":"a/b/.hidden"}
+{"func":"skipbundle","case":"pyc","rel_path":"a/b/mod.pyc"}
+{"func":"skipbundle","case":"pycache","rel_path":"a/__pycache__/mod.py"}
+{"func":"skipbundle","case":"normal","rel_path":"references/guide.md"}
+{"func":"skipbundle","case":"root_dot","rel_path":".env"}
+{"func":"ratelimit","case":"429","status_code":429,"headers":{}}
+{"func":"ratelimit","case":"403_zero","status_code":403,"headers":{"X-RateLimit-Remaining":"0"}}
+{"func":"ratelimit","case":"403_nonzero","status_code":403,"headers":{"X-RateLimit-Remaining":"5"}}
+{"func":"ratelimit","case":"200","status_code":200,"headers":{}}
+{"func":"treemembers","case":"mixed","prefix":"skills/","entries":[{"path":"skills/a/SKILL.md","type":"blob","mode":"100644"},{"path":"skills/a/link","type":"blob","mode":"120000"},{"path":"skills/a/sub","type":"tree","mode":"040000"},{"path":"README.md","type":"blob","mode":"100644"}]}
+{"func":"treemembers","case":"empty","prefix":"","entries":[]}
+{"func":"groupings","case":"valid","content":"{\"groupings\":[{\"title\":\"Writing\",\"skills\":[\"a\",\"b\"]},{\"title\":\"Dev\",\"skills\":[\"b\",\"c\"]}]}"}
+{"func":"groupings","case":"empty","content":"{\"groupings\":[]}"}
+{"func":"groupings","case":"notjson","content":"not json"}

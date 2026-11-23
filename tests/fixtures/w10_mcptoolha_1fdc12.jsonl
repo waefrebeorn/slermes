@@ -1,0 +1,28 @@
+{"case": 1, "func": "trust_approval_key", "server": "srv", "tool": "write_file"}
+{"case": 2, "func": "trust_approval_key", "server": "", "tool": "t"}
+{"case": 3, "func": "trust_approval_key", "server": "s/a", "tool": "t/b"}
+{"case": 4, "func": "trust_approval_key", "server": "s", "tool": ""}
+{"case": 5, "func": "result_is_error", "result": "{\"error\": \"bad\"}"}
+{"case": 6, "func": "result_is_error", "result": "{\"ok\": true}"}
+{"case": 7, "func": "result_is_error", "result": "{\"error\": null}"}
+{"case": 8, "func": "result_is_error", "result": "[\"error\", 1]"}
+{"case": 9, "func": "result_is_error", "result": "[\"warning\"]"}
+{"case": 10, "func": "result_is_error", "result": "\"my error here\""}
+{"case": 11, "func": "result_is_error", "result": "\"ok\""}
+{"case": 12, "func": "result_is_error", "result": "42"}
+{"case": 13, "func": "result_is_error", "result": "null"}
+{"case": 14, "func": "result_is_error", "result": "true"}
+{"case": 15, "func": "result_is_error", "result": "not json"}
+{"case": 16, "func": "result_is_error", "result": "{}"}
+{"case": 17, "func": "json_type_stable_equal", "left": 1, "right": 1}
+{"case": 18, "func": "json_type_stable_equal", "left": 1, "right": true}
+{"case": 19, "func": "json_type_stable_equal", "left": true, "right": true}
+{"case": 20, "func": "json_type_stable_equal", "left": {"a": 1}, "right": {"a": 1}}
+{"case": 21, "func": "json_type_stable_equal", "left": {"a": 1}, "right": {"a": 1, "b": 2}}
+{"case": 22, "func": "json_type_stable_equal", "left": {"a": 1, "b": 2}, "right": {"b": 2, "a": 1}}
+{"case": 23, "func": "json_type_stable_equal", "left": [1, 2], "right": [1, 2]}
+{"case": 24, "func": "json_type_stable_equal", "left": [1, 2], "right": [2, 1]}
+{"case": 25, "func": "json_type_stable_equal", "left": null, "right": null}
+{"case": 26, "func": "json_type_stable_equal", "left": "x", "right": "x"}
+{"case": 27, "func": "json_type_stable_equal", "left": "1", "right": 1}
+{"case": 28, "func": "json_type_stable_equal", "left": [true], "right": [1]}

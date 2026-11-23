@@ -1,0 +1,14 @@
+{"func":"normalize_modes","case":1,"os_name":"posix","root":"/h","staging":"/h/.stg","entries":[]}
+{"func":"normalize_modes","case":2,"os_name":"posix","root":"/h","staging":"/h/.stg","entries":[{"path":"/h/.stg/a","kind":"file"},{"path":"/h/.stg/b","kind":"dir"},{"path":"/h/.stg/c","kind":"symlink"}]}
+{"func":"normalize_modes","case":3,"os_name":"nt","root":"C:\\h","staging":"C:\\h\\.stg","entries":[{"path":"C:\\h\\.stg\\a","kind":"file"},{"path":"C:\\h\\.stg\\d","kind":"dir"},{"path":"C:\\h\\.stg\\l","kind":"symlink"}]}
+{"func":"normalize_modes","case":4,"os_name":"nt","root":"C:\\h","staging":"C:\\h\\.stg","entries":[]}
+{"func":"normalize_modes","case":5,"os_name":"posix","root":"/h","staging":"/h/.stg","entries":[{"path":"/h/.stg/z","kind":"other"},{"path":"/h/.stg/y","kind":"file"}]}
+{"func":"normalize_modes","case":6,"os_name":"","root":"/r","staging":"/s","entries":[{"path":"/s/f","kind":"file"}]}
+{"func":"normalize_modes","case":7,"os_name":"posix","root":"/r","staging":"/s","entries":[{"path":"/s/a","kind":"file"},{"path":"/s/b","kind":"dir"},{"path":"/s/c","kind":"file"},{"path":"/s/l","kind":"symlink"}]}
+{"func":"fsync_dir","case":8,"os_name":"nt","err":5,"unsupported":[22,129,10045]}
+{"func":"fsync_dir","case":9,"os_name":"posix","err":null,"unsupported":[22,129,10045]}
+{"func":"fsync_dir","case":10,"os_name":"posix","err":22,"unsupported":[22,129,10045]}
+{"func":"fsync_dir","case":11,"os_name":"posix","err":129,"unsupported":[22,129,10045]}
+{"func":"fsync_dir","case":12,"os_name":"posix","err":10045,"unsupported":[22,129,10045]}
+{"func":"fsync_dir","case":13,"os_name":"posix","err":5,"unsupported":[22,129,10045]}
+{"func":"fsync_dir","case":14,"os_name":"posix","err":0,"unsupported":[]}

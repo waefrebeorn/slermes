@@ -1,0 +1,27 @@
+{"func":"name","value":"  Bob  "}
+{"func":"name","value":"   "}
+{"func":"name","value":""}
+{"func":"name","value":null}
+{"func":"name","value":5}
+{"func":"name","value":"\tA\n"}
+{"func":"parse_subject","subject":"auth:v1:[\"p\",\"i\",\"u\"]"}
+{"func":"parse_subject","subject":"x"}
+{"func":"parse_subject","subject":"auth:v1:[bad"}
+{"func":"parse_subject","subject":"auth:v1:[\"p\",\"i\"]"}
+{"func":"parse_subject","subject":"auth:v1:[\"p\",1,\"u\"]"}
+{"func":"parse_subject","subject":"auth:v1:[\"p\", \"i\", \"u\"]"}
+{"func":"parse_subject","subject":null}
+{"func":"authenticated_subject","identity":{"user_id":"u1","provider":"p","issuer":"i"}}
+{"func":"authenticated_subject","identity":{"user_id":"u","provider":"local","profile_id":"prof","instance_id":"inst","capabilities":{}}}
+{"func":"authenticated_subject","identity":{"user_id":"u","provider":"local","profile_id":"prof","instance_id":""}}
+{"func":"authenticated_subject","identity":{"user_id":null,"provider":"p"}}
+{"func":"authenticated_subject","identity":{"user_id":0,"provider":"p"}}
+{"func":"authenticated_subject","identity":{"user_id":true,"provider":"p"}}
+{"func":"authenticated_subject","identity":{"user_id":"u","provider":null,"issuer":null}}
+{"func":"authenticated_subject","identity":{"user_id":"u","provider":5,"issuer":"iss"}}
+{"func":"authenticated_subject"}
+{"func":"is_authenticated_identity","identity":{"user_id":"u","provider":"p"}}
+{"func":"is_authenticated_identity","identity":{"user_id":"server-internal","provider":"server-internal"}}
+{"func":"is_authenticated_identity","identity":{"user_id":"","provider":"p"}}
+{"func":"is_authenticated_identity","identity":{"user_id":"u","provider":"   "}}
+{"func":"is_authenticated_identity","identity":"notadict"}

@@ -1,0 +1,26 @@
+{"func": "low", "case": "under floor", "db_bytes": "100", "free_bytes": "1073741824", "total_bytes": "107374182400"}
+{"func": "low", "case": "above floor", "db_bytes": "100", "free_bytes": "3221225472", "total_bytes": "107374182400"}
+{"func": "low", "case": "10 pct high headroom", "free_bytes": "5368709120", "total_bytes": "107374182400"}
+{"func": "low", "case": "9 pct under headroom", "free_bytes": "16106127360", "total_bytes": "214748364800"}
+{"func": "low", "case": "zero total", "free_bytes": 0, "total_bytes": 0}
+{"func": "retention_days", "case": "default", "sessions": {}}
+{"func": "retention_days", "case": "valid", "sessions": {"retention_days": 30}}
+{"func": "retention_days", "case": "string", "sessions": {"retention_days": "14"}}
+{"func": "retention_days", "case": "negative", "sessions": {"retention_days": -5}}
+{"func": "retention_days", "case": "garbage", "sessions": {"retention_days": "abc"}}
+{"func": "retention_days", "case": "null", "sessions": {"retention_days": null}}
+{"func": "gb", "case": "below gib", "n": 27262976}
+{"func": "gb", "case": "one gib", "n": 1073741824}
+{"func": "gb", "case": "two gib", "n": 2147483648}
+{"func": "gb", "case": "zero", "n": 0}
+{"func": "sessions", "case": "one", "n": 1}
+{"func": "sessions", "case": "many", "n": 5}
+{"func": "helps", "case": "none prunable", "db_bytes": "50", "free_bytes": "1", "total_bytes": "100", "reclaim_bytes": "0", "prunable_sessions": 0}
+{"func": "helps", "case": "big reclaim", "db_bytes": "10737418240", "free_bytes": "1073741824", "total_bytes": "107374182400", "reclaim_bytes": "2147483648", "prunable_sessions": 3}
+{"func": "helps", "case": "small reclaim lifts low", "db_bytes": "1073741824", "free_bytes": "1073741823", "total_bytes": "10737418240", "reclaim_bytes": "10737418240", "prunable_sessions": 2}
+{"func": "advice_lines", "case": "no estimate", "command_prefix": "/", "advice": {"disk": {"db_bytes": "1073741824", "free_bytes": "1073741824", "total_bytes": "10737418240"}, "retention_days": 90, "prunable_sessions": 2, "total_sessions": 10, "reclaim_bytes": "1073741824", "estimate_ok": false}}
+{"func": "advice_lines", "case": "none prunable total>0", "advice": {"disk": {"db_bytes": "1073741824", "free_bytes": "1073741824", "total_bytes": "10737418240"}, "retention_days": 90, "prunable_sessions": 0, "total_sessions": 10, "reclaim_bytes": 0, "estimate_ok": true}}
+{"func": "advice_lines", "case": "none prunable total 0", "advice": {"disk": {"db_bytes": "1073741824", "free_bytes": "1073741824", "total_bytes": "10737418240"}, "retention_days": 90, "prunable_sessions": 0, "total_sessions": 0, "reclaim_bytes": 0, "estimate_ok": true}}
+{"func": "advice_lines", "case": "helps", "advice": {"disk": {"db_bytes": "10737418240", "free_bytes": "1073741824", "total_bytes": "107374182400"}, "retention_days": 30, "prunable_sessions": 4, "total_sessions": 20, "reclaim_bytes": "3221225472", "estimate_ok": true}}
+{"func": "advice_lines", "case": "custom prefix", "command_prefix": "!", "advice": {"disk": {"db_bytes": "1073741824", "free_bytes": "1073741824", "total_bytes": "10737418240"}, "retention_days": 90, "prunable_sessions": 1, "total_sessions": 2, "reclaim_bytes": "2147483648", "estimate_ok": true}}
+{"func": "notice_payload", "case": "full", "advice": {"disk": {"db_bytes": "10737418240", "free_bytes": "1073741824", "total_bytes": "107374182400"}, "retention_days": 30, "prunable_sessions": 4, "total_sessions": 20, "reclaim_bytes": "3221225472", "estimate_ok": true}}

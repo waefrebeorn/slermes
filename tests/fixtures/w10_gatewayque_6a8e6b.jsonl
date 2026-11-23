@@ -1,0 +1,17 @@
+{"func":"published_queue","state":{"pending":[{"status":"queued","admission_id":"a","sequence":2,"text":"T"},{"status":"queued","admission_id":"b","sequence":1,"text":"U"}],"queued_inputs":{"a":"T","b":"U"},"queued_at":{},"pending_seq":10,"adopted":[]}}
+{"func":"published_queue","state":{"pending":[{"status":"queued","text":"no-id"},{"status":"started","admission_id":"x","text":"X"}],"queued_inputs":{"fresh":"F"},"queued_at":{"fresh":12},"pending_seq":10,"adopted":[]}}
+{"func":"published_queue","state":{"pending":[{"status":"queued","admission_id":"a","text":"T"}],"queued_inputs":{"a":"T","fresh":"F"},"queued_at":{"fresh":9},"pending_seq":10,"adopted":[]}}
+{"func":"published_queue","state":{"pending":[],"queued_inputs":{"f1":"one","f2":"two"},"queued_at":{"f1":10,"f2":11},"pending_seq":10,"adopted":[]}}
+{"func":"published_queue","state":{"pending":[],"queued_inputs":{},"queued_at":{},"pending_seq":0,"adopted":[]}}
+{"func":"published_queue","state":{"pending":[{"status":"queued","admission_id":7,"text":"num-id"}],"queued_inputs":{"9":"n"},"queued_at":{"9":0},"pending_seq":0,"adopted":[]}}
+{"func":"own_head","state":{"pending":[{"status":"queued","admission_id":"a","sequence":2},{"status":"queued","admission_id":"b","sequence":1}],"queued_inputs":{"a":"A","b":"B"},"queued_at":{},"pending_seq":10,"adopted":[]}}
+{"func":"own_head","state":{"pending":[{"status":"unknown","admission_id":"u"},{"status":"queued","admission_id":"a","sequence":1}],"queued_inputs":{"a":"A"},"queued_at":{},"pending_seq":10,"adopted":[]}}
+{"func":"own_head","state":{"pending":[{"status":"queued","admission_id":"a","sequence":1}],"queued_inputs":{"a":"A"},"queued_at":{},"pending_seq":10,"adopted":["a"]}}
+{"func":"own_head","state":{"pending":[{"status":"queued","admission_id":"other","sequence":1}],"queued_inputs":{"mine":"M"},"queued_at":{"mine":11},"pending_seq":10,"adopted":[]}}
+{"func":"own_head","state":{"pending":[],"queued_inputs":{"mine":"M"},"queued_at":{"mine":9},"pending_seq":10,"adopted":[]}}
+{"func":"own_head","state":{"pending":[],"queued_inputs":{},"queued_at":{},"pending_seq":10,"adopted":[]}}
+{"func":"queued_rows","state":{"pending":[{"status":"queued","admission_id":"a","sequence":2,"text":"T"},{"status":"queued","admission_id":"b","sequence":1,"text":"U"}],"queued_inputs":{"a":"T","b":"U"},"queued_at":{},"pending_seq":10,"adopted":[]},"receipts":{"a":{"receipt":{"status":"queued","sequence":2}},"b":{"receipt":{"status":"queued","sequence":1}}}}
+{"func":"queued_rows","state":{"pending":[],"queued_inputs":{"a":"T","b":"U"},"queued_at":{},"pending_seq":10,"adopted":[]},"receipts":{"a":{"receipt":{"status":"queued","sequence":5}},"b":{"receipt":{"status":"started"}}}}
+{"func":"queued_rows","state":{"pending":[],"queued_inputs":{"a":"T","b":"U"},"queued_at":{},"pending_seq":10,"adopted":[]},"receipts":{"a":{"error":true},"b":{"receipt":{"status":"queued","sequence":3}}}}
+{"func":"queued_rows","state":{"pending":[{"status":"queued","admission_id":"z","sequence":0,"text":"Z"}],"queued_inputs":{"z":"Z"},"queued_at":{},"pending_seq":10,"adopted":[]},"receipts":{"z":{"receipt":{"status":"settled"}}}}
+{"func":"queued_rows","state":{"pending":[],"queued_inputs":{},"queued_at":{},"pending_seq":10,"adopted":[]},"receipts":{}}

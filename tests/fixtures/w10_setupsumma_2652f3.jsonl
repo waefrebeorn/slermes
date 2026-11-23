@@ -1,0 +1,18 @@
+{"func": "managed_or_provider_row", "case": "managed", "name": "Web Search & Extract", "managed_label": "Nous subscription", "missing_hint": "MISSING", "feature": {"managed_by_nous": true, "available": false, "current_provider": null}}
+{"func": "managed_or_provider_row", "case": "available with provider", "name": "Search", "managed_label": "Nous", "missing_hint": "MISSING", "feature": {"managed_by_nous": false, "available": true, "current_provider": "Exa"}}
+{"func": "managed_or_provider_row", "case": "available no provider", "name": "Search", "managed_label": "Nous", "missing_hint": "MISSING", "feature": {"managed_by_nous": false, "available": true, "current_provider": null}}
+{"func": "managed_or_provider_row", "case": "missing", "name": "Search", "managed_label": "Nous", "missing_hint": "MISSING", "feature": {"managed_by_nous": false, "available": false, "current_provider": null}}
+{"func": "web_row", "case": "managed", "feature": {"managed_by_nous": true, "available": false, "current_provider": null}}
+{"func": "web_row", "case": "missing", "feature": {"managed_by_nous": false, "available": false, "current_provider": null}}
+{"func": "browser_row", "case": "browserbase", "feature": {"managed_by_nous": false, "available": false, "current_provider": "Browserbase"}}
+{"func": "browser_row", "case": "browser use", "feature": {"managed_by_nous": false, "available": false, "current_provider": "Browser Use"}}
+{"func": "browser_row", "case": "local browser", "feature": {"managed_by_nous": false, "available": false, "current_provider": "Local browser"}}
+{"func": "browser_row", "case": "other", "feature": {"managed_by_nous": false, "available": false, "current_provider": "Weird"}}
+{"func": "image_gen_row", "case": "managed", "feature": {"managed_by_nous": true, "available": false, "current_provider": null}, "backend": null}
+{"func": "image_gen_row", "case": "available", "feature": {"managed_by_nous": false, "available": true, "current_provider": null}, "backend": null}
+{"func": "image_gen_row", "case": "plugin backend", "feature": {"managed_by_nous": false, "available": false, "current_provider": null}, "backend": "OpenAI"}
+{"func": "image_gen_row", "case": "none", "feature": {"managed_by_nous": false, "available": false, "current_provider": null}, "backend": null}
+{"func": "video_gen_row", "case": "managed", "feature": {"managed_by_nous": true, "available": false}, "backend": null}
+{"func": "video_gen_row", "case": "plugin", "feature": {"managed_by_nous": false, "available": false}, "backend": "ElevenLabs"}
+{"func": "video_gen_row", "case": "none", "feature": {"managed_by_nous": false, "available": false}, "backend": null}
+{"func": "always_on_rows", "case": "all"}

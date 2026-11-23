@@ -1,0 +1,37 @@
+{"func": "matches", "case": "basic", "query": "hello", "fields": ["Hello World"]}
+{"func": "matches", "case": "nomatch", "query": "zzz", "fields": ["Hello World"]}
+{"func": "matches", "case": "listfields", "query": "beta", "fields": ["Alpha", ["beta", "gamma"]]}
+{"func": "matches", "case": "emptyquery", "query": "", "fields": ["anything"]}
+{"func": "matches", "case": "upperquery", "query": "HELLO", "fields": ["hello world"]}
+{"func": "matches", "case": "numfields", "query": "42", "fields": [41, 42, 43]}
+{"func": "dedupe", "case": "trustwins", "results": [{"identifier": "x", "trust_level": "community", "name": "c"}, {"identifier": "x", "trust_level": "trusted", "name": "t"}]}
+{"func": "dedupe", "case": "firstwins", "results": [{"identifier": "x", "trust_level": "trusted", "name": "first"}, {"identifier": "x", "trust_level": "trusted", "name": "second"}]}
+{"func": "dedupe", "case": "unique", "results": [{"identifier": "a", "trust_level": "community"}, {"identifier": "b", "trust_level": "builtin"}]}
+{"func": "normpath", "case": "simple", "path": "skill", "nested": false}
+{"func": "normpath", "case": "nested", "path": "a/b/c", "nested": true}
+{"func": "normpath", "case": "dotparts", "path": "a/./b//c", "nested": true}
+{"func": "normpath", "case": "backslash", "path": "a\\b\\c", "nested": true}
+{"func": "normpath", "case": "traversal", "path": "a/../b", "nested": true}
+{"func": "normpath", "case": "colon", "path": "C:foo", "nested": true}
+{"func": "normpath", "case": "absolute", "path": "/etc/passwd", "nested": true}
+{"func": "normpath", "case": "empty", "path": "   ", "nested": true}
+{"func": "normpath", "case": "nestednotallowed", "path": "a/b", "nested": false}
+{"func": "valname", "case": "ok", "name": "my-skill"}
+{"func": "valname", "case": "nestedbad", "name": "a/b"}
+{"func": "valparent", "case": "ok", "category": "mlops/training"}
+{"func": "valparent", "case": "traversal", "category": "../etc"}
+{"func": "valrel", "case": "ok", "rel_path": "references/guide.md"}
+{"func": "valrel", "case": "dotdot", "rel_path": "a/../b"}
+{"func": "hermestags", "case": "present", "fm": {"metadata": {"hermes": {"tags": ["a", "b"]}}}}
+{"func": "hermestags", "case": "absent", "fm": {"metadata": {}}}
+{"func": "concrete", "case": "kv", "query": "a=b"}
+{"func": "concrete", "case": "flag", "query": "verbose"}
+{"func": "concrete", "case": "pct", "query": "%20"}
+{"func": "concrete", "case": "bad", "query": "?.md"}
+{"func": "concrete", "case": "mixed", "query": "a=b&flag"}
+{"func": "concrete", "case": "empty", "query": ""}
+{"func": "srcurl", "case": "explicit", "bundle": {"metadata": {"source_url": "https://x/y"}, "source": "github", "identifier": "o/r/s"}}
+{"func": "srcurl", "case": "urlkey", "bundle": {"metadata": {"url": "https://z"}, "source": "github", "identifier": "o/r/s"}}
+{"func": "srcurl", "case": "github3", "bundle": {"metadata": {}, "source": "github", "identifier": "o/r/skill"}}
+{"func": "srcurl", "case": "github2", "bundle": {"metadata": {}, "source": "github", "identifier": "o/r"}}
+{"func": "srcurl", "case": "other", "bundle": {"metadata": {}, "source": "clawhub", "identifier": "abc"}}

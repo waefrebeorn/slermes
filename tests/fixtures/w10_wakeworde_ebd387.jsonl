@@ -1,0 +1,21 @@
+{"func": "sub", "case": "present", "cfg": {"openwakeword": {"model": "hey_hermes"}}, "key": "openwakeword"}
+{"func": "sub", "case": "absent", "cfg": {"openwakeword": 5}, "key": "openwakeword"}
+{"func": "sub", "case": "nonecfg", "cfg": null, "key": "x"}
+{"func": "path", "case": "plain", "value": "jarvis", "exists": false, "sep": "\\"}
+{"func": "path", "case": "onnx", "value": "models/kw.onnx", "exists": false, "sep": "\\"}
+{"func": "path", "case": "ppn", "value": "hey.ppn", "exists": false, "sep": "\\"}
+{"func": "path", "case": "sep_backslash", "value": "a\\b", "exists": false, "sep": "\\"}
+{"func": "path", "case": "sep_forward", "value": "a/b", "exists": false, "sep": "\\"}
+{"func": "path", "case": "exists", "value": "thing", "exists": true, "sep": "\\"}
+{"func": "root", "case": "posix", "home": "/home/user"}
+{"func": "root", "case": "windows", "home": "C:/Users/u"}
+{"func": "openwake", "case": "two_frames", "scores": [[0.9], [0.9]], "threshold": 0.6, "needed": 2, "streak": 0}
+{"func": "openwake", "case": "intermittent", "scores": [[0.9], [0.1], [0.9], [0.9]], "threshold": 0.6, "needed": 2, "streak": 0}
+{"func": "openwake", "case": "below", "scores": [[0.2], [0.3]], "threshold": 0.6, "needed": 1, "streak": 0}
+{"func": "openwake", "case": "multi_scores", "scores": [[0.1, 0.9], [0.9, 0.1]], "threshold": 0.6, "needed": 1, "streak": 0}
+{"func": "openwake", "case": "initial_streak", "scores": [[0.9]], "threshold": 0.6, "needed": 2, "streak": 1}
+{"func": "sherpa", "case": "one_fire", "results": [["HELLO_THERE"], []], "map": {"HELLO_THERE": "default"}}
+{"func": "sherpa", "case": "unknown", "results": [["UNKNOWN_WORD"]], "map": {}}
+{"func": "sherpa", "case": "multi_results", "results": [["A_B", "C_D"]], "map": {"A_B": "p1", "C_D": "p2"}}
+{"func": "sherpa", "case": "none", "results": [[], []], "map": {}}
+{"func": "porcupine", "case": "mixed", "values": [0, 1, -1, -0.5]}

@@ -1,0 +1,17 @@
+{"case":1,"func":"row_name","line":"    - calendar: Manage calendar"}
+{"case":2,"func":"row_name","line":"    - plugin:skill: Desc with colon"}
+{"case":3,"func":"row_name","line":"  - focus"}
+{"case":4,"func":"row_name","line":""}
+{"case":5,"func":"row_name","line":"    - name"}
+{"case":6,"func":"index_entries","prompt":"before\n<available_skills>\n    - alpha: Alpha desc\n    - beta: Beta desc\n</available_skills>\nafter"}
+{"case":7,"func":"index_entries","prompt":"<available_skills>[names only]: focus, recall, </available_skills>"}
+{"case":8,"func":"index_entries","prompt":"no block here"}
+{"case":9,"func":"index_entries","prompt":"<available_skills>\n    - plugin:one: Desc\n    - plugin:one: Duplicate\n    - solo\n</available_skills>"}
+{"case":10,"func":"render","added":{"calendar":"    - calendar: Manage calendar","focus":"    - focus: Focus mode"},"removed":["old"]}
+{"case":11,"func":"render","added":{},"removed":["beta","alpha"]}
+{"case":12,"func":"render","added":{"solo":""},"removed":[]}
+{"case":13,"func":"render","added":{},"removed":[]}
+{"case":14,"func":"parse","note":"[System: The skills available in this conversation changed after its system prompt was built.\nNow available (load with skill_view(name) when relevant, like the skills listed in the system prompt):\n    - alpha: A\n    - plugin:beta: B]"}
+{"case":15,"func":"parse","note":"[System: The skills available in this conversation changed after its system prompt was built.\nNo longer available: z, a]"}
+{"case":16,"func":"parse","note":"[System: The skills available in this conversation changed after its system prompt was built. The skills listed in the system prompt are accurate again; earlier skill-change notes are superseded.]"}
+{"case":17,"func":"parse","note":"unrelated text"}

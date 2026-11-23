@@ -1,0 +1,19 @@
+{"func":"commentary_items","message":{"codex_message_items":[{"type":"message","role":"assistant","phase":"commentary","content":[{"type":"output_text","text":"  hello  "},{"type":"output_text","text":" world "},{"type":"other","text":"NO"}]}]}}
+{"func":"commentary_items","message":{"codex_message_items":"[{\"type\":\"message\",\"role\":\"assistant\",\"phase\":\"COMMENTARY\",\"content\":[{\"type\":\"output_text\",\"text\":\"upper\"}]}]"}}
+{"func":"commentary_items","message":{"codex_message_items":"not json"}}
+{"func":"commentary_items","message":{"codex_message_items":{"not":"list"}}}
+{"func":"commentary_items","message":{}}
+{"func":"commentary_items","message":{"codex_message_items":[{"type":"message","role":"user","phase":"commentary","content":[{"type":"output_text","text":"x"}]},{"type":"message","role":"assistant","phase":"final","content":[{"type":"output_text","text":"y"}]},{"type":"message","role":"assistant","phase":5,"content":[{"type":"output_text","text":"z"}]}]}}
+{"func":"commentary_items","message":{"codex_message_items":[{"type":"message","role":"assistant","phase":"  Commentary  ","content":[{"type":"output_text","text":" trimmed "}]}]}}
+{"func":"final_items","message":{"codex_message_items":[{"type":"message","role":"assistant","content":[{"type":"output_text","text":"unphased"}]},{"type":"message","role":"assistant","phase":"final","content":[{"type":"output_text","text":" FINAL "}]},{"type":"message","role":"assistant","phase":"final_answer","content":[{"type":"output_text","text":"fa"}]},{"type":"message","role":"assistant","phase":"commentary","content":[{"type":"output_text","text":"c"}]}]}}
+{"func":"final_items","message":{"codex_message_items":[{"type":"message","role":"assistant","phase":"final","content":"notlist"}]}}
+{"func":"final_items","message":{"codex_message_items":[{"type":"message","role":"assistant","phase":null,"content":[{"type":"output_text","text":"nullphase"}]}]}}
+{"func":"without_flattened","reasoning":"alpha\nsecret\nbeta","commentary":["secret"]}
+{"func":"without_flattened","reasoning":"secret\nbeta","commentary":["secret"]}
+{"func":"without_flattened","reasoning":"alpha\nsecret","commentary":["secret"]}
+{"func":"without_flattened","reasoning":"alpha\nsecret\nbeta\nsecret\ngamma","commentary":["secret"]}
+{"func":"without_flattened","reasoning":"alpha\n\nsecret\n\nbeta","commentary":["secret"]}
+{"func":"without_flattened","reasoning":"no match here","commentary":["zzz"]}
+{"func":"without_flattened","reasoning":"x\naaa\nbbb\ny","commentary":["aaa","bb"]}
+{"func":"without_flattened","reasoning":"\nsecret\n","commentary":["secret"]}
+{"func":"without_flattened","reasoning":"abc","commentary":[]}

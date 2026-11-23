@@ -1,0 +1,24 @@
+{"func":"submit_cli_turn_fields","params":{"turn_author":"x","api_text":"hi","extra":1}}
+{"func":"submit_cli_turn_fields","params":{"clarify_batch":true,"api_text":null}}
+{"func":"submit_cli_turn_fields","params":{}}
+{"func":"take_cli_result_fields","result":{"final_response":"ok","last_reasoning":"r","turn_exit_reason":"done"}}
+{"func":"take_cli_result_fields","result":{"final_response":null,"pending_steer":"go"}}
+{"func":"take_cli_result_fields","result":{"final_response":"x","pending_steer":""}}
+{"func":"take_cli_result_fields","result":{"final_response":"x","pending_steer":null,"billing_block":{"n":1}}}
+{"func":"admit_cli_turn","params":{}}
+{"func":"admit_cli_turn","params":{"api_text":""}}
+{"func":"admit_cli_turn","params":{"api_text":"hello"}}
+{"func":"admit_cli_turn","params":{"api_text":123}}
+{"func":"admit_cli_turn","params":{"api_text":null}}
+{"func":"admit_cli_turn","params":{"model_override":{"model":"  gpt-4  "}}}
+{"func":"admit_cli_turn","params":{"model_override":{"model":"m","provider":""}}}
+{"func":"admit_cli_turn","params":{"model_override":{"model":"m","provider":"p"}}}
+{"func":"admit_cli_turn","params":{"model_override":{"model":"m","bogus":1}}}
+{"func":"admit_cli_turn","params":{"model_override":{"model":123}}}
+{"func":"admit_cli_turn","params":{"model_override":{"model":"   "}}}
+{"func":"admit_cli_turn","params":{"model_override":{"model":"m","provider":123}}}
+{"func":"admit_cli_turn","params":{"model_override":{"model":"m","reasoning":null}}}
+{"func":"admit_cli_turn","params":{"clarify_batch":true}}
+{"func":"admit_cli_turn","params":{"clarify_batch":false}}
+{"func":"admit_cli_turn","params":{"clarify_batch":1}}
+{"func":"admit_cli_turn","params":{"clarify_batch":null}}

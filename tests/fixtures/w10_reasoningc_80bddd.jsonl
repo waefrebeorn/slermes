@@ -1,0 +1,18 @@
+{"case":1,"func":"thought_signature","extra":{"google":{"thought_signature":"sig-1"}}}
+{"case":2,"func":"thought_signature","extra":{"thought_signature":"  flat-sig  "}}
+{"case":3,"func":"thought_signature","extra":"not-a-dict"}
+{"case":4,"func":"thought_signature","extra":{"google":{"thought_signature":"   "}}}
+{"case":5,"func":"carrier_record","msg":{"role":"assistant","extra_content":{"google":{"thought_signature":"abc"}},"opaque_blob":"OP","readable":"TEXT"},"opaque_keys":["opaque_blob"],"text_keys":["readable"]}
+{"case":6,"func":"carrier_record","msg":{"role":"assistant"},"opaque_keys":[],"text_keys":[]}
+{"case":7,"func":"carrier_record","msg":{"role":"assistant","model_extra":{"extra_content":{"thought_signature":"fall"},"tok":"T"}},"opaque_keys":["tok"],"text_keys":[]}
+{"case":8,"func":"strip_function_signature","tool_calls":[{"function":{"name":"f","thought_signature":"s","arguments":"{}"}},{"function":{"name":"g"}},"plain"]}
+{"case":9,"func":"strip_function_signature","tool_calls":[]}
+{"case":10,"func":"replay_plan","answer":{"out":"V1"},"values":{"src":"V1"}}
+{"case":11,"func":"replay_plan","answer":"not-a-dict","values":{}}
+{"case":12,"func":"replay_plan","answer":{"a":"V","b":"V"},"values":{"x":"V","y":"V"}}
+{"case":13,"func":"shape","msg":{"role":"assistant","content":null,"reasoning_details":[{"type":"hermes.native_assistant","extra_content":{"google":{"thought_signature":"S"}},"opaque_blob":"OP"},{"type":"other","x":1}],"extra_content":{"google":{"thought_signature":"S"}},"opaque_blob":"OP"},"route":{"keys":["extra_content","opaque_blob"],"gemini":true,"keep_fn_sig":false,"profile":false}}
+{"case":14,"func":"shape","msg":{"role":"user","extra_content":{"thought_signature":"S"}},"route":{"keys":["extra_content"],"gemini":true,"keep_fn_sig":false,"profile":false}}
+{"case":15,"func":"shape","msg":{"role":"assistant","opaque_blob":"OP","content":"hi"},"route":{"keys":["opaque_blob"],"gemini":false,"keep_fn_sig":false,"profile":false}}
+{"case":16,"func":"shape","msg":{"role":"assistant","tool_calls":[{"function":{"name":"f","thought_signature":"S","arguments":"{}"}}]},"route":{"keys":[],"gemini":false,"keep_fn_sig":false,"profile":false}}
+{"case":17,"func":"shape","msg":{"role":"assistant","tool_calls":[{"function":{"name":"f","thought_signature":"S"}}]},"route":{"keys":[],"gemini":false,"keep_fn_sig":true,"profile":false}}
+{"case":18,"func":"shape","msg":{"role":"assistant","extra_content":{"google":{}}},"route":{"keys":["extra_content"],"gemini":false,"keep_fn_sig":false,"profile":true},"replay_result":{"injected":"V"}}

@@ -1,0 +1,16 @@
+{"case":1,"func":"redacted","text":"Approve sudo?"}
+{"case":2,"func":"redacted","text":"Enter password for user:"}
+{"case":3,"func":"redacted","text":"Run: ls -la /tmp"}
+{"case":4,"func":"redacted","text":"Do you want to continue?"}
+{"case":5,"func":"redacted","text":""}
+{"case":6,"func":"redacted","text":"   "}
+{"case":7,"func":"redacted","text":"key: value"}
+{"case":8,"func":"redacted","text":"token=abc"}
+{"case":9,"func":"redacted","text":"12345"}
+{"case":10,"func":"redacted","text":"a-b_c.d/e"}
+{"case":11,"func":"redacted","text":"quote \" and apostrophe"}
+{"case":12,"func":"resolve_outcome","outcome":null}
+{"case":13,"func":"resolve_outcome","outcome":""}
+{"case":14,"func":"resolve_outcome","outcome":"approved"}
+{"case":15,"func":"resolve_outcome","outcome":"error"}
+{"case":16,"func":"resolve_outcome","outcome":"cancelled"}

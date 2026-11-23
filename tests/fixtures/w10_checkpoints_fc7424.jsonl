@@ -1,0 +1,24 @@
+{"func": "load_enabled", "cfg": null}
+{"func": "load_enabled", "cfg": {}}
+{"func": "load_enabled", "cfg": {"checkpoints": true}}
+{"func": "load_enabled", "cfg": {"checkpoints": false}}
+{"func": "load_enabled", "cfg": {"checkpoints": {}}}
+{"func": "load_enabled", "cfg": {"checkpoints": {"enabled": true}}}
+{"func": "load_enabled", "cfg": {"checkpoints": {"enabled": "false"}}}
+{"func": "load_enabled", "cfg": {"checkpoints": "bad"}}
+{"func": "load_enabled", "cfg": {"checkpoints": {"enabled": 0}}}
+{"func": "resolve_enabled_ex", "cfg": {"checkpoints": {"enabled": true}}, "env_value": null}
+{"func": "resolve_enabled_ex", "cfg": {}, "env_value": "true"}
+{"func": "resolve_enabled_ex", "cfg": {}, "env_value": "YES"}
+{"func": "resolve_enabled_ex", "cfg": {}, "env_value": "0"}
+{"func": "resolve_enabled_ex", "cfg": {}, "env_value": ""}
+{"func": "resolve_enabled_ex", "cfg": {"checkpoints": {"enabled": false}}, "env_value": "1"}
+{"func": "resolve_enabled_ex", "cfg": {"checkpoints": {"enabled": true}}, "env_value": "false"}
+{"func": "undo_hint_fields", "session": {}, "rewound": null, "params": {}, "hint": null}
+{"func": "undo_hint_fields", "session": {}, "rewound": [], "params": {}, "hint": null}
+{"func": "undo_hint_fields", "session": {}, "rewound": ["a", "b", 0], "params": {}, "hint": null}
+{"func": "undo_hint_fields", "session": {}, "rewound": ["a", "b", true], "params": {"intent": "retry"}, "hint": {"x": 1}}
+{"func": "undo_hint_fields", "session": {}, "rewound": ["a", "b", true], "params": {}, "hint": null}
+{"func": "undo_hint_fields", "session": {"agent": {}}, "rewound": ["a", "b", true], "params": {}, "hint": null}
+{"func": "undo_hint_fields", "session": {"agent": {"_checkpoint_mgr": {"enabled": false}}}, "rewound": ["a", "b", true], "params": {}, "hint": null}
+{"func": "undo_hint_fields", "session": {"agent": {"_checkpoint_mgr": {"enabled": true}}}, "rewound": ["a", "b", true], "params": {}, "hint": {"undo": "x"}}

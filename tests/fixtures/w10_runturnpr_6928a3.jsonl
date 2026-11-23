@@ -1,0 +1,13 @@
+{"func":"session_override_snapshot","override":{"provider":"p","api_key":"k","model":"ignored","capabilities":{"vision":true}}}
+{"func":"session_override_snapshot","override":{"capabilities":null,"base_url":"u","api_mode":"chat"}}
+{"func":"session_override_snapshot","override":{}}
+{"func":"session_override_snapshot","override":{"requested_provider":"x","credential_pool":null,"max_tokens":100}}
+{"func":"recover_or_remember_model","skey":"s1","model":"gpt","state_last":"old","star_last":"star"}
+{"func":"recover_or_remember_model","skey":"s1","model":"","state_last":"old","star_last":"star"}
+{"func":"recover_or_remember_model","skey":"s1","model":"","state_last":"","star_last":"star"}
+{"func":"recover_or_remember_model","skey":"s1","model":"","state_last":null,"star_last":"star"}
+{"func":"recover_or_remember_model","skey":"s1","model":"","state_last":"old","star_last":null}
+{"func":"recover_or_remember_model","skey":"","model":"","state_last":"ignored","star_last":"star"}
+{"func":"recover_or_remember_model","skey":"s1","model":"","state_last":null,"star_last":null}
+{"func":"recover_or_remember_model","skey":"s1","model":null,"state_last":null,"star_last":null}
+{"func":"recover_or_remember_model","skey":"s1","model":null,"state_last":null,"star_last":"recovered"}

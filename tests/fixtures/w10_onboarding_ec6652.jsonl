@@ -1,0 +1,22 @@
+{"func":"builds_onboarding","valid":["setup_beat","x"]}
+{"func":"builds_onboarding","valid":["x"]}
+{"func":"builds_onboarding","valid":null}
+{"func":"builds_onboarding","valid":[]}
+{"func":"builds_onboarding","valid":"prefix setup_beat suffix"}
+{"func":"keeps_toolsets","enabled":null}
+{"func":"keeps_toolsets","enabled":[]}
+{"func":"keeps_toolsets","enabled":["onboarding"]}
+{"func":"keeps_toolsets","enabled":["other"]}
+{"func":"keeps_toolsets","enabled":"onboarding"}
+{"func":"keeps_toolsets","enabled":""}
+{"func":"keeps_toolsets","enabled":false}
+{"func":"with_onboarding","enabled":["a","b"]}
+{"func":"with_onboarding","enabled":[]}
+{"func":"with_onboarding","enabled":null,"all_toolsets":["main","setup","chat","onboarding"],"session_platforms":["setup"]}
+{"func":"carry_onboarding_toolset","enabled":["a"],"agent_toolsets":["onboarding"]}
+{"func":"carry_onboarding_toolset","enabled":["a"],"agent_toolsets":["x"]}
+{"func":"carry_onboarding_toolset","enabled":["onboarding"],"agent_toolsets":["x"]}
+{"func":"carry_onboarding_toolset","enabled":[],"agent_toolsets":["onboarding"]}
+{"func":"append_turn_note","prior":"","note":"hello"}
+{"func":"append_turn_note","prior":"old","note":"new"}
+{"func":"append_turn_note","prior":"old","note":""}

@@ -1,0 +1,14 @@
+{"func":"elision_marker","omitted":"0","total":"0"}
+{"func":"elision_marker","omitted":"1234","total":"999999"}
+{"func":"elision_marker","omitted":"999999999999","total":"999999999999"}
+{"func":"elision_marker","omitted":"1000","total":"1000000"}
+{"func":"elision_marker_max_len"}
+{"func":"elide","text":"abc","limit":"5"}
+{"func":"elide","text":"abcdefghij","limit":"8"}
+{"func":"elide","text":"hello world   ","limit":"12"}
+{"func":"elide","text":"hello world","limit":"200"}
+{"func":"elide","text":"","limit":"0"}
+{"func":"elide_middle","text":"abcdefghij","head":"2","tail":"3"}
+{"func":"elide_middle","text":"abcdef","head":"0","tail":"2"}
+{"func":"elide_middle","text":"abcdef","head":"1","tail":"0"}
+{"func":"elide_middle","text":"abc","head":"5","tail":"5"}

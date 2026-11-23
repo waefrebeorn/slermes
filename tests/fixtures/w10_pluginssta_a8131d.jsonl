@@ -1,0 +1,23 @@
+{"func": "segments", "case": "single", "key": "endpoint"}
+{"func": "segments", "case": "dotted", "key": "retry.policy"}
+{"func": "segments", "case": "deep", "key": "a.b.c.d"}
+{"func": "segments", "case": "slash", "key": "/etc"}
+{"func": "segments", "case": "backslash", "key": "a\\b"}
+{"func": "segments", "case": "reserved model", "key": "model.x"}
+{"func": "segments", "case": "reserved case", "key": "Plugins.x"}
+{"func": "segments", "case": "leading digit", "key": "1bad"}
+{"func": "segments", "case": "double dot", "key": "a..b"}
+{"func": "segments", "case": "empty", "key": ""}
+{"func": "nested_value", "case": "present", "root": {"a": {"b": 42}}, "segments": ["a", "b"], "default": null}
+{"func": "nested_value", "case": "miss", "root": {"a": {"b": 42}}, "segments": ["a", "z"], "default": "DEF"}
+{"func": "nested_value", "case": "non mapping", "root": {"a": 7}, "segments": ["a", "b"], "default": null}
+{"func": "nested_value", "case": "empty segments", "root": {"x": 1}, "segments": [], "default": null}
+{"func": "nested_mapping", "case": "two", "segments": ["a", "b"], "value": {"count": 3}}
+{"func": "nested_mapping", "case": "one", "segments": ["endpoint"], "value": "v"}
+{"func": "state_key_valid", "case": "valid", "key": "k_1:x.y"}
+{"func": "state_key_valid", "case": "dotdot", "key": "a..b"}
+{"func": "state_key_valid", "case": "space", "key": "a b"}
+{"func": "state_key_valid", "case": "leading digit", "key": "1k"}
+{"func": "data_ns", "case": "portable valid", "plugin_id": "p", "data_namespace": "agent-plugin-foo", "portable_ns": "FALLBACK"}
+{"func": "data_ns", "case": "fallback", "plugin_id": "my_plugin", "data_namespace": "", "portable_ns": "FALLBACK"}
+{"func": "data_ns", "case": "bad portable", "plugin_id": "p", "data_namespace": "agent-plugin-BAD!", "portable_ns": "FALLBACK"}

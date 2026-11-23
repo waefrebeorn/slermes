@@ -1,0 +1,13 @@
+{"func":"persistence","case":"pinned_no_store","pinned":true,"has_store":false,"scope_result":"S"}
+{"func":"persistence","case":"pinned_with_store","pinned":true,"has_store":true,"store_persistence":"P"}
+{"func":"persistence","case":"unpinned_no_store","pinned":false,"has_store":false,"scope_result":"S"}
+{"func":"persistence","case":"store_persistence","pinned":false,"has_store":true,"store_persistence":"P1"}
+{"func":"persistence","case":"store_null","pinned":false,"has_store":true,"store_persistence":null}
+{"func":"persistence","case":"store_empty","pinned":false,"has_store":true,"store_persistence":""}
+{"func":"persistence","case":"absent_pinned","has_store":false,"scope_result":null}
+{"func":"persistence","case":"scope_string","pinned":false,"has_store":false,"scope_result":"scope2"}
+{"func":"profile_name","case":"named_single","launch":"alpha","multiplexed":false}
+{"func":"profile_name","case":"named_multiplex","launch":"alpha","multiplexed":true}
+{"func":"profile_name","case":"default_multiplex","launch":"default","multiplexed":true}
+{"func":"profile_name","case":"default_single","launch":"default","multiplexed":false}
+{"func":"profile_name","case":"empty_launch","launch":"","multiplexed":false}

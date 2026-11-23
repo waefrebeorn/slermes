@@ -1,0 +1,31 @@
+{"case": 1, "func": "normalize_for_match", "text": "  hello   world  "}
+{"case": 2, "func": "normalize_for_match", "text": "a\\nb  c"}
+{"case": 3, "func": "normalize_for_match", "text": "It’s a “test”"}
+{"case": 4, "func": "normalize_for_match", "text": "one—two - three"}
+{"case": 5, "func": "normalize_for_match", "text": "The…end"}
+{"case": 6, "func": "normalize_for_match", "text": "  a  b "}
+{"case": 7, "func": "normalize_for_match", "text": "  "}
+{"case": 8, "func": "normalize_for_match", "text": ""}
+{"case": 9, "func": "span_occurrences", "text": "1000", "span": "00"}
+{"case": 10, "func": "span_occurrences", "text": "abcabc", "span": "abc"}
+{"case": 11, "func": "span_occurrences", "text": "hello", "span": ""}
+{"case": 12, "func": "span_occurrences", "text": "aaa", "span": "a"}
+{"case": 13, "func": "span_occurrences", "text": "abc", "span": "z"}
+{"case": 14, "func": "repeated_span_message", "old_text": "x", "count": 2}
+{"case": 15, "func": "repeated_span_message", "old_text": "foo", "count": 3}
+{"case": 16, "func": "repeated_span_message", "old_text": "", "count": 1}
+{"case": 17, "func": "over_limit", "new_total": "2300", "limit": "2200"}
+{"case": 18, "func": "over_limit", "new_total": "1375", "limit": "1375"}
+{"case": 19, "func": "over_limit", "new_total": "1000000", "limit": "999"}
+{"case": 20, "func": "over_limit", "new_total": "-500", "limit": "2200"}
+{"case": 21, "func": "stale_entry_message", "entry": "alpha"}
+{"case": 22, "func": "stale_entry_message", "entry": "it’s gone"}
+{"case": 23, "func": "stale_entry_message", "entry": ""}
+{"case": 24, "func": "find_unique_match", "entries": ["alpha", "beta"], "old_text": "alpha"}
+{"case": 25, "func": "find_unique_match", "entries": ["alpha", "beta"], "old_text": "missing"}
+{"case": 26, "func": "find_unique_match", "entries": ["short", "a long entry containing short text"], "old_text": "short"}
+{"case": 27, "func": "find_unique_match", "entries": ["The sky is blue", "The sky is green"], "old_text": "The sky is blue"}
+{"case": 28, "func": "find_unique_match", "entries": ["x", "y"], "old_text": "!!!"}
+{"case": 29, "func": "find_unique_match", "entries": ["It’s fine", "It's fine"], "old_text": "It's fine"}
+{"case": 30, "func": "find_unique_match", "entries": [], "old_text": "anything"}
+{"case": 31, "func": "find_unique_match", "entries": ["a"], "old_text": "a"}

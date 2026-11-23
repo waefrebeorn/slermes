@@ -1,0 +1,18 @@
+{"func": "writer_interface", "persistence": {"read_only": false, "name": "P"}, "store": {"name": "S"}}
+{"func": "writer_interface", "persistence": {"read_only": true, "name": "P"}, "store": {"name": "S"}}
+{"func": "writer_interface", "persistence": null, "store": {"name": "S"}}
+{"func": "writer_interface", "persistence": {"read_only": false, "name": "P"}, "store": null}
+{"func": "writer_interface", "persistence": {"read_only": false, "name": "P"}, "store": false}
+{"func": "writer_interface", "persistence": {"read_only": 0, "a": 1}, "store": []}
+{"func": "agent_interface", "agent": {"persistence": {"read_only": false, "n": 1}, "_session_db": {"n": 2}}}
+{"func": "agent_interface", "agent": {}}
+{"func": "agent_interface", "agent": {"persistence": {"read_only": true}, "_session_db": {"a": 1}}}
+{"func": "agent_interface", "agent": {"persistence": {"read_only": false}, "_session_db": {}}}
+{"func": "stand_in_interface", "session_db": {"read_only": false, "_store": {"k": "v"}}, "registered": true, "is_session_db": true}
+{"func": "stand_in_interface", "session_db": {"read_only": false, "_store": {"k": "v"}}, "registered": false, "is_session_db": true}
+{"func": "stand_in_interface", "session_db": {"read_only": false, "_store": {"k": "v"}}, "registered": true, "is_session_db": false}
+{"func": "stand_in_interface", "session_db": {"read_only": true, "_store": {"k": "v"}}, "registered": true, "is_session_db": true}
+{"func": "stand_in_interface", "session_db": {"read_only": false, "_store": null}, "registered": true, "is_session_db": true}
+{"func": "publish_session_id", "session_id": "sess-1", "bridge_ok": true, "delegated_child": false}
+{"func": "publish_session_id", "session_id": "sess-2", "bridge_ok": false, "delegated_child": true}
+{"func": "publish_session_id", "session_id": "sess-3", "bridge_ok": false, "delegated_child": false}

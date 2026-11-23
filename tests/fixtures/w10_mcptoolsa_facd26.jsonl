@@ -1,0 +1,25 @@
+{"case": 1, "func": "parse_tool_call_arguments", "args": "{\"a\": 1}"}
+{"case": 2, "func": "parse_tool_call_arguments", "args": "not json"}
+{"case": 3, "func": "parse_tool_call_arguments", "args": "42"}
+{"case": 4, "func": "parse_tool_call_arguments", "args": "null"}
+{"case": 5, "func": "parse_tool_call_arguments", "args": "\"hello\""}
+{"case": 6, "func": "parse_tool_call_arguments", "args": "[1,2]"}
+{"case": 7, "func": "parse_tool_call_arguments", "args": "{\"x\":{\"y\":true}}"}
+{"case": 8, "func": "parse_tool_call_arguments", "args": {"already": "dict"}}
+{"case": 9, "func": "parse_tool_call_arguments", "args": null}
+{"case": 10, "func": "accepted_consent_content", "schema": null}
+{"case": 11, "func": "accepted_consent_content", "schema": {}}
+{"case": 12, "func": "accepted_consent_content", "schema": {"properties": {}}}
+{"case": 13, "func": "accepted_consent_content", "schema": {"properties": {"approve": {"type": "boolean"}}}}
+{"case": 14, "func": "accepted_consent_content", "schema": {"required": []}}
+{"case": 15, "func": "accepted_consent_content", "schema": {"required": ["approve"], "properties": {"approve": {"type": "boolean"}}}}
+{"case": 16, "func": "accepted_consent_content", "schema": {"required": ["choice"], "properties": {"choice": {"enum": ["allow_once", "always"]}}}}
+{"case": 17, "func": "accepted_consent_content", "schema": {"required": ["choice"], "properties": {"choice": {"enum": ["always"]}}}}
+{"case": 18, "func": "accepted_consent_content", "schema": {"required": ["choice"], "properties": {"choice": {"oneOf": [{"const": "allow_once"}]}}}}
+{"case": 19, "func": "accepted_consent_content", "schema": {"required": ["a", "b"], "properties": {"a": {"type": "boolean"}}}}
+{"case": 20, "func": "accepted_consent_content", "schema": {"required": ["x"], "properties": {"x": {"type": "string"}}}}
+{"case": 21, "func": "format_elicitation_schema_summary", "schema": {}, "server": "srv-x"}
+{"case": 22, "func": "format_elicitation_schema_summary", "schema": null, "server": "srv-x"}
+{"case": 23, "func": "format_elicitation_schema_summary", "schema": {"properties": {"name": {"type": "string", "description": "your name"}}}, "server": "srv-x"}
+{"case": 24, "func": "format_elicitation_schema_summary", "schema": {"properties": {"a": {"type": "boolean"}, "b": {"description": "second field"}}}, "server": "srv-x"}
+{"case": 25, "func": "format_elicitation_schema_summary", "schema": {"properties": {"x": "not-an-object"}}, "server": "srv-x"}

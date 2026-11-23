@@ -1,0 +1,18 @@
+{"func":"effort_word","config":{"enabled":false,"effort":"high"}}
+{"func":"effort_word","config":{"effort":"medium"}}
+{"func":"effort_word","config":{"enabled":true,"effort":""}}
+{"func":"effort_word","config":{}}
+{"func":"effort_word","config":null}
+{"func":"effort_word","config":"not-a-dict"}
+{"func":"effort_word","config":{"enabled":0,"effort":"low"}}
+{"func":"review_summary_line","payload":{"text":"  Self-improvement review: done  "}}
+{"func":"review_summary_line","payload":{"text":"   "}}
+{"func":"review_summary_line","payload":{}}
+{"func":"review_summary_line","payload":null}
+{"func":"clarify_reply","reply":null,"params":{"questions":[{"qid":"q1","question":"Q?"}]}}
+{"func":"clarify_reply","reply":null,"params":{}}
+{"func":"clarify_reply","reply":{"outcome":"cancelled"},"params":{}}
+{"func":"clarify_reply","reply":{"answers":{"q1":"yes","q2":null},"outcome":"submitted"},"params":{"questions":[{"qid":"q1","question":"a","choices":[1,2],"multi_select":true},{"qid":"q2"}]}}
+{"func":"clarify_reply","reply":{"answers":{"q1":5,"q2":true},"outcome":"timed_out"},"params":{"questions":[{"qid":"q1"},{"qid":"q2"}]}}
+{"func":"clarify_reply","reply":{"answers":{"a":[1,2],"b":{"k":"v"}}},"params":{"questions":[{"qid":"a"}]}}
+{"func":"clarify_reply","reply":{"answers":{},"outcome":"unknown"},"params":{"questions":[{"qid":"x"},{"noid":1}]}}

@@ -1,0 +1,25 @@
+{"func": "committed", "case": "explicit true", "row": {"committed": true, "facts_before": "old"}, "facts_digest": "old"}
+{"func": "committed", "case": "false same", "row": {"committed": false, "facts_before": "old"}, "facts_digest": "old"}
+{"func": "committed", "case": "false changed", "row": {"committed": false, "facts_before": "old"}, "facts_digest": "new"}
+{"func": "committed", "case": "missing key", "row": {"facts_before": "old"}, "facts_digest": "old"}
+{"func": "committed", "case": "zero same", "row": {"committed": 0, "facts_before": "x"}, "facts_digest": "x"}
+{"func": "committed", "case": "null changed", "row": {"committed": null, "facts_before": "x"}, "facts_digest": "y"}
+{"func": "plugin_paths_valid", "case": "valid", "home": "/h/root", "target": "/h/root/environments/gen1/plugins/foo", "backup": "/h/root/environments/gen1/plugins/.previous-foo", "metadata": "/h/root/environments/gen1/plugins/.install-metadata.json"}
+{"func": "plugin_paths_valid", "case": "target outside", "home": "/h/root", "target": "/other/plugins/foo", "backup": "/other/plugins/.previous-foo", "metadata": "/other/plugins/.install-metadata.json"}
+{"func": "plugin_paths_valid", "case": "wrong parent name", "home": "/h/root", "target": "/h/root/environments/gen1/other/foo", "backup": "/h/root/environments/gen1/other/.previous-foo", "metadata": "/h/root/environments/gen1/other/.install-metadata.json"}
+{"func": "plugin_paths_valid", "case": "backup parent differs", "home": "/h/root", "target": "/h/root/environments/gen1/plugins/foo", "backup": "/h/root/environments/gen1/other/.previous-foo", "metadata": "/h/root/environments/gen1/plugins/.install-metadata.json"}
+{"func": "plugin_paths_valid", "case": "bad backup name", "home": "/h/root", "target": "/h/root/environments/gen1/plugins/foo", "backup": "/h/root/environments/gen1/plugins/prev-foo", "metadata": "/h/root/environments/gen1/plugins/.install-metadata.json"}
+{"func": "plugin_paths_valid", "case": "metadata mismatch", "home": "/h/root", "target": "/h/root/environments/gen1/plugins/foo", "backup": "/h/root/environments/gen1/plugins/.previous-foo", "metadata": "/h/root/environments/gen1/plugins/other.json"}
+{"func": "config_path_valid", "case": "valid", "home": "/h/root", "config": "/h/root/config.yaml"}
+{"func": "config_path_valid", "case": "outside", "home": "/h/root", "config": "/other/config.yaml"}
+{"func": "config_path_valid", "case": "wrong name", "home": "/h/root", "config": "/h/root/settings.yaml"}
+{"func": "path_relative_to", "case": "equal", "path": "/a/b", "parent": "/a/b"}
+{"func": "path_relative_to", "case": "ancestor", "path": "/a/b/c", "parent": "/a"}
+{"func": "path_relative_to", "case": "sibling trap", "path": "/ab/c", "parent": "/a"}
+{"func": "path_relative_to", "case": "root", "path": "/a", "parent": "/"}
+{"func": "path_leaf", "case": "file", "path": "/a/b/config.yaml"}
+{"func": "path_leaf", "case": "trailing", "path": "/a/b/"}
+{"func": "path_leaf", "case": "root", "path": "/"}
+{"func": "path_parent", "case": "deep", "path": "/a/b/c"}
+{"func": "path_parent", "case": "one", "path": "/a"}
+{"func": "path_parent", "case": "relative", "path": "a"}

@@ -1,0 +1,38 @@
+{"func": "section", "case": "dict", "cfg": {"openai": {"max_text_length": 123}}, "key": "openai"}
+{"func": "section", "case": "missing", "cfg": {"openai": 5}, "key": "openai"}
+{"func": "section", "case": "nullcfg", "cfg": null, "key": "x"}
+{"func": "posint", "case": "positive", "value": 42}
+{"func": "posint", "case": "zero", "value": 0}
+{"func": "posint", "case": "negative", "value": -3}
+{"func": "posint", "case": "bool", "value": true}
+{"func": "maxlen", "case": "nprovider", "provider": ""}
+{"func": "maxlen", "case": "known", "provider": "openai"}
+{"func": "maxlen", "case": "override", "provider": "openai", "cfg": {"openai": {"max_text_length": 99}}}
+{"func": "maxlen", "case": "bad_override", "provider": "openai", "cfg": {"openai": {"max_text_length": -1}}}
+{"func": "maxlen", "case": "eleven_model", "provider": "elevenlabs", "cfg": {"elevenlabs": {"model_id": "eleven_flash_v2_5"}}}
+{"func": "maxlen", "case": "eleven_default", "provider": "elevenlabs"}
+{"func": "maxlen", "case": "unknown", "provider": "weird"}
+{"func": "maxlen", "case": "command", "provider": "mytts", "cfg": {"providers": {"mytts": {"type": "command", "command": "say", "max_text_length": 777}}}}
+{"func": "maxlen", "case": "command_default", "provider": "mytts", "cfg": {"mytts": {"command": "say"}}}
+{"func": "profile", "case": "discord", "platform": "discord"}
+{"func": "profile", "case": "telegram", "platform": "telegram"}
+{"func": "profile", "case": "default", "platform": ""}
+{"func": "profile", "case": "override", "platform": "discord", "cfg": {"delivery_profiles": {"discord": {"max_file_bytes": 9999, "safety_ratio": 0.5}}}}
+{"func": "profile", "case": "bad_ratio", "platform": "discord", "cfg": {"delivery_profiles": {"discord": {"safety_ratio": 2.0}}}}
+{"func": "pack", "case": "simple", "pieces": ["a", "b", "c"], "max_chars": 5, "slice_oversized": false}
+{"func": "pack", "case": "multichunk", "pieces": ["alpha", "beta", "gamma"], "max_chars": 8, "slice_oversized": false}
+{"func": "pack", "case": "oversize", "pieces": ["abcdefghij", "x"], "max_chars": 4, "slice_oversized": true}
+{"func": "pack", "case": "no_slice", "pieces": ["abcdefghij", "x"], "max_chars": 4, "slice_oversized": false}
+{"func": "pack", "case": "empty", "pieces": [], "max_chars": 5, "slice_oversized": false}
+{"func": "splitlong", "case": "words", "sentence": "one two three four", "max_chars": 7}
+{"func": "splitlong", "case": "longword", "sentence": "abcdefghij", "max_chars": 3}
+{"func": "splittext", "case": "short", "text": "Hello world", "max_chars": 100}
+{"func": "splittext", "case": "sentences", "text": "First sentence. Second one! Third, part", "max_chars": 12}
+{"func": "splittext", "case": "empty", "text": "   ", "max_chars": 10}
+{"func": "splittext", "case": "collapse", "text": "  a   b\nc  ", "max_chars": 50}
+{"func": "sidecar", "case": "wav", "path": "out.wav"}
+{"func": "sidecar", "case": "mp3", "path": "out.mp3"}
+{"func": "sidecar", "case": "nested", "path": "a.b/out.ogg"}
+{"func": "wav", "case": "shortpcm", "pcm": [0, 1, 255, 128], "rate": 24000, "channels": 1, "width": 2}
+{"func": "wav", "case": "stereo", "pcm": [10, 20], "rate": 44100, "channels": 2, "width": 2}
+{"func": "wav", "case": "empty", "pcm": [], "rate": 24000, "channels": 1, "width": 2}

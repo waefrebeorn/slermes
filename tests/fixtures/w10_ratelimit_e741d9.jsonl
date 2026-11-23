@@ -1,0 +1,23 @@
+{"case":1,"func":"is_nous_agent","provider":"nous","base_url":"http://127.0.0.1:11434","nous_host_match":false}
+{"case":2,"func":"is_nous_agent","provider":"  NoUs ","base_url":"","nous_host_match":false}
+{"case":3,"func":"is_nous_agent","provider":"openai","base_url":"https://api.openai.com/v1","nous_host_match":false}
+{"case":4,"func":"is_nous_agent","provider":null,"base_url":"https://api.nousresearch.com","nous_host_match":true}
+{"case":5,"func":"is_nous_agent","provider":"openai","base_url":"","nous_host_match":true}
+{"case":6,"func":"pct","fraction":0.5}
+{"case":7,"func":"pct","fraction":0.505}
+{"case":8,"func":"pct","fraction":null}
+{"case":9,"func":"pct","fraction":0.999}
+{"case":10,"func":"pct","fraction":0.0}
+{"case":11,"func":"credits_spent_micros","session_start":"9000000","remaining":"4000000"}
+{"case":12,"func":"credits_spent_micros","session_start":"9000000","remaining":"9500000"}
+{"case":13,"func":"credits_spent_micros","session_start":null,"remaining":"4000000"}
+{"case":14,"func":"credits_spent_micros","session_start":"9000000","remaining":null}
+{"case":15,"func":"notices_enabled","cache":true,"config_value":false}
+{"case":16,"func":"notices_enabled","cache":false,"config_value":true}
+{"case":17,"func":"notices_enabled","cache":null,"config_value":true}
+{"case":18,"func":"notices_enabled","cache":null,"config_value":false}
+{"case":19,"func":"notices_enabled","cache":null,"config_value":null}
+{"case":20,"func":"openrouter_cache_status","status":"HIT","count_before":"4"}
+{"case":21,"func":"openrouter_cache_status","status":"hit","count_before":"0"}
+{"case":22,"func":"openrouter_cache_status","status":"MISS","count_before":"7"}
+{"case":23,"func":"openrouter_cache_status","status":null,"count_before":"7"}

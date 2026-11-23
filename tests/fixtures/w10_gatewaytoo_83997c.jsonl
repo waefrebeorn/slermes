@@ -1,0 +1,14 @@
+{"func":"proc_from_row","row":{"session_id":"s1","command":"ls -la","exit_code":0,"started_epoch":100.5,"exited_at":160.5,"output_tail":"tail","completion_reason":"done","status":"exited"}}
+{"func":"proc_from_row","row":{"session_id":"s2","command":"server","exit_code":null,"started_epoch":100,"exited_at":0,"output_tail":"","completion_reason":"","status":"running"}}
+{"func":"proc_from_row","row":{}}
+{"func":"proc_from_row","row":{"session_id":"","command":"","exit_code":2,"started_epoch":"12.5","exited_at":"13.5","output_tail":"o","completion_reason":"c","status":"exited"}}
+{"func":"filter_printable","text":"hello world"}
+{"func":"filter_printable","text":"a\u0001b\nc\td\re"}
+{"func":"filter_printable","text":"  spaced   gone"}
+{"func":"filter_printable","text":""}
+{"func":"interesting","rows":[{"status":"running","started_epoch":100,"exited_at":0}],"now":200}
+{"func":"interesting","rows":[{"status":"exited","exited_at":190}],"now":200}
+{"func":"interesting","rows":[{"status":"exited","exited_at":100}],"now":200}
+{"func":"interesting","rows":[{"status":"exited","exited_at":"195"}],"now":200}
+{"func":"interesting","rows":[],"now":200}
+{"func":"interesting","rows":[{"status":"exited","exited_at":0},{"status":"exited","exited_at":150}],"now":200}

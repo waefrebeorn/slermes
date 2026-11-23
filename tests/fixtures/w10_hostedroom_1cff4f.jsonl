@@ -1,0 +1,18 @@
+{"func":"parse_assignment","case":"at_handle","text":"{\"assign\":[\"@ada\"]}","members":[{"handle":"Ada","member_id":"m1"},{"handle":"linus","member_id":"m2"},{"handle":"Bob","member_id":"m3"}]}
+{"func":"parse_assignment","case":"noise_then_assign","text":"noise {bad} then {\"assign\":[\"Ada\",\"linus\"]}","members":[{"handle":"Ada","member_id":"m1"},{"handle":"linus","member_id":"m2"},{"handle":"Bob","member_id":"m3"}]}
+{"func":"parse_assignment","case":"nested_object","text":"{\"x\":{\"assign\":[\"bob\"]}}","members":[{"handle":"Ada","member_id":"m1"},{"handle":"linus","member_id":"m2"},{"handle":"Bob","member_id":"m3"}]}
+{"func":"parse_assignment","case":"assign_not_list","text":"{\"assign\":\"ada\"}","members":[{"handle":"Ada","member_id":"m1"}]}
+{"func":"parse_assignment","case":"plain_text","text":"none","members":[{"handle":"Ada","member_id":"m1"}]}
+{"func":"parse_assignment","case":"empty_text","text":"","members":[{"handle":"Ada","member_id":"m1"}]}
+{"func":"parse_assignment","case":"strip_and_at","text":"{\"assign\":[\" @ADA \",\"@bob\"]}","members":[{"handle":"Ada","member_id":"m1"},{"handle":"Bob","member_id":"m3"}]}
+{"func":"parse_assignment","case":"non_string_items","text":"{\"assign\":[1,\"linus\",null]}","members":[{"handle":"linus","member_id":"m2"}]}
+{"func":"parse_assignment","case":"no_match","text":"{\"assign\":[\"nobody\"]}","members":[{"handle":"Ada","member_id":"m1"}]}
+{"func":"parse_assignment","case":"empty_assign","text":"{\"assign\":[]}","members":[{"handle":"Ada","member_id":"m1"}]}
+{"func":"parse_assignment","case":"dup_picks","text":"{\"assign\":[\"@Ada\",\"ada\"]}","members":[{"handle":"Ada","member_id":"m1"}]}
+{"func":"assignment","case":"first_match","discussion_event_id":"d1","events":[{"id":"e1","kind":"message.user","payload":{"discussion_event_id":"d1"}},{"id":"e2","kind":"room.assignment","payload":{"discussion_event_id":"d2"}},{"id":"e3","kind":"room.assignment","payload":{"discussion_event_id":"d1"}}]}
+{"func":"assignment","case":"second_match","discussion_event_id":"d2","events":[{"id":"e1","kind":"message.user","payload":{"discussion_event_id":"d1"}},{"id":"e2","kind":"room.assignment","payload":{"discussion_event_id":"d2"}}]}
+{"func":"assignment","case":"no_match","discussion_event_id":"d3","events":[{"id":"e1","kind":"room.assignment","payload":{"discussion_event_id":"d1"}}]}
+{"func":"is_routing_task","case":"true","payload":{"lead_routing":true}}
+{"func":"is_routing_task","case":"one","payload":{"lead_routing":1}}
+{"func":"is_routing_task","case":"absent","payload":{}}
+{"func":"is_routing_task","case":"string","payload":{"lead_routing":"True"}}

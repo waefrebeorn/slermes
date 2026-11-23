@@ -1,0 +1,13 @@
+{"func":"timeout_fallback_prompt","cached":"CACHED","build_ok":true,"built":"BUILT","system_message":"RAW"}
+{"func":"timeout_fallback_prompt","cached":"","build_ok":true,"built":"BUILT","system_message":"RAW"}
+{"func":"timeout_fallback_prompt","cached":null,"build_ok":true,"built":"BUILT","system_message":"RAW"}
+{"func":"timeout_fallback_prompt","cached":null,"build_ok":false,"system_message":"RAW"}
+{"func":"timeout_fallback_prompt","cached":"","build_ok":false,"system_message":""}
+{"func":"timeout_fallback_prompt","cached":null,"build_ok":false,"system_message":null}
+{"func":"warn_commit_overrun","waited":12.0,"ceiling":20.0}
+{"func":"warn_commit_overrun","waited":0.0,"ceiling":3.0}
+{"func":"warn_commit_overrun","waited":7.6,"ceiling":8.4}
+{"func":"compression_timeout_warning","idle":12.34,"waited":12.34,"total_ceiling":60.0,"since_progress":5.0,"total_exhausted":true,"progress_observed":true}
+{"func":"compression_timeout_warning","idle":9.96,"waited":9.96,"total_ceiling":60.0,"since_progress":2.0,"total_exhausted":true,"progress_observed":false}
+{"func":"compression_timeout_warning","idle":12.0,"waited":30.0,"total_ceiling":60.0,"since_progress":12.0,"total_exhausted":false,"progress_observed":true}
+{"func":"compression_timeout_warning","idle":3.25,"waited":5.0,"total_ceiling":60.0,"since_progress":3.25,"total_exhausted":false,"progress_observed":false}

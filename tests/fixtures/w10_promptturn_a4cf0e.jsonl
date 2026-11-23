@@ -1,0 +1,23 @@
+{"func": "result_status", "result": {"interrupted": true}}
+{"func": "result_status", "result": {"error": "x"}}
+{"func": "result_status", "result": {}}
+{"func": "result_status", "result": {"error": "", "interrupted": false}}
+{"func": "result_status", "result": {"interrupted": false, "error": true}}
+{"func": "is_successful_goal_turn", "result": {}, "status": "complete", "raw": "ok", "handoff": false}
+{"func": "is_successful_goal_turn", "result": {"failed": true}, "status": "complete", "raw": "ok", "handoff": false}
+{"func": "is_successful_goal_turn", "result": {"interrupted": true}, "status": "complete", "raw": "ok", "handoff": false}
+{"func": "is_successful_goal_turn", "result": {"completed": false}, "status": "complete", "raw": "ok", "handoff": false}
+{"func": "is_successful_goal_turn", "result": {"completed": false}, "status": "complete", "raw": "ok", "handoff": true}
+{"func": "is_successful_goal_turn", "result": {"completed": null}, "status": "complete", "raw": "ok", "handoff": false}
+{"func": "is_successful_goal_turn", "result": null, "status": "complete", "raw": "ok", "handoff": false}
+{"func": "is_successful_goal_turn", "result": {}, "status": "error", "raw": "ok", "handoff": false}
+{"func": "is_successful_goal_turn", "result": {}, "status": "complete", "raw": "   ", "handoff": false}
+{"func": "is_successful_goal_turn", "result": {}, "status": "complete", "raw": null, "handoff": false}
+{"func": "turn_outcome", "result": null, "error_text": "", "interrupt_prefix": "INTERRUPT"}
+{"func": "turn_outcome", "result": {}, "error_text": "", "interrupt_prefix": "INTERRUPT"}
+{"func": "turn_outcome", "result": {"final_response": "hi", "last_reasoning": "  think  "}, "error_text": "", "interrupt_prefix": "INTERRUPT"}
+{"func": "turn_outcome", "result": {"final_response": "", "error": "boom", "failed": true}, "error_text": "ERR", "interrupt_prefix": "INTERRUPT"}
+{"func": "turn_outcome", "result": {"final_response": "x", "interrupted": true}, "error_text": "", "interrupt_prefix": "INTERRUPT"}
+{"func": "turn_outcome", "result": {"final_response": "INTERRUPT: waiting for model", "interrupted": true}, "error_text": "", "interrupt_prefix": "INTERRUPT"}
+{"func": "turn_outcome", "result": {"final_response": 123}, "error_text": "", "interrupt_prefix": "INTERRUPT"}
+{"func": "turn_outcome", "result": {"last_reasoning": ""}, "error_text": "", "interrupt_prefix": "INTERRUPT"}

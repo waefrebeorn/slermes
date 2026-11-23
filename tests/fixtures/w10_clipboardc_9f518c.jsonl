@@ -1,0 +1,13 @@
+{"func":"mime","case":1,"head":[]}
+{"func":"mime","case":2,"head":[137,80,78,71,13,10,26,10]}
+{"func":"mime","case":3,"head":[255,216,255]}
+{"func":"mime","case":4,"head":[71,73,70,56,57,45,97]}
+{"func":"mime","case":5,"head":[66,77,10,0]}
+{"func":"mime","case":6,"head":[73,73,42,0,1,2]}
+{"func":"mime","case":7,"head":[77,77,0,42,1,2]}
+{"func":"mime","case":8,"head":[82,73,70,70,0,0,0,0,87,69,66,80]}
+{"func":"mime","case":9,"head":[82,73,70,70,0,0,0,0,87,69,66]}
+{"func":"mime","case":10,"head":[97,98,99,100,101,102,103,104]}
+{"func":"mime","case":11,"head":[82,73,70,70,0,0,0,0,87,69,66,80,0,0,0,0]}
+{"func":"mime","case":12,"head":[255,216]}
+{"func":"exit_codes","case":13}
