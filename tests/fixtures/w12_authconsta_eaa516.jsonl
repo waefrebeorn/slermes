@@ -1,0 +1,13 @@
+{"func":"constants","case":"module constants"}
+{"func": "decode", "token": "eyJhbGciOiAibm9uZSJ9.eyJzdWIiOiAiYWJjIiwgImFkbWluIjogdHJ1ZSwgIm4iOiAzfQ.sig", "case": "valid claims"}
+{"func": "decode", "token": "eyJhbGciOiAibm9uZSJ9.eyJuZXN0ZWQiOiB7IngiOiBbMSwgMl19fQ.sig", "case": "nested claims"}
+{"func":"decode","token":"a.b.c","case":"invalid json payload"}
+{"func":"decode","token":"abc","case":"no dots"}
+{"func":"decode","token":"a.b.c.d","case":"too many dots"}
+{"func":"decode","token":"","case":"empty token"}
+{"func":"decode","token":"...","case":"empty segments"}
+{"func": "decode", "token": "eyJhbGciOiAibm9uZSJ9.WzEsIDIsIDNd.sig", "case": "array not dict -> empty"}
+{"func":"error","provider":"nous","message":"bad","code":"x","relogin":true,"case":"nous error"}
+{"func":"error","provider":"xai-oauth","message":"oops","code":null,"relogin":false,"case":"null code"}
+{"func":"error","provider":"openai-codex","message":"","code":"c","relogin":false,"case":"empty message"}
+{"func":"error","provider":"qwen-oauth","message":"m","code":"z","relogin":true,"case":"qwen relogin"}

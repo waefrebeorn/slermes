@@ -1,0 +1,14 @@
+{"func":"resolve","argv":["prog","123"],"mainpid":"999","case":"explicit argv wins"}
+{"func":"resolve","argv":["prog"],"mainpid":"456","case":"env fallback"}
+{"func":"resolve","argv":["prog",""],"mainpid":"456","case":"empty argv falls back to env"}
+{"func":"resolve","argv":["prog"," 789 "],"case":"whitespace stripped"}
+{"func":"resolve","argv":["prog","+12"],"case":"plus sign"}
+{"func":"resolve","argv":["prog","-5"],"case":"negative -> null"}
+{"func":"resolve","argv":["prog","0"],"case":"zero -> null"}
+{"func":"resolve","argv":["prog","abc"],"case":"non-numeric -> null"}
+{"func":"resolve","argv":["prog","3.5"],"case":"float -> null"}
+{"func":"resolve","argv":["prog","1_000"],"case":"underscores"}
+{"func":"resolve","argv":[],"mainpid":"77","case":"empty argv env"}
+{"func":"resolve","argv":["prog"],"case":"no env -> null"}
+{"func":"main","argv":["prog","42"],"case":"main always 0"}
+{"func":"main","argv":["prog","bad"],"case":"main bad pid still 0"}

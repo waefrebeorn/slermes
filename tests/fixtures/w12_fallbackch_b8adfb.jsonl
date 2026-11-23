@@ -1,0 +1,22 @@
+{"case":1,"func":"canonical","model":"GPT-4o"}
+{"case":2,"func":"canonical","model":"  publishers/foo/models/Bar  "}
+{"case":3,"func":"canonical","model":"projects/p/locations/l/publishers/foo/models/Bar"}
+{"case":4,"func":"canonical","model":"publishers//models/x"}
+{"case":5,"func":"canonical","model":"publishers/foo/models/"}
+{"case":6,"func":"answered","requested":"gpt-4o","returned":""}
+{"case":7,"func":"answered","requested":"gpt-4o","returned":"gpt-4o"}
+{"case":8,"func":"answered","requested":"gpt-4o","returned":"gpt-4o-2024-08-06"}
+{"case":9,"func":"answered","requested":"gpt-4o","returned":"gpt-4o-20240806"}
+{"case":10,"func":"answered","requested":"gpt-4o","returned":"gpt-4o-latest"}
+{"case":11,"func":"answered","requested":"gpt-4o","returned":"gpt-4o-2024"}
+{"case":12,"func":"answered","requested":"gpt-4o","returned":"gpt-4o-mini"}
+{"case":13,"func":"answered","requested":"org-a/m","returned":"org-b/m"}
+{"case":14,"func":"answered","requested":"anthropic/claude-x","returned":"claude-x"}
+{"case":15,"func":"answered","requested":"qwen3:8b","returned":"qwen3:32b"}
+{"case":16,"func":"answered","requested":"x/llama-3:free","returned":"llama-3"}
+{"case":17,"func":"answered","requested":"openrouter/auto","returned":"openrouter/auto"}
+{"case":18,"func":"status","configured":true,"auth_ready":true,"inference":null,"error_class":""}
+{"case":19,"func":"status","configured":true,"auth_ready":true,"inference":true,"error_class":""}
+{"case":20,"func":"status","configured":true,"auth_ready":true,"inference":false,"error_class":"live_response"}
+{"case":21,"func":"status","configured":false,"auth_ready":true,"inference":true,"error_class":"config"}
+{"case":22,"func":"secrets","candidates":["short","longenough123",null,7,"12345678"]}

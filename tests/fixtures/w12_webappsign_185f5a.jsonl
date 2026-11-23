@@ -1,0 +1,15 @@
+{"func":"binding","token":""}
+{"func":"binding","token":"abc"}
+{"func":"binding","token":"the browser session token"}
+{"func":"binding","token":"s3cr3t-token-1234567890"}
+{"func":"binding","token":"unicode-é-密钥"}
+{"func":"binding","token":"a token longer than sixty four bytes to exercise the HMAC key-hash branch aaaaaaaaaaaaaaaa"}
+{"func":"digest","token":""}
+{"func":"digest","token":"abc"}
+{"func":"digest","token":"a b c"}
+{"func":"digest","token":"unicode-é-密钥"}
+{"func":"applies","ui_surface":"webapp","auth_required":true}
+{"func":"applies","ui_surface":"webapp","auth_required":false}
+{"func":"applies","ui_surface":"dashboard","auth_required":true}
+{"func":"applies","ui_surface":null,"auth_required":true}
+{"func":"applies","ui_surface":"WEBAPP","auth_required":true}

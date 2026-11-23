@@ -1,0 +1,22 @@
+{"case":1,"func":"outcome_line","to":"alice","entry":{"status":"settled","reply":"done"}}
+{"case":2,"func":"outcome_line","to":"bob","entry":{"status":"settled","reply":""}}
+{"case":3,"func":"outcome_line","to":"carol","entry":{"status":"settled","reply":false}}
+{"case":4,"func":"outcome_line","to":"dave","entry":{"status":"cancelled","error":"whatever"}}
+{"case":5,"func":"outcome_line","to":"eve","entry":{"status":"queued","target_state":"unreachable"}}
+{"case":6,"func":"outcome_line","to":"frank","entry":{"status":"claimed","target_state":"waiting_approval"}}
+{"case":7,"func":"outcome_line","to":"grace","entry":{"status":"pending","target_state":"waiting_clarify"}}
+{"case":8,"func":"outcome_line","to":"heidi","entry":{"status":"queued","target_state":"paused"}}
+{"case":9,"func":"outcome_line","to":"ivan","entry":{"status":"queued","target_state":"working"}}
+{"case":10,"func":"outcome_line","to":"judy","entry":{"status":"queued"}}
+{"case":11,"func":"outcome_line","to":"ken","entry":{"status":"queued","target_state":"mystery"}}
+{"case":12,"func":"outcome_line","to":"leo","entry":{"status":"ambiguous","error":"timed out."}}
+{"case":13,"func":"outcome_line","to":"mike","entry":{"status":"failed","error":"NOT sent: gateway down"}}
+{"case":14,"func":"outcome_line","to":"nan","entry":{"status":"failed","detail":"safe to resend"}}
+{"case":15,"func":"outcome_line","to":"omar","entry":{"status":"failed","error":"boom..."}}
+{"case":16,"func":"outcome_line","to":"pia","entry":{"status":"failed"}}
+{"case":17,"func":"outcome_line","to":"quinn","entry":{"status":"failed","error":"","detail":"fallback detail"}}
+{"case":18,"func":"combined_summary","entries":[{"to":"a","status":"queued"},{"to":"b","status":"settled","reply":"ok"},{"to":"c","status":"cancelled"}]}
+{"case":19,"func":"combined_summary","entries":[{"to":"x","status":"settled","reply":"ok"},{"to":"y","status":"settled","reply":"ok2"}]}
+{"case":20,"func":"combined_summary","entries":[{"to":"z","status":"failed","error":"NOT sent"}]}
+{"case":21,"func":"combined_summary","entries":[{"status":"settled","reply":"ok"},{"status":"queued"}]}
+{"case":22,"func":"combined_summary","entries":[]}

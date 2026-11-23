@@ -1,0 +1,19 @@
+{"case":"rc1","func":"repeat_count","message":"same line","occurrences":2}
+{"case":"rc2","func":"repeat_count","message":"code\n```\n","occurrences":3}
+{"case":"rc3","func":"repeat_count","message":"code\n```\r\n","occurrences":4}
+{"case":"rc4","func":"repeat_count","message":"code\n  \t```  \t\n","occurrences":1}
+{"case":"rc5","func":"repeat_count","message":"code\n``` tail\n","occurrences":5}
+{"case":"rc6","func":"repeat_count","message":"a\n\n","occurrences":7}
+{"case":"cmp1","func":"compact","value":"  a\t b\n\n c   ","limit":120}
+{"case":"cmp2","func":"compact","value":"the quick brown fox jumps over the lazy dog","limit":12}
+{"case":"cmp3","func":"compact","value":null,"limit":10}
+{"case":"cmp4","func":"compact","value":false,"limit":10}
+{"case":"cmp5","func":"compact","value":"  ","limit":4}
+{"case":"txt1","func":"progress_text","lines":["one","two",null,true,3]}
+{"case":"txt2","func":"progress_text","lines":[]}
+{"case":"reset1","func":"is_reset_marker","raw":["__reset__","x"]}
+{"case":"reset2","func":"is_reset_marker","raw":["other","__reset__"]}
+{"case":"reset3","func":"is_reset_marker","raw":[]}
+{"case":"abs1","func":"absorb","progress_lines":[],"raw":"first line"}
+{"case":"abs2","func":"absorb","progress_lines":["a","b"],"raw":["__dedup__","base",2]}
+{"case":"abs3","func":"absorb","progress_lines":[],"raw":["__dedup__","base",2]}

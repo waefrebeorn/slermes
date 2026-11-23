@@ -1,0 +1,20 @@
+{"func":"constants","case":"module constants"}
+{"func":"server_message","value":"  Hello   world  ","case":"collapse and trim"}
+{"func":"server_message","value":"a\tb\nc","case":"control chars become spaces"}
+{"func":"server_message","value":123,"case":"non-string -> empty"}
+{"func":"server_message","value":"","case":"empty -> empty"}
+{"func":"server_message","value":"x\u0007y","case":"control escape"}
+{"func":"same_origin","url":"https://portal.nousresearch.com/a","portal":"https://portal.nousresearch.com","case":"same origin"}
+{"func":"same_origin","url":"https://evil.com/a","portal":"https://portal.nousresearch.com","case":"different host"}
+{"func":"same_origin","url":"http://portal.nousresearch.com","portal":"https://portal.nousresearch.com","case":"scheme mismatch"}
+{"func":"same_origin","url":"HTTPS://PORTAL.nousresearch.com/x","portal":"https://portal.nousresearch.com","case":"case insensitive"}
+{"func":"same_origin","url":"not a url","portal":"https://portal.nousresearch.com","case":"malformed"}
+{"func":"number","value":0.5,"default":2.0,"case":"finite number"}
+{"func":"number","value":true,"default":2.0,"case":"bool -> default"}
+{"func":"number","value":"x","default":2.0,"case":"string -> default"}
+{"func":"parse","portal":"https://portal.nousresearch.com","payload":{"challenges":[{"type":"browser","url":"https://portal.nousresearch.com/challenge","expires_in":15,"interval":0.2}]},"case":"clamped bounds"}
+{"func":"parse","portal":"https://portal.nousresearch.com","payload":{"message":"  Do   this  ","challenges":[{"type":"browser","url":"https://portal.nousresearch.com/c","required":false,"expires_in":5000}]},"case":"message and required false"}
+{"func":"parse","portal":"https://portal.nousresearch.com","payload":{"challenges":[{"type":"browser","url":"https://evil.com/c"}]},"case":"off-origin skipped"}
+{"func":"parse","portal":"https://portal.nousresearch.com","payload":{"challenges":[]},"case":"no challenges -> null"}
+{"func":"parse","portal":"https://portal.nousresearch.com","payload":{"challenges":"x"},"case":"challenges not list -> null"}
+{"func":"parse","portal":"https://portal.nousresearch.com","payload":{"challenges":[{"type":"browser","url":"https://portal.nousresearch.com/c","required":null,"expires_in":"bad","interval":true}]},"case":"null required and bad numbers"}

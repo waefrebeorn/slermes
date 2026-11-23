@@ -1,0 +1,13 @@
+{"func":"session_surface","platform":"telegram","env_platform":""}
+{"func":"session_surface","platform":null,"env_platform":"cli"}
+{"func":"session_surface","platform":"","env_platform":"x"}
+{"func":"session_surface","platform":"discord","env_platform":"tui"}
+{"func":"context_surface","cli_ref":true,"surface":"tui"}
+{"func":"context_surface","cli_ref":false,"surface":"acp"}
+{"func":"context_surface","cli_ref":false,"surface":""}
+{"func":"session_cwd","scoped":"/w","policy_cwd":"","terminal_cwd":"  /t  "}
+{"func":"session_cwd","scoped":"","policy_cwd":"/p","terminal_cwd":"/t"}
+{"func":"session_cwd","scoped":"","policy_cwd":"","terminal_cwd":" /home "}
+{"func":"session_cwd","scoped":"","policy_cwd":null,"terminal_cwd":"  /proj  "}
+{"func":"session_cwd","scoped":" /a ","policy_cwd":"/b","terminal_cwd":"/c"}
+{"func":"session_cwd","scoped":"","policy_cwd":" ","terminal_cwd":"/t"}

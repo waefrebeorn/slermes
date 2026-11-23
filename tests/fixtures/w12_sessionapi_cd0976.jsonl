@@ -1,0 +1,13 @@
+{"case":"iu1","func":"image_urls","content":[{"type":"text","text":"hi"}]}
+{"case":"iu2","func":"image_urls","content":[{"type":"image_url","image_url":{"url":"https://x/a.png"}}]}
+{"case":"iu3","func":"image_urls","content":[{"type":"image_url","image_url":{"url":"data:image/png;base64,QUJD"}},{"type":"image_url","image_url":{}},{"type":"text","text":"t"}]}
+{"case":"iu4","func":"image_urls","content":[{"type":"image_url","image_url":null},{"type":"image_url"},{"type":"other"}]}
+{"case":"iu5","func":"image_urls","content":[]}
+{"case":"ri1","func":"restore_images","content":[{"type":"text","text":"look"},{"type":"image_url","image_url":{"url":"data:image/png;base64,QUJD"}}],"media_paths":["C:/cache/api_1.png"]}
+{"case":"ri2","func":"restore_images","content":[{"type":"text","text":"remote"},{"type":"image_url","image_url":{"url":"https://x/a.png"}}],"media_paths":[]}
+{"case":"ri3","func":"restore_images","content":[{"type":"image_url","image_url":{"url":"data:image/jpeg;base64,AAAA"}},{"type":"image_url","image_url":{"url":"https://x/b.jpg"}}],"media_paths":["C:/cache/api_2.jpg"]}
+{"case":"ri4","func":"restore_images","content":[{"type":"text","text":"none"}],"media_paths":[]}
+{"case":"ri5","func":"restore_images","content":[{"type":"image_url","image_url":{"url":"DATA:IMAGE/PNG;BASE64,QUJD"}}],"media_paths":["C:/cache/api_3.png"]}
+{"case":"ri6","func":"restore_images","content":[{"type":"image_url","image_url":{"url":"data:image/png;base64!!!!"}}],"media_paths":["C:/cache/api_4.png"]}
+{"case":"ri7","func":"restore_images","content":[{"type":"text","text":"a"},{"type":"image_url","image_url":{"url":"https://x/1"}},{"type":"image_url","image_url":{"url":"https://x/2"}}],"media_paths":[]}
+{"case":"ri8","func":"restore_images","content":[],"media_paths":[]}

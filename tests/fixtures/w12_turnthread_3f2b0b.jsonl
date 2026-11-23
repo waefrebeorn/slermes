@@ -1,0 +1,12 @@
+{"func":"locals","case":"configured locals list"}
+{"func":"reset","tid":"1001","interrupt":{"set":true,"reason":"x","pending_yield":true},"case":"interrupt cleared"}
+{"func":"reset","tid":"1001","sudo_cache":{"thread:1001":"pw","thread:1002":"pw2"},"case":"sudo thread entry popped"}
+{"func":"reset","tid":"1001","sudo_cache":{"thread:1002":"pw2"},"case":"other thread sudo survives"}
+{"func":"reset","tid":"1001","locals":{"tools.terminal_tool._callback_tls":{"cb":"A"}},"case":"one configured local cleared"}
+{"func":"reset","tid":"1001","locals":{"tools.terminal_tool._callback_tls":{"cb":"A"},"hermes_logging._session_context":{"tag":"t"}},"case":"two configured locals cleared"}
+{"func":"reset","tid":"1001","locals":{"some.other_module._not_configured":{"keep":1}},"case":"unconfigured local untouched"}
+{"func":"reset","tid":"1001","case":"nothing present"}
+{"func":"reset","tid":"0","sudo_cache":{"thread:0":"pw"},"case":"tid zero"}
+{"func":"reset","tid":"140000000000","sudo_cache":{"thread:140000000000":"pw"},"case":"large tid"}
+{"func":"reset","tid":"1001","locals":{"agent.auxiliary_client._aux_progress":{"p":1}},"case":"aux local cleared"}
+{"func":"reset","tid":"1001","interrupt":{"set":true,"reason":null,"pending_yield":false},"sudo_cache":{"thread:1001":"pw"},"locals":{"hermes_cli.plugins._thread_tool_whitelist":{"x":1}},"case":"all three together"}

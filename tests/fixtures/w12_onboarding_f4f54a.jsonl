@@ -1,0 +1,14 @@
+{"func":"reset"}
+{"func":"read","value":{"a":true},"before":"s1","after":"s1"}
+{"func":"read","value":{"a":false},"before":"s1","after":"s1"}
+{"func":"read","value":{"a":false},"before":"s2","after":"s2"}
+{"func":"read","value":{"a":false},"before":"s3","after":"s4"}
+{"func":"read","value":{"a":false},"before":"s4","after":"s4"}
+{"func":"invalidate"}
+{"func":"read","value":{"b":true},"before":"s5","after":"s5"}
+{"func":"store","value":{"b":false},"generation":"0","before":"s6","after":"s6"}
+{"func":"store","value":{"b":false},"generation":"1","before":"s6","after":"s6"}
+{"func":"read","value":{"b":true},"before":"s6","after":"s6"}
+{"func":"read","value":{"b":true},"before":"s7","after":"s7"}
+{"func":"reset"}
+{"func":"read","value":{"a":true,"b":false},"before":"t1","after":"t1"}

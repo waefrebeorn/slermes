@@ -1,0 +1,19 @@
+{"func":"is_allowed_image_url","url":"https://raw.githubusercontent.com/x"}
+{"func":"is_allowed_image_url","url":"https://github.com"}
+{"func":"is_allowed_image_url","url":"https://evil.com"}
+{"func":"is_allowed_image_url","url":"http://raw.githubusercontent.com/x"}
+{"func":"is_allowed_image_url","url":"https://foo.githubusercontent.com/a/b"}
+{"func":"is_allowed_image_url","url":"https://githubusercontent.com/x"}
+{"func":"is_allowed_image_url","url":"https://GitHub.com:443/x"}
+{"func":"is_https_url","url":"https://x.com/path"}
+{"func":"is_https_url","url":"javascript:alert(1)"}
+{"func":"is_https_url","url":"https://["}
+{"func":"is_https_url","url":"https://   "}
+{"func":"is_https_url","url":"HTTPS://github.com/x"}
+{"func":"is_https_url","url":""}
+{"func":"normalize_repo","url":"https://github.com/evil/bad"}
+{"func":"normalize_repo","url":"git@github.com:Evil/Bad.git"}
+{"func":"normalize_repo","url":"https://www.github.com/evil/bad.git/"}
+{"func":"normalize_repo","url":"github.com/evil/bad"}
+{"func":"normalize_repo","url":"  https://GitHub.com/Owner/Repo.git  "}
+{"func":"normalize_repo","url":"ssh://git@host/x/y"}

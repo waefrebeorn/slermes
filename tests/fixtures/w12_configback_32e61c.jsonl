@@ -1,0 +1,20 @@
+{"case":1,"func":"version","version":[]}
+{"case":2,"func":"version","version":[1]}
+{"case":3,"func":"version","version":[123456789]}
+{"case":4,"func":"version","version":[1700000000000000000]}
+{"case":5,"func":"version","version":[true]}
+{"case":6,"func":"version","version":[false]}
+{"case":7,"func":"version","version":["abc"]}
+{"case":8,"func":"version","version":["remote"]}
+{"case":9,"func":"version","version":["abc","def"]}
+{"case":10,"func":"version","version":[null]}
+{"case":11,"func":"version","version":[null,"x",true]}
+{"case":12,"func":"select","env":""}
+{"case":13,"func":"select","env":null}
+{"case":14,"func":"select","env":"REMOTE"}
+{"case":15,"func":"select","env":"  HeLLo_2  "}
+{"case":16,"func":"select","env":"9bad"}
+{"case":17,"func":"select","env":"a-b"}
+{"case":18,"func":"select","env":"file"}
+{"case":19,"func":"locked","path":"model","locked_by":"managed"}
+{"case":20,"func":"locked","path":"a.b.c","locked_by":"system"}

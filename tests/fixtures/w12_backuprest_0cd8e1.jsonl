@@ -1,0 +1,22 @@
+{"func":"names","case":"store file names constant"}
+{"func":"validate","names":[],"case":"empty zip"}
+{"func":"validate","names":["config.yaml","other.txt"],"case":"root config marker"}
+{"func":"validate","names":["a/b/.env","x"],"case":"nested env marker"}
+{"func":"validate","names":["hermes/state.db","readme"],"case":"state db marker"}
+{"func":"validate","names":["random.txt","a/b.log"],"case":"no markers"}
+{"func":"prefix","names":["config.yaml"],"case":"no prefix single file"}
+{"func":"prefix","names":[".hermes/config.yaml",".hermes/.env"],"case":"dot hermes prefix"}
+{"func":"prefix","names":["hermes/a/config.yaml","hermes/b/.env"],"case":"hermes prefix"}
+{"func":"prefix","names":["a/config.yaml","b/.env"],"case":"mixed dirs no prefix"}
+{"func":"prefix","names":[".hermes/","config.yaml"],"case":"directory entry skipped"}
+{"func":"get","data":{"a":{"b":7},"c":1},"dotted":["a","b"],"case":"existing nested value"}
+{"func":"get","data":{"a":{"b":7}},"dotted":["a","missing"],"case":"missing key null"}
+{"func":"get","data":{"a":1},"dotted":["a","b"],"case":"through non-dict null"}
+{"func":"get","data":{"a":{"b":null}},"dotted":["a","b"],"case":"explicit null"}
+{"func":"set","data":{},"dotted":["a","b"],"value":{"x":1},"case":"create nested path"}
+{"func":"set","data":{"a":{"b":1}},"dotted":["a","b"],"value":9,"case":"overwrite existing"}
+{"func":"set","data":{"a":1},"dotted":["a","b"],"value":2,"case":"replace non-dict child"}
+{"func":"set","data":{"keep":true},"dotted":["z"],"value":"v","case":"single key"}
+{"func":"is_store","name":"state.db","resolved":"x","case":"name match"}
+{"func":"is_store","name":"other.db","resolved":"shared-state.db","case":"resolved match"}
+{"func":"is_store","name":"a/state.db.bak","resolved":"x","case":"no match"}

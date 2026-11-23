@@ -1,0 +1,25 @@
+{"case":1,"func":"strip_html","value":"<b>Hello</b> world"}
+{"case":2,"func":"strip_html","value":"plain text"}
+{"case":3,"func":"strip_html","value":"<div><span>x</span></div>"}
+{"case":4,"func":"strip_html","value":"a < b > c"}
+{"case":5,"func":"strip_html","value":""}
+{"case":6,"func":"extract_repo_slug","repo_value":"https://github.com/owner/repo"}
+{"case":7,"func":"extract_repo_slug","repo_value":"owner/repo/tree/main"}
+{"case":8,"func":"extract_repo_slug","repo_value":""}
+{"case":9,"func":"extract_repo_slug","repo_value":"single"}
+{"case":10,"func":"extract_repo_slug","repo_value":" https://github.com/o/r "}
+{"case":11,"func":"normalize_identifier","identifier":"skills-sh/o/r/s"}
+{"case":12,"func":"normalize_identifier","identifier":"skills.sh/o/r/s"}
+{"case":13,"func":"normalize_identifier","identifier":"skils-sh/x"}
+{"case":14,"func":"normalize_identifier","identifier":"plain/id"}
+{"case":15,"func":"wrap_identifier","identifier":"o/r/s"}
+{"case":16,"func":"detail_to_metadata","canonical":"o/r/s","detail":null}
+{"case":17,"func":"detail_to_metadata","canonical":"solo","detail":null}
+{"case":18,"func":"detail_to_metadata","canonical":"o/r/s","detail":{"weekly_installs":"1.2K","install_command":"npx skills add o/r","repo_url":"https://override"}}
+{"case":19,"func":"token_variants","value":"OAuth Skill"}
+{"case":20,"func":"token_variants","value":"@My_Skill"}
+{"case":21,"func":"token_variants","value":"skills/my-tool"}
+{"case":22,"func":"token_variants","value":null}
+{"case":23,"func":"token_variants","value":""}
+{"case":24,"func":"token_variants","value":"@@foo"}
+{"case":25,"func":"token_variants","value":"Hello, World! v2.0"}

@@ -1,0 +1,23 @@
+{"case":1,"func":"ws","origin":"https://example.com","ticket":"abc"}
+{"case":2,"func":"ws","origin":"http://127.0.0.1:8080","ticket":"t-1"}
+{"case":3,"func":"ws","origin":"ws://x","ticket":"t2"}
+{"case":4,"func":"ws","origin":"wss://x","ticket":""}
+{"case":5,"func":"reason","value":"unknown_method"}
+{"case":6,"func":"reason","value":"bad reason"}
+{"case":7,"func":"reason","value":"a_b"}
+{"case":8,"func":"reason","value":""}
+{"case":9,"func":"reason","value":null}
+{"case":10,"func":"reason","value":123}
+{"case":11,"func":"reason","value":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"case":12,"func":"edata","data":{"a":1,"b":"x","c":null,"d":true,"e":[1,2,"z"],"f":{"x":1},"g":[1,{"y":2}],"h":"ok"}}
+{"case":13,"func":"edata","data":[]}
+{"case":14,"func":"edata","data":{"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk":1,"short":2}}
+{"case":15,"func":"edata","data":{"longlist":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]}}
+{"case":16,"func":"rpcerr","error":{"message":"unknown_method","code":-32601}}
+{"case":17,"func":"rpcerr","error":{"message":"bad reason","data":{"reason":"request_failed"}}}
+{"case":18,"func":"rpcerr","error":{}}
+{"case":19,"func":"rpcerr","error":{"code":true,"message":"ok"}}
+{"case":20,"func":"rpcerr","error":{"message":"x","data":{"reason":"rate_limit","n":1}}}
+{"case":21,"func":"rpcerr","error":{"message":"unknown_method"}}
+{"case":22,"func":"rpcerr","error":{"code":-32000,"data":{"reason":"rate_limited","items":[1,"z"]}}}
+{"case":23,"func":"reason","value":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}

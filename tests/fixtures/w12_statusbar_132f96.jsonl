@@ -1,0 +1,12 @@
+{"func":"branch_label","head":"ref: refs/heads/main"}
+{"func":"branch_label","head":"ref: refs/heads/feature/x"}
+{"func":"branch_label","head":"ref: refs/tags/v1"}
+{"func":"branch_label","head":"ref:refs/heads/detached-style"}
+{"func":"branch_label","head":"ref: refs/remotes/origin/dev"}
+{"func":"branch_label","head":"ref: refs/heads/"}
+{"func":"branch_label","head":"abc123def456789xyz"}
+{"func":"branch_label","head":"0123456789abcdef"}
+{"func":"branch_label","head":"   "}
+{"func":"branch_label","head":""}
+{"func":"branch_label","head":"  ref: refs/heads/main  "}
+{"func":"branch_label","head":"ref: refs/heads/a/b/c"}

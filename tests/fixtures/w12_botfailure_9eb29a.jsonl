@@ -1,0 +1,40 @@
+{"case":1,"func":"retry_action","reason":"runtime_offline"}
+{"case":2,"func":"retry_action","reason":"context_overflow"}
+{"case":3,"func":"retry_action","reason":"provider_auth_or_access"}
+{"case":4,"func":"retry_action","reason":"cancelled"}
+{"case":5,"func":"retry_action","reason":"delivery_timeout"}
+{"case":6,"func":"turn_failure_text","stdout":" provider prose \n","stderr":" session_id: abc "}
+{"case":7,"func":"turn_failure_text","stdout":"   ","stderr":""}
+{"case":8,"func":"turn_failure_text","stdout":null,"stderr":"  err text  "}
+{"case":9,"func":"turn_failure_text","stdout":"only out","stderr":null}
+{"case":10,"func":"classify","text":""}
+{"case":11,"func":"classify","text":"   "}
+{"case":12,"func":"classify","text":"authentication_error: bad key"}
+{"case":13,"func":"classify","text":"Invalid API key supplied"}
+{"case":14,"func":"classify","text":"Error code: 403 forbidden"}
+{"case":15,"func":"classify","text":"HTTP 402 payment required"}
+{"case":16,"func":"classify","text":"out of funds"}
+{"case":17,"func":"classify","text":"quota exceeded"}
+{"case":18,"func":"classify","text":"status code 429 too many"}
+{"case":19,"func":"classify","text":"rate-limit reached"}
+{"case":20,"func":"classify","text":"server_error occurred"}
+{"case":21,"func":"classify","text":"http 503 unavailable"}
+{"case":22,"func":"classify","text":"overloaded_error"}
+{"case":23,"func":"classify","text":"context length exceeded"}
+{"case":24,"func":"classify","text":"maximum context reached"}
+{"case":25,"func":"classify","text":"no llm provider configured"}
+{"case":26,"func":"classify","text":"no access token"}
+{"case":27,"func":"classify","text":"model gpt-x does not exist"}
+{"case":28,"func":"classify","text":"model_not_found"}
+{"case":29,"func":"classify","text":"could not read this profile's OPENROUTER_API_KEY (an internal profile-scoping bug)"}
+{"case":30,"func":"classify","text":"served_profile_child_env(inherit_credentials=true) detail"}
+{"case":31,"func":"classify","text":"some random error"}
+{"case":32,"func":"classify","text":"invalid api key, out of funds"}
+{"case":33,"func":"classify","text":"error code 401 invalid, blocked or out of funds"}
+{"case":34,"func":"classify","text":"AUTHENTICATION_ERROR"}
+{"case":35,"func":"classify","text":"error code 4015 something"}
+{"case":36,"func":"result_retry","result":{"failed":true,"error":"error code 429 rate limit"}}
+{"case":37,"func":"result_retry","result":{"failed":true,"failure_reason":"context_overflow"}}
+{"case":38,"func":"result_retry","result":{"failed":false,"error":"error code 429"}}
+{"case":39,"func":"result_retry","result":null}
+{"case":40,"func":"result_retry","result":{"error":"auth error"}}

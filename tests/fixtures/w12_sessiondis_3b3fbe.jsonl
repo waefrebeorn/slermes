@@ -1,0 +1,14 @@
+{"case":"d1","func":"discover","capabilities":[],"actor_profile":"p1","authority_profile":"p1","params":{},"completion":false,"profile_ok":true}
+{"case":"d2","func":"discover","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p2","params":{},"completion":false,"profile_ok":true}
+{"case":"d3","func":"discover","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p1","params":{"text":"q"},"completion":false,"profile_ok":true}
+{"case":"d4","func":"discover","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p1","params":{"session_id":5},"completion":false,"profile_ok":true}
+{"case":"d5","func":"discover","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p1","params":["x"],"completion":false,"profile_ok":true}
+{"case":"d6","func":"discover","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p1","params":{"profile":"other"},"completion":false,"profile_ok":false}
+{"case":"d7","func":"discover","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p1","params":{"profile":"mine"},"completion":false,"profile_ok":true}
+{"case":"d8","func":"discover","capabilities":["session:read","other"],"actor_profile":"p1","authority_profile":"p1","params":{"text":"find","session_id":"s1"},"completion":true,"profile_ok":true}
+{"case":"d9","func":"discover","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p1","params":{},"completion":true,"profile_ok":true}
+{"case":"l1","func":"list_check","capabilities":[],"actor_profile":"p1","authority_profile":"p1","params":{}}
+{"case":"l2","func":"list_check","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p1","params":{"x":"y"}}
+{"case":"l3","func":"list_check","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p1","params":{}}
+{"case":"l4","func":"list_check","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p1","params":null}
+{"case":"l5","func":"list_check","capabilities":["session:read"],"actor_profile":"p1","authority_profile":"p1","params":{"profile":"p1"}}

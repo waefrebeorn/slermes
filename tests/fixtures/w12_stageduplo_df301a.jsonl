@@ -1,0 +1,19 @@
+{"func":"safe_filename","value":"a.tar.gz"}
+{"func":"safe_filename","value":"foo."}
+{"func":"safe_filename","value":".."}
+{"func":"safe_filename","value":"../../etc/passwd"}
+{"func":"safe_filename","value":"café.txt"}
+{"func":"safe_filename","value":"  spaced  .TXT"}
+{"func":"safe_filename","value":"a@@b##c.txt"}
+{"func":"safe_filename","value":null}
+{"func":"safe_filename","value":""}
+{"func":"safe_filename","value":"..."}
+{"func":"safe_filename","value":"----------------------.txt"}
+{"func":"safe_filename","value":"a/b/c.d/e.f"}
+{"func":"parse_staged_upload","install_id":"inst-1","descriptor":{"install_id":"inst-1","profile_home":"/h/u","path":"/h/u/uploads/web-aa-file.txt"}}
+{"func":"parse_staged_upload","install_id":"inst-1","descriptor":{"install_id":"other","profile_home":"/h/u","path":"/h/u/uploads/web-aa-file.txt"}}
+{"func":"parse_staged_upload","install_id":"inst-1","descriptor":{"install_id":"inst-1","profile_home":"","path":"/x"}}
+{"func":"parse_staged_upload","install_id":"","descriptor":{"install_id":"inst-1","profile_home":"/h/u","path":"/x"}}
+{"func":"parse_staged_upload","install_id":"inst-1","descriptor":"not-a-dict"}
+{"func":"staged_upload_descriptor","install_id":"inst-1","path":"/h/u/uploads/web-aa-file.txt","profile_home":"/h/u"}
+{"func":"staged_upload_descriptor","install_id":"","path":"/h/u/uploads/web-aa-file.txt","profile_home":"/h/u"}

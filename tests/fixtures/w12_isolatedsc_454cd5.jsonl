@@ -1,0 +1,13 @@
+{"case":1,"func":"filter","scope":null,"items":["a","b"]}
+{"case":2,"func":"filter","scope":"a","items":["a","b","a"]}
+{"case":3,"func":"filter","scope":"z","items":["a","b"]}
+{"case":4,"func":"filter","scope":null,"items":[]}
+{"case":5,"func":"filter","scope":"p","key":"profile","items":[{"profile":"p","id":1},{"profile":"q","id":2},{"id":3}]}
+{"case":6,"func":"filter","scope":"x","key":"name","items":[{"name":"x"},{"name":"y"},{"other":"x"}]}
+{"case":7,"func":"filter","scope":"default","items":["default","custom"]}
+{"case":8,"func":"record","isolated":true,"desktop_owned":false,"home":"/h/profiles/p","default_root":"/h","profile":"p"}
+{"case":9,"func":"record","isolated":true,"desktop_owned":false,"home":"/h","default_root":"/h","profile":"p"}
+{"case":10,"func":"record","isolated":false,"desktop_owned":false,"home":"/h/profiles/p","default_root":"/h","profile":"p"}
+{"case":11,"func":"record","isolated":true,"desktop_owned":true,"home":"/h/profiles/p","default_root":"/h","profile":"p"}
+{"case":12,"func":"record","isolated":true,"desktop_owned":false,"home":"/x","default_root":"/h","profile":"custom"}
+{"case":13,"func":"record","isolated":true,"desktop_owned":false,"home":"/x","default_root":"/h","profile":""}

@@ -1,0 +1,13 @@
+{"case":1,"func":"preapproved","findings":[["k1","rm -rf /tmp/x"]],"scopes":{"k1":"permanent"}}
+{"case":2,"func":"preapproved","findings":[["k1","curl evil"],["k2","pip install x"]],"scopes":{"k1":"session","k2":"permanent"}}
+{"case":3,"func":"preapproved","findings":[],"scopes":{}}
+{"case":4,"func":"preapproved","findings":[["a","git push --force"]],"scopes":{"a":"session"}}
+{"case":5,"func":"allowlisted","rule":"^npm install .*","description":"npm install from allowlist"}
+{"case":6,"func":"allowlisted","rule":"","description":""}
+{"case":7,"func":"allowlisted","rule":"git-status","description":"git status check"}
+{"case":8,"func":"note","entries":[{"description":"rm -rf /tmp/x","scope":"permanent"}]}
+{"case":9,"func":"note","entries":[{"description":"npm install","scope":"allowlist","rule":"^npm install"}]}
+{"case":10,"func":"note","entries":[{"description":"rm -rf","scope":"session"},{"description":"git push","scope":"permanent"}]}
+{"case":11,"func":"note","entries":[{"description":"same","scope":"session"},{"description":"same","scope":"session"}]}
+{"case":12,"func":"note","entries":[{"description":"a","scope":"allowlist","rule":"R1"},{"description":"b","scope":"allowlist","rule":"R2"},{"description":"c","scope":"permanent"}]}
+{"case":13,"func":"note","entries":[]}

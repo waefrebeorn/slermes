@@ -1,0 +1,9 @@
+{"case":"runner-missing","func":"select_lifespan"}
+{"case":"runner-null","func":"select_lifespan","gateway_runner":null}
+{"case":"runner-zero","func":"select_lifespan","gateway_runner":0}
+{"case":"runner-empty-string","func":"select_lifespan","gateway_runner":""}
+{"case":"runner-false","func":"select_lifespan","gateway_runner":false}
+{"case":"runner-empty-object","func":"select_lifespan","gateway_runner":{}}
+{"case":"runner-empty-list","func":"select_lifespan","gateway_runner":[]}
+{"case":"runner-string","func":"select_lifespan","gateway_runner":"gateway"}
+{"case":"runner-number","func":"select_lifespan","gateway_runner":42}

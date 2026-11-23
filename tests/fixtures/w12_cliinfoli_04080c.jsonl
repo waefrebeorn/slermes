@@ -1,0 +1,12 @@
+{"func": "box", "title": "cli.toolsets.header", "width": 58, "case": "toolsets box width 58"}
+{"func": "box", "title": "abc", "width": 10, "case": "odd padding split"}
+{"func": "box", "title": "", "width": 0, "case": "zero width"}
+{"func": "box", "title": "x", "width": 6, "case": "small box"}
+{"func": "toolsets_lines", "spec": {"all_names": [], "toolsets": {}, "enabled": null}, "case": "empty catalog"}
+{"func": "toolsets_lines", "spec": {"all_names": ["zeta", "alpha", "mid"], "toolsets": {"zeta": {"tool_count": 3, "description": "Zed tools"}, "alpha": {"tool_count": 12, "description": "Alpha tools"}, "mid": {"tool_count": 1, "description": "Middle"}}, "enabled": ["alpha", "zeta"]}, "case": "sorted with markers and double digit count"}
+{"func": "toolsets_lines", "spec": {"all_names": ["b", "a"], "toolsets": {"b": {"tool_count": 2, "description": "Bee"}, "a": null}, "enabled": []}, "case": "missing info skipped"}
+{"func": "toolsets_lines", "spec": {"all_names": ["solo"], "toolsets": {"solo": {"tool_count": "7", "description": "String count"}}, "enabled": null}, "case": "string tool_count and null enabled"}
+{"func": "platforms_lines", "spec": {"home": "/home/u/.hermes", "config": {"platforms": {}}}, "case": "none configured"}
+{"func": "platforms_lines", "spec": {"home": "/h", "config": {"platforms": {"telegram": {"enabled": true, "home": "general"}, "discord": {"enabled": true}, "slack": {"enabled": false}, "whatsapp": {"enabled": true, "home": ""}}}}, "case": "mixed platforms with homes"}
+{"func": "platforms_lines", "spec": {"home": "/h", "load_error": "config broken", "config": {"platforms": {}}}, "case": "config load error"}
+{"func": "platforms_lines", "spec": {"home": "", "config": {"platforms": {"whatsapp": {"enabled": true, "home": "support"}}}}, "case": "empty home prefix"}

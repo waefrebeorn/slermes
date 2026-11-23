@@ -1,9 +1,14 @@
 /*
  * session_mutations.c — C home for upstream Hermes gateway/session_mutations.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: gateway_session_mutations_pending @ gateway/session_mutations.py:<module>
+ *
+ * PoP: w12_sessionmut_83f0c3_runtime_owns_authority @ gateway/session_mutations.py:_runtime_owns_authority
  */
-#include <stddef.h>
+#include "noc_w12_sessionmut_83f0c3.h"
 
-void gateway_session_mutations_port_pending(void) { (void)0; }
+int w12_sessionmut_83f0c3_runtime_owns_authority(int has_registry,
+                                                  int registry_contains_authority,
+                                                  int session_authority_is_authority) {
+    if (has_registry)
+        return registry_contains_authority ? 1 : 0;
+    return session_authority_is_authority ? 1 : 0;
+}

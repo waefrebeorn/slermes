@@ -1,0 +1,19 @@
+{"func": "tool_progress_label", "mode": "off", "case": "mode off"}
+{"func": "tool_progress_label", "mode": "new", "case": "mode new"}
+{"func": "tool_progress_label", "mode": "all", "case": "mode all"}
+{"func": "tool_progress_label", "mode": "verbose", "case": "mode verbose"}
+{"func": "tool_progress_label", "mode": "bogus", "case": "mode bogus"}
+{"func": "tool_progress_label", "mode": "", "case": "mode empty"}
+{"func": "reload_mcp_choices", "case": "three choices"}
+{"func": "help_section_title", "category": "Session", "case": "category Session"}
+{"func": "help_section_title", "category": "Tools & Skills", "case": "category Tools & Skills"}
+{"func": "help_section_title", "category": "Background & Automation", "case": "category Background & Automation"}
+{"func": "help_section_title", "category": "Custom", "case": "category Custom"}
+{"func": "skill_line", "item": {"name": "demo", "description": "A demo skill"}, "case": "with description"}
+{"func": "skill_line", "item": {"name": "demo"}, "case": "without description"}
+{"func": "skill_line", "item": {}, "case": "empty item"}
+{"func": "toolset_map", "tools": [], "availability": {}, "toolset_of": {}, "case": "empty map"}
+{"func": "toolset_map", "tools": [{"function": {"name": "a"}}, {"function": {"name": "b"}}], "toolset_of": {"a": "core", "b": null}, "availability": {"unavailable_toolsets": [{"id": "plug", "tools": ["b", "c"]}]}, "case": "setdefault does not overwrite null"}
+{"func": "toolset_map", "tools": [{"function": {"name": "x"}}], "toolset_of": {"x": "core"}, "availability": {"unavailable_toolsets": [{"name": "fallback", "tools": ["y"]}, {"tools": ["z"]}, {"id": null, "tools": ["w"]}]}, "case": "id fallback to name then empty, null id"}
+{"func": "ascii_box", "title": "cli.tools.header", "width": 78, "case": "wide box"}
+{"func": "ascii_box", "title": "ab", "width": 7, "case": "odd padding"}

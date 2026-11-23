@@ -1,0 +1,11 @@
+{"case":1,"func":"clamped","started":100,"now":150,"ceiling":200}
+{"case":2,"func":"clamped","started":100,"now":50,"ceiling":200}
+{"case":3,"func":"clamped","started":0,"now":500,"ceiling":120}
+{"case":4,"func":"clamped","started":10,"now":10,"ceiling":30}
+{"case":5,"func":"clamped","started":1.5,"now":2.75,"ceiling":3.5}
+{"case":6,"func":"clamped","started":100,"now":160,"ceiling":30}
+{"case":7,"func":"clamped","started":-5,"now":5,"ceiling":0}
+{"case":8,"func":"ceiling","timeout":300,"max_safe":86400}
+{"case":9,"func":"ceiling","timeout":3600,"max_safe":120}
+{"case":10,"func":"ceiling","timeout":0,"max_safe":60}
+{"case":11,"func":"ceiling","timeout":100,"max_safe":160}

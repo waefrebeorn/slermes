@@ -1,0 +1,11 @@
+{"func":"refusal","reason":"not_found","field":null,"detail":null}
+{"func":"refusal","reason":"launch_credentials_unavailable","field":"x","detail":"y"}
+{"func":"refusal","reason":"boom","field":"launch_dir","detail":"missing dir"}
+{"func":"refusal","reason":"boom","field":"launch_dir","detail":null}
+{"func":"refusal","reason":"boom","field":null,"detail":"something"}
+{"func":"refusal","reason":"","field":"","detail":""}
+{"func":"refusal","reason":"not_found","field":"launch_dir","detail":"gone"}
+{"func":"unreadable_store","kind":"lock","store":"/h/state.db","exc_text":"database is locked"}
+{"func":"unreadable_store","kind":"schema","store":"/h/state.db","exc_text":"no such table: sessions"}
+{"func":"unreadable_store","kind":"other","store":"/h/state.db","exc_text":"permission denied"}
+{"func":"unreadable_store","kind":"other","store":"C:/p/state.db","exc_text":""}

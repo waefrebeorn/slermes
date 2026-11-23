@@ -1,0 +1,11 @@
+{"case":1,"func":"browser_dialog","action":"accept","has_supervisor":false,"respond":{}}
+{"case":2,"func":"browser_dialog","action":"accept","has_supervisor":true,"respond":{"ok":true,"dialog":{"type":"confirm","id":"d1"}}}
+{"case":3,"func":"browser_dialog","action":"dismiss","has_supervisor":true,"respond":{"ok":true}}
+{"case":4,"func":"browser_dialog","action":"accept","has_supervisor":true,"respond":{"ok":true,"dialog":null}}
+{"case":5,"func":"browser_dialog","action":"dismiss","has_supervisor":true,"respond":{"ok":false,"error":"already dismissed"}}
+{"case":6,"func":"browser_dialog","action":"accept","has_supervisor":true,"respond":{"ok":false}}
+{"case":7,"func":"browser_dialog","action":"accept","has_supervisor":true,"respond":{"ok":false,"error":null}}
+{"case":8,"func":"browser_dialog","action":"accept","has_supervisor":true,"respond":{}}
+{"case":9,"func":"browser_dialog","action":"accept","prompt_text":"hello","dialog_id":"d7","task_id":"t1","has_supervisor":true,"respond":{"ok":true,"dialog":{"type":"prompt","id":"d7"}}}
+{"case":10,"func":"browser_dialog","action":"dismiss","task_id":"other","has_supervisor":false,"respond":{}}
+{"case":11,"func":"browser_dialog","action":"","has_supervisor":true,"respond":{"ok":true,"dialog":{}}}

@@ -1,0 +1,11 @@
+{"func": "guard", "caps": [], "actor_profile_id": "/profiles/alpha", "authority_profile_id": "/profiles/alpha", "params": {}, "case": 1}
+{"func": "guard", "caps": ["session:read"], "actor_profile_id": "/profiles/alpha", "authority_profile_id": "/profiles/alpha", "params": {}, "case": 2}
+{"func": "guard", "caps": ["session:create"], "actor_profile_id": "/profiles/beta", "authority_profile_id": "/profiles/alpha", "params": {}, "case": 3}
+{"func": "guard", "caps": ["session:create"], "actor_profile_id": "/profiles/alpha", "authority_profile_id": "/profiles/alpha", "params": [], "case": 4}
+{"func": "guard", "caps": ["session:create"], "actor_profile_id": "/profiles/alpha", "authority_profile_id": "/profiles/alpha", "params": {"x": "y"}, "case": 5}
+{"func": "guard", "caps": ["session:create"], "actor_profile_id": "/profiles/alpha", "authority_profile_id": "/profiles/alpha", "params": {"provider": "openai"}, "case": 6}
+{"func": "guard", "caps": ["session:create"], "actor_profile_id": "/profiles/alpha", "authority_profile_id": "/profiles/alpha", "params": {"profile": 123}, "case": 7}
+{"func": "guard", "caps": ["session:create"], "actor_profile_id": "/profiles/alpha", "authority_profile_id": "/profiles/alpha", "params": {"profile": "beta"}, "resolved_profile_dir": "/profiles/beta", "case": 8}
+{"func": "guard", "caps": ["session:create"], "actor_profile_id": "/profiles/alpha", "authority_profile_id": "/profiles/alpha", "params": {"profile": "beta"}, "resolve_raises": true, "case": 9}
+{"func": "guard", "caps": ["session:create"], "actor_profile_id": "/profiles/alpha", "authority_profile_id": "/profiles/alpha", "params": {"profile": "alpha"}, "resolved_profile_dir": "/profiles/alpha", "case": 10}
+{"func": "guard", "caps": ["session:create"], "actor_profile_id": "/profiles/alpha", "authority_profile_id": "/profiles/alpha", "params": {}, "runtime": true, "case": 11}

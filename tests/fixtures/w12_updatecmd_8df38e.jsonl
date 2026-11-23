@@ -1,0 +1,17 @@
+{"case":"top-venv-quoted","func":"status_top_level","path":"  \"venv\\bin\"  "}
+{"case":"top-node-modules-slash","func":"status_top_level","path":"node_modules/"}
+{"case":"top-dot-prefix","func":"status_top_level","path":"./src/x.py"}
+{"case":"top-windows-quoted","func":"status_top_level","path":"\"C:\\Users\""}
+{"case":"preserved-venv","func":"is_zip_preserved_entry_status_line","line":"?? venv/","shipped":[]}
+{"case":"preserved-modified-src","func":"is_zip_preserved_entry_status_line","line":"M src/x.py","shipped":["src"]}
+{"case":"preserved-ignored-unshipped","func":"is_zip_preserved_entry_status_line","line":"!! .bytecode-fingerprint","shipped":[]}
+{"case":"preserved-ignored-nested-keep","func":"is_zip_preserved_entry_status_line","line":"!! apps/desktop/release/x","shipped":["apps"]}
+{"case":"preserved-ignored-nested-unshipped","func":"is_zip_preserved_entry_status_line","line":"!! apps/desktop/release/x","shipped":["src"]}
+{"case":"preserved-rename-out","func":"is_zip_preserved_entry_status_line","line":"R  venv/x -> src/x","shipped":[]}
+{"case":"preserved-pycache","func":"is_zip_preserved_entry_status_line","line":"!! __pycache__/","shipped":["src"]}
+{"case":"preserved-no-shipped-arg","func":"is_zip_preserved_entry_status_line","line":"!! .env.local","shipped":null}
+{"case":"staging-root","func":"is_zip_staging_artifact_status_line","line":"?? .hermes-update-zip-swap","staged":[]}
+{"case":"staging-journal-temp","func":"is_zip_staging_artifact_status_line","line":"?? .hermes-update-zip-swap.abc123def456.tmp","staged":[]}
+{"case":"staging-journal-temp-upper","func":"is_zip_staging_artifact_status_line","line":"?? .hermes-update-zip-swap.ABC123def456.tmp","staged":[]}
+{"case":"staging-owned","func":"is_zip_staging_artifact_status_line","line":"?? tools.hermes-update-staging","staged":["tools"]}
+{"case":"staging-old-user-file","func":"is_zip_staging_artifact_status_line","line":"?? tools.hermes-update-old","staged":[]}

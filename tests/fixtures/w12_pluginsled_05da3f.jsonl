@@ -1,0 +1,13 @@
+{"func":"remove_identity","items":["a","b","c"],"target_index":2}
+{"func":"remove_identity","items":["a","b","c"],"target_index":0}
+{"func":"remove_identity","items":["x"],"target_index":0}
+{"func":"remove_identity","items":["p","q","r"],"target_index":1}
+{"func":"remove_identity","items":["m","n","o","p"],"target_index":3}
+{"func":"remove_callback","key":"k","items":["a","b","c"],"target_index":2}
+{"func":"remove_callback","key":"k","items":["a"],"target_index":0}
+{"func":"remove_callback","key":"k","items":["a","b"],"target_index":1}
+{"func":"restore_mapping","key":"k","map_value":"a","current":"a","previous":"b"}
+{"func":"restore_mapping","key":"k","map_value":"a","current":"a","previous":null}
+{"func":"restore_mapping","key":"k","map_value":null,"current":null,"previous":"a"}
+{"func":"restore_mapping","key":"k","map_value":"x","current":"y","previous":"z"}
+{"func":"restore_mapping","key":"k","map_value":"a","current":null,"previous":"b"}

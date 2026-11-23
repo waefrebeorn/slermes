@@ -1,0 +1,9 @@
+{"case":1,"func":"reconnect_outcome","shutdown":false,"reconnect":false}
+{"case":2,"func":"reconnect_outcome","shutdown":false,"reconnect":true}
+{"case":3,"func":"reconnect_outcome","shutdown":true,"reconnect":false}
+{"case":4,"func":"reconnect_outcome","shutdown":true,"reconnect":true}
+{"case":5,"func":"recycle_if_due","reason":null}
+{"case":6,"func":"recycle_if_due","reason":"idle-timeout"}
+{"case":7,"func":"recycle_if_due","reason":"lifetime"}
+{"case":8,"func":"recycle_if_due","reason":""}
+{"case":9,"func":"recycle_if_due","reason":"stdio idle recycle after 300s"}

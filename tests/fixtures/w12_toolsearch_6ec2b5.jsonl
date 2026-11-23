@@ -1,0 +1,25 @@
+{"case":1,"func":"short_desc","description":"Send an email. Then more."}
+{"case":2,"func":"short_desc","description":"e.g. this is a test. More text"}
+{"case":3,"func":"short_desc","description":"i.e. something here! rest"}
+{"case":4,"func":"short_desc","description":"etc. and more? Rest"}
+{"case":5,"func":"short_desc","description":"long description without any sentence terminator that keeps going and going beyond eighty characters"}
+{"case":6,"func":"short_desc","description":"  Extra   whitespace  here. Done"}
+{"case":7,"func":"short_desc","description":null}
+{"case":8,"func":"short_desc","description":"this is a fairly long sentence with several words inside it","max_chars":20}
+{"case":9,"func":"listing_group_label","source_name":"mcp-github"}
+{"case":10,"func":"listing_group_label","source_name":"kanban"}
+{"case":11,"func":"listing_group_label","source_name":null}
+{"case":12,"func":"listing_group_label","source_name":"mcp-"}
+{"case":13,"func":"fn","td":{"function":{"name":"x"}}}
+{"case":14,"func":"fn","td":{}}
+{"case":15,"func":"fn","td":{"function":null}}
+{"case":16,"func":"required_term_coverage","n":0}
+{"case":17,"func":"required_term_coverage","n":3}
+{"case":18,"func":"required_term_coverage","n":4}
+{"case":19,"func":"required_term_coverage","n":5}
+{"case":20,"func":"required_term_coverage","n":7}
+{"case":21,"func":"entry_search_text","td":{"function":{"name":"mcp__linear_create_issue","description":"Create issue","parameters":{"properties":{"title":{},"body":{}}}}},"source_label":"linear"}
+{"case":22,"func":"entry_search_text","td":{"function":{"name":"send_email","description":"Send email"}},"source_label":"gmail"}
+{"case":23,"func":"entry_search_text","td":{},"source_label":""}
+{"case":24,"func":"entry_search_text","td":{"function":{"name":"get_user.v2"}},"source_label":""}
+{"case":25,"func":"entry_search_text","td":{"function":{"name":"mcp__github-list_issues","description":"List issues"}},"source_label":"github"}

@@ -1,0 +1,14 @@
+{"func":"project_root","web_dir":"web"}
+{"func":"dist_dir","web_dir":"web"}
+{"func":"project_root","web_dir":"repo/web"}
+{"func":"dist_dir","web_dir":"repo/web"}
+{"func":"project_root","web_dir":"repo/apps/web"}
+{"func":"dist_dir","web_dir":"repo/apps/web"}
+{"func":"project_root","web_dir":"C:/repo/apps/web"}
+{"func":"dist_dir","web_dir":"C:/repo/apps/web"}
+{"func":"project_root","web_dir":"/repo/apps/web"}
+{"func":"dist_dir","web_dir":"/repo/apps/web"}
+{"func":"project_root","web_dir":"apps/web"}
+{"func":"dist_dir","web_dir":"apps/web"}
+{"func":"project_root","web_dir":"C:/repo//apps\\web/"}
+{"func":"dist_dir","web_dir":"C:/repo//apps\\web/"}

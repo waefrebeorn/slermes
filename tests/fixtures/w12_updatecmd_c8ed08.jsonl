@@ -1,0 +1,17 @@
+{"case":"fork-official-https","func":"is_fork","origin_url":"https://github.com/NousResearch/hermes-agent.git"}
+{"case":"fork-official-trailing-slash","func":"is_fork","origin_url":"https://github.com/NousResearch/hermes-agent.git/"}
+{"case":"fork-official-ssh","func":"is_fork","origin_url":"git@github.com:NousResearch/hermes-agent"}
+{"case":"fork-real-fork","func":"is_fork","origin_url":"https://github.com/SomeFork/hermes-agent.git"}
+{"case":"fork-empty","func":"is_fork","origin_url":""}
+{"case":"http-http429","func":"has_http_code","stderr_text":"fatal: HTTP 429 too many","codes":["429","500"]}
+{"case":"http-returned-error","func":"has_http_code","stderr_text":"x returned error: 503 y","codes":["503"]}
+{"case":"http-error-no-prefix","func":"has_http_code","stderr_text":"fatal: error: 429 boom","codes":["429"]}
+{"case":"http-empty-codes","func":"has_http_code","stderr_text":"anything","codes":[]}
+{"case":"class-rate-limit","func":"classify_fetch_failure","stderr_text":"fatal: unable to access 'x': returned error: 429"}
+{"case":"class-rate-limit-text","func":"classify_fetch_failure","stderr_text":"GitHub rate limit exceeded"}
+{"case":"class-outage-500","func":"classify_fetch_failure","stderr_text":"HTTP 502 while fetching"}
+{"case":"class-network","func":"classify_fetch_failure","stderr_text":"Could not resolve host: github.com"}
+{"case":"class-username","func":"classify_fetch_failure","stderr_text":"could not read Username for 'https://github.com'"}
+{"case":"class-auth","func":"classify_fetch_failure","stderr_text":"Authentication failed for 'https://github.com'"}
+{"case":"class-ssh","func":"classify_fetch_failure","stderr_text":"Permission denied (publickey)."}
+{"case":"class-default","func":"classify_fetch_failure","stderr_text":"some unrelated git error"}

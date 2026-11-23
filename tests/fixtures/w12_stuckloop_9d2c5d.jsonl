@@ -1,0 +1,11 @@
+{"func":"increment","counts":{},"keys":["s1"],"case":"empty -> s1=1"}
+{"func":"increment","counts":{"s1":2},"keys":["s1","s2"],"case":"existing plus new"}
+{"func":"increment","counts":{"s1":2,"s2":5},"keys":["s2"],"case":"only active keys kept"}
+{"func":"increment","counts":{"s1":2},"keys":[],"case":"no active keys -> empty"}
+{"func":"increment","counts":{"s1":2},"keys":["s1","s1"],"case":"duplicate key set semantics"}
+{"func":"increment","counts":{"a":-2,"b":100},"keys":["a","b","c"],"case":"negative and large"}
+{"func":"clear","counts":{"s1":3},"session_key":"s1","case":"last key -> unlink"}
+{"func":"clear","counts":{"s1":3,"s2":1},"session_key":"s1","case":"remaining -> rewrite"}
+{"func":"clear","counts":{"s1":3},"session_key":"missing","case":"absent key no-op"}
+{"func":"clear","counts":{},"session_key":"s1","case":"empty counts absent"}
+{"func":"clear","counts":{"x":1,"y":2,"z":3},"session_key":"y","case":"middle key"}

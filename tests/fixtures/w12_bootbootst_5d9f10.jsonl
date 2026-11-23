@@ -1,0 +1,22 @@
+{"func": "owed_config_migration", "known": {}, "case": "no results"}
+{"func": "owed_config_migration", "known": {"results": {"migrate_config": {"failed_step": "step2", "failed_warning": "boom"}}}, "case": "failed migration owed"}
+{"func": "owed_config_migration", "known": {"results": {"migrate_config": {"ok": true}}}, "case": "migration succeeded"}
+{"func": "owed_config_migration", "known": {"results": {"migrate_config": {"failed_step": ""}}}, "case": "empty failed_step is falsy"}
+{"func": "owed_config_migration", "known": {"results": {"migrate_config": null}}, "case": "null migration result"}
+{"func": "owed_steps", "known": {"results": {}}, "case": "no steps"}
+{"func": "owed_steps", "known": {"results": {"plugins": {"owed": true}, "cleanup": {"owed": false}, "other": "not a dict"}}, "case": "one owed step"}
+{"func": "owed_steps", "known": {"results": {"plugins": {"owed": true}, "migrate_config": {"failed_step": "s", "owed": true}}}, "case": "migrate_config appended even if already owed"}
+{"func": "owed_steps", "known": {"results": {"a": {"owed": true}, "b": {"owed": 1}, "c": {"owed": "yes"}}}, "case": "truthy owed variants and order"}
+{"func": "read_last_known", "text": "{\"identity\": \"abc\", \"results\": {}}", "case": "valid record"}
+{"func": "read_last_known", "text": "﻿{\"identity\": \"bom\"}", "case": "BOM stripped"}
+{"func": "read_last_known", "text": "[1,2,3]", "case": "non-dict becomes empty object"}
+{"func": "read_last_known", "text": "not json", "case": "malformed becomes empty object"}
+{"func": "read_last_known", "text": "null", "case": "json null becomes empty object"}
+{"func": "current_install_identity", "has_git": true, "git_head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "stamp": {}, "case": "git checkout"}
+{"func": "current_install_identity", "has_git": true, "git_head": null, "stamp": {"commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}, "case": "git present but head missing"}
+{"func": "current_install_identity", "has_git": false, "git_head": null, "stamp": {"commit": "cccccccccccccccccccccccccccccccccccccccc"}, "case": "sealed stamp commit"}
+{"func": "current_install_identity", "has_git": false, "git_head": null, "stamp": {"commit": "short", "tag": "v1.2.3"}, "case": "tag fallback"}
+{"func": "current_install_identity", "has_git": false, "git_head": null, "stamp": {"commit": 12345, "tag": ""}, "case": "broken stamp"}
+{"func": "needs_bootstrap", "identity": "", "known": {}, "case": "no identity never bootstraps"}
+{"func": "needs_bootstrap", "identity": "abc123", "known": {"identity": "abc123"}, "case": "same identity"}
+{"func": "needs_bootstrap", "identity": "abc123", "known": {"identity": "old"}, "case": "changed identity"}

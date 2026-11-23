@@ -1,0 +1,10 @@
+{"func": "tui_read", "policy_source": null, "name": "status", "case": 1}
+{"func": "tui_read", "policy_source": "cli", "name": "status", "case": 2}
+{"func": "tui_read", "policy_source": "tui", "name": "status", "case": 3}
+{"func": "tui_read", "policy_source": "tui", "name": "context", "case": 4}
+{"func": "tui_read", "policy_source": "tui", "name": "cron", "case": 5}
+{"func": "tui_read", "policy_source": "", "name": "context", "case": 6}
+{"func": "saved_route", "row": null, "case": 7}
+{"func": "saved_route", "row": {"model_config": {"provider": "p", "base_url": "u"}, "model": "m"}, "case": 8}
+{"func": "saved_route", "row": {"model_config": {}, "model": "m"}, "case": 9}
+{"func": "saved_route", "row": {"model_config": {"provider": null, "base_url": "u"}}, "case": 10}

@@ -1,0 +1,19 @@
+{"func":"quoted_grep_pattern_spans","command":"grep -P 'needle' file"}
+{"func":"grep_safe_detection_variant","command":"grep -P 'needle' file"}
+{"func":"quoted_grep_pattern_spans","command":"grep --perl-regexp 'abc' f"}
+{"func":"grep_safe_detection_variant","command":"grep --perl-regexp 'abc' f"}
+{"func":"quoted_grep_pattern_spans","command":"grep -n 'abc' f"}
+{"func":"quoted_grep_pattern_spans","command":"grep 'abc' f"}
+{"func":"quoted_grep_pattern_spans","command":"grep -P abc f"}
+{"func":"quoted_grep_pattern_spans","command":"grep -e 'abc' -P f"}
+{"func":"grep_safe_detection_variant","command":"grep -e 'abc' -P f"}
+{"func":"quoted_grep_pattern_spans","command":"grep -f 'pat' -P f"}
+{"func":"quoted_grep_pattern_spans","command":"grep -P 'a' 'b' f"}
+{"func":"grep_safe_detection_variant","command":"grep -P 'a' 'b' f"}
+{"func":"quoted_grep_pattern_spans","command":"egrep -P 'abc' f"}
+{"func":"quoted_grep_pattern_spans","command":"grep -P"}
+{"func":"quoted_grep_pattern_spans","command":"/bin/grep -P 'abc' f"}
+{"func":"quoted_grep_pattern_spans","command":"GREP -P 'abc' f"}
+{"func":"quoted_grep_pattern_spans","command":"cat -P 'abc' f"}
+{"func":"quoted_grep_pattern_spans","command":"grep --regexp 'abc' -P f"}
+{"func":"quoted_grep_pattern_spans","command":"grep -P 'abc'"}

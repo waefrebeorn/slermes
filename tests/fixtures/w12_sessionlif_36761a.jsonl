@@ -1,0 +1,17 @@
+{"func": "is_delegate_child_row", "row": {}, "case": 1}
+{"func": "is_delegate_child_row", "row": {"model_config": {"_delegate_from": true}}, "case": 2}
+{"func": "is_delegate_child_row", "row": {"model_config": {"_delegate_from": true, "_reset_from": true}}, "case": 3}
+{"func": "is_delegate_child_row", "row": {"model_config": {"_delegate_from": true, "_chat_adopted": true}}, "case": 4}
+{"func": "is_delegate_child_row", "row": {"model_config": "{\"_delegate_from\": true}"}, "case": 5}
+{"func": "is_delegate_child_row", "row": {"model_config": "{\"_delegate_from\": true, \"_reset_from\": false}"}, "case": 6}
+{"func": "is_delegate_child_row", "row": {"model_config": {"_delegate_from": false}}, "case": 7}
+{"func": "is_delegate_child_row", "row": {"model_config": 12345}, "case": 8}
+{"func": "is_delegate_child_row", "row": {"model_config": "not json"}, "case": 9}
+{"func": "is_delegate_child_row", "row": {"model_config": {"_delegate_from": true, "_reset_from": null}}, "case": 10}
+{"func": "is_delegate_child_row", "row": {"model_config": {"_delegate_from": "yes"}}, "case": 11}
+{"func": "auto_continue_freshness_window", "env_value": null, "case": 12}
+{"func": "auto_continue_freshness_window", "env_value": "", "case": 13}
+{"func": "auto_continue_freshness_window", "env_value": "120.5", "case": 14}
+{"func": "auto_continue_freshness_window", "env_value": "3600", "case": 15}
+{"func": "auto_continue_freshness_window", "env_value": "bogus", "case": 16}
+{"func": "auto_continue_freshness_window", "env_value": "  75.25  ", "case": 17}

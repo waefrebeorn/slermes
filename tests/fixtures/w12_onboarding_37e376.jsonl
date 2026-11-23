@@ -1,0 +1,17 @@
+{"func":"explicit_run","section":{"run":true}}
+{"func":"explicit_run","section":{"run":false}}
+{"func":"explicit_run","section":{"run":1}}
+{"func":"explicit_run","section":{"run":0}}
+{"func":"explicit_run","section":{"run":"yes"}}
+{"func":"explicit_run","section":{}}
+{"func":"explicit_run","section":null}
+{"func":"explicit_run","section":{"run":true,"other":"x"}}
+{"func":"should_run","explicit":true,"assume_fresh":false,"fresh":false}
+{"func":"should_run","explicit":false,"assume_fresh":true,"fresh":true}
+{"func":"should_run","explicit":null,"assume_fresh":true,"fresh":false}
+{"func":"should_run","explicit":null,"assume_fresh":false,"fresh":true}
+{"func":"should_run","explicit":null,"assume_fresh":false,"fresh":false}
+{"func":"latch","explicit":true,"fresh":false}
+{"func":"latch","explicit":null,"fresh":true}
+{"func":"latch","explicit":null,"fresh":false}
+{"func":"latch","explicit":false,"fresh":true}

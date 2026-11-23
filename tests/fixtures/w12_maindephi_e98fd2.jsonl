@@ -1,0 +1,12 @@
+{"func":"missing_optional_deps_message","surface":"dashboard","what":"required packages","extra":"ignored"}
+{"func":"missing_optional_deps_message","surface":"gateway","what":"extra deps","extra":""}
+{"func":"missing_optional_deps_message","surface":"","what":"","extra":null}
+{"func":"missing_optional_deps_message","surface":"cli","what":"declared groups","extra":"unused"}
+{"func":"smart_app_control_block_message","error":"DLL load failed: _ssl"}
+{"func":"smart_app_control_block_message","error":"No module named _ssl"}
+{"func":"smart_app_control_block_message","error":"DLL load failed while importing _ssl: The specified module could not be found."}
+{"func":"smart_app_control_block_message","error":123}
+{"func":"smart_app_control_block_message","error":"_ssl DLL load failed"}
+{"func":"smart_app_control_block_message","error":null}
+{"func":"smart_app_control_block_message","error":"DLL load failed"}
+{"func":"missing_optional_deps_message","surface":"web UI Ã©","what":"promos","extra":"x"}

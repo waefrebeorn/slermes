@@ -1,0 +1,18 @@
+{"func":"cached_profile_read","path":"/home/u/.hermes/config.yaml","kind":"config","signature":"s1","value":{"a":1},"max":512,"reset":true}
+{"func":"cached_profile_read","path":"/home/u/.hermes/config.yaml","kind":"config","signature":"s1","value":{"a":999},"max":512,"reset":false}
+{"func":"cached_profile_read","path":"/home/u/.hermes/config.yaml","kind":"config","signature":"s2","value":{"a":2},"max":512,"reset":false}
+{"func":"cached_profile_read","path":"/home/u/.hermes/config.yaml","kind":"config","signature":null,"value":{"a":3},"max":512,"reset":false}
+{"func":"cached_profile_read","path":"/home/u/.hermes/config.yaml","kind":"other","signature":"s2","value":[1,2],"max":512,"reset":false}
+{"func":"cached_profile_read","path":"/b","kind":"k","signature":"x","reset":true,"value":"hello","max":1}
+{"func":"cached_profile_read","path":"/c","kind":"k","signature":"y","value":"world","max":1}
+{"func":"cached_profile_read","path":"/d","kind":"k","signature":"z","value":null,"max":2,"reset":true}
+{"func":"yaml_scalar_to_json","value":"hello world"}
+{"func":"yaml_scalar_to_json","value":42}
+{"func":"yaml_scalar_to_json","value":true}
+{"func":"yaml_scalar_to_json","value":false}
+{"func":"yaml_scalar_to_json","value":null}
+{"func":"yaml_scalar_to_json","value":""}
+{"func":"json_safe_dumps","value":{"b":2,"a":[1,true,null,"x"]}}
+{"func":"json_safe_dumps","value":{"x":"__W12_NAN__"}}
+{"func":"json_safe_dumps","value":[]}
+{"func":"json_safe_dumps","value":"plain"}

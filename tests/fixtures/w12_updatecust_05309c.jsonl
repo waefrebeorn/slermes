@@ -1,0 +1,14 @@
+{"case":"sub-git-exe","func":"git_subcommand","args":["git","status"]}
+{"case":"sub-global-c","func":"git_subcommand","args":["-c","gc.autoDetach=false","status"]}
+{"case":"sub-global-C","func":"git_subcommand","args":["-C","/tmp","checkout","main"]}
+{"case":"sub-option-then-sub","func":"git_subcommand","args":["--git-dir=/x","remote"]}
+{"case":"sub-only-option","func":"git_subcommand","args":["-v"]}
+{"case":"sub-empty-args","func":"git_subcommand","args":[]}
+{"case":"sub-empty-string","func":"git_subcommand","args":[""]}
+{"case":"mut-checkout","func":"is_local_mutator","args":["checkout","main"]}
+{"case":"mut-with-global","func":"is_local_mutator","args":["-c","gc.autoDetach=false","reset","--hard"]}
+{"case":"mut-status-false","func":"is_local_mutator","args":["status"]}
+{"case":"mut-with-git-exe-false","func":"is_local_mutator","args":["git","commit"]}
+{"case":"argv-status","func":"git_argv","git_cmd":["git"],"args":["status"],"devnull":"nul"}
+{"case":"argv-checkout","func":"git_argv","git_cmd":["git"],"args":["checkout","main"],"devnull":"nul"}
+{"case":"argv-with-global","func":"git_argv","git_cmd":["git","-c","x=y"],"args":["commit"],"devnull":"/dev/null"}

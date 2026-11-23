@@ -1,0 +1,21 @@
+{"func":"dist_name","req":"requests>=2.0"}
+{"func":"dist_name","req":"foo"}
+{"func":"dist_name","req":" foo ; python_version<'3'"}
+{"func":"dist_name","req":"x[extra]==1"}
+{"func":"dist_name","req":"a~=1,b>=2"}
+{"func":"dist_name","req":"  numpy  "}
+{"func":"dist_name","req":"pkg[foo,bar]"}
+{"func":"dist_name","req":"a!=1"}
+{"func":"load_error_text","systemexit":true,"code":"bye"}
+{"func":"load_error_text","systemexit":true,"code":5}
+{"func":"load_error_text","systemexit":true,"code":null}
+{"func":"load_error_text","systemexit":true,"code":true}
+{"func":"load_error_text","systemexit":false,"text":"oops"}
+{"func":"load_error_text","systemexit":false,"text":""}
+{"func":"platform_name","name":"telegram-platform","path":null}
+{"func":"platform_name","name":"telegram","path":null}
+{"func":"platform_name","name":"x-platform","path":"a/b/myplat"}
+{"func":"platform_name","name":"","path":"a/b/cplat"}
+{"func":"platform_name","name":null,"path":"a/b/cplat"}
+{"func":"platform_name","name":"foo","path":"a/b"}
+{"func":"platform_name","name":"foo","path":null}

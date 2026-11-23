@@ -1,0 +1,19 @@
+{"func":"normalize_mcp_server_create","name":"","url":"https://x"}
+{"func":"normalize_mcp_server_create","name":"   ","command":"npx server"}
+{"func":"normalize_mcp_server_create","name":"srv"}
+{"func":"normalize_mcp_server_create","name":"srv","url":"https://x","command":"npx srv"}
+{"func":"normalize_mcp_server_create","name":"srv","url":"https://x","auth":"basic"}
+{"func":"normalize_mcp_server_create","name":"srv","url":"https://x","args":["a"]}
+{"func":"normalize_mcp_server_create","name":"srv","url":"https://x","env":{"A":"b"}}
+{"func":"normalize_mcp_server_create","name":"srv","url":"https://x","auth":"header"}
+{"func":"normalize_mcp_server_create","name":"My Server","url":"https://x","auth":"header","bearer_token":"Bearer abc123456789"}
+{"func":"normalize_mcp_server_create","name":"srv","url":"https://x","auth":"none","bearer_token":"tok"}
+{"func":"normalize_mcp_server_create","name":"srv","url":"https://x","auth":"oauth"}
+{"func":"normalize_mcp_server_create","name":"srv","command":"npx srv"}
+{"func":"normalize_mcp_server_create","name":"srv","command":"npx srv","args":["--a","b"],"env":{"K":"V"}}
+{"func":"normalize_mcp_server_create","name":"srv","command":"npx srv","auth":"header"}
+{"func":"normalize_mcp_server_create","name":"  spaced  ","url":"  https://x  ","auth":"  OAUTH  "}
+{"func":"normalize_mcp_server_create","name":"srv","url":"https://x","auth":"header","bearer_token":"beArEr   123456789012"}
+{"func":"redact_mcp_env","env":{"SHORT":"abc","LONG":"abcd12345678wxyz","EMPTY":"","NULL":null,"FLAG":true,"ZERO":false}}
+{"func":"redact_mcp_env","env":{"A":"12345678901","B":"123456789012","C":"  spaced value longer  "}}
+{"func":"redact_mcp_env","env":{}}

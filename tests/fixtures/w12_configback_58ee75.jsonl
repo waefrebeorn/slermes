@@ -1,0 +1,14 @@
+{"case":1,"func":"dir","config":"/h/config.yaml"}
+{"case":2,"func":"dir","config":"config.yaml"}
+{"case":3,"func":"dir","config":"/config.yaml"}
+{"case":4,"func":"dir","config":"/a/b/c.yaml"}
+{"case":5,"func":"list","config":"/h/config.yaml","reason":"good","files":["config.yaml.good.20240102-000000","config.yaml.good.20240101-000000","config.yaml.bad.20240103-000000","other.txt"]}
+{"case":6,"func":"list","config":"/h/config.yaml","reason":null,"files":["config.yaml.good.20240101-000000","config.yaml.bak.20240102-000000","config.yaml.good.20240103-000000"]}
+{"case":7,"func":"list","config":"/h/config.yaml","reason":"","files":["config.yaml.good.1","config.yaml.bad.2"]}
+{"case":8,"func":"list","config":"/h/config.yaml","reason":"good","files":[]}
+{"case":9,"func":"list","config":"/h/config.yaml","reason":"good","files":["other.txt","config.yaml.goodx","xconfig.yaml.good.1"]}
+{"case":10,"func":"list","config":"/h/config.yaml","reason":"pre-migrate","files":["config.yaml.pre-migrate.20240201-120000","config.yaml.pre-migrate.20240101-120000"]}
+{"case":11,"func":"list","config":"config.yaml","reason":"good","files":["config.yaml.good.2","config.yaml.good.1"]}
+{"case":12,"func":"list","config":"/config.yaml","reason":null,"files":["config.yaml.good.A","config.yaml.good.a","config.yaml.good.B"]}
+{"case":13,"func":"list","config":"/h/config.yaml","reason":"good","files":["config.yaml.good.20240101-000000","config.yaml.good.20240101-000000"]}
+{"case":14,"func":"list","config":"/h/c.yaml","reason":"z","files":["c.yaml.z.3","c.yaml.z.1","c.yaml.z.2"]}

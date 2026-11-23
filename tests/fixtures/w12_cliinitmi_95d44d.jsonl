@@ -1,0 +1,14 @@
+{"func": "explicit_launch_skills", "cli": {}, "auto_skills": [], "case": "nothing requested"}
+{"func": "explicit_launch_skills", "cli": {"_preload_skills_requested": ["a", "b", "c"]}, "auto_skills": ["b"], "case": "auto skill filtered"}
+{"func": "explicit_launch_skills", "cli": {"_preload_skills_requested": ["a", "b"], "ignore_rules": true}, "auto_skills": ["a", "b"], "case": "ignore rules keeps all"}
+{"func": "explicit_launch_skills", "cli": {"_preload_skills_requested": ["a"]}, "auto_skills": ["a"], "case": "all filtered becomes null"}
+{"func": "gateway_launch", "cli": {}, "auto_skills": [], "case": "all defaults"}
+{"func": "gateway_launch", "cli": {"_explicit_model_override": true, "model": "gpt-x", "_explicit_provider": "openai", "_explicit_api_key": "k", "_explicit_base_url": "https://x", "_explicit_toolsets": true, "enabled_toolsets": ["core", "web"], "_explicit_reasoning": "high", "_explicit_max_turns": 20, "_explicit_checkpoints": true, "pass_session_id": "sess-1", "ignore_rules": true, "_explicit_run_budget": 300, "verbose": true, "_preload_skills_requested": ["s1", "s2"]}, "auto_skills": ["s1"], "case": "full explicit launch"}
+{"func": "gateway_launch", "cli": {"_explicit_model_override": true, "model": "m", "_explicit_provider": "auto"}, "auto_skills": [], "case": "auto provider suppressed"}
+{"func": "gateway_launch", "cli": {"model": "m", "_explicit_provider": "openai", "verbose": false}, "auto_skills": [], "case": "no explicit model suppresses provider"}
+{"func": "gateway_launch", "cli": {"_explicit_model_override": true, "model": "", "_explicit_checkpoints": false, "pass_session_id": false, "ignore_rules": false, "verbose": false}, "auto_skills": [], "case": "falsy or-None fields and empty model"}
+{"func": "adopt_gateway_toolsets", "cli": {}, "store": {}, "case": "no store current"}
+{"func": "adopt_gateway_toolsets", "cli": {}, "store": {"current": {"info": {"enabled_toolsets": ["core"]}}}, "case": "adopt profile default"}
+{"func": "adopt_gateway_toolsets", "cli": {"enabled_toolsets": ["mine"]}, "store": {"current": {"info": {"enabled_toolsets": ["core"], "unknown_toolsets": ["plug"]}}}, "case": "existing toolsets kept plus warning"}
+{"func": "adopt_gateway_toolsets", "cli": {}, "store": {"current": {"info": {"unknown_toolsets": []}}}, "case": "empty unknown list no warning"}
+{"func": "adopt_gateway_toolsets", "cli": {}, "store": {"current": {"info": {"enabled_toolsets": "not-a-list"}}}, "case": "non-list profile default ignored"}

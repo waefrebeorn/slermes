@@ -1,0 +1,16 @@
+{"func": "parse", "params": {"row_id": "5", "newest_role": "user", "emoji": "  thumbsup  ", "author": "user"}, "case": 1}
+{"func": "parse", "params": {"row_id": "5", "newest_role": "admin", "emoji": "x"}, "case": 2}
+{"func": "parse", "params": {"row_id": null, "newest_role": "assistant", "emoji": "ok"}, "case": 3}
+{"func": "parse", "params": {"row_id": null, "newest_role": "user", "emoji": null}, "case": 4}
+{"func": "parse", "params": {"row_id": "5", "emoji": null, "author": "agent"}, "case": 5}
+{"func": "parse", "params": {"row_id": "5", "newest_role": "user", "emoji": "   "}, "case": 6}
+{"func": "parse", "params": {"row_id": "5", "newest_role": "user", "emoji": "x", "author": "bot"}, "case": 7}
+{"func": "parse", "params": {"row_id": "5", "newest_role": "user", "emoji": "x", "extra": 1}, "case": 8}
+{"func": "parse", "params": {"row_id": true, "newest_role": "user", "emoji": "x"}, "case": 9}
+{"func": "parse", "params": {"row_id": null, "newest_role": "admin", "emoji": "x"}, "case": 10}
+{"func": "parse", "params": {"row_id": null, "newest_role": null, "emoji": "x"}, "case": 11}
+{"func": "parse", "params": {"row_id": "7", "emoji": "e", "author": ""}, "case": 12}
+{"func": "parse", "params": {"row_id": "5", "newest_role": "user", "emoji": 123}, "case": 13}
+{"func": "parse", "params": {"row_id": "9007199254740991", "newest_role": "user", "emoji": "big"}, "case": 14}
+{"func": "parse", "params": {"row_id": "8", "emoji": "z", "author": 0}, "case": 15}
+{"func": "parse", "params": {"row_id": "5", "newest_role": "user", "emoji": "x", "author": "agent", "session_id": "s", "profile": "p"}, "case": 16}

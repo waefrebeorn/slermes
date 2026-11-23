@@ -1,0 +1,24 @@
+{"func":"probe_host","host":"0.0.0.0"}
+{"func":"probe_host","host":"::"}
+{"func":"probe_host","host":"[::1]"}
+{"func":"probe_host","host":"  example.com  "}
+{"func":"probe_host","host":"[0.0.0.0]"}
+{"func":"probe_host","host":null}
+{"func":"probe_host","host":""}
+{"func":"scope","entry":"/user.slice/user-1000.slice/session.scope"}
+{"func":"scope","entry":"/system.slice/hermes.service"}
+{"func":"scope","entry":"/machine.slice/foo.scope"}
+{"func":"scope","entry":""}
+{"func":"restart_commands","unit":"hermes-dashboard.service","scope":"user"}
+{"func":"restart_commands","unit":"hermes.service","scope":"system"}
+{"func":"restart_commands","unit":"hermes.service","scope":null}
+{"func":"format_restart","commands":["systemctl --user restart hermes.service","sudo systemctl restart hermes.service"]}
+{"func":"format_restart","commands":["a"]}
+{"func":"format_restart","commands":[]}
+{"func":"endpoint_flags","argv":["--host=0.0.0.0","--port","8899","dashboard","--host"]}
+{"func":"endpoint_flags","argv":["--port=9119"]}
+{"func":"endpoint_flags","argv":[]}
+{"func":"electron_dist","path":"C:/app/app.asar.unpacked/dist"}
+{"func":"electron_dist","path":"C:/app\\app.asar\\dist"}
+{"func":"electron_dist","path":""}
+{"func":"electron_dist","path":"/plain/web_dist"}

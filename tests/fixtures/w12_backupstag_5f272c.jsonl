@@ -1,0 +1,20 @@
+{"func": "marker", "name": ".hermes-backup-stage-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "case": "marker for valid stage name"}
+{"func": "marker", "name": "", "case": "marker for empty name"}
+{"func": "is_backup_name", "name": ".hermes-backup-stage-0123456789abcdef0123456789abcdef", "case": "valid 32 lowercase hex"}
+{"func": "is_backup_name", "name": ".hermes-backup-stage-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "case": "uppercase hex rejected"}
+{"func": "is_backup_name", "name": ".hermes-backup-stage-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "case": "too short"}
+{"func": "is_backup_name", "name": "x.hermes-backup-stage-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "case": "prefix not at start"}
+{"func": "is_legacy_name", "name": "tmpabc.db", "case": "legacy tmp residue"}
+{"func": "is_legacy_name", "name": "tmp.db", "case": "tmp.db needs at least one middle char"}
+{"func": "is_legacy_name", "name": ".foo.zip.12-34.partial", "case": "legacy partial zip"}
+{"func": "is_legacy_name", "name": "archive.partial", "case": "protocol payload is not legacy"}
+{"func": "is_legacy_name", "name": ".zip.1-2.partial", "case": "zip needs middle char after leading dot"}
+{"func": "stage_entries", "entries": [{"name": "snapshot.db", "plain": true}, {"name": "owner.lock", "plain": true}], "case": "only allowed payloads"}
+{"func": "stage_entries", "entries": [], "case": "empty stage"}
+{"func": "stage_entries", "entries": [{"name": "snapshot.db", "plain": true}, {"name": "evil.txt", "plain": true}], "case": "unexpected entry rejects"}
+{"func": "stage_entries", "entries": [{"name": "snapshot.db", "plain": false}], "case": "reparse point rejects"}
+{"func": "is_backup_staging", "name": ".hermes-backup-stage-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "lease": "hermes-backup-stage-v1:.hermes-backup-stage-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n", "stage_plain": true, "lease_plain": true, "entries": [{"name": "snapshot.db", "plain": true}], "case": "fully valid marked stage"}
+{"func": "is_backup_staging", "name": ".hermes-backup-stage-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "lease": "hermes-backup-stage-v1:other\n", "stage_plain": true, "lease_plain": true, "entries": [], "case": "wrong marker"}
+{"func": "is_backup_staging", "name": ".hermes-backup-stage-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "lease": "hermes-backup-stage-v1:.hermes-backup-stage-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n", "stage_plain": true, "lease_plain": false, "entries": [], "case": "lease reparse point"}
+{"func": "is_backup_staging", "name": ".hermes-backup-stage-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "lease": "hermes-backup-stage-v1:.hermes-backup-stage-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n", "stage_plain": true, "lease_plain": true, "entries": [{"name": "evil.txt", "plain": true}], "case": "unexpected payload"}
+{"func": "is_backup_staging", "name": "not-a-stage", "lease": "hermes-backup-stage-v1:not-a-stage\n", "stage_plain": true, "lease_plain": true, "entries": [], "case": "wrong directory name"}

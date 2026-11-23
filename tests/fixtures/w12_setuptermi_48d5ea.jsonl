@@ -1,0 +1,11 @@
+{"func":"report_binary","found":"/usr/bin/docker","missing":"Docker or Podman not found in PATH!","install_hint":"Install Docker: https://docs.docker.com/get-docker/","found_prefix":"Found: "}
+{"func":"report_binary","found":null,"missing":"Docker or Podman not found in PATH!","install_hint":"Install docs","found_prefix":"Found: "}
+{"func":"report_binary","found":"podman","missing":"M","install_hint":"I","found_prefix":"runtime found: "}
+{"func":"report_binary","found":"","missing":"M","install_hint":"I","found_prefix":"Found: "}
+{"func":"existing_secret_keeps","env_value":"sk-abc","label":"Modal token","question":"  Update Modal credentials?","prompt_answer":false}
+{"func":"existing_secret_keeps","env_value":"sk-abc","label":"Modal token","question":"  Update Modal credentials?","prompt_answer":true}
+{"func":"existing_secret_keeps","env_value":"","label":"Modal token","question":"Q","prompt_answer":false}
+{"func":"existing_secret_keeps","env_value":null,"label":"Daytona API key","question":"Q","prompt_answer":true}
+{"func":"prompt_secret_env","value":"tok123","label":"    Modal Token ID","env_var":"MODAL_TOKEN_ID","confirm_msg":""}
+{"func":"prompt_secret_env","value":"tok123","label":"    Daytona API key","env_var":"DAYTONA_API_KEY","confirm_msg":"    Updated"}
+{"func":"prompt_secret_env","value":"","label":"L","env_var":"V","confirm_msg":"X"}

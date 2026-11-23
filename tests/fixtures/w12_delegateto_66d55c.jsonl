@@ -1,0 +1,18 @@
+{"case":1,"func":"normalize_task_images","task":{}}
+{"case":2,"func":"normalize_task_images","task":{"images":null}}
+{"case":3,"func":"normalize_task_images","task":{"images":"/tmp/a.png"},"i":0}
+{"case":4,"func":"normalize_task_images","task":{"images":["  a.png  "," b.png "]},"i":1}
+{"case":5,"func":"normalize_task_images","task":{"images":123},"i":2}
+{"case":6,"func":"normalize_task_images","task":{"images":["ok.png",""]},"i":3}
+{"case":7,"func":"normalize_task_images","task":{"images":["ok.png",42]},"i":4}
+{"case":8,"func":"normalize_task_images","task":{"images":["1","2","3","4","5","6","7","8","9"]},"i":5}
+{"case":9,"func":"coerce_task_images","task_list":[{"goal":"g"}],"images":["top.png"]}
+{"case":10,"func":"coerce_task_images","task_list":[{"goal":"a","images":["a.png"]},{"goal":"b"}],"images":["top.png"]}
+{"case":11,"func":"coerce_task_images","task_list":[{"goal":"a","images":9}]}
+{"case":12,"func":"validate_batch_tasks","task_list":[{"goal":"Fix the tests"}]}
+{"case":13,"func":"validate_batch_tasks","task_list":[{"goal":"short"},{"goal":"also short"}]}
+{"case":14,"func":"validate_batch_tasks","task_list":[{"goal":"TODO"},{"goal":"a sufficiently long goal here"}]}
+{"case":15,"func":"validate_batch_tasks","task_list":[{"goal":"task 3"},{"goal":"a sufficiently long goal here"}]}
+{"case":16,"func":"validate_batch_tasks","task_list":[{"goal":"Do the <feature_name> work"},{"goal":"a sufficiently long goal here"}]}
+{"case":17,"func":"validate_batch_tasks","task_list":[{"goal":"Refactor Vec<T> generics"},{"goal":"Handle <div> tags and {a,b} globs"}]}
+{"case":18,"func":"validate_batch_tasks","task_list":[]}

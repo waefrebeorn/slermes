@@ -1,0 +1,12 @@
+{"func": "session_scope", "profile_id": "prof", "sid": "sid1", "case": 1}
+{"func": "session_scope", "profile_id": "alpha", "sid": "sess-9", "case": 2}
+{"func": "session_scope", "profile_id": "", "sid": "", "case": 3}
+{"func": "frozen_toolset", "data": null, "toolset": "mcp-abc", "case": 4}
+{"func": "frozen_toolset", "data": {}, "toolset": "mcp-abc", "case": 5}
+{"func": "frozen_toolset", "data": {"names": {"0": "abc"}}, "toolset": "mcp-abc", "case": 6}
+{"func": "frozen_toolset", "data": {"names": {"0": "abc"}}, "toolset": "mcp-abcd", "case": 7}
+{"func": "frozen_toolset", "data": {"names": {"0": "a", "1": "b"}}, "toolset": "mcp-b", "case": 8}
+{"func": "frozen_toolset", "data": {"scope": "scope-A"}, "toolset": "mcp-editor_cb7a02131d98f9b33287_x", "case": 9}
+{"func": "frozen_toolset", "data": {"scope": "scope-A"}, "toolset": "mcp-editor_deadbeef_x", "case": 10}
+{"func": "frozen_toolset", "data": {"scope": "scope-A"}, "toolset": "mcp-cb7a02131d98f9b33287_x", "case": 11}
+{"func": "frozen_toolset", "data": {"scope": "scope-A", "names": {}}, "toolset": "mcp-abc", "case": 12}

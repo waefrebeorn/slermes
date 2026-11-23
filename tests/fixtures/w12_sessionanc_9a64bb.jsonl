@@ -1,0 +1,13 @@
+{"case":"row1","func":"subagent_row","record":{"subagent_id":"s1","parent_id":"p","depth":1,"goal":"g","delegation_id":"d","model":"m","started_at":123,"status":"running","tool_count":2,"last_tool":"bash","accepting_steer":true,"agent":{"session_id":"child-1"}}}
+{"case":"row2","func":"subagent_row","record":{"subagent_id":"s2","status":"complete","agent":{"session_id":"child-2"},"extra":"ignored"}}
+{"case":"row3","func":"subagent_row","record":{"subagent_id":"s3","agent":{"session_id":""}}}
+{"case":"row4","func":"subagent_row","record":{"subagent_id":"s4","agent":{"session_id":5}}}
+{"case":"row5","func":"subagent_row","record":{}}
+{"case":"row6","func":"subagent_row","record":{"subagent_id":"s6","agent":null,"accepting_steer":false}}
+{"case":"home1","func":"reachable_upload_home","authority_home":"C:/Profiles/A","host_scoped":false,"siblings":[],"raw_home":"C:/Profiles/A"}
+{"case":"home2","func":"reachable_upload_home","authority_home":"C:/Profiles/A","host_scoped":false,"siblings":[],"raw_home":"C:/Profiles/a/./x/../"}
+{"case":"home3","func":"reachable_upload_home","authority_home":"C:/Profiles/A","host_scoped":true,"siblings":["C:/Profiles/B"],"raw_home":"C:/Profiles/B"}
+{"case":"home4","func":"reachable_upload_home","authority_home":"C:/Profiles/A","host_scoped":false,"siblings":["C:/Profiles/B"],"raw_home":"C:/Profiles/B"}
+{"case":"home5","func":"reachable_upload_home","authority_home":"C:/Profiles/A","host_scoped":true,"siblings":["C:/Profiles/B"],"raw_home":"C:/Profiles/C"}
+{"case":"home6","func":"reachable_upload_home","authority_home":"C:/Profiles/A","host_scoped":true,"siblings":[],"raw_home":""}
+{"case":"home7","func":"reachable_upload_home","authority_home":"C:/Profiles/A","host_scoped":true,"siblings":["D:/x/y"],"raw_home":"D:\\x\\y"}

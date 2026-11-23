@@ -1,0 +1,12 @@
+{"case":"flr1","func":"foreign_lock_recovery","path":"C:/profiles/a/gateway.lock"}
+{"case":"flr2","func":"foreign_lock_recovery","path":"/home/u/.hermes/gateway.lock"}
+{"case":"flr3","func":"foreign_lock_recovery","path":""}
+{"case":"ino1","func":"same_inode","left":{"dev":42,"ino":9001},"right":{"dev":42,"ino":9001}}
+{"case":"ino2","func":"same_inode","left":{"dev":42,"ino":9001},"right":{"dev":42,"ino":9002}}
+{"case":"ino3","func":"same_inode","left":{"dev":"42","ino":"9001"},"right":{"dev":42,"ino":9001}}
+{"case":"ino4","func":"same_inode","left":{"dev":42,"ino":7},"right":{"dev":43,"ino":7}}
+{"case":"home1","func":"canonical_home","home":"C:/Users/Foo"}
+{"case":"home2","func":"canonical_home","home":"C:/a/./b/../c"}
+{"case":"home3","func":"canonical_home","home":"C:\\Users\\Bar\\"}
+{"case":"home4","func":"canonical_home","home":"D:/x/../../y"}
+{"case":"home5","func":"canonical_home","home":"C:/"}

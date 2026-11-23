@@ -1,0 +1,10 @@
+{"case":"env-one","func":"is_post_swap_child","env_value":"1"}
+{"case":"env-zero","func":"is_post_swap_child","env_value":"0"}
+{"case":"env-empty","func":"is_post_swap_child","env_value":""}
+{"case":"env-two","func":"is_post_swap_child","env_value":" true "}
+{"case":"takeover-empty","func":"takeover_request","payload":{},"argv_tail":[]}
+{"case":"takeover-had-desktop","func":"takeover_request","payload":{"had_desktop_app_before_update":true},"argv_tail":[]}
+{"case":"takeover-explicit-desktop","func":"takeover_request","payload":{"desktop":"custom"},"argv_tail":[]}
+{"case":"takeover-resume-yes","func":"takeover_request","payload":{"windows_gateway_resume":"tk"},"argv_tail":["--yes"]}
+{"case":"takeover-string-false","func":"takeover_request","payload":{"had_desktop_app_before_update":"false"},"argv_tail":["-y"]}
+{"case":"takeover-empty-truthy","func":"takeover_request","payload":{"had_desktop_app_before_update":[],"restart_update":true},"argv_tail":["other"]}

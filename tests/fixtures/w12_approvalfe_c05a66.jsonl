@@ -1,0 +1,19 @@
+{"func":"base","path":"/tmp/a/b.sh"}
+{"func":"base","path":"/tmp/a/b.sh/"}
+{"func":"base","path":"file.sh"}
+{"func":"base","path":""}
+{"func":"base","path":"///"}
+{"func":"base","path":"C:\\tmp\\a.sh"}
+{"func":"base","path":"/a//b///"}
+{"func":"fetch_targets","command":"curl -o payload.sh http://x"}
+{"func":"fetch_targets","command":"wget -O job.sh http://x"}
+{"func":"fetch_targets","command":"wget --output-document=job.sh http://x"}
+{"func":"fetch_targets","command":"curl http://x > run.sh"}
+{"func":"fetch_targets","command":"curl http://x >> run.sh"}
+{"func":"fetch_targets","command":"curl -fsSL http://x"}
+{"func":"fetch_targets","command":"echo hi"}
+{"func":"fetch_targets","command":"curl -o /tmp/x.sh; sh /tmp/x.sh"}
+{"func":"fetch_targets","command":"wget -q -O a.sh && bash a.sh"}
+{"func":"fetch_targets","command":"curl -o \"spaced name.sh\" http://x"}
+{"func":"fetch_targets","command":"curl --output job2.sh http://x"}
+{"func":"fetch_targets","command":"wget -o file.txt URL"}

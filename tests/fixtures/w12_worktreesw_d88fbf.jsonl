@@ -1,0 +1,14 @@
+{"func":"inside","target":"C:\\repo\\.worktrees\\lane1\\file.txt","roots":["C:\\repo\\.worktrees\\lane1"]}
+{"func":"inside","target":"C:\\repo\\.worktrees\\lane1","roots":["C:\\repo\\.worktrees\\lane1"]}
+{"func":"inside","target":"C:\\repo\\.worktrees\\lane10\\x","roots":["C:\\repo\\.worktrees\\lane1"]}
+{"func":"inside","target":"C:\\repo\\.worktrees\\lane1\\deep\\a\\b","roots":["C:\\repo\\.worktrees\\lane2","C:\\repo\\.worktrees\\lane1"]}
+{"func":"inside","target":"D:\\other\\x","roots":["C:\\repo\\.worktrees\\lane1"]}
+{"func":"inside","target":"relative\\child","roots":["absolute\\root"]}
+{"func":"inside","target":"x","roots":[]}
+{"func":"inside","target":"","roots":[""]}
+{"func":"inside","target":"a/b/c","roots":["a/b"]}
+{"func":"classic_mode","archive_dirty":false,"max_total_gb":0}
+{"func":"classic_mode","archive_dirty":true,"max_total_gb":0}
+{"func":"classic_mode","archive_dirty":false,"max_total_gb":2.5}
+{"func":"classic_mode","archive_dirty":true,"max_total_gb":2.5}
+{"func":"classic_mode","archive_dirty":false,"max_total_gb":0.0}

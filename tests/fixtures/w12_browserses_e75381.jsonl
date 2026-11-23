@@ -1,0 +1,15 @@
+{"case":1,"func":"resolve","cdp_url":""}
+{"case":2,"func":"resolve","cdp_url":"   "}
+{"case":3,"func":"resolve","cdp_url":"ws://127.0.0.1:9222/devtools/browser/ABC123"}
+{"case":4,"func":"resolve","cdp_url":" WSS://Host:1234/devtools/browser/X "}
+{"case":5,"func":"resolve","cdp_url":"ws://localhost:9222","discovery":{"webSocketDebuggerUrl":"ws://resolved/devtools/browser/x"}}
+{"case":6,"func":"resolve","cdp_url":"ws://localhost:9222/","discovery":{"webSocketDebuggerUrl":"ws://resolved/devtools/browser/x"}}
+{"case":7,"func":"resolve","cdp_url":"ws://localhost:9222/foo","discovery":{"webSocketDebuggerUrl":"ws://resolved/devtools/browser/x"}}
+{"case":8,"func":"resolve","cdp_url":"ws://[::1]:9222","discovery":{"webSocketDebuggerUrl":"ws://resolved/devtools/browser/x"}}
+{"case":9,"func":"resolve","cdp_url":"wss://example.com","discovery":{"webSocketDebuggerUrl":"ws://resolved/devtools/browser/x"}}
+{"case":10,"func":"resolve","cdp_url":"http://127.0.0.1:9222/json/version","discovery":{"webSocketDebuggerUrl":"ws://resolved/devtools/browser/y"}}
+{"case":11,"func":"resolve","cdp_url":"ws://localhost:9222","discovery":null}
+{"case":12,"func":"resolve","cdp_url":"ws://localhost:9222","discovery":{}}
+{"case":13,"func":"resolve","cdp_url":"ws://localhost:9222","discovery":{"webSocketDebuggerUrl":"  ws://trimmed  "}}
+{"case":14,"func":"resolve","cdp_url":"HTTP://HOST:9222/json/version","discovery":{"webSocketDebuggerUrl":"ws://resolved/devtools/browser/z"}}
+{"case":15,"func":"resolve","cdp_url":"wss://host:443","discovery":{"webSocketDebuggerUrl":"wss://resolved/devtools/browser/q"}}

@@ -1,0 +1,22 @@
+{"case":1,"func":"aname","row":{"alias":"work"}}
+{"case":2,"func":"aname","row":{"alias":"","label":"My Slack"}}
+{"case":3,"func":"aname","row":{"alias":null,"label":"","connectionId":"conn-9"}}
+{"case":4,"func":"aname","row":{}}
+{"case":5,"func":"aname","row":{"alias":5}}
+{"case":6,"func":"aname","row":{"alias":true}}
+{"case":7,"func":"aname","row":{"alias":0,"label":"L"}}
+{"case":8,"func":"dname","row":{"alias":"work"}}
+{"case":9,"func":"dname","row":{"alias":"","label":"My Slack"}}
+{"case":10,"func":"dname","row":{"label":"","connectionId":"c1"}}
+{"case":11,"func":"dname","row":{}}
+{"case":12,"func":"hint","app":"slack","rows":[]}
+{"case":13,"func":"hint","app":"slack","rows":[{"alias":"z"},{"alias":"a"},{"alias":"z"}]}
+{"case":14,"func":"hint","app":"telegram","rows":[{"label":"L"}]}
+{"case":15,"func":"valias","alias":"abc-12"}
+{"case":16,"func":"valias","alias":"1abc"}
+{"case":17,"func":"valias","alias":"Bad"}
+{"case":18,"func":"valias","alias":"-bad"}
+{"case":19,"func":"valias","alias":""}
+{"case":20,"func":"valias","alias":"a12345678901234567890123456789012"}
+{"case":21,"func":"valias","alias":"a123456789012345678901234567890123"}
+{"case":22,"func":"valias","alias":"a_b"}

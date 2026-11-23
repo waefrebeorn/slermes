@@ -1,0 +1,17 @@
+{"func":"options","choices":["a","b"]}
+{"func":"options","choices":[{"value":1,"label":"One","description":"  desc "},{"value":"x"}]}
+{"func":"options","choices":[{"value":"k","description":"d"}]}
+{"func":"options","choices":[]}
+{"func":"options","choices":[{"value":"s","label":""}]}
+{"func":"ask_choice","choices":["a","b"],"picked":" B "}
+{"func":"ask_choice","choices":[{"value":"yes","label":"Yes"}],"picked":"YES"}
+{"func":"ask_choice","choices":[{"value":"v","label":"L","description":"D"}],"picked":"l — d"}
+{"func":"ask_choice","choices":["a"],"picked":"zzz"}
+{"func":"ask_choice","choices":[],"picked":"a"}
+{"func":"ask_choice","choices":["a","b"],"picked":""}
+{"func":"ask_choice","choices":[{"value":"x","label":"Lbl"}],"picked":"lbl"}
+{"func":"clarify_ask","reply":{"answers":{"q0":"ok"}}}
+{"func":"clarify_ask","reply":{"answers":{"q0":5}}}
+{"func":"clarify_ask","reply":null}
+{"func":"clarify_ask","reply":{}}
+{"func":"clarify_ask","reply":{"answers":null}}

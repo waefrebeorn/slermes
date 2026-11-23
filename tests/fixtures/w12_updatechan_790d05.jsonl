@@ -1,0 +1,19 @@
+{"case":"canary-valid","func":"is_canary_tag","tag":"v1.2.3+canary.20260101T123456Z"}
+{"case":"canary-spaces","func":"is_canary_tag","tag":"  v12.34.567+canary.20261231T235959Z  "}
+{"case":"canary-leading-zero","func":"is_canary_tag","tag":"v01.2.3+canary.20260101T123456Z"}
+{"case":"canary-stable-no-suffix","func":"is_canary_tag","tag":"v1.2.3"}
+{"case":"canary-empty","func":"is_canary_tag","tag":""}
+{"case":"canary-bad-major-4digits","func":"is_canary_tag","tag":"v1234.2.3+canary.20260101T123456Z"}
+{"case":"timestamp-valid","func":"canary_timestamp","tag":"v1.2.3+canary.20260101T123456Z"}
+{"case":"timestamp-invalid","func":"canary_timestamp","tag":"v1.2.3"}
+{"case":"tag-for-date-v","func":"canary_tag_for_date","version":"v1.2.3","date_utc":"20260101T123456Z"}
+{"case":"tag-for-date-no-v","func":"canary_tag_for_date","version":"1.2.3","date_utc":"20260101T000000Z"}
+{"case":"tag-for-date-bad-date","func":"canary_tag_for_date","version":"v1.2.3","date_utc":"20260101T12345Z"}
+{"case":"tag-for-date-bad-version","func":"canary_tag_for_date","version":"v01.2.3","date_utc":"20260101T123456Z"}
+{"case":"records-nested","func":"install_records","config":{"update":{"installs":{"a1":{"channel":"canary"}}},"other":1}}
+{"case":"records-update-scalar","func":"install_records","config":{"update":5}}
+{"case":"records-list","func":"install_records","config":[1,2,3]}
+{"case":"pkg-bundled","func":"package_channel","stamp":{"payload":"bundled"}}
+{"case":"pkg-external-mech","func":"package_channel","stamp":{"updateMechanism":"external"}}
+{"case":"pkg-source-git","func":"package_channel","stamp":{"payload":"source","updateMechanism":"git"}}
+{"case":"pkg-store","func":"package_channel","stamp":{"updateMechanism":"microsoft-store"}}
