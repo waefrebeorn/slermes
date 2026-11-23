@@ -324,7 +324,10 @@ class PathDouble:
         self._ctx = ctx
 
     def __truediv__(self, other):
-        return PathDouble(self._ctx, self.p + "/" + str(other))
+        base = self.p
+        if len(base) > 1 and base.endswith("/"):
+            base = base.rstrip("/")
+        return PathDouble(self._ctx, base + "/" + str(other))
 
     def mkdir(self, **kw):
         return self._ctx.call("mkdir", {"parents": kw.get("parents"),
