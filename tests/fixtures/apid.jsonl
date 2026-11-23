@@ -1,0 +1,13 @@
+{"func":"durable_response_id","request_key":"abc"}
+{"func":"durable_response_id","request_key":""}
+{"func":"durable_response_id","request_key":"the-key"}
+{"func":"durable_response_id","request_key":"a b c"}
+{"func":"durable_response_id","request_key":"unicode-é"}
+{"func":"item_id_sequence","response_id":"resp_x","calls":[{"type":"message"},{"type":"message"}]}
+{"func":"item_id_sequence","response_id":"resp_x","calls":[{"type":"message"},{"type":"message","commentary":true},{"type":"message"}]}
+{"func":"item_id_sequence","response_id":"resp_y","calls":[{"type":"function_call","call_id":"c1"},{"type":"function_call","call_id":"c1"},{"type":"function_call","call_id":"c2"}]}
+{"func":"item_id_sequence","response_id":"resp_x","calls":[{"type":"reasoning"},{"type":"function_call_output","call_id":"o1"}]}
+{"func":"identify_output","response_id":"resp_x","items":[{"type":"message","role":"user"},{"type":"function_call","call_id":"c1"},{"type":"message","phase":"commentary"},{"type":"reasoning"}]}
+{"func":"identify_output","response_id":"resp_z","items":[{"type":"message"},{"type":"message"},{"type":"message"}]}
+{"func":"identify_output","response_id":"resp_z","items":[]}
+{"func":"item_id_sequence","response_id":"resp_é","calls":[{"type":"message","call_id":"callé"}]}

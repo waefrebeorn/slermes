@@ -1,0 +1,9 @@
+{"func": "selection", "toolsets": ["kanban", "other"]}
+{"func": "selection", "toolsets": ["other"]}
+{"func": "selection", "toolsets": null}
+{"func": "selection", "toolsets": []}
+{"func": "selection", "toolsets": ["kanban"]}
+{"func": "selection", "toolsets": ["KANBAN"]}
+{"func": "scoped", "toolsets": ["kanban"]}
+{"func": "scoped", "toolsets": ["other"]}
+{"func": "scoped", "toolsets": null}

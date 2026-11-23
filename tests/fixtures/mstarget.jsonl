@@ -1,0 +1,12 @@
+{"func":"parse","ref":"!room:$abc"}
+{"func":"parse","ref":"!room"}
+{"func":"parse","ref":"@user"}
+{"func":"parse","ref":"  !r:$e  "}
+{"func":"parse","ref":"a:$b:$c"}
+{"func":"parse","ref":"::$x"}
+{"func":"parse","ref":"!r:$"}
+{"func":"parse","ref":"no-thread"}
+{"func":"parse","ref":"!a:b"}
+{"func":"parse","ref":":$x"}
+{"func":"parse","ref":"\t!r:$e\n"}
+{"func":"parse","ref":"room:$"}

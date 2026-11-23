@@ -1,0 +1,16 @@
+{"func":"parse","ref":"C01234567"}
+{"func":"parse","ref":"  GABCDEFGH  "}
+{"func":"parse","ref":"D12345678:123.456"}
+{"func":"parse","ref":"U12345678"}
+{"func":"parse","ref":"<@U12345678>"}
+{"func":"parse","ref":"<@U12345678|foo>"}
+{"func":"parse","ref":"@bob.smith-1"}
+{"func":"parse","ref":"c12345678"}
+{"func":"parse","ref":"C1234"}
+{"func":"parse","ref":"C123456789"}
+{"func":"parse","ref":"C12345678:ts:with:colon"}
+{"func":"parse","ref":"@a"}
+{"func":"parse","ref":"<@U12345678|>"}
+{"func":"parse","ref":"   "}
+{"func":"parse","ref":"user:U12345678"}
+{"func":"parse","ref":"@over哈哈哈"}

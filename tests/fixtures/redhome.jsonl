@@ -1,0 +1,12 @@
+{"func":"is_under","path":"C:/Users/eman5/.hermes/config.yaml","homes":["C:/Users/eman5/.hermes"]}
+{"func":"is_under","path":"C:/Users/eman5/.hermes/nested/config.yaml","homes":["C:/Users/eman5/.hermes"]}
+{"func":"is_under","path":"C:/Users/eman5/.hermes2/config.yaml","homes":["C:/Users/eman5/.hermes"]}
+{"func":"is_under","path":"D:/other/config.yaml","homes":["C:/Users/eman5/.hermes"]}
+{"func":"is_under","path":"C:/USERS/EMAN5/.HERMES/config.yaml","homes":["c:/users/eman5/.hermes"]}
+{"func":"is_under","path":"C:/Users/eman5/.hermes/sub/../config.yaml","homes":["C:/Users/eman5/.hermes"]}
+{"func":"is_under","path":"C:/root/auth.json","homes":["C:/Users/eman5/.hermes","C:/root"]}
+{"func":"is_under_ex","path":"C:/Users/eman5/.hermes/","homes":["C:/Users/eman5/.hermes"]}
+{"func":"is_under","path":"C:/Users/eman5/.hermesX/config.yaml","homes":["C:/Users/eman5/.hermes"]}
+{"func":"win_norm","path":"C:/a/b/../c"}
+{"func":"normcase","path":"C:/Users/EmAn5/.hermes"}
+{"func":"is_under","path":"C:/x/config.yaml","homes":[]}

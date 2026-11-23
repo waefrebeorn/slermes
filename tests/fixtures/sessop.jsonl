@@ -1,0 +1,15 @@
+{"func":"is_viewer_input","request_id":"abc","payload":{"text":"hi"}}
+{"func":"is_viewer_input","request_id":"abc","payload":{"text":"hi","attachments_v1":[]}}
+{"func":"is_viewer_input","request_id":"abc","payload":{}}
+{"func":"is_viewer_input","request_id":"abc","payload":{"foo":1}}
+{"func":"is_viewer_input","request_id":"hosted:xyz","payload":{"text":"hi"}}
+{"func":"is_viewer_input","request_id":null,"payload":{"text":"hi"}}
+{"func":"is_viewer_input","request_id":123,"payload":{"text":"hi"}}
+{"func":"is_viewer_input","request_id":"abc","payload":{"text":"hi","local_operator_v1":{"a":1}}}
+{"func":"is_viewer_input","request_id":"abc","payload":{"text":"hi","finite":true,"unattended":false,"surface_v1":"s","display_v1":"d","cli_turn_v1":1,"kanban_card_v1":"k"}}
+{"func":"is_viewer_input","request_id":"abc","payload":{"text":"hi","unknown":1}}
+{"func":"is_viewer_input","request_id":"abc","payload":{"local_operator_v1":{}}}
+{"func":"is_viewer_input","request_id":"hosted:","payload":{"text":"hi"}}
+{"func":"is_viewer_input","request_id":"HOSTED:x","payload":{"text":"hi"}}
+{"func":"is_viewer_input","request_id":"nothosted:x","payload":{"text":"hi"}}
+{"func":"is_viewer_input","request_id":true,"payload":{"text":"hi"}}

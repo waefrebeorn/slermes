@@ -1,0 +1,10 @@
+{"func":"scenario","notices":[],"prompt":null,"display":null}
+{"func":"scenario","notices":["a"],"prompt":"p","display":null}
+{"func":"scenario","notices":["a","b"],"prompt":null,"display":"d"}
+{"func":"scenario","notices":[],"prompt":"","display":""}
+{"func":"scenario","notices":["ack","next"],"prompt":"hello world","display":"panel"}
+{"func":"scenario","notices":[""],"prompt":null,"display":null}
+{"func":"scenario","notices":["a","b","c"],"prompt":"p","display":"d"}
+{"func":"scenario"}
+{"func":"scenario","notices":["é"],"prompt":"ü","display":null}
+{"func":"scenario","notices":["line1","line2"],"prompt":"prompt-1","display":"screen"}

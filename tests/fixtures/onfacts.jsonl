@@ -1,0 +1,12 @@
+{"func":"read_facts","os_family":"win32","native_arch":"x86_64","machine_kind":"PC","nvidia_platform":"discrete","host_locale":"en-US","facts_source":"remote","locale":null,"plugins":["alpha","beta"],"tours":true}
+{"func":"read_facts","os_family":"darwin","native_arch":"arm64","machine_kind":"Mac","nvidia_platform":null,"host_locale":"fr-FR","facts_source":"local","locale":"de-DE","plugins":[],"tours":false}
+{"func":"read_facts","os_family":"linux","native_arch":"aarch64","machine_kind":"computer","nvidia_platform":null,"host_locale":null,"facts_source":"other","locale":"","plugins":["one"],"tours":true}
+{"func":"read_facts","os_family":"freebsd","native_arch":"amd64","machine_kind":"Spark","nvidia_platform":"dgx_spark","host_locale":"ja-JP","facts_source":"remote","locale":"ko-KR","plugins":["x","y","z"],"tours":false}
+{"func":"read_facts","os_family":"","native_arch":"","machine_kind":"","nvidia_platform":"rtx_spark","host_locale":"","facts_source":"remote","locale":null,"plugins":[],"tours":true}
+{"func":"read_facts","os_family":"win32","native_arch":"i386","machine_kind":"PC","nvidia_platform":null,"host_locale":"es-ES","facts_source":"local","locale":"","plugins":["p"],"tours":false}
+{"func":"suggested_name","full_name":"Ada Lovelace"}
+{"func":"suggested_name","full_name":null}
+{"func":"suggested_name","full_name":""}
+{"func":"read_facts","os_family":"win32","native_arch":"x86_64","machine_kind":"PC","nvidia_platform":null,"host_locale":"en-US","facts_source":"remote","locale":"it-IT","plugins":[],"tours":true}
+{"func":"read_facts","os_family":"darwin","native_arch":"arm64","machine_kind":"Mac","nvidia_platform":null,"host_locale":"en-GB","facts_source":"local","locale":null,"plugins":["a","b"],"tours":false}
+{"func":"read_facts","os_family":"linux","native_arch":"x86_64","machine_kind":"computer","nvidia_platform":"discrete","host_locale":"zh-CN","facts_source":"local","locale":"zh-TW","plugins":["only"],"tours":true}

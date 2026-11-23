@@ -1,0 +1,10 @@
+{"func":"read_json","path":"gj_obj.json","create":true,"bom":false,"content":"{\"a\":1,\"b\":[true,null]}"}
+{"func":"read_json","path":"gj_arr.json","create":true,"bom":false,"content":"[1,2,3]"}
+{"func":"read_json","path":"gj_str.json","create":true,"bom":false,"content":"\"hello\""}
+{"func":"read_json","path":"gj_num.json","create":true,"bom":false,"content":"42"}
+{"func":"read_json","path":"gj_true.json","create":true,"bom":false,"content":"true"}
+{"func":"read_json","path":"gj_null.json","create":true,"bom":false,"content":"null"}
+{"func":"read_json","path":"gj_bad.json","create":true,"bom":false,"content":"{not json"}
+{"func":"read_json","path":"gj_empty.json","create":true,"bom":false,"content":""}
+{"func":"read_json","path":"gj_bom.json","create":true,"bom":true,"content":"{\"bom\":true}"}
+{"func":"read_json","path":"gj_missing.json","create":false,"bom":false,"content":""}

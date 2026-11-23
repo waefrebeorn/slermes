@@ -1,0 +1,21 @@
+{"func": "mask", "command": "echo 'a\nb'"}
+{"func": "mask", "command": "echo \"a\nb\""}
+{"func": "mask", "command": "echo a\nb"}
+{"func": "mask", "command": "$(echo x\ny)"}
+{"func": "mask", "command": "\"$(grep x f\nreboot)\""}
+{"func": "mask", "command": "'a\rb'"}
+{"func": "mask", "command": "echo '# hi\nsudo reboot'"}
+{"func": "mask", "command": "echo \"$(echo 'a\nb')\""}
+{"func": "mask", "command": "echo `x\ny`"}
+{"func": "mask", "command": "echo \"`x\ny`\""}
+{"func": "mask", "command": "echo 'a\\"}
+{"func": "mask", "command": "echo \"a\\nb\""}
+{"func": "mask", "command": "printf 'x\ny\nz'"}
+{"func": "mask", "command": "#comment\nsudo reboot"}
+{"func": "mask", "command": "echo \"$(bad\n"}
+{"func": "mask", "command": "a\nb"}
+{"func": "mask", "command": "'unterminated\nmore"}
+{"func": "mask", "command": "echo \"${x\ny}\""}
+{"func": "mask", "command": "cmd1\ncmd2"}
+{"func": "mask_span", "command": "echo 'a\nb' tail", "start": "0", "end": "9"}
+{"func": "mask_span", "command": "echo 'a\nb' tail", "start": "5", "end": "10"}

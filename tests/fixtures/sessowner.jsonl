@@ -1,0 +1,11 @@
+{"func":"timeout","case":"PRUNE_RPC_TIMEOUT"}
+{"func":"msg","exc":"connection lost","case":"simple exc text"}
+{"func":"msg","exc":"GatewayClientError: refused","case":"typed error text"}
+{"func":"msg","exc":"","case":"empty exc"}
+{"func":"msg","exc":"boom (x) `cmd`","case":"punctuation in exc"}
+{"func":"owner","state":"ready","endpoint":"http://127.0.0.1:8080","case":"ready owner -> endpoint"}
+{"func":"owner","state":"starting","endpoint":"http://127.0.0.1:8080","case":"not ready -> None"}
+{"func":"owner","state":"absent","endpoint":null,"case":"absent -> None"}
+{"func":"owner","state":"ready","endpoint":null,"case":"ready but no endpoint -> None"}
+{"func":"owner","state":null,"endpoint":"http://x","case":"null state -> None"}
+{"func":"owner","state":"READY","endpoint":"http://x","case":"case-sensitive state"}

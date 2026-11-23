@@ -1,0 +1,9 @@
+{"func": "collect", "batches": [["a", "b"], ["b", "c"]]}
+{"func": "collect", "batches": [["x"], ["x"]]}
+{"func": "collect", "batches": []}
+{"func": "collect", "batches": [["db", "write"], ["write", "net"]]}
+{"func": "collect", "batches": [["A", "a", "A"]]}
+{"func": "collect", "batches": [["b", "a", "c"]]}
+{"func": "after_scope", "inside": ["a"], "outside": ["b"]}
+{"func": "after_scope", "inside": [], "outside": ["z"]}
+{"func": "outside", "requires": ["a", "b"]}

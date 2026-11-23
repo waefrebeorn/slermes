@@ -1,0 +1,14 @@
+{"func":"read","query_file":null,"query":null}
+{"func":"read","query_file":"","query":"existing"}
+{"func":"read","query_file":"q.txt","query":"already set"}
+{"func":"read","query_file":"-","query":"","stdin_content":"  hello  "}
+{"func":"read","query_file":"-","query":null,"stdin_content":"from stdin\n"}
+{"func":"read","query_file":"-","query":"","stdin_content":""}
+{"func":"read","query_file":"-","query":"","stdin_content":"   \n\t"}
+{"func":"read","query_file":"q.txt","query":"","read_ok":true,"file_content":"  file body  "}
+{"func":"read","query_file":"q.txt","query":"","read_ok":true,"file_content":"\ufeffBOM body"}
+{"func":"read","query_file":"missing.txt","query":null,"read_ok":false,"err_detail":"boom"}
+{"func":"read","query_file":"empty.txt","query":"","read_ok":true,"file_content":""}
+{"func":"read","query_file":"q2.txt","query":"","read_ok":true,"file_content":"ok"}
+{"func":"is_empty","value":"   "}
+{"func":"is_empty","value":"x"}

@@ -1,0 +1,11 @@
+{"func":"protocol_name"}
+{"func":"is_protocol"}
+{"func":"method_count"}
+{"func":"method_at","i":0}
+{"func":"method_at","i":1}
+{"func":"method_at","i":2}
+{"func":"has_method","name":"claim_origin"}
+{"func":"has_method","name":"publication_target"}
+{"func":"has_method","name":"bogus"}
+{"func":"stub","name":"claim_origin"}
+{"func":"stub","name":"publication_target"}

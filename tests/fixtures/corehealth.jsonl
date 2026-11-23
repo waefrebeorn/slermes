@@ -1,0 +1,16 @@
+{"func":"state_value","name":"OK"}
+{"func":"state_value","name":"CORRUPT"}
+{"func":"state_value","name":"BAD"}
+{"func":"state_value","name":"ok"}
+{"func":"state_from_value","value":"ok"}
+{"func":"state_from_value","value":"corrupt"}
+{"func":"state_from_value","value":"OK"}
+{"func":"state_from_value","value":"bogus"}
+{"func":"state_str","name":"OK"}
+{"func":"state_str","name":"CORRUPT"}
+{"func":"state_str","name":"NOPE"}
+{"func":"state_count"}
+{"func":"make_probe","status":"ok","detail":null}
+{"func":"make_probe","status":"degraded","detail":"not initialized"}
+{"func":"make_probe","status":"degraded","detail":"corrupt"}
+{"func":"make_probe","status":"degraded","detail":""}

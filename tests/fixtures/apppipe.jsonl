@@ -1,0 +1,9 @@
+{"func": "launcher_re", "name": "sudo", "short": "ugUCDhpRrtT", "long_opts": ["user", "group", "other-user", "close-from", "chdir", "host", "prompt", "role", "type", "command-timeout", "chroot"]}
+{"func": "launcher_re", "name": "time", "short": "fo", "long_opts": ["format", "output"]}
+{"func": "launcher_re", "name": "command", "short": "", "long_opts": []}
+{"func": "launcher_re", "name": "nice", "short": "n", "long_opts": ["adjustment"]}
+{"func": "launcher_re", "name": "env", "short": "uCa", "long_opts": ["unset", "chdir", "argv0"]}
+{"func": "launcher_re", "name": "x", "short": "", "long_opts": [], "ws": "\\s+"}
+{"func": "launcher_re", "name": "doas", "short": "uC", "long_opts": []}
+{"func": "path_prefix"}
+{"func": "wrappers"}

@@ -1,0 +1,23 @@
+{"func": "is_wsl", "command": "wsl --status"}
+{"func": "is_wsl", "command": "wsl.exe --install"}
+{"func": "is_wsl", "command": "WSL.EXE foo"}
+{"func": "is_wsl", "command": "/usr/bin/wsl --x"}
+{"func": "is_wsl", "command": "C:\\Windows\\wsl.exe --x"}
+{"func": "is_wsl", "command": "'wsl.exe' --x"}
+{"func": "is_wsl", "command": "\"wsl\" --x"}
+{"func": "is_wsl", "command": "now wsl"}
+{"func": "is_wsl", "command": "cmd && wsl"}
+{"func": "is_wsl", "command": ""}
+{"func": "is_wsl", "command": "   "}
+{"func": "is_wsl", "command": "'wsl.exe --foo"}
+{"func": "is_wsl", "command": "wsl"}
+{"func": "is_wsl", "command": "wsl\t--foo"}
+{"func": "is_wsl", "command": "echo wsl"}
+{"func": "is_wsl", "command": "sudo wsl"}
+{"func": "is_wsl", "command": "wslg.exe"}
+{"func": "is_wsl", "command": "WSL"}
+{"func": "is_wsl", "command": "/wsl"}
+{"func": "is_wsl", "command": "prefix/wsl.exe/x"}
+{"func": "is_wsl", "command": "  wsl  "}
+{"func": "is_wsl", "command": "\\wsl.exe -x"}
+{"func": "is_wsl", "command": null}

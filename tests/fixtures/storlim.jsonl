@@ -1,0 +1,14 @@
+{"func":"resume","sessions":{"max_resume_messages":"5000"}}
+{"func":"resume","sessions":{"max_resume_messages":-1}}
+{"func":"resume","sessions":{}}
+{"func":"resume","sessions":null}
+{"func":"resume","sessions":{"max_resume_messages":0}}
+{"func":"resume","sessions":{"max_resume_messages":"abc"}}
+{"func":"export","sessions":{"max_export_messages":"7"}}
+{"func":"export","sessions":{"max_export_messages":"0"}}
+{"func":"limit","key":"max_resume_messages","fallback":"123","sessions":{"max_resume_messages":"42"}}
+{"func":"limit","key":"max_resume_messages","fallback":"123","sessions":{}}
+{"func":"limit","key":"custom","fallback":"9","sessions":{"custom":"1_000"}}
+{"func":"limit","key":"custom","fallback":"9","sessions":{"custom":"  -5 "}}
+{"func":"limit","key":"custom","fallback":"9","sessions":{"custom":true}}
+{"func":"limit","key":"custom","fallback":"9","sessions":{"custom":2.9}}

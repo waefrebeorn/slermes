@@ -1,0 +1,16 @@
+{"func":"dispatch","target":"log"}
+{"func":"dispatch","target":"github_comment"}
+{"func":"dispatch","target":"telegram"}
+{"func":"dispatch","target":"discord"}
+{"func":"dispatch","target":"matrix"}
+{"func":"dispatch","target":"wecom_callback"}
+{"func":"dispatch","target":"LOG"}
+{"func":"dispatch","target":"totally_unknown_xyz"}
+{"func":"dispatch","target":123}
+{"func":"dispatch","target":null}
+{"func":"dispatch","target":false}
+{"func":"dispatch","target":["log"]}
+{"func":"known","name":"signal"}
+{"func":"known","name":"weixin"}
+{"func":"known","name":""}
+{"func":"known","name":"notregistered_zz"}

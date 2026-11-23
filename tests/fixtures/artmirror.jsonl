@@ -1,0 +1,12 @@
+{"func":"object_key","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func":"object_key","sha256":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}
+{"func":"object_key","sha256":"abc"}
+{"func":"object_key","sha256":"gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"}
+{"func":"object_key","sha256":""}
+{"func":"mirror_url","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func":"mirror_url","sha256":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}
+{"func":"pinned","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","dest":"dest0","url":"https://registry.npmjs.org/pkg","mirrored":"https://hermes-assets.nousresearch.com/upstream/sha256/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","registry":""}
+{"func":"pinned","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","dest":"dest1","url":"https://registry.npmjs.org/pkg","mirrored":"https://registry.npmjs.org/pkg","registry":"https://r.npmjs.org/"}
+{"func":"pinned","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","dest":"dest2","url":"https://registry.npmjs.org/pkg","mirrored":"https://registry.npmjs.org/pkg","registry":"http://localhost:4873/"}
+{"func":"pinned","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","dest":"dest3","url":"https://x/pkg","mirrored":"https://x/pkg","registry":"http://registry/"}
+{"func":"pinned","sha256":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","dest":"dest4","url":"https://x/pkg","mirrored":"https://x/pkg","registry":""}

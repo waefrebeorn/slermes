@@ -1,0 +1,15 @@
+{"func":"lines","typed":"/modle","known":["/model","/help"]}
+{"func":"lines","typed":"/xyz","known":["/model"]}
+{"func":"lines","typed":"  ","known":["/model"]}
+{"func":"lines","typed":"","known":[]}
+{"func":"lines","typed":"/sta","known":["/status","/start"]}
+{"func":"lines","typed":"/model extra","known":["/model","/modell"]}
+{"func":"lines","typed":"/hlep","known":["/help","/hello"]}
+{"func":"close","typed":"/modl","known":["/model","/help"]}
+{"func":"close","typed":"/zzz","known":["/model"]}
+{"func":"close","typed":"/status","known":["/status","/start"]}
+{"func":"close","typed":"/helo","known":["/help","/hello","/health"]}
+{"func":"base","typed":"  /foo  bar "}
+{"func":"base","typed":"   "}
+{"func":"base","typed":""}
+{"func":"base","typed":"/single"}

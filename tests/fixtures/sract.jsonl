@@ -1,0 +1,16 @@
+{"func": "bound", "description": null}
+{"func": "bound", "description": ""}
+{"func": "bound", "description": "  hello  "}
+{"func": "bound", "description": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "bound", "description": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "bound", "description": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "bound", "description": "   x   y   "}
+{"func": "normalize", "provenance": null}
+{"func": "normalize", "provenance": ""}
+{"func": "normalize", "provenance": "unknown"}
+{"func": "normalize", "provenance": "agent.compression"}
+{"func": "normalize", "provenance": " agent.compression "}
+{"func": "normalize", "provenance": "bogus"}
+{"func": "normalize", "provenance": "AGENT.COMPRESSION"}
+{"func": "normalize", "provenance": "agent.compression_turnhold"}
+{"func": "max"}

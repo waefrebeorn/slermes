@@ -1,0 +1,11 @@
+{"func":"reject","outcome":0}
+{"func":"reject","outcome":1}
+{"func":"reject","outcome":2}
+{"func":"reject","outcome":9}
+{"func":"guarded_ids","ids":["a","b","c"],"outcomes":[0,0,0]}
+{"func":"guarded_ids","ids":["a","b","c"],"outcomes":[1,2,0]}
+{"func":"guarded_ids","ids":["a","b","a","c"],"outcomes":[1,0,1,2]}
+{"func":"guarded_ids","ids":["z","y","x"],"outcomes":[2,1,0]}
+{"func":"guarded_ids","ids":[],"outcomes":[]}
+{"func":"guarded_ids","ids":["solo"],"outcomes":[1]}
+{"func":"guarded_ids","ids":["m","m","n"],"outcomes":[2,0,0]}

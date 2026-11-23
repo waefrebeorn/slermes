@@ -1,0 +1,12 @@
+{"func":"div","budget":"6","mins":[2,3,4],"case":"late row clipped bottom-up"}
+{"func":"div","budget":"5","mins":[],"case":"no children"}
+{"func":"div","budget":"2","mins":[10,10,10],"case":"all taller than budget"}
+{"func":"div","budget":"3","mins":[1,1,1],"case":"exact fit"}
+{"func":"div","budget":"0","mins":[0,0],"case":"zero budget zero mins"}
+{"func":"div","budget":"4","mins":[5,1,3],"case":"mixed allocation"}
+{"func":"div","budget":"10","mins":[1,2,3,4],"case":"budget exceeds total"}
+{"func":"div","budget":"1","mins":[0,1,2,3],"case":"tight budget"}
+{"func":"div","budget":"7","mins":[3,0,4,2,1],"case":"five rows"}
+{"func":"div","budget":"9223372036854775807","mins":[1,2],"case":"huge budget decimal string"}
+{"func":"div","budget":"2","mins":[1],"case":"single child clipped"}
+{"func":"div","budget":"6","mins":[2,2,2,2],"case":"bottom child loses row"}

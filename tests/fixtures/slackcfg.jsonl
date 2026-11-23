@@ -1,0 +1,10 @@
+{"func":"flag_name","key":"foo","env_var":"FOO_ENV","strip":false}
+{"func":"flag_name","key":"dry_run","env_var":"DRY_RUN","strip":true}
+{"func":"flag_call","key":"foo","env_var":"FOO_ENV","strip":false}
+{"func":"flag_call","key":"foo","env_var":"FOO_ENV","strip":true}
+{"func":"flag_call","key":"","env_var":"","strip":true}
+{"func":"flag_call","key":"x_y","env_var":"XY","strip":false}
+{"func":"channel_name","key":"chan","env_var":"CHAN_ENV","coerce_scalar":false}
+{"func":"channel_call","key":"chan","env_var":"CHAN_ENV","coerce_scalar":false}
+{"func":"channel_call","key":"chan","env_var":"CHAN_ENV","coerce_scalar":true}
+{"func":"channel_call","key":"a_b","env_var":"AB","coerce_scalar":true}

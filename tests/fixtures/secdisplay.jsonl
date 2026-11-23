@@ -1,0 +1,18 @@
+{"func":"maskable","value":"  sk-secret  ","case":"string returned as-is"}
+{"func":"maskable","value":123456789012,"case":"int coerced to decimal str"}
+{"func":"maskable","value":true,"case":"bool -> empty"}
+{"func":"maskable","value":false,"case":"false bool -> empty"}
+{"func":"maskable","value":null,"case":"null -> empty"}
+{"func":"maskable","value":["a"],"case":"list -> empty"}
+{"func":"redact","value":{},"case":"empty config"}
+{"func":"redact","value":{"api_key":"sk-abcdefghijklmnop1234"},"case":"long api_key masked"}
+{"func":"redact","value":{"token":"short"},"case":"short token -> ***"}
+{"func":"redact","value":{"password":123456789012},"case":"numeric password masked"}
+{"func":"redact","value":{"api_key":"${MY_KEY}"},"case":"env placeholder untouched"}
+{"func":"redact","value":{"apikey":true,"url":"http://x"},"case":"bool secret + plain url"}
+{"func":"redact","value":{"nested":{"secret":"abcdefghijklmnop"}},"case":"nested dict masked"}
+{"func":"redact","value":{"x":[1,{"api_key":"secretsecretsecret"}]},"case":"list recursion"}
+{"func":"redact","value":{"mcp_servers":{"s":{"headers":{"X-API-Key":"abcdefghijklmnop"}}}},"case":"dotted header key folded"}
+{"func":"redact","value":{"TERMINAL_SSH_HOST":"abc","TERMINAL_SSH_KEY":"abcdefghijklmnop"},"case":"env non-secret vs secret"}
+{"func":"redact","value":{"access_token":"abcdefghijklmnop","refresh_token":"123456789012","jwt":"xyz"},"case":"multiple secret key shapes"}
+{"func":"redact","value":{"timeout":30,"model":"gpt-4o"},"case":"non-secret values echoed"}

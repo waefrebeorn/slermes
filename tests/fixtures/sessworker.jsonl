@@ -1,0 +1,11 @@
+{"func":"acquire","process":"P0","cancel":false}
+{"func":"acquire","process":"P1","cancel":true}
+{"func":"acquire","process":"worker-42","cancel":false}
+{"func":"acquire","process":"worker-43","cancel":true}
+{"func":"acquire","process":"","cancel":false}
+{"func":"acquire","process":"","cancel":true}
+{"func":"acquire","process":null,"cancel":false}
+{"func":"acquire","process":null,"cancel":true}
+{"func":"acquire","process":"proc/with/slashes","cancel":true}
+{"func":"acquire","process":"unicode-é","cancel":false}
+{"func":"acquire","process":"edge case value","cancel":true}

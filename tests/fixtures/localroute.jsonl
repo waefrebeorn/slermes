@@ -1,0 +1,20 @@
+{"func":"resolve_launch_route","params":{},"config":{}}
+{"func":"resolve_launch_route","params":{"model":null},"config":{}}
+{"func":"resolve_launch_route","params":{"model":123},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"   "},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"gpt-4o"},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"  gpt-4o  "},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"gpt-4o","base_url":"http://x"},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"gpt-4o","api_key":"k"},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"gpt-4o","provider":"openai"},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"openai/gpt-4o"},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"openai/gpt-4o","provider":"x"},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"openai/gpt-4o"},"config":{"providers":{"openai":{}}}}
+{"func":"resolve_launch_route","params":{"model":"openai/gpt-4o"},"config":{"providers":{"OPENAI":{}}}}
+{"func":"resolve_launch_route","params":{"model":"anthropic/claude-x"},"config":{"providers":{"anthropic":{}}}}
+{"func":"resolve_launch_route","params":{"model":"openai/gpt-4o","extra":1},"config":{"providers":{"openai":{}}}}
+{"func":"resolve_launch_route","params":{"model":"openai:gpt-4o"},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"openai:gpt-4o"},"config":{"providers":{"openai":{}}}}
+{"func":"resolve_launch_route","params":{"model":"anthropic:claude-x"},"config":{}}
+{"func":"resolve_launch_route","params":{"model":"anthropic/claude-x"},"config":{"model":{"provider":"openai"},"providers":{"anthropic":{}}}}
+{"func":"resolve_launch_route","params":{"model":"anthropic/claude-x","provider":"  "},"config":{"providers":{"anthropic":{}}}}

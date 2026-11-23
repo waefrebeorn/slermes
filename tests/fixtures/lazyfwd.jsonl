@@ -1,0 +1,10 @@
+{"func":"forward","module":"agent.demo","name":"do_thing"}
+{"func":"forward","module":"agent.demo","name":"do_thing","static":true}
+{"func":"forward_static","module":"agent.demo","name":"do_thing"}
+{"func":"forward_static","module":"pkg.mod","name":"run"}
+{"func":"doc","module":"agent.demo","name":"do_thing"}
+{"func":"doc","module":"","name":"x"}
+{"func":"doc","module":"a.b.c","name":""}
+{"func":"forward","module":"pkg","name":"unicode_\u00e9\u4e2d"}
+{"func":"forward_static","module":"m","name":"with-dash"}
+{"func":"forward","module":"m","name":""}

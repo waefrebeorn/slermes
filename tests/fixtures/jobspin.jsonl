@@ -1,0 +1,12 @@
+{"func":"pin","cfg":{},"provider":null,"case":"no config -> unpinned"}
+{"func":"pin","cfg":{"model":{"default":" gpt-4o "}},"provider":" OpenAI ","case":"default model, provider lower"}
+{"func":"pin","cfg":{"model":{"model":"llama"}},"provider":"Anthropic","case":"model fallback key"}
+{"func":"pin","cfg":{"model":"  direct  "},"provider":null,"case":"model is scalar string"}
+{"func":"pin","cfg":{"model":{}},"provider":"x","case":"empty model dict -> None"}
+{"func":"pin","cfg":{"model":{"default":""}},"provider":"x","case":"blank default -> None"}
+{"func":"pin","cfg":{"model":null},"provider":"z","case":"null model -> None"}
+{"func":"pin","cfg":{"model":{"default":0,"model":"fallback"}},"provider":"P","case":"falsy default falls through"}
+{"func":"pin","cfg":{"model":{"default":123}},"provider":true,"case":"non-str model and provider -> None"}
+{"func":"pin","cfg":{"model":{"default":"  mixed CASE  "}},"provider":"  MiXeD Provider  ","case":"strip+lower both"}
+{"func":"pin","cfg":{"model":[]},"provider":"q","case":"falsy list model -> None"}
+{"func":"pin","cfg":{"model":{"default":"gpt","model":"other"}},"provider":42,"case":"non-str provider ignored"}

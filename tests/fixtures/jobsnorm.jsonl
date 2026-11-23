@@ -1,0 +1,21 @@
+{"func":"opt","value":"  hello/  ","strip":false,"case":"strip whitespace keep slash"}
+{"func":"opt","value":"  hello/  ","strip":true,"case":"strip then rstrip slash"}
+{"func":"opt","value":123,"strip":false,"case":"non-str int -> None"}
+{"func":"opt","value":true,"strip":false,"case":"bool -> None"}
+{"func":"opt","value":null,"strip":false,"case":"null -> None"}
+{"func":"opt","value":"   ","strip":true,"case":"blank -> None"}
+{"func":"opt","value":"","strip":false,"case":"empty -> None"}
+{"func":"base","value":" http://x/y/// ","case":"base url strips trailing slashes"}
+{"func":"base","value":"/// ","case":"only slashes -> None"}
+{"func":"str_list","items":["  a ","",null,42,true," b"],"case":"mixed scalars"}
+{"func":"str_list","items":["  ",false,0],"case":"all stripped empty -> None"}
+{"func":"str_list","items":["caf\u00e9 ","\u2615","x"],"case":"unicode kept"}
+{"func":"str_list","items":[[1,2],{"a":1}],"case":"nested repr"}
+{"func":"context","value":"  abc ","case":"str wrapped into singleton list"}
+{"func":"context","value":["x"," ",7],"case":"list filtered"}
+{"func":"context","value":42,"case":"non-str non-list -> None"}
+{"func":"context","value":[],"case":"empty list -> None"}
+{"func":"failure","value":[" a ","","b",null,3],"case":"join with comma"}
+{"func":"failure","value":"  hi  ","case":"plain text stripped"}
+{"func":"failure","value":[" ",""],"case":"empty join -> None"}
+{"func":"failure","value":123,"case":"non-str non-list -> None"}

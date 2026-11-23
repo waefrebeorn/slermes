@@ -1,0 +1,14 @@
+{"func":"cron_read","tokens":[]}
+{"func":"cron_read","tokens":["list"]}
+{"func":"cron_read","tokens":["list","--all"]}
+{"func":"cron_read","tokens":["list","-a"]}
+{"func":"cron_read","tokens":["list","--all","-a"]}
+{"func":"cron_read","tokens":["LIST"]}
+{"func":"cron_read","tokens":["List","-a"]}
+{"func":"cron_read","tokens":["list","--foo"]}
+{"func":"cron_read","tokens":["add","x"]}
+{"func":"cron_read","tokens":["run"]}
+{"func":"cron_read","tokens":["--all"]}
+{"func":"cron_read","tokens":["list","x"]}
+{"func":"cron_read","tokens":["list","-A"]}
+{"func":"cron_read","tokens":["list","-a","--all","--all"]}

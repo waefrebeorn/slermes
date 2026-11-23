@@ -1,0 +1,16 @@
+{"func":"index","argv":["serve","--port","0"]}
+{"func":"index","argv":["dashboard","--port=0"]}
+{"func":"index","argv":["x","serve","--port","0"]}
+{"func":"index","argv":["dashboard"]}
+{"func":"index","argv":[]}
+{"func":"ephemeral","argv":["serve","--port","0"]}
+{"func":"ephemeral","argv":["dashboard","--port=0"]}
+{"func":"ephemeral","argv":["x","serve","--port","0"]}
+{"func":"ephemeral","argv":["dashboard"]}
+{"func":"ephemeral","argv":[]}
+{"func":"ephemeral","argv":["serve","--port","1"]}
+{"func":"ephemeral","argv":["serve","--port=","0"]}
+{"func":"ephemeral","argv":["--port","0"]}
+{"func":"ephemeral","argv":["dashboard","--port",0]}
+{"func":"ephemeral","argv":["dashboard","--port= 0 "]}
+{"func":"ephemeral","argv":["dashboard","--port=a=0"]}
