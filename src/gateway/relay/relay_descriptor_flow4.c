@@ -451,6 +451,46 @@ static json_t *rd4_hash(const json_t *desc, const rd4_seams_t *sp) {
     return r;
 }
 
+/* ── Python-faithful json.JSONDecodeError message (see rd3_jerr_msg) ──
+ * Recompute CPython's "Expecting value: line L column C (char N)" /
+ * "Extra data: line L column C (char N)" from the decoded data text; libjson's
+ * own parse error carries no position. A prefix-scan finds the first complete
+ * value; a non-whitespace tail is "Extra data", else "Expecting value". */
+static void rd4_jerr_msg(const char *text, char *buf, size_t bufsz) {
+    if (!text) text = "";
+    size_t n = strlen(text), pos = 0;
+    while (pos < n && (text[pos] == ' ' || text[pos] == '\t' ||
+                       text[pos] == '\n' || text[pos] == '\r')) pos++;
+    size_t errpos = pos;
+    const char *kind = "Expecting value";
+    if (pos < n) {
+        size_t best = 0;
+        for (size_t j = pos + 1; j <= n; j++) {
+            char *tmp = malloc(j + 1);
+            if (!tmp) break;
+            memcpy(tmp, text, j); tmp[j] = '\0';
+            char *pe = NULL;
+            json_t *v = json_parse(tmp, &pe);
+            free(pe);
+            bool ok = (v != NULL);
+            json_free(v);
+            free(tmp);
+            if (ok) { best = j; break; }
+        }
+        if (best) {
+            size_t k = best;
+            while (k < n && (text[k] == ' ' || text[k] == '\t' ||
+                             text[k] == '\n' || text[k] == '\r')) k++;
+            if (k < n) { errpos = k; kind = "Extra data"; }
+        }
+    }
+    size_t line = 1, col = 1;
+    for (size_t i = 0; i < errpos; i++) {
+        if (text[i] == '\n') { line++; col = 1; } else col++;
+    }
+    snprintf(buf, bufsz, "%s: line %zu column %zu (char %zu)", kind, line, col, errpos);
+}
+
 /* from_json — trust-boundary normalization. json.loads -> filter known keys,
  * int() inside try/except (TypeError, ValueError) with FULL hierarchy walk,
  * supported_ops -> tuple of non-empty strings or (), then cls(**filtered). */
@@ -459,9 +499,11 @@ static json_t *rd4_from_json(const char *data, const rd4_seams_t *sp) {
     json_t *raw = json_parse(data ? data : "", &err);
     if (err) free(err);
     if (!raw) {
-        /* malformed JSON -> json.JSONDecodeError propagates (unhandled).
-         * Fixtures keep data canonical; this is fail-closed only. */
-        rd4_park_new("JSONDecodeError", "invalid json");
+        /* malformed JSON -> json.JSONDecodeError propagates with CPython's
+         * exact message (notably trailing data -> "Extra data: ..."). */
+        char mbuf[192];
+        rd4_jerr_msg(data, mbuf, sizeof mbuf);
+        rd4_park_new("JSONDecodeError", mbuf);
         return NULL;
     }
     if (raw->type != JSON_OBJECT) {

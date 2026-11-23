@@ -120,11 +120,35 @@ static json_t *sau2_err(const char *type, const char *message) {
     return e;
 }
 
-/* str(KeyError(k)) == repr(k) for the string ids the fixtures use. */
+/* str(KeyError(k)) == repr(k). Python repr picks double quotes only when the
+ * string contains a single quote but no double quote, and escapes backslashes,
+ * the chosen quote, and control characters. The old always-single-quote form
+ * disagreed for ids like "heures d'été". */
 static json_t *sau2_keyerror(const char *key) {
-    char buf[512];
-    snprintf(buf, sizeof buf, "'%s'", key ? key : "");
-    return sau2_err("KeyError", buf);
+    if (!key) key = "";
+    bool has_sq = strchr(key, '\'') != NULL;
+    bool has_dq = strchr(key, '"') != NULL;
+    char q = (has_sq && !has_dq) ? '"' : '\'';
+    size_t n = strlen(key), cap = n * 4 + 3, len = 0;
+    char *buf = malloc(cap);
+    if (!buf) return sau2_err("KeyError", "");
+    buf[len++] = q;
+    for (const unsigned char *p = (const unsigned char *)key; *p; p++) {
+        unsigned char c = *p;
+        if (c == '\\')               { buf[len++] = '\\'; buf[len++] = '\\'; }
+        else if (c == (unsigned char)q) { buf[len++] = '\\'; buf[len++] = (char)c; }
+        else if (c == '\n')          { buf[len++] = '\\'; buf[len++] = 'n'; }
+        else if (c == '\r')          { buf[len++] = '\\'; buf[len++] = 'r'; }
+        else if (c == '\t')          { buf[len++] = '\\'; buf[len++] = 't'; }
+        else if (c < 0x20 || c == 0x7f || (c >= 0x80 && c <= 0x9f))
+            len += (size_t)snprintf(buf + len, cap - len, "\\x%02x", c);
+        else                         buf[len++] = (char)c;
+    }
+    buf[len++] = q;
+    buf[len] = '\0';
+    json_t *e = sau2_err("KeyError", buf);
+    free(buf);
+    return e;
 }
 
 /*

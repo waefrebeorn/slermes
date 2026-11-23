@@ -1018,6 +1018,35 @@ static json_t *rn2_send_watcher_message(const json_t *self, const char *platform
 }
 
 /* ── 9. _each_secondary_ledger: run fn() once per SECONDARY profile ── */
+/* Python binds _profile_runtime_scope(Path(profile_home), {}); the recorded
+ * seam `home` is Path(profile_home).as_posix(). Normalize the profile home the
+ * same way before forwarding it to the scope seams: backslash separators
+ * become '/', duplicate separators collapse (except a UNC root), and trailing
+ * separators drop (drive roots keep their single '/'). */
+static char *rn2_home_posix(const char *s) {
+    if (!s) s = "";
+    size_t n = strlen(s);
+    char *t = malloc(n + 2);
+    if (!t) return strdup("");
+    size_t k = 0;
+    bool unc = (n >= 2 && s[0] == '\\' && s[1] == '\\');
+    for (size_t i = 0; i < n; i++) {
+        char c = (s[i] == '\\') ? '/' : s[i];
+        if (c == '/' && k > 0 && t[k - 1] == '/') {
+            if (unc && k == 1) { t[k++] = c; continue; }  /* leading UNC '//' */
+            continue;                                      /* collapse dup */
+        }
+        t[k++] = c;
+    }
+    t[k] = '\0';
+    while (k > 1 && t[k - 1] == '/') {
+        if (k == 3 && t[1] == ':') break;  /* drive root "X:/" */
+        if (unc && k == 2) break;          /* UNC root "//" */
+        k--;
+    }
+    t[k] = '\0';
+    return t;
+}
 /* PoP: rn2_each_secondary_ledger @ gateway/run_notifications.py:_each_secondary_ledger */
 static json_t *rn2_each_secondary_ledger(const json_t *self, const json_t *profile_homes,
                                          const char *verb, const char *fn_seam,
@@ -1029,7 +1058,9 @@ static json_t *rn2_each_secondary_ledger(const json_t *self, const json_t *profi
         const json_t *pn = rn2_is_arr(pair) ? json_get(pair, 0) : NULL;
         const json_t *ph = rn2_is_arr(pair) ? json_get(pair, 1) : NULL;
         if (rn2_eq(pn, primary)) continue;   /* profile_name == primary (None == None) */
-        char *home = rn2_pystr(ph);          /* Path(profile_home).as_posix() */
+        char *home_raw = rn2_pystr(ph);       /* Path(profile_home).as_posix() */
+        char *home = rn2_home_posix(home_raw);
+        free(home_raw);
         json_t *caught = NULL;
         json_t *count_val = NULL;
         json_t *a = rn2_args(); rn2_s(a, "home", home);

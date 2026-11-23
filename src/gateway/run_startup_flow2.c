@@ -1806,7 +1806,14 @@ static json_t *rsu2_start_aggregate_connect_results(rsu2_env *e, const json_t *r
                          "too many values to unpack (expected 5, got %zu)", json_len(item));
             return rsu2_raise("ValueError", buf);
         }
-        const char *pvalue = rsu2_sval(json_get(item, 0));
+        /* LIVE builds Platform(item[0]) in _mk_raw BEFORE any of this function's
+         * seams or outcome branches; an invalid platform raises ValueError with
+         * the repr'd value. Mirror that ctor here, fail-closed before seams. */
+        const char *pvalue = NULL;
+        {
+            json_t *pe = rsu2_platform_ctor(json_get(item, 0), &pvalue);
+            if (pe) return pe;
+        }
         const json_t *adapter = json_get(item, 1);
         const json_t *pcfg = json_get(item, 2);
         const char *outcome = rsu2_sval(json_get(item, 3));

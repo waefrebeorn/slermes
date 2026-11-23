@@ -364,9 +364,48 @@ static char *sp2_posix_join_name(const char *base, const char *name) {
     free(nb);
     return out;
 }
+/* ── Python-faithful json.JSONDecodeError message ──
+ * Recompute CPython's "Expecting value: line L column C (char N)" /
+ * "Extra data: ..." from the decoded text (libjson's own error has no
+ * position). A prefix-scan locates the first complete value; a non-whitespace
+ * tail is "Extra data", otherwise the failure is "Expecting value". */
+static void sp2_jerr_msg(const char *text, char *buf, size_t bufsz) {
+    if (!text) text = "";
+    size_t n = strlen(text), pos = 0;
+    while (pos < n && (text[pos] == ' ' || text[pos] == '\t' ||
+                       text[pos] == '\n' || text[pos] == '\r')) pos++;
+    size_t errpos = pos;
+    const char *kind = "Expecting value";
+    if (pos < n) {
+        size_t best = 0;
+        for (size_t j = pos + 1; j <= n; j++) {
+            char *tmp = malloc(j + 1);
+            if (!tmp) break;
+            memcpy(tmp, text, j); tmp[j] = '\0';
+            char *pe = NULL;
+            json_t *parsed = json_parse(tmp, &pe);
+            free(pe);
+            bool ok = (parsed != NULL);
+            json_free(parsed);
+            free(tmp);
+            if (ok) { best = j; break; }
+        }
+        if (best) {
+            size_t k = best;
+            while (k < n && (text[k] == ' ' || text[k] == '\t' ||
+                             text[k] == '\n' || text[k] == '\r')) k++;
+            if (k < n) { errpos = k; kind = "Extra data"; }
+        }
+    }
+    size_t line = 1, col = 1;
+    for (size_t i = 0; i < errpos; i++) {
+        if (text[i] == '\n') { line++; col = 1; } else col++;
+    }
+    snprintf(buf, bufsz, "%s: line %zu column %zu (char %zu)", kind, line, col, errpos);
+}
 /* json.loads for the strict-valid-JSON string domain. Returns a NEW node
  * (JSON_NULL node for "null"); NULL input / parse failure -> the live
- * TypeError / out-of-domain ValueError. */
+ * TypeError / JSONDecodeError (with CPython's exact message). */
 static json_t *sp2_jloads(const json_t *v) {
     if (!sp2_is_str(v)) {
         char m[160];
@@ -378,7 +417,11 @@ static json_t *sp2_jloads(const json_t *v) {
     char *err = NULL;
     json_t *r = json_parse(v->str_val ? v->str_val : "", &err);
     free(err);
-    if (!r) return sp2_raise("ValueError", "invalid JSON (out of domain)");
+    if (!r) {
+        char mbuf[192];
+        sp2_jerr_msg(v->str_val ? v->str_val : "", mbuf, sizeof mbuf);
+        return sp2_raise("JSONDecodeError", mbuf);
+    }
     return r;
 }
 /* SURFACES[source] (module constant); NULL == KeyError (unknown label). */
@@ -1065,15 +1108,24 @@ static json_t *sp2_register_worker_hooks(const json_t *policy, const sp2_seams_t
     json_free(nullstr);
     if (sp2_raised(kanban)) return kanban;
     if (!sp2_truth(kanban)) { json_free(kanban); kanban = json_object(); }
-    if (!sp2_is_obj(kanban)) { json_t *e = sp2_attr_err(kanban, "get"); json_free(kanban); return e; }
+    /* LIVE evaluates left-to-right on one line:
+     *   json.loads(request_json).get('accept_hooks') is True
+     *   or kanban.get('accept_hooks') is True
+     * So request_json is parsed (and its .get checked) BEFORE the kanban type
+     * check / .get; a malformed request_json raises JSONDecodeError first, and
+     * a non-dict kanban is only touched when the request side is False. */
     json_t *rj = sp2_jloads(sp2_oget(policy, "request_json"));
     if (sp2_raised(rj)) { json_free(kanban); return rj; }
     if (!sp2_is_obj(rj)) { json_t *e = sp2_attr_err(rj, "get"); json_free(rj); json_free(kanban); return e; }
     const json_t *ahr = sp2_oget(rj, "accept_hooks");
-    const json_t *ahk = sp2_oget(kanban, "accept_hooks");
-    bool accept = (ahr && ahr->type == JSON_BOOL && ahr->bool_val)
-               || (ahk && ahk->type == JSON_BOOL && ahk->bool_val);
-    json_free(rj); json_free(kanban);
+    bool accept = (ahr && ahr->type == JSON_BOOL && ahr->bool_val);
+    json_free(rj);
+    if (!accept) {
+        if (!sp2_is_obj(kanban)) { json_t *e = sp2_attr_err(kanban, "get"); json_free(kanban); return e; }
+        const json_t *ahk = sp2_oget(kanban, "accept_hooks");
+        accept = (ahk && ahk->type == JSON_BOOL && ahk->bool_val);
+    }
+    json_free(kanban);
     json_t *cfg = sp2_call(s, "policy.config", sp2_args());
     if (sp2_raised(cfg)) return cfg;
     json_t *r1a = sp2_args();

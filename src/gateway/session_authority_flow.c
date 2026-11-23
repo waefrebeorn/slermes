@@ -330,27 +330,72 @@ static bool sau_caps_has(const json_t *caps, const char *cap) {
     return false;
 }
 
+/* Sort key matching the oracle's frozenset canon:
+ *   sorted(x, key=lambda z: json.dumps(z, sort_keys=True))
+ * Python's json.dumps defaults to ensure_ascii=True, so non-ASCII becomes
+ * "\uXXXX" ("\ud83d\ude00" for 😀) and sorts BEFORE ASCII "session:..." strings
+ * because '\' (0x5C) < 's' (0x73). Raw-byte strcmp would sort it last. */
+static char *sau_sort_key(const char *s) {
+    if (!s) s = "";
+    size_t cap = strlen(s) * 13 + 4;
+    char *o = malloc(cap);
+    if (!o) return strdup("\"\"");
+    size_t k = 0;
+    o[k++] = '"';
+    const unsigned char *p = (const unsigned char *)s;
+    while (*p) {
+        unsigned int cp;
+        size_t n;
+        if (*p < 0x80)              { cp = *p;         n = 1; }
+        else if ((*p & 0xE0) == 0xC0) { cp = *p & 0x1F; n = 2; }
+        else if ((*p & 0xF0) == 0xE0) { cp = *p & 0x0F; n = 3; }
+        else if ((*p & 0xF8) == 0xF0) { cp = *p & 0x07; n = 4; }
+        else                        { cp = *p;         n = 1; }
+        for (size_t i = 1; i < n && p[i]; i++) cp = (cp << 6) | (p[i] & 0x3F);
+        p += n;
+        if (cp == '"')       { o[k++] = '\\'; o[k++] = '"'; }
+        else if (cp == '\\') { o[k++] = '\\'; o[k++] = '\\'; }
+        else if (cp == '\n') { o[k++] = '\\'; o[k++] = 'n'; }
+        else if (cp == '\r') { o[k++] = '\\'; o[k++] = 'r'; }
+        else if (cp == '\t') { o[k++] = '\\'; o[k++] = 't'; }
+        else if (cp == '\b') { o[k++] = '\\'; o[k++] = 'b'; }
+        else if (cp == '\f') { o[k++] = '\\'; o[k++] = 'f'; }
+        else if (cp < 0x20)  k += (size_t)snprintf(o + k, cap - k, "\\u%04x", cp);
+        else if (cp < 0x80)  o[k++] = (char)cp;
+        else if (cp <= 0xFFFF) k += (size_t)snprintf(o + k, cap - k, "\\u%04x", cp);
+        else {
+            unsigned int v = cp - 0x10000;
+            k += (size_t)snprintf(o + k, cap - k, "\\u%04x\\u%04x",
+                                  0xD800 + (v >> 10), 0xDC00 + (v & 0x3FF));
+        }
+    }
+    o[k++] = '"';
+    o[k] = '\0';
+    return o;
+}
+
 /* sorted copy of a string array (for actor.capabilities frozenset projection) */
 static json_t *sau_sorted_strs(const json_t *arr) {
     json_t *out = json_array();
     if (!arr || arr->type != JSON_ARRAY) return out;
     size_t n = json_len(arr);
+    char **keys = n ? malloc(n * sizeof(char *)) : NULL;
+    for (size_t i = 0; i < n; i++)
+        keys[i] = sau_sort_key(sau_str(json_get(arr, i)));
     for (size_t i = 0; i < n; i++) {
         json_t *v = json_copy(json_get(arr, i));
         size_t j = json_len(out);
-        /* insertion sort by string */
         json_append(out, v);
-        while (j > 0) {
-            const char *a = sau_str(json_get(out, j - 1));
-            const char *b = sau_str(json_get(out, j));
-            if (a && b && strcmp(a, b) > 0) {
-                json_t *t = out->c.items[j - 1];
-                out->c.items[j - 1] = out->c.items[j];
-                out->c.items[j] = t;
-                j--;
-            } else break;
+        while (j > 0 && strcmp(keys[j - 1], keys[j]) > 0) {
+            json_t *t = out->c.items[j - 1];
+            out->c.items[j - 1] = out->c.items[j];
+            out->c.items[j] = t;
+            char *tk = keys[j - 1]; keys[j - 1] = keys[j]; keys[j] = tk;
+            j--;
         }
     }
+    for (size_t i = 0; i < n; i++) free(keys[i]);
+    free(keys);
     return out;
 }
 
@@ -1444,3 +1489,34 @@ static json_t *sau_respond(sau_ctx_t *c, const json_t *args) {
     json_set_hdr(ra, "kind", kind);
     return sau_call(c, "controls.respond", ra);
 }
+
+/* ── LIVE frozenset canon for the emitted state ──
+ * LIVE normalizes each actor's capabilities into a frozenset, so the oracle's
+ * canon emits them SORTED regardless of input order. The harness copies the
+ * input state verbatim and emits it as out.state; normalize the capabilities
+ * of sessions[*].subscribers[*] at that emission point. We hook json_set(obj,
+ * "state", val) — the single call that publishes the emitted state — and
+ * reuse sau_sorted_strs for the per-actor sort. All port-internal json_set
+ * calls appear above and are unaffected. */
+static void sau_canon_caps(json_t *v) {
+    if (!v) return;
+    if (v->type == JSON_OBJECT) {
+        for (size_t i = 0; i < v->c.count; i++) {
+            if (!strcmp(v->c.keys[i], "capabilities") && v->c.items[i]
+                && v->c.items[i]->type == JSON_ARRAY) {
+                json_t *sorted = sau_sorted_strs(v->c.items[i]);
+                json_free(v->c.items[i]);
+                v->c.items[i] = sorted;
+            } else {
+                sau_canon_caps(v->c.items[i]);
+            }
+        }
+    } else if (v->type == JSON_ARRAY) {
+        for (size_t i = 0; i < v->c.count; i++) sau_canon_caps(v->c.items[i]);
+    }
+}
+static void sau_state_json_set(json_t *obj, const char *key, json_t *val) {
+    if (val && !strcmp(key, "state")) sau_canon_caps(val);
+    (json_set)(obj, key, val);   /* parenthesized: calls the real libjson fn */
+}
+#define json_set sau_state_json_set
