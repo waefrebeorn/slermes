@@ -150,3 +150,4 @@
 {"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 40}}}
 {"func": "_clear_line_blanks", "in": {"state": {"last_line_len": 100}}}
 {"func": "_clear_line_blanks", "in": {"state": {}}}
+{"func": "_cute_memory", "in": {"args": {"target": "T"}, "io": {"_memory_first_op": {"op": {"action": "remove", "old_text": "o"}, "more": " (2)"}, "_cute_trunc": "TR", "_cute_row": {"__cute_row__": true, "text": "ROW", "emoji": " ", "verb": "V", "detail": "D"}}}}

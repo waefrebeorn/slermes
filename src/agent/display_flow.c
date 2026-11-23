@@ -825,6 +825,12 @@ static json_t *dp_cute_memory(dp_io_t *io, json_t *a_args, json_t *result) {
         json_free(ca); free(as);
     }
     json_free(mfo);
+    if (ret && ret->type == JSON_OBJECT && json_obj_get(ret, "__cute_row__")) {
+        const char *emoji = json_get_str(ret, "emoji", "");
+        char *trimmed = dp_strip(emoji);
+        json_set(ret, "emoji", json_string(trimmed ? trimmed : ""));
+        free(trimmed);
+    }
     return ret;
 }
 

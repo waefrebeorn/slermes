@@ -283,7 +283,27 @@ static json_t *fa9_apply_settings(fa9_ctx_t *ctx, const json_t *args) {
     /* _allowed_group_users = set(settings.allowed_group_users) */
     json_t *a = fa9_args();
     fa9_set_s(a, "name", "_allowed_group_users");
-    fa9_set_copy(a, "value", settings ? json_obj_get(settings, "allowed_group_users") : NULL);
+    {
+        json_t *src = settings ? json_obj_get(settings, "allowed_group_users") : NULL;
+        json_t *vals = json_array();
+        if (src && src->type == JSON_ARRAY) {
+            for (size_t i = 0; i < src->c.count; i++)
+                if (src->c.items[i]) json_append(vals, json_copy(src->c.items[i]));
+            for (size_t i = 1; i < vals->c.count; i++) {
+                json_t *cur = vals->c.items[i];
+                size_t j = i;
+                while (j > 0) {
+                    const char *pv = vals->c.items[j-1]->type == JSON_STRING ? vals->c.items[j-1]->str_val : "";
+                    const char *cv = cur->type == JSON_STRING ? cur->str_val : "";
+                    if (strcmp(pv, cv) <= 0) break;
+                    vals->c.items[j] = vals->c.items[j-1];
+                    j--;
+                }
+                vals->c.items[j] = cur;
+            }
+        }
+        json_set(a, "value", vals);
+    }
     json_t *r = fa9_call(ctx, "set_field", a);
     if (fa9_is_raise(r)) return r;
     json_free(r);

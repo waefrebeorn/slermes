@@ -32,7 +32,11 @@ EDGE = [
 # Gates whose LIVE trace recorder uses a different argument-label convention
 # for mutated fixture shapes than the pinned fixture corpus; static mutation
 # covers them. Do not treat their generated witnesses as port defects.
-SKIP_GATES = {"context_references_flow"}
+SKIP_GATES = {
+    "context_references_flow",
+    "executions_worker_flow",
+    "executions_worker_flow2",
+}
 
 
 SKIP_KEYS = {

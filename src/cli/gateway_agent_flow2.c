@@ -353,9 +353,12 @@ static json_t *ga2_call(ga2_ctx_t *c, const char *name, json_t *args) {
     const json_t *entry = c->io ? json_obj_get(c->io, name) : NULL;
     json_t *res;
     if (!entry) {
-        char msg[256];
-        snprintf(msg, sizeof msg, "no script for %s", name);
+        size_t mlen = strlen(name) + 24;
+        char *msg = malloc(mlen);
+        if (!msg) return ga2_err("RuntimeError", "no script");
+        snprintf(msg, mlen, "no script for %s", name);
         res = ga2_err("RuntimeError", msg);
+        free(msg);
     } else if (entry->type == JSON_ARRAY) {
         double cur = json_get_num(c->cursors, name, 0);
         size_t idx = (size_t)cur;
