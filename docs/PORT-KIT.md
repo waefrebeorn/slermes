@@ -67,9 +67,12 @@ int main(void) {
 }
 ```
 
-## libjson API facts (pitfalls that cost real bugs)
+## Pitfalls that already cost a gate
 - `json_len(obj)` returns **0 for JSON_OBJECT** — use `json_object_size(obj)` and
   `json_object_get_at(obj,i)` / `json_object_get_key_at(obj,i)` for objects.
+- Windows CRT `setenv(name, "", 1)` UNSETS the variable; Python `os.environ[name]=""
+  ` keeps it. For env-driven Python behaviour, expose an explicit `_ex(..., env_value)`
+  seam and inject from the fixture instead of mutating the process environment.
 - Numbers are `double`; pass 64-bit ints as decimal STRINGS and use `strtoll`.
 - Builders: `json_null/string/number/bool/array/object`, `json_set`, `json_append`,
   `json_free`, `json_copy`, `json_get_str/num/bool`, `json_obj_get`, `json_dumps`.
