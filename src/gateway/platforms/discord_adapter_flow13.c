@@ -192,6 +192,47 @@ static unsigned char *da13_hex_bytes(const char *hex, size_t *out_n) {
     *out_n = n;
     return b;
 }
+/* bytes.fromhex semantics for untrusted caller input. ASCII whitespace is
+ * skipped before each byte; the two nibbles of a byte must be adjacent.
+ * On invalid input *err receives the exact CPython message and NULL returns. */
+static unsigned char *da13_hex_checked(const char *hex, size_t *out_n, const char **err) {
+    *out_n = 0; *err = NULL;
+    size_t L = hex ? strlen(hex) : 0;
+    unsigned char *b = malloc(L / 2 + 1);
+    if (!b) return NULL;
+    size_t k = 0, i = 0;
+    for (;;) {
+        while (i < L && (hex[i] == ' ' || hex[i] == '\t' || hex[i] == '\n' ||
+                         hex[i] == '\r' || hex[i] == '\x0b' || hex[i] == '\x0c')) i++;
+        if (i >= L) break;
+        unsigned char hi = (unsigned char)hex[i];
+        bool hi_ok = (hi >= '0' && hi <= '9') || (hi >= 'a' && hi <= 'f') || (hi >= 'A' && hi <= 'F');
+        if (!hi_ok) goto nonhex;
+        i++;
+        if (i >= L) goto odd;
+        unsigned char lo = (unsigned char)hex[i];
+        bool lo_ok = (lo >= '0' && lo <= '9') || (lo >= 'a' && lo <= 'f') || (lo >= 'A' && lo <= 'F');
+        if (!lo_ok) goto nonhex;
+        i++;
+        int hv = (hi <= '9') ? hi - '0' : ((hi >= 'a') ? hi - 'a' + 10 : hi - 'A' + 10);
+        int lv = (lo <= '9') ? lo - '0' : ((lo >= 'a') ? lo - 'a' + 10 : lo - 'A' + 10);
+        b[k++] = (unsigned char)((hv << 4) | lv);
+    }
+    *out_n = k;
+    return b;
+nonhex: {
+        char *msg = malloc(L + 96);
+        if (msg) snprintf(msg, L + 96,
+                          "non-hexadecimal number found in fromhex() arg at position %zu", i);
+        *err = msg;
+        free(b);
+        return NULL;
+    }
+odd:
+    *err = da13_strdup("fromhex() arg must contain an even number of hexadecimal digits");
+    free(b);
+    return NULL;
+}
 static char *da13_bytes_hex(const unsigned char *b, size_t n) {
     char *o = malloc(n * 2 + 1);
     for (size_t i = 0; i < n; i++) sprintf(o + 2 * i, "%02x", b[i]);
@@ -924,6 +965,17 @@ static json_t *da13_on_packet(da13_ctx_t *ctx, const json_t *args) {
     if (!da13_truthy(da13_state_get(ctx, "_running")) ||
         da13_truthy(da13_state_get(ctx, "_paused")))
         return json_null();
+    /* LIVE computes bytes.fromhex(data) BEFORE calling _on_packet, so an
+       invalid hex string raises ValueError before any state mutation or seam. */
+    const char *hex = da13_str(da13_arg(args, "data"));
+    size_t n = 0;
+    const char *hexerr = NULL;
+    unsigned char *data = da13_hex_checked(hex ? hex : "", &n, &hexerr);
+    if (hexerr) {
+        json_t *e = da13_err("ValueError", hexerr);
+        free((void *)hexerr);
+        return e;
+    }
     const json_t *creds = da13_state_get(ctx, "_creds");
     const json_t *secret = json_get(creds, 0);
     const json_t *dave = json_get(creds, 1);
@@ -932,9 +984,6 @@ static json_t *da13_on_packet(da13_ctx_t *ctx, const json_t *args) {
     double cnt = da13_num(da13_state_get(ctx, "_packet_debug_count")) + 1.0;
     da13_state_set(ctx, "_packet_debug_count", json_number(cnt));
 
-    const char *hex = da13_str(da13_arg(args, "data"));
-    size_t n = 0;
-    unsigned char *data = da13_hex_bytes(hex ? hex : "", &n);
     bool show = cnt <= 5.0 || cnt <= 10.0;
     if (cnt <= 5.0) {
         char *first = n >= 4 ? da13_bytes_hex(data, 4) : da13_strdup("short");

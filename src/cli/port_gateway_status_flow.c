@@ -524,7 +524,7 @@ json_t *gsf_runtime_status_heartbeat_age_s(const json_t *record, const gsf_seams
     }
     if (!is_num(nowr)) {
         json_free(norm); json_free(nowr);
-        return raise_typeerror("an integer is required (got type NoneType)");
+        return raise_typeerror("argument must be int or float, not NoneType");
     }
     double epoch; bool has_tz;
     if (!parse_iso(us, &epoch, &has_tz)) {

@@ -1618,7 +1618,13 @@ static json_t *pb2__parse_docker_volume_mounts(const pb2_seams_t *s, json_t **ex
 
 /* PoP: pb2__profile_dirs @ gateway/platforms/base.py:_profile_dirs */
 static json_t *pb2__profile_dirs(const char *hermes_root, const pb2_seams_t *s, json_t **exc) {
-    char *path = pb2_posix_join(hermes_root, "profiles");
+    /* PurePosixPath("") == Path("."), so Path("") / "profiles" is the relative
+     * "profiles". pb2_posix_norm drops '.' components and pb2_posix_join turns
+     * a normalised-empty root into "/profiles", so emit the relative join
+     * directly for an empty root. */
+    char *path = (hermes_root && *hermes_root)
+        ? pb2_posix_join(hermes_root, "profiles")
+        : pb2_xstrdup("profiles");
     json_t *a = json_object();
     pb2_arg_str(a, "path", path);
     free(path);
@@ -1658,9 +1664,13 @@ static json_t *pb2__credential_home_roots(const char *hermes_root, const pb2_sea
     if (*exc) return NULL;
     char *home = pb2_str_result(hr);
     json_free(hr);
-    char *homen = pb2_posix_norm(home ? home : "");
+    /* str(PurePosixPath("")) == "." for the active home too. */
+    char *homen = (home && *home) ? pb2_posix_norm(home) : pb2_xstrdup(".");
     free(home);
-    char *rootn = pb2_posix_norm(hermes_root ? hermes_root : "");
+    /* str(PurePosixPath("")) == "."; pb2_posix_norm("") would emit "". */
+    char *rootn = (hermes_root && *hermes_root)
+        ? pb2_posix_norm(hermes_root)
+        : pb2_xstrdup(".");
     json_t *prof = pb2__profile_dirs(hermes_root, s, exc);
     if (*exc) { free(homen); free(rootn); return NULL; }
     /* list(dict.fromkeys((home, root, *profiles))) — order-preserving dedupe */

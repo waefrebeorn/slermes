@@ -725,18 +725,46 @@ static char *md2_sha256_final(md2_sha256_ctx *c) {
     return out;
 }
 
-/* hex string -> bytes (script domain: valid even-length hex). */
-static unsigned char *md2_hex_decode(const char *hex, size_t *outlen) {
-    size_t n = hex ? strlen(hex) : 0;
-    unsigned char *o = malloc(n / 2 + 1);
-    size_t k = 0;
-    for (size_t i = 0; i + 1 < n; i += 2) {
-        unsigned int b;
-        if (sscanf(hex + i, "%2x", &b) != 1) b = 0;
-        o[k++] = (unsigned char)b;
+/* hex string -> bytes with bytes.fromhex semantics: ASCII whitespace is
+ * skipped before each byte (nibbles within a byte must be adjacent). On
+ * invalid input *err receives the exact CPython message and NULL returns. */
+static unsigned char *md2_hex_decode(const char *hex, size_t *outlen, const char **err) {
+    *outlen = 0; *err = NULL;
+    size_t L = hex ? strlen(hex) : 0;
+    unsigned char *o = malloc(L / 2 + 1);
+    if (!o) return NULL;
+    size_t k = 0, i = 0;
+    for (;;) {
+        while (i < L && (hex[i] == ' ' || hex[i] == '\t' || hex[i] == '\n' ||
+                         hex[i] == '\r' || hex[i] == '\x0b' || hex[i] == '\x0c')) i++;
+        if (i >= L) break;
+        unsigned char hi = (unsigned char)hex[i];
+        bool hi_ok = (hi >= '0' && hi <= '9') || (hi >= 'a' && hi <= 'f') || (hi >= 'A' && hi <= 'F');
+        if (!hi_ok) goto nonhex;
+        i++;
+        if (i >= L) goto odd;
+        unsigned char lo = (unsigned char)hex[i];
+        bool lo_ok = (lo >= '0' && lo <= '9') || (lo >= 'a' && lo <= 'f') || (lo >= 'A' && lo <= 'F');
+        if (!lo_ok) goto nonhex;
+        i++;
+        int hv = (hi <= '9') ? hi - '0' : ((hi >= 'a') ? hi - 'a' + 10 : hi - 'A' + 10);
+        int lv = (lo <= '9') ? lo - '0' : ((lo >= 'a') ? lo - 'a' + 10 : lo - 'A' + 10);
+        o[k++] = (unsigned char)((hv << 4) | lv);
     }
     *outlen = k;
     return o;
+nonhex: {
+        char *msg = malloc(L + 96);
+        if (msg) snprintf(msg, L + 96,
+                          "non-hexadecimal number found in fromhex() arg at position %zu", i);
+        *err = msg;
+        free(o);
+        return NULL;
+    }
+odd:
+    *err = md2_dup("fromhex() arg must contain an even number of hexadecimal digits");
+    free(o);
+    return NULL;
 }
 
 /* ── strict json.loads (grammar pre-validator + libjson parse) ─────────── */
@@ -1830,8 +1858,15 @@ static json_t *md2_app_asar_hash(md2_io_t *io, json_t *in) {
             return md2_propagate(fr);
         }
         size_t n = 0;
-        unsigned char *bytes = md2_hex_decode(md2_jstr(fr), &n);
+        const char *herr = NULL;
+        unsigned char *bytes = md2_hex_decode(md2_jstr(fr), &n, &herr);
         json_free(fr);
+        if (herr) {
+            json_t *e = md2_raise_desc("ValueError", herr);
+            free((void *)herr);
+            free(asar);
+            return e;
+        }
         if (n == 0) { free(bytes); break; }
         md2_sha256_update(&h, bytes, n);
         free(bytes);

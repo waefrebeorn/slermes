@@ -605,11 +605,42 @@ static json_t *thrs2_list_tasks(const thrs2_seams_t *s, const json_t *room_id,
     return out;
 }
 
+/* str(PurePosixPath(p)): collapse duplicate '/', drop '.' components, keep
+ * '..', strip trailing separators (except the root), empty -> ".". Caller frees. */
+static char *thrs2_posix_norm(const char *p) {
+    if (!p || !*p) return strdup(".");
+    size_t n = strlen(p);
+    size_t lead = 0;
+    while (lead < n && p[lead] == '/') lead++;
+    const char *root = (lead == 2) ? "//" : (lead > 0 ? "/" : "");
+    char *out = malloc(n + strlen(root) + 2);
+    if (!out) return strdup(".");
+    size_t k = 0;
+    for (const char *q = root; *q; ) out[k++] = *q++;
+    size_t i = lead;
+    while (i < n) {
+        while (i < n && p[i] == '/') i++;
+        size_t st = i;
+        while (i < n && p[i] != '/') i++;
+        if (i == st) break;
+        size_t len = i - st;
+        if (len == 1 && p[st] == '.') continue;
+        if (k > 0 && out[k - 1] != '/') out[k++] = '/';
+        memcpy(out + k, p + st, len);
+        k += len;
+    }
+    out[k] = '\0';
+    if (k == 0) { free(out); return strdup("."); }
+    return out;
+}
+
 /* PoP: thrs2_turn_lock @ tui_gateway/hosted_room_service.py:_turn_lock */
 static json_t *thrs2_turn_lock(const thrs2_seams_t *s, const char *root,
                                const char *profile, json_t **exc) {
+    char *rootn = thrs2_posix_norm(root);
     json_t *a = json_object();
-    json_set(a, "root", json_string(root));
+    json_set(a, "root", json_string(rootn));
+    free(rootn);
     json_set(a, "profile", json_string(profile));
     json_t *r = thrs2_call(s, "acquire_turn_lock", a);
     json_free(a);

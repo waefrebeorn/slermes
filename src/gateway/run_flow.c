@@ -498,14 +498,60 @@ char *grun_flow_resolve_session_key_or_none(const json_t *source, const char *se
 
 /* ── 8. cron tick gating ── */
 
+/* Path(home).as_posix() over the fixture domain: backslashes -> '/', collapse
+ * duplicate separators (keeping a leading UNC "//"), drop '.' components,
+ * strip trailing separators (except the root), empty -> ".". A bare UNC share
+ * root ("//server/share") keeps its trailing '/', as WindowsPath does. Caller
+ * frees. */
+static char *grun_home_as_posix(const char *p) {
+    if (!p || !*p) return strdup(".");
+    size_t n = strlen(p);
+    size_t lead = 0;
+    while (lead < n && (p[lead] == '/' || p[lead] == '\\')) lead++;
+    const char *root = (lead == 2) ? "//" : (lead > 0 ? "/" : "");
+    char *out = malloc(n + strlen(root) + 3);
+    if (!out) return strdup(".");
+    size_t k = 0;
+    for (const char *q = root; *q; ) out[k++] = *q++;
+    size_t i = lead;
+    while (i < n) {
+        while (i < n && (p[i] == '/' || p[i] == '\\')) i++;
+        size_t st = i;
+        while (i < n && p[i] != '/' && p[i] != '\\') i++;
+        if (i == st) break;
+        size_t len = i - st;
+        if (len == 1 && p[st] == '.') continue;
+        if (k > 0 && out[k - 1] != '/') out[k++] = '/';
+        memcpy(out + k, p + st, len);
+        k += len;
+    }
+    out[k] = '\0';
+    if (k == 0) { free(out); return strdup("."); }
+    /* WindowsPath("//server/share").as_posix() keeps the bare share root's slash. */
+    if (out[0] == '/' && out[1] == '/' && out[2] != '/') {
+        const char *slash = strchr(out + 2, '/');
+        if (slash && slash != out + 2 && slash[1] != '\0' && !strchr(slash + 1, '/')) {
+            out[k++] = '/'; out[k] = '\0';
+        }
+    }
+    /* WindowsPath("C:\\").as_posix() keeps the drive root's trailing '/'. */
+    if (k == 2 && out[1] == ':' && ((p[n - 1] == '/') || (p[n - 1] == '\\'))
+        && ((out[0] >= 'A' && out[0] <= 'Z') || (out[0] >= 'a' && out[0] <= 'z'))) {
+        out[k++] = '/'; out[k] = '\0';
+    }
+    return out;
+}
+
 /* PoP: grun_flow_cron_profile_gate @ gateway/run.py:_cron_profile_gate */
 bool grun_flow_cron_profile_gate(const char *name, const char *home,
                                  const grun_cron_gate_seams_t *s) {
     bool raised = false;
-    /* LIVE passes Path(home); Path("") normalizes to ".", so forward "." rather
-     * than a raw empty string (which would change the seam's trace argument). */
-    const char *liveness_home = (home && *home != '\0') ? home : ".";
-    json_t *liveness = s->resolve_liveness(s->ctx, liveness_home, &raised);
+    /* LIVE passes Path(home) to resolve_gateway_liveness; the seam records
+     * Path(home).as_posix() — backslashes folded, duplicate separators
+     * collapsed, trailing separators dropped, and "" normalized to ".". */
+    char *home_norm = grun_home_as_posix(home);
+    json_t *liveness = s->resolve_liveness(s->ctx, home_norm, &raised);
+    free(home_norm);
     if (raised) {
         /* logger.debug("Cron profile gate probe failed for %s (ticking it): %s", name, exc) */
         const char *exc = s->probe_error ? s->probe_error : "";

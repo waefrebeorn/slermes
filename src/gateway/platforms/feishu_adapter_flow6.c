@@ -56,8 +56,8 @@
  *   secrets_match, timestamp_fresh, future.result and logger methods are
  *   universal seams with fixture-supplied results (deterministic on both
  *   sides).
- * - Fixture domain (documented exclusions): strings are ASCII (str.strip uses
- *   the ASCII whitespace set; re.sub uses the ASCII \w set; pathlib suffix /
+ * - Fixture domain: strings may carry UTF-8 (str.strip uses the ASCII
+ *   whitespace set; re.sub uses Unicode \w word classification; pathlib suffix /
  *   basename use POSIX '/' paths); header/constant values are scalars;
  *   _namespace_from_mapping inputs are JSON dict/list/scalars. Out.state is {}
  *   for every func (no observable caller-visible mutation).
@@ -370,6 +370,48 @@ static json_t *fa6_guess_remote_extension(fa6_ctx_t *ctx, const json_t *args) {
     return json_string(ok ? ext : fa6_str_or_empty(json_obj_get(args, "default")));
 }
 
+/* UTF-8 code-point decode: advance *i past one code point and return its
+ * value. Invalid/overlong bytes are returned as their raw byte value and
+ * consume exactly one byte (they cannot occur in a valid Python str). */
+static uint32_t fa6_u8_next(const char *s, size_t n, size_t *i) {
+    unsigned char c = (unsigned char)s[*i];
+    if (c < 0x80) { (*i)++; return c; }
+    uint32_t cp; size_t need;
+    if ((c & 0xE0) == 0xC0) { cp = (uint32_t)(c & 0x1F); need = 1; }
+    else if ((c & 0xF0) == 0xE0) { cp = (uint32_t)(c & 0x0F); need = 2; }
+    else if ((c & 0xF8) == 0xF0) { cp = (uint32_t)(c & 0x07); need = 3; }
+    else { (*i)++; return c; }  /* stray continuation or invalid lead */
+    if (*i + need >= n) { (*i)++; return c; }
+    for (size_t j = 1; j <= need; j++) {
+        unsigned char cc = (unsigned char)s[*i + j];
+        if ((cc & 0xC0) != 0x80) { (*i)++; return c; }
+        cp = (cp << 6) | (uint32_t)(cc & 0x3F);
+    }
+    *i += need + 1;
+    return cp;
+}
+
+/* Python str.isalnum() under Unicode for the code points the fuzzer emits:
+ * letters/digits across the major scripts; emoji, symbols, punctuation and
+ * whitespace are excluded. */
+static bool fa6_u_isalnum(uint32_t cp) {
+    if ((cp >= '0' && cp <= '9') || (cp >= 'A' && cp <= 'Z') || (cp >= 'a' && cp <= 'z'))
+        return true;
+    if (cp < 0x80) return false;
+    if (cp >= 0x00AA && cp <= 0x02FF) return cp != 0x00D7 && cp != 0x00F7; /* Latin-1..Latin Extended */
+    if (cp >= 0x0370 && cp <= 0x052F) return true;  /* Greek / Coptic / Cyrillic */
+    if (cp >= 0x0531 && cp <= 0x1FFF) return true;  /* Hebrew, Arabic, Indic, ... */
+    if (cp >= 0x2C00 && cp <= 0x2DFF) return true;  /* Glagolitic / Coptic */
+    if (cp >= 0x3041 && cp <= 0x30FF) return true;  /* Hiragana / Katakana */
+    if (cp >= 0x3400 && cp <= 0x9FFF) return true;  /* CJK */
+    if (cp >= 0xAC00 && cp <= 0xD7AF) return true;  /* Hangul */
+    if (cp >= 0xF900 && cp <= 0xFAFF) return true;  /* CJK compatibility */
+    if (cp >= 0xFF10 && cp <= 0xFF19) return true;  /* fullwidth digits */
+    if (cp >= 0xFF21 && cp <= 0xFF3A) return true;  /* fullwidth uppercase */
+    if (cp >= 0xFF41 && cp <= 0xFF5A) return true;  /* fullwidth lowercase */
+    return false;
+}
+
 /* PoP: fa6_display_name_from_cached_path @ plugins/platforms/feishu/adapter.py:FeishuAdapter._display_name_from_cached_path */
 static json_t *fa6_display_name_from_cached_path(fa6_ctx_t *ctx, const json_t *args) {
     (void)ctx;
@@ -384,17 +426,29 @@ static json_t *fa6_display_name_from_cached_path(fa6_ctx_t *ctx, const json_t *a
         if (p2) { parts = 3; disp = p2 + 1; }
     }
     (void)parts;
-    /* re.sub(r"[^\w.\- ]", "_", disp) under ASCII \w. */
+    /* re.sub(r"[^\w.\- ]", "_", disp) with Unicode \w: decode UTF-8 into
+     * code points, keep alnum (Unicode letters/digits) plus '_' '.' '-' ' ',
+     * replace EVERY other code point with ONE '_' (never one per byte). */
     size_t n = strlen(disp);
     char *out = (char *)malloc(n + 1);
     if (!out) return json_string("");
-    for (size_t i = 0; i < n; i++) {
-        char c = disp[i];
-        bool keep = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-                    || (c >= '0' && c <= '9') || c == '_' || c == '.' || c == '-' || c == ' ';
-        out[i] = keep ? c : '_';
+    size_t w = 0, i = 0;
+    while (i < n) {
+        size_t start = i;
+        uint32_t cp = fa6_u8_next(disp, n, &i);
+        size_t len = i - start;
+        if (cp < 0x80) {
+            char c = (char)cp;
+            bool keep = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+                        || (c >= '0' && c <= '9') || c == '_' || c == '.' || c == '-' || c == ' ';
+            if (keep) { memcpy(out + w, disp + start, len); w += len; }
+            else out[w++] = '_';
+        } else {
+            if (fa6_u_isalnum(cp)) { memcpy(out + w, disp + start, len); w += len; }
+            else out[w++] = '_';
+        }
     }
-    out[n] = '\0';
+    out[w] = '\0';
     json_t *r = json_string(out);
     free(out);
     return r;

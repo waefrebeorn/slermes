@@ -117,8 +117,16 @@ static json_t *cmf_run_case(const char *func, json_t *in) {
         strcmp(func, "keep_legacy_disable") == 0 || strcmp(func, "record_migration") == 0 ||
         strcmp(func, "install_one") == 0;
     if (needs_feature && !f) {
-        if (strcmp(func, "record_migration") != 0 && strcmp(func, "install_one") != 0)
-            config_out = cmf_config_from(in);
+        /* The oracle seeds `config` (and emits out.config on the StopIteration
+           path) only for funcs that deep-copy it before the feature lookup.
+           core_carried/predates_split never seed it, so emitting it there is
+           a harness-only extra field. */
+        bool seeds_config =
+            strcmp(func, "marked") == 0 || strcmp(func, "mark") == 0 ||
+            strcmp(func, "record_core_use") == 0 ||
+            strcmp(func, "turn_off_replaced") == 0 ||
+            strcmp(func, "keep_legacy_disable") == 0;
+        if (seeds_config) config_out = cmf_config_from(in);
         ret = cmf_make_raise("StopIteration", "");
     } else if (strcmp(func, "marked") == 0) {
         config_out = cmf_config_from(in);

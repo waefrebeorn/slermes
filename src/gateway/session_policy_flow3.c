@@ -275,34 +275,75 @@ static json_t *sp3_log_warning(const sp3_seams_t *s, const char *fmt, json_t *ar
 static bool sp3_py_ws(unsigned char ch) {
     return ch == ' ' || (ch >= '\t' && ch <= '\r') || (ch >= 0x1c && ch <= 0x1f);
 }
+/* Python str.isspace() for the whitespace set str.split() consumes: ASCII
+ * White_Space plus the Unicode Zs/Zl/Zp code points. */
+static bool sp3_py_ws_cp(uint32_t cp) {
+    if (cp < 0x80) return sp3_py_ws((unsigned char)cp);
+    return cp == 0x85 || cp == 0xA0 || cp == 0x1680
+        || (cp >= 0x2000 && cp <= 0x200A)
+        || cp == 0x2028 || cp == 0x2029 || cp == 0x202F
+        || cp == 0x205F || cp == 0x3000;
+}
+/* Decode one UTF-8 code point from s[0..n); advance *i past it. Invalid/overlong
+ * bytes are returned as their raw byte value (consuming a single byte). */
+static uint32_t sp3_u8_next(const char *s, size_t n, size_t *i) {
+    unsigned char c = (unsigned char)s[*i];
+    if (c < 0x80) { (*i)++; return c; }
+    uint32_t cp; size_t need;
+    if ((c & 0xE0) == 0xC0) { cp = (uint32_t)(c & 0x1F); need = 1; }
+    else if ((c & 0xF0) == 0xE0) { cp = (uint32_t)(c & 0x0F); need = 2; }
+    else if ((c & 0xF8) == 0xF0) { cp = (uint32_t)(c & 0x07); need = 3; }
+    else { (*i)++; return c; }
+    if (*i + need >= n) { (*i)++; return c; }
+    for (size_t j = 1; j <= need; j++) {
+        unsigned char cc = (unsigned char)s[*i + j];
+        if ((cc & 0xC0) != 0x80) { (*i)++; return c; }
+        cp = (cp << 6) | (uint32_t)(cc & 0x3F);
+    }
+    *i += need + 1;
+    return cp;
+}
 static char *sp3_one_line(const char *value, size_t limit) {
     if (!value) return NULL;
     size_t n = strlen(value);
+    /* Phase 1: " ".join(str(value).split()) -- collapse whitespace runs to a
+     * single ASCII space, walking whole UTF-8 code points. */
     char *tmp = malloc(n + 1);
     if (!tmp) return NULL;
-    size_t k = 0;
+    size_t k = 0, i = 0;
     bool pending_space = false, started = false;
-    for (size_t i = 0; i < n; i++) {
-        unsigned char ch = (unsigned char)value[i];
-        if (sp3_py_ws(ch)) { if (started) pending_space = true; continue; }
+    while (i < n) {
+        size_t start = i;
+        uint32_t cp = sp3_u8_next(value, n, &i);
+        size_t len = i - start;
+        if (sp3_py_ws_cp(cp)) {
+            if (started) pending_space = true;
+            continue;
+        }
         if (pending_space) { tmp[k++] = ' '; pending_space = false; }
         started = true;
-        tmp[k++] = (char)ch;
+        memcpy(tmp + k, value + start, len); k += len;
     }
     tmp[k] = '\0';
-    size_t w = 0;
-    for (size_t i = 0; i < k; i++) {
-        unsigned char ch = (unsigned char)tmp[i];
-        if (ch < 0x20 || (ch >= 0x7f && ch <= 0x9f)) continue;
-        tmp[w++] = tmp[i];
-    }
-    tmp[w] = '\0';
-    if (w == 0) { free(tmp); return NULL; }
-    if (w > limit) w = limit;
-    char *out = malloc(w + 1);
+    /* Phase 2: keep only ch.isprintable() code points -- drop C0 (0x00-0x1F)
+     * and C1 (0x7F-0x9F) controls, NEVER bare UTF-8 continuation bytes
+     * (0x80-0xBF, which belong to multi-byte code points). Truncate by code
+     * point count, preserving each whole code point. */
+    char *out = malloc(k + 1);
     if (!out) { free(tmp); return NULL; }
-    memcpy(out, tmp, w); out[w] = '\0';
+    size_t w = 0, cps = 0;
+    i = 0;
+    while (i < k) {
+        size_t start = i;
+        uint32_t cp = sp3_u8_next(tmp, k, &i);
+        size_t len = i - start;
+        if (cp < 0x20 || (cp >= 0x7f && cp <= 0x9f)) continue;
+        if (cps >= limit) break;
+        memcpy(out + w, tmp + start, len); w += len; cps++;
+    }
+    out[w] = '\0';
     free(tmp);
+    if (w == 0) { free(out); return NULL; }
     return out;
 }
 static json_t *sp3_ar_raise(const char *reason, const char *field, const char *detail) {

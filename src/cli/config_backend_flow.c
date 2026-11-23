@@ -251,7 +251,9 @@ static json_t *cb_via_route(const cb_seams_t *s, const char *config_path,
     json_t *route = cb_call(s, "route", args);
     if (cb_is_raise(route)) return route;
     json_t *bargs = json_object();
-    cb_set_str(bargs, "home", json_get_str(route, "home", ""));
+    char *home = cb_path_posix(json_get_str(route, "home", ""));
+    cb_set_str(bargs, "home", home);
+    free(home);
     json_free(route);
     return cb_call(s, backend_seam, bargs);
 }
@@ -569,7 +571,9 @@ json_t *cb_config_cache_version(const cb_seams_t *s, const char *config_path) {
     json_t *route = cb_call(s, "route", args);
     if (cb_is_raise(route)) { json_free(ver); return route; }
     json_t *bargs = json_object();
-    cb_set_str(bargs, "home", json_get_str(route, "home", ""));
+    char *home = cb_path_posix(json_get_str(route, "home", ""));
+    cb_set_str(bargs, "home", home);
+    free(home);
     json_set(bargs, "version", ver);  /* ownership transfer */
     json_free(route);
     return cb_call(s, "backend_cache_version", bargs);
@@ -606,7 +610,9 @@ json_t *cb_write_config_document(const cb_seams_t *s, const char *config_path,
     json_t *route = cb_call(s, "route", args);
     if (cb_is_raise(route)) return route;
     json_t *bargs = json_object();
-    cb_set_str(bargs, "home", json_get_str(route, "home", ""));
+    char *home = cb_path_posix(json_get_str(route, "home", ""));
+    cb_set_str(bargs, "home", home);
+    free(home);
     json_set(bargs, "changes", cb_changes_canon(document, NULL, NULL, extra));
     json_free(route);
     json_t *r = cb_call(s, "backend_write_changes", bargs);
@@ -661,7 +667,9 @@ json_t *cb_write_changes_flow(const cb_seams_t *s, const char *config_path, cons
     json_t *route = cb_call(s, "route", args);
     if (cb_is_raise(route)) return route;
     json_t *bargs = json_object();
-    cb_set_str(bargs, "home", json_get_str(route, "home", ""));
+    char *home = cb_path_posix(json_get_str(route, "home", ""));
+    cb_set_str(bargs, "home", home);
+    free(home);
     json_set(bargs, "changes", cb_changes_canon(
         json_obj_get(changes, "document"), json_obj_get(changes, "set"),
         json_obj_get(changes, "unset"), json_obj_get(changes, "extra_content_on_create")));

@@ -506,6 +506,14 @@ static json_t *rdf2_is_glued_identifier(rdf2_io_t *io, json_t *in) {
     json_t *m = rdf2_get(in, "m"); const char *tok = rdf2_str(in, "token", "");
     if (tok[0] == '\0') tok = rdf2_mg(m, "1");
     long st = rdf2_m_start(m); const char *str = rdf2_m_string(m);
+    /* Python m.string[m.start()-1] raises IndexError when st-1 is past the end;
+       the `st > 0` guard short-circuits, so no seam runs. */
+    if (st > 0 && (!str || (size_t)(st - 1) >= strlen(str))) {
+        json_t *e = json_object();
+        json_set(e, "__raise__", json_string("IndexError"));
+        json_set(e, "message", json_string("string index out of range"));
+        return e;
+    }
     bool glued = st > 0 && (str[st-1] == '-' || str[st-1] == '_');
     if (!glued) return json_bool(false);
     if (rdf2_startswith(tok, "GOCSPX-") || rdf2_startswith(tok, "ya29.") || rdf2_startswith(tok, "1//0")) return json_bool(false);

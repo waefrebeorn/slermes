@@ -154,7 +154,34 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
         ret_json(out, NULL);
     }
 
-    if (plan) { json_free(state); state = plan; }
+    if (plan) {
+        json_free(state); state = plan;
+        /* The oracle projects every path field through PathDouble.as_posix()
+           (posix slashes, collapsed separators, no trailing slash), including
+           fields the port never mutated. Normalize them to match. */
+        json_t *dh = json_obj_get(state, "default_home");
+        if (dh && dh->type == JSON_STRING) {
+            char *n = gm2_path_norm(dh->str_val);
+            json_set(state, "default_home", json_string(n)); free(n);
+        }
+        json_t *profs = json_obj_get(state, "profiles");
+        if (profs && profs->type == JSON_ARRAY) {
+            for (size_t i = 0; i < json_len(profs); i++) {
+                json_t *pg = json_get(profs, i);
+                if (!pg || pg->type != JSON_OBJECT) continue;
+                json_t *hm = json_obj_get(pg, "home");
+                if (hm && hm->type == JSON_STRING) {
+                    char *n = gm2_path_norm(hm->str_val);
+                    json_set(pg, "home", json_string(n)); free(n);
+                }
+                json_t *rh = json_obj_get(pg, "runtime_home");
+                if (rh && rh->type == JSON_STRING) {
+                    char *n = gm2_path_norm(rh->str_val);
+                    json_set(pg, "runtime_home", json_string(n)); free(n);
+                }
+            }
+        }
+    }
     json_set(out, "state", state);
     json_set(out, "trace", trace.events ? trace.events : json_array());
     json_free(counters);

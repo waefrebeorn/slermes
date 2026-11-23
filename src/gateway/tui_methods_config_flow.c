@@ -476,9 +476,13 @@ static const json_t *tmc_subscript(const json_t *obj, const char *key, json_t **
     if (obj && obj->type == JSON_OBJECT) {
         const json_t *v = json_obj_get(obj, key);
         if (v) return v;
-        char msg[192];
-        snprintf(msg, sizeof msg, "'%s'", key); /* str(KeyError) == repr(key) */
-        *raise = tmc_err_spec("KeyError", msg);
+        /* str(KeyError(key)) == repr(key) -- use the real repr() helper so
+         * quotes/backslashes/controls/non-printables are escaped like Python. */
+        json_t *keyj = json_string(key ? key : "");
+        char *r = tmc_repr(keyj);
+        json_free(keyj);
+        *raise = tmc_err_spec("KeyError", r ? r : "''");
+        free(r);
         return NULL;
     }
     char msg[160];
@@ -1412,11 +1416,13 @@ static json_t *tmc_config_getter(tmc_ctx_t *ctx, const json_t *args) {
         return tmc_unhashable_error(key);
     const tmc_getter_entry_t *ge = tmc_find_getter(key);
     if (!ge) {
-        char *ks = tmc_pystr(key);
-        char msg[256];
-        snprintf(msg, sizeof msg, "'%s'", ks ? ks : "");
-        free(ks);
-        return tmc_err_spec("KeyError", msg);
+        /* str(KeyError(key)) == repr(key) -- the LIVE dict subscript raises
+         * KeyError(key); raw snprintf("'%s'") mis-escapes quotes/backslashes/
+         * controls/non-printables, so route through tmc_repr(). */
+        char *r = tmc_repr(key);
+        json_t *e = tmc_err_spec("KeyError", r ? r : "''");
+        free(r);
+        return e;
     }
     return ge->fn(ctx, params, home);
 }

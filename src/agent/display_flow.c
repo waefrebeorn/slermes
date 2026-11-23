@@ -1368,6 +1368,15 @@ static json_t *dp_bridge_row_suffixes(dp_io_t *io, long rows, json_t *result, co
         long named = rows - 1;
         if (digits) { named = strtol(digits, NULL, 10); free(digits); }
         long target = (named >= 0 && named < rows) ? named : rows - 1;
+        /* LIVE: suffixes[named if 0 <= named < rows else rows - 1] = call_suffix.
+         * With rows == 0 the target is -1; assigning suffixes[-1] on [] raises
+         * IndexError('list assignment index out of range'). The old code guarded
+         * the store with `target >= 0` and returned [] instead of raising. */
+        if (rows == 0) {
+            json_free(suffixes);
+            if (data_owned) json_free(data);
+            return dp_raise("IndexError", "list assignment index out of range");
+        }
         if (target >= 0 && target < rows) {
             json_array_set(suffixes, (size_t)target, json_string(call_suffix));
         }

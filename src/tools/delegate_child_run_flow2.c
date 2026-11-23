@@ -1154,9 +1154,14 @@ static json_t *dcr2_diag_prompt(dcr2_io_t *io, const json_t *child)
     if (!dcr2_truth(sp)) { fallback = json_string(""); sp = fallback; }  /* ... or "" */
     int is_str = dcr2_is_str(sp);
     const char *s = is_str ? (sp->str_val ? sp->str_val : "") : "";
-    size_t slen = strlen(s);  /* ASCII: utf-8 bytes == chars */
+    size_t slen = strlen(s);  /* byte length == len(sys_prompt.encode('utf-8')) */
+    /* len(sys_prompt) is a code-point count: count UTF-8 lead bytes only
+     * (continuation bytes are 10xxxxxx, i.e. (b & 0xC0) == 0x80). */
+    size_t schars = 0;
+    for (size_t i = 0; i < slen; i++)
+        if (((unsigned char)s[i] & 0xC0) != 0x80) schars++;
     char *b1 = is_str ? dcr2_xfmt("  system_prompt_bytes: %zu", slen) : dcr2_xfmt("  system_prompt_bytes: n/a");
-    char *b2 = is_str ? dcr2_xfmt("  system_prompt_chars: %zu", slen) : dcr2_xfmt("  system_prompt_chars: n/a");
+    char *b2 = is_str ? dcr2_xfmt("  system_prompt_chars: %zu", schars) : dcr2_xfmt("  system_prompt_chars: n/a");
     json_t *out = json_array();
     json_append(out, json_string(b1 ? b1 : ""));
     json_append(out, json_string(b2 ? b2 : ""));
