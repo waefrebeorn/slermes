@@ -1,12 +1,13 @@
 /*
- * graph_client.c — C home for upstream Hermes plugins/teams_pipeline/graph_client.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_teams_pipeline_graph_client_pending @ plugins/teams_pipeline/graph_client.py:<module>
+ * graph_client.c — real C port of upstream Hermes plugins/teams_pipeline/graph_client.py constant tables.
+ * PoP: cn_a0b4567d4c_constants @ plugins/teams_pipeline/graph_client.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_a0b4567d4c.h"
 
-/* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_teams_pipeline_graph_client_CONST_DEFAULT_GRAPH_BASE_URL = "https://graph.microsoft.com/v1.0";
-
-void plugins_teams_pipeline_graph_client_port_pending(void) { (void)0; }
+json_t *cn_a0b4567d4c_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "DEFAULT_GRAPH_BASE_URL", json_string("https://graph.microsoft.com/v1.0"));
+    return out;
+}

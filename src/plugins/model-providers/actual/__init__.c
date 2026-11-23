@@ -1,12 +1,13 @@
 /*
- * __init__.c — C home for upstream Hermes plugins/model-providers/actual/__init__.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_model_providers_actual___init___pending @ plugins/model-providers/actual/__init__.py:<module>
+ * __init__.c — real C port of upstream Hermes plugins/model-providers/actual/__init__.py constant tables.
+ * PoP: cn_fac8f63e4d_constants @ plugins/model-providers/actual/__init__.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_fac8f63e4d.h"
 
-/* Module-level literal constants mirrored from the Python source. */
-static const char *const plugins_model_providers_actual___init___CONST_DEFAULT_ACTUAL_BASE_URL = "https://api.actual.inc/v1";
-
-void plugins_model_providers_actual___init___port_pending(void) { (void)0; }
+json_t *cn_fac8f63e4d_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "DEFAULT_ACTUAL_BASE_URL", json_string("https://api.actual.inc/v1"));
+    return out;
+}

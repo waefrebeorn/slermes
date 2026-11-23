@@ -1,14 +1,51 @@
 /*
- * maintenance.c — C home for upstream Hermes persistence/housekeeping/maintenance.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: persistence_housekeeping_maintenance_pending @ persistence/housekeeping/maintenance.py:<module>
+ * maintenance.c — real C port of upstream Hermes persistence/housekeeping/maintenance.py constant tables.
+ * PoP: cn_a9758b01cb_constants @ persistence/housekeeping/maintenance.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_a9758b01cb.h"
 
-/* Module-level literal constants mirrored from the Python source. */
-static const char *const persistence_housekeeping_maintenance_CONST_ORPHAN_REAP_END_REASON = "startup_orphan_reap";
-static const char *const persistence_housekeeping_maintenance_CONST_GHOST_SESSION_SOURCE = "tui";
-static long long persistence_housekeeping_maintenance_CONST_IMPORT_MAX_SESSIONS = 500;
-
-void persistence_housekeeping_maintenance_port_pending(void) { (void)0; }
+json_t *cn_a9758b01cb_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "ORPHAN_REAP_END_REASON", json_string("startup_orphan_reap"));
+    json_set(out, "GHOST_SESSION_SOURCE", json_string("tui"));
+    json_set(out, "AUTO_PRUNE_STALE_OPEN_SOURCES", ({ json_t *__a = json_array();
+        json_append(__a, json_string("cli"));
+        json_append(__a, json_string("cron"));
+        json_append(__a, json_string("kanban"));
+        json_append(__a, json_string("acp"));
+        json_append(__a, json_string("api_server"));
+        json_append(__a, json_string("subagent"));
+        json_append(__a, json_string("tool"));
+        json_append(__a, json_string("recovered"));
+      __a; }));
+    json_set(out, "IMPORT_MAX_SESSIONS", json_number(500));
+    json_set(out, "IMPORT_MAX_MESSAGES_PER_SESSION", json_number(10000));
+    json_set(out, "IMPORT_MAX_TOTAL_MESSAGES", json_number(50000));
+    json_set(out, "SESSION_PROJECTION_FIELDS", ({ json_t *__a = json_array();
+        json_append(__a, json_string("id"));
+        json_append(__a, json_string("source"));
+        json_append(__a, json_string("session_key"));
+        json_append(__a, json_string("display_name"));
+        json_append(__a, json_string("model"));
+        json_append(__a, json_string("parent_session_id"));
+        json_append(__a, json_string("started_at"));
+        json_append(__a, json_string("ended_at"));
+        json_append(__a, json_string("end_reason"));
+        json_append(__a, json_string("message_count"));
+        json_append(__a, json_string("tool_call_count"));
+        json_append(__a, json_string("cwd"));
+        json_append(__a, json_string("git_branch"));
+        json_append(__a, json_string("git_repo_root"));
+        json_append(__a, json_string("title"));
+        json_append(__a, json_string("title_source"));
+        json_append(__a, json_string("profile_name"));
+        json_append(__a, json_string("archived"));
+        json_append(__a, json_string("pinned"));
+        json_append(__a, json_string("hidden"));
+        json_append(__a, json_string("last_read_at"));
+        json_append(__a, json_string("handoff_state"));
+      __a; }));
+    return out;
+}

@@ -1,9 +1,16 @@
 /*
- * moves.c — C home for upstream Hermes hermes_agent/compat/moves.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: hermes_agent_compat_moves_pending @ hermes_agent/compat/moves.py:<module>
+ * moves.c — real C port of upstream Hermes hermes_agent/compat/moves.py constant tables.
+ * PoP: cn_9a0d4bbb84_constants @ hermes_agent/compat/moves.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_9a0d4bbb84.h"
 
-void hermes_agent_compat_moves_port_pending(void) { (void)0; }
+json_t *cn_9a0d4bbb84_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "MOVES", ({ json_t *__o = json_object();
+        json_set(__o, "agent.message_content", json_string("session_rules.turns"));
+        json_set(__o, "tools.plugin_guard", json_string("hermes_cli.plugins_install_scan"));
+      __o; }));
+    return out;
+}

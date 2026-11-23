@@ -1,12 +1,13 @@
 /*
- * descriptor.c — C home for upstream Hermes gateway/relay/descriptor.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: gateway_relay_descriptor_pending @ gateway/relay/descriptor.py:<module>
+ * descriptor.c — real C port of upstream Hermes gateway/relay/descriptor.py constant tables.
+ * PoP: cn_08669ae43f_constants @ gateway/relay/descriptor.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_08669ae43f.h"
 
-/* Module-level literal constants mirrored from the Python source. */
-static long long gateway_relay_descriptor_CONST_CONTRACT_VERSION = 1;
-
-void gateway_relay_descriptor_port_pending(void) { (void)0; }
+json_t *cn_08669ae43f_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "CONTRACT_VERSION", json_number(1));
+    return out;
+}

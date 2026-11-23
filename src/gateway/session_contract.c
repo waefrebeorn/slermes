@@ -1,12 +1,13 @@
 /*
- * session_contract.c — C home for upstream Hermes gateway/session_contract.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: gateway_session_contract_pending @ gateway/session_contract.py:<module>
+ * session_contract.c — real C port of upstream Hermes gateway/session_contract.py constant tables.
+ * PoP: cn_d06d1d1eb5_constants @ gateway/session_contract.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_d06d1d1eb5.h"
 
-/* Module-level literal constants mirrored from the Python source. */
-static const char *const gateway_session_contract_CONST_CANONICAL_GATEWAY_PROTOCOL = "hermes-gateway-v1";
-
-void gateway_session_contract_port_pending(void) { (void)0; }
+json_t *cn_d06d1d1eb5_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "CANONICAL_GATEWAY_PROTOCOL", json_string("hermes-gateway-v1"));
+    return out;
+}

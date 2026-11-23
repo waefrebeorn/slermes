@@ -1,12 +1,17 @@
 /*
- * artifacts.c — C home for upstream Hermes persistence/core/artifacts.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: persistence_core_artifacts_pending @ persistence/core/artifacts.py:<module>
+ * artifacts.c — real C port of upstream Hermes persistence/core/artifacts.py constant tables.
+ * PoP: cn_43db546fa4_constants @ persistence/core/artifacts.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_43db546fa4.h"
 
-/* Module-level literal constants mirrored from the Python source. */
-static const char *const persistence_core_artifacts_CONST_REQUEST_DUMP_PATTERN = "request_dump_{session_id}_*.json";
-
-void persistence_core_artifacts_port_pending(void) { (void)0; }
+json_t *cn_43db546fa4_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "TRANSCRIPT_SUFFIXES", ({ json_t *__a = json_array();
+        json_append(__a, json_string(".json"));
+        json_append(__a, json_string(".jsonl"));
+      __a; }));
+    json_set(out, "REQUEST_DUMP_PATTERN", json_string("request_dump_{session_id}_*.json"));
+    return out;
+}

@@ -1,13 +1,14 @@
 /*
- * browser_supervisor_frames.c — C home for upstream Hermes tools/browser_supervisor_frames.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: tools_browser_supervisor_frames_pending @ tools/browser_supervisor_frames.py:<module>
+ * browser_supervisor_frames.c — real C port of upstream Hermes tools/browser_supervisor_frames.py constant tables.
+ * PoP: cn_dc50a692e7_constants @ tools/browser_supervisor_frames.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_dc50a692e7.h"
 
-/* Module-level literal constants mirrored from the Python source. */
-static long long tools_browser_supervisor_frames_CONST_FRAME_TREE_MAX_ENTRIES = 30;
-static long long tools_browser_supervisor_frames_CONST_FRAME_TREE_MAX_OOPIF_DEPTH = 2;
-
-void tools_browser_supervisor_frames_port_pending(void) { (void)0; }
+json_t *cn_dc50a692e7_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "FRAME_TREE_MAX_ENTRIES", json_number(30));
+    json_set(out, "FRAME_TREE_MAX_OOPIF_DEPTH", json_number(2));
+    return out;
+}
