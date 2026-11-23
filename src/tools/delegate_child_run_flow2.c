@@ -1718,6 +1718,16 @@ exit:
     return out;
 }
 
+/* Python len(str) is a code-point count. Decode UTF-8 lead bytes only:
+ * continuation bytes are 10xxxxxx, i.e. (b & 0xC0) == 0x80. */
+static size_t dcr2_utf8_cplen(const char *s) {
+    size_t n = 0;
+    if (!s) return 0;
+    for (const unsigned char *p = (const unsigned char *)s; *p; p++)
+        if ((*p & 0xC0) != 0x80) n++;
+    return n;
+}
+
 /* =====================================================================
  * _build_tool_trace
  * ===================================================================== */
@@ -1757,7 +1767,7 @@ static json_t *dcr2_build_tool_trace_v(dcr2_io_t *io, const json_t *messages)
                 if (!args) args = NULL;  /* default "" */
                 /* len(arguments) */
                 size_t abytes;
-                if (dcr2_is_str(args)) abytes = strlen(args->str_val ? args->str_val : "");
+                if (dcr2_is_str(args)) abytes = dcr2_utf8_cplen(args->str_val ? args->str_val : "");
                 else if (dcr2_is_arr(args) || dcr2_is_obj(args)) abytes = args->c.count;
                 else if (dcr2_is_null(args)) abytes = 0;  /* default "" */
                 else {
@@ -1804,7 +1814,7 @@ static json_t *dcr2_build_tool_trace_v(dcr2_io_t *io, const json_t *messages)
             json_t *content_s = dcr2_call(io, "_stringify_tool_content", ca);
             if (dcr2_is_raise(content_s)) { json_free(trace); json_free(by_id); return content_s; }
             size_t rbytes;
-            if (dcr2_is_str(content_s)) rbytes = strlen(content_s->str_val ? content_s->str_val : "");
+            if (dcr2_is_str(content_s)) rbytes = dcr2_utf8_cplen(content_s->str_val ? content_s->str_val : "");
             else if (dcr2_is_arr(content_s) || dcr2_is_obj(content_s)) rbytes = content_s->c.count;
             else {
                 char *m = dcr2_xfmt("object of type '%s' has no len()", dcr2_typename(content_s));

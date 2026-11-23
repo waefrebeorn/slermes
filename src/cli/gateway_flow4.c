@@ -431,12 +431,15 @@ static json_t *gf4_sorted_numbers(json_t *a) { return gf4_sorted(a, gf4_cmp_num)
 /* path join: "/" of two POSIX path strings */
 static char *gf4_pathjoin(const char *a, const char *b) {
     size_t la = a ? strlen(a) : 0, lb = b ? strlen(b) : 0;
-    char *r = malloc(la + lb + 2);
+    /* PurePath join: no extra separator when 'a' already ends with '/'
+     * (root "/" therefore joins to "/b", never "//b"). */
+    size_t sep = (la && a[la - 1] == '/') ? 0 : 1;
+    char *r = malloc(la + sep + lb + 1);
     if (!r) return strdup("");
     if (la) memcpy(r, a, la);
-    r[la] = '/';
-    if (lb) memcpy(r + la + 1, b, lb);
-    r[la + 1 + lb] = '\0';
+    if (sep) r[la] = '/';
+    if (lb) memcpy(r + la + sep, b, lb);
+    r[la + sep + lb] = '\0';
     return r;
 }
 /* parent dir of a POSIX path (no trailing slash handling needed for fixtures) */

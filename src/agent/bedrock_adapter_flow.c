@@ -258,7 +258,13 @@ static char *safe_text(const json_t *text) {
 /* hostname: netloc after last '@', before first ':', lowercased; NULL when
  * empty. path: from the first '/' after the authority up to '?' / '#'. */
 static void url_split(const char *url, char **host_out, char **path_out) {
-    const char *s = url ? url : "";
+    /* urllib.parse.urlparse strips leading C0 control / space characters
+     * (<= 0x20) before parsing. Advance a SEPARATE pointer so the caller's
+     * original allocation (freed via free(ps) in brd_flow_mantle_url_parts)
+     * is still the pointer that gets freed. */
+    const char *raw = url ? url : "";
+    const char *s = raw;
+    while (*s && (unsigned char)*s <= 0x20) s++;
     const char *netloc = NULL;
     const char *sep = strstr(s, "://");
     if (sep && sep > s) {

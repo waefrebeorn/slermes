@@ -782,8 +782,14 @@ static json_t *wp3_open_profile_terminal(const wp3_seams_t *sp, const char *name
         json_free(br); json_free(nf); json_free(eargs); json_free(cmd_r); json_free(out);
         return mapped;
     }
-    const char *command = wp3_jstr(cmd_r);
-    json_set(out, "command", json_copy(cmd_r));
+    /* LIVE _profile_setup_command(name) calls _resolve_profile_dir(name) for
+     * its trace/side effect, then derives the command from the NAME itself —
+     * "hermes setup" for "default", otherwise "<name> setup". The seam's
+     * return string is NOT the command. */
+    char *command = !strcmp(name ? name : "", "default")
+                  ? strdup("hermes setup")
+                  : wp3_xsf("%s setup", name ? name : "");
+    json_set(out, "command", json_string(command));
     bool is_win = platform && !strncmp(platform, "win", 3);
     bool is_mac = platform && !strcmp(platform, "darwin");
     json_t *pa = wp3_args();
@@ -825,7 +831,7 @@ static json_t *wp3_open_profile_terminal(const wp3_seams_t *sp, const char *name
                 json_t *mapped = wp3_map_errors(sp, w, "POST /api/profiles/%s/open-terminal failed",
                                                eargs, nf, br);
                 json_free(br); json_free(nf); json_free(eargs); json_free(w);
-                json_free(pa); json_free(cmd_r); json_free(out);
+                json_free(pa); json_free(cmd_r); free(command); json_free(out);
                 return mapped;
             }
             bool ok = false;
@@ -862,11 +868,11 @@ static json_t *wp3_open_profile_terminal(const wp3_seams_t *sp, const char *name
             }
         }
         if (!launched) {
-            json_free(pa); json_free(cmd_r); json_free(out);
+            json_free(pa); json_free(cmd_r); free(command); json_free(out);
             return wp3_http_exc(400, "No supported terminal emulator found");
         }
     }
-    json_free(pa); json_free(cmd_r);
+    json_free(pa); json_free(cmd_r); free(command);
     json_set(out, "ok", json_bool(true));
     return out;
 }

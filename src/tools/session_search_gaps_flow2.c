@@ -631,8 +631,20 @@ static json_t *ssg2_session_search_impl(ssg2_ctx_t *c, const json_t *args) {
             json_free(session_id); json_free(prof); json_free(cur);
             return parsed;
         }
-        bool success = parsed->type == JSON_OBJECT &&
-                       ssg2_truthy(json_obj_get(parsed, "success"));
+        bool success = false;
+        if (parsed->type != JSON_OBJECT) {
+            /* LIVE: json.loads(result).get("success") — a non-dict parsed
+             * value raises AttributeError before _locate_session_db runs. */
+            char *msg = ssg2_fmt("'%s' object has no attribute 'get'",
+                                 ssg2_typename(parsed));
+            json_t *e = ssg2_err("AttributeError", msg);
+            free(msg);
+            json_free(parsed);
+            free(sid); json_free(result);
+            SSG2_FREE_LOCALS();
+            return e;
+        }
+        success = ssg2_truthy(json_obj_get(parsed, "success"));
         json_free(parsed);
         if (success) {
             free(sid); SSG2_FREE_LOCALS();

@@ -222,6 +222,25 @@ static char *blf_readline(const char *content, size_t *pos) {
 
 /* ── POSIX path math (Path.parent / os.path.join on posix-spelled inputs) ── */
 
+/* Normalize a POSIX-spelled path the way PurePath + as_posix does:
+ * backslashes -> '/', collapse duplicate separators (keep a leading UNC
+ * "//"), drop trailing separators, empty -> "". Caller frees. */
+static char *blf_posix_norm(const char *p) {
+    if (!p) p = "";
+    size_t n = strlen(p);
+    char *s = (char *)malloc(n + 1);
+    if (!s) return NULL;
+    size_t k = 0;
+    for (size_t i = 0; i < n; i++) {
+        char c = (p[i] == '\\') ? '/' : p[i];
+        if (c == '/' && k > 0 && s[k - 1] == '/' && k != 1) continue;
+        s[k++] = c;
+    }
+    while (k > 1 && s[k - 1] == '/') s[--k] = '\0';
+    s[k] = '\0';
+    return s;
+}
+
 static char *blf_posix_join(const char *a, const char *b) {
     if (!a) a = "";
     if (!b) b = "";
@@ -815,7 +834,12 @@ json_t *blf_log_tail(const json_t *in, const blf_io_t *io,
                      json_t *state, json_t **exc) {
     (void)state;
     const char *udd = json_get_str(in, "user_data_dir", "");
-    char *path = blf_posix_join(udd, BLF_LAUNCH_LOG);
+    /* Path(user_data_dir, ...) normalizes via PurePath/as_posix before the
+     * read_bytes seam sees it: backslash -> '/', collapse separators, drop
+     * trailing separators. Normalize the same way before composing/joining. */
+    char *nudd = blf_posix_norm(udd);
+    char *path = blf_posix_join(nudd ? nudd : "", BLF_LAUNCH_LOG);
+    free(nudd);
     json_t *a = json_object();
     blf_arg_s(a, "path", path ? path : "");
     free(path);

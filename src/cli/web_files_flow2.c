@@ -220,6 +220,25 @@ static void wf2_lower_ascii(char *s) {
 static char *wf2_path_name(const char *p) {
     size_t n = strlen(p);
     while (n > 0 && (p[n - 1] == '/' || p[n - 1] == '\\')) n--;
+    /* A UNC anchor (leading double separator) consumes the server and share
+     * components: Path("\\\\server\\share").name is empty, so the sanitizer
+     * falls back to "pasted-image" just like a drive-only path. Only a path
+     * with a component BEYOND the share has a name. */
+    if (n >= 2 && ((p[0] == '\\' && p[1] == '\\') || (p[0] == '/' && p[1] == '/'))) {
+        size_t i = 2, comps = 0, last_start = 0, last_end = 0;
+        while (i < n) {
+            while (i < n && (p[i] == '/' || p[i] == '\\')) i++;
+            if (i >= n) break;
+            size_t s = i;
+            while (i < n && p[i] != '/' && p[i] != '\\') i++;
+            comps++; last_start = s; last_end = i;
+        }
+        if (comps <= 2) return strdup("");
+        char *out = (char *)malloc(last_end - last_start + 1);
+        memcpy(out, p + last_start, last_end - last_start);
+        out[last_end - last_start] = '\0';
+        return out;
+    }
     size_t start = 0;
     for (size_t i = 0; i < n; i++)
         if (p[i] == '/' || p[i] == '\\') start = i + 1;

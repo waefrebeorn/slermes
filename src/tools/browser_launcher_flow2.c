@@ -171,7 +171,7 @@ static char *bl2_pid_str(const json_t *v) {
 static char *bl2_posix_norm(const char *p) {
     if (!p) p = "";
     size_t n = strlen(p);
-    char *s = (char *)malloc(n + 1);
+    char *s = (char *)malloc(n + 2);  /* +1 for a possible UNC trailing '/' */
     if (!s) return NULL;
     size_t k = 0;
     for (size_t i = 0; i < n; i++) {
@@ -179,8 +179,18 @@ static char *bl2_posix_norm(const char *p) {
         if (c == '/' && k > 0 && s[k - 1] == '/' && k != 1) continue;
         s[k++] = c;
     }
-    while (k > 1 && s[k - 1] == '/') s[--k] = '\0';
-    s[k] = '\0';
+    size_t e = k;
+    while (e > 1 && s[e - 1] == '/') e--;   /* drop trailing separators */
+    int had_trailing = (e < k);
+    /* PureWindowsPath UNC anchor: '//server/share' (share root) and
+     * '//server/' keep a trailing separator; a bare '//server' and deeper
+     * paths such as '//server/share/dir' drop it. */
+    if (e >= 2 && s[0] == '/' && s[1] == '/') {
+        size_t slashes = 0;
+        for (size_t i = 2; i < e; i++) if (s[i] == '/') slashes++;
+        if (slashes == 1 || (slashes == 0 && had_trailing)) s[e++] = '/';
+    }
+    s[e] = '\0';
     return s;
 }
 /* posixpath.join on POSIX-spelled inputs. Normalize each input like pathlib
@@ -1243,7 +1253,7 @@ static json_t *bl2_get_browser(bl2_ctx *ctx, const char *key) {
 
 /* ── 28. _last_holder_out ────────────────────────────────────────────────── */
 /* PoP: bl2_last_holder_out @ tools/browser_launcher.py:_last_holder_out */
-static json_t *bl2_last_holder_out(bl2_ctx *ctx, const char *record, const json_t *browser) {
+static json_t *bl2_last_holder_out_norm(bl2_ctx *ctx, const char *record, const json_t *browser) {
     json_t *da = json_object();
     bl2_arg_str(da, "record", record ? record : "");
     json_t *d = bl2_call(ctx, "drop_lease", da);
@@ -1305,6 +1315,17 @@ static json_t *bl2_last_holder_out(bl2_ctx *ctx, const char *record, const json_
     else result = json_get_bool(browser, "owned", false) || !bl2_is_none(data);
     json_free(others); json_free(data); json_free(heir);
     return json_bool(result);
+}
+
+/* LIVE _last_holder_out takes a Path; every recorded seam arg is that Path
+ * projected with as_posix(). Normalize the incoming record string the same
+ * PurePath way BEFORE it reaches any seam (record strings may carry
+ * backslashes, duplicate separators, or a trailing separator). */
+static json_t *bl2_last_holder_out(bl2_ctx *ctx, const char *record, const json_t *browser) {
+    char *nrecord = bl2_posix_norm(record);
+    json_t *r = bl2_last_holder_out_norm(ctx, nrecord ? nrecord : "", browser);
+    free(nrecord);
+    return r;
 }
 
 /* ── 29. _stop_locked ────────────────────────────────────────────────────── */

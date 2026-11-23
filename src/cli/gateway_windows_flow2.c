@@ -492,6 +492,21 @@ static char *gw2_path_join(const char *parent, const char *name) {
     if (!strcmp(parent, "/")) return gw2_xsf("/%s", name);
     return gw2_xsf("%s/%s", parent, name);
 }
+/* PureWindowsPath.as_posix() keeps a trailing '/' on a UNC share root
+ * (//server/share). with_suffix can produce one, e.g. //server/f.txt ->
+ * //server/f.vbs, so add the slash the LIVE path stringification has. */
+static char *gw2_unc_share_posix(char *out) {
+    if (!out) return out;
+    size_t n = strlen(out);
+    if (n < 4 || out[0] != '/' || out[1] != '/' || out[2] == '/') return out;
+    const char *slash = strchr(out + 2, '/');
+    if (slash && slash != out + 2 && slash[1]
+        && !strchr(slash + 1, '/') && out[n - 1] != '/') {
+        char *bigger = realloc(out, n + 2);
+        if (bigger) { out = bigger; out[n] = '/'; out[n + 1] = '\0'; }
+    }
+    return out;
+}
 /* with_suffix: returns NULL on ValueError (empty name / invalid suffix).
  * suffix scan: last dot at index > 0, unless the name is all dots (".."). */
 static char *gw2_with_suffix(const char *p, const char *suffix) {
@@ -504,7 +519,7 @@ static char *gw2_with_suffix(const char *p, const char *suffix) {
                      ? strndup(name, (size_t)(dot - name)) : strdup(name);
     char *joined = gw2_xsf("%s%s", stem, suffix);
     char *parent = gw2_path_parent(p);
-    char *out = gw2_path_join(parent, joined);
+    char *out = gw2_unc_share_posix(gw2_path_join(parent, joined));
     free(name); free(stem); free(joined); free(parent);
     return out;
 }

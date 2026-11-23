@@ -1120,7 +1120,10 @@ static json_t *cr3_ensure_path_allowed(cr3_seams_t *sp, const char *path,
             return cr3_raise("ValueError", "path could not be verified against the credential deny-list and cannot be attached");
         return blk; /* BaseException propagates */
     }
-    bool blocked = !cr3_is_null(blk) && cr3_jtruth(blk);
+    /* LIVE: blocked = get_read_block_error(str(path)) is not None. Any
+     * non-None value blocks -- "", False and 0 included -- so do NOT apply
+     * truthiness here. */
+    bool blocked = !cr3_is_null(blk);
     json_free(blk);
     json_free(exact); json_free(dirs);
     if (blocked)

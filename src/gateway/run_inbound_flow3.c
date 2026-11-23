@@ -1993,7 +1993,11 @@ static json_t *ri3_inbound_attachment_display_name(ri3_ctx_t *c, json_t *args) {
     if (!have_name && ri3_startswith(base, RI3_RELAY_PREFIX)) {
         display = ri3_strdup(RI3_UNKNOWN_NAME);
     } else if (!have_name) {
-        display = ri3_cache_name(base);
+        /* LIVE re.sub(r'[^\w.\- ]', '_', name) runs on the derived cache
+         * name too (e.g. a newline in the basename becomes '_'). */
+        char *cached = ri3_cache_name(base);
+        display = ri3_sanitize_name(cached);
+        free(cached);
     } else {
         display = ri3_sanitize_name(name_s ? name_s : "");
     }

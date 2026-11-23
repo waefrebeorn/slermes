@@ -882,22 +882,27 @@ static json_t *ta13_flush_buffered(ta13_ctx_t *ctx, const json_t *args) {
     if (tasks && tasks->type == JSON_OBJECT && key) json_obj_del(tasks, key);
     {
         const json_t *prior = json_obj_get(committed, comp);
+        /* prior is borrowed from the committed slot; json_set frees the old
+         * value when it overwrites the slot, so deep-copy it BEFORE that and
+         * use the owned copy in the task_done/asyncio_wait args. */
+        json_t *prior_owned = ta13_is_null(prior) ? NULL : json_copy(prior);
         json_set(committed, comp, json_copy(cur));
-        if (!ta13_is_null(prior)) {
+        if (prior_owned) {
             json_t *da = json_object();
-            json_set(da, "task", ta13_copyv(prior));
+            json_set(da, "task", ta13_copyv(prior_owned));
             json_t *done = ta13_call(ctx, "task_done", da);
-            if (ta13_is_raise(done)) { result = done; goto cancel_check; }
+            if (ta13_is_raise(done)) { json_free(prior_owned); result = done; goto cancel_check; }
             bool d = ta13_truthy(done); json_free(done);
             if (!d) {
                 json_t *wa = json_object();
                 json_t *tarr = json_array();
-                json_append(tarr, ta13_copyv(prior));
+                json_append(tarr, ta13_copyv(prior_owned));
                 json_set(wa, "tasks", tarr);
                 json_t *w = ta13_call(ctx, "asyncio_wait", wa);
-                if (ta13_is_raise(w)) { result = w; goto cancel_check; }
+                if (ta13_is_raise(w)) { json_free(prior_owned); result = w; goto cancel_check; }
                 json_free(w);
             }
+            json_free(prior_owned);
         }
     }
     {

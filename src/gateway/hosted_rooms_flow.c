@@ -861,9 +861,18 @@ static json_t *hrf_reservation_grant_impl(const json_t *claims) {
 /* ── PurePosixPath lexical model (corpus: no drive/UNC/double-slash roots) ── */
 static char *hrf_path_normalize(const char *s) {
     if (!s || !s[0]) return hrf_strdup(".");
+    /* Windows Path folds '\\' into '/': normalize backslashes before the
+     * lexical composition below (device/UNC prefix '\\\\?' -> '/?'). */
+    size_t slen = strlen(s);
+    char *folded = malloc(slen + 1);
+    if (!folded) return NULL;
+    for (size_t i = 0; i < slen; i++) folded[i] = (s[i] == '\\') ? '/' : s[i];
+    folded[slen] = '\0';
+    s = folded;
+
     bool absolute = s[0] == '/';
-    char *out = malloc(strlen(s) + 2);
-    if (!out) return NULL;
+    char *out = malloc(slen + 2);
+    if (!out) { free(folded); return NULL; }
     size_t k = 0;
     if (absolute) out[k++] = '/';
     const char *p = s;
@@ -882,6 +891,7 @@ static char *hrf_path_normalize(const char *s) {
     }
     if (k == 0) out[k++] = absolute ? '/' : '.';
     out[k] = '\0';
+    free(folded);
     return out;
 }
 static char *hrf_path_parent(const char *p) {

@@ -422,6 +422,13 @@ static char *sp4_normpath(const char *p) {
 }
 static char *sp4_path_join(const char *a, const char *b) {
     if (!a || !*a) return strdup(b ? b : "");
+    /* pathlib drops a leading '.' component: Path('.')/'config.yaml' is
+     * 'config.yaml', not './config.yaml'. Treat '.', './', './//' as that base. */
+    {
+        size_t j = strlen(a);
+        while (j > 0 && a[j - 1] == '/') j--;
+        if (j == 1 && a[0] == '.') return strdup(b ? b : "");
+    }
     size_t n = strlen(a);
     char *out = malloc(n + strlen(b ? b : "") + 2);
     strcpy(out, a);

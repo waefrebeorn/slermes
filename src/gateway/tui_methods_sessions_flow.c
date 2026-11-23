@@ -2050,17 +2050,32 @@ static json_t *tms2_auto_reload(tms2_ctx_t *ctx, const json_t *args) {
     return out;
 }
 
+/* LIVE projects the PathDouble p to a POSIX string: str(p) and as_posix()
+ * both turn backslashes into '/'. The oracle patches Path.__str__ the same
+ * way, so normalize the raw seam path before the stat/read_text seams and
+ * before emitting the returned "path" field. */
+static char *tms2_posix_path(const char *p) {
+    if (!p) return strdup("");
+    size_t n = strlen(p);
+    char *out = (char *)malloc(n + 1);
+    if (!out) return strdup("");
+    for (size_t i = 0; i < n; i++) out[i] = (p[i] == '\\') ? '/' : p[i];
+    out[n] = '\0';
+    return out;
+}
+
 /* Index-shaped entry for a pre-index snapshot file (None when unreadable). */
 /* PoP: tms2_legacy_spawn_tree_entry @ tui_gateway/methods_session.py:_legacy_spawn_tree_entry */
 static json_t *tms2_legacy_spawn_tree_entry(tms2_ctx_t *ctx, const json_t *args) {
-    const char *path = json_get_str(args, "path", "");
+    char *path = tms2_posix_path(json_get_str(args, "path", ""));
     const char *dirname = json_get_str(args, "session_dir_name", "");
     /* try: stat = p.stat() except OSError: return None */
     json_t *sa = tms2_args0();
     tms2_asets(sa, "path", path);
     json_t *stat = tms2_call(ctx, "stat", sa);
     if (tms2_is_raise(stat)) {
-        if (tms2_is_oserror(tms2_raise_kind(stat))) { json_free(stat); return json_null(); }
+        if (tms2_is_oserror(tms2_raise_kind(stat))) { json_free(stat); free(path); return json_null(); }
+        free(path);
         return stat;
     }
     /* raw = {}; with suppress(Exception): raw = json.loads(p.read_text(...)) */
@@ -2072,6 +2087,7 @@ static json_t *tms2_legacy_spawn_tree_entry(tms2_ctx_t *ctx, const json_t *args)
     if (tms2_is_raise(txt)) {
         if (tms2_is_base_exc(tms2_raise_kind(txt))) {
             json_free(raw); json_free(stat);
+            free(path);
             return txt;
         }
         json_free(txt);
@@ -2096,7 +2112,7 @@ static json_t *tms2_legacy_spawn_tree_entry(tms2_ctx_t *ctx, const json_t *args)
     } else {
         json_t *raise = NULL;
         const json_t *mt = tms2_attr(stat, "st_mtime", false, NULL, &raise);
-        if (raise) { json_free(out); json_free(raw); json_free(stat); return raise; }
+        if (raise) { json_free(out); json_free(raw); json_free(stat); free(path); return raise; }
         json_set(out, "finished_at", json_copy(mt));
     }
     const json_t *st = json_obj_get(raw, "started_at");
@@ -2107,5 +2123,6 @@ static json_t *tms2_legacy_spawn_tree_entry(tms2_ctx_t *ctx, const json_t *args)
     json_set(out, "count", json_number(count));
     json_free(raw);
     json_free(stat);
+    free(path);
     return out;
 }

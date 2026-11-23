@@ -552,14 +552,42 @@ static json_t *pe_read(mdf_io_t *io, const char *path, int n,
     if (mdf_raised(r)) return r;
     const char *hx = jstr(r);
     size_t hlen = hx ? strlen(hx) : 0;
-    size_t blen = hlen / 2;
-    unsigned char *buf = malloc(blen ? blen : 1);
-    for (size_t i = 0; i < blen; i++) {
-        int hi = hexval((unsigned char)hx[2 * i]);
-        int lo = hexval((unsigned char)hx[2 * i + 1]);
-        buf[i] = (unsigned char)(((hi < 0 ? 0 : hi) << 4) | (lo < 0 ? 0 : lo));
+    /* bytes.fromhex(): ASCII space may precede each byte's high nibble but
+     * never sits between its two nibbles. A bad char raises ValueError at
+     * its own index; a dangling high nibble raises the odd-length error.
+     * Validate the whole string before producing any buffer. */
+    unsigned char *buf = malloc(hlen / 2 + 1);
+    size_t blen = 0, i = 0;
+    json_t *err = NULL;
+    char msg[160];
+    while (i < hlen) {
+        while (i < hlen && (hx[i] == ' ' || (hx[i] >= 0x09 && hx[i] <= 0x0d))) i++;
+        if (i >= hlen) break;
+        int hi = hexval((unsigned char)hx[i]);
+        if (hi < 0) {
+            snprintf(msg, sizeof msg,
+                     "non-hexadecimal number found in fromhex() arg at position %zu", i);
+            err = raise_desc("ValueError", msg);
+            break;
+        }
+        i++;
+        if (i >= hlen) {
+            err = raise_desc("ValueError",
+                             "fromhex() arg must contain an even number of hexadecimal digits");
+            break;
+        }
+        int lo = hexval((unsigned char)hx[i]);
+        if (lo < 0) {
+            snprintf(msg, sizeof msg,
+                     "non-hexadecimal number found in fromhex() arg at position %zu", i);
+            err = raise_desc("ValueError", msg);
+            break;
+        }
+        i++;
+        buf[blen++] = (unsigned char)((hi << 4) | lo);
     }
     json_free(r);
+    if (err) { free(buf); return err; }
     *out = buf;
     *outlen = blen;
     return NULL;

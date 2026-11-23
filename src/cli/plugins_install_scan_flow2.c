@@ -590,10 +590,16 @@ static bool pis2_alternation_member(const char *line, size_t start, size_t end) 
     return false;
 }
 static json_t *pis2_is_alternation_member(pis2_ctx *ctx, json_t *in) {
-    (void)ctx;
     const char *line = pis2_jstr(pis2_get(in, "line"));
-    size_t s = (size_t)pis2_num(pis2_get(in, "start"));
+    double sd = pis2_num(pis2_get(in, "start"));
+    size_t s = (size_t)sd;
     size_t e = (size_t)pis2_num(pis2_get(in, "end"));
+    /* LIVE: before = line[start-1] if start > 0 else "" — a positive index
+     * past the end raises IndexError: string index out of range. */
+    if (sd > 0 && s - 1 >= strlen(line)) {
+        pis2_raise(ctx, "IndexError", "string index out of range");
+        return NULL;
+    }
     return json_bool(pis2_alternation_member(line, s, e));
 }
 

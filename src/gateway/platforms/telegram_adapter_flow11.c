@@ -439,14 +439,17 @@ static json_t *ta11_cache_observed_media(ta11_ctx_t *ctx, const json_t *args) {
     const char *status = (dl && dl->type == JSON_ARRAY && json_len(dl) > 0) ? ta11_str(json_get(dl, 0)) : NULL;
     const json_t *cached = (dl && dl->type == JSON_ARRAY && json_len(dl) > 1) ? json_get(dl, 1) : NULL;
     char *note = NULL;
-    bool do_log = false, do_attach = false;
+    bool do_log = false, do_attach = false, matched = false;
     if (status && strcmp(status, "oversized") == 0) {
+        matched = true;
         double mb = ta11_num(ta11_state_get(ctx, "_max_doc_bytes")) / (1024.0 * 1024.0);
         note = ta11_fmt("[Observed Telegram attachment too large or unverifiable. Maximum: %.0f MB.]", mb);
         do_log = true;
     } else if (status && strcmp(status, "unreadable") == 0) {
+        matched = true;
         note = ta11_strdup("[Observed Telegram attachment could not be read, not cached.]");
     } else if (status && strcmp(status, "ok") == 0) {
+        matched = true;
         json_set(event, "media_urls", json_array());
         json_set(event, "media_types", json_array());
         json_set(event, "media_text_inlined", json_array());
@@ -455,6 +458,9 @@ static json_t *ta11_cache_observed_media(ta11_ctx_t *ctx, const json_t *args) {
     /* free dl (cached borrowed -> copy first) */
     json_t *cached_copy = ta11_copyv(cached);
     json_free(dl);
+    /* LIVE: only oversized/unreadable/ok have a body; any other status falls
+     * off the end without ever calling append_observed_note. */
+    if (!matched) { json_free(cached_copy); return json_null(); }
     if (do_attach) {
         json_t *b = json_object();
         json_set(b, "cached", json_copy(cached_copy));

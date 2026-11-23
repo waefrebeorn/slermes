@@ -792,20 +792,25 @@ static json_t *da7_attachment_message_type(da7_ctx_t *ctx, const json_t *args) {
     json_t *att = json_obj_get(args, "att");
     json_t *ct = da7_need(att, "content_type");
     if (da7_is_raise(ct)) return ct;
-    const char *s = (ct->type == JSON_STRING) ? ct->str_val : "";
+    /* Own the string before freeing ct (borrowing ct->str_val past the free
+     * is a use-after-free); release the copy on every return path. */
+    char *s = (ct->type == JSON_STRING) ? da7_strdup(ct->str_val) : da7_strdup("");
     json_free(ct);
-    if (da7_startswith(s, "image/")) return da7_snode("PHOTO");
-    if (da7_startswith(s, "video/")) return da7_snode("VIDEO");
-    if (da7_startswith(s, "audio/")) {
+    json_t *ret;
+    if (da7_startswith(s, "image/")) ret = da7_snode("PHOTO");
+    else if (da7_startswith(s, "video/")) ret = da7_snode("VIDEO");
+    else if (da7_startswith(s, "audio/")) {
         json_t *a = json_object();
         json_set(a, "att", att ? json_copy(att) : json_null());
         json_t *r = da7_call(ctx, "_is_discord_voice_message_attachment", a);
-        if (da7_is_raise(r)) return r;
+        if (da7_is_raise(r)) { free(s); return r; }
         const char *name = da7_truthy(r) ? "VOICE" : "AUDIO";
         json_free(r);
-        return da7_snode(name);
+        ret = da7_snode(name);
     }
-    return da7_snode("DOCUMENT");
+    else ret = da7_snode("DOCUMENT");
+    free(s);
+    return ret;
 }
 
 /* ============================ PORTED DEF 16 ============================ */
