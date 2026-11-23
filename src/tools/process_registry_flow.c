@@ -24,6 +24,41 @@ static char *xstrdup_flow(const char *s) {
     return d;
 }
 
+/* Python repr() of a string, used for KeyError(sid) messages. */
+static char *prf_py_repr(const char *s) {
+    if (!s) return xstrdup_flow("None");
+    char quote = '\'';
+    if (strchr(s, '\'') && !strchr(s, '"')) quote = '"';
+    size_t cap = strlen(s) * 4 + 3;
+    char *out = malloc(cap);
+    if (!out) return xstrdup_flow("''");
+    size_t k = 0;
+    out[k++] = quote;
+    for (const unsigned char *p = (const unsigned char *)s; *p; p++) {
+        unsigned char c = *p;
+        if (c == '\\' || c == (unsigned char)quote) { out[k++] = '\\'; out[k++] = (char)c; }
+        else if (c == '\n') { out[k++] = '\\'; out[k++] = 'n'; }
+        else if (c == '\r') { out[k++] = '\\'; out[k++] = 'r'; }
+        else if (c == '\t') { out[k++] = '\\'; out[k++] = 't'; }
+        else if (c < 0x20 || c == 0x7f) {
+            static const char HEX[] = "0123456789abcdef";
+            out[k++] = '\\'; out[k++] = 'x'; out[k++] = HEX[c >> 4]; out[k++] = HEX[c & 0xf];
+        } else out[k++] = (char)c;
+    }
+    out[k++] = quote;
+    out[k] = '\0';
+    return out;
+}
+
+static json_t *prf_key_error(const char *sid) {
+    char *msg = prf_py_repr(sid);
+    json_t *e = json_object();
+    json_set(e, "__raise__", json_string("KeyError"));
+    json_set(e, "msg", json_string(msg ? msg : ""));
+    free(msg);
+    return e;
+}
+
 /* ── trace recorder ── */
 void prf_trace_add(prf_trace_t *t, json_t *ev) {
     if (!t) { json_free(ev); return; }
@@ -600,6 +635,9 @@ json_t *prf_unread_completions_owned_by(json_t *st, const char *owner_task_id) {
 void prf_track_started_flow(json_t *st, const char *sid, const char *reader_name,
                             const prf_seams_t *s, json_t **exc) {
     json_t *session = prf_sess(st, sid);
+    /* LIVE's driver does reg.sessions[sid] before _track_started: a missing sid
+     * raises KeyError(repr(sid)) BEFORE any seam or running-list mutation. */
+    if (!session) { *exc = prf_key_error(sid); return; }
     /* reader = threading.Thread(target=copy_context().run, ..., name=reader_name) */
     json_free(prf_call(s, "copy_context", NULL));
     json_t *a = json_object();

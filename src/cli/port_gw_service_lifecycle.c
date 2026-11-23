@@ -250,6 +250,19 @@ const char *gwsl_installed_service_kind(const gwsl_seams_t *s) {
 /* PoP: gwsl_service_call @ hermes_cli/gateway.py:_service_call */
 void gwsl_service_call(const char *backend, const char *verb, int system_tristate,
                        const gwsl_seams_t *s, gwsl_exc_t *exc) {
+    /* LIVE resolves the callable through globals()[f"systemd_{verb}"] (and the
+     * equivalent getattr/launchd lookup). An unknown verb is a KeyError
+     * ("systemd_<verb>") raised before any seam is touched. */
+    static const char *VALID_VERBS[] = {"start", "stop", "restart", "uninstall"};
+    bool valid = false;
+    if (verb) {
+        for (size_t i = 0; i < sizeof(VALID_VERBS) / sizeof(VALID_VERBS[0]); i++)
+            if (strcmp(verb, VALID_VERBS[i]) == 0) { valid = true; break; }
+    }
+    if (!valid) {
+        if (exc) exc->kind = GWSL_EXC_KEY_ERROR;
+        return;
+    }
     if (strcmp(backend, "windows") == 0) {
         json_t *r = s->gw_windows_call(s->ctx, verb, NULL, exc);
         json_free(r);

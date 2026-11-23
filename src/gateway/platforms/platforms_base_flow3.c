@@ -543,11 +543,24 @@ static char *pb3_py_str(const json_t *v) {
 /* PoP: pb3__cache_dir_accessors @ gateway/platforms/base.py:_cache_dir_accessors */
 static json_t *pb3__cache_dir_accessors(const char *kind) {
     json_t *r = json_object();
-    char buf[128];
-    snprintf(buf, sizeof(buf), "get_%s_cache_dir", kind ? kind : "");
-    json_set(r, "get_dir_name", json_string(buf));
-    snprintf(buf, sizeof(buf), "cleanup_%s_cache", kind ? kind : "");
-    json_set(r, "cleanup_name", json_string(buf));
+    const char *k = kind ? kind : "";
+    size_t kl = strlen(k);
+    /* Heap-size from the actual input: a fixed 128-byte stack buffer silently
+     * truncated long kind names (LIVE f-strings keep them whole). */
+    size_t cap_get = strlen("get_") + kl + strlen("_cache_dir") + 1;
+    char *get_name = malloc(cap_get);
+    if (get_name) {
+        snprintf(get_name, cap_get, "get_%s_cache_dir", k);
+        json_set(r, "get_dir_name", json_string(get_name));
+        free(get_name);
+    }
+    size_t cap_clean = strlen("cleanup_") + kl + strlen("_cache") + 1;
+    char *clean_name = malloc(cap_clean);
+    if (clean_name) {
+        snprintf(clean_name, cap_clean, "cleanup_%s_cache", k);
+        json_set(r, "cleanup_name", json_string(clean_name));
+        free(clean_name);
+    }
     return r;
 }
 

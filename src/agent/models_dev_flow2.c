@@ -413,16 +413,22 @@ static json_t *md2_profile_models_dev_ids(md2_ctx *ctx, json_t *in) {
     (void)in;
     json_t *provs = md2_call(ctx, "list_providers", json_object());
     if (md2_exc_pending(ctx)) { json_free(provs); return NULL; }
+    /* LIVE iterates list_providers() in a dict comprehension OUTSIDE any try:
+     * a None / non-iterable seam result raises TypeError ("'NoneType' object
+     * is not iterable") rather than yielding an empty dict. */
+    if (!md2_is_arr(provs)) {
+        md2_raise(ctx, "TypeError", "'NoneType' object is not iterable");
+        json_free(provs);
+        return NULL;
+    }
     json_t *out = json_object();
     json_t *pmap = md2_env_obj(ctx, "provider_map");
-    if (md2_is_arr(provs)) {
-        for (size_t i = 0; i < provs->c.count; i++) {
-            json_t *p = provs->c.items[i];
-            const char *name = json_get_str(p, "name", "");
-            json_t *mdev = md2_get(p, "models_dev_id");
-            if (md2_truthy(mdev) && !(pmap && json_obj_get(pmap, name)))
-                json_set(out, name, json_copy(mdev));
-        }
+    for (size_t i = 0; i < provs->c.count; i++) {
+        json_t *p = provs->c.items[i];
+        const char *name = json_get_str(p, "name", "");
+        json_t *mdev = md2_get(p, "models_dev_id");
+        if (md2_truthy(mdev) && !(pmap && json_obj_get(pmap, name)))
+            json_set(out, name, json_copy(mdev));
     }
     json_free(provs);
     return out;

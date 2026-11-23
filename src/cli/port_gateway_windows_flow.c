@@ -35,6 +35,32 @@ static const char *jstr(const json_t *v) {
     return (v && v->type == JSON_STRING && v->str_val) ? v->str_val : NULL;
 }
 
+/* Mirror the oracle's PathDouble/WindowsPath normalization of a seam-returned
+ * path (Path(s).as_posix()): backslashes become '/', an empty string is '.',
+ * and a bare UNC share root ("//server/share") gains a trailing '/'. Paths
+ * must be normalized BOTH when forwarded to the path_exists seam and when
+ * appended to the returned entries list. */
+static char *gww_path_posix(const char *s) {
+    if (!s) return strdup("");
+    if (!*s) return strdup(".");
+    size_t n = strlen(s);
+    char *out = malloc(n + 2);
+    if (!out) return strdup("");
+    for (size_t i = 0; i < n; i++) out[i] = (s[i] == '\\') ? '/' : s[i];
+    out[n] = '\0';
+    if (out[0] == '/' && out[1] == '/' && out[2] != '/') {
+        const char *slash = strchr(out + 2, '/');
+        if (slash && slash != out + 2 && slash[1] != '\0') {
+            const char *slash2 = strchr(slash + 1, '/');
+            if (!slash2) {
+                size_t len = strlen(out);
+                if (out[len - 1] != '/') { out[len] = '/'; out[len + 1] = '\0'; }
+            }
+        }
+    }
+    return out;
+}
+
 /* malloc'd printf (caller frees). */
 static char *xsf(const char *fmt, ...) {
     va_list ap;
@@ -337,7 +363,7 @@ json_t *gww_redundant_autostart_entries(const gww_seams_t *s) {
         json_t *pr = gww_call(s, names[i], a);
         json_free(a);
         const char *path = jstr(pr);
-        paths[i] = strdup(path ? path : "");
+        paths[i] = gww_path_posix(path);
         json_free(pr);
     }
     json_t *entries = json_array();

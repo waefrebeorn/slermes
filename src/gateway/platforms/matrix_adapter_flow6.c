@@ -440,8 +440,20 @@ static json_t *ma6_extract_reply_context(ma6_ctx_t *ctx, const json_t *args) {
 static json_t *ma6_check_e2ee_deps(ma6_ctx_t *ctx, const json_t *args) {
     (void)ctx;
     const json_t *blocked = json_obj_get(args, "blocked");
+    /* LIVE returns False only when one of the four in-function imports fails:
+     * mautrix.crypto (OlmMachine / PgCryptoStore), asyncpg or aiosqlite.
+     * Blocking an unrelated module leaves the imports intact -> True. */
+    static const char *E2EE_MODS[] = {"mautrix.crypto", "asyncpg", "aiosqlite"};
     bool ok = true;
-    if (blocked && blocked->type == JSON_ARRAY && json_len(blocked) > 0) ok = false;
+    if (blocked && blocked->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(blocked) && ok; i++) {
+            const char *mod = ma6_str(json_get(blocked, i));
+            if (!mod) continue;
+            for (size_t j = 0; j < sizeof(E2EE_MODS) / sizeof(E2EE_MODS[0]); j++) {
+                if (strcmp(mod, E2EE_MODS[j]) == 0) { ok = false; break; }
+            }
+        }
+    }
     return json_bool(ok);
 }
 

@@ -1035,8 +1035,10 @@ static char *ma8_md_inline(const char *s) {
     size_t i = 0;
     while (i < n) {
         const char *pat = NULL; const char *op = NULL, *cl = NULL;
+        bool star_strong = false;
         if (i + 1 < n && ((s[i] == '*' && s[i+1] == '*') || (s[i] == '_' && s[i+1] == '_'))) {
             pat = s[i] == '*' ? "**" : "__"; op = "<strong>"; cl = "</strong>";
+            star_strong = (s[i] == '*');
         } else if (i + 1 < n && s[i] == '~' && s[i+1] == '~') {
             pat = "~~"; op = "<del>"; cl = "</del>";
         } else if (s[i] == '*' || s[i] == '_') {
@@ -1058,6 +1060,27 @@ static char *ma8_md_inline(const char *s) {
                 }
                 mb_add(&out, cl);
                 i = (size_t)(end - s) + plen;
+                matched = true;
+            }
+        }
+        if (!matched && star_strong) {
+            /* A "**" opener with no closing "**" is NOT swallowed as literal
+             * stars: LIVE's later re.sub(r"\*(.+?)\*") sees the leading '*' and
+             * turns "***x" into "<em>*</em>x". Fall back to the single-star em
+             * transform at the same position, closing on the first later '*'
+             * with at least one character in between. */
+            const char *eend = strstr(s + i + 2, "*");
+            if (eend) {
+                mb_add(&out, "<em>");
+                size_t il = (size_t)(eend - (s + i + 1));
+                char *inner = (char *)malloc(il + 1);
+                if (inner) {
+                    memcpy(inner, s + i + 1, il); inner[il] = '\0';
+                    char *rec = ma8_md_inline(inner);
+                    mb_add(&out, rec); free(rec); free(inner);
+                }
+                mb_add(&out, "</em>");
+                i = (size_t)(eend - s) + 1;
                 matched = true;
             }
         }

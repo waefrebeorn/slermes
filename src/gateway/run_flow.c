@@ -502,7 +502,10 @@ char *grun_flow_resolve_session_key_or_none(const json_t *source, const char *se
 bool grun_flow_cron_profile_gate(const char *name, const char *home,
                                  const grun_cron_gate_seams_t *s) {
     bool raised = false;
-    json_t *liveness = s->resolve_liveness(s->ctx, home ? home : "", &raised);
+    /* LIVE passes Path(home); Path("") normalizes to ".", so forward "." rather
+     * than a raw empty string (which would change the seam's trace argument). */
+    const char *liveness_home = (home && *home != '\0') ? home : ".";
+    json_t *liveness = s->resolve_liveness(s->ctx, liveness_home, &raised);
     if (raised) {
         /* logger.debug("Cron profile gate probe failed for %s (ticking it): %s", name, exc) */
         const char *exc = s->probe_error ? s->probe_error : "";

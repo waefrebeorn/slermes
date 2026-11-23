@@ -1497,9 +1497,11 @@ json_t *py_toolsets_snapshot(void) {
         json_t *tnv = json_array_get(names, i);
         const char *tn = py_jstr(tnv);
         json_t *entry = json_obj_get(g_py_reg.tool_registry, tn);
-        json_t *tsv = entry ? json_obj_get(entry, "toolset") : NULL;
-        const char *ts = tsv ? py_jstr(tsv) : NULL;
-        if (!ts || !*ts) continue;
+        if (!entry) continue;  /* live: `if entry:` */
+        json_t *tsv = json_obj_get(entry, "toolset");
+        /* LIVE uses setdefault(entry.toolset, ...) with an empty-string
+         * default: a missing/empty toolset is a real "" group, not a skip. */
+        const char *ts = tsv ? py_jstr(tsv) : "";
         if (!json_obj_get(ts_tools, ts)) json_set(ts_tools, ts, json_array());
         json_t *lst = json_obj_get(ts_tools, ts);
         json_t *nm = entry ? json_obj_get(entry, "name") : NULL;
@@ -1512,9 +1514,10 @@ json_t *py_toolsets_snapshot(void) {
         json_t *tools = json_object_get_at(g_py_reg.plugins_tools, p);
         for (size_t t = 0; tools && t < json_array_size(tools); t++) {
             json_t *entry = json_obj_get(g_py_reg.tool_registry, py_jstr(json_array_get(tools, t)));
-            json_t *tsv = entry ? json_obj_get(entry, "toolset") : NULL;
-            const char *ts = tsv ? py_jstr(tsv) : NULL;
-            if (!ts || !json_obj_get(ts_tools, ts) || json_obj_get(ts_plugin, ts)) continue;
+            if (!entry) continue;  /* live: `if entry:` */
+            json_t *tsv = json_obj_get(entry, "toolset");
+            const char *ts = tsv ? py_jstr(tsv) : "";
+            if (!json_obj_get(ts_tools, ts) || json_obj_get(ts_plugin, ts)) continue;
             json_set(ts_plugin, ts, json_string(pid));
         }
     }
