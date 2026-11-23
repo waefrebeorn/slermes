@@ -1,0 +1,9 @@
+{"func":"result","case":"ok result with ids","result":{"ok":true,"imported":2,"skipped":1,"detached":0,"imported_ids":["a","b"],"skipped_ids":["c"],"errors":["e1"]}}
+{"func":"result","case":"ok all empty","result":{"ok":true,"imported":0,"skipped":0,"detached":0,"imported_ids":[],"skipped_ids":[],"errors":[]}}
+{"func":"result","case":"failed result drops ids","result":{"ok":false,"imported":0,"skipped":0,"detached":0,"imported_ids":["x"],"skipped_ids":["y"],"errors":["bad"]}}
+{"func":"result","case":"failed with multiple errors","result":{"ok":false,"imported":1,"skipped":2,"detached":3,"imported_ids":[],"skipped_ids":[],"errors":["e1","e2"]}}
+{"func":"result","case":"detached count preserved","result":{"ok":true,"imported":1,"skipped":1,"detached":2,"imported_ids":["z"],"skipped_ids":[],"errors":[]}}
+{"func":"entry","case":"simple session and rows","segment":{"session":{"id":"s1","foo":"v"},"messages":[{"role":"u","text":"x"},{"role":"a","text":"y"}]}}
+{"func":"entry","case":"session messages key overridden","segment":{"session":{"id":"s2","messages":"stale"},"messages":[{"m":1}]}}
+{"func":"entry","case":"empty messages","segment":{"session":{"id":"s3"},"messages":[]}}
+{"func":"entry","case":"nested session values","segment":{"session":{"id":"s4","meta":{"k":[1,2]}},"messages":[{"wire":true,"n":null}]}}

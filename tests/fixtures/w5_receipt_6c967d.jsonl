@@ -1,0 +1,12 @@
+{"func":"receipt","kind":"sync","update_id":null,"ops":[]}
+{"func":"receipt","kind":"sync","update_id":"u-1","ops":[{"op":"step","name":"dependency-sync","ok":false,"detail":"boom"}]}
+{"func":"receipt","kind":"sync","update_id":"u-2","ops":[{"op":"rebuild","ok":true,"reason":""},{"op":"features","extras":["a","b"]},{"op":"platform","id":"linux-x64"}]}
+{"func":"receipt","kind":"sync","update_id":null,"ops":[{"op":"warning","message":"low disk"},{"op":"refusal","code":"lazy-install","detail":"disabled"}]}
+{"func":"receipt","kind":"plugin-check","update_id":"u3","ops":[{"op":"step","name":"a","ok":true,"detail":""},{"op":"step","name":"b","ok":false,"detail":"x"},{"op":"step","name":"c","ok":true,"detail":"done"}]}
+{"func":"receipt","kind":"sync","update_id":null,"ops":[{"op":"features","extras":null}]}
+{"func":"receipt","kind":"update","update_id":"u-4","ops":[{"op":"step","name":"fetch","ok":true,"detail":""}]}
+{"func":"receipt","kind":"sync","update_id":null,"ops":[{"op":"warning","message":"w1"},{"op":"warning","message":"w2"}]}
+{"func":"receipt","kind":"sync","update_id":"u-5","ops":[{"op":"refusal","code":"install-busy"}]}
+{"func":"finalized","kind":"sync","update_id":null,"outcome":"ok","exit_code":0,"ops":[{"op":"rebuild","ok":true,"reason":"already in sync"}]}
+{"func":"finalized","kind":"sync","update_id":"u-9","outcome":"failed","exit_code":1,"ops":[{"op":"step","name":"dependency-sync","ok":false,"detail":"err"},{"op":"refusal","code":"lazy-install","detail":"d"}]}
+{"func":"finalized","kind":"update","update_id":null,"outcome":"ok","exit_code":0,"ops":[]}

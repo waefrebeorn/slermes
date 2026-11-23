@@ -1,0 +1,14 @@
+{"func":"toolchain","realize":true,"target":"linux-x64","sealed":false,"uv_loc":true,"uv_bin":true,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":false}
+{"func":"toolchain","realize":false,"target":"linux-x64","sealed":false,"uv_loc":false,"uv_bin":false,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":false}
+{"func":"toolchain","realize":true,"target":"linux-x64","sealed":false,"uv_loc":false,"uv_bin":false,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":false}
+{"func":"toolchain","realize":true,"target":"linux-x64","sealed":false,"uv_loc":true,"uv_bin":false,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":false}
+{"func":"toolchain","realize":false,"target":"linux-x64","sealed":false,"uv_loc":true,"uv_bin":false,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":false}
+{"func":"toolchain","realize":true,"target":"win32-x64","sealed":true,"uv_loc":true,"uv_bin":true,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":false}
+{"func":"toolchain","realize":true,"target":"win32-arm64","sealed":true,"uv_loc":true,"uv_bin":true,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":true}
+{"func":"toolchain","realize":true,"target":"win32-x64","sealed":false,"uv_loc":true,"uv_bin":true,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":false}
+{"func":"toolchain","realize":false,"target":"linux-x64","sealed":false,"uv_loc":true,"uv_bin":true,"uv_path":"uvtool","py_loc":false,"py_bin":false,"py_path":"pytool","writable":false}
+{"func":"toolchain","realize":true,"target":"linux-x64","sealed":false,"uv_loc":true,"uv_bin":true,"uv_path":"uvtool","py_loc":false,"py_bin":false,"py_path":"pytool","writable":false}
+{"func":"toolchain","realize":true,"target":"linux-x64","sealed":false,"uv_loc":true,"uv_bin":true,"uv_path":"uvtool","py_loc":true,"py_bin":false,"py_path":"pytool","writable":false}
+{"func":"needs_copy","target":"win32-x64","sealed":true,"uv_loc":true,"uv_bin":true,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":true}
+{"func":"needs_copy","target":"win32-arm64","sealed":false,"uv_loc":true,"uv_bin":true,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":true}
+{"func":"needs_copy","target":"linux-x64","sealed":true,"uv_loc":true,"uv_bin":true,"uv_path":"uvtool","py_loc":true,"py_bin":true,"py_path":"pytool","writable":true}

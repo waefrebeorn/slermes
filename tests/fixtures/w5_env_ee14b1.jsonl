@@ -1,0 +1,42 @@
+{"func":"truthy","value":"1"}
+{"func":"truthy","value":" TRUE "}
+{"func":"truthy","value":"YeS"}
+{"func":"truthy","value":"on","default":false}
+{"func":"truthy","value":" off "}
+{"func":"truthy","value":""}
+{"func":"truthy","value":null,"default":true}
+{"func":"truthy","value":null,"default":false}
+{"func":"truthy","value":0}
+{"func":"truthy","value":2}
+{"func":"truthy","value":true}
+{"func":"truthy","value":false,"default":true}
+{"func":"proxy","proxy_url":" socks://127.0.0.1:7890 "}
+{"func":"proxy","proxy_url":"SOCKS://Host:1"}
+{"func":"proxy","proxy_url":"http://proxy:8080"}
+{"func":"proxy","proxy_url":""}
+{"func":"proxy","proxy_url":null}
+{"func":"ipv6","entry":"[::1]"}
+{"func":"ipv6","entry":"[::1]:8080"}
+{"func":"ipv6","entry":"[2001:db8::1]/64"}
+{"func":"ipv6","entry":"::1/128"}
+{"func":"ipv6","entry":"[::ffff:192.0.2.1]"}
+{"func":"ipv6","entry":"1.2.3.4/24"}
+{"func":"ipv6","entry":"[bad]"}
+{"func":"ipv6","entry":"localhost"}
+{"func":"ipv6","entry":""}
+{"func":"sanitize","no_proxy_value":""}
+{"func":"sanitize","no_proxy_value":"localhost, 127.0.0.1"}
+{"func":"sanitize","no_proxy_value":"[::1],localhost"}
+{"func":"sanitize","no_proxy_value":"[::1]:8080,[::1]/64"}
+{"func":"sanitize","no_proxy_value":"*,[::1]"}
+{"func":"sanitize","no_proxy_value":"example.com"}
+{"func":"sanitize","no_proxy_value":"1.2.3.4/24,foo"}
+{"func":"sanitize","no_proxy_value":" [2001:db8::1]/64 , bar "}
+{"func":"int","raw":" 42 ","default":7}
+{"func":"int","raw":"","default":9}
+{"func":"int","raw":null,"default":11}
+{"func":"int","raw":"-5","default":0}
+{"func":"int","raw":"oops","default":3}
+{"func":"float","raw":" 2.5 ","default":1.0}
+{"func":"float","raw":"","default":4.5}
+{"func":"float","raw":"-1.25","default":0.0}

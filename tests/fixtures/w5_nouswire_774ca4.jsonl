@@ -1,0 +1,18 @@
+{"func":"classify","case":"provider string openrouter","provider":"Anthropic","rid":null}
+{"func":"classify","case":"gen id openrouter","provider":"","rid":"gen-123456789-abcdefgh"}
+{"func":"classify","case":"gen id long openrouter","provider":null,"rid":"gen-1234567890-AbC_1234"}
+{"func":"classify","case":"too few digits unknown","provider":null,"rid":"gen-12345678-abcdefgh"}
+{"func":"classify","case":"too short tail unknown","provider":null,"rid":"gen-123456789-abc"}
+{"func":"classify","case":"msg id gmi","provider":null,"rid":"msg_abc123"}
+{"func":"classify","case":"bare msg prefix gmi","provider":null,"rid":"msg_"}
+{"func":"classify","case":"nothing unknown","provider":null,"rid":null}
+{"func":"classify","case":"non string provider falls through","provider":5,"rid":"msg_x"}
+{"func":"for_upstream","case":"gmi still chat","upstream":"gmi"}
+{"func":"for_upstream","case":"null chat","upstream":null}
+{"func":"maybe","case":"wrong call count","facts":{"api_call_count":2,"decided":false,"provider":"nous","model":"anthropic/x","nous_wire_mode":"auto","response_id":"msg_x"}}
+{"func":"maybe","case":"already decided","facts":{"api_call_count":1,"decided":true,"provider":"nous","model":"anthropic/x","nous_wire_mode":"auto","response_id":"msg_x"}}
+{"func":"maybe","case":"wrong provider","facts":{"api_call_count":1,"decided":false,"provider":"openai","model":"anthropic/x","nous_wire_mode":"auto","response_id":"msg_x"}}
+{"func":"maybe","case":"wrong model","facts":{"api_call_count":1,"decided":false,"provider":"nous","model":"gpt-4o","nous_wire_mode":"auto","response_id":"msg_x"}}
+{"func":"maybe","case":"mode not auto","facts":{"api_call_count":1,"decided":false,"provider":"nous","model":"anthropic/claude","nous_wire_mode":"native","response_id":"msg_x"}}
+{"func":"maybe","case":"already chat stays","facts":{"api_call_count":1,"decided":false,"provider":"nous","model":"anthropic/claude","api_mode":"chat_completions","nous_wire_mode":"auto","response_provider":null,"response_id":"msg_x"}}
+{"func":"maybe","case":"gmi schedules switch","facts":{"api_call_count":1,"decided":false,"provider":"nous","model":"anthropic/claude","api_mode":"anthropic_messages","nous_wire_mode":"auto","response_provider":null,"response_id":"msg_x"}}

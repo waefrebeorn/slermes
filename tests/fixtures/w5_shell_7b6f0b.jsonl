@@ -1,0 +1,10 @@
+{"func":"candidates","env":{},"on_path":null}
+{"func":"candidates","env":{"HERMES_GIT_BASH_PATH":"D:\\custom\\bash.exe"},"on_path":"C:\\Windows\\System32\\bash.exe"}
+{"func":"candidates","env":{"ProgramFiles(x86)":"D:\\PF86"},"on_path":null}
+{"func":"candidates","env":{"LOCALAPPDATA":"C:\\Users\\T\\AppData\\Local"},"on_path":"C:\\Program Files\\Git\\bin\\bash.exe"}
+{"func":"candidates","env":{},"on_path":"C:/Windows/SYSTEM32/bash.exe"}
+{"func":"candidates","env":{},"on_path":"C:\\Windows\\SYSTEM32\\..\\Git\\bin\\bash.exe"}
+{"func":"candidates","env":{"LOCALAPPDATA":"C:\\Users\\T\\AppData\\Local"},"on_path":"C:\\Users\\T\\AppData\\Local\\Programs\\Git\\usr\\bin\\bash.exe"}
+{"func":"candidates","env":{"ProgramFiles":"C:\\Tools\\"},"on_path":"C:\\Windows\\WindowsApps\\bash.exe"}
+{"func":"candidates","env":{},"on_path":"C:\\Windows\\system32\\bash.exe"}
+{"func":"candidates","env":{"HERMES_GIT_BASH_PATH":"C:\\Program Files\\Git\\usr\\bin\\bash.exe"},"on_path":"C:\\other\\bash.exe"}

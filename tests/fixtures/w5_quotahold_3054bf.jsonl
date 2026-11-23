@@ -1,0 +1,21 @@
+{"func":"hold_seconds","case":"structured retry after","chain":[{"rate_limited":true,"retry_after":900,"text":"quota"}]}
+{"func":"hold_seconds","case":"text hint through cause","chain":[{"rate_limited":false,"text":"wrapper"},{"rate_limited":true,"retry_after":null,"text":"quota retry after 123518s. still valid"}]}
+{"func":"hold_seconds","case":"zero hint rejected","chain":[{"rate_limited":true,"retry_after":0,"text":""}]}
+{"func":"hold_seconds","case":"no hint in text","chain":[{"rate_limited":true,"retry_after":null,"text":"quota exhausted"}]}
+{"func":"hold_seconds","case":"plain text never parks","chain":[{"rate_limited":false,"text":"retry after 60s"}]}
+{"func":"hold_seconds","case":"case insensitive hint","chain":[{"rate_limited":true,"retry_after":null,"text":"RETRY AFTER 30S!"}]}
+{"func":"hold_seconds","case":"negative hint rejected","chain":[{"rate_limited":true,"retry_after":-5,"text":""}]}
+{"func":"hold_seconds","case":"empty chain","chain":[]}
+{"func":"hold_active","case":"until in future","now":"2026-10-28T09:00:00+00:00","job":{"quota_hold_until":"2026-10-28T10:00:00+00:00"}}
+{"func":"hold_active","case":"until in past","now":"2026-10-28T11:00:00+00:00","job":{"quota_hold_until":"2026-10-28T10:00:00+00:00"}}
+{"func":"hold_active","case":"equal instant not active","now":"2026-10-28T10:00:00+00:00","job":{"quota_hold_until":"2026-10-28T10:00:00+00:00"}}
+{"func":"hold_active","case":"no marker","now":"2026-10-28T09:00:00+00:00","job":{}}
+{"func":"hold_active","case":"empty marker","now":"2026-10-28T09:00:00+00:00","job":{"quota_hold_until":""}}
+{"func":"hold_active","case":"unparseable marker","now":"2026-10-28T09:00:00+00:00","job":{"quota_hold_until":"not-a-date"}}
+{"func":"clear","case":"both keys removed","job":{"quota_hold_until":"t","quota_hold_cron_expr":"e","name":"j","next_run_at":"x"}}
+{"func":"clear","case":"no keys","job":{"name":"j"}}
+{"func":"is_recovery","case":"exact recovery fire","next_run":"t","job":{"schedule":{"kind":"cron","expr":"0 12 * * *"},"quota_hold_until":"t","quota_hold_cron_expr":"0 12 * * *"}}
+{"func":"is_recovery","case":"expr mismatch","next_run":"t","job":{"schedule":{"kind":"cron","expr":"0 9 * * *"},"quota_hold_until":"t","quota_hold_cron_expr":"0 12 * * *"}}
+{"func":"is_recovery","case":"not cron","next_run":"t","job":{"schedule":{"kind":"interval","expr":null},"quota_hold_until":"t","quota_hold_cron_expr":null}}
+{"func":"is_recovery","case":"next run mismatch","next_run":"other","job":{"schedule":{"kind":"cron","expr":"e"},"quota_hold_until":"t","quota_hold_cron_expr":"e"}}
+{"func":"is_recovery","case":"both expr absent","next_run":"t","job":{"schedule":{"kind":"cron"},"quota_hold_until":"t"}}

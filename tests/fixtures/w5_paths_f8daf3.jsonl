@@ -1,0 +1,10 @@
+{"func":"install_root","repo":"repo"}
+{"func":"install_root","repo":"repo","env":"override"}
+{"func":"install_root","repo":"repo","env":""}
+{"func":"install_stamp_path","project":"repo","repo":"repo","inst":"inst","resolves":true}
+{"func":"install_stamp_path","project":"other","repo":"repo","inst":"inst","resolves":false}
+{"func":"install_stamp_path","project":"repo","repo":"repo","inst":"","resolves":true}
+{"func":"partials_root","root":"hermes"}
+{"func":"partials_root","root":"root-with-dash"}
+{"func":"facts_path","store":"store"}
+{"func":"facts_path","store":"nested/store"}

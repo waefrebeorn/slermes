@@ -1,0 +1,11 @@
+{"func":"validate","rc":0,"stderr":""}
+{"func":"validate","rc":0,"stderr":"x"}
+{"func":"validate","rc":1,"stderr":""}
+{"func":"validate","rc":2,"stderr":"  err  "}
+{"func":"validate","rc":3,"stderr":"\t\n"}
+{"func":"validate","rc":5,"stderr":"multi word err"}
+{"func":"command","resident":false,"python":"C:/py","script":"/x/launch.py","args":[]}
+{"func":"command","resident":false,"python":"C:/py","script":"/x/launch.py","args":["a","b"]}
+{"func":"command","resident":true,"python":"C:/py","site":"C:/site","script":"/x/launch.py","args":[]}
+{"func":"command","resident":true,"python":"C:/py","site":"C:/site","script":"/x/launch.py","args":["--flag","v"]}
+{"func":"launcher","python":"C:/py","site":"C:/site"}

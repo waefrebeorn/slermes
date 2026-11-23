@@ -1,0 +1,30 @@
+{"func":"disabled","env_value":"0"}
+{"func":"disabled","env_value":" OFF "}
+{"func":"disabled","env_value":" False "}
+{"func":"disabled","env_value":"no"}
+{"func":"disabled","env_value":""}
+{"func":"disabled","env_value":"1"}
+{"func":"disabled","env_value":"maybe"}
+{"func":"resolve_timeout","raw":""}
+{"func":"resolve_timeout","raw":"garbage"}
+{"func":"resolve_timeout","raw":"0"}
+{"func":"resolve_timeout","raw":"-5"}
+{"func":"resolve_timeout","raw":"10"}
+{"func":"resolve_timeout","raw":"600"}
+{"func":"resolve_timeout","raw":" 45.5 "}
+{"func":"dump_path","home":"/home/u/.hermes"}
+{"func":"dump_path","home":""}
+{"func":"kick_extra","extra_s":"12.5"}
+{"func":"kick_extra","extra_s":"-3"}
+{"func":"kick_extra","extra_s":"abc"}
+{"func":"kick_extra","extra_s":""}
+{"func":"lease_clamp","expected_s":"10"}
+{"func":"lease_clamp","expected_s":"5000"}
+{"func":"lease_clamp","expected_s":"0"}
+{"func":"lease_clamp","expected_s":"bad"}
+{"func":"arm_timeout","timeout_s":"500","disabled":true,"env_raw":"10"}
+{"func":"arm_timeout","timeout_s":"500","disabled":false,"env_raw":"10"}
+{"func":"arm_timeout","timeout_s":null,"disabled":false,"env_raw":"10"}
+{"func":"arm_timeout","timeout_s":"0","disabled":false,"env_raw":"600"}
+{"func":"arm_timeout","timeout_s":"bad","disabled":false,"env_raw":"600"}
+{"func":"arm_timeout","timeout_s":null,"disabled":false,"env_raw":"bad"}

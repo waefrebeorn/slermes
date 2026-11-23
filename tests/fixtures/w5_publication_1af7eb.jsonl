@@ -1,0 +1,10 @@
+{"func": "metadata_records"}
+{"func": "metadata_records", "data": "{}"}
+{"func": "metadata_records", "data": "{\"a\": 1}"}
+{"func": "metadata_records", "data": "[]"}
+{"func": "metadata_records", "data": "\"text\""}
+{"func": "metadata_records", "data": "not json"}
+{"func": "metadata_records", "data": "null"}
+{"func": "metadata_records", "data": "{\"x\":{\"y\":2}}"}
+{"func": "metadata_records", "data": ""}
+{"func": "metadata_records", "data": "{\"a\":1,\"b\":[1,2]}"}

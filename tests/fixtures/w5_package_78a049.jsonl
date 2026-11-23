@@ -1,0 +1,19 @@
+{"func":"compose","diffs":[],"base":{"PATH":"/usr/bin","FOO":"bar"}}
+{"func":"compose","diffs":[{"PATH":["/store/node","/store/npm"]}],"base":{}}
+{"func":"compose","diffs":[{"PATH":"/a","K":"v"}],"base":{"PATH":"/orig"}}
+{"func":"compose","diffs":[{"PATH":["/a","/b","/a"]}],"base":{}}
+{"func":"compose","diffs":[{"K1":"v1"},{"K1":"v2","PATH":["/d"]}],"base":{"K0":"z"}}
+{"func":"compose","diffs":[{"PATH":["/new"]}],"base":{"path":"/orig"}}
+{"func":"compose","diffs":[{"PATH":["\\\\?\\C:\\tools"]}],"base":{}}
+{"func":"compose","diffs":[{"PATH":[]}],"base":{"PATH":"/x"}}
+{"func":"error","package":"uv","cause":"not in the lockfile"}
+{"func":"error","package":"x","cause":"bad","remedy":"add it"}
+{"func":"entry","name":"node","version":"26.7.0","target":"win32-x64"}
+{"func":"entry","name":"uv","version":"0.12.3","target":"linux-x64"}
+{"func":"url","url":"https://x/{version}/{target}.zip","version":"1.2.3","target":"linux-x64"}
+{"func":"url","url":"https://x/a-{version}-b/target={target}","version":"v2","target":"win32-arm64"}
+{"func":"optional","optional":true,"on_demand":[],"target":"x"}
+{"func":"optional","optional":false,"on_demand":["darwin-arm64"],"target":"darwin-arm64"}
+{"func":"optional","optional":false,"on_demand":[],"target":"x"}
+{"func":"reason","gaps":[{"target":"linux-x64","reason":"upstream ships no artifact"}],"target":"linux-x64"}
+{"func":"reason","gaps":[{"target":"linux-x64","reason":"x"}],"target":"win32-x64"}

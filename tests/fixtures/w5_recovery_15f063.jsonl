@@ -1,0 +1,16 @@
+{"func": "w5_recovery_15f063_startup_script"}
+{"func": "w5_recovery_15f063_startup_script"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "requests"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "python-dotenv"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "PyJWT"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "ruamel.yaml"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "some_package"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "foo[extra]>=1.0"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "bar<2.0"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "baz~=3.1"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "qux; python_version<'3.12'"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "Flask @ https://example.com/x"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "a_b_c"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": ""}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "UPPER_CASE"}
+{"func": "w5_recovery_15f063_normalize_dependency", "dep": "click>=8.0 ; sys_platform=='win32'"}

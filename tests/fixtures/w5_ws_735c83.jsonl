@@ -1,0 +1,28 @@
+{"func":"peer","client":null,"case":"no client attribute"}
+{"func":"peer","client":{},"case":"empty client"}
+{"func":"peer","client":{"host":"1.2.3.4","port":9},"case":"host and integer port"}
+{"func":"peer","client":{"host":"","port":9},"case":"empty host falls back"}
+{"func":"peer","client":{"port":"99"},"case":"port without host"}
+{"func":"peer","client":{"host":"h"},"case":"host without port"}
+{"func":"peer","client":{"host":0,"port":1},"case":"zero host falls back"}
+{"func":"peer","client":{"host":"h","port":0},"case":"zero port still formatted"}
+{"func":"peer","client":{"host":"h","port":""},"case":"empty port still formatted"}
+{"func":"unknown","resp":{"jsonrpc":"2.0","error":{"code":-32601,"message":"Method not found"},"id":1},"case":"method not found"}
+{"func":"unknown","resp":{"error":{"code":-32600}},"case":"different error code"}
+{"func":"unknown","resp":{"result":{}},"case":"no error key"}
+{"func":"unknown","resp":{"error":"oops"},"case":"error is not a mapping"}
+{"func":"unknown","resp":"garbage","case":"response is not a mapping"}
+{"func":"unknown","resp":{"error":{"code":-32601.0}},"case":"float equal code"}
+{"func":"concurrent","method":"session.context_breakdown","case":"context breakdown read"}
+{"func":"concurrent","method":"session.transcript","case":"transcript read"}
+{"func":"concurrent","method":"session.account_usage","case":"account usage read"}
+{"func":"concurrent","method":"session.get","case":"non concurrent method"}
+{"func":"concurrent","method":"","case":"empty method"}
+{"func":"streaming","event":"message.delta","case":"message token"}
+{"func":"streaming","event":"reasoning.delta","case":"reasoning token"}
+{"func":"streaming","event":"thinking.delta","case":"thinking token"}
+{"func":"streaming","event":"tool.result","case":"non streaming event"}
+{"func":"answers","req":{"method":"clarify.lock","params":{}},"is_response":false,"case":"clarify lock answer"}
+{"func":"answers","req":{"method":"gateway.ping"},"is_response":true,"case":"response frame"}
+{"func":"answers","req":{"method":"gateway.ping"},"is_response":false,"case":"ordinary request"}
+{"func":"answers","req":"not-a-dict","is_response":true,"case":"non mapping cannot answer"}

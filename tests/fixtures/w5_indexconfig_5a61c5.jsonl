@@ -1,0 +1,30 @@
+{"func":"is_forwarded","case":1,"key":"UV_INDEX_URL"}
+{"func":"is_forwarded","case":2,"key":"UV_INDEX_FOO_USERNAME"}
+{"func":"is_forwarded","case":3,"key":"UV_HTTP_TIMEOUT"}
+{"func":"is_forwarded","case":4,"key":"PIP_INDEX_URL"}
+{"func":"is_forwarded","case":5,"key":"uv_index_url"}
+{"func":"is_index_redirect","case":6,"key":"UV_NATIVE_TLS"}
+{"func":"is_index_redirect","case":7,"key":"UV_INDEX_URL"}
+{"func":"is_index_redirect","case":8,"key":"UV_INDEX_SECRET"}
+{"func":"is_index_redirect","case":9,"key":"UV_HTTP_TIMEOUT"}
+{"func":"ini_unsafe","case":10,"raw":"  foo  "}
+{"func":"ini_unsafe","case":11,"raw":"\"https://u:p%x40x.com/simple\""}
+{"func":"ini_unsafe","case":12,"raw":"'foo'"}
+{"func":"ini_unsafe","case":13,"raw":"a ; comment"}
+{"func":"ini_unsafe","case":14,"raw":"a\\;b"}
+{"func":"ini_unsafe","case":15,"raw":"foo\\"}
+{"func":"npmrc_env_replace","case":16,"text":"hi ${NAME}!","env":{"NAME":"bob"}}
+{"func":"npmrc_env_replace","case":17,"text":"${MISSING}","env":{}}
+{"func":"npmrc_env_replace","case":18,"text":"${MISSING?}","env":{}}
+{"func":"npmrc_env_replace","case":19,"text":"a\\${NAME}","env":{"NAME":"x"}}
+{"func":"npmrc_env_replace","case":20,"text":"a\\\\${NAME}","env":{"NAME":"x"}}
+{"func":"npm_registry","case":21,"env_registry":"https://mirror.example.com/simple/","npmrc_registry":""}
+{"func":"npm_registry","case":22,"env_registry":"","npmrc_registry":"https://npm.corp/repo//"}
+{"func":"npm_registry","case":23,"env_registry":"","npmrc_registry":""}
+{"func":"npm_registry","case":24,"env_registry":"ftp://x","npmrc_registry":""}
+{"func":"npm_registry_url","case":25,"url":"https://registry.npmjs.org/pkg/-/pkg.tgz","env_registry":"https://mirror/","npmrc_registry":""}
+{"func":"npm_registry_url","case":26,"url":"https://other.com/pkg","env_registry":"https://mirror/","npmrc_registry":""}
+{"func":"bridged_index_settings","case":27,"ambient":{"UV_INDEX_URL":"https://custom/","PIP_INDEX_URL":"https://pip/","PIP_TRUSTED_HOST":"h","UV_HTTP_TIMEOUT":"30"},"pip_conf":""}
+{"func":"bridged_index_settings","case":28,"ambient":{"PIP_INDEX_URL":" https://pip-mirror/simple ","UV_NATIVE_TLS":"1"},"pip_conf":""}
+{"func":"bridged_index_settings","case":29,"ambient":{"UV_NO_INDEX":"1"},"pip_conf":"https://conf/"}
+{"func":"bridged_index_settings","case":30,"ambient":{},"pip_conf":"https://conf/"}

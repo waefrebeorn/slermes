@@ -1,0 +1,9 @@
+{"func": "doc"}
+{"func": "doc", "pad": "x"}
+{"func": "names"}
+{"func": "names", "pad": null}
+{"func": "has_symbol", "name": "_jiter_preload"}
+{"func": "has_symbol", "name": "preload_jiter_native"}
+{"func": "has_symbol", "name": "__doc__"}
+{"func": "has_symbol", "name": "native"}
+{"func": "has_symbol", "name": ""}

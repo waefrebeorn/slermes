@@ -1,0 +1,21 @@
+{"func":"hostname","hostname":"API.Example.COM.","base_url":"https://ignored.example/v1","case":"explicit hostname wins verbatim"}
+{"func":"hostname","base_url":"https://API.Example.com:8443/v1","case":"lowercase host with port"}
+{"func":"hostname","base_url":"HTTPS://User:Pw@API.Example.com:8443/v1","case":"userinfo stripped"}
+{"func":"hostname","base_url":"https://[::1]:8080/v1","case":"bracketed IPv6"}
+{"func":"hostname","base_url":"//h/x","case":"scheme-relative URL"}
+{"func":"hostname","base_url":"host.example/v1","case":"bare host"}
+{"func":"hostname","base_url":"not a url","case":"no netloc"}
+{"func":"hostname","base_url":"https://h/v1?x=1#frag","case":"query and fragment ignored"}
+{"func":"hostname","case":"neither field set"}
+{"func":"max_tokens","default_max_tokens":"4096","case":"explicit max tokens"}
+{"func":"max_tokens","default_max_tokens":"0","case":"zero"}
+{"func":"max_tokens","default_max_tokens":"-1","case":"negative"}
+{"func":"max_tokens","default_max_tokens":null,"case":"None passthrough"}
+{"func":"api_kwargs","case":"default hook returns two empty mappings"}
+{"func":"prepare_messages","messages":[{"role":"user","content":"hi"},{"role":"assistant","content":"yo"}],"case":"identity passthrough"}
+{"func":"prepare_messages","messages":[],"case":"empty list"}
+{"func":"reasoning_efforts","case":"base declares no vocabulary"}
+{"func":"vision_model","case":"no provider-specific vision default"}
+{"func":"aux_model","case":"empty cheap model id"}
+{"func":"extra_body","case":"empty request extras"}
+{"func":"reasoning_config","case":"unset reasoning config"}

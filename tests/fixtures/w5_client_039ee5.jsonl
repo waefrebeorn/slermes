@@ -1,0 +1,13 @@
+{"func":"prepare_tools","names":["git","uv"],"target":"win32-x64","cache":"cache0","outpath":"out0"}
+{"func":"prepare_tools","names":"git","target":"win32-x64","cache":"cache0","outpath":"out0"}
+{"func":"prepare_tools","names":[],"target":"linux-x64","outpath":"out1"}
+{"func":"stage_tools","names":["node"],"source_store":"store0","target":"linux-x64","outpath":"out1"}
+{"func":"stage_tools","names":"node","source_store":"store0","target":"linux-x64","outpath":"out1"}
+{"func":"ensure_environment","name":"venv","requirements":["a>=1","b"],"root":"root0","explicit":true,"timeout":900}
+{"func":"ensure_environment","name":"venv","requirements":"a>=1","root":"root0","explicit":true,"timeout":900}
+{"func":"ensure_environment","name":"venv","requirements":[],"root":null,"explicit":false,"timeout":1800}
+{"func":"ensure_python_tool","name":"ruff","requirements":["ruff"],"executable":"ruff.exe","root":null,"explicit":true,"timeout":300}
+{"func":"ensure_python_tool","name":"ruff","requirements":"ruff","executable":"ruff.exe","root":null,"explicit":true,"timeout":300}
+{"func":"build_requirements_environment","requirements":["x"],"python":"py0","cache":"c0","env":{"A":"B"},"wheelhouse":"wh","offline":true,"sealed":false,"explicit":true,"lock":"lock0","outpath":"out2"}
+{"func":"build_requirements_environment","requirements":["x"],"python":null,"cache":null,"env":null,"wheelhouse":null,"offline":false,"sealed":false,"explicit":false,"lock":null,"outpath":"out3"}
+{"func":"build_requirements_environment","requirements":"x","python":null,"outpath":"out2"}

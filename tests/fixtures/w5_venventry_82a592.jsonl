@@ -1,0 +1,11 @@
+{"func": "plan", "argv": [], "safe": false, "cwd": "C:/work"}
+{"func": "plan", "argv": ["C:/site"], "safe": false, "cwd": "C:/work"}
+{"func": "plan", "argv": ["C:/site", "-c"], "safe": false, "cwd": "C:/work"}
+{"func": "plan", "argv": ["C:/site", "-m"], "safe": false, "cwd": "C:/work"}
+{"func": "plan", "argv": ["C:/site", "-c", "print(1)", "a", "b"], "safe": false, "cwd": "C:/work"}
+{"func": "plan", "argv": ["C:/site", "-c", "x=1"], "safe": true, "cwd": "C:/work"}
+{"func": "plan", "argv": ["C:/site", "-m", "mod", "x"], "safe": false, "cwd": "C:/work"}
+{"func": "plan", "argv": ["C:/site", "-m", "mod"], "safe": true, "cwd": "C:/work"}
+{"func": "plan", "argv": ["C:/site", "-x"], "safe": false, "cwd": "C:/work"}
+{"func": "plan", "argv": ["C:/site", "C:/scripts/run.py", "arg"], "safe": false, "cwd": "C:/work"}
+{"func": "plan", "argv": ["C:/site", "C:/scripts/run.py"], "safe": true, "cwd": "C:/work"}

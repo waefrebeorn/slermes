@@ -1,0 +1,18 @@
+{"func":"principal","case":"valid principal id","v":"alice"}
+{"func":"principal","case":"empty id refused","v":""}
+{"func":"principal","case":"int id refused","v":123}
+{"func":"principal","case":"null id refused","v":null}
+{"func":"principal","case":"bool id refused","v":true}
+{"func":"system","case":"valid reason","v":"boot probe"}
+{"func":"system","case":"empty reason refused","v":""}
+{"func":"group","case":"valid group id","v":"org-admins"}
+{"func":"group","case":"number group refused","v":5}
+{"func":"fence","case":"positive pair","epoch":1,"generation":2}
+{"func":"fence","case":"zero epoch refused","epoch":0,"generation":1}
+{"func":"fence","case":"zero generation refused","epoch":1,"generation":0}
+{"func":"fence","case":"negative epoch refused","epoch":-1,"generation":2}
+{"func":"fence","case":"bool epoch refused","epoch":true,"generation":2}
+{"func":"is_local","case":"local tenant","tenant":"local"}
+{"func":"is_local","case":"hosted tenant","tenant":"acme-cloud"}
+{"func":"home","case":"local home is agent","tenant":"local","agent":"/home/u/.hermes"}
+{"func":"home","case":"hosted home is none","tenant":"acme","agent":"agent-1"}

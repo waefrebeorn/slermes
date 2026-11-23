@@ -1,0 +1,20 @@
+{"func":"clean","case":"normal path","value":"/tmp/x"}
+{"func":"clean","case":"stripped path","value":"  /tmp/x  "}
+{"func":"clean","case":"auto sentinel","value":"auto"}
+{"func":"clean","case":"upper cwd sentinel","value":"CWD"}
+{"func":"clean","case":"dot sentinel","value":"."}
+{"func":"clean","case":"dotslash sentinel","value":"./"}
+{"func":"clean","case":"number value","value":5}
+{"func":"clean","case":"null value","value":null}
+{"func":"clean","case":"preserve case","value":"C:/Work/Project"}
+{"func":"resolve","case":"session and task distinct cli","platform":"cli","facts":{"task_cwd":"/workspace/task","scoped_cwd":"/workspace/session","session_key":"","recorded":{},"agent_cwd":null,"terminal_env":"local","terminal_cwd":"","resolved_cwd":null,"platform":"cli"}}
+{"func":"resolve","case":"subagent promotes task","platform":"subagent","facts":{"task_cwd":"/workspace/task","scoped_cwd":"/workspace/session","session_key":"","recorded":{},"agent_cwd":null,"terminal_env":"local","terminal_cwd":"","resolved_cwd":null,"platform":"subagent"}}
+{"func":"resolve","case":"remote scoped preserved","facts":{"task_cwd":null,"scoped_cwd":"~/remote-project","session_key":"","recorded":{},"agent_cwd":null,"terminal_env":"local","terminal_cwd":"","resolved_cwd":null,"platform":"gateway"}}
+{"func":"resolve","case":"gateway session key recorded","facts":{"task_cwd":null,"scoped_cwd":null,"session_key":"gateway-key","recorded":{"gateway-key":"/remote/gateway-workspace"},"agent_cwd":null,"terminal_env":"local","terminal_cwd":"","resolved_cwd":null,"platform":"gateway"}}
+{"func":"resolve","case":"session id recorded fallback","facts":{"task_cwd":null,"scoped_cwd":null,"session_key":"","recorded":{"session-1":"/recorded/session"},"agent_cwd":null,"terminal_env":"local","terminal_cwd":"","resolved_cwd":null,"platform":"gateway"}}
+{"func":"resolve","case":"local cli resolves host","facts":{"task_cwd":null,"scoped_cwd":null,"session_key":"","recorded":{},"agent_cwd":null,"terminal_env":"local","terminal_cwd":"","resolved_cwd":"/workspace","platform":"cli"}}
+{"func":"resolve","case":"ssh cli does not resolve host","facts":{"task_cwd":null,"scoped_cwd":null,"session_key":"","recorded":{},"agent_cwd":null,"terminal_env":"ssh","terminal_cwd":"","resolved_cwd":"/workspace","platform":"cli"}}
+{"func":"resolve","case":"all empty","facts":{"task_cwd":null,"scoped_cwd":null,"session_key":"","recorded":{},"agent_cwd":null,"terminal_env":"local","terminal_cwd":"","resolved_cwd":null,"platform":"gateway"}}
+{"func":"resolve","case":"agent cwd fallback","facts":{"task_cwd":null,"scoped_cwd":null,"session_key":"","recorded":{},"agent_cwd":"/from/agent","terminal_env":"local","terminal_cwd":"","resolved_cwd":null,"platform":"gateway"}}
+{"func":"resolve","case":"terminal cwd fallback","facts":{"task_cwd":null,"scoped_cwd":null,"session_key":"","recorded":{},"agent_cwd":null,"terminal_env":"local","terminal_cwd":"/terminal/cwd","resolved_cwd":null,"platform":"gateway"}}
+{"func":"resolve","case":"cron promotes task","facts":{"task_cwd":"/t","scoped_cwd":null,"session_key":"","recorded":{},"agent_cwd":null,"terminal_env":"local","terminal_cwd":"","resolved_cwd":null,"platform":"cron"}}

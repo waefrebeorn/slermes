@@ -1,0 +1,25 @@
+{"func":"queued","case":"full queued marker","job":{"manual_run_at":"now","next_run_at":"now","manual_run_restore_at":"future"}}
+{"func":"queued","case":"missing restore","job":{"manual_run_at":"now","next_run_at":"now"}}
+{"func":"queued","case":"marker differs","job":{"manual_run_at":"now","next_run_at":"other","manual_run_restore_at":"future"}}
+{"func":"queued","case":"null marker","job":{"manual_run_at":null,"next_run_at":null,"manual_run_restore_at":"future"}}
+{"func":"queued","case":"empty job","job":{}}
+{"func":"restore","case":"queued uses restore","job":{"manual_run_at":"now","next_run_at":"now","manual_run_restore_at":"future"}}
+{"func":"restore","case":"unqueued uses next","job":{"next_run_at":"scheduled"}}
+{"func":"restore","case":"empty job null","job":{}}
+{"func":"is_extra","case":"extra slot set","job":{"fire_claim":{"extra_slot":"slot"}}}
+{"func":"is_extra","case":"extra slot empty","job":{"fire_claim":{"extra_slot":""}}}
+{"func":"is_extra","case":"no claim","job":{}}
+{"func":"is_extra","case":"claim not dict","job":{"fire_claim":5}}
+{"func":"is_extra","case":"extra slot number","job":{"fire_claim":{"extra_slot":3}}}
+{"func":"held","case":"queued markers","job":{"manual_run_at":"now","next_run_at":"now","manual_run_restore_at":"future","manual_run_prompt":"go","other":"x"}}
+{"func":"held","case":"unqueued empty","job":{"manual_run_at":"now","next_run_at":"later","manual_run_restore_at":"future"}}
+{"func":"pending","case":"trigger restores future slot","now":"2026-10-28T09:00:00+00:00","job":{"manual_run_at":"now","next_run_at":"now","manual_run_restore_at":"2026-10-28T10:00:00+00:00"}}
+{"func":"pending","case":"restore already past","now":"2026-10-28T11:00:00+00:00","job":{"manual_run_at":"now","next_run_at":"now","manual_run_restore_at":"2026-10-28T10:00:00+00:00"}}
+{"func":"pending","case":"manual fire future slot","now":"2026-10-28T09:00:00+00:00","manual_fire":true,"job":{"next_run_at":"2026-10-28T09:30:00+00:00"}}
+{"func":"pending","case":"tick no preserve","now":"2026-10-28T09:00:00+00:00","manual_fire":false,"job":{"next_run_at":"2026-10-28T09:30:00+00:00"}}
+{"func":"pending","case":"due slot not future","now":"2026-10-28T09:30:00+00:00","manual_fire":true,"job":{"next_run_at":"2026-10-28T09:30:00+00:00"}}
+{"func":"pending","case":"no slot","now":"2026-10-28T09:00:00+00:00","manual_fire":true,"job":{}}
+{"func":"stamp","case":"stamp claim restores slot","slot":"future","job":{"fire_claim":{},"next_run_at":"old","manual_run_restore_at":"future"}}
+{"func":"stamp","case":"stamp missing restore","slot":"future","job":{"fire_claim":{},"next_run_at":"old"}}
+{"func":"reschedule","case":"queued moves marker","at":"delayed","job":{"manual_run_at":"now","next_run_at":"now","manual_run_restore_at":"future","manual_run_prompt":"go"}}
+{"func":"reschedule","case":"unqueued only next","at":"delayed","job":{"next_run_at":"old"}}

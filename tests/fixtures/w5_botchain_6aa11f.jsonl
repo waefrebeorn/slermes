@@ -1,0 +1,26 @@
+{"func":"hops","case":"no author hops","author":{}}
+{"func":"hops","case":"positive hops","author":{"hops":3}}
+{"func":"hops","case":"zero hops","author":{"hops":0}}
+{"func":"hops","case":"negative hops","author":{"hops":-2}}
+{"func":"hops","case":"bool hops is not int","author":{"hops":true}}
+{"func":"hops","case":"hops with bot author","author":{"hops":2,"is_bot":true}}
+{"func":"envelope","case":"hop one omitted","hop":1}
+{"func":"envelope","case":"hop zero omitted","hop":0}
+{"func":"envelope","case":"hop negative omitted","hop":-1}
+{"func":"envelope","case":"hop two included","hop":2}
+{"func":"envelope","case":"hop five included","hop":5}
+{"func":"carry","case":"empty old no move","old":"","new":"x"}
+{"func":"carry","case":"empty new no move","old":"a","new":""}
+{"func":"carry","case":"same id no move","old":"a","new":"a"}
+{"func":"carry","case":"distinct ids move","old":"a","new":"b"}
+{"func":"admit","case":"disabled guard","facts":{"enabled":false,"recipients":["bot:g"],"body":"hi"}}
+{"func":"admit","case":"person first send","facts":{"key":"k","enabled":true,"max_hops":4,"hops":0,"sent":0,"asks":[],"recipients":["bot:gamma"],"body":"hello world","author":null,"no_reply_from":null}}
+{"func":"admit","case":"bot turn normal hop","facts":{"key":"k","enabled":true,"max_hops":4,"hops":2,"sent":2,"asks":[],"recipients":["bot:gamma"],"body":"hi","author":{"id":"bot:alpha","is_bot":true},"no_reply_from":null}}
+{"func":"admit","case":"hop cap refusal","facts":{"key":"k","enabled":true,"max_hops":4,"hops":4,"sent":4,"asks":[],"recipients":["bot:gamma"],"body":"hi","author":null,"no_reply_from":null}}
+{"func":"admit","case":"identical ask duplicate normalized","facts":{"key":"k","enabled":true,"max_hops":4,"hops":1,"sent":1,"asks":[["bot:gamma","status?"]],"recipients":["bot:gamma"],"body":"  status?  ","author":null,"no_reply_from":null}}
+{"func":"admit","case":"reply is notify only","facts":{"key":"k","enabled":true,"max_hops":4,"hops":1,"sent":1,"asks":[],"recipients":["bot:beta"],"body":"2","author":{"id":"bot:beta","is_bot":true},"no_reply_from":null}}
+{"func":"admit","case":"reply to reply refused","facts":{"key":"k","enabled":true,"max_hops":4,"hops":1,"sent":1,"asks":[],"recipients":["bot:beta"],"body":"3","author":{"id":"bot:beta","is_bot":true},"no_reply_from":"bot:beta"}}
+{"func":"admit","case":"reply expecting reply not notify","facts":{"key":"k","enabled":true,"max_hops":4,"bot_replies_expect_reply":true,"hops":1,"sent":1,"asks":[],"recipients":["bot:beta"],"body":"3","author":{"id":"bot:beta","is_bot":true},"no_reply_from":null}}
+{"func":"admit","case":"fan out sorted asks","facts":{"key":"k","enabled":true,"max_hops":4,"hops":0,"sent":0,"asks":[],"recipients":["bot:z","bot:a"],"body":"status?","author":null,"no_reply_from":null}}
+{"func":"admit","case":"max hops one person ok","facts":{"key":"k","enabled":true,"max_hops":1,"hops":0,"sent":0,"asks":[],"recipients":["bot:b"],"body":"x","author":null,"no_reply_from":null}}
+{"func":"admit","case":"max hops one bot refused","facts":{"key":"k","enabled":true,"max_hops":1,"hops":1,"sent":1,"asks":[],"recipients":["bot:b"],"body":"x","author":null,"no_reply_from":null}}

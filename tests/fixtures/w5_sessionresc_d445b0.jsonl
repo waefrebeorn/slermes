@@ -1,0 +1,10 @@
+{"func":"divert","case":"empty sid writes nothing","session_id":"","messages":["hello"]}
+{"func":"divert","case":"whitespace sid writes nothing","session_id":"   ","messages":["hello"]}
+{"func":"divert","case":"empty messages writes nothing","session_id":"abc","messages":[]}
+{"func":"divert","case":"single string message","session_id":"abc","messages":["hello"]}
+{"func":"divert","case":"single dict message","session_id":"route-1","messages":[{"role":"user","content":"hi"}]}
+{"func":"divert","case":"mixed coerced and dict and null","session_id":"mixed","messages":["hello",{"role":"u","content":"x"},5,true,null]}
+{"func":"divert","case":"unicode string coerced","session_id":"uni","messages":["café ☃"]}
+{"func":"divert","case":"sid is stripped","session_id":"  spaced  ","messages":["x"]}
+{"func":"divert","case":"multiple dicts","session_id":"m","messages":[{"a":1},{"b":[1,2,3]}]}
+{"func":"divert","case":"all null messages still writes file","session_id":"onlynull","messages":[null,null]}

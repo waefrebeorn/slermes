@@ -1,0 +1,12 @@
+{"func": "w5_registry_8fd451_walk", "names": ["a"], "deps": {"a": []}}
+{"func": "w5_registry_8fd451_walk", "names": ["b", "a"], "deps": {"a": [], "b": ["a"]}}
+{"func": "w5_registry_8fd451_walk", "names": ["a"], "deps": {"a": ["b", "c"], "b": ["d"], "c": ["d"], "d": []}}
+{"func": "w5_registry_8fd451_walk", "names": ["a", "a"], "deps": {"a": []}}
+{"func": "w5_registry_8fd451_walk", "names": ["x"], "deps": {}}
+{"func": "w5_registry_8fd451_walk", "names": ["a"], "deps": {"a": ["b"], "b": ["c"], "c": ["d"], "d": []}}
+{"func": "w5_registry_8fd451_walk", "names": ["a"], "deps": {"a": ["b"], "b": ["a"]}}
+{"func": "w5_registry_8fd451_walk", "names": ["a"], "deps": {"a": ["a"]}}
+{"func": "w5_registry_8fd451_walk", "names": [], "deps": {}}
+{"func": "w5_registry_8fd451_walk", "names": ["x", "y"], "deps": {"x": [], "y": []}}
+{"func": "w5_registry_8fd451_walk", "names": ["a", "b"], "deps": {"a": ["b"], "b": []}}
+{"func": "w5_registry_8fd451_walk", "names": ["a", "b", "c"], "deps": {"a": ["b", "c"], "b": [], "c": ["b"]}}

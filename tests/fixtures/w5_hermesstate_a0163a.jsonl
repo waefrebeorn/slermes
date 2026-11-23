@@ -1,0 +1,24 @@
+{"func":"valid_mode","mode":"warn"}
+{"func":"valid_mode","mode":"bogus"}
+{"func":"valid_mode","mode":""}
+{"func":"install_mode","mode":"raise","current_mode":"warn"}
+{"func":"install_mode","mode":"bogus","current_mode":"record"}
+{"func":"install_mode","mode":"bogus","current_mode":null}
+{"func":"install_from_config","cfg":{},"current_mode":null}
+{"func":"install_from_config","cfg":{"gateway":"x"},"current_mode":null}
+{"func":"install_from_config","cfg":null,"current_mode":"warn"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":null}},"current_mode":"warn"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":false}},"current_mode":"warn"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":0}},"current_mode":"warn"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":0.0}},"current_mode":"warn"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":""}},"current_mode":"warn"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":"off"}},"current_mode":"warn"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":"OFF"}},"current_mode":"warn"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":" false "}},"current_mode":"warn"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":"none"}},"current_mode":"warn"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":"warn"}},"current_mode":null}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":"Raise"}},"current_mode":null}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":"record"}},"current_mode":null}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":"bogus"}},"current_mode":"record"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":true}},"current_mode":"record"}
+{"func":"install_from_config","cfg":{"gateway":{"sessiondb_loop_guard":1}},"current_mode":"warn"}

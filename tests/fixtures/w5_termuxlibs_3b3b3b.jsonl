@@ -1,0 +1,23 @@
+{"func":"constants","case":"module literals"}
+{"func":"filename","url":"https://packages.termux.dev/apt/termux-main/pool/main/a/foo/foo_1.0.deb","case":"single path segment"}
+{"func":"filename","url":"foo_1.0.deb","case":"no slash at all"}
+{"func":"filename","url":"a/b/c.deb?query=1","case":"query stays attached"}
+{"func":"package_of","url":"https://packages.termux.dev/apt/termux-main/pool/main/a/foo/foo_1.0.deb","case":"valid pool URL"}
+{"func":"package_of","url":"HTTPS://packages.termux.dev/apt/termux-main/pool/main/a/foo/x.deb","case":"uppercase scheme accepted"}
+{"func":"package_of","url":"http://packages.termux.dev/apt/termux-main/pool/main/a/foo/x.deb","case":"http rejected"}
+{"func":"package_of","url":"https://other.example/apt/termux-main/pool/main/a/foo/x.deb","case":"wrong host"}
+{"func":"package_of","url":"https://packages.termux.dev:443/apt/termux-main/pool/main/a/foo/x.deb","case":"port in netloc rejected"}
+{"func":"package_of","url":"https://packages.termux.dev/apt/other/pool/main/a/foo/x.deb","case":"wrong path prefix"}
+{"func":"package_of","url":"https://packages.termux.dev/apt/termux-main/pool/main/a/foo","case":"two segments rejected"}
+{"func":"package_of","url":"https://packages.termux.dev/apt/termux-main/pool/main/a/foo/x/extra.deb","case":"four segments rejected"}
+{"func":"package_of","url":"https://packages.termux.dev/apt/termux-main/pool/main//foo/x.deb","case":"empty segment rejected"}
+{"func":"package_of","url":"https://packages.termux.dev/apt/termux-main/pool/main/a/foo/x.deb?y=1#frag","case":"query and fragment ignored"}
+{"func":"parse_index","text":"","case":"empty index"}
+{"func":"parse_index","text":"Package: zlib\nVersion: 1.2.13\nFilename: a/zlib/zlib-1.2.13.deb\nSHA256: abc123\n","case":"one complete stanza with trailing blank"}
+{"func":"parse_index","text":"Package: curl\nVersion: 8.0\nFilename: c/curl/curl.deb\nSHA256: de4\nDescription: a long\n  continued line\n","case":"indented continuation ignored"}
+{"func":"parse_index","text":"Package: x\nSHA256: aa\n","case":"missing filename dropped"}
+{"func":"parse_index","text":"Package: y\nFilename: y.deb\n","case":"missing sha dropped"}
+{"func":"parse_index","text":"Package: p\r\nVersion: 1\r\nFilename: p.deb\r\nSHA256: s\r\n","case":"CRLF line endings"}
+{"func":"parse_index","text":"Package: zlib\nVersion: 1.0\nFilename: old.deb\nSHA256: old\n\nPackage: zlib\nVersion: 2.0\nFilename: new.deb\nSHA256: new\n","case":"duplicate name last wins"}
+{"func":"parse_index","text":"Package: one\nFilename: a/one/one.deb\nSHA256: s1\n\nPackage: two\nFilename: b/two/two.deb\nSHA256: s2","case":"two stanzas no final newline"}
+{"func":"parse_index","text":" Package: leading\nPackage:good\nFilename:  two_spaces.deb\nSHA256:  s3  \n","case":"field regex and value strip"}

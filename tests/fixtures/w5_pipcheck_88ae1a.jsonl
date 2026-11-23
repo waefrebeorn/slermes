@@ -1,0 +1,22 @@
+{"func":"normalize","name":"Foo_Bar.Baz"}
+{"func":"normalize","name":"---UPPER__DOT..."}
+{"func":"normalize","name":"already-normal"}
+{"func":"normalize","name":"A___b..c-_-D"}
+{"func":"override_requirements","entries":[]}
+{"func":"override_requirements","entries":[{"name":"foo","specifier":"==1.2.3"}]}
+{"func":"override_requirements","entries":[{"name":"bar","specifier":"<2","marker":"python_version >= '3.11'"}]}
+{"func":"override_requirements","entries":[{"name":"x","url":"https://example.invalid/x.whl"}]}
+{"func":"overridden_versions","entries":[],"packages":[["foo","1.0"],["bar","2.0"]]}
+{"func":"overridden_versions","entries":[{"name":"Foo_Bar"}],"packages":[["foo-bar","1.0"],["foo.bar","2.0"],["other","3.0"]]}
+{"func":"overridden_versions","entries":[{"name":"pillow"},{"name":"numpy"}],"packages":[["Pillow","12.3.0"],["numpy","1.2"],["numpy","1.3"]]}
+{"func":"overridden_versions","entries":[{"name":"a"},{"name":"a"}],"packages":[["a","1"],["A","1"],["a","2"]]}
+{"func":"unexpected","report":"The package `x` requires `y==1`, but `2` is installed\nFound 1 incompatibility\n","lock":null}
+{"func":"unexpected","report":"The package `app` requires `pillow==12.3.0`, but `13.0.0` is installed\nFound 1 incompatibility\n","lock":{"overrides":[{"name":"pillow"}],"packages":[["pillow","13.0.0"]]}}
+{"func":"unexpected","report":"The package `app` requires `pillow==12.3.0`, but `12.3.0` is installed\nFound 1 incompatibility\n","lock":{"overrides":[{"name":"pillow"}],"packages":[["pillow","13.0.0"]]}}
+{"func":"unexpected","report":"The package `app` requires `foo`, but `9` is installed\nFound 2 incompatibilities\n","lock":null}
+{"func":"unexpected","report":"The package `app` requires `foo`, but `9` is installed\n","lock":null}
+{"func":"unexpected","report":"no lines here\nFound 0 incompatibilities\n","lock":null}
+{"func":"unexpected","report":"","lock":null}
+{"func":"unexpected","report":"  The package `app` requires `Foo_Bar`, but `7` is installed  \nFound 1 incompatibility\n","lock":{"overrides":[{"name":"foo-bar"}],"packages":[["foo.bar","7"]]}}
+{"func":"unexpected","report":"The package `a` requires `x`, but `1` is installed\nThe package `b` requires `y`, but `2` is installed\nFound 2 incompatibilities\n","lock":{"overrides":[{"name":"x"}],"packages":[["x","1"],["y","9"]]}}
+{"func":"unexpected","report":"The package `app` requires `z`, but `1` is installed\r\nFound 1 incompatibility\r\n","lock":null}

@@ -1,0 +1,14 @@
+{"func":"templatize","env":{"A":"store/tools/x","B":"nomatch"},"root":"store"}
+{"func":"templatize","env":{"A":["store/bin","other/store"],"B":5,"C":true,"D":null},"root":"store"}
+{"func":"resolve","env":{"A":"{{store}}/bin","B":["{{store}}/x","plain"]},"root":"store"}
+{"func":"resolve","env":{"A":123,"B":false,"C":null},"root":"store"}
+{"func":"artifacts","packages":{"uv":{"artifacts":{"linux-x64":{"url":"https://x/uv.tar.gz","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}}},"name":"uv","target":"linux-x64"}
+{"func":"artifacts","packages":{"uv":{"artifacts":{"linux-x64":[{"url":"https://x/a","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},{"url":"https://x/b","sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}]}}},"name":"uv","target":"linux-x64"}
+{"func":"artifacts","packages":{"uv":{"artifacts":{"any":{"url":"https://x/any","sha256":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}}}},"name":"uv","target":"darwin-arm64"}
+{"func":"artifacts","packages":{"uv":{"artifacts":{}}},"name":"uv","target":"linux-x64"}
+{"func":"artifacts","packages":{"termux-docker":{"artifacts":{"linux-arm64-bionic":{"url":"docker://img@sha256:abc"}}}},"name":"termux-docker","target":"linux-arm64-bionic"}
+{"func":"artifacts","packages":{"uv":{"artifacts":{"linux-x64":{"url":"https://x/a","sha256":"ZZZZ"}}}},"name":"uv","target":"linux-x64"}
+{"func":"artifacts","packages":{"uv":{"artifacts":{"linux-x64":{"url":"","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}}},"name":"uv","target":"linux-x64"}
+{"func":"tool_rows","fact":{"entry":"uv_dir","version":"1.0","previous":[{"entry":"old","version":"0.9"},{"version":"no-entry"},"junk"]}}
+{"func":"tool_rows","fact":{"stamp":"s","extras":[]}}
+{"func":"tool_rows","fact":null}

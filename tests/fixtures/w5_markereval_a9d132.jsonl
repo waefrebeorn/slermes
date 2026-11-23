@@ -1,0 +1,18 @@
+{"func":"eval","case":1,"marker":"python_version >= \"3.8\"","env":{"python_version":"3.11"}}
+{"func":"eval","case":2,"marker":"python_version < \"3.10\"","env":{"python_version":"3.9"}}
+{"func":"eval","case":3,"marker":"python_version < \"3.10\"","env":{"python_version":"3.11"}}
+{"func":"eval","case":4,"marker":"sys_platform == \"win32\"","env":{"sys_platform":"win32"}}
+{"func":"eval","case":5,"marker":"sys_platform == \"linux\"","env":{"sys_platform":"win32"}}
+{"func":"eval","case":6,"marker":"os_name == \"posix\" and python_version >= \"3.7\"","env":{"os_name":"posix","python_version":"3.10"}}
+{"func":"eval","case":7,"marker":"sys_platform == \"darwin\" or python_version >= \"3.9\"","env":{"sys_platform":"win32","python_version":"3.11"}}
+{"func":"eval","case":8,"marker":"\"linux\" in sys_platform","env":{"sys_platform":"linux2"}}
+{"func":"eval","case":9,"marker":"\"win\" not in sys_platform","env":{"sys_platform":"linux"}}
+{"func":"eval","case":10,"marker":"python_version ~= \"3.10\"","env":{"python_version":"3.11"}}
+{"func":"eval","case":11,"marker":"python_version ~= \"3.10\"","env":{"python_version":"4.0"}}
+{"func":"eval","case":12,"marker":"(python_version >= \"3.8\" and python_version < \"3.12\")","env":{"python_version":"3.10"}}
+{"func":"eval","case":13,"marker":"platform_system != \"Windows\"","env":{"platform_system":"Linux"}}
+{"func":"eval","case":14,"marker":"python_version === \"3.11.0\"","env":{"python_version":"3.11.0"}}
+{"func":"eval","case":15,"marker":"python_version == \"3.10\"","env":{"python_version":"3.10.0"}}
+{"func":"eval","case":16,"marker":"extra == \"Foo_Bar\"","env":{"extra":"foo-bar"}}
+{"func":"eval","case":17,"marker":"os_name > \"aaa\"","env":{"os_name":"posix"}}
+{"func":"eval","case":18,"marker":"os_name <= \"posix\"","env":{"os_name":"posix"}}

@@ -1,0 +1,15 @@
+{"func":"payload","extras":["b","a","b"]}
+{"func":"payload","extras":[]}
+{"func":"payload","extras":["all","dev"]}
+{"func":"payload","extras":["a"]}
+{"func":"read","text":"{\"extras\":[\"b\",\"a\",\"b\"]}"}
+{"func":"read","text":"{\"extras\":[]}"}
+{"func":"read","text":"{\"extras\":\"x\"}"}
+{"func":"read","text":"bad"}
+{"func":"read","text":"{}"}
+{"func":"optin","names":["x"],"declared":["x","y"]}
+{"func":"optin","names":["x","z"],"declared":["x"]}
+{"func":"optin","names":[],"declared":["a"]}
+{"func":"optin","names":["a","a"],"declared":["a"]}
+{"func":"path","base":"C:/bundle/payload"}
+{"func":"path","base":"/srv/hermes"}

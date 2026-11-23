@@ -1,0 +1,13 @@
+{"func":"all"}
+{"func":"home","name":"activate"}
+{"func":"home","name":"ensure"}
+{"func":"home","name":"environment_python"}
+{"func":"home","name":"Facts"}
+{"func":"home","name":"current_target"}
+{"func":"home","name":"nope"}
+{"func":"home","name":""}
+{"func":"has","name":"ensure"}
+{"func":"has","name":"compose_env"}
+{"func":"has","name":"walk"}
+{"func":"has","name":"nope"}
+{"func":"has","name":""}

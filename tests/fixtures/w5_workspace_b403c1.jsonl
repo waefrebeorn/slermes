@@ -1,0 +1,24 @@
+{"func":"member_ignored","names":["src",".git","foo.egg-info","node_modules","keep","__pycache__","x.egg-info.txt","venv",".venv"]}
+{"func":"member_ignored","names":[]}
+{"func":"member_ignored","names":["README.md","build","LICENSE"]}
+{"func":"without_release_age","text":"[tool.uv]\nexclude-newer = 2024-01-01T00:00:00Z\nother = 1\n"}
+{"func":"without_release_age","text":"name = \"demo\"\nversion = \"1\"\n"}
+{"func":"without_release_age","text":"exclude-newer=2024\nkeep = true\n"}
+{"func":"without_release_age","text":"exclude-newer = 2024"}
+{"func":"without_release_age","text":"exclude-newer-package = \"x\"\nexclude-newer = 2020\n\ntail\n"}
+{"func":"conjuncts","marker":"sys_platform == 'linux' and platform_machine == 'x86_64'"}
+{"func":"conjuncts","marker":"(sys_platform == 'linux') and (platform_python_implementation == 'CPython')"}
+{"func":"conjuncts","marker":"sys_platform == 'linux' or sys_platform == 'win32'"}
+{"func":"conjuncts","marker":"((sys_platform == 'linux'))"}
+{"func":"conjuncts","marker":"(a or b) and c"}
+{"func":"conjuncts","marker":"(a and b)"}
+{"func":"conjuncts","marker":""}
+{"func":"member_key","path":"C:\\homes\\alpha\\plugins\\Foo.Bar"}
+{"func":"member_key","path":"C:\\homes\\alpha\\plugins\\My Plugin_2"}
+{"func":"member_key","path":"/srv/plugins/123___"}
+{"func":"member_key","path":"C:\\plugins\\---"}
+{"func":"member_key","path":"C:\\plugins\\name\\"}
+{"func":"solve_only_for","environments":[],"target":{"sys_platform":"linux","platform_machine":"x86_64"}}
+{"func":"solve_only_for","environments":["python_version >= '3.11'"],"target":{"sys_platform":"win32","platform_machine":"AMD64"}}
+{"func":"solve_only_for","environments":["a","b"],"target":{"sys_platform":"darwin","platform_machine":"arm64"}}
+{"func":"solve_only_for","environments":null,"target":{"sys_platform":"linux","platform_machine":"aarch64"}}

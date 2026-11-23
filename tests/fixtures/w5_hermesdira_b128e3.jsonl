@@ -1,0 +1,12 @@
+{"func":"strip","case":"UNC extended prefix","path":"\\\\?\\UNC\\server\\share\\x"}
+{"func":"strip","case":"drive extended prefix","path":"\\\\?\\C:\\foo\\bar"}
+{"func":"strip","case":"normal drive path unchanged","path":"C:\\normal\\path"}
+{"func":"strip","case":"plain unc unchanged","path":"\\\\server\\share"}
+{"func":"strip","case":"plain relative unchanged","path":"plain"}
+{"func":"strip","case":"empty after prefix","path":"\\\\?\\"}
+{"func":"remedy","case":"windows icacls remedy","path":"/home/u/.hermes","windows":true}
+{"func":"remedy","case":"posix chown remedy","path":"/home/u/.hermes","windows":false}
+{"func":"remedy","case":"windows drive path","path":"C:\\Users\\u\\.hermes","windows":true}
+{"func":"remedy","case":"posix drive path","path":"C:\\Users\\u\\.hermes","windows":false}
+{"func":"remedy","case":"empty path windows","path":"","windows":true}
+{"func":"constants","case":"module win32 constants"}

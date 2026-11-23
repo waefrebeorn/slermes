@@ -1,0 +1,12 @@
+{"func":"controls","messages":[]}
+{"func":"controls","messages":[{"id":1,"type":"data"}]}
+{"func":"controls","messages":[{"id":"a","type":"cancel"}]}
+{"func":"controls","messages":[{"id":"a","cancel":true,"type":"cancel"}]}
+{"func":"controls","messages":[{"id":"a","cancel":true,"type":"data"}]}
+{"func":"controls","messages":[{"id":"a","type":"data"},{"id":"b","type":"data"}]}
+{"func":"controls","messages":[{"type":"data"}]}
+{"func":"controls","messages":[{"id":"a"},{"id":"a","cancel":false,"type":"cancel"}]}
+{"func":"controls","messages":[{"id":"a","type":"x"},{"id":"a","type":"y"},{"id":"a","type":"cancel"}]}
+{"func":"controls","messages":[{"id":1,"type":"data"},{"id":"1","type":"data"}]}
+{"func":"controls","messages":[{"id":"a","cancel":1,"type":"data"}]}
+{"func":"controls","messages":[{"id":"a","type":"data","payload":{"k":"v"}}]}

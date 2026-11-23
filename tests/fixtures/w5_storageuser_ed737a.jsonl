@@ -1,0 +1,15 @@
+{"func":"docs","case":"recovery docs URL constant"}
+{"func":"details","case":"whitespace normalised","text":"  a   b\n c ","limit":200}
+{"func":"details","case":"truncate with ellipsis","text":"abcdefghij","limit":5}
+{"func":"details","case":"null text is empty","text":null,"limit":200}
+{"func":"details","case":"exact length unchanged","text":"abcde","limit":5}
+{"func":"details","case":"tabs and newlines collapsed","text":"a\t\tb\n\nc  d","limit":200}
+{"func":"describe","case":"locked","cause":"locked","disk_full":false,"profile_arg":"P|"}
+{"func":"describe","case":"disk full via flag","cause":"disk","disk_full":true,"profile_arg":"P|"}
+{"func":"describe","case":"disk readonly","cause":"disk","disk_full":false,"profile_arg":"P|"}
+{"func":"describe","case":"corrupt two placeholders","cause":"corrupt","disk_full":false,"profile_arg":"P|"}
+{"func":"describe","case":"fts index two placeholders","cause":"fts_index","disk_full":false,"profile_arg":"--profile default "}
+{"func":"describe","case":"deleted wal long copy","cause":"deleted_wal","disk_full":false,"profile_arg":"P|"}
+{"func":"describe","case":"unknown fallback","cause":"totally-unknown","disk_full":false,"profile_arg":"P|"}
+{"func":"describe","case":"compression closed","cause":"compression_closed","disk_full":false,"profile_arg":"P|"}
+{"func":"describe","case":"empty profile arg","cause":"locked","disk_full":false,"profile_arg":""}

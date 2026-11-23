@@ -1,0 +1,57 @@
+{"func":"truthy","value":null,"default":false,"case":"null stays default false"}
+{"func":"truthy","value":null,"default":true,"case":"null stays default true"}
+{"func":"truthy","value":" YES ","case":"truthy string padded"}
+{"func":"truthy","value":"TRUE","case":"truthy case insensitive"}
+{"func":"truthy","value":"on","case":"on"}
+{"func":"truthy","value":"0","case":"zero string false"}
+{"func":"truthy","value":1,"case":"nonzero number true"}
+{"func":"truthy","value":0,"case":"zero number false"}
+{"func":"truthy","value":[],"case":"empty container false"}
+{"func":"truthy","value":["x"],"case":"nonempty container true"}
+{"func":"hostname","url":"https://API.Example.com:8443/v1","case":"host lowercased"}
+{"func":"hostname","url":"//Host.EXAMPLE./v1","case":"bare leading slashes mangle"}
+{"func":"hostname","url":"host.example/v1","case":"bare host tolerated"}
+{"func":"hostname","url":"https://u:p@H:99/v1","case":"userinfo stripped"}
+{"func":"hostname","url":"https://[::1]:8080/v1","case":"bracketed IPv6"}
+{"func":"hostname","url":"","case":"empty URL"}
+{"func":"hostname","url":"  HTTPS://X.COM/V1/  ","case":"outer whitespace stripped"}
+{"func":"path","url":"https://API.Example.com:8443/V1/","case":"path lowercased trailing slash removed"}
+{"func":"path","url":"//Host.EXAMPLE./v1","case":"double-prefixed bare host path"}
+{"func":"path","url":"host.example/v1","case":"bare host path"}
+{"func":"path","url":"","case":"empty path"}
+{"func":"origin","url":"https://API.Example.com:8443/v1","case":"explicit port origin"}
+{"func":"origin","url":"https://h","case":"https default port"}
+{"func":"origin","url":"http://h:/x","case":"empty port uses default"}
+{"func":"origin","url":"https://h:99999/x","case":"bad port invalid origin"}
+{"func":"origin","url":"","case":"no host origin"}
+{"func":"same","a":"https://h","b":"https://h:443","case":"default port equal"}
+{"func":"same","a":"https://h","b":"http://h","case":"scheme downgrade differs"}
+{"func":"same","a":"https://h","b":"https://h/x","case":"path ignored"}
+{"func":"same","a":"","b":"https://h","case":"empty not comparable"}
+{"func":"same","a":"https://localhost","b":"https://127.0.0.1","case":"hostnames literal"}
+{"func":"matches","url":"https://api.openai.com.example/v1","domain":"openai.com","case":"substring trap rejected"}
+{"func":"matches","url":"https://sub.example.com","domain":"example.com","case":"real subdomain"}
+{"func":"matches","url":"https://example.com.","domain":"example.com.","case":"trailing dot normalized"}
+{"func":"matches","url":"https://evil.com/x/example.com","domain":"example.com","case":"path append rejected"}
+{"func":"matches","url":"","domain":"example.com","case":"empty URL"}
+{"func":"proxy","url":" socks://127.0.0.1:1 ","case":"socks normalizes and strips"}
+{"func":"proxy","url":"","case":"empty becomes None"}
+{"func":"proxy","url":"http://x","case":"ordinary proxy unchanged"}
+{"func":"proxy","url":"SOCKS://H","case":"uppercase socks scheme"}
+{"func":"env_int","raw":" 42 ","default":"0","case":"whitespace int"}
+{"func":"env_int","raw":"","default":"7","case":"empty uses default"}
+{"func":"env_int","raw":"abc","default":"9","case":"non numeric uses default"}
+{"func":"env_int","raw":"-5","default":"0","case":"negative int"}
+{"func":"env_float","raw":"3.5","default":"0","case":"float value"}
+{"func":"env_float","raw":"","default":"2.5","case":"float default"}
+{"func":"env_float","raw":"bad","default":"1.25","case":"bad float default"}
+{"func":"noproxy","value":"[::1],example.com","case":"bracketed ipv6 rewrites"}
+{"func":"noproxy","value":"[::1]:8080, x.com","case":"ipv6 port dropped"}
+{"func":"noproxy","value":"[2001:db8::1]/64","case":"ipv6 cidr rewrites"}
+{"func":"noproxy","value":"::1/128","case":"bare cidr rewrites"}
+{"func":"noproxy","value":"1.2.3.4,example.com","case":"ipv4 untouched"}
+{"func":"noproxy","value":"*","case":"wildcard byte stable"}
+{"func":"noproxy","value":"[abcd::zz]","case":"bracketed junk untouched"}
+{"func":"noproxy","value":"[::1],[::1]","case":"duplicate literal deduped"}
+{"func":"noproxy","value":" [::1] , example.com ","case":"rewritten joined without original spaces"}
+{"func":"all","case":"namespace exports"}

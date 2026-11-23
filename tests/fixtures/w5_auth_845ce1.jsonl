@@ -1,0 +1,11 @@
+{"func":"terminal_id","case":1}
+{"func":"detect_provider","case":2,"runtime":{"api_key":"sk","provider":"OpenAI "}}
+{"func":"detect_provider","case":3,"runtime":{"api_key":"","provider":"openai"}}
+{"func":"detect_provider","case":4,"runtime":{"api_key":"sk","provider":"  "}}
+{"func":"detect_provider","case":5,"runtime":{"api_key":null,"provider":"openai"}}
+{"func":"detect_provider","case":6,"runtime":{"provider":"openai"},"api_key_callable":true}
+{"func":"detect_provider","case":7,"runtime":{"api_key":"sk"}}
+{"func":"detect_provider","case":8,"runtime":{"api_key":"sk","provider":"openai"},"raise":true}
+{"func":"build_auth_methods","case":9,"provider":"openai"}
+{"func":"build_auth_methods","case":10,"provider":""}
+{"func":"build_auth_methods","case":11}

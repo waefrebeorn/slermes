@@ -1,0 +1,12 @@
+{"func":"warm","case":1,"provider_arg":"cloud","config_provider":"local"}
+{"func":"warm","case":2,"config_provider":"OPENAI "}
+{"func":"warm","case":3,"provider_arg":"LOCAL_COMMAND"}
+{"func":"warm","case":4,"provider_arg":"local","has_fw":false,"lazy_install_ok":false}
+{"func":"warm","case":5,"provider_arg":"local","has_fw":true,"lazy_install_ok":false,"load_ok":true,"hot_before":false,"elapsed_ms":12}
+{"func":"warm","case":6,"provider_arg":"local","has_fw":false,"lazy_install_ok":true,"load_ok":true,"hot_before":true,"elapsed_ms":5}
+{"func":"warm","case":7,"provider_arg":"local","has_fw":true,"load_ok":false}
+{"func":"warm","case":8,"provider_arg":"local","has_fw":true,"load_ok":false,"load_error":"device busy"}
+{"func":"warm","case":9,"provider_arg":" local ","has_fw":true,"load_ok":true,"hot_before":false,"elapsed_ms":0}
+{"func":"warm","case":10,"config_provider":"local_command"}
+{"func":"warm","case":11}
+{"func":"warm","case":12,"provider_arg":"Local","has_fw":true,"load_ok":true,"hot_before":true,"elapsed_ms":100}

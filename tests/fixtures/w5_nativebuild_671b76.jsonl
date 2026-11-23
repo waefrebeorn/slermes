@@ -1,0 +1,10 @@
+{"func":"prepare_validate","case":1,"prepared":{"A":"1","B":"2"}}
+{"func":"prepare_validate","case":2,"prepared":{}}
+{"func":"prepare_validate","case":3,"prepared":{"A":1}}
+{"func":"prepare_validate","case":4,"prepared":{"A":null}}
+{"func":"source_build_environment","case":5,"target":"linux-x64","provider_present":true,"prepared":{"X":"1"},"bridged":{}}
+{"func":"source_build_environment","case":6,"target":"win32-arm64","provider_present":false,"prepared":{"X":"1"},"bridged":{}}
+{"func":"source_build_environment","case":7,"target":"win32-arm64","provider_present":true,"prepared":{"X":"1"},"bridged":{"UV_INDEX_URL":"u"}}
+{"func":"source_build_environment","case":8,"target":"win32-arm64","provider_present":true,"prepared":{"X":1},"bridged":{}}
+{"func":"source_build_environment","case":9,"target":"win32-arm64","provider_present":true,"prepared":{"X":"old"},"bridged":{"X":"new"}}
+{"func":"source_build_environment","case":10,"target":"win32-arm64","provider_present":true,"prepared":{"A":"1","B":"2"},"bridged":{"C":"3","A":"9"}}

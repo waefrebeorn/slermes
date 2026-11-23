@@ -1,0 +1,39 @@
+{"func":"pinned","sha256":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}
+{"func":"pinned","sha256":"BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD"}
+{"func":"pinned","sha256":"ba7816bf8f01cfea"}
+{"func":"pinned","sha256":""}
+{"func":"host","url":"https://example.com:8443/path"}
+{"func":"host","url":"HTTP://LOCALHOST/"}
+{"func":"host","url":"http://[::1]:80/x"}
+{"func":"host","url":"http://127.0.0.1:@evil.com/"}
+{"func":"host","url":"not-a-url"}
+{"func":"loopback","url":"http://127.0.0.1:8080/x"}
+{"func":"loopback","url":"http://LOCALHOST/x"}
+{"func":"loopback","url":"http://[::1]/x"}
+{"func":"loopback","url":"https://localhost/x"}
+{"func":"loopback","url":"http://user@localhost/x"}
+{"func":"loopback","url":"http://[::1"}
+{"func":"coalesce","ranges":[]}
+{"func":"coalesce","ranges":[[10,20],[0,5],[5,10],[20,25]]}
+{"func":"coalesce","ranges":[[9,3],[3,4],[4,8]]}
+{"func":"coalesce","ranges":[[0,10],[2,3],[10,12],[12,12]]}
+{"func":"missing","total":100,"covered":[]}
+{"func":"missing","total":100,"covered":[[20,40],[0,10]]}
+{"func":"missing","total":10,"covered":[[0,10]]}
+{"func":"missing","total":10,"covered":[[0,3],[3,6],[8,20]]}
+{"func":"source_plain_http","url":"http://registry.local/pkg","sha256":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","http_mirror":"http://registry.local/"}
+{"func":"source_plain_http","url":"http://registry.local/pkg","sha256":"short","http_mirror":"http://registry.local/"}
+{"func":"source_plain_http","url":"https://registry.local/pkg","sha256":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","http_mirror":"http://registry.local/"}
+{"func":"source_byte_limit","url":"http://registry.local/pkg","sha256":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","http_mirror":"http://registry.local/"}
+{"func":"source_byte_limit","url":"https://example.com/pkg","sha256":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","http_mirror":"http://registry.local/"}
+{"func":"validate_range","status":206,"content_range":"bytes 0-9/100","content_length":"10","start":0,"end":10,"total":100}
+{"func":"validate_range","status":200,"content_range":"bytes 0-9/100","content_length":"10","start":0,"end":10,"total":100}
+{"func":"validate_range","status":206,"content_range":"bytes 5-9/100","content_length":"5","start":0,"end":10,"total":100}
+{"func":"validate_range","status":206,"content_range":"bytes 0-9/100","content_length":"11","start":0,"end":10,"total":100}
+{"func":"validate_range","status":206,"content_range":"bytes 0-9/100","content_length":"10","content_encoding":"gzip","start":0,"end":10,"total":100}
+{"func":"validate_range","status":206,"content_range":"bytes 0-9/100","content_length":"10","start":0,"end":10,"total":null}
+{"func":"validate_range","status":206,"content_range":"bytes 0-9/100","content_length":null,"start":0,"end":10,"total":100}
+{"func":"validate_range","status":206,"content_range":"bytes 0-/100","content_length":"10","start":0,"end":10,"total":100}
+{"func":"strong_etag","etag":"\"abc\""}
+{"func":"strong_etag","etag":"W/\"abc\""}
+{"func":"strong_etag","etag":""}

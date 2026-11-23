@@ -1,0 +1,14 @@
+{"func":"store_owner_name","profile_dir":"/root","default_root":"/root"}
+{"func":"store_owner_name","profile_dir":"/root/profiles/alice","default_root":"/root"}
+{"func":"store_owner_name","profile_dir":"/root/profiles/a_b-1","default_root":"/root"}
+{"func":"store_owner_name","profile_dir":"/root/profiles/Bad","default_root":"/root"}
+{"func":"store_owner_name","profile_dir":"/root/profiles/x/y","default_root":"/root"}
+{"func":"store_owner_name","profile_dir":"/other/profiles/bob","default_root":"/root"}
+{"func":"store_owner_name","profile_dir":"/root/profiles/","default_root":"/root"}
+{"func":"state_db","key":"/root"}
+{"func":"state_db","key":"/root/profiles/alice"}
+{"func":"profile_scope","home":"/custom/home","default_root":"/root","hermes_home":"/home","profile_name_for_home":null,"named_profile_home":null}
+{"func":"profile_scope","profile":"default","default_root":"/root","hermes_home":"/home","profile_name_for_home":"default","named_profile_home":"/root"}
+{"func":"profile_scope","profile":"alice","default_root":"/root","hermes_home":"/home","profile_name_for_home":"alice","named_profile_home":"/root/profiles/alice"}
+{"func":"profile_scope","profile":"bob","default_root":"/root","hermes_home":"/home","profile_name_for_home":"bob","named_profile_home":"/other"}
+{"func":"profile_scope","default_root":"/root","hermes_home":"/home","profile_name_for_home":null,"named_profile_home":null}

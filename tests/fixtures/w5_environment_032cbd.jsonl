@@ -1,0 +1,12 @@
+{"func": "bytecode", "returncode": 1, "stderr": "failed to bytecode-compile x", "stdout": ""}
+{"func": "bytecode", "returncode": 1, "stderr": "", "stdout": "failed to bytecode-compile y"}
+{"func": "bytecode", "returncode": 0, "stderr": "failed to bytecode-compile", "stdout": ""}
+{"func": "bytecode", "returncode": 1, "stderr": "other error", "stdout": ""}
+{"func": "bytecode", "returncode": 2, "stderr": "", "stdout": "FAILED TO BYTECODE-COMPILE z"}
+{"func": "classify", "stage": "sync", "returncode": 1, "output": "error: no solution found here", "build_remedy": ""}
+{"func": "classify", "stage": "lock", "returncode": 2, "output": "conflicting requirements detected", "build_remedy": ""}
+{"func": "classify", "stage": "sync", "returncode": 1, "output": "the build backend returned an error\ntraceback", "build_remedy": "REMEDY_FOR_BUILD"}
+{"func": "classify", "stage": "sync", "returncode": 1, "output": "has no publish time for foo", "build_remedy": ""}
+{"func": "classify", "stage": "sync", "returncode": 1, "output": "is missing an upload date\nwas filtered by `exclude-newer", "build_remedy": ""}
+{"func": "classify", "stage": "pip", "returncode": 1, "output": "some random fetch failure", "build_remedy": ""}
+{"func": "classify", "stage": "sync", "returncode": 1, "output": "  padded spaces  ", "build_remedy": ""}

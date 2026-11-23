@@ -1,0 +1,15 @@
+{"func":"w5_progress_88711f_verbose_output","env":{"HERMES_VERBOSE":"1"}}
+{"func":"w5_progress_88711f_verbose_output","env":{"HERMES_VERBOSE":"  YES  "}}
+{"func":"w5_progress_88711f_verbose_output","env":{"HERMES_VERBOSE":"off"}}
+{"func":"w5_progress_88711f_verbose_output","env":{"CI":"","GITHUB_ACTIONS":""}}
+{"func":"w5_progress_88711f_verbose_output","env":{"CI":"0","GITHUB_ACTIONS":"TRUE"}}
+{"func":"w5_progress_88711f_verbose_output","env":{"HERMES_VERBOSE":"maybe","CI":""}}
+{"func":"w5_progress_88711f_verbose_output","env":{"HERMES_VERBOSE":"No"}}
+{"func":"w5_progress_88711f_ansi_strip","line":"hello   "}
+{"func":"w5_progress_88711f_ansi_strip","line":"\u001b[31mred\u001b[0m text"}
+{"func":"w5_progress_88711f_ansi_strip","line":"a\u001b[?25l b  "}
+{"func":"w5_progress_88711f_ansi_strip","line":"no escapes here"}
+{"func":"w5_progress_88711f_normalize_lines","partial":"","text":"a\nb\n"}
+{"func":"w5_progress_88711f_normalize_lines","partial":"pre","text":"x\r\ny\rz"}
+{"func":"w5_progress_88711f_normalize_lines","partial":"","text":""}
+{"func":"w5_progress_88711f_normalize_lines","partial":"","text":"only"}

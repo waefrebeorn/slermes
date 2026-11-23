@@ -1,0 +1,10 @@
+{"func":"release","is_none":true}
+{"func":"release","is_none":false}
+{"func":"acquire_variant","first_warning_present":false,"first_warning_result":false,"removal_release":"v0.27.0","migration_guide":"GUIDE"}
+{"func":"acquire_variant","first_warning_present":false,"first_warning_result":true,"removal_release":"v0.27.0","migration_guide":"GUIDE"}
+{"func":"acquire_variant","first_warning_present":true,"first_warning_result":false,"removal_release":"v0.27.0","migration_guide":"GUIDE"}
+{"func":"acquire_variant","first_warning_present":true,"first_warning_result":true,"removal_release":"v0.27.0","migration_guide":"GUIDE"}
+{"func":"acquire_variant","first_warning_present":true,"first_warning_result":true,"removal_release":"v1.0","migration_guide":"see docs"}
+{"func":"acquire_variant","first_warning_present":true,"first_warning_result":true,"removal_release":"","migration_guide":""}
+{"func":"acquire_variant","first_warning_present":true,"first_warning_result":true,"removal_release":"v0.30.0","migration_guide":"a, b & c"}
+{"func":"release","is_none":false}

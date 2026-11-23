@@ -1,0 +1,16 @@
+{"func":"version","case":"YAML 1.1 resolver version"}
+{"func":"width","case":"roundtrip anti-fold width"}
+{"func":"dump","case":"null scalar","v":null}
+{"func":"dump","case":"bool true","v":true}
+{"func":"dump","case":"bool false","v":false}
+{"func":"dump","case":"int 42","v":42}
+{"func":"dump","case":"int zero","v":0}
+{"func":"dump","case":"float 3.5","v":3.5}
+{"func":"dump","case":"plain string","v":"hello"}
+{"func":"dump","case":"space string plain","v":"a b"}
+{"func":"dump","case":"yaml 1.1 off quoted","v":"off"}
+{"func":"dump","case":"yaml 1.1 y quoted","v":"y"}
+{"func":"dump","case":"empty string quoted","v":""}
+{"func":"dump","case":"unicode snowman plain","v":"café ☃"}
+{"func":"dump","case":"colon-space quoted","v":"a: b"}
+{"func":"dump","case":"numeric string quoted","v":"123"}

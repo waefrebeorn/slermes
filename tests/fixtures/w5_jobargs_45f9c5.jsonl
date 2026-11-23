@@ -1,0 +1,37 @@
+{"func":"split_monitor_arg","monitor":null,"monitor_script":"old.py","monitor_url":"http://old"}
+{"func":"split_monitor_arg","monitor":"   ","monitor_script":"a","monitor_url":"b"}
+{"func":"split_monitor_arg","monitor":" HTTPS://Example.COM/x ","monitor_script":null,"monitor_url":null}
+{"func":"split_monitor_arg","monitor":"  scripts/check.py  ","monitor_script":"keep","monitor_url":"keep"}
+{"func":"repeat_display","job":{}}
+{"func":"repeat_display","job":{"repeat":{}}}
+{"func":"repeat_display","job":{"repeat":{"times":null}}}
+{"func":"repeat_display","job":{"repeat":{"times":1}}}
+{"func":"repeat_display","job":{"repeat":{"times":1,"completed":1}}}
+{"func":"repeat_display","job":{"repeat":{"times":3}}}
+{"func":"repeat_display","job":{"repeat":{"times":3,"completed":2}}}
+{"func":"clean_str_list","items":null}
+{"func":"clean_str_list","items":"  hello  "}
+{"func":"clean_str_list","items":[" a ","","b",null,false,0,2.5]}
+{"func":"clean_str_list","items":[]}
+{"func":"canonical_skills","skill":null,"skills":null}
+{"func":"canonical_skills","skill":"alpha","skills":null}
+{"func":"canonical_skills","skill":"ignored","skills":" beta "}
+{"func":"canonical_skills","skill":null,"skills":[" a ","a","",null," b ","b"]}
+{"func":"canonical_skills","skill":"x","skills":[]}
+{"func":"normalize_optional","value":null,"strip_trailing_slash":true}
+{"func":"normalize_optional","value":"  https://api.example/v1///  ","strip_trailing_slash":true}
+{"func":"normalize_optional","value":"  spaced  ","strip_trailing_slash":false}
+{"func":"normalize_optional","value":0,"strip_trailing_slash":false}
+{"func":"normalize_optional","value":false,"strip_trailing_slash":false}
+{"func":"normalize_optional","value":"///","strip_trailing_slash":true}
+{"func":"normalize_deliver","value":null}
+{"func":"normalize_deliver","value":"  telegram  "}
+{"func":"normalize_deliver","value":[null," telegram ","","discord"]}
+{"func":"normalize_deliver","value":[]}
+{"func":"normalize_deliver","value":123}
+{"func":"apply_continuity","context_from":null,"continuity":true}
+{"func":"apply_continuity","context_from":["SELF","a"],"continuity":false}
+{"func":"apply_continuity","context_from":["a","b"],"continuity":true}
+{"func":"apply_continuity","context_from":["self"],"continuity":false}
+{"func":"base_url_refused","bu":"http://evil.example/v1","prov":"openai","why":"same origin only"}
+{"func":"base_url_refused","bu":"x'y","prov":"a\"b","why":"it's blocked"}

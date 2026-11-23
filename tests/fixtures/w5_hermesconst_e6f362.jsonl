@@ -1,0 +1,14 @@
+{"func":"encode","chain":null}
+{"func":"encode","chain":[]}
+{"func":"encode","chain":[[123,1000.0]]}
+{"func":"encode","chain":[[1,1.5],[2,2.25]]}
+{"func":"encode","chain":[[7,0.0],[8,-2.5],[9,100000.0]]}
+{"func":"encode","chain":[[10,1e+20],[11,1e-05]]}
+{"func":"decode","lineage":"-"}
+{"func":"decode","lineage":"123:1000.0"}
+{"func":"decode","lineage":"1:1.5,2:2.25"}
+{"func":"decode","lineage":"5:1e+20,6:0.0001"}
+{"func":"decode","lineage":""}
+{"func":"decode","lineage":"1:2:3"}
+{"func":"child_script"}
+{"func":"child_script"}

@@ -1,0 +1,23 @@
+{"func":"manager_order","tokens":["ubuntu","debian"]}
+{"func":"manager_order","tokens":["rhel","fedora"]}
+{"func":"manager_order","tokens":["opensuse-leap","sles_sap"]}
+{"func":"manager_order","tokens":["arch","manjaro"]}
+{"func":"manager_order","tokens":["alpine"]}
+{"func":"manager_order","tokens":[]}
+{"func":"manager_order","tokens":["unknown","gentoo"]}
+{"func":"manager_order","tokens":["linuxmint","fedora","suse"]}
+{"func":"host_install_command","tokens":["debian"],"available":["apt-get","dnf"]}
+{"func":"host_install_command","tokens":["fedora"],"available":["yum","dnf"]}
+{"func":"host_install_command","tokens":["fedora"],"available":["apt-get"]}
+{"func":"host_install_command","tokens":["opensuse"],"available":["zypper","apk"]}
+{"func":"host_install_command","tokens":[],"available":[]}
+{"func":"command_plan","command":["apt-get","install","-y","libatomic1"],"is_root":true,"sudo_path":"/usr/bin/sudo"}
+{"func":"command_plan","command":["dnf","install","-y","libatomic"],"is_root":false,"sudo_path":"/usr/bin/sudo"}
+{"func":"command_plan","command":["apk","add","libatomic"],"is_root":false,"sudo_path":""}
+{"func":"command_plan","command":["a b","x'y",""],"is_root":false,"sudo_path":"/bin/sudo"}
+{"func":"command_plan","command":[],"is_root":true,"sudo_path":""}
+{"func":"shlex_join","tokens":["apt-get","install","-y","libatomic1"]}
+{"func":"shlex_join","tokens":[]}
+{"func":"shlex_join","tokens":[""]}
+{"func":"shlex_join","tokens":["a b","x'y","semi;colon"]}
+{"func":"shlex_join","tokens":["sudo","-n","lib@atomic=v1","path/to/x"]}

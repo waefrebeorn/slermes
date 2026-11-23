@@ -1,0 +1,18 @@
+{"func":"venv_bin_dir","case":1,"venv":"venv","windows":1}
+{"func":"venv_bin_dir","case":2,"venv":"venv","windows":0}
+{"func":"venv_bin_dir","case":3,"venv":"C:/proj/venv","windows":1}
+{"func":"venv_bin_dir","case":4,"venv":".venv","windows":0}
+{"func":"venv_bin_dir","case":5,"venv":"env","windows":-1}
+{"func":"venv_bin_dir","case":6,"venv":"v/","windows":0}
+{"func":"venv_python","case":7,"venv":"venv","windows":1}
+{"func":"venv_python","case":8,"venv":"venv","windows":0}
+{"func":"fish_quote","case":9,"value":"hello"}
+{"func":"fish_quote","case":10,"value":"a'b\\c"}
+{"func":"shell_exports","case":11,"env":{"FOO":"bar","BAZ":"a b"},"dialect":"sh"}
+{"func":"shell_exports","case":12,"env":{"PATH":"/a:/b"},"dialect":"sh"}
+{"func":"shell_exports","case":13,"env":{"PWD":"/tmp","FOO":"x"},"dialect":"fish"}
+{"func":"shell_exports","case":14,"env":{"FOO":"a'b"},"dialect":"fish"}
+{"func":"shell_exports","case":15,"env":{"9BAD":"x","good":"y"},"dialect":"sh"}
+{"func":"shell_exports","case":16,"env":{},"dialect":"sh"}
+{"func":"install_key","case":17,"canonical":"C:/proj"}
+{"func":"install_key","case":18,"canonical":"/home/user/repo"}

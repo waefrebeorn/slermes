@@ -1,0 +1,17 @@
+{"func":"extra","name":"foo_bar"}
+{"func":"extra","name":"FOO.BAR"}
+{"func":"extra","name":"a--b__c"}
+{"func":"extra","name":"plain"}
+{"func":"extra","name":""}
+{"func":"extra","name":"a.b_c-d"}
+{"func":"extra","name":"---"}
+{"func":"identity","target":"linux-x64","artifacts":[]}
+{"func":"identity","target":"linux-x64","artifacts":["abc123"]}
+{"func":"identity","target":"win32-x64","artifacts":["a","b","c"]}
+{"func":"order","names":["node","npm"],"deps":{"node":[],"npm":["node"]}}
+{"func":"order","names":["a","b","c"],"deps":{}}
+{"func":"order","names":["a","b","c"],"deps":{"c":["a","b"]}}
+{"func":"order","names":["b","a"],"deps":{"a":["b"]}}
+{"func":"order","names":["x","y"],"deps":{"y":["z"]}}
+{"func":"order","names":["a","b"],"deps":{"a":["a"]}}
+{"func":"order","names":["node","npm","pnpm"],"deps":{"node":[],"npm":["node"],"pnpm":["node","npm"]}}

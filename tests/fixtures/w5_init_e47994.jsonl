@@ -1,0 +1,10 @@
+{"func":"check","delegated":true,"case":"terminal backend available"}
+{"func":"check","delegated":false,"case":"terminal backend unavailable"}
+{"func":"check","delegated":true,"case":"delegation returns true"}
+{"func":"check","delegated":false,"case":"delegation returns false"}
+{"func":"check","delegated":true,"case":"repeated check after true"}
+{"func":"check","delegated":false,"case":"repeated check after false"}
+{"func":"check","delegated":true,"case":"no stack loaded by namespace"}
+{"func":"check","delegated":false,"case":"fallback refusal path"}
+{"func":"all","case":"public namespace exports"}
+{"func":"all","case":"exports are side-effect free"}

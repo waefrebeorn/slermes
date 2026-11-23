@@ -1,0 +1,18 @@
+{"func": "w5_buildenv_1eb2c8_parse_requirements", "text": "requests\nflask\n"}
+{"func": "w5_buildenv_1eb2c8_parse_requirements", "text": "# comment\n  # indented comment\n  pkg  \n"}
+{"func": "w5_buildenv_1eb2c8_parse_requirements", "text": ""}
+{"func": "w5_buildenv_1eb2c8_parse_requirements", "text": "a\r\nb\rc\u000bd\fe"}
+{"func": "w5_buildenv_1eb2c8_parse_requirements", "text": "  \n\t\n"}
+{"func": "w5_buildenv_1eb2c8_parse_requirements", "text": "foo\n#x\nbar"}
+{"func": "w5_buildenv_1eb2c8_parse_requirements", "text": "one\ntwo\nthree\n"}
+{"func": "w5_buildenv_1eb2c8_parse_requirements", "text": "  spaced  \n\tTABBED\t"}
+{"func": "w5_buildenv_1eb2c8_record_selection_invalid", "record_selection": false, "build": true, "requirements_count": 0, "manager_runtime": false, "all_extras": false, "groups_count": 0, "extras_count": 0}
+{"func": "w5_buildenv_1eb2c8_record_selection_invalid", "record_selection": true, "build": true, "requirements_count": 0, "manager_runtime": false, "all_extras": false, "groups_count": 0, "extras_count": 1}
+{"func": "w5_buildenv_1eb2c8_record_selection_invalid", "record_selection": true, "build": false, "requirements_count": 0, "manager_runtime": false, "all_extras": false, "groups_count": 0, "extras_count": 1}
+{"func": "w5_buildenv_1eb2c8_record_selection_invalid", "record_selection": true, "build": true, "requirements_count": 1, "manager_runtime": false, "all_extras": false, "groups_count": 0, "extras_count": 1}
+{"func": "w5_buildenv_1eb2c8_record_selection_invalid", "record_selection": true, "build": true, "requirements_count": 0, "manager_runtime": true, "all_extras": false, "groups_count": 0, "extras_count": 1}
+{"func": "w5_buildenv_1eb2c8_record_selection_invalid", "record_selection": true, "build": true, "requirements_count": 0, "manager_runtime": false, "all_extras": true, "groups_count": 0, "extras_count": 1}
+{"func": "w5_buildenv_1eb2c8_record_selection_invalid", "record_selection": true, "build": true, "requirements_count": 0, "manager_runtime": false, "all_extras": false, "groups_count": 1, "extras_count": 1}
+{"func": "w5_buildenv_1eb2c8_record_selection_invalid", "record_selection": true, "build": true, "requirements_count": 0, "manager_runtime": false, "all_extras": false, "groups_count": 0, "extras_count": 0}
+{"func": "w5_buildenv_1eb2c8_record_selection_invalid", "record_selection": true, "build": true, "requirements_count": 0, "manager_runtime": false, "all_extras": false, "groups_count": 0, "extras_count": 2}
+{"func": "w5_buildenv_1eb2c8_record_selection_invalid", "record_selection": false, "build": false, "requirements_count": 3, "manager_runtime": true, "all_extras": true, "groups_count": 2, "extras_count": 0}

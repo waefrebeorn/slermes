@@ -1,0 +1,13 @@
+{"func":"public_url","case":"no webapp","webapp_present":false,"public_url":"https://x"}
+{"func":"public_url","case":"webapp with url","webapp_present":true,"public_url":"https://x"}
+{"func":"public_url","case":"webapp empty url","webapp_present":true,"public_url":""}
+{"func":"public_url","case":"webapp null url","webapp_present":true,"public_url":null}
+{"func":"embedded","case":"not loaded","loaded_web":false}
+{"func":"embedded","case":"loaded no flag","loaded_web":true,"has_flag":false}
+{"func":"embedded","case":"loaded flag true","loaded_web":true,"has_flag":true,"flag_val":true}
+{"func":"embedded","case":"loaded flag false","loaded_web":true,"has_flag":true,"flag_val":false}
+{"func":"socket","case":"no port","port":0,"is_nt":false,"dual_stack":false}
+{"func":"socket","case":"posix fixed port reuse","port":8080,"is_nt":false,"dual_stack":false}
+{"func":"socket","case":"windows fixed port exclusive","port":8080,"is_nt":true,"dual_stack":false}
+{"func":"socket","case":"posix dual stack reuse","port":8080,"is_nt":false,"dual_stack":true}
+{"func":"socket","case":"windows dual stack exclusive","port":1,"is_nt":true,"dual_stack":true}

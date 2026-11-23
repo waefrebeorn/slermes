@@ -1,0 +1,9 @@
+{"func":"path_insert","file":"C:\\Users\\T\\proj\\pm\\launch.py"}
+{"func":"path_insert","file":"C:/Users/T/proj/pm/launch.py"}
+{"func":"path_insert","file":"D:\\a\\b\\c\\launch.py"}
+{"func":"path_insert","file":"C:\\a\\b\\..\\c\\pm\\launch.py"}
+{"func":"path_insert","file":"C:\\a\\b\\pm\\.\\launch.py"}
+{"func":"main","cli_rc":0}
+{"func":"main","cli_rc":1}
+{"func":"main","cli_rc":42}
+{"func":"main","cli_rc":-1}

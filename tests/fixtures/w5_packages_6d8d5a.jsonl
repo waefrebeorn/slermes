@@ -1,0 +1,26 @@
+{"func": "w5_packages_6d8d5a_dmgbuild_fetch_url", "version": "5.0.1+1", "target": "darwin-arm64"}
+{"func": "w5_packages_6d8d5a_dmgbuild_fetch_url", "version": "6.0.0+2", "target": "darwin-x64"}
+{"func": "w5_packages_6d8d5a_dmgbuild_fetch_url", "version": "7.1.0", "target": "darwin-arm64"}
+{"func": "w5_packages_6d8d5a_nodejs_fetch_url", "version": "22.10.0", "target": "linux-x64"}
+{"func": "w5_packages_6d8d5a_nodejs_fetch_url", "version": "22.10.0", "target": "win32-x64"}
+{"func": "w5_packages_6d8d5a_nodejs_fetch_url", "version": "22.10.0", "target": "linux-x64-musl"}
+{"func": "w5_packages_6d8d5a_nodejs_fetch_url", "version": "3.2.1", "target": "linux-arm64-bionic"}
+{"func": "w5_packages_6d8d5a_nodejs_fetch_url", "version": "20.0.0", "target": "darwin-arm64"}
+{"func": "w5_packages_6d8d5a_git_fetch_url", "version": "2.56.0+1", "target": "win32-x64"}
+{"func": "w5_packages_6d8d5a_git_fetch_url", "version": "2.53.0+3", "target": "win32-arm64"}
+{"func": "w5_packages_6d8d5a_gh_fetch_url", "version": "2.70.0", "target": "linux-x64"}
+{"func": "w5_packages_6d8d5a_gh_fetch_url", "version": "2.70.0", "target": "linux-x64-musl"}
+{"func": "w5_packages_6d8d5a_gh_fetch_url", "version": "2.70.0", "target": "darwin-arm64"}
+{"func": "w5_packages_6d8d5a_gh_fetch_url", "version": "2.70.0", "target": "win32-x64"}
+{"func": "w5_packages_6d8d5a_uv_fetch_url", "version": "0.9.0", "target": "linux-x64"}
+{"func": "w5_packages_6d8d5a_uv_fetch_url", "version": "0.9.0", "target": "win32-arm64"}
+{"func": "w5_packages_6d8d5a_uv_fetch_url", "version": "1.2.3", "target": "linux-arm64-bionic"}
+{"func": "w5_packages_6d8d5a_ripgrep_fetch_url", "version": "14.1.0", "target": "linux-x64"}
+{"func": "w5_packages_6d8d5a_ripgrep_fetch_url", "version": "14.1.0", "target": "linux-arm64-bionic"}
+{"func": "w5_packages_6d8d5a_ripgrep_fetch_url", "version": "14.1.0", "target": "win32-x64"}
+{"func": "w5_packages_6d8d5a_chromium_store_entry", "version": "1234+131.0.6778.85"}
+{"func": "w5_packages_6d8d5a_chromium_store_entry", "version": "999"}
+{"func": "w5_packages_6d8d5a_chromium_store_entry", "version": "1+2+3"}
+{"func": "w5_packages_6d8d5a_npm_env", "cache_dir": "/tmp/uv-cache", "base_env": {"PATH": "/usr/bin", "npm_config_foo": "x", "NPM_CONFIG_BAR": "y", "NODE_OPTIONS": "--x", "node_path": "/n", "Node_ENV": "prod", "CI": "1", "HERMES_VERBOSE": "0"}}
+{"func": "w5_packages_6d8d5a_npm_env", "cache_dir": "C:/cache", "base_env": {}}
+{"func": "w5_packages_6d8d5a_npm_env", "cache_dir": "/c", "base_env": {"npm_config_cache": "old", "KEEP": "v"}}

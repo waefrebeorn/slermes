@@ -1,0 +1,16 @@
+{"func":"copies","dirs":["C:\\UserTools","C:\\Programs\\node"],"applies":false,"sealed":{"node":["C:\\Program Files\\nodejs"]},"copies_map":{"node":["D:\\node-copy"]},"case":"windows sealed check off keeps dirs verbatim"}
+{"func":"copies","dirs":["C:\\npm","C:\\other"],"applies":true,"sealed":{"npm":["C:\\npm"]},"copies_map":{"npm":["D:\\npm-copy"]},"case":"npm packaged dir swapped"}
+{"func":"copies","dirs":["C:\\node1","C:\\node2","C:\\x"],"applies":true,"sealed":{"node":["C:\\node1","C:\\node2"]},"copies_map":{"node":["D:\\node"]},"case":"two sealed dirs collapse to one copy"}
+{"func":"copies","dirs":["C:\\python"],"applies":true,"sealed":{"python":["C:\\python"]},"copies_map":{},"case":"sealed without writable copy stays"}
+{"func":"copies","dirs":["C:/Programs/Node"],"applies":true,"sealed":{"node":["c:\\programs\\node"]},"copies_map":{"node":["D:\\n"]},"case":"normcase matches slash and case differences"}
+{"func":"copies","dirs":["A","A","B"],"applies":true,"sealed":{},"copies_map":{},"case":"unrelated dirs deduplicated"}
+{"func":"copies","dirs":["C:\\npm","C:\\python","C:\\node","C:\\keep"],"applies":true,"sealed":{"npm":["C:\\npm"],"python":["C:\\python"],"node":["C:\\node"]},"copies_map":{"npm":["D:\\npm"],"python":["D:\\py"],"node":["D:\\node"]},"case":"all three copied packages swapped in COPIED order"}
+{"func":"copies","dirs":["C:\\npm"],"applies":true,"sealed":{"npm":["C:\\npm"]},"copies_map":{"npm":["D:\\a","D:\\b"]},"case":"copy mapping to multiple dirs"}
+{"func":"path","path":"C:\\user;C:\\Hermes\\tools;C:\\bin","store":[],"ours":[],"python_copies":[],"stub_flags":{},"case":"no store dirs leaves path unchanged"}
+{"func":"path","path":"C:\\user;C:\\Hermes\\tools;C:\\bin","store":["C:\\Hermes\\tools"],"ours":["C:\\Hermes\\copy"],"python_copies":[],"stub_flags":{},"case":"store dirs removed copies appended late"}
+{"func":"path","path":"C:\\me;C:\\WindowsApps","store":["C:\\Hermes"],"ours":["C:\\Hermes\\python-copy"],"python_copies":["C:\\Hermes\\python-copy"],"stub_flags":{"c:\\windowsapps":true},"case":"python copy inserted before the store stub"}
+{"func":"path","path":"C:\\a;C:\\b;C:\\c","store":["C:\\Hermes"],"ours":["D:\\py"],"python_copies":[],"stub_flags":{},"case":"no stub copies go last"}
+{"func":"path","path":"A;C:\\u;C:\\hermes;C:\\u","store":["C:\\hermes"],"ours":["D:\\copy"],"python_copies":["D:\\copy"],"stub_flags":{},"case":"first occurrence dedup across all segments"}
+{"func":"path","path":"c:/Hermes/Tools;C:\\mine","store":["C:\\Hermes\\Tools"],"ours":["D:\\copy"],"python_copies":[],"stub_flags":{},"case":"store dir removed by normcase"}
+{"func":"path","path":"C:\\a;C:\\b","store":["C:\\h"],"ours":["D:\\py"],"python_copies":["D:\\py"],"stub_flags":{"c:\\a":true,"c:\\b":true},"case":"first stub wins the cut"}
+{"func":"path","path":"C:\\u1;C:\\WINDOWSAPPS;C:\\u2","store":["C:\\Hermes","C:\\Hermes\\Tools"],"ours":["D:\\py","D:\\node"],"python_copies":["D:\\py"],"stub_flags":{"c:\\windowsapps":true},"case":"mixed early and late copies"}

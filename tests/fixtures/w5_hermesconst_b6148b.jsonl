@@ -1,0 +1,20 @@
+{"func":"is_permission_error","is_oserror":true,"err":13}
+{"func":"is_permission_error","is_oserror":true,"err":"1"}
+{"func":"is_permission_error","is_oserror":true,"err":2}
+{"func":"is_permission_error","is_oserror":false,"err":13}
+{"func":"accessible","lexists":false,"access_ok":false}
+{"func":"accessible","lexists":true,"access_ok":true}
+{"func":"accessible","lexists":true,"access_ok":false}
+{"func":"still_stuck","rec":"{\"uid\":1000,\"since\":1000.0,\"fp\":[1,2,3],\"blockers\":[\"/a\"]}","fp":"[1,2,3]","access":"[false]","uid":1000,"now":2000.0}
+{"func":"still_stuck","rec":"{\"uid\":1000,\"since\":1000.0,\"fp\":[1,2,3],\"blockers\":[\"/a\"]}","fp":"[1,2,3]","access":"[true]","uid":1000,"now":2000.0}
+{"func":"still_stuck","rec":"{\"uid\":1001,\"since\":1000.0,\"fp\":[1,2,3],\"blockers\":[\"/a\"]}","fp":"[1,2,3]","access":"[false]","uid":1000,"now":2000.0}
+{"func":"still_stuck","rec":"{\"uid\":1000,\"since\":1000.0,\"fp\":[1,2,3],\"blockers\":[\"/a\"]}","fp":"[9,9,9]","access":"[false]","uid":1000,"now":2000.0}
+{"func":"still_stuck","rec":"{\"uid\":1000,\"since\":1.0,\"fp\":[1,2,3],\"blockers\":[\"/a\"]}","fp":"[1,2,3]","access":"[false]","uid":1000,"now":700000.0}
+{"func":"still_stuck","rec":"{\"uid\":1000,\"since\":1000.0,\"fp\":[1,2,3],\"blockers\":[]}","fp":"[1,2,3]","access":"[]","uid":1000,"now":2000.0}
+{"func":"still_stuck","rec":"{\"uid\":1000,\"since\":1000.0,\"fp\":[1,2,3],\"blockers\":[\"/a\",5,\"/b\"]}","fp":"[1,2,3]","access":"[true,false,false]","uid":1000,"now":2000.0}
+{"func":"still_stuck","rec":"{\"uid\":1000,\"since\":1000.0,\"fp\":[1,2,3],\"blockers\":[\"/a\",5,\"/b\"]}","fp":"[1,2,3]","access":"[true,false,true]","uid":1000,"now":2000.0}
+{"func":"shlex_quote","s":"simple/path"}
+{"func":"shlex_quote","s":"a b/c"}
+{"func":"shlex_quote","s":"it's here"}
+{"func":"shlex_quote","s":""}
+{"func":"shlex_quote","s":"under_score-@%+=:,./"}

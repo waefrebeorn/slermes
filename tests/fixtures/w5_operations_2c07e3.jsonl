@@ -1,0 +1,8 @@
+{"func": "environment_root", "name": "foo", "root": "C:/envs/x"}
+{"func": "environment_root", "name": "a.b-c_1", "root": "C:/envs/y"}
+{"func": "environment_root", "name": "bad name", "root": "C:/envs/z"}
+{"func": "environment_root", "name": "1abc", "root": "C:/e"}
+{"func": "environment_root", "name": "", "root": "C:/e"}
+{"func": "environment_root", "name": ".hidden", "root": "C:/e"}
+{"func": "environment_root", "name": "abc", "root": "D:\\a\\b"}
+{"func": "environment_root", "name": "x_y-Z.9", "root": "C:/envs/final"}

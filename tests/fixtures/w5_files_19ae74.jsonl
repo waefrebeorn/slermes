@@ -1,0 +1,28 @@
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "yes"}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "NO"}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "Off"}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "null"}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "~"}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "y"}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "maybe"}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "on"}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": ""}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "TRUE"}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "port"}
+{"func": "w5_files_19ae74_yaml11_ambiguous", "word": "n"}
+{"func": "w5_files_19ae74_contended_replace_error", "is_windows": true, "winerror": 5}
+{"func": "w5_files_19ae74_contended_replace_error", "is_windows": true, "winerror": 32}
+{"func": "w5_files_19ae74_contended_replace_error", "is_windows": true, "winerror": 33}
+{"func": "w5_files_19ae74_contended_replace_error", "is_windows": true, "winerror": 5}
+{"func": "w5_files_19ae74_contended_replace_error", "is_windows": false, "winerror": 5}
+{"func": "w5_files_19ae74_contended_replace_error", "is_windows": true, "winerror": -1}
+{"func": "w5_files_19ae74_contended_replace_error", "is_windows": true, "winerror": 13}
+{"func": "w5_files_19ae74_contended_replace_error", "is_windows": true, "winerror": 0}
+{"func": "w5_files_19ae74_mtime_is_racy", "mtime_ns": "1700000000000000000", "now_ns": "1700000000000000000"}
+{"func": "w5_files_19ae74_mtime_is_racy", "mtime_ns": "1699999998000000001", "now_ns": "1700000000000000000"}
+{"func": "w5_files_19ae74_mtime_is_racy", "mtime_ns": "1699999998000000000", "now_ns": "1700000000000000000"}
+{"func": "w5_files_19ae74_mtime_is_racy", "mtime_ns": "1699999997000000000", "now_ns": "1700000000000000000"}
+{"func": "w5_files_19ae74_mtime_is_racy", "mtime_ns": "1700000000000000100", "now_ns": "1700000000000000000"}
+{"func": "w5_files_19ae74_file_signature", "mtime_ns": "1700000000000000000", "size": "12345", "ino": "678", "ctime_ns": "1700000000000000001"}
+{"func": "w5_files_19ae74_file_signature", "mtime_ns": "0", "size": "0", "ino": "0", "ctime_ns": "0"}
+{"func": "w5_files_19ae74_file_signature", "mtime_ns": "1700000000000000000", "size": "9223372036854775807", "ino": "1", "ctime_ns": "2"}
