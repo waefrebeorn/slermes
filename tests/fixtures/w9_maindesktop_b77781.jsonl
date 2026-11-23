@@ -1,0 +1,10 @@
+{"func": "sign", "installed": {"team": null, "identifier": null, "verified": true}, "rebuilt": null}
+{"func": "sign", "installed": {"team": "TEAM1", "identifier": "com.x", "verified": true}, "rebuilt": null}
+{"func": "sign", "installed": {"team": "TEAM1", "identifier": "com.x", "verified": true}, "rebuilt": {"team": null, "identifier": null, "verified": false}}
+{"func": "sign", "installed": {"team": "TEAM1", "identifier": "com.x", "verified": true}, "rebuilt": {"team": "TEAM2", "identifier": "com.x", "verified": true}}
+{"func": "sign", "installed": {"team": "TEAM1", "identifier": "com.x", "verified": true}, "rebuilt": {"team": "TEAM1", "identifier": "com.y", "verified": true}}
+{"func": "sign", "installed": {"team": "TEAM1", "identifier": "com.x", "verified": true}, "rebuilt": {"team": "TEAM1", "identifier": "com.x", "verified": false}}
+{"func": "sign", "installed": {"team": "TEAM1", "identifier": "com.x", "verified": true}, "rebuilt": {"team": "TEAM1", "identifier": "com.x", "verified": true}}
+{"func": "sign", "installed": {"team": "TEAM1", "identifier": null, "verified": true}, "rebuilt": {"team": "TEAM1", "identifier": "com.y", "verified": true}}
+{"func": "sign", "installed": {"team": "TEAM1", "identifier": "com.x", "verified": true}, "rebuilt": {"team": "TEAM1", "identifier": null, "verified": false}}
+{"func": "sign", "installed": {"team": "", "identifier": "com.x", "verified": true}, "rebuilt": null}

@@ -1,0 +1,20 @@
+{"func":"is_side_event","name":"background.complete","case":"background completion is a side event"}
+{"func":"is_side_event","name":"btw.complete","case":"btw completion is a side event"}
+{"func":"is_side_event","name":"background.started","case":"other event is not a side event"}
+{"func":"is_side_event","name":"","case":"empty event name"}
+{"func":"connection_for","has_store":true,"session_open":true,"final":false,"case":"open gateway session has a connection"}
+{"func":"connection_for","has_store":false,"session_open":true,"final":false,"case":"no store means not rewired"}
+{"func":"connection_for","has_store":true,"session_open":false,"final":false,"case":"closed session has no connection"}
+{"func":"connection_for","has_store":true,"session_open":true,"final":true,"case":"final connection is not reusable"}
+{"func":"start","verb":"bg","result":{"task_id":"task-1"},"case":"valid task id echoed"}
+{"func":"start","verb":"btw","result":{"task_id":1234},"case":"numeric task id echoed"}
+{"func":"start","verb":"bg","result":{},"case":"missing task id is an error"}
+{"func":"start","verb":"btw","result":{"task_id":0},"case":"falsy task id is an error"}
+{"func":"start","verb":"bg","result":null,"case":"null result is an error"}
+{"func":"answer","payload":{"text":"the answer"},"case":"plain answer"}
+{"func":"answer","payload":{"text":"error: something failed"},"case":"error prefix becomes error"}
+{"func":"answer","payload":{"text":null},"case":"null text is empty answer"}
+{"func":"answer","payload":null,"case":"null payload is empty answer"}
+{"func":"answer","payload":{"text":42},"case":"numeric text is coerced with str"}
+{"func":"answer","payload":{"text":true},"case":"boolean text is coerced with str"}
+{"func":"answer","payload":{"text":""},"case":"empty string answer"}

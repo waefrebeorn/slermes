@@ -1,0 +1,11 @@
+{"func":"replace","in":{"provider_data":{},"replacements":{}}}
+{"func":"replace","in":{"provider_data":{"anthropic_content_blocks":[{"type":"text","text":"hello"}]},"replacements":{"tool_1":[{"id":"c1","function":{"name":"search","arguments":"{}"}}]}}}
+{"func":"replace","in":{"provider_data":{"anthropic_content_blocks":[{"type":"tool_use","id":"tool_1"}]},"replacements":{"tool_1":[{"id":"child_1","function":{"name":"search","arguments":"{\"calls\":[{\"name\":\"search\"}]}"}}]}}}
+{"func":"replace","in":{"provider_data":{"anthropic_content_blocks":[{"type":"tool_use","id":"missing"}]},"replacements":{"tool_1":[{"id":"c1","function":{"name":"search","arguments":"{}"}}]}}}
+{"func":"replace","in":{"provider_data":{"anthropic_content_blocks":[{"type":"tool_use","id":"t"}]},"replacements":{"t":[{"id":"c1","function":{"name":"a","arguments":"{\"calls\":[1]}"}},{"id":"c2","function":{"name":"b","arguments":"{\"calls\":[2]}"}}]}}}
+{"func":"replace","in":{"provider_data":{"anthropic_content_blocks":[{"type":"tool_use","id":"t"}]},"replacements":{"t":[]}}}
+{"func":"replace","in":{"provider_data":{"bedrock_content_blocks":[{"type":"toolUse","toolUse":{"toolUseId":"b1","name":"old","input":{}}}]},"replacements":{"b1":[{"id":"bc1","function":{"name":"lookup","arguments":"{\"calls\":[{\"name\":\"lookup\"}]}"}}]}}}
+{"func":"replace","in":{"provider_data":{"bedrock_content_blocks":[{"type":"toolUse","toolUse":"not-an-object"}]},"replacements":{"b1":[{"id":"bc1","function":{"name":"lookup","arguments":"{}"}}]}}}
+{"func":"replace","in":{"provider_data":{"anthropic_content_blocks":[{"type":"tool_use","id":"a"}],"bedrock_content_blocks":[{"type":"toolUse","toolUse":{"toolUseId":"b"}}],"other":"kept"},"replacements":{"a":[{"id":"ca","function":{"name":"fa","arguments":"{\"x\":1}"}}],"b":[{"id":"cb","function":{"name":"fb","arguments":"{\"y\":2}"}}]}}}
+{"func":"replace","in":{"provider_data":{"anthropic_content_blocks":[],"bedrock_content_blocks":[]},"replacements":{}}}
+{"func":"replace","in":{"provider_data":{"anthropic_content_blocks":[{"type":"tool_use","id":"old","name":"keep","input":{"x":1}}]},"replacements":{"old":[{"id":"new","function":{"name":"fresh","arguments":"{}"}}]}}}

@@ -1,0 +1,12 @@
+{"func":"names","case":"basic","methods":["a","b","a"]}
+{"func":"names","case":"empty","methods":[]}
+{"func":"names","case":"sorted","methods":["zeta","alpha","mid"]}
+{"func":"names","case":"dupes","methods":["x","x","x"]}
+{"func":"skip","case":"dunder","name":"__init__","skip":[]}
+{"func":"skip","case":"plumbing_logger","name":"logger","skip":[]}
+{"func":"skip","case":"plumbing_rebind","name":"rebind","skip":[]}
+{"func":"skip","case":"in_skip","name":"custom","skip":["custom","other"]}
+{"func":"skip","case":"normal","name":"handle","skip":[]}
+{"func":"skip","case":"not_in_skip","name":"handle","skip":["other"]}
+{"func":"skip","case":"single_underscore","name":"_private","skip":[]}
+{"func":"skip","case":"plumbing_method","name":"method","skip":[]}

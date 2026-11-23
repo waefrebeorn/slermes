@@ -1,0 +1,21 @@
+{"func":"normalize_mode","value":"  SMART  ","case":"n1"}
+{"func":"normalize_mode","value":false,"case":"n2"}
+{"func":"normalize_mode","value":true,"case":"n3"}
+{"func":"normalize_mode","value":"auto","case":"n4"}
+{"func":"normalize_mode","value":null,"case":"n5"}
+{"func":"normalize_mode","value":"Off","case":"n6"}
+{"func":"format_window","seconds":"300","case":"w1"}
+{"func":"format_window","seconds":"3600","case":"w2"}
+{"func":"format_window","seconds":"1","case":"w3"}
+{"func":"format_window","seconds":"0","case":"w4"}
+{"func":"format_window","seconds":"7200","case":"w5"}
+{"func":"format_window","seconds":"90","case":"w6"}
+{"func":"binary_mode","value":"off","case":"b1"}
+{"func":"binary_mode","value":"YES","case":"b2"}
+{"func":"binary_mode","value":true,"case":"b3"}
+{"func":"binary_mode","value":"deny","case":"b4"}
+{"func":"unattended_platform","platform":"webhook","case":"u1"}
+{"func":"unattended_platform","platform":"cli","case":"u2"}
+{"func":"unattended_platform","platform":"api_server","case":"u3"}
+{"func":"prompt_authority","req":{"requester_id":"u1"},"env":{"HERMES_SESSION_ACTOR_NAME":"EnvName","HERMES_SESSION_CHAT_TYPE":"group"},"approvers":null,"case":"p1"}
+{"func":"prompt_authority","req":{},"env":{"HERMES_SESSION_ACTOR_ID":"envid"},"approvers":["alice","bob"],"case":"p2"}

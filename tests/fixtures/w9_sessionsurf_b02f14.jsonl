@@ -1,0 +1,17 @@
+{"case":1,"func":"submit","params":{}}
+{"case":2,"func":"submit","params":{"surface":"hud","voice_context":"ctx","interrupted":true,"voice_turn":false,"extra":9}}
+{"case":3,"func":"admit","params":{}}
+{"case":4,"func":"admit","params":{"surface":"hud"}}
+{"case":5,"func":"admit","params":{"surface":"voice-live","voice_context":"hello world"}}
+{"case":6,"func":"admit","params":{"surface":"bad"}}
+{"case":7,"func":"admit","params":{"voice_context":"orphan"}}
+{"case":8,"func":"admit","params":{"surface":"voice-live","voice_context":123}}
+{"case":9,"func":"admit","params":{"interrupted":1}}
+{"case":10,"func":"admit","params":{"voice_turn":false}}
+{"case":11,"func":"admit","params":{"interrupted":true,"voice_turn":true,"surface":null}}
+{"case":12,"func":"restore","committed":{"surface":"hud"}}
+{"case":13,"func":"restore","committed":{}}
+{"case":14,"func":"restore","committed":{"bogus":1}}
+{"case":15,"func":"restore","committed":{"surface":"hud","voice_context":"x"}}
+{"case":16,"func":"restore","committed":{"interrupted":true}}
+{"case":17,"func":"admit","params":{"surface":"voice-live","voice_context":"abc"}}

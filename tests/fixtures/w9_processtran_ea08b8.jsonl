@@ -1,0 +1,12 @@
+{"func":"is_local_server","base_url":"http://localhost:11434","local":true,"external":false}
+{"func":"is_local_server","base_url":"http://localhost:11434","local":true,"external":true}
+{"func":"is_local_server","base_url":"process://child","local":false,"external":true}
+{"func":"is_local_server","base_url":"","local":true,"external":false}
+{"func":"is_local_server","base_url":"http://example.com","local":false,"external":false}
+{"func":"is_local_server","base_url":"http://10.0.0.5","local":true,"external":false,"provider":"ollama"}
+{"func":"waits_like_local","base_url":"http://localhost:11434","local":true,"external":false}
+{"func":"waits_like_local","base_url":"http://localhost:11434","local":true,"external":true}
+{"func":"waits_like_local","base_url":"process://child","local":false,"external":true}
+{"func":"waits_like_local","base_url":"","local":true,"external":false}
+{"func":"waits_like_local","base_url":"","local":false,"external":true}
+{"func":"waits_like_local","base_url":"http://example.com","local":false,"external":false}

@@ -1,0 +1,52 @@
+{"func": "normalize", "base_url": ""}
+{"func": "normalize", "base_url": ":11434"}
+{"func": "normalize", "base_url": "localhost"}
+{"func": "normalize", "base_url": "localhost:11434"}
+{"func": "normalize", "base_url": "http://x"}
+{"func": "normalize", "base_url": "https://x/v1"}
+{"func": "normalize", "base_url": "  :1234  "}
+{"func": "normalize", "base_url": "ftp://x"}
+{"func": "root", "base_url": ""}
+{"func": "root", "base_url": ":11434"}
+{"func": "root", "base_url": "http://x:11434/v1"}
+{"func": "root", "base_url": "http://x:11434/api/tags"}
+{"func": "root", "base_url": "http://x/v1/models"}
+{"func": "root", "base_url": "http://x/api"}
+{"func": "root", "base_url": "http://x/v1"}
+{"func": "root", "base_url": "http://x/"}
+{"func": "root", "base_url": "https://api.x/v1"}
+{"func": "host", "env_host": ""}
+{"func": "host", "env_host": ":11434"}
+{"func": "host", "env_host": "::1"}
+{"func": "host", "env_host": "[::1]"}
+{"func": "host", "env_host": "[::1]:11434"}
+{"func": "host", "env_host": "localhost"}
+{"func": "host", "env_host": "localhost:1234"}
+{"func": "host", "env_host": "http://localhost"}
+{"func": "host", "env_host": "http://user@localhost"}
+{"func": "host", "env_host": "http://[::1]"}
+{"func": "host", "env_host": "http://localhost:1234"}
+{"func": "host", "env_host": "0.0.0.0"}
+{"func": "host", "env_host": "https://x/v1"}
+{"func": "suffix", "model_id": "llama3:cloud"}
+{"func": "suffix", "model_id": "m-cloud"}
+{"func": "suffix", "model_id": "m:latest"}
+{"func": "suffix", "model_id": "x-cloud-cloud"}
+{"func": "pint", "value": 0}
+{"func": "pint", "value": 1}
+{"func": "pint", "value": -1}
+{"func": "pint", "value": 5}
+{"func": "pint", "value": 2.5}
+{"func": "pint", "value": "3"}
+{"func": "pint", "value": true}
+{"func": "tags", "payload": {}}
+{"func": "tags", "payload": {"models": []}}
+{"func": "tags", "payload": {"models": [{"model": "a"}]}}
+{"func": "tags", "payload": {"models": [{"name": "b"}]}}
+{"func": "tags", "payload": {"models": [{"model": "a"}, {"model": "a"}, {"name": "c"}]}}
+{"func": "tags", "payload": {"models": "x"}}
+{"func": "tags", "payload": {"models": [{"model": " "}]}}
+{"func": "tags", "payload": {"models": [1]}}
+{"func": "tags", "payload": {"models": [{"model": "a"}, 5]}}
+{"func": "tags", "payload": {"models": [{}]}}
+{"func": "tags", "payload": {"models": [{"model": "  a  ", "name": "b"}]}}

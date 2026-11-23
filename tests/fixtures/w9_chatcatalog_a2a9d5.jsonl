@@ -1,0 +1,26 @@
+{"func":"model_id_is_generation","model_id":"stable-diffusion-v1","case":"sd token"}
+{"func":"model_id_is_generation","model_id":"flux.1-dev","case":"flux sep"}
+{"func":"model_id_is_generation","model_id":"SDXL","case":"case insensitive"}
+{"func":"model_id_is_generation","model_id":"text-to-video","case":"text-to-video"}
+{"func":"model_id_is_generation","model_id":"my-image-gen-model","case":"image-gen"}
+{"func":"model_id_is_generation","model_id":"gpt-4o","case":"chat id"}
+{"func":"model_id_is_generation","model_id":"vision-model","case":"vision not token"}
+{"func":"model_id_is_generation","model_id":"","case":"empty"}
+{"func":"model_id_is_generation","model_id":null,"case":"null"}
+{"func":"model_id_is_generation","model_id":"notimage","case":"no boundary"}
+{"func":"model_id_is_generation","model_id":"image","case":"exact"}
+{"func":"model_id_is_generation","model_id":"video-generation","case":"video-generation"}
+{"func":"tag_list_is_generation","tags":["image","chat"],"case":"gen tag"}
+{"func":"tag_list_is_generation","tags":[],"case":"empty list"}
+{"func":"tag_list_is_generation","tags":"image","case":"not a list"}
+{"func":"tag_list_is_generation","tags":[null," IMAGE-GEN "],"case":"strip lower"}
+{"func":"output_modalities_are_generation","outputs":["image"],"case":"image only"}
+{"func":"output_modalities_are_generation","outputs":["image","text"],"case":"mixed"}
+{"func":"output_modalities_are_generation","outputs":[],"case":"empty"}
+{"func":"output_modalities_are_generation","outputs":["video","chat"],"case":"video chat"}
+{"func":"catalog_item_is_generation","item":{"id":"flux-pro"},"case":"id only"}
+{"func":"catalog_item_is_generation","item":{"id":"gpt-4o","capabilities":{"type":"image"}},"case":"cap type"}
+{"func":"catalog_item_is_generation","item":{"id":"gpt-4o","type":"chat"},"case":"chat type"}
+{"func":"catalog_item_is_generation","item":{"id":"m","architecture":{"output_modalities":["video"]}},"case":"arch"}
+{"func":"catalog_item_is_generation","item":{"id":"m","metadata":{"tags":["image"]}},"case":"metadata"}
+{"func":"catalog_item_is_generation","item":"x","case":"non dict"}

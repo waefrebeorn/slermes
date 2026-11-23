@@ -1,0 +1,13 @@
+{"func":"committed_expiry","in":{"mode":"store","value":1234.5,"floor":1000,"reader_present":true,"reader_result":1234.5}}
+{"func":"committed_expiry","in":{"mode":"store","value":"oops","floor":1000,"reader_present":true,"reader_result":"oops"}}
+{"func":"committed_expiry","in":{"mode":"store","value":null,"floor":1000,"reader_present":true,"reader_result":null}}
+{"func":"committed_expiry","in":{"mode":"reader","value":42,"floor":100,"reader_present":true,"reader_result":42}}
+{"func":"committed_expiry","in":{"mode":"reader","value":{"__raise__":true},"floor":500,"reader_present":true,"reader_result":null}}
+{"func":"committed_expiry","in":{"mode":"none","value":null,"floor":10,"reader_present":false,"reader_result":null}}
+{"func":"committed_expiry","in":{"mode":"store","value":true,"floor":100,"reader_present":true,"reader_result":true}}
+{"func":"committed_expiry","in":{"mode":"store","value":false,"floor":100,"reader_present":true,"reader_result":false}}
+{"func":"committed_expiry","in":{"mode":"store","value":0,"floor":999.5,"reader_present":true,"reader_result":0}}
+{"func":"current_session_id","in":{"agent_sid":"active-1","fallback":"admitted"}}
+{"func":"current_session_id","in":{"agent_sid":"","fallback":"admitted"}}
+{"func":"current_session_id","in":{"agent_sid":null,"fallback":"admitted"}}
+{"func":"current_session_id","in":{"agent_sid":"x","fallback":""}}

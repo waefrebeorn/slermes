@@ -1,0 +1,8 @@
+{"func":"release","case":"fresh_pool","pool_exists":false,"release_raises":false}
+{"func":"release","case":"fresh_pool_raise","pool_exists":false,"release_raises":true}
+{"func":"release","case":"existing_pool","pool_exists":true,"release_raises":false}
+{"func":"release","case":"existing_pool_raise","pool_exists":true,"release_raises":true}
+{"func":"release","case":"repeat_fresh","pool_exists":false,"release_raises":false}
+{"func":"release","case":"repeat_existing","pool_exists":true,"release_raises":true}
+{"func":"release","case":"no_flags","pool_exists":false}
+{"func":"release","case":"unrelated_key","pool_exists":true,"release_raises":false,"note":"echo me"}

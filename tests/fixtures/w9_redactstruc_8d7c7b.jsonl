@@ -1,0 +1,15 @@
+{"func":"redact","in":{"payload":{"password":"***"}}}
+{"func":"redact","in":{"payload":{"api_key":"SECRET","name":"bob"}}}
+{"func":"redact","in":{"payload":"SECRET"}}
+{"func":"redact","in":{"payload":{"a":"hello"}}}
+{"func":"redact","in":{"payload":{"items":["SECRET","ok"]}}}
+{"func":"redact","in":{"payload":{"SECRET":"value"}}}
+{"func":"redact","in":{"payload":{"n":null,"b":true,"i":7,"s":"SECRET"}}}
+{"func":"redact","in":{"payload":{}}}
+{"func":"redact","in":{"payload":[]}}
+{"func":"redact","in":{"payload":7}}
+{"func":"redact","in":{"payload":null}}
+{"func":"redact","in":{"payload":{"token":"sk-SECRET-xyz"}}}
+{"func":"redact","in":{"payload":{"outer":{"inner":"SECRET"}}}}
+{"func":"redact","in":{"payload":{"SECRET":"SECRET"}}}
+{"func":"redact","in":{"payload":["SECRET",{"k":"SECRET"},true,null]}}

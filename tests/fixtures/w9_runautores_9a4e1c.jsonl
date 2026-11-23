@@ -1,0 +1,10 @@
+{"func":"session_route","case":"empty_unit","unit":{},"parsed":null}
+{"func":"session_route","case":"telegram_dm","unit":{"origin_session":"agent:main:telegram:dm:12345:thread9","task":{"user_id":"u-1","user_name":"Alice","scope_id":"sc-9"}},"parsed":{"platform":"telegram","chat_type":"dm","chat_id":"12345","thread_id":"thread9"}}
+{"func":"session_route","case":"api_server_parent","unit":{"origin_session":"api_server:chat:abc","origin_session_id":"sess-77","task":{"user_id":"42","user_name":"Bob","scope_id":""}},"parsed":{"platform":"telegram","chat_type":"dm","chat_id":"ignored","thread_id":""}}
+{"func":"session_route","case":"parse_failed_keyless","unit":{"origin_session":"garbage","parent_session_id":"parent-1","origin_ui_session_id":"ui-2"},"parsed":null}
+{"func":"session_route","case":"parsed_no_thread","unit":{"origin_session":"agent:main:discord:channel:999"},"parsed":{"platform":"discord","chat_type":"channel","chat_id":"999","thread_id":""}}
+{"func":"session_route","case":"origin_session_id_empty_string","unit":{"origin_session":"agent:main:slack:dm:S1","origin_session_id":"","task":null},"parsed":{"platform":"slack","chat_type":"dm","chat_id":"S1","thread_id":"T1"}}
+{"func":"session_route","case":"parent_and_ui_ids","unit":{"origin_session":"agent:main:telegram:dm:c1:t1","parent_session_id":"p-100","origin_ui_session_id":"u-200","task":{"user_id":0,"user_name":null,"scope_id":false}},"parsed":{"platform":"telegram","chat_type":"dm","chat_id":"c1","thread_id":"t1"}}
+{"func":"session_route","case":"origin_session_id_wins_over_parsed","unit":{"origin_session":"","origin_session_id":"real-id","origin_ui_session_id":"ui","task":{}},"parsed":{"platform":"whatever","chat_type":"dm","chat_id":"other","thread_id":"x"}}
+{"func":"session_route","case":"task_missing_fields","unit":{"origin_session":"k","task":{"user_id":"only"}},"parsed":{"platform":"p","chat_type":"thread","chat_id":"c","thread_id":"th"}}
+{"func":"session_route","case":"numeric_user_id","unit":{"origin_session":"k2","task":{"user_id":1234567890123,"user_name":"N","scope_id":"s"}},"parsed":{"platform":"api_server","chat_type":"dm","chat_id":"c2","thread_id":""}}

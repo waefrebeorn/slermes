@@ -1,0 +1,13 @@
+{"func":"rejoin_history","messages":[],"case":"empty"}
+{"func":"rejoin_history","messages":null,"case":"null messages"}
+{"func":"rejoin_history","messages":[{"id":"m1","row_id":5}],"case":"strip row id"}
+{"func":"rejoin_history","messages":[{"id":"m1","row_id":5,"archived":true},{"id":"m2"}],"case":"archived dropped"}
+{"func":"rejoin_history","messages":[{"archived":false,"content":"x"}],"case":"false archived kept"}
+{"func":"rejoin_history","messages":[{"archived":1,"id":"m"}],"case":"truthy int archived"}
+{"func":"rejoin_history","messages":[{"archived":"yes","id":"m"}],"case":"truthy string archived"}
+{"func":"rejoin_history","messages":[{"archived":[],"id":"m"}],"case":"empty list falsy"}
+{"func":"rejoin_history","messages":[{"archived":null,"id":"m"}],"case":"null archived falsy"}
+{"func":"rejoin_history","messages":[{"row_id":"r","a":1,"b":[1,2]}],"case":"keeps other keys"}
+{"func":"rejoin_history","messages":[{"row_id":"only"}],"case":"row id only -> empty obj"}
+{"func":"rejoin_history","messages":[{"id":"a","row_id":1},{"id":"b","archived":true,"row_id":2},{"id":"c"}],"case":"mixed"}
+{"func":"rejoin_history","messages":[{"archived":0,"id":"m"}],"case":"zero archived falsy"}

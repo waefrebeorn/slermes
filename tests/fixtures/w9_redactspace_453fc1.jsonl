@@ -1,0 +1,22 @@
+{"func":"key_names_secret","name":"password","dotted":false}
+{"func":"key_names_secret","name":"db_password","dotted":false}
+{"func":"key_names_secret","name":"api.key","dotted":false}
+{"func":"key_names_secret","name":"api key","dotted":false}
+{"func":"key_names_secret","name":"x api key y","dotted":false}
+{"func":"key_names_secret","name":"keyboard","dotted":false}
+{"func":"key_names_secret","name":"auth_token","dotted":false}
+{"func":"key_names_secret","name":"db.password","dotted":true}
+{"func":"key_names_secret","name":"api.key","dotted":true}
+{"func":"key_names_secret","name":"foo.auth","dotted":true}
+{"func":"key_names_secret","name":"password","dotted":true}
+{"func":"key_names_secret","name":"a.password.x","dotted":true}
+{"func":"is_code_expression","key":"password","value":"None"}
+{"func":"is_code_expression","key":"x","value":"getpass.getpass()"}
+{"func":"is_code_expression","key":"x","value":"secret;"}
+{"func":"is_code_expression","key":"db_password","value":"db_password"}
+{"func":"is_code_expression","key":"api.token","value":"token"}
+{"func":"is_code_expression","key":"x","value":"short"}
+{"func":"is_code_expression","key":"x","value":"a1b2c3d4e5f6a7b8c9d0"}
+{"func":"is_code_expression","key":"x","value":"AUTH_TOKEN_ENV"}
+{"func":"is_code_expression","key":"x","value":"aB3defghijkl"}
+{"func":"is_code_expression","key":"x","value":"aBcdefghijkl"}

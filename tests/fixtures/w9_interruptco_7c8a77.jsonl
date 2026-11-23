@@ -1,0 +1,15 @@
+{"case":1,"func":"interrupt_issuer","reason":null}
+{"case":2,"func":"interrupt_issuer","reason":"explicit stop requested"}
+{"case":3,"func":"interrupt_issuer","reason":"user sent a new message"}
+{"case":4,"func":"interrupt_issuer","reason":"gateway shutdown"}
+{"case":5,"func":"interrupt_issuer","reason":"  context_overflow  "}
+{"case":6,"func":"interrupt_issuer","reason":"lots   of   spaces"}
+{"case":7,"func":"interrupt_skip_wording","reason":null}
+{"case":8,"func":"interrupt_skip_wording","reason":"user interrupt"}
+{"case":9,"func":"interrupt_skip_wording","reason":"gateway_shutdown"}
+{"case":10,"func":"interrupted_during_api_call_reason","reason":"gateway shutdown"}
+{"case":11,"func":"interrupted_during_api_call_reason","reason":"user interrupt"}
+{"case":12,"func":"steer","text":""}
+{"case":13,"func":"steer","text":"   "}
+{"case":14,"func":"steer","text":"  hello world  "}
+{"case":15,"func":"steer","text":"next step"}

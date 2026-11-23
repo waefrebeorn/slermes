@@ -1,0 +1,24 @@
+{"func":"format_wait_line","expires_in":0,"case":"zero"}
+{"func":"format_wait_line","expires_in":1,"case":"one second singular"}
+{"func":"format_wait_line","expires_in":59,"case":"59s one minute"}
+{"func":"format_wait_line","expires_in":60,"case":"60s one minute"}
+{"func":"format_wait_line","expires_in":61,"case":"61s two minutes"}
+{"func":"format_wait_line","expires_in":-10,"case":"negative clamped"}
+{"func":"format_wait_line","expires_in":"90","case":"string int"}
+{"func":"format_wait_line","expires_in":3600,"case":"one hour"}
+{"func":"format_wait_line","expires_in":true,"case":"bool True -> 1"}
+{"func":"completed_copy","email":"","model":"","model_changed":false,"handoff":[],"terminal":false,"case":"bare chat"}
+{"func":"completed_copy","email":"","model":"","model_changed":false,"handoff":[],"terminal":true,"case":"bare terminal"}
+{"func":"completed_copy","email":"a@b.com","model":"m1","model_changed":true,"handoff":[],"terminal":false,"case":"chat model"}
+{"func":"completed_copy","email":"a@b.com","model":"m1","model_changed":true,"handoff":[],"terminal":true,"case":"terminal model"}
+{"func":"completed_copy","email":"a@b.com","model":"","model_changed":true,"handoff":[],"terminal":false,"case":"no default chat"}
+{"func":"completed_copy","email":"a@b.com","model":"","model_changed":true,"handoff":[],"terminal":true,"case":"no default terminal"}
+{"func":"completed_copy","email":"a@b.com","model":"","model_changed":false,"handoff":["Moved app A","Reconnect B"],"terminal":false,"case":"handoff lines"}
+{"func":"code_copy_with_wait","expires_in":120,"case":"code wait 2 min"}
+{"func":"code_copy_with_wait","expires_in":30,"case":"code wait 1 min"}
+{"func":"state_copy","kind":"code","case":"code copy"}
+{"func":"state_copy","kind":"waiting","case":"waiting copy"}
+{"func":"state_copy","kind":"cancelled","case":"cancelled copy"}
+{"func":"state_copy","kind":"timed_out","case":"timed out copy"}
+{"func":"state_copy","kind":"already_signed_in","case":"already copy"}
+{"func":"state_copy","kind":"base","case":"base empty"}

@@ -1,0 +1,22 @@
+{"func":"float_env","env_value":"1.5","default":30.0,"case":"fraction"}
+{"func":"float_env","env_value":"30","default":30.0,"case":"integer"}
+{"func":"float_env","env_value":"  2.5  ","default":30.0,"case":"whitespace"}
+{"func":"float_env","env_value":"abc","default":30.0,"case":"unparseable"}
+{"func":"float_env","env_value":"","default":30.0,"case":"empty"}
+{"func":"float_env","env_value":null,"default":30.0,"case":"unset"}
+{"func":"float_env","env_value":"0","default":30.0,"case":"zero disables"}
+{"func":"float_env","env_value":"-4.25","default":30.0,"case":"negative"}
+{"func":"float_env","env_value":"1e2","default":30.0,"case":"exponent"}
+{"func":"float_env","env_value":".5","default":30.0,"case":"leading dot"}
+{"func":"should_emit","session_id":"s1","gateway_owns":true,"handed_off":[],"attempted":[],"case":"gateway owns"}
+{"func":"should_emit","session_id":null,"gateway_owns":false,"handed_off":[],"attempted":[],"case":"none no attempts"}
+{"func":"should_emit","session_id":"s1","gateway_owns":false,"handed_off":["s1"],"attempted":[],"case":"handed off"}
+{"func":"should_emit","session_id":"s1","gateway_owns":false,"handed_off":[],"attempted":[],"case":"no attempts"}
+{"func":"should_emit","session_id":"s1","gateway_owns":false,"handed_off":[],"attempted":["s2"],"case":"different attempt"}
+{"func":"should_emit","session_id":"s1","gateway_owns":false,"handed_off":[],"attempted":["s1"],"case":"already attempted"}
+{"func":"should_emit","session_id":null,"gateway_owns":false,"handed_off":[],"attempted":["s2"],"case":"none with attempts"}
+{"func":"oneshot_session","agent_session":"a","cli_session":"c","case":"agent wins"}
+{"func":"oneshot_session","agent_session":null,"cli_session":"c","case":"cli fallback"}
+{"func":"oneshot_session","agent_session":"","cli_session":"c","case":"empty agent fallback"}
+{"func":"oneshot_session","agent_session":"a","cli_session":null,"case":"agent with null cli"}
+{"func":"oneshot_session","agent_session":null,"cli_session":null,"case":"both null"}

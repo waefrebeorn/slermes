@@ -1,0 +1,11 @@
+{"case":"single-py","func":"tree_fingerprint","files":[{"name":"provider.py","size":"1234","mtime_ns":"1700000000123456789"}]}
+{"case":"empty","func":"tree_fingerprint","files":[]}
+{"case":"non-py-only","func":"tree_fingerprint","files":[{"name":"README.md","size":"99","mtime_ns":"1700000000000000000"},{"name":"plugin.lock","size":"5","mtime_ns":"42"}]}
+{"case":"sorted-reverse","func":"tree_fingerprint","files":[{"name":"zeta.py","size":"30","mtime_ns":"3"},{"name":"alpha.py","size":"10","mtime_ns":"1"},{"name":"middle.py","size":"20","mtime_ns":"2"}]}
+{"case":"manifests","func":"tree_fingerprint","files":[{"name":"plugin.yml","size":"11","mtime_ns":"100"},{"name":"plugin.yaml","size":"12","mtime_ns":"200"},{"name":"__init__.py","size":"13","mtime_ns":"300"}]}
+{"case":"huge-ints","func":"tree_fingerprint","files":[{"name":"big.py","size":"9223372036854775807","mtime_ns":"1700000000000000000"}]}
+{"case":"mixed","func":"tree_fingerprint","files":[{"name":"tests","size":"1","mtime_ns":"1"},{"name":"mod.py","size":"2048","mtime_ns":"999999999999999999"},{"name":"notes.txt","size":"77","mtime_ns":"77"},{"name":"plugin.yaml","size":"64","mtime_ns":"64"}]}
+{"case":"dot-py-name","func":"tree_fingerprint","files":[{"name":".py","size":"4","mtime_ns":"4"},{"name":"normal.py","size":"5","mtime_ns":"5"}]}
+{"case":"uppercase-extension","func":"tree_fingerprint","files":[{"name":"UPPER.PY","size":"5","mtime_ns":"5"},{"name":"lower.py","size":"6","mtime_ns":"6"}]}
+{"case":"unicode-name","func":"tree_fingerprint","files":[{"name":"über.py","size":"17","mtime_ns":"1700000000000000042"}]}
+{"case":"zero-values","func":"tree_fingerprint","files":[{"name":"empty.py","size":"0","mtime_ns":"0"}]}

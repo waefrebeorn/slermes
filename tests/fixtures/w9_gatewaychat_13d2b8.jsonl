@@ -1,0 +1,26 @@
+{"func":"continue_title","args":{"continue_last":"my-session"},"case":"continue title from -c name"}
+{"func":"continue_title","args":{"continue_last":"my-session","resume":"abc"},"case":"resume wins over continue title"}
+{"func":"continue_title","args":{"continue_last":123},"case":"non-string continue title ignored"}
+{"func":"wants_latest","args":{"resume":"  LATEST  "},"case":"resume latest case-insensitive and stripped"}
+{"func":"wants_latest","args":{"resume":"abc"},"case":"other resume is not latest"}
+{"func":"wants_latest","args":{"continue_last":true},"case":"bare -c is latest"}
+{"func":"wants_latest","args":{"continue_last":1},"case":"truthy number is not the True literal"}
+{"func":"env_flags","env":{"HERMES_YOLO_MODE":"YES","HERMES_SAFE_MODE":"1","HERMES_IGNORE_RULES":"false","HERMES_ACCEPT_HOOKS":" on ","HERMES_IGNORE_USER_CONFIG":"no"},"case":"truthy env strings only"}
+{"func":"env_flags","env":{},"case":"no env flags"}
+{"func":"bypass","args":{"safe_mode":true},"env":{},"case":"explicit safe mode bypasses profile"}
+{"func":"bypass","args":{},"env":{"HERMES_SAFE_MODE":"yes"},"case":"env safe mode bypasses profile"}
+{"func":"bypass","args":{},"env":{},"case":"no bypass"}
+{"func":"launch_flags","args":{"model":"m","max_turns":0,"safe_mode":false,"yolo":true,"extra":"ignored"},"case":"identity filter keeps zero, drops False and unknown keys"}
+{"func":"requested_policy","args":{"toolsets":" a, b ,,a ","skills":"x,y,x","source":"desktop"},"case":"toolsets and skills split and dedupe; desktop maps to gui"}
+{"func":"requested_policy","args":{},"case":"empty policy"}
+{"func":"requested_policy","args":{"skills":[]},"case":"empty skills array removed"}
+{"func":"validate","args":{"image":true,"w":true,"create_if_missing":true},"env":{},"case":"unsupported options plus missing -c"}
+{"func":"validate","args":{"safe_mode":true},"env":{},"case":"safe mode without model is refused"}
+{"func":"validate","args":{"safe_mode":true,"model":"m"},"env":{},"case":"safe mode with explicit model is fine"}
+{"func":"validate","args":{"safe_mode":true,"resume":"abc"},"env":{},"case":"resume suppresses the safe mode refusal"}
+{"func":"resume_error","keys":["model"],"case":"single differing flag uses singular grammar"}
+{"func":"resume_error","keys":["toolsets","skills"],"case":"no switch hint suggests a new session"}
+{"func":"resume_error","keys":["model","provider"],"case":"two flags sharing one switch command dedupe"}
+{"func":"resume_error","keys":["custom_thing"],"case":"unknown flag gets a synthesized --name"}
+{"func":"client_env_policy","parameters":["client_env"],"client_env":{"A":"1","B":null},"case":"client_env carried when contracted"}
+{"func":"client_env_policy","parameters":[],"client_env":{"A":"1"},"case":"older contract omits client_env"}

@@ -1,0 +1,12 @@
+{"case":1,"func":"unexecuted","reply":"apology","captured":null}
+{"case":2,"func":"unexecuted","reply":"sorry","captured":{}}
+{"case":3,"func":"unexecuted","reply":"sorry","error":"boom","reason":"context_overflow","captured":{}}
+{"case":4,"func":"unexecuted","reply":"","error":"","captured":{}}
+{"case":5,"func":"unexecuted","reply":"new","captured":{"result":{"x":1}}}
+{"case":6,"func":"unexecuted","reply":null,"error":"err","reason":"loop_error","captured":{"other":5}}
+{"case":7,"func":"unexecuted","reply":"z","captured":{"result":null}}
+{"case":8,"func":"unexecuted","reply":"r","reason":"","error":null,"captured":{"k":"v"}}
+{"case":9,"func":"terminal","result":{"a":1},"captured":null}
+{"case":10,"func":"terminal","result":"done","captured":{}}
+{"case":11,"func":"terminal","result":{"final_response":"hi"},"captured":{"x":1}}
+{"case":12,"func":"terminal","result":null,"captured":{"captured_existing":true}}

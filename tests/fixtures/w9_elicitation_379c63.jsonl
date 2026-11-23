@@ -1,0 +1,20 @@
+{"func":"client_supports_form","case":"v2_form_empty","params":{"capabilities":{"elicitation":{"form":{}}}}}
+{"func":"client_supports_form","case":"v1_form_null","params":{"clientCapabilities":{"elicitation":{"form":null}}}}
+{"func":"client_supports_form","case":"no_form_key","params":{"capabilities":{"elicitation":{}}}}
+{"func":"client_supports_form","case":"not_dict","params":[]}
+{"func":"client_supports_form","case":"wrong_shape","params":{"capabilities":{"elicitation":"yes"}}}
+{"func":"client_supports_form","case":"v1_ok","params":{"clientCapabilities":{"elicitation":{"form":true}}}}
+{"func":"build_clarify_elicitation","case":"no_choices","session_id":"s1","prompt":{"question":"Pick one"}}
+{"func":"build_clarify_elicitation","case":"choices","session_id":"s2","prompt":{"question":"Pick","choices":["a","b"]}}
+{"func":"build_clarify_elicitation","case":"multi","session_id":"s3","prompt":{"question":"Pick","choices":["a","b"],"multi_select":true}}
+{"func":"build_clarify_elicitation","case":"multi_empty","session_id":"s4","prompt":{"question":"Pick","choices":[],"multi_select":true}}
+{"func":"elicited_answer","case":"accept_str","response":{"action":"accept","content":{"answer":"yes"}}}
+{"func":"elicited_answer","case":"accept_list","response":{"action":"accept","content":{"answer":["a","b"]}}}
+{"func":"elicited_answer","case":"accept_list_unicode","response":{"action":"accept","content":{"answer":["café","naïve"]}}}
+{"func":"elicited_answer","case":"decline","response":{"action":"decline","content":{"answer":"x"}}}
+{"func":"elicited_answer","case":"cancel","response":{"action":"cancel"}}
+{"func":"elicited_answer","case":"bad_action","response":{"action":"weird"}}
+{"func":"elicited_answer","case":"accept_no_content","response":{"action":"accept"}}
+{"func":"elicited_answer","case":"accept_list_mixed","response":{"action":"accept","content":{"answer":["a",1]}}}
+{"func":"elicited_answer","case":"accept_list_empty","response":{"action":"accept","content":{"answer":[]}}}
+{"func":"elicited_answer","case":"not_dict","response":"accept"}

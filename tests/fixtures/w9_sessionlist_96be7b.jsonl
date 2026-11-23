@@ -1,0 +1,17 @@
+{"case": 1, "func": "check_page_params", "params": {}}
+{"case": 2, "func": "check_page_params", "params": {"query": "hello", "scope": "stored"}}
+{"case": 3, "func": "check_page_params", "params": {"query": "   ", "scope": "stored"}}
+{"case": 4, "func": "check_page_params", "params": {"query": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "scope": "stored"}}
+{"case": 5, "func": "check_page_params", "params": {"cursor": 123, "scope": "stored"}}
+{"case": 6, "func": "check_page_params", "params": {"cursor": "x"}}
+{"case": 7, "func": "check_page_params", "params": {"query": "hi", "scope": "stored", "title": "T"}}
+{"case": 8, "func": "binding_digest", "workspace": null, "query": null, "include_hidden": false}
+{"case": 9, "func": "binding_digest", "workspace": "proj", "query": "abc", "include_hidden": true}
+{"case": 10, "func": "binding_digest", "workspace": "p/x", "query": "cafe", "include_hidden": false}
+{"case": 11, "func": "binding_digest", "workspace": "p/x", "query": "a\\\"b\\\\c", "include_hidden": true}
+{"case": 12, "func": "encode_cursor", "workspace": null, "query": null, "include_hidden": false, "offset": "0"}
+{"case": 13, "func": "encode_cursor", "workspace": "proj", "query": "abc", "include_hidden": true, "offset": "12345"}
+{"case": 14, "func": "decode_cursor", "cursor": "WyJsMSIsIDcsICIzNzk3NGI3NWY2Nzg0YTE2MWE3YThlNWI0ZWYyMDQ3ZCJd", "workspace": "proj", "query": "abc", "include_hidden": true}
+{"case": 15, "func": "decode_cursor", "cursor": "WyJsMSIsIDcsICIzNzk3NGI3NWY2Nzg0YTE2MWE3YThlNWI0ZWYyMDQ3ZCJA", "workspace": "proj", "query": "abc", "include_hidden": true}
+{"case": 16, "func": "decode_cursor", "cursor": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "workspace": null, "query": null, "include_hidden": false}
+{"case": 17, "func": "decode_cursor", "cursor": "!!!not-base64!!!", "workspace": null, "query": null, "include_hidden": false}

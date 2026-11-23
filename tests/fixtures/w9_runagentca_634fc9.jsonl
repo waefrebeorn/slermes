@@ -1,0 +1,18 @@
+{"func":"first","case":"bare_dict","entry":{"agent":"a","n":1},"as_tuple":false}
+{"func":"first","case":"tuple_first","entry":["A","sig",3],"as_tuple":true}
+{"func":"first","case":"empty_tuple","entry":[],"as_tuple":true}
+{"func":"first","case":"list_not_tuple","entry":["A","sig"],"as_tuple":false}
+{"func":"first","case":"string_entry","entry":"agent","as_tuple":false}
+{"func":"first","case":"null_entry","entry":null,"as_tuple":false}
+{"func":"first","case":"scalar_tuple","entry":[42],"as_tuple":true}
+{"func":"tuple","case":"tuple_first","entry":["B","sig"],"as_tuple":true}
+{"func":"tuple","case":"bare_agent","entry":{"agent":"b"},"as_tuple":false}
+{"func":"tuple","case":"empty_tuple","entry":[],"as_tuple":true}
+{"func":"tuple","case":"list_not_tuple","entry":["B","sig"],"as_tuple":false}
+{"func":"tuple","case":"null_entry","entry":null,"as_tuple":false}
+{"func":"config_sig","case":"minimal","model":"m1","runtime":{}}
+{"func":"config_sig","case":"full","model":"gpt-x","runtime":{"api_key":"sk-secret","base_url":"https://api.example","provider":"openai","requested_provider":"","api_mode":"chat","capabilities":{"vision":"yes","tools":"x"}},"enabled_toolsets":["web","shell"],"ephemeral_prompt":"be brief","cache_keys":{"a":"1"},"user_id":"u1","user_id_alt":"u2","skip_context_files":true}
+{"func":"config_sig","case":"caps_unsorted","model":"m","runtime":{"capabilities":{"z":"9","a":"1","m":"5"}},"enabled_toolsets":["z","a"],"cache_keys":{"y":"2","b":"3"}}
+{"func":"config_sig","case":"empty_key","model":"m","runtime":{"api_key":""}}
+{"func":"config_sig","case":"no_user","model":"m","runtime":{},"user_id":"","user_id_alt":""}
+{"func":"config_sig","case":"skip_false","model":"m","runtime":{},"skip_context_files":false}

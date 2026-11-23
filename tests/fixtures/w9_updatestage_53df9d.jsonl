@@ -1,0 +1,15 @@
+{"case":"ui-app-window","func":"ui_present_in_log","log_text":"shim: starting\nshim: app window opened\nshim: done"}
+{"case":"ui-status-panel","func":"ui_present_in_log","log_text":"shim: status panel pid=4242"}
+{"case":"ui-none","func":"ui_present_in_log","log_text":"shim: skipping UI (no renderer)\nshim: stages done"}
+{"case":"ui-empty","func":"ui_present_in_log","log_text":""}
+{"case":"ui-old-line-outside-tail","func":"ui_present_in_log","log_text":"shim: app window\nx2\nx3\nx4\nx5\nx6\nx7\nx8\nx9\nx10\nx11\nx12\nx13\nx14\nx15\nx16\nx17\nx18\nx19\nx20\nx21\nx22\nx23\nx24\nx25\nx26\nx27\nx28\nx29\nx30\nx31\nx32\nx33\nx34\nx35\nx36\nx37\nx38\nx39\nx40\nx41"}
+{"case":"ui-crlf","func":"ui_present_in_log","log_text":"a\r\nshim: status panel pid=9\r\nb"}
+{"case":"status-exported","func":"status_file","exported":"  C:\\Users\\eman5\\status.json  ","marker_result":"C:\\ignored\\other.json"}
+{"case":"status-exported-empty","func":"status_file","exported":"   ","marker_result":"C:\\temp\\hermes-update-status.99"}
+{"case":"status-none","func":"status_file","exported":"","marker_result":""}
+{"case":"marker-valid","func":"status_from_marker","marker_text":"4321\nshim pid\n","candidate_exists":true}
+{"case":"marker-no-candidate","func":"status_from_marker","marker_text":"4322\n","candidate_exists":false}
+{"case":"marker-negative","func":"status_from_marker","marker_text":"-7\n","candidate_exists":true}
+{"case":"marker-zero","func":"status_from_marker","marker_text":"0\n","candidate_exists":true}
+{"case":"marker-garbage","func":"status_from_marker","marker_text":"not-a-pid\n","candidate_exists":true}
+{"case":"marker-empty","func":"status_from_marker","marker_text":"","candidate_exists":true}

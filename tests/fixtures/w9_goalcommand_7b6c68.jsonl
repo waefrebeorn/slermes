@@ -1,0 +1,21 @@
+{"func": "ctrl", "arg": ""}
+{"func": "ctrl", "arg": "status"}
+{"func": "ctrl", "arg": "status extra"}
+{"func": "ctrl", "arg": "resume last goal"}
+{"func": "ctrl", "arg": "pause"}
+{"func": "ctrl", "arg": "clear"}
+{"func": "ctrl", "arg": "clear it"}
+{"func": "ctrl", "arg": "wait"}
+{"func": "ctrl", "arg": "wait 123"}
+{"func": "ctrl", "arg": "gate"}
+{"func": "ctrl", "arg": "gate add x"}
+{"func": "ctrl", "arg": "draft foo"}
+{"func": "ctrl", "arg": "  STATUS  "}
+{"func": "ctrl", "arg": "continue"}
+{"func": "ctrl", "arg": "show"}
+{"func": "ctrl", "arg": "unwait"}
+{"func": "ctrl", "arg": "stop"}
+{"func": "ctrl", "arg": "done"}
+{"func": "ctrl", "arg": "foo resume"}
+{"func": "ctrl", "arg": "-- pause"}
+{"func": "ctrl", "arg": "my goal text here"}

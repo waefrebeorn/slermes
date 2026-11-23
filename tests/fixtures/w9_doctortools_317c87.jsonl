@@ -1,0 +1,29 @@
+{"func":"plural","n":0,"case":"zero plural"}
+{"func":"plural","n":1,"case":"singular"}
+{"func":"plural","n":2,"case":"plural"}
+{"func":"setup_gated","item":{"name":"web","missing_vars":[]},"case":"empty missing_vars is not gated"}
+{"func":"setup_gated","item":{"name":"image_gen"},"case":"setup-hinted name is gated"}
+{"func":"setup_gated","item":{"name":"web","env_vars":["OPENAI_API_KEY"]},"case":"env_vars gates"}
+{"func":"setup_gated","item":{"name":"web","missing_vars":["KEY"]},"case":"missing_vars gates"}
+{"func":"kanban_env_gate","item":{"name":"kanban","tools":["kanban_dispatch","kanban_review"]},"env_value":null,"case":"kanban-only tools outside worker is gated"}
+{"func":"kanban_env_gate","item":{"name":"kanban","tools":["kanban_dispatch","web_search"]},"env_value":null,"case":"mixed tools is not gated"}
+{"func":"kanban_env_gate","item":{"name":"kanban","tools":["kanban_dispatch"]},"env_value":"1","case":"inside a worker is not gated"}
+{"func":"kanban_env_gate","item":{"name":"kanban","tools":["kanban_dispatch"]},"env_value":"yes","case":"truthy yes env is not gated"}
+{"func":"kanban_env_gate","item":{"name":"web","tools":["web_search"]},"env_value":null,"case":"non-kanban toolset is not gated"}
+{"func":"tool_detail","toolset":"kanban","env_value":null,"case":"kanban detail outside worker"}
+{"func":"tool_detail","toolset":"kanban","env_value":"true","case":"no detail inside worker"}
+{"func":"tool_detail","toolset":"web","env_value":null,"case":"no detail for ordinary toolset"}
+{"func":"apply_overrides","available":["web","sessions"],"unavailable":[{"name":"kanban","tools":["kanban_dispatch"]},{"name":"voice","tools":[]}],"env_value":null,"case":"kanban moved into available"}
+{"func":"apply_overrides","available":["kanban"],"unavailable":[{"name":"kanban","tools":["kanban_dispatch"]}],"env_value":null,"case":"kanban already available is not duplicated"}
+{"func":"apply_overrides","available":[],"unavailable":[{"name":"kanban","tools":["kanban_dispatch"]}],"env_value":"1","case":"worker env keeps kanban unavailable"}
+{"func":"missing_api","unavailable":[{"name":"image_gen"},{"name":"web","missing_vars":["KEY"]},{"name":"voice"}],"enabled":null,"case":"config failure keeps every gated toolset"}
+{"func":"missing_api","unavailable":[{"name":"image_gen"},{"name":"web","missing_vars":["KEY"]},{"name":"voice"}],"enabled":["web"],"case":"only enabled toolsets kept"}
+{"func":"missing_api","unavailable":[{"name":"image_gen"}],"enabled":[],"case":"empty enabled filters everything"}
+{"func":"safe_which","cmd":"git","path_map":{},"case":"not on PATH"}
+{"func":"safe_which","cmd":"git","path_map":{"git":"/usr/bin/git"},"case":"found on PATH"}
+{"func":"chromium_reason","config":{},"cdp_env":null,"case":"no override"}
+{"func":"chromium_reason","config":{"browser":{"cdp_url":"http://localhost:9222"}},"cdp_env":null,"case":"config CDP override"}
+{"func":"chromium_reason","config":{},"cdp_env":"http://localhost:9222","case":"env CDP override"}
+{"func":"chromium_reason","config":{"browser":{"engine":"  LIGHTPANDA  "}},"cdp_env":null,"case":"lightpanda engine"}
+{"func":"chromium_reason","config":{"browser":{"cloud_provider":"BrowserBase"}},"cdp_env":null,"case":"cloud provider selected"}
+{"func":"chromium_reason","config":{"browser":{"cloud_provider":"local"}},"cdp_env":null,"case":"local provider needs no note"}

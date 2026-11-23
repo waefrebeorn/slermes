@@ -1,0 +1,17 @@
+{"case":1,"func":"configure_num_ctx","model_cfg":{"ollama_num_ctx":4096},"config_context_length":null,"is_local":false,"detected":null,"api_key":"sk-x","quiet_mode":false}
+{"case":2,"func":"configure_num_ctx","model_cfg":{"ollama_num_ctx":"8192"},"config_context_length":null,"is_local":false,"detected":null,"api_key":null,"quiet_mode":true}
+{"case":3,"func":"configure_num_ctx","model_cfg":{"ollama_num_ctx":"abc"},"config_context_length":null,"is_local":false,"detected":null,"api_key":"sk-x","quiet_mode":false}
+{"case":4,"func":"configure_num_ctx","model_cfg":{},"config_context_length":8192,"is_local":true,"detected":32768,"api_key":"sk-x","quiet_mode":false}
+{"case":5,"func":"configure_num_ctx","model_cfg":{"ollama_num_ctx":4096},"config_context_length":2048,"is_local":true,"detected":65536,"api_key":"sk-x","quiet_mode":false}
+{"case":6,"func":"configure_num_ctx","model_cfg":null,"config_context_length":8192,"is_local":false,"detected":null,"api_key":"sk-x","quiet_mode":false}
+{"case":7,"func":"configure_num_ctx","model_cfg":{},"config_context_length":null,"is_local":true,"detected":null,"api_key":"sk-x","quiet_mode":false}
+{"case":8,"func":"configure_num_ctx","model_cfg":{},"config_context_length":null,"is_local":true,"detected":null,"detect_error":true,"api_key":"sk-x","quiet_mode":false}
+{"case":9,"func":"configure_num_ctx","model_cfg":{"ollama_num_ctx":0},"config_context_length":null,"is_local":false,"detected":null,"api_key":"sk-x","quiet_mode":true}
+{"case":10,"func":"configure_num_ctx","model_cfg":{"ollama_num_ctx":"1_000"},"config_context_length":null,"is_local":false,"detected":null,"api_key":"sk-x","quiet_mode":false}
+{"case":11,"func":"configure_num_ctx","model_cfg":{"ollama_num_ctx":4096.7},"config_context_length":null,"is_local":false,"detected":null,"api_key":"sk-x","quiet_mode":false}
+{"case":12,"func":"configure_num_ctx","model_cfg":{},"config_context_length":null,"is_local":true,"detected":2048,"api_key":"sk-x","quiet_mode":false}
+{"case":13,"func":"clamp_compressor","num_ctx":4096,"cc_window":8192,"api_key":"sk-x"}
+{"case":14,"func":"clamp_compressor","num_ctx":8192,"cc_window":4096,"api_key":"sk-x"}
+{"case":15,"func":"clamp_compressor","num_ctx":null,"cc_window":8192,"api_key":"sk-x"}
+{"case":16,"func":"clamp_compressor","num_ctx":4096,"cc_window":null,"api_key":"sk-x"}
+{"case":17,"func":"clamp_compressor","num_ctx":0,"cc_window":8192,"api_key":"sk-x"}

@@ -1,0 +1,10 @@
+{"func":"is_benign","case":"reset_cb","exc_kind":"ConnectionResetError","callback":"<bound method _call_connection_lost of <Transport>>"}
+{"func":"is_benign","case":"aborted_handle","exc_kind":"ConnectionAbortedError","handle":"<Handle _call_connection_lost()>"}
+{"func":"is_benign","case":"brokenpipe_cb","exc_kind":"BrokenPipeError","callback":"<function _call_connection_lost at 0x1>"}
+{"func":"is_benign","case":"wrong_exc","exc_kind":"ValueError","callback":"<function _call_connection_lost>"}
+{"func":"is_benign","case":"no_marker","exc_kind":"ConnectionResetError","callback":"<function other_cb>"}
+{"func":"is_benign","case":"no_cb_handle","exc_kind":"ConnectionResetError"}
+{"func":"is_benign","case":"none_exc","exc_kind":"none","callback":"<function _call_connection_lost>"}
+{"func":"is_benign","case":"handle_only","exc_kind":"BrokenPipeError","handle":"<Task _call_connection_lost done>"}
+{"func":"is_benign","case":"connection_error_not_benign","exc_kind":"ConnectionError","callback":"<function _call_connection_lost>"}
+{"func":"is_benign","case":"oserror_not_benign","exc_kind":"OSError","handle":"<Handle _call_connection_lost>"}

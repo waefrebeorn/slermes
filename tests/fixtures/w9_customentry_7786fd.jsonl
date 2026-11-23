@@ -1,0 +1,15 @@
+{"case":1,"func":"entry_declares_credential","entry":{"api_key":"sk-x"},"openrouter_url":null,"registry":{}}
+{"case":2,"func":"entry_declares_credential","entry":{"key_env":"MY_KEY"},"openrouter_url":null,"registry":{}}
+{"case":3,"func":"entry_declares_credential","entry":{"key_cmd":"vault read"},"openrouter_url":null,"registry":{}}
+{"case":4,"func":"entry_declares_credential","entry":{"declares_credential":false,"api_key":"sk-x"},"openrouter_url":null,"registry":{}}
+{"case":5,"func":"entry_declares_credential","entry":{},"openrouter_url":null,"registry":{}}
+{"case":6,"func":"own_seeded_sources","entry":{"key_env":"A","api_key_env":"B","name":"myprov"},"openrouter_url":null,"registry":{}}
+{"case":7,"func":"own_seeded_sources","entry":{},"openrouter_url":null,"registry":{}}
+{"case":8,"func":"builtin_pool_address","pool_key":"custom:foo","openrouter_url":"https://openrouter.ai/api/v1","registry":{}}
+{"case":9,"func":"builtin_pool_address","pool_key":"openrouter","openrouter_url":"https://openrouter.ai/api/v1","registry":{}}
+{"case":10,"func":"builtin_pool_address","pool_key":"deepseek","openrouter_url":"https://openrouter.ai/api/v1","registry":{"deepseek":"https://api.deepseek.com"}}
+{"case":11,"func":"builtin_pool_address","pool_key":"nope","openrouter_url":null,"registry":{}}
+{"case":12,"func":"builtin_pool_address","pool_key":"deepseek","openrouter_url":null,"registry":{"deepseek":null}}
+{"case":13,"func":"recorded_address","row":{"base_url":" https://x.example "},"pool_key":"deepseek","openrouter_url":null,"registry":{"deepseek":"https://api.deepseek.com"}}
+{"case":14,"func":"recorded_address","row":{"base_url":""},"pool_key":"deepseek","openrouter_url":null,"registry":{"deepseek":"https://api.deepseek.com"}}
+{"case":15,"func":"recorded_address","row":{},"pool_key":"custom:x","openrouter_url":null,"registry":{}}

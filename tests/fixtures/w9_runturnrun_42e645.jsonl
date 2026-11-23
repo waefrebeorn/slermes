@@ -1,0 +1,18 @@
+{"func":"observed_persist","case":"non_list_string_override","run_message":"plain","override":"OVR","live_text":"abc"}
+{"func":"observed_persist","case":"non_list_null_override","run_message":"plain","override":null,"live_text":"fallback"}
+{"func":"observed_persist","case":"null_run_message","run_message":null,"override":"OVR","live_text":"abc"}
+{"func":"observed_persist","case":"empty_list","run_message":[],"override":"OVR","live_text":"abc"}
+{"func":"observed_persist","case":"matching_first_text","run_message":[{"type":"text","text":"hello world"}],"override":"HI","live_text":"hello"}
+{"func":"observed_persist","case":"matching_multi_part","run_message":[{"type":"text","text":"prefix here"},{"type":"image_url","image_url":{"url":"x"}}],"override":"NEW ","live_text":"prefix"}
+{"func":"observed_persist","case":"first_not_text","run_message":[{"type":"image_url","image_url":{"url":"x"}},{"type":"text","text":"abc"}],"override":"OVR","live_text":"abc"}
+{"func":"observed_persist","case":"override_not_string","run_message":[{"type":"text","text":"abc def"}],"override":{"x":1},"live_text":"abc"}
+{"func":"observed_persist","case":"live_not_string","run_message":[{"type":"text","text":"abc def"}],"override":"OVR","live_text":123}
+{"func":"observed_persist","case":"empty_live_matches_all","run_message":[{"type":"text","text":"abc def"}],"override":">>","live_text":""}
+{"func":"observed_persist","case":"no_prefix_match","run_message":[{"type":"text","text":"zzz abc"}],"override":"OVR","live_text":"abc"}
+{"func":"observed_persist","case":"missing_text_key","run_message":[{"type":"text"}],"override":"OVR","live_text":"nonempty"}
+{"func":"merge_overrides","case":"basic_drop_and_layer","agent_overrides":{"x":1,"keep":9},"prev_overrides":{"x":1},"turn_overrides":{"x":2,"y":3}}
+{"func":"merge_overrides","case":"prev_not_present","agent_overrides":{"a":1},"prev_overrides":{"b":2},"turn_overrides":{}}
+{"func":"merge_overrides","case":"turn_overwrites","agent_overrides":{"a":1,"b":2},"prev_overrides":{},"turn_overrides":{"a":99}}
+{"func":"merge_overrides","case":"all_null","agent_overrides":null,"prev_overrides":null,"turn_overrides":null}
+{"func":"merge_overrides","case":"prev_value_mismatch","agent_overrides":{"k":"old"},"prev_overrides":{"k":"different"},"turn_overrides":{}}
+{"func":"merge_overrides","case":"empty_agent_prev_values","agent_overrides":{},"prev_overrides":{"k":null},"turn_overrides":{"t":true}}

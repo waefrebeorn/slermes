@@ -1,0 +1,13 @@
+{"case":1,"func":"wire_bytes","text":"hello"}
+{"case":2,"func":"wire_bytes","text":"a\"b\\c\n"}
+{"case":3,"func":"wire_bytes","text":"x\ty\rz"}
+{"case":4,"func":"wire_bytes","text":""}
+{"case":5,"func":"wire_bytes","text":"caf\u00e9"}
+{"case":6,"func":"wire_bytes","text":"line1\nline2\n"}
+{"case":7,"func":"wire_bytes","text":"a\u0001b"}
+{"case":8,"func":"fit_frame","text":"abc\ndef\nghi","budget":"10"}
+{"case":9,"func":"fit_frame","text":"hello world","budget":"20"}
+{"case":10,"func":"fit_frame","text":"a\tb\nc","budget":"4"}
+{"case":11,"func":"fit_frame","text":"","budget":"5"}
+{"case":12,"func":"fit_frame","text":"caf\u00e9\nxy","budget":"6"}
+{"case":13,"func":"fit_frame","text":"one\ntwo\nthree\nfour","budget":"12"}

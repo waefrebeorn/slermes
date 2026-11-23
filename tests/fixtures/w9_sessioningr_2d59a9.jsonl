@@ -1,0 +1,14 @@
+{"func":"row_turn_author","case":"api_turn_author","row":{"payload":{"api_turn_v1":{"turn_author":{"id":"7","name":"api"}}}},"fallback_author":{"id":"fb"}}
+{"func":"row_turn_author","case":"local_wins","row":{"payload":{"local_automation_v1":{"turn_author":{"id":"local"}},"api_turn_v1":{"turn_author":{"id":"api"}}}},"fallback_author":"fb"}
+{"func":"row_turn_author","case":"cli_only","row":{"payload":{"cli_turn_v1":{"turn_author":{"id":"cli"}}}},"fallback_author":null}
+{"func":"row_turn_author","case":"no_author_fallback","row":{"payload":{"api_turn_v1":{}}},"fallback_author":{"id":"fallback"}}
+{"func":"row_turn_author","case":"null_author_fallback","row":{"payload":{"api_turn_v1":{"turn_author":null}}},"fallback_author":"fb"}
+{"func":"row_turn_author","case":"missing_payload","row":{},"fallback_author":"fb"}
+{"func":"row_turn_author","case":"empty_automation_obj","row":{"payload":{"local_automation_v1":{},"cli_turn_v1":{"turn_author":"CLI"}}},"fallback_author":"fb"}
+{"func":"row_turn_author","case":"null_fallback","row":{"payload":{}},"fallback_author":null}
+{"func":"pause_notice","case":"already_notified","reason":"session_busy","pause_notified":true,"slack":false}
+{"func":"pause_notice","case":"runtime_draining","reason":"runtime_draining","pause_notified":false,"slack":false}
+{"func":"pause_notice","case":"session_busy","reason":"session_busy","pause_notified":false,"slack":true}
+{"func":"pause_notice","case":"unknown_execution_slack","reason":"unknown_execution","pause_notified":false,"slack":true}
+{"func":"pause_notice","case":"unknown_execution_nonslack","reason":"unknown_execution","pause_notified":false,"slack":false}
+{"func":"pause_notice","case":"generic_reason","reason":"boom","pause_notified":false,"slack":false}

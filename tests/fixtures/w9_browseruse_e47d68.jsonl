@@ -1,0 +1,12 @@
+{"func":"harness_command","cmd":["python","-m","browser_harness.run"],"activate":"always","this_file":"/fake/browser_use_shot.py","case":"h1"}
+{"func":"harness_command","cmd":["python","-m","browser_harness.run"],"activate":"if-cloud","this_file":"C:/tools/shot.py","case":"h2"}
+{"func":"harness_command","cmd":["python","script.py"],"activate":"never","this_file":"/fake/x.py","case":"h3"}
+{"func":"harness_command","cmd":["python"],"activate":"always","this_file":"/fake/x.py","case":"h4"}
+{"func":"activation","mode":"never","is_cloud":true,"case":"a1"}
+{"func":"activation","mode":"always","is_cloud":false,"case":"a2"}
+{"func":"activation","mode":"if-cloud","is_cloud":true,"case":"a3"}
+{"func":"activation","mode":"if-cloud","is_cloud":false,"case":"a4"}
+{"func":"is_harness_helper","module":"browser_harness.helpers","callable":true,"case":"i1"}
+{"func":"is_harness_helper","module":"agent_helpers","callable":true,"case":"i2"}
+{"func":"is_harness_helper","module":"browser_harness.helpers","callable":false,"case":"i3"}
+{"func":"constants","case":"c1"}

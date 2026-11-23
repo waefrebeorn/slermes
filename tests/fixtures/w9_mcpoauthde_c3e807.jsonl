@@ -1,0 +1,19 @@
+{"func":"positive_seconds","value":"30","label":"interval","case":"p1"}
+{"func":"positive_seconds","value":"0","label":"interval","case":"p2"}
+{"func":"positive_seconds","value":"-5","label":"interval","case":"p3"}
+{"func":"positive_seconds","value":"nan","label":"interval","case":"p4"}
+{"func":"positive_seconds","value":"inf","label":"interval","case":"p5"}
+{"func":"positive_seconds","value":12.5,"label":"interval","case":"p6"}
+{"func":"positive_seconds","value":"1e3","label":"timeout","case":"p7"}
+{"func":"payload","status":200,"data":{"a":1},"bad_json":false,"label":"Device authorization","case":"y1"}
+{"func":"payload","status":404,"data":{"e":"x"},"bad_json":false,"label":"OAuth metadata","case":"y2"}
+{"func":"payload","status":200,"data":"not-a-dict","bad_json":false,"label":"OAuth metadata","case":"y3"}
+{"func":"payload","status":200,"data":null,"bad_json":true,"label":"Client registration","case":"y4"}
+{"func":"payload","status":500,"data":{"x":2},"bad_json":false,"label":"Device token","case":"y5"}
+{"func":"payload","status":201,"data":{"ok":true},"bad_json":false,"label":"Device authorization","case":"y6"}
+{"func":"payload","status":199,"data":{},"bad_json":false,"label":"Device authorization","case":"y7"}
+{"func":"constants","case":"c1"}
+{"func":"device_grant_supported","grants":null,"case":"d1"}
+{"func":"device_grant_supported","grants":["urn:ietf:params:oauth:grant-type:device_code"],"case":"d2"}
+{"func":"device_grant_supported","grants":["refresh_token"],"case":"d3"}
+{"func":"device_grant_supported","grants":[],"case":"d4"}

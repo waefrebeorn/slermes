@@ -1,0 +1,18 @@
+{"case":"dv-nodist","func":"derived_version","base":"1.2.3","distance":"","dirty":false,"short_commit":""}
+{"case":"dv-clean-dist","func":"derived_version","base":"1.2.3","distance":"7","dirty":false,"short_commit":""}
+{"case":"dv-short","func":"derived_version","base":"1.2.3","distance":"7","dirty":false,"short_commit":"abc1234"}
+{"case":"dv-short-dirty","func":"derived_version","base":"1.2.3","distance":"7","dirty":true,"short_commit":"abc1234"}
+{"case":"dv-dirty-nodist","func":"derived_version","base":"1.2.3","distance":"","dirty":true,"short_commit":""}
+{"case":"dv-zero","func":"derived_version","base":"1.2.3","distance":"0","dirty":true,"short_commit":"abc1234"}
+{"case":"dv-negative","func":"derived_version","base":"1.2.3","distance":"-3","dirty":true,"short_commit":"abc1234"}
+{"case":"dv-unknown-base","func":"derived_version","base":"unknown","distance":"5","dirty":false,"short_commit":"deadbeef"}
+{"case":"pn-positive","func":"parse_nonnegative","value":"42"}
+{"case":"pn-zero","func":"parse_nonnegative","value":"0"}
+{"case":"pn-negative","func":"parse_nonnegative","value":"-1"}
+{"case":"pn-garbage","func":"parse_nonnegative","value":"abc"}
+{"case":"pn-empty","func":"parse_nonnegative","value":""}
+{"case":"pn-whitespace","func":"parse_nonnegative","value":"  99  "}
+{"case":"pn-huge","func":"parse_nonnegative","value":"9007199254740991"}
+{"case":"disp-unknown","func":"display_version","base":"unknown","derived":"git.abcdef0.dirty","distance":""}
+{"case":"disp-known","func":"display_version","base":"2.0.0","derived":"2.0.0+9","distance":"9"}
+{"case":"disp-known-nodist","func":"display_version","base":"2.0.0","derived":"2.0.0","distance":""}

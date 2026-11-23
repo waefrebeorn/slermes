@@ -1,0 +1,19 @@
+{"func":"err","case":"no_detail","code":"no_conversation"}
+{"func":"err","case":"with_detail","code":"send_failed","detail":"no adapter"}
+{"func":"err","case":"empty_detail","code":"x","detail":""}
+{"func":"err","case":"empty_code","code":"","detail":"z"}
+{"func":"fit","case":"short","text":"hello world","limit":"10"}
+{"func":"fit","case":"exact","text":"12345","limit":"5"}
+{"func":"fit","case":"over_one","text":"abcdef","limit":"5"}
+{"func":"fit","case":"over_many","text":"abcdefghij","limit":"3"}
+{"func":"fit","case":"limit_one","text":"abcd","limit":"1"}
+{"func":"fit","case":"limit_zero","text":"abcdef","limit":"0"}
+{"func":"fit","case":"limit_neg","text":"abcdef","limit":"-2"}
+{"func":"fit","case":"empty_text","text":"","limit":"3"}
+{"func":"fit","case":"unicode_short","text":"héllo☃","limit":"10"}
+{"func":"fit","case":"unicode_clamp","text":"héllo☃world","limit":"5"}
+{"func":"fit","case":"default_limit","text":"xxxxxxxxxxxxxxxxxxxx"}
+{"func":"supports_edit","case":"flag_false","flag":false,"has_edit":true}
+{"func":"supports_edit","case":"flag_true","flag":true,"has_edit":false}
+{"func":"supports_edit","case":"no_flag","has_edit":true}
+{"func":"supports_edit","case":"flag_null","flag":null,"has_edit":true}

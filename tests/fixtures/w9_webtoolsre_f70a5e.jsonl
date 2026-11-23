@@ -1,0 +1,10 @@
+{"func":"policy_blocked","case":"flag_true","result":{"blocked_by_policy":true}}
+{"func":"policy_blocked","case":"flag_false_empty","result":{"blocked_by_policy":false,"error":""}}
+{"func":"policy_blocked","case":"error_exact","result":{"error":"Blocked by website policy"}}
+{"func":"policy_blocked","case":"error_mixed_case","result":{"error":"blocked BY Website POLICY: robots"}}
+{"func":"policy_blocked","case":"error_null","result":{"error":null}}
+{"func":"policy_blocked","case":"error_missing","result":{}}
+{"func":"policy_blocked","case":"error_unrelated","result":{"error":"Connection reset"}}
+{"func":"policy_blocked","case":"both","result":{"blocked_by_policy":true,"error":"blocked by website policy"}}
+{"func":"policy_blocked","case":"flag_false_null","result":{"blocked_by_policy":false,"error":null}}
+{"func":"policy_blocked","case":"embedded","result":{"error":"fetch failed: blocked by website policy for url"}}

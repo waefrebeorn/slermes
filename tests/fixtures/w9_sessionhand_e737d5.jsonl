@@ -1,0 +1,12 @@
+{"func":"unsettled","case":"session_busy","reason":"session_busy"}
+{"func":"unsettled","case":"unknown_execution","reason":"unknown_execution"}
+{"func":"unsettled","case":"unknown_reason_keyerror","reason":"something_else"}
+{"func":"unsettled","case":"empty_reason_keyerror","reason":""}
+{"func":"destination","case":"unknown_platform","reason":"unknown_platform","platform":"signal"}
+{"func":"destination","case":"platform_not_enabled","reason":"platform_not_enabled","platform":"irc"}
+{"func":"destination","case":"no_home_channel","reason":"no_home_channel","platform":"discord"}
+{"func":"destination","case":"unknown_reason_keyerror","reason":"mystery","platform":"telegram"}
+{"func":"destination","case":"empty_platform","reason":"unknown_platform","platform":""}
+{"func":"destination","case":"platform_with_space","reason":"platform_not_enabled","platform":"my platform"}
+{"func":"destination","case":"no_home_special_platform","reason":"no_home_channel","platform":"matrix"}
+{"func":"destination","case":"null_reason_keyerror","reason":null,"platform":"x"}

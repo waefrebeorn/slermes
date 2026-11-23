@@ -1,0 +1,17 @@
+{"func":"resolve_timeout","case":"given","timeout":12.5,"config_timeout":300}
+{"func":"resolve_timeout","case":"none","timeout":null,"config_timeout":77}
+{"func":"resolve_timeout","case":"zero","timeout":0,"config_timeout":300}
+{"func":"resolve_timeout","case":"given_int","timeout":45,"config_timeout":9}
+{"func":"map_outcome","case":"allow_once","valid_outcome":true,"option_id":"allow_once","allowed":["allow_once"]}
+{"func":"map_outcome","case":"allow_session","valid_outcome":true,"option_id":"allow_session","allowed":["allow_session"]}
+{"func":"map_outcome","case":"allow_always","valid_outcome":true,"option_id":"allow_always","allowed":["allow_always"]}
+{"func":"map_outcome","case":"deny","valid_outcome":true,"option_id":"deny","allowed":["deny"]}
+{"func":"map_outcome","case":"deny_always","valid_outcome":true,"option_id":"deny_always","allowed":["deny_always"]}
+{"func":"map_outcome","case":"unknown","valid_outcome":true,"option_id":"weird","allowed":["weird"]}
+{"func":"map_outcome","case":"not_allowed","valid_outcome":true,"option_id":"allow_once","allowed":["deny"]}
+{"func":"map_outcome","case":"bad_type","valid_outcome":false,"option_id":"allow_once","allowed":["allow_once"]}
+{"func":"build_options","case":"default","allow_permanent":true,"allow_session":true,"smart_denied":false,"supports_reject_always":true}
+{"func":"build_options","case":"no_permanent","allow_permanent":false,"allow_session":true,"smart_denied":false,"supports_reject_always":true}
+{"func":"build_options","case":"once_only","allow_permanent":true,"allow_session":false,"smart_denied":false,"supports_reject_always":true}
+{"func":"build_options","case":"smart_denied","allow_permanent":true,"allow_session":true,"smart_denied":true,"supports_reject_always":true}
+{"func":"build_options","case":"no_reject_always","allow_permanent":true,"allow_session":true,"smart_denied":false,"supports_reject_always":false}

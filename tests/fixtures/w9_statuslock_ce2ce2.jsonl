@@ -1,0 +1,14 @@
+{"case":1,"func":"reset"}
+{"case":2,"func":"reported","lock_dir":"/home/u/.hermes/gateway-locks"}
+{"case":3,"func":"unusable","lock_dir":"/home/u/.hermes/gateway-locks","errno":13,"strerror":"Permission denied","filename":"/home/u/.hermes/gateway-locks"}
+{"case":4,"func":"reported","lock_dir":"/home/u/.hermes/gateway-locks"}
+{"case":5,"func":"unusable","lock_dir":"/home/u/.hermes/gateway-locks","errno":13,"strerror":"Permission denied","filename":"/home/u/.hermes/gateway-locks"}
+{"case":6,"func":"recovered","lock_dir":"/home/u/.hermes/gateway-locks"}
+{"case":7,"func":"reported","lock_dir":"/home/u/.hermes/gateway-locks"}
+{"case":8,"func":"unusable","lock_dir":"/var/locks","errno":5,"strerror":"Input/output error","filename":"/var/locks/token.lock"}
+{"case":9,"func":"reported","lock_dir":"/var/locks"}
+{"case":10,"func":"reported","lock_dir":"/home/u/.hermes/gateway-locks"}
+{"case":11,"func":"reset"}
+{"case":12,"func":"reported","lock_dir":"/var/locks"}
+{"case":13,"func":"unusable","lock_dir":"C:\\Users\\u\\gateway-locks","errno":5,"strerror":"Access is denied","filename":"C:\\Users\\u\\gateway-locks"}
+{"case":14,"func":"reported","lock_dir":"C:\\Users\\u\\gateway-locks"}

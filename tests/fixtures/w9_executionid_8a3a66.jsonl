@@ -1,0 +1,11 @@
+{"func":"enter","in":{"job":{"id":"job-1","name":"Nightly"},"execution_id":"ex-1","record":{"source":"builtin","scheduled_instant":"2026-01-01T00:00:00Z","started_at":"2026-01-01T00:00:01Z"},"profile":"default"}}
+{"func":"enter","in":{"job":{"id":42},"execution_id":"e2","record":{"source":"direct"},"profile":null}}
+{"func":"enter","in":{"job":{"id":"j3","name":""},"execution_id":"e3","record":{},"profile":"work"}}
+{"func":"enter","in":{"job":{"id":"j4","name":"Run","source":"ignored"},"execution_id":"e4","record":{"source":0},"profile":"default"}}
+{"func":"enter","in":{"job":{"id":"j5","name":"Run"},"execution_id":"e5","record":{"source":5,"started_at":"2026-02-02T03:04:05Z"},"profile":null}}
+{"func":"enter","in":{"job":{"id":true,"name":"X"},"execution_id":"e6","record":{"source":"openai","scheduled_instant":null,"started_at":null},"profile":"prod"}}
+{"func":"enter","in":{"job":{"id":"j7","name":0},"execution_id":"e7","record":{"source":""},"profile":""}}
+{"func":"enter","in":{"job":{"id":"j8","name":"Named","extra":"kept"},"execution_id":"e8","record":{"source":"cron","scheduled_instant":"t0"},"profile":"nightly"}}
+{"func":"current","in":{"bound":{"job_id":"j1","job_name":"N","execution_id":"x","source":"builtin","scheduled_instant":null,"started_at":null,"profile":"default"},"delegated":false}}
+{"func":"current","in":{"bound":{"job_id":"j1","profile":"default"},"delegated":true}}
+{"func":"current","in":{"bound":null,"delegated":false}}

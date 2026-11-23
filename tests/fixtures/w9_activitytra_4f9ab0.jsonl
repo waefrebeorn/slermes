@@ -1,0 +1,15 @@
+{"case":1,"func":"touch","gen":null,"ts":100.0,"desc":"working","bound_desc":"working","resolved_provenance":"unknown","is_terminal":false,"force_persist":false}
+{"case":2,"func":"touch","gen":4,"ts":200.5,"desc":"  padded  ","bound_desc":"padded","resolved_provenance":"agent.compression","is_terminal":false,"force_persist":true}
+{"case":3,"func":"touch","gen":0,"ts":1.0,"desc":"","bound_desc":"","resolved_provenance":"agent.compression_timeout","is_terminal":true,"force_persist":false}
+{"case":4,"func":"touch","gen":-1,"ts":5.0,"desc":"x","bound_desc":"x","resolved_provenance":"agent.compression_cooldown","is_terminal":false,"force_persist":false}
+{"case":5,"func":"persist_if_due","session_id":null,"has_session_db":true,"has_touch":true,"now_mono":100.0,"last_mono":0.0,"interval":60.0}
+{"case":6,"func":"persist_if_due","session_id":"s1","has_session_db":false,"has_touch":true,"now_mono":100.0,"last_mono":70.0,"interval":60.0}
+{"case":7,"func":"persist_if_due","session_id":"s1","has_session_db":true,"has_touch":false,"now_mono":100.0,"last_mono":70.0,"interval":60.0}
+{"case":8,"func":"persist_if_due","session_id":"s1","has_session_db":true,"has_touch":true,"now_mono":100.0,"last_mono":0.0,"interval":60.0}
+{"case":9,"func":"persist_if_due","session_id":"s1","has_session_db":true,"has_touch":true,"now_mono":100.0,"last_mono":70.0,"interval":60.0}
+{"case":10,"func":"persist_if_due","session_id":"s1","has_session_db":true,"has_touch":true,"now_mono":130.1,"last_mono":70.0,"interval":60.0}
+{"case":11,"func":"persist_if_due","session_id":"","has_session_db":true,"has_touch":true,"now_mono":100.0,"last_mono":0.0,"interval":60.0}
+{"case":12,"func":"reset_labels","session_id":null,"has_session_db":true,"has_clear":true}
+{"case":13,"func":"reset_labels","session_id":"s1","has_session_db":true,"has_clear":true}
+{"case":14,"func":"reset_labels","session_id":"s1","has_session_db":true,"has_clear":false}
+{"case":15,"func":"reset_labels","session_id":"s1","has_session_db":false,"has_clear":true}

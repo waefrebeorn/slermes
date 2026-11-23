@@ -1,0 +1,17 @@
+{"func":"route_key","provider":"openai","builtins":["edge","openai"],"nous":"nous","has_command":false,"case":"r1"}
+{"func":"route_key","provider":" Nous ","builtins":[],"nous":"nous","has_command":false,"case":"r2"}
+{"func":"route_key","provider":"MYPLUGIN","builtins":[],"nous":"nous","has_command":false,"case":"r3"}
+{"func":"route_key","provider":"  ","builtins":[],"nous":"nous","has_command":false,"case":"r4"}
+{"func":"route_key","provider":"foo","builtins":[],"nous":"nous","has_command":true,"case":"r5"}
+{"func":"route_key","provider":"foo","builtins":["foo"],"nous":"nous","has_command":false,"case":"r6"}
+{"func":"voice_kwargs","config":{"voice":"v","model":"m","speed":1.5},"case":"v1"}
+{"func":"voice_kwargs","config":{"voice":"","model":null,"speed":true},"case":"v2"}
+{"func":"voice_kwargs","config":{"speed":"1.5"},"case":"v3"}
+{"func":"voice_kwargs","config":[1,2],"case":"v4"}
+{"func":"voice_kwargs","config":{"voice":"x"},"case":"v5"}
+{"func":"voice_compatible","provider":"edge","builtins":["edge","openai"],"available":true,"case":"c1"}
+{"func":"voice_compatible","provider":"myplug","builtins":[],"available":true,"case":"c2"}
+{"func":"voice_compatible","provider":"myplug","builtins":[],"available":false,"case":"c3"}
+{"func":"voice_compatible","provider":"","builtins":[],"available":true,"case":"c4"}
+{"func":"is_available","provider":"myplug","available":true,"case":"a1"}
+{"func":"is_available","provider":"myplug","available":false,"case":"a2"}

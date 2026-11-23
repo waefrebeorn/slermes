@@ -1,0 +1,15 @@
+{"func":"lower_key","name":"  OpenAI  "}
+{"func":"lower_key","name":"MiXeD"}
+{"func":"lower_key","name":""}
+{"func":"lower_key","name":"\tNoUS\n"}
+{"func":"exact_key","name":"  KeepCase  "}
+{"func":"exact_key","name":""}
+{"func":"configured","section":"tts","raw":"  openai  "}
+{"func":"configured","section":"tts","raw":" nous "}
+{"func":"configured","section":"tts","raw":"NOUS"}
+{"func":"configured","section":"tts","raw":"   "}
+{"func":"configured","section":"tts","raw":null}
+{"func":"configured","section":"stt","raw":"custom-provider"}
+{"func":"is_available_safe","available":true,"raises":false}
+{"func":"is_available_safe","available":false,"raises":false}
+{"func":"is_available_safe","available":true,"raises":true}

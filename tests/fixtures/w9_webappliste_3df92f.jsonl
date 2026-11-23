@@ -1,0 +1,27 @@
+{"case":1,"func":"bare_host","host":"  [::1]  "}
+{"case":2,"func":"bare_host","host":"[example.com]"}
+{"case":3,"func":"bare_host","host":" 0.0.0.0 "}
+{"case":4,"func":"is_wildcard","host":"0.0.0.0"}
+{"case":5,"func":"is_wildcard","host":"::"}
+{"case":6,"func":"is_wildcard","host":"127.0.0.1"}
+{"case":7,"func":"is_loopback","host":"localhost"}
+{"case":8,"func":"is_loopback","host":"127.0.0.1"}
+{"case":9,"func":"is_loopback","host":"::1"}
+{"case":10,"func":"is_loopback","host":"1.2.3.4"}
+{"case":11,"func":"is_loopback","host":"not-an-ip"}
+{"case":12,"func":"dial_host","host":"localhost"}
+{"case":13,"func":"dial_host","host":"0.0.0.0"}
+{"case":14,"func":"dial_host","host":"::"}
+{"case":15,"func":"dial_origin","host":"::","port":"9120"}
+{"case":16,"func":"dial_origin","host":"127.0.0.1","port":"9120"}
+{"case":17,"func":"public_url","value":"http://example.com/"}
+{"case":18,"func":"public_url","value":null}
+{"case":19,"func":"public_url","value":""}
+{"case":20,"func":"public_url","value":"http://user@host"}
+{"case":21,"func":"public_url","value":"ftp://x"}
+{"case":22,"func":"public_url","value":"http://x:0"}
+{"case":23,"func":"public_url","value":"http://x:9120"}
+{"case":24,"func":"public_url","value":123}
+{"case":25,"func":"public_url","value":"http://[::1]:80/"}
+{"case":26,"func":"is_loopback","host":"0:0:0:0:0:0:0:1"}
+{"case":27,"func":"public_url","value":"http://x:99999"}

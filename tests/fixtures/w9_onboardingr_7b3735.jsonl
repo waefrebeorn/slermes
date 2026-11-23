@@ -1,0 +1,12 @@
+{"func":"load","db_none":true,"session_id":"s1","record":{"onboarding_run":1}}
+{"func":"load","session_id":"","record":{"a":1}}
+{"func":"load","session_id":"s1","record":{"facts":{},"run_id":"r1"}}
+{"func":"load","session_id":"s1","record":[1,2]}
+{"func":"load","session_id":"s1","record":"scalar"}
+{"func":"load","session_id":"s1","record":null}
+{"func":"load","db_none":false,"session_id":"s9","record":{"x":true,"y":null}}
+{"func":"announce","run_id":"run-1","session_id":"s1","outcome":"skip"}
+{"func":"announce","run_id":"","session_id":"s1","outcome":"done"}
+{"func":"announce","run_id":null,"session_id":"s2","outcome":"deleted"}
+{"func":"announce","run_id":"abc","session_id":"","outcome":""}
+{"func":"announce","run_id":"xyz","session_id":"s3","outcome":"done"}

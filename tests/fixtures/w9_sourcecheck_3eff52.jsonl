@@ -1,0 +1,25 @@
+{"func": "sha", "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "sha", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}
+{"func": "sha", "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "sha", "value": "gggggggggggggggggggggggggggggggggggggggg"}
+{"func": "sha", "value": ""}
+{"func": "sha", "value": 123}
+{"func": "sha", "value": null}
+{"func": "cfg", "desktop_config": {"branch": "main"}}
+{"func": "cfg", "desktop_config": {"branch": "  feat  "}}
+{"func": "cfg", "desktop_config": {"branch": "   "}}
+{"func": "cfg", "desktop_config": {}}
+{"func": "cfg", "desktop_config": {"branch": null}}
+{"func": "cfg", "desktop_config": {"branch": 5}}
+{"func": "cfg", "desktop_config": null}
+{"func": "cob", "current_branch": "main", "fallback": "x"}
+{"func": "cob", "current_branch": "HEAD", "fallback": "x"}
+{"func": "cob", "current_branch": null, "fallback": "x"}
+{"func": "cob", "current_branch": "", "fallback": "x"}
+{"func": "cob", "current_branch": "dev", "fallback": null}
+{"func": "remote", "embedded": false, "repository": "", "origin": "", "branch": "main"}
+{"func": "remote", "embedded": false, "repository": "NousResearch/hermes-agent", "origin": "git@github.com:x.git", "branch": "dev"}
+{"func": "remote", "embedded": false, "repository": "NousResearch/hermes-agent", "origin": "git@github.com:x.git", "branch": "main"}
+{"func": "remote", "embedded": false, "repository": "fork/repo", "origin": "git@github.com:x.git", "branch": "dev"}
+{"func": "remote", "embedded": true, "repository": "", "origin": "", "branch": "main"}
+{"func": "remote", "embedded": false, "repository": "NousResearch/hermes-agent", "origin": "https://github.com/x.git", "branch": "dev"}

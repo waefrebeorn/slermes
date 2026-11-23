@@ -1,0 +1,13 @@
+{"func":"is_single_query","env_value":"1"}
+{"func":"is_single_query","env_value":"0"}
+{"func":"is_single_query","env_value":""}
+{"func":"is_single_query","env_value":null}
+{"func":"is_single_query","env_value":"true"}
+{"func":"is_single_query","policy_source":"oneshot","env_value":"0"}
+{"func":"is_single_query","policy_source":"cli","env_value":"1"}
+{"func":"is_single_query","policy_source":"oneshot","env_value":"1"}
+{"func":"agent_is_oneshot","cached_present":false,"computed":true}
+{"func":"agent_is_oneshot","cached_present":false,"computed":false}
+{"func":"agent_is_oneshot","cached_present":true,"cached":true,"computed":false}
+{"func":"agent_is_oneshot","cached_present":true,"cached":false,"computed":true}
+{"func":"disabled_toolsets"}

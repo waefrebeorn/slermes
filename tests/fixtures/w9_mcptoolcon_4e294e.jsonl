@@ -1,0 +1,26 @@
+{"func":"is_reserved_meta_key","key":"mcp/foo","case":"k1"}
+{"func":"is_reserved_meta_key","key":"com.example/mcp","case":"k2"}
+{"func":"is_reserved_meta_key","key":"a.b.mcp/x","case":"k3"}
+{"func":"is_reserved_meta_key","key":"mcp","case":"k4"}
+{"func":"is_reserved_meta_key","key":"x/mcp","case":"k5"}
+{"func":"is_reserved_meta_key","key":"modelcontextprotocol.foo/bar","case":"k6"}
+{"func":"is_reserved_meta_key","key":"foo.mcp/x","case":"k7"}
+{"func":"is_reserved_meta_key","key":"/x","case":"k8"}
+{"func":"is_reserved_meta_key","key":"mcp.foo/bar","case":"k9"}
+{"func":"strip_reserved_meta","meta":{"a":1,"mcp/x":2,"b":{"y":3}},"case":"s1"}
+{"func":"strip_reserved_meta","meta":"not-a-dict","case":"s2"}
+{"func":"strip_reserved_meta","meta":{"mcp/x":1,"modelcontextprotocol.a/y":2},"case":"s3"}
+{"func":"strip_reserved_meta","meta":{},"case":"s4"}
+{"func":"base_mime","mime":"image/PNG; charset=x","case":"m1"}
+{"func":"base_mime","mime":null,"case":"m2"}
+{"func":"base_mime","mime":"  Text/Plain  ","case":"m3"}
+{"func":"image_extension","mime":"image/jpeg","ext":".x","case":"g1"}
+{"func":"image_extension","mime":"image/png","ext":".png","case":"g2"}
+{"func":"image_extension","mime":"image/gif","ext":"","case":"g3"}
+{"func":"image_extension","mime":"IMAGE/JPG; charset=x","ext":"","case":"g4"}
+{"func":"resource_filename","uri":"https://example.com/a/b/report.pdf","mime":"application/pdf","ext":"","case":"f1"}
+{"func":"resource_filename","uri":"https://example.com/a/my%20file.txt","mime":"text/plain","ext":"","case":"f2"}
+{"func":"resource_filename","uri":"https://example.com/","mime":"text/plain","ext":"","case":"f3"}
+{"func":"resource_filename","uri":"a/b/c.png","mime":"image/png","ext":"","case":"f4"}
+{"func":"resource_filename","uri":"https://x/bad%0Aname.txt","mime":"text/plain","ext":"","case":"f5"}
+{"func":"resource_filename","uri":"https://x/a/..","mime":"text/plain","ext":"","case":"f6"}

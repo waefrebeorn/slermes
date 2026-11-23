@@ -1,0 +1,21 @@
+{"func":"normalize_posix","path":"","case":"n1"}
+{"func":"normalize_posix","path":"a/../b","case":"n2"}
+{"func":"normalize_posix","path":"/a/./b/","case":"n3"}
+{"func":"normalize_posix","path":"//a","case":"n4"}
+{"func":"normalize_posix","path":"///a","case":"n5"}
+{"func":"normalize_posix","path":"..","case":"n6"}
+{"func":"normalize_posix","path":"a//b/./c/../d","case":"n7"}
+{"func":"normalize_posix","path":"a/../../b","case":"n8"}
+{"func":"ssh_escapes_home","path":"~/..","case":"s1"}
+{"func":"ssh_escapes_home","path":"~/../x","case":"s2"}
+{"func":"ssh_escapes_home","path":"~/.ssh","case":"s3"}
+{"func":"ssh_escapes_home","path":"/abs","case":"s4"}
+{"func":"ssh_escapes_home","path":"~","case":"s5"}
+{"func":"sentinel","value":".","case":"t1"}
+{"func":"sentinel","value":"auto","case":"t2"}
+{"func":"sentinel","value":"","case":"t3"}
+{"func":"sentinel","value":"/abs","case":"t4"}
+{"func":"sentinel","value":" CWD ","case":"t5"}
+{"func":"expand_tilde","path":"~","home":"/home/u","case":"e1"}
+{"func":"expand_tilde","path":"~/x/y","home":"/home/u","case":"e2"}
+{"func":"expand_tilde","path":"plain/path","home":"/home/u","case":"e3"}

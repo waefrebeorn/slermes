@@ -1,0 +1,39 @@
+{"func":"stamp","in":{"result":{"a":1,"final_response":"x"},"reason":"rate_limit","retryable":true}}
+{"func":"stamp","in":{"result":{},"reason":"session_busy","retryable":false}}
+{"func":"stamp","in":{"result":{"failure_reason":"old","failure_retryable":true},"reason":"new","retryable":false}}
+{"func":"display_kind","in":{"role":"assistant","content":"  Your request was not processed. Send it again if you still want me to carry it out.  "}}
+{"func":"display_kind","in":{"role":"assistant","content":"This turn did not complete. Some actions may already have run; verify their effects before resending."}}
+{"func":"display_kind","in":{"role":"assistant","content":"An automated delivery was interrupted and was not run again. Some actions may already have run; verify their effects."}}
+{"func":"display_kind","in":{"role":"assistant","content":"A real assistant reply"}}
+{"func":"display_kind","in":{"role":"user","content":"Your request was not processed. Send it again if you still want me to carry it out."}}
+{"func":"display_kind","in":{"role":"assistant","content":null}}
+{"func":"notice","in":{"turn_messages":[]}}
+{"func":"notice","in":{"turn_messages":[{"role":"user","content":"hi"}]}}
+{"func":"notice","in":{"turn_messages":[{"role":"tool","content":"x"}]}}
+{"func":"notice","in":{"turn_messages":[{"role":"assistant","tool_calls":[{"id":"1"}]}]}}
+{"func":"notice","in":{"turn_messages":[{"role":"assistant","tool_calls":[]}]}}
+{"func":"exit_failure","in":{"reason":"all_retries_exhausted_no_response"}}
+{"func":"exit_failure","in":{"reason":"pending_tool_result(waiting)"}}
+{"func":"exit_failure","in":{"reason":"local_processing_error(boom)"}}
+{"func":"exit_failure","in":{"reason":"empty_response_exhausted"}}
+{"func":"exit_failure","in":{"reason":"some_unknown_exit"}}
+{"func":"handoff","in":{"result":{"failed":false,"interrupted":false,"completed":false,"turn_exit_reason":"max_iterations_reached(8/8)","final_response":"Here is a summary."}}}
+{"func":"handoff","in":{"result":{"failed":true,"completed":false,"turn_exit_reason":"max_iterations_reached(8/8)","final_response":"summary"}}}
+{"func":"handoff","in":{"result":{"completed":true,"turn_exit_reason":"max_iterations_reached(8/8)","final_response":"summary"}}}
+{"func":"handoff","in":{"result":{"completed":false,"turn_exit_reason":"max_iterations_reached(8/8)","final_response":"   "}}}
+{"func":"handoff","in":{"result":null}}
+{"func":"gloss","in":{"reason":"timeout","subject":"it","possessive":"its"}}
+{"func":"gloss","in":{"reason":"model_not_found","subject":"the job","possessive":"the job's"}}
+{"func":"gloss","in":{"reason":"context_overflow","subject":"it","possessive":"the job's"}}
+{"func":"gloss","in":{"reason":"no_such_reason","subject":"it","possessive":"its"}}
+{"func":"short_detail","in":{"text":"hello world","limit":200}}
+{"func":"short_detail","in":{"text":"first line\nsecond line","limit":200}}
+{"func":"short_detail","in":{"text":"abcdefghij","limit":5}}
+{"func":"short_detail","in":{"text":"","limit":5}}
+{"func":"invalid_reason","in":{"error":{"code":429}}}
+{"func":"invalid_reason","in":{"error":{"code":"503"}}}
+{"func":"invalid_reason","in":{"error":{"code":500}}}
+{"func":"invalid_reason","in":{"error":{"code":"abc"}}}
+{"func":"invalid_reason","in":{"error":{"code":418}}}
+{"func":"invalid_reason","in":{"error":null}}
+{"func":"invalid_reason","in":{"error":429}}

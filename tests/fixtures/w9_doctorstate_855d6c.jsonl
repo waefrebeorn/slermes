@@ -1,0 +1,22 @@
+{"func":"format_bytes","value":"0","case":"zero bytes"}
+{"func":"format_bytes","value":"1023","case":"below one KB"}
+{"func":"format_bytes","value":"1024","case":"exactly one KB"}
+{"func":"format_bytes","value":"1048576","case":"exactly one MB"}
+{"func":"format_bytes","value":"1073741824","case":"exactly one GB"}
+{"func":"format_bytes","value":"1099511627776","case":"one TB"}
+{"func":"format_bytes","value":"1.5","case":"fractional bytes truncate"}
+{"func":"format_bytes","value":null,"case":"None is a question mark"}
+{"func":"format_bytes","value":"abc","case":"unparseable is a question mark"}
+{"func":"malformed","exc":"malformed database schema","case":"lowercase marker"}
+{"func":"malformed","exc":"DATABASE DISK IMAGE IS MALFORMED","case":"uppercase marker"}
+{"func":"malformed","exc":"no such table: messages_fts","case":"unrelated error"}
+{"func":"render","stats":{},"holders":null,"host_note":"","case":"empty stats produce no rows"}
+{"func":"render","stats":{"page_count":125000},"holders":null,"case":"page count only with comma grouping"}
+{"func":"render","stats":{"logical_size_bytes":500000000,"page_count":125000,"freelist_count":42,"wal_size_bytes":100000000,"messages":1234,"sessions":56,"journal_mode":"wal"},"holders":2,"host_note":" (the host gateway (PID 42) serving profiles default, coder)","case":"full healthy stats and host note"}
+{"func":"render","stats":{"fts_tables":{"messages_fts":true,"sessions_fts":false}},"holders":null,"case":"FTS table list with one present"}
+{"func":"render","stats":{"fts_tables":{"messages_fts":false,"sessions_fts":false}},"holders":null,"case":"no FTS tables present"}
+{"func":"render","stats":{"fts_rebuild_deferral":{"futile":true,"holder_pids":[123,456],"holders_attempts":7}},"holders":null,"case":"futile deferral warning"}
+{"func":"render","stats":{"fts_rebuild_deferral":{"attempts":3}},"holders":null,"case":"ordinary deferral with unknown PIDs"}
+{"func":"render","stats":{"logical_size_bytes":2147483648,"page_count":524288},"holders":1,"case":"oversized DB warns with auto-prune hint"}
+{"func":"render","stats":{"logical_size_bytes":2147483648,"fts_rebuild_pending":true},"holders":1,"case":"oversized DB with pending FTS rebuild adds offline hint"}
+{"func":"render","stats":{"logical_size_bytes":1073741824},"holders":0,"case":"exactly at threshold does not warn; zero holders is omitted"}

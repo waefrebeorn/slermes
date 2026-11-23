@@ -1,0 +1,8 @@
+{"func": "npmrc", "settings": {}}
+{"func": "npmrc", "settings": {"registry": "https://registry.npmjs.org", "fetch-retries": "1"}}
+{"func": "npmrc", "settings": {"otp": "123456", "key": "abc", "cert": "xyz", "a": "1"}}
+{"func": "npmrc", "settings": {"OTP": "1", "KEY": "2", "CERT": "3", "KEEP": "4"}}
+{"func": "npmrc", "settings": {"_authToken": "secret", "//registry/:_authToken": "x", "@scope:registry": "https://x"}}
+{"func": "npmrc", "settings": {"bad key": "1", "bad.key": "2", "9good": "3", "good_key-2": "4", "-bad": "5", "_bad": "6"}}
+{"func": "npmrc", "settings": {"": "x", "a": "1", "A-b_C9": "z"}}
+{"func": "npmrc", "settings": {"otp": "1", "otp-two": "2", "mykey": "3", "certainty": "4"}}

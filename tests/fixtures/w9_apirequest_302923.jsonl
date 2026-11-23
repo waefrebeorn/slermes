@@ -1,0 +1,18 @@
+{"case":1,"func":"hook_payload_max_chars","env_value":null}
+{"case":2,"func":"hook_payload_max_chars","env_value":"2500"}
+{"case":3,"func":"hook_payload_max_chars","env_value":"50"}
+{"case":4,"func":"hook_payload_max_chars","env_value":"abc"}
+{"case":5,"func":"is_sensitive_hook_key","key":"api_key"}
+{"case":6,"func":"is_sensitive_hook_key","key":"X-Api-Key"}
+{"case":7,"func":"is_sensitive_hook_key","key":"my_service_api_key"}
+{"case":8,"func":"is_sensitive_hook_key","key":"model"}
+{"case":9,"func":"is_sensitive_hook_key","key":123}
+{"case":10,"func":"hook_jsonable","value":{"model":"gpt-4","api_key":"secret","authorization":"bearer","nested":{"cookie":"c","safe":1}}}
+{"case":11,"func":"hook_jsonable","value":"abcdefghij","max_string":4}
+{"case":12,"func":"hook_jsonable","value":[1,2,3,4,5],"max_sequence":3}
+{"case":13,"func":"hook_jsonable","value":{"a":1,"b":2,"c":3,"d":4},"max_sequence":2}
+{"case":14,"func":"hook_jsonable","value":[1,[2,[3]]],"max_depth":1}
+{"case":15,"func":"sanitize_hook_payload","value":{"data":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"},"limit":50000}
+{"case":16,"func":"sanitize_hook_payload","value":{"data":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"},"limit":100}
+{"case":17,"func":"request_payload","api_kwargs":{"model":"m","timeout":30,"http_client":{},"messages":[{"role":"user"}]},"limit":50000}
+{"case":18,"func":"request_payload","api_kwargs":{"api_key":"sk-secret","authorization":"Bearer x","temperature":0.5,"top_p":1},"limit":50000}

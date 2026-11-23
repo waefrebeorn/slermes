@@ -1,0 +1,14 @@
+{"func":"org","raw":{"id":"org-1","slug":"acme","name":"Acme","isPersonal":false,"role":"ADMIN"},"case":"full org"}
+{"func":"org","raw":{"id":"org-2"},"case":"defaults for missing fields"}
+{"func":"org","raw":["not","an","object"],"case":"non-dict org is null"}
+{"func":"org","raw":{"id":123,"name":"x"},"case":"non-string id is null"}
+{"func":"org","raw":{"id":"o3","isPersonal":"yes","role":false,"name":""},"case":"truthy coerce and empty name falls back"}
+{"func":"agent","raw":{"id":"a1","name":"Agent One","status":"running","dashboardUrl":"https://d/1","dashboardGatewayState":"healthy"},"case":"full agent"}
+{"func":"agent","raw":{"id":"a2"},"case":"agent defaults"}
+{"func":"agent","raw":{"id":"a3","name":42,"status":null,"dashboardUrl":"","dashboardGatewayState":7},"case":"non-string fields fall back"}
+{"func":"response","status_code":409,"body":{"error":"org_selection_required","orgs":[{"id":"p","isPersonal":true},{"id":9},{"name":"no id"}]},"case":"409 team picker filters invalid orgs"}
+{"func":"response","status_code":401,"body":{"error":"bad token"},"case":"401 expired sign-in maps to 409"}
+{"func":"response","status_code":503,"body":{"detail":"down"},"case":"5xx portal error message"}
+{"func":"response","status_code":409,"body":{"error":"something_else"},"case":"409 without marker falls through to portal error"}
+{"func":"response","status_code":200,"body":{"agents":[{"id":"a1","name":"A"},{"id":7},{"name":"no id"}],"org":{"id":"p","slug":"team"}},"org":"p","case":"shaped agents and org"}
+{"func":"status","case":"portal sign-in status constant"}

@@ -1,0 +1,24 @@
+{"func":"non_code","in":{"path":"README.md"}}
+{"func":"non_code","in":{"path":"src/main.c"}}
+{"func":"non_code","in":{"path":"LICENSE"}}
+{"func":"non_code","in":{"path":"docs/a/b.RMD"}}
+{"func":"non_code","in":{"path":".gitignore"}}
+{"func":"non_code","in":{"path":"build/NOTICE.txt"}}
+{"func":"non_code","in":{"path":"CONTRIBUTORS"}}
+{"func":"non_code","in":{"path":"a.b/c"}}
+{"func":"non_code","in":{"path":"changelog"}}
+{"func":"format_paths","in":{"paths":[]}}
+{"func":"format_paths","in":{"paths":["a.py"]}}
+{"func":"format_paths","in":{"paths":["a.py","b.md"]}}
+{"func":"format_paths","in":{"paths":["f1","f2","f3","f4","f5","f6","f7","f8","f9","f10"]}}
+{"func":"enabled","in":{"env":"0","config":{}}}
+{"func":"enabled","in":{"env":"FALSE ","config":{}}}
+{"func":"enabled","in":{"env":"yes","config":{}}}
+{"func":"enabled","in":{"env":"","config":{}}}
+{"func":"enabled","in":{"env":null,"config":{"agent":{"verify_on_stop":true}}}}
+{"func":"enabled","in":{"env":null,"config":{"agent":{"verify_on_stop":false}}}}
+{"func":"enabled","in":{"env":null,"config":{"agent":{"verify_on_stop":"auto"}},"messaging_surface":false}}
+{"func":"enabled","in":{"env":null,"config":{"agent":{"verify_on_stop":"AUTO"}},"messaging_surface":true}}
+{"func":"enabled","in":{"env":null,"config":{"agent":{"verify_on_stop":"yes"}}}}
+{"func":"enabled","in":{"env":null,"config":{}}}
+{"func":"enabled","in":{"env":"off","config":{"agent":{"verify_on_stop":true}}}}

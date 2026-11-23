@@ -1,0 +1,13 @@
+{"func":"append","content":"hello","notes":"a new note"}
+{"func":"append","content":"","notes":"note"}
+{"func":"append","notes":"only-note"}
+{"func":"append","content":null,"notes":"n"}
+{"func":"append","content":["x",{"type":"text","text":"y"}],"notes":"new"}
+{"func":"append","content":[],"notes":"\u2603 unicode"}
+{"func":"queue","notes":{},"plugin_key":"p1","note":"first"}
+{"func":"queue","notes":{"a":"1","b":"2"},"plugin_key":"c","note":"3"}
+{"func":"queue","notes":{"a":"1","p":"old","b":"2"},"plugin_key":"p","note":"new"}
+{"func":"queue","notes":{"z":"9"},"plugin_key":"z","note":"9b"}
+{"func":"pop","notes":{}}
+{"func":"pop","notes":{"k1":"one","k2":"two","k3":"three"}}
+{"func":"pop","notes":{"only":"solo"}}
