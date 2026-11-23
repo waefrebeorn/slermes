@@ -765,20 +765,77 @@ static char *ad2_selkey(const char *field, const char *value)
     return ad2_xfmt("%s|%s", field, value ? value : "");
 }
 
-/* ── PoP: ad2_unfence @ tools/async_delegation.py:_unfence ── */
-static void ad2_unfence(json_t *st, const char *token)
+/* Python repr() of a str: single quotes unless the value has a single quote
+ * but no double quote; escape backslash / the quote / control chars. */
+static char *ad2_pyrepr_str(const char *s)
 {
-    if (!token) return;
+    if (!s) s = "";
+    int has_s = strchr(s, '\'') != NULL;
+    int has_d = strchr(s, '"') != NULL;
+    char q = (has_s && !has_d) ? '"' : '\'';
+    size_t n = strlen(s);
+    char *out = (char *)malloc(n * 4 + 3);
+    if (!out) return strdup("''");
+    static const char HX[] = "0123456789abcdef";
+    size_t k = 0;
+    out[k++] = q;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = (unsigned char)s[i];
+        if (c == '\\' || c == (unsigned char)q) { out[k++] = '\\'; out[k++] = (char)c; }
+        else if (c == '\n') { out[k++] = '\\'; out[k++] = 'n'; }
+        else if (c == '\r') { out[k++] = '\\'; out[k++] = 'r'; }
+        else if (c == '\t') { out[k++] = '\\'; out[k++] = 't'; }
+        else if (c < 0x20 || c == 0x7f) {
+            out[k++] = '\\'; out[k++] = 'x'; out[k++] = HX[c >> 4]; out[k++] = HX[c & 15];
+        } else out[k++] = (char)c;
+    }
+    out[k++] = q; out[k] = '\0';
+    return out;
+}
+
+/* repr of a (field, value) selector stored as "field|value" in the harness. */
+static char *ad2_selector_repr(const char *sel)
+{
+    if (!sel) sel = "";
+    const char *bar = strchr(sel, '|');
+    size_t fl = bar ? (size_t)(bar - sel) : strlen(sel);
+    const char *val = bar ? bar + 1 : "";
+    char *fs = (char *)malloc(fl + 1);
+    if (!fs) return strdup("()");
+    memcpy(fs, sel, fl); fs[fl] = 0;
+    char *fr = ad2_pyrepr_str(fs);
+    char *vr = ad2_pyrepr_str(val);
+    char *out = ad2_xfmt("(%s, %s)", fr, vr);
+    free(fs); free(fr); free(vr);
+    return out;
+}
+
+/* ── PoP: ad2_unfence @ tools/async_delegation.py:_unfence ── */
+/* Returns a KeyError raise spec when a selected fence has no refused_by entry
+ * (LIVE: _refused_by[selector] raises KeyError(repr(selector))), else NULL. */
+static json_t *ad2_unfence(json_t *st, const char *token)
+{
+    if (!token) return NULL;
     json_t *refused = ad2_get(st, "refused");
     json_t *by = ad2_get(st, "refused_by");
-    if (!ad2_is_obj(refused)) return;
-    const json_t *sels = ad2_get(refused, token);
-    if (!ad2_is_arr(sels)) { json_obj_del(refused, token); return; }
-    for (size_t i = 0; i < sels->c.count; i++) {
-        const char *sel = ad2_str(sels->c.items[i]);
-        if (!sel || !ad2_is_obj(by)) continue;
-        json_t *toks = ad2_get(by, sel);
-        if (!ad2_is_arr(toks)) continue;
+    if (!ad2_is_obj(refused)) return NULL;
+    json_t *sels = ad2_get(refused, token);
+    if (!ad2_is_arr(sels)) { json_obj_del(refused, token); return NULL; }
+    /* LIVE pops the token BEFORE iterating its selectors; copy so the state
+     * matches on the raise path as well. */
+    json_t *items = json_copy(sels);
+    json_obj_del(refused, token);
+    json_t *err = NULL;
+    for (size_t i = 0; i < items->c.count && !err; i++) {
+        const char *sel = ad2_str(items->c.items[i]);
+        if (!sel) continue;
+        json_t *toks = ad2_is_obj(by) ? ad2_get(by, sel) : NULL;
+        if (!ad2_is_arr(toks)) {
+            char *r = ad2_selector_repr(sel);
+            err = ad2_mkraise("KeyError", r);
+            free(r);
+            break;  /* LIVE raises; the remaining selectors are not visited. */
+        }
         json_t *nt = json_array();
         for (size_t j = 0; j < toks->c.count; j++) {
             const char *t = ad2_str(toks->c.items[j]);
@@ -788,7 +845,8 @@ static void ad2_unfence(json_t *st, const char *token)
         else json_set(by, sel, nt);
         json_free(nt);
     }
-    json_obj_del(refused, token);
+    json_free(items);
+    return err;
 }
 
 /* ── PoP: ad2_refused_for_session @ tools/async_delegation.py:refused_for_session ── */
@@ -804,7 +862,8 @@ static json_t *ad2_refused_for_session(ad2_io_t *io, const json_t *in, json_t *s
 static json_t *ad2_allow_for_session(ad2_io_t *io, const json_t *in, json_t *st)
 {
     (void)io;
-    ad2_unfence(st, ad2_str(ad2_get(in, "token")));
+    json_t *e = ad2_unfence(st, ad2_str(ad2_get(in, "token")));
+    if (e) return e;
     return json_null();
 }
 
@@ -818,7 +877,8 @@ static json_t *ad2_refuse_for_session(ad2_io_t *io, const json_t *in, json_t *st
     if (!ad2_is_obj(refused)) { refused = json_object(); json_set(st, "refused", refused); }
     json_t *by = ad2_get(st, "refused_by");
     if (!ad2_is_obj(by)) { by = json_object(); json_set(st, "refused_by", by); }
-    ad2_unfence(st, token);
+    json_t *e = ad2_unfence(st, token);
+    if (e) return e;
     json_t *fence = json_array();
     const char *sk = ad2_str(ad2_get(in, "session_key"));
     if (sk && sk[0]) { char *k = ad2_selkey("session_key", sk); json_append(fence, json_string(k)); free(k); }

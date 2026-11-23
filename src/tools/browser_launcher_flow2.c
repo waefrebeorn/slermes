@@ -165,21 +165,44 @@ static char *bl2_pid_str(const json_t *v) {
     bl2_num_str(buf, sizeof buf, bl2_num(v));
     return strdup(buf);
 }
-/* posixpath.join on POSIX-spelled inputs (byte-identical on the fixture domain). */
+/* Normalize a POSIX-spelled path component the way PurePath + as_posix does:
+ * backslashes -> '/', collapse duplicate separators (but keep a leading UNC
+ * "//"), drop trailing separators, empty -> "". Caller frees. */
+static char *bl2_posix_norm(const char *p) {
+    if (!p) p = "";
+    size_t n = strlen(p);
+    char *s = (char *)malloc(n + 1);
+    if (!s) return NULL;
+    size_t k = 0;
+    for (size_t i = 0; i < n; i++) {
+        char c = (p[i] == '\\') ? '/' : p[i];
+        if (c == '/' && k > 0 && s[k - 1] == '/' && k != 1) continue;
+        s[k++] = c;
+    }
+    while (k > 1 && s[k - 1] == '/') s[--k] = '\0';
+    s[k] = '\0';
+    return s;
+}
+/* posixpath.join on POSIX-spelled inputs. Normalize each input like pathlib
+ * (backslash -> '/', trailing separators dropped) before composing. */
 static char *bl2_posix_join(const char *a, const char *b) {
-    if (!a) a = "";
-    if (!b) b = "";
-    if (b[0] == '/') return strdup(b);
-    if (!a[0]) return strdup(b);
+    char *na = bl2_posix_norm(a);
+    char *nb = bl2_posix_norm(b);
+    a = na ? na : "";
+    b = nb ? nb : "";
+    if (b[0] == '/') { free(na); free(nb); return strdup(b); }
+    if (!a[0]) { free(na); free(nb); return strdup(b); }
     size_t la = strlen(a), lb = strlen(b);
     int sep = (a[la - 1] != '/');
     char *out = (char *)malloc(la + (size_t)sep + lb + 1);
-    if (!out) return NULL;
-    memcpy(out, a, la);
-    size_t o = la;
-    if (sep) out[o++] = '/';
-    memcpy(out + o, b, lb);
-    out[o + lb] = '\0';
+    if (out) {
+        memcpy(out, a, la);
+        size_t o = la;
+        if (sep) out[o++] = '/';
+        memcpy(out + o, b, lb);
+        out[o + lb] = '\0';
+    }
+    free(na); free(nb);
     return out;
 }
 /* Path.parent on POSIX-spelled inputs. */

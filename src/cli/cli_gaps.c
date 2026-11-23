@@ -1041,13 +1041,21 @@ json_t *reset_accounting_context(const json_t *in, const cg1_io *io, json_t *sta
 /* DEFERRED (no PoP credit): faithful port pending — internal stub only. */
 void record_aux_usage(void) { }
 
+/* BaseException-only kinds are NOT caught by `except Exception`. Match the
+ * full dynamic-enum set the oracle builds (incl. CancelledError). */
+static int cg1_is_base_only(const char *k) {
+    return k && (strcmp(k, "SystemExit") == 0 || strcmp(k, "KeyboardInterrupt") == 0
+                 || strcmp(k, "GeneratorExit") == 0 || strcmp(k, "CancelledError") == 0
+                 || strcmp(k, "BaseException") == 0
+                 || strcmp(k, "BaseExceptionGroup") == 0);
+}
+
 /* PoP: error_class @ agent/auxiliary_call_outcome.py:error_class */
 json_t *error_class(const json_t *in, const cg1_io *io, json_t *state, cg1_exc *e) {
     (void)state;
     json_t *err = cg1_get(in, "error");
     const char *kind = cg1_str(err, "kind", "");
-    if (strcmp(kind, "SystemExit") == 0 || strcmp(kind, "KeyboardInterrupt") == 0
-        || strcmp(kind, "GeneratorExit") == 0) return json_string("unknown");
+    if (cg1_is_base_only(kind)) return json_string("unknown");
     json_t *embedded = cg1_get(err, "provider_error");
     json_t *target = json_object();
     if (cg1_is_dict(embedded)) {
@@ -1070,8 +1078,7 @@ json_t *error_class(const json_t *in, const cg1_io *io, json_t *state, cg1_exc *
     json_set(a, "model", json_string(cg1_str(in, "model", "")));
     json_t *r = cg1_call(io, "classify_api_error", a, e);
     if (e && e->kind) {
-        if (strcmp(e->kind, "SystemExit") == 0 || strcmp(e->kind, "KeyboardInterrupt") == 0
-            || strcmp(e->kind, "GeneratorExit") == 0) { json_free(r); return NULL; }
+        if (cg1_is_base_only(e->kind)) { json_free(r); return NULL; }
         cg1_exc_clear(e);
         json_free(r);
         json_t *la = json_object();
@@ -1079,6 +1086,9 @@ json_t *error_class(const json_t *in, const cg1_io *io, json_t *state, cg1_exc *
         json_set(la, "session_id", json_null());
         json_set(la, "exc_info", json_bool(1));
         json_t *lr = cg1_call(io, "logger_debug", la, e); json_free(lr);
+        /* LIVE has no guard around logger.debug: any exception it leaves
+         * pending propagates out of error_class (do NOT return "unknown"). */
+        if (e && e->kind) return NULL;
         return json_string("unknown");
     }
     json_t *reason = cg1_get(r, "reason");

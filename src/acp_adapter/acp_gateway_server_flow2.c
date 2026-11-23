@@ -597,6 +597,12 @@ static json_t *agsf2__session_fields(agsf2_io_t*io,const json_t*argv,const json_
     json_t*modes=agsf2_C1(io,"session_modes",json_copy(info)); if(agsf2_is_raise(modes)) return modes;
     const char*mode=agsf2_getstr(modes,"current_mode_id","ask");
     json_t*opts=agsf2_C5(io,"session_config_options",agsf2_GW(),json_copy(sid),json_copy(models),json_copy(info),json_string(mode)); if(agsf2_is_raise(opts)) return opts;
+    /* LIVE: MODE_TO_EDIT_APPROVAL_POLICY[self._modes[session_id]] raises
+     * KeyError(repr(mode)) for an unknown current_mode_id — before the SECOND
+     * session_modes seam call (and before any later state mutation). */
+    if(strcmp(mode,"default")!=0 && strcmp(mode,"ask")!=0 &&
+       strcmp(mode,"acceptEdits")!=0 && strcmp(mode,"bypassPermissions")!=0)
+        return agsf2_keyerr(mode);
     json_t*pi=json_object(); json_set(pi,"edit_approval_policy",json_string(mode));
     json_t*m2=agsf2_C1(io,"session_modes",pi); if(agsf2_is_raise(m2)) return m2;
     json_t*o=json_object(); json_set(o,"models",json_copy(models)); json_set(o,"modes",json_copy(m2)); json_set(o,"field_meta",json_copy(meta)); json_set(o,"config_options",json_copy(opts)); return o;

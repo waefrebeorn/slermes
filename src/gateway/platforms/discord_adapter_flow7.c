@@ -477,11 +477,40 @@ static bool da7_in_set(const json_t *arr, const json_t *v) {
     free(s);
     return hit;
 }
+/* Python repr() of a str (ASCII domain): single quotes unless the value has
+ * a single quote but no double quote; escape backslash, quote and controls. */
+static char *da7_py_repr(const char *s) {
+    if (!s) s = "";
+    int has_s = strchr(s, '\'') != NULL;
+    int has_d = strchr(s, '"') != NULL;
+    char q = (has_s && !has_d) ? '"' : '\'';
+    size_t n = strlen(s);
+    char *out = (char *)malloc(n * 4 + 3);
+    if (!out) return da7_strdup("''");
+    static const char HX[] = "0123456789abcdef";
+    size_t k = 0;
+    out[k++] = q;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = (unsigned char)s[i];
+        if (c == '\\' || c == (unsigned char)q) { out[k++] = '\\'; out[k++] = (char)c; }
+        else if (c == '\n') { out[k++] = '\\'; out[k++] = 'n'; }
+        else if (c == '\r') { out[k++] = '\\'; out[k++] = 'r'; }
+        else if (c == '\t') { out[k++] = '\\'; out[k++] = 't'; }
+        else if (c < 0x20 || c == 0x7f) {
+            out[k++] = '\\'; out[k++] = 'x'; out[k++] = HX[c >> 4]; out[k++] = HX[c & 15];
+        } else out[k++] = (char)c;
+    }
+    out[k++] = q; out[k] = '\0';
+    return out;
+}
 /* Python str() of the exception int() would raise for a bad raw value. */
 static char *da7_int_err(const json_t *raw) {
     char buf[512];
-    if (raw && raw->type == JSON_STRING)
-        snprintf(buf, sizeof buf, "invalid literal for int() with base 10: '%s'", raw->str_val);
+    if (raw && raw->type == JSON_STRING) {
+        char *rep = da7_py_repr(raw->str_val ? raw->str_val : "");
+        snprintf(buf, sizeof buf, "invalid literal for int() with base 10: %s", rep);
+        free(rep);
+    }
     else if (da7_is_null(raw))
         snprintf(buf, sizeof buf,
                  "int() argument must be a string, a bytes-like object or a real number, not 'NoneType'");
@@ -668,7 +697,12 @@ static json_t *da7_timeout_limit(da7_ctx_t *ctx, const char *attr, const char *c
         if (!v) v = json_number(cdef);
     }
     long long n;
-    if (!da7_int(v, &n)) return da7_err("ValueError", "invalid literal for int()");
+    if (!da7_int(v, &n)) {
+        char *msg = da7_int_err(v);
+        json_t *r = da7_err("ValueError", msg);
+        free(msg);
+        return r;
+    }
     return json_number((double)n);
 }
 /* PoP: da7_voice_timeout_limit @ plugins/platforms/discord/adapter.py:DiscordAdapter._voice_timeout_limit */

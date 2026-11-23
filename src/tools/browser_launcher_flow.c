@@ -242,17 +242,67 @@ static char *blf_posix_join(const char *a, const char *b) {
 static char *blf_posix_parent(const char *p) {
     if (!p) p = "";
     size_t n = strlen(p);
-    while (n > 1 && p[n - 1] == '/') n--;
-    if (n == 0) return strdup(".");
-    size_t k = n;
-    while (k > 0 && p[k - 1] != '/') k--;
-    if (k == 0) return strdup(".");
-    if (k == 1) return strdup("/");
-    char *out = (char *)malloc(k);
-    if (!out) return NULL;
-    memcpy(out, p, k - 1);
-    out[k - 1] = '\0';
-    return out;
+    /* pathlib on Windows treats both '/' and '\\' as separators and projects
+     * results with as_posix(): normalize backslashes before doing parent math. */
+    char *s = (char *)malloc(n + 1);
+    if (!s) return NULL;
+    for (size_t i = 0; i < n; i++) s[i] = (p[i] == '\\') ? '/' : p[i];
+    s[n] = '\0';
+    size_t e = n;
+    /* Detect the anchor BEFORE stripping trailing separators. */
+    int unc = (e >= 2 && s[0] == '/' && s[1] == '/');
+    int drive = (e >= 2 && ((s[0] >= 'A' && s[0] <= 'Z') || (s[0] >= 'a' && s[0] <= 'z'))
+                 && s[1] == ':');
+    size_t anchor = 0;
+    if (unc) {
+        size_t i = 2;
+        while (i < e && s[i] != '/') i++;          /* server */
+        if (i < e) i++;
+        while (i < e && s[i] != '/') i++;          /* share */
+        anchor = i;                                /* end of "//server/share" */
+    } else if (drive) {
+        anchor = (e >= 3 && s[2] == '/') ? 3 : 2;  /* "C:/" or "C:" */
+    } else if (e >= 1 && s[0] == '/') {
+        anchor = 1;                                /* POSIX root "/" */
+    }
+    while (e > anchor && s[e - 1] == '/') e--;
+    s[e] = '\0';
+    /* Helper: emit a path prefix, restoring the trailing separator when the
+     * result IS the anchor (UNC share root -> "//srv/shr/", drive -> "C:/"). */
+    char *out;
+    if (e <= anchor) {                             /* input is the anchor */
+        if (anchor == 0) { free(s); return strdup("."); }
+        if (unc) {
+            out = (char *)malloc(anchor + 2);
+            memcpy(out, s, anchor); out[anchor] = '/'; out[anchor + 1] = '\0';
+        } else if (drive) {
+            out = (char *)malloc(4);
+            snprintf(out, 4, "%c:/", s[0]);
+        } else {
+            out = strdup("/");
+        }
+        free(s); return out;
+    }
+    size_t k = e;
+    while (k > anchor && s[k - 1] != '/') k--;     /* start of last component */
+    size_t pe = k;
+    while (pe > anchor && s[pe - 1] == '/') pe--;  /* trim trailing separators */
+    if (pe <= anchor) {
+        if (anchor == 0) { free(s); return strdup("."); }
+        if (unc) {
+            out = (char *)malloc(anchor + 2);
+            memcpy(out, s, anchor); out[anchor] = '/'; out[anchor + 1] = '\0';
+        } else if (drive) {
+            out = (char *)malloc(4);
+            snprintf(out, 4, "%c:/", s[0]);
+        } else {
+            out = strdup("/");
+        }
+        free(s); return out;
+    }
+    out = (char *)malloc(pe + 1);
+    memcpy(out, s, pe); out[pe] = '\0';
+    free(s); return out;
 }
 
 /* ── base64 (read_bytes seam scripts carry {"b64": ...}) ── */

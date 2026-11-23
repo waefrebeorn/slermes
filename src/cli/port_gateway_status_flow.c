@@ -233,12 +233,42 @@ static char *path_norm(const char *s) {
     if (k == 0) { out[0] = '.'; out[1] = '\0'; }
     return out;
 }
+/* An absolute Windows component resets Path(base) / name. Project the result
+ * with as_posix(): drive roots keep C:/, UNC share roots keep //srv/shr/. */
+static char *path_abs_posix(const char *name) {
+    if (!name) return strdup("/");
+    size_t n = strlen(name);
+    char *s = (char *)malloc(n + 2);
+    if (!s) return strdup("/");
+    size_t k = 0;
+    for (size_t i = 0; i < n; i++) {
+        char c = (name[i] == '\\') ? '/' : name[i];
+        if (c == '/' && k > 0 && s[k - 1] == '/' && k != 1) continue;
+        s[k++] = c;
+    }
+    while (k > 1 && s[k - 1] == '/') s[--k] = '\0';
+    if (k == 2 && s[1] == ':' && ((s[0] >= 'A' && s[0] <= 'Z') || (s[0] >= 'a' && s[0] <= 'z'))) {
+        s[k++] = '/'; s[k] = '\0';                /* drive root -> C:/ */
+    } else if (k >= 2 && s[0] == '/' && s[1] == '/') {
+        size_t i = 2;
+        while (i < k && s[i] != '/') i++;          /* server */
+        if (i < k) i++;
+        while (i < k && s[i] != '/') i++;          /* share */
+        if (i == k) { s[k++] = '/'; s[k] = '\0'; }  /* UNC share root */
+    }
+    return s;
+}
 /* Path(base) / name: an absolute name resets the base; the join re-normalizes
- * (a trailing separator on name, "." components, "" base -> "."). Caller frees. */
+ * (a trailing separator on name, dot components, empty base -> dot). Caller frees. */
 static char *path_join(const char *base, const char *name) {
-    if (name && name[0] == '/') return path_norm(name);
+    if (!name) name = "";
+    /* POSIX absolute, drive-absolute, or UNC all reset the base. */
+    if (name[0] == '/' || name[0] == '\\' ||
+        (((name[0] >= 'A' && name[0] <= 'Z') || (name[0] >= 'a' && name[0] <= 'z'))
+         && name[1] == ':'))
+        return path_abs_posix(name);
     char *b = path_norm(base);
-    char *raw = xsf("%s/%s", b, name ? name : "");
+    char *raw = xsf("%s/%s", b, name);
     char *out = path_norm(raw);
     free(b);
     free(raw);

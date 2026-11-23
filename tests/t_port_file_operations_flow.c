@@ -53,6 +53,61 @@ static json_t *args_drop_null(const json_t *args) {
     return out;
 }
 
+/* fh_read seam results are hex strings. LIVE's FHDouble.read() calls
+ * bytes.fromhex() on them at the seam boundary: ASCII whitespace is allowed
+ * BETWEEN bytes only, a non-hex digit raises at its raw index, and an odd
+ * digit count raises the even-number message. On success the value is the
+ * normalized lowercase hex that bytes.fromhex(...).hex() would produce.
+ * Returns a ValueError raise spec on failure, else NULL (result replaced). */
+static json_t *fh_read_hex_materialize(json_t **pres) {
+    json_t *result = *pres;
+    if (!result || result->type != JSON_STRING) return NULL;
+    const char *s = result->str_val ? result->str_val : "";
+    size_t n = strlen(s);
+    char *digits = (char *)malloc(n + 1);
+    if (!digits) return NULL;
+    size_t nd = 0, i = 0;
+    json_t *err = NULL;
+    while (i < n) {
+        while (i < n && (s[i] == ' ' || s[i] == '\t' || s[i] == '\n'
+                         || s[i] == '\r' || s[i] == '\v' || s[i] == '\f')) i++;
+        if (i >= n) break;
+        if (fo_hexval(s[i]) < 0) {
+            char m[160];
+            snprintf(m, sizeof m,
+                     "non-hexadecimal number found in fromhex() arg at position %zu", i);
+            err = make_raise("ValueError", m);
+            goto done;
+        }
+        digits[nd++] = s[i++];
+        if (i >= n || fo_hexval(s[i]) < 0) {
+            if (i >= n) {
+                err = make_raise("ValueError",
+                                 "fromhex() arg must contain an even number of hexadecimal digits");
+                goto done;
+            }
+            char m[160];
+            snprintf(m, sizeof m,
+                     "non-hexadecimal number found in fromhex() arg at position %zu", i);
+            err = make_raise("ValueError", m);
+            goto done;
+        }
+        digits[nd++] = s[i++];
+    }
+    {
+        char *out = (char *)malloc(nd + 1);
+        for (size_t j = 0; j < nd; j++)
+            out[j] = (digits[j] >= 'A' && digits[j] <= 'F') ? (char)(digits[j] + 32) : digits[j];
+        out[nd] = '\0';
+        json_free(result);
+        *pres = json_string(out);
+        free(out);
+    }
+done:
+    free(digits);
+    return err;
+}
+
 static json_t *script_call(void *vctx, const char *name, const json_t *args) {
     script_ctx_t *ctx = vctx;
     const json_t *seams = json_obj_get(ctx->in, "seams");
@@ -85,6 +140,12 @@ static json_t *script_call(void *vctx, const char *name, const json_t *args) {
     json_set(e, "ret", result ? json_copy(result) : json_null());
     if (!ctx->trace) ctx->trace = json_array();
     json_append(ctx->trace, e);
+    /* Materialize fh_read hex results at the harness boundary: LIVE's
+     * FHDouble.read() applies bytes.fromhex() here, before the port sees data. */
+    if (strcmp(name, "fh_read") == 0 && result && result->type == JSON_STRING) {
+        json_t *hexerr = fh_read_hex_materialize(&result);
+        if (hexerr) { json_free(result); result = hexerr; }
+    }
     return result;
 }
 
