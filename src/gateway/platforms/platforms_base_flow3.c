@@ -587,6 +587,8 @@ static json_t *pb3_cache_dir_get_dir(const char *new_subpath, const char *old_na
     json_free(r);
     char *d = pb3_posix_norm(raw_d ? raw_d : "");
     free(raw_d);
+    /* str(Path(".")) == "." — a lone '.' (or empty) maps to '.', never ''. */
+    if (!*d) { free(d); d = pb3_xstrdup("."); }
     /* current / default identity + inequality gate */
     const json_t *def = (import_defaults && constant_name)
         ? json_obj_get(import_defaults, constant_name) : NULL;
@@ -598,6 +600,7 @@ static json_t *pb3_cache_dir_get_dir(const char *new_subpath, const char *old_na
         if (strcmp(cn, dn) != 0) {
             free(d);
             d = pb3_posix_norm(cur);
+            if (!*d) { free(d); d = pb3_xstrdup("."); }
         }
         free(cur); free(dfs); free(cn); free(dn);
     }

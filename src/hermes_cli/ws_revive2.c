@@ -637,6 +637,25 @@ bad:;
     return -1;
 }
 
+/* CPython int()'s invalid-literal message uses "%.200R": the repr is cut to
+ * at most 200 CHARACTERS (code points, not bytes), with no closing quote
+ * forced onto a truncated value. */
+static char *ws2_repr_200(const char *s) {
+    if (!s) return NULL;
+    const char *p = s;
+    size_t chars = 0;
+    while (*p && chars < 200) {
+        const char *nx = p;
+        ws2_cp_next(&nx);
+        p = nx;
+        chars++;
+    }
+    size_t keep = (size_t)(p - s);
+    char *o = malloc(keep + 1);
+    if (o) { memcpy(o, s, keep); o[keep] = '\0'; }
+    return o;
+}
+
 /* Python int(value) — truncation toward zero for reals, base-10 string
  * parse. Result rides a double (fixtures stay inside 2^53). */
 static int ws2_int_of(const json_t *v, double *out, json_t **err) {
@@ -659,9 +678,11 @@ static int ws2_int_of(const json_t *v, double *out, json_t **err) {
     long n = ws2_digit_run(p, clean, &cl);
     if (n <= 0 || p[n] != '\0') {
         char *r = ws2_str_repr(raw);
-        char msg[600];
-        snprintf(msg, sizeof msg, "invalid literal for int() with base 10: %s", r);
-        free(r); free(s);
+        char *r200 = ws2_repr_200(r);
+        char msg[1024];
+        snprintf(msg, sizeof msg, "invalid literal for int() with base 10: %s",
+                 r200 ? r200 : (r ? r : ""));
+        free(r200); free(r); free(s);
         *err = ws2_raise("ValueError", msg);
         return -1;
     }

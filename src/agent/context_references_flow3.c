@@ -688,6 +688,91 @@ static json_t *cr3_preprocess(cr3_seams_t *sp, const char *message, const char *
     return r;
 }
 
+/* Locate the end of the FIRST complete JSON value so a decode failure can be
+ * classified like CPython json.loads: a valid leading value followed by junk is
+ * "Extra data" (pos = first junk char after trailing ws); an invalid first token
+ * is "Expecting value" (pos = first non-ws char). Grammar-aware, not just a
+ * brace counter, so strings/brackets/nested values are skipped correctly. */
+static void cr3_je_ws(const char *s, size_t n, size_t *i) {
+    while (*i < n && (s[*i] == ' ' || s[*i] == '\t' || s[*i] == '\n' || s[*i] == '\r')) (*i)++;
+}
+static bool cr3_je_str(const char *s, size_t n, size_t *i) {
+    if (*i >= n || s[*i] != '"') return false;
+    (*i)++;
+    while (*i < n) {
+        unsigned char c = (unsigned char)s[*i];
+        if (c == '"') { (*i)++; return true; }
+        if (c == '\\') {
+            (*i)++;
+            if (*i >= n) return false;
+            char e = s[*i];
+            if (e == '"' || e == '\\' || e == '/' || e == 'b' || e == 'f' || e == 'n' || e == 'r' || e == 't') (*i)++;
+            else if (e == 'u') {
+                (*i)++;
+                for (int k = 0; k < 4; k++) { if (*i >= n || !isxdigit((unsigned char)s[*i])) return false; (*i)++; }
+            } else return false;
+        } else if (c < 0x20) return false;
+        else (*i)++;
+    }
+    return false;
+}
+static bool cr3_je_value(const char *s, size_t n, size_t *i);
+static bool cr3_je_arr(const char *s, size_t n, size_t *i) {
+    (*i)++; cr3_je_ws(s, n, i);
+    if (*i < n && s[*i] == ']') { (*i)++; return true; }
+    for (;;) {
+        if (!cr3_je_value(s, n, i)) return false;
+        cr3_je_ws(s, n, i);
+        if (*i < n && s[*i] == ']') { (*i)++; return true; }
+        if (*i >= n || s[*i] != ',') return false;
+        (*i)++; cr3_je_ws(s, n, i);
+    }
+}
+static bool cr3_je_obj(const char *s, size_t n, size_t *i) {
+    (*i)++; cr3_je_ws(s, n, i);
+    if (*i < n && s[*i] == '}') { (*i)++; return true; }
+    for (;;) {
+        cr3_je_ws(s, n, i);
+        if (!cr3_je_str(s, n, i)) return false;
+        cr3_je_ws(s, n, i);
+        if (*i >= n || s[*i] != ':') return false;
+        (*i)++;
+        if (!cr3_je_value(s, n, i)) return false;
+        cr3_je_ws(s, n, i);
+        if (*i < n && s[*i] == '}') { (*i)++; return true; }
+        if (*i >= n || s[*i] != ',') return false;
+        (*i)++; cr3_je_ws(s, n, i);
+    }
+}
+static bool cr3_je_value(const char *s, size_t n, size_t *i) {
+    cr3_je_ws(s, n, i);
+    if (*i >= n) return false;
+    char c = s[*i];
+    if (c == '"') return cr3_je_str(s, n, i);
+    if (c == '{') return cr3_je_obj(s, n, i);
+    if (c == '[') return cr3_je_arr(s, n, i);
+    if (c == '-' || (c >= '0' && c <= '9')) {
+        if (c == '-') (*i)++;
+        if (*i >= n) return false;
+        if (s[*i] == '0') (*i)++;
+        else if (s[*i] >= '1' && s[*i] <= '9') { while (*i < n && s[*i] >= '0' && s[*i] <= '9') (*i)++; }
+        else return false;
+        if (*i + 1 < n && s[*i] == '.' && s[*i + 1] >= '0' && s[*i + 1] <= '9') {
+            (*i)++; while (*i < n && s[*i] >= '0' && s[*i] <= '9') (*i)++;
+        }
+        if (*i < n && (s[*i] == 'e' || s[*i] == 'E')) {
+            size_t k = *i + 1;
+            if (k < n && (s[k] == '+' || s[k] == '-')) k++;
+            if (k < n && s[k] >= '0' && s[k] <= '9') { *i = k; while (*i < n && s[*i] >= '0' && s[*i] <= '9') (*i)++; }
+        }
+        return true;
+    }
+    if (n - *i >= 4 && strncmp(s + *i, "true", 4) == 0) { *i += 4; return true; }
+    if (n - *i >= 5 && strncmp(s + *i, "false", 5) == 0) { *i += 5; return true; }
+    if (n - *i >= 4 && strncmp(s + *i, "null", 4) == 0) { *i += 4; return true; }
+    return false;
+}
+
 /* ══════════════════ F7: _default_url_fetcher ══════════════════ */
 static json_t *cr3_default_url_fetcher(cr3_seams_t *sp, const char *url) {
     json_t *a = json_object();
@@ -700,15 +785,27 @@ static json_t *cr3_default_url_fetcher(cr3_seams_t *sp, const char *url) {
     json_t *payload = json_parse(txt, &err);
     if (err || !payload) {
         free(err);
-        size_t pos = 0, line = 1, col = 1;
-        while (txt && txt[pos] &&
-               (txt[pos] == ' ' || txt[pos] == '\t' || txt[pos] == '\n' || txt[pos] == '\r')) {
-            if (txt[pos] == '\n') { line++; col = 1; } else col++;
-            pos++;
+        /* CPython json.loads: a complete leading value followed by non-ws
+         * trailing data is "Extra data" at the first junk char; only an invalid
+         * FIRST token is "Expecting value". libjson rejects both the same way. */
+        size_t n = strlen(txt ? txt : ""), i = 0, pos = 0;
+        bool extra = false;
+        if (cr3_je_value(txt ? txt : "", n, &i)) {
+            cr3_je_ws(txt ? txt : "", n, &i);
+            if (i < n) { extra = true; pos = i; }
+        }
+        if (!extra) {
+            pos = 0;
+            while (txt && txt[pos] &&
+                   (txt[pos] == ' ' || txt[pos] == '\t' || txt[pos] == '\n' || txt[pos] == '\r')) pos++;
+        }
+        size_t line = 1, col = 1;
+        for (size_t k = 0; k < pos && txt && txt[k]; k++) {
+            if (txt[k] == '\n') { line++; col = 1; } else col++;
         }
         char msg[160];
-        snprintf(msg, sizeof(msg), "Expecting value: line %zu column %zu (char %zu)",
-                 line, col, pos);
+        snprintf(msg, sizeof(msg), "%s: line %zu column %zu (char %zu)",
+                 extra ? "Extra data" : "Expecting value", line, col, pos);
         json_free(raw);
         return cr3_raise("JSONDecodeError", msg);
     }

@@ -1638,6 +1638,9 @@ static json_t *pb2__profile_dirs(const char *hermes_root, const pb2_seams_t *s, 
         for (size_t i = 0; i < r->c.count; i++) {
             const json_t *p = r->c.items[i];
             char *pd = pb2_posix_norm(p && p->type == JSON_STRING ? p->str_val : "");
+            /* str(Path("")) == "." — a normalized-empty seam path must be
+             * forwarded and emitted as '.', not an empty string. */
+            if (!*pd) { free(pd); pd = pb2_xstrdup("."); }
             json_t *da = json_object();
             pb2_arg_str(da, "path", pd);
             json_t *dr = pb2_call_raw(s, "is_dir", da);

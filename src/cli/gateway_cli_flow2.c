@@ -502,6 +502,13 @@ static json_t *gc2_user_systemd_unit_dir(const gc2_seams_t *s) {
     }
     char *envs = gc2_py_str(env); json_free(env);
     char *config_home = gc2_strip(envs); free(envs);
+    /* LIVE wraps XDG_CONFIG_HOME in Path(); on Windows that normalizes
+       backslashes to forward slashes (C:\ -> C:/) before the / joins. */
+    {
+        char *norm_home = gc2_replace_all(config_home, "\\", "/");
+        free(config_home);
+        config_home = norm_home;
+    }
     char *base;
     if (config_home[0]) { base = strdup(config_home); }
     else {

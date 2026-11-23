@@ -336,6 +336,20 @@ static char *ta_repr_str(const char *s) {
     return o;
 }
 
+/* CPython formats int()'s invalid-literal ValueError with "%.200R": the repr
+ * is truncated to 200 characters (code points, not bytes) before interpolation. */
+static void ta_trunc_repr_200(char *s) {
+    if (!s) return;
+    int cps = 0;
+    for (char *p = s; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if ((c & 0xC0) != 0x80) {           /* UTF-8 lead byte == one code point */
+            if (cps == 200) { *p = '\0'; return; }
+            cps++;
+        }
+    }
+}
+
 /* Python int() on a scalar JSON value. Returns a fresh number node, or a
  * raise spec with the exact CPython 3.14 message. */
 static json_t *ta_pyint(const json_t *v) {
@@ -371,6 +385,7 @@ static json_t *ta_pyint(const json_t *v) {
     }
     if (!ok || nd == 0) {
         char *r = ta_repr_str(raw);
+        ta_trunc_repr_200(r);
         char msg[512];
         snprintf(msg, sizeof msg, "invalid literal for int() with base 10: %s", r ? r : "''");
         free(r);

@@ -392,16 +392,19 @@ static char *mo2_path_normalize(const char *p) {
     char *out = malloc(n + 3);
     if (!out) return NULL;
     size_t k = 0;
-    bool rooted = (n > 0 && s[0] == '/');
-    bool double_root = rooted && n > 1 && s[1] == '/' && (n < 2 || s[2] != '/');
+    /* Windows seam paths use '\' as a separator too; a trailing separator is
+     * dropped (PureWindowsPath("sC:\\") -> "sC:"). */
+    bool rooted = (n > 0 && (s[0] == '/' || s[0] == '\\'));
+    bool double_root = rooted && n > 1 && (s[1] == '/' || s[1] == '\\')
+                       && !(n > 2 && (s[2] == '/' || s[2] == '\\'));
     if (rooted) out[k++] = '/';
     if (double_root) out[k++] = '/';
     size_t i = 0;
     bool first = true;
     while (i < n) {
-        while (i < n && s[i] == '/') i++;
+        while (i < n && (s[i] == '/' || s[i] == '\\')) i++;
         size_t start = i;
-        while (i < n && s[i] != '/') i++;
+        while (i < n && s[i] != '/' && s[i] != '\\') i++;
         size_t len = i - start;
         if (len == 0) continue;
         if (len == 1 && s[start] == '.') continue;
@@ -417,9 +420,9 @@ static char *mo2_path_normalize(const char *p) {
     return out;
 }
 
-/* PurePath.__truediv__ (POSIX subset): an absolute rhs resets the path. */
+/* PurePath.__truediv__: an absolute rhs (leading '/' or '\') resets the path. */
 static char *mo2_path_join(const char *dir, const char *name) {
-    if (name && name[0] == '/') return mo2_path_normalize(name);
+    if (name && (name[0] == '/' || name[0] == '\\')) return mo2_path_normalize(name);
     char *dn = mo2_path_normalize(dir);
     if (!dn) return NULL;
     mo2_sb b; mo2_sb_init(&b);

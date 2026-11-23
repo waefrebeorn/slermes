@@ -1513,6 +1513,29 @@ static json_t *gw2_format_attestation_warning(const json_t *attested, const json
 }
 
 /* ── _read_start_attestation ── */
+/* Path(s).as_posix() on Windows for a seam-returned path string: backslashes
+ * become '/', empty maps to '.', and a bare UNC share root (//server/share)
+ * gains a trailing '/'. */
+static char *gw2_win_path_posix(const char *s) {
+    if (!s || !*s) return strdup(".");
+    size_t n = strlen(s);
+    char *out = malloc(n + 2);
+    if (!out) return strdup(".");
+    for (size_t i = 0; i < n; i++) out[i] = (s[i] == '\\') ? '/' : s[i];
+    out[n] = '\0';
+    if (out[0] == '/' && out[1] == '/' && out[2] != '/') {
+        const char *slash = strchr(out + 2, '/');
+        if (slash && slash != out + 2 && slash[1] != '\0') {
+            const char *slash2 = strchr(slash + 1, '/');
+            if (!slash2) {
+                size_t len = strlen(out);
+                if (out[len - 1] != '/') { out[len] = '/'; out[len + 1] = '\0'; }
+            }
+        }
+    }
+    return out;
+}
+
 /* PoP: gw2_read_start_attestation @ hermes_cli/gateway_windows.py:_read_start_attestation */
 static json_t *gw2_read_start_attestation(const char *home, const gw2_seams_t *s) {
     json_t *a = gw2_args();
@@ -1528,7 +1551,7 @@ static json_t *gw2_read_start_attestation(const char *home, const gw2_seams_t *s
         json_free(pr);
         return gw2_raise_spec("AttributeError", "'NoneType' object has no attribute 'read_text'");
     }
-    char *path = strdup(paths);
+    char *path = gw2_win_path_posix(paths);
     json_free(pr);
     json_t *ra = gw2_args();
     gw2_aset_s(ra, "path", path);

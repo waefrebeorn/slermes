@@ -382,7 +382,9 @@ static char *wa_path_join(const char *base, const char *name) {
         strcpy(o + 1, name);
         return o;
     }
-    if (bl == 0) return wa_strdup(name);
+    /* PurePosixPath(".") / name == name (the "." component is dropped), so a
+     * base of "." contributes no prefix: emit "name", not "./name". */
+    if (bl == 0 || (bl == 1 && base[0] == '.')) return wa_strdup(name);
     char *o = malloc(bl + strlen(name) + 2);
     memcpy(o, base, bl);
     o[bl] = '/';

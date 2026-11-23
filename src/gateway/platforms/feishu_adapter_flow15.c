@@ -394,8 +394,9 @@ fail:
         const char *errs = rmsg;
         if (fa15_truthy(per)) errs = fa15_str_or(per, rmsg);
         if (fa15_is_raise(per)) { json_free(r); json_free(content); return per; }
-        json_free(per);
+        /* errs borrows from per: build the envelope BEFORE freeing per. */
         json_t *out = fa15_send_result(false, NULL, errs);
+        json_free(per);
         json_free(r); json_free(content);
         return out;
     }

@@ -1178,18 +1178,60 @@ static json_t *tm_landed(tm_ctx_t *ctx, const json_t *args) {
 
 /* ── model-pin confirm handshake ── */
 
+/* PureWindowsPath(...).as_posix() semantics for seam forwarding: backslashes
+ * become '/', UNC roots keep the leading "//" and a trailing '/' at the share
+ * root, duplicate separators collapse, trailing separators drop (except roots).
+ * Returns an owned string; caller frees it. */
+static char *tm_posix_norm(const char *s) {
+    if (!s || !s[0]) return tm_strdup(".");   /* Path("") == Path(".") */
+    size_t n = strlen(s);
+    char *b = malloc(n + 1);
+    if (!b) return tm_strdup(s);
+    for (size_t i = 0; i < n; i++) b[i] = (s[i] == '\\') ? '/' : s[i];
+    b[n] = '\0';
+    size_t lead = 0;
+    while (lead < n && b[lead] == '/') lead++;
+    bool unc = lead >= 2, absolute = lead >= 1;
+    char *o = malloc(n + 4);
+    if (!o) { free(b); return tm_strdup(s); }
+    size_t k = 0;
+    if (unc) { o[k++] = '/'; o[k++] = '/'; }
+    else if (absolute) { o[k++] = '/'; }
+    size_t i = (unc || absolute) ? lead : 0, segs = 0;
+    while (i < n) {
+        while (i < n && b[i] == '/') i++;
+        if (i >= n) break;
+        if (segs) o[k++] = '/';
+        size_t st = i;
+        while (i < n && b[i] != '/') i++;
+        memcpy(o + k, b + st, i - st);
+        k += i - st;
+        segs++;
+    }
+    /* //host/share is a UNC root and keeps a trailing '/'; a bare drive ("C:")
+     * does too. All other paths drop trailing separators. */
+    if (unc && segs == 2) o[k++] = '/';
+    else if (!unc && segs == 1 && k > 0 && o[k - 1] == ':') o[k++] = '/';
+    o[k] = '\0';
+    free(b);
+    return o;
+}
+
 /* _configure_model body; returns the confirm message (owned) or NULL (None),
  * or a raise spec. applied is the caller dict (state mirror). */
 static json_t *tm_configure_model_body(tm_ctx_t *ctx, const json_t *params,
                                        const char *profile_dir, json_t *applied) {
-    /* LIVE wraps profile_dir in Path(); Path("") == Path(".") whose
-     * .as_posix() is "." — map an empty dir before any path seam. */
-    const char *pd = (profile_dir && profile_dir[0]) ? profile_dir : ".";
+    /* LIVE wraps profile_dir in Path() and forwards Path.as_posix() to every
+     * seam. Normalize once before any seam arg (backslashes / UNC / trailing
+     * separators); Path("") == Path(".") is handled inside tm_posix_norm. */
+    char *pd_owned = tm_posix_norm(profile_dir ? profile_dir : "");
+    const char *pd = pd_owned;
     char *model = tm_str_strip_param(params, "model");
     char *provider = tm_str_strip_param(params, "provider");
     if (!model[0] || !provider[0]) {
         free(model);
         free(provider);
+        free(pd_owned);
         return NULL;
     }
     json_t *confirm = NULL;
@@ -1201,7 +1243,7 @@ static json_t *tm_configure_model_body(tm_ctx_t *ctx, const json_t *params,
     if (!confirmed) {
         json_t *warn = tm_lazy_call(ctx, "hermes_cli.model_selection_guards",
                                     "combined_selection_warning");
-        if (tm_is_raise(warn)) { free(model); free(provider); return warn; }
+        if (tm_is_raise(warn)) { free(model); free(provider); free(pd_owned); return warn; }
         json_free(warn); /* the callable marker; the call is its own seam */
         json_t *a = tm_args0();
         tm_asets(a, "profile_dir", pd);
@@ -1209,18 +1251,18 @@ static json_t *tm_configure_model_body(tm_ctx_t *ctx, const json_t *params,
         json_t *context = tm_call(ctx, "profile_group_selection_context", a);
         if (tm_is_raise(context)) {
             if (tm_is_base_exc(tm_raise_kind(context))) {
-                free(model); free(provider); return context;
+                free(model); free(provider); free(pd_owned); return context;
             }
             json_free(context);
             context = NULL; /* _try(..., None) */
         }
         json_t *cm = tm_hermes_home_scope_call(ctx, pd);
         if (tm_is_raise(cm)) {
-            json_free(context); free(model); free(provider); return cm;
+            json_free(context); free(model); free(provider); free(pd_owned); return cm;
         }
         if (!cm || cm->type == JSON_NULL) {
             json_t *e = tm_cm_type_error(cm);
-            json_free(cm); json_free(context); free(model); free(provider);
+            json_free(cm); json_free(context); free(model); free(provider); free(pd_owned);
             return e;
         }
         /* with block: warn(model, provider=provider, selection_context=context) */
@@ -1232,7 +1274,7 @@ static json_t *tm_configure_model_body(tm_ctx_t *ctx, const json_t *params,
         json_t *w = tm_call(ctx, "combined_selection_warning", a);
         if (tm_is_raise(w)) {
             if (tm_is_base_exc(tm_raise_kind(w))) {
-                json_free(cm); free(model); free(provider); return w;
+                json_free(cm); free(model); free(provider); free(pd_owned); return w;
             }
             json_free(w); /* _try(..., None) swallows */
         } else {
@@ -1250,7 +1292,7 @@ static json_t *tm_configure_model_body(tm_ctx_t *ctx, const json_t *params,
         bool effort;
         if (tm_is_raise(r)) {
             if (tm_is_base_exc(tm_raise_kind(r))) {
-                free(model); free(provider); return r;
+                free(model); free(provider); free(pd_owned); return r;
             }
             json_free(r);
             effort = false;
@@ -1262,6 +1304,7 @@ static json_t *tm_configure_model_body(tm_ctx_t *ctx, const json_t *params,
     }
     free(model);
     free(provider);
+    free(pd_owned);
     return confirm;
 }
 

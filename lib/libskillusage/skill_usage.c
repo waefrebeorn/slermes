@@ -262,6 +262,12 @@ const char *skill_usage_file_path(const char *hermes_home, char *out_path)
 /* Port of Python tools/skill_usage.py:_archive_dir() */
 const char *skill_usage_archive_dir(const char *hermes_home, char *out_path)
 {
+    /* get_hermes_home() / "skills" / ".archive": Path("") is ".", whose join
+     * drops the '.' component -> "skills/.archive" (no leading slash). */
+    if (!hermes_home || hermes_home[0] == '\0') {
+        snprintf(out_path, SKILL_USAGE_MAX_PATH, "skills/.archive");
+        return out_path;
+    }
     snprintf(out_path, SKILL_USAGE_MAX_PATH, "%s/skills/.archive", hermes_home);
     return out_path;
 }
@@ -1755,7 +1761,7 @@ int skill_usage_restore(const char *hermes_home, const char *skill_name, char *o
     }
 
     char archive_root[SKILL_USAGE_MAX_PATH];
-    snprintf(archive_root, sizeof(archive_root), "%s/skills/.archive", home);
+    skill_usage_archive_dir(home, archive_root);
     json_t *e_args = json_object();
     json_set(e_args, "path", json_string(archive_root));
     json_t *e = su_call("exists", e_args);
@@ -1847,7 +1853,10 @@ int skill_usage_restore(const char *hermes_home, const char *skill_name, char *o
     }
 
     char dest[SKILL_USAGE_MAX_PATH];
-    snprintf(dest, sizeof(dest), "%s/skills/%s", home, name);
+    if (home[0] == '\0')
+        snprintf(dest, sizeof(dest), "skills/%s", name);   /* Path("") / "skills" / name */
+    else
+        snprintf(dest, sizeof(dest), "%s/skills/%s", home, name);
     json_t *de_args = json_object();
     json_set(de_args, "path", json_string(dest));
     json_t *de = su_call("exists", de_args);

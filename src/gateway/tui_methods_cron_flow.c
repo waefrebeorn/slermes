@@ -747,7 +747,23 @@ static json_t *tmc2_json_loads(const json_t *raw) {
         return tmc2_err_spec("TypeError", msg);
     }
     json_t *v = json_parse(s, NULL);
-    return v ? v : json_null();
+    if (v) return v;
+    /* LIVE lets json.loads' JSONDecodeError escape cron.manage (no try here).
+     * CPython's str() is "<msg>: line L column C (char P)". For a leading
+     * whitespace / non-value input msg is "Expecting value" and P is the first
+     * non-JSON-whitespace byte (or end of input); a leading tab therefore gives
+     * "Expecting value: line 1 column 2 (char 1)". L/C come from P exactly as
+     * json.decoder computes them. */
+    size_t pos = 0;
+    while (s[pos] == ' ' || s[pos] == '\t' || s[pos] == '\n' || s[pos] == '\r') pos++;
+    long line = 1, lastnl = -1;
+    for (size_t k = 0; k < pos; k++)
+        if (s[k] == '\n') { line++; lastnl = (long)k; }
+    long col = (long)pos - lastnl;
+    char msg[160];
+    snprintf(msg, sizeof msg, "Expecting value: line %ld column %ld (char %zu)",
+             line, col, pos);
+    return tmc2_err_spec("JSONDecodeError", msg);
 }
 
 /* PoP: tmc2_cron_manage @ tui_gateway/methods_tools.py:_ */

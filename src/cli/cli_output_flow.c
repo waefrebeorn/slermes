@@ -1191,20 +1191,49 @@ static json_t *co2_overlay_layer(co2_io_t *io, const char *home, const char *lan
     return flat;
 }
 
+/* PurePosixPath(directory) normalization: the oracle injects PathDouble
+ * (a PurePosixPath), so path.is_dir / path.iterdir seams record str(self) with
+ * duplicate separators collapsed, '.' dropped and the trailing separator
+ * removed (a leading exactly-two slashes stays '//'). Match that on the C side. */
+static char *co2_pureposix_posix(const char *s) {
+    if (!s) s = "";
+    size_t n = strlen(s), i = 0;
+    while (i < n && s[i] == '/') i++;
+    const char *lead = (i == 2) ? "//" : (i > 0) ? "/" : "";
+    char *out = (char *)calloc(n + 3, 1);
+    if (!out) return strdup(".");
+    size_t k = 0;
+    strcpy(out, lead); k = strlen(lead);
+    size_t p = i;
+    while (p < n) {
+        while (p < n && s[p] == '/') p++;
+        size_t st = p;
+        while (p < n && s[p] != '/') p++;
+        size_t len = p - st;
+        if (!len || (len == 1 && s[st] == '.')) continue;
+        if (k && out[k - 1] != '/') out[k++] = '/';
+        memcpy(out + k, s + st, len); k += len;
+    }
+    if (!k) out[k++] = '.';   /* PurePosixPath("") == Path(".") */
+    out[k] = '\0';
+    return out;
+}
+
 /* PoP: co2_scan_locale_dir @ agent/i18n_layers.py:scan_locale_dir */
 static json_t *co2_scan_locale_dir(co2_io_t *io, const char *directory) {
+    char *dir = co2_pureposix_posix(directory);
     json_t *da = json_object();
-    json_set(da, "path", json_string(directory ? directory : ""));
+    json_set(da, "path", json_string(dir));
     json_t *isd = co2_call(io, "path.is_dir", da);
-    if (co2_is_raise(isd)) return isd;
+    if (co2_is_raise(isd)) { free(dir); return isd; }
     int isdir = co2_truthy(isd);
     json_free(isd);
-    if (!isdir) return json_array();
+    if (!isdir) { free(dir); return json_array(); }
     json_t *ia = json_object();
-    json_set(ia, "path", json_string(directory ? directory : ""));
+    json_set(ia, "path", json_string(dir));
     json_t *it = co2_call(io, "path.iterdir", ia);
-    if (co2_is_raise(it)) return it;
-    if (!it || it->type != JSON_ARRAY) { json_free(it); return json_array(); }
+    if (co2_is_raise(it)) { free(dir); return it; }
+    if (!it || it->type != JSON_ARRAY) { json_free(it); free(dir); return json_array(); }
     size_t n = 0;
     char **paths = co2_str_vec(it, &n);
     json_free(it);
@@ -1221,6 +1250,7 @@ static json_t *co2_scan_locale_dir(co2_io_t *io, const char *directory) {
             free(lang); free(surface);
             co2_free_vec(paths, n);
             json_free(found);
+            free(dir);
             return isf;
         }
         int file = co2_truthy(isf);
@@ -1238,5 +1268,6 @@ static json_t *co2_scan_locale_dir(co2_io_t *io, const char *directory) {
         free(lang); free(surface); if (surf != surface) free(surf);
     }
     co2_free_vec(paths, n);
+    free(dir);
     return found;
 }

@@ -235,7 +235,36 @@ static char *sf2_repr_scalar(const json_t *v) {
     if (sf2_is_null(v)) return sf2_strdup("None");
     if (sf2_is_bool(v)) return sf2_strdup(v->bool_val ? "True" : "False");
     if (sf2_is_num(v)) return sf2_fmt("%lld", (long long)v->num_val);
-    if (sf2_is_str(v)) return sf2_fmt("'%s'", v->str_val ? v->str_val : "");
+    if (sf2_is_str(v)) {
+        const char *s = v->str_val ? v->str_val : "";
+        /* Python str repr: prefer single quotes, but use double quotes when the
+         * value has a single quote and no double quote. Escape backslash, the
+         * chosen quote, and control chars (\\n \\r \\t and \\xHH). */
+        bool has_sq = strchr(s, '\'') != NULL;
+        bool has_dq = strchr(s, '"') != NULL;
+        char quote = (has_sq && !has_dq) ? '"' : '\'';
+        size_t cap = strlen(s) * 4 + 3;
+        char *buf = (char *)malloc(cap);
+        if (!buf) return sf2_strdup("");
+        static const char hex[] = "0123456789abcdef";
+        size_t k = 0;
+        buf[k++] = quote;
+        for (const unsigned char *p = (const unsigned char *)s; *p; p++) {
+            unsigned char c = *p;
+            if (c == '\\') { buf[k++] = '\\'; buf[k++] = '\\'; }
+            else if (c == quote) { buf[k++] = '\\'; buf[k++] = (char)c; }
+            else if (c == '\n') { buf[k++] = '\\'; buf[k++] = 'n'; }
+            else if (c == '\r') { buf[k++] = '\\'; buf[k++] = 'r'; }
+            else if (c == '\t') { buf[k++] = '\\'; buf[k++] = 't'; }
+            else if (c < 0x20 || c == 0x7f) {
+                buf[k++] = '\\'; buf[k++] = 'x';
+                buf[k++] = hex[(c >> 4) & 0xf]; buf[k++] = hex[c & 0xf];
+            } else { buf[k++] = (char)c; }
+        }
+        buf[k++] = quote;
+        buf[k] = '\0';
+        return buf;
+    }
     return sf2_strdup(""); /* out of domain */
 }
 static json_t *sf2_key_error(const json_t *key) {

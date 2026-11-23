@@ -1319,6 +1319,13 @@ static json_t *sp2_valid_client_env(const json_t *value, const char *kind) {
 static json_t *sp2_request_flag(const char *key, const json_t *request_json) {
     json_t *r = sp2_jloads(request_json);
     if (sp2_raised(r)) return r;
+    /* live: json.loads(request_json).get(key, False) — a parsed null/non-object
+     * has no .get and raises AttributeError with the repr'd Python type name. */
+    if (!sp2_is_obj(r)) {
+        json_t *e = sp2_attr_err(r, "get");
+        json_free(r);
+        return e;
+    }
     const json_t *v = json_obj_get(r, key);  /* dict domain (live .get) */
     json_t *out = v ? json_copy(v) : json_bool(false);
     json_free(r);

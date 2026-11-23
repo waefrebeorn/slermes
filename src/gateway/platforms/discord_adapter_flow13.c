@@ -1061,11 +1061,25 @@ static json_t *da13_on_packet(da13_ctx_t *ctx, const json_t *args) {
     json_t *dec = da13_call(ctx, "nacl_decrypt", a);
     char *dec_bytes = NULL; size_t dec_n = 0;
     json_t *final = NULL;
+    json_t *dec_fail = NULL;   /* exception driving the decrypt-failure branch */
     if (da13_is_raise(dec)) {
-        json_t *e = dec;
-        if (!da13_is_exception(da13_raise_kind(e))) {
-            free(ssrc_key); free(data); return e;
+        dec_fail = dec;
+        if (!da13_is_exception(da13_raise_kind(dec_fail))) {
+            free(ssrc_key); free(data); return dec_fail;
         }
+    } else {
+        /* LIVE converts the seam string with bytes.fromhex() inside the try;
+         * invalid hex raises ValueError and takes the same failure path. */
+        const char *hexerr = NULL;
+        dec_bytes = da13_hex_checked(da13_str(dec), &dec_n, &hexerr);
+        json_free(dec);
+        if (!dec_bytes) {
+            dec_fail = da13_err("ValueError", hexerr ? hexerr : "");
+            free((void *)hexerr);
+        }
+    }
+    if (dec_fail) {
+        json_t *e = dec_fail;
         double failed = da13_num(da13_state_get(ctx, "_decode_failed")) + 1.0;
         da13_state_set(ctx, "_decode_failed", json_number(failed));
         double streak = da13_num(da13_state_get(ctx, "_nacl_fail_streak")) + 1.0;
@@ -1091,8 +1105,6 @@ static json_t *da13_on_packet(da13_ctx_t *ctx, const json_t *args) {
         return json_null();
     }
     da13_state_set(ctx, "_nacl_fail_streak", json_number(0));
-    dec_bytes = da13_hex_bytes(da13_str(dec), &dec_n);
-    json_free(dec);
     size_t dstart = 0;
     if (ext_data_len > 0 && dec_n > ext_data_len) dstart = ext_data_len;
     size_t dlen = dec_n - dstart;

@@ -506,6 +506,8 @@ static int cmf_py_int(const json_t *v, double *out) {
 typedef struct {
     char drive[3];      /* "C:" or "" */
     bool rooted;
+    bool is_unc;        /* UNC anchor //server/share is the root, not parts */
+    char *unc_anchor;   /* e.g. "//server/share/" when is_unc */
     char **parts;
     size_t n;
 } cmf_path_t;
@@ -514,13 +516,36 @@ static void cmf_path_parse(const char *s, cmf_path_t *p) {
     memset(p, 0, sizeof *p);
     if (!s) s = "";
     const char *rest = s;
-    if (((s[0] >= 'A' && s[0] <= 'Z') || (s[0] >= 'a' && s[0] <= 'z')) && s[1] == ':') {
-        p->drive[0] = s[0]; p->drive[1] = ':'; p->drive[2] = '\0';
-        rest = s + 2;
-    }
-    if (*rest == '/' || *rest == '\\') {
-        p->rooted = true;
-        while (*rest == '/' || *rest == '\\') rest++;
+    if (s[0] && (s[0] == '/' || s[0] == '\\') && s[1] && (s[1] == '/' || s[1] == '\\')) {
+        /* UNC anchor: pathlib treats //server/share as the root (anchor), whose
+         * as_posix() keeps a trailing slash; its parent is the anchor itself.
+         * Consume server + share into the anchor, not into `parts`. */
+        p->is_unc = true;
+        cmf_buf_t b; cmf_binit(&b);
+        cmf_bput(&b, "//");
+        const char *q = s + 2;
+        for (int comp = 0; comp < 2; comp++) {
+            while (*q == '/' || *q == '\\') q++;
+            const char *st = q;
+            while (*q && *q != '/' && *q != '\\') q++;
+            size_t len = (size_t)(q - st);
+            if (!len) break;
+            if (b.len && b.s[b.len - 1] != '/') cmf_bputc(&b, '/');
+            cmf_bputn(&b, st, len);
+        }
+        if (!b.s || !b.len) cmf_bput(&b, "//");
+        if (b.s[b.len - 1] != '/') cmf_bputc(&b, '/');
+        p->unc_anchor = b.s;
+        rest = q;
+    } else {
+        if (((s[0] >= 'A' && s[0] <= 'Z') || (s[0] >= 'a' && s[0] <= 'z')) && s[1] == ':') {
+            p->drive[0] = s[0]; p->drive[1] = ':'; p->drive[2] = '\0';
+            rest = s + 2;
+        }
+        if (*rest == '/' || *rest == '\\') {
+            p->rooted = true;
+            while (*rest == '/' || *rest == '\\') rest++;
+        }
     }
     size_t cap = 0;
     const char *seg = rest;
@@ -551,12 +576,23 @@ static void cmf_path_parse(const char *s, cmf_path_t *p) {
 static void cmf_path_free(cmf_path_t *p) {
     for (size_t i = 0; i < p->n; i++) free(p->parts[i]);
     free(p->parts);
-    p->parts = NULL; p->n = 0;
+    free(p->unc_anchor);
+    p->parts = NULL; p->unc_anchor = NULL; p->n = 0; p->is_unc = false;
 }
 
 /* reconstruct as_posix over the first n parts */
 static char *cmf_path_build(const cmf_path_t *p, size_t n) {
     cmf_buf_t b; cmf_binit(&b);
+    if (p->is_unc && p->unc_anchor) {
+        /* UNC anchor already carries its trailing slash; the anchor is the
+         * share root so parent-of-anchor (n==0) is the anchor itself. */
+        cmf_bput(&b, p->unc_anchor);
+        for (size_t i = 0; i < n; i++) {
+            if (b.len && b.s[b.len - 1] != '/') cmf_bputc(&b, '/');
+            cmf_bput(&b, p->parts[i]);
+        }
+        return b.s ? b.s : strdup("");
+    }
     if (p->drive[0]) {
         cmf_bput(&b, p->drive);
         if (p->rooted) cmf_bputc(&b, '/');

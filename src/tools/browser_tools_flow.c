@@ -898,6 +898,54 @@ static json_t *bt_record_driven_tab(bt_ctx *ctx, const json_t *env, const char *
     return json_null();
 }
 
+/* PureWindowsPath(...).as_posix() for the harness_pid_file path: LIVE wraps
+ * harness_pid_file(env) in a Windows Path and the read_text seam records
+ * a[0].as_posix(). Normalize backslashes, drive/UNC/root, duplicate separators,
+ * '.' components and trailing separators the same way before the seam. */
+static char *bt_purewin_as_posix(const char *s) {
+    if (!s) s = "";
+    size_t n = strlen(s), i = 0, k = 0;
+    char *out = (char *)malloc(n + 6);
+    if (!out) return strdup("");
+    bool has_drive = false;
+    if (n >= 2 && isalpha((unsigned char)s[0]) && s[1] == ':') {
+        out[k++] = s[0]; out[k++] = ':'; i = 2; has_drive = true;
+    }
+    size_t lead = 0;
+    while (i < n && (s[i] == '/' || s[i] == '\\')) { lead++; i++; }
+    if (lead == 2 && !has_drive) {
+        /* UNC anchor: //server/share/ (a share root keeps the trailing slash). */
+        out[k++] = '/'; out[k++] = '/';
+        for (int comp = 0; comp < 2; comp++) {
+            while (i < n && (s[i] == '/' || s[i] == '\\')) i++;
+            size_t st = i;
+            while (i < n && s[i] != '/' && s[i] != '\\') i++;
+            size_t len = i - st;
+            if (!len) break;
+            if (k && out[k - 1] != '/') out[k++] = '/';
+            memcpy(out + k, s + st, len); k += len;
+        }
+        if (k && out[k - 1] != '/') out[k++] = '/';
+    } else if (lead > 0) {
+        /* drive-absolute paths root at one '/'; otherwise 1 -> "/", 3 -> "///",
+         * >=4 -> "////" (pathlib caps at four). */
+        size_t sl = has_drive ? 1 : (lead > 4 ? 4 : lead);
+        for (size_t z = 0; z < sl; z++) out[k++] = '/';
+    }
+    while (i < n) {
+        while (i < n && (s[i] == '/' || s[i] == '\\')) i++;
+        size_t st = i;
+        while (i < n && s[i] != '/' && s[i] != '\\') i++;
+        size_t len = i - st;
+        if (!len || (len == 1 && s[st] == '.')) continue;
+        if (k && out[k - 1] != '/') out[k++] = '/';
+        memcpy(out + k, s + st, len); k += len;
+    }
+    if (!k) out[k++] = '.';
+    out[k] = '\0';
+    return out;
+}
+
 /* ── 18. _published_daemon_pid ───────────────────────────────────────────── */
 /* PoP: bt_published_daemon_pid @ tools/browser_use_cli.py:_published_daemon_pid */
 static json_t *bt_published_daemon_pid(bt_ctx *ctx, const json_t *env) {
@@ -909,8 +957,10 @@ static json_t *bt_published_daemon_pid(bt_ctx *ctx, const json_t *env) {
         json_free(pf); return NULL;
     }
     /* harness_pid_file(env).read_text(encoding="utf-8-sig").strip() */
-    char *path = bt_pystr(pf);
+    char *raw_path = bt_pystr(pf);
     json_free(pf);
+    char *path = bt_purewin_as_posix(raw_path);
+    free(raw_path);
     json_t *ra = json_object();
     bt_arg_str(ra, "path", path);
     bt_arg_str(ra, "encoding", "utf-8-sig");

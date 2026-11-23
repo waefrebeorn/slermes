@@ -459,17 +459,22 @@ json_t *gww_reconcile_autostart_launchers(const gww_seams_t *s) {
         json_free(ea2);
         bool still = jtruth(er2);
         json_free(er2);
+        /* LIVE interpolates str(Path) for legacy/entry -> as_posix(); normalize
+           seam-returned Windows paths before building the warning messages. */
+        char *legacy_n = gww_path_posix(legacy ? legacy : "");
+        char *entry_n = gww_path_posix(entry ? entry : "");
         if (still) {
             char *msg = xsf("Could not remove legacy Windows login item: %s "
                             "(locked or access denied; it still fires at logon beside %s)",
-                            legacy ? legacy : "", entry ? entry : "");
+                            legacy_n, entry_n);
             json_append(warnings, json_string(msg));
             free(msg);
         } else {
-            char *msg = xsf("Migrated legacy Windows login item to: %s", entry ? entry : "");
+            char *msg = xsf("Migrated legacy Windows login item to: %s", entry_n);
             json_append(done, json_string(msg));
             free(msg);
         }
+        free(legacy_n); free(entry_n);
         free(entry);
     } else {
         json_t *ga = args0();

@@ -204,6 +204,38 @@ static char *tg3_xfmt(const char *fmt, ...)
     return buf;
 }
 
+/* Python repr() of a str, as str(KeyError(code)) renders it: use double
+ * quotes only when the value holds a single quote but no double quote, and
+ * escape backslashes, the chosen quote and control characters. */
+static char *tg3_py_repr(const char *s)
+{
+    if (!s) s = "";
+    size_t n = strlen(s);
+    int has_single = 0, has_double = 0;
+    for (size_t i = 0; i < n; i++) {
+        if (s[i] == '\'') has_single = 1;
+        if (s[i] == '"') has_double = 1;
+    }
+    char q = (has_single && !has_double) ? '"' : '\'';
+    char *o = (char *)malloc(n * 4 + 3);
+    if (!o) return NULL;
+    size_t k = 0;
+    o[k++] = q;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = (unsigned char)s[i];
+        if (c == '\\') { o[k++] = '\\'; o[k++] = '\\'; }
+        else if (c == (unsigned char)q) { o[k++] = '\\'; o[k++] = (char)c; }
+        else if (c == '\n') { o[k++] = '\\'; o[k++] = 'n'; }
+        else if (c == '\r') { o[k++] = '\\'; o[k++] = 'r'; }
+        else if (c == '\t') { o[k++] = '\\'; o[k++] = 't'; }
+        else if (c < 0x20 || c == 0x7f) k += (size_t)snprintf(o + k, 5, "\\x%02x", c);
+        else o[k++] = (char)c;
+    }
+    o[k++] = q;
+    o[k] = '\0';
+    return o;
+}
+
 /* FULL builtin exception-parent hierarchy (probed on quarry CPython). */
 typedef struct { const char *name; const char *parent; } tg3_exc_row;
 static const tg3_exc_row TG3_EXC_PARENT[] TG3_UNUSED = {
@@ -706,7 +738,7 @@ static json_t *tg3_decide(tg3_io_t *io_unused, const json_t *in, json_t *st)
     } else {
         const char *tpl = TG3_DECISION_MSG(code);
         if (!tpl) {
-            char *m = tg3_xfmt("'%s'", code);
+            char *m = tg3_py_repr(code);
             json_t *e = tg3_mkraise("KeyError", m ? m : code);
             free(m);
             return e;

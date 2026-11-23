@@ -1204,6 +1204,12 @@ static json_t *sp4_build_policy(const json_t *params, json_t *config, const json
         if (sp4_raised(v)) { free(cwd); return v; }
         json_free(v);
     }
+    json_t *orig_config = config;   /* caller-owned: emitted as out.state.config */
+    /* LIVE: config = present_sections(json.loads(json.dumps(config))) — the
+     * rest of build_policy mutates a private working copy, so the caller keeps
+     * its original config on every exception path. On success the final
+     * working state is copied back below (matching LIVE's pol.config_json). */
+    config = config ? json_copy(config) : json_object();
     {
         json_t *cp = json_copy(config);
         json_t *a = sp4_args(); sp4_j(a, "config", cp); json_free(cp);
@@ -1349,5 +1355,9 @@ static json_t *sp4_build_policy(const json_t *params, json_t *config, const json
     json_set(out, "edit_approval_policy", json_string("ask"));
     free(client_env_json); free(rules_json);
     json_free(request); json_free(terminal); free(cwd);
+    /* Success: reflect the final working config into the caller's object so
+     * out.state.config matches LIVE's pol.config_json; then release our copy. */
+    sp4_obj_replace(orig_config, config);
+    json_free(config);
     return out;
 }

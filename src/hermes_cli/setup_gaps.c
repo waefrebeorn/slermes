@@ -927,7 +927,12 @@ json_t *print_macos_fda_tip(sg_io_t *io) {
     const char *home = sg_env_str(io, "home", "");
     size_t hn = strlen(home);
     while (hn > 0 && home[hn - 1] == '/') hn--;   /* Path() drops trailing separators */
-    char *path = sg_fmt("%.*s/Library/Application Support/com.apple.TCC", (int)hn, home);
+    /* Path("") normalizes to ".", and Path(".") / "Library" drops the '.'
+     * component, so an empty home yields a RELATIVE path (no leading '/').
+     * A root home ("/") still keeps its separator. */
+    char *path = home[0] == '\0'
+        ? sg_fmt("Library/Application Support/com.apple.TCC")
+        : sg_fmt("%.*s/Library/Application Support/com.apple.TCC", (int)hn, home);
     json_t *a = json_object();
     json_set(a, "path", json_string(path ? path : ""));
     free(path);

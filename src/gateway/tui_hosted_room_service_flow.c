@@ -678,6 +678,13 @@ static json_t *thrs_policy_snapshot(const thrs_seams_t *s, const json_t *room, j
 static char *thrs_path_join3(const char *root, const char *mid, const char *name) {
     size_t nr = strlen(root);           /* PurePosixPath strips trailing '/' */
     while (nr > 1 && root[nr - 1] == '/') nr--;
+    /* PurePosixPath also drops leading '.' components: "." -> "", "./x" -> "x".
+     * A lone "." must NOT leak a "./" prefix into the joined path. */
+    while (nr >= 1 && root[0] == '.' && (nr == 1 || root[1] == '/')) {
+        if (nr == 1) { root += 1; nr = 0; break; }
+        root += 2; nr -= 2;
+        while (nr > 0 && root[0] == '/') { root++; nr--; }
+    }
     size_t nm = strlen(mid), nn = strlen(name);
     bool sep1 = nr > 0 && root[nr - 1] != '/';
     bool sep2 = nm > 0 && mid[nm - 1] != '/';

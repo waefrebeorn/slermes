@@ -113,7 +113,7 @@ static const char *const PRUNE_DEPENDENTS[] = {
     "hosted_room_peer_reservations", "hosted_room_events"};
 
 static void prune_add(char **ids, int *n, const char *s) {
-    if (!s || !*s) return;
+    if (!s) return;
     for (int i = 0; i < *n; i++) if (strcmp(ids[i], s) == 0) return;
     if (*n < PRUNE_MAX_IDS) ids[(*n)++] = strdup(s);
 }

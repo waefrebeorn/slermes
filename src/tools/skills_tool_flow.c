@@ -1174,6 +1174,13 @@ static json_t *skt_resolve_plugin_skill(skt_env *e, const json_t *in) {
             json_free(md); md = md2;
         }
     }
+    /* pm.find_plugin_skill() may script an empty path. LIVE materializes it as
+     * PurePosixPath("") == ".", so both the exists() seam argument and the
+     * skill_md forwarded to _serve_plugin_skill must be "." -- not "". */
+    if (skt_is_str(md) && skt_str(md)[0] == '\0') {
+        json_free(md);
+        md = json_string(".");
+    }
     if (!skt_is_null(md)) {
         char *md_s = skt_pystr(md);
         json_t *ex = skt_path_bool(e, "exists", md_s);

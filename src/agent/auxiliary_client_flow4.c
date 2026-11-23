@@ -1005,7 +1005,9 @@ static json_t *ac4_acreate_with_progress(ac4_ctx *ctx, const char *client_marker
             json_set(a4, "exc", json_copy(exc_arg));
             ac4_arg_str(a4, "provider", provider);
             ac4_arg_str(a4, "client", client_marker);
-            ac4_arg(a4, "model", model);
+            /* LIVE: _classify_failure(exc, provider, client, kwargs.get("model"))
+             * uses the ORIGINAL kwargs' model, not stream_request_plan[1]. */
+            ac4_arg(a4, "model", ac4_get(orig_kwargs, "model"));
             json_t *failure = ac4_call(ctx, "classify_failure", a4);
             if (ac4_exc_pending(ctx)) { json_free(failure); json_free(model); json_free(ceiling); json_free(orig_kwargs); return NULL; }
             json_t *verdict = ac4_get(failure, "verdict");

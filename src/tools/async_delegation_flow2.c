@@ -841,9 +841,8 @@ static json_t *ad2_unfence(json_t *st, const char *token)
             const char *t = ad2_str(toks->c.items[j]);
             if (!(t && strcmp(t, token) == 0)) json_append(nt, json_copy(toks->c.items[j]));
         }
-        if (nt->c.count == 0) json_obj_del(by, sel);
-        else json_set(by, sel, nt);
-        json_free(nt);
+        if (nt->c.count == 0) { json_obj_del(by, sel); json_free(nt); }
+        else json_set(by, sel, nt);  /* json_set takes ownership; do NOT json_free(nt) */
     }
     json_free(items);
     return err;

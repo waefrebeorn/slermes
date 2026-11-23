@@ -83,8 +83,26 @@ static json_t *ws_norm_raise(json_t *r) {
     if (!ws_is_raise(r)) return r;
     json_t *o = json_object();
     json_set(o, "__raise__", json_string(ws_raise_class(r)));
-    json_set(o, "msg", json_string(json_get_str(r, "msg", "")));
+    /* LIVE raises SystemExit(code): str(SystemExit(c)) is str(c), the decimal
+     * string of a numeric code, NOT the scripted "msg". Mirror that so a
+     * scripted msg that disagrees with code does not leak into the envelope. */
     const json_t *code = json_obj_get(r, "code");
+    if (code && !strcmp(ws_raise_class(r), "SystemExit")) {
+        char num[64];
+        const char *cs = NULL;
+        if (code->type == JSON_NUMBER) {
+            if (code->num_val == (double)(long long)code->num_val)
+                snprintf(num, sizeof num, "%lld", (long long)code->num_val);
+            else
+                snprintf(num, sizeof num, "%.17g", code->num_val);
+            cs = num;
+        } else if (code->type == JSON_STRING) {
+            cs = code->str_val ? code->str_val : "";
+        }
+        json_set(o, "msg", json_string(cs ? cs : json_get_str(r, "msg", "")));
+    } else {
+        json_set(o, "msg", json_string(json_get_str(r, "msg", "")));
+    }
     if (code) json_set(o, "code", json_copy(code));
     json_free(r);
     return o;
