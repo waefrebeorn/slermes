@@ -1,0 +1,19 @@
+{"func": "script_is_command_line", "case": "plain filename no whitespace", "script": "watchdog.sh", "script_path": null, "script_is_file": false}
+{"func": "script_is_command_line", "case": "command line unresolved", "script": "echo hi", "script_path": null, "script_is_file": false}
+{"func": "script_is_command_line", "case": "whitespace but resolved file", "script": "echo hi", "script_path": "/home/test/.hermes/scripts/echo hi", "script_is_file": true}
+{"func": "script_is_command_line", "case": "padded command line", "script": "  echo   hi  ", "script_path": null, "script_is_file": false}
+{"func": "script_is_command_line", "case": "empty script", "script": "", "script_path": null, "script_is_file": false}
+{"func": "mode_error", "case": "both monitor sources", "monitor_script": "watch.sh", "monitor_url": "http://x", "no_agent": false, "script": null, "home": "/home/test/.hermes"}
+{"func": "mode_error", "case": "monitor plus no_agent", "monitor_script": "watch.sh", "monitor_url": null, "no_agent": true, "script": "watch.sh", "home": "/home/test/.hermes"}
+{"func": "mode_error", "case": "no_agent without script", "monitor_script": null, "monitor_url": null, "no_agent": true, "script": null, "home": "/home/test/.hermes"}
+{"func": "mode_error", "case": "no_agent with plain script ok", "monitor_script": null, "monitor_url": null, "no_agent": true, "script": "watchdog.sh", "home": "/home/test/.hermes"}
+{"func": "mode_error", "case": "unresolved command line", "monitor_script": null, "monitor_url": null, "no_agent": false, "script": "echo hi", "script_path": null, "home": "/home/test/.hermes"}
+{"func": "mode_error", "case": "resolved but missing file", "monitor_script": null, "monitor_url": null, "no_agent": false, "script": "echo hi", "script_path": "/home/test/.hermes/scripts/echo hi", "script_is_file": false, "home": "/home/test/.hermes"}
+{"func": "mode_error", "case": "resolved existing file ok", "monitor_script": null, "monitor_url": null, "no_agent": false, "script": "watch dog.sh", "script_path": "/home/test/.hermes/scripts/watch dog.sh", "script_is_file": true, "home": "/home/test/.hermes"}
+{"func": "mode_error", "case": "tab in script unresolved", "monitor_script": null, "monitor_url": null, "no_agent": false, "script": "echo\thi", "script_path": null, "home": "/home/test/.hermes"}
+{"func": "schedule_error", "case": "timezone error from normalizer", "schedule": {"kind": "cron"}, "timezone": "Bad/Zone", "grace_minutes": 5, "tz_error": true}
+{"func": "schedule_error", "case": "grace error from normalizer", "schedule": {"kind": "cron"}, "timezone": "UTC", "grace_minutes": -1, "grace_error": true}
+{"func": "schedule_error", "case": "normalizer returns None ok", "schedule": {"kind": "once"}, "timezone": "UTC", "grace_minutes": null, "grace_none": true}
+{"func": "schedule_error", "case": "grace on once schedule", "schedule": {"kind": "once"}, "timezone": "UTC", "grace_minutes": 5}
+{"func": "schedule_error", "case": "grace on cron schedule ok", "schedule": {"kind": "cron"}, "timezone": "UTC", "grace_minutes": 5}
+{"func": "schedule_error", "case": "grace on null schedule", "schedule": null, "timezone": "UTC", "grace_minutes": 5}

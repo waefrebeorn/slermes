@@ -1,0 +1,10 @@
+{"func":"tool_round_facts","tool_names":["memory"],"content":"[memory]"}
+{"func":"tool_round_facts","tool_names":["todo_list","skill_manage"],"content":"hello"}
+{"func":"tool_round_facts","tool_names":["setup_beat"],"content":"[setup_beat]"}
+{"func":"tool_round_facts","tool_names":["memory","setup_beat"],"content":"  [memory]  "}
+{"func":"tool_round_facts","tool_names":["shell"],"content":"[shell]"}
+{"func":"tool_round_facts","tool_names":[],"content":"[memory]"}
+{"func":"tool_round_facts","tool_names":["session_search"],"content":"[bad name]"}
+{"func":"tool_round_facts","tool_names":["memory"],"content":"[memory] extra"}
+{"func":"tool_round_facts","tool_names":["skill_manage"],"content":""}
+{"func":"tool_round_facts","tool_names":["memory","todo_list","skill_manage","session_search","setup_beat"],"content":"[A.b-c_1]"}

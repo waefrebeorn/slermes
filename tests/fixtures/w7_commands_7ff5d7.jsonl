@@ -1,0 +1,23 @@
+{"func":"commands_table","case":"all"}
+{"func":"commands_table","case":"pad","pad":1}
+{"func":"mid_turn_blocked","case":"set"}
+{"func":"mid_turn_blocked","case":"pad","pad":"x"}
+{"func":"parse_slash","case":"help","text":"/help"}
+{"func":"parse_slash","case":"model_args","text":"/MODEL  gpt-4o  "}
+{"func":"parse_slash","case":"queue_spaces","text":"  /Queue   run after  "}
+{"func":"parse_slash","case":"empty","text":""}
+{"func":"parse_slash","case":"spaces","text":"   "}
+{"func":"parse_slash","case":"slash_only","text":"/"}
+{"func":"parse_slash","case":"multi_slash","text":"///HELP x"}
+{"func":"parse_slash","case":"plain","text":"hello world"}
+{"func":"parse_slash","case":"unknown","text":"/unknown  args here  "}
+{"func":"parse_slash","case":"compress_flag","text":"/compress --preview  "}
+{"func":"parse_slash","case":"version","text":"/version"}
+{"func":"parse_slash","case":"tabs","text":"\t/wmic\tx  "}
+{"func":"help_text","case":"basic"}
+{"func":"help_text","case":"pad","pad":null}
+{"func":"model_status","case":"full","model":"gpt-4","fallback":"fb","provider":"openai"}
+{"func":"model_status","case":"fallback","model":"","fallback":"fb","provider":""}
+{"func":"model_status","case":"explicit","model":"m","fallback":"","provider":"p"}
+{"func":"model_status","case":"defaults","model":"","fallback":"","provider":""}
+{"func":"model_status","case":"spaces","model":"x y","fallback":"f","provider":"z"}

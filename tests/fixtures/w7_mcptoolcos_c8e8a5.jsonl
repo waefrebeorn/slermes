@@ -1,0 +1,58 @@
+{"func": "fmt", "case": "zero", "amount": 0}
+{"func": "fmt", "case": "int", "amount": 5}
+{"func": "fmt", "case": "thousands", "amount": 1234}
+{"func": "fmt", "case": "millions", "amount": 1000000}
+{"func": "fmt", "case": "float half", "amount": 12.5}
+{"func": "fmt", "case": "float thousands", "amount": 1234.5}
+{"func": "fmt", "case": "pi", "amount": 3.14159}
+{"func": "fmt", "case": "one", "amount": 1}
+{"func": "fmt", "case": "hundred k", "amount": 100000}
+{"func": "qty", "case": "singular", "amount": 1, "unit": "credits"}
+{"func": "qty", "case": "plural", "amount": 5, "unit": "credits"}
+{"func": "qty", "case": "two", "amount": 2, "unit": "credits"}
+{"func": "qty", "case": "non-s unit", "amount": 1, "unit": "USD"}
+{"func": "qty", "case": "grouped", "amount": 1000, "unit": "credits"}
+{"func": "qty", "case": "zero", "amount": 0, "unit": "credits"}
+{"func": "qty", "case": "plural tokens", "amount": 3, "unit": "tokens"}
+{"func": "parse_cost", "case": "number", "value": 5}
+{"func": "parse_cost", "case": "zero", "value": 0}
+{"func": "parse_cost", "case": "range", "value": [1, 5]}
+{"func": "parse_cost", "case": "range equal", "value": [3, 3]}
+{"func": "parse_cost", "case": "dict with note", "value": {"credits": 3, "note": "  est  "}}
+{"func": "parse_cost", "case": "dict no note", "value": {"credits": 7}}
+{"func": "parse_cost", "case": "note not string", "value": {"credits": 3, "note": 5}}
+{"func": "parse_cost", "case": "reversed range", "value": [5, 1]}
+{"func": "parse_cost", "case": "negative", "value": -1}
+{"func": "parse_cost", "case": "bool", "value": true}
+{"func": "parse_cost", "case": "long range", "value": [1, 2, 3]}
+{"func": "parse_cost", "case": "extra dict key", "value": {"credits": 1, "extra": 2}}
+{"func": "parse_cost_policy", "case": "two tools", "costs": {"a": 5, "b": [1, 2]}, "spend_limit": 100, "cost_unit": "credits"}
+{"func": "parse_cost_policy", "case": "custom unit", "costs": {"a": 2}, "spend_limit": 10, "cost_unit": "tokens"}
+{"func": "parse_cost_policy", "case": "no costs", "costs": null, "spend_limit": 100}
+{"func": "parse_cost_policy", "case": "all zero", "costs": {"a": 0}, "spend_limit": 100}
+{"func": "parse_cost_policy", "case": "costs not dict", "costs": [1, 2]}
+{"func": "parse_cost_policy", "case": "negative limit", "costs": {"a": 1}, "spend_limit": -5}
+{"func": "parse_cost_policy", "case": "unit number", "costs": {"a": 1}, "cost_unit": 5}
+{"func": "parse_cost_policy", "case": "unit blank", "costs": {"a": 1}, "cost_unit": "   "}
+{"func": "parse_cost_policy", "case": "unit trimmed", "costs": {"a": 1}, "cost_unit": "  credits  "}
+{"func": "parse_cost_policy", "case": "bool spend limit", "costs": {"a": 1}, "spend_limit": true}
+{"func": "unknown_cost_keys", "case": "one unknown", "costs": {"a": {"low": 1, "high": 1, "note": ""}, "b": {"low": 1, "high": 1, "note": ""}, "c": {"low": 1, "high": 1, "note": ""}}, "tool_names": ["a", "b"]}
+{"func": "unknown_cost_keys", "case": "all offered", "costs": {"a": {"low": 1, "high": 1, "note": ""}}, "tool_names": ["a"]}
+{"func": "unknown_cost_keys", "case": "all unknown sorted", "costs": {"z": {"low": 1, "high": 1, "note": ""}, "a": {"low": 1, "high": 1, "note": ""}}, "tool_names": []}
+{"func": "unknown_cost_keys", "case": "null policy", "costs": null, "tool_names": ["a"]}
+{"func": "charge_sentence", "case": "exact", "low": 5, "high": 5, "note": "", "unit": "credits"}
+{"func": "charge_sentence", "case": "with note", "low": 5, "high": 5, "note": "est", "unit": "credits"}
+{"func": "charge_sentence", "case": "range", "low": 2, "high": 5, "note": "", "unit": "credits"}
+{"func": "charge_sentence", "case": "singular", "low": 1, "high": 1, "note": "", "unit": "credits"}
+{"func": "spend_sentence", "case": "limit only", "spent": 0, "server": "srv", "limit": 100, "unit": "credits"}
+{"func": "spend_sentence", "case": "no limit no spend", "spent": 0, "server": "srv", "limit": 0, "unit": "credits"}
+{"func": "spend_sentence", "case": "used with limit", "spent": 5, "server": "srv", "limit": 100, "unit": "credits"}
+{"func": "spend_sentence", "case": "used no limit", "spent": 5, "server": "srv", "limit": 0, "unit": "credits"}
+{"func": "spend_sentence", "case": "singular limit", "spent": 0, "server": "srv", "limit": 1, "unit": "credits"}
+{"func": "charge_lines", "case": "both", "low": 2, "high": 5, "note": "est", "unit": "credits", "spent": 5, "server": "srv", "limit": 100}
+{"func": "charge_lines", "case": "one", "low": 5, "high": 5, "note": "", "unit": "credits", "spent": 0, "server": "srv", "limit": 0}
+{"func": "over_limit", "case": "over", "limit": 100, "spent": 95, "high": 6}
+{"func": "over_limit", "case": "exact", "limit": 100, "spent": 90, "high": 10}
+{"func": "over_limit", "case": "no limit", "limit": 0, "spent": 95, "high": 6}
+{"func": "charge_refusal", "case": "full", "tool": "search", "server": "srv", "spent": 95, "limit": 100, "high": 6, "unit": "credits"}
+{"func": "charge_refusal", "case": "singular", "tool": "search", "server": "srv", "spent": 0, "limit": 1, "high": 1, "unit": "credits"}

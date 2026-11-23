@@ -1,0 +1,25 @@
+{"func":"scope_values","raw":"a,b c  d","case":"string comma and space"}
+{"func":"scope_values","raw":["x y",3,"z"],"case":"list filters non strings"}
+{"func":"scope_values","raw":"","case":"empty string"}
+{"func":"scope_values","raw":null,"case":"null scope"}
+{"func":"scope_values","raw":"a,a b","case":"dedupe"}
+{"func":"scope_values","raw":["one",["two three"]],"case":"nested list"}
+{"func":"model_priority","mid":"claude-opus-4","case":"opus ranks 0"}
+{"func":"model_priority","mid":"gemini-pro","case":"pro ranks 1"}
+{"func":"model_priority","mid":"claude-sonnet-4","case":"sonnet ranks 3"}
+{"func":"model_priority","mid":"gpt-4","case":"other ranks 2"}
+{"func":"model_priority","mid":"CLAUDE-OPUS","case":"case insensitive"}
+{"func":"model_priority","mid":"pro-sonnet","case":"sonnet beats pro"}
+{"func":"validate_url","url":" https://welcome-api.nousresearch.com/v1/ ","override":"","case":"welcome host trimmed and rstripped"}
+{"func":"validate_url","url":"https://inference-api.nousresearch.com","override":"","case":"inference host"}
+{"func":"validate_url","url":"http://welcome-api.nousresearch.com","override":"","case":"non https rejected"}
+{"func":"validate_url","url":"https://evil.com","override":"","case":"unlisted host rejected"}
+{"func":"validate_url","url":"","override":"","case":"empty rejected"}
+{"func":"validate_url","url":null,"override":"","case":"null rejected"}
+{"func":"validate_url","url":"https://staging.internal.infer","override":"https://staging.internal.infer","case":"operator override accepts"}
+{"func":"validate_url","url":"https://staging.internal.infer","override":"","case":"override absent rejects"}
+{"func":"validate_url","url":"HTTPS://WELCOME-API.nousresearch.com/","override":"","case":"scheme and host case folded"}
+{"func":"portal_host","url":"https://portal.nousresearch.com/x","case":"explicit portal"}
+{"func":"portal_host","url":null,"case":"default portal"}
+{"func":"portal_host","url":"","case":"empty default portal"}
+{"func":"portal_host","url":"not a url","case":"no hostname falls back"}

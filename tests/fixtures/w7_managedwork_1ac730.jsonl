@@ -1,0 +1,32 @@
+{"func":"scalar","value":null,"case":"null"}
+{"func":"scalar","value":123,"case":"int"}
+{"func":"scalar","value":-4,"case":"negative int"}
+{"func":"scalar","value":3.5,"case":"float"}
+{"func":"scalar","value":true,"case":"bool"}
+{"func":"scalar","value":"ok","case":"short string"}
+{"func":"scalar","value":[1,2],"case":"list rejected"}
+{"func":"scalar","value":{"a":1},"case":"dict rejected"}
+{"func":"structured","key":"billing_block","value":{"provider":"x","unverified":true},"case":"valid billing"}
+{"func":"structured","key":"billing_block","value":{"provider":"x","bogus":1},"case":"bad key"}
+{"func":"structured","key":"free_tier","value":{"kind":"free"},"case":"valid free tier"}
+{"func":"structured","key":"free_tier","value":"notadict","case":"not dict"}
+{"func":"result_frame","result":{"final_response":"hello","failed":false,"unknown":"drop","billing_block":{"provider":"p","billing_url":"u","junk":9}},"case":"frame projection"}
+{"func":"result_frame","result":{"model":"gpt","prompt_tokens":12,"free_tier":{"kind":"free","message":"m","bad":1}},"case":"frame structured filter"}
+{"func":"accept_result","result":{"final_response":"ok","prompt_tokens":10,"completion_tokens":5,"_turn_input_tokens":8,"_turn_output_tokens":4},"case":"valid with turn tokens"}
+{"func":"accept_result","result":{"final_response":"ok","prompt_tokens":10,"completion_tokens":5},"case":"valid no turn tokens"}
+{"func":"accept_result","result":{"final_response":"","prompt_tokens":null,"completion_tokens":null},"case":"no usage"}
+{"func":"accept_result","result":{"failed":true},"case":"missing final_response"}
+{"func":"accept_result","result":{"final_response":"x","bogus":1},"case":"unknown key rejected"}
+{"func":"accept_result","result":{"final_response":"x","billing_block":{"provider":"p","bogus":1}},"case":"bad structured rejected"}
+{"func":"activity_interval","wedge_timeout":0,"case":"zero means off"}
+{"func":"activity_interval","wedge_timeout":200,"case":"clamp to 30"}
+{"func":"activity_interval","wedge_timeout":10,"case":"quarter timeout"}
+{"func":"activity_interval","wedge_timeout":0.02,"case":"floor 0.05"}
+{"func":"outbox_dir","home":"homebase","execution_id":"admission-worker:abc123","case":"relative home"}
+{"func":"outbox_dir","home":"C:/Users/eman5/home","execution_id":"admission-worker:abc123","case":"windows home"}
+{"func":"outbox_dir","home":"homebase","execution_id":"bad/id","case":"invalid id"}
+{"func":"outbox_dir","home":"homebase","execution_id":"","case":"empty id"}
+{"func":"activity_frame_interval","request_json":"{\"activity_frames_v1\":{\"interval\":2.5}}","case":"valid interval"}
+{"func":"activity_frame_interval","request_json":"{}","case":"no request"}
+{"func":"activity_frame_interval","request_json":null,"case":"null request"}
+{"func":"activity_frame_interval","request_json":"{\"activity_frames_v1\":{\"interval\":-1}}","case":"negative ignored"}

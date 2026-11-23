@@ -1,0 +1,19 @@
+{"func":"route_visit","case":"integer visit","visit":3}
+{"func":"route_visit","case":"zero visit","visit":0}
+{"func":"route_visit","case":"string visit","visit":"7"}
+{"func":"route_visit","case":"float visit","visit":5.5}
+{"func":"route_visit","case":"null visit","visit":null}
+{"func":"route_visit","case":"bool visit","visit":true}
+{"func":"snapshot","case":"three fields present","agent":{"_reasoning_disable_rejected":true,"_reasoning_floor_required":false,"_disable_streaming":true,"base_url":"https://api.openai.com/v1"}}
+{"func":"snapshot","case":"no verdict fields","agent":{"base_url":"x","_route_visit":2}}
+{"func":"snapshot","case":"empty agent","agent":{}}
+{"func":"apply","case":"override and add","agent":{"_reasoning_disable_rejected":true,"_route_visit":2},"values":{"_reasoning_disable_rejected":false,"_stream_options_unsupported":true}}
+{"func":"apply","case":"empty values","agent":{"_disable_streaming":true},"values":{}}
+{"func":"apply","case":"all verdicts","agent":{},"values":{"_reasoning_floor_required":true,"_reasoning_effort_rejected":false,"_codex_reasoning_replay_enabled":true}}
+{"func":"reset","case":"bump visit and restore streaming","agent":{"_route_visit":3,"_reasoning_disable_rejected":true,"_stream_options_unsupported":true,"_disable_streaming":true,"_disable_streaming_seed":false},"streaming_seed":false}
+{"func":"reset","case":"streaming seed true","agent":{"_route_visit":0,"_reasoning_effort_rejected":true,"_disable_streaming":false},"streaming_seed":true}
+{"func":"reset","case":"no streaming field","agent":{"_route_visit":7,"_reasoning_floor_required":true},"streaming_seed":true}
+{"func":"reset","case":"non int visit","agent":{"_route_visit":"x","_reasoning_disable_rejected":true},"streaming_seed":false}
+{"func":"restore_primary","case":"matching endpoint applies","endpoint":"https://api.openai.com/v1","rt":{"route_verdicts":{"base_url":"https://api.openai.com/v1","values":{"_reasoning_disable_rejected":true,"_disable_streaming":true}}},"agent":{"base_url":"https://api.openai.com/v1"}}
+{"func":"restore_primary","case":"moved endpoint skips","endpoint":"https://other.example/v1","rt":{"route_verdicts":{"base_url":"https://api.openai.com/v1","values":{"_reasoning_disable_rejected":true}}},"agent":{"base_url":"https://other.example/v1"}}
+{"func":"restore_primary","case":"no saved verdicts","endpoint":"cli","rt":{},"agent":{"base_url":"cli"}}

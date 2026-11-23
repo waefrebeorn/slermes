@@ -1,0 +1,22 @@
+{"func":"persistence_key","cause":"corrupt","case":"known cause"}
+{"func":"persistence_key","cause":"disk","case":"known cause disk"}
+{"func":"persistence_key","cause":"mystery","case":"unknown cause"}
+{"func":"persistence_key","cause":null,"case":"null cause -> default"}
+{"func":"format_explanation","reason":"","case":"empty reason"}
+{"func":"format_explanation","reason":"text_response","case":"healthy terminal"}
+{"func":"format_explanation","reason":"text_response_partial","case":"text_response prefix also suppressed"}
+{"func":"format_explanation","reason":"budget_exhausted","model":"gpt-x","case":"exact reason key"}
+{"func":"format_explanation","reason":"pending_tool_result","case":"another exact key"}
+{"func":"format_explanation","reason":"max_iterations_reached(3/3)","case":"prefix reason key"}
+{"func":"format_explanation","reason":"interrupted_during_api_call(host)","case":"prefix reason with issuer"}
+{"func":"format_explanation","reason":"session_persistence_failed","persistence_cause":"corrupt","case":"persistence branch known cause"}
+{"func":"format_explanation","reason":"session_persistence_failed","persistence_cause":"odd","case":"persistence branch unknown cause"}
+{"func":"format_explanation","reason":"totally_unknown_reason","case":"unknown reason -> empty"}
+{"func":"neutralize","text":"/repo/notes.md","case":"bare absolute path backticked"}
+{"func":"neutralize","text":"`/repo/notes.md`","case":"already backticked path left alone"}
+{"func":"neutralize","text":"no path here","case":"plain text unchanged"}
+{"func":"neutralize","text":"C:\\Users\\me\\report.pdf","case":"windows drive path"}
+{"func":"neutralize","text":"~/config.yaml","case":"home-relative path"}
+{"func":"neutralize","text":"see ./rel.py here","case":"dot-path not matched after dot lookbehind"}
+{"func":"neutralize","text":"a /one.py and /two.txt","case":"two paths in one line"}
+{"func":"neutralize","text":"https://example.com/x.py","case":"url-ish path after colon not matched"}

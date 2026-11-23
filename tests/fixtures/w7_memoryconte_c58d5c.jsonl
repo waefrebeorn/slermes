@@ -1,0 +1,21 @@
+{"func":"fence","value":"","case":"empty"}
+{"func":"fence","value":"plain text","case":"plain"}
+{"func":"fence","value":"hello <memory-context>secret</memory-context> world","case":"inline unchanged"}
+{"func":"fence","value":"line1\n<memory-context>\nSecret\n</memory-context>\nafter","case":"block span dropped"}
+{"func":"fence","value":"pre <MEMORY-CONTEXT>hidden</MEMORY-CONTEXT> post","case":"inline casefold unchanged"}
+{"func":"fence","value":"<memory-context>abc","case":"unterminated open"}
+{"func":"fence","value":"  padded <memory-context>\nX\n</memory-context>  ","case":"strip after change"}
+{"func":"dedupe","value":"- prefers draft PRs\n- prefers draft PRs\n- other thing\n\n# Head\n- prefers draft PRs\n- likes x\n  (logged 12 Jan)\n- likes x","case":"sectioned dedupe"}
+{"func":"dedupe","value":"1. one\n1. one","case":"numbered not bullet"}
+{"func":"dedupe","value":"","case":"empty"}
+{"func":"dedupe","value":"* alpha\n+ beta\n* alpha","case":"mixed markers"}
+{"func":"stream","chunks":["plain"," text"],"case":"no tags"}
+{"func":"stream","chunks":["x\n<memory-con","text>\nSECRET\n</memory-context>\ny"],"case":"split open tag"}
+{"func":"stream","chunks":["pre <memory-context>"],"case":"held partial flushed"}
+{"func":"stream","chunks":["hello\n<memory-context>\nsecret"],"case":"unterminated span"}
+{"func":"stream","chunks":["a<memory-context>b","</memory-context>c"],"case":"inline no drop"}
+{"func":"block","value":"alpha\nbeta","case":"plain block"}
+{"func":"block","value":"","case":"empty block"}
+{"func":"block","value":"   ","case":"whitespace block"}
+{"func":"block","value":"<memory-context>\nold\n</memory-context>\nnew fact","case":"prewrapped stripped"}
+{"func":"block","value":"- same\n- same\n# H\n- same","case":"deduped block"}

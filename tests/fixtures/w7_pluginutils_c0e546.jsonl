@@ -1,0 +1,11 @@
+{"func":"all","case":"public exports"}
+{"func":"singleton_slot_ops","ops":["get"],"factory_values":[10],"case":"single get builds once"}
+{"func":"singleton_slot_ops","ops":["get","get","peek"],"factory_values":[10,20],"case":"first config wins"}
+{"func":"singleton_slot_ops","ops":["peek","get"],"factory_values":[10],"case":"peek before get does not build"}
+{"func":"singleton_slot_ops","ops":["get","reset","peek","get"],"factory_values":[10,20],"case":"reset then rebuild"}
+{"func":"singleton_slot_ops","ops":["reset","reset","peek"],"factory_values":[],"case":"repeated reset on unset slot"}
+{"func":"singleton_slot_ops","ops":["get","peek","reset","peek","get","get"],"factory_values":[1,2,3],"case":"factory counter persists across reset"}
+{"func":"singleton_slot_ops","ops":["get","peek"],"factory_values":[null],"case":"None is still cached"}
+{"func":"singleton_slot_ops","ops":["get","peek"],"factory_values":["hello"],"case":"string instance"}
+{"func":"singleton_slot_ops","ops":["get","peek"],"factory_values":[{"a":1}],"case":"object instance"}
+{"func":"singleton_slot_ops","ops":["peek","reset"],"factory_values":[true],"case":"unset peek and reset"}

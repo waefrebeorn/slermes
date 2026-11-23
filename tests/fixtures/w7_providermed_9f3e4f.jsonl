@@ -1,0 +1,17 @@
+{"func":"subdir","case":"constant"}
+{"func":"max_age","case":"constant"}
+{"func":"max_redirects","case":"constant"}
+{"func":"redirect","code":301,"case":"301"}
+{"func":"redirect","code":302,"case":"302"}
+{"func":"redirect","code":303,"case":"303"}
+{"func":"redirect","code":307,"case":"307"}
+{"func":"redirect","code":308,"case":"308"}
+{"func":"redirect","code":300,"case":"300 no"}
+{"func":"redirect","code":200,"case":"200 no"}
+{"func":"redirect","code":304,"case":"304 no"}
+{"func":"redirect","code":0,"case":"zero"}
+{"func":"cache_path","home":"HOMEROOT","kind":"generated","prefix":"img","ts":"20260102_030405","short":"ab12cd34","extension":"png","case":"generated png"}
+{"func":"cache_path","home":"HOMEROOT","kind":"thumbs","prefix":"avatar","ts":"20260102_030405","short":"ab12cd34","extension":"jpg","case":"thumbs jpg"}
+{"func":"cache_path","home":"C:/Users/eman5/home","kind":"generated","prefix":"vid","ts":"19991231_235959","short":"001122ff","extension":"mp4","case":"abs home video"}
+{"func":"cache_path","home":"HOMEROOT/","kind":"generated","prefix":"clip","ts":"20200101_000000","short":"deadbeef","extension":"webp","case":"trailing slash home"}
+{"func":"cache_path","home":"HOMEROOT","kind":"generated","prefix":"a-b_c","ts":"20230607_081522","short":"c0ffee00","extension":"gif","case":"prefix chars"}

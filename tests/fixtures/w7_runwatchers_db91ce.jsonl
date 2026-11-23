@@ -1,0 +1,19 @@
+{"func":"sleep_ticks","seconds":5,"running_ticks":5,"case":"full duration"}
+{"func":"sleep_ticks","seconds":5,"running_ticks":2,"case":"stops early"}
+{"func":"sleep_ticks","seconds":0,"running_ticks":3,"case":"zero seconds"}
+{"func":"sleep_ticks","seconds":4,"running_ticks":0,"case":"already stopped"}
+{"func":"sleep_ticks","seconds":3,"running_ticks":1,"case":"one tick"}
+{"func":"prune_due","now":10000,"last_ts":0,"case":"well past hour"}
+{"func":"prune_due","now":3600,"last_ts":0,"case":"exact boundary is false"}
+{"func":"prune_due","now":3600.5,"last_ts":0,"case":"just past boundary"}
+{"func":"prune_due","now":100,"last_ts":200,"case":"negative delta"}
+{"func":"stall_timeout","env":null,"case":"unset uses default"}
+{"func":"stall_timeout","env":"","case":"empty uses default"}
+{"func":"stall_timeout","env":"120","case":"valid integer string"}
+{"func":"stall_timeout","env":"45.5","case":"valid float string"}
+{"func":"stall_timeout","env":"garbage","case":"malformed uses default"}
+{"func":"stall_timeout","env":" 90 ","case":"padded valid"}
+{"func":"stall_timeout","env":"0","case":"zero disables watchdog"}
+{"func":"drain_releases","release_keys":[],"case":"nothing pending"}
+{"func":"drain_releases","release_keys":["a"],"case":"one release"}
+{"func":"drain_releases","release_keys":["a","b","c"],"case":"insertion order preserved"}

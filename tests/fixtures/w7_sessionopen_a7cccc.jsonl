@@ -1,0 +1,13 @@
+{"func":"reason","session_id":"sid","receipt_ok":true,"receipt_target":"real","row_exists":true,"message_count":"5","case":"messages present -> resume"}
+{"func":"reason","session_id":"sid","receipt_ok":true,"receipt_target":"real","row_exists":true,"message_count":"0","case":"zero messages -> create"}
+{"func":"reason","session_id":"sid","receipt_ok":false,"row_exists":true,"message_count":"3","case":"no receipt -> logical row"}
+{"func":"reason","session_id":"sid","receipt_ok":true,"receipt_target":"real","row_exists":false,"message_count":"0","case":"no row -> create"}
+{"func":"reason","session_id":"sid","receipt_ok":true,"receipt_target":"real","row_exists":true,"message_count":"-2","case":"negative count is truthy"}
+{"func":"gate_fire","policy_present":true,"ignore_user_config":false,"case":"normal policy opens"}
+{"func":"gate_fire","policy_present":true,"ignore_user_config":true,"case":"bypass policy does not open"}
+{"func":"gate_fire","policy_present":false,"ignore_user_config":false,"case":"no policy does not open"}
+{"func":"gate_fire","policy_present":false,"ignore_user_config":true,"case":"no policy and bypass"}
+{"func":"settled_extra","callback_timeout":0,"case":"no callback timeout"}
+{"func":"settled_extra","callback_timeout":5,"case":"at unbounded wait"}
+{"func":"settled_extra","callback_timeout":10,"case":"extra five seconds"}
+{"func":"settled_extra","callback_timeout":5.5,"case":"fractional extra"}

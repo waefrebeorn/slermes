@@ -1,0 +1,13 @@
+{"func":"skill_review_due","case":"due with tool","iters":"7","interval":"5","valid_tool_names":["skill_manage"],"skill_interval":"5"}
+{"func":"skill_review_due","case":"due no tool","iters":"7","interval":"5","valid_tool_names":[],"skill_interval":"5"}
+{"func":"skill_review_due","case":"below interval","iters":"2","interval":"5","valid_tool_names":["skill_manage"],"skill_interval":"5"}
+{"func":"skill_review_due","case":"zero interval disabled","iters":"9","interval":"0","valid_tool_names":["skill_manage"],"skill_interval":"0"}
+{"func":"skill_review_due","case":"negative interval","iters":"9","interval":"-2","valid_tool_names":["skill_manage"],"skill_interval":"-2"}
+{"func":"skill_review_due","case":"exact boundary","iters":"5","interval":"5","valid_tool_names":["skill_manage"],"skill_interval":"5"}
+{"func":"background_review_enabled","case":"configured","configured":true,"skip":false,"delegate_depth":"0"}
+{"func":"background_review_enabled","case":"disabled config","configured":false,"skip":false,"delegate_depth":"0"}
+{"func":"background_review_enabled","case":"skipped","configured":true,"skip":true,"delegate_depth":"0"}
+{"func":"background_review_enabled","case":"delegated child","configured":true,"skip":false,"delegate_depth":"2"}
+{"func":"build_review_signals","case":"all due","iters":"7","turns":"4","skill_interval":"5","memory_interval":"6","memory_review_due":true,"skill_review_due":true,"background_enabled":true}
+{"func":"build_review_signals","case":"none due","iters":"1","turns":"0","skill_interval":"5","memory_interval":"6","memory_review_due":false,"skill_review_due":false,"background_enabled":false}
+{"func":"build_review_signals","case":"large counters","iters":"1234567890123","turns":"42","skill_interval":"1000000","memory_interval":"3","memory_review_due":true,"skill_review_due":false,"background_enabled":true}

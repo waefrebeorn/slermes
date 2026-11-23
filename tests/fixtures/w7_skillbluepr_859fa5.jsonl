@@ -1,0 +1,9 @@
+{"func": "blueprint_to_job_spec", "skill_name": "daily-notes", "schedule": "0 9 * * *", "deliver": "origin", "prompt": null, "no_agent": false, "model": null, "provider": null, "enabled_toolsets": null, "name": null}
+{"func": "blueprint_to_job_spec", "skill_name": "digest", "schedule": "@daily", "deliver": "telegram", "prompt": "Summarize", "no_agent": true, "model": "gpt-5", "provider": "openai", "enabled_toolsets": ["web", "terminal"], "name": null}
+{"func": "blueprint_to_job_spec", "skill_name": "", "schedule": "@hourly", "deliver": "origin", "prompt": "x", "no_agent": false, "model": null, "provider": null, "enabled_toolsets": [], "name": null}
+{"func": "blueprint_to_job_spec", "skill_name": "weekly", "schedule": "0 0 * * 0", "deliver": "origin", "prompt": "", "no_agent": false, "model": "", "provider": "", "enabled_toolsets": null, "name": "custom"}
+{"func": "blueprint_to_job_spec", "skill_name": "a", "schedule": "s", "deliver": "", "prompt": null, "no_agent": true, "model": null, "provider": null, "enabled_toolsets": ["one"], "name": ""}
+{"func": "blueprint_to_job_spec", "skill_name": "blue", "schedule": "* * * * *", "deliver": "origin", "prompt": null, "no_agent": false, "model": "m", "provider": null, "enabled_toolsets": null, "name": null}
+{"func": "blueprint_to_job_spec", "skill_name": "⚙️ bot", "schedule": "0 12 * * 1-5", "deliver": "discord", "prompt": "Do it", "no_agent": false, "model": null, "provider": "p", "enabled_toolsets": ["a", "b", "c"], "name": null}
+{"func": "blueprint_to_job_spec", "skill_name": "noname", "schedule": "sched", "deliver": "origin", "prompt": null, "no_agent": false, "model": null, "provider": null, "enabled_toolsets": null, "name": "overridden"}
+{"func": "blueprint_to_job_spec", "skill_name": "none-tools", "schedule": "@weekly", "deliver": "origin", "prompt": "p", "no_agent": true, "model": "m", "provider": "pr", "enabled_toolsets": [], "name": null}

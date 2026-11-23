@@ -1,0 +1,15 @@
+{"func":"split_runtime_boundary","case":"legacy prompt","prompt":"Identity stuff\n\nPlatform: desktop\n\nSome trailing prose"}
+{"func":"split_runtime_boundary","case":"modern prompt","prompt":"id block\n\nPlatform: desktop\n\n# Hermes runtime environment\n\nUser home directory: /home/u\nCurrent working directory: /work\n\nExtra\n<!-- End Hermes runtime environment -->"}
+{"func":"split_runtime_boundary","case":"end marker no separator","prompt":"No separator but ends\n<!-- End Hermes runtime environment -->"}
+{"func":"split_runtime_boundary","case":"empty prompt","prompt":""}
+{"func":"split_runtime_boundary","case":"runtime only","prompt":"\n\n# Hermes runtime environment\n\nUser home directory: ~\n<!-- End Hermes runtime environment -->"}
+{"func":"runtime_host_value","case":"modern cwd","prompt":"id block\n\nPlatform: desktop\n\n# Hermes runtime environment\n\nUser home directory: /home/u\nCurrent working directory: /work\n\nExtra\n<!-- End Hermes runtime environment -->","label":"Current working directory"}
+{"func":"runtime_host_value","case":"padded value","prompt":"x\n\n# Hermes runtime environment\n\nUser home directory: /home/u\nCurrent working directory:   /work  \n<!-- End Hermes runtime environment -->","label":"Current working directory"}
+{"func":"runtime_host_value","case":"missing label","prompt":"id block\n\nPlatform: desktop\n\n# Hermes runtime environment\n\nUser home directory: /home/u\nCurrent working directory: /work\n<!-- End Hermes runtime environment -->","label":"Nope"}
+{"func":"runtime_host_value","case":"legacy prompt no host","prompt":"Identity stuff\n\nPlatform: desktop\n\nSome trailing prose","label":"Current working directory"}
+{"func":"runtime_host_value","case":"marker at third line","prompt":"x\n\n# Hermes runtime environment\n\nUser home directory: ~\nA: 1\nB: 2\nCurrent working directory: /a\n<!-- End Hermes runtime environment -->","label":"Current working directory"}
+{"func":"identity_line_value","case":"modern platform","prompt":"id block\n\nPlatform: desktop\n\n# Hermes runtime environment\n\nUser home directory: /home/u\nCurrent working directory: /work\n<!-- End Hermes runtime environment -->","label":"Platform"}
+{"func":"identity_line_value","case":"legacy last paragraph wins","prompt":"intro\n\nPlatform: tui\n\nPlatform: desktop","label":"Platform"}
+{"func":"identity_line_value","case":"missing label","prompt":"intro\n\nPlatform: desktop","label":"Nope"}
+{"func":"identity_line_value","case":"empty prompt","prompt":"","label":"Platform"}
+{"func":"identity_line_value","case":"runtime only head empty","prompt":"\n\n# Hermes runtime environment\n\nUser home directory: ~\n<!-- End Hermes runtime environment -->","label":"Platform"}

@@ -1,0 +1,17 @@
+{"func":"prepare_tools","case":"p01_string","names":"tool-a"}
+{"func":"prepare_tools","case":"p02_state","names":["tool-a"],"state_present":true}
+{"func":"prepare_tools","case":"p03_ok","names":["tool-a"]}
+{"func":"prepare_tools","case":"p04_empty","names":[]}
+{"func":"verified_tools","case":"v01_string","names":"tool-a"}
+{"func":"verified_tools","case":"v02_state","names":["tool-a"],"state_present":true,"facts_present":true}
+{"func":"verified_tools","case":"v03_nofacts","names":["tool-a"],"facts_present":false}
+{"func":"stage_tools","case":"s01_string","names":"tool-a"}
+{"func":"stage_tools","case":"s02_overlap","names":["tool-a"],"overlap":true,"facts_present":true}
+{"func":"stage_tools","case":"s03_nofacts","names":["tool-a"],"facts_present":false}
+{"func":"stage_tools","case":"s04_state","names":["tool-a"],"state_present":true,"facts_present":true}
+{"func":"check_project_lock","case":"k01_denied","manifest_present":true,"offline":false,"explicit":false}
+{"func":"check_project_lock","case":"k02_offline","manifest_present":true,"offline":true,"explicit":false}
+{"func":"check_project_lock","case":"k03_explicit","manifest_present":true,"offline":false,"explicit":true}
+{"func":"check_project_lock","case":"k04_nomanifest","manifest_present":false,"offline":true,"explicit":false}
+{"func":"build_env","case":"b01_denied","explicit":false}
+{"func":"build_env","case":"b02_ok","explicit":true}

@@ -1,0 +1,10 @@
+{"func":"send_restart_ack","adapter_none":true,"platform_local":false,"result_success":true}
+{"func":"send_restart_ack","adapter_none":false,"platform_local":true,"result_success":true,"pad":7}
+{"func":"send_restart_ack","adapter_none":false,"platform_local":false,"result_success":true}
+{"func":"send_restart_ack","adapter_none":false,"platform_local":false,"send_raises":true,"result_success":true}
+{"func":"send_restart_ack","adapter_none":false,"platform_local":false,"result_success":false,"error_timeout":true}
+{"func":"send_restart_ack","adapter_none":false,"platform_local":false,"result_success":false,"result_retryable":true,"error_timeout":true}
+{"func":"send_restart_ack","adapter_none":false,"platform_local":false,"result_success":false,"error_retryable":true,"error_timeout":true}
+{"func":"send_restart_ack","adapter_none":false,"platform_local":false,"result_success":true,"error_retryable":true}
+{"func":"send_restart_ack","adapter_none":false,"platform_local":false,"result_success":false}
+{"func":"send_restart_ack","adapter_none":false,"platform_local":false,"result_success":true,"error_timeout":true,"tag":"t"}

@@ -1,0 +1,23 @@
+{"func": "with_choices", "case": "no enum", "key": "path", "properties": {"path": {"type": "string"}}}
+{"func": "with_choices", "case": "empty enum", "key": "path", "properties": {"path": {"enum": []}}}
+{"func": "with_choices", "case": "string enum", "key": "mode", "properties": {"mode": {"enum": ["fast", "slow", "auto"]}}}
+{"func": "with_choices", "case": "numeric enum", "key": "n", "properties": {"n": {"enum": [1, 2, 3]}}}
+{"func": "with_choices", "case": "bool enum", "key": "b", "properties": {"b": {"enum": [true, false]}}}
+{"func": "with_choices", "case": "missing key", "key": "nope", "properties": {"path": {"enum": ["a"]}}}
+{"func": "with_choices", "case": "spec not dict", "key": "x", "properties": {"x": "string"}}
+{"func": "missing_unknown", "case": "all present", "params": {"properties": {"a": {}, "b": {}}, "required": ["a"]}, "args": {"a": 1}}
+{"func": "missing_unknown", "case": "missing required", "params": {"properties": {"a": {}, "b": {}}, "required": ["a", "b"]}, "args": {"a": 1}, "compat_args": [], "self_checked_args": []}
+{"func": "missing_unknown", "case": "unknown name", "params": {"properties": {"a": {}}}, "args": {"a": 1, "b": 2}, "compat_args": [], "self_checked_args": []}
+{"func": "missing_unknown", "case": "compat arg suppresses missing", "params": {"properties": {"a": {}}, "required": ["b"]}, "args": {"a": 1, "b": 2}, "compat_args": ["b"], "self_checked_args": []}
+{"func": "missing_unknown", "case": "self checked required", "params": {"properties": {"a": {}}, "required": ["b"]}, "args": {"a": 1}, "compat_args": [], "self_checked_args": ["b"]}
+{"func": "missing_unknown", "case": "no required key", "params": {"properties": {"a": {}}}, "args": {}, "compat_args": [], "self_checked_args": []}
+{"func": "missing_unknown", "case": "both missing and unknown", "params": {"properties": {"a": {}}, "required": ["z"]}, "args": {"q": 1}, "compat_args": [], "self_checked_args": []}
+{"func": "flag_unknown_args", "case": "no unknown", "name": "tool", "result": "{\"ok\": true}", "unknown": [], "valid": "a"}
+{"func": "flag_unknown_args", "case": "new warning", "name": "tool", "result": "{\"ok\": true}", "unknown": ["b"], "valid": "a, b"}
+{"func": "flag_unknown_args", "case": "append to warning", "name": "tool", "result": "{\"ok\": true, \"_warning\": \"old\"}", "unknown": ["b"], "valid": "a, b"}
+{"func": "flag_unknown_args", "case": "repeat warning unchanged", "name": "tool", "result": "{\"ok\": true, \"_warning\": \"b: not a parameter of tool and was probably ignored. Valid parameters: a, b.\"}", "unknown": ["b"], "valid": "a, b"}
+{"func": "flag_unknown_args", "case": "non string warning", "name": "tool", "result": "{\"ok\": true, \"_warning\": 5}", "unknown": ["b"], "valid": "a"}
+{"func": "flag_unknown_args", "case": "result not json", "name": "tool", "result": "plain text", "unknown": ["b"], "valid": "a"}
+{"func": "flag_unknown_args", "case": "result json array", "name": "tool", "result": "[1, 2]", "unknown": ["b"], "valid": "a"}
+{"func": "flag_unknown_args", "case": "empty warning falsey", "name": "tool", "result": "{\"ok\": true, \"_warning\": \"\"}", "unknown": ["b"], "valid": "a"}
+{"func": "flag_unknown_args", "case": "multiple unknown", "name": "tool", "result": "{\"ok\": true}", "unknown": ["b", "c"], "valid": "a"}

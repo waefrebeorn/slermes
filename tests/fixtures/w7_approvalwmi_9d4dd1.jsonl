@@ -1,0 +1,21 @@
+{"func":"has_wmic","case":"upper","text":"WMIC shadowcopy delete"}
+{"func":"has_wmic","case":"path","text":"C:\\Windows\\System32\\wmic.exe shadowcopy delete"}
+{"func":"has_wmic","case":"none","text":"echo hello"}
+{"func":"has_wmic","case":"empty","text":""}
+{"func":"carrier_script","case":"cmd_c","name":"cmd","rest":" /c wmic shadowcopy delete"}
+{"func":"carrier_script","case":"pwsh_flags","name":"pwsh","rest":" -NoProfile -ExecutionPolicy Bypass -Command wmic shadowcopy delete"}
+{"func":"carrier_script","case":"start_title","name":"start","rest":" \"my title\" wmic shadowcopy delete"}
+{"func":"carrier_script","case":"ssh_host","name":"ssh","rest":" -i k -p 22 host wmic shadowcopy delete"}
+{"func":"carrier_script","case":"quoted_whole","name":"cmd","rest":"\"wmic shadowcopy delete\""}
+{"func":"carrier_script","case":"quoted_program","name":"cmd","rest":"\"wmic\" shadowcopy delete"}
+{"func":"carrier_script","case":"empty","name":"call","rest":""}
+{"func":"carrier_script","case":"wsl_dd","name":"wsl","rest":" -- wmic shadowcopy delete"}
+{"func":"carrier_script","case":"escaped","name":"cmd","rest":" /c echo \\\"hi\\\" & wmic shadowcopy delete"}
+{"func":"wmic_delete","case":"basic","segment":"wmic shadowcopy delete"}
+{"func":"wmic_delete","case":"mixed","segment":"wmic ShadowCopy DeLeTe"}
+{"func":"wmic_delete","case":"list","segment":"wmic shadowcopy list"}
+{"func":"wmic_delete","case":"starts","segment":"shadowcopy delete"}
+{"func":"wmic_delete","case":"wordbound","segment":"shadowcopyx delete"}
+{"func":"wmic_delete","case":"deleting","segment":"shadowcopy deleting"}
+{"func":"wmic_delete","case":"newline","segment":"SHADOWCOPY\nDELETE"}
+{"func":"wmic_delete","case":"empty","segment":""}

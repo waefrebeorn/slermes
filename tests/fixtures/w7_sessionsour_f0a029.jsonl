@@ -1,0 +1,22 @@
+{"func":"create_surface","case":"desktop maps to gui","source":"desktop"}
+{"func":"create_surface","case":"tui unchanged","source":"tui"}
+{"func":"create_surface","case":"cli unchanged","source":"cli"}
+{"func":"create_surface","case":"telegram unchanged","source":"telegram"}
+{"func":"session_source_for","case":"plain cli","platform":"cli","source":"","single_query":false,"explicit":false}
+{"func":"session_source_for","case":"whitespace ui goes oneshot","platform":"cli","source":"  tui  ","single_query":true,"explicit":false}
+{"func":"session_source_for","case":"explicit ui kept","platform":"cli","source":"tui","single_query":true,"explicit":true}
+{"func":"session_source_for","case":"desktop platform with ui source","platform":"desktop","source":"tui","single_query":true,"explicit":false}
+{"func":"session_source_for","case":"tui platform empty source","platform":"tui","source":"","single_query":true,"explicit":false}
+{"func":"session_source_for","case":"empty platform oneshot","platform":"","source":"","single_query":true,"explicit":false}
+{"func":"session_source_for","case":"telegram passthrough","platform":"telegram","source":"telegram","single_query":false,"explicit":false}
+{"func":"session_source_for","case":"acp source single query","platform":"cli","source":"acp","single_query":true,"explicit":false}
+{"func":"session_source_for","case":"cron source","platform":"cron","source":"","single_query":false,"explicit":false}
+{"func":"session_source_for","case":"stale desktop note","platform":"tui","source":"desktop","single_query":true,"explicit":false}
+{"func":"is_ui_transport","case":"tui","source":"tui"}
+{"func":"is_ui_transport","case":"cli no","source":"cli"}
+{"func":"is_cli_family","case":"oneshot","source":"oneshot"}
+{"func":"is_cli_family","case":"acp no","source":"acp"}
+{"func":"is_daybreak","case":"cli yes","source":"cli"}
+{"func":"is_daybreak","case":"acp no","source":"acp"}
+{"func":"is_attended","case":"acp yes","source":"acp"}
+{"func":"is_attended","case":"cron no","source":"cron"}

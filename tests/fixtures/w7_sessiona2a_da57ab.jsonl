@@ -1,0 +1,16 @@
+{"func":"is_forward_policy","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":[\"agent\",\"tenant\",\"peer-x\",\"ctx\"]}"}
+{"func":"is_forward_policy","source":"a2a","platform":"a2a","request_json":"{\"source\":\"cli\",\"a2a_identity\":[\"a\",\"t\",\"p\",\"c\"]}"}
+{"func":"is_forward_policy","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":\"nope\"}"}
+{"func":"is_forward_policy","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":[\"a\",\"t\",\"p\"]}"}
+{"func":"is_forward_policy","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":[\"a\",\"t\",7,\"c\"]}"}
+{"func":"is_forward_policy","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\"}"}
+{"func":"is_forward_policy","source":"a2a","platform":"a2a","request_json":"{\"a2a_identity\":[\"a\",\"t\",\"p\",\"c\"]}"}
+{"func":"is_forward_policy","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":[\"a\",\"t\",\"p\",\"c\",\"x\"]}"}
+{"func":"is_forward_policy","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":[\"\\u4e2d\",\"t\",\"p\\u00e9er\",\"c\"]}"}
+{"func":"is_forward_policy","source":"a2a","platform":"a2a","request_json":"{not json"}
+{"func":"is_forward_policy","source":"cli","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":[\"agent\",\"tenant\",\"peer-x\",\"ctx\"]}","tag":1}
+{"func":"is_forward_policy","source":"a2a","platform":"cli","request_json":"{\"source\":\"a2a\",\"a2a_identity\":[\"agent\",\"tenant\",\"peer-x\",\"ctx\"]}"}
+{"func":"forward_author","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":[\"agent\",\"tenant\",\"peer-x\",\"ctx\"]}"}
+{"func":"forward_author","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":[\"\\u4e2d\",\"t\",\"p\\u00e9er\",\"c\"]}","pad":null}
+{"func":"forward_author","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":\"nope\"}"}
+{"func":"forward_author","source":"a2a","platform":"a2a","request_json":"{\"source\":\"a2a\",\"a2a_identity\":[\"a\",\"t\",\"p\"]}"}

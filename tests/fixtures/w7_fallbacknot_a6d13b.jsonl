@@ -1,0 +1,18 @@
+{"case":"consts","func":"constants"}
+{"case":"rt_auth","func":"reason_text","reason":"auth"}
+{"case":"rt_unknown","func":"reason_text","reason":"unknown"}
+{"case":"rt_none","func":"reason_text","reason":null}
+{"case":"rt_unlisted","func":"reason_text","reason":"custom_weird_reason"}
+{"case":"tt_no_stash","func":"trigger_text","reason":"timeout"}
+{"case":"tt_match","func":"trigger_text","reason":"timeout","stashed":{"reason":"timeout","detail":"upstream timed out after 30s"}}
+{"case":"tt_mismatch","func":"trigger_text","reason":"timeout","stashed":{"reason":"auth","detail":"bad key"}}
+{"case":"tt_stash_null","func":"trigger_text","reason":"billing","stashed":{"reason":null,"detail":"quota"}}
+{"case":"tt_ws","func":"trigger_text","reason":"rate_limit","stashed":{"reason":"rate_limit","detail":"  too   many\trequests \n now  "}}
+{"case":"tt_empty_detail","func":"trigger_text","reason":"overloaded","stashed":{"reason":"overloaded","detail":"   "}}
+{"case":"tt_truncate","func":"trigger_text","reason":"server_error","stashed":{"reason":"server_error","detail":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"case":"tt_unicode","func":"trigger_text","reason":"timeout","stashed":{"reason":"timeout","detail":"café naïve 日本語"}}
+{"case":"nh_internal","func":"notice_hidden","display_kind":"internal_notification"}
+{"case":"nh_process","func":"notice_hidden","display_kind":"process_complete"}
+{"case":"nh_async","func":"notice_hidden","display_kind":"async_delegation_complete"}
+{"case":"nh_user","func":"notice_hidden","display_kind":"user_message"}
+{"case":"nh_null","func":"notice_hidden","display_kind":null}

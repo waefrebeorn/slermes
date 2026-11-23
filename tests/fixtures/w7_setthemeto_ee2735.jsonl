@@ -1,0 +1,20 @@
+{"case":"acc_valid_swatch","func":"accent_error","accent":"mono"}
+{"case":"acc_valid_theme","func":"accent_error","accent":"theme"}
+{"case":"acc_valid_hex","func":"accent_error","accent":"#A1b2C3"}
+{"case":"acc_bad","func":"accent_error","accent":"bogus"}
+{"case":"acc_empty","func":"accent_error","accent":""}
+{"case":"acc_quote","func":"accent_error","accent":"it's bad"}
+{"case":"acc_short_hex","func":"accent_error","accent":"#abc"}
+{"case":"st_no_callback","func":"set_theme","accent":"green","callback":false}
+{"case":"st_no_values","func":"set_theme","callback":true}
+{"case":"st_accent","func":"set_theme","accent":"cyan","callback":true}
+{"case":"st_mode","func":"set_theme","mode":"dark","callback":true}
+{"case":"st_mode_bad","func":"set_theme","mode":"dim","callback":true}
+{"case":"st_accent_bad","func":"set_theme","accent":"chartreuse","callback":true}
+{"case":"st_layout","func":"set_theme","layout":"terminal-deck","callback":true}
+{"case":"st_picker_ok","func":"set_theme","picker":"accent","callback":true}
+{"case":"st_picker_bad","func":"set_theme","picker":"colour","callback":true}
+{"case":"st_picker_with_values","func":"set_theme","picker":"layout","accent":"red","callback":true}
+{"case":"st_trim","func":"set_theme","accent":"  violet\t","callback":true}
+{"case":"st_all","func":"set_theme","accent":"theme","mode":"light","layout":"quad","callback":true}
+{"case":"st_non_str_mode","func":"set_theme","mode":42,"callback":true}

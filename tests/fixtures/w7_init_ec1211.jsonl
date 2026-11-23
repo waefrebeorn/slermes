@@ -1,0 +1,12 @@
+{"case":"pn_seed_1","func":"public_names","seed":1}
+{"case":"pn_seed_null","func":"public_names","seed":null}
+{"case":"pn_seed_text","func":"public_names","seed":"abc"}
+{"case":"pn_seed_obj","func":"public_names","seed":{"x":1}}
+{"case":"pn_seed_arr","func":"public_names","seed":[1,2,3]}
+{"case":"ha_run","func":"has_attr","name":"run"}
+{"case":"ha_main","func":"has_attr","name":"main"}
+{"case":"ha_empty","func":"has_attr","name":""}
+{"case":"ha_unicode","func":"has_attr","name":"démarrer"}
+{"case":"ha_space","func":"has_attr","name":" "}
+{"case":"md","func":"module_doc"}
+{"case":"md_seed","func":"module_doc","seed":7}

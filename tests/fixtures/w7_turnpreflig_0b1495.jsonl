@@ -1,0 +1,16 @@
+{"func":"run_preflight","case":"ineligible one message","msg_count":1,"compression_enabled":true,"should_compress":true}
+{"func":"run_preflight","case":"compression disabled guard","compression_enabled":false,"msg_count":3,"should_compress":false}
+{"func":"run_preflight","case":"eligible but should_compress false","msg_count":3,"should_compress":false}
+{"func":"run_preflight","case":"grown window refund","msg_count":3,"should_compress":true,"grown_window":8192,"api_call_count":4}
+{"func":"run_preflight","case":"compress success","msg_count":3,"should_compress":true,"api_call_count":4,"compression_attempts":1}
+{"func":"run_preflight","case":"compress timeout","msg_count":3,"should_compress":true,"timed_out":true,"api_call_count":2}
+{"func":"run_preflight","case":"lock skip defer","msg_count":3,"should_compress":true,"compress_noop":true,"lock_skipped":true,"compression_attempts":0}
+{"func":"run_preflight","case":"transient block defer","msg_count":3,"should_compress":true,"compress_noop":true,"blocked_transient":true,"compression_attempts":2}
+{"func":"run_preflight","case":"handoff skip break","msg_count":3,"should_compress":true,"handoff":true,"api_call_count":2}
+{"func":"run_preflight","case":"handoff keeps preset final","msg_count":3,"should_compress":true,"handoff":true,"final_response":"PRESENT"}
+{"func":"run_preflight","case":"overflow with cooldown deferred","provider_overflow_preflight":true,"cooldown":true,"msg_count":1,"api_call_count":2}
+{"func":"run_preflight","case":"overflow exhausted attempts","provider_overflow_preflight":true,"compression_attempts":3,"max_compression_attempts":3,"should_compress":false,"msg_count":3}
+{"func":"run_preflight","case":"overflow fail closed uncompressible","provider_overflow_preflight":true,"msg_count":1,"should_compress":false}
+{"func":"run_preflight","case":"review fork blocks overflow preflight","provider_overflow_preflight":true,"review_fork_pending":true,"should_compress":true,"msg_count":3}
+{"func":"run_preflight","case":"preflight blocked overridden by overflow","provider_overflow_preflight":true,"preflight_compression_blocked":true,"should_compress":true,"msg_count":3,"grown_window":4096}
+{"func":"run_preflight","case":"cooldown warning path no overflow","msg_count":3,"should_compress":false,"cooldown":true,"compression_enabled":true,"defer":false}

@@ -1,0 +1,20 @@
+{"case":"kn_bare","func":"key_name","key":"github"}
+{"case":"kn_tuple","func":"key_name","key":["alpha","github"]}
+{"case":"kn_empty","func":"key_name","key":""}
+{"case":"kn_unicode","func":"key_name","key":[" équipe ","sérveur"]}
+{"case":"ks_bare","func":"key_scope","key":"github"}
+{"case":"ks_tuple","func":"key_scope","key":["alpha","github"]}
+{"case":"vis_none","func":"key_visible","key":["alpha","github"],"scope":null,"adopted":[]}
+{"case":"vis_owner","func":"key_visible","key":["alpha","github"],"scope":"alpha","adopted":[]}
+{"case":"vis_adopted","func":"key_visible","key":["alpha","github"],"scope":"beta","adopted":["gamma","beta"]}
+{"case":"vis_miss","func":"key_visible","key":["alpha","github"],"scope":"beta","adopted":["gamma"]}
+{"case":"sk_default_none","func":"server_key","name":"github","scope":null,"current":true,"current_scope":null}
+{"case":"sk_default_scope","func":"server_key","name":"github","scope":null,"current":true,"current_scope":"launch"}
+{"case":"sk_not_current","func":"server_key","name":"github","scope":null,"current":false,"current_scope":"launch"}
+{"case":"sk_explicit","func":"server_key","name":"github","scope":"beta","current":true,"current_scope":"launch"}
+{"case":"res_none_scope","func":"resolve","name":"github","scope":null,"current":true,"current_scope":"launch","servers":[],"lazy":[],"shared":[]}
+{"case":"res_own_live","func":"resolve","name":"github","scope":"alpha","current":false,"servers":[["alpha","github"]],"lazy":[],"shared":[]}
+{"case":"res_own_lazy","func":"resolve","name":"github","scope":"alpha","current":false,"servers":[],"lazy":[["alpha","github"]],"shared":[]}
+{"case":"res_shared","func":"resolve","name":"github","scope":"beta","current":false,"servers":[["alpha","github"]],"lazy":[],"shared":[{"key":["alpha","github"],"scopes":["beta"]}]}
+{"case":"res_shared_not_live","func":"resolve","name":"github","scope":"beta","current":false,"servers":[],"lazy":[],"shared":[{"key":["alpha","github"],"scopes":["beta"]}]}
+{"case":"res_bare_shared","func":"resolve","name":"github","scope":"beta","current":false,"servers":["github"],"lazy":[],"shared":[]}

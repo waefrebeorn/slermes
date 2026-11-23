@@ -1,0 +1,17 @@
+{"func":"provider_label","key":"edge","case":"edge short label"}
+{"func":"provider_label","key":"elevenlabs","case":"elevenlabs short label"}
+{"func":"provider_label","key":"openai","case":"openai short label"}
+{"func":"provider_label","key":"xai","case":"xai short label"}
+{"func":"provider_label","key":"mistral","case":"parenthetical stripped"}
+{"func":"provider_label","key":"neutts","case":"neutts"}
+{"func":"provider_label","key":"kittentts","case":"kittentts"}
+{"func":"provider_label","key":"bogus","case":"missing key -> null"}
+{"func":"all_labels","case":"full label map"}
+{"func":"tts_api_key_step","selected":"elevenlabs","env":{},"prompt_value":"","case":"no env no prompt -> edge"}
+{"func":"tts_api_key_step","selected":"elevenlabs","env":{"ELEVENLABS_API_KEY":"k"},"prompt_value":"","case":"env present"}
+{"func":"tts_api_key_step","selected":"elevenlabs","env":{},"prompt_value":"typed-key","case":"typed key"}
+{"func":"tts_api_key_step","selected":"openai","env":{"OPENAI_API_KEY":"x"},"prompt_value":"","case":"openai alt env"}
+{"func":"tts_api_key_step","selected":"openai","env":{"VOICE_TOOLS_OPENAI_KEY":"x"},"prompt_value":"","case":"openai primary env"}
+{"func":"tts_api_key_step","selected":"gemini","env":{},"prompt_value":"","case":"gemini no key -> edge"}
+{"func":"tts_api_key_step","selected":"mistral","env":{"MISTRAL_API_KEY":"z"},"prompt_value":"","case":"mistral env"}
+{"func":"tts_api_key_step","selected":"minimax","env":{},"prompt_value":"abc","case":"minimax typed"}

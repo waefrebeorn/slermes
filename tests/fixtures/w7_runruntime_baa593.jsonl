@@ -1,0 +1,12 @@
+{"func":"profile_parked","descriptor":{"parked_profiles":{"a":"why"}},"name":"a"}
+{"func":"profile_parked","descriptor":{"parked_profiles":{"a":"why"}},"name":"z"}
+{"func":"profile_parked","descriptor":{"parked_profiles":{"a":"why"}},"name":""}
+{"func":"profile_parked","descriptor":null,"name":"a"}
+{"func":"profile_parked","descriptor":{},"name":"a","tag":"x"}
+{"func":"parked_profile_map","descriptor":{}}
+{"func":"parked_profile_map","descriptor":{"parked_profiles":{"x":"r"}},"pad":1}
+{"func":"park_profile","descriptor":{"parked_profiles":{"a":"why"}},"name":"b","reason":"reason1"}
+{"func":"park_profile","descriptor":{"parked_profiles":{"a":"why"}},"name":"a","reason":"new"}
+{"func":"park_profile","descriptor":{},"name":"k","reason":42}
+{"func":"unpark_profile","descriptor":{"parked_profiles":{"a":"why","b":"r"}},"name":"a"}
+{"func":"unpark_profile","descriptor":{"parked_profiles":{"a":"why"}},"name":"z"}

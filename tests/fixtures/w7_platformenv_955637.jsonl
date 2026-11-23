@@ -1,0 +1,28 @@
+{"func":"csv_list","value":" a, ,b , c,","case":"strip and drop empties"}
+{"func":"csv_list","value":"","case":"empty string"}
+{"func":"csv_list","value":"solo","case":"no comma"}
+{"func":"csv_list","value":"a\tb, \tc ,d","case":"tab whitespace stripped"}
+{"func":"csv_list","value":",,,","case":"all empty parts"}
+{"func":"strip_slash","value":"a/b///","case":"trailing slashes"}
+{"func":"strip_slash","value":"","case":"empty"}
+{"func":"strip_slash","value":"/a/b","case":"leading slash kept"}
+{"func":"strip_lower","value":"  HeLLo WoRLD  ","case":"strip then lower"}
+{"func":"strip_lower","value":"","case":"empty"}
+{"func":"truthy","value":"TRUE","case":"true upper"}
+{"func":"truthy","value":"yes","case":"yes"}
+{"func":"truthy","value":"ON","case":"on upper"}
+{"func":"truthy","value":"1","case":"one"}
+{"func":"truthy","value":"nope","case":"false"}
+{"func":"truthy","value":"","case":"empty false"}
+{"func":"int_or","value":" 42 ","default":"-1","case":"strip and parse"}
+{"func":"int_or","value":"abc","default":"7","case":"malformed default"}
+{"func":"int_or","value":"","default":"9","case":"blank default"}
+{"func":"int_or","value":"-13","default":"0","case":"negative"}
+{"func":"mention","value":"[\"a\",\"b\"]","case":"json array"}
+{"func":"mention","value":"{\"x\":1}","case":"json object"}
+{"func":"mention","value":"a\nb, c","case":"newline fallback csv"}
+{"func":"mention","value":"","case":"empty fallback"}
+{"func":"mention","value":"true","case":"json bool"}
+{"func":"env_first","names":"A","values":{"A":"first","B":""},"case":"single name"}
+{"func":"env_first","names":["X","B","C"],"values":{"B":"","C":"third"},"case":"tuple first truthy"}
+{"func":"env_first","names":["X","B"],"values":{"B":""},"case":"tuple all falsy"}

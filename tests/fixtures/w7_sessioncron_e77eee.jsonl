@@ -1,0 +1,17 @@
+{"func":"sched_exec","job_id":"j1","request_id":"cron:j1:abc","case":"matching prefix stripped"}
+{"func":"sched_exec","job_id":"j1","request_id":"other:abc","case":"no prefix unchanged"}
+{"func":"sched_exec","job_id":"j1","request_id":"cron:j1:","case":"empty execution id"}
+{"func":"sched_exec","job_id":"job-2","request_id":"cron:job-2:cron:x","case":"strips only first prefix"}
+{"func":"validate","params":{"job_id":"j","request_id":"r","extra_prompt":null},"case":"valid null extra"}
+{"func":"validate","params":{"job_id":"j","request_id":"r","extra_prompt":"go"},"case":"valid string extra"}
+{"func":"validate","params":{"job_id":"j","request_id":"r"},"case":"missing extra_prompt"}
+{"func":"validate","params":{"job_id":"j","request_id":"r","extra_prompt":null,"bogus":1},"case":"extra key rejected"}
+{"func":"validate","params":{"job_id":"","request_id":"r","extra_prompt":null},"case":"empty job id"}
+{"func":"validate","params":{"job_id":"j","request_id":"","extra_prompt":null},"case":"empty request id"}
+{"func":"validate","params":{"job_id":"j","request_id":"r","extra_prompt":5},"case":"numeric extra"}
+{"func":"validate","params":null,"case":"null params"}
+{"func":"no_owner","home":"/h","chat_id":"chat1","case":"no owner message"}
+{"func":"no_owner","home":"/h","chat_id":"","case":"empty chat id"}
+{"func":"run_flags","job":{},"case":"no flags"}
+{"func":"run_flags","job":{"_model_unreachable":true,"id":"j"},"case":"one flag"}
+{"func":"run_flags","job":{"_model_unreachable":true,"_quota_hold_seconds":30,"other":"x"},"case":"both flags"}

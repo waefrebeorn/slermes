@@ -1,0 +1,20 @@
+{"func":"is_failure","case":"f1_save","output":"ERR_PNPM_STRICT_MIN_RELEASE_AGE_REQUIRES_SAVE"}
+{"func":"is_failure","case":"f2_mature","output":"... ERR_PNPM_NO_MATURE_MATCHING_VERSION ..."}
+{"func":"is_failure","case":"f3_none","output":"ERR_PNPM_SOMETHING_ELSE"}
+{"func":"is_failure","case":"f4_empty","output":""}
+{"func":"kept","case":"k1_basic","entry":"foo@1.0.0 || 2.0.0","locked":{"foo":["1.0.0","2.0.0"]}}
+{"func":"kept","case":"k2_partial","entry":"foo@1.0.0 || 2.0.0 || 3.0.0","locked":{"foo":["2.0.0"]}}
+{"func":"kept","case":"k3_none_locked","entry":"bar@1.0.0","locked":{"foo":["1.0.0"]}}
+{"func":"kept","case":"k4_wildcard","entry":"foo*@1.0.0","locked":{}}
+{"func":"kept","case":"k5_noat","entry":"plain-package","locked":{}}
+{"func":"kept","case":"k6_spaces","entry":"  scoped@pkg@1.0.0 || 2.0.0  ","locked":{"scoped@pkg":["2.0.0","1.0.0"]}}
+{"func":"yaml_scalar","case":"y1_plain","value":"foo@1.2.3"}
+{"func":"yaml_scalar","case":"y2_scope","value":"@scope/pkg@1.0.0"}
+{"func":"yaml_scalar","case":"y3_colon","value":"foo: bar"}
+{"func":"yaml_scalar","case":"y4_comment","value":"foo #comment"}
+{"func":"yaml_scalar","case":"y5_bool","value":"true"}
+{"func":"yaml_scalar","case":"y6_num","value":"1.2"}
+{"func":"yaml_scalar","case":"y7_dash","value":"- dash"}
+{"func":"yaml_scalar","case":"y8_plainmid","value":"a*b-c.d"}
+{"func":"exclude_hint","case":"e1_empty","picks":[]}
+{"func":"exclude_hint","case":"e2_two","picks":["foo@1.0.0","@scope/pkg@2.0.0"]}

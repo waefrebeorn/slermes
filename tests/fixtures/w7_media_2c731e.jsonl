@@ -1,0 +1,15 @@
+{"func":"hosted","case":"h1_nonhosted","request_id":"cell:1","payload":{"text":"\n[Shared attachment] file: C:/retained/media/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/doc.pdf\n"},"media_root":"C:/retained/media"}
+{"func":"hosted","case":"h2_nomarker","request_id":"hosted:room1","payload":{"text":"just plain text"},"media_root":"C:/retained/media"}
+{"func":"hosted","case":"h3_valid","request_id":"hosted:room1","payload":{"text":"before\n[Shared attachment] file: C:/retained/media/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/doc.pdf\nafter"},"media_root":"C:/retained/media"}
+{"func":"hosted","case":"h4_apiimage","request_id":"hosted:room1","payload":{"text":"\n[Shared attachment] file: C:/retained/media/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/api_11111111111111111111111111111111.png\n"},"media_root":"C:/retained/media"}
+{"func":"hosted","case":"h5_wrongroot","request_id":"hosted:room1","payload":{"text":"\n[Shared attachment] file: C:/other/media/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/doc.pdf\n"},"media_root":"C:/retained/media"}
+{"func":"hosted","case":"h6_nonsha","request_id":"hosted:room1","payload":{"text":"\n[Shared attachment] file: C:/retained/media/short-dir/doc.pdf\n"},"media_root":"C:/retained/media"}
+{"func":"hosted","case":"h7_relative","request_id":"hosted:room1","payload":{"text":"\n[Shared attachment] file: retained/media/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/doc.pdf\n"},"media_root":"C:/retained/media"}
+{"func":"hosted","case":"h8_backslash","request_id":"hosted:room1","payload":{"text":"\n[Shared attachment] file: C:\\retained\\media\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\note.txt\n"},"media_root":"C:/retained/media"}
+{"func":"hosted","case":"h9_nonstring_text","request_id":"hosted:room1","payload":{"text":123},"media_root":"C:/retained/media"}
+{"func":"admission","case":"a1_both","payload":{"attachments_v1":{"media":["x1","x2"]},"native_text_v1":{"media":["n1"]}}}
+{"func":"admission","case":"a2_empty","payload":{}}
+{"func":"archive","case":"ar1_mixed","texts":["see spillover/report.txt and C:\\x\\spillover\\data.bin and cache/pruned/old.json but not hermes-results/z.txt","cache/pruned/foo.tar  spillover//doublefreq spillover/a-b_c.1"]}
+{"func":"retirement","case":"r1","texts":["spillover/a.txt cache/pruned/b.json spillover/a.txt"]}
+{"func":"spillover","case":"s1","texts":["spillover/a.txt cache/pruned/b.json spillover/sub/dir.txt"]}
+{"func":"spillover","case":"s2_nonstring","texts":["spillover/x.txt",123,null,"cache/pruned/y.json"]}

@@ -1,0 +1,14 @@
+{"func":"api_generation_id","session_id":"sess1","generation":0}
+{"func":"api_generation_id","session_id":"sess1","generation":1}
+{"func":"api_generation_id","session_id":"sess1","generation":12}
+{"func":"api_generation_id","session_id":"","generation":3}
+{"func":"api_generation_id","session_id":"abc\u00e9","generation":99,"tag":"x"}
+{"func":"room_session_id","identity":["home","room","member","prof"],"generation":0}
+{"func":"room_session_id","identity":["home","room","member","prof"],"generation":3}
+{"func":"room_session_id","identity":["h","r","m","p"],"generation":12,"pad":null}
+{"func":"room_session_id","identity":[],"generation":0}
+{"func":"room_session_id","identity":["a","b"],"generation":1}
+{"func":"api_storage_source","store":{"binding":"bot_room"},"session_id":"s1","fallback":"api_server"}
+{"func":"api_storage_source","store":{"binding":null},"session_id":"s1","fallback":"api_server"}
+{"func":"api_storage_source","store":{},"session_id":"s1","fallback":"api_server"}
+{"func":"api_storage_source","store":{},"session_id":"s1","fallback":"local"}

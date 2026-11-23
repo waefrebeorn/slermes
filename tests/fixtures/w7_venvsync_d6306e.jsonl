@@ -1,0 +1,19 @@
+{"func":"is_read_only_gateway_status","command":["gateway","status"],"case":"exact"}
+{"func":"is_read_only_gateway_status","command":["gateway","status","x"],"case":"too many"}
+{"func":"is_read_only_gateway_status","command":["gateway"],"case":"too few"}
+{"func":"is_read_only_gateway_status","command":["pm","install"],"case":"other command"}
+{"func":"supervised_child","supervised":"1","s6":"","case":"marker 1"}
+{"func":"supervised_child","supervised":" TRUE ","s6":"","case":"marker true padded"}
+{"func":"supervised_child","supervised":"yes","s6":"","case":"marker yes"}
+{"func":"supervised_child","supervised":"on","s6":"","case":"marker on"}
+{"func":"supervised_child","supervised":"0","s6":"","case":"marker zero false"}
+{"func":"supervised_child","supervised":"","s6":"false","case":"s6 false"}
+{"func":"supervised_child","supervised":"","s6":"YES","case":"s6 uppercase yes"}
+{"func":"completion_retry_constants","case":"retry constants"}
+{"func":"string_set","which":"metadata_flags","case":"metadata flags"}
+{"func":"string_set","which":"report_only_update_flags","case":"report only flags"}
+{"func":"string_set","which":"tail_scripts","case":"tail scripts"}
+{"func":"string_set","which":"sync_inputs","case":"sync inputs tuple order"}
+{"func":"relaunch_command","python":"PY","root":"/R","argv":["-c"],"original":["python","-W","ignore","-u","-c","print(1)"],"case":"-c with options"}
+{"func":"relaunch_command","python":"PY","root":"/R","argv":["-m"],"original":["python","-m","mod"],"case":"-m module from cmdline"}
+{"func":"relaunch_command","python":"PY","root":"/R","argv":["script.py"],"original":["python"],"module":"pkg.mod","case":"module param"}

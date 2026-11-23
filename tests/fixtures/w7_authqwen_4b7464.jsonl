@@ -1,0 +1,13 @@
+{"func":"is_expiring","expiry":1060000,"skew":120,"now":1000,"case":"expiring within skew"}
+{"func":"is_expiring","expiry":1500000,"skew":120,"now":1000,"case":"not expiring"}
+{"func":"is_expiring","expiry":1120000,"skew":120,"now":1000,"case":"inclusive boundary"}
+{"func":"is_expiring","expiry":"abc","skew":120,"now":1000,"case":"invalid string -> True"}
+{"func":"is_expiring","expiry":null,"skew":120,"now":1000,"case":"None -> True"}
+{"func":"is_expiring","expiry":"1_700_000_000_000","skew":0,"now":1600000000,"case":"underscored decimal string"}
+{"func":"is_expiring","expiry":true,"skew":0,"now":1000,"case":"bool True int=1"}
+{"func":"is_expiring","expiry":-5000,"skew":-10,"now":1000,"case":"negative skew clamped"}
+{"func":"is_expiring","expiry":0,"skew":0,"now":1000,"case":"epoch expiry always expired"}
+{"func":"base_url","env_value":"","case":"empty env uses default"}
+{"func":"base_url","env_value":" https://x.ai///  ","case":"strip then rstrip slashes"}
+{"func":"base_url","env_value":"///","case":"all slashes -> default"}
+{"func":"base_url","env_value":"https://qwen.ai/v1/","case":"single trailing slash removed"}

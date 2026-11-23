@@ -1,0 +1,16 @@
+{"func": "repetition_copy", "stopping": "the stream mid-loop", "outcome": "so the stream was stopped", "refusal": " and was truncated mid-loop"}
+{"func": "repetition_copy", "stopping": "instead of continuing", "outcome": "discarded", "refusal": ""}
+{"func": "repetition_copy", "stopping": "x", "outcome": "y", "refusal": " and z"}
+{"func": "repetition_copy", "stopping": "", "outcome": "", "refusal": ""}
+{"func": "partial_result", "final_response": "partial text", "api_calls": "3", "has_error": false, "error": "", "failed": false, "compression_exhausted": false}
+{"func": "partial_result", "final_response": "boom", "api_calls": "7", "has_error": true, "error": "custom error", "failed": true, "compression_exhausted": false}
+{"func": "partial_result", "final_response": "", "api_calls": "0", "has_error": false, "error": "", "failed": false, "compression_exhausted": true}
+{"func": "partial_result", "final_response": "⚠️ notice", "api_calls": "12", "has_error": true, "error": "", "failed": true, "compression_exhausted": true}
+{"func": "boosted_output_cap", "requested_cap": "1000", "n": "1", "max_tokens": "2000", "api_mode": "chat_completions"}
+{"func": "boosted_output_cap", "requested_cap": "1000", "n": "2", "max_tokens": "2000", "api_mode": "chat_completions"}
+{"func": "boosted_output_cap", "requested_cap": "1000", "n": "4", "max_tokens": "2000", "api_mode": "chat_completions"}
+{"func": "boosted_output_cap", "requested_cap": "0", "n": "3", "max_tokens": "0", "api_mode": "chat_completions"}
+{"func": "boosted_output_cap", "requested_cap": "30000", "n": "1", "max_tokens": "1000", "api_mode": "chat_completions"}
+{"func": "boosted_output_cap", "requested_cap": "5000", "n": "2", "max_tokens": "1000", "api_mode": "anthropic_messages", "model_limit": "6000"}
+{"func": "boosted_output_cap", "requested_cap": "5000", "n": "2", "max_tokens": "1000", "api_mode": "anthropic_messages", "model_limit": "4000"}
+{"func": "boosted_output_cap", "requested_cap": null, "n": "2", "max_tokens": "4096", "api_mode": "chat_completions", "base": "100"}

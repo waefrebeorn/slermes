@@ -1,0 +1,16 @@
+{"func":"doc"}
+{"func":"doc","pad":"x"}
+{"func":"release_date"}
+{"func":"public_names"}
+{"func":"public_names","pad":null}
+{"func":"has_symbol","name":"_ensure_utf8"}
+{"func":"has_symbol","name":"_stdio_repaired"}
+{"func":"has_symbol","name":"sys"}
+{"func":"has_symbol","name":"__getattr__"}
+{"func":"has_symbol","name":"missing"}
+{"func":"getattr","name":"__version__","base_version":"1.2.3"}
+{"func":"getattr","name":"__version__","base_version":null}
+{"func":"getattr","name":"__version__","base_version":""}
+{"func":"getattr","name":"__version__","base_version":5}
+{"func":"getattr","name":"other","base_version":"1.2.3"}
+{"func":"getattr","name":"_ensure_utf8","base_version":"1.2.3","tag":"x"}

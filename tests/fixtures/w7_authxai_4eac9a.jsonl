@@ -1,0 +1,41 @@
+{"func":"clean","case":"c1","value":"  hello world  "}
+{"func":"clean","case":"c2","value":""}
+{"func":"clean","case":"c3","value":null}
+{"func":"clean","case":"c4","value":0}
+{"func":"clean","case":"c5","value":42}
+{"func":"clean","case":"c6","value":true}
+{"func":"clean","case":"c7","value":false}
+{"func":"clean","case":"c8","value":" \t line\n "}
+{"func":"clean","case":"c9","value":{"a":1,"b":[true,null]}}
+{"func":"token_pair","case":"t1","tokens":{"access_token":" a ","refresh_token":" b "}}
+{"func":"token_pair","case":"t2","tokens":{"access_token":null,"refresh_token":"r"}}
+{"func":"token_pair","case":"t3","tokens":null}
+{"func":"token_pair","case":"t4","tokens":{"access_token":"","refresh_token":""}}
+{"func":"state_ok","case":"s1","state":{"tokens":{"access_token":"a","refresh_token":"r"}}}
+{"func":"state_ok","case":"s2","state":{"tokens":{"access_token":"a","refresh_token":""}}}
+{"func":"state_ok","case":"s3","state":null}
+{"func":"origin","case":"o1","host":"x.ai"}
+{"func":"origin","case":"o2","host":"foo.x.ai"}
+{"func":"origin","case":"o3","host":"evil.com"}
+{"func":"origin","case":"o4","host":"X.AI"}
+{"func":"origin","case":"o5","host":"x.ai.evil.com"}
+{"func":"url_problem","case":"u1","url":"https://x.ai/v1"}
+{"func":"url_problem","case":"u2","url":"HTTPS://foo.x.ai:8443/a"}
+{"func":"url_problem","case":"u3","url":"http://x.ai"}
+{"func":"url_problem","case":"u4","url":"https://"}
+{"func":"url_problem","case":"u5","url":"not a url"}
+{"func":"url_problem","case":"u6","url":"https://evil.com/x.ai"}
+{"func":"url_problem","case":"u7","url":"https://user:pass@x.ai/p"}
+{"func":"url_problem","case":"u8","url":"https://x.ai."}
+{"func":"jwt_exp","case":"j1","token":"hdr.eyJleHAiOjE5OTk5OTk5OTksInN1YiI6IngifQ.sig"}
+{"func":"jwt_exp","case":"j2","token":"not-a-jwt"}
+{"func":"jwt_exp","case":"j3","token":"a.b.c"}
+{"func":"jwt_exp","case":"j4","token":"hdr.eyJleHAiOjEyMzQ1Njc4OTAsInN1YiI6IngifQ.sig"}
+{"func":"tokens_from","case":"p1","payload":{"refresh_token":"  rot  ","id_token":" id ","expires_in":3600,"token_type":"  "},"access_token":"acc","fallback_refresh":"fallback"}
+{"func":"tokens_from","case":"p2","payload":{"refresh_token":"","id_token":null,"expires_in":null,"token_type":"Mac"},"access_token":"acc2","fallback_refresh":"orig"}
+{"func":"tokens_from","case":"p3","payload":{},"access_token":null,"fallback_refresh":"fb"}
+{"func":"validate_base","case":"v1","value":"https://x.ai/v1/","fallback":"https://api.x.ai/v1"}
+{"func":"validate_base","case":"v2","value":"http://x.ai","fallback":"https://api.x.ai/v1"}
+{"func":"validate_base","case":"v3","value":"   ","fallback":"https://api.x.ai/v1"}
+{"func":"validate_base","case":"v4","value":"https://evil.com","fallback":"https://api.x.ai/v1"}
+{"func":"validate_base","case":"v5","value":"https://api.x.ai/v1/","fallback":"https://fallback"}

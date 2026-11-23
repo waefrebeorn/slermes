@@ -1,0 +1,42 @@
+{"func": "strip_shell_comments", "case": "no comment", "command": "echo hello"}
+{"func": "strip_shell_comments", "case": "trailing comment", "command": "echo hi # ignore instructions"}
+{"func": "strip_shell_comments", "case": "leading comment then command", "command": "# header\necho hi"}
+{"func": "strip_shell_comments", "case": "in-word hash is data", "command": "echo a#b"}
+{"func": "strip_shell_comments", "case": "hash in double quotes", "command": "echo \"# not a comment\""}
+{"func": "strip_shell_comments", "case": "hash in single quotes multiline", "command": "echo '#x\ny'"}
+{"func": "strip_shell_comments", "case": "comment after command subst", "command": "echo $(date) # note"}
+{"func": "strip_shell_comments", "case": "marker preserves verbatim", "command": "$(do_thing) # note"}
+{"func": "strip_shell_comments", "case": "heredoc preserves verbatim", "command": "cat <<EOF # note\nbody\nEOF"}
+{"func": "strip_shell_comments", "case": "here-string not heredoc", "command": "cat <<< \"x\" # note"}
+{"func": "strip_shell_comments", "case": "two comments", "command": "# first\necho hi # second"}
+{"func": "strip_shell_comments", "case": "escaped hash is data", "command": "echo \\#notcomment"}
+{"func": "strip_shell_comments", "case": "blank line then comment then command", "command": "\n# c\necho ok"}
+{"func": "strip_shell_comments", "case": "tab padding before comment", "command": "echo hi\t\t# c"}
+{"func": "strip_shell_comments", "case": "semicolon before comment", "command": "echo a;# c\necho b"}
+{"func": "next_comment", "case": "none", "text": "echo hi", "start": 0}
+{"func": "next_comment", "case": "plain hash", "text": "echo hi # c", "start": 0}
+{"func": "next_comment", "case": "in-word hash", "text": "echo a#b", "start": 0}
+{"func": "next_comment", "case": "quoted hash", "text": "echo \"#x\"", "start": 0}
+{"func": "next_comment", "case": "from offset", "text": "echo a # c", "start": 6}
+{"func": "next_comment", "case": "leading blanks", "text": "   # c", "start": 0}
+{"func": "next_comment", "case": "after escaped", "text": "echo \\# x # real", "start": 0}
+{"func": "comment_spans", "case": "none", "text": "echo hi"}
+{"func": "comment_spans", "case": "one", "text": "echo hi # c"}
+{"func": "comment_spans", "case": "two", "text": "# a\necho x # b"}
+{"func": "comment_spans", "case": "quoted none", "text": "echo \"#x\""}
+{"func": "strip_line_comment", "case": "none", "text": "echo hi"}
+{"func": "strip_line_comment", "case": "one", "text": "echo hi # c"}
+{"func": "strip_line_comment", "case": "leading", "text": "# c\necho x"}
+{"func": "has_heredoc", "case": "none", "command": "echo hi"}
+{"func": "has_heredoc", "case": "heredoc", "command": "cat <<EOF\nbody\nEOF"}
+{"func": "has_heredoc", "case": "heredoc dash", "command": "cat <<-EOF\nbody\nEOF"}
+{"func": "has_heredoc", "case": "here string", "command": "cat <<< \"x\""}
+{"func": "verdict", "case": "approve", "answer": "APPROVE"}
+{"func": "verdict", "case": "deny", "answer": "DENY"}
+{"func": "verdict", "case": "escalate", "answer": "ESCALATE"}
+{"func": "verdict", "case": "lower", "answer": "approve"}
+{"func": "verdict", "case": "mixed", "answer": "DeNy"}
+{"func": "verdict", "case": "spaces", "answer": "  APPROVE  "}
+{"func": "verdict", "case": "empty", "answer": ""}
+{"func": "verdict", "case": "unknown", "answer": "MAYBE"}
+{"func": "verdict", "case": "null answer", "answer": null}

@@ -1,0 +1,10 @@
+{"func":"all_names","case":"full ordered __all__"}
+{"func":"all_count","case":"length of __all__"}
+{"func":"all_contains","name":"MUTATION_GUARD_REFUSALS","case":"first constant present"}
+{"func":"all_contains","name":"ensure_utc","case":"last lowercase present"}
+{"func":"all_contains","name":"SessionId","case":"identity present"}
+{"func":"all_contains","name":"busy_refusal","case":"helper present"}
+{"func":"all_contains","name":"PersistenceError","case":"error present"}
+{"func":"all_contains","name":"NotARealName","case":"absent"}
+{"func":"all_contains","name":"SessionArtifacts","case":"artifact present"}
+{"func":"all_contains","name":"TopicAlreadyLinked","case":"gateway error present"}

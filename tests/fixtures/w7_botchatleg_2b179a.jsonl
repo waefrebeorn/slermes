@@ -1,0 +1,15 @@
+{"func":"malformed","case":"all required fields usable","record":{"id":"job-1","home":"/h","content":"hello","job":{"id":"j","name":"n"}}}
+{"func":"malformed","case":"all missing","record":{}}
+{"func":"malformed","case":"missing id only","record":{"home":"/h","content":"hello"}}
+{"func":"malformed","case":"missing home and content","record":{"id":"job-1"}}
+{"func":"malformed","case":"empty string id is missing","record":{"id":"","home":"/h","content":"hello"}}
+{"func":"malformed","case":"non-string id is missing","record":{"id":123,"home":"/h","content":"hello"}}
+{"func":"malformed","case":"non-string home is missing","record":{"id":"job-1","home":false,"content":"hello"}}
+{"func":"malformed","case":"job is a command line string","record":{"id":"job-1","home":"/h","content":"hello","job":"echo hi"}}
+{"func":"malformed","case":"job is a list","record":{"id":"job-1","home":"/h","content":"hello","job":[1,2]}}
+{"func":"malformed","case":"job null is treated as empty object","record":{"id":"job-1","home":"/h","content":"hello","job":null}}
+{"func":"malformed","case":"job empty object is fine","record":{"id":"job-1","home":"/h","content":"hello","job":{}}}
+{"func":"malformed","case":"job zero is falsy so fine","record":{"id":"job-1","home":"/h","content":"hello","job":0}}
+{"func":"defer_record","case":"basic with id name and extras","key":"deliver-42","job":{"id":"job-7","name":"nightly","extra":"dropped"},"content":"ping","home":"/profiles/a","for_failure":false,"sequence":"1700000000000"}
+{"func":"defer_record","case":"empty job projects to empty object","key":"k","job":{},"content":"","home":"/p","for_failure":false,"sequence":"1"}
+{"func":"defer_record","case":"for failure true","key":"k2","job":{"name":"only-name"},"content":"boom","home":"C:/profiles/b","for_failure":true,"sequence":"999"}

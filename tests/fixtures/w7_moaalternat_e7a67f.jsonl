@@ -1,0 +1,16 @@
+{"func":"destination_key","runtime":{"base_url":"https://api.example.com/v1/","model":"gpt-x"},"case":"base_url wins over provider, trailing slash stripped"}
+{"func":"destination_key","runtime":{"provider":"openrouter","model":"  llama-3  "},"case":"provider fallback and model strip"}
+{"func":"destination_key","runtime":{"base_url":"","provider":"nous","model":"m"},"case":"empty base_url falls through to provider"}
+{"func":"destination_key","runtime":{"base_url":null,"provider":null,"model":null},"case":"all absent -> empty strings"}
+{"func":"destination_key","runtime":{"base_url":"  /root/path/  ","model":7},"case":"whitespace strip then rstrip slashes, numeric model coerced"}
+{"func":"destination_key","runtime":{"base_url":"x/","model":""},"case":"empty model stays empty"}
+{"func":"role_alt","classified":true,"runtime":{"provider":"p"},"case":"classifier says role_alternation"}
+{"func":"role_alt","classified":false,"runtime":{"provider":"p"},"case":"classifier says some other reason"}
+{"func":"merge","messages":[{"role":"system","content":"s"},{"role":"user","content":"first"},{"role":"assistant","content":"a"},{"role":"user","content":"last"}],"case":"no adjacent user rows -> unchanged"}
+{"func":"merge","messages":[{"role":"user","content":"one"},{"role":"user","content":"two"}],"case":"adjacent str+str merged with blank line"}
+{"func":"merge","messages":[{"role":"user","content":""},{"role":"user","content":"two"}],"case":"empty prev string: no blank line"}
+{"func":"merge","messages":[{"role":"user","content":["a",{"type":"text","text":"x"}]},{"role":"user","content":["b"]}],"case":"list+list concatenates"}
+{"func":"merge","messages":[{"role":"user","content":["a"]},{"role":"user","content":"tail"}],"case":"list+str appends text block"}
+{"func":"merge","messages":[{"role":"user","content":"head"},{"role":"user","content":[{"type":"text","text":"z"}]}],"case":"str+list prepends text block"}
+{"func":"merge","messages":[{"role":"user","content":{"k":1}},{"role":"user","content":"two"}],"case":"dict content is unmergeable -> unchanged"}
+{"func":"merge","messages":[{"role":"user","content":"a","tag":"keep"},{"role":"user","content":"b"}],"case":"prev extra keys preserved through merge"}

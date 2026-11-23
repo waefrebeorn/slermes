@@ -1,0 +1,10 @@
+{"func": "restart_if_dead", "stop_set": false, "thread_alive": false, "crashed": true, "restarts": "0"}
+{"func": "restart_if_dead", "stop_set": false, "thread_alive": false, "crashed": true, "restarts": "2"}
+{"func": "restart_if_dead", "stop_set": true, "thread_alive": false, "crashed": true, "restarts": "0"}
+{"func": "restart_if_dead", "stop_set": false, "thread_alive": true, "crashed": true, "restarts": "0"}
+{"func": "restart_if_dead", "stop_set": false, "thread_alive": false, "crashed": false, "restarts": "0"}
+{"func": "restart_if_dead", "stop_set": true, "thread_alive": true, "crashed": false, "restarts": "3"}
+{"func": "restart_if_dead", "stop_set": true, "thread_alive": false, "crashed": false, "restarts": "5"}
+{"func": "restart_if_dead", "stop_set": false, "thread_alive": true, "crashed": false, "restarts": "1"}
+{"func": "restart_if_dead", "stop_set": true, "thread_alive": true, "crashed": true, "restarts": "9"}
+{"func": "restart_if_dead", "stop_set": false, "thread_alive": false, "crashed": true, "restarts": "100"}

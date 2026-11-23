@@ -1,0 +1,10 @@
+{"func":"rmtree_force","case":"c01_empty","path":".testbin/w7_fsutils_c01_empty","files":[]}
+{"func":"rmtree_force","case":"c02_one","path":".testbin/w7_fsutils_c02_one","files":["a.txt"]}
+{"func":"rmtree_force","case":"c03_ro","path":".testbin/w7_fsutils_c03_ro","files":["a.txt"],"readonly":["a.txt"]}
+{"func":"rmtree_force","case":"c04_nested","path":".testbin/w7_fsutils_c04_nested","files":["sub/b.txt","sub/deep/c.log"]}
+{"func":"rmtree_force","case":"c05_ro_nested","path":".testbin/w7_fsutils_c05_ro_nested","files":["sub/b.txt","sub/deep/c.log"],"readonly":["sub/deep/c.log"]}
+{"func":"rmtree_force","case":"c06_multi","path":".testbin/w7_fsutils_c06_multi","files":["a.txt","b.txt","c.txt"],"readonly":["a.txt","c.txt"]}
+{"func":"rmtree_force","case":"c07_deep","path":".testbin/w7_fsutils_c07_deep","files":["a/b/c/d/e/f.txt"],"readonly":["a/b/c/d/e/f.txt"]}
+{"func":"rmtree_force","case":"c08_mixed","path":".testbin/w7_fsutils_c08_mixed","files":["top.txt","x/y/z.txt","x/q.dat"],"readonly":["top.txt","x/y/z.txt"]}
+{"func":"rmtree_force","case":"c09_many","path":".testbin/w7_fsutils_c09_many","files":["f00.txt","f01.txt","f02.txt","f03.txt","f04.txt","f05.txt","f06.txt","f07.txt","f08.txt","f09.txt","f10.txt","f11.txt"],"readonly":["f00.txt","f11.txt"]}
+{"func":"rmtree_force","case":"c10_dash","path":".testbin/w7_fsutils_c10_dash","files":["sub-dir/file-name.data"],"readonly":["sub-dir/file-name.data"]}

@@ -1,0 +1,22 @@
+{"func": "is_token", "value": "FAKE_DISCORD_TOKEN_LONG_FORM", "case": "real snowflake"}
+{"func": "is_token", "value": "FAKE_DISCORD_TOKEN_BBBB", "case": "17 digit snowflake"}
+{"func": "is_token", "value": "SomeVeryLongClassName.Config.AnotherLongAttributeName", "case": "dotted name"}
+{"func": "is_token", "value": "abc.def.ghi", "case": "short shapes"}
+{"func": "is_token", "value": "", "case": "empty"}
+{"func": "mfa_left", "value": "abc", "start": 0, "case": "start"}
+{"func": "mfa_left", "value": "x mfa", "start": 2, "case": "space before"}
+{"func": "mfa_left", "value": "x\\nmfa", "start": 3, "case": "escaped newline"}
+{"func": "mfa_left", "value": "x%20mfa", "start": 4, "case": "percent escape"}
+{"func": "mfa_left", "value": "xZmfa", "start": 3, "case": "letter glued"}
+{"func": "redact", "value": "key=FAKE_DISCORD_TOKEN_LONG_FORM", "case": "bare key"}
+{"func": "redact", "value": "json value \"FAKE_DISCORD_TOKEN_LONG_FORM\"", "case": "json quoted"}
+{"func": "redact", "value": "DISCORD_BOT_TOKEN=FAKE_DISCORD_TOKEN_LONG_FORM", "case": "env assignment"}
+{"func": "redact", "value": "a FAKE_DISCORD_TOKEN_LONG_FORM b", "case": "embedded"}
+{"func": "redact", "value": "FAKE_DISCORD_TOKEN_LONG_FORM.", "case": "dot at sentence end"}
+{"func": "redact", "value": "FAKE_DISCORD_TOKEN_LONG_FORM.foo", "case": "dotted identifier keeps"}
+{"func": "redact", "value": "\\nFAKE_DISCORD_TOKEN_LONG_FORM", "case": "escape left neighbor"}
+{"func": "redact", "value": "mfa.ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ end", "case": "mfa token"}
+{"func": "redact", "value": "mfa.verify_totp_code_for_user", "case": "mfa dotted name"}
+{"func": "redact", "value": "x\\x1b[31mFAKE_DISCORD_TOKEN_LONG_FORM", "case": "ansi escape before"}
+{"func": "redact", "value": "a FAKE_DISCORD_TOKEN_LONG_FORM b FAKE_DISCORD_TOKEN_LONG_FORM c", "case": "two tokens"}
+{"func": "redact", "value": "plain text no token", "case": "nothing"}

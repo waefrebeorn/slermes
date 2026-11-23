@@ -1,0 +1,17 @@
+{"func":"key","case":"constant"}
+{"func":"applied","session_row":{"model_config":{"prompt_refresh_epoch":5}},"case":"dict epoch"}
+{"func":"applied","session_row":{"model_config":"{\"prompt_refresh_epoch\": 7}"},"case":"json text epoch"}
+{"func":"applied","session_row":{"model_config":"not json"},"case":"bad json"}
+{"func":"applied","session_row":{"model_config":{"prompt_refresh_epoch":"9"}},"case":"string epoch ignored"}
+{"func":"applied","session_row":null,"case":"null row"}
+{"func":"applied","session_row":{},"case":"empty row"}
+{"func":"requested","reader_present":true,"session_id":"s1","epoch":4,"case":"valid epoch"}
+{"func":"requested","reader_present":false,"session_id":"s1","epoch":4,"case":"no reader"}
+{"func":"requested","reader_present":true,"session_id":"","epoch":4,"case":"no session"}
+{"func":"requested","reader_present":true,"session_id":"s1","epoch":"5","case":"string epoch"}
+{"func":"requested","reader_present":true,"session_id":"s1","epoch":null,"case":"null epoch"}
+{"func":"requested","reader_present":true,"session_id":"s1","epoch":0,"case":"zero epoch"}
+{"func":"stored","reader_present":true,"session_id":"s1","epoch":4,"session_row":{"model_config":{"prompt_refresh_epoch":2}},"case":"refresh fires"}
+{"func":"stored","reader_present":true,"session_id":"s1","epoch":4,"session_row":{"model_config":{"prompt_refresh_epoch":5}},"case":"already applied"}
+{"func":"stored","reader_present":true,"session_id":"s1","epoch":0,"session_row":{"model_config":{"prompt_refresh_epoch":2}},"case":"no request"}
+{"func":"stored","reader_present":false,"session_id":"s1","epoch":4,"session_row":{"model_config":"{}"},"case":"no reader no request"}

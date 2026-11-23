@@ -1,0 +1,18 @@
+{"func":"names","case":"all names sorted"}
+{"func":"lookup","case":"ensure state","name":"ensure"}
+{"func":"lookup","case":"stage_only always","name":"stage_only"}
+{"func":"lookup","case":"stage_tools never","name":"stage_tools"}
+{"func":"lookup","case":"prepare_tools always","name":"prepare_tools"}
+{"func":"lookup","case":"sync_venv venv policy","name":"sync_venv"}
+{"func":"lookup","case":"venv_is_current venv never","name":"venv_is_current"}
+{"func":"lookup","case":"build_environment uv policy","name":"build_environment"}
+{"func":"lookup","case":"lock_project","name":"lock_project"}
+{"func":"lookup","case":"ensure_environment","name":"ensure_environment"}
+{"func":"lookup","case":"ensure_project_environment","name":"ensure_project_environment"}
+{"func":"lookup","case":"ensure_python_tool","name":"ensure_python_tool"}
+{"func":"lookup","case":"check_project_lock","name":"check_project_lock"}
+{"func":"lookup","case":"export_requirements","name":"export_requirements"}
+{"func":"lookup","case":"build_requirements_environment","name":"build_requirements_environment"}
+{"func":"lookup","case":"prune_cache always","name":"prune_cache"}
+{"func":"lookup","case":"unknown name","name":"definitely_not_an_operation"}
+{"func":"lookup","case":"empty name","name":""}

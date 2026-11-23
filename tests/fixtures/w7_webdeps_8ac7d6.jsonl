@@ -1,0 +1,21 @@
+{"func":"late_name","case":"n1","name":"get_user","module":"hermes_cli.web_server"}
+{"func":"late_name","case":"n2","name":"_hidden_state","module":"hermes_cli.web_server_extra"}
+{"func":"state","case":"g1","op":"getitem","name":"state","module":"hermes_cli.web_server","target":{"a":1,"b":"two"},"arg":"b"}
+{"func":"state","case":"g2","op":"getitem","name":"state","module":"hermes_cli.web_server","target":["x","y","z"],"arg":1}
+{"func":"state","case":"c1","op":"contains","name":"state","module":"hermes_cli.web_server","target":"hello world","arg":"world"}
+{"func":"state","case":"c2","op":"contains","name":"state","module":"hermes_cli.web_server","target":[1,2,3],"arg":3}
+{"func":"state","case":"c3","op":"contains","name":"state","module":"hermes_cli.web_server","target":{"k":1},"arg":"k"}
+{"func":"state","case":"l1","op":"len","name":"state","module":"hermes_cli.web_server","target":"abcdef"}
+{"func":"state","case":"l2","op":"len","name":"state","module":"hermes_cli.web_server","target":[1,2,3,4]}
+{"func":"state","case":"l3","op":"len","name":"state","module":"hermes_cli.web_server","target":{"a":1}}
+{"func":"state","case":"b1","op":"bool","name":"state","module":"hermes_cli.web_server","target":[]}
+{"func":"state","case":"b2","op":"bool","name":"state","module":"hermes_cli.web_server","target":[1]}
+{"func":"state","case":"r1","op":"repr","name":"shared","module":"hermes_cli.web_server","target":{"a":1,"b":[true,null]}}
+{"func":"state","case":"r2","op":"repr","name":"label","module":"hermes_cli.web_server","target":"plain text"}
+{"func":"state","case":"a1","op":"attr","name":"state","module":"hermes_cli.web_server","target":{"x":42},"arg":"x"}
+{"func":"state","case":"e1","op":"eq","name":"state","module":"hermes_cli.web_server","target":[1,2,3],"arg":[1,2,3]}
+{"func":"state","case":"e2","op":"ne","name":"state","module":"hermes_cli.web_server","target":[1,2],"arg":[1,2,3]}
+{"func":"state","case":"o1","op":"lt","name":"state","module":"hermes_cli.web_server","target":2,"arg":3}
+{"func":"state","case":"o2","op":"gt","name":"state","module":"hermes_cli.web_server","target":"b","arg":"a"}
+{"func":"state","case":"o3","op":"le","name":"state","module":"hermes_cli.web_server","target":3,"arg":3}
+{"func":"state","case":"o4","op":"ge","name":"state","module":"hermes_cli.web_server","target":3,"arg":3}

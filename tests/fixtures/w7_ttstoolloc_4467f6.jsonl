@@ -1,0 +1,23 @@
+{"case":"consts","func":"constants"}
+{"case":"voice_empty","func":"voice_default","voice":""}
+{"case":"voice_null","func":"voice_default","voice":null}
+{"case":"voice_explicit","func":"voice_default","voice":"en_GB-custom"}
+{"case":"cache_miss","func":"cache","entries":[],"key":"a","load_value":"A","max":3}
+{"case":"cache_hit","func":"cache","entries":[["a","A"],["b","B"]],"key":"a","load_value":"NEW","max":3}
+{"case":"cache_hit_refresh","func":"cache","entries":[["a","A"],["b","B"],["c","C"]],"key":"a","load_value":"NEW","max":3}
+{"case":"cache_evict","func":"cache","entries":[["a","A"],["b","B"],["c","C"]],"key":"d","load_value":"D","max":3}
+{"case":"cache_max1","func":"cache","entries":[["a","A"]],"key":"b","load_value":"B","max":1}
+{"case":"cache_max2","func":"cache","entries":[["a","A"],["b","B"]],"key":"a","load_value":"X","max":2}
+{"case":"cache_value_obj","func":"cache","entries":[],"key":"k","load_value":{"model":1},"max":3}
+{"case":"cache_key_empty","func":"cache","entries":[["","zero"]],"key":"","load_value":"new","max":3}
+{"case":"pck_false","func":"piper_cache_key","model_path":"/m/a.onnx","use_cuda":false}
+{"case":"pck_true","func":"piper_cache_key","model_path":"/m/b onyx.onnx","use_cuda":true}
+{"case":"sid_str","func":"speaker_id","raw":"5"}
+{"case":"sid_neg","func":"speaker_id","raw":"-2"}
+{"case":"sid_zero","func":"speaker_id","raw":"0"}
+{"case":"sid_spaces","func":"speaker_id","raw":" 7 "}
+{"case":"sid_float","func":"speaker_id","raw":5.5}
+{"case":"sid_bool","func":"speaker_id","raw":true}
+{"case":"sid_null","func":"speaker_id","raw":null}
+{"case":"adv_yes","func":"advanced","keys":["voice","volume"]}
+{"case":"adv_no","func":"advanced","keys":["voice","speed"]}

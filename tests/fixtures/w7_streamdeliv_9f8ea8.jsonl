@@ -1,0 +1,19 @@
+{"func":"normalize","value":"  Hello   world\n","case":"collapse whitespace runs and strip"}
+{"func":"normalize","value":"\tfoo\tbar  baz ","case":"tabs collapsed"}
+{"func":"normalize","value":"","case":"empty string"}
+{"func":"normalize","value":"a  b  c","case":"internal double spaces"}
+{"func":"normalize","value":42,"case":"non-string -> empty"}
+{"func":"normalize","value":null,"case":"null -> empty"}
+{"func":"was_streamed","content":"Hello world","streamed":"Hello","case":"visible startswith streamed"}
+{"func":"was_streamed","content":"Hello","streamed":"Hello world","case":"reverse (streamed longer) is false"}
+{"func":"was_streamed","content":"Hello  world","streamed":"hello world","case":"normalized but case sensitive"}
+{"func":"was_streamed","content":"","streamed":"x","case":"empty visible"}
+{"func":"was_streamed","content":"abc","streamed":"","case":"empty streamed"}
+{"func":"fully_streamed","content":"Hello world","streamed":"Hello  world ","case":"normalized exact match"}
+{"func":"fully_streamed","content":"Hello world","streamed":"Hello","case":"prefix is not exact"}
+{"func":"fully_streamed","content":"","streamed":"","case":"both empty -> false"}
+{"func":"codex_texts","assistant_msg":{},"case":"no codex items"}
+{"func":"codex_texts","assistant_msg":{"codex_message_items":[{"type":"message","phase":"commentary","content":[{"type":"output_text","text":"Let me check."}]}]},"case":"one commentary item"}
+{"func":"codex_texts","assistant_msg":{"codex_message_items":[{"type":"message","phase":"analysis","content":[{"type":"output_text","text":"hidden"}]},{"type":"message","phase":" COMMENTARY ","content":[{"type":"output_text","text":" shown "}]}]},"case":"analysis filtered, commentary phase normalized"}
+{"func":"codex_texts","assistant_msg":{"codex_message_items":[{"type":"message","phase":"commentary","content":[{"type":"output_text","text":" "},{"type":"output_text","text":"after newline"}]}]},"case":"whitespace-only part kept, whole stripped"}
+{"func":"codex_texts","assistant_msg":{"codex_message_items":[{"type":"message","phase":"commentary","content":[{"type":"output_text","text":"  "}]}]},"case":"whitespace-only commentary dropped"}

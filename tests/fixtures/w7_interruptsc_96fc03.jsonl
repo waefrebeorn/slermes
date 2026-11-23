@@ -1,0 +1,11 @@
+{"func":"default_reason","case":"module default tool reason constant"}
+{"func":"replay","ops":[],"case":"empty ops: nothing latched"}
+{"func":"replay","ops":[{"op":"track","agent":"a"}],"case":"track with no cancel is a no-op"}
+{"func":"replay","ops":[{"op":"track","agent":"a"},{"op":"track","agent":"b"},{"op":"cancel","reason":"user stopped"}],"case":"cancel interrupts all registered agents with default tool reason"}
+{"func":"replay","ops":[{"op":"cancel","reason":"host cancel"},{"op":"track","agent":"late"}],"case":"track after cancel interrupts immediately (lost-race guard)"}
+{"func":"replay","ops":[{"op":"cancel","reason":"human stop","tool_reason":null},{"op":"track","agent":"late"}],"case":"explicit null tool_reason stays None"}
+{"func":"replay","ops":[{"op":"track","agent":"a"},{"op":"cancel","reason":"first","tool_reason":"host"},{"op":"cancel","reason":"second","tool_reason":"operator"}],"case":"second cancel overwrites latched values"}
+{"func":"replay","ops":[{"op":"cancel","reason":"r1"}],"case":"cancel with no registered agents"}
+{"func":"replay","ops":[{"op":"track_in","agent":"a","bound":false},{"op":"cancel","reason":"r"},{"op":"track_in","agent":"b","bound":false}],"case":"track_in without a bound scope is a nullcontext no-op"}
+{"func":"replay","ops":[{"op":"cancel","reason":"r","tool_reason":"host"},{"op":"track_in","agent":"bound","bound":true}],"case":"bound track_in after cancel interrupts"}
+{"func":"replay","ops":[{"op":"cancel","reason":""},{"op":"track","agent":"empty"}],"case":"empty string reason is still latched (not None)"}

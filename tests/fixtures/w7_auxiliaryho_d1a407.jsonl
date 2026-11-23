@@ -1,0 +1,24 @@
+{"case":"consts","func":"constants"}
+{"case":"id_null","func":"identity","turn":null}
+{"case":"id_full","func":"identity","turn":{"lease":{"session_id":"s-1","platform":"telegram"},"task_id":"t-9","turn_id":"u-7"}}
+{"case":"id_no_lease","func":"identity","turn":{"task_id":"t-2","turn_id":"u-3"}}
+{"case":"id_empty","func":"identity","turn":{"lease":{"session_id":"","platform":""},"task_id":"","turn_id":""}}
+{"case":"sp_system_kwarg","func":"system_prompt","messages":[],"kwargs":{"system":"be concise"}}
+{"case":"sp_instructions","func":"system_prompt","messages":[],"kwargs":{"instructions":"respond briefly"}}
+{"case":"sp_first_msg","func":"system_prompt","messages":[{"role":"system","content":"sys-msg"},{"role":"user","content":"hi"}],"kwargs":{}}
+{"case":"sp_first_not_system","func":"system_prompt","messages":[{"role":"user","content":"hi"}],"kwargs":{}}
+{"case":"sp_missing","func":"system_prompt","messages":[],"kwargs":{}}
+{"case":"sp_sys_wins","func":"system_prompt","messages":[{"role":"system","content":"msg"}],"kwargs":{"system":"kw"}}
+{"case":"fc_dict","func":"first_choice","response":{"choices":[{"message":{"role":"assistant","content":"ok"},"finish_reason":"stop"}]}}
+{"case":"fc_empty","func":"first_choice","response":{"choices":[]}}
+{"case":"fc_null","func":"first_choice","response":null}
+{"case":"fc_no_message","func":"first_choice","response":{"choices":[{"finish_reason":"length"}]}}
+{"case":"field_obj","func":"field","obj":{"content":"yes"},"name":"content"}
+{"case":"field_missing","func":"field","obj":{"content":"yes"},"name":"other"}
+{"case":"mc_messages","func":"message_count","messages":[{"role":"user"},{"role":"user"}],"input":[]}
+{"case":"mc_input_fallback","func":"message_count","messages":[],"input":[{"role":"user"}]}
+{"case":"mc_none","func":"message_count","messages":null,"input":null}
+{"case":"rc_str","func":"retry_counts","raw":"3"}
+{"case":"rc_null","func":"retry_counts","raw":null}
+{"case":"rc_num","func":"retry_counts","raw":2.7}
+{"case":"rc_bool","func":"retry_counts","raw":true}

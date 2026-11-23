@@ -1,0 +1,21 @@
+{"func":"ui_language","locale":null,"case":"None -> en"}
+{"func":"ui_language","locale":"","case":"empty -> en"}
+{"func":"ui_language","locale":"DE-de","case":"case folded primary tag"}
+{"func":"ui_language","locale":"zh_TW","case":"underscore + traditional region"}
+{"func":"ui_language","locale":"zh-hans","case":"simplified chinese"}
+{"func":"ui_language","locale":"fr-CA","case":"french"}
+{"func":"ui_language","locale":"xx-YY","case":"unknown primary -> en"}
+{"func":"ui_language","locale":"  ja  ","case":"whitespace stripped"}
+{"func":"greeting","locale":"en","case":"english greeting"}
+{"func":"greeting","locale":"ja","case":"japanese greeting"}
+{"func":"greeting","locale":"zh-hant","case":"traditional chinese greeting"}
+{"func":"question","beat":"theme","locale":"de","case":"non-name question uses QUESTIONS"}
+{"func":"question","beat":"name","locale":"es","case":"name question localized"}
+{"func":"question","beat":"name","locale":"zh-hant","case":"name question traditional chinese"}
+{"func":"question","beat":"name","locale":"en","case":"name question falls back to QUESTIONS"}
+{"func":"names","values":[],"case":"empty -> none"}
+{"func":"names","values":["github","slack"],"case":"two names joined"}
+{"func":"names","values":["solo"],"case":"single name"}
+{"func":"facts_block","facts":{"facts_source":"local","os":"Windows","arch":"arm64","machine_kind":"laptop","nvidia_platform":"rtx_spark","locale":"en-US"},"case":"local spark with locale"}
+{"func":"facts_block","facts":{"facts_source":"remote","os":"Linux","arch":"","machine_kind":"server","nvidia_platform":"none","locale":null},"case":"remote, unknown arch, no nvidia, no locale"}
+{"func":"facts_block","facts":{"facts_source":"local","os":"macOS","arch":"arm64","machine_kind":"desktop","nvidia_platform":"discrete","locale":""},"case":"discrete nvidia, empty locale"}

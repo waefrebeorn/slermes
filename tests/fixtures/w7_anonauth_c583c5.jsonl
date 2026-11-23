@@ -1,0 +1,32 @@
+{"func":"friendly_wait","seconds":"0","case":"zero"}
+{"func":"friendly_wait","seconds":"-5","case":"negative clamped"}
+{"func":"friendly_wait","seconds":"15","case":"boundary seconds"}
+{"func":"friendly_wait","seconds":"16","case":"just over seconds"}
+{"func":"friendly_wait","seconds":"60","case":"about a minute"}
+{"func":"friendly_wait","seconds":"89","case":"still about a minute"}
+{"func":"friendly_wait","seconds":"90","case":"two minutes rounding"}
+{"func":"friendly_wait","seconds":"150","case":"bankers rounding 2.5"}
+{"func":"friendly_wait","seconds":"3600","case":"about an hour"}
+{"func":"friendly_wait","seconds":"5400","case":"bankers rounding hours"}
+{"func":"friendly_wait","seconds":"garbage","case":"invalid -> a few seconds"}
+{"func":"is_guest","state":{"auth_method":"anonymous"},"case":"guest state"}
+{"func":"is_guest","state":{"auth_method":"oauth_device_code"},"case":"account state"}
+{"func":"is_guest","state":null,"case":"null state"}
+{"func":"parse_refusal","body":{"reason":"rate_limited","retry_after":"12","alternates":["a",1,""],"upgrade_url":"/u"},"case":"full refusal"}
+{"func":"parse_refusal","body":{"reason":"bogus"},"case":"bad reason"}
+{"func":"parse_refusal","body":null,"case":"non dict"}
+{"func":"parse_refusal","body":{"reason":"at_capacity","retry_after":-4,"alternates":"x","upgrade_url":7},"case":"coerce fields"}
+{"func":"failure_copy","code":"anon_rate_limited","retry_after":"90","case":"wait substituted"}
+{"func":"failure_copy","code":"anon_rate_limited","retry_after":"0","case":"zero is truthy string"}
+{"func":"failure_copy","code":"anon_rate_limited","retry_after":"","case":"empty -> 60s"}
+{"func":"failure_copy","code":"anon_gate_closed","retry_after":"","case":"static copy"}
+{"func":"failure_copy","code":"unknown_code","retry_after":"","case":"server error fallback"}
+{"func":"failure_copy","code":"anon_credential_dead","retry_after":"","case":"another static copy"}
+{"func":"welcome_host","base_url":"https://welcome-api.nousresearch.com/v1","extra_hosts":"","case":"canonical welcome host"}
+{"func":"welcome_host","base_url":"https://WELCOME-API.nousresearch.com","extra_hosts":"","case":"host lowercased"}
+{"func":"welcome_host","base_url":"https://portal.nousresearch.com","extra_hosts":"","case":"portal not welcome"}
+{"func":"welcome_host","base_url":"http://127.0.0.1:8080","extra_hosts":"127.0.0.1","case":"extra host with port"}
+{"func":"welcome_host","base_url":"","extra_hosts":"","case":"empty url"}
+{"func":"pin_model","provider":"nous","base_url":"https://welcome-api.nousresearch.com/v1","model":"gpt-x","extra_hosts":"","case":"welcome pins model"}
+{"func":"pin_model","provider":"openai","base_url":"https://welcome-api.nousresearch.com","model":"gpt-x","extra_hosts":"","case":"non nous keeps model"}
+{"func":"pin_model","provider":"nous","base_url":"https://portal.nousresearch.com","model":"gpt-x","extra_hosts":"","case":"portal keeps model"}

@@ -1,0 +1,16 @@
+{"func": "terminal", "status": "delivered"}
+{"func": "terminal", "status": "suppressed"}
+{"func": "terminal", "status": "failed", "error": "smtp refused"}
+{"func": "terminal", "status": "failed"}
+{"func": "terminal", "status": "failed", "error": ""}
+{"func": "terminal", "status": "unknown", "error": "owner died"}
+{"func": "terminal", "status": "unknown"}
+{"func": "terminal", "status": "queued"}
+{"func": "terminal", "status": null}
+{"func": "settled_outcome", "status": "delivered"}
+{"func": "settled_outcome", "status": "unknown"}
+{"func": "settled_outcome", "status": "queued"}
+{"func": "settle_queued", "job_id": "job-1", "execution_id": "exec-1", "status": "delivered"}
+{"func": "settle_queued", "job_id": "job-1", "execution_id": "exec-1", "status": "queued"}
+{"func": "settle_queued", "job_id": null, "execution_id": "exec-1", "status": "delivered"}
+{"func": "settle_queued", "job_id": "job-1", "execution_id": "", "status": "failed", "error": "x"}

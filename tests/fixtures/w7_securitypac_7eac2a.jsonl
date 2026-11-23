@@ -1,0 +1,19 @@
+{"func":"bws_fetch_url","case":"linux x64 gnu->musl","version":"1.2.3","target":"linux-x64"}
+{"func":"bws_fetch_url","case":"linux arm64","version":"0.9.0","target":"linux-arm64"}
+{"func":"bws_fetch_url","case":"linux x64 musl passthrough","version":"2.0","target":"linux-x64-musl"}
+{"func":"bws_fetch_url","case":"linux arm64 musl","version":"3.1.4","target":"linux-arm64-musl"}
+{"func":"bws_fetch_url","case":"darwin x64 universal","version":"4.5.6","target":"darwin-x64"}
+{"func":"bws_fetch_url","case":"darwin arm64 universal","version":"5.0","target":"darwin-arm64"}
+{"func":"bws_fetch_url","case":"win32 x64","version":"1.0.0","target":"win32-x64"}
+{"func":"bws_fetch_url","case":"win32 arm64","version":"1.0.0","target":"win32-arm64"}
+{"func":"bws_fetch_url","case":"version prerelease","version":"7.0.0-rc1","target":"linux-x64"}
+{"func":"iron_fetch_url","case":"linux x64","version":"0.9.1","target":"linux-x64"}
+{"func":"iron_fetch_url","case":"linux x64 musl normalizes","version":"0.9.1","target":"linux-x64-musl"}
+{"func":"iron_fetch_url","case":"linux arm64","version":"1.2.0","target":"linux-arm64"}
+{"func":"iron_fetch_url","case":"linux arm64 musl","version":"1.2.0","target":"linux-arm64-musl"}
+{"func":"iron_fetch_url","case":"x64->amd64","version":"2.0.0","target":"win32-x64"}
+{"func":"iron_fetch_url","case":"windows arm64","version":"2.0.0","target":"win32-arm64"}
+{"func":"iron_fetch_url","case":"darwin x64","version":"3.0","target":"darwin-x64"}
+{"func":"iron_fetch_urls","case":"four urls x64","version":"0.9.1","target":"linux-x64"}
+{"func":"iron_fetch_urls","case":"four urls arm64 musl","version":"1.2.0","target":"linux-arm64-musl"}
+{"func":"iron_fetch_urls","case":"four urls darwin","version":"2.0","target":"darwin-arm64"}

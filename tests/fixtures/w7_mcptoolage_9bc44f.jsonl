@@ -1,0 +1,19 @@
+{"func": "def_name", "case": "normal", "tool_def": {"type": "function", "function": {"name": "read_file"}}}
+{"func": "def_name", "case": "missing name", "tool_def": {"type": "function", "function": {}}}
+{"func": "def_name", "case": "no function", "tool_def": {"type": "function"}}
+{"func": "def_name", "case": "empty object", "tool_def": {}}
+{"func": "def_name", "case": "function not dict", "tool_def": {"function": "x"}}
+{"func": "def_name", "case": "empty name", "tool_def": {"type": "function", "function": {"name": ""}}}
+{"func": "agent_tool_names", "case": "mixed", "tools": [{"type": "function", "function": {"name": "a"}}, {"type": "function", "function": {"name": ""}}, {"type": "function", "function": {"name": "b"}}, {"function": {}}, {"type": "function", "function": {"name": "c"}}]}
+{"func": "agent_tool_names", "case": "empty", "tools": []}
+{"func": "agent_tool_names", "case": "all unnamed", "tools": [{}, {"type": "function", "function": {"name": ""}}]}
+{"func": "merge", "case": "both empty", "current_defs": [], "new_defs": [], "registered_names": [], "held": []}
+{"func": "merge", "case": "keep registered current", "current_defs": [{"type": "function", "function": {"name": "a"}}, {"type": "function", "function": {"name": "b"}}], "new_defs": [], "registered_names": ["a", "b"], "held": []}
+{"func": "merge", "case": "drop unregistered current", "current_defs": [{"type": "function", "function": {"name": "a"}}, {"type": "function", "function": {"name": "b"}}], "new_defs": [], "registered_names": ["a"], "held": []}
+{"func": "merge", "case": "current bytes win on replacement", "current_defs": [{"type": "function", "function": {"name": "a", "description": "old"}}], "new_defs": [{"type": "function", "function": {"name": "a", "description": "new"}}], "registered_names": [], "held": []}
+{"func": "merge", "case": "bridge kept", "current_defs": [{"type": "function", "function": {"name": "tool_search"}}], "new_defs": [], "registered_names": [], "held": []}
+{"func": "merge", "case": "new appended", "current_defs": [{"type": "function", "function": {"name": "a"}}], "new_defs": [{"type": "function", "function": {"name": "b"}}], "registered_names": ["a"], "held": []}
+{"func": "merge", "case": "held not appended", "current_defs": [{"type": "function", "function": {"name": "a"}}], "new_defs": [{"type": "function", "function": {"name": "b"}}], "registered_names": ["a"], "held": ["b"]}
+{"func": "merge", "case": "unnamed skipped", "current_defs": [{}], "new_defs": [{"type": "function", "function": {"name": ""}}], "registered_names": [], "held": []}
+{"func": "merge", "case": "duplicate names last wins", "current_defs": [], "new_defs": [{"type": "function", "function": {"name": "x", "description": "first"}}, {"type": "function", "function": {"name": "x", "description": "second"}}], "registered_names": [], "held": []}
+{"func": "merge", "case": "mixed preserve", "current_defs": [{"type": "function", "function": {"name": "a"}}, {"type": "function", "function": {"name": "gone"}}, {"type": "function", "function": {"name": "tool_call"}}], "new_defs": [{"type": "function", "function": {"name": "a", "description": "new"}}, {"type": "function", "function": {"name": "fresh"}}], "registered_names": ["a"], "held": []}

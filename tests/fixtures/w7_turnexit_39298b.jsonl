@@ -1,0 +1,18 @@
+{"func":"turn_exit_code","result":{},"kanban_worker":false,"case":"empty dict success"}
+{"func":"turn_exit_code","result":{"interrupted":true},"kanban_worker":false,"case":"interrupted"}
+{"func":"turn_exit_code","result":{"failed":true},"kanban_worker":false,"case":"failed plain"}
+{"func":"turn_exit_code","result":{"partial":true},"kanban_worker":false,"case":"partial plain"}
+{"func":"turn_exit_code","result":{"completed":false},"kanban_worker":false,"case":"completed is False"}
+{"func":"turn_exit_code","result":{"completed":true},"kanban_worker":false,"case":"completed True"}
+{"func":"turn_exit_code","result":{"completed":0},"kanban_worker":false,"case":"completed 0 is not False identity"}
+{"func":"turn_exit_code","result":{"failed":true,"failure_reason":"rate_limit"},"kanban_worker":true,"case":"transient reason rate_limit"}
+{"func":"turn_exit_code","result":{"failed":true,"failure_reason":"timeout"},"kanban_worker":true,"case":"transient reason timeout"}
+{"func":"turn_exit_code","result":{"failed":true,"failure_reason":"auth"},"kanban_worker":true,"case":"terminal reason auth"}
+{"func":"turn_exit_code","result":{"partial":true,"failure_reason":"model_not_found"},"kanban_worker":true,"case":"terminal on partial"}
+{"func":"turn_exit_code","result":{"failed":true,"failure_reason":"weird"},"kanban_worker":true,"case":"unknown reason"}
+{"func":"turn_exit_code","result":"oops","kanban_worker":false,"case":"non dict result"}
+{"func":"turn_exit_code","result":"oops","kanban_worker":true,"credentials_rate_limited":true,"case":"non dict rate limited"}
+{"func":"turn_exit_code","result":"oops","kanban_worker":true,"credentials_terminal":true,"case":"non dict terminal"}
+{"func":"turn_exit_code","result":{"interrupted":true,"failed":true},"kanban_worker":true,"credentials_terminal":true,"case":"interrupted wins"}
+{"func":"reasons","which":"transient","case":"transient set sorted"}
+{"func":"reasons","which":"terminal","case":"terminal set sorted"}

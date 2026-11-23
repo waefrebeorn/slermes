@@ -1,0 +1,23 @@
+{"func":"closes","value":"ab'c","j":2,"case":"no follower"}
+{"func":"closes","value":"ab'","j":2,"case":"end of line"}
+{"func":"closes","value":"ab' x","j":2,"case":"space follower"}
+{"func":"closes","value":"ab'&& echo","j":2,"case":"amp follower"}
+{"func":"value_end","value":"secret dbname=x","i":0,"semicolon":false,"case":"unquoted"}
+{"func":"value_end","value":"{Zq7x;LmP2};Database=x","i":0,"semicolon":true,"case":"odbc braced"}
+{"func":"value_end","value":"\"p@ss word\" rest","i":0,"semicolon":false,"case":"quoted"}
+{"func":"value_end","value":"'ab''cd';Database=x","i":0,"semicolon":true,"case":"doubled quote"}
+{"func":"value_end","value":"a\\ b rest","i":0,"semicolon":false,"case":"backslash escape"}
+{"func":"line","value":"Host=db;Username=app;Password=secret;Database=x","case":"ado password"}
+{"func":"line","value":"host=db user=app password=s3cr3t dbname=x","case":"libpq password"}
+{"func":"line","value":"Server=h;PWD={Zq7x;LmP2};Database=x","case":"odbc braced pw"}
+{"func":"line","value":"host=db password=\"p@ss word\" dbname=x","case":"quoted pw"}
+{"func":"line","value":"the password= field","case":"prose"}
+{"func":"line","value":"password=abc","case":"no companion"}
+{"func":"line","value":"Host=db;Password=${DB_PASS};Database=x","case":"env template non-code"}
+{"func":"line","value":"Host=db;Password=${DB_PASS};Database=x","code_file":true,"case":"env template code"}
+{"func":"line","value":"Host=db;Password={0};Database=x","code_file":true,"case":"format slot code"}
+{"func":"line","value":"Host=db;Password='ab''cd';Database=x","case":"doubled quote pw"}
+{"func":"line","value":"host=db password=abc password=def dbname=x","case":"two passwords"}
+{"func":"line","value":"Server=db;User Id=app;Password={0};Encrypt=True","case":"semicolon extra key"}
+{"func":"strings","value":"Host=db;Password=a;Database=x\nhost=db password=b dbname=y","case":"two lines"}
+{"func":"strings","value":"the password= field\nhost=db password=c dbname=z","case":"prose plus real"}

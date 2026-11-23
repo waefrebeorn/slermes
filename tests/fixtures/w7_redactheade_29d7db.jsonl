@@ -1,0 +1,20 @@
+{"func":"cookie_credential","case":"name=value pair","value":"sid=abc123","qualified":false}
+{"func":"cookie_credential","case":"code prose","value":"getCookie()","qualified":false}
+{"func":"cookie_credential","case":"None literal","value":"None","qualified":false}
+{"func":"cookie_credential","case":"short prose","value":"chocolate","qualified":false}
+{"func":"cookie_credential","case":"qualified empty","value":"","qualified":true}
+{"func":"cookie_credential","case":"already redacted","value":"«redacted:secret»","qualified":false}
+{"func":"cookie_credential","case":"mixed opaque token","value":"Abcdef1234567890","qualified":false}
+{"func":"cookie_credential","case":"command substitution qualified","value":"$(cat jar)","qualified":true}
+{"func":"cookie_credential","case":"shell var ref","value":"$COOKIE","qualified":false}
+{"func":"cookie_credential","case":"multiple pairs","value":"abc=123; x=y","qualified":false}
+{"func":"cookie_credential","case":"code prose qualified","value":"getCookie()","qualified":true}
+{"func":"json_header_credential","case":"api key value","key":"x-api-key","value":"sk-abc123"}
+{"func":"json_header_credential","case":"already masked","key":"x-api-key","value":"***"}
+{"func":"json_header_credential","case":"braced env placeholder","key":"x-api-key","value":"${API_KEY}"}
+{"func":"json_header_credential","case":"bare env placeholder","key":"x-api-key","value":"$API_KEY"}
+{"func":"json_header_credential","case":"os getenv value","key":"x-api-key","value":"os.getenv('X')"}
+{"func":"json_header_credential","case":"cookie payload","key":"Cookie","value":"sid=abc"}
+{"func":"json_header_credential","case":"set cookie prose","key":"Set-Cookie","value":"hello"}
+{"func":"json_header_credential","case":"path shaped key value","key":"x-goog-api-key","value":"/api/path"}
+{"func":"json_header_credential","case":"redacted sentinel","key":"apikey","value":"«redacted:ghp_x»"}

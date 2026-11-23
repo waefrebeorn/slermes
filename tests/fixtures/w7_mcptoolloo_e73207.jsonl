@@ -1,0 +1,18 @@
+{"func":"forward","case":"benign","exc_is_runtime":1,"message":"Event loop is closed"}
+{"func":"forward","case":"benign_long","exc_is_runtime":1,"message":"Event loop is closed during shutdown"}
+{"func":"forward","case":"runtime_other","exc_is_runtime":1,"message":"something else"}
+{"func":"forward","case":"value_error","has_exception":1,"message":"Event loop is closed"}
+{"func":"forward","case":"none","message":""}
+{"func":"wait_ready","case":"first","timeout":0.75,"script":[{"session":2,"ready_present":1,"ready":1}]}
+{"func":"wait_ready","case":"second","timeout":0.75,"script":[{"session":1,"ready":1},{"session":0},{"session":2,"ready":1}]}
+{"func":"wait_ready","case":"never","timeout":0.75,"script":[{"session":1},{"session":0},{"session":0}]}
+{"func":"wait_ready","case":"zero_timeout","timeout":0.0,"script":[{"session":2,"ready":1}]}
+{"func":"wait_ready","case":"no_ready_attr","timeout":0.1,"script":[{"session":2,"ready_present":0}]}
+{"func":"wait_ready","case":"not_ready_then_ready","timeout":0.75,"script":[{"session":2,"ready":0},{"session":2,"ready":1},{"session":0}]}
+{"func":"wait_ready","case":"ready_raises","timeout":0.75,"script":[{"session":2,"ready_raises":1}]}
+{"func":"wait_ready","case":"four_iters","timeout":1.0,"script":[{"session":0},{"session":0},{"session":0},{"session":0}]}
+{"func":"signal","case":"no_event","has_event":0,"event_is_asyncio":1,"loop_running":1}
+{"func":"signal","case":"asyncio_live","has_event":1,"event_is_asyncio":1,"loop_running":1}
+{"func":"signal","case":"asyncio_dead","has_event":1,"event_is_asyncio":1,"loop_running":0}
+{"func":"signal","case":"plain_live","has_event":1,"event_is_asyncio":0,"loop_running":1}
+{"func":"signal","case":"plain_dead","has_event":1,"event_is_asyncio":0,"loop_running":0}

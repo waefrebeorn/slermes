@@ -1,0 +1,20 @@
+{"func":"is_os_keychain","case":"leaf macOS","backend":{"module":"keyring.backends.macOS","type_name":"Api","name":"macOS Keychain"}}
+{"func":"is_os_keychain","case":"leaf Windows","backend":{"module":"keyring.backends.Windows","type_name":"WinVaultKeyring"}}
+{"func":"is_os_keychain","case":"leaf secret service","backend":{"module":"keyring.backends.SecretService","type_name":"Keyring"}}
+{"func":"is_os_keychain","case":"leaf fail backend","backend":{"module":"keyring.backends.fail","type_name":"Keyring"}}
+{"func":"is_os_keychain","case":"leaf null backend","backend":{"module":"keyring.backends.null","type_name":"Keyring"}}
+{"func":"is_os_keychain","case":"leaf alt plaintext","backend":{"module":"keyrings.alt.file","type_name":"PlaintextKeyring"}}
+{"func":"is_os_keychain","case":"chain with OS child","backend":{"module":"keyring.backends.chainer","type_name":"ChainerBackend","backends":[{"module":"keyring.backends.macOS","type_name":"Api"}]}}
+{"func":"is_os_keychain","case":"chain with fail child","backend":{"module":"keyring.backends.chainer","type_name":"ChainerBackend","backends":[{"module":"keyring.backends.fail","type_name":"Keyring"}]}}
+{"func":"is_os_keychain","case":"empty chain","backend":{"module":"keyring.backends.chainer","type_name":"ChainerBackend","backends":[]}}
+{"func":"is_os_keychain","case":"nested chain with null grandchild","backend":{"module":"keyring.backends.chainer","type_name":"ChainerBackend","backends":[{"module":"keyring.backends.chainer","type_name":"Inner","backends":[{"module":"keyring.backends.null","type_name":"Keyring"}]}]}}
+{"func":"backend_label","case":"happy macOS name","backend":{"module":"keyring.backends.macOS","type_name":"Api","name":"macOS Keychain"}}
+{"func":"backend_label","case":"happy fallback to type name","backend":{"module":"keyring.backends.SecretService","type_name":"Keyring"}}
+{"func":"backend_label","case":"import error","import_error":true}
+{"func":"backend_label","case":"backend discovery error","backend_error":true}
+{"func":"backend_label","case":"fail backend unavailable","backend":{"module":"keyring.backends.fail","type_name":"Keyring"}}
+{"func":"new_ref","case":"new vault pointer","vault_dir":"C:/Users/test/.hermes/vault","account_hex":"a1b2c3d4"}
+{"func":"new_ref","case":"empty hex","vault_dir":"/tmp/vault","account_hex":""}
+{"func":"owns","case":"same directory","ref":{"storage":"keychain","vault_dir":"C:/Users/test/.hermes/vault"},"vault_dir":"C:/Users/test/.hermes/vault"}
+{"func":"owns","case":"cloned directory","ref":{"storage":"keychain","vault_dir":"C:/Users/other/.hermes/vault"},"vault_dir":"C:/Users/test/.hermes/vault"}
+{"func":"owns","case":"missing key in ref","ref":{"storage":"keychain"},"vault_dir":"C:/Users/test/.hermes/vault"}

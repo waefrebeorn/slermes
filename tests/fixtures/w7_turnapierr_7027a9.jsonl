@@ -1,0 +1,12 @@
+{"func":"is_local_validation_error","case":"ValueError plain","exc_type":"ValueError","message":"invalid parameter","stream_parse":false}
+{"func":"is_local_validation_error","case":"TypeError plain","exc_type":"TypeError","message":"unsupported operand type(s)","stream_parse":false}
+{"func":"is_local_validation_error","case":"RuntimeError not a local bug","exc_type":"RuntimeError","message":"boom","stream_parse":false}
+{"func":"is_local_validation_error","case":"KeyError not a local bug","exc_type":"KeyError","message":"missing","stream_parse":false}
+{"func":"is_local_validation_error","case":"UnicodeEncodeError excluded","exc_type":"UnicodeEncodeError","message":"codec can't encode","stream_parse":false}
+{"func":"is_local_validation_error","case":"JSONDecodeError excluded","exc_type":"JSONDecodeError","message":"Expecting value","stream_parse":false}
+{"func":"is_local_validation_error","case":"SSLError excluded","exc_type":"SSLError","message":"TLS handshake failed","stream_parse":false}
+{"func":"is_local_validation_error","case":"ValueError stream parse marker","exc_type":"ValueError","message":"unterminated SSE chunk","stream_parse":true}
+{"func":"is_local_validation_error","case":"TypeError NoneType not iterable upper","exc_type":"TypeError","message":"'NoneType' Object Is Not Iterable","stream_parse":false}
+{"func":"is_local_validation_error","case":"TypeError NoneType but no iterable phrase","exc_type":"TypeError","message":"NoneType has no attribute foo","stream_parse":false}
+{"func":"is_local_validation_error","case":"TypeError not iterable but no NoneType","exc_type":"TypeError","message":"object is not iterable","stream_parse":false}
+{"func":"is_local_validation_error","case":"ValueError with not iterable phrase still local","exc_type":"ValueError","message":"'NoneType' object is not iterable","stream_parse":false}
