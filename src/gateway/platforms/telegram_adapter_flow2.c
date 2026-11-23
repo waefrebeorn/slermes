@@ -1694,17 +1694,42 @@ static json_t *ta2_sniff_raster_format(ta2_ctx_t *ctx, const json_t *args) {
         if (ta2_is_oserror(ta2_raise_kind(hr))) { json_free(hr); return json_null(); }
         return hr;
     }
-    /* hex string -> bytes (<= 16) */
+    /* hex string -> bytes (<= 16) with bytes.fromhex() validation.
+     * ASCII whitespace is skipped before each byte; an invalid nibble raises
+     * ValueError with the exact CPython position message. */
     unsigned char head[16];
     size_t hn = 0;
     const char *hex = ta2_str(hr);
     if (hex) {
         size_t L = strlen(hex);
-        for (size_t i = 0; i + 1 < L && hn < 16; i += 2) {
-            int hi = hex[i], lo = hex[i + 1];
-            hi = (hi >= '0' && hi <= '9') ? hi - '0' : (tolower(hi) - 'a' + 10);
-            lo = (lo >= '0' && lo <= '9') ? lo - '0' : (tolower(lo) - 'a' + 10);
-            head[hn++] = (unsigned char)((hi << 4) | lo);
+        size_t i = 0;
+        while (i < L) {
+            /* skip ASCII whitespace before each byte, like bytes.fromhex */
+            while (i < L && (hex[i] == ' ' || hex[i] == '\t' || hex[i] == '\n' ||
+                             hex[i] == '\r' || hex[i] == '\x0b' || hex[i] == '\x0c')) i++;
+            if (i >= L) break;
+            int nib[2];
+            for (int j = 0; j < 2; j++) {
+                if (i >= L) {
+                    json_free(hr);
+                    return ta2_err("ValueError", "fromhex() arg must contain an even number of hexadecimal digits");
+                }
+                unsigned char c = (unsigned char)hex[i];
+                int v;
+                if (c >= '0' && c <= '9') v = c - '0';
+                else if (c >= 'a' && c <= 'f') v = c - 'a' + 10;
+                else if (c >= 'A' && c <= 'F') v = c - 'A' + 10;
+                else {
+                    char msg[96];
+                    snprintf(msg, sizeof msg,
+                             "non-hexadecimal number found in fromhex() arg at position %zu", i);
+                    json_free(hr);
+                    return ta2_err("ValueError", msg);
+                }
+                nib[j] = v;
+                i++;
+            }
+            if (hn < 16) head[hn++] = (unsigned char)((nib[0] << 4) | nib[1]);
         }
     }
     json_free(hr);

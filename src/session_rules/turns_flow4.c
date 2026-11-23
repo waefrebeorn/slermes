@@ -464,13 +464,17 @@ static json_t *tf4_cut_after(tf4_ctx_t *ctx, json_t *args) {
     const char *marker = tf4_get_str(args, "marker");
     const char *stop = tf4_get_str(args, "stop_marker");
     const char *mode = tf4_get_str(args, "find");
+    bool rfind = mode && strcmp(mode, "find") != 0;  /* oracle: anything but "find" selects rfind */
+    /* LIVE resolves the marker first: find(marker) < 0 returns None before
+     * split(stop_marker) can raise "empty separator". */
+    if (!msg || !marker || (rfind ? tf4_rfind(msg, marker) : tf4_find(msg, marker)) < 0)
+        return json_null();
     if (stop && stop[0] == '\0') {
         json_t *e = json_object();
         json_set(e, "__raise__", json_string("ValueError"));
         json_set(e, "message", json_string("empty separator"));
         return e;
     }
-    bool rfind = mode && strcmp(mode, "find") != 0;  /* oracle: anything but "find" selects rfind */
     char *r = tf4_cut_after_impl(msg, marker, stop, rfind);
     json_t *out = r ? json_string(r) : json_null();
     free(r);

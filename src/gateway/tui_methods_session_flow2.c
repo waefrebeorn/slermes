@@ -343,14 +343,35 @@ static char *tms2_str_param(const json_t *params, const char *key) {
 /* -- standard base64 (ASCII text -> bytes -> standard_b64encode) -- */
 static char *tms2_b64(const char *data) {
     static const char *T = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    size_t n = data ? strlen(data) : 0;
+    /* LIVE: base64.b64encode(s.encode("ascii", "replace")).
+     * Decode UTF-8 code points; each non-ASCII code point becomes one '?' and
+     * the resulting ASCII bytes are what we base64-encode. */
+    size_t raw = data ? strlen(data) : 0;
+    char *asc = malloc(raw + 1);
+    if (!asc) return NULL;
+    size_t an = 0, i = 0;
+    while (i < raw) {
+        unsigned char c = (unsigned char)data[i];
+        if (c < 0x80) { asc[an++] = (char)c; i++; continue; }
+        size_t need = (c & 0xE0) == 0xC0 ? 2 : (c & 0xF0) == 0xE0 ? 3 :
+                      (c & 0xF8) == 0xF0 ? 4 : 1;
+        bool ok = need > 1 && (i + need <= raw);
+        for (size_t k = 1; ok && k < need; k++) {
+            unsigned char cc = (unsigned char)data[i + k];
+            if ((cc & 0xC0) != 0x80) ok = false;
+        }
+        asc[an++] = '?';
+        i += ok ? need : 1;
+    }
+    asc[an] = '\0';
+    size_t n = an;
     size_t cap = ((n + 2) / 3) * 4 + 1;
     char *o = malloc(cap);
-    if (!o) return NULL;
+    if (!o) { free(asc); return NULL; }
     size_t k = 0;
-    size_t i = 0;
+    i = 0;
     while (i + 3 <= n) {
-        unsigned a = (unsigned char)data[i], b = (unsigned char)data[i+1], c = (unsigned char)data[i+2];
+        unsigned a = (unsigned char)asc[i], b = (unsigned char)asc[i+1], c = (unsigned char)asc[i+2];
         o[k++] = T[a >> 2];
         o[k++] = T[((a & 3) << 4) | (b >> 4)];
         o[k++] = T[((b & 15) << 2) | (c >> 6)];
@@ -359,13 +380,14 @@ static char *tms2_b64(const char *data) {
     }
     size_t rem = n - i;
     if (rem == 1) {
-        unsigned a = (unsigned char)data[i];
+        unsigned a = (unsigned char)asc[i];
         o[k++] = T[a >> 2]; o[k++] = T[(a & 3) << 4]; o[k++] = '='; o[k++] = '=';
     } else if (rem == 2) {
-        unsigned a = (unsigned char)data[i], b = (unsigned char)data[i+1];
+        unsigned a = (unsigned char)asc[i], b = (unsigned char)asc[i+1];
         o[k++] = T[a >> 2]; o[k++] = T[((a & 3) << 4) | (b >> 4)]; o[k++] = T[(b & 15) << 2]; o[k++] = '=';
     }
     o[k] = '\0';
+    free(asc);
     return o;
 }
 

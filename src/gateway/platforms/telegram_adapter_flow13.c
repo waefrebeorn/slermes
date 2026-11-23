@@ -315,7 +315,10 @@ static json_t *ta13_drain_polling_connections(ta13_ctx_t *ctx, const json_t *arg
     (void)args;
     const char *ak = ta13_str(ta13_arg(args, "app_kind"));
     const char *rk = ta13_str(ta13_arg(args, "req_kind"));
-    if (!ak || strcmp(ak, "ok") != 0) return json_null();
+    /* LIVE returns early only when _app is None (app_kind "none") or
+     * _app.bot is None (app_kind "no_bot"); every other app_kind runs the
+     * normal shutdown / bounded_request_step / initialize drain flow. */
+    if (ak && (strcmp(ak, "none") == 0 || strcmp(ak, "no_bot") == 0)) return json_null();
     if (rk && strcmp(rk, "missing") == 0) return json_null();
     /* polling_req.shutdown() */
     json_t *sh = ta13_call(ctx, "req_shutdown", json_object());

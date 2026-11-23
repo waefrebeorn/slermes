@@ -223,6 +223,14 @@ static char *wf2_path_name(const char *p) {
     size_t start = 0;
     for (size_t i = 0; i < n; i++)
         if (p[i] == '/' || p[i] == '\\') start = i + 1;
+    /* Windows drive prefix with no following separator: the drive is not part
+     * of Path(...).name, so a drive-only path has an empty name and the
+     * sanitizer falls back to "pasted-image". Drive-relative "C:foo" keeps
+     * "foo" as the name. */
+    if (start == 0 && n >= 2 && p[1] == ':' &&
+        ((p[0] >= 'A' && p[0] <= 'Z') || (p[0] >= 'a' && p[0] <= 'z') ||
+         (p[0] >= '0' && p[0] <= '9')))
+        start = 2;
     char *out = malloc(n - start + 1);
     memcpy(out, p + start, n - start);
     out[n - start] = '\0';
