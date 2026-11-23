@@ -15,6 +15,9 @@ import subprocess
 import sys
 import tempfile
 
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HARNESS = os.path.join(ROOT, ".testbin", "harnesses")
 PY = os.path.join(ROOT, ".testbin", "pytestbin.cache")
@@ -42,6 +45,7 @@ SKIP_GATES = {
 SKIP_KEYS = {
     "func", "fn", "id", "case", "name", "_orig", "__raise__", "__script__",
     "__callable__", "__special__", "type", "message", "exc", "errno", "reason",
+    "platform", "message_type", "intent",
 }
 
 

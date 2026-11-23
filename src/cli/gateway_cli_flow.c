@@ -397,7 +397,13 @@ json_t *gc_current_profile_name(const gc_seams_t *s) {
     json_t *home = gc_call(s, "get_hermes_home", gc_args0());
     if (gc_is_raise(home)) return home;
     json_t *args = gc_args0();
-    gc_set_str(args, "home", jstr(home));
+    {
+        char *norm = strdup(jstr(home) ? jstr(home) : "");
+        if (!norm) { json_free(home); return gc_raise("ValueError", "oom"); }
+        for (char *q = norm; *q; q++) if (*q == '\\') *q = '/';
+        gc_set_str(args, "home", norm);
+        free(norm);
+    }
     json_t *pnfh = gc_call(s, "profile_name_for_home", args);
     json_free(home);
     if (gc_is_raise(pnfh)) return pnfh;
@@ -767,8 +773,16 @@ json_t *gc_host_multiplexer_is_ours(const json_t *owner, const gc_seams_t *s) {
         json_free(ph); return json_bool(false);
     }
     json_t *sa = gc_args0();
-    gc_set_str(sa, "left", json_get_str(owner, "home", NULL));
-    gc_set_str(sa, "right", jstr(ph));
+    {
+        const char *lh = json_get_str(owner, "home", NULL) ? json_get_str(owner, "home", NULL) : "";
+        char *nl = strdup(lh), *nr = strdup(jstr(ph) ? jstr(ph) : "");
+        if (!nl || !nr) { free(nl); free(nr); json_free(ph); return gc_raise("ValueError", "oom"); }
+        for (char *q = nl; *q; q++) if (*q == '\\') *q = '/';
+        for (char *q = nr; *q; q++) if (*q == '\\') *q = '/';
+        gc_set_str(sa, "left", nl);
+        gc_set_str(sa, "right", nr);
+        free(nl); free(nr);
+    }
     json_t *sm = gc_call(s, "same_hermes_home", sa);
     json_free(ph);
     if (gc_is_raise(sm)) {
@@ -989,7 +1003,15 @@ json_t *gc_named_profile_refused_under_multiplexer(bool force, const gc_seams_t 
     }
     home1 = gc_call(s, "get_hermes_home", gc_args0());
     if (gc_is_raise(home1)) { if (gc_is_base_exc(gc_raise_class(home1))) { ret = home1; home1 = NULL; goto done; } ret = json_bool(false); goto done; }
-    json_t *a1 = gc_args0(); gc_set_str(a1, "home", jstr(home1));
+    json_t *a1 = gc_args0();
+    {
+        const char *raw_home = jstr(home1) ? jstr(home1) : "";
+        char *norm_home = strdup(raw_home);
+        if (!norm_home) { ret = gc_raise("ValueError", "oom"); goto done; }
+        for (char *q = norm_home; *q; q++) if (*q == '\\') *q = '/';
+        gc_set_str(a1, "home", norm_home);
+        free(norm_home);
+    }
     pnfh1 = gc_call(s, "profile_name_for_home", a1);
     if (gc_is_raise(pnfh1)) { if (gc_is_base_exc(gc_raise_class(pnfh1))) { ret = pnfh1; pnfh1 = NULL; goto done; } ret = json_bool(false); goto done; }
     bool cond1 = jpresent(pnfh1) && strcmp(jstr(pnfh1) ? jstr(pnfh1) : "", "default") != 0;
@@ -1112,7 +1134,14 @@ json_t *gc_attach_to_host_gateway_or_guard(bool force, bool replace, const gc_se
         goto probe_catch;
     }
     json_t *da = gc_args0();
-    gc_set_str(da, "home", jstr(home));
+    {
+        const char *raw = jstr(home) ? jstr(home) : "";
+        char *nd = strdup(*raw ? raw : ".");
+        if (!nd) { json_free(home); return gc_raise("ValueError", "oom"); }
+        for (char *q = nd; *q; q++) if (*q == '\\') *q = '/';
+        gc_set_str(da, "home", nd);
+        free(nd);
+    }
     gc_set_bool(da, "replace", replace);
     decision = gc_call(s, "decide", da);
     if (gc_is_raise(decision)) {

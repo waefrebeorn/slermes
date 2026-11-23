@@ -130,6 +130,33 @@ static json_t *gif_err(const char *type, const char *message) {
     return e;
 }
 
+/* Platform(...) validation: plugin adapters may use [-_.] but separators,
+ * whitespace and punctuation outside that set are rejected by the enum. */
+static bool gif_platform_name_ok(const char *v) {
+    if (!v || !*v) return false;
+    for (const char *p = v; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (!(c == '_' || c == '-' || c == '.' ||
+              (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+              (c >= '0' && c <= '9'))) return false;
+    }
+    return true;
+}
+
+static json_t *gif_bad_platform(const char *v) {
+    char esc[256]; size_t n = 0;
+    for (const char *p = v ? v : ""; *p && n + 2 < sizeof(esc); p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c == '\\') { esc[n++] = '\\'; esc[n++] = '\\'; }
+        else if (c == '\'') { esc[n++] = '\\'; esc[n++] = '\''; }
+        else esc[n++] = (char)c;
+    }
+    esc[n] = '\0';
+    char msg[320];
+    snprintf(msg, sizeof(msg), "'%s' is not a valid Platform", esc);
+    return gif_err("ValueError", msg);
+}
+
 /* str(KeyError(k)) == repr(k) for the string session ids the fixtures use. */
 static json_t *gif_keyerror(const char *key) {
     char buf[512];
@@ -426,6 +453,21 @@ static json_t *gif_admission_row(gif_ctx_t *c, const json_t *args) {
     (void)c;
     json_t *record = json_obj_get(args, "record");
     if (gif_is_null(record)) return NULL;  /* None stays None */
+    const char *intent = json_get_str(record, "intent", "");
+    if (strcmp(intent, "queue") != 0 && strcmp(intent, "steer") != 0 &&
+        strcmp(intent, "redirect") != 0) {
+        char esc[256]; size_t n = 0;
+        for (const char *p = intent; *p && n + 2 < sizeof(esc); p++) {
+            unsigned char c = (unsigned char)*p;
+            if (c == '\\') { esc[n++] = '\\'; esc[n++] = '\\'; }
+            else if (c == '\'') { esc[n++] = '\\'; esc[n++] = '\''; }
+            else esc[n++] = (char)c;
+        }
+        esc[n] = '\0';
+        char msg[320];
+        snprintf(msg, sizeof(msg), "'%s' is not a valid AdmissionIntent", esc);
+        return gif_err("ValueError", msg);
+    }
     json_t *row = json_copy(record);       /* asdict(record) */
     json_obj_del(row, "queued_owner_epoch");
     return row;
@@ -1009,6 +1051,8 @@ static json_t *gif_estop_turn_allowed(gif_ctx_t *c, const json_t *args) {
 
 /* PoP: gif_estop_gate @ gateway/run_inbound.py:_hm_estop_gate */
 static json_t *gif_estop_gate(gif_ctx_t *c, const json_t *args) {
+    const char *platform = json_get_str(json_obj_get(args, "source"), "platform", "");
+    if (*platform && !gif_platform_name_ok(platform)) return gif_bad_platform(platform);
     if (json_get_bool(args, "is_internal", false)) return NULL;
     json_t *notice = gif_call(c, "agent.estop.paused_reply", json_object());
     if (gif_is_raise(notice)) return notice;
@@ -1334,6 +1378,8 @@ static json_t *gif_send_unauthorized_decline(gif_ctx_t *c, const json_t *args);
 static json_t *gif_admit_event(gif_ctx_t *c, const json_t *args) {
     json_t *event = json_obj_get(args, "event");
     json_t *source = json_obj_get(event, "source");
+    const char *platform = json_get_str(source, "platform", "");
+    if (!gif_platform_name_ok(platform)) return gif_bad_platform(platform);
     json_t *config = json_obj_get(c->state, "config");
     /* try: reset_session_vars() except Exception: logger.debug (silent) */
     json_t *rv = gif_call(c, "reset_session_vars", json_object());

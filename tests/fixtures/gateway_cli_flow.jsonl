@@ -162,3 +162,4 @@
 {"func": "systemd_reset_and_run", "in": {"action": "start", "system": false, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": {"__raise__": "RuntimeError", "msg": "boom"}}}}
 {"func": "systemd_reset_and_run", "in": {"action": "start", "system": false, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": [{"returncode": 0}, {"__raise__": "ValueError", "msg": "boom"}]}}}
 {"func": "systemd_reset_and_run", "in": {"action": "start", "system": false, "previous_pid": 100, "seams": {"get_service_name": "hermes-gateway", "run_systemctl": [{"returncode": 0}, {"returncode": 0}], "wait_for_systemd_service_restart": {"__raise__": "RuntimeError", "msg": "boom"}}}}
+{"func": "named_profile_refused_under_multiplexer", "in": {"force": false, "seams": {"get_hermes_home": "C:\\", "profile_name_for_home": {"__raise__": "SystemExit", "msg": "1"}}}}

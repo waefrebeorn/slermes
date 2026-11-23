@@ -1736,12 +1736,52 @@ static json_t *gi2_hm_admit_to_fifo(gi2_ctx_t *c, json_t *args) {
 /* PoP: gi2_handle_message @ gateway/run_inbound.py:_handle_message */
 static json_t *gi2_handle_message(gi2_ctx_t *c, json_t *args) {
     json_t *ev = json_obj_get(args, "event");
+    const char *mt = json_get_str(ev, "message_type", "");
+    static const char *const types[] = {
+        "text", "location", "photo", "video", "audio", "voice",
+        "document", "sticker", "command"
+    };
+    bool ok = false;
+    for (size_t i = 0; i < sizeof(types)/sizeof(types[0]); i++)
+        if (strcmp(mt, types[i]) == 0) { ok = true; break; }
+    if (!ok) {
+        char esc[256]; size_t n = 0;
+        for (const char *p = mt; *p && n + 2 < sizeof(esc); p++) {
+            unsigned char ch = (unsigned char)*p;
+            if (ch == '\\' || ch == '\'') { esc[n++] = '\\'; esc[n++] = (char)ch; }
+            else esc[n++] = (char)ch;
+        }
+        esc[n] = '\0';
+        char msg[320];
+        snprintf(msg, sizeof(msg), "'%s' is not a valid MessageType", esc);
+        return gi2_err("ValueError", msg);
+    }
     json_t *ad = gi2_call(c, "self._hm_admit_event", gi2_arg1("event", ev));
     GI2_CHK(ad);
     if (gi2_is_null(ad)) { json_free(ad); return NULL; }
     json_t *ap[3];
     if (!gi2_unpack(ad, 3, ap)) { json_t *e = ap[0]; json_free(ad); return e; }
     json_t *ev2 = json_copy(ap[0]);
+    {
+        const char *mt2 = json_get_str(ev2, "message_type", "");
+        bool ok2 = false;
+        for (size_t i = 0; i < sizeof(types)/sizeof(types[0]); i++)
+            if (strcmp(mt2, types[i]) == 0) { ok2 = true; break; }
+        if (!ok2) {
+            char esc[256]; size_t n = 0;
+            for (const char *p = mt2; *p && n + 2 < sizeof(esc); p++) {
+                unsigned char ch = (unsigned char)*p;
+                if (ch == '\\' || ch == '\'') { esc[n++] = '\\'; esc[n++] = (char)ch; }
+                else esc[n++] = (char)ch;
+            }
+            esc[n] = '\0';
+            char msg[320];
+            snprintf(msg, sizeof(msg), "'%s' is not a valid MessageType", esc);
+            json_t *e2 = gi2_err("ValueError", msg);
+            json_free(ev2);
+            return e2;
+        }
+    }
     json_t *src = json_copy(ap[1]);
     bool internal = gi2_truthy(ap[2]);
     json_free(ad);
