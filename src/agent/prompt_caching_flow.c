@@ -365,6 +365,29 @@ static json_t *pc_is_one_shot(pc_ctx *ctx, json_t *messages, json_t *tools) {
 }
 
 /* ── _scaffold_parts / _split_unmarked_scaffolds ─────────────────────────── */
+static size_t pc_utf8_char_count(const char *s)
+{
+    size_t n = 0;
+    for (const unsigned char *p = (const unsigned char *)s; *p; p++)
+        if ((*p & 0xC0) != 0x80) n++;
+    return n;
+}
+
+/* Python slices by code points, not UTF-8 bytes. Return the byte offset
+ * after n characters; invalid continuation bytes count as their own char. */
+static size_t pc_utf8_char_offset(const char *s, size_t nchars)
+{
+    size_t off = 0, chars = 0;
+    while (s[off] && chars < nchars) {
+        unsigned char b = (unsigned char)s[off];
+        off++;
+        if ((b & 0xC0) == 0x80) continue;  /* continuation byte of the same char */
+        chars++;
+        while (s[off] && ((unsigned char)s[off] & 0xC0) == 0x80) off++;
+    }
+    return off;
+}
+
 
 /* PoP: pc_scaffold_parts @ agent/prompt_caching.py:_scaffold_parts */
 static json_t *pc_scaffold_parts(pc_ctx *ctx, json_t *msg, const json_t *cache_marker) {
@@ -383,7 +406,10 @@ static json_t *pc_scaffold_parts(pc_ctx *ctx, json_t *msg, const json_t *cache_m
         json_free(prefix);
         return NULL;
     }
-    char *tail = pc_str_slice(pc_jstr(content), strlen(pc_jstr(prefix)));
+    /* Python strips len(prefix) characters from content, not bytes. */
+    size_t pchars = pc_utf8_char_count(pc_jstr(prefix));
+    char *tail = pc_str_slice(pc_jstr(content),
+                              pc_utf8_char_offset(pc_jstr(content), pchars));
     json_t *arr = json_array();
     json_append(arr, pc_text_part(prefix, cache_marker));
     json_t *tn = json_string(tail ? tail : "");

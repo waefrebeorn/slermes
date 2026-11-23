@@ -50,6 +50,11 @@ void hc_platform_default_hermes_home(const char *suffix,
         snprintf(name, sizeof(name), ".hermes%s", s);
         hj(out, n, user_home ? user_home : "", name);
     }
+    /* pathlib.Path drops a trailing separator (except for the filesystem
+     * root itself). The port must not keep "hermesC:/" where Python
+     * reports "hermesC:". */
+    size_t ol = strlen(out);
+    while (ol > 1 && out[ol - 1] == '/') out[--ol] = '\0';
 }
 
 /* PoP: _get_platform_default_hermes_home @ hermes_constants.py */
