@@ -1,0 +1,13 @@
+{"func":"constants"}
+{"func":"is_recurring","job":{}}
+{"func":"is_recurring","job":{"schedule":null}}
+{"func":"is_recurring","job":{"schedule":{}}}
+{"func":"is_recurring","job":{"schedule":{"kind":"cron"}}}
+{"func":"is_recurring","job":{"schedule":{"kind":"interval"}}}
+{"func":"is_recurring","job":{"schedule":{"kind":"once"}}}
+{"func":"is_recurring","job":{"schedule":{"kind":null}}}
+{"func":"is_recurring","job":{"schedule":{"kind":"cron","expr":"* * * * *"}}}
+{"func":"is_recurring","job":{"schedule":false}}
+{"func":"is_recurring","job":{"schedule":0}}
+{"func":"is_recurring","job":{"schedule":""}}
+{"func":"is_recurring","job":{"schedule":[]}}

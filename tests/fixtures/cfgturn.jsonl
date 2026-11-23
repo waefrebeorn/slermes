@@ -1,0 +1,7 @@
+{"func":"label","limit":"9223372036854775807"}
+{"func":"label","limit":"0"}
+{"func":"label","limit":"10"}
+{"func":"label","limit":"-1"}
+{"func":"label","limit":"42"}
+{"func":"label","limit":"1000000"}
+{"func":"label","limit":"9223372036854775806"}

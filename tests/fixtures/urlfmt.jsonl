@@ -1,0 +1,16 @@
+{"func":"format","host":"example.com"}
+{"func":"format","host":"  example.com  "}
+{"func":"format","host":""}
+{"func":"format","host":"   "}
+{"func":"format","host":"::1"}
+{"func":"format","host":"2001:db8::1"}
+{"func":"format","host":"[::1]"}
+{"func":"format","host":"[2001:db8::1]"}
+{"func":"format","host":"[no colon]"}
+{"func":"format","host":"fe80::1%eth0"}
+{"func":"format","host":"[fe80::1%25eth0]"}
+{"func":"format","host":"a%b:c"}
+{"func":"format","host":"localhost:8080"}
+{"func":"format","host":"[::ffff:192.0.2.1]"}
+{"func":"format","host":"  [::1]  "}
+{"func":"format","host":"host%2 name"}
