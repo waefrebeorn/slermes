@@ -1068,6 +1068,23 @@ json_t *rid_base_url_hostname(rid_io_t *io, const json_t *in, json_t *st)
     return r;
 }
 
+/* Product adapter: utils.base_url_hostname(base_url) as a malloc'd C string.
+ * The FLOW entry keeps its JSON envelope for the differential oracle; this
+ * adapter lets product callers consume the same ported implementation without
+ * constructing envelopes themselves. Invalid input (Python exception) yields NULL.
+ */
+char *rid_base_url_hostname_cstr(const char *base_url)
+{
+    json_t *in = json_object();
+    json_set(in, "base_url", base_url ? json_string(base_url) : json_null());
+    json_t *r = rid_base_url_hostname(NULL, in, NULL);
+    json_free(in);
+    if (!r || r->type != JSON_STRING) { json_free(r); return NULL; }
+    char *out = strdup(r->str_val ? r->str_val : "");
+    json_free(r);
+    return out;
+}
+
 /* PoP: rid_base_url_path @ utils/urls.py:base_url_path */
 json_t *rid_base_url_path(rid_io_t *io, const json_t *in, json_t *st)
 {

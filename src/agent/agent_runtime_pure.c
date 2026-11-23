@@ -24,6 +24,8 @@
 /* provider_base_url_hostname is declared in port_provider_registry.c (libpath).
  * Forward-declare here so direct_native_* resolves correctly. */
 extern char *provider_base_url_hostname(const char *base_url);
+/* Ported utils.base_url_hostname from src/cli/route_identity_flow.c. */
+extern char *rid_base_url_hostname_cstr(const char *base_url);
 
 /* config_py_load_config_readonly is declared in port_config_py_helpers.h. */
 
@@ -162,7 +164,7 @@ bool direct_native_anthropic_tool_cache_capability(const char *provider,
     const char *eff_base_url = base_url ? base_url : "";
     if (strcmp(eff_api_mode, "anthropic_messages") != 0)
         return false;
-    char *host = provider_base_url_hostname(eff_base_url);
+    char *host = rid_base_url_hostname_cstr(eff_base_url);
     bool ok = host && strcmp(host, "api.anthropic.com") == 0;
     free(host);
     return ok;
