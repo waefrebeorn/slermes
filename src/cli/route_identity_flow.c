@@ -979,6 +979,31 @@ json_t *rid_should_clear_context_pin(rid_io_t *io, const json_t *in, json_t *st)
     return r;   /* the callee result UNCHANGED (NULL == None) */
 }
 
+/* Product adapter for the CLI wrapper: arg is "configured_model\tactive_model\troutes_match".
+ * routes_match=1 models _context_route_mismatch returning False; 0 models True.
+ */
+static json_t *rid_pin_seam(void *ctx, const char *name, const json_t *args)
+{
+    (void)name; (void)args;
+    return json_bool(*(int *)ctx ? 0 : 1);
+}
+
+int rid_should_clear_context_pin_cstr(const char *configured_model,
+                                      const char *active_model, int routes_match)
+{
+    rid_io_t io = { rid_pin_seam, &routes_match };
+    json_t *in = json_object();
+    json_set(in, "configured_model", configured_model ? json_string(configured_model) : json_null());
+    json_set(in, "active_model", active_model ? json_string(active_model) : json_null());
+    json_set(in, "configured_base_url", json_string(""));
+    json_set(in, "active_base_url", json_string(""));
+    json_t *r = rid_should_clear_context_pin(&io, in, NULL);
+    json_free(in);
+    int out = rid_truth(r) ? 1 : 0;
+    json_free(r);
+    return out;
+}
+
 /* PoP: rid_should_clear_context_pin_async @ hermes_cli/route_identity.py:should_clear_context_pin_async */
 json_t *rid_should_clear_context_pin_async(rid_io_t *io, const json_t *in, json_t *st)
 {

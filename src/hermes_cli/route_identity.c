@@ -9,21 +9,28 @@
 #include <string.h>
 
 
+/* Ported should_clear_context_pin from src/cli/route_identity_flow.c. */
+extern int rid_should_clear_context_pin_cstr(const char *configured_model,
+                                             const char *active_model, int routes_match);
+
 /* === dissolved from ports_wrappers.c === */
 /* PoP: hermes_cli_route_identity_should_clear_context_pin @ hermes_cli/route_identity.py:should_clear_context_pin */
 int hermes_cli_route_identity_should_clear_context_pin(const char *arg) {
-    /* Python: model mismatch or route mismatch; fail-closed True. Arg =
-     * "configured_model\tactive_model\tmatch". */
-    if (!arg || !*arg) { printf("1\n"); return 0; }
-    const char *t1 = strchr(arg, '\t');
-    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
-    const char *cm = arg;
-    const char *am = t1 ? t1 + 1 : "";
-    int match = t2 && t2[1] == '1';
-    if (cm[0] && strcmp(cm, am) != 0) { printf("1\n"); return 0; }
-    if (!match) { printf("1\n"); return 0; }
-    printf("0\n");
-    return 0;
+    int out = 1;
+    if (arg && *arg) {
+        char buf[1024];
+        snprintf(buf, sizeof buf, "%s", arg);
+        char *t1 = strchr(buf, '\t');
+        char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+        int match = t2 && t2[1] == '1';
+        if (t1) *t1 = '\0';
+        if (t2) *t2 = '\0';
+        const char *cm = buf;
+        const char *am = t1 ? t1 + 1 : "";
+        out = rid_should_clear_context_pin_cstr(cm, am, match);
+    }
+    printf("%d\n", out ? 1 : 0);
+    return out;
 }
 
 /* PoP: hermes_cli_route_identity_should_clear_context_pin_async @ hermes_cli/route_identity.py:should_clear_context_pin_async */
