@@ -1,0 +1,21 @@
+{"func":"lower","case":"plain lowercase unchanged","command":"echo hello world"}
+{"func":"lower","case":"uppercase words lowered","command":"ECHO HELLO WORLD"}
+{"func":"lower","case":"dash tokens preserved","command":"grep -RIn FILE --Force"}
+{"func":"lower","case":"mixed whitespace","command":"sudo\t-X  DoSomething\nNEXT"}
+{"func":"lower","case":"empty string","command":""}
+{"func":"splice","case":"insert two starts","command":"ls; reboot","edits":[[3,3,"\n"],[7,7,"\n"]]}
+{"func":"splice","case":"replace span","command":"rm -rf /","edits":[[0,2,"safe"]]}
+{"func":"splice","case":"delete span","command":"abcdef","edits":[[1,3,""]]}
+{"func":"splice","case":"no edits","command":"hello","edits":[]}
+{"func":"splice","case":"append at end","command":"abc","edits":[[3,3,"XYZ"]]}
+{"func":"eval","case":"plain join","args":["echo","hi","there"]}
+{"func":"eval","case":"leading double dash dropped","args":["--","rm","-rf","/"]}
+{"func":"eval","case":"empty args -> null","args":[]}
+{"func":"eval","case":"only double dash -> null","args":["--"]}
+{"func":"family","case":"python3.11","executable":"python3.11"}
+{"func":"family","case":"windows path py.exe","executable":"C:\\tools\\py.exe"}
+{"func":"family","case":"node","executable":"/usr/bin/node"}
+{"func":"family","case":"pwsh.exe","executable":"pwsh.exe"}
+{"func":"family","case":"bash is not interpreter","executable":"bash"}
+{"func":"family","case":"python4 invalid","executable":"python4"}
+{"func":"family","case":"perl5.36","executable":"perl5.36"}

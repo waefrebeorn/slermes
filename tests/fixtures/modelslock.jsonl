@@ -1,0 +1,12 @@
+{"func":"lock_spec","case":1,"path":"cache.json"}
+{"func":"lock_spec","case":2,"path":"models_cache.json"}
+{"func":"lock_spec","case":3,"path":"C:/Users/u/.hermes/provider_models_cache.json"}
+{"func":"lock_spec","case":4,"path":"/home/u/.hermes/models.json"}
+{"func":"lock_spec","case":5,"path":"Cache.JSON"}
+{"func":"write","case":6,"raise":"none","path":"cache.json"}
+{"func":"write","case":7,"raise":"write_oserror","path":"cache.json"}
+{"func":"write","case":8,"raise":"write_timeouterror","path":"cache.json"}
+{"func":"write","case":9,"raise":"write_valueerror","path":"cache.json"}
+{"func":"write","case":10,"raise":"lock_oserror","path":"cache.json"}
+{"func":"write","case":11,"raise":"lock_timeouterror","path":"cache.json"}
+{"func":"write","case":12,"raise":"lock_valueerror","path":"cache.json"}

@@ -1,0 +1,27 @@
+{"func":"as_bool","case":1,"raw":"YES","default":false}
+{"func":"as_bool","case":2,"raw":"  off  ","default":true}
+{"func":"as_bool","case":3,"raw":true,"default":false}
+{"func":"as_bool","case":4,"raw":null,"default":true}
+{"func":"as_bool","case":5,"raw":"maybe","default":false}
+{"func":"as_bool","case":6,"raw":1,"default":false}
+{"func":"as_bool","case":7,"raw":0,"default":true}
+{"func":"as_positive","case":8,"raw":"2.5","default":1.0}
+{"func":"as_positive","case":9,"raw":"0","default":7.0}
+{"func":"as_positive","case":10,"raw":true,"default":3.0}
+{"func":"as_positive","case":11,"raw":"abc","default":9.0}
+{"func":"as_positive","case":12,"raw":4,"default":1.0}
+{"func":"as_positive_int","case":13,"raw":"3.0","default":5}
+{"func":"as_positive_int","case":14,"raw":"2.7","default":5}
+{"func":"as_positive_int","case":15,"raw":"0","default":5}
+{"func":"configured_bot_user","case":16,"extra":{"bot_users":" botA , botB "},"user_id":"botA"}
+{"func":"configured_bot_user","case":17,"extra":{"bot_users":["botA"]},"user_id":" botA "}
+{"func":"configured_bot_user","case":18,"extra":{"bot_users":[]},"user_id":""}
+{"func":"configured_bot_user","case":19,"extra":null,"user_id":"botA"}
+{"func":"settings","case":20,"block":{}}
+{"func":"settings","case":21,"block":{"enabled":"no","max_events":"3","window_seconds":"10.5","cooldown_seconds":0,"max_hops":2,"bot_replies_expect_reply":"yes"}}
+{"func":"guard","case":22,"settings":{"enabled":true,"max_events":2,"window_seconds":10.0,"cooldown_seconds":20.0,"max_hops":4,"bot_replies_expect_reply":false},"ops":[{"op":"admit","conv":"c","t":0},{"op":"admit","conv":"c","t":1},{"op":"admit","conv":"c","t":2},{"op":"blocked","conv":"c","t":3},{"op":"blocked","conv":"c","t":25},{"op":"admit","conv":"c","t":26}]}
+{"func":"guard","case":23,"settings":{"enabled":true,"max_events":20,"window_seconds":300.0,"cooldown_seconds":600.0,"max_hops":4,"bot_replies_expect_reply":false},"ops":[{"op":"chain","conv":"c","sender":"A","text":"","is_bot":false,"t":0},{"op":"chain","conv":"c","sender":"A","text":"  hi  ","is_bot":true,"t":1},{"op":"chain","conv":"c","sender":"A","text":"hi","is_bot":true,"t":2},{"op":"chain","conv":"c","sender":"A","text":"there","is_bot":true,"t":3}]}
+{"func":"guard","case":24,"settings":{"enabled":true,"max_events":20,"window_seconds":300.0,"cooldown_seconds":600.0,"max_hops":4,"bot_replies_expect_reply":false},"ops":[{"op":"chain","conv":"c","sender":"A","text":"a","is_bot":true,"t":0},{"op":"note","conv":"c","recipient":"A"},{"op":"chain","conv":"c","sender":"A","text":"b","is_bot":true,"t":1}]}
+{"func":"guard","case":25,"settings":{"enabled":true,"max_events":20,"window_seconds":300.0,"cooldown_seconds":600.0,"max_hops":1,"bot_replies_expect_reply":false},"ops":[{"op":"chain","conv":"c","sender":"A","text":"a","is_bot":true,"t":0},{"op":"chain","conv":"c","sender":"B","text":"b","is_bot":true,"t":1}]}
+{"func":"guard","case":26,"settings":{"enabled":false,"max_events":20,"window_seconds":300.0,"cooldown_seconds":600.0,"max_hops":4,"bot_replies_expect_reply":false},"ops":[{"op":"admit","conv":"c","t":0},{"op":"chain","conv":"c","sender":"A","text":"a","is_bot":true,"t":1},{"op":"blocked","conv":"c","t":2},{"op":"note","conv":"c","recipient":"A"}]}
+{"func":"guard","case":27,"settings":{"enabled":true,"max_events":20,"window_seconds":300.0,"cooldown_seconds":600.0,"max_hops":4,"bot_replies_expect_reply":true},"ops":[{"op":"chain","conv":"c","sender":"A","text":"a","is_bot":true,"t":0},{"op":"note","conv":"c","recipient":"A"},{"op":"chain","conv":"c","sender":"A","text":"b","is_bot":true,"t":1}]}

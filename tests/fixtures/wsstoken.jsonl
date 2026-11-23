@@ -1,0 +1,12 @@
+{"func":"resolve","case":"unset env -> minted token","minted":"MINTED_RANDOM_abc123","env_value":null}
+{"func":"resolve","case":"empty env -> minted token","minted":"freshXYZ","env_value":""}
+{"func":"resolve","case":"plain env token returned verbatim","env_value":"super-secret-token"}
+{"func":"resolve","case":"plain token with spaces kept verbatim","env_value":"  spaced token  "}
+{"func":"resolve","case":"uppercase FILE prefix is not a file path","env_value":"FILE:/etc/token"}
+{"func":"resolve","case":"contains file: but does not start with it","env_value":"xfile:/etc/token"}
+{"func":"resolve","case":"file token trimmed","env_value":"file:/run/secrets/token.txt","file_content":"  abc123\n\t"}
+{"func":"resolve","case":"file token with UTF-8 BOM","env_value":"file:/run/token","file_content":"\ufeffBOMTOK\r\n"}
+{"func":"resolve","case":"empty file -> SystemExit","env_value":"file:/run/empty","file_content":"   \n\t"}
+{"func":"resolve","case":"truly empty file -> SystemExit","env_value":"file:/empty2","file_content":""}
+{"func":"resolve","case":"unreadable file -> SystemExit with errno text","env_value":"file:/run/denied","file_error":"boom"}
+{"func":"resolve","case":"relative file path","env_value":"file:relative/token","file_content":"tok-value"}

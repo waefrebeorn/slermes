@@ -1,0 +1,11 @@
+{"func":"bare","provider":"llamacpp","base_url_in":null,"api_key":null,"named":false,"ep_present":true,"ep_base_url":"http://127.0.0.1:8080/v1","ep_api_key":"sk-local"}
+{"func":"bare","provider":" LLAMA.CPP ","base_url_in":null,"api_key":null,"named":false,"ep_present":true,"ep_base_url":"  http://x:9000/v1  ","ep_api_key":""}
+{"func":"bare","provider":"llama-cpp","base_url_in":"http://explicit","api_key":"K","named":false,"ep_present":true,"ep_base_url":"http://x","ep_api_key":"E"}
+{"func":"bare","provider":"openai","base_url_in":null,"api_key":null,"named":false,"ep_present":true,"ep_base_url":"http://x","ep_api_key":"E"}
+{"func":"bare","provider":"llamacpp","base_url_in":null,"api_key":"MYKEY","named":false,"ep_present":true,"ep_base_url":"http://x","ep_api_key":"E"}
+{"func":"bare","provider":"llamacpp","base_url_in":null,"api_key":null,"named":true,"ep_present":true,"ep_base_url":"http://x","ep_api_key":"E"}
+{"func":"bare","provider":"llamacpp","base_url_in":null,"api_key":null,"named":false,"ep_present":false,"ep_base_url":"","ep_api_key":""}
+{"func":"bare","provider":"LLAMACPP","base_url_in":"","api_key":"","named":false,"ep_present":true,"ep_base_url":"http://y","ep_api_key":"E2"}
+{"func":"bare","provider":null,"base_url_in":null,"api_key":null,"named":false,"ep_present":true,"ep_base_url":"http://z","ep_api_key":"K3"}
+{"func":"bare","provider":"llamacpp","base_url_in":null,"api_key":"PROVIDED","named":false,"ep_present":false,"ep_base_url":"","ep_api_key":""}
+{"func":"bare","provider":"  llamacpp  ","base_url_in":null,"api_key":null,"named":false,"ep_present":true,"ep_base_url":null,"ep_api_key":"K4"}

@@ -1,0 +1,16 @@
+{"case":"slc01","func":"closed_idle_unviewed","live":{"subscribers":0,"detached":false},"execution_state":"idle","target_ended_at":"2026-01-01","history_mount":false,"out":true}
+{"case":"slc02","func":"closed_idle_unviewed","live":{"subscribers":1,"detached":false},"execution_state":"idle","target_ended_at":"2026-01-01","history_mount":false,"out":false}
+{"case":"slc03","func":"closed_idle_unviewed","live":{"subscribers":0,"detached":false},"execution_state":"idle","target_ended_at":null,"history_mount":false,"out":false}
+{"case":"slc04","func":"closed_idle_unviewed","live":{"subscribers":0,"detached":true},"execution_state":"busy","target_ended_at":null,"history_mount":false,"out":false}
+{"case":"slc05","func":"closed_idle_unviewed","live":{"subscribers":0,"detached":false},"execution_state":"idle","target_ended_at":"2026-01-01","history_mount":true,"out":true}
+{"case":"slc06","func":"closed_idle_unviewed","live":null,"execution_state":"idle","target_ended_at":"2026-01-01","history_mount":false,"out":false}
+{"case":"slc07","func":"closed_idle_unviewed","live":{"subscribers":0,"detached":true},"execution_state":"idle","target_ended_at":null,"history_mount":false,"out":true}
+{"case":"slc08","func":"closed_and_unviewed","live":{"subscribers":0,"detached":false},"execution_state":"idle","history_mount":false,"target":"t1","receipt_raises":false,"no_row":false,"row_ended_at":"2026-01-01","out":true}
+{"case":"slc09","func":"closed_and_unviewed","live":{"subscribers":0,"detached":false},"execution_state":"idle","history_mount":false,"target":"t1","receipt_raises":true,"no_row":false,"row_ended_at":"2026-01-01","out":false}
+{"case":"slc10","func":"closed_and_unviewed","live":{"subscribers":0,"detached":false},"execution_state":"idle","history_mount":false,"target":null,"receipt_raises":false,"no_row":false,"row_ended_at":"2026-01-01","out":false}
+{"case":"slc11","func":"closed_and_unviewed","live":{"subscribers":0,"detached":false},"execution_state":"idle","history_mount":false,"target":"t1","receipt_raises":false,"no_row":true,"row_ended_at":"2026-01-01","out":false}
+{"case":"slc12","func":"closed_and_unviewed","live":{"subscribers":0,"detached":true},"execution_state":"idle","history_mount":false,"target":"t1","receipt_raises":false,"no_row":false,"row_ended_at":null,"out":true}
+{"case":"slc13","func":"closed_and_unviewed","live":{"subscribers":2,"detached":false},"execution_state":"idle","history_mount":false,"target":"t1","receipt_raises":false,"no_row":false,"row_ended_at":"2026-01-01","out":false}
+{"case":"slc14","func":"closed_and_unviewed","live":{"subscribers":0,"detached":false},"execution_state":"running","history_mount":false,"target":"t1","receipt_raises":false,"no_row":false,"row_ended_at":"2026-01-01","out":false}
+{"case":"slc15","func":"closed_and_unviewed","live":null,"execution_state":"idle","history_mount":false,"target":"t1","receipt_raises":false,"no_row":false,"row_ended_at":"2026-01-01","out":false}
+{"case":"slc16","func":"closed_and_unviewed","live":{"subscribers":0,"detached":false},"execution_state":"idle","history_mount":true,"target":"t1","receipt_raises":false,"no_row":false,"row_ended_at":null,"out":true}

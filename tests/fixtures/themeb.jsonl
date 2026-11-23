@@ -1,0 +1,12 @@
+{"func": "theme_request", "sid": "s1", "payload": {"theme": "dark"}, "answer": "{\"success\":true,\"theme\":\"dark\"}", "result": null, "elapsed": 0.0}
+{"func": "theme_request", "sid": "s2", "payload": {"theme": "light"}, "answer": "{\"success\":false,\"error\":\"nope\"}", "result": null, "elapsed": 0.0}
+{"func": "theme_request", "sid": "s3", "payload": {"theme": "x"}, "answer": "", "result": null, "elapsed": 0.0}
+{"func": "theme_request", "sid": "s4", "payload": {"theme": "x"}, "answer": null, "result": null, "elapsed": 0.0}
+{"func": "theme_request", "sid": "s5", "payload": {"picker": true}, "answer": null, "result": {"picked": {"name": "solarized", "mode": "dark"}}, "elapsed": 1.0}
+{"func": "theme_request", "sid": "s6", "payload": {"picker": true}, "answer": null, "result": {"said": "  I choose this one  "}, "elapsed": 2.0}
+{"func": "theme_request", "sid": "s7", "payload": {"picker": true}, "answer": null, "result": {"said": "   "}, "elapsed": 2.0}
+{"func": "theme_request", "sid": "s8", "payload": {"picker": true}, "answer": null, "result": null, "elapsed": 299.0}
+{"func": "theme_request", "sid": "s9", "payload": {"picker": true}, "answer": null, "result": null, "elapsed": 300.0}
+{"func": "theme_request", "sid": "s10", "payload": {"picker": true}, "answer": null, "result": {}, "elapsed": 1.0}
+{"func": "theme_request", "sid": "s11", "payload": {"picker": false, "x": 1}, "answer": "{\"ok\":1}", "result": null, "elapsed": 0.0}
+{"func": "theme_request", "sid": "s12", "payload": {"picker": true}, "answer": null, "result": {"picked": "not-a-dict", "said": "fallback"}, "elapsed": 0.0}

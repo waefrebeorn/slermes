@@ -1,0 +1,11 @@
+{"func":"remember","values":{"a":{"m":1}},"stamps":{"a":100},"ttl":10,"now":105,"memo_key":"k","cache_value":{"v":1}}
+{"func":"remember","values":{"a":{},"b":{}},"stamps":{"a":100,"b":200},"ttl":10,"now":120,"memo_key":"c","cache_value":{}}
+{"func":"remember","values":{},"stamps":{},"ttl":5,"now":0,"memo_key":"x","cache_value":{"n":2}}
+{"func":"remember","values":{"old":{}},"stamps":{},"ttl":1,"now":999,"memo_key":"old","cache_value":{"n":3}}
+{"func":"remember","values":{"p":{"v":0}},"stamps":{"p":50},"ttl":0,"now":50,"memo_key":"q","cache_value":{"v":9}}
+{"func":"bound","context":{"A":["x",1],"B":["y",2],"C":["z",3]},"cache_key":"D","limit":3,"max_context":{"A":9,"B":8,"C":7}}
+{"func":"bound","context":{"A":["x",5]},"cache_key":"A","limit":1,"max_context":{"A":1}}
+{"func":"bound","context":{"A":["x",5],"B":["y",2]},"cache_key":"C","limit":5,"max_context":{}}
+{"func":"bound","context":{"A":[1,10],"B":[2,20],"C":[3,30]},"cache_key":"C","limit":2,"max_context":{"A":1,"B":2,"C":3}}
+{"func":"bound","context":{"A":[1,10],"B":[2,20]},"cache_key":"C","limit":1,"max_context":{"A":1,"B":2}}
+{"func":"bound","context":{"A":[1,7],"B":[2,7]},"cache_key":"Z","limit":2,"max_context":{"A":1,"B":2}}

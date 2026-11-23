@@ -1,0 +1,12 @@
+{"func":"record","case":"no receipt at all","reason":"refused","has_receipt":false,"has_record_reason":false,"has_record_without":false}
+{"func":"record","case":"no receipt, without_receipt set","reason":"failed","without_receipt":"failed","has_receipt":false,"has_record_reason":false,"has_record_without":true}
+{"func":"record","case":"receipt with record_stop_reason, None","reason":"user_cancel","has_receipt":true,"has_record_reason":true,"has_record_without":false}
+{"func":"record","case":"receipt with record_stop_reason, without set -> elif miss","reason":"x","without_receipt":"refused","has_receipt":true,"has_record_reason":true,"has_record_without":false}
+{"func":"record","case":"receipt with only without method, None -> no call","reason":"y","has_receipt":true,"has_record_reason":false,"has_record_without":true}
+{"func":"record","case":"receipt with only without method, set","reason":"z","without_receipt":"failed","has_receipt":true,"has_record_reason":false,"has_record_without":true}
+{"func":"record","case":"both methods, None -> reason","reason":"stop reason with spaces","has_receipt":true,"has_record_reason":true,"has_record_without":true}
+{"func":"record","case":"both methods, set -> without","reason":"ignored","without_receipt":"refused","has_receipt":true,"has_record_reason":true,"has_record_without":true}
+{"func":"record","case":"empty reason","reason":"","has_receipt":true,"has_record_reason":true,"has_record_without":false}
+{"func":"best","case":"best effort no exception","message":"bookkeeping step","raises":false,"exc":""}
+{"func":"best","case":"best effort swallows exception","message":"cache seed failed: %s","raises":true,"exc":"boom"}
+{"func":"best","case":"best effort empty message","message":"","raises":true,"exc":"ValueError: bad"}

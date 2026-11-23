@@ -1,0 +1,11 @@
+{"func":"rotate","old":"sk-old","new":"  sk-new  ","current":"sk-old","runtime_is_dict":true}
+{"func":"rotate","old":"sk-old","new":"sk-new","current":"sk-other","runtime_is_dict":true}
+{"func":"rotate","old":"sk-old","new":"sk-new","current":"sk-old","runtime_is_dict":false}
+{"func":"rotate","old":null,"new":"sk-fresh","current":null,"runtime_is_dict":true}
+{"func":"rotate","old":"","new":"","current":"","runtime_is_dict":true}
+{"func":"rotate","old":"K","new":null,"current":"K","runtime_is_dict":true}
+{"func":"rotate","old":"K","new":"   ","current":"K","runtime_is_dict":true}
+{"func":"rotate","old":null,"new":"X","current":"K","runtime_is_dict":true}
+{"func":"rotate","old":"dup","new":"NEW","current":"dup","runtime_is_dict":true}
+{"func":"rotate","old":"K","new":"Z","current":null,"runtime_is_dict":true}
+{"func":"rotate","old":"tab","new":"\tA\t","current":"tab","runtime_is_dict":true}

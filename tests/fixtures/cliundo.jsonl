@@ -1,0 +1,8 @@
+{"func":"undone_span","before":[{"timestamp":100},{"role":"assistant"},{"timestamp":200},{"timestamp":300},{"timestamp":400}],"indices":[0,2,4],"turns_undone":"1","case":"one turn undone"}
+{"func":"undone_span","before":[{"timestamp":100},{"role":"assistant"},{"timestamp":200},{"timestamp":300},{"timestamp":400}],"indices":[0,2,4],"turns_undone":"2","case":"two turns undone"}
+{"func":"undone_span","before":[{"timestamp":100},{"timestamp":200}],"indices":[0,1],"turns_undone":"0","case":"zero undone"}
+{"func":"undone_span","before":[{"timestamp":100},{"timestamp":200}],"indices":[],"turns_undone":"1","case":"no user turns"}
+{"func":"undone_span","before":[{"timestamp":100},{"timestamp":200},{"timestamp":300}],"indices":[0,1,2],"turns_undone":"5","case":"undone exceeds history"}
+{"func":"undone_span","before":[{"role":"user"},{"timestamp":200}],"indices":[0,1],"turns_undone":"1","case":"missing timestamp is null"}
+{"func":"undone_span","before":[{"timestamp":"2026-01-01T00:00:00Z"}],"indices":[0],"turns_undone":"1","case":"string timestamp cut zero"}
+{"func":"undone_span","before":[{"timestamp":1},{"timestamp":2},{"timestamp":3}],"indices":[0,1,2],"turns_undone":"-1","case":"negative undone"}

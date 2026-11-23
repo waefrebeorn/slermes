@@ -1,0 +1,10 @@
+{"func":"invoke","case":1,"params":[{"name":"arg","kind":"POSITIONAL_OR_KEYWORD"}],"raw_args":"hello","context":{}}
+{"func":"invoke","case":2,"params":[{"name":"source","kind":"POSITIONAL_OR_KEYWORD"}],"raw_args":"RAW","context":{"source":"dup"}}
+{"func":"invoke","case":3,"params":[{"name":"source","kind":"POSITIONAL_OR_KEYWORD"},{"name":"session_id","kind":"KEYWORD_ONLY"}],"raw_args":"RAW","context":{"source":"dup","session_id":"s1","platform":"p"}}
+{"func":"invoke","case":4,"params":[{"name":"arg","kind":"POSITIONAL_OR_KEYWORD"},{"name":"kw","kind":"VAR_KEYWORD"}],"raw_args":"RAW","context":{"source":"s","session_id":"x"}}
+{"func":"invoke","case":5,"params":[{"name":"h","kind":"POSITIONAL_OR_KEYWORD"},{"name":"a","kind":"POSITIONAL_OR_KEYWORD"},{"name":"b","kind":"KEYWORD_ONLY"}],"raw_args":"RAW","context":{"a":"A","b":"B","c":"C"}}
+{"func":"invoke","case":6,"params":[{"name":"tok","kind":"POSITIONAL_ONLY"},{"name":"x","kind":"KEYWORD_ONLY"}],"raw_args":"RAW","context":{"x":"X","tok":"T"}}
+{"func":"invoke","case":7,"params":[{"name":"x","kind":"NOSIG"}],"raw_args":"RAW","context":{"a":"b"}}
+{"func":"invoke","case":8,"params":[{"name":"h","kind":"POSITIONAL_OR_KEYWORD"},{"name":"args","kind":"VAR_POSITIONAL"},{"name":"z","kind":"KEYWORD_ONLY"}],"raw_args":"RAW","context":{"z":"Z","extra":"E"}}
+{"func":"invoke","case":9,"params":[{"name":"a","kind":"POSITIONAL_OR_KEYWORD"},{"name":"b","kind":"KEYWORD_ONLY"}],"raw_args":"RAW","context":{"platform":"telegram"}}
+{"func":"invoke","case":10,"params":[{"name":"arg","kind":"POSITIONAL_OR_KEYWORD"}],"raw_args":{"k":1,"s":"v"},"context":{}}

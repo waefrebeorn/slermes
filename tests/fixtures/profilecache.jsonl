@@ -1,0 +1,10 @@
+{"func":"run","case":1,"initial":{"X":"frozen"},"ops":[{"op":"set","attr":"X","value":"new","override":null,"home":"h1"},{"op":"get","attr":"X","default":"d","override":null,"home":"h1"}]}
+{"func":"run","case":2,"initial":{"X":"frozen"},"ops":[{"op":"set","attr":"X","value":"routed","override":"h1","home":"h1"},{"op":"get","attr":"X","default":"cold","override":"h1","home":"h1"}]}
+{"func":"run","case":3,"initial":{"X":"launch"},"ops":[{"op":"get","attr":"X","default":"cold","override":"h1","home":"h1"}]}
+{"func":"run","case":4,"initial":{"X":"launch"},"ops":[{"op":"set","attr":"X","value":"new","override":null,"home":"h1"},{"op":"get","attr":"X","default":"cold","override":"h1","home":"h1"}]}
+{"func":"run","case":5,"initial":{},"ops":[{"op":"set","attr":"X","value":"a","override":"h1","home":"h1"},{"op":"set","attr":"X","value":"b","override":"h1","home":"h2"},{"op":"get","attr":"X","default":"cold","override":"h1","home":"h1"},{"op":"get","attr":"X","default":"cold","override":"h1","home":"h2"}]}
+{"func":"run","case":6,"initial":{},"ops":[{"op":"set","attr":"X","value":"x","override":"h1","home":"h1"},{"op":"set","attr":"Y","value":"y","override":"h1","home":"h1"},{"op":"get","attr":"X","default":"cold","override":"h1","home":"h1"},{"op":"get","attr":"Y","default":"cold","override":"h1","home":"h1"}]}
+{"func":"run","case":7,"initial":{},"ops":[{"op":"get","attr":"Z","default":42,"override":"h1","home":"h1"}]}
+{"func":"run","case":8,"initial":{},"ops":[{"op":"set","attr":"X","value":{"k":1},"override":"h1","home":"h1"},{"op":"get","attr":"X","default":null,"override":"h1","home":"h1"}]}
+{"func":"run","case":9,"initial":{"X":"a"},"ops":[{"op":"set","attr":"X","value":"b","override":"h1","home":"h1"},{"op":"get","attr":"X","default":"cold","override":null,"home":"h1"},{"op":"get","attr":"X","default":"cold","override":"h1","home":"h1"}]}
+{"func":"run","case":10,"initial":{"X":true,"Y":0},"ops":[{"op":"get","attr":"X","default":false,"override":null,"home":"h1"},{"op":"get","attr":"Y","default":9,"override":null,"home":"h1"},{"op":"get","attr":"X","default":false,"override":"h1","home":"h2"}]}

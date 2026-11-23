@@ -1,0 +1,11 @@
+{"func":"heading"}
+{"func":"rule"}
+{"func":"section"}
+{"func":"today","clock_ok":true,"date":"2026-11-23"}
+{"func":"today","clock_ok":true,"date":"2000-01-01"}
+{"func":"today","clock_ok":false,"date":"2026-11-23"}
+{"func":"today","clock_ok":true,"date":""}
+{"func":"heading"}
+{"func":"rule"}
+{"func":"section"}
+{"func":"today","clock_ok":false,"date":""}

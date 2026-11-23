@@ -1,0 +1,16 @@
+{"func": "provider_filter", "source_filter": "NVIDIA"}
+{"func": "provider_filter", "source_filter": "  Weights & Biases  "}
+{"func": "provider_filter", "source_filter": "github"}
+{"func": "provider_filter", "source_filter": ""}
+{"func": "provider_filter", "source_filter": " huggingface "}
+{"func": "select_active", "source_filter": "all", "sources": [{"id": "hermes-index", "available": false}, {"id": "official", "available": false}, {"id": "github", "available": false}, {"id": "url", "available": false}]}
+{"func": "select_active", "source_filter": "all", "sources": [{"id": "hermes-index", "available": true}, {"id": "official", "available": false}, {"id": "github", "available": false}, {"id": "skills-sh", "available": false}, {"id": "clawhub", "available": false}, {"id": "url", "available": false}, {"id": "optional", "available": false}]}
+{"func": "select_active", "source_filter": "github", "sources": [{"id": "hermes-index", "available": true}, {"id": "official", "available": false}, {"id": "github", "available": false}, {"id": "clawhub", "available": false}]}
+{"func": "select_active", "source_filter": "nvidia", "sources": [{"id": "hermes-index", "available": true}, {"id": "official", "available": false}, {"id": "github", "available": false}]}
+{"func": "select_active", "source_filter": "official", "sources": [{"id": "hermes-index", "available": false}, {"id": "official", "available": false}, {"id": "github", "available": false}]}
+{"func": "index_miss_fallback", "all_ids": ["hermes-index", "official", "github", "skills-sh", "clawhub", "lobehub", "well-known", "url", "optional"], "active_ids": ["hermes-index", "official"], "query": "foo", "source_counts": {"hermes-index": 0}, "provider_filter": ""}
+{"func": "index_miss_fallback", "all_ids": ["hermes-index", "official", "github", "skills-sh", "clawhub", "lobehub", "well-known", "url", "optional"], "active_ids": ["hermes-index", "official", "clawhub", "url"], "query": "foo", "source_counts": {"hermes-index": 0}, "provider_filter": ""}
+{"func": "index_miss_fallback", "all_ids": ["hermes-index", "official", "github", "skills-sh", "clawhub", "lobehub", "well-known", "url", "optional"], "active_ids": ["hermes-index"], "query": "foo", "source_counts": {"hermes-index": 3}, "provider_filter": ""}
+{"func": "index_miss_fallback", "all_ids": ["hermes-index", "official", "github", "skills-sh", "clawhub", "lobehub", "well-known", "url", "optional"], "active_ids": ["hermes-index"], "query": "   ", "source_counts": {"hermes-index": 0}, "provider_filter": ""}
+{"func": "index_miss_fallback", "all_ids": ["hermes-index", "official", "github", "skills-sh", "clawhub", "lobehub", "well-known", "url", "optional"], "active_ids": ["official"], "query": "foo", "source_counts": {"hermes-index": 0}, "provider_filter": ""}
+{"func": "index_miss_fallback", "all_ids": ["hermes-index", "official", "github", "skills-sh", "clawhub", "lobehub", "well-known", "url", "optional"], "active_ids": ["hermes-index", "official"], "query": "foo", "source_counts": {"hermes-index": 0}, "provider_filter": "nvidia"}

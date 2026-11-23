@@ -1,0 +1,17 @@
+{"func": "command_text", "command": {"command": "/deploy", "text": "prod  now "}}
+{"func": "command_text", "command": {"command": "/deploy"}}
+{"func": "command_text", "command": {"command": "/hermes", "text": "compact   all things"}}
+{"func": "command_text", "command": {"command": "/hermes", "text": "  model  gpt-5  "}}
+{"func": "command_text", "command": {"command": "/hermes", "text": "write a poem"}}
+{"func": "command_text", "command": {"command": "/hermes", "text": ""}}
+{"func": "command_text", "command": {"command": "", "text": "  hello   world  "}}
+{"func": "command_text", "command": {"text": "free question"}}
+{"func": "command_text", "command": {"command": "/hermes", "text": "compact"}}
+{"func": "command_text", "command": {"command": "/hermes", "text": "model\t\tgpt"}}
+{"func": "thread_id", "command": {"thread_ts": "111", "message_ts": "222"}}
+{"func": "thread_id", "command": {"message_ts": "333"}}
+{"func": "thread_id", "command": {"message": {"thread_ts": "444"}, "container": {}}}
+{"func": "thread_id", "command": {"message": {}, "container": {"message_ts": "555"}}}
+{"func": "thread_id", "command": {"thread_ts": "", "message_ts": "666"}}
+{"func": "thread_id", "command": {"message": {"thread_ts": "1"}, "container": {"thread_ts": "2"}}}
+{"func": "thread_id", "command": {}}

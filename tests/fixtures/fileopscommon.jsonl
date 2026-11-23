@@ -1,0 +1,49 @@
+{"func":"conflict","case":"empty","text":""}
+{"func":"conflict","case":"no markers","text":"1| ordinary line\n2| more"}
+{"func":"conflict","case":"one balanced block","text":"3|<<<<<<< HEAD\n4|ours\n5|>>>>>>> theirs"}
+{"func":"conflict","case":"two balanced blocks","text":"1|<<<<<<< A\n2|x\n3|>>>>>>> B\n9|<<<<<<< C\n10|y\n11|>>>>>>> D"}
+{"func":"conflict","case":"unmatched open","text":"1|<<<<<<< HEAD"}
+{"func":"conflict","case":"unmatched close","text":"1|>>>>>>> HEAD"}
+{"func":"conflict","case":"indented markers","text":"  12|<<<<<<< A\n\t13|>>>>>>> B"}
+{"func":"fence","case":"empty","text":""}
+{"func":"fence","case":"plain text unchanged","text":"hello\nworld\n"}
+{"func":"fence","case":"osc-only line dropped","text":"before\n\u001b]0;title\a\nafter\n"}
+{"func":"fence","case":"osc with ST terminator","text":"x\u001b]0;title\u001b\\y"}
+{"func":"fence","case":"fence-only line dropped","text":"a\n'\u0007__HERMES_FENCE_ABC__\u0007'\nb\n"}
+{"func":"fence","case":"fence inline kept","text":"pre '__HERMES_FENCE_X__' post\n"}
+{"func":"fence","case":"bare BEL removed","text":"a\u0007b"}
+{"func":"fname","case":"plain","name":"Screen Shot 2026-11-23.png"}
+{"func":"fname","case":"curly apostrophes","name":"it\u2019s a \u2018test\u2019.png"}
+{"func":"fname","case":"nbsp and narrow nbsp","name":"photo\u00a0\u202fNov.png"}
+{"func":"fname","case":"ideographic space","name":"file\u3000name.txt"}
+{"func":"eol","case":"empty","sample":""}
+{"func":"eol","case":"lf","sample":"a\nb"}
+{"func":"eol","case":"crlf wins","sample":"a\r\nb\nc"}
+{"func":"eol","case":"no newline","sample":"single line"}
+{"func":"eol","case":"lone cr","sample":"a\rb"}
+{"func":"normeol","case":"to lf from crlf+cr","text":"a\r\nb\rc\n","target":"\n"}
+{"func":"normeol","case":"to crlf from mixed","text":"a\r\nb\rc\n","target":"\r\n"}
+{"func":"normeol","case":"idempotent lf","text":"a\nb\n","target":"\n"}
+{"func":"normeol","case":"unknown target returns original","text":"a\r\nb","target":"X"}
+{"func":"bom","case":"with bom","text":"\ufeffhello"}
+{"func":"bom","case":"without bom","text":"hello"}
+{"func":"bom","case":"mid content bom kept","text":"a\ufeffb"}
+{"func":"bom","case":"empty","text":""}
+{"func":"hasbom","case":"true","text":"\ufeffx"}
+{"func":"hasbom","case":"false","text":"x"}
+{"func":"coerce","case":"valid positive","value":"12","default":1}
+{"func":"coerce","case":"invalid text","value":"abc","default":7}
+{"func":"coerce","case":"surrounding spaces","value":" 7 ","default":1}
+{"func":"coerce","case":"empty string","value":"","default":3}
+{"func":"coerce","case":"negative","value":"-3","default":1}
+{"func":"coerce","case":"float text","value":"1.2","default":5}
+{"func":"readpage","case":"defaults","offset":"","limit":"","max_lines":2000}
+{"func":"readpage","case":"negative offset clamped","offset":"-5","limit":"10","max_lines":2000}
+{"func":"readpage","case":"huge limit clamped","offset":"3","limit":"9999","max_lines":50}
+{"func":"readpage","case":"invalid values","offset":"abc","limit":"xyz","max_lines":100}
+{"func":"searchpage","case":"defaults","offset":"","limit":""}
+{"func":"searchpage","case":"negative offset clamped","offset":"-9","limit":"5"}
+{"func":"searchpage","case":"zero limit clamped","offset":"2","limit":"0"}
+{"func":"lint","case":"ok no message","success":true,"skipped":false,"output":"clean","message":""}
+{"func":"lint","case":"error with message","success":false,"skipped":false,"output":"bad","message":"oops"}
+{"func":"lint","case":"skipped","success":true,"skipped":true,"output":"ignored","message":"not applicable"}

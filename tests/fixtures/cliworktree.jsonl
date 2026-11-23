@@ -1,0 +1,8 @@
+{"func":"enter","move_outcome":"ok","gateway_conn_is_none":true,"wt_info":{"path":"/tmp/wt1"},"case":"gateway accepted move"}
+{"func":"enter","move_outcome":"ok","gateway_conn_is_none":false,"wt_info":{"path":"/tmp/wt2"},"case":"accepted with gateway owner"}
+{"func":"enter","move_outcome":"gateway_error","gateway_conn_is_none":false,"wt_info":{"path":"/tmp/wt3"},"case":"gateway refusal cleans up"}
+{"func":"enter","move_outcome":"gateway_error","gateway_conn_is_none":true,"wt_info":{"path":"/tmp/wt4"},"case":"gateway refusal local session"}
+{"func":"enter","move_outcome":"os_error","gateway_conn_is_none":true,"wt_info":{"path":"/tmp/wt5"},"case":"local chdir failure no move"}
+{"func":"enter","move_outcome":"os_error","gateway_conn_is_none":false,"wt_info":{"path":"/tmp/wt6"},"case":"gateway cwd enter failure reported"}
+{"func":"enter","move_outcome":"os_error","gateway_conn_is_none":false,"wt_info":{"path":"/tmp/wt7"},"case":"cwd failure with path"}
+{"func":"enter","move_outcome":"gateway_error","gateway_conn_is_none":false,"wt_info":{"path":"/tmp/wt8"},"case":"busy session refusal"}

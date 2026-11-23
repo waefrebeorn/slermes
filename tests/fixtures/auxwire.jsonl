@@ -1,0 +1,11 @@
+{"func":"relay","metadata":{}}
+{"func":"relay","metadata":{"api_mode":"responses","model":"gpt-4o"}}
+{"func":"relay","metadata":{"model":"x","nested":{"a":1},"n":0}}
+{"func":"relay","metadata":{"api_mode":null,"x":true}}
+{"func":"relay","metadata":{"api_mode":"chat_completions"}}
+{"func":"prepare","client_is_chat_sdk":false,"kwargs":{"messages":[{"role":"user","content":"old"}]},"shaped_messages":[{"role":"user","content":"new"}]}
+{"func":"prepare","client_is_chat_sdk":true,"kwargs":{"model":"m","temperature":0.5},"shaped_messages":[{"role":"user","content":"x"}]}
+{"func":"prepare","client_is_chat_sdk":true,"kwargs":{"messages":[{"role":"user","content":"old"}],"model":"m"},"shaped_messages":[{"role":"system","content":"new"}]}
+{"func":"prepare","client_is_chat_sdk":false,"kwargs":{"messages":[],"api_mode":"responses"},"shaped_messages":[]}
+{"func":"prepare","client_is_chat_sdk":true,"kwargs":{"messages":[],"api_mode":"responses"},"shaped_messages":[]}
+{"func":"prepare","client_is_chat_sdk":true,"kwargs":{},"shaped_messages":[{"role":"user","content":"z"}]}

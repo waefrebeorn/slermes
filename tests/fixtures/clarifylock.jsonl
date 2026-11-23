@@ -1,0 +1,20 @@
+{"case":"cl01_ok","func":"lock","params":{"request_id":"r1","question_id":"q1","answer":"yes"},"remaining":3,"lock_raises":false,"out":{"status":"ok","remaining":3}}
+{"case":"cl02_zero","func":"lock","params":{"request_id":"r1","question_id":"q1"},"remaining":0,"lock_raises":false,"out":{"status":"ok","remaining":0}}
+{"case":"cl03_expired","func":"lock","params":{"request_id":"r1","question_id":"q1"},"remaining":null,"lock_raises":false,"out":{"status":"expired"}}
+{"case":"cl04_raises","func":"lock","params":{"request_id":"r1","question_id":"q1"},"remaining":5,"lock_raises":true,"out":{"__raise__":"AuthorityRefusal","msg":"invalid_params"}}
+{"case":"cl05_noreq","func":"lock","params":{"question_id":"q1"},"remaining":5,"lock_raises":false,"out":{"__raise__":"AuthorityRefusal","msg":"invalid_params"}}
+{"case":"cl06_emptyreq","func":"lock","params":{"request_id":"","question_id":"q1"},"remaining":5,"lock_raises":false,"out":{"__raise__":"AuthorityRefusal","msg":"invalid_params"}}
+{"case":"cl07_badqid","func":"lock","params":{"request_id":"r1","question_id":9},"remaining":5,"lock_raises":false,"out":{"__raise__":"AuthorityRefusal","msg":"invalid_params"}}
+{"case":"cl08_noqid","func":"lock","params":{"request_id":"r1"},"remaining":5,"lock_raises":false,"out":{"__raise__":"AuthorityRefusal","msg":"invalid_params"}}
+{"case":"cl09_answerobj","func":"lock","params":{"request_id":"r1","question_id":"q1","answer":{"a":1}},"remaining":2,"lock_raises":false,"out":{"status":"ok","remaining":2}}
+{"case":"cl10_ansnull","func":"lock","params":{"request_id":"r1","question_id":"q1","answer":null},"remaining":1,"lock_raises":false,"out":{"status":"ok","remaining":1}}
+{"case":"cl11_default","func":"coerce_answer","out":""}
+{"case":"cl12_null","func":"coerce_answer","answer":null,"out":null}
+{"case":"cl13_str","func":"coerce_answer","answer":"hello","out":"hello"}
+{"case":"cl14_num","func":"coerce_answer","answer":5,"out":"5"}
+{"case":"cl15_true","func":"coerce_answer","answer":true,"out":"true"}
+{"case":"cl16_false","func":"coerce_answer","answer":false,"out":"false"}
+{"case":"cl17_arr","func":"coerce_answer","answer":[1,2],"out":"[1, 2]"}
+{"case":"cl18_obj","func":"coerce_answer","answer":{"a":1,"b":"x"},"out":"{\"a\": 1, \"b\": \"x\"}"}
+{"case":"cl19_unicode","func":"coerce_answer","answer":"héllo ☃","out":"héllo ☃"}
+{"case":"cl20_uniobj","func":"coerce_answer","answer":{"k":"héllo"},"out":"{\"k\": \"héllo\"}"}

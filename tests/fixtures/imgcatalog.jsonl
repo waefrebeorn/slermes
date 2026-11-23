@@ -1,0 +1,15 @@
+{"func": "default_model"}
+{"func": "default_aspect_ratio"}
+{"func": "valid_aspect_ratios"}
+{"func": "upscaler"}
+{"func": "model_field", "key": "fal-ai/flux-2-pro", "field": "speed"}
+{"func": "model_field", "key": "fal-ai/flux-2/klein/9b", "field": "supports"}
+{"func": "model_field", "key": "fal-ai/gpt-image-1.5", "field": "sizes"}
+{"func": "model_field", "key": "fal-ai/gpt-image-2", "field": "edit_endpoint"}
+{"func": "model_field", "key": "bytedance/seedream/v5/pro/text-to-image", "field": "sizes"}
+{"func": "model_field", "key": "fal-ai/z-image/turbo", "field": "missing_field"}
+{"func": "model_field", "key": "no/such/model", "field": "display"}
+{"func": "model_keys"}
+{"func": "build_entry", "params": {"display": "X", "speed": "~1s", "strengths": "s", "price": "$1", "style": "aspect_ratio", "defaults": {"num_images": 1}, "supports": ["prompt", "seed", "aspect_ratio"]}}
+{"func": "build_entry", "params": {"display": "Y", "speed": "~2s", "strengths": "t", "price": "$2", "defaults": {"output_format": "png"}, "supports": ["prompt", "seed"], "edit_endpoint": "x/edit", "edit_supports": ["prompt", "image_urls"], "max_reference_images": "9", "edit_image_param": "image_url"}}
+{"func": "build_entry", "params": {"display": "Z", "speed": "<1s", "strengths": "u", "price": "free", "style": "image_size_preset", "defaults": {}, "supports": []}}

@@ -1,0 +1,20 @@
+{"func":"voice","case":1,"config":{}}
+{"func":"voice","case":2,"config":{"voice":{"auto_tts_mode":"all"}}}
+{"func":"voice","case":3,"config":{"voice":{"auto_tts_mode":"ALL"}}}
+{"func":"voice","case":4,"config":{"voice":{"auto_tts_mode":"bad"}}}
+{"func":"voice","case":5,"config":{"voice":{"auto_tts_mode":null}}}
+{"func":"voice","case":6,"config":{"voice":{"auto_tts_mode":true}}}
+{"func":"voice","case":7,"config":{"voice":{"submit_mode":"draft"}}}
+{"func":"voice","case":8,"config":{"voice":{"submit_mode":"oops"}}}
+{"func":"voice","case":9,"config":{"voice":{"auto_tts_mode":"bad","submit_mode":"oops"}}}
+{"func":"voice","case":10,"config":{"voice":null}}
+{"func":"voice","case":11,"config":{"voice":{"auto_tts_mode":" voice_only "}}}
+{"func":"disabled","case":12,"manifests":[{"name":"telegram","manifest_name":null,"required":["BOT_TOKEN"]}],"disabled":["platforms/telegram"],"env":{"BOT_TOKEN":"x"}}
+{"func":"disabled","case":13,"manifests":[{"name":"telegram","manifest_name":null,"required":["BOT_TOKEN"]}],"disabled":[],"env":{"BOT_TOKEN":"x"}}
+{"func":"disabled","case":14,"manifests":[{"name":"telegram","manifest_name":null,"required":["BOT_TOKEN"]}],"disabled":["platforms/telegram"],"env":{}}
+{"func":"disabled","case":15,"manifests":[{"name":"telegram","manifest_name":"hermes-telegram","required":["T"]}],"disabled":["hermes-telegram"],"env":{"T":"v"}}
+{"func":"disabled","case":16,"manifests":[{"name":"telegram","manifest_name":null,"required":["A","B"]}],"disabled":["platforms/telegram"],"env":{"A":"v"}}
+{"func":"disabled","case":17,"manifests":[{"name":"telegram","manifest_name":null,"required":["A","B"]}],"disabled":["platforms/telegram"],"env":{"A":"v","B":"w"}}
+{"func":"disabled","case":18,"manifests":[{"name":"telegram","manifest_name":null,"required":["T"]},{"name":"slack","manifest_name":null,"required":["S"]}],"disabled":["platforms/slack"],"env":{"T":"v","S":"w"}}
+{"func":"disabled","case":19,"manifests":[{"name":"telegram","manifest_name":null,"required":["T"]}],"disabled":["platforms/telegram"],"env":{"T":""}}
+{"func":"disabled","case":20,"manifests":[{"name":"telegram","manifest_name":null,"required":[]}],"disabled":["platforms/telegram"],"env":{}}

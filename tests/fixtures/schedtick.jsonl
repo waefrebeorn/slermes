@@ -1,0 +1,17 @@
+{"func":"const","case":"yield log interval"}
+{"func":"advance","case":"clean advance keeps all jobs","raise_error":false,"due_jobs":[{"id":1,"schedule":{"kind":"cron"}},{"id":2,"schedule":{"kind":"once"}},{"id":"a"}]}
+{"func":"advance","case":"failed advance drops recurring kinds","raise_error":true,"due_jobs":[{"id":1,"schedule":{"kind":"cron"}},{"id":2,"schedule":{"kind":"interval"}},{"id":3,"schedule":{"kind":"once"}},{"id":4,"schedule":null},{"id":5}]}
+{"func":"advance","case":"failed advance unknown kind is one-shot","raise_error":true,"due_jobs":[{"id":"x","schedule":{"kind":"daily"}}]}
+{"func":"advance","case":"failed advance empty list","raise_error":true,"due_jobs":[]}
+{"func":"advance","case":"clean advance empty list","raise_error":false,"due_jobs":[]}
+{"func":"yield","case":"first reason logs","reason":"boot=1 disk=2","now":100.0}
+{"func":"yield","case":"same reason within hour quiet","reason":"boot=1 disk=2","now":200.0}
+{"func":"yield","case":"same reason 3500s quiet","reason":"boot=1 disk=2","now":3700.0}
+{"func":"yield","case":"same reason 100s quiet","reason":"boot=1 disk=2","now":3800.0}
+{"func":"yield","case":"same reason exactly 3600s logs","reason":"boot=1 disk=2","now":7400.0}
+{"func":"yield","case":"different reason logs","reason":"boot=2 disk=2","now":7401.0}
+{"func":"yield","case":"same new reason quiet","reason":"boot=2 disk=2","now":7402.0}
+{"func":"yield","case":"same new reason 3599s quiet","reason":"boot=2 disk=2","now":11001.0}
+{"func":"yield","case":"same new reason 3601s logs","reason":"boot=2 disk=2","now":11002.0}
+{"func":"yield","case":"empty reason differs logs","reason":"","now":0.0}
+{"func":"yield","case":"empty reason repeat quiet","reason":"","now":0.0}

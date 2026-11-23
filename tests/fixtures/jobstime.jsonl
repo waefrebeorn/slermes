@@ -1,0 +1,35 @@
+{"func":"const","case":"module constants"}
+{"func":"grace","case":"None","kind":"null"}
+{"func":"grace","case":"bool rejected","kind":"bool","value":true}
+{"func":"grace","case":"zero is real value","kind":"int","value":"0"}
+{"func":"grace","case":"normal int","kind":"int","value":"720"}
+{"func":"grace","case":"max int","kind":"int","value":"1440"}
+{"func":"grace","case":"above max","kind":"int","value":"1441"}
+{"func":"grace","case":"negative","kind":"int","value":"-1"}
+{"func":"grace","case":"digit string with spaces","kind":"str","value":" 60 "}
+{"func":"grace","case":"blank string -> None","kind":"str","value":"  "}
+{"func":"grace","case":"non digit string","kind":"str","value":"abc"}
+{"func":"grace","case":"multiple signs pass isdigit but int fails","kind":"str","value":"+-5"}
+{"func":"grace","case":"leading zeros","kind":"str","value":"0007"}
+{"func":"grace","case":"float integral","kind":"float","value":"60.0"}
+{"func":"grace","case":"float non integral","kind":"float","value":"60.5"}
+{"func":"tz","case":"None -> None","kind":"null"}
+{"func":"tz","case":"UTC with spaces","kind":"str","value":" UTC "}
+{"func":"tz","case":"valid IANA","kind":"str","value":"America/New_York"}
+{"func":"tz","case":"unknown zone","kind":"str","value":"Mars/Olympus"}
+{"func":"tz","case":"blank -> None","kind":"str","value":"   "}
+{"func":"tz","case":"non string","kind":"int","value":"5"}
+{"func":"zone","case":"dict valid","mode":"dict","value":"Europe/London"}
+{"func":"zone","case":"dict null","mode":"dict","value":null}
+{"func":"zone","case":"bare valid","mode":"bare","value":"Asia/Hong_Kong"}
+{"func":"zone","case":"bare corrupt","mode":"bare","value":"Nope/Nope"}
+{"func":"zone","case":"bare empty","mode":"bare","value":""}
+{"func":"sec","case":"2 min -> 120","kind":"int","value":"2"}
+{"func":"sec","case":"0 min -> 0","kind":"str","value":"0"}
+{"func":"sec","case":"negative -> None","kind":"int","value":"-1"}
+{"func":"sec","case":"garbage -> None","kind":"str","value":"bad"}
+{"func":"prune","case":"blank timezone dropped, 0 grace kept","record":{"timezone":"","grace_minutes":0,"keep":1}}
+{"func":"prune","case":"null grace dropped, tz kept","record":{"timezone":"UTC","grace_minutes":null}}
+{"func":"prune","case":"null timezone dropped","record":{"timezone":null,"grace_minutes":5}}
+{"func":"prune","case":"false timezone dropped, empty grace kept","record":{"timezone":false,"grace_minutes":""}}
+{"func":"prune","case":"no optional keys","record":{"id":"j1"}}

@@ -1,0 +1,19 @@
+{"func":"app_title","slug":"github","case":"known title"}
+{"func":"app_title","slug":"google-calendar","case":"known with space"}
+{"func":"app_title","slug":"my_cool-app","case":"title-cased words"}
+{"func":"app_title","slug":"---","case":"separators only keeps key"}
+{"func":"app_title","slug":"","case":"empty slug"}
+{"func":"action_phrase","tool":"send_message","app_slug":"github","case":"strip vendor prefix"}
+{"func":"action_phrase","tool":"SEND-MESSAGE","app_slug":"","case":"lowercase words"}
+{"func":"action_phrase","tool":"GITHUB_X_M","app_slug":"github","case":"prefix strip then words"}
+{"func":"label","name":"connectors__github__send_message","arguments":{"connector_alias":"  Work  "},"preview":"","case":"connector with alias"}
+{"func":"label","name":"mcp__linear__create_issue","preview":"","case":"mcp label"}
+{"func":"label","name":"my_tool","arguments":{"x":1},"verb":"Read file","emoji":"📄","preview":"p","case":"local tool with injected verb"}
+{"func":"label","name":"","case":"blank name is null"}
+{"func":"label","name":"plain_tool","arguments":{"x":1},"verb":"","emoji":"","preview":"","case":"local falls back to title and default emoji"}
+{"func":"label","name":"mcp__nobody","case":"mcp missing tool falls to local"}
+{"func":"bridge","function_name":"tool_search","args":{"queries":["alpha","beta"]},"case":"search first query"}
+{"func":"bridge","function_name":"tool_search","args":{"queries":"solo"},"case":"search string query"}
+{"func":"bridge","function_name":"tool_describe","args":{"names":["a"]},"case":"describe one tool"}
+{"func":"bridge","function_name":"tool_describe","args":{"names":["a","b","c"]},"case":"describe many tools"}
+{"func":"bridge","function_name":"tool_describe","args":{},"case":"describe zero tools"}

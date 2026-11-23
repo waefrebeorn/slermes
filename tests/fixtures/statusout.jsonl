@@ -1,0 +1,20 @@
+{"func":"quiet_tool_messages","suppress":false,"quiet_mode":true,"tool_progress_cb":false,"platform":"cli","case":"quiet cli emits"}
+{"func":"quiet_tool_messages","suppress":true,"quiet_mode":true,"platform":"cli","case":"suppress wins"}
+{"func":"quiet_tool_messages","quiet_mode":true,"platform":"gateway","case":"non-cli platform"}
+{"func":"quiet_tool_messages","quiet_mode":true,"tool_progress_cb":true,"platform":"cli","case":"callback owns rendering"}
+{"func":"quiet_tool_messages","quiet_mode":false,"platform":"cli","case":"not quiet"}
+{"func":"quiet_spinner","has_print_fn":true,"isatty":false,"case":"print fn is a safe sink"}
+{"func":"quiet_spinner","has_print_fn":false,"isatty":true,"case":"real tty"}
+{"func":"quiet_spinner","has_print_fn":false,"isatty":false,"case":"non-tty no spinner"}
+{"func":"safe_print","mute_notification":true,"case":"muted"}
+{"func":"safe_print","diagnostic":true,"warning_enabled":false,"case":"diagnostic suppressed"}
+{"func":"safe_print","diagnostic":true,"warning_enabled":true,"case":"diagnostic allowed"}
+{"func":"safe_print","diagnostic":false,"case":"normal print"}
+{"func":"vprint","suppress":true,"force":true,"case":"suppress beats force"}
+{"func":"vprint","diagnostic":true,"warning_enabled":false,"case":"diagnostic suppressed"}
+{"func":"vprint","mute_post":true,"case":"post-response muted"}
+{"func":"vprint","has_consumers":true,"executing":false,"case":"streaming suppresses"}
+{"func":"vprint","has_consumers":true,"executing":true,"case":"tool execution allows"}
+{"func":"vprint","force":true,"mute_post":true,"case":"force bypasses mute post"}
+{"func":"vprint","mute_notification":true,"case":"notification reply muted"}
+{"func":"vprint","case":"normal"}

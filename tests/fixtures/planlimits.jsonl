@@ -1,0 +1,18 @@
+{"func":"model_label","model":"provider/model-a","pricing":{"provider/model-a":{"name":"  Model A  "}},"case":"trimmed catalog name"}
+{"func":"model_label","model":"provider/model-a","pricing":{"provider/model-a":{"name":"   "}},"case":"blank name falls back to id"}
+{"func":"model_label","model":"provider/model-b","pricing":{},"case":"no catalog row"}
+{"func":"model_label","model":"provider/model-a","pricing":null,"case":"null pricing"}
+{"func":"credits_action","kg":false,"pm":5000,"case":"keep-going off with balance"}
+{"func":"credits_action","kg":false,"pm":0,"case":"keep-going off no balance"}
+{"func":"credits_action","kg":false,"pm":null,"case":"unknown balance counts none"}
+{"func":"credits_action","kg":true,"pm":0,"case":"keep-going on"}
+{"func":"credits_action","kg":null,"pm":9999,"case":"keep-going unknown"}
+{"func":"portal_wording","text":"turn on Keep going in /topup; (turn on in /topup); /topup to add credits; add credits in /topup","case":"all four patterns"}
+{"func":"portal_wording","text":"nothing to replace here","case":"no patterns"}
+{"func":"next_steps","limit":{"suggestions":[{"model":"p/a","label":"Model A","note":"free"}],"credits":null},"case":"one suggestion no credits"}
+{"func":"next_steps","limit":{"suggestions":[],"credits":{"action":"use_credits"}},"portal":true,"case":"no suggestion, portal use credits"}
+{"func":"next_steps","limit":{"suggestions":[],"credits":{"action":"add_credits_and_keep_going"}},"topup_command":null,"case":"add and keep going, no topup"}
+{"func":"next_steps","limit":{"suggestions":[],"credits":{"action":"add_credits"}},"model_command":"!model","case":"custom model command, add credits"}
+{"func":"next_steps","limit":{"suggestions":[{"model":"p/a","label":"Model A","note":"included"}],"credits":{"action":"use_credits"}},"markup":true,"case":"markup wraps commands"}
+{"func":"next_steps","limit":{},"case":"empty payload"}
+{"func":"next_steps","limit":{"suggestions":[{"model":"p/a","label":"","note":""},{"model":"p/b","label":"B","note":"free"}],"credits":null},"case":"label and note fallbacks"}

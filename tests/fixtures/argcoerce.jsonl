@@ -1,0 +1,25 @@
+{"func":"number","value":"42","integer_only":false,"case":"int number"}
+{"func":"number","value":"3.5","case":"float number"}
+{"func":"number","value":"3.5","integer_only":true,"case":"integer_only keeps decimal string"}
+{"func":"number","value":"abc","case":"unparseable stays string"}
+{"func":"number","value":"1e3","case":"exponent becomes int"}
+{"func":"number","value":"NaN","case":"nan stays string"}
+{"func":"number","value":"Infinity","case":"inf stays string"}
+{"func":"number","value":" 7 ","case":"whitespace stripped by float"}
+{"func":"boolean","value":"TRUE","case":"true case-insensitive"}
+{"func":"boolean","value":"no","case":"non-bool stays string"}
+{"func":"boolean","value":"  false  ","case":"false with padding"}
+{"func":"allows_null","schema":{"type":"null"},"case":"explicit null type"}
+{"func":"allows_null","schema":{"type":["string","null"]},"case":"union with null"}
+{"func":"allows_null","schema":{"nullable":true},"case":"nullable flag"}
+{"func":"allows_null","schema":{"anyOf":[{"type":"string"},{"type":"null"}]},"case":"anyOf null branch"}
+{"func":"allows_null","schema":{"type":"string"},"case":"no null"}
+{"func":"accepts_kind","schema":{"anyOf":[{"type":"string"},{"type":"array"}]},"kind":"array","case":"union accepts array"}
+{"func":"accepts_kind","schema":{"type":"object"},"kind":"array","case":"object not array"}
+{"func":"coerce_value","value":"42","expected_type":"integer","case":"string to integer"}
+{"func":"coerce_value","value":"true","expected_type":"boolean","case":"string to bool"}
+{"func":"coerce_value","value":"null","expected_type":"string","schema":{"type":["string","null"]},"case":"nullable null word"}
+{"func":"coerce_value","value":"[1,2]","expected_type":"array","case":"json array string"}
+{"func":"coerce_value","value":"42","expected_type":["string","integer"],"case":"union picks integer"}
+{"func":"normalize","value":"[{\"a\":\"[1,2]\"}]","schema":{"type":"array","items":{"type":"object","properties":{"a":{"type":"array"}}}},"case":"nested json string in object"}
+{"func":"normalize","value":"{\"x\":1}","schema":{"type":"object","properties":{"x":{"type":"string"}}},"case":"string field survives"}

@@ -1,0 +1,15 @@
+{"case":"cw01","func":"only_keys","section":{"a":1,"b":2,"c":{"x":3}},"names":["a","c"],"out":{"a":1,"c":{"x":3}}}
+{"case":"cw02","func":"only_keys","section":[1,2],"names":["a"],"out":{}}
+{"case":"cw03","func":"only_keys","section":{"telegram":{"enabled":true},"discord":{"enabled":false}},"names":["telegram"],"out":{"telegram":{"enabled":true}}}
+{"case":"cw04","func":"only_keys","section":{},"names":["a"],"out":{}}
+{"case":"cw05","func":"only_keys","section":{"a":null,"b":false,"c":0,"d":""},"names":["a","b","c","d"],"out":{"a":null,"b":false,"c":0,"d":""}}
+{"case":"cw06","func":"platform_layers","yaml_cfg":{"platforms":{"telegram":{"enabled":true}},"other":1,"gateway":{"platforms":{"relay":{"x":1}},"relay":{"y":2}}},"names":["telegram","relay"],"out":[{"platforms":{"telegram":{"enabled":true}}},{"platforms":{"relay":{"x":1}},"relay":{"y":2}}]}
+{"case":"cw07","func":"platform_layers","yaml_cfg":{"gateway":{"platforms":{"telegram":{"z":9}}}},"names":["telegram"],"out":[{"platforms":{}},{"platforms":{"telegram":{"z":9}}}]}
+{"case":"cw08","func":"platform_layers","yaml_cfg":{},"names":["telegram"],"out":[{"platforms":{}},{"platforms":{}}]}
+{"case":"cw09","func":"platform_layers","yaml_cfg":{"gateway":123,"telegram":{"enabled":true}},"names":["telegram"],"out":[{"platforms":{},"telegram":{"enabled":true}},{"platforms":{}}]}
+{"case":"cw10","func":"platform_layers","yaml_cfg":{"platforms":{"telegram":1},"other":2},"names":["platforms"],"out":[{"platforms":{"telegram":1}},{"platforms":{}}]}
+{"case":"cw11","func":"platform_rank","name":"relay","members":["api_server","webhook","relay","telegram"],"out":2}
+{"case":"cw12","func":"platform_rank","name":"telegram","members":["api_server","webhook","relay","telegram"],"out":3}
+{"case":"cw13","func":"platform_rank","name":"bogus","members":["api_server","webhook","relay","telegram"],"out":4}
+{"case":"cw14","func":"platform_rank","name":"x","members":[],"out":0}
+{"case":"cw15","func":"platform_rank","name":"api_server","members":["api_server","webhook","relay","telegram"],"out":0}

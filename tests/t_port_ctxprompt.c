@@ -1,0 +1,55 @@
+/* Port gate harness for agent/context_compressor_prompt_rules.py (gate ctxprompt). */
+#include "hermes_json.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "noc_ctxprompt.h"
+
+static void emit_key(const char *key, json_t *v) {
+    char *s = v ? json_dumps(v, 0) : NULL;
+    printf("\"%s\":", key);
+    if (s) { fputs(s, stdout); free(s); }
+    else fputs("null", stdout);
+}
+
+int main(void) {
+    char line[32768];
+    setvbuf(stdout, NULL, _IONBF, 0);
+    while (fgets(line, sizeof(line), stdin)) {
+        if (!strchr(line, '{')) continue;
+        json_t *in = json_parse(line, NULL);
+        if (!in) continue;
+        const char *func = json_get_str(in, "func", "");
+        json_t *out = NULL;
+        char *tmp = NULL;
+        if (!strcmp(func, "heading")) {
+            out = json_string(ctxprompt_unverified_section_heading());
+        } else if (!strcmp(func, "rule")) {
+            out = json_string(ctxprompt_epistemic_stance_rule());
+        } else if (!strcmp(func, "section")) {
+            out = json_string(ctxprompt_unverified_hypotheses_section());
+        } else if (!strcmp(func, "today")) {
+            const char *d = json_get_str(in, "date", "");
+            tmp = ctxprompt_today_for_prompt_ex(
+                json_get_bool(in, "clock_ok", 0) ? 1 : 0, d);
+            out = json_string(tmp ? tmp : "");
+        } else {
+            out = json_string("UNKNOWN_FUNC");
+        }
+        printf("{");
+        emit_key("func", json_string(func));
+        fputs(",", stdout);
+        emit_key("out", out);
+        for (size_t i = 0; i < json_object_size(in); i++) {
+            const char *k = json_object_get_key_at(in, i);
+            if (!k || !strcmp(k, "func")) continue;
+            fputs(",", stdout);
+            emit_key(k, json_copy(json_object_get_at(in, i)));
+        }
+        fputs("}\n", stdout);
+        free(tmp);
+        json_free(out);
+        json_free(in);
+    }
+    return 0;
+}

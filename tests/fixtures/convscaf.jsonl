@@ -1,0 +1,17 @@
+{"func":"text","message":{"content":"hello"}}
+{"func":"text","message":{"content":["a","b",{"text":"c","content":"d"}]}}
+{"func":"text","message":{"content":[{"content":"x"},{"text":null,"content":"y"}]}}
+{"func":"text","message":{"content":42}}
+{"func":"text","message":{"content":[1,{"text":"ok"}]}}
+{"func":"text","message":{}}
+{"func":"text","message":{"content":[{"text":5,"content":"ignored"},{"text":"","content":true}]}}
+{"func":"flag","message":{"_todo_snapshot_synthetic":true}}
+{"func":"flag","message":{"_dropped_toolcall_nudge":false}}
+{"func":"flag","message":{"_pre_verify_synthetic":"yes"}}
+{"func":"flag","message":{}}
+{"func":"scaffold","message":{"content":"[System: Your previous response was truncated here"}}
+{"func":"scaffold","message":{"content":"  [IMPORTANT: Background process done"}}
+{"func":"scaffold","message":{"content":"normal text"}}
+{"func":"scaffold","message":{"_verification_stop_synthetic":true,"content":"normal"}}
+{"func":"scaffold","message":{"content":[{"text":"[Your active task list was preserved across context compression]"}]}}
+{"func":"scaffold","message":{"content":"[System: Your previous tool call failed"}}

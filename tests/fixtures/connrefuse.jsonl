@@ -1,0 +1,22 @@
+{"func": "constant", "name": "INVALID_PARAMS"}
+{"func": "constant", "name": "INVALID_ANSWER"}
+{"func": "constant", "name": "UNKNOWN_OPERATION"}
+{"func": "constant", "name": "UNKNOWN_TARGET_REFUSAL"}
+{"func": "constant", "name": "CONNECTORS_UNAVAILABLE"}
+{"func": "constant", "name": "REQUEST_FAILED"}
+{"func": "constant", "name": "REISSUE_REFUSED"}
+{"func": "constant", "name": "NO_SUCH_CONSTANT"}
+{"func": "reissue_refusal", "key": "unknown_target"}
+{"func": "reissue_refusal", "key": "mixed_kinds"}
+{"func": "reissue_refusal", "key": "link_still_valid"}
+{"func": "reissue_refusal", "key": "settled"}
+{"func": "reissue_refusal", "key": "not_allowed"}
+{"func": "reissue_refusal", "key": "refused"}
+{"func": "reissue_refusal", "key": "bogus"}
+{"func": "auth_refusal", "code": "no_access", "status": 200}
+{"func": "auth_refusal", "code": "ORG_ACCESS_DENIED", "status": 200}
+{"func": "auth_refusal", "code": "other", "status": 401}
+{"func": "auth_refusal", "code": "invalid_token", "status": 200}
+{"func": "auth_refusal", "code": "INVALID_TOKEN", "status": 200}
+{"func": "auth_refusal", "code": "NO_TOKEN", "status": 200}
+{"func": "auth_refusal", "code": "something", "status": 403}

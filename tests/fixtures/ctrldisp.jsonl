@@ -1,0 +1,13 @@
+{"case":"cd01_hosted","func":"select","raw":"{\"verb\": \"hosted-producer\"}","peer":null,"out":"producers"}
+{"case":"cd02_other","func":"select","raw":"{\"verb\": \"other\"}","peer":"1.2.3.4","out":"controls"}
+{"case":"cd03_badjson","func":"select","raw":"not json","peer":null,"out":"controls"}
+{"case":"cd04_list","func":"select","raw":"[{\"verb\": \"hosted-producer\"}]","peer":null,"out":"controls"}
+{"case":"cd05_null","func":"select","raw":"null","peer":null,"out":"controls"}
+{"case":"cd06_string","func":"select","raw":"\"hosted-producer\"","peer":null,"out":"controls"}
+{"case":"cd07_numverb","func":"select","raw":"{\"verb\": 123}","peer":null,"out":"controls"}
+{"case":"cd08_empty","func":"select","raw":"","peer":null,"out":"controls"}
+{"case":"cd09_extra","func":"select","raw":"{\"verb\": \"hosted-producer\", \"payload\": [1,2]}","peer":"peer","out":"producers"}
+{"case":"cd10_case","func":"select","raw":"{\"VERB\": \"hosted-producer\"}","peer":null,"out":"controls"}
+{"case":"cd11_bool","func":"is_producer","raw":"{\"verb\": \"hosted-producer\"}","peer":null,"out":true}
+{"case":"cd12_bool","func":"is_producer","raw":"{\"verb\": \"nope\"}","peer":null,"out":false}
+{"case":"cd13_ws","func":"select","raw":"  { \"verb\" : \"hosted-producer\" }  ","peer":null,"out":"producers"}
