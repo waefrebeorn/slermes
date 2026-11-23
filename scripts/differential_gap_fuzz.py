@@ -46,6 +46,9 @@ SKIP_KEYS = {
     "func", "fn", "id", "case", "name", "_orig", "__raise__", "__script__",
     "__callable__", "__special__", "type", "message", "exc", "errno", "reason",
     "platform", "message_type", "intent",
+    # LIVE returns a frozenset here; its iteration order is process-dependent,
+    # so a mutated list cannot be compared byte-for-byte against the port.
+    "custom_provider_aliases",
 }
 
 
