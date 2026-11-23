@@ -83,11 +83,11 @@ def plan(m):
           % (arr, ' '.join(m)))
 
 
-def tally(d):
+def tally(d, prefix=''):
     total = mism = 0
     files = 0
     for fn in os.listdir(d):
-        if not fn.endswith('.out'):
+        if not fn.endswith('.out') or (prefix and not fn.startswith(prefix)):
             continue
         s = open(os.path.join(d, fn), encoding='utf-8', errors='replace').read()
         hits = re.findall(r'ORACLE \S+: (\d+) cases, (\d+) mismatches', s)
@@ -100,6 +100,6 @@ def tally(d):
 if __name__ == '__main__':
     cmd = sys.argv[1]
     if cmd == 'tally':
-        sys.exit(tally(sys.argv[2]))
+        sys.exit(tally(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else ''))
     m = load_map(sys.argv[2])
     sys.exit(plan(m) if cmd == 'plan' else wire(m))
