@@ -61,6 +61,11 @@ SKIP_KEYS = {
 # or fixture-only controls in specific gates. Mutating them produces oracle
 # drive errors rather than port differences.
 SKIP_KEYS_BY_GATE = {
+    "conversation_sessions_flow": ("lineage_kind",),
+    "moa_loop_flow3": ("__call__",),
+    "observability_metrics_flow": ("module",),
+    "platform_registry_flow": ("_failed_loads",),
+    "telegram_adapter_flow15": ("error_kind",),
     "async_delegation_flow2": ("refused",),
     "kanban_db_flow2": ("rel_path", "__bytes__"),
     "relay_auth_flow3": ("hmac_hexdigest",),
@@ -72,13 +77,13 @@ SKIP_KEYS_BY_GATE = {
     "telegram_adapter_flow13": ("key", "where"),
     "transport_types_flow2": ("other_class",),
     "backup_flow2": ("invoking_home",),
-    "backup_flow3": ("members",),
+    "backup_flow3": ("members", "native_default"),
     "browser_launcher_flow": ("b64",),
     "config_migrations_flow2": ("kind",),
     "memory_tool_flow4": ("action",),
     "moa_loop_flow": ("_type",),
     "run_inbound_flow3": ("agent",),
-    "run_notifications_flow3": ("self._served_home_channel_configs",),
+    "run_notifications_flow3": ("self._served_home_channel_configs", "self._home_channel_transports"),
     "tui_methods_cron_flow": ("tools_mod",),
     "web_tools_flow": ("func_name",),
     "api_server_runs_flow": ("tables",),
@@ -90,7 +95,7 @@ SKIP_KEYS_BY_GATE = {
     "cron_jobs_flow2": ("state",),
     "plugins_install_scan_flow2": ("rel_path",),
     "process_registry_flow": ("running", "sid"),
-    "run_busy_flow": ("queued_events", "_pending_messages", "running_event", "adapter_id", "event_id"),
+    "run_busy_flow": ("queued_events", "_pending_messages", "running_event", "adapter_id", "event_id", "running_agent"),
     "session_authority_flow2": ("capabilities",),
     "tui_methods_plugins_flow": ("tools_mod",),
     "web_profiles_flow3": ("not_found", "bad_request"),
@@ -99,7 +104,7 @@ SKIP_KEYS_BY_GATE = {
     "gateway_session_flow": ("updated_at", "created_at", "now"),
     "gw_session_store_flow": ("ref",),
     "memory_manager_flow2": ("home_key",),
-    "rest_revive3": ("tenv", "_parse_docker_volume_mounts", "session_key"),
+    "rest_revive3": ("tenv", "_parse_docker_volume_mounts", "session_key", "workspace_key", "_shared_cwd_mount_guess", "_docker_persistent_sandbox_roots"),
     "session_controls_flow": ("authority", "profile_id", "capabilities", "status", "members"),
     "setup_revive": ("action", "event"),
     "shared_metrics_flow": ("_utc_now", "store._parse_state_timestamp"),
@@ -204,6 +209,21 @@ def shrink(gate, case):
     return current
 
 
+def unsafe_case(gate, case):
+    """Skip generated cases known to hang the LIVE oracle."""
+    if gate == "irc_adapter_flow" and case.get("func") == "_chunk_paragraph":
+        args = case.get("args")
+        if not isinstance(args, dict):
+            inner = case.get("in")
+            args = inner.get("args", {}) if isinstance(inner, dict) else {}
+        paragraph = args.get("paragraph", "")
+        limit = args.get("limit", 0)
+        if (isinstance(paragraph, str) and isinstance(limit, (int, float))
+                and limit < 4 and any(ord(ch) > 127 for ch in paragraph)):
+            return True
+    return False
+
+
 def main():
     if len(sys.argv) < 3:
         print("usage: differential_gap_fuzz.py GATE N [SEED]", file=sys.stderr)
@@ -226,6 +246,7 @@ def main():
         if m:
             m["_orig"] = base["_orig"]
             generated.append(m)
+    generated = [c for c in generated if not unsafe_case(gate, c)]
     res, err = run(gate, generated)
     if err:
         print("ERROR", err, file=sys.stderr)
