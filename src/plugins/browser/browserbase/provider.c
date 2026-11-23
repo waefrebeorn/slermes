@@ -1,9 +1,22 @@
 /*
- * provider.c — C home for upstream Hermes plugins/browser/browserbase/provider.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_browser_browserbase_provider_pending @ plugins/browser/browserbase/provider.py:<module>
+ * provider.c — real C port of upstream Hermes plugins/browser/browserbase/provider.py constant tables.
+ * PoP: cn_eff47defba_constants @ plugins/browser/browserbase/provider.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_eff47defba.h"
 
-void plugins_browser_browserbase_provider_port_pending(void) { (void)0; }
+json_t *cn_eff47defba_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_PAID_FEATURE_FALLBACKS", ({ json_t *__a = json_array();
+        json_append(__a, ({ json_t *__a = json_array();
+            json_append(__a, json_string("keepAlive"));
+            json_append(__a, json_string("keepAlive may require paid plan (402), retrying without it. Sessions may timeout during long operations."));
+          __a; }));
+        json_append(__a, ({ json_t *__a = json_array();
+            json_append(__a, json_string("proxies"));
+            json_append(__a, json_string("Proxies unavailable (402), retrying without proxies. Bot detection may be less effective."));
+          __a; }));
+      __a; }));
+    return out;
+}

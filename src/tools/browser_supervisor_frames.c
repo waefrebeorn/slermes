@@ -10,5 +10,10 @@ json_t *cn_dc50a692e7_constants(void) {
     json_t *out = json_object();
     json_set(out, "FRAME_TREE_MAX_ENTRIES", json_number(30));
     json_set(out, "FRAME_TREE_MAX_OOPIF_DEPTH", json_number(2));
+    json_set(out, "_AUTO_ATTACH_PARAMS", ({ json_t *__o = json_object();
+        json_set(__o, "autoAttach", json_bool(true));
+        json_set(__o, "flatten", json_bool(true));
+        json_set(__o, "waitForDebuggerOnStart", json_bool(false));
+      __o; }));
     return out;
 }

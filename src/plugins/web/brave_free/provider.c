@@ -1,9 +1,13 @@
 /*
- * provider.c — C home for upstream Hermes plugins/web/brave_free/provider.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_web_brave_free_provider_pending @ plugins/web/brave_free/provider.py:<module>
+ * provider.c — real C port of upstream Hermes plugins/web/brave_free/provider.py constant tables.
+ * PoP: cn_62ae795a05_constants @ plugins/web/brave_free/provider.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_62ae795a05.h"
 
-void plugins_web_brave_free_provider_port_pending(void) { (void)0; }
+json_t *cn_62ae795a05_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_BRAVE_ENDPOINT", json_string("https://api.search.brave.com/res/v1/web/search"));
+    return out;
+}

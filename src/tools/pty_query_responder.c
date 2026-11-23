@@ -1,9 +1,14 @@
 /*
- * pty_query_responder.c — C home for upstream Hermes tools/pty_query_responder.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: tools_pty_query_responder_pending @ tools/pty_query_responder.py:<module>
+ * pty_query_responder.c — real C port of upstream Hermes tools/pty_query_responder.py constant tables.
+ * PoP: cn_037e736778_constants @ tools/pty_query_responder.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_037e736778.h"
 
-void tools_pty_query_responder_port_pending(void) { (void)0; }
+json_t *cn_037e736778_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_ESC", json_number(27));
+    json_set(out, "_MAX_MODE_DIGITS", json_number(10));
+    return out;
+}

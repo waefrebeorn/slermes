@@ -1,9 +1,13 @@
 /*
- * __init__.c — C home for upstream Hermes plugins/model-providers/commandcode/__init__.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_model_providers_commandcode___init___pending @ plugins/model-providers/commandcode/__init__.py:<module>
+ * __init__.c — real C port of upstream Hermes plugins/model-providers/commandcode/__init__.py constant tables.
+ * PoP: cn_a2ea107778_constants @ plugins/model-providers/commandcode/__init__.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_a2ea107778.h"
 
-void plugins_model_providers_commandcode___init___port_pending(void) { (void)0; }
+json_t *cn_a2ea107778_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_COMMANDCODE_BASE", json_string("https://api.commandcode.ai/provider/v1"));
+    return out;
+}

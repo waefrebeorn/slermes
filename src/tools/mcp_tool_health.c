@@ -1,9 +1,13 @@
 /*
- * mcp_tool_health.c — C home for upstream Hermes tools/mcp_tool_health.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: tools_mcp_tool_health_pending @ tools/mcp_tool_health.py:<module>
+ * mcp_tool_health.c — real C port of upstream Hermes tools/mcp_tool_health.py constant tables.
+ * PoP: cn_8d43370842_constants @ tools/mcp_tool_health.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_8d43370842.h"
 
-void tools_mcp_tool_health_port_pending(void) { (void)0; }
+json_t *cn_8d43370842_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_KEEPALIVE_RPC_TIMEOUT", json_number(30));
+    return out;
+}

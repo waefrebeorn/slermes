@@ -1,9 +1,13 @@
 /*
- * chat_completion_stream_monitor.c — C home for upstream Hermes agent/chat_completion_stream_monitor.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: agent_chat_completion_stream_monitor_pending @ agent/chat_completion_stream_monitor.py:<module>
+ * chat_completion_stream_monitor.c — real C port of upstream Hermes agent/chat_completion_stream_monitor.py constant tables.
+ * PoP: cn_f3e135e7d4_constants @ agent/chat_completion_stream_monitor.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_f3e135e7d4.h"
 
-void agent_chat_completion_stream_monitor_port_pending(void) { (void)0; }
+json_t *cn_f3e135e7d4_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_STALE_ABANDON_KILLS", json_number(3));
+    return out;
+}

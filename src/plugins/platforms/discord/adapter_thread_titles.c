@@ -1,9 +1,13 @@
 /*
- * adapter_thread_titles.c — C home for upstream Hermes plugins/platforms/discord/adapter_thread_titles.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_platforms_discord_adapter_thread_titles_pending @ plugins/platforms/discord/adapter_thread_titles.py:<module>
+ * adapter_thread_titles.c — real C port of upstream Hermes plugins/platforms/discord/adapter_thread_titles.py constant tables.
+ * PoP: cn_187d876a40_constants @ plugins/platforms/discord/adapter_thread_titles.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_187d876a40.h"
 
-void plugins_platforms_discord_adapter_thread_titles_port_pending(void) { (void)0; }
+json_t *cn_187d876a40_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_MAX_RECORDS", json_number(2000));
+    return out;
+}

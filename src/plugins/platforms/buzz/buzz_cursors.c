@@ -1,9 +1,15 @@
 /*
- * buzz_cursors.c — C home for upstream Hermes plugins/platforms/buzz/buzz_cursors.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_platforms_buzz_buzz_cursors_pending @ plugins/platforms/buzz/buzz_cursors.py:<module>
+ * buzz_cursors.c — real C port of upstream Hermes plugins/platforms/buzz/buzz_cursors.py constant tables.
+ * PoP: cn_51f149a2c6_constants @ plugins/platforms/buzz/buzz_cursors.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_51f149a2c6.h"
 
-void plugins_platforms_buzz_buzz_cursors_port_pending(void) { (void)0; }
+json_t *cn_51f149a2c6_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_SEEN_CAP", json_number(500));
+    json_set(out, "_CURSOR_STATE_SUBDIR", json_string("buzz"));
+    json_set(out, "_CURSOR_STATE_FILENAME", json_string("channel-cursors.json"));
+    return out;
+}

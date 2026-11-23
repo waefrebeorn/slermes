@@ -1,9 +1,13 @@
 /*
- * provider.c — C home for upstream Hermes plugins/browser/firecrawl/provider.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_browser_firecrawl_provider_pending @ plugins/browser/firecrawl/provider.py:<module>
+ * provider.c — real C port of upstream Hermes plugins/browser/firecrawl/provider.py constant tables.
+ * PoP: cn_d2cfe3135a_constants @ plugins/browser/firecrawl/provider.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_d2cfe3135a.h"
 
-void plugins_browser_firecrawl_provider_port_pending(void) { (void)0; }
+json_t *cn_d2cfe3135a_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_BASE_URL", json_string("https://api.firecrawl.dev"));
+    return out;
+}

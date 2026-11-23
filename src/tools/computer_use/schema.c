@@ -1,9 +1,172 @@
 /*
- * schema.c — C home for upstream Hermes tools/computer_use/schema.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: tools_computer_use_schema_pending @ tools/computer_use/schema.py:<module>
+ * schema.c — real C port of upstream Hermes tools/computer_use/schema.py constant tables.
+ * PoP: cn_1495dc4c38_constants @ tools/computer_use/schema.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_1495dc4c38.h"
 
-void tools_computer_use_schema_port_pending(void) { (void)0; }
+json_t *cn_1495dc4c38_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_PROPERTIES", ({ json_t *__o = json_object();
+        json_set(__o, "action", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Which action to perform. `capture` is free (no side effects). All other actions require approval unless auto-approved. Use `set_value` for select/popup elements and sliders — it selects the matching option directly without opening the native menu (no focus steal)."));
+            json_set(__o, "enum", ({ json_t *__a = json_array();
+                json_append(__a, json_string("capture"));
+                json_append(__a, json_string("click"));
+                json_append(__a, json_string("double_click"));
+                json_append(__a, json_string("right_click"));
+                json_append(__a, json_string("middle_click"));
+                json_append(__a, json_string("drag"));
+                json_append(__a, json_string("scroll"));
+                json_append(__a, json_string("type"));
+                json_append(__a, json_string("key"));
+                json_append(__a, json_string("set_value"));
+                json_append(__a, json_string("wait"));
+                json_append(__a, json_string("list_apps"));
+                json_append(__a, json_string("list_windows"));
+                json_append(__a, json_string("focus_app"));
+              __a; }));
+            json_set(__o, "type", json_string("string"));
+          __o; }));
+        json_set(__o, "amount", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Scroll wheel ticks. Default 3."));
+            json_set(__o, "type", json_string("integer"));
+          __o; }));
+        json_set(__o, "app", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Optional. Limit capture/action to one app (name e.g. 'Safari', or bundle ID). Omitted = frontmost window. app='screen' = composited full-screen grab (image only, no clickable elements); app='desktop' = the OS desktop/shell surface (wallpaper, icons, taskbar) with its elements."));
+            json_set(__o, "type", json_string("string"));
+          __o; }));
+        json_set(__o, "bring_to_front", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Optional and only valid with delivery_mode='foreground'. Explicitly invokes cua-driver's standalone bring_to_front tool before the input; it is never passed as an input property. This persistent focus change has a separate approval scope. Default false."));
+            json_set(__o, "type", json_string("boolean"));
+          __o; }));
+        json_set(__o, "button", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Mouse button. Defaults to left."));
+            json_set(__o, "enum", ({ json_t *__a = json_array();
+                json_append(__a, json_string("left"));
+                json_append(__a, json_string("right"));
+                json_append(__a, json_string("middle"));
+              __a; }));
+            json_set(__o, "type", json_string("string"));
+          __o; }));
+        json_set(__o, "capture_after", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("If true, take a follow-up capture after the action and include it in the response. Saves a round-trip when you need to verify an action's effect."));
+            json_set(__o, "type", json_string("boolean"));
+          __o; }));
+        json_set(__o, "coordinate", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Pixel coordinates [x, y] relative to the captured window screenshot (top-left origin). Only use this if no element index is available."));
+            json_set(__o, "items", ({ json_t *__o = json_object();
+                json_set(__o, "type", json_string("integer"));
+              __o; }));
+            json_set(__o, "maxItems", json_number(2));
+            json_set(__o, "minItems", json_number(2));
+            json_set(__o, "type", json_string("array"));
+          __o; }));
+        json_set(__o, "delivery_mode", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("For input actions (click, type, key, drag, scroll). `background` (DEFAULT) delivers without raising the window or stealing focus. `foreground` briefly fronts the window then restores focus — a visible change needing its own approval; use it only when a result's verdict tells you to escalate there. Each result's `verdict` carries the next step; follow it rather than guessing."));
+            json_set(__o, "enum", ({ json_t *__a = json_array();
+                json_append(__a, json_string("background"));
+                json_append(__a, json_string("foreground"));
+              __a; }));
+            json_set(__o, "type", json_string("string"));
+          __o; }));
+        json_set(__o, "direction", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Scroll direction."));
+            json_set(__o, "enum", ({ json_t *__a = json_array();
+                json_append(__a, json_string("up"));
+                json_append(__a, json_string("down"));
+                json_append(__a, json_string("left"));
+                json_append(__a, json_string("right"));
+              __a; }));
+            json_set(__o, "type", json_string("string"));
+          __o; }));
+        json_set(__o, "element", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("The 1-based SOM index returned by the last `capture(mode='som')` call. Strongly preferred over raw coordinates."));
+            json_set(__o, "type", json_string("integer"));
+          __o; }));
+        json_set(__o, "from_coordinate", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Source [x,y] (drag; use when no element available)."));
+            json_set(__o, "items", ({ json_t *__o = json_object();
+                json_set(__o, "type", json_string("integer"));
+              __o; }));
+            json_set(__o, "maxItems", json_number(2));
+            json_set(__o, "minItems", json_number(2));
+            json_set(__o, "type", json_string("array"));
+          __o; }));
+        json_set(__o, "from_element", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Source element index (drag)."));
+            json_set(__o, "type", json_string("integer"));
+          __o; }));
+        json_set(__o, "keys", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Key combo, e.g. 'cmd+s', 'ctrl+alt+t', 'return', 'escape', 'tab'. Use '+' to combine."));
+            json_set(__o, "type", json_string("string"));
+          __o; }));
+        json_set(__o, "mode", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Capture mode. `som` (default) is a screenshot with numbered overlays on every interactable element plus the AX tree — best for vision models, lets you click by element index. `vision` is a plain screenshot. `ax` is the accessibility tree only (no image; useful for text-only models)."));
+            json_set(__o, "enum", ({ json_t *__a = json_array();
+                json_append(__a, json_string("som"));
+                json_append(__a, json_string("vision"));
+                json_append(__a, json_string("ax"));
+              __a; }));
+            json_set(__o, "type", json_string("string"));
+          __o; }));
+        json_set(__o, "modifiers", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Modifier keys held during the action."));
+            json_set(__o, "items", ({ json_t *__o = json_object();
+                json_set(__o, "enum", ({ json_t *__a = json_array();
+                    json_append(__a, json_string("cmd"));
+                    json_append(__a, json_string("shift"));
+                    json_append(__a, json_string("option"));
+                    json_append(__a, json_string("alt"));
+                    json_append(__a, json_string("ctrl"));
+                    json_append(__a, json_string("fn"));
+                    json_append(__a, json_string("win"));
+                    json_append(__a, json_string("windows"));
+                    json_append(__a, json_string("super"));
+                    json_append(__a, json_string("meta"));
+                  __a; }));
+                json_set(__o, "type", json_string("string"));
+              __o; }));
+            json_set(__o, "type", json_string("array"));
+          __o; }));
+        json_set(__o, "pid", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Optional exact process target for action='capture'. Pair with window_id when discovery cannot resolve an X11 app."));
+            json_set(__o, "type", json_string("integer"));
+          __o; }));
+        json_set(__o, "raise_window", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Only for action='focus_app'. If true, brings the window to front (DISRUPTS the user). Default false — input is routed to the app without raising, matching the background co-work model."));
+            json_set(__o, "type", json_string("boolean"));
+          __o; }));
+        json_set(__o, "seconds", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("wait: seconds to pause (max 30)."));
+            json_set(__o, "type", json_string("number"));
+          __o; }));
+        json_set(__o, "text", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Text to type (respects the current layout)."));
+            json_set(__o, "type", json_string("string"));
+          __o; }));
+        json_set(__o, "to_coordinate", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Target [x,y] (drag; use when no element available)."));
+            json_set(__o, "items", ({ json_t *__o = json_object();
+                json_set(__o, "type", json_string("integer"));
+              __o; }));
+            json_set(__o, "maxItems", json_number(2));
+            json_set(__o, "minItems", json_number(2));
+            json_set(__o, "type", json_string("array"));
+          __o; }));
+        json_set(__o, "to_element", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Target element index (drag)."));
+            json_set(__o, "type", json_string("integer"));
+          __o; }));
+        json_set(__o, "value", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("For action='set_value': the value to set on the element. For AXPopUpButton / select dropdowns, pass the option's display label (e.g. 'Blue'). For sliders and other AXValue-settable elements, pass the numeric or string value."));
+            json_set(__o, "type", json_string("string"));
+          __o; }));
+        json_set(__o, "window_id", ({ json_t *__o = json_object();
+            json_set(__o, "description", json_string("Optional exact native window target for action='capture'. Pair with pid when an external cua-driver list_windows lookup has already identified the window."));
+            json_set(__o, "type", json_string("integer"));
+          __o; }));
+      __o; }));
+    return out;
+}

@@ -1,9 +1,27 @@
 /*
- * dashboard_card.c — C home for upstream Hermes plugins/platforms/matrix/dashboard_card.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_platforms_matrix_dashboard_card_pending @ plugins/platforms/matrix/dashboard_card.py:<module>
+ * dashboard_card.c — real C port of upstream Hermes plugins/platforms/matrix/dashboard_card.py constant tables.
+ * PoP: cn_fabf8dbd87_constants @ plugins/platforms/matrix/dashboard_card.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_fabf8dbd87.h"
 
-void plugins_platforms_matrix_dashboard_card_port_pending(void) { (void)0; }
+json_t *cn_fabf8dbd87_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "DASHBOARD_CARD", ({ json_t *__o = json_object();
+        json_set(__o, "dashboard_description", json_string("Use Hermes in Matrix rooms and direct messages."));
+        json_set(__o, "dashboard_env_vars", ({ json_t *__a = json_array();
+            json_append(__a, json_string("MATRIX_HOMESERVER"));
+            json_append(__a, json_string("MATRIX_ACCESS_TOKEN"));
+            json_append(__a, json_string("MATRIX_USER_ID"));
+            json_append(__a, json_string("MATRIX_ALLOWED_USERS"));
+          __a; }));
+        json_set(__o, "dashboard_required_env", ({ json_t *__a = json_array();
+            json_append(__a, json_string("MATRIX_HOMESERVER"));
+            json_append(__a, json_string("MATRIX_ACCESS_TOKEN"));
+            json_append(__a, json_string("MATRIX_USER_ID"));
+          __a; }));
+        json_set(__o, "docs_url", json_string("https://matrix.org/ecosystem/servers/"));
+      __o; }));
+    return out;
+}

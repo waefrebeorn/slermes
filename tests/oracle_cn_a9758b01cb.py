@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Oracle for literal constants of persistence/housekeeping/maintenance.py."""
-import importlib.util, json, os, sys
+import importlib, importlib.util, json, os, sys
 sys.stdin.reconfigure(encoding="utf-8", errors="replace")
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 Q = "C:/Users/eman5/hermes-agent"
-sys.path.insert(0, Q)  # quarry must shadow repo tests/ packages
+sys.path.insert(0, Q)
 SRC = os.path.join(Q, 'persistence/housekeeping/maintenance' + ".py")
 def _load_live():
     parts = 'persistence/housekeeping/maintenance'.split("/")
@@ -13,20 +13,15 @@ def _load_live():
         if pname in sys.modules: continue
         pdir = os.path.join(Q, *parts[:i])
         init = os.path.join(pdir, "__init__.py")
-        loc = [pdir]
-        sp = importlib.util.spec_from_file_location(
-            pname, init if os.path.isfile(init) else os.path.join(pdir, "__init__.py"),
-            submodule_search_locations=loc)
-        pm = importlib.util.module_from_spec(sp)
-        sys.modules[pname] = pm
+        sp = importlib.util.spec_from_file_location(pname, init, submodule_search_locations=[pdir])
+        pm = importlib.util.module_from_spec(sp); sys.modules[pname] = pm
         try: sp.loader.exec_module(pm)
         except Exception: pass
     name = ".".join(parts)
     sp = importlib.util.spec_from_file_location(name, SRC)
-    mod = importlib.util.module_from_spec(sp)
-    sys.modules[name] = mod
-    sp.loader.exec_module(mod)
-    return mod
+    live = importlib.util.module_from_spec(sp); sys.modules[name] = live
+    sp.loader.exec_module(live)
+    return live
 live = _load_live()
 def compat(v):
     if isinstance(v, (set, frozenset)): return [compat(x) for x in sorted(v, key=repr)]
@@ -34,7 +29,7 @@ def compat(v):
     if isinstance(v, dict): return {str(k): compat(x) for k, x in v.items()}
     if isinstance(v, int) and abs(v) > 9007199254740992: return str(v)
     return v
-names = ["ORPHAN_REAP_END_REASON", "GHOST_SESSION_SOURCE", "AUTO_PRUNE_STALE_OPEN_SOURCES", "IMPORT_MAX_SESSIONS", "IMPORT_MAX_MESSAGES_PER_SESSION", "IMPORT_MAX_TOTAL_MESSAGES", "SESSION_PROJECTION_FIELDS"]
+names = ["ORPHAN_REAP_END_REASON", "GHOST_SESSION_SOURCE", "AUTO_PRUNE_STALE_OPEN_SOURCES", "PRUNE_FILTER_NAMES", "IMPORT_MAX_SESSIONS", "IMPORT_MAX_MESSAGES_PER_SESSION", "IMPORT_MAX_TOTAL_MESSAGES", "SESSION_PROJECTION_FIELDS"]
 py = {n: compat(getattr(live, n)) for n in names}
 cases = mism = 0
 for line in sys.stdin:

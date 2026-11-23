@@ -1,9 +1,13 @@
 /*
- * approval_variation_selectors.c — C home for upstream Hermes tools/approval_variation_selectors.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: tools_approval_variation_selectors_pending @ tools/approval_variation_selectors.py:<module>
+ * approval_variation_selectors.c — real C port of upstream Hermes tools/approval_variation_selectors.py constant tables.
+ * PoP: cn_d6a5548205_constants @ tools/approval_variation_selectors.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_d6a5548205.h"
 
-void tools_approval_variation_selectors_port_pending(void) { (void)0; }
+json_t *cn_d6a5548205_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_EMOJI_RANGE", json_string("\\U0001F000-\\U0001FAFF\\u2600-\\u27BF"));
+    return out;
+}

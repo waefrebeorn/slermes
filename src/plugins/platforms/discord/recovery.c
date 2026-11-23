@@ -1,9 +1,14 @@
 /*
- * recovery.c — C home for upstream Hermes plugins/platforms/discord/recovery.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_platforms_discord_recovery_pending @ plugins/platforms/discord/recovery.py:<module>
+ * recovery.c — real C port of upstream Hermes plugins/platforms/discord/recovery.py constant tables.
+ * PoP: cn_3145e44260_constants @ plugins/platforms/discord/recovery.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_3145e44260.h"
 
-void plugins_platforms_discord_recovery_port_pending(void) { (void)0; }
+json_t *cn_3145e44260_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_DB_FILENAME", json_string("discord_message_recovery.db"));
+    json_set(out, "_RETENTION_DAYS", json_number(30));
+    return out;
+}

@@ -1,9 +1,13 @@
 /*
- * adapter_choice_cards.c — C home for upstream Hermes plugins/platforms/feishu/adapter_choice_cards.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: plugins_platforms_feishu_adapter_choice_cards_pending @ plugins/platforms/feishu/adapter_choice_cards.py:<module>
+ * adapter_choice_cards.c — real C port of upstream Hermes plugins/platforms/feishu/adapter_choice_cards.py constant tables.
+ * PoP: cn_1978b51517_constants @ plugins/platforms/feishu/adapter_choice_cards.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_1978b51517.h"
 
-void plugins_platforms_feishu_adapter_choice_cards_port_pending(void) { (void)0; }
+json_t *cn_1978b51517_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_BUTTON_LABEL_MAX", json_number(40));
+    return out;
+}

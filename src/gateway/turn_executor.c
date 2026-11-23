@@ -1,9 +1,13 @@
 /*
- * turn_executor.c — C home for upstream Hermes gateway/turn_executor.py.
- * STATUS: C HOME CREATED — behavior port PENDING. This file is provenance,
- *          not verified parity. It is deliberately not linked into the build.
- * PoP: gateway_turn_executor_pending @ gateway/turn_executor.py:<module>
+ * turn_executor.c — real C port of upstream Hermes gateway/turn_executor.py constant tables.
+ * PoP: cn_5a9ff58aea_constants @ gateway/turn_executor.py:<module-constants>
+ * Auto-generated from literal top-level constants; gated against live Python.
  */
-#include <stddef.h>
+#include "hermes_json.h"
+#include "noc_cn_5a9ff58aea.h"
 
-void gateway_turn_executor_port_pending(void) { (void)0; }
+json_t *cn_5a9ff58aea_constants(void) {
+    json_t *out = json_object();
+    json_set(out, "_IDLE_TIMEOUT_S", json_number(60));
+    return out;
+}
