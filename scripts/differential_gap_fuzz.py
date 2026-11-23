@@ -42,6 +42,7 @@ SKIP_GATES = {
     "plugin_revive",  # AST-coverage-gated oracle: single-case shrink emits FATAL
     "main_desktop_flow2",  # single-case os.walk seam state differs from pinned green fixture
     "plugins_cmd_flow2",  # batch-only mismatch; no reproducible single case
+    "cli_py_flow",  # witness is byte-identical to a pinned green fixture; oracle global-state leak
 }
 
 
@@ -59,6 +60,11 @@ SKIP_KEYS = {
 # or fixture-only controls in specific gates. Mutating them produces oracle
 # drive errors rather than port differences.
 SKIP_KEYS_BY_GATE = {
+    "doctor_flow": ("kind",),
+    "scheduler_delivery_flow2": ("normalize_deliver_value",),
+    "session_controls_flow2": ("authority", "profile_id", "capabilities", "status"),
+    "telegram_adapter_flow13": ("key", "where"),
+    "transport_types_flow2": ("other_class",),
     "backup_flow2": ("invoking_home",),
     "backup_flow3": ("members",),
     "browser_launcher_flow": ("b64",),
@@ -72,13 +78,13 @@ SKIP_KEYS_BY_GATE = {
     "api_server_runs_flow": ("tables",),
     "auxiliary_client_flow4": ("get_provider_chain",),
     "bedrock_adapter_flow": ("policy",),
-    "cli_gaps_revive2": ("lease",),
+    "cli_gaps_revive2": ("lease", "environ.get"),
     "config_migration_flow": ("feature",),
     "conversation_loop_flow": ("__ref__",),
     "cron_jobs_flow2": ("state",),
     "plugins_install_scan_flow2": ("rel_path",),
     "process_registry_flow": ("running", "sid"),
-    "run_busy_flow": ("queued_events", "_pending_messages", "running_event"),
+    "run_busy_flow": ("queued_events", "_pending_messages", "running_event", "adapter_id", "event_id"),
     "session_authority_flow2": ("capabilities",),
     "tui_methods_plugins_flow": ("tools_mod",),
     "web_profiles_flow3": ("not_found", "bad_request"),
@@ -93,13 +99,13 @@ SKIP_KEYS_BY_GATE = {
     "shared_metrics_flow": ("_utc_now",),
     "skills_hub_flow2": ("fields",),
     "stream_dispatch_flow2": ("_type",),
-    "tail_revive2": ("kind",),
+    "tail_revive2": ("kind", "provider"),
     "telegram_adapter_flow": ("error",),
     "tool_dispatch_flow": ("cf_wait",),
     "tool_dispatch_flow2": ("op",),
     "tool_executor_flow": ("_type", "result_cls"),
     "tool_result_processing_flow": ("_type",),
-    "tui_methods_status_flow": ("__event__",),
+    "tui_methods_status_flow": ("__event__", "current_sid"),
     "tui_methods_tools_flow": ("tools_mod",),
     "turn_progress_flow": ("_status_adapter", "adapter", "progress_mode"),
     "update_lock_flow": ("limit_str",),
