@@ -1,0 +1,20 @@
+{"case":1,"func":"classify","delivery_error":"boom","should_deliver":true,"unresolved_origin":true,"normalized_deliver":"local","incident_acked":true,"success":true,"delivery_queued":true,"notification_suppressed":true}
+{"case":2,"func":"classify","delivery_error":null,"should_deliver":true,"unresolved_origin":false,"normalized_deliver":"local","incident_acked":false,"success":true,"delivery_queued":true,"notification_suppressed":true}
+{"case":3,"func":"classify","delivery_error":null,"should_deliver":false,"unresolved_origin":false,"normalized_deliver":"local","incident_acked":true,"success":false,"delivery_queued":null,"notification_suppressed":true}
+{"case":4,"func":"classify","delivery_error":null,"should_deliver":true,"unresolved_origin":true,"normalized_deliver":"local","incident_acked":false,"success":false,"delivery_queued":null,"notification_suppressed":false}
+{"case":5,"func":"classify","delivery_error":null,"should_deliver":true,"unresolved_origin":false,"normalized_deliver":"webhook","incident_acked":false,"success":true,"delivery_queued":null,"notification_suppressed":false}
+{"case":6,"func":"classify","delivery_error":null,"should_deliver":true,"unresolved_origin":false,"normalized_deliver":"local","incident_acked":true,"success":false,"delivery_queued":null,"notification_suppressed":false}
+{"case":7,"func":"classify","delivery_error":null,"should_deliver":false,"unresolved_origin":false,"normalized_deliver":"local","incident_acked":false,"success":false,"delivery_queued":null,"notification_suppressed":false}
+{"case":8,"func":"classify","delivery_error":null,"should_deliver":true,"unresolved_origin":false,"normalized_deliver":null,"incident_acked":false,"success":true,"delivery_queued":null,"notification_suppressed":false}
+{"case":9,"func":"classify","delivery_error":null,"should_deliver":false,"unresolved_origin":false,"normalized_deliver":"local","incident_acked":true,"success":false,"delivery_queued":false,"notification_suppressed":true}
+{"case":10,"func":"classify","delivery_error":null,"should_deliver":false,"unresolved_origin":false,"normalized_deliver":"local","incident_acked":true,"success":true,"delivery_queued":false,"notification_suppressed":false}
+{"case":11,"func":"classify","delivery_error":null,"should_deliver":true,"unresolved_origin":false,"normalized_deliver":"local","incident_acked":false,"success":false,"delivery_queued":false,"notification_suppressed":false}
+{"case":12,"func":"fail_empty","success":true,"final_response":"","error":null}
+{"case":13,"func":"fail_empty","success":true,"final_response":"   \n\t ","error":null}
+{"case":14,"func":"fail_empty","success":true,"final_response":"ok","error":null}
+{"case":15,"func":"fail_empty","success":true,"final_response":null,"error":null}
+{"case":16,"func":"fail_empty","success":false,"final_response":"","error":null}
+{"case":17,"func":"fail_empty","success":false,"final_response":"ok","error":"prior error"}
+{"case":18,"func":"fail_empty","success":true,"final_response":0,"error":null}
+{"case":19,"func":"fail_empty","success":true,"final_response":5,"error":null}
+{"case":20,"func":"fail_empty","success":true,"final_response":true,"error":null}

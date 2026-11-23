@@ -1,0 +1,23 @@
+{"func": "strip_shadow", "text": "sk-abcdef", "case": "no control"}
+{"func": "strip_shadow", "text": "sk-abc\u001bdef", "case": "esc split"}
+{"func": "strip_shadow", "text": "ghp_abc\n123", "case": "newline split"}
+{"func": "strip_shadow", "text": "\u001b[32msk-abc\u001b[0m", "case": "csi colour"}
+{"func": "strip_shadow", "text": "ABC\u001b7DEF", "case": "cursor escape"}
+{"func": "strip_shadow", "text": "a\u0000b\u007fc", "case": "multiple controls"}
+{"func": "strip_shadow", "text": "", "case": "empty"}
+{"func": "union", "spans": [[0, 3, false], [2, 5, false], [10, 12, true]], "case": "overlap merge"}
+{"func": "union", "spans": [[0, 3, false], [3, 6, false]], "case": "adjacent not merged"}
+{"func": "union", "spans": [[0, 4, true], [2, 6, false]], "case": "flag and"}
+{"func": "union", "spans": [], "case": "empty spans"}
+{"func": "mask_split", "text": "sk-abc\u001bdef", "prefix": "sk-", "mask": "***", "case": "split token masked"}
+{"func": "mask_split", "text": "plain sk-abcdef", "prefix": "sk-", "mask": "***", "case": "no control unchanged"}
+{"func": "mask_split", "text": "\u001b[32msk-abc\u001b[0m", "prefix": "sk-", "mask": "***", "case": "csi wrapped"}
+{"func": "mask_split", "text": "ghp_abc\n123", "prefix": "ghp_", "mask": "***", "case": "clean newline kept"}
+{"func": "mask_split", "text": "sk-abc\u001bdef tail", "prefix": "sk-", "mask": "<RED>", "case": "split with tail"}
+{"func": "mask_split", "text": "abc\u001bdef", "prefix": "sk-", "mask": "***", "case": "no prefix"}
+{"func": "mask_split", "text": "sk-\u001b123\u001b456", "prefix": "sk-", "mask": "X", "case": "two splits"}
+{"func": "mask_prefix", "text": "sk-abcdef", "prefix": "sk-", "mask": "***", "case": "plain mask"}
+{"func": "mask_prefix", "text": "x sk-abc sk-def", "prefix": "sk-", "mask": "***", "case": "two tokens"}
+{"func": "mask_prefix", "text": "no tokens here", "prefix": "sk-", "mask": "***", "case": "none"}
+{"func": "mask_prefix", "text": "ghp_abc123 ghp_", "prefix": "ghp_", "mask": "Z", "case": "trailing bare prefix"}
+{"func": "mask_prefix", "text": "sk-a/b+c.d_e-f", "prefix": "sk-", "mask": "M", "case": "body char class"}

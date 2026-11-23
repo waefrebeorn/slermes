@@ -1,0 +1,22 @@
+{"case": 1, "func": "preview_name", "name": "short"}
+{"case": 2, "func": "preview_name", "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"case": 3, "func": "preview_name", "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"case": 4, "func": "preview_name", "name": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+{"case": 5, "func": "preview_name", "name": ""}
+{"case": 6, "func": "preview_name", "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé"}
+{"case": 7, "func": "preview_name", "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé"}
+{"case": 8, "func": "preview_name", "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxY"}
+{"case": 9, "func": "validate_facts", "tool_calls": [{"function": {"name": "foo", "arguments": "{\"a\":1}"}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "stop"}
+{"case": 10, "func": "validate_facts", "tool_calls": [{"function": {"name": "bad", "arguments": "{}"}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "stop"}
+{"case": 11, "func": "validate_facts", "tool_calls": [{"function": {"name": "bad", "arguments": "{}"}}], "valid_names": ["foo"], "invalid_tool_retries": 2, "invalid_json_retries": 0, "finish_reason": "stop"}
+{"case": 12, "func": "validate_facts", "tool_calls": [{"function": {"name": "foo", "arguments": "{}"}}, {"function": {"name": "bad", "arguments": "{}"}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "stop"}
+{"case": 13, "func": "validate_facts", "tool_calls": [{"function": {"name": "foo", "arguments": "{\"a\":"}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "tool_calls"}
+{"case": 14, "func": "validate_facts", "tool_calls": [{"function": {"name": "foo", "arguments": "{\"a\":"}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "length"}
+{"case": 15, "func": "validate_facts", "tool_calls": [{"function": {"name": "foo", "arguments": "{\"a\": 1,}"}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "stop"}
+{"case": 16, "func": "validate_facts", "tool_calls": [{"function": {"name": "foo", "arguments": "   "}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "stop"}
+{"case": 17, "func": "validate_facts", "tool_calls": [{"function": {"name": "foo", "arguments": {"a": 1}}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "stop"}
+{"case": 18, "func": "validate_facts", "tool_calls": [{"function": {"name": "foo", "arguments": 5}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "stop"}
+{"case": 19, "func": "validate_facts", "tool_calls": [{"function": {"name": "foo", "arguments": true}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "stop"}
+{"case": 20, "func": "validate_facts", "tool_calls": [{"function": {"name": "foo", "arguments": "{\"a\": 1,}"}}], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 2, "finish_reason": "stop"}
+{"case": 21, "func": "validate_facts", "tool_calls": [], "valid_names": ["foo"], "invalid_tool_retries": 0, "invalid_json_retries": 0, "finish_reason": "stop"}
+{"case": 22, "func": "validate_facts", "tool_calls": [{"function": {"name": "bad-zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "arguments": "{}"}}], "valid_names": [], "invalid_tool_retries": 2, "invalid_json_retries": 0, "finish_reason": "stop"}

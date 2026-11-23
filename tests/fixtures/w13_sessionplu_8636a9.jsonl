@@ -1,0 +1,14 @@
+{"case":"res1","func":"resolve","method":"plugin.myplugin.hello"}
+{"case":"res2","func":"resolve","method":"plugin."}
+{"case":"res3","func":"resolve","method":"Plugin.upper"}
+{"case":"res4","func":"resolve","method":"plugin"}
+{"case":"res5","func":"resolve","method":123}
+{"case":"res6","func":"resolve","method":null}
+{"case":"res7","func":"resolve","method":""}
+{"case":"lk1","func":"live_key","session_id":"conv-1","sessions":{"conv-1":{},"conv-2":{}},"agents":{}}
+{"case":"lk2","func":"live_key","session_id":"new-id","sessions":{"conv-1":{},"conv-2":{}},"agents":{"conv-2":"new-id"}}
+{"case":"lk3","func":"live_key","session_id":"nope","sessions":{"conv-1":{}},"agents":{}}
+{"case":"lk4","func":"live_key","session_id":"conv-1","sessions":{"conv-1":null},"agents":{}}
+{"case":"lk5","func":"live_key","session_id":"z","sessions":{"a":{},"b":{},"c":{}},"agents":{"b":"z","c":"z"}}
+{"case":"lk6","func":"live_key","session_id":"conv-1","sessions":{},"agents":{}}
+{"case":"lk7","func":"live_key","session_id":"conv-1","sessions":{"conv-1":{}},"agents":{"conv-1":null}}

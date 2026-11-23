@@ -1,0 +1,12 @@
+{"func":"cloud_trim_settings","cfg":{},"case":"all defaults"}
+{"func":"cloud_trim_settings","cfg":{"cloud_trim_silence":false},"case":"bool false disables"}
+{"func":"cloud_trim_settings","cfg":{"cloud_trim_silence":"false"},"case":"yaml string false disables"}
+{"func":"cloud_trim_settings","cfg":{"cloud_trim_silence":"YES"},"case":"truthy string yes"}
+{"func":"cloud_trim_settings","cfg":{"cloud_trim_silence":0},"case":"numeric zero disables"}
+{"func":"cloud_trim_settings","cfg":{"cloud_trim_silence":null},"case":"null uses default true"}
+{"func":"cloud_trim_settings","cfg":{"cloud_trim_silence":[1]},"case":"nonempty list truthy"}
+{"func":"cloud_trim_settings","cfg":{"cloud_trim_threshold_db":-30,"cloud_trim_keep_ms":500},"case":"explicit numbers"}
+{"func":"cloud_trim_settings","cfg":{"cloud_trim_threshold_db":"-35","cloud_trim_keep_ms":"250"},"case":"numeric strings"}
+{"func":"cloud_trim_settings","cfg":{"cloud_trim_threshold_db":"bad","cloud_trim_keep_ms":-42},"case":"bad threshold default, negative keep clamped"}
+{"func":"cloud_trim_settings","cfg":"not a dict","case":"non-dict config falls back to empty"}
+{"func":"cloud_trim_settings","cfg":{"cloud_trim_threshold_db":-25.9,"cloud_trim_keep_ms":1.9},"case":"float values cast to int"}

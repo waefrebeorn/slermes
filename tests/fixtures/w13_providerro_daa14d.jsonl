@@ -1,0 +1,25 @@
+{"func":"forces_max","model":"gpt-4o-2024-08-06","case":"gpt-4o family"}
+{"func":"forces_max","model":"openai/gpt-5.1","case":"slash prefix path"}
+{"func":"forces_max","model":"o3-mini","case":"o3 family"}
+{"func":"forces_max","model":"  GPT-4.1-mini  ","case":"strip and lowercase"}
+{"func":"forces_max","model":"claude-sonnet-4","case":"not an openai family"}
+{"func":"forces_max","model":"","case":"empty model"}
+{"func":"forces_max","model":"gpt-3.5-turbo","case":"gpt-3 not forced"}
+{"func":"freeze","value":{"b":{"z":1,"a":[3,2]},"a":"x"},"case":"nested dict sorted"}
+{"func":"freeze","value":[{"y":2,"x":1},[1,2],null,true,3.5],"case":"list mixed"}
+{"func":"freeze","value":{"k":[true,false,null]},"case":"single key array"}
+{"func":"route","hook":"request_headers","provider":"openai","base_url":"https://api.openai.com/v1","profiles":[{"name":"p_openai","overrides":["request_headers"]},{"name":"p_host","overrides":["request_headers"]}],"providers":{"openai":"p_openai"},"hosts":{"https://api.openai.com/v1":"p_host"},"case":"named then host"}
+{"func":"route","hook":"request_headers","provider":"custom","base_url":"https://api.openai.com/v1","profiles":[{"name":"same","overrides":["request_headers"]}],"providers":{"custom":"same"},"hosts":{"https://api.openai.com/v1":"same"},"case":"same profile named and host dedup"}
+{"func":"route","hook":"max_tokens_param","provider":"openai","base_url":"https://x/v1","profiles":[{"name":"a","overrides":[]},{"name":"b","overrides":["max_tokens_param"]}],"providers":{"openai":"a"},"hosts":{"https://x/v1":"b"},"case":"named not overriding"}
+{"func":"route","hook":"request_headers","provider":"","base_url":"","profiles":[{"name":"a","overrides":["request_headers"]}],"providers":{},"hosts":{},"case":"empty provider and base"}
+{"func":"ask","profile":{"name":"p1"},"hook":"request_headers","fallback":{"default":true},"answers":{"request_headers":{"Authorization":"Bearer x"}},"raises":[],"scope":null,"case":"plain answer"}
+{"func":"ask","profile":{"name":"p1"},"hook":"request_headers","fallback":"FB","answers":{},"raises":["request_headers"],"scope":{},"case":"hook raises fresh scope"}
+{"func":"ask","profile":{"name":"p1"},"hook":"request_headers","fallback":"FB","answers":{"request_headers":"OK"},"raises":[],"scope":{"_provider_hook_failures":[["p1","request_headers"]]},"case":"preseeded sticky failure"}
+{"func":"ask","profile":{"name":"p1"},"hook":"request_headers","fallback":"FB","answers":{},"raises":["request_headers"],"scope":null,"case":"ephemeral scope failure not persisted"}
+{"func":"hook_failed","profile":{"name":"p1"},"hook":"request_headers","scope":{"_provider_hook_failures":[["p1","request_headers"],["p2","other"]]},"case":"sticky present"}
+{"func":"hook_failed","profile":{"name":"p1"},"hook":"request_headers","scope":{},"case":"sticky absent"}
+{"func":"model_api_mode","profile":{"name":"p1","api_mode":"responses","model_mode_answer":"chat_completions","model_mode_raises":false},"model":"gpt-5","case":"mode answer"}
+{"func":"model_api_mode","profile":{"name":"p1","api_mode":"responses","model_mode_answer":null,"model_mode_raises":true},"model":"gpt-5","case":"mode raise falls back to api_mode"}
+{"func":"model_api_mode","profile":{"name":"p1","api_mode":null,"model_mode_answer":null,"model_mode_raises":true},"model":"gpt-5","case":"mode raise no api_mode"}
+{"func":"route_answer","hook":"request_headers","provider":"openai","base_url":"https://api.openai.com/v1","profiles":[{"name":"p1","overrides":["request_headers"],"answers":{"request_headers":null},"raises":[]},{"name":"p2","overrides":["request_headers"],"answers":{"request_headers":{"X":"y"}},"raises":[]}],"providers":{"openai":"p1"},"hosts":{"https://api.openai.com/v1":"p2"},"scope":null,"case":"first truthy wins"}
+{"func":"route_answer","hook":"request_headers","provider":"openai","base_url":"https://x/v1","profiles":[{"name":"p1","overrides":["request_headers"],"answers":{"request_headers":null},"raises":[]}],"providers":{"openai":"p1"},"hosts":{},"scope":null,"case":"all falsy returns null"}

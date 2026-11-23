@@ -1,0 +1,11 @@
+{"func":"drop","document":{"context_lengths":{"m/a":128000,"m/b":64000},"bedrock_confirmed_v1":{"m/a":true}},"stale_keys":["m/a"],"label":"drop one cache+confirmed key","case":"basic drop"}
+{"func":"drop","document":{"context_lengths":{"gpt-4o":128000},"bedrock_confirmed_v1":{"claude":true}},"stale_keys":["claude"],"label":"confirmed only","case":"drop confirmed only"}
+{"func":"drop","document":{"context_lengths":{"a":1,"b":2}},"stale_keys":["z","q"],"label":"no hit","case":"no stale key present"}
+{"func":"drop","document":{},"stale_keys":["a"],"label":"empty doc","case":"empty document"}
+{"func":"drop","document":{"context_lengths":{"a":1,"b":2,"c":3}},"stale_keys":["a","c","z"],"label":"multi","case":"multiple stale keys some present"}
+{"func":"drop","document":{"context_lengths":{"a":1},"bedrock_confirmed_v1":{"a":true}},"stale_keys":["a"],"label":"confirmed empties","case":"confirmed becomes empty and omitted"}
+{"func":"drop","document":{"context_lengths":{"a":1},"bedrock_confirmed_v1":"not-a-dict"},"stale_keys":["a"],"label":"confirmed non dict","case":"confirmed non dict becomes empty"}
+{"func":"drop","document":{"bedrock_confirmed_v1":{"x":true}},"stale_keys":["x"],"label":"no context lengths","case":"missing context_lengths treated as empty"}
+{"func":"drop","document":{"context_lengths":{"a":1}},"stale_keys":[],"label":"empty stale","case":"empty stale keys"}
+{"func":"drop","document":{"context_lengths":{"k1":1,"k2":2,"k3":3},"bedrock_confirmed_v1":{"k2":true,"k4":false}},"stale_keys":["k1","k2","k4"],"label":"both maps","case":"both maps mixed removal"}
+{"func":"drop","document":{"context_lengths":null,"bedrock_confirmed_v1":null},"stale_keys":["a"],"label":"null maps","case":"null values treated as empty"}

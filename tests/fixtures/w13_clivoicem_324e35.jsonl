@@ -1,0 +1,19 @@
+{"func": "numeric_or", "case": 1, "value": 2.5, "default": 9}
+{"func": "numeric_or", "case": 2, "value": true, "default": 9}
+{"func": "numeric_or", "case": 3, "value": "7", "default": 9}
+{"func": "numeric_or", "case": 4, "value": null, "default": 3}
+{"func": "numeric_or", "case": 5, "value": 0, "default": 9}
+{"func": "numeric_or", "case": 6, "value": false, "default": 9}
+{"func": "numeric_or", "case": 7, "value": -1.25, "default": 9}
+{"func": "stt_provider", "case": 8, "stt": {"provider": "LOCAL "}}
+{"func": "stt_provider", "case": 9, "stt": {"provider": " openai "}}
+{"func": "stt_provider", "case": 10, "stt": {}}
+{"func": "stt_provider", "case": 11, "stt": {"provider": null}}
+{"func": "stt_model", "case": 12, "stt": {"provider": "LOCAL ", "local": {"model": "small"}, "model": "big"}}
+{"func": "stt_model", "case": 13, "stt": {"provider": "openai", "model": "whisper"}}
+{"func": "stt_model", "case": 14, "stt": {"provider": "local", "local": "bad"}}
+{"func": "stt_model", "case": 15, "stt": {"provider": " local "}}
+{"func": "stt_model", "case": 16, "stt": {}}
+{"func": "stt_model", "case": 17, "stt": {"provider": "local", "local": {}}}
+{"func": "stt_model", "case": 18, "stt": {"provider": "local", "local": {"model": ""}}}
+{"func": "stt_model", "case": 19, "stt": {"model": "gpt"}}

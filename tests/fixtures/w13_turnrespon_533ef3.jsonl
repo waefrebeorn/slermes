@@ -1,0 +1,20 @@
+{"case":1,"func":"coerce","raw":"hello world"}
+{"case":2,"func":"coerce","raw":null}
+{"case":3,"func":"coerce","raw":5}
+{"case":4,"func":"coerce","raw":true}
+{"case":5,"func":"coerce","raw":{"text":"hi"}}
+{"case":6,"func":"coerce","raw":{"text":"","content":"fallback"}}
+{"case":7,"func":"coerce","raw":{"content":"c"}}
+{"case":8,"func":"coerce","raw":{"a":1,"text":null,"content":null}}
+{"case":9,"func":"coerce","raw":{}}
+{"case":10,"func":"coerce","raw":{"a":"x","b":[1,2],"c":true,"d":null}}
+{"case":11,"func":"coerce","raw":{"k":"café"}}
+{"case":12,"func":"coerce","raw":["a","b"]}
+{"case":13,"func":"coerce","raw":[{"type":"text","text":"t"},"s"]}
+{"case":14,"func":"coerce","raw":[{"text":123}]}
+{"case":15,"func":"coerce","raw":[{"type":"image","text":"x"},{"type":"image"}]}
+{"case":16,"func":"coerce","raw":[null,5,{"type":"text","text":"ok"}]}
+{"case":17,"func":"coerce","raw":[]}
+{"case":18,"func":"coerce","raw":{"text":5,"content":"c"}}
+{"case":19,"func":"coerce","raw":{"text":{"nested":1}}}
+{"case":20,"func":"coerce","raw":[{"type":"text","text":""},{"text":"z"},"tail"]}

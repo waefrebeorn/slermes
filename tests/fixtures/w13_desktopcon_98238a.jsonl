@@ -1,0 +1,9 @@
+{"func":"notice","platform":"win32","source_mode":false,"message":"packet start","case":"packaged windows logs"}
+{"func":"notice","platform":"win32","source_mode":true,"message":"source launch","case":"source mode prints"}
+{"func":"notice","platform":"linux","source_mode":false,"message":"linux prints","case":"non-windows prints"}
+{"func":"notice","platform":"darwin","source_mode":false,"message":"mac prints","case":"mac prints"}
+{"func":"notice","platform":"win32","source_mode":false,"message":"","case":"empty message logs"}
+{"func":"stream_keys","platform":"win32","source_mode":false,"case":"packaged windows yields two streams"}
+{"func":"stream_keys","platform":"win32","source_mode":true,"case":"source mode yields empty mapping"}
+{"func":"stream_keys","platform":"linux","source_mode":false,"case":"linux yields empty mapping"}
+{"func":"stream_keys","platform":"darwin","source_mode":true,"case":"mac source yields empty mapping"}

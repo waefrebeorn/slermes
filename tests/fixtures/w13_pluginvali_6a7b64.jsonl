@@ -1,0 +1,20 @@
+{"func":"declared_list","case":"mixed","manifest":{"provides_tools":["alpha",1,null,"beta",true]},"key":"provides_tools"}
+{"func":"declared_list","case":"missing","manifest":{},"key":"provides_tools"}
+{"func":"declared_list","case":"not_list","manifest":{"provides_tools":"alpha"},"key":"provides_tools"}
+{"func":"requires_hermes_spec_valid","case":"simple","spec":">=0.19"}
+{"func":"requires_hermes_spec_valid","case":"two_clauses","spec":">=0.19, <1.0"}
+{"func":"requires_hermes_spec_valid","case":"bad_version","spec":">=abc"}
+{"func":"requires_hermes_spec_valid","case":"empty","spec":""}
+{"func":"requires_hermes_spec_valid","case":"garbage","spec":"garbage"}
+{"func":"requires_hermes_spec_valid","case":"eq_valid","spec":"==1.2.3"}
+{"func":"requires_hermes_spec_valid","case":"suffix_bad","spec":">=1.2.x"}
+{"func":"check_requires_env","case":"all_good","entries":["GOOD","BAD","A1_B"]}
+{"func":"check_requires_env","case":"lower","entries":["lower"]}
+{"func":"check_requires_env","case":"mixed","entries":["OK",{"name":"X_Y"},{"name":null},5]}
+{"func":"check_requires_env","case":"not_list","entries":"str"}
+{"func":"check_requires_env","case":"empty","entries":[]}
+{"func":"check_requires_env","case":"digit_start","entries":["1BAD"]}
+{"func":"validation_report","case":"empty","checks":[]}
+{"func":"validation_report","case":"all_ok","checks":[["a",true,"x"]]}
+{"func":"validation_report","case":"failures","checks":[["a",false,"detail"],["b",false,""]]}
+{"func":"validation_report","case":"mixed","checks":[["ok1",true,"d"],["bad",false,"why"],["ok2",true,"d2"]]}

@@ -1,0 +1,16 @@
+{"case":"e1","func":"err","code":"no_conversation","detail":""}
+{"case":"e2","func":"err","code":"timeout","detail":"the previous operation on this message has not finished"}
+{"case":"e3","func":"err","code":"gateway_unavailable","detail":null}
+{"case":"p1","func":"props","state":{"target_null":false,"result":{"ok":true,"message_id":"m1"},"message_id":"m1"}}
+{"case":"p2","func":"props","state":{"target_null":true,"result":{"ok":false,"error":"gateway_unavailable"},"message_id":null}}
+{"case":"p3","func":"props","state":{"target_null":false,"result":{"ok":1},"message_id":null}}
+{"case":"r1","func":"repr","state":{"target_null":false,"result":{"ok":true,"message_id":"m1"},"message_id":"m1"}}
+{"case":"r2","func":"repr","state":{"target_null":true,"result":{"ok":false,"error":"no_conversation"},"message_id":null}}
+{"case":"r3","func":"repr","state":{"target_null":false,"result":{"ok":true,"message_id":42},"message_id":42}}
+{"case":"f1","func":"refused","state":{"target_null":true,"result":{"ok":false,"error":"no_conversation","detail":"why"},"message_id":null}}
+{"case":"f2","func":"refused","state":{"target_null":true,"result":{"ok":false,"error":"","detail":""},"message_id":null}}
+{"case":"f3","func":"refused","state":{"target_null":false,"result":{"ok":false,"error":"no_conversation"},"message_id":null}}
+{"case":"f4","func":"refused","state":{"target_null":true,"result":{"ok":false,"error":"timeout","message_id":"m1"},"message_id":"m1"}}
+{"case":"s1","func":"settle","state":{"target_null":false,"result":{"ok":false,"error":"timeout"},"message_id":"old"},"result":{"ok":true,"message_id":"new"}}
+{"case":"s2","func":"settle","state":{"target_null":false,"result":{"ok":true,"message_id":"old"},"message_id":"old"},"result":{"ok":false,"error":"gateway_unavailable"}}
+{"case":"a1","func":"adopt","state":{"target_null":true,"result":{"ok":false,"error":"timeout"},"message_id":null},"other":{"target_null":false,"result":{"ok":true,"message_id":"final","edited":true},"message_id":"final"}}

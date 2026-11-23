@@ -1,0 +1,12 @@
+{"func":"constants","case":"module constants"}
+{"func":"label","suffix":"default","case":"labelled profile"}
+{"func":"label","suffix":"","case":"unlabelled default"}
+{"func":"unloaded","returncode":3,"case":"3 means unloaded"}
+{"func":"unloaded","returncode":113,"case":"113 means unloaded"}
+{"func":"unloaded","returncode":125,"case":"125 means unloaded"}
+{"func":"unloaded","returncode":5,"case":"5 is not unloaded"}
+{"func":"unsupported","returncode":5,"case":"5 unsupported"}
+{"func":"unsupported","returncode":125,"case":"125 unsupported"}
+{"func":"unsupported","returncode":3,"case":"3 supported"}
+{"func":"prog_args","command":["/usr/bin/python3","-m","hermes","gateway","run"],"stdout_log":"/Users/me/.hermes/logs/gateway.log","stderr_log":"/Users/me/.hermes/logs/gateway.error.log","case":"simple command"}
+{"func":"prog_args","command":["/usr/bin/python3","--profile","my profile","gateway"],"stdout_log":"/logs/out log.txt","stderr_log":"/logs/err log.txt","case":"quoted args with spaces"}

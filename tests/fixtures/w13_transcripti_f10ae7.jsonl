@@ -1,0 +1,27 @@
+{"func":"normalize_language","language":"EN-us","case":"casefold and underscore split"}
+{"func":"normalize_language","language":"  zh-Hans  ","case":"strip and dash split"}
+{"func":"normalize_language","language":"haw","case":"three-letter whisper code"}
+{"func":"normalize_language","language":"yue_US","case":"three-letter with suffix"}
+{"func":"normalize_language","language":"繁體中文","case":"traditional chinese alias"}
+{"func":"normalize_language","language":"简体中文","case":"simplified chinese alias"}
+{"func":"normalize_language","language":"123","case":"not alpha"}
+{"func":"normalize_language","language":"e","case":"too short"}
+{"func":"normalize_language","language":"en","supported":["EN","fr"],"case":"supported case-insensitive"}
+{"func":"normalize_language","language":"en","supported":["de"],"case":"unsupported code"}
+{"func":"normalize_language","language":null,"case":"null language"}
+{"func":"normalize_model","model":null,"case":"default local model"}
+{"func":"normalize_model","model":"","case":"empty falls back"}
+{"func":"normalize_model","model":"whisper-1","case":"openai-only name falls back"}
+{"func":"normalize_model","model":"distil-whisper-large-v3-en","case":"retired groq name falls back"}
+{"func":"normalize_model","model":"large-v3","case":"valid local size kept"}
+{"func":"idle_unload","cfg":{},"case":"default zero"}
+{"func":"idle_unload","cfg":{"unload_after_idle_seconds":90},"case":"explicit"}
+{"func":"idle_unload","cfg":{"unload_after_idle_seconds":-5},"case":"negative clamped"}
+{"func":"idle_unload","cfg":{"unload_after_idle_seconds":"bad"},"case":"bad value default"}
+{"func":"cuda_error","msg":"CUDA error: libcublas.so cannot be loaded","case":"cuda library marker"}
+{"func":"cuda_error","msg":"CUDA driver version is insufficient","case":"driver marker"}
+{"func":"cuda_error","msg":"CUDA out of memory","case":"legitimate runtime failure not matched"}
+{"func":"cuda_error","msg":"all good","case":"no marker"}
+{"func":"confidence_thresholds","cfg":{},"case":"default thresholds"}
+{"func":"confidence_thresholds","cfg":{"no_speech_prob_threshold":0.9,"logprob_threshold":-2.5},"case":"explicit thresholds"}
+{"func":"confidence_thresholds","cfg":{"no_speech_prob_threshold":"0.7","logprob_threshold":"bad"},"case":"string parsed, bad fallback"}

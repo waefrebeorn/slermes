@@ -1,0 +1,21 @@
+{"func":"plain","value":null,"case":"none is plain"}
+{"func":"plain","value":{"a":[1,"x",true,null,2.5]},"case":"nested containers"}
+{"func":"plain","value":"scalar","case":"scalar"}
+{"func":"plain","value":{"k":42},"case":"object"}
+{"func":"plain","value":[{"x":[]}],"case":"array of objects"}
+{"func":"bypass","request_kwargs":{"input":[{"role":"user","content":"hi"}],"model":"gpt-5","max_tokens":100},"env_value":"","case":"move input default fields"}
+{"func":"bypass","request_kwargs":{"input":[{"role":"user","content":"x"}],"model":"m"},"env_value":"","case":"input list moved"}
+{"func":"bypass","request_kwargs":{"input":[1,2],"tools":[]},"keep_slots":true,"env_value":"","case":"keep slots"}
+{"func":"bypass","request_kwargs":{"input":[1],"extra_body":{"foo":7}},"env_value":"","case":"merge existing extra_body"}
+{"func":"bypass","request_kwargs":{"input":[1],"extra_body":{"input":[99]}},"env_value":"","case":"explicit extra_body wins"}
+{"func":"bypass","request_kwargs":{"input":[1],"model":"m"},"fields":["model"],"env_value":"","case":"custom fields only scalar"}
+{"func":"bypass","request_kwargs":{"input":[1],"model":"m"},"env_value":"1","case":"escape hatch 1"}
+{"func":"bypass","request_kwargs":{"input":[1],"model":"m"},"env_value":" TRUE ","case":"escape hatch true trimmed"}
+{"func":"bypass","request_kwargs":{"input":[1],"model":"m"},"env_value":"yes","case":"escape hatch yes"}
+{"func":"bypass","request_kwargs":{"input":[1],"model":"m"},"env_value":"off","case":"escape hatch off inactive"}
+{"func":"bypass","request_kwargs":{"model":"m"},"env_value":"","case":"no bulk fields"}
+{"func":"bypass","request_kwargs":{"input":"not-a-container","tools":null,"model":"m"},"env_value":"","case":"scalar fields not moved"}
+{"func":"chat","request_kwargs":{"messages":[{"role":"user","content":"hi"}],"model":"gpt-4o"},"is_openai":true,"env_value":"","case":"chat openai moves messages with keep_slots"}
+{"func":"chat","request_kwargs":{"messages":[1],"tools":[],"extra_body":{"z":1}},"is_openai":true,"env_value":"","case":"chat openai with extra_body"}
+{"func":"chat","request_kwargs":{"messages":[1],"model":"m"},"is_openai":false,"env_value":"","case":"chat non SDK unchanged"}
+{"func":"chat","request_kwargs":{"messages":[1],"model":"m"},"is_openai":true,"env_value":"on","case":"chat escape hatch on"}

@@ -1,0 +1,26 @@
+{"func": "device_flow_error", "code": "expired_token", "desc": "code expired", "retry": "hermes portal"}
+{"func": "device_flow_error", "code": "access_denied", "desc": "user said no", "retry": "hermes model"}
+{"func": "device_flow_error", "code": "invalid_grant", "desc": "bad grant", "retry": "R"}
+{"func": "device_flow_error", "code": "invalid_client", "desc": "unknown app", "retry": "hermes update"}
+{"func": "device_flow_error", "code": "weird_code", "desc": "server exploded", "retry": "hermes portal"}
+{"func": "device_flow_error", "code": "", "desc": "no code given", "retry": "hermes portal"}
+{"func": "device_flow_error", "code": "weird", "desc": "", "retry": "R"}
+{"func": "is_network_error", "type": "ConnectError", "mess": "refused"}
+{"func": "is_network_error", "type": "ReadTimeout", "mess": "timed out"}
+{"func": "is_network_error", "type": "NetworkError", "mess": "net down"}
+{"func": "is_network_error", "type": "ConnectionError", "mess": "reset"}
+{"func": "is_network_error", "type": "TimeoutError", "mess": "late"}
+{"func": "is_network_error", "type": "RuntimeError", "mess": "boom"}
+{"func": "is_network_error", "type": "SignInCopyError", "mess": "copy", "oauth": "expired_token"}
+{"func": "is_network_error", "type": "DeviceCodeExpired", "mess": "expired"}
+{"func": "is_device_code_expired", "type": "AuthError", "code": "device_code_timeout"}
+{"func": "is_device_code_expired", "type": "AuthError", "code": "timeout"}
+{"func": "is_device_code_expired", "type": "AuthError", "code": "other", "oauth": "expired_token"}
+{"func": "is_device_code_expired", "type": "AuthError", "code": "other", "oauth": "access_denied"}
+{"func": "is_cancelled", "type": "KeyboardInterrupt"}
+{"func": "is_cancelled", "type": "EOFError"}
+{"func": "is_cancelled", "type": "SystemExit", "exit": "130"}
+{"func": "is_cancelled", "type": "SystemExit", "exit": "-1"}
+{"func": "is_cancelled", "type": "SystemExit", "exit": "0"}
+{"func": "is_cancelled", "type": "SystemExit", "exit": "3"}
+{"func": "is_cancelled", "type": "RuntimeError", "exit": "0"}

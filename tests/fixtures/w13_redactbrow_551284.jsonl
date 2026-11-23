@@ -1,0 +1,27 @@
+{"func": "literal_end", "code": "\"abc\"", "start": 0, "case": "plain double quote"}
+{"func": "literal_end", "code": "f\"abc\"", "start": 0, "case": "f prefix"}
+{"func": "literal_end", "code": "fr'abc'", "start": 0, "case": "two letter prefix"}
+{"func": "literal_end", "code": "'''abc'''", "start": 0, "case": "triple quote"}
+{"func": "literal_end", "code": "'abc", "start": 0, "case": "unterminated"}
+{"func": "literal_end", "code": "abc", "start": 0, "case": "no literal"}
+{"func": "literal_end", "code": "x = 'a\\nb'", "start": 4, "case": "backslash escape"}
+{"func": "skip_comment", "code": "# don't", "i": 0, "case": "comment with apostrophe"}
+{"func": "skip_comment", "code": "# hi\nx = 1", "i": 0, "case": "comment before newline"}
+{"func": "skip_comment", "code": "x = 1  # tail", "i": 7, "case": "trailing comment"}
+{"func": "literal_mask", "code": "\"abc\"", "start": 0, "case": "plain mask"}
+{"func": "literal_mask", "code": "f\"abc\"", "start": 0, "case": "prefix mask"}
+{"func": "call_end", "code": "fill_input('#p', 'pw')", "i": 11, "case": "call close"}
+{"func": "call_end", "code": "fill_input('a)', 'b')", "i": 11, "case": "paren inside string"}
+{"func": "literal_regions", "code": "fill_input('a', \"b\")", "start": 0, "end": 20, "case": "two literals"}
+{"func": "literal_regions", "code": "fill_input('a') # don't", "start": 0, "end": 23, "case": "comment quote masked"}
+{"func": "unparsed_masks", "code": "fill_input('#pw', 'hunter2')", "case": "fill typed"}
+{"func": "unparsed_masks", "code": "type_text(\"secret\")", "case": "type typed"}
+{"func": "unparsed_masks", "code": "el.insertText('pw')", "case": "insertText"}
+{"func": "unparsed_masks", "code": "fill_input('a', f\"pw{x}\")", "case": "fstring typed"}
+{"func": "mask_unparsed", "code": "fill_input('#p', 'hunter2')", "case": "mask fill"}
+{"func": "mask_unparsed", "code": "type_text(\"abc\")", "case": "mask type"}
+{"func": "mask_unparsed", "code": "el.value = \"leak\"", "case": "value assign"}
+{"func": "mask_unparsed", "code": "fill_input('a', 'b'); el.value = \"c\"", "case": "typing plus value assign"}
+{"func": "mask_unparsed", "code": "x = 1", "case": "no typed values"}
+{"func": "mask_unparsed", "code": "", "case": "empty code"}
+{"func": "mask_unparsed", "code": "fill_input(r'raw')", "case": "raw prefix"}

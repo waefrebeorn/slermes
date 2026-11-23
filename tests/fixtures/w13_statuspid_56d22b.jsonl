@@ -1,0 +1,16 @@
+{"case":"pv1","func":"previous","pid_record":{"pid":4242,"start_time":"t-old"},"lock_record":{"start_time":"t-new"},"live_pids":[],"live_start_times":{}}
+{"case":"pv2","func":"previous","pid_record":{"pid":4242,"start_time":"t-old"},"lock_record":{"start_time":"t-new"},"live_pids":[4242],"live_start_times":{"4242":"t-old"}}
+{"case":"pv3","func":"previous","pid_record":{"pid":4242,"start_time":"t-old"},"lock_record":{"start_time":"t-new"},"live_pids":[4242],"live_start_times":{"4242":"t-other"}}
+{"case":"pv4","func":"previous","pid_record":{"pid":4242,"start_time":"t-new"},"lock_record":{"start_time":"t-new"},"live_pids":[],"live_start_times":{}}
+{"case":"pv5","func":"previous","pid_record":{"pid":4242},"lock_record":{"start_time":"t-new"},"live_pids":[],"live_start_times":{}}
+{"case":"pv6","func":"previous","pid_record":{"pid":4242,"start_time":"t-old"},"lock_record":{},"live_pids":[],"live_start_times":{}}
+{"case":"pv7","func":"previous","pid_record":{"pid":0,"start_time":"t-old"},"lock_record":{"start_time":"t-new"},"live_pids":[],"live_start_times":{}}
+{"case":"pv8","func":"previous","pid_record":{"pid":null,"start_time":"t-old"},"lock_record":{"start_time":"t-new"},"live_pids":[],"live_start_times":{}}
+{"case":"pv9","func":"previous","pid_record":{"pid":"4242","start_time":"t-old"},"lock_record":{"start_time":"t-new"},"live_pids":["4242"],"live_start_times":{"4242":"t-fresh"}}
+{"case":"pv10","func":"previous","pid_record":{"pid":-5,"start_time":"t-old"},"lock_record":{"start_time":"t-new"},"live_pids":[],"live_start_times":{}}
+{"case":"st1","func":"strict","pid_record":{"pid":4242,"start_time":"t-old"},"lock_record":{"start_time":"t-new"},"pid_exists":false,"live_pids":[],"live_start_times":{}}
+{"case":"st2","func":"strict","pid_record":null,"lock_record":{"start_time":"t-new"},"pid_exists":true,"live_pids":[],"live_start_times":{}}
+{"case":"st3","func":"strict","pid_record":{"pid":4242,"start_time":"t-old"},"lock_record":{"start_time":"t-new"},"pid_exists":true,"live_pids":[],"live_start_times":{}}
+{"case":"st4","func":"strict","pid_record":{"pid":4242,"start_time":"t-old"},"lock_record":{"start_time":"t-new"},"pid_exists":true,"live_pids":[4242],"live_start_times":{"4242":"t-old"}}
+{"case":"st5","func":"strict","pid_record":{"pid":4242,"start_time":"t-old"},"lock_record":null,"pid_exists":true,"live_pids":[],"live_start_times":{}}
+{"case":"st6","func":"strict","pid_record":{},"lock_record":{"start_time":"t-new"},"pid_exists":true,"live_pids":[],"live_start_times":{}}

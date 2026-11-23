@@ -1,0 +1,20 @@
+{"func": "tools_changed", "case": 1, "payload": {"mcp_servers": ["alpha", "beta"]}}
+{"func": "tools_changed", "case": 2, "payload": {"mcp_servers": []}}
+{"func": "tools_changed", "case": 3, "payload": {}}
+{"func": "tools_changed", "case": 4, "payload": {"mcp_servers": ["solo"]}}
+{"func": "tools_changed", "case": 5, "payload": {"mcp_servers": [""]}}
+{"func": "bypass", "case": 6, "model": "gpt-4", "provider": "openai"}
+{"func": "bypass", "case": 7, "model": "", "imodel": "claude-3", "provider": "anthropic"}
+{"func": "bypass", "case": 8, "model": "  m  ", "provider": "  p  "}
+{"func": "bypass", "case": 9, "model": "", "imodel": "", "provider": "openai"}
+{"func": "bypass", "case": 10, "model": "m", "provider": ""}
+{"func": "bypass", "case": 11, "model": "   ", "provider": "p"}
+{"func": "slash", "case": 12, "text": "/new", "commands": {"new": "new", "model": "model", "alias": "model"}, "routes": []}
+{"func": "slash", "case": 13, "text": "  /model gpt-4 ", "commands": {"new": "new", "model": "model", "alias": "model"}, "routes": []}
+{"func": "slash", "case": 14, "text": "/alias", "commands": {"new": "new", "model": "model", "alias": "model"}, "routes": []}
+{"func": "slash", "case": 15, "text": "/discard", "commands": {}, "routes": ["discard"]}
+{"func": "slash", "case": 16, "text": "hello", "commands": {"new": "new", "model": "model", "alias": "model"}, "routes": []}
+{"func": "slash", "case": 17, "text": "/tmp/x", "commands": {"new": "new", "model": "model", "alias": "model"}, "routes": ["tmp"]}
+{"func": "slash", "case": 18, "text": "/", "commands": {"new": "new", "model": "model", "alias": "model"}, "routes": []}
+{"func": "slash", "case": 19, "text": "/unknown", "commands": {}, "routes": []}
+{"func": "slash", "case": 20, "text": "\t/compress now", "commands": {}, "routes": ["compress"]}

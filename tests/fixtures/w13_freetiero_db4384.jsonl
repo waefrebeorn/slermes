@@ -1,0 +1,16 @@
+{"func":"constants","case":"module constants"}
+{"func":"due_at","state":{},"case":"empty state never due"}
+{"func":"due_at","state":{"first_task_at":1000,"offers":0},"case":"first offer 180s after first task"}
+{"func":"due_at","state":{"first_task_at":1000,"offers":1,"last_task_at":1300,"last_offered_at":2000},"case":"no task since last offer"}
+{"func":"due_at","state":{"first_task_at":1000,"offers":1,"last_task_at":3000,"last_offered_at":2000},"case":"1st reoffer 1h floor"}
+{"func":"due_at","state":{"first_task_at":1000,"offers":2,"last_task_at":3000,"last_offered_at":2000},"case":"2nd reoffer 4h floor"}
+{"func":"due_at","state":{"first_task_at":1000,"offers":5,"last_task_at":3000,"last_offered_at":2000},"case":"later offers 24h floor"}
+{"func":"due_at","state":{"first_task_at":1000,"offers":0,"last_task_at":0},"case":"zero last_task falls back to first"}
+{"func":"due_in","state":{"first_task_at":1000,"offers":0},"eligible":true,"now":900,"case":"due in 280s"}
+{"func":"due_in","state":{"first_task_at":1000,"offers":0},"eligible":false,"now":900,"case":"ineligible never due"}
+{"func":"due_in","state":{"first_task_at":1000,"offers":0},"eligible":true,"now":2000,"case":"clamp negative to zero"}
+{"func":"eligible","kind":"trial","free_active":true,"case":"trial free inference active"}
+{"func":"eligible","kind":"trial","free_active":false,"case":"trial no free inference"}
+{"func":"eligible","kind":"connector","is_guest":true,"guest_allowed":true,"free_active":false,"flag":true,"case":"connector eligible"}
+{"func":"eligible","kind":"connector","is_guest":true,"guest_allowed":true,"free_active":false,"flag":1,"case":"flag must be boolean True not 1"}
+{"func":"eligible","kind":"connector","is_guest":false,"guest_allowed":true,"free_active":false,"flag":true,"case":"not a guest"}

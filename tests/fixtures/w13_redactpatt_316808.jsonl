@@ -1,0 +1,21 @@
+{"func":"skip_class","pattern":"[abc]xyz","i":0,"case":"simple class"}
+{"func":"skip_class","pattern":"[]abc]tail","i":0,"case":"leading close bracket literal"}
+{"func":"skip_class","pattern":"[a\\]b]rest","i":0,"case":"escaped bracket"}
+{"func":"skip_class","pattern":"abc[def","i":3,"case":"unterminated class"}
+{"func":"skip_class","pattern":"[\\\\]x","i":0,"case":"class ending at escaped slash"}
+{"func":"unbounded","pattern":"a+b","j":1,"case":"plus"}
+{"func":"unbounded","pattern":"ab*c","j":2,"case":"star"}
+{"func":"unbounded","pattern":"a{2,}b","j":1,"case":"open bounded quantifier"}
+{"func":"unbounded","pattern":"a{2}b","j":1,"case":"exact quantifier"}
+{"func":"unbounded","pattern":"a{2,3}b","j":1,"case":"closed range"}
+{"func":"unbounded","pattern":"abc","j":3,"case":"past end"}
+{"func":"unbounded","pattern":"a{,}b","j":1,"case":"empty body"}
+{"func":"structure","pattern":"ab|.*","case":"top level alternation"}
+{"func":"structure","pattern":"ab(?:x|y)","case":"grouped alternation no top level"}
+{"func":"structure","pattern":"(a+)+","case":"nested unbounded"}
+{"func":"structure","pattern":"(a{2,})+","case":"nested open quantifier"}
+{"func":"structure","pattern":"(a{2})+$","case":"bounded group repeat not nested"}
+{"func":"structure","pattern":"sk-[A-Z0-9]{20,}","case":"quantifier in class only"}
+{"func":"structure","pattern":"a\\|b|c","case":"escaped pipe then top level alt"}
+{"func":"structure","pattern":"(?:(a|b)+|c)+","case":"complex nested"}
+{"func":"structure","pattern":"","case":"empty pattern"}

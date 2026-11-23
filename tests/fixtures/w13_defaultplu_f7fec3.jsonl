@@ -1,0 +1,17 @@
+{"func": "attempt", "case": 1, "name": "foo"}
+{"func": "attempt", "case": 2, "name": "x-api-key"}
+{"func": "fetch_policy", "case": 3, "env": "1", "security": null, "readable": true}
+{"func": "fetch_policy", "case": 4, "env": "YES", "security": null, "readable": true}
+{"func": "fetch_policy", "case": 5, "env": "true", "security": {}, "readable": true}
+{"func": "fetch_policy", "case": 6, "env": "no", "security": {}, "readable": true}
+{"func": "fetch_policy", "case": 7, "env": "", "security": {"allow_lazy_installs": true}, "readable": true}
+{"func": "fetch_policy", "case": 8, "env": "", "security": {"allow_lazy_installs": 1}, "readable": true}
+{"func": "fetch_policy", "case": 9, "env": "", "security": {"allow_lazy_installs": false}, "readable": true}
+{"func": "fetch_policy", "case": 10, "env": "", "security": {}, "readable": true}
+{"func": "fetch_policy", "case": 11, "env": "", "security": null, "readable": false}
+{"func": "fetch_policy", "case": 12, "env": " true ", "security": {}, "readable": true}
+{"func": "fetch_allowed", "case": 13, "env": "", "security": {"allow_lazy_installs": true}, "readable": true}
+{"func": "fetch_allowed", "case": 14, "env": "1", "security": {"allow_lazy_installs": true}, "readable": true}
+{"func": "fetch_allowed", "case": 15, "env": "", "security": null, "readable": false}
+{"func": "fetch_allowed", "case": 16, "env": "", "security": {"allow_lazy_installs": 1}, "readable": true}
+{"func": "fetch_allowed", "case": 17, "env": "", "security": {}, "readable": true}

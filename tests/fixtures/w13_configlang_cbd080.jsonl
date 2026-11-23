@@ -1,0 +1,12 @@
+{"func": "display_language_error", "case": 1, "value": "pl", "resolved": null, "supported": ["en", "es", "fr"]}
+{"func": "display_language_error", "case": 2, "value": "en", "resolved": "en", "supported": ["en", "es"]}
+{"func": "display_language_error", "case": 3, "value": "", "resolved": "en", "supported": ["en"]}
+{"func": "display_language_error", "case": 4, "value": "  ", "resolved": null, "supported": ["en"]}
+{"func": "display_language_error", "case": 5, "value": "xx", "resolved": null, "supported": ["en", "es"]}
+{"func": "display_language_error", "case": 6, "value": "it's", "resolved": null, "supported": ["en"]}
+{"func": "display_language_error", "case": 7, "value": "back\\slash", "resolved": null, "supported": ["en"]}
+{"func": "display_language_error", "case": 8, "value": "en-US", "resolved": null, "supported": ["en", "de"]}
+{"func": "display_language_error", "case": 9, "value": null, "resolved": null, "supported": ["en"]}
+{"func": "display_language_error", "case": 10, "value": "zz", "resolved": null, "supported": []}
+{"func": "display_language_error", "case": 11, "value": "a\nb", "resolved": null, "supported": ["en"]}
+{"func": "display_language_error", "case": 12, "value": "say \"hi\"", "resolved": null, "supported": ["en", "zh"]}

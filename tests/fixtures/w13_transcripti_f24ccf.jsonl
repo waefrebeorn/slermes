@@ -1,0 +1,20 @@
+{"func":"sdk_prompt_kwargs","language":null,"prompt":null,"case":"both absent"}
+{"func":"sdk_prompt_kwargs","language":"en","prompt":null,"case":"language only"}
+{"func":"sdk_prompt_kwargs","language":"","prompt":"be concise","case":"empty language skipped"}
+{"func":"sdk_prompt_kwargs","language":"fr","prompt":"short","case":"both set"}
+{"func":"sdk_prompt_kwargs","language":"  ","prompt":0,"case":"whitespace string is truthy, zero is not"}
+{"func":"sdk_prompt_kwargs","language":5,"prompt":false,"case":"number truthy, bool false skipped"}
+{"func":"elevenlabs_error_detail","body":{},"case":"empty body"}
+{"func":"elevenlabs_error_detail","body":{"detail":"bad input"},"case":"detail string"}
+{"func":"elevenlabs_error_detail","body":{"error":"oops"},"case":"error fallback"}
+{"func":"elevenlabs_error_detail","body":{"detail":null,"error":"fallback"},"case":"null detail falls back"}
+{"func":"elevenlabs_error_detail","body":{"detail":{"message":"nested boom"}},"case":"nested message"}
+{"func":"elevenlabs_error_detail","body":{"detail":0,"error":"zero is falsy"},"case":"numeric zero falls back"}
+{"func":"extract_transcript_text","value":"  hello world  ","case":"plain string stripped"}
+{"func":"extract_transcript_text","value":"language en <asr_text>  hi there  ","case":"asr prefix stripped"}
+{"func":"extract_transcript_text","value":"Language ZH-Hans <audio_language>Chinese</audio_language> <asr_text>  你好  ","case":"asr prefix with audio_language tag"}
+{"func":"extract_transcript_text","value":{"text":"  wrapped  "},"case":"dict text stripped"}
+{"func":"extract_transcript_text","value":{"text":null,"error":"provider exploded"},"case":"structured error surfaced"}
+{"func":"extract_transcript_text","value":{"text":null},"case":"no text and no error"}
+{"func":"extract_transcript_text","value":"plain text","case":"non-prefixed scalar"}
+{"func":"extract_transcript_text","value":{"text":42},"case":"non-string text in dict"}

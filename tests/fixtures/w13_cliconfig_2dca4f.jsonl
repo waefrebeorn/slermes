@@ -1,0 +1,14 @@
+{"func": "merge_file_config", "defaults": {"model": {"default": "", "base_url": "", "provider": "auto"}, "agent": {"max_turns": 5, "verbose": false}, "terminal": {"env_type": "local", "cwd": "."}}, "file_config": {"model": {"model": "gpt-x"}, "agent": {"verbose": true}, "max_turns": 9, "unknown": "kept", "terminal": null}}
+{"func": "merge_file_config", "defaults": {"model": {"default": "", "base_url": "", "provider": "auto"}, "agent": {"max_turns": 5, "verbose": false}, "terminal": {"env_type": "local", "cwd": "."}}, "file_config": {"model": "strmodel", "newsec": {"a": 1}}}
+{"func": "merge_file_config", "defaults": {"model": {"default": "", "base_url": "", "provider": "auto"}, "agent": {"max_turns": 5, "verbose": false}, "terminal": {"env_type": "local", "cwd": "."}}, "file_config": {"agent": {"max_turns": null}, "max_turns": 7}}
+{"func": "merge_file_config", "defaults": {"model": {"default": "", "base_url": "", "provider": "auto"}, "agent": {"max_turns": 5, "verbose": false}, "terminal": {"env_type": "local", "cwd": "."}}, "file_config": {}}
+{"func": "merge_file_config", "defaults": {"model": {"default": "", "base_url": "", "provider": "auto"}, "agent": {"max_turns": 5, "verbose": false}, "terminal": {"env_type": "local", "cwd": "."}}, "file_config": {"model": {"default": "explicit", "model": "other"}, "agent": {"max_turns": 3}, "max_turns": 99}}
+{"func": "merge_file_config", "defaults": {"model": {"default": "", "base_url": "", "provider": "auto"}, "agent": {"max_turns": 5, "verbose": false}, "terminal": {"env_type": "local", "cwd": "."}}, "file_config": {"terminal": {"cwd": "/tmp", "timeout": 30}, "display": {"compact": true}}}
+{"func": "merge_file_config", "defaults": {"model": {"default": "x"}, "agent": {"max_turns": 1}}, "file_config": {"model": {}, "agent": {}}}
+{"func": "merge_file_config", "defaults": {"model": {"default": "", "base_url": "", "provider": "auto"}, "agent": {"max_turns": 5, "verbose": false}, "terminal": {"env_type": "local", "cwd": "."}}, "file_config": {"display": 5}}
+{"func": "resolve_prefill_messages_file", "env_value": "  /env/prefill.json  ", "config": {"prefill_messages_file": "  /top.json  ", "agent": {"prefill_messages_file": "  /ag.json  "}}}
+{"func": "resolve_prefill_messages_file", "env_value": "", "config": {"prefill_messages_file": "  /top.json  ", "agent": {"prefill_messages_file": "  /ag.json  "}}}
+{"func": "resolve_prefill_messages_file", "env_value": "   ", "config": {"agent": {"prefill_messages_file": "  /ag.json  "}}}
+{"func": "resolve_prefill_messages_file", "env_value": "", "config": {"agent": "not-a-dict", "prefill_messages_file": "  /top.json  "}}
+{"func": "resolve_prefill_messages_file", "env_value": "", "config": {}}
+{"func": "resolve_prefill_messages_file", "env_value": "", "config": {"agent": {"prefill_messages_file": 123}}}

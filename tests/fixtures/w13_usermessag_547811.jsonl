@@ -1,0 +1,31 @@
+{"func": "identity", "case": 1, "surface": {"provider": "  OpenAI  "}}
+{"func": "identity", "case": 2, "surface": {"provider": ""}}
+{"func": "identity", "case": 3, "surface": null}
+{"func": "identity", "case": 4, "surface": {"provider": "Anthropic"}}
+{"func": "title", "case": 5, "surface": {"code": "auth"}}
+{"func": "title", "case": 6, "surface": {"code": "rate_limit", "provider": "openrouter"}}
+{"func": "title", "case": 7, "surface": {"layer": "streaming"}}
+{"func": "title", "case": 8, "surface": {"code": "unknown_code", "layer": "gateway"}}
+{"func": "title", "case": 9, "surface": {}}
+{"func": "title", "case": 10, "surface": {"code": "ssl_cert_verification", "provider": "Proxy"}}
+{"func": "hint", "case": 11, "surface": {"code": "auth"}}
+{"func": "hint", "case": 12, "surface": {"code": "auth"}, "recoverable": false}
+{"func": "hint", "case": 13, "surface": {"code": "local_runtime_unavailable"}, "recoverable": false}
+{"func": "hint", "case": 14, "surface": {"code": "local_runtime_unavailable"}, "recoverable": true}
+{"func": "hint", "case": 15, "surface": {"code": "local_runtime_unavailable", "retryable": false}, "recoverable": true}
+{"func": "hint", "case": 16, "surface": {"layer": "streaming"}, "recoverable": false}
+{"func": "hint", "case": 17, "surface": {}, "recoverable": false}
+{"func": "text", "case": 18, "error": "  Provider   said  \n no  ", "surface": {"code": "timeout"}, "recoverable": true}
+{"func": "text", "case": 19, "error": "", "surface": {"code": "billing"}}
+{"func": "text", "case": 20, "error": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "surface": {"code": "auth"}, "recoverable": false}
+{"func": "text", "case": 21, "error": "boom", "surface": null, "recoverable": true}
+{"func": "busy", "case": 22, "command": "/new"}
+{"func": "busy", "case": 23, "command": "/new", "compressing": true}
+{"func": "busy", "case": 24, "command": "///sessions", "compressing": true}
+{"func": "agent_init", "case": 25, "exc": "Some error."}
+{"func": "agent_init", "case": 26, "exc": "Timed out waiting for auth store lock after 30s..  "}
+{"func": "agent_init", "case": 27, "exc": "Timed out waiting for shared Nous auth lock (contention)"}
+{"func": "resume_failed", "case": 28, "exc": "missing transcript"}
+{"func": "still_starting", "case": 29}
+{"func": "build_abandoned", "case": 30}
+{"func": "missing_for_turn", "case": 31}

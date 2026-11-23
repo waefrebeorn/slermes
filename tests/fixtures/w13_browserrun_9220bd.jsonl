@@ -1,0 +1,14 @@
+{"func": "chromium_executable", "allow_override": true, "configured": "/opt/my/chrome", "pm_exec": "/pm/chrome", "baked": "/baked/chrome", "system": "/usr/bin/chromium", "pm_no": true}
+{"func": "chromium_executable", "allow_override": false, "configured": "/opt/my/chrome", "pm_exec": "/pm/chrome", "baked": "/baked/chrome", "system": "/usr/bin/chromium", "pm_no": true}
+{"func": "chromium_executable", "allow_override": true, "configured": "", "pm_exec": "/pm/chrome", "baked": "/baked/chrome", "system": "/usr/bin/chromium", "pm_no": true}
+{"func": "chromium_executable", "allow_override": true, "pm_exec": "", "baked": "/baked/chrome", "system": "/usr/bin/chromium", "pm_no": true}
+{"func": "chromium_executable", "allow_override": true, "pm_exec": "", "baked": "", "system": "/usr/bin/chromium", "pm_no": true}
+{"func": "chromium_executable", "allow_override": true, "pm_exec": "", "baked": "", "system": "/usr/bin/chromium", "pm_no": false}
+{"func": "chromium_executable", "allow_override": true}
+{"func": "chromium_executable", "allow_override": false, "pm_exec": "", "baked": "", "system": "/usr/bin/chromium", "pm_no": true}
+{"func": "chromium_missing_hint", "pinned": "/bad/chrome", "termux": true, "baked_exists": true, "pm_no": true}
+{"func": "chromium_missing_hint", "termux": true, "baked_exists": true, "pm_no": true}
+{"func": "chromium_missing_hint", "termux": false, "baked_exists": true, "pm_no": true}
+{"func": "chromium_missing_hint", "termux": false, "baked_exists": false, "pm_no": true}
+{"func": "chromium_missing_hint", "termux": false, "baked_exists": false, "pm_no": false}
+{"func": "chromium_missing_hint", "pinned": "not-a-browser", "termux": false, "baked_exists": false, "pm_no": false}

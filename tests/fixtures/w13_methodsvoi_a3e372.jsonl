@@ -1,0 +1,16 @@
+{"func": "voice_cfg_number", "case": 1, "value": 2.5, "default": 9}
+{"func": "voice_cfg_number", "case": 2, "value": true, "default": 9}
+{"func": "voice_cfg_number", "case": 3, "value": "7", "default": 9}
+{"func": "voice_cfg_number", "case": 4, "value": null, "default": 3}
+{"func": "voice_cfg_number", "case": 5, "value": 0, "default": 9}
+{"func": "frame_fields", "case": 6, "frame": {}}
+{"func": "frame_fields", "case": 7, "frame": {"sample_rate": 8000, "frame_length": 256, "extra": 1}}
+{"func": "frame_fields", "case": 8, "frame": {"sample_rate": null}}
+{"func": "fd_barge_params", "case": 9, "cfg": {}}
+{"func": "fd_barge_params", "case": 10, "cfg": {"barge_in_threshold_multiplier": 2.5, "barge_in_grace_seconds": 0.25}}
+{"func": "fd_barge_params", "case": 11, "cfg": {"barge_in_threshold_multiplier": "1.5", "barge_in_grace_seconds": "bad"}}
+{"func": "fd_barge_params", "case": 12, "cfg": {"barge_in_grace_seconds": -1, "barge_in_threshold_multiplier": 0}}
+{"func": "owner_result", "case": 13, "field": "stopped", "ok": true}
+{"func": "owner_result", "case": 14, "field": "paused", "ok": false}
+{"func": "owner_result", "case": 15, "field": "fed", "ok": 0, "extra": {"disabled_persisted": true}}
+{"func": "owner_result", "case": 16, "field": "resumed", "ok": true, "extra": {"reason": "override"}}

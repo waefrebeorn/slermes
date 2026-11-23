@@ -1,0 +1,14 @@
+{"func":"model_output","agent":null,"case":"no agent"}
+{"func":"model_output","agent":{},"case":"agent without model"}
+{"func":"model_output","agent":{"model":"gpt-4o"},"case":"model only"}
+{"func":"model_output","agent":{"model":"gpt-4o","provider":"openai"},"case":"model and provider"}
+{"func":"model_output","agent":{"model":"","provider":"x"},"case":"empty model"}
+{"func":"model_output","agent":{"model":"m","provider":""},"case":"empty provider omitted"}
+{"func":"model_output","agent":{"model":123},"case":"numeric model coerced"}
+{"func":"model_output","agent":{"model":"claude","provider":"anthropic","extra":"ignored"},"case":"extra agent keys ignored"}
+{"func":"model_output","agent":{"model":false,"provider":"p"},"case":"false model"}
+{"func":"model_output","agent":{"model":0},"case":"numeric zero model"}
+{"func":"model_output","agent":{"model":"modèle","provider":"mistral"},"case":"unicode model"}
+{"func":"model_output","agent":{"model":"m","provider":true},"case":"bool provider coerced"}
+{"func":"model_output","agent":{"model":"m","provider":0},"case":"numeric zero provider omitted"}
+{"func":"model_output","agent":{"model":"m","provider":"p/q"},"case":"provider with punctuation"}

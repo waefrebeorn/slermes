@@ -1,0 +1,13 @@
+{"case":"ol1","func":"owner_lines","lines":[]}
+{"case":"ol2","func":"owner_lines","lines":["alpha"]}
+{"case":"ol3","func":"owner_lines","lines":["alpha","beta","gamma"]}
+{"case":"ol4","func":"owner_lines","lines":["\n","alpha\n",""]}
+{"case":"ol5","func":"owner_lines","lines":["",""]}
+{"case":"ol6","func":"owner_lines","lines":["  spaced  ","beta"]}
+{"case":"ol7","func":"owner_lines","lines":["a\nb"]}
+{"case":"ri1","func":"run_info_read","name":"toolsets","policy":true,"toolsets":["web","files"]}
+{"case":"ri2","func":"run_info_read","name":"toolsets","policy":false,"toolsets":["web","files"]}
+{"case":"ri3","func":"run_info_read","name":"toolsets","policy":true,"toolsets":[]}
+{"case":"ri4","func":"run_info_read","name":"platforms","policy":true,"toolsets":["web"]}
+{"case":"ri5","func":"run_info_read","name":"platforms","policy":false,"toolsets":[]}
+{"case":"ri6","func":"run_info_read","name":"toolsets","policy":true,"toolsets":["a","b","c"]}

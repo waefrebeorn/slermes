@@ -1,0 +1,12 @@
+{"func": "inject", "case": 1, "session_key": "s1", "content": "hello", "sessions": [{"session_key": "s1", "lazy": false, "_closing": false, "_finalized": false, "history_lock": true, "running": false}]}
+{"func": "inject", "case": 2, "session_key": "", "content": "hello", "sessions": [{"session_key": "", "lazy": false, "_closing": false, "_finalized": false, "history_lock": true, "running": false}]}
+{"func": "inject", "case": 3, "session_key": "s1", "content": "   ", "sessions": [{"session_key": "s1", "lazy": false, "_closing": false, "_finalized": false, "history_lock": true, "running": false}]}
+{"func": "inject", "case": 4, "session_key": "s1", "content": "hello", "sessions": []}
+{"func": "inject", "case": 5, "session_key": "s1", "content": "hello", "sessions": [{"session_key": "s2", "lazy": false, "_closing": false, "_finalized": false, "history_lock": true, "running": false}]}
+{"func": "inject", "case": 6, "session_key": "s1", "content": "hello", "sessions": [{"session_key": "s2", "lazy": false, "_closing": false, "_finalized": false, "history_lock": true, "running": false}, {"session_key": "s1", "lazy": false, "_closing": false, "_finalized": false, "history_lock": true, "running": true}]}
+{"func": "inject", "case": 7, "session_key": "s1", "content": "x", "sessions": [{"session_key": "s1", "lazy": true, "_closing": false, "_finalized": false, "history_lock": true, "running": false}]}
+{"func": "inject", "case": 8, "session_key": "s1", "content": "x", "sessions": [{"session_key": "s1", "lazy": false, "_closing": false, "_finalized": true, "history_lock": true, "running": false}]}
+{"func": "inject", "case": 9, "session_key": "s1", "content": "x", "sessions": [{"session_key": "s1", "lazy": false, "_closing": false, "_finalized": false, "history_lock": null, "running": false}]}
+{"func": "inject", "case": 10, "session_key": null, "content": "x", "sessions": [{"session_key": "s1", "lazy": false, "_closing": false, "_finalized": false, "history_lock": true, "running": false}]}
+{"func": "inject", "case": 11, "session_key": "s1", "content": null, "sessions": [{"session_key": "s1", "lazy": false, "_closing": false, "_finalized": false, "history_lock": true, "running": false}]}
+{"func": "inject", "case": 12, "session_key": "s1", "content": "\t ok \n", "sessions": [{"session_key": "s1", "lazy": false, "_closing": false, "_finalized": false, "history_lock": true, "running": false}]}

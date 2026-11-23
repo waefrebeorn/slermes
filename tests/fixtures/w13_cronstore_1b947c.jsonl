@@ -1,0 +1,14 @@
+{"case":1,"func":"notice_facts","boot":[],"degraded":{"/a":true},"events":[{"kind":"unwritable","store":"/a"}]}
+{"case":2,"func":"notice_facts","boot":[],"degraded":{},"events":[{"kind":"unwritable","store":"/a"}]}
+{"case":3,"func":"notice_facts","boot":[],"degraded":{"/a":true},"events":[{"kind":"unwritable","store":"/a"},{"kind":"recovered","store":"/a"}]}
+{"case":4,"func":"notice_facts","boot":[],"degraded":{"/a":true},"events":[{"kind":"unwritable","store":"/a"},{"kind":"recovered","store":"/a"},{"kind":"fire","store":"/a"}]}
+{"case":5,"func":"notice_facts","boot":["/b"],"degraded":{"/b":true},"events":[]}
+{"case":6,"func":"notice_facts","boot":["/b"],"degraded":{},"events":[]}
+{"case":7,"func":"notice_facts","boot":[],"degraded":{"/a":true},"events":[{"kind":"unwritable","store":"/a"},{"kind":"unwritable","store":"/a"}]}
+{"case":8,"func":"notice_facts","boot":[],"degraded":{"/a":true},"events":[{"kind":"unwritable","store":"/a"},{"kind":"recovered","store":"/a"},{"kind":"unwritable","store":"/a"}]}
+{"case":9,"func":"notice_facts","boot":[],"degraded":{"/a":true},"events":[{"kind":"unwritable","store":"/a"},{"kind":"recovered","store":"/a"},{"kind":"fire","store":"/a"},{"kind":"unwritable","store":"/a"}]}
+{"case":10,"func":"notice_facts","boot":[],"degraded":{"/a":true},"events":[{"kind":"recovered","store":"/a"}]}
+{"case":11,"func":"notice_facts","boot":[],"degraded":{"/a":true,"/b":true},"events":[{"kind":"unwritable","store":"/a"},{"kind":"unwritable","store":"/b"},{"kind":"recovered","store":"/a"},{"kind":"fire","store":"/a"}]}
+{"case":12,"func":"notice_facts","boot":[],"degraded":{"/a":true},"events":[{"kind":"unwritable","store":"/a"},{"kind":"recovered","store":"/a"},{"kind":"fire","store":"/a"},{"kind":"recovered","store":"/a"}]}
+{"case":13,"func":"notice_facts","boot":[],"degraded":{"/a":true},"events":[{"kind":"unwritable","store":"/a"},{"kind":"recovered","store":"/a"},{"kind":"recovered","store":"/a"}]}
+{"case":14,"func":"notice_facts","boot":[],"degraded":{"/a":false},"events":[{"kind":"unwritable","store":"/a"},{"kind":"recovered","store":"/a"},{"kind":"fire","store":"/a"}]}

@@ -1,0 +1,15 @@
+{"func":"install_cmd","pkg":"zsh","platform":"linux","termux":false,"case":"apt on linux"}
+{"func":"install_cmd","pkg":"git","platform":"darwin","termux":false,"case":"brew on mac"}
+{"func":"install_cmd","pkg":"python","platform":"linux","termux":true,"case":"pkg on termux overrides platform"}
+{"func":"install_cmd","pkg":"","platform":"win32","termux":false,"case":"empty package apt"}
+{"func":"repair_hint","method":"nix","cmd":"nix-shell -p","nix":true,"case":"nix returns update command"}
+{"func":"repair_hint","method":"docker","cmd":"hermes update","nix":false,"case":"docker adds container note"}
+{"func":"repair_hint","method":"apt","cmd":"sudo apt upgrade","nix":false,"case":"apt plain run"}
+{"func":"repair_hint","method":"pip","cmd":"ignored","nix":false,"case":"fallback repair hint"}
+{"func":"sqlite_hint","method":"nix","cmd":"nix-update","nix":true,"case":"nix prose"}
+{"func":"sqlite_hint","method":"docker","cmd":"hermes update","nix":false,"case":"docker containers note"}
+{"func":"sqlite_hint","method":"pip","cmd":"ignored","nix":false,"case":"default update hint"}
+{"func":"tcc","dr":"","case":"empty requirement warns"}
+{"func":"tcc","dr":"designated requirement => cdhash H'abc'","case":"cdhash pinned warns"}
+{"func":"tcc","dr":"anchor apple generic and certificate 1[field.1.2.3]","case":"certificate anchored"}
+{"func":"tcc","dr":"identifier \"com.nousresearch.hermes\"","case":"identifier pinned"}

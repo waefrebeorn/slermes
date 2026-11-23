@@ -1,0 +1,20 @@
+{"case":"b1","func":"bypass","args":{"safe_mode":true}}
+{"case":"b2","func":"bypass","args":{"ignore_user_config":true,"tui":false}}
+{"case":"b3","func":"bypass","args":{"safe_mode":true,"tui":true}}
+{"case":"b4","func":"bypass","args":{}}
+{"case":"s1","func":"split_comma","items":"a, b ,,c","split_non_str":true}
+{"case":"s2","func":"split_comma","items":["x, y",2,null],"split_non_str":true}
+{"case":"s3","func":"split_comma","items":["x, y",2],"split_non_str":false}
+{"case":"s4","func":"split_comma","items":null,"split_non_str":true}
+{"case":"s5","func":"split_comma","items":[",","  ","a"],"split_non_str":true}
+{"case":"u1","func":"unforwarded_flags","args":{"api_key":"k","base_url":"u","reasoning":"r"}}
+{"case":"u2","func":"unforwarded_flags","args":{"api_key":"k"}}
+{"case":"u3","func":"unforwarded_flags","args":{}}
+{"case":"h1","func":"heap_mb","limit":0,"default_mb":8192}
+{"case":"h2","func":"heap_mb","limit":4294967296,"default_mb":8192}
+{"case":"h3","func":"heap_mb","limit":1073741824,"default_mb":8192}
+{"case":"h4","func":"heap_mb","limit":1099511627776,"default_mb":8192}
+{"case":"h5","func":"heap_mb","limit":3221225472,"default_mb":4096}
+{"case":"n1","func":"normalize_toolsets","toolsets":["a,b"," c "]"}
+{"case":"n2","func":"normalize_toolsets","toolsets":""}
+{"case":"n3","func":"normalize_toolsets","toolsets":null}

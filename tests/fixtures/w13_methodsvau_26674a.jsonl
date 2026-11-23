@@ -1,0 +1,16 @@
+{"func": "remove", "case": 1, "params": {"id": "abc"}, "removed": true}
+{"func": "remove", "case": 2, "params": {"id": "abc"}, "removed": false}
+{"func": "remove", "case": 3, "params": {}, "removed": true}
+{"func": "remove", "case": 4, "params": {"id": ""}, "removed": true}
+{"func": "remove", "case": 5, "params": {"id": null}, "removed": true}
+{"func": "lock", "case": 6, "params": {"name": "bitwarden"}}
+{"func": "add", "case": 7, "params": {"secret": {}}, "add_result": {"id": "x"}}
+{"func": "add", "case": 8, "params": {"secret": {"password": "hunter22"}}, "add_result": {"id": "item1"}}
+{"func": "add", "case": 9, "params": {"secret": {"password": "hunter22"}}, "add_result": {"error": "bad secret hunter22"}}
+{"func": "add", "case": 10, "params": {"secret": {"pw": "abcdef", "password": "s3cr3t"}}, "add_result": {"error": "failed: password=leaked123 abcdef"}}
+{"func": "unlock", "case": 11, "params": {"name": "bw", "password": "pw123"}, "backends": [{"name": "bw", "needs_unlock": true}], "exc_msg": null}
+{"func": "unlock", "case": 12, "params": {"name": "bw", "password": ""}, "backends": [{"name": "bw", "needs_unlock": true}], "exc_msg": null}
+{"func": "unlock", "case": 13, "params": {"name": "other", "password": "pw"}, "backends": [{"name": "bw", "needs_unlock": true}], "exc_msg": null}
+{"func": "unlock", "case": 14, "params": {"name": "bw", "password": "s3cret"}, "backends": [{"name": "bw", "needs_unlock": true}], "exc_msg": "bad password: s3cret"}
+{"func": "unlock", "case": 15, "params": {"name": "bw", "password": "pw"}, "backends": [{"name": "bw", "needs_unlock": false}], "exc_msg": null}
+{"func": "unlock", "case": 16, "params": {"name": "bw", "password": "pw"}, "backends": [{"name": "x", "needs_unlock": true}, {"name": "bw", "needs_unlock": true}], "exc_msg": null}

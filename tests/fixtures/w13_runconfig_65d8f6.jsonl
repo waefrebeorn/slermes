@@ -1,0 +1,25 @@
+{"case":"bm1","func":"busy_modes","config":{"display":{"busy_input_mode":"queue"}},"fallback_input":"interrupt","fallback_text":"interrupt"}
+{"case":"bm2","func":"busy_modes","config":{"display":{"busy_input_mode":"steer"}},"fallback_input":"interrupt","fallback_text":"interrupt"}
+{"case":"bm3","func":"busy_modes","config":{"display":{"busy_input_mode":"interrupt"}},"fallback_input":"queue","fallback_text":"queue"}
+{"case":"bm4","func":"busy_modes","config":{"display":{"busy_input_mode":" QUEUE "}},"fallback_input":"interrupt","fallback_text":"interrupt"}
+{"case":"bm5","func":"busy_modes","config":{"display":{"busy_text_mode":"queue"}},"fallback_input":"interrupt","fallback_text":"interrupt"}
+{"case":"bm6","func":"busy_modes","config":{},"fallback_input":"interrupt","fallback_text":"interrupt"}
+{"case":"bm7","func":"busy_modes","config":{"display":{"busy_input_mode":"garbage"}},"fallback_input":"interrupt","fallback_text":"steer"}
+{"case":"bm8","func":"busy_modes","config":{"display":{"busy_input_mode":"queue","busy_text_mode":"interrupt"}},"fallback_input":"interrupt","fallback_text":"interrupt"}
+{"case":"bm9","func":"busy_modes","config":{"display":{"busy_input_mode":null,"busy_text_mode":null}},"fallback_input":"steer","fallback_text":"queue"}
+{"case":"bt1","func":"busy_timing","config":{"display":{"busy_text_debounce_seconds":0.5,"busy_text_hard_cap_seconds":2.0}}}
+{"case":"bt2","func":"busy_timing","config":{}}
+{"case":"bt3","func":"busy_timing","config":{"display":{"busy_text_debounce_seconds":"0.75"}}}
+{"case":"bt4","func":"busy_timing","config":{"display":{"busy_text_debounce_seconds":-1}}}
+{"case":"bt5","func":"busy_timing","config":{"display":{"busy_text_debounce_seconds":"nope","busy_text_hard_cap_seconds":"3.5"}}}
+{"case":"bt6","func":"busy_timing","config":{"display":{"busy_text_debounce_seconds":""}}}
+{"case":"bt7","func":"busy_timing","config":{"display":{"busy_text_debounce_seconds":0,"busy_text_hard_cap_seconds":0}}}
+{"case":"hd1","func":"human_delay","config":{"human_delay":{"mode":"off"}}}
+{"case":"hd2","func":"human_delay","config":{"human_delay":{"mode":"natural"}}}
+{"case":"hd3","func":"human_delay","config":{"human_delay":{"mode":"custom","min_ms":100,"max_ms":500}}}
+{"case":"hd4","func":"human_delay","config":{"human_delay":{"mode":"custom","min_ms":-5,"max_ms":500}}}
+{"case":"hd5","func":"human_delay","config":{"human_delay":{"mode":"custom","min_ms":900,"max_ms":100}}}
+{"case":"hd6","func":"human_delay","config":{"human_delay":{"mode":"custom"}}}
+{"case":"hd7","func":"human_delay","config":{}}
+{"case":"hd8","func":"human_delay","config":{"human_delay":{"mode":"custom","min_ms":"250","max_ms":"750"}}}
+{"case":"hd9","func":"human_delay","config":{"human_delay":{"mode":"weird"}}}

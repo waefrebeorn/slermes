@@ -1,0 +1,16 @@
+{"func": "forwardable", "case": 1, "refusal": {"ledger_status": "queued"}, "session": {}, "text": "hello", "params": {}}
+{"func": "forwardable", "case": 2, "refusal": {"ledger_status": "started"}, "session": {"attached_images": []}, "text": " hi ", "params": {}}
+{"func": "forwardable", "case": 3, "refusal": {"ledger_status": "terminal"}, "session": {}, "text": "x", "params": {}}
+{"func": "forwardable", "case": 4, "refusal": {"ledger_status": "queued"}, "session": {}, "text": "   ", "params": {}}
+{"func": "forwardable", "case": 5, "refusal": {"ledger_status": "queued"}, "session": {"attached_images": [1]}, "text": "x", "params": {}}
+{"func": "forwardable", "case": 6, "refusal": {"ledger_status": "queued"}, "session": {}, "text": "x", "params": {"truncate_before_row_id": null, "truncate_before_message_id": 5}}
+{"func": "forwardable", "case": 7, "refusal": {}, "session": {}, "text": "x", "params": {}}
+{"func": "forwardable", "case": 8, "refusal": {"ledger_status": "running"}, "session": {}, "text": "x", "params": {"truncate_before_user_ordinal": null}}
+{"func": "discover_owner", "case": 9, "state": "ready", "endpoint": "ws://owner"}
+{"func": "discover_owner", "case": 10, "state": "starting", "endpoint": "ws://owner"}
+{"func": "discover_owner", "case": 11, "state": "ready", "endpoint": null}
+{"func": "payload_for", "case": 12, "event_type": "message.complete", "payload": {"text": "done", "extra": 1}, "contract_fields": {"message.complete": ["text"]}, "valid": true}
+{"func": "payload_for", "case": 13, "event_type": "message.complete", "payload": {"text": 5, "extra": 1}, "contract_fields": {"message.complete": ["text"]}, "valid": false}
+{"func": "payload_for", "case": 14, "event_type": "message.start", "payload": {"text": "x"}, "contract_fields": {"message.start": ["text"]}, "valid": false}
+{"func": "payload_for", "case": 15, "event_type": "message.start", "payload": {"text": "x"}, "contract_fields": null, "valid": true}
+{"func": "payload_for", "case": 16, "event_type": "message.start", "payload": {"a": 1, "b": 2}, "contract_fields": {"message.start": ["b"]}, "valid": true}

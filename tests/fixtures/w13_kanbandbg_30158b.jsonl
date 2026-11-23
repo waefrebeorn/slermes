@@ -1,0 +1,17 @@
+{"case":"s1","func":"initial_state","parents":["p1"],"rows":{"p1":{"status":"todo","tenant":"t1"}},"initial_status":"blocked","triage":false,"tenant":null}
+{"case":"s2","func":"initial_state","parents":["p1"],"rows":{"p1":{"status":"todo","tenant":"t1"}},"initial_status":"ready","triage":true,"tenant":null}
+{"case":"s3","func":"initial_state","parents":["p1"],"rows":{"p1":{"status":"todo","tenant":"t1"}},"initial_status":"ready","triage":false,"tenant":null}
+{"case":"s4","func":"initial_state","parents":["p1","p2"],"rows":{"p1":{"status":"done","tenant":"t1"},"p2":{"status":"done","tenant":"t2"}},"initial_status":"ready","triage":false,"tenant":null}
+{"case":"s5","func":"initial_state","parents":["p1"],"rows":{"p1":{"status":"todo","tenant":"t1"}},"initial_status":"ready","triage":false,"tenant":"explicit"}
+{"case":"s6","func":"initial_state","parents":["p1","gone"],"rows":{"p1":{"status":"done","tenant":"t1"}},"initial_status":"ready","triage":false,"tenant":null}
+{"case":"s7","func":"initial_state","parents":[],"rows":{},"initial_status":"ready","triage":false,"tenant":null}
+{"case":"s8","func":"initial_state","parents":["p1","p2"],"rows":{"p1":{"status":"done","tenant":""},"p2":{"status":"done","tenant":"t2"}},"initial_status":"ready","triage":false,"tenant":null}
+{"case":"g1","func":"validate_graph","children":[{"title":"a"},{"title":"b","parents":[0]}]}
+{"case":"g2","func":"validate_graph","children":[]}
+{"case":"g3","func":"validate_graph","children":[1]}
+{"case":"g4","func":"validate_graph","children":[{"title":"   "}]}
+{"case":"g5","func":"validate_graph","children":[{"title":"a","parents":"x"}]}
+{"case":"g6","func":"validate_graph","children":[{"title":"a","parents":[5]}]}
+{"case":"g7","func":"validate_graph","children":[{"title":"a","parents":[0]}]}
+{"case":"g8","func":"validate_graph","children":[{"title":"a","parents":[1]},{"title":"b","parents":[0]}]}
+{"case":"g9","func":"validate_graph","children":[{"title":"a","parents":[-2]}]}

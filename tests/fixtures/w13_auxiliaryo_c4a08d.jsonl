@@ -1,0 +1,26 @@
+{"func": "dual", "case": 1, "url": "https://api.minimax.io/anthropic"}
+{"func": "dual", "case": 2, "url": "https://minimax.io/v1"}
+{"func": "dual", "case": 3, "url": "https://sub.minimax.chat/v1"}
+{"func": "dual", "case": 4, "url": "https://api.minimaxi.com/v1"}
+{"func": "dual", "case": 5, "url": "https://evilminimax.io/v1"}
+{"func": "dual", "case": 6, "url": "api.minimax.io/anthropic"}
+{"func": "dual", "case": 7, "url": "https://API.MINIMAX.IO/v1"}
+{"func": "dual", "case": 8, "url": "https://api.openai.com/v1"}
+{"func": "dual", "case": 9, "url": "//api.minimax.io/v1"}
+{"func": "dual", "case": 10, "url": "https://minimax.chat.attacker.com/v1"}
+{"func": "to_openai", "case": 101, "base_url": "https://api.minimax.io/anthropic"}
+{"func": "to_openai", "case": 102, "base_url": "https://minimax.chat/anthropic"}
+{"func": "to_openai", "case": 103, "base_url": "https://open.bigmodel.cn/anthropic"}
+{"func": "to_openai", "case": 104, "base_url": "https://api.z.ai/anthropic"}
+{"func": "to_openai", "case": 105, "base_url": "https://sub.api.z.ai/anthropic"}
+{"func": "to_openai", "case": 106, "base_url": "https://api.anthropic.com/v1"}
+{"func": "to_openai", "case": 107, "base_url": "https://api.kimi.com/coding"}
+{"func": "to_openai", "case": 108, "base_url": "https://api.kimi.com/v1"}
+{"func": "to_openai", "case": 109, "base_url": "https://api.actual.inc"}
+{"func": "to_openai", "case": 110, "base_url": "https://api.actual.inc/v1"}
+{"func": "to_openai", "case": 111, "base_url": "https://api.actual.inc/foo"}
+{"func": "to_openai", "case": 112, "base_url": "  https://api.minimax.io/anthropic/  "}
+{"func": "to_openai", "case": 113, "base_url": ""}
+{"func": "to_openai", "case": 114, "base_url": "https://evil.com/api.actual.inc/anthropic"}
+{"func": "to_openai", "case": 115, "base_url": "https://proxy.test/api.openai.com/v1"}
+{"func": "to_openai", "case": 116, "base_url": "api.minimax.io/anthropic"}

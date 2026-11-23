@@ -1,0 +1,22 @@
+{"func":"str_arg","params":{"name":"  alice  "},"key":"name","case":"stripped"}
+{"func":"str_arg","params":{"name":""},"key":"name","case":"empty string"}
+{"func":"str_arg","params":{"name":null},"key":"name","case":"null becomes empty"}
+{"func":"str_arg","params":{},"key":"name","case":"missing key"}
+{"func":"str_arg","params":{"name":0},"key":"name","case":"numeric zero falsy"}
+{"func":"str_arg","params":{"name":5},"key":"name","case":"number coerced"}
+{"func":"str_arg","params":{"name":true},"key":"name","case":"bool coerced"}
+{"func":"str_arg","params":{"name":"   "},"key":"name","case":"whitespace only strips to empty"}
+{"func":"joined_output","stdout":"out","stderr":"err","case":"both parts"}
+{"func":"joined_output","stdout":"out","stderr":"","case":"stdout only"}
+{"func":"joined_output","stdout":"","stderr":"err","case":"stderr only"}
+{"func":"joined_output","stdout":"","stderr":"","case":"both empty"}
+{"func":"joined_output","stdout":"  a  ","stderr":"  b  ","case":"outer whitespace stripped only"}
+{"func":"joined_output","stdout":null,"stderr":null,"case":"null parts"}
+{"func":"is_snapshot_restore","arg":"restore","case":"exact"}
+{"func":"is_snapshot_restore","arg":"REWIND now","case":"case-insensitive first token"}
+{"func":"is_snapshot_restore","arg":"  restore  ","case":"padded"}
+{"func":"is_snapshot_restore","arg":"restorex","case":"not a word"}
+{"func":"is_snapshot_restore","arg":"","case":"empty"}
+{"func":"is_snapshot_restore","arg":null,"case":"null"}
+{"func":"is_snapshot_restore","arg":"compress","case":"other command"}
+{"func":"is_snapshot_restore","arg":"rewind","case":"rewind alias"}

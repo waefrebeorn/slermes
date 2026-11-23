@@ -1,0 +1,20 @@
+{"case":1,"func":"text_of","content":"hello world"}
+{"case":2,"func":"text_of","content":null}
+{"case":3,"func":"text_of","content":["a","b","c"]}
+{"case":4,"func":"text_of","content":[{"type":"text","text":"hi"},"plain"]}
+{"case":5,"func":"text_of","content":[{"text":"x"},{"type":null,"text":"y"}]}
+{"case":6,"func":"text_of","content":[{"type":"image","text":"no"},{"type":"image"}]}
+{"case":7,"func":"text_of","content":[{"type":"text","text":""},{"type":"text","text":"ok"}]}
+{"case":8,"func":"text_of","content":["a",{"type":"text","text":"b"},{"type":"image"},null,{"text":"c"}]}
+{"case":9,"func":"text_of","content":[]}
+{"case":10,"func":"history","messages":[{"role":"tool","content":"x"}],"tools":["foo"],"tool_choice":null}
+{"case":11,"func":"history","messages":[{"role":"tool","tool_call_id":"c1","content":"r"}],"tools":["foo"],"tool_choice":"none"}
+{"case":12,"func":"history","messages":[{"role":"tool","tool_call_id":"c1","content":{"type":"text","text":"result"}}],"tools":null,"tool_choice":null}
+{"case":13,"func":"history","messages":[{"role":"tool","tool_call_id":null,"content":null}]}
+{"case":14,"func":"history","messages":[{"role":"assistant","content":"before","tool_calls":[{"function":{"name":"foo","arguments":"{\"a\":1}"}}]}]}
+{"case":15,"func":"history","messages":[{"role":"assistant","tool_calls":[{"function":{"name":"foo"}}]}]}
+{"case":16,"func":"history","messages":[{"role":"assistant","tool_calls":[{}]}]}
+{"case":17,"func":"history","messages":[{"role":"assistant","tool_calls":[{"function":{"name":"a","arguments":"1"}},{"function":{"name":"b","arguments":"2"}}]}]}
+{"case":18,"func":"history","messages":[{"role":"user","content":"hi"},{"role":"assistant","content":"yo"}]}
+{"case":19,"func":"history","messages":[]}
+{"case":20,"func":"history","messages":[{"role":"user","content":"u"},{"role":"tool","tool_call_id":"t1","content":"res"},{"role":"assistant","content":"mid","tool_calls":[{"function":{"name":"go","arguments":"{}"}}]},{"role":"assistant","content":"plain"}],"tool_choice":"none"}

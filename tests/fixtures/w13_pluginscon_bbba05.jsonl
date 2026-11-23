@@ -1,0 +1,16 @@
+{"func":"plugin_skill_owners","case":"both","skills":{"p:foo":{"plugin_key":"pk","plugin_name":"pn"}},"qualified":"p:foo"}
+{"func":"plugin_skill_owners","case":"only_key","skills":{"p:foo":{"plugin_key":"pk"}},"qualified":"p:foo"}
+{"func":"plugin_skill_owners","case":"only_name","skills":{"p:foo":{"plugin_name":"pn"}},"qualified":"p:foo"}
+{"func":"plugin_skill_owners","case":"empty_strings","skills":{"p:foo":{"plugin_key":"","plugin_name":""}},"qualified":"p:foo"}
+{"func":"plugin_skill_owners","case":"null_entry","skills":{"p:foo":null},"qualified":"p:foo"}
+{"func":"plugin_skill_owners","case":"missing","skills":{},"qualified":"alpha:beta"}
+{"func":"plugin_skill_owners","case":"no_colon","skills":{},"qualified":"solo"}
+{"func":"plugin_skill_owners","case":"multi_colon","skills":{},"qualified":"a:b:c"}
+{"func":"plugin_skill_owners","case":"empty_qualified","skills":{},"qualified":""}
+{"func":"plugin_skill_owners","case":"dedupe","skills":{"p:foo":{"plugin_key":"same","plugin_name":"same"}},"qualified":"p:foo"}
+{"func":"skill_name_valid","case":"valid","name":"my-tool_1","plugin_name":"Demo"}
+{"func":"skill_name_valid","case":"colon","name":"a:b","plugin_name":"Demo"}
+{"func":"skill_name_valid","case":"empty","name":"","plugin_name":"Demo"}
+{"func":"skill_name_valid","case":"space","name":"bad name","plugin_name":"Demo"}
+{"func":"skill_name_valid","case":"dot","name":"a.b","plugin_name":"Demo"}
+{"func":"skill_name_valid","case":"unicode","name":"café","plugin_name":"Demo"}

@@ -1,0 +1,24 @@
+{"func":"https_update_url","case":"valid","url":"https://example.com/feed.yml"}
+{"func":"https_update_url","case":"spaces","url":"  https://example.com/a  "}
+{"func":"https_update_url","case":"upper_scheme","url":"HTTPS://EXAMPLE.COM/a"}
+{"func":"https_update_url","case":"http","url":"http://example.com/a"}
+{"func":"https_update_url","case":"file","url":"file:///tmp/x"}
+{"func":"https_update_url","case":"empty","url":""}
+{"func":"https_update_url","case":"null","url":null}
+{"func":"https_update_url","case":"number","url":123}
+{"func":"https_update_url","case":"false","url":false}
+{"func":"https_update_url","case":"prefix_only","url":"https://"}
+{"func":"version_is_newer","case":"greater","latest":"2.0","current":"1.10"}
+{"func":"version_is_newer","case":"equal_padded","latest":"1.0","current":"1.0.0"}
+{"func":"version_is_newer","case":"equal_padded_rev","latest":"1.0.0","current":"1.0"}
+{"func":"version_is_newer","case":"v_prefix","latest":"v1.2","current":"1.1"}
+{"func":"version_is_newer","case":"invalid_latest","latest":"abc","current":"1.0"}
+{"func":"version_is_newer","case":"invalid_current","latest":"2.0","current":"nope"}
+{"func":"version_is_newer","case":"smaller","latest":"2","current":"10"}
+{"func":"version_is_newer","case":"leading_zeros","latest":"01.02","current":"1.2"}
+{"func":"version_is_newer","case":"double_dot","latest":"1..2","current":"1.0"}
+{"func":"version_is_newer","case":"long_equal","latest":"3","current":"3.0.0.0"}
+{"func":"version_is_newer","case":"patch","latest":"1.2.4","current":"1.2.3"}
+{"func":"check_result_json","case":"full","name":"p","klass":"git","current":"a","latest":"b","update_available":true,"needs_fixing":null,"min_hermes":"0.19","reason":"ok"}
+{"func":"check_result_json","case":"defaults","name":"p","klass":"manual"}
+{"func":"check_result_json","case":"nulls","name":"p","klass":"git","current":null,"latest":null,"update_available":null,"reason":""}

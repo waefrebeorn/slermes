@@ -1,0 +1,16 @@
+{"case":"s1","func":"sanitize","pin":{"version":1,"context_key":"ctx-1","context_prompt":"You are helpful.","redact_pii":true}}
+{"case":"s2","func":"sanitize","pin":{"version":1,"context_key":"ctx-2","context_prompt":"","redact_pii":false,"channel_prompt":"chan","parent_chat_id":"parent-9"}}
+{"case":"s3","func":"sanitize","pin":{"version":2,"context_key":"k","context_prompt":"p","redact_pii":true}}
+{"case":"s4","func":"sanitize","pin":{"version":1,"context_key":"","context_prompt":"p","redact_pii":true}}
+{"case":"s5","func":"sanitize","pin":{"version":1,"context_key":"k","context_prompt":null,"redact_pii":true}}
+{"case":"s6","func":"sanitize","pin":{"version":1,"context_key":"k","context_prompt":"p","redact_pii":1}}
+{"case":"s7","func":"sanitize","pin":{"version":1,"context_key":"k","context_prompt":"p","redact_pii":true,"channel_prompt":42}}
+{"case":"s8","func":"sanitize","pin":{"version":1,"context_key":"k","context_prompt":"p","redact_pii":true,"parent_chat_id":false}}
+{"case":"s9","func":"sanitize","pin":null}
+{"case":"s10","func":"sanitize","pin":{"version":true,"context_key":"k","context_prompt":"p","redact_pii":false}}
+{"case":"s11","func":"sanitize","pin":{"version":1.0,"context_key":"k","context_prompt":"p","redact_pii":true,"channel_prompt":null,"parent_chat_id":null}}
+{"case":"g1","func":"get_pin","entry":{"session_id":"s1","prompt_pin":{"version":1,"context_key":"k"}},"expected":"s1"}
+{"case":"g2","func":"get_pin","entry":{"session_id":"s1","prompt_pin":{"version":1,"context_key":"k"}},"expected":"s2"}
+{"case":"g3","func":"get_pin","entry":{"session_id":"s1","prompt_pin":{}},"expected":null}
+{"case":"g4","func":"get_pin","entry":null,"expected":null}
+{"case":"g5","func":"get_pin","entry":{"session_id":"s1","prompt_pin":{"a":1}},"expected":null}

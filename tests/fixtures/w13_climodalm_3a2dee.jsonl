@@ -1,0 +1,31 @@
+{"func": "approval_choices", "case": 1, "command": "short", "allow_permanent": true, "allow_session": true, "smart_denied": false}
+{"func": "approval_choices", "case": 2, "command": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "allow_permanent": true, "allow_session": true, "smart_denied": false}
+{"func": "approval_choices", "case": 3, "command": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "allow_permanent": true, "allow_session": true, "smart_denied": true}
+{"func": "approval_choices", "case": 4, "command": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "allow_permanent": false, "allow_session": true, "smart_denied": false}
+{"func": "approval_choices", "case": 5, "command": "x", "allow_permanent": false, "allow_session": false, "smart_denied": false}
+{"func": "approval_choices", "case": 6, "command": "x", "allow_permanent": true, "allow_session": false, "smart_denied": false}
+{"func": "normalize", "case": 7, "raw": "YES", "choices": [["once", "Once", ""], ["session", "Session", ""], ["always", "Always", ""], ["deny", "Deny", ""], ["cancel", "Cancel", ""]]}
+{"func": "normalize", "case": 8, "raw": " once ", "choices": [["once", "Once", ""], ["session", "Session", ""], ["always", "Always", ""], ["deny", "Deny", ""], ["cancel", "Cancel", ""]]}
+{"func": "normalize", "case": 9, "raw": "n", "choices": [["once", "Once", ""], ["session", "Session", ""], ["always", "Always", ""], ["deny", "Deny", ""], ["cancel", "Cancel", ""]]}
+{"func": "normalize", "case": 10, "raw": "nevermind", "choices": [["once", "Once", ""], ["session", "Session", ""], ["always", "Always", ""], ["deny", "Deny", ""], ["cancel", "Cancel", ""]]}
+{"func": "normalize", "case": 11, "raw": "maybe", "choices": [["once", "Once", ""], ["session", "Session", ""], ["always", "Always", ""], ["deny", "Deny", ""], ["cancel", "Cancel", ""]]}
+{"func": "normalize", "case": 12, "raw": "2", "choices": [["once", "Once", ""], ["session", "Session", ""], ["always", "Always", ""], ["deny", "Deny", ""], ["cancel", "Cancel", ""]]}
+{"func": "normalize", "case": 13, "raw": "3", "choices": [["once", "Once", ""], ["session", "Session", ""], ["always", "Always", ""], ["deny", "Deny", ""], ["cancel", "Cancel", ""]]}
+{"func": "normalize", "case": 14, "raw": "", "choices": [["once", "Once", ""], ["session", "Session", ""], ["always", "Always", ""], ["deny", "Deny", ""], ["cancel", "Cancel", ""]]}
+{"func": "normalize", "case": 15, "raw": null, "choices": [["once", "Once", ""], ["session", "Session", ""], ["always", "Always", ""], ["deny", "Deny", ""], ["cancel", "Cancel", ""]]}
+{"func": "normalize", "case": 16, "raw": "  cancel  ", "choices": [["cancel", "Cancel", ""]]}
+{"func": "opening_phase", "case": 17, "target": {"state": "initiated", "connect_url": "http://x"}}
+{"func": "opening_phase", "case": 18, "target": {"state": "failed"}}
+{"func": "opening_phase", "case": 19, "target": {"state": "pending", "action": "authorize"}}
+{"func": "opening_phase", "case": 20, "target": {"state": "pending"}}
+{"func": "opening_phase", "case": 21, "target": {"state": "initiated", "connect_url": ""}}
+{"func": "opening_phase", "case": 22, "target": {}}
+{"func": "split_skip", "case": 23, "cmd_text": "/reset now"}
+{"func": "split_skip", "case": 24, "cmd_text": "/reset --yes My title"}
+{"func": "split_skip", "case": 25, "cmd_text": "/new -y"}
+{"func": "split_skip", "case": 26, "cmd_text": "/new My title"}
+{"func": "split_skip", "case": 27, "cmd_text": "  /new   now   hi  "}
+{"func": "split_skip", "case": 28, "cmd_text": ""}
+{"func": "split_skip", "case": 29, "cmd_text": "/new NOW x"}
+{"func": "connection_fields", "case": 30, "target": {"required_env": [{"name": "A", "secret": true}, {"name": "B"}, "x", null]}}
+{"func": "connection_fields", "case": 31, "target": {}}

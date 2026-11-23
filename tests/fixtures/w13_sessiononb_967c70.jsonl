@@ -1,0 +1,13 @@
+{"case":"h1","func":"handlers"}
+{"case":"h2","func":"handlers","note":"extra keys are echoed"}
+{"case":"c1","func":"connection","sibling":"chat-default"}
+{"case":"c2","func":"connection","sibling":null}
+{"case":"c3","func":"connection","sibling":""}
+{"case":"c4","func":"connection","sibling":"  spaced  "}
+{"case":"r1","func":"run_id","record":{"run_id":"run-abc","facts":{"x":1}}}
+{"case":"r2","func":"run_id","record":null}
+{"case":"r3","func":"run_id","record":{}}
+{"case":"r4","func":"run_id","record":{"run_id":""}}
+{"case":"r5","func":"run_id","record":{"run_id":12345}}
+{"case":"r6","func":"run_id","record":{"run_id":0}}
+{"case":"r7","func":"run_id","record":{"run_id":null,"other":true}}

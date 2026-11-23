@@ -1,0 +1,14 @@
+{"func":"mcp_envelope","case":"error_dict","raw":"{\"error\":\"boom\"}"}
+{"func":"mcp_envelope","case":"result_dict","raw":"{\"result\":{\"a\":1}}"}
+{"func":"mcp_envelope","case":"structured","raw":"{\"result\":\"ok\",\"structuredContent\":[1,2]}"}
+{"func":"mcp_envelope","case":"error_and_result","raw":"{\"error\":\"e\",\"result\":1}"}
+{"func":"mcp_envelope","case":"plain_json","raw":"{\"hello\":\"world\"}"}
+{"func":"mcp_envelope","case":"plain_string","raw":"not json"}
+{"func":"mcp_envelope","case":"null_raw","raw":null}
+{"func":"mcp_envelope","case":"json_null","raw":"null"}
+{"func":"mcp_envelope","case":"json_number","raw":"42"}
+{"func":"mcp_envelope","case":"bool_raw","raw":true}
+{"func":"mcp_envelope","case":"number_raw","raw":7}
+{"func":"mcp_envelope","case":"empty","raw":""}
+{"func":"mcp_envelope","case":"result_null","raw":"{\"result\":null}"}
+{"func":"mcp_envelope","case":"error_null","raw":"{\"error\":null}"}

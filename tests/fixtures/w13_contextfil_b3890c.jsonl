@@ -1,0 +1,25 @@
+{"func": "estimate", "case": 1, "text": ""}
+{"func": "estimate", "case": 2, "text": "abcd"}
+{"func": "estimate", "case": 3, "text": "aaaaaaa"}
+{"func": "estimate", "case": 4, "text": "hello world"}
+{"func": "estimate", "case": 5, "text": "你好世界"}
+{"func": "estimate", "case": 6, "text": "hi你好"}
+{"func": "estimate", "case": 7, "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+{"func": "entry", "case": 20, "label": "AGENTS.md", "path": "/proj/AGENTS.md", "content": "hello", "status": "loaded"}
+{"func": "entry", "case": 21, "label": "SOUL.md", "path": "/home/SOUL.md", "content": "abc", "status": "flagged"}
+{"func": "entry", "case": 22, "label": "x", "path": "/p/x", "content": "", "status": "empty"}
+{"func": "entry", "case": 23, "label": "BLOCKED", "path": "/p/b", "content": "secret", "status": "blocked"}
+{"func": "entry", "case": 24, "label": "shadow", "path": "/p/s", "content": "abc", "status": "shadowed"}
+{"func": "entry", "case": 25, "label": "你好", "path": "/p/u", "content": "你好", "status": "truncated"}
+{"func": "loaded_status", "case": 40, "scan_hit": true, "rendered_len": "100", "max_chars": "500", "user_authored": false}
+{"func": "loaded_status", "case": 41, "scan_hit": true, "rendered_len": "100", "max_chars": "500", "user_authored": true}
+{"func": "loaded_status", "case": 42, "scan_hit": false, "rendered_len": "501", "max_chars": "500", "user_authored": false}
+{"func": "loaded_status", "case": 43, "scan_hit": false, "rendered_len": "500", "max_chars": "500", "user_authored": false}
+{"func": "loaded_status", "case": 44, "scan_hit": false, "rendered_len": "0", "max_chars": "0", "user_authored": false}
+{"func": "loaded_status", "case": 45, "scan_hit": false, "rendered_len": "9999", "max_chars": "100", "user_authored": true}
+{"func": "render_lines", "case": 60, "sources": []}
+{"func": "render_lines", "case": 61, "sources": [{"label": "AGENTS.md", "path": "p", "chars": 9, "est_tokens": 12, "loaded": true, "status": "loaded"}]}
+{"func": "render_lines", "case": 62, "sources": [{"label": "AGENTS.md", "path": "p", "chars": 9, "est_tokens": 12, "loaded": true, "status": "loaded"}, {"label": "SOUL.md", "path": "p", "chars": 7, "est_tokens": 34567, "loaded": true, "status": "flagged"}, {"label": "x", "path": "p", "chars": 1, "est_tokens": 0, "loaded": false, "status": "blocked"}]}
+{"func": "render_lines", "case": 63, "sources": [{"label": "short", "path": "p", "chars": 5, "est_tokens": 9, "loaded": true, "status": "truncated"}, {"label": "a-much-longer-label", "path": "p", "chars": 19, "est_tokens": 1234567, "loaded": false, "status": "shadowed"}]}
+{"func": "render_lines", "case": 64, "sources": [{"label": "weird", "path": "p", "chars": 5, "est_tokens": 5, "loaded": false, "status": "mystery"}]}
+{"func": "render_lines", "case": 65, "sources": [{"label": "你好", "path": "p", "chars": 2, "est_tokens": 8, "loaded": true, "status": "loaded"}, {"label": "AGENTS.md", "path": "p", "chars": 9, "est_tokens": 0, "loaded": false, "status": "suppressed"}]}

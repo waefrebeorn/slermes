@@ -1,0 +1,26 @@
+{"func":"constants","case":"module constants"}
+{"func":"service_label","kind":"systemd","system":true,"case":"system systemd"}
+{"func":"service_label","kind":"systemd","system":false,"case":"user systemd"}
+{"func":"service_label","kind":"s6","system":false,"case":"s6 slot"}
+{"func":"service_label","kind":"windows","system":false,"case":"windows task"}
+{"func":"service_label","kind":"custom","system":false,"case":"unknown kind passthrough"}
+{"func":"remove_verb","kind":"s6","case":"s6 parked"}
+{"func":"remove_verb","kind":"systemd","case":"systemd uninstalled"}
+{"func":"service_dict","kind":"launchd","system":false,"case":"service dict"}
+{"func":"key_names","platform_value":"telegram","env_keys":{"TELEGRAM_BOT_TOKEN":"telegram","OTHER":"discord","ZZ_TELEGRAM":"telegram"},"case":"sorted key names"}
+{"func":"key_names","platform_value":"discord","env_keys":{},"case":"fallback token phrase"}
+{"func":"listener_url","platform_value":"api_server","profile":"alpha","case":"api default url"}
+{"func":"listener_url","platform_value":"webhook","profile":"beta","case":"webhook default url"}
+{"func":"listener_url","platform_value":"api_server","profile":"alpha","extra_host":"myhost","extra_port":"9999","case":"overridden host port"}
+{"func":"listener_url","platform_value":"telegram","profile":"gamma","case":"unknown platform placeholders"}
+{"func":"manifest_secondaries","manifest":{"secondaries":[{"profile":"a","home":"/h/a"}]},"case":"valid secondaries"}
+{"func":"manifest_secondaries","manifest":{"secondaries":[{"profile":"a"}]},"case":"malformed secondaries"}
+{"func":"manifest_secondaries","manifest":{},"case":"missing secondaries"}
+{"func":"recorded_services","rec":{"services":[{"kind":"systemd","system":true},{"kind":"s6"}]},"case":"all services"}
+{"func":"recorded_services","rec":{"service":{"kind":"launchd","system":false}},"case":"legacy single service"}
+{"func":"recorded_user","rec":{"run_as_user":"alice"},"case":"user present"}
+{"func":"recorded_user","rec":{"run_as_user":""},"case":"empty user"}
+{"func":"target","manifest":{"default":{"services":[{"kind":"systemd","system":true}],"run_as_user":"root"},"secondaries":[{"profile":"a","home":"/h/a","service":{"kind":"s6"}}]},"case":"manifest target and user"}
+{"func":"not_yet_served","manifest":{"default":{"profile":"default"},"secondaries":[{"profile":"a","home":"/h/a"}]},"live_served":["default","a"],"parked":[],"case":"all served"}
+{"func":"not_yet_served","manifest":{"default":{"profile":"default"},"secondaries":[{"profile":"a","home":"/h/a"}]},"live_served":["default"],"parked":[],"case":"one missing"}
+{"func":"not_yet_served","manifest":null,"live_served":[],"parked":[],"case":"no manifest"}

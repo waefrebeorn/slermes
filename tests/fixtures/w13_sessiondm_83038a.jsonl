@@ -1,0 +1,20 @@
+{"case":"dt1","func":"declared_topic","extra":{"dm_topics":[{"chat_id":"c1","topics":[{"thread_id":"t1"},{"thread_id":"t2"}]}]},"chat_id":"c1","thread_id":"t1"}
+{"case":"dt2","func":"declared_topic","extra":{"dm_topics":[{"chat_id":"c1","topics":[{"thread_id":"t1"}]}]},"chat_id":"c1","thread_id":"t9"}
+{"case":"dt3","func":"declared_topic","extra":{"dm_topics":[{"chat_id":"c2","topics":[{"thread_id":"t1"}]}]},"chat_id":"c1","thread_id":"t1"}
+{"case":"dt4","func":"declared_topic","extra":{},"chat_id":"c1","thread_id":"t1"}
+{"case":"dt5","func":"declared_topic","extra":{"dm_topics":[{"chat_id":"c1","topics":[{}]},"bad"]},"chat_id":"c1","thread_id":""}
+{"case":"ks1","func":"key_source","source":{"platform":"telegram","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared"},"db":null}
+{"case":"ks2","func":"key_source","source":{"platform":"telegram","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"per_thread"},"db":null}
+{"case":"ks3","func":"key_source","source":{"platform":"telegram","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared"},"db":{"topic_mode":true}}
+{"case":"ks4","func":"key_source","source":{"platform":"telegram","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared"},"db":{"topic_mode":false}}
+{"case":"ks5","func":"key_source","source":{"platform":"telegram","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared","dm_topics":[{"chat_id":"c1","topics":[{"thread_id":"t1"}]}]},"db":null}
+{"case":"ks6","func":"key_source","source":{"platform":"discord","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared"},"db":null}
+{"case":"ks7","func":"key_source","source":{"platform":"telegram","chat_type":"group","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared"},"db":null}
+{"case":"ks8","func":"key_source","source":{"platform":"telegram","chat_type":"dm","thread_id":null,"detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared"},"db":null}
+{"case":"ks9","func":"key_source","source":{"platform":"telegram","chat_type":"dm","thread_id":"t1","detached_route":"route","chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared"},"db":null}
+{"case":"ks10","func":"key_source","source":{"platform":"telegram","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":" SHARED "},"db":null}
+{"case":"ks11","func":"key_source","source":{"platform":"telegram","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":null,"db":null}
+{"case":"bs1","func":"batch_suffix","source":{"platform":"telegram","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared"}}
+{"case":"bs2","func":"batch_suffix","source":{"platform":"telegram","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"per_thread"}}
+{"case":"bs3","func":"batch_suffix","source":{"platform":"telegram","chat_type":"dm","thread_id":"t7","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared","dm_topics":[{"chat_id":"c1","topics":[{"thread_id":"t7"}]}]}}
+{"case":"bs4","func":"batch_suffix","source":{"platform":"discord","chat_type":"dm","thread_id":"t1","detached_route":null,"chat_id":"c1","user_id":"u1","profile":null},"extra":{"dm_threads":"shared"}}

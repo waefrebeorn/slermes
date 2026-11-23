@@ -1,0 +1,22 @@
+{"case":"w1","func":"word","value":null}
+{"case":"w2","func":"word","value":"  HeLLo  "}
+{"case":"w3","func":"word","value":"ON"}
+{"case":"w4","func":"word","value":true}
+{"case":"w5","func":"word","value":false}
+{"case":"w6","func":"word","value":42}
+{"case":"w7","func":"word","value":""}
+{"case":"w8","func":"word","value":"\tNo\r\n"}
+{"case":"sb1","func":"statusbar","raw":false}
+{"case":"sb2","func":"statusbar","raw":" TOP "}
+{"case":"sb3","func":"statusbar","raw":"bottom"}
+{"case":"sb4","func":"statusbar","raw":"weird"}
+{"case":"sb5","func":"statusbar","raw":true}
+{"case":"sb6","func":"statusbar","raw":null}
+{"case":"lf1","func":"leaf","cfg":{},"key":"display.message_reactions","value":"on"}
+{"case":"lf2","func":"leaf","cfg":{"display":{"x":1}},"key":"display.in_app_tips","value":"off"}
+{"case":"lf3","func":"leaf","cfg":{},"key":"voice.voice_chat_mode","value":"CHAINED"}
+{"case":"lf4","func":"leaf","cfg":{},"key":"voice.voice_chat_mode","value":"bogus"}
+{"case":"lf5","func":"leaf","cfg":{},"key":"no-dot","value":"on"}
+{"case":"lf6","func":"leaf","cfg":{},"key":"a.b.c","value":"yes"}
+{"case":"lf7","func":"leaf","cfg":{},"key":"agent.daybreak","value":"1"}
+{"case":"lf8","func":"leaf","cfg":{},"key":"agent.daybreak","value":"0"}

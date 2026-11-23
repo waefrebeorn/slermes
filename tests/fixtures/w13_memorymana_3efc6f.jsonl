@@ -1,0 +1,30 @@
+{"func": "normalize", "case": 1, "schema": {"name": "mem", "description": "d", "parameters": {}}}
+{"func": "normalize", "case": 2, "schema": {"type": "function", "function": {"name": "mem", "description": "d"}}}
+{"func": "normalize", "case": 3, "schema": "not a dict"}
+{"func": "normalize", "case": 4, "schema": {"name": ""}}
+{"func": "normalize", "case": 5, "schema": {"name": 123}}
+{"func": "normalize", "case": 6, "schema": {"type": "function", "function": {}}}
+{"func": "normalize", "case": 7, "schema": {"type": "function", "function": "x"}}
+{"func": "normalize", "case": 8, "schema": null}
+{"func": "tool_name", "case": 20, "tool": {"function": {"name": "memory"}}}
+{"func": "tool_name", "case": 21, "tool": {"function": {"name": "other"}}}
+{"func": "tool_name", "case": 22, "tool": {}}
+{"func": "tool_name", "case": 23, "tool": "x"}
+{"func": "tool_name", "case": 24, "tool": {"function": {}}}
+{"func": "tool_name", "case": 25, "tool": {"function": {"name": 123}}}
+{"func": "enabled", "case": 40, "enabled": ["x"], "disabled": ["memory"], "present": false, "resolved": {}}
+{"func": "enabled", "case": 41, "enabled": ["x"], "disabled": ["all"], "present": false, "resolved": {}}
+{"func": "enabled", "case": 42, "enabled": ["x"], "disabled": ["*"], "present": false, "resolved": {}}
+{"func": "enabled", "case": 43, "enabled": ["x"], "disabled": [], "present": true, "resolved": {}}
+{"func": "enabled", "case": 44, "enabled": null, "disabled": [], "present": false, "resolved": {}}
+{"func": "enabled", "case": 45, "enabled": [], "disabled": [], "present": false, "resolved": {}}
+{"func": "enabled", "case": 46, "enabled": ["memory"], "disabled": [], "present": false, "resolved": {}}
+{"func": "enabled", "case": 47, "enabled": ["other"], "disabled": [], "present": false, "resolved": {"other": ["memory"]}}
+{"func": "enabled", "case": 48, "enabled": ["a", "b"], "disabled": [], "present": false, "resolved": {"a": ["x"], "b": ["memory"]}}
+{"func": "enabled", "case": 49, "enabled": ["a", "b"], "disabled": [], "present": false, "resolved": {"a": ["memory"]}}
+{"func": "enabled", "case": 50, "enabled": ["a"], "disabled": [], "present": false, "resolved": {}}
+{"func": "enabled", "case": 51, "enabled": ["a"], "disabled": [], "present": false, "resolved": {"a": ["x"]}}
+{"func": "exposed", "case": 60, "tools": [{"function": {"name": "memory"}}], "enabled": ["other"], "disabled": [], "resolved": {"other": ["x"]}}
+{"func": "exposed", "case": 61, "tools": [{"function": {"name": "x"}}], "enabled": ["other"], "disabled": [], "resolved": {"other": ["memory"]}}
+{"func": "exposed", "case": 62, "tools": [], "enabled": [], "disabled": [], "resolved": {}}
+{"func": "exposed", "case": 63, "tools": [{"function": {"name": "memory"}}], "enabled": ["memory"], "disabled": ["all"], "resolved": {}}

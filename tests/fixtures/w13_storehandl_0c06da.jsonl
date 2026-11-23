@@ -1,0 +1,11 @@
+{"func": "is_handle", "case": 1, "db": {"is_handle": true}}
+{"func": "is_handle", "case": 2, "db": {"is_handle": false}}
+{"func": "is_handle", "case": 3, "db": null}
+{"func": "launch_persistence", "case": 4, "launch_is_handle": true}
+{"func": "launch_persistence", "case": 5, "launch_is_handle": false}
+{"func": "persistence_beside", "case": 6, "db": null, "launch_is_handle": true}
+{"func": "persistence_beside", "case": 7, "db": {"is_launch": true, "is_handle": true}, "launch_is_handle": true}
+{"func": "persistence_beside", "case": 8, "db": {"is_launch": true, "is_handle": true}, "launch_is_handle": false}
+{"func": "persistence_beside", "case": 9, "db": {"is_handle": true, "is_launch": false, "scope": "profA"}, "launch_is_handle": true}
+{"func": "persistence_beside", "case": 10, "db": {"is_handle": false, "is_launch": false}, "launch_is_handle": true}
+{"func": "persistence_beside", "case": 11, "db": {"is_handle": true, "scope": ""}, "launch_is_handle": false}

@@ -1,0 +1,26 @@
+{"func":"parse_model_config","raw":{"default":"gpt-x","follow_profile_config":true},"quiet":true,"case":"dict passthrough"}
+{"func":"parse_model_config","raw":"{\"a\":1,\"b\":[2]}","quiet":true,"case":"json text to dict"}
+{"func":"parse_model_config","raw":"[1,2]","quiet":true,"case":"json list becomes empty dict"}
+{"func":"parse_model_config","raw":"not json","quiet":true,"case":"invalid json quiet"}
+{"func":"parse_model_config","raw":"   ","quiet":true,"case":"blank string"}
+{"func":"parse_model_config","raw":null,"quiet":true,"case":"null"}
+{"func":"row_follows_profile","row":null,"case":"no row"}
+{"func":"row_follows_profile","row":{"model_config":{"follow_profile_config":true}},"case":"follow marker"}
+{"func":"row_follows_profile","row":{"title":"Bot Chat"},"case":"legacy title fallback"}
+{"func":"row_follows_profile","row":{"title":"  Bot Chat  ","model_config":{}},"case":"title stripped"}
+{"func":"row_follows_profile","row":{"title":"Other","model_config":{"follow_profile_config":false}},"case":"not a bot chat"}
+{"func":"row_follows_profile","row":{"model_config":"{\"follow_profile_config\": true}"},"case":"model_config as json text"}
+{"func":"display_mouse_tracking","display":null,"case":"non-dict display"}
+{"func":"display_mouse_tracking","display":{"mouse_tracking":"SCROLL"},"case":"scroll alias"}
+{"func":"display_mouse_tracking","display":{"mouse_tracking":"CLICK"},"case":"click alias"}
+{"func":"display_mouse_tracking","display":{"mouse_tracking":false},"case":"bool false"}
+{"func":"display_mouse_tracking","display":{"mouse_tracking":0},"case":"numeric zero"}
+{"func":"display_mouse_tracking","display":{"tui_mouse":false},"case":"legacy tui_mouse"}
+{"func":"display_mouse_tracking","display":{"mouse_tracking":"bogus"},"case":"unknown alias"}
+{"func":"display_mouse_tracking","display":{"mouse_tracking":null},"case":"null raw"}
+{"func":"coerce_statusbar","value":false,"case":"bool false"}
+{"func":"coerce_statusbar","value":"TOP","case":"case-insensitive"}
+{"func":"coerce_statusbar","value":"  bottom  ","case":"stripped"}
+{"func":"coerce_statusbar","value":"bogus","case":"unknown mode"}
+{"func":"coerce_statusbar","value":0,"case":"numeric zero is not False identity"}
+{"func":"coerce_statusbar","value":true,"case":"bool true"}

@@ -1,0 +1,18 @@
+{"case":"o1","func":"origin","url":"https://github.com/org/repo.git"}
+{"case":"o2","func":"origin","url":"https://gitlab.example.com:8443/a/b"}
+{"case":"o3","func":"origin","url":"https://[::1]:8080/x"}
+{"case":"o4","func":"origin","url":"http://github.com/x"}
+{"case":"o5","func":"origin","url":"https:///path"}
+{"case":"o6","func":"origin","url":"https://USER:pass@GITHUB.com/path"}
+{"case":"t1","func":"token_pair","token":"ghp_abc123"}
+{"case":"t2","func":"token_pair","token":""}
+{"case":"t3","func":"token_pair","token":null}
+{"case":"h1","func":"auth_headers","env":{"GIT_CONFIG_VALUE_1":"Authorization: basic ZZZ","GIT_CONFIG_VALUE_0":"Authorization: basic AAA","GIT_CONFIG_KEY_0":"http.a/.extraheader","PATH":"/usr/bin"}}
+{"case":"c1","func":"credential_required","err":"fatal: could not read Username for 'https://github.com': terminal prompts disabled","stdout":""}
+{"case":"c2","func":"credential_required","err":"fatal: repository 'x' not found","stdout":""}
+{"case":"c3","func":"credential_required","err":"error: 403","stdout":""}
+{"case":"c4","func":"credential_required","err":"error: 4034","stdout":""}
+{"case":"c5","func":"credential_required","err":"","stdout":"ERROR: 401 Unauthorized"}
+{"case":"w1","func":"with_git_auth","env":{"GIT_CONFIG_COUNT":"1","GIT_CONFIG_KEY_0":"http.other/.extraheader","GIT_CONFIG_VALUE_0":"Authorization: basic ZZZ"},"url":"https://github.com/org/repo.git","auth":["user","pass"]}
+{"case":"w2","func":"with_git_auth","env":{"PATH":"/usr/bin"},"url":"https://example.com/x","auth":["x-access-token","tok"]}
+{"case":"w3","func":"with_git_auth","env":{"PATH":"/usr/bin"},"url":"git@github.com:org/repo.git","auth":["user","pass"]}

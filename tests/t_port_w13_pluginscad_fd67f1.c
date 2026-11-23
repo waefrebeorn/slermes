@@ -1,0 +1,48 @@
+/* t_port_w13_pluginscad_fd67f1.c — harness for src/hermes_cli/plugins_cadence.c */
+#include "hermes_json.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "noc_w13_pluginscad_fd67f1.h"
+
+static void emit_key(const char *key, json_t *v) {
+    char *s = v ? json_dumps(v, 0) : NULL;
+    printf("\"%s\":", key);
+    if (s) { fputs(s, stdout); free(s); }
+    else fputs("null", stdout);
+}
+int main(void) {
+    char line[32768];
+    setvbuf(stdout, NULL, _IONBF, 0);
+    while (fgets(line, sizeof(line), stdin)) {
+        if (!strchr(line, '{')) continue;
+        json_t *in = json_parse(line, NULL);
+        if (!in) continue;
+        const char *func = json_get_str(in, "func", "");
+        json_t *out = NULL;
+        if (!strcmp(func, "install_fingerprint")) {
+            out = w13_pluginscad_fd67f1_install_fingerprint(in);
+        } else if (!strcmp(func, "check_interval_hours")) {
+            out = w13_pluginscad_fd67f1_check_interval_hours(in);
+        } else if (!strcmp(func, "auto_apply_enabled")) {
+            out = w13_pluginscad_fd67f1_auto_apply_enabled(in);
+        } else if (!strcmp(func, "cached_git_updates")) {
+            out = w13_pluginscad_fd67f1_cached_git_updates(in);
+        }
+        printf("{");
+        json_t *fv = json_string(func);
+        emit_key("func", fv); json_free(fv);
+        fputs(",", stdout);
+        emit_key("out", out);
+        for (size_t i = 0; i < json_object_size(in); i++) {
+            const char *k = json_object_get_key_at(in, i);
+            if (!k || !strcmp(k, "func")) continue;
+            fputs(",", stdout);
+            emit_key(k, json_copy(json_object_get_at(in, i)));
+        }
+        fputs("}\n", stdout);
+        json_free(out);
+        json_free(in);
+    }
+    return 0;
+}

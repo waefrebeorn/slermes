@@ -1,0 +1,13 @@
+{"case":"d1","func":"dict_or_empty","value":{"a":1,"b":"x"}}
+{"case":"d2","func":"dict_or_empty","value":"not a dict"}
+{"case":"d3","func":"dict_or_empty","value":null}
+{"case":"a1","func":"acp_flags","args":{"acp_version":true,"check":true,"setup":true,"setup_browser":true,"assume_yes":true}}
+{"case":"a2","func":"acp_flags","args":{"check":true,"assume_yes":true,"model":"anthropic/claude-sonnet-4"}}
+{"case":"a3","func":"acp_flags","args":{}}
+{"case":"e1","func":"acp_env","args":{"accept_hooks":true,"ignore_rules":true}}
+{"case":"e2","func":"acp_env","args":{"model":"custom/model-x","provider":"openrouter"}}
+{"case":"e3","func":"acp_env","args":{}}
+{"case":"m1","func":"monitoring_lines","otlp_available":true,"mon":{"gateway_health_export":{"enabled":true,"metrics_enabled":true,"export_interval_seconds":90,"diagnostic_events_enabled":false,"warning_error_events_enabled":true,"logs_export_interval_seconds":7},"export":{"otlp":{"enabled":true,"endpoint":"https://otlp.example:4317"}}}}
+{"case":"m2","func":"monitoring_lines","otlp_available":false,"mon":{}}
+{"case":"m3","func":"monitoring_lines","otlp_available":true,"mon":{"gateway_health_export":{"enabled":true},"export":{"otlp":{"enabled":false,"endpoint":"https://ignored"}}}}
+{"case":"m4","func":"monitoring_lines","otlp_available":false,"mon":{"gateway_health_export":"bad","export":[1,2]}}

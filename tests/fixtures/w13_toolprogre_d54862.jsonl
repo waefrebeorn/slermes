@@ -1,0 +1,39 @@
+{"func": "cap_tui_verbose_text", "case": 1, "text": "short text"}
+{"func": "cap_tui_verbose_text", "case": 2, "text": "a\nb\nc\n"}
+{"func": "cap_tui_verbose_text", "case": 3, "text": "line0\nline1\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10\nline11\nline12\nline13\nline14\nline15\nline16\nline17\nline18\nline19"}
+{"func": "cap_tui_verbose_text", "case": 4, "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+{"func": "cap_tui_verbose_text", "case": 5, "text": "pad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\npad\nLAST"}
+{"func": "fmt_tool_duration", "case": 6, "seconds": null}
+{"func": "fmt_tool_duration", "case": 7, "seconds": 1.25}
+{"func": "fmt_tool_duration", "case": 8, "seconds": 9.96}
+{"func": "fmt_tool_duration", "case": 9, "seconds": 12.4}
+{"func": "fmt_tool_duration", "case": 10, "seconds": 59.6}
+{"func": "fmt_tool_duration", "case": 11, "seconds": 125}
+{"func": "fmt_tool_duration", "case": 12, "seconds": 120}
+{"func": "count_list", "case": 13, "obj": {"data": {"web": [1, 2, 3]}}, "path": ["data", "web"]}
+{"func": "count_list", "case": 14, "obj": {"results": []}, "path": ["results"]}
+{"func": "count_list", "case": 15, "obj": {"a": 5}, "path": ["a", "b"]}
+{"func": "count_list", "case": 16, "obj": [1, 2], "path": []}
+{"func": "tool_summary", "case": 17, "name": "web_search", "result": "{\"data\": {\"web\": [1, 2, 3]}}", "duration_s": 2.5}
+{"func": "tool_summary", "case": 18, "name": "web_search", "result": "{\"data\": {\"web\": [1]}}", "duration_s": null}
+{"func": "tool_summary", "case": 19, "name": "web_extract", "result": "{\"data\": {\"results\": [1, 2]}}", "duration_s": 9}
+{"func": "tool_summary", "case": 20, "name": "web_extract", "result": "{\"results\": [1, 2, 3]}", "duration_s": null}
+{"func": "tool_summary", "case": 21, "name": "web_search", "result": "{\"fallback_warning\": \"  careful  \"}", "duration_s": 1.2}
+{"func": "tool_summary", "case": 22, "name": "other", "result": "not json", "duration_s": null}
+{"func": "normalize_todo_state", "case": 23, "value": {"todos": [{"id": 1}], "revision": 3}}
+{"func": "normalize_todo_state", "case": 24, "value": {"todos": [], "revision": 0}}
+{"func": "normalize_todo_state", "case": 25, "value": {"todos": [], "revision": 1}}
+{"func": "normalize_todo_state", "case": 26, "value": {"todos": [], "revision": "bad"}}
+{"func": "normalize_todo_state", "case": 27, "value": {"todos": [], "revision": "2"}}
+{"func": "tool_result_needs_user", "case": 28, "result": "{\"success\": false}"}
+{"func": "tool_result_needs_user", "case": 29, "result": "{\"ok\": false, \"error\": \"\"}"}
+{"func": "tool_result_needs_user", "case": 30, "result": "{\"exit_code\": 1, \"error\": null}"}
+{"func": "tool_result_needs_user", "case": 31, "result": "{\"exit_code\": 0}"}
+{"func": "tool_result_needs_user", "case": 32, "result": "{\"error\": \"  \"}"}
+{"func": "int_or_skip", "case": 33, "v": "12"}
+{"func": "int_or_skip", "case": 34, "v": "12.5"}
+{"func": "int_or_skip", "case": 35, "v": 3.9}
+{"func": "int_or_skip", "case": 36, "v": null}
+{"func": "int_or_skip", "case": 37, "v": true}
+{"func": "str_list", "case": 38, "v": ["a", 1, true, null]}
+{"func": "str_list", "case": 39, "v": []}

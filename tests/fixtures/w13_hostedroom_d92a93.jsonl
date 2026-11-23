@@ -1,0 +1,25 @@
+{"case":"re1","func":"routed_event_id","id":"evt-123"}
+{"case":"re2","func":"routed_event_id","id":""}
+{"case":"re3","func":"routed_event_id","id":"a:b:c"}
+{"case":"cc1","func":"continue_count","id":"d1","events":[{"kind":"room.continued","payload":{"discussion_event_id":"d1"}},{"kind":"message.user","payload":{}},{"kind":"room.continued","payload":{"discussion_event_id":"d2"}}]}
+{"case":"cc2","func":"continue_count","id":"d1","events":[]}
+{"case":"cc3","func":"continue_count","id":"d1","events":[{"kind":"room.continued","payload":{"discussion_event_id":"d1"}},{"kind":"room.continued","payload":{"discussion_event_id":"d1"}}]}
+{"case":"cc4","func":"continue_count","id":"d1","events":[{"kind":"room.activity","payload":{"discussion_event_id":"d1"}}]}
+{"case":"rp1","func":"routed_payload","discussion_event_id":"d1","thread_id":"t1","member_ids":["a","b"]}
+{"case":"rp2","func":"routed_payload","discussion_event_id":"d1","thread_id":"t1","member_ids":null}
+{"case":"rp3","func":"routed_payload","discussion_event_id":"d1","thread_id":"t1","member_ids":[]}
+{"case":"rp4","func":"routed_payload","discussion_event_id":"d1","thread_id":"t1","member_ids":["a"]}
+{"case":"ol1","func":"one_line","text":"  hello   world\tfrom\nC  "}
+{"case":"ol2","func":"one_line","text":""}
+{"case":"ol3","func":"one_line","text":null}
+{"case":"ol4","func":"one_line","text":"   leading and trailing   "}
+{"case":"pa1","func":"parse_router_answer","text":"{\"members\":[\"@Alice\",\"bob\"]}","handles":{"alice":"m1","bob":"m2"}}
+{"case":"pa2","func":"parse_router_answer","text":"{\"members\":\"everyone\"}","handles":{"alice":"m1"}}
+{"case":"pa3","func":"parse_router_answer","text":"```json\n{\"members\":[\"@Alice\"]}\n```","handles":{"alice":"m1"}}
+{"case":"pa4","func":"parse_router_answer","text":"{\"members\":[\"@Alice\",\"@alice\"]}","handles":{"alice":"m1"}}
+{"case":"pa5","func":"parse_router_answer","text":"{\"members\":[\"nobody\"]}","handles":{"alice":"m1"}}
+{"case":"pa6","func":"parse_router_answer","text":"not json","handles":{"alice":"m1"}}
+{"case":"pa7","func":"parse_router_answer","text":"{\"members\":[]}","handles":{"alice":"m1"}}
+{"case":"pa8","func":"parse_router_answer","text":"{\"members\":123}","handles":{"alice":"m1"}}
+{"case":"pa9","func":"parse_router_answer","text":"{\"members\":[\"@BOB\"]}","handles":{"bob":"m9"}}
+{"case":"pa10","func":"parse_router_answer","text":"{\"members\":[\"alice\"],\"extra\":1}","handles":{"alice":"m1"}}

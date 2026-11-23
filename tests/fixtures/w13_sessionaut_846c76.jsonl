@@ -1,0 +1,21 @@
+{"case":"id1","func":"identities","raws":["[\"heartbeat\",\"p1\",\"e1\"]","[\"completion\",\"p1\"]"]}
+{"case":"id2","func":"identities","raws":["not json","[]","{\"a\":1}"]}
+{"case":"id3","func":"identities","raws":[]}
+{"case":"id4","func":"identities","raws":[null,42,"[1,2,3]"]}
+{"case":"qt1","func":"queued_tick","row":{"status":"queued","principal_id":"automation:key1","request_id":"[\"heartbeat\",\"p1\",\"e1\"]"},"process":"p1","route":"key1"}
+{"case":"qt2","func":"queued_tick","row":{"status":"queued","principal_id":"automation:key1","request_id":"[\"heartbeat\",\"p2\",\"e1\"]"},"process":"p1","route":"key1"}
+{"case":"qt3","func":"queued_tick","row":{"status":"settled","principal_id":"automation:key1","request_id":"[\"heartbeat\",\"p1\",\"e1\"]"},"process":"p1","route":"key1"}
+{"case":"qt4","func":"queued_tick","row":{"status":"queued","principal_id":"automation:other","request_id":"[\"heartbeat\",\"p1\",\"e1\"]"},"process":"p1","route":"key1"}
+{"case":"qt5","func":"queued_tick","row":{"status":"queued","principal_id":"automation:key1","request_id":"[\"heartbeat\",\"p1\"]"},"process":"p1","route":"key1"}
+{"case":"qt6","func":"queued_tick","row":{"status":"queued","principal_id":"automation:key1","request_id":"bad"},"process":"p1","route":"key1"}
+{"case":"nm1","func":"notification","metadata":{}}
+{"case":"nm2","func":"notification","metadata":{"notification_category":"diagnostic"}}
+{"case":"nm3","func":"notification","metadata":{"notification_category":"result"}}
+{"case":"nm4","func":"notification","metadata":{"notification_category":"weird"}}
+{"case":"nm5","func":"notification","metadata":{"notification_category":null}}
+{"case":"ad1","func":"admission_display","payload":{"local_automation_v1":{"display_kind":"result","display_text":"  done  ","identity":"i1"},"text":"hello"}}
+{"case":"ad2","func":"admission_display","payload":{"local_automation_v1":{"display_kind":"result","display_text":"   ","identity":"i1"},"text":"hello"}}
+{"case":"ad3","func":"admission_display","payload":{"native_text_v1":{"automation":{"display_kind":"error","display_text":"failed","notification_category":"diagnostic"}},"text":"oops"}}
+{"case":"ad4","func":"admission_display","payload":{}}
+{"case":"ad5","func":"admission_display","payload":{"local_automation_v1":{},"text":"x"}}
+{"case":"ad6","func":"admission_display","payload":{"local_automation_v1":{"display_kind":"result","display_text":"ok"},"text":null}}

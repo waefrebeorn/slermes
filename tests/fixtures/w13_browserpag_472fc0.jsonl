@@ -1,0 +1,11 @@
+{"func": "abstract_methods", "case": 1}
+{"func": "abstract_methods", "case": 2}
+{"func": "is_abstract", "case": 3}
+{"func": "is_abstract", "case": 4}
+{"func": "method_shape", "case": 5, "method": "has_page"}
+{"func": "method_shape", "case": 6, "method": "evaluate"}
+{"func": "method_shape", "case": 7, "method": "evaluate"}
+{"func": "method_shape", "case": 8, "method": "has_page"}
+{"func": "method_shape", "case": 9, "method": "missing"}
+{"func": "method_shape", "case": 10, "method": "has_page"}
+{"func": "method_shape", "case": 11, "method": "evaluate"}
