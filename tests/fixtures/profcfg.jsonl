@@ -1,0 +1,8 @@
+{"func":"migrate","supports":false,"exists":true,"cur":0,"latest":5}
+{"func":"migrate","supports":true,"exists":false,"cur":0,"latest":5}
+{"func":"migrate","supports":true,"exists":true,"cur":5,"latest":5}
+{"func":"migrate","supports":true,"exists":true,"cur":0,"latest":5}
+{"func":"migrate","supports":true,"exists":true,"cur":4,"latest":5}
+{"func":"migrate","supports":true,"exists":true,"cur":6,"latest":5}
+{"func":"migrate","supports":false,"exists":false,"cur":0,"latest":5}
+{"func":"migrate","supports":true,"exists":true,"cur":-1,"latest":0}

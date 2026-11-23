@@ -1,0 +1,14 @@
+{"func":"ns","case":1,"value":"main"}
+{"func":"ns","case":2,"value":"main~"}
+{"func":"ns","case":3,"value":"work"}
+{"func":"ns","case":4,"value":""}
+{"func":"ns","case":5,"value":"Main"}
+{"func":"profile","case":6,"value":"agent:main:abc"}
+{"func":"profile","case":7,"value":"agent:main~:x"}
+{"func":"profile","case":8,"value":"agent:work:y"}
+{"func":"profile","case":9,"value":"agent::x"}
+{"func":"profile","case":10,"value":"cli:main:x"}
+{"func":"profile","case":11,"value":"agent:main"}
+{"func":"profile","case":12,"value":"agent:main:x:y"}
+{"func":"profile","case":13,"value":null}
+{"func":"profile","case":14,"value":123}

@@ -1,0 +1,17 @@
+{"func":"contains","value":{}}
+{"func":"contains","value":{"reasoning":1}}
+{"func":"contains","value":{" REASONING ":1}}
+{"func":"contains","value":{"nested":{"thinking_budget":2}}}
+{"func":"contains","value":{"a":{"b":{"verbosity":"x"}}}}
+{"func":"contains","value":{"x":[{"think":1}]}}
+{"func":"contains","value":{"X":1}}
+{"func":"contains","value":5}
+{"func":"contains","value":"reasoning"}
+{"func":"contains","value":null}
+{"func":"contains","value":{"enable_thinking":false}}
+{"func":"contains","value":{"thinkingConfig":1}}
+{"func":"contains","value":{"foo":"reasoning"}}
+{"func":"forwards","provider":"openai","profile_known":false,"forwards":false}
+{"func":"forwards","provider":"openai","profile_known":true,"forwards":true}
+{"func":"forwards","provider":"anthropic","profile_known":true,"forwards":false}
+{"func":"forwards","provider":"","profile_known":false,"forwards":true}

@@ -1,0 +1,11 @@
+{"func":"bedrock_fast_mode_overrides","model_id":"openai.gpt-6.1-sol","base_url":"https://bedrock-mantle.us-east-1.api.aws/openai/v1","tier":"ultrafast"}
+{"func":"bedrock_fast_mode_overrides","model_id":"openai.gpt-6.1-sol","base_url":"https://bedrock-mantle.us-east-1.api.aws/openai/v1/","tier":"ultrafast"}
+{"func":"bedrock_fast_mode_overrides","model_id":"openai.gpt-6.1-sol","base_url":"https://bedrock-mantle.us-east-1.api.aws/openai/v1///","tier":"ultrafast"}
+{"func":"bedrock_fast_mode_overrides","model_id":"openai.gpt-6.1-sol","base_url":"https://bedrock-mantle.us-east-1.api.aws/openai/v1","tier":"standard"}
+{"func":"bedrock_fast_mode_overrides","model_id":"openai.gpt-6.1-sol","base_url":"https://bedrock-mantle.us-east-1.api.aws/openai/v1","tier":"ULTRAFAST"}
+{"func":"bedrock_fast_mode_overrides","model_id":null,"base_url":"https://bedrock-mantle.us-east-1.api.aws/openai/v1","tier":"ultrafast"}
+{"func":"bedrock_fast_mode_overrides","model_id":"openai.gpt-6","base_url":"https://bedrock-mantle.us-east-1.api.aws/openai/v1","tier":"ultrafast"}
+{"func":"bedrock_fast_mode_overrides","model_id":"openai.gpt-6.1-sol","base_url":null,"tier":"ultrafast"}
+{"func":"bedrock_fast_mode_overrides","model_id":"openai.gpt-6.1-sol","base_url":"https://bedrock-mantle.us-west-2.api.aws/openai/v1","tier":"ultrafast"}
+{"func":"bedrock_fast_mode_overrides","model_id":"openai.gpt-6.1-sol","base_url":"","tier":"ultrafast"}
+{"func":"bedrock_fast_mode_overrides","model_id":"openai.gpt-6.1-sol","base_url":"https://bedrock-mantle.us-east-1.api.aws/openai/v1","tier":null}

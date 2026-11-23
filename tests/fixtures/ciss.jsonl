@@ -1,0 +1,8 @@
+{"func":"_issue","calls":[{"severity":"error","message":"missing key","hint":"add it"}]}
+{"func":"_issue","calls":[{"severity":"warning","message":"old version","hint":"upgrade"},{"severity":"error","message":"bad port","hint":"use 1-65535"}]}
+{"func":"_issue","calls":[]}
+{"func":"_issue","calls":[{"severity":"","message":"","hint":""}]}
+{"func":"_issue","calls":[{"severity":"warning","message":"unicode cafe","hint":"non-ascii"}]}
+{"func":"_issue","calls":[{"severity":"error","message":"comma, colon: value","hint":"still stored"}]}
+{"func":"_issue","calls":[{"severity":"info","message":"nonstandard severity","hint":"still stored"}]}
+{"func":"_issue","calls":[{"severity":"error","message":"one","hint":"h1"},{"severity":"warning","message":"two","hint":"h2"},{"severity":"error","message":"three","hint":"h3"}]}

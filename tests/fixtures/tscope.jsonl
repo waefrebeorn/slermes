@@ -1,0 +1,10 @@
+{"func":"toolset_allowed_for_platform","ts_key":"discord","platform":"discord"}
+{"func":"toolset_allowed_for_platform","ts_key":"discord","platform":"telegram"}
+{"func":"toolset_allowed_for_platform","ts_key":"discord_admin","platform":"discord"}
+{"func":"toolset_allowed_for_platform","ts_key":"discord_admin","platform":"slack"}
+{"func":"toolset_allowed_for_platform","ts_key":"general","platform":"whatsapp"}
+{"func":"toolset_allowed_for_platform","ts_key":"","platform":""}
+{"func":"toolset_allowed_for_platform","ts_key":"DISCORD","platform":"discord"}
+{"func":"toolset_allowed_for_platform","ts_key":"discord","platform":""}
+{"func":"toolset_allowed_for_platform","ts_key":"discord","platform":"DISCORD"}
+{"func":"toolset_allowed_for_platform","ts_key":"discord","platform":"discord "}

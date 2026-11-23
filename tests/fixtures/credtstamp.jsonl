@@ -1,0 +1,21 @@
+{"func":"parse","value":null}
+{"func":"parse","value":""}
+{"func":"parse","value":"   "}
+{"func":"parse","value":0}
+{"func":"parse","value":-5}
+{"func":"parse","value":1700000000}
+{"func":"parse","value":1700000000000}
+{"func":"parse","value":1700000000001}
+{"func":"parse","value":"1700000000"}
+{"func":"parse","value":"1700000000000"}
+{"func":"parse","value":"0"}
+{"func":"parse","value":"-5"}
+{"func":"parse","value":"2024-01-01T00:00:00"}
+{"func":"parse","value":"2024-01-01T00:00:00+00:00"}
+{"func":"parse","value":"2024-01-01T00:00:00Z"}
+{"func":"parse","value":"2024-06-01 12:30:45+02:00"}
+{"func":"parse","value":"2024-01-01"}
+{"func":"parse","value":"not-a-date"}
+{"func":"parse","value":true}
+{"func":"parse","value":false}
+{"func":"parse","value":" 1700000000 "}

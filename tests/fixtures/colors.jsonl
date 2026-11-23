@@ -1,0 +1,11 @@
+{"func": "should_use_color", "no_color": null, "term": "xterm-256color", "tty": true}
+{"func": "should_use_color", "no_color": "", "term": "xterm", "tty": true}
+{"func": "should_use_color", "no_color": null, "term": "dumb", "tty": true}
+{"func": "should_use_color", "no_color": null, "term": "xterm", "tty": false}
+{"func": "should_use_color", "no_color": "1", "term": "dumb", "tty": true}
+{"func": "color", "no_color": null, "term": "xterm", "tty": true, "text": "hi", "codes": ["\u001b[31m"]}
+{"func": "color", "no_color": null, "term": "xterm", "tty": false, "text": "hi", "codes": ["\u001b[31m"]}
+{"func": "color", "no_color": "", "term": "xterm", "tty": true, "text": "hi", "codes": ["\u001b[31m"]}
+{"func": "color", "no_color": null, "term": "xterm", "tty": true, "text": "OK", "codes": ["\u001b[1m", "\u001b[32m"]}
+{"func": "color", "no_color": null, "term": "xterm", "tty": true, "text": "plain", "codes": []}
+{"func": "color", "no_color": null, "term": "dumb", "tty": true, "text": "x", "codes": ["\u001b[36m"]}

@@ -1,0 +1,8 @@
+{"func":"unknown_subkey_refusal","key":"gateway.discord.foo"}
+{"func":"unknown_subkey_refusal","key":"gateway.discord.foo","suggestion":"gateway.discord.token"}
+{"func":"unknown_subkey_refusal","key":"gateway.discord.foo","suggestion":null}
+{"func":"unknown_subkey_refusal","key":"","suggestion":""}
+{"func":"unknown_subkey_refusal","key":"配置.foo","suggestion":"models.provider"}
+{"func":"unknown_subkey_refusal","key":"a'b\"c","suggestion":"x y"}
+{"func":"unknown_subkey_refusal","key":"a.very.long.config.key.path.that.is.nested","suggestion":"a.very.long.config.key.path.that.is.nested2"}
+{"func":"unknown_subkey_refusal","key":"x","suggestion":"y"}

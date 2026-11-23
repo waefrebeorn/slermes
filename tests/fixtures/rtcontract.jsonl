@@ -1,0 +1,14 @@
+{"func":"action","state":"absent","installed":false,"may_start":false,"paused":false}
+{"func":"action","state":"absent","installed":true,"may_start":false,"paused":false}
+{"func":"action","state":"absent","installed":false,"may_start":true,"paused":false}
+{"func":"action","state":"absent","installed":true,"may_start":true,"paused":false}
+{"func":"action","state":"ready"}
+{"func":"action","state":"starting"}
+{"func":"action","state":"draining"}
+{"func":"action","state":"incompatible"}
+{"func":"action","state":"inaccessible"}
+{"func":"action","state":"conflict"}
+{"func":"action","state":"ready","paused":true}
+{"func":"action","state":"absent","paused":true}
+{"func":"action","state":"bogus"}
+{"func":"action","state":""}

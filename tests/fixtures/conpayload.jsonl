@@ -1,0 +1,13 @@
+{"func":"payload","case":1,"value":{"api_key":"secretvalue","username":"alice","authorization":"Bearer abc","connect_url":"https://example.com/a","nested":{"password":"hunter2","count":5},"items":[{"token":"t123"},true,"plain text"]}}
+{"func":"payload","case":2,"value":{"api_key":true,"password":123,"PW":"x","MYSQL_PWD":"z"}}
+{"func":"payload","case":3,"value":["abc",{"password":"p"},7,null,true]}
+{"func":"payload","case":4,"value":"hello world"}
+{"func":"payload","case":5,"value":"api_key=supersecret123 token=abc"}
+{"func":"payload","case":6,"value":"https://user:pass@example.com/path"}
+{"func":"payload","case":7,"value":"Authorization: Basic dXNlcjpwYXNz"}
+{"func":"payload","case":8,"value":{"connect_url":123,"set-cookie":"a=b","credentials":false,"cookie":"x=1"}}
+{"func":"payload","case":9,"value":{"keyboard":"letters","secretary":"notes","monkey":"banana"}}
+{"func":"payload","case":10,"value":null}
+{"func":"payload","case":11,"value":42}
+{"func":"payload","case":12,"value":true}
+{"func":"payload","case":13,"value":{"links":[{"connect_url":"https://a/b","api_key":"k"}]}}

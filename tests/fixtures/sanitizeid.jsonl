@@ -1,0 +1,20 @@
+{"func":"sanitize","task_id":""}
+{"func":"sanitize","task_id":"simple-task_1.0"}
+{"func":"sanitize","task_id":"."}
+{"func":"sanitize","task_id":".."}
+{"func":"sanitize","task_id":"a:b"}
+{"func":"sanitize","task_id":"a_b"}
+{"func":"sanitize","task_id":"trailing."}
+{"func":"sanitize","task_id":"trailing "}
+{"func":"sanitize","task_id":"..."}
+{"func":"sanitize","task_id":"caf\u00e9 \u2615"}
+{"func":"sanitize","task_id":"\u4f60\u597d\u4e16\u754c"}
+{"func":"sanitize","task_id":"/etc/passwd"}
+{"func":"sanitize","task_id":"a/b\\c:d"}
+{"func":"sanitize","task_id":"\ud83d\ude00emoji"}
+{"func":"sanitize","task_id":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+{"func":"sanitize","task_id":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+{"func":"sanitize","task_id":"a:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:ba:b"}
+{"func":"sanitize","task_id":"._.-."}
+{"func":"sanitize","task_id":null}
+{"func":"sanitize","task_id":12345}

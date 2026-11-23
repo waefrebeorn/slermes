@@ -1,0 +1,9 @@
+{"func":"process_catalog_identity","ctx":{"provider":"codex","profile":null,"env":{},"binary":null}}
+{"func":"process_catalog_identity","ctx":{"provider":"openai","profile":{"auth_type":"openai","process_command_env_vars":[],"process_args_env_var":""},"env":{},"binary":"/usr/bin/codex"}}
+{"func":"process_catalog_identity","ctx":{"provider":"codex","profile":{"auth_type":"external_process","process_command_env_vars":[],"process_args_env_var":""},"env":{},"binary":"/usr/bin/codex"}}
+{"func":"process_catalog_identity","ctx":{"provider":"codex","profile":{"auth_type":"external_process","process_command_env_vars":["CODEX_CMD","EMPTY"],"process_args_env_var":"CODEX_ARGS"},"env":{"CODEX_CMD":"codex","CODEX_ARGS":"--yolo"},"binary":"/opt/bin/c"}}
+{"func":"process_catalog_identity","ctx":{"provider":"x","profile":{"auth_type":"external_process","process_command_env_vars":["","CMD"],"process_args_env_var":""},"env":{"CMD":"  a b "},"binary":"codex"}}
+{"func":"process_catalog_identity","ctx":{"provider":"x","profile":{"auth_type":"external_process","process_command_env_vars":["MISSING"],"process_args_env_var":"ARGS"},"env":{},"binary":null}}
+{"func":"process_catalog_identity","ctx":{"provider":"x","profile":{"auth_type":"external_process","process_command_env_vars":[],"process_args_env_var":""},"env":{},"binary":""}}
+{"func":"process_catalog_identity","ctx":{"provider":"x","profile":{"auth_type":"external_process","process_command_env_vars":["A","B","C"],"process_args_env_var":"D"},"env":{"A":"1","B":"2","C":"3","D":"4"},"binary":"/bin/x"}}
+{"func":"process_catalog_identity","ctx":{"provider":"x","profile":{"auth_type":"external_process","process_command_env_vars":["A"],"process_args_env_var":"A"},"env":{"A":"v"},"binary":"/bin/x"}}

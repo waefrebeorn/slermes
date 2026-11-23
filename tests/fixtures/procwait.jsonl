@@ -1,0 +1,18 @@
+{"func":"max_wait_timeout"}
+{"func":"max_wait_timeout","terminal_timeout":"300"}
+{"func":"max_wait_timeout","terminal_timeout":"0"}
+{"func":"max_wait_timeout","terminal_timeout":"-5"}
+{"func":"max_wait_timeout","terminal_timeout":"abc"}
+{"func":"max_wait_timeout","terminal_timeout":" 45 "}
+{"func":"max_wait_timeout","terminal_timeout":""}
+{"func":"max_wait_timeout","terminal_timeout":"1_000"}
+{"func":"process_deadline_floor","args":{"action":"list","timeout":10}}
+{"func":"process_deadline_floor","args":{"action":"wait"}}
+{"func":"process_deadline_floor","args":{"action":"wait","timeout":60}}
+{"func":"process_deadline_floor","args":{"action":"wait","timeout":300},"terminal_timeout":"180"}
+{"func":"process_deadline_floor","args":{"action":"wait","timeout":0}}
+{"func":"process_deadline_floor","args":{"action":"wait","timeout":-2}}
+{"func":"process_deadline_floor","args":{"action":"wait","timeout":"45.5"}}
+{"func":"process_deadline_floor","args":{"action":"wait","timeout":"abc"}}
+{"func":"process_deadline_floor","args":{"action":"wait","timeout":null}}
+{"func":"process_deadline_floor","args":{"action":"wait","timeout":"1e2"},"terminal_timeout":"60"}

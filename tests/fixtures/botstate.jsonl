@@ -1,0 +1,11 @@
+{"func":"state","case":1,"value":{"retiring":true,"draining":false,"live":true,"exec_state":"running","exec_gen":"1","kinds":[]}}
+{"func":"state","case":2,"value":{"retiring":false,"draining":true,"live":true,"exec_state":"running","exec_gen":"1","kinds":[]}}
+{"func":"state","case":3,"value":{"retiring":false,"draining":false,"live":false,"exec_state":"running","exec_gen":"1","kinds":[]}}
+{"func":"state","case":4,"value":{"retiring":false,"draining":false,"live":true,"exec_state":"idle","exec_gen":"1","kinds":[]}}
+{"func":"state","case":5,"value":{"retiring":false,"draining":false,"live":true,"exec_state":"running","exec_gen":"1","kinds":[]}}
+{"func":"state","case":6,"value":{"retiring":false,"draining":false,"live":true,"exec_state":"running","exec_gen":"1","kinds":["approval"]}}
+{"func":"state","case":7,"value":{"retiring":false,"draining":false,"live":true,"exec_state":"running","exec_gen":"1","kinds":["clarify"]}}
+{"func":"state","case":8,"value":{"retiring":false,"draining":false,"live":true,"exec_state":"running","exec_gen":"1","kinds":["approval","clarify"]}}
+{"func":"state","case":9,"value":{"retiring":false,"draining":false,"live":true,"exec_state":"running","exec_gen":"1","kinds":["other"]}}
+{"func":"state","case":10,"value":{"retiring":false,"draining":false,"live":true,"exec_state":"running","exec_gen":"1","kinds":["clarify","approval"]}}
+{"func":"state","case":11,"value":{"retiring":true,"draining":true,"live":true,"exec_state":"running","exec_gen":"1","kinds":["approval"]}}

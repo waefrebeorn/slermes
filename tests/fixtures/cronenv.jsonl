@@ -1,0 +1,10 @@
+{"func":"cron_env_setting","name":"HERMES_CRON_TIMEOUT","default":"60","multiplex":false,"has_scope":false,"env_val":"30","scope":{},"home_scope":{}}
+{"func":"cron_env_setting","name":"HERMES_CRON_TIMEOUT","default":"60","multiplex":false,"has_scope":false,"env_val":"","scope":{},"home_scope":{}}
+{"func":"cron_env_setting","name":"HERMES_CRON_TIMEOUT","default":"60","multiplex":false,"has_scope":false,"env_val":null,"scope":{},"home_scope":{}}
+{"func":"cron_env_setting","name":"HERMES_CRON_TIMEOUT","default":"","multiplex":false,"has_scope":false,"env_val":null,"scope":{},"home_scope":{}}
+{"func":"cron_env_setting","name":"HERMES_CRON_TIMEOUT","default":"60","multiplex":true,"has_scope":true,"env_val":"30","scope":{"HERMES_CRON_TIMEOUT":"45"},"home_scope":{}}
+{"func":"cron_env_setting","name":"HERMES_CRON_TIMEOUT","default":"60","multiplex":true,"has_scope":true,"env_val":"30","scope":{},"home_scope":{"HERMES_CRON_TIMEOUT":"90"}}
+{"func":"cron_env_setting","name":"HERMES_CRON_TIMEOUT","default":"60","multiplex":true,"has_scope":false,"env_val":"30","scope":{"HERMES_CRON_TIMEOUT":"45"},"home_scope":{"HERMES_CRON_TIMEOUT":"90"}}
+{"func":"cron_env_setting","name":"HERMES_CRON_TIMEOUT","default":"7","multiplex":true,"has_scope":false,"env_val":null,"scope":{},"home_scope":{}}
+{"func":"cron_env_setting","name":"HERMES_CRON_TIMEOUT","default":"5","multiplex":true,"has_scope":true,"env_val":null,"scope":{"HERMES_CRON_TIMEOUT":42},"home_scope":{}}
+{"func":"cron_env_setting","name":"HERMES_OTHER","default":"d","multiplex":false,"has_scope":false,"env_val":"v","scope":{},"home_scope":{}}

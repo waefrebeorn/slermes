@@ -1,0 +1,16 @@
+{"func":"env_int","name":"TENV_I","value":"42","default":"7"}
+{"func":"env_int","name":"TENV_I","value":"  17  ","default":"7"}
+{"func":"env_int","name":"TENV_I","value":"1_000","default":"7"}
+{"func":"env_int","name":"TENV_I","value":"2s","default":"7"}
+{"func":"env_int","name":"TENV_I","value":"","default":"7"}
+{"func":"env_int","name":"TENV_I","value":null,"default":"7"}
+{"func":"env_int","name":"TENV_I","value":"-25","default":"7"}
+{"func":"env_int","name":"TENV_I","value":"+33","default":"7"}
+{"func":"env_int","name":"TENV_I","value":"3.5","default":"7"}
+{"func":"env_float","name":"TENV_F","value":"3.14","default":"2.5"}
+{"func":"env_float","name":"TENV_F","value":" 1e3 ","default":"2.5"}
+{"func":"env_float","name":"TENV_F","value":"1_0.5","default":"2.5"}
+{"func":"env_float","name":"TENV_F","value":"abc","default":"2.5"}
+{"func":"env_float","name":"TENV_F","value":"","default":"2.5"}
+{"func":"env_float","name":"TENV_F","value":null,"default":"2.5"}
+{"func":"env_float","name":"TENV_F","value":"-0.5","default":"2.5"}

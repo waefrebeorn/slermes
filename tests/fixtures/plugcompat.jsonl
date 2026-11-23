@@ -1,0 +1,9 @@
+{"func":"compat_report"}
+{"func":"compat_report","manifests":[],"force":false}
+{"func":"compat_report","manifests":[{"name":"a"}],"force":true}
+{"func":"compat_report","manifests":null,"force":true}
+{"func":"removal_in_effect"}
+{"func":"removal_in_effect","today":"2026-09-13"}
+{"func":"removal_in_effect","today":"2026-09-14"}
+{"func":"summary_lines","report":{}}
+{"func":"summary_lines","report":{"a":1},"today":"2026-09-15"}

@@ -1,0 +1,12 @@
+{"func":"settle_batch","locked":{"q1":"a"},"ended":"submitted"}
+{"func":"settle_batch","locked":{},"ended":"timed_out"}
+{"func":"settle_batch","locked":{"q1":"a","q2":"b"},"ended":"cancelled"}
+{"func":"settle_batch","locked":{"q1":"a"},"ended":"bogus"}
+{"func":"settle_batch","locked":{"q1":"a"},"frame_result":{"answers":{"q2":"b"},"outcome":"timed_out","extra":1}}
+{"func":"settle_batch","locked":{"q1":"a"},"frame_result":{"answers":{"q1":"z"}}}
+{"func":"settle_batch","locked":{"q1":"a"},"frame_result":{}}
+{"func":"settle_batch","locked":{"q1":"a"},"frame_result":null}
+{"func":"settle_batch","locked":{"q1":"a"},"frame_result":{"answers":[1,2]}}
+{"func":"settle_batch","locked":{"q1":"a"},"frame_result":{"answers":{},"outcome":"weird"}}
+{"func":"settle_batch","locked":{},"frame_result":{"answers":{"x":"y"}}}
+{"func":"settle_batch","locked":{"q1":"a"}}

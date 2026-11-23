@@ -1,0 +1,9 @@
+{"func":"automatic_notices_allowed"}
+{"func":"automatic_notices_allowed","is_bot":true}
+{"func":"automatic_notices_allowed","is_bot":false}
+{"func":"automatic_notices_allowed","is_bot":null}
+{"func":"automatic_notices_allowed","is_bot":"true"}
+{"func":"automatic_notices_allowed","is_bot":1}
+{"func":"automatic_notices_allowed","is_bot":0}
+{"func":"automatic_notices_allowed","is_bot":"bot"}
+{"func":"automatic_notices_allowed","is_bot":[]}

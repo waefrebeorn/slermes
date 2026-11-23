@@ -1,0 +1,10 @@
+{"func":"panel","border":"B","width":10,"title":"","title_style":"","ops":[{"op":"close"}]}
+{"func":"panel","border":"B","width":10,"title":"Hi","title_style":"T","ops":[{"op":"close"}]}
+{"func":"panel","border":"B","width":10,"title":"","title_style":"","ops":[{"op":"row","style":"C","text":"hello"},{"op":"close"}]}
+{"func":"panel","border":"B","width":10,"title":"","title_style":"","ops":[{"op":"blank"},{"op":"close"}]}
+{"func":"panel","border":"B","width":10,"title":"Title","title_style":"T","ops":[{"op":"row","style":"C","text":"body"},{"op":"blank"},{"op":"close"}]}
+{"func":"panel","border":"B","width":2,"title":"","title_style":"","ops":[{"op":"row","style":"C","text":"long text"},{"op":"close"}]}
+{"func":"panel","border":"B","width":10,"title":"中","title_style":"T","ops":[{"op":"close"}]}
+{"func":"panel","border":"B","width":10,"title":"","title_style":"","ops":[{"op":"row","style":"C","text":""},{"op":"close"}]}
+{"func":"panel","border":"B","width":8,"title":"","title_style":"","ops":[{"op":"row","style":"C","text":"a中b"},{"op":"close"}]}
+{"func":"panel","border":"X","width":0,"title":"","title_style":"","ops":[{"op":"row","style":"Y","text":"x"},{"op":"blank"},{"op":"close"}]}

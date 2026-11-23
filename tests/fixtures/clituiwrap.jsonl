@@ -1,0 +1,10 @@
+{"func":"wrap_rows","case":1,"items":["alpha beta gamma delta","short","one two three four five"],"width":10,"indent":"    "}
+{"func":"wrap_rows","case":2,"items":[],"width":10,"indent":"    "}
+{"func":"wrap_rows","case":3,"items":["","hello"],"width":10,"indent":"    "}
+{"func":"wrap_rows","case":4,"items":["abcdefghijklmnop"],"width":10,"indent":"    "}
+{"func":"wrap_rows","case":5,"items":["one two three"],"width":6,"indent":""}
+{"func":"prefix_rows","case":6,"label":"alpha beta gamma delta","width":10,"first_prefix":"> ","indent":"  "}
+{"func":"prefix_rows","case":7,"label":"hello","width":10,"first_prefix":"> ","indent":"  "}
+{"func":"prefix_rows","case":8,"label":"","width":10,"first_prefix":"> ","indent":"  "}
+{"func":"prefix_rows","case":9,"label":"abcdefghijklmnop","width":10,"first_prefix":"> ","indent":"  "}
+{"func":"prefix_rows","case":10,"label":"one two three four","width":7,"first_prefix":"❯ ","indent":"   "}

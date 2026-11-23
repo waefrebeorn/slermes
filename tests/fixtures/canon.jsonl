@@ -1,0 +1,14 @@
+{"func":"dumps","case":1,"value":{"b":1,"a":2}}
+{"func":"dumps","case":2,"value":{"z":"x","a":[3,{"y":2,"x":1}],"m":null,"t":true}}
+{"func":"dumps","case":3,"value":{}}
+{"func":"dumps","case":4,"value":[1,2,3]}
+{"func":"dumps","case":5,"value":"hello"}
+{"func":"dumps","case":6,"value":42}
+{"func":"dumps","case":7,"value":{"unicode":"café ☃","esc":"a\nb\t\"c"}}
+{"func":"dumps","case":8,"value":{"nested":{"b":2,"a":1},"list":[{"d":4,"c":3}]}}
+{"func":"dumps","case":9,"value":{"f":1.5,"g":2.25,"n":-7}}
+{"func":"json","case":10,"value":{"b":1,"a":2}}
+{"func":"json","case":11,"value":[1,2,3]}
+{"func":"json","case":12,"value":"hello"}
+{"func":"json","case":13,"value":42}
+{"func":"json","case":14,"value":{}}

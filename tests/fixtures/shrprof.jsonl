@@ -1,0 +1,10 @@
+{"func":"shared_profile_warning","own_install":"inst-A","home_key":"/h/prof","ledger":[]}
+{"func":"shared_profile_warning","own_install":"inst-A","home_key":"/h/prof","ledger":[{"install":"inst-B","hermes_home":"/h/prof"}]}
+{"func":"shared_profile_warning","own_install":"inst-A","home_key":"/h/prof","ledger":[{"install":"inst-A","hermes_home":"/h/prof"}]}
+{"func":"shared_profile_warning","own_install":"inst-A","home_key":"/h/prof","ledger":[{"install":"inst-B","hermes_home":"/h/other"}]}
+{"func":"shared_profile_warning","own_install":"inst-A","home_key":"/h/prof","ledger":[{"hermes_home":"/h/prof"}]}
+{"func":"shared_profile_warning","own_install":"inst-A","home_key":"/h/prof","ledger":[{"install":"","hermes_home":"/h/prof"}]}
+{"func":"shared_profile_warning","own_install":"inst-A","home_key":"/h/prof","ledger":[{"install":null,"hermes_home":"/h/prof"}]}
+{"func":"shared_profile_warning","own_install":"inst-A","home_key":"/h/prof","ledger":[{"install":"inst-B","hermes_home":"/h/prof","extra":"x"}]}
+{"func":"shared_profile_warning","own_install":"inst-A","home_key":"","ledger":[{"install":"inst-B","hermes_home":""}]}
+{"func":"shared_profile_warning","own_install":"inst-A","home_key":"/h/prof","ledger":[{"install":"inst-B"},{"install":"inst-C","hermes_home":"/h/prof"}]}

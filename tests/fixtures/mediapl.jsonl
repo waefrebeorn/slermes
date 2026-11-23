@@ -1,0 +1,10 @@
+{"func":"pad_inline_flags","event":{"media_text_inlined":[true,false,true],"media_urls":["a","b","c"]}}
+{"func":"pad_inline_flags","event":{"media_text_inlined":[],"media_urls":["a","b"]}}
+{"func":"pad_inline_flags","event":{"media_text_inlined":[true],"media_urls":["a","b","c"]}}
+{"func":"pad_inline_flags","event":{"media_text_inlined":null,"media_urls":["a","b"]}}
+{"func":"pad_inline_flags","event":{"media_text_inlined":[null,false],"media_urls":["a","b","c"]}}
+{"func":"pad_inline_flags","event":{"media_text_inlined":[true,false,true],"media_urls":["a"]}}
+{"func":"pad_inline_flags","event":{"media_text_inlined":[],"media_urls":[]}}
+{"func":"pad_inline_flags","event":{"media_text_inlined":[],"media_urls":["a"]}}
+{"func":"pad_inline_flags","event":{"media_text_inlined":[false],"media_urls":[]}}
+{"func":"pad_inline_flags","event":{"media_urls":["a","b","c","d"]}}
