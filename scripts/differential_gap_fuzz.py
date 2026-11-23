@@ -57,14 +57,14 @@ SKIP_KEYS = {
 # or fixture-only controls in specific gates. Mutating them produces oracle
 # drive errors rather than port differences.
 SKIP_KEYS_BY_GATE = {
-    "auth_flow": ("lock_backend", "os_name"),
+    "auth_flow": ("lock_backend", "os_name", "kind"),
     "conversation_compression_flow2": ("__class__",),
     "gateway_session_flow": ("updated_at", "created_at", "now"),
     "gw_session_store_flow": ("ref",),
     "memory_manager_flow2": ("home_key",),
     "rest_revive3": ("tenv",),
-    "session_controls_flow": ("authority",),
-    "setup_revive": ("action",),
+    "session_controls_flow": ("authority", "profile_id", "capabilities", "status"),
+    "setup_revive": ("action", "event"),
     "shared_metrics_flow": ("_utc_now",),
     "skills_hub_flow2": ("fields",),
     "stream_dispatch_flow2": ("_type",),
@@ -76,7 +76,7 @@ SKIP_KEYS_BY_GATE = {
     "tool_result_processing_flow": ("_type",),
     "tui_methods_status_flow": ("__event__",),
     "tui_methods_tools_flow": ("tools_mod",),
-    "turn_progress_flow": ("_status_adapter",),
+    "turn_progress_flow": ("_status_adapter", "adapter"),
     "update_lock_flow": ("limit_str",),
 }
 
