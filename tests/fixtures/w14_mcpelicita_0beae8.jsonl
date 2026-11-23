@@ -1,0 +1,51 @@
+{"func":"options","spec":{"enum":["US","CA"],"enumNames":["United States","Canada"]},"case":"enum with names"}
+{"func":"options","spec":{"enum":["US","CA"]},"case":"enum without names"}
+{"func":"options","spec":{"enum":["a","b"],"enumNames":["Alpha"]},"case":"shorter enumNames falls back"}
+{"func":"options","spec":{"oneOf":[{"const":"x","title":"X-ray"},{"const":2,"title":"Two"}]},"case":"titled oneOf"}
+{"func":"options","spec":{"oneOf":[],"anyOf":[{"const":"z"}]},"case":"anyOf fallback"}
+{"func":"options","spec":{"anyOf":[{"const":"p","title":""},{"const":"q"}]},"case":"blank title falls back to const"}
+{"func":"field_kind","spec":{"type":"string"},"case":"plain string"}
+{"func":"field_kind","spec":{"type":"number"},"case":"number kind"}
+{"func":"field_kind","spec":{"type":"boolean"},"case":"boolean kind"}
+{"func":"field_kind","spec":{"type":"object"},"case":"unknown type is string"}
+{"func":"field_kind","spec":{"enum":["a","b"]},"case":"enum kind"}
+{"func":"field_kind","spec":{"type":"array","items":{"enum":["x","y"],"enumNames":["X","Y"]}},"case":"multi uses items options"}
+{"func":"match_option","spec":{"enum":["US","CA"],"enumNames":["United States","Canada"]},"text":"Canada","case":"exact label"}
+{"func":"match_option","spec":{"enum":["US","CA"]},"text":"  ca  ","case":"unique case insensitive"}
+{"func":"match_option","spec":{"enum":["US","us"]},"text":"US","case":"exact beats ambiguous fold"}
+{"func":"match_option","spec":{"enum":["US","us"]},"text":"uS","case":"ambiguous fold no match"}
+{"func":"coerce_boolean","text":"YES","case":"yes upper"}
+{"func":"coerce_boolean","text":"Off","case":"off mixed"}
+{"func":"coerce_boolean","text":"1","case":"numeric one"}
+{"func":"coerce_boolean","text":"maybe","case":"invalid boolean"}
+{"func":"format_error","fmt":"email","text":"a@b.co","case":"valid email"}
+{"func":"format_error","fmt":"email","text":"a@b","case":"email without dot"}
+{"func":"format_error","fmt":"uri","text":"mailto:user@example.com","case":"uri without authority"}
+{"func":"format_error","fmt":"uri","text":"1bad:thing","case":"uri bad scheme"}
+{"func":"format_error","fmt":"date","text":"2024-02-29","case":"leap day"}
+{"func":"format_error","fmt":"date","text":"2023-02-29","case":"invalid leap day"}
+{"func":"format_error","fmt":"date-time","text":"2024-01-01T10:20:30Z","case":"rfc3339 Z"}
+{"func":"format_error","fmt":"date-time","text":"2024-01-01 10:20:30+05:30","case":"rfc3339 offset with space"}
+{"func":"format_error","fmt":"date-time","text":"2024-01-01T10:20:30","case":"missing offset"}
+{"func":"format_error","fmt":"uuid","text":"anything","case":"unknown format no check"}
+{"func":"coerce_string","spec":{"type":"string","minLength":3},"text":"ab","case":"min length"}
+{"func":"coerce_string","spec":{"type":"string","maxLength":3},"text":"abcdef","case":"max length"}
+{"func":"coerce_string","spec":{"type":"string","format":"email"},"text":"nope","case":"string format error"}
+{"func":"coerce_string","spec":{"type":"string"},"text":"  hello  ","case":"string passthrough"}
+{"func":"coerce_number","spec":{"type":"integer"},"text":"42","case":"integer"}
+{"func":"coerce_number","spec":{"type":"integer"},"text":"4.5","case":"not whole"}
+{"func":"coerce_number","spec":{"type":"number","minimum":1,"maximum":10},"text":"20","case":"above maximum"}
+{"func":"coerce_number","spec":{"type":"number","minimum":1},"text":"0","case":"below minimum"}
+{"func":"coerce_number","spec":{"type":"number"},"text":"abc","case":"not a number"}
+{"func":"coerce_multi","spec":{"type":"array","items":{"enum":["US","CA"],"enumNames":["USA","Canada"]}},"raw":["US","CA"],"case":"array raw"}
+{"func":"coerce_multi","spec":{"type":"array","items":{"enum":["US","CA"]}},"raw":"US, CA","case":"comma string"}
+{"func":"coerce_multi","spec":{"type":"array","items":{"enum":["US","CA"]}},"raw":"[\"US\"]","case":"json array string"}
+{"func":"coerce_multi","spec":{"type":"array","minItems":2,"items":{"enum":["US","CA"]}},"raw":["US"],"case":"minItems"}
+{"func":"coerce_multi","spec":{"type":"array","items":{"enum":["US","CA"]}},"raw":["MX"],"case":"invalid option"}
+{"func":"coerce_answer","spec":{"type":"string"},"raw":null,"required":true,"case":"blank required"}
+{"func":"coerce_answer","spec":{"type":"string"},"raw":"   ","required":false,"case":"blank optional"}
+{"func":"coerce_answer","spec":{"type":"string","default":"fallback"},"raw":null,"required":true,"case":"blank takes default"}
+{"func":"coerce_answer","spec":{"type":"boolean"},"raw":"YES","required":false,"case":"boolean answer"}
+{"func":"coerce_answer","spec":{"enum":["US","us"],"enumNames":["USA","usa"]},"raw":"USA","required":false,"case":"enum exact label"}
+{"func":"coerce_answer","spec":{"type":"array","items":{"enum":["US","CA"]}},"raw":["US"],"required":false,"case":"multi answer"}
+{"func":"coerce_answer","spec":{"type":"integer"},"raw":7,"required":false,"case":"numeric answer"}

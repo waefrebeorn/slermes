@@ -1,0 +1,16 @@
+{"func": "same_owner", "existing": {"pid": 123}, "holder": {}}
+{"func": "same_owner", "existing": {"pid": 123}, "holder": {"pid": 0}}
+{"func": "same_owner", "existing": {"pid": 123}, "holder": {"pid": null}}
+{"func": "same_owner", "existing": {"pid": 123}, "holder": {"pid": "321"}}
+{"func": "same_owner", "existing": {"pid": 123}, "holder": {"pid": "123"}}
+{"func": "same_owner", "existing": {"pid": 123, "pidns": "ns1"}, "holder": {"pid": "123", "pidns": "ns1"}}
+{"func": "same_owner", "existing": {"pid": 123, "pidns": "ns1"}, "holder": {"pid": "123", "pidns": "ns2"}}
+{"func": "same_owner", "existing": {"pid": 123, "start_time": 100}, "holder": {"pid": 123, "start_time": 100}}
+{"func": "same_owner", "existing": {"pid": 123, "start_time": 100}, "holder": {"pid": 123, "start_time": 200}}
+{"func": "same_owner", "existing": {"pid": 123}, "holder": {"pid": 123, "start_time": null}}
+{"func": "same_owner", "existing": {"pid": 123, "start_time": null}, "holder": {"pid": 123}}
+{"func": "same_owner", "existing": {"pid": "abc"}, "holder": {"pid": "abc"}}
+{"func": "same_owner", "existing": {"pid": 123, "start_time": 0}, "holder": {"pid": 123, "start_time": 0}}
+{"func": "same_owner", "existing": {"pid": 123}, "holder": {"pid": true}}
+{"func": "same_owner", "existing": {"pid": 123, "pidns": null}, "holder": {"pid": 123}}
+{"func": "same_owner", "existing": {"pid": 123, "start_time": 5}, "holder": {"pid": 123, "start_time": 5.0}}

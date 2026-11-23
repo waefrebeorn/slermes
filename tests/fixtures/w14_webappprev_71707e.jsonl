@@ -1,0 +1,12 @@
+{"func":"preview_policy","case":"preview CSP"}
+{"func":"preview_policy","case":"preview CSP repeated"}
+{"func":"guest_policy","case":"guest CSP"}
+{"func":"guest_policy","case":"guest CSP repeated"}
+{"func":"preview_html","case":"shell document"}
+{"func":"preview_html","case":"shell document repeated"}
+{"func":"preview_loader","case":"loader script"}
+{"func":"preview_loader","case":"loader script repeated"}
+{"func":"route_manifest","case":"registered assets"}
+{"func":"route_manifest","case":"registered assets repeated"}
+{"func":"preview_html","case":"boundary trailing newline check"}
+{"func":"route_manifest","case":"boundary header set check"}

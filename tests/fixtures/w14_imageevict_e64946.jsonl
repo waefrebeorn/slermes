@@ -1,0 +1,37 @@
+{"func": "image_dimensions_from_bytes", "raw_b64": "iVBORw0KGgoAAAANSUhEUgAAAyAAAAJYCAYAAAAAAAAA"}
+{"func": "image_dimensions_from_bytes", "raw_b64": "iVBORw0KGgoAAAANSUhEUgAABiAAAAYgCAYAAAAAAAAA"}
+{"func": "image_dimensions_from_bytes", "raw_b64": "/9j/4AAQSkZJRgABAQAAAQABAAD/wAARCAOEBLADAREAAhEBAxEB/9k="}
+{"func": "image_dimensions_from_bytes", "raw_b64": "Qk0AAAAA"}
+{"func": "image_dimensions_from_bytes", "raw_b64": ""}
+{"func": "image_max_side_from_data", "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACWAAAABkCAYAAAAAAAAA"}
+{"func": "image_max_side_from_data", "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABiAAAAPoCAYAAAAAAAAA"}
+{"func": "image_max_side_from_data", "data": "iVBORw0KGgoAAAANSUhEUgAAAyAAAAJYCAYAAAAAAAAA"}
+{"func": "image_max_side_from_data", "data": "data:image/png,iVBORw0KGgoAAAANSUhEUgAAAyAAAAJYCAYAAAAAAAAA"}
+{"func": "image_max_side_from_data", "data": "data:image/png;base64"}
+{"func": "image_max_side_from_data", "data": "https://example.com/a.png"}
+{"func": "image_max_side_from_data", "data": ""}
+{"func": "image_max_side_from_data", "data": null}
+{"func": "image_max_side_from_data", "data": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/wAARCAOEBLADAREAAhEBAxEB/9k="}
+{"func": "image_within_many_image_limit", "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABiAAAAPoCAYAAAAAAAAA"}
+{"func": "image_within_many_image_limit", "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACWAAAABkCAYAAAAAAAAA"}
+{"func": "image_within_many_image_limit", "data": null}
+{"func": "image_within_many_image_limit", "data": "garbage"}
+{"func": "images_all_within_many_image_limit", "datas": ["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABiAAAAPoCAYAAAAAAAAA", "iVBORw0KGgoAAAANSUhEUgAAAyAAAAJYCAYAAAAAAAAA"]}
+{"func": "images_all_within_many_image_limit", "datas": ["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABiAAAAPoCAYAAAAAAAAA", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACWAAAABkCAYAAAAAAAAA"]}
+{"func": "images_all_within_many_image_limit", "datas": ["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABiAAAAPoCAYAAAAAAAAA", null]}
+{"func": "images_all_within_many_image_limit", "datas": []}
+{"func": "outbound_image_block_limit", "many_image_safe": false}
+{"func": "outbound_image_block_limit", "many_image_safe": true}
+{"func": "outbound_image_retire_count", "carrier_blocks": [1, 1, 1], "reserved_blocks": 0, "limit": 2}
+{"func": "outbound_image_retire_count", "carrier_blocks": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], "reserved_blocks": 0, "limit": null, "many_image_safe": false}
+{"func": "outbound_image_retire_count", "carrier_blocks": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], "reserved_blocks": 0, "limit": null, "many_image_safe": true}
+{"func": "outbound_image_retire_count", "carrier_blocks": [2, 2, 2, 2, 2], "reserved_blocks": 1, "limit": 5, "batch": 2, "floor": 1}
+{"func": "outbound_image_retire_count", "carrier_blocks": [1, 1, 1, 1], "reserved_blocks": 0, "carrier_bytes": [1000, 1000, 1000, 1000], "reserved_bytes": 0, "limit": 3, "budget": 2500, "batch": 8, "floor": 0}
+{"func": "outbound_image_retire_count", "carrier_blocks": [1, 1, 1, 1], "reserved_blocks": 0, "limit": 10, "batch": 2, "floor": 0}
+{"func": "outbound_image_retire_count", "carrier_blocks": [3, 3], "reserved_blocks": 0, "limit": 1, "floor": 0}
+{"func": "outbound_image_retire_count", "carrier_blocks": [], "reserved_blocks": 0, "limit": 0}
+{"func": "latched_retire_count", "retire": 0, "ids": ["a", "b", "c"], "retired": ["c"]}
+{"func": "latched_retire_count", "retire": 2, "ids": ["a", "b", "c", "d"], "retired": ["b"]}
+{"func": "latched_retire_count", "retire": 1, "ids": ["a", "b"], "retired": null}
+{"func": "latched_retire_count", "retire": 0, "ids": ["a", "b", "c"], "retired": []}
+{"func": "latched_retire_count", "retire": 5, "ids": ["a", "b", "c"], "retired": ["a"]}

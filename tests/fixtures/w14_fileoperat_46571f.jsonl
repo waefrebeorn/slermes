@@ -1,0 +1,19 @@
+{"func":"looks_like_linter_unusable","base_cmd":"npx","output":"npm ERR! could not determine executable to run","case":"npx missing tsc"}
+{"func":"looks_like_linter_unusable","base_cmd":"npx","output":"THIS IS NOT THE TSC COMMAND YOU ARE LOOKING FOR","case":"case insensitive npx banner"}
+{"func":"looks_like_linter_unusable","base_cmd":"npx","output":"error TS2307: Cannot find module","case":"real linter error is usable"}
+{"func":"looks_like_linter_unusable","base_cmd":"rustfmt","output":"error: not a workspace","case":"rustfmt outside cargo"}
+{"func":"looks_like_linter_unusable","base_cmd":"rustfmt","output":"No input filename given","case":"rustfmt no filename"}
+{"func":"looks_like_linter_unusable","base_cmd":"go","output":"go: cannot find main module","case":"go outside module"}
+{"func":"looks_like_linter_unusable","base_cmd":"go","output":"cannot find package ./foo","case":"go missing package"}
+{"func":"looks_like_linter_unusable","base_cmd":"node","output":"could not determine executable to run","case":"unmapped base command"}
+{"func":"looks_like_linter_unusable","base_cmd":"npx","output":"","case":"empty output"}
+{"func":"check_lint_delta","post":{"success":true,"skipped":false,"output":"","message":""},"case":"post success passthrough"}
+{"func":"check_lint_delta","post":{"success":false,"skipped":true,"output":"","message":"LSP handles it"},"case":"post skipped passthrough"}
+{"func":"check_lint_delta","pre":null,"post":{"success":false,"skipped":false,"output":"err","message":""},"case":"no pre content passthrough"}
+{"func":"check_lint_delta","pre":{"success":true,"skipped":false,"output":"","message":""},"post":{"success":false,"skipped":false,"output":"new err","message":""},"case":"clean pre means all errors new"}
+{"func":"check_lint_delta","pre":{"success":false,"skipped":true,"output":"old","message":"skipped"},"post":{"success":false,"skipped":false,"output":"new","message":""},"case":"skipped pre means all errors new"}
+{"func":"check_lint_delta","pre":{"success":false,"skipped":false,"output":"","message":""},"post":{"success":false,"skipped":false,"output":"new","message":""},"case":"empty pre output"}
+{"func":"check_lint_delta","pre":{"success":false,"skipped":false,"output":"line 1: bad\nline 2: bad","message":""},"post":{"success":false,"skipped":false,"output":"line 1: bad\nline 2: bad","message":""},"case":"all errors pre-existing"}
+{"func":"check_lint_delta","pre":{"success":false,"skipped":false,"output":"line 1: bad","message":""},"post":{"success":false,"skipped":false,"output":"line 1: bad\nline 2: new bad","message":""},"case":"one new error line"}
+{"func":"check_lint_delta","pre":{"success":false,"skipped":false,"output":"  line 1: bad  \n\n line 2: bad ","message":""},"post":{"success":false,"skipped":false,"output":"line 1: bad\n \nline 2: bad\nline 3: new","message":""},"case":"whitespace stripped before comparison"}
+{"func":"check_lint_delta","pre":{"success":false,"skipped":false,"output":"A\nB","message":""},"post":{"success":false,"skipped":false,"output":"C\nA\nD\nB","message":""},"case":"interleaved new lines preserve order"}

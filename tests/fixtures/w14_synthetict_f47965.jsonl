@@ -1,0 +1,26 @@
+{"func":"synth_turn_armed","case":"armed","env_value":"1"}
+{"func":"synth_turn_armed","case":"not armed","env_value":"0"}
+{"func":"synth_turn_armed","case":"truthy string is not one","env_value":"true"}
+{"func":"synth_turn_armed","case":"empty","env_value":""}
+{"func":"synth_turn_armed","case":"null","env_value":null}
+{"func":"synth_turn_armed","case":"number one not string","env_value":1}
+{"func":"parse_spec","case":"plain text falls back","message":"hello world","defaults":{"HERMES_ISO_CERTIFY_DURATION_S":8.0,"HERMES_ISO_CERTIFY_CHUNK":20000,"HERMES_ISO_CERTIFY_DELTA_S":0.05,"HERMES_ISO_CERTIFY_TPD":512}}
+{"func":"parse_spec","case":"empty object","message":"{}","defaults":{"HERMES_ISO_CERTIFY_DURATION_S":8.0,"HERMES_ISO_CERTIFY_CHUNK":20000,"HERMES_ISO_CERTIFY_DELTA_S":0.05,"HERMES_ISO_CERTIFY_TPD":512}}
+{"func":"parse_spec","case":"all fields","message":"{\"duration_s\":1.5,\"chunk\":7,\"delta_interval_s\":0.25,\"tokens_per_delta\":99,\"sleep_s\":0.1}","defaults":{"HERMES_ISO_CERTIFY_DURATION_S":8.0,"HERMES_ISO_CERTIFY_CHUNK":20000,"HERMES_ISO_CERTIFY_DELTA_S":0.05,"HERMES_ISO_CERTIFY_TPD":512}}
+{"func":"parse_spec","case":"partial object","message":"  {\"chunk\": \"13\"}  ","defaults":{"HERMES_ISO_CERTIFY_DURATION_S":8.0,"HERMES_ISO_CERTIFY_CHUNK":20000,"HERMES_ISO_CERTIFY_DELTA_S":0.05,"HERMES_ISO_CERTIFY_TPD":512}}
+{"func":"parse_spec","case":"json array falls back","message":"[1,2,3]","defaults":{"HERMES_ISO_CERTIFY_DURATION_S":8.0,"HERMES_ISO_CERTIFY_CHUNK":20000,"HERMES_ISO_CERTIFY_DELTA_S":0.05,"HERMES_ISO_CERTIFY_TPD":512}}
+{"func":"parse_spec","case":"malformed json falls back","message":"{\"chunk\":","defaults":{"HERMES_ISO_CERTIFY_DURATION_S":8.0,"HERMES_ISO_CERTIFY_CHUNK":20000,"HERMES_ISO_CERTIFY_DELTA_S":0.05,"HERMES_ISO_CERTIFY_TPD":512}}
+{"func":"parse_spec","case":"string number fields","message":"{\"duration_s\":\"2.5\",\"tokens_per_delta\":\"42\"}","defaults":{"HERMES_ISO_CERTIFY_DURATION_S":8.0,"HERMES_ISO_CERTIFY_CHUNK":20000,"HERMES_ISO_CERTIFY_DELTA_S":0.05,"HERMES_ISO_CERTIFY_TPD":512}}
+{"func":"parse_spec","case":"zero values","message":"{\"duration_s\":0,\"chunk\":0,\"delta_interval_s\":0,\"tokens_per_delta\":0,\"sleep_s\":0}","defaults":{"HERMES_ISO_CERTIFY_DURATION_S":8.0,"HERMES_ISO_CERTIFY_CHUNK":20000,"HERMES_ISO_CERTIFY_DELTA_S":0.05,"HERMES_ISO_CERTIFY_TPD":512}}
+{"func":"parse_spec","case":"bool fields","message":"{\"duration_s\":true,\"chunk\":true,\"sleep_s\":false}","defaults":{"HERMES_ISO_CERTIFY_DURATION_S":8.0,"HERMES_ISO_CERTIFY_CHUNK":20000,"HERMES_ISO_CERTIFY_DELTA_S":0.05,"HERMES_ISO_CERTIFY_TPD":512}}
+{"func":"parse_spec","case":"env defaults injected","message":"plain","defaults":{"HERMES_ISO_CERTIFY_DURATION_S":3.5,"HERMES_ISO_CERTIFY_CHUNK":11,"HERMES_ISO_CERTIFY_DELTA_S":0.5,"HERMES_ISO_CERTIFY_TPD":7}}
+{"func":"parse_spec","case":"non string message","message":123,"defaults":{"HERMES_ISO_CERTIFY_DURATION_S":8.0,"HERMES_ISO_CERTIFY_CHUNK":20000,"HERMES_ISO_CERTIFY_DELTA_S":0.05,"HERMES_ISO_CERTIFY_TPD":512}}
+{"func":"maybe_build_agent","case":"not armed","sid":"s1","model_override":"gpt","armed":false}
+{"func":"maybe_build_agent","case":"armed no override","sid":"s1","model_override":null,"armed":true}
+{"func":"maybe_build_agent","case":"armed string override","sid":"s1","model_override":"my-model","armed":true}
+{"func":"maybe_build_agent","case":"armed empty string","sid":"s1","model_override":"","armed":true}
+{"func":"maybe_build_agent","case":"armed dict override","sid":"s1","model_override":{"model":"dict-model"},"armed":true}
+{"func":"maybe_build_agent","case":"armed dict falsy model","sid":"s1","model_override":{"model":""},"armed":true}
+{"func":"maybe_build_agent","case":"armed dict no model","sid":"s1","model_override":{},"armed":true}
+{"func":"maybe_build_agent","case":"armed numeric override","sid":"s1","model_override":42,"armed":true}
+{"func":"maybe_build_agent","case":"armed dict numeric model","sid":"s1","model_override":{"model":7},"armed":true}

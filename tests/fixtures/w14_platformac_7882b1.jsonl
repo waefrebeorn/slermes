@@ -1,0 +1,20 @@
+{"func": "yaml_block_names", "yaml_cfg": {"telegram": {}, "platforms": {"discord": {}, "x": 1}, "gateway": {"signal": {}, "platforms": {"slack": {}}}}}
+{"func": "yaml_block_names", "yaml_cfg": {}}
+{"func": "yaml_block_names", "yaml_cfg": "not a dict"}
+{"func": "yaml_block_names", "yaml_cfg": {"gateway": {"platforms": {"wecom": {}, "qq": 5}}}}
+{"func": "yaml_block_names", "yaml_cfg": {"platforms": {"a": {}, "b": {}}, "gateway": "x"}}
+{"func": "matches", "name": "telegram", "candidates": ["TELEGRAM_BOT_TOKEN"]}
+{"func": "matches", "name": "telegram", "candidates": ["telegramx"]}
+{"func": "matches", "name": "telegram", "candidates": ["TELEGRAM"]}
+{"func": "matches", "name": "sms", "candidates": ["TWILIO_SID"]}
+{"func": "matches", "name": "google-chat", "candidates": ["GOOGLE_CHAT_TOKEN"]}
+{"func": "matches", "name": "", "candidates": ["_x"]}
+{"func": "has_evidence", "name": "telegram", "blocks": ["Telegram"], "platform_names": [], "legacy": [], "env": [], "pools": [], "declared": []}
+{"func": "has_evidence", "name": "slack", "blocks": ["discord"], "platform_names": [], "legacy": [], "env": [], "pools": ["SLACK"], "declared": []}
+{"func": "has_evidence", "name": "wecom", "blocks": [], "platform_names": [], "legacy": [], "env": ["WECOM_CALLBACK_URL"], "pools": [], "declared": []}
+{"func": "has_evidence", "name": "sms", "blocks": [], "platform_names": [], "legacy": [], "env": ["TWILIO_SID"], "pools": [], "declared": ["TWILIO_SID"]}
+{"func": "has_evidence", "name": "discord", "blocks": [], "platform_names": [], "legacy": [], "env": ["DISCORD_TOKEN"], "pools": [], "declared": []}
+{"func": "has_evidence", "name": "signal", "blocks": [], "platform_names": [], "legacy": [], "env": ["OTHER"], "pools": [], "declared": []}
+{"func": "has_evidence", "name": "google-chat", "blocks": [], "platform_names": [], "legacy": [], "env": ["GOOGLE_CHAT_TOKEN"], "pools": [], "declared": []}
+{"func": "has_evidence", "name": "matrix", "blocks": [], "platform_names": ["Matrix"], "legacy": [], "env": [], "pools": [], "declared": []}
+{"func": "has_evidence", "name": "photon", "blocks": ["x"], "platform_names": [], "legacy": ["PHOTON"], "env": [], "pools": [], "declared": []}

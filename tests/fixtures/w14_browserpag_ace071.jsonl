@@ -1,0 +1,11 @@
+{"func":"backend_for_task","task_id":"t1","providers":[]}
+{"func":"backend_for_task","task_id":"t1","providers":[{"name":"alpha","pages":["t1","t2"]}]}
+{"func":"backend_for_task","task_id":"t2","providers":[{"name":"alpha","pages":["t1"]},{"name":"beta","pages":["t2"]}]}
+{"func":"backend_for_task","task_id":"t9","providers":[{"name":"alpha","pages":["t1"]},{"name":"beta","pages":["t2"]}]}
+{"func":"backend_for_task","task_id":"t1","providers":[{"name":"boom","pages":["t1"],"raises":true},{"name":"ok","pages":["t1"]}]}
+{"func":"backend_for_task","task_id":"t1","providers":[{"name":"first","pages":["t1"]},{"name":"second","pages":["t1"]}]}
+{"func":"backend_for_task","task_id":"","providers":[{"name":"empty","pages":[""]}]}
+{"func":"backend_for_task","task_id":"t1","providers":[{"name":null,"pages":["t1"]}]}
+{"func":"backend_for_task","task_id":"t1","providers":[{"name":"empty-pages","pages":[]}]}
+{"func":"backend_for_task","task_id":"t1","providers":[{"name":"raiser","pages":["t1"],"raises":true}]}
+{"func":"backend_for_task","task_id":"t1","providers":[{"name":"gap","pages":["x","t1","y"]}]}

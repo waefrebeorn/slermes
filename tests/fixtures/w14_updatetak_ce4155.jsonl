@@ -1,0 +1,17 @@
+{"func": "sha_valid", "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "sha_valid", "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+{"func": "sha_valid", "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "sha_valid", "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "sha_valid", "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}
+{"func": "sha_valid", "value": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"}
+{"func": "sha_valid", "value": ""}
+{"func": "head_sha", "facts": {"git_rc": 0, "git_stdout": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n", "head": "ref: refs/heads/main"}}
+{"func": "head_sha", "facts": {"git_rc": 0, "git_stdout": "garbage", "head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"func": "head_sha", "facts": {"git_rc": 1, "git_stdout": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"func": "head_sha", "facts": {"git_rc": 1, "head": "ref: refs/heads/main", "loose": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}
+{"func": "head_sha", "facts": {"git_rc": 1, "head": "ref: refs/heads/main", "packed": "# pack-refs with: peeled\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa refs/heads/main\nbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb refs/heads/other\n"}}
+{"func": "head_sha", "facts": {"git_rc": 1, "head": "ref: refs/heads/main", "packed": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb refs/heads/other\n"}}
+{"func": "head_sha", "facts": {"git_rc": 1, "head": "ref: refs/heads/main", "loose": "short"}}
+{"func": "head_sha", "facts": {"git_rc": 1, "head": "not-a-ref"}}
+{"func": "head_sha", "facts": {"git_rc": 1, "head": "ref: refs/heads/main", "packed": "deadbeef refs/heads/main\n"}}
+{"func": "head_sha", "facts": {"git_rc": 1, "head": "  bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb  "}}

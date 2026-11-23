@@ -1,0 +1,13 @@
+{"func":"prop","type_":"string","description":"Task id filter","case":"basic string prop"}
+{"func":"prop","type_":"boolean","description":"Include archived tasks. Defaults to false.","case":"boolean prop"}
+{"func":"prop","type_":"integer","description":"Optional maximum rows to return (default 50, max 200).","case":"integer prop"}
+{"func":"prop","type_":"object","description":"Free-form dict of structured facts.","case":"object prop with punctuation"}
+{"func":"prop","type_":"string","description":"Unicode caf\u00e9 \u2192 \u2713","case":"unicode description"}
+{"func":"prop","type_":null,"description":null,"case":"null type and description"}
+{"func":"prop","description":"missing type key","case":"missing type key"}
+{"func":"board_schema_prop","case":"frozen board description"}
+{"func":"schema","name":"kanban_show","description":"Read a task's full state.","properties":{},"required":[],"case":"empty properties"}
+{"func":"schema","name":"kanban_list","description":"List Kanban task summaries.","properties":{"assignee":{"type":"string","description":"Optional assignee/profile filter."},"limit":{"type":"integer","description":"Max rows."}},"required":[],"case":"two properties plus board"}
+{"func":"schema","name":"kanban_block","description":"Stop work on this task.","properties":{"reason":{"type":"string","description":"Why blocked."}},"required":["reason"],"case":"required list"}
+{"func":"schema","name":"kanban_custom","description":"Override board.","properties":{"board":{"type":"integer","description":"caller board (must be overridden)"},"task_id":{"type":"string","description":"Task id."}},"required":["board","task_id"],"case":"caller board key overridden by canonical prop"}
+{"func":"schema","name":null,"description":null,"properties":{"x":{"type":"array","items":{"type":"string"},"description":"List."}},"required":[],"case":"null name and nested property"}

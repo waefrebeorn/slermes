@@ -1,0 +1,25 @@
+{"case":"os1","func":"owner_stopped","result":{"interrupt_message":"Gateway restarting"}}
+{"case":"os2","func":"owner_stopped","result":{"interrupt_message":"Gateway shutting down"}}
+{"case":"os3","func":"owner_stopped","result":{"interrupt_message":"user cancelled"}}
+{"case":"os4","func":"owner_stopped","result":{}}
+{"case":"os5","func":"owner_stopped","result":{"interrupt_message":null}}
+{"case":"ra1","func":"reply_attempt","call":{"function":{"name":"message_agent","arguments":"{\"target\": \"@Bot\", \"message\": \"  hi  \"}"}},"sender":"bot"}
+{"case":"ra2","func":"reply_attempt","call":{"function":{"name":"message_agent","arguments":"{\"target\": \"@bot\", \"message\": \"ok\"}"}},"sender":"bot"}
+{"case":"ra3","func":"reply_attempt","call":{"function":{"name":"other","arguments":"{\"target\": \"bot\", \"message\": \"x\"}"}},"sender":"bot"}
+{"case":"ra4","func":"reply_attempt","call":{"function":{"name":"message_agent","arguments":"not json"}},"sender":"bot"}
+{"case":"ra5","func":"reply_attempt","call":{"function":{"name":"message_agent","arguments":""}},"sender":"bot"}
+{"case":"ra6","func":"reply_attempt","call":{"function":{"name":"message_agent","arguments":"{\"target\": \" @BOT \", \"message\": \"   \"}"}},"sender":"bot"}
+{"case":"ra7","func":"reply_attempt","call":"not a dict","sender":"bot"}
+{"case":"ra8","func":"reply_attempt","call":{},"sender":"bot"}
+{"case":"ra9","func":"reply_attempt","call":{"function":{"name":"message_agent","arguments":"{\"target\": 42, \"message\": \"x\"}"}},"sender":"42"}
+{"case":"ra10","func":"reply_attempt","call":{"function":{"name":"message_agent","arguments":"{\"message\": \"why\"}"}},"sender":""}
+{"case":"lw1","func":"last_words","messages":[{"role":"assistant","content":"  final  "}],"sender":"bot"}
+{"case":"lw2","func":"last_words","messages":[{"role":"assistant","content":"ignored","tool_calls":[{"function":{"name":"message_agent","arguments":"{\"target\": \"@bot\", \"message\": \"tool reply\"}"}}]}],"sender":"bot"}
+{"case":"lw3","func":"last_words","messages":[{"role":"assistant","content":"content wins","tool_calls":[{"function":{"name":"message_agent","arguments":"{\"target\": \"@other\", \"message\": \"not me\"}"}}]}],"sender":"bot"}
+{"case":"lw4","func":"last_words","messages":[{"role":"assistant","content":"NO_REPLY"}],"sender":"bot"}
+{"case":"lw5","func":"last_words","messages":[{"role":"assistant","content":"first"},{"role":"assistant","content":"second"}],"sender":"bot"}
+{"case":"lw6","func":"last_words","messages":["junk",{"role":"user","content":"user said"},{"role":"assistant","content":"answer"}],"sender":"bot"}
+{"case":"lw7","func":"last_words","messages":[{"role":"assistant","content":"fallback","tool_calls":[{"function":{"name":"message_agent","arguments":"{\"target\": \"@bot\", \"message\": \"  \"}"}}]}],"sender":"bot"}
+{"case":"lw8","func":"last_words","messages":[{"role":"assistant","content":"NO_REPLY mentioned in prose"}],"sender":"bot"}
+{"case":"lw9","func":"last_words","messages":[],"sender":"bot"}
+{"case":"lw10","func":"last_words","messages":[{"role":"assistant","content":123}],"sender":"bot"}

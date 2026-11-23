@@ -1,0 +1,18 @@
+{"func":"safe_client_label","label":"hello world","case":"plain spaces"}
+{"func":"safe_client_label","label":"  ..hidden..file  ","case":"dots and spaces"}
+{"func":"safe_client_label","label":"../../etc/passwd","case":"traversal slashes stripped"}
+{"func":"safe_client_label","label":"a!!!b@@@c###d","case":"punctuation stripped"}
+{"func":"safe_client_label","label":".........","case":"dot runs collapse"}
+{"func":"safe_client_label","label":"(round) [square] {curly}","case":"allowed parens only"}
+{"func":"safe_client_label","label":"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnop","case":"over 64 codepoints"}
+{"func":"safe_client_label","label":"","case":"empty"}
+{"func":"safe_client_label","label":"modèle café","case":"unicode letters"}
+{"func":"safe_client_label","label":"...leading","case":"leading dots"}
+{"func":"display_word","key":"theme","default":"auto","allowed":["auto","light","dark"],"display_raw":{"theme":" DARK "},"case":"normalised dark"}
+{"func":"display_word","key":"theme","default":"auto","allowed":["auto","light","dark"],"display_raw":{"theme":"neon"},"case":"unknown falls back"}
+{"func":"display_word","key":"theme","default":"auto","allowed":["auto","light","dark"],"display_raw":{},"case":"absent uses default"}
+{"func":"display_word","key":"skin","default":"default","allowed":["default","dark"],"display_raw":{"skin":""},"case":"empty string"}
+{"func":"display_word","key":"skin","default":"default","allowed":["default","dark"],"display_raw":{"skin":null},"case":"null value"}
+{"func":"display_word","key":"num","default":"auto","allowed":["auto","0","1"],"display_raw":{"num":0},"case":"numeric zero falsy"}
+{"func":"display_word","key":"flag","default":"auto","allowed":["auto","true"],"display_raw":{"flag":true},"case":"bool true"}
+{"func":"display_word","key":"theme","default":"auto","allowed":["auto","LIGHT"],"display_raw":{"theme":"LiGhT"},"case":"lower allowed set"}

@@ -1,0 +1,17 @@
+{"func": "validate_title", "title": "Hello World"}
+{"func": "validate_title", "title": "  Hello   World  "}
+{"func": "validate_title", "title": "a\tb\nc\rd"}
+{"func": "validate_title", "title": "   "}
+{"func": "validate_title", "title": ""}
+{"func": "validate_title", "title": null}
+{"func": "validate_title", "title": 5}
+{"func": "validate_title", "title": true}
+{"func": "validate_title", "title": ["x"]}
+{"func": "validate_title", "title": "a\u0001bc"}
+{"func": "validate_title", "title": "a​b‮c"}
+{"func": "validate_title", "title": "café   menu"}
+{"func": "validate_title", "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "validate_title", "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "validate_title", "title": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"}
+{"func": "validate_title", "title": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé"}
+{"func": "validate_title", "title": "title with breaks"}

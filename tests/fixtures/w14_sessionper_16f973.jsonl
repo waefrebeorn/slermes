@@ -1,0 +1,14 @@
+{"func": "chat_labels_meta_key", "platform": "discord", "scope_id": "123", "chat_id": "456"}
+{"func": "chat_labels_meta_key", "platform": "telegram", "scope_id": null, "chat_id": "c1"}
+{"func": "chat_labels_meta_key", "platform": "slack", "scope_id": "", "chat_id": "c2"}
+{"func": "chat_labels_meta_key", "platform": "web", "scope_id": "w", "chat_id": ""}
+{"func": "chat_labels_meta_key", "platform": true, "scope_id": "s", "chat_id": "c"}
+{"func": "chat_labels_meta_key", "platform": null, "scope_id": null, "chat_id": null}
+{"func": "chat_labels_meta_key", "platform": "whatsapp", "scope_id": 0, "chat_id": "chat-é"}
+{"func": "chat_labels_meta_key", "platform": "signal", "scope_id": "s:1", "chat_id": "c:2"}
+{"func": "is_live_system_guard", "exc_type": "RuntimeError", "exc_message": "live-system guard: stop"}
+{"func": "is_live_system_guard", "exc_type": "RuntimeError", "exc_message": "ordinary failure"}
+{"func": "is_live_system_guard", "exc_type": "ValueError", "exc_message": "live-system guard"}
+{"func": "is_live_system_guard", "exc_type": "RuntimeError", "exc_message": ""}
+{"func": "is_live_system_guard", "exc_type": "Exception", "exc_message": "live-system guard"}
+{"func": "is_live_system_guard", "exc_type": "TypeError", "exc_message": "prefix live-system guard suffix"}

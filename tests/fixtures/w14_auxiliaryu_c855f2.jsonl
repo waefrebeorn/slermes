@@ -1,0 +1,18 @@
+{"func":"sentence","text":"hello"}
+{"func":"sentence","text":"hello."}
+{"func":"sentence","text":"  hello...  "}
+{"func":"sentence","text":""}
+{"func":"sentence","text":"..."}
+{"func":"sentence","text":null}
+{"func":"sentence","text":true}
+{"func":"sentence","text":42}
+{"func":"sentence","text":"  a. b.  "}
+{"func":"sentence","text":false}
+{"func":"missing_provider_credentials_message","provider_id":"openai","cooldown":null,"pconfig":null,"llama_alias":false}
+{"func":"missing_provider_credentials_message","provider_id":"alibaba","cooldown":null,"pconfig":{"api_key_env_vars":["DASHSCOPE_API_KEY"]},"llama_alias":false}
+{"func":"missing_provider_credentials_message","provider_id":"minimax-oauth","cooldown":null,"pconfig":{"auth_type":"oauth","api_key_env_vars":[]},"llama_alias":false}
+{"func":"missing_provider_credentials_message","provider_id":"custom","cooldown":null,"pconfig":{"auth_type":"api_key"},"llama_alias":false}
+{"func":"missing_provider_credentials_message","provider_id":"local","cooldown":null,"pconfig":null,"llama_alias":true}
+{"func":"missing_provider_credentials_message","provider_id":"x","cooldown":"Provider 'x' is cooling down.","pconfig":null,"llama_alias":false}
+{"func":"missing_provider_credentials_message","provider_id":"weird-id","cooldown":null,"pconfig":null,"llama_alias":false}
+{"func":"missing_provider_credentials_message","provider_id":"azure","cooldown":null,"pconfig":{"api_key_env_vars":["AZURE_KEY","SECOND"]},"llama_alias":false}

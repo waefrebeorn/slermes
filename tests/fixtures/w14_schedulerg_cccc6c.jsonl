@@ -1,0 +1,19 @@
+{"func": "gateway_unavailable", "state": "absent", "case": "explicit remote url short-circuits", "env_value": "http://gw:8937"}
+{"func": "gateway_unavailable", "state": "absent", "case": "explicit remote url whitespace", "env_value": "   "}
+{"func": "gateway_unavailable", "state": "absent", "case": "empty env absent -> down hint", "env_value": ""}
+{"func": "gateway_unavailable", "state": "ready", "case": "missing env ready -> none"}
+{"func": "gateway_unavailable", "state": "absent", "case": "absent down hint", "reason_code": null}
+{"func": "gateway_unavailable", "state": "starting", "case": "starting with reason code", "reason_code": "E_TIMEOUT"}
+{"func": "gateway_unavailable", "state": "draining", "case": "draining no reason code", "reason_code": ""}
+{"func": "gateway_unavailable", "state": "inaccessible", "case": "inaccessible with reason", "reason_code": "ECONNREFUSED"}
+{"func": "gateway_unavailable", "state": "incompatible", "case": "incompatible", "reason_code": "v0.1"}
+{"func": "gateway_unavailable", "state": "weird", "case": "unknown state no reason", "reason_code": null}
+{"func": "refuse_jobs", "due_jobs": [], "state": "absent", "case": "no jobs -> unchanged"}
+{"func": "refuse_jobs", "due_jobs": [{"id": "a", "no_agent": false}, {"id": "b", "no_agent": true}], "state": "absent", "case": "all no_agent -> unchanged"}
+{"func": "refuse_jobs", "due_jobs": [{"id": "a", "no_agent": false}, {"id": "b", "no_agent": true}], "state": "ready", "case": "ready gateway -> unchanged"}
+{"func": "refuse_jobs", "due_jobs": [{"id": "a", "no_agent": false}, {"id": "b", "no_agent": true}], "state": "absent", "case": "absent -> hold agent jobs"}
+{"func": "refuse_jobs", "due_jobs": [{"id": 123, "no_agent": false}, {"id": 456, "no_agent": true}], "state": "absent", "case": "numeric ids str()"}
+{"func": "refuse_jobs", "due_jobs": [{"id": "x", "no_agent": false}, {"id": "y", "no_agent": false}, {"id": "z", "no_agent": true}], "state": "starting", "case": "multiple agent jobs", "reason_code": "BOOTING"}
+{"func": "refuse_jobs", "due_jobs": [{"id": "only", "no_agent": false}], "state": "absent", "case": "single agent job absent"}
+{"func": "refuse_jobs", "due_jobs": [{"id": "only", "no_agent": false}, {"id": "n", "no_agent": true}], "state": "absent", "case": "remote url leaves all", "env_value": "http://remote"}
+{"func": "refuse_jobs", "due_jobs": [{"id": "m", "no_agent": true}, {"id": "n", "no_agent": true}], "state": "ready", "case": "no agent jobs ready path"}

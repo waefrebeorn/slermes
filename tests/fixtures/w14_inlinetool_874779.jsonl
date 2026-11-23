@@ -1,0 +1,18 @@
+{"func": "tool_hook_ids", "task_id": "task-1", "session_id": "sess-9", "tool_call_id": "tc-3", "turn_id": "turn-7", "api_request_id": "api-5", "conversation_id": "conv-2", "case": "all identity fields", "out": {"task_id": "task-1", "session_id": "sess-9", "tool_call_id": "tc-3", "turn_id": "", "api_request_id": "", "conversation_id": null}}
+{"func": "tool_hook_ids", "task_id": "", "session_id": "", "tool_call_id": null, "turn_id": "", "api_request_id": "", "conversation_id": null, "case": "empty and null coercion", "out": {"task_id": "", "session_id": "", "tool_call_id": "", "turn_id": "", "api_request_id": "", "conversation_id": null}}
+{"func": "tool_hook_ids", "task_id": "tarea", "session_id": "seßion", "tool_call_id": "llamada", "turn_id": "turno", "api_request_id": "solicitud", "conversation_id": "conversación", "case": "unicode values", "out": {"task_id": "tarea", "session_id": "seßion", "tool_call_id": "llamada", "turn_id": "", "api_request_id": "", "conversation_id": null}}
+{"func": "is_context_engine_tool", "names": ["engine_a", "engine_b"], "function_name": "engine_b", "case": "in names", "out": true}
+{"func": "is_context_engine_tool", "names": ["engine_a"], "function_name": "engine_b", "case": "not in names", "out": false}
+{"func": "is_context_engine_tool", "names": [], "function_name": "engine_a", "case": "empty names falsy", "out": false}
+{"func": "is_memory_provider_tool", "has_manager": true, "tool_names": ["mem_read", "mem_write"], "function_name": "mem_write", "case": "manager has tool", "out": true}
+{"func": "is_memory_provider_tool", "has_manager": true, "tool_names": ["mem_read"], "function_name": "other", "case": "manager lacks tool", "out": false}
+{"func": "is_memory_provider_tool", "has_manager": false, "tool_names": ["mem_read"], "function_name": "mem_read", "case": "no manager", "out": false}
+{"func": "pre_registry_route", "function_name": "old_alias", "legacy_aliases": ["old_alias"], "bridge_names": ["old_alias"], "case": "alias wins", "out": "alias"}
+{"func": "pre_registry_route", "function_name": "bridge_tool", "bridge_names": ["bridge_tool"], "legacy_aliases": [], "case": "bridge", "out": "bridge"}
+{"func": "pre_registry_route", "function_name": "todo_list", "case": "hardcoded inline name", "out": "inline"}
+{"func": "pre_registry_route", "function_name": "custom_loop", "agent_loop_tools": ["custom_loop"], "case": "agent loop tool is inline", "out": "inline"}
+{"func": "pre_registry_route", "function_name": "conn_x", "connector_names": ["conn_x"], "case": "connector", "out": "connector"}
+{"func": "pre_registry_route", "function_name": "ctx_tool", "has_agent": true, "context_engine_names": ["ctx_tool"], "case": "context engine with agent", "out": "context_engine"}
+{"func": "pre_registry_route", "function_name": "ctx_tool", "has_agent": false, "context_engine_names": ["ctx_tool"], "case": "context engine skipped without agent", "out": null}
+{"func": "pre_registry_route", "function_name": "mem_tool", "has_agent": true, "memory_provider_names": ["mem_tool"], "case": "memory provider", "out": "memory_provider"}
+{"func": "pre_registry_route", "function_name": "mystery", "case": "no match returns null", "out": null}

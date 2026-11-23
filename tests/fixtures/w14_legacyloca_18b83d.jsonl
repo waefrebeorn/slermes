@@ -1,0 +1,56 @@
+{"case":"ps1","func":"parse","subject":"auth:v1:[\"github\",\"\",\"alice\"]"}
+{"case":"ps2","func":"parse","subject":"auth:v1:[1,2,3]"}
+{"case":"ps3","func":"parse","subject":"auth:v1:[\"a\",\"b\"]"}
+{"case":"ps4","func":"parse","subject":"auth:v1:notjson"}
+{"case":"ps5","func":"parse","subject":"AUTH:V1:[\"a\",\"b\",\"c\"]"}
+{"case":"ps6","func":"parse","subject":42}
+{"case":"ll1","func":"login_label","subject":"auth:v1:[\"github\",\"\",\"alice\"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"ll2","func":"login_label","subject":"auth:v1:[\"github\",\"iss\",\"alice\"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"ll3","func":"login_label","subject":"auth:v1:[\"gi:thub\",\"\",\"alice\"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"ll4","func":"login_label","subject":"auth:v1:[\" auth \",\"\",\" bob \"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"ll5","func":"login_label","subject":"auth:v1:[\" git hub \",\"\",\" alice \"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"so1","func":"same_owner","stored":"github:alice","subject":"auth:v1:[\"github\",\"\",\"alice\"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"so2","func":"same_owner","stored":"github:alice","subject":"github:alice","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"so3","func":"same_owner","stored":"local:uid:501","subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"so4","func":"same_owner","stored":"google:uid:501","subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"so5","func":"same_owner","stored":"telegram:42","subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"so6","func":"same_owner","stored":"github:alice","subject":"uid:501","rule":null}
+{"case":"so7","func":"same_owner","stored":null,"subject":null,"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"so8","func":"same_owner","stored":"github:alice","subject":"auth:v1:[\"github\",\"iss\",\"alice\"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"oa1","func":"owners_agree","first":"github:alice","second":"auth:v1:[\"github\",\"\",\"alice\"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"oa2","func":"owners_agree","first":"telegram:42","second":"github:alice","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"oa3","func":"owners_agree","first":"uid:501","second":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"bn1","func":"binding_names","saved":"[\"/home/p\",\"uid:501\"]","subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"bn2","func":"binding_names","saved":"[\"/home/p\",\"github:alice\"]","subject":"auth:v1:[\"github\",\"\",\"alice\"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"bn3","func":"binding_names","saved":"[\"/home/p\",\"telegram:42\"]","subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"bn4","func":"binding_names","saved":"not json","subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"ba1","func":"bindings_agree","first":null,"second":null,"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"ba2","func":"bindings_agree","first":null,"second":"[\"/home/p\",\"uid:501\"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"ba3","func":"bindings_agree","first":"[\"/a\",\"uid:501\"]","second":"[\"/b\",\"github:alice\"]","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"cl1","func":"client_label","source":"mobile","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"cl2","func":"client_label","source":"local","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"cl3","func":"client_label","source":"telegram","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"cl4","func":"client_label","source":"mobile","rule":null}
+{"case":"cl5","func":"client_label","source":"  ios  ","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"cl6","func":"client_label","source":"","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lh1","func":"legacy_history_row","row":{"source":"mobile"},"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lh2","func":"legacy_history_row","row":{"source":"cli"},"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lh3","func":"legacy_history_row","row":{"source":"webhook"},"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lh4","func":"legacy_history_row","row":{"source":"mobile","session_key":"k"},"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lh5","func":"legacy_history_row","row":{"source":"telegram"},"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lc1","func":"legacy_creation_source","row":{"source":"desktop"},"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lc2","func":"legacy_creation_source","row":{"source":"mobile"},"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lc3","func":"legacy_creation_source","row":{"source":"unknown"},"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lc4","func":"legacy_creation_source","row":{"source":"cli"},"rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"la1","func":"legacy_account_label","row":{"source":"desktop","user_id":"nous:123"}}
+{"case":"la2","func":"legacy_account_label","row":{"source":"desktop","user_id":"github:x"}}
+{"case":"la3","func":"legacy_account_label","row":{"source":"cli","user_id":"nous:123"}}
+{"case":"lo1","func":"login_owned_by","row":{"user_id":"github:alice"},"subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lo2","func":"login_owned_by","row":{"user_id":"telegram:42"},"subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"lo3","func":"login_owned_by","row":{},"subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"vr1","func":"validate_legacy_row","own_profile":"p","row":{"source":"desktop"},"subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"vr2","func":"validate_legacy_row","own_profile":"p","row":{"source":"mobile","session_key":"k"},"subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"vr3","func":"validate_legacy_row","own_profile":"p","row":{"source":"cli","user_id":"nous:123"},"subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"vr4","func":"validate_legacy_row","own_profile":"p","row":{"source":"cli","user_id":"telegram:42"},"subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"vr5","func":"validate_legacy_row","own_profile":"p","row":{"source":"cli","profile_name":"other"},"subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}
+{"case":"vr6","func":"validate_legacy_row","own_profile":"p","row":{"source":"cli","profile_name":"default"},"subject":"uid:501","rule":{"host_subject":"uid:501","login_providers":["github","google","local"],"messaging_labels":["telegram","discord"]}}

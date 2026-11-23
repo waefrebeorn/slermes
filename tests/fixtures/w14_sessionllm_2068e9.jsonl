@@ -1,0 +1,19 @@
+{"func":"validate","params":{"template":"commit_message"},"templates":["commit_message"]}
+{"func":"validate","params":{"instructions":"Write a commit"},"templates":["commit_message"]}
+{"func":"validate","params":{"input":"some user text"},"templates":[]}
+{"func":"validate","params":{},"templates":[]}
+{"func":"validate","params":{"template":"commit_message","bogus":1},"templates":["commit_message"]}
+{"func":"validate","params":{"template":7},"templates":[]}
+{"func":"validate","params":{"input":"x","variables":"not-a-dict"},"templates":[]}
+{"func":"validate","params":{"input":"x","variables":[]},"templates":[]}
+{"func":"validate","params":{"input":"x","variables":{}},"templates":[]}
+{"func":"validate","params":{"input":"x","temperature":true},"templates":[]}
+{"func":"validate","params":{"input":"x","temperature":"0.3"},"templates":[]}
+{"func":"validate","params":{"input":"x","temperature":0.7,"max_tokens":0},"templates":[]}
+{"func":"validate","params":{"template":"unknown_template"},"templates":["commit_message"]}
+{"func":"validate","params":{"template":"   ","instructions":"  "},"templates":[]}
+{"func":"validate","params":{"session_id":123,"input":"x"},"templates":[]}
+{"func":"validate","params":{"template":"  commit_message \t"},"templates":["commit_message"]}
+{"func":"validate","params":{"input":"x","max_tokens":null,"temperature":null},"templates":[]}
+{"func":"validate","params":{"input":"x","variables":5},"templates":[]}
+{"func":"validate","params":{"task":"title_generation","variables":{"a":1}},"templates":[]}

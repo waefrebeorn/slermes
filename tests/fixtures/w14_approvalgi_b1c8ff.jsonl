@@ -1,0 +1,14 @@
+{"func": "join", "command": "git -C /a reset --hard", "case": "no escapes"}
+{"func": "join", "command": "git -C /a\\ b reset", "case": "escaped space"}
+{"func": "join", "command": "git -c x=y\\;z push", "case": "escaped semicolon"}
+{"func": "join", "command": "git -c 'a\\;b' push", "case": "single quote joins semicolon"}
+{"func": "join", "command": "git -c 'a\\ b' push", "case": "single quote leaves escaped space"}
+{"func": "join", "command": "git -C \"/a\\ b\" reset", "case": "double quote escaped space"}
+{"func": "join", "command": "git -C \"\\\"q\\\"\" reset", "case": "double quote escaped quote"}
+{"func": "join", "command": "git \\`x push", "case": "escaped backtick"}
+{"func": "join", "command": "git -c a\\tb push", "case": "escaped literal tab"}
+{"func": "join", "command": "git -c a\\\\b push", "case": "escaped backslash preserved"}
+{"func": "join", "command": "git -c a\\$b push", "case": "escaped dollar preserved"}
+{"func": "join", "command": "git -c 'unterminated \\; x", "case": "unclosed single quote"}
+{"func": "join", "command": "git -C $(git rev-parse) reset", "case": "command substitution untouched"}
+{"func": "join", "command": "git push && grep -f p.txt log", "case": "separators untouched"}

@@ -1,0 +1,20 @@
+{"func": "has_server_side_tools", "api_kwargs": {}, "case": "has_server_side_tools"}
+{"func": "has_server_side_tools", "api_kwargs": {"tools": []}, "case": "empty tools"}
+{"func": "has_server_side_tools", "api_kwargs": {"tools": [{"type": "function"}]}, "case": "function tool"}
+{"func": "has_server_side_tools", "api_kwargs": {"tools": [{"type": "custom"}, {"type": "function"}]}, "case": "custom+function"}
+{"func": "has_server_side_tools", "api_kwargs": {"tools": [{"type": "web_search"}]}, "case": "web_search tool"}
+{"func": "has_server_side_tools", "api_kwargs": {"tools": [{"name": "no_type"}]}, "case": "tool without type"}
+{"func": "has_server_side_tools", "api_kwargs": {"tools": [{"type": ""}]}, "case": "empty type is falsy"}
+{"func": "has_server_side_tools", "api_kwargs": {"extra_body": {"tools": [{"type": "custom"}]}}, "case": "extra_body client tool"}
+{"func": "has_server_side_tools", "api_kwargs": {"extra_body": {"tools": [{"type": "web_search_20250305"}]}}, "case": "extra_body server tool"}
+{"func": "has_server_side_tools", "api_kwargs": {"web_search_options": {"x": 1}}, "case": "web_search_options top level"}
+{"func": "has_server_side_tools", "api_kwargs": {"extra_body": {"web_search_options": {}}}, "case": "web_search_options extra_body"}
+{"func": "has_server_side_tools", "api_kwargs": {"plugins": [{"id": "pareto-router"}]}, "case": "routing only plugin"}
+{"func": "has_server_side_tools", "api_kwargs": {"plugins": [{"id": "pareto-router"}, {"id": "web"}]}, "case": "mixed plugins"}
+{"func": "has_server_side_tools", "api_kwargs": {"plugins": ["web"]}, "case": "non-dict plugin"}
+{"func": "has_server_side_tools", "api_kwargs": {"extra_body": {"plugins": [{"id": "pareto-router"}]}}, "case": "extra_body routing plugin"}
+{"func": "has_server_side_tools", "api_kwargs": {"tools": null, "plugins": null}, "case": "null lists"}
+{"func": "runtime_key", "agent": {"model": "gpt-4", "provider": "openai", "base_url": "https://x", "api_mode": "chat", "reasoning_config": {"effort": "high"}}, "case": "all fields"}
+{"func": "runtime_key", "agent": {"model": "m"}, "case": "partial fields default null"}
+{"func": "runtime_key", "agent": {"model": null, "provider": null, "api_mode": "responses", "reasoning_config": null}, "case": "explicit nulls"}
+{"func": "runtime_key", "agent": {"reasoning_config": [1, 2, 3]}, "case": "non-string config"}

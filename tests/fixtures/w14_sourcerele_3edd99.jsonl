@@ -1,0 +1,25 @@
+{"func":"valid_tag","tag":"v1.2.3","channel":"stable","case":"stable valid"}
+{"func":"valid_tag","tag":"v0.0.0","channel":"stable","case":"stable zeros"}
+{"func":"valid_tag","tag":"v01.2.3","channel":"stable","case":"stable leading zero major"}
+{"func":"valid_tag","tag":"v1000.1.2","channel":"stable","case":"stable 4 digit major"}
+{"func":"valid_tag","tag":"v2026.7.20","channel":"stable","case":"calver rejected"}
+{"func":"valid_tag","tag":"v1.2.3+canary.20260101T120000Z","channel":"stable","case":"canary tag not stable"}
+{"func":"valid_tag","tag":" v1.2.3","channel":"stable","case":"leading space"}
+{"func":"valid_tag","tag":"v1.2.3+canary.20260101T120000Z","channel":"canary","case":"canary valid"}
+{"func":"valid_tag","tag":"v1.2.3","channel":"canary","case":"stable tag not canary"}
+{"func":"valid_tag","tag":" v1.2.3+canary.20260101T120000Z","channel":"canary","case":"canary leading space"}
+{"func":"valid_tag","tag":"v1.2.3+canary.20260101T120000Z ","channel":"canary","case":"canary trailing space"}
+{"func":"published","release":{"draft":false,"prerelease":false,"tag_name":"v1.2.3"},"channel":"stable","case":"published stable"}
+{"func":"published","release":{"draft":true,"prerelease":false,"tag_name":"v1.2.3"},"channel":"stable","case":"draft rejected"}
+{"func":"published","release":{"draft":false,"prerelease":true,"tag_name":"v1.2.3"},"channel":"stable","case":"prerelease on stable rejected"}
+{"func":"published","release":{"draft":false,"prerelease":true,"tag_name":"v1.2.3+canary.20260101T120000Z"},"channel":"canary","case":"published canary"}
+{"func":"published","release":null,"channel":"stable","case":"non dict"}
+{"func":"origin","url":"https://github.com/NousResearch/hermes-agent.git","case":"https with git suffix"}
+{"func":"origin","url":"git@github.com:Owner/Repo.git","case":"ssh scp style"}
+{"func":"origin","url":"ssh://git@github.com/Owner/Repo/","case":"ssh url trailing slash"}
+{"func":"origin","url":"https://gitlab.com/Owner/Repo.git","case":"non github falls back"}
+{"func":"origin","url":"https://github.com/OWNER/repo-name.x","case":"dotted repo name"}
+{"func":"target_label","channel":"stable","version":"1.2.3","commit":"0123456789abcdef0123456789abcdef01234567","ahead":false,"case":"commit truncated 12"}
+{"func":"target_label","channel":"stable","version":"1.2.3","commit":null,"ahead":false,"case":"no commit"}
+{"func":"target_label","channel":"stable","version":"1.2.3","commit":"0123456789abcdef0123456789abcdef01234567","ahead":true,"case":"ahead message"}
+{"func":"target_label","channel":"pm-preview","version":null,"commit":"abc","ahead":false,"case":"null version"}

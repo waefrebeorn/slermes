@@ -1,0 +1,17 @@
+{"func":"skin_payload","config":{"display":{"skin":"default"}},"skin":{"name":"default","colors":{},"light_colors":{},"dark_colors":{},"branding":{},"banner_logo":"","banner_hero":"","tool_prefix":"hermes","custom_css":""},"case":"default skin minimal"}
+{"func":"skin_payload","config":{"display":{"skin":"void"}},"skin":{"name":"void","colors":{"bg":"black"},"light_colors":{"bg":"white"},"dark_colors":{"bg":"black"},"branding":{"help_header":"Custom help","title":"Void"},"banner_logo":"logo.txt","banner_hero":"hero.txt","tool_prefix":"v>","custom_css":"body{color:red}"},"case":"full skin with help_header"}
+{"func":"skin_payload","config":{},"skin":{"name":"plain","colors":["#000"],"light_colors":null,"dark_colors":null,"branding":null,"banner_logo":null,"banner_hero":null,"tool_prefix":"","custom_css":null},"case":"null branding -> empty help_header"}
+{"func":"skin_payload","config":{},"skin":{"name":"nhelp","colors":{},"light_colors":{},"dark_colors":{},"branding":{"other":1},"banner_logo":"","banner_hero":"","tool_prefix":"","custom_css":""},"case":"branding without help_header"}
+{"func":"skin_payload","config":{},"skin":{"name":"nums","colors":{},"light_colors":{},"dark_colors":{},"branding":{"help_header":7},"banner_logo":"","banner_hero":"","tool_prefix":"","custom_css":""},"case":"numeric help_header passthrough"}
+{"func":"skin_payload","config":{},"skin":null,"case":"skin engine fails -> empty payload"}
+{"func":"groups_changed","before":{},"after":{},"epoch":"ep0","case":"no rooms changed"}
+{"func":"groups_changed","before":{"r1":1},"after":{"r1":1},"epoch":"ep1","case":"same signature no change"}
+{"func":"groups_changed","before":{"r1":1},"after":{"r1":2},"epoch":"ep2","case":"one room moved"}
+{"func":"groups_changed","before":{"z":1,"a":2},"after":{"z":9,"a":8},"epoch":"ep3","case":"two rooms sorted"}
+{"func":"groups_changed","before":{},"after":{"new":1},"epoch":"ep4","case":"room added"}
+{"func":"groups_changed","before":{"gone":1},"after":{},"epoch":"ep5","case":"room removed"}
+{"func":"groups_changed","before":{"":{"next_seq":1}},"after":{"":{"next_seq":2}},"epoch":"ep6","case":"process-wide scope omits room_ids"}
+{"func":"groups_changed","before":{"a":1,"":{"v":1}},"after":{"a":2,"":{"v":2}},"epoch":"ep7","case":"process-wide wins over room ids"}
+{"func":"groups_changed","before":{"a":[1,2]},"after":{"a":[1,3]},"epoch":"ep8","case":"list signature changed"}
+{"func":"groups_changed","before":{"a":{"s":1}},"after":{"a":{"s":2}},"epoch":"ep8","case":"dict signature changed"}
+{"func":"groups_changed","before":{"a":null},"after":{"a":null},"epoch":"ep9","case":"null signatures equal"}

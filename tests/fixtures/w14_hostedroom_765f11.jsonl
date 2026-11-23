@@ -1,0 +1,36 @@
+{"case":"id1","func":"identifier","value":"  room-1  ","label":"room_id","max_chars":128,"pattern_mode":"identifier"}
+{"case":"id2","func":"identifier","value":"bad name!","label":"room_id","max_chars":128,"pattern_mode":"identifier"}
+{"case":"id3","func":"identifier","value":42,"label":"room_id","max_chars":128,"pattern_mode":"identifier"}
+{"case":"id4","func":"identifier","value":"","label":"name","max_chars":200,"pattern_mode":"none"}
+{"case":"id5","func":"identifier","value":"room.context_set","label":"kind","max_chars":64,"pattern_mode":"event_kind"}
+{"case":"id6","func":"identifier","value":"Room.Context","label":"kind","max_chars":64,"pattern_mode":"event_kind","invalid":"invalid event kind"}
+{"case":"id7","func":"identifier","value":"abc","label":"x","max_chars":2,"pattern_mode":"identifier"}
+{"case":"id8","func":"identifier","value":"  x  ","label":"x","max_chars":1,"pattern_mode":"identifier","invalid":"custom invalid"}
+{"case":"id9","func":"identifier","value":".leading","label":"room_id","max_chars":128,"pattern_mode":"identifier"}
+{"case":"bi1","func":"bounded_int","value":5,"message":"must be positive","low":1}
+{"case":"bi2","func":"bounded_int","value":0,"message":"must be positive","low":1}
+{"case":"bi3","func":"bounded_int","value":true,"message":"bad bool","low":0}
+{"case":"bi4","func":"bounded_int","value":500,"message":"limit must be between 1 and 500","low":1,"high":500}
+{"case":"bi5","func":"bounded_int","value":5.5,"message":"not int","low":0}
+{"case":"bi6","func":"bounded_int","value":-3,"message":"non-negative","low":0}
+{"case":"tx1","func":"text","value":"  hello  ","label":"prompt","max_bytes":128,"strip":true}
+{"case":"tx2","func":"text","value":"  hello  ","label":"prompt","max_bytes":128,"strip":false}
+{"case":"tx3","func":"text","value":"   ","label":"prompt","max_bytes":128,"strip":true}
+{"case":"tx4","func":"text","value":"abcdef","label":"prompt","max_bytes":3,"strip":true}
+{"case":"tx5","func":"text","value":123,"label":"prompt","max_bytes":128,"strip":true}
+{"case":"tx6","func":"text","value":"héllo","label":"prompt","max_bytes":6,"strip":true}
+{"case":"vc1","func":"validate_context","purpose":"  a   b  ","notes":"  hi  ","routing":"everyone","lead_member_id":"ignored"}
+{"case":"vc2","func":"validate_context","purpose":"x","notes":"hi","routing":"lead","lead_member_id":"  mem1  "}
+{"case":"vc3","func":"validate_context","purpose":"x","notes":"hi","routing":"lead","lead_member_id":"  "}
+{"case":"vc4","func":"validate_context","purpose":"x","notes":"hi","routing":"auto","lead_member_id":"m"}
+{"case":"vc5","func":"validate_context","purpose":"x","notes":"hi","routing":"weird","lead_member_id":"m"}
+{"case":"vc6","func":"validate_context","purpose":null,"notes":"hi","routing":"everyone","lead_member_id":"m"}
+{"case":"cf1","func":"context_from_payload","payload":null}
+{"case":"cf2","func":"context_from_payload","payload":{"purpose":"p","notes":"n","routing":"lead","lead_member_id":"m"}}
+{"case":"cf3","func":"context_from_payload","payload":{"purpose":null,"routing":null}}
+{"case":"rf1","func":"retry_fields","context":{"purpose":"p","notes":"","routing":"everyone","lead_member_id":""},"original":{"purpose":"old","notes":""}}
+{"case":"rf2","func":"retry_fields","context":{"purpose":"","notes":"","routing":"everyone","lead_member_id":""},"original":{"purpose":"old"}}
+{"case":"rt1","func":"retained_fields","table":"hosted_room_work_records_source"}
+{"case":"rt2","func":"retained_fields","table":"hosted_room_work_records_invalid"}
+{"case":"rt3","func":"retained_fields","table":"hosted_room_work_records_pending"}
+{"case":"rt4","func":"retained_fields","table":"other"}

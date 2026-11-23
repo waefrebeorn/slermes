@@ -1,0 +1,12 @@
+{"func":"make_writable","error":"PermissionError","path":"/home/u/profiles/a","case":"perm nested path"}
+{"func":"make_writable","error":"PermissionError","path":"profile","case":"perm no parent"}
+{"func":"make_writable","error":"PermissionError","path":"","case":"perm empty path"}
+{"func":"make_writable","error":"PermissionError","path":"/","case":"perm root path"}
+{"func":"make_writable","error":"PermissionError","path":"a/b","as_tuple":true,"case":"perm tuple form"}
+{"func":"make_writable","error":"FileNotFoundError","path":"a/b","case":"non-perm reraise"}
+{"func":"make_writable","error":"RuntimeError","path":"a/b","as_tuple":true,"case":"non-perm tuple reraise"}
+{"func":"retry","rmtree_ok":[true],"exists":[],"case":"first try success"}
+{"func":"retry","rmtree_ok":[false,true],"exists":[true],"case":"second try success"}
+{"func":"retry","rmtree_ok":[false,false,false],"exists":[true,true,true],"case":"all attempts fail raised"}
+{"func":"retry","rmtree_ok":[false],"exists":[false],"case":"gone mid retry"}
+{"func":"retry","rmtree_ok":[false,false,true],"exists":[true,true],"case":"third try success"}

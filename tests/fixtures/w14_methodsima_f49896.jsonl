@@ -1,0 +1,21 @@
+{"func":"image_generate","params":{},"env":{"available":false},"case":"probe no backend"}
+{"func":"image_generate","params":{"probe":true},"env":{"available":false},"case":"probe false availability"}
+{"func":"image_generate","params":{"probe":true},"env":{"available":true},"case":"probe true availability"}
+{"func":"image_generate","params":{"probe":"yes"},"env":{"available":true},"case":"probe truthy string"}
+{"func":"image_generate","params":{},"env":{"available":true},"case":"no prompt"}
+{"func":"image_generate","params":{"prompt":"   "},"env":{"available":true},"case":"blank prompt"}
+{"func":"image_generate","params":{"prompt":"  a cat  "},"env":{"available":true,"gen_error":"backend exploded"},"case":"provider error"}
+{"func":"image_generate","params":{"prompt":"a cat"},"env":{"available":true,"gen":{"success":false}},"case":"generation failed default error"}
+{"func":"image_generate","params":{"prompt":"a cat"},"env":{"available":true,"gen":{"success":false,"error":"quota exceeded"}},"case":"generation failed custom error"}
+{"func":"image_generate","params":{"prompt":"a dog","aspect_ratio":" LANDSCAPE "},"env":{"available":true,"gen":{"success":true,"image":"gen.png"}},"case":"success with image"}
+{"func":"image_generate","params":{"prompt":"a dog","max_bytes":999999999},"env":{"available":true,"gen":{"success":true}},"case":"success no image"}
+{"func":"image_generate","params":{"prompt":"x","max_bytes":"not-an-int"},"env":{"available":true,"gen":{"success":true,"image":"x.png"}},"case":"bad max_bytes fallback"}
+{"func":"image_generate","params":{"prompt":"x","probe":"false"},"env":{"available":true},"case":"probe false string"}
+{"func":"image_render","params":{"cols":100,"rows":50},"env":{"path_present":false},"case":"no path -> off"}
+{"func":"image_render","params":{"cols":100,"rows":50},"env":{"path_present":true,"render":null},"case":"no render -> off"}
+{"func":"image_render","params":{"cols":"bad","rows":4},"env":{"path_present":true,"render":{"mode":"kitty"}},"case":"bad cols"}
+{"func":"image_render","params":{"cols":100,"rows":50,"graphics":true,"terminal":"kitty"},"env":{"path_present":true,"inline_images":"auto","render":{"mode":"kitty","cols":7,"rows":3,"color":true,"transmit":"t","placeholder":"p"}},"case":"kitty result"}
+{"func":"image_render","params":{"cols":4,"rows":2},"env":{"path_present":true,"render":{"mode":"unicode","cols":4,"rows":2,"cells":[[[[1,2],[3]],[[4],[5,6]]]]}},"case":"unicode cells"}
+{"func":"image_render","params":{"cols":3,"rows":9},"env":{"path_present":true,"render":{"mode":"unicode","cols":3,"rows":9,"cells":[]}},"case":"empty cells"}
+{"func":"image_render","params":{"cols":1,"rows":1},"env":{"path_present":true,"inline_images":false,"render":{"mode":"unicode","cols":1,"rows":1,"cells":[]}},"case":"explicit off config"}
+{"func":"image_render","params":{"cols":1,"rows":1,"graphics":false,"terminal":"kitty"},"env":{"path_present":true,"inline_images":"kitty","render":{"mode":"unicode","cols":1,"rows":1,"cells":[]}},"case":"no graphics downgrade"}

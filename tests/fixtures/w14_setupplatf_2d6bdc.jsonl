@@ -1,0 +1,26 @@
+{"func":"valid_telegram_token","token":"123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZ1234","case":"valid uppercase 30"}
+{"func":"valid_telegram_token","token":"42:abcdefghijklmnopqrstuvwxyz1234","case":"valid lowercase 30"}
+{"func":"valid_telegram_token","token":"9:ABCdefGHI-jklMNOpqrSTUvwxYZabcd","case":"valid 31 with dash"}
+{"func":"valid_telegram_token","token":"123:short","case":"hash too short"}
+{"func":"valid_telegram_token","token":"abc:ABCDEFGHIJKLMNOPQRSTUVWXYZ1234","case":"non numeric id"}
+{"func":"valid_telegram_token","token":"123:ABCDEFGHIJKLMNOPQRSTUVWXYZ!234","case":"invalid char"}
+{"func":"valid_telegram_token","token":"123:ABCDEFGHIJKLMNOPQRSTUVWXYZ123","case":"29 chars fails"}
+{"func":"valid_telegram_token","token":"","case":"empty token"}
+{"func":"is_progress","status":"configured","case":"configured"}
+{"func":"is_progress","status":"NOT CONFIGURED","case":"not configured uppercase"}
+{"func":"is_progress","status":"Partially configured","case":"partially"}
+{"func":"is_progress","status":"plugin disabled","case":"plugin disabled"}
+{"func":"is_progress","status":"enabled, not paired","case":"enabled not paired"}
+{"func":"is_progress","status":"","case":"empty status"}
+{"func":"allowlist","users":"123, 456,789 ","case":"spaces stripped"}
+{"func":"allowlist","users":"","case":"empty"}
+{"func":"allowlist","users":"  ","case":"only spaces"}
+{"func":"allowlist","users":"abc def\tghi","case":"tabs preserved"}
+{"func":"save_port","value":"8080","default":"8644","case":"valid port"}
+{"func":"save_port","value":"0","default":"8644","case":"zero port"}
+{"func":"save_port","value":"-1","default":"8644","case":"negative port"}
+{"func":"save_port","value":"+80","default":"8644","case":"plus sign"}
+{"func":"save_port","value":" 90 ","default":"8644","case":"surrounding whitespace"}
+{"func":"save_port","value":"8.0","default":"8644","case":"float invalid"}
+{"func":"save_port","value":"abc","default":"8644","case":"non numeric"}
+{"func":"save_port","value":"","default":"8644","case":"empty skipped"}

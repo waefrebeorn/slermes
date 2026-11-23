@@ -1,0 +1,20 @@
+{"func": "identity", "env": {"BH_RUNTIME_DIR": "/r", "BH_TMP_DIR": "/t", "BU_NAME": "dev"}, "case": "identity with some keys"}
+{"func": "identity", "env": {}, "case": "identity empty env default BU_NAME"}
+{"func": "identity", "env": {"BH_RUNTIME_DIR_SHARED": "1", "BH_TMP_DIR_SHARED": "0", "BU_NAME": "a", "BH_RUNTIME_DIR": "", "BH_TMP_DIR": ""}, "case": "identity empty dir values"}
+{"func": "daemon_env", "env": {"FOO": "bar", "BH_RUNTIME_DIR": "/old", "BH_TMP_DIR": "/oldt", "BH_RUNTIME_DIR_SHARED": "1", "BH_TMP_DIR_SHARED": "1", "BU_NAME": "x"}, "identity": ["/new1", "/new2", "/new3", "/new4", "named"], "case": "daemon_env rebind"}
+{"func": "daemon_env", "env": {"FOO": "bar"}, "identity": ["", "", "", "", "default"], "case": "daemon_env empty dirs ignored"}
+{"func": "budget", "platform": "darwin", "case": "darwin budget"}
+{"func": "budget", "platform": "linux", "case": "linux budget"}
+{"func": "budget", "platform": "linux2", "case": "linux prefix budget"}
+{"func": "budget", "platform": "win32", "case": "win32 no budget"}
+{"func": "fits", "resolved_dir": "/a/b", "budget": 34, "case": "fits within budget"}
+{"func": "fits", "resolved_dir": "/a/very/long/path", "budget": 5, "case": "exceeds budget"}
+{"func": "fits", "resolved_dir": "/anything", "budget": null, "case": "no budget always fits"}
+{"func": "home", "env": {"BH_HOME": "/bh"}, "case": "home from BH_HOME"}
+{"func": "home", "env": {"BROWSER_HARNESS_HOME": "/opt/bh"}, "case": "home from BROWSER_HARNESS_HOME"}
+{"func": "home", "env": {"XDG_CONFIG_HOME": "/xdg", "HOME": "/home/u"}, "case": "home from XDG"}
+{"func": "home", "env": {"HOME": "/home/u"}, "case": "home from HOME fallback"}
+{"func": "pid_file", "env": {"BH_RUNTIME_DIR": "/run", "BU_NAME": "dev", "BH_RUNTIME_DIR_SHARED": "1"}, "suffix": ".pid", "case": "pid shared runtime"}
+{"func": "pid_file", "env": {"BH_RUNTIME_DIR": "/run", "BU_NAME": "dev"}, "suffix": ".sock", "case": "pid not shared"}
+{"func": "pid_file", "env": {"BH_TMP_DIR": "/tmp", "BU_NAME": "z"}, "suffix": ".port", "case": "pid isolated tmp"}
+{"func": "pid_file", "env": {"HOME": "/home/u"}, "suffix": ".pid", "case": "pid default home runtime"}

@@ -1,0 +1,26 @@
+{"func":"signal_exit","exit_code":-9,"case":"negative SIGKILL definite"}
+{"func":"signal_exit","exit_code":-11,"case":"negative SIGSEGV"}
+{"func":"signal_exit","exit_code":-2,"case":"SIGINT excluded"}
+{"func":"signal_exit","exit_code":137,"case":"shell 128+9 OOM"}
+{"func":"signal_exit","exit_code":139,"case":"shell 128+11"}
+{"func":"signal_exit","exit_code":"143","case":"int64 decimal string 128+15"}
+{"func":"signal_exit","exit_code":99,"case":"plain code no note"}
+{"func":"signal_exit","exit_code":-99,"case":"unknown negative signal"}
+{"func":"exit_code","command":"grep -rn x .","exit_code":0,"case":"zero no note"}
+{"func":"exit_code","command":"grep -rn x .","exit_code":1,"case":"grep no matches"}
+{"func":"exit_code","command":"diff a b","exit_code":1,"case":"diff files differ"}
+{"func":"exit_code","command":"test -f x","exit_code":1,"case":"test false"}
+{"func":"exit_code","command":"find /tmp -name x","exit_code":1,"case":"find partial"}
+{"func":"exit_code","command":"curl -s http://x","exit_code":6,"case":"curl resolve"}
+{"func":"exit_code","command":"curl -s http://x","exit_code":28,"case":"curl timeout"}
+{"func":"exit_code","command":"git diff","exit_code":1,"case":"git diff normal"}
+{"func":"exit_code","command":"FOO=bar /usr/bin/rg x .","exit_code":1,"case":"assignment skipped + basename"}
+{"func":"exit_code","command":"true && rg x .","exit_code":1,"case":"chain last segment"}
+{"func":"exit_code","command":"true | echo x","exit_code":1,"case":"pipeline last segment"}
+{"func":"exit_code","command":"kill -9 self","exit_code":137,"case":"signal takes precedence"}
+{"func":"cwd_fallback","fallback":{"used":"/tmp/actual","requested":"/old/path"},"case":"full fallback note"}
+{"func":"cwd_fallback","fallback":{"used":"/tmp/actual"},"case":"missing requested -> None"}
+{"func":"cwd_fallback","fallback":{"used":false,"requested":"/old"},"case":"used false -> null"}
+{"func":"cwd_fallback","fallback":{"used":"","requested":"/old"},"case":"used empty -> null"}
+{"func":"cwd_fallback","fallback":null,"case":"non-dict -> null"}
+{"func":"env_recreated","case":"constant note"}

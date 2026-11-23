@@ -1,0 +1,15 @@
+{"func": "detached_restart_shell", "cmd": "python -m hermes_cli.main", "pid": "4242", "after": 3.7, "log_path": null}
+{"func": "detached_restart_shell", "cmd": "python -m hermes_cli.main", "pid": "4242", "after": 3.7, "log_path": "C:/Users/eman5/.hermes/logs/detached-restart.log"}
+{"func": "detached_restart_shell", "cmd": "python -m hermes_cli.main", "pid": "99", "after": 1.2, "log_path": "C:/Program Files/h/detached restart.log"}
+{"func": "detached_restart_shell", "cmd": "python", "pid": "7", "after": -2.9, "log_path": null}
+{"func": "detached_restart_shell", "cmd": "python", "pid": "7", "after": 0.9, "log_path": null}
+{"func": "detached_restart_shell", "cmd": "", "pid": "1", "after": 5, "log_path": null}
+{"func": "detached_restart_shell", "cmd": "python", "pid": "10", "after": 2, "log_path": "a'b.log"}
+{"func": "detached_restart_shell", "cmd": "python", "pid": "10", "after": 2, "log_path": ""}
+{"func": "keep_importable", "pythonpath": "", "root": "C:/repo"}
+{"func": "keep_importable", "pythonpath": "A;B", "root": "C:/repo"}
+{"func": "keep_importable", "pythonpath": "A;C:/repo;B", "root": "C:/repo"}
+{"func": "keep_importable", "pythonpath": "", "root": null}
+{"func": "keep_importable", "pythonpath": "A;;B", "root": "C:/repo"}
+{"func": "keep_importable", "pythonpath": "A;B", "root": null}
+{"func": "keep_importable", "pythonpath": "C:/repo", "root": "C:/repo"}

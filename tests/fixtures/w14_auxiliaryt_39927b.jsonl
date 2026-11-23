@@ -1,0 +1,15 @@
+{"func":"authoritative_auxiliary_task","task":"ping"}
+{"func":"authoritative_auxiliary_task","task":null}
+{"func":"authoritative_auxiliary_task","task":""}
+{"func":"authoritative_auxiliary_task","task":"fallback/nous"}
+{"func":"core_rooted","base":"core","entries":{}}
+{"func":"core_rooted","base":"p","entries":{"p":{"inherit_from":"core"}}}
+{"func":"core_rooted","base":"p","entries":{"p":{"inherit_from":null}}}
+{"func":"core_rooted","base":"p","entries":{"p":{}}}
+{"func":"core_rooted","base":"p","entries":{"p":{"inherit_from":"q"},"q":{"inherit_from":"p"}}}
+{"func":"core_rooted","base":"p","entries":{"p":{"inherit_from":"core"},"core":{}}}
+{"func":"layer_over_inherited","inherited":{"provider":"auto"},"user":{}}
+{"func":"layer_over_inherited","inherited":{"provider":"auto","model":"","base_url":"","api_key":"base-key","timeout":30},"user":{"provider":"auto","model":"","base_url":"","api_key":"","timeout":0}}
+{"func":"layer_over_inherited","inherited":{"provider":"auto","model":"base-model","api_key":"base-key","reasoning_effort":true},"user":{"provider":"nous","model":"custom","api_key":"","reasoning_effort":false}}
+{"func":"layer_over_inherited","inherited":{"provider":"auto","base_url":"http://base","extra_body":{"x":1}},"user":{"provider":"","model":"m","base_url":""}}
+{"func":"layer_over_inherited","inherited":{"provider":"auto","model":"m0"},"user":{"provider":"AUTO","model":"  ","base_url":"  ","api_key":null}}

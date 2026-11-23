@@ -1,0 +1,41 @@
+{"func":"validate_workdir","workdir":"/home/wubu/repo","case":"safe path -> null"}
+{"func":"validate_workdir","workdir":"C:\\Users\\Eman\\repo","case":"windows path drive/backslash safe"}
+{"func":"validate_workdir","workdir":"/home/日本/保管庫","case":"unicode alnum allowed"}
+{"func":"validate_workdir","workdir":"/home/user;rm -rf","case":"semicolon blocked"}
+{"func":"validate_workdir","workdir":"$(echo hi)","case":"dollar paren blocked"}
+{"func":"validate_workdir","workdir":"line\nbreak","case":"newline blocked"}
+{"func":"preview","command":null,"case":"None preview"}
+{"func":"preview","command":"abcdefghij","limit":4,"case":"truncate to 4"}
+{"func":"preview","command":"short","limit":200,"case":"under limit"}
+{"func":"blocked_json","error":"Blocked: nope","status":"blocked","case":"envelope string"}
+{"func":"blocked_json","error":"quote \" and backslash \\","status":"error","case":"escaped error string"}
+{"func":"help_version","command":"hermes --help","case":"long help"}
+{"func":"help_version","command":"git  -H","case":"short -h after normalize"}
+{"func":"help_version","command":"python --version","case":"long version"}
+{"func":"help_version","command":"npm run dev","case":"not help"}
+{"func":"strip_quotes","command":"echo 'npm run dev' && echo \"setsid x\"","case":"mask both quote styles"}
+{"func":"strip_quotes","command":"echo `nohup server` &","case":"mask backticks"}
+{"func":"strip_quotes","command":"echo 'unterminated","case":"unterminated single quote unchanged"}
+{"func":"strip_trailing_amp","command":"npm run dev &","case":"plain trailing amp"}
+{"func":"strip_trailing_amp","command":"sleep 2   &  ","case":"rstrip then drop amp and spaces"}
+{"func":"strip_trailing_amp","command":"echo trailing\\  &","case":"escaped space kept"}
+{"func":"has_flag","args":["tail","-f","app.log"],"short":"fF","long":["--follow"],"case":"short f"}
+{"func":"has_flag","args":["tail","--follow=name"],"short":"fF","long":["--follow"],"case":"long with value"}
+{"func":"has_flag","args":["-n","12"],"short":"fF","long":["--follow"],"case":"no flag"}
+{"func":"is_data","word":"grep","args":["-rn","uvicorn","."],"case":"grep is data"}
+{"func":"is_data","word":"find","args":[".","-exec","rm","{}"],"case":"find -exec not data"}
+{"func":"is_data","word":"tail","args":["-f","app.log"],"case":"tail -f not data"}
+{"func":"is_data","word":"npm","args":["install","uvicorn"],"case":"npm install is data"}
+{"func":"is_data","word":"npm","args":["run","dev"],"case":"npm run not data"}
+{"func":"is_data","word":"git","args":["log","--oneline"],"case":"git log is data"}
+{"func":"is_data","word":"git","args":["-c","alias.x=!cmd","status"],"case":"git -c runs command"}
+{"func":"is_data","word":"uv","args":["pip","list"],"case":"uv pip list is data"}
+{"func":"returns_promptly","word":"sleep","args":["2"],"case":"timed sleep"}
+{"func":"returns_promptly","word":"sleep","args":["abc"],"case":"bad duration"}
+{"func":"returns_promptly","word":"docker","args":["compose","ps"],"case":"docker compose report"}
+{"func":"returns_promptly","word":"docker","args":["compose","logs","-f"],"case":"docker logs not prompt"}
+{"func":"command_word","tokens":["env","FOO=bar","npm","run","dev"],"case":"skip env + assignment"}
+{"func":"command_word","tokens":["sudo","-n","tail","-f","x"],"case":"sudo flag then command"}
+{"func":"command_word","tokens":["timeout","3s","uvicorn","app:app"],"case":"timeout duration"}
+{"func":"command_word","tokens":["/usr/bin/grep","-rn","x","."],"case":"system bin basename"}
+{"func":"command_word","tokens":["( npm run dev )"],"case":"group opener single token"}

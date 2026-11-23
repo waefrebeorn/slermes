@@ -1,0 +1,24 @@
+{"func":"message_row_id","case":"row id from _row_id","msg":{"_row_id":42}}
+{"func":"message_row_id","case":"row id from row_id","msg":{"row_id":7}}
+{"func":"message_row_id","case":"_row_id wins","msg":{"_row_id":9,"row_id":3}}
+{"func":"message_row_id","case":"numeric string","msg":{"row_id":"123"}}
+{"func":"message_row_id","case":"float truncates","msg":{"row_id":12.9}}
+{"func":"message_row_id","case":"bad string","msg":{"row_id":"abc"}}
+{"func":"message_row_id","case":"null both","msg":{"_row_id":null,"row_id":null}}
+{"func":"message_row_id","case":"bool true","msg":{"row_id":true}}
+{"func":"message_row_id","case":"not a dict","msg":[]}
+{"func":"row_ids_of","case":"sorted unique ids","messages":[{"_row_id":5},{"row_id":3},{"_row_id":5},{"row_id":"9"},{"row_id":"bad"}]}
+{"func":"row_ids_of","case":"empty","messages":[]}
+{"func":"row_ids_of","case":"empty dict entries","messages":[{},{"row_id":1},{"_row_id":2}]}
+{"func":"pdf_page_range","case":"defaults","params":{},"max_pages":20}
+{"func":"pdf_page_range","case":"explicit range","params":{"first_page":2,"last_page":4},"max_pages":20}
+{"func":"pdf_page_range","case":"first zero","params":{"first_page":0},"max_pages":20}
+{"func":"pdf_page_range","case":"negative","params":{"first_page":-3},"max_pages":20}
+{"func":"pdf_page_range","case":"bad int string","params":{"first_page":"x"},"max_pages":20}
+{"func":"pdf_page_range","case":"last before first","params":{"first_page":5,"last_page":2},"max_pages":20}
+{"func":"pdf_page_range","case":"over cap","params":{"first_page":1,"last_page":30},"max_pages":20}
+{"func":"pdf_page_range","case":"custom cap","params":{"first_page":1,"last_page":6},"max_pages":5}
+{"func":"pdf_page_range","case":"string ints","params":{"first_page":"2","last_page":"4"},"max_pages":20}
+{"func":"preview_restart_prompt","case":"basic","url":" http://localhost:8000 ","cwd":"/home/u","context":"","has_history":false,"note":"NOTE","rules":["RULE1","RULE2"]}
+{"func":"preview_restart_prompt","case":"with context and history","url":"u","cwd":"","context":"line1\nline2","has_history":true,"note":"HISTORY NOTE","rules":["A","","B"]}
+{"func":"preview_restart_prompt","case":"unknown cwd","url":"u","cwd":"","context":"","has_history":false,"note":"NOTE","rules":[]}

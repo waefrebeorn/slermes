@@ -1,0 +1,14 @@
+{"case":"st1","func":"stored_transcript","session_id":"s1","history":[{"role":"user","content":"hi"},{"role":"assistant","content":"yo"}]}
+{"case":"st2","func":"stored_transcript","session_id":"s1","history":[{"role":"system","content":"sys"}]}
+{"case":"st3","func":"stored_transcript","session_id":null,"history":[{"role":"user","content":"hi"}]}
+{"case":"st4","func":"stored_transcript","session_id":"s1","history":[]}
+{"case":"st5","func":"stored_transcript","session_id":"s1","history":[{"role":"assistant","content":"yo"}]}
+{"case":"st6","func":"stored_transcript","session_id":"s1","history":[{"content":"x"}]}
+{"case":"st7","func":"stored_transcript","session_id":"s1","history":[{"role":"USER","content":"hi"}]}
+{"case":"st8","func":"stored_transcript","session_id":"","history":[{"role":"user","content":"hi"}]}
+{"case":"st9","func":"stored_transcript","session_id":"s2","history":[{"role":"tool","content":"t"},{"role":"assistant","content":"a"}]}
+{"case":"st10","func":"stored_transcript","session_id":"s3","history":[{"role":"system","content":"s"},{"role":"tool","content":"t"}]}
+{"case":"ic1","func":"is_conversational","history":[{"role":"user","content":"hi"}],"session_id":"s1"}
+{"case":"ic2","func":"is_conversational","history":[{"role":"system","content":"s"}],"session_id":"s1"}
+{"case":"ic3","func":"is_conversational","history":[{"role":"assistant"}],"session_id":"s1"}
+{"case":"ic4","func":"is_conversational","history":[],"session_id":"s1"}

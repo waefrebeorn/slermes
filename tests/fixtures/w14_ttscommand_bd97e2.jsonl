@@ -1,0 +1,45 @@
+{"func":"quote_context","command_template":"echo \"hello {x}\"","position":13,"case":"inside double quotes"}
+{"func":"quote_context","command_template":"echo 'hi {x}'","position":9,"case":"inside single quotes"}
+{"func":"quote_context","command_template":"echo {x}","position":5,"case":"no quote"}
+{"func":"quote_context","command_template":"echo \"a\\\"b {x}\"","position":12,"case":"escaped quote then inside double"}
+{"func":"quote_placeholder","value":"plain","os_name":"posix","case":"shlex safe"}
+{"func":"quote_placeholder","value":"a b","os_name":"posix","case":"shlex quoted spaces"}
+{"func":"quote_placeholder","value":"","os_name":"posix","case":"shlex empty"}
+{"func":"quote_placeholder","value":"it's","os_name":"posix","case":"shlex single quote"}
+{"func":"quote_placeholder","value":"a b","quote_context":"'","os_name":"posix","case":"single context keeps space"}
+{"func":"quote_placeholder","value":"it's","quote_context":"'","os_name":"posix","case":"single context escapes quote"}
+{"func":"quote_placeholder","value":"C:\\x $HOME `id` \"q\"","quote_context":"\"","os_name":"posix","case":"double context escaping"}
+{"func":"quote_placeholder","value":"C:\\voices\\","quote_context":"\"","os_name":"nt","case":"windows double trailing backslash"}
+{"func":"quote_placeholder","value":"a b","os_name":"nt","case":"windows list2cmdline space"}
+{"func":"render","command_template":"piper -f {output_path} < {input_path}","placeholders":{"output_path":"/tmp/o.wav","input_path":"/tmp/i.txt"},"os_name":"posix","case":"two placeholders"}
+{"func":"render","command_template":"say {{model}}","placeholders":{"model":"grok-stt"},"os_name":"posix","case":"double braces"}
+{"func":"render","command_template":"echo \\{voice}","placeholders":{"voice":"alice"},"os_name":"posix","case":"backslash keeps literal"}
+{"func":"render","command_template":"echo ${voice}","placeholders":{"voice":"alice"},"os_name":"posix","case":"dollar keeps literal"}
+{"func":"render","command_template":"sh -c 'echo {text_path}'","placeholders":{"text_path":"a b"},"os_name":"posix","case":"single quoted context"}
+{"func":"render","command_template":"echo \"{voice}\"","placeholders":{"voice":"a b"},"os_name":"posix","case":"double quoted context"}
+{"func":"render","command_template":"echo {unknown} {{known}}","placeholders":{"known":"k"},"os_name":"posix","case":"unknown left literal"}
+{"func":"render","command_template":"cmd /c echo {voice}","placeholders":{"voice":"a b"},"os_name":"nt","case":"windows render"}
+{"func":"failure_detail","stderr":"bad input\n","stdout":"partial","case":"stderr then stdout"}
+{"func":"failure_detail","stderr":"","stdout":"out text  ","case":"stdout only stripped"}
+{"func":"failure_detail","stderr":null,"stdout":null,"case":"no output"}
+{"func":"provider_section","config":{"providers":{"piper":{"command":"piper"}}},"name":"providers","case":"dict section"}
+{"func":"provider_section","config":{"providers":"not a dict"},"name":"providers","case":"non-dict -> empty"}
+{"func":"is_command_config","config":{"type":"command","command":"piper -f {output_path}"},"case":"explicit command"}
+{"func":"is_command_config","config":{"command":"  "},"case":"blank command"}
+{"func":"is_command_config","config":{"type":"openai","command":"x"},"case":"wrong type"}
+{"func":"is_command_config","config":{"command":"x"},"case":"empty type allowed"}
+{"func":"named_config","config":{"providers":{"piper":{"command":"piper"}}},"name":"piper","builtins":["openai"],"case":"canonical providers block"}
+{"func":"named_config","config":{"openai":{"command":"evil"}},"name":"openai","builtins":["openai"],"case":"builtin name refused"}
+{"func":"named_config","config":{"piper":{"command":"piper"}},"name":"piper","builtins":["openai"],"case":"legacy top-level name"}
+{"func":"resolve_config","provider":" PIPER ","config":{"providers":{"piper":{"command":"piper"}}},"reserved":["openai"],"case":"resolve trimmed lower"}
+{"func":"resolve_config","provider":"openai","config":{"providers":{"openai":{"command":"evil"}}},"reserved":["openai"],"case":"reserved -> null"}
+{"func":"command_timeout","config":{"timeout":2.5},"default":120,"case":"timeout key"}
+{"func":"command_timeout","config":{"timeout_seconds":"30"},"default":120,"case":"timeout_seconds string"}
+{"func":"command_timeout","config":{"timeout":"bad"},"default":120,"case":"invalid -> default"}
+{"func":"command_timeout","config":{"timeout":-1},"default":120,"case":"non-positive -> default"}
+{"func":"command_output_format","config":{"format":".WAV"},"formats":["mp3","wav"],"default":"mp3","case":"format normalized"}
+{"func":"command_output_format","config":{"output_format":"flac"},"formats":["mp3","flac"],"default":"mp3","case":"output_format fallback"}
+{"func":"command_output_format","config":{"format":"xyz"},"formats":["mp3","wav"],"default":"mp3","case":"invalid -> default"}
+{"func":"tts_output_format","config":{"format":"wav"},"output_path":"/tmp/out.OGG","case":"suffix wins"}
+{"func":"tts_output_format","config":{"format":"wav"},"output_path":"/tmp/out","case":"no suffix uses config"}
+{"func":"tts_output_format","config":{},"output_path":"","case":"default mp3"}

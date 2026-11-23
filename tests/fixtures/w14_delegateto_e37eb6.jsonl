@@ -1,0 +1,13 @@
+{"func": "without_tier", "overrides": null, "case": "null becomes empty"}
+{"func": "without_tier", "overrides": "scalar", "case": "non dict string"}
+{"func": "without_tier", "overrides": [1, 2], "case": "non dict list"}
+{"func": "without_tier", "overrides": 7, "case": "non dict number"}
+{"func": "without_tier", "overrides": {}, "case": "empty object"}
+{"func": "without_tier", "overrides": {"a": 1}, "case": "plain keys kept"}
+{"func": "without_tier", "overrides": {"service_tier": "fast"}, "case": "top service_tier removed"}
+{"func": "without_tier", "overrides": {"speed": "x", "a": 1}, "case": "top speed removed"}
+{"func": "without_tier", "overrides": {"extra_body": {"service_tier": "fast", "x": 1}}, "case": "extra body tier removed"}
+{"func": "without_tier", "overrides": {"extra_body": {"service_tier": "fast"}}, "case": "extra body emptied removed"}
+{"func": "without_tier", "overrides": {"extra_body": "scalar"}, "case": "extra body non dict untouched"}
+{"func": "without_tier", "overrides": {"service_tier": "fast", "speed": "ultra", "extra_body": {"speed": "x", "keep": 2}, "other": 3}, "case": "mixed"}
+{"func": "without_tier", "overrides": {"extra_body": {"nested": {"service_tier": "fast"}}}, "case": "nested untouched"}

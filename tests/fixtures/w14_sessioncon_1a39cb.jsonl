@@ -1,0 +1,15 @@
+{"case":"so1","func":"session_owned","params":{"owner":{"type":"session","session_id":"s1"}}}
+{"case":"so2","func":"session_owned","params":{"owner":{"type":"account"}}}
+{"case":"so3","func":"session_owned","params":{"owner":"session"}}
+{"case":"so4","func":"session_owned","params":{"owner":null}}
+{"case":"so5","func":"session_owned","params":{}}
+{"case":"so6","func":"session_owned","params":null}
+{"case":"so7","func":"session_owned","params":{"owner":{"type":"session"}}}
+{"case":"so8","func":"session_owned","params":{"owner":{"type":"session"}}}
+{"case":"so9","func":"session_owned","params":{"owner":{"type":123}}}
+{"case":"m1","func":"methods"}
+{"case":"cr1","func":"connector_refusal","code":"INVALID_PARAMS","reason":"invalid_params","message":"bad params"}
+{"case":"cr2","func":"connector_refusal","code":"INVALID_ANSWER","reason":"invalid_answer","message":"bad answer"}
+{"case":"cr3","func":"connector_refusal","code":404,"reason":404,"message":"not found"}
+{"case":"cr4","func":"connector_refusal","code":"UNKNOWN","reason":123,"message":"numeric reason"}
+{"case":"cr5","func":"connector_refusal","code":"X","reason":"x","message":""}

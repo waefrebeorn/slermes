@@ -1,0 +1,35 @@
+{"case":"mn1","func":"mentions","text":"osascript -e 'get name'"}
+{"case":"mn2","func":"mentions","text":"osacompile -e 'x'"}
+{"case":"mn3","func":"mentions","text":"/usr/bin/osascript"}
+{"case":"mn4","func":"mentions","text":"test_osascript_bridge.py"}
+{"case":"mn5","func":"mentions","text":"osascript-notes"}
+{"case":"mn6","func":"mentions","text":"osascript.exe"}
+{"case":"mn7","func":"mentions","text":"osascript.py"}
+{"case":"mn8","func":"mentions","text":"osa''script"}
+{"case":"mn9","func":"mentions","text":"myosascript"}
+{"case":"mn10","func":"mentions","text":"OSASCRIPT"}
+{"case":"mn11","func":"mentions","text":"osa\\script"}
+{"case":"mn12","func":"mentions","text":"x osascript"}
+{"case":"mn13","func":"mentions","text":"osascripting"}
+{"case":"mn14","func":"mentions","text":"osascript.exe foo"}
+{"case":"mn15","func":"mentions","text":"no mention here"}
+{"case":"sl1","func":"strip_layout","program":"get name of app"}
+{"case":"sl2","func":"strip_layout","program":"quit ¬\nwithout saving"}
+{"case":"sl3","func":"strip_layout","program":"-- comment\nquit"}
+{"case":"sl4","func":"strip_layout","program":"# comment\nquit"}
+{"case":"sl5","func":"strip_layout","program":"(* block *)quit"}
+{"case":"sl6","func":"strip_layout","program":"(* outer (* inner *) done *)quit"}
+{"case":"sl7","func":"strip_layout","program":"(* unterminated quit"}
+{"case":"sl8","func":"strip_layout","program":"\"-- not a comment\" quit"}
+{"case":"sl9","func":"strip_layout","program":"|ident -- | quit"}
+{"case":"sl10","func":"strip_layout","program":"do ¬\nshell script"}
+{"case":"sl11","func":"strip_layout","program":"do (* x *) shell script"}
+{"case":"sl12","func":"strip_layout","program":"set x to \"a (* b\"\nquit"}
+{"case":"sl13","func":"strip_layout","program":"plain |a| text"}
+{"case":"hb1","func":"heredoc_body","text":"cmd\nbody\nEOF\ntail","after":3,"delim":"EOF","strip_tabs":false}
+{"case":"hb2","func":"heredoc_body","text":"cmd\nbody\n\tEOF\ntail","after":3,"delim":"EOF","strip_tabs":true}
+{"case":"hb3","func":"heredoc_body","text":"cmd\nbody\n\tEOF\ntail","after":3,"delim":"EOF","strip_tabs":false}
+{"case":"hb4","func":"heredoc_body","text":"cmd\nbody no terminator","after":3,"delim":"EOF","strip_tabs":false}
+{"case":"hb5","func":"heredoc_body","text":"cmd","after":3,"delim":"EOF","strip_tabs":false}
+{"case":"hb6","func":"heredoc_body","text":"a\nb\nEOF\nEOF\nc","after":1,"delim":"EOF","strip_tabs":false}
+{"case":"hb7","func":"heredoc_body","text":"a\n\nEOF\nz","after":1,"delim":"EOF","strip_tabs":false}

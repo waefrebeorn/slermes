@@ -1,0 +1,15 @@
+{"func": "apply_row_annotations", "messages": [{"a": 1, "b": 2}], "annotations": [{"a": null}], "case": "pop key", "out": [{"b": 2}]}
+{"func": "apply_row_annotations", "messages": [{"a": 1}], "annotations": [{"b": 9}], "case": "set new key", "out": [{"a": 1, "b": 9}]}
+{"func": "apply_row_annotations", "messages": [{"a": 1}], "annotations": [{"a": 5}], "case": "overwrite key", "out": [{"a": 5}]}
+{"func": "apply_row_annotations", "messages": [{"a": 1, "b": 2}, {"c": 3}], "annotations": [{"a": null, "d": 4}, {"c": null, "e": 7}], "case": "multiple messages", "out": [{"b": 2, "d": 4}, {"e": 7}]}
+{"func": "apply_row_annotations", "messages": [], "annotations": [], "case": "both empty", "out": []}
+{"func": "session_number", "row": {"compression_fallback_streak": 7}, "column": "compression_fallback_streak", "cast_kind": "int", "zero": 0, "case": "int value", "out": 7}
+{"func": "session_number", "row": {"n": "12"}, "column": "n", "cast_kind": "int", "zero": 0, "case": "int from string", "out": 12}
+{"func": "session_number", "row": {"n": "3.5"}, "column": "n", "cast_kind": "int", "zero": 0, "case": "invalid int falls back to zero", "out": 0}
+{"func": "session_number", "row": {"n": "2.75"}, "column": "n", "cast_kind": "float", "zero": 0.0, "case": "float from string", "out": 2.75}
+{"func": "session_number", "row": {"n": -9}, "column": "n", "cast_kind": "int", "zero": 0, "case": "negative clamped", "out": 0}
+{"func": "session_number", "row": {}, "column": "missing", "cast_kind": "int", "zero": 4, "case": "missing column uses zero", "out": 4}
+{"func": "compression_cooldown", "row": {"compression_failure_cooldown_until": 200.5, "compression_failure_error": "boom"}, "now": 100.0, "case": "live cooldown", "out": {"cooldown_until": 200.5, "remaining_seconds": 100.5, "error": "boom"}}
+{"func": "compression_cooldown", "row": {"compression_failure_cooldown_until": "50.0", "compression_failure_error": "old"}, "now": 100.0, "case": "expired cooldown", "out": null}
+{"func": "compression_cooldown", "row": {"compression_failure_cooldown_until": null, "compression_failure_error": null}, "now": 100.0, "case": "null deadline", "out": null}
+{"func": "compression_cooldown", "row": {"compression_failure_cooldown_until": 300, "compression_failure_error": null}, "now": 100.0, "case": "null error preserved", "out": {"cooldown_until": 300.0, "remaining_seconds": 200.0, "error": null}}

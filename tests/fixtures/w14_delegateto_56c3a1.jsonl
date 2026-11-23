@@ -1,0 +1,17 @@
+{"func": "param_error", "index": 0, "name": "speed", "value": "fast", "schema": {"enum": ["fast", "normal"]}, "case": "value in enum"}
+{"func": "param_error", "index": 2, "name": "speed", "value": "turbo", "schema": {"enum": ["fast", "normal"]}, "case": "value not in enum"}
+{"func": "param_error", "index": 1, "name": "n", "value": 3, "schema": {"enum": [1, 2]}, "case": "int not in enum"}
+{"func": "param_error", "index": 4, "name": "ok", "value": true, "schema": {"enum": [true, false]}, "case": "bool in enum"}
+{"func": "param_error", "index": 0, "name": "x", "value": "v", "schema": {}, "case": "no enum"}
+{"func": "param_error", "index": 0, "name": "x", "value": "v", "schema": {"enum": "fast"}, "case": "enum not list"}
+{"func": "clean_route", "provider_name": "p", "route": {"model": "m", "junk": 1, "provider": "prov", "label": "L", "api_key": "k"}, "case": "filter route keys"}
+{"func": "clean_route", "provider_name": "p", "route": {"unknown": 1}, "case": "all dropped"}
+{"func": "clean_route", "provider_name": "mybackend", "route": null, "case": "non-mapping raises"}
+{"func": "with_inherited_fallback", "route": {"profile": "p"}, "config": {"fallback_providers": ["x"]}, "case": "profile keeps route"}
+{"func": "with_inherited_fallback", "route": {"fallback_providers": []}, "config": {"fallback_providers": ["x"]}, "case": "explicit empty keeps"}
+{"func": "with_inherited_fallback", "route": {"model": "m"}, "config": {"fallback_providers": ["x"]}, "case": "inherit fallback"}
+{"func": "with_inherited_fallback", "route": {"model": "m"}, "config": {}, "case": "no inherit"}
+{"func": "report", "backend": "default", "label": null, "case": "default unlabelled none"}
+{"func": "report", "backend": "custom", "label": "L", "case": "custom labelled"}
+{"func": "report", "backend": "default", "label": "L", "case": "default labelled"}
+{"func": "refused_entry", "index": 3, "backend": "custom", "label": "L", "error": "nope", "case": "refused entry"}

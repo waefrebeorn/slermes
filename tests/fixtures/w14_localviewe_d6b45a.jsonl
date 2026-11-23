@@ -1,0 +1,17 @@
+{"func": "publish_progress", "event_type": "reasoning.available", "name": "", "preview": "hello", "kwargs": {}, "show_reasoning": true, "classic_cli": false}
+{"func": "publish_progress", "event_type": "reasoning.available", "name": "", "preview": "hello", "kwargs": {}, "show_reasoning": false, "classic_cli": false}
+{"func": "publish_progress", "event_type": "reasoning.available", "name": "", "preview": "hello", "kwargs": {}, "show_reasoning": false, "classic_cli": true}
+{"func": "publish_progress", "event_type": "reasoning.available", "name": "", "preview": "", "kwargs": {}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "moa.reference", "name": "ref", "preview": "txt", "kwargs": {"moa_index": 1, "moa_count": 3}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "moa.reference", "name": "ref", "preview": "txt", "kwargs": {"moa_index": 1}, "show_reasoning": false, "classic_cli": true}
+{"func": "publish_progress", "event_type": "moa.reference", "name": "ref", "preview": "txt", "kwargs": {}, "show_reasoning": false, "classic_cli": false}
+{"func": "publish_progress", "event_type": "moa.progress", "name": "p", "preview": "", "kwargs": {"moa_refs_done": 2, "moa_refs_total": 5}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "moa.progress", "name": "p", "preview": "", "kwargs": {"moa_refs_done": 2}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "moa.aggregating", "name": "agg", "preview": "", "kwargs": {}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "moa.aggregating", "name": "", "preview": "", "kwargs": {}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "moa.phase", "name": "ph", "preview": "", "kwargs": {"moa_phase": "plan", "moa_refs_done": 1}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "moa.phase", "name": "ph", "preview": "", "kwargs": {"moa_phase": ""}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "moa.phase", "name": "", "preview": "", "kwargs": {"moa_phase": "plan"}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "moa.reference", "name": "ref", "preview": "txt", "kwargs": {"moa_index": null, "moa_count": 3}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "unknown.event", "name": "", "preview": "", "kwargs": {}, "show_reasoning": true}
+{"func": "publish_progress", "event_type": "subagent.text", "name": "", "preview": "", "kwargs": {}, "show_reasoning": true}

@@ -1,0 +1,14 @@
+{"func":"grant_expiry","claims":{"status_expires_at":1700000000.5,"expires_at":100},"case":"status wins"}
+{"func":"grant_expiry","claims":{"expires_at":3600},"case":"fallback to expires_at"}
+{"func":"grant_expiry","claims":{"status_expires_at":"1700000000","expires_at":1},"case":"numeric string"}
+{"func":"grant_expiry","claims":{"expires_at":1700000000},"case":"int64-ish"}
+{"func":"grant_expiry","claims":{"status_expires_at":0,"expires_at":99},"case":"zero status"}
+{"func":"grant_expiry","claims":{"status_expires_at":true,"expires_at":5},"case":"bool true coerced"}
+{"func":"grant_expiry","claims":{"status_expires_at":1.25e10,"expires_at":1},"case":"exponent number"}
+{"func":"include_disbanded","params":{"include_disbanded":true},"case":"true"}
+{"func":"include_disbanded","params":{"include_disbanded":false},"case":"false"}
+{"func":"include_disbanded","params":{"include_disbanded":1},"case":"int one is not True"}
+{"func":"include_disbanded","params":{},"case":"absent"}
+{"func":"include_disbanded","params":{"include_disbanded":"true"},"case":"string not True"}
+{"func":"methods","case":"wire order"}
+{"func":"long_handlers","case":"sorted frozenset union"}

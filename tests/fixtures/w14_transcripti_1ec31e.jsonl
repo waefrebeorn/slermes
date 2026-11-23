@@ -1,0 +1,24 @@
+{"func":"error_result","error":"bad audio","case":"plain failure envelope"}
+{"func":"error_result","error":"oops","extra":{"hint":"retry","code":7},"case":"extra keys merged"}
+{"func":"error_result","error":"oops","extra":{"success":true,"transcript":"x"},"case":"extra overrides envelope"}
+{"func":"ok_result","transcript":"hello world","provider":"local","case":"ok envelope"}
+{"func":"ok_result","transcript":"","provider":"groq","case":"empty transcript"}
+{"func":"normalize_xai","model":"","env_value":"grok-voice-transcribe-1.0","case":"blank -> env"}
+{"func":"normalize_xai","model":null,"env_value":"  pinned-model  ","case":"null -> stripped env"}
+{"func":"normalize_xai","model":"  grok-stt  ","env_value":"","case":"legacy alias -> catalog default"}
+{"func":"normalize_xai","model":"grok-voice-transcribe-1.0","env_value":"other","case":"explicit model wins"}
+{"func":"normalize_xai","model":"  whisper-x  ","env_value":"other","case":"explicit model stripped"}
+{"func":"normalize_xai","model":0,"env_value":"","case":"falsy number -> default"}
+{"func":"normalize_xai","model":false,"env_value":"","case":"falsy bool -> default"}
+{"func":"config_number","cfg":{"timeout":2.5},"key":"timeout","default":60,"cast":"float","case":"float number"}
+{"func":"config_number","cfg":{"timeout":"3.5"},"key":"timeout","default":60,"cast":"float","case":"float string"}
+{"func":"config_number","cfg":{"timeout":"bad"},"key":"timeout","default":60,"cast":"float","case":"float invalid -> default"}
+{"func":"config_number","cfg":{},"key":"timeout","default":30,"cast":"float","case":"missing key -> default cast"}
+{"func":"config_number","cfg":{"n":3.9},"key":"n","default":5,"cast":"int","case":"int truncates number"}
+{"func":"config_number","cfg":{"n":"7"},"key":"n","default":5,"cast":"int","case":"int string"}
+{"func":"config_number","cfg":{"n":"3.5"},"key":"n","default":5,"cast":"int","case":"int invalid string -> default"}
+{"func":"config_number","cfg":{"n":null},"key":"n","default":5,"cast":"int","case":"null -> default"}
+{"func":"process_error_detail","stderr":"  boom  ","stdout":"ignored","exc_str":"exc","case":"stderr wins stripped"}
+{"func":"process_error_detail","stderr":"","stdout":"out text\n","exc_str":"exc","case":"stdout fallback stripped"}
+{"func":"process_error_detail","stderr":null,"stdout":null,"exc_str":"Command failed","case":"fallback to str(exc)"}
+{"func":"process_error_detail","stderr":"   ","stdout":"   ","exc_str":"fallback","case":"whitespace streams -> exc"}

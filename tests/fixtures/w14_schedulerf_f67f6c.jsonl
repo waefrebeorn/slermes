@@ -1,0 +1,26 @@
+{"func": "output_dir", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "display path"}
+{"func": "output_dir", "job_name": "nightly", "job_id": "JOB-42", "home": "/home/u/.hermes", "case": "display path odd id"}
+{"func": "generic", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "generic with error", "cleaned_error": "boom: connection refused"}
+{"func": "generic", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "generic with unicode error", "cleaned_error": "⚠️ bad"}
+{"func": "script_timeout", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "script timed out"}
+{"func": "inactivity", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "job stalled"}
+{"func": "blocked_config", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "reason needs period", "reason": "config invalid"}
+{"func": "blocked_config", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "reason already period", "reason": "already bad."}
+{"func": "blocked_config", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "reason question mark", "reason": "is that ok?"}
+{"func": "blocked_config", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "reason with trailing space", "reason": "  trailing  \n"}
+{"func": "blocked_config", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "empty reason", "reason": "   "}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "no cause returns null", "reason": "timeout", "backup_provider_phrase": "No backup."}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "transient timeout", "reason": "timeout", "cause": "the request timed out", "backup_provider_phrase": "No backup is configured."}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "transient rate limit", "reason": "rate_limit", "cause": "rate limited", "backup_provider_phrase": "Fallback is on."}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "billing", "reason": "billing", "cause": "out of credits"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "billing alias", "reason": "billing_unverified", "cause": "unverified"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "auth with relogin", "reason": "auth", "cause": "bad token", "relogin": "hermes auth login"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "auth_permanent alias", "reason": "auth_permanent", "cause": "revoked", "relogin": "/login"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "model not found", "reason": "model_not_found", "cause": "no such model"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "upstream blocked", "reason": "upstream_blocked", "cause": "blocked"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "context overflow", "reason": "context_overflow", "cause": "too long"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "payload too large alias", "reason": "payload_too_large", "cause": "oversized"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "content policy", "reason": "content_policy_blocked", "cause": "filtered"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "provider policy", "reason": "provider_policy_blocked", "cause": "suspended"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "guardrail blocked", "reason": "guardrail_blocked", "cause": "guardrail"}
+{"func": "provider_notice", "job_name": "nightly", "job_id": "a1b2c3", "home": "/home/u/.hermes", "case": "unknown reason default action", "reason": "mystery", "cause": "unknown thing"}

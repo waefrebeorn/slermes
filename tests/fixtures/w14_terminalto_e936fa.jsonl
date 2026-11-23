@@ -1,0 +1,32 @@
+{"func":"profile_container_key","profile":"default","case":"default profile stays literal"}
+{"func":"profile_container_key","profile":"work","case":"named profile prefixed"}
+{"func":"profile_container_key","profile":"","case":"empty profile -> profile:"}
+{"func":"is_host_cwd","path":"/Users/eman/project","case":"macOS user dir"}
+{"func":"is_host_cwd","path":"/home/wubu/repo","case":"linux user dir"}
+{"func":"is_host_cwd","path":"/workspace/repo","case":"container workspace not host"}
+{"func":"is_host_cwd","path":"C:/Users/eman","case":"windows drive slash"}
+{"func":"is_host_cwd","path":"d:\\repo\\x","case":"windows drive backslash"}
+{"func":"is_host_cwd","path":"relative/path","case":"relative path"}
+{"func":"is_windows_drive_path","path":"E:/x","case":"drive path true"}
+{"func":"is_windows_drive_path","path":"","case":"empty false"}
+{"func":"is_windows_drive_path","path":"/home/x","case":"posix false"}
+{"func":"host_path_key","path":"C:\\Users\\Eman\\","case":"drive lower + slash normalize + rstrip"}
+{"func":"host_path_key","path":"C:/","case":"drive root never collapsed"}
+{"func":"host_path_key","path":"/home/wubu/","case":"trailing slash stripped"}
+{"func":"translate","path":"C:\\Users\\Eman\\repo","host_root":"c:/Users/Eman","container_root":"/workspace/","case":"translate drive child with trailing container slash"}
+{"func":"translate","path":"C:\\Users\\Eman\\repo","host_root":"c:/users/eman","container_root":"/workspace","case":"case-sensitive remainder -> null"}
+{"func":"translate","path":"/home/wubu","host_root":"/home/wubu","container_root":"/mnt/host","case":"exact root maps to mount"}
+{"func":"translate","path":"/home/wubu-other/x","host_root":"/home/wubu","container_root":"/workspace","case":"sibling not a child"}
+{"func":"translate","path":"relative","host_root":"/home/wubu","container_root":"/workspace","case":"relative not under root"}
+{"func":"translate","path":"","host_root":"/home/wubu","container_root":"/workspace","case":"empty path -> null"}
+{"func":"is_unusable_cwd","cwd":"/home/wubu/repo","case":"host prefix unusable"}
+{"func":"is_unusable_cwd","cwd":"C:\\repo","case":"windows drive unusable"}
+{"func":"is_unusable_cwd","cwd":"relative","case":"relative unusable"}
+{"func":"is_unusable_cwd","cwd":"/workspace","case":"absolute container path usable"}
+{"func":"cwd_follows_host_mount","cwd":"/Users/eman/repo","mount":"/workspace","case":"host path follows mount"}
+{"func":"cwd_follows_host_mount","cwd":"/workspace","mount":"/mnt/host","case":"assumed workspace view follows"}
+{"func":"cwd_follows_host_mount","cwd":"/workspace","mount":"/workspace","case":"same path false"}
+{"func":"tenv_bool","value":"YES","case":"yes true"}
+{"func":"tenv_bool","value":"True","case":"true true"}
+{"func":"tenv_bool","value":"1","case":"one true"}
+{"func":"tenv_bool","value":"no","case":"no false"}

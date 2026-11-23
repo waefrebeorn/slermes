@@ -1,0 +1,10 @@
+{"func": "ask_sudo_request", "session_id": "sess-1", "command": "sudo apt update"}
+{"func": "ask_sudo_request", "session_id": "sess-2", "command": "", "timeout": 5}
+{"func": "ask_sudo_request", "session_id": "sess-3", "command": "echo hi", "timeout": 0}
+{"func": "ask_sudo_request", "session_id": "sess-4", "command": "ls", "timeout": -1}
+{"func": "ask_sudo_request", "session_id": "", "command": "pwd"}
+{"func": "ask_sudo_request", "session_id": null, "command": "whoami"}
+{"func": "ask_sudo_request", "session_id": "s-é", "command": "commande é"}
+{"func": "ask_sudo_request", "session_id": "s5", "command": "x", "timeout": 120}
+{"func": "sudo_timeout_s"}
+{"func": "ask_sudo_request", "session_id": "s6", "command": "unicode ☃", "timeout": 900}

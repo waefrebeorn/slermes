@@ -1,0 +1,44 @@
+{"case":"is1","func":"is_secret","name":"API_KEY"}
+{"case":"is2","func":"is_secret","name":"PATH"}
+{"case":"is3","func":"is_secret","name":"MY_PASSWORD"}
+{"case":"is4","func":"is_secret","name":"PASS"}
+{"case":"is5","func":"is_secret","name":"COMPASS_DIR"}
+{"case":"is6","func":"is_secret","name":"BYPASS_CACHE"}
+{"case":"is7","func":"is_secret","name":"PASSWORD"}
+{"case":"is8","func":"is_secret","name":"MY_TOKEN"}
+{"case":"is9","func":"is_secret","name":"AUTH_HEADER"}
+{"case":"is10","func":"is_secret","name":"HOME"}
+{"case":"tv1","func":"travels","name":"NODE_AUTH_TOKEN","secret":null}
+{"case":"tv2","func":"travels","name":"NODE_OPTIONS","secret":null}
+{"case":"tv3","func":"travels","name":"HERMES_TRACE","secret":null}
+{"case":"tv4","func":"travels","name":"CUSTOM_X","secret":["CUSTOM_"]}
+{"case":"tv5","func":"travels","name":"LANG","secret":null}
+{"case":"kp1","func":"kept","name":"HERMES_TRACE","rules":{"behaviour":["HERMES_TRACE"],"secret":null,"names":["LANG","TERM"],"prefixes":["NODE_","MYAPP_"]}}
+{"case":"kp2","func":"kept","name":"LANG","rules":{"behaviour":["HERMES_TRACE"],"secret":null,"names":["LANG","TERM"],"prefixes":["NODE_","MYAPP_"]}}
+{"case":"kp3","func":"kept","name":"NODE_OPTIONS","rules":{"behaviour":["HERMES_TRACE"],"secret":null,"names":["LANG","TERM"],"prefixes":["NODE_","MYAPP_"]}}
+{"case":"kp4","func":"kept","name":"NODE_AUTH_TOKEN","rules":{"behaviour":["HERMES_TRACE"],"secret":null,"names":["LANG","TERM"],"prefixes":["NODE_","MYAPP_"]}}
+{"case":"kp5","func":"kept","name":"OTHER","rules":{"behaviour":["HERMES_TRACE"],"secret":null,"names":["LANG","TERM"],"prefixes":["NODE_","MYAPP_"]}}
+{"case":"kp6","func":"kept","name":"X","rules":{"behaviour":[],"secret":["CUSTOM_"],"names":["X"],"prefixes":[]}}
+{"case":"kp7","func":"kept","name":"CUSTOM_Y","rules":{"behaviour":[],"secret":["CUSTOM_"],"names":["X"],"prefixes":[]}}
+{"case":"nm1","func":"normalise","value":{"Z":"z","A":"a","M":"m"},"rules":null}
+{"case":"nm2","func":"normalise","value":{"Z":"z","A":"a","NODE_AUTH_TOKEN":"s","LANG":"en"},"rules":{"behaviour":["HERMES_TRACE"],"secret":null,"names":["LANG","TERM"],"prefixes":["NODE_","MYAPP_"]}}
+{"case":"nm3","func":"normalise","value":{},"rules":null}
+{"case":"nm4","func":"normalise","value":{"K":1},"rules":null}
+{"case":"nm5","func":"normalise","value":{"a":"259"},"rules":null}
+{"case":"nm6","func":"normalise","value":{"HERMES_TRACE":"1","PATH":"/bin","MYAPP_X":"y"},"rules":{"behaviour":["HERMES_TRACE"],"secret":null,"names":["LANG","TERM"],"prefixes":["NODE_","MYAPP_"]}}
+{"case":"cr1","func":"client_request","request_json":"{\"model\": \"gpt\", \"model_requested\": \"gpt\", \"base_url\": \"u\", \"route_derived\": \"e\", \"desktop_local\": true, \"x\": 1}","derived":null}
+{"case":"cr2","func":"client_request","request_json":"{\"model\": \"gpt\", \"model_requested\": \"gpt\", \"endpoint\": \"e\", \"route_derived\": \"e\", \"desktop_local\": true}","derived":["endpoint"]}
+{"case":"cr3","func":"client_request","request_json":"{\"model\": \"gpt\", \"route_derived\": \"e\"}","derived":null}
+{"case":"cr4","func":"client_request","request_json":"{\"model_requested\": \"gpt\", \"model\": \"gpt\", \"base_url\": \"u\"}","derived":null}
+{"case":"sc1","func":"same_create_request","saved_json":"{\"model\": \"gpt\", \"model_requested\": \"gpt\", \"base_url\": \"u\", \"route_derived\": \"e\", \"desktop_local\": true}","retry_json":"{\"model\": \"gpt\", \"model_requested\": \"gpt\", \"base_url\": \"u\", \"route_derived\": \"e\", \"desktop_local\": true}"}
+{"case":"sc2","func":"same_create_request","saved_json":"{\"model\": \"gpt\", \"model_requested\": \"gpt\", \"base_url\": \"u\", \"route_derived\": \"e\"}","retry_json":"{\"model\": \"gpt\", \"model_requested\": \"gpt\", \"base_url\": \"different\", \"route_derived\": \"e\"}"}
+{"case":"sc3","func":"same_create_request","saved_json":"{\"model\": \"gpt\", \"model_requested\": \"gpt\"}","retry_json":"{\"model\": \"gpt\"}"}
+{"case":"sc4","func":"same_create_request","saved_json":"{\"model\": \"gpt\", \"model_requested\": \"other\"}","retry_json":"{\"model\": \"gpt\"}"}
+{"case":"sc5","func":"same_create_request","saved_json":"{\"model\": \"gpt\"}","retry_json":"{\"model\": \"gpt\"}"}
+{"case":"rm1","func":"retry_matches","committed":{"client_env_json":"{\"A\": \"1\", \"B\": \"2\"}","client_env_rules_json":null},"request":{"client_env":{"B":"2","A":"1"}}}
+{"case":"rm2","func":"retry_matches","committed":{"client_env_json":"{\"A\": \"1\", \"B\": \"2\"}","client_env_rules_json":null},"request":{"client_env":{"A":"1"}}}
+{"case":"rm3","func":"retry_matches","committed":{"client_env_json":"{\"A\": \"1\", \"B\": \"2\"}","client_env_rules_json":null},"request":{}}
+{"case":"rm4","func":"retry_matches","committed":{},"request":{}}
+{"case":"rm5","func":"retry_matches","committed":{"client_env_json":"{\"LANG\": \"en\"}","client_env_rules_json":"{\"behaviour\": [\"HERMES_TRACE\"], \"secret\": null, \"names\": [\"LANG\", \"TERM\"], \"prefixes\": [\"NODE_\", \"MYAPP_\"]}"},"request":{"client_env":{"LANG":"en","NODE_AUTH_TOKEN":"s"}}}
+{"case":"rm6","func":"retry_matches","committed":{"client_env_json":"{\"LANG\": \"en\"}","client_env_rules_json":"{\"behaviour\": [\"HERMES_TRACE\"], \"secret\": null, \"names\": [\"LANG\", \"TERM\"], \"prefixes\": [\"NODE_\", \"MYAPP_\"]}"},"request":{"client_env":{"LANG":"en"}}}
+{"case":"rm7","func":"retry_matches","committed":{"client_env_json":"{\"LANG\": \"en\"}","client_env_rules_json":"{\"behaviour\": [\"HERMES_TRACE\"], \"secret\": null, \"names\": [\"LANG\", \"TERM\"], \"prefixes\": [\"NODE_\", \"MYAPP_\"]}"},"request":{"client_env":{"LANG":"en","OTHER":"x"}}}

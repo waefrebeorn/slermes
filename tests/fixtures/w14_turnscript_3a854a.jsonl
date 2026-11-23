@@ -1,0 +1,15 @@
+{"func": "prelude_call_id", "session_id": "sess-1", "name": "open_app", "args": {}, "index": 0, "case": "empty args"}
+{"func": "prelude_call_id", "session_id": "sess-1", "name": "open_app", "args": {"b": 2, "a": 1}, "index": 0, "case": "sorted keys"}
+{"func": "prelude_call_id", "session_id": "sess-1", "name": "open_app", "args": {"cmd": "open", "path": "/tmp/a", "flag": true, "n": 0}, "index": 0, "case": "mixed scalars"}
+{"func": "prelude_call_id", "session_id": "sess-1", "name": "open_app", "args": {"nested": {"z": 1, "a": [3, 2, 1]}}, "index": 0, "case": "nested containers"}
+{"func": "prelude_call_id", "session_id": "sess-1", "name": "open_app", "args": {"list": [{"b": "x", "a": "y"}, null, false]}, "index": 0, "case": "list of objects"}
+{"func": "prelude_call_id", "session_id": "sess-1", "name": "open_app", "args": {"quote": "a\"b", "slash": "a\\b", "nl": "a\nb", "tab": "a\tb"}, "index": 0, "case": "escapes"}
+{"func": "prelude_call_id", "session_id": "sess-1", "name": "open_app", "args": {"unicode": "café", "emoji": "😀"}, "index": 0, "case": "ensure_ascii non-ascii"}
+{"func": "prelude_call_id", "session_id": "", "name": "", "args": {"a": 1}, "index": 99, "case": "empty ids nonzero index"}
+{"func": "prelude_call_id", "session_id": "s:e:ss", "name": "weird name", "args": {"a": 1}, "index": -2, "case": "punctuation and negative index"}
+{"func": "play_prelude", "prelude_present": false, "verdict": null, "case": "no prelude -> run"}
+{"func": "play_prelude", "prelude_present": true, "verdict": null, "case": "prelude no verdict -> run"}
+{"func": "play_prelude", "prelude_present": true, "verdict": {"action": "continue", "result": "x"}, "case": "continue verdict -> run"}
+{"func": "play_prelude", "prelude_present": true, "verdict": {"action": "return", "result": "done"}, "case": "return verdict"}
+{"func": "play_prelude", "prelude_present": true, "verdict": {"action": "break", "result": null}, "case": "break verdict"}
+{"func": "play_prelude", "prelude_present": true, "verdict": {"action": "return", "result": [1, {"k": "v"}]}, "case": "return with structured result"}

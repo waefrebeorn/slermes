@@ -1,0 +1,18 @@
+{"func": "text", "text": "SECRET-value", "force": true, "case": "force egress SECRET"}
+{"func": "text", "text": "VAULT-x", "force": false, "case": "opt-out VAULT only"}
+{"func": "text", "text": "SECRET-x", "force": false, "case": "opt-out leaves SECRET"}
+{"func": "text", "text": "plain", "force": true, "case": "plain unchanged"}
+{"func": "text", "text": null, "force": true, "case": "null text becomes empty"}
+{"func": "text", "text": 5, "force": true, "case": "number coerced to str"}
+{"func": "text", "text": true, "force": false, "case": "bool coerced to str"}
+{"func": "value", "value": {"api_key": "SECRET-k", "plain": "keep", "n": 1, "ok": true, "z": null}, "force": true, "case": "dict mixed"}
+{"func": "value", "value": ["SECRET-a", "VAULT-b", 2], "force": true, "case": "list redaction"}
+{"func": "value", "value": {"SECRETkey": "v"}, "force": true, "case": "key redacted"}
+{"func": "value", "value": {"a": {"b": ["SECRET-x"]}}, "force": true, "case": "nested"}
+{"func": "value", "value": null, "force": true, "case": "null value"}
+{"func": "result", "result": {"task_index": 0, "summary": "SECRET-s", "status": "ok", "model": "m", "extra": "SECRET-e"}, "output_schema": null, "force": true, "case": "result projection metadata"}
+{"func": "result", "result": {"summary": "SECRET-s", "results": [{"summary": "SECRET-r", "task_index": 1}, {"x": "SECRET-x"}]}, "output_schema": {"type": "object"}, "force": true, "case": "results recursion"}
+{"func": "result", "result": {"summary": "SECRET-s", "schema_valid": true, "schema_errors": ["old"]}, "output_schema": {"type": "object"}, "force": true, "case": "schema revalidated true"}
+{"func": "result", "result": {"summary": "SECRET-s", "schema_valid": false}, "output_schema": null, "force": true, "case": "schema revalidated false no schema"}
+{"func": "result", "result": {"summary": "plain", "schema_valid": true}, "output_schema": {"type": "object"}, "force": true, "case": "unchanged summary no revalidation"}
+{"func": "event", "event": {"type": "done", "delegation_id": "D1", "goal": "SECRET-g", "summary": "SECRET-s", "results": [{"summary": "SECRET-r"}]}, "force": true, "case": "event parent fields preserved"}

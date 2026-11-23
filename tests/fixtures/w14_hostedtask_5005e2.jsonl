@@ -1,0 +1,15 @@
+{"case":"vt1","func":"validate_task_input","value":{"watermark":0,"event_seqs":[1,2,3]}}
+{"case":"vt2","func":"validate_task_input","value":{"watermark":10,"event_seqs":[11,15]}}
+{"case":"vt3","func":"validate_task_input","value":{"watermark":5,"event_seqs":[5]}}
+{"case":"vt4","func":"validate_task_input","value":{"watermark":5,"event_seqs":[4,6]}}
+{"case":"vt5","func":"validate_task_input","value":{"watermark":5,"event_seqs":[6,6]}}
+{"case":"vt6","func":"validate_task_input","value":{"watermark":-1,"event_seqs":[0]}}
+{"case":"vt7","func":"validate_task_input","value":{"watermark":true,"event_seqs":[1]}}
+{"case":"vt8","func":"validate_task_input","value":{"watermark":1,"event_seqs":[2.5]}}
+{"case":"vt9","func":"validate_task_input","value":{"watermark":1,"event_seqs":[]}}
+{"case":"vt10","func":"validate_task_input","value":{"watermark":1,"event_seqs":"not a list"}}
+{"case":"vt11","func":"validate_task_input","value":{"watermark":1}}
+{"case":"vt12","func":"validate_task_input","value":{"watermark":1,"event_seqs":[2],"extra":3}}
+{"case":"vt13","func":"validate_task_input","value":"not an object"}
+{"case":"vt14","func":"validate_task_input","value":{"watermark":1,"event_seqs":[true]}}
+{"case":"vt15","func":"validate_task_input","value":{"watermark":1,"event_seqs":[2,3,4,5,6,7,8,9]}}

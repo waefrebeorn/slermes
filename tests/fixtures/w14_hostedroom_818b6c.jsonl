@@ -1,0 +1,29 @@
+{"func": "identifier", "value": "abc", "label": "id"}
+{"func": "identifier", "value": "  abc  ", "label": "id"}
+{"func": "identifier", "value": "", "label": "id"}
+{"func": "identifier", "value": 123, "label": "id"}
+{"func": "identifier", "value": "a b", "label": "id"}
+{"func": "identifier", "value": "a_b:c.d-9", "label": "id"}
+{"func": "identifier", "value": "_abc", "label": "id"}
+{"func": "identifier", "value": "abcdefghij", "label": "id", "max_chars": 5}
+{"func": "identifier", "value": "a b", "label": "id", "skip_pattern": true}
+{"func": "identifier", "value": "bad!", "label": "id", "invalid": "CUSTOM_BAD"}
+{"func": "bounded_int", "value": 5, "message": "bad n", "low": 0, "high": 10}
+{"func": "bounded_int", "value": -1, "message": "bad n", "low": 0}
+{"func": "bounded_int", "value": 11, "message": "bad n", "low": 0, "high": 10}
+{"func": "bounded_int", "value": true, "message": "bad n", "low": 0}
+{"func": "bounded_int", "value": 3.5, "message": "bad n", "low": 0}
+{"func": "bounded_int", "value": 999, "message": "bad n", "low": 0}
+{"func": "exact_fields", "value": {"a": 1, "b": 2}, "label": "obj", "required": ["a"]}
+{"func": "exact_fields", "value": {"a": 1}, "label": "obj", "required": ["a", "b"]}
+{"func": "exact_fields", "value": {"a": 1, "c": 3}, "label": "obj", "required": ["a"]}
+{"func": "exact_fields", "value": 5, "label": "obj", "required": ["a"]}
+{"func": "exact_fields", "value": {"a": 1, "o": 2}, "label": "obj", "required": ["a"], "optional": ["o"]}
+{"func": "exact_fields", "value": {"z": 1, "a": 2}, "label": "obj", "required": ["b", "c"]}
+{"func": "text", "value": " hello ", "label": "note", "max_bytes": 10}
+{"func": "text", "value": "   ", "label": "note", "max_bytes": 10}
+{"func": "text", "value": 5, "label": "note", "max_bytes": 10}
+{"func": "text", "value": "abcdef", "label": "note", "max_bytes": 3}
+{"func": "text", "value": " hi ", "label": "note", "max_bytes": 10, "strip": false}
+{"func": "utf8_len", "parts": ["abc", "de"]}
+{"func": "utf8_len", "parts": []}

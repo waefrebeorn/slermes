@@ -1,0 +1,24 @@
+{"func":"safe_rel_install_path","path":"skills/cat/my-skill","base":"skills","case":"nested install path"}
+{"func":"safe_rel_install_path","path":"skills/my-skill","base":"skills","case":"top level install path"}
+{"func":"safe_rel_install_path","path":"skills/./cat/./my-skill","base":"skills","case":"dot segments filtered"}
+{"func":"safe_rel_install_path","path":"skills//cat//my-skill","base":"skills","case":"double slashes filtered"}
+{"func":"safe_rel_install_path","path":"skills/cat/../my-skill","base":"skills","case":"traversal rejected"}
+{"func":"safe_rel_install_path","path":"other/cat/my-skill","base":"skills","case":"outside base rejected"}
+{"func":"safe_rel_install_path","path":"skills","base":"skills","case":"base itself has no parts"}
+{"func":"safe_rel_install_path","path":"skillstest/my-skill","base":"skills","case":"prefix without boundary rejected"}
+{"func":"hub_lock_entries","data":null,"case":"null data"}
+{"func":"hub_lock_entries","data":{},"case":"empty dict"}
+{"func":"hub_lock_entries","data":{"installed":{}},"case":"empty installed"}
+{"func":"hub_lock_entries","data":{"installed":{"a":{"install_path":"a"},"b":"not a dict","c":{"install_path":"c","source":"official"}}},"case":"only dict entries"}
+{"func":"read_hub_install_paths","data":{"installed":{"a":{"install_path":"/cat/a/"},"b":{"install_path":"cat/b"},"c":{},"d":{"install_path":""},"e":{"install_path":123}}},"case":"strip slashes and skip falsy"}
+{"func":"read_hub_install_paths","data":{"installed":{"a":{"install_path":"/cat/a"},"b":{"install_path":"cat/a/"},"c":{"install_path":"cat/c"}}},"case":"deduplicate via set"}
+{"func":"read_hub_install_paths","data":null,"case":"null lock data"}
+{"func":"is_runtime_cache","path":"skill/__pycache__/mod.pyc","skill_dir":"skill","is_dir":false,"py_exists":false,"case":"cache dir in prefix"}
+{"func":"is_runtime_cache","path":"skill/mod.pyc","skill_dir":"skill","is_dir":false,"py_exists":true,"case":"sibling source present"}
+{"func":"is_runtime_cache","path":"skill/mod.pyc","skill_dir":"skill","is_dir":false,"py_exists":false,"case":"source-less pyc ignored"}
+{"func":"is_runtime_cache","path":"skill/mod.pyo","skill_dir":"skill","is_dir":false,"py_exists":true,"case":"pyo with source"}
+{"func":"is_runtime_cache","path":"skill/.pytest_cache","skill_dir":"skill","is_dir":true,"py_exists":false,"case":"cache dir itself"}
+{"func":"is_runtime_cache","path":"skill/.pytest_cache","skill_dir":"skill","is_dir":false,"py_exists":false,"case":"cache name but file"}
+{"func":"is_runtime_cache","path":"skill/__pycache__","skill_dir":"skill","is_dir":false,"py_exists":false,"case":"cache dir name without is_dir"}
+{"func":"is_runtime_cache","path":"skill/mod.txt","skill_dir":"skill","is_dir":false,"py_exists":false,"case":"normal source file"}
+{"func":"is_runtime_cache","path":"skill/sub/mod.pyc","skill_dir":"skill","is_dir":false,"py_exists":true,"case":"nested pyc with source"}

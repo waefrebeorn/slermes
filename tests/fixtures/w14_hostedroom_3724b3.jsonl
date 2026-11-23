@@ -1,0 +1,16 @@
+{"func": "scheduled_post_kind", "actor": null}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": "cron:job123"}}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": "cron-notice:job456"}}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": "alice"}}
+{"func": "scheduled_post_kind", "actor": {"kind": "bot", "id": "cron:job"}}
+{"func": "scheduled_post_kind", "actor": {"id": "cron:job"}}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": null}}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": ""}}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": "cron:"}}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": "cron-notice:"}}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": "cron-notice-x"}}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": "CRON:upper"}}
+{"func": "scheduled_post_kind", "actor": ["cron:x"]}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": 123}}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": 0}}
+{"func": "scheduled_post_kind", "actor": {"kind": "user", "id": "cron:a.b:c-d_e"}}

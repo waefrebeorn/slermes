@@ -1,0 +1,16 @@
+{"func":"model_summary","config":{},"has_creds":false,"case":"no creds -> null"}
+{"func":"model_summary","config":{},"has_creds":true,"case":"creds, no model -> configured"}
+{"func":"model_summary","config":{"model":"  gpt-4o  "},"has_creds":true,"case":"string stripped"}
+{"func":"model_summary","config":{"model":"   "},"has_creds":true,"case":"blank string -> configured"}
+{"func":"model_summary","config":{"model":{"default":"gpt-4.1"}},"has_creds":true,"case":"dict default"}
+{"func":"model_summary","config":{"model":{"default":null,"model":"fallback"}},"has_creds":true,"case":"dict model fallback"}
+{"func":"model_summary","config":{"model":{"default":"","model":"m2"}},"has_creds":true,"case":"empty default falls through"}
+{"func":"cfg_summary","config":{},"section":"terminal","key":"backend","default":"local","prefix":"backend: ","case":"default used"}
+{"func":"cfg_summary","config":{"terminal":{"backend":"docker"}},"section":"terminal","key":"backend","default":"local","prefix":"backend: ","case":"nested value"}
+{"func":"cfg_summary","config":{"terminal":{"backend":null}},"section":"terminal","key":"backend","default":"local","prefix":"backend: ","case":"explicit null"}
+{"func":"cfg_summary","config":{"terminal":{"backend":true}},"section":"terminal","key":"backend","default":"local","prefix":"backend: ","case":"bool str coercion"}
+{"func":"get_section_summary","config":{},"has_creds":false,"section_key":"model","case":"section model no creds"}
+{"func":"get_section_summary","config":{"model":{"default":"d"}},"has_creds":true,"section_key":"model","case":"section model configured"}
+{"func":"get_section_summary","config":{"terminal":{"backend":"docker"}},"section_key":"terminal","case":"section terminal"}
+{"func":"get_section_summary","config":{"agent":{"max_turns":50}},"section_key":"agent","case":"section agent"}
+{"func":"get_section_summary","config":{},"section_key":"unknown","case":"unknown section"}

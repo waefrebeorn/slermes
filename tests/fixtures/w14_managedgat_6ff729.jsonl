@@ -1,0 +1,18 @@
+{"func":"connector_gateway_origin","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"connector origin from builder"}
+{"func":"connector_gateway_origin","tool_url":"https://gateway.nousresearch.com","connector_url":"","case":"empty connector builder"}
+{"func":"is_managed","url":"https://gateway.nousresearch.com","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"exact tool origin"}
+{"func":"is_managed","url":"https://connector-gateway.nousresearch.com/v1/tools","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"connector origin with path"}
+{"func":"is_managed","url":"HTTPS://Gateway.NOUSresearch.com/x?v=1","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"scheme lowercased netloc preserved"}
+{"func":"is_managed","url":"  https://gateway.nousresearch.com  ","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"url stripped"}
+{"func":"is_managed","url":"https://evil-connector-gateway.nousresearch.com.attacker.dev","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"suffix attack rejected"}
+{"func":"is_managed","url":"http://gateway.nousresearch.com","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"http downgrade rejected"}
+{"func":"is_managed","url":"gateway.nousresearch.com","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"no scheme rejected"}
+{"func":"is_managed","url":null,"tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"null url"}
+{"func":"is_managed","url":"https://gateway.nousresearch.com:8443/a","tool_url":"https://gateway.nousresearch.com:8443","connector_url":"https://connector-gateway.nousresearch.com","case":"netloc includes port"}
+{"func":"is_managed","url":"https://gateway.nousresearch.com@evil.com/","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"userinfo in netloc rejected"}
+{"func":"is_managed","url":"http://[::1","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"invalid ipv6 returns false"}
+{"func":"auth_headers","url":"https://gateway.nousresearch.com","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","token":"tok-abc","case":"managed with token"}
+{"func":"auth_headers","url":"https://gateway.nousresearch.com","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","token":"  tok-xyz  ","case":"token stripped"}
+{"func":"auth_headers","url":"https://gateway.nousresearch.com","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","token":"","case":"empty token"}
+{"func":"auth_headers","url":"https://gateway.nousresearch.com","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","case":"null token"}
+{"func":"auth_headers","url":"https://evil.example.com","tool_url":"https://gateway.nousresearch.com","connector_url":"https://connector-gateway.nousresearch.com","token":"tok-abc","case":"unmanaged url empty headers"}

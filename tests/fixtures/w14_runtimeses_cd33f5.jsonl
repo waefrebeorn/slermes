@@ -1,0 +1,10 @@
+{"func": "refusal", "code": "delegation_capacity", "case": "capacity", "out": "the gateway owner refused another subagent: this execution already runs delegation.max_concurrent_children of them"}
+{"func": "refusal", "code": "delegation_depth_exceeded", "case": "depth", "out": "the gateway owner refused a subagent this deep (delegation.max_spawn_depth)"}
+{"func": "refusal", "code": "owner_busy", "case": "unknown refusal", "out": "the gateway owner refused a subagent: owner_busy"}
+{"func": "constructor_fields", "fields": {"model": "gpt-4o", "model_config": {"max_tokens": 100, "temperature": 0.5, "yolo_mode": true}, "system_prompt": "be brief", "extra": "ignored"}, "allowed_keys": ["max_iterations", "max_tokens", "reasoning_config", "yolo_mode"], "case": "filter model config", "out": {"model": "gpt-4o", "model_config": {"max_tokens": 100, "yolo_mode": true}, "system_prompt": "be brief"}}
+{"func": "constructor_fields", "fields": {}, "allowed_keys": ["max_iterations", "max_tokens", "reasoning_config", "yolo_mode"], "case": "empty fields", "out": {"model": null, "model_config": null, "system_prompt": null}}
+{"func": "constructor_fields", "fields": {"model_config": {"temperature": 0.5}}, "allowed_keys": ["max_iterations", "max_tokens", "reasoning_config", "yolo_mode"], "case": "no allowed keys means null config", "out": {"model": null, "model_config": null, "system_prompt": null}}
+{"func": "constructor_fields", "fields": {"model": null, "model_config": null, "system_prompt": null}, "allowed_keys": ["max_iterations", "max_tokens", "reasoning_config", "yolo_mode"], "case": "null fields", "out": {"model": null, "model_config": null, "system_prompt": null}}
+{"func": "outbox_name", "execution_id": "owner:abc:child-7", "case": "two colons", "out": "child-child-7"}
+{"func": "outbox_name", "execution_id": "trailing:", "case": "trailing colon", "out": "child-"}
+{"func": "outbox_name", "execution_id": "a:b:c:last", "case": "many colons", "out": "child-last"}

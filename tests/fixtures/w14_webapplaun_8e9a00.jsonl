@@ -1,0 +1,29 @@
+{"func":"older_gateway","response":{"ok":false,"error":"unknown verb: webapp-status"},"case":"older gateway"}
+{"func":"older_gateway","response":{"ok":true,"error":"unknown verb: x"},"case":"ok true not older"}
+{"func":"older_gateway","response":{"error":"some error"},"case":"no ok key"}
+{"func":"older_gateway","response":{"ok":false,"error":"RuntimeError: boom"},"case":"other verb error"}
+{"func":"older_gateway","response":{},"case":"empty response"}
+{"func":"refusal","response":{"ok":false,"error":"unknown verb: x"},"case":"older refusal"}
+{"func":"refusal","response":{"ok":false,"error":"RuntimeError: boom"},"case":"kind error split"}
+{"func":"refusal","response":{"ok":false,"error":"plain"},"case":"plain error"}
+{"func":"refusal","response":{"ok":false,"error":"ValueError: "},"case":"empty message"}
+{"func":"refusal","response":{"ok":false},"case":"default refusal"}
+{"func":"plain_http_note","url":"http://example.com","case":"public http"}
+{"func":"plain_http_note","url":"http://127.0.0.1:8080","case":"ipv4 loopback"}
+{"func":"plain_http_note","url":"http://[::1]:8443","case":"ipv6 loopback"}
+{"func":"plain_http_note","url":"http://localhost","case":"localhost"}
+{"func":"plain_http_note","url":"http://foo.localhost","case":"dot localhost"}
+{"func":"plain_http_note","url":"https://example.com","case":"https"}
+{"func":"plain_http_note","url":"HTTP://EXAMPLE.COM","case":"uppercase scheme and host"}
+{"func":"plain_http_note","url":"http://192.168.1.1","case":"lan ip"}
+{"func":"plain_http_note","url":"http://127.0.0.1.","case":"trailing dot loopback"}
+{"func":"plain_http_note","url":"http://user@127.0.0.1/","case":"userinfo loopback"}
+{"func":"signed_out_summary","result":{"serving":false},"case":"not serving"}
+{"func":"signed_out_summary","result":{},"case":"old gateway signout"}
+{"func":"signed_out_summary","result":{"connections_closed":1},"case":"one connection"}
+{"func":"signed_out_summary","result":{"connections_closed":3},"case":"three connections"}
+{"func":"signed_out_summary","result":{"connections_closed":2,"sign_in_gate":true},"case":"sign in gate"}
+{"func":"restart_applies","reason":"The Webapp is not built","case":"not built"}
+{"func":"restart_applies","reason":"The Webapp is not built: missing bundle","case":"not built prefix"}
+{"func":"restart_applies","reason":"config invalid","case":"other reason"}
+{"func":"restart_applies","reason":null,"case":"null reason"}

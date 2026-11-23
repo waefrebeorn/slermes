@@ -1,0 +1,17 @@
+{"func":"refusal","message":"Skill 'demo' is locked","extra":{"_locked":true},"case":"refusal with extra flag"}
+{"func":"refusal","message":"plain refusal","case":"refusal without extra"}
+{"func":"refusal","message":"merge test","extra":{"_fail_closed":true,"detail":"extra detail"},"case":"refusal merges multiple extras"}
+{"func":"pinned_guard","name":"hermes","essential":["hermes","agent"],"pinned":false,"case":"essential skill"}
+{"func":"pinned_guard","name":"my-skill","essential":[],"pinned":true,"case":"pinned skill"}
+{"func":"pinned_guard","name":"my-skill","essential":[],"pinned":false,"case":"not pinned"}
+{"func":"pinned_guard","name":"my-skill","essential":[],"pinned":null,"case":"unreadable pin record"}
+{"func":"pinned_guard","name":"hermes","essential":["hermes"],"pinned":true,"case":"essential wins over pinned"}
+{"func":"pinned_guard","name":"cat/my-skill","essential":[],"pinned":true,"case":"slash name pinned"}
+{"func":"read_before_write_guard","name":"my-skill","target":"/skills/my-skill/SKILL.md","action":"patch","file_label":"SKILL.md","is_bg":true,"has_read":false,"case":"background review must read first"}
+{"func":"read_before_write_guard","name":"my-skill","target":"/skills/my-skill/SKILL.md","action":"patch","file_label":"SKILL.md","is_bg":false,"has_read":false,"case":"normal turn skips guard"}
+{"func":"read_before_write_guard","name":"my-skill","target":"/skills/my-skill/ref.txt","action":"delete","file_label":"supporting file","is_bg":true,"has_read":true,"case":"already read"}
+{"func":"curator_consolidation_delete_guard","name":"stale-skill","absorbed_into":null,"is_bg":false,"case":"not background review"}
+{"func":"curator_consolidation_delete_guard","name":"stale-skill","absorbed_into":null,"is_bg":true,"case":"no forwarding target"}
+{"func":"curator_consolidation_delete_guard","name":"stale-skill","absorbed_into":"","is_bg":true,"case":"empty forwarding target"}
+{"func":"curator_consolidation_delete_guard","name":"stale-skill","absorbed_into":"   ","is_bg":true,"case":"blank forwarding target"}
+{"func":"curator_consolidation_delete_guard","name":"stale-skill","absorbed_into":"umbrella-skill","is_bg":true,"case":"verified consolidation allowed"}

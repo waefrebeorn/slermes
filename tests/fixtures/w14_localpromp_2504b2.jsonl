@@ -1,0 +1,18 @@
+{"func": "with_prompt_progress", "kwargs": {"model": "llama", "stream": true}, "case": "no extra_body", "out": {"model": "llama", "stream": true, "extra_body": {"return_progress": true}}}
+{"func": "with_prompt_progress", "kwargs": {"model": "llama", "extra_body": {"temperature": 0.2, "top_k": 5}}, "case": "merge extra body", "out": {"model": "llama", "extra_body": {"temperature": 0.2, "top_k": 5, "return_progress": true}}}
+{"func": "with_prompt_progress", "kwargs": {"extra_body": {"return_progress": false, "x": 1}}, "case": "explicit false kept by setdefault", "out": {"extra_body": {"return_progress": false, "x": 1}}}
+{"func": "with_prompt_progress", "kwargs": {"extra_body": "not-a-dict", "n": 1}, "case": "non-dict extra body replaced", "out": {"extra_body": {"return_progress": true}, "n": 1}}
+{"func": "prompt_progress", "chunk": {"prompt_progress": {"total": 10, "processed": 5}, "choices": [{"delta": {}}]}, "case": "progress-only chunk", "out": {"total": 10, "processed": 5}}
+{"func": "prompt_progress", "chunk": {"prompt_progress": {"total": 10}, "choices": [{"finish_reason": "stop", "delta": {}}]}, "case": "finish reason rejects", "out": null}
+{"func": "prompt_progress", "chunk": {"prompt_progress": {"total": 10}, "choices": [{"delta": {"content": "hi"}}]}, "case": "content rejects", "out": null}
+{"func": "prompt_progress", "chunk": {"prompt_progress": {"total": 10}, "choices": [{"delta": {"tool_calls": [{"id": "1"}]}}]}, "case": "tool_calls rejects", "out": null}
+{"func": "prompt_progress", "chunk": {"prompt_progress": "not-a-dict", "choices": []}, "case": "non-dict progress rejects", "out": null}
+{"func": "prompt_progress", "chunk": {"prompt_progress": {"total": 1}, "choices": [{"delta": {"reasoning": "thinking"}}]}, "case": "reasoning rejects", "out": null}
+{"func": "prompt_progress", "chunk": {"prompt_progress": {"total": 1}, "choices": [{"delta": {"refusal": "no"}}]}, "case": "refusal rejects", "out": null}
+{"func": "prompt_progress_percent", "progress": {"total": 100, "processed": 50}, "case": "half", "out": 50}
+{"func": "prompt_progress_percent", "progress": {"total": 0, "processed": 5}, "case": "zero total", "out": null}
+{"func": "prompt_progress_percent", "progress": {"total": 8, "processed": 1}, "case": "12.5 rounds to even 12", "out": 12}
+{"func": "prompt_progress_percent", "progress": {"total": 8, "processed": 3}, "case": "37.5 rounds to even 38", "out": 38}
+{"func": "prompt_progress_percent", "progress": {"total": "100", "processed": " 7 "}, "case": "string ints with whitespace", "out": 7}
+{"func": "prompt_progress_percent", "progress": {"total": 10, "processed": 99}, "case": "clamp to 100", "out": 100}
+{"func": "prompt_progress_percent", "progress": {"total": 10, "processed": "3.5"}, "case": "invalid processed returns null", "out": null}

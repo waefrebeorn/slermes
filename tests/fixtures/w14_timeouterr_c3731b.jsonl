@@ -1,0 +1,21 @@
+{"func": "summarize", "nodes": [{"type": "APITimeoutError"}], "case": "bare APITimeoutError read", "provider": "openai"}
+{"func": "summarize", "nodes": [{"type": "APITimeoutError", "cause": 1}, {"type": "ReadTimeout"}], "case": "SDK wraps httpx read", "provider": "openai"}
+{"func": "summarize", "nodes": [{"type": "ReadTimeout"}], "case": "raw ReadTimeout", "provider": "anthropic"}
+{"func": "summarize", "nodes": [{"type": "TimeoutException"}], "case": "TimeoutException read", "provider": "x"}
+{"func": "summarize", "nodes": [{"type": "ReadTimeoutError"}], "case": "ReadTimeoutError read", "provider": "x"}
+{"func": "summarize", "nodes": [{"type": "APITimeoutError", "cause": 1}, {"type": "ConnectTimeout"}], "case": "connect through cause", "provider": "x"}
+{"func": "summarize", "nodes": [{"type": "ConnectTimeoutError"}], "case": "connect error", "provider": "x"}
+{"func": "summarize", "nodes": [{"type": "APITimeoutError", "cause": 1}, {"type": "PoolTimeout"}], "case": "pool timeout -> None", "provider": "x"}
+{"func": "summarize", "nodes": [{"type": "WriteTimeout"}], "case": "write timeout -> None", "provider": "x"}
+{"func": "summarize", "nodes": [{"type": "APITimeoutError", "cause": 1}, {"type": "ValueError"}], "case": "non timeout cause breaks", "provider": "x"}
+{"func": "summarize", "nodes": [{"type": "ValueError"}], "case": "plain error -> None", "provider": "x"}
+{"func": "summarize", "nodes": [{"type": "APITimeoutError", "cause": 1}, {"type": "ReadTimeout", "cause": 0}], "case": "cycle guard", "provider": "x"}
+{"func": "summarize", "nodes": [{"type": "APITimeoutError"}], "case": "empty provider default", "provider": ""}
+{"func": "summarize", "nodes": [{"type": "APITimeoutError"}], "case": "whitespace provider default", "provider": "   "}
+{"func": "summarize", "nodes": [{"type": "APITimeoutError"}], "case": "provider stripped", "provider": "  openai  "}
+{"func": "summarize", "nodes": [{"type": "APITimeoutError"}], "case": "missing provider default"}
+{"func": "summarize", "nodes": [{"type": "APITimeoutError"}], "case": "non-string provider default", "provider": 5}
+{"func": "phase", "nodes": [{"type": "APITimeoutError"}], "case": "phase read"}
+{"func": "phase", "nodes": [{"type": "APITimeoutError", "cause": 1}, {"type": "ConnectTimeout"}], "case": "phase connect"}
+{"func": "phase", "nodes": [{"type": "APITimeoutError", "cause": 1}, {"type": "PoolTimeout"}], "case": "phase none"}
+{"func": "phase", "nodes": [{"type": "APITimeoutError", "cause": 1}, {"type": "ReadTimeout", "cause": 0}], "case": "phase cycle"}

@@ -1,0 +1,34 @@
+{"func": "parse_timeout", "raw": 30, "case": "int floor 30"}
+{"func": "parse_timeout", "raw": 45.5, "case": "float above floor"}
+{"func": "parse_timeout", "raw": 10, "case": "below floor clamps"}
+{"func": "parse_timeout", "raw": 0, "case": "zero disables"}
+{"func": "parse_timeout", "raw": -5, "case": "negative disables"}
+{"func": "parse_timeout", "raw": "120", "case": "numeric string"}
+{"func": "parse_timeout", "raw": "1e3", "case": "exponent string"}
+{"func": "normalized_url", "value": "HTTPS://Example.com/path///", "case": "strip trailing slashes"}
+{"func": "normalized_url", "value": "  spaced  ", "case": "strip whitespace"}
+{"func": "normalized_url", "value": "", "case": "empty string"}
+{"func": "normalized_url", "value": null, "case": "null becomes empty"}
+{"func": "normalized_url", "value": 0, "case": "zero falsy becomes empty"}
+{"func": "normalized_url", "value": 5, "case": "number coerced"}
+{"func": "normalized_url", "value": true, "case": "bool coerced to True"}
+{"func": "merge", "runtime": null, "explicit": null, "case": "both empty none"}
+{"func": "merge", "runtime": {}, "explicit": {}, "case": "both empty objects none"}
+{"func": "merge", "runtime": {"a": 1}, "explicit": null, "case": "runtime only"}
+{"func": "merge", "runtime": null, "explicit": {"b": 2}, "case": "explicit only"}
+{"func": "merge", "runtime": {"a": 1, "extra_body": {"x": 1}}, "explicit": {"b": 2, "extra_body": {"y": 2}}, "case": "deep merge extra_body"}
+{"func": "merge", "runtime": {"a": 1}, "explicit": {"extra_body": "scalar"}, "case": "explicit extra_body scalar"}
+{"func": "merge", "runtime": {"a": 1, "extra_body": {"x": 1}}, "explicit": {"a": 9}, "case": "explicit overrides top key"}
+{"func": "credential_bundle", "model": "m", "provider": "p", "base_url": "u", "api_key": "k", "api_mode": "am", "request_overrides": {"x": 1}, "extra": {"command": "cc"}, "case": "bundle with extra"}
+{"func": "credential_bundle", "model": null, "provider": null, "base_url": null, "api_key": null, "api_mode": null, "request_overrides": null, "extra": {}, "case": "bundle all none"}
+{"func": "inherit_caps", "parent_agent": {"capabilities": {"a": true, "b": false, "c": "yes", "d": 1}}, "override_provider": null, "override_base_url": null, "case": "filter caps"}
+{"func": "inherit_caps", "parent_agent": {"capabilities": {"a": true}}, "override_provider": "prov", "override_base_url": null, "case": "provider override denies"}
+{"func": "inherit_caps", "parent_agent": {"capabilities": {"a": true}}, "override_provider": null, "override_base_url": "http://x", "case": "base_url override denies"}
+{"func": "inherit_caps", "parent_agent": {}, "override_provider": null, "override_base_url": null, "case": "no caps attr"}
+{"func": "gateway_inline", "user_config": {"delegation": {"gateway_mode": "inline"}}, "platform_key": "gateway", "interim_enabled": false, "case": "explicit inline"}
+{"func": "gateway_inline", "user_config": {"delegation": {"gateway_mode": "background"}}, "platform_key": "gateway", "interim_enabled": true, "case": "explicit background"}
+{"func": "gateway_inline", "user_config": {"delegation": {"gateway_mode": "async"}}, "platform_key": "cli", "interim_enabled": true, "case": "async alias"}
+{"func": "gateway_inline", "user_config": {"delegation": {"gateway_mode": "AUTO"}}, "platform_key": "telegram", "interim_enabled": false, "case": "auto messaging joins"}
+{"func": "gateway_inline", "user_config": {"delegation": {"gateway_mode": ""}}, "platform_key": "cli", "interim_enabled": true, "case": "empty mode auto nonmessaging no join"}
+{"func": "gateway_inline", "user_config": {"delegation": {"gateway_mode": "weird"}}, "platform_key": "discord", "interim_enabled": true, "case": "unknown mode interim true no join"}
+{"func": "gateway_inline", "user_config": {}, "platform_key": "api_server", "interim_enabled": false, "case": "no section nonmessaging"}
