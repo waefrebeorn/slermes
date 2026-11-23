@@ -147,7 +147,7 @@ def main():
     seed = int(sys.argv[3]) if len(sys.argv) > 3 else 20261122
     rng = random.Random(seed)
     fp = os.path.join(ROOT, "tests", "fixtures", gate + ".jsonl")
-    templates = [json.loads(l) for l in open(fp, encoding="utf-8") if l.strip()]
+    templates = [json.loads(l) for l in open(fp, encoding="utf-8", errors="surrogatepass") if l.strip()]
     generated = []
     for _ in range(n):
         base = copy.deepcopy(rng.choice(templates))
