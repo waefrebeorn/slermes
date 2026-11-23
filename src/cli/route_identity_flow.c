@@ -1232,3 +1232,20 @@ json_t *rid_base_url_host_matches(rid_io_t *io, const json_t *in, json_t *st)
     json_free(hj);
     return json_bool(match ? 1 : 0);
 }
+
+/* Product adapter: utils.base_url_host_matches(base_url, domain) as C bool.
+ * Mirrors the JSON-envelope entry; invalid input (Python exception) fails closed.
+ */
+bool rid_base_url_host_matches_cstr(const char *base_url, const char *domain)
+{
+    json_t *in = json_object();
+    json_set(in, "base_url", base_url ? json_string(base_url) : json_null());
+    json_set(in, "domain", domain ? json_string(domain) : json_null());
+    json_t *r = rid_base_url_host_matches(NULL, in, NULL);
+    json_free(in);
+    if (!r || r->type != JSON_BOOL) { json_free(r); return false; }
+    bool ok = r->bool_val;
+    json_free(r);
+    return ok;
+}
+

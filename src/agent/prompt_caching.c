@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "hermes_url_safety.h"
+/* Ported utils.base_url_host_matches from src/cli/route_identity_flow.c. */
+extern bool rid_base_url_host_matches_cstr(const char *base_url, const char *domain);
 
 /* ── Cache statistics (thread-safe via simple atomics on common platforms) ── */
 static int g_cache_hits = 0;
@@ -325,7 +327,7 @@ bool anthropic_prompt_cache_policy(const char *provider,
     /* AG26: Port of Python agent/anthropic_adapter.py:_is_claude_model(). */
 
     bool is_openrouter = eff_base_url[0] &&
-        url_host_matches(eff_base_url, "openrouter.ai");
+        rid_base_url_host_matches_cstr(eff_base_url, "openrouter.ai");
 
     bool is_nous_portal = eff_base_url[0] &&
         (strstr(eff_base_url, "nousresearch") != NULL);
@@ -375,8 +377,8 @@ bool anthropic_prompt_cache_policy(const char *provider,
         if (!is_minimax_provider && eff_base_url[0]) {
             char *host = url_extract_hostname(eff_base_url);
             if (host) {
-                is_minimax_host = (url_host_matches(eff_base_url, "api.minimax.io") ||
-                                   url_host_matches(eff_base_url, "api.minimaxi.com"));
+                is_minimax_host = (rid_base_url_host_matches_cstr(eff_base_url, "api.minimax.io") ||
+                                   rid_base_url_host_matches_cstr(eff_base_url, "api.minimaxi.com"));
                 free(host);
             }
         }

@@ -32,10 +32,24 @@ EXPECTED = [
     "",
 ]
 
+MATCH_PAIRS = [
+    ("https://openrouter.ai/v1", "openrouter.ai"),
+    ("https://api.openrouter.ai/v1", "openrouter.ai"),
+    ("https://openrouter.ai.:443/", "openrouter.ai"),
+    ("https://evilopenrouter.ai/", "openrouter.ai"),
+    ("https://nousresearch.com/", "nousresearch.com"),
+    ("https://api.minimax.io/", "api.minimax.io"),
+    ("https://api.minimaxi.com/", "api.minimaxi.com"),
+    ("https://api.anthropic.com/", "api.anthropic.com"),
+    ("", "openrouter.ai"),
+]
+MATCH_EXPECTED = [1, 1, 1, 0, 1, 1, 1, 1, 0]
+
 DRIVER = r'''
 #include <stdio.h>
 #include <stdlib.h>
 extern char *rid_base_url_hostname_cstr(const char *);
+extern bool rid_base_url_host_matches_cstr(const char *, const char *);
 int main(void) {
     const char *cases[] = {
         "https://api.anthropic.com/v1", "api.anthropic.com",
@@ -44,9 +58,23 @@ int main(void) {
     };
     for (int i = 0; i < 7; i++) {
         char *h = rid_base_url_hostname_cstr(cases[i]);
-        printf("%d|%s\n", i, h ? h : "");
+        printf("H|%d|%s\n", i, h ? h : "");
         free(h);
     }
+    const char *pairs[][2] = {
+        {"https://openrouter.ai/v1", "openrouter.ai"},
+        {"https://api.openrouter.ai/v1", "openrouter.ai"},
+        {"https://openrouter.ai.:443/", "openrouter.ai"},
+        {"https://evilopenrouter.ai/", "openrouter.ai"},
+        {"https://nousresearch.com/", "nousresearch.com"},
+        {"https://api.minimax.io/", "api.minimax.io"},
+        {"https://api.minimaxi.com/", "api.minimaxi.com"},
+        {"https://api.anthropic.com/", "api.anthropic.com"},
+        {"", "openrouter.ai"}
+    };
+    for (int i = 0; i < 9; i++)
+        printf("M|%d|%d\n", i,
+               rid_base_url_host_matches_cstr(pairs[i][0], pairs[i][1]) ? 1 : 0);
     return 0;
 }
 '''
@@ -74,11 +102,17 @@ def main() -> int:
         if out.returncode:
             print(out.stderr)
             return out.returncode
-        got = [line.split("|", 1)[1] for line in out.stdout.splitlines()]
-        if got != EXPECTED:
-            print(f"MISMATCH expected={EXPECTED!r} got={got!r}")
+        lines = out.stdout.splitlines()
+        got_h = [l.split("|", 2)[2] for l in lines if l.startswith("H|")]
+        got_m = [int(l.split("|", 2)[2]) for l in lines if l.startswith("M|")]
+        if got_h != EXPECTED:
+            print(f"HOSTNAME MISMATCH expected={EXPECTED!r} got={got_h!r}")
             return 1
-    print(f"route_identity adapter: {len(CASES)} cases, 0 mismatches")
+        if got_m != MATCH_EXPECTED:
+            print(f"MATCH MISMATCH expected={MATCH_EXPECTED!r} got={got_m!r}")
+            return 1
+    total = len(CASES) + len(MATCH_PAIRS)
+    print(f"route_identity adapters: {total} cases, 0 mismatches")
     return 0
 
 

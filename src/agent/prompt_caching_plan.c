@@ -33,6 +33,8 @@ static bool is_dict(const json_t *v) { return json_is_object(v); }
 /* Reuse URL helpers ported in port_provider_registry.c / provider_anthropic.c. */
 extern char *provider_base_url_hostname(const char *base_url);
 extern bool  provider_base_url_host_matches(const char *base_url, const char *domain);
+/* Ported utils.base_url_host_matches from src/cli/route_identity_flow.c. */
+extern bool  rid_base_url_host_matches_cstr(const char *base_url, const char *domain);
 /* Reuse the dedicated PoP port (port_anthropic_adapter_ports.c), not the
  * heavy duplicate in provider_anthropic.c — avoids dragging http.o etc. */
 extern bool antr_model_name_is_kimi_family(const char *model);
@@ -493,7 +495,7 @@ void pca_anthropic_prompt_cache_policy(const char *provider,
         (strstr(mlower, "moonshot") != NULL);
 
     /* is_openrouter / is_nous_portal */
-    bool is_openrouter = provider_base_url_host_matches(eff_base_url, "openrouter.ai");
+    bool is_openrouter = rid_base_url_host_matches_cstr(eff_base_url, "openrouter.ai");
     bool is_nous_portal = strstr(blower, "nousresearch") != NULL;
 
     /* (openrouter or nous_portal) and (is_claude or is_kimi) and not native */
@@ -515,8 +517,8 @@ void pca_anthropic_prompt_cache_policy(const char *provider,
     if (is_anthropic_wire) {
         bool is_mm_provider = strcasecmp(prov_lower, "minimax") == 0 ||
                               strcasecmp(prov_lower, "minimax-cn") == 0;
-        bool is_mm_host = provider_base_url_host_matches(eff_base_url, "api.minimax.io") ||
-                          provider_base_url_host_matches(eff_base_url, "api.minimaxi.com");
+        bool is_mm_host = rid_base_url_host_matches_cstr(eff_base_url, "api.minimax.io") ||
+                          rid_base_url_host_matches_cstr(eff_base_url, "api.minimaxi.com");
         if (is_mm_provider || is_mm_host) {
             should_cache = true; native_layout = true; goto done;
         }
