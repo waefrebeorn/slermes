@@ -1159,8 +1159,10 @@ json_t *msf_aggregator_alias_error(msf_ctx *ctx, const char *explicit_provider, 
         return NULL;
     }
     msf_sb sb; msf_sb_init(&sb);
+    /* Python f-string renders a None label as "None", not as an empty string. */
+    const char *label_s = (label && label->type != JSON_NULL) ? msf_jstr(label) : "None";
     msf_sb_appendf(&sb, "Provider '%s' is an alias that routes through %s, which "
-                        "has no credentials configured.", explicit_norm, msf_jstr(label));
+                        "has no credentials configured.", explicit_norm, label_s);
     if (nsugg) msf_sb_appendf(&sb, " Did you mean: %s?", suggestions.buf);
     json_free(label);
     free(suggestions.buf);

@@ -18,7 +18,9 @@ for fn in fns: fn.decorator_list = []
 
 class P:
     def __init__(self, p): self.p = p.rstrip("/") if p != "/" else "/"
-    def __truediv__(self, other): return P(self.p + "/" + str(other).lstrip("/"))
+    def __truediv__(self, other):
+        base = "" if self.p == "/" else self.p.rstrip("/")
+        return P(base + "/" + str(other).lstrip("/"))
     def __str__(self): return self.p
 P.home = staticmethod(lambda: P(os.environ.get("HOME", "")))
 
