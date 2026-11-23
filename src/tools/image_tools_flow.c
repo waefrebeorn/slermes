@@ -574,15 +574,37 @@ static bool it_scan_value(it_scan_t *sc, int depth) {
     }
     return it_scan_number(sc);
 }
-/* Python json.loads accept/reject domain (message irrelevant: the only consumer
- * catches ValueError). Returns parsed value or a ValueError raise spec. */
+/* CPython json.loads raises JSONDecodeError ("Expecting value: line L column C
+ * (char N)") when a value is missing at byte offset `pos`. Python positions are
+ * str code points, so count UTF-8 non-continuation bytes, not raw bytes. */
+static json_t *it_json_decode_expecting(const char *s, size_t pos) {
+    size_t char_pos = 0;      /* code points before pos (== CPython pos) */
+    size_t line = 1;
+    long last_nl = -1;        /* code-point index of the last '\n' before pos */
+    for (size_t i = 0; i < pos; i++) {
+        unsigned char b = (unsigned char)s[i];
+        if ((b & 0xC0) == 0x80) continue;   /* UTF-8 continuation byte */
+        if (b == '\n') { line++; last_nl = (long)char_pos; }
+        char_pos++;
+    }
+    long col = (long)char_pos - last_nl;    /* CPython colno (1-based) */
+    char msg[256];
+    snprintf(msg, sizeof(msg),
+             "Expecting value: line %zu column %ld (char %zu)",
+             line, col, char_pos);
+    return it_raise("JSONDecodeError", msg);
+}
+
+/* Python json.loads accept/reject domain. On rejection emit the same
+ * JSONDecodeError CPython raises (a ValueError subclass, so existing
+ * `except ValueError` callers still catch it). Returns parsed value or raise. */
 static json_t *it_json_loads(const char *s) {
     it_scan_t sc = {s ? s : "", 0, s ? strlen(s) : 0};
-    if (!it_scan_value(&sc, 0)) return it_raise("ValueError", "invalid JSON");
+    if (!it_scan_value(&sc, 0)) return it_json_decode_expecting(sc.s, sc.i);
     it_skip_ws(&sc);
-    if (sc.i != sc.n) return it_raise("ValueError", "invalid JSON");
+    if (sc.i != sc.n) return it_json_decode_expecting(sc.s, sc.i);
     json_t *v = json_parse(s, NULL);
-    return v ? v : it_raise("ValueError", "invalid JSON");
+    return v ? v : it_json_decode_expecting(sc.s, sc.i);
 }
 
 /* -- catalog constants (mirrors tools/image_generation_catalog.py) ---------

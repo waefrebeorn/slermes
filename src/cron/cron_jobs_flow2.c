@@ -284,6 +284,11 @@ static json_t *cj2_fill_missing_next_run(cj2_io_t *io, json_t *updated) {
     if (strcmp(state, "paused") == 0) return json_null();
     json_t *nr = json_obj_get(updated, "next_run_at");
     if (nr && cj2_truthy(nr)) return json_null();
+    /* LIVE: compute_next_run(updated["schedule"], ...) evaluates the subscript
+     * BEFORE the call. A missing "schedule" therefore raises KeyError('schedule')
+     * with an empty seam trace (compute_next_run is never entered). */
+    if (!json_obj_get(updated, "schedule"))
+        return cj2_raise("KeyError", "'schedule'");
     json_t *r = cj2_seam(io, "compute_next_run", cj2_args());
     if (cj2_raised(r)) return cj2_propagate(r);
     bool is_null = (r->type == JSON_NULL);

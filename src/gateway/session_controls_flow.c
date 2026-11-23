@@ -671,6 +671,72 @@ static json_t *gscf_sibling_for(gscf_env *e, const json_t *in) {
 }
 
 /* ── 9. awaits_profile_start ─────────────────────────────────────────────── */
+/* Emulate str(WindowsPath(raw)) for a held home path: backslash separators,
+ * UNC share roots keep a trailing separator, '.' components are dropped and
+ * drive/root prefixes are preserved. The PY seam records str(Path(key)), not
+ * the raw string or as_posix(), so the 'home' arg must use this form while the
+ * returned key stays the original held entry. */
+static char *gscf_win_path_str(const char *raw) {
+    const char *s = raw ? raw : "";
+    size_t n = strlen(s);
+    if (n == 0) return strdup(".");
+
+    int i = 0;
+    int unc = 0, rooted = 0;
+    char drive[3] = {0};
+    if (n >= 2 && (s[0] == '/' || s[0] == '\\') &&
+        (s[1] == '/' || s[1] == '\\')) {
+        unc = 1; i = 2;
+    } else if (n >= 2 && s[1] == ':') {
+        drive[0] = s[0]; drive[1] = ':';
+        i = 2;
+        if (i < (int)n && (s[i] == '/' || s[i] == '\\')) { rooted = 1; i++; }
+    } else if (s[0] == '/' || s[0] == '\\') {
+        rooted = 1; i = 1;
+    }
+
+    typedef struct { const char *p; size_t len; } tok_t;
+    tok_t toks[256];
+    size_t nt = 0;
+    while (i < (int)n && nt < 256) {
+        while (i < (int)n && (s[i] == '/' || s[i] == '\\')) i++;
+        if (i >= (int)n) break;
+        size_t st = (size_t)i;
+        while (i < (int)n && s[i] != '/' && s[i] != '\\') i++;
+        size_t len = (size_t)i - st;
+        if (len == 1 && s[st] == '.') continue;   /* WindowsPath drops '.' */
+        toks[nt].p = s + st; toks[nt].len = len; nt++;
+    }
+
+    char *out = (char *)malloc(n + 8);
+    if (!out) return strdup("");
+    size_t k = 0;
+    if (unc) {
+        out[k++] = '\\'; out[k++] = '\\';
+        size_t used = nt < 2 ? nt : 2;
+        for (size_t t = 0; t < used; t++) {
+            if (t) out[k++] = '\\';
+            memcpy(out + k, toks[t].p, toks[t].len); k += toks[t].len;
+        }
+        if (nt == 2) out[k++] = '\\';              /* share root: trailing '\' */
+        for (size_t t = 2; t < nt; t++) {
+            out[k++] = '\\';
+            memcpy(out + k, toks[t].p, toks[t].len); k += toks[t].len;
+        }
+    } else {
+        if (drive[0]) { out[k++] = drive[0]; out[k++] = ':'; }
+        if (rooted) out[k++] = '\\';
+        for (size_t t = 0; t < nt; t++) {
+            if (t) out[k++] = '\\';   /* only BETWEEN components; drive/root
+                                      * prefix already emitted its own sep */
+            memcpy(out + k, toks[t].p, toks[t].len); k += toks[t].len;
+        }
+    }
+    if (k == 0) out[k++] = '.';
+    out[k] = '\0';
+    return out;
+}
+
 /* PoP: gscf_awaits_profile_start @ gateway/session_controls.py:awaits_profile_start */
 static json_t *gscf_awaits_profile_start(gscf_env *e, const json_t *in) {
     const json_t *selfn = json_obj_get(in, "self");
@@ -691,12 +757,16 @@ static json_t *gscf_awaits_profile_start(gscf_env *e, const json_t *in) {
             if (!gflow_is_str(h)) continue;
             json_t *a = json_object();
             json_set(a, "profile", json_string(pstr));
-            json_set(a, "home", json_string(h->str_val));
+            {
+                char *home = gscf_win_path_str(h->str_val);
+                json_set(a, "home", json_string(home));
+                free(home);
+            }
             json_t *r = gscf_call(e, "profile_matches_home", a);
             if (gscf_prop(e, r)) return NULL;
             bool match = gflow_truth(r);
             json_free(r);
-            if (match) { key = h->str_val; break; }
+            if (match) { key = h->str_val; break; }   /* original held entry */
         }
     }
     if (key) {

@@ -1107,7 +1107,9 @@ json_t *gc_named_profile_refused_under_multiplexer(bool force, const gc_seams_t 
     dh = gc_call(s, "display_hermes_home", da);
     GC_PROP(dh);
     {
-        char *m = xsf("  gateway.standalone: true in %s/config.yaml,", jstr(dh) ? jstr(dh) : "");
+        /* LIVE: f"... {display_hermes_home(...)}/config.yaml" renders a None
+         * result as the literal "None", never an empty string. */
+        char *m = xsf("  gateway.standalone: true in %s/config.yaml,", jstr(dh) ? jstr(dh) : "None");
         r = gc_print_text(s, m); free(m); GC_PROP(r); json_free(r); r = NULL;
     }
     r = gc_print_text(s, "  then wait for the host gateway to rescan (<=30s) or send its rescan-profiles control verb."); GC_PROP(r); json_free(r); r = NULL;

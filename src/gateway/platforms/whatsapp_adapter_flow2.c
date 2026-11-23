@@ -4046,7 +4046,15 @@ static json_t *wa2__poll_bridge_health(wa2_ctx_t *ctx, const json_t *args) {
 
 /* PoP: wa2__mint_bridge_token @ plugins/platforms/whatsapp/adapter.py:_mint_bridge_token */
 static json_t *wa2__mint_bridge_token(wa2_ctx_t *ctx, const json_t *args) {
-    const json_t *self = wa2_self(ctx);
+    json_t *self = wa2_self(ctx);
+    /* LIVE stores _session_path as a Path; Path("").as_posix() == ".".
+     * Project an empty path to "." in the emitted state BEFORE forwarding it
+     * to the seam (seam joins downstream keep the raw path unchanged). */
+    if (self) {
+        const json_t *sp = json_obj_get(self, "_session_path");
+        if (sp && sp->type == JSON_STRING && sp->str_val && sp->str_val[0] == '\0')
+            json_set(self, "_session_path", json_string("."));
+    }
     json_t *loop = wa2_call(ctx, "asyncio.get_running_loop", json_object());
     if (wa2_is_raise(loop)) return loop;
     json_t *ta = json_object();

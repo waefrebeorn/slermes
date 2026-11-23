@@ -214,7 +214,10 @@ bool gww_attested_pid_exited_cleanly(int pid, bool create_time_present, double c
     if (gww_caught(sp, "OSError")) { json_free(sp); free(home_free); return false; }
     if (gww_raise_class(sp)) { json_free(sp); free(home_free); return create_time_present; }
     const char *sentinel = jstr(sp);
-    char *sent_free = sentinel ? strdup(sentinel) : NULL;
+    /* LIVE wraps the seam return in Path(sentinel) and forwards as_posix() to
+     * read_text; normalize backslashes, empty string and a bare UNC share root
+     * the same way PathDouble does in the oracle. */
+    char *sent_free = sentinel ? gww_path_posix(sentinel) : NULL;
     json_free(sp);
 
     json_t *ra = args0();

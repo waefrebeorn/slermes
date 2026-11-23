@@ -202,34 +202,45 @@ static char *pathdouble_norm(const char *s) {
 
 /* Normalize a path string the way Windows pathlib.Path + as_posix does:
  * backslashes -> slashes, collapse duplicate slashes, drop "." components
- * (pathlib keeps ".."), drop a trailing separator (root "/" stays), and the
- * empty path is Path(".") -> ".". Caller frees. */
+ * (pathlib keeps ".."), drop a trailing separator (root "/", drive root and a
+ * bare UNC share root keep theirs), and the empty path is Path(".") -> ".".
+ * A UNC share root "\\\\server\\share" stays "//server/share/" (two leading
+ * slashes + trailing share slash); a single-root POSIX path "/x" stays "/x".
+ * Caller frees. */
 static char *path_norm(const char *s) {
     if (!s) return strdup(".");
-    char *flat = pathdouble_norm(s);
-    size_t n = strlen(flat);
-    bool rooted = (n > 0 && flat[0] == '/');
-    char *out = malloc(n + 3);
-    if (!out) { free(flat); return strdup("."); }
+    size_t slen = strlen(s);
+    char *raw = (char *)malloc(slen + 1);
+    if (!raw) return strdup(".");
+    for (size_t i = 0; i < slen; i++) raw[i] = (s[i] == '\\') ? '/' : s[i];
+    raw[slen] = '\0';
+    bool unc = (slen >= 2 && raw[0] == '/' && raw[1] == '/');
+    bool rooted = (slen >= 1 && raw[0] == '/');
+    char *out = malloc(slen + 4);
+    if (!out) { free(raw); return strdup("."); }
     size_t k = 0;
-    if (rooted) out[k++] = '/';
-    size_t i = rooted ? 1 : 0;
-    bool first = true;
-    while (i <= n) {
+    if (unc) { out[k++] = '/'; out[k++] = '/'; }
+    else if (rooted) out[k++] = '/';
+    size_t i = unc ? 2 : (rooted ? 1 : 0);
+    size_t comps = 0;
+    while (i <= slen) {
         size_t j = i;
-        while (j < n && flat[j] != '/') j++;
+        while (j < slen && raw[j] != '/') j++;
         size_t len = j - i;
-        if (len == 1 && flat[i] == '.') { /* drop "." component */ }
+        if (len == 1 && raw[i] == '.') { /* drop "." component */ }
         else if (len > 0) {
-            if (!first) out[k++] = '/';
-            memcpy(out + k, flat + i, len);
+            if (comps > 0) out[k++] = '/';
+            memcpy(out + k, raw + i, len);
             k += len;
-            first = false;
+            comps++;
         }
         i = j + 1;
     }
+    /* A bare UNC share root (server + share, nothing after it) keeps its
+     * trailing separator, matching pathlib.Path(s).as_posix(). */
+    if (unc && comps == 2 && out[k - 1] != '/') out[k++] = '/';
     out[k] = '\0';
-    free(flat);
+    free(raw);
     if (k == 0) { out[0] = '.'; out[1] = '\0'; }
     return out;
 }

@@ -154,6 +154,49 @@ static char *ta14_py_str(const json_t *v) {
         default: { char *s = json_serialize((json_t *)v); return s ? s : ta14_strdup(""); }
     }
 }
+
+/* Python repr() of a str with CPython quote selection (used by %.200R). */
+static char *ta14_repr_str(const char *s) {
+    if (!s) s = "";
+    int has_sq = 0, has_dq = 0;
+    for (const char *p = s; *p; p++) {
+        if (*p == '\'') has_sq = 1;
+        if (*p == '"') has_dq = 1;
+    }
+    char q = (has_sq && !has_dq) ? '"' : '\'';
+    size_t n = strlen(s);
+    char *o = malloc(n * 4 + 3);
+    if (!o) return NULL;
+    size_t k = 0;
+    o[k++] = q;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = (unsigned char)s[i];
+        if (c == (unsigned char)q || c == '\\') { o[k++] = '\\'; o[k++] = (char)c; }
+        else if (c == '\n') { o[k++] = '\\'; o[k++] = 'n'; }
+        else if (c == '\r') { o[k++] = '\\'; o[k++] = 'r'; }
+        else if (c == '\t') { o[k++] = '\\'; o[k++] = 't'; }
+        else if (c < 0x20 || c == 0x7f) { k += (size_t)snprintf(o + k, 5, "\\x%02x", c); }
+        else o[k++] = (char)c;
+    }
+    o[k++] = q;
+    o[k] = '\0';
+    return o;
+}
+
+/* CPython formats int()'s invalid-literal ValueError with "%.200R": the repr
+ * is truncated to 200 code points (not bytes) before interpolation. When the
+ * repr is longer, the cut falls before the closing quote, so it is omitted. */
+static void ta14_trunc_repr_200(char *s) {
+    if (!s) return;
+    int cps = 0;
+    for (char *p = s; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if ((c & 0xC0) != 0x80) {           /* UTF-8 lead byte == one code point */
+            if (cps == 200) { *p = '\0'; return; }
+            cps++;
+        }
+    }
+}
 static char *ta14_join(const json_t *arr, const char *sep) {
     if (!arr || arr->type != JSON_ARRAY) return ta14_strdup("");
     size_t cap = 64, len = 0;
@@ -501,8 +544,12 @@ static json_t *ta14_get_dm_topic_info(ta14_ctx_t *ctx, const json_t *args) {
     double tid = 0;
     if (!ta14_parse_int(tidv, &tid)) {
         char *s = ta14_py_str(tidv);
-        char *msg = ta14_fmt("invalid literal for int() with base 10: '%s'", s ? s : "");
-        free(s); json_t *e = ta14_err("ValueError", msg); free(msg); return e;
+        char *r = ta14_repr_str(s ? s : "");
+        ta14_trunc_repr_200(r);
+        char *msg = ta14_fmt("invalid literal for int() with base 10: %s", r ? r : "''");
+        free(r);
+        free(s);
+        json_t *e = ta14_err("ValueError", msg); free(msg); return e;
     }
     json_t *found = ta14_dm_lookup(ctx, cid, tid);
     if (found) return found;

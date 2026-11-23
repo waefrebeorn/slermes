@@ -2014,8 +2014,11 @@ static json_t *skt_log_security_warnings(skt_env *e, const json_t *in) {
     const char *content = json_get_str(in, "content", "");
     json_t *all_dirs = json_obj_get(in, "all_dirs");
     const char *active = json_get_str(in, "active_skills_dir", "");
+    /* LIVE: Path("") == Path("."); the empty string would change the seam
+     * trace argument. Resolve with "." locally in this caller only. */
+    const char *active_resolve = (active[0] == '\0') ? "." : active;
     json_t *trusted = json_array();
-    json_t *ar = skt_path_resolve(e, active);
+    json_t *ar = skt_path_resolve(e, active_resolve);
     if (skt_is_raise(ar)) { json_free(trusted); return ar; }
     { char *as = skt_pystr(ar); json_append(trusted, json_string(as)); free(as); json_free(ar); }
     for (size_t i = 0; i < json_len(all_dirs); i++) {

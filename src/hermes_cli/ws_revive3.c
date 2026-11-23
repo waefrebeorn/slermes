@@ -270,7 +270,31 @@ static char *w3_float_repr(double v) {
     return w3_bdone(&out);
 }
 
-/* Python str() for scalar JSON values (containers excluded by fixture scope). */
+/* Python repr() of a str with CPython quote selection. */
+static char *w3_repr_str(const char *s) {
+    int has_sq = 0, has_dq = 0;
+    for (const char *p = s; *p; p++) { if (*p == '\'') has_sq = 1; if (*p == '"') has_dq = 1; }
+    char q = (has_sq && !has_dq) ? '"' : '\'';
+    size_t cap = strlen(s) * 4 + 3;
+    char *out = malloc(cap);
+    if (!out) return NULL;
+    size_t n = 0;
+    out[n++] = q;
+    for (const char *p = s; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c == (unsigned char)q || c == '\\') { out[n++] = '\\'; out[n++] = (char)c; }
+        else if (c == '\n') { out[n++] = '\\'; out[n++] = 'n'; }
+        else if (c == '\r') { out[n++] = '\\'; out[n++] = 'r'; }
+        else if (c == '\t') { out[n++] = '\\'; out[n++] = 't'; }
+        else out[n++] = (char)c;
+    }
+    out[n++] = q; out[n] = '\0';
+    return out;
+}
+static char *w3_py_repr(const json_t *v); /* fwd */
+
+/* Python str() for scalar JSON values; containers use repr (str(list)/str(dict)
+ * == repr) instead of the old empty-string fallback. */
 static char *w3_py_str(const json_t *v) {
     if (!v || v->type == JSON_NULL) return w3_strdup("None");
     switch (v->type) {
@@ -285,8 +309,55 @@ static char *w3_py_str(const json_t *v) {
             return w3_float_repr(d);
         }
         case JSON_STRING: return w3_strdup(v->str_val ? v->str_val : "");
-        default: return w3_strdup("");
+        default: return w3_py_repr(v); /* list / dict -> repr */
     }
+}
+
+/* Python repr() of a JSON value: single/double-quoted strings and keys with
+ * CPython quote selection, recursion into containers, None/bool as literals. */
+static char *w3_py_repr(const json_t *v) {
+    if (!v || v->type == JSON_NULL) return w3_strdup("None");
+    if (v->type == JSON_BOOL) return w3_strdup(v->bool_val ? "True" : "False");
+    if (v->type == JSON_STRING) return w3_repr_str(v->str_val ? v->str_val : "");
+    if (v->type == JSON_NUMBER) {
+        double d = v->num_val;
+        if (d == (double)(long long)d) {
+            char b[40];
+            snprintf(b, sizeof b, "%.0f", d);
+            return w3_strdup(b);
+        }
+        return w3_float_repr(d);
+    }
+    /* list / dict */
+    size_t cap = 64, n = 0;
+    char *out = malloc(cap);
+    if (!out) return NULL;
+    int is_obj = (v->type == JSON_OBJECT);
+    out[n++] = is_obj ? '{' : '[';
+    for (size_t i = 0; i < v->c.count; i++) {
+        char *piece = NULL;
+        if (is_obj) {
+            char *k = w3_repr_str(v->c.keys[i] ? v->c.keys[i] : "");
+            char *val = w3_py_repr(v->c.items[i]);
+            if (k && val) {
+                size_t need = strlen(k) + strlen(val) + 4;
+                piece = malloc(need);
+                if (piece) snprintf(piece, need, "%s: %s", k, val);
+            }
+            free(k); free(val);
+        } else {
+            piece = w3_py_repr(v->c.items[i]);
+        }
+        if (!piece) piece = w3_strdup("");
+        size_t pl = strlen(piece);
+        while (n + pl + 4 >= cap) { cap *= 2; char *t = realloc(out, cap); if (!t) { free(piece); free(out); return NULL; } out = t; }
+        if (i) { out[n++] = ','; out[n++] = ' '; }
+        memcpy(out + n, piece, pl); n += pl;
+        free(piece);
+    }
+    while (n + 2 >= cap) { cap *= 2; char *t = realloc(out, cap); if (!t) { free(out); return NULL; } out = t; }
+    out[n++] = is_obj ? '}' : ']'; out[n] = '\0';
+    return out;
 }
 
 /* str(value or "") — the full falsy set collapses to the empty string. */

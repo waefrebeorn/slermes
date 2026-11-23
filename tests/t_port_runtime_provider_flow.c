@@ -27,8 +27,33 @@ typedef struct {
 
 static json_t *make_exc(json_t *spec) {
     json_t *e = json_object();
-    json_set_hdr(e, "__raise__", json_get_str(spec, "type", "RuntimeError"));
-    json_set_hdr(e, "message", json_get_str(spec, "message", ""));
+    char numbuf[64];   /* must outlive the branch: msg is set after the if */
+    const char *kind = json_get_str(spec, "type", "RuntimeError");
+    json_set_hdr(e, "__raise__", kind);
+    const char *msg = json_get_str(spec, "message", "");
+    /* LIVE make_exc does SystemExit(spec.get("code")); proj_exc uses str(exc),
+     * which for a one-arg SystemExit is str(code) -- the sibling "message"
+     * is ignored. Emit that value here (decimal form for a number). */
+    if (strcmp(kind, "SystemExit") == 0) {
+        json_t *code = json_obj_get(spec, "code");
+        if (code) {
+            if (code->type == JSON_NUMBER) {
+                double d = code->num_val;
+                if (d == (double)(long long)d && d < 9.2e18 && d > -9.2e18)
+                    snprintf(numbuf, sizeof(numbuf), "%lld", (long long)d);
+                else
+                    snprintf(numbuf, sizeof(numbuf), "%.17g", d);
+                msg = numbuf;
+            } else if (code->type == JSON_STRING) {
+                msg = code->str_val ? code->str_val : "";
+            } else if (code->type == JSON_BOOL) {
+                msg = code->bool_val ? "True" : "False";
+            } else if (code->type == JSON_NULL) {
+                msg = "None";
+            }
+        }
+    }
+    json_set_hdr(e, "message", msg);
     json_t *en = json_obj_get(spec, "errno");
     if (en && en->type == JSON_NUMBER) json_set(e, "errno", json_copy(en));
     return e;

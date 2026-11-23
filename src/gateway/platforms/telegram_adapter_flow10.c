@@ -583,8 +583,12 @@ static json_t *ta10_parse_page(ta10_ctx_t *ctx, const json_t *args) {
     if (s) {
         char *end = NULL;
         long v = strtol(s, &end, 10);
+        /* Check that strtol actually consumed digits BEFORE skipping trailing
+         * spaces: CPython int("   ") raises ValueError, but strtol leaves
+         * end==s and the space skip would otherwise march to '\0' and parse 0. */
+        bool consumed = (end != s);
         while (*end == ' ') end++;
-        if (end != s && *end == '\0') return json_number((double)v);
+        if (consumed && *end == '\0') return json_number((double)v);
         /* ValueError path */
         json_t *t = ta10_call(ctx, "_toast",
                               ta10_sarg("key", "platform.telegram.picker.invalid_page"));

@@ -570,6 +570,22 @@ json_t *mof_refresh_lock_path(const char *path) {
     for (size_t i = 0; i < plen; i++)
         slashed[i] = path[i] == '\\' ? '/' : path[i];
     slashed[plen] = '\0';
+    /* A drive-only path ('C:/', 'C:\\', 'C:') has an empty name in LIVE
+     * pathlib: Path('C:/').with_suffix(...) raises
+     * ValueError("WindowsPath('C:/') has an empty name") before any seam. */
+    if (plen >= 2 && slashed[1] == ':') {
+        size_t k = 2;
+        while (k < plen && slashed[k] == '/') k++;
+        if (k == plen) {
+            char msg[1024];
+            if (plen == 2)
+                snprintf(msg, sizeof(msg), "WindowsPath('%c:') has an empty name", slashed[0]);
+            else
+                snprintf(msg, sizeof(msg), "WindowsPath('%c:/') has an empty name", slashed[0]);
+            free(slashed);
+            return mof_raise("ValueError", msg);
+        }
+    }
     if (slashed[0] == '/' && slashed[1] == '/') {
         size_t comps = 0;
         for (size_t i = 2; i < plen; ) {

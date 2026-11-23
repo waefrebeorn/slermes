@@ -747,7 +747,13 @@ json_t *gm2_flow_spawn_detached_gateway(const char *home, const gm2_seams_t *s) 
 
 /* PoP: gm2_flow_read_multiplex_flag @ hermes_cli/gateway_migrate.py:_read_multiplex_flag */
 json_t *gm2_flow_read_multiplex_flag(const char *default_home, const gm2_seams_t *s) {
-    json_t *a = gm2_args0(); gm2_aset_s(a, "default_home", default_home);
+    json_t *a = gm2_args0();
+    /* LIVE wraps default_home in Path(...) and forwards its .as_posix(); the
+     * oracle normalizes with PathDouble (backslash->'/', collapse '//', rstrip
+     * trailing '/' except root) before recording the seam argument. */
+    char *nh = gm2_path_norm(default_home);
+    gm2_aset_s(a, "default_home", nh);
+    free(nh);
     json_t *r = gm2_scall(s, "explicit_multiplex_flag", a);
     GM2_PROP(r);
     json_t *ret = json_bool(gm2_is_bool(r) && r->bool_val);
