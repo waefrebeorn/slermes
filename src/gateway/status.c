@@ -1628,19 +1628,16 @@ void gwstatus_clear_planned_stop_marker(void) {
 static const char *gwstatus_profile_home_regex(void) {
     return "^[a-z0-9][a-z0-9_-]{0,63}$";
 }
+/* Ported _expand_hermes_home from src/cli/hermes_home_defaults.c. */
+extern void hc_expand_hermes_home(const char *path, const char *home,
+                                  char *out, size_t n);
 
 char *profile_label_for_home(const char *home,
                               const char *default_root) {
     if (!home || !home[0]) return NULL;
     /* _canonical_hermes_home: expanduser + absolute. Only ~ needs expansion. */
     char canonical[1200];
-    if (home[0] == '~') {
-        const char *h = getenv("HOME");
-        if (!h || !h[0]) return NULL;
-        snprintf(canonical, sizeof canonical, "%s%s", h, home + 1);
-    } else {
-        snprintf(canonical, sizeof canonical, "%s", home);
-    }
+    hc_expand_hermes_home(home, getenv("HOME"), canonical, sizeof canonical);
     /* normcase is a no-op on POSIX; strip trailing slashes like realpath would. */
     size_t cl = strlen(canonical);
     while (cl > 1 && canonical[cl - 1] == '/') canonical[--cl] = '\0';
