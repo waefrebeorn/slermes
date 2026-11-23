@@ -1,0 +1,21 @@
+{"func":"idle_seconds","value":null}
+{"func":"idle_seconds","value":600}
+{"func":"idle_seconds","value":0}
+{"func":"idle_seconds","value":-5}
+{"func":"idle_seconds","value":12.5}
+{"func":"idle_seconds","value":"45"}
+{"func":"idle_seconds","value":" 3.5 "}
+{"func":"idle_seconds","value":"junk"}
+{"func":"idle_seconds","value":true}
+{"func":"idle_seconds","value":false}
+{"func":"idle_seconds","value":[1,2]}
+{"func":"client_busy","clients":2,"attaching":false,"last_activity":0,"now":100,"window":30}
+{"func":"client_busy","clients":0,"attaching":true,"last_activity":0,"now":100,"window":30}
+{"func":"client_busy","clients":0,"attaching":false,"last_activity":98,"now":100,"window":30}
+{"func":"client_busy","clients":0,"attaching":false,"last_activity":70,"now":100,"window":30}
+{"func":"client_busy","clients":0,"attaching":false,"last_activity":97.5,"now":100,"window":30}
+{"func":"client_busy","clients":1,"attaching":true,"last_activity":99,"now":100,"window":30}
+{"func":"exit_reason","window":600,"restart":null}
+{"func":"exit_reason","window":45,"restart":null}
+{"func":"exit_reason","window":12.6,"restart":"cli/plugin-install"}
+{"func":"exit_reason","window":600,"restart":""}

@@ -1,0 +1,17 @@
+{"func":"local_liveness_pid","liveness":{"source":"health","pid":123}}
+{"func":"local_liveness_pid","liveness":{"source":"local","pid":456}}
+{"func":"local_liveness_pid","liveness":{"source":"api","pid":null}}
+{"func":"local_liveness_pid","liveness":{"source":null,"pid":7}}
+{"func":"served_profile_runtime","home":"/h","own_runtime":null,"gateway_pid":null,"seams":{"own_running_pid":null,"served":[100,{"a":1}],"platforms":{"x":1}}}
+{"func":"served_profile_runtime","home":"/h","own_runtime":{},"gateway_pid":null,"seams":{"own_running_pid":200,"served":[100,{"a":1}],"platforms":{"x":1}}}
+{"func":"served_profile_runtime","home":"/h","own_runtime":{},"gateway_pid":null,"seams":{"own_running_pid":null,"served":null,"platforms":{}}}
+{"func":"served_profile_runtime","home":"/h","own_runtime":null,"gateway_pid":null,"seams":{"own_running_pid":null,"served":[100,{}],"platforms":{}}}
+{"func":"served_profile_runtime","home":"/h","own_runtime":null,"gateway_pid":999,"seams":{"own_running_pid":null,"served":[100,{"a":1}],"platforms":{"x":1}}}
+{"func":"served_profile_runtime","home":"/h","own_runtime":null,"gateway_pid":100,"seams":{"own_running_pid":null,"served":[100,{"a":1}],"platforms":{"x":1}}}
+{"func":"served_profile_mirror_platforms","runtime":null,"profile":"p"}
+{"func":"served_profile_mirror_platforms","runtime":{"platforms":{}},"profile":""}
+{"func":"served_profile_mirror_platforms","runtime":{"platforms":{}},"profile":"default"}
+{"func":"served_profile_mirror_platforms","runtime":{"platforms":{}},"profile":"p"}
+{"func":"served_profile_mirror_platforms","runtime":{"platforms":{"api_server":{"state":"connected","listener_base":"http://host:8000","extra":1},"webhook":{"state":"retrying","listener_base":"http://host:8001"},"relay":{"state":"failed"},"other":{"state":"connected"}}},"profile":"alpha"}
+{"func":"served_profile_mirror_platforms","runtime":{"platforms":{"api_server":{"state":"failed","listener_base":"http://h"},"relay":{},"webhook":{"state":"connecting"}}},"profile":"beta"}
+{"func":"served_profile_mirror_platforms","runtime":{"platforms":{"relay":{"state":"dead","note":"kept"},"api_server":{"state":"connected","listener_base":123}}},"profile":"gamma"}

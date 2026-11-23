@@ -1,0 +1,23 @@
+{"func": "mcp_revision", "source": {}, "case": "all empty"}
+{"func": "mcp_revision", "source": {"mcp": null, "mcp_servers": null, "tools": null}, "case": "explicit nulls"}
+{"func": "mcp_revision", "source": {"mcp": {"a": "1"}, "mcp_servers": ["s"], "tools": ["t"]}, "case": "populated sections"}
+{"func": "mcp_revision", "source": {"tools": ["z"], "mcp": "x"}, "case": "key order normalized"}
+{"func": "mcp_revision", "source": {"mcp": {"b": true, "a": "v"}}, "case": "nested object sorted keys"}
+{"func": "mcp_revision", "source": {"mcp": "caf\u00e9"}, "case": "non-ascii escaped"}
+{"func": "mcp_revision", "source": {"mcp": "quote\"slash\\"}, "case": "escapes"}
+{"func": "mcp_revision", "source": {"mcp": {"servers": {}}}, "has_policy": true, "case": "policy config branch"}
+{"func": "config_get_problem", "params": {"key": "full"}, "case": "valid full"}
+{"func": "config_get_problem", "params": {"key": "project", "cwd": "/repo"}, "case": "project with cwd"}
+{"func": "config_get_problem", "params": {"key": "project", "cwd": 12}, "case": "non-string cwd"}
+{"func": "config_get_problem", "params": {"key": "skin", "extra": 1}, "case": "unknown param key"}
+{"func": "config_get_problem", "params": {}, "case": "missing key"}
+{"func": "config_get_problem", "params": {"key": "busy"}, "case": "busy delegated"}
+{"func": "config_get_problem", "params": {"key": "theme", "cwd": "/x"}, "case": "cwd on non-project"}
+{"func": "model_options_problem", "params": {"explicit_only": true}, "case": "valid flag"}
+{"func": "model_options_problem", "params": {"refresh": 1}, "case": "flag must be bool"}
+{"func": "model_options_problem", "params": {"bogus": true}, "case": "unknown flag"}
+{"func": "model_options_problem", "params": {"profile": "p", "session_id": "s", "include_unconfigured": false}, "case": "valid mix"}
+{"func": "fast_value", "tier": "priority", "case": "priority fast"}
+{"func": "fast_value", "tier": "ultrafast", "case": "ultrafast"}
+{"func": "fast_value", "tier": null, "case": "none normal"}
+{"func": "fast_value", "tier": "standard", "case": "other normal"}

@@ -1,0 +1,27 @@
+{"func": "resolve_identity_header", "name": "s", "cfg": {}}
+{"func": "resolve_identity_header", "name": "s", "cfg": {"identity_header": {"name": "X-User", "value": "alice"}}}
+{"func": "resolve_identity_header", "name": "s", "cfg": {"identity_header": {"name": " X ", "value": " v "}}}
+{"func": "resolve_identity_header", "name": "s", "cfg": {"identity_header": {"name": "X", "value_from": "bogus", "value": "v"}}}
+{"func": "resolve_identity_header", "name": "s", "cfg": {"identity_header": "bad"}}
+{"func": "resolve_identity_header", "name": "s", "cfg": {"identity_header": {"name": "X", "value": ""}}}
+{"func": "apply_identity_header", "name": "s", "cfg": {}, "headers": {}}
+{"func": "apply_identity_header", "name": "s", "cfg": {"identity_header": {"name": "X-User", "value": "alice"}}, "headers": {}}
+{"func": "apply_identity_header", "name": "s", "cfg": {"identity_header": {"name": "X-User", "value": "alice"}}, "headers": {"x-user": "keep"}}
+{"func": "apply_identity_header", "name": "s", "cfg": {}, "headers": {"X-User": "existing"}}
+{"func": "validate_remote_mcp_url", "name": "s", "url": " http://example.com/path "}
+{"func": "validate_remote_mcp_url", "name": "s", "url": "https://x/a?b=1"}
+{"func": "validate_remote_mcp_url", "name": "s", "url": "ftp://x"}
+{"func": "validate_remote_mcp_url", "name": "s", "url": ""}
+{"func": "validate_remote_mcp_url", "name": "s", "url": "http://"}
+{"func": "validate_remote_mcp_url", "name": "s", "url": "http://:8080"}
+{"func": "validate_remote_mcp_url", "name": "s", "url": 123}
+{"func": "validate_remote_mcp_url", "name": "s", "url": "not a url"}
+{"func": "validate_remote_mcp_url", "name": "s", "url": "HTTP://EXAMPLE.COM"}
+{"func": "shown_url", "url": "https://x/p?token=abc&k=1"}
+{"func": "shown_url", "url": "https://u:p@x/p"}
+{"func": "shown_url", "url": "http://x"}
+{"func": "shown_url", "url": "https://x/?API_KEY=secret"}
+{"func": "shown_url", "url": "https://user@x/p"}
+{"func": "shown_url", "url": "https://x/?Password=abc&secret=s&foo=1"}
+{"func": "shown_url", "url": "https://x/?access_token=abc&pageToken=p"}
+{"func": "shown_url", "url": "https://u:p@x/p?token=t"}

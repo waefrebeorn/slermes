@@ -1,0 +1,14 @@
+{"func":"replace","case":1,"value":"/old;/keep;/old","old":"/old","new":"/new","sep":";"}
+{"func":"replace","case":2,"value":"/a;/b;/c","old":"/old","new":"/new","sep":";"}
+{"func":"replace","case":3,"value":"","old":"/old","new":"/new","sep":";"}
+{"func":"replace","case":4,"value":"/old","old":"/old","new":"/new","sep":";"}
+{"func":"replace","case":5,"value":";/old;;x","old":"/old","new":"/new","sep":";"}
+{"func":"replace","case":6,"value":"C:/old;C:/keep","old":"C:/old","new":"D:/new","sep":";"}
+{"func":"replace","case":7,"value":"/old/../old;/x","old":"/old","new":"/new","sep":";"}
+{"func":"replace","case":8,"value":"/a:/old:/b","old":"/old","new":"/new","sep":":"}
+{"func":"restart","case":9,"running":"/gen/old/venv","selected":"/gen/old/venv"}
+{"func":"restart","case":10,"running":"/gen/old/venv","selected":"/gen/new/venv"}
+{"func":"restart","case":11,"running":"C:/g/a/venv","selected":"C:/g/b/venv"}
+{"func":"note","case":12,"value":"reason one"}
+{"func":"note","case":13,"value":null}
+{"func":"note","case":14,"value":"second"}

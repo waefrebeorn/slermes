@@ -1,0 +1,14 @@
+{"func":"identify_payload","base":{"protocol":1,"pid":42,"supervisor":"manual"},"descriptor":{},"draining":false,"restart_wait_reason":"restart_wait"}
+{"func":"identify_payload","base":{"protocol":1,"supervisor":"desktop"},"descriptor":{"state":"running","capabilities":["a"]},"draining":false,"restart_wait_reason":"restart_wait"}
+{"func":"identify_payload","base":{"protocol":1,"supervisor":"systemd"},"descriptor":{"instance_id":"i1","state":"running"},"draining":true,"restart_wait_reason":"restart_wait"}
+{"func":"identify_payload","base":{"protocol":1,"supervisor":"manual"},"descriptor":{"drain_reason":"restart_wait","state":"running","capabilities":["x"]},"draining":true,"restart_wait_reason":"restart_wait"}
+{"func":"identify_payload","base":{"protocol":1,"supervisor":"manual"},"descriptor":{"drain_reason":"idle_exit","state":"running","capabilities":["x"]},"draining":true,"restart_wait_reason":"restart_wait"}
+{"func":"identify_payload","base":{"protocol":1},"descriptor":{"drain_reason":"idle_exit"},"draining":false,"restart_wait_reason":"restart_wait"}
+{"func":"identify_payload","base":{"protocol":1,"supervisor":null},"descriptor":{"state":"draining"},"draining":false,"restart_wait_reason":"restart_wait"}
+{"func":"identify_payload","base":{"protocol":1,"supervisor":""},"descriptor":{},"draining":false,"restart_wait_reason":"restart_wait"}
+{"func":"identify_payload","base":{"instance_id":"old","api_origin":"x","supervisor":"desktop"},"descriptor":{"instance_id":"new","served_profiles":["default"],"parked_profiles":[]},"draining":false,"restart_wait_reason":"restart_wait"}
+{"func":"identify_payload","base":{"supervisor":"systemd","capabilities":["old"]},"descriptor":{"capabilities":[],"authority_epoch":7,"drain_reason":null},"draining":true,"restart_wait_reason":"restart_wait"}
+{"func":"browse_reconcile_reserve_wait_s","budget":3.0}
+{"func":"browse_reconcile_reserve_wait_s","budget":0.0}
+{"func":"browse_reconcile_reserve_wait_s","budget":1.5}
+{"func":"browse_reconcile_reserve_wait_s","budget":10.25}

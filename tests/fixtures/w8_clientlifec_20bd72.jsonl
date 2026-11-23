@@ -1,0 +1,28 @@
+{"func":"valid_pair","api_key":"sk-1","base_url":"https://x","case":"valid"}
+{"func":"valid_pair","api_key":"   ","base_url":"https://x","case":"blank key"}
+{"func":"valid_pair","api_key":"k","base_url":"  ","case":"blank url"}
+{"func":"valid_pair","api_key":null,"base_url":"u","case":"null key"}
+{"func":"valid_pair","api_key":123,"base_url":"u","case":"numeric key"}
+{"func":"reset_slot","cache":{"client":"c","key":"k","poisoned":true,"in_use":true},"in_use":false,"case":"reset all"}
+{"func":"reset_slot","cache":{"client":"c","extra":7},"in_use":true,"case":"preserve extra"}
+{"func":"reset_slot","cache":{},"case":"empty cache"}
+{"func":"image_parts","api_kwargs":{"messages":[{"role":"user","content":[{"type":"image_url"}]}]},"case":"chat image"}
+{"func":"image_parts","api_kwargs":{"input":[{"type":"input_image"}]},"case":"responses image"}
+{"func":"image_parts","api_kwargs":{"messages":[{"role":"user","content":"text"}]},"case":"text only"}
+{"func":"image_parts","api_kwargs":{"messages":"bad"},"case":"messages not list"}
+{"func":"image_parts","api_kwargs":{"extra":{"deep":[{"type":"image_url"}]}},"case":"neither field"}
+{"func":"client_closed","client":{"mock":true,"is_closed":true},"case":"mock false"}
+{"func":"client_closed","client":{"is_closed":true},"case":"property true"}
+{"func":"client_closed","client":{"is_closed":{"$call":true}},"case":"method true"}
+{"func":"client_closed","client":{"is_closed":false,"_client":{"is_closed":true}},"case":"http client true"}
+{"func":"client_closed","client":{"is_closed":{"$call":false},"_client":{"is_closed":false}},"case":"all false"}
+{"func":"client_closed","client":{},"case":"empty client"}
+{"func":"should_adopt","args":{"api_key":"new","base_url":"http://d","default_base":"http://d","state":{"base_url":"http://d","api_key":"old","_env_creds_seen":null,"_credential_pool":null,"_credential_pool_entry_id":null}},"case":"first look adopt"}
+{"func":"should_adopt","args":{"api_key":"old","base_url":"http://d","default_base":"http://d","state":{"base_url":"http://d","api_key":"old","_env_creds_seen":null}},"case":"first look unchanged"}
+{"func":"should_adopt","args":{"api_key":"new","base_url":"http://d","default_base":"http://d","state":{"base_url":"http://d","api_key":"old","_env_creds_seen":null,"_credential_pool":{},"_credential_pool_entry_id":"e1"}},"case":"pool rotated"}
+{"func":"should_adopt","args":{"api_key":"new","base_url":"http://other","default_base":"http://d","state":{"base_url":"http://other","api_key":"old","_env_creds_seen":null}},"case":"base not default"}
+{"func":"should_adopt","args":{"api_key":"new2","base_url":"http://seen","default_base":"http://default","state":{"base_url":"http://seen","api_key":"old","_env_creds_seen":["http://seen","old"]}},"case":"prev seen adopt"}
+{"func":"should_adopt","args":{"api_key":"new","base_url":"http://other","default_base":"http://default","state":{"base_url":"http://other","api_key":"old","_env_creds_seen":["http://seen","old"]}},"case":"prev seen outside set"}
+{"func":"should_adopt","args":{"api_key":"old","base_url":"http://seen","default_base":"http://default","state":{"base_url":"http://seen","api_key":"old","_env_creds_seen":["http://seen","old"]}},"case":"prev seen unchanged"}
+{"func":"log_context","agent":{"provider":"anthropic","model":"claude"},"case":"both strings"}
+{"func":"log_context","agent":{},"case":"both missing"}

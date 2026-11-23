@@ -1,0 +1,12 @@
+{"func": "resolve_profile_path_ex", "path": "C:/home/u/prof.out", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "profile.out", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "sub/../prof.out", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "~/prof.out", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "C:/home/u/./prof.out", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "logs/prof.out", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "../prof.out", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "~", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "a/b/c/../../x", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "C:/home/u/a/../../b", "home": "C:/home/u"}
+{"func": "resolve_profile_path_ex", "path": "deep//nested/./out", "home": "C:/home/u"}

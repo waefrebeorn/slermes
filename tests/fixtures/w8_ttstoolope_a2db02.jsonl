@@ -1,0 +1,14 @@
+{"func":"openai_extra_body","case":"empty","oai_config":{}}
+{"func":"openai_extra_body","case":"language","oai_config":{"language":"en"}}
+{"func":"openai_extra_body","case":"consent_true_empty_lang","oai_config":{"language":"","consent_attestation":true}}
+{"func":"openai_extra_body","case":"both_nonstring","oai_config":{"language":"fr-FR","consent_attestation":"yes","model":"gpt-4o-mini-tts"}}
+{"func":"openai_extra_body","case":"null_and_false","oai_config":{"consent_attestation":false,"language":null}}
+{"func":"openai_extra_body","case":"numbers","oai_config":{"language":0,"consent_attestation":1}}
+{"func":"openai_extra_body","case":"arrays","oai_config":{"language":[],"consent_attestation":[1]}}
+{"func":"openai_extra_body","case":"objects","oai_config":{"language":{},"consent_attestation":{"k":1}}}
+{"func":"is_response_format_rejection","case":"opus400","status_code":400,"message":"literal_error body response_format opus"}
+{"func":"is_response_format_rejection","case":"opus422","status_code":422,"message":"body/response_format invalid"}
+{"func":"is_response_format_rejection","case":"400other","status_code":400,"message":"bad request"}
+{"func":"is_response_format_rejection","case":"200withkw","status_code":200,"message":"response_format ok"}
+{"func":"is_response_format_rejection","case":"422empty","status_code":422,"message":""}
+{"func":"is_response_format_rejection","case":"nostatus","message":"response_format"}

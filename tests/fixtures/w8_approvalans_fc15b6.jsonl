@@ -1,0 +1,30 @@
+{"func": "expand", "command": "echo $'rm -rf /'"}
+{"func": "expand", "command": "echo $'a\\x72b'"}
+{"func": "expand", "command": "echo $'\\101\\102'"}
+{"func": "expand", "command": "echo $'\\u0041\\U00000042'"}
+{"func": "expand", "command": "echo $'\\n\\t'"}
+{"func": "expand", "command": "echo $'\\cA'"}
+{"func": "expand", "command": "echo $'\\ud800'"}
+{"func": "expand", "command": "echo $'a\\0b'"}
+{"func": "expand", "command": "echo $'unterminated"}
+{"func": "expand", "command": "echo \"$'literal'\""}
+{"func": "expand", "command": "echo $'x' \\$'y'"}
+{"func": "expand", "command": "echo $$'x'"}
+{"func": "expand", "command": "echo $\"'v'\""}
+{"func": "expand", "command": "echo # comment $'x'"}
+{"func": "expand", "command": "echo \\ # not comment $'x'"}
+{"func": "expand", "command": "echo \"$(echo $'x')\""}
+{"func": "expand", "command": "echo `echo $'y'`"}
+{"func": "expand", "command": "echo $'it'\\''s'"}
+{"func": "expand", "command": "echo $'\\\\x72'"}
+{"func": "expand", "command": "echo $'\\q'"}
+{"func": "expand", "command": "echo plain text"}
+{"func": "expand", "command": "echo $'a\\\"b'"}
+{"func": "span_end", "text": "x$'abc'z", "start": 1}
+{"func": "span_end", "text": "x$'abc", "start": 1}
+{"func": "span_end", "text": "x$'a\\'b'z", "start": 1}
+{"func": "comment_start", "text": "a #x", "index": 2}
+{"func": "comment_start", "text": "a\\ #x", "index": 3}
+{"func": "comment_start", "text": "a#x", "index": 1}
+{"func": "skip_cont", "text": "a\\\nb", "i": 1}
+{"func": "skip_cont", "text": "abc", "i": 1}

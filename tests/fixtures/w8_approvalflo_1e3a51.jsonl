@@ -1,0 +1,46 @@
+{"func": "user_deny", "pattern": "rm *"}
+{"func": "user_deny", "pattern": "git push --force"}
+{"func": "user_deny", "pattern": "sudo *"}
+{"func": "user_deny", "pattern": "drop table"}
+{"func": "sudo", "description": "password piping detected"}
+{"func": "sudo", "description": "sudo -S usage"}
+{"func": "sudo", "description": "malformed input"}
+{"func": "hardline", "description": "recursive delete", "command": "rm -rf /"}
+{"func": "hardline", "description": "dangerous op", "command": "echo hi"}
+{"func": "hardline", "description": "unsafe flag", "command": "curl -k"}
+{"func": "has_operator", "command": "cargo bench -- '^a(b|c)$'"}
+{"func": "has_operator", "command": "echo $HOME"}
+{"func": "has_operator", "command": "echo $(id)"}
+{"func": "has_operator", "command": "echo ${x}"}
+{"func": "has_operator", "command": "echo {a,b}"}
+{"func": "has_operator", "command": "cargo -c 'x'"}
+{"func": "has_operator", "command": "echo 'a;b'"}
+{"func": "has_operator", "command": "echo a;echo b"}
+{"func": "has_operator", "command": "echo \\$("}
+{"func": "has_operator", "command": "test -v 'a[$(cmd)]'"}
+{"func": "has_operator", "command": "echo '\\$x'"}
+{"func": "has_operator", "command": "echo \"`id`\""}
+{"func": "has_operator", "command": "echo \"$HOME\""}
+{"func": "has_operator", "command": "echo $((1+1))"}
+{"func": "has_operator", "command": "printf -v x 'a'"}
+{"func": "has_operator", "command": "echo hi"}
+{"func": "has_operator", "command": ""}
+{"func": "has_operator", "command": "echo $'a;b'"}
+{"func": "has_operator", "command": "[[ x -eq 'a[$(cmd)]' ]]"}
+{"func": "has_operator", "command": "builtin -- test -v 'a'"}
+{"func": "matching", "command": "echo hi", "patterns": ["echo hi"]}
+{"func": "matches", "command": "echo hi", "patterns": ["echo hi"]}
+{"func": "matching", "command": "podman run x", "patterns": ["podman *"]}
+{"func": "matches", "command": "podman run x", "patterns": ["podman *"]}
+{"func": "matching", "command": "echo a;id", "patterns": ["echo *"]}
+{"func": "matches", "command": "echo a;id", "patterns": ["echo *"]}
+{"func": "matching", "command": "  echo hi  ", "patterns": ["echo hi"]}
+{"func": "matches", "command": "  echo hi  ", "patterns": ["echo hi"]}
+{"func": "matching", "command": "x", "patterns": ["a[0-9]"]}
+{"func": "matches", "command": "x", "patterns": ["a[0-9]"]}
+{"func": "matching", "command": "python x.py", "patterns": ["python *", "echo *"]}
+{"func": "matches", "command": "python x.py", "patterns": ["python *", "echo *"]}
+{"func": "matching", "command": "echo hi", "patterns": []}
+{"func": "matches", "command": "echo hi", "patterns": []}
+{"func": "matching", "command": "", "patterns": ["*"]}
+{"func": "matches", "command": "", "patterns": ["*"]}

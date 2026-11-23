@@ -1,0 +1,16 @@
+{"func": "bg_preview", "prompt": "hello world", "case": "short prompt"}
+{"func": "bg_preview", "prompt": "  a\tb \n c   d  ", "case": "whitespace collapse"}
+{"func": "bg_preview", "prompt": "  ", "case": "all whitespace"}
+{"func": "bg_preview", "prompt": null, "case": "null prompt"}
+{"func": "bg_preview", "prompt": "aaaaaaaaaa", "limit": 5, "case": "truncate with ellipsis"}
+{"func": "bg_preview", "prompt": "abc def ghi", "limit": 5, "case": "truncate at token boundary rstrip"}
+{"func": "bg_preview", "prompt": "aaaaaaaaaa", "limit": 11, "case": "exactly at limit"}
+{"func": "bg_preview", "prompt": "abcdef", "limit": 1, "case": "limit one"}
+{"func": "bg_preview", "prompt": " a b ", "limit": 3, "case": "collapse then truncate"}
+{"func": "complete_preview", "prompt": "short", "case": "complete short"}
+{"func": "complete_preview", "prompt": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "case": "complete exactly 60"}
+{"func": "complete_preview", "prompt": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "case": "complete 61 truncated"}
+{"func": "image_paths", "urls": ["a.png", "b.mp3", "c.jpg"], "media_types": ["image/png", "audio/mpeg", "image/jpeg"], "case": "mixed media"}
+{"func": "image_paths", "urls": ["a", "b"], "media_types": ["image/"], "case": "missing type falls back empty"}
+{"func": "image_paths", "urls": ["a", "b"], "media_types": [], "case": "no types"}
+{"func": "image_paths", "urls": [], "media_types": ["image/png"], "case": "no urls"}

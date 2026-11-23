@@ -1,0 +1,19 @@
+{"func":"timeout_seconds"}
+{"func":"local_backends"}
+{"func":"handler_names"}
+{"func":"params_valid","params":{},"session_id":"s1","command":"echo hi"}
+{"func":"params_valid","params":{"session_id":"s1","profile":"p","command":"ls"},"session_id":"s1","command":"ls"}
+{"func":"params_valid","params":{"bogus":1},"session_id":"s1","command":"ls"}
+{"func":"params_valid","params":{},"session_id":"","command":"ls"}
+{"func":"params_valid","params":{},"session_id":null,"command":"ls"}
+{"func":"params_valid","params":{},"session_id":123,"command":"ls"}
+{"func":"params_valid","params":{},"session_id":"s1","command":"   "}
+{"func":"params_valid","params":{},"session_id":"s1","command":null}
+{"func":"params_valid","params":{},"session_id":"s1","command":"  echo hi  "}
+{"func":"backend_is_local","terminal_env":null}
+{"func":"backend_is_local","terminal_env":""}
+{"func":"backend_is_local","terminal_env":"local"}
+{"func":"backend_is_local","terminal_env":"LOCAL"}
+{"func":"backend_is_local","terminal_env":"  local  "}
+{"func":"backend_is_local","terminal_env":"docker"}
+{"func":"backend_is_local","terminal_env":"ssh "}

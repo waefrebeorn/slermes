@@ -1,0 +1,10 @@
+{"func":"serialize_frame","case":"empty_obj","obj":{}}
+{"func":"serialize_frame","case":"rpc","obj":{"jsonrpc":"2.0","id":1,"method":"ping"}}
+{"func":"serialize_frame","case":"scalars","obj":{"a":true,"b":false,"c":null}}
+{"func":"serialize_frame","case":"unicode","obj":{"nested":{"x":[1,2,3]},"s":"héllo"}}
+{"func":"serialize_frame","case":"array","obj":[1,"two",{"three":3}]}
+{"func":"serialize_frame","case":"escapes","obj":{"esc":"line\nnul\tquote\"back\\"}}
+{"func":"tee_write","case":"primary_ok_no_sec","primary_ok":true,"secondaries":[]}
+{"func":"tee_write","case":"primary_fail","primary_ok":false,"secondaries":[{"ok":true,"raise":false}]}
+{"func":"tee_write","case":"mixed_secondaries","primary_ok":true,"secondaries":[{"ok":false,"raise":false},{"ok":true,"raise":true}]}
+{"func":"tee_write","case":"all_raise","primary_ok":false,"secondaries":[{"ok":false,"raise":true},{"ok":true,"raise":true}]}

@@ -1,0 +1,25 @@
+{"func":"should_sanitize","api_mode":"chat_completions","case":"chat completions sanitize"}
+{"func":"should_sanitize","api_mode":"codex_responses","case":"codex skip"}
+{"func":"should_sanitize","api_mode":null,"case":"null mode sanitize"}
+{"func":"echo_opt_in","flag":true,"case":"flag true"}
+{"func":"echo_opt_in","flag":false,"case":"flag false"}
+{"func":"echo_opt_in","case":"flag missing"}
+{"func":"echo_opt_in","flag":0,"case":"flag zero"}
+{"func":"kimi","args":{"provider":"kimi","base_url":"u","family_matches":{"kimi|kimi||u":true}},"case":"kimi match"}
+{"func":"kimi","args":{"provider":"kimi","base_url":"v","family_matches":{"kimi|kimi||u":true}},"case":"kimi no match"}
+{"func":"deepseek","args":{"provider":"DeepSeek","model":"m","base_url":"u","family_matches":{"deepseek|deepseek|m|u":true}},"case":"deepseek lower provider"}
+{"func":"deepseek","args":{"provider":"DeepSeek","model":"m","base_url":"u","family_matches":{"deepseek|DeepSeek|m|u":true}},"case":"deepseek raw key absent"}
+{"func":"mimo","args":{"provider":"Xiaomi","model":"m","base_url":"u","family_matches":{"mimo|xiaomi|m|u":true}},"case":"mimo lower provider"}
+{"func":"sanitize","api_msg":{"role":"assistant","tool_calls":[{"id":"1","call_id":"c","response_item_id":"r","extra_content":"e","name":"f"}]},"keep_signature":false,"case":"strip strict fields"}
+{"func":"sanitize","api_msg":{"tool_calls":[{"call_id":"c","extra_content":"e","name":"f"}]},"keep_signature":true,"case":"keep signature"}
+{"func":"sanitize","api_msg":{"tool_calls":"bad"},"keep_signature":false,"case":"non list tool calls"}
+{"func":"supports","args":{"matches":["nousresearch.com"]},"case":"nous direct"}
+{"func":"supports","args":{"profile":"p","ask_profile_value":{"reasoning":{}},"matches":[]},"case":"profile with payload"}
+{"func":"supports","args":{"profile":"p","ask_profile_value":null,"matches":[]},"case":"profile no payload"}
+{"func":"supports","args":{"provider":" LMSTUDIO ","lmstudio_options":["high"],"matches":[]},"case":"lmstudio high"}
+{"func":"supports","args":{"provider":"lmstudio","lmstudio_options":["off"],"matches":[]},"case":"lmstudio off only"}
+{"func":"supports","args":{"matches":["ollama.com"],"ollama_thinking":true},"case":"ollama thinking"}
+{"func":"supports","args":{"matches":[],"is_openrouter":false},"case":"not openrouter"}
+{"func":"supports","args":{"matches":[],"is_openrouter":true,"caps":{"supports_reasoning":true}},"case":"openrouter caps"}
+{"func":"supports","args":{"matches":[],"is_openrouter":true,"model":"DeepSeek/chat"},"case":"openrouter static prefix"}
+{"func":"supports","args":{"matches":[],"is_openrouter":true,"model":"unknown-model"},"case":"openrouter no prefix"}

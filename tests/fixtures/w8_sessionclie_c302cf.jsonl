@@ -1,0 +1,20 @@
+{"func": "client_problem", "value": {"name": "abc"}, "case": "valid bare name"}
+{"func": "client_problem", "value": {"name": "a.b_c-9", "version": "1.2.0"}, "case": "valid name and version"}
+{"func": "client_problem", "value": {"name": "abc", "version": "!~"}, "case": "version printable extremes"}
+{"func": "client_problem", "value": {"name": "abc", "extra": 1}, "case": "extra key rejected"}
+{"func": "client_problem", "value": {"version": "1.0"}, "case": "missing name rejected"}
+{"func": "client_problem", "value": null, "case": "non-dict rejected"}
+{"func": "client_problem", "value": {"name": ""}, "case": "empty name"}
+{"func": "client_problem", "value": {"name": "Abc"}, "case": "uppercase name"}
+{"func": "client_problem", "value": {"name": ".abc"}, "case": "name must start alnum"}
+{"func": "client_problem", "value": {"name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, "case": "name too long"}
+{"func": "client_problem", "value": {"name": "abc", "version": "a b"}, "case": "version with space"}
+{"func": "client_problem", "value": {"name": "abc", "version": 12}, "case": "version non-string"}
+{"func": "client_problem", "value": {"name": "abc", "version": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, "case": "version too long"}
+{"func": "policy_client", "policy": null, "case": "no policy"}
+{"func": "policy_client", "policy": "not json", "case": "bad request_json"}
+{"func": "policy_client", "policy": "[]", "case": "list request_json"}
+{"func": "policy_client", "policy": "{}", "case": "no client key"}
+{"func": "policy_client", "policy": "{\"client\":{\"name\":\"cli\",\"version\":\"2.0\"}}", "case": "valid client"}
+{"func": "policy_client", "policy": "{\"client\":{\"name\":\"BAD\"}}", "case": "invalid client label"}
+{"func": "policy_client", "policy": "{\"client\":\"str\"}", "case": "client not object"}

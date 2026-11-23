@@ -1,0 +1,16 @@
+{"func":"set_extra_header","api_kwargs":{},"key":"X-A","value":"1","case":"empty kwargs"}
+{"func":"set_extra_header","api_kwargs":{"extra_headers":{"X-Old":"v"}},"key":"X-New","value":"2","case":"merge existing"}
+{"func":"set_extra_header","api_kwargs":{"extra_headers":{"X-A":"old"}},"key":"X-A","value":"new","case":"overwrite existing"}
+{"func":"set_extra_header","api_kwargs":{"model":"m","extra_headers":{"a":1}},"key":"b","value":null,"case":"null value"}
+{"func":"set_extra_header","api_kwargs":{"extra_headers":{}},"key":"k","value":{"nested":true},"case":"object value"}
+{"func":"set_extra_header","api_kwargs":{"input":[]},"key":"k","value":"v","case":"no extra_headers field"}
+{"func":"set_extra_header","api_kwargs":{"extra_headers":{"x":1,"y":2}},"key":"z","value":3,"case":"numeric value preserves"}
+{"func":"set_extra_header","api_kwargs":{"extra_headers":{"keep":"me"}},"key":"arr","value":[1,2],"case":"array value"}
+{"func":"apply_headers","agent":{"_is_user_initiated_turn":false},"api_kwargs":{},"request_headers":{"X-A":"1"},"case":"not user initiated no-op"}
+{"func":"apply_headers","agent":{"_is_user_initiated_turn":true,"provider":"openai","base_url":"http://x","model":"m"},"api_kwargs":{},"request_headers":{"X-A":"1"},"case":"user initiated consumes flag"}
+{"func":"apply_headers","agent":{"_is_user_initiated_turn":true,"provider":"x","base_url":"b","model":"m"},"api_kwargs":{"extra_headers":{"old":"v"}},"request_headers":{"k1":"v1","k2":"v2"},"case":"two headers merged"}
+{"func":"apply_headers","agent":{"_is_user_initiated_turn":true},"api_kwargs":{},"request_headers":null,"case":"null headers"}
+{"func":"apply_headers","agent":{},"api_kwargs":{},"request_headers":{"k":"v"},"case":"missing flag"}
+{"func":"apply_headers","agent":{"_is_user_initiated_turn":true},"api_kwargs":{"model":"m"},"request_headers":{},"case":"empty headers"}
+{"func":"apply_headers","agent":{"_is_user_initiated_turn":false},"api_kwargs":{"extra_headers":{"z":9}},"request_headers":{"k":"v"},"case":"not initiated keeps kwargs"}
+{"func":"apply_headers","agent":{"_is_user_initiated_turn":true,"provider":"p","base_url":"u","model":"mm"},"api_kwargs":{"messages":[]},"request_headers":{"h":"w"},"case":"user initiated with messages"}

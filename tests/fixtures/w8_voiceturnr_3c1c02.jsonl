@@ -1,0 +1,17 @@
+{"func": "route_target", "case": "auto no model no base -> None", "cfg": {"provider": "auto", "model": "", "base_url": ""}, "agent_provider": "openai", "agent_model": "gpt-x", "aux_model": "", "alias_provider": "", "alias_base": null}
+{"func": "route_target", "case": "auto with model -> agent provider", "cfg": {"provider": "auto", "model": "fast-model", "base_url": "", "reasoning_effort": "low"}, "agent_provider": "openai", "agent_model": "gpt-x", "aux_model": "", "alias_provider": "", "alias_base": null}
+{"func": "route_target", "case": "auto with base_url -> custom", "cfg": {"provider": "auto", "model": "", "base_url": "https://x", "tag": 1}, "agent_provider": "openai", "agent_model": "gpt-x", "aux_model": "", "alias_provider": "", "alias_base": null}
+{"func": "route_target", "case": "empty provider with model", "cfg": {"provider": "", "model": "m"}, "agent_provider": "openai", "agent_model": "gpt-x", "aux_model": "", "alias_provider": "", "alias_base": null}
+{"func": "route_target", "case": "main with model", "cfg": {"provider": "MAIN", "model": "m"}, "agent_provider": "openai", "agent_model": "gpt-x", "aux_model": "", "alias_provider": "", "alias_base": null}
+{"func": "route_target", "case": "provider pinned no model uses aux", "cfg": {"provider": "anthropic"}, "agent_provider": "openai", "agent_model": "gpt-x", "aux_model": "claude-haiku", "alias_provider": "", "alias_base": null}
+{"func": "route_target", "case": "pinned no aux -> None", "cfg": {"provider": "anthropic"}, "agent_provider": "openai", "agent_model": "gpt-x", "aux_model": "", "alias_provider": "", "alias_base": null}
+{"func": "route_target", "case": "same provider and model -> None", "cfg": {"provider": "openai", "model": "gpt-x"}, "agent_provider": "openai", "agent_model": "gpt-x", "aux_model": "fast", "alias_provider": "", "alias_base": null}
+{"func": "route_target", "case": "same provider different model -> target", "cfg": {"provider": "openai", "model": "other"}, "agent_provider": "openai", "agent_model": "gpt-x", "aux_model": "", "alias_provider": "", "alias_base": null}
+{"func": "route_target", "case": "alias applied (openai)", "cfg": {"provider": "openai", "model": "m"}, "agent_provider": "openai", "agent_model": "gpt-x", "aux_model": "", "alias_provider": "openai", "alias_base": "https://api.openai.com/v1"}
+{"func": "route_target", "case": "whitespace and case normalization", "cfg": {"provider": "  AUTO  ", "model": "  M  ", "base_url": "  "}, "agent_provider": "OpenAI", "agent_model": "gpt-x", "aux_model": "fast", "alias_provider": "", "alias_base": null}
+{"func": "voice_reasoning", "case": "disabled effort with floor", "effort": {"enabled": false}, "lowest": "low"}
+{"func": "voice_reasoning", "case": "disabled effort no floor", "effort": {"enabled": false}, "lowest": null}
+{"func": "voice_reasoning", "case": "disabled effort empty floor", "effort": {"enabled": false}, "lowest": ""}
+{"func": "voice_reasoning", "case": "enabled effort unchanged", "effort": {"enabled": true, "effort": "high"}, "lowest": "low"}
+{"func": "voice_reasoning", "case": "null effort", "effort": null, "lowest": "low"}
+{"func": "voice_reasoning", "case": "non-dict effort", "effort": "low", "lowest": "low"}

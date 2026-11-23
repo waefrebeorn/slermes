@@ -1,0 +1,16 @@
+{"func":"reanchor","messages":[{"role":"user","content":"u0"},{"role":"assistant","content":"a"},{"role":"user","content":"hi"}],"user_message":"hi"}
+{"func":"reanchor","messages":[{"role":"user","content":"a"},{"role":"assistant","content":"x"},{"role":"user","content":"b"}],"user_message":"zzz"}
+{"func":"reanchor","messages":[{"role":"user","content":"hidden","display_kind":"hidden"},{"role":"user","content":"b"}],"user_message":"zzz"}
+{"func":"reanchor","messages":[{"role":"user","content":"steer","display_kind":"steer"}],"user_message":"zzz"}
+{"func":"reanchor","messages":[{"role":"assistant","content":"x"}],"user_message":"zzz"}
+{"func":"reanchor","messages":[{"role":"user","content":""},{"role":"user","content":"ok"}],"user_message":"zzz"}
+{"func":"reanchor","messages":[{"role":"user"}],"user_message":null}
+{"func":"reanchor","messages":[{"role":"user","content":"x"},{"role":"user","content":"x"}],"user_message":"x"}
+{"func":"compact","result":{"result":{"messages":[{"role":"user","content":"u0"},{"role":"user","content":"hi","api_content":[{"type":"input_text","text":"hi"}]},{"role":"assistant","content":"a"}],"current_turn_user_idx":1}},"user_message":"hi"}
+{"func":"compact","result":{"result":{"tools":[{"x":1}],"messages":[{"role":"user","content":"u0"},{"role":"user","content":"hi"},{"role":"assistant","content":"a"}],"current_turn_user_idx":1}},"user_message":"hi"}
+{"func":"compact","result":{"result":{"messages":[{"role":"user","content":"u0"},{"role":"user","content":"hi"},{"role":"assistant","content":"a"}],"current_turn_user_idx":1,"_compressed":true}},"user_message":"hi"}
+{"func":"compact","result":{"result":{"messages":[{"role":"user","content":"u0"},{"role":"user","content":"hi"},{"role":"assistant","content":"a"}],"current_turn_user_idx":1,"_messages_are_turn_suffix":true}},"user_message":"hi"}
+{"func":"compact","result":{"result":{"messages":[{"role":"user","content":"u0"},{"role":"user","content":"hi"},{"role":"assistant","content":"a"}],"current_turn_user_idx":99}},"user_message":"hi"}
+{"func":"compact","result":{"result":{"messages":[{"role":"assistant","content":"a"}]}},"user_message":"zzz"}
+{"func":"compact","result":{"result":{"messages":[{"role":"user","content":"a"},{"role":"tool","content":"t"}],"current_turn_user_idx":0}},"user_message":"zzz"}
+{"func":"compact","result":{"not_result":1},"user_message":"x"}

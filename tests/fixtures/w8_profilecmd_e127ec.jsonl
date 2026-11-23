@@ -1,0 +1,13 @@
+{"func": "confirm", "answer": "y"}
+{"func": "confirm", "answer": "YES"}
+{"func": "confirm", "answer": "  yes  "}
+{"func": "confirm", "answer": ""}
+{"func": "confirm", "answer": "n"}
+{"func": "confirm", "answer": "maybe"}
+{"func": "is_active", "name": "alpha", "active": "alpha", "is_default": false}
+{"func": "is_active", "name": "alpha", "active": "default", "is_default": true}
+{"func": "is_active", "name": "alpha", "active": "default", "is_default": false}
+{"func": "is_active", "name": "", "active": "", "is_default": false}
+{"func": "action_keys", "pad": "x"}
+{"func": "has_action", "action": "create"}
+{"func": "has_action", "action": "bogus"}

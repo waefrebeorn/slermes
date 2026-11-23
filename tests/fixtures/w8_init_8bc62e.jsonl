@@ -1,0 +1,10 @@
+{"func": "doc"}
+{"func": "doc", "pad": "x"}
+{"func": "public_names"}
+{"func": "public_names", "pad": null}
+{"func": "has_symbol", "name": "activity"}
+{"func": "has_symbol", "name": "__doc__"}
+{"func": "has_symbol", "name": ""}
+{"func": "has_symbol", "name": "session_rules"}
+{"func": "is_package"}
+{"func": "is_package", "tag": "z"}

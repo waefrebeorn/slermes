@@ -1,0 +1,22 @@
+{"func": "login_provider", "provider": "basic", "case": "bundled basic"}
+{"func": "login_provider", "provider": "session-token", "case": "bundled loopback"}
+{"func": "login_provider", "provider": "local", "case": "local is not a login"}
+{"func": "login_provider", "provider": "custom", "extra": ["custom"], "case": "plugin login"}
+{"func": "login_provider", "provider": "custom", "case": "unknown provider"}
+{"func": "principal", "identity": {"user_id": "u1", "provider": "basic"}, "host": "uid:1000", "case": "login principal is owner"}
+{"func": "principal", "identity": {"user_id": "u1", "provider": "local"}, "host": "uid:1000", "case": "native local keeps subject"}
+{"func": "principal", "identity": {"user_id": "u1"}, "host": "uid:1000", "case": "no provider keeps subject"}
+{"func": "principal", "identity": {"user_id": null, "provider": "basic"}, "host": "uid:1000", "case": "unbound early return"}
+{"func": "principal", "identity": {"user_id": "u1", "provider": "custom"}, "extra": ["custom"], "host": "uid:1000", "case": "plugin login is owner"}
+{"func": "principal", "identity": {"user_id": "u1", "provider": "local", "profile_id": "p", "instance_id": "i", "capabilities": {}}, "host": "uid:1000", "case": "native receipt"}
+{"func": "principal", "identity": {"user_id": "u1", "provider": "nous", "issuer": "iss"}, "host": "uid:1000", "case": "nous login"}
+{"func": "same_owner", "stored": "uid:1000", "subject": "uid:1000", "rule": {"host_subject": "uid:1000", "login_providers": ["basic", "nous", "self-hosted", "session-token", "server-internal"]}, "case": "equal"}
+{"func": "same_owner", "stored": "basic:bob", "subject": "auth:v1:[\"basic\",\"\",\"bob\"]", "rule": {"host_subject": "uid:1000", "login_providers": ["basic", "nous", "self-hosted", "session-token", "server-internal"]}, "case": "owner login label"}
+{"func": "same_owner", "stored": "auth:v1:[\"basic\",\"iss\",\"bob\"]", "subject": "uid:1000", "rule": {"host_subject": "uid:1000", "login_providers": ["basic", "nous", "self-hosted", "session-token", "server-internal"]}, "case": "legacy auth stamp of owner"}
+{"func": "same_owner", "stored": "basic:bob", "subject": "uid:1000", "rule": {"host_subject": "uid:1000", "login_providers": ["basic", "nous", "self-hosted", "session-token", "server-internal"]}, "case": "served dashboard stamp"}
+{"func": "same_owner", "stored": "nous:bob", "subject": "uid:1000", "rule": {"host_subject": "uid:1000", "login_providers": ["basic", "nous", "self-hosted", "session-token", "server-internal"]}, "case": "nous label is not owner stamp"}
+{"func": "same_owner", "stored": "local:uid:1000", "subject": "uid:1000", "rule": {"host_subject": "uid:1000", "login_providers": ["basic", "nous", "self-hosted", "session-token", "server-internal"]}, "case": "local stamp matches host"}
+{"func": "same_owner", "stored": "telegram:42", "subject": "uid:1000", "rule": {"host_subject": "uid:1000", "login_providers": ["basic", "nous", "self-hosted", "session-token", "server-internal"]}, "case": "foreign platform stamp"}
+{"func": "same_owner", "stored": "", "subject": "uid:1000", "rule": {"host_subject": "uid:1000", "login_providers": ["basic", "nous", "self-hosted", "session-token", "server-internal"]}, "case": "empty stored"}
+{"func": "owners_agree", "first": "basic:bob", "second": "auth:v1:[\"basic\",\"\",\"bob\"]", "rule": {"host_subject": "uid:1000", "login_providers": ["basic", "nous", "self-hosted", "session-token", "server-internal"]}, "case": "label and subject agree"}
+{"func": "owners_agree", "first": "basic:bob", "second": "nous:bob", "rule": {"host_subject": "uid:1000", "login_providers": ["basic", "nous", "self-hosted", "session-token", "server-internal"]}, "case": "different providers disagree"}

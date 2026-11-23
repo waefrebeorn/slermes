@@ -1,0 +1,11 @@
+{"func": "run_steps_ex", "steps": [{"name": "a", "out": {"ok": true}}]}
+{"func": "run_steps_ex", "steps": [{"name": "a", "out": {"ok": true}}, {"name": "b", "raise": "boom"}, {"name": "c", "out": {"ok": false, "error": "nope"}}]}
+{"func": "run_steps_ex", "steps": [{"name": "x", "out": "plain-string"}]}
+{"func": "run_steps_ex", "steps": [{"name": "e", "raise": ""}]}
+{"func": "run_steps_ex", "steps": [{"name": "f", "out": [1, 2, 3]}]}
+{"func": "run_steps_ex", "steps": [{"name": "g", "out": null}]}
+{"func": "run_steps_ex", "steps": [{"name": "h", "out": 42}]}
+{"func": "run_steps_ex", "steps": [{"name": "i", "out": true}, {"name": "j", "raise": "second error"}]}
+{"func": "run_steps_ex", "steps": [{"name": "k", "out": {"nested": {"a": 1}}}, {"name": "l", "out": {}}, {"name": "m", "raise": "last"}]}
+{"func": "run_steps_ex", "steps": []}
+{"func": "run_steps_ex", "steps": [{"name": "n", "raise": "first"}, {"name": "n", "out": {"ok": true}}]}

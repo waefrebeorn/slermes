@@ -1,0 +1,22 @@
+{"func": "may_answer", "case": "default star admitted", "authority": {"approvers": ["*"], "requester_id": "U1", "requester_name": "Alice"}, "actor_id": "U2", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "may_answer", "case": "default star unadmitted", "authority": {"approvers": ["*"], "requester_id": "U1"}, "actor_id": "U9", "admin_ids": [], "extra": null, "commands": [], "admitted": false}
+{"func": "may_answer", "case": "star with commands policy refuses", "authority": {"approvers": ["*"], "requester_id": "U1"}, "actor_id": "U9", "admin_ids": [], "extra": {"enabled": true, "admins": ["ADM"], "commands": []}, "commands": ["approve"], "admitted": true}
+{"func": "may_answer", "case": "star with commands actor admin", "authority": {"approvers": ["*"], "requester_id": "U1"}, "actor_id": "ADM", "admin_ids": [], "extra": {"enabled": true, "admins": ["ADM"], "commands": []}, "commands": ["approve"], "admitted": true}
+{"func": "may_answer", "case": "star with commands allowed", "authority": {"approvers": ["*"], "requester_id": "U1"}, "actor_id": "U9", "admin_ids": [], "extra": {"enabled": true, "admins": ["ADM"], "commands": ["approve"]}, "commands": ["approve"], "admitted": true}
+{"func": "may_answer", "case": "narrowed empty requester match", "authority": {"approvers": [], "requester_id": "U1", "requester_name": "Alice"}, "actor_id": "U1", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "may_answer", "case": "narrowed empty other actor", "authority": {"approvers": [], "requester_id": "U1", "requester_name": "Alice"}, "actor_id": "U2", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "may_answer", "case": "narrowed list approver", "authority": {"approvers": ["U2", "U3"], "requester_id": "U1"}, "actor_id": "U2", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "may_answer", "case": "narrowed admin via admin_ids", "authority": {"approvers": [], "requester_id": "U1"}, "actor_id": "ADM", "admin_ids": ["ADM"], "extra": null, "commands": [], "admitted": true}
+{"func": "may_answer", "case": "narrowed actor empty", "authority": {"approvers": [], "requester_id": "U1"}, "actor_id": "", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "may_answer", "case": "empty authority admitted", "authority": {}, "actor_id": "U1", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "may_answer", "case": "empty authority unadmitted", "authority": {}, "actor_id": "U1", "admin_ids": [], "extra": null, "commands": [], "admitted": false}
+{"func": "may_answer", "case": "whitespace actor trimmed", "authority": {"approvers": [], "requester_id": "U1"}, "actor_id": " U1 ", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "may_answer", "case": "default star bare admin ids no floor", "authority": {"approvers": ["*"], "requester_id": "U1"}, "actor_id": "U9", "admin_ids": ["ADM"], "extra": null, "commands": ["approve"], "admitted": true}
+{"func": "refusal", "case": "allowed default", "authority": {"approvers": ["*"], "requester_id": "U1"}, "actor_id": "U1", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "refusal", "case": "requester name refusal", "authority": {"approvers": [], "requester_id": "U1", "requester_name": "Alice"}, "actor_id": "U2", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "refusal", "case": "requester id fallback", "authority": {"approvers": [], "requester_id": "U1"}, "actor_id": "U2", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "refusal", "case": "approvers string form", "authority": {"approvers": "U2", "requester_id": "U1", "requester_name": "Bob"}, "actor_id": "U2", "admin_ids": [], "extra": null, "commands": [], "admitted": true}
+{"func": "commands", "case": "choice none", "choice": null}
+{"func": "commands", "case": "choice deny", "choice": "deny"}
+{"func": "commands", "case": "choice approve", "choice": "approve"}
+{"func": "commands", "case": "choice unknown", "choice": "other"}

@@ -1,0 +1,23 @@
+{"func":"token","case":1,"env":{"GITHUB_TOKEN":" abc "}}
+{"func":"token","case":2,"env":{"GITHUB_TOKEN":"   ","GH_TOKEN":"tok2"}}
+{"func":"token","case":3,"env":{}}
+{"func":"token","case":4,"env":{"GITHUB_TOKEN":null,"GH_TOKEN":" t "}}
+{"func":"token","case":5,"env":{"GITHUB_TOKEN":"first","GH_TOKEN":"second"}}
+{"func":"header_int","case":6,"headers":{"x-ratelimit-remaining":"0"},"name":"x-ratelimit-remaining"}
+{"func":"header_int","case":7,"headers":{"x":" 42 "},"name":"x"}
+{"func":"header_int","case":8,"headers":{"x":"abc"},"name":"x"}
+{"func":"header_int","case":9,"headers":{},"name":"x"}
+{"func":"header_int","case":10,"headers":{"x":"3.5"},"name":"x"}
+{"func":"header_int","case":11,"headers":{"x":"-5"},"name":"x"}
+{"func":"describe","case":12,"spec":{"kind":"http","status":403,"headers":{"x-ratelimit-remaining":"0","x-ratelimit-reset":"1003600"},"authenticated":false,"now":1000000}}
+{"func":"describe","case":13,"spec":{"kind":"http","status":403,"headers":{"x-ratelimit-remaining":"0","x-ratelimit-reset":"1003600"},"authenticated":true,"now":1000000}}
+{"func":"describe","case":14,"spec":{"kind":"http","status":429,"headers":{"x-ratelimit-remaining":"0"},"authenticated":false,"now":1000000}}
+{"func":"describe","case":15,"spec":{"kind":"http","status":403,"headers":{"x-ratelimit-remaining":"1"},"authenticated":false,"now":1000000}}
+{"func":"describe","case":16,"spec":{"kind":"http","status":503,"headers":{},"authenticated":false,"now":1000000}}
+{"func":"describe","case":17,"spec":{"kind":"http","status":404,"headers":{},"authenticated":false,"now":1000000}}
+{"func":"describe","case":18,"spec":{"kind":"url","reason":"Connection refused","authenticated":false}}
+{"func":"describe","case":19,"spec":{"kind":"url","reason":"timed out","authenticated":false}}
+{"func":"describe","case":20,"spec":{"kind":"url","reason":"Operation TIMED OUT","authenticated":false}}
+{"func":"describe","case":21,"spec":{"kind":"url_timeout","authenticated":false}}
+{"func":"describe","case":22,"spec":{"kind":"timeout","authenticated":false}}
+{"func":"describe","case":23,"spec":{"kind":"other","message":"boom"}}

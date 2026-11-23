@@ -1,0 +1,19 @@
+{"func":"key","model":"gpt-4","base_url":"https://api.openai.com/v1","hosts":{"https://api.openai.com/v1":"api.openai.com"},"case":"full key"}
+{"func":"key","model":null,"base_url":"https://x.test/v1","hosts":{"https://x.test/v1":"x.test"},"case":"null model"}
+{"func":"key","model":"m","base_url":null,"hosts":{},"case":"null base_url"}
+{"func":"key","model":"m","base_url":"https://unknown","hosts":{},"case":"unmapped host"}
+{"func":"learned","model":"m","base_url":"u","hosts":{"u":"h"},"table":{"m@h":2345},"case":"hit table"}
+{"func":"learned","model":"m","base_url":"u","hosts":{"u":"h"},"table":{},"case":"table miss default"}
+{"func":"learned","model":"m","base_url":"u","hosts":{"u":"h"},"table":{"m@h":0},"case":"zero learned value"}
+{"func":"current","bound":null,"case":"unbound default"}
+{"func":"current","bound":2500,"case":"explicit bound"}
+{"func":"current","bound":0,"case":"zero bound"}
+{"func":"calibrate","args":{"anchor":{"base_count":0},"messages":[{"role":"user","_images":2}],"prompt_tokens":5000,"text_only":2000,"hosts":{},"table":{},"model":"m","base_url":"u"},"case":"learn fresh"}
+{"func":"calibrate","args":{"anchor":{"base_count":0},"messages":[{"role":"user","_images":2}],"prompt_tokens":5000,"text_only":2000,"hosts":{},"table":{"m@":1000},"model":"m","base_url":"u"},"case":"ema prior"}
+{"func":"calibrate","args":{"anchor":{"base_count":0},"messages":[{"role":"assistant","_images":9},{"role":"user","_images":2}],"prompt_tokens":5000,"text_only":2000,"hosts":{},"table":{},"model":"m","base_url":"u"},"case":"drop leading assistant"}
+{"func":"calibrate","args":{"anchor":{"base_count":1},"messages":[{"role":"user","_images":9},{"role":"user","_images":2}],"prompt_tokens":5000,"text_only":2000,"hosts":{},"table":{},"model":"m","base_url":"u"},"case":"base_count offset"}
+{"func":"calibrate","args":{"anchor":{"base_count":0},"messages":[{"role":"user"}],"prompt_tokens":5000,"text_only":2000,"hosts":{},"table":{},"model":"m","base_url":"u"},"case":"no images"}
+{"func":"calibrate","args":{"anchor":{"base_count":0},"messages":[{"role":"user","_images":2}],"prompt_tokens":100,"text_only":0,"hosts":{},"table":{},"model":"m","base_url":"u"},"case":"implausible low"}
+{"func":"calibrate","args":{"anchor":{"base_count":0},"messages":[{"role":"user","_images":1}],"prompt_tokens":"abc","text_only":0,"hosts":{},"table":{},"model":"m","base_url":"u"},"case":"bad prompt_tokens"}
+{"func":"calibrate","args":{"anchor":null,"messages":[{"role":"user","_images":1}],"prompt_tokens":5000,"text_only":0,"hosts":{},"table":{},"model":"m","base_url":"u"},"case":"no anchor"}
+{"func":"calibrate","args":{"anchor":{"base_count":0},"messages":[],"prompt_tokens":0,"text_only":0,"hosts":{},"table":{},"model":"m","base_url":"u"},"case":"zero prompt"}

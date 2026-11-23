@@ -1,0 +1,21 @@
+{"func": "only", "candidates": []}
+{"func": "only", "candidates": ["a"]}
+{"func": "only", "candidates": ["a", "b"]}
+{"func": "only", "candidates": ["/x/y"]}
+{"func": "launcher", "files": [{"path": "/app/Contents/MacOS/MyApp", "exec": false}], "platform": "darwin"}
+{"func": "launcher", "files": [{"path": "/app/Contents/MacOS/A", "exec": false}, {"path": "/app/Contents/MacOS/B", "exec": false}], "platform": "darwin"}
+{"func": "launcher", "files": [], "platform": "darwin"}
+{"func": "launcher", "files": [{"path": "/app/Hermes.exe", "exec": false}, {"path": "/app/uninstall.exe", "exec": false}], "platform": "win32"}
+{"func": "launcher", "files": [{"path": "/app/uninstall.exe", "exec": false}], "platform": "win32"}
+{"func": "launcher", "files": [{"path": "/app/HERMES.EXE", "exec": false}], "platform": "win32"}
+{"func": "launcher", "files": [{"path": "/app/A.exe", "exec": false}, {"path": "/app/B.exe", "exec": false}], "platform": "win32"}
+{"func": "launcher", "files": [{"path": "/app/AppRun", "exec": true}, {"path": "/app/Hermes", "exec": true}], "platform": "linux"}
+{"func": "launcher", "files": [{"path": "/app/libfoo.so", "exec": true}, {"path": "/app/Hermes", "exec": true}], "platform": "linux"}
+{"func": "launcher", "files": [{"path": "/app/chrome-sandbox", "exec": true}], "platform": "linux"}
+{"func": "launcher", "files": [{"path": "/app/Hermes", "exec": false}], "platform": "linux"}
+{"func": "launcher", "files": [{"path": "/app/Hermes", "exec": true}, {"path": "/app/other", "exec": true}], "platform": "linux"}
+{"func": "layout", "project_root": "/apps/Hermes/resources/agent-payload/repo", "platform": "win32", "dirs": ["/apps/Hermes/resources/agent-payload/repo", "/apps/Hermes/resources/agent-payload", "/apps/Hermes/resources", "/apps/Hermes"], "files": [{"path": "/apps/Hermes/Hermes.exe", "exec": false}], "app_root_is_dir": true}
+{"func": "layout", "project_root": "/Applications/Hermes.app/Contents/Resources/agent-payload/repo", "platform": "darwin", "dirs": ["/Applications/Hermes.app/Contents/Resources/agent-payload/repo", "/Applications/Hermes.app/Contents/Resources/agent-payload", "/Applications/Hermes.app/Contents/Resources", "/Applications/Hermes.app/Contents", "/Applications/Hermes.app"], "files": [{"path": "/Applications/Hermes.app/Contents/MacOS/Hermes", "exec": false}], "app_root_is_dir": true}
+{"func": "layout", "project_root": "/checkout/repo", "platform": "win32", "dirs": ["/checkout/repo", "/checkout"], "files": [{"path": "/checkout/Hermes.exe", "exec": false}], "app_root_is_dir": true}
+{"func": "layout", "project_root": "/apps/Hermes/resources/agent-payload/repo", "platform": "win32", "dirs": ["/apps/Hermes/resources/agent-payload/repo", "/apps/Hermes/resources/agent-payload", "/apps/Hermes/resources"], "files": [{"path": "/apps/Hermes/Hermes.exe", "exec": false}], "app_root_is_dir": false}
+{"func": "layout", "project_root": "/opt/Hermes/resources/agent-payload/repo", "platform": "linux", "dirs": ["/opt/Hermes/resources/agent-payload/repo", "/opt/Hermes/resources/agent-payload", "/opt/Hermes/resources", "/opt/Hermes"], "files": [{"path": "/opt/Hermes/AppRun", "exec": true}, {"path": "/opt/Hermes/hermes", "exec": true}], "app_root_is_dir": true}

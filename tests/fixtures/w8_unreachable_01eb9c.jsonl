@@ -1,0 +1,21 @@
+{"func": "retry_enabled", "case": "cfg null", "cfg": null}
+{"func": "retry_enabled", "case": "empty cfg", "cfg": {}}
+{"func": "retry_enabled", "case": "cron not dict", "cfg": {"cron": []}}
+{"func": "retry_enabled", "case": "explicit false", "cfg": {"cron": {"retry_unreachable": false}}}
+{"func": "retry_enabled", "case": "explicit true", "cfg": {"cron": {"retry_unreachable": true}}}
+{"func": "retry_enabled", "case": "explicit null", "cfg": {"cron": {"retry_unreachable": null}}}
+{"func": "retry_enabled", "case": "zero is not False", "cfg": {"cron": {"retry_unreachable": 0}}}
+{"func": "retry_enabled", "case": "string false is not False", "cfg": {"cron": {"retry_unreachable": "false"}}}
+{"func": "is_retry_fire", "case": "matching at and expr", "job": {"unreachable_retry": {"at": "T1", "expr": "*/5 * * * *"}, "schedule": {"expr": "*/5 * * * *"}}, "next_run": "T1"}
+{"func": "is_retry_fire", "case": "at mismatch", "job": {"unreachable_retry": {"at": "T1", "expr": "E"}, "schedule": {"expr": "E"}}, "next_run": "T2"}
+{"func": "is_retry_fire", "case": "expr mismatch", "job": {"unreachable_retry": {"at": "T1", "expr": "OLD"}, "schedule": {"expr": "NEW"}}, "next_run": "T1"}
+{"func": "is_retry_fire", "case": "no state", "job": {"schedule": {"expr": "E"}}, "next_run": "T1"}
+{"func": "is_retry_fire", "case": "both null", "job": {"unreachable_retry": {"at": null, "expr": null}, "schedule": {}}, "next_run": null}
+{"func": "is_retry_fire", "case": "schedule missing expr", "job": {"unreachable_retry": {"at": "T1", "expr": "E"}}, "next_run": "T1"}
+{"func": "clear_state", "case": "state present", "job": {"name": "j", "unreachable_retry": {"attempt": 1}, "state": "scheduled"}}
+{"func": "clear_state", "case": "state absent", "job": {"name": "j", "state": "scheduled"}}
+{"func": "ladder_applies", "case": "recurring active", "job": {"state": "scheduled"}, "recurring": true, "cfg": null}
+{"func": "ladder_applies", "case": "paused", "job": {"state": "paused"}, "recurring": true, "cfg": null}
+{"func": "ladder_applies", "case": "one-shot", "job": {"state": "scheduled"}, "recurring": false, "cfg": null}
+{"func": "ladder_applies", "case": "disabled config", "job": {"state": "scheduled"}, "recurring": true, "cfg": {"cron": {"retry_unreachable": false}}}
+{"func": "ladder_applies", "case": "missing state field", "job": {}, "recurring": true, "cfg": null}

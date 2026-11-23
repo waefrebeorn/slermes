@@ -1,0 +1,16 @@
+{"func":"quarantine_ttl","case":"rate_limit","reason":"rate limit"}
+{"func":"quarantine_ttl","case":"connection_error","reason":"connection error"}
+{"func":"quarantine_ttl","case":"invalid_response","reason":"invalid provider response"}
+{"func":"quarantine_ttl","case":"overloaded","reason":"provider overloaded"}
+{"func":"quarantine_ttl","case":"server_error","reason":"server error"}
+{"func":"quarantine_ttl","case":"other","reason":"other label"}
+{"func":"quarantine_ttl","case":"null","reason":null}
+{"func":"quarantine_ttl","case":"empty","reason":""}
+{"func":"custom_health_base_url","case":"local_explicit","provider":"local/custom","explicit":"https://x","label":"local/custom","current_custom":"https://cur","resolves":false,"named_entry":null}
+{"func":"custom_health_base_url","case":"local_fallback_current","provider":"local/custom","explicit":"","label":"local/custom","current_custom":"https://cur","resolves":false,"named_entry":null}
+{"func":"custom_health_base_url","case":"custom_named_explicit","provider":"foo","explicit":"https://e","label":"custom:foo","current_custom":"https://cur","resolves":false,"named_entry":null}
+{"func":"custom_health_base_url","case":"custom_named_entry","provider":"foo","explicit":"","label":"custom:foo","current_custom":"https://cur","resolves":false,"named_entry":{"base_url":"https://named"}}
+{"func":"custom_health_base_url","case":"resolves_current","provider":"openai","explicit":"","label":"openai","current_custom":"https://cur","resolves":true,"named_entry":null}
+{"func":"custom_health_base_url","case":"none","provider":"openai","explicit":"","label":"openai","current_custom":"https://cur","resolves":false,"named_entry":null}
+{"func":"custom_health_base_url","case":"named_strip","provider":"foo","explicit":"","label":"openai","current_custom":"","resolves":false,"named_entry":{"base_url":"  https://spaced  "}}
+{"func":"custom_health_base_url","case":"custom_explicit_strip","provider":"foo","explicit":"  https://explicit  ","label":"custom:foo","current_custom":"https://cur","resolves":false,"named_entry":null}

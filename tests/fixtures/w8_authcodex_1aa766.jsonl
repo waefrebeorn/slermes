@@ -1,0 +1,31 @@
+{"func":"stripped","value":"  hello  "}
+{"func":"stripped","value":null}
+{"func":"stripped","value":""}
+{"func":"stripped","value":0}
+{"func":"stripped","value":false}
+{"func":"stripped","value":true}
+{"func":"stripped","value":5}
+{"func":"stripped","value":" \tX\n "}
+{"func":"is_codex_rate_limit_shaped","code":429,"reason":"","message":""}
+{"func":"is_codex_rate_limit_shaped","code":500,"reason":"rate_limit_exceeded","message":""}
+{"func":"is_codex_rate_limit_shaped","code":500,"reason":"USAGE_LIMIT","message":""}
+{"func":"is_codex_rate_limit_shaped","code":500,"reason":"none","message":"Quota exceeded"}
+{"func":"is_codex_rate_limit_shaped","code":500,"reason":"auth_failed","message":"bad creds"}
+{"func":"is_codex_rate_limit_shaped","code":"429","reason":"","message":""}
+{"func":"is_codex_rate_limit_shaped","code":null,"reason":"quota","message":null}
+{"func":"entry_is_rate_limit_exhausted","entry":{"last_status":"exhausted","last_error_code":429}}
+{"func":"entry_is_rate_limit_exhausted","entry":{"last_status":"exhausted","last_error_code":500,"last_error_reason":"quota"}}
+{"func":"entry_is_rate_limit_exhausted","entry":{"last_status":"exhausted","last_error_code":500,"last_error_reason":"bad"}}
+{"func":"entry_is_rate_limit_exhausted","entry":{"last_status":"active","last_error_code":429}}
+{"func":"entry_is_rate_limit_exhausted","entry":{}}
+{"func":"codex_usage_probe_url","base_url":null}
+{"func":"codex_usage_probe_url","base_url":""}
+{"func":"codex_usage_probe_url","base_url":"https://chatgpt.com/backend-api/codex"}
+{"func":"codex_usage_probe_url","base_url":"https://example.com/codex"}
+{"func":"codex_usage_probe_url","base_url":"https://example.com/"}
+{"func":"codex_usage_probe_url","base_url":"  https://example.com/codex  "}
+{"func":"codex_usage_probe_url","base_url":"https://x/backend-api"}
+{"func":"codex_quota_probe_cache_key","token":""}
+{"func":"codex_quota_probe_cache_key","token":"abc"}
+{"func":"codex_quota_probe_cache_key","token":"token-123"}
+{"func":"codex_quota_probe_cache_key","token":"a-very-long-access-token-value-with-64-chars-abcdefghijklmnopqrstuvwxyz"}

@@ -1,0 +1,13 @@
+{"func": "minimize_config", "config": {}}
+{"func": "minimize_config", "config": {"agent": {"max_turns": 500, "other": 1}}}
+{"func": "minimize_config", "config": {"compression": {"enabled": true, "x": 2}, "checkpoints": {"enabled": true}}}
+{"func": "minimize_config", "config": {"memory": {"memory_enabled": true, "user_profile_enabled": true, "keep": 9}}}
+{"func": "minimize_config", "config": {"smart_model_routing": {"enabled": true}, "top": "keep"}}
+{"func": "minimize_config", "config": {"agent": {}, "memory": {}, "unknown": {"a": 1}}, "tag": "x"}
+{"func": "messaging_platform", "name": "TELEGRAM_BOT_TOKEN"}
+{"func": "messaging_platform", "name": "MY_DISCORD_TOKEN"}
+{"func": "messaging_platform", "name": "SLACK_API_KEY"}
+{"func": "messaging_platform", "name": "TELEGRAM_AND_DISCORD"}
+{"func": "messaging_platform", "name": "telegram_lowercase"}
+{"func": "messaging_platform", "name": "OPENAI_API_KEY"}
+{"func": "messaging_platform", "name": ""}

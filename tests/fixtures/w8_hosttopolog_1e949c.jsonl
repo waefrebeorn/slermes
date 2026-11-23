@@ -1,0 +1,20 @@
+{"func":"normalized","name":"default"}
+{"func":"normalized","name":"Default"}
+{"func":"normalized","name":"  DEFAULT  "}
+{"func":"normalized","name":"Coder"}
+{"func":"normalized","name":"  My Profile  "}
+{"func":"normalized","name":""}
+{"func":"normalized","name":null}
+{"func":"serves","profiles":["default","coder"],"wanted":"default"}
+{"func":"serves","profiles":["default","coder"],"wanted":"Default"}
+{"func":"serves","profiles":["default","coder"],"wanted":"CODER"}
+{"func":"serves","profiles":["default","coder"],"wanted":"nobody"}
+{"func":"serves","profiles":[],"wanted":"default"}
+{"func":"serves","profiles":[" default ","Coder"],"wanted":"coder"}
+{"func":"serves","profiles":["default"],"wanted":null}
+{"func":"serves","profiles":["default"],"wanted":""}
+{"func":"describe","pid":"42","profiles":["default","coder"]}
+{"func":"describe","pid":"7","profiles":["default"]}
+{"func":"describe","pid":"0","profiles":[]}
+{"func":"describe","pid":"123456789","profiles":["alpha","beta","gamma"]}
+{"func":"describe","pid":"42","profiles":["  spaced  "]}

@@ -1,0 +1,22 @@
+{"func": "env_ref_name", "ref": "  env:MY_KEY  "}
+{"func": "env_ref_name", "ref": "env:"}
+{"func": "env_ref_name", "ref": "plain name"}
+{"func": "safe_numeric", "value": "3", "default": 7, "coerce": "int", "minimum": 1}
+{"func": "safe_numeric", "value": "2.9", "default": 7, "coerce": "int", "minimum": 1}
+{"func": "safe_numeric", "value": 2.9, "default": 7, "coerce": "int", "minimum": 1}
+{"func": "safe_numeric", "value": "x", "default": 7, "coerce": "int", "minimum": 1}
+{"func": "safe_numeric", "value": "0", "default": 7, "coerce": "int", "minimum": 1}
+{"func": "safe_numeric", "value": "3.7", "default": 1.0, "coerce": "float", "minimum": 0.5}
+{"func": "parse_boolish", "value": " off ", "default": true}
+{"func": "parse_boolish", "value": 2, "default": true}
+{"func": "parse_boolish", "value": "maybe", "default": true}
+{"func": "parse_boolish", "value": null, "default": false}
+{"func": "mcp_server_enabled", "cfg": {"enabled": "no"}}
+{"func": "mcp_server_enabled", "cfg": {"enabled": true, "disabled": true}}
+{"func": "mcp_server_enabled", "cfg": {}}
+{"func": "get_lifecycle_seconds", "cfg": {"lifecycle": {"idle_timeout_seconds": 9}}, "key": "idle_timeout_seconds"}
+{"func": "get_lifecycle_seconds", "cfg": {"idle_timeout_seconds": 0}, "key": "idle_timeout_seconds"}
+{"func": "get_lifecycle_seconds", "cfg": {"idle_timeout_seconds": "bad"}, "key": "idle_timeout_seconds"}
+{"func": "prepend_path", "env": {"PATH": "/a:/b"}, "directory": "/x"}
+{"func": "prepend_path", "env": {"PATH": "/x"}, "directory": "/x"}
+{"func": "prepend_path", "env": {}, "directory": "/usr/bin"}

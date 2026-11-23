@@ -1,0 +1,10 @@
+{"func": "config_load_issue_ex", "exc_kind": "home", "exc_message": "disk full"}
+{"func": "config_load_issue_ex", "exc_kind": "os", "exc_message": "no such dir"}
+{"func": "config_load_issue_ex", "exc_kind": "other", "exc_message": "bad yaml"}
+{"func": "config_load_issue_ex", "exc_kind": "home", "exc_message": ""}
+{"func": "config_load_issue_ex", "exc_kind": "other", "exc_message": ""}
+{"func": "config_load_issue_ex", "exc_kind": "os", "exc_message": "a: b / path"}
+{"func": "config_load_issue_ex", "exc_kind": "OSError", "exc_message": "unmapped token is generic"}
+{"func": "config_load_issue_ex", "exc_kind": "", "exc_message": "empty kind"}
+{"func": "config_load_issue_ex", "exc_kind": "home", "exc_message": "unicode ⚙ café"}
+{"func": "config_load_issue_ex", "exc_kind": "os", "exc_message": "Hermes storage is unavailable: nested"}

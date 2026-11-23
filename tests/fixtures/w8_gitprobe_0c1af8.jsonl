@@ -1,0 +1,10 @@
+{"func":"branch","case":"branch_present","first":"main","second":"abc1234"}
+{"func":"branch","case":"detached_fallback","first":"","second":"deadbeef"}
+{"func":"branch","case":"both_empty","first":"","second":""}
+{"func":"branch","case":"branch_with_slash","first":"feature/x","second":"sha"}
+{"func":"branch","case":"whitespace_truthy","first":"  ","second":"sha"}
+{"func":"resolve","case":"worktree","worktree_root":"/repo/.git/worktrees/wt","common_root":"/repo"}
+{"func":"resolve","case":"no_common","worktree_root":"/repo","common_root":""}
+{"func":"resolve","case":"empty_cwd","worktree_root":"","common_root":"/main"}
+{"func":"resolve","case":"equal_roots","worktree_root":"/wt","common_root":"/wt"}
+{"func":"resolve","case":"relative_wt","worktree_root":"rel/path","common_root":"/abs/main"}

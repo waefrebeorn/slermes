@@ -1,0 +1,10 @@
+{"func":"sheet_revision","case":"typical","mtime_ns":"1700000000000000000","size":"4096","fail":false}
+{"func":"sheet_revision","case":"zeros","mtime_ns":"0","size":"0","fail":false}
+{"func":"sheet_revision","case":"stat_fail","mtime_ns":"123","size":"9","fail":true}
+{"func":"sheet_revision","case":"negative","mtime_ns":"-1","size":"100","fail":false}
+{"func":"sheet_revision","case":"leading_zeros","mtime_ns":"0000000000000000123","size":"0007","fail":false}
+{"func":"clone_payload","case":"empty","payload":{}}
+{"func":"clone_payload","case":"all_typed","payload":{"framesByState":{"idle":4},"framesByRow":{"row0":3},"stateRows":["idle","walk"]}}
+{"func":"clone_payload","case":"wrong_types","payload":{"framesByState":[1],"stateRows":{"x":1},"other":42}}
+{"func":"clone_payload","case":"nested","payload":{"a":1,"b":null,"c":[1,2,{"x":true}]}}
+{"func":"clone_payload","case":"empty_typed","payload":{"framesByState":{},"stateRows":[]}}

@@ -1,0 +1,10 @@
+{"func":"doc"}
+{"func":"doc","pad":"x"}
+{"func":"doc","pad":null}
+{"func":"names"}
+{"func":"names","pad":1}
+{"func":"has_symbol","name":""}
+{"func":"has_symbol","name":"__doc__"}
+{"func":"has_symbol","name":"hermes_agent"}
+{"func":"has_symbol","name":"main"}
+{"func":"has_symbol","name":"anything"}

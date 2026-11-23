@@ -1,0 +1,34 @@
+{"func": "consent", "unresolved": "decline", "choice": "once"}
+{"func": "consent", "unresolved": "decline", "choice": "session"}
+{"func": "consent", "unresolved": "decline", "choice": "always"}
+{"func": "consent", "unresolved": "decline", "choice": "timeout"}
+{"func": "consent", "unresolved": "cancel", "choice": "timeout"}
+{"func": "consent", "unresolved": "cancel", "choice": "cancelled"}
+{"func": "consent", "unresolved": "decline", "choice": "deny"}
+{"func": "consent", "unresolved": "decline", "choice": "weird"}
+{"func": "consent", "unresolved": "decline"}
+{"func": "attempt", "name": "p1", "choice": "once"}
+{"func": "attempt", "name": "p2", "failure": "unavailable", "fallback": "builtin"}
+{"func": "attempt", "name": "p3", "choice": "deny", "failure": "error"}
+{"func": "attempt", "name": "", "choice": "always", "failure": "x", "fallback": "y"}
+{"func": "unanswered", "cause": "the approval callback failed: ValueError"}
+{"func": "unanswered", "cause": "no callback"}
+{"func": "unanswered", "cause": "interrupted"}
+{"func": "unanswered", "cause": ""}
+{"func": "cli_decision", "choice": "o", "once_only": true, "allow_permanent": true, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "cli_decision", "choice": "yes", "once_only": true, "allow_permanent": true, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "cli_decision", "choice": "n", "once_only": true, "allow_permanent": true, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "cli_decision", "choice": "zz", "once_only": true, "allow_permanent": true, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "cli_decision", "choice": "once", "once_only": false, "allow_permanent": true, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "cli_decision", "choice": "s", "once_only": false, "allow_permanent": false, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "cli_decision", "choice": "always", "once_only": false, "allow_permanent": true, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "cli_decision", "choice": "always", "once_only": false, "allow_permanent": false, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "cli_decision", "choice": "a", "once_only": false, "allow_permanent": false, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "cli_decision", "choice": "deny", "once_only": false, "allow_permanent": false, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "cli_decision", "choice": "O", "once_only": false, "allow_permanent": false, "once_inputs": ["o", "once", "1", "yes"], "deny_inputs": ["n", "no", "d", "deny"]}
+{"func": "i18n_key", "decision": "once"}
+{"func": "i18n_key", "decision": "session"}
+{"func": "i18n_key", "decision": "always"}
+{"func": "i18n_key", "decision": "deny"}
+{"func": "i18n_key", "decision": "timeout"}
+{"func": "i18n_key", "decision": "cancelled"}

@@ -1,0 +1,13 @@
+{"func":"build","case":"simple_root","acp_id":"acp1","current":"cur","sessions":{"cur":{"parent_session_id":null,"end_reason":null}}}
+{"func":"build","case":"continuation","acp_id":"acp2","current":"cur","sessions":{"cur":{"parent_session_id":"p","end_reason":null},"p":{"parent_session_id":null,"end_reason":"compression"}}}
+{"func":"build","case":"two_level","acp_id":"acp3","current":"c","sessions":{"c":{"parent_session_id":"b","end_reason":null},"b":{"parent_session_id":"a","end_reason":"compression"},"a":{"parent_session_id":null,"end_reason":"delegate"}}}
+{"func":"build","case":"cycle","acp_id":"acp4","current":"c","sessions":{"c":{"parent_session_id":"b","end_reason":null},"b":{"parent_session_id":"c","end_reason":"compression"}}}
+{"func":"build","case":"missing_current","acp_id":"acp5","current":"missing","sessions":{}}
+{"func":"build","case":"previous_diff","acp_id":"acp6","current":"cur","previous":"old-cur","sessions":{"cur":{"parent_session_id":"p","end_reason":null},"p":{"parent_session_id":null,"end_reason":"compression"}}}
+{"func":"build","case":"previous_same","acp_id":"acp7","current":"cur","previous":"cur","sessions":{"cur":{"parent_session_id":null,"end_reason":null}}}
+{"func":"build","case":"delegate_parent","acp_id":"acp8","current":"c","sessions":{"c":{"parent_session_id":"b","end_reason":null},"b":{"parent_session_id":"a","end_reason":"delegate"},"a":{"parent_session_id":null,"end_reason":null}}}
+{"func":"build","case":"ghost_parent","acp_id":"acp9","current":"c","sessions":{"c":{"parent_session_id":"ghost","end_reason":null}}}
+{"func":"build","case":"empty_parent","acp_id":"acp10","current":"c","sessions":{"c":{"parent_session_id":"","end_reason":"compression"}}}
+{"func":"meta","case":"meta_simple","acp_id":"acpM","current":"cur","sessions":{"cur":{"parent_session_id":"p","end_reason":null},"p":{"parent_session_id":null,"end_reason":"compression"}}}
+{"func":"meta","case":"meta_null","acp_id":"acpN","current":"missing","sessions":{}}
+{"func":"meta","case":"meta_previous","acp_id":"acpP","current":"cur","previous":"old","sessions":{"cur":{"parent_session_id":null,"end_reason":null}}}

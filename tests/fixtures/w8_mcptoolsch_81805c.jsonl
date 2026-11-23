@@ -1,0 +1,20 @@
+{"func": "sanitize", "value": "a-b.c"}
+{"func": "sanitize", "value": "hello world"}
+{"func": "sanitize", "value": ""}
+{"func": "sanitize", "value": "already_ok"}
+{"func": "sanitize", "value": "é-x"}
+{"func": "sanitize", "value": "a/b\\c"}
+{"func": "prefixed", "server": "srv", "tool": "tool"}
+{"func": "prefixed", "server": "my-server", "tool": "my.tool"}
+{"func": "prefixed", "server": "a", "tool": ""}
+{"func": "prefixed", "server": "srv", "tool": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+{"func": "matches", "tool_name": "foo", "patterns": ["foo", "b*"]}
+{"func": "matches", "tool_name": "bXYZ", "patterns": ["foo", "b*"]}
+{"func": "matches", "tool_name": "q1", "patterns": ["foo", "b?", "x[0-9]"]}
+{"func": "matches", "tool_name": "nope", "patterns": ["foo", "b*"]}
+{"func": "matches", "tool_name": "FOO", "patterns": ["foo"]}
+{"func": "matches", "tool_name": "x3", "patterns": ["x[0-9]"]}
+{"func": "rewrite", "node": {"definitions": {"X": {"type": "string"}}, "properties": {"definitions": {"type": "string"}}, "$ref": "#/definitions/X"}}
+{"func": "rewrite", "node": {"a": [{"definitions": {"y": 1}}]}}
+{"func": "rewrite", "node": {"$ref": "#/definitions/A"}}
+{"func": "rewrite", "node": {"type": "object", "required": ["a"]}}

@@ -1,0 +1,10 @@
+{"func": "show_display_section_ex", "config": {}}
+{"func": "show_display_section_ex", "config": {"display": {"personality": "pirate", "show_reasoning": false, "bell_on_complete": true}}}
+{"func": "show_display_section_ex", "config": {"display": {"show_reasoning": true, "bell_on_prompt": true, "user_message_preview": {"first_lines": 5, "last_lines": 9}}}}
+{"func": "show_display_section_ex", "config": {"display": {"user_message_preview": "not-a-dict"}}}
+{"func": "show_display_section_ex", "config": {"display": {"personality": "", "show_reasoning": 0, "bell_on_complete": "yes"}}}
+{"func": "show_display_section_ex", "config": {"display": {"personality": null, "bell_on_prompt": 1, "user_message_preview": {"first_lines": 0, "last_lines": 12}}}}
+{"func": "show_display_section_ex", "config": {"display": {"show_reasoning": false, "bell_on_complete": false, "bell_on_prompt": false, "user_message_preview": {"first_lines": 3}}}}
+{"func": "show_display_section_ex", "config": {"display": {"show_reasoning": "off", "user_message_preview": {}}}}
+{"func": "show_display_section_ex", "config": {"display": {"personality": "sysop", "show_reasoning": false, "bell_on_complete": true, "bell_on_prompt": true, "user_message_preview": {"first_lines": 1, "last_lines": 1}}}}
+{"func": "show_display_section_ex", "config": {"display": {"personality": "café ⚙", "user_message_preview": {"last_lines": 7}}}}

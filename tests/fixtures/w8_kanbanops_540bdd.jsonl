@@ -1,0 +1,15 @@
+{"func":"kanban_config","case":1,"cfg":{"kanban":{"default_assignee":"bot","max_spawn":2},"other":1}}
+{"func":"kanban_config","case":2,"cfg":{"other":1}}
+{"func":"kanban_config","case":3,"cfg":{}}
+{"func":"kanban_config","case":4,"cfg":null}
+{"func":"kanban_config","case":5,"cfg":{"kanban":null}}
+{"func":"kanban_config","case":6,"cfg":{"kanban":[]}}
+{"func":"kanban_config","case":7,"cfg":{"kanban":{"x":1}}}
+{"func":"daemon_deprecated","case":8,"force":false}
+{"func":"daemon_deprecated","case":9,"force":0}
+{"func":"daemon_deprecated","case":10,"force":null}
+{"func":"daemon_deprecated","case":11}
+{"func":"gc_retention_error","case":12,"event_days":-1,"log_days":30}
+{"func":"gc_retention_error","case":13,"event_days":30,"log_days":-5}
+{"func":"gc_retention_error","case":14,"event_days":-2,"log_days":-3}
+{"func":"gc_retention_error","case":15,"event_days":0,"log_days":-1}

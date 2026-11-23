@@ -1,0 +1,14 @@
+{"func": "classify_http_ex", "name": "Firecrawl", "code": "200", "key_hint": "FIRECRAWL_API_KEY"}
+{"func": "classify_http_ex", "name": "FAL", "code": "201", "key_hint": "FAL_KEY"}
+{"func": "classify_http_ex", "name": "N", "code": "299", "key_hint": "X"}
+{"func": "classify_http_ex", "name": "N", "code": "300", "key_hint": "X"}
+{"func": "classify_http_ex", "name": "OPENAI", "code": "401", "key_hint": "OPENAI_API_KEY"}
+{"func": "classify_http_ex", "name": "GROQ", "code": "403", "key_hint": "GROQ_API_KEY"}
+{"func": "classify_http_ex", "name": "N", "code": "404", "key_hint": "X"}
+{"func": "classify_http_ex", "name": "N", "code": "500", "key_hint": "X"}
+{"func": "classify_http_ex", "name": "N", "code": null, "key_hint": "X"}
+{"func": "classify_http_ex", "name": "N", "code": "0", "key_hint": "X"}
+{"func": "classify_http_ex", "name": "N", "code": "100", "key_hint": "X"}
+{"func": "classify_http_ex", "name": "ELEVENLABS", "code": "401", "key_hint": ""}
+{"func": "classify_http_ex", "name": "N", "code": "403", "key_hint": "K"}
+{"func": "classify_http_ex", "name": "N", "code": "-1", "key_hint": "Y"}

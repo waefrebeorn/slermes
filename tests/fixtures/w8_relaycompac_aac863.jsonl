@@ -1,0 +1,23 @@
+{"func":"turn_target","session_id":"s","active":true,"live_runtime":true,"host":"runtime","session":"S","turn_handle":"th","session_handle":"sh","case":"turn handle wins"}
+{"func":"turn_target","session_id":"s","active":true,"live_runtime":true,"host":"runtime","session":"S","turn_handle":null,"session_handle":"sh","case":"session handle fallback"}
+{"func":"turn_target","session_id":"s","active":false,"host":"runtime","session":"S","case":"no active turn"}
+{"func":"turn_target","session_id":"s","active":true,"live_runtime":false,"host":"runtime","session":"S","case":"no live runtime"}
+{"func":"session_target","session_id":"s","host_runtime":true,"session_exists":true,"host":"H","session":"S","session_handle":"sh","case":"session scope"}
+{"func":"session_target","session_id":"s","host_runtime":false,"session_exists":true,"host":"H","session":"S","session_handle":"sh","case":"not relay runtime"}
+{"func":"session_target","session_id":"s","host_runtime":true,"session_exists":false,"host":"H","session":"S","session_handle":"sh","case":"no session"}
+{"func":"session_target","session_id":"s","host_runtime":true,"session_exists":true,"host":"H","session":"S","session_handle":null,"case":"no handle"}
+{"func":"session_target","session_id":"s","host_runtime":true,"session_exists":true,"host":"H","session":"S","session_handle":"","case":"empty handle ok"}
+{"func":"resolve_target","session_id":"s","enabled":false,"turn_target":["T"],"case":"disabled"}
+{"func":"resolve_target","session_id":"s","enabled":true,"turn_target":["T"],"session_target":["SS"],"case":"turn priority"}
+{"func":"resolve_target","session_id":"s","enabled":true,"turn_target":null,"session_target":["SS"],"case":"session fallback"}
+{"func":"resolve_target","session_id":"s","enabled":true,"turn_target":null,"session_target":null,"turn_session_id":"ts","turn_turn_target":["TT"],"case":"turn session fallback"}
+{"func":"resolve_target","session_id":"s","enabled":true,"turn_target":null,"session_target":null,"turn_session_id":null,"turn_turn_target":["TT"],"case":"no turn session id"}
+{"func":"target_available","session_id":"s","target":["H","S","h"],"case":"available"}
+{"func":"target_available","session_id":"","target":["H"],"case":"empty session"}
+{"func":"target_available","session_id":"s","target":null,"case":"no target"}
+{"func":"emit_mark","session_id":"s","target":["H","S","h"],"stalled":false,"run_outcome":"ok","case":"emit ok"}
+{"func":"emit_mark","session_id":"s","target":null,"stalled":false,"case":"no target"}
+{"func":"emit_mark","session_id":"s","target":["H","S","h"],"stalled":true,"case":"stalled"}
+{"func":"emit_mark","session_id":"s","target":["H","S","h"],"stalled":false,"run_outcome":"timeout","case":"timeout raises"}
+{"func":"emit_mark","session_id":"s","target":["H","S","h"],"stalled":false,"run_outcome":"error","case":"other error raises"}
+{"func":"emit_mark","session_id":"","target":["H","S","h"],"case":"empty session no mark"}

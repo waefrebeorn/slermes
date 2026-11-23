@@ -1,0 +1,21 @@
+{"func":"summary_marker","entry":{"__summary":true},"cc":{"summary_key":"__summary","micro_key":"__micro","summary_prefix":"PREFIX","heading":"## Task","end_marker":"END","max_failures":3},"case":"summary present"}
+{"func":"summary_marker","entry":{},"cc":{"summary_key":"__summary","micro_key":"__micro","heading":"## Task","end_marker":"END"},"case":"summary absent"}
+{"func":"summary_marker","entry":{"__summary":false},"cc":{"summary_key":"__summary","micro_key":"__micro","heading":"## Task","end_marker":"END"},"case":"summary false"}
+{"func":"summary_marker","entry":"not a dict","cc":{"summary_key":"__summary","heading":"## Task","end_marker":"END"},"case":"non dict entry"}
+{"func":"micro_marker","entry":{"__summary":true,"__micro":true},"cc":{"summary_key":"__summary","micro_key":"__micro","heading":"## Task","end_marker":"END"},"case":"micro present"}
+{"func":"micro_marker","entry":{"__summary":true},"cc":{"summary_key":"__summary","micro_key":"__micro","heading":"## Task","end_marker":"END"},"case":"micro absent"}
+{"func":"rolling","content":"preamble ## Task\nHello world\nEND","cc":{"heading":"## Task","end_marker":"END"},"case":"recover body"}
+{"func":"rolling","content":"## Task first\nA ## Task last\nB END","cc":{"heading":"## Task","end_marker":"END"},"case":"rfind heading"}
+{"func":"rolling","content":"   ","cc":{"heading":"## Task","end_marker":"END"},"case":"blank content"}
+{"func":"rolling","content":"  no heading here  ","cc":{"heading":"## Task","end_marker":"END"},"case":"no heading"}
+{"func":"render","summary_text":"  A summary  ","cc":{"summary_prefix":"PREFIX","heading":"## Task","end_marker":"END"},"case":"render wrapper"}
+{"func":"render","summary_text":"","cc":{"summary_prefix":"PREFIX","heading":"## Task","end_marker":"END"},"case":"render empty"}
+{"func":"record_failure","exchange_start":5,"exchange_end":8,"state":{"_micro_compact_consecutive_failures":0,"_micro_compact_last_failure_cursor":-1,"_micro_compact_cursor":2},"cc":{"max_failures":3},"case":"first failure"}
+{"func":"record_failure","exchange_start":5,"exchange_end":8,"state":{"_micro_compact_consecutive_failures":2,"_micro_compact_last_failure_cursor":5,"_micro_compact_cursor":2},"cc":{"max_failures":3},"case":"threshold skip"}
+{"func":"record_failure","exchange_start":5,"exchange_end":8,"state":{"_micro_compact_consecutive_failures":0,"_micro_compact_last_failure_cursor":5,"_micro_compact_cursor":2},"cc":{"max_failures":1},"case":"max one"}
+{"func":"reset_failure","state":{"_micro_compact_consecutive_failures":7,"_micro_compact_last_failure_cursor":9},"cc":{"max_failures":3},"case":"reset tracking"}
+{"func":"find_exchange","messages":[{"role":"user"},{"role":"assistant"},{"role":"tool"},{"role":"user"}],"start":0,"tail_start":4,"cc":{"heading":"## Task","end_marker":"END"},"case":"full exchange"}
+{"func":"find_exchange","messages":[{"role":"user"},{"role":"assistant"}],"start":0,"tail_start":2,"cc":{"heading":"## Task","end_marker":"END"},"case":"open turn at tail"}
+{"func":"find_exchange","messages":[{"role":"assistant"},{"role":"tool"},{"role":"user"}],"start":0,"tail_start":3,"cc":{"heading":"## Task","end_marker":"END"},"case":"assistant tool then user"}
+{"func":"find_exchange","messages":[{"role":"assistant"},{"role":"tool"},{"role":"assistant"}],"start":0,"tail_start":3,"cc":{"heading":"## Task","end_marker":"END"},"case":"boundary assistant"}
+{"func":"find_exchange","messages":[{"role":"assistant","_summary":true},{"role":"assistant"},{"role":"user"}],"start":0,"tail_start":3,"cc":{"heading":"## Task","end_marker":"END"},"case":"skip summary marker"}

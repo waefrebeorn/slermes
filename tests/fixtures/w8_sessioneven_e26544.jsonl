@@ -1,0 +1,14 @@
+{"func":"note","state":null,"generation":"g1","event_type":"tool.start","payload":{"tool_id":"t1","name":"bash"},"now":1000}
+{"func":"note","state":{"generation":"g1","tools":{"t1":"bash"},"at":1000},"generation":"g1","event_type":"tool.complete","payload":{"tool_id":"t1"},"now":1001}
+{"func":"note","state":{"generation":"g1","tools":{},"at":1000},"generation":"g2","event_type":"tool.start","payload":{"tool_id":"x","name":""},"now":1002}
+{"func":"note","state":{"generation":"g1","tools":{"a":"one"},"at":5},"generation":"g1","event_type":"tool.start","payload":[],"now":6}
+{"func":"note","state":{"generation":"g1","tools":{},"at":1},"generation":"g1","event_type":"tool.start","payload":{"tool_id":0,"name":5},"now":2}
+{"func":"note","state":{"generation":"g","tools":{"a":"one","b":"two"},"at":1},"generation":"g","event_type":"tool.start","payload":{"tool_id":"a","name":"NEW"},"now":2}
+{"func":"progress","state":{"generation":"g","tools":{"a":"one","b":"two"},"at":9},"generation":"g"}
+{"func":"progress","state":{"generation":"g","tools":{},"at":9},"generation":"g"}
+{"func":"progress","state":{"generation":"g","tools":{"a":"one"},"at":9},"generation":"other"}
+{"func":"progress","state":null,"generation":"g"}
+{"func":"frames","generation":"g","frames":[{"generation":"g","event_type":"tool.start","payload":{"tool_id":"a","name":"one"},"now":1},{"generation":"g","event_type":"tool.start","payload":{"tool_id":"b","name":"two"},"now":2},{"generation":"g","event_type":"tool.complete","payload":{"tool_id":"a"},"now":3}]}
+{"func":"frames","generation":"g","frames":[{"generation":"g","event_type":"tool.start","payload":{"tool_id":"a","name":"one"},"now":1},{"generation":"g","event_type":"tool.start","payload":{"tool_id":"b","name":"two"},"now":2},{"generation":"g","event_type":"tool.complete","payload":{"tool_id":"b"},"now":3}]}
+{"func":"frames","generation":"g","frames":[{"generation":"h","event_type":"tool.start","payload":{"tool_id":"x","name":"old"},"now":1},{"generation":"g","event_type":"tool.complete","payload":{"tool_id":"x"},"now":2}]}
+{"func":"frames","generation":"g","frames":[{"generation":"g","event_type":"tool.start","payload":{"tool_id":"a"},"now":1},{"generation":"g","event_type":"tool.complete","payload":{"tool_id":"nope"},"now":2}]}

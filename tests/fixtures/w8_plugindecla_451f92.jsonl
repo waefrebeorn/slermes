@@ -1,0 +1,22 @@
+{"func": "manifest_version_error", "name": "X", "manifest": {}, "requires_error": null}
+{"func": "manifest_version_error", "name": "X", "manifest": {"manifest_version": "1"}, "requires_error": null}
+{"func": "manifest_version_error", "name": "X", "manifest": {"manifest_version": "2"}, "requires_error": null}
+{"func": "manifest_version_error", "name": "X", "manifest": {"manifest_version": "3"}, "requires_error": null}
+{"func": "manifest_version_error", "name": "X", "manifest": {"manifest_version": 3}, "requires_error": null}
+{"func": "manifest_version_error", "name": "X", "manifest": {"manifest_version": "abc"}, "requires_error": null}
+{"func": "manifest_version_error", "name": "X", "manifest": {"manifest_version": null}, "requires_error": null}
+{"func": "manifest_version_error", "name": "X", "manifest": {"manifest_version": ""}, "requires_error": null}
+{"func": "manifest_version_error", "name": "X", "manifest": {"manifest_version": " 2 "}, "requires_error": null}
+{"func": "manifest_version_error", "name": "X", "manifest": {"manifest_version": "-1"}, "requires_error": null}
+{"func": "manifest_version_error", "name": "X", "manifest": {}, "requires_error": "requires hermes 99, running 1.0"}
+{"func": "manifest_version_error", "name": "plug", "manifest": {"manifest_version": "9"}, "requires_error": "requires hermes 9, running 1", "tag": "x"}
+{"func": "external", "manifest": {}}
+{"func": "external", "manifest": {"python_runtime": "external"}}
+{"func": "external", "manifest": {"python_runtime": " EXTERNAL "}}
+{"func": "external", "manifest": {"python_runtime": "External\n"}}
+{"func": "external", "manifest": {"python_runtime": null}}
+{"func": "external", "manifest": {"python_runtime": false}}
+{"func": "external", "manifest": {"python_runtime": true}}
+{"func": "external", "manifest": {"python_runtime": 0}}
+{"func": "external", "manifest": {"python_runtime": "internal"}}
+{"func": "external", "manifest": {"python_runtime": "external "}}

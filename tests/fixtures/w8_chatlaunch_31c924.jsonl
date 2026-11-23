@@ -1,0 +1,16 @@
+{"func": "short", "session_id": "abc", "resolve_map": {}, "resolve_error": false}
+{"func": "short", "session_id": "local-1234567890123456", "resolve_map": {}, "resolve_error": false}
+{"func": "short", "session_id": "local-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "resolve_map": {"local-0123456789abcdef": "local-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}, "resolve_error": false}
+{"func": "short", "session_id": "local-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "resolve_map": {"local-0123456789abcdef": "local-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"}, "resolve_error": false}
+{"func": "short", "session_id": "local-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "resolve_map": {"local-0123456789abcdef": "local-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}, "resolve_error": true}
+{"func": "short", "session_id": "LOCAL-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "resolve_map": {"LOCAL-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}, "resolve_error": false}
+{"func": "short", "session_id": "local-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcde", "resolve_map": {"local-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcde": "local-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcde"}, "resolve_error": false}
+{"func": "short", "session_id": "local-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "resolve_map": {}, "resolve_error": false}
+{"func": "lineage", "sessions": {"c": {"_branched_from": null}}, "start_id": "c"}
+{"func": "lineage", "sessions": {"c": {"_branched_from": "p"}, "p": {"_branched_from": "g"}, "g": {"_branched_from": null}}, "start_id": "c"}
+{"func": "lineage", "sessions": {"c": {"_branched_from": "missing"}}, "start_id": "c"}
+{"func": "lineage", "sessions": {"a": {"_branched_from": "b"}, "b": {"_branched_from": "a"}}, "start_id": "a"}
+{"func": "lineage", "sessions": {"s": {"_branched_from": null}}, "start_id": "s"}
+{"func": "lineage", "sessions": {"a": {"_branched_from": "a"}}, "start_id": "a"}
+{"func": "lineage", "sessions": {"d": {"_branched_from": "c"}, "c": {"_branched_from": "b"}, "b": {"_branched_from": "a"}, "a": {"_branched_from": null}}, "start_id": "d"}
+{"func": "lineage", "sessions": {"s": {"_branched_from": ""}}, "start_id": "s"}

@@ -1,0 +1,18 @@
+{"func":"is_local","platform":"local"}
+{"func":"is_local","platform":"cloud"}
+{"func":"is_local","platform":""}
+{"func":"is_local","platform":"LOCAL"}
+{"func":"is_local","source_null":true}
+{"func":"is_local","platform":"local "}
+{"func":"is_local","platform":"remote"}
+{"func":"is_local","platform":"Local"}
+{"func":"focus_tail","focus":""}
+{"func":"focus_tail","focus":"world"}
+{"func":"focus_tail","focus":"a b"}
+{"func":"focus_tail","focus":"with {braces}"}
+{"func":"focus_tail","focus":"café"}
+{"func":"focus_tail","focus":"100%"}
+{"func":"focus_tail","focus":"  spaced  "}
+{"func":"focus_tail","focus":"0"}
+{"func":"started","suffix":""}
+{"func":"started","suffix":" (focus: X)"}

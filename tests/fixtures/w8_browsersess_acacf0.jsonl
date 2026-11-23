@@ -1,0 +1,39 @@
+{"func": "is_local", "key": "a::local"}
+{"func": "owner", "key": "a::local"}
+{"func": "is_local", "key": "a::local@b"}
+{"func": "owner", "key": "a::local@b"}
+{"func": "is_local", "key": "a@b@c"}
+{"func": "owner", "key": "a@b@c"}
+{"func": "is_local", "key": "a"}
+{"func": "owner", "key": "a"}
+{"func": "is_local", "key": "::local"}
+{"func": "owner", "key": "::local"}
+{"func": "is_local", "key": "x@y::local"}
+{"func": "owner", "key": "x@y::local"}
+{"func": "is_local", "key": "a b::local"}
+{"func": "owner", "key": "a b::local"}
+{"func": "is_local", "key": ""}
+{"func": "owner", "key": ""}
+{"func": "session_record", "prefix": "h", "hex10": "0123456789", "features": {"local": true}}
+{"func": "session_record", "prefix": "lp", "hex10": "abcdef0123", "cdp_url": "http://x", "features": {"local": true, "lightpanda": true}}
+{"func": "session_record", "prefix": "rp", "hex10": "ffffffffff", "cdp_url": "ws://y"}
+{"func": "session_record", "prefix": "cdp", "hex10": "", "cdp_url": "u", "features": {}}
+{"func": "publish", "cache_key": "k::local", "session_info": {"cdp_url": "u", "features": {"local": true}}, "home_key": "home"}
+{"func": "publish", "cache_key": "task", "session_info": {}, "home_key": "h2"}
+{"func": "publish", "cache_key": "a::local", "session_info": {"session_key": "pinned", "owner_task_id": "pinned-owner"}, "home_key": "h3"}
+{"func": "publish", "cache_key": "x@y", "session_info": {"home_key": "pinned-home"}, "home_key": "h4"}
+{"func": "shares", "session_info": {"features": {"local": true}}, "display": "", "human_holds": false}
+{"func": "human_holds_shared", "session_info": {"features": {"local": true}}, "display": "", "human_holds": false}
+{"func": "shares", "session_info": {"features": {"local": true}}, "display": "", "human_holds": true}
+{"func": "human_holds_shared", "session_info": {"features": {"local": true}}, "display": "", "human_holds": true}
+{"func": "shares", "session_info": {"features": {"local": true}}, "display": ":0", "human_holds": false}
+{"func": "human_holds_shared", "session_info": {"features": {"local": true}}, "display": ":0", "human_holds": false}
+{"func": "shares", "session_info": {"features": {}}, "display": ":0", "human_holds": true}
+{"func": "human_holds_shared", "session_info": {"features": {}}, "display": ":0", "human_holds": true}
+{"func": "shares", "session_info": {}, "display": ":0", "human_holds": true}
+{"func": "human_holds_shared", "session_info": {}, "display": ":0", "human_holds": true}
+{"func": "shares", "session_info": {"features": {"local": false}}, "display": ":0", "human_holds": true}
+{"func": "human_holds_shared", "session_info": {"features": {"local": false}}, "display": ":0", "human_holds": true}
+{"func": "shares", "session_info": {"features": {"local": true}}, "display": "", "human_holds": false}
+{"func": "human_holds_shared", "session_info": {"features": {"local": true}}, "display": "", "human_holds": false}
+{"func": "constants"}

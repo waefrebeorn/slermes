@@ -1,0 +1,20 @@
+{"func":"child_dir","case":1,"root":"/plugins","name":"memory"}
+{"func":"child_dir","case":2,"root":"/plugins/","name":"cron-provider"}
+{"func":"child_dir","case":3,"root":"","name":"abc"}
+{"func":"child_dir","case":4,"root":"/plugins","name":".hidden"}
+{"func":"child_dir","case":5,"root":"/plugins","name":"-bad"}
+{"func":"child_dir","case":6,"root":"/plugins","name":"a b"}
+{"func":"child_dir","case":7,"root":"/plugins","name":""}
+{"func":"child_dir","case":8,"root":"/plugins","name":null}
+{"func":"child_dir","case":9,"root":"/plugins","name":123}
+{"func":"child_dir","case":10,"root":"/plugins","name":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func":"child_dir","case":11,"root":"/plugins","name":"a_b-C9"}
+{"func":"deadlock","case":12,"graph":{"me":1,"owners":{"modA":1},"waiters":{"1":"modA"},"blocking":{}}}
+{"func":"deadlock","case":13,"graph":{"me":1,"owners":{"modA":2},"waiters":{"1":"modA"},"blocking":{}}}
+{"func":"deadlock","case":14,"graph":{"me":1,"owners":{},"waiters":{},"blocking":{"1":2,"2":1}}}
+{"func":"deadlock","case":15,"graph":{"me":1,"owners":{},"waiters":{},"blocking":{"1":[3,2],"2":1}}}
+{"func":"deadlock","case":16,"graph":{"me":1,"owners":{},"waiters":{},"blocking":{"1":-1}}}
+{"func":"deadlock","case":17,"graph":{"me":1,"owners":{"mA":2},"waiters":{"1":"mA"},"blocking":{"2":1}}}
+{"func":"deadlock","case":18,"graph":{"me":1,"owners":{},"waiters":{},"blocking":{}}}
+{"func":"deadlock","case":19,"graph":{"me":1,"owners":{},"waiters":{},"blocking":{"1":2,"2":3,"3":1}}}
+{"func":"deadlock","case":20,"graph":{"me":1,"owners":{},"waiters":{},"blocking":{"1":2,"2":3,"3":4,"4":3}}}

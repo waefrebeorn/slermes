@@ -1,0 +1,21 @@
+{"func": "text", "case": "plain strip", "name": "title", "value": "  Hello World  "}
+{"func": "text", "case": "empty string", "name": "title", "value": "   "}
+{"func": "text", "case": "null value", "name": "title", "value": null}
+{"func": "text", "case": "number value", "name": "title", "value": 5}
+{"func": "text", "case": "unicode strip", "name": "description", "value": "\t caffè \n"}
+{"func": "strings", "case": "list of strings", "name": "tags", "value": ["a", "b", "c"]}
+{"func": "strings", "case": "string not iterable", "name": "tags", "value": "abc"}
+{"func": "strings", "case": "list with blank item", "name": "tags", "value": ["a", "  ", "c"]}
+{"func": "strings", "case": "list with non string", "name": "tags", "value": ["a", 3]}
+{"func": "strings", "case": "null value", "name": "tags", "value": null}
+{"func": "strings", "case": "empty list", "name": "tags", "value": []}
+{"func": "strings", "case": "dict keys iterable", "name": "skills", "value": {"read": 1, "write": 2}}
+{"func": "placeholders", "case": "simple field", "template": "hello {name}", "what": "prompt_template"}
+{"func": "placeholders", "case": "escaped braces", "template": "{{literal}} {a!r} {b:>10}", "what": "prompt_template"}
+{"func": "placeholders", "case": "no fields", "template": "no fields here", "what": "prompt_template"}
+{"func": "placeholders", "case": "repeated field", "template": "{a}{b}{a}", "what": "prompt_template"}
+{"func": "placeholders", "case": "numeric field", "template": "{0} {1}", "what": "prompt_template"}
+{"func": "placeholders", "case": "invalid hyphen name", "template": "prefix {bad-name}", "what": "prompt_template"}
+{"func": "placeholders", "case": "attribute name", "template": "{a.b} {a[0]}", "what": "prompt_template"}
+{"func": "placeholders", "case": "unmatched open brace", "template": "trailing {", "what": "schedule_template"}
+{"func": "placeholders", "case": "unmatched close brace", "template": "a } b {ok}", "what": "prompt_template"}

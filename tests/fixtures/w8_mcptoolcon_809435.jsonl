@@ -1,0 +1,14 @@
+{"func": "pathext_suffixes", "env": {"PATHEXT": ".PY;.EXE"}, "windows": true}
+{"func": "pathext_suffixes", "env": {"pathext": ".X"}, "windows": true}
+{"func": "pathext_suffixes", "env": {}, "windows": true}
+{"func": "pathext_suffixes", "env": {}, "windows": false}
+{"func": "pathext_suffixes", "env": {"PATH": "/a"}, "windows": true}
+{"func": "warn_hidden_whitespace", "name": "s", "config": {"a": " x ", "b": "y", "nested": {"q": "z\\n"}}}
+{"func": "warn_hidden_whitespace", "name": "s", "config": {"list": [" ok ", "bad"]}}
+{"func": "warn_hidden_whitespace", "name": "s", "config": {"a": "ok"}}
+{"func": "warn_hidden_whitespace", "name": "s", "config": {}}
+{"func": "require_rendered_remote", "name": "s", "cfg": {"url": "http://x"}}
+{"func": "require_rendered_remote", "name": "s", "cfg": {"url": "http://x/${TOKEN}"}}
+{"func": "require_rendered_remote", "name": "s", "cfg": {"url": "http://x", "headers": {"A": "${K}"}}}
+{"func": "require_rendered_remote", "name": "s", "cfg": {"command": "x"}}
+{"func": "require_rendered_remote", "name": "s", "cfg": {"url": "http://x/${A}/${B}"}}

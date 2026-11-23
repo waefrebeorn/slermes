@@ -1,0 +1,13 @@
+{"func": "suggest_from", "slugs": null}
+{"func": "suggest_from", "slugs": []}
+{"func": "suggest_from", "slugs": ["github", "slack"]}
+{"func": "suggest_from", "slugs": ["zeta", "alpha"]}
+{"func": "suggest_from", "slugs": ["b", "a", "c"]}
+{"func": "unlisted_suggestions", "args": {}, "slugs": null}
+{"func": "unlisted_suggestions", "args": {"suggest": []}, "slugs": null}
+{"func": "unlisted_suggestions", "args": {"suggest": ["github"]}, "slugs": ["github", "slack"]}
+{"func": "unlisted_suggestions", "args": {"suggest": [" GITHUB ", "ghost"]}, "slugs": ["github", "slack"]}
+{"func": "unlisted_suggestions", "args": {"suggest": ["ghost", "phantom"]}, "slugs": ["github"]}
+{"func": "unlisted_suggestions", "args": {"suggest": "github"}, "slugs": ["github"]}
+{"func": "unlisted_suggestions", "args": {"suggest": [1, null, " x "]}, "slugs": ["x"]}
+{"func": "unlisted_suggestions", "args": {"suggest": ["ghost"]}, "slugs": []}

@@ -1,0 +1,21 @@
+{"func":"text_or_none","field":"nm","value":null}
+{"func":"text_or_none","field":"nm","value":"hello"}
+{"func":"text_or_none","field":"nm","value":""}
+{"func":"text_or_none","field":"nm","value":5}
+{"func":"text_or_none","field":"nm","value":true}
+{"func":"text_or_none","field":"nm","value":[1]}
+{"func":"int_or_none","field":"f","value":null}
+{"func":"int_or_none","field":"f","value":5.9}
+{"func":"int_or_none","field":"f","value":-2}
+{"func":"int_or_none","field":"f","value":true}
+{"func":"int_or_none","field":"f","value":false}
+{"func":"int_or_none","field":"f","value":"  42 "}
+{"func":"int_or_none","field":"f","value":"abc"}
+{"func":"int_or_none","field":"f","value":[1]}
+{"func":"non_finite_path","path":"root","data":{"a":1}}
+{"func":"non_finite_path","path":"root","data":{"a":{"b":"Infinity"}}}
+{"func":"non_finite_path","path":"root","data":{"x":[1,2,"-Infinity"]}}
+{"func":"non_finite_path","path":"root","data":{"ok":1,"z":"NaN"}}
+{"func":"non_finite_path","path":"r","data":{"d.e":[{"n":1},"NaN"]}}
+{"func":"bounds"}
+{"func":"field_tables"}

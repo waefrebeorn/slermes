@@ -1,0 +1,11 @@
+{"func": "marker_path", "home": "C:/Users/eman5/.hermes", "case": "home forward slashes"}
+{"func": "marker_path", "home": "C:/Users/eman5/.hermes/", "case": "home trailing slash"}
+{"func": "marker_path", "home": "a/b", "case": "relative home"}
+{"func": "marker_path", "home": null, "default_home": "C:/default/home", "case": "None uses injected default"}
+{"func": "marker_path", "home": "", "default_home": "C:/d", "case": "empty string uses default"}
+{"func": "marker_path", "home": ".", "case": "dot home"}
+{"func": "marker_path", "home": "C:\\Users\\x", "case": "already backslash"}
+{"func": "marker_payload", "now": 1700000000.0, "via_service": false, "detached": false, "case": "plain stop"}
+{"func": "marker_payload", "now": 1700000000.5, "via_service": true, "detached": false, "case": "via service"}
+{"func": "marker_payload", "now": 0.0, "via_service": false, "detached": true, "case": "detached"}
+{"func": "marker_payload", "now": -1.25, "via_service": true, "detached": true, "case": "both flags negative time"}

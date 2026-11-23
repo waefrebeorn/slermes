@@ -1,0 +1,14 @@
+{"func": "gate", "facts": {"db": true, "has_work": true}, "case": "has work"}
+{"func": "gate", "facts": {"db": true, "has_work": false}, "case": "no work"}
+{"func": "gate", "facts": {"db": false, "has_work": false}, "case": "no store fails open"}
+{"func": "gate", "facts": {"db": true, "has_work": false, "raises": true}, "case": "probe raises fails open"}
+{"func": "heartbeat", "facts": {"db": true, "has_work": true}, "case": "heartbeat active"}
+{"func": "heartbeat", "facts": {"db": true, "has_work": false}, "case": "heartbeat idle"}
+{"func": "heartbeat", "facts": {"db": false, "has_work": false}, "case": "heartbeat no store"}
+{"func": "loop", "facts": {"db": true, "has_work": false, "raises": true}, "case": "loop probe failure"}
+{"func": "loop", "facts": {"db": true, "has_work": true}, "case": "loop active"}
+{"func": "handoff", "facts": {"db": true, "has_work": true}, "case": "handoff pending"}
+{"func": "handoff", "facts": {"db": true, "has_work": false}, "case": "handoff none"}
+{"func": "off_loop", "has_offload": false, "case": "runner without executor keeps always-enter"}
+{"func": "off_loop", "has_offload": true, "offload_result": true, "case": "offload true"}
+{"func": "off_loop", "has_offload": true, "offload_result": false, "case": "offload false"}

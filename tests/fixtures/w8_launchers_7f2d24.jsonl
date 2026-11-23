@@ -1,0 +1,23 @@
+{"func":"pin_default_home_flag"}
+{"func":"windows_bin_launchers"}
+{"func":"entry_points"}
+{"func":"inline_string_literal","value":"abc"}
+{"func":"inline_string_literal","value":""}
+{"func":"inline_string_literal","value":"a'b"}
+{"func":"inline_string_literal","value":"a\"b"}
+{"func":"inline_string_literal","value":"C:\\Python\\python.exe"}
+{"func":"inline_string_literal","value":"a\tb\nc"}
+{"func":"first_token","line":""}
+{"func":"first_token","line":"   "}
+{"func":"first_token","line":"/usr/bin/python3 -I -c x"}
+{"func":"first_token","line":"\"C:/Program Files/Python/python.exe\" -I"}
+{"func":"first_token","line":"'single quoted' tail"}
+{"func":"first_token","line":"noquote tail"}
+{"func":"first_token","line":"''"}
+{"func":"first_token","line":"\"unmatched"}
+{"func":"merge_user_path","existing":"","entry":"C:\\Tools"}
+{"func":"merge_user_path","existing":"C:\\Tools","entry":"C:\\Tools;"}
+{"func":"merge_user_path","existing":"A;B;C","entry":"D"}
+{"func":"merge_user_path","existing":"a\\;b","entry":"A"}
+{"func":"merge_user_path","existing":null,"entry":""}
+{"func":"merge_user_path","existing":"A;;B","entry":"C"}

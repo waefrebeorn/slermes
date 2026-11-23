@@ -1,0 +1,14 @@
+{"func":"effort_fields","config":null,"tier":"","supported_efforts":[],"static_tiers":["priority","ultrafast"],"fast_override":null}
+{"func":"effort_fields","config":{},"tier":"priority","supported_efforts":["none","low","medium","high"],"static_tiers":["priority","ultrafast"],"fast_override":{"speed":"fast"}}
+{"func":"effort_fields","config":{"enabled":false},"tier":"priority","supported_efforts":["none","high"],"static_tiers":["priority","ultrafast"],"fast_override":{"speed":"fast"}}
+{"func":"effort_fields","config":{"effort":"high"},"tier":"standard","supported_efforts":["none","low","medium","high"],"static_tiers":["priority","ultrafast"],"fast_override":null}
+{"func":"effort_fields","config":{"effort":"HIGH"},"tier":"standard","supported_efforts":["none","low","medium","high"],"static_tiers":["priority","ultrafast"],"fast_override":null}
+{"func":"effort_fields","config":{"effort":"max"},"tier":"ultrafast","supported_efforts":["none","low","medium","high"],"static_tiers":["priority","ultrafast"],"fast_override":null}
+{"func":"effort_fields","config":{"effort":"minimal"},"tier":"","supported_efforts":["none","low"],"static_tiers":["priority","ultrafast"],"fast_override":null}
+{"func":"effort_fields","config":{"effort":"medium"},"tier":"priority","supported_efforts":["none","high","xhigh"],"static_tiers":["priority","ultrafast"],"fast_override":null}
+{"func":"effort_fields","config":{"effort":"custom"},"tier":"priority","supported_efforts":["none","low","high"],"static_tiers":["priority","ultrafast"],"fast_override":null}
+{"func":"effort_fields","config":{"effort":"high"},"tier":"ultrafast","supported_efforts":[],"static_tiers":["priority","ultrafast"],"fast_override":null}
+{"func":"effort_fields","config":{"effort":"low"},"tier":"ultrafast","supported_efforts":["none","high"],"static_tiers":["priority","ultrafast"],"fast_override":{"service_tier":"priority"}}
+{"func":"effort_fields","config":{"effort":"high"},"tier":null,"supported_efforts":["none","low","medium","high"],"static_tiers":[],"fast_override":null}
+{"func":"identity","source":{"platform":"local","chat_id":"c1","user_id":"u1","profile":"default","chat_type":"dm"}}
+{"func":"identity","source":{"platform":"telegram","chat_id":"c2","user_id":42,"profile":"coder","chat_type":"group"}}
