@@ -1,0 +1,30 @@
+{"func":"env","token":"FOO=bar","case":"valid env assignment"}
+{"func":"env","token":"=bad","case":"leading equals"}
+{"func":"env","token":"1FOO=x","case":"invalid name start"}
+{"func":"env","token":"A_B2=x","case":"underscore and digits"}
+{"func":"env","token":"sudo","case":"no equals"}
+{"func":"token","command":"sudo -S hi","start":0,"case":"plain word"}
+{"func":"token","command":"'a b' rest","start":0,"case":"quoted word with space"}
+{"func":"token","command":"abc\\ def rest","start":0,"case":"backslash escape"}
+{"func":"token","command":"echo hi | sudo x","start":8,"case":"start on whitespace"}
+{"func":"token","command":"x;y","start":0,"case":"stop at operator"}
+{"func":"scan","command":"sudo a && sudo b","background":false,"case":"scanner normal mode"}
+{"func":"scan","command":"A && B & C","background":true,"case":"scanner background mode"}
+{"func":"scan","command":"echo 'x && y &'","background":true,"case":"quoted text not operators"}
+{"func":"rewrite","command":"sudo apt update","askpass":false,"case":"single sudo"}
+{"func":"rewrite","command":"FOO=1 sudo x","askpass":false,"case":"env assignment before sudo"}
+{"func":"rewrite","command":"env -u X sudo y","askpass":false,"case":"env value option"}
+{"func":"rewrite","command":"echo sudo","askpass":false,"case":"non-command sudo untouched"}
+{"func":"rewrite","command":"sudo a && sudo b","askpass":false,"case":"two sudo invocations"}
+{"func":"rewrite","command":"'sudo' x","askpass":false,"case":"quoted sudo word"}
+{"func":"rewrite","command":"sudo apt update","askpass":true,"case":"askpass prefix and suffix"}
+{"func":"count","command":"sudo a && sudo b","case":"count two"}
+{"func":"count","command":"echo sudo","case":"count zero"}
+{"func":"bg","command":"A && B &","case":"wrap background compound"}
+{"func":"bg","command":"A && B & C","case":"restore separator after group"}
+{"func":"bg","command":"cmd &","case":"simple background unchanged"}
+{"func":"bg","command":"A && { B & }","case":"already grouped idempotent"}
+{"func":"bg","command":"A && B &> f","case":"redirect not background"}
+{"func":"wrongpw","output":"sudo: authentication failed","case":"known marker"}
+{"func":"wrongpw","output":"SUDO: INCORRECT PASSWORD ATTEMPT","case":"case-insensitive marker"}
+{"func":"wrongpw","output":"all good","case":"no marker"}

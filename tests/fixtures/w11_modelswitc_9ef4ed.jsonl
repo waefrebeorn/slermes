@@ -1,0 +1,23 @@
+{"func":"constants"}
+{"func":"lazy_info_route","override":{"model":"gpt-5","provider":"openai"}}
+{"func":"lazy_info_route","override":{"model":"claude-sonnet","provider":""}}
+{"func":"lazy_info_route","override":{"model":"m","provider":null}}
+{"func":"lazy_info_route","override":{"model":null,"provider":"anthropic"}}
+{"func":"current_runtime","agent":{"provider":"p1","model":"m1","base_url":"https://x","api_key":"k1"}}
+{"func":"current_runtime","agent":{"provider":null,"model":"","base_url":"https://y","api_key":null}}
+{"func":"current_runtime","agent":{}}
+{"func":"result_scope","one_turn":true,"persist_global":true}
+{"func":"result_scope","one_turn":false,"persist_global":true}
+{"func":"result_scope","one_turn":false,"persist_global":false}
+{"func":"apply_result","new_model":"gpt-5","warning":"head","one_turn":false,"persist_global":false}
+{"func":"apply_result","new_model":"m2","warning":"","one_turn":true,"persist_global":false}
+{"func":"apply_result","new_model":"m3","warning":"W","one_turn":false,"persist_global":true}
+{"func":"confirm_message","warning_message":"big model","result_warning":"cache will be cleared"}
+{"func":"confirm_message","warning_message":"big model","result_warning":""}
+{"func":"confirm_message","warning_message":null,"result_warning":"x"}
+{"func":"switch_away_provider","has_agent":true,"explicit_provider":"openai","current_provider":"old-p","env_provider":"ignored","model_seed":false,"config_target":"cfg"}
+{"func":"switch_away_provider","has_agent":false,"explicit_provider":"","current_provider":"cur","env_provider":"ignored","model_seed":false,"config_target":"cfg"}
+{"func":"switch_away_provider","has_agent":false,"explicit_provider":"openai","current_provider":"cur","env_provider":"  nous  ","model_seed":false,"config_target":"cfg"}
+{"func":"switch_away_provider","has_agent":false,"explicit_provider":"openai","current_provider":"cur","env_provider":"","model_seed":true,"config_target":"cfg"}
+{"func":"switch_away_provider","has_agent":false,"explicit_provider":"openai","current_provider":"cur","env_provider":"","model_seed":false,"config_target":"cfg-p"}
+{"func":"switch_away_provider","has_agent":false,"explicit_provider":"openai","current_provider":"cur","env_provider":"","model_seed":false,"config_target":""}

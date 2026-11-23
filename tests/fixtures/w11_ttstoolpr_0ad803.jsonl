@@ -1,0 +1,26 @@
+{"func":"config_bool","value":true,"default":false,"case":"bool true"}
+{"func":"config_bool","value":0,"default":true,"case":"int zero -> false"}
+{"func":"config_bool","value":"  YES  ","default":false,"case":"string true word trimmed"}
+{"func":"config_bool","value":"no","default":true,"case":"string false word"}
+{"func":"config_bool","value":"maybe","default":true,"case":"unrecognised keeps default"}
+{"func":"config_bool","value":null,"default":false,"case":"null keeps default"}
+{"func":"response_format","path":"out.wav","case":"wav"}
+{"func":"response_format","path":"out.OGG","case":"uppercase ext defaults to mp3"}
+{"func":"response_format","path":"out.ogg","case":"ogg to opus"}
+{"func":"response_format","path":"out.flac","case":"flac"}
+{"func":"response_format","path":"out.mp3","case":"mp3 default"}
+{"func":"clamped_number","raw":"1.5","cast":"float","lo":0.7,"hi":1.5,"case":"float in range"}
+{"func":"clamped_number","raw":"9","cast":"float","lo":0.7,"hi":1.5,"case":"float above ceiling"}
+{"func":"clamped_number","raw":"0.1","cast":"float","lo":0.7,"hi":1.5,"case":"float below floor"}
+{"func":"clamped_number","raw":"3","cast":"int","lo":0,"hi":2,"case":"int clamped"}
+{"func":"clamped_number","raw":"bad","cast":"int","lo":0,"hi":2,"case":"unparseable -> null"}
+{"func":"clamped_number","raw":null,"cast":"float","lo":0,"hi":1,"case":"null -> null"}
+{"func":"gemini_tags","gemini_config":{"audio_tags":true},"model":"gemini-3.1-flash-tts","case":"enabled 3.1 model"}
+{"func":"gemini_tags","gemini_config":{"audio_tags":{"enabled":true}},"model":"google/gemini-3.1-tts-preview","case":"dict enabled with slash"}
+{"func":"gemini_tags","gemini_config":{"audio_tags":true},"model":"gemini-2.5-tts","case":"unsupported model"}
+{"func":"gemini_tags","gemini_config":{"audio_tags":"yes"},"model":"gemini-3.1-tts","case":"string yes"}
+{"func":"gemini_tags","gemini_config":{},"model":"gemini-3.1-tts","case":"absent audio_tags"}
+{"func":"compose","text":"Hello world.","persona_prompt":"","case":"no persona -> transcript"}
+{"func":"compose","text":"Hi.","persona_prompt":"Speak slowly.","case":"persona appended"}
+{"func":"compose","text":"Hi.","persona_prompt":"Use {{ transcript }} here.","case":"double brace placeholder"}
+{"func":"compose","text":"  padded  ","persona_prompt":"  Persona {TRANSCRIPT} here  ","case":"single brace uppercase placeholder"}

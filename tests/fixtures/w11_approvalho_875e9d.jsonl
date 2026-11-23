@@ -1,0 +1,20 @@
+{"func": "msys_drive_spellings", "path": "C:\\Users\\me", "case": "native windows home"}
+{"func": "msys_drive_spellings", "path": "c:/Users/me", "case": "forward slash"}
+{"func": "msys_drive_spellings", "path": "/home/me", "case": "posix no drive"}
+{"func": "msys_drive_spellings", "path": "C:", "case": "drive root only"}
+{"func": "msys_drive_spellings", "path": "", "case": "empty"}
+{"func": "path_below", "root": "/c/Users/me", "path": "/c/Users/me/AppData/Local/hermes", "case": "below"}
+{"func": "path_below", "root": "/c/Users/me", "path": "/c/Users/me", "case": "equal -> None"}
+{"func": "path_below", "root": "C:\\Users\\me", "path": "c:/users/ME/AppData", "win32": true, "case": "casefold win32"}
+{"func": "path_below", "root": "/root", "path": "/rooted/x", "case": "prefix not component"}
+{"func": "home_spellings", "paths": ["/home/me"], "command": "rm /home/me/x", "case": "no markers -> absolute only"}
+{"func": "home_spellings", "paths": ["/home/me/.ssh"], "command": "rm ~/.ssh/id", "expand_home": "/home/me", "case": "tilde relative"}
+{"func": "home_spellings", "paths": ["C:\\Users\\me\\AppData\\Local\\hermes"], "command": "x $LOCALAPPDATA/hermes/config", "win32": true, "local_appdata": "C:\\Users\\me\\AppData\\Local", "case": "env relative win32"}
+{"func": "fold_home_prefixes", "command": "cat /home/me/.ssh/id", "paths": ["/home/me"], "replacement": "~", "case": "posix fold"}
+{"func": "fold_home_prefixes", "command": "rm /home/me/x", "paths": ["/home/me"], "replacement": "~", "case": "posix fold file"}
+{"func": "fold_home_prefixes", "command": "xx/home/me/x", "paths": ["/home/me"], "replacement": "~", "case": "lookbehind blocks"}
+{"func": "fold_home_prefixes", "command": "rm C:\\Users\\me\\file", "paths": ["C:\\Users\\me"], "replacement": "~", "win32": true, "case": "windows tail normalized"}
+{"func": "fold_home_prefixes", "command": "rm /home/me", "paths": ["/home/me"], "replacement": "~", "case": "bare home no tail"}
+{"func": "fold_home_prefixes", "command": "cat /root/.ssh/x", "paths": ["/root"], "replacement": "~", "case": "single-component posix home"}
+{"func": "rewrite_user_home_ex", "command": "cat C:\\Users\\me\\.ssh\\id", "expand_home": "C:\\Users\\me", "real_home": "C:\\Users\\me", "win32": true, "case": "rewrite windows"}
+{"func": "rewrite_user_home_ex", "command": "cat /home/me/.ssh/id", "expand_home": "/home/me", "real_home": "/home/me", "case": "rewrite posix"}

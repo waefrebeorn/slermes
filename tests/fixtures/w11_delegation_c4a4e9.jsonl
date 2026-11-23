@@ -1,0 +1,17 @@
+{"case":1,"func":"configured_backend","config":{"backend":" CLI "}}
+{"case":2,"func":"configured_backend","config":{"backend":"  "}}
+{"case":3,"func":"configured_backend","config":{}}
+{"case":4,"func":"configured_backend","config":{"backend":null}}
+{"case":5,"func":"configured_backend","config":{"backend":5}}
+{"case":6,"func":"configured_backend","config":[]}
+{"case":7,"func":"lower_key","name":"  MiXeD-Case_42  "}
+{"case":8,"func":"lower_key","name":""}
+{"case":9,"func":"lower_key","name":"default"}
+{"case":10,"func":"bundled_name_matches","name":"default"}
+{"case":11,"func":"bundled_name_matches","name":"a"}
+{"case":12,"func":"bundled_name_matches","name":"my-plugin_v2"}
+{"case":13,"func":"bundled_name_matches","name":"BadName"}
+{"case":14,"func":"bundled_name_matches","name":"-leading"}
+{"case":15,"func":"bundled_name_matches","name":"a.b"}
+{"case":16,"func":"bundled_name_matches","name":"trailing\n"}
+{"case":17,"func":"bundled_name_matches","name":""}

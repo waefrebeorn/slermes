@@ -1,0 +1,31 @@
+{"case":1,"func":"normalize_base_url_text","base_url":"  https://api.minimax.io/anthropic/  "}
+{"case":2,"func":"normalize_base_url_text","base_url":""}
+{"case":3,"func":"normalized_lower","base_url":" HTTPS://API.KIMI.COM/Coding/// "}
+{"case":4,"func":"normalized_lower","base_url":null}
+{"case":5,"func":"is_third_party_anthropic_endpoint","base_url":"https://api.anthropic.com/v1"}
+{"case":6,"func":"is_third_party_anthropic_endpoint","base_url":"https://api.minimax.io/anthropic"}
+{"case":7,"func":"is_third_party_anthropic_endpoint","base_url":null}
+{"case":8,"func":"is_kimi_coding_endpoint","base_url":"https://api.kimi.com/coding/v1"}
+{"case":9,"func":"is_kimi_coding_endpoint","base_url":"https://api.kimi.com/chat/completions"}
+{"case":10,"func":"is_opencode_endpoint","base_url":"https://opencode.ai/zen/v1"}
+{"case":11,"func":"is_opencode_endpoint","base_url":"https://evil.com/opencode.ai/v1"}
+{"case":12,"func":"model_name_is_kimi_family","model":"moonshotai/kimi-k2.5"}
+{"case":13,"func":"model_name_is_kimi_family","model":"k3"}
+{"case":14,"func":"model_name_is_kimi_family","model":"gpt-4o"}
+{"case":15,"func":"is_kimi_family_endpoint","base_url":"https://gateway.local/v1","model":"vendor/k2-thinking"}
+{"case":16,"func":"is_kimi_family_endpoint","base_url":"https://api.moonshot.cn/v1","model":"gpt-4"}
+{"case":17,"func":"model_name_is_deepseek_thinking","model":"deepseek-reasoner"}
+{"case":18,"func":"model_name_is_deepseek_thinking","model":"deepseek-chat"}
+{"case":19,"func":"is_deepseek_anthropic_endpoint","base_url":"https://api.deepseek.com/anthropic"}
+{"case":20,"func":"is_deepseek_anthropic_endpoint","base_url":"https://api.deepseek.com/v1"}
+{"case":21,"func":"is_minimax_anthropic_endpoint","base_url":"https://api.minimaxi.com/anthropic/v1"}
+{"case":22,"func":"is_azure_anthropic_endpoint","base_url":"https://foo.services.ai.azure.net/anthropic"}
+{"case":23,"func":"is_azure_anthropic_endpoint","base_url":"https://foo.openai.azure.com/v1"}
+{"case":24,"func":"is_bedrock_runtime_endpoint","base_url":"https://bedrock-runtime.us-east-1.amazonaws.com/v1"}
+{"case":25,"func":"is_bedrock_runtime_endpoint","base_url":"https://bedrock.us-east-1.amazonaws.com/v1"}
+{"case":26,"func":"is_vertex_ai_endpoint","base_url":"https://us-central1-aiplatform.googleapis.com/v1"}
+{"case":27,"func":"is_claude_platform_endpoint","base_url":"https://aiplatform.googleapis.com/v1"}
+{"case":28,"func":"base_url_needs_context_1m_beta","base_url":"https://foo.azure.com/v1"}
+{"case":29,"func":"requires_bearer_auth","base_url":"https://api.minimax.io/anthropic","nous_override":false}
+{"case":30,"func":"requires_bearer_auth","base_url":"https://my.proxy/v1","nous_override":true}
+{"case":31,"func":"requires_bearer_auth","base_url":"https://api.anthropic.com/v1","nous_override":false}

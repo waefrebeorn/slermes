@@ -1,0 +1,13 @@
+{"func":"message","what":"memory","why":"reasons","case":"message assembly"}
+{"func":"message","what":"","why":"","case":"message empty strings"}
+{"func":"tool_refusal","tool_name":"memory","hosted":true,"case":"hosted blocks memory"}
+{"func":"tool_refusal","tool_name":"terminal","hosted":true,"case":"hosted allows terminal"}
+{"func":"tool_refusal","tool_name":"execute_code","hosted":true,"case":"hosted allows execute_code"}
+{"func":"tool_refusal","tool_name":"browser","hosted":false,"case":"local always allowed"}
+{"func":"feature_enabled","feature":"skills","hosted":false,"case":"local feature on"}
+{"func":"feature_enabled","feature":"skills","hosted":true,"case":"hosted feature off"}
+{"func":"feature_enabled","feature":"nope","hosted":false,"case":"unknown feature KeyError"}
+{"func":"feature_refusal","feature":"builtin_memory","what":"memory","hosted":true,"case":"hosted feature refusal"}
+{"func":"feature_refusal","feature":"builtin_memory","what":"memory","hosted":false,"case":"local feature no refusal"}
+{"func":"require","feature":"skills","what":"profile skills","hosted":true,"case":"hosted require raises"}
+{"func":"require","feature":"skills","what":"profile skills","hosted":false,"case":"local require noop"}

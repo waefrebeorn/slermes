@@ -1,0 +1,27 @@
+{"func":"private_dirs_cmd","root":"/tmp/root","subdirs":[],"case":"root only"}
+{"func":"private_dirs_cmd","root":"/tmp/root","subdirs":["a","b"],"case":"two subdirs"}
+{"func":"private_dirs_cmd","root":"/tmp/my root","subdirs":["it's","a b"],"case":"spaces and quote quoting"}
+{"func":"private_dirs_cmd","root":"","subdirs":[],"case":"empty root"}
+{"func":"rpc_token_ok","request":{"token":"abc"},"rpc_token":"abc","case":"match"}
+{"func":"rpc_token_ok","request":{"token":"abc"},"rpc_token":"xyz","case":"mismatch"}
+{"func":"rpc_token_ok","request":{"token":"abc"},"rpc_token":"","case":"empty server token fails closed"}
+{"func":"rpc_token_ok","request":{},"rpc_token":"abc","case":"missing token"}
+{"func":"rpc_token_ok","request":{"token":null},"rpc_token":"abc","case":"null token"}
+{"func":"rpc_token_ok","request":{"token":true},"rpc_token":"True","case":"bool token coercion"}
+{"func":"rpc_token_ok","request":{"token":1},"rpc_token":"1","case":"int token coercion"}
+{"func":"result_error","result":"{\"error\":\"boom\"}","case":"string error"}
+{"func":"result_error","result":"{\"error\":\"\"}","case":"empty error"}
+{"func":"result_error","result":"{\"ok\":1}","case":"no error key"}
+{"func":"result_error","result":"notjson","case":"not json"}
+{"func":"result_error","result":"{\"error\":42}","case":"number error"}
+{"func":"result_error","result":"{\"error\":true}","case":"bool error"}
+{"func":"tool_errors_since","tool_call_log":[{"tool":"a","error":"e1"},{"tool":"b","error":""},{"tool":"c","error":"e3"},{"tool":"d"},{"tool":"e","error":"e5"},{"tool":"f","error":"e6"}],"start":"0","case":"all from zero cap 5"}
+{"func":"tool_errors_since","tool_call_log":[{"tool":"a","error":"e1"},{"tool":"b","error":""},{"tool":"c","error":"e3"},{"tool":"d"},{"tool":"e","error":"e5"},{"tool":"f","error":"e6"}],"start":"2","case":"from index 2"}
+{"func":"tool_errors_since","tool_call_log":[{"tool":"a","error":"e1"},{"tool":"b","error":""},{"tool":"c","error":"e3"},{"tool":"d"},{"tool":"e","error":"e5"},{"tool":"f","error":"e6"}],"start":"-2","case":"negative start"}
+{"func":"execute_checked","cmd":"x","what":"ship","timeout":"5","execute_result":{"returncode":0,"output":"ok"},"case":"success"}
+{"func":"execute_checked","cmd":"x","what":"ship","timeout":"5","execute_result":{"returncode":1,"output":"oops"},"case":"failure"}
+{"func":"execute_checked","cmd":"x","what":"ship","timeout":"5","execute_result":{"returncode":1,"output":"it's broken"},"case":"failure repr quote"}
+{"func":"execute_checked","cmd":"x","what":"ship","timeout":"5","execute_result":{},"case":"missing returncode defaults 1"}
+{"func":"remote_write","remote_path":"/tmp/f","content":"hello","atomic":false,"timeout":"30","check":false,"execute_result":{"returncode":0,"output":""},"case":"plain write"}
+{"func":"remote_write","remote_path":"/tmp/f","content":"a b","atomic":true,"timeout":"60","check":false,"execute_result":{"returncode":0,"output":""},"case":"atomic quoted path"}
+{"func":"remote_write","remote_path":"/tmp/f","content":"x","atomic":false,"timeout":"30","check":true,"execute_result":{"returncode":1,"output":"denied"},"case":"check failure raises"}

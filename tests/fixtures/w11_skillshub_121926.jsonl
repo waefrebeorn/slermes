@@ -1,0 +1,35 @@
+{"case":1,"func":"query_to_index_url","query":"https://x.com/.well-known/skills/index.json"}
+{"case":2,"func":"query_to_index_url","query":"https://x.com/"}
+{"case":3,"func":"query_to_index_url","query":"https://x.com/.well-known/skills/foo"}
+{"case":4,"func":"query_to_index_url","query":"http://a.com/base/"}
+{"case":5,"func":"query_to_index_url","query":"not a url"}
+{"case":6,"func":"query_to_index_url","query":"  https://x.com/  "}
+{"case":7,"func":"wrap_identifier","base_url":"https://x.com/","skill_name":"my-skill"}
+{"case":8,"func":"wrap_identifier","base_url":"https://x.com","skill_name":"s"}
+{"case":9,"func":"parse_wellknown_identifier","identifier":"well-known:https://x.com/.well-known/skills/sk/index.json#myskill"}
+{"case":10,"func":"parse_wellknown_identifier","identifier":"https://x.com/.well-known/skills/sk/index.json"}
+{"case":11,"func":"parse_wellknown_identifier","identifier":"https://x.com/.well-known/skills/sk/SKILL.md"}
+{"case":12,"func":"parse_wellknown_identifier","identifier":"https://x.com/.well-known/skills/sk/"}
+{"case":13,"func":"parse_wellknown_identifier","identifier":"garbage"}
+{"case":14,"func":"is_valid_skill_name","name":"my-skill"}
+{"case":15,"func":"is_valid_skill_name","name":"MySkill"}
+{"case":16,"func":"is_valid_skill_name","name":"skill"}
+{"case":17,"func":"is_valid_skill_name","name":"a_b-1"}
+{"case":18,"func":"is_valid_skill_name","name":"a.b"}
+{"case":19,"func":"is_valid_skill_name","name":null}
+{"case":20,"func":"is_valid_skill_name","name":"  Good-Name  "}
+{"case":21,"func":"resolve_skill_name","fm":{"name":"My-Skill"},"url":"https://x/a/SKILL.md"}
+{"case":22,"func":"resolve_skill_name","fm":{},"url":"https://x/myskill/SKILL.md"}
+{"case":23,"func":"resolve_skill_name","fm":{},"url":"https://x/myskill.md"}
+{"case":24,"func":"resolve_skill_name","fm":{},"url":"https://x/SKILL.md"}
+{"case":25,"func":"resolve_skill_name","fm":{"name":"skill"},"url":"https://x/ok.md"}
+{"case":26,"func":"url_matches","identifier":"https://x/a/SKILL.md"}
+{"case":27,"func":"url_matches","identifier":"https://x/.well-known/skills/index.json"}
+{"case":28,"func":"url_matches","identifier":"https://x/a.md"}
+{"case":29,"func":"url_matches","identifier":"ftp://x/a.md"}
+{"case":30,"func":"url_matches","identifier":" https://x/a.md "}
+{"case":31,"func":"agent_id","identifier":"lobehub/abc"}
+{"case":32,"func":"agent_id","identifier":"abc"}
+{"case":33,"func":"agent_id","identifier":"lobehub/a/b"}
+{"case":34,"func":"slug_from_identifier","identifier":"browse-sh/airbnb.com/x"}
+{"case":35,"func":"slug_from_identifier","identifier":"x"}

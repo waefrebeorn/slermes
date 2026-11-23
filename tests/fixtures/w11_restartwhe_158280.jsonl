@@ -1,0 +1,12 @@
+{"func": "log_view", "case": 1, "units": []}
+{"func": "log_view", "case": 2, "units": [{"kind": "delegation", "delegation_id": "d1", "session": "s1"}]}
+{"func": "log_view", "case": 3, "units": [{"kind": "process", "process_id": "p1", "pid": 1234}]}
+{"func": "log_view", "case": 4, "units": [{"kind": "delegation", "delegation_id": "d1"}, {"kind": "notice", "id": "x", "session": "s"}]}
+{"func": "log_view", "case": 5, "units": [{"kind": "x", "session": null, "delegation_id": ""}]}
+{"func": "log_view", "case": 6, "units": [{"kind": "x", "pid": 0, "job_id": 0}]}
+{"func": "log_view", "case": 7, "units": [{"delegation_id": "d"}]}
+{"func": "log_view", "case": 8, "units": ["not a dict", {"kind": "k", "id": "a"}]}
+{"func": "log_view", "case": 9, "units": [{"kind": "k", "id": "a", "pid": 9, "session": "s", "delegation_id": "d", "process_id": "p", "job_id": "j"}]}
+{"func": "log_view", "case": 10, "units": [{"kind": "k", "session": false, "id": true}]}
+{"func": "log_view", "case": 11, "units": [{"kind": "k", "id": 42, "pid": 7}]}
+{"func": "log_view", "case": 12, "units": [null, {}, {"kind": null, "id": "z"}]}

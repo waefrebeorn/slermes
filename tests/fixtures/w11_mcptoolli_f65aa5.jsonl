@@ -1,0 +1,14 @@
+{"func":"filter_children","pids":["100","200"],"cmdlines":{"100":["node","mcp-server.js"],"200":["python","-m","tui_gateway.slash_worker"]},"psutil_available":true,"supervisor_script":"/bin/sup","case":"drop non-mcp marker child"}
+{"func":"filter_children","pids":["100","200"],"cmdlines":{"100":["sh","/bin/sup","123"],"200":["node","server"]},"psutil_available":true,"supervisor_script":"/bin/sup","case":"drop supervisor child"}
+{"func":"filter_children","pids":["100","200"],"cmdlines":{"100":["node","mcp-a.js"],"200":["node","mcp-b.js"]},"psutil_available":true,"supervisor_script":"/bin/sup","case":"all children kept when no markers"}
+{"func":"filter_children","pids":[],"cmdlines":{},"psutil_available":true,"supervisor_script":"","case":"empty pids"}
+{"func":"filter_children","pids":["100","999"],"cmdlines":{"100":["node","server"]},"psutil_available":true,"supervisor_script":"","case":"raced away process skipped"}
+{"func":"take_reapable","include_active":true,"server_name":null,"orphan_pids":["100","200"],"orphan_servers":{"100":"srvA","200":"srvB"},"stdio_pids":{"300":"srvA"},"stdio_pgids":{"100":"111","300":"333"},"stdio_starttimes":{"100":"555"},"case":"take all with pgid and start"}
+{"func":"take_reapable","include_active":false,"server_name":"srvA","orphan_pids":["100","200"],"orphan_servers":{"100":"srvA","200":"srvB"},"stdio_pids":{"300":"srvA"},"stdio_pgids":{},"stdio_starttimes":{},"case":"filter by server name"}
+{"func":"take_reapable","include_active":false,"server_name":null,"orphan_pids":[],"orphan_servers":{},"stdio_pids":{},"stdio_pgids":{},"stdio_starttimes":{},"case":"empty ledgers"}
+{"func":"take_reapable","include_active":true,"server_name":"nope","orphan_pids":["100"],"orphan_servers":{"100":"srvA"},"stdio_pids":{"300":"srvA"},"stdio_pgids":{"100":"111"},"stdio_starttimes":{},"case":"no matching owner"}
+{"func":"clear_cooldowns","keys":null,"retry_after":{"a":1,"b":2},"failures":{"a":3},"case":"clear all"}
+{"func":"clear_cooldowns","keys":["a"],"retry_after":{"a":1,"b":2},"failures":{"a":3,"b":4},"case":"clear one key"}
+{"func":"clear_cooldowns","keys":[],"retry_after":{},"failures":{},"case":"empty maps"}
+{"func":"stop_loop_if_idle","loop_result":true,"case":"idle loop stopped"}
+{"func":"stop_loop_if_idle","loop_result":false,"case":"busy loop kept"}

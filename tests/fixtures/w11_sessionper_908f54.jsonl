@@ -1,0 +1,25 @@
+{"case": 1, "func": "override", "msg": {}, "content": "x", "override": null}
+{"case": 2, "func": "override", "msg": {}, "content": "x", "override": "y"}
+{"case": 3, "func": "override", "msg": {"_compressed_summary": true}, "content": "x", "override": "y"}
+{"case": 4, "func": "override", "msg": {}, "content": ["img"], "override": "y"}
+{"case": 5, "func": "override", "msg": {}, "content": ["img"], "override": ["img2"]}
+{"case": 6, "func": "override", "msg": {}, "content": "x", "override": ["img2"]}
+{"case": 7, "func": "override", "msg": {"_compressed_summary": false}, "content": "x", "override": 0}
+{"case": 8, "func": "override", "msg": {}, "content": null, "override": "y"}
+{"case": 9, "func": "content_override", "msg": {"_merged_turn_prefix": "PRE"}, "content": "PRE", "override": "new"}
+{"case": 10, "func": "content_override", "msg": {"_merged_turn_prefix": "PRE"}, "content": "PRE\n\nold", "override": "new"}
+{"case": 11, "func": "content_override", "msg": {"_merged_turn_prefix": "PRE"}, "content": "OTHER", "override": "new"}
+{"case": 12, "func": "content_override", "msg": {"_merged_turn_prefix": "PRE"}, "content": "PRE\n\nold", "override": ""}
+{"case": 13, "func": "content_override", "msg": {}, "content": "PRE", "override": "new"}
+{"case": 14, "func": "content_override", "msg": {"_merged_turn_prefix": "PRE"}, "content": ["a"], "override": "new"}
+{"case": 15, "func": "safe_filename", "session_id": ""}
+{"case": 16, "func": "safe_filename", "session_id": null}
+{"case": 17, "func": "safe_filename", "session_id": "  abc  "}
+{"case": 18, "func": "safe_filename", "session_id": "a/b?c"}
+{"case": 19, "func": "safe_filename", "session_id": "hello_world"}
+{"case": 20, "func": "safe_filename", "session_id": "...x..."}
+{"case": 21, "func": "safe_filename", "session_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"case": 22, "func": "safe_filename", "session_id": "x.y"}
+{"case": 23, "func": "safe_filename", "session_id": "user-123"}
+{"case": 24, "func": "safe_filename", "session_id": 42}
+{"case": 25, "func": "safe_filename", "session_id": true}

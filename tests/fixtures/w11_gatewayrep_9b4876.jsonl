@@ -1,0 +1,23 @@
+{"func": "text", "payload": {"text": "hello"}}
+{"func": "text", "payload": {"text": null}}
+{"func": "text", "payload": {"text": 123}}
+{"func": "text", "payload": {}}
+{"func": "close_segment", "streamed": "abc", "shown": []}
+{"func": "close_segment", "streamed": "   ", "shown": ["x"]}
+{"func": "close_segment", "streamed": "", "shown": []}
+{"func": "close_segment", "streamed": "hi", "shown": ["prev"]}
+{"func": "final_remainder", "text": "", "streamed": "", "shown": [], "response_reused": false, "has_receipt": false}
+{"func": "final_remainder", "text": "hello", "streamed": "hel", "shown": [], "response_reused": false, "has_receipt": false}
+{"func": "final_remainder", "text": "hello", "streamed": "", "shown": ["hello"], "response_reused": false, "has_receipt": false}
+{"func": "final_remainder", "text": "hello", "streamed": "", "shown": [], "response_reused": false, "has_receipt": false}
+{"func": "final_remainder", "text": "abc", "streamed": "xyz", "shown": [], "response_reused": false, "has_receipt": false}
+{"func": "final_remainder", "text": "abc", "streamed": "abc", "shown": [], "response_reused": false, "has_receipt": false}
+{"func": "final_remainder", "text": "Operation interrupted: waiting for model response (x)", "streamed": "", "shown": [], "response_reused": false, "has_receipt": false, "outcome": "cancelled"}
+{"func": "final_remainder", "text": "final text", "streamed": "", "shown": ["final text"], "response_reused": true, "has_receipt": false}
+{"func": "final_remainder", "text": "final text", "streamed": "", "shown": ["final text"], "response_reused": true, "has_receipt": false, "cut": ""}
+{"func": "final_remainder", "text": "final text", "streamed": "", "shown": ["final text"], "response_reused": true, "has_receipt": false, "cut": "abc"}
+{"func": "final_remainder", "text": "abcdef", "streamed": "", "shown": [], "response_reused": false, "has_receipt": false, "cut": "abc  "}
+{"func": "final_remainder", "text": "abc", "streamed": "", "shown": [], "response_reused": false, "has_receipt": false, "cut": "zz"}
+{"func": "final_remainder", "text": "xy done", "streamed": "", "shown": [], "response_reused": false, "has_receipt": false, "cut": "\n\nxy"}
+{"func": "final_remainder", "text": "x", "streamed": "", "shown": [], "response_reused": true, "has_receipt": true}
+{"func": "final_remainder", "text": "hi", "streamed": "hi", "shown": [], "response_reused": false, "has_receipt": false}

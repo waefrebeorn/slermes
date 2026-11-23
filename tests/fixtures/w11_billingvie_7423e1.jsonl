@@ -1,0 +1,19 @@
+{"func":"wire","value":null,"case":"None passes through"}
+{"func":"wire","value":"12.50","case":"string decimal preserved"}
+{"func":"wire","value":12.5,"case":"number to wire string"}
+{"func":"wire","value":true,"case":"bool to True"}
+{"func":"wire","value":false,"case":"bool to False"}
+{"func":"wire","value":-3.25,"case":"negative decimal"}
+{"func":"pick","result":{"foo":1,"bar":null,"nope":3},"fields":{"a":"foo","b":"bar","c":"missing"},"case":"ordered pick with missing"}
+{"func":"pick","result":{},"fields":{"x":"a","y":"b"},"case":"empty result"}
+{"func":"pick","result":{"s":"hello"},"fields":{"only":"s"},"case":"single field"}
+{"func":"pm","pm":null,"case":"null payment method"}
+{"func":"pm","pm":{"kind":"card","brand":"visa","last4":"4242","wallet":"apple","resolved_via":"rung","email":"x","raw_kind":"card"},"case":"card fields only"}
+{"func":"pm","pm":{"kind":"link","brand":"v","last4":"1","wallet":"w","resolved_via":"direct","email":"a@b.c","raw_kind":"link"},"case":"link fields only"}
+{"func":"pm","pm":{"kind":"weird","brand":"v","last4":"1","wallet":"w","resolved_via":"x","email":"e","raw_kind":"weird"},"case":"unknown kind"}
+{"func":"preview","p":{"effect":"downgrade","reason":"user","current_tier_id":"c1","current_tier_name":"C1","target_tier_id":"t2","target_tier_name":"T2","monthly_credits_delta":"-5.50","amount_due_now_cents":1234,"effective_at":"2026-01-02"},"case":"negative decimal delta"}
+{"func":"preview","p":{"effect":"upgrade","reason":"admin","current_tier_id":"a","current_tier_name":"A","target_tier_id":"b","target_tier_name":"B","monthly_credits_delta":"10","amount_due_now_cents":0,"effective_at":null},"case":"integral delta"}
+{"func":"auto_reload","ar":null,"case":"null auto reload"}
+{"func":"auto_reload","ar":{"enabled":true,"threshold_usd":"10","reload_to_usd":"25.5","card":null},"case":"no card"}
+{"func":"auto_reload","ar":{"enabled":false,"threshold_usd":"0.01","reload_to_usd":"100","card":{"kind":"distinct","payment_method_id":"pm_1","brand":"mc","last4":"1111"}},"case":"distinct card"}
+{"func":"auto_reload","ar":{"enabled":true,"threshold_usd":"10","reload_to_usd":"20","card":{"kind":"same"}},"case":"same card"}

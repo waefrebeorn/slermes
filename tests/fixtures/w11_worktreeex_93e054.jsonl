@@ -1,0 +1,15 @@
+{"func":"worktree_state","info":{"path":"","repo_root":"/r"},"is_dir":true,"is_dirty":true,"has_unpushed":false,"out":null}
+{"func":"worktree_state","info":{"path":"/w","repo_root":"/r"},"is_dir":false,"is_dirty":true,"has_unpushed":false,"out":null}
+{"func":"worktree_state","info":{"path":"/w","repo_root":"/r"},"is_dir":true,"is_dirty":true,"has_unpushed":true,"out":"dirty"}
+{"func":"worktree_state","info":{"path":"/w","repo_root":"/r"},"is_dir":true,"is_dirty":false,"has_unpushed":true,"out":"unpushed"}
+{"func":"worktree_state","info":{"path":"/w","repo_root":"/r"},"is_dir":true,"is_dirty":false,"has_unpushed":false,"out":null}
+{"func":"ask_exit_choice","info":null,"has_tty":true,"state":"dirty","still_in_use":false,"curses_idx":1,"curses_error":false,"out":"keep"}
+{"func":"ask_exit_choice","info":{},"has_tty":true,"state":"dirty","still_in_use":false,"curses_idx":1,"curses_error":false,"out":"keep"}
+{"func":"ask_exit_choice","info":{"path":"/w","repo_root":"/r"},"has_tty":false,"state":"dirty","still_in_use":false,"curses_idx":1,"curses_error":false,"out":"keep"}
+{"func":"ask_exit_choice","info":{"path":"/w","repo_root":"/r"},"has_tty":true,"state":null,"still_in_use":false,"curses_idx":1,"curses_error":false,"out":"keep"}
+{"func":"ask_exit_choice","info":{"path":"/w","repo_root":"/r"},"has_tty":true,"state":"dirty","still_in_use":true,"curses_idx":1,"curses_error":false,"out":"keep"}
+{"func":"ask_exit_choice","info":{"path":"/w","repo_root":"/r"},"has_tty":true,"state":"dirty","still_in_use":false,"curses_idx":1,"curses_error":true,"out":"keep"}
+{"func":"ask_exit_choice","info":{"path":"/w","repo_root":"/r"},"has_tty":true,"state":"unpushed","still_in_use":false,"curses_idx":0,"curses_error":false,"out":"keep"}
+{"func":"ask_exit_choice","info":{"path":"/w","repo_root":"/r"},"has_tty":true,"state":"dirty","still_in_use":false,"curses_idx":1,"curses_error":false,"out":"archive"}
+{"func":"ask_exit_choice","info":{"path":"/w","repo_root":"/r"},"has_tty":true,"state":"unpushed","still_in_use":false,"curses_idx":2,"curses_error":false,"out":"discard"}
+{"func":"ask_exit_choice","info":{"path":"/w","repo_root":"/r"},"has_tty":true,"state":"dirty","still_in_use":false,"curses_idx":5,"curses_error":false,"out":"keep"}

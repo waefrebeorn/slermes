@@ -1,0 +1,19 @@
+{"func":"descriptor","payload":{"local_automation_v1":{"kind":"local","identities":["a"]}},"case":"local wins"}
+{"func":"descriptor","payload":{"local_automation_v1":{},"native_text_v1":{"automation":{"kind":"native"}}},"case":"empty local falls through"}
+{"func":"descriptor","payload":{"native_text_v1":{"automation":{"kind":"native","goal":"g"}}},"case":"native automation"}
+{"func":"descriptor","payload":{"native_text_v1":{"automation":{}}},"case":"empty native -> empty"}
+{"func":"descriptor","payload":{},"case":"no descriptor"}
+{"func":"folded_payload","payload":{"text":"old","local_automation_v1":{"identities":["x","y"],"kind":"local"}},"case":"fold local pops identities"}
+{"func":"folded_payload","payload":{"text":"old","native_text_v1":{"automation":{"identities":["z"]}}},"case":"fold native pops identities"}
+{"func":"folded_payload","payload":{"text":"old","local_automation_v1":{"kind":"local"}},"case":"fold no identities"}
+{"func":"folded_payload","payload":{"text":"old"},"case":"fold empty payload"}
+{"func":"goal_contract","data":{"outcome":"  ship it  ","verification":"tests","stop_when":"  "},"case":"contract trims"}
+{"func":"goal_contract","data":{"outcome":"", "verification":null, "constraints":false},"case":"contract falsy fields"}
+{"func":"goal_contract_empty","data":{"outcome":"  ","verification":"","stop_when":""},"case":"contract empty"}
+{"func":"goal_contract_empty","data":{"outcome":" ship ","verification":""},"case":"contract not empty"}
+{"func":"goal_gate","data":{},"case":"gate defaults"}
+{"func":"goal_gate","data":{"command":"make test","timeout_seconds":60,"max_retries":1,"attempts":2,"last_exit_code":0,"last_output_tail":"tail"},"case":"gate full"}
+{"func":"goal_gate","data":{"command":"x","last_exit_code":null,"timeout_seconds":0,"attempts":0},"case":"gate falsy -> defaults"}
+{"func":"heartbeat_state","data":{"prompt":"ping","interval_seconds":60,"status":"paused","created_at":1.5,"last_fired_at":2.0,"fire_count":3},"case":"heartbeat full"}
+{"func":"heartbeat_state","data":{"prompt":"","interval_seconds":0,"status":"","fire_count":0},"case":"heartbeat defaults"}
+{"func":"heartbeat_state","data":{},"case":"heartbeat empty"}

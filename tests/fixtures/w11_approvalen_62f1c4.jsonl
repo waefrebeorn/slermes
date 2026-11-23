@@ -1,0 +1,23 @@
+{"func": "split_env_string", "payload": "echo hi", "case": "two words"}
+{"func": "split_env_string", "payload": "'a b' c", "case": "single quotes"}
+{"func": "split_env_string", "payload": "a\\ b", "case": "escaped space"}
+{"func": "split_env_string", "payload": "a\\_b c", "case": "underscore separator"}
+{"func": "split_env_string", "payload": "'a\\_b'", "case": "underscore inside quotes is space"}
+{"func": "split_env_string", "payload": "# comment", "case": "leading comment"}
+{"func": "split_env_string", "payload": "echo hi # tail", "case": "trailing comment"}
+{"func": "split_env_string", "payload": "'unterminated", "case": "unterminated quote -> None"}
+{"func": "split_env_string", "payload": "trailing\\", "case": "trailing backslash -> None"}
+{"func": "split_env_string", "payload": "$HOME", "case": "dynamic expansion refused"}
+{"func": "split_env_string", "payload": "'$HOME'", "case": "$ inside single quotes allowed"}
+{"func": "split_env_string", "payload": "echo \\c done", "case": "\\c breaks"}
+{"func": "split_env_string", "payload": "\"a\\tb\"", "case": "tab escape"}
+{"func": "split_env_string", "payload": "a''b", "case": "adjacent quotes join"}
+{"func": "split_env_string", "payload": "", "case": "empty payload -> []"}
+{"func": "env_split_payload", "tokens": ["env", "-S", "echo hi"], "case": "-S separate"}
+{"func": "env_split_payload", "tokens": ["env", "--split-string", "echo hi", "arg"], "case": "long option + trailing arg"}
+{"func": "env_split_payload", "tokens": ["env", "--split-string=echo hi"], "case": "attached long value"}
+{"func": "env_split_payload", "tokens": ["env", "-u", "FOO", "-S", "echo hi"], "case": "skip -u operand"}
+{"func": "env_split_payload", "tokens": ["env", "-S", "-S reboot"], "case": "nested re-parse"}
+{"func": "env_split_payload", "tokens": ["env", "cmd"], "case": "no option -> None"}
+{"func": "env_split_payload", "tokens": ["env", "-S", "$HOME"], "case": "dynamic refused -> None"}
+{"func": "env_split_payload", "tokens": ["env", "-S'echo hi'", "tail"], "case": "bundle attached value"}

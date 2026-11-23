@@ -1,0 +1,14 @@
+{"func": "redact", "text": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASC\n-----END PRIVATE KEY-----", "case": "full block BEGIN+body+END"}
+{"func": "redact", "text": "-----BEGIN RSA PRIVATE KEY-----\nABCDEF1234567890abcdefghijkl\nQFBgc1hremNlZA==\n-----END RSA PRIVATE KEY-----\n echo done", "case": "BEGIN with short ending body"}
+{"func": "redact", "text": "-----BEGIN EC PRIVATE KEY-----\ndGhpcyBpcyBhIHRlc3Qga2V5IGJvZHk=\n-----END EC PRIVATE KEY-----", "case": "EC key lone begin"}
+{"func": "redact", "text": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtz\n-----END OPENSSH PRIVATE KEY-----", "case": "openssh key"}
+{"func": "redact", "text": "no armor here\njust text", "case": "no armor"}
+{"func": "redact", "text": "-----END PRIVATE KEY-----", "case": "lone END armor"}
+{"func": "redact", "text": "-----BEGIN PRIVATE KEY-----\ndeadbeefdeadbeefdeadbeefdead\n", "case": "pure hex body not redacted"}
+{"func": "redact", "text": "-----BEGIN PRIVATE KEY-----\nQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo=\necho $?\ndone", "case": "tail with trailing = word"}
+{"func": "redact", "text": "-----BEGIN PRIVATE KEY-----\r\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASC\r\n-----END PRIVATE KEY-----\r\n", "case": "CRLF armor"}
+{"func": "redact", "text": "-----BEGIN PRIVATE KEY-----\n   QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo=   \n-----END PRIVATE KEY-----", "case": "leading spaces body"}
+{"func": "redact", "text": "", "case": "empty text"}
+{"func": "redact", "text": "see -----BEGIN PRIVATE KEY----- here\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASC\nEND OF LINE", "case": "armor inline in prose"}
+{"func": "redact", "text": "-----BEGIN PRIVATE KEY-----\nQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo=\n-----BEGIN PRIVATE KEY-----\nQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo=\n", "case": "two BEGIN blocks"}
+{"func": "redact", "text": "-----BEGIN PRIVATE KEY-----\nQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo=\ndone", "case": "unpadded short word not trailer"}

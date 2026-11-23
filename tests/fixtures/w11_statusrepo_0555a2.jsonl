@@ -1,0 +1,13 @@
+{"func":"status_lines","fields":{"session_id":"abc","path":"/home/u","title":"My Session","model":"gpt","provider":"openai","created":"2026-01-01 10:00","last_activity":"2026-01-02 11:30","tokens":"1,234","agent_running":true},"keys":["session_id","path","title","model","created","last_activity","tokens","agent_running"],"out":["Session ID: abc","Path: /home/u","Title: My Session","Model: gpt (openai)","Created: 2026-01-01 10:00","Last Activity: 2026-01-02 11:30","Tokens: 1,234","Agent Running: Yes"]}
+{"func":"status_lines","fields":{"session_id":"abc","title":""},"keys":["title","session_id"],"out":["Session ID: abc"]}
+{"func":"status_lines","fields":{"title":null,"model":"","provider":""},"keys":["title","model"],"out":["Model: (unknown) (unknown)"]}
+{"func":"status_lines","fields":{"model":"M","provider":""},"keys":["model"],"out":["Model: M (unknown)"]}
+{"func":"status_lines","fields":{"model":"","provider":"p"},"keys":["model"],"out":["Model: (unknown) (p)"]}
+{"func":"status_lines","fields":{"agent_running":false},"keys":["agent_running"],"out":["Agent Running: No"]}
+{"func":"status_lines","fields":{"tokens":"0"},"keys":["tokens"],"out":["Tokens: 0"]}
+{"func":"status_lines","fields":{"session_id":"s","tokens":"9","agent_running":true},"keys":["tokens","session_id","agent_running"],"out":["Tokens: 9","Session ID: s","Agent Running: Yes"]}
+{"func":"status_lines","fields":{"title":"   "},"keys":["title"],"out":["Title:    "]}
+{"func":"status_lines","fields":{"tokens":42},"keys":["tokens"],"out":["Tokens: 42"]}
+{"func":"status_lines","fields":{"agent_running":0},"keys":["agent_running"],"out":["Agent Running: No"]}
+{"func":"status_lines","fields":{"session_id":null},"keys":["session_id"],"out":["Session ID: None"]}
+{"func":"status_lines","fields":{},"keys":[],"out":[]}

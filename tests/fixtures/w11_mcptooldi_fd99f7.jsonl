@@ -1,0 +1,25 @@
+{"func":"connected_summary","names":["a","b","c"],"servers":{"a":{"tools":3,"park":false},"b":{"tools":1,"park":false}},"connect_errors":{"b":"boom"},"lazy_tools":"2","lazy_servers":"1","case":"mixed connected and failed"}
+{"func":"connected_summary","names":[],"servers":{},"connect_errors":{},"lazy_tools":"0","lazy_servers":"0","case":"empty"}
+{"func":"connected_summary","names":["a","b"],"servers":{"a":{"tools":2,"park":false},"b":{"tools":0,"park":false}},"connect_errors":{"b":""},"lazy_tools":"0","lazy_servers":"0","case":"empty error string still not connected"}
+{"func":"connected_summary","names":["x"],"servers":{},"connect_errors":{},"lazy_tools":"5","lazy_servers":"3","case":"never attempted fallback"}
+{"func":"unregistered","wanted":["a","b","c","d"],"servers":{"a":{"tools":0,"park":false}},"connecting":["b"],"lazy_configs":["c"],"case":"only d unregistered"}
+{"func":"unregistered","wanted":["z","a"],"servers":{"a":{"tools":0,"park":false}},"connecting":[],"lazy_configs":[],"case":"sorted output"}
+{"func":"unregistered","wanted":[],"servers":{},"connecting":[],"lazy_configs":[],"case":"empty wanted"}
+{"func":"awaiting_connect","wanted":["a","b","c"],"servers":{},"connecting":[],"lazy_configs":[],"retry_after":{"b":100.0},"now":50.0,"case":"b in cooldown"}
+{"func":"awaiting_connect","wanted":["a","b"],"servers":{},"connecting":[],"lazy_configs":[],"retry_after":{"b":40.0},"now":50.0,"case":"cooldown lapsed"}
+{"func":"awaiting_connect","wanted":["a"],"servers":{"a":{"tools":0,"park":false}},"connecting":[],"lazy_configs":[],"retry_after":{},"now":0.0,"case":"already connected not awaited"}
+{"func":"not_connected","wanted":["a","b","c","d","e"],"servers":{"a":{"tools":0,"park":false},"b":{"tools":1,"park":false}},"connect_errors":{"b":"boom"},"connecting":["c"],"lazy_configs":["d"],"retry_after":{},"now":0.0,"case":"serving nothing and unregistered"}
+{"func":"not_connected","wanted":["a","b"],"servers":{"a":{"tools":0,"park":true},"b":{"tools":2,"park":false}},"connect_errors":{},"connecting":[],"lazy_configs":[],"retry_after":{},"now":0.0,"case":"parked server counts"}
+{"func":"not_connected","wanted":["d"],"servers":{},"connect_errors":{},"connecting":[],"lazy_configs":["d"],"retry_after":{},"now":0.0,"case":"lazy without error is fine"}
+{"func":"parallel_safe","tool_name":"mcp__a__x","mcp_tool_server_names":{"mcp__a__x":"a","mcp__b__y":"b"},"parallel_safe":{"a":true},"case":"parallel safe tool"}
+{"func":"parallel_safe","tool_name":"mcp__b__y","mcp_tool_server_names":{"mcp__a__x":"a","mcp__b__y":"b"},"parallel_safe":{"a":true},"case":"not parallel safe"}
+{"func":"parallel_safe","tool_name":"terminal","mcp_tool_server_names":{"mcp__a__x":"a","mcp__b__y":"b"},"parallel_safe":{"a":true},"case":"non mcp tool"}
+{"func":"parallel_safe","tool_name":"mcp__z__q","mcp_tool_server_names":{"mcp__a__x":"a","mcp__b__y":"b"},"parallel_safe":{},"case":"unmapped mcp tool"}
+{"func":"resolve_server_lazy","config":{"lazy":true},"case":"bool true"}
+{"func":"resolve_server_lazy","config":{"lazy":false},"case":"bool false"}
+{"func":"resolve_server_lazy","config":{"lazy":"YES"},"case":"string yes"}
+{"func":"resolve_server_lazy","config":{"lazy":" off "},"case":"string off padded"}
+{"func":"resolve_server_lazy","config":{"lazy":"maybe"},"case":"unknown default false"}
+{"func":"resolve_server_lazy","config":{"lazy":1},"case":"number 1"}
+{"func":"resolve_server_lazy","config":{"lazy":0},"case":"number 0"}
+{"func":"resolve_server_lazy","config":{},"case":"absent default false"}

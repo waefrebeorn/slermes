@@ -1,0 +1,26 @@
+{"func":"metadata_issuer","context":{"oauth_metadata":{"issuer":"https://api.figma.com/"}},"case":"trailing slash stripped"}
+{"func":"metadata_issuer","context":{"oauth_metadata":{"issuer":"https://api.figma.com"}},"case":"no trailing slash"}
+{"func":"metadata_issuer","context":{"oauth_metadata":null},"case":"no metadata"}
+{"func":"metadata_issuer","context":{"oauth_metadata":{"issuer":""}},"case":"empty issuer"}
+{"func":"metadata_issuer","context":{"oauth_metadata":{"issuer":"https://x///"}},"case":"multiple trailing slashes"}
+{"func":"asm_discovery_failure","response":{"request":{"url":"https://s/.well-known/oauth-authorization-server"},"status_code":404},"case":"asm 404"}
+{"func":"asm_discovery_failure","response":{"request":{"url":"https://s/.well-known/openid-configuration"},"status_code":500},"case":"oidc 500"}
+{"func":"asm_discovery_failure","response":{"request":{"url":"https://s/.well-known/oauth-authorization-server"},"status_code":200},"case":"2xx success"}
+{"func":"asm_discovery_failure","response":{"request":{"url":"https://s/other"},"status_code":404},"case":"non discovery path"}
+{"func":"asm_discovery_failure","response":{"request":null,"status_code":404},"case":"no request"}
+{"func":"asm_discovery_failure","response":{"request":{"url":"https://s/.well-known/oauth-authorization-server"},"status_code":null},"case":"no status"}
+{"func":"with_discovery_context","exc":"boom","failures":["404 from a","500 from b"],"case":"two failures"}
+{"func":"with_discovery_context","exc":"oops","failures":[],"case":"no failures"}
+{"func":"metadata_issued_by_origin","metadata":{"issuer":"https://api.strava.com"},"auth_server_url":"https://api.strava.com/api/v1","response":{"status_code":200,"url":"https://api.strava.com/.well-known/oauth-authorization-server/api/v1"},"case":"strava origin match"}
+{"func":"metadata_issued_by_origin","metadata":{"issuer":"https://api.strava.com/"},"auth_server_url":"https://api.strava.com/api/v1","response":{"status_code":200,"url":"https://api.strava.com/.well-known/oauth-authorization-server/api/v1"},"case":"issuer trailing slash tolerated"}
+{"func":"metadata_issued_by_origin","metadata":{"issuer":"https://api.strava.com"},"auth_server_url":"https://api.strava.com/api/v1","response":{"status_code":200,"url":"https://evil/x"},"case":"redirected url rejected"}
+{"func":"metadata_issued_by_origin","metadata":{"issuer":"https://api.strava.com"},"auth_server_url":"https://api.strava.com/api/v1","response":{"status_code":302,"url":"https://api.strava.com/.well-known/oauth-authorization-server/api/v1"},"case":"non 200 rejected"}
+{"func":"metadata_issued_by_origin","metadata":{"issuer":"https://api.strava.com"},"auth_server_url":"","response":{"status_code":200,"url":"https://api.strava.com/.well-known/oauth-authorization-server/api/v1"},"case":"empty advertised url"}
+{"func":"metadata_issued_by_origin","metadata":{"issuer":"https://api.strava.com"},"auth_server_url":"https://api.strava.com/a/../b","response":{"status_code":200,"url":"https://api.strava.com/.well-known/oauth-authorization-server/api/v1"},"case":"dotdot segment rejected"}
+{"func":"metadata_issued_by_origin","metadata":{"issuer":"https://other.com"},"auth_server_url":"https://api.strava.com/api/v1","response":{"status_code":200,"url":"https://api.strava.com/.well-known/oauth-authorization-server/api/v1"},"case":"wrong issuer"}
+{"func":"metadata_issued_by_origin","metadata":{"issuer":"https://api.strava.com"},"auth_server_url":"https://api.strava.com/api/v1?x=1","response":{"status_code":200,"url":"https://api.strava.com/.well-known/oauth-authorization-server/api/v1"},"case":"query rejected"}
+{"func":"metadata_issued_by_origin","metadata":{"issuer":"https://api.strava.com"},"auth_server_url":"https://u@api.strava.com/api/v1","response":{"status_code":200,"url":"https://api.strava.com/.well-known/oauth-authorization-server/api/v1"},"case":"userinfo rejected"}
+{"func":"google_offline_access_params","context":{"oauth_metadata":{"issuer":"https://accounts.google.com"}},"case":"google issuer"}
+{"func":"google_offline_access_params","context":{"oauth_metadata":{"issuer":"https://accounts.google.com/"}},"case":"google issuer trailing slash"}
+{"func":"google_offline_access_params","context":{"oauth_metadata":{"issuer":"https://api.figma.com"}},"case":"non google issuer"}
+{"func":"google_offline_access_params","context":{"oauth_metadata":null},"case":"no metadata"}

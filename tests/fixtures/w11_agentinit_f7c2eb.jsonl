@@ -1,0 +1,14 @@
+{"func": "entries", "fallback_model": {"provider": "openai", "model": "gpt-4"}}
+{"func": "entries", "fallback_model": [{"provider": "openai", "model": "gpt-4"}, {"provider": "anthropic", "model": "claude"}]}
+{"func": "entries", "fallback_model": [{"provider": "openai", "model": ""}, {"model": "x"}, {"provider": "p"}, "notadict", null, {"provider": "p", "model": "m"}]}
+{"func": "entries", "fallback_model": []}
+{"func": "entries", "fallback_model": "nope"}
+{"func": "entries", "fallback_model": null}
+{"func": "entries", "fallback_model": 123}
+{"func": "labels", "chain": [{"provider": "openai", "model": "gpt-4"}]}
+{"func": "labels", "chain": [{"provider": "openai", "model": "gpt-4"}, {"provider": "anthropic", "model": "claude"}]}
+{"func": "labels", "chain": []}
+{"func": "message", "chain": [{"provider": "openai", "model": "gpt-4"}]}
+{"func": "message", "chain": [{"provider": "openai", "model": "gpt-4"}, {"provider": "anthropic", "model": "claude"}]}
+{"func": "message", "chain": [{"provider": "a", "model": "m1"}, {"provider": "b", "model": "m2"}, {"provider": "c", "model": "m3"}]}
+{"func": "message", "chain": []}

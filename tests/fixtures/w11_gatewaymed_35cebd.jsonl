@@ -1,0 +1,13 @@
+{"func": "fingerprint", "session_id": "s1", "content": ""}
+{"func": "fingerprint", "session_id": "s1", "content": "hello"}
+{"func": "fingerprint", "session_id": "s2", "content": ["hello", "world"]}
+{"func": "fingerprint", "session_id": "s3", "content": [{"type": "text", "text": "hi"}]}
+{"func": "fingerprint", "session_id": "s4", "content": [{"type": "image_url", "image_url": {"url": "data:image/png;base64,AAAA"}}]}
+{"func": "fingerprint", "session_id": "s5", "content": ["before", {"type": "image_url", "image_url": {"url": "https://x/y.png"}}, "after"]}
+{"func": "fingerprint", "session_id": "u1", "content": "héllo世界"}
+{"func": "fingerprint", "session_id": "e1", "content": []}
+{"func": "fingerprint", "session_id": "long", "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+{"func": "fingerprint", "session_id": "s6", "content": [{"type": "text", "text": "no type"}, {"type": "image_url", "image_url": {"url": ""}}]}
+{"func": "fingerprint", "session_id": "s7", "content": [{"type": "text", "text": "a"}]}
+{"func": "fingerprint", "session_id": "s8", "content": "Operation interrupted: waiting for model response ("}
+{"func": "fingerprint", "session_id": "s9", "content": ["a", "b", "c", "d", "e"]}

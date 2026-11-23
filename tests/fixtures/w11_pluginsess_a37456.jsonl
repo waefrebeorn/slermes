@@ -1,0 +1,21 @@
+{"func":"bounded_int","value":"12","low":"1","high":"16","case":"within range"}
+{"func":"bounded_int","value":"99","low":"1","high":"16","case":"clamped to high"}
+{"func":"bounded_int","value":"-5","low":"1","high":"16","case":"clamped to low"}
+{"func":"bounded_int","value":"7","low":"1","case":"no high bound"}
+{"func":"bounded_int","value":true,"low":"1","high":"16","case":"bool is not int -> null"}
+{"func":"bounded_int","value":"3.5","low":"1","high":"16","case":"float string not int -> null"}
+{"func":"bounded_int","value":null,"low":"1","high":"16","case":"null -> null"}
+{"func":"bounded_int","value":42,"low":"1","high":"16","case":"json int within range"}
+{"func":"bounded_int","value":3.5,"low":"1","high":"16","case":"json float not int -> null"}
+{"func":"bounded_int","value":"1000000","low":"-1000000","high":"999999","case":"large decimal strings clamp"}
+{"func":"clamped_timeout","timeout":"30","case":"positive string"}
+{"func":"clamped_timeout","timeout":3600,"case":"clamped to 1800"}
+{"func":"clamped_timeout","timeout":"-5","case":"negative -> null"}
+{"func":"clamped_timeout","timeout":"0","case":"zero -> null"}
+{"func":"clamped_timeout","timeout":"abc","case":"unparseable -> null"}
+{"func":"clamped_timeout","timeout":null,"case":"null -> null"}
+{"func":"clamped_timeout","timeout":true,"case":"bool true -> 1.0"}
+{"func":"clamped_timeout","timeout":"nan","case":"nan -> null"}
+{"func":"clamped_timeout","timeout":"inf","case":"inf clamps to 1800"}
+{"func":"clamped_timeout","timeout":900,"case":"positive json number"}
+{"func":"constants","case":"module constants"}

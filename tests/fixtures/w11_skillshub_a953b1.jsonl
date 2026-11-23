@@ -1,0 +1,43 @@
+{"case":1,"func":"query_terms","query":"Hello_World!"}
+{"case":2,"func":"query_terms","query":"  a1  b2 "}
+{"case":3,"func":"query_terms","query":""}
+{"case":4,"func":"query_terms","query":"ABC"}
+{"case":5,"func":"query_terms","query":"a.b/c"}
+{"case":6,"func":"search_score","query":"alpha","meta":{"identifier":"alpha","name":"Alpha Tool","description":"does alpha things"}}
+{"case":7,"func":"search_score","query":"","meta":{"identifier":"x","name":"y","description":"z"}}
+{"case":8,"func":"search_score","query":"cloud deploy","meta":{"identifier":"cloud-deploy","name":"Cloud Deploy","description":"deploy to cloud"}}
+{"case":9,"func":"search_score","query":"xyz","meta":{"identifier":"alpha","name":"Alpha","description":"desc"}}
+{"case":10,"func":"search_score","query":"  MY-SKILL  ","meta":{"identifier":"my-skill","name":"My-Skill","description":"a my-skill helper"}}
+{"case":11,"func":"search_score","query":"build","meta":{"identifier":"builder-kit","name":"Builder","description":"tools"}}
+{"case":12,"func":"normalize_tags","tags":["a",1,null,true]}
+{"case":13,"func":"normalize_tags","tags":{"a":"1","latest":"2","b":"3"}}
+{"case":14,"func":"normalize_tags","tags":"not a list"}
+{"case":15,"func":"normalize_tags","tags":null}
+{"case":16,"func":"normalize_tags","tags":[]}
+{"case":17,"func":"owner_from_payload","data":{"owner":{"handle":" @Bob "}}}
+{"case":18,"func":"owner_from_payload","data":{"owner":" @Ann "}}
+{"case":19,"func":"owner_from_payload","data":{"owner":"   "}}
+{"case":20,"func":"owner_from_payload","data":null}
+{"case":21,"func":"owner_matches","expected_owner":"bob","data":{"owner":{"handle":"Bob"}}}
+{"case":22,"func":"owner_matches","expected_owner":"bob","data":{}}
+{"case":23,"func":"owner_matches","expected_owner":"bob","data":{"owner":"ann"}}
+{"case":24,"func":"owner_matches","expected_owner":null,"data":{}}
+{"case":25,"func":"parse_identifier","identifier":"slug"}
+{"case":26,"func":"parse_identifier","identifier":"clawhub/slug"}
+{"case":27,"func":"parse_identifier","identifier":"@owner/slug"}
+{"case":28,"func":"parse_identifier","identifier":"clawhub/@owner/slug"}
+{"case":29,"func":"parse_identifier","identifier":"owner/skills/slug"}
+{"case":30,"func":"parse_identifier","identifier":"a/b"}
+{"case":31,"func":"parse_identifier","identifier":"bad_slug!"}
+{"case":32,"func":"parse_identifier","identifier":"  slug  "}
+{"case":33,"func":"parse_identifier","identifier":"owner/SKILLS/slug"}
+{"case":34,"func":"catalog_identifier","identifier":"@owner/slug"}
+{"case":35,"func":"catalog_identifier","identifier":123}
+{"case":36,"func":"first_str","values":[null,"","hi"]}
+{"case":37,"func":"first_str","values":[null,5,"x"]}
+{"case":38,"func":"first_str","values":[{},null]}
+{"case":39,"func":"coerce_skill_payload","data":{"skill":{"name":"a"},"latestVersion":"1","owner":"o"}}
+{"case":40,"func":"coerce_skill_payload","data":{"name":"a"}}
+{"case":41,"func":"coerce_skill_payload","data":null}
+{"case":42,"func":"coerce_skill_payload","data":{"skill":5,"name":"b"}}
+{"case":43,"func":"coerce_skill_payload","data":{"skill":{"name":"a","latestVersion":"inner","owner":"inner"},"latestVersion":"outer","owner":"outer"}}

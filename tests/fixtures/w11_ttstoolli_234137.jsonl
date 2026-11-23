@@ -1,0 +1,22 @@
+{"func":"keep_warm","raw":60,"case":"numeric default"}
+{"func":"keep_warm","raw":"30","case":"decimal string"}
+{"func":"keep_warm","raw":-5,"case":"negative clamped to zero"}
+{"func":"keep_warm","raw":"bad","case":"unparseable -> 60 default"}
+{"func":"keep_warm","raw":null,"case":"null -> default"}
+{"func":"keep_warm","raw":0,"case":"zero means unload now"}
+{"func":"release","provider":null,"cache_sizes":{"piper":2,"kittentts":1},"case":"release all caches"}
+{"func":"release","provider":"PIPER","cache_sizes":{"piper":2,"kittentts":1},"case":"case-insensitive provider"}
+{"func":"release","provider":"bogus","cache_sizes":{"piper":2,"kittentts":1},"case":"unknown provider"}
+{"func":"release","provider":"","cache_sizes":{},"case":"empty caches"}
+{"func":"warm","provider":"  ELEVENLABS  ","case":"normalized noop name"}
+{"func":"warm","provider":"OpenAI","case":"mixed case noop"}
+{"func":"warm","provider":null,"case":"null provider noop"}
+{"func":"warm","provider":"bogus","case":"unknown provider noop"}
+{"func":"lease","op":"acquire","lease":"desktop:read-aloud","leases":[],"cache_sizes":{"piper":2},"keep_warm":60,"case":"first lease acquired"}
+{"func":"lease","op":"acquire","lease":"desktop:read-aloud","leases":["desktop:read-aloud"],"cache_sizes":{"piper":2},"keep_warm":60,"case":"idempotent re-acquire"}
+{"func":"lease","op":"release","lease":"a","leases":["a","b"],"cache_sizes":{"piper":2},"keep_warm":60,"case":"one of two released"}
+{"func":"lease","op":"release","lease":"a","leases":["a"],"cache_sizes":{"piper":2},"keep_warm":60,"case":"last lease keeps model warm"}
+{"func":"lease","op":"release","lease":"a","leases":["a"],"cache_sizes":{"piper":2},"keep_warm":0,"case":"last lease unloads inline"}
+{"func":"lease","op":"release","lease":"zz","leases":["a"],"cache_sizes":{"piper":2},"keep_warm":60,"case":"never-acquired lease noop"}
+{"func":"lease","op":"holders","lease":"","leases":["b","a"],"cache_sizes":{},"keep_warm":60,"case":"sorted holders snapshot"}
+{"func":"warmers","case":"local warmer names"}

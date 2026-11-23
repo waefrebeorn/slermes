@@ -1,0 +1,14 @@
+{"func":"capability","provider":"OPENROUTER","api_mode":"chat_completions","case":"openrouter provider never trusted"}
+{"func":"capability","base_url":"https://openrouter.ai/api/v1","provider":"custom:x","api_mode":"chat_completions","openrouter_host_match":true,"case":"openrouter host never trusted"}
+{"func":"capability","provider":"custom:x","api_mode":"responses","case":"non chat-completions transport rejected"}
+{"func":"capability","provider":"custom:x","api_mode":"chat_completions","configured":true,"case":"per-model opt-in true"}
+{"func":"capability","provider":"custom:x","api_mode":"chat_completions","configured":false,"case":"per-model opt-in false"}
+{"func":"capability","provider":"custom:foo","requested_provider":"custom:foo","api_mode":"chat_completions","entries":[{"name":"Other","provider_key":"custom:foo","capabilities":{"answer_in_reasoning":true}}],"case":"live custom entry all true"}
+{"func":"capability","provider":"custom:foo","api_mode":"chat_completions","entries":[{"name":"Other","provider_key":"custom:foo","capabilities":{"answer_in_reasoning":false}}],"case":"live custom entry false"}
+{"func":"capability","provider":"custom:foo","api_mode":"chat_completions","entries":[{"name":"A","provider_key":"custom:foo","capabilities":{"answer_in_reasoning":true}},{"name":"B","provider_key":"custom:foo","capabilities":{"answer_in_reasoning":false}}],"case":"mixed flags rejected"}
+{"func":"capability","provider":"custom:foo","api_mode":"chat_completions","entries":[{"name":"Sibling","provider_key":"custom:bar","capabilities":{"answer_in_reasoning":true}}],"case":"no live entry uses all siblings"}
+{"func":"capability","provider":"custom:my-provider","api_mode":"chat_completions","entries":[{"name":"My Provider","provider_key":"","capabilities":{"answer_in_reasoning":true}}],"case":"display name slug matches provider"}
+{"func":"capability","provider":"custom:x","api_mode":"chat_completions","model":"nemotron-3.5-lightning-8b","is_local":true,"case":"local nemotron parser trusted"}
+{"func":"capability","provider":"custom:x","api_mode":"chat_completions","model":"nemotron-3.5-lightning-8b","is_local":false,"case":"remote nemotron rejected"}
+{"func":"capability","provider":"custom:x","api_mode":"chat_completions","model":"gpt-4o","is_local":true,"case":"non nemotron never promoted"}
+{"func":"capability","provider":" custom:foo ","api_mode":" chat_completions ","configured":true,"case":"provider and api mode stripped lowercased"}

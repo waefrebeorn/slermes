@@ -1,0 +1,19 @@
+{"func": "encode", "provider": "OpenAI", "model": " gpt-4 "}
+{"func": "encode", "provider": "", "model": "model"}
+{"func": "encode", "provider": "  ", "model": "  m  "}
+{"func": "encode", "provider": "Provider:X", "model": "m:v1"}
+{"func": "encode", "provider": "p", "model": ""}
+{"func": "semantic", "provider_id": "OLLAMA", "normalized": "x"}
+{"func": "semantic", "provider_id": " custom:ollama ", "normalized": "x"}
+{"func": "semantic", "provider_id": "CUSTOM:Foo", "normalized": "x"}
+{"func": "semantic", "provider_id": "openrouter", "normalized": "openai"}
+{"func": "semantic", "provider_id": "", "normalized": "norm"}
+{"func": "empty_applies", "provider_id": "openrouter", "candidates": ["openrouter"], "norm_map": {}}
+{"func": "empty_applies", "provider_id": "custom:foo", "candidates": ["custom:foo"], "norm_map": {}}
+{"func": "empty_applies", "provider_id": "ollama", "candidates": ["custom:ollama"], "norm_map": {}}
+{"func": "empty_applies", "provider_id": "custom", "candidates": ["custom"], "norm_map": {}}
+{"func": "empty_applies", "provider_id": "custom:foo", "candidates": ["foo"], "norm_map": {"custom:foo": "custom"}}
+{"func": "empty_applies", "provider_id": "x", "candidates": [], "norm_map": {}}
+{"func": "empty_applies", "provider_id": "x", "candidates": ["y"], "norm_map": {"x": "z", "y": "z"}}
+{"func": "empty_applies", "provider_id": "CUSTOM:Bar  ", "candidates": ["custom:bar"], "norm_map": {"custom:bar": "custom"}}
+{"func": "empty_applies", "provider_id": "anthropic", "candidates": ["openai"], "norm_map": {}}

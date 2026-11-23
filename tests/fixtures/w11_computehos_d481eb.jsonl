@@ -1,0 +1,19 @@
+{"func":"history_meta","session":{"session_key":"s1","history_version":7,"history":[1,2,3]},"case":"normal session"}
+{"func":"history_meta","session":{"session_key":null,"history_version":"12","history":[]},"case":"null key, string version"}
+{"func":"history_meta","session":{"history":null,"history_version":0},"case":"missing key empty history"}
+{"func":"history_meta","session":{"session_key":"abc","history_version":true,"history":[{"role":"user"}]},"case":"bool version coerces"}
+{"func":"workers","env_value":null,"case":"unset -> default 8"}
+{"func":"workers","env_value":"","case":"empty -> default 8"}
+{"func":"workers","env_value":"4","case":"explicit 4"}
+{"func":"workers","env_value":"1","case":"clamped to floor 2"}
+{"func":"workers","env_value":"not-a-number","case":"unparseable -> 8"}
+{"func":"transport_write","obj":{"method":"event","params":{"session_id":"abc"}},"case":"event with session id"}
+{"func":"transport_write","obj":{"method":"event","params":{}},"case":"event missing session id"}
+{"func":"transport_write","obj":{"method":"turn.start","params":{"session_id":"abc"}},"case":"non-event sid empty"}
+{"func":"transport_write","obj":{"method":"event","params":{"session_id":null}},"case":"null session id"}
+{"func":"frame_handler","kind":"turn.start","case":"known turn.start"}
+{"func":"frame_handler","kind":"shutdown","case":"known shutdown"}
+{"func":"frame_handler","kind":"bogus","case":"unknown frame type"}
+{"func":"control_failure","route":"session.save","case":"save failure"}
+{"func":"control_failure","route":"session.compress","case":"compress failure"}
+{"func":"control_failure","route":"unknown","case":"unknown route"}

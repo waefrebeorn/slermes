@@ -1,0 +1,25 @@
+{"func": "extract", "patch_body": "*** Update File: a/b.py"}
+{"func": "extract", "patch_body": "*** Add File: new.py\n*** Delete File: old.py"}
+{"func": "extract", "patch_body": "*** Move File: old.py -> new.py"}
+{"func": "extract", "patch_body": "*** Update File:  spaced.py  "}
+{"func": "extract", "patch_body": "***   Update   File:   x.py"}
+{"func": "extract", "patch_body": "*** Update File: https://x/y"}
+{"func": "extract", "patch_body": "just text\n*** Bogus File: x"}
+{"func": "extract", "patch_body": ""}
+{"func": "extract", "patch_body": "*** Move File: a -> b\n*** Move File: c -> d"}
+{"func": "extract", "patch_body": "*** Update File: \t"}
+{"func": "extract", "patch_body": "*** Delete File: .env"}
+{"func": "extract", "patch_body": "*** Update File: x\r"}
+{"func": "extract", "patch_body": "*** Add File: a\n*** Move File: old -> new\n*** Delete File: z"}
+{"func": "path_is_sensitive", "path": "a/.git/config"}
+{"func": "path_is_sensitive", "path": "notes.txt"}
+{"func": "path_is_sensitive", "path": "prod/.ENV.local"}
+{"func": "path_is_sensitive", "path": "id_rsa"}
+{"func": "path_is_sensitive", "path": ".ssh"}
+{"func": "path_is_sensitive", "path": ""}
+{"func": "path_is_sensitive", "path": "a/./b/id_ed25519"}
+{"func": "path_is_sensitive", "path": "a/b/.gitkeep"}
+{"func": "path_is_sensitive", "path": "C:/Users/x/.ssh/key"}
+{"func": "denied", "message": "Edit approval denied."}
+{"func": "denied", "message": "Could not prepare diff"}
+{"func": "denied", "message": "bad \"quote\" here"}

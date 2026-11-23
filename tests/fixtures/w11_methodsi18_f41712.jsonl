@@ -1,0 +1,13 @@
+{"func":"constants"}
+{"func":"languages","rid":"r1","languages":[{"id":"en","label":"English"},{"id":"fr","label":"Français"}],"fail":null}
+{"func":"languages","rid":"r2","languages":[],"fail":null}
+{"func":"languages","rid":"r3","languages":[{"id":"en"}],"fail":"catalog backend offline"}
+{"func":"catalog","rid":"c1","params":{"surface":"app","lang":"fr"},"core":"app","surfaces":["app","desktop","ide"],"resolve":"fr","messages":{"hello":"bonjour"},"fail":null}
+{"func":"catalog","rid":"c2","params":{"surface":"bogus"},"core":"app","surfaces":["app","desktop","ide"],"resolve":null,"messages":{},"fail":null}
+{"func":"catalog","rid":"c3","params":{},"core":"app","surfaces":["app","desktop","ide"],"resolve":"de","messages":{"hello":"hallo"},"fail":null}
+{"func":"catalog","rid":"c4","params":{"surface":"desktop","lang":"zz"},"core":"app","surfaces":["app","desktop","ide"],"resolve":"","messages":{},"fail":null}
+{"func":"catalog","rid":"c5","params":{"surface":"app"},"core":"app","surfaces":["app","desktop","ide"],"resolve":"fr","messages":{},"fail":"surface lookup blew up"}
+{"func":"catalog","rid":"c6","params":{"surface":""},"core":"app","surfaces":["app","desktop","ide"],"resolve":"en","messages":{"x":1},"fail":null}
+{"func":"catalog","rid":"c7","params":{"surface":null},"core":"app","surfaces":["app","desktop","ide"],"resolve":"en","messages":null,"fail":null}
+{"func":"catalog","rid":"c8","params":{"surface":5},"core":"app","surfaces":["app","desktop","ide"],"resolve":"en","messages":{},"fail":null}
+{"func":"catalog","rid":"c9","params":{"surface":"ide"},"core":"app","surfaces":["app"],"resolve":"es","messages":{"a":1,"b":2},"fail":null}

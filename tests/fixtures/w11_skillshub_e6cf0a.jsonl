@@ -1,0 +1,15 @@
+{"case":1,"func":"bundle_content_hash","files":{"SKILL.md":"hello"}}
+{"case":2,"func":"bundle_content_hash","files":{"b.md":"B","a.md":"A"}}
+{"case":3,"func":"bundle_content_hash","files":{"SKILL.md":"a","sub\\x.md":"y"}}
+{"case":4,"func":"bundle_content_hash","files":{}}
+{"case":5,"func":"bundle_content_hash","files":{"SKILL.md":"# Title\n\nBody text.\n","references/a.md":"ref A","scripts/run.sh":"echo hi"}}
+{"case":6,"func":"bundle_content_hash","files":{"z.md":"1","a.md":"2","m.md":"3"}}
+{"case":7,"func":"bundle_content_hash","files":{"dir\\nested\\SKILL.md":"nested","SKILL.md":"root"}}
+{"case":8,"func":"bundle_content_hash","files":{"a.md":""}}
+{"case":9,"func":"bundle_content_hash","files":{"emoji.md":"caf\u00e9 \u2603"}}
+{"case":10,"func":"bundle_content_hash","files":{"long.md":"L0123456789012345678901234567890123456789012345678901234567890123456789"}}
+{"case":11,"func":"source_matches","source_id":"sh","source_name":"sh"}
+{"case":12,"func":"source_matches","source_id":"skills-sh","source_name":"skills.sh"}
+{"case":13,"func":"source_matches","source_id":"github","source_name":"github"}
+{"case":14,"func":"source_matches","source_id":"github","source_name":"git"}
+{"case":15,"func":"source_matches","source_id":"skills.sh","source_name":"skills.sh"}

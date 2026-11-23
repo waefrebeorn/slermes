@@ -1,0 +1,19 @@
+{"func": "codex_finish_reason", "status": "incomplete", "incomplete_details": {"reason": "max_output_tokens"}, "case": 0, "out": "incomplete"}
+{"func": "codex_finish_reason", "status": "incomplete", "incomplete_details": {"reason": "length"}, "case": 1, "out": "incomplete"}
+{"func": "codex_finish_reason", "status": "incomplete", "incomplete_details": {"reason": "content_filter"}, "case": 2, "out": "content_filter"}
+{"func": "codex_finish_reason", "status": " INCOMPLETE ", "incomplete_details": {"reason": " LENGTH "}, "case": 3, "out": "incomplete"}
+{"func": "codex_finish_reason", "status": "completed", "incomplete_details": {"reason": "length"}, "case": 4, "out": "stop"}
+{"func": "codex_finish_reason", "status": "incomplete", "incomplete_details": {}, "case": 5, "out": "stop"}
+{"func": "codex_finish_reason", "status": "incomplete", "incomplete_details": null, "case": 6, "out": "stop"}
+{"func": "codex_finish_reason", "status": null, "incomplete_details": {"reason": "length"}, "case": 7, "out": "stop"}
+{"func": "codex_finish_reason", "status": "incomplete", "incomplete_details": "not-a-dict", "case": 8, "out": "stop"}
+{"func": "codex_finish_reason", "status": "incomplete", "incomplete_details": {"reason": 123}, "case": 9, "out": "stop"}
+{"func": "codex_finish_reason", "status": 200, "incomplete_details": {"reason": "length"}, "case": 10, "out": "stop"}
+{"func": "derive_finish_reason", "api_mode": "codex_responses", "status": "incomplete", "incomplete_details": {"reason": "max_output_tokens"}, "codex_tool_calls": 0, "transport_finish": "stop", "case": 11, "out": "incomplete"}
+{"func": "derive_finish_reason", "api_mode": "codex_responses", "status": "incomplete", "incomplete_details": {"reason": "max_output_tokens"}, "codex_tool_calls": 1, "transport_finish": "stop", "case": 12, "out": "length"}
+{"func": "derive_finish_reason", "api_mode": "codex_responses", "status": "completed", "incomplete_details": null, "codex_tool_calls": 0, "transport_finish": "stop", "case": 13, "out": "stop"}
+{"func": "derive_finish_reason", "api_mode": "anthropic_messages", "status": "incomplete", "incomplete_details": {"reason": "length"}, "codex_tool_calls": 1, "transport_finish": "tool_use", "case": 14, "out": "tool_use"}
+{"func": "derive_finish_reason", "api_mode": "bedrock_converse", "status": "stop", "incomplete_details": null, "codex_tool_calls": 0, "transport_finish": "stop", "treat_stop_truncated": 1, "case": 15, "out": "stop"}
+{"func": "derive_finish_reason", "api_mode": "chat_completions", "status": "stop", "incomplete_details": null, "codex_tool_calls": 0, "transport_finish": "stop", "treat_stop_truncated": 1, "case": 16, "out": "length"}
+{"func": "derive_finish_reason", "api_mode": "chat_completions", "status": "stop", "incomplete_details": null, "codex_tool_calls": 0, "transport_finish": "tool_calls", "treat_stop_truncated": 0, "case": 17, "out": "tool_calls"}
+{"func": "derive_finish_reason", "api_mode": "ollama", "status": "stop", "incomplete_details": null, "codex_tool_calls": 0, "transport_finish": "stop", "treat_stop_truncated": 0, "case": 18, "out": "stop"}

@@ -1,0 +1,47 @@
+{"func":"constants"}
+{"func":"segments","path":"/a/b//c/"}
+{"func":"segments","path":"C:\\\\Work\\\\Repo\\\\"}
+{"func":"segments","path":""}
+{"func":"base_name","path":"/repo/proj/"}
+{"func":"base_name","path":"\\\\srv\\share\\leaf"}
+{"func":"path_key","path":"/Repo/Sub/"}
+{"func":"path_key","path":"C:\\Repo\\Sub"}
+{"func":"path_key","path":"//srv/share/Name"}
+{"func":"lane_key","path":"/repo/proj::branch::Feature/X"}
+{"func":"lane_key","path":"/repo/proj::kanban"}
+{"func":"lane_key","path":"/repo/proj/"}
+{"func":"branch_lane_id","root":"/repo","branch":"  feat/x  "}
+{"func":"branch_lane_id","root":"/repo","branch":""}
+{"func":"kanban_lane_id","root":"C:\\repo"}
+{"func":"is_windows_path","path":"C:\\x"}
+{"func":"is_windows_path","path":"/x"}
+{"func":"is_windows_path","path":"\\\\srv\\x"}
+{"func":"is_windows_path","path":"  c:/x  "}
+{"func":"kanban_worktree_dir","path":"/repo/.worktrees/t_ab12cd"}
+{"func":"kanban_worktree_dir","path":"/repo/.worktrees/t_ABCD"}
+{"func":"kanban_worktree_dir","path":"/repo/.worktrees/named"}
+{"func":"kanban_worktree_dir","path":"/repo/.worktrees/t_ab12cd/"}
+{"func":"with_base_name","path":"/a/b/c","name":""}
+{"func":"with_base_name","path":"/a/b/c","name":"x"}
+{"func":"with_base_name","path":"C:\\a\\b\\c","name":""}
+{"func":"field","row":{"cwd":"  /repo/proj  "},"key":"cwd"}
+{"func":"field","row":{"cwd":null},"key":"cwd"}
+{"func":"field","row":{},"key":"cwd"}
+{"func":"session_time","session":{"last_active":12.5}}
+{"func":"session_time","session":{"last_active":null,"started_at":3}}
+{"func":"last_active","sessions":[{"last_active":1},{"started_at":9},{"last_active":4}]}
+{"func":"placement","repo_root":"/r/p","lane_key":"/r/p::branch::main","lane_label":"main","lane_path":"/r/p","is_main":true,"is_kanban":false,"is_git":true}
+{"func":"trunk_placement","root":"/r/p","branch":"  develop  "}
+{"func":"trunk_placement","root":"/r/p","branch":""}
+{"func":"kanban_placement","root":"/r/p","kanban_dir":"/r/p/.worktrees/t_1"}
+{"func":"repo_node","root":"/r/p","label":"proj"}
+{"func":"project_node","pid":"p_abc","label":"Proj","path":"/r/p","repos":[{"id":"r"}],"session_count":2,"last_active":12.5,"previews":[{"id":"s1"}],"rows":[{"id":"s1","input_tokens":10,"output_tokens":5,"actual_cost_usd":0.25},{"id":"s2","input_tokens":2,"output_tokens":1,"estimated_cost_usd":0.5}],"flags":{"color":"#fff","isAuto":true}}
+{"func":"lane_sort_key","group":{"label":"Main","isMain":true,"isKanban":false,"sessions":[{"last_active":5}]}}
+{"func":"lane_sort_key","group":{"label":"feature","isMain":false,"isKanban":false,"sessions":[{"last_active":9}]}}
+{"func":"lane_sort_key","group":{"label":"kanban","isMain":false,"isKanban":true,"sessions":[]}}
+{"func":"disambiguate_labels","items":[{"label":"proj","path":"/a/proj"},{"label":"proj","path":"/b/proj"}]}
+{"func":"disambiguate_labels","items":[{"label":"proj","path":"/a/x/proj"},{"label":"proj","path":"/b/y/proj"}]}
+{"func":"stamp_profile","projects":[{"repos":[{"groups":[{"sessions":[{"id":"s1"}]}]}],"previewSessions":[{"id":"s2"}]}],"profile":"work"}
+{"func":"place_by_heuristic","path":"/home/me/proj"}
+{"func":"place_by_heuristic","path":"/repo/.worktrees/t_deadbeef"}
+{"func":"place_by_heuristic","path":"/repo/proj-wt-feature"}

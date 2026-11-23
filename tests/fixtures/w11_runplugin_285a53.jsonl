@@ -1,0 +1,11 @@
+{"func": "count", "adapters": {"a": {}, "b": {}}, "profile_adapters": null, "profile_name": null, "case": 1}
+{"func": "count", "adapters": null, "profile_adapters": null, "profile_name": null, "case": 2}
+{"func": "count", "adapters": {}, "profile_adapters": null, "profile_name": null, "case": 3}
+{"func": "count", "adapters": {"a": {}}, "profile_adapters": {"p1": {"x": {}, "y": {}, "z": {}}}, "profile_name": "p1", "case": 4}
+{"func": "count", "adapters": {"a": {}}, "profile_adapters": {"p1": null}, "profile_name": "p1", "case": 5}
+{"func": "count", "adapters": {"a": {}}, "profile_adapters": {"p1": {}}, "profile_name": "missing", "case": 6}
+{"func": "rewire_count", "adapters": {"a": {}, "b": {}, "c": {}}, "profile_adapters": null, "profile_name": null, "fail": [], "case": 7}
+{"func": "rewire_count", "adapters": {"a": {}, "b": {}, "c": {}}, "profile_adapters": null, "profile_name": null, "fail": ["b"], "case": 8}
+{"func": "rewire_count", "adapters": {}, "profile_adapters": {"p1": {"x": {}, "y": {}}}, "profile_name": "p1", "fail": [], "case": 9}
+{"func": "rewire_count", "adapters": {}, "profile_adapters": {"p1": {"x": {}, "y": {}}}, "profile_name": "p1", "fail": ["x", "y"], "case": 10}
+{"func": "rewire_count", "adapters": null, "profile_adapters": null, "profile_name": null, "fail": [], "case": 11}

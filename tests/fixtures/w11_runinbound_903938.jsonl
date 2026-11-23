@@ -1,0 +1,10 @@
+{"func": "expand", "qcmd": {"target": "events"}, "args": "", "text": "", "case": 1}
+{"func": "expand", "qcmd": {"target": "/events"}, "args": "--all", "text": "ORIG", "case": 2}
+{"func": "expand", "qcmd": {"target": "  events  "}, "args": "  x  ", "text": "ORIG", "case": 3}
+{"func": "expand", "qcmd": {}, "args": "x", "text": "ORIG", "case": 4}
+{"func": "expand", "qcmd": {"target": "///"}, "args": "y", "text": "ORIG", "case": 5}
+{"func": "expand", "qcmd": {"target": "/a/b c"}, "args": "z", "text": "ORIG", "case": 6}
+{"func": "expand", "qcmd": {"target": "a\tb"}, "args": "c", "text": "ORIG", "case": 7}
+{"func": "expand", "qcmd": {"target": null}, "args": "x", "text": "ORIG", "case": 8}
+{"func": "expand", "qcmd": {"target": "  "}, "args": "x", "text": "ORIG", "case": 9}
+{"func": "expand", "qcmd": {"target": "/x"}, "args": "  ", "text": "ORIG", "case": 10}

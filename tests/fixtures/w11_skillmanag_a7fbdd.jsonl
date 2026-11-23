@@ -1,0 +1,13 @@
+{"case":1,"func":"finding_keys","files":{"s.md":"hello\n  BAD \nbye"},"findings":[{"file":"s.md","line":2,"pattern_id":"p1","severity":"high","match":"BAD"}]}
+{"case":2,"func":"finding_keys","files":{"s.md":"hello\n  BAD \nbye"},"findings":[{"file":"s.md","line":1,"pattern_id":"p2","severity":"low","match":"x"}]}
+{"case":3,"func":"finding_keys","files":{"s.md":"hello\n  BAD \nbye"},"findings":[{"file":"s.md","line":3,"pattern_id":"p3","severity":"med","match":"y"}]}
+{"case":4,"func":"finding_keys","files":{"s.md":"hello\n  BAD \nbye"},"findings":[{"file":"s.md","line":99,"pattern_id":"p4","severity":"high","match":"out-of-range"}]}
+{"case":5,"func":"finding_keys","files":{"s.md":"hello\n  BAD \nbye"},"findings":[{"file":"s.md","line":0,"pattern_id":"p5","severity":"info","match":"zero-line"}]}
+{"case":6,"func":"finding_keys","files":{"s.md":"hello\n  BAD \nbye"},"findings":[{"file":"s.md","line":-1,"pattern_id":"p6","severity":"info","match":"negative"}]}
+{"case":7,"func":"finding_keys","files":{"mix.md":"a\r\nb\rc\nd"},"findings":[{"file":"mix.md","line":1,"pattern_id":"a","severity":"s","match":"a"},{"file":"mix.md","line":2,"pattern_id":"b","severity":"s","match":"b"},{"file":"mix.md","line":3,"pattern_id":"c","severity":"s","match":"c"},{"file":"mix.md","line":4,"pattern_id":"d","severity":"s","match":"d"}]}
+{"case":8,"func":"finding_keys","files":{},"findings":[{"file":"ghost.md","line":1,"pattern_id":"g","severity":"high","match":"missing-file-fallback"}]}
+{"case":9,"func":"finding_keys","files":{"s.md":"dup\nline"},"findings":[{"file":"s.md","line":1,"pattern_id":"d","severity":"high","match":"dup"},{"file":"s.md","line":1,"pattern_id":"d","severity":"high","match":"dup"}]}
+{"case":10,"func":"finding_keys","files":{"s.md":"same line"},"findings":[{"file":"s.md","line":1,"pattern_id":"p","severity":"low","match":"same line"},{"file":"s.md","line":1,"pattern_id":"p","severity":"critical","match":"same line"}]}
+{"case":11,"func":"finding_keys","files":{},"findings":[]}
+{"case":12,"func":"finding_keys","files":{"s.md":"x\n"},"findings":[{"file":"s.md","line":2,"pattern_id":"empty","severity":"info","match":"should-not-use"}]}
+{"case":13,"func":"finding_keys","files":{"t.md":"\tFoo\t"},"findings":[{"file":"t.md","line":1,"pattern_id":"tab","severity":"high","match":"Foo"}]}

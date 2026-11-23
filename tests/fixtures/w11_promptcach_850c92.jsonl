@@ -1,0 +1,26 @@
+{"func":"finite","value":42,"case":"int is finite"}
+{"func":"finite","value":true,"case":"bool is not a number"}
+{"func":"finite","value":"3","case":"string is not a number"}
+{"func":"finite","value":null,"case":"null is not a number"}
+{"func":"numbers","value":[1,2,3],"case":"all finite"}
+{"func":"numbers","value":[1,"x"],"case":"one non-number"}
+{"func":"numbers","value":[],"case":"empty list is all() true"}
+{"func":"well_formed","entry":{"updated":1000},"case":"defaults all present"}
+{"func":"well_formed","entry":{"updated":1000,"reads":true},"case":"bool counter rejected"}
+{"func":"well_formed","entry":{"reads":2},"case":"missing updated rejected"}
+{"func":"well_formed","entry":{"updated":1000,"hit_gaps":[1.0,2.5],"miss_gaps_sessions":["s1"]},"case":"gaps and string sessions"}
+{"func":"well_formed","entry":{"updated":1000,"hit_gaps":["bad"]},"case":"non-number gap rejected"}
+{"func":"push","entry":{},"field":"hit_gaps","gap":1.2,"case":"append rounded gap"}
+{"func":"push","entry":{"hit_gaps":[1,2,3,4,5,6,7,8]},"field":"hit_gaps","gap":9,"case":"trim to last eight"}
+{"func":"push","entry":{},"field":"miss_gaps","gap":5.5,"session_id":"s1","case":"miss gap carries session"}
+{"func":"sessions","entry":{"miss_gaps":[1,2,3],"miss_gaps_sessions":["s1","s2","s1"]},"field":"miss_gaps","keep":[true,false,true],"case":"distinct kept sessions"}
+{"func":"sessions","entry":{"miss_gaps":[1,2,3]},"field":"miss_gaps","case":"no sessions padded with empty"}
+{"func":"routine_hit","entry":{"reads":2,"updated":1000},"gap_s":null,"read":100,"write":10,"now":2000,"case":"fresh small rewrite is routine"}
+{"func":"routine_hit","entry":{"reads":2,"updated":1000},"gap_s":null,"read":100,"write":60,"now":2000,"case":"large rewrite not routine"}
+{"func":"learned_lifetime","entry":{"longest_hit":10,"hit_gaps":[5],"miss_gaps":[20,30],"miss_gaps_sessions":["s1","s2"]},"tier_s":1800,"case":"two sessions agree"}
+{"func":"learned_lifetime","entry":{"longest_hit":1,"miss_gaps":[20],"miss_gaps_sessions":["s1"]},"tier_s":1800,"case":"only one miss"}
+{"func":"learned_lifetime","entry":{"longest_hit":1,"miss_gaps":[20,30],"miss_gaps_sessions":["s1","s1"]},"tier_s":1800,"case":"same session twice"}
+{"func":"display_rule","rule":"lifetime:300","case":"lifetime collapses to short-lived"}
+{"func":"display_rule","rule":"no-cache","case":"plain rule unchanged"}
+{"func":"display_rule","rule":null,"case":"null rule"}
+{"func":"display_rule","rule":"","case":"empty rule"}

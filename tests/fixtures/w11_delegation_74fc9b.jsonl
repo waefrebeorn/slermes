@@ -1,0 +1,16 @@
+{"case":1,"func":"route_keys","provider":{"route_keys":["a","b","a"]}}
+{"case":2,"func":"route_keys","provider":{"route_keys":[" a ","b","  "]}}
+{"case":3,"func":"route_keys","provider":{"route_keys":["x",1,null,"y"]}}
+{"case":4,"func":"route_keys","provider":{"route_keys":"abc"}}
+{"case":5,"func":"route_keys","provider":{"route_keys":[]}}
+{"case":6,"func":"route_keys","provider":{}}
+{"case":7,"func":"delegate_def","tools":[{"function":{"name":"other"}},{"function":{"name":"delegate_task"}}]}
+{"case":8,"func":"delegate_def","tools":[{"function":{"name":"other"}}]}
+{"case":9,"func":"delegate_def","tools":[{"name":"delegate_task"}]}
+{"case":10,"func":"delegate_def","tools":[{"function":null},{"function":{"name":"delegate_task","parameters":{}}}]}
+{"case":11,"func":"delegate_def","tools":null}
+{"case":12,"func":"delegate_def","tools":[]}
+{"case":13,"func":"pinned_backend","agent":{"_delegation_backend":"cli"}}
+{"case":14,"func":"pinned_backend","agent":{"_delegation_backend":5}}
+{"case":15,"func":"pinned_backend","agent":{}}
+{"case":16,"func":"pinned_backend","agent":{"_delegation_backend":""}}

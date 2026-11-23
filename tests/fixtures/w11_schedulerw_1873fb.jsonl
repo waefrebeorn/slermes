@@ -1,0 +1,10 @@
+{"func": "pin", "case": 1, "env": {}, "root": "/repo", "purelib": null, "dep": null}
+{"func": "pin", "case": 2, "env": {"PYTHONPATH": "/a;/b"}, "root": "/repo", "purelib": null, "dep": null}
+{"func": "pin", "case": 3, "env": {"PYTHONPATH": "/repo;/a"}, "root": "/repo", "purelib": null, "dep": null}
+{"func": "pin", "case": 4, "env": {"PYTHONPATH": ";;/a;;"}, "root": "/repo", "purelib": null, "dep": null}
+{"func": "pin", "case": 5, "env": {"PYTHONPATH": "/a", "OTHER": "x"}, "root": "/repo", "purelib": "/repo", "dep": null}
+{"func": "pin", "case": 6, "env": {}, "root": "/repo", "purelib": null, "dep": "/deps/site"}
+{"func": "pin", "case": 7, "env": {"PYTHONPATH": "/deps/site;/a"}, "root": "/repo", "purelib": null, "dep": "/deps/site"}
+{"func": "pin", "case": 8, "env": {"PYTHONPATH": "/repo"}, "root": "/repo", "purelib": "/other", "dep": "/repo"}
+{"func": "pin", "case": 9, "env": {}, "root": "C:/repo", "purelib": null, "dep": null}
+{"func": "pin", "case": 10, "env": {"PYTHONPATH": ""}, "root": "/repo", "purelib": null, "dep": null}

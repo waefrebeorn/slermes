@@ -1,0 +1,12 @@
+{"func":"chat_keeps_phone_numbers","security":{"redact_phone_numbers":false},"case":"explicit false opts out"}
+{"func":"chat_keeps_phone_numbers","security":{"redact_phone_numbers":true},"case":"explicit true keeps masking"}
+{"func":"chat_keeps_phone_numbers","security":{},"case":"empty security defaults to masking"}
+{"func":"chat_keeps_phone_numbers","security":null,"case":"null security defaults to masking"}
+{"func":"chat_keeps_phone_numbers","config_error":true,"security":{"redact_phone_numbers":false},"case":"unreadable config fails closed"}
+{"func":"chat_keeps_phone_numbers","security":{"redact_phone_numbers":"false"},"case":"string value not a bool"}
+{"func":"chat_keeps_phone_numbers","security":{"redact_phone_numbers":0},"case":"int zero not a bool"}
+{"func":"chat_keeps_phone_numbers","security":{"redact_phone_numbers":null},"case":"null value not a bool"}
+{"func":"redact_for_chat_egress","security":{"redact_phone_numbers":false},"text":"call +1 555 now","case":"egress passes keep true"}
+{"func":"redact_for_chat_egress","security":{"redact_phone_numbers":true},"text":"call +1 555 now","case":"egress passes keep false"}
+{"func":"redact_assistant_reply","security":{"redact_phone_numbers":false},"text":"reply text","case":"assistant passes keep true"}
+{"func":"redact_assistant_reply","security":{"redact_phone_numbers":"false"},"text":"reply text","case":"assistant non-bool keeps masking"}

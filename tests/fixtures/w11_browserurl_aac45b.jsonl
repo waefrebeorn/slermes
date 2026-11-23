@@ -1,0 +1,22 @@
+{"func": "url_literals", "text": "fetch('https://example.com/x')", "case": "single quoted"}
+{"func": "url_literals", "text": "http://a.b/path?next=//c", "case": "slashes in path"}
+{"func": "url_literals", "text": "HTTPS://EXAMPLE.COM/Up", "case": "case insensitive"}
+{"func": "url_literals", "text": "const u = 'http://[::1]:8080/';", "case": "bracketed ipv6"}
+{"func": "url_literals", "text": "const a='http://x)@host/y';", "case": "userinfo tail"}
+{"func": "url_literals", "text": "//cdn.example.com/x", "protocol_relative": true, "case": "protocol relative"}
+{"func": "url_literals", "text": "///cdn.example.com/x", "protocol_relative": true, "case": "three slashes"}
+{"func": "url_literals", "text": "\\\\host\\share", "protocol_relative": true, "case": "unc path"}
+{"func": "url_literals", "text": "a//b", "case": "mid word plain"}
+{"func": "url_literals", "text": "a//b", "protocol_relative": true, "case": "mid word protocol relative"}
+{"func": "url_literals", "text": "see // comment", "protocol_relative": true, "case": "comment not url"}
+{"func": "url_literals", "text": "http://x, http://y.", "case": "rstrip punctuation"}
+{"func": "url_literals", "text": "https://x/#frag", "case": "fragment"}
+{"func": "url_literals", "text": "https://x?q=1", "case": "query"}
+{"func": "url_literals", "text": "fetch(\"https://a\") && fetch('http://b')", "case": "two literals"}
+{"func": "url_literals", "text": "https://x/y)]", "case": "cut at paren"}
+{"func": "url_literals", "text": "http://x/?next=//y", "protocol_relative": true, "case": "no double count"}
+{"func": "url_literals", "text": "text with no urls", "case": "none"}
+{"func": "url_literals", "text": "https://user@host/p", "case": "userinfo in authority"}
+{"func": "url_literals", "text": "https://a.b; https://c.d,", "case": "multiple rstrip"}
+{"func": "url_literals", "text": "https://x\r\nhttp://y", "case": "newline separated"}
+{"func": "url_literals", "text": "", "case": "empty text"}

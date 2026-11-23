@@ -1,0 +1,17 @@
+{"case": 1, "func": "unattended"}
+{"case": 2, "func": "unattended", "persist_disabled": true}
+{"case": 3, "func": "unattended", "platform": "cron"}
+{"case": 4, "func": "unattended", "delegate_depth": 1}
+{"case": 5, "func": "unattended", "delegate_depth": 0}
+{"case": 6, "func": "unattended", "delegate_depth": -1}
+{"case": 7, "func": "unattended", "platform": "web", "delegate_depth": 2}
+{"case": 8, "func": "redeemable", "lease": null, "prompt": "x"}
+{"case": 9, "func": "redeemable", "lease": {"expired": true}, "prompt": "x"}
+{"case": 10, "func": "redeemable", "lease": {"parent_gone": true}, "prompt": "x"}
+{"case": 11, "func": "redeemable", "lease": {"parent_turn_id": "t1", "turn_id": "t2"}, "prompt": "x"}
+{"case": 12, "func": "redeemable", "lease": {"parent_turn_id": "t1", "turn_id": "t1"}, "prompt": ""}
+{"case": 13, "func": "redeemable", "lease": {"parent_turn_id": "t1", "turn_id": "t1"}, "prompt": "   "}
+{"case": 14, "func": "redeemable", "lease": {"parent_turn_id": "t1", "turn_id": "t1"}, "prompt": 123}
+{"case": 15, "func": "redeemable", "lease": {"parent_turn_id": "t1", "turn_id": "t1"}, "prompt": "abc", "max_prompt_chars": 2}
+{"case": 16, "func": "redeemable", "lease": {"parent_turn_id": "t1", "turn_id": "t1"}, "prompt": "abc"}
+{"case": 17, "func": "redeemable", "lease": {"turn_id": "t1"}, "prompt": "abc"}

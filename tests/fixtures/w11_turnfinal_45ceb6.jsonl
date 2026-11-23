@@ -1,0 +1,28 @@
+{"func": "bare_marker", "needs_reply": "false", "reply": "NO_REPLY", "reply_is_silence": 1, "final_is_silence": 1, "case": 0, "out": false}
+{"func": "bare_marker", "needs_reply": "none", "reply": "NO_REPLY", "reply_is_silence": 1, "final_is_silence": 1, "case": 1, "out": false}
+{"func": "bare_marker", "needs_reply": "one", "reply": "NO_REPLY", "reply_is_silence": 0, "final_is_silence": 1, "case": 2, "out": false}
+{"func": "bare_marker", "needs_reply": "str", "reply": "NO_REPLY", "reply_is_silence": 0, "final_is_silence": 1, "case": 3, "out": false}
+{"func": "bare_marker", "needs_reply": "true", "reply": "", "reply_is_silence": 0, "final_is_silence": 1, "case": 4, "out": false}
+{"func": "bare_marker", "needs_reply": "true", "reply": "NO_REPLY", "reply_is_silence": 1, "final_is_silence": 1, "case": 5, "out": false}
+{"func": "bare_marker", "needs_reply": "true", "reply": "NO_REPLY", "reply_is_silence": 0, "final_is_silence": 1, "case": 6, "out": true}
+{"func": "bare_marker", "needs_reply": "true", "reply": "NO_REPLY", "reply_is_silence": 0, "final_is_silence": 0, "case": 7, "out": false}
+{"func": "bare_marker", "needs_reply": "true", "reply": "x", "reply_is_silence": 0, "final_is_silence": 1, "truncated_parts": 1, "case": 8, "out": false}
+{"func": "bare_marker", "needs_reply": "true", "reply": "x", "reply_is_silence": 0, "final_is_silence": 1, "promoted": 1, "case": 9, "out": false}
+{"func": "bare_marker", "needs_reply": "true", "reply": "x", "reply_is_silence": 0, "final_is_silence": 1, "interrupt_requested": 1, "case": 10, "out": false}
+{"func": "bare_marker", "needs_reply": "true", "reply": "x", "reply_is_silence": 1, "final_is_silence": 1, "case": 11, "out": false}
+{"func": "absorb", "final_response": "tail", "parts": [], "messages": [], "case": 12, "out": {"joined": "tail", "had_parts": false, "messages": []}}
+{"func": "absorb", "final_response": "tail", "parts": [{"text": "hello", "is_partial_stub": false}], "messages": [{"role": "user"}], "case": 13, "out": {"joined": "hello\ntail", "had_parts": true, "messages": [{"role": "user"}]}}
+{"func": "absorb", "final_response": "tail", "parts": [{"text": "hello world", "is_partial_stub": false}, {"text": "tail", "is_partial_stub": false}], "messages": [], "case": 14, "out": {"joined": "hello world\ntail\ntail", "had_parts": true, "messages": []}}
+{"func": "absorb", "final_response": "tail", "parts": [{"text": "hello", "is_partial_stub": true}, {"text": "hello tail", "is_partial_stub": false}], "messages": [], "case": 15, "out": {"joined": "hello\nhello tail\ntail", "had_parts": true, "messages": []}}
+{"func": "absorb", "final_response": "tail", "parts": [{"text": "abc", "is_partial_stub": false}, {"text": "def", "is_partial_stub": false}], "messages": [{"a": 1}], "case": 16, "out": {"joined": "abc\ndef\ntail", "had_parts": true, "messages": [{"a": 1}]}}
+{"func": "absorb", "final_response": "tail", "parts": [{"text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_partial_stub": true}, {"text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END", "is_partial_stub": false}], "messages": [], "case": 17, "out": {"joined": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa END\ntail", "had_parts": true, "messages": []}}
+{"func": "absorb", "final_response": "", "parts": [{"text": "", "is_partial_stub": true}, {"text": "", "is_partial_stub": false}], "messages": [], "case": 18, "out": {"joined": "", "had_parts": true, "messages": []}}
+{"func": "absorb", "final_response": "tail", "parts": [{"text": "abc", "is_partial_stub": false}], "messages": [{"_length_continuation_fragment": true, "_length_continuation_nudge": true, "role": "assistant"}, {"role": "tool"}], "case": 19, "out": {"joined": "abc\ntail", "had_parts": true, "messages": [{"role": "assistant"}, {"role": "tool"}]}}
+{"func": "absorb", "final_response": "tail", "parts": [{"text": "abc", "is_partial_stub": false}], "messages": [{"_length_continuation_fragment": false, "role": "assistant"}], "case": 20, "out": {"joined": "abc\ntail", "had_parts": true, "messages": [{"role": "assistant"}]}}
+{"func": "pop_scaffolding", "messages": [], "case": 21, "out": {"count": 0, "messages": []}}
+{"func": "pop_scaffolding", "messages": [{"role": "user", "content": "hi"}], "case": 22, "out": {"count": 0, "messages": [{"role": "user", "content": "hi"}]}}
+{"func": "pop_scaffolding", "messages": [{"role": "user"}, {"_thinking_prefill": true}], "case": 23, "out": {"count": 1, "messages": [{"role": "user"}]}}
+{"func": "pop_scaffolding", "messages": [{"role": "user"}, {"_empty_recovery_synthetic": 1}, {"_empty_terminal_sentinel": "x"}], "case": 24, "out": {"count": 2, "messages": [{"role": "user"}]}}
+{"func": "pop_scaffolding", "messages": [{"_thinking_prefill": false}, {"role": "assistant"}], "case": 25, "out": {"count": 0, "messages": [{"_thinking_prefill": false}, {"role": "assistant"}]}}
+{"func": "pop_scaffolding", "messages": [{"_dropped_toolcall_nudge": 1}, {"_empty_terminal_sentinel": 0}, {"role": "user"}], "case": 26, "out": {"count": 0, "messages": [{"_dropped_toolcall_nudge": 1}, {"_empty_terminal_sentinel": 0}, {"role": "user"}]}}
+{"func": "pop_scaffolding", "messages": ["not-a-dict", {"_thinking_prefill": 1}], "case": 27, "out": {"count": 1, "messages": ["not-a-dict"]}}

@@ -1,0 +1,15 @@
+{"case":1,"func":"advertised_tiers","entry":{"service_tiers":[{"id":"ultrafast"},{"id":"priority"}]}}
+{"case":2,"func":"advertised_tiers","entry":{"service_tiers":[{"id":"fast"}]}}
+{"case":3,"func":"advertised_tiers","entry":{"additional_speed_tiers":["fast","priority","ultrafast"]}}
+{"case":4,"func":"advertised_tiers","entry":{"service_tiers":[],"additional_speed_tiers":["fast"]}}
+{"case":5,"func":"advertised_tiers","entry":{"service_tiers":[]}}
+{"case":6,"func":"advertised_tiers","entry":{"service_tiers":[{"id":"fast"},{"id":1}]}}
+{"case":7,"func":"advertised_tiers","entry":{"service_tiers":"fast"}}
+{"case":8,"func":"advertised_tiers","entry":{"additional_speed_tiers":["fast","fast","a"]}}
+{"case":9,"func":"advertised_tiers","entry":{}}
+{"case":10,"func":"advertised_cyber_programs","entry":{"available_access_programs":{"cyber":["daybreak_blue","x"]}}}
+{"case":11,"func":"advertised_cyber_programs","entry":{"available_access_programs":{"cyber":[]}}}
+{"case":12,"func":"advertised_cyber_programs","entry":{"available_access_programs":{"cyber":["a",1]}}}
+{"case":13,"func":"advertised_cyber_programs","entry":{"available_access_programs":"x"}}
+{"case":14,"func":"advertised_cyber_programs","entry":{}}
+{"case":15,"func":"daybreak_program"}

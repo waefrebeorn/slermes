@@ -1,0 +1,12 @@
+{"func":"drop_stale_root_modules","required":null,"modules":{"utils":["file_signature","file_cache_version"]},"out":[]}
+{"func":"drop_stale_root_modules","required":null,"modules":{"utils":["file_signature"]},"out":["utils"]}
+{"func":"drop_stale_root_modules","required":null,"modules":{},"out":[]}
+{"func":"drop_stale_root_modules","required":null,"modules":{"utils":null},"out":[]}
+{"func":"drop_stale_root_modules","required":{"utils":["file_signature"],"oldmod":["x"]},"modules":{"utils":[],"oldmod":["x"]},"out":["utils"]}
+{"func":"drop_stale_root_modules","required":{"a":["p","q"],"b":["r"]},"modules":{"a":["p"],"b":["r"]},"out":["a"]}
+{"func":"drop_stale_root_modules","required":{"a":["p"]},"modules":{},"out":[]}
+{"func":"drop_stale_root_modules","required":{},"modules":{"a":[]},"out":[]}
+{"func":"drop_stale_root_modules","required":{"a":[],"b":["x"]},"modules":{"a":["anything"]},"out":[]}
+{"func":"drop_stale_root_modules","required":{"z":["k"]},"modules":{"z":[]},"out":["z"]}
+{"func":"drop_stale_root_modules","required":null,"modules":{"utils":[]},"out":["utils"]}
+{"func":"drop_stale_root_modules","required":{"m1":["x"],"m2":["y"],"m3":["z"]},"modules":{"m1":["x"],"m2":[],"m3":["z"]},"out":["m2"]}

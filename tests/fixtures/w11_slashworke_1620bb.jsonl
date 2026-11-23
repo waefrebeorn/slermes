@@ -1,0 +1,20 @@
+{"func":"slash_base","command":"/status"}
+{"func":"slash_base","command":"  /Model  gpt-5  "}
+{"func":"slash_base","command":"status"}
+{"func":"slash_base","command":""}
+{"func":"slash_base","command":"/"}
+{"func":"slash_base","command":"/  /deep"}
+{"func":"slash_base","command":"  /HELP\tmore"}
+{"func":"slash_base","command":"///triple"}
+{"func":"parse_line","raw":"{\"id\":\"a\",\"command\":\"/status\"}\n"}
+{"func":"parse_line","raw":"   {\"id\": 7, \"command\": \"model gpt\", \"extra\": true}   "}
+{"func":"parse_line","raw":""}
+{"func":"parse_line","raw":"   \n\t "}
+{"func":"parse_line","raw":"{\"id\":null,\"command\":\"\"}"}
+{"func":"parse_line","raw":"{\"command\":\"/help\"}"}
+{"func":"skill_refused","base":"model"}
+{"func":"skill_refused","base":"blueprint"}
+{"func":"skill_refused","base":""}
+{"func":"reply","fields":{"id":"a","ok":true,"output":"done","seed":""}}
+{"func":"reply","fields":{"id":null,"ok":false,"error":"boom"}}
+{"func":"reply","fields":{"id":5,"ok":true,"output":"line1\nline2","seed":"seed value"}}

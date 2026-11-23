@@ -1,0 +1,21 @@
+{"func":"normalize_arch","raw":"  X86_64  ","case":"trim + lower"}
+{"func":"normalize_arch","raw":"aarch64","case":"arm64 alias"}
+{"func":"normalize_arch","raw":"i686","case":"x86 alias"}
+{"func":"normalize_arch","raw":"sparc","case":"unknown"}
+{"func":"normalize_arch","raw":"","case":"empty"}
+{"func":"windows_native_arch","wow64_native":"34404","machine":"ARM64","case":"wow64 amd64 wins"}
+{"func":"windows_native_arch","wow64_native":"43620","machine":"x86","case":"wow64 arm64"}
+{"func":"windows_native_arch","wow64_native":"none","machine":" X64 ","case":"fallback normalize"}
+{"func":"classify_gpu_vendors","vendor_ids":["0x10DE","1002"],"case":"nvidia priority"}
+{"func":"classify_gpu_vendors","vendor_ids":["1002","8086"],"case":"amd over intel"}
+{"func":"classify_gpu_vendors","vendor_ids":["  ",""],"case":"all blank -> unknown"}
+{"func":"classify_gpu_vendors","vendor_ids":[],"case":"empty -> none"}
+{"func":"classify_gpu_vendors","vendor_ids":["8086"],"case":"intel"}
+{"func":"parse_cpuinfo","text":"processor\t: 0\nmodel name\t: Intel(R) Xeon(R) CPU\n","device_tree_model":"","case":"model name"}
+{"func":"parse_cpuinfo","text":"Hardware\t: BCM2835\nRevision : a\n","device_tree_model":"","case":"Hardware key"}
+{"func":"parse_cpuinfo","text":"nothing here\n","device_tree_model":"my_model_v2","case":"device-tree fallback"}
+{"func":"parse_cpuinfo_vendor","text":"vendor_id\t: GenuineIntel\n","case":"vendor_id"}
+{"func":"parse_cpuinfo_vendor","text":"CPU implementer\t: 0x41\nCPU part\t: 0xd03\n","case":"arm implementer"}
+{"func":"parse_cpuinfo_vendor","text":"CPU implementer\t: zz\n","case":"bad hex -> empty"}
+{"func":"parse_meminfo_total","text":"MemTotal:       16384 kB\nMemFree: 12 kB\n","case":"memtotal bytes"}
+{"func":"parse_meminfo_total","text":"MemTotal: bad kB\n","case":"non-digit -> null"}

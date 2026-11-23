@@ -1,0 +1,10 @@
+{"case": 1, "func": "payload", "name": "t", "message": "m", "kwargs": {"tool_call_id": "c1", "progress": 5, "total": 10, "percent": 50}}
+{"case": 2, "func": "payload", "name": null, "message": null, "kwargs": {}}
+{"case": 3, "func": "payload", "name": null, "message": "", "kwargs": {"tool_call_id": 0, "progress": 0, "total": null, "percent": true}}
+{"case": 4, "func": "payload", "name": 7, "message": 5, "kwargs": {"progress": "3.5", "total": "8"}}
+{"case": 5, "func": "payload", "name": "t", "message": "m", "kwargs": {"tool_call_id": "id-2", "progress": 1, "total": 1, "percent": 100}}
+{"case": 6, "func": "payload", "name": "t", "message": "m", "kwargs": {"progress": -2, "total": 10, "percent": -20}}
+{"case": 7, "func": "payload", "name": false, "message": true, "kwargs": {"tool_call_id": false, "progress": 2.5}}
+{"case": 8, "func": "payload", "name": "t", "message": null, "kwargs": {"total": 0, "percent": 0}}
+{"case": 9, "func": "payload", "name": "t", "message": "x", "kwargs": {"progress": 0.1, "total": 3}}
+{"case": 10, "func": "current"}

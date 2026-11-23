@@ -1,0 +1,16 @@
+{"case":1,"func":"refused_tool_message","tool_name":"memory_search"}
+{"case":2,"func":"refused_tool_message","tool_name":""}
+{"case":3,"func":"bound_scope","home":"A","identity":{"u":1},"home_key":"KA"}
+{"case":4,"func":"bound_scope","home":null,"identity":null,"home_key":null}
+{"case":5,"func":"caller_scope","bound":{"hermes_home":"A","home_key":"KA","agent_identity":{"u":1}},"caller_home":"A","process_home":"P","multiplexed":false,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":6,"func":"caller_scope","bound":{"hermes_home":"A"},"caller_home":"A","process_home":"P","multiplexed":false,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":7,"func":"caller_scope","bound":{"hermes_home":"A","home_key":"KA"},"caller_home":"B","process_home":"P","multiplexed":false,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":8,"func":"caller_scope","bound":{"hermes_home":"A","home_key":"KA"},"caller_home":"Z","process_home":"P","multiplexed":false,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":9,"func":"caller_scope","bound":{"hermes_home":"A","home_key":"KA"},"caller_home":null,"process_home":"P","multiplexed":true,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":10,"func":"caller_scope","bound":null,"caller_home":null,"process_home":"P","multiplexed":false,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":11,"func":"caller_scope","bound":{"hermes_home":"A","home_key":"KA"},"caller_home":null,"process_home":"P","multiplexed":false,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":12,"func":"caller_scope","bound":{"hermes_home":"P","home_key":"KP"},"caller_home":null,"process_home":"P","multiplexed":false,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":13,"func":"caller_scope","bound":{"hermes_home":"A","home_key":"KB"},"caller_home":"A","process_home":"P","multiplexed":false,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":14,"func":"caller_scope","bound":{},"caller_home":"A","process_home":"P","multiplexed":false,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":15,"func":"caller_scope","bound":{},"caller_home":"A","process_home":"P","multiplexed":true,"keys":{"A":"KA","B":"KB","P":"KP"}}
+{"case":16,"func":"caller_scope","bound":{"hermes_home":"A","home_key":"KA","agent_identity":0},"caller_home":"A","process_home":"P","multiplexed":false,"keys":{"A":"KA","B":"KB","P":"KP"}}

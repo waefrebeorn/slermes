@@ -1,0 +1,18 @@
+{"case":1,"func":"content_type_base","content_type":"application/json; charset=utf-8"}
+{"case":2,"func":"content_type_base","content_type":" TEXT/HTML "}
+{"case":3,"func":"content_type_base","content_type":""}
+{"case":4,"func":"content_type_base","content_type":"Application/JSON;charset=UTF-8"}
+{"case":5,"func":"content_type_base","content_type":"text/event-stream;x=1"}
+{"case":6,"func":"content_type_base","content_type":"  ; foo=bar"}
+{"case":7,"func":"content_type_base","content_type":"\tMiXeD Case/TYPE  ; q=1"}
+{"case":8,"func":"is_2xx","status":199}
+{"case":9,"func":"is_2xx","status":200}
+{"case":10,"func":"is_2xx","status":204}
+{"case":11,"func":"is_2xx","status":299}
+{"case":12,"func":"is_2xx","status":300}
+{"case":13,"func":"is_2xx","status":404}
+{"case":14,"func":"is_2xx","status":500}
+{"case":15,"func":"present","kwargs":{"a":1,"b":null,"c":"x","d":null}}
+{"case":16,"func":"present","kwargs":{}}
+{"case":17,"func":"present","kwargs":{"only":null}}
+{"case":18,"func":"present","kwargs":{"flag":true,"zero":0,"empty":"","obj":{"k":null},"arr":[1,null]}}

@@ -1,0 +1,19 @@
+{"case": 1, "func": "latest_display", "messages": []}
+{"case": 2, "func": "latest_display", "messages": [{"role": "user", "display_kind": "internal_notification"}, {"role": "assistant"}]}
+{"case": 3, "func": "latest_display", "messages": [{"role": "user"}, {"role": "user", "display_kind": "process_complete"}]}
+{"case": 4, "func": "latest_display", "messages": [{"role": "tool"}, {"role": "assistant"}]}
+{"case": 5, "func": "latest_display", "messages": [{"role": "user", "display_kind": null}]}
+{"case": 6, "func": "machinery_quiet", "messages": [{"role": "user", "display_kind": "process_complete"}]}
+{"case": 7, "func": "machinery_quiet", "messages": [{"role": "tool"}, {"role": "user", "display_kind": "process_complete"}]}
+{"case": 8, "func": "machinery_quiet", "messages": [{"role": "assistant"}, {"role": "user", "display_kind": "internal_notification"}]}
+{"case": 9, "func": "machinery_quiet", "messages": [{"role": "user", "display_kind": "process_complete"}, {"role": "tool"}]}
+{"case": 10, "func": "machinery_quiet", "messages": [{"role": "user", "display_kind": "other"}]}
+{"case": 11, "func": "machinery_quiet", "messages": []}
+{"case": 12, "func": "machinery_quiet", "messages": [{"role": "user", "display_kind": "async_delegation_complete"}]}
+{"case": 13, "func": "retry_hint", "hint": "HINT", "api_messages": [{"role": "user", "content": "hello"}]}
+{"case": 14, "func": "retry_hint", "hint": "HINT", "api_messages": [{"role": "assistant", "content": "x"}]}
+{"case": 15, "func": "retry_hint", "hint": "", "api_messages": [{"role": "user", "content": "x"}]}
+{"case": 16, "func": "retry_hint", "hint": "HINT", "api_messages": []}
+{"case": 17, "func": "retry_hint", "hint": "HINT", "api_messages": [{"role": "tool", "content": null}]}
+{"case": 18, "func": "retry_hint", "hint": "HINT", "api_messages": [{"role": "user", "content": [{"type": "text", "text": "x"}]}]}
+{"case": 19, "func": "retry_hint", "hint": "HINT", "api_messages": [{"role": "user", "content": "hello", "extra": "keep"}]}

@@ -1,0 +1,15 @@
+{"func": "key", "home_key": "/home/u", "provider": " OpenAI ", "identity_id": " abc ", "base_url": " https://x/api/ "}
+{"func": "key", "home_key": "H", "provider": "", "identity_id": "", "base_url": ""}
+{"func": "key", "home_key": "H", "provider": "ANTHROPIC", "identity_id": "id-1", "base_url": "http://localhost:8000//"}
+{"func": "key", "home_key": "H", "provider": null, "identity_id": null, "base_url": null}
+{"func": "identity", "provider": "openai-codex", "runtime_api_key": "", "entry_id": "entry-7", "principal": null}
+{"func": "identity", "provider": "openai-codex", "runtime_api_key": "tok123", "entry_id": "entry-7", "principal": ["acct-1", "user-2"]}
+{"func": "identity", "provider": "openai-codex", "runtime_api_key": "tok123", "entry_id": "entry-7", "principal": null}
+{"func": "identity", "provider": "anthropic", "runtime_api_key": "  sekret  ", "entry_id": "entry-9", "principal": null}
+{"func": "identity", "provider": "openai-codex", "runtime_api_key": "   ", "entry_id": "e", "principal": null}
+{"func": "stale", "valid": true, "bad_timestamp": false, "fetched_at": 1000.0, "now": 1100.0}
+{"func": "stale", "valid": true, "bad_timestamp": false, "fetched_at": 1000.0, "now": 1899.0}
+{"func": "stale", "valid": true, "bad_timestamp": false, "fetched_at": 1000.0, "now": 1901.0}
+{"func": "stale", "valid": true, "bad_timestamp": false, "fetched_at": 1000.0, "now": 999.0}
+{"func": "stale", "valid": false, "bad_timestamp": false, "fetched_at": 1000.0, "now": 1100.0}
+{"func": "stale", "valid": true, "bad_timestamp": true, "fetched_at": 1000.0, "now": 1100.0}

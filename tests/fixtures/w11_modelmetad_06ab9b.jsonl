@@ -1,0 +1,16 @@
+{"case":1,"func":"resolve_verify","base_url":""}
+{"case":2,"func":"resolve_verify","base_url":"https://x/v1","settings":{}}
+{"case":3,"func":"resolve_verify","base_url":"https://x/v1","settings":{"ssl_ca_cert":"/tmp/ca.pem"}}
+{"case":4,"func":"resolve_verify","base_url":"https://x/v1","settings":{"ssl_verify":false}}
+{"case":5,"func":"resolve_verify","base_url":"https://x/v1","settings":{"ssl_verify":true,"ssl_ca_cert":"ca"}}
+{"case":6,"func":"resolve_verify","base_url":"https://x/v1","settings":{"ssl_ca_cert":"ignored"},"settings_raise":true}
+{"case":7,"func":"resolve_verify","base_url":"https://x/v1","settings":{"ssl_verify":"custom.pem","other":1}}
+{"case":8,"func":"total_deadline_s"}
+{"case":9,"func":"scope_headers","initial_url":"https://h/v1","request_url":"https://h/v2","headers":{"accept":"application/json","authorization":"Bearer x"}}
+{"case":10,"func":"scope_headers","initial_url":"https://h:443/v1","request_url":"https://h/v1","headers":{"cookie":"c=1","user-agent":"ua"}}
+{"case":11,"func":"scope_headers","initial_url":"http://h/v1","request_url":"https://h/v1","headers":{"accept":"a","authorization":"x","cookie":"c","x-secret":"s"}}
+{"case":12,"func":"scope_headers","initial_url":"https://h/v1","request_url":"https://evil.example/v1","headers":{"accept":"a","user-agent":"u","authorization":"x","cookie":"c","proxy-authorization":"p","x-custom":"v"}}
+{"case":13,"func":"scope_headers","initial_url":"https://h/v1","request_url":"https://evil.example/v1","headers":{}}
+{"case":14,"func":"scope_headers","initial_url":"https://h/v1","request_url":"https://evil.example/v1","headers":{"accept":"a","user-agent":"u"}}
+{"case":15,"func":"scope_headers","initial_url":"https://h:8443/v1","request_url":"https://h/v1","headers":{"authorization":"x"}}
+{"case":16,"func":"scope_headers","initial_url":"https://h/v1","request_url":"https://h/v1","headers":{"authorization":"x","x-secret":"s"}}

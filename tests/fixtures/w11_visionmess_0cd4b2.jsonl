@@ -1,0 +1,42 @@
+{"func": "is_image_part", "part": {}, "case": 0, "out": false}
+{"func": "is_image_part", "part": {"type": "image_url"}, "case": 1, "out": true}
+{"func": "is_image_part", "part": {"type": "input_image"}, "case": 2, "out": true}
+{"func": "is_image_part", "part": {"type": "text"}, "case": 3, "out": false}
+{"func": "is_image_part", "part": "image_url", "case": 4, "out": false}
+{"func": "is_image_part", "part": {"type": "image_url", "url": "x"}, "case": 5, "out": true}
+{"func": "is_image_part", "part": {"type": null}, "case": 6, "out": false}
+{"func": "content_has_image", "content": [], "case": 7, "out": false}
+{"func": "content_has_image", "content": [{"type": "text"}], "case": 8, "out": false}
+{"func": "content_has_image", "content": [{"type": "text"}, {"type": "input_image"}], "case": 9, "out": true}
+{"func": "content_has_image", "content": null, "case": 10, "out": false}
+{"func": "content_has_image", "content": {}, "case": 11, "out": false}
+{"func": "salvage", "content": ["  hello  ", "", " world "], "any_dict_text": 0, "case": 12, "out": ["hello", "world"]}
+{"func": "salvage", "content": [{"type": "text", "text": " hi "}, {"type": "image_url"}], "any_dict_text": 0, "case": 13, "out": ["hi"]}
+{"func": "salvage", "content": [{"type": "input_text", "text": " a "}, {"type": "text", "text": null}], "any_dict_text": 0, "case": 14, "out": ["a"]}
+{"func": "salvage", "content": [{"foo": 1, "text": " t "}], "any_dict_text": 1, "case": 15, "out": ["t"]}
+{"func": "salvage", "content": [{"foo": 1, "text": " t "}], "any_dict_text": 0, "case": 16, "out": []}
+{"func": "salvage", "content": [{"type": "text", "text": 123}], "any_dict_text": 0, "case": 17, "out": ["123"]}
+{"func": "salvage", "content": [{"type": "text", "text": 0}], "any_dict_text": 0, "case": 18, "out": []}
+{"func": "salvage", "content": [{"type": "text", "text": true}], "any_dict_text": 0, "case": 19, "out": ["True"]}
+{"func": "provider_model_key", "provider": " OPENAI ", "model": " GPT-4 ", "case": 20, "out": ["openai", "GPT-4"]}
+{"func": "provider_model_key", "provider": null, "model": null, "case": 21, "out": ["", ""]}
+{"func": "provider_model_key", "provider": "MiXeD-Case", "model": " x ", "case": 22, "out": ["mixed-case", "x"]}
+{"func": "preserve_dots", "provider": "alibaba", "base_url": "", "case": 23, "out": true}
+{"func": "preserve_dots", "provider": "minimax-cn", "base_url": "", "case": 24, "out": true}
+{"func": "preserve_dots", "provider": "bedrock", "base_url": "", "case": 25, "out": true}
+{"func": "preserve_dots", "provider": "openai", "base_url": "", "case": 26, "out": false}
+{"func": "preserve_dots", "provider": "openai", "base_url": "https://dashscope.aliyuncs.com/v1", "case": 27, "out": true}
+{"func": "preserve_dots", "provider": "openai", "base_url": "https://api.aliyuncs.com/v1", "case": 28, "out": true}
+{"func": "preserve_dots", "provider": "openai", "base_url": "https://evil.com/path?x=aliyuncs.com", "case": 29, "out": false}
+{"func": "preserve_dots", "provider": "openai", "base_url": "https://opencode.ai/zen/v1", "case": 30, "out": true}
+{"func": "preserve_dots", "provider": "openai", "base_url": "https://bigmodel.cn/v1", "case": 31, "out": true}
+{"func": "preserve_dots", "provider": "openai", "base_url": "https://xiaomimimo.com/v1", "case": 32, "out": true}
+{"func": "preserve_dots", "provider": "openai", "base_url": "https://aiplatform.googleapis.com/v1", "case": 33, "out": true}
+{"func": "preserve_dots", "provider": "openai", "base_url": "https://bedrock-runtime.us-east-1.amazonaws.com", "case": 34, "out": true}
+{"func": "preserve_dots", "provider": "openai", "base_url": "https://proxy.test/api.openai.com/v1", "case": 35, "out": false}
+{"func": "preserve_dots", "provider": "openai", "base_url": "portal.qwen.ai", "case": 36, "out": false}
+{"func": "qwen_portal", "base_url_lower": "https://portal.qwen.ai/v1", "case": 37, "out": true}
+{"func": "qwen_portal", "base_url_lower": "https://evil.com/portal.qwen.ai", "case": 38, "out": false}
+{"func": "qwen_portal", "base_url_lower": "portal.qwen.ai", "case": 39, "out": true}
+{"func": "qwen_portal", "base_url_lower": "https://portal.qwen.ai.evil.com", "case": 40, "out": false}
+{"func": "qwen_portal", "base_url_lower": "", "case": 41, "out": false}

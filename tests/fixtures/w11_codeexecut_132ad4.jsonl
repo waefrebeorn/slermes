@@ -1,0 +1,18 @@
+{"func":"is_secret","name":"API_KEY","case":"secret key"}
+{"func":"is_secret","name":"bypass_cache","case":"PASS intentionally absent"}
+{"func":"is_secret","name":"my_token","case":"lowercase token"}
+{"func":"is_secret","name":"AUTH_TYPE","case":"auth substring"}
+{"func":"is_secret","name":"PATH","case":"safe prefix not secret"}
+{"func":"cache_probe","cache":{},"key":"a","value":1,"case":"insert into empty"}
+{"func":"cache_probe","cache":{"a":1,"b":2},"key":"a","value":9,"case":"update keeps position"}
+{"func":"cache_probe","cache":{"k0":0,"k1":1,"k2":2,"k3":3,"k4":4,"k5":5,"k6":6,"k7":7,"k8":8,"k9":9,"k10":10,"k11":11,"k12":12,"k13":13,"k14":14,"k15":15,"k16":16,"k17":17,"k18":18,"k19":19,"k20":20,"k21":21,"k22":22,"k23":23,"k24":24,"k25":25,"k26":26,"k27":27,"k28":28,"k29":29,"k30":30,"k31":31},"key":"new","value":99,"case":"FIFO eviction at cap"}
+{"func":"cache_probe","cache":{"x":true},"key":"n","value":{"z":[1,2]},"case":"object value"}
+{"func":"scrub","source_env":{"PATH":"/bin","HOME":"/h","API_KEY":"sec","HERMES_FOO":"x","HERMES_HOME":"/hh","RANDOM":"y","TOKEN":"abc","LANG":"C.UTF-8"},"passthrough":[],"resolved":{},"scoped_additions":{},"toolchain":[],"is_windows":false,"delegated":false,"os_task":"","fence_root":"1","case":"mixed scrub"}
+{"func":"scrub","source_env":{"CUSTOM":"literal"},"passthrough":["CUSTOM","SCOPED"],"resolved":{"CUSTOM":"resolved-val"},"scoped_additions":{"SCOPED":"from-scope"},"toolchain":[],"is_windows":false,"delegated":false,"os_task":"","fence_root":"1","case":"passthrough resolved + scoped"}
+{"func":"scrub","source_env":{"CUSTOM":"literal"},"passthrough":["CUSTOM"],"resolved":{},"scoped_additions":{},"toolchain":[],"is_windows":false,"delegated":false,"os_task":"","fence_root":"1","case":"unresolved passthrough omitted"}
+{"func":"scrub","source_env":{"NVM_DIR":"/nvm","RANDOM":"z"},"passthrough":[],"resolved":{},"scoped_additions":{},"toolchain":["NVM_DIR"],"is_windows":false,"delegated":false,"os_task":"","fence_root":"1","case":"toolchain keep"}
+{"func":"scrub","source_env":{"SystemRoot":"C:\\Win","COMSPEC":"cmd","random":"x"},"passthrough":[],"resolved":{},"scoped_additions":{},"toolchain":[],"is_windows":true,"delegated":false,"os_task":"","fence_root":"1","case":"windows essential uppercase"}
+{"func":"scrub","source_env":{"HERMES_KANBAN_TASK":"t","HERMES_KANBAN_DB":"/db","HOME":"/h"},"passthrough":[],"resolved":{},"scoped_additions":{},"toolchain":[],"is_windows":false,"delegated":true,"os_task":"","fence_root":"/fence","case":"delegated fence carries DB"}
+{"func":"scrub","source_env":{"HERMES_DELEGATED_CHILD_CONTEXT":"/inherited","PATH":"/p"},"passthrough":[],"resolved":{},"scoped_additions":{},"toolchain":[],"is_windows":false,"delegated":false,"os_task":"","fence_root":"1","case":"inherited marker path"}
+{"func":"scrub","source_env":{},"passthrough":[],"resolved":{},"scoped_additions":{},"toolchain":[],"is_windows":false,"delegated":false,"os_task":"","fence_root":"1","case":"empty env"}
+{"func":"scrub","source_env":{"HERMES_HOME":"/hh","HERMES_PROFILE":"p","HERMES_X":"z"},"passthrough":[],"resolved":{},"scoped_additions":{},"toolchain":[],"is_windows":false,"delegated":false,"os_task":"","fence_root":"1","case":"hermes allowlist vs dropped"}

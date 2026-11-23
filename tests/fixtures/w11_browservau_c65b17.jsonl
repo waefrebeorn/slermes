@@ -1,0 +1,22 @@
+{"func": "parse_json_result", "raw": "{\"a\":1}", "case": "json string parses"}
+{"func": "parse_json_result", "raw": "not json", "case": "plain string survives"}
+{"func": "parse_json_result", "raw": 42, "case": "number identity"}
+{"func": "parse_json_result", "raw": {"x": true}, "case": "object identity"}
+{"func": "parse_json_result", "raw": null, "case": "null identity"}
+{"func": "parse_json_result", "raw": "\"hello\"", "case": "json string literal"}
+{"func": "deep_probe", "selector": "input[type=password]", "case": "password probe"}
+{"func": "deep_probe", "selector": "a'b", "case": "selector with quote"}
+{"func": "list", "backends": [], "case": "empty vault hint"}
+{"func": "list", "backends": [{"name": "local", "display_name": "Local", "needs_unlock": false, "unlocked": true, "items": [{"id": "h1", "label": "GitHub", "kind": "login", "origin": "https://github.com", "allowed_origins": [], "has_otp": true, "identifier": "me@example.com", "identifier_type": "email"}]}], "case": "login item"}
+{"func": "list", "backends": [{"name": "bw", "display_name": "Bitwarden", "needs_unlock": true, "unlocked": true, "items": [{"id": "p1", "label": "Card", "kind": "payment", "origin": "https://shop.test", "allowed_origins": [], "has_otp": false, "identifier": "", "identifier_type": ""}]}], "case": "payment needs unlock two_factor"}
+{"func": "list", "backends": [{"name": "bw", "display_name": "Bitwarden", "needs_unlock": true, "unlocked": false}], "can_prompt": true, "case": "locked can prompt"}
+{"func": "list", "backends": [{"name": "bw", "display_name": "Bitwarden", "needs_unlock": true, "unlocked": false}], "can_prompt": false, "case": "locked no prompt"}
+{"func": "list", "backends": [{"name": "op", "display_name": "1Password", "needs_unlock": false, "unlocked": true, "list_error": "vault offline"}, {"name": "local", "display_name": "Local", "needs_unlock": false, "unlocked": true, "items": [{"id": "h2", "label": "Site", "kind": "login", "origin": "", "allowed_origins": [], "has_otp": false, "identifier": "", "identifier_type": ""}]}], "case": "error plus item"}
+{"func": "list", "backends": [{"name": "local", "display_name": "Local", "needs_unlock": false, "unlocked": true, "items": [{"id": "h3", "label": "Mgr", "kind": "login", "origin": "https://a.test", "allowed_origins": ["https://a.test", "https://b.test"], "has_otp": false, "identifier": "", "identifier_type": ""}]}], "case": "multiple allowed origins"}
+{"func": "list", "backends": [{"name": "local", "display_name": "Local", "needs_unlock": false, "unlocked": true, "items": [{"id": "h4", "label": "Mgr", "kind": "login", "origin": "https://a.test", "allowed_origins": ["https://a.test"], "has_otp": false, "identifier": "", "identifier_type": ""}]}], "case": "single allowed origin omitted"}
+{"func": "unlock", "backends": [{"name": "local", "display_name": "Local", "needs_unlock": false, "unlocked": true}], "backend_name": "missing", "case": "no unlockable backend"}
+{"func": "unlock", "backends": [{"name": "bw", "display_name": "Bitwarden", "needs_unlock": true, "unlocked": true}], "backend_name": "bw", "case": "already unlocked"}
+{"func": "unlock", "backends": [{"name": "bw", "display_name": "Bitwarden", "needs_unlock": true, "unlocked": false}], "backend_name": "bw", "can_prompt": false, "case": "unlock unavailable"}
+{"func": "unlock", "backends": [{"name": "bw", "display_name": "Bitwarden", "needs_unlock": true, "unlocked": false}], "backend_name": "bw", "can_prompt": true, "prompt_master": "", "case": "declined"}
+{"func": "unlock", "backends": [{"name": "bw", "display_name": "Bitwarden", "needs_unlock": true, "unlocked": false}], "backend_name": "bw", "can_prompt": true, "prompt_master": "secret", "case": "unlocked"}
+{"func": "unlock", "backends": [{"name": "bw", "display_name": "Bitwarden", "needs_unlock": true, "unlocked": false, "unlock_error": "wrong master"}], "backend_name": "bw", "can_prompt": true, "prompt_master": "bad", "case": "unlock failed"}

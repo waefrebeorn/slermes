@@ -1,0 +1,26 @@
+{"func":"clamp","value":42,"case":"valid int -> floor"}
+{"func":"clamp","value":"123456","case":"decimal string inside range"}
+{"func":"clamp","value":"-9","case":"negative string -> floor"}
+{"func":"clamp","value":9999999,"case":"above ceiling"}
+{"func":"clamp","value":3.7,"case":"float int() truncates"}
+{"func":"clamp","value":"3.5","case":"ValueError sentinel"}
+{"func":"clamp","value":null,"case":"TypeError sentinel"}
+{"func":"clamp_or_default","value":null,"case":"None -> default"}
+{"func":"clamp_or_default","value":"abc","case":"unparseable -> default"}
+{"func":"clamp_or_default","value":"700000","case":"string -> ceiling"}
+{"func":"clamp_or_default","value":true,"case":"bool coerces to int then floor"}
+{"func":"effective","char_limit":null,"config_value":12345,"case":"config path clamped"}
+{"func":"effective","char_limit":null,"config_value":"bad","case":"config fallback default"}
+{"func":"effective","char_limit":"900000","config_value":100,"case":"caller wins, clamped"}
+{"func":"effective","char_limit":null,"config_value":null,"case":"null config -> default"}
+{"func":"convert","text":"![logo](data:image/png;base64,iVBORw0KGgo=)","case":"markdown image with alt"}
+{"func":"convert","text":"before ![a pic](data:image/png;base64, AA==) after","case":"markdown with padded payload"}
+{"func":"convert","text":"inline data:image/png;base64,QUJDREVG blob","case":"bare data uri"}
+{"func":"convert","text":"(data:image/jpeg;base64,/9j/4AAQ==)","case":"parenthesised blob"}
+{"func":"convert","text":"http image ![x](https://example.com/x.png) keep","case":"real http link untouched"}
+{"func":"convert","text":"empty alt ![  ](data:image/gif;base64,R0lGOD=)","case":"blank alt drops name"}
+{"func":"convert","text":"![a](  data:image/png;base64,QQ==  )","case":"leading spaces inside parens"}
+{"func":"convert","text":"no image at all","case":"identity"}
+{"func":"trim","results":[{"url":"u1","title":"t","content":"c","error":null,"blocked_by_policy":true,"extra":1},{"url":"u2"},{"title":"only-title"},{"url":"u4","error":"boom","blocked_by_policy":null}],"case":"mixed entries"}
+{"func":"trim","results":[],"case":"empty array"}
+{"func":"trim","results":[{"url":"https://x/y","content":"body","error":false}],"case":"false error preserved"}

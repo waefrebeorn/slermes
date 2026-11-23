@@ -1,0 +1,22 @@
+{"case": 1, "func": "resolve", "agent_cfg": {}, "stale_timeout": null}
+{"case": 2, "func": "resolve", "agent_cfg": {"stream_max_lifetime": 30}, "stale_timeout": null}
+{"case": 3, "func": "resolve", "agent_cfg": {"stream_max_lifetime": 30}, "stale_timeout": 10}
+{"case": 4, "func": "resolve", "agent_cfg": {"stream_max_lifetime": 30}, "stale_timeout": 60}
+{"case": 5, "func": "resolve", "agent_cfg": {"stream_max_lifetime": 5}, "stale_timeout": 60}
+{"case": 6, "func": "resolve", "agent_cfg": {"stream_max_lifetime": true}, "stale_timeout": 10}
+{"case": 7, "func": "resolve", "agent_cfg": {"stream_max_lifetime": "30"}, "stale_timeout": 10}
+{"case": 8, "func": "resolve", "agent_cfg": {"stream_max_lifetime": 0}, "stale_timeout": 10}
+{"case": 9, "func": "resolve", "agent_cfg": {"stream_max_lifetime": -5}, "stale_timeout": 10}
+{"case": 10, "func": "resolve", "agent_cfg": {"stream_max_lifetime": "__inf__"}, "stale_timeout": 10}
+{"case": 11, "func": "resolve", "agent_cfg": {"stream_max_lifetime": 30}, "stale_timeout": "__inf__"}
+{"case": 12, "func": "resolve", "agent_cfg": {"stream_max_lifetime": 30}, "stale_timeout": -1}
+{"case": 13, "func": "resolve", "agent_cfg": "notadict", "stale_timeout": 10}
+{"case": 14, "func": "resolve", "agent_cfg": null, "stale_timeout": 10}
+{"case": 15, "func": "message", "elapsed": 0, "cap": 30.0}
+{"case": 16, "func": "message", "elapsed": 61.4, "cap": 30.0}
+{"case": 17, "func": "message", "elapsed": 120.6, "cap": 0.5}
+{"case": 18, "func": "message", "elapsed": 7, "cap": 1000000.0}
+{"case": 19, "func": "message", "elapsed": 3, "cap": 1.5}
+{"case": 20, "func": "message", "elapsed": 1000000, "cap": 2.0}
+{"case": 21, "func": "message", "elapsed": 2.5, "cap": 4.0}
+{"case": 22, "func": "message", "elapsed": 0.5, "cap": 0.125}

@@ -1,0 +1,27 @@
+{"func": "soft_error", "error": null, "case": 0, "out": {}}
+{"func": "soft_error", "error": {}, "case": 1, "out": {}}
+{"func": "soft_error", "error": {"code": "rate_limit", "message": "Quota exceeded", "extra": 123, "blank": "  "}, "case": 2, "out": {"code": "rate_limit", "message": "Quota exceeded"}}
+{"func": "soft_error", "error": {"code": 401, "message": ""}, "case": 3, "out": {}}
+{"func": "soft_error", "error": "just a string", "case": 4, "out": {"message": "just a string"}}
+{"func": "soft_error", "error": "", "case": 5, "out": {}}
+{"func": "soft_error", "error": 0, "case": 6, "out": {}}
+{"func": "soft_error", "error": 123, "case": 7, "out": {"message": "123"}}
+{"func": "soft_error", "error": true, "case": 8, "out": {"message": "True"}}
+{"func": "soft_error", "error": false, "case": 9, "out": {}}
+{"func": "soft_error", "error": {"code": "auth", "message": "\t\n  "}, "case": 10, "out": {"code": "auth"}}
+{"func": "token_expired", "status_code": 401, "reason": "token_expired", "case": 11, "out": true}
+{"func": "token_expired", "status_code": 401, "reason": " TOKEN_EXPIRED ", "case": 12, "out": true}
+{"func": "token_expired", "status_code": 401, "reason": "invalid_encrypted_content", "case": 13, "out": false}
+{"func": "token_expired", "status_code": 200, "reason": "token_expired", "case": 14, "out": false}
+{"func": "token_expired", "status_code": "401", "reason": "token_expired", "case": 15, "out": false}
+{"func": "token_expired", "status_code": 401, "reason": null, "case": 16, "out": false}
+{"func": "token_expired", "status_code": 401.0, "reason": "token_expired", "case": 17, "out": true}
+{"func": "classify", "api_mode": "codex_responses", "status": "failed", "error": {"code": "rate_limit", "message": "Quota exceeded"}, "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x", "case": 18, "out": {"classified": {"code": "rate_limit", "message": "Quota exceeded", "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x"}, "error_context": {"error": {"code": "rate_limit", "message": "Quota exceeded"}}}}
+{"func": "classify", "api_mode": "openai", "status": "failed", "error": {"code": "rate_limit", "message": "Quota exceeded"}, "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x", "case": 19, "out": {"classified": null, "error_context": {}}}
+{"func": "classify", "api_mode": "codex_responses", "status": " CANCELLED ", "error": {"code": "rate_limit", "message": "Quota exceeded"}, "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x", "case": 20, "out": {"classified": {"code": "rate_limit", "message": "Quota exceeded", "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x"}, "error_context": {"error": {"code": "rate_limit", "message": "Quota exceeded"}}}}
+{"func": "classify", "api_mode": "codex_responses", "status": "completed", "error": {"code": "rate_limit", "message": "Quota exceeded"}, "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x", "case": 21, "out": {"classified": null, "error_context": {}}}
+{"func": "classify", "api_mode": "codex_responses", "status": null, "error": {"code": "rate_limit", "message": "Quota exceeded"}, "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x", "case": 22, "out": {"classified": null, "error_context": {}}}
+{"func": "classify", "api_mode": "codex_responses", "status": "failed", "error": "soft failure text", "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x", "case": 23, "out": {"classified": {"code": null, "message": "soft failure text", "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x"}, "error_context": {"error": {"message": "soft failure text"}}}}
+{"func": "classify", "api_mode": "codex_responses", "status": "failed", "error": {"code": "rate_limit", "message": "Quota exceeded"}, "provider": "", "model": "", "base_url": "", "api_key": null, "case": 24, "out": {"classified": {"code": "rate_limit", "message": "Quota exceeded", "provider": "", "model": "", "base_url": "", "api_key": null}, "error_context": {"error": {"code": "rate_limit", "message": "Quota exceeded"}}}}
+{"func": "classify", "api_mode": "codex_responses", "status": "failed", "error": {}, "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x", "case": 25, "out": {"classified": {"code": null, "message": null, "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x"}, "error_context": {"error": {}}}}
+{"func": "classify", "api_mode": "codex_responses", "status": "failed", "error": {"code": 123, "message": "   "}, "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x", "case": 26, "out": {"classified": {"code": null, "message": null, "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1", "api_key": "sk-x"}, "error_context": {"error": {}}}}
