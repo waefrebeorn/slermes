@@ -1,0 +1,44 @@
+{"func":"portable_slug","case":1,"key":"My Plugin!"}
+{"func":"portable_slug","case":2,"key":"café"}
+{"func":"portable_slug","case":3,"key":"---"}
+{"func":"portable_slug","case":4,"key":"a_b-c"}
+{"func":"portable_slug","case":5,"key":"AI/ML Tool"}
+{"func":"portable_slug","case":6,"key":""}
+{"func":"portable_slug","case":7,"key":"v1.2 Name"}
+{"func":"portable_mcp_server_name","case":8,"key":"plug","server":"My Server"}
+{"func":"portable_mcp_server_name","case":9,"key":"other","server":"a.b.c"}
+{"func":"display_author","case":10,"value":{"name":"A","email":"","url":"u"}}
+{"func":"display_author","case":11,"value":null}
+{"func":"display_author","case":12,"value":"Jane"}
+{"func":"display_author","case":13,"value":true}
+{"func":"display_author","case":14,"value":42}
+{"func":"display_author","case":15,"value":{"name":"","email":null,"url":false}}
+{"func":"display_author","case":16,"value":{}}
+{"func":"config_key_path","case":17,"item":" memory.retaindb "}
+{"func":"config_key_path","case":18,"item":"agent"}
+{"func":"config_key_path","case":19,"item":"a..b"}
+{"func":"config_key_path","case":20,"item":"a."}
+{"func":"config_key_path","case":21,"item":".x"}
+{"func":"config_key_path","case":22,"item":"x.y.z"}
+{"func":"config_key_path","case":23,"item":123}
+{"func":"config_key_path","case":24,"item":""}
+{"func":"config_key_path","case":25,"item":null}
+{"func":"manifest_config_keys","case":26,"data":{"config_keys":["memory.retaindb","agent","a..b","x.y"]}}
+{"func":"manifest_config_keys","case":27,"data":{}}
+{"func":"manifest_config_keys","case":28,"data":{"config_keys":"bad"}}
+{"func":"detect_kind","case":29,"source":"from hermes_cli import register_memory_provider"}
+{"func":"detect_kind","case":30,"source":"class X(CronScheduler): pass"}
+{"func":"detect_kind","case":31,"source":"def register_provider(): class P(ProviderProfile): pass"}
+{"func":"detect_kind","case":32,"source":"plain source"}
+{"func":"detect_kind","case":33,"source":"register_provider only"}
+{"func":"version_satisfies","case":34,"spec":">=0.19","current":"0.20"}
+{"func":"version_satisfies","case":35,"spec":">=0.19","current":"0.18"}
+{"func":"version_satisfies","case":36,"spec":">=0.19,<1.0","current":"0.21"}
+{"func":"version_satisfies","case":37,"spec":">1.0","current":"1.0"}
+{"func":"version_satisfies","case":38,"spec":"==1.2.3","current":"v1.2.3"}
+{"func":"version_satisfies","case":39,"spec":"!=1.2.3","current":"1.2.4"}
+{"func":"version_satisfies","case":40,"spec":"1.2","current":"1.1"}
+{"func":"version_satisfies","case":41,"spec":">=1.0-rc1","current":"1.0"}
+{"func":"version_satisfies","case":42,"spec":"","current":"0.1"}
+{"func":"version_satisfies","case":43,"spec":">=bad","current":"0.1"}
+{"func":"version_satisfies","case":44,"spec":">=1","current":"notaversion"}

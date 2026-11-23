@@ -1,0 +1,25 @@
+{"func": "clip", "text": null, "case": "null text"}
+{"func": "clip", "text": "  hello   world  ", "case": "collapse whitespace"}
+{"func": "clip", "text": "a\tb\nc", "case": "tabs and newlines collapsed"}
+{"func": "clip", "text": 123, "case": "int coercion"}
+{"func": "clip", "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "case": "exactly 240"}
+{"func": "clip", "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "case": "241 -> 239 + ellipsis"}
+{"func": "clip", "text": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé", "case": "multibyte 241 codepoints"}
+{"func": "voice_row", "voice": {"voice_id": "v1", "name": "Alpha", "gender": "male", "age": "young", "descriptive": "deep", "category": "premade", "preview_url": "http://p"}, "case": "library row top-level"}
+{"func": "voice_row", "voice": {"voice_id": "v2", "name": "Beta", "labels": {"gender": "female", "use case": "characters", "age": "old"}}, "case": "account labels with spaced key"}
+{"func": "voice_row", "voice": {"voice_id": "v3", "name": "Gamma", "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "rate": 1.5, "preview_url": "u"}, "case": "long desc clipped and credit rate"}
+{"func": "voice_row", "voice": {"name": "NoId", "rate": 1, "category": ""}, "case": "missing id and rate 1 excluded"}
+{"func": "voice_row", "voice": {"voice_id": "v5", "name": "Zero", "rate": 0}, "case": "rate zero included"}
+{"func": "voice_row", "voice": {}, "case": "empty voice"}
+{"func": "request_params", "source": "account", "query": "orc", "filters": {"gender": "male"}, "use_case": "", "sort": "", "page": "tok123", "page_size": 20, "case": "account with token"}
+{"func": "request_params", "source": "library", "query": "", "filters": {}, "use_case": "", "sort": "", "page": "", "page_size": 20, "case": "library defaults"}
+{"func": "request_params", "source": "library", "query": "gravelly old", "filters": {"gender": "male", "age": "old"}, "use_case": "characters_animation", "sort": "trending", "page": "2", "page_size": 50, "case": "library full"}
+{"func": "request_params", "source": "library", "query": "", "filters": {}, "use_case": "", "sort": "", "page": "abc", "page_size": 20, "case": "bad page raises"}
+{"func": "request_params", "source": "library", "query": "", "filters": {}, "use_case": "", "sort": "bogus", "page": "", "page_size": 20, "case": "bad sort raises"}
+{"func": "request_params", "source": "account", "query": "", "filters": {}, "use_case": "", "sort": "", "page": "", "page_size": 5, "case": "account no token"}
+{"func": "request_params", "source": "library", "query": "", "filters": {"page_size": 7}, "use_case": "", "sort": "", "page": "", "page_size": 20, "case": "filters override page_size"}
+{"func": "next_page", "source": "library", "body": {"has_more": false}, "page": "3", "case": "no more"}
+{"func": "next_page", "source": "account", "body": {"has_more": true, "next_page_token": "tok"}, "page": "x", "case": "account token"}
+{"func": "next_page", "source": "account", "body": {"has_more": true}, "page": "x", "case": "account no token"}
+{"func": "next_page", "source": "library", "body": {"has_more": true}, "page": "3", "case": "library increments"}
+{"func": "next_page", "source": "library", "body": {"has_more": true}, "page": "", "case": "library empty page"}

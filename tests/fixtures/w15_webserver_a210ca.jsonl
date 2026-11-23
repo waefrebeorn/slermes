@@ -1,0 +1,22 @@
+{"func":"truncate","value":"","case":"empty value"}
+{"func":"truncate","value":"abcdef","visible":6,"case":"exactly visible"}
+{"func":"truncate","value":"abcdefghi","visible":6,"case":"long ascii"}
+{"func":"truncate","value":"abcdefghi","visible":3,"case":"short visible"}
+{"func":"truncate","value":"aa.bb.cccccccc","visible":6,"case":"jwt signature tail"}
+{"func":"truncate","value":"aa.bb.short","visible":6,"case":"jwt short tail"}
+{"func":"truncate","value":"a.bbbb","visible":6,"case":"one dot not jwt"}
+{"func":"truncate","value":"secret","callable":true,"case":"callable credential placeholder"}
+{"func":"truncate","value":"hd.xy.áéíóú","visible":3,"case":"unicode codepoint tail"}
+{"func":"truncate","value":"X","visible":0,"case":"zero visible keeps whole tail"}
+{"func":"truncate","case":"missing value"}
+{"func":"profile","case":"missing profile"}
+{"func":"profile","profile":"   ","case":"blank profile"}
+{"func":"profile","profile":"current","case":"current profile"}
+{"func":"profile","profile":" CURRENT ","case":"CURRENT upper stripped"}
+{"func":"profile","profile":"  my-profile  ","case":"named profile stripped"}
+{"func":"token_status","source":"hermes_pkce","label":"Hermes PKCE","creds":{"accessToken":"aa.bb.longtokenvalue","expiresAt":"2030-01-01T00:00:00Z","refreshToken":"r"},"case":"full token status"}
+{"func":"token_status","source":"env_var","label":"KEY","creds":{},"case":"empty creds"}
+{"func":"token_status","source":"x","label":"X","creds":{"accessToken":"abcd","refreshToken":""},"case":"empty refresh token false"}
+{"func":"token_status","source":"x","label":"X","creds":{"accessToken":"token"},"access_token_callable":true,"case":"callable access token placeholder"}
+{"func":"token_status","source":"x","label":"X","creds":{"refreshToken":0},"case":"numeric zero refresh false"}
+{"func":"token_status","source":"x","label":"X","creds":{"refreshToken":5},"case":"numeric nonzero refresh true"}

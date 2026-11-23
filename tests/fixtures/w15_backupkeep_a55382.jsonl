@@ -1,0 +1,25 @@
+{"func":"host_env_key","name":"API_SERVER_KEY","case":"exact host name"}
+{"func":"host_env_key","name":"NOUS_ENDPOINT","case":"nous prefix"}
+{"func":"host_env_key","name":"HERMES_DEBUG","case":"hermes prefix"}
+{"func":"host_env_key","name":"TOOL_GATEWAY_KEY","case":"gateway prefix"}
+{"func":"host_env_key","name":"OPENAI_API_KEY","case":"archive key"}
+{"func":"host_env_key","name":"nous_x","case":"case sensitive"}
+{"func":"env_name","line":"  export NOUS_X = yes  ","case":"export prefix and strip"}
+{"func":"env_name","line":"# NOUS_X=1","case":"comment"}
+{"func":"env_name","line":"NOUS_X=a=b=c","case":"split on first equals"}
+{"func":"env_name","line":"   ","case":"blank"}
+{"func":"env_name","line":"PLAIN=value","case":"plain name"}
+{"func":"host_lines","text":"A=1\nNOUS_X=2\nexport HERMES_Y=3\n# NOUS_Z=4\nB=5\n","case":"ordered host lines"}
+{"func":"merge_env","archive":"A=1\nNOUS_X=a\nB=2\n","host_text":"A=9\nNOUS_X=h\nHERMES_K=v\n","case":"replace and append"}
+{"func":"merge_env","archive":"A=1\nNOUS_X=a\n","host_text":"A=9\n","case":"drop host line absent in host"}
+{"func":"merge_env","archive":"A=1\nNOUS_X=a\n","host_text":"A=1\nNOUS_X=a\n","case":"identical unchanged"}
+{"func":"merge_env","archive":"","host_text":"NOUS_X=1\n","case":"empty archive"}
+{"func":"merge_config","archive":{"model":"a","keep":1},"host":{"model":"b","providers":{"x":1}},"case":"config host sections"}
+{"func":"merge_config","archive":{"model":"a","fallback":2,"keep":1},"host":{"keep":9},"case":"missing host sections removed"}
+{"func":"merge_auth","archive":{"providers":{"nous":{"t":1},"openai":{"k":2}},"active_provider":"openai"},"host":{"providers":{"nous":{"t":9}},"active_provider":"nous"},"case":"nous swap"}
+{"func":"merge_auth","archive":{"credential_pool":{"nous":{"c":1},"x":2}},"host":{},"case":"nous dropped when host lacks it"}
+{"func":"home_parts","parts":["profiles","alice","config.yaml"],"case":"profile parts"}
+{"func":"home_parts","parts":["config.yaml"],"case":"root parts"}
+{"func":"is_auth_store","parts":["auth.json"],"case":"root auth"}
+{"func":"is_auth_store","parts":["profiles","bob","auth.json"],"case":"profile auth"}
+{"func":"is_auth_store","parts":["profiles","bob","config.yaml"],"case":"profile config"}

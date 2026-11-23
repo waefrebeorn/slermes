@@ -1,0 +1,24 @@
+{"func":"deferred_pick_text","result":{"model":"gpt-5"}}
+{"func":"deferred_pick_text","result":{}}
+{"func":"deferred_pick_text","result":{"model":null}}
+{"func":"deferred_pick_text","result":{"model":5}}
+{"func":"deferred_pick_text","result":{"model":0}}
+{"func":"refused_pick_text","update":{"model":"old","provider":"openai","target_model":"new","reason":"busy"}}
+{"func":"refused_pick_text","update":{}}
+{"func":"refused_pick_text","update":{"model":"m"}}
+{"func":"refused_pick_text","update":{"provider":"","reason":""}}
+{"func":"refused_pick_text","update":{"target_model":7,"model":false}}
+{"func":"summary_text","result":{"summary":{"headline":"H","token_line":"T","note":"N"}}}
+{"func":"summary_text","result":{"summary":{"headline":"H","note":null,"token_line":""}}}
+{"func":"summary_text","result":{"summary":{}}}
+{"func":"summary_text","result":{}}
+{"func":"model_text","label":"Current model","fields":{"model":"m1"}}
+{"func":"model_text","label":"Model switched to","fields":{"model":"m2","provider":"p"}}
+{"func":"model_text","label":"X","fields":{}}
+{"func":"model_text","label":"X","fields":{"model":0,"provider":""}}
+{"func":"tools_text","info":{"tools":{"a":["z","a"],"b":["m","z"]}}}
+{"func":"tools_text","info":{"tools":{"zeta":["t2","t1"],"alpha":[]}}}
+{"func":"tools_text","info":{"tools":{}}}
+{"func":"tools_text","info":{"tools":{},"enabled_toolsets":["web","files"]}}
+{"func":"tools_text","info":{}}
+{"func":"tools_text","info":{"tools":{"s":["dup","dup","aa"]}}}

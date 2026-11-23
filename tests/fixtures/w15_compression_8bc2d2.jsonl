@@ -1,0 +1,10 @@
+{"func":"carry","old_sid":"old-1","new_sid":"new-1","is_runtime_store":false}
+{"func":"carry","old_sid":"old-2","new_sid":"new-2","is_runtime_store":true}
+{"func":"carry","old_sid":"","new_sid":""}
+{"func":"carry","old_sid":"a","new_sid":"a","is_runtime_store":false}
+{"func":"carry","old_sid":"é-😀","new_sid":"会话","is_runtime_store":false}
+{"func":"carry","old_sid":"sess/old","new_sid":"sess\\new","is_runtime_store":true}
+{"func":"carry","old_sid":"0","new_sid":"1","is_runtime_store":true}
+{"func":"carry","old_sid":"  spaced  ","new_sid":"x","is_runtime_store":false}
+{"func":"carry","old_sid":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","new_sid":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","is_runtime_store":true}
+{"func":"carry","old_sid":"line1\nline2","new_sid":"tab\there","is_runtime_store":false}

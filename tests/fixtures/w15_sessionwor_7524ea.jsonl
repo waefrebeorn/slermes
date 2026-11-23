@@ -1,0 +1,24 @@
+{"func":"container_path","raw":"/workspace","case":"posix absolute"}
+{"func":"container_path","raw":"//share","case":"double slash rejected"}
+{"func":"container_path","raw":"relative/path","case":"relative rejected"}
+{"func":"container_path","raw":"","case":"empty rejected"}
+{"func":"container_path","raw":"/","case":"root accepted"}
+{"func":"container_path","raw":"C:/Users/x","case":"windows drive rejected"}
+{"func":"valid_generation","generation":1,"case":"one is valid"}
+{"func":"valid_generation","generation":5,"case":"positive int valid"}
+{"func":"valid_generation","generation":0,"case":"zero invalid"}
+{"func":"valid_generation","generation":-2,"case":"negative invalid"}
+{"func":"valid_generation","generation":true,"case":"bool excluded"}
+{"func":"valid_generation","generation":2.5,"case":"float invalid"}
+{"func":"valid_generation","generation":"3","case":"string invalid"}
+{"func":"valid_generation","generation":null,"case":"null invalid"}
+{"func":"policy_backend","policy":{},"case":"empty -> local"}
+{"func":"policy_backend","policy":{"TERMINAL_ENV":"  DOCKER "},"case":"lower + strip"}
+{"func":"policy_backend","policy":{"TERMINAL_ENV":""},"case":"empty -> local"}
+{"func":"policy_backend","policy":{"TERMINAL_ENV":null},"case":"null -> local"}
+{"func":"policy_backend","policy":{"TERMINAL_ENV":"SSH"},"case":"ssh uppercase"}
+{"func":"session_source","session":{"source":"  local "},"fallback":"remote","case":"strip source"}
+{"func":"session_source","session":{"source":""},"fallback":"remote","case":"empty -> fallback"}
+{"func":"session_source","session":null,"fallback":"remote","case":"null session -> fallback"}
+{"func":"session_source","session":{},"fallback":"local","case":"missing -> fallback"}
+{"func":"session_source","session":{"source":"kanban"},"fallback":"local","case":"explicit source"}

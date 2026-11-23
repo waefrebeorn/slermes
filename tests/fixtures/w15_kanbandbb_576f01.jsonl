@@ -1,0 +1,10 @@
+{"func":"display_name","slug":"atm10-server","case":"hyphen slug"}
+{"func":"display_name","slug":"default","case":"single word"}
+{"func":"display_name","slug":"my_board-name","case":"underscore and hyphen"}
+{"func":"display_name","slug":"","case":"empty slug"}
+{"func":"display_name","slug":"-","case":"only separator"}
+{"func":"display_name","slug":"foo__bar","case":"double underscore"}
+{"func":"display_name","slug":"ABC_def","case":"uppercase word lowercased"}
+{"func":"display_name","slug":"a","case":"one letter"}
+{"func":"display_name","slug":"123-test","case":"leading digits"}
+{"func":"display_name","slug":"--x--y--","case":"leading trailing separators"}

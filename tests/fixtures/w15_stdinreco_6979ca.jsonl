@@ -1,0 +1,16 @@
+{"func":"diagnose","case":"d1","fcntl_available":false}
+{"func":"diagnose","case":"d2","fcntl_available":true,"flags":0,"nonblock_flag":2048}
+{"func":"diagnose","case":"d3","fcntl_available":true,"flags":2048,"nonblock_flag":2048}
+{"func":"diagnose","case":"d4","fcntl_available":true,"flags":4096,"nonblock_flag":2048}
+{"func":"diagnose","case":"d5","fcntl_available":true,"fgetfl_error":"bad fd","nonblock_flag":2048}
+{"func":"diagnose","case":"d6","fcntl_available":false,"rcvtimeout_repr":"b'\\x00\\x00'"}
+{"func":"diagnose","case":"d7","fcntl_available":true,"flags":2048,"nonblock_flag":2048,"rcvtimeout_repr":"b'\\x01\\x00'"}
+{"func":"diagnose","case":"d8","fcntl_available":true,"fgetfl_error":"permission denied","rcvtimeout_repr":"b'\\x02\\x00'"}
+{"func":"handle","case":"h1","nonblock":false,"recovery_times":[],"now":1000,"max_recoveries":10,"diag_state":"O_NONBLOCK=n/a (no fcntl)"}
+{"func":"handle","case":"h2","nonblock":true,"recovery_times":[],"now":1000,"max_recoveries":10,"diag_state":"O_NONBLOCK=1"}
+{"func":"handle","case":"h3","nonblock":true,"recovery_times":[990,995,999],"now":1000,"max_recoveries":10,"diag_state":"O_NONBLOCK=1, SO_RCVTIMEO=b'\\x00'"}
+{"func":"handle","case":"h4","nonblock":true,"recovery_times":[900,901],"now":1000,"max_recoveries":10,"diag_state":"O_NONBLOCK=1"}
+{"func":"handle","case":"h5","nonblock":true,"recovery_times":[999,999,999,999,999,999,999,999,999,999,999],"now":1000,"max_recoveries":10,"diag_state":"x"}
+{"func":"handle","case":"h6","nonblock":true,"recovery_times":[999,999,999,999,999,999,999,999,999,999],"now":1000,"max_recoveries":5,"diag_state":"y"}
+{"func":"handle","case":"h7","nonblock":false,"recovery_times":[1000],"now":1000,"max_recoveries":0,"diag_state":"z"}
+{"func":"handle","case":"h8","nonblock":true,"recovery_times":[941,940,939],"now":1000,"max_recoveries":10,"diag_state":"O_NONBLOCK=1"}

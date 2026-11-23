@@ -1,0 +1,18 @@
+{"func":"in_dir_guard","in_dir":null,"case":"no in_dir"}
+{"func":"in_dir_guard","in_dir":"","case":"empty in_dir"}
+{"func":"in_dir_guard","in_dir":"/tmp/work","case":"posix in_dir"}
+{"func":"in_dir_guard","in_dir":" ","case":"whitespace in_dir is truthy"}
+{"func":"in_dir_guard","in_dir":0,"case":"numeric zero is falsy"}
+{"func":"foreign_guard","resume":null,"case":"no resume"}
+{"func":"foreign_guard","resume":"123","case":"plain session id"}
+{"func":"foreign_guard","resume":"@claude","case":"claude import"}
+{"func":"foreign_guard","resume":" @CODEX ","case":"codex import stripped lower"}
+{"func":"foreign_guard","resume":"@Claude","case":"mixed case claude"}
+{"func":"foreign_guard","resume":"@other","case":"unknown foreign marker"}
+{"func":"foreign_guard","resume":5,"case":"non-string resume"}
+{"func":"foreign_guard","resume":"@codex ","case":"trailing space codex"}
+{"func":"worktree_guard","resume":null,"worktree":false,"case":"no resume"}
+{"func":"worktree_guard","resume":"abc","worktree":false,"case":"resume without worktree flag"}
+{"func":"worktree_guard","resume":"abc","worktree":true,"case":"worktree flag present"}
+{"func":"worktree_guard","resume":"","worktree":false,"case":"empty resume"}
+{"func":"worktree_guard","resume":"abc","case":"missing worktree defaults false"}

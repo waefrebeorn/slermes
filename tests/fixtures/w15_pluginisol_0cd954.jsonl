@@ -1,0 +1,20 @@
+{"func":"isolation_mode","case":1,"cfg_isolation":"host"}
+{"func":"isolation_mode","case":2,"cfg_isolation":"HOST"}
+{"func":"isolation_mode","case":3,"cfg_isolation":" in-process "}
+{"func":"isolation_mode","case":4,"cfg_isolation":"Host-"}
+{"func":"isolation_mode","case":5,"cfg_isolation":"bogus"}
+{"func":"isolation_mode","case":6,"cfg_isolation":null}
+{"func":"isolation_mode","case":7,"cfg_isolation":"host","host_env":"1"}
+{"func":"isolation_mode","case":8,"cfg_isolation":"host","host_env":"0"}
+{"func":"isolation_mode","case":9,"cfg_isolation":"   "}
+{"func":"isolation_mode","case":10,"cfg_isolation":"In_Process"}
+{"func":"in_process_import_refusal","case":11,"what":"ctx.dispatch_tool","source":"user","cfg_isolation":"host"}
+{"func":"in_process_import_refusal","case":12,"what":"ctx.dispatch_tool","source":"bundled","cfg_isolation":"host"}
+{"func":"in_process_import_refusal","case":13,"what":"x","source":"user","cfg_isolation":"in_process"}
+{"func":"in_process_import_refusal","case":14,"what":"x","source":"user","cfg_isolation":"host","host_env":"1"}
+{"func":"in_process_import_refusal","case":15,"what":"","source":"user","cfg_isolation":"host"}
+{"func":"host_launcher","case":16,"launcher":"uv run -- python -m x"}
+{"func":"host_launcher","case":17,"launcher":null}
+{"func":"host_launcher","case":18,"launcher":["a","b c"]}
+{"func":"host_launcher","case":19,"launcher":"a b"}
+{"func":"host_launcher","case":20,"launcher":""}

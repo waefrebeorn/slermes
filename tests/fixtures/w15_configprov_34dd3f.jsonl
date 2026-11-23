@@ -1,0 +1,35 @@
+{"func":"canonical_api_mode","api_mode":"  OpenAI ","case":"alias case and whitespace"}
+{"func":"canonical_api_mode","api_mode":"chatcompletions","case":"alias chatcompletions"}
+{"func":"canonical_api_mode","api_mode":"bedrock-converse","case":"alias bedrock"}
+{"func":"canonical_api_mode","api_mode":"custom_transport","case":"unknown passes through"}
+{"func":"canonical_api_mode","api_mode":"","case":"empty stays empty"}
+{"func":"coerce_provider_id","value":null,"case":"none to empty"}
+{"func":"coerce_provider_id","value":"  acme  ","case":"string stripped"}
+{"func":"coerce_provider_id","value":2070,"case":"int unquoted yaml key"}
+{"func":"coerce_provider_id","value":true,"case":"bool to True"}
+{"func":"stringify_provider_map","providers":{"  a  ":{"x":1},"":"drop me","b":2},"case":"keys coerced and blanks dropped"}
+{"func":"stringify_provider_map","providers":[],"case":"non-mapping empty"}
+{"func":"find_provider_entry","providers":{"acme":{"base_url":"https://a"}},"key":" acme ","case":"exact after coercion"}
+{"func":"find_provider_entry","providers":{" acme ":{"name":"spaced"}},"key":"acme","case":"scan fallback returns stored key"}
+{"func":"find_provider_entry","providers":{"acme":"not a dict"},"key":"acme","case":"non-dict exact ignored"}
+{"func":"find_provider_entry","providers":null,"key":"x","case":"non-mapping nulls"}
+{"func":"find_provider_entry","providers":{"a":{"x":1}},"key":"","case":"blank key nulls"}
+{"func":"normalize_provider_models","models":{"m1":{},"__discovered_model_catalog__":true,"__explicit_model_allowlist__":["m1"]},"case":"dict sentinels stripped discovered flag"}
+{"func":"normalize_provider_models","models":[" a ","",42,{"id":" b ","x":1},{"name":"c","id":"","y":2}],"case":"list rows and names"}
+{"func":"normalize_provider_models","models":[],"case":"empty list"}
+{"func":"normalize_provider_models","models":{"m":{},"__discovered_model_catalog__":1},"case":"int sentinel is not True"}
+{"func":"coerce_ssl_verify","value":" OFF ","case":"string false off"}
+{"func":"coerce_ssl_verify","value":"YES","case":"string true yes"}
+{"func":"coerce_ssl_verify","value":"maybe","case":"unknown string null"}
+{"func":"coerce_ssl_verify","value":false,"case":"bool false"}
+{"func":"coerce_ssl_verify","value":null,"case":"null"}
+{"func":"normalize_extra_headers","extra_headers":{"X-Token":"abc","X-Null":null,"X-Num":42,"X-Bool":true},"case":"stringified values and null dropped"}
+{"func":"normalize_extra_headers","extra_headers":{},"case":"empty mapping"}
+{"func":"is_provider_enabled","provider_cfg":null,"case":"non-dict default true"}
+{"func":"is_provider_enabled","provider_cfg":{},"case":"missing flag default true"}
+{"func":"is_provider_enabled","provider_cfg":{"enabled":false},"case":"explicit false"}
+{"func":"is_provider_enabled","provider_cfg":{"enabled":" OFF "},"case":"string off"}
+{"func":"is_provider_enabled","provider_cfg":{"enabled":0},"case":"numeric zero"}
+{"func":"route_model_cfg","entry":{"models":{"gpt":{"ctx":8192}}},"model":"gpt","case":"dict model cfg"}
+{"func":"route_model_cfg","entry":{"models":{"gpt":"not a dict"}},"model":"gpt","case":"non-dict cfg null"}
+{"func":"route_model_cfg","entry":{"models":[]},"model":"gpt","case":"models not mapping null"}

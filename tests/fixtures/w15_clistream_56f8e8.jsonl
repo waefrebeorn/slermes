@@ -1,0 +1,24 @@
+{"func":"slow_command_status","command":"/skills search foo","case":"prefix skills search"}
+{"func":"slow_command_status","command":"  /SKILLS BROWSE java  ","case":"case-fold and strip"}
+{"func":"slow_command_status","command":"/reload-mcp","case":"exact reload-mcp"}
+{"func":"slow_command_status","command":"/reload_skills","case":"exact underscore alias"}
+{"func":"slow_command_status","command":"/browser open url","case":"browser prefix"}
+{"func":"slow_command_status","command":"/skills","case":"generic skills prefix"}
+{"func":"slow_command_status","command":"/chat","case":"default processing"}
+{"func":"slow_command_status","command":"","case":"empty command default"}
+{"func":"current_reasoning_callback","show_reasoning":true,"streaming_enabled":true,"verbose":false,"case":"stream wins"}
+{"func":"current_reasoning_callback","show_reasoning":true,"streaming_enabled":false,"verbose":true,"case":"show without streaming is null"}
+{"func":"current_reasoning_callback","show_reasoning":false,"streaming_enabled":true,"verbose":true,"case":"verbose fallback"}
+{"func":"current_reasoning_callback","show_reasoning":false,"streaming_enabled":false,"verbose":false,"case":"nothing"}
+{"func":"current_reasoning_callback","show_reasoning":null,"streaming_enabled":true,"verbose":true,"case":"null show falls to verbose"}
+{"func":"reset_stream_state","case":"all fields reset"}
+{"func":"flush_reasoning_preview","buf":"","force":false,"columns":80,"case":"empty buffer no flush"}
+{"func":"flush_reasoning_preview","buf":"short text","force":false,"columns":80,"case":"short buffer no flush"}
+{"func":"flush_reasoning_preview","buf":"short text","force":true,"columns":80,"case":"force flushes all"}
+{"func":"flush_reasoning_preview","buf":"line one\nline two","force":false,"columns":80,"case":"early newline not flushed"}
+{"func":"flush_reasoning_preview","buf":"aaaaaaaaaaaaaaaaaaaa\nb","force":false,"columns":80,"case":"late newline flush"}
+{"func":"flush_reasoning_preview","buf":"word word word word word word word word word word word word word word word","force":false,"columns":80,"case":"width boundary word break"}
+{"func":"flush_reasoning_preview","buf":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","force":false,"columns":80,"case":"no break point no flush"}
+{"func":"flush_reasoning_preview","buf":"Hello.\n","force":false,"columns":80,"case":"sentence newline early still flushes"}
+{"func":"flush_reasoning_preview","buf":"head\n   tail","force":true,"columns":80,"case":"force then lstrip remainder"}
+{"func":"flush_reasoning_preview","buf":"one two three four five six seven eight nine ten eleven twelve","force":false,"columns":40,"case":"narrow terminal width"}

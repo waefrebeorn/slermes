@@ -1,0 +1,24 @@
+{"func":"command_timeout","case":1,"section":{}}
+{"func":"command_timeout","case":2,"section":{"command_timeout":"45"}}
+{"func":"command_timeout","case":3,"section":{"command_timeout":"2"}}
+{"func":"command_timeout","case":4,"section":{"command_timeout":null}}
+{"func":"command_timeout","case":5,"section":{"command_timeout":"oops"}}
+{"func":"inactivity_timeout","case":6,"section":{},"default":60}
+{"func":"inactivity_timeout","case":7,"section":{"inactivity_timeout":"10"},"default":60}
+{"func":"chromium_args","case":8,"section":{"chromium_args":"--a,--b\n --c"}}
+{"func":"chromium_args","case":9,"section":{"chromium_args":[" --x ","","y"]}}
+{"func":"chromium_args","case":10,"section":{}}
+{"func":"executable_path","case":11,"section":{"executable_path":" /usr/bin/chrome "}}
+{"func":"executable_path","case":12,"section":{}}
+{"func":"browser_engine","case":13,"section":{"engine":"CHROME"}}
+{"func":"browser_engine","case":14,"section":{"engine":"lightpanda"}}
+{"func":"browser_engine","case":15,"section":{"engine":"firefox"}}
+{"func":"browser_engine","case":16,"section":{}}
+{"func":"is_headed","case":17,"section":{"headed":"YES"}}
+{"func":"is_headed","case":18,"section":{"headed":"false"}}
+{"func":"allow_private_urls","case":19,"section":{"allow_private_urls":"on"}}
+{"func":"auto_local_private","case":20,"section":{}}
+{"func":"auto_local_private","case":21,"section":{"auto_local_for_private_urls":"false"}}
+{"func":"auto_local_private","case":22,"section":{"auto_local_for_private_urls":false}}
+{"func":"use_real_profile","case":23,"section":{}}
+{"func":"use_real_profile","case":24,"section":{"use_real_profile":true}}

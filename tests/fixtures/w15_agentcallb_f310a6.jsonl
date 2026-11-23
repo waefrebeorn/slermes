@@ -1,0 +1,17 @@
+{"func":"skills","case":"s1","raw":""}
+{"func":"skills","case":"s2","raw":"alpha, beta,gamma"}
+{"func":"skills","case":"s3","raw":"a\nb,c\na"}
+{"func":"skills","case":"s4","raw":"  ,   ,  x  ,x, y ,"}
+{"func":"skills","case":"s5","raw":"one,two,three,one,two"}
+{"func":"preview","case":"p1","name":"terminal","result":"{\"output\":\"  hello world  \"}"}
+{"func":"preview","case":"p2","name":"terminal","result":"{\"output\":\"   \"}"}
+{"func":"preview","case":"p3","name":"terminal","result":"{\"session_id\":\"abc123\"}"}
+{"func":"preview","case":"p4","name":"terminal","result":"{\"exit_code\":0}"}
+{"func":"preview","case":"p5","name":"terminal","result":"{\"error\":\"  boom  \"}"}
+{"func":"preview","case":"p6","name":"file","result":"{\"output\":\"ignored\",\"error\":\"oops\"}"}
+{"func":"preview","case":"p7","name":"terminal","result":"not json"}
+{"func":"preview","case":"p8","name":"terminal","result":"[1,2,3]"}
+{"func":"history","case":"h1","messages":[],"max_messages":24,"max_tool_chars":1200}
+{"func":"history","case":"h2","messages":[{"role":"user","content":"u1","reasoning":"secret"},{"role":"assistant","content":"a1"},{"role":"tool","content":"0123456789ABCDEFGHIJ"}],"max_messages":24,"max_tool_chars":5}
+{"func":"history","case":"h3","messages":[{"role":"tool","content":"short","extra":7},{"role":"system","content":"sys"},{"role":"bogus","content":"skip"}],"max_messages":24,"max_tool_chars":1200}
+{"func":"history","case":"h4","messages":[{"role":"user","content":"old"},{"role":"assistant","content":"m1"},{"role":"user","content":"new"},{"role":"tool","content":"abcdef"}],"max_messages":2,"max_tool_chars":3}

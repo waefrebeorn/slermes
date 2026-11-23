@@ -1,0 +1,16 @@
+{"func":"commit_graph_stale","files":{},"now":100000,"case":"no graph at all stale"}
+{"func":"commit_graph_stale","files":{"objects/info/commit-graph":1000},"now":2000,"case":"fresh monolithic graph"}
+{"func":"commit_graph_stale","files":{"objects/info/commit-graph":1000},"now":87400,"case":"exactly max age not stale"}
+{"func":"commit_graph_stale","files":{"objects/info/commit-graph":1000},"now":87401,"case":"one second past max age stale"}
+{"func":"commit_graph_stale","files":{"objects/info/commit-graphs/commit-graph-chain":50000},"now":50010,"case":"fresh chain only"}
+{"func":"commit_graph_stale","files":{"objects/info/commit-graph":100,"hermes-commit-graph.fresh":90000},"now":90010,"case":"fresh stamp vouches for old graph"}
+{"func":"commit_graph_stale","files":{"objects/info/commit-graph":100,"objects/info/commit-graphs/commit-graph-chain":90000},"now":90001,"case":"newest of graph and chain wins"}
+{"func":"commit_graph_stale","files":{"hermes-commit-graph.fresh":90000},"now":90001,"case":"stamp alone cannot make a graph"}
+{"func":"graph_on_disk","files":{},"chain_text":null,"case":"nothing on disk"}
+{"func":"graph_on_disk","files":{"objects/info/commit-graph":1000},"chain_text":null,"case":"monolithic graph fallback"}
+{"func":"graph_on_disk","files":{"objects/info/commit-graphs/graph-abc.graph":1,"objects/info/commit-graphs/graph-def.graph":2},"chain_text":"abc def","case":"complete two layer chain"}
+{"func":"graph_on_disk","files":{"objects/info/commit-graphs/graph-abc.graph":1},"chain_text":"abc","case":"single complete layer"}
+{"func":"graph_on_disk","files":{},"chain_text":"abc","case":"layer file missing"}
+{"func":"graph_on_disk","files":{},"chain_text":"   ","case":"whitespace only chain"}
+{"func":"graph_on_disk","files":{},"chain_text":"","case":"empty chain"}
+{"func":"graph_on_disk","files":{"objects/info/commit-graphs/graph-a.graph":1,"objects/info/commit-graphs/graph-b.graph":2},"chain_text":"a\tb\n c  ","case":"whitespace separated layers"}

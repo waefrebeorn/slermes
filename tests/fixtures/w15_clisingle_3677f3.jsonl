@@ -1,0 +1,20 @@
+{"func":"int_or","value":"42","default":0,"case":"plain decimal string"}
+{"func":"int_or","value":"  -7  ","default":0,"case":"whitespace and sign"}
+{"func":"int_or","value":3.9,"default":0,"case":"float truncates toward zero"}
+{"func":"int_or","value":-3.9,"default":-1,"case":"negative float truncates toward zero"}
+{"func":"int_or","value":true,"default":0,"case":"bool true"}
+{"func":"int_or","value":false,"default":9,"case":"bool false"}
+{"func":"int_or","value":null,"default":"fallback","case":"null falls back to string default"}
+{"func":"int_or","value":"abc","default":-5,"case":"garbage falls back"}
+{"func":"int_or","value":"","default":7,"case":"empty string falls back"}
+{"func":"int_or","value":"1_000","default":0,"case":"underscore digit separators"}
+{"func":"int_or","value":"4.2","default":11,"case":"float-looking string falls back"}
+{"func":"int_or","value":{"a":1},"default":null,"case":"dict falls back to null"}
+{"func":"int_or","value":[1,2],"default":99,"case":"list falls back"}
+{"func":"sync_session","cli":{"session_id":"old","agent":{"session_id":"new"}},"case":"rotation adopts agent id"}
+{"func":"sync_session","cli":{"session_id":"same","agent":{"session_id":"same"}},"case":"equal ids no change"}
+{"func":"sync_session","cli":{"session_id":"keep","agent":{"session_id":""}},"case":"empty agent id is falsy"}
+{"func":"sync_session","cli":{"session_id":"keep","agent":null},"case":"null agent no change"}
+{"func":"sync_session","cli":{"session_id":"keep"},"case":"missing agent no change"}
+{"func":"configure_quiet","agent":{},"case":"empty agent gets nine fields"}
+{"func":"configure_quiet","agent":{"quiet_mode":false,"tool_progress_mode":"all","custom":7},"case":"preexisting values overwritten, extra kept"}

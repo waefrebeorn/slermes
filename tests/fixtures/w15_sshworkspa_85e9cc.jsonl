@@ -1,0 +1,12 @@
+{"case": "ec-marker", "func": "error_code", "output": "noise\n__HERMES_FS_ERROR__:ENOENT\n"}
+{"case": "ec-custom-fallback", "func": "error_code", "output": "nothing", "fallback": "read-error"}
+{"case": "ec-empty-marker-code", "func": "error_code", "output": "__HERMES_FS_ERROR__:   \n", "fallback": "EIO"}
+{"case": "ec-mid-marker", "func": "error_code", "output": "a\n__HERMES_FS_ERROR__:EACCES\nb\n"}
+{"case": "ec-empty-output", "func": "error_code", "output": "", "fallback": "EIO"}
+{"case": "norm-abs-dotdot", "func": "normalize", "path": "/a/b/../c/./d", "cwd": "/home/u/proj", "remote_home": "/home/u"}
+{"case": "norm-relative", "func": "normalize", "path": "src/../src/x.py", "cwd": "/home/u/proj", "remote_home": "/home/u"}
+{"case": "norm-home", "func": "normalize", "path": "~", "cwd": "/home/u/proj", "remote_home": "/home/u"}
+{"case": "norm-home-rel", "func": "normalize", "path": "~/a/b/../c", "cwd": "/home/u/proj", "remote_home": "/home/u"}
+{"case": "norm-double-slash", "func": "normalize", "path": "/a//b/./c/", "cwd": "/home/u/proj", "remote_home": "/home/u"}
+{"case": "norm-trailing-space", "func": "normalize", "path": "/a/.env /x/..", "cwd": "/home/u/proj", "remote_home": "/home/u"}
+{"case": "norm-strip", "func": "normalize", "path": "  ./src/../src/x.py  ", "cwd": "/home/u/proj", "remote_home": "/home/u"}

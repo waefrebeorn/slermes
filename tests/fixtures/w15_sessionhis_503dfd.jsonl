@@ -1,0 +1,28 @@
+{"func":"image_url","part":{"image_url":{"url":"https://x/a.png"}},"case":"dict image_url"}
+{"func":"image_url","part":{"image_url":"https://x/b.png"},"case":"string image_url"}
+{"func":"image_url","part":{},"case":"no image_url"}
+{"func":"image_url","part":{"image_url":{"url":5}},"case":"non-string url"}
+{"func":"dict_text","content":{"type":"text","text":"hello"},"image_urls":true,"case":"text kind"}
+{"func":"dict_text","content":{"type":"input_text","content":"world"},"image_urls":true,"case":"fallback content key"}
+{"func":"dict_text","content":{"type":"image_url","image_url":{"url":"u"}},"image_urls":true,"case":"image with url"}
+{"func":"dict_text","content":{"type":"image_url","image_url":{"url":"u"}},"image_urls":false,"case":"image without urls"}
+{"func":"dict_text","content":{"type":"input_audio"},"image_urls":true,"case":"audio kind"}
+{"func":"dict_text","content":{"type":"custom"},"image_urls":true,"case":"unknown typed"}
+{"func":"dict_text","content":{"text":"bare"},"image_urls":true,"case":"untyped text key"}
+{"func":"dict_text","content":{},"image_urls":true,"case":"empty structured"}
+{"func":"display_text","content":["  a  ","",  "b"],"case":"list join and strip"}
+{"func":"display_text","content":[{"type":"image_url","image_url":{"url":"u"}}],"case":"list image no urls"}
+{"func":"display_text","content":"  plain  ","case":"scalar with spaces"}
+{"func":"display_text","content":null,"case":"null content"}
+{"func":"coerce","content":["hello",{"type":"text","text":" world"},{"type":"image_url","image_url":{"url":"u"}}],"image_urls":true,"case":"mixed chunks"}
+{"func":"coerce","content":[{"text":"plain","type":"text"},{"type":"image"}],"image_urls":false,"case":"text-key precedence"}
+{"func":"coerce","content":{"type":"text","text":"one dict"},"image_urls":true,"case":"single dict"}
+{"func":"hidden","role":"user","text":"  [System: model switch]","case":"hidden marker"}
+{"func":"hidden","role":"assistant","text":"[System: x]","case":"wrong role"}
+{"func":"hidden","role":"user","text":"[Other]","case":"not a marker"}
+{"func":"strip_screenshots","text":"a\n[screenshot]\n[screenshot]","case":"two screenshots"}
+{"func":"strip_screenshots","text":"[screenshot]","case":"only screenshot"}
+{"func":"strip_screenshots","text":"a\nb","case":"no screenshots"}
+{"func":"seed_history","value":[{"role":"user","content":" hi ","display_kind":"hidden"},{"role":"x","content":"skip"},{"role":"assistant","text":"reply"}],"case":"valid seed rows"}
+{"func":"seed_history","value":[{"role":"user","content":"   "}],"case":"blank content skipped"}
+{"func":"inflight","value":[" a "," b "],"case":"inflight join + strip"}

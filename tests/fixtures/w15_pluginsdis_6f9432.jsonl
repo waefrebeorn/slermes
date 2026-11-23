@@ -1,0 +1,22 @@
+{"func":"valid_section_id","case":1,"value":"my-section","label":"basic"}
+{"func":"valid_section_id","case":2,"value":"a","label":"single"}
+{"func":"valid_section_id","case":3,"value":"A","label":"upper"}
+{"func":"valid_section_id","case":4,"value":"-lead","label":"lead-hyphen"}
+{"func":"valid_section_id","case":5,"value":"trail-","label":"trail-hyphen"}
+{"func":"valid_section_id","case":6,"value":"","label":"empty"}
+{"func":"valid_section_id","case":7,"value":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","label":"len128"}
+{"func":"valid_section_id","case":8,"value":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","label":"len129"}
+{"func":"valid_section_id","case":9,"value":"a.b_c-1","label":"punct"}
+{"func":"valid_section_id","case":10,"value":"with space","label":"space"}
+{"func":"valid_section_id","case":11,"value":123,"label":"number"}
+{"func":"format_section","case":12,"section_id":"a","content":"hello"}
+{"func":"format_section","case":13,"section_id":"x","content":"héllo"}
+{"func":"format_section","case":14,"section_id":"y","content":""}
+{"func":"format_sections","case":15,"sections":[]}
+{"func":"format_sections","case":16,"sections":[{"id":"a","content":"x"},{"id":"b","content":"yz"}]}
+{"func":"hook_call_identity","case":17,"hook_name":"pre_command","kwargs":{"session_key":"s1","tool_call_id":"t"}}
+{"func":"hook_call_identity","case":18,"hook_name":"pre_command","kwargs":{"tool_call_id":"t"}}
+{"func":"hook_call_identity","case":19,"hook_name":"pre_tool_call","kwargs":{"tool_call_id":"t1","turn_id":"u"}}
+{"func":"hook_call_identity","case":20,"hook_name":"pre_tool_call","kwargs":{"tool_call_id":""}}
+{"func":"hook_call_identity","case":21,"hook_name":"pre_tool_call","kwargs":{}}
+{"func":"hook_call_identity","case":22,"hook_name":"post_compaction","kwargs":{"session_id":"sid"}}

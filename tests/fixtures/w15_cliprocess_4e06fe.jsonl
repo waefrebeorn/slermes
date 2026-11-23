@@ -1,0 +1,22 @@
+{"func":"last_output_line","buffer":"","case":"empty"}
+{"func":"last_output_line","buffer":null,"case":"null buffer"}
+{"func":"last_output_line","buffer":"  first  \n\n second \n","case":"last nonblank"}
+{"func":"last_output_line","buffer":"\n\n","case":"only newlines"}
+{"func":"last_output_line","buffer":"   \nfoo\n","case":"leading blanks"}
+{"func":"last_output_line","buffer":"a  b\t c","case":"collapse whitespace"}
+{"func":"last_output_line","buffer":"  caf\u00e9  \n","case":"unicode"}
+{"func":"last_output_line","buffer":"tail\r\n  ","case":"crlf trailing blanks"}
+{"func":"status","entry":{},"case":"no status"}
+{"func":"status","entry":{"status":"running"},"case":"running"}
+{"func":"status","entry":{"status":"exited"},"case":"exited no code"}
+{"func":"status","entry":{"status":"exited","exit_code":0},"case":"zero code"}
+{"func":"status","entry":{"status":"exited","exit_code":7},"case":"failed code"}
+{"func":"status","entry":{"status":"exited","completion_reason":"killed"},"case":"killed"}
+{"func":"status","entry":{"status":"exited","completion_reason":"lost","exit_code":1},"case":"lost"}
+{"func":"status","entry":{"status":"exited","completion_reason":""},"case":"empty reason"}
+{"func":"glyph","row":{"status":"running"},"case":"running glyph"}
+{"func":"glyph","row":{"status":"done"},"case":"done glyph"}
+{"func":"glyph","row":{"status":"failed"},"case":"failed glyph"}
+{"func":"glyph","row":{"status":"killed"},"case":"killed glyph"}
+{"func":"glyph","row":{"status":"lost"},"case":"lost glyph"}
+{"func":"glyph","row":{"status":"weird"},"case":"unknown glyph"}

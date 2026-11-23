@@ -1,0 +1,16 @@
+{"func":"capture_active_lazy_features","case":"capture_active_lazy_features_case"}
+{"func":"refresh_active_lazy_features","case":"refresh_active_lazy_features_case"}
+{"func":"refresh_active_memory_provider_dependencies","case":"refresh_active_memory_provider_dependencies_case"}
+{"func":"npm_lockfile_changed","case":"npm_lockfile_changed_case"}
+{"func":"update_node_dependencies","case":"update_node_dependencies_case"}
+{"func":"rebuild_desktop_after_update","case":"rebuild_desktop_after_update_case"}
+{"func":"write_update_incomplete_marker","case":"write_update_incomplete_marker_case"}
+{"func":"path_uid","case":"path_uid_case"}
+{"func":"leftover_pausable_gateway_pids","case":"leftover_pausable_gateway_pids_case"}
+{"func":"ledger_manual_serve_holders","case":"ledger_manual_serve_holders_case"}
+{"func":"relaunch_stopped_serves","case":"relaunch_stopped_serves_pending_true","pending":true}
+{"func":"relaunch_stopped_serves","case":"relaunch_stopped_serves_pending_false","pending":false}
+{"func":"orphaned_desktop_backend_pids","case":"orphaned_desktop_backend_pids_case"}
+{"func":"ledger_reapable_backend_pids","case":"ledger_reapable_backend_pids_case"}
+{"func":"handoff_reapable_backend_pids","case":"handoff_reapable_backend_pids_case"}
+{"func":"stop_process_trees","case":"stop_process_trees_case"}

@@ -1,0 +1,15 @@
+{"case": "sqlite-posix", "func": "sqlite_partial_completion_lines", "sqlite_version": "3.40.1", "is_windows": false}
+{"case": "sqlite-win", "func": "sqlite_partial_completion_lines", "sqlite_version": "3.35.0", "is_windows": true}
+{"case": "sqlite-empty-ver", "func": "sqlite_partial_completion_lines", "sqlite_version": "", "is_windows": false}
+{"case": "msg-both-versions", "func": "update_complete_message", "pre_version": "0.19.4", "post_version": "0.20.0"}
+{"case": "msg-same", "func": "update_complete_message", "pre_version": "0.20.0", "post_version": "0.20.0"}
+{"case": "msg-none-pre", "func": "update_complete_message", "pre_version": null, "post_version": "0.20.0"}
+{"case": "msg-none-post", "func": "update_complete_message", "pre_version": "0.19.4", "post_version": null}
+{"case": "msg-git-sha", "func": "update_complete_message", "pre_version": "git.abc", "post_version": "0.20.0"}
+{"case": "msg-git-both", "func": "update_complete_message", "pre_version": "0.19.4", "post_version": "git.def"}
+{"case": "status-null", "func": "profile_skill_sync_status", "r": null}
+{"case": "status-empty", "func": "profile_skill_sync_status", "r": {}}
+{"case": "status-optout", "func": "profile_skill_sync_status", "r": {"skipped_opt_out": true}}
+{"case": "status-mixed", "func": "profile_skill_sync_status", "r": {"copied": ["a", "b"], "updated": ["c"]}}
+{"case": "status-user-mod", "func": "profile_skill_sync_status", "r": {"copied": [], "user_modified": ["x"]}}
+{"case": "status-all", "func": "profile_skill_sync_status", "r": {"copied": ["a"], "updated": ["b", "c"], "user_modified": ["d"]}}

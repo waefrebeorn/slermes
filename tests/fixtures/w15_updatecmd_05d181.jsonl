@@ -1,0 +1,17 @@
+{"case": "intent-basic", "func": "intent_to_add_paths", "fields": [" A new.txt", "M  mod.py", "?? untracked", "A  staged.py"]}
+{"case": "intent-rename", "func": "intent_to_add_paths", "fields": ["R  old.py", "new.py", " A added.py"]}
+{"case": "intent-empty", "func": "intent_to_add_paths", "fields": []}
+{"case": "intent-short", "func": "intent_to_add_paths", "fields": [" A", " A x", "   "]}
+{"case": "porcelain-basic", "func": "porcelain_records", "fields": ["M  a.py", "?? u.txt", " X"]}
+{"case": "porcelain-rename", "func": "porcelain_records", "fields": ["R  old.py", "new.py", "?? u.txt"]}
+{"case": "porcelain-copy", "func": "porcelain_records", "fields": ["C  src.py", "dst.py", "M  m.py"]}
+{"case": "porcelain-empty", "func": "porcelain_records", "fields": []}
+{"case": "collide-file", "func": "untracked_collides", "entry": "Config.py", "files": ["config.py"], "dirs": []}
+{"case": "collide-dir", "func": "untracked_collides", "entry": "build/", "files": [], "dirs": ["build"]}
+{"case": "collide-prefix", "func": "untracked_collides", "entry": "src/util.py", "files": ["src"], "dirs": []}
+{"case": "collide-none", "func": "untracked_collides", "entry": "z.txt", "files": [], "dirs": []}
+{"case": "apply-untracked", "func": "stash_apply_failed_only_on_existing_untracked", "stderr": "error: already exists, no checkout\nnote: x\n"}
+{"case": "apply-restore-fail", "func": "stash_apply_failed_only_on_existing_untracked", "stderr": "fatal: could not restore untracked files from stash\n"}
+{"case": "apply-warn-hint", "func": "stash_apply_failed_only_on_existing_untracked", "stderr": "warning: w\nhint: h\nerror: already exists, no checkout\n"}
+{"case": "apply-other-error", "func": "stash_apply_failed_only_on_existing_untracked", "stderr": "error: would be overwritten by merge\n"}
+{"case": "apply-empty", "func": "stash_apply_failed_only_on_existing_untracked", "stderr": ""}

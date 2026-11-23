@@ -1,0 +1,15 @@
+{"func":"console","value":"","case":"empty"}
+{"func":"console","value":"   ","case":"blank only"}
+{"func":"console","value":"w3m","case":"plain w3m"}
+{"func":"console","value":"  W3M --new-window","case":"strip split lower"}
+{"func":"console","value":"/usr/bin/lynx","case":"posix basename"}
+{"func":"console","value":"C:\\bin\\ELINKS","case":"windows basename lower"}
+{"func":"console","value":"firefox","case":"graphical browser"}
+{"func":"console","value":"# w3m","case":"comment first token"}
+{"func":"console","value":"browsh --flag","case":"browsh tui"}
+{"func":"console","value":"links2x","case":"near miss"}
+{"func":"timeout_msg","portal":null,"case":"default portal"}
+{"func":"timeout_msg","portal":"","case":"empty portal uses default"}
+{"func":"timeout_msg","portal":"https://portal.example.com","case":"custom portal"}
+{"func":"timeout_msg","portal":"https://portal.example.com///","case":"trailing slashes stripped"}
+{"func":"timeout_msg","portal":"///","case":"only slashes"}

@@ -1,0 +1,26 @@
+{"func":"sub_key","task_id":"t1","platform":"discord","chat_id":"c1","thread_id":null,"case":"null thread becomes empty"}
+{"func":"sub_key","task_id":"t2","platform":"telegram","chat_id":"c2","thread_id":"thr","case":"explicit thread"}
+{"func":"sub_key","task_id":"","platform":"","chat_id":"","thread_id":"","case":"all empty"}
+{"func":"sub_key","task_id":"a","platform":"P","chat_id":"C","thread_id":"","case":"empty string thread stays empty"}
+{"func":"encode_meta","metadata":{},"case":"empty mapping is None"}
+{"func":"encode_meta","metadata":{"b":2,"a":1},"case":"sorted compact keys"}
+{"func":"encode_meta","metadata":{"a":null},"case":"null value filtered -> None"}
+{"func":"encode_meta","metadata":{"z":true,"a":"x","m":3},"case":"mixed scalars"}
+{"func":"encode_meta","metadata":{"k":[1,2]},"case":"list value filtered -> None"}
+{"func":"encode_meta","metadata":{"s":"a\"b"},"case":"escaped quote in string"}
+{"func":"encode_meta","metadata":[1,2],"case":"non-mapping returns None"}
+{"func":"decode_meta","raw":{},"case":"empty mapping"}
+{"func":"decode_meta","raw":{"a":1,"b":null,"c":[1]},"case":"mapping copied verbatim"}
+{"func":"decode_meta","raw":"{\"a\":1,\"b\":null,\"c\":\"x\",\"d\":[1]}","case":"json string filters scalars"}
+{"func":"decode_meta","raw":"not json","case":"invalid json string"}
+{"func":"decode_meta","raw":"[1,2]","case":"json list is not dict"}
+{"func":"decode_meta","raw":0,"case":"falsy number"}
+{"func":"decode_meta","raw":"{\"z\":true,\"x\":false,\"f\":1.5}","case":"bool and float scalars"}
+{"func":"profile_filter","notifier_profiles":null,"include_unowned":false,"case":"None profiles"}
+{"func":"profile_filter","notifier_profiles":null,"include_unowned":true,"case":"None profiles still empty"}
+{"func":"profile_filter","notifier_profiles":[],"include_unowned":false,"case":"empty profiles -> 0"}
+{"func":"profile_filter","notifier_profiles":[],"include_unowned":true,"case":"empty profiles unowned only"}
+{"func":"profile_filter","notifier_profiles":["b","a"],"include_unowned":false,"case":"sorted unique"}
+{"func":"profile_filter","notifier_profiles":["b","a"],"include_unowned":true,"case":"sorted with unowned"}
+{"func":"profile_filter","notifier_profiles":["  a  ","a",""," b "],"include_unowned":false,"case":"strip and dedupe"}
+{"func":"profile_filter","notifier_profiles":["x"],"include_unowned":true,"case":"single profile with unowned"}

@@ -1,0 +1,18 @@
+{"case": "serve-base", "func": "is_serve_or_dashboard_unit", "unit": "hermes-serve.service"}
+{"case": "serve-profile", "func": "is_serve_or_dashboard_unit", "unit": "hermes-serve-alpha.service"}
+{"case": "serve-lookalike", "func": "is_serve_or_dashboard_unit", "unit": "hermes-server.service"}
+{"case": "dash-profile", "func": "is_serve_or_dashboard_unit", "unit": "hermes-dashboard-p1.service"}
+{"case": "gw-base", "func": "is_hermes_gateway_unit", "unit": "hermes-gateway.service"}
+{"case": "gw-profile", "func": "is_hermes_gateway_unit", "unit": "hermes-gateway-prod.service"}
+{"case": "gw-serve", "func": "is_hermes_gateway_unit", "unit": "hermes-serve.service"}
+{"case": "gw-other", "func": "is_hermes_gateway_unit", "unit": "other.service"}
+{"case": "ru-clean", "func": "receipt_looks_unfinished", "receipt": {"exit_code": 0, "outcome": "success"}}
+{"case": "ru-failed", "func": "receipt_looks_unfinished", "receipt": {"exit_code": 1}}
+{"case": "ru-outcome-failed", "func": "receipt_looks_unfinished", "receipt": {"outcome": "failed"}}
+{"case": "ru-stop-reason-ok", "func": "receipt_looks_unfinished", "receipt": {"exit_code": 0, "stop_reason": "x"}}
+{"case": "ru-stop-reason-only", "func": "receipt_looks_unfinished", "receipt": {"stop_reason": "x"}}
+{"case": "ru-gw-incomplete", "func": "receipt_looks_unfinished", "receipt": {"exit_code": 0, "gateway_restart": {"incomplete": true}}}
+{"case": "inc-none", "func": "restart_phase_failure_is_incomplete", "surviving": null, "pre_restart_pids": null}
+{"case": "inc-empty-both", "func": "restart_phase_failure_is_incomplete", "surviving": [], "pre_restart_pids": []}
+{"case": "inc-empty-pre", "func": "restart_phase_failure_is_incomplete", "surviving": [], "pre_restart_pids": [123]}
+{"case": "inc-survivors", "func": "restart_phase_failure_is_incomplete", "surviving": [1], "pre_restart_pids": []}

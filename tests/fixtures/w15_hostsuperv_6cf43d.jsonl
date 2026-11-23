@@ -1,0 +1,18 @@
+{"func":"identity","case":"i1","command":"/usr/bin/python -m tui_gateway.compute_host --x"}
+{"func":"identity","case":"i2","command":"python -m tui_gateway.other"}
+{"func":"identity","case":"i3","command":""}
+{"func":"identity","case":"i4","command":"tui_gateway.compute_host"}
+{"func":"identity","case":"i5","command":"/usr/bin/python -m tui_gateway.compute_hostx"}
+{"func":"log_text","case":"l1","record":"hello"}
+{"func":"log_text","case":"l2","record":"hello\n"}
+{"func":"log_text","case":"l3","record":""}
+{"func":"log_text","case":"l4","record":"a\nb"}
+{"func":"log_text","case":"l5","record":"trailing  \t"}
+{"func":"hello","case":"v1","hello_present":false,"expected_home":"/h","expected_sha":"abc"}
+{"func":"hello","case":"v2","hello_present":true,"hello_home":"/h","hello_sha":"abc","expected_home":"/h","expected_sha":"abc"}
+{"func":"hello","case":"v3","hello_present":true,"hello_home":"/other","hello_sha":"abc","expected_home":"/h","expected_sha":"abc"}
+{"func":"hello","case":"v4","hello_present":true,"hello_home":"","hello_sha":"abc","expected_home":"/h","expected_sha":"abc"}
+{"func":"hello","case":"v5","hello_present":true,"hello_home":"/h","hello_sha":"bad","expected_home":"/h","expected_sha":"abc"}
+{"func":"hello","case":"v6","hello_present":true,"hello_home":"/h","hello_sha":"","expected_home":"/h","expected_sha":"abc"}
+{"func":"hello","case":"v7","hello_present":true,"hello_home":"/h","hello_sha":"unknown","expected_home":"/h","expected_sha":"abc"}
+{"func":"hello","case":"v8","hello_present":true,"hello_home":"/h","hello_sha":"abc","expected_home":"/h","expected_sha":"unknown"}

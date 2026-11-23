@@ -1,0 +1,17 @@
+{"func":"backtick_end","case":1,"segment":"echo `cmd` tail","i":5}
+{"func":"backtick_end","case":2,"segment":"echo \\`x","i":5}
+{"func":"backtick_end","case":3,"segment":"`a`","i":0}
+{"func":"backtick_end","case":4,"segment":"no backticks","i":0}
+{"func":"shell_tokens","case":5,"segment":"grep -n X f","start":0}
+{"func":"shell_tokens","case":6,"segment":"grep 'foo bar' f","start":0}
+{"func":"shell_tokens","case":7,"segment":"grep \"foo bar\" f","start":0}
+{"func":"shell_tokens","case":8,"segment":"echo a\\ b","start":0}
+{"func":"shell_tokens","case":9,"segment":"grep -n X f | cut -d: -f1","start":0}
+{"func":"shell_tokens","case":10,"segment":"echo $(x) y","start":0}
+{"func":"shell_tokens","case":11,"segment":"echo `x` y","start":0}
+{"func":"shell_tokens","case":12,"segment":"echo 'unterminated","start":0}
+{"func":"shell_tokens","case":13,"segment":"echo \\","start":0}
+{"func":"shell_tokens","case":14,"segment":"grep -e `cmd` f","start":0}
+{"func":"shell_tokens","case":15,"segment":"echo a;b","start":0}
+{"func":"shell_tokens","case":16,"segment":"echo ='abc'","start":0}
+{"func":"shell_tokens","case":17,"segment":"cut -d: -f1","start":0}

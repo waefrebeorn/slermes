@@ -1,0 +1,12 @@
+{"func":"verify","path":"no/such/thing.db","case":"missing simple"}
+{"func":"verify","path":"no/such/deep/folder/missing.sqlite3","case":"missing deep path"}
+{"func":"verify","path":"a b/quit\\missing.db","case":"missing mixed separators"}
+{"func":"verify","path":"missing-é导致.db","case":"missing unicode"}
+{"func":"verify","path":"tests/fixtures/w15_backupinte_5de948_data/empty.bin","case":"zero bytes too small"}
+{"func":"verify","path":"tests/fixtures/w15_backupinte_5de948_data/small.bin","case":"99 bytes too small"}
+{"func":"verify","path":"tests/fixtures/w15_backupinte_5de948_data/bad.bin","case":"header magic mismatch hex"}
+{"func":"verify","path":"tests/fixtures/w15_backupinte_5de948_data/case.bin","case":"wrong case magic"}
+{"func":"verify","path":"tests/fixtures/w15_backupinte_5de948_data/valid.db","case":"valid pragma"}
+{"func":"verify","path":"tests/fixtures/w15_backupinte_5de948_data/valid.db","check_header":false,"run_pragma":false,"case":"no checks header passed"}
+{"func":"verify","path":"tests/fixtures/w15_backupinte_5de948_data/valid.db","max_bytes":"50","case":"size ceiling skip"}
+{"func":"verify","path":"tests/fixtures/w15_backupinte_5de948_data/valid.db","run_pragma":false,"case":"pragma disabled"}

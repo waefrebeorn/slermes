@@ -1,0 +1,19 @@
+{"func": "control_failure", "answer": null, "case": "none answer"}
+{"func": "control_failure", "answer": {"ok": false}, "case": "dict no failure key"}
+{"func": "control_failure", "answer": {"error": "boom"}, "case": "error field"}
+{"func": "control_failure", "answer": {"error": "", "message": "msg2"}, "case": "empty error falls to message"}
+{"func": "control_failure", "answer": {"detail": "detail text"}, "case": "detail field"}
+{"func": "control_failure", "answer": {"error": 0, "message": "fallback"}, "case": "falsy zero error"}
+{"func": "control_failure", "answer": "just a string", "case": "string repr"}
+{"func": "control_failure", "answer": 42, "case": "int repr"}
+{"func": "control_failure", "answer": true, "case": "bool repr"}
+{"func": "control_failure", "answer": [1, "x"], "case": "list repr"}
+{"func": "control_failure", "answer": {"a": 1, "b": "x"}, "case": "dict repr fallback"}
+{"func": "store_error", "class_name": "ValueError", "message": "bad value", "collision": false, "case": "plain value error"}
+{"func": "store_error", "class_name": "OSError", "message": "disk full", "collision": false, "case": "os error"}
+{"func": "store_error", "class_name": "TypeError", "message": "wrong type", "collision": false, "case": "type error"}
+{"func": "store_error", "class_name": "ProfileIdentityCollision", "message": "collided", "collision": true, "case": "collision becomes ValueError"}
+{"func": "store_error", "class_name": "Exception", "message": "", "collision": false, "case": "empty message"}
+{"func": "gateway_verb", "identified": true, "raises": false, "case": "gateway identified"}
+{"func": "gateway_verb", "identified": false, "raises": false, "case": "no gateway"}
+{"func": "gateway_verb", "identified": true, "raises": true, "case": "identify raised"}

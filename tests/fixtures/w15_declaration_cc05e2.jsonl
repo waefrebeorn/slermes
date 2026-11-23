@@ -1,0 +1,23 @@
+{"func":"gpu_label","case":1,"gpu":"nvidia"}
+{"func":"gpu_label","case":2,"gpu":null}
+{"func":"gpu_label","case":3,"gpu":"amd"}
+{"func":"gpu_label","case":4,"gpu":""}
+{"func":"location_is_rooted","case":5,"location":"/usr/bin","osf":"linux"}
+{"func":"location_is_rooted","case":6,"location":"../etc","osf":"linux"}
+{"func":"location_is_rooted","case":7,"location":"~/Apps/x","osf":"linux"}
+{"func":"location_is_rooted","case":8,"location":"C:\\Program Files\\App","osf":"win32"}
+{"func":"location_is_rooted","case":9,"location":"C:\\Program Files\\App","osf":"linux"}
+{"func":"location_is_rooted","case":10,"location":"https://example/x","osf":"linux"}
+{"func":"location_is_rooted","case":11,"location":"%LOCALAPPDATA%\\App","osf":"win32"}
+{"func":"location_is_rooted","case":12,"location":"/a/../b","osf":"linux"}
+{"func":"is_relative_name","case":13,"value":"vim","allow_dirs":false}
+{"func":"is_relative_name","case":14,"value":"../vim","allow_dirs":false}
+{"func":"is_relative_name","case":15,"value":"bin/vim","allow_dirs":true}
+{"func":"is_relative_name","case":16,"value":"bin/vim","allow_dirs":false}
+{"func":"is_relative_name","case":17,"value":"C:vim","allow_dirs":false}
+{"func":"is_relative_name","case":18,"value":null,"allow_dirs":false}
+{"func":"parse_requires","case":19,"raw":null,"app_per_os":null}
+{"func":"parse_requires","case":20,"raw":{"app":true,"min_version":"1.2","gpu":"nvidia"},"app_per_os":{"win32":"pe_resource"}}
+{"func":"parse_requires","case":21,"raw":{"gpu":"nvidia"},"app_per_os":null}
+{"func":"parse_requires","case":22,"raw":{"app":false,"min_version":null},"app_per_os":{"linux":"none"}}
+{"func":"parse_requires","case":23,"raw":{"app":true,"min_version":"2.0.1"},"app_per_os":{"darwin":"plist"}}

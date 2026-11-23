@@ -1,0 +1,17 @@
+{"func":"summary","case":"s1","name":"srv1","cfg":{"url":"http://x","args":["a","b"],"env":{"Z":"1","A":"2","M":"3"},"tools":["t1"],"enabled":true},"plugin":null,"oauth":false,"enabled":true}
+{"func":"summary","case":"s2","name":"srv2","cfg":{"command":"npx","args":[],"env":{},"headers":{"AUTHORIZATION":"Bearer x"},"auth":null},"plugin":null,"oauth":false,"enabled":false}
+{"func":"summary","case":"s3","name":"srv3","cfg":{"url":"http://y","auth":"oauth"},"plugin":"plugA","oauth":true,"enabled":true}
+{"func":"summary","case":"s4","name":"srv4","cfg":{"url":"http://y","auth":"oauth"},"plugin":"plugA","oauth":false,"enabled":true}
+{"func":"summary","case":"s5","name":"srv5","cfg":{},"plugin":null,"oauth":false,"enabled":false}
+{"func":"summary","case":"s6","name":"srv6","cfg":{"command":"cmd","auth":"header","headers":{"authorization":"x"},"env":{"b":"1","a":"2"}},"plugin":null,"oauth":false,"enabled":true}
+{"func":"summary","case":"s7","name":"srv7","cfg":{"url":"http://z","headers":[],"auth":"basic","args":["x"],"tools":null},"plugin":null,"oauth":false,"enabled":false}
+{"func":"summary","case":"s8","name":"srv8","cfg":null,"plugin":"p2","oauth":true,"enabled":true}
+{"func":"sources","case":"c1","config_servers":{"a":{"url":"http://a"},"bad":"notadict"},"portable":{"b":{"command":"cmd"},"a":{"url":"override"}},"owners":{"b":"plugB"}}
+{"func":"sources","case":"c2","config_servers":{},"portable":{},"owners":{}}
+{"func":"sources","case":"c3","config_servers":{"x":{"env":{}}},"portable":{"y":{}},"owners":{}}
+{"func":"sources","case":"c4","config_servers":{"z":{"command":"c"}},"portable":{"z":{"command":"new"},"w":{"url":"u"}},"owners":{"w":null,"z":"ownerZ"}}
+{"func":"record","case":"r1","entry_present":true,"entry_name":"cat1","server_config":{"url":"http://x"},"saved":true}
+{"func":"record","case":"r2","entry_present":false,"entry_name":"","server_config":{"url":"http://x"},"saved":false}
+{"func":"record","case":"r3","entry_present":false,"entry_name":"","server_config":{"command":"c"},"saved":true}
+{"func":"record","case":"r4","entry_present":false,"entry_name":"","server_config":{},"saved":false}
+{"func":"record","case":"r5","entry_present":true,"entry_name":"","server_config":{},"saved":false}

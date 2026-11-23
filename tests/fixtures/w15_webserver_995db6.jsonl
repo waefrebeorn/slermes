@@ -1,0 +1,22 @@
+{"func":"path_text","raw":"  /a/b  ","case":"strip both ends"}
+{"func":"path_text","raw":"","case":"empty path"}
+{"func":"path_text","raw":"x\t\n","case":"trailing whitespace"}
+{"func":"path_text","raw":"a b c","case":"inner whitespace kept"}
+{"func":"path_text","raw":"p","raw_nul":true,"case":"embedded nul rejected"}
+{"func":"path_text","raw":"  q  ","raw_nul":true,"case":"nul rejected after strip"}
+{"func":"container_cwd","host":"/workspace","case":"exact workspace"}
+{"func":"container_cwd","host":"/workspace/foo","case":"under workspace"}
+{"func":"container_cwd","host":"/root","case":"exact root"}
+{"func":"container_cwd","host":"/rootish","case":"prefix lookalike"}
+{"func":"container_cwd","host":"/tmp/workspace","case":"workspace elsewhere"}
+{"func":"container_cwd","host":"","case":"empty host"}
+{"func":"container_cwd","host":"/workspaceish/x","case":"workspaceish segment"}
+{"func":"path_is_under","root":"/opt/data","target":"/opt/data/file.txt","case":"child file"}
+{"func":"path_is_under","root":"/opt/data","target":"/opt/data","case":"equal paths"}
+{"func":"path_is_under","root":"/opt/data","target":"/opt/database","case":"sibling lookalike"}
+{"func":"path_is_under","root":"/opt/data","target":"/opt","case":"ancestor target"}
+{"func":"path_is_under","root":"/","target":"/a","case":"filesystem root"}
+{"func":"path_is_under","root":"/a/../b","target":"/a/../b/c","case":"dotdot retained"}
+{"func":"path_is_under","root":"a","target":"a/b","case":"relative child"}
+{"func":"path_is_under","root":"a","target":"ab","case":"relative lookalike"}
+{"func":"path_is_under","root":"/opt/data","target":"./x","case":"relative target under absolute root"}

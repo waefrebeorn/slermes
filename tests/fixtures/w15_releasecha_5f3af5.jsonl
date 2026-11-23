@@ -1,0 +1,41 @@
+{"func": "name", "value": "stable", "case": "valid name"}
+{"func": "name", "value": "canary-2", "case": "valid dashed"}
+{"func": "name", "value": "Bad-Name", "case": "uppercase invalid"}
+{"func": "name", "value": "a--b", "case": "double dash invalid"}
+{"func": "name", "value": "con", "case": "reserved name"}
+{"func": "name", "value": "lpt9", "case": "reserved lpt"}
+{"func": "name", "value": 123, "case": "non string"}
+{"func": "name", "value": "abcdefghijklmnopqrstuvwxyzabcdef", "case": "33 chars too long"}
+{"func": "repository", "value": "NousResearch/hermes-agent", "case": "valid repo"}
+{"func": "repository", "value": "owner/repo.name", "case": "dot in repo"}
+{"func": "repository", "value": "owner", "case": "missing slash"}
+{"func": "repository", "value": "-owner/repo", "case": "leading dash"}
+{"func": "repository", "value": "owner/", "case": "empty repo part"}
+{"func": "sha256", "value": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef", "case": "valid sha"}
+{"func": "sha256", "value": "ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789", "case": "uppercase sha"}
+{"func": "sha256", "value": "abc", "case": "short sha"}
+{"func": "commit", "value": "0123456789abcdef0123456789abcdef01234567", "case": "valid commit"}
+{"func": "commit", "value": "0123456789abcdef0123456789abcdef0123456", "case": "short commit"}
+{"func": "build_prefix", "value": "0123456789abcdef0123456789abcdef", "case": "valid build id"}
+{"func": "build_prefix", "value": "z0123456789abcdef0123456789abcde", "case": "invalid build id char"}
+{"func": "channel_key", "value": "stable", "case": "channel key valid"}
+{"func": "channel_key", "value": "Bad", "case": "channel key invalid name"}
+{"func": "package_versions", "sequence": "1", "case": "sequence one"}
+{"func": "package_versions", "sequence": "65537", "case": "sequence > 65536"}
+{"func": "package_versions", "sequence": "4294967295", "case": "max sequence"}
+{"func": "package_versions", "sequence": "0", "case": "zero invalid"}
+{"func": "package_versions", "sequence": "4294967296", "case": "over max"}
+{"func": "artifact_key", "value": "releases/channel-builds/0123456789abcdef0123456789abcdef/build.json", "case": "valid artifact"}
+{"func": "artifact_key", "value": "releases/tag/v1.0.0/setup.exe", "case": "tag artifact"}
+{"func": "artifact_key", "value": "other/key.json", "case": "bad prefix"}
+{"func": "artifact_key", "value": "releases//bad.json", "case": "empty segment"}
+{"func": "artifact_key", "value": "releases/../evil.json", "case": "dotdot segment"}
+{"func": "artifact_key", "value": "releases/con/bad.json", "case": "reserved segment"}
+{"func": "artifact_key", "value": "releases/bad./x.json", "case": "trailing dot segment"}
+{"func": "head", "value": {"buildId": "0123456789abcdef0123456789abcdef", "sequence": 5, "manifestKey": "releases/channel-builds/0123456789abcdef0123456789abcdef/build.json", "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}, "case": "valid head"}
+{"func": "head", "value": null, "case": "null head"}
+{"func": "head", "value": {"buildId": "0123456789abcdef0123456789abcdef", "sequence": 0, "manifestKey": "releases/channel-builds/0123456789abcdef0123456789abcdef/build.json", "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}, "case": "head sequence zero"}
+{"func": "head", "value": {"buildId": "0123456789abcdef0123456789abcdef", "sequence": 5, "manifestKey": "wrong.json", "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}, "case": "bad manifest key"}
+{"func": "identity", "value": {"token": "0123456789abcdef", "displayName": "Hermes Agent", "appNamePascal": "Hermes", "artifactNamePascal": "Hermes", "appId": "com.nous.hermes", "msixAppIdWithOrg": "Nous.Hermes", "cliName": "hermes", "windowsExecutableName": "Hermes.exe"}, "case": "valid identity"}
+{"func": "identity", "value": {"token": "XYZ", "displayName": "Hermes", "appNamePascal": "Hermes", "artifactNamePascal": "Hermes", "appId": "com.nous.hermes", "msixAppIdWithOrg": "Nous.Hermes", "cliName": "hermes", "windowsExecutableName": "Hermes.exe"}, "case": "bad token"}
+{"func": "identity", "value": {}, "case": "empty identity"}

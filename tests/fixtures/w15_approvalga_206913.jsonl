@@ -1,0 +1,20 @@
+{"func":"identity_digest","case":1,"text":"echo hi"}
+{"func":"identity_digest","case":2,"text":""}
+{"func":"identity_digest","case":3,"text":null}
+{"func":"identity_digest","case":4,"text":"café"}
+{"func":"same_answerers","case":5,"leader":{"approvers":["*"],"requester_id":"a"},"follower":{"approvers":["*"],"requester_id":"b"}}
+{"func":"same_answerers","case":6,"leader":{"approvers":["u1"],"requester_id":"a"},"follower":{"approvers":["u1"],"requester_id":"a"}}
+{"func":"same_answerers","case":7,"leader":{"approvers":["u1"],"requester_id":"a"},"follower":{"approvers":["u1"],"requester_id":"b"}}
+{"func":"same_answerers","case":8,"leader":{"approvers":["*"]},"follower":{"approvers":["u1"]}}
+{"func":"same_answerers","case":9,"leader":{},"follower":{}}
+{"func":"same_answerers","case":10,"leader":{"approvers":[]},"follower":{"approvers":["*"]}}
+{"func":"hook_choice","case":11,"resolved":true,"choice":"once","extra":{}}
+{"func":"hook_choice","case":12,"resolved":true,"choice":null,"extra":{}}
+{"func":"hook_choice","case":13,"resolved":false,"choice":"always","extra":{}}
+{"func":"hook_choice","case":14,"resolved":true,"choice":"session","extra":{"cancelled":"turn ended"}}
+{"func":"hook_choice","case":15,"resolved":true,"choice":"always","extra":{"cancelled":""}}
+{"func":"cancel_cause","case":16,"state":"interrupted","entry":{"result":null},"interrupt_reason":"/stop"}
+{"func":"cancel_cause","case":17,"state":"interrupted","entry":{"result":null},"interrupt_reason":null}
+{"func":"cancel_cause","case":18,"state":"set","entry":{"result":null,"cancelled":"session torn down"}}
+{"func":"cancel_cause","case":19,"state":"set","entry":{"result":"deny","cancelled":null}}
+{"func":"cancel_cause","case":20,"state":"timeout","entry":{"result":null}}

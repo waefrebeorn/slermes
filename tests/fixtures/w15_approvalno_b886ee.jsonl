@@ -1,0 +1,12 @@
+{"func":"current","case":1,"session_key":"s1","current_lease_key":null}
+{"func":"current","case":2,"session_key":"s1","current_lease_key":"s1"}
+{"func":"current","case":3,"session_key":"s1","current_lease_key":"s2"}
+{"func":"current","case":4,"session_key":"","current_lease_key":""}
+{"func":"deliverable","case":5,"active":false,"has_callback":false,"gateway_has_notifier":false}
+{"func":"deliverable","case":6,"active":true,"has_callback":false,"gateway_has_notifier":false}
+{"func":"deliverable","case":7,"active":true,"has_callback":true,"gateway_has_notifier":false}
+{"func":"deliverable","case":8,"active":true,"has_callback":false,"gateway_has_notifier":true}
+{"func":"deliverable","case":9,"active":false,"has_callback":true,"gateway_has_notifier":false}
+{"func":"revoke","case":10,"session_key":"s1","lease_keys":["s1","s2"]}
+{"func":"revoke","case":11,"session_key":"s3","lease_keys":["s1","s2"]}
+{"func":"revoke","case":12,"session_key":"s1","lease_keys":[]}

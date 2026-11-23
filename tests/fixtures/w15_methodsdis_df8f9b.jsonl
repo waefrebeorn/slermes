@@ -1,0 +1,11 @@
+{"func":"mint","requested":"","mine":[],"generated":"new1","case":"empty minted set, fresh id"}
+{"func":"mint","requested":"abc","mine":[],"generated":"fresh","case":"request not minted -> fresh"}
+{"func":"mint","requested":"abc","mine":["abc"],"generated":"fresh","case":"request honoured"}
+{"func":"mint","requested":"x","mine":["a","b","c"],"generated":"z","case":"sorted fresh addition"}
+{"func":"mint","requested":"b","mine":["c","a","b","a"],"generated":"z","case":"dedupe set semantics"}
+{"func":"mint","requested":"  ","mine":["  "],"generated":"g","case":"whitespace id honoured"}
+{"func":"mint","requested":"v-ü","mine":["v-ü"],"generated":"g","case":"unicode id honoured"}
+{"func":"foreign","viewer_id":"abc","mine":["abc"],"case":"own id not foreign"}
+{"func":"foreign","viewer_id":"abc","mine":[],"case":"empty set is foreign"}
+{"func":"foreign","viewer_id":"x","mine":["a","b"],"case":"unknown id is foreign"}
+{"func":"foreign","viewer_id":"","mine":[""],"case":"empty string own id"}

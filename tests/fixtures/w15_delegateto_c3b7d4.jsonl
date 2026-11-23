@@ -1,0 +1,18 @@
+{"func":"stringify","content":null,"case":"None -> empty string"}
+{"func":"stringify","content":"plain text","case":"plain string"}
+{"func":"stringify","content":"","case":"empty string"}
+{"func":"stringify","content":42,"case":"int -> str"}
+{"func":"stringify","content":true,"case":"bool -> str"}
+{"func":"stringify","content":["a",{"text":"b"},{"x":1}],"case":"list with text block and dict"}
+{"func":"stringify","content":{"b":2,"a":"x"},"case":"dict -> json dumps"}
+{"func":"stringify","content":[{"text":"one"},{"text":"two"}],"case":"list of text blocks joined"}
+{"func":"stringify","content":[1,false,null],"case":"list of scalars"}
+{"func":"stringify","content":{"a":"caf\u00e9","n":1.5},"case":"unicode and float"}
+{"func":"looks_error","content":"Error: bad thing","case":"error prefix"}
+{"func":"looks_error","content":"Traceback (most recent call last):","case":"traceback prefix"}
+{"func":"looks_error","content":"all is well","case":"normal output"}
+{"func":"looks_error","content":{"error":"boom"},"case":"structured error key"}
+{"func":"looks_error","content":{"status":"failed"},"case":"structured status failed"}
+{"func":"looks_error","content":{"status":"ok"},"case":"structured status ok"}
+{"func":"looks_error","content":"  FAILED: nope","case":"failed prefix lstrip"}
+{"func":"looks_error","content":{"text":"Exception: x"},"case":"dict text block no structured error"}

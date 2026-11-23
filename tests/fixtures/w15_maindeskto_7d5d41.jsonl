@@ -1,0 +1,9 @@
+{"func":"identity_valid","identity":"Hermes Local Signing","stdout":"  1) ABC \"Hermes Local Signing\" (SHA256) valid","ok":true,"case":"identity present quoted"}
+{"func":"identity_valid","identity":"X","stdout":"abc","ok":true,"case":"identity absent"}
+{"func":"identity_valid","identity":"X","stdout":"","ok":true,"case":"empty stdout"}
+{"func":"identity_valid","identity":"X","stdout":null,"ok":true,"case":"null stdout"}
+{"func":"identity_valid","identity":"X","stdout":"\"X\"","ok":false,"case":"run raised"}
+{"func":"identity_valid","identity":"A\"B","stdout":"\"A\"B\"","ok":true,"case":"identity with quote char"}
+{"func":"identity_valid","identity":"","stdout":"\"\" 0)","ok":true,"case":"empty identity"}
+{"func":"identity_valid","identity":"abc","stdout":"\"abcd\"","ok":true,"case":"substring not enough"}
+{"func":"identity_valid","identity":"abc","stdout":"1) \"abc\" - valid\n2) \"other\"","ok":true,"case":"among multiple identities"}

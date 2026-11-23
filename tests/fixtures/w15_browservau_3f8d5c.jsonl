@@ -1,0 +1,12 @@
+{"func":"saved_origins","meta":{"allowed_origins":["https://a.example","https://b.example"],"origin":null},"case":"two saved origins"}
+{"func":"saved_origins","meta":{"allowed_origins":[],"origin":"https://a.example"},"case":"empty list falls back to origin"}
+{"func":"saved_origins","meta":{"allowed_origins":[],"origin":null},"case":"empty and no origin"}
+{"func":"saved_origins","meta":{"allowed_origins":["https://x"],"origin":"https://y"},"case":"saved wins over origin"}
+{"func":"saved_origins","meta":{"allowed_origins":[],"origin":""},"case":"empty origin string"}
+{"func":"saved_origins","meta":{"allowed_origins":["https://one"],"origin":""},"case":"single origin"}
+{"func":"snapshot_refusal","custom_context":false,"meta":{"kind":"login","allowed_origins":["https://a"],"origin":null},"fresh":null,"page_origin":"https://evil","case":"builtin backend never refuses"}
+{"func":"snapshot_refusal","custom_context":true,"meta":{"kind":"login","allowed_origins":["https://a"],"origin":null},"fresh":{"kind":"login","allowed_origins":["https://a"],"origin":null},"page_origin":"https://a","case":"fresh still binds"}
+{"func":"snapshot_refusal","custom_context":true,"meta":{"kind":"login","allowed_origins":["https://a"],"origin":null},"fresh":{"kind":"login","allowed_origins":["https://b"],"origin":null},"page_origin":"https://a","case":"fresh changed -> refusal"}
+{"func":"snapshot_refusal","custom_context":true,"meta":{"kind":"login","allowed_origins":["https://a"],"origin":null},"fresh":null,"page_origin":"https://a","case":"fresh missing -> refusal"}
+{"func":"snapshot_refusal","custom_context":true,"meta":{"kind":"login","allowed_origins":[],"origin":"https://a"},"fresh":{"kind":"other","allowed_origins":["https://a"],"origin":null},"page_origin":"https://a","case":"kind mismatch -> refusal"}
+{"func":"snapshot_refusal","custom_context":true,"meta":{"kind":"login","allowed_origins":[],"origin":"https://a"},"fresh":{"kind":"login","allowed_origins":[],"origin":"https://a"},"page_origin":"https://a","case":"origin fallback still binds"}

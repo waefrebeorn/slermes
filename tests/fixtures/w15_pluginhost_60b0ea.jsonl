@@ -1,0 +1,21 @@
+{"func":"error_payload","case":1,"type":"ValueError","message":"bad value"}
+{"func":"error_payload","case":2,"type":"TypeError","message":"oops"}
+{"func":"error_payload","case":3,"type":"RuntimeError","message":"boom"}
+{"func":"error_payload","case":4,"type":"IndexError","message":"idx"}
+{"func":"error_payload","case":5,"type":"OSError","message":"io fail"}
+{"func":"error_payload","case":6,"type":"PluginHostUnsupported","message":"no cross"}
+{"func":"error_payload","case":7,"type":"NotImplementedError","message":"nimpl"}
+{"func":"error_payload","case":8,"type":"ValueError","message":""}
+{"func":"raise_remote","case":9,"type":"ValueError","message":"m"}
+{"func":"raise_remote","case":10,"type":"TimeoutError","message":"t"}
+{"func":"raise_remote","case":11,"type":"JSONDecodeError","message":"m","base":"ValueError"}
+{"func":"raise_remote","case":12,"type":"Weird","message":"m","base":"TypeError"}
+{"func":"raise_remote","case":13,"type":"Weird","message":"m"}
+{"func":"raise_remote","case":14,"type":null,"message":"m"}
+{"func":"decode","case":15,"value":{"a":1,"b":[true,null],"c":"s"}}
+{"func":"decode","case":16,"value":{"__record__":"FetchResult","fields":{"a":1,"b":{"__opaque__":"Runner"}}}}
+{"func":"decode","case":17,"value":{"__opaque__":"SDKClient"}}
+{"func":"decode","case":18,"value":[{"__opaque__":"A"},2,{"k":"v"}]}
+{"func":"decode","case":19,"value":"plain"}
+{"func":"decode","case":20,"value":{"__callable__":{"ref":1},"x":2}}
+{"func":"decode","case":21,"value":{"__record__":"Empty","fields":null}}

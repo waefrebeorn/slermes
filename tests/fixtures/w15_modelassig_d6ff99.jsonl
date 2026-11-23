@@ -1,0 +1,17 @@
+{"func":"same_endpoint","a":"HTTP://X/","b":"http://x","case":"case and trailing slash"}
+{"func":"same_endpoint","a":null,"b":"","case":"null equals empty"}
+{"func":"same_endpoint","a":"a","b":"b","case":"different hosts"}
+{"func":"same_endpoint","a":"  https://e/  ","b":"https://e","case":"strip then rstrip"}
+{"func":"same_endpoint","a":"","b":null,"case":"empty equals null"}
+{"func":"same_endpoint","a":"https://x///","b":"/https://x","case":"rstrip only on right"}
+{"func":"explicit_endpoint","provider":"custom","base_url":"https://x","case":"custom with url"}
+{"func":"explicit_endpoint","provider":"local","base_url":"  ","case":"local with whitespace url"}
+{"func":"explicit_endpoint","provider":"CUSTOM","base_url":"x","case":"uppercase custom"}
+{"func":"explicit_endpoint","provider":"openrouter","base_url":"https://x","case":"named provider"}
+{"func":"explicit_endpoint","provider":"custom","base_url":"","case":"custom no url"}
+{"func":"explicit_endpoint","provider":" custom ","base_url":" x ","case":"strip provider and url"}
+{"func":"entry_elsewhere","entry":{"base_url":"https://other"},"base_url":"https://x","case":"different host block"}
+{"func":"entry_elsewhere","entry":{"base_url":"https://x/"},"base_url":"https://x","case":"same host block"}
+{"func":"entry_elsewhere","entry":null,"base_url":"https://x","case":"null entry"}
+{"func":"entry_elsewhere","entry":"str","base_url":"https://x","case":"non-dict entry"}
+{"func":"entry_elsewhere","entry":{},"base_url":"https://x","case":"empty block points elsewhere"}

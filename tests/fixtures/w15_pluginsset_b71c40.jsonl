@@ -1,0 +1,22 @@
+{"func": "secret_env_name", "plugin_id": "image_gen/fal", "key": "api_key", "spec": {}, "case": "derived upper snake"}
+{"func": "secret_env_name", "plugin_id": "my.plugin/v2", "key": "token-1", "spec": {}, "case": "dots slashes dashes"}
+{"func": "secret_env_name", "plugin_id": "p", "key": "k", "spec": {"env": "MY_SECRET"}, "case": "declared env"}
+{"func": "secret_env_name", "plugin_id": "p", "key": "k", "spec": {"env": "  SPACED_env  "}, "case": "declared env stripped"}
+{"func": "secret_env_name", "plugin_id": "P", "key": "K", "spec": {"env": ""}, "case": "empty env falls back"}
+{"func": "secret_env_name", "plugin_id": "p", "key": "k", "spec": {"env": null}, "case": "null env falls back"}
+{"func": "secret_env_name", "plugin_id": "p", "key": "k", "spec": {"env": true}, "case": "bool env coerced"}
+{"func": "field_type", "spec": {"type": "str"}, "case": "str string"}
+{"func": "field_type", "spec": {"type": "INTEGER"}, "case": "integer number upper"}
+{"func": "field_type", "spec": {"type": "boolean"}, "case": "boolean"}
+{"func": "field_type", "spec": {"type": "object"}, "case": "object json"}
+{"func": "field_type", "spec": {"secret": true, "type": "str"}, "case": "secret true"}
+{"func": "field_type", "spec": {"secret": false, "type": "str", "choices": ["a", "b"]}, "case": "choices enum"}
+{"func": "field_type", "spec": {"type": "string", "choices": []}, "case": "empty choices not enum"}
+{"func": "field_type", "spec": {"type": "string", "enum": ["x"]}, "case": "enum alias"}
+{"func": "field_type", "spec": {}, "case": "missing type defaults string"}
+{"func": "save_plugin_settings", "plugin_id": "p", "schema": {"a": {"type": "int"}, "b": {"type": "str"}, "c": {"type": "bool"}, "d": {"type": "list"}, "e": {"type": "str", "choices": ["x", "y"]}}, "values": {"a": 1, "b": "hi", "c": true, "d": [1, 2], "e": "x"}, "case": "all valid"}
+{"func": "save_plugin_settings", "plugin_id": "p", "schema": {"a": {"type": "int"}}, "values": {"a": "no"}, "case": "type mismatch"}
+{"func": "save_plugin_settings", "plugin_id": "p", "schema": {"a": {"type": "int"}}, "values": {"a": true}, "case": "bool rejected for number"}
+{"func": "save_plugin_settings", "plugin_id": "p", "schema": {"e": {"type": "str", "choices": ["x"]}}, "values": {"e": "z"}, "case": "enum out of choices"}
+{"func": "save_plugin_settings", "plugin_id": "p", "schema": {}, "values": {"zzz": 1}, "case": "unknown key"}
+{"func": "save_plugin_settings", "plugin_id": "p", "schema": {"s": {"secret": true}}, "values": {"s": "v"}, "case": "secret rejected"}

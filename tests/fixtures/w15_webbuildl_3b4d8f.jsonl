@@ -1,0 +1,22 @@
+{"func":"light","env":{"HERMES_WEB_BUILD_LIGHT":"1"},"case":"light 1"}
+{"func":"light","env":{"HERMES_WEB_BUILD_LIGHT":" YES "},"case":"light yes stripped upper"}
+{"func":"light","env":{"HERMES_WEB_BUILD_LIGHT":"On"},"case":"light On mixed"}
+{"func":"light","env":{"HERMES_WEB_BUILD_LIGHT":"false"},"case":"light false"}
+{"func":"light","env":{},"case":"light absent"}
+{"func":"threads","cores":1,"case":"one core"}
+{"func":"threads","cores":2,"case":"two cores"}
+{"func":"threads","cores":3,"case":"three cores floors"}
+{"func":"threads","cores":16,"case":"sixteen cores capped"}
+{"func":"threads","cores":0,"case":"zero cores falls back one"}
+{"func":"heap","cgroup_mb":null,"case":"no cgroup unconstrained"}
+{"func":"heap","cgroup_mb":0,"case":"zero cgroup unconstrained"}
+{"func":"heap","cgroup_mb":512,"case":"small cgroup clamps to min"}
+{"func":"heap","cgroup_mb":2048,"case":"medium cgroup three quarters"}
+{"func":"heap","cgroup_mb":8192,"case":"large cgroup clamps to max"}
+{"func":"limits","env":{"HERMES_WEB_BUILD_LIGHT":"1"},"cgroup_mb":2048,"cores":16,"case":"light caps both"}
+{"func":"limits","env":{"HERMES_WEB_BUILD_MAX_OLD_SPACE_SIZE":"2500","HERMES_WEB_BUILD_THREADS":"3"},"cgroup_mb":2048,"cores":16,"case":"explicit overrides"}
+{"func":"limits","env":{"NODE_OPTIONS":"--max-old-space-size=7777"},"cgroup_mb":1024,"cores":8,"case":"existing heap flag preserved"}
+{"func":"limits","env":{"NODE_OPTIONS":"  --foo   --bar  ","RAYON_NUM_THREADS":"0"},"cgroup_mb":null,"cores":4,"case":"tokens rebuilt and rayon zero preserved"}
+{"func":"limits","env":{"HERMES_WEB_BUILD_MAX_OLD_SPACE_SIZE":"junk","HERMES_WEB_BUILD_THREADS":"-4"},"cgroup_mb":2048,"cores":5,"case":"invalid explicit falls back to bounded"}
+{"func":"limits","env":{"HERMES_WEB_BUILD_LIGHT":"yes","NODE_OPTIONS":"--max-old-space-size=2048"},"cgroup_mb":4096,"cores":32,"case":"light with existing flag only thread capped"}
+{"func":"apply","env":{"HERMES_WEB_BUILD_LIGHT":"1"},"cgroup_mb":null,"cores":1,"case":"apply equals limits"}

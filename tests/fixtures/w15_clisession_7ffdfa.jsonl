@@ -1,0 +1,18 @@
+{"func":"countdown","seconds":0,"case":"zero"}
+{"func":"countdown","seconds":-5,"case":"negative clamped"}
+{"func":"countdown","seconds":0.4,"case":"fraction ceil"}
+{"func":"countdown","seconds":1,"case":"one second"}
+{"func":"countdown","seconds":59,"case":"59 seconds"}
+{"func":"countdown","seconds":59.1,"case":"ceil to minute"}
+{"func":"countdown","seconds":60,"case":"one minute"}
+{"func":"countdown","seconds":61,"case":"two minutes"}
+{"func":"countdown","seconds":300,"case":"five minutes"}
+{"func":"countdown","seconds":3600,"case":"one hour"}
+{"func":"countdown","seconds":3661,"case":"one hour two minutes"}
+{"func":"countdown","seconds":7260,"case":"two hours one minute"}
+{"func":"prompt_text","item":"  hello   world  ","case":"string collapse"}
+{"func":"prompt_text","item":"","case":"empty string"}
+{"func":"prompt_text","item":{"display_text":"  A B "},"case":"display text"}
+{"func":"prompt_text","item":{"display_text":"","text":" fallback "},"case":"text fallback"}
+{"func":"prompt_text","item":{"text":"x\ty"},"case":"tab collapse"}
+{"func":"prompt_text","item":"a\n b","case":"newline collapse"}

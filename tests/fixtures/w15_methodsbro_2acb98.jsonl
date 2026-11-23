@@ -1,0 +1,15 @@
+{"func":"default_local","case":"u1","url":"http://127.0.0.1:9222"}
+{"func":"default_local","case":"u2","url":"http://localhost:9222/"}
+{"func":"default_local","case":"u3","url":"ws://127.0.0.1:9222/json"}
+{"func":"default_local","case":"u4","url":"http://127.0.0.1:9222/json/version"}
+{"func":"default_local","case":"u5","url":"wss://localhost:9222"}
+{"func":"default_local","case":"u6","url":"https://localhost:9222"}
+{"func":"default_local","case":"u7","url":"http://localhost:9223"}
+{"func":"default_local","case":"u8","url":"http://example.com:9222"}
+{"func":"default_local","case":"u9","url":"http://localhost:9222/devtools/browser/abc"}
+{"func":"default_local","case":"u10","url":"http://localhost:abc/"}
+{"func":"default_local","case":"u11","url":"http://LOCALHOST:9222"}
+{"func":"default_local","case":"u12","url":"http://127.0.0.1:9222/json/version/extra"}
+{"func":"default_local","case":"u13","url":"http://127.0.0.1:9222?x=1"}
+{"func":"default_local","case":"u14","url":"ws://127.0.0.1:9222/json/version#frag"}
+{"func":"schemes","case":"sc1"}

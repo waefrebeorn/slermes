@@ -1,0 +1,17 @@
+{"func":"normalize_trust","value":null,"case":"None -> full"}
+{"func":"normalize_trust","value":"full","case":"full"}
+{"func":"normalize_trust","value":"FULL","case":"upper full"}
+{"func":"normalize_trust","value":"  Untrusted  ","case":"strip lower untrusted"}
+{"func":"normalize_trust","value":"bogus","case":"unknown -> untrusted"}
+{"func":"normalize_trust","value":"","case":"empty -> untrusted"}
+{"func":"normalize_trust","value":1,"case":"int -> untrusted"}
+{"func":"normalize_trust","value":true,"case":"bool -> untrusted"}
+{"func":"normalize_trust","value":"TrUstEd","case":"mixed case unknown"}
+{"func":"auth_type","config":{},"case":"missing auth"}
+{"func":"auth_type","config":{"auth":"OAuth"},"case":"lower"}
+{"func":"auth_type","config":{"auth":"  BEARER  "},"case":"strip lower"}
+{"func":"auth_type","config":{"auth":null},"case":"null auth"}
+{"func":"auth_type","config":{"auth":""},"case":"empty auth"}
+{"func":"auth_type","config":{"auth":false},"case":"false auth"}
+{"func":"auth_type","config":{"auth":123},"case":"int auth"}
+{"func":"auth_type","config":{"auth":" api-KEY "},"case":"mixed strip lower"}

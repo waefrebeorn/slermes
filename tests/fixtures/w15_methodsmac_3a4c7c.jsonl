@@ -1,0 +1,10 @@
+{"func":"facts","summary":{},"case":"empty summary"}
+{"func":"facts","summary":{"full_name":"Ada Lovelace"},"case":"only full_name removed"}
+{"func":"facts","summary":{"os":"linux","arch":"x86_64","full_name":"Ada"},"case":"drops name keeps facts"}
+{"func":"facts","summary":{"full_name":null,"host":"box"},"case":"null full_name still removed"}
+{"func":"facts","summary":{"cpu_count":8,"mem_gb":32.5},"case":"numeric values preserved"}
+{"func":"facts","summary":{"full_name":"","tier":"free"},"case":"empty name removed"}
+{"func":"facts","summary":{"a":1,"full_name":"x","b":2,"c":3},"case":"key order preserved after removal"}
+{"func":"facts","summary":{"full_name":"x","nested":{"full_name":"keep"},"list":[1,2]},"case":"nested key untouched"}
+{"func":"facts","summary":{"ü":"yes","full_name":"n","s":" spaced "},"case":"unicode and spacing"}
+{"func":"facts","summary":{"full name":"keep","full_name":"drop"},"case":"exact key match only"}

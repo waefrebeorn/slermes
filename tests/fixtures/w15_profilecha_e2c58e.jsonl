@@ -1,0 +1,29 @@
+{"func": "prefixes", "pid": "telegram", "case": "canonical only"}
+{"func": "prefixes", "pid": "my-bot", "case": "dash to underscore uppercase"}
+{"func": "prefixes", "pid": "email", "case": "email alias"}
+{"func": "prefixes", "pid": "qqbot", "case": "qqbot alias"}
+{"func": "prefixes", "pid": "relay", "case": "relay alias"}
+{"func": "prefixes", "pid": "sms", "case": "sms alias"}
+{"func": "prefixes", "pid": "wedcom", "case": "unknown no alias"}
+{"func": "env_key", "line": "TELEGRAM_BOT_TOKEN=abc", "case": "plain assignment"}
+{"func": "env_key", "line": "  export   FOO_BAR = value", "case": "export with spaces"}
+{"func": "env_key", "line": "# comment", "case": "comment"}
+{"func": "env_key", "line": "", "case": "empty"}
+{"func": "env_key", "line": "9BAD=x", "case": "invalid first char"}
+{"func": "env_key", "line": "export=X", "case": "export without whitespace"}
+{"func": "env_key", "line": "GOOD-KEY=1", "case": "dash stops key then no equals"}
+{"func": "env_key", "line": "  _leading=1", "case": "leading underscore"}
+{"func": "explicit_enabled", "raw": {"platforms": {"telegram": {"enabled": true}}}, "pid": "telegram", "case": "top-level enabled"}
+{"func": "explicit_enabled", "raw": {"gateway": {"platforms": {"sms": {"enabled": false}}}}, "pid": "sms", "case": "gateway nesting disabled"}
+{"func": "explicit_enabled", "raw": {"platforms": {"telegram": {"enabled": true}}, "gateway": {"platforms": {"telegram": {"enabled": false}}}}, "pid": "telegram", "case": "top-level wins"}
+{"func": "explicit_enabled", "raw": {"platforms": {"telegram": {}}}, "pid": "telegram", "case": "block without enabled"}
+{"func": "explicit_enabled", "raw": {}, "pid": "telegram", "case": "empty raw"}
+{"func": "config_paths", "raw": {"platforms": {}, "gateway": {"platforms": {}, "profile_routes": {}}, "telegram": {}, "multiplex_profiles": 1}, "platforms": ["telegram", "sms"], "case": "many paths"}
+{"func": "config_paths", "raw": {}, "platforms": [], "case": "empty raw and platforms"}
+{"func": "config_paths", "raw": {"gateway": {"telegram": {}}, "sms": {}}, "platforms": ["telegram", "sms", "email"], "case": "gateway and top-level platform"}
+{"func": "warning", "profile": "clone1", "platforms": ["telegram", "sms"], "case": "two platforms default source"}
+{"func": "warning", "profile": "beta", "platforms": ["email"], "source": "default", "case": "one platform explicit source"}
+{"func": "warning", "profile": "p", "platforms": [], "case": "no platforms"}
+{"func": "notice", "profile": "clone1", "platforms": ["telegram", "sms"], "case": "two platforms notice"}
+{"func": "notice", "profile": "beta", "platforms": ["email"], "clone_flag": "--clone-channels", "case": "custom clone flag"}
+{"func": "notice", "profile": "p", "platforms": [], "case": "empty platforms no notice"}

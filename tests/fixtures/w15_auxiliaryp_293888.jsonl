@@ -1,0 +1,14 @@
+{"func":"configured_endpoint","config_base_url":"https://cfg","profile_inference_base_url":"https://prof"}
+{"func":"configured_endpoint","config_base_url":"","profile_inference_base_url":"https://prof"}
+{"func":"configured_endpoint","config_base_url":"","profile_inference_base_url":""}
+{"func":"configured_endpoint","provider":"unknown","provider_in_registry":false,"config_base_url":"","profile_inference_base_url":"https://never"}
+{"func":"resolve","req":{"provider":"p1","explicit_api_key":"ignored","explicit_base_url":"  https://e/  ","model":"m"},"normalized_api_key":"KEY","profile_client_available":true,"normalized_model":"MODEL"}
+{"func":"resolve","req":{"provider":"p2","explicit_api_key":"","explicit_base_url":"","model":"m"},"normalized_api_key":"","pool_selected":true,"pool_runtime_key":"POOLKEY","pool_runtime_base_url":"https://pool/","profile_client_available":true,"normalized_model":"M2"}
+{"func":"resolve","req":{"provider":"p3","explicit_api_key":"","explicit_base_url":"","model":"m"},"normalized_api_key":"","pool_selected":false,"configured_endpoint":"https://c","profile_client_available":true,"normalized_model":"M3"}
+{"func":"resolve","req":{"provider":"p4","explicit_api_key":"x","explicit_base_url":"/","model":null},"normalized_api_key":"K","profile_client_available":false,"normalized_model":"M4"}
+{"func":"resolve","req":{"provider":"p5","explicit_api_key":"x","explicit_base_url":"","model":"m"},"normalized_api_key":"K","pool_selected":true,"pool_runtime_key":"PK","pool_runtime_base_url":"","configured_endpoint":"  https://cfg///  ","profile_client_available":true,"normalized_model":"M5"}
+{"func":"resolve","req":{"provider":"p6","explicit_api_key":"x","explicit_base_url":"\t https://e2/ \n","model":"m"},"normalized_api_key":"K","profile_client_available":true,"normalized_model":"M6"}
+{"func":"resolve","req":{"provider":"p7","explicit_api_key":"x","explicit_base_url":"","model":"m"},"normalized_api_key":"K","pool_selected":true,"pool_runtime_key":"PK","pool_runtime_base_url":"https://pb","configured_endpoint":"https://cfg","profile_client_available":true,"normalized_model":"M7"}
+{"func":"resolve","req":{"provider":"p8","explicit_api_key":"x","explicit_base_url":"https://x////","model":null},"normalized_api_key":"K","profile_client_available":true,"model_candidate":"cand","normalized_model":"NORM"}
+{"func":"resolve","req":{"provider":"p9","explicit_api_key":"  raw  ","explicit_base_url":"https://z","model":"m"},"normalized_api_key":"trimmed","profile_client_available":true,"normalized_model":"M9"}
+{"func":"resolve","req":{"provider":"p10","explicit_api_key":"","explicit_base_url":"","model":null},"normalized_api_key":"","pool_selected":true,"pool_runtime_key":"","pool_runtime_base_url":"","configured_endpoint":"https://fallback","profile_client_available":true,"normalized_model":""}

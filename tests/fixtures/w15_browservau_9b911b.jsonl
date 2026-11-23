@@ -1,0 +1,12 @@
+{"func":"request","raw":"{\"success\": true, \"result\": \"ok\"}","case":"string raw success"}
+{"func":"request","raw":{"success":true,"result":{"x":1}},"case":"dict raw success"}
+{"func":"request","raw":{"success":false,"error":"nope"},"case":"dict not success"}
+{"func":"request","raw":{"success":"true"},"case":"string true is not bool"}
+{"func":"request","raw":{"success":1},"case":"int one is not True"}
+{"func":"request","raw":"not json","case":"string that is not json"}
+{"func":"request","raw":null,"case":"raw null"}
+{"func":"request","raw":[],"case":"raw list"}
+{"func":"request","raw":"[]","case":"json list string"}
+{"func":"request","raw":"{\"success\": true, \"result\": null}","case":"null result preserved"}
+{"func":"request","raw":"{\"success\": true, \"extra\": \"caf\u00e9\"}","case":"unicode result preserved"}
+{"func":"unavailable","case":"fixed envelope"}

@@ -1,0 +1,16 @@
+{"func":"effective","raw":{},"env":{},"managed":{},"case":"empty user layer"}
+{"func":"effective","raw":{"api_key":"${TOKEN}"},"env":{"TOKEN":"sk-abc"},"managed":{},"case":"bare env ref expands"}
+{"func":"effective","raw":{"api_key":"${env:TOKEN}"},"env":{"TOKEN":"sk-xyz"},"managed":{},"case":"env: SecretRef expands"}
+{"func":"effective","raw":{"api_key":"${MISSING}"},"env":{},"managed":{},"case":"unresolved ref stays literal"}
+{"func":"effective","raw":{"api_key":"${vault:secret}"},"env":{"vault:secret":"leak"},"managed":{},"case":"non-env source never resolves"}
+{"func":"effective","raw":{"model":{"default":"${MODEL}"},"tags":["${TAG}","plain"]},"env":{"MODEL":"gpt-x","TAG":"t1"},"managed":{},"case":"nested dict and list expansion"}
+{"func":"effective","raw":{"provider":"acme","base_url":"https://a"},"env":{},"managed":{},"case":"root provider and base_url migrate under model"}
+{"func":"effective","raw":{"model":{"base_url":"https://explicit"},"api_base":"https://alias"},"env":{},"managed":{},"case":"explicit base_url wins over api_base alias"}
+{"func":"effective","raw":{"model":{"name":"my-model"}},"env":{},"managed":{},"case":"model name alias becomes default"}
+{"func":"effective","raw":{"model":{"default":{"model":"  inside  ","provider":"inner"}}},"env":{},"managed":{},"case":"dict-valued default flattened and nested provider promoted"}
+{"func":"effective","raw":{"model":{"default":"user","x":1}},"env":{},"managed":{"model":{"default":"managed"}},"case":"managed scalar overrides user model default"}
+{"func":"effective","raw":{"terminal":{"backend":"local","theme":"dark"}},"env":{},"managed":{"terminal":{"backend":"tmux"}},"case":"managed deep merge keeps sibling"}
+{"func":"effective","raw":{"terminal":{"backend":"local"}},"env":{},"managed":{"terminal":null},"case":"managed null over dict ignored"}
+{"func":"effective","raw":{"model":{"default":"user"}},"env":{},"managed":{"model":"pinned/model"},"case":"managed bare model string promoted to default"}
+{"func":"effective","raw":{"model":{"provider":2}},"env":{},"managed":{},"case":"numeric provider coerced to string"}
+{"func":"effective","raw":{"model":{"default":"a"}},"env":{"X":"v"},"managed":{"extra":"${X}"},"case":"managed env ref expands against injected env"}

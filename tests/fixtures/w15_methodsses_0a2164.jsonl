@@ -1,0 +1,23 @@
+{"func":"str_param","params":{"source":"  ssh  "},"key":"source","default":"local","case":"strip value"}
+{"func":"str_param","params":{"source":""},"key":"source","default":"local","case":"empty -> default"}
+{"func":"str_param","params":{},"key":"source","default":"local","case":"missing -> default"}
+{"func":"str_param","params":{"source":null},"key":"source","default":"D","case":"null -> default"}
+{"func":"str_param","params":{"source":42},"key":"source","default":"D","case":"int str coercion"}
+{"func":"str_param","params":{"source":2.5},"key":"source","default":"D","case":"float str coercion"}
+{"func":"str_param","params":{"source":true},"key":"source","default":"D","case":"bool True str coercion"}
+{"func":"str_param","params":{"source":false},"key":"source","default":"D","case":"bool False falsy -> default"}
+{"func":"int_param","params":{"n":"42"},"key":"n","default":9,"case":"numeric string"}
+{"func":"int_param","params":{"n":"  -7 "},"key":"n","default":9,"case":"spaced negative string"}
+{"func":"int_param","params":{"n":3.9},"key":"n","default":9,"case":"float truncates"}
+{"func":"int_param","params":{"n":"oops"},"key":"n","default":9,"case":"unparsable -> default"}
+{"func":"int_param","params":{},"key":"n","default":9,"case":"missing -> default"}
+{"func":"int_param","params":{"n":null},"key":"n","default":9,"case":"null -> default"}
+{"func":"int_param","params":{"n":true},"key":"n","default":9,"case":"bool True -> 1"}
+{"func":"denied","row":{"source":" KANBAN "},"case":"case-insensitive deny"}
+{"func":"denied","row":{"source":"tool"},"case":"tool deny"}
+{"func":"denied","row":{"source":"oneshot"},"case":"oneshot deny"}
+{"func":"denied","row":{"source":"local"},"case":"local allowed"}
+{"func":"denied","row":{},"case":"missing source allowed"}
+{"func":"auto_denied","row":{"source":"unknown"},"case":"auto-resume unknown denied"}
+{"func":"auto_denied","row":{"source":"Kanban"},"case":"auto deny case-insensitive"}
+{"func":"auto_denied","row":{"source":"local"},"case":"auto local allowed"}

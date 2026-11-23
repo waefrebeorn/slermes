@@ -1,0 +1,17 @@
+{"func":"can_replay","method":"preview.act","params":{"action":"vault"},"case":"vault script not replayable"}
+{"func":"can_replay","method":"preview.act","params":{"action":"read"},"case":"other preview action replayable"}
+{"func":"can_replay","method":"preview.act","params":{},"case":"missing action replayable"}
+{"func":"can_replay","method":"clarify","params":{"action":"vault"},"case":"other method replayable"}
+{"func":"can_replay","method":"preview.read","params":{"action":"vault"},"case":"preview.read replayable"}
+{"func":"not_shown","frame":{"error":{"code":4404}},"case":"4404 int is not shown"}
+{"func":"not_shown","frame":{"error":{"code":4404.0}},"case":"4404.0 is not shown"}
+{"func":"not_shown","frame":{"error":{"code":"4404"}},"case":"string code not matched"}
+{"func":"not_shown","frame":{"error":{"code":500}},"case":"other code"}
+{"func":"not_shown","frame":{"error":"text"},"case":"error not dict"}
+{"func":"not_shown","frame":{},"case":"no error"}
+{"func":"is_response","obj":{"id":"r1","result":{"ok":true}},"case":"response with result"}
+{"func":"is_response","obj":{"id":"r1","error":{"code":1}},"case":"response with error"}
+{"func":"is_response","obj":{"id":"r1","method":"x","result":{}},"case":"method present -> not response"}
+{"func":"is_response","obj":{"id":"r1"},"case":"id only -> not response"}
+{"func":"is_response","obj":{"result":{}},"case":"no id -> not response"}
+{"func":"is_response","obj":null,"case":"null -> not response"}

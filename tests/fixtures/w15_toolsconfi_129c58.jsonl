@@ -1,0 +1,12 @@
+{"case": "ps-include-exact", "func": "preselected", "tool_names": ["read", "write", "delete"], "include_set": ["read", "delete"], "exclude_set": null}
+{"case": "ps-exclude-star", "func": "preselected", "tool_names": ["team_member", "team_list", "user_read"], "include_set": null, "exclude_set": ["team_*"]}
+{"case": "ps-exclude-literal", "func": "preselected", "tool_names": ["a", "ab", "b"], "include_set": null, "exclude_set": ["a"]}
+{"case": "ps-unfiltered", "func": "preselected", "tool_names": ["a", "b", "c"], "include_set": null, "exclude_set": null}
+{"case": "ps-include-empty", "func": "preselected", "tool_names": ["a", "b"], "include_set": [], "exclude_set": null}
+{"case": "ps-include-glob", "func": "preselected", "tool_names": ["team_alpha", "team_beta", "solo"], "include_set": ["team_?"], "exclude_set": null}
+{"case": "ps-exclude-class", "func": "preselected", "tool_names": ["a1", "b2", "c3"], "include_set": null, "exclude_set": ["[ab][0-9]"]}
+{"case": "ac-disable", "func": "apply_mcp_change", "config": {"mcp_servers": {"s1": {"tools": {"exclude": ["x"]}}}}, "targets": ["s1:y"], "action": "disable"}
+{"case": "ac-enable", "func": "apply_mcp_change", "config": {"mcp_servers": {"s1": {"tools": {"exclude": ["x", "y"]}}}}, "targets": ["s1:y"], "action": "enable"}
+{"case": "ac-unknown", "func": "apply_mcp_change", "config": {"mcp_servers": {"s1": {}}}, "targets": ["s1:x", "nope:z"], "action": "disable"}
+{"case": "ac-new-tools", "func": "apply_mcp_change", "config": {"mcp_servers": {"s2": {}}}, "targets": ["s2:new"], "action": "disable"}
+{"case": "ac-dup-remove", "func": "apply_mcp_change", "config": {"mcp_servers": {"s1": {"tools": {"exclude": ["a", "a", "b"]}}}}, "targets": ["s1:a"], "action": "enable"}

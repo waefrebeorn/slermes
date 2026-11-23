@@ -1,0 +1,28 @@
+{"func":"hallucination","case":"h1","text":""}
+{"func":"hallucination","case":"h2","text":"   "}
+{"func":"hallucination","case":"h3","text":"  Thank You.  "}
+{"func":"hallucination","case":"h4","text":"Thanks for watching!"}
+{"func":"hallucination","case":"h5","text":"Thank you. Thank you. Okay."}
+{"func":"hallucination","case":"h6","text":"stop"}
+{"func":"hallucination","case":"h7","text":"yes"}
+{"func":"hallucination","case":"h8","text":"sous-titres"}
+{"func":"hallucination","case":"h9","text":"Like and subscribe!"}
+{"func":"normalize","case":"n1","text":"  Hello\t  World\n"}
+{"func":"normalize","case":"n2","text":"a   b\t\tc"}
+{"func":"normalize","case":"n3","text":""}
+{"func":"normalize","case":"n4","text":"  MIXED Case  SPACES  "}
+{"func":"echo","case":"e1","text":"hello world","spoken":"hello world","threshold":0.6}
+{"func":"echo","case":"e2","text":"yes","spoken":"hello world","threshold":0.6}
+{"func":"echo","case":"e3","text":"hello there friend","spoken":"well hello there friend indeed","threshold":0.6}
+{"func":"echo","case":"e4","text":"stop","spoken":"stop please","threshold":0.6}
+{"func":"echo","case":"e5","text":"","spoken":"hello world","threshold":0.6}
+{"func":"echo","case":"e6","text":"hello world","spoken":"hello world","threshold":1.0}
+{"func":"echo","case":"e7","text":"THE   QUICK brown FOX","spoken":"the quick brown fox jumps","threshold":0.7}
+{"func":"stop_phrase","case":"s1","text":" STOP!! ","phrases":["stop","halt"]}
+{"func":"stop_phrase","case":"s2","text":"stop doing that","phrases":["stop","halt"]}
+{"func":"stop_phrase","case":"s3","text":"stop","phrases":[]}
+{"func":"stop_phrase","case":"s4","text":"","phrases":["stop"]}
+{"func":"stop_phrase","case":"s5","text":"\"HALT\"?","phrases":["stop","halt"]}
+{"func":"stop_hint","case":"k1","phrases":["stop"]}
+{"func":"stop_hint","case":"k2","phrases":["halt","stop"]}
+{"func":"stop_hint","case":"k3","phrases":[]}

@@ -1,0 +1,20 @@
+{"func":"ref_safe","name":"feature/login","case":"slash sanitized"}
+{"func":"ref_safe","name":"my tree!!!","case":"spaces and punctuation collapsed"}
+{"func":"ref_safe","name":"tree.lock","case":"lock suffix removed"}
+{"func":"ref_safe","name":"a..b","case":"double dot replaced"}
+{"func":"ref_safe","name":"....","case":"all dots becomes tree"}
+{"func":"ref_safe","name":"@@@","case":"all invalid becomes tree"}
+{"func":"ref_safe","name":"a___b.c","case":"valid chars preserved"}
+{"func":"ref_safe","name":"work tree.lock","case":"sanitize then lock suffix"}
+{"func":"ref_safe","name":"a  b","case":"run of spaces one dash"}
+{"func":"parse_meta","body":"hermes worktree archive: x\n\n{\"version\":1,\"name\":\"x\"}","case":"json after subject"}
+{"func":"parse_meta","body":"no brace here","case":"no brace"}
+{"func":"parse_meta","body":"prefix {bad json","case":"invalid json object"}
+{"func":"parse_meta","body":"{\"a\":[1,2],\"b\":true,\"c\":null}","case":"nested values"}
+{"func":"parse_meta","body":"[1,2,3]","case":"array body no object"}
+{"func":"split_oversized","untracked":["a.bin","b.bin"],"sizes":{"a.bin":"60000000","b.bin":"1000"},"max_mb":50,"case":"one oversized"}
+{"func":"split_oversized","untracked":["a.bin"],"sizes":{"a.bin":"60000000"},"max_mb":0,"case":"zero max disables"}
+{"func":"split_oversized","untracked":["a.bin"],"sizes":{"a.bin":"60000000"},"max_mb":-1,"case":"negative max disables"}
+{"func":"split_oversized","untracked":["at.bin","over.bin"],"sizes":{"at.bin":"1048576","over.bin":"1048577"},"max_mb":1,"case":"exact cap excluded"}
+{"func":"split_oversized","untracked":["big.bin"],"sizes":{"big.bin":"9007199254740993"},"max_mb":50,"case":"int64 size preserved"}
+{"func":"split_oversized","untracked":["x","y","z"],"sizes":{"x":"200000000","y":"5","z":"90000000"},"max_mb":50,"case":"multiple in order"}

@@ -1,0 +1,16 @@
+{"func":"entries","value":"a, b, c","case":"split comma whitespace"}
+{"func":"entries","value":"  alpha,,beta  , gamma\t","case":"split with empties and tabs"}
+{"func":"entries","value":"","case":"empty entries"}
+{"func":"entries","value":"one two,three","case":"space is a separator too"}
+{"func":"restore","env":{"HTTPS_PROXY":"http://sys","HTTP_PROXY":"http://sys","HERMES_UPDATE_USER_NO_PROXY":"a,b","HERMES_UPDATE_SYSTEM_PROXY":"HTTPS_PROXY,HTTP_PROXY"},"published":{},"case":"drop added proxies and restore saved NO_PROXY"}
+{"func":"restore","env":{"HTTPS_PROXY":"http://mine","HERMES_UPDATE_SYSTEM_PROXY":"HTTPS_PROXY"},"published":{"https_proxy":["http://mine"]},"case":"dotenv published value wins keep"}
+{"func":"restore","env":{"NO_PROXY":"user","HERMES_UPDATE_USER_NO_PROXY":"saved","HERMES_UPDATE_SYSTEM_PROXY":"NO_PROXY"},"published":{"no_proxy":["user"]},"case":"published user NO_PROXY not overwritten by saved"}
+{"func":"restore","env":{"HTTPS_PROXY":"x"},"published":{},"case":"no marker no change"}
+{"func":"restore","env":{" HTTPS_PROXY ":"odd","HERMES_UPDATE_SYSTEM_PROXY":" HTTPS_PROXY "},"published":{},"case":"marker key not trimmed so not removed"}
+{"func":"restore","env":{"no_proxy":"user","HERMES_UPDATE_USER_no_proxy":"saved-lower","HERMES_UPDATE_SYSTEM_PROXY":"no_proxy"},"published":{},"case":"lower-case no_proxy saved restore"}
+{"func":"restore","env":{"HTTPS_PROXY":"a","https_proxy":"b","HERMES_UPDATE_USER_HTTP_PROXY":"http://own","HERMES_UPDATE_SYSTEM_PROXY":"HTTPS_PROXY,https_proxy,HTTP_PROXY"},"published":{},"case":"multiple added keys plus different saved key"}
+{"func":"prefer","env":{"HTTPS_PROXY":"sys"},"published":{},"case":"prefer no marker unchanged"}
+{"func":"prefer","env":{"HTTPS_PROXY":"http://sys","HERMES_UPDATE_SYSTEM_PROXY":"HTTPS_PROXY"},"published":{"https_proxy":["mine"]},"case":"prefer proxy published delegates restore"}
+{"func":"prefer","env":{"no_proxy":"*","NO_PROXY":"a,*","HERMES_UPDATE_SYSTEM_PROXY":"NO_PROXY","HERMES_UPDATE_USER_NO_PROXY":"own"},"published":{"no_proxy":["*"]},"case":"prefer wildcard no_proxy delegates restore"}
+{"func":"prefer","env":{"no_proxy":"user1,user2","NO_PROXY":"user1,user2,sys1","HERMES_UPDATE_USER_NO_PROXY":"own1","HERMES_UPDATE_SYSTEM_PROXY":"NO_PROXY"},"published":{"no_proxy":["user1,user2"]},"case":"prefer merge own and added entries"}
+{"func":"prefer","env":{"NO_PROXY":"sys1","no_proxy":"sys2","HERMES_UPDATE_SYSTEM_PROXY":"NO_PROXY,no_proxy"},"published":{"no_proxy":["other"]},"case":"prefer no matching published no_proxy unchanged"}

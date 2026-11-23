@@ -1,0 +1,10 @@
+{"func":"profile_root","parts":[],"case":"empty tuple returns None"}
+{"func":"profile_root","parts":["foo"],"case":"single part"}
+{"func":"profile_root","parts":["profiles"],"case":"one part profiles"}
+{"func":"profile_root","parts":["profiles","alice"],"case":"two parts stays root"}
+{"func":"profile_root","parts":["profiles","alice","skill-x"],"case":"profiles third part"}
+{"func":"profile_root","parts":["profiles","alice","skill-x","extra"],"case":"four parts still third"}
+{"func":"profile_root","parts":["a","b","c"],"case":"non-profiles first part"}
+{"func":"profile_root","parts":["profiles","","cache"],"case":"empty middle part"}
+{"func":"profile_root","parts":["profiles","x",""],"case":"empty third part"}
+{"func":"profile_root","parts":["profiles","x","a/b"],"case":"nested posix path part"}

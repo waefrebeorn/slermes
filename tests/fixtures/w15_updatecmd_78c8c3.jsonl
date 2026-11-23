@@ -1,0 +1,12 @@
+{"case": "ref-origin-main", "func": "tracking_refspec", "remote": "origin", "branch": "main"}
+{"case": "ref-upstream-release", "func": "tracking_refspec", "remote": "upstream", "branch": "release/1.2"}
+{"case": "ref-empty", "func": "tracking_refspec", "remote": "", "branch": ""}
+{"case": "ref-feature-slash", "func": "tracking_refspec", "remote": "fork", "branch": "feat/x/y"}
+{"case": "shallow-true", "func": "is_shallow_repository", "git_stdout": "true\n"}
+{"case": "shallow-false", "func": "is_shallow_repository", "git_stdout": "false\n"}
+{"case": "shallow-space", "func": "is_shallow_repository", "git_stdout": "  true  "}
+{"case": "shallow-crlf", "func": "is_shallow_repository", "git_stdout": "true\r\n"}
+{"case": "shallow-empty", "func": "is_shallow_repository", "git_stdout": ""}
+{"case": "exists-0", "func": "compare_ref_exists", "returncode": "0"}
+{"case": "exists-128", "func": "compare_ref_exists", "returncode": "128"}
+{"case": "exists-neg", "func": "compare_ref_exists", "returncode": "-1"}

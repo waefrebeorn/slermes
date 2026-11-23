@@ -1,0 +1,11 @@
+{"func":"drain","states":[],"chat":true,"case":"empty generator"}
+{"func":"drain","states":[],"chat":false,"case":"empty generator terminal copy"}
+{"func":"drain","states":[{"terminal":false,"copy":"ignored"}],"chat":true,"case":"code only"}
+{"func":"drain","states":[{"terminal":false,"copy":"w"},{"terminal":true,"copy":"done","copy_terminal":"DONE."}],"chat":true,"case":"chat copy"}
+{"func":"drain","states":[{"terminal":false,"copy":"w"},{"terminal":true,"copy":"done","copy_terminal":"DONE."}],"chat":false,"case":"terminal copy"}
+{"func":"drain","states":[{"terminal":true,"copy":"first","copy_terminal":"FIRST"},{"terminal":false,"copy":"x"},{"terminal":true,"copy":"second","copy_terminal":"SECOND"}],"chat":true,"case":"last terminal wins"}
+{"func":"drain","states":[{"terminal":true,"copy":"","copy_terminal":""}],"chat":true,"case":"empty terminal copy"}
+{"func":"drain","states":[{"terminal":true,"copy":"a"}],"chat":false,"case":"missing copy_terminal falls back to copy"}
+{"func":"drain","states":[{"terminal":false,"copy":"waiting"},{"terminal":false,"copy":"code"}],"chat":false,"case":"no terminal state at all"}
+{"func":"drain","states":[{"terminal":true,"copy":" signed  in \u2713 ","copy_terminal":"signed in"}],"chat":true,"case":"unicode and spacing"}
+{"func":"drain","states":[{"terminal":true,"copy":"first"},{"terminal":true,"copy":""}],"chat":true,"case":"later empty overrides earlier"}

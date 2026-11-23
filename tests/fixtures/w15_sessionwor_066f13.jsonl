@@ -1,0 +1,14 @@
+{"func": "frozen_cwd", "policy": {"cwd": "/repo/.worktrees/abc"}, "case": "policy cwd"}
+{"func": "frozen_cwd", "policy": {"cwd": "  /spaced/tree  "}, "case": "policy cwd stripped"}
+{"func": "frozen_cwd", "policy": {"cwd": ""}, "case": "empty cwd"}
+{"func": "frozen_cwd", "policy": {"cwd": null}, "case": "null cwd"}
+{"func": "frozen_cwd", "policy": {}, "case": "missing cwd"}
+{"func": "frozen_cwd", "policy": {"cwd": 123}, "case": "numeric cwd coerced"}
+{"func": "frozen_cwd", "policy": null, "case": "null policy attribute error"}
+{"func": "restore", "frozen": "/repo/.worktrees/abc", "record_cwd": "/repo", "is_dir": false, "recreated": "/repo/.worktrees/abc", "case": "frozen cwd recreate"}
+{"func": "restore", "frozen": "", "record_cwd": "/repo/.worktrees/abc", "is_dir": false, "recreated": "/repo/.worktrees/abc", "case": "row cwd fallback"}
+{"func": "restore", "frozen": "", "record_cwd": null, "is_dir": false, "recreated": "/x", "case": "no cwd at all"}
+{"func": "restore", "frozen": "/tree", "record_cwd": null, "is_dir": true, "recreated": "/tree", "case": "directory exists"}
+{"func": "restore", "frozen": "", "record_cwd": "   ", "is_dir": false, "recreated": "/x", "case": "whitespace row cwd"}
+{"func": "restore", "frozen": "  /tree  ", "record_cwd": null, "is_dir": false, "recreated": "/tree", "case": "whitespace frozen cwd"}
+{"func": "restore", "frozen": "/tree", "record_cwd": null, "is_dir": false, "recreated": null, "case": "recreate returned none"}
