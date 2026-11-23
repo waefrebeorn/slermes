@@ -18,6 +18,8 @@
 #include "hermes_url_safety.h"
 /* Ported utils.base_url_host_matches from src/cli/route_identity_flow.c. */
 extern bool rid_base_url_host_matches_cstr(const char *base_url, const char *domain);
+/* Ported utils.base_url_hostname from src/cli/route_identity_flow.c. */
+extern char *rid_base_url_hostname_cstr(const char *base_url);
 
 /* ── Cache statistics (thread-safe via simple atomics on common platforms) ── */
 static int g_cache_hits = 0;
@@ -339,7 +341,7 @@ bool anthropic_prompt_cache_policy(const char *provider,
         if (strcmp(eff_provider, "anthropic") == 0) {
             is_native_anthropic = true;
         } else if (eff_base_url[0]) {
-            char *host = url_extract_hostname(eff_base_url);
+            char *host = rid_base_url_hostname_cstr(eff_base_url);
             if (host) {
                 if (strcmp(host, "api.anthropic.com") == 0)
                     is_native_anthropic = true;
@@ -375,7 +377,7 @@ bool anthropic_prompt_cache_policy(const char *provider,
                                      strcmp(provider_lower, "minimax-cn") == 0);
         bool is_minimax_host = false;
         if (!is_minimax_provider && eff_base_url[0]) {
-            char *host = url_extract_hostname(eff_base_url);
+            char *host = rid_base_url_hostname_cstr(eff_base_url);
             if (host) {
                 is_minimax_host = (rid_base_url_host_matches_cstr(eff_base_url, "api.minimax.io") ||
                                    rid_base_url_host_matches_cstr(eff_base_url, "api.minimaxi.com"));
