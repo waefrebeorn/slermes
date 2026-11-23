@@ -19,6 +19,8 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+extern char *rid_normalize_route_base_url_cstr(const char *base_url);
+
 /* ============================================================
  * Route-identity normalizer (hermes_cli/route_identity.py)
  * ============================================================  */
@@ -26,32 +28,7 @@
 /* PoP: config_normalize_route_base_url @ agent/agent_init.py:_normalize_route_base_url  */
 /* PoP: config_normalize_route_base_url @ hermes_cli/route_identity.py:normalize_route_base_url */
 char *config_normalize_route_base_url(const char *url) {
-    if (!url) return strdup("");
-    size_t n = strlen(url);
-    char *out = (char *)malloc(n + 1);
-    if (!out) return strdup("");
-    size_t i = 0;
-    const char *scheme = strstr(url, "://");
-    if (scheme) {
-        size_t slen = (size_t)(scheme - url);
-        for (size_t k = 0; k < slen; k++) out[i++] = (char)tolower((unsigned char)url[k]);
-        out[i++] = ':'; out[i++] = '/'; out[i++] = '/';
-        const char *h = scheme + 3;
-        while (*h && *h != '/' && *h != '?' && *h != ' ') {
-            out[i++] = (char)tolower((unsigned char)*h);
-            h++;
-        }
-        while (*h) out[i++] = *h++;
-    } else {
-        const char *h = url;
-        while (*h && *h != '/' && *h != '?' && *h != ' ') {
-            out[i++] = (char)tolower((unsigned char)*h);
-            h++;
-        }
-        while (*h) out[i++] = *h++;
-    }
-    out[i] = '\0';
-    return out;
+    return rid_normalize_route_base_url_cstr(url);
 }
 
 /* ============================================================

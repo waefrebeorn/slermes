@@ -918,6 +918,21 @@ json_t *rid_normalize_route_base_url(rid_io_t *io, const json_t *in, json_t *st)
     return ret;
 }
 
+/* Product adapter: hermes_cli.route_identity.normalize_route_base_url as a
+ * malloc'd C string. Invalid input fails closed to "".
+ */
+char *rid_normalize_route_base_url_cstr(const char *base_url)
+{
+    json_t *in = json_object();
+    json_set(in, "base_url", base_url ? json_string(base_url) : json_null());
+    json_t *r = rid_normalize_route_base_url(NULL, in, NULL);
+    json_free(in);
+    if (!r || r->type != JSON_STRING) { json_free(r); return strdup(""); }
+    char *out = strdup(r->str_val ? r->str_val : "");
+    json_free(r);
+    return out;
+}
+
 /* PoP: rid_should_clear_context_pin @ hermes_cli/route_identity.py:should_clear_context_pin */
 json_t *rid_should_clear_context_pin(rid_io_t *io, const json_t *in, json_t *st)
 {

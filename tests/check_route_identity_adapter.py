@@ -45,11 +45,43 @@ MATCH_PAIRS = [
 ]
 MATCH_EXPECTED = [1, 1, 1, 0, 1, 1, 1, 1, 0]
 
+NORMALIZE_CASES = [
+    "HTTP://U:***@Example.COM:80/a/?q#f",
+    "http://h:8080/x/",
+    "https://H:443/x/",
+    "http://h/",
+    "http://h/?",
+    "http://h?x",
+    "http://h/#f",
+    "http://[FE80::1%tESt]:1234/keys/",
+    "http://[::1]:80/",
+    "not a url",
+    "",
+    None,
+    "5",
+]
+NORMALIZE_EXPECTED = [
+    "http://U:***@example.com/a/?q",
+    "http://h:8080/x",
+    "https://h/x",
+    "http://h",
+    "http://h/?",
+    "http://h?x",
+    "http://h",
+    "http://[fe80::1%tESt]:1234/keys",
+    "http://[::1]",
+    "not a url",
+    "",
+    "",
+    "5",
+]
+
 DRIVER = r'''
 #include <stdio.h>
 #include <stdlib.h>
 extern char *rid_base_url_hostname_cstr(const char *);
 extern bool rid_base_url_host_matches_cstr(const char *, const char *);
+extern char *rid_normalize_route_base_url_cstr(const char *);
 int main(void) {
     const char *cases[] = {
         "https://api.anthropic.com/v1", "api.anthropic.com",
@@ -75,6 +107,17 @@ int main(void) {
     for (int i = 0; i < 9; i++)
         printf("M|%d|%d\n", i,
                rid_base_url_host_matches_cstr(pairs[i][0], pairs[i][1]) ? 1 : 0);
+    const char *urls[] = {
+        "HTTP://U:***@Example.COM:80/a/?q#f", "http://h:8080/x/",
+        "https://H:443/x/", "http://h/", "http://h/?", "http://h?x",
+        "http://h/#f", "http://[FE80::1%tESt]:1234/keys/",
+        "http://[::1]:80/", "not a url", "", NULL, "5"
+    };
+    for (int i = 0; i < 13; i++) {
+        char *u = rid_normalize_route_base_url_cstr(urls[i]);
+        printf("N|%d|%s\n", i, u ? u : "");
+        free(u);
+    }
     return 0;
 }
 '''
@@ -105,13 +148,17 @@ def main() -> int:
         lines = out.stdout.splitlines()
         got_h = [l.split("|", 2)[2] for l in lines if l.startswith("H|")]
         got_m = [int(l.split("|", 2)[2]) for l in lines if l.startswith("M|")]
+        got_n = [l.split("|", 2)[2] for l in lines if l.startswith("N|")]
         if got_h != EXPECTED:
             print(f"HOSTNAME MISMATCH expected={EXPECTED!r} got={got_h!r}")
             return 1
         if got_m != MATCH_EXPECTED:
             print(f"MATCH MISMATCH expected={MATCH_EXPECTED!r} got={got_m!r}")
             return 1
-    total = len(CASES) + len(MATCH_PAIRS)
+        if got_n != NORMALIZE_EXPECTED:
+            print(f"NORMALIZE MISMATCH expected={NORMALIZE_EXPECTED!r} got={got_n!r}")
+            return 1
+    total = len(CASES) + len(MATCH_PAIRS) + len(NORMALIZE_CASES)
     print(f"route_identity adapters: {total} cases, 0 mismatches")
     return 0
 
