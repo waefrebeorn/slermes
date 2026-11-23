@@ -39,6 +39,7 @@ SKIP_GATES = {
     "context_references_flow",
     "executions_worker_flow",
     "executions_worker_flow2",
+    "plugin_revive",  # AST-coverage-gated oracle: single-case shrink emits FATAL
 }
 
 
@@ -52,15 +53,44 @@ SKIP_KEYS = {
 }
 
 
-def strings(obj, path=()):
+# Fields that act as selectors, object-double discriminators, typed values,
+# or fixture-only controls in specific gates. Mutating them produces oracle
+# drive errors rather than port differences.
+SKIP_KEYS_BY_GATE = {
+    "auth_flow": ("lock_backend", "os_name"),
+    "conversation_compression_flow2": ("__class__",),
+    "gateway_session_flow": ("updated_at", "created_at", "now"),
+    "gw_session_store_flow": ("ref",),
+    "memory_manager_flow2": ("home_key",),
+    "rest_revive3": ("tenv",),
+    "session_controls_flow": ("authority",),
+    "setup_revive": ("action",),
+    "shared_metrics_flow": ("_utc_now",),
+    "skills_hub_flow2": ("fields",),
+    "stream_dispatch_flow2": ("_type",),
+    "tail_revive2": ("kind",),
+    "telegram_adapter_flow": ("error",),
+    "tool_dispatch_flow": ("cf_wait",),
+    "tool_dispatch_flow2": ("op",),
+    "tool_executor_flow": ("_type",),
+    "tool_result_processing_flow": ("_type",),
+    "tui_methods_status_flow": ("__event__",),
+    "tui_methods_tools_flow": ("tools_mod",),
+    "turn_progress_flow": ("_status_adapter",),
+    "update_lock_flow": ("limit_str",),
+}
+
+
+def strings(obj, path=(), extra=()):
+    skip = SKIP_KEYS | set(extra)
     if isinstance(obj, dict):
         for k, v in obj.items():
-            if k in SKIP_KEYS:
+            if k in skip:
                 continue
-            yield from strings(v, path + (k,))
+            yield from strings(v, path + (k,), extra)
     elif isinstance(obj, list):
         for i, v in enumerate(obj):
-            yield from strings(v, path + (i,))
+            yield from strings(v, path + (i,), extra)
     elif isinstance(obj, str):
         yield path, obj
 
@@ -72,10 +102,10 @@ def setpath(obj, path, value):
     cur[path[-1]] = value
 
 
-def mutate(rng, case):
+def mutate(rng, case, extra=()):
     out = copy.deepcopy(case)
     container = out.get("args", out.get("in", out))
-    paths = [p for p, _ in strings(container)]
+    paths = [p for p, _ in strings(container, extra=extra)]
     if not paths:
         return None
     for _ in range(rng.choice((1, 1, 2))):
@@ -121,7 +151,8 @@ def run(gate, cases, timeout=60):
 def shrink(gate, case):
     """Revert mutated fields one at a time while the case still mismatches."""
     current = case
-    for path, _ in list(strings(current.get("args", current.get("in", current)))):
+    extra = SKIP_KEYS_BY_GATE.get(gate, ())
+    for path, _ in list(strings(current.get("args", current.get("in", current)), extra=extra)):
         trial = copy.deepcopy(current)
         container = trial.get("args", trial.get("in", trial))
         try:
@@ -154,7 +185,7 @@ def main():
         container = base.get("args", base.get("in", base))
         paths = [p for p, _ in strings(container)]
         base["_orig"] = {json.dumps(p): _getpath(container, p) for p in paths}
-        m = mutate(rng, base)
+        m = mutate(rng, base, SKIP_KEYS_BY_GATE.get(gate, ()))
         if m:
             m["_orig"] = base["_orig"]
             generated.append(m)
