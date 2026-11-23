@@ -116,6 +116,32 @@ static char *cd2_xsf(const char *fmt, ...) {
     if (buf) vsnprintf(buf, (size_t)n + 1, fmt, ap2);
     va_end(ap2); return buf ? buf : strdup("");
 }
+/* Python repr() of a str (ASCII domain): single quotes unless the value contains
+ * a single quote and no double quote, then double quotes. Escape backslash, the
+ * chosen quote, \n \r \t and other control chars as \xNN. */
+static char *cd2_repr_str(const char *s) {
+    const char *p = s ? s : "";
+    bool has_sq = strchr(p, '\'') != NULL;
+    bool has_dq = strchr(p, '"') != NULL;
+    char q = (has_sq && !has_dq) ? '"' : '\'';
+    size_t n = strlen(p);
+    char *out = malloc(n * 4 + 3);
+    if (!out) return strdup("");
+    size_t k = 0;
+    out[k++] = q;
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = (unsigned char)p[i];
+        if (c == (unsigned char)q || c == '\\') { out[k++] = '\\'; out[k++] = (char)c; }
+        else if (c == '\n') { out[k++] = '\\'; out[k++] = 'n'; }
+        else if (c == '\r') { out[k++] = '\\'; out[k++] = 'r'; }
+        else if (c == '\t') { out[k++] = '\\'; out[k++] = 't'; }
+        else if (c < 0x20 || c == 0x7f) k += (size_t)sprintf(out + k, "\\x%02x", c);
+        else out[k++] = (char)c;
+    }
+    out[k++] = q;
+    out[k] = '\0';
+    return out;
+}
 /* Python type name of a JSON value (for AttributeError messages). libjson has no
  * int/float identity: an integral number projects to "int", else "float". */
 static const char *cd2_type_name(const json_t *v) {
@@ -409,7 +435,7 @@ json_t *cd2_getitem(const cd2_seams_t *s, cd2_env_state_t *st, const char *key) 
     if (cd2_is_raise(r)) return r;
     const json_t *v = json_obj_get(st->data, key);
     if (!v) {
-        char *m = cd2_xsf("'%s'", key ? key : "");   /* str(KeyError(key)) == repr(key) */
+        char *m = cd2_repr_str(key ? key : "");   /* str(KeyError(key)) == repr(key) */
         json_t *e = cd2_raise("KeyError", m);
         free(m);
         return e;

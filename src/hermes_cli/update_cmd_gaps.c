@@ -706,6 +706,82 @@ void verify_and_restore_one_state_db(const char *home, const char *label) {
 
 
 /* PoP: warn_orphaned_update_autostashes @ hermes_cli/update_cmd_stash.py:_warn_orphaned_update_autostashes */
+/* Mirror pathlib.Path(cwd).as_posix() (PureWindowsPath semantics) before the
+ * seam: '\\'->'/', repeated separators collapse, '.' components drop, and a
+ * trailing separator is dropped except at roots (drive 'C:/', UNC '//h/s/',
+ * '/' and '//'). An empty path maps to '.'. */
+static char *uc_purewin_as_posix(const char *s) {
+    if (!s || !*s) return strdup(".");
+    size_t n = strlen(s);
+    char *t = (char *)malloc(n + 2);
+    if (!t) return strdup(".");
+    for (size_t i = 0; i < n; ++i) t[i] = (s[i] == '\\') ? '/' : s[i];
+    t[n] = '\0';
+    int trailing = (n && t[n - 1] == '/');
+
+    char drive[3] = {0};
+    size_t off = 0;
+    if (n >= 2 && ((t[0] >= 'A' && t[0] <= 'Z') || (t[0] >= 'a' && t[0] <= 'z'))
+        && t[1] == ':') { drive[0] = t[0]; drive[1] = ':'; off = 2; }
+
+    size_t lead = 0;
+    while (t[off + lead] == '/') lead++;
+
+    char **parts = NULL; size_t np = 0;
+    char *p = t + off + lead;
+    while (*p) {
+        while (*p == '/') p++;
+        if (!*p) break;
+        char *st = p;
+        while (*p && *p != '/') p++;
+        size_t len = (size_t)(p - st);
+        if (len == 1 && st[0] == '.') continue;
+        char *cp = (char *)malloc(len + 1);
+        char **nn = cp ? (char **)realloc(parts, (np + 1) * sizeof(char *)) : NULL;
+        if (!nn) { free(cp); break; }
+        memcpy(cp, st, len); cp[len] = '\0';
+        parts = nn; parts[np++] = cp;
+    }
+
+    size_t cap = n + 8;
+    char *out = (char *)calloc(1, cap);
+    if (!out) { for (size_t i = 0; i < np; ++i) free(parts[i]); free(parts); free(t); return strdup("."); }
+    size_t o = 0;
+#define UC_PW_PUT(ch) do { if (o + 1 < cap) out[o++] = (char)(ch); } while (0)
+    for (size_t i = 0; drive[i]; ++i) UC_PW_PUT(drive[i]);
+    if (lead == 2) {
+        UC_PW_PUT('/'); UC_PW_PUT('/');
+        for (size_t i = 0; i < np; ++i) {
+            if (i) UC_PW_PUT('/');
+            for (size_t j = 0; parts[i][j]; ++j) UC_PW_PUT(parts[i][j]);
+        }
+        if (np == 2 || (np == 1 && trailing)) UC_PW_PUT('/');
+    } else if (lead >= 3 && !drive[0]) {
+        for (size_t i = 0; i < lead; ++i) UC_PW_PUT('/');
+        for (size_t i = 0; i < np; ++i) {
+            UC_PW_PUT('/');
+            for (size_t j = 0; parts[i][j]; ++j) UC_PW_PUT(parts[i][j]);
+        }
+    } else if (lead >= 1) {
+        if (!o || out[o - 1] != '/') UC_PW_PUT('/');  /* drive root '/', or '/' */
+        for (size_t i = 0; i < np; ++i) {
+            if (i) UC_PW_PUT('/');
+            for (size_t j = 0; parts[i][j]; ++j) UC_PW_PUT(parts[i][j]);
+        }
+    } else {
+        for (size_t i = 0; i < np; ++i) {
+            if (i) UC_PW_PUT('/');
+            for (size_t j = 0; parts[i][j]; ++j) UC_PW_PUT(parts[i][j]);
+        }
+    }
+#undef UC_PW_PUT
+    out[o] = '\0';
+    if (o == 0) { out[0] = '.'; out[1] = '\0'; }
+    for (size_t i = 0; i < np; ++i) free(parts[i]);
+    free(parts); free(t);
+    return out;
+}
+
 int warn_orphaned_update_autostashes(const char *git_cmd, const char *cwd) {
     /* git_cmd carries the JSON-encoded argv list (documented projection).
      * Returns the stale-entry count; 0 on any git failure (never a GC). */
@@ -714,6 +790,7 @@ int warn_orphaned_update_autostashes(const char *git_cmd, const char *cwd) {
     json_t *lines = NULL;
     json_t *stale_sel = json_array();
     json_t *stale_stamp = json_array();
+    char *cwd_posix = NULL;
     int ret = 0;
     if (!cwd) {
         /* Path(None) raises at the CALL SITE, before the function's try —
@@ -726,6 +803,7 @@ int warn_orphaned_update_autostashes(const char *git_cmd, const char *cwd) {
                    "__fspath__ returns a str, not 'NoneType'");
         return 0;
     }
+    cwd_posix = uc_purewin_as_posix(cwd);
     {
         json_t *a = json_object();
         json_set(a, "git_cmd", gc ? gc : json_null());
@@ -735,7 +813,7 @@ int warn_orphaned_update_autostashes(const char *git_cmd, const char *cwd) {
         json_append(args, json_string("list"));
         json_append(args, json_string("--format=%gd %s"));
         json_set(a, "args", args);
-        json_set(a, "cwd", json_string(cwd));
+        json_set(a, "cwd", json_string(cwd_posix));
         res = uc_call("git_run", a);
     }
     if (uc_exc.active) goto except;
@@ -848,6 +926,7 @@ except:
     }
     ret = 0;
 cleanup:
+    free(cwd_posix);
     json_free(gc);
     json_free(res);
     json_free(lines);

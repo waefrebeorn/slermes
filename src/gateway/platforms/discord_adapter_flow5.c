@@ -598,17 +598,27 @@ static json_t *da5_forum_thread_parts(da5_ctx_t *ctx, const json_t *args) {
     return arr;
 }
 
-static void da5_repr_escape(const char *in, char *out, size_t cap) {
-    size_t n = 0;
+/* Python repr() of a str: single quotes unless the value has a single quote and
+ * no double quote, then double quotes. Escape backslash, the chosen quote,
+ * \n \r \t and other control chars as \xNN. */
+static void da5_py_repr_str(const char *in, char *out, size_t cap) {
     if (!in) in = "";
-    for (const char *p = in; *p && n + 2 < cap; p++) {
+    bool has_sq = strchr(in, '\'') != NULL;
+    bool has_dq = strchr(in, '"') != NULL;
+    char q = (has_sq && !has_dq) ? '"' : '\'';
+    size_t n = 0;
+    if (cap < 3) { if (cap) out[0] = '\0'; return; }
+    out[n++] = q;
+    for (const char *p = in; *p && n + 5 < cap; p++) {
         unsigned char c = (unsigned char)*p;
-        if (c == '\n') { out[n++] = '\\'; out[n++] = 'n'; }
+        if (c == '\\' || c == (unsigned char)q) { out[n++] = '\\'; out[n++] = (char)c; }
+        else if (c == '\n') { out[n++] = '\\'; out[n++] = 'n'; }
         else if (c == '\r') { out[n++] = '\\'; out[n++] = 'r'; }
         else if (c == '\t') { out[n++] = '\\'; out[n++] = 't'; }
-        else if (c == '\\' || c == '\'') { out[n++] = '\\'; out[n++] = (char)c; }
+        else if (c < 0x20 || c == 0x7f) n += (size_t)snprintf(out + n, cap - n, "\\x%02x", c);
         else out[n++] = (char)c;
     }
+    out[n++] = q;
     out[n] = '\0';
 }
 
@@ -623,9 +633,10 @@ static json_t *da5_int_error(const json_t *v) {
     if (v->type == JSON_OBJECT)
         return da5_err("TypeError", "int() argument must be a string, a bytes-like object or a real number, not 'dict'");
     if (v->type == JSON_STRING) {
-        char msg[512];
-        char esc[256]; da5_repr_escape(v->str_val, esc, sizeof(esc));
-        snprintf(msg, sizeof msg, "invalid literal for int() with base 10: '%s'", esc);
+        char msg[1024];
+        char repr[600];
+        da5_py_repr_str(v->str_val, repr, sizeof(repr));
+        snprintf(msg, sizeof msg, "invalid literal for int() with base 10: %s", repr);
         return da5_err("ValueError", msg);
     }
     return da5_err("ValueError", "invalid literal for int() with base 10");

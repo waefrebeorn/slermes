@@ -413,13 +413,16 @@ static json_t *cfg2b_offer_new_optional_env_vars(cfg2b_flow_io_t *io, double cur
     size_t sn = json_len(sorted);
     for (size_t i = 0; i < sn; i++) {
         const char *nm = cfg2b_sval(json_get(sorted, i));
-        json_t *info = json_obj_get(optional, nm);
-        if (!info || info->type != JSON_OBJECT) continue;
+        /* LIVE: `if not get_env_value(name) and name in OPTIONAL_ENV_VARS` —
+         * the seam runs for EVERY sorted name, left to right, before the
+         * membership guard (which has no side effects). */
         json_t *a = json_object(); json_set(a, "name", json_string(nm));
         json_t *ev = cfg2b_seam(io, "get_env_value", a);
         if (cfg2b_raised(ev)) { json_free(sorted); return ev; }
         bool unset = !cfg2b_truthy(ev);
         json_free(ev);
+        json_t *info = json_obj_get(optional, nm);
+        if (!info || info->type != JSON_OBJECT) continue;
         if (!unset) continue;
         json_t *pair = json_array();
         json_append(pair, json_string(nm));

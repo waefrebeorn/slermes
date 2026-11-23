@@ -1182,6 +1182,9 @@ static json_t *tm_landed(tm_ctx_t *ctx, const json_t *args) {
  * or a raise spec. applied is the caller dict (state mirror). */
 static json_t *tm_configure_model_body(tm_ctx_t *ctx, const json_t *params,
                                        const char *profile_dir, json_t *applied) {
+    /* LIVE wraps profile_dir in Path(); Path("") == Path(".") whose
+     * .as_posix() is "." — map an empty dir before any path seam. */
+    const char *pd = (profile_dir && profile_dir[0]) ? profile_dir : ".";
     char *model = tm_str_strip_param(params, "model");
     char *provider = tm_str_strip_param(params, "provider");
     if (!model[0] || !provider[0]) {
@@ -1201,7 +1204,7 @@ static json_t *tm_configure_model_body(tm_ctx_t *ctx, const json_t *params,
         if (tm_is_raise(warn)) { free(model); free(provider); return warn; }
         json_free(warn); /* the callable marker; the call is its own seam */
         json_t *a = tm_args0();
-        tm_asets(a, "profile_dir", profile_dir);
+        tm_asets(a, "profile_dir", pd);
         tm_asets(a, "target_model", model);
         json_t *context = tm_call(ctx, "profile_group_selection_context", a);
         if (tm_is_raise(context)) {
@@ -1211,7 +1214,7 @@ static json_t *tm_configure_model_body(tm_ctx_t *ctx, const json_t *params,
             json_free(context);
             context = NULL; /* _try(..., None) */
         }
-        json_t *cm = tm_hermes_home_scope_call(ctx, profile_dir);
+        json_t *cm = tm_hermes_home_scope_call(ctx, pd);
         if (tm_is_raise(cm)) {
             json_free(context); free(model); free(provider); return cm;
         }
@@ -1243,7 +1246,7 @@ static json_t *tm_configure_model_body(tm_ctx_t *ctx, const json_t *params,
     }
     if (!confirm) {
         /* applied["model"] = _best_effort(_pin_profile_model(...)) */
-        json_t *r = tm_pin_profile_model_call(ctx, profile_dir, provider, model, "");
+        json_t *r = tm_pin_profile_model_call(ctx, pd, provider, model, "");
         bool effort;
         if (tm_is_raise(r)) {
             if (tm_is_base_exc(tm_raise_kind(r))) {

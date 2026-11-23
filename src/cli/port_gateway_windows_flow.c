@@ -177,7 +177,26 @@ bool gww_attested_pid_exited_cleanly(int pid, bool create_time_present, double c
     /* sentinel = get_lifecycle_sentinel_path(home or _hermes_home()) */
     const char *h = home;
     char *home_free = NULL;
-    if (!h) {
+    if (h) {
+        /* LIVE wraps the caller-supplied home in Path(...) and forwards its
+         * .as_posix() form; normalize backslashes / trailing separators the
+         * same way before forwarding to the seam. */
+        home_free = gww_path_posix(h);
+        /* pathlib drops a trailing separator except for roots: "/", "C:/"
+         * and a bare UNC share root "//server/share/" (which gww_path_posix
+         * already keeps). */
+        size_t n = strlen(home_free);
+        if (n > 1 && home_free[n - 1] == '/') {
+            bool keep = (n == 3 && home_free[1] == ':');            /* drive root */
+            if (!keep && home_free[0] == '/' && home_free[1] == '/' && n > 2) {
+                size_t slashes = 0;
+                for (size_t i = 2; i < n; i++) if (home_free[i] == '/') slashes++;
+                keep = (slashes == 2);                              /* UNC share root */
+            }
+            if (!keep) home_free[n - 1] = '\0';
+        }
+        h = home_free;
+    } else {
         json_t *a = args0();
         json_t *r = gww_call(s, "hermes_home", a);
         json_free(a);

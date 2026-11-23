@@ -623,6 +623,7 @@ static json_t *ac4_wrap_transport(ac4_ctx *ctx, const json_t *req, json_t *clien
                                     free(eff_mode); json_free(st); *state_out = st; return NULL; }
     } else {
         char mode_buf[128];
+        bool have_api_mode = true;
         if (eff_mode[0]) snprintf(mode_buf, sizeof mode_buf, "%s", eff_mode);
         else {
             json_t *a5 = json_object();
@@ -630,7 +631,11 @@ static json_t *ac4_wrap_transport(ac4_ctx *ctx, const json_t *req, json_t *clien
             json_t *pd = ac4_call(ctx, "profile_declared_messages_wire", a5);
             if (ac4_exc_pending(ctx)) { json_free(pd); json_free(oc_base); free(orig_mode);
                                         free(eff_mode); json_free(st); *state_out = st; return NULL; }
-            snprintf(mode_buf, sizeof mode_buf, "%s", ac4_jstr(pd));
+            /* LIVE: api_mode = req.api_mode or _profile_declared_messages_wire(...).
+             * A None result stays None and the oracle drops None-valued seam args,
+             * so omit api_mode entirely instead of emitting an empty string. */
+            have_api_mode = (pd && pd->type != JSON_NULL);
+            if (have_api_mode) snprintf(mode_buf, sizeof mode_buf, "%s", ac4_jstr(pd));
             json_free(pd);
         }
         json_t *a6 = json_object();
@@ -638,7 +643,7 @@ static json_t *ac4_wrap_transport(ac4_ctx *ctx, const json_t *req, json_t *clien
         ac4_arg_str(a6, "model", final_model);
         ac4_arg_str(a6, "api_key", api_key);
         ac4_arg_str(a6, "base_url", eff_base);
-        ac4_arg_str(a6, "api_mode", mode_buf);
+        if (have_api_mode) ac4_arg_str(a6, "api_mode", mode_buf);
         ret = ac4_call(ctx, "maybe_wrap_anthropic", a6);
         if (ac4_exc_pending(ctx)) { json_free(ret); json_free(oc_base); free(orig_mode);
                                     free(eff_mode); json_free(st); *state_out = st; return NULL; }

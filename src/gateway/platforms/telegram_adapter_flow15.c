@@ -777,7 +777,14 @@ static json_t *ta15_handle_update_prompt_callback(ta15_ctx_t *ctx, const json_t 
     const json_t *q = ta15_arg(args, "query");
     const char *dstr = ta15_str(ta15_arg(args, "data"));
     char *s1 = NULL, *s2 = NULL, *s3 = NULL;
-    ta15_split3(dstr ? dstr : "", &s1, &s2, &s3);
+    int nparts = ta15_split3(dstr ? dstr : "", &s1, &s2, &s3);
+    /* LIVE: `_, answer, card_id = (data.split(":", 2) + [None])[:3]`.
+     * With no ':' the split yields 1 part, padded to 2, so the 3-way
+     * unpack raises ValueError BEFORE any seam (unauthorized included). */
+    if (nparts < 2) {
+        free(s1); free(s2); free(s3);
+        return ta15_err("ValueError", "not enough values to unpack (expected 3, got 2)");
+    }
     const char *answer = s2 ? s2 : "";
     const char *card = s3 ? s3 : "";
     json_t *un = ta15_call(ctx, "unauthorized", json_object());

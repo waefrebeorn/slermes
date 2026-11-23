@@ -417,9 +417,17 @@ static json_t *pi2_file_lines(pi2_ctx *c, json_t *in) {
 }
 
 static json_t *pi2_at_most(pi2_ctx *c, json_t *in) {
-    (void)c;
     const char *sev = pi2_s(in,"severity","");
     const char *cap = pi2_s(in,"cap","medium");
+    /* LIVE: _SEVERITY_RANK[cap] is a bracket lookup, so an unknown cap raises
+     * KeyError (severity uses .get(sev,0) and defaults to 0 instead). */
+    static const char *const valid[] = {"low","medium","high","critical"};
+    if (!pi2_in_strs(cap, valid, 4)) {
+        if (c->exc) json_free(c->exc);
+        c->exc = json_object();
+        json_set(c->exc, "__raise__", json_string("KeyError"));
+        return NULL;
+    }
     return json_string(pi2_at_most_s(sev,cap));
 }
 
