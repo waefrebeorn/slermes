@@ -1,0 +1,27 @@
+{"func": "steward_update_message", "steward": "desktop-app"}
+{"func": "steward_update_message", "steward": "nix"}
+{"func": "steward_update_message", "steward": "apt-termux"}
+{"func": "steward_update_message", "steward": "docker"}
+{"func": "steward_update_message", "steward": "some-new-pm"}
+{"func": "steward_uninstall_message", "steward": "docker"}
+{"func": "steward_uninstall_message", "steward": "apt-termux"}
+{"func": "steward_uninstall_message", "steward": "nix"}
+{"func": "steward_uninstall_message", "steward": "desktop-app", "platform": "win32"}
+{"func": "steward_uninstall_message", "steward": "desktop-app", "platform": "darwin"}
+{"func": "steward_uninstall_message", "steward": "desktop-app", "platform": "linux"}
+{"func": "steward_uninstall_message", "steward": "desktop-app", "platform": null}
+{"func": "steward_uninstall_message", "steward": "some-new-pm"}
+{"func": "read_install_stamp", "content": "{\"distribution\":\"docker\",\"payload\":\"bundled\"}"}
+{"func": "read_install_stamp", "content": "﻿{\"distribution\":\"nix\"}"}
+{"func": "read_install_stamp", "content": "{bad"}
+{"func": "read_install_stamp", "content": "[1,2]"}
+{"func": "read_install_stamp", "content": null}
+{"func": "sealed_steward", "has_git": true, "content": "{\"distribution\":\"docker\"}"}
+{"func": "sealed_steward", "has_git": false, "content": "{\"distribution\":\"docker\"}"}
+{"func": "sealed_steward", "has_git": false, "content": "{\"distribution\":\"\"}"}
+{"func": "sealed_steward", "has_git": false, "content": null}
+{"func": "is_bundled_payload", "content": "{\"payload\":\"bundled\"}"}
+{"func": "is_bundled_payload", "content": "{\"payload\":\"other\"}"}
+{"func": "is_bundled_payload", "content": null}
+{"func": "classify_install", "has_git": true, "content": null}
+{"func": "classify_install", "has_git": false, "content": "{\"distribution\":\"nix\"}"}

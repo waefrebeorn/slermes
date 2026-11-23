@@ -1,0 +1,15 @@
+{"func":"drop_expired","case":1,"values":{"a":1,"b":2,"c":3},"stamps":{"a":0,"b":5,"c":20},"ttl":10,"now":12}
+{"func":"drop_expired","case":2,"values":{"a":1,"b":2,"c":3},"stamps":{"a":0,"b":5,"c":20},"ttl":5,"now":5}
+{"func":"drop_expired","case":3,"values":{"x":1},"stamps":{},"ttl":3,"now":3}
+{"func":"drop_expired","case":4,"values":{},"stamps":{"z":0},"ttl":1,"now":10}
+{"func":"drop_expired","case":5,"values":{"e":1},"stamps":{"e":2},"ttl":3,"now":5}
+{"func":"drop_expired","case":6,"values":{"p":1,"q":2},"stamps":{"p":100,"q":0},"ttl":5,"now":6}
+{"func":"evict_oldest","case":7,"cache":{"a":{"stamp":1},"b":{"stamp":5},"c":{"stamp":3}},"key":"d","limit":2,"siblings":[{"a":"x","b":"y"}]}
+{"func":"evict_oldest","case":8,"cache":{"a":{"stamp":1}},"key":"a","limit":0,"siblings":[{"a":9}]}
+{"func":"evict_oldest","case":9,"cache":{"a":{"stamp":1}},"key":"b","limit":5,"siblings":[]}
+{"func":"evict_oldest","case":10,"cache":{"x":5,"y":2},"key":"z","limit":1,"siblings":[{"y":2}]}
+{"func":"evict_oldest","case":11,"cache":{"a":{"stamp":1},"b":{"stamp":1}},"key":"c","limit":1,"siblings":[]}
+{"func":"publish_lru","case":12,"table":{"a":1,"b":2,"c":3},"key":"d","value":4,"limit":2,"siblings":[{"a":9,"b":8,"c":7}]}
+{"func":"publish_lru","case":13,"table":{"a":1,"b":2,"c":3},"key":"b","value":20,"limit":2,"siblings":[]}
+{"func":"publish_lru","case":14,"table":{"a":1,"b":2},"key":"c","value":3,"limit":3,"siblings":[{"a":1,"b":2}]}
+{"func":"publish_lru","case":15,"table":{"a":1,"b":2},"key":"c","value":3,"limit":1,"siblings":[]}

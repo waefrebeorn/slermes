@@ -1,0 +1,13 @@
+{"func":"grace_default","case":1}
+{"func":"grace","case":2,"env_value":null}
+{"func":"grace","case":3,"env_value":""}
+{"func":"grace","case":4,"env_value":"0.5"}
+{"func":"grace","case":5,"env_value":"2.5"}
+{"func":"grace","case":6,"env_value":"0"}
+{"func":"grace","case":7,"env_value":"-2"}
+{"func":"grace","case":8,"env_value":"abc"}
+{"func":"grace","case":9,"env_value":"0.01"}
+{"func":"grace","case":10,"env_value":"10"}
+{"func":"grace","case":11,"env_value":" 3.5 "}
+{"func":"grace","case":12,"env_value":"2s"}
+{"func":"grace","case":13,"env_value":"1e1"}

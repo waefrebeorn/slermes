@@ -1,0 +1,18 @@
+{"func":"probe_interval","case":1}
+{"func":"fix_hint","case":2,"store":"/home/u/.hermes/cron"}
+{"func":"describe_error","case":3,"errnum":13,"text":"Permission denied"}
+{"func":"describe_error","case":4,"errnum":10069,"text":"Disk quota exceeded"}
+{"func":"describe_error","case":5,"errnum":999,"text":"mystery failure"}
+{"func":"unwritable_errno","case":6,"errnum":28}
+{"func":"unwritable_errno","case":7,"errnum":30}
+{"func":"unwritable_errno","case":8,"errnum":10069}
+{"func":"unwritable_errno","case":9,"errnum":13}
+{"func":"unwritable_errno","case":10,"errnum":2}
+{"func":"outage_covers","case":11,"records":[{"since":100.0,"recovered_at":null}],"due_at":150.0,"grace":60.0}
+{"func":"outage_covers","case":12,"records":[{"since":100.0,"recovered_at":120.0}],"due_at":150.0,"grace":0.0}
+{"func":"outage_covers","case":13,"records":[{"since":100.0,"recovered_at":120.0}],"due_at":110.0,"grace":0.0}
+{"func":"outage_covers","case":14,"records":[{"since":300.0,"recovered_at":null}],"due_at":150.0,"grace":0.0}
+{"func":"outage_covers","case":15,"records":[{"since":500.0,"recovered_at":null},{"since":100.0,"recovered_at":200.0}],"due_at":150.0,"grace":0.0}
+{"func":"run_keys","case":16,"jobs":[{"id":"b","next_run_at":"2"},{"id":"a","next_run_at":"1"},{"id":"b","next_run_at":"2"},{"id":"a","next_run_at":"0"}]}
+{"func":"skipped_runs","case":17,"skipped":["a","b","a","c","b"]}
+{"func":"skipped_runs","case":18,"skipped":[]}

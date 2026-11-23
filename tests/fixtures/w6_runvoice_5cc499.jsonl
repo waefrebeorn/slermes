@@ -1,0 +1,20 @@
+{"func":"voice_key","case":1,"platform":"telegram","chat_id":"12345","profile":null}
+{"func":"voice_key","case":2,"platform":"telegram","chat_id":"12345","profile":"default"}
+{"func":"voice_key","case":3,"platform":"telegram","chat_id":"12345","profile":"work"}
+{"func":"voice_key","case":4,"platform":"discord","chat_id":"!room:srv","profile":""}
+{"func":"voice_key","case":5,"platform":"matrix","chat_id":"!room:srv","profile":"  work  "}
+{"func":"voice_key","case":6,"platform":"local","chat_id":"abc","profile":"default "}
+{"func":"voice_key","case":7,"platform":"telegram","chat_id":"chat","profile":"   "}
+{"func":"voice_key","case":8,"platform":"slack","chat_id":"C1","profile":"Alt"}
+{"func":"is_legacy","case":9,"key":"12345"}
+{"func":"is_legacy","case":10,"key":"telegram:12345"}
+{"func":"is_legacy","case":11,"key":"work:telegram:12345"}
+{"func":"is_legacy","case":12,"key":"!room:server"}
+{"func":"is_legacy","case":13,"key":"matrix:!room:server"}
+{"func":"is_legacy","case":14,"key":"prof:matrix:!room:server"}
+{"func":"is_legacy","case":15,"key":"a:b:c"}
+{"func":"is_legacy","case":16,"key":"wecom_callback:xyz"}
+{"func":"is_legacy","case":17,"key":"signal:group:abc"}
+{"func":"is_legacy","case":18,"key":"default:discord:1"}
+{"func":"is_legacy","case":19,"key":"http://x"}
+{"func":"is_legacy","case":20,"key":""}

@@ -1,0 +1,18 @@
+{"func": "read", "content": "{\"since\":100,\"last\":200}"}
+{"func": "read", "content": "﻿{\"since\":100.5,\"last\":200.25}"}
+{"func": "read", "content": "{\"since\":\"100\",\"last\":\"200\"}"}
+{"func": "read", "content": "{\"since\":true,\"last\":false}"}
+{"func": "read", "content": "{\"since\":100}"}
+{"func": "read", "content": "{\"last\":200}"}
+{"func": "read", "content": "{bad json"}
+{"func": "read", "content": "[1,2,3]"}
+{"func": "read", "content": "{\"since\":null,\"last\":200}"}
+{"func": "read", "content": null}
+{"func": "grace_starts_at", "content": "{\"since\":100,\"last\":200}", "due_at": 150, "grace": 30}
+{"func": "grace_starts_at", "content": "{\"since\":100,\"last\":200}", "due_at": 50, "grace": 30}
+{"func": "grace_starts_at", "content": "{\"since\":100,\"last\":200}", "due_at": 300, "grace": 30}
+{"func": "grace_starts_at", "content": "{\"since\":100,\"last\":200}", "due_at": 100, "grace": 30}
+{"func": "grace_starts_at", "content": "{\"since\":1000,\"last\":2000}", "due_at": 300, "grace": 30}
+{"func": "grace_starts_at", "content": "{\"since\":100,\"last\":200}", "due_at": 260, "grace": 30}
+{"func": "grace_starts_at", "content": null, "due_at": 150, "grace": 30}
+{"func": "grace_starts_at", "content": "{\"since\":100.5,\"last\":200.5}", "due_at": 150.25, "grace": 0}

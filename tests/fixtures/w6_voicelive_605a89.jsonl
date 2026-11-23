@@ -1,0 +1,17 @@
+{"func":"voice_live_turn_note","context":""}
+{"func":"voice_live_turn_note","context":"   \n\t  "}
+{"func":"voice_live_turn_note","context":"yes"}
+{"func":"voice_live_turn_note","context":"  Thursday, not Friday  "}
+{"func":"voice_chat_mode","voice":{"voice_chat_mode":"gpt-live"}}
+{"func":"voice_chat_mode","voice":{"voice_chat_mode":"GPT_LIVE"}}
+{"func":"voice_chat_mode","voice":{"voice_chat_mode":" live "}}
+{"func":"voice_chat_mode","voice":{"voice_chat_mode":"gptlive"}}
+{"func":"voice_chat_mode","voice":{"voice_chat_mode":"chained"}}
+{"func":"voice_chat_mode","voice":{"voice_chat_mode":""}}
+{"func":"voice_chat_mode","voice":{}}
+{"func":"voice_chat_mode","voice":{"voice_chat_mode":null}}
+{"func":"voice_chat_mode","voice":{"voice_chat_mode":123}}
+{"func":"voice_chat_mode","voice":{"voice_chat_mode":true}}
+{"func":"live_instructions","live":{}}
+{"func":"live_instructions","live":{"instructions":"  remember the user likes tea  "}}
+{"func":"live_instructions","live":{"instructions":""}}

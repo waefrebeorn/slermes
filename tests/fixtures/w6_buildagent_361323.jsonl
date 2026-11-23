@@ -1,0 +1,10 @@
+{"func": "assemble_inputs", "root": "C:/opt/hermes", "target": "linux-x64", "site": "C:/opt/hermes/.venv/lib/python3.12/site-packages"}
+{"func": "assemble_inputs", "root": "D:/srv/hermes/", "target": "win32-x64", "site": "D:/srv/hermes/.venv/Lib/site-packages"}
+{"func": "assemble_inputs", "root": "E:/opt/hermes3", "target": "darwin-arm64", "site": "E:/opt/hermes3/.venv/lib/python3.11/site-packages"}
+{"func": "link_target", "command": "libexec/hermes"}
+{"func": "link_target", "command": "libexec/cli"}
+{"func": "link_target", "command": "bin/hermes-web"}
+{"func": "link_target", "command": ""}
+{"func": "assemble_image", "root": "C:/opt/hermes", "target": "linux-x64", "site": "C:/opt/hermes/.venv/lib/python3.12/site-packages", "commands": {"hermes": "libexec/hermes", "hermes-cli": "libexec/cli"}}
+{"func": "assemble_image", "root": "D:/srv/hermes", "target": "win32-x64", "site": "D:/srv/hermes/.venv/Lib/site-packages", "commands": {}}
+{"func": "assemble_image", "root": "E:/opt/hermes3", "target": "darwin-arm64", "site": "E:/opt/hermes3/.venv/lib/python3.11/site-packages", "commands": {"hermes": "bin/hermes"}}

@@ -1,0 +1,12 @@
+{"func":"coerce","case":"quick","name":"quick"}
+{"func":"coerce","case":"full","name":"full"}
+{"func":"coerce","case":"bad","name":"nope"}
+{"func":"coerce","case":"empty","name":""}
+{"func":"coerce","case":"null","name":null}
+{"func":"coerce","case":"uppercase","name":"QUICK"}
+{"func":"is_valid","case":"quick","name":"quick"}
+{"func":"is_valid","case":"full","name":"full"}
+{"func":"is_valid","case":"bad","name":"guided"}
+{"func":"is_valid","case":"empty","name":""}
+{"func":"is_valid","case":"null","name":null}
+{"func":"values","case":"all"}

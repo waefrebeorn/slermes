@@ -1,0 +1,17 @@
+{"func":"actions"}
+{"func":"actions","pad":"x"}
+{"func":"handler","action":"add"}
+{"func":"handler","action":"list"}
+{"func":"handler","action":"rm"}
+{"func":"handler","action":"sources"}
+{"func":"handler","action":"key"}
+{"func":"handler","action":"key","subaction":"migrate"}
+{"func":"handler","action":""}
+{"func":"handler","action":"bogus"}
+{"func":"argmeta","action":"add","opt":"--kind"}
+{"func":"argmeta","action":"rm","opt":"handle"}
+{"func":"argmeta","action":"sources","opt":"--disable"}
+{"func":"argmeta","action":"sources","opt":"--enable"}
+{"func":"argmeta","action":"key/migrate","opt":"--to"}
+{"func":"argmeta","action":"add","opt":"--nope"}
+{"func":"argmeta","action":"bogus","opt":"--kind"}

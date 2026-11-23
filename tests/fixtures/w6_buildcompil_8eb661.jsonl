@@ -1,0 +1,18 @@
+{"func": "missing_compiler_remedy", "output": "error: No such file or directory: 'clang++'"}
+{"func": "missing_compiler_remedy", "output": "command 'gcc' failed: No such file or directory"}
+{"func": "missing_compiler_remedy", "output": "CMake Error: No CMAKE_C_COMPILER could be found"}
+{"func": "missing_compiler_remedy", "output": "No CMAKE_CXX_COMPILER could be found"}
+{"func": "missing_compiler_remedy", "output": "No such file or directory: 'python3'"}
+{"func": "missing_compiler_remedy", "output": "No such file or directory: 'clang-14'"}
+{"func": "missing_compiler_remedy", "output": "nothing interesting here"}
+{"func": "missing_compiler_remedy", "output": "No such file or directory: '/usr/bin/gcc'"}
+{"func": "missing_compiler_remedy", "output": "command 'notacompiler' failed: No such file or directory"}
+{"func": "missing_compiler_remedy", "output": "No such file or directory: 'cc'"}
+{"func": "linux_defaults", "recorded": {"CC": "clang -pthread", "CXX": "clang++ -pthread", "LDSHARED": "clang -shared", "LDCXXSHARED": "clang++ -shared", "AR": "/tools/llvm/bin/ar"}, "env": {}, "available": ["gcc", "g++", "ar"]}
+{"func": "linux_defaults", "recorded": {"CC": "clang -pthread", "CXX": "clang++ -pthread", "LDSHARED": "clang -shared", "LDCXXSHARED": "clang++ -shared", "AR": "/tools/llvm/bin/ar"}, "env": {"CC": "mycc"}, "available": ["gcc", "g++", "ar"]}
+{"func": "linux_defaults", "recorded": {"CC": "clang -pthread", "CXX": "clang++ -pthread", "LDSHARED": "clang -shared", "LDCXXSHARED": "clang++ -shared", "AR": "/tools/llvm/bin/ar"}, "env": {}, "available": []}
+{"func": "linux_defaults", "recorded": {"CC": "clang", "AR": "/x/ar"}, "env": {}, "available": ["gcc"]}
+{"func": "linux_defaults", "recorded": {"CC": "g++", "CXX": "clang++"}, "env": {}, "available": ["gcc", "g++"]}
+{"func": "pinned_build_defaults", "platform": "darwin", "env": {}, "recorded": {"CC": "clang -pthread", "CXX": "clang++ -pthread", "LDSHARED": "clang -shared", "LDCXXSHARED": "clang++ -shared", "AR": "/tools/llvm/bin/ar"}, "available": ["gcc", "g++", "ar"]}
+{"func": "pinned_build_defaults", "platform": "win32", "env": {}, "recorded": {"CC": "clang -pthread", "CXX": "clang++ -pthread", "LDSHARED": "clang -shared", "LDCXXSHARED": "clang++ -shared", "AR": "/tools/llvm/bin/ar"}, "available": ["gcc", "g++", "ar"]}
+{"func": "pinned_build_defaults", "platform": "linux", "env": {}, "recorded": {"CC": "clang -pthread", "CXX": "clang++ -pthread", "LDSHARED": "clang -shared", "LDCXXSHARED": "clang++ -shared", "AR": "/tools/llvm/bin/ar"}, "available": ["gcc", "g++", "ar"]}

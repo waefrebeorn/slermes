@@ -1,0 +1,10 @@
+{"func":"threshold","case":1}
+{"func":"slept","case":2,"prev_wall":100.0,"wall":106.0,"interval":1.0}
+{"func":"slept","case":3,"prev_wall":100.0,"wall":105.9,"interval":1.0}
+{"func":"slept","case":4,"prev_wall":100.0,"wall":110.0,"interval":0.5}
+{"func":"slept","case":5,"prev_wall":100.0,"wall":101.0,"interval":5.0}
+{"func":"slept","case":6,"prev_wall":-5.0,"wall":2.0,"interval":1.0}
+{"func":"slept","case":7,"prev_wall":100.0,"wall":100.0,"interval":0.0}
+{"func":"slept","case":8,"prev_wall":0.0,"wall":5.0000001,"interval":0.0}
+{"func":"sequence","case":9,"interval":1.0,"initial_wall":10.0,"walls":[11.0,13.0,13.5,25.0]}
+{"func":"sequence","case":10,"interval":0.0,"initial_wall":0.0,"walls":[]}

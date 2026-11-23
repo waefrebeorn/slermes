@@ -1,0 +1,16 @@
+{"func":"headers","case":"headers null","headers":null}
+{"func":"headers","case":"empty object","headers":{}}
+{"func":"headers","case":"first header value","headers":{"x-litellm-model-id":"deployment-a"}}
+{"func":"headers","case":"second header value","headers":{"x-litellm-model-api-base":"https://upstream"}}
+{"func":"headers","case":"both first wins","headers":{"x-litellm-model-id":"deploy-1","x-litellm-model-api-base":"https://upstream"}}
+{"func":"headers","case":"first empty second used","headers":{"x-litellm-model-id":"","x-litellm-model-api-base":"fallback-model"}}
+{"func":"headers","case":"value stripped","headers":{"x-litellm-model-id":"  spaced-model  "}}
+{"func":"headers","case":"numeric value","headers":{"x-litellm-model-id":0}}
+{"func":"result","case":"no served no fallback","model":"gpt-4o","last_served":null,"fallback_activated":false,"primary_runtime":null}
+{"func":"result","case":"served present","model":"gpt-4o","last_served":"real-model","fallback_activated":false,"primary_runtime":null}
+{"func":"result","case":"served empty string","model":"gpt-4o","last_served":"","fallback_activated":false,"primary_runtime":null}
+{"func":"result","case":"fallback primary different","model":"gpt-4o","last_served":null,"fallback_activated":true,"primary_runtime":{"model":"claude-3"}}
+{"func":"result","case":"fallback primary same as model","model":"gpt-4o","last_served":null,"fallback_activated":true,"primary_runtime":{"model":"gpt-4o"}}
+{"func":"result","case":"fallback primary empty","model":"gpt-4o","last_served":null,"fallback_activated":true,"primary_runtime":{"model":""}}
+{"func":"result","case":"fallback primary whitespace","model":"gpt-4o","last_served":null,"fallback_activated":true,"primary_runtime":{"model":"  claude-3  "}}
+{"func":"result","case":"fallback but served still set","model":"gpt-4o","last_served":"real-model","fallback_activated":true,"primary_runtime":{"model":"claude-3"}}

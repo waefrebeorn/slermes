@@ -1,0 +1,13 @@
+{"func":"display_name","name":"openai","case":"plain"}
+{"func":"display_name","name":"my-provider","case":"hyphen"}
+{"func":"setup_schema","name":"openai","case":"schema shape"}
+{"func":"setup_schema","name":"hugging face","case":"schema with space"}
+{"func":"catalog_display_name","name":"openai","case":"title simple"}
+{"func":"catalog_display_name","name":"hugging-face","case":"title hyphen"}
+{"func":"catalog_display_name","name":"MY PROVIDER","case":"title uppercase"}
+{"func":"catalog_display_name","name":"foo_bar 123abc","case":"title word boundaries"}
+{"func":"catalog_is_available","name":"x","case":"always true"}
+{"func":"catalog_list_models","name":"x","case":"empty list"}
+{"func":"catalog_default_model","models":[],"case":"default none"}
+{"func":"catalog_default_model","models":[{"id":"m1","display":"M1"}],"case":"default first"}
+{"func":"catalog_default_model","models":[{"display":"no id"}],"case":"default missing id"}

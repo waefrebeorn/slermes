@@ -1,0 +1,16 @@
+{"func":"discard","case":"remove spellings","names":["alpha","beta","gamma"],"spellings":["beta"]}
+{"func":"discard","case":"no spellings","names":["alpha","beta"],"spellings":[]}
+{"func":"discard","case":"all removed","names":["a","b"],"spellings":["a","b"]}
+{"func":"discard","case":"empty names","names":[],"spellings":["a"]}
+{"func":"list","case":"missing key","plugins":{"disabled":["x"]},"key":"enabled"}
+{"func":"list","case":"explicit null","plugins":{"disabled":null},"key":"disabled"}
+{"func":"list","case":"existing list","plugins":{"disabled":["x","y"]},"key":"disabled"}
+{"func":"prune","case":"prune one record","plugins":{"disabled":["old"],"disabled_by_update":{"old":{"enabled":true},"keep":{"enabled":false}}}}
+{"func":"prune","case":"empty record removed","plugins":{"disabled":[],"disabled_by_update":{"gone":{}}}}
+{"func":"prune","case":"non dict record","plugins":{"disabled_by_update":"oops"}}
+{"func":"settle","case":"settle forgets record","plugins":{"disabled":["a"],"disabled_by_update":{"a":{"enabled":true}}},"settled":["a"]}
+{"func":"settle","case":"non dict record noop","plugins":{"disabled_by_update":7},"settled":["a"]}
+{"func":"notices","case":"disabled notice","facts":{"entries":[["h1/plugins","foo","h1/plugins/foo"]],"recorded":[],"reasons":{"h1/plugins/foo":"its dependency declaration is invalid"},"waiting":{},"joined":[]}}
+{"func":"notices","case":"waiting notice","facts":{"entries":[["h1/plugins","bar","h1/plugins/bar"]],"recorded":[],"reasons":{},"waiting":{"h1/plugins/bar":"it needs Python 3.12"},"joined":[]}}
+{"func":"notices","case":"still disabled and rejoined","facts":{"entries":[],"recorded":[{"entry":["h1/plugins","old","h1/plugins/old"],"record":{"reason":"build failed"}},{"entry":["h1/plugins","back","h1/plugins/back"],"record":{"reason":"gone"}}],"reasons":{},"waiting":{},"joined":[["h1/plugins","back","h1/plugins/back"]]}}
+{"func":"notices","case":"unknown reason","facts":{"entries":[],"recorded":[{"entry":["h1/plugins","mystery","h1/plugins/mystery"],"record":{}}],"reasons":{},"waiting":{},"joined":[]}}

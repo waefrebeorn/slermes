@@ -1,0 +1,20 @@
+{"func":"overflow","result":{"failed":false,"error":"context length exceeded"},"history_len":500}
+{"func":"overflow","result":{"failed":true,"compression_exhausted":true},"history_len":0}
+{"func":"overflow","result":{"failed":true,"error":"Context Length Exceeded"},"history_len":2}
+{"func":"overflow","result":{"failed":true,"error":"rate limit exceeded"},"history_len":100}
+{"func":"overflow","result":{"failed":true,"error":"Bad Request 400"},"history_len":51}
+{"func":"overflow","result":{"failed":true,"error":"Bad Request 400"},"history_len":50}
+{"func":"overflow","result":{"failed":true,"error":"TOO MANY TOKENS"},"history_len":3}
+{"func":"overflow","result":{"failed":true,"error":0},"history_len":999}
+{"func":"bound","history":[{"role":"system","c":"s1"},{"role":"session_meta","c":"m1"},{"role":"user","c":"u1"},{"role":"assistant","c":"a1"},{"role":"tool","c":"t1"}],"limit":3}
+{"func":"bound","history":[{"role":"user","c":"u1"},{"role":"assistant","c":"a1"}],"limit":5}
+{"func":"bound","history":[{"role":"tool","c":"t0"},{"role":"user","c":"u1"},{"role":"tool","c":"t1"},{"role":"tool","c":"t2"}],"limit":2}
+{"func":"bound","history":[{"role":"system","c":"s1"},{"role":"system","c":"s2"},{"role":"user","c":"u1"}],"limit":1}
+{"func":"bound","history":[],"limit":0}
+{"func":"reason","attrs":{}}
+{"func":"reason","attrs":{"_last_compression_attempt_recorded":true,"_compression_skipped_due_to_lock":true}}
+{"func":"reason","attrs":{"_last_compression_attempt_recorded":true,"_compression_blocked_transient":"cooldown"}}
+{"func":"reason","attrs":{"_last_compression_attempt_recorded":true,"_last_compression_attempt_in_place":null,"_last_compression_timed_out":true,"_last_compression_summary_warning":"oops"}}
+{"func":"reason","attrs":{"_last_compression_attempt_recorded":true,"_last_compression_attempt_in_place":null,"_last_compression_timed_out":false,"_last_compression_summary_warning":""}}
+{"func":"reason","attrs":{"_last_compression_attempt_recorded":true,"_last_compression_attempt_in_place":true,"_session_db":null}}
+{"func":"reason","attrs":{"_last_compression_attempt_recorded":true,"_last_compression_attempt_in_place":true,"_session_db":{"db":1}}}

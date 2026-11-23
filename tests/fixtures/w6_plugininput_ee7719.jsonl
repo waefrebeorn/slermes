@@ -1,0 +1,15 @@
+{"func":"decode","value":null}
+{"func":"decode","value":{"kind":"members","paths":[]}}
+{"func":"decode","value":{"kind":"members","paths":["a","b/c"]}}
+{"func":"decode","value":{"kind":"members","sources":[["id1","src1"],["id2","d/s2"]]}}
+{"func":"decode","value":{"kind":"candidates","paths":["foo","bar\\baz"]}}
+{"func":"decode","value":{"kind":"selection","data":{"a":1,"b":[true,null]}}}
+{"func":"decode","value":{"kind":"staged","data":{"x":"y"}}}
+{"func":"decode","value":{"kind":"bogus"}}
+{"func":"encode","spec":null,"cwd":"C:\\work\\base"}
+{"func":"encode","spec":{"type":"members","dirs":["foo","bar/baz"]},"cwd":"C:\\work\\base"}
+{"func":"encode","spec":{"type":"members","dirs":["C:/a","D:\\b"]},"cwd":"C:\\work\\base"}
+{"func":"encode","spec":{"type":"members","sources":[["C:/id","C:/src"]]},"cwd":"C:\\work\\base"}
+{"func":"encode","spec":{"type":"candidates","dirs":["../x","/root"]},"cwd":"C:\\work\\base"}
+{"func":"encode","spec":{"type":"selection","data":{"a":1,"b":[true]}},"cwd":"C:\\work\\base"}
+{"func":"encode","spec":{"type":"staged","data":{"x":"y"}},"cwd":"C:\\work\\base"}

@@ -1,0 +1,16 @@
+{"func":"valid","case":1,"id":"exec-123"}
+{"func":"valid","case":2,"id":"  exec-456  "}
+{"func":"valid","case":3,"id":"a/b"}
+{"func":"valid","case":4,"id":".."}
+{"func":"valid","case":5,"id":""}
+{"func":"marker","case":6,"id":"exec-789"}
+{"func":"marker","case":7,"id":"bad\\id"}
+{"func":"cancel_reason","case":8,"reason":"operator asked"}
+{"func":"cancel_reason","case":9,"reason":""}
+{"func":"cancel_reason","case":10}
+{"func":"cancel_run_none","case":11}
+{"func":"cancel_run","case":12,"record":{"id":"exec-1","status":"running","pid":4242},"reason":"operator"}
+{"func":"combined_is_set","case":13,"events":[]}
+{"func":"combined_is_set","case":14,"events":[{"set":false,"reason":"a"},{"set":true,"reason":"operator"}]}
+{"func":"combined_reason","case":15,"events":[{"set":false,"reason":"a"},{"set":true,"reason":"operator"}]}
+{"func":"combined_reason","case":16,"events":[]}

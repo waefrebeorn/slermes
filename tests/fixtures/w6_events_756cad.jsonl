@@ -1,0 +1,17 @@
+{"func":"plan_status","case":1,"status":"pending"}
+{"func":"plan_status","case":2,"status":"in_progress"}
+{"func":"plan_status","case":3,"status":"completed"}
+{"func":"plan_status","case":4,"status":"cancelled"}
+{"func":"plan_status","case":5,"status":"unknown"}
+{"func":"plan_status","case":6,"status":""}
+{"func":"plan_status","case":7,"status":"  cancelled  "}
+{"func":"plan_update","case":8,"result":"{\"todos\":[{\"content\":\"A\",\"status\":\"pending\"},{\"content\":\"B\",\"status\":\"in_progress\"}]}"}
+{"func":"plan_update","case":9,"result":"{\"todos\":[{\"id\":\"t1\",\"status\":\"cancelled\",\"content\":\"X\"}]}"}
+{"func":"plan_update","case":10,"result":"{\"todos\":[{\"id\":\"only-id\"}]}"}
+{"func":"plan_update","case":11,"result":"{\"todos\":[\"skip\",{\"content\":\"  \"},{\"content\":\"ok\",\"status\":\"weird\"}]}"}
+{"func":"plan_update","case":12,"result":"{}"}
+{"func":"plan_update","case":13,"result":"not json"}
+{"func":"plan_update","case":14,"result":"{\"todos\":[]}"}
+{"func":"upgrade_queue","case":15,"ids":{"t":"legacy"},"name":"t"}
+{"func":"upgrade_queue","case":16,"ids":{"t":["a","b"]},"name":"t"}
+{"func":"upgrade_queue","case":17,"ids":{},"name":"missing"}

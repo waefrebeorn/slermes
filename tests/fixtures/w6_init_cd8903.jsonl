@@ -1,0 +1,16 @@
+{"func":"host_claims","case":"exact","host":"api.example.com","claimed":"api.example.com"}
+{"func":"host_claims","case":"subdomain","host":"a.b.example.com","claimed":"example.com"}
+{"func":"host_claims","case":"case and trailing dot","host":"api.example.com","claimed":" EXAMPLE.COM. "}
+{"func":"host_claims","case":"not subdomain","host":"notexample.com","claimed":"example.com"}
+{"func":"host_claims","case":"empty claimed","host":"anything","claimed":""}
+{"func":"host_claims","case":"partial suffix","host":"myexample.com","claimed":"example"}
+{"func":"host_claims","case":"suffix boundary","host":"a.api.example.com","claimed":".example.com"}
+{"func":"module_name","case":"known sha1","name":"my-provider","home_key":"abc"}
+{"func":"module_name","case":"empty key","name":"foo","home_key":""}
+{"func":"module_name","case":"underscore name","name":"some_provider","home_key":"Home/Key"}
+{"func":"module_name","case":"long name","name":"a-b-c-d-e","home_key":"profile-2"}
+{"func":"stamps_settled","case":"none stamps","facts":{"now":"1000000000","stamps":[null,null]}}
+{"func":"stamps_settled","case":"settled","facts":{"now":"1000000000","stamps":["0","3000000000"]}}
+{"func":"stamps_settled","case":"too recent","facts":{"now":"1000000000","stamps":["999999999"]}}
+{"func":"stamps_settled","case":"exact tick","facts":{"now":"2000000000","stamps":["0"]}}
+{"func":"stamps_settled","case":"mix unsettled","facts":{"now":"1000000000","stamps":[null,"999000000"]}}

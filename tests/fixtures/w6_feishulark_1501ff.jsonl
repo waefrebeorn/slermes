@@ -1,0 +1,15 @@
+{"func":"raw_body","case":1,"raw":{"content":"{\"a\":1}"}}
+{"func":"raw_body","case":2,"raw":{"content":"[1,2]"}}
+{"func":"raw_body","case":3,"raw":{"content":"not json"}}
+{"func":"raw_body","case":4}
+{"func":"raw_body","case":5,"raw":{"content":"{\"data\":{\"x\":5}}"}}
+{"func":"response_data","case":6,"raw":{"content":"{\"data\":{\"k\":1}}"},"data":null}
+{"func":"response_data","case":7,"raw":{"content":"{\"data\":{}}"},"data":{"t":2}}
+{"func":"response_data","case":8,"raw":{"content":"{\"data\":{}}"},"data":null}
+{"func":"response_data","case":9,"data":{"a":1}}
+{"func":"response_data","case":10,"raw":{"content":"{\"data\":{\"d\":9}}"},"data":{"t":2}}
+{"func":"response_data","case":11,"raw":{"content":"{\"data\":[]}"},"data":null}
+{"func":"response_data","case":12,"raw":{"content":"{\"data\":{}}"},"data":"model","data_vars":{"v":7}}
+{"func":"response_data","case":13,"raw":{"content":"{\"data\":{\"k\":0}}"},"data":null}
+{"func":"response_data","case":14,"raw":{"content":"{\"data\":null}"},"data":{"f":1}}
+{"func":"response_data","case":15,"raw":{"content":"{\"data\":\"\"}"},"data":null}

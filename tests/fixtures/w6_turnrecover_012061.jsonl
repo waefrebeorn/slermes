@@ -1,0 +1,14 @@
+{"func":"image_dim","error":"Image dimension exceeds max allowed size: 2000 pixels"}
+{"func":"image_dim","error":"image dimension max allowed size for vision input: 1024 pixels"}
+{"func":"image_dim","error":"image patches after processing exceeding the limit of 30000 patches"}
+{"func":"image_dim","error":"patches after processing exceeding the limit of 10000000"}
+{"func":"image_dim","error":"patches after processing exceeding the limit of 100"}
+{"func":"image_dim","error":"patches after processing, exceeding the limit of"}
+{"func":"image_dim","error":"patches after processing exceeding the limit of 5"}
+{"func":"image_dim","error":"image dimension max allowed size: 800 pixels"}
+{"func":"image_dim","error":"image dimension max allowed size: 9000 pixels"}
+{"func":"image_dim","error":"image dimension max allowed size: 123456 pixels"}
+{"func":"image_dim","error":"image dimension too large"}
+{"func":"image_dim","error":"some error","message":"IMAGE DIMENSION","body":"MAX ALLOWED SIZE: 4096 PIXELS"}
+{"func":"image_dim","error":"image dimension max allowed size : 2000 pixels"}
+{"func":"image_dim","error":"image dimension max allowed size for : 2000 pixels"}

@@ -1,0 +1,41 @@
+{"func":"ok","case":"simple","rid":"r1","result":{"a":1}}
+{"func":"ok","case":"id number","rid":7,"result":{}}
+{"func":"ok","case":"null result","rid":null,"result":null}
+{"func":"err","case":"simple","rid":"r2","code":-32600,"msg":"bad"}
+{"func":"err","case":"with data","rid":"r3","code":42,"msg":"oops","data":{"x":[1,2]}}
+{"func":"err","case":"null data","rid":"r4","code":1,"msg":"m","data":null}
+{"func":"normalize_request","case":"valid","req":{"id":1,"method":"ping","params":{"x":2}}}
+{"func":"normalize_request","case":"no params","req":{"id":"a","method":"m"}}
+{"func":"normalize_request","case":"null params","req":{"id":2,"method":"m","params":null}}
+{"func":"normalize_request","case":"not object","req":[1,2,3]}
+{"func":"normalize_request","case":"no method","req":{"id":3}}
+{"func":"normalize_request","case":"empty method","req":{"id":4,"method":""}}
+{"func":"normalize_request","case":"bad params","req":{"id":5,"method":"m","params":[1]}}
+{"func":"is_model_switch_marker","case":"yes","entry":{"content":"[System: The active model for this chat has changed to gpt-x"}}
+{"func":"is_model_switch_marker","case":"no","entry":{"content":"hello"}}
+{"func":"is_model_switch_marker","case":"not dict","entry":["x"]}
+{"func":"is_pivot_marker","case":"personality","entry":{"display_kind":"personality_switch"}}
+{"func":"is_pivot_marker","case":"model switch","entry":{"content":"[System: The active model for this chat has changed to m"}}
+{"func":"is_pivot_marker","case":"none","entry":{"display_kind":"other"}}
+{"func":"coerce_int","case":"string","value":"5","default":3,"min_value":1}
+{"func":"coerce_int","case":"below min","value":"0","default":7,"min_value":1}
+{"func":"coerce_int","case":"bad","value":"abc","default":9,"min_value":0}
+{"func":"coerce_int","case":"float","value":3.9,"default":2,"min_value":0}
+{"func":"coerce_int","case":"negative","value":"-4","default":1,"min_value":0}
+{"func":"coerce_int","case":"spaces","value":" 8 ","default":1,"min_value":0}
+{"func":"coerce_int","case":"bool","value":true,"default":1,"min_value":0}
+{"func":"cli_exec_blocked","case":"bare","argv":[]}
+{"func":"cli_exec_blocked","case":"setup","argv":["setup"]}
+{"func":"cli_exec_blocked","case":"setup more","argv":["SETUP","x"]}
+{"func":"cli_exec_blocked","case":"gateway","argv":["gateway"]}
+{"func":"cli_exec_blocked","case":"browse","argv":["sessions","browse"]}
+{"func":"cli_exec_blocked","case":"edit","argv":["config","edit"]}
+{"func":"cli_exec_blocked","case":"allowed","argv":["chat","-q"]}
+{"func":"turn_started_at","case":"number","session":{"inflight_turn":{"started_at":12.5}}}
+{"func":"turn_started_at","case":"string","session":{"inflight_turn":{"started_at":"99.5"}}}
+{"func":"turn_started_at","case":"idle","session":{"inflight_turn":null}}
+{"func":"turn_started_at","case":"zero","session":{"inflight_turn":{"started_at":0}}}
+{"func":"event_frame","case":"payload","event":"ping","sid":"s1","payload":{"a":1}}
+{"func":"event_frame","case":"no payload","event":"pong","sid":"s2"}
+{"func":"event_frame","case":"null payload","event":"x","sid":"s3","payload":null}
+{"func":"event_frame","case":"false payload","event":"x","sid":"s4","payload":false}

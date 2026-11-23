@@ -1,0 +1,23 @@
+{"func": "collapse_title", "title": "  Hello   world\t again  "}
+{"func": "collapse_title", "title": "   "}
+{"func": "collapse_title", "title": ""}
+{"func": "collapse_title", "title": "café  ☃"}
+{"func": "sanitize_telegram_topic_title", "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "sanitize_telegram_topic_title", "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "sanitize_telegram_topic_title", "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   bbbbbbbbbbbbbbbbbbbb"}
+{"func": "sanitize_telegram_topic_title", "title": "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂"}
+{"func": "sanitize_discord_thread_title", "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "sanitize_discord_thread_title", "title": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "sanitize_discord_thread_title", "title": "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂"}
+{"func": "telegram_topic_profile_name", "profile": "  main  "}
+{"func": "telegram_topic_profile_name", "profile": "   "}
+{"func": "telegram_topic_key", "chat_id": "123", "thread_id": "0"}
+{"func": "telegram_topic_cooldown_key", "profile": "main", "chat_id": "123"}
+{"func": "telegram_topic_cooldown_key", "profile": "main", "chat_id": ""}
+{"func": "is_telegram_dm", "platform": "telegram", "chat_type": "dm"}
+{"func": "is_telegram_dm", "platform": "discord", "chat_type": "dm"}
+{"func": "is_discord_auto_thread_lane", "platform": "discord", "chat_type": "thread", "auto_thread_created": true, "thread_id": "9", "auto_thread_initial_name": "hi"}
+{"func": "is_discord_auto_thread_lane", "platform": "discord", "chat_type": "thread", "auto_thread_created": true, "thread_id": "9", "auto_thread_initial_name": ""}
+{"func": "is_relay_discord_channel_lane", "platform": "discord", "chat_id": "5", "chat_type": "channel", "delivered_via_upstream_relay": true}
+{"func": "is_relay_discord_channel_lane", "platform": "discord", "chat_id": "5", "thread_id": "9", "chat_type": "group", "delivered_via_upstream_relay": true}
+{"func": "topic_restore_steps"}

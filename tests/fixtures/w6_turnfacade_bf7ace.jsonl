@@ -1,0 +1,15 @@
+{"func":"chat","case":1,"result":{"final_response":"done","interrupted":false}}
+{"func":"chat","case":2,"result":{}}
+{"func":"outcome","case":3,"result":{"interrupted":true,"failed":true}}
+{"func":"outcome","case":4,"result":{"failed":true}}
+{"func":"outcome","case":5,"result":{"interrupted":1}}
+{"func":"outcome","case":6,"result":{}}
+{"func":"exception_outcome","case":7,"raise":"KeyboardInterrupt"}
+{"func":"exception_outcome","case":8,"raise":"TimeoutError"}
+{"func":"exception_outcome","case":9,"raise":"ValueError"}
+{"func":"task_context","case":10,"session_id":"s-1","task_id":"t-1","platform":"web"}
+{"func":"task_context","case":11,"session_id":"","task_id":"t-2","platform":"subagent"}
+{"func":"relay_turn_id","case":12,"session_id":"s-1","task_id":"t-1","uuid_hex":"abcdef1234567890"}
+{"func":"relay_turn_id","case":13,"session_id":"","task_id":"t-2","uuid_hex":"0123456789abcdef"}
+{"func":"relay_parent","case":14,"parent_session_id":"p-1","platform":"subagent"}
+{"func":"relay_parent","case":15,"parent_session_id":"p-1","platform":"web"}

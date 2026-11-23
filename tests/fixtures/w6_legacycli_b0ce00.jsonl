@@ -1,0 +1,21 @@
+{"func":"resolve","case":"bare","argv":[]}
+{"func":"resolve","case":"positional","argv":["hello","world"]}
+{"func":"resolve","case":"query_long","argv":["--query","hi"]}
+{"func":"resolve","case":"query_short","argv":["-q","hi"]}
+{"func":"resolve","case":"query_inline","argv":["--query=hi"]}
+{"func":"resolve","case":"conflict","argv":["hello","--query","hi"]}
+{"func":"resolve","case":"list_tools","argv":["--list-tools"]}
+{"func":"resolve","case":"list_tools_alias_verbose","argv":["--list_tools","--verbose"]}
+{"func":"resolve","case":"model_maxturns","argv":["--query","hi","--model","m1","--max-turns","5"]}
+{"func":"resolve","case":"keys_and_base","argv":["--query","hi","--api-key","k","--base-url","http://x","--log-prefix-chars","40"]}
+{"func":"resolve","case":"toolsets","argv":["--query","hi","--enabled-toolsets","a,b","--disabled-toolsets","c"]}
+{"func":"resolve","case":"save_flags","argv":["--save-trajectories","--save-sample","--query","hi"]}
+{"func":"resolve","case":"positional_strip","argv":["  hello  world  "]}
+{"func":"resolve","case":"blank_positionals","argv":["","  "]}
+{"func":"resolve","case":"empty_query","argv":["--query",""]}
+{"func":"resolve","case":"double_dash","argv":["--","--query"]}
+{"func":"resolve","case":"unknown_flag","argv":["--unknown"]}
+{"func":"resolve","case":"bad_int","argv":["--max-turns","abc"]}
+{"func":"resolve","case":"bool_explicit","argv":["--list-tools=true"]}
+{"func":"resolve","case":"short_plus_model","argv":["-q","hi","--model","m2"]}
+{"func":"resolve","case":"underscore_aliases","argv":["--api_key","k2","--base_url","u2","--max_turns","3","--log_prefix_chars","7","--query","ok"]}

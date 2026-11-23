@@ -1,0 +1,30 @@
+{"func":"result","case":"r_string","id":"m1","result":{"ok":true}}
+{"func":"result","case":"r_number","id":7,"result":null}
+{"func":"result","case":"r_null","id":null,"result":"text"}
+{"func":"error","case":"e_basic","id":"m2","code":-32601,"message":"Method not found"}
+{"func":"error","case":"e_empty","id":"m3","code":1,"message":""}
+{"func":"ids","case":"ids_mix","entries":[{"value":"a"},{"value":" b "},{"value":"a"},{"value":""},null,7,true,{"other":1}],"key":"value"}
+{"func":"ids","case":"ids_empty","entries":[],"key":"value"}
+{"func":"ids","case":"ids_nonarray","entries":{"value":"x"},"key":"value"}
+{"func":"ids","case":"ids_legacy","entries":[{"modelId":"m1"},{"modelId":"m2"},{"modelId":"m1"}],"key":"modelId"}
+{"func":"config_option","case":"cfg_none","session":{}}
+{"func":"config_option","case":"cfg_empty","session":{"configOptions":[]}}
+{"func":"config_option","case":"cfg_id_model","session":{"configOptions":[{"id":"model","options":[{"value":"m-a"},{"value":"m-b"}]}]}}
+{"func":"config_option","case":"cfg_category_model","session":{"configOptions":[{"category":"model","id":"cfg1","options":[{"value":"m-a"}]},{"id":"model","options":[{"value":"zzz"}]}]}}
+{"func":"config_option","case":"cfg_no_model","session":{"configOptions":[{"category":"other","id":"notmodel"}]}}
+{"func":"session_ids","case":"sess_v1","session":{"configOptions":[{"id":"model","options":[{"value":"m-a"},{"value":"m-b"},{"value":"m-a"}]}]}}
+{"func":"session_ids","case":"sess_legacy","session":{"models":{"availableModels":[{"modelId":"legacy-1"},{"modelId":"legacy-2"},{"modelId":"legacy-1"}]}}}
+{"func":"session_ids","case":"sess_none","session":{"note":"nothing"}}
+{"func":"legacy_ids","case":"leg_basic","session":{"models":{"availableModels":[{"modelId":"a"},{"modelId":" b "},{"modelId":""}]}}}
+{"func":"legacy_ids","case":"leg_absent","session":{}}
+{"func":"selection","case":"sel_v1_ok","session":{"sessionId":"s1","configOptions":[{"id":"model","options":[{"value":"m-a"}]}]},"model":"m-a","ph":""}
+{"func":"selection","case":"sel_v1_unknown","session":{"sessionId":"s1","configOptions":[{"id":"model","options":[{"value":"m-a"}]}]},"model":"m-b","ph":""}
+{"func":"selection","case":"sel_custom_cfgid","session":{"sessionId":" s1 ","configOptions":[{"category":"model","id":"cfg9","options":[{"value":"m-a"}]}]},"model":"m-a","ph":""}
+{"func":"selection","case":"sel_legacy_ok","session":{"sessionId":"s2","models":{"availableModels":[{"modelId":"legacy-1"}]}},"model":"legacy-1","ph":""}
+{"func":"selection","case":"sel_placeholder","session":{"sessionId":"s4","models":{"availableModels":[{"modelId":"acp"}]}},"model":"acp","ph":"acp"}
+{"func":"selection","case":"sel_empty_session","session":{"sessionId":""},"model":"m-a","ph":""}
+{"func":"selection","case":"sel_trim","session":{"sessionId":"s5"},"model":"  anything  ","ph":""}
+{"func":"timeout","case":"t_num_int","is_number":true,"number":30,"has_read":false,"read":0,"has_write":false,"write":0,"has_connect":false,"connect":0,"has_pool":false,"pool":0,"has_timeout":false,"timeout":0}
+{"func":"timeout","case":"t_num_float","is_number":true,"number":30.5,"has_read":false,"read":0,"has_write":false,"write":0,"has_connect":false,"connect":0,"has_pool":false,"pool":0,"has_timeout":false,"timeout":0}
+{"func":"timeout","case":"t_components","is_number":false,"number":0,"has_read":true,"read":10,"has_write":true,"write":20,"has_connect":true,"connect":5,"has_pool":true,"pool":7.5,"has_timeout":true,"timeout":1.25}
+{"func":"timeout","case":"t_default","is_number":false,"number":0,"has_read":false,"read":0,"has_write":false,"write":0,"has_connect":false,"connect":0,"has_pool":false,"pool":0,"has_timeout":false,"timeout":0}

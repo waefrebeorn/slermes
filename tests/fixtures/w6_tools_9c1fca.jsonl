@@ -1,0 +1,38 @@
+{"func":"tool_kind","tool_name":"read_file"}
+{"func":"tool_kind","tool_name":"skill_manage"}
+{"func":"tool_kind","tool_name":"terminal"}
+{"func":"tool_kind","tool_name":"web_search"}
+{"func":"tool_kind","tool_name":"_thinking"}
+{"func":"tool_kind","tool_name":"todo"}
+{"func":"tool_kind","tool_name":"unknown_plugin_tool"}
+{"func":"plural","count":0,"word":"file"}
+{"func":"plural","count":1,"word":"match","suffix":"es"}
+{"func":"plural","count":2,"word":"match","suffix":"es"}
+{"func":"nonempty","result":"  ok  "}
+{"func":"nonempty","result":"   "}
+{"func":"nonempty","result":null}
+{"func":"nonempty","result":""}
+{"func":"failure","data":{"success":false},"prefix":"Tool failed"}
+{"func":"failure","data":{"error":"boom"},"prefix":"patch failed for f"}
+{"func":"failure","data":{"success":true},"prefix":"X"}
+{"func":"failure","data":{"success":false,"error":null},"prefix":"E"}
+{"func":"truncate_text","text":"abcdef","limit":3}
+{"func":"truncate_text","text":"short","limit":5000}
+{"func":"truncate_text","text":"abcdefghij","limit":110}
+{"func":"fenced_text","text":"hello","language":"python"}
+{"func":"fenced_text","text":"a`b`c","language":""}
+{"func":"fenced_text","text":"x````y","language":"json"}
+{"func":"json_loads_maybe","value":"{\"a\":1}"}
+{"func":"json_loads_maybe","value":"not json"}
+{"func":"json_loads_maybe","value":"{\"a\":1}\n\n[Hint: use x]"}
+{"func":"json_loads_maybe","value":[1,2]}
+{"func":"coerce_args","raw":"{\"a\":1}"}
+{"func":"coerce_args","raw":"notjson"}
+{"func":"coerce_args","raw":[1,2]}
+{"func":"coerce_args","raw":"\"abc\""}
+{"func":"more","items":[1,2,3],"shown":1,"unit":" items"}
+{"func":"more","items":[1],"shown":1,"unit":""}
+{"func":"arg","args":{"a":"  hi  ","b":"x"},"keys":["a","b"],"default":"d"}
+{"func":"arg","args":{},"keys":["a"],"default":"d"}
+{"func":"arg","args":{"a":0,"b":5},"keys":["a","b"],"default":"d"}
+{"func":"arg","args":{"a":true},"keys":["a"],"default":"d"}

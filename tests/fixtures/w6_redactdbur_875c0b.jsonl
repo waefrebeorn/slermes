@@ -1,0 +1,23 @@
+{"func":"is_userinfo_placeholder","value":"<password>","case":"angle lower"}
+{"func":"is_userinfo_placeholder","value":"${PG_PASSWORD}","case":"braced env"}
+{"func":"is_userinfo_placeholder","value":"%PG_PASSWORD%","case":"percent env"}
+{"func":"is_userinfo_placeholder","value":"$PG","case":"bare env"}
+{"func":"is_userinfo_placeholder","value":"PASSWORD","case":"word casefold"}
+{"func":"is_userinfo_placeholder","value":"{pw}","case":"template braces"}
+{"func":"is_userinfo_placeholder","value":"$ecretPassw0rd","case":"real secret"}
+{"func":"is_userinfo_placeholder","value":"<Zq8x>","case":"mixed case angle"}
+{"func":"is_userinfo_placeholder","value":"{}","case":"empty braces"}
+{"func":"is_template_value","value":"{{ .Values.pw }}","case":"helm template"}
+{"func":"is_template_value","value":"${PG}","case":"env template"}
+{"func":"is_template_value","value":"plain","case":"plain"}
+{"func":"mask_query_params","value":"?user=app&password=secret&x=1","case":"basic"}
+{"func":"mask_query_params","value":"?password=${PG};password=real","case":"template sibling"}
+{"func":"mask_query_params","value":"?password=","case":"empty value"}
+{"func":"mask_query_params","value":"?pwd=abc&sslpassword=xyz","case":"pwd and sslpassword"}
+{"func":"redact","value":"postgresql://db/app?user=app&password=hunter2","case":"pg"}
+{"func":"redact","value":"mysql+pymysql://u:p@h/db?password=abc","case":"driver suffix"}
+{"func":"redact","value":"https://example.com/?password=keep","case":"non db scheme"}
+{"func":"redact","value":"text rediss://host:6379/0?password=secret end","case":"embedded redis"}
+{"func":"redact","value":"mongodb://h/db?password=pw;ssl=true","case":"semicolon data"}
+{"func":"redact","value":"postgresql://db/app?password=${PG};password=real","case":"template then real"}
+{"func":"redact","value":"postgresql://db/app?user=app&password=Zq7x;a=b","case":"password with semicolon"}

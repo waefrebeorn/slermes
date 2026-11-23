@@ -1,0 +1,14 @@
+{"func":"catches_up","case":"explicit_true","job":{"catch_up":true,"schedule":{"kind":"cron"}},"grace_override":false,"config_catch_up":false}
+{"func":"catches_up","case":"explicit_false","job":{"catch_up":false,"schedule":{"kind":"cron"}},"grace_override":false,"config_catch_up":true}
+{"func":"catches_up","case":"once_default","job":{"schedule":{"kind":"once"}},"grace_override":false,"config_catch_up":true}
+{"func":"catches_up","case":"bool_beats_once","job":{"catch_up":true,"schedule":{"kind":"once"}},"grace_override":false,"config_catch_up":false}
+{"func":"catches_up","case":"grace_override","job":{"grace_minutes":5,"schedule":{"kind":"cron"}},"grace_override":true,"config_catch_up":true}
+{"func":"catches_up","case":"recurring_config_true","job":{"schedule":{"kind":"interval"}},"grace_override":false,"config_catch_up":true}
+{"func":"catches_up","case":"recurring_config_false","job":{"schedule":{"kind":"cron"}},"grace_override":false,"config_catch_up":false}
+{"func":"catches_up","case":"string_value_once","job":{"catch_up":"yes","schedule":{"kind":"once"}},"grace_override":false,"config_catch_up":true}
+{"func":"catches_up","case":"int_value_false_cfg","job":{"catch_up":0},"grace_override":false,"config_catch_up":false}
+{"func":"catches_up","case":"int_value_true_cfg","job":{"catch_up":1},"grace_override":false,"config_catch_up":true}
+{"func":"catches_up","case":"no_schedule_key","job":{"id":"j1"},"grace_override":false,"config_catch_up":true}
+{"func":"catches_up","case":"null_schedule_grace","job":{"schedule":null,"grace_minutes":0},"grace_override":true,"config_catch_up":true}
+{"func":"catches_up","case":"empty_job","job":{},"grace_override":false,"config_catch_up":true}
+{"func":"catches_up","case":"empty_job_cfg_false","job":{},"grace_override":false,"config_catch_up":false}

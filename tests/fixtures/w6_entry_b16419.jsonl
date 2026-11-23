@@ -1,0 +1,15 @@
+{"func":"parse_args","argv":[]}
+{"func":"parse_args","argv":["--version"]}
+{"func":"parse_args","argv":["--check"]}
+{"func":"parse_args","argv":["--setup"]}
+{"func":"parse_args","argv":["--setup-browser"]}
+{"func":"parse_args","argv":["--yes"]}
+{"func":"parse_args","argv":["-y"]}
+{"func":"parse_args","argv":["--check","--version"]}
+{"func":"parse_args","argv":["-y","--setup-browser","--check"]}
+{"func":"parse_args","argv":["--version","--version","-y"]}
+{"func":"is_benign_probe","method":"ping"}
+{"func":"is_benign_probe","method":"health"}
+{"func":"is_benign_probe","method":"healthcheck"}
+{"func":"is_benign_probe","method":"method_not_found"}
+{"func":"is_benign_probe","method":""}

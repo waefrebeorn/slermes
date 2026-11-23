@@ -1,0 +1,22 @@
+{"func":"instant","case":"zulu","value":"2024-01-15T10:30:00Z"}
+{"func":"instant","case":"utc_offset","value":"2024-01-15T10:30:00+00:00"}
+{"func":"instant","case":"plus0530","value":"2024-01-15T10:30:00+05:30"}
+{"func":"instant","case":"minus0300","value":"2024-01-15T10:30:00-03:00"}
+{"func":"instant","case":"frac3","value":"2024-01-15T10:30:00.123Z"}
+{"func":"instant","case":"frac6","value":"2024-01-15T10:30:00.123456Z"}
+{"func":"instant","case":"frac9_trunc","value":"2024-01-15T10:30:00.123456789Z"}
+{"func":"instant","case":"space_sep","value":"2024-01-15 10:30:00+00:00"}
+{"func":"instant","case":"day_back","value":"2024-01-15T00:15:00+05:30"}
+{"func":"instant","case":"year_forward","value":"2024-12-31T23:30:00-05:00"}
+{"func":"instant","case":"leap_valid","value":"2024-02-29T12:00:00+00:00"}
+{"func":"instant","case":"leap_invalid","value":"2023-02-29T12:00:00+00:00"}
+{"func":"instant","case":"naive","value":"2024-01-15T10:30:00"}
+{"func":"instant","case":"date_only","value":"2024-01-15"}
+{"func":"instant","case":"garbage","value":"not-a-date"}
+{"func":"instant","case":"bad_month","value":"2024-13-01T00:00:00Z"}
+{"func":"instant","case":"bad_hour","value":"2024-01-15T25:00:00Z"}
+{"func":"instant","case":"offset_seconds","value":"2024-01-15T10:30:00+05:00:30"}
+{"func":"instant","case":"non_string_int","value":7}
+{"func":"instant","case":"non_string_null","value":null}
+{"func":"instant","case":"empty_string","value":""}
+{"func":"instant","case":"offset_no_colon","value":"2024-01-15T10:30:00+0530"}

@@ -1,0 +1,19 @@
+{"func": "paused_for_payment", "reason": "payment_past_due"}
+{"func": "paused_for_payment", "reason": "unknown"}
+{"func": "paused_for_payment", "reason": null}
+{"func": "parse_gauges", "value": [{"id": "day", "scope": "all", "label": " Dayly ", "used_bp": 2500, "resets_at_ms": 1000}, {"id": "week", "scope": "all", "label": "Weekly", "used_bp": 10000, "resets_at_ms": 2000}, {"id": "top_tier", "scope": "top_tier", "label": "Large", "used_bp": 9999}]}
+{"func": "parse_gauges", "value": "[{\"id\": \"day\", \"scope\": \"all\", \"label\": \"D\", \"used_bp\": 0}, {\"id\": \"month\", \"scope\": \"all\", \"label\": \"M\", \"used_bp\": 10000, \"resets_at_ms\": 1500}]"}
+{"func": "parse_gauges", "value": [{"id": "day", "scope": "other", "used_bp": 1}, {"id": "day", "scope": "all", "used_bp": 2}, {"id": "w", "scope": "all", "used_bp": true}, {"id": "x", "scope": "all", "used_bp": -1}, {"id": "y", "scope": "all", "used_bp": 10001}, "not a dict", {"scope": "all", "used_bp": 1}]}
+{"func": "parse_gauges", "value": []}
+{"func": "parse_gauges", "value": {"id": "day"}}
+{"func": "parse_gauges", "value": "{bad json"}
+{"func": "parse_gauges", "value": [{"id": "z", "scope": "all", "label": "   ", "used_bp": 5000}]}
+{"func": "gauge_title", "id": "day", "label": "Fallback"}
+{"func": "gauge_title", "id": "custom", "label": "Server label"}
+{"func": "gauge_limit_name", "id": "week", "label": "Server label"}
+{"func": "gauge_short", "id": "top_tier", "label": "Server label"}
+{"func": "all_scope", "value": [{"id": "day", "scope": "all", "used_bp": 1}, {"id": "top_tier", "scope": "top_tier", "used_bp": 2}]}
+{"func": "top_tier_gauge", "value": [{"id": "day", "scope": "all", "used_bp": 1}, {"id": "top_tier", "scope": "top_tier", "used_bp": 2}]}
+{"func": "binding_gauge", "value": [{"id": "day", "scope": "all", "used_bp": 10000, "resets_at_ms": 1000}, {"id": "week", "scope": "all", "used_bp": 10000, "resets_at_ms": 2000}, {"id": "top_tier", "scope": "top_tier", "used_bp": 10000, "resets_at_ms": 3000}]}
+{"func": "binding_gauge", "value": [{"id": "day", "scope": "all", "used_bp": 3000}, {"id": "week", "scope": "all", "used_bp": 9000}, {"id": "month", "scope": "all", "used_bp": 9000}]}
+{"func": "binding_gauge", "value": [{"id": "top_tier", "scope": "top_tier", "used_bp": 10000}]}

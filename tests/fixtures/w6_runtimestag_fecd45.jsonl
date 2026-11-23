@@ -1,0 +1,8 @@
+{"func":"plan","project":"C:/proj","destination":"C:/dest","wheelhouse":null,"cache":null,"offline":false,"uv_cache_default":"C:/uvcache","executable":"C:/py","check_rc":0,"check_stderr":"","cwd":"C:\\work\\base"}
+{"func":"plan","project":"C:/proj","destination":"C:/dest","wheelhouse":null,"cache":null,"offline":true,"uv_cache_default":"D:/cache","executable":"D:/py.exe","check_rc":0,"check_stderr":"","cwd":"C:\\work\\base"}
+{"func":"plan","project":"C:/proj","destination":"rel/dest","wheelhouse":null,"cache":"rel/cache","offline":false,"uv_cache_default":"C:/uvcache","executable":"C:/py","check_rc":0,"check_stderr":"","cwd":"C:\\work\\base"}
+{"func":"plan","project":"C:/p","destination":"C:/dest","wheelhouse":"C:/wh","cache":null,"offline":false,"uv_cache_default":"C:/uvcache","executable":"C:/py","check_rc":0,"check_stderr":"","cwd":"C:\\work\\base"}
+{"func":"plan","project":"C:/p","destination":"C:/dest","wheelhouse":null,"cache":null,"offline":false,"uv_cache_default":"C:/uvcache","executable":"C:/py","check_rc":1,"check_stderr":"missing packaging\n","cwd":"C:\\work\\base"}
+{"func":"plan","project":"C:/p","destination":"C:/dest","wheelhouse":null,"cache":null,"offline":false,"uv_cache_default":"C:/uvcache","executable":"C:/py","check_rc":2,"check_stderr":"  bad dep  ","cwd":"C:\\work\\base"}
+{"func":"plan","project":"C:/p","destination":"C:/dest","wheelhouse":"C:/wh","cache":"C:/explicit","offline":true,"uv_cache_default":"C:/uvcache","executable":"C:/py","check_rc":7,"check_stderr":"fail","cwd":"C:\\work\\base"}
+{"func":"plan","project":"C:/p","destination":"/root/dest","wheelhouse":null,"cache":null,"offline":false,"uv_cache_default":"C:/uvcache","executable":"C:/py","check_rc":0,"check_stderr":"","cwd":"C:\\work\\base"}

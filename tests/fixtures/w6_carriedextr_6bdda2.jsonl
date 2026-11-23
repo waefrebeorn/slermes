@@ -1,0 +1,10 @@
+{"func":"baseline","case":1,"extras":[],"carried":[],"automatic":[],"baseline":[],"plugins_none":true}
+{"func":"baseline","case":2,"extras":["telegram"],"carried":[],"automatic":[],"baseline":["telegram","voice"],"plugins_none":true}
+{"func":"baseline","case":3,"extras":["telegram"],"carried":[],"automatic":[],"baseline":["telegram"],"plugins_none":true}
+{"func":"baseline","case":4,"extras":[],"carried":[],"automatic":[],"baseline":["all","voice"],"plugins_none":true}
+{"func":"baseline","case":5,"extras":["voice"],"carried":["old"],"automatic":["auto"],"baseline":["telegram","all"],"plugins_none":true}
+{"func":"baseline","case":6,"extras":["voice"],"carried":["old"],"automatic":["auto"],"baseline":["telegram","all"],"plugins_none":false}
+{"func":"baseline","case":7,"extras":["b","a"],"carried":[],"automatic":[],"baseline":["c","a"],"plugins_none":true}
+{"func":"baseline","case":8,"extras":[],"carried":[],"automatic":[],"baseline":["all"],"plugins_none":true}
+{"func":"baseline","case":9,"extras":["z"],"carried":["z"],"automatic":[],"baseline":["a","b","c"],"plugins_none":true}
+{"func":"baseline","case":10,"extras":[],"carried":["x"],"automatic":["y"],"baseline":[],"plugins_none":false}

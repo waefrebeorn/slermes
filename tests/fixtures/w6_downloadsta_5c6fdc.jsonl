@@ -1,0 +1,10 @@
+{"func":"collect","case":1,"grace":3600,"files":[{"name":"a.part","age":1},{"name":"a.ranges","age":1},{"name":"b.part","age":99999}]}
+{"func":"collect","case":2,"grace":-1,"files":[{"name":"a.part","age":1}]}
+{"func":"collect","case":3,"grace":3600,"files":[{"name":"a.part","age":99999},{"name":"b.ranges","age":99999}]}
+{"func":"collect","case":4,"grace":0,"files":[{"name":"z.part","age":99999}]}
+{"func":"collect","case":5,"grace":3600,"files":[{"name":"a.part","age":1}]}
+{"func":"collect","case":6,"grace":3600,"files":[{"name":"a.part","age":1},{"name":"a.ranges","age":99999}]}
+{"func":"collect","case":7,"grace":3600,"files":[{"name":"a.part","age":99999},{"name":"a.ranges","age":1}]}
+{"func":"collect","case":8,"grace":3600,"files":[{"name":"m.part","age":1},{"name":"n.ranges","age":1},{"name":"o.part","age":99999}]}
+{"func":"collect","case":9,"grace":7200,"files":[{"name":"k.part","age":5000}]}
+{"func":"collect","case":10,"grace":60,"files":[{"name":"k.part","age":5000}]}

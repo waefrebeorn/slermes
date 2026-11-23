@@ -1,0 +1,20 @@
+{"func":"pd","case":1,"root_exists":true,"root_rel":false,"parent_worktrees":false,"parent_isdir":false}
+{"func":"pd","case":2,"root_exists":false,"root_rel":true,"parent_worktrees":false,"parent_isdir":false}
+{"func":"pd","case":3,"root_exists":false,"root_rel":false,"parent_worktrees":true,"parent_isdir":true}
+{"func":"pd","case":4,"root_exists":false,"root_rel":false,"parent_worktrees":true,"parent_isdir":false}
+{"func":"pd","case":5,"root_exists":false,"root_rel":false,"parent_worktrees":false,"parent_isdir":false}
+{"func":"orph","case":6,"state_isdir":true,"record_isfile":true,"record_root":"/chk","root_exists":false,"provably":false,"retention":null,"age":0}
+{"func":"orph","case":7,"state_isdir":true,"record_isfile":true,"record_root":"/chk","root_exists":false,"provably":true,"retention":null,"age":0}
+{"func":"orph","case":8,"state_isdir":true,"record_isfile":true,"record_root":"/chk","root_exists":true,"provably":false,"retention":null,"age":0}
+{"func":"orph","case":9,"state_isdir":true,"record_isfile":true,"record_root":"","root_exists":false,"provably":false,"retention":null,"age":0}
+{"func":"orph","case":10,"state_isdir":true,"record_isfile":true,"record_root":"  /chk  ","root_exists":false,"provably":false,"retention":null,"age":0}
+{"func":"orph","case":11,"state_isdir":false,"record_isfile":true,"record_root":"/chk","root_exists":false,"provably":false,"retention":null,"age":0}
+{"func":"orph","case":12,"state_isdir":true,"record_isfile":false,"record_root":"/chk","root_exists":false,"provably":false,"retention":null,"age":0}
+{"func":"orph","case":13,"state_isdir":true,"record_isfile":true,"record_root":"/chk","root_exists":false,"provably":false,"retention":100,"age":200}
+{"func":"orph","case":14,"state_isdir":true,"record_isfile":true,"record_root":"/chk","root_exists":false,"provably":false,"retention":100,"age":50}
+{"func":"retention","case":15,"config":{}}
+{"func":"retention","case":16,"config":{"worktrees":{"install_state_retention_days":5}}}
+{"func":"retention","case":17,"config":{"worktrees":{"install_state_retention_days":0}}}
+{"func":"retention","case":18,"config":{"worktrees":{"install_state_retention_days":"9"}}}
+{"func":"retention","case":19,"config":{"worktrees":{"install_state_retention_days":-1}}}
+{"func":"retention","case":20,"config":{"worktrees":{"install_state_retention_days":0.5}}}

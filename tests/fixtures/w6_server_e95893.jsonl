@@ -1,0 +1,19 @@
+{"func":"flatten","case":1,"value":"  hello  "}
+{"func":"flatten","case":2,"value":[{"text":" A "},{"type":"text","content":"B"}," C "]}
+{"func":"flatten","case":3,"value":[{"text":""},"   ",{"foo":"bar"}]}
+{"func":"flatten","case":4,"value":[]}
+{"func":"flatten","case":5,"value":123}
+{"func":"flatten","case":6,"value":[{"text":"x"},{"type":"text","content":5}]}
+{"func":"reasoning","case":7,"message":{"reasoning_content":" rc ","reasoning":"r2"}}
+{"func":"reasoning","case":8,"message":{"reasoning":" r2 "}}
+{"func":"reasoning","case":9,"message":{}}
+{"func":"notice","case":10,"message":{}}
+{"func":"notice","case":11,"message":{"display_kind":"other","display_metadata":{"content_refused":{"notice":"x"}}}}
+{"func":"notice","case":12,"message":{"display_kind":"content_refused","display_metadata":"{\"content_refused\":{\"notice\":\"  Custom notice  \"}}"}}
+{"func":"notice","case":13,"message":{"display_kind":"content_refused","display_metadata":"not json"}}
+{"func":"notice","case":14,"message":{"display_kind":"content_refused","display_metadata":{"content_refused":{"notice":""}}}}
+{"func":"attach","case":15,"interrupted":"Stop","guidance":"do X"}
+{"func":"tool_call","case":16,"tool_call":{"function":{"name":"read_file","arguments":"{\"path\":\"/a\"}"}}}
+{"func":"tool_call","case":17,"tool_call":{"name":"fallback","args":{"k":1}}}
+{"func":"tool_call","case":18,"tool_call":{}}
+{"func":"tool_call","case":19,"tool_call":{"function":{"name":"bad","arguments":"notjson"}}}

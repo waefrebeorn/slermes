@@ -1,0 +1,12 @@
+{"func":"merge","local":{"id":"j1","name":"old","prompt":"p","next_run_at":"T","state":"ok","repeat":{"completed":5,"times":3}},"authored":{"name":"new","schedule":"0 9 * * *","repeat":{"times":7}}}
+{"func":"merge","local":{"id":"j2","schedule":"daily","state":"x"},"authored":{"prompt":"hi"}}
+{"func":"merge","local":{"schedule":"daily","next_run_at":"T"},"authored":{"schedule":"daily"}}
+{"func":"merge","local":{"id":"j3"},"authored":{"schedule":null,"timezone":"UTC"}}
+{"func":"merge","local":{"schedule":"old","pending_slot":{"x":1},"next_run_at":"T"},"authored":{"schedule":"new","schedule_display":"human"}}
+{"func":"merge","local":{"id":"j6","name":"n","state":"enabled"},"authored":{}}
+{"func":"merge","local":{"id":"j7"},"authored":{"model":"m","provider":"openai","skills":["a","b"],"deliver":"local","workdir":"/tmp","grace_minutes":5,"catch_up":true}}
+{"func":"merge","local":{"repeat":{"times":9}},"authored":{}}
+{"func":"merge","local":{"timezone":"America/New_York","schedule":"@daily","pending_slot":1},"authored":{"timezone":"UTC"}}
+{"func":"merge","local":{"id":"j10"},"authored":{"repeat":{"times":null}}}
+{"func":"merge","local":{"repeat":{}},"authored":{}}
+{"func":"merge","local":{"id":"j12","schedule":"","next_run_at":"T"},"authored":{"schedule":"@hourly"}}

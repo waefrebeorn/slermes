@@ -1,0 +1,23 @@
+{"func":"final_text","case":1,"agent_kind":"dict","value":{"final_response":"hello"},"has_event":false,"streamed":null}
+{"func":"final_text","case":2,"agent_kind":"dict","value":{"final_response":"  hi  "},"has_event":false,"streamed":null}
+{"func":"final_text","case":3,"agent_kind":"dict","value":{"final_response":""},"has_event":false,"streamed":null}
+{"func":"final_text","case":4,"agent_kind":"dict","value":{"final_response":null},"has_event":false,"streamed":null}
+{"func":"final_text","case":5,"agent_kind":"str","value":"plain text","has_event":false,"streamed":null}
+{"func":"final_text","case":6,"agent_kind":"str","value":"","has_event":false,"streamed":null}
+{"func":"final_text","case":7,"agent_kind":"dict","value":{"final_response":"   "},"has_event":true,"streamed":"streamed value"}
+{"func":"final_text","case":8,"agent_kind":"dict","value":{"final_response":""},"has_event":true,"streamed":"  stream  "}
+{"func":"final_text","case":9,"agent_kind":"dict","value":{"final_response":""},"has_event":true,"streamed":"   "}
+{"func":"final_text","case":10,"agent_kind":"dict","value":{"final_response":42},"has_event":false,"streamed":null}
+{"func":"final_text","case":11,"agent_kind":"dict","value":{"final_response":0},"has_event":false,"streamed":null}
+{"func":"final_text","case":12,"agent_kind":"other","value":123,"has_event":false,"streamed":null}
+{"func":"goal_max_turns","case":13,"goals":{"max_turns":5}}
+{"func":"goal_max_turns","case":14,"goals":{"max_turns":0}}
+{"func":"goal_max_turns","case":15,"goals":{"max_turns":"7"}}
+{"func":"goal_max_turns","case":16,"goals":{}}
+{"func":"goal_max_turns","case":17,"goals":null}
+{"func":"goal_max_turns","case":18,"goals":{"max_turns":true}}
+{"func":"goal_max_turns","case":19,"goals":{"max_turns":"0"}}
+{"func":"goal_max_turns","case":20,"goals":{"max_turns":2.9}}
+{"func":"goal_max_turns","case":21,"goals":{"max_turns":-3}}
+{"func":"goal_max_turns","case":22,"goals":{"max_turns":"abc"}}
+{"func":"goal_max_turns","case":23,"goals":{"max_turns":false}}

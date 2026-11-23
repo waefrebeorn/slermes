@@ -1,0 +1,11 @@
+{"func":"pcm","case":"empty","samples":[],"sample_rate":"24000"}
+{"func":"pcm","case":"silence","samples":[0.0,0.0,0.0],"sample_rate":"24000"}
+{"func":"pcm","case":"full scale","samples":[1.0,-1.0],"sample_rate":"24000"}
+{"func":"pcm","case":"clipped","samples":[2.0,-2.0,0.5,-0.5],"sample_rate":"24000"}
+{"func":"pcm","case":"float32 rounding","samples":[0.1,0.2,0.3],"sample_rate":"24000"}
+{"func":"pcm","case":"triangular wave","samples":[0.0,0.25,0.5,0.75,1.0,0.75,0.5,0.25],"sample_rate":"8000"}
+{"func":"wav","case":"empty header","samples":[],"sample_rate":"24000"}
+{"func":"wav","case":"single sample","samples":[0.5],"sample_rate":"24000"}
+{"func":"wav","case":"alternating","samples":[1.0,-1.0,0.0],"sample_rate":"8000"}
+{"func":"wav","case":"cd rate","samples":[0.1,-0.2,0.3],"sample_rate":"44100"}
+{"func":"wav","case":"clipped wave","samples":[3.0,-3.0,0.0],"sample_rate":"16000"}

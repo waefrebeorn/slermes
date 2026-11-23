@@ -1,0 +1,13 @@
+{"func":"find","case":"empty","text":""}
+{"func":"find","case":"plain valid min suffix","text":"0123456789abcdef0123456789abcdef.AbcDef0123456789"}
+{"func":"find","case":"long alnum suffix","text":"key is aaaa0123456789abcdef0123456789abcdef.abcdefghijklmnopqrstuvwxyz0123456789 done"}
+{"func":"find","case":"lookbehind letter","text":"x0123456789abcdef0123456789abcdef.abcdefghijklmnop"}
+{"func":"find","case":"lookbehind dot","text":".0123456789abcdef0123456789abcdef.abcdefghijklmnop"}
+{"func":"find","case":"lookahead dash","text":"0123456789abcdef0123456789abcdef.abcdefghijklmnop-end"}
+{"func":"find","case":"lookahead underscore","text":"0123456789abcdef0123456789abcdef.abcdefghijklmnop_foo"}
+{"func":"find","case":"uppercase hex no match","text":"0123456789ABCDEF0123456789abcdef.abcdefghijklmnop"}
+{"func":"find","case":"short hex 31","text":"0123456789abcde0123456789abcdef.abcdefghijklmnop"}
+{"func":"find","case":"short suffix 15","text":"0123456789abcdef0123456789abcdef.abcdefghijklmno"}
+{"func":"find","case":"content hash bundle no match","text":"0123456789abcdef0123456789abcdef.abcdef0123456789bundle"}
+{"func":"find","case":"two keys in text","text":"0123456789abcdef0123456789abcdef.aaaaaaaaaaaaaaaa and 0123456789abcdef0123456789abcdef.BBBBBBBBBBBBBBBB"}
+{"func":"find","case":"key at end of string","text":"prefix 0123456789abcdef0123456789abcdef.A1B2C3D4E5F6G7H8I"}

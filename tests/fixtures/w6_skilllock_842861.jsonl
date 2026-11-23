@@ -1,0 +1,18 @@
+{"func":"skill_refusal","name":"my-skill"}
+{"func":"skill_refusal","name":""}
+{"func":"unquoted_newlines_to_semicolons","command":"echo hi\nrm -rf x"}
+{"func":"unquoted_newlines_to_semicolons","command":"echo 'a\nb'\nc"}
+{"func":"segments","tokens":["echo","hi",">","out.txt","&&","ls"]}
+{"func":"segments","tokens":["cmd","2>","err.txt",";","next"]}
+{"func":"segments","tokens":["cmd",">","/dev/null","|","grep","x"]}
+{"func":"segments","tokens":["cmd",">&","2"]}
+{"func":"segments","tokens":["a","<","in.txt","&&","b"]}
+{"func":"operands","args":["-la","file","--verbose","x"]}
+{"func":"operands","args":["-a","-b"]}
+{"func":"target_directory","args":["-t","/tmp","a","b"]}
+{"func":"target_directory","args":["--target-directory=/dest","-r","src"]}
+{"func":"target_directory","args":["-tfoo","x"]}
+{"func":"target_directory","args":["cp","a","b"]}
+{"func":"find_exec_commands","args":["find",".","-exec","rm","{}",";","-delete"]}
+{"func":"find_exec_commands","args":["find",".","-exec",";","-ok","echo","{}","+"]}
+{"func":"find_exec_commands","args":["find",".","-print"]}

@@ -1,0 +1,15 @@
+{"func":"enabled","config":{}}
+{"func":"enabled","config":{"plugins":{}}}
+{"func":"enabled","config":{"plugins":{"enabled":"not-a-list"}}}
+{"func":"enabled","config":{"plugins":{"enabled":["a","b","c"],"disabled":["b"]}}}
+{"func":"enabled","config":{"plugins":{"enabled":["ns/a","ns/b","plain"],"disabled":["a"]}}}
+{"func":"enabled","config":{"plugins":{"enabled":["a","a","b","a"],"disabled":[]}}}
+{"func":"enabled","config":{"plugins":{"enabled":["","a",null,5,true,"b"],"disabled":null}}}
+{"func":"enabled","config":{"plugins":{"enabled":["x","y"],"disabled":"x"}}}
+{"func":"enabled","config":{"plugins":{"enabled":["p/q","p","q"],"disabled":["p/q"]}}}
+{"func":"spellings","dir_name":"a/b","key":null,"manifest_name":null}
+{"func":"spellings","dir_name":"C:\\x\\plug","key":"ns/plug","manifest_name":null}
+{"func":"spellings","dir_name":"d","key":"d","manifest_name":"manifest-name"}
+{"func":"spellings","dir_name":"x","key":"","manifest_name":""}
+{"func":"spellings","dir_name":"p/q","key":"a/b/c","manifest_name":"z"}
+{"func":"spellings","dir_name":"solo","key":"same","manifest_name":"same"}

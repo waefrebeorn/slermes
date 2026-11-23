@@ -1,0 +1,10 @@
+{"func":"doc"}
+{"func":"doc","pad":"x"}
+{"func":"doc","pad":null}
+{"func":"names"}
+{"func":"names","pad":1}
+{"func":"has_symbol","name":""}
+{"func":"has_symbol","name":"__doc__"}
+{"func":"has_symbol","name":"plugins"}
+{"func":"has_symbol","name":"Hermes plugins package"}
+{"func":"has_symbol","name":"_jiter_preload"}

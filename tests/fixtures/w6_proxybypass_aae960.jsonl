@@ -1,0 +1,40 @@
+{"func":"split","case":"empty","value":""}
+{"func":"split","case":"host port lower","value":"EXAMPLE.COM:8080"}
+{"func":"split","case":"url userinfo","value":"http://user:pass@Host:8080/path"}
+{"func":"split","case":"url v6","value":"https://[::1]:443/x"}
+{"func":"split","case":"bracket v6 port","value":"[2001:DB8::1]:9999"}
+{"func":"split","case":"bad port bare","value":"host:abc"}
+{"func":"split","case":"bad port url","value":"http://host:abc/x"}
+{"func":"split","case":"protocol relative trailing dot","value":"//HOST./path"}
+{"func":"split","case":"bare out of range port","value":"host:99999"}
+{"func":"split","case":"url out of range port","value":"http://host:99999"}
+{"func":"split","case":"ipv4 bare","value":"192.168.1.1"}
+{"func":"loopback","case":"localhost","host":"localhost"}
+{"func":"loopback","case":"v4 loopback","host":"127.0.0.1"}
+{"func":"loopback","case":"v4 loopback any","host":"127.1.2.3"}
+{"func":"loopback","case":"bracket v6 loopback","host":"[::1]"}
+{"func":"loopback","case":"mapped loopback","host":"::ffff:127.0.0.1"}
+{"func":"loopback","case":"v6 loopback","host":"::1"}
+{"func":"loopback","case":"remote v4","host":"8.8.8.8"}
+{"func":"loopback","case":"remote v6","host":"2001:db8::1"}
+{"func":"entries","case":"mixed separators","value":"a, b ,,c\td"}
+{"func":"entries","case":"blank","value":"  "}
+{"func":"match","case":"wildcard","entry":"*","host":"example.com","has_port":false,"port":0}
+{"func":"match","case":"exact apex","entry":"example.com","host":"example.com","has_port":false,"port":0}
+{"func":"match","case":"subdomain","entry":"example.com","host":"sub.example.com","has_port":false,"port":0}
+{"func":"match","case":"dot prefix non match","entry":".example.com","host":"notexample.com","has_port":false,"port":0}
+{"func":"match","case":"star prefix","entry":"*.example.com","host":"a.example.com","has_port":false,"port":0}
+{"func":"match","case":"cidr v4 hit","entry":"10.0.0.0/8","host":"10.1.2.3","has_port":false,"port":0}
+{"func":"match","case":"cidr v4 miss","entry":"10.0.0.0/8","host":"11.1.2.3","has_port":false,"port":0}
+{"func":"match","case":"literal ip","entry":"192.168.1.1","host":"192.168.1.1","has_port":false,"port":0}
+{"func":"match","case":"with port hit","entry":"host:8080","host":"host","has_port":true,"port":8080}
+{"func":"match","case":"with port miss","entry":"host:8080","host":"host","has_port":true,"port":9090}
+{"func":"match","case":"cidr v6 hit","entry":"2001:db8::/32","host":"2001:db8::5","has_port":false,"port":0}
+{"func":"bypass","case":"loopback target","targets":["http://localhost:8000/x"],"no_proxy_value":"example.com"}
+{"func":"bypass","case":"explicit entry","targets":["http://example.com"],"no_proxy_value":"localhost,example.com"}
+{"func":"bypass","case":"empty no proxy","targets":["http://example.com"],"no_proxy_value":""}
+{"func":"bypass","case":"no targets","targets":[],"no_proxy_value":"example.com"}
+{"func":"connect","case":"loopback url","url":"ws://127.0.0.1:9222/devtools"}
+{"func":"connect","case":"remote url","url":"http://example.com"}
+{"func":"request","case":"loopback v6 url","url":"http://[::1]:1234"}
+{"func":"request","case":"remote url","url":"http://example.com"}

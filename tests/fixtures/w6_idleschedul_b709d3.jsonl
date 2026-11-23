@@ -1,0 +1,14 @@
+{"func":"parse_iso_ok","ts":"2024-01-01T00:00:00+00:00","case":"aware tz"}
+{"func":"parse_iso_ok","ts":"2024-01-01T00:00:00","case":"naive"}
+{"func":"parse_iso_ok","ts":"2024-05-05","case":"date only"}
+{"func":"parse_iso_ok","ts":"2024-05-05T10:20:30Z","case":"Zulu"}
+{"func":"parse_iso_ok","ts":"","case":"empty falsy"}
+{"func":"parse_iso_ok","ts":"not-a-date","case":"garbage"}
+{"func":"interval_due","state":{},"interval_hours":1.0,"now":"2024-01-01T00:00:00+00:00","seed_summary":"init","case":"seed defers"}
+{"func":"interval_due","state":{"last_run_at":"2024-01-01T00:00:00+00:00"},"interval_hours":1.0,"now":"2024-01-01T00:30:00+00:00","seed_summary":"x","case":"not yet"}
+{"func":"interval_due","state":{"last_run_at":"2024-01-01T00:00:00+00:00"},"interval_hours":1.0,"now":"2024-01-01T01:00:00+00:00","seed_summary":"x","case":"exactly due"}
+{"func":"interval_due","state":{"last_run_at":"2024-01-01T00:00:00+00:00"},"interval_hours":1.0,"now":"2024-01-02T00:00:00+00:00","seed_summary":"x","case":"well past"}
+{"func":"interval_due","state":{"last_run_at":"2024-01-01T00:00:00"},"interval_hours":1.5,"now":"2024-01-01T02:00:00+00:00","seed_summary":"x","case":"naive last"}
+{"func":"interval_due","state":{"last_run_at":"2023-12-31T19:00:00-05:00"},"interval_hours":1.0,"now":"2024-01-01T00:30:00+00:00","seed_summary":"x","case":"offset tz"}
+{"func":"interval_due","state":{"last_run_at":"2024-01-01T00:00:00+00:00"},"interval_hours":1.5,"now":"2024-01-01T01:30:00+00:00","seed_summary":"x","case":"fractional boundary"}
+{"func":"interval_due","state":{"last_run_at":"garbage"},"interval_hours":1.0,"now":"2024-02-02T03:04:05+00:00","seed_summary":"reseed","case":"bad last reseeds"}

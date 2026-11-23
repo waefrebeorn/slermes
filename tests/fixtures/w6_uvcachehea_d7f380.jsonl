@@ -1,0 +1,22 @@
+{"func":"normalize","case":"underscores dots","name":"Foo_Bar.baz"}
+{"func":"normalize","case":"uppercase","name":"MY.Package"}
+{"func":"normalize","case":"runs collapse","name":"a--b__c..d"}
+{"func":"normalize","case":"empty","name":""}
+{"func":"normalize","case":"already normal","name":"lxml"}
+{"func":"valid","case":"valid hyphen","name":"foo-bar"}
+{"func":"valid","case":"leading hyphen","name":"-bad"}
+{"func":"valid","case":"trailing dot","name":"a.b_"}
+{"func":"valid","case":"single char","name":"a"}
+{"func":"valid","case":"empty","name":""}
+{"func":"valid","case":"mixed sep","name":"a.b_c-d"}
+{"func":"failed","case":"invalid wheel","output":"error: Failed to install: lxml-6.1.3-cp314-none-any.whl (lxml==6.1.3): the wheel is invalid"}
+{"func":"failed","case":"record invalid","output":"Failed to install: My_Pkg-2.0-py3-none-any.whl -> `record` file is invalid"}
+{"func":"failed","case":"resolver no cause","output":"error: Failed to install: lxml-6.1.3-cp314-none-any.whl: no matching distribution found"}
+{"func":"failed","case":"missing archive","output":"No such file or directory (os error 2): archive-v0/abc123/WHEEL"}
+{"func":"failed","case":"two wheels","output":"Failed to install: zope.interface-5.4.0-cp311.whl the wheel is invalid; Failed to install: attrs-23.1.0.whl the wheel is invalid"}
+{"func":"failed","case":"os error 3 windows","output":"archive-v0\\deadbeef\\METADATA (os error 3) the wheel is invalid"}
+{"func":"dist_name","case":"simple","info":"foo-1.0.dist-info"}
+{"func":"dist_name","case":"sep in name","info":"my_pkg-2.0.dist-info"}
+{"func":"dist_name","case":"multi dash name","info":"zope-interface-5.4.0.dist-info"}
+{"func":"dist_name","case":"no suffix","info":"foo-1.0"}
+{"func":"dist_name","case":"no version","info":"foo-.dist-info"}

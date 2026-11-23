@@ -1,0 +1,27 @@
+{"func":"validate","case":"valid min","value":"1","param_name":"guild_id"}
+{"func":"validate","case":"valid max 20","value":"12345678901234567890","param_name":"channel_id"}
+{"func":"validate","case":"empty","value":"","param_name":"guild_id"}
+{"func":"validate","case":"21 digits","value":"123456789012345678901","param_name":"guild_id"}
+{"func":"validate","case":"letters","value":"12abc","param_name":"user_id"}
+{"func":"validate","case":"unicode digits","value":"１２３","param_name":"guild_id"}
+{"func":"channel_type","case":"text","type_id":"0"}
+{"func":"channel_type","case":"voice","type_id":"2"}
+{"func":"channel_type","case":"forum","type_id":"15"}
+{"func":"channel_type","case":"unknown","type_id":"99"}
+{"func":"channel_type","case":"negative","type_id":"-1"}
+{"func":"limit","case":"under cap","limit":"5","default_value":"20"}
+{"func":"limit","case":"over cap","limit":"500","default_value":"20"}
+{"func":"limit","case":"invalid fallback","limit":"abc","default_value":"50"}
+{"func":"limit","case":"negative","limit":"-3","default_value":"20"}
+{"func":"limit","case":"whitespace","limit":"  17  ","default_value":"20"}
+{"func":"enrich_403","case":"pin","action":"pin_message","body":"Missing Access"}
+{"func":"enrich_403","case":"add role","action":"add_role","body":"forbidden"}
+{"func":"enrich_403","case":"search","action":"search_members","body":"x"}
+{"func":"enrich_403","case":"unknown","action":"mystery","body":"raw"}
+{"func":"token_key","case":"empty","token":""}
+{"func":"token_key","case":"abc","token":"abc"}
+{"func":"token_key","case":"long token","token":"MTIzNDU2Nzg5MDEyMzQ1Njc4OWFzZGY="}
+{"func":"available","case":"all","caps":{"has_members_intent":true,"detected":false},"allowlist":null}
+{"func":"available","case":"no members","caps":{"has_members_intent":false},"allowlist":null}
+{"func":"available","case":"allowlist","caps":{"has_members_intent":true},"allowlist":["fetch_messages","member_info"]}
+{"func":"available","case":"empty allowlist","caps":{"has_members_intent":true},"allowlist":[]}

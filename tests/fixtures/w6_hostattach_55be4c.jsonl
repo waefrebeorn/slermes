@@ -1,0 +1,15 @@
+{"func":"served","identity":{}}
+{"func":"served","identity":{"profile":"work"}}
+{"func":"served","identity":{"served_profiles":["default","work"]}}
+{"func":"served","identity":{"served_profiles":[{"profile_id":"alice"},{"home":"/home/u/.hermes/profiles/bob"}]}}
+{"func":"served","identity":{"served_profiles":[]}}
+{"func":"served","identity":{"served_profiles":[{"home":"/"}]}}
+{"func":"served","identity":{"served_profiles":[{"profile_id":"x","home":""}]}}
+{"func":"served","identity":{"profile":""}}
+{"func":"serves","served_known":true,"profiles":["Default","WORK"],"profile":"work"}
+{"func":"serves","served_known":true,"profiles":["WORK"],"profile":" work "}
+{"func":"serves","served_known":false,"profiles":["work"],"profile":"work"}
+{"func":"serves","served_known":true,"profiles":[],"profile":"default"}
+{"func":"serves","served_known":true,"profiles":["default"],"profile":""}
+{"func":"rescan_msg","profile":"work"}
+{"func":"rescan_msg","profile":"default"}

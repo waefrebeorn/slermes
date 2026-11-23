@@ -1,0 +1,11 @@
+{"func":"dist_dir","case":1,"project_root":"proj","dist_env":null}
+{"func":"dist_dir","case":2,"project_root":"checkout","dist_env":""}
+{"func":"dist_dir","case":3,"project_root":"proj","dist_env":"custom/dist"}
+{"func":"dist_dir","case":4,"project_root":"proj","dist_env":"/opt/bundle"}
+{"func":"dist_dir","case":5,"project_root":"worktree-2","dist_env":"releases/webapp"}
+{"func":"mark_stale","case":6,"packaged":false,"index_exists":false}
+{"func":"mark_stale","case":7,"packaged":false,"index_exists":true}
+{"func":"mark_stale","case":8,"packaged":true,"index_exists":false}
+{"func":"mark_stale","case":9,"packaged":true,"index_exists":true}
+{"func":"bundle_stale","case":10,"marker_exists":false}
+{"func":"bundle_stale","case":11,"marker_exists":true}

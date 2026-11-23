@@ -1,0 +1,30 @@
+{"func":"resolve","case":"cfg null","cfg":null}
+{"func":"resolve","case":"empty cfg","cfg":{}}
+{"func":"resolve","case":"vision null","cfg":{"vision":null}}
+{"func":"resolve","case":"explicit zero","cfg":{"vision":{"replay_recent_images":0}}}
+{"func":"resolve","case":"explicit five","cfg":{"vision":{"replay_recent_images":5}}}
+{"func":"resolve","case":"explicit null","cfg":{"vision":{"replay_recent_images":null}}}
+{"func":"resolve","case":"negative","cfg":{"vision":{"replay_recent_images":-1}}}
+{"func":"resolve","case":"bool true","cfg":{"vision":{"replay_recent_images":true}}}
+{"func":"resolve","case":"string value","cfg":{"vision":{"replay_recent_images":"3"}}}
+{"func":"resolve","case":"vision not dict","cfg":{"vision":"nope"}}
+{"func":"frontier","case":"equal","total":3,"keep":3}
+{"func":"frontier","case":"under","total":5,"keep":3}
+{"func":"frontier","case":"exact batch","total":6,"keep":3}
+{"func":"frontier","case":"two batches","total":10,"keep":3}
+{"func":"frontier","case":"eleven","total":11,"keep":3}
+{"func":"frontier","case":"zero total","total":0,"keep":3}
+{"func":"split","case":"single image","content":"[Image attached at: /x.png]\n[screenshot]"}
+{"func":"split","case":"text around","content":"Hello\n[Image attached at: /x.png]\n[screenshot]\nBye"}
+{"func":"split","case":"detail low","content":"[Image attached at: /x.png]\n[screenshot detail=low]"}
+{"func":"split","case":"detail auto","content":"[Image attached at: /x.png]\n[screenshot detail=auto]"}
+{"func":"split","case":"remote hint empty ref","content":"[Image attached: https://example.com/x.png]\n[screenshot]"}
+{"func":"split","case":"count mismatch","content":"[screenshot]\n[screenshot]"}
+{"func":"split","case":"no markers","content":"plain text"}
+{"func":"split","case":"empty content","content":""}
+{"func":"replay","case":"no user messages","keep":3,"urls":{},"messages":[{"role":"assistant","content":"hi"}]}
+{"func":"replay","case":"one image replayed","keep":3,"urls":{"/x.png":"data:image/png;base64,AAA"},"messages":[{"role":"user","content":"[Image attached at: /x.png]\n[screenshot]"}]}
+{"func":"replay","case":"url missing keeps marker","keep":3,"urls":{},"messages":[{"role":"user","content":"[Image attached at: /x.png]\n[screenshot]"}]}
+{"func":"replay","case":"detail carried into image url","keep":3,"urls":{"/x.png":"data:image/png;base64,BBB"},"messages":[{"role":"user","content":"[Image attached at: /x.png]\n[screenshot detail=low]"}]}
+{"func":"replay","case":"frontier drops older","keep":1,"urls":{"/a.png":"data:a","/b.png":"data:b","/c.png":"data:c","/d.png":"data:d"},"messages":[{"role":"user","content":"[Image attached at: /a.png]\n[screenshot]"},{"role":"user","content":"[Image attached at: /b.png]\n[screenshot]"},{"role":"user","content":"[Image attached at: /c.png]\n[screenshot]"},{"role":"user","content":"[Image attached at: /d.png]\n[screenshot]"}]}
+{"func":"replay","case":"native image holds slot","keep":1,"urls":{"/a.png":"data:a","/b.png":"data:b"},"messages":[{"role":"user","content":[{"type":"image_url","image_url":{"url":"x"}}]},{"role":"user","content":"[Image attached at: /a.png]\n[screenshot]"},{"role":"user","content":"[Image attached at: /b.png]\n[screenshot]"}]}

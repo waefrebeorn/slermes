@@ -1,0 +1,14 @@
+{"func":"should_stream"}
+{"func":"should_stream","disable_streaming":true}
+{"func":"should_stream","base_url":"acp://127.0.0.1:1234","provider":"openai"}
+{"func":"should_stream","base_url":"ACP+TCP://host","supports_streaming":1}
+{"func":"should_stream","supports_streaming":0}
+{"func":"should_stream","external_process_provider":true,"supports_streaming":-1}
+{"func":"should_stream","external_process_provider":true,"supports_streaming":1}
+{"func":"should_stream","has_stream_consumers":false,"provider":"moa"}
+{"func":"should_stream","has_stream_consumers":false,"client_is_mock":true}
+{"func":"should_stream","has_stream_consumers":false,"provider":"openai","client_is_mock":false}
+{"func":"should_stream","base_url":"","provider":"openai"}
+{"func":"should_stream","disable_streaming":true,"supports_streaming":1,"has_stream_consumers":true}
+{"func":"should_stream","base_url":"https://acp://not-a-scheme","provider":"openai"}
+{"func":"should_stream","has_stream_consumers":false,"provider":"MOA","client_is_mock":false}

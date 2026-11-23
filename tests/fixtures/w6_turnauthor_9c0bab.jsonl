@@ -1,0 +1,16 @@
+{"func":"env_key","case":1}
+{"func":"clean_text","case":2,"value":"  hello\u0007world  "}
+{"func":"clean_text","case":3,"value":123}
+{"func":"clean_text","case":4,"value":"\t\n "}
+{"func":"bot_flag","case":5,"value":" YES "}
+{"func":"bot_flag","case":6,"value":"maybe"}
+{"func":"bot_flag","case":7,"value":true}
+{"func":"bot_author_id","case":8,"profile":"support","origin":" relay-host "}
+{"func":"bot_author_id","case":9,"profile":"support","origin":""}
+{"func":"parse","case":10,"raw":{"id":" alice ","name":"Alice ","is_bot":false}}
+{"func":"parse","case":11,"raw":"{\"id\":\"bot:helper\",\"name\":\"Helper\",\"is_bot\":\"yes\",\"hops\":3}"}
+{"func":"parse","case":12,"raw":{"id":"bot:helper","name":null,"is_bot":true,"origin":"relay-1","hops":1001}}
+{"func":"parse","case":13,"raw":null}
+{"func":"env","case":14,"author":{"id":"u-1","name":"User","is_bot":false}}
+{"func":"a2a_key","case":15,"author":{"id":"bot:relay/host","is_bot":true}}
+{"func":"a2a_key","case":16,"author":{"id":"u-1","is_bot":false}}

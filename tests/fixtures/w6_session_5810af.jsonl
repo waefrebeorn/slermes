@@ -1,0 +1,39 @@
+{"func":"build_session_title","case":"title wins","title":" My title ","preview":"preview","cwd":"/a/b/proj"}
+{"func":"build_session_title","case":"preview","title":"","preview":"  prev  ","cwd":"/a/b/proj"}
+{"func":"build_session_title","case":"leaf","title":null,"preview":"","cwd":"/a/b/proj/"}
+{"func":"build_session_title","case":"windows leaf","title":"","preview":"","cwd":"C:\\work\\proj"}
+{"func":"build_session_title","case":"fallback","title":"","preview":null,"cwd":""}
+{"func":"build_session_title","case":"null cwd","title":"t","preview":"p","cwd":null}
+{"func":"format_updated_at","case":"none","value":null}
+{"func":"format_updated_at","case":"string","value":"2024-01-01T00:00:00+00:00"}
+{"func":"format_updated_at","case":"blank string","value":"   "}
+{"func":"format_updated_at","case":"epoch zero","value":0}
+{"func":"format_updated_at","case":"epoch","value":1700000000}
+{"func":"format_updated_at","case":"fraction","value":1700000000.5}
+{"func":"format_updated_at","case":"quarter","value":1.25}
+{"func":"format_updated_at","case":"numeric string","value":"1700000000"}
+{"func":"format_updated_at","case":"garbage","value":"not-a-number"}
+{"func":"updated_at_sort_key","case":"number","value":123.5}
+{"func":"updated_at_sort_key","case":"null","value":null}
+{"func":"updated_at_sort_key","case":"empty string","value":""}
+{"func":"updated_at_sort_key","case":"garbage","value":"nope"}
+{"func":"updated_at_sort_key","case":"numeric string","value":"1700000000.5"}
+{"func":"updated_at_sort_key","case":"iso","value":"2024-01-01T00:00:00+00:00"}
+{"func":"updated_at_sort_key","case":"iso frac","value":"2024-01-01T00:00:00.500000+00:00"}
+{"func":"parse_model_config","case":"null","mc":null}
+{"func":"parse_model_config","case":"empty","mc":""}
+{"func":"parse_model_config","case":"bad","mc":"{bad"}
+{"func":"parse_model_config","case":"object json","mc":"{\"cwd\":\"/work\",\"provider\":\"x\"}"}
+{"func":"parse_model_config","case":"array json","mc":"[1,2]"}
+{"func":"parse_model_config","case":"already object","mc":{"cwd":"/x"}}
+{"func":"expand_toolsets","case":"default","toolsets":null,"mcp_names":null}
+{"func":"expand_toolsets","case":"custom","toolsets":["a","b"],"mcp_names":["s1","s2"]}
+{"func":"expand_toolsets","case":"dedupe","toolsets":["a","a","mcp-s1"],"mcp_names":["s1"]}
+{"func":"expand_toolsets","case":"empty","toolsets":[],"mcp_names":[]}
+{"func":"expand_toolsets","case":"blanks","toolsets":["","x"],"mcp_names":["","y"]}
+{"func":"session_info","case":"full","sid":"s1","cwd":"/w","model":"m","history_len":3,"title":"T","preview":"P","updated_at":1700000000}
+{"func":"session_info","case":"empty","sid":"s2","cwd":"","model":"","history_len":0,"title":"","preview":"","updated_at":null}
+{"func":"first_user_preview","case":"first","history":[{"role":"system","content":"sys"},{"role":"user","content":"  hi  "},{"role":"user","content":"second"}],"default_val":"D"}
+{"func":"first_user_preview","case":"no user","history":[{"role":"assistant","content":"a"}],"default_val":"DEF"}
+{"func":"first_user_preview","case":"blank user","history":[{"role":"user","content":"   "}],"default_val":"D2"}
+{"func":"first_user_preview","case":"empty","history":[],"default_val":"D3"}

@@ -1,0 +1,22 @@
+{"func":"action","case":"app not running","state":"app_not_running","app_name":"Plex","gpu_label":"a supported GPU"}
+{"func":"action","case":"no session","state":"no_interactive_session","app_name":"Plex","gpu_label":"a supported GPU"}
+{"func":"action","case":"unsupported gpu","state":"unsupported_gpu","app_name":"Plex","gpu_label":"an NVIDIA GPU"}
+{"func":"action","case":"missing app","state":"missing_app","app_name":"Plex","gpu_label":"a supported GPU"}
+{"func":"availability_problem","case":"missing","state":"missing_app"}
+{"func":"availability_problem","case":"unsupported os","state":"unsupported_os"}
+{"func":"availability_problem","case":"ok","state":"ok"}
+{"func":"parse","case":"static","facts":{"osf":"win32","raw":{"kind":"static"}}}
+{"func":"parse","case":"interactive","facts":{"osf":"linux","raw":{"kind":"interactive_session"}}}
+{"func":"parse","case":"static extra","facts":{"osf":"win32","raw":{"kind":"static","path":"/x"}}}
+{"func":"parse","case":"unknown kind","facts":{"osf":"win32","raw":{"kind":"weird"}}}
+{"func":"parse","case":"server json defaults","facts":{"osf":"win32","raw":{"kind":"server_json","path":"C:/ProgramData/plex.json"}}}
+{"func":"parse","case":"server json fields","facts":{"osf":"linux","raw":{"kind":"server_json","path":"/etc/plex.json","fields":{"url":"endpoint","token":"key","pid":"process_id"}}}}
+{"func":"parse","case":"server json dotdot","facts":{"osf":"linux","raw":{"kind":"server_json","path":"/etc/../bad.json"}}}
+{"func":"parse","case":"server json relative","facts":{"osf":"linux","raw":{"kind":"server_json","path":"relative/x.json"}}}
+{"func":"parse","case":"server json bad field","facts":{"osf":"linux","raw":{"kind":"server_json","path":"/etc/x.json","fields":{"extra":"x"}}}}
+{"func":"parse","case":"server json empty field","facts":{"osf":"linux","raw":{"kind":"server_json","path":"/etc/x.json","fields":{"url":"  "}}}}
+{"func":"parse","case":"server json bad key","facts":{"osf":"linux","raw":{"kind":"server_json","path":"/etc/x.json","fields":{"url":"bad key!"}}}}
+{"func":"describe","case":"missing unsupported os","facts":{"name":"plex","required_gpu":null,"available":{"state":"unsupported_os","min_version":null,"version":null},"liveness_state":"missing_app","display_name":null}}
+{"func":"describe","case":"missing with min","facts":{"name":"plex","required_gpu":null,"available":{"state":"missing_app","min_version":"1.2","version":null},"liveness_state":"missing_app","display_name":"Plex Media Server"}}
+{"func":"describe","case":"old version","facts":{"name":"plex","required_gpu":null,"available":{"state":"version_too_old","min_version":"2.0","version":"1.5"},"liveness_state":"version_too_old","display_name":null}}
+{"func":"describe","case":"unsupported gpu","facts":{"name":"plex","required_gpu":"nvidia","available":{"state":"unsupported_gpu","min_version":null,"version":null},"liveness_state":"unsupported_gpu","display_name":null}}

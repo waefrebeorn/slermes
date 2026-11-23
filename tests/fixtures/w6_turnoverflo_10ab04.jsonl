@@ -1,0 +1,12 @@
+{"func":"clamp","available_out":"1000","old_ctx":"8192","request_input_estimate":"1000"}
+{"func":"clamp","available_out":"1000","old_ctx":"2048","request_input_estimate":"2000"}
+{"func":"clamp","available_out":"1000","old_ctx":"1500","request_input_estimate":"2000"}
+{"func":"clamp","available_out":"10","old_ctx":"100000","request_input_estimate":"1"}
+{"func":"clamp","available_out":"64","old_ctx":"1000","request_input_estimate":"100"}
+{"func":"clamp","available_out":"65","old_ctx":"1000","request_input_estimate":"100"}
+{"func":"clamp","available_out":"1000000","old_ctx":"200000","request_input_estimate":"50000"}
+{"func":"clamp","available_out":"0","old_ctx":"100","request_input_estimate":"10"}
+{"func":"clamp","available_out":"-100","old_ctx":"100","request_input_estimate":"10"}
+{"func":"clamp","available_out":"500","old_ctx":"500","request_input_estimate":"0"}
+{"func":"clamp","available_out":"500","old_ctx":"500","request_input_estimate":"500"}
+{"func":"clamp","available_out":"9000000000000","old_ctx":"9000000000000","request_input_estimate":"0"}

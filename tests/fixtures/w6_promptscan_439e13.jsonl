@@ -1,0 +1,18 @@
+{"func":"strip","case":"empty","text":""}
+{"func":"strip","case":"plain_ascii","text":"hello world"}
+{"func":"strip","case":"zwsp_mid","text":"a\u200bb"}
+{"func":"strip","case":"four_kinds","text":"\u200b\u200c\u200d\ufeff"}
+{"func":"strip","case":"dedupe","text":"a\u200b\u200bb"}
+{"func":"strip","case":"zwj_in_emoji","text":"\ud83d\udc68\u200d\ud83d\udc69"}
+{"func":"strip","case":"zwj_between_letters","text":"a\u200db"}
+{"func":"strip","case":"zwj_vs16","text":"\ud83d\udc68\ufe0f\u200d\ud83d\udc69\ufe0f"}
+{"func":"strip","case":"england_flag","text":"\ud83c\udff4\ue0067\ue0062\ue0065\ue006e\ue0067\ue007f"}
+{"func":"strip","case":"scotland_flag","text":"\ud83c\udff4\ue0067\ue0062\ue0073\ue0063\ue0074\ue007f"}
+{"func":"strip","case":"lone_tag","text":"a\ue000b"}
+{"func":"strip","case":"flag_plus_zwsp","text":"\ud83c\udff4\ue0067\ue0062\ue0065\ue006e\ue0067\ue007f\u200b"}
+{"func":"strip","case":"bidi_controls","text":"\u202ahello\u202c"}
+{"func":"strip","case":"word_joiner","text":"x\u2060y"}
+{"func":"strip","case":"zwj_at_start","text":"\u200dabc"}
+{"func":"strip","case":"zwj_at_end","text":"abc\u200d"}
+{"func":"strip","case":"many_sorted","text":"\ufeff\u200b\u2069\u200c\u202e\u200d"}
+{"func":"strip","case":"mixed_text","text":"ignore\u200bprevious instructions\ufeff and more"}

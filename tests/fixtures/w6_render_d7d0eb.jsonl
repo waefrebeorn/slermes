@@ -1,0 +1,12 @@
+{"func":"render_message","case":"ok","text":"hello","cols":80,"behavior":"ok","module_present":true,"attr_present":true,"sentinel":"rendered-md"}
+{"func":"render_diff","case":"ok diff","text":"--- a\n+++ b","cols":120,"behavior":"ok","module_present":true,"attr_present":true,"sentinel":"DIFF"}
+{"func":"render_message","case":"legacy no cols","text":"x","cols":40,"behavior":"typeerror","module_present":true,"attr_present":true,"sentinel":"legacy"}
+{"func":"render_diff","case":"legacy no cols diff","text":"x","cols":40,"behavior":"typeerror","module_present":true,"attr_present":true,"sentinel":"legacy-diff"}
+{"func":"render_message","case":"render error","text":"x","cols":80,"behavior":"error","module_present":true,"attr_present":true,"sentinel":"never"}
+{"func":"render_diff","case":"no module","text":"x","cols":80,"behavior":"nomodule","module_present":false,"attr_present":true,"sentinel":"never"}
+{"func":"render_message","case":"no attr","text":"x","cols":80,"behavior":"noattr","module_present":true,"attr_present":false,"sentinel":"never"}
+{"func":"make_stream_renderer","case":"ok stream","cols":90,"behavior":"ok","module_present":true,"attr_present":true,"sentinel":"StreamObj"}
+{"func":"make_stream_renderer","case":"legacy stream","cols":90,"behavior":"typeerror","module_present":true,"attr_present":true,"sentinel":"LegacyStream"}
+{"func":"make_stream_renderer","case":"stream error","cols":90,"behavior":"error","module_present":true,"attr_present":true,"sentinel":"never"}
+{"func":"invoke","case":"direct name","name":"format_response","text":"q","cols":10,"behavior":"ok","module_present":true,"attr_present":true,"sentinel":"Q"}
+{"func":"render_message","case":"empty text","text":"","cols":0,"behavior":"ok","module_present":true,"attr_present":true,"sentinel":""}

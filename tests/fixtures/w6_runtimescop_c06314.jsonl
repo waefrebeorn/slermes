@@ -1,0 +1,10 @@
+{"func":"claim_fence","row":{"owner_epoch":1,"generation":1},"case":"both one"}
+{"func":"claim_fence","row":{"owner_epoch":1700000000,"generation":42},"case":"large epoch"}
+{"func":"claim_fence","row":{"owner_epoch":0,"generation":1},"case":"zero epoch invalid"}
+{"func":"claim_fence","row":{"owner_epoch":1,"generation":0},"case":"zero generation invalid"}
+{"func":"claim_fence","row":{"owner_epoch":-1,"generation":5},"case":"negative epoch"}
+{"func":"claim_fence","row":{"owner_epoch":1,"generation":-2},"case":"negative generation"}
+{"func":"identity","scope":{"tenant":"local","agent":"/h","actor":"u","owner":"o","can_administer":true},"case":"all fields"}
+{"func":"identity","scope":{"tenant":"host","agent":"a","actor":"b","owner":"c","can_administer":false},"case":"admin false"}
+{"func":"identity","scope":{"tenant":"t","agent":"a","actor":"","owner":"","can_administer":true},"case":"empty strings"}
+{"func":"claim_fence","row":{"owner_epoch":2,"generation":3},"case":"small ints"}

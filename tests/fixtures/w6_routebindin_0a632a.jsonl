@@ -1,0 +1,12 @@
+{"func":"resolve","entry":{},"provider":"openai","model":"gpt-4","raw_codex":true,"case":"basic"}
+{"func":"resolve","entry":{"base_url":"  https://ollama.com/v1  "},"provider":"ollama","model":"llama3","raw_codex":true,"case":"ollama secret"}
+{"func":"resolve","entry":{"api_key":"sk-1","base_url":"https://ollama.com"},"provider":"ollama","model":"llama3","raw_codex":false,"case":"ollama with key"}
+{"func":"resolve","entry":{"api_mode":"codex_responses","api_mode_explicit":true,"api_key":"k"},"provider":"codex","model":"o1","raw_codex":true,"case":"explicit mode"}
+{"func":"resolve","entry":{},"provider":"moa","model":"preset","raw_codex":true,"case":"moa no pool"}
+{"func":"resolve","entry":{},"provider":"no_client","model":"m","raw_codex":true,"case":"no client"}
+{"func":"resolve","entry":{"base_url":"   "},"provider":"openai","model":"m","raw_codex":false,"case":"whitespace base"}
+{"func":"resolve","entry":{"base_url":"https://evilollama.com/v1"},"provider":"ollama","model":"m","raw_codex":true,"case":"host not matched"}
+{"func":"resolve","entry":{"base_url":"https://ollama.com:443/v1?x=1"},"provider":"ollama","model":"m","raw_codex":true,"case":"port and query host"}
+{"func":"resolve","entry":{"api_key":""},"provider":"ollama","model":"m","raw_codex":true,"case":"empty key no base"}
+{"func":"resolve","entry":{"api_mode":"custom","api_mode_explicit":true,"api_key":"k"},"provider":"anthropic","model":"claude","raw_codex":true,"case":"custom mode"}
+{"func":"resolve","entry":{"base_url":"https://ollama.com"},"provider":"ollama","model":"m","raw_codex":false,"case":"ollama no key false raw"}

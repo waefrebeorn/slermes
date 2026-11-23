@@ -1,0 +1,19 @@
+{"func":"catalog_sessions","case":"empty","home":"/h","rows":[],"owners":{}}
+{"func":"catalog_sessions","case":"one","home":"/h","rows":[{"id":"s1","message_count":3,"cwd":"/w","model":"m","title":"Title","preview":"Prev","last_active":1700000000}],"owners":{}}
+{"func":"catalog_sessions","case":"zero count","home":"/h","rows":[{"id":"s1","message_count":0,"cwd":"/w","title":"T"}],"owners":{}}
+{"func":"catalog_sessions","case":"negative count","home":"/h","rows":[{"id":"s1","message_count":-2,"cwd":"/w"}],"owners":{}}
+{"func":"catalog_sessions","case":"sort two","home":"/h","rows":[{"id":"old","message_count":2,"cwd":"/a","last_active":100},{"id":"new","message_count":4,"cwd":"/b","last_active":200}],"owners":{}}
+{"func":"catalog_sessions","case":"title fallback","home":"/h","rows":[{"id":"s","message_count":1,"cwd":"/a/b/proj/","title":"","preview":"  prev  "}],"owners":{}}
+{"func":"catalog_sessions","case":"new thread","home":"/h","rows":[{"id":"s","message_count":1,"cwd":"","title":"","preview":""}],"owners":{}}
+{"func":"catalog_sessions","case":"lineage root","home":"/h","rows":[{"id":"phys","_lineage_root_id":"root","message_count":5,"cwd":"/w","title":"R"}],"owners":{"root":"logical"}}
+{"func":"catalog_sessions","case":"owner mapping","home":"/h","rows":[{"id":"phys","message_count":5,"cwd":"/w","title":"R"}],"owners":{"phys":"logical"}}
+{"func":"catalog_sessions","case":"model config cwd","home":"/h","rows":[{"id":"s","message_count":2,"model_config":"{\"cwd\":\"/from/cfg\"}","title":"MC","started_at":1700000000}],"owners":{}}
+{"func":"catalog_sessions","case":"started fallback","home":"/h","rows":[{"id":"s","message_count":2,"cwd":"/w","started_at":150,"last_active":null}],"owners":{}}
+{"func":"catalog_sessions","case":"dedupe logical","home":"/h","rows":[{"id":"a","message_count":3,"cwd":"/w","title":"Old","last_active":100},{"id":"b","message_count":7,"cwd":"/w","title":"New","last_active":200}],"owners":{"a":"same","b":"same"}}
+{"func":"catalog_sessions","case":"iso times","home":"/h","rows":[{"id":"a","message_count":1,"cwd":"/w","last_active":"2024-01-01T00:00:00+00:00"},{"id":"b","message_count":1,"cwd":"/w","last_active":"2023-01-01T00:00:00+00:00"}],"owners":{}}
+{"func":"catalog_sessions","case":"null updated","home":"/h","rows":[{"id":"a","message_count":1,"cwd":"/w","last_active":null,"started_at":null},{"id":"b","message_count":1,"cwd":"/w","last_active":5}],"owners":{}}
+{"func":"format_updated_at","case":"none","value":null}
+{"func":"format_updated_at","case":"epoch","value":1700000000.5}
+{"func":"format_updated_at","case":"string","value":"2024-01-01T00:00:00+00:00"}
+{"func":"updated_at_sort_key","case":"iso","value":"2024-01-01T00:00:00+00:00"}
+{"func":"updated_at_sort_key","case":"garbage","value":"bad"}
