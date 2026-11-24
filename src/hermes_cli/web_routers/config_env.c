@@ -157,7 +157,16 @@ static char *ce_strip_of(const json_t *v, const char *dflt) {
 
 /* coerce_provider_id(): None -> "", anything else str().strip(). */
 static char *ce_coerce_id(const json_t *v) {
-    return ce_strip_of(v, "");
+    /* coerce_provider_id(): None -> "", ANYTHING else str().strip(). Truthiness
+     * must not enter here: str(0) is "0", so a numeric endpoint id slugs to "0"
+     * rather than falling through to the default. */
+    char *raw, *base, *out;
+    if (!v || v->type == JSON_NULL) return ce_dup("");
+    raw = ce_str(v);
+    base = ce_strip_inplace(raw);
+    out = ce_dup(base);
+    free(raw);
+    return out;
 }
 
 static json_t *ce_copy_or_null(const json_t *v) {
