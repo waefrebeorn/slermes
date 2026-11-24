@@ -158,6 +158,25 @@ static const json_t *sr_row(const json_t *req, const char *key) {
 }
 
 /* json.dumps of a value is enough as a stable dedupe/identity key. */
+/* Python str() of a value used as a mapping key: SessionId(None) keys the bucket
+ * "None", not nothing. */
+static char *sr_pystr_key(const json_t *v) {
+    char buf[64];
+    if (!v) return NULL;
+    switch (v->type) {
+    case JSON_NULL:   return strdup("None");
+    case JSON_STRING: return v->str_val ? strdup(v->str_val) : NULL;
+    case JSON_BOOL:   return strdup(v->bool_val ? "True" : "False");
+    case JSON_NUMBER:
+        if (v->num_val == (double)(long long)v->num_val)
+            snprintf(buf, sizeof buf, "%lld", (long long)v->num_val);
+        else
+            snprintf(buf, sizeof buf, "%g", v->num_val);
+        return strdup(buf);
+    default:          return json_dumps((json_t *)v, 0);
+    }
+}
+
 static char *sr_key(const json_t *v) {
     return v ? json_dumps(v, 0) : NULL;
 }
@@ -1078,13 +1097,15 @@ json_t *w29_sessions_2114c9_p4_pending_by_session(const json_t *req) {
         const json_t *r = json_get(rows, i);
         const json_t *sid = r ? json_obj_get(r, "target_session_id") : NULL;
         json_t *bucket, *ref;
-        if (!sr_is_str(sid)) continue;
-        bucket = json_obj_get(out, sid->str_val);
+        char *key = sr_pystr_key(sid);   /* SessionId(None) -> "None" */
+        if (!key) continue;
+        bucket = json_obj_get(out, key);
         if (!bucket) {
             json_t *fresh = json_array();
-            json_set(out, sid->str_val, fresh);
-            bucket = json_obj_get(out, sid->str_val);
+            json_set(out, key, fresh);
+            bucket = json_obj_get(out, key);
         }
+        free(key);
         ref = json_object();
         sr_pass(ref, "admission_id", r ? json_obj_get(r, "admission_id") : NULL);
         json_set(ref, "seq", json_number(sr_int_of(r ? json_obj_get(r, "seq") : NULL)));
