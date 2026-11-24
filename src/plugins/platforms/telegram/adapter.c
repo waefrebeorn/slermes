@@ -633,19 +633,24 @@ json_t *w27_adapter_a96ad6_p3_reply_to_message_id_for_send(const json_t *req) {
 /* _message_thread_id_for_send's numeric half: 1 is the forum General topic,
  * which sendMessage rejects, so it is dropped. */
 static int jd_thread_id_for_send(const json_t *thread_id, long *out) {
-    char *s, *stripped;
+    char *s, *stripped = NULL;
     int ok;
     if (!jd_truthy(thread_id)) return 0;
     s = jd_str_of(thread_id);
-    stripped = jd_strip(s);
-    ok = stripped && stripped[0] && strcmp(stripped, W27_GENERAL_TOPIC_THREAD_ID) != 0;
+    /* str(thread_id) == "1" is compared on the RAW text: " 1" is not the General
+     * topic, and int(" 1") is 1. Stripping first turned " 1" into "1" and dropped
+     * the topic. Only the integer parse tolerates surrounding whitespace. */
+    ok = s && s[0] && strcmp(s, W27_GENERAL_TOPIC_THREAD_ID) != 0;
     if (ok) {
         char *end = NULL;
-        long v = strtol(stripped, &end, 10);
-        if (!end || *end || v < 0) ok = 0;
+        long v;
+        stripped = jd_strip(s);
+        v = stripped ? strtol(stripped, &end, 10) : 0;
+        if (!stripped || !end || *end || v < 0) ok = 0;
         else *out = v;
+        free(stripped);
     }
-    free(s); free(stripped);
+    free(s);
     return ok;
 }
 
