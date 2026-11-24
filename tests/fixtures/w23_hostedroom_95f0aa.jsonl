@@ -1,0 +1,48 @@
+{"func": "constants", "case": "bounded"}
+{"func": "grant_digest", "case": "ascii", "req": {"grant": "abc"}}
+{"func": "grant_digest", "case": "empty", "req": {"grant": ""}}
+{"func": "grant_digest", "case": "utf8", "req": {"grant": "héllo"}}
+{"func": "grant_digest", "case": "long", "req": {"grant": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}}
+{"func": "grant_digest", "case": "dotted", "req": {"grant": "a.b"}}
+{"func": "hard_expiry", "case": "status-horizon", "req": {"grant": "eyJleHBpcmVzX2F0IjogMTAwLCAic3RhdHVzX2V4cGlyZXNfYXQiOiAyMDB9.AQID", "now": 1000.0}}
+{"func": "hard_expiry", "case": "expires-only", "req": {"grant": "eyJleHBpcmVzX2F0IjogMTcwMDAwMDAwMH0.AQID", "now": 1000.0}}
+{"func": "hard_expiry", "case": "expires-zero", "req": {"grant": "eyJleHBpcmVzX2F0IjogMH0.AQID", "now": 5.0}}
+{"func": "hard_expiry", "case": "no-separator", "req": {"grant": "eyJleHBpcmVzX2F0IjogMTAwfQ", "now": 1000.0}}
+{"func": "hard_expiry", "case": "payload-not-json", "req": {"grant": "bm90IGpzb24.AQID", "now": 1000.0}}
+{"func": "hard_expiry", "case": "payload-not-object", "req": {"grant": "WzEsIDJd.AQID", "now": 1000.0}}
+{"func": "hard_expiry", "case": "missing-expires", "req": {"grant": "eyJvdGhlciI6IDF9.AQID", "now": 1000.0}}
+{"func": "hard_expiry", "case": "status-without-expires", "req": {"grant": "eyJzdGF0dXNfZXhwaXJlc19hdCI6IDIwMH0.AQID", "now": 1000.0}}
+{"func": "hard_expiry", "case": "status-null", "req": {"grant": "eyJleHBpcmVzX2F0IjogMSwgInN0YXR1c19leHBpcmVzX2F0IjogbnVsbH0.AQID", "now": 1000.0}}
+{"func": "hard_expiry", "case": "status-string", "req": {"grant": "eyJleHBpcmVzX2F0IjogMSwgInN0YXR1c19leHBpcmVzX2F0IjogIjEyLjUifQ.AQID", "now": 10.0}}
+{"func": "hard_expiry", "case": "status-string-bad", "req": {"grant": "eyJleHBpcmVzX2F0IjogMSwgInN0YXR1c19leHBpcmVzX2F0IjogInNvb24ifQ.AQID", "now": 10.0}}
+{"func": "hard_expiry", "case": "expires-bool", "req": {"grant": "eyJleHBpcmVzX2F0IjogdHJ1ZX0.AQID", "now": 10.0}}
+{"func": "hard_expiry", "case": "expires-list", "req": {"grant": "eyJleHBpcmVzX2F0IjogWzFdfQ.AQID", "now": 10.0}}
+{"func": "hard_expiry", "case": "empty-grant", "req": {"grant": "", "now": 10.0}}
+{"func": "hard_expiry", "case": "only-dot", "req": {"grant": ".", "now": 10.0}}
+{"func": "hard_expiry", "case": "grant-not-string", "req": {"grant": 5, "now": 10.0}}
+{"func": "hard_expiry", "case": "valid-without-now", "req": {"grant": "eyJleHBpcmVzX2F0IjogNzd9.AQID"}}
+{"func": "hard_expiry", "case": "sig-empty", "req": {"grant": "eyJleHBpcmVzX2F0IjogNDJ9.", "now": 10.0}}
+{"func": "hard_expiry", "case": "trailing-junk", "req": {"grant": "eyJleHBpcmVzX2F0IjogNDJ9.AQID!", "now": 10.0}}
+{"func": "task_identifier", "case": "value-7-7019", "req": {"value": " ok ", "label": "room_id"}}
+{"func": "task_identifier", "case": "value-7-7172", "req": {"value": "a.b:c_d-e", "label": "task_id"}}
+{"func": "task_identifier", "case": "value-9-7710", "req": {"value": "A0", "label": "thread_id"}}
+{"func": "task_identifier", "case": "value-7-0", "req": {"value": "", "label": "turn_id"}}
+{"func": "task_identifier", "case": "value-7-3040", "req": {"value": "   ", "label": "task_id"}}
+{"func": "task_identifier", "case": "value-7-6161", "req": {"value": "a b", "label": "task_id"}}
+{"func": "task_identifier", "case": "value-7-5573", "req": {"value": "-a", "label": "task_id"}}
+{"func": "task_identifier", "case": "value-7-5662", "req": {"value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "label": "task_id"}}
+{"func": "task_identifier", "case": "value-7-8037", "req": {"value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "label": "task_id"}}
+{"func": "task_identifier", "case": "value-7-8584", "req": {"value": "a\n", "label": "task_id"}}
+{"func": "task_identifier", "case": "value-7-8968", "req": {"value": "\tq9\t", "label": "turn_id"}}
+{"func": "task_identifier", "case": "int-value", "req": {"value": 5, "label": "room_id"}}
+{"func": "task_identifier", "case": "bool-value", "req": {"value": true, "label": "room_id"}}
+{"func": "task_identifier", "case": "null-value", "req": {"value": null, "label": "room_id"}}
+{"func": "task_identifier", "case": "missing-value", "req": {"label": "room_id"}}
+{"func": "task_identifier", "case": "no-label", "req": {"value": "ok"}}
+{"func": "task_identity", "case": "all-good", "req": {"room_id": "r1", "task_id": "t1", "thread_id": "th", "turn_id": "tu"}}
+{"func": "task_identity", "case": "stripped", "req": {"room_id": " r1 ", "task_id": "t1", "thread_id": "th", "turn_id": "tu"}}
+{"func": "task_identity", "case": "bad-task-id", "req": {"room_id": "r1", "task_id": "t 1", "thread_id": "th", "turn_id": "tu"}}
+{"func": "task_identity", "case": "bad-first-and-later", "req": {"room_id": "1r", "task_id": "t 1", "thread_id": "", "turn_id": "tu"}}
+{"func": "task_identity", "case": "non-string", "req": {"room_id": "r1", "task_id": 7, "thread_id": "th", "turn_id": "tu"}}
+{"func": "task_identity", "case": "missing-turn", "req": {"room_id": "r1", "task_id": "t1", "thread_id": "th"}}
+{"func": "task_identity", "case": "all-missing", "req": {}}

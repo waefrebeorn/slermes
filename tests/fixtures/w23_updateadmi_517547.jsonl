@@ -1,0 +1,38 @@
+{"func": "defaults", "case": "constants"}
+{"func": "field_names", "case": "empty", "data": {}}
+{"func": "field_names", "case": "one-key", "data": {"x": "v"}}
+{"func": "field_names", "case": "nested-and-false", "data": {"message": {"b": 1, "a": false, "c": 0}, "z": false, "y": null, "x": "v"}}
+{"func": "field_names", "case": "all-false", "data": {"a": false, "b": false}}
+{"func": "field_names", "case": "nested-all-false", "data": {"edited_message": {"a": false}}}
+{"func": "field_names", "case": "false-is-not-falsy", "data": {"a": 0, "b": false, "c": "", "d": null, "e": [], "f": {}, "g": true}}
+{"func": "field_names", "case": "sort-order", "data": {"b": 1, "A": 2, "a": 3, "Z": 4}}
+{"func": "field_names", "case": "nested-sort-order", "data": {"message": {"z": 1, "A": 2, "m": false}}}
+{"func": "field_names", "case": "wrong-type-data", "data": "not-a-dict"}
+{"func": "topic_lane", "case": "thread-id", "message": {"is_topic_message": true, "message_thread_id": 42}}
+{"func": "topic_lane", "case": "topic-created", "message": {"is_topic_message": true, "forum_topic_created": {"name": "t"}, "message_thread_id": 42}}
+{"func": "topic_lane", "case": "no-thread-id", "message": {"is_topic_message": true}}
+{"func": "topic_lane", "case": "numeric-flag", "message": {"is_topic_message": 1, "message_thread_id": 42}}
+{"func": "topic_lane", "case": "flag-false", "message": {"is_topic_message": false, "message_thread_id": 42}}
+{"func": "topic_lane", "case": "no-flag", "message": {"message_thread_id": 42}}
+{"func": "topic_lane", "case": "null-thread", "message": {"is_topic_message": true, "message_thread_id": null}}
+{"func": "topic_lane", "case": "no-message"}
+{"func": "lane_keys", "case": "chat-lane", "chat_id": -100, "message": {"text": "hi"}}
+{"func": "lane_keys", "case": "topic-lane", "chat_id": -100, "message": {"is_topic_message": true, "message_thread_id": 42}}
+{"func": "lane_keys", "case": "topic-string-id", "chat_id": -100, "message": {"is_topic_message": true, "message_thread_id": "topic-9"}}
+{"func": "lane_keys", "case": "adopted-opener", "chat_id": -100, "message": {"text": "hi"}, "adopt": 77}
+{"func": "lane_keys", "case": "adopted-topic-message", "chat_id": -100, "message": {"is_topic_message": true, "message_thread_id": 42}, "adopt": 77}
+{"func": "lane_keys", "case": "adopt-with-null-message", "chat_id": -100, "message": null, "adopt": 77}
+{"func": "lane_keys", "case": "adopt-null", "chat_id": -100, "message": {"is_topic_message": true, "message_thread_id": 42}, "adopt": null}
+{"func": "lane_keys", "case": "message-not-an-object", "chat_id": -100, "message": "x"}
+{"func": "update_limit", "case": "absent"}
+{"func": "update_limit", "case": "zero", "raw": 0}
+{"func": "update_limit", "case": "negative", "raw": -5}
+{"func": "update_limit", "case": "garbage-string", "raw": "abc"}
+{"func": "update_limit", "case": "numeric-string", "raw": "12"}
+{"func": "update_limit", "case": "padded-string", "raw": "  9  "}
+{"func": "update_limit", "case": "float-truncates", "raw": 4.9}
+{"func": "update_limit", "case": "true-is-one", "raw": true}
+{"func": "update_limit", "case": "false-is-zero", "raw": false}
+{"func": "update_limit", "case": "null", "raw": null}
+{"func": "update_limit", "case": "large", "raw": 64}
+{"func": "update_limit", "case": "one", "raw": 1}

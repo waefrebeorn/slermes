@@ -1,0 +1,46 @@
+{"func": "effective_path", "case": "absent-ctx"}
+{"func": "effective_path", "case": "empty-ctx", "ctx": {}}
+{"func": "effective_path", "case": "explicit-none", "ctx": {"path": null}}
+{"func": "effective_path", "case": "explicit-empty", "ctx": {"path": ""}}
+{"func": "effective_path", "case": "explicit-string", "ctx": {"path": "C:/bin"}}
+{"func": "effective_path", "case": "pathext-only", "ctx": {"pathext": ".EXE"}}
+{"func": "resolution", "case": "missing-empty", "kind": "missing", "candidates": []}
+{"func": "resolution", "case": "path-hit", "kind": "path_executable", "candidates": [{"value": "git", "source": "PATH", "present": true}]}
+{"func": "resolution", "case": "second-candidate-wins", "kind": "known_path", "candidates": [{"value": "git", "source": "PATH", "present": false}, {"value": "C:/tools/git.EXE", "source": "known_dir:C:/tools", "present": true}, {"value": "C:/other/git", "source": "known_dir:C:/other", "present": true}]}
+{"func": "resolution", "case": "explicit-present", "kind": "explicit_path", "candidates": [{"value": "C:/bin/tool", "source": "explicit", "present": true}]}
+{"func": "resolution", "case": "kind-missing-but-present", "kind": "missing", "candidates": [{"value": "x", "source": "PATH", "present": true}]}
+{"func": "resolution", "case": "none-present", "kind": "known_path", "candidates": [{"value": "a", "source": "PATH", "present": false}, {"value": "b", "source": "known_dir:/d", "present": false}]}
+{"func": "resolution", "case": "no-kind-key", "candidates": [{"value": "a", "source": "PATH", "present": true}]}
+{"func": "locate", "case": "explicit-absolute-executable", "name": "C:/bin/git.exe", "files": ["C:/bin/git.exe"], "xok": ["C:/bin/git.exe"]}
+{"func": "locate", "case": "explicit-absolute-not-executable", "name": "C:/bin/git.exe", "files": ["C:/bin/git.exe"], "xok": []}
+{"func": "locate", "case": "explicit-absolute-missing", "name": "C:/bin/nope.exe", "files": [], "xok": []}
+{"func": "locate", "case": "explicit-relative", "name": "./git", "files": ["./git"], "xok": ["./git"]}
+{"func": "locate", "case": "explicit-home-var", "name": "$HOME/bin/tool.exe", "env": {"HOME": "C:/Users/me"}, "files": ["C:/Users/me/bin/tool.exe"], "xok": ["C:/Users/me/bin/tool.exe"]}
+{"func": "locate", "case": "explicit-braced-var", "name": "${HOME}/bin/tool.exe", "env": {"HOME": "C:/Users/me"}, "files": ["C:/Users/me/bin/tool.exe"], "xok": ["C:/Users/me/bin/tool.exe"]}
+{"func": "locate", "case": "explicit-unknown-var", "name": "$NOPE/bin/tool", "env": {"HOME": "C:/Users/me"}, "files": ["C:/Users/me/bin/tool"], "xok": ["C:/Users/me/bin/tool"]}
+{"func": "locate", "case": "explicit-tilde", "name": "~/bin/tool.exe", "env": {"USERPROFILE": "C:/Users/me"}, "files": ["C:/Users/me/bin/tool.exe"], "xok": ["C:/Users/me/bin/tool.exe"]}
+{"func": "locate", "case": "explicit-tilde-no-home", "name": "~/bin/tool.exe", "env": {}, "files": ["C:/Users/me/bin/tool.exe"], "xok": ["C:/Users/me/bin/tool.exe"]}
+{"func": "locate", "case": "path-hit", "name": "git", "which": {"git": "C:/bin/git.exe"}, "files": [], "xok": []}
+{"func": "locate", "case": "path-hit-not-a-file", "name": "git", "which": {"git": "C:/ghost/git.exe"}, "files": [], "xok": []}
+{"func": "locate", "case": "known-dir-hit-slash", "name": "git", "which": {}, "known_dirs": ["C:/tools/"], "files": ["C:/tools/git.EXE"], "xok": ["C:/tools/git.EXE"]}
+{"func": "locate", "case": "known-dir-hit-backslash", "name": "git", "which": {}, "known_dirs": ["C:/tools"], "files": ["C:/tools\\git.EXE"], "xok": ["C:/tools\\git.EXE"]}
+{"func": "locate", "case": "known-dir-bare-name", "name": "tool", "which": {}, "known_dirs": ["C:/tools/"], "files": ["C:/tools/tool"], "xok": ["C:/tools/tool"]}
+{"func": "locate", "case": "known-dir-exists-not-executable", "name": "git", "which": {}, "known_dirs": ["C:/tools/"], "files": ["C:/tools/git.EXE"], "xok": []}
+{"func": "locate", "case": "path-miss-two-dirs-miss", "name": "git", "which": {}, "known_dirs": ["C:/tools/", "C:/other/"], "files": [], "xok": []}
+{"func": "locate", "case": "second-dir-wins", "name": "git", "which": {}, "known_dirs": ["C:/tools/", "C:/other/"], "files": ["C:/other/git.EXE"], "xok": ["C:/other/git.EXE"]}
+{"func": "locate", "case": "empty-path-searches-nothing", "name": "git", "ctx": {"path": ""}, "which": {"git": "C:/bin/git.exe"}, "known_dirs": ["C:/tools/"], "files": ["C:/tools/git.EXE"], "xok": ["C:/tools/git.EXE"]}
+{"func": "locate", "case": "explicit-pathext-order", "name": "git", "ctx": {"pathext": ".CMD;.EXE"}, "which": {"git.CMD": "C:/bin/git.CMD", "git.EXE": "C:/bin/git.EXE"}, "files": [], "xok": []}
+{"func": "locate", "case": "explicit-pathext-second", "name": "git", "ctx": {"pathext": ".CMD;.EXE"}, "which": {"git.EXE": "C:/bin/git.EXE"}, "files": [], "xok": []}
+{"func": "locate", "case": "pathext-null-ignored", "name": "git", "ctx": {"pathext": null}, "which": {"git": "C:/bin/git.exe"}, "files": [], "xok": []}
+{"func": "locate", "case": "pathext-empty-string", "name": "git", "ctx": {"pathext": ""}, "which": {"git": "C:/bin/git.exe"}, "files": [], "xok": []}
+{"func": "locate", "case": "posix-path-hit", "name": "git", "os_name": "posix", "which": {"git": "/usr/bin/git"}, "files": [], "xok": []}
+{"func": "locate", "case": "posix-known-dir", "name": "tool", "os_name": "posix", "which": {}, "known_dirs": ["/opt/bin"], "files": ["/opt/bin/tool"], "xok": ["/opt/bin/tool"]}
+{"func": "locate", "case": "posix-pathext-ignored", "name": "git", "os_name": "posix", "ctx": {"pathext": ".EXE"}, "which": {"git": "/usr/bin/git", "git.EXE": "/usr/bin/git.EXE"}, "files": [], "xok": []}
+{"func": "locate", "case": "posix-explicit", "name": "/usr/local/bin/tool", "os_name": "posix", "files": ["/usr/local/bin/tool"], "xok": ["/usr/local/bin/tool"]}
+{"func": "locate", "case": "posix-explicit-relative", "name": "bin/tool", "os_name": "posix", "files": ["bin/tool"], "xok": ["bin/tool"]}
+{"func": "locate", "case": "posix-tilde-home", "name": "~/bin/tool", "os_name": "posix", "env": {"HOME": "/home/me"}, "files": ["/home/me/bin/tool"], "xok": ["/home/me/bin/tool"]}
+{"func": "locate", "case": "name-padded", "name": "  git  ", "which": {"git": "C:/bin/git.exe"}, "files": [], "xok": []}
+{"func": "locate", "case": "known-dir-env-var", "name": "git", "env": {"HOME": "C:/Users/me"}, "which": {}, "known_dirs": ["$HOME/bin"], "files": ["C:/Users/me/bin/git.EXE"], "xok": ["C:/Users/me/bin/git.EXE"]}
+{"func": "locate", "case": "empty-name", "name": "", "which": {}, "files": [], "xok": []}
+{"func": "locate", "case": "missing-name-key", "which": {}, "files": [], "xok": []}
+{"func": "locate", "case": "no-known-dirs", "name": "git", "which": {}, "files": [], "xok": []}

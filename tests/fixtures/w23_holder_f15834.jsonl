@@ -1,0 +1,25 @@
+{"func": "constants", "case": "budgets"}
+{"func": "coalesce", "case": "empty-batch", "batch": []}
+{"func": "coalesce", "case": "single", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 10, "output_tokens": 4}}]}
+{"func": "coalesce", "case": "merge-same-route", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 10, "output_tokens": 4, "api_call_count": 1}}, {"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 5, "output_tokens": 6, "api_call_count": 1}}]}
+{"func": "coalesce", "case": "different-model", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 10}}, {"session_id": "s1", "kwargs": {"model": "m2", "input_tokens": 5}}]}
+{"func": "coalesce", "case": "different-session", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 10}}, {"session_id": "s2", "kwargs": {"model": "m1", "input_tokens": 5}}]}
+{"func": "coalesce", "case": "absolute-blocks", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 10}}, {"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 99, "absolute": true}}]}
+{"func": "coalesce", "case": "absolute-first", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 99, "absolute": true}}, {"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 10}}, {"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 5}}]}
+{"func": "coalesce", "case": "absolute-zero-merges", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 10, "absolute": 0}}, {"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 5, "absolute": 0}}]}
+{"func": "coalesce", "case": "three-runs", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 1}}, {"session_id": "s1", "kwargs": {"model": "m1", "input_tokens": 2}}, {"session_id": "s2", "kwargs": {"model": "m1", "input_tokens": 3}}, {"session_id": "s2", "kwargs": {"model": "m1", "input_tokens": 4}}]}
+{"func": "coalesce", "case": "null-model-matches-missing", "batch": [{"session_id": "s1", "kwargs": {"model": null, "input_tokens": 10}}, {"session_id": "s1", "kwargs": {"input_tokens": 5}}]}
+{"func": "coalesce", "case": "non-route-key-not-merged", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "note": "a", "input_tokens": 10}}, {"session_id": "s1", "kwargs": {"model": "m1", "note": "b", "input_tokens": 5}}]}
+{"func": "coalesce", "case": "route-field-differs", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "prompt_cache_clock": 1, "input_tokens": 10}}, {"session_id": "s1", "kwargs": {"model": "m1", "prompt_cache_clock": 2, "input_tokens": 5}}]}
+{"func": "coalesce", "case": "cost-sum", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "estimated_cost_usd": 0.1, "actual_cost_usd": 0.25}}, {"session_id": "s1", "kwargs": {"model": "m1", "estimated_cost_usd": 0.2, "actual_cost_usd": 0.25}}]}
+{"func": "coalesce", "case": "cost-none-then-value", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "estimated_cost_usd": null}}, {"session_id": "s1", "kwargs": {"model": "m1", "estimated_cost_usd": 0.5}}]}
+{"func": "coalesce", "case": "wrong-type-batch", "batch": {"session_id": "s1"}}
+{"func": "coalesce", "case": "full-route", "batch": [{"session_id": "s1", "kwargs": {"model": "m1", "cost_status": "estimated", "cost_source": "api", "pricing_version": "v3", "billing_provider": "nous", "billing_base_url": "https://api", "billing_mode": "prepaid", "source": "turn", "task": "chat", "prompt_cache_clock": "w1", "input_tokens": 7}}, {"session_id": "s1", "kwargs": {"model": "m1", "cost_status": "estimated", "cost_source": "api", "pricing_version": "v3", "billing_provider": "nous", "billing_base_url": "https://api", "billing_mode": "prepaid", "source": "turn", "task": "chat", "prompt_cache_clock": "w1", "input_tokens": 3, "reasoning_tokens": 2}}]}
+{"func": "quarantine_reason", "case": "clean", "state": {"db_corrupt": false, "db_replaced": false, "wal_generation_lost": false}}
+{"func": "quarantine_reason", "case": "corrupt", "state": {"db_corrupt": true, "reason": "database disk image is malformed", "db_replaced": false, "wal_generation_lost": false}}
+{"func": "quarantine_reason", "case": "corrupt-empty-reason", "state": {"db_corrupt": true, "db_replaced": false, "wal_generation_lost": false}}
+{"func": "quarantine_reason", "case": "replaced", "state": {"db_corrupt": false, "db_replaced": true, "wal_generation_lost": false}}
+{"func": "quarantine_reason", "case": "wal-lost", "state": {"db_corrupt": false, "db_replaced": false, "wal_generation_lost": true}}
+{"func": "quarantine_reason", "case": "corrupt-wins", "state": {"db_corrupt": true, "reason": "freelist damage", "db_replaced": true, "wal_generation_lost": true}}
+{"func": "quarantine_reason", "case": "replaced-before-lost", "state": {"db_corrupt": false, "db_replaced": true, "wal_generation_lost": true}}
+{"func": "quarantine_reason", "case": "missing-state"}

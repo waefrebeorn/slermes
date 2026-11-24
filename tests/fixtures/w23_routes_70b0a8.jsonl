@@ -1,0 +1,23 @@
+{"func": "constants", "case": "literals"}
+{"func": "in_window", "case": "plain", "expr": "s.last_activity_at"}
+{"func": "in_window", "case": "empty-expr", "expr": ""}
+{"func": "in_window", "case": "missing-expr"}
+{"func": "freshest_of", "case": "plain", "activity": "s.last_activity_at", "session_id_expr": "s.id", "started": "s.started_at"}
+{"func": "freshest_of", "case": "empty-parts", "activity": "", "session_id_expr": "", "started": ""}
+{"func": "freshest_of", "case": "missing-started", "activity": "o.last_activity_at", "session_id_expr": "o.id"}
+{"func": "last_active", "case": "default"}
+{"func": "last_active", "case": "alias-o", "alias": "o"}
+{"func": "last_active", "case": "alias-empty", "alias": ""}
+{"func": "last_active", "case": "alias-null", "alias": null}
+{"func": "fence_key", "case": "main", "namespace": "main", "session_id": "abc"}
+{"func": "fence_key", "case": "numeric-sid", "namespace": "prof", "session_id": 42}
+{"func": "fence_key", "case": "missing-sid", "namespace": "main"}
+{"func": "namespace", "case": "agent-prof", "session_key": "agent:prof:sess-1"}
+{"func": "namespace", "case": "agent-empty-ns", "session_key": "agent::sess-1"}
+{"func": "namespace", "case": "agent-no-third", "session_key": "agent:prof"}
+{"func": "namespace", "case": "no-colons", "session_key": "plain"}
+{"func": "namespace", "case": "empty", "session_key": ""}
+{"func": "retired_params", "case": "agent-key", "session_key": "agent:prof:sess-1", "entry_json": "{\"session_id\": \"sess-1\"}", "now": 1700000000.5}
+{"func": "retired_params", "case": "main-key-missing-now", "session_key": "sess-2", "entry_json": "{}"}
+{"func": "retired_params", "case": "entry-object", "session_key": null, "entry_json": {"session_id": "x"}, "now": 5}
+{"func": "retired_params", "case": "numeric-key", "session_key": 7, "entry_json": "[]", "now": 0}

@@ -1,0 +1,64 @@
+{"func": "consts", "case": "queue-rows"}
+{"func": "clip", "case": "fits-exact", "value": "abcdef", "width": 6}
+{"func": "clip", "case": "truncates", "value": "abcdef", "width": 5}
+{"func": "clip", "case": "width-zero", "value": "abcdef", "width": 0}
+{"func": "clip", "case": "width-negative", "value": "abcdef", "width": -3}
+{"func": "clip", "case": "collapses-space", "value": "  a  b\tc\nd ", "width": 40}
+{"func": "clip", "case": "drops-control", "value": "a\u0001b\u007fc", "width": 40}
+{"func": "clip", "case": "number", "value": 5, "width": 40}
+{"func": "clip", "case": "zero-is-empty", "value": 0, "width": 40}
+{"func": "clip", "case": "null-is-empty", "value": null, "width": 40}
+{"func": "clip", "case": "wide-cell", "value": "漢字x", "width": 4}
+{"func": "clip", "case": "wide-cell-clip", "value": "漢字x", "width": 3}
+{"func": "counts", "case": "empty", "entries": [], "processes": [], "goal": "", "queued": []}
+{"func": "counts", "case": "agents-only", "entries": [{"subagent_id": "a1"}], "processes": [], "queued": []}
+{"func": "counts", "case": "one-proc", "entries": [], "processes": [{"status": "running"}], "queued": []}
+{"func": "counts", "case": "two-procs", "entries": [], "processes": [{"status": "running"}, {"status": "running"}], "queued": []}
+{"func": "counts", "case": "all-done", "entries": [], "processes": [{"status": "done"}, {"status": "failed"}], "queued": []}
+{"func": "counts", "case": "mixed-procs", "entries": [], "processes": [{"status": "running"}, {"status": "done"}], "queued": []}
+{"func": "counts", "case": "goal-active", "entries": [{"subagent_id": "a"}], "processes": [], "goal": "▶ ship it", "queued": []}
+{"func": "counts", "case": "goal-paused", "entries": [], "processes": [], "goal": "⏸ waiting", "queued": []}
+{"func": "counts", "case": "goal-parked", "entries": [], "processes": [], "goal": "⏳ later", "queued": []}
+{"func": "counts", "case": "badge-and-queue", "entries": [], "processes": [], "goal": "", "loop_badge": "↻ loop 2/5", "queued": ["q1", "q2"]}
+{"func": "counts", "case": "session-off", "entries": [{"subagent_id": "a"}], "processes": [], "goal": "▶ x", "loop_badge": "badge", "queued": ["q"], "session": false}
+{"func": "title", "case": "both", "entries": [{"subagent_id": "a"}], "processes": [{"status": "running"}]}
+{"func": "title", "case": "agents", "entries": [{"subagent_id": "a"}], "processes": []}
+{"func": "title", "case": "procs", "entries": [], "processes": [{"status": "done"}]}
+{"func": "agent_activity", "case": "tool", "row": {"last_tool": "bash", "status": "running"}}
+{"func": "agent_activity", "case": "status", "row": {"last_tool": "", "status": "waiting"}}
+{"func": "agent_activity", "case": "starting", "row": {"last_tool": null, "status": ""}}
+{"func": "process_activity", "case": "running-detail", "row": {"status": "running", "elapsed": 5, "detail": "ready", "exit_code": null, "since_exit": 0}}
+{"func": "process_activity", "case": "running-quiet", "row": {"status": "running", "elapsed": 0, "detail": "", "exit_code": null, "since_exit": 0}}
+{"func": "process_activity", "case": "done-code", "row": {"status": "done", "elapsed": 9, "detail": "", "exit_code": 0, "since_exit": 4}}
+{"func": "process_activity", "case": "failed-code", "row": {"status": "failed", "elapsed": 9, "detail": "", "exit_code": 1, "since_exit": 12}}
+{"func": "process_activity", "case": "killed", "row": {"status": "killed", "elapsed": 3, "detail": "", "exit_code": -9, "since_exit": 2}}
+{"func": "process_activity", "case": "lost", "row": {"status": "lost", "elapsed": 3, "detail": "", "exit_code": null, "since_exit": 7}}
+{"func": "collapsed_activity", "case": "agent-first", "entries": [{"subagent_id": "a1", "last_tool": "grep"}], "processes": [{"status": "running", "elapsed": 1, "detail": "x"}]}
+{"func": "collapsed_activity", "case": "process-first", "entries": [], "processes": [{"status": "running", "elapsed": 2, "detail": "y"}], "goal": "▶ g"}
+{"func": "collapsed_activity", "case": "goal", "entries": [], "processes": [], "goal": "▶ goal text", "loop_prompt": "lp"}
+{"func": "collapsed_activity", "case": "loop-prompt", "entries": [], "processes": [], "goal": "", "loop_prompt": "loop prompt"}
+{"func": "collapsed_activity", "case": "queued", "entries": [], "processes": [], "goal": "", "loop_prompt": "", "queued": ["first question"]}
+{"func": "dock_text", "case": "no-rows", "columns": 80, "rows": 40}
+{"func": "dock_text", "case": "collapsed-wide", "columns": 100, "rows": 40, "collapsed": true, "entries": [{"subagent_id": "a1", "key": "a1", "elapsed": 3, "status": "running", "last_tool": "bash", "goal": "do it"}], "processes": [{"kind": "process", "key": "p1", "command": "npm start", "status": "running", "elapsed": 5, "detail": "ready"}], "goal": "▶ ship", "queued": ["first", "second"]}
+{"func": "dock_text", "case": "collapsed-narrow", "columns": 20, "rows": 12, "collapsed": true, "entries": [{"subagent_id": "a1", "key": "a1", "elapsed": 3, "status": "running", "last_tool": "bash", "goal": "do it"}], "processes": [{"kind": "process", "key": "p1", "command": "npm start", "status": "running", "elapsed": 5, "detail": "ready"}], "goal": "▶ ship", "queued": ["first", "second"]}
+{"func": "dock_text", "case": "collapsed-session-only", "columns": 60, "rows": 12, "collapsed": true, "entries": [], "processes": [], "goal": "⏳ parked goal", "queued": ["one queued prompt"]}
+{"func": "dock_text", "case": "expanded-full", "columns": 100, "rows": 40, "entries": [{"subagent_id": "a1", "key": "a1", "elapsed": 3, "status": "running", "last_tool": "bash", "goal": "do it"}, {"subagent_id": "a2", "key": "a2", "elapsed": 0, "status": "waiting", "last_tool": "", "goal": "wait"}], "processes": [{"kind": "process", "key": "p1", "id": "p1", "command": "npm start", "status": "running", "elapsed": 5, "detail": "ready", "exit_code": null, "since_exit": 0}], "goal": "▶ ship", "loop": "↻ loop 2/5", "queued": ["first", "second", "third", "fourth"]}
+{"func": "dock_text", "case": "expanded-narrow", "columns": 24, "rows": 40, "entries": [{"subagent_id": "a1", "key": "a1", "elapsed": 3, "status": "running", "last_tool": "bash", "goal": "a very long goal name here"}], "processes": [{"kind": "process", "key": "p1", "command": "npm run build --watch", "status": "done", "elapsed": 15, "detail": "", "exit_code": 0, "since_exit": 3}], "goal": "", "queued": []}
+{"func": "dock_text", "case": "expanded-procs-only-short", "columns": 80, "rows": 12, "entries": [], "processes": [{"kind": "process", "key": "p1", "command": "tail -f app.log", "status": "running", "elapsed": 7, "detail": "line", "exit_code": null, "since_exit": 0}, {"kind": "process", "key": "p2", "command": "sleep 9", "status": "killed", "elapsed": 2, "detail": "", "exit_code": -9, "since_exit": 1}], "queued": ["only one shown", "hidden two", "hidden three"]}
+{"func": "dock_text", "case": "expanded-queue-only", "columns": 80, "rows": 30, "entries": [], "processes": [], "queued": ["q1", "q2", "q3", "q4"]}
+{"func": "dock_text", "case": "expanded-zero-size", "columns": 0, "rows": 0, "entries": [{"subagent_id": "a1", "key": "a1", "elapsed": 3, "status": "running", "last_tool": "", "goal": "g"}]}
+{"func": "select", "case": "next", "entries": [{"subagent_id": "a1", "key": "a1"}, {"subagent_id": "a2", "key": "a2"}], "processes": [{"kind": "process", "key": "p1"}], "selected_id": "a1", "delta": 1}
+{"func": "select", "case": "wrap", "entries": [{"subagent_id": "a1", "key": "a1"}, {"subagent_id": "a2", "key": "a2"}], "processes": [], "selected_id": "a2", "delta": 1}
+{"func": "select", "case": "previous", "entries": [{"subagent_id": "a1", "key": "a1"}, {"subagent_id": "a2", "key": "a2"}], "processes": [], "selected_id": "a1", "delta": -1}
+{"func": "select", "case": "unknown-selected", "entries": [{"subagent_id": "a1"}, {"subagent_id": "a2"}], "processes": [], "selected_id": "zzz", "delta": 1}
+{"func": "select", "case": "empty-roster", "entries": [], "processes": [], "selected_id": "a1", "delta": 1}
+{"func": "select", "case": "into-process", "entries": [{"subagent_id": "a1", "key": "a1"}], "processes": [{"kind": "process", "key": "p1"}], "selected_id": "a1", "delta": 1}
+{"func": "view", "case": "mixed", "entries": [{"subagent_id": "a1", "key": "a1"}], "processes": [{"kind": "process", "key": "p1"}], "selected_id": "p1", "goal": "▶ g"}
+{"func": "view", "case": "selected-agent", "entries": [{"subagent_id": "a1"}], "processes": [{"kind": "process", "key": "p1"}], "selected_id": "a1"}
+{"func": "view", "case": "empty", "entries": [], "processes": [], "queued": []}
+{"func": "modal_prompt_active", "case": "none", "attrs": {"_clarify_state": null, "_approval_state": false}}
+{"func": "modal_prompt_active", "case": "clarify", "attrs": {"_clarify_state": {"q": 1}}}
+{"func": "modal_prompt_active", "case": "sudo", "attrs": {"_sudo_state": 1, "_secret_state": null}}
+{"func": "read_tail", "case": "empty-path", "path": ""}
+{"func": "read_tail", "case": "missing", "path": "tests/fixtures/does-not-exist-work23.txt"}
+{"func": "read_tail", "case": "assigned-doc", "path": "docs/.w23-assign-5.txt"}

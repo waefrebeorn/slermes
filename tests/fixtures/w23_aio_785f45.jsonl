@@ -1,0 +1,27 @@
+{"func": "no_awaitable_form", "case": "reasons"}
+{"func": "refusal", "case": "context-manager", "world": {"name": "read_snapshot", "returns": "context_manager"}}
+{"func": "refusal", "case": "iterator", "world": {"name": "terminal_tool_call_payloads", "returns": "iterator"}}
+{"func": "refusal", "case": "iterable-is-not-refused", "world": {"name": "list_rows", "returns": "iterable"}}
+{"func": "refusal", "case": "plain-return", "world": {"name": "get", "returns": "plain"}}
+{"func": "refusal", "case": "no-annotation", "world": {"name": "get", "returns": "none"}}
+{"func": "refusal", "case": "string-annotation-iterator", "world": {"name": "terminal_tool_call_payloads", "returns": "string_iterator"}}
+{"func": "refusal", "case": "string-annotation-unresolved", "world": {"name": "read_snapshot", "returns": "string_unresolved", "annotation": "Zed"}}
+{"func": "refusal", "case": "protocol-lacks-verb", "world": {"name": "read_snapshot", "returns": "context_manager", "protocol_has": false}}
+{"func": "refusal", "case": "no-protocol", "world": {"name": "read_snapshot", "returns": "context_manager", "has_protocol": false}}
+{"func": "repository_attr", "case": "awaitable", "world": {"name": "get", "repo_type": "Repository", "has_attr": true, "callable": true, "returns": "plain"}}
+{"func": "repository_attr", "case": "refused-context-manager", "world": {"name": "read_snapshot", "repo_type": "Repository", "has_attr": true, "callable": true, "returns": "context_manager"}}
+{"func": "repository_attr", "case": "refused-iterator", "world": {"name": "terminal_tool_call_payloads", "repo_type": "Repository", "has_attr": true, "callable": true, "returns": "iterator"}}
+{"func": "repository_attr", "case": "missing-attribute", "world": {"name": "nope", "repo_type": "Repository", "has_attr": false, "callable": true, "returns": "plain"}}
+{"func": "repository_attr", "case": "not-callable", "world": {"name": "prop", "repo_type": "Repository", "has_attr": true, "callable": false, "returns": "plain"}}
+{"func": "repository_attr", "case": "underscore-attribute-exists", "world": {"name": "_hidden", "repo_type": "Repository", "has_attr": true, "callable": true, "returns": "plain"}}
+{"func": "repository_attr", "case": "no-protocol-awaitable", "world": {"name": "read_snapshot", "repo_type": "Repository", "has_attr": true, "callable": true, "returns": "context_manager", "has_protocol": false}}
+{"func": "repository_attr", "case": "protocol-lacks-verb-awaitable", "world": {"name": "read_snapshot", "repo_type": "Repository", "has_attr": true, "callable": true, "returns": "context_manager", "protocol_has": false}}
+{"func": "repository_attr", "case": "string-annotation-unresolved", "world": {"name": "read_snapshot", "repo_type": "Repository", "has_attr": true, "callable": true, "returns": "string_unresolved", "annotation": "Zed"}}
+{"func": "store_attr", "case": "repository-view", "world": {"name": "messages", "store_type": "Store", "has_attr": true}}
+{"func": "store_attr", "case": "underscore-refused", "world": {"name": "_hidden", "store_type": "Store", "has_attr": true}}
+{"func": "store_attr", "case": "missing-attribute", "world": {"name": "nope", "store_type": "Store", "has_attr": false}}
+{"func": "complete", "case": "generator-drained", "world": {"kind": "generator", "items": [1, "two", {"three": 3}]}}
+{"func": "complete", "case": "generator-empty", "world": {"kind": "generator", "items": []}}
+{"func": "complete", "case": "list-not-drained", "world": {"kind": "list", "value": [1, 2, 3]}}
+{"func": "complete", "case": "value-null", "world": {"kind": "value", "value": null}}
+{"func": "complete", "case": "value-object", "world": {"kind": "value", "value": {"ok": true, "rows": []}}}}

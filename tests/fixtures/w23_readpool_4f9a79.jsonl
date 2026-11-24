@@ -1,0 +1,47 @@
+{"func": "consts", "case": "constants"}
+{"func": "fd_headroom", "case": "no-rlimit-fails-open", "soft": null, "stamp": 0.0, "now": 5.0, "cached": 200, "probe": 300}
+{"func": "fd_headroom", "case": "cold-cache-probes", "soft": 256, "stamp": 0.0, "now": 5.0, "cached": null, "probe": 100}
+{"func": "fd_headroom", "case": "fresh-cache-room", "soft": 256, "stamp": 1.0, "now": 1.1, "cached": 100, "probe": 999}
+{"func": "fd_headroom", "case": "fresh-cache-tight", "soft": 256, "stamp": 1.0, "now": 1.1, "cached": 200, "probe": 1}
+{"func": "fd_headroom", "case": "stale-cache-reprobes", "soft": 256, "stamp": 1.0, "now": 2.0, "cached": 200, "probe": 10}
+{"func": "fd_headroom", "case": "unmeasurable-count", "soft": 256, "stamp": 1.0, "now": 2.0, "cached": 5, "probe": null}
+{"func": "fd_headroom", "case": "starved-probe", "soft": 256, "stamp": 1.0, "now": 1.05, "cached": -1, "probe": 5}
+{"func": "fd_headroom", "case": "reserve-boundary", "soft": 100, "stamp": 0.0, "now": 0.1, "cached": 36, "probe": 36}
+{"func": "fd_headroom", "case": "reserve-just-over", "soft": 100, "stamp": 0.0, "now": 0.1, "cached": 35, "probe": 35}
+{"func": "fd_soft_limit", "case": "plain-rlimit", "module": true, "soft": 4096, "raise": null}
+{"func": "fd_soft_limit", "case": "infinite-rlimit", "module": true, "soft": 4096, "infinity": true}
+{"func": "fd_soft_limit", "case": "minus-one", "module": true, "soft": -1}
+{"func": "fd_soft_limit", "case": "no-module", "module": false, "soft": 4096}
+{"func": "fd_soft_limit", "case": "oserror-becomes-none", "module": true, "soft": 4096, "raise": "os"}
+{"func": "fd_soft_limit", "case": "valueerror-becomes-none", "module": true, "soft": 4096, "raise": "value"}
+{"func": "fd_soft_limit", "case": "attributeerror-becomes-none", "module": true, "soft": 4096, "raise": "attr"}
+{"func": "fd_count", "case": "enumeration", "dirs": [{"entries": ["0", "1", "2", "3"]}]}
+{"func": "fd_count", "case": "emfile-probe", "dirs": [{"error": "emfile"}, {"entries": ["0"]}]}
+{"func": "fd_count", "case": "enfile-second-dir", "dirs": [{"error": "enoent"}, {"error": "enfile"}]}
+{"func": "fd_count", "case": "both-unmeasurable", "dirs": [{"error": "enoent"}, {"error": "enoent"}]}
+{"func": "fd_count", "case": "skips-other-oserror", "dirs": [{"error": "eacces"}, {"entries": ["0", "1"]}]}
+{"func": "fd_count", "case": "empty-listing", "dirs": [{"entries": []}]}
+{"func": "budget_key", "case": "absolute", "path": "C:/w23tmp/a/state.db"}
+{"func": "budget_key", "case": "dotdot-collapses", "path": "C:/w23tmp/b/../a/state.db"}
+{"func": "budget_key", "case": "lowercase-drive", "path": "c:/W23TMP//a/state.db"}
+{"func": "budget_key", "case": "dot-segment", "path": "C:/w23tmp/./a/state.db"}
+{"func": "budget_key", "case": "backslashes", "path": "C:\\w23tmp\\a\\state.db"}
+{"func": "budget_key", "case": "trailing-sep", "path": "C:/w23tmp/a/"}
+{"func": "acquire", "case": "first-permit", "fd_ok": true, "process_used": 0, "path_used": 0, "requester": -1, "members": [], "ops": [{"op": "acquire"}]}
+{"func": "acquire", "case": "grow-to-eight", "fd_ok": true, "process_used": 0, "path_used": 0, "requester": -1, "members": [], "ops": [{"op": "acquire"}, {"op": "acquire"}, {"op": "acquire"}, {"op": "acquire"}, {"op": "acquire"}, {"op": "acquire"}, {"op": "acquire"}, {"op": "acquire"}]}
+{"func": "acquire", "case": "ninth-refused", "fd_ok": true, "process_used": 0, "path_used": 8, "requester": -1, "members": [], "ops": [{"op": "acquire"}]}
+{"func": "acquire", "case": "path-ceiling-reclaims-idle", "fd_ok": true, "process_used": 0, "path_used": 8, "requester": -1, "members": [{"evictable": true}], "ops": [{"op": "acquire"}]}
+{"func": "acquire", "case": "path-ceiling-excludes-requester", "fd_ok": true, "process_used": 0, "path_used": 8, "requester": 0, "members": [{"evictable": true}], "ops": [{"op": "acquire"}]}
+{"func": "acquire", "case": "process-ceiling-reclaims-idle", "fd_ok": true, "process_used": 24, "path_used": 1, "requester": -1, "members": [{"evictable": true}], "ops": [{"op": "acquire"}]}
+{"func": "acquire", "case": "process-ceiling-refused", "fd_ok": true, "process_used": 24, "path_used": 1, "requester": -1, "members": [{"evictable": false}], "ops": [{"op": "acquire"}]}
+{"func": "acquire", "case": "fd-headroom-denied", "fd_ok": false, "process_used": 0, "path_used": 0, "requester": -1, "members": [{"evictable": true}], "ops": [{"op": "acquire"}, {"op": "acquire"}]}
+{"func": "acquire", "case": "release-returns-both", "fd_ok": true, "process_used": 2, "path_used": 2, "requester": -1, "members": [], "ops": [{"op": "release"}, {"op": "acquire"}]}
+{"func": "register", "case": "four-handles-quiet", "db_path": "C:/w23tmp/a/state.db", "members": [{"read_only": false, "has_conn": true, "site": "cli"}, {"read_only": false, "has_conn": true, "site": "gateway"}, {"read_only": false, "has_conn": true, "site": "cron"}, {"read_only": false, "has_conn": true, "site": "desktop"}]}
+{"func": "register", "case": "five-handles-warn", "db_path": "C:/w23tmp/a/state.db", "members": [{"read_only": false, "has_conn": true, "site": "cli"}, {"read_only": false, "has_conn": true, "site": "gateway"}, {"read_only": false, "has_conn": true, "site": "cron"}, {"read_only": false, "has_conn": true, "site": "desktop"}, {"read_only": false, "has_conn": true, "site": "agent"}]}
+{"func": "register", "case": "readonly-attaches-ignored", "db_path": "C:/w23tmp/a/state.db", "members": [{"read_only": true, "has_conn": true, "site": "dashboard"}, {"read_only": false, "has_conn": true, "site": "cli"}, {"read_only": true, "has_conn": true, "site": "status"}, {"read_only": false, "has_conn": true, "site": "gateway"}]}
+{"func": "register", "case": "closed-writer-in-sites", "db_path": "C:/w23tmp/a/state.db", "members": [{"read_only": false, "has_conn": true, "site": "zeta"}, {"read_only": false, "has_conn": true, "site": "alpha"}, {"read_only": false, "has_conn": true, "site": "mike"}, {"read_only": false, "has_conn": true, "site": "bravo"}, {"read_only": false, "has_conn": false, "site": "closed"}]}
+{"func": "note_exhausted", "case": "first-warning", "ops": [{"db": "C:/w23tmp/a/state.db", "t": 100.0}]}
+{"func": "note_exhausted", "case": "suppressed-then-summed", "ops": [{"db": "C:/w23tmp/a/state.db", "t": 100.0}, {"db": "C:/w23tmp/a/state.db", "t": 110.0}, {"db": "C:/w23tmp/a/state.db", "t": 170.0}]}
+{"func": "note_exhausted", "case": "window-boundary-warns", "ops": [{"db": "C:/w23tmp/a/state.db", "t": 0.0}, {"db": "C:/w23tmp/a/state.db", "t": 60.0}]}
+{"func": "note_exhausted", "case": "per-db-windows", "ops": [{"db": "C:/w23tmp/a/state.db", "t": 0.0}, {"db": "C:/w23tmp/b/state.db", "t": 1.0}, {"db": "C:/w23tmp/a/state.db", "t": 2.0}]}
+{"func": "note_exhausted", "case": "no-ops", "ops": []}

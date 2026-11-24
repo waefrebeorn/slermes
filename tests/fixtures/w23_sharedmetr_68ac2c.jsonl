@@ -1,0 +1,52 @@
+{"func": "metric_name", "case": "metric-constant"}
+{"func": "truthy", "case": "truthy-on-string", "value": "on"}
+{"func": "truthy", "case": "truthy-yes-padded", "value": "  YES "}
+{"func": "truthy", "case": "truthy-one-number", "value": 1}
+{"func": "truthy", "case": "truthy-zero", "value": 0}
+{"func": "truthy", "case": "truthy-false", "value": false}
+{"func": "truthy", "case": "truthy-empty-string", "value": ""}
+{"func": "truthy", "case": "truthy-null", "value": null}
+{"func": "truthy", "case": "truthy-empty-list", "value": []}
+{"func": "truthy", "case": "truthy-list", "value": ["x"]}
+{"func": "truthy", "case": "truthy-other-string", "value": "enabled"}
+{"func": "prepare_ahead_state", "case": "on-literal", "config": {"compression": {"prepare_ahead": "on"}}}
+{"func": "prepare_ahead_state", "case": "on-upper", "config": {"compression": {"prepare_ahead": "YES"}}}
+{"func": "prepare_ahead_state", "case": "on-bool", "config": {"compression": {"prepare_ahead": true}}}
+{"func": "prepare_ahead_state", "case": "off-literal", "config": {"compression": {"prepare_ahead": "off"}}}
+{"func": "prepare_ahead_state", "case": "off-zero", "config": {"compression": {"prepare_ahead": 0}}}
+{"func": "prepare_ahead_state", "case": "off-null", "config": {"compression": {"prepare_ahead": null}}}
+{"func": "prepare_ahead_state", "case": "off-missing-key", "config": {"compression": {}}}
+{"func": "prepare_ahead_state", "case": "off-no-compression", "config": {"other": 1}}
+{"func": "prepare_ahead_state", "case": "off-config-not-dict", "config": 5}
+{"func": "prepare_ahead_state", "case": "off-config-missing"}
+{"func": "prepare_ahead_state", "case": "off-compression-not-dict", "config": {"compression": "on"}}
+{"func": "prepare_ahead_state", "case": "on-nonempty-list", "config": {"compression": {"prepare_ahead": ["x"]}}}
+{"func": "wait_bucket", "case": "zero", "seconds": 0}
+{"func": "wait_bucket", "case": "sub-second", "seconds": 0.999}
+{"func": "wait_bucket", "case": "one", "seconds": 1}
+{"func": "wait_bucket", "case": "just-under-five", "seconds": 4.999}
+{"func": "wait_bucket", "case": "five", "seconds": 5}
+{"func": "wait_bucket", "case": "thirty", "seconds": 30}
+{"func": "wait_bucket", "case": "just-under-120", "seconds": 119.9}
+{"func": "wait_bucket", "case": "120", "seconds": 120}
+{"func": "wait_bucket", "case": "bool-true", "seconds": true}
+{"func": "wait_bucket", "case": "negative", "seconds": -0.5}
+{"func": "wait_bucket", "case": "string", "seconds": "3"}
+{"func": "wait_bucket", "case": "null", "seconds": null}
+{"func": "wait_bucket", "case": "missing"}
+{"func": "fields", "case": "full", "event": "used", "origin": "turn-end", "reason": "Head-Moved", "failure_class": "exception:ValueError", "wait_seconds": 4}
+{"func": "fields", "case": "all-defaults", "event": "pass_started"}
+{"func": "fields", "case": "event-uppercase", "event": "USED", "origin": "TOOL_BATCH", "reason": "fresh-required", "failure_class": null, "wait_seconds": 0.2}
+{"func": "fields", "case": "unknown-event", "event": "not_an_event", "origin": "turn_end", "reason": "none", "failure_class": "none", "wait_seconds": 1}
+{"func": "fields", "case": "null-event", "event": null}
+{"func": "fields", "case": "dashed-event", "event": "-pass_started"}
+{"func": "fields", "case": "numeric-event", "event": 3}
+{"func": "fields", "case": "failure-nonstring", "event": "pass_failed", "failure_class": 5}
+{"func": "fields", "case": "failure-none-string", "event": "pass_failed", "failure_class": "none"}
+{"func": "fields", "case": "failure-unknown-string", "event": "pass_failed", "failure_class": "unknown"}
+{"func": "fields", "case": "failure-empty-string", "event": "pass_failed", "failure_class": ""}
+{"func": "fields", "case": "failure-other", "event": "pass_failed", "failure_class": "plugin_specific_thing"}
+{"func": "fields", "case": "failure-rollback-prefixed", "event": "internal_error", "failure_class": "Rollback:BrokenPipe"}
+{"func": "fields", "case": "failure-uppercase-padded", "event": "compaction_failed", "failure_class": " SUMMARY_GENERATION_FAILED "}
+{"func": "fields", "case": "wait-string", "event": "skipped_busy", "origin": "none", "reason": "session_boundary", "failure_class": null, "wait_seconds": "9"}
+{"func": "fields", "case": "origin-object", "event": "discarded", "origin": {"a": 1}, "reason": [], "failure_class": null, "wait_seconds": 200}

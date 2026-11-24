@@ -1,0 +1,63 @@
+{"func": "limits", "case": "constants"}
+{"func": "file_uri", "case": "nt-space", "os_name": "nt", "path": "C:/work/a b/x.py"}
+{"func": "file_uri", "case": "nt-backslashes", "os_name": "nt", "path": "C:\\work\\sub\\y.py"}
+{"func": "file_uri", "case": "nt-dotdot", "os_name": "nt", "path": "C:/work/./a/../x.py"}
+{"func": "file_uri", "case": "nt-lower-drive", "os_name": "nt", "path": "d:/data/z.py"}
+{"func": "file_uri", "case": "nt-unicode", "os_name": "nt", "path": "C:/work/\u00fcn\u00ef/x.py"}
+{"func": "file_uri", "case": "nt-relative", "os_name": "nt", "path": "rel/x.py"}
+{"func": "file_uri", "case": "nt-empty", "os_name": "nt", "path": ""}
+{"func": "file_uri", "case": "posix-branch", "os_name": "posix", "path": "/home/u/a b.py"}
+{"func": "uri_to_path", "case": "nt-space", "os_name": "nt", "uri": "file:///C:/work/a%20b/x.py"}
+{"func": "uri_to_path", "case": "nt-unicode", "os_name": "nt", "uri": "file:///C:/work/%C3%BCn%C3%AF/x.py"}
+{"func": "uri_to_path", "case": "nt-bad-byte", "os_name": "nt", "uri": "file:///C:/work/%FFx.py"}
+{"func": "uri_to_path", "case": "nt-bad-escape", "os_name": "nt", "uri": "file:///C:/work/bad%zz.py"}
+{"func": "uri_to_path", "case": "nt-empty-raw", "os_name": "nt", "uri": "file://"}
+{"func": "uri_to_path", "case": "other-scheme", "os_name": "nt", "uri": "https://example.test/a%20b"}
+{"func": "uri_to_path", "case": "posix-branch", "os_name": "posix", "uri": "file:///C:/work/x.py"}
+{"func": "folder", "case": "plain", "os_name": "nt", "root": "C:/work/proj"}
+{"func": "folder", "case": "trailing-backslash", "os_name": "nt", "root": "C:\\work\\proj\\"}
+{"func": "folder", "case": "trailing-slash", "os_name": "nt", "root": "C:/work/proj/"}
+{"func": "end_position", "case": "empty", "text": ""}
+{"func": "end_position", "case": "single-line", "text": "abc"}
+{"func": "end_position", "case": "two-lines", "text": "a\nbc"}
+{"func": "end_position", "case": "trailing-newline", "text": "a\n"}
+{"func": "end_position", "case": "crlf", "text": "a\r\nbc"}
+{"func": "end_position", "case": "blank-line", "text": "a\n\nb"}
+{"func": "end_position", "case": "only-newline", "text": "\n"}
+{"func": "end_position", "case": "emoji", "text": "x\ud83d\ude00"}
+{"func": "end_position", "case": "unicode-break", "text": "a\u2028bc"}
+{"func": "as_disk_read", "case": "bom-crlf", "text": "\ufeffa\r\nb\rc"}
+{"func": "as_disk_read", "case": "plain", "text": "line1\nline2\n"}
+{"func": "as_disk_read", "case": "cr-only", "text": "a\rb\rc"}
+{"func": "as_disk_read", "case": "bom-only", "text": "\ufeff"}
+{"func": "diagnostic_key", "case": "full", "diag": {"severity": 2, "code": "E1", "source": "ts", "message": " boom ", "range": {"start": {"line": 1, "character": 2}, "end": {"line": 3, "character": 4}}}}
+{"func": "diagnostic_key", "case": "empty", "diag": {}}
+{"func": "diagnostic_key", "case": "zero-severity", "diag": {"severity": 0, "code": 3821}}
+{"func": "diagnostic_key", "case": "bool-severity", "diag": {"severity": true, "source": "", "message": "x"}}
+{"func": "diagnostic_key", "case": "partial-range", "diag": {"message": "m", "range": {"start": {"line": 7}}}}
+{"func": "diagnostic_key", "case": "null-range", "diag": {"message": "m", "range": null, "code": null}}
+{"func": "dedupe", "case": "merge-dup", "lists": [[{"message": "a"}, {"message": "b"}], [{"message": "a"}, {"message": "c"}]]}
+{"func": "dedupe", "case": "non-dict", "lists": [[{"message": "a"}, "x", 4], [{"message": "a"}]]}
+{"func": "dedupe", "case": "empty", "lists": [[], []]}
+{"func": "dedupe", "case": "different-sites", "lists": [[{"message": "e", "range": {"start": {"line": 1, "character": 0}, "end": {"line": 1, "character": 3}}}], [{"message": "e", "range": {"start": {"line": 9, "character": 0}, "end": {"line": 9, "character": 3}}}]]}
+{"func": "doc_fresh", "case": "any-pull", "doc": {"version": 3, "push_version": 2, "pull_version": 3}, "kind": "any"}
+{"func": "doc_fresh", "case": "push-stale", "doc": {"version": 3, "push_version": 2, "pull_version": 3}, "kind": "push"}
+{"func": "doc_fresh", "case": "pull-exact", "doc": {"version": 3, "push_version": -1, "pull_version": 3}, "kind": "pull"}
+{"func": "doc_fresh", "case": "push-at-old", "doc": {"version": 3, "push_version": 2, "pull_version": 3}, "kind": "push", "at": 2}
+{"func": "doc_fresh", "case": "defaults", "doc": {}, "kind": "any"}
+{"func": "diagnostics_for", "case": "fresh-only-drops-stale-push", "path": "C:/w/f.py", "fresh_only": true, "docs": [{"path": "C:/w/f.py", "version": 3, "push_version": 2, "pull_version": 3, "push": [{"message": "p"}], "pull": [{"message": "q"}]}]}
+{"func": "diagnostics_for", "case": "all-stores", "path": "C:/w/f.py", "docs": [{"path": "C:/w/f.py", "version": 3, "push_version": 2, "pull_version": 3, "push": [{"message": "p"}], "pull": [{"message": "q"}]}]}
+{"func": "diagnostics_for", "case": "dedupes-across-stores", "path": "C:/w/f.py", "docs": [{"path": "C:/w/f.py", "version": 1, "push_version": 1, "pull_version": 1, "push": [{"message": "same"}], "pull": [{"message": "same"}, {"message": "other"}]}]}
+{"func": "diagnostics_for", "case": "unopened", "path": "C:/w/none.py", "docs": [{"path": "C:/w/f.py", "version": 1, "push_version": 1, "push": [{"message": "x"}]}]}
+{"func": "document_text", "case": "opened", "path": "C:/w/f.py", "docs": [{"path": "C:/w/f.py", "version": 2, "text": "hello"}]}
+{"func": "document_text", "case": "never-opened", "path": "C:/w/f.py", "docs": [{"path": "C:/w/f.py", "version": -1, "text": "spill"}]}
+{"func": "document_text", "case": "no-docs", "path": "C:/w/f.py"}
+{"func": "config_section", "case": "nested", "item": {"section": "lsp.pyright.analysis"}, "init": {"lsp": {"pyright": {"analysis": 5}}}}
+{"func": "config_section", "case": "missing-leaf", "item": {"section": "lsp.nope"}, "init": {"lsp": {"pyright": {"analysis": 5}}}}
+{"func": "config_section", "case": "no-section", "item": {}, "init": {"lsp": {"a": 1}}}
+{"func": "config_section", "case": "empty-init", "item": {"section": "lsp"}, "init": {}}
+{"func": "config_section", "case": "int-section", "item": {"section": 5}, "init": {"5": "five"}}
+{"func": "config_section", "case": "non-dict-item", "item": "lsp", "init": {"lsp": 1}}
+{"func": "workspace_configuration", "case": "two-items", "params": {"items": [{"section": "lsp"}, {}]}, "init": {"lsp": {"a": 1}}}
+{"func": "workspace_configuration", "case": "non-dict-params", "params": null, "init": {"lsp": {"a": 1}}}
+{"func": "workspace_configuration", "case": "no-items", "params": {"items": []}, "init": {"lsp": {"a": 1}}}

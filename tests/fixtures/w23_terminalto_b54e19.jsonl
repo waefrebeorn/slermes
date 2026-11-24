@@ -1,0 +1,60 @@
+{"func": "consts", "case": "literals"}
+{"func": "prologue", "case": "count-1-default", "count": 1}
+{"func": "prologue", "case": "count-3-no-bg", "count": 3, "background": false, "sudo_words": ["sudo"]}
+{"func": "prologue", "case": "count-0-empty-words", "count": 0, "sudo_words": []}
+{"func": "prologue", "case": "count-2-two-words", "count": 2, "timeout_token": "45", "sudo_words": ["sudo", "/usr/bin/sudo"]}
+{"func": "prologue", "case": "words-missing", "count": 5, "timeout_token": "30"}
+{"func": "prologue", "case": "words-int", "count": 1, "sudo_words": [5]}
+{"func": "prologue", "case": "words-bool-null", "count": 1, "sudo_words": [true, null]}
+{"func": "prologue", "case": "count-string", "count": "4", "sudo_words": ["doas"]}
+{"func": "prologue", "case": "count-negative", "count": -1}
+{"func": "prologue", "case": "count-missing"}
+{"func": "prologue", "case": "bg-truthy-int", "count": 2, "background": 1}
+{"func": "fill", "case": "int-5", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail", "timeout": 5}
+{"func": "fill", "case": "string-junk", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail", "timeout": "abc"}
+{"func": "fill", "case": "float-3.9", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail", "timeout": 3.9}
+{"func": "fill", "case": "null-timeout", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail", "timeout": null}
+{"func": "fill", "case": "bool-timeout", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail", "timeout": true}
+{"func": "fill", "case": "padded-string", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail", "timeout": " 12 "}
+{"func": "fill", "case": "string-float", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail", "timeout": "12.0"}
+{"func": "fill", "case": "negative", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail", "timeout": -5}
+{"func": "fill", "case": "object-timeout", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail", "timeout": {"a": 1}}
+{"func": "fill", "case": "no-head", "command": "echo 1 __HERMES_SUDO_ASKPASS_T__", "timeout": 5}
+{"func": "fill", "case": "null-command", "command": null, "timeout": 5}
+{"func": "fill", "case": "token-absent", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\necho hi", "timeout": 5}
+{"func": "fill", "case": "empty-string-timeout", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail", "timeout": ""}
+{"func": "fill", "case": "timeout-missing", "command": "__hermes_sudo_pw=; __hermes_sudo_o=(-S -p '')\nrest __HERMES_SUDO_ASKPASS_T__ tail"}
+{"func": "own_input", "case": "cluster-nS", "words": ["-nS"]}
+{"func": "own_input", "case": "value-u-then-S", "words": ["-u", "S"]}
+{"func": "own_input", "case": "pS", "words": ["-pS"]}
+{"func": "own_input", "case": "stdin-long", "words": ["--stdin"]}
+{"func": "own_input", "case": "double-dash", "words": ["--"]}
+{"func": "own_input", "case": "dollar", "words": ["$X"]}
+{"func": "own_input", "case": "backquote", "words": ["`x`"]}
+{"func": "own_input", "case": "redirect-2g1", "words": ["2>&1"]}
+{"func": "own_input", "case": "bare-redirect-swallows", "words": ["2>", "-S"]}
+{"func": "own_input", "case": "quoted-space", "words": ["'a b'"]}
+{"func": "own_input", "case": "n-then-askpass", "words": ["-n", "--askpass"]}
+{"func": "own_input", "case": "empty-word", "words": [""]}
+{"func": "own_input", "case": "unbalanced-quote", "words": ["'"]}
+{"func": "own_input", "case": "cluster-Ab", "words": ["-Ab"]}
+{"func": "own_input", "case": "user-value", "words": ["--user", "root"]}
+{"func": "own_input", "case": "xS", "words": ["-xS"]}
+{"func": "own_input", "case": "command-timeout", "words": ["--command-timeout", "5"]}
+{"func": "own_input", "case": "Sx", "words": ["-Sx"]}
+{"func": "own_input", "case": "empty-list", "words": []}
+{"func": "own_input", "case": "single-dash", "words": ["-"]}
+{"func": "own_input", "case": "words-missing"}
+{"func": "supported", "case": "cached-true", "world": {"cached": true}}
+{"func": "supported", "case": "cached-false", "world": {"cached": false, "probe_supported": true, "run_rc": 0}}
+{"func": "supported", "case": "runtime-checked", "world": {"runtime_checked": true}}
+{"func": "supported", "case": "probe-rc0", "world": {"probe_supported": true, "run_rc": 0}}
+{"func": "supported", "case": "probe-rc1", "world": {"probe_supported": true, "run_rc": 1}}
+{"func": "supported", "case": "probe-raises", "world": {"probe_supported": true, "run_raises": true}}
+{"func": "supported", "case": "not-supported", "world": {"run_rc": 0}}
+{"func": "supported", "case": "local-windows", "world": {"probe_supported": true, "is_local": true, "system": "Windows", "run_rc": 0}}
+{"func": "supported", "case": "windows-remote", "world": {"probe_supported": true, "is_local": false, "system": "Windows", "run_rc": 0}}
+{"func": "supported", "case": "cached-null-probes", "world": {"cached": null, "probe_supported": true, "run_rc": 0}}
+{"func": "supported", "case": "probe-timeout-7", "world": {"probe_supported": true, "run_rc": 0, "probe_timeout": 7}}
+{"func": "supported", "case": "missing-world"}
+{"func": "supported", "case": "world-not-object", "world": 3}

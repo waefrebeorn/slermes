@@ -1,0 +1,44 @@
+{"func": "backend_for_model", "case": "unset", "model_id": null}
+{"func": "backend_for_model", "case": "empty-string", "model_id": ""}
+{"func": "backend_for_model", "case": "blank-string", "model_id": "   "}
+{"func": "backend_for_model", "case": "fal-known", "model_id": "fal-ai/flux-2-pro"}
+{"func": "backend_for_model", "case": "fal-padded", "model_id": "  fal-ai/flux-2/klein/9b\t"}
+{"func": "backend_for_model", "case": "fal-krea-on-fal", "model_id": "fal-ai/krea/v2/medium/text-to-image"}
+{"func": "backend_for_model", "case": "krea-native", "model_id": "krea-2-medium"}
+{"func": "backend_for_model", "case": "krea-three", "model_id": "krea-3"}
+{"func": "backend_for_model", "case": "portal-shaped", "model_id": "openai/gpt-image-2"}
+{"func": "backend_for_model", "case": "portal-unknown", "model_id": "some/vendor/model"}
+{"func": "backend_for_model", "case": "non-string", "model_id": 5}
+{"func": "backend_for_model", "case": "case-sensitive", "model_id": "KREA-3"}
+{"func": "backend_for_model", "case": "missing-key"}
+{"func": "route", "case": "both-unset", "provider": null, "model_id": null}
+{"func": "route", "case": "nous-unset-model", "provider": "nous", "model_id": null}
+{"func": "route", "case": "nous-fal", "provider": "nous", "model_id": "fal-ai/gpt-image-2"}
+{"func": "route", "case": "nous-krea", "provider": "nous", "model_id": "krea-2-large"}
+{"func": "route", "case": "nous-portal", "provider": "nous", "model_id": "openai/gpt-image-2"}
+{"func": "route", "case": "nous-portal-unknown", "provider": "nous", "model_id": "vendor/thing"}
+{"func": "route", "case": "unset-provider-portal-id", "model_id": "openai/gpt-image-2"}
+{"func": "route", "case": "unset-provider-krea-id", "provider": null, "model_id": "krea-3"}
+{"func": "route", "case": "direct-provider", "provider": "fal", "model_id": "fal-ai/flux-2-pro"}
+{"func": "route", "case": "direct-provider-blank-model", "provider": "openrouter", "model_id": ""}
+{"func": "route", "case": "padded-provider", "provider": "  nous  ", "model_id": "  krea-2-medium-turbo "}
+{"func": "route", "case": "blank-provider", "provider": "", "model_id": "openai/gpt-image-2"}
+{"func": "route", "case": "case-variant-provider", "provider": "Nous", "model_id": "krea-3"}
+{"func": "route", "case": "non-string-provider", "provider": 7, "model_id": "krea-3"}
+{"func": "route", "case": "non-string-model", "provider": "nous", "model_id": 7}
+{"func": "route", "case": "missing-both"}
+{"func": "portal_duplicate_of", "case": "gpt-image-2", "model_id": "openai/gpt-image-2"}
+{"func": "portal_duplicate_of", "case": "nano-banana-pro", "model_id": "google/gemini-3-pro-image"}
+{"func": "portal_duplicate_of", "case": "lite", "model_id": "google/gemini-3.1-flash-lite-image"}
+{"func": "portal_duplicate_of", "case": "krea-three", "model_id": "krea/krea-3"}
+{"func": "portal_duplicate_of", "case": "krea-medium", "model_id": "krea/krea-2-medium"}
+{"func": "portal_duplicate_of", "case": "not-a-duplicate", "model_id": "krea-3"}
+{"func": "portal_duplicate_of", "case": "padded-is-not-a-key", "model_id": " krea/krea-3 "}
+{"func": "portal_duplicate_of", "case": "null", "model_id": null}
+{"func": "portal_duplicate_of", "case": "non-string", "model_id": 9}
+{"func": "is_fal_krea_entry", "case": "krea-on-fal", "model_id": "fal-ai/krea/v2/large/text-to-image"}
+{"func": "is_fal_krea_entry", "case": "fal-non-krea", "model_id": "fal-ai/flux-2-pro"}
+{"func": "is_fal_krea_entry", "case": "native-krea", "model_id": "krea-3"}
+{"func": "is_fal_krea_entry", "case": "prefix-only", "model_id": "fal-ai/krea/"}
+{"func": "is_fal_krea_entry", "case": "null", "model_id": null}
+{"func": "is_fal_krea_entry", "case": "non-string", "model_id": true}

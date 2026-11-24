@@ -1,0 +1,50 @@
+{"func": "cli_attempts", "case": "constant"}
+{"func": "outcome_unknown", "case": "transport", "name": "get_window_state", "detail": "Read of closed file", "code": "transport_outcome_unknown"}
+{"func": "outcome_unknown", "case": "timeout", "name": "click", "detail": "futures.TimeoutError()", "code": "timeout_outcome_unknown"}
+{"func": "outcome_unknown", "case": "empty-detail", "name": "key", "code": "timeout_outcome_unknown"}
+{"func": "outcome_unknown", "case": "empty-name", "name": "", "detail": "x", "code": "transport_outcome_unknown"}
+{"func": "logical_error_text", "case": "dict-and-string", "error": {"data": {"z": "caf\u00e9", "a": 1, "m": null}, "structuredContent": "tail"}}
+{"func": "logical_error_text", "case": "array-and-null", "error": {"data": [1, {"k": "v"}, true], "structuredContent": null}}
+{"func": "logical_error_text", "case": "empty-object", "error": {}}
+{"func": "logical_error_text", "case": "numbers", "error": {"data": 1.5, "structuredContent": 7}}
+{"func": "logical_error_text", "case": "plain-string", "error": {"data": "session 7 has ended; call start_session", "structuredContent": null}}
+{"func": "is_ended_session_result", "case": "ended", "result": {"isError": true, "data": "Session ABC has ended. Call start_session to begin a new one."}}
+{"func": "is_ended_session_result", "case": "ended-lowercase", "result": {"isError": true, "structuredContent": "session ended: start_session again"}}
+{"func": "is_ended_session_result", "case": "not-error", "result": {"isError": false, "data": "session ABC has ended; start_session"}}
+{"func": "is_ended_session_result", "case": "int-not-bool", "result": {"isError": 1, "data": "session ABC has ended; start_session"}}
+{"func": "is_ended_session_result", "case": "no-start-session", "result": {"isError": true, "data": "the session has ended"}}
+{"func": "is_ended_session_result", "case": "empty", "result": {}}
+{"func": "is_closed_session_error", "case": "closed-resource", "name": "ClosedResourceError", "module": "anyio._core._exceptions"}
+{"func": "is_closed_session_error", "case": "broken-resource", "name": "BrokenResourceError", "module": "anyio._core._exceptions"}
+{"func": "is_closed_session_error", "case": "end-of-stream", "name": "EndOfStream", "module": "mcp.shared.session"}
+{"func": "is_closed_session_error", "case": "anyio-resource-name", "name": "ResourceBusyError", "module": "anyio.streams.memory"}
+{"func": "is_closed_session_error", "case": "broken-pipe-instance", "name": "OSError", "module": "builtins", "base": "broken_pipe"}
+{"func": "is_closed_session_error", "case": "eof-instance", "name": "CustomEOF", "module": "custom", "base": "eof"}
+{"func": "is_closed_session_error", "case": "plain-value-error", "name": "ValueError", "module": "builtins"}
+{"func": "is_closed_session_error", "case": "empty", "name": "RuntimeError"}
+{"func": "is_transient_daemon_error", "case": "eagain", "message": "[Errno 35] Resource temporarily unavailable"}
+{"func": "is_transient_daemon_error", "case": "os-error-35", "message": "cua-driver call failed: os error 35"}
+{"func": "is_transient_daemon_error", "case": "daemon-proxy", "message": "daemon proxy: connection reset"}
+{"func": "is_transient_daemon_error", "case": "daemon-transport", "message": "daemon transport error while writing"}
+{"func": "is_transient_daemon_error", "case": "plain", "message": "no such process"}
+{"func": "is_transient_daemon_error", "case": "empty", "message": ""}
+{"func": "supports_capability", "case": "tool-scoped-hit", "capability": "accessibility.element_tokens", "tool": "click", "capabilities": {"click": ["accessibility.element_tokens", "input.mouse"], "get_window_state": ["tree"]}}
+{"func": "supports_capability", "case": "tool-scoped-miss", "capability": "tree", "tool": "click", "capabilities": {"click": ["accessibility.element_tokens"], "get_window_state": ["tree"]}}
+{"func": "supports_capability", "case": "any-tool", "capability": "tree", "capabilities": {"click": ["accessibility.element_tokens"], "get_window_state": ["tree"]}}
+{"func": "supports_capability", "case": "no-map", "capability": "tree", "tool": "click"}
+{"func": "supports_capability", "case": "tool-null", "capability": "tree", "tool": null, "capabilities": {"get_window_state": ["tree"]}}
+{"func": "supports_capability", "case": "tool-wrong-type", "capability": "tree", "tool": 5, "capabilities": {"5": ["tree"]}}
+{"func": "supports_capability", "case": "capability-wrong-type", "capability": 7, "capabilities": {"7": ["tree"]}}
+{"func": "supports_input_property", "case": "present", "tool": "get_window_state", "property": "tree_format", "schemas": {"get_window_state": {"properties": {"tree_format": {"type": "string"}, "window_id": {"type": "integer"}}}}}
+{"func": "supports_input_property", "case": "absent", "tool": "get_window_state", "property": "delivery_mode", "schemas": {"get_window_state": {"properties": {"tree_format": {"type": "string"}}}}}
+{"func": "supports_input_property", "case": "no-properties", "tool": "click", "property": "x", "schemas": {"click": {"type": "object"}}}
+{"func": "supports_input_property", "case": "unknown-tool", "tool": "drag", "property": "x", "schemas": {"click": {"properties": {"x": {}}}}}
+{"func": "supports_input_property", "case": "no-schema-map", "tool": "click", "property": "x"}
+{"func": "mcp_field", "case": "snake-present", "snake": "input_schema", "camel": "inputSchema", "obj": {"input_schema": {"a": 1}, "inputSchema": {"b": 2}}}
+{"func": "mcp_field", "case": "camel-fallback", "snake": "input_schema", "camel": "inputSchema", "obj": {"inputSchema": {"b": 2}}}
+{"func": "mcp_field", "case": "neither", "snake": "input_schema", "camel": "inputSchema", "obj": {"other": 1}}
+{"func": "mcp_field", "case": "empty-object", "snake": "capabilities", "camel": "capabilities", "obj": {}}
+{"func": "tool_field", "case": "snake-present", "snake": "capabilities", "camel": "capabilities", "obj": {"capabilities": ["a"], "model_extra": {"capabilities": ["b"]}}}
+{"func": "tool_field", "case": "model-extra-fallback", "snake": "input_schema", "camel": "inputSchema", "obj": {"model_extra": {"inputSchema": {"x": 1}}}}
+{"func": "tool_field", "case": "null-then-model-extra", "snake": "capabilities", "camel": "capabilities", "obj": {"capabilities": null, "model_extra": {"capabilities": ["c"]}}}
+{"func": "tool_field", "case": "nothing", "snake": "capabilities", "camel": "capabilities", "obj": {"name": "click"}}

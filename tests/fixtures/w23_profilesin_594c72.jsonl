@@ -1,0 +1,25 @@
+{"func": "staging", "case": "fresh", "dir": "w23tmp/pp/alpha", "pid": 4242, "leftover": "none"}
+{"func": "staging", "case": "leftover-file", "dir": "w23tmp/pp/bravo", "pid": 4242, "leftover": "file"}
+{"func": "staging", "case": "leftover-dir", "dir": "w23tmp/pp/charlie", "pid": 7, "leftover": "dir"}
+{"func": "staging", "case": "deep-name", "dir": "w23tmp/pp/deep/nest", "pid": 99, "leftover": "none"}
+{"func": "staging", "case": "single-segment", "dir": "solo", "pid": 7, "leftover": "none"}
+{"func": "staging", "case": "pid-zero", "dir": "w23tmp/pp/echo", "pid": 0, "leftover": "none"}
+{"func": "staging", "case": "backslash-dir", "dir": "w23tmp\\pp\\foxtrot", "pid": 31, "leftover": "file"}
+{"func": "discard", "case": "nothing-copied", "ref": null}
+{"func": "discard", "case": "absent-key"}
+{"func": "discard", "case": "own-copied-key", "ref": {"service": "keyring", "account": "hermes/profile/golf"}}
+{"func": "prepare_import", "case": "runtime-roots", "dir": "imp/c1", "env": "file", "config": "file", "children": [{"name": "installs", "kind": "dir"}, {"name": "tools", "kind": "dir"}, {"name": "cache", "kind": "dir"}, {"name": "sessions", "kind": "dir"}, {"name": "config.yaml", "kind": "file"}]}
+{"func": "prepare_import", "case": "file-shaped-root", "dir": "imp/c2", "env": "absent", "config": "absent", "children": [{"name": "tools", "kind": "file"}, {"name": "skills", "kind": "dir"}]}
+{"func": "prepare_import", "case": "nothing-foreign", "dir": "imp/c3", "env": "absent", "config": "file", "children": [{"name": "sessions", "kind": "dir"}, {"name": "SOUL.md", "kind": "file"}, {"name": "profiles", "kind": "dir"}]}
+{"func": "prepare_import", "case": "empty-tree", "dir": "imp/c4", "env": "absent", "config": "absent", "children": []}
+{"func": "prepare_import", "case": "env-is-dir", "dir": "imp/c5", "env": "dir", "config": "file", "children": [{"name": "installs", "kind": "file"}]}
+{"func": "prepare_import", "case": "env-absent", "dir": "imp/c6", "env": "absent", "config": "absent", "children": [{"name": "cache", "kind": "dir"}, {"name": "logs", "kind": "dir"}]}
+{"func": "finish_layout", "case": "plain", "dir": "pp/l1", "soul": null, "no_skills": false, "clone_all": false, "description": null, "default_soul_error": false}
+{"func": "finish_layout", "case": "explicit-soul", "dir": "pp/l2", "soul": "# my soul\n", "no_skills": false, "clone_all": false, "description": null, "default_soul_error": false}
+{"func": "finish_layout", "case": "no-skills-marker", "dir": "pp/l3", "soul": null, "no_skills": true, "clone_all": false, "description": null, "default_soul_error": false}
+{"func": "finish_layout", "case": "clone-all-skips-migrate", "dir": "pp/l4", "soul": null, "no_skills": false, "clone_all": true, "description": null, "default_soul_error": false}
+{"func": "finish_layout", "case": "description-padded", "dir": "pp/l5", "soul": null, "no_skills": false, "clone_all": false, "description": "  research profile  ", "default_soul_error": false}
+{"func": "finish_layout", "case": "description-blank", "dir": "pp/l6", "soul": null, "no_skills": false, "clone_all": false, "description": "   ", "default_soul_error": false}
+{"func": "finish_layout", "case": "description-empty", "dir": "pp/l7", "soul": null, "no_skills": false, "clone_all": false, "description": "", "default_soul_error": false}
+{"func": "finish_layout", "case": "default-soul-unavailable", "dir": "pp/l8", "soul": null, "no_skills": true, "clone_all": false, "description": null, "default_soul_error": true}
+{"func": "finish_layout", "case": "everything", "dir": "pp/l9", "soul": "soul-body", "no_skills": true, "clone_all": false, "description": "kitchen sink", "default_soul_error": false}

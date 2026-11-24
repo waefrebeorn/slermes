@@ -1,0 +1,17 @@
+{"func": "subcommand_names", "case": "menu-order"}
+{"func": "surface", "case": "root-no-path"}
+{"func": "surface", "case": "root-empty-path", "path": []}
+{"func": "surface", "case": "xai", "path": ["xai"]}
+{"func": "surface", "case": "relay", "path": ["relay"]}
+{"func": "surface", "case": "openclaw", "path": ["openclaw"]}
+{"func": "surface", "case": "claude-code", "path": ["claude-code"]}
+{"func": "surface", "case": "codex", "path": ["codex"]}
+{"func": "surface", "case": "cursor", "path": ["cursor"]}
+{"func": "surface", "case": "grok-bot", "path": ["grok-bot"]}
+{"func": "surface", "case": "openbot", "path": ["openbot"]}
+{"func": "surface", "case": "null-path", "path": null}
+{"func": "surface", "case": "unknown-name", "path": ["nope"]}
+{"func": "surface", "case": "too-deep", "path": ["xai", "relay"]}
+{"func": "surface", "case": "empty-name", "path": [""]}
+{"func": "surface", "case": "path-not-a-list", "path": "xai"}
+{"func": "surface", "case": "path-non-string", "path": [1]}

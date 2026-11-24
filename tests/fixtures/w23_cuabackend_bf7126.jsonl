@@ -1,0 +1,59 @@
+{"func": "constants", "case": "catalogues"}
+{"func": "self_window", "case": "plain", "w": {"app_name": "CuaDriver", "title": "x"}}
+{"func": "self_window", "case": "spaced", "w": {"app_name": "cua driver"}}
+{"func": "self_window", "case": "underscore", "w": {"app_name": "CUA_Driver"}}
+{"func": "self_window", "case": "hyphen", "w": {"app_name": "cua-driver"}}
+{"func": "self_window", "case": "other", "w": {"app_name": "CuaDriverX"}}
+{"func": "self_window", "case": "empty", "w": {}}
+{"func": "desktop_window", "case": "progman", "w": {"app_name": "Progman", "title": ""}}
+{"func": "desktop_window", "case": "title-desktop", "w": {"app_name": "xterm", "title": "the Desktop"}}
+{"func": "desktop_window", "case": "finder", "w": {"app_name": "Finder", "title": "Documents"}}
+{"func": "desktop_window", "case": "app", "w": {"app_name": "Firefox", "title": "Mozilla Firefox"}}
+{"func": "desktop_window", "case": "tray-full", "w": {"app_name": "Shell_TrayWnd", "title": ""}}
+{"func": "desktop_window", "case": "tray-backdrop", "w": {"app_name": "Shell_TrayWnd", "title": ""}, "backdrop": true}
+{"func": "desktop_window", "case": "dock-backdrop", "w": {"app_name": "Dock", "title": ""}, "backdrop": true}
+{"func": "select_target", "case": "all-off-screen-falls-back", "platform": "win32", "windows": [{"app_name": "Hidden", "pid": 1, "window_id": 11, "off_screen": true, "title": "", "z_index": 9}, {"app_name": "Gone", "pid": 2, "window_id": 12, "off_screen": true, "title": "", "z_index": 5}]}
+{"func": "select_target", "case": "off-screen-first", "platform": "win32", "windows": [{"app_name": "Hidden", "pid": 1, "window_id": 11, "off_screen": true, "title": "", "z_index": 9}, {"app_name": "Firefox", "pid": 2, "window_id": 12, "off_screen": false, "title": "web", "z_index": 5}]}
+{"func": "select_target", "case": "self-window-front", "platform": "win32", "windows": [{"app_name": "CuaDriver", "pid": 3, "window_id": 13, "off_screen": false, "title": "auth", "z_index": 9}, {"app_name": "Firefox", "pid": 2, "window_id": 12, "off_screen": false, "title": "web", "z_index": 5}]}
+{"func": "select_target", "case": "self-window-exact", "platform": "win32", "exact_target": true, "windows": [{"app_name": "CuaDriver", "pid": 3, "window_id": 13, "off_screen": false, "title": "auth", "z_index": 9}, {"app_name": "Firefox", "pid": 2, "window_id": 12, "off_screen": false, "title": "web", "z_index": 5}]}
+{"func": "select_target", "case": "only-self-windows", "platform": "win32", "windows": [{"app_name": "CuaDriver", "pid": 3, "window_id": 13, "off_screen": false, "title": "auth", "z_index": 9}]}
+{"func": "select_target", "case": "linux-active-wins", "platform": "linux", "active_id": 22, "windows": [{"app_name": "A", "pid": 4, "window_id": 21, "off_screen": false, "title": "one", "z_index": 0}, {"app_name": "B", "pid": 5, "window_id": 22, "off_screen": false, "title": "two", "z_index": 0}]}
+{"func": "select_target", "case": "linux-no-active", "platform": "linux", "active_id": null, "windows": [{"app_name": "A", "pid": 4, "window_id": 21, "off_screen": false, "title": "one", "z_index": 0}, {"app_name": "B", "pid": 5, "window_id": 22, "off_screen": false, "title": "two", "z_index": 0}]}
+{"func": "select_target", "case": "linux-informative-z", "platform": "linux", "active_id": 22, "windows": [{"app_name": "A", "pid": 4, "window_id": 21, "off_screen": false, "title": "one", "z_index": 7}, {"app_name": "B", "pid": 5, "window_id": 22, "off_screen": false, "title": "two", "z_index": 1}]}
+{"func": "select_target", "case": "linux-desktop-helper-only", "platform": "linux", "active_id": null, "windows": [{"app_name": "", "pid": 6, "window_id": 31, "off_screen": false, "title": "Desktop Icons", "z_index": 0}, {"app_name": "A", "pid": 4, "window_id": 21, "off_screen": false, "title": "one", "z_index": 0}]}
+{"func": "select_target", "case": "darwin-app-requested", "platform": "darwin", "app_requested": true, "active_id": 21, "windows": [{"app_name": "A", "pid": 4, "window_id": 21, "off_screen": false, "title": "one", "z_index": 3}, {"app_name": "B", "pid": 5, "window_id": 22, "off_screen": false, "title": "two", "z_index": 2}]}
+{"func": "sorted_windows", "case": "structured", "structuredContent": {"windows": [{"pid": 1, "window_id": 11, "z_index": 1, "app_name": "A", "title": "a", "is_on_screen": true}, {"pid": 2, "window_id": 12, "z_index": 5, "app_name": "B", "title": "b"}]}}
+{"func": "sorted_windows", "case": "string-pid", "data": {"windows": [{"pid": "42", "window_id": "7", "z_index": 2, "app_name": "S", "title": "s"}, {"pid": true, "window_id": 8, "z_index": 9, "app_name": "Bool", "title": "x"}, {"pid": 0, "window_id": 9, "z_index": 9, "app_name": "Zero", "title": "z"}]}}
+{"func": "sorted_windows", "case": "legacy-key", "_legacy_windows": [{"pid": 3, "window_id": 13, "z_index": 4, "app_name": "L", "title": "l", "is_on_screen": false}]}
+{"func": "sorted_windows", "case": "no-windows", "data": {"windows": []}}
+{"func": "sorted_windows", "case": "tie-keeps-order", "windows": [{"pid": 1, "window_id": 1, "z_index": 2, "app_name": "A"}, {"pid": 2, "window_id": 2, "z_index": 2, "app_name": "B"}, {"pid": 3, "window_id": 3, "z_index": 2, "app_name": "C"}]}
+{"func": "png_metrics", "case": "png", "png_b64": "iVBORw0KGgoAAAANSUhEUgAAAoAAAAHg", "width": 0, "height": 0}
+{"func": "png_metrics", "case": "png-zero-width-falls-back", "png_b64": "iVBORw0KGgoAAAANSUhEUgAAAAAAAAAH", "width": 100, "height": 50}
+{"func": "png_metrics", "case": "jpeg", "png_b64": "/9j/wAARCAAgAEADASIAAhEBAxEB", "width": 0, "height": 0}
+{"func": "png_metrics", "case": "not-an-image", "png_b64": "YWJj", "width": 640, "height": 480}
+{"func": "png_metrics", "case": "bad-padding", "png_b64": "abc", "width": 8, "height": 6}
+{"func": "png_metrics", "case": "empty", "png_b64": "", "width": 8, "height": 6}
+{"func": "match_windows", "case": "exact-name", "app": "Firefox", "windows": [{"app_name": "Code", "pid": 1, "window_id": 1, "title": ""}, {"app_name": "Firefox", "pid": 2, "window_id": 2, "title": ""}], "apps": []}
+{"func": "match_windows", "case": "empty-app", "app": "  ", "windows": [{"app_name": "Firefox", "pid": 2, "window_id": 2, "title": ""}], "apps": []}
+{"func": "match_windows", "case": "alias-exact", "app": "code", "windows": [{"app_name": "", "pid": 7, "window_id": 70, "title": "main"}, {"app_name": "Terminal", "pid": 8, "window_id": 80, "title": ""}], "apps": [{"pid": 7, "name": "Code"}, {"pid": 8, "name": "Terminal"}]}
+{"func": "match_windows", "case": "alias-partial", "app": "term", "windows": [{"app_name": "", "pid": 7, "window_id": 70, "title": "main"}, {"app_name": "", "pid": 8, "window_id": 80, "title": ""}], "apps": [{"pid": 7, "name": "Code"}, {"pid": 8, "name": "Terminal"}]}
+{"func": "match_windows", "case": "alias-not-running", "app": "term", "windows": [{"app_name": "", "pid": 8, "window_id": 80, "title": ""}], "apps": [{"pid": 8, "name": "Terminal", "running": false}]}
+{"func": "match_windows", "case": "name-substring", "app": "fire", "windows": [{"app_name": "Firefox", "pid": 2, "window_id": 2, "title": ""}], "apps": []}
+{"func": "match_windows", "case": "nameless-title", "app": "calc", "windows": [{"app_name": "", "pid": 9, "window_id": 90, "title": "Calculator"}], "apps": []}
+{"func": "match_windows", "case": "no-match", "app": "zzz", "windows": [{"app_name": "Firefox", "pid": 2, "window_id": 2, "title": ""}], "apps": [{"pid": 2, "name": "Firefox"}]}
+{"func": "list_apps", "case": "structured-apps", "structuredContent": {"apps": [{"name": "Finder", "pid": 1}]}, "data": null}
+{"func": "list_apps", "case": "data-list", "data": [{"name": "Safari", "pid": 2}], "structuredContent": {}}
+{"func": "list_apps", "case": "data-apps", "data": {"apps": [{"name": "Mail", "pid": 3}]}}
+{"func": "list_apps", "case": "envelope-apps", "apps": [{"name": "Notes", "pid": 4}]}
+{"func": "list_apps", "case": "from-windows", "data": {"windows": [{"pid": 5, "window_id": 51, "app_name": "Slack", "title": "x"}, {"pid": 6, "window_id": 61, "app_name": "", "title": "nameless"}, {"pid": 5, "window_id": 52, "app_name": "Slack", "title": "y"}]}}
+{"func": "list_apps", "case": "text-fallback", "data": "Finder (pid 111)\nSafari (pid 222)\nnot a row"}
+{"func": "list_apps", "case": "nothing", "data": {}}
+{"func": "is_full_screen", "case": "screen", "app": "screen"}
+{"func": "is_full_screen", "case": "spaced-case", "app": "  Full Screen "}
+{"func": "is_full_screen", "case": "desktop", "app": "desktop"}
+{"func": "is_full_screen", "case": "plain", "app": "Firefox"}
+{"func": "is_full_screen", "case": "null", "app": null}
+{"func": "is_desktop_shell", "case": "desktop", "app": "Desktop"}
+{"func": "is_desktop_shell", "case": "all", "app": "all"}
+{"func": "no_app_match_message", "case": "calculator", "app": "Calculator"}
+{"func": "no_desktop_message", "case": "screen", "app": "screen"}

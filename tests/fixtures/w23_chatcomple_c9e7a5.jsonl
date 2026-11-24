@@ -1,0 +1,37 @@
+{"func": "wait_text", "case": "first-event-plain", "world": {"model": "gpt-5.2", "silence_secs": 42.0, "phase": "first_event"}}
+{"func": "wait_text", "case": "first-event-watchdog", "world": {"model": "gpt-5.2", "silence_secs": 42.9, "phase": "first_event", "watchdog": ["TTFB", 60.0]}}
+{"func": "wait_text", "case": "post-chunk-near", "world": {"model": "claude-sonnet-4.6", "silence_secs": 42.9, "phase": "post_chunk", "watchdog": ["TTFB", 3.7]}}
+{"func": "wait_text", "case": "pre-progress-boundary", "world": {"model": "m", "silence_secs": 0.5, "phase": "pre_progress", "watchdog": ["wall-clock stale", 15.0]}}
+{"func": "wait_text", "case": "post-event-just-near", "world": {"model": "m", "silence_secs": 12.0, "phase": "post_event", "watchdog": ["stream idle", 14.99]}}
+{"func": "wait_text", "case": "reconnect-negative-remaining", "world": {"model": "m", "silence_secs": 7.2, "phase": "reconnect", "watchdog": ["stream idle", -2.5]}}
+{"func": "wait_text", "case": "first-chunk-negative-silence", "world": {"model": "m", "silence_secs": -3.5, "phase": "first_chunk"}}
+{"func": "wait_text", "case": "first-event-null-watchdog", "world": {"model": "gpt-5.2", "silence_secs": 100.0, "phase": "first_event", "watchdog": null}}
+{"func": "wait_text", "case": "empty-model", "world": {"model": "", "silence_secs": 0.0, "phase": "first_event"}}
+{"func": "wait_text", "case": "missing-model", "world": {"silence_secs": 5.0, "phase": "post_chunk"}}
+{"func": "wait_text", "case": "far-watchdog-zero-silence", "world": {"model": "qwen3-coder", "silence_secs": 0.0, "phase": "pre_progress", "watchdog": ["TTFB", 900.0]}}
+{"func": "deadline", "case": "stale-only", "world": {"stale_timeout": 90.0, "ttfb_enabled": false, "last_event_ts": null, "call_start": 0.0, "elapsed": 10.0}}
+{"func": "deadline", "case": "ttfb-wins", "world": {"stale_timeout": 90.0, "ttfb_enabled": true, "ttfb_timeout": 30.0, "last_event_ts": null, "call_start": 100.0, "elapsed": 10.0}}
+{"func": "deadline", "case": "retry-offset", "world": {"stale_timeout": 90.0, "ttfb_enabled": true, "ttfb_timeout": 30.0, "last_event_ts": null, "retry_started_ts": 104.0, "call_start": 100.0, "elapsed": 10.0}}
+{"func": "deadline", "case": "retry-before-call-start", "world": {"stale_timeout": 90.0, "ttfb_enabled": true, "ttfb_timeout": 30.0, "last_event_ts": null, "retry_started_ts": 90.0, "call_start": 100.0, "elapsed": 10.0}}
+{"func": "deadline", "case": "first-progress", "world": {"stale_timeout": 90.0, "ttfb_enabled": true, "last_event_ts": 105.0, "last_progress_ts": null, "retry_started_ts": 101.0, "call_start": 100.0, "elapsed": 5.0, "progress_timeout": 20.0}}
+{"func": "deadline", "case": "first-progress-already-passed", "world": {"stale_timeout": 90.0, "last_event_ts": 105.0, "last_progress_ts": null, "call_start": 100.0, "elapsed": 25.0, "progress_timeout": 20.0}}
+{"func": "deadline", "case": "stream-idle", "world": {"stale_timeout": 90.0, "last_event_ts": 130.0, "last_progress_ts": null, "call_start": 100.0, "idle_enabled": true, "idle_timeout": 45.0, "elapsed": 40.0}}
+{"func": "deadline", "case": "idle-needs-progress", "world": {"stale_timeout": 90.0, "last_event_ts": 130.0, "last_progress_ts": null, "call_start": 100.0, "idle_enabled": true, "idle_timeout": 45.0, "idle_requires_progress": true, "elapsed": 40.0}}
+{"func": "deadline", "case": "idle-with-progress", "world": {"stale_timeout": 90.0, "last_event_ts": 130.0, "last_progress_ts": 128.0, "call_start": 100.0, "idle_enabled": true, "idle_timeout": 45.0, "idle_requires_progress": true, "elapsed": 40.0}}
+{"func": "deadline", "case": "all-disabled", "world": {"stale_finite": false, "ttfb_enabled": false, "last_event_ts": null, "call_start": 0.0, "idle_enabled": false, "elapsed": 1.0}}
+{"func": "deadline", "case": "tie-keeps-first", "world": {"stale_timeout": 30.0, "ttfb_enabled": true, "ttfb_timeout": 30.0, "last_event_ts": null, "call_start": 0.0, "elapsed": 5.0}}
+{"func": "deadline", "case": "ttfb-infinite", "world": {"stale_timeout": 90.0, "ttfb_enabled": true, "ttfb_finite": false, "ttfb_timeout": 30.0, "last_event_ts": null, "call_start": 0.0, "elapsed": 10.0}}
+{"func": "deadline", "case": "idle-infinite", "world": {"stale_timeout": 90.0, "last_event_ts": 130.0, "call_start": 100.0, "idle_enabled": true, "idle_finite": false, "idle_timeout": 45.0, "elapsed": 40.0}}
+{"func": "deadline", "case": "exactly-at-elapsed", "world": {"stale_timeout": 50.0, "ttfb_enabled": false, "last_event_ts": null, "call_start": 0.0, "elapsed": 50.0}}
+{"func": "deadline", "case": "stale-infinite-only", "world": {"stale_finite": false, "ttfb_enabled": true, "ttfb_timeout": 12.0, "last_event_ts": null, "call_start": 0.0, "elapsed": 2.0}}
+{"func": "should_emit", "case": "phase-and-near-ladder", "world": {"steps": [{"phase": "first_event", "watchdog": ["TTFB", 30.0]}, {"phase": "first_event", "watchdog": ["TTFB", 30.0]}, {"phase": "post_chunk", "watchdog": ["TTFB", 30.0]}, {"phase": "post_chunk", "watchdog": ["TTFB", 10.0]}, {"phase": "post_chunk", "watchdog": ["TTFB", 10.0]}, {"phase": "post_chunk", "watchdog": ["TTFB", 40.0]}, {"phase": "post_chunk", "watchdog": null}, {"phase": "post_chunk", "watchdog": null}]}}
+{"func": "should_emit", "case": "reset-restarts", "world": {"steps": [{"phase": "first_event", "watchdog": null}, {"reset": true}, {"phase": "first_event", "watchdog": null}, {"phase": "first_event", "watchdog": null}]}}
+{"func": "should_emit", "case": "no-watchdog-twice", "world": {"steps": [{"phase": "pre_progress"}, {"phase": "pre_progress"}, {"phase": "pre_progress"}]}}
+{"func": "should_emit", "case": "near-then-phase-change", "world": {"steps": [{"phase": "first_event", "watchdog": ["TTFB", 10.0]}, {"phase": "post_chunk", "watchdog": ["TTFB", 10.0]}, {"phase": "post_chunk", "watchdog": ["TTFB", 10.0]}]}}
+{"func": "should_emit", "case": "empty-steps", "world": {"steps": []}}
+{"func": "near", "case": "at-threshold", "world": {"watchdog": ["TTFB", 15.0]}}
+{"func": "near", "case": "just-over", "world": {"watchdog": ["TTFB", 15.01]}}
+{"func": "near", "case": "null-watchdog", "world": {"watchdog": null}}
+{"func": "near", "case": "missing-watchdog", "world": {}}
+{"func": "phases", "case": "constant"}
+{"func": "near_secs", "case": "constant"}

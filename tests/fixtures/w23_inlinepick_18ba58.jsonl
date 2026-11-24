@@ -1,0 +1,30 @@
+{"func": "page_size", "case": "constant"}
+{"func": "cache_time", "case": "constant"}
+{"func": "collect", "case": "full-merge", "world": {"registry": true, "bot": [["plan", "Plan the work"], ["help", null]], "skills": [["weather", "Forecast"], ["plan", "duplicate loses"], ["", "empty name skipped"], ["/compact", ""]]}}
+{"func": "collect", "case": "registry-missing", "world": {"registry": false, "bot": [["plan", "Plan the work"]], "skills": [["weather", "Forecast"]]}}
+{"func": "collect", "case": "bot-error", "world": {"registry": true, "bot_error": true, "bot": [["plan", "Plan the work"]], "skills": [["weather", "Forecast"]]}}
+{"func": "collect", "case": "skills-error", "world": {"registry": true, "bot": [["plan", "Plan the work"]], "skills_error": true, "skills": [["weather", "Forecast"]]}}
+{"func": "collect", "case": "bot-row-not-a-pair", "world": {"registry": true, "bot": [["plan", "Plan the work"], ["broken"]], "skills": [["weather", "Forecast"]]}}
+{"func": "collect", "case": "skill-entry-three-wide", "world": {"registry": true, "bot": [], "skills": [["plan", "Plan", "cmd:plan"], ["weather", "Forecast", "cmd:weather", "raw-name"]]}}
+{"func": "collect", "case": "falsy-descriptions", "world": {"registry": true, "bot": [["numdesc", 5], ["zerodesc", 0], ["empty", ""]], "skills": [["missingdesc"]]}}
+{"func": "filter", "case": "empty-term", "world": {"catalog": [{"name": "plan", "description": "Plan the work", "keep": 1}, {"name": "help", "description": "Show help"}], "term": ""}}
+{"func": "filter", "case": "slash-only-term", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}, {"name": "help", "description": "Show help"}], "term": "//"}}
+{"func": "filter", "case": "null-term", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}, {"name": "help", "description": "Show help"}], "term": null}}
+{"func": "filter", "case": "rank-prefix-then-desc", "world": {"catalog": [{"name": "help", "description": "Show help for a PLAN"}, {"name": "deploy-plan", "description": "Ship it"}, {"name": "plan", "description": "Plan the work"}, {"name": "replan", "description": "Again"}], "term": "plan"}}
+{"func": "filter", "case": "term-case-and-space", "world": {"catalog": [{"name": "help", "description": "Show help for a PLAN"}, {"name": "Plan", "description": "Capital"}, {"name": "replan", "description": "Again"}], "term": "  PLAN  "}}
+{"func": "filter", "case": "term-leading-slash", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}, {"name": "help", "description": "Show help"}], "term": "/PLAN"}}
+{"func": "filter", "case": "hyphen-underscore-equivalent", "world": {"catalog": [{"name": "deploy-plan", "description": "Ship it"}, {"name": "deploy_plan", "description": "Other"}, {"name": "undeploy_plan_x", "description": "Tail"}], "term": "deploy-plan"}}
+{"func": "filter", "case": "substring-not-prefix", "world": {"catalog": [{"name": "weath", "description": "near"}, {"name": "weather", "description": "Forecast"}, {"name": "unweatherly", "description": "Long"}], "term": "weath"}}
+{"func": "filter", "case": "no-match", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}, {"name": "help", "description": "Show help"}], "term": "zzz"}}
+{"func": "filter", "case": "hyphen-term-misses-description", "world": {"catalog": [{"name": "deploy-plan", "description": "Ship it"}], "term": "ship-it"}}
+{"func": "build", "case": "default-page", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}, {"name": "help", "description": "Show help"}], "query": "plan", "offset": ""}}
+{"func": "build", "case": "second-page", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}, {"name": "plan-a", "description": "A"}, {"name": "plan-b", "description": "B"}, {"name": "plan-c", "description": "C"}], "query": "plan", "offset": "2", "page_size": 2}}
+{"func": "build", "case": "negative-offset", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}, {"name": "plan-a", "description": "A"}], "query": "plan", "offset": "-3", "page_size": 1}}
+{"func": "build", "case": "junk-offset", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}], "query": "plan", "offset": "abc"}}
+{"func": "build", "case": "numeric-offset", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}, {"name": "plan-a", "description": "A"}, {"name": "plan-b", "description": "B"}], "query": "plan", "offset": 2, "page_size": 5}}
+{"func": "build", "case": "query-with-args", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}, {"name": "help", "description": "Show help"}], "query": "  plan   migrate  auth ", "offset": ""}}
+{"func": "build", "case": "blank-query-browses", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}, {"name": "help", "description": "Show help"}], "query": "   ", "offset": ""}}
+{"func": "build", "case": "long-name-id-truncated", "world": {"catalog": [{"name": "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn", "description": "long"}], "query": "nnnn", "offset": "0"}}
+{"func": "build", "case": "description-codepoint-truncation", "world": {"catalog": [{"name": "plan", "description": "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂"}], "query": "plan", "offset": ""}}
+{"func": "build", "case": "empty-catalog", "world": {"catalog": [], "query": "plan", "offset": ""}}
+{"func": "build", "case": "offset-past-end", "world": {"catalog": [{"name": "plan", "description": "Plan the work"}], "query": "plan", "offset": "9"}}

@@ -1,0 +1,30 @@
+{"func": "cron_principal", "case": "constant"}
+{"func": "is_unattended", "case": "cron", "row": {"principal_id": "cron-owner", "payload": {}, "status": "unknown"}}
+{"func": "is_unattended", "case": "automation-route", "row": {"principal_id": "automation:telegram:42", "payload": null, "status": "unknown"}}
+{"func": "is_unattended", "case": "automation-bare", "row": {"principal_id": "automation:", "status": "unknown"}}
+{"func": "is_unattended", "case": "automation-no-colon", "row": {"principal_id": "automation", "status": "unknown"}}
+{"func": "is_unattended", "case": "principal-null", "row": {"principal_id": null, "payload": {}, "status": "unknown"}}
+{"func": "is_unattended", "case": "principal-person", "row": {"principal_id": "person-1", "payload": {}, "status": "unknown"}}
+{"func": "is_unattended", "case": "payload-missing", "row": {"principal_id": "person-1", "status": "unknown"}}
+{"func": "is_unattended", "case": "local-automation-true", "row": {"principal_id": "person-1", "payload": {"local_automation_v1": true}}}
+{"func": "is_unattended", "case": "local-automation-false-value", "row": {"principal_id": "person-1", "payload": {"local_automation_v1": false}}}
+{"func": "is_unattended", "case": "kanban-card", "row": {"principal_id": null, "payload": {"kanban_card_v1": {"card": "k-9"}}}}
+{"func": "is_unattended", "case": "payload-empty", "row": {"principal_id": "person-2", "payload": {}}}
+{"func": "is_unattended", "case": "native-automation-object", "row": {"payload": {"native_text_v1": {"automation": {"route": "x"}}}}}
+{"func": "is_unattended", "case": "native-automation-null", "row": {"payload": {"native_text_v1": {"automation": null}}}}
+{"func": "is_unattended", "case": "native-webhook", "row": {"payload": {"native_text_v1": {"webhook_delivery": "gh"}}}}
+{"func": "is_unattended", "case": "native-text-clean", "row": {"payload": {"native_text_v1": "a human typed this"}}}
+{"func": "is_unattended", "case": "native-text-substring", "row": {"payload": {"native_text_v1": "an automation envelope arrived"}}}
+{"func": "is_unattended", "case": "native-list-hit", "row": {"payload": {"native_text_v1": ["automation"]}}}
+{"func": "is_unattended", "case": "native-list-miss", "row": {"payload": {"native_text_v1": ["other"]}}}
+{"func": "is_unattended", "case": "native-null", "row": {"payload": {"native_text_v1": null, "kanban_card_v1": null}}}
+{"func": "unattended_unknown", "case": "mixed", "records": [{"admission_id": "a1", "status": "unknown", "principal_id": "cron-owner"}, {"admission_id": "a2", "status": "queued", "principal_id": "cron-owner"}, {"admission_id": "a3", "status": "unknown", "principal_id": "person-1", "payload": {}}, {"admission_id": "a4", "status": "unknown", "payload": {"kanban_card_v1": null}}]}
+{"func": "unattended_unknown", "case": "empty", "records": []}
+{"func": "unattended_unknown", "case": "none-unknown", "records": [{"admission_id": "b1", "status": "settled", "principal_id": "cron-owner"}]}
+{"func": "settle_recovered", "case": "mixed-refusal", "epoch": 7, "rows": [{"admission_id": "a1", "status": "unknown", "principal_id": "cron-owner", "generation": 3, "target_session_id": "s1"}, {"admission_id": "a2", "status": "unknown", "principal_id": "person-1", "generation": 1, "target_session_id": "s1"}, {"admission_id": "a3", "status": "unknown", "principal_id": "automation:telegram:9", "generation": 0, "target_session_id": "s2", "refuse": true}, {"admission_id": "a4", "status": "unknown", "payload": {"local_automation_v1": true}, "generation": 5, "target_session_id": "s3"}]}
+{"func": "settle_recovered", "case": "all-refused", "epoch": 12, "rows": [{"admission_id": "r1", "status": "unknown", "principal_id": "cron-owner", "generation": 2, "target_session_id": "s1", "refuse": true}]}
+{"func": "settle_recovered", "case": "no-rows", "epoch": 1, "rows": []}
+{"func": "settle_recovered", "case": "person-only", "epoch": 4, "rows": [{"admission_id": "p1", "status": "unknown", "principal_id": "person-1", "generation": 0, "target_session_id": "s1"}]}
+{"func": "settle_drain", "case": "mixed-refusal", "session_id": "s-77", "rows": [{"admission_id": "d1", "status": "unknown", "principal_id": "automation:discord:1", "generation": 4}, {"admission_id": "d2", "status": "unknown", "payload": {"native_text_v1": {"webhook_delivery": {"id": 1}}}, "generation": 8}, {"admission_id": "d3", "status": "unknown", "principal_id": "person-9", "generation": 2}, {"admission_id": "d4", "status": "unknown", "principal_id": "cron-owner", "generation": 6, "refuse": true}]}
+{"func": "settle_drain", "case": "person-only", "session_id": "s-78", "rows": [{"admission_id": "e1", "status": "unknown", "principal_id": "person-9", "generation": 2}]}
+{"func": "settle_drain", "case": "empty", "session_id": null, "rows": []}

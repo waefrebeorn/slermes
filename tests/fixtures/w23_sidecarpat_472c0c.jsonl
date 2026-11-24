@@ -1,0 +1,33 @@
+{"func": "resolve", "case": "override-set", "world": {"source_dir": "C:/p/sidecar", "override": "D:/ov", "writable": true}}
+{"func": "resolve", "case": "override-empty", "world": {"source_dir": "C:/p/sidecar", "override": "", "writable": true}}
+{"func": "resolve", "case": "override-missing", "world": {"source_dir": "C:/p/sidecar", "writable": true}}
+{"func": "resolve", "case": "writable-in-place", "world": {"source_dir": "C:/p/sidecar", "writable": true}}
+{"func": "resolve", "case": "readonly-baked-deps", "world": {"source_dir": "C:/p/sidecar", "writable": false, "node_modules": true, "lock_newer": false}}
+{"func": "resolve", "case": "readonly-missing-deps", "world": {"source_dir": "C:/p/sidecar", "writable": false, "node_modules": false, "hermes_home": "C:/h", "src_files": ["index.mjs"], "dst_files": [], "same": false}}
+{"func": "resolve", "case": "readonly-stale-lock", "world": {"source_dir": "C:/p/sidecar", "writable": false, "node_modules": true, "lock_newer": true, "hermes_home": "C:/h", "src_files": ["index.mjs", "package.json"], "dst_files": [], "same": false}}
+{"func": "resolve", "case": "mirror-all-differ", "world": {"source_dir": "C:/p/sidecar", "writable": false, "hermes_home": "C:/h", "src_files": ["index.mjs", "package.json", "package-lock.json", "patch-spectrum-mixed-attachments.mjs", ".npmrc"], "dst_files": ["index.mjs"], "same": false}}
+{"func": "resolve", "case": "mirror-identical-skip", "world": {"source_dir": "C:/p/sidecar", "writable": false, "hermes_home": "C:/h", "src_files": ["index.mjs", "package.json", "package-lock.json", "patch-spectrum-mixed-attachments.mjs", ".npmrc"], "dst_files": ["index.mjs", "package.json"], "same": true}}
+{"func": "resolve", "case": "mirror-fail-fallback", "world": {"source_dir": "C:/p/sidecar", "writable": false, "hermes_home": "C:/h", "mirror_fail": true}}
+{"func": "resolve", "case": "mirror-home-trailing-slash", "world": {"source_dir": "C:/p/sidecar", "writable": false, "hermes_home": "C:/h/", "src_files": [".npmrc"], "dst_files": [], "same": false}}
+{"func": "resolve", "case": "default-source", "world": {"writable": true}}
+{"func": "resolve", "case": "empty-source-is-dot", "world": {"source_dir": "", "writable": true}}
+{"func": "resolve", "case": "trailing-slash", "world": {"source_dir": "C:/p/sidecar/", "writable": true}}
+{"func": "resolve", "case": "relative-source", "world": {"source_dir": "plugins/photon/sidecar", "override": null, "writable": true}}
+{"func": "resolve", "case": "null-source", "world": {"source_dir": null, "writable": true}}
+{"func": "sidecar_dir", "case": "cached", "world": {"cached": "C:/h/photon/sidecar"}}
+{"func": "sidecar_dir", "case": "cached-forward-slash", "world": {"cached": "C:/h/photon/sidecar/"}}
+{"func": "sidecar_dir", "case": "uncached-writable", "world": {"writable": true}}
+{"func": "npm_error_log", "case": "explicit-log", "world": {"log": "C:/h/photon/npm.log"}}
+{"func": "npm_error_log", "case": "derived-from-dir", "world": {"sidecar_dir": "C:/h/photon/sidecar"}}
+{"func": "npm_error_log", "case": "derived-from-cache", "world": {"cached": "mirror/dir"}}
+{"func": "npm_error_log", "case": "all-null", "world": {}}
+{"func": "writable", "case": "ok", "world": {"touch_ok": true}}
+{"func": "writable", "case": "denied", "world": {"touch_ok": false}}
+{"func": "writable", "case": "missing-key", "world": {}}
+{"func": "mirror_files", "case": "constant"}
+{"func": "source_default", "case": "constant"}
+{"func": "path_norm", "case": "relative", "world": {"path": "plugins/x/sidecar"}}
+{"func": "path_norm", "case": "absolute", "world": {"path": "C:/a/b/"}}
+{"func": "path_norm", "case": "empty", "world": {"path": ""}}
+{"func": "path_norm", "case": "double-slash", "world": {"path": "C:/a//b"}}
+{"func": "path_norm", "case": "drive-root", "world": {"path": "C:/"}}

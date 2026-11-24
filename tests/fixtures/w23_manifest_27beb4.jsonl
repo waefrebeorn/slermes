@@ -1,0 +1,37 @@
+{"func": "consts", "case": "constants"}
+{"func": "entry_from_dict", "case": "full", "data": {"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}}
+{"func": "entry_from_dict", "case": "minimal", "data": {"slug": "x", "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "empty-dict", "data": {}}
+{"func": "entry_from_dict", "case": "slug-padded", "data": {"slug": "  dog  ", "displayName": "", "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "display-null-falls-back", "data": {"slug": "dog", "displayName": null, "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "display-number", "data": {"slug": "dog", "displayName": 123, "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "display-zero-falls-back", "data": {"slug": "dog", "displayName": 0, "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "kind-null", "data": {"slug": "dog", "kind": null, "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "kind-empty", "data": {"slug": "dog", "kind": "", "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "kind-image", "data": {"slug": "dog", "kind": "image", "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "slug-null", "data": {"slug": null, "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "slug-number", "data": {"slug": 7, "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "slug-bool", "data": {"slug": true, "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "submitted-zero", "data": {"slug": "dog", "submittedBy": 0, "spritesheetUrl": "u"}}
+{"func": "entry_from_dict", "case": "extra-keys", "data": {"slug": "dog", "spritesheetUrl": "u", "generatedAt": 5, "total": 9}}
+{"func": "fetch", "case": "ok-filtered", "payload": {"generatedAt": "2026-01-01", "total": 4, "pets": [{"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}, {"slug": "cat", "displayName": "Cat", "kind": "pet", "submittedBy": "", "spritesheetUrl": "https://cdn.example/cat.png", "petJsonUrl": "", "zipUrl": ""}, {"slug": "nosheet", "displayName": "No Sheet"}, "not-a-dict", {"slug": "", "spritesheetUrl": "https://cdn.example/e.png"}]}}
+{"func": "fetch", "case": "ok-empty-list", "payload": {"pets": []}}
+{"func": "fetch", "case": "cache-hit", "cached": {"warm": true, "entries": [{"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}]}, "error": "transport should not be touched", "payload": {"pets": []}}
+{"func": "fetch", "case": "cache-hit-force-refresh", "force": true, "cached": {"warm": true, "entries": [{"slug": "cat", "displayName": "Cat", "kind": "pet", "submittedBy": "", "spritesheetUrl": "https://cdn.example/cat.png", "petJsonUrl": "", "zipUrl": ""}]}, "payload": {"pets": [{"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}]}}
+{"func": "fetch", "case": "cache-warm-force-error", "force": true, "cached": {"warm": true, "entries": [{"slug": "cat", "displayName": "Cat", "kind": "pet", "submittedBy": "", "spritesheetUrl": "https://cdn.example/cat.png", "petJsonUrl": "", "zipUrl": ""}]}, "error": "connection reset"}
+{"func": "fetch", "case": "cache-cold", "cached": {"warm": false, "entries": [{"slug": "cat", "displayName": "Cat", "kind": "pet", "submittedBy": "", "spritesheetUrl": "https://cdn.example/cat.png", "petJsonUrl": "", "zipUrl": ""}]}, "payload": {"pets": [{"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}]}}
+{"func": "fetch", "case": "import-missing", "import_ok": false, "payload": {"pets": [{"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}]}}
+{"func": "fetch", "case": "unsafe-url", "safe": false, "payload": {"pets": [{"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}]}}
+{"func": "fetch", "case": "client-error", "error": "connection refused"}
+{"func": "fetch", "case": "payload-not-dict", "payload": [1, 2]}
+{"func": "fetch", "case": "pets-not-list", "payload": {"pets": {"a": 1}}}
+{"func": "fetch", "case": "no-pets-key", "payload": {"total": 0}}
+{"func": "fetch", "case": "no-world"}
+{"func": "find_entry", "case": "exact", "slug": "dog", "entries": [{"slug": "cat", "displayName": "Cat", "kind": "pet", "submittedBy": "", "spritesheetUrl": "https://cdn.example/cat.png", "petJsonUrl": "", "zipUrl": ""}, {"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}]}
+{"func": "find_entry", "case": "case-insensitive", "slug": "DOG", "entries": [{"slug": "cat", "displayName": "Cat", "kind": "pet", "submittedBy": "", "spritesheetUrl": "https://cdn.example/cat.png", "petJsonUrl": "", "zipUrl": ""}, {"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}]}
+{"func": "find_entry", "case": "padded", "slug": "  cat  ", "entries": [{"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}, {"slug": "cat", "displayName": "Cat", "kind": "pet", "submittedBy": "", "spritesheetUrl": "https://cdn.example/cat.png", "petJsonUrl": "", "zipUrl": ""}]}
+{"func": "find_entry", "case": "miss", "slug": "bird", "entries": [{"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}, {"slug": "cat", "displayName": "Cat", "kind": "pet", "submittedBy": "", "spritesheetUrl": "https://cdn.example/cat.png", "petJsonUrl": "", "zipUrl": ""}]}
+{"func": "find_entry", "case": "no-entries", "slug": "dog"}
+{"func": "find_entry", "case": "first-wins", "slug": "dog", "entries": [{"slug": "dog", "spritesheetUrl": "first"}, {"slug": "dog", "spritesheetUrl": "second"}]}
+{"func": "find_entry", "case": "non-dict-skipped", "slug": "cat", "entries": ["junk", {"slug": "cat", "displayName": "Cat", "kind": "pet", "submittedBy": "", "spritesheetUrl": "https://cdn.example/cat.png", "petJsonUrl": "", "zipUrl": ""}]}
+{"func": "find_entry", "case": "slug-with-space", "slug": "d o g", "entries": [{"slug": "dog", "displayName": "Dog", "kind": "pet", "submittedBy": "ann", "spritesheetUrl": "https://cdn.example/dog.png", "petJsonUrl": "https://cdn.example/dog.json", "zipUrl": "https://cdn.example/dog.zip"}]}

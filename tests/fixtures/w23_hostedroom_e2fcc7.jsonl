@@ -1,0 +1,62 @@
+{"func": "consts", "case": "constants"}
+{"func": "identifier", "case": "plain", "value": "adm-1"}
+{"func": "identifier", "case": "trimmed", "value": "  room.7:abc_def  "}
+{"func": "identifier", "case": "max-len-128", "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "identifier", "case": "too-long-129", "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "identifier", "case": "empty", "value": ""}
+{"func": "identifier", "case": "spaces-only", "value": "   "}
+{"func": "identifier", "case": "leading-dash", "value": "-a"}
+{"func": "identifier", "case": "inner-space", "value": "a b"}
+{"func": "identifier", "case": "non-ascii", "value": "café"}
+{"func": "identifier", "case": "wrong-type", "value": 5}
+{"func": "identifier", "case": "null-value", "value": null}
+{"func": "identifier", "case": "custom-label", "value": "", "label": "event_id"}
+{"func": "sniff_mime", "case": "png", "data_b64": "iVBORw0KGgoAAAAAAAAAAA=="}
+{"func": "sniff_mime", "case": "jpeg", "data_b64": "/9j/4HJlc3Q="}
+{"func": "sniff_mime", "case": "gif87", "data_b64": "R0lGODdhAQA="}
+{"func": "sniff_mime", "case": "gif89", "data_b64": "R0lGODlhAQA="}
+{"func": "sniff_mime", "case": "bmp", "data_b64": "Qk0AAA=="}
+{"func": "sniff_mime", "case": "webp", "data_b64": "UklGRgwAAABXRUJQZGF0YQ=="}
+{"func": "sniff_mime", "case": "riff-not-webp", "data_b64": "UklGRgAAAABXQVZF"}
+{"func": "sniff_mime", "case": "riff-too-short", "data_b64": "UklGRg=="}
+{"func": "sniff_mime", "case": "pdf", "data_b64": "JVBERi0xLjcK"}
+{"func": "sniff_mime", "case": "zip", "data_b64": "UEsDBBQA"}
+{"func": "sniff_mime", "case": "gzip", "data_b64": "H4sIAA=="}
+{"func": "sniff_mime", "case": "utf8-text", "data_b64": "aGVsbG8gY2Fmw6k="}
+{"func": "sniff_mime", "case": "text-with-nul", "data_b64": "YQBi"}
+{"func": "sniff_mime", "case": "invalid-utf8", "data_b64": "Y2Fm6Q=="}
+{"func": "sniff_mime", "case": "empty", "data_b64": ""}
+{"func": "sniff_mime", "case": "empty-key"}
+{"func": "validate_mime_kind", "case": "image-ok", "data_b64": "iVBORw0KGgp4eA==", "kind": "image", "mime": "image/png"}
+{"func": "validate_mime_kind", "case": "image-mismatch", "data_b64": "iVBORw0KGgp4eA==", "kind": "image", "mime": "image/jpeg"}
+{"func": "validate_mime_kind", "case": "image-nonimage-mime", "data_b64": "iVBORw0KGgp4eA==", "kind": "image", "mime": "application/zip"}
+{"func": "validate_mime_kind", "case": "image-bmp-ok", "data_b64": "Qk14eA==", "kind": "image", "mime": "image/bmp"}
+{"func": "validate_mime_kind", "case": "pdf-ok", "data_b64": "JVBERi0xLjQK", "kind": "pdf", "mime": "application/pdf"}
+{"func": "validate_mime_kind", "case": "pdf-wrong-mime", "data_b64": "JVBERi0xLjQK", "kind": "pdf", "mime": "text/plain"}
+{"func": "validate_mime_kind", "case": "pdf-bytes-wrong", "data_b64": "aGVsbG8=", "kind": "pdf", "mime": "application/pdf"}
+{"func": "validate_mime_kind", "case": "file-image-mime", "data_b64": "aGVsbG8=", "kind": "file", "mime": "image/png"}
+{"func": "validate_mime_kind", "case": "file-pdf-mime", "data_b64": "aGVsbG8=", "kind": "file", "mime": "application/pdf"}
+{"func": "validate_mime_kind", "case": "file-text-ok", "data_b64": "aGVsbG8=", "kind": "file", "mime": "text/plain"}
+{"func": "validate_mime_kind", "case": "file-text-binary", "data_b64": "iVBORw0KGgo=", "kind": "file", "mime": "text/plain"}
+{"func": "validate_mime_kind", "case": "file-zip-container", "data_b64": "UEsDBHp6", "kind": "file", "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
+{"func": "validate_mime_kind", "case": "file-opaque", "data_b64": "//4A", "kind": "file", "mime": "application/octet-stream"}
+{"func": "decode_b64", "case": "ok", "value": "aGVsbG8="}
+{"func": "decode_b64", "case": "ok-unpadded-input-rejected", "value": "aGVsbG8"}
+{"func": "decode_b64", "case": "empty", "value": ""}
+{"func": "decode_b64", "case": "missing"}
+{"func": "decode_b64", "case": "spaces-only", "value": "   "}
+{"func": "decode_b64", "case": "data-url", "value": "data:text/plain;base64,aGVsbG8="}
+{"func": "decode_b64", "case": "data-url-upper-padded", "value": "  DATA:application/pdf;base64,YQ=="}
+{"func": "decode_b64", "case": "wrong-length", "value": "YWJjZA="}
+{"func": "decode_b64", "case": "data-after-pad", "value": "YQ=a"}
+{"func": "decode_b64", "case": "three-pads", "value": "A==="}
+{"func": "decode_b64", "case": "nonzero-pad-bits", "value": "AB=="}
+{"func": "decode_b64", "case": "bad-char", "value": "not base64!!"}
+{"func": "decode_b64", "case": "trailing-space", "value": "aGVsbG8= "}
+{"func": "decode_b64", "case": "wrong-type", "value": 12}
+{"func": "decode_b64", "case": "binary", "value": "AP8gaGk="}
+{"func": "encode_b64", "case": "hello", "data_b64": "aGVsbG8="}
+{"func": "encode_b64", "case": "one-byte", "data_b64": "YQ=="}
+{"func": "encode_b64", "case": "two-byte", "data_b64": "YWI="}
+{"func": "encode_b64", "case": "binary", "data_b64": "AP8gaGk="}
+{"func": "encode_b64", "case": "empty", "data_b64": ""}

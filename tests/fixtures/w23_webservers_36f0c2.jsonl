@@ -1,0 +1,24 @@
+{"func": "poll_s", "case": "constant"}
+{"func": "confirmations", "case": "constant"}
+{"func": "should_retire", "case": "drift-no-update", "skew": ["a1b2c3", "d4e5f6"], "update": false}
+{"func": "should_retire", "case": "drift-during-update", "skew": ["a1b2c3", "d4e5f6"], "update": true}
+{"func": "should_retire", "case": "no-drift", "skew": null, "update": false}
+{"func": "should_retire", "case": "empty-pair", "skew": [], "update": false}
+{"func": "reason", "case": "drift", "skew": ["boot123", "disk456"], "update": false}
+{"func": "reason", "case": "drift-during-update", "skew": ["boot123", "disk456"], "update": true}
+{"func": "reason", "case": "no-drift", "skew": null, "update": false}
+{"func": "reason", "case": "update-lock-raises", "skew": ["boot123", "disk456"], "update_raises": true}
+{"func": "run", "case": "retire-after-two", "world": {"should_exit": false, "max_polls": 5, "readings": [{"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "one-observation-is-not-enough", "world": {"should_exit": false, "max_polls": 1, "readings": [{"skew": ["aaa", "bbb"], "update": false}], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "broken-streak-needs-two-again", "world": {"should_exit": false, "max_polls": 8, "readings": [{"skew": ["aaa", "bbb"], "update": false}, {"skew": null, "update": false}, {"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "checkout-mid-rewrite", "world": {"should_exit": false, "max_polls": 4, "readings": [{"skew": ["aaa", "bbb"], "update": false}, {"skew": null, "update": false}, {"skew": null, "update": false}, {"skew": null, "update": false}], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "update-in-flight-then-over", "world": {"should_exit": false, "max_polls": 6, "readings": [{"skew": ["aaa", "bbb"], "update": true}, {"skew": ["aaa", "bbb"], "update": true}, {"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "update-lock-unreadable", "world": {"should_exit": false, "max_polls": 3, "readings": [{"skew": ["aaa", "bbb"], "update_raises": true}, {"skew": ["aaa", "bbb"], "update_raises": true}, {"skew": ["aaa", "bbb"], "update_raises": true}], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "no-skew-with-unreadable-lock", "world": {"should_exit": false, "max_polls": 2, "readings": [{"skew": null, "update_raises": true}, {"skew": null, "update_raises": true}], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "fence-refuses-idle-proof", "world": {"should_exit": false, "max_polls": 4, "readings": [{"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}], "fence": {"prepare": [false], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "commit-refused-then-accepted", "world": {"should_exit": false, "max_polls": 6, "readings": [{"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}], "fence": {"prepare": [true], "commit": [false, true], "tokens": ["tok-1", "tok-2"]}}}
+{"func": "run", "case": "already-exiting", "world": {"should_exit": true, "max_polls": 5, "readings": [{"skew": ["aaa", "bbb"], "update": false}], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "zero-poll-budget", "world": {"should_exit": false, "max_polls": 0, "readings": [{"skew": ["aaa", "bbb"], "update": false}], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "unbounded-bounded-by-script", "world": {"should_exit": false, "max_polls": null, "readings": [{"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "empty-script", "world": {"should_exit": false, "max_polls": 3, "readings": [], "fence": {"prepare": [true], "commit": [true], "tokens": ["tok-1"]}}}
+{"func": "run", "case": "no-fence-section", "world": {"should_exit": false, "max_polls": 2, "readings": [{"skew": ["aaa", "bbb"], "update": false}, {"skew": ["aaa", "bbb"], "update": false}]}}

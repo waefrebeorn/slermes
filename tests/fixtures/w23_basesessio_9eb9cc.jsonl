@@ -1,0 +1,28 @@
+{"func": "guard_under", "case": "chain-to-none", "world": {"guard": "g3", "replaced": [["g3", "g2"], ["g2", "g1"], ["g1", null]]}}
+{"func": "guard_under", "case": "chain-two", "world": {"guard": "g3", "replaced": [["g3", "g2"], ["g2", "g1"]]}}
+{"func": "guard_under", "case": "no-entry", "world": {"guard": "g4", "replaced": [["g1", null]]}}
+{"func": "guard_under", "case": "null-guard", "world": {"guard": null, "replaced": [["g1", null]]}}
+{"func": "guard_under", "case": "last-write-wins", "world": {"guard": "g1", "replaced": [["g1", "g2"], ["g1", "g3"]]}}
+{"func": "guard_under", "case": "missing-world"}
+{"func": "guard_under", "case": "world-not-object", "world": [1, 2]}
+{"func": "in_flight", "case": "true", "world": {"guard": "gc", "in_flight": ["gc", "g1"]}}
+{"func": "in_flight", "case": "false", "world": {"guard": "g9", "in_flight": ["gc"]}}
+{"func": "in_flight", "case": "missing-list", "world": {"guard": "gc"}}
+{"func": "in_flight", "case": "null-guard", "world": {"guard": null, "in_flight": ["gc"]}}
+{"func": "dispatch", "case": "accept-no-auth", "world": {"current_guard": "g1", "held": false}}
+{"func": "dispatch", "case": "accept-interrupt-held", "world": {"auth_check": true, "interrupt_accepted": true, "held": true, "current_guard": "g1", "in_flight": ["gc-old"]}}
+{"func": "dispatch", "case": "accept-no-auth-held", "world": {"held": true, "current_guard": "g1", "in_session_tasks": true}}
+{"func": "dispatch", "case": "refuse-owner-live", "world": {"auth_check": true, "interrupt_accepted": false, "current_guard": "g1", "in_session_tasks": true, "task_stale": false, "held": true}}
+{"func": "dispatch", "case": "refuse-task-stale", "world": {"auth_check": true, "current_guard": "g1", "in_session_tasks": true, "task_stale": true}}
+{"func": "dispatch", "case": "refuse-no-current", "world": {"auth_check": true}}
+{"func": "dispatch", "case": "refuse-newer-owner", "world": {"auth_check": true, "current_guard": "g1", "newer_owner": "g9", "held": true, "in_session_tasks": true}}
+{"func": "dispatch", "case": "refuse-owner-in-flight", "world": {"auth_check": true, "current_guard": "g1", "in_flight": ["g1"], "in_session_tasks": true, "task_stale": false}}
+{"func": "dispatch", "case": "refuse-walk-to-in-flight", "world": {"auth_check": true, "current_guard": "g4", "replaced": [["g4", "g2"], ["g2", "g0"]], "in_flight": ["g2"], "in_session_tasks": true, "task_stale": false}}
+{"func": "dispatch", "case": "refuse-held-no-tasks", "world": {"auth_check": true, "current_guard": "g1", "held": true}}
+{"func": "dispatch", "case": "refuse-walk-to-null", "world": {"auth_check": true, "current_guard": "g2", "replaced": [["g2", null]], "in_session_tasks": true, "task_stale": false}}
+{"func": "dispatch", "case": "interrupt-int-not-true", "world": {"auth_check": true, "interrupt_accepted": 1}}
+{"func": "dispatch", "case": "current-guard-wrong-type", "world": {"auth_check": true, "current_guard": 5, "in_session_tasks": true}}
+{"func": "dispatch", "case": "missing-world"}
+{"func": "dispatch", "case": "world-not-object", "world": "nope"}
+{"func": "in_flight", "case": "empty-name", "world": {"guard": "", "in_flight": ["", "g1"]}}
+{"func": "dispatch", "case": "empty-name-in-flight", "world": {"auth_check": true, "in_flight": [""], "held": false}}

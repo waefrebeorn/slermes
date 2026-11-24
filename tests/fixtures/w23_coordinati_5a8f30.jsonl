@@ -1,0 +1,42 @@
+{"func": "consts", "case": "ledger-constants"}
+{"func": "past_replay_age", "case": "past", "now": 1000000.0, "completed_at": 827199.0, "dispatched_at": 1000000.0}
+{"func": "past_replay_age", "case": "dispatched-fallback", "now": 1000000.0, "completed_at": null, "dispatched_at": 827195.0}
+{"func": "past_replay_age", "case": "both-null", "now": 1000000.0, "completed_at": null, "dispatched_at": null}
+{"func": "past_replay_age", "case": "exactly-at-cap", "now": 1000000.0, "completed_at": 827200.0, "dispatched_at": null}
+{"func": "past_replay_age", "case": "zero-completed-falls-back", "now": 1000000.0, "completed_at": 0, "dispatched_at": 999990.0}
+{"func": "past_replay_age", "case": "fresh", "now": 1000000.0, "completed_at": 999940.0, "dispatched_at": 999970.0}
+{"func": "json_object", "case": "object", "raw": "{\"k\": 1, \"s\": \"v\"}"}
+{"func": "json_object", "case": "empty", "raw": ""}
+{"func": "json_object", "case": "null-raw", "raw": null}
+{"func": "json_object", "case": "garbage", "raw": "{not json"}
+{"func": "json_object", "case": "array", "raw": "[1, 2, 3]"}
+{"func": "json_object", "case": "json-null", "raw": "null"}
+{"func": "json_object", "case": "nested", "raw": "{\"results\": [{\"task_index\": 0}], \"partial\": true}"}
+{"func": "claim_lease", "case": "free-key", "table": "compression_locks", "key_col": "session_id", "key": "sess-1", "holder": "owner-a", "now": 1000000.0, "expires_at": 1000300.0, "mode": "lt", "lease": null}
+{"func": "claim_lease", "case": "live-other-holder", "table": "compression_locks", "key_col": "session_id", "key": "sess-1", "holder": "owner-b", "now": 1000000.0, "expires_at": 1000300.0, "mode": "lt", "lease": ["owner-a", 1000200.0]}
+{"func": "claim_lease", "case": "stale-by-time", "table": "compression_locks", "key_col": "session_id", "key": "sess-1", "holder": "owner-b", "now": 1000000.0, "expires_at": 1000300.0, "mode": "lt", "lease": ["owner-a", 999999.0]}
+{"func": "claim_lease", "case": "stale-by-dead-holder", "table": "compression_locks", "key_col": "session_id", "key": "sess-1", "holder": "owner-b", "now": 1000000.0, "expires_at": 1000300.0, "mode": "lt", "lease": ["owner-a", 1000500.0], "dead": ["owner-a"]}
+{"func": "claim_lease", "case": "same-holder-renew", "table": "compression_locks", "key_col": "session_id", "key": "sess-1", "holder": "owner-a", "now": 1000000.0, "expires_at": 1000300.0, "mode": "lt", "lease": ["owner-a", 1000100.0]}
+{"func": "claim_lease", "case": "lease-mode-inclusive", "table": "session_turn_leases", "key_col": "conversation_id", "key": "conv-9", "holder": "turn-2", "now": 1000000.0, "expires_at": 1000060.0, "mode": "le", "lease": ["turn-1", 1000000.0]}
+{"func": "claim_lease", "case": "lt-mode-exclusive", "table": "session_turn_leases", "key_col": "conversation_id", "key": "conv-9", "holder": "turn-2", "now": 1000000.0, "expires_at": 1000060.0, "mode": "lt", "lease": ["turn-1", 1000000.0]}
+{"func": "replay_pending", "case": "fresh", "now": 1000000.0, "rows": [["d1", "{\"kind\": \"done\"}", 999970.0, 999960.0], ["d2", "{\"kind\": \"done\", \"n\": 2}", 999990.0, 999910.0]]}
+{"func": "replay_pending", "case": "past-age", "now": 1000000.0, "rows": [["d1", "{\"kind\": \"done\"}", 827199.0, 827198.0]]}
+{"func": "replay_pending", "case": "mixed", "now": 1000000.0, "rows": [["d1", "{\"a\": 1}", 999900.0, 999900.0], ["d2", "{\"a\": 2}", null, 827199.0], ["d3", "{\"a\": 3}", null, 999995.0]]}
+{"func": "replay_pending", "case": "no-rows", "now": 1000000.0, "rows": []}
+{"func": "admitted_completion", "case": "ok", "delegation_id": "d1", "now": 1000000.0, "row": ["{\"kind\": \"done\"}", 999980.0, 999970.0, 2]}
+{"func": "admitted_completion", "case": "attempts-exhausted", "delegation_id": "d1", "now": 1000000.0, "row": ["{\"kind\": \"done\"}", 999980.0, 999970.0, 8]}
+{"func": "admitted_completion", "case": "past-age", "delegation_id": "d1", "now": 1000000.0, "row": ["{\"kind\": \"done\"}", 827199.0, 827198.0, 0]}
+{"func": "admitted_completion", "case": "no-row", "delegation_id": "d9", "now": 1000000.0, "row": null}
+{"func": "admitted_completion", "case": "dispatched-basis", "delegation_id": "d2", "now": 1000000.0, "row": ["{}", null, 999990.0, 0]}
+{"func": "sweep", "case": "dead-owner", "now": 1000000.0, "exclude_ids": [], "lost_ids": [], "dead_owners": [[111, 5.0]], "rows": [["d1", "{\"k\": 1}", 999940.0, 999940.0, 111, 5.0, 1]]}
+{"func": "sweep", "case": "live-owner", "now": 1000000.0, "exclude_ids": [], "lost_ids": [], "dead_owners": [[222, 5.0]], "rows": [["d1", "{\"k\": 1}", 999940.0, 999940.0, 111, 5.0, 1]]}
+{"func": "sweep", "case": "excluded-id", "now": 1000000.0, "exclude_ids": ["d1"], "lost_ids": [], "dead_owners": [[111, 5.0]], "rows": [["d1", "{\"k\": 1}", 999940.0, 999940.0, 111, 5.0, 1]]}
+{"func": "sweep", "case": "lost-id-live-owner", "now": 1000000.0, "exclude_ids": [], "lost_ids": ["d1"], "dead_owners": [], "rows": [["d1", "{\"k\": 1}", 999940.0, 999940.0, 111, 5.0, 0]]}
+{"func": "sweep", "case": "attempts-exhausted", "now": 1000000.0, "exclude_ids": [], "lost_ids": [], "dead_owners": [[111, 5.0]], "rows": [["d1", "{\"k\": 1}", 999940.0, 999940.0, 111, 5.0, 8]]}
+{"func": "sweep", "case": "past-age", "now": 1000000.0, "exclude_ids": [], "lost_ids": [], "dead_owners": [[111, 5.0]], "rows": [["d1", "{\"k\": 1}", 827199.0, 827198.0, 111, 5.0, 0]]}
+{"func": "sweep", "case": "mixed", "now": 1000000.0, "exclude_ids": ["d3"], "lost_ids": ["d4"], "dead_owners": [[111, 5.0], [333, 7.0]], "rows": [["d1", "{\"a\": 1}", 999940.0, 999940.0, 111, 5.0, 0], ["d2", "{\"a\": 2}", 999940.0, 999940.0, 222, 5.0, 0], ["d3", "{\"a\": 3}", 999940.0, 999940.0, 111, 5.0, 0], ["d4", "{\"a\": 4}", 999940.0, 999940.0, 222, 5.0, 0], ["d5", "{\"a\": 5}", 999940.0, 999940.0, 333, 7.0, 8]]}
+{"func": "sweep", "case": "no-rows", "now": 1000000.0, "exclude_ids": [], "lost_ids": [], "dead_owners": [], "rows": []}
+{"func": "finished", "case": "origin-only", "origin_ui_session_id": "ui-1", "parent_session_id": "", "limit": 5, "now": 1000000.0, "rows": [["d1", "completed", 999900.0, 999910.0, "{\"prompt\": \"x\"}", "{\"ok\": true}"], ["d2", "failed", 999900.0, 999920.0, "{\"prompt\": \"y\"}", null]]}
+{"func": "finished", "case": "parent-only", "origin_ui_session_id": "", "parent_session_id": "sess-9", "limit": 3, "now": 1000000.0, "rows": [["d3", "completed", 999950.0, 999960.0, "{}", "{\"ok\": false}"]]}
+{"func": "finished", "case": "both", "origin_ui_session_id": "ui-1", "parent_session_id": "sess-9", "limit": 20, "now": 1000000.0, "rows": []}
+{"func": "finished", "case": "no-selector", "origin_ui_session_id": "", "parent_session_id": "", "limit": 20, "now": 1000000.0, "rows": [["d4", "completed", 999995.0, 999996.0, "{}", "{}"]]}
