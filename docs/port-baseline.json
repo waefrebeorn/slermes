@@ -1,19 +1,19 @@
 {
  "sources": {
-  "ported_files": 1877,
-  "ported_pop_lines": 8066,
-  "placeholder_pop_lines": 543,
-  "stub_with_pop": 571,
+  "ported_files": 1878,
+  "ported_pop_lines": 8068,
+  "placeholder_pop_lines": 542,
+  "stub_with_pop": 570,
   "stub_no_pop": 2365
  },
  "gates": {
-  "with_cases": 2295,
+  "with_cases": 2296,
   "no_fixture": 146,
   "vacuous": 1,
   "constant_surface": 72,
   "no_harness": 3,
   "orphan_fixtures": 0,
-  "authored_cases": 112210
+  "authored_cases": 112240
  },
  "detail": {
   "sources": {
@@ -73,14 +73,6 @@
      "real_pop": 0,
      "defs": 1,
      "bytes": 420
-    },
-    {
-     "file": "src/agent/checkpoints/undo_hint.c",
-     "pop": 1,
-     "placeholder_pop": 1,
-     "real_pop": 0,
-     "defs": 1,
-     "bytes": 410
     },
     {
      "file": "src/agent/context_compressor_sampling.c",
@@ -19561,8 +19553,8 @@
      "pop": 0,
      "placeholder_pop": 0,
      "real_pop": 0,
-     "defs": 132,
-     "bytes": 118624
+     "defs": 133,
+     "bytes": 119127
     },
     {
      "file": "src/plugins/platforms/telegram/base_ext.c",
@@ -24107,8 +24099,8 @@
      "pop": 23,
      "placeholder_pop": 0,
      "real_pop": 23,
-     "defs": 49,
-     "bytes": 38791
+     "defs": 50,
+     "bytes": 40159
     },
     {
      "file": "src/agent/checkpoints/manager_profile_rename.c",
@@ -24133,6 +24125,14 @@
      "real_pop": 2,
      "defs": 8,
      "bytes": 5047
+    },
+    {
+     "file": "src/agent/checkpoints/undo_hint.c",
+     "pop": 2,
+     "placeholder_pop": 0,
+     "real_pop": 2,
+     "defs": 7,
+     "bytes": 7513
     },
     {
      "file": "src/agent/client_lifecycle.c",
@@ -29116,7 +29116,7 @@
      "placeholder_pop": 0,
      "real_pop": 4,
      "defs": 5,
-     "bytes": 6205
+     "bytes": 6637
     },
     {
      "file": "src/hermes_cli/browser_runtime.c",
@@ -32148,7 +32148,7 @@
      "placeholder_pop": 0,
      "real_pop": 3,
      "defs": 8,
-     "bytes": 6669
+     "bytes": 8622
     },
     {
      "file": "src/hermes_cli/subcommands/vault.c",
@@ -32204,7 +32204,7 @@
      "placeholder_pop": 1,
      "real_pop": 4,
      "defs": 14,
-     "bytes": 11859
+     "bytes": 12060
     },
     {
      "file": "src/hermes_cli/toolset_scope.c",
@@ -32524,7 +32524,7 @@
      "placeholder_pop": 0,
      "real_pop": 18,
      "defs": 36,
-     "bytes": 43170
+     "bytes": 43548
     },
     {
      "file": "src/hermes_cli/web_routers/display.c",
@@ -34180,7 +34180,7 @@
      "placeholder_pop": 0,
      "real_pop": 93,
      "defs": 151,
-     "bytes": 120776
+     "bytes": 121724
     },
     {
      "file": "src/plugins/platforms/discord/adapter_authorization.c",
@@ -34364,7 +34364,7 @@
      "placeholder_pop": 0,
      "real_pop": 22,
      "defs": 60,
-     "bytes": 58113
+     "bytes": 58482
     },
     {
      "file": "src/plugins/platforms/feishu/gateway_env.c",
@@ -34612,7 +34612,7 @@
      "placeholder_pop": 0,
      "real_pop": 99,
      "defs": 272,
-     "bytes": 198082
+     "bytes": 199130
     },
     {
      "file": "src/plugins/platforms/slack/adapter_config_readers.c",
@@ -34788,7 +34788,7 @@
      "placeholder_pop": 0,
      "real_pop": 5,
      "defs": 9,
-     "bytes": 7189
+     "bytes": 7420
     },
     {
      "file": "src/plugins/platforms/telegram/telegram_clarify_binding.c",
@@ -36164,7 +36164,7 @@
      "placeholder_pop": 0,
      "real_pop": 4,
      "defs": 12,
-     "bytes": 9738
+     "bytes": 10209
     },
     {
      "file": "src/tools/async_delegation_worker.c",
@@ -46197,6 +46197,10 @@
     {
      "gate": "w34_webserverl_f96a1a",
      "cases": 115
+    },
+    {
+     "gate": "w35_undohint_c4d2a1",
+     "cases": 30
     },
     {
      "gate": "w5_auth_845ce1",

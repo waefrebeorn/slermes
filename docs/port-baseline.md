@@ -131,3 +131,35 @@ under-sized ones — 72 by shape, 1 real.
 4. **Un-swept waves (25, 26, 28-33).** Sweep each at `--per-case 5` and record
    the real split here before any of those waves is touched again.
 5. **Wave 34.** 10 of 15 gates carry findings; it lands only at zero.
+
+## The audit tool itself was wrong three times
+
+Before trusting any number above, read this: the measuring instrument failed in
+three ways during the 2026-11-24 sweep, and each failure made the tree look better
+than it was.
+
+1. **A truncated wave reported as a finished wave.** Printing a mismatch line hit
+   `UnicodeEncodeError` on the console code page and killed the whole run mid-wave:
+   wave 27 reported 31 gates instead of 75, wave 28 reported 1 instead of 32. The
+   totals looked cleaner because two thirds of the gates were never measured.
+   `gate_fuzz`/`gate_batch` now reconfigure stdout to UTF-8 with `errors="replace"`.
+2. **Oracle output was decoded with the console code page.** A correct U+2026 from a
+   harness came back as U+FFFD and was reported as a divergence:
+   `w25_asyncdeleg_9f3438` showed 11 findings of which 10 were mojibake. The decode
+   is now explicit UTF-8, and the gate's real count was 1 — now 0.
+3. **Perturbing a documented seam.** `w28_configenv_e9e22f_p2` reported 8 findings
+   because the fuzzer rewrote `cfg.custom_providers`, a field the port documents as
+   not modelled. `tests/fuzz_seams/<gate>.txt` now lists keys to leave alone, either
+   bare or as `func:key`, plus `func:*` for a whole function the port cannot answer.
+
+A tool that invents findings is worse than no tool, because it spends the fixing
+budget on ghosts and hides the real ones in the noise.
+
+## Wave 35
+
+`agent/checkpoints/undo_hint` was a header-only stub whose PoP line still counted:
+`STATUS: C HOME CREATED — behavior port PENDING`, body `(void)0`. Its timestamp
+normaliser (`_epoch`) and the `files[:8]` name shape are now ported, with 30
+authored cases and 150 held-out inputs at 0 mismatches. The git walk and the i18n
+catalogue stay seams, and the port answers the join plus the overflow count rather
+than inventing a translated sentence.
