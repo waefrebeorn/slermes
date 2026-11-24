@@ -1,0 +1,14 @@
+{"func":"holds_busy_burst","session_key":"s1","adapter":{"_shared_bursts":{"s1":{}},"_shared_burst_commits":{}}}
+{"func":"holds_busy_burst","session_key":"s2","adapter":{"_shared_bursts":{"s1":{}},"_shared_burst_commits":{}}}
+{"func":"holds_busy_burst","session_key":"s1","adapter":{"_shared_bursts":{},"_shared_burst_commits":{"s1":{}}}}
+{"func":"holds_busy_burst","session_key":"s9","adapter":{"_shared_bursts":{},"_shared_burst_commits":{}}}
+{"func":"holds_busy_burst","session_key":"s1","adapter":{"_shared_bursts":["s1","s2"],"_shared_burst_commits":[]}}
+{"func":"holds_busy_burst","session_key":"s1","adapter":{}}
+{"func":"serial","adapter":{"serial_receive_loop":true}}
+{"func":"serial","adapter":{"serial_receive_loop":false}}
+{"func":"serial","adapter":{}}
+{"func":"kind","event":{"message_type":"photo","internal":false},"adapter":{}}
+{"func":"kind","event":{"message_type":"photo","internal":true},"adapter":{"_is_queue_text_debounce_candidate":true}}
+{"func":"kind","event":{"message_type":"text","internal":false},"adapter":{"_is_queue_text_debounce_candidate":true}}
+{"func":"kind","event":{"message_type":"text","internal":false},"adapter":{"_is_queue_text_debounce_candidate":false}}
+{"func":"kind","event":{"message_type":"video","internal":false},"adapter":{}}

@@ -1,0 +1,46 @@
+{"func":"is_ghostty","env":{"TERM_PROGRAM":"ghostty"},"case":"term program"}
+{"func":"is_ghostty","env":{"TERM":"xterm-ghostty"},"case":"term value"}
+{"func":"is_ghostty","env":{"TERM":"XTERM-GHOSTTY"},"case":"term lowercased"}
+{"func":"is_ghostty","env":{"TERM_PROGRAM":" Ghostty "},"case":"case sensitive term program"}
+{"func":"is_ghostty","env":{},"case":"empty env"}
+{"func":"supports_enter","env":{"WT_SESSION":"1"},"case":"wt session"}
+{"func":"supports_enter","env":{"TERM_PROGRAM":"iTerm.app"},"case":"iterm"}
+{"func":"supports_enter","env":{"TERM_PROGRAM":"vscode"},"case":"vscode"}
+{"func":"supports_enter","env":{"TERM":"xterm-kitty"},"case":"kitty term"}
+{"func":"supports_enter","env":{"TERM":"tmux-256color"},"case":"tmux term"}
+{"func":"supports_enter","env":{"TERM_PROGRAM":"tmux"},"case":"tmux program"}
+{"func":"supports_enter","env":{"KITTY_WINDOW_ID":""},"case":"empty kitty id"}
+{"func":"supports_enter","env":{},"case":"no allowlist"}
+{"func":"multiline","config":{},"case":"default on"}
+{"func":"multiline","config":{"display":{"cli_multiline_shortcuts":false}},"case":"explicit off"}
+{"func":"multiline","config":{"display":{"cli_multiline_shortcuts":"off"}},"case":"string off"}
+{"func":"multiline","config":{"display":{"cli_multiline_shortcuts":"YES"}},"case":"truthy string keeps on"}
+{"func":"multiline","config":{"display":{"cli_multiline_shortcuts":null}},"case":"null keeps on"}
+{"func":"multiline","config":{"display":{"cli_multiline_shortcuts":0}},"case":"number keeps on"}
+{"func":"backslash_check","text":"abc\\","case":"trailing backslash"}
+{"func":"backslash_check","text":"abc\\   ","case":"backslash plus spaces"}
+{"func":"backslash_check","text":"abc\\\n","case":"backslash before newline"}
+{"func":"backslash_check","text":"abc","case":"no backslash"}
+{"func":"backslash_check","text":"abc\\\\","case":"double backslash"}
+{"func":"backslash_apply","text":"abc\\","case":"replace with newline"}
+{"func":"backslash_apply","text":"abc\\\n","case":"replace keeps existing newline"}
+{"func":"backslash_apply","text":"abc","case":"append newline"}
+{"func":"backslash_apply","text":"hello \\\nworld","case":"inline continuation"}
+{"func":"clipboard","text":"","case":"empty paste attaches"}
+{"func":"clipboard","text":"  \t\n ","case":"whitespace paste attaches"}
+{"func":"clipboard","text":"hello","case":"text paste does not attach"}
+{"func":"statusbar","config":{},"case":"default top"}
+{"func":"statusbar","config":{"statusbar":"hidden"},"case":"hidden string"}
+{"func":"statusbar","config":{"statusbar":false},"case":"false bool"}
+{"func":"statusbar","config":{"tui_statusbar":"off"},"case":"legacy off"}
+{"func":"statusbar","config":{"statusbar":null},"case":"null keeps visible"}
+{"func":"statusbar","config":{"statusbar":0},"case":"number keeps visible"}
+{"func":"split_path","raw":"","case":"empty raw"}
+{"func":"split_path","raw":"/tmp/a.txt extra","case":"path plus rest"}
+{"func":"split_path","raw":"/tmp/my file.txt note","case":"quoted path with space"}
+{"func":"split_path","raw":"/a\\ b rest","case":"escaped space"}
+{"func":"split_path","raw":"plain words","case":"no path prefix"}
+{"func":"split_path","raw":"/tmp/my file.txt note","case":"unquoted path with spaces uses escaped form"}
+{"func":"split_path","raw":"\"/tmp/my file.txt\" note","case":"double quoted path"}
+{"func":"split_path","raw":"'/a/b.txt' tail","case":"single quoted path"}
+{"func":"split_path","raw":"\"unclosed path","case":"unclosed quote yields whole remainder"}

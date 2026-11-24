@@ -1,0 +1,16 @@
+{"case":"first_props_nctx","func":"llamacpp","model":"m","responses":[{"status":200,"body":{"default_generation_settings":{"n_ctx":4096}}}]}
+{"case":"second_props","func":"llamacpp","model":"m","responses":[{"status":500},{"status":200,"body":{"default_generation_settings":{"n_ctx":8192}}}]}
+{"case":"first_props_error","func":"llamacpp","model":"m","responses":[{"error":true}]}
+{"case":"json_raises_then_router","func":"llamacpp","model":"m","responses":[{"status":200,"json_raises":true},{"status":200,"body":{}},{"status":200,"body":{"data":[{"id":"m","status":{"args":["-c","2048"]}}]}}]}
+{"case":"body_not_dict_fallback","func":"llamacpp","model":"m","responses":[{"status":200,"body":[1,2]},{"status":200,"body":{}},{"status":200,"body":{"data":[{"id":"org/m","status":{"args":["--ctx-size","4096"]}}]}}]}
+{"case":"nctx_zero_router_404","func":"llamacpp","model":"m","responses":[{"status":200,"body":{"default_generation_settings":{"n_ctx":0}}},{"status":500},{"status":404}]}
+{"case":"nctx_float_trunc","func":"llamacpp","model":"m","responses":[{"status":200,"body":{"default_generation_settings":{"n_ctx":3.7}}}]}
+{"case":"nctx_bool_true","func":"llamacpp","model":"m","responses":[{"status":200,"body":{"default_generation_settings":{"n_ctx":true}}}]}
+{"case":"nctx_negative","func":"llamacpp","model":"m","responses":[{"status":200,"body":{"default_generation_settings":{"n_ctx":-5}}}]}
+{"case":"settings_not_dict","func":"llamacpp","model":"m","responses":[{"status":200,"body":{"default_generation_settings":"x"}},{"status":200,"body":{}},{"status":500}]}
+{"case":"router_mid_id_pairwise","func":"router","model":"m","responses":[{"status":200,"body":{"data":[{"id":"org/m","status":{"args":["--model","x","-c","512"]}}]}}]}
+{"case":"router_no_match","func":"router","model":"zz","responses":[{"status":200,"body":{"data":[{"id":"org/m","status":{"args":["-c","512"]}}]}}]}
+{"case":"router_zero_then_valid","func":"router","model":"m","responses":[{"status":200,"body":{"data":[{"id":"m","status":{"args":["--ctx-size","0","-c","99"]}}]}}]}
+{"case":"router_status_not_dict","func":"router","model":"m","responses":[{"status":200,"body":{"data":[{"id":"m","status":"x"}]}}]}
+{"case":"router_numeric_arg","func":"router","model":"m","responses":[{"status":200,"body":{"data":[{"id":"m","status":{"args":["-c",4096]}}]}}]}
+{"case":"router_error","func":"router","model":"m","responses":[{"error":true}]}

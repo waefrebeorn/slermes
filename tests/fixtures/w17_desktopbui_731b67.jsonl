@@ -1,0 +1,13 @@
+{"func":"checkout_key","project_root":"C:/checkouts/proj"}
+{"func":"checkout_key","project_root":"c:/checkouts/proj"}
+{"func":"checkout_key","project_root":"C:\\checkouts\\proj"}
+{"func":"checkout_key","project_root":"C:/checkouts/./proj"}
+{"func":"checkout_key","project_root":"C:/checkouts/a/../proj"}
+{"func":"checkout_key","project_root":"C:/checkouts/proj/"}
+{"func":"checkout_key","project_root":"C:/checkouts//proj"}
+{"func":"checkout_key","project_root":"C:/CheckOuts/Proj"}
+{"func":"checkout_key","project_root":"D:/src/hermes"}
+{"func":"checkout_key","project_root":"C:/a/../../b"}
+{"func":"lock_name","project_root":"C:/checkouts/proj"}
+{"func":"lock_name","project_root":"C:/checkouts/a/../proj"}
+{"func":"lock_name","project_root":"D:/deep/nested/path/"}

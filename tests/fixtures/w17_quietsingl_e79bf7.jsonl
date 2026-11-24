@@ -1,0 +1,16 @@
+{"func":"take_report_path","environ":{"HERMES_QUIET_TURN_REPORT_FILE":"/tmp/report.json","OTHER":"x"},"case":"pop present key"}
+{"func":"take_report_path","environ":{"OTHER":"x"},"case":"key absent"}
+{"func":"take_report_path","environ":{"HERMES_QUIET_TURN_REPORT_FILE":""},"case":"empty value becomes null"}
+{"func":"take_report_path","environ":{},"case":"empty environ"}
+{"func":"take_report_path","environ":{"A":"1","HERMES_QUIET_TURN_REPORT_FILE":"r","B":"2"},"case":"extra keys preserved"}
+{"func":"exit_trailer","code":"0","case":"zero exit"}
+{"func":"exit_trailer","code":"1","case":"one exit"}
+{"func":"exit_trailer","code":"75","case":"rate limit exit"}
+{"func":"exit_trailer","code":"-1","case":"negative exit"}
+{"func":"exit_trailer","code":"123456789","case":"large exit"}
+{"func":"diagnostic_muted","events":[],"warnings_enabled":false,"case":"no events"}
+{"func":"diagnostic_muted","events":[{"diagnostic":true}],"warnings_enabled":false,"case":"diagnostic and warnings on"}
+{"func":"diagnostic_muted","events":[{"diagnostic":true}],"warnings_enabled":true,"case":"diagnostic but warnings off"}
+{"func":"diagnostic_muted","events":[{"diagnostic":false}],"warnings_enabled":false,"case":"non diagnostic event"}
+{"func":"diagnostic_muted","events":["x",5],"warnings_enabled":false,"case":"only non dict events"}
+{"func":"diagnostic_muted","events":[{"diagnostic":true},"x"],"warnings_enabled":false,"case":"mixed dict and non dict"}

@@ -1,0 +1,39 @@
+{"case":"slug-host","func":"env_slug","in":{"text":"my-host.com"}}
+{"case":"slug-underscores","func":"env_slug","in":{"text":"a__b"}}
+{"case":"slug-empty","func":"env_slug","in":{"text":""}}
+{"case":"slug-digits","func":"env_slug","in":{"text":"9 lives!"}}
+{"case":"model","func":"model_api_key_env","in":{}}
+{"case":"aux-deleg","func":"aux_api_key_env","in":{"task":"delegation"}}
+{"case":"aux-plain","func":"aux_api_key_env","in":{"task":"my_task"}}
+{"case":"aux-upper","func":"aux_api_key_env","in":{"task":"My_Task"}}
+{"case":"aux-empty","func":"aux_api_key_env","in":{"task":""}}
+{"case":"aux-dot","func":"aux_api_key_env","in":{"task":"a.b"}}
+{"case":"digest-empty","func":"digest","in":{"text":""}}
+{"case":"digest-abc","func":"digest","in":{"text":"abc"}}
+{"case":"digest-host","func":"digest","in":{"text":"my.host"}}
+{"case":"provider-openai","func":"provider_name_key_env","in":{"name":"openai"}}
+{"case":"provider-host","func":"provider_name_key_env","in":{"name":"my.host"}}
+{"case":"provider-dash","func":"provider_name_key_env","in":{"name":"my-host"}}
+{"case":"provider-empty","func":"provider_name_key_env","in":{"name":""}}
+{"case":"ref-ok","func":"is_env_reference","in":{"value":"${FOO}"}}
+{"case":"ref-spaces","func":"is_env_reference","in":{"value":"  ${FOO}  "}}
+{"case":"ref-empty","func":"is_env_reference","in":{"value":"${}"}}
+{"case":"ref-tail","func":"is_env_reference","in":{"value":"${a}b"}}
+{"case":"ref-plain","func":"is_env_reference","in":{"value":"plain"}}
+{"case":"ref-two","func":"is_env_reference","in":{"value":"${a}${b}"}}
+{"case":"canon-https","func":"canonical_endpoint","in":{"base_url":"https://API.Example.com:443/v1/"}}
+{"case":"canon-port","func":"canonical_endpoint","in":{"base_url":"http://h:8080/x/"}}
+{"case":"canon-query","func":"canonical_endpoint","in":{"base_url":"https://h/v1?a=1"}}
+{"case":"canon-bare","func":"canonical_endpoint","in":{"base_url":"example.com"}}
+{"case":"ident-v1","func":"endpoint_identity","in":{"base_url":"https://my.host.com/v1"}}
+{"case":"ident-path","func":"endpoint_identity","in":{"base_url":"https://a.com:8443/foo/bar"}}
+{"case":"ident-empty","func":"endpoint_identity","in":{"base_url":""}}
+{"case":"epkey-v1","func":"endpoint_api_key_env","in":{"base_url":"https://a.com:8443/v1"}}
+{"case":"epkey-path","func":"endpoint_api_key_env","in":{"base_url":"https://h/x/y"}}
+{"case":"epkey-empty","func":"endpoint_api_key_env","in":{"base_url":""}}
+{"case":"dash-existing","func":"dashboard_endpoint_key_env","in":{"entry":{"key_env":"HERMES_CUSTOM_ABC_API_KEY"},"endpoint_id":"my.host"}}
+{"case":"dash-new","func":"dashboard_endpoint_key_env","in":{"entry":{"key_env":"OPENAI_API_KEY"},"endpoint_id":"my.host"}}
+{"case":"block-base","func":"block_base_url","in":{"block":{"base_url":"  https://h/v1/  "}}}
+{"case":"block-url","func":"block_base_url","in":{"block":{"url":" x "}}}
+{"case":"block-api","func":"block_base_url","in":{"block":{"api":"y"}}}
+{"case":"block-empty","func":"block_base_url","in":{"block":{}}}

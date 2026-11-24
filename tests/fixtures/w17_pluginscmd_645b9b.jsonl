@@ -1,0 +1,12 @@
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"],["b","1","","bundled",null,"k/b"]],"enabled":["k/a"],"disabled":[],"active":[]}
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"],["b","1","","bundled",null,"k/b"]],"enabled":[],"disabled":["k/b"],"active":[]}
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"],["b","1","","bundled",null,"k/b"]],"enabled":[],"disabled":[],"active":["cat1"]}
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"],["b","1","","bundled",null,"k/b"]],"enabled":["k/a","k/b"],"disabled":[],"active":[]}
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"],["b","1","","bundled",null,"k/b"]],"enabled":["k/a","k/b"],"disabled":["k/a"],"active":[]}
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"],["b","1","","bundled",null,"k/b"]],"enabled":[],"disabled":[],"active":[]}
+{"func":"effective_selection","entries":[],"enabled":["k/a"],"disabled":[],"active":[]}
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"]],"enabled":["a"],"disabled":[],"active":[]}
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"]],"enabled":[],"disabled":["a"],"active":["k/a"]}
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"],["b","1","","user",null,"k/b"],["c","1","","user",null,"k/c"]],"enabled":["k/c","k/a"],"disabled":[],"active":[]}
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"],["b","1","","user",null,"k/b"],["c","1","","user",null,"k/c"]],"enabled":[],"disabled":["k/b"],"active":["k/a","k/c"]}
+{"func":"effective_selection","entries":[["a","1","","user",null,"k/a"]],"enabled":[],"disabled":[],"active":["a"]}

@@ -1,0 +1,29 @@
+{"case": "empty", "func": "version_spec", "spec": "", "version": "3.11", "uv_root_name": "x"}
+{"case": "all", "func": "version_spec", "spec": "all", "version": "3.11", "uv_root_name": "x"}
+{"case": "dashdashall", "func": "version_spec", "spec": "--all", "version": "3.11", "uv_root_name": "x"}
+{"case": "dasha", "func": "version_spec", "spec": "-a", "version": "3.11", "uv_root_name": "x"}
+{"case": "dash_version", "func": "version_spec", "spec": "-3.11", "version": "3.11", "uv_root_name": "x"}
+{"case": "exact", "func": "version_spec", "spec": "3.11", "version": "3.11", "uv_root_name": "x"}
+{"case": "exact_long", "func": "version_spec", "spec": "3.11.7", "version": "3.11.7", "uv_root_name": "x"}
+{"case": "prefix_not_dot", "func": "version_spec", "spec": "3.1", "version": "3.11", "uv_root_name": "x"}
+{"case": "strip_spaces", "func": "version_spec", "spec": " 3.11 ", "version": "3.11", "uv_root_name": "x"}
+{"case": "root_prefix", "func": "version_spec", "spec": "CPYTHON-3", "version": "3.11", "uv_root_name": "cpython-3.11.7-linux"}
+{"case": "version_dot", "func": "version_spec", "spec": "3.11", "version": "3.11.0", "uv_root_name": "x"}
+{"case": "version_no_dot", "func": "version_spec", "spec": "3.1", "version": "3.11.0", "uv_root_name": "x"}
+{"case": "upper_all", "func": "version_spec", "spec": "ALL", "version": "3.11", "uv_root_name": "x"}
+{"case": "ancestor_win", "func": "overlaps", "a": "C:\\a\\b", "b": "C:\\a"}
+{"case": "ancestor_posix_no", "func": "overlaps", "a": "/a/b", "b": "/a"}
+{"case": "empty_a", "func": "overlaps", "a": "", "b": "C:\\a"}
+{"case": "equal", "func": "overlaps", "a": "C:\\a", "b": "C:\\a"}
+{"case": "sibling", "func": "overlaps", "a": "C:\\ab", "b": "C:\\a"}
+{"case": "deep", "func": "overlaps", "a": "C:\\a\\b\\c", "b": "C:\\a\\b"}
+{"case": "sudo", "func": "strip_prefixes", "words": ["sudo", "rm", "-rf", "/x"]}
+{"case": "envassign", "func": "strip_prefixes", "words": ["FOO=1", "rm", "x"]}
+{"case": "env_then_assign", "func": "strip_prefixes", "words": ["env", "FOO=1", "rm", "x"]}
+{"case": "nice_opt", "func": "strip_prefixes", "words": ["nice", "-n", "5", "rm"]}
+{"case": "dash_arg", "func": "strip_prefixes", "words": ["-x", "cmd"]}
+{"case": "slash_assign", "func": "strip_prefixes", "words": ["/x=1", "cmd"]}
+{"case": "plain", "func": "strip_prefixes", "words": ["rm", "x"]}
+{"case": "multi", "func": "strip_prefixes", "words": ["time", "env", "A=1", "ls"]}
+{"case": "bad_assign", "func": "strip_prefixes", "words": ["a-b=1", "cmd"]}
+{"case": "empty", "func": "strip_prefixes", "words": []}

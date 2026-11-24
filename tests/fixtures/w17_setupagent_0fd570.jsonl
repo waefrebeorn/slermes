@@ -1,0 +1,12 @@
+{"case":1,"func":"constants"}
+{"case":2,"func":"argv","executable":"C:/venv/Scripts/python.exe","source":"openclaw","extra_args":[],"selector":[],"from_setup":true}
+{"case":3,"func":"argv","executable":"python","source":"claude-code","extra_args":[],"selector":["--profile","default"],"from_setup":false}
+{"case":4,"func":"argv","executable":"python","source":"grok-bot","extra_args":["--from-setup"],"selector":[],"from_setup":true}
+{"case":5,"func":"argv","executable":"py","source":"openbot","extra_args":["--debug"],"selector":[],"from_setup":false}
+{"case":6,"func":"hint","found":[],"show_found":false}
+{"case":7,"func":"hint","found":["OpenClaw","Codex CLI"],"show_found":true}
+{"case":8,"func":"hint","found":["Grok Bot"],"show_found":true}
+{"case":9,"func":"context","user_home":"C:/Users/eman5","found":[{"label":"OpenClaw","path":"C:/Users/eman5/.openclaw"}]}
+{"case":10,"func":"context","user_home":"C:/Users/eman5","found":[{"label":"OpenClaw","path":"C:/Users/eman5/.openclaw"},{"label":"Codex CLI","path":"C:/Users/eman5/.codex"}]}
+{"case":11,"func":"context","user_home":"C:/Users/eman5","found":[{"label":"Grok Bot","path":"D:/apps/grok"}]}
+{"case":12,"func":"context","user_home":"C:/Users/eman5","found":[]}

@@ -1,0 +1,18 @@
+{"func":"normalize","name":"  Foo  ","mode":"strip","case":"strip padding"}
+{"func":"normalize","name":"  Foo  ","mode":"lower","case":"strip and lowercase"}
+{"func":"normalize","name":"  Foo  ","mode":"none","case":"raw name unchanged"}
+{"func":"normalize","name":"HTTPServer","mode":"lower","case":"lower ascii"}
+{"func":"normalize","name":"\tTabbed\t","mode":"strip","case":"tabs stripped"}
+{"func":"normalize","name":"","mode":"lower","case":"empty string"}
+{"func":"row","method":"register_login_backend","case":"row with explicit raw normalize"}
+{"func":"row","method":"register_browser_page_backend","case":"row with default strip"}
+{"func":"row","method":"register_image_gen_provider","case":"row with article an"}
+{"func":"row","method":"register_video_gen_provider","case":"video row"}
+{"func":"row","method":"register_web_search_provider","case":"web search row"}
+{"func":"row","method":"register_browser_provider","case":"browser row"}
+{"func":"row","method":"register_terminal_environment_provider","case":"row with lower normalize"}
+{"func":"row","method":"register_secret_source","case":"secret source row"}
+{"func":"row","method":"register_tts_provider","case":"tts row"}
+{"func":"row","method":"register_transcription_provider","case":"transcription row"}
+{"func":"row","method":"register_delegation_provider","case":"delegation row"}
+{"func":"row","method":"register_unknown","case":"unknown method is null"}

@@ -1,0 +1,13 @@
+{"case":1,"func":"describe","kind":"launchd job","name":"ai.hermes.gateway","home":"C:/h/ome"}
+{"case":2,"func":"describe","kind":"systemd unit","name":"hermes-gateway@x","checkout":"/check/out"}
+{"case":3,"func":"describe","kind":"gateway","name":"svc"}
+{"case":4,"func":"describe","kind":"gateway","name":"svc","home":null,"checkout":"C:/other/checkout"}
+{"case":5,"func":"describe","kind":"launchd job","name":"ai.hermes.gateway (2)","home":"C:/Users/eman5/.hermes"}
+{"case":6,"func":"scope","home":"C:/Users/eman5","scope":["C:/Users/eman5"]}
+{"case":7,"func":"scope","home":"C:/Users/eman5/foo","scope":["C:/Users/eman5"]}
+{"case":8,"func":"scope","home":"/no/pe","scope":["C:/Users/eman5"]}
+{"case":9,"func":"scope","home":"","scope":["C:/Users/eman5"]}
+{"case":10,"func":"scope","home":"C:/Users/eman5/foo/../bar","scope":["C:/Users/eman5/bar"]}
+{"case":11,"func":"scope","home":"c:/users/EMAN5","scope":["C:/Users/eman5","C:/other"]}
+{"case":12,"func":"scope","home":"C:/Users/eman5/","scope":["C:\\Users\\eman5"]}
+{"case":13,"func":"scope","home":null,"scope":[]}

@@ -1,0 +1,17 @@
+{"func": "reason", "case": "rc 0", "rc": 0}
+{"func": "reason", "case": "rc 1", "rc": 1}
+{"func": "reason", "case": "rc -9", "rc": -9}
+{"func": "reason", "case": "rc None", "rc": null}
+{"func": "reason", "case": "rc 137", "rc": 137}
+{"func": "reason", "case": "rc True", "rc": true}
+{"func": "reason", "case": "rc 'custom'", "rc": "custom"}
+{"func": "record", "case": "unknown + owner, no claim fence", "job": {"id": "j1", "execution_id": "e1", "fire_claim": {"by": "workerA"}}, "exec_status": "unknown", "owns_claim": false, "exec_unknown": true}
+{"func": "record", "case": "unknown + owner, owns claim", "job": {"id": "j2", "execution_id": "e1", "fire_claim": {"by": "workerB"}}, "exec_status": "unknown", "owns_claim": true, "exec_unknown": true}
+{"func": "record", "case": "empty by", "job": {"id": "j3", "execution_id": "e1", "fire_claim": {"by": ""}}, "exec_status": "unknown", "owns_claim": false, "exec_unknown": true}
+{"func": "record", "case": "no fire_claim", "job": {"id": "j4", "execution_id": "e1"}, "exec_status": "unknown", "owns_claim": false, "exec_unknown": true}
+{"func": "record", "case": "empty fire_claim dict", "job": {"id": "j5", "execution_id": "e1", "fire_claim": {}}, "exec_status": "unknown", "owns_claim": false, "exec_unknown": true}
+{"func": "record", "case": "status failed", "job": {"id": "j6", "execution_id": "e1", "fire_claim": {"by": "w"}}, "exec_status": "failed", "owns_claim": false, "exec_unknown": false}
+{"func": "record", "case": "numeric zero owner falsy", "job": {"id": "j7", "execution_id": "e1", "fire_claim": {"by": 0}}, "exec_status": "unknown", "owns_claim": false, "exec_unknown": true}
+{"func": "record", "case": "numeric five owner", "job": {"id": "j8", "execution_id": "e1", "fire_claim": {"by": 5}}, "exec_status": "unknown", "owns_claim": false, "exec_unknown": true}
+{"func": "record", "case": "null owner", "job": {"id": "j9", "execution_id": "e1", "fire_claim": {"by": null}}, "exec_status": "unknown", "owns_claim": false, "exec_unknown": true}
+{"func": "record", "case": "non-dict fire_claim", "job": {"id": "j10", "execution_id": "e1", "fire_claim": "owner"}, "exec_status": "unknown", "owns_claim": false, "exec_unknown": true}

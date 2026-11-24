@@ -1,0 +1,14 @@
+{"func":"requested","model":{"provider":"custom:lab"},"case":"custom provider string"}
+{"func":"requested","model":{},"case":"no model provider"}
+{"func":"requested","model":{"provider":123},"case":"non string provider"}
+{"func":"requested","model":{"provider":""},"case":"empty provider stays empty string"}
+{"func":"aliases","entry":{"name":"Lab","provider_key":"lab"},"key":"","case":"name and provider key"}
+{"func":"aliases","entry":{"name":"lab"},"key":"","case":"name only"}
+{"func":"aliases","entry":{},"key":"explicit","case":"explicit key only"}
+{"func":"aliases","entry":null,"key":"","case":"non dict entry"}
+{"func":"merge","dst":{},"seed":{"providers":{"custom":{"name":"Lab","url":"https://x"}}},"claimed":[],"case":"seed written first"}
+{"func":"merge","dst":{"providers":{"Lab":{"name":"Lab"},"keep":{"name":"Keep"}}},"seed":{"providers":{"custom":{"name":"Lab"}}},"claimed":["Lab"],"case":"claimed identity dropped"}
+{"func":"merge","dst":{"providers":{"other":{"name":"Other"}}},"seed":{"providers":{"custom":{"name":"Lab"}}},"claimed":[],"case":"no claims keeps dst"}
+{"func":"merge","dst":{"custom_providers":[{"name":"Old"}]},"seed":{"custom_providers":[{"name":"New"}]},"claimed":[],"case":"custom providers concatenated"}
+{"func":"merge","dst":{"custom_providers":[{"name":"Old"}]},"seed":{"custom_providers":[{"name":"New"}]},"claimed":["Old"],"case":"claimed custom dropped"}
+{"func":"merge","dst":{},"seed":{},"claimed":[],"case":"both empty"}

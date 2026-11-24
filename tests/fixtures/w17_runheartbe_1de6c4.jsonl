@@ -1,0 +1,11 @@
+{"func":"watched","default_home":"homeA","multiplex_profiles":false}
+{"func":"watched","default_home":"homeA","multiplex_profiles":true,"multiplex_homes":[["work","homeB"],["play","homeC"]]}
+{"func":"watched","default_home":"homeA","multiplex_profiles":true,"multiplex_homes":[["work","homeA"],["play","homeB"]]}
+{"func":"watched","default_home":"a/b","multiplex_profiles":false}
+{"func":"watched","default_home":"a/b/","multiplex_profiles":false}
+{"func":"watched","default_home":"","multiplex_profiles":false}
+{"func":"watched","default_home":"a/./b","multiplex_profiles":false}
+{"func":"watched","default_home":"a//b","multiplex_profiles":false}
+{"func":"watched","default_home":"homeA","multiplex_profiles":true,"multiplex_homes":[]}
+{"func":"watched","default_home":"a/b","multiplex_profiles":true,"multiplex_homes":[["work","a\b"],["play","c"]]}
+{"func":"watched","default_home":".","multiplex_profiles":true,"multiplex_homes":[["work","."],["play","x/./y"]]}

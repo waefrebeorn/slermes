@@ -1,0 +1,12 @@
+{"case":1,"func":"marker","path":"C:/Users/eman5/profiles/x"}
+{"case":2,"func":"marker","path":"C:\\Users\\eman5\\profiles\\y\\"}
+{"case":3,"func":"marker","path":"D:/hermes home/default"}
+{"case":4,"func":"prefix","path":"C:/Users/eman5"}
+{"case":5,"func":"prefix","path":"C:/Users/eman5/foo/../bar"}
+{"case":6,"func":"prefix","path":"C:/Users/EMAN5/Profiles//X/"}
+{"case":7,"func":"pids","profiles":{"a":"10","b":"20","c":"-1"},"unmapped":[{"pid":"30","argv":["gateway"]},{"pid":"0","argv":[]}],"alive":["10","30","40"]}
+{"case":8,"func":"pids","profiles":{},"unmapped":[],"alive":[]}
+{"case":9,"func":"pids","profiles":{"a":"5","b":"5","c":"7"},"unmapped":[{"pid":"7","argv":["x"]},{"pid":"9","argv":[]}],"alive":["5","7","9"]}
+{"case":10,"func":"pids","profiles":{"a":"100","b":"200"},"unmapped":[{"pid":"300","argv":["g"]}],"alive":["200","300"]}
+{"case":11,"func":"pids","profiles":{"a":"-5","b":"0"},"unmapped":[{"pid":"-2","argv":["g"]}],"alive":["-5","0","-2"]}
+{"case":12,"func":"pids","profiles":{"z":"42","a":"11"},"unmapped":[{"pid":"33","argv":["g","x"]}],"alive":["11","42","33","7"]}

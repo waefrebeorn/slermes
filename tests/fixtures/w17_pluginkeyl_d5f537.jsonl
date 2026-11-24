@@ -1,0 +1,18 @@
+{"func":"local","source":{"platform":"local","authorized":true},"case":"local authorized"}
+{"func":"local","source":{"platform":"messaging","authorized":true},"case":"messaging source"}
+{"func":"local","source":{"platform":"local","authorized":false},"case":"local not authorized"}
+{"func":"local","case":"no source"}
+{"func":"launched","source":{"policy_source":"cli"},"case":"cli policy"}
+{"func":"launched","source":{"policy_source":"tui"},"case":"tui policy"}
+{"func":"launched","source":{"policy_refusal":true},"case":"authority refusal"}
+{"func":"launched","source":{"policy_source":null},"case":"no policy"}
+{"func":"resolve","plugin_home":"homeA","served":false,"calling_session_key":"s1","case":"unserved home"}
+{"func":"resolve","plugin_home":null,"served":true,"calling_session_key":"s1","case":"null home"}
+{"func":"resolve","plugin_home":"homeA","served":true,"calling_session_key":"s1","own_sessions":[{"route":"s1","source":{"platform":"local","authorized":true}}],"case":"csk local own"}
+{"func":"resolve","plugin_home":"homeA","served":true,"calling_session_key":"s1","own_sessions":[{"route":"s1","source":{"platform":"messaging","authorized":true}}],"case":"csk own not local"}
+{"func":"resolve","plugin_home":"homeA","served":true,"calling_session_key":"s1","own_sessions":[],"other_sessions":[{"route":"s1","source":{"platform":"local","authorized":true}}],"case":"csk other local"}
+{"func":"resolve","plugin_home":"homeA","served":true,"calling_session_key":"s1","own_sessions":[],"other_sessions":[],"case":"csk no match"}
+{"func":"resolve","plugin_home":"homeA","served":true,"calling_session_key":"s1","own_sessions":[{"route":"s1","source":{"platform":"local","authorized":false}}],"case":"csk local but unauthorized"}
+{"func":"resolve","plugin_home":"homeA","served":true,"own_sessions":[{"route":"s1","source":{"platform":"local","authorized":true},"subscribers":true,"policy_source":"cli"}],"case":"one attached cli"}
+{"func":"resolve","plugin_home":"homeA","served":true,"own_sessions":[{"route":"s1","source":{"platform":"local","authorized":true},"subscribers":true,"policy_source":"cli"},{"route":"s2","source":{"platform":"local","authorized":true},"subscribers":true,"policy_source":"cli"}],"case":"two attached"}
+{"func":"resolve","plugin_home":"homeA","served":true,"own_sessions":[{"route":"s1","source":{"platform":"local","authorized":true},"subscribers":true,"policy_source":"tui"}],"case":"attached non-cli policy"}

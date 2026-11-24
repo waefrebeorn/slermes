@@ -1,0 +1,12 @@
+{"func": "wedged", "case": "normal", "job": {"id": "j1", "name": "Nightly", "repeat": {"completed": 2, "times": 3}, "run_claim": {"at": "t0", "by": "w1"}}, "now_iso": "2026-05-06T07:08:09.123456"}
+{"func": "wedged", "case": "last_run_at set -> no write", "job": {"id": "j2", "name": "X", "last_run_at": "2026-05-06T01:00:00", "repeat": {"completed": 2, "times": 3}}, "now_iso": "2026-05-06T07:08:09.123456"}
+{"func": "wedged", "case": "missing repeat and claim -> defaults", "job": {"id": "j3", "name": null}, "now_iso": "2026-05-06T07:08:09.123456"}
+{"func": "wedged", "case": "empty repeat and claim objects -> defaults", "job": {"id": "j4", "name": "Empty", "repeat": {}, "run_claim": {}}, "now_iso": "2026-05-06T07:08:09.123456"}
+{"func": "wedged", "case": "numeric id and null completed", "job": {"id": 42, "name": "Num", "repeat": {"completed": null, "times": "once"}, "run_claim": {"at": "a", "by": "b"}}, "now_iso": "2026-05-06T07:08:09.123456"}
+{"func": "wedged", "case": "unicode name and apostrophe", "job": {"id": "j5", "name": "O'Brien été", "repeat": {"completed": 1, "times": 2}, "run_claim": {"at": "now", "by": "w"}}, "now_iso": "2026-01-01T00:00:00"}
+{"func": "wedged", "case": "empty last_run_at string still skips", "job": {"id": "j6", "name": "S", "last_run_at": ""}, "now_iso": "2026-05-06T07:08:09.123456"}
+{"func": "missed", "case": "normal missed", "job": {"id": "j1", "name": "Nightly", "repeat": {"completed": 2, "times": 3}}, "next_run": "2026-05-01T00:00:00", "grace": "4321", "now_iso": "2026-05-06T07:08:09.123456"}
+{"func": "missed", "case": "varied grace", "job": {"id": "j9", "name": "x"}, "next_run": "2026-04-01T12:34:56", "grace": "99", "now_iso": "2026-05-06T07:08:09.123456"}
+{"func": "missed", "case": "null id and name", "job": {"id": null, "name": null}, "next_run": "2026-05-05T05:05:05", "grace": "4321", "now_iso": "2026-05-06T07:08:09.123456"}
+{"func": "missed", "case": "empty job", "job": {}, "next_run": "", "grace": "0", "now_iso": "2026-05-06T07:08:09.123456"}
+{"func": "missed", "case": "float-ish name string", "job": {"id": "j10", "name": "a b c"}, "next_run": "next-run-value", "grace": "100000", "now_iso": "2026-05-06T07:08:09.123456"}

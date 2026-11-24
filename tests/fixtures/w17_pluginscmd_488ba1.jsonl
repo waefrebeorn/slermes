@@ -1,0 +1,12 @@
+{"func":"reclone_message","source":"https://example.com/repo.git","previous_revision":"abcdef1234567890","revision":"abcdef1234567890"}
+{"func":"reclone_message","source":"https://example.com/repo.git","previous_revision":"1111111111111111","revision":"abcdef1234567890"}
+{"func":"reclone_message","source":"src","previous_revision":null,"revision":"abcdef1234567890"}
+{"func":"reclone_message","source":"src","previous_revision":12345,"revision":"abcdef1234567890"}
+{"func":"reclone_message","source":"src","previous_revision":"short","revision":"abcdef1234567890"}
+{"func":"reclone_message","source":"src","previous_revision":"abcdef1234567890","revision":"short"}
+{"func":"reclone_message","source":"src","previous_revision":"12345678","revision":"abcdefgh"}
+{"func":"reclone_message","source":"src","previous_revision":"","revision":"abcdef1234567890"}
+{"func":"reclone_message","source":"","previous_revision":"abcdef1234567890","revision":"0123456789abcdef"}
+{"func":"reclone_message","source":"owner/repo@sub","previous_revision":"aaaaaaaaaaaaaaaa","revision":"bbbbbbbbbbbbbbbb"}
+{"func":"reclone_message","source":"src","previous_revision":"","revision":""}
+{"func":"reclone_message","source":"src","previous_revision":true,"revision":"deadbeefcafe"}

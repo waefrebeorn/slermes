@@ -1,0 +1,18 @@
+{"func":"script_hashes","html":""}
+{"func":"script_hashes","html":"<html><body>hi</body></html>"}
+{"func":"script_hashes","html":"<script>alert(1)</script>"}
+{"func":"script_hashes","html":"<script src='x.js'>code</script>"}
+{"func":"script_hashes","html":"<script>var x = 1;</script><script>foo()</script>"}
+{"func":"script_hashes","html":"<SCRIPT>UPPER</SCRIPT>"}
+{"func":"script_hashes","html":"<script>a &amp; b</script>"}
+{"func":"script_hashes","html":"<script>line1\nline2</script>"}
+{"func":"script_hashes","html":"<script type=\"module\">export const x=1;</script>"}
+{"func":"script_hashes","html":"<script>never closed"}
+{"func":"script_hashes","html":"before<script>a()</script>after<script src='z'>skip</script>tail"}
+{"func":"page_headers","ui_surface":"webapp","html":"","headers":{}}
+{"func":"page_headers","ui_surface":"webapp","html":"<script>alert(1)</script>","headers":{"X-Foo":"bar"}}
+{"func":"page_headers","ui_surface":"webapp","html":"<script>a()</script><script>b()</script>","headers":{"Content-Security-Policy":"OLD","X-Content-Type-Options":"OLDVAL"}}
+{"func":"page_headers","ui_surface":"desktop","html":"<script>alert(1)</script>","headers":{"k":"v"}}
+{"func":"page_headers","ui_surface":null,"html":"<script>alert(1)</script>","headers":{"k":"v"}}
+{"func":"page_headers","ui_surface":"WebApp","html":"<script>alert(1)</script>","headers":{"k":"v"}}
+{"func":"constants"}

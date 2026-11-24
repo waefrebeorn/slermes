@@ -1,0 +1,18 @@
+{"case":"eio-5","func":"is_eio","in":{"errno":5}}
+{"case":"eio-2","func":"is_eio","in":{"errno":2}}
+{"case":"eio-0","func":"is_eio","in":{"errno":0}}
+{"case":"tmux-empty","func":"tmux_passthrough","in":{"seq":""}}
+{"case":"tmux-plain","func":"tmux_passthrough","in":{"seq":"hello world"}}
+{"case":"tmux-one-esc","func":"tmux_passthrough","in":{"seq":"\u001b[31m"}}
+{"case":"tmux-two-esc","func":"tmux_passthrough","in":{"seq":"\u001bA\u001bB"}}
+{"case":"tmux-esc-mid","func":"tmux_passthrough","in":{"seq":"a\u001bb\u001b"}}
+{"case":"rebuild-empty","func":"rebuilds_scrollback","in":{"cli_config":{}}}
+{"case":"rebuild-no-display","func":"rebuilds_scrollback","in":{"cli_config":{"other":1}}}
+{"case":"rebuild-str-yes","func":"rebuilds_scrollback","in":{"cli_config":{"display":{"cli_rebuild_scrollback_on_redraw":"yes"}}}}
+{"case":"rebuild-str-on-space","func":"rebuilds_scrollback","in":{"cli_config":{"display":{"cli_rebuild_scrollback_on_redraw":" ON "}}}}
+{"case":"rebuild-str-1","func":"rebuilds_scrollback","in":{"cli_config":{"display":{"cli_rebuild_scrollback_on_redraw":"1"}}}}
+{"case":"rebuild-str-no","func":"rebuilds_scrollback","in":{"cli_config":{"display":{"cli_rebuild_scrollback_on_redraw":"no"}}}}
+{"case":"rebuild-bool-true","func":"rebuilds_scrollback","in":{"cli_config":{"display":{"cli_rebuild_scrollback_on_redraw":true}}}}
+{"case":"rebuild-bool-false","func":"rebuilds_scrollback","in":{"cli_config":{"display":{"cli_rebuild_scrollback_on_redraw":false}}}}
+{"case":"rebuild-num-1","func":"rebuilds_scrollback","in":{"cli_config":{"display":{"cli_rebuild_scrollback_on_redraw":1}}}}
+{"case":"rebuild-num-0","func":"rebuilds_scrollback","in":{"cli_config":{"display":{"cli_rebuild_scrollback_on_redraw":0}}}}

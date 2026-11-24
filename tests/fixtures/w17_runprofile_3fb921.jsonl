@@ -1,0 +1,13 @@
+{"func":"served","homes":[],"active":null}
+{"func":"served","homes":["work"],"active":null}
+{"func":"served","homes":["work","default","zeta"],"active":"default"}
+{"func":"served","homes":["zeta","alpha","mid"],"active":"work"}
+{"func":"served","homes":["b","a","c"],"active":"a"}
+{"func":"blocker","opted_out":true,"implicit":"other reason"}
+{"func":"blocker","opted_out":false,"implicit":"implicit blocker"}
+{"func":"blocker","opted_out":false,"implicit":null}
+{"func":"error","collision":true,"type_name":"ValueError","message":"name clash"}
+{"func":"error","collision":false,"type_name":"ValueError","message":"plain value error"}
+{"func":"error","collision":false,"type_name":"RuntimeError","message":"store down"}
+{"func":"error","collision":false,"type_name":"KeyError","message":"missing key"}
+{"func":"error","collision":false,"type_name":"OSError","message":""}

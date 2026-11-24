@@ -1,0 +1,16 @@
+{"func":"candidates","platform":null,"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"local","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":null,"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":false,"origin":"local","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":null,"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"suspended":true,"origin":"local","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":null,"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":null,"resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":null,"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"local","resume_reason":"manual"}]}
+{"func":"candidates","platform":"local","auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"local","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":"local","auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"telegram","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":"relay","relay_fronts":true,"fronts_platforms":["telegram"],"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"telegram","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":"relay","relay_fronts":true,"fronts_platforms":["discord"],"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"telegram","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":"relay","relay_fronts":false,"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"telegram","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":null,"lock_raises":true,"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"local","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":null,"ensure_raises":true,"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"local","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":null,"guard_trip":true,"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"local","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":null,"guard_raises":true,"auto_reasons":["restart_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"local","resume_reason":"restart_timeout"}]}
+{"func":"candidates","platform":null,"auto_reasons":["restart_timeout","shutdown_timeout"],"entries":[{"session_key":"s1","resume_pending":true,"origin":"local","resume_reason":"restart_timeout"},{"session_key":"s2","resume_pending":true,"origin":"telegram","resume_reason":"manual"},{"session_key":"s3","resume_pending":true,"origin":"discord","resume_reason":"shutdown_timeout"},{"session_key":"s4","resume_pending":true,"origin":"local","resume_reason":"restart_interrupted"}]}
+{"func":"candidates","platform":null,"guard_trip":true,"auto_reasons":["restart_timeout"],"entries":[]}

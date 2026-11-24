@@ -1,0 +1,14 @@
+{"case":1,"func":"surface","ui_surface":"webapp"}
+{"case":2,"func":"surface","ui_surface":"dashboard","gateway_runner":true}
+{"case":3,"func":"surface","ui_surface":"","gateway_runner":true}
+{"case":4,"func":"surface","gateway_runner":false}
+{"case":5,"func":"policy","ui_surface":"serve"}
+{"case":6,"func":"policy","ui_surface":"dashboard"}
+{"case":7,"func":"policy","ui_surface":"gateway"}
+{"case":8,"func":"policy","ui_surface":"webapp"}
+{"case":9,"func":"policy","ui_surface":"","gateway_runner":true}
+{"case":10,"func":"private_launch","ui_surface":"webapp","auth_required":false}
+{"case":11,"func":"private_launch","ui_surface":"webapp","auth_required":true}
+{"case":12,"func":"private_launch","ui_surface":"gateway","auth_required":false}
+{"case":13,"func":"private_launch","ui_surface":"dashboard","auth_required":false}
+{"case":14,"func":"surface","ui_surface":null,"gateway_runner":false}

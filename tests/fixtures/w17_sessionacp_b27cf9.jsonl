@@ -1,0 +1,13 @@
+{"func":"end_idle_acp_session","authority":{"epoch":"e1","sessions":{"s1":{"subscribers":["v1"]}}},"session_id":"s1","io":{"receipts":{"s1":{"policy":{"source":"acp"},"entry":{"session_id":"t1"}}},"end_idle":{"s1":true}}}
+{"func":"end_idle_acp_session","authority":{"epoch":"e1","sessions":{}},"session_id":"s1","io":{"receipts":{"s1":{"$raise":"AuthorityRefusal"}},"end_idle":{}}}
+{"func":"end_idle_acp_session","authority":{"epoch":"e1","sessions":{}},"session_id":"s1","io":{"receipts":{"s1":{"policy":{"source":"local"},"entry":{"session_id":"t1"}}},"end_idle":{}}}
+{"func":"end_idle_acp_session","authority":{"epoch":"e7","sessions":{"s1":{"subscribers":[]}}},"session_id":"s1","io":{"receipts":{"s1":{"policy":{"source":"acp"},"entry":{"session_id":"t1"}}},"end_idle":{"s1":true}}}
+{"func":"end_idle_acp_session","authority":{"epoch":"e7","sessions":{}},"session_id":"s1","io":{"receipts":{"s1":{"policy":{"source":"acp"},"entry":{"session_id":"t1"}}},"end_idle":{"s1":{"$raise":"AuthorityRefusal"}}}}
+{"func":"end_idle_acp_session","authority":{"epoch":"e7","sessions":{}},"session_id":"s1","io":{"receipts":{"s1":{"policy":{"source":"acp"},"entry":{}}},"end_idle":{}}}
+{"func":"end_idle_viewer_session","authority":{"epoch":"e2","sessions":{}},"session_id":"s2","reason":"cli_close","io":{"receipts":{"s2":{"policy":{"source":"local"},"entry":{"session_id":"t2"}}},"end_idle":{"s2":true}}}
+{"func":"end_idle_viewer_session","authority":{"epoch":"e2","sessions":{}},"session_id":"s2","reason":"cli_close","io":{"receipts":{"s2":{"policy":{"source":"acp"},"entry":{"session_id":"t2"}}},"end_idle":{"s2":true}}}
+{"func":"end_idle_viewer_session","authority":{"epoch":"e2","sessions":{}},"session_id":"s2","reason":"switch","io":{"receipts":{"s2":{"$raise":"AuthorityRefusal"}},"end_idle":{}}}
+{"func":"reopen_if_reattached","authority":{"epoch":"e3","sessions":{"s3":{"subscribers":[]}}},"session_id":"s3","ended":false,"io":{"receipts":{}}}
+{"func":"reopen_if_reattached","authority":{"epoch":"e3","sessions":{"s3":{"subscribers":["v1"]}}},"session_id":"s3","ended":true,"io":{"receipts":{"s3":{"policy":{"source":"acp"},"entry":{"session_id":"t3"}}}}}
+{"func":"reopen_if_reattached","authority":{"epoch":"e3","sessions":{}},"session_id":"s3","ended":true,"io":{"receipts":{}}}
+{"func":"end_idle_acp_sessions","authority":{"epoch":"e9","sessions":{"a":{"subscribers":[]},"b":{"subscribers":[]}}},"io":{"local_session_ids":["a","b"],"receipts":{"a":{"policy":{"source":"acp"},"entry":{"session_id":"ta"}},"b":{"policy":{"source":"local"},"entry":{"session_id":"tb"}}},"end_idle":{"a":true}}}

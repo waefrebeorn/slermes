@@ -1,0 +1,17 @@
+{"func":"base_state","plugin_id":"acme","name":"curator","case":"canonical state dict"}
+{"func":"base_state","plugin_id":"","name":"","case":"empty identifiers"}
+{"func":"valid_name","name":"curator","case":"plain lowercase"}
+{"func":"valid_name","name":"a_b-9","case":"allowed separators and digit"}
+{"func":"valid_name","name":"0","case":"single digit"}
+{"func":"valid_name","name":"Bad-Name","case":"uppercase rejected"}
+{"func":"valid_name","name":"","case":"empty rejected"}
+{"func":"valid_name","name":"-lead","case":"leading dash rejected"}
+{"func":"valid_name","name":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","case":"65 chars rejected"}
+{"func":"build_spec","name":"curator","interval":"2","min_idle":"1.5","first_run":"defer","case":"valid deferred"}
+{"func":"build_spec","name":"curator","interval":"3","min_idle":"0","first_run":"immediate","case":"valid immediate"}
+{"func":"build_spec","name":"curator","interval":"0.25","min_idle":"1","first_run":"defer","case":"interval floored to one"}
+{"func":"build_spec","name":"curator","interval":"2","min_idle":"-3","first_run":"defer","case":"negative idle clamped"}
+{"func":"build_spec","name":"curator","interval":"2","min_idle":"1","first_run":"later","case":"bad first_run"}
+{"func":"build_spec","name":"curator","interval":"abc","min_idle":"1","first_run":"defer","case":"non numeric interval"}
+{"func":"build_spec","name":"curator","interval":"inf","min_idle":"1","first_run":"defer","case":"inf rejected"}
+{"func":"build_spec","name":"curator","interval":"2","min_idle":"nan","first_run":"defer","case":"nan idle rejected"}

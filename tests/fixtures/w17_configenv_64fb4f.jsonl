@@ -1,0 +1,14 @@
+{"case":"reg-optional","func":"is_registered_env_name","in":{"name":"HERMES_TIMEZONE","registry":{"optional":["HERMES_TIMEZONE"],"extra":[],"hidden":[]}}}
+{"case":"reg-extra","func":"is_registered_env_name","in":{"name":"IRC_HOME_CHANNEL","registry":{"optional":[],"extra":["IRC_HOME_CHANNEL"],"hidden":[]}}}
+{"case":"reg-hidden","func":"is_registered_env_name","in":{"name":"FOO_BAR","registry":{"optional":[],"extra":[],"hidden":["FOO_BAR"]}}}
+{"case":"reg-none","func":"is_registered_env_name","in":{"name":"UNKNOWN_X","registry":{"optional":[],"extra":[],"hidden":[]}}}
+{"case":"key-upper","func":"is_env_setting_key","in":{"key":"TELEGRAM_GROUP_ALLOWED_USERS","registry":{"optional":[],"extra":[],"hidden":[]}}}
+{"case":"key-dotted","func":"is_env_setting_key","in":{"key":"model.provider","registry":{"optional":[],"extra":[],"hidden":[]}}}
+{"case":"key-lower-unreg","func":"is_env_setting_key","in":{"key":"my_flag","registry":{"optional":[],"extra":[],"hidden":[]}}}
+{"case":"key-lower-reg","func":"is_env_setting_key","in":{"key":"discord_home_channel","registry":{"optional":["DISCORD_HOME_CHANNEL"],"extra":[],"hidden":[]}}}
+{"case":"key-mixed-reg","func":"is_env_setting_key","in":{"key":"Discord_Home_Channel","registry":{"optional":["DISCORD_HOME_CHANNEL"],"extra":[],"hidden":[]}}}
+{"case":"key-empty","func":"is_env_setting_key","in":{"key":"","registry":{"optional":[],"extra":[],"hidden":[]}}}
+{"case":"key-leading-digit","func":"is_env_setting_key","in":{"key":"1ABC","registry":{"optional":[],"extra":[],"hidden":[]}}}
+{"case":"key-digits","func":"is_env_setting_key","in":{"key":"ABC123_X","registry":{"optional":[],"extra":[],"hidden":[]}}}
+{"case":"key-lower-digit","func":"is_env_setting_key","in":{"key":"abc123","registry":{"optional":[],"extra":[],"hidden":[]}}}
+{"case":"key-upper-with-dot","func":"is_env_setting_key","in":{"key":"FOO.BAR","registry":{"optional":[],"extra":[],"hidden":[]}}}

@@ -1,0 +1,22 @@
+{"func":"at_block_boundary","accumulated":"","buf":"<think>hi","idx":0}
+{"func":"at_block_boundary","accumulated":"hello","buf":"<think>hi","idx":0}
+{"func":"at_block_boundary","accumulated":"hello\n","buf":"<think>hi","idx":0}
+{"func":"at_block_boundary","accumulated":"","buf":"   <think>hi","idx":3}
+{"func":"at_block_boundary","accumulated":"","buf":"prose <think>hi","idx":6}
+{"func":"at_block_boundary","accumulated":"","buf":"a\n   <think>hi","idx":5}
+{"func":"at_block_boundary","accumulated":"","buf":"你好 <think>hi","idx":3}
+{"func":"earliest_open_tag","accumulated":"","buf":"<think>hello"}
+{"func":"earliest_open_tag","accumulated":"","buf":"<THINKING>hello"}
+{"func":"earliest_open_tag","accumulated":"","buf":"prose <think> inline"}
+{"func":"earliest_open_tag","accumulated":"","buf":"<思考>reasoning"}
+{"func":"earliest_open_tag","accumulated":"","buf":"first <think> and <reasoning> here","idx":0}
+{"func":"earliest_open_tag","accumulated":"","buf":"no tags here"}
+{"func":"earliest_open_tag","accumulated":"prev\n","buf":"x <think> after newline"}
+{"func":"strip_orphan_close_tags","text":"</think>visible"}
+{"func":"strip_orphan_close_tags","text":"plain text"}
+{"func":"strip_orphan_close_tags","text":"a </thought> b"}
+{"func":"strip_orphan_close_tags","text":"</THINK>   tail"}
+{"func":"strip_orphan_close_tags","text":"</thinking>x"}
+{"func":"strip_orphan_close_tags","text":"</思考> after"}
+{"func":"strip_orphan_close_tags","text":"x</think>  </reasoning>y"}
+{"func":"strip_orphan_close_tags","text":"no close tag </ here"}

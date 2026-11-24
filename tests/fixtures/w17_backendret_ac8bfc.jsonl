@@ -1,0 +1,18 @@
+{"func":"acquire","preparing":false,"has_token":false,"active":0,"committed":false,"now":0,"expires":30,"case":"idle admits"}
+{"func":"acquire","preparing":true,"has_token":false,"active":0,"committed":false,"now":0,"expires":30,"case":"preparing blocks"}
+{"func":"acquire","has_token":true,"active":0,"committed":false,"now":0,"expires":30,"cur":"tok","case":"unexpired token blocks"}
+{"func":"acquire","has_token":true,"active":0,"committed":false,"now":40,"expires":30,"cur":"tok","case":"expired token admits"}
+{"func":"acquire","has_token":true,"active":0,"committed":true,"now":40,"expires":30,"cur":"tok","case":"committed token never expires"}
+{"func":"acquire","preparing":false,"has_token":false,"active":3,"committed":false,"now":0,"expires":30,"case":"increments active count"}
+{"func":"release","active":3,"case":"decrements active count"}
+{"func":"release","active":0,"case":"release below zero"}
+{"func":"commit","token":"tok","has_token":true,"committed":false,"now":0,"expires":30,"cur":"tok","case":"matching commit"}
+{"func":"commit","token":"wrong","has_token":true,"committed":false,"now":0,"expires":30,"cur":"tok","case":"wrong token commit"}
+{"func":"commit","token":null,"has_token":true,"committed":false,"now":0,"expires":30,"cur":"tok","case":"null token commit"}
+{"func":"commit","token":"","has_token":true,"committed":false,"now":0,"expires":30,"cur":"tok","case":"empty token commit"}
+{"func":"commit","token":"tok","has_token":true,"committed":false,"now":99,"expires":30,"cur":"tok","case":"expired token commit fails"}
+{"func":"commit","token":"tok","has_token":true,"committed":true,"now":99,"expires":30,"cur":"tok","case":"committed token commit succeeds"}
+{"func":"cancel","token":"tok","has_token":true,"committed":false,"now":0,"expires":30,"cur":"tok","case":"matching cancel"}
+{"func":"cancel","token":"tok","has_token":true,"committed":true,"now":0,"expires":30,"cur":"tok","case":"committed cancel fails"}
+{"func":"cancel","token":"wrong","has_token":true,"committed":false,"now":0,"expires":30,"cur":"tok","case":"wrong token cancel"}
+{"func":"cancel","token":null,"has_token":true,"committed":false,"now":0,"expires":30,"cur":"tok","case":"null token cancel"}

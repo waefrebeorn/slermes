@@ -1,0 +1,10 @@
+{"func":"guardable","sets":[["register_login_backend","subscribe","on_unload","run","on_load"]],"case":"one class"}
+{"func":"guardable","sets":[["register_a"],["register_b","subscribe"]],"case":"two classes MRO"}
+{"func":"guardable","sets":[["run","stop","tick"]],"case":"no registrar names"}
+{"func":"guardable","sets":[["registered","deregister_x","Subscribe","on_unload_x"]],"case":"near misses excluded"}
+{"func":"guardable","sets":[],"case":"empty MRO"}
+{"func":"guardable","sets":[["register_a"],["register_a","subscribe"]],"case":"duplicate deduped"}
+{"func":"guardable","sets":[["register_"]],"case":"register_ prefix alone"}
+{"func":"guardable","sets":[["subscribe"],["on_unload"],["register_z"]],"case":"three classes sorted"}
+{"func":"guardable","sets":[["on_unload"]],"case":"just on_unload"}
+{"func":"guardable","sets":[["register_zzz","subscribe","register_aaa"]],"case":"sorted within class"}

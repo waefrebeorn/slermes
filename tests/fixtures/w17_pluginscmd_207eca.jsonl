@@ -1,0 +1,12 @@
+{"func":"dashboard_remove_error","name":"B","plugins_dir":"/home/u/.hermes/plugins","entries":[["B","1.0","desc","bundled","/p","k"]]}
+{"func":"dashboard_remove_error","name":"B","plugins_dir":"/home/u/.hermes/plugins","entries":[["Other","1.0","desc","bundled","/p","k"]]}
+{"func":"dashboard_remove_error","name":"Z","plugins_dir":"/home/u/.hermes/plugins","entries":[["Other","1.0","desc","bundled","/p","k"]]}
+{"func":"dashboard_remove_error","name":"Z","plugins_dir":"/home/u/.hermes/plugins","entries":[]}
+{"func":"dashboard_remove_error","name":"Z","plugins_dir":"/opt/hermes/plugins","entries":null}
+{"func":"dashboard_remove_error","name":"my-plugin","plugins_dir":"/home/u/.hermes/plugins","entries":[["my-plugin","2","","user",null,"x/my-plugin"]]}
+{"func":"dashboard_remove_error","name":"","plugins_dir":"/home/u/.hermes/plugins","entries":[]}
+{"func":"dashboard_remove_error","name":"ALLCAPS","plugins_dir":"/p","entries":[["ALLCAPS","1","d","bundled","/p","k"]]}
+{"func":"dashboard_remove_error","name":"bundle","plugins_dir":"/p","entries":[["bundlex","1","d","bundled","/p","k"]]}
+{"func":"dashboard_remove_error","name":"a/b","plugins_dir":"/p","entries":[["a/b","1","d","bundled","/p","k"]]}
+{"func":"dashboard_remove_error","name":"quote'name","plugins_dir":"/p","entries":[]}
+{"func":"dashboard_remove_error","name":"multi","plugins_dir":"/p","entries":[["x","1","d","user",null,"k1"],["multi","1","d","bundled",null,"k2"]]}

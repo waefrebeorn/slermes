@@ -1,0 +1,15 @@
+{"case": "pipeline", "func": "segments", "command": "ls | grep foo"}
+{"case": "awk_program", "func": "segments", "command": "awk '{print $1; print $2}'"}
+{"case": "grep_pattern", "func": "segments", "command": "grep \"foo|bar\" ; echo hi"}
+{"case": "all_separators", "func": "segments", "command": "a&&b||c;d"}
+{"case": "trim", "func": "segments", "command": "  lead ;  trail  "}
+{"case": "empty", "func": "segments", "command": ""}
+{"case": "unterminated_quote", "func": "segments", "command": "'unterminated|x"}
+{"case": "windows_paths", "func": "segments", "command": "C:\\\\Users\\\\x && echo ok"}
+{"case": "empty_middle", "func": "segments", "command": "a |  | b"}
+{"case": "quoted_pipeline", "func": "segments", "command": "echo 'a&&b|c'"}
+{"case": "double_semi", "func": "segments", "command": "x; ;y"}
+{"case": "no_separator", "func": "segments", "command": "no-separator"}
+{"case": "mixed_quotes", "func": "segments", "command": "a'b\"c|d"}
+{"case": "trailing_sep", "func": "segments", "command": "trailing ;"}
+{"case": "newline_sep", "func": "segments", "command": "first\nsecond;third"}

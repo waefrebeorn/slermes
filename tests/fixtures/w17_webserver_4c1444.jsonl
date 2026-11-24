@@ -1,0 +1,21 @@
+{"case":1,"func":"build","version":"10.0.22631","platform_label":"Windows-10-10.0.22631-SP0"}
+{"case":2,"func":"build","version":"","platform_label":"x10.0.19041y"}
+{"case":3,"func":"build","version":"10.0.1234","platform_label":"Windows-10-10.0.1234-SP0"}
+{"case":4,"func":"build","version":"110.0.22000","platform_label":"z"}
+{"case":5,"func":"display","system":"Windows","release":"10","version":"10.0.22631","platform_label":"Windows-10-10.0.22631-SP0"}
+{"case":6,"func":"display","system":"Windows","release":"10","version":"10.0.19041","platform_label":"Windows-10-10.0.19041-SP0"}
+{"case":7,"func":"display","system":"Linux","release":"6.1","version":"#1","platform_label":"Linux-6.1"}
+{"case":8,"func":"named","subcommand":["-p"," coder ","gateway","restart"]}
+{"case":9,"func":"named","subcommand":["--profile=dev","gateway"]}
+{"case":10,"func":"named","subcommand":["gateway","-p","x"]}
+{"case":11,"func":"named","subcommand":["-p","   ","gateway"]}
+{"case":12,"func":"hostspawn","subcommand":["gateway","restart"]}
+{"case":13,"func":"hostspawn","subcommand":["-p","default","gateway","stop"]}
+{"case":14,"func":"hostspawn","subcommand":["-p","coder","gateway","stop"]}
+{"case":15,"func":"split","text":"Hello there. How are you? Fine!\nA second line here.","cap":20}
+{"case":16,"func":"split","text":"abcdefghij","cap":3}
+{"case":17,"func":"split","text":"aé中文! done","cap":4}
+{"case":18,"func":"split","text":"","cap":10}
+{"case":19,"func":"split","text":"One two three four five. Six seven.","cap":0}
+{"case":20,"func":"strip","sessions":[{"id":1,"system_prompt":"LONG","model_config":{},"title":"t"},{"id":2,"title":"u"}]}
+{"case":21,"func":"strip","sessions":[]}

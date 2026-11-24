@@ -1,0 +1,17 @@
+{"func":"decode","value":{"__state__":{"a":1,"b":[2,3]}}}
+{"func":"decode","value":{"__state__":"text"}}
+{"func":"decode","value":{"__state__":null}}
+{"func":"decode","value":{"__state__":{"a":1},"extra":2}}
+{"func":"decode","value":{"__gate__":{"cmd":"x"}}}
+{"func":"decode","value":{"a":[{"__state__":5},{"b":1}],"c":true}}
+{"func":"decode","value":[1,2,{"__state__":"z"}]}
+{"func":"decode","value":7}
+{"func":"decode","value":{"x":{"y":{"__state__":[1,2]}}}}
+{"func":"decode","value":{}}
+{"func":"decode","value":{"__state__":"a","__gate__":"b"}}
+{"func":"decode","value":{"__gate__":null}}
+{"func":"gateway_connection","is_store":true,"open":true,"connection":"ws://gw"}
+{"func":"gateway_connection","is_store":true,"open":false,"connection":"ws://gw"}
+{"func":"gateway_connection","is_store":false,"open":true,"connection":"ws://gw"}
+{"func":"gateway_connection","is_store":false,"open":false,"connection":null}
+{"func":"gateway_connection","is_store":true,"open":true,"connection":null}

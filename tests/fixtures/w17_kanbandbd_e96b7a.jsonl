@@ -1,0 +1,17 @@
+{"func":"wait_status","returncode":0}
+{"func":"wait_status","returncode":1}
+{"func":"wait_status","returncode":-15}
+{"func":"wait_status","returncode":511}
+{"func":"exit_code_kind","code":0,"rate_limit_code":75,"terminal_provider_code":78}
+{"func":"exit_code_kind","code":75,"rate_limit_code":75,"terminal_provider_code":78}
+{"func":"exit_code_kind","code":78,"rate_limit_code":75,"terminal_provider_code":78}
+{"func":"exit_code_kind","code":7,"rate_limit_code":75,"terminal_provider_code":78}
+{"func":"error_fingerprint","error_text":"  PID 12345 failed at 1700000000  "}
+{"func":"error_fingerprint","error_text":"pid 42 boom pid 43 again"}
+{"func":"error_fingerprint","error_text":"TIMEOUT 1700000000000 after 12ms"}
+{"func":"error_fingerprint","error_text":""}
+{"func":"worker_survived","termination":{"host_local":true,"termination_attempted":true,"terminated":false}}
+{"func":"worker_survived","termination":{"host_local":true,"signal_refused":true,"terminated":false}}
+{"func":"worker_survived","termination":{"host_local":true,"termination_attempted":true,"terminated":true}}
+{"func":"worker_survived","termination":{"host_local":false,"termination_attempted":true,"terminated":false}}
+{"func":"worker_survived","termination":{}}

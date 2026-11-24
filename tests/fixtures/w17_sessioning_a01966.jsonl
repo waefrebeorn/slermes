@@ -1,0 +1,14 @@
+{"func":"sniff_image_mime","data_hex":"89504e470d0a1a0a0000000d49484452"}
+{"func":"sniff_image_mime","data_hex":"89504e470d0a1a"}
+{"func":"sniff_image_mime","data_hex":"ffd8ffe000104a46494600"}
+{"func":"sniff_image_mime","data_hex":"474946383961"}
+{"func":"sniff_image_mime","data_hex":"474946383961"}
+{"func":"sniff_image_mime","data_hex":"524946462a000000574542505650384c"}
+{"func":"sniff_image_mime","data_hex":"524946462a000000574542"}
+{"func":"sniff_image_mime","data_hex":""}
+{"func":"sniff_image_mime","data_hex":"474946383761"}
+{"func":"sniff_image_mime","data_hex":"474946383831"}
+{"func":"admission_media_references","payload":{"attachments_v1":{"media":[{"path":"/a","sha256":"x","size":1}]},"native_text_v1":{"media":[{"path":"/b","sha256":"y","size":2}]}}}
+{"func":"admission_media_references","payload":{"attachments_v1":{"media":[]},"native_text_v1":{}}}
+{"func":"admission_media_references","payload":{}}
+{"func":"admission_media_references","payload":{"native_text_v1":{"media":[{"path":"/c","sha256":"z","size":3}]}}}

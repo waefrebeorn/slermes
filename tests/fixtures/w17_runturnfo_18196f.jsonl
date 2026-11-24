@@ -1,0 +1,15 @@
+{"func":"apply","adapter":null,"event":{"message_id":"m1"}}
+{"func":"apply","adapter":{"overrides_start":true},"event":null}
+{"func":"apply","adapter":{"overrides_start":true},"event":{}}
+{"func":"apply","adapter":{"overrides_start":true},"event":{"message_id":"","raw_message":"sig"}}
+{"func":"apply","adapter":{"overrides_start":false},"event":{"message_id":"m1"}}
+{"func":"apply","adapter":{"overrides_start":true},"event":{"message_id":"m1","raw_message":null}}
+{"func":"cancel","adapter":{},"io":{"current_task":"t1"}}
+{"func":"cancel","adapter":{"expected_cancelled":["t1","t2"]},"io":{"current_task":{"$raise":"RuntimeError"}}}
+{"func":"cancel","adapter":{"expected_cancelled":["t1","t2"]},"io":{"current_task":"t2"}}
+{"func":"cancel","adapter":{"expected_cancelled":["t1"]},"io":{"current_task":"t9"}}
+{"func":"cancel","adapter":{"expected_cancelled":"t1t2"},"io":{"current_task":"t1"}}
+{"func":"cancel","adapter":{"expected_cancelled":42},"io":{"current_task":42}}
+{"func":"run_hook","adapter":{"overrides_start":false,"run_hook":true},"event":{"message_id":"m1"},"hook_name":"on_processing_start","args":[]}
+{"func":"run_hook","adapter":{"overrides_start":true,"run_hook":false},"event":{"message_id":"m1"},"hook_name":"on_processing_start","args":[]}
+{"func":"run_hook","adapter":{"overrides_start":true,"run_hook":true},"event":{"message_id":"m1","raw_message":null},"hook_name":"on_processing_complete","args":["x",7]}

@@ -1,0 +1,14 @@
+{"func":"generation_of","credential":"","case":"empty credential sha256"}
+{"func":"generation_of","credential":"abc","case":"abc sha256"}
+{"func":"generation_of","credential":"hermes-session-token-1","case":"session token sha256"}
+{"func":"generation_of","credential":"tok","case":"short token"}
+{"func":"generation_of","credential":"tökén","case":"utf-8 credential bytes"}
+{"func":"generation_of","credential":"cred-A","case":"cred A"}
+{"func":"current_if","recorded":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","credential":"abc","case":"matching generation returns credential"}
+{"func":"current_if","recorded":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","credential":"xyz","case":"wrong credential yields null"}
+{"func":"current_if","recorded":null,"credential":"abc","case":"null recorded"}
+{"func":"current_if","recorded":"","credential":"abc","case":"empty recorded"}
+{"func":"current_if","recorded":"1a7674eb4ee78df7e1ac439a93c3fa8e3c945784d4dec9fd8e3011738b2f1d62","credential":"tok","case":"tok generation match"}
+{"func":"is_current","recorded":"b0af4b9d02499e0c36d2d8cbed1a46e9285e77902934e73951f98256d2400fd9","credential":"cred-A","case":"is_current true"}
+{"func":"is_current","recorded":"a86b57914fe30794f837e6ba9785f89e033c561b55760dbdd78bc05454a00626","credential":"cred-A","case":"is_current wrong generation"}
+{"func":"is_current","recorded":null,"credential":"cred-B","case":"is_current null recorded"}

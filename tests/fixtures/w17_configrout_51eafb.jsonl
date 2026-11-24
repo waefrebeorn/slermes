@@ -1,0 +1,16 @@
+{"case":"route-auto","func":"route_of","in":{"provider":"AUTO","base_url":""}}
+{"case":"route-simple","func":"route_of","in":{"provider":" OpenAI ","base_url":" https://API.Example.COM:443/v1/ "}}
+{"case":"route-port","func":"route_of","in":{"provider":"custom","base_url":"http://H:8080/x/"}}
+{"case":"route-empty","func":"route_of","in":{"provider":"","base_url":""}}
+{"case":"route-userinfo","func":"route_of","in":{"provider":"x","base_url":"https://user@H/v1"}}
+{"case":"route-query","func":"route_of","in":{"provider":"x","base_url":"https://h/v1?a=1#"}}
+{"case":"route-slash","func":"route_of","in":{"provider":"x","base_url":"https://h/"}}
+{"case":"url-norm","func":"url","in":{"value":"  https://h/v1/  "}}
+{"case":"url-empty","func":"url","in":{"value":""}}
+{"case":"url-slashes","func":"url","in":{"value":"///"}}
+{"case":"aux-same","func":"clear_aux_credentials","in":{"entry":{"provider":"openai","base_url":"https://api.openai.com/v1","api_key":"k","name":"n"},"provider":"openai","base_url":"https://api.openai.com/v1"}}
+{"case":"aux-provider-change","func":"clear_aux_credentials","in":{"entry":{"provider":"openai","base_url":"","api_key":"k","key_env":"E","api_mode":"chat","name":"n"},"provider":"anthropic","base_url":""}}
+{"case":"aux-custom-same-origin","func":"clear_aux_credentials","in":{"entry":{"provider":"custom","base_url":"https://h/v1","api_key":"k"},"provider":"custom","base_url":"https://h/v2"}}
+{"case":"aux-custom-other-origin","func":"clear_aux_credentials","in":{"entry":{"provider":"custom","base_url":"https://h1/v1","api_key":"k"},"provider":"custom","base_url":"https://h2/v1"}}
+{"case":"aux-auto-to-new","func":"clear_aux_credentials","in":{"entry":{"provider":"auto","base_url":"","api_key":"k","api_key_env":"E"},"provider":"openai","base_url":""}}
+{"case":"aux-extra-fields","func":"clear_aux_credentials","in":{"entry":{"provider":"a","base_url":"","api":"z","api_mode":"m","name":"n","model":"gpt"},"provider":"b","base_url":""}}

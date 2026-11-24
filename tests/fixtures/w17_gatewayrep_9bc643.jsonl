@@ -1,0 +1,24 @@
+{"func":"pending_status","pending":[{"admission_id":"a","status":"queued"}],"admission":"a"}
+{"func":"pending_status","pending":[{"admission_id":"a","status":"queued"}],"admission":"b"}
+{"func":"pending_status","pending":[{"admission_id":"a","status":"queued"},{"admission_id":"b","status":"started"}],"admission":"b"}
+{"func":"pending_status","pending":null,"admission":"a"}
+{"func":"pending_status","pending":[],"admission":"a"}
+{"func":"pending_status","pending":[{"admission_id":"a","status":null}],"admission":"a"}
+{"func":"settled","receipt":{"status":"terminal","outcome":"success","result":"ok"}}
+{"func":"settled","receipt":{"status":"terminal","outcome":"cancelled"}}
+{"func":"settled","receipt":{"status":"terminal","outcome":"interrupted"}}
+{"func":"settled","receipt":{"status":"terminal","outcome":"failed"}}
+{"func":"settled","receipt":{"status":"terminal","outcome":"success"}}
+{"func":"settled","receipt":{"status":"running"}}
+{"func":"settled","receipt":{}}
+{"func":"settled","receipt":{"status":"terminal","result":null}}
+{"func":"owed_reply","shown":"abc","final":"abcdef"}
+{"func":"owed_reply","shown":"\n\nabc","final":"abcdef"}
+{"func":"owed_reply","shown":"abc  ","final":"abcdef"}
+{"func":"owed_reply","shown":"xyz","final":"abcdef"}
+{"func":"owed_reply","shown":"","final":"abcdef"}
+{"func":"owed_reply","shown":"\n\n","final":"abcdef"}
+{"func":"owed_reply","shown":"héllo","final":"héllo world"}
+{"func":"owed_reply","shown":"🙂","final":"🙂done"}
+{"func":"owed_reply","shown":"a \t","final":"aX"}
+{"func":"owed_reply","shown":"abc","final":"ABC"}

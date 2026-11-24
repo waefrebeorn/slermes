@@ -1,0 +1,10 @@
+{"func":"skipped","var_name":"API_KEY","reason":"cancelled","message":"Secret setup was skipped."}
+{"func":"skipped","var_name":"X","reason":"other","message":""}
+{"func":"skipped","var_name":"","reason":"r","message":"m"}
+{"func":"skipped","var_name":"密钥","reason":"cancelled","message":"已跳过"}
+{"func":"callback_result","var_name":"API_KEY","prompt":"key?","live_session":false,"ask_value":"v","saved":{}}
+{"func":"callback_result","var_name":"API_KEY","prompt":"key?","live_session":true,"ask_value":"","saved":{}}
+{"func":"callback_result","var_name":"API_KEY","prompt":"key?","live_session":true,"ask_value":null,"saved":{}}
+{"func":"callback_result","var_name":"API_KEY","prompt":"key?","live_session":true,"ask_value":"secret","saved":{"success":true,"stored_as":"API_KEY"}}
+{"func":"callback_result","var_name":"TOKEN","prompt":"t?","live_session":true,"ask_value":"s3cr3t","saved":{"success":true,"stored_as":"TOKEN","validated":true,"extra":1},"has_metadata":true,"metadata":{"k":"v"}}
+{"func":"callback_result","var_name":"K","prompt":"p?","live_session":true,"ask_value":"x","saved":{}}

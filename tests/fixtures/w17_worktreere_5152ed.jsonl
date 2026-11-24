@@ -1,0 +1,10 @@
+{"func":"named","paths":["a"],"more":false}
+{"func":"named","paths":["a","b","c","d","e"],"more":false}
+{"func":"named","paths":["a","b","c","d","e","f"],"more":false}
+{"func":"named","paths":["a","b","c","d","e","f","g"],"more":true}
+{"func":"named","paths":[],"more":true}
+{"func":"named","paths":[],"more":false}
+{"func":"named","paths":["a","b","c","d","e"],"more":true}
+{"func":"named","paths":["build/tool/.git","src/x","a/b/c","d","e","f","g","h"],"more":false}
+{"func":"named","paths":["a","b","c","d","e","f"],"more":true}
+{"func":"constants"}

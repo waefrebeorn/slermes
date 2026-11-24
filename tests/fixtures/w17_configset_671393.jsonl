@@ -1,0 +1,25 @@
+{"func":"coerce_int","value":"42"}
+{"func":"coerce_int","value":"  -17  "}
+{"func":"coerce_int","value":"+1_000"}
+{"func":"coerce_int","value":"0x10"}
+{"func":"coerce_int","value":"12abc"}
+{"func":"coerce_int","value":null}
+{"func":"coerce_int","value":""}
+{"func":"coerce_int","value":"9007199254740992"}
+{"func":"coerce_float","value":"1.5"}
+{"func":"coerce_float","value":"0.1"}
+{"func":"coerce_float","value":"  2e3  "}
+{"func":"coerce_float","value":"nan"}
+{"func":"coerce_float","value":"inf"}
+{"func":"coerce_float","value":"0.100000000000000005"}
+{"func":"coerce_float","value":"1_000.5"}
+{"func":"coerce_float","value":"not-a-number"}
+{"func":"coerce_float","value":null}
+{"func":"quoted_bool","value":"\"true\""}
+{"func":"quoted_bool","value":"'FALSE'"}
+{"func":"quoted_bool","value":"\"  yes \""}
+{"func":"quoted_bool","value":"\"null\""}
+{"func":"quoted_bool","value":"true"}
+{"func":"quoted_bool","value":"'no'"}
+{"func":"quoted_bool","value":"\"maybe\""}
+{"func":"quoted_bool","value":null}

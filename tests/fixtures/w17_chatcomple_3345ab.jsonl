@@ -1,0 +1,12 @@
+{"case":"provider_not_nous","func":"capture","provider":"openai","has_state":true,"is_usage_window":true,"has_raw_response":true,"response_is_window":true}
+{"case":"provider_missing","func":"capture","has_state":true,"is_usage_window":true,"has_raw_response":true,"response_is_window":true}
+{"case":"provider_null","func":"capture","provider":null,"has_state":true,"is_usage_window":true,"has_raw_response":true,"response_is_window":true}
+{"case":"no_state","func":"capture","provider":"nous","has_state":false,"is_usage_window":true,"has_raw_response":true,"response_is_window":true}
+{"case":"state_false","func":"capture","provider":"nous","has_state":true,"is_usage_window":false,"has_raw_response":true,"response_is_window":true}
+{"case":"state_int_one_not_true","func":"capture","provider":"nous","has_state":true,"is_usage_window":1,"has_raw_response":true,"response_is_window":true}
+{"case":"state_string","func":"capture","provider":"nous","has_state":true,"is_usage_window":"true","has_raw_response":true,"response_is_window":true}
+{"case":"no_raw_response","func":"capture","provider":"nous","has_state":true,"is_usage_window":true,"has_raw_response":false,"response_is_window":true}
+{"case":"parse_only","func":"capture","provider":"nous","has_state":true,"is_usage_window":true,"has_raw_response":true,"response_is_window":false,"parse_result":"PARSED_ONLY"}
+{"case":"captured","func":"capture","provider":"nous","has_state":true,"is_usage_window":true,"has_raw_response":true,"response_is_window":true,"parse_result":"WINDOW_PARSED"}
+{"case":"captured_all_raise","func":"capture","provider":"nous","has_state":true,"is_usage_window":true,"has_raw_response":true,"response_is_window":true,"capture_raises":[true,true,true,true],"plain_result":"WRONG"}
+{"case":"plain_custom_result","func":"capture","provider":"anthropic","has_state":true,"is_usage_window":true,"has_raw_response":true,"response_is_window":true,"plain_result":"CUSTOM_PLAIN","parse_result":"CUSTOM_PARSED"}

@@ -1,0 +1,16 @@
+{"func":"complete","event":"ev1","result":{"ok":1}}
+{"func":"complete","event":"ev2","result":{"r":2},"delivery":"delivered"}
+{"func":"complete","event":"ev3","result":{"r":3},"delivery":"pending"}
+{"func":"complete","event":"ev4","result":[1,2,3],"delivery":"sent"}
+{"func":"complete","event":"e5","result":null,"delivery":null}
+{"func":"child","delegation_id":"d1","entry":{"n":1}}
+{"func":"child","delegation_id":"d2","entry":{"goal":"g","tools":["a","b"]}}
+{"func":"child","delegation_id":"d3","entry":null}
+{"func":"read","delegation_id":"d1"}
+{"func":"read","delegation_id":"d-long-id/with:chars"}
+{"func":"claim","delegation_id":"d1","claim_id":"c1"}
+{"func":"ack","delegation_id":"d1","claim_id":"c2"}
+{"func":"defer","delegation_id":"d2","claim_id":"c3"}
+{"func":"release","delegation_id":"d2","claim_id":"c4"}
+{"func":"drop","delegation_id":"d3","claim_id":"c5"}
+{"func":"unscheduled","delegation_id":"d9"}

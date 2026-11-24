@@ -1,0 +1,22 @@
+{"func":"message","platform_value":"telegram","retrying":true}
+{"func":"message","platform_value":"discord","retrying":false}
+{"func":"message","platform_value":"","retrying":true}
+{"func":"contention","error_code":"telegram_polling_conflict"}
+{"func":"contention","error_code":"TELEGRAM_POLLING_CONFLICT"}
+{"func":"contention","error_code":"  telegram_polling_conflict  "}
+{"func":"contention","error_code":"polling_conflict"}
+{"func":"contention","error_code":"other_error"}
+{"func":"contention","error_code":null}
+{"func":"discount","entries":[{"queued_at":100.0}],"waited_from":0.0,"planned":10.0,"now":20.0}
+{"func":"discount","entries":[{"queued_at":100.0}],"waited_from":0.0,"planned":10.0,"now":100.0}
+{"func":"discount","entries":[{"queued_at":5.0},{"queued_at":null},{"queued_at":100.0}],"waited_from":10.0,"planned":10.0,"now":100.0}
+{"func":"discount","entries":[{"queued_at":20.0}],"waited_from":10.0,"planned":10.0,"now":80.0}
+{"func":"discount","entries":[],"waited_from":0.0,"planned":10.0,"now":1000.0}
+{"func":"delay","status_key":"telegram:main","now":100.0,"has_strikes":false,"adapter":{"fatal_error_retryable":true,"fatal_error_code":"telegram_polling_conflict","platform_value":"telegram"}}
+{"func":"delay","status_key":"telegram:main","now":130.0,"strikes":{"telegram:main":[1,100.0]},"adapter":{"fatal_error_retryable":true,"fatal_error_code":"telegram_polling_conflict","platform_value":"telegram"}}
+{"func":"delay","status_key":"telegram:main","now":130.0,"strikes":{"telegram:main":[2,100.0]},"adapter":{"fatal_error_retryable":true,"fatal_error_code":"telegram_polling_conflict","platform_value":"telegram"}}
+{"func":"delay","status_key":"telegram:main","now":130.0,"strikes":{"telegram:main":[3,100.0]},"adapter":{"fatal_error_retryable":true,"fatal_error_code":"telegram_polling_conflict","platform_value":"telegram"}}
+{"func":"delay","status_key":"telegram:main","now":1900.0,"strikes":{"telegram:main":[3,100.0]},"adapter":{"fatal_error_retryable":true,"fatal_error_code":"telegram_polling_conflict","platform_value":"discord"}}
+{"func":"delay","status_key":"telegram:main","now":1900.0,"strikes":{"telegram:main":[1,100.0]},"adapter":{"fatal_error_retryable":true,"fatal_error_code":"telegram_polling_conflict","platform_value":"telegram"}}
+{"func":"delay","status_key":"telegram:main","now":130.0,"strikes":{"telegram:main":[1,100.0]},"adapter":{"fatal_error_retryable":false,"fatal_error_code":"telegram_polling_conflict","platform_value":"telegram"}}
+{"func":"delay","status_key":"telegram:main","now":130.0,"strikes":{"telegram:main":[1,100.0]},"adapter":{"fatal_error_retryable":true,"fatal_error_code":"other_error","platform_value":"telegram"}}

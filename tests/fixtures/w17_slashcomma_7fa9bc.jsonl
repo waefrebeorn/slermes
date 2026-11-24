@@ -1,0 +1,31 @@
+{"func":"clean_str","value":"  hello  "}
+{"func":"clean_str","value":"   "}
+{"func":"clean_str","value":"a\tb\n"}
+{"func":"clean_str","value":""}
+{"func":"clean_str","value":null}
+{"func":"clean_str","value":123}
+{"func":"int_value","value":"42"}
+{"func":"int_value","value":"  -7  "}
+{"func":"int_value","value":"1.5"}
+{"func":"int_value","value":"abc"}
+{"func":"int_value","value":null}
+{"func":"int_value","value":true}
+{"func":"int_value","value":-13}
+{"func":"int_value","value":"1_000"}
+{"func":"int_value","value":[1,2]}
+{"func":"fmt","n":1234567890}
+{"func":"fmt","n":-98765}
+{"func":"fmt","n":7}
+{"func":"fmt","n":-1020304050}
+{"func":"pct","used":25,"total":200}
+{"func":"pct","used":50,"total":25}
+{"func":"pct","used":5,"total":0}
+{"func":"clip","text":"abcdefghij","limit":6}
+{"func":"clip","text":"abc","limit":6}
+{"func":"clip","text":"a very long sentence here","limit":10}
+{"func":"clip","text":"这是一段很长的中文文本需要截断","limit":8}
+{"func":"clip","text":"abcde","limit":3}
+{"func":"routes_for_default","default_route":["m1","p1"],"persisted_route":{"model":"m1","billing_provider":"p1"},"session_row":{"model":"m1","billing_provider":"p1","title":"t"}}
+{"func":"routes_for_default","default_route":["m1","p1"],"persisted_route":{"model":"old","billing_provider":"p2"},"session_row":{"model":"old","billing_provider":"old","title":"t"}}
+{"func":"routes_for_default","default_route":["m1",""],"persisted_route":{"model":"m1","billing_provider":"anything"},"session_row":{"model":"m1","billing_provider":"x"}}
+{"func":"routes_for_default","default_route":["","p1"],"persisted_route":{"model":"x"},"session_row":{"model":"y"}}

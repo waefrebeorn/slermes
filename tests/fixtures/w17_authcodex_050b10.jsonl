@@ -1,0 +1,16 @@
+{"func":"authorize_url","redirect_uri":"http://localhost:1455/auth/callback","state":"xyz123","code_challenge":"abcDEF-_~","case":"canonical loopback url"}
+{"func":"authorize_url","redirect_uri":"http://localhost:1455/auth/callback","state":"a b+c/d?e=f&g","code_challenge":"ch@llenge","case":"quote_plus specials"}
+{"func":"authorize_url","redirect_uri":"","state":"","code_challenge":"","case":"empty values"}
+{"func":"authorize_url","redirect_uri":"file:///C:/x","state":"üñî","code_challenge":"a=b","case":"utf-8 state"}
+{"func":"authorize_url","redirect_uri":"https://example.com/cb?x=1&y=2","state":"S","code_challenge":"C","case":"query in redirect"}
+{"func":"authorize_url","redirect_uri":"http://localhost:1455/auth/callback","state":"a%2Fb","code_challenge":"dot._-~","case":"already escaped stays percent"}
+{"func":"authorize_url","redirect_uri":"http://x/","state":"tab\tword","code_challenge":"line\nbreak","case":"control chars"}
+{"func":"login_flow","browser":true,"config":{},"case":"browser flag wins"}
+{"func":"login_flow","browser":false,"config":{"auth":{"codex_login_flow":"browser"}},"case":"config selects browser"}
+{"func":"login_flow","browser":false,"config":{"auth":{"codex_login_flow":"DEVICE_CODE"}},"case":"uppercase device code"}
+{"func":"login_flow","browser":false,"config":{"auth":{"codex_login_flow":" Browser "}},"case":"whitespace browser"}
+{"func":"login_flow","browser":false,"config":{"auth":{"codex_login_flow":"bogus"}},"case":"unknown falls back"}
+{"func":"login_flow","browser":false,"config":{"auth":{"codex_login_flow":""}},"case":"empty falls back"}
+{"func":"login_flow","browser":false,"config":{},"case":"no auth section"}
+{"func":"login_flow","browser":false,"config":{"auth":"not-a-dict"},"case":"non dict auth"}
+{"func":"login_flow","browser":false,"config":{"auth":{"codex_login_flow":null}},"case":"null flow"}

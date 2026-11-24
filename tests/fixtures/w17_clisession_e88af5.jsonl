@@ -1,0 +1,12 @@
+{"func":"end_session","has_agent":true,"session_id":"s1","reason":"switch","history_len":3,"case":"flush and end with agent"}
+{"func":"end_session","has_agent":false,"session_id":"s2","reason":"resume","history_len":0,"case":"end only without agent"}
+{"func":"end_session","has_agent":true,"session_id":"","reason":"","case":"empty ids"}
+{"func":"end_session","has_agent":true,"session_id":"branch-9","reason":"branch","history_len":11,"case":"branch end"}
+{"func":"sync_agent","has_agent":false,"session_id":"s1","parent_session_id":"p","reason":"switch","case":"no agent is a no-op"}
+{"func":"sync_agent","has_agent":true,"session_id":"s1","parent_session_id":"p0","reason":"resume","history_len":4,"case":"minimal agent"}
+{"func":"sync_agent","has_agent":true,"session_id":"s2","parent_session_id":"","reason":"branch","history_len":0,"has_last_flushed":true,"case":"flush index re-anchored to zero"}
+{"func":"sync_agent","has_agent":true,"session_id":"s3","parent_session_id":"p1","reason":"switch","history_len":7,"has_last_flushed":true,"has_invalidate":true,"case":"invalidate and flush index"}
+{"func":"sync_agent","has_agent":true,"session_id":"s4","parent_session_id":"p2","reason":"resume","history_len":2,"has_mm":true,"mm_present":true,"case":"memory manager notified"}
+{"func":"sync_agent","has_agent":true,"session_id":"s5","parent_session_id":"","reason":"branch","history_len":2,"has_mm":true,"mm_present":false,"case":"memory manager None"}
+{"func":"sync_agent","has_agent":true,"session_id":"s6","parent_session_id":"p3","reason":"switch","history_len":5,"has_todo":true,"case":"todo store replaced"}
+{"func":"sync_agent","has_agent":true,"session_id":"s7","parent_session_id":"p4","reason":"resume","history_len":9,"has_last_flushed":true,"has_todo":true,"has_invalidate":true,"has_mm":true,"mm_present":true,"case":"all hooks active"}

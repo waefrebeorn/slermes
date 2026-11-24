@@ -1,0 +1,14 @@
+{"func":"find_activation","summaries":[{"name":"alpha","key":"web/alpha"},{"name":"beta","key":"x/beta"}],"name":"beta"}
+{"func":"find_activation","summaries":[{"name":"alpha","key":"web/alpha"},{"name":"beta","key":"x/beta"}],"name":"web/alpha"}
+{"func":"find_activation","summaries":[{"name":"alpha","key":"web/alpha"},{"name":"beta","key":"x/beta"}],"name":"alpha"}
+{"func":"find_activation","summaries":[{"name":"alpha","key":"web/alpha"}],"name":"gamma"}
+{"func":"find_activation","summaries":[],"name":"alpha"}
+{"func":"find_activation","summaries":null,"name":"alpha"}
+{"func":"find_activation","summaries":[{"name":"a","key":"one/a"},{"name":"b","key":"two/b"}],"name":"b"}
+{"func":"gateway_reload_hint","answer":null,"name":"p"}
+{"func":"gateway_reload_hint","answer":{},"name":"p"}
+{"func":"gateway_reload_hint","answer":{"reloaded":true},"name":"p"}
+{"func":"gateway_reload_hint","answer":{"reloaded":true,"error":"ignored"},"name":"p"}
+{"func":"gateway_reload_hint","answer":{"reloaded":false,"error":"busy"},"name":"p"}
+{"func":"gateway_reload_hint","answer":{"reloaded":false,"error":""},"name":"p"}
+{"func":"gateway_reload_hint","answer":{"reloaded":false},"name":"p"}

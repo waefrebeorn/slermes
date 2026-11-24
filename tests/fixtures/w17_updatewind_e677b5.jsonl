@@ -1,0 +1,12 @@
+{"case":1,"func":"repair","elevated":false,"probe_elevated":true,"home":"C:/h","granted":[],"skipped":[],"failed":[]}
+{"case":2,"func":"repair","elevated":null,"probe_elevated":false,"home":"C:/h","granted":[],"skipped":[],"failed":[]}
+{"case":3,"func":"repair","elevated":null,"probe_elevated":true,"home":"C:/h","granted":["C:/h/a"],"skipped":[],"failed":[]}
+{"case":4,"func":"repair","elevated":true,"probe_elevated":false,"home":"C:/h","granted":["C:/h/a"],"skipped":[],"failed":[]}
+{"case":5,"func":"repair","elevated":true,"probe_elevated":false,"home":"C:/h","granted":[],"skipped":["C:/link"],"failed":[]}
+{"case":6,"func":"repair","elevated":true,"probe_elevated":false,"home":"C:/h","granted":[],"skipped":[],"failed":[]}
+{"case":7,"func":"repair","elevated":true,"probe_elevated":false,"home":"C:/h","granted":[],"skipped":[],"failed":[["C:/h/bad","Access denied"]]}
+{"case":8,"func":"repair","elevated":true,"probe_elevated":false,"home":"C:/h","granted":["C:/h/a"],"skipped":[],"failed":[["C:/h/bad","Access denied"],["C:/h/x","no"]]}
+{"case":9,"func":"repair","elevated":true,"probe_elevated":false,"home":"C:/h","granted":[],"skipped":["C:/j"],"failed":[["C:/h/bad","denied"]]}
+{"case":10,"func":"repair","elevated":false,"probe_elevated":false,"home":"","granted":[],"skipped":[],"failed":[]}
+{"case":11,"func":"repair","elevated":true,"probe_elevated":false,"home":"C:/Users/eman5/.hermes","granted":[],"skipped":["C:/j/é中"],"failed":[]}
+{"case":12,"func":"repair","elevated":true,"probe_elevated":false,"home":"C:/h","granted":[],"skipped":[],"failed":[["C:/h/é","não"],["C:/h/2","x"]]}

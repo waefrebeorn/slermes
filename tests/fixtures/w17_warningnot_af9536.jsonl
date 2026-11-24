@@ -1,0 +1,25 @@
+{"func":"is_warning_status","event_type":"warn","diag":false,"case":"warn event"}
+{"func":"is_warning_status","event_type":"info","diag":false,"case":"info event plain"}
+{"func":"is_warning_status","event_type":"error","diag":true,"case":"diagnostic marker wins"}
+{"func":"is_warning_status","event_type":"","diag":true,"case":"empty type with diagnostic marker"}
+{"func":"is_warning_status","event_type":"WARN","diag":false,"case":"case sensitive"}
+{"func":"is_diagnostic_notice","level":"warn","case":"warn level"}
+{"func":"is_diagnostic_notice","level":"error","case":"error level"}
+{"func":"is_diagnostic_notice","level":"info","key":"credits.restored","case":"credit service notice"}
+{"func":"is_diagnostic_notice","level":"info","key":"credits.","case":"credits prefix boundary"}
+{"func":"is_diagnostic_notice","level":"info","key":"credit.restored","case":"near miss key"}
+{"func":"is_diagnostic_notice","level":null,"key":"","case":"no level no key"}
+{"func":"diagnostic_metadata","internal":true,"metadata":{"notification_category":"diagnostic"},"case":"trusted diagnostic wake"}
+{"func":"diagnostic_metadata","internal":false,"metadata":{"notification_category":"diagnostic"},"case":"human content never classifies"}
+{"func":"diagnostic_metadata","internal":true,"metadata":{"notification_category":"other"},"case":"other category"}
+{"func":"diagnostic_metadata","internal":true,"metadata":null,"case":"null metadata"}
+{"func":"warning_notifications_enabled","platform":"telegram","user_config":{},"case":"empty config enabled"}
+{"func":"warning_notifications_enabled","platform":"telegram","user_config":{"display":{"suppress_warning_notifications":true}},"case":"suppressed by bool"}
+{"func":"warning_notifications_enabled","platform":"telegram","user_config":{"display":{"suppress_warning_notifications":"YES"}},"case":"suppressed by truthy string"}
+{"func":"warning_notifications_enabled","platform":"telegram","user_config":{"display":{"suppress_warning_notifications":"no"}},"case":"falsy string keeps enabled"}
+{"func":"warning_notifications_enabled","platform":"telegram","user_config":{"display":{"suppress_warning_notifications":"True","platforms":{"telegram":{"suppress_warning_notifications":false}}}},"case":"platform override wins"}
+{"func":"warning_notifications_enabled","platform":"telegram","user_config":{"display":{"platforms":{"telegram":{"suppress_warning_notifications":true}}}},"case":"platform override suppresses"}
+{"func":"warning_notifications_enabled","platform":"telegram","user_config":{"display":{"suppress_warning_notifications":42}},"case":"unsupported value stays enabled"}
+{"func":"diagnostic_turn_muted","display_metadata":{"notification_category":"diagnostic"},"platform":"telegram","user_config":{"display":{"suppress_warning_notifications":true}},"case":"muted when policy hides"}
+{"func":"diagnostic_turn_muted","display_metadata":{"notification_category":"diagnostic"},"platform":"telegram","user_config":{},"case":"not muted when shown"}
+{"func":"diagnostic_turn_muted","display_metadata":null,"platform":"telegram","user_config":{"display":{"suppress_warning_notifications":true}},"case":"human content never mutes"}

@@ -1,0 +1,23 @@
+{"case": "clean", "func": "sanitize", "text": "clean ascii"}
+{"case": "control_0x01", "func": "sanitize", "text": "a\u0001b"}
+{"case": "zwsp_x4", "func": "sanitize", "text": "\u200b\u200b\u200b\u200b"}
+{"case": "zwsp_x2", "func": "sanitize", "text": "\u200b\u200b"}
+{"case": "braille_blank", "func": "sanitize", "text": "\u2800"}
+{"case": "accent_unchanged", "func": "sanitize", "text": "caf\u00e9"}
+{"case": "bidi_normal", "func": "sanitize", "text": "a\u202eb"}
+{"case": "bidi_prose", "func": "sanitize", "text": "a\u202eb", "prose": true}
+{"case": "zwj_normal", "func": "sanitize", "text": "a\u200db"}
+{"case": "zwj_prose", "func": "sanitize", "text": "a\u200db", "prose": true}
+{"case": "blank_lines", "func": "sanitize", "text": "\na\n\n\n\nb"}
+{"case": "mid_pad_21", "func": "sanitize", "text": "x                     y"}
+{"case": "line_pad_65", "func": "sanitize", "text": "                                                                 y"}
+{"case": "crlf", "func": "sanitize", "text": "a\r\nb"}
+{"case": "nbsp_pad_21", "func": "sanitize", "text": "x\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0y"}
+{"case": "u2000_x3", "func": "sanitize", "text": "\u2000\u2000\u2000x"}
+{"case": "cgj_x4", "func": "sanitize", "text": "\u034f\u034f\u034f\u034f"}
+{"case": "variation_selector_supp", "func": "sanitize", "text": "\udb40\udd00"}
+{"case": "mixed_specials", "func": "sanitize", "text": "a\u200b\u200cb"}
+{"case": "fe0f_x4", "func": "sanitize", "text": "\ufe0f\ufe0f\ufe0f\ufe0f"}
+{"case": "blank_lines_with_spaces", "func": "sanitize", "text": "\n   \n   \n   \n"}
+{"case": "mid_pad_20_no_collapse", "func": "sanitize", "text": "x                    y"}
+{"case": "line_pad_64_no_collapse", "func": "sanitize", "text": "                                                                y"}

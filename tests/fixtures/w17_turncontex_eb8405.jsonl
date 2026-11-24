@@ -1,0 +1,17 @@
+{"func": "blocked_reason", "case": "no info attr -> None", "have_info": false, "should": true, "reason": null, "tokens": "9000", "attempts_spent": null}
+{"func": "blocked_reason", "case": "should true, no reason, no attempts", "have_info": true, "should": true, "reason": null, "tokens": "9000", "attempts_spent": null}
+{"func": "blocked_reason", "case": "attempts exhausted decimal string", "have_info": true, "should": true, "reason": null, "tokens": "9000", "attempts_spent": "3"}
+{"func": "blocked_reason", "case": "below threshold with reason", "have_info": true, "should": false, "reason": "too big", "tokens": "50", "attempts_spent": null}
+{"func": "blocked_reason", "case": "empty reason is falsy -> attempts", "have_info": true, "should": true, "reason": "", "tokens": "9000", "attempts_spent": "2"}
+{"func": "blocked_reason", "case": "empty reason returned verbatim", "have_info": true, "should": true, "reason": "", "tokens": "9000", "attempts_spent": null}
+{"func": "blocked_reason", "case": "should false keeps reason despite attempts", "have_info": true, "should": false, "reason": "lock", "tokens": "9000", "attempts_spent": "5"}
+{"func": "blocked_reason", "case": "info raises -> None", "have_info": true, "should": true, "reason": null, "tokens": "9000", "attempts_spent": null, "raise": true}
+{"func": "blocked_reason", "case": "zero attempts still counted", "have_info": true, "should": true, "reason": null, "tokens": "1", "attempts_spent": "0"}
+{"func": "codex_native", "case": "native default", "api_mode": "codex_app_server", "codex_auto": "native"}
+{"func": "codex_native", "case": "uppercase OFF", "api_mode": "codex_app_server", "codex_auto": "OFF"}
+{"func": "codex_native", "case": "other auto -> false", "api_mode": "codex_app_server", "codex_auto": "other"}
+{"func": "codex_native", "case": "non-codex api -> false", "api_mode": "anthropic", "codex_auto": "native"}
+{"func": "codex_native", "case": "empty auto falls back to native", "api_mode": "codex_app_server", "codex_auto": ""}
+{"func": "codex_native", "case": "missing api_mode -> false", "codex_auto": "native"}
+{"func": "codex_native", "case": "missing auto -> native default", "api_mode": "codex_app_server"}
+{"func": "codex_native", "case": "trailing space not in set", "api_mode": "codex_app_server", "codex_auto": "Off "}

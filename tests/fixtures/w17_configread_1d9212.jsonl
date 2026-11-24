@@ -1,0 +1,14 @@
+{"case":"loc-problem","func":"yaml_error_location","in":{"exc":{"problem_mark":{"line":11},"problem":"bad indent"}}}
+{"case":"loc-context","func":"yaml_error_location","in":{"exc":{"problem_mark":null,"context_mark":{"line":0}}}}
+{"case":"loc-none","func":"yaml_error_location","in":{"exc":{"problem_mark":null,"context_mark":null}}}
+{"case":"loc-noline","func":"yaml_error_location","in":{"exc":{"problem_mark":{}}}}
+{"case":"details-problem","func":"yaml_error_details","in":{"exc":{"problem":"could not\n  find   key","str":"ignored"}}}
+{"case":"details-str","func":"yaml_error_details","in":{"exc":{"problem":null,"str":"  bad  \t indent "}}}
+{"case":"details-empty","func":"yaml_error_details","in":{"exc":{"problem":"","str":""}}}
+{"case":"fmt-yaml-line","func":"format_config_parse_failure","in":{"path":"/home/u/.hermes/config.yaml","fallback":"defaults","exc":{"problem_mark":{"line":11},"problem":"bad indent"}}}
+{"case":"fmt-yaml-noline","func":"format_config_parse_failure","in":{"path":"C:\\Users\\u\\.hermes\\config.yaml","fallback":"defaults","exc":{"problem":"bad indent"}}}
+{"case":"fmt-yaml-lkg","func":"format_config_parse_failure","in":{"path":"/p/config.yaml","fallback":"last-known-good","exc":{"problem_mark":{"line":3}}}}
+{"case":"fmt-yaml-lkgbak","func":"format_config_parse_failure","in":{"path":"/p/config.yaml","fallback":"last-known-good-backup","exc":{"problem_mark":{"line":7}}}}
+{"case":"fmt-oserror","func":"format_config_parse_failure","in":{"path":"/p/config.yaml","fallback":"defaults","exc":{"oserror":true,"permission":false,"str":"busy"}}}
+{"case":"fmt-permission","func":"format_config_parse_failure","in":{"path":"/p/config.yaml","fallback":"defaults","exc":{"oserror":true,"permission":true,"str":"denied"}}}
+{"case":"fmt-refuse","func":"format_config_parse_failure","in":{"path":"/p/config.yaml","fallback":"refuse-write","exc":{"problem_mark":{"line":1}}}}

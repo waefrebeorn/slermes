@@ -1,0 +1,28 @@
+{"case":"req-angle","func":"requires_argument","in":{"args_hint":"<query>"}}
+{"case":"req-bracket","func":"requires_argument","in":{"args_hint":"[subcommand] [args]"}}
+{"case":"req-space","func":"requires_argument","in":{"args_hint":"  <name>"}}
+{"case":"req-empty","func":"requires_argument","in":{"args_hint":""}}
+{"case":"tg-hyphen","func":"sanitize_telegram_name","in":{"raw":"Hello-World"}}
+{"case":"tg-multi-us","func":"sanitize_telegram_name","in":{"raw":"foo__bar__"}}
+{"case":"tg-only-dashes","func":"sanitize_telegram_name","in":{"raw":"---"}}
+{"case":"tg-cjk","func":"sanitize_telegram_name","in":{"raw":"中文helper"}}
+{"case":"tg-dot","func":"sanitize_telegram_name","in":{"raw":"a.b"}}
+{"case":"tg-upper","func":"sanitize_telegram_name","in":{"raw":"UPPER"}}
+{"case":"tg-lead","func":"sanitize_telegram_name","in":{"raw":"_lead_"}}
+{"case":"desc-dash-em","func":"normalize_telegram_desc","in":{"desc":"a\u2014b"}}
+{"case":"desc-dash-mix","func":"normalize_telegram_desc","in":{"desc":"x\u2013y\u2212z\u2015"}}
+{"case":"desc-plain","func":"normalize_telegram_desc","in":{"desc":"no dashes here"}}
+{"case":"trunc-short","func":"truncate_desc","in":{"desc":"hello world","limit":20}}
+{"case":"trunc-8","func":"truncate_desc","in":{"desc":"hello world","limit":8}}
+{"case":"trunc-3","func":"truncate_desc","in":{"desc":"hello world","limit":3}}
+{"case":"trunc-2","func":"truncate_desc","in":{"desc":"hello world","limit":2}}
+{"case":"clamp-basic","func":"clamp_command_names","in":{"entries":[["short","d"],["abcdefghij0123456789abcdefghij0123456789","dd"]],"reserved":[]}}
+{"case":"clamp-collision","func":"clamp_command_names","in":{"entries":[["abcdefghij0123456789abcdefghij0123456789","d"]],"reserved":["abcdefghij0123456789abcdefghij"]}}
+{"case":"clamp-dup","func":"clamp_command_names","in":{"entries":[["one","a"],["one","b"],["two","c",9]],"reserved":[]}}
+{"case":"clamp-reserved","func":"clamp_command_names","in":{"entries":[["status","a"],["ok","b"]],"reserved":["status"]}}
+{"case":"rank-basic","func":"sanitized_rank","in":{"raw_names":["help","new","help","中文","model"]}}
+{"case":"rank-empty","func":"sanitized_rank","in":{"raw_names":[]}}
+{"case":"slack-space","func":"sanitize_slack_name","in":{"raw":"Hello World!"}}
+{"case":"slack-edge","func":"sanitize_slack_name","in":{"raw":"-Foo_Bar-"}}
+{"case":"slack-long","func":"sanitize_slack_name","in":{"raw":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"case":"slack-cjk","func":"sanitize_slack_name","in":{"raw":"中文"}}

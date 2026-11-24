@@ -1,0 +1,15 @@
+{"func":"classify","rows":{"alpha":{"update_url":"git+https://x"}},"dirs":[{"name":"alpha","has_git":true}],"case":"row plus git = git install"}
+{"func":"classify","rows":{"alpha":{"update_url":"v1"}},"dirs":[{"name":"alpha","has_git":false}],"case":"row only = drift"}
+{"func":"classify","rows":{},"dirs":[{"name":"alpha","has_git":true}],"case":"git only = self cloned"}
+{"func":"classify","rows":{},"dirs":[{"name":"alpha","has_git":false}],"case":"neither = manual drop"}
+{"func":"classify","rows":{"alpha":{}},"dirs":[{"name":"alpha","has_git":true}],"case":"empty row dict is falsy"}
+{"func":"classify","rows":{"alpha":{"update_url":""}},"dirs":[{"name":"alpha","has_git":false}],"case":"empty url becomes null"}
+{"func":"classify","rows":{"a":{"update_url":"1"},"b":{}},"dirs":[{"name":"a","has_git":true},{"name":"b","has_git":false},{"name":"c","has_git":true},{"name":"d","has_git":false}],"case":"four way mix"}
+{"func":"classify","rows":{"alpha":[]},"dirs":[{"name":"alpha","has_git":true}],"case":"non dict row ignored"}
+{"func":"git_origin","config":"[core]\n\tbare = false\n[remote \"origin\"]\n\turl = https://example.com/repo.git\n","case":"standard origin url"}
+{"func":"git_origin","config":"[core]\n\tbare = false\n","case":"no origin section"}
+{"func":"git_origin","config":"[remote \"upstream\"]\n\turl = https://up.example/x\n[remote \"origin\"]\n\turl = git@github.com:o/r.git\n","case":"origin after another remote"}
+{"func":"git_origin","config":"[remote \"origin\"]\n\tfetch = +refs/heads/*\n[branch \"main\"]\n\turl = https://wrong.example/x\n","case":"url outside origin ignored"}
+{"func":"git_origin","config":"[remote \"origin\"]\n    url   =    https://spaced.example/r.git   \n","case":"whitespace around url"}
+{"func":"git_origin","config":"﻿[remote \"origin\"]\n\turl = https://bom.example/r.git\n","case":"utf8 bom prefix"}
+{"func":"git_origin","config":"[remote \"origin\"]\n\turl\n","case":"url line without equals"}

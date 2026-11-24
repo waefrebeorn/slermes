@@ -1,0 +1,12 @@
+{"func": "ask_viewers", "case": "string answer", "result": {"answers": {"q0": "yes"}}, "timeout": "5", "labels": ["a", "b"], "session_id": "sess", "question": "Q?"}
+{"func": "ask_viewers", "case": "non-str answer", "result": {"answers": {"q0": 123}}, "timeout": "5", "labels": ["a", "b"], "session_id": "sess", "question": "Q?"}
+{"func": "ask_viewers", "case": "null result", "result": null, "timeout": "0", "labels": ["a", "b"], "session_id": "sess", "question": "Q?"}
+{"func": "ask_viewers", "case": "null answers", "result": {"answers": null}, "timeout": "-1", "labels": ["a", "b"], "session_id": "sess", "question": "Q?"}
+{"func": "ask_viewers", "case": "another string", "result": {"answers": {"q0": "maybe"}}, "timeout": "10", "labels": ["a", "b"], "session_id": "sess", "question": "Q?"}
+{"func": "ask_viewers", "case": "empty answers", "result": {"answers": {}}, "timeout": "5", "labels": ["a", "b"], "session_id": "sess", "question": "Q?"}
+{"func": "ask_viewers", "case": "empty labels", "result": {"answers": {"q0": "ok"}}, "timeout": "1", "labels": [], "session_id": "sess", "question": "Q?"}
+{"func": "ask_viewers", "case": "unicode answer", "result": {"answers": {"q0": "oui ✓"}}, "timeout": "7", "labels": ["a", "b"], "session_id": "s-9", "question": "Choisissez"}
+{"func": "chat_choices", "case": "free remote", "asker_bound": false, "is_local": false, "session_key": "sk1"}
+{"func": "chat_choices", "case": "already bound", "asker_bound": true, "is_local": false, "session_key": "sk1"}
+{"func": "chat_choices", "case": "local source", "asker_bound": false, "is_local": true, "session_key": "sk1"}
+{"func": "chat_choices", "case": "bound and local", "asker_bound": true, "is_local": true, "session_key": "sk1"}

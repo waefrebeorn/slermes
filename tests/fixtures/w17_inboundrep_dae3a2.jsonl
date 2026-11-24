@@ -1,0 +1,22 @@
+{"func": "chat_key", "case": "string platform", "platform": "Telegram", "chat_id": "123"}
+{"func": "chat_key", "case": "object value uppercase", "platform": {"value": "DISCORD"}, "chat_id": 456}
+{"func": "chat_key", "case": "string platform discord", "platform": "discord", "chat_id": "c1"}
+{"func": "chat_key", "case": "null chat id", "platform": {"value": "Telegram"}, "chat_id": null}
+{"func": "chat_key", "case": "numeric value", "platform": {"value": 5}, "chat_id": "x"}
+{"func": "field", "case": "present", "result": {"a": 1}, "key": "a"}
+{"func": "field", "case": "missing", "result": {"a": 1}, "key": "z"}
+{"func": "field", "case": "null result", "result": null, "key": "a"}
+{"func": "field", "case": "scalar result", "result": "str", "key": "a"}
+{"func": "field", "case": "array value", "result": {"a": [1, 2]}, "key": "a"}
+{"func": "pointer", "case": "plain", "text": "hello"}
+{"func": "pointer", "case": "cron own message", "text": "Cronjob Response: report", "own_message": true}
+{"func": "pointer", "case": "cron with leading spaces", "text": "  Cronjob Response: r2"}
+{"func": "pointer", "case": "own message", "text": "hi", "own_message": true}
+{"func": "pointer", "case": "header lookup prepends", "text": "orig", "has_message_id": true, "header": "Cronjob Response: past"}
+{"func": "pointer", "case": "header null no prepend", "text": "orig", "has_message_id": true, "header": null}
+{"func": "pointer", "case": "no lookup when no msgid", "text": "orig", "has_message_id": false, "header": "Cronjob Response: past"}
+{"func": "pointer", "case": "sanitized differs", "text": "RAW", "sanitized": "SANITIZED"}
+{"func": "record", "case": "full ids", "text": "Cronjob Response: hi\nbody", "send_result": {"message_id": "m1", "continuation_message_ids": ["m2"], "raw_response": {"message_ids": ["m3"], "last_message_id": "m4"}}, "platform": "Telegram", "chat_id": "c1"}
+{"func": "record", "case": "no prefix -> no record", "text": "plain report", "send_result": {"message_id": "m1"}, "platform": "Telegram", "chat_id": "c1"}
+{"func": "record", "case": "only first line", "text": "Cronjob Response: only first line", "send_result": {"message_id": "m1"}, "platform": "Telegram", "chat_id": "c1"}
+{"func": "record", "case": "all lists", "text": "Cronjob Response: x\ny\nz", "send_result": {"message_id": null, "continuation_message_ids": ["a", "b"], "delivered_message_ids": ["c"], "raw_response": {"message_ids": [], "last_message_id": null, "continuation_message_ids": ["d"], "delivered_message_ids": ["e", "f"]}}, "platform": {"value": "Telegram"}, "chat_id": 99}

@@ -1,0 +1,19 @@
+{"func":"shared_key","env_id":"0","udd":"/tmp/prof"}
+{"func":"shared_key","env_id":"deadbeef","udd":"/home/u/.browser"}
+{"func":"shared_key","env_id":"1a2b3c","udd":"C:\\Users\\u\\AppData\\Local\\Chromium"}
+{"func":"read_devtools","rc":0,"text":"9222\n/devtools/browser/abc\n"}
+{"func":"read_devtools","rc":0,"text":" 9222 \n/devtools/browser/abc def \n"}
+{"func":"read_devtools","rc":0,"text":"9222"}
+{"func":"read_devtools","rc":0,"text":"xx\n/devtools/browser/abc\n"}
+{"func":"read_devtools","rc":0,"text":"9222\nhttp://x\n"}
+{"func":"read_devtools","rc":4,"text":"9222\n/devtools/browser/abc\n"}
+{"func":"read_devtools","rc":0,"text":""}
+{"func":"read_devtools","rc":0,"text":"\n/devtools/browser/x\n"}
+{"func":"live_devtools","rc":0,"text":"9333\n/devtools/browser/xyz\n","raise_exec":false}
+{"func":"live_devtools","rc":3,"text":"","raise_exec":false}
+{"func":"live_devtools","rc":3,"text":"9222\n/devtools/browser/abc\n","raise_exec":false}
+{"func":"live_devtools","rc":4,"text":"9222\n/devtools/browser/abc\n","raise_exec":false}
+{"func":"live_devtools","rc":0,"text":"9222\nhttp://x\n","raise_exec":false}
+{"func":"live_devtools","rc":1,"text":"9222\n/devtools/browser/abc\n","raise_exec":false}
+{"func":"live_devtools","rc":0,"text":"9222\n/devtools/browser/abc\n","raise_exec":true}
+{"func":"constants"}

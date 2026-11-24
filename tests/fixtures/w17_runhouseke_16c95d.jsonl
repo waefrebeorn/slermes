@@ -1,0 +1,14 @@
+{"func":"clear","platform":"local","chat_id":"c1","has_authority":true,"has_live":true}
+{"func":"clear","platform":"telegram","chat_id":"c1","has_authority":true,"has_live":true}
+{"func":"clear","platform":"local","chat_id":"c1","has_authority":false,"has_live":true}
+{"func":"clear","platform":"local","chat_id":"c1","has_authority":true,"has_live":false}
+{"func":"clear","platform":"local","chat_id":"a b","has_authority":true,"has_live":true}
+{"func":"maybe","runner_none":true}
+{"func":"maybe","loop_none":true}
+{"func":"maybe","routing_home":"homeDefault","transports":[["default","telegram",null,"hc",{}]],"should_ask":{"homeDefault":true},"advice":{"homeDefault":{"disk":1}},"future_result":true}
+{"func":"maybe","routing_home":"homeDefault","transports":[["default","telegram",null,"hc",{}]],"should_ask":{"homeDefault":true},"advice":{"homeDefault":{"disk":1}},"future_result":false}
+{"func":"maybe","routing_home":"homeDefault","transports":[["default","telegram",null,"hc",{}],["work","discord",null,"hc2",{}]],"served_profile_homes":{"work":"homeWork"},"should_ask":{"homeDefault":true,"homeWork":true},"advice":{"homeDefault":{"disk":1},"homeWork":{"disk":2}},"future_result":true}
+{"func":"maybe","routing_home":"homeDefault","transports":[["default","telegram",null,"hc",{}]],"served_profile_homes":{"work":"homeWork"},"should_ask":{"homeDefault":true,"homeWork":true},"advice":{"homeDefault":{"disk":1},"homeWork":{"disk":2}},"future_result":true}
+{"func":"maybe","routing_home":"homeDefault","transports":[["default","telegram",null,"hc",{}]],"should_ask":{"homeDefault":null},"advice":{"homeDefault":{"disk":1}},"future_result":true}
+{"func":"maybe","routing_home":"homeDefault","transports":[["default","telegram",null,"hc",{}]],"should_ask":{"homeDefault":true},"advice":{},"future_result":true}
+{"func":"maybe","routing_home":"homeDefault","transports":[["default","telegram",null,"hc",{}]],"should_ask":{"homeDefault":true},"advice":{"homeDefault":{"disk":1}},"future_none":true}
