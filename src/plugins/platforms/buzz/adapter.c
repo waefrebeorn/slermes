@@ -2040,7 +2040,9 @@ json_t *w27_adapter_04abb5_dispatch_shape(const json_t *in) {
     }
     {
         const json_t *chat_name = (names && names->type == JSON_OBJECT) ? json_obj_get(names, chat_id) : NULL;
-        json_set(out, "chat_name", (chat_name && w_truthy(chat_name)) ? json_copy(chat_name) : json_string(chat_id));
+        /* self._channel_names.get(chat_id, chat_id): the default applies only when
+         * the KEY is absent. A present-but-empty name is the answer, not a miss. */
+        json_set(out, "chat_name", chat_name ? json_copy(chat_name) : json_string(chat_id));
     }
     free(text);
     return out;
