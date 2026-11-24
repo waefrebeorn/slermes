@@ -1,0 +1,5 @@
+w27_methodsdis_df5fac	tui_gateway/methods_display_watch
+w27_pluginvali_1bd325	hermes_cli/plugin_validate_desktop
+w27_gatewaycon_cb0dce	hermes_cli/gateway_connections_reach
+w27_updateserv_bb8bf2	hermes_cli/update_serve_obligations
+w27_botmodedmc_727405	tools/bot_mode_dm_coordination

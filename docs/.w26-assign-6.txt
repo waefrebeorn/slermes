@@ -1,0 +1,5 @@
+w26_processreg_5c33c6	tools/process_registry_output_log
+w26_richcodere_c9c20f	plugins/platforms/telegram/rich_code_regions
+w26_telegramba_f62536	plugins/platforms/telegram/telegram_batching
+w26_sessionmes_de1f3f	gateway/session_messaging_picks
+w26_mutationpu_fecf98	persistence/sqlite/authority/_mutation_publish

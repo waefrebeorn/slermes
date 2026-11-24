@@ -1,0 +1,5 @@
+w25_auth_b05ad0	plugins/model-providers/solstice/auth
+w25_delegateto_a1fd91	tools/delegate_tool_prefix_gate
+w25_auxiliaryc_9372f1	agent/auxiliary_custom_credentials
+w25_verify_1e9aa1	plugins/cron_providers/chronos/verify
+w25_telegramto_67ae35	plugins/platforms/telegram/telegram_topic_transfer

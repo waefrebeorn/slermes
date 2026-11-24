@@ -1,0 +1,5 @@
+w25_gatewayset_b9bfd0	hermes_cli/gateway_setting_commands
+w25_slashcomma_2c9db9	gateway/slash_commands_branch_thread
+w25_adaptercon_1cab56	plugins/platforms/discord/adapter_config_readers
+w25_darwinpci_ff026b	hermes_platform/host/darwin_pci
+w25_conversati_616874	agent/conversation_compression_deadline

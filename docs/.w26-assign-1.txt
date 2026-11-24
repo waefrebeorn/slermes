@@ -1,0 +1,5 @@
+w26_resources_caddbd	tools/bot_desktop/resources
+w26_telegramau_5c2119	plugins/platforms/telegram/telegram_audio_meta
+w26_runner_fdd9a0	agent/verify/runner
+w26_webserveri_efe232	hermes_cli/web_server_idle_exit
+w26_gatewayrun_1eda26	hermes_cli/gateway_runtime_tickets

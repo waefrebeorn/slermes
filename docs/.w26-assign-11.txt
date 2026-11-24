@@ -1,0 +1,5 @@
+w26_gatewaymul_37308a	hermes_cli/gateway_multiplex_served
+w26_methodsses_f994df	tui_gateway/methods_session_interrupt
+w26_profilemem_515314	hermes_cli/profile_memory_config
+w26_catalogtoo_5874af	tools/connectors/catalog_tool
+w26_kanbanprac_090283	hermes_cli/kanban_pr_acceptance

@@ -1,0 +1,4 @@
+w25_transcript_064b5f	tools/transcription_whisper_cpp
+w25_register_bdae35	plugins/platforms/signal/register
+w25_apiserverc_947063	gateway/platforms/api_server_cron_jobs
+w25_telegramcl_80d613	plugins/platforms/telegram/telegram_clarify_binding

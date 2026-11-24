@@ -1,0 +1,5 @@
+w26_telegramad_942de7	plugins/platforms/telegram/telegram_addressing
+w26_localpytho_6351f3	tools/environments/local_pythonpath
+w26_hostedroom_598018	persistence/sqlite/gateway/_hosted_rooms_schema
+w26_webserverf_e4be3e	hermes_cli/web_server_file_tickets
+w26_provider_21d780	plugins/web/ddgs/provider

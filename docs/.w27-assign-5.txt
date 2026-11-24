@@ -1,0 +1,5 @@
+w27_config_7abe0f	tools/connectors/gateway/config
+w27_sessionset_2f78ed	gateway/session_setting_commands
+w27_sessionhos_b18a75	gateway/session_hosted_transport
+w27_mcpoauthse_006df3	tui_gateway/mcp_oauth_sessions
+w27_sessionvie_6b6b13	gateway/session_viewer_automation

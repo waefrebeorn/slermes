@@ -1,0 +1,4 @@
+w25_kanbannoti_2979d2	hermes_cli/kanban_notify_thread
+w25_provider_f2f12e	plugins/web/parallel/provider
+w25_telegramli_06412b	plugins/platforms/telegram/telegram_live_location
+w25_detachedre_4e5201	persistence/sqlite/conversation/_store/detached_results

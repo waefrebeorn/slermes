@@ -1,0 +1,5 @@
+w26_protocol_45f875	agent/lsp/protocol
+w26_methodscom_94b48f	tui_gateway/methods_complete_helpers
+w26_computerus_4c7531	hermes_cli/subcommands/computer_use
+w26_telegramcl_ca0267	plugins/platforms/telegram/telegram_clarify_multi
+w26_conversati_97cb0b	agent/conversation_compression_image_shrink

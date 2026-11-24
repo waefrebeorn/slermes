@@ -1,0 +1,5 @@
+w26_processreg_e923be	tools/process_registry_awaiting
+w26_updatecmdf_887c4a	hermes_cli/update_cmd_fleet_unit_budget
+w26_gatewayrun_558360	hermes_cli/gateway_runtime_start
+w26_pluginscmd_167cdc	hermes_cli/plugins_cmd_update_all
+w26_client_1fcd78	tools/connectors/portal/client

@@ -1,0 +1,5 @@
+w27_telegramse_7fe1fe	plugins/platforms/telegram/telegram_send_errors
+w27_sharedmetr_5f58db	hermes_cli/observability/shared_metrics_model
+w27_admissionm_0af0f7	persistence/sqlite/authority/_admission_media
+w27_modelsetup_ab90ca	hermes_cli/model_setup_flows_local
+w27_conversati_6b44d0	agent/conversation_compression_telemetry
