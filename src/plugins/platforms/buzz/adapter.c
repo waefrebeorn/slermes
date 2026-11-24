@@ -220,7 +220,13 @@ static int w_scheme_char(int c) {
 
 static void w_urlsplit(const char *text, w_url *u) {
     const char *s = text ? text : "";
-    size_t n = strlen(s), i, cut;
+    size_t n, i, cut;
+    /* urlsplit() strips leading/trailing C0 controls and spaces (WHATWG), so
+     * " http://h:8080/x" parses as http with port 8080 -- a leading space does
+     * not make the scheme empty. Nothing is allocated: advance s, trim n. */
+    while (*s && (unsigned char)*s <= 0x20) s++;
+    n = strlen(s);
+    while (n && (unsigned char)s[n - 1] <= 0x20) n--;
     char *rest;
     memset(u, 0, sizeof(*u));
     u->scheme = w_dup("");
@@ -356,7 +362,8 @@ static int w_media_path(const char *path) {
     size_t n, i, q;
     if (!path) return 0;
     n = strlen(path);
-    if (n < 7 || strncmp(path, "/media/", 7) != 0) return 0;
+    /* re.IGNORECASE: "/MEDIA/..." is the same object as "/media/...". */
+    if (n < 7 || !w_startswith_ci(path, "/media/")) return 0;
     if (n < 7 + 64) return 0;
     for (i = 0; i < 64; i++)
         if (!w_is_hex((unsigned char)path[7 + i])) return 0;
@@ -391,7 +398,7 @@ static int w_media_url_exact(const char *s, size_t n) {
     if (s[plen] == '/' || s[plen] == '?' || s[plen] == '#') return 0;
     last = -1;
     for (pos = plen; pos + 7 + 64 <= n; pos++)
-        if (s[pos] == '/' && strncmp(s + pos, "/media/", 7) == 0) last = (int)pos;
+        if (s[pos] == '/' && w_startswith_ci(s + pos, "/media/")) last = (int)pos;
     for (pos = (size_t)(last < 0 ? 0 : last + 1); pos-- > plen;) {
         size_t q, r;
         int ok = 1;
