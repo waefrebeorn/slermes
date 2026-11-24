@@ -111,8 +111,12 @@ static char *mm_pystr(const json_t *v) {
     case JSON_NUMBER: mm_num_repr(buf, sizeof(buf), v->num_val); return mm_dup(buf);
     default: break;
     }
-    /* dict/list reprs are out of scope for these call sites; a stable
-     * placeholder beats pretending to render Python's repr. */
+    /* Empty containers are part of the value surface: str({}) is "{}" and str([])
+     * is "[]", which is what a comma-split then produces as a channel id. Only a
+     * NON-empty container would need Python's single-quoted repr, and that stays a
+     * documented gap. */
+    if (v->type == JSON_OBJECT) return mm_dup(json_object_size(v) ? "<container>" : "{}");
+    if (v->type == JSON_ARRAY) return mm_dup(json_len(v) ? "<container>" : "[]");
     return mm_dup("<container>");
 }
 

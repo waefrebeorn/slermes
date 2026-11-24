@@ -459,10 +459,12 @@ json_t *w31_ops_0ed859_p2_hook_event_verdict(const json_t *req) {
 
     if (!json_get_bool(fields, "ok", false)) return fields;
     event_text = json_get_str(fields, "event", "");
-    /* valid_hooks absent/null means the registry was unavailable -> no check. */
-    if (!valid || valid->type != JSON_ARRAY) return fields;
+    /* Absent or null means the registry was unavailable -> no check. An EMPTY
+     * mapping is a registry that loaded with no hooks: the check still runs and
+     * every event is unknown, which is what `Valid: ` (empty list) reports. */
+    if (!valid || valid->type == JSON_NULL) return fields;
 
-    n = json_len(valid);
+    n = (valid->type == JSON_ARRAY) ? json_len(valid) : 0;
     for (i = 0; i < n; i++) {
         const json_t *item = json_get(valid, i);
         if (!item || item->type != JSON_STRING || !item->str_val) continue;
