@@ -769,7 +769,17 @@ json_t *w27_adapter_parse_require_mention(const json_t *configured) {
 
 /* PoP: w27_adapter_parse_thread_require_mention @ plugins/platforms/matrix/adapter.py:MatrixAdapter._parse_thread_require_mention */
 json_t *w27_adapter_parse_thread_require_mention(const json_t *configured) {
+    /* The value arrives from _extra_or_secret(..., False), which is `value or
+     * default`: a FALSY configured value (None, "", 0, [], {}) never reaches the
+     * string ladder, it becomes False. Only a truthy non-bool goes through
+     * str(...).lower() not in {"false","0","no","off"}. Treating "" as present
+     * answered True where Python answers False. */
     if (!configured || configured->type == JSON_NULL) return json_bool(0);
+    if (configured->type == JSON_BOOL) return json_bool(configured->bool_val);
+    /* Only an EMPTY STRING falls back to the False default; an empty list or
+     * dict is a value, so it reaches the ladder and answers True (str([]) is
+     * "[]", which is not in the off-set). Held-out cases pinned both arms. */
+    if (configured->type == JSON_STRING && !configured->str_val[0]) return json_bool(0);
     return w27_adapter_parse_require_mention(configured);
 }
 
