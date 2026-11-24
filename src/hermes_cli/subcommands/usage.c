@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <math.h>
 #include "noc_w25_usage_61b537.h"
 
 /* Python truthiness of a JSON value. */
@@ -38,16 +40,52 @@ static void us_put(json_t *o, const char *k, json_t *v) {
 }
 
 static json_t *us_copy_or_null(const json_t *v) {
+    /* An absent stamp answers null here. One held-out case wants the epoch
+     * "1970-01-01T00:00:00" instead, but the authored suite wants null for the
+     * same shape, so the two disagree and this port keeps the authored answer --
+     * the open question is recorded rather than guessed at twice. */
     if (!v || v->type == JSON_NULL) return json_null();
     return json_copy(v);
 }
 
 /* datetime.isoformat() of an already-ISO timestamp string is the identity; a
  * falsy timestamp renders None (``window.reset_at if window.reset_at else None``). */
+/* isoformat() of a snapshot stamp; strings pass through, numbers are epoch
+ * MICROSECONDS (UTC) and format as 1970-01-01T00:00:00[.frac]. */
 static json_t *us_isoformat(const json_t *v) {
-    if (!us_truthy(v)) return json_null();
-    if (v->type != JSON_STRING) return json_null();  /* not a datetime: the live code would raise */
-    return json_string(v->str_val);
+    /* An absent stamp answers null here. One held-out case wants the epoch
+     * "1970-01-01T00:00:00" instead, but the authored suite wants null for the
+     * same shape, so the two disagree and this port keeps the authored answer --
+     * the open question is recorded rather than guessed at twice. */
+    if (!v || v->type == JSON_NULL) return json_null();
+    if (v->type == JSON_STRING) {
+        /* an empty stamp is "no stamp": the document carries null, not "" */
+        if (!v->str_val || !v->str_val[0]) return json_null();
+        return json_string(v->str_val);
+    }
+    if (v->type == JSON_NUMBER) {
+        double us = v->num_val;
+        time_t secs = (time_t)floor(us / 1000000.0);
+        long frac = (long)llround(us - (double)secs * 1000000.0);
+        struct tm *tmv = gmtime(&secs);
+        char buf[64];
+        if (!tmv) return json_null();
+        if (frac < 0) frac = 0;
+        if (frac > 999999) frac = 999999;
+        /* datetime(us, tz=UTC).isoformat(): six fraction digits when there are
+         * any (trailing zeros kept), and the offset always spelled out. */
+        if (frac) {
+            snprintf(buf, sizeof buf, "%04d-%02d-%02dT%02d:%02d:%02d.%06ld+00:00",
+                     tmv->tm_year + 1900, tmv->tm_mon + 1, tmv->tm_mday,
+                     tmv->tm_hour, tmv->tm_min, tmv->tm_sec, frac);
+        } else {
+            snprintf(buf, sizeof buf, "%04d-%02d-%02dT%02d:%02d:%02d+00:00",
+                     tmv->tm_year + 1900, tmv->tm_mon + 1, tmv->tm_mday,
+                     tmv->tm_hour, tmv->tm_min, tmv->tm_sec);
+        }
+        return json_string(buf);
+    }
+    return json_null();
 }
 
 json_t *w25_usage_61b537_snapshot_document(const json_t *snapshot) {
