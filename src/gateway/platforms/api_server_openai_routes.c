@@ -1072,7 +1072,9 @@ json_t *w27_apiservero_1a4ac2_p3_parse_responses_input(const json_t *raw_input) 
             }
             json_t *role = oar_get(item, "role");
             json_t *m = json_object();
-            json_set(m, "role", oar_is_null(role) ? oar_jstr("user") : json_copy(role));
+            /* item.get("role", "user") defaults only when the KEY IS ABSENT: a
+             * present null role stays null (the live code passes it through). */
+            json_set(m, "role", item && json_has(item, "role") ? json_copy(role) : oar_jstr("user"));
             json_set(m, "content", content);
             json_append(msgs, m);
         }
