@@ -1065,7 +1065,9 @@ json_t *w29_hostedroom_8927a5_p3_admit(const json_t *req) {
         json_set(out, "task", w29_hostedroom_8927a5_p3_task_view(existing, 1));
         return out;
     }
-    if (!jnone(thread_row)) {
+    /* The oracle feeds `[Row(thread_row)] if thread_row else []`: a FALSY row (an
+     * empty mapping) means the query found nothing, so it cannot conflict. */
+    if (jtruthy(thread_row)) {
         json_set(out, "outcome", json_string("error"));
         json_set(out, "error", json_string("TaskConflictError"));
         json_set(out, "message", json_string("thread_id and turn_id are already bound to a task"));
