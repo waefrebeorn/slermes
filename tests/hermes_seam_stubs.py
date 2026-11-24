@@ -44,6 +44,25 @@ class BaseModel:
         return dict(self.__dict__)
 
 
+class ConfigDict(dict):
+    """pydantic.ConfigDict stand-in.
+
+    Live modules merge config dicts with `|` (PEP 584); subclassing dict plus
+    __or__/__ror__ keeps `ConfigDict(extra="allow") | {"strict": True}` working
+    instead of raising TypeError on a bare dict.
+    """
+
+    def __or__(self, other):
+        merged = ConfigDict(self)
+        merged.update(other or {})
+        return merged
+
+    def __ror__(self, other):
+        merged = ConfigDict(other or {})
+        merged.update(self)
+        return merged
+
+
 class ValidationError(ValueError):
     pass
 
@@ -199,7 +218,7 @@ def install(force=False):
             validator=_decorator,
             model_validator=_decorator,
             root_validator=_decorator,
-            ConfigDict=dict,
+            ConfigDict=ConfigDict,
             ValidationError=ValidationError,
             SecretStr=str,
             StrictBool=bool,
