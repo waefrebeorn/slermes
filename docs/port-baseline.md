@@ -53,20 +53,21 @@ Held-out fuzz (the only measure that can disagree with the author):
 | wave | clean | carrying |
 |---|---|---|
 | 25 | 41 | 16 |
-| 26 | 43 | 17 |
-| 27 | 43 | 32 |
-| 28 | 10 | 22 |
-| 29 | 6 | 24 |
-| 30 | 7 | 17 |
-| 31 | 14 | 9 |
-| 32 | 10 | 11 |
+| 26 | 44 | 16 |
+| 27 | 48 | 27 |
+| 28 | 11 | 21 |
+| 29 | 12 | 18 |
+| 30 | 8 | 16 |
+| 31 | 15 | 8 |
+| 32 | 11 | 10 |
 | 33 | 9 | 10 |
-| 34 | 5 | 10 |
+| 34 | 6 | 9 |
 | 35 | 1 | 0 |
 
-**357 gates measured, 189 clean (53%), 168 carrying at least one real divergence.**
-Latest clean sweep, 2026-11-24, --per-case 5, after the day's fixes: eleven gates
-went from carrying to clean and one new gate landed.
+**357 gates measured, 206 clean (58%), 151 carrying at least one real divergence.**
+Latest clean sweep, 2026-11-24, --per-case 5, after the second day of triage: nineteen
+gates went from carrying to clean, each verified by an authored gate and a fresh
+held-out sweep.
 
 ## Why the previous counts were wrong
 
