@@ -154,7 +154,18 @@ def expected(r):
     if f == 'clean_id':
         return live._clean_discord_id(r.get("entry") or "")
     if f == 'ready_timeout':
-        return float(live._discord_ready_timeout_seconds())
+        # The live code reads ONE canonical name; the fixture's env_name is a label,
+        # so set the canonical variable from the value and ignore the label.
+        key = "HERMES_GATEWAY_PLATFORM_CONNECT_TIMEOUT"
+        prev = os.environ.get(key)
+        os.environ[key] = r.get("env") or ""
+        try:
+            return float(live._discord_ready_timeout_seconds())
+        finally:
+            if prev is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = prev
     if f == 'env_bool':
         name = r.get("env_name") or "SLERMES_GATE"
         return bool(live._env_bool(name, bool(r.get("default"))))
