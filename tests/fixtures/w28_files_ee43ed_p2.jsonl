@@ -1,0 +1,54 @@
+{"func": "fs_mime_type", "case": "png", "path": "assets/logo.png"}
+{"func": "fs_mime_type", "case": "upper_opus", "path": "a/b/clip.OPUS"}
+{"func": "fs_mime_type", "case": "unknown_ext", "path": "notes.zzz"}
+{"func": "fs_mime_type", "case": "no_ext", "path": "README"}
+{"func": "fs_mime_type", "case": "log_ext", "path": "backup.log"}
+{"func": "fs_mime_type", "case": "svg", "path": "icon.svg"}
+{"func": "preview_governing", "case": "requested_wins", "requested": "report.html", "target": "/cache/abc123"}
+{"func": "preview_governing", "case": "fallback_no_ext", "requested": "latest", "target": "/cache/x.png"}
+{"func": "preview_governing", "case": "fallback_unknown_ext", "requested": "notes.draft", "target": "/cache/x.zzz"}
+{"func": "preview_governing", "case": "txt_wins", "requested": "x.txt", "target": "/cache/y.png"}
+{"func": "preview_governing", "case": "stripped_and_empty", "requested": "   ", "target": "/cache/z.mp4"}
+{"func": "looks_binary", "case": "empty", "data": []}
+{"func": "looks_binary", "case": "ascii", "data": [104, 101, 108, 108, 111]}
+{"func": "looks_binary", "case": "nul_byte", "data": [65, 0, 66]}
+{"func": "looks_binary", "case": "tab_lf_cr_are_text", "data": [9, 10, 13, 65, 66]}
+{"func": "looks_binary", "case": "boundary_12_of_100", "data": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65]}
+{"func": "looks_binary", "case": "above_12_of_100", "data": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65]}
+{"func": "managed_response_meta", "case": "locked", "locked": true, "can_change_path": false}
+{"func": "managed_response_meta", "case": "unlocked", "locked": false, "can_change_path": true}
+{"func": "managed_files_policy", "case": "forced_root", "forced_root": "C:/srv/files", "hermes_home": "C:/Users/u/.hermes"}
+{"func": "managed_files_policy", "case": "opt_data", "forced_root": "", "hermes_home": "C:/opt/data", "default_root": "C:/opt/data"}
+{"func": "managed_files_policy", "case": "home", "forced_root": "  ", "hermes_home": "C:/Users/u/.hermes", "default_root": "C:/Users/u/.hermes"}
+{"func": "managed_files_policy", "case": "no_home", "forced_root": "", "hermes_home": ""}
+{"func": "managed_file_size", "case": "under_cap", "size": 10, "max_bytes": 100}
+{"func": "managed_file_size", "case": "at_cap", "size": 100, "max_bytes": 100}
+{"func": "managed_file_size", "case": "over_cap", "size": 101, "max_bytes": 100}
+{"func": "managed_file_entry", "case": "file", "kind": "file", "name": "clip.mp4", "size": 4096, "mtime": 1700000000.25}
+{"func": "managed_file_entry", "case": "unknown_mime_file", "kind": "file", "name": "notes.zzz", "size": 7, "mtime": 1700000001}
+{"func": "managed_file_entry", "case": "directory", "kind": "dir", "name": "sub", "mtime": 1700000002}
+{"func": "managed_file_entry", "case": "broken_link_inside", "kind": "broken", "name": "link.txt", "locked": true, "inside": true}
+{"func": "managed_file_entry", "case": "broken_link_outside", "kind": "broken", "name": "link.txt", "locked": true, "inside": false}
+{"func": "managed_file_entry", "case": "vanished", "kind": "missing", "name": "gone.txt"}
+{"func": "managed_file_entry", "case": "outside_root", "kind": "outside", "name": "x.txt"}
+{"func": "fs_list_sort", "case": "dirs_first_case_insensitive", "entries": [{"name": "b.txt", "isDirectory": false}, {"name": "Zeta", "isDirectory": true}, {"name": "a.txt", "isDirectory": false}, {"name": "alpha", "isDirectory": true}, {"name": "B.txt", "isDirectory": false}]}
+{"func": "fs_list_sort", "case": "same_lower_name_ties_on_exact", "entries": [{"name": "B.txt", "isDirectory": false}, {"name": "b.txt", "isDirectory": false}, {"name": "A.txt", "isDirectory": false}]}
+{"func": "managed_list_sort", "case": "dirs_first", "entries": [{"name": "notes.md", "is_directory": false}, {"name": "src", "is_directory": true}, {"name": "Audio", "is_directory": true}, {"name": "alpha.txt", "is_directory": false}]}
+{"func": "list_has_parent", "case": "nested", "target": "C:/home/u/x", "locked_root": ""}
+{"func": "list_has_parent", "case": "drive_root", "target": "C:/", "locked_root": ""}
+{"func": "list_has_parent", "case": "locked_root_itself", "target": "C:/data", "locked_root": "C:/data"}
+{"func": "list_has_parent", "case": "locked_root_child", "target": "C:/data/sub", "locked_root": "C:/data"}
+{"func": "is_readdir_hidden", "case": "node_modules", "name": "node_modules"}
+{"func": "is_readdir_hidden", "case": "venv", "name": ".venv"}
+{"func": "is_readdir_hidden", "case": "src", "name": "src"}
+{"func": "backend_error", "case": "enoent", "code": "ENOENT"}
+{"func": "backend_error", "case": "eacces", "code": "EACCES"}
+{"func": "backend_error", "case": "efbig", "code": "EFBIG"}
+{"func": "backend_error", "case": "econn", "code": "ECONN"}
+{"func": "backend_error", "case": "unknown_code", "code": "EWHAT"}
+{"func": "media_extension_verdict", "case": "streamable_mp4", "suffix": ".MP4", "media_only": true}
+{"func": "media_extension_verdict", "case": "not_streamable", "suffix": ".pdf", "media_only": true}
+{"func": "media_extension_verdict", "case": "download_no_cap", "suffix": ".pdf", "media_only": false}
+{"func": "media_extension_verdict", "case": "no_suffix", "suffix": "", "media_only": true}
+{"func": "sandbox_not_found_detail", "case": "unmapped", "unmapped": true}
+{"func": "sandbox_not_found_detail", "case": "plain_missing", "unmapped": false}

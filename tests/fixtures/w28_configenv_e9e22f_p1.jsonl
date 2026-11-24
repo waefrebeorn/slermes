@@ -1,0 +1,47 @@
+{"case":"preview-long","func":"env_preview","value":"sk-abcdefghijklmn"}
+{"case":"preview-short","func":"env_preview","value":"abc123"}
+{"case":"preview-empty","func":"env_preview","value":""}
+{"case":"preview-null","func":"env_preview","value":null}
+{"case":"preview-control","func":"env_preview","value":"\u0001sk-abcdefghijklmn\u007f"}
+{"case":"preview-c1","func":"env_preview","value":"\u0080sk-abcdefghijklmn\u009f"}
+{"case":"preview-unicode-head","func":"env_preview","value":"\u00e9\u00e9\u00e9\u00e9abcdefghijkl"}
+{"case":"preview-zero","func":"env_preview","value":0}
+{"case":"red-sentinel","func":"is_redacted_preview","submitted":"\u00abredacted:sk-a...klmn\u00bb"}
+{"case":"red-legacy-mask","func":"is_redacted_preview","submitted":"abcd...wxyz"}
+{"case":"red-legacy-long","func":"is_redacted_preview","submitted":"abcde...wxyz"}
+{"case":"red-stars","func":"is_redacted_preview","submitted":"***"}
+{"case":"red-empty","func":"is_redacted_preview","submitted":""}
+{"case":"red-short-dots","func":"is_redacted_preview","submitted":"abcd..wxyz"}
+{"case":"red-dots-mid","func":"is_redacted_preview","submitted":"ab.d...wxyz"}
+{"case":"red-plain-key","func":"is_redacted_preview","submitted":"sk-abcdefghijklmn"}
+{"case":"env-basic","func":"env_vars","optional_env_vars":{"OPENAI_API_KEY":{"description":"hand desc","category":"provider","tools":["t1"],"advanced":true},"ANTHROPIC_API_KEY":{"password":false,"url":null,"category":"provider"}},"catalog_meta":{"OPENAI_API_KEY":{"provider":"openai","provider_label":"OpenAI","description":"cat desc","url":"http://u","is_password":true,"advanced":false,"provider_primary":true,"provider_profiles":[{"provider":"openai"}]},"ANTHROPIC_API_KEY":{"description":"anth"}},"env_on_disk":{"OPENAI_API_KEY":"sk-abcdefghijklmn","MY_CUSTOM":"x","DISCORD_TOKEN":"t","EMPTYV":""},"channel_keys":["DISCORD_TOKEN"]}
+{"case":"env-catalog-only","func":"env_vars","optional_env_vars":{},"catalog_meta":{"GEMINI_API_KEY":{"provider":"google","provider_label":"Google","description":"gem","is_password":true,"advanced":false}},"env_on_disk":{"GEMINI_API_KEY":"AIzaSy0000000000"},"channel_keys":[]}
+{"case":"env-empty","func":"env_vars","optional_env_vars":{},"catalog_meta":{},"env_on_disk":{},"channel_keys":[]}
+{"case":"env-hand-no-cat","func":"env_vars","optional_env_vars":{"PLAIN_TOKEN":{"description":"","category":"tool","tools":[]}},"catalog_meta":{},"env_on_disk":{"PLAIN_TOKEN":"tok","EXTRA":"v"},"channel_keys":[]}
+{"case":"env-null-cat","func":"env_vars","optional_env_vars":{"PLAIN_TOKEN":{"description":""}},"catalog_meta":{"PLAIN_TOKEN":null},"env_on_disk":{"PLAIN_TOKEN":"tok"},"channel_keys":[]}
+{"case":"env-error-value","func":"env_error","kind":"value_error","message":"Invalid env var name: 1BAD"}
+{"case":"env-error-http","func":"env_error","kind":"http","status":404,"detail":"X not found in .env"}
+{"case":"env-error-other","func":"env_error","kind":"boom"}
+{"case":"slug-spaces","func":"custom_endpoint_id","raw":"  My Endpoint!! v2 "}
+{"case":"slug-null","func":"custom_endpoint_id","raw":null}
+{"case":"slug-unicode","func":"custom_endpoint_id","raw":"\u00dcn\u00efcode Name"}
+{"case":"slug-fallback","func":"custom_endpoint_id","raw":"!!!","fallback":"fb"}
+{"case":"slug-underscores","func":"custom_endpoint_id","raw":"-a_b-"}
+{"case":"slug-dotted","func":"custom_endpoint_id","raw":"My.EP:1"}
+{"case":"models-array","func":"models_from_entry","entry":{"models":["a","b","a"," b "],"model":"m1"}}
+{"case":"models-dict","func":"models_from_entry","entry":{"models":{"x":{},"y":{}},"default_model":"dm"}}
+{"case":"models-empty","func":"models_from_entry","entry":{}}
+{"case":"models-tail-first","func":"models_from_entry","entry":{"models":[" m1 ","m2"],"model":"m1"}}
+{"case":"key-plain","func":"api_key_display","entry":{"api_key":"  sk-abcdefghijklmn  "}}
+{"case":"key-env","func":"api_key_display","entry":{"key_env":"MY_KEY"}}
+{"case":"key-none","func":"api_key_display","entry":{"api_key":"   ","key_env":""}}
+{"case":"mode-alias","func":"endpoint_api_mode","entry":{"api_mode":" OpenAI "}}
+{"case":"mode-transport","func":"endpoint_api_mode","entry":{"transport":"responses"}}
+{"case":"mode-bedrock","func":"endpoint_api_mode","entry":{"api_mode":"bedrock"}}
+{"case":"mode-unknown","func":"endpoint_api_mode","entry":{"api_mode":"something_else"}}
+{"case":"mode-chat-cased","func":"endpoint_api_mode","entry":{"transport":"Chat_Completions"}}
+{"case":"mode-none","func":"endpoint_api_mode","entry":{}}
+{"case":"names-custom-prefix","func":"model_names_provider","model_cfg":{"provider":"custom:local"},"provider_key":"local","entry":{"name":"Local"}}
+{"case":"names-by-name","func":"model_names_provider","model_cfg":{"provider":"Custom:My Endpoint"},"provider_key":"weird-key","entry":{"name":"My Endpoint"}}
+{"case":"names-miss","func":"model_names_provider","model_cfg":{"provider":"openai"},"provider_key":"local","entry":{"name":"Local"}}
+{"case":"names-empty","func":"model_names_provider","model_cfg":{},"provider_key":"","entry":{}}

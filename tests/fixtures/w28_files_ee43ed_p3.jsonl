@@ -1,0 +1,79 @@
+{"func": "decode_data_url", "case": "png_ok", "data_url": "data:image/png;base64,iVBORw0KGgo=", "max_bytes": 10485760}
+{"func": "decode_data_url", "case": "no_base64_marker", "data_url": "data:image/png,iVBORw0KGgo=", "max_bytes": 10485760}
+{"func": "decode_data_url", "case": "not_a_data_url", "data_url": "notadata", "max_bytes": 10485760}
+{"func": "decode_data_url", "case": "empty_mime", "data_url": "data:;base64,aGVsbG8=", "max_bytes": 10485760}
+{"func": "decode_data_url", "case": "missing_padding", "data_url": "data:image/png;base64,aGVsbG8", "max_bytes": 10485760}
+{"func": "decode_data_url", "case": "bad_alphabet", "data_url": "data:image/png;base64,!!!!", "max_bytes": 10485760}
+{"func": "decode_data_url", "case": "charset_param", "data_url": "data:image/jpeg;charset=x;base64,aGVsbG8=", "max_bytes": 10485760}
+{"func": "decode_data_url", "case": "empty_payload", "data_url": "data:text/plain;base64,", "max_bytes": 10485760}
+{"func": "decode_data_url", "case": "over_cap", "data_url": "data:image/png;base64,iVBORw0KGgo=", "max_bytes": 4}
+{"func": "chat_image_extension", "case": "png", "data": [137, 80, 78, 71, 13, 10, 26, 10]}
+{"func": "chat_image_extension", "case": "jpeg", "data": [255, 216, 255, 224, 0, 16]}
+{"func": "chat_image_extension", "case": "gif87", "data": [71, 73, 70, 56, 55, 97]}
+{"func": "chat_image_extension", "case": "gif89", "data": [71, 73, 70, 56, 57, 97]}
+{"func": "chat_image_extension", "case": "bmp", "data": [66, 77, 120, 120]}
+{"func": "chat_image_extension", "case": "webp", "data": [82, 73, 70, 70, 0, 0, 0, 0, 87, 69, 66, 80]}
+{"func": "chat_image_extension", "case": "riff_wave", "data": [82, 73, 70, 70, 0, 0, 0, 0, 87, 65, 86, 69]}
+{"func": "chat_image_extension", "case": "text", "data": [97, 98, 99]}
+{"func": "chat_image_extension", "case": "empty", "data": []}
+{"func": "decode_chat_image_upload", "case": "png", "data_url": "data:image/png;base64,iVBORw0KGgo=", "max_bytes": 10485760, "cap": 10485760}
+{"func": "decode_chat_image_upload", "case": "gif", "data_url": "data:image/gif;base64,R0lGODlh", "max_bytes": 10485760, "cap": 10485760}
+{"func": "decode_chat_image_upload", "case": "not_an_image", "data_url": "data:text/plain;base64,aGVsbG8=", "max_bytes": 10485760, "cap": 10485760}
+{"func": "decode_chat_image_upload", "case": "unknown_magic", "data_url": "data:image/png;base64,AAAA", "max_bytes": 10485760, "cap": 10485760}
+{"func": "decode_chat_image_upload", "case": "svg_magic", "data_url": "data:image/svg+xml;base64,PHN2Zz4=", "max_bytes": 10485760, "cap": 10485760}
+{"func": "decode_chat_image_upload", "case": "over_cap", "data_url": "data:image/png;base64,iVBORw0KGgo=", "max_bytes": 10485760, "cap": 4}
+{"func": "media_proxy_host_allowed", "case": "bare", "host": "fal.media"}
+{"func": "media_proxy_host_allowed", "case": "upper_trailing_dot", "host": "FAL.MEDIA."}
+{"func": "media_proxy_host_allowed", "case": "subdomain", "host": "x.fal.media"}
+{"func": "media_proxy_host_allowed", "case": "lookalike", "host": "evilfal.media"}
+{"func": "media_proxy_host_allowed", "case": "v3", "host": "v3.fal.media"}
+{"func": "media_proxy_host_allowed", "case": "gcs", "host": "storage.googleapis.com"}
+{"func": "media_proxy_host_allowed", "case": "localhost", "host": "localhost"}
+{"func": "media_proxy_host_allowed", "case": "deep_fal_run", "host": "a.b.fal.run"}
+{"func": "media_proxy_host_allowed", "case": "leading_dot", "host": ".fal.media"}
+{"func": "media_proxy_target", "case": "png", "url": "https://fal.media/x.png"}
+{"func": "media_proxy_target", "case": "no_ext", "url": "https://fal.media/abc123"}
+{"func": "media_proxy_target", "case": "host_denied", "url": "https://evil.com/x.png"}
+{"func": "media_proxy_target", "case": "bad_scheme", "url": "ftp://fal.media/x.png"}
+{"func": "media_proxy_target", "case": "empty", "url": ""}
+{"func": "media_proxy_target", "case": "padded", "url": "  https://v3.fal.media/a/b.jpg "}
+{"func": "media_proxy_target", "case": "non_image_ext", "url": "https://fal.media/x.txt"}
+{"func": "media_proxy_target", "case": "bare_root", "url": "https://fal.media/"}
+{"func": "media_proxy_target", "case": "upper", "url": "https://FAL.MEDIA./X.PNG"}
+{"func": "media_proxy_target", "case": "query", "url": "https://fal.media/x.png?q=1"}
+{"func": "media_proxy_content_type_ok", "case": "png", "content_type": "image/png"}
+{"func": "media_proxy_content_type_ok", "case": "upper", "content_type": "IMAGE/PNG"}
+{"func": "media_proxy_content_type_ok", "case": "params", "content_type": "image/png; charset=x"}
+{"func": "media_proxy_content_type_ok", "case": "html", "content_type": "text/html"}
+{"func": "media_proxy_content_type_ok", "case": "svg", "content_type": "image/svg+xml"}
+{"func": "media_proxy_content_type_ok", "case": "empty", "content_type": ""}
+{"func": "media_proxy_redirect", "case": "absolute_hop", "url": "https://fal.media/a.png", "chain": [{"status": 302, "location": "https://fal.media/b.png"}]}
+{"func": "media_proxy_redirect", "case": "offsite_hop", "url": "https://fal.media/a.png", "chain": [{"status": 302, "location": "https://evil.com/b.png"}]}
+{"func": "media_proxy_redirect", "case": "relative_hop", "url": "https://fal.media/a.png", "chain": [{"status": 307, "location": "/b.png"}]}
+{"func": "media_proxy_redirect", "case": "no_redirect", "url": "https://fal.media/a.png", "chain": [{"status": 200, "location": ""}]}
+{"func": "media_proxy_redirect", "case": "cap_three", "url": "https://fal.media/a.png", "chain": [{"status": 301, "location": "https://fal.media/1.png"}, {"status": 301, "location": "https://fal.media/2.png"}, {"status": 301, "location": "https://fal.media/3.png"}, {"status": 301, "location": "https://fal.media/4.png"}]}
+{"func": "media_proxy_redirect", "case": "redirect_without_location", "url": "https://fal.media/a.png", "chain": [{"status": 302, "location": ""}]}
+{"func": "proxy_response_verdict", "case": "ok", "status": 200, "content_type": "image/png", "size": 1024, "max_bytes": 26214400}
+{"func": "proxy_response_verdict", "case": "http_error", "status": 500, "content_type": "image/png", "size": 1, "max_bytes": 26214400}
+{"func": "proxy_response_verdict", "case": "bad_type", "status": 200, "content_type": "text/html", "size": 1, "max_bytes": 26214400}
+{"func": "proxy_response_verdict", "case": "too_big", "status": 200, "content_type": "image/png", "size": 26214401, "max_bytes": 26214400}
+{"func": "profile_key", "case": "padded", "profile": " Default "}
+{"func": "profile_key", "case": "empty", "profile": ""}
+{"func": "profile_key", "case": "upper", "profile": "CURRENT"}
+{"func": "profile_key", "case": "plain", "profile": "work"}
+{"func": "default_cwd_placeholder", "case": "auto", "raw": "auto"}
+{"func": "default_cwd_placeholder", "case": "empty", "raw": ""}
+{"func": "default_cwd_placeholder", "case": "upper", "raw": "AUTO"}
+{"func": "default_cwd_placeholder", "case": "cwd", "raw": "cwd"}
+{"func": "default_cwd_placeholder", "case": "path", "raw": "/tmp"}
+{"func": "default_cwd_placeholder", "case": "dot", "raw": "  .  "}
+{"func": "read_text_meta", "case": "text_small", "name": "clip.mp4", "size": 100, "preview_max": 524288, "data": [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]}
+{"func": "read_text_meta", "case": "text_truncated", "name": "clip.mp4", "size": 600000, "preview_max": 524288, "data": [104, 101, 108, 108, 111]}
+{"func": "read_text_meta", "case": "binary_nul", "name": "data.zzz", "size": 3, "preview_max": 524288, "data": [0, 1, 2]}
+{"func": "read_text_meta", "case": "svg_language", "name": "icon.svg", "size": 20, "preview_max": 524288, "data": [60, 115, 118, 103, 62, 60, 47, 115, 118, 103, 62]}
+{"func": "read_text_meta", "case": "empty", "name": "notes.zzz", "size": 0, "preview_max": 524288, "data": []}
+{"func": "media_suffix_verdict", "case": "png_ok", "suffix": ".PNG", "under_roots": true, "is_file": true, "size": 10, "max_bytes": 26214400}
+{"func": "media_suffix_verdict", "case": "unsupported", "suffix": ".txt", "under_roots": true, "is_file": true, "size": 10, "max_bytes": 26214400}
+{"func": "media_suffix_verdict", "case": "outside_roots", "suffix": ".png", "under_roots": false, "is_file": true, "size": 10, "max_bytes": 26214400}
+{"func": "media_suffix_verdict", "case": "missing", "suffix": ".png", "under_roots": true, "is_file": false, "size": 10, "max_bytes": 26214400}
+{"func": "media_suffix_verdict", "case": "too_large", "suffix": ".png", "under_roots": true, "is_file": true, "size": 26214401, "max_bytes": 26214400}

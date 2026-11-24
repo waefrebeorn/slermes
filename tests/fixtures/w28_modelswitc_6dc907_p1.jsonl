@@ -1,0 +1,118 @@
+{"func": "catalog_stale", "case": "no-models-key", "entry": {"base_url": "https://x/v1"}, "model_ids": ["a", "b"]}
+{"func": "catalog_stale", "case": "dict-discovered-different", "entry": {"models": {"a": {}, "b": {}}, "models_discovered": true}, "model_ids": ["a", "c"]}
+{"func": "catalog_stale", "case": "dict-discovered-same", "entry": {"models": {"a": {}, "b": {}}, "models_discovered": true}, "model_ids": ["a", "b"]}
+{"func": "catalog_stale", "case": "dict-legacy-sentinel-same", "entry": {"models": {"__discovered_model_catalog__": true, "a": {}}}, "model_ids": ["__discovered_model_catalog__", "a"]}
+{"func": "catalog_stale", "case": "dict-user-curated", "entry": {"models": {"a": {"ctx": 128000}}}} 
+{"func": "catalog_stale", "case": "dict-user-curated-ids", "entry": {"models": {"a": {}}}, "model_ids": ["a"]}
+{"func": "catalog_stale", "case": "list-of-dicts", "entry": {"models": [{"id": "a"}]}, "model_ids": ["a"]}
+{"func": "catalog_stale", "case": "list-of-strings-same", "entry": {"models": ["a", "b"]}, "model_ids": ["a", "b"]}
+{"func": "catalog_stale", "case": "list-of-strings-different", "entry": {"models": ["a"]}, "model_ids": ["a", "b"]}
+{"func": "catalog_stale", "case": "list-vs-string-type-mismatch", "entry": {"models": ["a"]}, "model_ids": "a"}
+{"func": "catalog_stale", "case": "empty-dict-discovered", "entry": {"models": {}, "models_discovered": true}, "model_ids": []}
+{"func": "catalog_stale", "case": "empty-dict-discovered-ids", "entry": {"models": {}, "models_discovered": true}, "model_ids": ["a"]}
+{"func": "catalog_stale", "case": "flag-not-strict-true", "entry": {"models": {"a": {}}, "models_discovered": 1}, "model_ids": ["b"]}
+{"func": "any_env", "case": "first-set", "env_vars": ["A_KEY", "B_KEY"], "env": {"A_KEY": "x"}}
+{"func": "any_env", "case": "second-set", "env_vars": ["A_KEY", "B_KEY"], "env": {"B_KEY": "y"}}
+{"func": "any_env", "case": "none-set", "env_vars": ["A_KEY"], "env": {"A_KEY": ""}}
+{"func": "any_env", "case": "absent", "env_vars": ["A_KEY"], "env": {}}
+{"func": "any_env", "case": "empty-vars", "env_vars": [], "env": {"A": "1"}}
+{"func": "any_env", "case": "string-iterates-chars", "env_vars": "ABC", "env": {"A": "", "B": "", "C": "1"}}
+{"func": "any_env", "case": "zero-number-falsy", "env_vars": ["N"], "env": {"N": 0}}
+{"func": "skip", "case": "seen-hit", "seen": ["openai"], "excluded": [], "keys": ["OpenAI"]}
+{"func": "skip", "case": "excluded-hit", "seen": [], "excluded": ["kimi-coding"], "keys": ["kimi", "KIMI-CODING"]}
+{"func": "skip", "case": "no-hit", "seen": ["openai"], "excluded": ["x"], "keys": ["anthropic"]}
+{"func": "skip", "case": "no-keys", "seen": ["openai"], "excluded": [], "keys": []}
+{"func": "azure_entra_configured", "case": "configured", "model_cfg": {"provider": "azure-foundry", "auth_mode": "entra_id", "base_url": "https://x.openai.azure.com"}, "env": {}}
+{"func": "azure_entra_configured", "case": "base-from-env", "model_cfg": {"provider": "Azure-Foundry", "auth_mode": " ENTRA_ID "}, "env": {"AZURE_FOUNDRY_BASE_URL": "https://y"}}
+{"func": "azure_entra_configured", "case": "no-base", "model_cfg": {"provider": "azure-foundry", "auth_mode": "entra_id"}, "env": {}}
+{"func": "azure_entra_configured", "case": "wrong-provider", "model_cfg": {"provider": "openai", "auth_mode": "entra_id", "base_url": "https://x"}, "env": {"AZURE_FOUNDRY_BASE_URL": "https://y"}}
+{"func": "azure_entra_configured", "case": "wrong-auth-mode", "model_cfg": {"provider": "azure-foundry", "auth_mode": "api_key", "base_url": "https://x"}, "env": {}}
+{"func": "azure_entra_configured", "case": "empty-cfg", "model_cfg": {}, "env": {}}
+{"func": "fast_aws_signal", "case": "bearer", "env": {"AWS_BEARER_TOKEN_BEDROCK": "tok"}}
+{"func": "fast_aws_signal", "case": "keypair", "env": {"AWS_ACCESS_KEY_ID": "id", "AWS_SECRET_ACCESS_KEY": "sec"}}
+{"func": "fast_aws_signal", "case": "access-only", "env": {"AWS_ACCESS_KEY_ID": "id"}}
+{"func": "fast_aws_signal", "case": "profile", "env": {"AWS_PROFILE": "dev"}}
+{"func": "fast_aws_signal", "case": "blank-profile", "env": {"AWS_PROFILE": "   "}}
+{"func": "fast_aws_signal", "case": "empty-env", "env": {}}
+{"func": "fast_aws_signal", "case": "web-identity", "env": {"AWS_WEB_IDENTITY_TOKEN_FILE": "/tmp/t"}}
+{"func": "aws_creds_for_listing", "case": "fast-signal-wins", "slug": "bedrock", "current_provider": "openai", "env": {"AWS_PROFILE": "p"}, "sdk_creds": false}
+{"func": "aws_creds_for_listing", "case": "current-and-sdk", "slug": "bedrock", "current_provider": "bedrock", "env": {}, "sdk_creds": true}
+{"func": "aws_creds_for_listing", "case": "not-current", "slug": "bedrock", "current_provider": "openai", "env": {}, "sdk_creds": true}
+{"func": "aws_creds_for_listing", "case": "current-no-sdk", "slug": "bedrock", "current_provider": "bedrock", "env": {}, "sdk_creds": false}
+{"func": "aws_creds_for_listing", "case": "case-space-equal", "slug": " Bedrock ", "current_provider": "BEDROCK", "env": {}, "sdk_creds": true}
+{"func": "is_aws_sdk", "case": "yes", "pconfig": {"auth_type": "aws_sdk"}}
+{"func": "is_aws_sdk", "case": "api-key", "pconfig": {"auth_type": "api_key"}}
+{"func": "is_aws_sdk", "case": "none", "pconfig": null}
+{"func": "is_aws_sdk", "case": "empty-object", "pconfig": {}}
+{"func": "is_aws_sdk", "case": "auth-type-not-string", "pconfig": {"auth_type": 1}}
+{"func": "first_curated", "case": "first-nonempty", "curated": {"a": [], "b": ["m1"]}, "keys": ["a", "b", "c"]}
+{"func": "first_curated", "case": "all-empty", "curated": {"a": [], "b": []}, "keys": ["a", "b"]}
+{"func": "first_curated", "case": "missing-keys", "curated": {}, "keys": ["x"]}
+{"func": "first_curated", "case": "no-keys", "curated": {"a": ["m"]}, "keys": []}
+{"func": "free_tier_nous_row", "case": "real-account", "row": {"name": "Nous", "models": ["x"]}, "flags": {"guest": false, "guest_allowed": true, "free_inference": true, "label": "Nous \u00b7 free tier", "guest_model": "nous/welcome"}}
+{"func": "free_tier_nous_row", "case": "guest-disabled", "row": {"name": "Nous", "models": []}, "flags": {"guest": true, "guest_allowed": false, "free_inference": true, "label": "Nous \u00b7 free tier", "guest_model": "nous/welcome"}}
+{"func": "free_tier_nous_row", "case": "guest-no-trial", "row": {"name": "Nous", "models": []}, "flags": {"guest": true, "guest_allowed": true, "free_inference": false, "label": "Nous \u00b7 free tier", "guest_model": "nous/welcome"}}
+{"func": "free_tier_nous_row", "case": "guest-free", "row": {"name": "Nous", "models": [], "total_models": 0, "source": "hermes"}, "flags": {"guest": true, "guest_allowed": true, "free_inference": true, "label": "Nous \u00b7 free tier", "guest_model": "nous/welcome"}}
+{"func": "free_tier_nous_row", "case": "guest-free-minimal-row", "row": {}, "flags": {"guest": 1, "guest_allowed": 1, "free_inference": 1, "label": "Free tier", "guest_model": "welcome"}}
+{"func": "cap_models", "case": "none", "model_ids": ["a", "b", "c"], "max_models": null, "slug": "openai"}
+{"func": "cap_models", "case": "two", "model_ids": ["a", "b", "c"], "max_models": 2, "slug": "openai"}
+{"func": "cap_models", "case": "zero", "model_ids": ["a", "b"], "max_models": 0, "slug": "openai"}
+{"func": "cap_models", "case": "zero-uncapped", "model_ids": ["a", "b"], "max_models": 0, "slug": "nous"}
+{"func": "cap_models", "case": "negative", "model_ids": ["a", "b", "c"], "max_models": -1, "slug": "openai"}
+{"func": "cap_models", "case": "negative-beyond", "model_ids": ["a"], "max_models": -5, "slug": "openai"}
+{"func": "cap_models", "case": "uncapped-nous", "model_ids": ["a", "b", "c"], "max_models": 1, "slug": "nous"}
+{"func": "cap_models", "case": "uncapped-openrouter", "model_ids": ["a", "b", "c"], "max_models": 2, "slug": "openrouter"}
+{"func": "cap_models", "case": "case-sensitive-slug", "model_ids": ["a", "b", "c"], "max_models": 2, "slug": "Nous"}
+{"func": "cap_models", "case": "limit-above-length", "model_ids": ["a"], "max_models": 10, "slug": ""}
+{"func": "split_chain_entries", "case": "chain", "models": ["default_model: a,b,c", "plain"]}
+{"func": "split_chain_entries", "case": "chain-dedupe", "models": ["x, y", "y", "x"]}
+{"func": "split_chain_entries", "case": "no-comma", "models": ["a", "b"]}
+{"func": "split_chain_entries", "case": "empty", "models": []}
+{"func": "split_chain_entries", "case": "trailing-comma", "models": ["a,"]}
+{"func": "split_chain_entries", "case": "non-string-skipped", "models": [1, {"a": 1}, "m,n"]}
+{"func": "extend_unique", "case": "appends-new", "target": ["a"], "items": ["b", "a", "c"]}
+{"func": "extend_unique", "case": "falsy-items", "target": [], "items": [null, "", 0, false, [], {}, "keep"]}
+{"func": "extend_unique", "case": "numeric-equality", "target": [1], "items": [true, 1.0, 2]}
+{"func": "extend_unique", "case": "empty-target", "target": [], "items": ["a", "b"]}
+{"func": "extend_unique", "case": "empty-items", "target": ["a"], "items": []}
+{"func": "norm_url", "case": "slug-normalise", "url": "  HTTPS://API.Example.COM/v1//  "}
+{"func": "norm_url", "case": "null", "url": null}
+{"func": "norm_url", "case": "zero", "url": 0}
+{"func": "norm_url", "case": "already", "url": "https://api.example.com/v1"}
+{"func": "norm_url", "case": "empty", "url": ""}
+{"func": "entry_base_url", "case": "base-url", "entry": {"base_url": "https://a", "url": "https://b"}}
+{"func": "entry_base_url", "case": "url-fallback", "entry": {"base_url": "", "url": "https://b"}}
+{"func": "entry_base_url", "case": "api-last", "entry": {"api": "https://c"}}
+{"func": "entry_base_url", "case": "none", "entry": {}}
+{"func": "entry_base_url", "case": "custom-keys", "entry": {"api": "https://c", "base_url": "https://a"}, "keys": ["api", "base_url"]}
+{"func": "entry_api_mode", "case": "api-mode", "entry": {"api_mode": "Chat "}}
+{"func": "entry_api_mode", "case": "transport", "entry": {"transport": "RESPONSES"}}
+{"func": "entry_api_mode", "case": "api-mode-wins", "entry": {"api_mode": "chat", "transport": "responses"}}
+{"func": "entry_api_mode", "case": "blank", "entry": {"api_mode": "   "}}
+{"func": "entry_api_mode", "case": "none", "entry": {}}
+{"func": "entry_credentials", "case": "inline-key", "entry": {"api_key": " sk-1 "}, "key_env_keys": ["key_env", "api_key_env"], "key_cmd_identity": null}
+{"func": "entry_credentials", "case": "key-env-only", "entry": {"key_env": "OPENAI_API_KEY"}, "key_env_keys": ["key_env", "api_key_env"], "key_cmd_identity": null}
+{"func": "entry_credentials", "case": "api-key-env-second", "entry": {"api_key_env": "X_KEY"}, "key_env_keys": ["key_env", "api_key_env"], "key_cmd_identity": null}
+{"func": "entry_credentials", "case": "key-cmd-source", "entry": {"key_cmd": "op read x", "key_env": "E"}, "key_env_keys": ["key_env"], "key_cmd_identity": "cmd:op-read"}
+{"func": "entry_credentials", "case": "neither", "entry": {}, "key_env_keys": ["key_env"], "key_cmd_identity": null}
+{"func": "entry_credentials", "case": "both-inline-wins", "entry": {"api_key": "sk-2", "key_env": "E"}, "key_env_keys": ["key_env"], "key_cmd_identity": null}
+{"func": "discover_flag", "case": "default", "entry": {}}
+{"func": "discover_flag", "case": "false-bool", "entry": {"discover_models": false}}
+{"func": "discover_flag", "case": "false-string", "entry": {"discover_models": "FALSE"}}
+{"func": "discover_flag", "case": "no-string", "entry": {"discover_models": "no"}}
+{"func": "discover_flag", "case": "zero-string", "entry": {"discover_models": "0"}}
+{"func": "discover_flag", "case": "true-string", "entry": {"discover_models": "yes"}}
+{"func": "discover_flag", "case": "zero-number", "entry": {"discover_models": 0}}
+{"func": "discover_flag", "case": "null", "entry": {"discover_models": null}}
+{"func": "display_prefix", "case": "em-dash", "name": "Ollama \u2014 Qwen 2.5"}
+{"func": "display_prefix", "case": "hyphen", "name": "Palantir - Claude 4.7"}
+{"func": "display_prefix", "case": "both-prefers-em-dash", "name": "A - B \u2014 C"}
+{"func": "display_prefix", "case": "none", "name": "Plain Name"}
+{"func": "display_prefix", "case": "empty-before", "name": " \u2014 trailing"}
+{"func": "group_display_name", "case": "version-tail", "name": "Palantir Claude 4.7 Opus"}
+{"func": "group_display_name", "case": "no-digits", "name": "Nous"}
+{"func": "group_display_name", "case": "prefix-only", "name": "Ollama \u2014 Qwen 2.5"}
+{"func": "group_display_name", "case": "cut-at-one", "name": "GPT 4o"}
+{"func": "group_display_name", "case": "cut-at-two", "name": "Mistral Small 3.1"}
+{"func": "group_display_name", "case": "paren-digit-first", "name": "(8b) model"}
+{"func": "group_display_name", "case": "digit-later-in-word", "name": "Claude Sonnet 4"}

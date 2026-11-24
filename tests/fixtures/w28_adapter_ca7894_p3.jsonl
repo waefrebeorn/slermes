@@ -1,0 +1,70 @@
+{"func": "verify_sender_auth", "case": "v0", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dmarc=pass header.from=example.com"]}
+{"func": "verify_sender_auth", "case": "v1", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dmarc=pass header.from=evil.com"]}
+{"func": "verify_sender_auth", "case": "v2", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; spf=pass smtp.mailfrom=mail.example.com"]}
+{"func": "verify_sender_auth", "case": "v3", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; spf=pass smtp.mailfrom=evil.com"]}
+{"func": "verify_sender_auth", "case": "v4", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dkim=pass header.d=example.com"]}
+{"func": "verify_sender_auth", "case": "v5", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dkim=pass header.d=evil.com"]}
+{"func": "verify_sender_auth", "case": "v6", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dkim=pass header.i=@example.com"]}
+{"func": "verify_sender_auth", "case": "v7", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": []}
+{"func": "verify_sender_auth", "case": "v8", "from_addr": "alice@example.com", "authserv_id": "", "headers": ["mx.example.com; dmarc=pass header.from=example.com"]}
+{"func": "verify_sender_auth", "case": "v9", "from_addr": "alice@example.com", "authserv_id": "evil.example.com", "headers": ["mx.example.com; dmarc=pass header.from=example.com"]}
+{"func": "verify_sender_auth", "case": "v10", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dmarc=pass (unbalanced header.from=example.com"]}
+{"func": "verify_sender_auth", "case": "v11", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dmarc=pass header.from=example.com; dmarc=fail"]}
+{"func": "verify_sender_auth", "case": "v12", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dmarc=pass"]}
+{"func": "verify_sender_auth", "case": "v13", "from_addr": "no-at-sign", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dmarc=pass"]}
+{"func": "verify_sender_auth", "case": "v14", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; spf=pass smtp.mailfrom=example.com; spf=pass smtp.mailfrom=example.com"]}
+{"func": "verify_sender_auth", "case": "v15", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dmarc=pass (p=reject) header.from=example.com"]}
+{"func": "verify_sender_auth", "case": "v16", "from_addr": "alice@mail.example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dkim=pass header.d=example.com"]}
+{"func": "verify_sender_auth", "case": "v17", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["  mx.example.com ;  dkim=pass  header.d=example.com "]}
+{"func": "verify_sender_auth", "case": "v18", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dmarc=pass header.from=example.com", "mx.example.com; dmarc=pass header.from=evil.com"]}
+{"func": "verify_sender_auth", "case": "v19", "from_addr": "alice@example.com", "authserv_id": "mx.example.com", "headers": ["mx.example.com; dmarc=fail"]}
+{"func": "sender_accepted", "case": "s0", "sender": "bot@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s1", "sender": "no-reply@spam.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s2", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {"EMAIL_ALLOWED_USERS": "alice@example.com"}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s3", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": false, "auth_reason": "no Authentication-Results header"}, "env": {"EMAIL_ALLOWED_USERS": "alice@example.com"}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s4", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {"EMAIL_ALLOWED_USERS": "alice"}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s5", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s6", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {}, "extra": {"unauthorized_dm_behavior": "pair"}, "authorized": null}
+{"func": "sender_accepted", "case": "s7", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {}, "extra": {}, "authorized": true}
+{"func": "sender_accepted", "case": "s8", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {"EMAIL_ALLOW_ALL_USERS": "true"}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s9", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {"GATEWAY_ALLOWED_USERS": "[\"ALICE@EXAMPLE.COM\"]"}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s10", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {"GATEWAY_ALLOW_ALL_USERS": "1"}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s11", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": false, "auth_reason": "dmarc=pass"}, "env": {"EMAIL_ALLOWED_USERS": "alice@example.com"}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s12", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": false, "auth_reason": "no Authentication-Results from trusted authserv-id"}, "env": {}, "extra": {"unauthorized_dm_behavior": "decline"}, "authorized": null}
+{"func": "sender_accepted", "case": "s13", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": false, "msg": {"sender_authenticated": false, "auth_reason": null}, "env": {}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s14", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {"EMAIL_ALLOWED_USERS": " bob@x.com , alice@example.com "}, "extra": {}, "authorized": null}
+{"func": "sender_accepted", "case": "s15", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {"EMAIL_ALLOWED_USERS": "[]"}, "extra": {}, "authorized": true}
+{"func": "sender_accepted", "case": "s16", "sender": "alice@example.com", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": false, "auth_reason": null}, "env": {}, "extra": {"unauthorized_dm_behavior": "pair"}, "authorized": false}
+{"func": "sender_accepted", "case": "s17", "sender": "Alice@Example.COM", "address": "bot@example.com", "require_auth": true, "msg": {"sender_authenticated": true, "auth_reason": null}, "env": {"EMAIL_ALLOWED_USERS": "alice@example.com"}, "extra": {}, "authorized": null}
+{"func": "trim_seen_uids", "case": "t0", "uids": ["1", "2", "3"], "max": 2000}
+{"func": "trim_seen_uids", "case": "t1", "uids": ["3", "1", "2", "1"], "max": 2000}
+{"func": "trim_seen_uids", "case": "t2", "uids": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"], "max": 4}
+{"func": "trim_seen_uids", "case": "t3", "uids": ["9", "10", "100", "11"], "max": 2}
+{"func": "trim_seen_uids", "case": "t4", "uids": [], "max": 2000}
+{"func": "trim_seen_uids", "case": "t5", "uids": ["5", "6", "7"], "max": 0}
+{"func": "trim_seen_uids", "case": "t6", "uids": ["30", "29", "28", "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1"], "max": 6}
+{"func": "message_id_domain", "case": "m0", "address": "bot@example.com"}
+{"func": "message_id_domain", "case": "m1", "address": "nodomain"}
+{"func": "message_id_domain", "case": "m2", "address": "a@b@c"}
+{"func": "message_id_domain", "case": "m3", "address": "bot@"}
+{"func": "message_id_domain", "case": "m4", "address": ""}
+{"func": "reply_threading", "case": "r0", "address": "bot@example.com", "to_addr": "alice@example.com", "ctx": null, "reply_to": null}
+{"func": "reply_threading", "case": "r1", "address": "bot@example.com", "to_addr": "alice@example.com", "ctx": {"subject": "Invoice 42", "message_id": "<m1@x>"}, "reply_to": null}
+{"func": "reply_threading", "case": "r2", "address": "bot@example.com", "to_addr": "alice@example.com", "ctx": {"subject": "Re: Invoice 42"}, "reply_to": null}
+{"func": "reply_threading", "case": "r3", "address": "bot@example.com", "to_addr": "alice@example.com", "ctx": {"subject": "Hi", "message_id": "<ctx@x>"}, "reply_to": "<explicit@x>"}
+{"func": "reply_threading", "case": "r4", "address": "bot@example.com", "to_addr": "alice@example.com", "ctx": {}, "reply_to": null}
+{"func": "reply_threading", "case": "r5", "address": "bot@example.com", "to_addr": "alice@example.com", "ctx": {"message_id": "<only@x>"}, "reply_to": null}
+{"func": "attachment_meta", "case": "a0", "disposition": "attachment; filename=report.pdf", "content_type": "application/pdf", "subtype": "pdf", "filename": "report.pdf", "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a1", "disposition": "attachment", "content_type": "image/png", "subtype": "png", "filename": "SHOT.PNG", "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a2", "disposition": "inline", "content_type": "text/plain", "subtype": "plain", "filename": "body.txt", "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a3", "disposition": "inline", "content_type": "image/png", "subtype": "png", "filename": "inline.png", "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a4", "disposition": "attachment", "content_type": "application/pdf", "subtype": "pdf", "filename": "x.pdf", "has_payload": true, "skip": true}
+{"func": "attachment_meta", "case": "a5", "disposition": "attachment", "content_type": "application/pdf", "subtype": "pdf", "filename": "x.pdf", "has_payload": false, "skip": false}
+{"func": "attachment_meta", "case": "a6", "disposition": "attachment", "content_type": "text/plain", "subtype": "plain", "filename": "=?utf-8?b?Y2Fmw6kudHh0?=", "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a7", "disposition": "attachment", "content_type": "application/pdf", "subtype": "pdf", "filename": null, "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a8", "disposition": "attachment", "content_type": "application/octet-stream", "subtype": "", "filename": null, "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a9", "disposition": "", "content_type": "application/pdf", "subtype": "pdf", "filename": "x.pdf", "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a10", "disposition": "attachment", "content_type": "application/octet-stream", "subtype": "bin", "filename": ".bashrc", "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a11", "disposition": "attachment", "content_type": "application/gzip", "subtype": "gzip", "filename": "archive.tar.gz", "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a12", "disposition": "attachment", "content_type": "image/jpeg", "subtype": "jpeg", "filename": "/tmp/pics/me.JPEG", "has_payload": true, "skip": false}
+{"func": "attachment_meta", "case": "a13", "disposition": "ATTACHMENT", "content_type": "application/pdf", "subtype": "pdf", "filename": "up.pdf", "has_payload": true, "skip": false}

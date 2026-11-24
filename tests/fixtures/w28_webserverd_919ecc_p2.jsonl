@@ -1,0 +1,120 @@
+{"func": "strip_manifest", "case": "drops_private", "p": {"_dir": "d", "_api_file": "api.py", "name": "p", "tab": {"path": "/p"}}}
+{"func": "strip_manifest", "case": "no_private", "p": {"name": "p", "has_api": true}}
+{"func": "strip_manifest", "case": "all_private", "p": {"_a": 1, "_b": null}}
+{"func": "strip_manifest", "case": "empty", "p": {}}
+{"func": "runtime_status", "case": "disabled_wins", "aliases": ["p", "p-key"], "enabled": ["p"], "disabled": ["p-key"]}
+{"func": "runtime_status", "case": "enabled", "aliases": ["p"], "enabled": ["p"], "disabled": []}
+{"func": "runtime_status", "case": "inactive", "aliases": ["p"], "enabled": ["other"], "disabled": []}
+{"func": "runtime_status", "case": "empty_aliases", "aliases": [], "enabled": ["p"], "disabled": ["p"]}
+{"func": "runtime_status", "case": "key_alias", "aliases": ["p", "spotify"], "enabled": ["spotify"], "disabled": []}
+{"func": "mount_skip_reason", "case": "user_not_enabled", "plugin": {"name": "p", "source": "user"}, "enabled": [], "disabled": []}
+{"func": "mount_skip_reason", "case": "user_enabled", "plugin": {"name": "p", "source": "user"}, "enabled": ["p"], "disabled": []}
+{"func": "mount_skip_reason", "case": "bundled_disabled", "plugin": {"name": "p", "source": "bundled"}, "enabled": [], "disabled": ["p"]}
+{"func": "mount_skip_reason", "case": "bundled_default", "plugin": {"name": "p", "source": "bundled"}, "enabled": [], "disabled": []}
+{"func": "mount_skip_reason", "case": "project_ignored", "plugin": {"name": "p", "source": "project"}, "enabled": [], "disabled": ["p"]}
+{"func": "mount_skip_reason", "case": "missing_name", "plugin": {"source": "user"}, "enabled": [""], "disabled": []}
+{"func": "plugin_entry", "case": "full", "data": {"name": "p", "label": "Pretty", "description": "d", "icon": "Star", "version": "1.2.3", "tab": {"path": "/x", "position": "top", "override": "/y", "hidden": 1}, "slots": ["a", "", 3, null], "entry": "dist/app.js", "css": "s.css", "api": "api.py"}, "name": "p", "dashboard_dir": "C:/tmp/plug/dashboard", "source": "user"}
+{"func": "plugin_entry", "case": "defaults", "data": {}, "name": "nm", "dashboard_dir": "C:/tmp/plug/dashboard", "source": "bundled"}
+{"func": "plugin_entry", "case": "tab_not_dict", "data": {"tab": "notadict", "override": "noslash"}, "name": "q", "dashboard_dir": "C:/tmp/plug/dashboard", "source": "bundled"}
+{"func": "plugin_entry", "case": "explicit_null_label", "data": {"label": null, "css": null, "api": null}, "name": "r", "dashboard_dir": "C:/tmp/plug/dashboard", "source": "bundled"}
+{"func": "plugin_entry", "case": "escape_api", "data": {"api": "../evil.py"}, "name": "s", "dashboard_dir": "C:/tmp/plug/dashboard", "source": "user"}
+{"func": "plugin_entry", "case": "hidden_zero", "data": {"tab": {"hidden": 0, "override": "rel"}}, "name": "t", "dashboard_dir": "C:/tmp/plug/dashboard", "source": "project"}
+{"func": "plugin_entry", "case": "slots_not_list", "data": {"slots": "a"}, "name": "u", "dashboard_dir": "C:/tmp/plug/dashboard", "source": "user"}
+{"func": "plugin_entry", "case": "subdir_api", "data": {"api": "sub/api.py"}, "name": "v", "dashboard_dir": "C:/tmp/plug/dashboard", "source": "user"}
+{"func": "plugin_entry", "case": "empty_tab_dict", "data": {"tab": {}}, "name": "w", "dashboard_dir": "C:/tmp/plug/dashboard", "source": "user"}
+{"func": "safe_api_relpath", "case": "plain", "api_field": "api.py", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "dot_parent", "api_field": "../evil.py", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "inner_dotdot", "api_field": "sub/../api.py", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "subdir", "api_field": "sub/api.py", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "absolute", "api_field": "/abs.py", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "drive_absolute", "api_field": "C:/x.py", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "empty", "api_field": "", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "blank", "api_field": "  ", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "trailing_space", "api_field": "api.py ", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "dot", "api_field": ".", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "dot_slash", "api_field": "./api.py", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "climb_out", "api_field": "a/../../x.py", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "backslash", "api_field": "sub\\\\api.py", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "not_a_str", "api_field": 7, "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "safe_api_relpath", "case": "relative_dir", "api_field": "sub/../../x.py", "dashboard_dir": "plug/dashboard"}
+{"func": "safe_api_relpath", "case": "relative_dir_ok", "api_field": "api.py", "dashboard_dir": "plug/dashboard"}
+{"func": "safe_api_relpath", "case": "sibling_dir", "api_field": "../other/api.py", "dashboard_dir": "C:/tmp/plug/dashboard"}
+{"func": "api_name", "case": "name", "path": "/api/plugins/x/y", "root_path": ""}
+{"func": "api_name", "case": "bare", "path": "/api/plugins/x", "root_path": ""}
+{"func": "api_name", "case": "trailing_slash", "path": "/api/plugins/", "root_path": ""}
+{"func": "api_name", "case": "no_plugins", "path": "/api/plugins", "root_path": ""}
+{"func": "api_name", "case": "root_path", "path": "/hermes/api/plugins/x/y", "root_path": "/hermes"}
+{"func": "api_name", "case": "root_mismatch", "path": "/other/api/plugins/x", "root_path": "/hermes"}
+{"func": "api_name", "case": "empty", "path": "", "root_path": ""}
+{"func": "api_mounted", "case": "exact", "name": "p", "routes": [{"path": "/api/plugins/p", "hot": false}]}
+{"func": "api_mounted", "case": "subpath", "name": "p", "routes": [{"path": "/api/plugins/p/x", "hot": false}]}
+{"func": "api_mounted", "case": "other", "name": "p", "routes": [{"path": "/api/plugins/q/x", "hot": false}]}
+{"func": "api_mounted", "case": "hot_only", "name": "p", "routes": [{"path": "/api/plugins/p/x", "hot": true}]}
+{"func": "api_mounted", "case": "hot_plus_real", "name": "p", "routes": [{"path": "/api/plugins/p/x", "hot": true}, {"path": "/api/plugins/p/y", "hot": false}]}
+{"func": "api_mounted", "case": "prefix_lookalike", "name": "p", "routes": [{"path": "/api/plugins/px", "hot": false}]}
+{"func": "api_mounted", "case": "empty", "name": "p", "routes": []}
+{"func": "api_mounted", "case": "name_trailing_slash", "name": "p/", "routes": [{"path": "/api/plugins/p/x", "hot": false}]}
+{"func": "hot_name_ok", "case": "plain", "name": "plug"}
+{"func": "hot_name_ok", "case": "empty", "name": ""}
+{"func": "hot_name_ok", "case": "dotdot", "name": ".."}
+{"func": "hot_name_ok", "case": "slash", "name": "a/b"}
+{"func": "hot_name_ok", "case": "backslash", "name": "a\\\\b"}
+{"func": "hot_name_ok", "case": "brace", "name": "a{b}"}
+{"func": "hot_name_ok", "case": "dotted", "name": "a.b"}
+{"func": "hot_name_ok", "case": "with_space", "name": "a b"}
+{"func": "hot_name_ok", "case": "single_dot", "name": "."}
+{"func": "login_command", "case": "left_core", "name": "spotify", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}]}
+{"func": "login_command", "case": "left_core_blank_cli", "name": "nocl", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}]}
+{"func": "login_command", "case": "left_core_alt_cli", "name": "gmail", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}]}
+{"func": "login_command", "case": "unknown", "name": "other", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}]}
+{"func": "login_command", "case": "empty_table", "name": "spotify", "left_core": []}
+{"func": "auth_hint", "case": "cached_false", "name": "plug", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}], "provides_tools": ["t1"], "registry": {"t1": {"check_fn": "fn1"}, "t2": {"check_fn": "fn2"}, "t3": {"check_fn": null}}, "cached": {"fn1": false}}
+{"func": "auth_hint", "case": "cached_true", "name": "plug", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}], "provides_tools": ["t1"], "registry": {"t1": {"check_fn": "fn1"}, "t2": {"check_fn": "fn2"}, "t3": {"check_fn": null}}, "cached": {"fn1": true}}
+{"func": "auth_hint", "case": "unknown_probes", "name": "plug", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}], "provides_tools": ["t1", "t2"], "registry": {"t1": {"check_fn": "fn1"}, "t2": {"check_fn": "fn2"}, "t3": {"check_fn": null}}, "cached": {}}
+{"func": "auth_hint", "case": "missing_entry", "name": "plug", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}], "provides_tools": ["nope"], "registry": {"t1": {"check_fn": "fn1"}, "t2": {"check_fn": "fn2"}, "t3": {"check_fn": null}}, "cached": {}}
+{"func": "auth_hint", "case": "no_check_fn", "name": "plug", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}], "provides_tools": ["t3"], "registry": {"t1": {"check_fn": "fn1"}, "t2": {"check_fn": "fn2"}, "t3": {"check_fn": null}}, "cached": {"fn3": false}}
+{"func": "auth_hint", "case": "second_tool_false", "name": "spotify", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}], "provides_tools": ["t1", "t2"], "registry": {"t1": {"check_fn": "fn1"}, "t2": {"check_fn": "fn2"}, "t3": {"check_fn": null}}, "cached": {"fn1": true, "fn2": false}}
+{"func": "auth_hint", "case": "unknown_then_false", "name": "plug", "left_core": [{"plugin": "spotify", "cli": "spotify"}, {"plugin": "nocl", "cli": ""}, {"plugin": "gmail", "cli": "mail"}], "provides_tools": ["t1", "t2"], "registry": {"t1": {"check_fn": "fn1"}, "t2": {"check_fn": "fn2"}, "t3": {"check_fn": null}}, "cached": {"fn2": false}}
+{"func": "mount_decision", "case": "user_enabled_ok", "plugin": {"name": "p", "source": "user", "_api_file": "api.py"}, "enabled": ["p"], "disabled": [], "routes": [], "isolation": "in-process", "api_exists": true, "api_inside": true, "import_mode": "ok"}
+{"func": "mount_decision", "case": "user_not_enabled", "plugin": {"name": "p", "source": "user", "_api_file": "api.py"}, "enabled": [], "disabled": [], "routes": [], "isolation": "in-process", "api_exists": true, "api_inside": true, "import_mode": "ok"}
+{"func": "mount_decision", "case": "bundled_disabled", "plugin": {"name": "p", "source": "bundled", "_api_file": "api.py"}, "enabled": [], "disabled": ["p"], "routes": [], "isolation": "in-process", "api_exists": true, "api_inside": true, "import_mode": "ok"}
+{"func": "mount_decision", "case": "bundled_ok", "plugin": {"name": "p", "source": "bundled", "_api_file": "api.py"}, "enabled": [], "disabled": [], "routes": [], "isolation": "in-process", "api_exists": true, "api_inside": true, "import_mode": "ok"}
+{"func": "mount_decision", "case": "no_api_file", "plugin": {"name": "p", "source": "bundled"}, "enabled": [], "disabled": [], "routes": [], "isolation": "in-process", "api_exists": true, "api_inside": true, "import_mode": "ok"}
+{"func": "mount_decision", "case": "already_mounted", "plugin": {"name": "p", "source": "bundled", "_api_file": "api.py"}, "enabled": [], "disabled": [], "routes": [{"path": "/api/plugins/p/x", "hot": false}], "isolation": "in-process", "api_exists": true, "api_inside": true, "import_mode": "ok"}
+{"func": "mount_decision", "case": "project_refused", "plugin": {"name": "p", "source": "project", "_api_file": "api.py"}, "enabled": ["p"], "disabled": [], "routes": [], "isolation": "in-process", "api_exists": true, "api_inside": true, "import_mode": "ok"}
+{"func": "mount_decision", "case": "hosted_user", "plugin": {"name": "p", "source": "user", "_api_file": "api.py"}, "enabled": ["p"], "disabled": [], "routes": [], "isolation": "host", "api_exists": true, "api_inside": true, "import_mode": "ok"}
+{"func": "mount_decision", "case": "hosted_bundled_inline", "plugin": {"name": "p", "source": "bundled", "_api_file": "api.py"}, "enabled": [], "disabled": [], "routes": [], "isolation": "host", "api_exists": true, "api_inside": true, "import_mode": "ok"}
+{"func": "mount_decision", "case": "outside_dir", "plugin": {"name": "p", "source": "bundled", "_api_file": "api.py"}, "enabled": [], "disabled": [], "routes": [], "isolation": "in-process", "api_exists": true, "api_inside": false, "import_mode": "ok"}
+{"func": "mount_decision", "case": "missing_file", "plugin": {"name": "p", "source": "bundled", "_api_file": "api.py"}, "enabled": [], "disabled": [], "routes": [], "isolation": "in-process", "api_exists": false, "api_inside": true, "import_mode": "ok"}
+{"func": "mount_decision", "case": "import_none", "plugin": {"name": "p", "source": "bundled", "_api_file": "api.py"}, "enabled": [], "disabled": [], "routes": [], "isolation": "in-process", "api_exists": true, "api_inside": true, "import_mode": "none"}
+{"func": "mount_decision", "case": "no_router", "plugin": {"name": "p", "source": "bundled", "_api_file": "api.py"}, "enabled": [], "disabled": [], "routes": [], "isolation": "in-process", "api_exists": true, "api_inside": true, "import_mode": "norouter"}
+{"func": "mount_decision", "case": "import_raises", "plugin": {"name": "p", "source": "bundled", "_api_file": "api.py"}, "enabled": [], "disabled": [], "routes": [], "isolation": "in-process", "api_exists": true, "api_inside": true, "import_mode": "raise"}
+{"func": "mount_decision", "case": "other_source_host", "plugin": {"name": "p", "source": "git", "_api_file": "api.py"}, "enabled": ["p"], "disabled": [], "routes": [], "isolation": "host", "api_exists": true, "api_inside": true, "import_mode": "ok"}
+{"func": "env_truthy", "case": "one", "value": "1"}
+{"func": "env_truthy", "case": "true", "value": "true"}
+{"func": "env_truthy", "case": "upper", "value": "TRUE"}
+{"func": "env_truthy", "case": "padded_yes", "value": " yes "}
+{"func": "env_truthy", "case": "on", "value": "on"}
+{"func": "env_truthy", "case": "zero", "value": "0"}
+{"func": "env_truthy", "case": "false", "value": "false"}
+{"func": "env_truthy", "case": "no", "value": "no"}
+{"func": "env_truthy", "case": "lookalike", "value": "onx"}
+{"func": "env_truthy", "case": "empty", "value": ""}
+{"func": "enable_sets", "case": "both", "config": {"plugins": {"enabled": ["b", "a", "a"], "disabled": ["z"]}}}
+{"func": "enable_sets", "case": "non_list", "config": {"plugins": {"enabled": "a", "disabled": null}}}
+{"func": "enable_sets", "case": "no_plugins_key", "config": {}}
+{"func": "enable_sets", "case": "plugins_not_dict", "config": {"plugins": ["a"]}}
+{"func": "enable_sets", "case": "empty_lists", "config": {"plugins": {"enabled": [], "disabled": []}}}
+{"func": "orphan_dashboard", "case": "one_orphan", "rows": [{"name": "a"}, {"name": "b"}], "dashboard_list": [{"name": "a", "tab": {"path": "/a"}, "_dir": "x"}, {"name": "c", "tab": {"path": "/c"}, "_dir": "y"}]}
+{"func": "orphan_dashboard", "case": "none_orphan", "rows": [{"name": "a"}], "dashboard_list": [{"name": "a"}]}
+{"func": "orphan_dashboard", "case": "all_orphan", "rows": [], "dashboard_list": [{"name": "a"}, {"name": "b", "_x": 1}]}
+{"func": "cache_hit", "case": "warm", "force": false, "has_entry": true, "now": 1.0, "expiry": 2.0}
+{"func": "cache_hit", "case": "expired", "force": false, "has_entry": true, "now": 3.0, "expiry": 2.0}
+{"func": "cache_hit", "case": "forced", "force": true, "has_entry": true, "now": 1.0, "expiry": 2.0}
+{"func": "cache_hit", "case": "cold", "force": false, "has_entry": false, "now": 1.0, "expiry": 2.0}
+{"func": "cache_hit", "case": "exact_expiry", "force": false, "has_entry": true, "now": 2.0, "expiry": 2.0}
+{"func": "splice_index", "case": "before_fallback", "routes": [{"hot": false}, {"hot": true}, {"hot": false}]}
+{"func": "splice_index", "case": "no_fallback", "routes": [{"hot": false}, {"hot": false}]}
+{"func": "splice_index", "case": "empty", "routes": []}
+{"func": "splice_index", "case": "fallback_first", "routes": [{"hot": true}]}
+{"func": "constants", "case": "all"}

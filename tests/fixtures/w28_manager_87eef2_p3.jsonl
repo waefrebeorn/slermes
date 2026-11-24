@@ -1,0 +1,35 @@
+{"func": "safe_restore_plan", "commit": "zz", "dir": "/work/proj", "names": [], "ledger": {}, "has_head": true}
+{"func": "safe_restore_plan", "commit": "", "dir": "/work/proj", "names": [], "ledger": {}, "has_head": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["a.txt"], "ledger": {}, "has_head": false}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["a.txt"], "ledger": {}, "has_head": true, "ok": false, "err": "boom"}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["a.txt"], "ledger": {}, "has_head": true, "ok": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["a.txt"], "has_head": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["a.txt", "b.txt"], "ledger": {"/work/proj/a.txt": {"sha256": "aa", "ts": 1}}, "current": {"/work/proj/a.txt": "aa", "/work/proj/b.txt": "bb"}, "has_head": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["a.txt", "b.txt"], "ledger": {"/work/proj/a.txt": {"sha256": "aa"}, "/work/proj/b.txt": {"sha256": "bb"}}, "current": {"/work/proj/a.txt": "zz", "/work/proj/b.txt": null}, "has_head": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["a.txt"], "ledger": {"/work/proj/a.txt": "str"}, "current": {"/work/proj/a.txt": "zz"}, "has_head": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["a.txt"], "ledger": {"/work/proj/a.txt": {"ts": 1}}, "current": {"/work/proj/a.txt": "zz"}, "has_head": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["a.txt"], "ledger": {"/work/proj/a.txt": {"sha256": null}}, "current": {"/work/proj/a.txt": null}, "has_head": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["sub/dir/f.txt"], "ledger": {"/work/proj/sub/dir/f.txt": {"sha256": "x"}}, "current": {"/work/proj/sub/dir/f.txt": "x"}, "has_head": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["", "a.txt"], "ledger": {"/work/proj/a.txt": {"sha256": "aa"}}, "current": {"/work/proj/a.txt": "aa"}, "has_head": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/work/proj", "names": ["a.txt"], "ledger": {"/work/proj/a.txt": {"sha256": 42}}, "current": {"/work/proj/a.txt": 42}, "has_head": true}
+{"func": "safe_restore_plan", "commit": "abcdef12", "dir": "/w2", "names": ["a.txt", "b/c.txt"], "ledger": {"/w2/a.txt": {"sha256": "1"}, "/w2/b/c.txt": {"sha256": "2"}}, "current": {"/w2/a.txt": "1", "/w2/b/c.txt": "2"}, "has_head": true}
+{"func": "diff_result", "commit": "zz"}
+{"func": "diff_result", "commit": "abcdef12", "has_head": false}
+{"func": "diff_result", "commit": "abcdef12", "has_head": true, "cat_ok": false}
+{"func": "diff_result", "commit": "abcdef12", "has_head": true, "cat_ok": true, "stat_ok": false, "diff_ok": false}
+{"func": "diff_result", "commit": "abcdef12", "has_head": true, "cat_ok": true, "stat_ok": true, "stat": " a | 1 +", "diff_ok": false, "diff": "ignored"}
+{"func": "diff_result", "commit": "abcdef12", "has_head": true, "cat_ok": true, "stat_ok": false, "stat": "ignored", "diff_ok": true, "diff": "only"}
+{"func": "diff_result", "commit": "abcdef12", "has_head": true, "cat_ok": true}
+{"func": "session_diff", "checkpoints": [], "diff": {"success": true}}
+{"func": "session_diff", "checkpoints": [{"hash": "n1"}, {"hash": "old"}], "diff": {"success": true, "stat": "", "diff": ""}}
+{"func": "session_diff", "checkpoints": [{"hash": "n1"}, {"hash": "old"}], "diff": {"success": true, "stat": " s", "diff": "d"}}
+{"func": "session_diff", "checkpoints": [{"hash": "n1"}, {"hash": "old"}], "diff": {"success": true, "stat": "", "diff": "", "baseline": "given"}}
+{"func": "session_diff", "checkpoints": [{"hash": "n1"}, {"hash": "old"}], "diff": {"success": false, "error": "nope"}}
+{"func": "session_diff", "checkpoints": [{"short_hash": "x"}], "diff": {"success": true}}
+{"func": "exceeds_size_cap", "cap_mb": 0, "size": 999}
+{"func": "exceeds_size_cap", "cap_mb": 1, "size": 1048576}
+{"func": "exceeds_size_cap", "cap_mb": 1, "size": 1048577}
+{"func": "exceeds_size_cap", "cap_mb": 1, "size": 1048577, "stat_ok": false}
+{"func": "exceeds_size_cap", "cap_mb": 2, "size": 3145728}
+{"func": "exceeds_size_cap", "cap_mb": 10, "size": 3145728}
+{"func": "exceeds_size_cap", "cap_mb": 0, "size": 0}

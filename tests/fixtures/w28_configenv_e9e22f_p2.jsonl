@@ -1,0 +1,43 @@
+{"case":"strip-internal","func":"strip_internal","config":{"_internal":1,"model":{"provider":"x"},"show":true,"_draft":"y","memory":{"_tmp":2}}}
+{"case":"strip-empty","func":"strip_internal","config":{}}
+{"case":"row-basic","func":"endpoint_row","args":{"id":"local","name":"Local","base_url":"http://127.0.0.1:8283/v1","model":"m1","models":["m1","a"],"context_length":32000,"discover_models":false,"key_entry":{"api_key":"sk-abcdefghijklmn"},"is_current":true,"source":"providers"}}
+{"case":"row-no-key","func":"endpoint_row","args":{"id":"k2","name":"k2","base_url":"http://u/v1","model":"","models":[],"context_length":null,"discover_models":true,"key_entry":{},"is_current":false,"source":"providers"}}
+{"case":"row-key-env","func":"endpoint_row","args":{"id":"env-k","name":"Env K","base_url":"http://h/v1","model":"m","models":["m"],"context_length":8192,"discover_models":true,"key_entry":{"key_env":"ENV_K","api_mode":"anthropic"},"is_current":false,"source":"custom_providers"}}
+{"case":"resp-providers","func":"custom_endpoint_response","cfg":{"providers":{"local":{"base_url":"http://127.0.0.1:8283/v1/","model":"m1","models":["a","b","a"],"api_mode":"openai","discover_models":false,"context_length":32000,"api_key":"sk-abcdefghijklmn"}},"custom_providers":[]}}
+{"case":"resp-current-by-name","func":"custom_endpoint_response","cfg":{"model":{"provider":"custom:local","default":"m1","base_url":"http://127.0.0.1:8283"},"providers":{"Local":{"name":"Local","api":"http://127.0.0.1:8283/v1","default_model":"dm","models":{"x":{},"y":{}},"key_env":"LOCAL_KEY"}}}}
+{"case":"resp-bare-custom","func":"custom_endpoint_response","cfg":{"model":{"provider":"custom","default":"q","base_url":"http://host:9/v1/"},"providers":{}}}
+{"case":"resp-bare-covered","func":"custom_endpoint_response","cfg":{"model":{"provider":"custom","base_url":"http://host:9/v1"},"providers":{"custom":{"base_url":"http://host:9/v1","model":"other"}}}}
+{"case":"resp-empty","func":"custom_endpoint_response","cfg":{}}
+{"case":"resp-model-not-dict","func":"custom_endpoint_response","cfg":{"model":"nope","providers":{"k":{"base_url":"http://x/v1"}}}}
+{"case":"resp-filters","func":"custom_endpoint_response","cfg":{"providers":{"k":{"base_url":"","model":"m"},"k2":{"url":"  http://u/v1  ","name":"","model":""},"k3":"notadict","k4":{"base_url":"http://x/v1","models":[],"transport":"anthropic"}}}}
+{"case":"resp-no-name","func":"custom_endpoint_response","cfg":{"providers":{"bare-key":{"base_url":"http://h/v1","model":"m"}}}}
+{"case":"pop-match","func":"pop_legacy_provider","cfg":{"custom_providers":[{"name":"My Endpoint","base_url":"http://a"},{"name":"Other","base_url":"http://b"}],"model":{"provider":"x"}},"provider_key":"my-endpoint"}
+{"case":"pop-second","func":"pop_legacy_provider","cfg":{"custom_providers":[{"name":"Other","base_url":"http://b"},{"name":"My Endpoint","base_url":"http://a"}]},"provider_key":"my-endpoint"}
+{"case":"pop-miss","func":"pop_legacy_provider","cfg":{"custom_providers":[{"name":"Other","base_url":"http://b"}]},"provider_key":"my-endpoint"}
+{"case":"pop-not-list","func":"pop_legacy_provider","cfg":{"custom_providers":"oops"},"provider_key":"my-endpoint"}
+{"case":"detach-match","func":"detach_main_model","cfg":{"model":{"provider":"custom:Local","base_url":"http://h","api_key":"sk-1","key_env":"K","default":"m"},"providers":{}},"provider_key":"local","entry":{"name":"Local"}}
+{"case":"detach-by-key","func":"detach_main_model","cfg":{"model":{"provider":" Local ","base_url":"http://h","api_key":"sk-1","default":"m"}},"provider_key":"local","entry":null}
+{"case":"detach-miss","func":"detach_main_model","cfg":{"model":{"provider":"openai","base_url":"http://h","default":"m"}},"provider_key":"local","entry":{"name":"Local"}}
+{"case":"detach-no-model","func":"detach_main_model","cfg":{"providers":{}},"provider_key":"local","entry":{"name":"Local"}}
+{"case":"drop-stale","func":"drop_stale_addresses","entry":{"base_url":"http://h/v1","url":"http://old","api":"http://older","baseUrl":"http://oldest","model":"m","key_env":"K"}}
+{"case":"drop-stale-clean","func":"drop_stale_addresses","entry":{"base_url":"http://h/v1"}}
+{"case":"resolve-exact","func":"resolve_entry","providers":{"my-ep":{"base_url":"http://h"}},"endpoint_id":"my-ep"}
+{"case":"resolve-verbatim","func":"resolve_entry","providers":{"My.EP:1":{"base_url":"http://h"}},"endpoint_id":"My.EP:1"}
+{"case":"resolve-slug","func":"resolve_entry","providers":{"my-ep":{"base_url":"http://h"}},"endpoint_id":"My EP"}
+{"case":"resolve-miss","func":"resolve_entry","providers":{"other":{"base_url":"http://h"}},"endpoint_id":"nope"}
+{"case":"resolve-not-dict","func":"resolve_entry","providers":null,"endpoint_id":"my-ep"}
+{"case":"resolve-exact-nondict","func":"resolve_entry","providers":{"my-ep":"nope"},"endpoint_id":"my-ep"}
+{"case":"validate-ok","func":"validate_endpoint","name":" n ","base_url":"  http://h//  ","model":" m "}
+{"case":"validate-name","func":"validate_endpoint","name":"   ","base_url":"http://h","model":"m"}
+{"case":"validate-base","func":"validate_endpoint","name":"n","base_url":"   ","model":"m"}
+{"case":"validate-scheme","func":"validate_endpoint","name":"n","base_url":"example.com/v1","model":"m"}
+{"case":"validate-ipv6","func":"validate_endpoint","name":"n","base_url":"http://[::1","model":"m"}
+{"case":"validate-model","func":"validate_endpoint","name":"n","base_url":"http://h/","model":"  "}
+{"case":"validate-ipv6-ok","func":"validate_endpoint","name":"n","base_url":"http://[::1]:8080/v1","model":"m"}
+{"case":"validate-userinfo","func":"validate_endpoint","name":"n","base_url":"HTTP://user:pw@Host:80/v1","model":"m"}
+{"case":"nomodels-html","func":"no_models_message","base_url":"http://h/v1","content_type":"text/html; charset=utf-8","payload_ok":false,"payload":null}
+{"case":"nomodels-no-ct","func":"no_models_message","base_url":"http://h/v1","content_type":null,"payload_ok":false,"payload":null}
+{"case":"nomodels-empty","func":"no_models_message","base_url":"http://h/v1","content_type":"application/json","payload_ok":true,"payload":{"object":"list","data":[]}}
+{"case":"nomodels-no-data","func":"no_models_message","base_url":"http://h/v1","content_type":"application/json","payload_ok":true,"payload":{"object":"list"}}
+{"case":"nomodels-list","func":"no_models_message","base_url":"http://h/v1","content_type":"application/json","payload_ok":true,"payload":[]}
+{"case":"nomodels-string","func":"no_models_message","base_url":"http://h/v1","content_type":"application/json","payload_ok":true,"payload":"hello"}

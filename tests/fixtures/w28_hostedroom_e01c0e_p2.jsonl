@@ -1,0 +1,26 @@
+{"func": "grant_revoke_is_terminal", "case": "403-invalid-grant", "status_code": 403, "error_code": "invalid_room_grant"}
+{"func": "grant_revoke_is_terminal", "case": "401-reauth", "status_code": 401, "error_code": "room_reauthorization_required"}
+{"func": "grant_revoke_is_terminal", "case": "500-invalid-grant", "status_code": 500, "error_code": "invalid_room_grant"}
+{"func": "grant_revoke_is_terminal", "case": "403-other-code", "status_code": 403, "error_code": "run_not_found"}
+{"func": "grant_revoke_is_terminal", "case": "no-status", "status_code": null, "error_code": "invalid_room_grant"}
+{"func": "grant_revoke_is_terminal", "case": "no-error-code", "status_code": 401, "error_code": null}
+{"func": "route_statuses", "case": "all-unsorted", "routes": [{"room_id": "r2", "member_id": "m1", "status": "ready"}, {"room_id": "r1", "member_id": "m9", "status": "needs_reauthorization"}, {"room_id": "r1", "member_id": "m2", "status": "unavailable"}]}
+{"func": "route_statuses", "case": "filter-r1", "room_id": "r1", "routes": [{"room_id": "r2", "member_id": "m1", "status": "ready"}, {"room_id": "r1", "member_id": "m2", "status": "ready"}]}
+{"func": "route_statuses", "case": "no-filter-empty", "routes": []}
+{"func": "route_statuses", "case": "filter-miss", "room_id": "r7", "routes": [{"room_id": "r1", "member_id": "m2", "status": "ready"}]}
+{"func": "live_status_sig", "case": "full", "runtime": {"running": true, "stopping": false, "blocked_rooms": ["r2"]}, "pending_actions": [{"room_id": "r1", "member_id": "m1", "action": {"kind": "retry", "task_id": "t1", "execution_generation": 3, "member_id": "m1"}}], "routes": [{"room_id": "r1", "member_id": "m1", "status": "ready"}, {"room_id": "r2", "member_id": "m2", "status": "unavailable"}], "prepare_stalls": [{"room_id": "r3", "stalled": true, "error": "boom"}]}
+{"func": "live_status_sig", "case": "empty", "runtime": {"running": true, "stopping": false, "blocked_rooms": []}, "pending_actions": [], "routes": [], "prepare_stalls": []}
+{"func": "live_status_sig", "case": "stopping", "runtime": {"running": true, "stopping": true, "blocked_rooms": []}, "pending_actions": [], "routes": [], "prepare_stalls": []}
+{"func": "live_status_sig", "case": "two-actions-same-room", "runtime": {"running": false, "stopping": false, "blocked_rooms": ["r1"]}, "pending_actions": [{"room_id": "r1", "member_id": "m2", "action": {"kind": "once", "task_id": "t2"}}, {"room_id": "r1", "member_id": "m1", "action": {"kind": "deny", "request_id": "req1"}}], "routes": [{"room_id": "r1", "member_id": "m1", "status": "ready"}], "prepare_stalls": [{"room_id": "r1", "stalled": false, "error": "soft"}]}
+{"func": "live_status_sig", "case": "prepare-failed-not-stalled", "runtime": {"running": true, "stopping": false, "blocked_rooms": []}, "pending_actions": [], "routes": [], "prepare_stalls": [{"room_id": "r5", "stalled": false, "error": "soft"}]}
+{"func": "turn_timeout_seconds", "case": "env-60", "env": "60"}
+{"func": "turn_timeout_seconds", "case": "env-900.5", "env": "900.5"}
+{"func": "turn_timeout_seconds", "case": "env-0", "env": "0"}
+{"func": "turn_timeout_seconds", "case": "env-negative", "env": "-5"}
+{"func": "turn_timeout_seconds", "case": "env-garbage", "env": "abc"}
+{"func": "turn_timeout_seconds", "case": "env-empty", "env": ""}
+{"func": "turn_timeout_seconds", "case": "env-unset", "env": null}
+{"func": "constants", "case": "budgets"}
+{"func": "authority", "case": "int-epoch", "room": {"authority_gateway_id": "gw-1", "authority_epoch": 4}}
+{"func": "authority", "case": "float-epoch-truncates", "room": {"authority_gateway_id": "gw-2", "authority_epoch": 4.9}}
+{"func": "authority", "case": "zero-epoch", "room": {"authority_gateway_id": "gw-3", "authority_epoch": 0}}

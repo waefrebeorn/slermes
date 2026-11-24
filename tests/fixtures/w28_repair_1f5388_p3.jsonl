@@ -1,0 +1,33 @@
+{"func": "initial_report", "case": "clean-slate"}
+{"func": "repair_skip", "case": "environmental-no-exc", "has_exc": false, "is_db_error": false, "errorcode_present": false, "error": "disk budget refused", "report": {"repaired": false, "strategy": null, "backup_path": null, "error": null}}
+{"func": "repair_skip", "case": "corrupt-code", "has_exc": true, "is_db_error": true, "errorcode_present": true, "errorcode": 11, "message": "database disk image is malformed", "error": "aborted", "report": {"repaired": false, "strategy": null, "backup_path": null, "error": null}}
+{"func": "repair_skip", "case": "busy-code", "has_exc": true, "is_db_error": true, "errorcode_present": true, "errorcode": 5, "message": "database is locked", "error": "skipped", "report": {"repaired": false, "strategy": null, "backup_path": null, "error": null}}
+{"func": "repair_skip", "case": "not-a-db-error", "has_exc": true, "is_db_error": false, "errorcode_present": false, "message": "file is not a database", "error": "aborted", "report": {"repaired": false, "strategy": null, "backup_path": null, "error": null}}
+{"func": "repair_skip", "case": "message-matched-corruption", "has_exc": true, "is_db_error": true, "errorcode_present": false, "message": "database disk image is malformed", "error": "aborted", "report": {"repaired": false, "strategy": null, "backup_path": null, "error": null}}
+{"func": "repair_skip", "case": "keeps-existing-report-keys", "has_exc": true, "is_db_error": true, "errorcode_present": true, "errorcode": 26, "message": "file is not a database", "error": "pre-repair backup refused", "report": {"repaired": true, "strategy": "rebuild_fts", "backup_path": "b.db", "error": null}}
+{"func": "run_strategies", "case": "first-clean", "reasons": [null, null, null, null]}
+{"func": "run_strategies", "case": "second-clean", "reasons": ["bad tree", null, null, null]}
+{"func": "run_strategies", "case": "fourth-clean", "reasons": ["bad", "bad", "bad", null]}
+{"func": "run_strategies", "case": "all-fail", "reasons": ["bad0", "bad1", "bad2", "bad3"]}
+{"func": "run_strategies", "case": "unavailable-first", "reasons": [{"unavailable": "probe copy failed"}, "bad", "bad", "bad"]}
+{"func": "run_strategies", "case": "unavailable-third", "reasons": ["bad", "bad", {"unavailable": "could not make the probe copy"}, null]}
+{"func": "repair_flow", "case": "missing-file", "scenario": "missing", "db_path": "state.db"}
+{"func": "repair_flow", "case": "lock-lost", "scenario": "lock_lost", "db_path": "state.db"}
+{"func": "repair_flow", "case": "lock-lost-healed", "scenario": "lock_lost_healed", "db_path": "state.db"}
+{"func": "repair_flow", "case": "live-writer", "scenario": "live_writer", "db_path": "state.db"}
+{"func": "repair_flow", "case": "exhausted-default-profile", "scenario": "exhausted", "db_path": "state.db", "profile_arg": ""}
+{"func": "repair_flow", "case": "exhausted-named-profile", "scenario": "exhausted", "db_path": "state.db", "profile_arg": "work:"}
+{"func": "preflight_skip", "case": "memory", "db_path": ":memory:"}
+{"func": "preflight_skip", "case": "uri", "db_path": "file:memdb1?mode=memory"}
+{"func": "preflight_skip", "case": "real-file", "db_path": "state.db"}
+{"func": "rw_or_vanished", "case": "writable", "path": "state.db", "rw_first": true, "exists": true, "rw_second": false}
+{"func": "rw_or_vanished", "case": "vanished", "path": "state.db", "rw_first": false, "exists": false, "rw_second": false}
+{"func": "rw_or_vanished", "case": "recreated-writable", "path": "state.db", "rw_first": false, "exists": true, "rw_second": true}
+{"func": "rw_or_vanished", "case": "still-read-only", "path": "state.db", "rw_first": false, "exists": true, "rw_second": false}
+{"func": "preflight_error", "case": "directory", "db_label": "state.db", "path": "C:\\hermes", "is_dir": true, "parent_rw": false, "file_rw": false}
+{"func": "preflight_error", "case": "file", "db_label": "state.db", "path": "C:\\hermes\\state.db", "is_dir": false, "parent_rw": true, "file_rw": false}
+{"func": "preflight_error", "case": "wal-file", "db_label": "state.db", "path": "C:\\hermes\\state.db-wal", "is_dir": false, "parent_rw": true, "file_rw": false}
+{"func": "preflight_error", "case": "custom-label", "db_label": "kanban.db", "path": "C:\\hermes\\kanban.db", "is_dir": false, "parent_rw": true, "file_rw": false}
+{"func": "unlink_victims", "case": "bare", "db_path": "state.db"}
+{"func": "unlink_victims", "case": "windows-path", "db_path": "C:\\hermes\\state.db"}
+{"func": "strategies", "case": "pinned-table"}

@@ -1,0 +1,66 @@
+{"func": "extract_email_address", "case": "addr0", "raw": "j@x.com"}
+{"func": "extract_email_address", "case": "addr1", "raw": "John Doe <j@x.com>"}
+{"func": "extract_email_address", "case": "addr2", "raw": "\"Doe, John\" <j@x.com>"}
+{"func": "extract_email_address", "case": "addr3", "raw": "Doe, John <j@x.com>"}
+{"func": "extract_email_address", "case": "addr4", "raw": "A@X.COM <a@x.com>"}
+{"func": "extract_email_address", "case": "addr5", "raw": "<j@x.com>"}
+{"func": "extract_email_address", "case": "addr6", "raw": "  j@x.com  "}
+{"func": "extract_email_address", "case": "addr7", "raw": "j@x.com (comment)"}
+{"func": "extract_email_address", "case": "addr8", "raw": "(comment) j@x.com"}
+{"func": "extract_email_address", "case": "addr9", "raw": "grp: a@x, b@y;"}
+{"func": "extract_email_address", "case": "addr10", "raw": "a@x, b@y"}
+{"func": "extract_email_address", "case": "addr11", "raw": "John"}
+{"func": "extract_email_address", "case": "addr12", "raw": ""}
+{"func": "extract_email_address", "case": "addr13", "raw": "\"unterminated <j@x>"}
+{"func": "extract_email_address", "case": "addr14", "raw": "victim\"@evil.com"}
+{"func": "extract_email_address", "case": "addr15", "raw": "a@x b@y"}
+{"func": "extract_email_address", "case": "addr16", "raw": "\"a b\" <a b@x>"}
+{"func": "extract_email_address", "case": "addr17", "raw": "folded\r\n\tvalue <j@x.com>"}
+{"func": "extract_email_address", "case": "addr18", "raw": "  Name   <  j@x  >  "}
+{"func": "extract_email_address", "case": "addr19", "raw": "a@x (c) <a@y>"}
+{"func": "extract_email_address", "case": "addr20", "raw": "<a@x> extra"}
+{"func": "extract_email_address", "case": "addr21", "raw": "no_reply@x.com <no_reply@x.com>"}
+{"func": "extract_email_address", "case": "addr22", "raw": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "extract_email_address", "case": "addr23", "raw": "((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((("}
+{"func": "extract_email_address", "case": "addr24", "raw": "a@[1.2.3.4]"}
+{"func": "extract_email_address", "case": "addr25", "raw": "j@x y"}
+{"func": "extract_email_address", "case": "addr26", "raw": "a@x <a@x>"}
+{"func": "extract_email_address", "case": "addr27", "raw": "Mixed.Case@Example.COM"}
+{"func": "domain_of", "case": "dom0", "address": "a@b.com"}
+{"func": "domain_of", "case": "dom1", "address": "A@B.COM"}
+{"func": "domain_of", "case": "dom2", "address": "no-at-sign"}
+{"func": "domain_of", "case": "dom3", "address": "a@b@c.com"}
+{"func": "domain_of", "case": "dom4", "address": " padded@ X.com "}
+{"func": "domain_of", "case": "dom5", "address": ""}
+{"func": "domain_of", "case": "dom6", "address": "@x.com"}
+{"func": "domain_of", "case": "dom7", "address": "a@"}
+{"func": "domains_aligned", "case": "align0", "a": "example.com", "b": "example.com"}
+{"func": "domains_aligned", "case": "align1", "a": "mail.example.com", "b": "example.com"}
+{"func": "domains_aligned", "case": "align2", "a": "example.com", "b": "mail.example.com"}
+{"func": "domains_aligned", "case": "align3", "a": "EXAMPLE.COM.", "b": "example.com"}
+{"func": "domains_aligned", "case": "align4", "a": "example.com", "b": "example.org"}
+{"func": "domains_aligned", "case": "align5", "a": "", "b": "example.com"}
+{"func": "domains_aligned", "case": "align6", "a": "a.example.com", "b": "b.example.com"}
+{"func": "domains_aligned", "case": "align7", "a": "example.com", "b": "ample.com"}
+{"func": "domains_aligned", "case": "align8", "a": "example.com", "b": "mail.example.com."}
+{"func": "ar_clauses", "case": "clause0", "text": "mx.example.com; dmarc=pass header.from=example.com"}
+{"func": "ar_clauses", "case": "clause1", "text": "mx.example.com; spf=pass smtp.mailfrom=example.com"}
+{"func": "ar_clauses", "case": "clause2", "text": "mx.example.com; dmarc=pass (p=reject) header.from=example.com"}
+{"func": "ar_clauses", "case": "clause3", "text": "mx.example.com; dkim=pass header.d=\"ex;ample.com\"; dmarc=fail"}
+{"func": "ar_clauses", "case": "clause4", "text": "mx.example.com; dmarc=pass \"unbalanced"}
+{"func": "ar_clauses", "case": "clause5", "text": "mx.example.com; dmarc=pass header.from=example.com)"}
+{"func": "ar_clauses", "case": "clause6", "text": "mx.example.com"}
+{"func": "ar_clauses", "case": "clause7", "text": "mx.example.com; dmarc=pass;a=b"}
+{"func": "ar_clauses", "case": "clause8", "text": "mx.example.com; dmarc=pass (nested (x) y) header.from=a.com"}
+{"func": "ar_clauses", "case": "clause9", "text": "  mx.example.com ;; dmarc=fail"}
+{"func": "auth_props", "case": "prop0", "text": "dmarc=pass header.from=example.com"}
+{"func": "auth_props", "case": "prop1", "text": "dkim=pass header.d=example.com header.i=@x"}
+{"func": "auth_props", "case": "prop2", "text": "spf=pass smtp.mailfrom=\"a b\""}
+{"func": "auth_props", "case": "prop3", "text": "header.from=xheader.d=y"}
+{"func": "auth_props", "case": "prop4", "text": "xheader.d=evil.com"}
+{"func": "auth_props", "case": "prop5", "text": "envelope-from=a@x.com"}
+{"func": "auth_props", "case": "prop6", "text": "Header.From=A@B.com"}
+{"func": "auth_props", "case": "prop7", "text": "header.from = spaced.com"}
+{"func": "auth_props", "case": "prop8", "text": "header.d=\"quoted;d.com\""}
+{"func": "auth_props", "case": "prop9", "text": "smtp.from=a@b smtp.mailfrom=c@d"}
+{"func": "auth_props", "case": "prop10", "text": "dmarc=pass"}

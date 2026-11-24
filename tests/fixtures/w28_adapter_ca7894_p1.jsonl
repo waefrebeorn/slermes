@@ -1,0 +1,66 @@
+{"func": "normalize_security", "case": "sec0", "value": "TLS"}
+{"func": "normalize_security", "case": "sec1", "value": " start-tls "}
+{"func": "normalize_security", "case": "sec2", "value": "implicit"}
+{"func": "normalize_security", "case": "sec3", "value": "none"}
+{"func": "normalize_security", "case": "sec4", "value": "bogus", "default": "starttls"}
+{"func": "normalize_security", "case": "sec5", "value": null}
+{"func": "normalize_security", "case": "sec6", "value": "PLAIN", "default": "starttls"}
+{"func": "normalize_security", "case": "sec7", "value": "ssl"}
+{"func": "normalize_security", "case": "sec8", "value": "NONE"}
+{"func": "is_automated_sender", "case": "auto0", "address": "no-reply@spam.com", "headers": {}}
+{"func": "is_automated_sender", "case": "auto1", "address": "alice@example.com", "headers": {"Precedence": "bulk"}}
+{"func": "is_automated_sender", "case": "auto2", "address": "alice@example.com", "headers": {"Auto-Submitted": "no"}}
+{"func": "is_automated_sender", "case": "auto3", "address": "alice@example.com", "headers": {"Auto-Submitted": "auto-replied"}}
+{"func": "is_automated_sender", "case": "auto4", "address": "alice@example.com", "headers": {"List-Unsubscribe": "<mailto:u@x>"}}
+{"func": "is_automated_sender", "case": "auto5", "address": "alice@example.com", "headers": {"Precedence": "first-class"}}
+{"func": "is_automated_sender", "case": "auto6", "address": "bounces@lists.example.com", "headers": {}}
+{"func": "is_automated_sender", "case": "auto7", "address": "Alice@Example.COM", "headers": {"X-Auto-Response-Suppress": "All"}}
+{"func": "is_automated_sender", "case": "auto8", "address": "alice@example.com", "headers": {"List-Unsubscribe": ""}}
+{"func": "is_automated_sender", "case": "auto9", "address": "POSTMASTER@x.org", "headers": {}}
+{"func": "safe_decode", "case": "dec0", "payload_b64": "Y2Fmw6k=", "charset": "utf-8"}
+{"func": "safe_decode", "case": "dec1", "payload_b64": "Y2Fm6Q==", "charset": "latin-1"}
+{"func": "safe_decode", "case": "dec2", "payload_b64": "Y2Fm6Q==", "charset": "unknown-8bit"}
+{"func": "safe_decode", "case": "dec3", "payload_b64": "4oI=", "charset": "utf-8"}
+{"func": "safe_decode", "case": "dec4", "payload_b64": "4ICA", "charset": "utf-8"}
+{"func": "safe_decode", "case": "dec5", "payload_b64": "8J+YgA==", "charset": null}
+{"func": "safe_decode", "case": "dec6", "payload_b64": "aGk=", "charset": "no-such-codec"}
+{"func": "safe_decode", "case": "dec7", "payload_b64": "aGk=", "charset": "\"UTF-8\""}
+{"func": "safe_decode", "case": "dec8", "payload_b64": "Y2Fm6Q==", "charset": "ansi_x3.110-1983"}
+{"func": "safe_decode", "case": "dec9", "payload_b64": "aGk=", "charset": "ascii"}
+{"func": "safe_decode", "case": "dec10", "payload_b64": "aGk=", "charset": ""}
+{"func": "safe_decode", "case": "dec11", "payload_b64": "7aCA", "charset": "utf-8"}
+{"func": "decode_header_value", "case": "hdr0", "raw": "=?utf-8?b?SGVsbG8gV29ybGQ=?="}
+{"func": "decode_header_value", "case": "hdr1", "raw": "=?utf-8?q?caf=C3=A9?="}
+{"func": "decode_header_value", "case": "hdr2", "raw": "plain text"}
+{"func": "decode_header_value", "case": "hdr3", "raw": "=?utf-8?b?SGk=?= =?utf-8?b?V29ybGQ=?="}
+{"func": "decode_header_value", "case": "hdr4", "raw": "pre =?utf-8?b?SGk=?= post"}
+{"func": "decode_header_value", "case": "hdr5", "raw": "=?iso-8859-1?q?caf=E9?="}
+{"func": "decode_header_value", "case": "hdr6", "raw": "=?bogus-charset?b?SGk=?="}
+{"func": "decode_header_value", "case": "hdr7", "raw": "=?utf-8?b?!!!?="}
+{"func": "decode_header_value", "case": "hdr8", "raw": "=?utf-8?q?hello_world?="}
+{"func": "decode_header_value", "case": "hdr9", "raw": "=?utf-8?x?SGk?="}
+{"func": "decode_header_value", "case": "hdr10", "raw": "=?UTF-8?B?SGk=?= tail"}
+{"func": "decode_header_value", "case": "hdr11", "raw": "Subject line\r\n =?utf-8?b?SGk=?="}
+{"func": "decode_header_value", "case": "hdr12", "raw": "=?utf-8?b?S?="}
+{"func": "decode_header_value", "case": "hdr13", "raw": "=?utf-8?q?a_b?= =?utf-8?q?c_d?="}
+{"func": "decode_header_value", "case": "hdr14", "raw": "  =?utf-8?b?SGk=?="}
+{"func": "strip_html", "case": "html0", "html": "<p>Hello</p><br/>World"}
+{"func": "strip_html", "case": "html1", "html": "<b>bold</b> &amp; <i>it</i>&nbsp;x"}
+{"func": "strip_html", "case": "html2", "html": "a<br>b<br />c"}
+{"func": "strip_html", "case": "html3", "html": "line1\n\n\n\n\nline2"}
+{"func": "strip_html", "case": "html4", "html": "  <span>x</span>  "}
+{"func": "strip_html", "case": "html5", "html": "A &lt;tag&gt; B"}
+{"func": "strip_html", "case": "html6", "html": "<div><p class=\"r\">One</p><p>Two</p></div>"}
+{"func": "strip_html", "case": "html7", "html": "&amp;amp;"}
+{"func": "strip_html", "case": "html8", "html": "<PRE>keep</PRE>"}
+{"func": "strip_html", "case": "html9", "html": ""}
+{"func": "strip_html", "case": "html10", "html": "no tags at all"}
+{"func": "strip_html", "case": "html11", "html": "<br\ntype=\"x\">split"}
+{"func": "strip_comments", "case": "cmt0", "text": "a (b) c"}
+{"func": "strip_comments", "case": "cmt1", "text": "a (b(c)) d"}
+{"func": "strip_comments", "case": "cmt2", "text": "()"}
+{"func": "strip_comments", "case": "cmt3", "text": "a)b"}
+{"func": "strip_comments", "case": "cmt4", "text": "x (y) (z) w"}
+{"func": "strip_comments", "case": "cmt5", "text": "(unclosed"}
+{"func": "strip_comments", "case": "cmt6", "text": "((a))"}
+{"func": "strip_comments", "case": "cmt7", "text": "plain"}

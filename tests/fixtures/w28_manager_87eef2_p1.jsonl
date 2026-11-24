@@ -1,0 +1,66 @@
+{"func": "validate_commit_hash", "commit_hash": "abc"}
+{"func": "validate_commit_hash", "commit_hash": ""}
+{"func": "validate_commit_hash", "commit_hash": "   "}
+{"func": "validate_commit_hash", "commit_hash": "-p"}
+{"func": "validate_commit_hash", "commit_hash": "--patch"}
+{"func": "validate_commit_hash", "commit_hash": "abc123"}
+{"func": "validate_commit_hash", "commit_hash": "ABCDEF12"}
+{"func": "validate_commit_hash", "commit_hash": "abcd"}
+{"func": "validate_commit_hash", "commit_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "validate_commit_hash", "commit_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "validate_commit_hash", "commit_hash": "abcg"}
+{"func": "validate_commit_hash", "commit_hash": "123"}
+{"func": "validate_commit_hash", "commit_hash": "deadbeefcafe"}
+{"func": "validate_commit_hash", "commit_hash": "abcd\n"}
+{"func": "validate_commit_hash", "commit_hash": "  abcd  "}
+{"func": "validate_commit_hash", "commit_hash": "0x1234"}
+{"func": "validate_commit_hash", "commit_hash": "ABC"}
+{"func": "validate_commit_hash", "commit_hash": "abcd-12"}
+{"func": "ref_name", "dir_hash": "deadbeef"}
+{"func": "ref_name", "dir_hash": ""}
+{"func": "gitlink_paths", "records": []}
+{"func": "gitlink_paths", "records": ["100644 blob abc\tfile.txt", "040000 tree def\tsub"]}
+{"func": "gitlink_paths", "records": ["160000 commit abc\tvendor/x", "100644 blob def\tfile.txt"]}
+{"func": "gitlink_paths", "records": ["160000 commit abc\tnodash"]}
+{"func": "gitlink_paths", "records": ["160000 commit abc\tsub/repo", "160000 commit def\tb"]}
+{"func": "gitlink_paths", "records": ["160000 commit\tabc"]}
+{"func": "uncaptured_note", "nested_repos": []}
+{"func": "uncaptured_note", "nested_repos": ["a"]}
+{"func": "uncaptured_note", "nested_repos": ["a", "b", "c"]}
+{"func": "uncaptured_note", "nested_repos": ["a", "b", "c", "d"]}
+{"func": "uncaptured_note", "nested_repos": ["x/y", "z", "w", "v", "u"]}
+{"func": "project_hash", "abs_path": "/work/proj"}
+{"func": "project_hash", "abs_path": "/work/proj/"}
+{"func": "project_hash", "abs_path": "/"}
+{"func": "project_hash", "abs_path": "/a/./b/"}
+{"func": "project_hash", "abs_path": "/a//b"}
+{"func": "project_hash", "abs_path": "/a/b/../c"}
+{"func": "store_path", "base": "/hermes/checkpoints"}
+{"func": "store_path", "base": "/hermes/checkpoints/"}
+{"func": "index_path", "store": "/hermes/checkpoints/store", "dir_hash": "0123456789abcdef"}
+{"func": "ledger_path", "store": "/hermes/checkpoints/store", "dir_hash": "0123456789abcdef"}
+{"func": "meta_path", "store": "/hermes/checkpoints/store", "dir_hash": "0123456789abcdef"}
+{"func": "store_pathspecs", "base": "/hermes/checkpoints", "working_dir": "/work/proj"}
+{"func": "exclude_store_args", "base": "/hermes/checkpoints", "working_dir": "/work/proj"}
+{"func": "stage_all_args", "base": "/hermes/checkpoints", "working_dir": "/work/proj"}
+{"func": "store_pathspecs", "base": "/work/proj", "working_dir": "/work/proj"}
+{"func": "exclude_store_args", "base": "/work/proj", "working_dir": "/work/proj"}
+{"func": "stage_all_args", "base": "/work/proj", "working_dir": "/work/proj"}
+{"func": "store_pathspecs", "base": "/work/proj/x", "working_dir": "/work/proj"}
+{"func": "exclude_store_args", "base": "/work/proj/x", "working_dir": "/work/proj"}
+{"func": "stage_all_args", "base": "/work/proj/x", "working_dir": "/work/proj"}
+{"func": "store_pathspecs", "base": "/hermes/checkpoints", "working_dir": "/hermes"}
+{"func": "exclude_store_args", "base": "/hermes/checkpoints", "working_dir": "/hermes"}
+{"func": "stage_all_args", "base": "/hermes/checkpoints", "working_dir": "/hermes"}
+{"func": "store_pathspecs", "base": "/work", "working_dir": "/work/proj"}
+{"func": "exclude_store_args", "base": "/work", "working_dir": "/work/proj"}
+{"func": "stage_all_args", "base": "/work", "working_dir": "/work/proj"}
+{"func": "store_pathspecs", "base": "/a/b/c", "working_dir": "/a"}
+{"func": "exclude_store_args", "base": "/a/b/c", "working_dir": "/a"}
+{"func": "stage_all_args", "base": "/a/b/c", "working_dir": "/a"}
+{"func": "store_pathspecs", "base": "/work/proj/.store", "working_dir": "/work/proj"}
+{"func": "exclude_store_args", "base": "/work/proj/.store", "working_dir": "/work/proj"}
+{"func": "stage_all_args", "base": "/work/proj/.store", "working_dir": "/work/proj"}
+{"func": "store_pathspecs", "base": "rel/base", "working_dir": "/work/proj"}
+{"func": "exclude_store_args", "base": "rel/base", "working_dir": "/work/proj"}
+{"func": "stage_all_args", "base": "rel/base", "working_dir": "/work/proj"}

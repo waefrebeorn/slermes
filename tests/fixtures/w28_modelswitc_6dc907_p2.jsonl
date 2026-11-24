@@ -1,0 +1,55 @@
+{"func": "discover_models", "case": "probe-live-list", "live_models": ["m1", "m2"], "opts": {"native": false, "has_explicit_models": false, "probe_live": true, "discovery_allowed": true}}
+{"func": "discover_models", "case": "probe-live-empty-no-explicit", "live_models": [], "opts": {"native": false, "has_explicit_models": false, "probe_live": true, "discovery_allowed": true}}
+{"func": "discover_models", "case": "probe-live-empty-explicit", "live_models": [], "opts": {"native": false, "has_explicit_models": true, "probe_live": true, "discovery_allowed": true}}
+{"func": "discover_models", "case": "probe-native-explicit", "live_models": ["m1"], "opts": {"native": true, "has_explicit_models": true, "probe_live": true, "discovery_allowed": true}}
+{"func": "discover_models", "case": "probe-native-empty-explicit", "live_models": [], "opts": {"native": true, "has_explicit_models": true, "probe_live": true, "discovery_allowed": true}}
+{"func": "discover_models", "case": "probe-native-empty-authoritative", "live_models": [], "opts": {"native": true, "has_explicit_models": false, "probe_live": true, "discovery_allowed": true}}
+{"func": "discover_models", "case": "probe-none", "live_models": null, "opts": {"native": false, "has_explicit_models": false, "probe_live": true, "discovery_allowed": true}}
+{"func": "discover_models", "case": "probe-native-list", "live_models": ["m1"], "opts": {"native": true, "has_explicit_models": false, "probe_live": true, "discovery_allowed": true}}
+{"func": "discover_models", "case": "cache-read", "live_models": ["m1"], "opts": {"native": false, "has_explicit_models": false, "probe_live": false, "discovery_allowed": true}}
+{"func": "discover_models", "case": "cache-empty-explicit", "live_models": [], "opts": {"native": false, "has_explicit_models": true, "probe_live": false, "discovery_allowed": true}}
+{"func": "discover_models", "case": "cache-native-empty", "live_models": [], "opts": {"native": true, "has_explicit_models": false, "probe_live": false, "discovery_allowed": true}}
+{"func": "discover_models", "case": "discovery-off", "live_models": ["m1"], "opts": {"native": false, "has_explicit_models": false, "probe_live": false, "discovery_allowed": false}}
+{"func": "resolved_fast_probe", "case": "inherit-true", "for_picker": true, "fast_custom_probe": null}
+{"func": "resolved_fast_probe", "case": "inherit-false", "for_picker": false, "fast_custom_probe": null}
+{"func": "resolved_fast_probe", "case": "override-false", "for_picker": true, "fast_custom_probe": false}
+{"func": "resolved_fast_probe", "case": "override-true", "for_picker": false, "fast_custom_probe": true}
+{"func": "can_probe_custom", "case": "all-custom", "probe_custom_providers": true, "probe_current_custom_provider": false, "row_is_current": false}
+{"func": "can_probe_custom", "case": "current-only", "probe_custom_providers": false, "probe_current_custom_provider": true, "row_is_current": true}
+{"func": "can_probe_custom", "case": "current-only-not-current", "probe_custom_providers": false, "probe_current_custom_provider": true, "row_is_current": false}
+{"func": "can_probe_custom", "case": "none", "probe_custom_providers": false, "probe_current_custom_provider": false, "row_is_current": true}
+{"func": "endpoint_is_current", "case": "slug-match", "slug": "Palantir", "aliases": [], "url_norm": "https://x", "cfg": {"current_provider": "palantir", "current_base_url": "https://y"}}
+{"func": "endpoint_is_current", "case": "slug-space-case", "slug": " Palantir ", "aliases": [], "url_norm": "", "cfg": {"current_provider": "PALANTIR", "current_base_url": ""}}
+{"func": "endpoint_is_current", "case": "alias-match", "slug": "ep-1", "aliases": ["palantir", "p1"], "url_norm": "", "cfg": {"current_provider": "p1", "current_base_url": ""}}
+{"func": "endpoint_is_current", "case": "custom-url-match", "slug": "custom", "aliases": [], "url_norm": "https://api.x/v1", "cfg": {"current_provider": "custom", "current_base_url": "https://api.x/v1/"}}
+{"func": "endpoint_is_current", "case": "custom-url-match-disabled", "slug": "custom", "aliases": [], "url_norm": "https://api.x/v1", "cfg": {"current_provider": "custom", "current_base_url": "https://api.x/v1", "url_match_ok": false}}
+{"func": "endpoint_is_current", "case": "custom-no-base", "slug": "custom", "aliases": [], "url_norm": "https://api.x/v1", "cfg": {"current_provider": "custom", "current_base_url": ""}}
+{"func": "endpoint_is_current", "case": "no-match", "slug": "other", "aliases": ["x"], "url_norm": "https://a", "cfg": {"current_provider": "openai", "current_base_url": "https://a"}}
+{"func": "record_section3_pair", "case": "normal", "name": " Palantir Claude ", "url_norm": "https://api.x/v1"}
+{"func": "record_section3_pair", "case": "blank-name", "name": "   ", "url_norm": "https://api.x/v1"}
+{"func": "record_section3_pair", "case": "blank-url", "name": "Palantir", "url_norm": ""}
+{"func": "record_section3_pair", "case": "null-url", "name": "Palantir", "url_norm": null}
+{"func": "add_builtin_row", "case": "plain", "req": {"slug": "openai", "name": "OpenAI", "is_current": true, "model_ids": ["gpt-5", "gpt-4.1", "o3"], "source": "built-in", "max_models": 2}}
+{"func": "add_builtin_row", "case": "uncapped-ok-false", "req": {"slug": "openrouter", "name": "OpenRouter", "is_current": false, "model_ids": ["a", "b", "c"], "source": "built-in", "max_models": 1, "uncapped_ok": false}}
+{"func": "add_builtin_row", "case": "uncapped-slug", "req": {"slug": "nous", "name": "Nous", "is_current": false, "model_ids": ["a", "b", "c"], "source": "hermes", "max_models": 1}}
+{"func": "add_builtin_row", "case": "nous-guest-free", "req": {"slug": "nous", "name": "Nous", "is_current": true, "model_ids": [], "source": "hermes", "max_models": null, "flags": {"guest": true, "guest_allowed": true, "free_inference": true, "label": "Nous \u00b7 free tier", "guest_model": "nous/welcome"}}}
+{"func": "add_builtin_row", "case": "nous-guest-off", "req": {"slug": "nous", "name": "Nous", "is_current": false, "model_ids": ["m"], "source": "hermes", "max_models": null, "flags": {"guest": true, "guest_allowed": false, "free_inference": true, "label": "Nous \u00b7 free tier", "guest_model": "nous/welcome"}}}
+{"func": "add_builtin_row", "case": "empty-models", "req": {"slug": "custom-x", "name": "X", "is_current": false, "model_ids": [], "source": "canonical", "max_models": 0}}
+{"func": "add_endpoint_row", "case": "normal", "req": {"slug": "palantir", "name": "Palantir", "api_url": "https://api.x/v1", "models": ["a", "b"], "is_current": true, "native_catalog_empty": false}}
+{"func": "add_endpoint_row", "case": "shown-overrides", "req": {"slug": "palantir", "name": "Palantir", "api_url": "https://api.x/v1", "models": ["a", "b"], "is_current": false, "native_catalog_empty": false, "shown": ["a"]}}
+{"func": "add_endpoint_row", "case": "shown-empty-list", "req": {"slug": "custom", "name": "Custom endpoint", "api_url": "https://api.x", "models": ["a"], "is_current": true, "native_catalog_empty": true, "shown": [], "source": "model-config"}}
+{"func": "add_endpoint_row", "case": "no-models", "req": {"slug": "empty", "name": "Empty", "api_url": "", "models": [], "is_current": false, "native_catalog_empty": false, "source": "user-config"}}
+{"func": "discover_endpoint", "case": "key-and-allowed", "req": {"discovery_allowed": true, "api_key": "sk", "has_explicit_models": true, "probe_custom_providers": true, "probe_current_custom_provider": false, "is_current": false}}
+{"func": "discover_endpoint", "case": "no-key-explicit", "req": {"discovery_allowed": true, "api_key": "", "has_explicit_models": true, "probe_custom_providers": true, "probe_current_custom_provider": false, "is_current": true}}
+{"func": "discover_endpoint", "case": "no-key-no-explicit", "req": {"discovery_allowed": true, "api_key": null, "has_explicit_models": false, "probe_custom_providers": true, "probe_current_custom_provider": false, "is_current": false}}
+{"func": "discover_endpoint", "case": "current-only", "req": {"discovery_allowed": true, "api_key": "sk", "has_explicit_models": false, "probe_custom_providers": false, "probe_current_custom_provider": true, "is_current": true}}
+{"func": "discover_endpoint", "case": "current-only-not-current", "req": {"discovery_allowed": true, "api_key": "sk", "has_explicit_models": false, "probe_custom_providers": false, "probe_current_custom_provider": true, "is_current": false}}
+{"func": "discover_endpoint", "case": "discovery-off", "req": {"discovery_allowed": false, "api_key": "sk", "has_explicit_models": false, "probe_custom_providers": true, "probe_current_custom_provider": true, "is_current": true}}
+{"func": "lmstudio_row", "case": "current-empty", "req": {"excluded": [], "seen": [], "configured": null, "curated": ["a", "b"], "current_provider": "LMStudio", "declared_models": [], "label": "LM Studio", "max_models": null}}
+{"func": "lmstudio_row", "case": "excluded", "req": {"excluded": ["lmstudio"], "seen": [], "configured": null, "curated": ["a"], "current_provider": "lmstudio", "declared_models": [], "label": "LM Studio", "max_models": null}}
+{"func": "lmstudio_row", "case": "already-seen", "req": {"excluded": [], "seen": ["lmstudio"], "configured": null, "curated": ["a"], "current_provider": "lmstudio", "declared_models": [], "label": "LM Studio", "max_models": null}}
+{"func": "lmstudio_row", "case": "configured-with-base", "req": {"excluded": [], "seen": [], "configured": {"base_url": "http://127.0.0.1:1234/v1"}, "curated": ["a"], "current_provider": "lmstudio", "declared_models": [], "label": "LM Studio", "max_models": null}}
+{"func": "lmstudio_row", "case": "configured-no-base-not-current", "req": {"excluded": [], "seen": [], "configured": {"request_timeout_seconds": 60}, "curated": ["a"], "current_provider": "openai", "declared_models": ["x"], "label": "LM Studio", "max_models": null}}
+{"func": "lmstudio_row", "case": "not-configured-not-current", "req": {"excluded": [], "seen": [], "configured": null, "curated": ["a"], "current_provider": "openai", "declared_models": [], "label": "LM Studio", "max_models": null}}
+{"func": "lmstudio_row", "case": "merge-dedupe", "req": {"excluded": [], "seen": [], "configured": {"request_timeout_seconds": 5}, "curated": ["b", "a", "c"], "current_provider": "lmstudio", "declared_models": ["a", "z"], "label": "LM Studio", "max_models": null}}
+{"func": "lmstudio_row", "case": "capped", "req": {"excluded": [], "seen": [], "configured": null, "curated": ["a", "b", "c"], "current_provider": "lmstudio", "declared_models": [], "label": "LM Studio", "max_models": 2}}

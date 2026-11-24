@@ -1,0 +1,57 @@
+{"func": "integrity_structural", "case": "clean", "lines": ["ok"], "master_rows": []}
+{"func": "integrity_structural", "case": "fts-shadow-tree", "lines": ["Tree 5 page 3: btreeInitPage() failed"], "master_rows": [[5, "table", "messages_fts_data"]]}
+{"func": "integrity_structural", "case": "canonical-table-tree", "lines": ["Tree 5 page 3: btreeInitPage() failed"], "master_rows": [[5, "table", "messages"]]}
+{"func": "integrity_structural", "case": "unmapped-tree", "lines": ["Tree 7 page 2: btreeInitPage() failed"], "master_rows": [[5, "table", "messages"]]}
+{"func": "integrity_structural", "case": "freelist", "lines": ["Freelist: 3 of 12 pages missing"], "master_rows": []}
+{"func": "integrity_structural", "case": "missing-btree-index", "lines": ["row 12 missing from index idx_sessions_handoff_state"], "master_rows": []}
+{"func": "integrity_structural", "case": "missing-fts-index", "lines": ["row 12 missing from index messages_fts_idx"], "master_rows": []}
+{"func": "integrity_structural", "case": "missing-trigram-segdir-index", "lines": ["row 4 missing from index messages_fts_trigram_segdir"], "master_rows": []}
+{"func": "integrity_structural", "case": "lookalike-index", "lines": ["row 7 missing from index archive_fts_data"], "master_rows": []}
+{"func": "integrity_structural", "case": "rootpage-zero-skipped", "lines": ["Tree 9 page 1: bad"], "master_rows": [[0, "table", "messages"]]}
+{"func": "integrity_structural", "case": "tree-number-glued-to-word", "lines": ["Tree 12abc page 1"], "master_rows": [[12, "table", "messages"]]}
+{"func": "integrity_structural", "case": "second-line-damage", "lines": ["ok", "Tree 3 page 1: bad"], "master_rows": [[3, "table", "sessions"]]}
+{"func": "integrity_structural", "case": "null-rootpage-skipped", "lines": ["Tree 4 page 1"], "master_rows": [[null, "table", "sessions"]]}
+{"func": "integrity_structural", "case": "duplicate-rootpage-last-wins", "lines": ["Tree 5 page 1"], "master_rows": [[5, "table", "messages_fts"], [5, "table", "messages"]]}
+{"func": "integrity_structural", "case": "empty-tree-number", "lines": ["Tree  page 1"], "master_rows": [[5, "table", "messages"]]}
+{"func": "probe_reason", "case": "all-ok", "rows": [["ok"]], "all_ok": true}
+{"func": "probe_reason", "case": "one-problem", "rows": [["ok"], ["Row 3 missing from index idx_a"]], "all_ok": false}
+{"func": "probe_reason", "case": "first-three-only", "rows": [["a"], ["b"], ["c"], ["d"]], "all_ok": false}
+{"func": "probe_reason", "case": "empty-row-skipped", "rows": [[], ["bad"]], "all_ok": false}
+{"func": "probe_reason", "case": "numeric-cell", "rows": [[5]], "all_ok": false}
+{"func": "probe_reason", "case": "all-ok-rows-but-continue", "rows": [["ok"], ["OK"]], "all_ok": false}
+{"func": "strategy_statements", "case": "rebuild-fts", "name": "rebuild_fts"}
+{"func": "strategy_statements", "case": "reindex", "name": "reindex_btree"}
+{"func": "strategy_statements", "case": "dedup-no-dupes", "name": "dedup_schema", "dupes": [], "schema_version": 42}
+{"func": "strategy_statements", "case": "dedup-two-dupes", "name": "dedup_schema", "dupes": [["table", "messages", 2, 31], ["index", "idx_a", 2, 7]], "schema_version": 42}
+{"func": "strategy_statements", "case": "drop-fts-rebuild", "name": "drop_fts_rebuild", "schema_version": 42}
+{"func": "strategy_statements", "case": "drop-fts-cookie-wrap", "name": "drop_fts_rebuild", "schema_version": 2147483647}
+{"func": "strategy_statements", "case": "unknown-strategy", "name": "no_such_strategy"}
+{"func": "probe_plan", "case": "healthy-store-plan"}
+{"func": "schema_version_sql", "case": "plain", "current": 42}
+{"func": "schema_version_sql", "case": "wrap-at-int-max", "current": 2147483647}
+{"func": "schema_version_sql", "case": "negative", "current": -1}
+{"func": "fingerprint_text", "case": "sha-prefix", "size": 1234, "digest_hex": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"}
+{"func": "ledger_name", "case": "bare", "db_name": "state.db"}
+{"func": "scratch_name", "case": "bare", "db_name": "state.db"}
+{"func": "staging_name", "case": "bare", "db_name": "state.db", "stamp": "20261124_030405"}
+{"func": "backup_name", "case": "no-collision", "db_name": "state.db", "stamp": "20261124_030405", "existing": []}
+{"func": "backup_name", "case": "base-taken", "db_name": "state.db", "stamp": "20261124_030405", "existing": ["state.db.malformed-backup-20261124_030405"]}
+{"func": "backup_name", "case": "one-taken", "db_name": "state.db", "stamp": "20261124_030405", "existing": ["state.db.malformed-backup-20261124_030405", "state.db.malformed-backup-20261124_030405_1"]}
+{"func": "backup_name", "case": "three-taken", "db_name": "state.db", "stamp": "20261124_030405", "existing": ["state.db.malformed-backup-20261124_030405", "state.db.malformed-backup-20261124_030405_1", "state.db.malformed-backup-20261124_030405_2"]}
+{"func": "existing_backups", "case": "mixed", "db_name": "state.db", "names": ["state.db.malformed-backup-20260101_000000", "state.db.malformed-backup-20260301_000000-wal", "state.db.malformed-backup-20260201_000000", "other.db", "state.db.malformed-backup-x-journal"]}
+{"func": "existing_backups", "case": "none", "db_name": "state.db", "names": []}
+{"func": "prune_victims", "case": "keep-three-of-five", "db_name": "state.db", "keep": 3, "names": ["state.db.malformed-backup-1", "state.db.malformed-backup-2", "state.db.malformed-backup-3", "state.db.malformed-backup-4", "state.db.malformed-backup-5"]}
+{"func": "prune_victims", "case": "under-cap", "db_name": "state.db", "keep": 3, "names": ["state.db.malformed-backup-1"]}
+{"func": "prune_victims", "case": "ignore-sidecar-entries", "db_name": "state.db", "keep": 1, "names": ["state.db.malformed-backup-1", "state.db.malformed-backup-2", "state.db.malformed-backup-2-wal"]}
+{"func": "attempts_exhausted", "case": "same-fp-third-failure", "recorded": "100:abcdef", "fp": "100:abcdef", "db_size": 100, "failed_attempts": 3}
+{"func": "attempts_exhausted", "case": "same-fp-second-failure", "recorded": "100:abcdef", "fp": "100:abcdef", "db_size": 100, "failed_attempts": 2}
+{"func": "attempts_exhausted", "case": "different-fp", "recorded": "100:abcdef", "fp": "100:999999", "db_size": 100, "failed_attempts": 9}
+{"func": "attempts_exhausted", "case": "unavailable-fp-size-match", "recorded": "100:abcdef", "fp": null, "db_size": 100, "failed_attempts": 3}
+{"func": "attempts_exhausted", "case": "unavailable-fp-size-mismatch", "recorded": "101:abcdef", "fp": null, "db_size": 100, "failed_attempts": 3}
+{"func": "attempts_exhausted", "case": "unavailable-fp-no-record", "recorded": null, "fp": null, "db_size": 100, "failed_attempts": 3}
+{"func": "attempts_exhausted", "case": "attempts-as-string", "recorded": "100:abcdef", "fp": "100:abcdef", "db_size": 100, "failed_attempts": "3"}
+{"func": "next_attempts", "case": "same-key-increments", "recorded": "100:abcdef", "fp": "100:abcdef", "failed_attempts": 2}
+{"func": "next_attempts", "case": "new-key-resets", "recorded": "100:abcdef", "fp": "100:ffffff", "failed_attempts": 2}
+{"func": "next_attempts", "case": "unavailable-fp-extends-record", "recorded": "100:abcdef", "fp": null, "failed_attempts": 2}
+{"func": "next_attempts", "case": "unavailable-fp-no-record", "recorded": null, "fp": null, "failed_attempts": 2}
+{"func": "next_attempts", "case": "first-ever-failure", "recorded": null, "fp": "100:abcdef", "failed_attempts": null}

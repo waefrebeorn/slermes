@@ -1,0 +1,41 @@
+{"case": "sidecar_main", "func": "sidecar_path", "path": "state.db", "suffix": ""}
+{"case": "sidecar_wal", "func": "sidecar_path", "path": "state.db", "suffix": "-wal"}
+{"case": "sidecar_journal_in_dir", "func": "sidecar_path", "path": "profiles/work/state.db", "suffix": "-journal"}
+{"case": "bytes_zero", "func": "format_bytes", "value": 0}
+{"case": "bytes_1280", "func": "format_bytes", "value": 1280}
+{"case": "bytes_1536", "func": "format_bytes", "value": 1536}
+{"case": "bytes_mib", "func": "format_bytes", "value": 268435456}
+{"case": "bytes_gib", "func": "format_bytes", "value": 1073741824}
+{"case": "bytes_int64_max", "func": "format_bytes", "value": 9223372036854775807}
+{"case": "quoted_two", "func": "quoted_columns", "columns": ["id", "session_id"]}
+{"case": "quoted_single", "func": "quoted_columns", "columns": ["value"]}
+{"case": "quoted_three", "func": "quoted_columns", "columns": ["key", "value", "updated_at"]}
+{"case": "compatible_reorder", "func": "compatible_columns", "table": "messages", "source": ["id", "role", "timestamp", "session_id"], "destination": ["id", "session_id", "timestamp", "payload"]}
+{"case": "compatible_source_empty", "func": "compatible_columns", "table": "sessions", "source": [], "destination": ["id", "title"]}
+{"case": "compatible_no_overlap", "func": "compatible_columns", "table": "sessions", "source": ["legacy_a"], "destination": ["id", "title"]}
+{"case": "inventory_available", "func": "table_inventory", "table": "messages", "columns": ["id", "session_id"], "rows": 42}
+{"case": "inventory_no_columns", "func": "table_inventory", "table": "messages", "columns": [], "rows": 0}
+{"case": "inventory_count_error", "func": "table_inventory", "table": "messages", "columns": ["id"], "rows": null, "rows_error": "database disk image is malformed"}
+{"case": "inventory_pragma_error", "func": "table_inventory", "table": "sessions", "columns": null, "rows": null, "columns_error": "file is not a database"}
+{"case": "inspect_healthy", "func": "inspect", "journal_mode": "wal", "tables": {"sessions": {"available": true, "columns": ["id", "title"], "rows": 3}, "messages": {"available": true, "columns": ["id", "session_id"], "rows": 9}}}
+{"case": "inspect_messages_missing", "func": "inspect", "journal_mode": "delete", "tables": {"sessions": {"available": true, "columns": ["id"], "rows": 1}}}
+{"case": "inspect_unreadable_count", "func": "inspect", "journal_mode": "wal", "tables": {"sessions": {"available": true, "columns": ["id"], "rows": null}, "messages": {"available": true, "columns": ["id"], "rows": 4}}}
+{"case": "inspect_journal_damaged", "func": "inspect", "journal_mode": null, "journal_error": "database disk image is malformed", "tables": {"sessions": {"available": true, "columns": ["id"], "rows": 2}, "messages": {"available": true, "columns": ["id"], "rows": 2}}}
+{"case": "skip_merge_adjacent", "func": "append_skipped_range", "ranges": [{"low": 10, "high": 20, "error": "boom"}], "low": 21, "high": 40, "error": "boom"}
+{"case": "skip_append_gap", "func": "append_skipped_range", "ranges": [{"low": 10, "high": 20, "error": "boom"}], "low": 22, "high": 30, "error": "boom"}
+{"case": "skip_append_new_error", "func": "append_skipped_range", "ranges": [{"low": 10, "high": 20, "error": "boom"}], "low": 21, "high": 30, "error": "range limit"}
+{"case": "skip_from_empty", "func": "append_skipped_range", "ranges": [], "low": 5, "high": 5, "error": "destination constraint rejected row: NOT NULL"}
+{"case": "meta_ok", "func": "state_meta_precheck", "source_columns": ["key", "value"], "destination_columns": ["key", "value"], "source_rows": 12, "salvage": false}
+{"case": "meta_absent_whole_copy", "func": "state_meta_precheck", "source_columns": [], "destination_columns": ["key", "value"], "source_rows": null, "salvage": false}
+{"case": "meta_present_unusable_salvage", "func": "state_meta_precheck", "source_columns": ["k", "v", "extra"], "destination_columns": ["key", "value"], "source_rows": 7, "salvage": true}
+{"case": "meta_present_unusable_copy", "func": "state_meta_precheck", "source_columns": ["k"], "destination_columns": ["key", "value"], "source_rows": null, "salvage": false}
+{"case": "meta_destination_incomplete", "func": "state_meta_precheck", "source_columns": ["key", "value"], "destination_columns": ["key"], "source_rows": 3, "salvage": true}
+{"case": "reconcile_none", "func": "reconcile", "table": "sessions", "where": "parent_session_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM sessions AS parent WHERE parent.id = sessions.parent_session_id)", "mutation": "UPDATE sessions SET parent_session_id = NULL", "count": 0}
+{"case": "reconcile_some", "func": "reconcile", "table": "sessions", "where": "model_config IS NOT NULL AND json_valid(model_config) = 0", "mutation": "UPDATE sessions SET model_config = '{}'", "count": 4}
+{"case": "reconcile_delete", "func": "reconcile", "table": "messages", "where": "NOT EXISTS (SELECT 1 FROM sessions WHERE sessions.id = \"messages\".session_id)", "mutation": "DELETE FROM \"messages\"", "count": 2}
+{"case": "space_shared_ok", "func": "disk_space_preflight", "bundle_bytes": 4128, "output_parent": true, "work_free_bytes": 1000000000, "output_free_bytes": 0, "same_filesystem": true, "work_dir": "work", "output_dir": "out"}
+{"case": "space_shared_short", "func": "disk_space_preflight", "bundle_bytes": 4128, "output_parent": true, "work_free_bytes": 268443711, "output_free_bytes": 0, "same_filesystem": true, "work_dir": "work", "output_dir": "out"}
+{"case": "space_no_output_exact", "func": "disk_space_preflight", "bundle_bytes": 4096, "output_parent": false, "work_free_bytes": 268439552, "output_free_bytes": 0, "same_filesystem": true, "work_dir": "work", "output_dir": "out"}
+{"case": "space_split_both_short", "func": "disk_space_preflight", "bundle_bytes": 4128, "output_parent": true, "work_free_bytes": 10, "output_free_bytes": 20, "same_filesystem": false, "work_dir": "work", "output_dir": "out"}
+{"case": "space_split_output_short", "func": "disk_space_preflight", "bundle_bytes": 4128, "output_parent": true, "work_free_bytes": 1000000000, "output_free_bytes": 5, "same_filesystem": false, "work_dir": "work", "output_dir": "out"}
+{"case": "space_headroom_fraction", "func": "disk_space_preflight", "bundle_bytes": 10737418240, "output_parent": true, "work_free_bytes": 32212254720, "output_free_bytes": 0, "same_filesystem": true, "work_dir": "work", "output_dir": "out"}

@@ -1,0 +1,31 @@
+{"func": "constants", "case": "pinned-module-constants"}
+{"func": "sidecars", "case": "bare-name", "db_path": "state.db"}
+{"func": "sidecars", "case": "absolute-windows", "db_path": "C:\\Users\\eman5\\hermes\\state.db"}
+{"func": "sidecars", "case": "other-name", "db_path": "hermes_state.db"}
+{"func": "mask_header", "case": "short-head-untouched", "head_hex": "00070e151c232a31383f464d545b626970777e858c939aa1a8afb6bdc4cbd2d9e0e7eef5fc030a11181f262d343b424950575e656c737a81888f969da4abb2b9c0c7ced5dce3eaf1f8ff060d141b2229"}
+{"func": "mask_header", "case": "exactly-96", "head_hex": "000306090c0f1215181b1e2124272a2d303336393c3f4245484b4e5154575a5d606366696c6f7275787b7e8184878a8d909396999c9fa2a5a8abaeb1b4b7babdc0c3c6c9cccfd2d5d8dbdee1e4e7eaedf0f3f6f9fcff0205080b0e1114171a1d"}
+{"func": "mask_header", "case": "long-head-masks-two-ranges", "head_hex": "00050a0f14191e23282d32373c41464b50555a5f64696e73787d82878c91969ba0a5aaafb4b9bec3c8cdd2d7dce1e6ebf0f5faff04090e13181d22272c31363b40454a4f54595e63686d72777c81868b90959a9fa4a9aeb3b8bdc2c7ccd1d6dbe0e5eaeff4f9fe03080d12171c21262b30353a3f44494e53"}
+{"func": "headroom", "case": "floor-wins", "total_bytes": 13000000000}
+{"func": "headroom", "case": "fraction-wins", "total_bytes": 20000000000}
+{"func": "headroom", "case": "zero-total", "total_bytes": 0}
+{"func": "snapshot_timeout", "case": "small-file-floor", "db_path": "state.db", "db_bytes": 1048576, "sidecar_bytes": []}
+{"func": "snapshot_timeout", "case": "five-gib-plus-wal", "db_path": "state.db", "db_bytes": 5000000000, "sidecar_bytes": [7340032, 0, 0]}
+{"func": "disk_budget_error", "case": "stat-failed", "db_path": "state.db", "parent": "C:\\hermes", "exc": "[Errno 2] No such file or directory", "refusal": "repair snapshot"}
+{"func": "scratch_space_error", "case": "fits", "db_path": "state.db", "parent": "C:\\hermes", "snapshot_bytes": 100000000, "free_bytes": 900000000, "headroom_bytes": 268435456}
+{"func": "scratch_space_error", "case": "short", "db_path": "state.db", "parent": "C:\\hermes", "snapshot_bytes": 4000000000, "free_bytes": 2000000000, "headroom_bytes": 268435456}
+{"func": "backup_free_space_error", "case": "fits", "db_path": "state.db", "parent": "C:\\hermes", "need_bytes": 100000000, "free_bytes": 900000000, "headroom_bytes": 268435456}
+{"func": "backup_free_space_error", "case": "refused", "db_path": "state.db", "parent": "C:\\hermes", "need_bytes": 2400000000, "free_bytes": 2500000000, "headroom_bytes": 268435456}
+{"func": "manual_hint", "case": "bare-name", "db_path": "state.db"}
+{"func": "failure_consumes_attempt", "case": "corrupt-code", "is_db_error": true, "errorcode_present": true, "errorcode": 11, "message": "database disk image is malformed"}
+{"func": "failure_consumes_attempt", "case": "notadb-code", "is_db_error": true, "errorcode_present": true, "errorcode": 26, "message": "file is not a database"}
+{"func": "failure_consumes_attempt", "case": "busy-code", "is_db_error": true, "errorcode_present": true, "errorcode": 5, "message": "database is locked"}
+{"func": "failure_consumes_attempt", "case": "extended-corrupt-code", "is_db_error": true, "errorcode_present": true, "errorcode": 267, "message": "x"}
+{"func": "failure_consumes_attempt", "case": "no-code-message-match", "is_db_error": true, "errorcode_present": false, "message": "Database disk image is MALFORMED"}
+{"func": "failure_consumes_attempt", "case": "no-code-disk-full", "is_db_error": true, "errorcode_present": false, "message": "database or disk is full"}
+{"func": "failure_consumes_attempt", "case": "not-a-db-error", "is_db_error": false, "errorcode_present": false, "message": "file is not a database"}
+{"func": "temporary_file_failure", "case": "full-code", "is_db_error": true, "errorcode_present": true, "errorcode": 13, "message": "x"}
+{"func": "temporary_file_failure", "case": "no-code-no-space", "is_db_error": true, "errorcode_present": false, "message": "disk I/O error: No space left on device"}
+{"func": "temporary_file_failure", "case": "corrupt-code-not-temporary", "is_db_error": true, "errorcode_present": true, "errorcode": 11, "message": "database disk image is malformed"}
+{"func": "schema_not_built", "case": "no-such-table", "message": "no such table: messages_fts"}
+{"func": "schema_not_built", "case": "no-such-column-upper", "message": "NO SUCH COLUMN: retired_cjk"}
+{"func": "schema_not_built", "case": "malformed", "message": "database disk image is malformed"}

@@ -1,0 +1,31 @@
+{"case":"uid-plain","func":"normalize_user_id","value":"123456789"}
+{"case":"uid-padded","func":"normalize_user_id","value":" 0042 "}
+{"case":"uid-letter","func":"normalize_user_id","value":"12a"}
+{"case":"uid-negative","func":"normalize_user_id","value":"-5"}
+{"case":"uid-null","func":"normalize_user_id","value":null}
+{"case":"uid-number","func":"normalize_user_id","value":987654}
+{"case":"uid-empty","func":"normalize_user_id","value":""}
+{"case":"ids-dedupe","func":"normalize_allowed_ids","ids":["111","222","111","333"]}
+{"case":"ids-empty","func":"normalize_allowed_ids","ids":[]}
+{"case":"ids-nonnumeric","func":"normalize_allowed_ids","ids":["111","x1"]}
+{"case":"ids-blank","func":"normalize_allowed_ids","ids":[" 111 ",""]}
+{"case":"ids-padded","func":"normalize_allowed_ids","ids":[" 111 "," 22 "]}
+{"case":"expiry-zulu","func":"parse_expiry_ts","value":"2026-01-02T03:04:05Z"}
+{"case":"expiry-offset","func":"parse_expiry_ts","value":"2026-01-02T03:04:05.250000+02:00"}
+{"case":"expiry-naive","func":"parse_expiry_ts","value":"2026-01-02 03:04:05"}
+{"case":"expiry-date-only","func":"parse_expiry_ts","value":"2026-01-02"}
+{"case":"expiry-garbage","func":"parse_expiry_ts","value":"not-a-date"}
+{"case":"expiry-bad-day","func":"parse_expiry_ts","value":"2026-02-30T00:00:00Z"}
+{"case":"ready-full","func":"ready_payload","record":{"bot_username":"acme_bot","owner_user_id":"424242","expires_at":"2026-01-02T03:04:05Z"}}
+{"case":"ready-empty","func":"ready_payload","record":{}}
+{"case":"start-full","func":"start_payload","payload":{"pairing_id":"pair-1","poll_token":"poll-1","expires_at":"2026-01-02T03:04:05Z","deep_link":"https://t.me/acme_bot?start=pair-1","suggested_username":"acme_bot","qr_payload":"tg://pair?x=1"}}
+{"case":"start-no-deep-link","func":"start_payload","payload":{"pairing_id":"pair-1","poll_token":"poll-1","expires_at":"2026-01-02T03:04:05Z"}}
+{"case":"start-qr-fallback","func":"start_payload","payload":{"pairing_id":"pair-2","poll_token":"poll-2","expires_at":"2026-01-03T00:00:00+00:00","deep_link":"https://t.me/bot?start=pair-2","suggested_username":"  ","qr_payload":null}}
+{"case":"status-already-ready","func":"status_payload","record":{"bot_token":"9:xyz","poll_token":"pt","expires_at":"2026-01-02T03:04:05Z","bot_username":"acme_bot","owner_user_id":"42"},"payload":{"status":"waiting"}}
+{"case":"status-waiting","func":"status_payload","record":{"bot_token":null,"poll_token":"pt","expires_at":"2026-01-02T03:04:05Z"},"payload":{"status":"waiting"}}
+{"case":"status-ready","func":"status_payload","record":{"bot_token":null,"poll_token":"pt","expires_at":"2026-01-02T03:04:05Z"},"payload":{"status":"ready","token":"123:abc","bot_username":"acme_bot","owner_user_id":"424242"}}
+{"case":"status-ready-bad-owner","func":"status_payload","record":{"bot_token":null,"poll_token":"pt","expires_at":"2026-01-02T03:04:05Z"},"payload":{"status":"ready","token":"123:abc","bot_username":"","owner_user_id":"owner-7"}}
+{"case":"status-ready-no-token","func":"status_payload","record":{"bot_token":null,"poll_token":"pt","expires_at":"2026-01-02T03:04:05Z"},"payload":{"status":"ready","bot_username":"acme_bot"}}
+{"case":"status-expired","func":"status_payload","record":{"bot_token":null,"poll_token":"pt","expires_at":"2026-01-02T03:04:05Z"},"payload":{"status":"expired"}}
+{"case":"status-claimed","func":"status_payload","record":{"bot_token":null,"poll_token":"pt","expires_at":"2026-01-02T03:04:05Z"},"payload":{"status":"claimed"}}
+{"case":"status-unknown","func":"status_payload","record":{"bot_token":null,"poll_token":"pt","expires_at":"2026-01-02T03:04:05Z"},"payload":{"status":"banana"}}

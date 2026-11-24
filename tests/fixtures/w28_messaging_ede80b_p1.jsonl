@@ -1,0 +1,36 @@
+{"case":"mode-bot","func":"normalize_mode","value":"bot"}
+{"case":"mode-self-chat-upper","func":"normalize_mode","value":" Self-Chat "}
+{"case":"mode-default-null","func":"normalize_mode","value":null}
+{"case":"mode-empty-default","func":"normalize_mode","value":""}
+{"case":"mode-blank-error","func":"normalize_mode","value":"   "}
+{"case":"mode-unknown","func":"normalize_mode","value":"web"}
+{"case":"mode-bool","func":"normalize_mode","value":true}
+{"case":"users-basic","func":"normalize_allowed_users","value":" 1, 2 ,, 3 "}
+{"case":"users-phones","func":"normalize_allowed_users","value":" +1 (555) 010-9999 , 44 7700 900123 "}
+{"case":"users-null","func":"normalize_allowed_users","value":null}
+{"case":"users-blank-parts","func":"normalize_allowed_users","value":" , , "}
+{"case":"users-single","func":"normalize_allowed_users","value":"15551234567"}
+{"case":"phone-jid","func":"phone_from_identifier","value":"15551234567:7@s.whatsapp.net"}
+{"case":"phone-cus","func":"phone_from_identifier","value":"447700900123@c.us"}
+{"case":"phone-nodigits","func":"phone_from_identifier","value":"lid:someone"}
+{"case":"phone-null","func":"phone_from_identifier","value":null}
+{"case":"phone-punctuation","func":"phone_from_identifier","value":"  +1 (555) 010-9999  "}
+{"case":"first-id-blank","func":"first_str","candidate":{"jid":"x@c.us","id":"  "},"keys":["id","jid"]}
+{"case":"first-not-dict","func":"first_str","candidate":"not-a-dict","keys":["id"]}
+{"case":"first-number","func":"first_str","candidate":{"id":7},"keys":["id"]}
+{"case":"first-empty","func":"first_str","candidate":{},"keys":["id","jid"]}
+{"case":"linked-me","func":"linked_account","payload":{"me":{"id":"15551234567:3@s.whatsapp.net","name":" Ada "},"account":{"jid":"x"}}}
+{"case":"linked-account-lid","func":"linked_account","payload":{"account":{"lid":"987654321","pushName":"Bob"}}}
+{"case":"linked-empty","func":"linked_account","payload":{}}
+{"case":"linked-verified-name","func":"linked_account","payload":{"me":{"id":"1@s.whatsapp.net","verifiedName":"Acme Corp"},"account":{"name":"acct"}}}
+{"case":"ev-qr","func":"apply_pairing_event","record":{"qr_payload":null,"status":"starting","error":null,"account_id":null,"account_name":null,"account_phone":null},"payload":{"event":"qr","qr":"2@abc"}}
+{"case":"ev-qr-blank","func":"apply_pairing_event","record":{"qr_payload":"old","status":"starting","error":null,"account_id":null,"account_name":null,"account_phone":null},"payload":{"event":"qr","qr":"   "}}
+{"case":"ev-connected","func":"apply_pairing_event","record":{"qr_payload":"q","status":"waiting","error":"boom","account_id":null,"account_name":null,"account_phone":null},"payload":{"event":"connected","user":{"id":"15551234567:1@s.whatsapp.net","name":" Ada Lovelace "}}}
+{"case":"ev-connected-nouser","func":"apply_pairing_event","record":{"qr_payload":"q","status":"waiting","error":null,"account_id":"keep","account_name":"keep","account_phone":"1"},"payload":{"event":"connected"}}
+{"case":"ev-connected-blank-user","func":"apply_pairing_event","record":{"qr_payload":"q","status":"waiting","error":null,"account_id":"old","account_name":"old","account_phone":"1"},"payload":{"event":"connected","user":{"id":"","name":"  "}}}
+{"case":"ev-error-passkey","func":"apply_pairing_event","record":{"qr_payload":null,"status":"starting","error":null,"account_id":null,"account_name":null,"account_phone":null},"payload":{"event":"error","error":"passkey_required"}}
+{"case":"ev-error-raw","func":"apply_pairing_event","record":{"qr_payload":null,"status":"starting","error":null,"account_id":null,"account_name":null,"account_phone":null},"payload":{"event":"error","error":"bridge crashed"}}
+{"case":"ev-error-empty","func":"apply_pairing_event","record":{"qr_payload":null,"status":"starting","error":null,"account_id":null,"account_name":null,"account_phone":null},"payload":{"event":"error","error":""}}
+{"case":"ev-disconnected-starting","func":"apply_pairing_event","record":{"qr_payload":null,"status":"starting","error":null,"account_id":null,"account_name":null,"account_phone":null},"payload":{"event":"disconnected"}}
+{"case":"ev-disconnected-waiting","func":"apply_pairing_event","record":{"qr_payload":"q","status":"waiting","error":"e","account_id":null,"account_name":null,"account_phone":null},"payload":{"event":"disconnected"}}
+{"case":"ev-unknown","func":"apply_pairing_event","record":{"qr_payload":"q","status":"waiting","error":null,"account_id":"a","account_name":"b","account_phone":"c"},"payload":{"event":"progress","pct":50}}
