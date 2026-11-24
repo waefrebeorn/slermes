@@ -41,6 +41,11 @@ REPO = os.getcwd()
 PY = sys.executable
 BASH = r"C:\msys64\usr\bin\bash.exe" if os.name == "nt" else "sh"
 KEEP = {"func", "case", "out", "seams"}
+GATE_TIMEOUT = 120
+
+
+def args_timeout():
+    return GATE_TIMEOUT
 
 
 def is_discriminator(key):
@@ -196,14 +201,23 @@ def fuzz_gate(gate, module, per_case, jobs, min_cases, seed):
             fh.write(json.dumps(v, ensure_ascii=False) + "\n")
 
     with open(inp, "rb") as fin, open(filled, "wb") as fout:
-        r = subprocess.run([exe], stdin=fin, stdout=fout, stderr=subprocess.DEVNULL)
+        try:
+            # A perturbed input can drive the port into an unbounded loop; without
+            # a timeout the whole audit hangs instead of reporting that gate.
+            r = subprocess.run([exe], stdin=fin, stdout=fout,
+                               stderr=subprocess.DEVNULL, timeout=args_timeout())
+        except subprocess.TimeoutExpired:
+            return gate, "harness TIMEOUT (unbounded loop on a perturbed input?)", 0, 0, []
     if r.returncode not in (0, 1):
         return gate, "harness rc=%d" % r.returncode, 0, 0, []
 
     oracle = os.path.join(REPO, "tests", "oracle_%s.py" % gate)
     with open(filled, "rb") as fin:
-        o = subprocess.run([PY, oracle], stdin=fin, capture_output=True,
-                           text=True, errors="replace")
+        try:
+            o = subprocess.run([PY, oracle], stdin=fin, capture_output=True,
+                               text=True, errors="replace", timeout=args_timeout() * 2)
+        except subprocess.TimeoutExpired:
+            return gate, "oracle TIMEOUT", 0, 0, []
     detail = [ln for ln in (o.stderr or "").splitlines() if ln.startswith("MISMATCH")]
     real = [ln for ln in detail if "live-error" not in ln]
     noise = [ln for ln in detail if "live-error" in ln]
@@ -251,7 +265,8 @@ def main():
         for f in futs:
             gate, note, total, mism, detail = f.result()
             flag = "OK " if (note == "ok" and mism == 0) else "BAD"
-            print("%s %-32s cases=%-5d value-mismatches=%-3d %s" % (flag, gate, total, mism, note))
+            print("%s %-32s cases=%-5d value-mismatches=%-3d %s"
+                  % (flag, gate, total, mism, note), flush=True)
             for ln in detail[:5]:
                 print("      " + ln[:200])
             if note != "ok" or mism:

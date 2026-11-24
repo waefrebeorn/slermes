@@ -57,22 +57,36 @@ python scripts/gate_fuzz.py w32_backup_1d0d4e_p1 --plan docs/wave32-plan.json --
 | `w32_tools_f39c80_p1` | `detail: null` vs `""` | probe without a `detail` key: `dict.get` gives None, the port defaulted to `""` | copy the node, or `json_null()` |
 | `w32_backup_1d0d4e_p1` | uppercase `.BAK` survivor dropped | `glob` is case-insensitive on Windows; `strncmp` is not | `bp_starts_ci` / `bp_ends_ci` for the prune arm only |
 
+## Defects this audit found in wave 33 (all fixed)
+
+| gate | symptom | cause | fix |
+|---|---|---|---|
+| `w33_telegramne_429779_p2` | `py=-2.5 c=15`, `py=1.25 c=-5` | `_connect_share` clamped a negative `paths_left` to 1 before dividing | divide by `paths_left` as-is; 0 → null (Python raises) |
+| `w33_standalone_9f791b` | `py=7 c='7'` | `standalone_send`'s token resolution `str()`-ed a non-string token | pass the chosen value through unchanged |
+| `w33_standalone_9f791b` | `text: None` where Python returns `[]`/`0`/`{}` | caption split only forwarded string text | copy the node |
+| `w33_telegramne_429779_p1` | `py=['[::1]'] c=['::1']` | IPv6 bracketing applied only in the with-port arm | bracket in both arms |
+
 ## Known debt (still diverging under fuzz)
 
-Sweep of 2026-11-24 (`--per-case 6`, wave 32 plan). These gates pass their
-authored fixtures but diverge on held-out inputs; each needs a port fix before
-the wave contract treats fuzz as blocking:
+**P0 — a hang, not a wrong answer.** `w33_portabilit_b54bb9` stops responding on a
+perturbed `validate_payload` case carrying a very long title (the harness hits the
+120 s ceiling the audit enforces). An unbounded input must fail fast, not spin:
+this is the first thing to fix, ahead of any count below.
 
-- `w32_audio_a418b2_p1` (8), `w32_audio_a418b2_p2` (3) — `speak`/`transcribe`
-  argument shaping.
-- `w32_backup_1d0d4e_p1` (2), `p2` (2) — `uses_wal` header sniffing, `verify`
-  message ordering (size gate vs open failure).
-- `w32_chatws_cd49ef_p1` (6) — `console_run` frame sequence when a frame is not
-  a JSON object.
-- `w32_hostedroom_be7d8d_p1` (4), `p2` (2) — remaining budget/validation arms.
-- `w32_tools_f39c80_p1` (1), `p2` (3) — `toolset_config` defaults.
-- `w32_methodscon_ce0f5d_p1/p2` — VACUOUS: the oracle skips every fuzz line
-  (func name set differs), so the gate has no held-out coverage at all yet.
+Sweep of 2026-11-24 (`--per-case 5`, wave 33 plan). These gates pass their
+authored fixtures but diverge on held-out inputs:
+
+- `w33_sandboxcon_be5b73_p2` (10), `w33_adapter_eaa5eb_p2` (6),
+  `w33_interactio_95c25f_p2` (6), `w33_pipeline_540ecf_p2` (6),
+  `w33_configfree_3f224a` (5), `w33_servers_a4580e` (3),
+  `w33_maintenanc_3e1b75_p1` (2).
+- `w33_telegramne_429779_p2` (5 remaining) — all `urlunsplit` round-trip
+  artefacts on malformed URLs (space in the authority, single-slash, scheme-less);
+  documented as a seam in the port header. Valid Bot API URLs are identical.
+- `w33_adapter_eaa5eb_p1` — the ORACLE times out (not the harness), so the gate
+  has no held-out verdict at all yet.
+- Earlier wave 32 debt is listed above and unchanged: audio, chatws, hostedroom,
+  toolsets, plus two vacuous gates with no held-out coverage.
 
 ## Integration with landing
 
