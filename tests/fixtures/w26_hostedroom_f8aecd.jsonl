@@ -1,0 +1,17 @@
+{"func":"source_for","case":"root-state-db-with-sibling","target_name":"state.db","sibling_exists":1}
+{"func":"source_for","case":"root-state-db-no-sibling","target_name":"state.db","sibling_exists":0}
+{"func":"source_for","case":"named-profile-db","target_name":"other.db","sibling_exists":1}
+{"func":"source_for","case":"source-itself","target_name":"shared-state.db","sibling_exists":1}
+{"func":"source_for","case":"case-mismatch","target_name":"STATE.DB","sibling_exists":1}
+{"func":"source_for","case":"empty-name","target_name":"","sibling_exists":1}
+{"func":"handoff_id","case":"normal","local_id":"local-1"}
+{"func":"handoff_id","case":"empty-local","local_id":""}
+{"func":"handoff_id","case":"host-and-profile","local_id":"host@default"}
+{"func":"handoff_id","case":"long-authority","local_id":"host-0123456789abcdef"}
+{"func":"import_plan","case":"mixed","authorities":[{"has_service":false},{"has_service":true,"ready_started":false},{"has_service":true,"ready_started":true}]}
+{"func":"import_plan","case":"no-authorities","authorities":[]}
+{"func":"import_plan","case":"already-started","authorities":[{"has_service":true,"ready_started":true},{"has_service":true,"ready_started":true}]}
+{"func":"import_plan","case":"all-fresh","authorities":[{"has_service":true,"ready_started":false},{"has_service":true,"ready_started":false}]}
+{"func":"import_plan","case":"single-service","authorities":[{"has_service":true,"ready_started":false}]}
+{"func":"import_plan","case":"zero-flag","authorities":[{"has_service":true,"ready_started":0},{"has_service":1,"ready_started":0}]}
+{"func":"constants","case":"values"}

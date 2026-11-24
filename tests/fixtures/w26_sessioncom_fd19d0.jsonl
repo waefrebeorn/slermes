@@ -1,0 +1,28 @@
+{"func": "producer", "case": "list-two-elements", "identity": "[\"async_delegation\", \"d-1\"]"}
+{"func": "producer", "case": "single-element", "identity": "[\"completion\"]"}
+{"func": "producer", "case": "empty-list", "identity": "[]"}
+{"func": "producer", "case": "not-json", "identity": "not json at all"}
+{"func": "producer", "case": "object-literal", "identity": "{\"a\": 1}"}
+{"func": "producer", "case": "string-literal", "identity": "\"abc\""}
+{"func": "producer", "case": "number-literal", "identity": "5"}
+{"func": "producer", "case": "identity-null", "identity": null}
+{"func": "noted_completion", "case": "async-delegation", "row": {"admission_id": "a-1", "payload": {"text": "done", "local_automation_v1": {"identity": "[\"async_delegation\", \"d-1\"]", "display_text": "delegation finished", "display_kind": "internal_notification"}}}}
+{"func": "noted_completion", "case": "cron-result", "row": {"payload": {"local_automation_v1": {"identity": "[\"cron\", \"job-1\"]"}}}}
+{"func": "noted_completion", "case": "plain-turn-producer", "row": {"payload": {"local_automation_v1": {"identity": "[\"turn\", \"t-1\"]"}}}}
+{"func": "noted_completion", "case": "no-descriptor", "row": {"payload": {"text": "hello"}}}
+{"func": "noted_completion", "case": "descriptor-null", "row": {"payload": {"local_automation_v1": null}}}
+{"func": "noted_completion", "case": "empty-row", "row": {}}
+{"func": "noted_completion", "case": "row-wrong-type", "row": null}
+{"func": "noted_completion", "case": "malformed-identity", "row": {"payload": {"local_automation_v1": {"identity": "nope"}}}}
+{"func": "wakes", "case": "resume-no-viewer", "descriptor": {"resumes_parent": true}, "closed": false, "unattended_wakes": 0}
+{"func": "wakes", "case": "failed-first-wake", "descriptor": {"wakes_parent": true}, "closed": false, "unattended_wakes": 0}
+{"func": "wakes", "case": "failed-last-budget", "descriptor": {"wakes_parent": true}, "closed": false, "unattended_wakes": 2}
+{"func": "wakes", "case": "failed-past-limit", "descriptor": {"wakes_parent": true}, "closed": false, "unattended_wakes": 3}
+{"func": "wakes", "case": "resume-in-closed-chat", "descriptor": {"resumes_parent": true}, "closed": true, "unattended_wakes": 0}
+{"func": "wakes", "case": "neither-flag", "descriptor": {"display_text": "x"}, "closed": false, "unattended_wakes": 0}
+{"func": "wakes", "case": "failed-closed-keeps-count", "descriptor": {"wakes_parent": true}, "closed": true, "unattended_wakes": 1}
+{"func": "wakes", "case": "descriptor-wrong-type", "descriptor": null, "closed": false, "unattended_wakes": 5}
+{"func": "constants", "case": "tables"}
+{"func": "constants", "case": "tables-again"}
+{"func": "constants", "case": "tables-third"}
+{"func": "constants", "case": "tables-fourth"}

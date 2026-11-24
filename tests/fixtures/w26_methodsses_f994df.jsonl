@@ -1,0 +1,23 @@
+{"func": "constants", "case": "methods"}
+{"func": "correction", "case": "steer-applied", "verb": "steer", "params": {"text": "fix it"}, "session": {"running": true, "agent": {"name": "a"}, "supports_steer": true}}
+{"func": "correction", "case": "steer-agent-rejects", "verb": "steer", "params": {"text": "fix it"}, "session": {"running": true, "agent": {"name": "a"}, "supports_steer": true, "accepted": false}}
+{"func": "correction", "case": "steer-text-missing", "verb": "steer", "params": {}, "session": {"running": true, "agent": {"name": "a"}, "supports_steer": true}}
+{"func": "correction", "case": "steer-text-whitespace", "verb": "steer", "params": {"text": "   "}, "session": {"running": true, "agent": {"name": "a"}, "supports_steer": true}}
+{"func": "correction", "case": "steer-text-zero", "verb": "steer", "params": {"text": 0}, "session": {"running": true, "agent": {"name": "a"}, "supports_steer": true}}
+{"func": "correction", "case": "steer-text-padded", "verb": "steer", "params": {"text": "  hi  "}, "session": {"running": true, "agent": {"name": "a"}, "supports_steer": true}}
+{"func": "correction", "case": "steer-idle", "verb": "steer", "params": {"text": "go"}, "session": {"running": false, "agent": {"name": "a"}, "supports_steer": true}}
+{"func": "correction", "case": "steer-unsupported", "verb": "steer", "params": {"text": "go"}, "session": {"running": true, "agent": {"name": "a"}, "supports_steer": false}}
+{"func": "correction", "case": "steer-compressing", "verb": "steer", "params": {"text": "go"}, "session": {"running": true, "agent": {"name": "a"}, "supports_steer": true, "compression_in_flight": true}}
+{"func": "correction", "case": "steer-agent-raises", "verb": "steer", "params": {"text": "go"}, "session": {"running": true, "agent": {"name": "a"}, "supports_steer": true, "agent_error": "queue is full"}}
+{"func": "correction", "case": "redirect-mid-build", "verb": "redirect", "params": {"text": "other path"}, "session": {"running": true, "agent": null, "supports_redirect": true}}
+{"func": "correction", "case": "redirect-unsupported", "verb": "redirect", "params": {"text": "other path"}, "session": {"running": true, "agent": {"name": "a"}, "supports_redirect": false}}
+{"func": "correction", "case": "redirect-applied", "verb": "redirect", "params": {"text": "other path"}, "session": {"running": true, "agent": {"name": "a"}, "supports_redirect": true}}
+{"func": "correction", "case": "redirect-idle-applies", "verb": "redirect", "params": {"text": "other path"}, "session": {"running": false, "agent": {"name": "a"}, "supports_redirect": true}}
+{"func": "correction", "case": "redirect-text-null", "verb": "redirect", "params": {"text": null}, "session": {"running": true, "agent": {"name": "a"}, "supports_redirect": true}}
+{"func": "interrupt", "case": "plain", "params": {"session_id": "s1"}, "session": {"running": true, "agent": {"name": "a"}}}
+{"func": "interrupt", "case": "compute-host", "params": {"session_id": "s1"}, "session": {"running": true, "agent": {"name": "a"}, "compute_host": true}}
+{"func": "interrupt", "case": "expected-mismatch", "params": {"session_id": "s1", "expected_hosted_task_id": "t9"}, "session": {"running": true, "agent": {"name": "a"}}}
+{"func": "interrupt", "case": "expected-match", "params": {"session_id": "s1", "expected_hosted_task_id": "t9"}, "session": {"running": true, "agent": {"name": "a"}, "_hosted_room_task": {"task_id": "t9"}}}
+{"func": "interrupt", "case": "expected-not-running", "params": {"session_id": "s1", "expected_hosted_task_id": "t9"}, "session": {"running": false, "agent": {"name": "a"}, "_hosted_room_task": {"task_id": "t9"}}}
+{"func": "interrupt", "case": "expected-int-task-id", "params": {"session_id": "s1", "expected_hosted_task_id": "5"}, "session": {"running": true, "agent": {"name": "a"}, "_hosted_room_task": {"task_id": 5}}}
+{"func": "interrupt", "case": "expected-empty", "params": {"session_id": "s1", "expected_hosted_task_id": ""}, "session": {"running": true, "agent": {"name": "a"}}}

@@ -1,0 +1,27 @@
+{"func":"output_dir","case":"home_abs","hermes_home":"/home/u/.hermes"}
+{"func":"output_dir","case":"home_trailing","hermes_home":"/home/u/.hermes/"}
+{"func":"output_dir","case":"home_drive","hermes_home":"C:/Users/x/hermes"}
+{"func":"output_dir","case":"home_dots","hermes_home":"/a//b/./c"}
+{"func":"output_dir","case":"home_empty","hermes_home":""}
+{"func":"output_dir","case":"home_rel","hermes_home":"profiles/p1"}
+{"func":"adoptable_log","case":"match","path":"/home/u/logs/process-output/s1.log","output_dir":"/home/u/logs/process-output"}
+{"func":"adoptable_log","case":"wrong_ext","path":"/home/u/logs/process-output/s1.txt","output_dir":"/home/u/logs/process-output"}
+{"func":"adoptable_log","case":"wrong_dir","path":"logs/process-output/s1.log","output_dir":"/home/u/logs/process-output"}
+{"func":"adoptable_log","case":"trailing_slash","path":"/home/u/logs/process-output/s1.log/","output_dir":"/home/u/logs/process-output/"}
+{"func":"adoptable_log","case":"none","path":null,"output_dir":"/home/u/logs/process-output"}
+{"func":"adoptable_log","case":"empty","path":"","output_dir":"/home/u/logs/process-output"}
+{"func":"adoptable_log","case":"dot_log","path":"/x/.log","output_dir":"/x"}
+{"func":"adoptable_log","case":"same_name_other_dir","path":"/home/u/logs/process-output/s1.log","output_dir":"/home/u/logs/other"}
+{"func":"exit_path","case":"abs","log":"/home/u/logs/process-output/s1.log"}
+{"func":"exit_path","case":"rel","log":"s1.log"}
+{"func":"exit_path","case":"double_ext","log":"dir/name.tar.gz"}
+{"func":"exit_path","case":"none_ext","log":"dir/name"}
+{"func":"exit_path","case":"dot_tail","log":"x."}
+{"func":"exit_path","case":"leading_dot","log":"/x/.log"}
+{"func":"exit_path","case":"dotdot","log":"a/b/../c.log"}
+{"func":"record_exit_command","case":"plain","log":"/tmp/po/s1.log","command":"echo hi"}
+{"func":"record_exit_command","case":"space","log":"/tmp/po s/s1.log","command":"ls -l"}
+{"func":"record_exit_command","case":"quote","log":"/tmp/po'q/s1.log","command":"true"}
+{"func":"record_exit_command","case":"empty_cmd","log":"/tmp/po/s1.log","command":""}
+{"func":"record_exit_command","case":"multi_cmd","log":"/s1.log","command":"a\nb"}
+{"func":"constants","case":"all"}

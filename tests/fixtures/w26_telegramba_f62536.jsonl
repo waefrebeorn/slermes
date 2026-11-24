@@ -1,0 +1,27 @@
+{"func":"pad_inline_flags","case":"pad_two","media_text_inlined":[true],"media_urls":["a","b","c"]}
+{"func":"pad_inline_flags","case":"pad_one","media_text_inlined":[],"media_urls":["a"]}
+{"func":"pad_inline_flags","case":"no_urls","media_text_inlined":[false,true],"media_urls":[]}
+{"func":"pad_inline_flags","case":"null_inlined","media_text_inlined":null,"media_urls":["a","b"]}
+{"func":"pad_inline_flags","case":"already_long","media_text_inlined":[true,false,true],"media_urls":["a"]}
+{"func":"command_first","case":"lift","captions":"see file","incoming":"/goal summarize"}
+{"func":"command_first","case":"already_command","captions":"/goal x","incoming":"/goal y"}
+{"func":"command_first","case":"no_command","captions":"hello","incoming":"world"}
+{"func":"command_first","case":"empty_captions","captions":"","incoming":"/goal x"}
+{"func":"command_first","case":"bot_suffix","captions":"pic","incoming":"/reset@hermesbot now"}
+{"func":"command_first","case":"null_captions","captions":null,"incoming":"/goal"}
+{"func":"merged_text","case":"join","text":"A","incoming":"B","notes":[]}
+{"func":"merged_text","case":"from_null","text":null,"incoming":"B","notes":[]}
+{"func":"merged_text","case":"empty_incoming","text":"A","incoming":"","notes":[]}
+{"func":"merged_text","case":"all_empty","text":null,"incoming":"","notes":[]}
+{"func":"merged_text","case":"note_stripped","text":"A","incoming":"cap [too large]","notes":["[too large]"]}
+{"func":"merged_text","case":"note_kept_in_text","text":"A\n\n[too large]","incoming":"x","notes":["[too large]"]}
+{"func":"merged_text","case":"two_notes","text":"A","incoming":"[n1][n2]","notes":["[n1]","[n2]"]}
+{"func":"merged_text","case":"empty_note","text":"A","incoming":"tail","notes":[""]}
+{"func":"caption_is_command","case":"plain","caption":"/goal x"}
+{"func":"caption_is_command","case":"prose","caption":"hello"}
+{"func":"caption_is_command","case":"attachment_ref","caption":"@image:C:/Users/John Doe/a.png\n/goal"}
+{"func":"caption_is_command","case":"ref_not_command","caption":"@file:/tmp/x.txt\nnot a command"}
+{"func":"caption_is_command","case":"bare_slash","caption":"/"}
+{"func":"caption_is_command","case":"leading_space","caption":"  /model"}
+{"func":"caption_is_command","case":"path_like","caption":"/usr/bin/ls"}
+{"func":"constants","case":"all"}

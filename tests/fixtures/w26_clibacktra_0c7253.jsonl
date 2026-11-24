@@ -1,0 +1,24 @@
+{"func": "scroll", "case": "normal", "offset": 0, "span": [3, 5], "visible": 10, "total": 40}
+{"func": "scroll", "case": "above-view", "offset": 10, "span": [3, 5], "visible": 10, "total": 40}
+{"func": "scroll", "case": "below-view", "offset": 0, "span": [20, 25], "visible": 10, "total": 40}
+{"func": "scroll", "case": "taller-than-view", "offset": 0, "span": [30, 60], "visible": 10, "total": 40}
+{"func": "scroll", "case": "clamped-at-bottom", "offset": 35, "span": [30, 32], "visible": 10, "total": 40}
+{"func": "scroll", "case": "visible-exceeds-total", "offset": 5, "span": [3, 4], "visible": 50, "total": 40}
+{"func": "scroll", "case": "empty", "offset": 0, "span": [0, 0], "visible": 10, "total": 0}
+{"func": "scroll", "case": "negative-offset", "offset": -5, "span": [0, 1], "visible": 10, "total": 40}
+{"func": "geometry", "case": "default-100x24", "columns": 100, "lines": 24, "reserved_below": 5, "hint_rows": 1}
+{"func": "geometry", "case": "two-hint-rows", "columns": 100, "lines": 24, "reserved_below": 5, "hint_rows": 2}
+{"func": "geometry", "case": "50x10-implicit-hint-rows", "columns": 50, "lines": 10, "reserved_below": 0}
+{"func": "geometry", "case": "body-floor", "columns": 50, "lines": 10, "reserved_below": 100, "hint_rows": 5}
+{"func": "geometry", "case": "inner-floor", "columns": 10, "lines": 5, "reserved_below": 0, "hint_rows": 1}
+{"func": "geometry", "case": "zero-terminal", "columns": 0, "lines": 0, "reserved_below": 0, "hint_rows": 0}
+{"func": "geometry", "case": "wide", "columns": 200, "lines": 60, "reserved_below": 10, "hint_rows": 3}
+{"func": "fit_hint", "case": "exact-width", "hint": "Browse · ↑↓ scroll · ↹ prompts · e edit · f fork · esc back", "width": 59}
+{"func": "fit_hint", "case": "shed-words", "hint": "Browse · ↑↓ scroll · ↹ prompts · e edit · f fork · esc back", "width": 55}
+{"func": "fit_hint", "case": "shed-fork", "hint": "Browse · ↑↓ scroll · ↹ prompts · e edit · f fork · esc back", "width": 40}
+{"func": "fit_hint", "case": "shed-edit", "hint": "Browse · ↑↓ scroll · ↹ prompts · e edit · f fork · esc back", "width": 30}
+{"func": "fit_hint", "case": "back-only", "hint": "Browse · ↑↓ scroll · ↹ prompts · e edit · f fork · esc back", "width": 20}
+{"func": "fit_hint", "case": "label-only", "hint": "Browse · ↑↓ scroll · ↹ prompts · e edit · f fork · esc back", "width": 0}
+{"func": "fit_hint", "case": "wrong-hint-count", "hint": "Browse · esc back", "width": 1}
+{"func": "fit_hint", "case": "four-hints", "hint": "Browse · a · b · c · d", "width": 1}
+{"func": "constants", "case": "values"}

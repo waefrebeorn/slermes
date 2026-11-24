@@ -1,0 +1,82 @@
+{"func": "utf16_offsets", "case": "ascii", "text": "abc"}
+{"func": "utf16_offsets", "case": "empty", "text": ""}
+{"func": "utf16_offsets", "case": "astral", "text": "a😀b"}
+{"func": "utf16_offsets", "case": "bmp-wide", "text": "日本"}
+{"func": "entity_handle", "case": "mention", "etype": "mention", "span": "@Bot_Name"}
+{"func": "entity_handle", "case": "mention-padded", "etype": "mention", "span": "  @Bot  "}
+{"func": "entity_handle", "case": "mention-multi-at", "etype": "mention", "span": "@@x"}
+{"func": "entity_handle", "case": "command-suffix", "etype": "bot_command", "span": "/status@OtherBot"}
+{"func": "entity_handle", "case": "command-bare", "etype": "bot_command", "span": "/status"}
+{"func": "entity_handle", "case": "command-padded", "etype": "bot_command", "span": "  /a@B  "}
+{"func": "entity_handle", "case": "empty-span", "etype": "mention", "span": ""}
+{"func": "leading_handles", "case": "two-leading", "text": "@BotA @BotB: do this"}
+{"func": "leading_handles", "case": "later-handle-ignored", "text": "@bot later text @other"}
+{"func": "leading_handles", "case": "command-suffix", "text": "/status@OtherBot"}
+{"func": "leading_handles", "case": "no-leading", "text": "hello @bot"}
+{"func": "leading_handles", "case": "single-char-handle", "text": "@a"}
+{"func": "leading_handles", "case": "bare-at", "text": "@"}
+{"func": "leading_handles", "case": "semicolon-separator", "text": "@bot;;;@bot2"}
+{"func": "leading_handles", "case": "leading-space-punct", "text": "  @Bot,"}
+{"func": "leading_handles", "case": "empty", "text": ""}
+{"func": "leading_handles", "case": "ent-one", "text": "@Bot hi", "entities": [{"type": "mention", "offset": 0, "length": 4}]}
+{"func": "leading_handles", "case": "ent-second-not-head", "text": "@Bot hi", "entities": [{"type": "mention", "offset": 0, "length": 4}, {"type": "mention", "offset": 5, "length": 3}]}
+{"func": "leading_handles", "case": "ent-offset-not-head", "text": "x @Bot", "entities": [{"type": "mention", "offset": 2, "length": 4}]}
+{"func": "leading_handles", "case": "ent-code-masked", "text": "`@Bot` hi", "entities": [{"type": "code", "offset": 0, "length": 6}]}
+{"func": "leading_handles", "case": "ent-astral-offset", "text": "😀 @Bot", "entities": [{"type": "mention", "offset": 3, "length": 4}]}
+{"func": "leading_handles", "case": "ent-beyond-text", "text": "@Bot", "entities": [{"type": "mention", "offset": 0, "length": 40}]}
+{"func": "leading_handles", "case": "ent-duplicate-start", "text": "@Bot", "entities": [{"type": "mention", "offset": 0, "length": 4}, {"type": "bot_command", "offset": 0, "length": 4}]}
+{"func": "leading_handles", "case": "ent-dotted-type", "text": "@Bot hi", "entities": [{"type": "MessageEntityType.MENTION", "offset": 0, "length": 4}]}
+{"func": "leading_bot_handles", "case": "one-known", "text": "@BotA @BotB: hi", "bots": ["bota"]}
+{"func": "leading_bot_handles", "case": "both-known", "text": "@BotA @BotB: hi", "bots": ["bota", "botb"]}
+{"func": "leading_bot_handles", "case": "none-known", "text": "@BotA", "bots": []}
+{"func": "leading_bot_handles", "case": "with-entity", "text": "@BotA hi", "entities": [{"type": "mention", "offset": 0, "length": 5}], "bots": ["bota"]}
+{"func": "leading_bot_handles", "case": "duplicate-known", "text": "@bot @Bot hi", "bots": ["bot"]}
+{"func": "command", "case": "suffix-args", "text": "/status@MyBot args", "bot": "mybot"}
+{"func": "command", "case": "address-then-cmd", "text": "@MyBot /status", "bot": "MyBot"}
+{"func": "command", "case": "address-punct-cmd", "text": "@MyBot, /status@other", "bot": "MyBot"}
+{"func": "command", "case": "bare-cmd", "text": "/status", "bot": "mybot"}
+{"func": "command", "case": "slash-after-cmd", "text": "/status/x", "bot": "mybot"}
+{"func": "command", "case": "slash-after-cmd-entities", "text": "/status/x", "bot": "mybot", "has_entities": true}
+{"func": "command", "case": "run-on", "text": "/statusX", "bot": "mybot"}
+{"func": "command", "case": "not-at-start", "text": "hello /status", "bot": "mybot"}
+{"func": "command", "case": "dash-suffix", "text": "/cmd@bot-extra", "bot": "mybot"}
+{"func": "command", "case": "astral-prefix", "text": "😀 /status@x", "bot": "mybot"}
+{"func": "foreign", "case": "foreign-bare", "text": "/status@OtherBot", "bot": "mybot"}
+{"func": "foreign", "case": "own-bot", "text": "/status@MyBot", "bot": "mybot"}
+{"func": "foreign", "case": "no-suffix", "text": "/status", "bot": "mybot"}
+{"func": "foreign", "case": "entity-accepts", "text": "/status@OtherBot", "bot": "mybot", "entities": [{"type": "bot_command", "offset": 0, "length": 16}]}
+{"func": "foreign", "case": "entity-short-length", "text": "/status@OtherBot", "bot": "mybot", "entities": [{"type": "bot_command", "offset": 0, "length": 7}]}
+{"func": "foreign", "case": "entity-wrong-offset", "text": "/status@OtherBot", "bot": "mybot", "entities": [{"type": "bot_command", "offset": 1, "length": 15}]}
+{"func": "foreign", "case": "entity-after-address", "text": "@MyBot /status@other", "bot": "MyBot", "entities": [{"type": "bot_command", "offset": 7, "length": 13}]}
+{"func": "clean", "case": "command-suffix-space", "text": "/reasoning@Bot medium", "bot": "Bot"}
+{"func": "clean", "case": "command-suffix-comma", "text": "/status@Bot, medium", "bot": "Bot"}
+{"func": "clean", "case": "address-then-cmd", "text": "@Bot /status", "bot": "Bot"}
+{"func": "clean", "case": "leading-address", "text": "@Bot hello", "bot": "Bot"}
+{"func": "clean", "case": "inline-address", "text": "hello @Bot world", "bot": "Bot"}
+{"func": "clean", "case": "trailing-address", "text": "hello @Bot", "bot": "Bot"}
+{"func": "clean", "case": "only-address", "text": "@Bot", "bot": "Bot"}
+{"func": "clean", "case": "double-address", "text": "@Bot@Bot hi", "bot": "Bot"}
+{"func": "clean", "case": "dash-tail", "text": "/status hi @Bot —tail", "bot": "Bot"}
+{"func": "clean", "case": "other-bot-suffix", "text": "/status@Bot2 x", "bot": "Bot"}
+{"func": "clean", "case": "plain", "text": "hi", "bot": "Bot"}
+{"func": "clean", "case": "empty", "text": "", "bot": "Bot"}
+{"func": "clean", "case": "null-text", "text": null, "bot": "Bot"}
+{"func": "clean", "case": "empty-bot", "text": "@Bot hi", "bot": ""}
+{"func": "command", "case": "entity-suffix-slash-backtrack", "text": "/cmd@abc/def", "bot": "mybot", "has_entities": true}
+{"func": "command", "case": "plain-suffix-slash", "text": "/cmd@abc/def", "bot": "mybot"}
+{"func": "command", "case": "suffix-32", "text": "/cmd@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa x", "bot": "mybot"}
+{"func": "command", "case": "suffix-33", "text": "/cmd@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa x", "bot": "mybot"}
+{"func": "command", "case": "hyphen-cmd", "text": "/cmd-run x", "bot": "mybot"}
+{"func": "command", "case": "semicolon-after", "text": "/cmd;x", "bot": "mybot"}
+{"func": "clean", "case": "two-suffix-addresses", "text": "/status@Bot,@Bot x", "bot": "Bot"}
+{"func": "clean", "case": "em-dash-spaced", "text": "/status@Bot — x", "bot": "Bot"}
+{"func": "clean", "case": "double-leading", "text": "@Bot @Bot hi", "bot": "Bot"}
+{"func": "clean", "case": "upper-suffix", "text": "/cmd@BOT hi", "bot": "Bot"}
+{"func": "clean", "case": "other-suffix", "text": "/cmd@bot2 hi", "bot": "Bot"}
+{"func": "clean", "case": "punct-only", "text": "@Bot,,: hi", "bot": "Bot"}
+{"func": "leading_handles", "case": "comma-run", "text": "@bot, @bot2"}
+{"func": "leading_handles", "case": "one-char-cmd-suffix", "text": "/cmd@a"}
+{"func": "leading_handles", "case": "space-after-handle-end", "text": "@bot   "}
+{"func": "leading_bot_handles", "case": "entity-two", "text": "@a1 @b2 hi", "entities": [{"type": "mention", "offset": 0, "length": 3}, {"type": "mention", "offset": 4, "length": 3}], "bots": ["a1", "b2"]}
+{"func": "foreign", "case": "entity-dash-continuation", "text": "/cmd-x@other y", "bot": "mybot", "entities": [{"type": "bot_command", "offset": 0, "length": 6}]}
+{"func": "utf16_offsets", "case": "mixed", "text": "é😀日"}

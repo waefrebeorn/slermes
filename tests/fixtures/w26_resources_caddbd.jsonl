@@ -1,0 +1,61 @@
+{"func":"read_int","case":"plain","text":"16384"}
+{"func":"read_int","case":"padded","text":"  8192  "}
+{"func":"read_int","case":"max-is-none","text":"max"}
+{"func":"read_int","case":"empty","text":""}
+{"func":"read_int","case":"negative-is-not-digit","text":"-5"}
+{"func":"read_int","case":"unit-suffix","text":"12kB"}
+{"func":"read_int","case":"zero","text":"0"}
+{"func":"read_int","case":"leading-zeros","text":"000123"}
+{"func":"meminfo","case":"normal","text":"MemTotal:       16384000 kB\nMemFree:         1000000 kB\nMemAvailable:    8388608 kB\nBuffers:          123456 kB\n"}
+{"func":"meminfo","case":"junk-lines","text":"MemTotal: 2048 kB\nNoColonLine\nBad: processor 4\nMemFree: kB\nZero: 0 kB\n"}
+{"func":"meminfo","case":"crlf","text":"MemTotal: 1024 kB\r\nMemAvailable: 512 kB\r\n"}
+{"func":"meminfo","case":"empty","text":""}
+{"func":"meminfo","case":"key-with-space","text":"Mem Total: 12 kB\n"}
+{"func":"meminfo","case":"tab-separated-value","text":"MemTotal:\t4096\tkB\n"}
+{"func":"meminfo","case":"duplicate-last-wins","text":"MemTotal: 1 kB\nMemTotal: 2 kB\n"}
+{"func":"stat_value","case":"normal","text":"anon 100\ninactive_file 4096\nactive_file 8192\n","key":"inactive_file"}
+{"func":"stat_value","case":"missing-key","text":"anon 100\ninactive_file 4096\n","key":"file_dirty"}
+{"func":"stat_value","case":"non-numeric-value","text":"inactive_file max\n","key":"inactive_file"}
+{"func":"stat_value","case":"leading-space","text":" inactive_file 77\n","key":"inactive_file"}
+{"func":"stat_value","case":"tab-separated","text":"inactive_file\t99\n","key":"inactive_file"}
+{"func":"stat_value","case":"negative","text":"inactive_file -5\n","key":"inactive_file"}
+{"func":"stat_value","case":"wide-gap","text":"inactive_file   123456\n","key":"inactive_file"}
+{"func":"stat_value","case":"empty-text","text":"","key":"inactive_file"}
+{"func":"cgroup","case":"v2-with-cache","cgroup":{"version":2,"limit":4294967296,"usage":300000000,"cache":100000000}}
+{"func":"cgroup","case":"v2-nothing","cgroup":{"version":2,"limit":null,"usage":null,"cache":null}}
+{"func":"cgroup","case":"v2-zero-cache","cgroup":{"version":2,"limit":2147483648,"usage":1000,"cache":0}}
+{"func":"cgroup","case":"v1-unlimited-sentinel","cgroup":{"version":1,"limit":1152921504606846976,"usage":1000,"cache":0}}
+{"func":"cgroup","case":"v1-real-limit","cgroup":{"version":1,"limit":1073741824,"usage":1000,"cache":500}}
+{"func":"cgroup","case":"usage-below-cache","cgroup":{"version":2,"limit":4294967296,"usage":100,"cache":500}}
+{"func":"cgroup","case":"missing-block","cgroup":null}
+{"func":"memory_info","case":"host-tighter","meminfo":{"MemTotal":8589934592,"MemAvailable":1073741824},"cgroup":{"version":2,"limit":4294967296,"usage":3000000000,"cache":0}}
+{"func":"memory_info","case":"cgroup-tighter","meminfo":{"MemTotal":8589934592,"MemAvailable":8589934592},"cgroup":{"version":2,"limit":4294967296,"usage":3221225472,"cache":0}}
+{"func":"memory_info","case":"host-only","meminfo":{"MemTotal":4294967296,"MemAvailable":2147483648}}
+{"func":"memory_info","case":"nothing-readable"}
+{"func":"memory_info","case":"negative-room","meminfo":{},"cgroup":{"version":2,"limit":50,"usage":100,"cache":0}}
+{"func":"memory_info","case":"negative-limit","meminfo":{},"cgroup":{"version":2,"limit":-100,"usage":0,"cache":0}}
+{"func":"memory_info","case":"only-total","meminfo":{"MemTotal":1073741824}}
+{"func":"min_free_mb","case":"default","cfg":{}}
+{"func":"min_free_mb","case":"explicit","cfg":{"min_free_memory_mb":2048}}
+{"func":"min_free_mb","case":"negative-clamped","cfg":{"min_free_memory_mb":-5}}
+{"func":"min_free_mb","case":"numeric-string","cfg":{"min_free_memory_mb":"2048"}}
+{"func":"min_free_mb","case":"junk-string","cfg":{"min_free_memory_mb":"abc"}}
+{"func":"min_free_mb","case":"null-value","cfg":{"min_free_memory_mb":null}}
+{"func":"min_free_mb","case":"bool-value","cfg":{"min_free_memory_mb":true}}
+{"func":"min_free_mb","case":"float-value","cfg":{"min_free_memory_mb":3.9}}
+{"func":"min_free_mb","case":"no-section"}
+{"func":"tight_headroom_mb","case":"default-floor","floor":1536}
+{"func":"tight_headroom_mb","case":"round-floor","floor":1500}
+{"func":"tight_headroom_mb","case":"zero-floor","floor":0}
+{"func":"tight_headroom_mb","case":"small-floor","floor":1}
+{"func":"tight_headroom_mb","case":"from-config","floor":null,"cfg":{"min_free_memory_mb":900}}
+{"func":"tight_headroom_mb","case":"absent-floor","cfg":{}}
+{"func":"tight_headroom_mb","case":"negative-floor","floor":-5}
+{"func":"memory_blocker","case":"blocked-with-limit","info":{"available_mb":1024,"limit_mb":2048},"need":1536}
+{"func":"memory_blocker","case":"enough","info":{"available_mb":2048,"limit_mb":4096},"need":1536}
+{"func":"memory_blocker","case":"zero-limit-omitted","info":{"available_mb":0,"limit_mb":0},"need":1536}
+{"func":"memory_blocker","case":"unknown-memory","info":{"available_mb":null,"limit_mb":2048},"need":1536}
+{"func":"memory_blocker","case":"gate-disabled","info":{"available_mb":10,"limit_mb":2048},"need":0}
+{"func":"memory_blocker","case":"need-from-config","info":{"available_mb":10,"limit_mb":2048},"need":null,"cfg":{"min_free_memory_mb":0}}
+{"func":"memory_blocker","case":"info-absent","meminfo":{"MemTotal":4294967296,"MemAvailable":104857600},"need":1536}
+{"func":"constants","case":"literals"}

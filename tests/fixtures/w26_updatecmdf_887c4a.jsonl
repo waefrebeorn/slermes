@@ -1,0 +1,39 @@
+{"func": "restart_timeout", "case": "rt-normal", "show": "TimeoutStopUSec=30s\nTimeoutStartUSec=1min 30s", "rc": 0}
+{"func": "restart_timeout", "case": "rt-start-only", "show": "TimeoutStopUSec=30s\nTimeoutStartUSec=1min 30s", "rc": 0, "start_only": true}
+{"func": "restart_timeout", "case": "rt-default-phases", "show": "", "rc": 0}
+{"func": "restart_timeout", "case": "rt-infinity-stop", "show": "TimeoutStopUSec=infinity\nTimeoutStartUSec=45s", "rc": 0}
+{"func": "restart_timeout", "case": "rt-raise-missing", "raise": "missing"}
+{"func": "restart_timeout", "case": "rt-raise-timeout", "raise": "timeout"}
+{"func": "restart_timeout", "case": "rt-rc-nonzero", "show": "TimeoutStopUSec=30s\nTimeoutStartUSec=1min 30s", "rc": 1}
+{"func": "restart_timeout", "case": "rt-ceiling", "show": "TimeoutStopUSec=30d\nTimeoutStartUSec=30d", "rc": 0}
+{"func": "restart_timeout", "case": "rt-bare-digits", "show": "TimeoutStopUSec=5000000\nTimeoutStartUSec=0", "rc": 0}
+{"func": "unit_job_budget", "case": "ujb-start", "show": "TimeoutStopUSec=30s\nTimeoutStartUSec=1min 30s", "rc": 0, "verb": "start"}
+{"func": "unit_job_budget", "case": "ujb-stop", "show": "TimeoutStopUSec=30s\nTimeoutStartUSec=1min 30s", "rc": 0, "verb": "stop"}
+{"func": "unit_job_budget", "case": "ujb-restart", "show": "TimeoutStopUSec=30s\nTimeoutStartUSec=1min 30s", "rc": 0, "verb": "restart"}
+{"func": "unit_job_budget", "case": "ujb-reload", "show": "TimeoutStopUSec=30s\nTimeoutStartUSec=1min 30s", "rc": 0, "verb": "reload"}
+{"func": "unit_job_budget", "case": "ujb-hard-cap", "show": "TimeoutStopUSec=30d\nTimeoutStartUSec=30d", "rc": 0, "verb": "start"}
+{"func": "unit_job_budget", "case": "ujb-raise-missing", "raise": "missing", "verb": "start"}
+{"func": "unit_job_state", "case": "ujs-active", "show": "ActiveState=active\nSubState=running\nMainPID=42\nJob=\n", "rc": 0}
+{"func": "unit_job_state", "case": "ujs-transitional", "show": "ActiveState=activating\nSubState=start\nJob=17\n", "rc": 0}
+{"func": "unit_job_state", "case": "ujs-garbage", "show": "garbage\n", "rc": 0}
+{"func": "unit_job_state", "case": "ujs-rc-nonzero", "show": "ActiveState=active", "rc": 1}
+{"func": "unit_job_state", "case": "ujs-raise-missing", "raise": "missing"}
+{"func": "unit_job_state", "case": "ujs-empty", "show": "", "rc": 0}
+{"func": "settled", "case": "settled-active", "state": {"ActiveState": "active"}}
+{"func": "settled", "case": "settled-empty-state", "state": {}}
+{"func": "settled", "case": "settled-empty-active", "state": {"ActiveState": ""}}
+{"func": "settled", "case": "settled-activating", "state": {"ActiveState": "activating"}}
+{"func": "settled", "case": "settled-deactivating", "state": {"ActiveState": "deactivating"}}
+{"func": "settled", "case": "settled-job-pending", "state": {"ActiveState": "active", "Job": "3"}}
+{"func": "settled", "case": "settled-failed", "state": {"ActiveState": "failed"}}
+{"func": "settled", "case": "settled-reloading", "state": {"ActiveState": "reloading"}}
+{"func": "service_restart_sec", "case": "srs-seconds", "show": "30s\n", "rc": 0}
+{"func": "service_restart_sec", "case": "srs-millis", "show": "100ms\n", "rc": 0}
+{"func": "service_restart_sec", "case": "srs-empty-default", "show": "", "rc": 0}
+{"func": "service_restart_sec", "case": "srs-infinity-default", "show": "infinity\n", "rc": 0, "default": 7.5}
+{"func": "service_restart_sec", "case": "srs-compound", "show": "1min 30s\n", "rc": 0}
+{"func": "service_restart_sec", "case": "srs-unparsable-default", "show": "abc\n", "rc": 0, "default": 7.5}
+{"func": "service_restart_sec", "case": "srs-micros", "show": "1500us\n", "rc": 0}
+{"func": "service_restart_sec", "case": "srs-hours-default", "show": "2h\n", "rc": 0, "default": 7.5}
+{"func": "service_restart_sec", "case": "srs-raise-missing", "raise": "missing", "default": 2.5}
+{"func": "constants", "case": "constants-table"}

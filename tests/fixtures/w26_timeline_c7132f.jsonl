@@ -1,0 +1,24 @@
+{"func": "display_rows_sql", "case": "indexed-all", "indexed": true, "users_only": false}
+{"func": "display_rows_sql", "case": "indexed-users-only", "indexed": true, "users_only": true}
+{"func": "display_rows_sql", "case": "legacy-all", "indexed": false, "users_only": false}
+{"func": "display_rows_sql", "case": "legacy-users-only", "indexed": false, "users_only": true}
+{"func": "display_rows_sql", "case": "falsy-indexed-zero", "indexed": 0, "users_only": ""}
+{"func": "display_rows_sql", "case": "truthy-both", "indexed": 1, "users_only": ["x"]}
+{"func": "prompt_preview", "case": "normal", "content": "hello world", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "collapse-whitespace", "content": "  a  b\n\tc  ", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "boundary-120", "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "boundary-121", "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "boundary-119-trailing-space", "content": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  ", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "falsy-empty", "content": "", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "falsy-none", "content": null, "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "synthetic-important", "content": "[IMPORTANT: Background process 12 exited]", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "synthetic-async-batch", "content": "  [async delegation batch COMPLETE] done", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "synthetic-fanout", "content": "A background fan-out of 3 subagent(s) you dispatched earlier has finished.", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "not-synthetic-fanout", "content": "A background fan-out of many things", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "summary-drops", "content": "plain prompt", "display_kind": null, "summary": 1}
+{"func": "prompt_preview", "case": "display-kind-drops", "content": "plain prompt", "display_kind": "user", "summary": null}
+{"func": "prompt_preview", "case": "content-parts", "content": ["first part", {"text": "second part"}, 3], "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "content-empty-list", "content": [], "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "type-mismatch-number", "content": 42, "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "unicode-120", "content": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé", "display_kind": null, "summary": null}
+{"func": "prompt_preview", "case": "unicode-121", "content": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé", "display_kind": null, "summary": null}

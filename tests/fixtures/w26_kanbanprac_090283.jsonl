@@ -1,0 +1,24 @@
+{"func": "constants", "case": "gh-identity-tables"}
+{"func": "validate_contract", "case": "repo", "value": "acme/widgets"}
+{"func": "validate_contract", "case": "pr-url", "value": "https://github.com/acme/widgets/pull/12"}
+{"func": "validate_contract", "case": "local-only", "value": "local-only"}
+{"func": "validate_contract", "case": "null-is-local-only", "value": null}
+{"func": "validate_contract", "case": "garbage", "value": "nope"}
+{"func": "validate_contract", "case": "three-segments", "value": "a/b/c"}
+{"func": "validate_contract", "case": "pr-zero", "value": "https://github.com/acme/widgets/pull/0"}
+{"func": "validate_contract", "case": "trailing-space", "value": "acme/widgets "}
+{"func": "validate_contract", "case": "trailing-newline", "value": "https://github.com/acme/widgets/pull/12\n"}
+{"func": "validate_contract", "case": "not-a-string", "value": 5}
+{"func": "validate_contract", "case": "true-is-not-a-contract", "value": true}
+{"func": "classify", "case": "run-success", "check": {"head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "status": "completed", "conclusion": "success"}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": true}
+{"func": "classify", "case": "run-failure", "check": {"head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "status": "completed", "conclusion": "failure"}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": true}
+{"func": "classify", "case": "run-null-conclusion", "check": {"head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "status": "completed", "conclusion": null}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": true}
+{"func": "classify", "case": "run-in-progress", "check": {"head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "status": "in_progress", "conclusion": null}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": true}
+{"func": "classify", "case": "run-stale-head", "check": {"head_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "status": "completed", "conclusion": "success"}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": true}
+{"func": "classify", "case": "legacy-success", "check": {"sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "state": "success"}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": false}
+{"func": "classify", "case": "legacy-pending", "check": {"sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "state": "pending"}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": false}
+{"func": "classify", "case": "legacy-error", "check": {"sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "state": "error"}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": false}
+{"func": "classify", "case": "legacy-missing-sha", "check": {"state": "success"}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": false}
+{"func": "classify", "case": "run-unknown-conclusion", "check": {"head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "status": "completed", "conclusion": "neutral"}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": true}
+{"func": "classify", "case": "run-neutral-not-pending", "check": {"head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "status": "queued", "conclusion": "success"}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": true}
+{"func": "classify", "case": "run-empty-head", "check": {"head_sha": "", "status": "completed", "conclusion": "success"}, "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "is_run": true}

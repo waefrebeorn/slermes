@@ -1,0 +1,24 @@
+{"func": "normalize_search_results", "case": "two_hits", "response": {"results": [{"title": "Bloom filters", "url": "https://ex.com/bloom", "snippet": "a probabilistic set"}, {"title": "Count-min", "url": "https://ex.com/cm", "snippet": "sketch", "last_updated": "2026-01-01"}]}}
+{"func": "normalize_search_results", "case": "empty_results", "response": {"results": []}}
+{"func": "normalize_search_results", "case": "results_missing", "response": {"id": "abc"}}
+{"func": "normalize_search_results", "case": "results_null", "response": {"results": null}}
+{"func": "normalize_search_results", "case": "results_zero", "response": {"results": 0}}
+{"func": "normalize_search_results", "case": "falsy_fields", "response": {"results": [{"title": null, "url": 0, "snippet": []}]}}
+{"func": "normalize_search_results", "case": "truthy_nonstring_fields", "response": {"results": [{"title": 42, "url": "https://ex.com/x", "snippet": 1.5}]}}
+{"func": "normalize_snippets", "case": "both_present", "response": {"results": [{"url": "https://a.com/1", "text": "alpha"}, {"url": "https://b.com/2", "text": "beta"}]}, "urls": ["https://a.com/1", "https://b.com/2"]}
+{"func": "normalize_snippets", "case": "omitted_url", "response": {"results": [{"url": "https://a.com/1", "text": "alpha"}]}, "urls": ["https://a.com/1", "https://c.com/3"]}
+{"func": "normalize_snippets", "case": "error_no_text", "response": {"results": [{"url": "https://a.com/1", "error": "blocked by robots"}]}, "urls": ["https://a.com/1"]}
+{"func": "normalize_snippets", "case": "error_with_text", "response": {"results": [{"url": "https://a.com/1", "text": "partial", "error": "truncated"}]}, "urls": ["https://a.com/1"]}
+{"func": "normalize_snippets", "case": "duplicate_request_url", "response": {"results": [{"url": "https://a.com/1", "text": "alpha"}]}, "urls": ["https://a.com/1", "https://a.com/1"]}
+{"func": "normalize_snippets", "case": "duplicate_result_url", "response": {"results": [{"url": "https://a.com/1", "text": "first"}, {"url": "https://a.com/1", "text": "last"}]}, "urls": ["https://a.com/1"]}
+{"func": "normalize_snippets", "case": "no_urls", "response": {"results": [{"url": "https://a.com/1", "text": "alpha"}]}, "urls": []}
+{"func": "normalize_snippets", "case": "null_text_and_results", "response": {"results": [{"url": "https://a.com/1", "text": null}]}, "urls": ["https://a.com/1"]}
+{"func": "query_for_urls", "case": "hyphen_and_digits", "urls": ["https://example.com/Bloom-Filter-1"]}
+{"func": "query_for_urls", "case": "no_path_netloc_case", "urls": ["https://Example.COM"]}
+{"func": "query_for_urls", "case": "dedupe_across_urls", "urls": ["https://a.com/alpha-beta", "https://b.org/alpha_gamma"]}
+{"func": "query_for_urls", "case": "digit_tokens_dropped", "urls": ["https://a.com/2024/03/post"]}
+{"func": "query_for_urls", "case": "trailing_slash", "urls": ["https://example.com/"]}
+{"func": "query_for_urls", "case": "query_and_fragment_ignored", "urls": ["https://a.com/guide/intro?x=y#top"]}
+{"func": "query_for_urls", "case": "empty_list", "urls": []}
+{"func": "query_for_urls", "case": "truncated_at_500", "urls": ["https://h00.example/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "https://h01.example/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "https://h02.example/cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "https://h03.example/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "https://h04.example/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "https://h05.example/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", "https://h06.example/gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg", "https://h07.example/hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", "https://h08.example/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii", "https://h09.example/jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj"]}
+{"func": "constants", "case": "literals"}

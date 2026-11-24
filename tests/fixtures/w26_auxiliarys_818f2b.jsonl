@@ -1,0 +1,44 @@
+{"func": "route_key", "case": "provider-only", "provider": "deepseek", "base_url": null}
+{"func": "route_key", "case": "base-url-host-wins", "provider": "DeepSeek", "base_url": "https://api.deepseek.com/v1"}
+{"func": "route_key", "case": "both-absent", "provider": null, "base_url": null}
+{"func": "route_key", "case": "provider-padded", "provider": " custom ", "base_url": null}
+{"func": "route_key", "case": "schemeless-dial-address", "provider": "openai", "base_url": "localhost:11434"}
+{"func": "route_key", "case": "local-port", "provider": null, "base_url": "http://localhost:11434/v1"}
+{"func": "route_key", "case": "host-lowercased-with-port", "provider": "x", "base_url": "https://API.Example.COM:8443/v1?x=1"}
+{"func": "format_type", "case": "extra-body-first", "kwargs": {"extra_body": {"response_format": {"type": "json_schema"}}, "response_format": {"type": "json_object"}}}
+{"func": "format_type", "case": "top-level-only", "kwargs": {"response_format": {"type": "json_object"}}}
+{"func": "format_type", "case": "null-in-extra-body-falls-back", "kwargs": {"extra_body": {"response_format": null}, "response_format": {"type": "json_schema"}}}
+{"func": "format_type", "case": "extra-body-wrong-type", "kwargs": {"extra_body": "not a dict", "response_format": {"type": "json_schema"}}}
+{"func": "format_type", "case": "response-format-not-dict", "kwargs": {"response_format": "json_object"}}
+{"func": "format_type", "case": "no-format", "kwargs": {"model": "m1"}}
+{"func": "format_type", "case": "format-without-type", "kwargs": {"response_format": {"name": "x"}}}
+{"func": "capability", "case": "unavailable", "error": "This response_format type is unavailable now"}
+{"func": "capability", "case": "invalid-schema-wins", "error": "Invalid schema for response_format 'json_schema': additionalProperties must be false"}
+{"func": "capability", "case": "unsupported-parameter", "error": "unsupported_parameter: response_format"}
+{"func": "capability", "case": "empty-string", "error": ""}
+{"func": "capability", "case": "none", "error": null}
+{"func": "capability", "case": "case-insensitive", "error": "Extra inputs are not permitted"}
+{"func": "without_format", "case": "profile-declares-type", "extra_body": {"response_format": {"type": "json_schema"}, "x": 1}, "provider": "deepseek", "base_url": null, "model": "m1", "unsupported": ["json_schema"], "rejected": []}
+{"func": "without_format", "case": "type-accepted", "extra_body": {"response_format": {"type": "json_object"}, "x": 1}, "provider": "deepseek", "base_url": null, "model": "m1", "unsupported": ["json_schema"], "rejected": []}
+{"func": "without_format", "case": "memo-hit", "extra_body": {"response_format": {"type": "json_schema"}}, "provider": "deepseek", "base_url": "https://api.deepseek.com/v1", "model": "m1", "unsupported": [], "rejected": [["api.deepseek.com", "m1", "json_schema"]]}
+{"func": "without_format", "case": "memo-route-mismatch", "extra_body": {"response_format": {"type": "json_schema"}}, "provider": "deepseek", "base_url": "https://api.deepseek.com/v1", "model": "m1", "unsupported": [], "rejected": [["api.openai.com", "m1", "json_schema"]]}
+{"func": "without_format", "case": "memo-model-mismatch", "extra_body": {"response_format": {"type": "json_schema"}}, "provider": "deepseek", "base_url": null, "model": "m2", "unsupported": [], "rejected": [["deepseek", "m1", "json_schema"]]}
+{"func": "without_format", "case": "no-format-type", "extra_body": {"response_format": {"name": "x"}, "x": 1}, "provider": "openai", "base_url": null, "model": "m1", "unsupported": ["json_schema"], "rejected": []}
+{"func": "without_format", "case": "no-response-format", "extra_body": {"x": 1}, "provider": "deepseek", "base_url": null, "model": "m1", "unsupported": ["json_schema"], "rejected": []}
+{"func": "without_format", "case": "extra-body-wrong-type", "extra_body": null, "provider": "deepseek", "base_url": null, "model": null, "unsupported": ["json_schema"], "rejected": []}
+{"func": "without_format", "case": "numeric-model-in-memo", "extra_body": {"response_format": {"type": "json_object"}}, "provider": "local", "base_url": null, "model": 7, "unsupported": [], "rejected": [["local", "7", "json_object"]]}
+{"func": "strip_format", "case": "top-level-only", "kwargs": {"response_format": {"type": "json_schema"}, "model": "m1"}}
+{"func": "strip_format", "case": "extra-body-keeps-siblings", "kwargs": {"extra_body": {"response_format": {"type": "json_schema"}, "x": 1}, "model": "m1"}}
+{"func": "strip_format", "case": "extra-body-emptied", "kwargs": {"model": "m1", "extra_body": {"response_format": {}}}}
+{"func": "strip_format", "case": "nothing-to-remove", "kwargs": {"model": "m1", "temperature": 0.2}}
+{"func": "strip_format", "case": "null-format-not-removed", "kwargs": {"response_format": null, "model": "m1"}}
+{"func": "strip_format", "case": "both-levels", "kwargs": {"response_format": {"type": "json_object"}, "extra_body": {"response_format": {"type": "json_schema"}, "y": 2}}}
+{"func": "strip_format", "case": "empty-kwargs", "kwargs": {}}
+{"func": "remember", "case": "capability-records", "provider": "deepseek", "base_url": "https://api.deepseek.com/v1", "kwargs": {"model": "m1", "extra_body": {"response_format": {"type": "json_schema"}}}, "error": "This response_format type is unavailable now"}
+{"func": "remember", "case": "no-format-records-nothing", "provider": "deepseek", "base_url": null, "kwargs": {"model": "m1"}, "error": "type is unavailable now"}
+{"func": "remember", "case": "schema-rejection-records-nothing", "provider": "deepseek", "base_url": null, "kwargs": {"model": "m1", "response_format": {"type": "json_schema"}}, "error": "Invalid schema for response_format 'json_schema': additionalProperties must be false"}
+{"func": "remember", "case": "model-absent", "provider": "deepseek", "base_url": null, "kwargs": {"response_format": {"type": "json_object"}}, "error": "does not support response_format"}
+{"func": "constants", "case": "markers"}
+{"func": "constants", "case": "markers-again"}
+{"func": "constants", "case": "markers-third"}
+{"func": "constants", "case": "markers-fourth"}

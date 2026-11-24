@@ -1,0 +1,17 @@
+{"func": "live_notice", "case": "nothing-live", "name": "demo"}
+{"func": "live_notice", "case": "empty-live-now", "name": "demo", "live_now": {}}
+{"func": "live_notice", "case": "skills-only", "name": "demo", "live_now": {"skills": [{"name": "demo:run"}, {"name": "demo:inspect"}]}}
+{"func": "live_notice", "case": "servers-mixed", "name": "demo", "live_now": {"mcp_servers": [{"name": "github", "connected": true, "tools": ["a", "b", "c"]}, {"name": "notion", "connected": false, "tools": [], "error": "sign in expired"}]}}
+{"func": "live_notice", "case": "connected-no-tools", "key": "demo-key", "live_now": {"mcp_servers": [{"name": "docs server", "connected": true, "tools": []}]}}
+{"func": "live_notice", "case": "error-falsy", "name": "demo", "live_now": {"mcp_servers": [{"name": "s1", "connected": false, "tools": [], "error": ""}]}}
+{"func": "live_notice", "case": "deferred-both", "name": "demo", "live_now": {"skills": [{"name": "demo:a"}]}, "deferred": {"tools": ["t1", "t2"], "prompt": ["p"]}}
+{"func": "live_notice", "case": "deferred-prompt-only", "name": "demo", "live_now": {"mcp_servers": [{"name": "s1", "connected": true, "tools": ["x"]}]}, "deferred": {"tools": [], "prompt": ["p1", "p2", "p3"]}}
+{"func": "live_notice", "case": "no-name-no-key", "live_now": {"skills": [{"name": "anon:a"}]}}
+{"func": "tool_prefix", "case": "plain", "server": "github"}
+{"func": "tool_prefix", "case": "hyphen-space", "server": "my server-x"}
+{"func": "tool_prefix", "case": "already-underscored", "server": "notion_work"}
+{"func": "tool_prefix", "case": "empty", "server": ""}
+{"func": "tool_prefix", "case": "none", "server": null}
+{"func": "tool_prefix", "case": "bool", "server": true}
+{"func": "tool_prefix", "case": "number", "server": 7}
+{"func": "constants", "case": "suffixes"}

@@ -1,0 +1,38 @@
+{"func": "constants", "case": "vocabulary"}
+{"func": "route_key", "case": "host-port-wins", "provider": "Nous", "base_url": "https://api.example.com:8443/v1/x"}
+{"func": "route_key", "case": "provider-fallback", "provider": "  Nous ", "base_url": ""}
+{"func": "route_key", "case": "both-absent", "provider": null, "base_url": null}
+{"func": "route_key", "case": "uppercase-scheme", "provider": "Nous", "base_url": "HTTPS://Host"}
+{"func": "route_key", "case": "userinfo-netloc", "provider": "Nous", "base_url": "http://user:pw@Host/Path"}
+{"func": "route_key", "case": "no-authority", "provider": "P", "base_url": "host:8080"}
+{"func": "route_key", "case": "scheme-relative", "provider": null, "base_url": "//Host/x"}
+{"func": "route_key", "case": "numeric-provider", "provider": 5, "base_url": null}
+{"func": "is_disabled", "case": "disabled", "config": {"enabled": false}}
+{"func": "is_disabled", "case": "enabled", "config": {"enabled": true}}
+{"func": "is_disabled", "case": "zero-is-not-false", "config": {"enabled": 0}}
+{"func": "is_disabled", "case": "null-config", "config": null}
+{"func": "is_disabled", "case": "string-config", "config": "false"}
+{"func": "is_disabled", "case": "empty-object", "config": {}}
+{"func": "is_disabled", "case": "null-enabled", "config": {"enabled": null}}
+{"func": "floor_config", "case": "lifted", "config": {"enabled": false, "effort": "none"}}
+{"func": "floor_config", "case": "already-enabled", "config": {"enabled": true, "effort": "high"}}
+{"func": "floor_config", "case": "null-passthrough", "config": null}
+{"func": "floor_config", "case": "string-passthrough", "config": "none"}
+{"func": "floor_config", "case": "empty-object", "config": {}}
+{"func": "with_floor", "case": "effort-none", "kwargs": {"model": "m1", "reasoning_effort": "none", "max_tokens": 64}}
+{"func": "with_floor", "case": "effort-uppercase", "kwargs": {"reasoning_effort": "OFF"}}
+{"func": "with_floor", "case": "effort-null", "kwargs": {"reasoning_effort": null}}
+{"func": "with_floor", "case": "effort-zero-int", "kwargs": {"reasoning_effort": 0}}
+{"func": "with_floor", "case": "effort-true-untouched", "kwargs": {"reasoning_effort": true}}
+{"func": "with_floor", "case": "nothing-disabled", "kwargs": {"model": "m1", "reasoning_effort": "high"}}
+{"func": "with_floor", "case": "extra-body-enabled-false", "kwargs": {"extra_body": {"reasoning": {"enabled": false}, "z": 2}}}
+{"func": "with_floor", "case": "extra-body-effort-zero", "kwargs": {"extra_body": {"reasoning": {"effort": "0", "budget": 7}}}}
+{"func": "with_floor", "case": "private-config", "kwargs": {"_reasoning_config": {"enabled": false, "effort": "none"}}}
+{"func": "with_floor", "case": "empty-kwargs", "kwargs": {}}
+{"func": "with_floor", "case": "extra-body-not-dict", "kwargs": {"extra_body": "x", "reasoning_effort": "disabled"}}
+{"func": "known_floor", "case": "memo-known", "config": {"enabled": false}, "provider": "nous", "model": "gpt-6-astra", "known": true, "catalog": false}
+{"func": "known_floor", "case": "unknown-route", "config": {"enabled": false}, "provider": "nous", "model": "gpt-6-astra", "known": false, "catalog": false}
+{"func": "known_floor", "case": "catalog-mandatory", "config": {"enabled": false}, "provider": "openrouter", "model": "some/model", "known": false, "catalog": true}
+{"func": "known_floor", "case": "enabled-untouched", "config": {"enabled": true}, "provider": "nous", "model": "m", "known": true, "catalog": true}
+{"func": "known_floor", "case": "null-config", "config": null, "provider": "nous", "model": "m", "known": true, "catalog": false}
+{"func": "known_floor", "case": "both-seams", "config": {"enabled": false, "effort": "minimal"}, "provider": "openrouter", "model": "m", "known": true, "catalog": true}

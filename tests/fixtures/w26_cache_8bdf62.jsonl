@@ -1,0 +1,42 @@
+{"func": "fingerprint", "case": "ascii", "material": "abc"}
+{"func": "fingerprint", "case": "empty", "material": ""}
+{"func": "fingerprint", "case": "multibyte", "material": "héllo"}
+{"func": "fingerprint", "case": "block_edge_55", "material": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "fingerprint", "case": "block_edge_56", "material": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "fingerprint", "case": "block_edge_64", "material": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "fingerprint", "case": "long", "material": "hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-hermes-"}
+{"func": "is_fresh", "case": "fresh", "fetched_at": 100, "ttl_seconds": 3600, "now": 200}
+{"func": "is_fresh", "case": "exact_boundary", "fetched_at": 100, "ttl_seconds": 100, "now": 200}
+{"func": "is_fresh", "case": "just_inside", "fetched_at": 100, "ttl_seconds": 100, "now": 199.5}
+{"func": "is_fresh", "case": "ttl_zero", "fetched_at": 100, "ttl_seconds": 0, "now": 100}
+{"func": "is_fresh", "case": "ttl_negative", "fetched_at": 100, "ttl_seconds": -5, "now": 100}
+{"func": "is_fresh", "case": "clock_skew", "fetched_at": 1000, "ttl_seconds": 10, "now": 500}
+{"func": "is_fresh", "case": "ttl_bool_true", "fetched_at": 100, "ttl_seconds": true, "now": 100}
+{"func": "entry_from_payload", "case": "str_pairs_only", "payload": {"secrets": {"A": "1", "B": 2, "C": true, "D": null, "E": ""}, "fetched_at": 1}}
+{"func": "entry_from_payload", "case": "empty_secrets", "payload": {"secrets": {}, "fetched_at": 0}}
+{"func": "entry_from_payload", "case": "not_a_dict", "payload": []}
+{"func": "entry_from_payload", "case": "payload_null", "payload": null}
+{"func": "entry_from_payload", "case": "secrets_not_dict", "payload": {"secrets": "x", "fetched_at": 1}}
+{"func": "entry_from_payload", "case": "fetched_at_missing", "payload": {"secrets": {"A": "1"}}}
+{"func": "entry_from_payload", "case": "fetched_at_string", "payload": {"secrets": {"A": "1"}, "fetched_at": "1"}}
+{"func": "entry_from_payload", "case": "fetched_at_bool", "payload": {"secrets": {"A": "1"}, "fetched_at": true}}
+{"func": "disk_read", "case": "hit", "payload": {"key": "k1", "secrets": {"A": "1"}, "fetched_at": 100}, "want_key": "k1", "ttl_seconds": 60, "now": 120}
+{"func": "disk_read", "case": "stale", "payload": {"key": "k1", "secrets": {"A": "1"}, "fetched_at": 100}, "want_key": "k1", "ttl_seconds": 60, "now": 200}
+{"func": "disk_read", "case": "key_mismatch", "payload": {"key": "other", "secrets": {"A": "1"}, "fetched_at": 100}, "want_key": "k1", "ttl_seconds": 60, "now": 120}
+{"func": "disk_read", "case": "ttl_zero", "payload": {"key": "k1", "secrets": {"A": "1"}, "fetched_at": 100}, "want_key": "k1", "ttl_seconds": 0, "now": 120}
+{"func": "disk_read", "case": "file_missing", "payload": null, "want_key": "k1", "ttl_seconds": 60, "now": 120}
+{"func": "disk_read", "case": "file_not_object", "payload": [], "want_key": "k1", "ttl_seconds": 60, "now": 120}
+{"func": "disk_read", "case": "no_key_field", "payload": {"secrets": {"A": "1"}, "fetched_at": 100}, "want_key": "k1", "ttl_seconds": 60, "now": 120}
+{"func": "disk_read", "case": "malformed_secrets", "payload": {"key": "k1", "secrets": "nope", "fetched_at": 100}, "want_key": "k1", "ttl_seconds": 60, "now": 120}
+{"func": "write_payload", "case": "normal", "key": "k1", "entry": {"secrets": {"A": "1", "B": "2"}, "fetched_at": 100}, "ttl_seconds": 60}
+{"func": "write_payload", "case": "ttl_zero", "key": "k1", "entry": {"secrets": {"A": "1"}, "fetched_at": 100}, "ttl_seconds": 0}
+{"func": "write_payload", "case": "ttl_negative", "key": "k1", "entry": {"secrets": {"A": "1"}, "fetched_at": 100}, "ttl_seconds": -1}
+{"func": "write_payload", "case": "empty_secrets", "key": "k0", "entry": {"secrets": {}, "fetched_at": 0}, "ttl_seconds": 86400}
+{"func": "write_payload", "case": "float_time", "key": "k2", "entry": {"secrets": {"TOKEN": "x"}, "fetched_at": 1730000000.25}, "ttl_seconds": 120}
+{"func": "lookup", "case": "l1_fresh", "memory": {"k1": {"secrets": {"A": "1"}, "fetched_at": 100}}, "key": "k1", "ttl_seconds": 60, "now": 120, "disk": {"secrets": {"A": "2"}, "fetched_at": 110}}
+{"func": "lookup", "case": "l1_stale_to_disk", "memory": {"k1": {"secrets": {"A": "1"}, "fetched_at": 100}}, "key": "k1", "ttl_seconds": 60, "now": 200, "disk": {"secrets": {"A": "2"}, "fetched_at": 110}}
+{"func": "lookup", "case": "l1_stale_no_disk", "memory": {"k1": {"secrets": {"A": "1"}, "fetched_at": 100}}, "key": "k1", "ttl_seconds": 60, "now": 200, "disk": null}
+{"func": "lookup", "case": "l1_absent_disk", "memory": {}, "key": "k1", "ttl_seconds": 60, "now": 120, "disk": {"secrets": {"A": "2"}, "fetched_at": 110}}
+{"func": "lookup", "case": "l1_absent_no_disk", "memory": {}, "key": "k1", "ttl_seconds": 60, "now": 120, "disk": null}
+{"func": "lookup", "case": "ttl_zero_skips_l1", "memory": {"k1": {"secrets": {"A": "1"}, "fetched_at": 100}}, "key": "k1", "ttl_seconds": 0, "now": 120, "disk": {"secrets": {"A": "2"}, "fetched_at": 110}}
+{"func": "lookup", "case": "other_key_in_l1", "memory": {"k2": {"secrets": {"A": "1"}, "fetched_at": 100}}, "key": "k1", "ttl_seconds": 60, "now": 120, "disk": {"secrets": {"A": "2"}, "fetched_at": 110}}

@@ -1,0 +1,32 @@
+{"func": "elapsed", "case": "whole-seconds", "seconds": 45}
+{"func": "elapsed", "case": "minute-rollover", "seconds": 125}
+{"func": "elapsed", "case": "float-truncates", "seconds": 90.7}
+{"func": "elapsed", "case": "numeric-string", "seconds": "12"}
+{"func": "elapsed", "case": "falsy-none", "seconds": null}
+{"func": "elapsed", "case": "word", "seconds": "abc"}
+{"func": "elapsed", "case": "bool-true", "seconds": true}
+{"func": "elapsed", "case": "zero", "seconds": 0}
+{"func": "describe", "case": "chat-full", "unit": {"kind": "chat", "session": "s-1", "model": "gpt-x", "current_tool": "bash", "pid": 4242, "elapsed_s": 75}}
+{"func": "describe", "case": "chat-bare", "unit": {"kind": "chat", "session": "s-2"}}
+{"func": "describe", "case": "delegation-goal-stripped", "unit": {"kind": "delegation", "delegation_id": "d-9", "goal": "  fix the build  ", "elapsed_s": 5}}
+{"func": "describe", "case": "cron-external", "unit": {"kind": "cron", "job_id": "job-w26-missing", "external": true, "pid": 7, "elapsed_s": 10}}
+{"func": "describe", "case": "cron-inprocess", "unit": {"kind": "cron", "job_id": "job-w26-missing", "external": false}}
+{"func": "describe", "case": "unknown-kind", "unit": {"kind": "backfill", "session": "s-3", "pid": 11}}
+{"func": "describe", "case": "empty-object", "unit": {}}
+{"func": "describe", "case": "wrong-type", "unit": null}
+{"func": "work_lines", "case": "two-units", "verb": "stop", "home": "/tmp/w26-h1", "flag_hint": "hermes gateway {verb} --yes", "work": {"active_agents": 2, "active_work": [{"kind": "chat", "session": "s-1", "model": "m1"}, {"kind": "delegation", "delegation_id": "d-1", "goal": "ship"}]}}
+{"func": "work_lines", "case": "unnamed-agents", "verb": "stop", "home": "/tmp/w26-h1", "work": {"active_agents": 3, "active_work": []}}
+{"func": "work_lines", "case": "no-work", "verb": "stop", "home": "/tmp/w26-h1", "work": {"active_agents": 0, "active_work": []}}
+{"func": "work_lines", "case": "custom-hint-restart", "verb": "restart", "home": "/tmp/w26-h2", "flag_hint": "hermes -p dev gateway {verb} --yes", "work": {"active_agents": 1, "active_work": [{"kind": "chat", "session": "s-7", "elapsed_s": 61}]}}
+{"func": "work_lines", "case": "work-missing", "verb": "stop", "home": "/tmp/w26-h1", "work": null}
+{"func": "work_lines", "case": "count-from-units", "verb": "stop", "home": "/tmp/w26-h1", "work": {"active_agents": null, "active_work": [{"kind": "chat", "session": "a"}, {"kind": "chat", "session": "b"}]}}
+{"func": "work_lines", "case": "non-dict-units-skipped", "verb": "stop", "home": "/tmp/w26-h1", "work": {"active_agents": 0, "active_work": ["x", {"kind": "chat", "session": "s"}]}}
+{"func": "refusal_lines", "case": "first-answers-empty-work", "verb": "stop", "homes": ["/tmp/w26-a", "/tmp/w26-b"], "answers": [{"active_agents": 0, "active_work": []}, {"active_agents": 1, "active_work": [{"kind": "chat", "session": "s"}]}]}
+{"func": "refusal_lines", "case": "second-answers", "verb": "restart", "homes": ["/tmp/w26-a", "/tmp/w26-b"], "answers": [null, {"active_agents": 2, "active_work": [{"kind": "delegation", "delegation_id": "d-4", "goal": "verify"}]}]}
+{"func": "refusal_lines", "case": "none-answers", "verb": "stop", "homes": ["/tmp/w26-a", "/tmp/w26-b"], "answers": [null, null]}
+{"func": "refusal_lines", "case": "no-homes", "verb": "stop", "homes": [], "answers": []}
+{"func": "refusal_lines", "case": "profile-hint", "verb": "stop", "homes": ["/tmp/w26-prof"], "flag_hint": "hermes -p work gateway {verb} --yes", "answers": [{"active_agents": 4, "active_work": []}]}
+{"func": "constants", "case": "flag"}
+{"func": "constants", "case": "flag-again"}
+{"func": "constants", "case": "flag-third"}
+{"func": "constants", "case": "flag-fourth"}

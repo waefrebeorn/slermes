@@ -1,0 +1,28 @@
+{"func": "constants", "case": "pattern-tables"}
+{"func": "utf16_len", "case": "empty", "text": ""}
+{"func": "utf16_len", "case": "ascii", "text": "abc"}
+{"func": "utf16_len", "case": "bmp-wide", "text": "例え"}
+{"func": "utf16_len", "case": "astral", "text": "😀"}
+{"func": "utf16_len", "case": "mixed", "text": "a😀b"}
+{"func": "split_fenced", "case": "no-fence", "text": "plain text"}
+{"func": "split_fenced", "case": "one-fence", "text": "a\n```\ncode\n```\nb"}
+{"func": "split_fenced", "case": "inline-fence", "text": "```x```"}
+{"func": "split_fenced", "case": "unclosed", "text": "no close ``` here"}
+{"func": "split_fenced", "case": "two-fences", "text": "a```b```c```d```e"}
+{"func": "split_fenced", "case": "longer-fence-inner", "text": "````\na```b\n````"}
+{"func": "normalize_bullets", "case": "dash-list", "text": "- a\n- b"}
+{"func": "normalize_bullets", "case": "star-list", "text": "* a"}
+{"func": "normalize_bullets", "case": "plus-list", "text": "+ a"}
+{"func": "normalize_bullets", "case": "indented", "text": "  - a"}
+{"func": "normalize_bullets", "case": "inside-fence", "text": "```\n- a\n```"}
+{"func": "normalize_bullets", "case": "four-spaces", "text": "    - a"}
+{"func": "normalize_bullets", "case": "no-bullet", "text": "a - b\n-- c"}
+{"func": "markdown_to_signal", "case": "bold", "text": "say **bold** now"}
+{"func": "markdown_to_signal", "case": "italic-star", "text": "an *emphatic* word"}
+{"func": "markdown_to_signal", "case": "heading-and-body", "text": "# Title\n\nbody text"}
+{"func": "markdown_to_signal", "case": "fence-block", "text": "before\n```\nline1\nline2\n```\nafter"}
+{"func": "markdown_to_signal", "case": "heading-in-fence", "text": "```\n# not a heading\n```\nafter"}
+{"func": "markdown_to_signal", "case": "bold-wrapping-code", "text": "**run `x`**"}
+{"func": "markdown_to_signal", "case": "bullets-and-bold", "text": "- one **b**\n- two"}
+{"func": "markdown_to_signal", "case": "blank-line-collapse", "text": "a\n\n\n\nb"}
+{"func": "markdown_to_signal", "case": "empty", "text": ""}

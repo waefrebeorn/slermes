@@ -1,0 +1,21 @@
+{"func": "expected_client_state", "case": "stripped", "raw": "  abc  "}
+{"func": "expected_client_state", "case": "empty-string", "raw": ""}
+{"func": "expected_client_state", "case": "spaces-only", "raw": "   "}
+{"func": "expected_client_state", "case": "null-reads-env", "raw": null}
+{"func": "expected_client_state", "case": "number-coerced", "raw": 5}
+{"func": "expected_client_state", "case": "bool-coerced", "raw": true}
+{"func": "utc_timestamp", "case": "zero-hours", "hours_from_now": 0, "base": "2026-01-01T00:00:00Z"}
+{"func": "utc_timestamp", "case": "plus-24", "hours_from_now": 24, "base": "2026-01-01T00:00:00Z"}
+{"func": "utc_timestamp", "case": "minus-1-boundary", "hours_from_now": -1, "base": "2026-01-01T00:00:00Z"}
+{"func": "utc_timestamp", "case": "drop-microseconds", "hours_from_now": 0, "base": "2026-02-28T23:59:59.987654Z"}
+{"func": "utc_timestamp", "case": "offset-to-utc", "hours_from_now": 1, "base": "2026-03-01T10:30:00+02:00"}
+{"func": "utc_timestamp", "case": "leap-day", "hours_from_now": 24, "base": "2024-02-28T12:00:00Z"}
+{"func": "utc_timestamp", "case": "type-mismatch-hours", "hours_from_now": "3", "base": "2026-01-01T00:00:00Z"}
+{"func": "is_managed_subscription", "case": "known-in-store", "known_ids": ["sub-1"], "payload": {"subscription_id": "sub-1"}, "expected_client_state_value": null}
+{"func": "is_managed_subscription", "case": "client-state-match", "known_ids": [], "payload": {"subscription_id": "sub-9", "clientState": "  s3cret "}, "expected_client_state_value": "s3cret"}
+{"func": "is_managed_subscription", "case": "camel-state-match", "known_ids": [], "payload": {"id": "sub-8", "client_state": "abc"}, "expected_client_state_value": "abc"}
+{"func": "is_managed_subscription", "case": "not-managed", "known_ids": ["other"], "payload": {"subscription_id": "sub-2", "client_state": "zzz"}, "expected_client_state_value": "abc"}
+{"func": "is_managed_subscription", "case": "no-expected-state", "known_ids": [], "payload": {"subscription_id": "sub-3", "client_state": "abc"}, "expected_client_state_value": null}
+{"func": "is_managed_subscription", "case": "empty-id-and-state", "known_ids": [""], "payload": {"subscription_id": "", "id": null}, "expected_client_state_value": ""}
+{"func": "is_managed_subscription", "case": "known-id-not-in-list", "known_ids": ["sub-1", "sub-2"], "payload": {"id": "sub-3"}, "expected_client_state_value": ""}
+{"func": "is_managed_subscription", "case": "type-mismatch-payload", "known_ids": [], "payload": 7, "expected_client_state_value": "abc"}

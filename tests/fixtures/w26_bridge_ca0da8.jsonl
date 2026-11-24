@@ -1,0 +1,31 @@
+{"func": "leg_failure", "case": "auth_not_set_up", "kind": "auth", "code": "not_set_up", "status": null}
+{"func": "leg_failure", "case": "auth_unauthorized", "kind": "auth", "code": "UNAUTHORIZED", "status": null}
+{"func": "leg_failure", "case": "auth_lowercase_token", "kind": "auth", "code": "token_expired", "status": 500}
+{"func": "leg_failure", "case": "auth_status_401", "kind": "auth", "code": "SOMETHING", "status": 401}
+{"func": "leg_failure", "case": "auth_forbidden", "kind": "auth", "code": "FORBIDDEN", "status": 403}
+{"func": "leg_failure", "case": "auth_code_empty", "kind": "auth", "code": "", "status": 0}
+{"func": "leg_failure", "case": "gateway_unavailable", "kind": "unavailable", "code": "HTTP_404", "status": 404}
+{"func": "leg_failure", "case": "other_with_auth_code", "kind": "other", "code": "UNAUTHORIZED", "status": 401}
+{"func": "search_leg", "case": "hits", "available": true, "queries": [{"query": "bloom filter"}], "result": {"results": [{"title": "Bloom", "url": "https://ex.com/b"}]}}
+{"func": "search_leg", "case": "not_available", "available": false, "queries": [{"query": "x"}], "result": {"results": []}}
+{"func": "search_leg", "case": "empty_queries", "available": true, "queries": [], "result": {"results": []}}
+{"func": "search_leg", "case": "empty_result", "available": true, "queries": [{"query": "x"}], "result": {}}
+{"func": "search_leg", "case": "null_result", "available": true, "queries": [{"query": "x"}], "result": null}
+{"func": "search_leg", "case": "gateway_dark", "available": true, "queries": [{"query": "x"}], "raise": {"kind": "unavailable", "code": "HTTP_404", "status": 404}}
+{"func": "search_leg", "case": "auth_failure", "available": true, "queries": [{"query": "x"}], "raise": {"kind": "auth", "code": "UNAUTHORIZED", "status": 401}}
+{"func": "search_leg", "case": "unexpected_failure", "available": true, "queries": [{"query": "x"}], "raise": {"kind": "other", "code": "BOOM", "status": null}}
+{"func": "describe_leg", "case": "primary_slug", "available": true, "names": ["connectors__slack__send_message"], "schemas_response": {"schemas": {"SLACK_send_message": {"description": "Send a message to a channel", "input_schema": {"type": "object", "properties": {"channel": {"type": "string", "description": "Channel id"}, "blocks": {"type": "array", "items": {"type": "object"}}}, "required": ["channel"]}}}}}
+{"func": "describe_leg", "case": "literal_slug", "available": true, "names": ["connectors__slack__send_message"], "schemas_response": {"schemas": {"send_message": {"description": "Send a message to a channel", "input_schema": {"type": "object", "properties": {"channel": {"type": "string", "description": "Channel id"}, "blocks": {"type": "array", "items": {"type": "object"}}}, "required": ["channel"]}}}}}
+{"func": "describe_leg", "case": "schema_missing", "available": true, "names": ["connectors__slack__send_message"], "schemas_response": {"schemas": {"other_tool": {"description": "Send a message to a channel", "input_schema": {"type": "object", "properties": {"channel": {"type": "string", "description": "Channel id"}, "blocks": {"type": "array", "items": {"type": "object"}}}, "required": ["channel"]}}}}}
+{"func": "describe_leg", "case": "not_available", "available": false, "names": ["connectors__slack__send_message"], "schemas_response": {"schemas": {"SLACK_send_message": {"description": "Send a message to a channel", "input_schema": {"type": "object", "properties": {"channel": {"type": "string", "description": "Channel id"}, "blocks": {"type": "array", "items": {"type": "object"}}}, "required": ["channel"]}}}}}
+{"func": "describe_leg", "case": "no_valid_names", "available": true, "names": ["slack__x", "connectors__slack", "connectors__", "connectors__a__"], "schemas_response": {"schemas": {"SLACK_send_message": {"description": "Send a message to a channel", "input_schema": {"type": "object", "properties": {"channel": {"type": "string", "description": "Channel id"}, "blocks": {"type": "array", "items": {"type": "object"}}}, "required": ["channel"]}}}}}
+{"func": "describe_leg", "case": "file_uploadable_parameter", "available": true, "names": ["connectors__drive__upload"], "schemas_response": {"schemas": {"DRIVE_upload": {"description": "", "input_schema": {"type": "object", "properties": {"file": {"type": "string", "description": "The file to send", "file_uploadable": true}, "note": {"type": "string", "file_uploadable": 1}}}}}}}
+{"func": "describe_leg", "case": "gateway_dark", "available": true, "names": ["connectors__slack__send_message"], "raise": {"kind": "unavailable", "code": "HTTP_404", "status": 404}}
+{"func": "describe_leg", "case": "auth_failure", "available": true, "names": ["connectors__slack__send_message"], "raise": {"kind": "auth", "code": "TOKEN_EXPIRED", "status": 401}}
+{"func": "fallback_plan", "case": "one_confirmed_miss", "planned": [{"connector": "slack", "tool": "send_message"}, {"connector": "slack", "tool": "send_message"}, {"connector": "slack", "tool": "send_message"}], "entries": [{"index": 0, "name": "connectors__slack__send_message", "response": {"ok": true}}, {"index": 1, "name": "connectors__slack__send_message", "error": {"code": "TOOL_NOT_FOUND", "message": "no such tool"}}, {"index": 2, "name": "connectors__slack__send_message", "error": {"code": "CONNECTION_REQUIRED", "message": "connect first"}}]}
+{"func": "fallback_plan", "case": "no_entries", "planned": [{"connector": "slack", "tool": "send_message"}], "entries": []}
+{"func": "fallback_plan", "case": "null_entry", "planned": [{"connector": "slack", "tool": "send_message"}], "entries": [null]}
+{"func": "fallback_plan", "case": "entry_without_error", "planned": [{"connector": "slack", "tool": "send_message"}], "entries": [{"response": {"ok": true}}]}
+{"func": "fallback_plan", "case": "error_not_a_dict", "planned": [{"connector": "slack", "tool": "send_message"}], "entries": [{"error": "TOOL_NOT_FOUND"}]}
+{"func": "fallback_plan", "case": "entries_shorter_than_plan", "planned": [{"connector": "slack", "tool": "send_message"}, {"connector": "drive", "tool": "upload"}], "entries": [{"index": 1, "name": "connectors__slack__send_message", "error": {"code": "TOOL_NOT_FOUND", "message": "no such tool"}}]}
+{"func": "constants", "case": "literals"}

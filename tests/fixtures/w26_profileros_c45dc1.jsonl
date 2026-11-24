@@ -1,0 +1,22 @@
+{"func": "store_signature", "case": "db-only", "files": [{"name": "state.db", "mtime_ns": 1600000000000000000, "size": 4096}], "now_ns": 1600000004000000000}
+{"func": "store_signature", "case": "db-and-wal", "files": [{"name": "state.db", "mtime_ns": 1600000000000000000, "size": 4096}, {"name": "state.db-wal", "mtime_ns": 1600000001000000000, "size": 8192}], "now_ns": 1600000004000000000}
+{"func": "store_signature", "case": "empty-wal-dropped", "files": [{"name": "state.db", "mtime_ns": 1600000000000000000, "size": 4096}, {"name": "state.db-wal", "mtime_ns": 1600000001000000000, "size": 0}], "now_ns": 1600000004000000000}
+{"func": "store_signature", "case": "no-store-files", "files": [], "now_ns": 1600000004000000000}
+{"func": "store_signature", "case": "racy-mtime", "files": [{"name": "state.db", "mtime_ns": 3000000000000000000, "size": 4096}], "now_ns": 4000000000000000000}
+{"func": "store_signature", "case": "window-boundary-not-racy", "files": [{"name": "state.db", "mtime_ns": 2000000000000000000, "size": 4096}], "now_ns": 4000000000000000000}
+{"func": "store_signature", "case": "db-absent-wal-present", "files": [{"name": "state.db", "exists": false, "mtime_ns": 1600000000000000000, "size": 4096}, {"name": "state.db-wal", "mtime_ns": 1600000001000000000, "size": 8192}], "now_ns": 1600000004000000000}
+{"func": "store_signature", "case": "unrelated-file", "files": [{"name": "notes.txt", "mtime_ns": 1600000000000000000, "size": 12}], "now_ns": 1600000004000000000}
+{"func": "yaml_signature", "case": "present", "files": [{"name": "profile.yaml", "mtime_ns": 1600000001000000000, "size": 512, "inode": 987654321}]}
+{"func": "yaml_signature", "case": "missing", "files": []}
+{"func": "yaml_signature", "case": "inode-zero", "files": [{"name": "profile.yaml", "mtime_ns": 1600000001000000000, "size": 0}]}
+{"func": "yaml_signature", "case": "absent-flag", "files": [{"name": "profile.yaml", "exists": false, "mtime_ns": 1600000001000000000, "size": 512, "inode": 7}]}
+{"func": "yaml_signature", "case": "large-values", "files": [{"name": "profile.yaml", "mtime_ns": 1700000000123456000, "size": 1048576, "inode": 4294967296}]}
+{"func": "cached", "case": "miss-empty", "cache": [], "key": ["/p/alpha"], "signature": [["state.db", 1600000000000000000, 4096]], "fields": {"last_session": "s-1"}, "copier": "dict", "max_entries": 512}
+{"func": "cached", "case": "hit-same-signature", "cache": [{"key": ["/p/alpha"], "signature": [["state.db", 1600000000000000000, 4096]], "fields": {"last_session": "memo"}}], "key": ["/p/alpha"], "signature": [["state.db", 1600000000000000000, 4096]], "fields": {"last_session": "recomputed"}, "copier": "dict", "max_entries": 512}
+{"func": "cached", "case": "no-signature", "cache": [{"key": ["/p/alpha"], "signature": [["state.db", 1, 4]], "fields": {"last_session": "memo"}}], "key": ["/p/alpha"], "signature": null, "fields": {"last_session": "fresh"}, "copier": "dict", "max_entries": 512}
+{"func": "cached", "case": "stale-signature-refresh", "cache": [{"key": ["/p/alpha"], "signature": [["state.db", 1, 4]], "fields": {"last_session": "old"}}, {"key": ["/p/beta"], "signature": [["state.db", 2, 4]], "fields": {"last_session": "beta"}}], "key": ["/p/alpha"], "signature": [["state.db", 9, 8]], "fields": {"last_session": "new"}, "copier": "deep", "max_entries": 512}
+{"func": "cached", "case": "clears-at-bound", "cache": [{"key": ["/p/a"], "signature": [["state.db", 1, 4]], "fields": {"n": 1}}, {"key": ["/p/b"], "signature": [["state.db", 2, 4]], "fields": {"n": 2}}], "key": ["/p/c"], "signature": [["state.db", 3, 4]], "fields": {"n": 3}, "copier": "dict", "max_entries": 2}
+{"func": "cached", "case": "deep-copier-nested", "cache": [], "key": ["/p/alpha"], "signature": [["state.db", 1600000000000000000, 4096], ["state.db-wal", 1600000001000000000, 8192]], "fields": {"ui_meta": {"tabs": ["a", "b"], "nested": {"k": 1}}}, "copier": "deep", "max_entries": 512}
+{"func": "cached", "case": "reader-key", "cache": [{"key": ["/p/gateway", ["owner", "u-1"]], "signature": [["state.db", 5, 4]], "fields": {"canonical_session": "c-1"}}], "key": ["/p/gateway", ["owner", "u-1"]], "signature": [["state.db", 5, 4]], "fields": {"canonical_session": "c-2"}, "copier": "dict", "max_entries": 512}
+{"func": "cached", "case": "empty-fields", "cache": [], "key": ["/p/alpha"], "signature": [], "fields": {}, "copier": "dict", "max_entries": 512}
+{"func": "constants", "case": "budgets"}

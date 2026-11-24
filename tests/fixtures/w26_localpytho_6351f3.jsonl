@@ -1,0 +1,24 @@
+{"func": "same_path", "case": "identical", "left": "C:\\repo", "right": "C:\\repo"}
+{"func": "same_path", "case": "case-and-slashes", "left": "C:/Repo", "right": "c:\\repo"}
+{"func": "same_path", "case": "trailing-sep", "left": "C:\\repo\\", "right": "C:/repo"}
+{"func": "same_path", "case": "dot-component", "left": "C:\\repo\\.\\x", "right": "C:\\repo\\x"}
+{"func": "same_path", "case": "parent-escape", "left": "C:\\repo\\..\\x", "right": "C:\\x"}
+{"func": "same_path", "case": "different-drive", "left": "C:\\repo", "right": "D:\\repo"}
+{"func": "same_path", "case": "relative-vs-absolute", "left": "repo", "right": "C:\\repo"}
+{"func": "same_path", "case": "empty-vs-dot", "left": "", "right": "."}
+{"func": "same_path", "case": "type-mismatch", "left": 5, "right": "C:\\repo"}
+{"func": "strip_pythonpath", "case": "mixed", "env": {"PYTHONPATH": "C:\\repo;C:\\lib", "KEEP": "1"}, "owned_paths": ["C:\\REPO"], "sep": ";"}
+{"func": "strip_pythonpath", "case": "all-owned", "env": {"PYTHONPATH": "C:\\repo"}, "owned_paths": ["C:\\repo"], "sep": ";"}
+{"func": "strip_pythonpath", "case": "absent", "env": {"KEEP": "1"}, "owned_paths": ["C:\\repo"], "sep": ";"}
+{"func": "strip_pythonpath", "case": "empty-string", "env": {"PYTHONPATH": ""}, "owned_paths": ["C:\\repo"], "sep": ";"}
+{"func": "strip_pythonpath", "case": "null-value", "env": {"PYTHONPATH": null}, "owned_paths": ["C:\\repo"], "sep": ";"}
+{"func": "strip_all", "case": "empty-components", "env": {"PYTHONPATH": ";;C:\\repo;;"}, "owned_paths": ["C:\\repo"], "sep": ";"}
+{"func": "strip_pythonpath", "case": "descendant-kept", "env": {"PYTHONPATH": "C:\\repo\\sub"}, "owned_paths": ["C:\\repo"], "sep": ";"}
+{"func": "strip_all", "case": "duplicate-owned", "env": {"PYTHONPATH": "C:\\repo;C:\\repo;C:\\x"}, "owned_paths": ["c:\\repo"], "sep": ";"}
+{"func": "strip_pythonpath", "case": "type-mismatch", "env": {"PYTHONPATH": 5}, "owned_paths": [], "sep": ";"}
+{"func": "strip_pythonpath", "case": "env-not-mapping", "env": [], "owned_paths": [], "sep": ";"}
+{"func": "strip_all", "case": "markers-and-path", "env": {"PYTHONPATH": "C:\\repo;C:\\lib", "VIRTUAL_ENV": "C:\\repo\\venv", "CONDA_PREFIX": "x", "PYTHONHOME": "y"}, "owned_paths": ["C:\\repo"], "sep": ";"}
+{"func": "strip_all", "case": "no-markers", "env": {"PYTHONPATH": "C:\\lib"}, "owned_paths": ["C:\\repo"], "sep": ";"}
+{"func": "strip_all", "case": "markers-only", "env": {"VIRTUAL_ENV": "v", "CONDA_PREFIX": "c", "PYTHONHOME": "h"}, "owned_paths": [], "sep": ";"}
+{"func": "constants", "case": "table"}
+{"func": "strip_pythonpath", "case": "custom-sep", "env": {"PYTHONPATH": "repo:lib"}, "owned_paths": ["repo"], "sep": ":"}

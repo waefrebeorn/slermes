@@ -1,0 +1,24 @@
+{"func": "constants", "case": "tables"}
+{"func": "check_args", "case": "search-ok", "args": {"action": "search", "query": "pdf"}}
+{"func": "check_args", "case": "search-bare", "args": {"action": "search"}}
+{"func": "check_args", "case": "install-ok", "args": {"action": "install", "items": [{"kind": "plugin", "id": "p1"}, {"kind": "skill", "id": "s1"}]}}
+{"func": "check_args", "case": "unknown-top-params", "args": {"action": "search", "zzz": 2, "bogus": 1}}
+{"func": "check_args", "case": "bad-action", "args": {"action": "remove"}}
+{"func": "check_args", "case": "missing-action", "args": {}}
+{"func": "check_args", "case": "action-not-a-string", "args": {"action": 5}}
+{"func": "check_args", "case": "bad-kind", "args": {"action": "search", "kind": "agent"}}
+{"func": "check_args", "case": "kind-null", "args": {"action": "search", "kind": null}}
+{"func": "check_args", "case": "install-no-items", "args": {"action": "install"}}
+{"func": "check_args", "case": "install-empty-items", "args": {"action": "install", "items": []}}
+{"func": "check_args", "case": "install-items-not-a-list", "args": {"action": "install", "items": "p1"}}
+{"func": "check_args", "case": "item-not-an-object", "args": {"action": "install", "items": ["p1"]}}
+{"func": "check_args", "case": "item-unknown-field", "args": {"action": "install", "items": [{"kind": "plugin", "id": "p1", "pin": "1"}]}}
+{"func": "check_args", "case": "item-bad-kind", "args": {"action": "install", "items": [{"kind": "tool", "id": "p1"}]}}
+{"func": "check_args", "case": "item-blank-id", "args": {"action": "install", "items": [{"kind": "plugin", "id": "   "}]}}
+{"func": "check_args", "case": "item-numeric-id", "args": {"action": "install", "items": [{"kind": "skill", "id": 5}]}}
+{"func": "check_args", "case": "item-zero-id", "args": {"action": "install", "items": [{"kind": "skill", "id": 0}]}}
+{"func": "dispatch", "case": "error-route", "args": {"action": "remove"}, "card_surface": true, "have_callback": true}
+{"func": "dispatch", "case": "not-here-no-callback", "args": {"action": "search"}, "card_surface": true, "have_callback": false}
+{"func": "dispatch", "case": "not-here-not-desktop", "args": {"action": "search"}, "card_surface": false, "have_callback": true}
+{"func": "dispatch", "case": "search-route", "args": {"action": "search", "query": "pdf"}, "card_surface": true, "have_callback": true}
+{"func": "dispatch", "case": "install-route", "args": {"action": "install", "items": [{"kind": "plugin", "id": "p1"}]}, "card_surface": true, "have_callback": true}

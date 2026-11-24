@@ -1,0 +1,18 @@
+{"func": "parse_envelope", "case": "ok-results", "raw": "{\"ok\": true, \"results\": [{\"title\": \"T\", \"url\": \"u\", \"description\": \"D\", \"position\": 1}]}", "exit_code": 0}
+{"func": "parse_envelope", "case": "empty-raw", "raw": "", "exit_code": 1}
+{"func": "parse_envelope", "case": "whitespace-raw", "raw": "  \n\t ", "exit_code": 0}
+{"func": "parse_envelope", "case": "non-dict-envelope", "raw": "1", "exit_code": 0}
+{"func": "parse_envelope", "case": "ok-false-error", "raw": "{\"ok\": false, \"error\": \"boom happened\"}", "exit_code": 1}
+{"func": "parse_envelope", "case": "ok-false-no-error", "raw": "{\"ok\": false}", "exit_code": 1}
+{"func": "parse_envelope", "case": "ok-true-null-results", "raw": "{\"ok\": true, \"results\": null}", "exit_code": 0}
+{"func": "parse_envelope", "case": "non-list-results", "raw": "{\"ok\": true, \"results\": \"nope\"}", "exit_code": 0}
+{"func": "parse_envelope", "case": "padded-envelope", "raw": "  {\"ok\": true, \"results\": []}  \n", "exit_code": 0}
+{"func": "search", "case": "available-ok", "available": true, "seam": "ok", "query": "cats", "limit": 5, "hits": [{"title": "T", "url": "u", "description": "D", "position": 1}]}
+{"func": "search", "case": "limit-zero", "available": true, "seam": "ok", "query": "cats", "limit": 0, "hits": []}
+{"func": "search", "case": "limit-negative", "available": true, "seam": "ok", "query": "cats", "limit": -3, "hits": []}
+{"func": "search", "case": "unavailable", "available": false, "seam": "ok", "query": "cats", "limit": 5, "hits": []}
+{"func": "search", "case": "timeout", "available": true, "seam": "timeout", "query": "cats", "limit": 5, "hits": []}
+{"func": "search", "case": "interrupt", "available": true, "seam": "interrupt", "query": "cats", "limit": 5, "hits": []}
+{"func": "search", "case": "worker-error", "available": true, "seam": "error", "query": "cats", "limit": 5, "hits": []}
+{"func": "setup_schema", "case": "picker-entry"}
+{"func": "constants", "case": "table"}

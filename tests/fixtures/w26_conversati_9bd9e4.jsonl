@@ -1,0 +1,44 @@
+{"func": "same_content", "case": "text-normalized", "left": {"role": "assistant", "content": "  x  "}, "right": {"role": "assistant", "content": "x"}, "right_text": "x"}
+{"func": "same_content", "case": "text-differs", "left": {"role": "assistant", "content": "a"}, "right": {"role": "assistant", "content": "b"}, "right_text": "b"}
+{"func": "same_content", "case": "parts-vs-string", "left": {"role": "assistant", "content": [{"type": "text", "text": "hi"}]}, "right": {"role": "assistant", "content": "hi"}}
+{"func": "same_content", "case": "both-empty-same-raw", "left": {"role": "assistant", "content": ""}, "right": {"role": "assistant", "content": ""}}
+{"func": "same_content", "case": "both-empty-differing-raw", "left": {"role": "assistant", "content": ""}, "right": {"role": "assistant", "content": null}}
+{"func": "same_content", "case": "parts-equal-raw-fallback", "left": {"role": "assistant", "content": [{"type": "text", "text": ""}]}, "right": {"role": "assistant", "content": ""}}
+{"func": "tool_ids", "case": "two-ids", "message": {"role": "assistant", "tool_calls": [{"id": "call_1"}, {"call_id": "call_2"}]}}
+{"func": "tool_ids", "case": "call-id-wins", "message": {"role": "assistant", "tool_calls": [{"id": "call_a", "call_id": "call_b"}]}}
+{"func": "tool_ids", "case": "composite-split", "message": {"role": "assistant", "tool_calls": [{"call_id": "call_1|resp_2"}]}}
+{"func": "tool_ids", "case": "empty-calls", "message": {"role": "assistant", "tool_calls": []}}
+{"func": "tool_ids", "case": "no-calls", "message": {"role": "assistant", "content": "x"}}
+{"func": "tool_ids", "case": "blank-id", "message": {"role": "assistant", "tool_calls": [{"id": "   "}]}}
+{"func": "tool_ids", "case": "pipe-only", "message": {"role": "assistant", "tool_calls": [{"call_id": "|x"}]}}
+{"func": "tool_ids", "case": "non-dict-entries", "message": {"role": "assistant", "tool_calls": ["x", 5]}}
+{"func": "result_id", "case": "plain", "message": {"role": "tool", "tool_call_id": "call_9"}}
+{"func": "result_id", "case": "missing", "message": {"role": "tool", "content": "ok"}}
+{"func": "result_id", "case": "composite", "message": {"role": "tool", "tool_call_id": "call_1|item_2"}}
+{"func": "result_id", "case": "blank", "message": {"role": "tool", "tool_call_id": "  "}}
+{"func": "reused_ids", "case": "duplicate", "messages": [{"role": "assistant", "tool_calls": [{"id": "c"}]}, {"role": "user", "content": "x"}, {"role": "assistant", "tool_calls": [{"id": "c"}]}]}
+{"func": "reused_ids", "case": "unique", "messages": [{"role": "assistant", "tool_calls": [{"id": "a"}]}, {"role": "assistant", "tool_calls": [{"id": "b"}]}]}
+{"func": "reused_ids", "case": "two-duplicates", "messages": [{"role": "assistant", "tool_calls": [{"id": "a"}, {"id": "b"}]}, {"role": "assistant", "tool_calls": [{"id": "b"}]}, {"role": "assistant", "tool_calls": [{"id": "a"}]}]}
+{"func": "reused_ids", "case": "non-assistant-ignored", "messages": [{"role": "user", "tool_calls": [{"id": "z"}]}, {"role": "user", "tool_calls": [{"id": "z"}]}]}
+{"func": "reused_ids", "case": "empty", "messages": []}
+{"func": "insertion_index", "case": "follower-survives", "followers": [{"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "user", "content": "next"}]}
+{"func": "insertion_index", "case": "no-followers", "followers": [], "compressed": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello"}]}
+{"func": "insertion_index", "case": "trailing-real-user", "followers": [{"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "user", "content": "other"}]}
+{"func": "insertion_index", "case": "trailing-scaffolding", "followers": [{"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "user", "content": "todo", "_todo_snapshot_synthetic": true}]}
+{"func": "insertion_index", "case": "tool-round-match", "followers": [{"role": "assistant", "tool_calls": [{"id": "call_1"}]}], "compressed": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": null, "tool_calls": [{"id": "call_1"}]}]}
+{"func": "insertion_index", "case": "reused-id-ambiguous", "followers": [{"role": "assistant", "tool_calls": [{"id": "dup"}]}], "compressed": [{"role": "assistant", "tool_calls": [{"id": "dup"}]}], "reused_ids": ["dup"]}
+{"func": "insertion_index", "case": "reused-id-absent", "followers": [{"role": "assistant", "tool_calls": [{"id": "dup"}]}], "compressed": [{"role": "user", "content": "hi"}], "reused_ids": ["dup"]}
+{"func": "insertion_index", "case": "tool-result-match", "followers": [{"role": "tool", "content": "ok", "tool_call_id": "call_3"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "tool", "content": "ok", "tool_call_id": "call_3"}]}
+{"func": "anchor", "case": "reinserts", "original_messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello there"}, {"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "user", "content": "next"}], "rough": {"in": 100, "out": 60, "anchor": 10}}
+{"func": "anchor", "case": "already-present", "original_messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello there"}, {"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello there"}, {"role": "user", "content": "next"}], "rough": {"in": 100, "out": 60, "anchor": 10}}
+{"func": "anchor", "case": "no-assistant", "original_messages": [{"role": "user", "content": "hi"}, {"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}], "rough": {"in": 100, "out": 60, "anchor": 10}}
+{"func": "anchor", "case": "tail-placement", "original_messages": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "answer one"}], "compressed": [{"role": "user", "content": "a"}], "rough": {"in": 100, "out": 50, "anchor": 5}}
+{"func": "anchor", "case": "no-growth-guard", "original_messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello there"}, {"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "user", "content": "next"}], "rough": {"in": 100, "out": 95, "anchor": 10}}
+{"func": "anchor", "case": "non-shrinking-bypass", "original_messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello there"}, {"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "user", "content": "next"}], "rough": {"in": 100, "out": 120, "anchor": 10}}
+{"func": "anchor", "case": "assistant-neighbour", "original_messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello there"}, {"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "a different reply"}, {"role": "user", "content": "next"}], "rough": {"in": 100, "out": 60, "anchor": 10}}
+{"func": "anchor", "case": "summary-reply-skipped", "original_messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "the real reply"}, {"role": "assistant", "content": "handoff text", "_compressed_summary": true}, {"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "user", "content": "next"}], "rough": {"in": 100, "out": 60, "anchor": 10}}
+{"func": "anchor", "case": "empty-reply-skipped", "original_messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "kept answer"}, {"role": "assistant", "content": "   "}, {"role": "user", "content": "next"}], "compressed": [{"role": "user", "content": "hi"}, {"role": "user", "content": "next"}], "rough": {"in": 100, "out": 60, "anchor": 10}}
+{"func": "constants", "case": "tables"}
+{"func": "constants", "case": "tables-again"}
+{"func": "constants", "case": "tables-third"}
+{"func": "constants", "case": "tables-fourth"}

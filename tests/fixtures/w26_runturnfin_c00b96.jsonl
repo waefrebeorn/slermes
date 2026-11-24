@@ -1,0 +1,28 @@
+{"func": "constants", "case": "retry-budget"}
+{"func": "flood_wait", "case": "not-a-flood", "error": "boom", "retry_after": null}
+{"func": "flood_wait", "case": "no-error", "error": null, "retry_after": null}
+{"func": "flood_wait", "case": "prefix", "error": "flood_control:3.5", "retry_after": null}
+{"func": "flood_wait", "case": "prefix-zero-wait", "error": "flood_control:0", "retry_after": null}
+{"func": "flood_wait", "case": "prefix-garbage", "error": "flood_control:soon", "retry_after": null}
+{"func": "flood_wait", "case": "raw-ptb-wording", "error": "Flood control exceeded. Retry in 42 seconds", "retry_after": null}
+{"func": "flood_wait", "case": "retry-after-wins", "error": "Flood_control:5", "retry_after": 7}
+{"func": "flood_wait", "case": "retry-after-ignored-when-clean", "error": "boom", "retry_after": 9}
+{"func": "carries_whole", "case": "splits-oversized", "content": "a very long answer indeed", "splits": true, "base": false, "limit": 4, "len_fn": "len", "fmt": "none"}
+{"func": "carries_whole", "case": "fits-plain", "content": "hello", "splits": false, "base": false, "limit": 5, "len_fn": "len", "fmt": "none"}
+{"func": "carries_whole", "case": "too-long-plain", "content": "hello world", "splits": false, "base": false, "limit": 5, "len_fn": "len", "fmt": "none"}
+{"func": "carries_whole", "case": "base-utf16-emoji-fits", "content": "📊📊", "splits": false, "base": true, "limit": 4, "len_fn": "utf16", "fmt": "none"}
+{"func": "carries_whole", "case": "base-utf16-emoji-over", "content": "📊📊📊", "splits": false, "base": true, "limit": 4, "len_fn": "utf16", "fmt": "none"}
+{"func": "carries_whole", "case": "formatted-text-over", "content": "&&&&&&&&&&", "splits": false, "base": true, "limit": 10, "len_fn": "len", "fmt": "amp"}
+{"func": "carries_whole", "case": "formatted-text-fits", "content": "&", "splits": false, "base": true, "limit": 5, "len_fn": "len", "fmt": "amp"}
+{"func": "carries_whole", "case": "limit-missing", "content": "hi", "splits": false, "base": false, "limit": null, "len_fn": "len", "fmt": "none"}
+{"func": "owns_preview", "case": "no-consumer", "consumer": null, "chat_id": "c", "content": null}
+{"func": "owns_preview", "case": "happy-no-content", "consumer": {"message_id": "42", "turn_split_delivery": false, "adapter": {"splits": true, "base": false, "limit": 4096, "len_fn": "len", "fmt": "none"}}, "chat_id": "c", "content": null}
+{"func": "owns_preview", "case": "content-fits", "consumer": {"message_id": "42", "turn_split_delivery": false, "adapter": {"splits": false, "base": true, "limit": 10, "len_fn": "len", "fmt": "none"}}, "chat_id": "c", "content": "hello"}
+{"func": "owns_preview", "case": "content-too-long", "consumer": {"message_id": "42", "turn_split_delivery": false, "adapter": {"splits": false, "base": true, "limit": 10, "len_fn": "len", "fmt": "none"}}, "chat_id": "c", "content": "hello world this will not fit"}
+{"func": "owns_preview", "case": "split-delivery", "consumer": {"message_id": "42", "turn_split_delivery": true, "adapter": {"splits": true, "base": false, "limit": 4096, "len_fn": "len", "fmt": "none"}}, "chat_id": "c", "content": null}
+{"func": "owns_preview", "case": "no-edit-marker", "consumer": {"message_id": "__no_edit__", "turn_split_delivery": false, "adapter": {"splits": true, "base": false, "limit": 4096, "len_fn": "len", "fmt": "none"}}, "chat_id": "c", "content": null}
+{"func": "owns_preview", "case": "no-adapter", "consumer": {"message_id": "42", "turn_split_delivery": false, "adapter": null}, "chat_id": "c", "content": null}
+{"func": "owns_preview", "case": "ambiguous-delivery", "consumer": {"message_id": "42", "turn_split_delivery": false, "delivery_ambiguous": true, "adapter": {"splits": true, "base": false, "limit": 4096, "len_fn": "len", "fmt": "none"}}, "chat_id": "c", "content": null}
+{"func": "owns_preview", "case": "native-streaming", "consumer": {"message_id": "42", "turn_split_delivery": false, "native_streaming": true, "adapter": {"splits": true, "base": false, "limit": 4096, "len_fn": "len", "fmt": "none"}}, "chat_id": "c", "content": null}
+{"func": "owns_preview", "case": "egress-declined", "consumer": {"message_id": "42", "turn_split_delivery": false, "egress_declined": true, "adapter": {"splits": true, "base": false, "limit": 4096, "len_fn": "len", "fmt": "none"}}, "chat_id": "c", "content": null}
+{"func": "owns_preview", "case": "clean-for-display", "consumer": {"message_id": "42", "turn_split_delivery": false, "clean": "strip", "adapter": {"splits": false, "base": true, "limit": 5, "len_fn": "len", "fmt": "none"}}, "chat_id": "c", "content": "  hello  "}

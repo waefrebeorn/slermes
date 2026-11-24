@@ -1,0 +1,37 @@
+{"func":"tail","case":"shorter","text":"abcdef","limit":3}
+{"func":"tail","case":"exact","text":"abc","limit":3}
+{"func":"tail","case":"limit-larger","text":"abc","limit":10}
+{"func":"tail","case":"limit-zero","text":"abc","limit":0}
+{"func":"tail","case":"negative-limit","text":"abcdef","limit":-2}
+{"func":"tail","case":"empty-text","text":"","limit":5}
+{"func":"tail","case":"default-limit","text":"abc"}
+{"func":"tail","case":"unicode","text":"héllo wörld","limit":5}
+{"func":"phase_result","case":"ok","phase":"build","command":"npm run build","exit_code":0,"duration":1.25,"output_tail":"done"}
+{"func":"phase_result","case":"failed","phase":"test","command":"pytest","exit_code":1,"duration":0.5,"output_tail":"1 failed"}
+{"func":"phase_result","case":"timed-out","phase":"build","command":"make","exit_code":null,"duration":600.0,"output_tail":"","timed_out":true}
+{"func":"phase_result","case":"timed-out-signalled-zero","phase":"start","command":"sleep","exit_code":0,"duration":60.75,"output_tail":"","timed_out":true}
+{"func":"phase_result","case":"no-exit-code","phase":"bootstrap","command":"x","exit_code":null,"duration":0.0,"output_tail":""}
+{"func":"phase_result","case":"fractional-duration","phase":"test","command":"y","exit_code":0,"duration":12.375,"output_tail":"ok"}
+{"func":"phase_result","case":"signal-exit","phase":"test","command":"z","exit_code":-9,"duration":2.5,"output_tail":""}
+{"func":"readiness_result","case":"ready","url":"http://127.0.0.1:8000/health","ready":true,"status_code":200,"duration":0.5}
+{"func":"readiness_result","case":"not-ready","url":"http://127.0.0.1:8000/","ready":false,"status_code":null,"duration":60.0,"error":"Connection refused"}
+{"func":"readiness_result","case":"server-error","url":"http://127.0.0.1:8000/","ready":true,"status_code":503,"duration":3.375}
+{"func":"readiness_result","case":"with-tail","url":"u","ready":true,"status_code":200,"duration":0.0,"output_tail":"listening on 8000"}
+{"func":"verify_ok","case":"all-pass","phases":[{"exit_code":0,"duration":1.0},{"exit_code":0,"duration":2.0}]}
+{"func":"verify_ok","case":"one-fails","phases":[{"exit_code":0},{"exit_code":2}]}
+{"func":"verify_ok","case":"no-phases","phases":[]}
+{"func":"verify_ok","case":"readiness-not-ready","phases":[{"exit_code":0}],"readiness":{"ready":false,"status_code":null}}
+{"func":"verify_ok","case":"readiness-ready","phases":[{"exit_code":0}],"readiness":{"ready":true,"status_code":200}}
+{"func":"verify_ok","case":"phase-timed-out","phases":[{"exit_code":0,"timed_out":true}]}
+{"func":"compose_live_state_reason","case":"clean","mode":"ok","returncode":0,"stdout":""}
+{"func":"compose_live_state_reason","case":"running-containers","mode":"ok","returncode":0,"stdout":"web-1\nworker-1\n"}
+{"func":"compose_live_state_reason","case":"blank-lines-only","mode":"ok","returncode":0,"stdout":"\n  \n"}
+{"func":"compose_live_state_reason","case":"probe-failed","mode":"ok","returncode":1,"stdout":"","stderr":"Cannot connect to the Docker daemon\nsecond line\n"}
+{"func":"compose_live_state_reason","case":"probe-failed-stdout","mode":"ok","returncode":2,"stdout":"boom","stderr":""}
+{"func":"compose_live_state_reason","case":"docker-missing","mode":"missing","returncode":0,"stdout":""}
+{"func":"compose_live_state_reason","case":"daemon-hung","mode":"timeout","returncode":0,"stdout":""}
+{"func":"compose_live_state_reason","case":"probe-failed-no-output","mode":"ok","returncode":1,"stdout":"","stderr":"  \n\n"}
+{"func":"verify_refusal","case":"build-list","reason":"this compose project already has running container(s): web-1","build":["docker compose build"],"recipe":"compose-app"}
+{"func":"verify_refusal","case":"no-build-list","reason":"docker compose ps timed out after 15s; live containers cannot be ruled out","build":null,"recipe":"app"}
+{"func":"verify_refusal","case":"custom-command","reason":"r","build":["docker compose up --build"],"recipe":"svc"}
+{"func":"constants","case":"literals"}

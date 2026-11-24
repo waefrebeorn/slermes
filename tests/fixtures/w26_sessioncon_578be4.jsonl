@@ -1,0 +1,35 @@
+{"func": "validate", "case": "goal-pause-ok", "action": "goal.pause", "args": {}}
+{"func": "validate", "case": "subgoal-add-ok", "action": "subgoal.add", "args": {"text": "do it"}}
+{"func": "validate", "case": "subgoal-add-blank", "action": "subgoal.add", "args": {"text": "   "}}
+{"func": "validate", "case": "subgoal-add-missing-text", "action": "subgoal.add", "args": {}}
+{"func": "validate", "case": "subgoal-add-numeric-text", "action": "subgoal.add", "args": {"text": 5}}
+{"func": "validate", "case": "subgoal-remove-ok", "action": "subgoal.remove", "args": {"index": 2}}
+{"func": "validate", "case": "subgoal-remove-zero", "action": "subgoal.remove", "args": {"index": 0}}
+{"func": "validate", "case": "subgoal-remove-bool", "action": "subgoal.remove", "args": {"index": true}}
+{"func": "validate", "case": "subgoal-remove-float", "action": "subgoal.remove", "args": {"index": 1.5}}
+{"func": "validate", "case": "extra-key", "action": "goal.pause", "args": {"text": "x", "other": 1}}
+{"func": "validate", "case": "unknown-action", "action": "bogus.action", "args": {}}
+{"func": "validate", "case": "args-wrong-type", "action": "goal.pause", "args": null}
+{"func": "validate", "case": "subgoal-clear-ok", "action": "subgoal.clear", "args": {}}
+{"func": "dispatch", "case": "goal-pause", "action": "goal.pause"}
+{"func": "dispatch", "case": "loop-stop", "action": "loop.stop"}
+{"func": "dispatch", "case": "heartbeat-clear", "action": "heartbeat.clear"}
+{"func": "dispatch", "case": "subgoal-remove", "action": "subgoal.remove"}
+{"func": "dispatch", "case": "unknown", "action": "bogus.action"}
+{"func": "dispatch", "case": "action-null", "action": null}
+{"func": "envelope", "case": "full", "result": {"type": "exec", "output": "done", "notice": null, "message": "m", "display": {"kind": "card"}, "extra": 1}}
+{"func": "envelope", "case": "partial", "result": {"output": "x"}}
+{"func": "envelope", "case": "empty", "result": {}}
+{"func": "envelope", "case": "result-wrong-type", "result": null}
+{"func": "publish_decision", "case": "normal", "control_published_seq": 3, "control_revision": 4, "ticket": 5, "snapshot_revision": 7, "only_if_present": false, "only_if_changed": false}
+{"func": "publish_decision", "case": "stale-ticket", "control_published_seq": 9, "control_revision": 4, "ticket": 5, "snapshot_revision": 7, "only_if_present": false, "only_if_changed": false}
+{"func": "publish_decision", "case": "ticket-equal", "control_published_seq": 5, "control_revision": 4, "ticket": 5, "snapshot_revision": 7, "only_if_present": false, "only_if_changed": false}
+{"func": "publish_decision", "case": "only-if-present-no-revision", "control_published_seq": 3, "control_revision": 4, "ticket": 5, "snapshot_revision": null, "only_if_present": true, "only_if_changed": false}
+{"func": "publish_decision", "case": "only-if-changed-same", "control_published_seq": 3, "control_revision": 4, "ticket": 5, "snapshot_revision": 4, "only_if_present": false, "only_if_changed": true}
+{"func": "publish_decision", "case": "only-if-changed-differs", "control_published_seq": 3, "control_revision": 4, "ticket": 5, "snapshot_revision": 5, "only_if_present": false, "only_if_changed": true}
+{"func": "publish_decision", "case": "only-if-changed-both-none", "control_published_seq": 3, "control_revision": null, "ticket": 5, "snapshot_revision": null, "only_if_present": false, "only_if_changed": true}
+{"func": "publish_decision", "case": "only-if-present-with-rev", "control_published_seq": 0, "control_revision": "r0", "ticket": 1, "snapshot_revision": "r1", "only_if_present": true, "only_if_changed": false}
+{"func": "constants", "case": "tables"}
+{"func": "constants", "case": "tables-again"}
+{"func": "constants", "case": "tables-third"}
+{"func": "constants", "case": "tables-fourth"}

@@ -1,0 +1,25 @@
+{"func": "constants", "case": "sentinels-and-pattern"}
+{"func": "active_provider", "case": "external", "config": {"memory": {"provider": "hindsight"}}}
+{"func": "active_provider", "case": "external-padded", "config": {"memory": {"provider": "  hindsight  "}}}
+{"func": "active_provider", "case": "mem0", "config": {"memory": {"provider": "mem0"}}}
+{"func": "active_provider", "case": "core-default", "config": {"memory": {"provider": "default"}}}
+{"func": "active_provider", "case": "core-uppercase", "config": {"memory": {"provider": " Default "}}}
+{"func": "active_provider", "case": "core-built-in", "config": {"memory": {"provider": "built-in"}}}
+{"func": "active_provider", "case": "core-empty", "config": {"memory": {"provider": ""}}}
+{"func": "active_provider", "case": "blank", "config": {"memory": {"provider": "   "}}}
+{"func": "active_provider", "case": "provider-null", "config": {"memory": {"provider": null}}}
+{"func": "active_provider", "case": "provider-not-a-string", "config": {"memory": {"provider": 5}}}
+{"func": "active_provider", "case": "memory-not-a-mapping", "config": {"memory": "hindsight"}}
+{"func": "active_provider", "case": "no-memory", "config": {}}
+{"func": "active_provider", "case": "config-null", "config": null}
+{"func": "active_provider", "case": "dot-dot", "config": {"memory": {"provider": ".."}}}
+{"func": "active_provider", "case": "path-escape", "config": {"memory": {"provider": "../escape"}}}
+{"func": "active_provider", "case": "slash", "config": {"memory": {"provider": "hindsight/"}}}
+{"func": "active_provider", "case": "space-inside", "config": {"memory": {"provider": "a b"}}}
+{"func": "names_external", "case": "primary", "configs": [{"memory": {"provider": "honcho"}}]}
+{"func": "names_external", "case": "managed-overlay-only", "configs": [{"memory": {"provider": "default"}}, {"memory": {"provider": "supermemory"}}]}
+{"func": "names_external", "case": "none", "configs": [{}]}
+{"func": "names_external", "case": "empty-list", "configs": []}
+{"func": "names_external", "case": "blank-name", "configs": [{"memory": {"provider": "  "}}]}
+{"func": "names_external", "case": "null-config", "configs": [null]}
+{"func": "names_external", "case": "not-a-list", "configs": {"memory": {"provider": "honcho"}}}

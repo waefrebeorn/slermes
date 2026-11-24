@@ -1,0 +1,36 @@
+{"func": "constants", "case": "message-shapes"}
+{"func": "plan_ordinal", "case": "oldest", "count": 3, "ordinal": 0}
+{"func": "plan_ordinal", "case": "newest", "count": 3, "ordinal": 2}
+{"func": "plan_ordinal", "case": "minus-one", "count": 3, "ordinal": -1}
+{"func": "plan_ordinal", "case": "minus-all", "count": 3, "ordinal": -3}
+{"func": "plan_ordinal", "case": "minus-clamps", "count": 3, "ordinal": -9}
+{"func": "plan_ordinal", "case": "past-newest", "count": 3, "ordinal": 3}
+{"func": "plan_ordinal", "case": "empty-transcript", "count": 0, "ordinal": 0}
+{"func": "plan_ordinal", "case": "empty-negative", "count": 0, "ordinal": -1}
+{"func": "retry_text", "case": "plain-string", "content": "hi"}
+{"func": "retry_text", "case": "text-parts", "content": [{"type": "text", "text": "a"}, {"type": "output_text", "text": "b"}]}
+{"func": "retry_text", "case": "mixed-string-part", "content": [{"type": "input_text", "text": "a"}, "b"]}
+{"func": "retry_text", "case": "non-text-scalar", "content": 5}
+{"func": "retry_text", "case": "none-content", "content": null}
+{"func": "retry_text", "case": "object-content", "content": {"type": "text", "text": "a"}}
+{"func": "retry_text", "case": "media-part", "content": [{"type": "image", "url": "x"}]}
+{"func": "retry_text", "case": "annotated-part", "content": [{"type": "text", "text": "x", "cache": false}]}
+{"func": "retry_text", "case": "part-text-not-string", "content": [{"type": "text", "text": 3}]}
+{"func": "retry_text", "case": "blank-text", "content": "   "}
+{"func": "flatten_text", "case": "none", "content": null}
+{"func": "flatten_text", "case": "plain-string", "content": "hi"}
+{"func": "flatten_text", "case": "parts-with-image", "content": [{"type": "text", "text": "a"}, {"type": "image"}, {"content": "c"}]}
+{"func": "flatten_text", "case": "empty-object", "content": {}}
+{"func": "flatten_text", "case": "object-with-data", "content": {"a": 1}}
+{"func": "flatten_text", "case": "object-content-key", "content": {"content": "hi"}}
+{"func": "flatten_text", "case": "float-scalar", "content": 5.5}
+{"func": "flatten_text", "case": "all-non-text", "content": [{"type": "image"}]}
+{"func": "flatten_text", "case": "int-scalar", "content": 7}
+{"func": "flatten_text", "case": "bool-scalar", "content": true}
+{"func": "non_scaffolding", "case": "drops-thinking-prefill", "messages": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b", "_thinking_prefill": true}]}
+{"func": "non_scaffolding", "case": "keeps-plain", "messages": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}]}
+{"func": "non_scaffolding", "case": "false-flag-kept", "messages": [{"role": "user", "_empty_recovery_synthetic": false}]}
+{"func": "non_scaffolding", "case": "truthy-int-flag", "messages": [{"role": "user", "_kanban_stop_synthetic": 1}, {"role": "user", "content": "k"}]}
+{"func": "non_scaffolding", "case": "two-flags", "messages": [{"_pre_verify_synthetic": true, "_dropped_toolcall_nudge": true}, {"role": "user"}]}
+{"func": "non_scaffolding", "case": "non-dict-entries", "messages": ["x", 3, null, {"_verification_stop_synthetic": "yes"}]}
+{"func": "non_scaffolding", "case": "empty-list", "messages": []}

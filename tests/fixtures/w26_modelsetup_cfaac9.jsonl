@@ -1,0 +1,27 @@
+{"func": "mode_label", "case": "chat-completions", "mode": "chat_completions"}
+{"func": "mode_label", "case": "anthropic-messages", "mode": "anthropic_messages"}
+{"func": "mode_label", "case": "empty", "mode": ""}
+{"func": "mode_label", "case": "unknown", "mode": "responses"}
+{"func": "mode_label", "case": "null", "mode": null}
+{"func": "current", "case": "entra-settings", "env_key": "KEY1234567890", "config": {"model": {"provider": "azure-foundry", "base_url": "https://x.openai.azure.com/openai/v1", "api_mode": "chat_completions", "auth_mode": " Entra_ID ", "entra": {"scope": "https://ai.azure.com/.default"}}}}
+{"func": "current", "case": "no-api-key", "env_key": null, "config": {"model": {"provider": "azure-foundry", "base_url": "https://x/", "api_mode": "anthro"}}}
+{"func": "current", "case": "other-provider", "env_key": null, "config": {"model": {"provider": "openai", "base_url": "https://api.openai.com/v1"}}}
+{"func": "current", "case": "model-not-a-mapping", "env_key": "k", "config": {"model": "azure-foundry"}}
+{"func": "current", "case": "entra-not-a-mapping", "env_key": "k", "config": {"model": {"provider": "azure-foundry", "auth_mode": null, "entra": "notadict"}}}
+{"func": "current", "case": "blank-auth-mode", "env_key": "k", "config": {"model": {"provider": "azure-foundry", "auth_mode": "   ", "entra": {}}}}
+{"func": "current", "case": "empty-config", "env_key": null, "config": {}}
+{"func": "pick_model", "case": "manual-entry", "models": [], "current": "cur", "answer": "gpt-5.4"}
+{"func": "pick_model", "case": "cancelled", "models": [], "current": "cur", "answer": null}
+{"func": "pick_model", "case": "empty-keeps-current", "models": [], "current": "cur", "answer": ""}
+{"func": "pick_model", "case": "pick-by-number", "models": ["a", "b", "c"], "current": "", "answer": "2"}
+{"func": "pick_model", "case": "default-current", "models": ["a"], "current": "cur", "answer": ""}
+{"func": "pick_model", "case": "out-of-range-number", "models": ["a", "b"], "current": "cur", "answer": "5"}
+{"func": "pick_model", "case": "typed-name-with-models", "models": ["a", "b"], "current": "cur", "answer": "b"}
+{"func": "pick_model", "case": "cancelled-with-models", "models": ["a"], "current": "cur", "answer": null}
+{"func": "transport", "case": "detected", "detected": {"api_mode": "chat_completions", "models": ["m1", "m2"], "reason": "GET /models"}, "current_api_mode": "", "answer": null}
+{"func": "transport", "case": "manual-anthropic", "detected": {"api_mode": "", "models": [], "reason": "no /models"}, "current_api_mode": "", "answer": "2"}
+{"func": "transport", "case": "default-anthropic", "detected": {"api_mode": "", "models": [], "reason": "no /models"}, "current_api_mode": "anthropic_messages", "answer": ""}
+{"func": "transport", "case": "default-chat", "detected": {"api_mode": "", "models": ["m1"], "reason": "probe failed"}, "current_api_mode": "chat_completions", "answer": ""}
+{"func": "transport", "case": "cancelled", "detected": {"api_mode": "", "models": [], "reason": "probe failed"}, "current_api_mode": "", "answer": null}
+{"func": "transport", "case": "manual-chat", "detected": {"api_mode": "", "models": [], "reason": ""}, "current_api_mode": "anthropic_messages", "answer": "1"}
+{"func": "constants", "case": "values"}

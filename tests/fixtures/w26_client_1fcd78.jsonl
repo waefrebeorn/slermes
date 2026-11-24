@@ -1,0 +1,29 @@
+{"func": "validate_slug", "case": "slug-simple", "slug": "gmail"}
+{"func": "validate_slug", "case": "slug-charset", "slug": "a-b_c9"}
+{"func": "validate_slug", "case": "slug-digit-first", "slug": "9x"}
+{"func": "validate_slug", "case": "slug-upper", "slug": "Gmail"}
+{"func": "validate_slug", "case": "slug-empty", "slug": ""}
+{"func": "validate_slug", "case": "slug-underscore-first", "slug": "_x"}
+{"func": "validate_slug", "case": "slug-hyphen-first", "slug": "-x"}
+{"func": "validate_slug", "case": "slug-space", "slug": "a b"}
+{"func": "validate_slug", "case": "slug-slash", "slug": "a/b"}
+{"func": "validate_slug", "case": "slug-type-none", "slug": null}
+{"func": "validate_slug", "case": "slug-type-number", "slug": 5}
+{"func": "validate_slug", "case": "slug-single-char", "slug": "a"}
+{"func": "route_key", "case": "route-tools", "path": "/api/v1/connectors/gmail/tools"}
+{"func": "route_key", "case": "route-catalog", "path": "/api/v1/connectors/catalog"}
+{"func": "route_key", "case": "route-catalog-public", "path": "/api/v1/connectors/catalog/public"}
+{"func": "route_key", "case": "route-accounts-id", "path": "/api/v1/connectors/accounts/abc123"}
+{"func": "route_key", "case": "route-policy", "path": "/api/v1/connectors/policy"}
+{"func": "route_key", "case": "route-short", "path": "/x/y"}
+{"func": "route_key", "case": "route-root", "path": "/"}
+{"func": "route_key", "case": "route-empty", "path": ""}
+{"func": "route_key", "case": "route-extra-verb", "path": "/api/v1/connectors/gmail/tools/extra"}
+{"func": "auth_token", "case": "token-bearer", "headers": {"Authorization": "Bearer tok123"}}
+{"func": "auth_token", "case": "token-extra-spaces", "headers": {"Authorization": "bearer   tok "}}
+{"func": "auth_token", "case": "token-wrong-scheme", "headers": {"Authorization": "Basic abc"}}
+{"func": "auth_token", "case": "token-no-value", "headers": {"Authorization": "Bearer"}}
+{"func": "auth_token", "case": "token-missing", "headers": {}}
+{"func": "auth_token", "case": "token-empty", "headers": {"Authorization": ""}}
+{"func": "auth_token", "case": "token-type-number", "headers": {"Authorization": 5}}
+{"func": "constants", "case": "constants-table"}

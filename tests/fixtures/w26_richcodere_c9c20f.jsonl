@@ -1,0 +1,45 @@
+{"func":"regions","case":"fence_closed","text":"Here:\n```bash\nls -la\n```\ndone"}
+{"func":"regions","case":"fence_open_stream","text":"Intro\n```py\nprint(1)\n"}
+{"func":"regions","case":"tilde_fence","text":"a\n~~~\nx\n~~~\nb"}
+{"func":"regions","case":"quoted_fence","text":"> ```\n> code\n> ```\n"}
+{"func":"regions","case":"list_fence","text":"- ```\n  x\n- ```"}
+{"func":"regions","case":"leadin_closed","text":"Here is the code: ```bash\nx=1\n```\n"}
+{"func":"regions","case":"prose_run_literal","text":"Use ``` to open a fence. Cost is $5"}
+{"func":"regions","case":"inline_span","text":"call `foo()` now"}
+{"func":"regions","case":"inline_double","text":"a ``x ` y`` b"}
+{"func":"regions","case":"inline_unclosed","text":"a ` b"}
+{"func":"regions","case":"paragraph_stop","text":"`a\n\nb`"}
+{"func":"regions","case":"indented_block","text":"para\n\n    code\n    more\ntext"}
+{"func":"regions","case":"indented_after_list","text":"- item\n    not code\n"}
+{"func":"regions","case":"html_pre","text":"a <pre>x</pre> b"}
+{"func":"regions","case":"html_off","text":"a <pre>x</pre> b `c`","html":false}
+{"func":"regions","case":"html_code_span","text":"<code>a</code> `<b>`"}
+{"func":"regions","case":"mixed","text":"pre `c` mid\n```\ncode\n```\ntail `d`\n"}
+{"func":"regions","case":"empty","text":""}
+{"func":"regions","case":"blank_only","text":"\n\n   \n"}
+{"func":"strip_code","case":"span_and_html","text":"A `b` C <pre>D</pre> E"}
+{"func":"strip_code","case":"fence","text":"head\n```\nx\n```\ntail"}
+{"func":"strip_code","case":"empty","text":""}
+{"func":"strip_code","case":"nothing","text":"plain text only"}
+{"func":"strip_code","case":"indented","text":"p\n\n    code\nq"}
+{"func":"map_outside","case":"upper","text":"A `b` C","transform":"upper"}
+{"func":"map_outside","case":"bracket","text":"A `b` C","transform":"bracket"}
+{"func":"map_outside","case":"drop","text":"A `b` C","transform":"drop"}
+{"func":"map_outside","case":"identity_fence","text":"a\n```\nx\n```\nb","transform":"identity"}
+{"func":"map_outside","case":"upper_html_off","text":"a <pre>x</pre> b","transform":"upper","html":false}
+{"func":"constants","case":"all"}
+{"func":"regions","case":"leadin_unclosed","text":"see ```bash\nprose only\n"}
+{"func":"regions","case":"tilde_open_closed_by_backtick","text":"~~~\nx\n```\n"}
+{"func":"regions","case":"wide_close","text":"````\nx\n``\n"}
+{"func":"regions","case":"two_fences","text":"```\na\n```\n```\nb\n```\n"}
+{"func":"regions","case":"html_upper","text":"<PRE>x</PRE>"}
+{"func":"regions","case":"html_unclosed","text":"a <code>x b"}
+{"func":"regions","case":"inline_adjacent","text":"`a``b`"}
+{"func":"regions","case":"indented_in_list","text":"- a\n\n    code"}
+{"func":"regions","case":"crlf_fence","text":"```\r\nx\r\n```\r\n"}
+{"func":"regions","case":"nested_quote","text":"> > ```\nx\n```"}
+{"func":"regions","case":"digit_list_fence","text":"1. ```\nx\n1. ```"}
+{"func":"regions","case":"html_nested_same","text":"<pre>a<pre>b</pre>c"}
+{"func":"strip_code","case":"two_fences_tail","text":"a\n```\nx\n```\nb `c` d"}
+{"func":"map_outside","case":"lower_hard","text":"HeLLo `X` WORLD","transform":"lower"}
+{"func":"map_outside","case":"bracket_empty_gap","text":"`x``y`","transform":"bracket"}

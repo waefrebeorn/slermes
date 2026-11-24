@@ -1,0 +1,30 @@
+{"func":"keyboard","case":"kb-normal","clarify_id":"c1","count":3,"selected":[1]}
+{"func":"keyboard","case":"kb-none-selected","clarify_id":"c1","count":2,"selected":[]}
+{"func":"keyboard","case":"kb-all-selected","clarify_id":"c1","count":2,"selected":[0,1]}
+{"func":"keyboard","case":"kb-zero-count","clarify_id":"c9","count":0,"selected":[]}
+{"func":"keyboard","case":"kb-selected-out-of-range","clarify_id":"c1","count":2,"selected":[5]}
+{"func":"keyboard","case":"kb-missing-selected","clarify_id":"c1","count":1}
+{"func":"pending_multi","case":"pm-multi-with-choices","entry":{"multi_select":true,"choices":["a","b"]}}
+{"func":"pending_multi","case":"pm-single-select","entry":{"multi_select":false,"choices":["a"]}}
+{"func":"pending_multi","case":"pm-no-choices","entry":{"multi_select":true,"choices":[]}}
+{"func":"pending_multi","case":"pm-null-entry","entry":null}
+{"func":"pending_multi","case":"pm-missing-choices","entry":{"multi_select":true}}
+{"func":"pending_multi","case":"pm-missing-entry"}
+{"func":"token_action","case":"ta-toggle-first","clarify_id":"c1","token":"t0","entry":{"multi_select":true,"choices":["Alpha (Recommended)","Beta","Gamma"]},"selected":[]}
+{"func":"token_action","case":"ta-toggle-last","clarify_id":"c1","token":"t2","entry":{"multi_select":true,"choices":["Alpha (Recommended)","Beta","Gamma"]},"selected":[0]}
+{"func":"token_action","case":"ta-toggle-out-of-range","clarify_id":"c1","token":"t5","entry":{"multi_select":true,"choices":["Alpha (Recommended)","Beta","Gamma"]},"selected":[]}
+{"func":"token_action","case":"ta-not-handled","clarify_id":"c1","token":"x9","entry":{"multi_select":true,"choices":["Alpha (Recommended)","Beta","Gamma"]},"selected":[]}
+{"func":"token_action","case":"ta-token-bare-t","clarify_id":"c1","token":"t","entry":{"multi_select":true,"choices":["Alpha (Recommended)","Beta","Gamma"]},"selected":[]}
+{"func":"token_action","case":"ta-all-other","clarify_id":"c1","token":"other","entry":{"multi_select":true,"choices":["Alpha (Recommended)","Beta","Gamma"]},"selected":[]}
+{"func":"token_action","case":"ta-expire","clarify_id":"c1","token":"go","entry":null,"selected":[0]}
+{"func":"token_action","case":"ta-send-labels","clarify_id":"c1","token":"go","entry":{"multi_select":true,"choices":["Alpha (Recommended)","Beta","Gamma"]},"selected":[2,0]}
+{"func":"token_action","case":"ta-send-empty-selection","clarify_id":"c1","token":"go","entry":{"multi_select":true,"choices":["Alpha (Recommended)","Beta","Gamma"]},"selected":[]}
+{"func":"token_action","case":"ta-send-negative-index","clarify_id":"c1","token":"go","entry":{"multi_select":true,"choices":["Alpha (Recommended)","Beta","Gamma"]},"selected":[-1]}
+{"func":"token_action","case":"ta-send-unicode","clarify_id":"c1","token":"go","entry":{"multi_select":true,"choices":["Café","Thé"]},"selected":[0,1]}
+{"func":"token_action","case":"ta-toggle-single-select-entry","clarify_id":"c1","token":"t0","entry":{"multi_select":false,"choices":["Alpha (Recommended)","Beta","Gamma"]},"selected":[]}
+{"func":"resolve_ack","case":"ra-resolved-short","clarify_id":"c1","resolved_text":"[\"Alpha\"]","shown":null,"resolved":true,"message_text":"Which one?","user":"Alice"}
+{"func":"resolve_ack","case":"ra-resolved-long-shown","clarify_id":"c1","resolved_text":"[\"x\"]","shown":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","resolved":true,"message_text":"Pick","user":"Bob"}
+{"func":"resolve_ack","case":"ra-resolved-html-escape","clarify_id":"c1","resolved_text":"[\"<tag>\"]","shown":"<tag> & \"quoted\" 'single'","resolved":true,"message_text":"<b>Pick & choose</b>","user":"A&B"}
+{"func":"resolve_ack","case":"ra-expired","clarify_id":"c1","resolved_text":"[\"Alpha\"]","shown":null,"resolved":false,"message_text":"Which one?","user":"Alice"}
+{"func":"resolve_ack","case":"ra-null-message-text","clarify_id":"c1","resolved_text":"[\"Alpha\"]","shown":"Alpha","resolved":true,"message_text":null,"user":"Alice"}
+{"func":"resolve_ack","case":"ra-unicode-truncation","clarify_id":"c1","resolved_text":"[\"é\"]","shown":"éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé","resolved":true,"message_text":"Accents","user":"Ünicode"}

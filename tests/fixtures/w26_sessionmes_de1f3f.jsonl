@@ -1,0 +1,14 @@
+{"func":"is_chat_pick","case":"model_telegram","operation":"model","platform":"telegram","live":true}
+{"func":"is_chat_pick","case":"model_local","operation":"model","platform":"local","live":true}
+{"func":"is_chat_pick","case":"reasoning_discord","operation":"reasoning","platform":"discord","live":true}
+{"func":"is_chat_pick","case":"other_operation","operation":"theme","platform":"telegram","live":true}
+{"func":"is_chat_pick","case":"no_live_session","operation":"model","platform":"telegram","live":false}
+{"func":"is_chat_pick","case":"slack","operation":"model","platform":"slack","live":true}
+{"func":"is_chat_pick","case":"plugin_platform","operation":"reasoning","platform":"irc","live":true}
+{"func":"is_chat_pick","case":"null_operation","operation":null,"platform":"telegram","live":true}
+{"func":"platform_key","case":"local","platform":"local"}
+{"func":"platform_key","case":"telegram","platform":"telegram"}
+{"func":"platform_key","case":"api_server","platform":"api_server"}
+{"func":"platform_key","case":"plugin","platform":"irc"}
+{"func":"platform_key","case":"discord","platform":"discord"}
+{"func":"constants","case":"all"}

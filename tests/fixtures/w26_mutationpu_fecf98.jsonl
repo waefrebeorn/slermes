@@ -1,0 +1,17 @@
+{"func":"profile_from_session_key","case":"main","session_key":"agent:main:telegram:123"}
+{"func":"profile_from_session_key","case":"marked_main","session_key":"agent:main~:discord:9"}
+{"func":"profile_from_session_key","case":"named","session_key":"agent:work:slack:1"}
+{"func":"profile_from_session_key","case":"empty_namespace","session_key":"agent:"}
+{"func":"profile_from_session_key","case":"no_colon","session_key":"agent"}
+{"func":"profile_from_session_key","case":"wrong_prefix","session_key":"telegram:1"}
+{"func":"profile_from_session_key","case":"empty","session_key":""}
+{"func":"profile_from_session_key","case":"none","session_key":null}
+{"func":"child_policy","case":"plain","policy":{"model":"m","source":"telegram","cwd":"/work"},"child":"c1","prepared":null}
+{"func":"child_policy","case":"approval_reset","policy":{"model":"m","source":"s","cwd":"/w","edit_approval_policy":"deny"},"child":"c1","prepared":null}
+{"func":"child_policy","case":"editor_scope_refused","policy":{"model":"m","editor_mcp_json":"{\"mcpServers\":{}}"},"child":"c1","prepared":null}
+{"func":"child_policy","case":"prepared_merge","policy":{"model":"m","source":"s","cwd":"/w","editor_mcp_json":null},"child":"c1","prepared":{"child":"c1","parent_editor_mcp_json":null,"editor_mcp_json":"{kid}","toolsets":["a","b"],"config_secret_ref":"ref"}}
+{"func":"child_policy","case":"child_mismatch","policy":{"model":"m","source":"s","cwd":"/w","editor_mcp_json":null},"child":"c2","prepared":{"child":"c1","parent_editor_mcp_json":null,"editor_mcp_json":"{kid}","toolsets":["a"],"config_secret_ref":"ref"}}
+{"func":"child_policy","case":"parent_editor_moved","policy":{"model":"m","editor_mcp_json":"a"},"child":"c1","prepared":{"child":"c1","parent_editor_mcp_json":"b","editor_mcp_json":"{kid}","toolsets":[],"config_secret_ref":"ref"}}
+{"func":"child_policy","case":"approval_and_prepared","policy":{"model":"m","source":"s","cwd":"/w","edit_approval_policy":"deny"},"child":"c1","prepared":{"child":"c1","parent_editor_mcp_json":null,"editor_mcp_json":null,"toolsets":["t"],"config_secret_ref":"r2"}}
+{"func":"child_policy","case":"empty_policy","policy":{},"child":"c1","prepared":null}
+{"func":"constants","case":"all"}

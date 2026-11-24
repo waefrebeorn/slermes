@@ -1,0 +1,9 @@
+{"func": "should_evict", "case": "taken-over-by-other", "held": {"ever": true}, "lease": {"holder": "human", "viewer_id": "bob"}, "viewer_id": "alice"}
+{"func": "should_evict", "case": "watcher-never-held", "held": {"ever": false}, "lease": {"holder": "human", "viewer_id": "bob"}, "viewer_id": "alice"}
+{"func": "should_evict", "case": "same-viewer-reacquires", "held": {"ever": false}, "lease": {"holder": "human", "viewer_id": "alice"}, "viewer_id": "alice"}
+{"func": "should_evict", "case": "handback-to-agent", "held": {"ever": true}, "lease": {"holder": "agent", "viewer_id": null}, "viewer_id": "alice"}
+{"func": "should_evict", "case": "no-holder", "held": {"ever": true}, "lease": {"holder": null, "viewer_id": "bob"}, "viewer_id": "alice"}
+{"func": "should_evict", "case": "ever-null-echo", "held": {"ever": null}, "lease": {"holder": "human", "viewer_id": "bob"}, "viewer_id": "alice"}
+{"func": "should_evict", "case": "ever-truthy-string", "held": {"ever": "yes"}, "lease": {"holder": "human", "viewer_id": "bob"}, "viewer_id": "alice"}
+{"func": "should_evict", "case": "type-mismatch-lease", "held": {"ever": true}, "lease": 5, "viewer_id": "alice"}
+{"func": "constants", "case": "bridge-budgets"}

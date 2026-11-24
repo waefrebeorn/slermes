@@ -1,0 +1,26 @@
+{"func": "coerce", "case": "current-version", "value": 54}
+{"func": "coerce", "case": "bool-true", "value": true}
+{"func": "coerce", "case": "null", "value": null}
+{"func": "coerce", "case": "negative", "value": -3}
+{"func": "coerce", "case": "float-truncates", "value": 54.9}
+{"func": "coerce", "case": "numeric-string", "value": "54"}
+{"func": "coerce", "case": "padded-string", "value": " 12 "}
+{"func": "coerce", "case": "list", "value": []}
+{"func": "read_stamp", "case": "missing-file", "exists": 0}
+{"func": "read_stamp", "case": "parse-error-tolerant", "exists": 1, "parse_error": 1, "raise": 0}
+{"func": "read_stamp", "case": "parse-error-strict", "exists": 1, "parse_error": 1, "raise": 1}
+{"func": "read_stamp", "case": "empty-doc", "exists": 1, "doc": null}
+{"func": "read_stamp", "case": "never-stamped", "exists": 1, "doc": {"model": {"provider": "openai"}}}
+{"func": "read_stamp", "case": "stamped", "exists": 1, "doc": {"_config_version": 54}}
+{"func": "read_stamp", "case": "stale-stamp", "exists": 1, "doc": {"_config_version": 12}}
+{"func": "read_stamp", "case": "list-root-strict", "exists": 1, "doc": [1, 2], "raise": 1}
+{"func": "check_version", "case": "missing-file", "exists": 0}
+{"func": "check_version", "case": "never-stamped", "exists": 1, "doc": {}}
+{"func": "check_version", "case": "stamped", "exists": 1, "doc": {"_config_version": 54}}
+{"func": "check_version", "case": "stale-stamp", "exists": 1, "doc": {"_config_version": 12}}
+{"func": "check_version", "case": "strict-parse-error", "exists": 1, "parse_error": 1, "raise": 1}
+{"func": "newer_message", "case": "newer", "stamp": 99}
+{"func": "newer_message", "case": "next-version", "stamp": 55}
+{"func": "newer_message", "case": "at-latest", "stamp": 54}
+{"func": "newer_message", "case": "zero", "stamp": 0}
+{"func": "constants", "case": "values"}

@@ -1,0 +1,14 @@
+{"func": "constants", "case": "registry"}
+{"func": "declared", "case": "normal", "manifest": {"capabilities": ["tools.override", "llm.side_question"]}}
+{"func": "declared", "case": "padded-and-unknown", "plugin_name": "demo", "manifest": {"capabilities": ["  tools.override  ", "made.up", "\tllm.session_fork\n", "tools.override"]}}
+{"func": "declared", "case": "empty-list", "manifest": {"capabilities": []}}
+{"func": "declared", "case": "no-capabilities-key", "manifest": {"name": "demo"}}
+{"func": "declared", "case": "manifest-null", "manifest": null}
+{"func": "declared", "case": "capabilities-string", "plugin_name": "demo", "manifest": {"capabilities": "tools.override"}}
+{"func": "declared", "case": "capabilities-object", "manifest": {"capabilities": {"tools.override": true}}}
+{"func": "declared", "case": "non-string-entries", "manifest": {"capabilities": [1, null, true, "gateway.platform_actions"]}}
+{"func": "known", "case": "dedupe-and-drop", "capabilities": ["llm.model_override", "bogus", "llm.model_override", "tools.override"]}
+{"func": "known", "case": "all-known", "capabilities": ["gateway.platform_actions", "llm.task_override"]}
+{"func": "known", "case": "empty", "capabilities": []}
+{"func": "known", "case": "non-string", "capabilities": [7, "llm.profile_override"]}
+{"func": "known", "case": "unpadded", "capabilities": [" tools.override "]}

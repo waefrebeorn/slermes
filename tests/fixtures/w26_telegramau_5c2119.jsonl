@@ -1,0 +1,47 @@
+{"func": "coerce_duration", "case": "whole", "value": 5}
+{"func": "coerce_duration", "case": "half-even-down", "value": 2.5}
+{"func": "coerce_duration", "case": "half-even-up", "value": 3.5}
+{"func": "coerce_duration", "case": "sub-second", "value": 0.4}
+{"func": "coerce_duration", "case": "zero", "value": 0}
+{"func": "coerce_duration", "case": "negative", "value": -2}
+{"func": "coerce_duration", "case": "numeric-string", "value": "3.6"}
+{"func": "coerce_duration", "case": "padded-string", "value": "  2.5 "}
+{"func": "coerce_duration", "case": "junk-string", "value": "abc"}
+{"func": "coerce_duration", "case": "empty-string", "value": ""}
+{"func": "coerce_duration", "case": "null", "value": null}
+{"func": "coerce_duration", "case": "bool", "value": true}
+{"func": "coerce_duration", "case": "list", "value": [1, 2]}
+{"func": "audio_tags", "case": "standard", "blob": {"format": {"tags": {"artist": " A ", "title": " T "}}, "streams": []}}
+{"func": "audio_tags", "case": "upper-case-keys", "blob": {"format": {"tags": {"Artist": "AC/DC", "TITLE": "TNT"}}, "streams": []}}
+{"func": "audio_tags", "case": "no-tags", "blob": {"format": {}, "streams": []}}
+{"func": "audio_tags", "case": "blank-artist", "blob": {"format": {"tags": {"artist": "   ", "title": "X"}}, "streams": []}}
+{"func": "audio_tags", "case": "title-at-limit", "blob": {"format": {"tags": {"title": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"}}, "streams": []}}
+{"func": "audio_tags", "case": "title-over-limit", "blob": {"format": {"tags": {"artist": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "title": "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"}}, "streams": []}}
+{"func": "audio_tags", "case": "no-format", "blob": {"streams": []}}
+{"func": "audio_tags", "case": "unicode-over-limit", "blob": {"format": {"tags": {"artist": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé"}}, "streams": []}}
+{"func": "audio_tags", "case": "unrelated-tags", "blob": {"format": {"tags": {"album": "A", "genre": "G"}}, "streams": []}}
+{"func": "has_cover", "case": "audio-and-video", "blob": {"streams": [{"codec_type": "audio"}, {"codec_type": "video"}]}}
+{"func": "has_cover", "case": "audio-only", "blob": {"streams": [{"codec_type": "audio"}]}}
+{"func": "has_cover", "case": "no-streams", "blob": {"format": {"tags": {"artist": "x"}}}}
+{"func": "has_cover", "case": "empty-streams", "blob": {"streams": []}}
+{"func": "video_geometry", "case": "normal", "blob": {"streams": [{"codec_type": "video", "width": 1920, "height": 1080}], "format": {"duration": "10.4"}}}
+{"func": "video_geometry", "case": "no-format", "blob": {"streams": [{"codec_type": "video", "width": 640, "height": 480}]}}
+{"func": "video_geometry", "case": "duration-half-even", "blob": {"streams": [{"width": 640, "height": 480}], "format": {"duration": "9.7"}}}
+{"func": "video_geometry", "case": "duration-zero", "blob": {"streams": [{"width": 640, "height": 480}], "format": {"duration": 0}}}
+{"func": "video_geometry", "case": "no-streams", "blob": {"streams": [], "format": {"duration": 3}}}
+{"func": "video_geometry", "case": "missing-width", "blob": {"streams": [{"height": 480}], "format": {}}}
+{"func": "video_geometry", "case": "string-dimensions", "blob": {"streams": [{"width": "1280", "height": "720"}]}}
+{"func": "video_geometry", "case": "probe-failed", "blob": {}, "returncode": 1}
+{"func": "video_thumb_seek", "case": "long", "duration": 100}
+{"func": "video_thumb_seek", "case": "ten", "duration": 10}
+{"func": "video_thumb_seek", "case": "four", "duration": 4}
+{"func": "video_thumb_seek", "case": "five", "duration": 5}
+{"func": "video_thumb_seek", "case": "none", "duration": null}
+{"func": "video_thumb_seek", "case": "zero", "duration": 0}
+{"func": "video_thumb_seek", "case": "negative", "duration": -8}
+{"func": "wav_duration", "case": "one-second", "rate": 8000, "nframes": 8000}
+{"func": "wav_duration", "case": "one-and-half", "rate": 8000, "nframes": 12000}
+{"func": "wav_duration", "case": "half-second", "rate": 8000, "nframes": 4000}
+{"func": "wav_duration", "case": "ten-seconds", "rate": 44100, "nframes": 441000}
+{"func": "wav_duration", "case": "zero-rate", "rate": 0, "nframes": 1000}
+{"func": "wav_duration", "case": "null-rate", "rate": null, "nframes": 1000}

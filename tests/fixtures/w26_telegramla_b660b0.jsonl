@@ -1,0 +1,34 @@
+{"func": "normalize", "case": "plain-arrow", "prose": "A \\to B"}
+{"func": "normalize", "case": "math-span-drops-dollars", "prose": "$x \\leq y$"}
+{"func": "normalize", "case": "math-span-keeps-dollars", "prose": "$\\frac{\\alpha}{2}$"}
+{"func": "normalize", "case": "currency-not-math", "prose": "$5 \\to $ 10"}
+{"func": "normalize", "case": "drive-path", "prose": "copy C:\\in there"}
+{"func": "normalize", "case": "url-target", "prose": "see https://x.test/a\\to?q=\\alpha now"}
+{"func": "normalize", "case": "path-segment", "prose": "dir a/\\to b"}
+{"func": "normalize", "case": "no-backslash", "prose": "nothing to do here"}
+{"func": "normalize", "case": "unknown-macro", "prose": "\\foo and \\bar"}
+{"func": "normalize", "case": "possessive-run-blocks", "prose": "\\alpha\\beta\\data"}
+{"func": "normalize", "case": "adjacent-run", "prose": "x \\alpha\\beta y"}
+{"func": "normalize", "case": "type-mismatch", "prose": 5}
+{"func": "replace_outside", "case": "span-kept", "prose": "$x \\leq y$ and \\to z", "kept_spans": [[0, 10]]}
+{"func": "replace_outside", "case": "middle-span", "prose": "keep \\to inside, map \\to outside", "kept_spans": [[5, 12]]}
+{"func": "replace_outside", "case": "no-spans", "prose": "keep \\to inside, map \\to outside", "kept_spans": []}
+{"func": "replace_outside", "case": "overlapping-span-skipped", "prose": "keep \\to inside, map \\to outside", "kept_spans": [[5, 12], [6, 10]]}
+{"func": "replace_outside", "case": "span-at-end", "prose": "keep \\to inside, map \\to outside", "kept_spans": [[29, 32]]}
+{"func": "replace_outside", "case": "no-backslash", "prose": "plain words", "kept_spans": [[0, 5]]}
+{"func": "replace_outside", "case": "type-mismatch-spans", "prose": "x \\to y", "kept_spans": "oops"}
+{"func": "constants", "case": "macro-table"}
+{"func": "normalize", "case": "tab-then-macro", "prose": "x\t\\to y"}
+{"func": "normalize", "case": "paren-context", "prose": "(\\to)"}
+{"func": "normalize", "case": "longest-name-first", "prose": "\\leftrightarrow\\infty"}
+{"func": "normalize", "case": "tilde-blocks", "prose": "~\\top"}
+{"func": "normalize", "case": "percent-blocks", "prose": "10%\\to"}
+{"func": "normalize", "case": "newline-in-math", "prose": "$a\n\\to b$ c"}
+{"func": "normalize", "case": "two-math-spans", "prose": "$x\\leq y$ ok $z\\ne 1$"}
+{"func": "normalize", "case": "www-url", "prose": "www.x.test/\\alpha end"}
+{"func": "normalize", "case": "markdown-link-parens", "prose": "[t](http://a/b?q=\\alpha) and \\to"}
+{"func": "normalize", "case": "digit-macro-letter", "prose": "\\in2"}
+{"func": "replace_outside", "case": "spans-out-of-order", "prose": "one \\to two \\leq three", "kept_spans": [[15, 21], [4, 10]]}
+{"func": "replace_outside", "case": "span-start-before-pos", "prose": "one \\to two \\leq three", "kept_spans": [[4, 10], [6, 8]]}
+{"func": "normalize", "case": "url-scheme-boundary", "prose": "\\Leftrightarrow\\tohttps://"}
+{"func": "normalize", "case": "dollar-pair-math", "prose": "\t$$\\int$"}

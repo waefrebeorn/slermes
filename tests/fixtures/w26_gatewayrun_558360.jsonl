@@ -1,0 +1,22 @@
+{"func": "strip_markers", "case": "strip-invocation", "env": {"INVOCATION_ID": "abc", "HOME": "/h"}}
+{"func": "strip_markers", "case": "strip-empty-env", "env": {}}
+{"func": "strip_markers", "case": "strip-supervised-child", "env": {"HERMES_SUPERVISED_CHILD": "1", "HERMES_PROFILE": "work"}}
+{"func": "strip_markers", "case": "strip-external-supervisor-true", "env": {"HERMES_GATEWAY_EXTERNAL_SUPERVISOR": "TRUE"}}
+{"func": "strip_markers", "case": "strip-external-supervisor-zero", "env": {"HERMES_GATEWAY_EXTERNAL_SUPERVISOR": "0"}}
+{"func": "strip_markers", "case": "strip-all-markers", "env": {"INVOCATION_ID": "v", "JOURNAL_STREAM": "v", "XPC_SERVICE_NAME": "v", "LAUNCHD_SOCKET": "v", "HERMES_LAUNCHD_LABEL": "v", "HERMES_GATEWAY_EXTERNAL_SUPERVISOR": "v", "HERMES_SUPERVISED_CHILD": "v", "NOTIFY_SOCKET": "v", "WATCHDOG_USEC": "v", "WATCHDOG_PID": "v", "SAFE": "1"}}
+{"func": "strip_markers", "case": "strip-falsy-invocation", "env": {"INVOCATION_ID": ""}}
+{"func": "strip_markers", "case": "strip-number-invocation", "env": {"INVOCATION_ID": 1}}
+{"func": "strip_markers", "case": "strip-keeps-unrelated", "env": {"HERMES_KANBAN_TASK": "t1", "PATH": "/bin"}}
+{"func": "os_refusal", "case": "refusal-errno", "exc": {"errno": 2, "strerror": "No such file or directory"}}
+{"func": "os_refusal", "case": "refusal-winerror-wins", "exc": {"winerror": 5, "errno": 22, "strerror": "Access is denied"}}
+{"func": "os_refusal", "case": "refusal-strerror-only", "exc": {"strerror": "boom"}}
+{"func": "os_refusal", "case": "refusal-nothing", "exc": {}}
+{"func": "os_refusal", "case": "refusal-errno-zero", "exc": {"errno": 0, "strerror": "Success"}}
+{"func": "os_refusal", "case": "refusal-nulls", "exc": {"errno": null, "strerror": null}}
+{"func": "os_refusal", "case": "refusal-winerror-zero", "exc": {"winerror": 0}}
+{"func": "stdio_log_path", "case": "log-win-home", "home": "C:/Users/eman5/.hermes"}
+{"func": "stdio_log_path", "case": "log-posix-home", "home": "/home/u/.hermes"}
+{"func": "stdio_log_path", "case": "log-empty-home", "home": ""}
+{"func": "stdio_log_path", "case": "log-double-sep", "home": "C:/a//b/"}
+{"func": "stdio_log_path", "case": "log-relative", "home": "profiles/work"}
+{"func": "constants", "case": "constants-table"}

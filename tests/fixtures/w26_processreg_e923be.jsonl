@@ -1,0 +1,33 @@
+{"func": "owner", "case": "owner-str", "evt": {"owner_task_id": "task-1"}}
+{"func": "owner", "case": "owner-empty-str", "evt": {"owner_task_id": ""}}
+{"func": "owner", "case": "owner-falsy-zero", "evt": {"owner_task_id": 0}}
+{"func": "owner", "case": "owner-missing", "evt": {}}
+{"func": "owner", "case": "owner-null", "evt": {"owner_task_id": null}}
+{"func": "owner", "case": "owner-type-mismatch-bool", "evt": {"owner_task_id": true}}
+{"func": "owner", "case": "owner-not-a-dict", "evt": "abc"}
+{"func": "notifies", "case": "notifies-flag", "session": {"notify_on_complete": true}}
+{"func": "notifies", "case": "notifies-watch", "session": {"watch_patterns": ["error"]}}
+{"func": "notifies", "case": "notifies-empty-watch", "session": {"watch_patterns": []}}
+{"func": "notifies", "case": "notifies-watch-disabled", "session": {"watch_patterns": ["error"], "_watch_disabled": true}}
+{"func": "notifies", "case": "notifies-none", "session": {}}
+{"func": "notifies", "case": "notifies-falsy-int", "session": {"notify_on_complete": 0, "watch_patterns": null}}
+{"func": "retained", "case": "retained-unpublished", "session": {"_finish_claimed": true, "_completion_event": false}}
+{"func": "retained", "case": "retained-not-claimed", "session": {"_finish_claimed": false}}
+{"func": "retained", "case": "retained-published", "session": {"_finish_claimed": true, "_completion_event": true}}
+{"func": "retained", "case": "retained-truthy-nonbool", "session": {"_finish_claimed": "yes", "_completion_event": null}}
+{"func": "retained", "case": "retained-zero", "session": {"_finish_claimed": 0, "_completion_event": false}}
+{"func": "adjust", "case": "adjust-take", "in_flight": {}, "owners": ["a"], "delta": 1}
+{"func": "adjust", "case": "adjust-release-last", "in_flight": {"a": 1}, "owners": ["a"], "delta": -1}
+{"func": "adjust", "case": "adjust-release-partial", "in_flight": {"a": 2}, "owners": ["a", "b"], "delta": -1}
+{"func": "adjust", "case": "adjust-skips-falsy-owners", "in_flight": {"a": 1}, "owners": ["", null, "a"], "delta": 1}
+{"func": "adjust", "case": "adjust-duplicate-owner", "in_flight": {"a": 1}, "owners": ["a", "a"], "delta": 1}
+{"func": "adjust", "case": "adjust-boundary-zero-count", "in_flight": {"a": 0}, "owners": ["a"], "delta": 1}
+{"func": "awaits", "case": "awaits-running-notifies", "state": {"owners": ["o"], "running": [{"owner_task_id": "o", "notify_on_complete": true}], "finished": [], "queued": [], "in_flight": {}}}
+{"func": "awaits", "case": "awaits-no-owners", "state": {"owners": [], "running": [{"owner_task_id": "o", "notify_on_complete": true}], "finished": [], "queued": [], "in_flight": {}}}
+{"func": "awaits", "case": "awaits-queued-event", "state": {"owners": ["o"], "running": [], "finished": [], "queued": [{"owner_task_id": "o"}], "in_flight": {}}}
+{"func": "awaits", "case": "awaits-in-flight-hold", "state": {"owners": ["o"], "running": [], "finished": [], "queued": [], "in_flight": {"o": 1}}}
+{"func": "awaits", "case": "awaits-nothing", "state": {"owners": ["o"], "running": [], "finished": [], "queued": [], "in_flight": {}}}
+{"func": "awaits", "case": "awaits-exit-unpublished", "state": {"owners": ["o"], "running": [], "finished": [{"owner_task_id": "o", "notify_on_complete": true, "exited": true}], "queued": [], "in_flight": {}}}
+{"func": "awaits", "case": "awaits-exit-published", "state": {"owners": ["o"], "running": [], "finished": [{"owner_task_id": "o", "notify_on_complete": true, "exited": true, "_completion_event": true}], "queued": [], "in_flight": {}}}
+{"func": "awaits", "case": "awaits-running-silent", "state": {"owners": ["o"], "running": [{"owner_task_id": "o"}], "finished": [], "queued": [], "in_flight": {}}}
+{"func": "awaits", "case": "awaits-falsy-owner-entry", "state": {"owners": [""], "running": [], "finished": [], "queued": [{"owner_task_id": ""}], "in_flight": {}}}

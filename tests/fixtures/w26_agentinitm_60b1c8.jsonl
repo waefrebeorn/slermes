@@ -1,0 +1,20 @@
+{"func": "init_kwargs", "case": "full-cli-session", "session_id": "s1", "platform": "cli", "hermes_home": "/home/u/.hermes", "have_db": 1, "use_store": 1, "row": 1, "count": 3, "has_assistant": 1, "session_title": "Fix the build", "session_title_source": "user", "identities": {"user_id": "u1", "chat_id": 0, "chat_name": "general", "gateway_session_key": "k1"}, "session_cwd": "/proj", "profile": "default"}
+{"func": "init_kwargs", "case": "cron-worker", "session_id": "s2", "platform": "cron", "hermes_home": "/h", "have_db": 0}
+{"func": "init_kwargs", "case": "platform-null", "session_id": "s3", "platform": null, "hermes_home": "/h2", "have_db": 0}
+{"func": "init_kwargs", "case": "named-fork-context", "session_id": "s5", "platform": "cli", "hermes_home": "/h", "memory_agent_context": "fork", "parent_session_id": "p1", "have_db": 0, "profile": "default"}
+{"func": "init_kwargs", "case": "count-without-reply", "session_id": "s6", "platform": "cli", "hermes_home": "/h", "have_db": 1, "use_store": 1, "row": 1, "count": 1, "has_assistant": 0, "profile": "default"}
+{"func": "init_kwargs", "case": "db-path-title", "session_id": "s7", "platform": "cli", "hermes_home": "/h", "have_db": 1, "use_store": 0, "row": 1, "count": 2, "has_assistant": 1, "session_title": "Title from db", "session_title_source": "auto", "profile": "default"}
+{"func": "init_kwargs", "case": "empty-strings", "session_id": "", "platform": "", "hermes_home": "", "have_db": 0}
+{"func": "init_kwargs", "case": "profile-lookup-raises", "session_id": "s8", "platform": "cli", "hermes_home": "/h", "have_db": 0, "profile_raises": 1}
+{"func": "stored_transcript", "case": "store-count-and-reply", "have_db": 1, "use_store": 1, "row": 1, "count": 4, "has_assistant": 1}
+{"func": "stored_transcript", "case": "no-db", "have_db": 0}
+{"func": "stored_transcript", "case": "count-without-reply", "have_db": 1, "use_store": 1, "row": 1, "count": 2, "has_assistant": 0}
+{"func": "stored_transcript", "case": "db-path-reply", "have_db": 1, "use_store": 0, "row": 1, "count": 2, "has_assistant": 1}
+{"func": "stored_transcript", "case": "missing-row", "have_db": 1, "use_store": 1, "row": 0, "count": 9, "has_assistant": 1}
+{"func": "unavailable_message", "case": "with-reason", "name": "honcho", "reason": "AZURE_FOUNDRY_API_KEY is not set"}
+{"func": "unavailable_message", "case": "no-reason", "name": "honcho", "reason": null}
+{"func": "unavailable_message", "case": "empty-reason", "name": "honcho", "reason": ""}
+{"func": "unavailable_message", "case": "apostrophe-name", "name": "o'donnell", "reason": "missing binary"}
+{"func": "unavailable_message", "case": "unicode-name", "name": "mémoire-pro", "reason": null}
+{"func": "unavailable_message", "case": "long-name", "name": "mem0-self-hosted-community-provider", "reason": "connection refused (111)"}
+{"func": "constants", "case": "values"}

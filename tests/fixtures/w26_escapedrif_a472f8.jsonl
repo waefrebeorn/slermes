@@ -1,0 +1,46 @@
+{"func": "halve", "case": "two->one", "s": "a\\\\b"}
+{"func": "halve", "case": "five->two", "s": "\\\\\\\\\\"}
+{"func": "halve", "case": "none", "s": "plain text"}
+{"func": "halve", "case": "empty", "s": ""}
+{"func": "halve", "case": "type-mismatch", "s": 7}
+{"func": "runs_even", "case": "even-pair", "s": "a\\\\b"}
+{"func": "runs_even", "case": "odd-single", "s": "a\\b"}
+{"func": "runs_even", "case": "none", "s": "no runs"}
+{"func": "runs_even", "case": "empty", "s": ""}
+{"func": "runs_even", "case": "mixed", "s": "\\a\\\\\\"}
+{"func": "runs_even", "case": "null", "s": null}
+{"func": "strip_quotes", "case": "apostrophe", "s": "don\\'t"}
+{"func": "strip_quotes", "case": "dquote", "s": "say \\\"hi\\\""}
+{"func": "strip_quotes", "case": "doubled-then-quote", "s": "a\\\\'b"}
+{"func": "strip_quotes", "case": "plain", "s": "nothing here"}
+{"func": "strip_quotes", "case": "empty", "s": ""}
+{"func": "strip_quotes", "case": "type-mismatch", "s": 7}
+{"func": "quotes_all_spurious", "case": "all-single", "strings": ["don\\'t", "it\\'s"]}
+{"func": "quotes_all_spurious", "case": "bare-beside-escaped", "strings": ["don't", "it\\'s"]}
+{"func": "quotes_all_spurious", "case": "double-backslash", "strings": ["a\\\\'b"]}
+{"func": "quotes_all_spurious", "case": "no-escapes", "strings": ["plain", "text"]}
+{"func": "quotes_all_spurious", "case": "both-kinds", "strings": ["a\\\"b", "c\\'d"]}
+{"func": "quotes_all_spurious", "case": "second-kind-bare", "strings": ["a\\\"b", "say \"hi\""]}
+{"func": "quotes_all_spurious", "case": "empty-list", "strings": []}
+{"func": "quotes_all_spurious", "case": "type-mismatch", "strings": "abc"}
+{"func": "backslash_correct", "case": "no-backslash", "old": "abc", "new": "x", "content": "abc"}
+{"func": "backslash_correct", "case": "already-in-content", "old": "a\\\\b", "new": "z", "content": "a\\\\b"}
+{"func": "backslash_correct", "case": "odd-runs", "old": "a\\b", "new": "z", "content": "a\\b"}
+{"func": "backslash_correct", "case": "verified-halved", "old": "a\\\\b", "new": "plain", "content": "x a\\b y"}
+{"func": "backslash_correct", "case": "halved-missing", "old": "a\\\\b", "new": "plain", "content": "nothing"}
+{"func": "backslash_correct", "case": "ambiguous-new", "old": "a\\\\b", "new": "c\\\\d", "content": "x a\\b y"}
+{"func": "backslash_correct", "case": "type-mismatch", "old": 3, "new": "x", "content": "3"}
+{"func": "quote_correct", "case": "no-suspect", "old": "abc", "new": "x", "content": "abc"}
+{"func": "quote_correct", "case": "old-in-content", "old": "it\\'s", "new": "it\\'s ok", "content": "it\\'s"}
+{"func": "quote_correct", "case": "verified", "old": "it\\'s", "new": "it\\'s ok", "content": "so it's fine"}
+{"func": "quote_correct", "case": "bare-quote-refuses", "old": "it\\'s", "new": "it\\'s don't", "content": "so it's fine"}
+{"func": "quote_correct", "case": "stripped-missing", "old": "it\\'s", "new": "it\\'s ok", "content": "nope"}
+{"func": "quote_correct", "case": "unproven-kind", "old": "it\\'s", "new": "he said \\\"hi\\\"", "content": "so it's fine"}
+{"func": "quote_correct", "case": "type-mismatch", "old": "it\\'s", "new": 0, "content": "so it's fine"}
+{"func": "escape_drift", "case": "quote-path", "old": "it\\'s", "new": "it\\'s ok", "content": "so it's fine"}
+{"func": "escape_drift", "case": "backslash-path", "old": "a\\\\b", "new": "plain", "content": "x a\\b y"}
+{"func": "escape_drift", "case": "nothing", "old": "abc", "new": "x", "content": "abc"}
+{"func": "escape_drift", "case": "quote-ambiguous", "old": "it\\'s", "new": "he said \\\"hi\\\"", "content": "so it's fine"}
+{"func": "escape_drift", "case": "backslash-ambiguous", "old": "a\\\\b", "new": "c\\\\d", "content": "x a\\b y"}
+{"func": "escape_drift", "case": "type-mismatch", "old": null, "new": "x", "content": "abc"}
+{"func": "notes", "case": "notes"}

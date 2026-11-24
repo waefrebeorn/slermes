@@ -1,0 +1,36 @@
+{"func": "constants", "case": "tables"}
+{"func": "pause_acked", "case": "acked-pausing", "response": {"pid": 7, "pausing": true}, "identity": {"pid": 7}}
+{"func": "pause_acked", "case": "already-stopping", "response": {"pid": 7, "already_stopping": 1}, "identity": {"pid": 7}}
+{"func": "pause_acked", "case": "pid-mismatch", "response": {"pid": 8, "pausing": true}, "identity": {"pid": 7}}
+{"func": "pause_acked", "case": "no-response", "response": null, "identity": {"pid": 7}}
+{"func": "pause_acked", "case": "no-identity", "response": {"pid": 7, "pausing": true}, "identity": null}
+{"func": "pause_acked", "case": "both-pid-absent", "response": {"pausing": true}, "identity": {}}
+{"func": "pause_acked", "case": "bool-pid-equality", "response": {"pid": true, "pausing": true}, "identity": {"pid": 1}}
+{"func": "pause_acked", "case": "not-pausing", "response": {"pid": 7, "pausing": false}, "identity": {"pid": 7}}
+{"func": "owner_stop_hint", "case": "systemd", "owner": "systemd"}
+{"func": "owner_stop_hint", "case": "launchd", "owner": "launchd"}
+{"func": "owner_stop_hint", "case": "desktop", "owner": "desktop"}
+{"func": "owner_stop_hint", "case": "external", "owner": "external"}
+{"func": "owner_stop_hint", "case": "unknown-owner", "owner": "custom"}
+{"func": "owner_stop_hint", "case": "null-owner", "owner": null}
+{"func": "owner_stop_hint", "case": "empty-owner", "owner": ""}
+{"func": "drain_timeout", "case": "default", "response": {}}
+{"func": "drain_timeout", "case": "zero-clamps", "response": {"drain_timeout": 0}}
+{"func": "drain_timeout", "case": "five", "response": {"drain_timeout": 5}}
+{"func": "drain_timeout", "case": "200-clamps", "response": {"drain_timeout": 200}}
+{"func": "drain_timeout", "case": "115-to-cap", "response": {"drain_timeout": 115}}
+{"func": "drain_timeout", "case": "bool-one", "response": {"drain_timeout": true}}
+{"func": "backend_owner_state", "case": "serve-running", "row": {"purpose": "serve", "pid": 12}, "running": true}
+{"func": "backend_owner_state", "case": "dashboard-free", "row": {"purpose": "dashboard", "pid": 12}, "running": false}
+{"func": "backend_owner_state", "case": "zero-pid", "row": {"purpose": "serve", "pid": 0}, "running": true}
+{"func": "backend_owner_state", "case": "other-purpose", "row": {"purpose": "cli", "pid": 12}, "running": true}
+{"func": "backend_owner_state", "case": "bool-pid", "row": {"purpose": "serve", "pid": true}, "running": true}
+{"func": "backend_owner_state", "case": "missing-pid", "row": {"purpose": "serve"}, "running": true}
+{"func": "backend_owner_state", "case": "missing-purpose", "row": {"pid": 12}, "running": true}
+{"func": "cron_owner_state", "case": "handoff", "row": {"id": 3, "pid": 44, "handoff_pending": true, "process_started_at": 10.5}, "pid_exists": true, "current_start": 10.5}
+{"func": "cron_owner_state", "case": "pid-gone", "row": {"id": 4, "pid": 44, "process_started_at": 10.5}, "pid_exists": false, "current_start": 10.5}
+{"func": "cron_owner_state", "case": "start-probe-failed", "row": {"id": 5, "pid": 44, "process_started_at": 10.5}, "pid_exists": true, "current_start": null}
+{"func": "cron_owner_state", "case": "recorded-missing", "row": {"id": 6, "pid": 44}, "pid_exists": true, "current_start": 10.5}
+{"func": "cron_owner_state", "case": "same-start", "row": {"id": 7, "pid": 44, "process_started_at": 10.5}, "pid_exists": true, "current_start": 10.5}
+{"func": "cron_owner_state", "case": "restarted-since", "row": {"id": 8, "pid": 44, "process_started_at": 10.5}, "pid_exists": true, "current_start": 11.25}
+{"func": "cron_owner_state", "case": "bool-start-equality", "row": {"id": 9, "pid": 44, "process_started_at": 1}, "pid_exists": true, "current_start": true}

@@ -1,0 +1,33 @@
+{"func": "constants", "case": "vocabulary"}
+{"func": "validate", "case": "context-empty", "op": "worker_context", "payload": {}}
+{"func": "validate", "case": "context-falsy-list", "op": "worker_context", "payload": []}
+{"func": "validate", "case": "context-nonempty", "op": "worker_context", "payload": {"a": 1}}
+{"func": "validate", "case": "tail-role-nonempty", "op": "worker_tail_role", "payload": {"x": null}}
+{"func": "validate", "case": "finish-empty", "op": "worker_finish", "payload": {}}
+{"func": "validate", "case": "finish-nonempty", "op": "worker_finish", "payload": {"a": 1}}
+{"func": "validate", "case": "prompt-ok", "op": "worker_prompt", "payload": {"system_prompt": "be terse"}}
+{"func": "validate", "case": "prompt-null", "op": "worker_prompt", "payload": {"system_prompt": null}}
+{"func": "validate", "case": "prompt-number", "op": "worker_prompt", "payload": {"system_prompt": 7}}
+{"func": "validate", "case": "prompt-extra-key", "op": "worker_prompt", "payload": {"system_prompt": "x", "other": 1}}
+{"func": "validate", "case": "sidecars-ok", "op": "worker_sidecars", "payload": {"patch": {"_usage_anchor": 12, "_proactive_prune_cold_credit": null}}}
+{"func": "validate", "case": "sidecars-unknown-key", "op": "worker_sidecars", "payload": {"patch": {"_usage_anchor": 1, "bogus": 2}}}
+{"func": "validate", "case": "sidecars-patch-not-object", "op": "worker_sidecars", "payload": {"patch": []}}
+{"func": "validate", "case": "tools-list-ok", "op": "worker_tool_names", "payload": {"tool_names": ["shell_exec", "write_file"]}}
+{"func": "validate", "case": "tools-empty-list", "op": "worker_tool_names", "payload": {"tool_names": []}}
+{"func": "validate", "case": "tools-empty-name", "op": "worker_tool_names", "payload": {"tool_names": ["ok", ""]}}
+{"func": "validate", "case": "tools-pin-ok", "op": "worker_tool_names", "payload": {"tool_names": {"version": "p1", "tools": ["a"], "delegation_backend": "codex"}}}
+{"func": "validate", "case": "tools-pin-missing-tools", "op": "worker_tool_names", "payload": {"tool_names": {"version": "p1"}}}
+{"func": "validate", "case": "tools-pin-extra-key", "op": "worker_tool_names", "payload": {"tool_names": {"version": "p1", "tools": [], "extra": true}}}
+{"func": "validate", "case": "tools-pin-bad-version", "op": "worker_tool_names", "payload": {"tool_names": {"version": 1, "tools": []}}}
+{"func": "validate", "case": "tools-null", "op": "worker_tool_names", "payload": {"tool_names": null}}
+{"func": "validate", "case": "tools-scalar", "op": "worker_tool_names", "payload": {"tool_names": 5}}
+{"func": "validate", "case": "row-role-ok", "op": "worker_row_role", "payload": {"row_id": 42}}
+{"func": "validate", "case": "row-role-bool", "op": "worker_row_role", "payload": {"row_id": true}}
+{"func": "validate", "case": "row-role-string", "op": "worker_row_role", "payload": {"row_id": "42"}}
+{"func": "validate", "case": "row-role-extra", "op": "worker_row_role", "payload": {"row_id": 42, "x": 1}}
+{"func": "validate", "case": "unknown-op", "op": "session.context", "payload": {}}
+{"func": "stamp", "case": "event-stamped", "clock": "{\"kind\": \"cache_hit\", \"at\": 3}", "generation": 17}
+{"func": "stamp", "case": "event-zero", "clock": "{\"kind\": \"cache_miss\"}", "generation": 0}
+{"func": "stamp", "case": "not-json", "clock": "raw-clock-text", "generation": 9}
+{"func": "stamp", "case": "json-array", "clock": "[1, 2, 3]", "generation": 9}
+{"func": "stamp", "case": "json-string", "clock": "\"plain\"", "generation": 4}
