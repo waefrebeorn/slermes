@@ -91,7 +91,10 @@ def env_enablement(r):
 
 async def standalone_send(r):
     _clear_buzz_env()
-    cli = _fake_cli() if (r.get("cli_path") or "") == "present" else ""
+    # The fixture carries the RESOLVED cli path; any non-empty string is "found".
+    # Treating only the literal "present" as found made a perturbed path look
+    # absent to the oracle while the harness passed it through as a path.
+    cli = _fake_cli() if (r.get("cli_path") or "") else ""
     os.environ["BUZZ_RELAY_URL"] = r.get("relay") or ""
     os.environ["BUZZ_PRIVATE_KEY"] = r.get("key") or ""
     os.environ["BUZZ_CLI_PATH"] = cli

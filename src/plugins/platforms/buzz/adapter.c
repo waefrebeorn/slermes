@@ -2289,9 +2289,17 @@ json_t *w27_adapter_04abb5_standalone_send(const json_t *in) {
     json_append(args, json_string(target));
     json_append(args, json_string("--content"));
     json_append(args, json_string("-"));
-    if (thread_id[0] && strcmp(reply_mode, "off")) {
-        json_append(args, json_string("--reply-to"));
-        json_append(args, json_string(thread_id));
+    {
+        /* _reply_to_mode() normalises with str(...).strip().lower() before the
+         * != "off" test, so "OFF"/" Off " post flat exactly like "off". */
+        char *rs = w_strip(reply_mode);
+        char *rl = w_lower(rs);
+        free(rs);
+        if (thread_id[0] && strcmp(rl, "off")) {
+            json_append(args, json_string("--reply-to"));
+            json_append(args, json_string(thread_id));
+        }
+        free(rl);
     }
     if (media && media->type == JSON_ARRAY) {
         for (i = 0; i < json_len(media); i++) {
