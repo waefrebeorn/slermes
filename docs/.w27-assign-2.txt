@@ -1,5 +1,0 @@
-w27_telegramst_68df20	plugins/platforms/telegram/telegram_status_indicator
-w27_telegramme_83586c	plugins/platforms/telegram/telegram_media_fetch
-w27_profilepro_c1dd5d	hermes_cli/profile_provision_gateway
-w27_targets_dc97ec	tools/connectors/targets
-w27_conversati_9139e5	agent/conversation_compression_store

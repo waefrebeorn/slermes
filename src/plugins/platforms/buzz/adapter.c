@@ -402,7 +402,7 @@ static int w_media_url_exact(const char *s, size_t n) {
     for (pos = (size_t)(last < 0 ? 0 : last + 1); pos-- > plen;) {
         size_t q, r;
         int ok = 1;
-        if (!(s[pos] == '/' && strncmp(s + pos, "/media/", 7) == 0)) {
+        if (!(s[pos] == '/' && w_startswith_ci(s + pos, "/media/"))) {
             if (pos == plen) break;
             continue;
         }

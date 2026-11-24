@@ -1,5 +1,0 @@
-w27_guard_916c5c	persistence/sqlite/_state/guard
-w27_processreg_d56009	tools/process_registry_wait_policy
-w27_transcript_03bad5	persistence/sqlite/conversation/_store/transcript_repair
-w27_sharedingr_d098a5	gateway/platforms/shared_ingress
-w27_core_5b13b0	persistence/sqlite/conversation/_store/core

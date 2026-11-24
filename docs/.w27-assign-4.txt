@@ -1,5 +1,0 @@
-w27_gatewaymul_abe5e6	hermes_cli/gateway_multiplex_s6
-w27_gatewayown_c99d00	hermes_cli/gateway_owner_restart
-w27_browserrea_6971ab	tools/browser_real_profile_logins
-w27_telegramte_6f65f2	plugins/platforms/telegram/telegram_text_photo_pairing
-w27_install_222c04	tools/bot_desktop/install

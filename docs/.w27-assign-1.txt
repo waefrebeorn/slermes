@@ -1,5 +1,0 @@
-w27_sharedmetr_f2cd32	hermes_cli/observability/shared_metrics_connectors
-w27_updatedown_01b284	hermes_cli/update_downgrade_guard
-w27_desktopplu_6e4e85	hermes_cli/desktop_plugin_install
-w27_gatewayrun_24bbab	hermes_cli/gateway_runtime_replace
-w27_kanbanwork_7cac5d	hermes_cli/kanban_worker_client

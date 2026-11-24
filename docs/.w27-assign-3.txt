@@ -1,5 +1,0 @@
-w27_browser_28fc1e	tools/bot_desktop/browser
-w27_keyboards_266efb	plugins/platforms/qqbot/keyboards
-w27_send_03c7df	plugins/platforms/qqbot/send
-w27_sharedmetr_15926e	hermes_cli/observability/shared_metrics_signals
-w27_hostedstor_2b3e0f	persistence/sqlite/gateway/_hosted_store

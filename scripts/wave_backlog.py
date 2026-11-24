@@ -80,15 +80,41 @@ def candidates(used, want, lo=1, hi=5):
     return rows[:want]
 
 
-def pick(used, want, max_fns=9):
-    """Fewest-function modules first; widen the band only when a band runs dry."""
+def pick(used, want, max_fns=24):
+    """Fewest-function modules first; widen the band only when a band runs dry.
+
+    The 1-5 and 6-9 pools drain long before the gap inventory does (they were
+    empty after wave 26), so the later bands and the constants-only (0-fn)
+    modules are part of the ladder, not an afterthought: a constants module is
+    still a real port of its literal tables.
+    """
     rows = []
-    for lo, hi in ((1, 5), (6, 7), (8, max_fns)):
+    for lo, hi in ((1, 5), (6, 9), (0, 0), (10, 14), (15, max_fns)):
         if len(rows) >= want or lo > max_fns:
             break
         rows += candidates(used, want - len(rows), lo, min(hi, max_fns))
     rows.sort(key=lambda t: (t[0], t[1]))
     return rows[:want]
+
+
+def write_wave(wave, rows, size, used, extra=()):
+    """Write the plan + snake-dealt assignment files for one wave."""
+    plan = {gate_id(wave, m): m for _f, _s, m in rows}
+    plan.update({g: m for g, m in extra})
+    with open(os.path.join(REPO, "docs", "wave%d-plan.json" % wave), "w",
+              encoding="utf-8", newline="\n") as fh:
+        json.dump(plan, fh, indent=2, sort_keys=True)
+        fh.write("\n")
+    order = sorted(rows, key=lambda t: (-t[0], t[1]))
+    inv = {v: k for k, v in plan.items()}
+    nb = max(1, -(-len(order) // size))
+    for i in range(nb):
+        batch = order[i::nb]
+        with open(os.path.join(REPO, "docs", ".w%d-assign-%d.txt" % (wave, i)), "w",
+                  encoding="utf-8", newline="\n") as fh:
+            fh.write("\n".join("%s\t%s" % (inv[m], m) for _f, _s, m in batch) + "\n")
+    used.update(plan.values())
+    return len(plan)
 
 
 def main():
@@ -121,27 +147,23 @@ def main():
     target_top = frontier + args.ahead
 
     made = []
+    # Top up the newest plan when it was staged short (a band ran dry mid-wave)
+    # and the queue has not taken work from it yet.
+    if plans:
+        short = max(plans)
+        if short > frontier and len(plans[short]) < args.per_wave:
+            have = {g: m for g, m in plans[short].items()}
+            rows = pick(used, args.per_wave - len(have), args.max_fns)
+            if rows:
+                made.append((short, write_wave(short, rows, args.size, used,
+                                               extra=have.items())))
     while top < target_top:
         top += 1
         rows = pick(used, args.per_wave, args.max_fns)
         if not rows:
-            print("gap-c-homes exhausted for 1-5 function modules", file=sys.stderr)
+            print("gap-c-homes exhausted: no candidate modules left", file=sys.stderr)
             return 1
-        plan = {gate_id(top, m): m for _f, _s, m in rows}
-        with open(os.path.join(REPO, "docs", "wave%d-plan.json" % top), "w",
-                  encoding="utf-8", newline="\n") as fh:
-            json.dump(plan, fh, indent=2, sort_keys=True)
-            fh.write("\n")
-        order = sorted(rows, key=lambda t: (-t[0], t[1]))
-        inv = {v: k for k, v in plan.items()}
-        nb = max(1, -(-len(order) // args.size))  # ceil: batches of <=size gates
-        batches = [order[i::nb] for i in range(nb)]
-        for i, batch in enumerate(batches):
-            with open(os.path.join(REPO, "docs", ".w%d-assign-%d.txt" % (top, i)), "w",
-                      encoding="utf-8", newline="\n") as fh:
-                fh.write("\n".join("%s\t%s" % (inv[m], m) for _f, _s, m in batch) + "\n")
-        used.update(plan.values())
-        made.append((top, len(plan)))
+        made.append((top, write_wave(top, rows, args.size, used)))
 
     for wave, n in made:
         print("staged wave %d: %d gates" % (wave, n))
