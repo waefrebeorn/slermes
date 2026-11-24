@@ -1,0 +1,13 @@
+{"func":"source_template","case":"template verbatim"}
+{"func":"watcher_source","old_pid":4242,"respawn_cwd":"/tmp/x","respawn_env_overlay":{"HERMES_HOME":"C:/h","PYTHONPATH":"C:/q"},"timeout_s":30.0,"project_root":"C:/Users/eman5/hermes-agent","start_time":"1758123456","case":"win full overlay"}
+{"func":"watcher_source","old_pid":1,"respawn_cwd":"","respawn_env_overlay":{},"timeout_s":0.5,"project_root":"/opt/hermes","start_time":null,"case":"no start time posix"}
+{"func":"watcher_source","old_pid":99,"respawn_cwd":"C:\\Users\\me\\app","respawn_env_overlay":{"VIRTUAL_ENV":"C:\\v"},"timeout_s":12.75,"project_root":"C:\\Users\\me\\hermes","start_time":"0","case":"windows backslash paths"}
+{"func":"watcher_source","old_pid":7,"respawn_cwd":"/home/u/c h","respawn_env_overlay":{"A":"1"},"timeout_s":60.0,"project_root":"/srv/h","start_time":"1760000000123","case":"space in cwd"}
+{"func":"watcher_source","old_pid":7,"respawn_cwd":"/home/u","respawn_env_overlay":null,"timeout_s":2.5,"project_root":"/srv/h","start_time":"5","case":"null overlay"}
+{"func":"watcher_source","old_pid":7,"case":"all keys missing"}
+{"func":"watcher_source","old_pid":7,"respawn_cwd":"/tmp/quote\"s","respawn_env_overlay":{"Q":"a\"b\\c"},"timeout_s":1.0,"project_root":"/tmp/tab\there","start_time":"9","case":"quotes and backslashes"}
+{"func":"watcher_source","old_pid":8,"respawn_cwd":"/x","respawn_env_overlay":{"UNI":"naïve — dash"},"timeout_s":3.0,"project_root":"/ü","start_time":"11","case":"non ascii literals"}
+{"func":"watcher_source","old_pid":8,"respawn_cwd":"C:/Users/eman5","respawn_env_overlay":{},"timeout_s":45.5,"project_root":"C:/Users/eman5/hermes-agent","start_time":"1731000000987","case":"empty overlay win"}
+{"func":"watcher_source","old_pid":12,"respawn_cwd":"/a/b/c","respawn_env_overlay":{"PATH":"/usr/bin","LANG":"C.UTF-8","HOME":"/home/u"},"timeout_s":15.0,"project_root":"/proj root","start_time":"1712345678901","case":"three env keys"}
+{"func":"source_template","case":"template again stable"}
+{"func":"watcher_source","old_pid":3,"respawn_cwd":"relative/dir","respawn_env_overlay":{"K":""},"timeout_s":4.25,"project_root":"relative/root","start_time":"-1","case":"relative and empty value"}

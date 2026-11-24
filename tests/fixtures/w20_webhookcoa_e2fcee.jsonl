@@ -1,0 +1,39 @@
+{"func": "validate", "case": "no-coalesce", "route_name": "r1", "route": {"prompt": "p"}}
+{"func": "validate", "case": "good-key", "route_name": "r1", "route": {"coalesce": {"key": "pull_request.number"}}}
+{"func": "validate", "case": "blank-key", "route_name": "r1", "route": {"coalesce": {"key": "   "}}}
+{"func": "validate", "case": "empty-key", "route_name": "r1", "route": {"coalesce": {"key": ""}}}
+{"func": "validate", "case": "non-string-key", "route_name": "r1", "route": {"coalesce": {"key": 5}}}
+{"func": "validate", "case": "coalesce-not-dict", "route_name": "r1", "route": {"coalesce": "yes"}}
+{"func": "validate", "case": "deliver-only", "route_name": "r2", "route": {"deliver_only": true, "coalesce": {"key": "k"}}}
+{"func": "validate", "case": "cron-job", "route_name": "r3", "route": {"cron_job": true, "coalesce": {"key": "k"}}}
+{"func": "validate", "case": "deliver-only-false", "route_name": "r2", "route": {"deliver_only": false, "coalesce": {"key": "k"}}}
+{"func": "validate", "case": "window-zero", "route_name": "r4", "route": {"coalesce": {"key": "k", "window_seconds": 0}}}
+{"func": "validate", "case": "window-negative", "route_name": "r4", "route": {"coalesce": {"key": "k", "window_seconds": -5}}}
+{"func": "validate", "case": "window-bool", "route_name": "r4", "route": {"coalesce": {"key": "k", "window_seconds": true}}}
+{"func": "validate", "case": "window-string", "route_name": "r4", "route": {"coalesce": {"key": "k", "window_seconds": "5"}}}
+{"func": "validate", "case": "window-fraction", "route_name": "r4", "route": {"coalesce": {"key": "k", "window_seconds": 2.5}}}
+{"func": "validate", "case": "max-wait-fraction", "route_name": "r4", "route": {"coalesce": {"key": "k", "max_wait_seconds": 0.5}}}
+{"func": "validate", "case": "max-wait-zero", "route_name": "r4", "route": {"coalesce": {"key": "k", "max_wait_seconds": 0}}}
+{"func": "prompt_with_note", "case": "single", "event": {"prompt": "PR pushed", "count": 1}}
+{"func": "prompt_with_note", "case": "coalesced", "event": {"prompt": "PR pushed", "count": 3}}
+{"func": "prompt_with_note", "case": "zero", "event": {"prompt": "PR pushed", "count": 0}}
+{"func": "prompt_with_note", "case": "empty-prompt", "event": {"prompt": "", "count": 2}}
+{"func": "placeholder_present", "case": "template", "text": "{repository.full_name}#{number}"}
+{"func": "placeholder_present", "case": "resolved", "text": "acme/thing#42"}
+{"func": "placeholder_present", "case": "empty-braces", "text": "{}"}
+{"func": "placeholder_present", "case": "dash", "text": "{a-b}"}
+{"func": "placeholder_present", "case": "bare", "text": "a.b.c"}
+{"func": "placeholder_present", "case": "class-chars", "text": "{a.b_c9}"}
+{"func": "group_key", "case": "resolved", "route_name": "pull", "rendered": "acme/thing#42"}
+{"func": "group_key", "case": "unresolved", "route_name": "pull", "rendered": "{number}"}
+{"func": "group_key", "case": "empty-rendered", "route_name": "pull", "rendered": ""}
+{"func": "normalize_template", "case": "bare-field", "key_template": "pull_request.number"}
+{"func": "normalize_template", "case": "padded-template", "key_template": " {repository.full_name}#{number} "}
+{"func": "normalize_template", "case": "empty", "key_template": ""}
+{"func": "enqueue_plan", "case": "first-event", "spec": {"route_name": "r1", "rendered": "acme#1", "key_template": "k", "now": 100.0, "delivery_id": "d1"}}
+{"func": "enqueue_plan", "case": "supersedes", "spec": {"route_name": "r1", "rendered": "acme#1", "key_template": "k", "now": 100.0, "delivery_id": "d2", "existing": {"first_at": 90.0, "count": 2, "superseded": [], "delivery_id": "d1"}}}
+{"func": "enqueue_plan", "case": "chain", "spec": {"route_name": "r1", "rendered": "acme#1", "key_template": "k", "now": 100.0, "delivery_id": "d3", "existing": {"first_at": 90.0, "count": 1, "superseded": ["d0"], "delivery_id": "d2"}}}
+{"func": "enqueue_plan", "case": "near-cap", "spec": {"route_name": "r1", "rendered": "acme#1", "key_template": "k", "now": 295.0, "window": 30.0, "max_wait": 300.0, "delivery_id": "d4", "existing": {"first_at": 0.0, "count": 5, "superseded": [], "delivery_id": "d3"}}}
+{"func": "enqueue_plan", "case": "past-cap", "spec": {"route_name": "r1", "rendered": "acme#1", "key_template": "k", "now": 400.0, "max_wait": 300.0, "delivery_id": "d5", "existing": {"first_at": 0.0, "count": 1, "superseded": [], "delivery_id": "d4"}}}
+{"func": "enqueue_plan", "case": "unresolved", "spec": {"route_name": "r1", "rendered": "{number}", "key_template": "k", "now": 100.0, "delivery_id": "d6"}}
+{"func": "enqueue_plan", "case": "short-window", "spec": {"route_name": "prod", "rendered": "acme#1", "key_template": "key", "now": 0.0, "window": 5.0, "delivery_id": "d7"}}

@@ -1,0 +1,34 @@
+{"func": "code_request", "case": "submit-then-wait", "ops": [{"op": "submit", "code": " 123456 "}, {"op": "wait", "timeout": 0.0, "cancelled": false}]}
+{"func": "code_request", "case": "blank-submit", "ops": [{"op": "submit", "code": "   "}]}
+{"func": "code_request", "case": "double-submit", "ops": [{"op": "submit", "code": "111111"}, {"op": "submit", "code": "222222"}]}
+{"func": "code_request", "case": "cancel-drops-code", "ops": [{"op": "submit", "code": "999999"}, {"op": "cancel"}, {"op": "state"}]}
+{"func": "code_request", "case": "close-keeps-code", "ops": [{"op": "submit", "code": "777777"}, {"op": "close"}, {"op": "state"}]}
+{"func": "code_request", "case": "wait-cancelled", "ops": [{"op": "submit", "code": "888888"}, {"op": "wait", "timeout": 5.0, "cancelled": true}]}
+{"func": "code_request", "case": "wait-timeout-empty", "ops": [{"op": "state"}, {"op": "wait", "timeout": 0.0, "cancelled": false}]}
+{"func": "code_request", "case": "submit-after-close", "ops": [{"op": "close"}, {"op": "submit", "code": "1234"}]}
+{"func": "code_request", "case": "null-code", "ops": [{"op": "submit", "code": null}]}
+{"func": "code_request", "case": "strip-both-sides", "ops": [{"op": "submit", "code": "\tabc\n"}, {"op": "state"}]}
+{"func": "code_request", "case": "unknown-op", "ops": [{"op": "bogus"}]}
+{"func": "code_request", "case": "second-submit-after-wait", "ops": [{"op": "submit", "code": "1"}, {"op": "wait", "timeout": 0.0, "cancelled": false}, {"op": "submit", "code": "2"}]}
+{"func": "code_request", "case": "empty-ops", "ops": []}
+{"func": "user_id", "case": "null-source", "source": null}
+{"func": "user_id", "case": "null-user", "source": {"user_id": null}}
+{"func": "user_id", "case": "empty-user", "source": {"user_id": ""}}
+{"func": "user_id", "case": "string-user", "source": {"user_id": "u1"}}
+{"func": "user_id", "case": "int-user", "source": {"user_id": 123}}
+{"func": "user_id", "case": "zero-user", "source": {"user_id": 0}}
+{"func": "user_id", "case": "bool-user", "source": {"user_id": true}}
+{"func": "user_id", "case": "float-user", "source": {"user_id": 1.5}}
+{"func": "user_id", "case": "missing-key", "source": {}}
+{"func": "scope_gate", "case": "installs", "turn": {"has_adapter": true, "adapter_kind": "with", "source": {"user_id": "u1"}}}
+{"func": "scope_gate", "case": "no-author", "turn": {"has_adapter": true, "adapter_kind": "with", "source": {"user_id": ""}}}
+{"func": "scope_gate", "case": "no-source", "turn": {"has_adapter": true, "adapter_kind": "with"}}
+{"func": "scope_gate", "case": "class-method-none", "turn": {"has_adapter": true, "adapter_kind": "none", "source": {"user_id": "u1"}}}
+{"func": "scope_gate", "case": "adapter-without-method", "turn": {"has_adapter": true, "adapter_kind": "without", "source": {"user_id": "u1"}}}
+{"func": "scope_gate", "case": "no-adapter", "turn": {"has_adapter": false, "adapter_kind": "with", "source": {"user_id": "u1"}}}
+{"func": "scope_gate", "case": "numeric-author", "turn": {"has_adapter": true, "adapter_kind": "with", "source": {"user_id": 123}}}
+{"func": "wait_slice", "case": "zero", "remaining": 0.0}
+{"func": "wait_slice", "case": "partial", "remaining": 0.35}
+{"func": "wait_slice", "case": "exactly-one", "remaining": 1.0}
+{"func": "wait_slice", "case": "long", "remaining": 5.0}
+{"func": "wait_slice", "case": "negative", "remaining": -2.0}

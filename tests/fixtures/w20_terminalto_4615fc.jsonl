@@ -1,0 +1,38 @@
+{"case":"bare_open_file","func":"transform","command":"open notes.pdf","system":"Darwin"}
+{"case":"bare_open_quoted_space","func":"transform","command":"open 'My File.pdf'","system":"Darwin"}
+{"case":"open_a_app_file","func":"transform","command":"open -a Preview file.pdf","system":"Darwin"}
+{"case":"open_a_app_with_space","func":"transform","command":"open -a \"Google Chrome\" page.html","system":"Darwin"}
+{"case":"flag_reveal","func":"transform","command":"open -R notes.pdf","system":"Darwin"}
+{"case":"flag_background","func":"transform","command":"open -g notes.pdf","system":"Darwin"}
+{"case":"flag_textedit","func":"transform","command":"open -t notes.pdf","system":"Darwin"}
+{"case":"open_no_args","func":"transform","command":"open","system":"Darwin"}
+{"case":"open_a_no_file","func":"transform","command":"open -a Preview","system":"Darwin"}
+{"case":"open_a_extra_arg","func":"transform","command":"open -a Preview file.pdf extra","system":"Darwin"}
+{"case":"two_files","func":"transform","command":"open a.pdf b.pdf","system":"Darwin"}
+{"case":"compound_command","func":"transform","command":"open a.pdf && rm a.pdf","system":"Darwin"}
+{"case":"not_open","func":"transform","command":"cat a.pdf","system":"Darwin"}
+{"case":"linux_noop","func":"transform","command":"open notes.pdf","system":"Linux"}
+{"case":"system_absent_noop","func":"transform","command":"open notes.pdf"}
+{"case":"command_null","func":"transform","command":null,"system":"Darwin"}
+{"case":"unterminated_quote","func":"transform","command":"open 'a.pdf","system":"Darwin"}
+{"case":"file_starts_with_dash","func":"transform","command":"open -a Preview -weird","system":"Darwin"}
+{"case":"double_quoted_path","func":"transform","command":"open \"a b.pdf\"","system":"Darwin"}
+{"case":"backslash_escaped_space","func":"transform","command":"open a\\ b.pdf","system":"Darwin"}
+{"case":"hash_not_comment","func":"transform","command":"open a#1.pdf","system":"Darwin"}
+{"case":"ladder_bare","func":"ladder","app":null,"file":"notes.pdf"}
+{"case":"ladder_named_app","func":"ladder","app":"Preview","file":"/tmp/dir/file.pdf"}
+{"case":"ladder_app_with_space","func":"ladder","app":"Google Chrome","file":"page.html"}
+{"case":"ladder_app_with_quote","func":"ladder","app":"Bob's App","file":"a b.pdf"}
+{"case":"quote_empty","func":"quote","value":""}
+{"case":"quote_safe","func":"quote","value":"simple-file.pdf"}
+{"case":"quote_space","func":"quote","value":"with space.txt"}
+{"case":"quote_apostrophe","func":"quote","value":"it's"}
+{"case":"quote_all_safe_chars","func":"quote","value":"a@b:c,d/e%f+g=h_i-j"}
+{"case":"quote_newline","func":"quote","value":"a\nb"}
+{"case":"osascript_wrap","func":"osascript_app","script":"tell application \"X\" to activate"}
+{"case":"split_mixed_quotes","func":"split","command":"open 'a b' \"c d\" e"}
+{"case":"split_unterminated","func":"split","command":"open 'a b"}
+{"case":"split_backslash_space","func":"split","command":"open a\\ b.pdf"}
+{"case":"split_empty_quoted","func":"split","command":"open ''"}
+{"case":"split_reset_double_quote","func":"split","command":"open \"a\\\"b\""}
+{"case":"flags_table","func":"flags"}

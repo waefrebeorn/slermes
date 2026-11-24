@@ -1,0 +1,30 @@
+{"func": "declares_external_supervisor", "pid": 906, "identity": {"pid": 906, "launch_supervisor": "systemd"}, "case": "systemd identity"}
+{"func": "declares_external_supervisor", "pid": 906, "identity": {"pid": 906, "supervisor": "launchd"}, "case": "launchd supervisor key"}
+{"func": "declares_external_supervisor", "pid": 906, "identity": {"pid": 906, "launch_supervisor": "none"}, "argv": ["hermes", "gateway", "run", "--external-supervisor"], "case": "folded none falls back to argv"}
+{"func": "declares_external_supervisor", "pid": 906, "identity": {"pid": 906, "launch_supervisor": "manual"}, "argv": ["hermes", "gateway", "run", "--external-supervisor"], "case": "manual identity argv marker"}
+{"func": "declares_external_supervisor", "pid": 906, "identity": {"pid": 906, "launch_supervisor": "manual"}, "argv": ["hermes", "gateway", "run"], "case": "manual plain argv"}
+{"func": "declares_external_supervisor", "pid": 906, "identity": {"pid": 907, "launch_supervisor": "systemd"}, "argv": ["hermes", "gateway", "run"], "case": "identity pid mismatch"}
+{"func": "declares_external_supervisor", "pid": 906, "argv": ["hermes", "run", "--external-supervisor"], "case": "no identity argv marker"}
+{"func": "declares_external_supervisor", "pid": 906, "identity": null, "argv": null, "record": {"pid": 906, "argv": ["hermes", "run", "--external-supervisor"]}, "case": "record argv marker"}
+{"func": "declares_external_supervisor", "pid": 906, "argv": null, "record": {"pid": 905, "argv": ["hermes", "run", "--external-supervisor"]}, "case": "record pid mismatch"}
+{"func": "declares_external_supervisor", "pid": 906, "argv": null, "record": null, "case": "no argv no record"}
+{"func": "declares_external_supervisor", "pid": 1, "argv": ["hermes", "run", "--external-supervisor"], "case": "pid one"}
+{"func": "declares_external_supervisor", "pid": 0, "argv": ["hermes", "run", "--external-supervisor"], "case": "pid zero"}
+{"func": "declares_external_supervisor", "pid": null, "argv": ["hermes", "run", "--external-supervisor"], "case": "pid none"}
+{"func": "declares_external_supervisor", "pid": 906, "identity": {"pid": 906.0, "launch_supervisor": "desktop"}, "case": "float identity pid"}
+{"func": "declares_external_supervisor", "pid": 906, "identity": {"pid": 906, "launch_supervisor": ""}, "argv": ["hermes", "run", "--external-supervisor"], "case": "blank supervisor falls through"}
+{"func": "declares_external_supervisor", "pid": 906, "argv": [], "case": "empty argv"}
+{"func": "replacement_pid", "old_pid": 400, "observed": [null, 500], "timeout": 15.0, "case": "fresh on second poll"}
+{"func": "replacement_pid", "old_pid": 400, "observed": [400, 400, 600], "timeout": 15.0, "case": "old then fresh"}
+{"func": "replacement_pid", "old_pid": 400, "observed": [400], "timeout": 1.0, "case": "never fresh"}
+{"func": "replacement_pid", "old_pid": 400, "observed": [null], "timeout": 1.0, "case": "never registered"}
+{"func": "replacement_pid", "old_pid": 400, "observed": [0, -5, 500], "timeout": 2.0, "case": "non positive pids skipped"}
+{"func": "replacement_pid", "old_pid": 400, "observed": [500], "timeout": 0, "case": "zero timeout still checks"}
+{"func": "replacement_pid", "old_pid": 400, "observed": [null, 700], "timeout": null, "case": "default timeout"}
+{"func": "replacement_pid", "old_pid": 400, "observed": [], "timeout": 1.0, "case": "no observation"}
+{"func": "replacement_pid", "old_pid": 400, "observed": [400, 900], "poll_interval": 1.0, "timeout": 5.0, "case": "custom interval"}
+{"func": "start_mode", "args": {"detach": true}, "force": false, "home": "C:/temp/hermes-home", "detach_code": 7, "case": "detached start"}
+{"func": "start_mode", "args": {}, "force": false, "case": "foreground start"}
+{"func": "start_mode", "args": {"detach": 0}, "force": true, "case": "detach zero foreground"}
+{"func": "start_mode", "args": {"detach": true}, "force": true, "home": "C:/temp/hermes-home", "detach_code": 0, "case": "detached with force"}
+{"func": "verify_timeout", "case": "verify timeout constant"}

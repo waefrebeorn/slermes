@@ -1,0 +1,62 @@
+{"func": "is_inert_python", "case": "print-literal", "code": "print(\"hello world\")"}
+{"func": "is_inert_python", "case": "json-import", "code": "import json\ndata = {\"a\": 1}\nprint(json.dumps(data))"}
+{"func": "is_inert_python", "case": "os-import", "code": "import os\nprint(1)"}
+{"func": "is_inert_python", "case": "relative-import", "code": "from . import helpers"}
+{"func": "is_inert_python", "case": "assign-then-use", "code": "x = 1\ny = x + 2\nprint(y)"}
+{"func": "is_inert_python", "case": "unbound-name", "code": "print(y)"}
+{"func": "is_inert_python", "case": "def-stmt", "code": "def f():\n    pass"}
+{"func": "is_inert_python", "case": "comprehension", "code": "print([i for i in range(3)])"}
+{"func": "is_inert_python", "case": "lambda", "code": "lam = lambda: 1"}
+{"func": "is_inert_python", "case": "docstring-body", "code": "text = \"def sh(cmd):\\n    os.system(cmd)\"\nprint(text)"}
+{"func": "is_inert_python", "case": "sink-attr", "code": "import pathlib\nprint(pathlib.os)"}
+{"func": "is_inert_python", "case": "with-block", "code": "with open(\"p\") as fh:\n    print(fh.read())"}
+{"func": "is_inert_python", "case": "syntax-error", "code": "x = ("}
+{"func": "is_inert_python", "case": "fstring-field", "code": "import json\nprint(f\"{json.dumps(1)}\")"}
+{"func": "is_inert_python", "case": "fstring-unbound", "code": "print(f\"{nope}\")"}
+{"func": "is_inert_python", "case": "if-branch", "code": "if True:\n    print(1)"}
+{"func": "is_inert_python", "case": "augmented", "code": "x = 1\nx += 2"}
+{"func": "is_inert_python", "case": "self-assign-unbound", "code": "sh = sh"}
+{"func": "is_inert_python", "case": "empty", "code": ""}
+{"func": "is_inert_python", "case": "import-attr-chain", "code": "import json\nprint(json.loads(\"{}\")[\"a\"])"}
+{"func": "is_inert_python", "case": "null-code", "code": null}
+{"func": "is_inert_python", "case": "from-import-inert", "code": "from collections import OrderedDict\nprint(OrderedDict())"}
+{"func": "is_inert_python", "case": "from-import-sink", "code": "from subprocess import run"}
+{"func": "is_inert_python", "case": "target-subscript", "code": "import json\nd = {}\nd[\"k\"] = json.dumps(2)\nprint(d)"}
+{"func": "is_inert_python", "case": "attribute-assign", "code": "import json\njson.value = 1"}
+{"func": "is_inert_python", "case": "unbound-attribute-assign", "code": "mod.value = 1"}
+{"func": "is_inert_python", "case": "semicolons", "code": "a = 1; b = a; print(b)"}
+{"func": "is_inert_python", "case": "annotated", "code": "count: int = 3\nprint(count)"}
+{"func": "is_inert_python", "case": "triple-string", "code": "doc = \"\"\"line one\nline two\"\"\"\nprint(doc)"}
+{"func": "is_inert_python", "case": "workspace-helpers", "code": "import json\nnote = 1\nprint(note)"}
+{"func": "is_inert_python", "case": "try-block", "code": "try:\n    print(1)\nexcept Exception:\n    pass"}
+{"func": "is_inert_python", "case": "call-keyword", "code": "print(\"x\", sep=\"-\")"}
+{"func": "safe_builtin", "case": "print", "name": "print"}
+{"func": "safe_builtin", "case": "exec", "name": "exec"}
+{"func": "safe_builtin", "case": "getattr", "name": "getattr"}
+{"func": "safe_builtin", "case": "none-literal", "name": "None"}
+{"func": "safe_builtin", "case": "open", "name": "open"}
+{"func": "safe_builtin", "case": "breakpoint", "name": "breakpoint"}
+{"func": "inert_import", "case": "json", "name": "json"}
+{"func": "inert_import", "case": "os", "name": "os"}
+{"func": "inert_import", "case": "pathlib", "name": "pathlib"}
+{"func": "inert_import", "case": "hermes-tools", "name": "hermes_tools"}
+{"func": "inert_import", "case": "datetime", "name": "datetime"}
+{"func": "inert_import", "case": "sys", "name": "sys"}
+{"func": "sink_attr", "case": "system", "name": "system"}
+{"func": "sink_attr", "case": "dumps", "name": "dumps"}
+{"func": "sink_attr", "case": "private", "name": "_private"}
+{"func": "sink_attr", "case": "get-type-hints", "name": "get_type_hints"}
+{"func": "sink_attr", "case": "gi-frame", "name": "gi_frame"}
+{"func": "sink_attr", "case": "write", "name": "write"}
+{"func": "sink_attr", "case": "check-output", "name": "check_output"}
+{"func": "sink_attr", "case": "startfile", "name": "startfile"}
+{"func": "sink_attr", "case": "import-module", "name": "import_module"}
+{"func": "max_match_chars", "case": "const"}
+{"func": "max_match_chars", "case": "const-again"}
+{"func": "rejection", "case": "blocked-with-match", "code": "import os\nos.system(\"reboot\")", "contains": true, "host_kill": false, "match": "os.system(\"reboot\")"}
+{"func": "rejection", "case": "not-a-command", "code": "import os\nos.system(\"reboot\")", "contains": false, "host_kill": false, "match": "os.system(\"reboot\")"}
+{"func": "rejection", "case": "inert-cell", "code": "print(\"os.system('reboot')\")", "contains": true, "host_kill": false, "match": "os.system('reboot')"}
+{"func": "rejection", "case": "no-match-text", "code": "def f():\n    pass", "contains": true, "host_kill": false, "match": ""}
+{"func": "rejection", "case": "host-kill", "code": "import os\nos.kill(1, 9)", "contains": true, "host_kill": true, "match": "os.kill(1, 9)", "host_kill_text": "Blocked: this looks like a host interpreter kill; run it outside the gateway."}
+{"func": "rejection", "case": "long-match", "code": "import os\nsubprocess.run([\"reboot\"])", "contains": true, "host_kill": false, "match": "os.system(xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)"}
+{"func": "rejection", "case": "missing-code", "contains": true}

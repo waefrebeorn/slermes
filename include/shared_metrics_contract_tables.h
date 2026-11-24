@@ -10,59 +10,58 @@
 extern "C" {
 #endif
 
-struct smc_set {
+struct smct_set {
     const char *const *values;
     size_t n;
 };
 
-struct smc_metric_entry {
+struct smct_metric_entry {
     const char *name;
-    struct smc_set set;
+    struct smct_set set;
     size_t n_fields;
 };
 
-struct smc_shape {
+struct smct_shape {
     const char *metric;
-    struct smc_set set;
+    struct smct_set set;
     size_t n_fields;
 };
 
-struct smc_field_entry {
+struct smct_field_entry {
     const char *metric;
     const char *field;
-    size_t set;
-    size_t n;
+    struct smct_set set;
     int dynamic;
 };
 
-struct smc_identifier {
+struct smct_identifier {
     const char *metric;
     const char *field;
     int max_length;
 };
 
 /* _METRIC_FIELDS.get(metric): NULL when the metric is unknown. */
-const char *const *smc_metric_fields(const char *metric, size_t *n_out);
+const char *const *smct_metric_fields(const char *metric, size_t *n_out);
 
 /* _LEGACY_METRIC_FIELDS.get(metric, ()) shapes. */
-size_t smc_legacy_shape_count(const char *metric);
-const char *const *smc_legacy_shape(const char *metric, size_t index, size_t *n_out);
+size_t smct_legacy_shape_count(const char *metric);
+const char *const *smct_legacy_shape(const char *metric, size_t index, size_t *n_out);
 
 /* _COUNTER_DIMENSION_VALUES[metric][field] membership. `dynamic` carries the
- * catalog values the caller loaded (see smc_counter_is_dynamic). */
-int smc_counter_known(const char *metric, const char *field);
-int smc_counter_is_dynamic(const char *metric, const char *field);
-int smc_counter_allows(const char *metric, const char *field, const char *value,
+ * catalog values the caller loaded (see smct_counter_is_dynamic). */
+int smct_counter_known(const char *metric, const char *field);
+int smct_counter_is_dynamic(const char *metric, const char *field);
+int smct_counter_allows(const char *metric, const char *field, const char *value,
                        const char *const *dynamic, size_t n_dynamic);
 
 /* First of custom/other/unknown present in the field's enum, else "". */
-const char *smc_field_fallback(const char *metric, const char *field);
+const char *smct_field_fallback(const char *metric, const char *field);
 
 /* _IDENTIFIER_FIELDS.get(metric, {}).get(field) -> max_length (-1 when absent). */
-int smc_identifier_max(const char *metric, const char *field, int *found);
+int smct_identifier_max(const char *metric, const char *field, int *found);
 
 /* _metric_identifier(value, max_length=max_length); writes into buf and returns it. */
-const char *smc_metric_identifier(const char *value, int max_length, char *buf, size_t cap);
+const char *smct_metric_identifier(const char *value, int max_length, char *buf, size_t cap);
 
 #ifdef __cplusplus
 }

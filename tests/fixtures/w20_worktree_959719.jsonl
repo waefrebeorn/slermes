@@ -1,0 +1,14 @@
+{"case":"parser_spec","func":"spec"}
+{"case":"alias_ls","func":"canonical_action","action":"ls"}
+{"case":"alias_audit","func":"canonical_action","action":"audit"}
+{"case":"action_list","func":"canonical_action","action":"list"}
+{"case":"action_prune","func":"canonical_action","action":"prune"}
+{"case":"action_restore","func":"canonical_action","action":"restore","extra":["mytree"]}
+{"case":"action_uppercase_ls","func":"canonical_action","action":"LS"}
+{"case":"action_trailing_space","func":"canonical_action","action":"audit "}
+{"case":"action_empty","func":"canonical_action","action":""}
+{"case":"action_missing_key","func":"canonical_action"}
+{"case":"action_unknown","func":"canonical_action","action":"status"}
+{"case":"action_wrong_type_number","func":"canonical_action","action":7}
+{"case":"action_wrong_type_bool","func":"canonical_action","action":true}
+{"case":"action_prefix_l","func":"canonical_action","action":"l"}

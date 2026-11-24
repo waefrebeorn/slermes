@@ -1,0 +1,20 @@
+{"func":"has_live_listener","probe":"ok","case":"probe accepts"}
+{"func":"has_live_listener","probe":"refused","case":"probe refused"}
+{"func":"has_live_listener","probe":"timeout","case":"probe timeout stays exclusive"}
+{"func":"is_wildcard_host","host":null,"case":"wildcard none"}
+{"func":"is_wildcard_host","host":"","case":"wildcard empty"}
+{"func":"is_wildcard_host","host":" 0.0.0.0 ","case":"wildcard v4 padded"}
+{"func":"is_wildcard_host","host":"::","case":"wildcard v6"}
+{"func":"is_wildcard_host","host":"*","case":"wildcard star"}
+{"func":"is_wildcard_host","host":"127.0.0.1","case":"explicit host"}
+{"func":"start","platform":"linux","host":"127.0.0.1","port":8080,"log_tag":"webhook","first":"ok","case":"linux binds first try"}
+{"func":"start","platform":"darwin","host":"127.0.0.1","port":8080,"log_tag":"webhook","first":"ok","case":"darwin binds first try"}
+{"func":"start","platform":"linux","host":"127.0.0.1","port":8080,"log_tag":"webhook","first":"EADDRINUSE","case":"linux eaddrinuse raises"}
+{"func":"start","platform":"darwin","host":"127.0.0.1","port":8080,"log_tag":"webhook","first":"EADDRINUSE","probe":"refused","second":"ok","case":"darwin timewait retry"}
+{"func":"start","platform":"darwin","host":"127.0.0.1","port":8080,"log_tag":"api_server","first":"EADDRINUSE","probe":"ok","case":"darwin live listener raises"}
+{"func":"start","platform":"darwin","host":"0.0.0.0","port":8080,"log_tag":"webhook","first":"EADDRINUSE","probe":"refused","case":"darwin wildcard keeps strict"}
+{"func":"start","platform":"darwin","host":null,"port":8080,"log_tag":"webhook","first":"EADDRINUSE","probe":"refused","case":"darwin null host strict"}
+{"func":"start","platform":"darwin","host":"127.0.0.1","port":80,"log_tag":"webhook","first":"EACCES","probe":"refused","case":"darwin other errno raises"}
+{"func":"start","platform":"darwin","host":"127.0.0.1","port":8080,"log_tag":"webhook","first":"EADDRINUSE","probe":"timeout","case":"darwin probe timeout keeps exclusive"}
+{"func":"start","platform":"darwin","host":"127.0.0.1","port":8080,"log_tag":"webhook","first":"EADDRINUSE","probe":"refused","second":"EADDRINUSE","case":"darwin retry fails"}
+{"func":"start","platform":"darwin","host":"::1","port":8443,"log_tag":"teams","first":"EADDRINUSE","probe":"refused","second":"ok","case":"darwin v6 loopback retry"}

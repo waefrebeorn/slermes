@@ -1,0 +1,77 @@
+{"case": "auto-native", "func": "auto_mode", "raw": "native"}
+{"case": "auto-Native", "func": "auto_mode", "raw": "Native"}
+{"case": "auto-OFF", "func": "auto_mode", "raw": "OFF"}
+{"case": "auto-Hermes", "func": "auto_mode", "raw": "Hermes"}
+{"case": "auto-HERMES", "func": "auto_mode", "raw": "HERMES"}
+{"case": "auto-bogus", "func": "auto_mode", "raw": "bogus"}
+{"case": "auto-empty", "func": "auto_mode", "raw": ""}
+{"case": "auto-native", "func": "auto_mode", "raw": "  native  "}
+{"case": "auto-missing", "func": "auto_mode"}
+{"case": "tokens-0", "func": "tokens_label", "approx_tokens": 0}
+{"case": "tokens-1", "func": "tokens_label", "approx_tokens": 1}
+{"case": "tokens-999", "func": "tokens_label", "approx_tokens": 999}
+{"case": "tokens-1000", "func": "tokens_label", "approx_tokens": 1000}
+{"case": "tokens-12345", "func": "tokens_label", "approx_tokens": 12345}
+{"case": "tokens-1234567", "func": "tokens_label", "approx_tokens": 1234567}
+{"case": "tokens--1234", "func": "tokens_label", "approx_tokens": -1234}
+{"case": "tokens--1000000", "func": "tokens_label", "approx_tokens": -1000000}
+{"case": "tokens-None", "func": "tokens_label", "approx_tokens": null}
+{"case": "tokens-True", "func": "tokens_label", "approx_tokens": true}
+{"case": "tokens-False", "func": "tokens_label", "approx_tokens": false}
+{"case": "tokens-missing", "func": "tokens_label"}
+{"case": "cd-no-compressor", "func": "cooldown_remaining", "agent": {"compressor": null}}
+{"case": "cd-no-getter", "func": "cooldown_remaining", "agent": {"compressor": {"has_getter": false, "state": {"remaining_seconds": 9}}}}
+{"case": "cd-raises", "func": "cooldown_remaining", "agent": {"compressor": {"has_getter": true, "raises": true, "state": {"remaining_seconds": 9}}}}
+{"case": "cd-state-null", "func": "cooldown_remaining", "agent": {"compressor": {"has_getter": true, "state": null}}}
+{"case": "cd-state-empty", "func": "cooldown_remaining", "agent": {"compressor": {"has_getter": true, "state": {}}}}
+{"case": "cd-null-remaining", "func": "cooldown_remaining", "agent": {"compressor": {"has_getter": true, "state": {"remaining_seconds": null}}}}
+{"case": "cd-number", "func": "cooldown_remaining", "agent": {"compressor": {"has_getter": true, "state": {"remaining_seconds": 12.5}}}}
+{"case": "cd-negative", "func": "cooldown_remaining", "agent": {"compressor": {"has_getter": true, "state": {"remaining_seconds": -3}}}}
+{"case": "cd-string", "func": "cooldown_remaining", "agent": {"compressor": {"has_getter": true, "state": {"remaining_seconds": "7"}}}}
+{"case": "cd-bad-string", "func": "cooldown_remaining", "agent": {"compressor": {"has_getter": true, "state": {"remaining_seconds": "soon"}}}}
+{"case": "cd-bool", "func": "cooldown_remaining", "agent": {"compressor": {"has_getter": true, "state": {"remaining_seconds": true}}}}
+{"case": "cd-missing-agent", "func": "cooldown_remaining"}
+{"case": "skip-native", "func": "skip_decision", "force": false, "auto_mode": "native", "cooldown": 0, "has_session": true}
+{"case": "skip-off", "func": "skip_decision", "force": false, "auto_mode": "off", "cooldown": 0, "has_session": true}
+{"case": "skip-hermes-cooldown", "func": "skip_decision", "force": false, "auto_mode": "hermes", "cooldown": 30, "has_session": true}
+{"case": "skip-hermes-fraction", "func": "skip_decision", "force": false, "auto_mode": "hermes", "cooldown": 2.5, "has_session": true}
+{"case": "skip-hermes-small", "func": "skip_decision", "force": false, "auto_mode": "hermes", "cooldown": 0.4, "has_session": true}
+{"case": "skip-hermes-nosession", "func": "skip_decision", "force": false, "auto_mode": "hermes", "cooldown": 0, "has_session": false}
+{"case": "skip-forced-nosession", "func": "skip_decision", "force": true, "auto_mode": "native", "cooldown": 0, "has_session": false}
+{"case": "skip-forced-session", "func": "skip_decision", "force": true, "auto_mode": "native", "cooldown": 99, "has_session": true}
+{"case": "skip-forced-hermes-session", "func": "skip_decision", "force": true, "auto_mode": "hermes", "cooldown": 0, "has_session": true}
+{"case": "skip-missing", "func": "skip_decision"}
+{"case": "failed-null", "func": "failed"}
+{"case": "failed-interrupted", "func": "failed", "result": {"interrupted": true}}
+{"case": "failed-error", "func": "failed", "result": {"error": "boom"}}
+{"case": "failed-clean", "func": "failed", "result": {"interrupted": false, "error": null}}
+{"case": "failed-empty", "func": "failed", "result": {}}
+{"case": "failed-empty-error", "func": "failed", "result": {"interrupted": true, "error": ""}}
+{"case": "msg-text", "func": "failure_message", "result": {"error": "boom"}}
+{"case": "msg-null", "func": "failure_message", "result": {"error": null}}
+{"case": "msg-number", "func": "failure_message", "result": {"error": 500}}
+{"case": "msg-bool", "func": "failure_message", "result": {"error": true}}
+{"case": "msg-missing", "func": "failure_message"}
+{"case": "err-text", "func": "failure_error", "result": {"error": "boom"}}
+{"case": "err-null", "func": "failure_error", "result": {"error": null}}
+{"case": "err-empty", "func": "failure_error", "result": {"error": ""}}
+{"case": "err-zero", "func": "failure_error", "result": {"error": 0}}
+{"case": "err-bool", "func": "failure_error", "result": {"error": true}}
+{"case": "err-missing", "func": "failure_error"}
+{"case": "status-ok", "func": "status_text", "failed": false}
+{"case": "status-failed", "func": "status_text", "failed": true}
+{"case": "status-missing", "func": "status_text"}
+{"case": "plan-native", "func": "plan", "force": false, "auto_mode": "native", "has_session": true, "result": {"error": null, "interrupted": false}, "session_id": "s1", "approx_tokens": 100, "messages": [{}, {}]}
+{"case": "plan-hermes-cooldown", "func": "plan", "force": false, "auto_mode": "hermes", "cooldown": 42, "has_session": true, "result": {"error": null, "interrupted": false}, "session_id": "s1"}
+{"case": "plan-hermes-nosession", "func": "plan", "force": false, "auto_mode": "hermes", "cooldown": 0, "has_session": false, "result": {"error": null, "interrupted": false}, "session_id": "s1"}
+{"case": "plan-forced-nosession", "func": "plan", "force": true, "auto_mode": "native", "has_session": false, "result": {"error": null, "interrupted": false}, "session_id": "s1"}
+{"case": "plan-forced-bogus-mode", "func": "plan", "force": true, "auto_mode": "Bogus", "has_session": false, "result": {"error": null, "interrupted": false}, "session_id": ""}
+{"case": "plan-raise", "func": "plan", "force": true, "auto_mode": "native", "has_session": true, "session_id": "s2", "approx_tokens": 5000, "messages": [{}, {}, {}]}
+{"case": "plan-raise-typerr", "func": "plan", "force": true, "auto_mode": "native", "has_session": true, "raise_type": "TypeError", "result": null, "session_id": "s2"}
+{"case": "plan-failed", "func": "plan", "force": true, "auto_mode": "native", "has_session": true, "session_id": "s2", "cooldown_recorder": true, "result": {"interrupted": true, "error": "kaboom", "should_retire": true}, "approx_tokens": 250000}
+{"case": "plan-failed-interrupt", "func": "plan", "force": true, "auto_mode": "native", "has_session": true, "session_id": "s3", "cooldown_recorder": true, "result": {"interrupted": true, "error": null}}
+{"case": "plan-failed-norecorder", "func": "plan", "force": true, "auto_mode": "native", "has_session": true, "session_id": "s3", "result": {"interrupted": false, "error": "nope"}}
+{"case": "plan-ok", "func": "plan", "force": true, "auto_mode": "native", "has_session": true, "session_id": "s4", "result": {"interrupted": false, "error": null, "thread_id": "t-9", "turn_id": "u-1"}, "has_update_from_response": true, "approx_tokens": 1234, "task_id": "task-7", "messages": [{}, {}]}
+{"case": "plan-ok-no-usage", "func": "plan", "force": true, "auto_mode": "off", "has_session": true, "session_id": "s5", "result": {"interrupted": false, "error": null}, "has_update_from_response": false, "task_id": "task-8"}
+{"case": "plan-ok-nulls", "func": "plan", "force": true, "auto_mode": "native", "has_session": true, "result": {"interrupted": false, "error": null, "thread_id": null, "turn_id": null}}
+{"case": "plan-missing-all", "func": "plan"}

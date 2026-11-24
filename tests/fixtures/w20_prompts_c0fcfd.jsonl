@@ -1,0 +1,29 @@
+{"func":"style_hint","style":"auto","case":"hint auto"}
+{"func":"style_hint","style":"  PIXEL ","case":"hint strip + lower"}
+{"func":"style_hint","style":"flat-vector","case":"hint flat-vector"}
+{"func":"style_hint","style":"watercolour","case":"hint unknown"}
+{"func":"style_hint","style":null,"case":"hint null reads auto"}
+{"func":"style_hint","style":"","case":"hint empty reads auto"}
+{"func":"state_action","state":"idle","case":"action idle"}
+{"func":"state_action","state":"failed","case":"action failed em dash"}
+{"func":"state_action","state":"waiting","case":"action waiting em dash"}
+{"func":"state_action","state":"running","case":"action running in place"}
+{"func":"state_action","state":"unknown-state","case":"action unknown default"}
+{"func":"state_action","case":"action missing key"}
+{"func":"spacing_spec","frame_count":1,"case":"spacing 1"}
+{"func":"spacing_spec","frame_count":3,"case":"spacing 3"}
+{"func":"spacing_spec","frame_count":2.5,"case":"spacing fractional"}
+{"func":"spacing_spec","frame_count":0,"case":"spacing zero clamps"}
+{"func":"spacing_spec","frame_count":-4,"case":"spacing negative clamps"}
+{"func":"spacing_spec","frame_count":8,"case":"spacing 8"}
+{"func":"base_variations","case":"variations table"}
+{"func":"base_prompt","concept":"a sleepy mushroom cat","style":"pixel","variation":"a heavier, broader silhouette with sturdier proportions","case":"base full"}
+{"func":"base_prompt","concept":"  a tin robot  ","style":"PLUSH","case":"base strip + upper style"}
+{"func":"base_prompt","concept":null,"style":null,"variation":null,"case":"base nulls"}
+{"func":"base_prompt","concept":"   ","case":"base blank concept"}
+{"func":"base_prompt","concept":"an eel","style":"nonesuch","variation":"","case":"base unknown style empty variation"}
+{"func":"row_prompt","state":"idle","frame_count":4,"concept":"an eel","style":"auto","case":"row idle 4"}
+{"func":"row_prompt","state":"running-left","frame_count":6,"concept":"a jelly ghost","style":"pixel","case":"row running-left 6"}
+{"func":"row_prompt","state":"unknown-state","frame_count":8,"concept":"a fox","style":"clay","case":"row unknown state 8"}
+{"func":"row_prompt","state":"jumping","frame_count":1,"style":"sticker","case":"row single frame no concept"}
+{"func":"row_prompt","state":"failed","frame_count":7,"concept":null,"style":null,"case":"row nulls with em dash action"}

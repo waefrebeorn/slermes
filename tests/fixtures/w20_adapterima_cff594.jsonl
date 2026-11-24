@@ -1,0 +1,29 @@
+{"func":"ext_for","content_type":"image/jpeg","case":"ext jpeg"}
+{"func":"ext_for","content_type":"image/jpg","case":"ext jpg"}
+{"func":"ext_for","content_type":"image/gif","case":"ext gif"}
+{"func":"ext_for","content_type":"image/webp","case":"ext webp"}
+{"func":"ext_for","content_type":"image/png","case":"ext png default"}
+{"func":"ext_for","content_type":"","case":"ext empty"}
+{"func":"ext_for","content_type":"IMAGE/JPEG","case":"ext case sensitive"}
+{"func":"unquote","value":"/tmp/a%20b.png","case":"unquote space"}
+{"func":"unquote","value":"/tmp/no-escape.png","case":"unquote plain"}
+{"func":"unquote","value":"/tmp/%ZZ.png","case":"unquote invalid escape"}
+{"func":"unquote","value":"%2Ftmp%2Fc%2Ed.png","case":"unquote slashes"}
+{"func":"basename","path":"/tmp/dir/a.png","case":"basename posix"}
+{"func":"basename","path":"C:\\tmp\\dir\\b.png","case":"basename windows"}
+{"func":"basename","path":"/tmp/dir/","case":"basename trailing slash"}
+{"func":"basename","path":"","case":"basename empty"}
+{"func":"collect","chunk":[["https://x/a.png","first"]],"downloads":{"https://x/a.png":{"ok":true,"content_type":"image/png","content":"AAA"}},"case":"remote png with alt"}
+{"func":"collect","chunk":[["https://x/a.jpg",""]],"downloads":{"https://x/a.jpg":{"ok":true,"content_type":"image/jpeg","content":"JPG"}},"case":"remote jpeg no alt"}
+{"func":"collect","chunk":[["https://x/a","x1"],["https://x/b","x2"]],"downloads":{"https://x/a":{"ok":true,"content_type":"image/gif","content":"G1"},"https://x/b":{"ok":true,"content_type":"image/webp","content":"G2"}},"case":"two remote uploads"}
+{"func":"collect","chunk":[["file:///tmp/dir/a.png","local alt"]],"exists":["/tmp/dir/a.png"],"case":"file exists with alt"}
+{"func":"collect","chunk":[["file:///tmp/dir/missing.png","ghost alt"]],"exists":[],"case":"file missing keeps alt"}
+{"func":"collect","chunk":[["file:///tmp/a%20b.png",""]],"exists":["/tmp/a b.png"],"case":"file percent decoded"}
+{"func":"collect","chunk":[["https://evil/x.png","bad alt"]],"unsafe":["https://evil/x.png"],"case":"unsafe url refused"}
+{"func":"collect","chunk":[["https://x/a.png","alt"]],"downloads":{"https://x/a.png":{"ok":false,"fail":"status"}},"case":"download status failure"}
+{"func":"collect","chunk":[["https://x/a.png","alt"]],"downloads":{"https://x/a.png":{"ok":false,"fail":"body"}},"case":"download body limit"}
+{"func":"collect","chunk":[["https://x/a.png","alt"]],"downloads":{"https://x/a.png":{"ok":false,"fail":"stream"}},"case":"download stream failure"}
+{"func":"collect","chunk":[["https://x/a.bin","bin"]],"downloads":{"https://x/a.bin":{"ok":true,"content":"BIN"}},"case":"no content type defaults png"}
+{"func":"collect","chunk":[],"case":"empty batch"}
+{"func":"collect","chunk":[["file:///tmp/one.png","keep"],["https://evil/two.png","blocked"],["https://x/three.jpg","third"]],"exists":["/tmp/one.png"],"unsafe":["https://evil/two.png"],"downloads":{"https://x/three.jpg":{"ok":true,"content_type":"image/jpeg","content":"3"}},"case":"mixed batch"}
+{"func":"collect","chunk":[["file:///tmp/no%zz.png","bad escape"]],"exists":["/tmp/no%zz.png"],"case":"file invalid escape kept"}

@@ -1,0 +1,33 @@
+{"func": "source_path", "case": "path-0", "db_path": "shared-state.db"}
+{"func": "source_path", "case": "path-1", "db_path": "/var/lib/h/shared-state.db"}
+{"func": "source_path", "case": "path-2", "db_path": "C:/Users/x/state/shared-state.db"}
+{"func": "source_path", "case": "path-3", "db_path": "C:\\Users\\x\\shared-state.db"}
+{"func": "source_path", "case": "path-4", "db_path": "C:/x/state.db"}
+{"func": "source_path", "case": "path-5", "db_path": "state.db"}
+{"func": "source_path", "case": "path-6", "db_path": "a/shared-state.dbx"}
+{"func": "source_path", "case": "path-7", "db_path": ""}
+{"func": "source_path", "case": "path-missing"}
+{"func": "settled", "case": "settled-no-predecessor", "db_path": "C:/x/state.db", "source_failed": false, "table_exists": true, "marker_row": true}
+{"func": "settled", "case": "settled-failed-source", "db_path": "C:/x/shared-state.db", "source_failed": true, "table_exists": false, "marker_row": false}
+{"func": "settled", "case": "settled-recorded", "db_path": "C:/x/shared-state.db", "source_failed": false, "table_exists": true, "marker_row": true}
+{"func": "settled", "case": "settled-no-marker-row", "db_path": "C:/x/shared-state.db", "source_failed": false, "table_exists": true, "marker_row": false}
+{"func": "settled", "case": "settled-no-table", "db_path": "C:/x/shared-state.db", "source_failed": false, "table_exists": false, "marker_row": true}
+{"func": "select_expressions", "case": "select-rooms-full", "name": "hosted_rooms", "source_cols": ["room_id", "name", "created_at"], "target_cols": ["room_id", "name", "created_at", "authority_gateway_id", "authority_epoch", "event_bytes"], "defaults": [["hosted_rooms", "authority_gateway_id", "'legacy'"], ["hosted_rooms", "authority_epoch", "1"], ["hosted_rooms", "event_bytes", "0"], ["hosted_room_events", "actor_json", "'{\"kind\": \"legacy\"}'"]]}
+{"func": "select_expressions", "case": "select-rooms-has-event-bytes", "name": "hosted_rooms", "source_cols": ["room_id", "event_bytes"], "target_cols": ["room_id", "event_bytes", "authority_gateway_id"], "defaults": [["hosted_rooms", "authority_gateway_id", "'legacy'"], ["hosted_rooms", "authority_epoch", "1"], ["hosted_rooms", "event_bytes", "0"], ["hosted_room_events", "actor_json", "'{\"kind\": \"legacy\"}'"]]}
+{"func": "select_expressions", "case": "select-events-default", "name": "hosted_room_events", "source_cols": ["room_id", "seq", "kind"], "target_cols": ["room_id", "seq", "kind", "actor_json", "authority_epoch"], "defaults": [["hosted_rooms", "authority_gateway_id", "'legacy'"], ["hosted_rooms", "authority_epoch", "1"], ["hosted_rooms", "event_bytes", "0"], ["hosted_room_events", "actor_json", "'{\"kind\": \"legacy\"}'"]]}
+{"func": "select_expressions", "case": "select-drops-source-only", "name": "hosted_room_events", "source_cols": ["room_id", "legacy_only"], "target_cols": ["room_id", "actor_json"], "defaults": [["hosted_rooms", "authority_gateway_id", "'legacy'"], ["hosted_rooms", "authority_epoch", "1"], ["hosted_rooms", "event_bytes", "0"], ["hosted_room_events", "actor_json", "'{\"kind\": \"legacy\"}'"]]}
+{"func": "select_expressions", "case": "select-unknown-table", "name": "hosted_room_peer", "source_cols": ["a"], "target_cols": ["a", "b"], "defaults": [["hosted_rooms", "authority_gateway_id", "'legacy'"], ["hosted_rooms", "authority_epoch", "1"], ["hosted_rooms", "event_bytes", "0"], ["hosted_room_events", "actor_json", "'{\"kind\": \"legacy\"}'"]]}
+{"func": "select_expressions", "case": "select-no-columns", "name": "hosted_rooms", "source_cols": [], "target_cols": ["room_id"], "defaults": [["hosted_rooms", "authority_gateway_id", "'legacy'"], ["hosted_rooms", "authority_epoch", "1"], ["hosted_rooms", "event_bytes", "0"], ["hosted_room_events", "actor_json", "'{\"kind\": \"legacy\"}'"]]}
+{"func": "plan_tables", "case": "plan-full", "names": ["hosted_room_events", "hosted_rooms", "hosted_room_driver_leases", "hosted_room_router_claims", "hosted_room_legacy_imports", "hosted_room_seq_next", "hosted_room_x_migrating", "hosted_room_peers", "hosted_room_events_next"]}
+{"func": "plan_tables", "case": "plan-only-parent", "names": ["hosted_room_events", "hosted_rooms"]}
+{"func": "plan_tables", "case": "plan-empty", "names": []}
+{"func": "plan_tables", "case": "plan-missing"}
+{"func": "table_included", "case": "incl-hosted_rooms", "name": "hosted_rooms"}
+{"func": "table_included", "case": "incl-hosted_room_events", "name": "hosted_room_events"}
+{"func": "table_included", "case": "incl-hosted_room_driver_leases", "name": "hosted_room_driver_leases"}
+{"func": "table_included", "case": "incl-hosted_room_router_claims", "name": "hosted_room_router_claims"}
+{"func": "table_included", "case": "incl-hosted_room_legacy_imports", "name": "hosted_room_legacy_imports"}
+{"func": "table_included", "case": "incl-hosted_room_next", "name": "hosted_room_next"}
+{"func": "table_included", "case": "incl-hosted_room_migrating", "name": "hosted_room_migrating"}
+{"func": "table_included", "case": "incl-hosted_room_events_next_v2", "name": "hosted_room_events_next_v2"}
+{"func": "table_included", "case": "incl-empty", "name": ""}

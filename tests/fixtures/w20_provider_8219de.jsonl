@@ -1,0 +1,34 @@
+{"func": "missing_key", "case": "missing-key"}
+{"func": "setup_schema", "case": "setup-schema"}
+{"func": "search", "case": "search-basic", "query": "hello", "limit": 3, "results": [{"url": "https://a.example/1", "title": "A one", "highlights": ["alpha", "beta"]}, {"url": "https://b.example/2", "title": "B two", "highlights": []}]}
+{"func": "search", "case": "search-empty", "query": "nothing", "limit": 5, "results": []}
+{"func": "search", "case": "search-null-fields", "query": "q", "limit": 5, "results": [{"url": null, "title": null, "highlights": null}]}
+{"func": "search", "case": "search-wrong-types", "query": "q", "limit": 1, "results": [{"url": 42, "title": true, "highlights": []}, {"url": "u", "title": "t", "highlights": ["only"]}]}
+{"func": "search", "case": "search-missing-results", "query": "q", "limit": 5}
+{"func": "extract", "case": "extract-basic", "urls": ["https://a.example/1", "https://b.example/2"], "results": [{"url": "https://a.example/1", "title": "A", "text": "body a"}, {"url": null, "title": null, "text": null}], "statuses": null}
+{"func": "extract", "case": "extract-status-http", "urls": ["https://x.example/"], "results": [{"url": "https://y.example/", "title": "Y", "text": "ok"}], "statuses": [{"id": "https://x.example/", "status": "error", "error": {"http_status_code": 429, "tag": "CRAWL_HTTP_429"}}]}
+{"func": "extract", "case": "extract-status-tag", "urls": ["https://gone.example/"], "results": [], "statuses": [{"id": "https://gone.example/", "status": "error", "error": {"http_status_code": null, "tag": "CRAWL_NOT_FOUND"}}]}
+{"func": "extract", "case": "extract-status-bad-tag", "urls": ["https://dns.example/"], "results": [], "statuses": [{"id": "https://dns.example/", "status": "error", "error": {"http_status_code": null, "tag": "CRAWL_DNS"}}, {"id": "https://fine.example/", "status": "success", "error": null}]}
+{"func": "extract", "case": "extract-no-statuses-key", "urls": ["https://a.example/"], "results": [{"url": "https://a.example/", "title": "A", "text": "t"}]}
+{"func": "crawl_status", "case": "crawl-http-code", "error": {"http_status_code": 503, "tag": "CRAWL_HTTP_500"}}
+{"func": "crawl_status", "case": "crawl-zero-falls-back", "error": {"http_status_code": 0, "tag": "CRAWL_HTTP_404"}}
+{"func": "crawl_status", "case": "crawl-not-found", "error": {"http_status_code": null, "tag": "CRAWL_NOT_FOUND"}}
+{"func": "crawl_status", "case": "crawl-unknown-tag", "error": {"http_status_code": null, "tag": "CRAWL_DNS"}}
+{"func": "crawl_status", "case": "crawl-trailing-ws", "error": {"http_status_code": null, "tag": "CRAWL_HTTP_429 \n"}}
+{"func": "crawl_status", "case": "crawl-word-boundary", "error": {"http_status_code": null, "tag": "XCRAWL_HTTP_429"}}
+{"func": "crawl_status", "case": "crawl-four-digits", "error": {"http_status_code": null, "tag": "CRAWL_HTTP_4299"}}
+{"func": "crawl_status", "case": "crawl-null-error", "error": null}
+{"func": "vendor_error_entry", "case": "vee-origin", "url": "https://a/", "status": 500, "reason": "boom", "body": "raw body"}
+{"func": "vendor_error_entry", "case": "vee-reason-only", "url": "https://b/", "status": null, "reason": "http_error", "body": null}
+{"func": "vendor_error_entry", "case": "vee-body-only", "url": "https://c/", "status": null, "reason": null, "body": "oops"}
+{"func": "vendor_error_entry", "case": "vee-low-status", "url": "https://d/", "status": 200, "reason": null, "body": null}
+{"func": "vendor_error_entry", "case": "vee-string-status", "url": "https://e/", "status": "429", "reason": "limited", "body": null}
+{"func": "vendor_error_entry", "case": "vee-bool-status", "url": "https://f/", "status": true, "reason": null, "body": "x"}
+{"func": "document", "case": "document-basic", "url": "https://g/", "title": "G", "content": "text"}
+{"func": "document", "case": "document-empty", "url": "", "title": "", "content": ""}
+{"func": "use_keyless", "case": "auto-no-key-enabled", "tier": null, "api_key": "", "keyless_enabled": true}
+{"func": "use_keyless", "case": "auto-no-key-disabled", "tier": null, "api_key": "", "keyless_enabled": false}
+{"func": "use_keyless", "case": "auto-with-key", "tier": null, "api_key": "sk-1", "keyless_enabled": true}
+{"func": "use_keyless", "case": "free-with-key", "tier": "free", "api_key": "sk-1", "keyless_enabled": false}
+{"func": "use_keyless", "case": "paid-no-key", "tier": "paid", "api_key": "", "keyless_enabled": true}
+{"func": "use_keyless", "case": "other-tier", "tier": "custom", "api_key": "", "keyless_enabled": true}

@@ -1,0 +1,23 @@
+{"func":"finalize","case":"success","result":{"success":true,"error":null},"adapter":{"degraded":false,"running":true}}
+{"func":"finalize","case":"degraded refusal on healthy adapter","result":{"success":false,"error":"send_path_degraded"},"adapter":{"degraded":false,"running":true}}
+{"func":"finalize","case":"other error","result":{"success":false,"error":"timeout"},"adapter":{"degraded":false,"running":true}}
+{"func":"finalize","case":"adapter still degraded","result":{"success":false,"error":"send_path_degraded"},"adapter":{"degraded":true,"running":true}}
+{"func":"finalize","case":"not running","result":{"success":false,"error":"send_path_degraded"},"adapter":{"degraded":false,"running":false}}
+{"func":"finalize","case":"not the mixin","result":{"success":false,"error":"send_path_degraded"},"adapter":{"degraded":false,"running":true,"is_mixin":false}}
+{"func":"finalize","case":"missing error key","result":{"success":false},"adapter":{"degraded":false,"running":true}}
+{"func":"mark_recovered","case":"full edge","adapter":{"degraded":true,"running":true,"fatal":false,"has_redeliver":true,"has_replay":true,"name":"tg"}}
+{"func":"mark_recovered","case":"not degraded","adapter":{"degraded":false,"running":true,"has_replay":true,"name":"tg"}}
+{"func":"mark_recovered","case":"fatal error","adapter":{"degraded":true,"running":true,"fatal":true,"has_replay":true,"name":"tg"}}
+{"func":"mark_recovered","case":"not running","adapter":{"degraded":true,"running":false,"has_replay":true,"name":"tg"}}
+{"func":"mark_recovered","case":"no redeliver","adapter":{"degraded":true,"running":true,"has_redeliver":false,"has_replay":false,"name":"tg"}}
+{"func":"mark_recovered","case":"sweep already running","adapter":{"degraded":true,"running":true,"task_running":true,"has_replay":false,"name":"tg"}}
+{"func":"mark_recovered","case":"no replay","adapter":{"degraded":true,"running":true,"has_replay":false,"name":"bot7"}}
+{"func":"schedule_sweep","case":"no runner","adapter":{"has_redeliver":false,"name":"tg"}}
+{"func":"schedule_sweep","case":"already running","adapter":{"has_redeliver":true,"task_running":true,"rerun":false,"name":"tg"}}
+{"func":"schedule_sweep","case":"fresh task","adapter":{"has_redeliver":true,"name":"tg","rerun":true}}
+{"func":"sweep_loop","case":"one redelivery","adapter":{"degraded":false,"running":true,"name":"tg"},"delivered":[2],"rerun_after":[false]}
+{"func":"sweep_loop","case":"rerun once","adapter":{"degraded":false,"running":true,"name":"tg"},"delivered":[0,3],"rerun_after":[true,false]}
+{"func":"sweep_loop","case":"degraded stops","adapter":{"degraded":true,"running":true,"name":"tg"},"delivered":[5],"rerun_after":[false]}
+{"func":"sweep_loop","case":"stopped adapter","adapter":{"degraded":false,"running":false,"name":"tg"},"delivered":[5],"rerun_after":[false]}
+{"func":"sweep_loop","case":"empty script","adapter":{"degraded":false,"running":true,"name":"tg"},"delivered":[],"rerun_after":[]}
+{"func":"sweep_loop","case":"three passes","adapter":{"degraded":false,"running":true,"name":"tg"},"delivered":[1,2,3],"rerun_after":[true,true,false]}

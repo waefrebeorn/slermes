@@ -1,0 +1,20 @@
+{"func": "stale_survivor_pids", "case": "mixed", "fleet": [{"pid": 11, "state": "stale", "profile": "alpha"}, {"pid": 12, "state": "fresh", "profile": "beta"}, {"pid": 13, "state": "stale", "profile": null}, {"pid": 14, "state": "stale"}]}
+{"func": "stale_survivor_pids", "case": "already-signalled", "fleet": [{"pid": 11, "state": "stale", "profile": "alpha"}, {"pid": 12, "state": "fresh", "profile": "beta"}, {"pid": 13, "state": "stale", "profile": null}, {"pid": 14, "state": "stale"}], "already_signalled": [11, 14]}
+{"func": "stale_survivor_pids", "case": "none-stale", "fleet": [{"pid": 1, "state": "fresh"}]}
+{"func": "stale_survivor_pids", "case": "bad-pids", "fleet": [{"pid": 0, "state": "stale"}, {"pid": -3, "state": "stale"}, {"pid": "5", "state": "stale"}, {"pid": null, "state": "stale"}]}
+{"func": "stale_survivor_pids", "case": "bool-pid", "fleet": [{"pid": true, "state": "stale"}]}
+{"func": "stale_survivor_pids", "case": "null-fleet", "fleet": null}
+{"func": "stale_survivor_pids", "case": "empty-fleet", "fleet": []}
+{"func": "stale_survivor_pids", "case": "row-not-dict", "fleet": [{"pid": 1, "state": "stale"}, 7]}
+{"func": "stale_survivor_pids", "case": "no-pid-key", "fleet": [{"state": "stale"}]}
+{"func": "signal", "case": "one-stale-manual", "fleet": [{"pid": 21, "state": "stale", "profile": "alpha"}], "restart": {"killed_pids": [], "stopped_unmapped_pids": []}, "drain_budget": 30, "drain_ok": [21], "service_pids": []}
+{"func": "signal", "case": "two-supervised", "fleet": [{"pid": 31, "state": "stale", "profile": "a"}, {"pid": 32, "state": "stale", "profile": "b"}], "restart": {"killed_pids": [32]}, "drain_budget": 60, "drain_ok": [31, 32], "service_pids": [31, 32]}
+{"func": "signal", "case": "left-pending", "fleet": [{"pid": 41, "state": "stale", "profile": "c"}], "restart": {"killed_pids": []}, "drain_budget": 10, "drain_ok": [], "service_pids": [41], "identity": {"41": 9871}}
+{"func": "signal", "case": "drain-raises", "fleet": [{"pid": 51, "state": "stale"}, {"pid": 52, "state": "stale", "profile": "d"}], "restart": {"killed_pids": []}, "drain_budget": 5, "drain_ok": [52], "drain_raise": {"51": "permission denied"}, "service_pids": []}
+{"func": "signal", "case": "no-survivors", "fleet": [{"pid": 61, "state": "fresh"}], "restart": {"killed_pids": []}, "drain_budget": 5}
+{"func": "signal", "case": "service-raises", "fleet": [{"pid": 71, "state": "stale", "profile": "e"}], "restart": {"killed_pids": []}, "drain_budget": 5, "drain_ok": [71], "service_raises": true}
+{"func": "signal", "case": "stopped-union", "fleet": [{"pid": 81, "state": "stale", "profile": "f"}, {"pid": 82, "state": "stale"}], "restart": {"killed_pids": [9], "stopped_unmapped_pids": [3]}, "drain_budget": 5, "drain_ok": [81, 82], "service_pids": [82]}
+{"func": "signal", "case": "unhashable-pid", "fleet": [{"pid": 91, "state": "stale"}, {"pid": [1], "state": "fresh"}], "restart": {"killed_pids": []}, "drain_budget": 5}
+{"func": "signal", "case": "already-killed", "fleet": [{"pid": 101, "state": "stale"}, {"pid": 102, "state": "stale"}], "restart": {"killed_pids": [101]}, "drain_budget": 5, "drain_ok": [102], "service_pids": [102]}
+{"func": "signal", "case": "numeric-profile", "fleet": [{"pid": 111, "state": "stale", "profile": 5}], "restart": {"killed_pids": []}, "drain_budget": 5, "drain_ok": [111], "service_pids": []}
+{"func": "signal", "case": "bool-stale-pid", "fleet": [{"pid": true, "state": "stale"}], "restart": {"killed_pids": []}, "drain_budget": 5, "drain_ok": [1], "service_pids": []}

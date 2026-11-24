@@ -1,0 +1,31 @@
+{"func":"image_pinned","case":"raw key pins","terminal_cfg":{"docker_image":"old"},"raw_terminal":{"docker_image":"x"},"scope":null,"env_image":null}
+{"func":"image_pinned","case":"raw non-dict","terminal_cfg":{"docker_image":"old"},"raw_terminal":"nope","scope":null,"env_image":null}
+{"func":"image_pinned","case":"scope pinned","terminal_cfg":{},"raw_terminal":{},"scope":{"TERMINAL_DOCKER_IMAGE_PINNED":"1"},"env_image":null}
+{"func":"image_pinned","case":"scope zero","terminal_cfg":{},"raw_terminal":{},"scope":{"TERMINAL_DOCKER_IMAGE_PINNED":"0"},"env_image":null}
+{"func":"image_pinned","case":"scope empty","terminal_cfg":{},"raw_terminal":{},"scope":{},"env_image":null}
+{"func":"image_pinned","case":"scope int one is not str one","terminal_cfg":{},"raw_terminal":{},"scope":{"TERMINAL_DOCKER_IMAGE_PINNED":1},"env_image":null}
+{"func":"image_pinned","case":"env differs","terminal_cfg":{"docker_image":"img-y"},"raw_terminal":{},"scope":null,"env_image":"img-x"}
+{"func":"image_pinned","case":"env same","terminal_cfg":{"docker_image":"img-y"},"raw_terminal":{},"scope":null,"env_image":"img-y"}
+{"func":"image_pinned","case":"env empty","terminal_cfg":{"docker_image":"img-y"},"raw_terminal":{},"scope":null,"env_image":""}
+{"func":"image_pinned","case":"env set cfg absent","terminal_cfg":{},"raw_terminal":{},"scope":null,"env_image":"img-x"}
+{"func":"image_pinned","case":"no cfg no env","terminal_cfg":{"backend":"docker"},"raw_terminal":{},"scope":null,"env_image":null}
+{"func":"pending","case":"stale group wins","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":"c1\told:1\nc2\told:1\nc3\tother:2\n"}
+{"func":"pending","case":"tie keeps first max","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":"a\timgA\nb\timgB\n"}
+{"func":"pending","case":"all current","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":"a\tnew:1\nb\tnew:1\n"}
+{"func":"pending","case":"backend modal","config":{"terminal":{"backend":"modal","docker_image":"new:1"}},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":"a\told\n"}
+{"func":"pending","case":"pinned raw","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{"docker_image":"pinned"},"scope":null,"env_image":null,"docker_found":true,"listing":"a\told\n"}
+{"func":"pending","case":"no docker","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":false,"listing":"a\told\n"}
+{"func":"pending","case":"probe failed","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":null}
+{"func":"pending","case":"no tab skipped","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":"no-separator\na\told:9\n"}
+{"func":"pending","case":"crlf listing","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":"b\told:2\r\na\told:2\r\n"}
+{"func":"pending","case":"empty listing","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":""}
+{"func":"pending","case":"empty target","config":{"terminal":{"backend":"docker","docker_image":""}},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":"a\told\n"}
+{"func":"pending","case":"terminal missing","config":{},"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":"a\told\n"}
+{"func":"pending","case":"config null","config":null,"raw_terminal":{},"scope":null,"env_image":null,"docker_found":true,"listing":"a\told\n"}
+{"func":"pending","case":"scope pinned blocks","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{},"scope":{"TERMINAL_DOCKER_IMAGE_PINNED":"1"},"env_image":null,"docker_found":true,"listing":"a\told\n"}
+{"func":"pending","case":"env pinned blocks","config":{"terminal":{"backend":"docker","docker_image":"new:1"}},"raw_terminal":{},"scope":null,"env_image":"override","docker_found":true,"listing":"a\told\n"}
+{"func":"explain_lines","case":"one container","switch":{"current_image":"old:1","target_image":"new:1","containers":["c1"]}}
+{"func":"explain_lines","case":"zero containers","switch":{"current_image":"old:1","target_image":"new:1","containers":[]}}
+{"func":"explain_lines","case":"three containers","switch":{"current_image":"old:1","target_image":"new:1","containers":["a","b","c"]}}
+{"func":"decide_image","case":"approve","switch":{"current_image":"old:1","target_image":"new:1","containers":["a"]},"approve":true}
+{"func":"decide_image","case":"keep","switch":{"current_image":"old:1","target_image":"new:1","containers":["a"]},"approve":false}

@@ -1,0 +1,25 @@
+{"case": "prepend_all", "func": "prepend_tool_paths", "managed_home": "H", "managed_bin": "H\\bin", "executable": "V\\python.exe", "home_dir": "HD", "env_path": "C:\\Windows", "store_first": false}
+{"case": "prepend_no_env", "func": "prepend_tool_paths", "managed_home": "H", "managed_bin": "H\\bin", "executable": "V\\python.exe", "home_dir": "HD", "env_path": "", "store_first": false}
+{"case": "prepend_managed_error", "func": "prepend_tool_paths", "managed_home": "H", "managed_bin": "", "managed_error": true, "executable": "V\\python.exe", "home_dir": "HD", "env_path": "C:\\Windows", "store_first": false}
+{"case": "prepend_store_first", "func": "prepend_tool_paths", "managed_home": "H", "managed_bin": "H\\bin", "executable": "V\\python.exe", "home_dir": "HD", "env_path": "C:\\Windows", "store_first": true}
+{"case": "prepend_relative_exe", "func": "prepend_tool_paths", "managed_home": "H", "managed_bin": "H\\bin", "executable": "python.exe", "home_dir": "HD", "env_path": "/usr/bin", "store_first": false}
+{"case": "run_ok_seed", "func": "run_reply", "seq": 4, "messages": [{"id": 5, "ok": true, "output": "hello world  \n", "seed": "next turn"}], "command": "/prompt hi"}
+{"case": "run_foreign_then_match", "func": "run_reply", "seq": 4, "messages": [{"id": 99, "ok": true, "output": "ignored"}, {"id": 5, "ok": true, "output": "mine"}], "command": "/x"}
+{"case": "run_seed_zero", "func": "run_reply", "seq": 1, "messages": [{"id": 2, "ok": true, "output": "out", "seed": 0}], "command": "/x"}
+{"case": "run_no_seed", "func": "run_reply", "seq": 1, "messages": [{"id": 2, "ok": true, "output": "out"}], "command": "/x"}
+{"case": "run_output_null", "func": "run_reply", "seq": 1, "messages": [{"id": 2, "ok": true, "output": null}], "command": "/x"}
+{"case": "run_error", "func": "run_reply", "seq": 1, "messages": [{"id": 2, "ok": false, "error": "boom"}], "command": "/x"}
+{"case": "run_error_missing", "func": "run_reply", "seq": 1, "messages": [{"id": 2, "ok": false}], "command": "/x"}
+{"case": "run_error_empty", "func": "run_reply", "seq": 1, "messages": [{"id": 2, "ok": false, "error": ""}], "command": "/x"}
+{"case": "run_exited", "func": "run_reply", "seq": 1, "exited": true, "messages": [{"id": 2, "ok": true, "output": "never"}]}
+{"case": "run_closed_pipe", "func": "run_reply", "seq": 1, "messages": [null], "stderr_tail": ["line a", "line b"]}
+{"case": "run_closed_pipe_empty_tail", "func": "run_reply", "seq": 1, "messages": [null], "stderr_tail": []}
+{"case": "run_timeout", "func": "run_reply", "seq": 1, "messages": []}
+{"case": "run_foreign_only", "func": "run_reply", "seq": 1, "messages": [{"id": 77, "ok": true, "output": "x"}]}
+{"case": "closed_no_tail", "func": "closed_pipe"}
+{"case": "closed_tail_8_of_10", "func": "closed_pipe", "stderr_tail": ["l1", "l2", "l3", "l4", "l5", "l6", "l7", "l8", "l9", "l10"]}
+{"case": "closed_empty_tail", "func": "closed_pipe", "stderr_tail": []}
+{"case": "stop_posix_alive", "func": "stop_plan", "posix": true, "alive": true}
+{"case": "stop_posix_dead", "func": "stop_plan", "posix": true, "alive": false}
+{"case": "stop_nt_alive", "func": "stop_plan", "posix": false, "alive": true}
+{"case": "stop_nt_dead", "func": "stop_plan", "posix": false, "alive": false}

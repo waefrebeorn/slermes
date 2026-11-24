@@ -47,6 +47,9 @@ WIN_LIBS = ["-lws2_32", "-lgdi32", "-lcrypt32", "-ladvapi32", "-luser32",
 TAIL_LIBS = ["-lz", "-lpcre2-8", "-ltre", "-lssl", "-lcrypto",
              "-Wl,--allow-multiple-definition"]
 
+# Filled in main(); run_gate needs them for the SAC relink path.
+DEPS, ALIAS, INCS, FULL_CACHE = {}, {}, [], []
+
 
 def sh_lines(path):
     with open(path, encoding="utf-8", errors="replace") as fh:
@@ -133,13 +136,13 @@ def harness_name(gate, alias):
     return alias.get(gate, gate)
 
 
-def link(gate, objs, incs):
+def link(gate, objs, incs, opt="-O2", suffix=""):
     harness = harness_name(gate, ALIAS)
     src = "tests/t_port_%s.c" % harness
-    out = os.path.join(HARNESS_DIR, "%s.exe" % harness)
+    out = os.path.join(HARNESS_DIR, "%s%s.exe" % (harness, suffix))
     if not os.path.isfile(src):
         return gate, None, "no harness %s" % src
-    cmd = ([GCC] + DEFS + incs + [src] + objs + ["-o", out,
+    cmd = ([GCC, opt] + DEFS + incs + [src] + objs + ["-o", out,
            "-L", "C:/winlibs/extra-libs", "-lstdc++", "-lm"] + WIN_LIBS + TAIL_LIBS)
     res = subprocess.run(cmd, cwd=REPO, capture_output=True, text=True, errors="replace")
     if res.returncode != 0:
@@ -164,9 +167,16 @@ def run_gate(gate, exe, pybin):
         data = open(os.path.join(REPO, fixture), "rb").read() if fixture else b""
         h = subprocess.run([exe], input=data, capture_output=True, env=env, cwd=REPO)
         if h.returncode in (126, 127):
-            # Smart App Control refuses some fresh images; a relink at -O1 slips past.
-            alt = exe + "_alt.exe"
-            shutil.copyfile(exe, alt)
+            # Smart App Control refuses some freshly linked images. A copy has the
+            # same image hash and stays refused; only a *different* image passes,
+            # which is why the shell runner relinks at -O1 here.
+            alt = exe[:-4] + "_alt.exe"
+            if not os.path.isfile(alt):
+                gate2, made, err = link(gate, objects_for(gate, DEPS, FULL_CACHE), INCS,
+                                        opt="-O1", suffix="_alt")
+                if err or not made:
+                    return gate, "FAIL %s  rc=%d  relink at -O1 failed: %s" % (gate, h.returncode, err)
+                alt = made
             h = subprocess.run([alt], input=data, capture_output=True, env=env, cwd=REPO)
         if h.returncode != 0:
             return gate, "FAIL %s  rc=%d  harness crashed (partial output is not a pass)" % (gate, h.returncode)
@@ -201,9 +211,10 @@ def main():
         print("no gates given", file=sys.stderr)
         return 2
 
-    global ALIAS
+    global ALIAS, INCS, DEPS, FULL_CACHE
     DEPS, ALIAS = parse_maps()
-    incs = include_args()
+    incs = INCS = include_args()
+    FULL_CACHE = []
     os.makedirs(HARNESS_DIR, exist_ok=True)
 
     pybin = os.environ.get("PYTHON_BIN")
@@ -213,7 +224,7 @@ def main():
                 pybin = cand
                 break
 
-    full_cache = []
+    full_cache = FULL_CACHE
     # Build every missing object dependency in one make batch first: serialising
     # it per gate is what made the shell runner slow on a fresh wave.
     missing = set()

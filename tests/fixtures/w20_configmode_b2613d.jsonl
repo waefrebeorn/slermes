@@ -1,0 +1,25 @@
+{"case":"plain_no_work","func":"normalize","config":{"model":{"default":"gpt-4","provider":"openrouter"}}}
+{"case":"root_provider_moved","func":"normalize","config":{"provider":"nous","model":{"default":"hermes-4"}}}
+{"case":"root_base_url_not_overriding","func":"normalize","config":{"base_url":"https://root.example","model":{"default":"m","base_url":"https://model.example"}}}
+{"case":"root_api_base_only","func":"normalize","config":{"api_base":"https://alias.example","model":{"default":"m"}}}
+{"case":"model_api_base_alias","func":"normalize","config":{"model":{"default":"m","api_base":"https://mb.example"}}}
+{"case":"model_key_alias","func":"normalize","config":{"model":{"model":"alias-model"}}}
+{"case":"name_key_alias","func":"normalize","config":{"model":{"name":"named-model"}}}
+{"case":"dict_default_flatten","func":"normalize","config":{"model":{"default":{"model":"m1","provider":"p1"}}}}
+{"case":"dict_default_provider_auto","func":"normalize","config":{"model":{"provider":"auto","default":{"model":"m2","provider":"p2"}}}}
+{"case":"dict_default_extra_dropped","func":"normalize","config":{"model":{"default":{"model":"m3","temperature":0.2,"top_p":0.9}}}}
+{"case":"dict_default_keeps_configured_provider","func":"normalize","config":{"model":{"provider":"fixed","default":{"model":"m4","provider":"nested"}}}}
+{"case":"model_scalar_with_root_provider","func":"normalize","config":{"provider":"custom","model":"bare-model"}}
+{"case":"empty_config","func":"normalize","config":{}}
+{"case":"provider_int_coerced","func":"normalize","config":{"model":{"default":"m","provider":2}}}
+{"case":"both_api_base_and_base_url","func":"normalize","config":{"model":{"default":"m","base_url":"https://keep.example","api_base":"https://drop.example"}}}
+{"case":"context_length_moved","func":"normalize","config":{"context_length":32000,"model":{"default":"m"}}}
+{"case":"model_null_root_api_base","func":"normalize","config":{"api_base":"https://nullmodel.example","model":null}}
+{"case":"model_empty_list_root_base_url","func":"normalize","config":{"base_url":"https://listmodel.example","model":[]}}
+{"case":"provider_bool_coerced","func":"normalize","config":{"model":{"default":"m","provider":true}}}
+{"case":"missing_config_key","func":"normalize"}
+{"case":"config_wrong_type_string","func":"normalize","config":"not-a-mapping"}
+{"case":"coerce_string_strip","func":"coerce_provider","value":"  openrouter  "}
+{"case":"coerce_none","func":"coerce_provider","value":null}
+{"case":"coerce_int","func":"coerce_provider","value":2070}
+{"case":"coerce_missing","func":"coerce_provider"}

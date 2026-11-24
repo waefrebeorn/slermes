@@ -1,0 +1,39 @@
+{"case": "start-full", "func": "start_bot", "payload": {"url": "https://m/x", "guest_name": "Hermes", "duration": 900, "headed": true, "auth_state": "auth.json", "session_id": "s1", "out_dir": "/tmp/o"}, "start_result": {"ok": true, "pid": 12}}
+{"case": "start-url-only", "func": "start_bot", "payload": {"url": "https://m/x"}, "start_result": {"ok": true}}
+{"case": "start-missing-url", "func": "start_bot", "payload": {"guest_name": "H", "duration": 60}, "start_result": {"ok": true}}
+{"case": "start-empty-payload", "func": "start_bot", "payload": {}, "start_result": {"ok": true}}
+{"case": "start-extra-keys", "func": "start_bot", "payload": {"url": "u", "token": "ignored", "payload": {"a": 1}}, "start_result": {"ok": true}}
+{"case": "start-null-url", "func": "start_bot", "payload": {"url": null}, "start_result": {"ok": false, "error": "no"}}
+{"case": "start-wrong-type", "func": "start_bot", "payload": {"url": 7, "duration": "900", "headed": "yes"}, "start_result": null}
+{"case": "say-no-active", "func": "say", "payload": {"text": "hello"}}
+{"case": "say-no-text", "func": "say", "payload": {}, "active": {"session_id": "s1"}}
+{"case": "say-null-active", "func": "say", "payload": {"text": "hello"}, "active": null}
+{"case": "say-enqueue", "func": "say", "payload": {"text": "hello"}, "active": {"out_dir": "__DIR__"}, "write_ok": true}
+{"case": "say-write-fails", "func": "say", "payload": {"text": "hello"}, "active": {"out_dir": "__FILE__"}, "write_ok": false}
+{"case": "say-numeric-text", "func": "say", "payload": {"text": 5}, "active": {"out_dir": ""}}
+{"case": "dispatch-ping", "func": "dispatch", "type": "ping"}
+{"case": "dispatch-start", "func": "dispatch", "type": "start_bot"}
+{"case": "dispatch-stop", "func": "dispatch", "type": "stop"}
+{"case": "dispatch-status", "func": "dispatch", "type": "status"}
+{"case": "dispatch-transcript", "func": "dispatch", "type": "transcript"}
+{"case": "dispatch-say", "func": "dispatch", "type": "say"}
+{"case": "dispatch-unknown", "func": "dispatch", "type": "nope"}
+{"case": "dispatch-empty", "func": "dispatch", "type": ""}
+{"case": "dispatch-case", "func": "dispatch", "type": "Ping"}
+{"case": "dispatch-quoted", "func": "dispatch", "type": "it's"}
+{"case": "pong-basic", "func": "pong", "id": "r1", "display_name": "node-x", "ts": 1700000000.5}
+{"case": "pong-null-id", "func": "pong", "id": null, "display_name": "node-x", "ts": 0}
+{"case": "pong-empty-name", "func": "pong", "id": "r2", "display_name": "", "ts": 1.25}
+{"case": "err-plain", "func": "error_envelope", "id": "r1", "reason": "decode: bad json"}
+{"case": "err-empty-id", "func": "error_envelope", "id": "", "reason": "missing 'url' in payload"}
+{"case": "err-empty-reason", "func": "error_envelope", "id": "r9", "reason": ""}
+{"case": "tok-cached", "func": "ensure_token", "cached": "abc123"}
+{"case": "tok-persisted", "func": "ensure_token", "cached": "", "token_data": {"token": "persisted", "generated_at": 1}}
+{"case": "tok-empty-data", "func": "ensure_token", "token_data": {}}
+{"case": "tok-null-data", "func": "ensure_token", "token_data": null}
+{"case": "tok-empty-token", "func": "ensure_token", "token_data": {"token": ""}}
+{"case": "tok-numeric-token", "func": "ensure_token", "token_data": {"token": 5}}
+{"case": "tok-cached-true", "func": "ensure_token", "cached": true}
+{"case": "tok-cached-wins", "func": "ensure_token", "cached": "y", "token_data": {"token": "x"}}
+{"case": "tok-missing-all", "func": "ensure_token"}
+{"case": "keys", "func": "start_bot_keys"}

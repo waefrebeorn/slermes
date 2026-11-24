@@ -1,0 +1,19 @@
+{"func": "delete_timeout_seconds", "case": "const"}
+{"func": "register", "case": "all-good", "ctx": {"cleanup_progress": true, "has_adapter": true, "ids": ["m1", "m2"], "session_key": "s1", "generation": "g1", "chat_id": "c1", "has_register_cb": true}, "response": {"ok": true}}
+{"func": "register", "case": "no-progress", "ctx": {"cleanup_progress": false, "has_adapter": true, "ids": ["m1", "m2"], "session_key": "s1", "generation": "g1", "chat_id": "c1", "has_register_cb": true}, "response": {"ok": true}}
+{"func": "register", "case": "no-adapter", "ctx": {"cleanup_progress": true, "has_adapter": false, "ids": ["m1", "m2"], "session_key": "s1", "generation": "g1", "chat_id": "c1", "has_register_cb": true}, "response": {"ok": true}}
+{"func": "register", "case": "empty-ids", "ctx": {"cleanup_progress": true, "has_adapter": true, "ids": [], "session_key": "s1", "generation": "g1", "chat_id": "c1", "has_register_cb": true}, "response": {"ok": true}}
+{"func": "register", "case": "no-session-key", "ctx": {"cleanup_progress": true, "has_adapter": true, "ids": ["m1", "m2"], "session_key": "", "generation": "g1", "chat_id": "c1", "has_register_cb": true}, "response": {"ok": true}}
+{"func": "register", "case": "response-string", "ctx": {"cleanup_progress": true, "has_adapter": true, "ids": ["m1", "m2"], "session_key": "s1", "generation": "g1", "chat_id": "c1", "has_register_cb": true}, "response": "done"}
+{"func": "register", "case": "response-failed", "ctx": {"cleanup_progress": true, "has_adapter": true, "ids": ["m1", "m2"], "session_key": "s1", "generation": "g1", "chat_id": "c1", "has_register_cb": true}, "response": {"failed": true}}
+{"func": "register", "case": "no-register-cb", "ctx": {"cleanup_progress": true, "has_adapter": true, "ids": ["m1", "m2"], "session_key": "s1", "generation": "g1", "chat_id": "c1", "has_register_cb": false}, "response": {"ok": true}}
+{"func": "register", "case": "response-null", "ctx": {"cleanup_progress": true, "has_adapter": true, "ids": ["m1", "m2"], "session_key": "s1", "generation": "g1", "chat_id": "c1", "has_register_cb": true}, "response": null}
+{"func": "register", "case": "no-generation", "ctx": {"cleanup_progress": true, "has_adapter": true, "ids": ["m1", "m2"], "session_key": "s1", "generation": null, "chat_id": "c1", "has_register_cb": true}, "response": {"ok": true}}
+{"func": "register", "case": "numeric-chat", "ctx": {"cleanup_progress": true, "has_adapter": true, "ids": ["m1", "m2"], "session_key": "s1", "generation": "g1", "chat_id": 42, "has_register_cb": true}, "response": {"ok": true}}
+{"func": "register", "case": "failed-false", "ctx": {"cleanup_progress": true, "has_adapter": true, "ids": ["m1", "m2"], "session_key": "s1", "generation": "g1", "chat_id": "c1", "has_register_cb": true}, "response": {"failed": false, "ok": true}}
+{"func": "cleanup", "case": "all-ok", "spec": {"session_key": "s1", "results": ["ok", "ok"]}}
+{"func": "cleanup", "case": "one-false", "spec": {"session_key": "s1", "results": ["ok", "false"]}}
+{"func": "cleanup", "case": "one-raise", "spec": {"session_key": "s1", "results": ["raise", "ok", "ok"]}}
+{"func": "cleanup", "case": "all-failed", "spec": {"session_key": "s1", "results": ["false", "false"]}}
+{"func": "cleanup", "case": "slash-key", "spec": {"session_key": "s/1 x", "results": ["raise"]}}
+{"func": "cleanup", "case": "single-ok", "spec": {"session_key": "s2", "results": ["ok"]}}

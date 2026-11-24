@@ -1,0 +1,28 @@
+{"func":"stream_windows","spec":{"task_timeout":null,"aux_default":60,"cloud_stale":120,"local":false,"timeout":null},"case":"cloud default windows"}
+{"func":"stream_windows","spec":{"task_timeout":null,"aux_default":60,"cloud_stale":120,"local":true,"timeout":null},"case":"local keeps request timeout"}
+{"func":"stream_windows","spec":{"task_timeout":90,"aux_default":60,"cloud_stale":120,"local":false},"case":"task override raises window"}
+{"func":"stream_windows","spec":{"task_timeout":0,"aux_default":60,"cloud_stale":45,"local":false},"case":"zero task timeout falls back"}
+{"func":"stream_windows","spec":{"task_timeout":null,"aux_default":60,"cloud_stale":45,"local":false},"case":"stale below window"}
+{"func":"stream_windows","spec":{"task_timeout":null,"aux_default":60,"cloud_stale":120,"local":false,"timeout":30},"case":"request timeout caps both"}
+{"func":"stream_windows","spec":{"task_timeout":null,"aux_default":60,"cloud_stale":120,"local":false,"timeout":600},"case":"big request timeout no cap"}
+{"func":"stream_windows","spec":{"task_timeout":null,"aux_default":60,"cloud_stale":120,"local":false,"timeout":"45"},"case":"string timeout ignored"}
+{"func":"stream_windows","spec":{"task_timeout":null,"aux_default":60,"cloud_stale":120,"local":false,"timeout":true},"case":"bool timeout is one"}
+{"func":"stream_windows","spec":{"aux_default":60,"cloud_stale":120,"local":false,"timeout":0},"case":"zero timeout ignored"}
+{"func":"timeout_error","saw_progress":false,"window":60,"first_token":null,"elapsed":301.44,"case":"no progress no first window"}
+{"func":"timeout_error","saw_progress":false,"window":60,"first_token":120.5,"elapsed":125.25,"case":"no progress first window"}
+{"func":"timeout_error","saw_progress":true,"window":60,"first_token":300,"elapsed":61.25,"case":"stalled mid stream"}
+{"func":"timeout_error","saw_progress":true,"window":45.5,"first_token":null,"elapsed":0.0,"case":"stalled zero elapsed"}
+{"func":"close_chunk_stream","spec":{"has_close":true,"awaitable":true},"case":"async close"}
+{"func":"close_chunk_stream","spec":{"has_close":true,"awaitable":false},"case":"sync close"}
+{"func":"close_chunk_stream","spec":{"has_close":false,"has_aclose":true,"allow_aclose":true,"awaitable":true},"case":"aclose allowed"}
+{"func":"close_chunk_stream","spec":{"has_close":false,"has_aclose":true,"allow_aclose":false,"awaitable":true},"case":"aclose not allowed"}
+{"func":"close_chunk_stream","spec":{"has_close":true,"raises":true,"awaitable":true},"case":"close raises"}
+{"func":"close_chunk_stream","spec":{},"case":"no close at all"}
+{"func":"simulate","spec":{"window":60,"first_token":null,"start":1000.0},"case":"no first token no deadline"}
+{"func":"simulate","spec":{"window":60,"first_token":300,"start":1000.0,"fire_at":1100.0},"case":"early fire reschedules"}
+{"func":"simulate","spec":{"window":60,"first_token":300,"start":1000.0,"fire_at":1400.0},"case":"late fire trips"}
+{"func":"simulate","spec":{"window":60,"first_token":300,"start":1000.0,"progress_at":1100.0,"fire_at":1200.0},"case":"progress tightens deadline"}
+{"func":"simulate","spec":{"window":200,"first_token":300,"start":1000.0,"progress_at":1100.0,"fire_at":1350.0},"case":"progress keeps longer timer"}
+{"func":"simulate","spec":{"window":60,"first_token":300,"start":1000.0,"progress_at":1100.0,"fire_at":1200.0,"stale_generation":true},"case":"stale generation ignored"}
+{"func":"simulate","spec":{"window":60,"first_token":300,"start":1000.0,"progress_at":1100.0,"fire_at":1155.0},"case":"fire just before deadline"}
+{"func":"simulate","spec":{"window":60,"first_token":300,"start":1000.0,"fire_at":1300.0},"case":"fire exactly on deadline"}

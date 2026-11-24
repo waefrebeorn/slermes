@@ -1,0 +1,17 @@
+{"func":"has_credentials","case":"provider token","auth_text":"{\"providers\":{\"openai-codex\":{\"tokens\":{\"access_token\":\"tok-1\"}}}}"}
+{"func":"has_credentials","case":"token whitespace","auth_text":"{\"providers\":{\"openai-codex\":{\"tokens\":{\"access_token\":\"   \\t \"}}}}"}
+{"func":"has_credentials","case":"pool only","auth_text":"{\"credential_pool\":{\"openai-codex\":[{\"access_token\":\"pool-tok\"}]}}"}
+{"func":"has_credentials","case":"pool non-dict entries","auth_text":"{\"credential_pool\":{\"openai-codex\":[\"nope\",{\"access_token\":\"\"}]}}"}
+{"func":"has_credentials","case":"pool not a list","auth_text":"{\"credential_pool\":{\"openai-codex\":{\"access_token\":\"x\"}}}"}
+{"func":"has_credentials","case":"providers not dict","auth_text":"{\"providers\":\"nope\"}"}
+{"func":"has_credentials","case":"invalid json","auth_text":"{not json"}
+{"func":"has_credentials","case":"empty object","auth_text":"{}"}
+{"func":"has_credentials","case":"file missing","file_exists":false,"auth_text":"{\"providers\":{\"openai-codex\":{\"tokens\":{\"access_token\":\"tok\"}}}}"}
+{"func":"has_credentials","case":"bom stripped","auth_text":"\ufeff{\"providers\":{\"openai-codex\":{\"tokens\":{\"access_token\":\"tok-bom\"}}}}"}
+{"func":"has_credentials","case":"numeric token","auth_text":"{\"providers\":{\"openai-codex\":{\"tokens\":{\"access_token\":5}}}}"}
+{"func":"has_credentials","case":"null token empty pool","auth_text":"{\"providers\":{\"openai-codex\":{\"tokens\":{\"access_token\":null}}},\"credential_pool\":{\"openai-codex\":[]}}"}
+{"func":"has_credentials","case":"empty token pool fallback","auth_text":"{\"providers\":{\"openai-codex\":{\"tokens\":{\"access_token\":\"\"}}},\"credential_pool\":{\"openai-codex\":[{\"access_token\":\"fallback\"}]}}"}
+{"func":"has_credentials","case":"false token","auth_text":"{\"providers\":{\"openai-codex\":{\"tokens\":{\"access_token\":false}}}}"}
+{"func":"search_unsupported","case":"refusal payload"}
+{"func":"setup_schema","case":"picker entry"}
+{"func":"identity","case":"names"}

@@ -1,0 +1,29 @@
+{"func":"bucket_name","index":0,"case":"bucket subscriptions"}
+{"func":"bucket_name","index":1,"case":"bucket receipts"}
+{"func":"bucket_name","index":4,"case":"bucket sink"}
+{"func":"bucket_name","index":5,"case":"bucket out of range"}
+{"func":"is_bucket","name":"jobs","case":"is bucket yes"}
+{"func":"is_bucket","name":"nope","case":"is bucket no"}
+{"func":"load_state","text":"{\"subscriptions\":{\"s1\":{\"subscription_id\":\"s1\"}},\"jobs\":{\"j1\":{}},\"extra\":{\"x\":1}}","case":"load normal"}
+{"func":"load_state","text":"{}","case":"load empty doc"}
+{"func":"load_state","text":"","case":"load empty text"}
+{"func":"load_state","text":"\ufeff{\"jobs\":{\"j2\":{\"job_id\":\"j2\"}}}","case":"load bom"}
+{"func":"load_state","text":"[1, 2, 3]","case":"load list doc"}
+{"func":"load_state","text":"{\"subscriptions\":null,\"jobs\":[],\"sink_records\":\"\"}","case":"load falsy buckets"}
+{"func":"load_state","text":"not json at all","case":"load parse error"}
+{"func":"receipt_key","notification":{"id":"evt-1","kind":"change"},"case":"receipt id"}
+{"func":"receipt_key","notification":{"kind":"change","value":7,"active":true},"case":"receipt hashed"}
+{"func":"receipt_key","notification":{},"case":"receipt empty object"}
+{"func":"receipt_key","notification":{"id":0,"a":1,"b":{"c":2}},"case":"receipt falsy id hashes"}
+{"func":"receipt_key","notification":{"nested":{"z":1,"a":[1,2,{"m":true}]},"s":"quote\"and\\slash"},"case":"receipt nested canonical"}
+{"func":"upsert","bucket":"subscriptions","key":"s-1","payload":{"resource":"/me/messages","expires":"2026-02-01"},"now":"2026-01-01T00:00:00+00:00","case":"upsert first write"}
+{"func":"upsert","bucket":"subscriptions","key":"s-1","existing":{"subscription_id":"s-1","resource":"/old","created_at":"2025-12-01T00:00:00+00:00"},"payload":{"resource":"/new"},"now":"2026-01-02T00:00:00+00:00","case":"upsert merge keeps created_at"}
+{"func":"upsert","bucket":"jobs","key":"j-9","existing":{"job_id":"j-9","status":"queued","created_at":"2025-11-05T10:00:00+00:00"},"payload":{"status":"done","extra":1},"now":"2026-01-03T00:00:00+00:00","case":"upsert job done"}
+{"func":"upsert","bucket":"sink_records","key":"sink-a","existing":{"sink_key":"sink-a","created_at":""},"payload":{"seen":3},"now":"2026-01-04T00:00:00+00:00","case":"upsert empty created_at restamps"}
+{"func":"upsert","bucket":"subscriptions","key":"s-2","payload":{"created_at":"2024-06-01T00:00:00+00:00","subscription_id":"ignored"},"now":"2026-01-05T00:00:00+00:00","case":"upsert payload created_at wins"}
+{"func":"upsert","bucket":"subscriptions","key":"s-3","existing":{"subscription_id":"s-3"},"payload":null,"now":"2026-01-06T00:00:00+00:00","case":"upsert null payload"}
+{"func":"record_receipt","key":"id:evt-1","now":"2026-01-01T00:00:00+00:00","case":"receipt first"}
+{"func":"record_receipt","key":"id:evt-1","receipts":{"id:evt-1":{"received_at":"2025-01-01T00:00:00+00:00","payload":null}},"now":"2026-01-02T00:00:00+00:00","case":"receipt duplicate"}
+{"func":"record_receipt","key":"sha256:abc","payload":{"changeType":"updated"},"received_at":"2026-01-03T00:00:00+00:00","now":"2026-01-09T00:00:00+00:00","case":"receipt explicit received_at"}
+{"func":"record_receipt","key":"sha256:def","payload":"raw-string","now":"2026-01-04T00:00:00+00:00","case":"receipt non dict payload"}
+{"func":"record_receipt","key":"sha256:ghi","payload":null,"now":"2026-01-05T00:00:00+00:00","case":"receipt null payload"}

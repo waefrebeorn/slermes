@@ -1,0 +1,28 @@
+{"func":"plan_latest","session_id":"sess-1","content":"hello there","api_content":"{\"type\":\"text\",\"text\":\"hello there\"}","case":"latest text"}
+{"func":"plan_latest","session_id":"sess-1","content":"hello there","api_content":"cached-bytes-1","rowcount":1,"case":"latest row matched"}
+{"func":"plan_latest","session_id":"sess-1","content":"hello there","api_content":"cached-bytes-1","rowcount":0,"case":"latest row rewritten"}
+{"func":"plan_latest","session_id":"sess-2","content":null,"api_content":"cached-null","case":"latest null content"}
+{"func":"plan_latest","session_id":"sess-3","content":{"type":"text","text":"hi"},"api_content":"cached-obj","case":"latest dict content"}
+{"func":"plan_latest","session_id":"sess-4","content":[{"type":"text","text":"a"},{"type":"image","source":"b64"}],"api_content":"cached-list","case":"latest list content"}
+{"func":"plan_latest","session_id":"sess-5","api_content":"cached-no-content","case":"latest content absent"}
+{"func":"plan_latest","content":"orphan","api_content":"cached-no-session","case":"latest session absent"}
+{"func":"plan_latest","session_id":"sess-6","content":42,"api_content":"cached-number","case":"latest numeric content"}
+{"func":"plan_row","session_id":"sess-1","row_id":9,"content":"ok","api_content":"row-bytes-9","case":"row ok"}
+{"func":"plan_row","session_id":"sess-1","row_id":9,"content":"ok","api_content":"row-bytes-9","rowcount":0,"case":"row archived"}
+{"func":"plan_row","session_id":"sess-1","row_id":0,"content":"ok","api_content":"row-bytes","case":"row id zero"}
+{"func":"plan_row","session_id":"sess-1","row_id":-3,"content":"ok","api_content":"row-bytes","case":"row id negative"}
+{"func":"plan_row","session_id":"sess-1","row_id":true,"content":"ok","api_content":"row-bytes","case":"row id bool"}
+{"func":"plan_row","session_id":"sess-1","row_id":"9","content":"ok","api_content":"row-bytes","case":"row id string"}
+{"func":"plan_row","session_id":"sess-1","row_id":1.5,"content":"ok","api_content":"row-bytes","case":"row id float"}
+{"func":"plan_row","row_id":9,"content":"ok","api_content":"row-bytes","case":"row session absent"}
+{"func":"plan_row","session_id":"","row_id":9,"content":"ok","api_content":"row-bytes","case":"row session blank"}
+{"func":"plan_row","session_id":"sess-7","row_id":12,"content":{"type":"text","text":"x"},"api_content":"row-bytes-12","case":"row dict content"}
+{"func":"encode_content","content":"plain","case":"encode text"}
+{"func":"encode_content","content":null,"case":"encode null"}
+{"func":"encode_content","content":12,"case":"encode int"}
+{"func":"encode_content","content":true,"case":"encode bool"}
+{"func":"encode_content","content":{"z":1,"a":2},"case":"encode dict order"}
+{"func":"encode_content","content":[1,"two",null],"case":"encode array"}
+{"func":"encode_content","content":"quote\"and\\slash\nnewline","case":"encode escapes"}
+{"func":"latest_sql","case":"latest sql text"}
+{"func":"row_sql","case":"row sql text"}

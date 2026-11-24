@@ -1,0 +1,49 @@
+{"case":"latex_inline","func":"latex","text":"Energy is $E=mc^2$ here"}
+{"case":"latex_display","func":"latex","text":"Before $$a+b$$ after"}
+{"case":"latex_two_inline","func":"latex","text":"$a$ and $b$"}
+{"case":"latex_price_literal","func":"latex","text":"costs $5 and $6 today"}
+{"case":"latex_escaped_dollar","func":"latex","text":"\\$5$ literal"}
+{"case":"latex_word_after","func":"latex","text":"$a$b"}
+{"case":"latex_no_dollars","func":"latex","text":"plain text"}
+{"case":"latex_newline_display","func":"latex","text":"$$a\nb$$"}
+{"case":"latex_spaces_stripped","func":"latex","text":"$$  x  $$"}
+{"case":"latex_empty","func":"latex","text":""}
+{"case":"mx_maths_one","func":"mx_maths","html":"a HERMESTEXINLINE0HERMESTEXEND b","store":[{"tag":"span","tex":"x<1 & \"q\""}]}
+{"case":"mx_maths_display","func":"mx_maths","html":"<p>HERMESTEXDISPLAY0HERMESTEXEND</p>","store":[{"tag":"div","tex":"a+b"}]}
+{"case":"mx_maths_out_of_range","func":"mx_maths","html":"HERMESTEXINLINE9HERMESTEXEND","store":[{"tag":"span","tex":"x"}]}
+{"case":"mx_maths_user_text","func":"mx_maths","html":"HERMESTEXINLINEXHERMESTEXEND","store":[]}
+{"case":"tex_source_inline","func":"tex_source","text":"a HERMESTEXINLINE0HERMESTEXEND b","store":[{"tag":"span","tex":"x"}]}
+{"case":"tex_source_display","func":"tex_source","text":"HERMESTEXDISPLAY0HERMESTEXEND","store":[{"tag":"div","tex":"x"}]}
+{"case":"tex_source_out_of_range","func":"tex_source","text":"HERMESTEXINLINE3HERMESTEXEND","store":[]}
+{"case":"url_https","func":"safe_url","value":"https://example.com/a?b=1"}
+{"case":"url_javascript","func":"safe_url","value":"javascript:alert(1)"}
+{"case":"url_leading_control","func":"safe_url","value":"\u0001  https://ok.example  "}
+{"case":"url_mailto","func":"safe_url","value":"mailto:a@b.c"}
+{"case":"url_protocol_relative","func":"safe_url","value":"//evil.example/x"}
+{"case":"url_matrix","func":"safe_url","value":"matrix:u/x:y"}
+{"case":"url_data","func":"safe_url","value":"data:text/html,<b>x</b>"}
+{"case":"url_spaced_scheme","func":"safe_url","value":"  JavaScript:alert(1)"}
+{"case":"san_allowed","func":"sanitize","html":"<p>Hello <strong>world</strong></p>"}
+{"case":"san_script_dropped","func":"sanitize","html":"<p>a</p><script>alert('x')</script><p>b</p>"}
+{"case":"san_disallowed_tag","func":"sanitize","html":"<p>keep<marquee>text</marquee></p>"}
+{"case":"san_href_safe","func":"sanitize","html":"<a href=\"https://example.com/x?a=1&amp;b=2\">link</a>"}
+{"case":"san_href_unsafe","func":"sanitize","html":"<a href=\"javascript:alert(1)\">x</a>"}
+{"case":"san_code_class","func":"sanitize","html":"<code class=\"language-python\">x</code>"}
+{"case":"san_code_bad_class","func":"sanitize","html":"<code class=\"foo\">x</code>"}
+{"case":"san_entities","func":"sanitize","html":"<p>a &amp; b &lt; c</p>"}
+{"case":"san_charrefs","func":"sanitize","html":"<p>&#65;&#x42;</p>"}
+{"case":"san_comment","func":"sanitize","html":"<p>a<!-- hidden -->b</p>"}
+{"case":"san_void","func":"sanitize","html":"<p>a<br>b</p><hr>"}
+{"case":"san_self_closing_br","func":"sanitize","html":"<br/>"}
+{"case":"san_uppercase","func":"sanitize","html":"<P CLASS=\"x\">Hi</P>"}
+{"case":"san_math_text_and_attr","func":"sanitize","html":"<p>HERMESTEXINLINE0HERMESTEXEND</p><a href=\"HERMESTEXINLINE0HERMESTEXEND\">t</a>","store":[{"tag":"span","tex":"x+y"}]}
+{"case":"san_attr_allowlist","func":"sanitize","html":"<p onclick=\"x\" style=\"y\">t</p>"}
+{"case":"san_unquoted_href","func":"sanitize","html":"<a href=https://e.com>t</a>"}
+{"case":"san_plain_text_escape","func":"sanitize","html":"5 < 6 & 7 > 3 \"q\" 'z'"}
+{"case":"san_nested_script","func":"sanitize","html":"<script>if (a<b) { x() }</script><p>after</p>"}
+{"case":"pre_script_block","func":"pre_sanitize","text":"a<script>bad()</script>b"}
+{"case":"pre_onclick","func":"pre_sanitize","text":"<a href=\"https://e.com\" onclick=\"evil()\">t</a>"}
+{"case":"pre_js_href","func":"pre_sanitize","text":"<a href=\"javascript:alert(1)\">t</a>"}
+{"case":"pre_safe_href","func":"pre_sanitize","text":"<a href=\"https://e.com/x\">t</a>"}
+{"case":"pre_style_block","func":"pre_sanitize","text":"<style>\nbody { color: red }\n</style>tail"}
+{"case":"pre_plain","func":"pre_sanitize","text":"nothing to strip here"}

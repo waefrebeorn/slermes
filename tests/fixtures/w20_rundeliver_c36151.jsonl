@@ -1,0 +1,25 @@
+{"case": "watch-seconds", "func": "watch_seconds"}
+{"case": "drain-label", "func": "drain_label"}
+{"case": "stamp-two-homes", "func": "stamp", "homes": ["/h/a", "/h/b"], "stats": [{"path": "/h/a/cron/deliveries.db", "mtime_ns": 111, "size": 5}, {"path": "/h/b/cron/deliveries.db-wal", "mtime_ns": 222, "size": 7}]}
+{"case": "stamp-errno", "func": "stamp", "homes": ["/h/a", "/h/default"], "stats": [{"path": "/h/a/cron/deliveries.db", "mtime_ns": 100, "size": 1}, {"path": "/h/a/cron/deliveries.db-wal", "errno": 2}, {"path": "/h/default/cron/deliveries.db", "errno": 13}]}
+{"case": "stamp-all-missing", "func": "stamp", "homes": ["/h/a"], "stats": []}
+{"case": "stamp-null-home", "func": "stamp", "homes": [null], "stats": [{"path": "/h/default/cron/deliveries.db", "mtime_ns": 5, "size": 9}]}
+{"case": "stamp-mixed", "func": "stamp", "homes": [null, "/h/a"], "stats": [{"path": "/h/default/cron/deliveries.db", "mtime_ns": 5, "size": 9}, {"path": "/h/a/cron/deliveries.db-wal", "mtime_ns": -3, "size": 0}]}
+{"case": "stamp-no-homes", "func": "stamp", "stats": [{"path": "/h/a/cron/deliveries.db", "mtime_ns": 111, "size": 5}, {"path": "/h/b/cron/deliveries.db-wal", "mtime_ns": 222, "size": 7}]}
+{"case": "stamp-homes-not-array", "func": "stamp", "homes": "/h/a", "stats": [{"path": "/h/a/cron/deliveries.db", "mtime_ns": 111, "size": 5}, {"path": "/h/b/cron/deliveries.db-wal", "mtime_ns": 222, "size": 7}]}
+{"case": "stamp-extra-stat", "func": "stamp", "homes": ["/h/a"], "stats": [{"path": "/elsewhere/cron/deliveries.db", "mtime_ns": 1, "size": 1}, {"path": "/h/a/cron/deliveries.db", "mtime_ns": 77, "size": 4}]}
+{"case": "changed-same", "func": "changed", "homes": ["/h/a"], "seen": [["/h/a/cron/deliveries.db", "111", "5"]], "stats": [{"path": "/h/a/cron/deliveries.db", "mtime_ns": 111, "size": 5}, {"path": "/h/b/cron/deliveries.db-wal", "mtime_ns": 222, "size": 7}]}
+{"case": "changed-size", "func": "changed", "homes": ["/h/a"], "seen": [["/h/a/cron/deliveries.db", "111", "4"]], "stats": [{"path": "/h/a/cron/deliveries.db", "mtime_ns": 111, "size": 5}, {"path": "/h/b/cron/deliveries.db-wal", "mtime_ns": 222, "size": 7}]}
+{"case": "changed-path", "func": "changed", "homes": ["/h/a"], "seen": [["/h/z/cron/deliveries.db", "111", "5"]], "stats": [{"path": "/h/a/cron/deliveries.db", "mtime_ns": 111, "size": 5}, {"path": "/h/b/cron/deliveries.db-wal", "mtime_ns": 222, "size": 7}]}
+{"case": "changed-count", "func": "changed", "homes": ["/h/a"], "seen": [], "stats": [{"path": "/h/a/cron/deliveries.db", "mtime_ns": 111, "size": 5}, {"path": "/h/b/cron/deliveries.db-wal", "mtime_ns": 222, "size": 7}]}
+{"case": "changed-null-seen", "func": "changed", "homes": ["/h/a"], "seen": null, "stats": [{"path": "/h/a/cron/deliveries.db", "mtime_ns": 111, "size": 5}, {"path": "/h/b/cron/deliveries.db-wal", "mtime_ns": 222, "size": 7}]}
+{"case": "changed-both-empty", "func": "changed", "homes": [], "seen": [], "stats": []}
+{"case": "changed-new-wal", "func": "changed", "homes": ["/h/b"], "seen": [], "stats": [{"path": "/h/a/cron/deliveries.db", "mtime_ns": 111, "size": 5}, {"path": "/h/b/cron/deliveries.db-wal", "mtime_ns": 222, "size": 7}]}
+{"case": "wait-no-watch", "func": "wait_plan", "interval": 5, "watch": null, "clock": [], "stop_results": [], "changed_flags": []}
+{"case": "wait-no-watch-zero", "func": "wait_plan", "interval": 0, "watch": null}
+{"case": "wait-drain-then-deadline", "func": "wait_plan", "interval": 5, "watch": {"homes": [], "stats": []}, "clock": [0, 0, 0.5, 0.5, 1.0, 5.0, 5.0], "stop_results": [false, false, false], "changed_flags": [true, false, false]}
+{"case": "wait-stop-first", "func": "wait_plan", "interval": 5, "watch": {"homes": [], "stats": []}, "clock": [0, 0, 0.1], "stop_results": [true], "changed_flags": [true]}
+{"case": "wait-short-interval", "func": "wait_plan", "interval": 0.5, "watch": {"homes": [], "stats": []}, "clock": [10, 10, 10.2, 10.2, 10.4, 10.4, 10.6], "stop_results": [false, false, false], "changed_flags": [false, false, false]}
+{"case": "wait-no-drains", "func": "wait_plan", "interval": 2, "watch": {"homes": [], "stats": []}, "clock": [0, 0, 0.2, 0.5, 1.9, 2.0, 2.0], "stop_results": [false, false, false], "changed_flags": [false, false, false]}
+{"case": "wait-stop-second", "func": "wait_plan", "interval": 5, "watch": {"homes": [], "stats": []}, "clock": [0, 0, 0.2, 0.3, 0.4], "stop_results": [false, true], "changed_flags": [false, false]}
+{"case": "wait-two-drains", "func": "wait_plan", "interval": 3, "watch": {"homes": [], "stats": []}, "clock": [0, 0, 0.5, 0.5, 1.0, 1.0, 1.5, 3.0, 3.0], "stop_results": [false, false, false, false], "changed_flags": [true, true, false]}

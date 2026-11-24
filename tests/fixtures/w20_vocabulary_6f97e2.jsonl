@@ -1,0 +1,31 @@
+{"func": "fingerprint", "case": "sorted-keys", "target": "telegram:chat:42", "payload_json": "{\"b\":2,\"a\":1}"}
+{"func": "fingerprint", "case": "nested", "target": "room/9", "payload_json": "{\"z\":[1,{\"b\":true,\"a\":null}],\"a\":{\"y\":\"x\",\"b\":[[]]}}"}
+{"func": "fingerprint", "case": "unicode", "target": "tärget-Ω", "payload_json": "{\"emoji\":\"héllo ✓\",\"naïve\":\"ü\"}"}
+{"func": "fingerprint", "case": "control-chars", "target": "t", "payload_json": "{\"s\": \"a\\nb\\tc\\u0001\\u001f\\\"q\\\\\"}"}
+{"func": "fingerprint", "case": "no-payload", "target": "solo"}
+{"func": "fingerprint", "case": "empty-array", "target": "arr", "payload_json": "[]"}
+{"func": "fingerprint", "case": "empty-string-payload", "target": "s", "payload_json": "\"\""}
+{"func": "fingerprint", "case": "bool-payload", "target": "b", "payload_json": "true"}
+{"func": "fingerprint", "case": "big-int", "target": "n", "payload_json": "{\"n\":9007199254740991,\"m\":-0}"}
+{"func": "fingerprint", "case": "key-order-case", "target": "k", "payload_json": "{\"Z\":1,\"a\":2,\"A\":3,\"0\":4,\"é\":5}"}
+{"func": "fingerprint", "case": "empty-target", "target": "", "payload_json": "{\"k\":\"v\"}"}
+{"func": "fingerprint", "case": "deep", "target": "d", "payload_json": "{\"a\":{\"b\":{\"c\":{\"d\":{\"e\":[1,2,{\"f\":\"g\"}]}}}}}"}
+{"func": "classify", "case": "label-cli", "label": "cli"}
+{"func": "classify", "case": "label-desktop", "label": "desktop"}
+{"func": "classify", "case": "label-cron", "label": "cron"}
+{"func": "classify", "case": "label-webui", "label": "webui"}
+{"func": "classify", "case": "label-telegram", "label": "telegram"}
+{"func": "classify", "case": "label-local", "label": "local"}
+{"func": "classify", "case": "label-unknown", "label": "unknown"}
+{"func": "classify", "case": "label-api_server", "label": "api_server"}
+{"func": "classify", "case": "label-gui", "label": "gui"}
+{"func": "classify", "case": "label-oneshot", "label": "oneshot"}
+{"func": "classify", "case": "label-acp", "label": "acp"}
+{"func": "classify", "case": "label-batch", "label": "batch"}
+{"func": "classify", "case": "label-empty", "label": ""}
+{"func": "queue_max", "case": "queue-max"}
+{"func": "retry_horizon", "case": "retry-horizon"}
+{"func": "admitted_request_conflict", "case": "conflict"}
+{"func": "classify", "case": "label-number", "label": 42}
+{"func": "classify", "case": "label-missing"}
+{"func": "fingerprint", "case": "target-missing", "payload_json": "{\"a\":1}"}

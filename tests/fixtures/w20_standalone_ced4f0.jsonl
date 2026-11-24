@@ -1,0 +1,52 @@
+{"func": "is_rate_limit", "error": {"code": -5, "message": "RateLimitException"}, "case": "isrl typed code"}
+{"func": "is_rate_limit", "error": {"message": "[429] Too Many Requests"}, "case": "isrl legacy 429"}
+{"func": "is_rate_limit", "error": {"message": "Retry after 4 seconds"}, "case": "isrl retry later text"}
+{"func": "is_rate_limit", "error": {"message": "SOMETHING RATELIMITED"}, "case": "isrl case insensitive"}
+{"func": "is_rate_limit", "error": {"code": -1, "message": "Invalid account"}, "case": "isrl plain error"}
+{"func": "is_rate_limit", "error": "Retry after 3 second", "case": "isrl bare string"}
+{"func": "is_rate_limit", "error": "nope", "case": "isrl bare junk"}
+{"func": "is_rate_limit", "error": {"code": -5}, "case": "isrl code only"}
+{"func": "is_rate_limit", "error": {"data": {"response": {"results": [{"retryAfterSeconds": 7}]}}}, "case": "isrl retry data"}
+{"func": "is_rate_limit", "error": {"data": {"response": {"results": [{"retryAfterSeconds": "9.5"}, {"retryAfterSeconds": 12}]}}}, "case": "isrl retry data max"}
+{"func": "is_rate_limit", "error": {"data": {"response": {"results": [{"retryAfterSeconds": 0}]}}, "message": "rate"}, "case": "isrl retry zero"}
+{"func": "is_rate_limit", "error": {"data": {"response": {"results": []}}, "message": "Retry after 2.5 seconds"}, "case": "isrl retry empty results"}
+{"func": "is_rate_limit", "error": {}, "case": "isrl empty error"}
+{"func": "is_rate_limit", "error": null, "case": "isrl null error"}
+{"func": "retry_after", "error": {"data": {"response": {"results": [{"retryAfterSeconds": 7}]}}}, "case": "ra data 7"}
+{"func": "retry_after", "error": {"data": {"response": {"results": [{"retryAfterSeconds": "4.5"}]}}}, "case": "ra data str"}
+{"func": "retry_after", "error": {"message": "Retry after 4 seconds"}, "case": "ra text 4"}
+{"func": "retry_after", "error": {"message": "retry after 30 second"}, "case": "ra text lower"}
+{"func": "retry_after", "error": {"message": "nothing here"}, "case": "ra text none"}
+{"func": "retry_after", "error": {"data": {"response": {"results": [{"retryAfterSeconds": "abc"}]}}, "message": "Retry after 6 seconds"}, "case": "ra text fallback"}
+{"func": "retry_after", "error": null, "case": "ra null"}
+{"func": "retry_after", "error": "Retry after 2 seconds", "case": "ra bare str"}
+{"func": "send_timeout", "attachments": 0, "case": "timeout zero"}
+{"func": "send_timeout", "attachments": 1, "case": "timeout one"}
+{"func": "send_timeout", "attachments": 12, "case": "timeout twelve"}
+{"func": "send_timeout", "attachments": 32, "case": "timeout full batch"}
+{"func": "send_timeout", "attachments": 64, "case": "timeout two batches"}
+{"func": "chat_id", "chat_id": "group:abc123", "case": "chatid group"}
+{"func": "chat_id", "chat_id": "+15551234567", "case": "chatid dm"}
+{"func": "chat_id", "chat_id": "group:", "case": "chatid empty group"}
+{"func": "chat_id", "chat_id": "", "case": "chatid empty"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [["media/a.png", false]], "post": [{"ok": true}], "estimates": [0], "case": "send one image"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "group:abc", "media": [["media/a.png", false], ["media/b.png", true]], "post": [{"ok": true}], "estimates": [0], "case": "send group two attachments"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [], "post": [{"ok": true}], "estimates": [], "case": "send text only"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [["missing/a.png", false], ["media/b.png", false]], "post": [{"ok": true}], "estimates": [0], "case": "send skipped media"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [["missing/a.png", false], ["missing/b.png", false]], "post": [{"ok": true}], "estimates": [], "case": "send all media missing"}
+{"func": "send", "extra": {}, "chat_id": "+15550001", "media": [], "post": [], "estimates": [], "case": "send no account"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [], "post": [{"ok": true}], "estimates": [], "httpx_available": false, "case": "send no httpx"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [["media/a.png", false]], "post": [{"error": {"code": -5, "message": "RateLimitException"}}, {"ok": true}], "estimates": [0], "case": "send rate limited then ok"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [["media/a.png", false]], "post": [{"error": {"code": -5, "message": "RateLimitException"}}, {"error": {"code": -5, "message": "RateLimitException"}}], "estimates": [0], "case": "send rate limited twice"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [["media/a.png", false], ["media/b.png", false]], "post": [{"error": {"code": -1, "message": "Invalid account"}}], "estimates": [0], "case": "send non rate limit error"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [["media/a.png", false]], "post": [{"raise": "connection reset"}, {"ok": true}], "estimates": [0], "case": "send transport error retried"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [["media/a.png", false]], "post": [{"raise": "connection reset"}, {"raise": "still down"}], "estimates": [0], "case": "send transport error twice"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [["media/a.png", false], ["media/b.png", false]], "post": [{"error": {"code": -5, "message": "RateLimitException"}}, {"ok": true}], "estimates": [12.5], "case": "send pacing notice"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "group:zzz", "media": [["media/a.png", false], ["media/b.png", false], ["media/c.png", false]], "post": [{"ok": true}], "estimates": [9.9], "case": "send no notice under threshold"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550009", "media": [["media/f00.png", false], ["media/f01.png", false], ["media/f02.png", false], ["media/f03.png", false], ["media/f04.png", false], ["media/f05.png", false], ["media/f06.png", false], ["media/f07.png", false], ["media/f08.png", false], ["media/f09.png", false], ["media/f10.png", false], ["media/f11.png", false], ["media/f12.png", false], ["media/f13.png", false], ["media/f14.png", false], ["media/f15.png", false], ["media/f16.png", false], ["media/f17.png", false], ["media/f18.png", false], ["media/f19.png", false], ["media/f20.png", false], ["media/f21.png", false], ["media/f22.png", false], ["media/f23.png", false], ["media/f24.png", false], ["media/f25.png", false], ["media/f26.png", false], ["media/f27.png", false], ["media/f28.png", false], ["media/f29.png", false], ["media/f30.png", false], ["media/f31.png", false], ["media/f32.png", false]], "post": [{"ok": true}, {"ok": true}], "estimates": [0, 25], "case": "send two batches"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550009", "media": [["media/a.png", false], ["media/b.png", false]], "post": [{"error": {"message": "Retry after 12 seconds"}}, {"error": {"message": "Retry after 6 seconds"}}], "estimates": [0], "case": "send retry after text"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550009", "media": [["media/a.png", false]], "post": [{"error": {"message": "rate limit", "data": {"response": {"results": [{"retryAfterSeconds": 3}, {"retryAfterSeconds": 8}]}}}}, {"ok": true}], "estimates": [0], "case": "send retry after results"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [], "post": [{"error": {"code": -5, "message": "RateLimitException"}}, {"ok": true}], "estimates": [], "case": "send text rate limited"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [], "post": [{"error": {"code": -5, "message": "RateLimitException"}}, {"error": {"code": -5, "message": "RetryLaterException"}}], "estimates": [], "case": "send text every batch lost"}
+{"func": "send", "extra": {"account": "+1555"}, "chat_id": "+15550001", "media": [], "post": [], "estimates": [], "case": "send missing script"}
+{"func": "send", "case": "send all keys missing"}

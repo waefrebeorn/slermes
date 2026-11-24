@@ -1,0 +1,39 @@
+{"func": "should_preserve_pending_create_key", "case": "500", "status": 500, "payload": {}}
+{"func": "should_preserve_pending_create_key", "case": "502-null-payload", "status": 502, "payload": null}
+{"func": "should_preserve_pending_create_key", "case": "409-in-progress", "status": 409, "payload": {"error": {"message": "Request already in progress"}}}
+{"func": "should_preserve_pending_create_key", "case": "409-in-progress-upper", "status": 409, "payload": {"error": {"message": "ALREADY IN PROGRESS for this key"}}}
+{"func": "should_preserve_pending_create_key", "case": "409-other-message", "status": 409, "payload": {"error": {"message": "conflict"}}}
+{"func": "should_preserve_pending_create_key", "case": "409-no-error", "status": 409, "payload": {}}
+{"func": "should_preserve_pending_create_key", "case": "409-error-not-dict", "status": 409, "payload": {"error": "already in progress"}}
+{"func": "should_preserve_pending_create_key", "case": "401-with-message", "status": 401, "payload": {"error": {"message": "already in progress"}}}
+{"func": "should_preserve_pending_create_key", "case": "400", "status": 400, "payload": {}}
+{"func": "should_preserve_pending_create_key", "case": "409-payload-string", "status": 409, "payload": "already in progress"}
+{"func": "should_preserve_pending_create_key", "case": "409-message-null", "status": 409, "payload": {"error": {"message": null}}}
+{"func": "resolve_config", "case": "direct", "seams": {"api_key": "k1"}}
+{"func": "resolve_config", "case": "direct-empty-key", "seams": {"api_key": ""}}
+{"func": "resolve_config", "case": "managed-selected", "seams": {"api_key": "k1", "selected": "nous", "managed_available": true, "managed_token": "tok", "managed_origin": "https://gw.example///"}}
+{"func": "resolve_config", "case": "managed-unavailable-selected", "seams": {"api_key": "k1", "selected": "nous", "managed_available": false}}
+{"func": "resolve_config", "case": "direct-selected", "seams": {"api_key": "k1", "selected": "browser-use"}}
+{"func": "resolve_config", "case": "selected-without-key", "seams": {"selected": "browser-use"}}
+{"func": "resolve_config", "case": "never-configured-managed", "seams": {"managed_available": true, "managed_token": "tok", "managed_origin": "https://gw/api/"}}
+{"func": "resolve_config", "case": "never-configured-tools-on", "seams": {"tools_enabled": true}}
+{"func": "resolve_config", "case": "never-configured-tools-off", "seams": {}}
+{"func": "resolve_config", "case": "null-key", "seams": {"api_key": null, "selected": "browser-use"}}
+{"func": "headers", "case": "with-key", "config": {"api_key": "abc123"}}
+{"func": "headers", "case": "null-key", "config": {"api_key": null}}
+{"func": "release_body", "case": "stop"}
+{"func": "create_payload", "case": "managed", "managed": true}
+{"func": "create_payload", "case": "direct", "managed": false}
+{"func": "pending_key_ops", "case": "reuse", "ops": [{"op": "get", "task_id": "k1"}, {"op": "get", "task_id": "k1"}]}
+{"func": "pending_key_ops", "case": "clear-then-get", "ops": [{"op": "clear", "task_id": "k1"}, {"op": "get", "task_id": "k1"}]}
+{"func": "pending_key_ops", "case": "two-tasks", "ops": [{"op": "get", "task_id": "k2"}, {"op": "get", "task_id": "k3"}]}
+{"func": "pending_key_ops", "case": "unknown-op", "ops": [{"op": "bogus", "task_id": "k1"}]}
+{"func": "pending_key_ops", "case": "double-clear", "ops": [{"op": "get", "task_id": "k4"}, {"op": "clear", "task_id": "k4"}, {"op": "clear", "task_id": "k4"}, {"op": "get", "task_id": "k4"}]}
+{"func": "create_session", "case": "direct-happy", "task_id": "s1", "seams": {"api_key": "k1"}, "response": {"ok": true, "status": 201, "body": {"id": "b1", "cdpUrl": "wss://cdp/1", "timeoutAt": "2026-01-01T00:00:00Z"}, "headers": {"x-external-call-id": "ext-1"}}}
+{"func": "create_session", "case": "direct-connect-url", "task_id": "s2", "seams": {"api_key": "k1"}, "response": {"ok": true, "status": 201, "body": {"id": "b2", "connectUrl": "wss://connect"}}}
+{"func": "create_session", "case": "direct-no-cdp-no-expiry", "task_id": "s3", "seams": {"api_key": "k1"}, "response": {"ok": true, "status": 201, "body": {"id": "b3", "cdpUrl": "", "connectUrl": ""}}}
+{"func": "create_session", "case": "managed-happy", "task_id": "s4", "seams": {"selected": "nous", "managed_available": true, "managed_token": "tok", "managed_origin": "https://gw"}, "response": {"ok": true, "status": 201, "body": {"id": "b4", "cdpUrl": "wss://cdp/4", "timeoutAt": "2026-02-02T00:00:00Z"}, "headers": {"x-external-call-id": "ext-4"}}}
+{"func": "create_session", "case": "managed-then-reuse", "task_id": "s4", "seams": {"selected": "nous", "managed_available": true, "managed_token": "tok", "managed_origin": "https://gw"}, "response": {"ok": true, "status": 201, "body": {"id": "b5"}, "headers": {"x-external-call-id": "ext-5"}}}
+{"func": "create_session", "case": "missing-id", "task_id": "s6", "seams": {"api_key": "k1"}, "response": {"ok": true, "status": 201, "body": {"cdpUrl": "wss://cdp/6"}}}
+{"func": "create_session", "case": "no-config", "task_id": "s7", "seams": {}, "response": {"ok": true, "status": 201, "body": {"id": "b7"}}}
+{"func": "create_session", "case": "no-response", "task_id": "s8", "seams": {"api_key": "k1"}}

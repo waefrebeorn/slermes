@@ -1,0 +1,20 @@
+{"case":"fields_worker","func":"fields","which":"worker_message_fields"}
+{"case":"fields_handoff","func":"fields","which":"handoff_message_fields"}
+{"case":"fields_sidecar","func":"fields","which":"sidecar_keys"}
+{"case":"fields_ctor","func":"fields","which":"constructor_config_keys"}
+{"case":"fields_row_tuple","func":"fields","which":"row_annotation_keys"}
+{"case":"fields_unknown","func":"fields","which":"no_such_set"}
+{"case":"fields_missing","func":"fields"}
+{"case":"contains_worker_true","func":"contains","which":"worker_message_fields","key":"role"}
+{"case":"contains_worker_false","func":"contains","which":"worker_message_fields","key":"_compressed_summary_has_user_turn"}
+{"case":"contains_handoff_true","func":"contains","which":"handoff_message_fields","key":"_compressed_summary_has_user_turn"}
+{"case":"contains_tuple_true","func":"contains","which":"row_annotation_keys","key":"message_uid"}
+{"case":"contains_unknown_set","func":"contains","which":"nope","key":"role"}
+{"case":"contains_missing_key","func":"contains","which":"sidecar_keys"}
+{"case":"contains_wrong_type_key","func":"contains","which":"sidecar_keys","key":7}
+{"case":"constants","func":"constants"}
+{"case":"annotations_full","func":"row_annotations","messages":[{"role":"user","content":"hi","_row_id":42,"timestamp":"2026-01-02T03:04:05Z","_tool_call_uids":["a","b"],"_tool_call_uid":"a","_db_row_snapshot":{"k":1},"_canonical_row":null},{"role":"assistant","message_uid":"u-1","_canonical_row":[1,2,3]}]}
+{"case":"annotations_empty","func":"row_annotations","messages":[]}
+{"case":"annotations_missing","func":"row_annotations"}
+{"case":"annotations_wrong_type","func":"row_annotations","messages":"not-a-list"}
+{"case":"annotations_bare","func":"row_annotations","messages":[{}, {"extra_key":"ignored","timestamp":0}]}

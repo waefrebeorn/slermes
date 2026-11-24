@@ -1,0 +1,128 @@
+{"func": "pending_media", "text": "", "case": "media 00"}
+{"func": "pending_media", "text": "MEDIA:", "case": "media 01"}
+{"func": "pending_media", "text": "MEDIA: ", "case": "media 02"}
+{"func": "pending_media", "text": "MEDIA: /tmp/a.png", "case": "media 03"}
+{"func": "pending_media", "text": "media: x", "case": "media 04"}
+{"func": "pending_media", "text": "MEDIA:x:y", "case": "media 05"}
+{"func": "pending_media", "text": "MEDIA:`a`", "case": "media 06"}
+{"func": "pending_media", "text": "MEDIA:~", "case": "media 07"}
+{"func": "pending_media", "text": "MEDIA:\"q", "case": "media 08"}
+{"func": "pending_media", "text": "social media: Twitter", "case": "media 09"}
+{"func": "pending_media", "text": "图片：MED", "case": "media 10"}
+{"func": "pending_media", "text": "MED", "case": "media 11"}
+{"func": "pending_media", "text": "ME", "case": "media 12"}
+{"func": "pending_media", "text": "M", "case": "media 13"}
+{"func": "pending_media", "text": "`M", "case": "media 14"}
+{"func": "pending_media", "text": "**MED", "case": "media 15"}
+{"func": "pending_media", "text": "abcM", "case": "media 16"}
+{"func": "pending_media", "text": "ab MED", "case": "media 17"}
+{"func": "pending_media", "text": "image: MEDIA: C:\\x", "case": "media 18"}
+{"func": "pending_media", "text": "MEDIA:\t\n", "case": "media 19"}
+{"func": "pending_media", "text": "media: z", "case": "media 20"}
+{"func": "pending_media", "text": "MEDIA:/a b", "case": "media 21"}
+{"func": "pending_media", "text": "text MEDIA: 'x'", "case": "media 22"}
+{"func": "pending_media", "text": "MEDIA:MEDIA:", "case": "media 23"}
+{"func": "pending_media", "text": "B`MED", "case": "media 24"}
+{"func": "pending_media", "text": "B MED", "case": "media 25"}
+{"func": "pending_media", "text": "MEDIA:\r", "case": "media 26"}
+{"func": "pending_media", "text": "media stuff", "case": "media 27"}
+{"func": "pending_image", "text": "", "case": "image 00"}
+{"func": "pending_image", "text": "![](", "case": "image 01"}
+{"func": "pending_image", "text": "![](http://x", "case": "image 02"}
+{"func": "pending_image", "text": "![alt", "case": "image 03"}
+{"func": "pending_image", "text": "![alt]", "case": "image 04"}
+{"func": "pending_image", "text": "![alt](http", "case": "image 05"}
+{"func": "pending_image", "text": "![alt](http://x y)", "case": "image 06"}
+{"func": "pending_image", "text": "![a]b", "case": "image 07"}
+{"func": "pending_image", "text": "see ![x]", "case": "image 08"}
+{"func": "pending_image", "text": "world!", "case": "image 09"}
+{"func": "pending_image", "text": "chart:!", "case": "image 10"}
+{"func": "pending_image", "text": "a!!!", "case": "image 11"}
+{"func": "pending_image", "text": "!", "case": "image 12"}
+{"func": "pending_image", "text": "?", "case": "image 13"}
+{"func": "pending_image", "text": "<img", "case": "image 14"}
+{"func": "pending_image", "text": "<img ", "case": "image 15"}
+{"func": "pending_image", "text": "<img src", "case": "image 16"}
+{"func": "pending_image", "text": "<img src=\"", "case": "image 17"}
+{"func": "pending_image", "text": "<img src=\"http://x", "case": "image 18"}
+{"func": "pending_image", "text": "<img src=\"x\"/", "case": "image 19"}
+{"func": "pending_image", "text": "<img alt", "case": "image 20"}
+{"func": "pending_image", "text": "<i", "case": "image 21"}
+{"func": "pending_image", "text": "<im", "case": "image 22"}
+{"func": "pending_image", "text": "<imgx", "case": "image 23"}
+{"func": "pending_image", "text": "</", "case": "image 24"}
+{"func": "pending_image", "text": "</i", "case": "image 25"}
+{"func": "pending_image", "text": "</img", "case": "image 26"}
+{"func": "pending_image", "text": "</img>", "case": "image 27"}
+{"func": "pending_image", "text": "<div", "case": "image 28"}
+{"func": "pending_image", "text": "a\n![alt\nspan]", "case": "image 29"}
+{"func": "pending_image", "text": "![alt\nmore](u", "case": "image 30"}
+{"func": "pending_image", "text": "![a](b", "case": "image 31"}
+{"func": "pending_image", "text": "![a](b)", "case": "image 32"}
+{"func": "pending_image", "text": "x<y<img ", "case": "image 33"}
+{"func": "pending_image", "text": "end.", "case": "image 34"}
+{"func": "pending_image", "text": "end…", "case": "image 35"}
+{"func": "pending_image", "text": "hey?", "case": "image 36"}
+{"func": "pending_image", "text": "multi\nline\n![alt", "case": "image 37"}
+{"func": "pending_image", "text": "<IMG SRC=x", "case": "image 38"}
+{"func": "pending_image", "text": "<img\tsrc=x", "case": "image 39"}
+{"func": "pending_flag", "text": "", "case": "flag 00"}
+{"func": "flag_opens_stream", "text": "", "case": "flagopen 00"}
+{"func": "pending_flag", "text": "[[", "case": "flag 01"}
+{"func": "flag_opens_stream", "text": "[[", "case": "flagopen 01"}
+{"func": "pending_flag", "text": "[[audio_as_voice", "case": "flag 02"}
+{"func": "flag_opens_stream", "text": "[[audio_as_voice", "case": "flagopen 02"}
+{"func": "pending_flag", "text": "[[audio_as_voice]]", "case": "flag 03"}
+{"func": "flag_opens_stream", "text": "[[audio_as_voice]]", "case": "flagopen 03"}
+{"func": "pending_flag", "text": "[[as_document", "case": "flag 04"}
+{"func": "flag_opens_stream", "text": "[[as_document", "case": "flagopen 04"}
+{"func": "pending_flag", "text": "[[as_doc", "case": "flag 05"}
+{"func": "flag_opens_stream", "text": "[[as_doc", "case": "flagopen 05"}
+{"func": "pending_flag", "text": "[[x", "case": "flag 06"}
+{"func": "flag_opens_stream", "text": "[[x", "case": "flagopen 06"}
+{"func": "pending_flag", "text": "[x]", "case": "flag 07"}
+{"func": "flag_opens_stream", "text": "[x]", "case": "flagopen 07"}
+{"func": "pending_flag", "text": "[", "case": "flag 08"}
+{"func": "flag_opens_stream", "text": "[", "case": "flagopen 08"}
+{"func": "pending_flag", "text": "]", "case": "flag 09"}
+{"func": "flag_opens_stream", "text": "]", "case": "flagopen 09"}
+{"func": "pending_flag", "text": "[[a]]", "case": "flag 10"}
+{"func": "flag_opens_stream", "text": "[[a]]", "case": "flagopen 10"}
+{"func": "pending_flag", "text": "text [[audio", "case": "flag 11"}
+{"func": "flag_opens_stream", "text": "text [[audio", "case": "flagopen 11"}
+{"func": "pending_flag", "text": "a[b", "case": "flag 12"}
+{"func": "flag_opens_stream", "text": "a[b", "case": "flagopen 12"}
+{"func": "pending_flag", "text": "[[audio", "case": "flag 13"}
+{"func": "flag_opens_stream", "text": "[[audio", "case": "flagopen 13"}
+{"func": "pending_flag", "text": "[[as_document]]", "case": "flag 14"}
+{"func": "flag_opens_stream", "text": "[[as_document]]", "case": "flagopen 14"}
+{"func": "pending_flag", "text": "[[ALSO", "case": "flag 15"}
+{"func": "flag_opens_stream", "text": "[[ALSO", "case": "flagopen 15"}
+{"func": "pending_flag", "text": "[[]", "case": "flag 16"}
+{"func": "flag_opens_stream", "text": "[[]", "case": "flagopen 16"}
+{"func": "pending_flag", "text": "[[_", "case": "flag 17"}
+{"func": "flag_opens_stream", "text": "[[_", "case": "flagopen 17"}
+{"func": "has_pending", "text": "", "case": "draft 00"}
+{"func": "last_line", "text": "", "case": "lastline 00"}
+{"func": "has_pending", "text": "hello", "case": "draft 01"}
+{"func": "last_line", "text": "hello", "case": "lastline 01"}
+{"func": "has_pending", "text": "draft line\nMEDIA:", "case": "draft 02"}
+{"func": "last_line", "text": "draft line\nMEDIA:", "case": "lastline 02"}
+{"func": "has_pending", "text": "draft\n![alt", "case": "draft 03"}
+{"func": "last_line", "text": "draft\n![alt", "case": "lastline 03"}
+{"func": "has_pending", "text": "a\nb\n[[audio", "case": "draft 04"}
+{"func": "last_line", "text": "a\nb\n[[audio", "case": "lastline 04"}
+{"func": "has_pending", "text": "MEDIA: /x", "case": "draft 05"}
+{"func": "last_line", "text": "MEDIA: /x", "case": "lastline 05"}
+{"func": "has_pending", "text": "line1\nline2![x]", "case": "draft 06"}
+{"func": "last_line", "text": "line1\nline2![x]", "case": "lastline 06"}
+{"func": "has_pending", "text": "x\ny\n<img src=", "case": "draft 07"}
+{"func": "last_line", "text": "x\ny\n<img src=", "case": "lastline 07"}
+{"func": "has_pending", "text": "text\n\n", "case": "draft 08"}
+{"func": "last_line", "text": "text\n\n", "case": "lastline 08"}
+{"func": "has_pending", "text": "line\nMED", "case": "draft 09"}
+{"func": "last_line", "text": "line\nMED", "case": "lastline 09"}
+{"func": "has_pending", "case": "missing text"}
+{"func": "pending_media", "case": "missing text"}
+{"func": "pending_flag", "case": "missing text"}
+{"func": "pending_image", "text": null, "case": "null text"}

@@ -1,0 +1,38 @@
+{"case": "unquote-plain", "func": "unquote_dotenv_value", "raw": "  hello  "}
+{"case": "unquote-double", "func": "unquote_dotenv_value", "raw": "\"abc\""}
+{"case": "unquote-single", "func": "unquote_dotenv_value", "raw": "'abc'"}
+{"case": "unquote-mismatched", "func": "unquote_dotenv_value", "raw": "\"abc'"}
+{"case": "unquote-lone", "func": "unquote_dotenv_value", "raw": "\""}
+{"case": "unquote-empty-double", "func": "unquote_dotenv_value", "raw": "\"\""}
+{"case": "unquote-inner-spaces", "func": "unquote_dotenv_value", "raw": "  \"  spaced  \"  "}
+{"case": "unquote-empty", "func": "unquote_dotenv_value", "raw": ""}
+{"case": "unquote-space-only", "func": "unquote_dotenv_value", "raw": "   "}
+{"case": "parse-basic", "func": "parse_dotenv_map", "stdout": "A=1\nB=two\n"}
+{"case": "parse-comments", "func": "parse_dotenv_map", "stdout": "# comment\n\nA=1\n  # indented comment\nB=2"}
+{"case": "parse-quoted", "func": "parse_dotenv_map", "stdout": "A=\"x y\"\nB='z'\nC=\"  pad  \"\nD=  loose  \n"}
+{"case": "parse-default-tail", "func": "parse_dotenv_map", "stdout": "B=2\ndefault: value\nA=1\n"}
+{"case": "parse-invalid-names", "func": "parse_dotenv_map", "stdout": "1A=2\nA B=3\n=x\n_ok=yes\nA-B=4\n"}
+{"case": "parse-crlf", "func": "parse_dotenv_map", "stdout": "A=1\r\nB=2\r\n"}
+{"case": "parse-empty-value", "func": "parse_dotenv_map", "stdout": "A=\nB==x\n"}
+{"case": "parse-duplicates", "func": "parse_dotenv_map", "stdout": "A=1\nB=2\nA=3\n"}
+{"case": "parse-empty", "func": "parse_dotenv_map", "stdout": ""}
+{"case": "parse-no-newline-at-end", "func": "parse_dotenv_map", "stdout": "A=1\nB=2"}
+{"case": "schema", "func": "config_schema"}
+{"case": "fetch-empty-command", "func": "fetch_plan", "cfg": {"command": "   "}}
+{"case": "fetch-missing-command", "func": "fetch_plan", "cfg": {}}
+{"case": "fetch-null-cfg", "func": "fetch_plan", "cfg": null, "helper_stdout": "A=1\n"}
+{"case": "fetch-string-cfg", "func": "fetch_plan", "cfg": "not-a-dict", "helper_stdout": "A=1\n"}
+{"case": "fetch-windows", "func": "fetch_plan", "cfg": {"command": "cat /run/secrets.env"}, "is_windows": true}
+{"case": "fetch-windows-empty-command", "func": "fetch_plan", "cfg": {"command": ""}, "is_windows": true}
+{"case": "fetch-helper-failed", "func": "fetch_plan", "cfg": {"command": "cat /run/secrets.env"}, "helper_stdout": null}
+{"case": "fetch-ok", "func": "fetch_plan", "cfg": {"command": "cat /run/secrets.env", "helper_timeout_seconds": 5}, "helper_stdout": "OPENAI_API_KEY=\"sk-test\"\n# ignored\nOTHER=plain\n"}
+{"case": "fetch-empty-output", "func": "fetch_plan", "cfg": {"command": "true"}, "helper_stdout": "not a map\n"}
+{"case": "fetch-blank-output", "func": "fetch_plan", "cfg": {"command": "true"}, "helper_stdout": ""}
+{"case": "fetch-command-number", "func": "fetch_plan", "cfg": {"command": 123}, "helper_stdout": "A=1\n"}
+{"case": "fetch-command-true", "func": "fetch_plan", "cfg": {"command": true}, "helper_stdout": "A=1\n"}
+{"case": "fetch-timeout-string", "func": "fetch_plan", "cfg": {"command": "x", "helper_timeout_seconds": "2.5"}, "helper_stdout": "A=1\n"}
+{"case": "fetch-timeout-bad", "func": "fetch_plan", "cfg": {"command": "x", "helper_timeout_seconds": "soon"}, "helper_stdout": "A=1\n"}
+{"case": "fetch-timeout-null", "func": "fetch_plan", "cfg": {"command": "x", "helper_timeout_seconds": null}, "helper_stdout": "A=1\n"}
+{"case": "fetch-timeout-true", "func": "fetch_plan", "cfg": {"command": "x", "helper_timeout_seconds": true}, "helper_stdout": "A=1\n"}
+{"case": "fetch-timeout-hex", "func": "fetch_plan", "cfg": {"command": "x", "helper_timeout_seconds": "0x10"}, "helper_stdout": "A=1\n"}
+{"case": "fetch-missing-keys", "func": "fetch_plan"}

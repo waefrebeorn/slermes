@@ -1,0 +1,24 @@
+{"func": "fd_bounded_limits", "case": "s1024-m100-k20-p2", "soft": 1024, "max_connections": 100, "max_keepalive_connections": 20, "keepalive_expiry": 5.0, "paths": 2}
+{"func": "fd_bounded_limits", "case": "s1024-m100-k20-p1", "soft": 1024, "max_connections": 100, "max_keepalive_connections": 20, "keepalive_expiry": 5.0, "paths": 1}
+{"func": "fd_bounded_limits", "case": "s64-m8-kNone-p1", "soft": 64, "max_connections": 8, "max_keepalive_connections": null, "keepalive_expiry": 5.0, "paths": 1}
+{"func": "fd_bounded_limits", "case": "sNone-m100-k20-p2", "soft": null, "max_connections": 100, "max_keepalive_connections": 20, "keepalive_expiry": 5.0, "paths": 2}
+{"func": "fd_bounded_limits", "case": "s1024-mNone-k20-p2", "soft": 1024, "max_connections": null, "max_keepalive_connections": 20, "keepalive_expiry": 5.0, "paths": 2}
+{"func": "fd_bounded_limits", "case": "s8-m4-k2-p1", "soft": 8, "max_connections": 4, "max_keepalive_connections": 2, "keepalive_expiry": 5.0, "paths": 1}
+{"func": "fd_bounded_limits", "case": "s65536-m3000-k1000-p4", "soft": 65536, "max_connections": 3000, "max_keepalive_connections": 1000, "keepalive_expiry": 30.0, "paths": 4}
+{"func": "fd_bounded_limits", "case": "s1024-m100-k2-p2", "soft": 1024, "max_connections": 100, "max_keepalive_connections": 2, "keepalive_expiry": 5.0, "paths": 2}
+{"func": "fd_bounded_limits", "case": "s1024-m100-k99-p2", "soft": 1024, "max_connections": 100, "max_keepalive_connections": 99, "keepalive_expiry": 5.0, "paths": 2}
+{"func": "fd_bounded_limits", "case": "s4096-m500-k50-p0", "soft": 4096, "max_connections": 500, "max_keepalive_connections": 50, "keepalive_expiry": null, "paths": 0}
+{"func": "fd_bounded_limits", "case": "s0-m100-k20-p2", "soft": 0, "max_connections": 100, "max_keepalive_connections": 20, "keepalive_expiry": 5.0, "paths": 2}
+{"func": "fd_bounded_limits", "case": "s1024-m64-k20-p2", "soft": 1024, "max_connections": 64, "max_keepalive_connections": 20, "keepalive_expiry": 5.0, "paths": 2}
+{"func": "lease", "case": "retire-idle", "ops": ["retire"]}
+{"func": "lease", "case": "retire-then-end", "ops": ["begin", "retire", "end"]}
+{"func": "lease", "case": "grace-fires", "ops": ["begin", "begin", "retire", "grace"]}
+{"func": "lease", "case": "aclose-pending", "ops": ["begin", "retire", "aclose"]}
+{"func": "lease", "case": "begin-fail", "ops": ["begin_fail"]}
+{"func": "lease", "case": "fail-then-retire", "ops": ["begin", "begin_fail", "retire"]}
+{"func": "lease", "case": "double-end", "ops": ["begin", "retire", "end_twice", "grace"]}
+{"func": "lease", "case": "empty", "ops": []}
+{"func": "lease", "case": "grace-unarmed", "ops": ["grace"]}
+{"func": "lease", "case": "drain-then-retire", "ops": ["begin", "end", "retire"]}
+{"func": "lease", "case": "two-clients", "ops": ["begin", "begin", "end", "retire", "end"]}
+{"func": "lease", "case": "aclose-idle", "ops": ["aclose"]}

@@ -1,0 +1,39 @@
+{"func": "bot_id", "case": "numeric-prefix", "token": "123456:AAH-xyz"}
+{"func": "bot_id", "case": "non-numeric", "token": "abc:123"}
+{"func": "bot_id", "case": "empty-prefix", "token": ":99"}
+{"func": "bot_id", "case": "leading-zeros", "token": "007:t"}
+{"func": "bot_id", "case": "no-colon", "token": "123456"}
+{"func": "bot_id", "case": "null-token", "token": null}
+{"func": "bot_id", "case": "empty-token", "token": ""}
+{"func": "store_name", "case": "path-ok", "token": "555:abc", "has_receipt_dir": true}
+{"func": "store_name", "case": "no-dir", "token": "555:abc", "has_receipt_dir": false}
+{"func": "store_name", "case": "no-bot", "token": "bot:abc", "has_receipt_dir": true}
+{"func": "seed", "case": "mixed-expiry", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "saved_text": "{\"until\": {\"42\": 1700000100.5, \"43\": 1699999999.0}}"}
+{"func": "seed", "case": "clamped", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "saved_text": "{\"until\": {\"44\": 1700003600.0}}"}
+{"func": "seed", "case": "non-number", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "saved_text": "{\"until\": {\"45\": \"soon\", \"46\": null}}"}
+{"func": "seed", "case": "bool-deadline", "token": "123:b", "wall_now": -5.0, "loop_now": 5000.0, "saved_text": "{\"until\":{\"47\":true}}"}
+{"func": "seed", "case": "missing-file", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "saved_text": null}
+{"func": "seed", "case": "garbage", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "saved_text": "not json"}
+{"func": "seed", "case": "top-list", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "saved_text": "[1,2]"}
+{"func": "seed", "case": "until-null", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "saved_text": "{\"until\":null}"}
+{"func": "seed", "case": "until-list", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "saved_text": "{\"until\":[1,2]}"}
+{"func": "seed", "case": "bom", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "saved_text": "﻿{\"until\": {\"48\": 1700000042.0}}"}
+{"func": "seed", "case": "preset-merge", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "preset": {"42": 9999.0}, "saved_text": "{\"until\": {\"42\": 1700000060.0}}"}
+{"func": "seed", "case": "already-loaded", "token": "123:b", "wall_now": 1700000000.0, "loop_now": 5000.0, "loaded": true, "preset": {"7": 1.5}, "saved_text": "{\"until\": {\"8\": 1700000010.0}}"}
+{"func": "seed", "case": "no-bot-id", "token": "x:y", "wall_now": 1700000000.0, "loop_now": 5000.0, "saved_text": "{\"until\": {\"9\": 1700000010.0}}"}
+{"func": "record", "case": "wait-30", "chat": "42", "wait": 30.0, "loop_now": 1000.0}
+{"func": "record", "case": "wait-half", "chat": "42", "wait": 0.5, "loop_now": 1000.0}
+{"func": "record", "case": "wait-huge", "chat": "42", "wait": 500.0, "loop_now": 1000.0}
+{"func": "record", "case": "chat-spaced", "chat": "  42  ", "wait": 12.5, "loop_now": 1000.0}
+{"func": "record", "case": "chat-username", "chat": "@channel", "wait": 90.0, "loop_now": 1000.0}
+{"func": "record", "case": "chat-leading-zeros", "chat": "007", "wait": 60.0, "loop_now": 1000.0, "preset": {"9": 55.5}}
+{"func": "remaining", "case": "future", "chat": "42", "loop_now": 1000.0, "until": {"42": 1015.5}}
+{"func": "remaining", "case": "expired", "chat": "42", "loop_now": 1000.0, "until": {"42": 999.0, "43": 1001.0}}
+{"func": "remaining", "case": "absent", "chat": "42", "loop_now": 1000.0, "until": {"43": 1001.0}}
+{"func": "remaining", "case": "normalized", "chat": " 42 ", "loop_now": 1000.0, "until": {"42": 1001.0}}
+{"func": "remaining", "case": "empty-map", "chat": "42", "loop_now": 1000.0, "until": null}
+{"func": "record", "case": "chat-numeric", "chat": 42, "wait": 30.0, "loop_now": 1000.0}
+{"func": "record", "case": "chat-null", "chat": null, "wait": 5.0, "loop_now": 1000.0}
+{"func": "record", "case": "chat-bool", "chat": true, "wait": 5.0, "loop_now": 1000.0}
+{"func": "remaining", "case": "numeric-chat", "chat": 42, "loop_now": 1000.0, "until": {"42": 1004.25}}
+{"func": "remaining", "case": "null-chat", "chat": null, "loop_now": 1000.0, "until": {"None": 1004.0}}

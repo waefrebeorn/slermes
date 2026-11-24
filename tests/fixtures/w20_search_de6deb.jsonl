@@ -1,0 +1,29 @@
+{"func":"sort_arg","sort":"relevance","case":"sort relevance"}
+{"func":"sort_arg","sort":"newest","case":"sort newest"}
+{"func":"sort_arg","sort":"oldest","case":"sort oldest"}
+{"func":"sort_arg","sort":"bogus","case":"sort unknown keyerror"}
+{"func":"sort_arg","sort":"","case":"sort empty keyerror"}
+{"func":"optional_list","values":null,"case":"optional null"}
+{"func":"optional_list","case":"optional missing"}
+{"func":"optional_list","values":["telegram","slack"],"case":"optional list"}
+{"func":"optional_list","values":[],"case":"optional empty list"}
+{"func":"optional_list","values":"ab","case":"optional string iterates chars"}
+{"func":"optional_list","values":{"a":1,"b":2},"case":"optional dict keys"}
+{"func":"optional_list","values":7,"case":"optional number type error"}
+{"func":"hit","match":{"id":41,"session_id":"s-1","role":"user","snippet":"a >>>cat<<< sat","timestamp":1700000000.5,"tool_name":null,"source":"telegram","model":"m1","session_started":1699999999.0,"context":[{"role":"user","content":"hi"},{"role":"assistant","content":"hello"}]},"case":"hit full"}
+{"func":"hit","match":{"id":"42","role":"tool"},"case":"hit numeric string id"}
+{"func":"hit","match":{"id":null,"role":"assistant"},"case":"hit null id"}
+{"func":"hit","match":{"role":"assistant"},"case":"hit missing id"}
+{"func":"hit","match":{"id":"abc","role":"user"},"case":"hit bad id valueerror"}
+{"func":"hit","match":{"id":1.9,"role":"user"},"case":"hit float id truncates"}
+{"func":"hit","match":{"id":5,"context":[{"role":"user","content":"q"}]},"case":"hit context only"}
+{"func":"hit","match":{"id":6,"context":[{"role":"user"}]},"case":"hit context row missing content"}
+{"func":"hit","match":{"id":7,"context":[{"content":"q"}]},"case":"hit context row missing role"}
+{"func":"hit","match":{"id":8,"context":["nope"]},"case":"hit context row not a mapping"}
+{"func":"hit","match":null,"case":"hit null match"}
+{"func":"store_call","params":{},"case":"store defaults empty"}
+{"func":"store_call","params":{"query":"cat","source_filter":["telegram"],"exclude_sources":["cron"],"role_filter":["user"],"limit":5,"offset":10,"sort":"newest","include_inactive":true,"fields":["id","snippet"],"after_ts":1699990000,"before_ts":1700000000},"case":"store all args"}
+{"func":"store_call","params":{"query":"dog","source_filter":"ab","sort":"oldest"},"case":"store string filter and oldest"}
+{"func":"store_call","params":{"query":"x","matches":[{"id":1,"session_id":"s","role":"user","snippet":"x","timestamp":1.5,"context":[{"role":"user","content":"x"}]}]},"case":"store maps one hit"}
+{"func":"store_call","params":{"query":"y","matches":[{"id":2,"role":"assistant"},{"id":3,"role":"user"}]},"case":"store maps two hits"}
+{"func":"store_call","params":{"query":"z","matches":[{"id":"bad","role":"user"}]},"case":"store hit raises bad id"}

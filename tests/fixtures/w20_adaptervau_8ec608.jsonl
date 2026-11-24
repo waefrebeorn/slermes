@@ -1,0 +1,32 @@
+{"func": "frame_kept", "message": "shard 0 received: {\"op\":10}", "case": "ordinary frame kept"}
+{"func": "frame_kept", "message": "shard 0 received: {\"type\":5,\"data\":{\"custom_id\":\"hermes_vault_code_value\",\"components\":[{\"value\":\"123456\"}]}}", "case": "modal submit dropped"}
+{"func": "frame_kept", "message": "", "case": "empty frame"}
+{"func": "frame_kept", "message": "hermes_vault_code_value", "case": "bare id dropped"}
+{"func": "truncate_utf16", "text": "Enter the code", "limit": 45, "case": "fits untouched"}
+{"func": "truncate_utf16", "text": "Enter the code from your browser", "limit": 10, "case": "ascii cut"}
+{"func": "truncate_utf16", "text": "ab🔑cd", "limit": 3, "case": "emoji pair not split"}
+{"func": "truncate_utf16", "text": "ab🔑cd", "limit": 4, "case": "emoji pair fits"}
+{"func": "truncate_utf16", "text": "café au lait", "limit": 3, "case": "bmp accent is one unit"}
+{"func": "truncate_utf16", "text": "anything", "limit": 0, "case": "zero budget"}
+{"func": "truncate_utf16", "text": "anything", "limit": -5, "case": "negative budget"}
+{"func": "truncate_utf16", "text": "", "limit": 10, "case": "empty text"}
+{"func": "check_auth", "admitted": true, "interaction_user_id": "42", "user_id": "42", "case": "author allowed"}
+{"func": "check_auth", "admitted": true, "interaction_user_id": "7", "user_id": "42", "case": "other user refused"}
+{"func": "check_auth", "admitted": false, "interaction_user_id": "42", "user_id": "42", "case": "base admission refused"}
+{"func": "check_auth", "admitted": true, "interaction_user_id": 42, "user_id": "42", "case": "numeric id coerced"}
+{"func": "check_auth", "admitted": true, "interaction_user_id": null, "user_id": "42", "case": "missing user"}
+{"func": "check_auth", "admitted": true, "interaction_user_id": "42", "user_id": "", "case": "blank expected id"}
+{"func": "submit_plan", "code": " 123456 ", "admitted": true, "accepted": true, "case": "accepted code"}
+{"func": "submit_plan", "code": "654321", "admitted": true, "accepted": false, "case": "rejected code"}
+{"func": "submit_plan", "code": "   ", "admitted": true, "accepted": true, "case": "blank code defers"}
+{"func": "submit_plan", "code": "\t\n123456\r\n", "admitted": true, "accepted": true, "case": "whitespace wrapped code"}
+{"func": "submit_plan", "code": "", "admitted": true, "accepted": false, "case": "empty code defers"}
+{"func": "submit_plan", "code": "123456", "admitted": false, "accepted": true, "case": "gated keeps card"}
+{"func": "submit_plan", "code": "123456", "admitted": false, "accepted": false, "case": "gated rejected"}
+{"func": "prompt_content", "body": "Open the page and enter the code it shows.", "hint": "", "case": "no hint"}
+{"func": "prompt_content", "body": "Open the page.", "hint": "codes expire after 10 minutes", "case": "short hint"}
+{"func": "prompt_content", "body": "Open the page.", "hint": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "case": "long hint cut to 300"}
+{"func": "prompt_content", "body": "", "hint": "only a hint", "case": "empty body"}
+{"func": "prompt_content", "body": "Body", "hint": "🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑🔑", "case": "emoji hint cut by code points"}
+{"func": "input_id", "case": "input id constant"}
+{"func": "limits", "case": "component limits"}

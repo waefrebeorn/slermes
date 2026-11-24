@@ -1,0 +1,26 @@
+{"func":"headers","case":"with key","api_key":"abc"}
+{"func":"headers","case":"empty key","api_key":""}
+{"func":"headers","case":"missing key"}
+{"func":"search_request","case":"keyless tier","query":"cats","limit":5,"keyless":true}
+{"func":"search_request","case":"keyed default","query":"dogs","limit":5,"reply":{"status":200,"body":{"results":[]}}}
+{"func":"search_request","case":"limit floor","query":"q","limit":0,"reply":{"status":200,"body":{"results":[]}}}
+{"func":"search_request","case":"limit cap","query":"q","limit":50,"reply":{"status":200,"body":{"results":[]}}}
+{"func":"search_request","case":"limit truncates","query":"q","limit":2.9,"reply":{"status":200,"body":{"results":[]}}}
+{"func":"search_request","case":"negative limit","query":"q","limit":-3,"reply":{"status":200,"body":{"results":[]}}}
+{"func":"search_request","case":"keyed with key","query":"q","limit":5,"api_key":"sk-1","reply":{"status":200,"body":{"results":[]}}}
+{"func":"search_result","case":"two rows","reply":{"status":200,"body":{"results":[{"url":"https://a","title":"A","snippet":"sa"},{"url":"https://b","title":"B","snippet":"sb"}]}}}
+{"func":"search_result","case":"description fallback","reply":{"status":200,"body":{"results":[{"url":"https://a","title":"A","snippet":"","description":"d1"}]}}}
+{"func":"search_result","case":"missing fields","reply":{"status":200,"body":{"results":[{}]}}}
+{"func":"search_result","case":"http error text","reply":{"status":429,"text":"slow down","body":{}}}
+{"func":"search_result","case":"http error no text","reply":{"status":500,"text":"   ","body":{}}}
+{"func":"search_result","case":"json error","reply":{"status":200,"json_error":"bad json"}}
+{"func":"search_result","case":"empty results","reply":{"status":200,"body":{}}}
+{"func":"extract","case":"document","urls":["https://page"],"replies":[{"status":200,"body":{"url":"https://page","title":"T","content":"C"}}]}
+{"func":"extract","case":"body url override","urls":["https://orig"],"replies":[{"status":200,"body":{"url":"https://canonical","title":"T2","content":"C2"}}]}
+{"func":"extract","case":"origin error","urls":["https://gone"],"replies":[{"status":404,"text":"{\"message\":\"the target server answered 404\"}","body":{}}]}
+{"func":"extract","case":"vendor refusal","urls":["https://busy"],"replies":[{"status":500,"text":"","body":{}}]}
+{"func":"extract","case":"transport error","urls":["https://down"],"replies":[{"get_error":"connection reset"}]}
+{"func":"extract","case":"json error","urls":["https://bad"],"replies":[{"status":200,"json_error":"bad json"}]}
+{"func":"extract","case":"two urls","urls":["https://ok","https://gone"],"replies":[{"status":200,"body":{"title":"A","content":"x"}},{"status":403,"text":"{\"message\":\"The page does not exist\"}","body":{}}]}
+{"func":"setup_schema","case":"picker entry"}
+{"func":"identity","case":"names"}

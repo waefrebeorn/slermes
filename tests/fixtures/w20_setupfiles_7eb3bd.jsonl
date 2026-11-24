@@ -1,0 +1,25 @@
+{"func":"run","raw_text":"/setup-files","chat_id":"c1","thread_id":"t1","token_path":"/s/tok.json","client_secret_exists":true,"token_exists":false,"helper":{"mode":"ok"},"case":"status not authorized"}
+{"func":"run","raw_text":"/setup-files","chat_id":"c1","client_secret_exists":false,"token_exists":false,"helper":{"mode":"ok"},"case":"status not configured"}
+{"func":"run","raw_text":"/setup-files","chat_id":"c1","thread_id":"t9","token_path":"/s/bob.json","client_secret_exists":true,"token_exists":true,"creds_loaded":true,"sender_email":" Bob@Example.COM ","helper":{"mode":"ok"},"case":"status active per user"}
+{"func":"run","raw_text":"/setup-files","chat_id":"c1","token_path":"/s/shared.json","client_secret_exists":true,"token_exists":true,"creds_loaded":true,"sender_email":null,"helper":{"mode":"ok"},"case":"status active shared"}
+{"func":"run","raw_text":"   /setup-files   ","chat_id":"c1","client_secret_exists":true,"token_exists":true,"creds_loaded":false,"helper":{"mode":"ok"},"case":"status token unreadable"}
+{"func":"run","raw_text":"/setup-files start","chat_id":"c1","client_secret_exists":false,"helper":{"mode":"ok"},"case":"start no client credentials"}
+{"func":"run","raw_text":"/setup-files start","chat_id":"c1","thread_id":"t2","sender_email":"ann@example.com","client_secret_exists":true,"helper":{"mode":"ok","output":"working...\nhttps://accounts.example/auth?x=1\n"},"case":"start prints url"}
+{"func":"run","raw_text":"/setup-files   start    ","chat_id":"c1","client_secret_exists":true,"helper":{"mode":"ok","output":"https://accounts.example/auth?y=2"},"case":"start extra whitespace"}
+{"func":"run","raw_text":"/setup-files start","chat_id":"c1","client_secret_exists":true,"helper":{"mode":"exit"},"case":"start system exit"}
+{"func":"run","raw_text":"/setup-files start","chat_id":"c1","client_secret_exists":true,"helper":{"mode":"error","error":"import exploded"},"case":"start helper error"}
+{"func":"run","raw_text":"/setup-files start","chat_id":"c1","client_secret_exists":true,"helper":{"mode":"ok","output":""},"case":"start empty output leaks index error"}
+{"func":"run","raw_text":"/setup-files revoke","chat_id":"c1","thread_id":"t3","sender_email":"ann@example.com","client_secret_exists":true,"token_path":"/s/ann.json","helper":{"mode":"ok","output":"  token revoked  "},"case":"revoke output"}
+{"func":"run","raw_text":"/setup-files revoke","chat_id":"c1","client_secret_exists":true,"helper":{"mode":"ok","output":"   "},"case":"revoke blank output"}
+{"func":"run","raw_text":"/setup-files revoke","chat_id":"c1","client_secret_exists":true,"helper":{"mode":"exit"},"case":"revoke system exit tolerated"}
+{"func":"run","raw_text":"/setup-files revoke","chat_id":"c1","client_secret_exists":true,"helper":{"mode":"error","error":"no token"},"case":"revoke helper error"}
+{"func":"run","raw_text":"/setup-files revoke","chat_id":"c1","sender_email":"bob@example.com","client_secret_exists":true,"helper":{"mode":"ok","output":"gone"},"case":"revoke per user evicts"}
+{"func":"run","raw_text":"/setup-files 4/0AX4code","chat_id":"c1","thread_id":"t4","sender_email":"ann@example.com","token_path":"/s/ann.json","client_secret_exists":true,"creds_loaded":true,"build_api_ok":true,"helper":{"mode":"ok","output":"exchanged\n"},"case":"exchange authorized"}
+{"func":"run","raw_text":"/setup-files permit?code=abc","chat_id":"c1","client_secret_exists":true,"creds_loaded":true,"build_api_ok":true,"helper":{"mode":"ok","output":"ok"},"case":"exchange authorized shared slot"}
+{"func":"run","raw_text":"/setup-files 4/0AX4code","chat_id":"c1","token_path":"/s/tok.json","client_secret_exists":true,"creds_loaded":false,"helper":{"mode":"ok","output":"  body line  \n"},"case":"exchange not reloaded"}
+{"func":"run","raw_text":"/setup-files 4/0AX4code","chat_id":"c1","token_path":"/s/tok.json","client_secret_exists":true,"creds_loaded":true,"build_api_ok":false,"helper":{"mode":"ok","output":"built badly"},"case":"exchange api build fails"}
+{"func":"run","raw_text":"/setup-files 4/0AX4code","chat_id":"c1","client_secret_exists":true,"helper":{"mode":"exit"},"case":"exchange system exit"}
+{"func":"run","raw_text":"/setup-files 4/0AX4code","chat_id":"c1","client_secret_exists":true,"helper":{"mode":"error","error":"bad code"},"case":"exchange helper error"}
+{"func":"run","raw_text":"/setup-files Start","chat_id":"c1","token_path":"/s/tok.json","client_secret_exists":true,"creds_loaded":true,"helper":{"mode":"ok","output":"treated as code"},"case":"start is case sensitive"}
+{"func":"run","raw_text":"/setup-files","chat_id":"c1","token_path":"/s/blank.json","client_secret_exists":true,"token_exists":true,"creds_loaded":true,"sender_email":"   ","helper":{"mode":"ok"},"case":"blank sender falls back shared"}
+{"func":"run","raw_text":"-no-command-","chat_id":"c1","client_secret_exists":true,"token_exists":true,"creds_loaded":true,"helper":{"mode":"ok"},"case":"other command text"}

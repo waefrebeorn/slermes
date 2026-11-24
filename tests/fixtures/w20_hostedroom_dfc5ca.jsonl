@@ -1,0 +1,21 @@
+{"func": "budget_remaining", "timeout": 15.0, "elapsed": 3.5, "case": "time left"}
+{"func": "budget_remaining", "timeout": 15.0, "elapsed": 0, "case": "full budget"}
+{"func": "budget_remaining", "timeout": 15.0, "elapsed": 15.0, "case": "deadline hit"}
+{"func": "budget_remaining", "timeout": 15.0, "elapsed": 16.0, "case": "deadline passed"}
+{"func": "budget_remaining", "timeout": 15.0, "elapsed": 0, "closed": true, "case": "closed budget"}
+{"func": "budget_remaining", "timeout": 0.5, "elapsed": 0.25, "case": "fractional budget"}
+{"func": "budget_track", "closed": false, "case": "track on live budget"}
+{"func": "budget_track", "closed": true, "case": "track after close"}
+{"func": "budget_close", "timeout": 15.0, "sockets": 2, "case": "close two sockets"}
+{"func": "budget_close", "timeout": 15.0, "sockets": 0, "case": "close no sockets"}
+{"func": "budget_close", "timeout": 15.0, "sockets": 2, "shutdown_fails": true, "case": "shutdown errors suppressed"}
+{"func": "budget_close", "timeout": 15.0, "sockets": 4, "case": "close four sockets"}
+{"func": "open_plan", "host": "peer.example", "scheme": "https", "timeout": 15.0, "elapsed": 1.0, "case": "https default port"}
+{"func": "open_plan", "host": "peer.example", "scheme": "http", "timeout": 15.0, "elapsed": 1.0, "case": "http default port"}
+{"func": "open_plan", "host": "peer.example", "port": 8443, "scheme": "https", "timeout": 15.0, "elapsed": 1.0, "case": "explicit port"}
+{"func": "open_plan", "host": "peer.example", "port": 8443, "scheme": "https", "timeout": 15.0, "elapsed": 1.0, "targets": [["peer.example", 8443]], "case": "target already in flight"}
+{"func": "open_plan", "host": "peer.example", "scheme": "https", "timeout": 15.0, "elapsed": 1.0, "targets": [["a", 443], ["b", 443], ["c", 443], ["d", 443]], "case": "attempt cap reached"}
+{"func": "open_plan", "host": "peer.example", "scheme": "https", "timeout": 15.0, "elapsed": 1.0, "targets": [["a", 443], ["b", 443], ["c", 443]], "case": "one slot left"}
+{"func": "open_plan", "host": "peer.example", "scheme": "https", "timeout": 15.0, "elapsed": 15.0, "case": "expired before send"}
+{"func": "open_plan", "host": "peer.example", "port": 8443, "scheme": "https", "timeout": 15.0, "elapsed": 1.0, "targets": [["peer.example", 443]], "case": "other port free"}
+{"func": "max_attempts", "case": "attempt cap constant"}

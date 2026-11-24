@@ -1,0 +1,21 @@
+{"func":"translate","exc_type":"AuthorityRefusal","fields":{"reason":"unknown_execution"},"session_id":"s-1","case":"unknown execution"}
+{"func":"translate","exc_type":"AuthorityRefusal","fields":{"reason":"permission_denied"},"session_id":"s-1","case":"authority passthrough"}
+{"func":"translate","exc_type":"AuthorityRefusal","fields":{"reason":"unknown_execution"},"case":"unknown execution no sid"}
+{"func":"translate","exc_type":"SessionCompressionInProgressError","fields":{"message":"compression running"},"session_id":"sess-7","case":"in progress"}
+{"func":"translate","exc_type":"CompressionSessionBusyError","fields":{"message":"busy writing"},"session_id":"sess-8","case":"busy"}
+{"func":"translate","exc_type":"CompressionSessionClosedError","fields":{"message":"closed","session_id":"sess-x"},"session_id":"s-1","holder_present":true,"compression_tip":"sess-tip","case":"closed with holder"}
+{"func":"translate","exc_type":"CompressionSessionClosedError","fields":{"message":"closed","session_id":"sess-x"},"session_id":"s-1","holder_present":false,"case":"closed no holder"}
+{"func":"translate","exc_type":"CompressionSessionClosedError","fields":{"message":"closed","session_id":"sess-n"},"session_id":"s-1","holder_present":true,"compression_tip":null,"case":"closed null tip"}
+{"func":"translate","exc_type":"SessionTurnLeaseLostError","fields":{"message":"lease lost"},"session_id":"s-2","case":"lease lost"}
+{"func":"translate","exc_type":"SessionActiveWriteGuardError","fields":{"message":"guarded"},"session_id":"s-3","case":"write guarded"}
+{"func":"translate","exc_type":"HeldRowRewrittenError","fields":{"message":"rewritten"},"session_id":"s-4","case":"held row"}
+{"func":"translate","exc_type":"PruneRowStaleError","fields":{"message":"stale"},"session_id":"s-5","case":"prune stale"}
+{"func":"translate","exc_type":"PruneRowUnresolvedError","fields":{"message":"unresolved"},"case":"prune unresolved no sid"}
+{"func":"translate","exc_type":"SessionResumeTooLargeError","fields":{"message":"too many","message_count":12,"limit":10,"scope":"turn"},"session_id":"s-6","case":"resume too large"}
+{"func":"translate","exc_type":"SessionResumeTooLargeError","fields":{"message":"too many","message_count":1,"limit":500,"scope":"session"},"case":"resume one over"}
+{"func":"translate","exc_type":"SessionExportTooLargeError","fields":{"message":"export","session_id":"s-9","message_count":3,"limit":2},"session_id":"s-1","case":"export too large"}
+{"func":"translate","exc_type":"RewindTargetUnavailableError","fields":{"message":"no target"},"session_id":"s-1","case":"rewind"}
+{"func":"translate","exc_type":"RuntimeError","fields":{"message":"boom"},"session_id":"s-1","case":"unmapped passthrough"}
+{"func":"translate","exc_type":"KeyError","fields":{},"session_id":"s-1","case":"unknown class empty fields"}
+{"func":"translate","exc_type":"ValueError","case":"all keys missing"}
+{"func":"translate","exc_type":"CompressionSessionClosedError","fields":{"message":"closed","session_id":"sess-y"},"session_id":"","holder_present":true,"compression_tip":{"tip":"obj"},"case":"closed object tip"}

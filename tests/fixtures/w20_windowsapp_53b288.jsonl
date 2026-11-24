@@ -1,0 +1,16 @@
+{"func":"run","spec":{"import_error":"No module named 'winrt'","identity":null,"source":null,"availability":0},"case":"winrt missing"}
+{"func":"run","spec":{"import_error":null,"identity":{"winerror":-2147009196,"str":"[WinError -2147009196] no identity"},"source":null,"availability":0},"case":"not packaged"}
+{"func":"run","spec":{"import_error":null,"identity":{"winerror":5,"str":"[WinError 5] access denied"},"source":null,"availability":0},"case":"identity OSError other"}
+{"func":"run","spec":{"import_error":null,"identity":{"winerror":null,"str":"boom","type":"RuntimeError"},"source":null,"availability":0},"case":"identity generic error"}
+{"func":"run","spec":{"import_error":null,"identity":null,"source":null,"availability":0},"case":"no app installer source"}
+{"func":"run","spec":{"import_error":null,"identity":null,"source":{"uri":"file:///C:/Hermes.appinstaller"},"availability":1},"case":"no updates"}
+{"func":"run","spec":{"import_error":null,"identity":null,"source":{"uri":"https://example.test/h.appinstaller"},"availability":2},"case":"update available"}
+{"func":"run","spec":{"import_error":null,"identity":null,"source":{"uri":"https://example.test/h.appinstaller"},"availability":3},"case":"update required"}
+{"func":"run","spec":{"import_error":null,"identity":null,"source":{"uri":"https://example.test/h.appinstaller"},"availability":0},"case":"availability unknown"}
+{"func":"run","spec":{"import_error":null,"identity":null,"source":{"uri":"https://example.test/h.appinstaller"},"availability":4},"case":"availability error member"}
+{"func":"run","spec":{"import_error":null,"identity":null,"source":{"uri":"https://example.test/h.appinstaller"},"availability":7},"case":"availability out of range"}
+{"func":"run","spec":{"import_error":null,"identity":null,"source":{"uri":"https://example.test/h.appinstaller"},"check_error":"The server is unavailable"},"case":"check raises"}
+{"func":"run","spec":{"import_error":null,"identity":null,"source":{"uri":""},"availability":2},"case":"empty uri still reports"}
+{"func":"availability_name","value":0,"case":"name 0"}
+{"func":"availability_name","value":3,"case":"name 3"}
+{"func":"availability_name","value":9,"case":"name out of range"}

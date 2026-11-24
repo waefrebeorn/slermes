@@ -1,0 +1,29 @@
+{"func":"setup","case":"linux success","system":"Linux","script":{"sink":{"rc":0,"stdout":"5\n","stderr":""},"src":{"rc":0,"stdout":"7\n","stderr":""}}}
+{"func":"setup","case":"linux custom prefix","system":"Linux","script":{"prefix":"meet42","sink":{"rc":0,"stdout":"11","stderr":""},"src":{"rc":0,"stdout":"12","stderr":""}}}
+{"func":"setup","case":"pactl missing","system":"Linux","script":{"sink":{"missing":true}}}
+{"func":"setup","case":"sink failed stderr","system":"Linux","script":{"sink":{"rc":1,"stderr":"boom"},"src":{"rc":0,"stdout":"7"}}}
+{"func":"setup","case":"sink failed no stderr","system":"Linux","script":{"sink":{"rc":3,"stderr":""},"src":{"rc":0,"stdout":"7"}}}
+{"func":"setup","case":"sink empty stdout","system":"Linux","script":{"sink":{"rc":0,"stdout":""},"src":{"rc":0,"stdout":"7"}}}
+{"func":"setup","case":"sink bad stdout","system":"Linux","script":{"sink":{"rc":0,"stdout":"abc\n"},"src":{"rc":0,"stdout":"7"}}}
+{"func":"setup","case":"src failed rollback","system":"Linux","script":{"sink":{"rc":0,"stdout":"5"},"src":{"rc":1,"stderr":"no source"}}}
+{"func":"setup","case":"src empty stdout","system":"Linux","script":{"sink":{"rc":0,"stdout":"5"},"src":{"rc":0,"stdout":"  "}}}
+{"func":"setup","case":"windows unsupported","system":"Windows","script":{}}
+{"func":"setup","case":"other platform","system":"FreeBSD","script":{}}
+{"func":"setup","case":"darwin success","system":"Darwin","script":{"profiler":{"rc":0,"out":"Devices:\n  BlackHole 2ch:\n"}}}
+{"func":"setup","case":"darwin profiler missing","system":"Darwin","script":{"profiler":{"missing":true}}}
+{"func":"setup","case":"darwin profiler failed","system":"Darwin","script":{"profiler":{"rc":2,"out":"boom-out"}}}
+{"func":"setup","case":"darwin no blackhole","system":"Darwin","script":{"profiler":{"rc":0,"out":"Built-in Microphone"}}}
+{"func":"parse_module_id","case":"plain","stdout":"5"}
+{"func":"parse_module_id","case":"last token","stdout":"x 12 13"}
+{"func":"parse_module_id","case":"padded","stdout":"  42  "}
+{"func":"parse_module_id","case":"plus sign","stdout":"+7"}
+{"func":"parse_module_id","case":"first line","stdout":"1\n2"}
+{"func":"parse_module_id","case":"empty","stdout":""}
+{"func":"parse_module_id","case":"not a number","stdout":"abc"}
+{"func":"parse_module_id","case":"blank first line","stdout":"\n5"}
+{"func":"teardown","case":"reverse order","module_ids":[3,1]}
+{"func":"teardown","case":"nothing","module_ids":[]}
+{"func":"teardown","case":"unload fails","module_ids":[5],"script":{"unload_fail":true}}
+{"func":"ready","case":"unset","value":null}
+{"func":"ready","case":"set","value":"dev-name"}
+{"func":"finish","case":"shape","tag":"linux","device":"src","write_target":"sink","module_ids":[5,7]}
