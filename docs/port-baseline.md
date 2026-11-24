@@ -52,8 +52,8 @@ Held-out fuzz (the only measure that can disagree with the author):
 |---|---|---|---|---|
 | wave | clean | carrying |
 |---|---|---|
-| 25 | 41 | 16 |
-| 26 | 44 | 16 |
+| 25 | 43 | 14 |
+| 26 | 46 | 14 |
 | 27 | 48 | 27 |
 | 28 | 11 | 21 |
 | 29 | 12 | 18 |
@@ -64,10 +64,10 @@ Held-out fuzz (the only measure that can disagree with the author):
 | 34 | 6 | 9 |
 | 35 | 1 | 0 |
 
-**357 gates measured, 206 clean (58%), 151 carrying at least one real divergence.**
-Latest clean sweep, 2026-11-24, --per-case 5, after the second day of triage: nineteen
-gates went from carrying to clean, each verified by an authored gate and a fresh
-held-out sweep.
+**357 gates measured, 210 clean (59%), 147 carrying at least one real divergence.**
+Sweep of 2026-11-24 (third of the day). Three further gates were fixed while this
+sweep was running (`w26_cache_8bdf62`, `w26_provider_9eacd0`,
+`w26_sessionmes_de1f3f`), so wave 26 is one sweep behind its own tree.
 
 ## Why the previous counts were wrong
 
