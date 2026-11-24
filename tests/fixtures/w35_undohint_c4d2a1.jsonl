@@ -1,0 +1,30 @@
+{"func":"epoch","case":"bool-true","value":true}
+{"func":"epoch","case":"bool-false","value":false}
+{"func":"epoch","case":"zero","value":0}
+{"func":"epoch","case":"negative","value":-5}
+{"func":"epoch","case":"float","value":1730000000.5}
+{"func":"epoch","case":"null-value","value":null}
+{"func":"epoch","case":"array","value":[1,2]}
+{"func":"epoch","case":"empty-string","value":""}
+{"func":"epoch","case":"blank-string","value":"   "}
+{"func":"epoch","case":"date-only","value":"2024-05-06"}
+{"func":"epoch","case":"naive-datetime","value":"2024-05-06T07:08:09"}
+{"func":"epoch","case":"aware-zulu","value":"2024-05-06T07:08:09Z"}
+{"func":"epoch","case":"aware-offset","value":"2024-05-06T07:08:09+02:00"}
+{"func":"epoch","case":"aware-negative","value":"2024-05-06T07:08:09-05:30"}
+{"func":"epoch","case":"fractional","value":"2024-05-06T07:08:09.25+00:00"}
+{"func":"epoch","case":"padded","value":"  2024-05-06T07:08:09Z  "}
+{"func":"epoch","case":"leap-day","value":"2024-02-29T00:00:00Z"}
+{"func":"epoch","case":"not-leap","value":"2023-02-29T00:00:00Z"}
+{"func":"epoch","case":"month-13","value":"2024-13-01T00:00:00Z"}
+{"func":"epoch","case":"hour-24","value":"2024-05-06T24:00:00Z"}
+{"func":"epoch","case":"junk","value":"yesterday"}
+{"func":"epoch","case":"trailing-junk","value":"2024-05-06T07:08:09Zjunk"}
+{"func":"epoch","case":"space-separator","value":"2024-05-06 07:08:09Z"}
+{"func":"named_files","case":"empty","files":[]}
+{"func":"named_files","case":"one","files":["a.py"]}
+{"func":"named_files","case":"exactly-eight","files":["a","b","c","d","e","f","g","h"]}
+{"func":"named_files","case":"nine","files":["a","b","c","d","e","f","g","h","i"]}
+{"func":"named_files","case":"eleven","files":["1","2","3","4","5","6","7","8","9","10","11"]}
+{"func":"named_files","case":"non-string","files":["a",7]}
+{"func":"named_files","case":"not-a-list","files":"a.py"}
