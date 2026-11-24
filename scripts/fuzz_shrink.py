@@ -166,7 +166,16 @@ def batch_mismatch(runner: Runner, trials: list[dict]) -> set[str]:
             at = line.find("case=")
             if at >= 0:
                 bad.add(line[at + 5:].split()[0].strip("'\""))
-    return bad
+    # Confirm every hit on its own. A harness or oracle that keeps state between
+    # lines can make a candidate disagree only inside the batch, and a reduction
+    # based on that is fiction.
+    by_tag = {t.get("case"): t for t in trials}
+    confirmed = set()
+    for tag in bad:
+        probe = by_tag.get(tag)
+        if probe is not None and runner.mismatches(probe):
+            confirmed.add(tag)
+    return confirmed
 
 
 def shrink(runner: Runner, case: dict, verbose=False) -> dict:
