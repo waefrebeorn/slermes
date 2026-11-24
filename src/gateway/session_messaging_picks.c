@@ -13,6 +13,7 @@
  */
 #include <stddef.h>
 #include <string.h>
+#include <ctype.h>
 #include "noc_w26_sessionmes_de1f3f.h"
 
 /* CHAT_PICKS = frozenset({'model', 'reasoning'}) */
@@ -50,8 +51,21 @@ json_t *w26_sessionmes_de1f3f_platform_key(const json_t *platform) {
     const char *plat = sm_str(platform);
 
     if (!plat) return json_null();
-    if (!strcmp(plat, "local")) return json_string("cli");
-    return json_string(plat);
+    /* The key is the ENUM's value, and a Platform's value is its lowercase name:
+     * the fixture string arrives through the enum, so "DISCORD" is "discord". */
+    {
+        char buf[128];
+        size_t i, n, a = 0;
+        while (plat[a] == ' ' || plat[a] == '\t' || plat[a] == '\n' || plat[a] == '\r') a++;
+        n = strlen(plat + a);
+        if (n >= sizeof buf) n = sizeof buf - 1;
+        for (i = 0; i < n; i++)
+            buf[i] = (char)tolower((unsigned char)plat[a + i]);
+        while (n && (buf[n - 1] == ' ' || buf[n - 1] == '\t' || buf[n - 1] == '\n' || buf[n - 1] == '\r')) n--;
+        buf[n] = '\0';
+        if (!strcmp(buf, "local")) return json_string("cli");
+        return json_string(buf);
+    }
 }
 
 json_t *w26_sessionmes_de1f3f_constants(void) {
