@@ -1,0 +1,7 @@
+# data_int masks a negative int into an unsigned 64-bit value, so -1 answers
+# 18446744073709551615. Python ints are arbitrary precision; lib/libjson stores
+# every number as a double, where 2^64-1 is not representable (it rounds to
+# 1.8446744073709552e+19). This is a known fidelity limit of the json layer, not
+# a wrong decision, so the function is excluded from perturbation and the limit is
+# stated in the module header instead of being papered over.
+data_int:*

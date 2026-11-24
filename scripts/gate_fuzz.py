@@ -138,6 +138,11 @@ def perturb_value(v, rng, pool):
 def variants_for_case(case, rng, pools, per_case, seams=frozenset()):
     """Yield input-only variants of one fixture case."""
     func = case.get("func")
+    if ("%s:*" % func) in seams:
+        # Whole-function exclusion: the port cannot answer this shape at all (for
+        # example a result the C json layer cannot represent). Recorded in the
+        # seam file with the reason, never silently.
+        return []
     keys = [k for k in case if k not in KEEP and not is_discriminator(k)
             and k not in seams and ("%s:%s" % (func, k)) not in seams]
     made = 0
