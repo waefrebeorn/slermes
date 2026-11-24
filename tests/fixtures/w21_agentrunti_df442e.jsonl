@@ -1,0 +1,16 @@
+{"func":"row","case":"hidden-row"}
+{"func":"row","case":"hidden-row-extra-keys-echoed","note":"ignored","n":1}
+{"func":"row","case":"hidden-row-wrong-typed-echo","role":7,"display_kind":["x"]}
+{"func":"placeholder","case":"current-wording"}
+{"func":"placeholder","case":"current-with-junk","junk":null}
+{"func":"legacy","case":"legacy-wording"}
+{"func":"legacy","case":"legacy-with-number","n":12.5}
+{"func":"matches","case":"matches-current","text":"[interrupt: no assistant output for this turn]"}
+{"func":"matches","case":"matches-legacy","text":"[response interrupted]"}
+{"func":"matches","case":"near-miss-prefix","text":"[interrupt: no assistant output]"}
+{"func":"matches","case":"empty-text","text":""}
+{"func":"matches","case":"text-null","text":null}
+{"func":"matches","case":"text-missing"}
+{"func":"matches","case":"text-number","text":3}
+{"func":"matches","case":"text-object","text":{"a":1}}
+{"func":"matches","case":"text-with-whitespace","text":" [response interrupted] "}

@@ -1,0 +1,25 @@
+{"func":"normalize","value":"  Prod  ","case":"strip padding"}
+{"func":"normalize","value":"default","case":"plain"}
+{"func":"normalize","value":"","case":"empty -> default"}
+{"func":"normalize","case":"missing key -> default"}
+{"func":"normalize","value":null,"case":"null -> default"}
+{"func":"normalize","value":"   ","case":"whitespace only -> default"}
+{"func":"normalize","value":"\t\n  ops \r\n","case":"tab newline padding"}
+{"func":"normalize","value":0,"case":"zero is falsy"}
+{"func":"normalize","value":7,"case":"int -> str"}
+{"func":"normalize","value":false,"case":"false is falsy"}
+{"func":"normalize","value":true,"case":"true -> True"}
+{"func":"params","user_id":"42","profile":"  Prod  ","limit":10,"case":"scoped bind"}
+{"func":"params","user_id":5,"profile":"","limit":"7","case":"int user, string limit"}
+{"func":"params","user_id":null,"profile":null,"limit":3.9,"case":"none user, float limit truncates"}
+{"func":"params","user_id":"42","profile":"default","limit":"abc","case":"bad limit -> ValueError"}
+{"func":"params","user_id":"42","profile":"default","limit":null,"case":"null limit -> TypeError"}
+{"func":"params","user_id":true,"profile":"x","limit":true,"case":"bool user and limit"}
+{"func":"params","user_id":"42","case":"missing profile and limit -> TypeError"}
+{"func":"params","user_id":"42","profile":"default","limit":" +12 ","case":"signed padded limit"}
+{"func":"params","user_id":"42","profile":"default","limit":"","case":"empty limit -> ValueError"}
+{"func":"query","profile_scoped":true,"preview":"PREVIEW","last_active":"LAST","case":"scoped query"}
+{"func":"query","profile_scoped":false,"preview":"PREVIEW","last_active":"LAST","case":"fallback query drops profile clause"}
+{"func":"query","case":"missing expressions default empty"}
+{"func":"query","profile_scoped":true,"case":"scoped with empty expressions"}
+{"func":"query","profile_scoped":false,"preview":"COALESCE(x, '') AS p","last_active":"MAX(y)","case":"fallback with expressions"}

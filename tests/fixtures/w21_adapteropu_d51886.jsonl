@@ -1,0 +1,29 @@
+{"func": "bundled", "case": "not_windows", "opus_file": "/x/discord/opus.py", "platform": "linux", "ptr_bits": 64, "files": ["/x/discord/bin/libopus-0.x64.dll"]}
+{"func": "bundled", "case": "win64_present", "opus_file": "C:/py/discord/opus.py", "platform": "win32", "ptr_bits": 64, "files": ["C:/py/discord/bin/libopus-0.x64.dll"]}
+{"func": "bundled", "case": "win64_x86_name_only", "opus_file": "C:/py/discord/opus.py", "platform": "win32", "ptr_bits": 64, "files": ["C:/py/discord/bin/libopus-0.x86.dll"]}
+{"func": "bundled", "case": "win32_present", "opus_file": "C:/py/discord/opus.py", "platform": "win32", "ptr_bits": 32, "files": ["C:/py/discord/bin/libopus-0.x86.dll"]}
+{"func": "bundled", "case": "win64_missing", "opus_file": "C:/py/discord/opus.py", "platform": "win32", "ptr_bits": 64, "files": []}
+{"func": "bundled", "case": "no_opus_file", "platform": "win32", "ptr_bits": 64, "files": ["/bin/libopus-0.x64.dll"]}
+{"func": "bundled", "case": "empty_opus_file", "opus_file": "", "platform": "win32", "ptr_bits": 64, "files": ["/bin/libopus-0.x64.dll"]}
+{"func": "bundled", "case": "no_opus_module", "platform": "win32", "ptr_bits": 64, "no_opus_module": true, "files": ["/bin/libopus-0.x64.dll"]}
+{"func": "bundled", "case": "root_level_file", "opus_file": "/opus.py", "platform": "win32", "ptr_bits": 64, "files": ["/bin/libopus-0.x64.dll"]}
+{"func": "bundled", "case": "backslash_path", "opus_file": "C:\\py\\discord\\opus.py", "platform": "win32", "ptr_bits": 64, "files": ["C:/py/discord/bin/libopus-0.x64.dll"]}
+{"func": "bundled", "case": "darwin_never_bundled", "opus_file": "/opt/py/opus.py", "platform": "darwin", "ptr_bits": 64, "files": ["/opt/py/bin/libopus-0.x64.dll"]}
+{"func": "bundled", "case": "ptr_bits_missing", "opus_file": "/x/opus.py", "platform": "win32", "files": ["/x/bin/libopus-0.x64.dll"]}
+{"func": "plan", "case": "linux_find_library_ok", "platform": "linux", "find_library": "libopus.so.0", "load_script": ["ok"]}
+{"func": "plan", "case": "linux_find_library_fails_all", "platform": "linux", "find_library": "libopus.so.0", "load_script": ["fail"]}
+{"func": "plan", "case": "linux_no_library", "platform": "linux", "load_script": []}
+{"func": "plan", "case": "linux_load_returns_not_loaded", "platform": "linux", "find_library": "libopus.so.0", "load_script": ["no"]}
+{"func": "plan", "case": "probed_earlier", "platform": "linux", "find_library": "libopus.so.0", "probed": true, "load_script": ["ok"]}
+{"func": "plan", "case": "already_loaded", "platform": "linux", "find_library": "libopus.so.0", "already_loaded": true, "load_script": ["ok"]}
+{"func": "plan", "case": "win_bundled_then_find_library", "platform": "win32", "ptr_bits": 64, "opus_file": "C:/py/discord/opus.py", "find_library": "libopus-0.dll", "files": ["C:/py/discord/bin/libopus-0.x64.dll"], "load_script": ["fail", "ok"]}
+{"func": "plan", "case": "win_bundled_only_ok", "platform": "win32", "ptr_bits": 64, "opus_file": "C:/py/discord/opus.py", "files": ["C:/py/discord/bin/libopus-0.x64.dll"], "load_script": ["ok"]}
+{"func": "plan", "case": "win_no_find_library_no_bundle", "platform": "win32", "ptr_bits": 64, "opus_file": "C:/py/discord/opus.py", "files": []}
+{"func": "plan", "case": "darwin_homebrew_apple_silicon", "platform": "darwin", "files": ["/opt/homebrew/lib/libopus.dylib", "/usr/local/lib/libopus.dylib"], "load_script": ["ok"]}
+{"func": "plan", "case": "darwin_homebrew_intel", "platform": "darwin", "files": ["/usr/local/lib/libopus.dylib"], "load_script": ["fail", "fail"]}
+{"func": "plan", "case": "darwin_find_library_wins", "platform": "darwin", "find_library": "libopus.0.dylib", "files": ["/opt/homebrew/lib/libopus.dylib"], "load_script": ["ok"]}
+{"func": "plan", "case": "darwin_no_homebrew", "platform": "darwin", "files": []}
+{"func": "plan", "case": "find_library_empty_string", "platform": "darwin", "find_library": "", "files": ["/opt/homebrew/lib/libopus.dylib"], "load_script": ["ok"]}
+{"func": "plan", "case": "find_library_null", "platform": "linux", "find_library": null, "load_script": []}
+{"func": "plan", "case": "script_shorter_than_candidates", "platform": "darwin", "files": ["/opt/homebrew/lib/libopus.dylib", "/usr/local/lib/libopus.dylib"], "find_library": "libopus.so", "load_script": ["fail"]}
+{"func": "plan", "case": "three_candidates_ok_third", "platform": "win32", "ptr_bits": 64, "opus_file": "C:/py/discord/opus.py", "find_library": "libopus-0.dll", "files": ["C:/py/discord/bin/libopus-0.x64.dll"], "load_script": ["fail", "fail"]}

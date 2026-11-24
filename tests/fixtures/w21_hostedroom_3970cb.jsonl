@@ -1,0 +1,42 @@
+{"func":"validate","case":"absent-history-adopts-current","gateway_id":"gw-a","epoch":3}
+{"func":"validate","case":"null-history-adopts-current","value":null,"gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"single-chain","value":[{"gateway_id":"gw-a","epoch":1,"from_seq":0},{"gateway_id":"gw-b","epoch":2,"from_seq":10}],"gateway_id":"gw-b","epoch":2}
+{"func":"validate","case":"three-spans","value":[{"gateway_id":"gw-a","epoch":1,"from_seq":0},{"gateway_id":"gw-b","epoch":2,"from_seq":10},{"gateway_id":"gw-c","epoch":3,"from_seq":42}],"gateway_id":"gw-c","epoch":3}
+{"func":"validate","case":"empty-list","value":[],"gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"wrong-kind-object","value":{"gateway_id":"gw-a"},"gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"wrong-kind-string","value":"gw-a","gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"item-missing-key","value":[{"gateway_id":"gw-a","epoch":1}],"gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"item-extra-key","value":[{"gateway_id":"gw-a","epoch":1,"from_seq":0,"note":"x"}],"gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"item-not-object","value":["gw-a"],"gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"gateway-not-string","value":[{"gateway_id":42,"epoch":1,"from_seq":0}],"gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"gateway-not-stripped","value":[{"gateway_id":" gw-a","epoch":1,"from_seq":0}],"gateway_id":" gw-a","epoch":1}
+{"func":"validate","case":"gateway-bad-shape","value":[{"gateway_id":"gw a","epoch":1,"from_seq":0}],"gateway_id":"gw a","epoch":1}
+{"func":"validate","case":"gateway-empty","value":[{"gateway_id":"","epoch":1,"from_seq":0}],"gateway_id":"","epoch":1}
+{"func":"validate","case":"gateway-leading-hyphen","value":[{"gateway_id":"-gw","epoch":1,"from_seq":0}],"gateway_id":"-gw","epoch":1}
+{"func":"validate","case":"epoch-as-string","value":[{"gateway_id":"gw-a","epoch":"1","from_seq":0}],"gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"epoch-zero-first","value":[{"gateway_id":"gw-a","epoch":0,"from_seq":0}],"gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"first-from-seq-nonzero","value":[{"gateway_id":"gw-a","epoch":1,"from_seq":5}],"gateway_id":"gw-a","epoch":1}
+{"func":"validate","case":"epoch-gap","value":[{"gateway_id":"gw-a","epoch":1,"from_seq":0},{"gateway_id":"gw-b","epoch":3,"from_seq":10}],"gateway_id":"gw-b","epoch":3}
+{"func":"validate","case":"unordered-boundary","value":[{"gateway_id":"gw-a","epoch":1,"from_seq":10},{"gateway_id":"gw-b","epoch":2,"from_seq":10}],"gateway_id":"gw-b","epoch":2}
+{"func":"validate","case":"does-not-reach-owner","value":[{"gateway_id":"gw-a","epoch":1,"from_seq":0}],"gateway_id":"gw-b","epoch":1}
+{"func":"validate","case":"does-not-reach-epoch","value":[{"gateway_id":"gw-a","epoch":1,"from_seq":0}],"gateway_id":"gw-a","epoch":2}
+{"func":"validate","case":"owner-missing","value":[{"gateway_id":"gw-a","epoch":1,"from_seq":0}]}
+{"func":"at","case":"exact-boundary","history":[{"gateway_id":"gw-a","epoch":1,"from_seq":0},{"gateway_id":"gw-b","epoch":2,"from_seq":10}],"seq":10}
+{"func":"at","case":"after-boundary","history":[{"gateway_id":"gw-a","epoch":1,"from_seq":0},{"gateway_id":"gw-b","epoch":2,"from_seq":10}],"seq":99}
+{"func":"at","case":"before-boundary","history":[{"gateway_id":"gw-a","epoch":1,"from_seq":0},{"gateway_id":"gw-b","epoch":2,"from_seq":10}],"seq":9}
+{"func":"at","case":"precedes-history","history":[{"gateway_id":"gw-a","epoch":1,"from_seq":5}],"seq":4}
+{"func":"at","case":"empty-history","history":[],"seq":1}
+{"func":"origin","case":"absent-history","room":{"authority_gateway_id":"gw-a","authority_epoch":4}}
+{"func":"origin","case":"chain-origin","room":{"authority_gateway_id":"gw-c","authority_epoch":3,"authority_history":[{"gateway_id":"gw-a","epoch":1,"from_seq":0},{"gateway_id":"gw-b","epoch":2,"from_seq":10},{"gateway_id":"gw-c","epoch":3,"from_seq":42}]}}
+{"func":"origin","case":"chain-broken","room":{"authority_gateway_id":"gw-c","authority_epoch":4,"authority_history":[{"gateway_id":"gw-a","epoch":1,"from_seq":0}]}}
+{"func":"origin","case":"missing-gateway-key","room":{"authority_epoch":1}}
+{"func":"origin","case":"missing-epoch-key","room":{"authority_gateway_id":"gw-a"}}
+{"func":"identifier","case":"plain","value":"gw-a","label":"authority gateway"}
+{"func":"identifier","case":"padded","value":" gw-a","label":"authority gateway"}
+{"func":"identifier","case":"inner-space","value":"gw a","label":"authority gateway"}
+{"func":"identifier","case":"empty","value":"","label":"authority gateway"}
+{"func":"identifier","case":"not-string","value":42,"label":"authority gateway"}
+{"func":"identifier","case":"too-long","value":"gw-abcdefghijklmnopqrstuvwxyz-0123456789-abcdefghijklmnopqrstuvwxyz-0123456789-abcdefghijklmnopqrstuvwxyz-0123456789-abcdefghijklmnopqrs","label":"authority gateway"}
+{"func":"identifier","case":"starts-with-digit","value":"9lives","label":"authority gateway"}
+{"func":"identifier","case":"shape-not-checked","value":"gw a","label":"authority gateway","check_shape":false}
+{"func":"identifier","case":"custom-bound","value":"gw-abcdef","label":"authority gateway","max_chars":4}

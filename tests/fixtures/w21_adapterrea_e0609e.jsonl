@@ -1,0 +1,47 @@
+{"func": "marker", "case": "no_reactions_key", "msg": {}}
+{"func": "marker", "case": "reactions_null", "msg": {"reactions": null}}
+{"func": "marker", "case": "reactions_string", "msg": {"reactions": "nope"}}
+{"func": "marker", "case": "reactions_dict", "msg": {"reactions": {"name": "x"}}}
+{"func": "marker", "case": "reactions_empty", "msg": {"reactions": []}}
+{"func": "marker", "case": "msg_string", "msg": "nope"}
+{"func": "marker", "case": "msg_null", "msg": null}
+{"func": "marker", "case": "msg_list", "msg": [1, 2]}
+{"func": "marker", "case": "count_one", "msg": {"reactions": [{"name": "tada", "count": 1}]}}
+{"func": "marker", "case": "count_three", "msg": {"reactions": [{"name": "white_check_mark", "count": 3}]}}
+{"func": "marker", "case": "count_zero", "msg": {"reactions": [{"name": "tada", "count": 0}]}}
+{"func": "marker", "case": "count_missing", "msg": {"reactions": [{"name": "tada"}]}}
+{"func": "marker", "case": "count_string", "msg": {"reactions": [{"name": "tada", "count": "3"}]}}
+{"func": "marker", "case": "count_bool_true", "msg": {"reactions": [{"name": "tada", "count": true}]}}
+{"func": "marker", "case": "count_bool_false", "msg": {"reactions": [{"name": "tada", "count": false}]}}
+{"func": "marker", "case": "count_float", "msg": {"reactions": [{"name": "tada", "count": 2.5}]}}
+{"func": "marker", "case": "count_negative", "msg": {"reactions": [{"name": "tada", "count": -4}]}}
+{"func": "marker", "case": "name_unsafe_chars", "msg": {"reactions": [{"name": "foo bar!@#baz", "count": 2}]}}
+{"func": "marker", "case": "name_colons", "msg": {"reactions": [{"name": ":thumbsup:"}]}}
+{"func": "marker", "case": "name_skin_tone", "msg": {"reactions": [{"name": "thumb::skin-tone-2", "count": 5}]}}
+{"func": "marker", "case": "name_null", "msg": {"reactions": [{"name": null, "count": 2}]}}
+{"func": "marker", "case": "name_empty", "msg": {"reactions": [{"name": "", "count": 2}]}}
+{"func": "marker", "case": "name_only_unsafe", "msg": {"reactions": [{"name": "!!!", "count": 2}]}}
+{"func": "marker", "case": "name_number", "msg": {"reactions": [{"name": 42, "count": 2}]}}
+{"func": "marker", "case": "name_unicode", "msg": {"reactions": [{"name": "héllo", "count": 0}]}}
+{"func": "marker", "case": "name_dict", "msg": {"reactions": [{"name": {"a": 1}, "count": 2}]}}
+{"func": "marker", "case": "name_list", "msg": {"reactions": [{"name": ["x", "y"]}]}}
+{"func": "marker", "case": "name_bool", "msg": {"reactions": [{"name": true}]}}
+{"func": "marker", "case": "element_not_dict", "msg": {"reactions": [1, "x", null, {"name": "ok"}]}}
+{"func": "marker", "case": "eight_parts", "msg": {"reactions": [{"name": "r0", "count": 0}, {"name": "r1", "count": 1}, {"name": "r2", "count": 2}, {"name": "r3", "count": 3}, {"name": "r4", "count": 4}, {"name": "r5", "count": 5}, {"name": "r6", "count": 6}, {"name": "r7", "count": 7}]}}
+{"func": "marker", "case": "nine_parts", "msg": {"reactions": [{"name": "r0", "count": 0}, {"name": "r1", "count": 1}, {"name": "r2", "count": 2}, {"name": "r3", "count": 3}, {"name": "r4", "count": 4}, {"name": "r5", "count": 5}, {"name": "r6", "count": 6}, {"name": "r7", "count": 7}, {"name": "r8", "count": 8}]}}
+{"func": "marker", "case": "twelve_parts", "msg": {"reactions": [{"name": "0"}, {"name": "1"}, {"name": "2"}, {"name": "3"}, {"name": "4"}, {"name": "5"}, {"name": "6"}, {"name": "7"}, {"name": "8"}, {"name": "9"}, {"name": "10"}, {"name": "11"}]}}
+{"func": "marker", "case": "all_skipped", "msg": {"reactions": [{"name": ""}, {"name": "::"}, {"name": null}]}}
+{"func": "name", "case": "name_int", "value": 7}
+{"func": "name", "case": "name_float", "value": 1.5}
+{"func": "name", "case": "name_true", "value": true}
+{"func": "name", "case": "name_false", "value": false}
+{"func": "name", "case": "name_null", "value": null}
+{"func": "name", "case": "name_colons", "value": "::a::"}
+{"func": "name", "case": "name_space", "value": "a b"}
+{"func": "name", "case": "name_zero", "value": 0}
+{"func": "name", "case": "name_missing"}
+{"func": "name", "case": "name_list", "value": ["a", 1]}
+{"func": "limit", "case": "marker_limit"}
+{"func": "more", "case": "more_12", "parts": 12}
+{"func": "more", "case": "more_8", "parts": 8}
+{"func": "more", "case": "more_3", "parts": 3}

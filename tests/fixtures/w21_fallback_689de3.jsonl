@@ -1,0 +1,12 @@
+{"case":"full_tree","func":"spec"}
+{"case":"choice_list","func":"subcommand","name":"list"}
+{"case":"choice_alias_ls","func":"subcommand","name":"ls"}
+{"case":"choice_add","func":"subcommand","name":"add"}
+{"case":"choice_remove","func":"subcommand","name":"remove"}
+{"case":"choice_alias_rm","func":"subcommand","name":"rm"}
+{"case":"choice_clear","func":"subcommand","name":"clear"}
+{"case":"choice_check","func":"subcommand","name":"check"}
+{"case":"choice_unknown","func":"subcommand","name":"status"}
+{"case":"choice_empty","func":"subcommand","name":" "}
+{"case":"choice_missing","func":"subcommand"}
+{"case":"default_func","func":"default_func"}

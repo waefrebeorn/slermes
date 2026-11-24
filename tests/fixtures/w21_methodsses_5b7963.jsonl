@@ -1,0 +1,51 @@
+{"func":"str","case":"plain","value":"gpt-5.5"}
+{"func":"str","case":"padded","value":"  gpt-5.5  "}
+{"func":"str","case":"empty","value":""}
+{"func":"str","case":"null","value":null}
+{"func":"str","case":"number","value":42}
+{"func":"str","case":"zero","value":0}
+{"func":"str","case":"true","value":true}
+{"func":"str","case":"missing"}
+{"func":"truthy","case":"yes","value":"yes"}
+{"func":"truthy","case":"padded-uppercase","value":" TRUE "}
+{"func":"truthy","case":"zero-string","value":"0"}
+{"func":"truthy","case":"y-only","value":"y"}
+{"func":"truthy","case":"number-one","value":1}
+{"func":"truthy","case":"number-zero","value":0}
+{"func":"truthy","case":"empty-string","value":""}
+{"func":"truthy","case":"null","value":null}
+{"func":"reasoning","case":"bare-high","effort":"high"}
+{"func":"reasoning","case":"bare-uppercase","effort":" XHIGH "}
+{"func":"reasoning","case":"disabled-word","effort":"disabled"}
+{"func":"reasoning","case":"typo","effort":"hgih"}
+{"func":"reasoning","case":"dict-effort","effort":{"enabled":true,"effort":"thinking-hard"}}
+{"func":"reasoning","case":"dict-disabled","effort":{"enabled":false,"effort":"high"}}
+{"func":"reasoning","case":"dict-no-effort","effort":{"enabled":true}}
+{"func":"reasoning","case":"true-bool","effort":true}
+{"func":"reasoning","case":"false-bool","effort":false}
+{"func":"reasoning","case":"null","effort":null}
+{"func":"service_tier","case":"priority","raw":"priority"}
+{"func":"service_tier","case":"fast-word","raw":"fast"}
+{"func":"service_tier","case":"ultra","raw":"ULTRA"}
+{"func":"service_tier","case":"normal-word","raw":"standard"}
+{"func":"service_tier","case":"empty","raw":""}
+{"func":"service_tier","case":"unknown","raw":"bogus"}
+{"func":"service_tier","case":"number-zero","raw":0}
+{"func":"model_override","case":"explicit-provider","params":{"model":"gpt-5.5","provider":" anthropic "},"scope_provider":"openrouter","conflict":{"model":"gpt-5.5","provider":"anthropic"}}
+{"func":"model_override","case":"scope-provider","params":{"model":"gpt-5.5"},"scope_provider":"openai-codex","conflict":null}
+{"func":"model_override","case":"no-model","params":{"provider":"anthropic"},"scope_provider":"openai"}
+{"func":"model_override","case":"blank-model","params":{"model":"   ","provider":"anthropic"},"scope_provider":"openai"}
+{"func":"model_override","case":"no-params"}
+{"func":"create_overrides","case":"full","params":{"model":"claude-sonnet-4","provider":"anthropic","reasoning_effort":"high","service_tier":"priority"}}
+{"func":"create_overrides","case":"model-only","params":{"model":"gpt-5.5"}}
+{"func":"create_overrides","case":"service-tier-normal","params":{"model":"m","service_tier":"standard"}}
+{"func":"create_overrides","case":"legacy-fast-true","params":{"model":"m","fast":true}}
+{"func":"create_overrides","case":"legacy-fast-false","params":{"model":"m","fast":"no"}}
+{"func":"create_overrides","case":"legacy-fast-null","params":{"model":"m","fast":null}}
+{"func":"create_overrides","case":"service-tier-wins-over-fast","params":{"model":"m","service_tier":"auto","fast":true}}
+{"func":"create_overrides","case":"service-tier-null-falls-to-fast","params":{"model":"m","service_tier":null,"fast":true}}
+{"func":"create_overrides","case":"unknown-tier-raises","params":{"model":"m","service_tier":"turbo"}}
+{"func":"create_overrides","case":"bad-reasoning-word","params":{"model":"m","reasoning_effort":"hgih"}}
+{"func":"create_overrides","case":"empty-params","params":{}}
+{"func":"create_overrides","case":"blank-values","params":{"model":"  ","provider":"  ","reasoning_effort":"  "}}
+{"func":"create_overrides","case":"numeric-model","params":{"model":5,"provider":"openai"}}

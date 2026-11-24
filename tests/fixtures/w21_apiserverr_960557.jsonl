@@ -1,0 +1,23 @@
+{"case":"reasoning_effort_overrides_structured","func":"reasoning","model_options":{"reasoning":{"enabled":true,"effort":"high"},"reasoning_effort":"MEDIUM"}}
+{"case":"reasoning_enabled_true_only","func":"reasoning","model_options":{"reasoning":{"enabled":true}}}
+{"case":"reasoning_enabled_false_wins","func":"reasoning","model_options":{"reasoning":{"enabled":false,"effort":"high"}}}
+{"case":"reasoning_effort_none","func":"reasoning","model_options":{"reasoning_effort":"none"}}
+{"case":"reasoning_effort_none_padded","func":"reasoning","model_options":{"reasoning_effort":"  NONE  "}}
+{"case":"reasoning_structured_not_dict","func":"reasoning","model_options":{"reasoning":"high"}}
+{"case":"reasoning_absent_key","func":"reasoning","model_options":{}}
+{"case":"reasoning_unknown_effort","func":"reasoning","model_options":{"reasoning_effort":"turbo"}}
+{"case":"reasoning_structured_effort","func":"reasoning","model_options":{"reasoning":{"effort":"xhigh"}}}
+{"case":"reasoning_effort_null_overrides","func":"reasoning","model_options":{"reasoning":{"effort":"high"},"reasoning_effort":null}}
+{"case":"reasoning_model_options_is_list","func":"reasoning","model_options":["reasoning"]}
+{"case":"reasoning_enabled_int_not_bool","func":"reasoning","model_options":{"reasoning":{"enabled":1}}}
+{"case":"reasoning_missing_model_options","func":"reasoning"}
+{"case":"service_tier_stripped","func":"service_tier","model_options":{"service_tier":"  priority  "}}
+{"case":"service_tier_blank_is_none","func":"service_tier","model_options":{"service_tier":"   "}}
+{"case":"service_tier_wins_over_fast","func":"service_tier","model_options":{"service_tier":"default","fast":true}}
+{"case":"service_tier_fast_true","func":"service_tier","model_options":{"fast":true}}
+{"case":"service_tier_fast_string_false","func":"service_tier","model_options":{"fast":"FALSE"}}
+{"case":"service_tier_fast_unknown_string","func":"service_tier","model_options":{"fast":"maybe"}}
+{"case":"service_tier_absent","func":"service_tier","model_options":{}}
+{"case":"service_tier_non_string_scalar","func":"service_tier","model_options":{"service_tier":5}}
+{"case":"service_tier_wrong_options_type","func":"service_tier","model_options":"fast"}
+{"case":"efforts_ladder","func":"efforts"}

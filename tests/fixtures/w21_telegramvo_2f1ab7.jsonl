@@ -1,0 +1,23 @@
+{"func": "env_probe", "case": "isolated-home"}
+{"func": "admit_media", "case": "text-gate-passes", "world": {"should_process": true, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": true, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "no-voice", "world": {"should_process": false, "has_voice": false, "caption": null, "mention_patterns": true, "gate_extra": true, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "caption-present", "world": {"should_process": false, "has_voice": true, "caption": "ship it", "mention_patterns": true, "gate_extra": true, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "empty-caption", "world": {"should_process": false, "has_voice": true, "caption": "", "mention_patterns": true, "gate_extra": true, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "no-mention-patterns", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": false, "gate_extra": true, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "gate-absent", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "gate-string-off", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": "  Off ", "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "gate-string-yes", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": " YES ", "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "gate-number-one", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": 1, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "gate-number-zero", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": 0, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "spoken-gate-refuses", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": true, "spoken_ok": false, "media_allowed": true, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "media-too-large", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": true, "spoken_ok": true, "media_allowed": false, "fetch_ok": true, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "fetch-raises", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": true, "spoken_ok": true, "media_allowed": true, "fetch_ok": false, "clips": ["/c/a.ogg"]}}
+{"func": "admit_media", "case": "clips-matched", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": true, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": ["/cache/one.ogg", "/cache/two.ogg"]}}
+{"func": "admit_media", "case": "clips-empty", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": true, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": []}}
+{"func": "admit_media", "case": "truthy-string-gate", "world": {"should_process": "false", "has_voice": false, "clips": []}}
+{"func": "admit_media", "case": "world-wrong-type"}
+{"func": "cache_inbound_voice", "case": "download", "world": {"clips": []}}
+{"func": "cache_inbound_voice", "case": "download-missing", "world": {}}
+{"func": "cache_inbound_voice", "case": "attach-one", "world": {"clips": ["/cache/one.ogg"]}}
+{"func": "cache_inbound_voice", "case": "attach-two", "world": {"clips": ["/cache/one.ogg", "/cache/two.ogg"]}}
+{"func": "admit_media", "case": "clips-nonstring", "world": {"should_process": false, "has_voice": true, "caption": null, "mention_patterns": true, "gate_extra": true, "spoken_ok": true, "media_allowed": true, "fetch_ok": true, "clips": [3]}}

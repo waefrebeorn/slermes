@@ -1,0 +1,14 @@
+{"func":"upload","case":"small_with_descriptor","size":1024,"filename":"report.pdf","profile":null,"path":"/home/u/uploads/web-1","descriptor":{"path":"/home/u/uploads/web-1","home":"/home/u","install_id":"inst-1"}}
+{"func":"upload","case":"exact_cap","size":16777216,"filename":"edge.bin","profile":"work","path":"/home/u/uploads/web-2","descriptor":{"path":"/home/u/uploads/web-2"}}
+{"func":"upload","case":"one_over_cap","size":16777217,"filename":"big.bin","profile":null,"path":"/home/u/uploads/web-3"}
+{"func":"upload","case":"far_over_cap","size":5000000000,"filename":"huge.bin","profile":"work","path":"/home/u/uploads/web-4"}
+{"func":"upload","case":"zero_bytes","size":0,"filename":"empty.txt","profile":null,"path":"/home/u/uploads/web-5","descriptor":{"path":"/home/u/uploads/web-5"}}
+{"func":"upload","case":"filename_null","size":10,"filename":null,"path":"/home/u/uploads/web-6"}
+{"func":"upload","case":"filename_absent","size":10,"path":"/home/u/uploads/web-7"}
+{"func":"upload","case":"filename_blank","size":10,"filename":"","path":"/home/u/uploads/web-8"}
+{"func":"upload","case":"descriptor_empty","size":10,"filename":"a.txt","path":"/home/u/uploads/web-9","descriptor":{}}
+{"func":"upload","case":"descriptor_null","size":10,"filename":"a.txt","path":"/home/u/uploads/web-a","descriptor":null}
+{"func":"upload","case":"descriptor_absent","size":64,"filename":"b.txt","path":"/home/u/uploads/web-b"}
+{"func":"upload","case":"size_absent","filename":"c.txt","path":"/home/u/uploads/web-c","descriptor":{"path":"/home/u/uploads/web-c"}}
+{"func":"upload","case":"long_filename","size":32,"filename":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt","path":"/home/u/uploads/web-d"}
+{"func":"upload","case":"unicode_filename","size":2048,"filename":"résumé-final.docx","profile":"default","path":"/home/u/uploads/web-d","descriptor":{"path":"/home/u/uploads/web-d","home":"/home/u"}}

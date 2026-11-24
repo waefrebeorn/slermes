@@ -1,0 +1,33 @@
+{"case": "contract_shape", "func": "contract_shape"}
+{"case": "shape_current", "func": "shape_known", "metric": "hermes.compression.count", "dimensions": {"context_fill_bucket": "lt_50", "failure_class": "exception", "outcome": "success", "trigger": "auto"}}
+{"case": "shape_legacy", "func": "shape_known", "metric": "hermes.compression.count", "dimensions": {"context_fill_bucket": "lt_50", "outcome": "success", "trigger": "auto"}}
+{"case": "shape_missing_field", "func": "shape_known", "metric": "hermes.compression.count", "dimensions": {"outcome": "success", "trigger": "auto"}}
+{"case": "shape_extra_field", "func": "shape_known", "metric": "hermes.compression.count", "dimensions": {"context_fill_bucket": "lt_50", "failure_class": "exception", "outcome": "success", "trigger": "auto", "extra": "x"}}
+{"case": "shape_unknown_metric", "func": "shape_known", "metric": "hermes.nope", "dimensions": {}}
+{"case": "shape_empty_metric", "func": "shape_known", "metric": "hermes.client.active", "dimensions": {}}
+{"case": "shape_empty_dims", "func": "shape_known", "metric": "hermes.compression.count", "dimensions": {}}
+{"case": "shape_tool_call_legacy", "func": "shape_known", "metric": "hermes.tool_call.count", "dimensions": {"approval_outcome": "approved", "latency_bucket": "lt_100ms", "outcome": "success", "retry_count_bucket": "0", "tool_category": "file"}}
+{"case": "conform_in_contract", "func": "conform", "metric": "hermes.compression.count", "dimensions": {"context_fill_bucket": "lt_50", "failure_class": "exception", "outcome": "success", "trigger": "auto"}}
+{"case": "conform_fallback_other", "func": "conform", "metric": "hermes.compression.count", "dimensions": {"trigger": "weird"}}
+{"case": "conform_no_fallback", "func": "conform", "metric": "hermes.compression.count", "dimensions": {"outcome": "weird"}}
+{"case": "conform_non_string", "func": "conform", "metric": "hermes.compression.count", "dimensions": {"trigger": 5}}
+{"case": "conform_bogus_field", "func": "conform", "metric": "hermes.compression.count", "dimensions": {"bogus": "x"}}
+{"case": "conform_unknown_metric", "func": "conform", "metric": "hermes.nope", "dimensions": {}}
+{"case": "conform_memory_op", "func": "conform", "metric": "hermes.memory.op.count", "dimensions": {"op": "nope"}}
+{"case": "conform_catalog_hit", "func": "conform", "metric": "hermes.memory.op.count", "dimensions": {"provider": "plugin"}, "catalog": {"hermes.memory.op.count": {"provider": ["builtin", "plugin", "custom"]}}}
+{"case": "conform_catalog_fallback_custom", "func": "conform", "metric": "hermes.memory.op.count", "dimensions": {"provider": "acme"}, "catalog": {"hermes.memory.op.count": {"provider": ["builtin", "plugin", "custom"]}}}
+{"case": "conform_catalog_empty", "func": "conform", "metric": "hermes.memory.op.count", "dimensions": {"provider": "acme"}}
+{"case": "conform_catalog_other", "func": "conform", "metric": "hermes.session.count", "dimensions": {"platform": "weird"}, "catalog": {"hermes.session.count": {"platform": ["other", "cli"]}}}
+{"case": "conform_identifier_ok", "func": "conform", "metric": "hermes.model_route.count", "dimensions": {"model": "gpt-4o", "provider": "openai"}}
+{"case": "conform_identifier_case", "func": "conform", "metric": "hermes.model_route.count", "dimensions": {"model": "GPT-4o"}}
+{"case": "conform_identifier_too_long", "func": "conform", "metric": "hermes.model_route.count", "dimensions": {"provider": "ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"}}
+{"case": "conform_identifier_bad_start", "func": "conform", "metric": "hermes.model_route.count", "dimensions": {"model": "-abc"}}
+{"case": "conform_identifier_space", "func": "conform", "metric": "hermes.model_route.count", "dimensions": {"model": "gpt 4o"}}
+{"case": "conform_mixed", "func": "conform", "metric": "hermes.model_route.count", "dimensions": {"model": "gpt-4o", "outcome": "success"}}
+{"case": "ident_strip_lower", "func": "metric_identifier", "value": "  ABC  ", "max_length": 64}
+{"case": "ident_empty", "func": "metric_identifier", "value": "", "max_length": 64}
+{"case": "ident_underscore", "func": "metric_identifier", "value": "abc_def", "max_length": 64}
+{"case": "ident_zero_length", "func": "metric_identifier", "value": "x", "max_length": 0}
+{"case": "ident_one", "func": "metric_identifier", "value": "x", "max_length": 1}
+{"case": "ident_slash_colon", "func": "metric_identifier", "value": "Provider/Model:V1@2+3-4.5", "max_length": 256}
+{"case": "ident_unicode", "func": "metric_identifier", "value": "caf\u00e9", "max_length": 64}

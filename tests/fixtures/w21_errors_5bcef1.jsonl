@@ -1,0 +1,33 @@
+{"func":"parse","status":401,"body":{"error":{"code":"UNAUTHORIZED","message":"no token"}},"case":"401 envelope object"}
+{"func":"parse","status":403,"body":{"error":"FORBIDDEN_ACCOUNT"},"case":"403 envelope string"}
+{"func":"parse","status":404,"body":{"error":{"code":null,"message":null}},"case":"404 falsy envelope fields"}
+{"func":"parse","status":409,"body":{},"case":"409 empty body -> default message"}
+{"func":"parse","status":429,"body":{"code":"RATE_LIMITED","message":"slow down","requestId":"rq-1","retryAfterMs":2500},"case":"429 flat envelope"}
+{"func":"parse","status":429,"body":{"error":{"message":"slow down"}},"headers":{"Retry-After":"3"},"case":"429 header wins"}
+{"func":"parse","status":429,"body":{},"headers":{"Retry-After":"1.5"},"case":"429 fractional header"}
+{"func":"parse","status":429,"body":{},"headers":{"Retry-After":""},"case":"429 empty header -> one second"}
+{"func":"parse","status":429,"body":{},"headers":{"Retry-After":"later"},"case":"429 bad header -> ValueError"}
+{"func":"parse","status":429,"body":{"retryAfterMs":0},"case":"429 zero retryAfterMs"}
+{"func":"parse","status":500,"body":{"error":{"code":"BOOM","message":"kaboom"}},"case":"500 retryable"}
+{"func":"parse","status":502,"body":"upstream said no","case":"non-mapping body"}
+{"func":"parse","status":503,"body":["a", 1, true, null],"case":"list body str"}
+{"func":"parse","status":418,"body":{"requestId":0},"case":"requestId zero coerced"}
+{"func":"parse","status":"500","body":{},"case":"string status -> TypeError"}
+{"func":"parse","status":null,"body":{},"case":"null status -> TypeError"}
+{"func":"parse","status":429,"case":"missing body"}
+{"func":"render","case":"defaults"}
+{"func":"render","connector":"slack","case":"connector default message"}
+{"func":"render","connector":"slack","surface":"side","case":"side hint"}
+{"func":"render","connector":"slack","surface":"card","case":"card hint"}
+{"func":"render","connector":"","message":"","code":"CONNECTION_EXPIRED","surface":"card","case":"expired card"}
+{"func":"render","code":"CONNECTION_EXPIRED","surface":"side","case":"expired side"}
+{"func":"render","code":"CONNECTION_EXPIRED","connect_url":"https://example.test/connect","case":"expired link url"}
+{"func":"render","code":"CONNECTION_EXPIRED","case":"expired without url has no link hint"}
+{"func":"render","connect_url":"https://example.test/connect","case":"required link url"}
+{"func":"render","hint":"custom hint","connect_url":"https://example.test/connect","case":"explicit hint kept"}
+{"func":"render","surface":"bogus","connect_url":"https://example.test/c","hint":"h","case":"unknown surface uses link path"}
+{"func":"render","message":"already explained","connector":"jira","surface":"side","case":"explicit message kept"}
+{"func":"render","code":"CONNECTION_EXPIRED","message":"gone","case":"expired with message"}
+{"func":"default_message","code":"CONNECTION_REQUIRED","connector":"notion","case":"named connector"}
+{"func":"default_message","code":"CONNECTION_EXPIRED","case":"expired unnamed"}
+{"func":"default_message","case":"missing code"}

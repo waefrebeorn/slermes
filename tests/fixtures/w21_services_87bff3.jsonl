@@ -1,0 +1,17 @@
+{"func":"probe","exists":false,"case":"no store file"}
+{"func":"probe","case":"missing exists key"}
+{"func":"probe","exists":false,"state":"corrupt","connect":"raise","note":"latched","case":"missing file wins over latch"}
+{"func":"probe","exists":true,"state":"corrupt","connect":"ok","case":"latched store skips the connection"}
+{"func":"probe","exists":true,"state":"corrupt","connect":"raise","exc_type":"OperationalError","case":"latch beats the failure"}
+{"func":"probe","exists":true,"state":"ok","connect":"ok","case":"healthy read-only probe"}
+{"func":"probe","exists":true,"state":"ok","connect":"raise","note":"latched","exc_type":"DatabaseError","case":"failure latches as corrupt"}
+{"func":"probe","exists":true,"state":"ok","connect":"raise","note":"none","exc_type":"OperationalError","case":"failure reports its class"}
+{"func":"probe","exists":true,"state":"ok","connect":"raise","note":"none","case":"failure defaults to DatabaseError class"}
+{"func":"probe","exists":true,"connect":"ok","case":"missing state reads ok"}
+{"func":"probe","exists":true,"state":5,"connect":"ok","case":"wrong-typed state reads ok"}
+{"func":"probe","exists":true,"state":"ok","connect":"raise","note":true,"exc_type":"OSError","case":"wrong-typed note is not latched"}
+{"func":"health_state","state":"corrupt","case":"latched"}
+{"func":"health_state","state":"ok","case":"healthy"}
+{"func":"health_state","case":"missing state"}
+{"func":"health_state","state":"","case":"empty state"}
+{"func":"health_state","state":"CORRUPT","case":"case sensitive"}

@@ -1,0 +1,31 @@
+{"func":"budget","deadline":null,"now":100,"cap":5,"case":"no deadline uses cap"}
+{"func":"budget","deadline":110,"now":100,"cap":5,"case":"plenty left uses cap"}
+{"func":"budget","deadline":102,"now":100,"cap":5,"case":"deadline inside cap"}
+{"func":"budget","deadline":100,"now":105,"cap":5,"case":"deadline passed is zero"}
+{"func":"budget","deadline":100,"now":100,"cap":10,"case":"deadline exactly now"}
+{"func":"budget","deadline":103.5,"now":100,"cap":10,"case":"fractional budget"}
+{"func":"poll","prev_status":7,"elapsed":9,"rc":0,"stdout":"  pid = 41","case":"recorded status wins"}
+{"func":"poll","elapsed":0.1,"rc":0,"stdout":"  pid = 41","pid":null,"case":"inside interval no call"}
+{"func":"poll","elapsed":0.5,"rc":0,"stdout":"  pid = 41","pid":null,"pgrep":["777"],"case":"pid via pgrep"}
+{"func":"poll","elapsed":0.5,"rc":0,"stdout":"  pid = 41","pid":null,"pgrep_fail":true,"case":"pgrep failure keeps wrapper"}
+{"func":"poll","elapsed":0.5,"rc":0,"stdout":"  pid = 41","pid":777,"pgrep":["888"],"case":"different pid recorded does not overwrite"}
+{"func":"poll","elapsed":0.5,"rc":0,"stdout":"  pid = 41","pid":41,"pgrep":["888"],"case":"wrapper pid re-resolves"}
+{"func":"poll","elapsed":0.5,"rc":0,"stdout":"  pid = 41","pid":null,"budget":0,"pgrep":["777"],"case":"no pgrep budget"}
+{"func":"poll","elapsed":0.5,"rc":1,"stdout":"","pid":null,"case":"gone job status 1"}
+{"func":"poll","elapsed":0.5,"rc":0,"stdout":"  last exit code = 3\n","pid":null,"case":"exit code recorded"}
+{"func":"poll","elapsed":0.5,"rc":0,"stdout":"\tlast exit code = -9","pid":null,"case":"negative exit code"}
+{"func":"poll","elapsed":0.5,"rc":0,"stdout":"no pid and no exit\n","pid":null,"case":"still running unknown"}
+{"func":"poll","elapsed":0.5,"rc":0,"stdout":"  pid = 0\n  last exit code = 2","pid":null,"pgrep":[],"case":"pid zero then exit ignored"}
+{"func":"poll","elapsed":0.5,"rc":0,"stdout":"  pid = 12abc","pid":null,"pgrep":[],"case":"regex is not anchored"}
+{"func":"finished_jobs","rc":0,"stdout":"-\t0\tcom.nousresearch.hermes.runtime.abc\n","case":"finished label removed"}
+{"func":"finished_jobs","rc":0,"stdout":"123\t0\tcom.nousresearch.hermes.runtime.abc\n","case":"running job untouched"}
+{"func":"finished_jobs","rc":0,"stdout":"-\t0\tcom.other.agent\n","case":"other label untouched"}
+{"func":"finished_jobs","rc":0,"stdout":"-\t0\tcom.nousresearch.hermes.runtime.a\n-\t1\tcom.nousresearch.hermes.runtime.b\n","case":"two finished labels"}
+{"func":"finished_jobs","rc":0,"stdout":"-\t0\n","case":"two fields skipped"}
+{"func":"finished_jobs","rc":1,"stdout":"-\t0\tcom.nousresearch.hermes.runtime.abc\n","case":"failing list removes nothing"}
+{"func":"finished_jobs","rc":0,"stdout":"","case":"empty list"}
+{"func":"job","command":["/usr/bin/python3","-m","hermes"],"hex12":"abc123def456","uid":501,"log_path":"/Users/x/Library/Logs/hermes/gateway.log","cwd":"/Users/x/w","env":{"X":"1"},"case":"full identity"}
+{"func":"job","command":["/bin/sh"],"hex12":"0011223344ff","uid":0,"log_path":"gateway.log","cwd":"/","case":"root uid"}
+{"func":"job","command":[],"hex12":"","uid":501,"log_path":"gateway.log","cwd":"","case":"empty command and hex"}
+{"func":"job","command":["a","b"],"hex12":"0123456789abcdef","uid":501,"log_path":"g.log","cwd":"/tmp","case":"hex truncated to twelve"}
+{"func":"job","hex12":"ffee00112233","uid":1000,"case":"missing command and env"}

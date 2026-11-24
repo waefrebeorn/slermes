@@ -36,6 +36,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TESTS = os.path.join(REPO, "tests")
 ORACLE_SH = os.path.join(TESTS, "run_all_oracles.sh")
 HARNESS_DIR = os.path.join(REPO, ".testbin", "harnesses")
+SITECOPY = "C:/Users/eman5/hermes-agent/sitecopy"
 JOBS = min(12, os.cpu_count() or 4)
 
 GCC = os.environ.get("CC") or "C:/winlibs/mingw64/bin/gcc.exe"
@@ -163,6 +164,11 @@ def run_gate(gate, exe, pybin):
     fixture = fixture_for(gate, harness)
     tmp = tempfile.mkdtemp(prefix="fg_", dir=os.path.join(REPO, ".testbin"))
     env = dict(os.environ, SLERMES_HOME=tmp, HOME=tmp, PYTHONIOENCODING="utf-8")
+    # Native extensions shipped inside the WindowsApps payload fail to load there
+    # ("DLL load failed: Access is denied"); the same wheels copied to a normal
+    # directory load fine, so that copy goes first on sys.path.
+    if os.path.isdir(SITECOPY):
+        env["PYTHONPATH"] = SITECOPY + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
     try:
         data = open(os.path.join(REPO, fixture), "rb").read() if fixture else b""
         h = subprocess.run([exe], input=data, capture_output=True, env=env, cwd=REPO)

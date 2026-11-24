@@ -1,0 +1,27 @@
+{"case": "bridge-no-pid-file", "func": "bridge_check", "pid_file_exists": false, "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-recycled-pid", "current_start": 457, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": "123\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-still-running", "current_start": 456, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": "123\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-pid-gone", "current_start": 456, "func": "bridge_check", "pid_exists": false, "pid_file_exists": true, "pid_text": "123\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-garbage-pid", "func": "bridge_check", "pid_exists": false, "pid_file_exists": true, "pid_text": "abc\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-empty-file", "func": "bridge_check", "pid_exists": false, "pid_file_exists": true, "pid_text": "", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-zero-pid", "func": "bridge_check", "pid_exists": false, "pid_file_exists": true, "pid_text": "0\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-negative-pid", "func": "bridge_check", "pid_exists": false, "pid_file_exists": true, "pid_text": "-3\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-single-line", "current_start": 456, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": "123", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-zero-start", "current_start": 456, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": "123\n0", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-garbage-start", "current_start": 456, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": "123\nabc", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-padded-ints", "current_start": 456, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": " 123 \n 456 ", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-bom", "current_start": 456, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": "\ufeff123\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-crlf", "current_start": 999, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": "123\r\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-read-raises", "func": "bridge_check", "pid_exists": false, "pid_file_exists": true, "read_raises": true, "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-underscore-pid", "func": "bridge_check", "pid_exists": false, "pid_file_exists": true, "pid_text": "1_2\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-start-unknown", "current_start": null, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": "123\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-signed-ints", "current_start": 456, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": "+7\n+456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-huge-pid", "current_start": 5, "func": "bridge_check", "pid_exists": true, "pid_file_exists": true, "pid_text": "99999999999999999999999\n5", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"case": "bridge-trailing-junk", "func": "bridge_check", "pid_exists": false, "pid_file_exists": true, "pid_text": "12x\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"backup_dir": "/srv/hermes/profiles/w21/session-backup-20261123T120000Z-ab12cd", "case": "backup-fresh", "exists": true, "func": "backup", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"backup_dir": "/srv/hermes/profiles/w21/session-backup-20261123T120000Z-ab12cd", "case": "backup-nothing-there", "exists": false, "func": "backup", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"backup_dir": "/srv/hermes/profiles/w21/session-backup-20261123T120000Z-ab12cd", "case": "backup-symlink", "exists": true, "func": "backup", "is_symlink": true, "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"backup_dir": "/srv/hermes/profiles/w21/session-backup-20261123T120000Z-ab12cd", "case": "backup-bridge-running", "current_start": 77, "exists": true, "func": "backup", "pid_exists": true, "pid_file_exists": true, "pid_text": "42\n77", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"backup_dir": "/srv/hermes/profiles/w21/session-backup-20261123T120000Z-ab12cd", "case": "backup-rename-fails", "exists": true, "func": "backup", "rename_error": "rename failed", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"backup_dir": "/srv/hermes/profiles/w21/session-backup-20261123T120000Z-ab12cd", "case": "backup-mkdir-fails-preserved", "exists": true, "func": "backup", "mkdir_error": "mkdir failed", "session_path": "/srv/hermes/profiles/w21/whatsapp"}
+{"backup_dir": "/srv/hermes/profiles/w21/session-backup-20261123T120000Z-ab12cd", "case": "backup-passes-bridge-check", "current_start": 789, "exists": true, "func": "backup", "pid_exists": true, "pid_file_exists": true, "pid_text": "\ufeff123\n456", "session_path": "/srv/hermes/profiles/w21/whatsapp"}

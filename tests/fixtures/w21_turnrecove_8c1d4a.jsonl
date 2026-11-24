@@ -1,0 +1,35 @@
+{"func":"cycles","agent":{},"case":"cycles default"}
+{"func":"cycles","agent":{"_auto_recovery_cycles":5},"case":"cycles configured"}
+{"func":"cycles","agent":{"_auto_recovery_cycles":-3},"case":"cycles negative clamps"}
+{"func":"cycles","agent":{"_auto_recovery_cycles":"7"},"case":"cycles numeric string"}
+{"func":"cycles","agent":{"_auto_recovery_cycles":5.9},"case":"cycles float truncates"}
+{"func":"cycles","agent":{"_auto_recovery_cycles":true},"case":"cycles bool is int"}
+{"func":"wait","cycle":1,"api_error":{"retry_after":null},"case":"wait first cycle"}
+{"func":"wait","cycle":2,"api_error":{"retry_after":null},"case":"wait second cycle"}
+{"func":"wait","cycle":3,"api_error":{"retry_after":null},"case":"wait third cycle caps"}
+{"func":"wait","cycle":4,"api_error":{"retry_after":null},"case":"wait fourth cycle caps"}
+{"func":"wait","cycle":0,"api_error":{"retry_after":null},"case":"wait zero cycle"}
+{"func":"wait","cycle":2,"api_error":{"retry_after":7.5},"case":"wait retry after wins"}
+{"func":"wait","cycle":2,"api_error":{"retry_after":500},"case":"wait retry after capped"}
+{"func":"wait","cycle":2,"api_error":{"retry_after":0},"case":"wait zero retry after"}
+{"func":"eligible","agent":{"_auto_recovery_cycles":5},"reason":"timeout","streamed":"","has_content":false,"case":"eligible transient with no text"}
+{"func":"eligible","agent":{"_auto_recovery_cycles":0},"reason":"timeout","streamed":"","has_content":false,"case":"eligible needs cycles"}
+{"func":"eligible","agent":{"_auto_recovery_cycles":5},"reason":"auth","streamed":"","has_content":false,"case":"eligible rejects auth"}
+{"func":"eligible","agent":{"_auto_recovery_cycles":5},"reason":"server_error","streamed":"hello","has_content":true,"case":"eligible rejects delivered text"}
+{"func":"eligible","agent":{"_auto_recovery_cycles":5},"reason":"overloaded","streamed":"  ","has_content":false,"case":"eligible whitespace only"}
+{"func":"eligible","agent":{"_auto_recovery_cycles":5},"reason":"rate_limit","streamed":"","has_content":false,"case":"eligible rejects rate limit"}
+{"func":"notice","platform":"cli","wait_s":15.0,"cycle":1,"total":5,"case":"notice cli hint"}
+{"func":"notice","platform":"API_SERVER","wait_s":7.4,"cycle":2,"total":5,"case":"notice api server hint folds case"}
+{"func":"notice","platform":"cron","wait_s":60.0,"cycle":3,"total":5,"case":"notice cron has no hint"}
+{"func":"notice","platform":"","wait_s":30.0,"cycle":2,"total":5,"case":"notice default hint"}
+{"func":"notice","platform":"desktop","wait_s":0.5,"cycle":1,"total":1,"case":"notice half second rounds to zero"}
+{"func":"recover","case_data":{"agent":{"_auto_recovery_cycles":0},"reason":"timeout","streamed":"","has_content":false,"retry":{"auto_recovery_cycles_used":0},"api_error":{"retry_after":null},"interrupt":null},"case":"recover ineligible"}
+{"func":"recover","case_data":{"agent":{"_auto_recovery_cycles":2,"platform":"cli"},"reason":"timeout","streamed":"","has_content":false,"retry":{"auto_recovery_cycles_used":2},"api_error":{"retry_after":null},"interrupt":null},"case":"recover spent gives up"}
+{"func":"recover","case_data":{"agent":{"_auto_recovery_cycles":5,"platform":"cli"},"reason":"timeout","streamed":"","has_content":false,"retry":{"auto_recovery_cycles_used":0},"api_error":{"retry_after":null},"interrupt":null},"case":"recover first cycle continues"}
+{"func":"recover","case_data":{"agent":{"_auto_recovery_cycles":5,"platform":"tui"},"reason":"overloaded","streamed":"","has_content":false,"retry":{"auto_recovery_cycles_used":1},"api_error":{"retry_after":9.0},"interrupt":{"interrupted":true}},"case":"recover interrupted returns result"}
+{"func":"recover","case_data":{"agent":{"_auto_recovery_cycles":5,"platform":"cli"},"reason":"server_error","streamed":"","has_content":false,"retry":{"auto_recovery_cycles_used":2,"restart_with_redirected_messages":true},"api_error":{"retry_after":null},"interrupt":null},"case":"recover pending redirect breaks"}
+{"func":"recover","case_data":{"agent":{"_auto_recovery_cycles":5,"platform":"cli"},"reason":"timeout","streamed":"","has_content":false,"retry":{"auto_recovery_cycles_used":4},"api_error":{"retry_after":null},"interrupt":null},"case":"recover last cycle waits sixty"}
+{"func":"recover","case_data":{"agent":{"_auto_recovery_cycles":5,"platform":"cli"},"reason":"auth","streamed":"","has_content":false,"retry":{"auto_recovery_cycles_used":0},"api_error":{"retry_after":null},"interrupt":null},"case":"recover non transient reason"}
+{"func":"recover","case_data":{"agent":{"_auto_recovery_cycles":5,"platform":"cli"},"reason":"timeout","streamed":"visible answer","has_content":true,"retry":{"auto_recovery_cycles_used":0},"api_error":{"retry_after":null},"interrupt":null},"case":"recover already delivered text"}
+{"func":"eligible","agent":{"_auto_recovery_cycles":5},"reason":"timeout","streamed":"<thinking>plan</thinking>visible answer","has_content":true,"case":"eligible closed think block leaves content"}
+{"func":"eligible","agent":{"_auto_recovery_cycles":5},"reason":"timeout","streamed":"<thinking>plan only</thinking>","has_content":false,"case":"eligible closed think block leaves nothing"}

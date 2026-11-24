@@ -1,0 +1,28 @@
+{"func": "describe", "message": "boom", "type": "RuntimeError", "case": "plain text"}
+{"func": "describe", "message": "  padded  ", "type": "RuntimeError", "case": "strip padding"}
+{"func": "describe", "message": "   ", "type": "RoomUnavailableError", "case": "blank falls to type"}
+{"func": "describe", "message": "", "type": "ValueError", "case": "empty falls to type"}
+{"func": "describe", "type": "ValueError", "case": "missing message"}
+{"func": "describe", "message": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "type": "RuntimeError", "case": "exactly 301 chars truncates"}
+{"func": "describe", "message": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "type": "RuntimeError", "case": "exactly 300 chars kept"}
+{"func": "describe", "message": "  cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc   ", "type": "RuntimeError", "case": "padded long truncates after strip"}
+{"func": "feed", "events": [{"kind": "permanent", "message": "member missing"}, {"kind": "permanent", "message": "member missing"}, {"kind": "permanent", "message": "member missing"}], "case": "three failures stall"}
+{"func": "feed", "events": [{"kind": "permanent", "message": "a"}, {"kind": "permanent", "message": "b"}, {"kind": "permanent", "message": "c"}, {"kind": "permanent", "message": "d"}], "case": "fourth does not re-emit"}
+{"func": "feed", "events": [{"kind": "transient", "message": "lease held"}, {"kind": "transient", "message": "lease held"}, {"kind": "transient", "message": "lease held"}], "case": "transient never counts"}
+{"func": "feed", "events": [{"kind": "missing_table", "message": "no such table: x"}, {"kind": "missing_table", "message": "no such table: x"}, {"kind": "missing_table", "message": "no such table: x"}], "case": "missing table never counts"}
+{"func": "feed", "events": [{"kind": "permanent", "message": "a"}, {"kind": "permanent", "message": "b"}, {"kind": "transient", "message": "moved"}, {"kind": "permanent", "message": "c"}], "case": "transient between permanent"}
+{"func": "feed", "events": [{"kind": "permanent", "message": "a"}, {"kind": "permanent", "message": "b"}, {"op": "clear"}, {"kind": "permanent", "message": "c"}, {"kind": "permanent", "message": "d"}], "case": "clear resets streak"}
+{"func": "feed", "events": [{"op": "stall", "message": "retry failed"}, {"kind": "permanent", "message": "after"}], "case": "stall re-arms without emit"}
+{"func": "feed", "events": [], "case": "empty stream"}
+{"func": "feed", "case": "missing events key"}
+{"func": "feed", "room_id": "r-9", "events": [{"kind": "permanent", "type": "KeyError", "message": "  weird  "}, {"kind": "permanent", "type": "KeyError", "message": "  "}, {"kind": "permanent", "type": "KeyError", "message": "  "}], "case": "type name as error text"}
+{"func": "retry_action", "room_id": "room-1", "room": {"members": [{"handle": "ada"}, {"handle": "grace"}]}, "case": "handles joined"}
+{"func": "retry_action", "room_id": "room-1", "room": {"members": [{"handle": "ada"}, {"member_id": "m-2"}, {}]}, "case": "member_id fallback"}
+{"func": "retry_action", "room_id": "room-1", "room": {"members": []}, "case": "empty members uses room id"}
+{"func": "retry_action", "room_id": "room-1", "case": "missing members key"}
+{"func": "retry_action", "room_id": "room-7", "room": {"members": [{"handle": ""}, {"handle": null, "member_id": "only"}]}, "case": "empty handle skipped"}
+{"func": "report_plan", "room_id": "room-1", "latest_seq": "12", "message": "member gone", "case": "append stall event"}
+{"func": "report_plan", "room_id": "room-1", "latest_seq": "12", "tail_event_id": "prepare-stalled:11", "message": "member gone", "case": "already reported"}
+{"func": "report_plan", "room_id": "room-1", "latest_seq": "0", "tail_event_id": "message:1", "message": "member gone", "case": "other tail event"}
+{"func": "report_plan", "room_id": "room-1", "latest_seq": "5", "tail_event_id": "prepare-stalled:4", "case": "missing message on skip", "type": "RuntimeError"}
+{"func": "report_plan", "room_id": "room-1", "latest_seq": "5", "type": "RoomUnavailableError", "message": "   ", "case": "blank message uses type"}

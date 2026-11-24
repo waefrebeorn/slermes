@@ -1,0 +1,20 @@
+{"func": "env_probe", "case": "isolated-home"}
+{"func": "in_env", "case": "same-env", "session": {"env_ref": "e", "task_id": "t-1", "exited": false}, "key": "k1", "env_tag": "e"}
+{"func": "in_env", "case": "other-env-same-task", "session": {"env_ref": "other", "task_id": "k1", "exited": false}, "key": "k1", "env_tag": "e"}
+{"func": "in_env", "case": "no-env-ref-task-match", "session": {"env_ref": null, "task_id": "k1", "exited": false}, "key": "k1", "env_tag": "e"}
+{"func": "in_env", "case": "no-env-ref-task-miss", "session": {"env_ref": null, "task_id": "k2", "exited": false}, "key": "k1", "env_tag": "e"}
+{"func": "in_env", "case": "env-none-local", "session": {"env_ref": null, "task_id": "k1", "exited": false}, "key": "k1", "env_tag": null}
+{"func": "in_env", "case": "env-none-with-ref", "session": {"env_ref": "e", "task_id": "k1", "exited": false}, "key": "k1", "env_tag": null}
+{"func": "in_env", "case": "missing-tag-key", "session": {"env_ref": "e", "task_id": "k1", "exited": false}, "key": "k1"}
+{"func": "has_running", "case": "live-in-env", "world": {"env_tag": "e", "key": "k1", "sessions": [{"env_ref": "e", "task_id": "t-1", "exited": false}, {"env_ref": "other", "task_id": "k1", "exited": false}]}}
+{"func": "has_running", "case": "only-other-env", "world": {"env_tag": "e", "key": "k1", "sessions": [{"env_ref": "other", "task_id": "k1", "exited": false}]}}
+{"func": "has_running", "case": "local-task-match", "world": {"env_tag": "e", "key": "k1", "sessions": [{"env_ref": null, "task_id": "k1", "exited": false}]}}
+{"func": "has_running", "case": "no-sessions", "world": {"env_tag": "e", "key": "k1", "sessions": []}}
+{"func": "has_running", "case": "missing-world"}
+{"func": "settle", "case": "one-lost", "world": {"env_tag": "e", "sessions": [{"env_ref": "e", "task_id": "t-1", "exited": false}, {"env_ref": "e", "task_id": "t-2", "exited": true}, {"env_ref": "other", "task_id": "k1", "exited": false}]}}
+{"func": "settle", "case": "already-exited", "world": {"env_tag": "e", "sessions": [{"env_ref": "e", "task_id": "t-2", "exited": true}]}}
+{"func": "settle", "case": "env-none", "world": {"env_tag": null, "sessions": [{"env_ref": null, "task_id": "k1", "exited": false}]}}
+{"func": "settle", "case": "cleanup-does-not-stop", "world": {"env_tag": "e", "cleanup_stops_processes": false, "sessions": [{"env_ref": "e", "task_id": "t-1", "exited": false}]}}
+{"func": "settle", "case": "cleanup-flag-null", "world": {"env_tag": "e", "cleanup_stops_processes": null, "sessions": [{"env_ref": "e", "task_id": "t-1", "exited": false}]}}
+{"func": "settle", "case": "no-match", "world": {"env_tag": "e", "sessions": [{"env_ref": "other", "task_id": "t-1", "exited": false}]}}
+{"func": "settle", "case": "missing-world"}

@@ -1,0 +1,14 @@
+{"case": "shape", "func": "parser_shape"}
+{"case": "no_action", "func": "dispatch"}
+{"case": "explicit_browser", "func": "dispatch", "action": "close-profile", "browser": "brave", "detected": "edge", "profile": {"brave": "/home/u/.config/BraveSoftware"}, "closed": true, "msg": "closed brave"}
+{"case": "detected_browser", "func": "dispatch", "action": "close-profile", "detected": "chrome", "profile": {"chrome": "/home/u/.config/google-chrome"}, "closed": true, "msg": "closed chrome"}
+{"case": "no_browser_detected", "func": "dispatch", "action": "close-profile", "detected": null}
+{"case": "unsupported_channel", "func": "dispatch", "action": "close-profile", "detected": "__unsupported_channel__"}
+{"case": "profile_missing", "func": "dispatch", "action": "close-profile", "browser": "brave", "profile": {}, "closed": true, "msg": "closed brave"}
+{"case": "profile_empty", "func": "dispatch", "action": "close-profile", "browser": "brave", "profile": {"brave": ""}, "closed": true, "msg": "closed brave"}
+{"case": "close_failed", "func": "dispatch", "action": "close-profile", "browser": "chromium", "profile": {"chromium": "/p/chromium"}, "closed": false, "msg": "chromium still holds its profile"}
+{"case": "close_no_message", "func": "dispatch", "action": "close-profile", "browser": "chromium", "profile": {"chromium": "/p/chromium"}, "closed": true}
+{"case": "export_signins", "func": "dispatch", "action": "export-signins", "export_rc": 7}
+{"case": "export_signins_default_rc", "func": "dispatch", "action": "export-signins"}
+{"case": "empty_browser_falls_back", "func": "dispatch", "action": "close-profile", "browser": "", "detected": "edge", "profile": {"edge": "/p/edge"}, "closed": true, "msg": "closed edge"}
+{"case": "explicit_wins_profile", "func": "dispatch", "action": "close-profile", "browser": "chrome", "detected": "edge", "profile": {"edge": "/p/edge"}, "closed": true, "msg": "closed"}

@@ -1,0 +1,32 @@
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"gateway","supervisor":"systemd","pid":41},"alive":true,"case":"gateway rows are in the matrix"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"desktop","pid":42},"alive":true,"case":"desktop owns the restart"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"dashboard","supervisor":"systemd","pid":43},"alive":true,"case":"dashboard under systemd"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"windows-service","pid":44},"alive":true,"case":"windows service backend"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"manual-serve","restart_via":"respawn-argv","pid":45,"detail":{"create_time":1700000000.5}},"alive":true,"case":"manual serve files its reminder"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"manual-serve","restart_via":"respawn-argv","pid":46,"detail":{"create_time":1700000001}},"alive":false,"case":"manual serve whose pid is gone"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"dashboard","supervisor":"manual-serve","restart_via":"respawn-argv","pid":47,"detail":{"create_time":1700000002}},"alive":null,"case":"manual serve with unknown liveness"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"manual-serve","restart_via":"argv","pid":48,"detail":{"create_time":1700000003}},"alive":true,"case":"manual serve without the respawn argv"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"manual-serve","restart_via":"respawn-argv","pid":49,"detail":{}},"alive":false,"case":"no creation time, dead pid discharges"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"manual-serve","restart_via":"respawn-argv","pid":50,"detail":{}},"alive":true,"case":"no creation time, live pid stays owed"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"manual-serve","restart_via":"respawn-argv","pid":51,"detail":{}},"alive":null,"case":"no creation time, liveness unknown stays owed"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"manual-serve","restart_via":"respawn-argv","pid":52,"detail":"identified"},"alive":true,"case":"detail is not a mapping"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"unclassified","pid":53},"alive":true,"case":"unclassified backend stays evidence"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"manual-serve","restart_via":"respawn-argv","pid":0,"detail":{}},"alive":false,"case":"zero pid is refused"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"manual-serve","restart_via":"respawn-argv","detail":{}},"alive":false,"case":"missing pid is refused"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"launchd","pid":54},"alive":true,"case":"launchd owns the restart"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"kind":"serve","supervisor":"desktop-ssh","pid":55},"alive":true,"case":"desktop-ssh owns the restart"}
+{"func":"runtime_outside_gateway_evidence","runtime":{"supervisor":"desktop","pid":56},"alive":true,"case":"missing kind"}
+{"func":"host_owes_no_gateway_restart","records":[],"runtimes":[],"case":"no profiles, no runtimes"}
+{"func":"host_owes_no_gateway_restart","records":[null],"runtimes":[],"case":"profile that never ran a gateway"}
+{"func":"host_owes_no_gateway_restart","records":[{"gateway_state":"stopped"}],"runtimes":[],"case":"cleanly stopped gateway"}
+{"func":"host_owes_no_gateway_restart","records":[{"gateway_state":"startup_failed"},null],"runtimes":[],"case":"startup_failed is not expected"}
+{"func":"host_owes_no_gateway_restart","records":[{"gateway_state":"running"}],"runtimes":[],"case":"running gateway keeps the obligation"}
+{"func":"host_owes_no_gateway_restart","records":[{"gateway_state":"crashed"}],"runtimes":[],"case":"unknown state keeps the obligation"}
+{"func":"host_owes_no_gateway_restart","records":[{}],"runtimes":[],"case":"record without a state keeps it"}
+{"func":"host_owes_no_gateway_restart","records":["garbage"],"runtimes":[],"case":"record that is not a mapping"}
+{"func":"host_owes_no_gateway_restart","records":[{"gateway_state":"stopped"}],"runtimes":[{"kind":"serve","supervisor":"desktop","pid":61,"profile":"default"}],"case":"only an outside serve runs"}
+{"func":"host_owes_no_gateway_restart","records":[{"gateway_state":"stopped"}],"runtimes":[{"kind":"gateway","supervisor":"systemd","pid":62,"profile":"default"}],"case":"a gateway row is in the matrix"}
+{"func":"host_owes_no_gateway_restart","records":[],"runtimes":[{"kind":"serve","supervisor":"manual-serve","restart_via":"respawn-argv","pid":77,"detail":{}}],"alive_map":{"77":false},"case":"dead manual serve discharged"}
+{"func":"host_owes_no_gateway_restart","records":[],"runtimes":[{"kind":"serve","supervisor":"manual-serve","restart_via":"respawn-argv","pid":78,"detail":{}}],"alive_map":{"78":true},"case":"live manual serve still owed"}
+{"func":"host_owes_no_gateway_restart","records":[],"runtimes":[{"kind":"serve","supervisor":"desktop","pid":79},{"kind":"serve","supervisor":"unclassified","pid":80}],"case":"one unclassified row fails the host"}
+{"func":"host_owes_no_gateway_restart","records":[null,null],"runtimes":[{"kind":"dashboard","supervisor":"launchd","pid":81},{"kind":"serve","supervisor":"systemd","pid":82}],"case":"two profiles, all runtimes outside"}

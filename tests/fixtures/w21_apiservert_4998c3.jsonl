@@ -1,0 +1,25 @@
+{"func":"same_prefix","agent_messages":[{"role":"user","content":"hi"}],"prefix":[{"role":"user","content":"hi"}],"case":"prefix equal bare"}
+{"func":"same_prefix","agent_messages":[{"role":"user","content":"hi","timestamp":1,"_db_persisted":true,"finish_reason":"stop"}],"prefix":[{"role":"user","content":"hi"}],"case":"agent stamps ignored"}
+{"func":"same_prefix","agent_messages":[{"role":"assistant","content":"a","tool_calls":[{"id":"1"}]}],"prefix":[{"role":"assistant","content":"a","tool_calls":[{"id":"2"}]}],"case":"tool calls differ"}
+{"func":"same_prefix","agent_messages":[{"role":"user","content":"hi"}],"prefix":[{"role":"user","content":"hi"},{"role":"assistant","content":"yo"}],"case":"agent shorter than prefix"}
+{"func":"same_prefix","agent_messages":[1,2],"prefix":[true,2],"case":"bool equals int elementwise"}
+{"func":"same_prefix","agent_messages":["a"],"prefix":["b"],"case":"string elements differ"}
+{"func":"same_prefix","agent_messages":[{"role":"user"}],"prefix":[{"role":"user","content":null}],"case":"missing content reads none"}
+{"func":"same_prefix","agent_messages":[{"role":"user","content":{"a":1,"b":2}}],"prefix":[{"role":"user","content":{"b":2,"a":1}}],"case":"object key order ignored"}
+{"func":"same_prefix","agent_messages":[],"prefix":[],"case":"two empty lists"}
+{"func":"same_prefix","agent_messages":"nope","prefix":[],"case":"wrong type agent messages"}
+{"func":"reanchor","agent_messages":[{"role":"user","content":"old"},{"role":"assistant","content":"a"},{"role":"user","content":"new"}],"user_message":"new","case":"reanchor exact last","live_views":[{"role":"user","content":"old"},null,{"role":"user","content":"new"}]}
+{"func":"reanchor","agent_messages":[{"role":"user","content":"old"},{"role":"assistant","content":"a"},{"role":"user","content":"same"},{"role":"assistant","content":"b"},{"role":"user","content":"same"}],"user_message":"same","case":"reanchor duplicate prefers last","live_views":[{"role":"user","content":"old"},null,{"role":"user","content":"same"},null,{"role":"user","content":"same"}]}
+{"func":"reanchor","agent_messages":[{"role":"user","content":"old"},{"role":"user","content":"hidden","display_kind":"hidden"}],"user_message":"old","case":"reanchor hidden row skipped","live_views":[{"role":"user","content":"old"},null]}
+{"func":"reanchor","agent_messages":[{"role":"assistant","content":"a"},{"role":"tool","content":"t"}],"user_message":"x","case":"reanchor no user rows","live_views":[null,null]}
+{"func":"reanchor","agent_messages":[{"role":"user","content":"old"},{"role":"assistant","content":"a"},{"role":"user","content":"newer"}],"user_message":"newest","case":"reanchor falls back to last user row","live_views":[{"role":"user","content":"old"},null,{"role":"user","content":"newer"}]}
+{"func":"start_index","result":{"messages":[{"role":"user","content":"hi"}]},"conversation_history":[],"user_message":"hi","case":"start index single user row","live_views":[{"role":"user","content":"hi"}]}
+{"func":"start_index","result":{"messages":[{"role":"user","content":"q"}],"_messages_are_turn_suffix":true},"conversation_history":[{"role":"user","content":"prev"}],"user_message":"q","case":"suffix flag wins","live_views":[{"role":"user","content":"q"}]}
+{"func":"start_index","result":{"messages":[],"_messages_are_turn_suffix":false},"conversation_history":[],"user_message":"q","case":"empty messages list","live_views":[]}
+{"func":"start_index","result":{},"conversation_history":[],"user_message":"q","case":"result without messages key"}
+{"func":"start_index","result":"nope","conversation_history":[],"user_message":"q","case":"result wrong type"}
+{"func":"start_index","result":{"messages":[{"role":"user","content":"a"},{"role":"assistant","content":"x"},{"role":"user","content":"b"}]},"conversation_history":[{"role":"user","content":"a"},{"role":"assistant","content":"x"}],"user_message":"b","case":"anchored turn start","live_views":[{"role":"user","content":"a"},null,{"role":"user","content":"b"}]}
+{"func":"start_index","result":{"messages":[{"role":"assistant","content":"x"},{"role":"user","content":"q"},{"role":"assistant","content":"a"}]},"conversation_history":[{"role":"assistant","content":"x"}],"user_message":"q","case":"no reanchor rows falls to prefix","live_views":[null,{"role":"user","content":"q"},null]}
+{"func":"start_index","result":{"messages":[{"role":"user","content":"q"},{"role":"assistant","content":"a"}]},"conversation_history":[],"user_message":"q","case":"expected prefix without prior","live_views":[{"role":"user","content":"q"},null]}
+{"func":"start_index","result":{"messages":[{"role":"user","content":"other"},{"role":"assistant","content":"a"}]},"conversation_history":[],"user_message":"q","case":"nothing matches returns zero","live_views":[{"role":"user","content":"other"},null]}
+{"func":"start_index","result":{"messages":[{"role":"system","content":"s"},{"role":"assistant","content":"a"}]},"conversation_history":[{"role":"system","content":"s"}],"user_message":"q","case":"prior prefix match only","live_views":[null,null]}

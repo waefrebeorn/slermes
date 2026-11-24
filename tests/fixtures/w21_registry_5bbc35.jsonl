@@ -1,0 +1,43 @@
+{"func": "get", "case": "no_file", "path": "reg/get_no_file.json", "name": "alpha"}
+{"func": "get", "case": "found", "path": "reg/get_found.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "name": "alpha"}
+{"func": "get", "case": "missing_name", "path": "reg/get_missing.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "name": "zzz"}
+{"func": "get", "case": "empty_name", "path": "reg/get_empty_name.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "name": ""}
+{"func": "get", "case": "nodes_not_dict", "path": "reg/get_nodes_list.json", "preload": "{\"nodes\": [1, 2]}", "name": "a"}
+{"func": "get", "case": "document_is_list", "path": "reg/get_doc_list.json", "preload": "[1]", "name": "a"}
+{"func": "get", "case": "malformed", "path": "reg/get_bad.json", "preload": "{\"nodes\": ", "name": "a"}
+{"func": "get", "case": "bom", "path": "reg/get_bom.json", "preload": "﻿{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "name": "alpha"}
+{"func": "get", "case": "extra_keys", "path": "reg/get_extra.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"u\", \"token\": \"t\", \"added_at\": 1, \"note\": \"n\", \"port\": 5}}}", "name": "alpha"}
+{"func": "get", "case": "entry_overrides_name", "path": "reg/get_override.json", "preload": "{\"nodes\": {\"alpha\": {\"name\": \"shadow\", \"url\": \"u\"}}}", "name": "alpha"}
+{"func": "add", "case": "fresh", "path": "reg/add_fresh.json", "name": "alpha", "url": "ws://a", "token": "ta", "now": 1700000000.5}
+{"func": "add", "case": "existing_kept", "path": "reg/add_existing.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "name": "beta", "url": "ws://b", "token": "tb", "now": 2}
+{"func": "add", "case": "overwrite", "path": "reg/add_overwrite.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "name": "alpha", "url": "ws://new", "token": "tnew", "now": 3}
+{"func": "add", "case": "empty_name", "path": "reg/add_empty_name.json", "name": "", "url": "ws://a", "token": "ta", "now": 1}
+{"func": "add", "case": "missing_name", "path": "reg/add_missing_name.json", "url": "ws://a", "token": "ta", "now": 1}
+{"func": "add", "case": "url_wrong_type", "path": "reg/add_url_int.json", "name": "alpha", "url": 5, "token": "ta", "now": 1}
+{"func": "add", "case": "url_empty", "path": "reg/add_url_empty.json", "name": "alpha", "url": "", "token": "ta", "now": 1}
+{"func": "add", "case": "token_null", "path": "reg/add_token_null.json", "name": "alpha", "url": "ws://a", "token": null, "now": 1}
+{"func": "add", "case": "token_missing", "path": "reg/add_token_missing.json", "name": "alpha", "url": "ws://a", "now": 1}
+{"func": "add", "case": "malformed_file_replaced", "path": "reg/add_bad_file.json", "preload": "{\"nodes\": ", "name": "alpha", "url": "ws://a", "token": "ta", "now": 7}
+{"func": "add", "case": "nodes_not_dict_replaced", "path": "reg/add_nodes_list.json", "preload": "{\"nodes\": 3}", "name": "alpha", "url": "ws://a", "token": "ta", "now": 8}
+{"func": "add", "case": "now_zero", "path": "reg/add_now_zero.json", "name": "z", "url": "u", "token": "t", "now": 0}
+{"func": "remove", "case": "present", "path": "reg/rm_present.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}, \"beta\": {\"url\": \"ws://b\", \"token\": \"tb\", \"added_at\": 2}}}", "name": "alpha"}
+{"func": "remove", "case": "absent", "path": "reg/rm_absent.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}, \"beta\": {\"url\": \"ws://b\", \"token\": \"tb\", \"added_at\": 2}}}", "name": "zzz"}
+{"func": "remove", "case": "no_file", "path": "reg/rm_no_file.json", "name": "alpha"}
+{"func": "remove", "case": "last_one", "path": "reg/rm_last.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "name": "alpha"}
+{"func": "remove", "case": "empty_name", "path": "reg/rm_empty_name.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "name": ""}
+{"func": "list", "case": "empty", "path": "reg/list_empty.json"}
+{"func": "list", "case": "sorted_three", "path": "reg/list_three.json", "preload": "{\"nodes\": {\"c\": {\"url\": \"u3\", \"token\": \"t3\", \"added_at\": 3}, \"a\": {\"url\": \"u1\", \"token\": \"t1\", \"added_at\": 1}, \"b\": {\"url\": \"u2\", \"token\": \"t2\", \"added_at\": 2}}}"}
+{"func": "list", "case": "malformed", "path": "reg/list_bad.json", "preload": "not json at all"}
+{"func": "list", "case": "nodes_not_dict", "path": "reg/list_nodes_str.json", "preload": "{\"nodes\": \"x\"}"}
+{"func": "list", "case": "non_dict_entry", "path": "reg/list_non_dict.json", "preload": "{\"nodes\": {\"a\": 5}}"}
+{"func": "resolve", "case": "named_found", "path": "reg/res_named.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}, \"beta\": {\"url\": \"ws://b\", \"token\": \"tb\", \"added_at\": 2}}}", "chrome_node": "beta"}
+{"func": "resolve", "case": "named_missing", "path": "reg/res_missing.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}, \"beta\": {\"url\": \"ws://b\", \"token\": \"tb\", \"added_at\": 2}}}", "chrome_node": "zzz"}
+{"func": "resolve", "case": "sole_node", "path": "reg/res_sole.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}"}
+{"func": "resolve", "case": "ambiguous", "path": "reg/res_ambiguous.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}, \"beta\": {\"url\": \"ws://b\", \"token\": \"tb\", \"added_at\": 2}}}"}
+{"func": "resolve", "case": "empty_registry", "path": "reg/res_empty.json"}
+{"func": "resolve", "case": "empty_name_falls_back", "path": "reg/res_empty_name.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "chrome_node": ""}
+{"func": "resolve", "case": "zero_is_falsy", "path": "reg/res_zero.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "chrome_node": 0}
+{"func": "resolve", "case": "null_node", "path": "reg/res_null.json", "preload": "{\"nodes\": {\"alpha\": {\"url\": \"ws://a\", \"token\": \"ta\", \"added_at\": 1}}}", "chrome_node": null}
+{"func": "default_path", "case": "injected_home", "hermes_home": "/tmp/hermes-home-x"}
+{"func": "default_path", "case": "injected_home_trailing_slash", "hermes_home": "/tmp/hermes-home-y/"}
+{"func": "default_path", "case": "empty_home", "hermes_home": ""}

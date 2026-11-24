@@ -1,0 +1,42 @@
+{"func":"format_name","case":"plain","connector":"gmail","tool":"gmail_search"}
+{"func":"format_name","case":"strips-upper-prefix","connector":"gmail","tool":"GMAIL_search"}
+{"func":"format_name","case":"no-prefix-to-strip","connector":"outlook","tool":"send_mail"}
+{"func":"format_name","case":"prefix-not-exact","connector":"gmail","tool":"GMAILX_search"}
+{"func":"vendor_candidates","case":"gmail","connector":"gmail","tool":"search"}
+{"func":"vendor_candidates","case":"already-prefixed","connector":"google-drive","tool":"files_list"}
+{"func":"is_connector_name","case":"prefixed","name":"connectors__gmail__search"}
+{"func":"is_connector_name","case":"unprefixed","name":"gmail__search"}
+{"func":"is_connector_name","case":"number","name":5}
+{"func":"is_connector_name","case":"missing"}
+{"func":"model_parameters","case":"file-input","input_schema":{"type":"object","properties":{"to":{"type":"string"},"attachment":{"type":"string","file_uploadable":true,"description":"the file"}},"required":["to"]}}
+{"func":"model_parameters","case":"file-input-no-description","input_schema":{"type":"object","properties":{"f":{"file_uploadable":true}}}}
+{"func":"model_parameters","case":"nested-list","input_schema":{"type":"object","properties":{"items":{"type":"array","items":{"file_uploadable":true,"description":"each"}}}}}
+{"func":"model_parameters","case":"non-object","input_schema":[]}
+{"func":"model_parameters","case":"missing"}
+{"func":"in_scope","case":"present","tool_defs":[{"type":"function","function":{"name":"read_file"}},{"type":"function","function":{"name":"manage_connections"}}]}
+{"func":"in_scope","case":"absent","tool_defs":[{"type":"function","function":{"name":"read_file"}}]}
+{"func":"in_scope","case":"null-function","tool_defs":[{"type":"function","function":null}]}
+{"func":"in_scope","case":"empty-list","tool_defs":[]}
+{"func":"unavailable","case":"not-set-up","failure":"not_set_up","verb":"searched","last_failure":null}
+{"func":"unavailable","case":"not-set-up-with-names-and-failure","failure":"not_set_up","verb":"searched","names":["gmail_search"],"last_failure":"oauth exchange failed"}
+{"func":"unavailable","case":"sign-in-expired","failure":"sign_in_expired","verb":"searched","names":["gmail_search","drive_list"],"last_failure":null}
+{"func":"unavailable","case":"unreachable-verb-described","failure":"unreachable","verb":"described","last_failure":"ignored"}
+{"func":"unavailable","case":"empty-names-omitted","failure":"unreachable","verb":"searched","names":[]}
+{"func":"entries_by_group","case":"leg-failure","queries":["find invoices","send mail"],"leg":{"failure":"sign_in_expired","payload":null}}
+{"func":"entries_by_group","case":"empty-payload","queries":["a","b"],"leg":{"failure":null,"payload":{}}}
+{"func":"entries_by_group","case":"payload-without-schemas","queries":["a"],"leg":{"failure":null,"payload":{"results":[{"use_case":"a","tools":["gmail_search"]}]}}}
+{"func":"entries_by_group","case":"normal-two-queries","queries":["find invoices","send mail"],"leg":{"failure":null,"payload":{"schemas":{"gmail_search":{"connector":"gmail","description":"Search Gmail","input_schema":{"type":"object","properties":{"q":{"type":"string"}},"required":["q"]}},"gmail_send":{"connector":"Gmail","description":"Send mail","input_schema":{"type":"object","properties":{"to":{"type":"string"},"attachment":{"type":"string","file_uploadable":true,"description":"the file"}}}}},"results":[{"use_case":"find invoices","tools":["gmail_search","noschema_tool","broken"]},{"use_case":"send mail","tools":["gmail_send"]}]}}}
+{"func":"entries_by_group","case":"echo-mismatch-skips-group","queries":["a","b"],"leg":{"failure":null,"payload":{"schemas":{"gmail_search":{"connector":"gmail","description":"Search Gmail"},"gmail_send":{"connector":"gmail","description":"Send"}},"results":[{"use_case":"zzz","tools":["gmail_search"]},{"use_case":"b","tools":["gmail_send"]}]}}}
+{"func":"entries_by_group","case":"collision-last-wins","queries":["q"],"leg":{"failure":null,"payload":{"schemas":{"gmail_search":{"connector":"gmail","description":"lower slug"},"GMAIL_search":{"connector":"gmail","description":"upper slug"}},"results":[{"tools":["gmail_search","GMAIL_search"]}]}}}
+{"func":"entries_by_group","case":"collision-last-loses","queries":["q"],"leg":{"failure":null,"payload":{"schemas":{"gmail_search":{"connector":"gmail","description":"lower slug"},"GMAIL_search":{"connector":"gmail","description":"upper slug"}},"results":[{"tools":["GMAIL_search","gmail_search"]}]}}}
+{"func":"entries_by_group","case":"group-not-a-mapping","queries":["a"],"leg":{"failure":null,"payload":{"schemas":{},"results":["nope"]}}}
+{"func":"entries_by_group","case":"more-groups-than-queries","queries":["a"],"leg":{"failure":null,"payload":{"schemas":{"gmail_send":{"connector":"gmail","description":"Send"}},"results":[{"tools":[]},{"tools":["gmail_send"]}]}}}
+{"func":"entries_by_group","case":"unhashable-slug","queries":["a","b"],"leg":{"failure":null,"payload":{"schemas":{"gmail_send":{"connector":"gmail","description":"Send"}},"results":[{"tools":[{"x":1}]}]}}}
+{"func":"entries_by_group","case":"numeric-slug-ignored","queries":["a"],"leg":{"failure":null,"payload":{"schemas":{"gmail_send":{"connector":"gmail"}},"results":[{"tools":[5,"gmail_send"]}]}}}
+{"func":"remote_schemas","case":"no-connector-names","names":["read_file","write_file"],"tool_defs":[{"function":{"name":"manage_connections"}}],"leg":{"failure":null,"payload":{"tools":{"connectors__gmail__search":{}}}}}
+{"func":"remote_schemas","case":"out-of-scope","names":["connectors__gmail__search"],"tool_defs":[{"function":{"name":"read_file"}}],"leg":{"failure":null,"payload":{"tools":{}}}}
+{"func":"remote_schemas","case":"leg-failure","names":["connectors__gmail__search"],"tool_defs":[{"function":{"name":"manage_connections"}}],"leg":{"failure":"not_set_up","payload":null}}
+{"func":"remote_schemas","case":"tools-returned","names":["connectors__gmail__search","read_file"],"tool_defs":[{"function":{"name":"manage_connections"}}],"leg":{"failure":null,"payload":{"tools":{"connectors__gmail__search":{"name":"connectors__gmail__search"}}}}}
+{"func":"remote_schemas","case":"payload-without-tools","names":["connectors__gmail__search"],"tool_defs":[{"function":{"name":"manage_connections"}}],"leg":{"failure":null,"payload":{"other":1}}}
+{"func":"remote_schemas","case":"payload-null","names":["connectors__gmail__search"],"tool_defs":[{"function":{"name":"manage_connections"}}],"leg":{"failure":null,"payload":null}}
+{"func":"remote_schemas","case":"payload-empty","names":["connectors__gmail__search"],"tool_defs":[{"function":{"name":"manage_connections"}}],"leg":{"failure":null,"payload":{}}}

@@ -1,0 +1,35 @@
+{"case": "pattern_depth_1", "func": "pattern_source", "depth": 1}
+{"case": "pattern_depth_2", "func": "pattern_source", "depth": 2}
+{"case": "pattern_depth_3", "func": "pattern_source", "depth": 3}
+{"case": "pattern_depth_4", "func": "pattern_source", "depth": 4}
+{"case": "dotenv_hermes_home", "func": "dotenv", "text": "load_dotenv(HERMES_HOME + \"/.env\")"}
+{"case": "dotenv_nested_get_hermes_home", "func": "dotenv", "text": "dotenv_values(join(environ.get(\"HERMES_HOME\", expanduser(\"~/.hermes\")), \".env\"))"}
+{"case": "dotenv_plain_env_no_match", "func": "dotenv", "text": "load_dotenv(\".env\")"}
+{"case": "dotenv_quoted_segment", "func": "dotenv", "text": "load_dotenv(os.path.join(HOME, \".hermes\", \".env\"))"}
+{"case": "dotenv_comment_blanked", "func": "dotenv", "text": "                                   HERMES_HOME/.env"}
+{"case": "dotenv_dotted_name_no_match", "func": "dotenv", "text": "load_dotenv(foo.hermes.env)"}
+{"case": "dotenv_word_boundary_no_match", "func": "dotenv", "text": "my_load_dotenv(HERMES_HOME)"}
+{"case": "dotenv_empty_args", "func": "dotenv", "text": "dotenv_values( )"}
+{"case": "dotenv_newline_blocks", "func": "dotenv", "text": "load_dotenv(\n    HERMES_HOME)"}
+{"case": "dotenv_get_hermes_home", "func": "dotenv", "text": "load_dotenv(get_hermes_home())"}
+{"case": "dotenv_depth_four_matches", "func": "dotenv", "text": "load_dotenv(a(b(c(HERMES_HOME)))"}
+{"case": "dotenv_depth_five_blocked", "func": "dotenv", "text": "load_dotenv(a(b(c(d(HERMES_HOME)))))"}
+{"case": "dotenv_closed_before_name", "func": "dotenv", "text": "load_dotenv(read(x)) + HERMES_HOME"}
+{"case": "dotenv_backslash_segment", "func": "dotenv", "text": "load_dotenv(\".hermes\\\\.env\")"}
+{"case": "read_getenv", "func": "read_names", "line": "key = os.getenv(\"OPENROUTER_API_KEY\")"}
+{"case": "read_environ_get", "func": "read_names", "line": "k = os.environ.get( 'ANTHROPIC_API_KEY' , '')"}
+{"case": "read_environ_item", "func": "read_names", "line": "v = os.environ[\"HERMES_HOME\"]"}
+{"case": "read_two_on_one_line", "func": "read_names", "line": "a = getenv(\"A\") or getenv(\"B\")"}
+{"case": "read_bare_name_no_quote", "func": "read_names", "line": "getenv(name)"}
+{"case": "read_digit_start_no_match", "func": "read_names", "line": "getenv('1BAD')"}
+{"case": "read_inside_string_text", "func": "read_names", "line": "msg = \"call getenv('FAKE_KEY') first\""}
+{"case": "read_no_call", "func": "read_names", "line": "plain text with no reads"}
+{"case": "raise_provider_hit", "func": "raise", "findings": [{"pattern_id": "python_getenv_secret", "line": 1, "severity": "medium", "description": "reads a secret env var"}], "lines": ["k=getenv(\"OPENROUTER_API_KEY\")"], "providers": ["OPENROUTER_API_KEY"], "in_text": null}
+{"case": "raise_non_provider_stays", "func": "raise", "findings": [{"pattern_id": "python_getenv_secret", "line": 1, "severity": "medium", "description": "reads a secret env var"}], "lines": ["k=getenv(\"MY_OWN_TOKEN\")"], "providers": ["OPENROUTER_API_KEY"], "in_text": null}
+{"case": "raise_text_mask_skips", "func": "raise", "findings": [{"pattern_id": "python_environ_get_secret", "line": 1, "severity": "medium", "description": "reads a secret env var"}], "lines": ["k=getenv(\"OPENROUTER_API_KEY\")"], "providers": ["OPENROUTER_API_KEY"], "in_text": ["00100000000000000000000000000"]}
+{"case": "raise_code_mask_counts", "func": "raise", "findings": [{"pattern_id": "python_environ_get_secret", "line": 1, "severity": "medium", "description": "reads a secret env var"}], "lines": ["k=getenv(\"OPENROUTER_API_KEY\")"], "providers": ["OPENROUTER_API_KEY"], "in_text": ["00000000000000000000000000000"]}
+{"case": "raise_other_pattern_untouched", "func": "raise", "findings": [{"pattern_id": "hardcoded_api_key", "line": 1, "severity": "high", "description": "literal key"}], "lines": ["k=getenv(\"OPENROUTER_API_KEY\")"], "providers": ["OPENROUTER_API_KEY"], "in_text": null}
+{"case": "raise_no_findings", "func": "raise", "findings": [], "lines": [], "providers": [], "in_text": null}
+{"case": "raise_mixed_findings", "func": "raise", "findings": [{"pattern_id": "python_getenv_secret", "line": 2, "severity": "low", "description": "d1"}, {"pattern_id": "python_environ_get_secret", "line": 1, "severity": "medium", "description": "d2"}], "lines": ["tok = os.environ.get(\"GEMINI_API_KEY\")", "own = os.getenv(\"SKILL_TOKEN\")"], "providers": ["GEMINI_API_KEY"], "in_text": null}
+{"case": "raise_second_match_is_first_named", "func": "raise", "findings": [{"pattern_id": "python_getenv_secret", "line": 1, "severity": "medium", "description": "reads a secret env var"}], "lines": ["a = getenv(\"HOME_KEY\") + getenv(\"OPENROUTER_API_KEY\")"], "providers": ["OPENROUTER_API_KEY"], "in_text": null}
+{"case": "raise_lowercase_provider_not_matched", "func": "raise", "findings": [{"pattern_id": "python_getenv_secret", "line": 1, "severity": "medium", "description": "reads a secret env var"}], "lines": ["k=getenv(\"OPENROUTER_API_KEY\")"], "providers": ["openrouter_api_key"], "in_text": null}

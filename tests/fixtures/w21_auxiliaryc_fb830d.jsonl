@@ -1,0 +1,44 @@
+{"func": "arms", "case": "table"}
+{"func": "arm_for", "case": "arm_vertex", "auth_type": "vertex"}
+{"func": "arm_for", "case": "arm_aws_sdk", "auth_type": "aws_sdk"}
+{"func": "arm_for", "case": "arm_oauth_minimax", "auth_type": "oauth_minimax"}
+{"func": "arm_for", "case": "arm_oauth_device_code", "auth_type": "oauth_device_code"}
+{"func": "arm_for", "case": "arm_oauth_external", "auth_type": "oauth_external"}
+{"func": "arm_for", "case": "arm_api_key", "auth_type": "api_key"}
+{"func": "arm_for", "case": "arm_external_process", "auth_type": "external_process"}
+{"func": "arm_for", "case": "arm_empty", "auth_type": ""}
+{"func": "arm_for", "case": "arm_vertex", "auth_type": "VERTEX"}
+{"func": "arm_for", "case": "arm_oauth_minimax", "auth_type": "oauth_minimax "}
+{"func": "log_once", "case": "empty", "keys": [], "seen": []}
+{"func": "log_once", "case": "single", "keys": ["a"]}
+{"func": "log_once", "case": "repeat_same", "keys": ["a", "a", "a"]}
+{"func": "log_once", "case": "two_distinct", "keys": ["a", "b", "a"]}
+{"func": "log_once", "case": "preexisting", "keys": ["a", "b"], "seen": ["a"]}
+{"func": "log_once", "case": "empty_key", "keys": [""]}
+{"func": "log_once", "case": "duplicate_key", "keys": ["minimax-oauth", "minimax-oauth", "vertex"]}
+{"func": "minimax", "case": "probe_ok", "probe": true, "state": {"access_token": "tok", "inference_base_url": "https://api.minimax.io/anthropic/"}, "req_model": "MiniMax-M2"}
+{"func": "minimax", "case": "probe_ok_strip_slashes", "probe": true, "state": {"access_token": "tok", "inference_base_url": "  https://api.x///  "}}
+{"func": "minimax", "case": "probe_ok_aux_model", "probe": true, "state": {"access_token": "tok", "inference_base_url": "https://api.minimax.io/anthropic/"}, "aux_model": "MiniMax-aux"}
+{"func": "minimax", "case": "probe_ok_placeholder", "probe": true, "state": {"access_token": "tok", "inference_base_url": "https://api.minimax.io/anthropic/"}}
+{"func": "minimax", "case": "probe_ok_base_is_number", "probe": true, "state": {"access_token": "t", "inference_base_url": 8080}}
+{"func": "minimax", "case": "probe_no_token", "probe": true, "state": {"inference_base_url": "https://x"}}
+{"func": "minimax", "case": "probe_empty_token", "probe": true, "state": {"access_token": "", "inference_base_url": "https://x"}}
+{"func": "minimax", "case": "probe_no_base", "probe": true, "state": {"access_token": "tok"}}
+{"func": "minimax", "case": "probe_blank_base", "probe": true, "state": {"access_token": "tok", "inference_base_url": " / "}}
+{"func": "minimax", "case": "probe_state_null", "probe": true, "state": null}
+{"func": "minimax", "case": "probe_absent_seen", "probe": true, "state": null, "seen": ["minimax-oauth"]}
+{"func": "minimax", "case": "creds_ok", "probe": false, "creds": {"api_key_callable": true, "api_key": "k", "base_url": "https://api.m/"}, "req_model": "M1"}
+{"func": "minimax", "case": "creds_ok_whitespace_base", "probe": false, "creds": {"api_key_callable": true, "base_url": "  https://api.m//  "}}
+{"func": "minimax", "case": "creds_ok_placeholder_model", "probe": false, "creds": {"api_key_callable": true, "base_url": "https://api.m"}}
+{"func": "minimax", "case": "creds_ok_aux_model", "probe": false, "creds": {"api_key_callable": true, "base_url": "https://api.m"}, "aux_model": "aux-2"}
+{"func": "minimax", "case": "creds_not_callable", "probe": false, "creds": {"api_key_callable": false, "base_url": "https://api.m"}}
+{"func": "minimax", "case": "creds_empty_base", "probe": false, "creds": {"api_key_callable": true, "base_url": ""}}
+{"func": "minimax", "case": "creds_null_base", "probe": false, "creds": {"api_key_callable": true}}
+{"func": "minimax", "case": "creds_missing_base", "probe": false, "creds": {"api_key_callable": true, "base_url": null}}
+{"func": "minimax", "case": "creds_empty_dict", "probe": false, "creds": {}}
+{"func": "minimax", "case": "auth_error", "probe": false, "creds_error": {"type": "AuthError", "message": "not logged in for minimax-oauth"}}
+{"func": "minimax", "case": "auth_error_seen", "probe": false, "creds_error": {"type": "AuthError", "message": "quarantined"}, "seen": ["minimax-oauth"]}
+{"func": "minimax", "case": "unexpected_error", "probe": false, "creds_error": {"type": "RuntimeError", "message": "boom in store"}}
+{"func": "minimax", "case": "unexpected_error_seen", "probe": false, "creds_error": {"type": "RuntimeError", "message": "boom"}, "seen": ["minimax-oauth"]}
+{"func": "minimax", "case": "sdk_absent", "probe": false, "creds": {"api_key_callable": true, "base_url": "https://api.m"}, "build_import_error": true}
+{"func": "minimax", "case": "provider_other", "probe": true, "state": {"access_token": "tok", "inference_base_url": "https://api.minimax.io/anthropic/"}, "req_model": "X1", "provider": "minimax"}

@@ -1,0 +1,48 @@
+{"func":"default_url","api_key":"k","default_url":"https://default/v1","env_url":"https://env/v1//","case":"env url wins and sheds trailing slashes"}
+{"func":"default_url","api_key":"k","default_url":"https://default/v1","env_url":"","case":"empty env url falls back to the default"}
+{"func":"default_url","api_key":"k","default_url":"https://default/v1","env_url":"/","case":"slash-only env url collapses to empty"}
+{"func":"default_url","api_key":null,"default_url":null,"env_url":null,"case":"missing urls are null"}
+{"func":"origin","base_url":"https://API.Example.COM:8443/v1","case":"origin explicit port folds host case"}
+{"func":"origin","base_url":"http://h","case":"origin http default port"}
+{"func":"origin","base_url":"https://h","case":"origin https default port"}
+{"func":"origin","base_url":"h:8080/x","case":"origin bare host with port"}
+{"func":"origin","base_url":"https://h:99999","case":"origin out of range port"}
+{"func":"origin","base_url":"https://user:pw@h./v1","case":"origin strips userinfo and trailing dot"}
+{"func":"origin","base_url":"","case":"origin empty url"}
+{"func":"origin","base_url":"https://h:bad","case":"origin non numeric port"}
+{"func":"relay","provider_id":"acme","relay":"https://api.acme.com/v1","api_key":"sk-live-1234","cred_base_url":"https://api.acme.com","known_provider":false,"case":"relay same origin rides"}
+{"func":"relay","provider_id":"acme","relay":"https://API.acme.com:443/v1","api_key":"sk-live-1234","cred_base_url":"https://api.acme.com/","known_provider":false,"case":"relay case and default port fold"}
+{"func":"relay","provider_id":"acme","relay":"https://api.acme.com:8443/v1","api_key":"sk-live-1234","cred_base_url":"https://api.acme.com","known_provider":false,"case":"relay different port is keyless"}
+{"func":"relay","provider_id":"acme","relay":"http://api.acme.com","api_key":"sk-live-1234","cred_base_url":"https://api.acme.com","known_provider":false,"case":"relay scheme downgrade is keyless"}
+{"func":"relay","provider_id":"openrouter","relay":"https://elsewhere.test/v1","api_key":"sk-or-1234","cred_base_url":"https://api.acme.com","known_provider":true,"case":"relay registry provider always rides"}
+{"func":"relay","provider_id":"acme","relay":"https://api.acme.com","api_key":"","cred_base_url":"https://api.acme.com","known_provider":false,"case":"relay empty key stays empty"}
+{"func":"relay","provider_id":"acme","relay":"https://api.acme.com/v1","api_key":"sk-live-1234","cred_base_url":"","known_provider":false,"case":"relay empty credential url is keyless"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"https://api.acme.com/","api_key":"  sk-inline  "}}},"env":{},"key_cmd_values":{},"case":"resolve inline api key"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"https://base/v1","api":"https://api/v1","url":"https://url/v1","api_key":"k-1234"}}},"env":{},"key_cmd_values":{},"case":"resolve base_url beats api and url"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"api":"https://api/v1/","url":"https://url/v1","api_key":"k-1234"}}},"env":{},"key_cmd_values":{},"case":"resolve api beats url when base_url missing"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"https://api.acme.com","key_env":"ACME_KEY"}}},"env":{"ACME_KEY":"  env-key  "},"key_cmd_values":{},"case":"resolve key_env names the source"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"https://api.acme.com","api_key":""}}},"env":{},"key_cmd_values":{},"case":"resolve keyless declared provider"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"https://api.acme.com","key_cmd":"pass show acme","api_key":"fallback-key"}}},"env":{},"key_cmd_values":{"pass show acme":"minted-key"},"case":"resolve key_cmd mints first"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"https://api.acme.com","key_cmd":"pass show acme","api_key":"fallback-key"}}},"env":{},"key_cmd_values":{},"case":"resolve unminted key_cmd falls back to api_key"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"https://api.acme.com","api_key":"k-1234","enabled":false}}},"env":{},"key_cmd_values":{},"case":"resolve disabled provider refuses"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"https://api.acme.com","api_key":"k-1234","enabled":"no"}}},"env":{},"key_cmd_values":{},"case":"resolve string false refuses"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"https://api.acme.com","api_key":"k-1234","enabled":"true"}}},"env":{},"key_cmd_values":{},"case":"resolve string true is enabled"}
+{"func":"resolve","provider_id":"ghost","config":{"providers":{"acme":{"base_url":"https://api.acme.com"}}},"env":{},"key_cmd_values":{},"case":"resolve unknown provider refuses"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"api_key":"k-1234"}}},"env":{},"key_cmd_values":{},"case":"resolve without a url refuses"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":5}},"env":{},"key_cmd_values":{},"case":"resolve non dict entry refuses"}
+{"func":"resolve","provider_id":"acme","config":{},"env":{},"key_cmd_values":{},"case":"resolve empty config refuses"}
+{"func":"resolve","provider_id":" acme ","config":{"providers":{"acme":{"base_url":"https://api.acme.com","api_key":"k-1234"}}},"env":{},"key_cmd_values":{},"case":"resolve padded provider id matches"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"${ACME_BASE}/","api_key":"${env:ACME_TOKEN}"}}},"env":{"ACME_BASE":"https://api.acme.com","ACME_TOKEN":"  tok-1234  "},"key_cmd_values":{},"case":"resolve expands env refs"}
+{"func":"resolve","provider_id":"acme","config":{"providers":{"acme":{"base_url":"${UNSET_BASE}/v1","api_key":"k-1234"}}},"env":{},"key_cmd_values":{},"case":"resolve keeps unresolved ref literal"}
+{"func":"custom","bundle":{"model_cfg":{"base_url":"https://h/v1","api_key":"model-key"},"base_url":"https://h/v1","env":{},"owning":{},"minted":true},"case":"custom model api key on its own url"}
+{"func":"custom","bundle":{"model_cfg":{"base_url":"https://h/v1","api_key":"model-key"},"base_url":"https://other/v1","env":{},"owning":{},"minted":true},"case":"custom model api key off its url is ignored"}
+{"func":"custom","bundle":{"model_cfg":{"base_url":"https://h/v1","key_env":"MODEL_KEY"},"base_url":"https://h/v1","env":{"MODEL_KEY":"model-env-key"},"owning":{},"minted":true},"case":"custom model key_env"}
+{"func":"custom","bundle":{"model_cfg":{"base_url":"https://h/v1","key_env":"MODEL_KEY"},"base_url":"https://other/v1","env":{"MODEL_KEY":"model-env-key"},"owning":{},"minted":true},"case":"custom model key_env off its url is ignored"}
+{"func":"custom","bundle":{"model_cfg":{"api_key":"bond-empty"},"base_url":"","env":{},"owning":{},"minted":true},"case":"custom both urls empty counts as configured url"}
+{"func":"custom","bundle":{"model_cfg":{"base_url":"https://h/v1","api_key":"your_api_key"},"base_url":"https://h/v1","env":{},"owning":{},"minted":true},"case":"custom placeholder key is not usable"}
+{"func":"custom","bundle":{"model_cfg":{},"base_url":"https://h/v1","env":{},"owning":{"declared":true,"key":"cmd-source"},"minted":true,"key_cmd_values":{"cmd-source":"minted-token"}},"case":"custom declared entry mints"}
+{"func":"custom","bundle":{"model_cfg":{},"base_url":"https://h/v1","env":{},"owning":{"declared":true,"key":"cmd-source"},"minted":false},"case":"custom declared entry unminted returns the token source"}
+{"func":"custom","bundle":{"model_cfg":{},"base_url":"https://h/v1","env":{"CUSTOM_API_KEY":"  custom-secret  "},"owning":{},"minted":true},"case":"custom api key env"}
+{"func":"custom","bundle":{"model_cfg":{},"base_url":"https://h/v1","env":{"CUSTOM_API_KEY":""},"owning":{},"minted":true,"host_gated":["","gated-key"]},"case":"custom host gated candidate"}
+{"func":"custom","bundle":{"model_cfg":{},"base_url":"https://h/v1","env":{"CUSTOM_API_KEY":"custom-secret"},"owning":{},"minted":true,"host_gated":["gated-key"]},"case":"custom api key env beats host gated"}
+{"func":"custom","bundle":{"model_cfg":{},"base_url":"https://h/v1","env":{},"owning":{},"minted":true,"host_gated":[]},"case":"custom nothing configured is keyless"}

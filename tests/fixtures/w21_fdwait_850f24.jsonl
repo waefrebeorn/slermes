@@ -1,0 +1,30 @@
+{"func": "open", "case": "ok_linux", "register": "ok", "platform": "linux"}
+{"func": "open", "case": "ok_darwin", "register": "ok", "platform": "darwin"}
+{"func": "open", "case": "value_error", "register": "ValueError", "platform": "linux"}
+{"func": "open", "case": "value_error_darwin_char", "register": "ValueError", "platform": "darwin", "is_char_device": true}
+{"func": "open", "case": "ebadf", "register": "EBADF", "platform": "linux"}
+{"func": "open", "case": "ebadf_darwin_char", "register": "EBADF", "platform": "darwin", "is_char_device": true}
+{"func": "open", "case": "other_ernno_ebadf_name", "register": "other", "errno_name": "EBADF", "platform": "darwin", "is_char_device": true}
+{"func": "open", "case": "emfile_linux", "register": "EMFILE", "platform": "linux"}
+{"func": "open", "case": "emfile_linux_char", "register": "EMFILE", "platform": "linux", "is_char_device": true}
+{"func": "open", "case": "emfile_darwin_char", "register": "EMFILE", "platform": "darwin", "is_char_device": true}
+{"func": "open", "case": "emfile_darwin_regular", "register": "EMFILE", "platform": "darwin", "is_char_device": false}
+{"func": "open", "case": "emfile_win32_char", "register": "EMFILE", "platform": "win32", "is_char_device": true}
+{"func": "open", "case": "other_errno_darwin_char", "register": "other", "errno_name": "EPERM", "platform": "darwin", "is_char_device": true}
+{"func": "open", "case": "other_errno_darwin_regular", "register": "other", "errno_name": "EPERM", "platform": "darwin"}
+{"func": "open", "case": "missing_register_key", "platform": "darwin", "is_char_device": true}
+{"func": "open", "case": "platform_uppercase_darwin", "register": "EMFILE", "platform": "Darwin", "is_char_device": true}
+{"func": "open", "case": "empty_object"}
+{"func": "wait", "case": "ready_zero", "timeout": 0, "ready": true}
+{"func": "wait", "case": "not_ready_zero", "timeout": 0, "ready": false}
+{"func": "wait", "case": "fractional", "timeout": 0.25, "ready": true}
+{"func": "wait", "case": "negative_clamped", "timeout": -5, "ready": false}
+{"func": "wait", "case": "negative_ready", "timeout": -0.5, "ready": true}
+{"func": "wait", "case": "whole_second", "timeout": 2, "ready": true}
+{"func": "wait", "case": "large", "timeout": 30.5, "ready": false}
+{"func": "wait", "case": "ready_missing", "timeout": 1}
+{"func": "clamp", "case": "clamp_zero", "timeout": 0}
+{"func": "clamp", "case": "clamp_negative", "timeout": -3.5}
+{"func": "clamp", "case": "clamp_positive", "timeout": 1.5}
+{"func": "clamp", "case": "clamp_missing"}
+{"func": "clamp", "case": "clamp_int", "timeout": 7}

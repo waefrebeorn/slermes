@@ -1,0 +1,14 @@
+{"func": "env_probe", "case": "isolated-home"}
+{"func": "spec", "case": "full-tree"}
+{"func": "lookup", "case": "list", "token": "list"}
+{"func": "lookup", "case": "alias-ls", "token": "ls"}
+{"func": "lookup", "case": "accounts", "token": "accounts"}
+{"func": "lookup", "case": "connect", "token": "connect"}
+{"func": "lookup", "case": "rename", "token": "rename"}
+{"func": "lookup", "case": "disconnect", "token": "disconnect"}
+{"func": "lookup", "case": "unknown", "token": "remove"}
+{"func": "lookup", "case": "empty-token", "token": ""}
+{"func": "lookup", "case": "case-sensitive", "token": "LIST"}
+{"func": "lookup", "case": "padded", "token": " ls "}
+{"func": "lookup", "case": "wrong-type", "token": 7}
+{"func": "lookup", "case": "missing-token"}

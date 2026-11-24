@@ -1,0 +1,38 @@
+{"func": "env_probe", "case": "isolated-home"}
+{"func": "parse_ref", "case": "plugin-tuple", "platform": "acme", "target_ref": "whatever", "parser": {"kind": "tuple", "chat": "C1", "thread": "T1"}}
+{"func": "parse_ref", "case": "plugin-not-explicit", "platform": "acme", "target_ref": "12345", "parser": {"kind": "not_explicit"}}
+{"func": "parse_ref", "case": "plugin-none-falls-through", "platform": "acme", "target_ref": "12345", "parser": {"kind": "none"}}
+{"func": "parse_ref", "case": "plugin-absent-falls-through", "platform": "acme", "target_ref": "@bob", "parser": null}
+{"func": "parse_ref", "case": "whatsapp-e164", "platform": "whatsapp", "target_ref": "+15551234567", "parser": null}
+{"func": "parse_ref", "case": "whatsapp-e164-padded", "platform": "whatsapp", "target_ref": "   +15551234567\n", "parser": null}
+{"func": "parse_ref", "case": "whatsapp-too-short", "platform": "whatsapp", "target_ref": "+123456", "parser": null}
+{"func": "parse_ref", "case": "whatsapp-too-long", "platform": "whatsapp", "target_ref": "+1234567890123456", "parser": null}
+{"func": "parse_ref", "case": "phone-platform-only", "platform": "telegram", "target_ref": "+15551234567", "parser": null}
+{"func": "parse_ref", "case": "numeric-negative", "platform": "telegram", "target_ref": "-42", "parser": null}
+{"func": "parse_ref", "case": "numeric-mixed", "platform": "telegram", "target_ref": "12a", "parser": null}
+{"func": "parse_ref", "case": "numeric-empty-dashes", "platform": "telegram", "target_ref": "---", "parser": null}
+{"func": "parse_ref", "case": "matrix-room", "platform": "matrix", "target_ref": "!room:server", "parser": null}
+{"func": "parse_ref", "case": "matrix-user", "platform": "matrix", "target_ref": "@alice:server", "parser": null}
+{"func": "parse_ref", "case": "matrix-channel-hash", "platform": "matrix", "target_ref": "#chan", "parser": null}
+{"func": "parse_ref", "case": "xmpp-jid", "platform": "xmpp", "target_ref": "user@host", "parser": null}
+{"func": "parse_ref", "case": "xmpp-plain", "platform": "xmpp", "target_ref": "userhost", "parser": null}
+{"func": "parse_ref", "case": "empty-ref", "platform": "telegram", "target_ref": "", "parser": null}
+{"func": "resolve", "case": "plugin-parser-tuple", "platform": "acme", "target_ref": "whatever", "world": {"entry": {"source": "plugin", "parse": {"kind": "tuple", "chat": "C1", "thread": "T1"}, "validate": "none"}}}
+{"func": "resolve", "case": "plugin-parser-invalid", "platform": "acme", "target_ref": "whatever", "world": {"entry": {"source": "plugin", "parse": {"kind": "invalid"}, "validate": "none"}}}
+{"func": "resolve", "case": "plugin-parser-raises", "platform": "acme", "target_ref": "whatever", "world": {"entry": {"source": "plugin", "parse": {"kind": "raises"}, "validate": "none"}}}
+{"func": "resolve", "case": "plugin-not-explicit-directory", "platform": "acme", "target_ref": "general", "world": {"entry": {"source": "plugin", "parse": {"kind": "not_explicit"}, "validate": "none"}, "resolve": "555"}}
+{"func": "resolve", "case": "builtin-numeric", "platform": "telegram", "target_ref": "12345", "world": {"entry": null, "builtin": true}}
+{"func": "resolve", "case": "validator-false", "platform": "telegram", "target_ref": "12345", "world": {"entry": {"source": "builtin", "parse": {"kind": "none"}, "validate": "false"}, "builtin": true}}
+{"func": "resolve", "case": "validator-string", "platform": "telegram", "target_ref": "12345", "world": {"entry": {"source": "builtin", "parse": {"kind": "none"}, "validate": "str:bad channel"}, "builtin": true}}
+{"func": "resolve", "case": "validator-raises", "platform": "telegram", "target_ref": "12345", "world": {"entry": {"source": "builtin", "parse": {"kind": "none"}, "validate": "raises"}, "builtin": true}}
+{"func": "resolve", "case": "unknown-platform", "platform": "zzz", "target_ref": "abc", "world": {"entry": null, "builtin": false, "install_hint": " (install the plugin)"}}
+{"func": "resolve", "case": "directory-raised", "platform": "telegram", "target_ref": "general", "world": {"entry": null, "builtin": true, "resolve_raises": true}}
+{"func": "resolve", "case": "directory-miss", "platform": "telegram", "target_ref": "general", "world": {"entry": null, "builtin": true, "resolve": null}}
+{"func": "resolve", "case": "plugin-unresolved", "platform": "acme", "target_ref": "general", "world": {"entry": {"source": "plugin", "parse": {"kind": "none"}, "validate": "none"}, "builtin": false}}
+{"func": "resolve", "case": "pass-unresolved-builtin", "platform": "telegram", "target_ref": "raw target", "pass_unresolved": true, "world": {"entry": null, "builtin": true}}
+{"func": "resolve", "case": "pass-unresolved-plugin-strict", "platform": "acme", "target_ref": "raw target", "pass_unresolved": true, "world": {"entry": {"source": "plugin", "parse": {"kind": "none"}, "validate": "none"}, "builtin": false}}
+{"func": "resolve", "case": "directory-returns-numeric", "platform": "telegram", "target_ref": "general", "world": {"entry": null, "builtin": true, "resolve": "777"}}
+{"func": "resolve", "case": "builtin-ignores-registered", "platform": "telegram", "target_ref": "general", "world": {"entry": {"source": "builtin", "parse": {"kind": "none"}, "validate": "none"}, "builtin": true, "resolve": "chan-1"}}
+{"func": "unknown_platform_error", "case": "with-hint", "platform": "zzz", "install_hint": " (pip install hermes-zzz)"}
+{"func": "unknown_platform_error", "case": "no-hint", "platform": "yyy", "install_hint": ""}
+{"func": "unknown_platform_error", "case": "missing-hint", "platform": "xxx"}

@@ -1,0 +1,24 @@
+{"func":"surfaces","case":"table"}
+{"func":"platform_value","source":{"platform":{"value":"telegram"}},"case":"adapter value"}
+{"func":"platform_value","source":{"platform":"telegram"},"case":"string platform has no .value"}
+{"func":"platform_value","source":{"platform":{"value":5}},"case":"numeric value"}
+{"func":"platform_value","source":{"platform":{"value":0}},"case":"zero value is falsy"}
+{"func":"platform_value","source":{"platform":null},"case":"null platform"}
+{"func":"platform_value","source":{"platform":{}},"case":"object without value"}
+{"func":"platform_value","source":"telegram","case":"non-object source"}
+{"func":"platform_value","case":"missing source"}
+{"func":"transport","source":{"platform":{"value":"telegram"}},"case":"telegram attaches"}
+{"func":"transport","source":{"platform":{"value":"cli"}},"case":"cli is non-messaging"}
+{"func":"transport","source":{"platform":{"value":""}},"case":"empty platform default-deny"}
+{"func":"transport","case":"missing platform default-deny"}
+{"func":"transport","source":{"platform":{"value":"Telegram"}},"case":"case is not normalized"}
+{"func":"transport","source":{"platform":{"value":" telegram "}},"case":"spaces are not stripped"}
+{"func":"transport","source":{"platform":{"value":"api_server"}},"case":"api server"}
+{"func":"transport","source":{"platform":{"value":"webhook"}},"case":"webhook"}
+{"func":"transport","source":{"platform":{"value":"tui"}},"case":"tui"}
+{"func":"transport","source":{"platform":{"value":"desktop"}},"case":"desktop"}
+{"func":"transport","source":{"platform":{"value":"discord"}},"local_viewer":true,"case":"local viewer blocks"}
+{"func":"transport","source":{"platform":{"value":"cli"}},"local_viewer":true,"case":"non-messaging and viewer"}
+{"func":"transport","source":{"platform":{"value":7}},"case":"numeric platform is messaging"}
+{"func":"transport","source":{"platform":"telegram"},"case":"string platform reads empty"}
+{"func":"transport","source":{"platform":{"value":true}},"case":"bool value reads True"}

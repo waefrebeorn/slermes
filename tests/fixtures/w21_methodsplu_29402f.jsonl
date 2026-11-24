@@ -1,0 +1,43 @@
+{"func":"lookup","case":"found","params":{"name":"alpha"},"entries":[{"name":"alpha","repo":"https://github.com/acme/alpha","sha":"0123456789abcdef0123456789abcdef01234567","subdir":"","tier":"community"},{"name":"beta","repo":"https://github.com/acme/beta","sha":"89abcdef0123456789abcdef0123456789abcdef","subdir":"plugins","tier":"official"}],"removed":[]}
+{"func":"lookup","case":"found-name-trimmed","params":{"name":"  alpha  "},"entries":[{"name":"alpha","repo":"https://github.com/acme/alpha","sha":"aaa","subdir":"","tier":"community"}],"removed":[]}
+{"func":"lookup","case":"found-second-entry","params":{"name":"beta"},"entries":[{"name":"alpha","repo":"https://github.com/acme/alpha","sha":"aaa","subdir":"","tier":"community"},{"name":"beta","repo":"https://github.com/acme/beta","sha":"bbb","subdir":"plugins","tier":"official"}],"removed":[]}
+{"func":"lookup","case":"unknown-name","params":{"name":"gamma"},"entries":[{"name":"alpha","repo":"https://github.com/acme/alpha","sha":"aaa","subdir":"","tier":"community"}],"removed":[]}
+{"func":"lookup","case":"unavailable-empty-catalog","params":{"name":"alpha"},"entries":[],"removed":[]}
+{"func":"lookup","case":"unavailable-catalog-missing","params":{"name":"alpha"}}
+{"func":"lookup","case":"invalid-name-slash","params":{"name":"acme/alpha"},"entries":[],"removed":[]}
+{"func":"lookup","case":"invalid-name-url","params":{"name":"https://github.com/acme/alpha"},"entries":[],"removed":[]}
+{"func":"lookup","case":"invalid-name-spaces","params":{"name":"two words"},"entries":[],"removed":[]}
+{"func":"lookup","case":"invalid-name-empty","params":{"name":""},"entries":[],"removed":[]}
+{"func":"lookup","case":"invalid-name-null","params":{"name":null},"entries":[],"removed":[]}
+{"func":"lookup","case":"invalid-name-missing-key","params":{},"entries":[],"removed":[]}
+{"func":"lookup","case":"invalid-name-uppercase","params":{"name":"Alpha"},"entries":[{"name":"alpha","repo":"https://github.com/acme/alpha","sha":"aaa","subdir":"","tier":"community"}],"removed":[]}
+{"func":"lookup","case":"invalid-name-scp-prefix","params":{"name":"git@acme"},"entries":[],"removed":[]}
+{"func":"lookup","case":"invalid-name-bool","params":{"name":true},"entries":[],"removed":[]}
+{"func":"lookup","case":"numeric-name","params":{"name":42},"entries":[{"name":"42","repo":"https://github.com/acme/fourtytwo","sha":"ccc","subdir":"","tier":"community"}],"removed":[]}
+{"func":"lookup","case":"removed-by-name","params":{"name":"alpha"},"entries":[{"name":"alpha","repo":"https://github.com/acme/alpha","sha":"aaa","subdir":"","tier":"community"}],"removed":[{"name":"alpha","repo":"","reason":"malware","date":"2025-01-02"}]}
+{"func":"lookup","case":"removed-by-repo-normalised","params":{"name":"badplug"},"entries":[{"name":"badplug","repo":"https://github.com/Evil/Bad.git","sha":"ddd","subdir":"","tier":"community"}],"removed":[{"name":"other-name","repo":"git@github.com:evil/bad.git","reason":"","date":""}]}
+{"func":"lookup","case":"removed-repo-empty-does-not-match","params":{"name":"alpha"},"entries":[{"name":"alpha","repo":"https://github.com/acme/alpha","sha":"aaa","subdir":"","tier":"community"}],"removed":[{"name":"other","repo":"","reason":"x","date":"2025-02-03"}]}
+{"func":"lookup","case":"duplicate-name-first-wins","params":{"name":"alpha"},"entries":[{"name":"alpha","repo":"https://github.com/first/alpha","sha":"111","subdir":"","tier":"official"},{"name":"alpha","repo":"https://github.com/second/alpha","sha":"222","subdir":"sub","tier":"community"}],"removed":[]}
+{"func":"looks_like","case":"valid-simple","name":"alpha"}
+{"func":"looks_like","case":"valid-single-char","name":"a"}
+{"func":"looks_like","case":"valid-underscore-dash","name":"a_b-c9"}
+{"func":"looks_like","case":"valid-leading-dash","name":"-alpha"}
+{"func":"looks_like","case":"invalid-uppercase","name":"Alpha"}
+{"func":"looks_like","case":"invalid-slash","name":"a/b"}
+{"func":"looks_like","case":"invalid-backslash","name":"a\\b"}
+{"func":"looks_like","case":"invalid-empty","name":""}
+{"func":"looks_like","case":"invalid-scheme","name":"git@acme"}
+{"func":"looks_like","case":"invalid-too-long","name":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func":"normalize_repo","case":"https-git","url":"https://github.com/Evil/Bad.git"}
+{"func":"normalize_repo","case":"scp-git","url":"git@github.com:evil/bad.git"}
+{"func":"normalize_repo","case":"www-and-trailing-slash","url":"https://www.GitHub.com/Evil/Bad/"}
+{"func":"normalize_repo","case":"bare-owner-repo","url":"owner/repo"}
+{"func":"normalize_repo","case":"padded","url":"  https://github.com/a/b  "}
+{"func":"normalize_repo","case":"ssh-with-user","url":"ssh://git@github.com/a/b"}
+{"func":"normalize_repo","case":"empty","url":""}
+{"func":"normalize_repo","case":"port-and-userinfo","url":"https://user:pw@github.com:8443/x/y"}
+{"func":"normalize_repo","case":"file-scheme","url":"file:///srv/repo/thing.git"}
+{"func":"match_removed","case":"name-hit","candidate":"alpha","removed":[{"name":"alpha","repo":""}]}
+{"func":"match_removed","case":"repo-hit-normalised","candidate":"https://github.com/evil/bad","removed":[{"name":"x","repo":"git@github.com:Evil/Bad.git"}]}
+{"func":"match_removed","case":"miss","candidate":"beta","removed":[{"name":"alpha","repo":"https://github.com/acme/alpha"}]}
+{"func":"match_removed","case":"empty-candidate","candidate":"","removed":[{"name":"alpha","repo":""}]}

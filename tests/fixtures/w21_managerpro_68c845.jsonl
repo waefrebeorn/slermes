@@ -1,0 +1,21 @@
+{"func": "env_probe", "case": "isolated-home"}
+{"func": "rebase", "case": "moves-under-old", "old_workdir": "C:/Prof/old", "new_workdir": "C:/Prof/new", "ledger": {"C:/Prof/old/a/b.log": 1, "D:/elsewhere/x.log": {"n": 2}}}
+{"func": "rebase", "case": "case-insensitive-prefix", "old_workdir": "C:/Prof/old", "new_workdir": "C:/Prof/new", "ledger": {"c:/prof/OLD/a": 1}}
+{"func": "rebase", "case": "exact-root", "old_workdir": "C:/Prof/old", "new_workdir": "C:/Prof/new", "ledger": {"C:/Prof/old": true}}
+{"func": "rebase", "case": "dotdot-kept", "old_workdir": "C:/Prof/old", "new_workdir": "C:/Prof/new", "ledger": {"C:/Prof/old/../x": 3}}
+{"func": "rebase", "case": "relative-key", "old_workdir": "C:/Prof/old", "new_workdir": "C:/Prof/new", "ledger": {"rel/a.log": 1}}
+{"func": "rebase", "case": "other-drive", "old_workdir": "C:/Prof/old", "new_workdir": "C:/Prof/new", "ledger": {"D:/Prof/old/a": 1}}
+{"func": "rebase", "case": "backslashes", "old_workdir": "C:\\Prof\\old", "new_workdir": "C:\\Prof\\new", "ledger": {"C:\\Prof\\old\\a\\b.txt": 1}}
+{"func": "rebase", "case": "collision", "old_workdir": "C:/p/old", "new_workdir": "C:/p/new", "ledger": {"C:/p/old/a": 1, "C:/P/OLD/a": 2}}
+{"func": "rebase", "case": "empty-ledger", "old_workdir": "C:/Prof/old", "new_workdir": "C:/Prof/new", "ledger": {}}
+{"func": "rebase", "case": "ledger-wrong-type", "old_workdir": "C:/Prof/old", "new_workdir": "C:/Prof/new", "ledger": [1, 2]}
+{"func": "rebase", "case": "missing-roots", "ledger": {"C:/Prof/old/a": 1}}
+{"func": "rebase", "case": "prefix-not-a-boundary", "old_workdir": "C:/Prof/old", "new_workdir": "C:/Prof/new", "ledger": {"C:/Prof/oldish/a": 1}}
+{"func": "rebase", "case": "dots-in-key", "old_workdir": "C:/Prof/old", "new_workdir": "C:/Prof/new", "ledger": {"C:/Prof/./old/sub/./x": 7}}
+{"func": "migrate", "case": "no-head", "world": {"old_root": "C:/Prof/old", "new_root": "C:/Prof/new", "has_head": false, "git": true, "projects": [{"workdir": "C:/Prof/old/a", "exists": true}]}}
+{"func": "migrate", "case": "no-git", "world": {"old_root": "C:/Prof/old", "new_root": "C:/Prof/new", "has_head": true, "git": false, "projects": [{"workdir": "C:/Prof/old/a", "exists": true}]}}
+{"func": "migrate", "case": "mixed", "world": {"old_root": "C:/Prof/old", "new_root": "C:/Prof/new", "has_head": true, "git": true, "projects": [{"workdir": "C:/Prof/old/a", "exists": true}, {"workdir": "C:/Prof/old/b", "exists": false}, {"workdir": "D:/ext", "exists": true}, {"workdir": "", "exists": true}, {"workdir": "c:/prof/OLD/c", "exists": true, "fail": true}]}}
+{"func": "migrate", "case": "all-migrated", "world": {"old_root": "C:/Prof/old", "new_root": "C:/Prof/new", "has_head": true, "git": true, "projects": [{"workdir": "C:/Prof/old/a", "exists": true}, {"workdir": "C:/Prof/old/deep/er", "exists": true}]}}
+{"func": "migrate", "case": "no-projects", "world": {"old_root": "C:/Prof/old", "new_root": "C:/Prof/new", "has_head": true, "git": true}}
+{"func": "migrate", "case": "missing-world"}
+{"func": "migrate", "case": "null-workdir", "world": {"old_root": "C:/Prof/old", "new_root": "C:/Prof/new", "has_head": true, "git": true, "projects": [{"workdir": null, "exists": true}, {"workdir": "C:/Prof/old/z", "exists": true}]}}

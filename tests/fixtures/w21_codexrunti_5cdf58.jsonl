@@ -1,0 +1,20 @@
+{"case": "summary-empty", "func": "summary", "report": {}}
+{"case": "summary-written-no-servers", "func": "summary", "report": {"target_path": "/home/u/.codex/config.toml", "written": true}}
+{"case": "summary-dry-run", "func": "summary", "report": {"dry_run": true, "migrated": ["hermes-tools"], "skipped_keys_per_server": {}, "target_path": "/home/u/.codex/config.toml"}}
+{"case": "summary-skipped-keys", "func": "summary", "report": {"migrated": ["alpha", "beta"], "skipped_keys_per_server": {"alpha": ["sampling", "description"], "beta": ["timeout (not numeric)"]}, "target_path": "/home/u/.codex/config.toml", "written": true}}
+{"case": "summary-plugins", "func": "summary", "report": {"migrated": ["alpha"], "migrated_plugins": ["codex-review", "codex-tests"], "target_path": "/home/u/.codex/config.toml", "written": true}}
+{"case": "summary-plugin-error", "func": "summary", "report": {"plugin_query_error": "codex binary not found", "target_path": "/home/u/.codex/config.toml", "written": true}}
+{"case": "summary-plugin-error-empty", "func": "summary", "report": {"plugin_query_error": "", "target_path": "/home/u/.codex/config.toml", "written": true}}
+{"case": "summary-permissions", "func": "summary", "report": {"target_path": "/home/u/.codex/config.toml", "written": true, "wrote_permissions_default": "allow"}}
+{"case": "summary-preserved", "func": "summary", "report": {"preserved_user_servers": ["mine", "yours"], "target_path": "/home/u/.codex/config.toml", "written": true}}
+{"case": "summary-errors", "func": "summary", "report": {"errors": ["cannot write config.toml", "toml validation failed"], "target_path": "/home/u/.codex/config.toml", "written": true}}
+{"case": "summary-null-target-dry-run", "func": "summary", "report": {"dry_run": true}}
+{"case": "summary-everything", "func": "summary", "report": {"errors": ["config.toml is read-only"], "migrated": ["alpha", "beta"], "migrated_plugins": ["codex-review"], "preserved_user_servers": ["legacy"], "skipped_keys_per_server": {"beta": ["cwd"]}, "target_path": "/home/u/.codex/config.toml", "written": true, "wrote_permissions_default": "deny"}}
+{"case": "migrate-empty-report", "func": "migrate"}
+{"case": "migrate-text-ok", "func": "migrate", "report": {"migrated": ["hermes-tools"], "target_path": "/home/u/.codex/config.toml", "written": true}}
+{"case": "migrate-text-errors", "func": "migrate", "report": {"errors": ["boom"], "target_path": "/home/u/.codex/config.toml", "written": false}}
+{"case": "migrate-text-dry-run", "dry_run": true, "func": "migrate", "report": {"dry_run": true, "target_path": "/home/u/.codex/config.toml"}}
+{"case": "migrate-json-full", "func": "migrate", "json": true, "report": {"dry_run": false, "errors": [], "migrated": ["alpha"], "migrated_plugins": ["codex-review"], "plugin_query_error": null, "preserved_user_servers": ["legacy"], "skipped_keys_per_server": {"alpha": ["sampling"]}, "target_path": "/home/u/.codex/config.toml", "written": true, "wrote_permissions_default": "allow"}}
+{"case": "migrate-json-defaults", "func": "migrate", "json": true, "report": {}}
+{"case": "migrate-json-null-target", "func": "migrate", "json": true, "report": {"errors": ["nope"], "target_path": null}}
+{"case": "parser", "func": "parser"}

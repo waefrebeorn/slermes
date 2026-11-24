@@ -1,0 +1,18 @@
+{"case": "model_list_no_force", "func": "guard", "key": "model", "value": ["a"], "user_config": {"model": {"a": 1}}, "force": false}
+{"case": "model_dict_existing_no_force", "func": "guard", "key": "model", "value": {"a": 1}, "user_config": {"model": {"a": 1}}, "force": false}
+{"case": "model_dict_existing_force", "func": "guard", "key": "model", "value": {"a": 1, "b": 2}, "user_config": {"model": {"provider": "x", "default": "y"}}, "force": true}
+{"case": "model_dict_no_section", "func": "guard", "key": "model", "value": {"a": 1}, "user_config": {}, "force": false}
+{"case": "model_scalar_redirect", "func": "guard", "key": "model", "value": "gpt-x", "user_config": {"model": {"provider": "x"}}, "force": false}
+{"case": "model_scalar_force", "func": "guard", "key": "model", "value": "gpt-x", "user_config": {"model": {"provider": "x"}}, "force": true}
+{"case": "dotted_key", "func": "guard", "key": "model.default", "value": "gpt-x", "user_config": {"model": {"provider": "x"}}, "force": false}
+{"case": "theme_scalar_refused", "func": "guard", "key": "theme", "value": 1, "user_config": {"theme": {"a": 1, "b": 2}}, "force": false}
+{"case": "theme_many_subkeys", "func": "guard", "key": "theme", "value": 1, "user_config": {"theme": {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8, "i": 9, "z": 1}}, "force": false}
+{"case": "theme_empty_section", "func": "guard", "key": "theme", "value": 1, "user_config": {"theme": {}}, "force": false}
+{"case": "theme_force", "func": "guard", "key": "theme", "value": 1, "user_config": {"theme": {"a": 1}}, "force": true}
+{"case": "theme_not_a_section", "func": "guard", "key": "theme", "value": 1, "user_config": {"theme": "dark"}, "force": false}
+{"case": "theme_list_refused", "func": "guard", "key": "theme", "value": ["x"], "user_config": {"theme": {"a": 1}}, "force": false}
+{"case": "theme_dict_refused", "func": "guard", "key": "theme", "value": {"a": 1}, "user_config": {"theme": {"b": 2}}, "force": false}
+{"case": "no_user_config", "func": "guard", "key": "theme", "value": 1, "force": false}
+{"case": "missing_value", "func": "guard", "key": "theme", "user_config": {"theme": {"a": 1}}, "force": false}
+{"case": "empty_key", "func": "guard", "key": "", "value": 1, "user_config": {"theme": {"a": 1}}, "force": false}
+{"case": "truthy_force_string", "func": "guard", "key": "theme", "value": 1, "user_config": {"theme": {"a": 1}}, "force": "yes"}

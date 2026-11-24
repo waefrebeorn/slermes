@@ -1,0 +1,38 @@
+{"case": "direct_todo_list", "func": "is_call", "call_id": "c1", "call": {"id": "c1", "function": {"name": "todo_list"}}}
+{"case": "direct_todo", "func": "is_call", "call_id": "c1", "call": {"id": "c1", "function": {"name": "todo"}}}
+{"case": "id_mismatch", "func": "is_call", "call_id": "c1", "call": {"id": "c2", "function": {"name": "todo_list"}}}
+{"case": "other_function", "func": "is_call", "call_id": "c1", "call": {"id": "c1", "function": {"name": "read_file"}}}
+{"case": "wrapper_arguments_text", "func": "is_call", "call_id": "c1", "call": {"id": "c1", "function": {"name": "tool_call", "arguments": "{\"calls\":[{\"name\":\"todo\"}]}"}}}
+{"case": "wrapper_arguments_object", "func": "is_call", "call_id": "c1", "call": {"id": "c1", "function": {"name": "tool_call", "arguments": {"calls": [{"name": "todo_list"}]}}}}
+{"case": "wrapper_arguments_bad_json", "func": "is_call", "call_id": "c1", "call": {"id": "c1", "function": {"name": "tool_call", "arguments": "{not json"}}}
+{"case": "call_not_dict", "func": "is_call", "call_id": "c1", "call": "c1"}
+{"case": "function_not_dict", "func": "is_call", "call_id": "c1", "call": {"id": "c1", "function": "todo_list"}}
+{"case": "wrapper_no_inner_match", "func": "is_call", "call_id": "c1", "call": {"id": "c1", "function": {"name": "tool_call", "arguments": {"calls": [{"name": "read_file"}]}}}}
+{"case": "paired_first_matches", "func": "paired", "call_id": "c1", "tool_calls": "[{\"id\":\"c1\",\"function\":{\"name\":\"todo_list\"}}]"}
+{"case": "paired_empty_text", "func": "paired", "call_id": "c1", "tool_calls": ""}
+{"case": "paired_missing_key", "func": "paired", "call_id": "c1"}
+{"case": "paired_bad_json", "func": "paired", "call_id": "c1", "tool_calls": "[oops"}
+{"case": "paired_object_not_list", "func": "paired", "call_id": "c1", "tool_calls": "{\"id\":\"c1\"}"}
+{"case": "paired_raise_short_circuits", "func": "paired", "call_id": "c1", "tool_calls": "[{\"id\":\"c1\",\"function\":{\"name\":\"tool_call\",\"arguments\":\"{bad\"}},{\"id\":\"c1\",\"function\":{\"name\":\"todo_list\"}}]"}
+{"case": "paired_later_match", "func": "paired", "call_id": "c1", "tool_calls": "[{\"id\":\"c2\",\"function\":{\"name\":\"todo\"}},{\"id\":\"c1\",\"function\":{\"name\":\"todo\"}}]"}
+{"case": "valid_good", "func": "valid", "content": "{\"todos\":[{\"text\":\"a\",\"done\":false}],\"revision\":3}"}
+{"case": "valid_missing_todos", "func": "valid", "content": "{\"revision\":1}"}
+{"case": "valid_todos_not_list", "func": "valid", "content": "{\"todos\":{\"a\":1}}"}
+{"case": "valid_not_object", "func": "valid", "content": "[1,2]"}
+{"case": "valid_revision_text_bad", "func": "valid", "content": "{\"todos\":[],\"revision\":\"abc\"}"}
+{"case": "valid_revision_text_padded", "func": "valid", "content": "{\"todos\":[],\"revision\":\" 7 \"}"}
+{"case": "valid_revision_list", "func": "valid", "content": "{\"todos\":[],\"revision\":[1]}"}
+{"case": "valid_revision_zero", "func": "valid", "content": "{\"todos\":[],\"revision\":0}"}
+{"case": "valid_bad_json", "func": "valid", "content": "{oops"}
+{"case": "valid_missing_content", "func": "valid"}
+{"case": "copy_ids_identity_uid_absorbed", "func": "copy_ids", "identity": "h1", "message_uid": "u1", "absorbed": "[\"u2\",\"u2\",\"\",\"u3\"]"}
+{"case": "copy_ids_identity_only", "func": "copy_ids", "identity": "h2", "message_uid": "", "absorbed": []}
+{"case": "copy_ids_absorbed_list", "func": "copy_ids", "identity": "h3", "absorbed": ["u9", "u1"]}
+{"case": "copy_ids_absorbed_bad_json", "func": "copy_ids", "identity": "h4", "message_uid": "u5", "absorbed": "not json"}
+{"case": "removed_max_keeps_newest", "func": "removed", "rows": [{"id": "4", "display_identity": "h1", "message_uid": "u1", "absorbed_message_uids": []}, {"id": "9", "display_identity": "h1", "message_uid": "", "absorbed_message_uids": "[\"u1\"]"}, {"id": "2", "display_identity": "h2", "message_uid": "", "absorbed_message_uids": []}]}
+{"case": "removed_empty_rows", "func": "removed", "rows": []}
+{"case": "removed_hit_newer", "func": "removed_hit", "removed": {"h1": "8", "uid:u1": "8"}, "copy_ids": ["h1"], "row_id": "7"}
+{"case": "removed_hit_older", "func": "removed_hit", "removed": {"h1": "6"}, "copy_ids": ["h1", "uid:u1"], "row_id": "7"}
+{"case": "removed_hit_empty_map", "func": "removed_hit", "removed": {}, "copy_ids": ["h1"], "row_id": "7"}
+{"case": "removed_hit_uid_only", "func": "removed_hit", "removed": {"uid:u1": "10"}, "copy_ids": ["h1", "uid:u1"], "row_id": "7"}
+{"case": "removed_int64_precision", "func": "removed", "rows": [{"id": "9007199254740993", "display_identity": "h9", "message_uid": "", "absorbed_message_uids": []}, {"id": "9007199254740992", "display_identity": "h9", "message_uid": "", "absorbed_message_uids": []}]}

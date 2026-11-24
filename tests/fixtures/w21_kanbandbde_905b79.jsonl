@@ -1,0 +1,18 @@
+{"func":"apply","task_id":"t1","assignee":"alice","dry_run":true,"rowcount":1,"raises":false,"case":"dry run reports success without writing"}
+{"func":"apply","task_id":"t1","assignee":"alice","dry_run":false,"rowcount":1,"raises":false,"case":"single row updated emits event"}
+{"func":"apply","task_id":"t1","assignee":"alice","dry_run":false,"rowcount":0,"raises":false,"case":"concurrent assign wins the row"}
+{"func":"apply","task_id":"t1","assignee":"alice","dry_run":false,"rowcount":2,"raises":false,"case":"rowcount two is not a single row"}
+{"func":"apply","task_id":"t1","assignee":"alice","dry_run":false,"rowcount":-1,"raises":true,"case":"write exception is swallowed"}
+{"func":"apply","task_id":"t1","assignee":"alice","dry_run":true,"rowcount":-1,"raises":true,"case":"dry run never touches the write"}
+{"func":"apply","task_id":"","assignee":"","dry_run":false,"rowcount":1,"raises":false,"case":"empty ids still emit the event"}
+{"func":"fill","task_id":"t2","default_assignee":null,"dry_run":false,"rowcount":1,"raises":false,"current_row":null,"result":{},"case":"no default parks the card"}
+{"func":"fill","task_id":"t2","default_assignee":"","dry_run":false,"rowcount":1,"raises":false,"current_row":null,"result":{},"case":"empty default parks the card"}
+{"func":"fill","task_id":"t2","default_assignee":"alice","dry_run":false,"rowcount":1,"raises":false,"current_row":null,"result":{},"case":"default applied and bucketed"}
+{"func":"fill","task_id":"t2","default_assignee":"alice","dry_run":true,"rowcount":1,"raises":false,"current_row":null,"result":{},"case":"dry run reports the assignment"}
+{"func":"fill","task_id":"t2","default_assignee":"alice","dry_run":false,"rowcount":0,"raises":false,"current_row":{"assignee":null},"result":{},"case":"rowcount miss with null assignee parks"}
+{"func":"fill","task_id":"t2","default_assignee":"alice","dry_run":false,"rowcount":0,"raises":false,"current_row":{"assignee":""},"result":{},"case":"rowcount miss with empty assignee parks"}
+{"func":"fill","task_id":"t2","default_assignee":"alice","dry_run":false,"rowcount":0,"raises":false,"current_row":{"assignee":"bob"},"result":{},"case":"concurrent assignee defers without a bucket"}
+{"func":"fill","task_id":"t2","default_assignee":"alice","dry_run":false,"rowcount":0,"raises":false,"current_row":null,"result":{},"case":"row gone parks the card"}
+{"func":"fill","task_id":"t2","default_assignee":"alice","dry_run":false,"rowcount":-1,"raises":true,"current_row":{"assignee":"bob"},"result":{},"case":"write exception with concurrent assignee defers"}
+{"func":"fill","task_id":"t2","default_assignee":"alice","dry_run":false,"rowcount":1,"raises":false,"current_row":null,"result":{"skipped_unassigned":["x"],"auto_assigned_default":["y"]},"case":"existing buckets are appended"}
+{"func":"fill","task_id":"t2","default_assignee":"alice","dry_run":false,"rowcount":1,"raises":false,"current_row":null,"result":[],"case":"wrong type result starts empty buckets"}

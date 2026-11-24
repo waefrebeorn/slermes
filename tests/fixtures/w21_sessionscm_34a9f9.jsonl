@@ -1,0 +1,14 @@
+{"case":"no_file_backed_store","func":"run","mode":"delete","db":null,"store_location":null}
+{"case":"store_location_fallback","func":"run","mode":"wal","db":"","store_location":"fallback.db","db_exists":true,"admin":"ok","result":{"current":"wal","after":"wal"},"configured":"wal"}
+{"case":"database_missing","func":"run","mode":"delete","db":"missing.db","db_exists":false,"admin":"ok"}
+{"case":"admin_none","func":"run","mode":"delete","db":"sessions.db","db_exists":true,"admin":"none"}
+{"case":"admin_unsupported","func":"run","mode":"delete","db":"sessions.db","db_exists":true,"admin":"unsupported"}
+{"case":"persistence_error","func":"run","mode":"delete","db":"sessions.db","db_exists":true,"admin":"ok","error":"database is locked"}
+{"case":"flip_with_config_note","func":"run","mode":"wal","db":"sessions.db","db_exists":true,"admin":"ok","result":{"current":"delete","after":"wal"},"configured":"delete"}
+{"case":"flip_config_already_target","func":"run","mode":"delete","db":"sessions.db","db_exists":true,"admin":"ok","result":{"current":"wal","after":"delete"},"configured":"delete"}
+{"case":"already_set_no_note","func":"run","mode":"wal","db":"sessions.db","db_exists":true,"admin":"ok","result":{"current":"wal","after":"wal"},"configured":"delete"}
+{"case":"flip_configured_null","func":"run","mode":"wal","db":"sessions.db","db_exists":true,"admin":"ok","result":{"current":"delete","after":"wal"},"configured":null}
+{"case":"mode_numeric_already","func":"run","mode":3,"db":"sessions.db","db_exists":true,"admin":"ok","result":{"current":3,"after":3},"configured":3}
+{"case":"mode_null_already","func":"run","mode":null,"db":"sessions.db","db_exists":true,"admin":"ok","result":{"current":null,"after":null},"configured":"wal"}
+{"case":"error_empty_is_no_raise","func":"run","mode":"wal","db":"sessions.db","db_exists":true,"admin":"ok","error":""}
+{"case":"db_wins_over_store_location","func":"run","mode":"wal","db":"other.db","store_location":"fallback.db","db_exists":true,"admin":"ok","result":{"current":"delete","after":"wal"},"configured":"wal"}

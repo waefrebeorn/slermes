@@ -1,0 +1,28 @@
+{"func":"hardline_patterns","case":"detection-cmdpos","cmdpos":"(?<![\\w.\\\\/-])"}
+{"func":"hardline_patterns","case":"empty-cmdpos","cmdpos":""}
+{"func":"hardline_patterns","case":"bash-cmdpos","cmdpos":"^(?:cd [^;]*&& )?(?:[^;]*\\\\s)?"}
+{"func":"strict_patterns","case":"detection-cmdpos","cmdpos":"(?<![\\w.\\\\/-])"}
+{"func":"strict_patterns","case":"empty-cmdpos","cmdpos":""}
+{"func":"win_cmdpos","case":"plain","cmdpos":"(?:^|;)"}
+{"func":"win_cmdpos","case":"empty","cmdpos":""}
+{"func":"whatif","case":"clean-whatif","command":"Clear-Disk 0 -WhatIf"}
+{"func":"whatif","case":"clean-whatif-restart","command":"Restart-Computer -WhatIf"}
+{"func":"whatif","case":"no-whatif","command":"Clear-Disk 0"}
+{"func":"whatif","case":"whatif-with-value","command":"Clear-Disk 0 -WhatIf:1"}
+{"func":"whatif","case":"other-verb-after","command":"Clear-Disk 0 -WhatIf; Remove-Item x"}
+{"func":"whatif","case":"other-verb-format-volume","command":"Clear-Disk 1\nFormat-Volume C -WhatIf"}
+{"func":"whatif","case":"second-statement-unguarded","command":"Clear-Disk 0 -WhatIf | Clear-Disk 1"}
+{"func":"whatif","case":"quoted-pwsh","command":"pwsh -c \"Clear-Disk 0 -WhatIf\""}
+{"func":"whatif","case":"cmdlet-suffix-not-a-command","command":"Stop-Computer.ps1 -WhatIf"}
+{"func":"whatif","case":"array-element-whatif","command":"Clear-Disk srv1, -WhatIf"}
+{"func":"whatif","case":"cr-split-unguarded","command":"Clear-Disk 0 -WhatIf\rClear-Disk 1"}
+{"func":"whatif","case":"nel-split-unguarded","command":"Clear-Disk 0 -WhatIf\u0085Clear-Disk 1"}
+{"func":"whatif","case":"u2028-split-unguarded","command":"Clear-Disk 0 -WhatIf\u2028Clear-Disk 1"}
+{"func":"whatif","case":"ampersand-split","command":"Stop-Computer -WhatIf & Stop-Computer"}
+{"func":"whatif","case":"no-cmdlet-at-all","command":"echo hi"}
+{"func":"whatif","case":"empty-command","command":""}
+{"func":"whatif","case":"posix-rm","command":"rm -rf /"}
+{"func":"whatif","case":"cmd-exe-whatif","command":"cmd /c \"Clear-Disk 0 -WhatIf\""}
+{"func":"whatif","case":"clear-disk-report-not-a-wipe","command":"Clear-Disk-Report 0 -WhatIf"}
+{"func":"whatif","case":"whatif-quoted-end","command":"pwsh -c \"Stop-Computer -WhatIf\""}
+{"func":"whatif","case":"comment-then-whatif","command":"Clear-Disk 0 # -WhatIf"}

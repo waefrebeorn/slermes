@@ -1,0 +1,25 @@
+{"func":"update","case":"fresh-key-send-success","chat_id":"-100200","status_key":"typing","content":"Reading…","message_ids":[],"send":{"success":true,"message_id":"501"}}
+{"func":"update","case":"fresh-key-send-failure","chat_id":"-100200","status_key":"typing","content":"Reading…","message_ids":[],"send":{"success":false}}
+{"func":"update","case":"fresh-key-send-success-no-id","chat_id":"-100200","status_key":"typing","content":"x","message_ids":[],"send":{"success":true,"message_id":null}}
+{"func":"update","case":"fresh-key-send-zero-id","chat_id":"-100200","status_key":"typing","content":"x","message_ids":[],"send":{"success":true,"message_id":0}}
+{"func":"update","case":"cached-edit-success-same-id","chat_id":"42","status_key":"tool","content":"step 2","message_ids":[["42","tool","77"]],"edit":{"success":true,"message_id":"77"}}
+{"func":"update","case":"cached-edit-success-new-id","chat_id":"42","status_key":"tool","content":"step 2","message_ids":[["42","tool","77"]],"edit":{"success":true,"message_id":88}}
+{"func":"update","case":"cached-edit-success-replaced-during-await","chat_id":"42","status_key":"tool","content":"step 2","message_ids":[["42","tool","77"],["42","other","9"]],"during_edit":"replace","edit":{"success":true,"message_id":"88"}}
+{"func":"update","case":"cached-edit-success-popped-during-await","chat_id":"42","status_key":"tool","content":"step 2","message_ids":[["42","tool","77"]],"during_edit":"pop","edit":{"success":true,"message_id":"88"}}
+{"func":"update","case":"cached-edit-fails-then-send","chat_id":"42","status_key":"tool","content":"step 2","message_ids":[["42","tool","77"],["42","peer","8"]],"edit":{"success":false},"send":{"success":true,"message_id":"99"}}
+{"func":"update","case":"cached-edit-fails-then-send-fails","chat_id":"42","status_key":"tool","content":"step 2","message_ids":[["42","tool","77"]],"edit":{"success":false},"send":{"success":false}}
+{"func":"update","case":"cached-edit-success-no-id","chat_id":"42","status_key":"tool","content":"step 2","message_ids":[["42","tool","77"]],"edit":{"success":true,"message_id":null}}
+{"func":"update","case":"cached-edit-success-empty-id","chat_id":"42","status_key":"tool","content":"step 2","message_ids":[["42","tool","77"]],"edit":{"success":true,"message_id":""}}
+{"func":"update","case":"lock-already-registered","chat_id":"42","status_key":"tool","content":"step 2","message_ids":[["42","tool","77"]],"lock_exists":true,"edit":{"success":true,"message_id":"78"}}
+{"func":"update","case":"trim-oldest-half","chat_id":"7","status_key":"new","content":"x","message_ids":[["1","a","11"],["2","b","22"],["3","c","33"],["4","d","44"]],"max":4,"send":{"success":true,"message_id":"55"}}
+{"func":"update","case":"trim-bound-not-reached","chat_id":"7","status_key":"new","content":"x","message_ids":[["1","a","11"],["2","b","22"],["3","c","33"]],"max":4,"send":{"success":true,"message_id":"55"}}
+{"func":"update","case":"trim-max-one-drops-none","chat_id":"7","status_key":"new","content":"x","message_ids":[["1","a","11"]],"max":1,"send":{"success":true,"message_id":"55"}}
+{"func":"update","case":"trim-max-zero","chat_id":"7","status_key":"new","content":"x","message_ids":[["1","a","11"]],"max":0,"send":{"success":true,"message_id":"55"}}
+{"func":"update","case":"numeric-chat-id","chat_id":12345,"status_key":"typing","content":"x","message_ids":[],"send":{"success":true,"message_id":"501"}}
+{"func":"update","case":"numeric-chat-id-matches-string-entry","chat_id":12345,"status_key":"typing","content":"x","message_ids":[["12345","typing","77"]],"edit":{"success":true,"message_id":"79"}}
+{"func":"update","case":"message-ids-missing","chat_id":"9","status_key":"typing","content":"x","send":{"success":true,"message_id":"12"}}
+{"func":"update","case":"alias-other-chat-untouched","chat_id":"42","status_key":"tool","content":"x","message_ids":[["41","tool","71"],["42","tool","72"]],"edit":{"success":false},"send":{"success":true,"message_id":"73"}}
+{"func":"str","case":"str-int","value":42}
+{"func":"str","case":"str-string","value":"abc"}
+{"func":"str","case":"str-null","value":null}
+{"func":"str","case":"str-true","value":true}

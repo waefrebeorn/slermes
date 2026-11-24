@@ -1,0 +1,30 @@
+{"case": "af_defaults", "func": "audio_format", "overrides": {}}
+{"case": "af_rate", "func": "audio_format", "overrides": {"sample_rate": 16000}}
+{"case": "af_passthrough", "func": "audio_format", "overrides": {"sample_rate": "16000", "channels": 2, "sample_width": 4}}
+{"case": "af_missing_key", "func": "audio_format"}
+{"case": "af_unknown", "func": "audio_format", "overrides": {"bogus": 1}}
+{"case": "h_defaults", "func": "handle", "overrides": {}}
+{"case": "h_chat", "func": "handle", "overrides": {"chat_id": "c1", "audible": true}}
+{"case": "h_nested", "func": "handle", "overrides": {"audio_format": {"sample_rate": 8000}, "aborted": true}}
+{"case": "h_nested_unknown", "func": "handle", "overrides": {"audio_format": {"nope": 1}}}
+{"case": "h_unknown", "func": "handle", "overrides": {"wat": 1}}
+{"case": "h_no_overrides", "func": "handle"}
+{"case": "tk_marker", "func": "turn_key", "session_key": "s1", "turn_marker": 3}
+{"case": "tk_empty_session", "func": "turn_key", "session_key": "", "turn_marker": 3}
+{"case": "tk_null_session", "func": "turn_key", "session_key": null, "turn_marker": 3}
+{"case": "tk_no_session_key", "func": "turn_key", "turn_marker": 3}
+{"case": "tk_event_fallback", "func": "turn_key", "session_key": "s1", "event": {"message_id": 0, "platform_update_id": "u9"}}
+{"case": "tk_event_falsy", "func": "turn_key", "session_key": "s1", "event": {"message_id": 0}}
+{"case": "tk_event_message_id", "func": "turn_key", "session_key": "s1", "event": {"message_id": 42, "platform_update_id": "u9"}}
+{"case": "tk_no_marker", "func": "turn_key", "session_key": "s1"}
+{"case": "tk_zero_marker", "func": "turn_key", "session_key": "s1", "turn_marker": 0}
+{"case": "tk_false_marker", "func": "turn_key", "session_key": "s1", "turn_marker": false}
+{"case": "sk_hit", "func": "should_skip", "completed_turns": ["s1:3", "s2:9"], "session_key": "s1", "turn_marker": 3}
+{"case": "sk_miss", "func": "should_skip", "completed_turns": ["s1:4"], "session_key": "s1", "turn_marker": 3}
+{"case": "sk_empty_turns", "func": "should_skip", "completed_turns": [], "session_key": "s1", "turn_marker": 3}
+{"case": "sk_no_session", "func": "should_skip", "completed_turns": ["s1:3"], "session_key": null, "turn_marker": 3}
+{"case": "sk_string_turns", "func": "should_skip", "completed_turns": "xs1:3y", "session_key": "s1", "turn_marker": 3}
+{"case": "sk_dict_turns", "func": "should_skip", "completed_turns": {"s1:3": true}, "session_key": "s1", "turn_marker": 3}
+{"case": "sk_number_turns", "func": "should_skip", "completed_turns": 7, "session_key": "s1", "turn_marker": 3}
+{"case": "sk_null_turns", "func": "should_skip", "completed_turns": null, "session_key": "s1", "turn_marker": 3}
+{"case": "sk_event", "func": "should_skip", "completed_turns": ["s1:u9"], "session_key": "s1", "event": {"platform_update_id": "u9"}}

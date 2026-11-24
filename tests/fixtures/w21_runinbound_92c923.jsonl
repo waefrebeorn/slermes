@@ -1,0 +1,28 @@
+{"func": "profile_arg", "case": "named-profile", "profile": "work"}
+{"func": "profile_arg", "case": "default-profile", "profile": "default"}
+{"func": "profile_arg", "case": "empty-profile", "profile": ""}
+{"func": "profile_arg", "case": "null-profile", "profile": null}
+{"func": "profile_arg", "case": "numeric-profile", "profile": 7}
+{"func": "profile_arg", "case": "missing-profile"}
+{"func": "code_reply", "case": "plain", "platform": "telegram", "code": "4821", "profile_arg": ""}
+{"func": "code_reply", "case": "profiled", "platform": "slack", "code": "XY-9", "profile_arg": "-p work "}
+{"func": "rate_limited", "case": "constant"}
+{"func": "owner_hint", "case": "telegram-plain-name", "platform": "telegram", "user_id": "5551234", "user_name": "Ada Lovelace", "hermes_home": "/home/u"}
+{"func": "owner_hint", "case": "hostile-name", "platform": "slack", "user_id": "U777", "user_name": "@here <https://evil.example|click> [x](y) `code` *bold* _it_ ~s~ #tag", "hermes_home": "/srv/hermes"}
+{"func": "owner_hint", "case": "empty-name", "platform": "discord", "user_id": "42", "user_name": "", "hermes_home": "/h"}
+{"func": "owner_hint", "case": "long-name-truncated", "platform": "signal", "user_id": "+15551234567", "user_name": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz0123456789", "hermes_home": "/h"}
+{"func": "owner_hint", "case": "platform-without-allowlist", "platform": "wechat", "user_id": "wx-1", "user_name": "Wei", "hermes_home": "/h"}
+{"func": "owner_hint", "case": "uppercase-platform", "platform": " TELEGRAM ", "user_id": "9", "user_name": "Bob", "hermes_home": "C:/Users/x"}
+{"func": "allowlist_env", "case": "whatsapp-cloud", "platform": "whatsapp_cloud"}
+{"func": "allowlist_env", "case": "wechat-none", "platform": "wechat"}
+{"func": "allowlist_env", "case": "uppercase-discord", "platform": "DISCORD"}
+{"func": "allowlist_env", "case": "google-chat", "platform": "google_chat"}
+{"func": "allowlist_env", "case": "unknown", "platform": "nosuchplatform"}
+{"func": "first_time", "case": "empty-state-first", "state": [], "platform": "telegram", "user_id": "101", "max_seen": 2048}
+{"func": "first_time", "case": "repeat-sender", "state": [["telegram", "101"], ["slack", "9"]], "platform": "telegram", "user_id": "101", "max_seen": 2048}
+{"func": "first_time", "case": "evicts-oldest", "state": [["telegram", "1"], ["slack", "2"]], "platform": "discord", "user_id": "3", "max_seen": 2}
+{"func": "first_time", "case": "max-seen-zero-clamps", "state": [["telegram", "1"]], "platform": "discord", "user_id": "3", "max_seen": 0}
+{"func": "first_time", "case": "numeric-user-id", "state": [], "platform": "telegram", "user_id": 12345, "max_seen": 8}
+{"func": "first_time", "case": "numeric-user-id-matches", "state": [["telegram", "12345"]], "platform": "telegram", "user_id": 12345, "max_seen": 8}
+{"func": "first_time", "case": "non-string-state-entry", "state": [["telegram", 1]], "platform": "telegram", "user_id": "1", "max_seen": 8}
+{"func": "first_time", "case": "trims-to-limit", "state": [["telegram", "1"], ["slack", "2"], ["discord", "3"]], "platform": "signal", "user_id": "4", "max_seen": 3}

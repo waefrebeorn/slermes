@@ -1,0 +1,23 @@
+{"case": "vocab", "func": "vocabulary"}
+{"case": "static_assets", "func": "is_static_asset", "full_path": "assets/app.js"}
+{"case": "static_fonts", "func": "is_static_asset", "full_path": "fonts/inter.woff2"}
+{"case": "static_no_slash", "func": "is_static_asset", "full_path": "assets"}
+{"case": "static_favicon", "func": "is_static_asset", "full_path": "favicon.ico"}
+{"case": "static_touch_icon", "func": "is_static_asset", "full_path": "apple-touch-icon.png"}
+{"case": "static_index", "func": "is_static_asset", "full_path": "index.html"}
+{"case": "static_empty", "func": "is_static_asset", "full_path": ""}
+{"case": "static_case", "func": "is_static_asset", "full_path": "Fonts/inter.woff2"}
+{"case": "static_ds_assets", "func": "is_static_asset", "full_path": "ds-assets/x.css"}
+{"case": "static_terminal_fonts", "func": "is_static_asset", "full_path": "fonts-terminal/t.woff"}
+{"case": "font_dist_hit", "func": "font", "full_path": "fonts/a.woff", "files": ["dist/fonts/a.woff"]}
+{"case": "font_dash_fallback", "func": "font", "full_path": "fonts/b.woff", "files": ["dash/fonts/b.woff"]}
+{"case": "font_webpublic_fallback", "func": "font", "full_path": "fonts-terminal/t.woff", "files": ["webpublic/fonts-terminal/t.woff"]}
+{"case": "font_precedence", "func": "font", "full_path": "fonts/p.woff", "files": ["dist/fonts/p.woff", "dash/fonts/p.woff", "webpublic/fonts/p.woff"]}
+{"case": "font_missing", "func": "font", "full_path": "fonts/nope.woff", "files": []}
+{"case": "font_wrong_folder", "func": "font", "full_path": "assets/a.woff", "files": ["dist/assets/a.woff"]}
+{"case": "font_no_name", "func": "font", "full_path": "fonts/", "files": ["dist/fonts/.keep"]}
+{"case": "font_traversal", "func": "font", "full_path": "fonts/../secret.woff", "files": ["dist/secret.woff"]}
+{"case": "font_subdir", "func": "font", "full_path": "fonts/sub/a.woff", "files": ["dist/fonts/sub/a.woff"]}
+{"case": "font_is_dir", "func": "font", "full_path": "fonts/dir.woff/", "files": ["dist/fonts/dir.woff/"]}
+{"case": "font_empty", "func": "font", "full_path": "", "files": ["dist/.keep"]}
+{"case": "font_dist_only_dir", "func": "font", "full_path": "fonts/c.woff", "files": ["dist/fonts/c.woff/"]}

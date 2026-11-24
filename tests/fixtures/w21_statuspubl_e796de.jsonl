@@ -1,0 +1,25 @@
+{"func":"redact","case":"empty_status","status":{}}
+{"func":"redact","case":"platforms_allowlist","status":{"gateway_platforms":{"telegram":{"state":"connected","error_code":"telegram_polling_conflict","needs_attention":true,"error_message":"401 token rejected","last_error":"x"},"discord":{"state":"weird","error_code":"Bad Code","needs_attention":"yes"}},"gateway_state":"degraded"}}
+{"func":"redact","case":"platform_values_not_dicts","status":{"gateway_platforms":{"a":"boom","b":[1,2],"c":null,"d":7}}}
+{"func":"redact","case":"platform_state_null","status":{"gateway_platforms":{"tg":{"state":null,"error_code":"ok_code"}}}}
+{"func":"redact","case":"platform_state_and_code_types","status":{"gateway_platforms":{"a":{"state":5,"error_code":12},"b":{"state":"OK","error_code":"Upper"},"c":{"state":"ok","error_code":"a1_b2"},"d":{"error_code":"  spaced  "},"e":{"error_code":""},"f":{"error_code":"x0123456789012345678901234567890123456789012345678901234567890123"}}}}
+{"func":"redact","case":"platform_stamps_valid","status":{"gateway_platforms":{"tg":{"state":"retrying","updated_at":"2024-01-02T03:04:05Z","retrying_since":"2024-01-02"},"dc":{"state":"connected","updated_at":"2024-02-03T04:05:06.123+02:00","retrying_since":"  2024-03-04T05:06:07  "},"qw":{"updated_at":"2024-12-31T23:59:59.5z"}}}}
+{"func":"redact","case":"platform_stamps_garbage","status":{"gateway_platforms":{"a":{"updated_at":"not-a-date"},"b":{"updated_at":"2024-13-02T00:00:00"},"c":{"updated_at":"2024-02-30T00:00:00"},"d":{"updated_at":1700000000},"e":{"updated_at":"2024-01-02T25:00:00"},"f":{"updated_at":""}}}}
+{"func":"redact","case":"exit_reason_public_code","status":{"gateway_exit_reason":"loop_liveness_watchdog","gateway_state":"degraded"}}
+{"func":"redact","case":"exit_reason_auth_prose","status":{"gateway_exit_reason":"gateway crashed: 401 unauthorized","gateway_state":"degraded"}}
+{"func":"redact","case":"exit_reason_signal","status":{"gateway_exit_reason":"Killed by SIGTERM","gateway_state":"degraded"}}
+{"func":"redact","case":"exit_reason_planned_stop","status":{"gateway_exit_reason":"Shutdown requested by operator","gateway_state":"stopped"}}
+{"func":"redact","case":"exit_reason_startup_failed","status":{"gateway_exit_reason":"","gateway_state":"startup_failed"}}
+{"func":"redact","case":"exit_reason_number_403","status":{"gateway_exit_reason":403,"gateway_state":"degraded"}}
+{"func":"redact","case":"exit_reason_network","status":{"gateway_exit_reason":"connection refused by peer","gateway_state":"degraded"}}
+{"func":"redact","case":"exit_reason_bool_true","status":{"gateway_exit_reason":true,"gateway_state":"degraded"}}
+{"func":"redact","case":"exit_reason_rate_limit","status":{"gateway_exit_reason":"rate limit exceeded","gateway_state":"degraded"}}
+{"func":"redact","case":"exit_reason_token_wins_over_config","status":{"gateway_exit_reason":"invalid config: missing token","gateway_state":"degraded"}}
+{"func":"redact","case":"multiplex_present","status":{"multiplex_standalone_reason":"profile default collides with work (HERMES_API_KEY)","gateway_platforms":{},"gateway_state":"ok"}}
+{"func":"redact","case":"platforms_null","status":{"gateway_platforms":null}}
+{"func":"redact","case":"platforms_empty_string","status":{"gateway_platforms":""}}
+{"func":"redact","case":"platforms_empty_list","status":{"gateway_platforms":[]}}
+{"func":"redact","case":"platforms_zero","status":{"gateway_platforms":0}}
+{"func":"entry","case":"entry_not_a_dict","value":"text"}
+{"func":"entry","case":"entry_empty_object","value":{}}
+{"func":"entry","case":"entry_all_keys","value":{"state":"paused","error_code":"retry_scheduled","needs_attention":false,"updated_at":"2024-05-06T07:08:09Z","retrying_since":"garbage","error_message":"leak"}}

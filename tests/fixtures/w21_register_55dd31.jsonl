@@ -1,0 +1,26 @@
+{"func":"is_connected","case":"nothing-configured","extra":{},"env":{}}
+{"func":"is_connected","case":"both-extra-values","extra":{"app_id":"a","client_secret":"s"},"env":{}}
+{"func":"is_connected","case":"extra-values-padded","extra":{"app_id":" a ","client_secret":" s "},"env":{}}
+{"func":"is_connected","case":"extra-app-id-empty","extra":{"app_id":"","client_secret":"s"},"env":{}}
+{"func":"is_connected","case":"extra-app-id-blank","extra":{"app_id":"   ","client_secret":"s"},"env":{}}
+{"func":"is_connected","case":"extra-app-id-number","extra":{"app_id":123,"client_secret":"s"},"env":{}}
+{"func":"is_connected","case":"extra-app-id-zero-env-set","extra":{"app_id":0,"client_secret":"s"},"env":{"QQ_APP_ID":"a","QQ_CLIENT_SECRET":"s"}}
+{"func":"is_connected","case":"extra-app-id-object-env-set","extra":{"app_id":{},"client_secret":"s"},"env":{"QQ_APP_ID":"a","QQ_CLIENT_SECRET":"s"}}
+{"func":"is_connected","case":"env-only","extra":{},"env":{"QQ_APP_ID":"a","QQ_CLIENT_SECRET":"s"}}
+{"func":"is_connected","case":"env-blank-app-id","extra":{},"env":{"QQ_APP_ID":" ","QQ_CLIENT_SECRET":"s"}}
+{"func":"is_connected","case":"env-missing-one","extra":{},"env":{"QQ_APP_ID":"a"}}
+{"func":"is_connected","case":"extra-missing-both-keys","extra":{"unrelated":1},"env":{}}
+{"func":"is_connected","case":"extra-null","extra":null,"env":{"QQ_APP_ID":"a","QQ_CLIENT_SECRET":"s"}}
+{"func":"is_connected","case":"extra-missing-key","env":{"QQ_APP_ID":"a","QQ_CLIENT_SECRET":"s"}}
+{"func":"is_connected","case":"extra-secret-blank-env-empty","extra":{"app_id":"a","client_secret":"  "},"env":{}}
+{"func":"config_connected","case":"token-set","extra":{},"token":"tok","api_key":null}
+{"func":"config_connected","case":"api-key-set","extra":{},"token":null,"api_key":"k"}
+{"func":"config_connected","case":"token-empty-extras-both","extra":{"app_id":"a","client_secret":"s"},"token":"","api_key":null}
+{"func":"config_connected","case":"token-zero-no-extras","extra":{},"token":0,"api_key":0}
+{"func":"config_connected","case":"extras-one-missing","extra":{"app_id":"a"},"token":null,"api_key":null}
+{"func":"config_connected","case":"extras-blank-strings-are-truthy","extra":{"app_id":"","client_secret":"s"},"token":null,"api_key":null}
+{"func":"config_connected","case":"extra-missing-key","token":null,"api_key":null}
+{"func":"hint","case":"platform-hint"}
+{"func":"hint","case":"platform-hint-with-junk","extra":{"a":1}}
+{"func":"meta","case":"register-meta"}
+{"func":"meta","case":"register-meta-with-junk","argv":["x"]}

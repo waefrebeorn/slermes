@@ -1,0 +1,28 @@
+{"func":"canonical_home_key","path":"$HOME","case":"home itself"}
+{"func":"canonical_home_key","path":"$HOME/","case":"trailing separator"}
+{"func":"canonical_home_key","path":"$HOME/prof","case":"existing subdir"}
+{"func":"canonical_home_key","path":"$HOME/PROF","case":"case folded to disk spelling"}
+{"func":"canonical_home_key","path":"$HOME/prof/../prof","case":"dotdot folded"}
+{"func":"canonical_home_key","path":"$HOME/prof/./sub","case":"dot dropped"}
+{"func":"canonical_home_key","path":"$HOME/newdir/deep","case":"tail not on disk"}
+{"func":"canonical_home_key","path":"docs","case":"relative path"}
+{"func":"canonical_home_key","path":"x/../docs","case":"relative dotdot"}
+{"func":"canonical_home_key","case":"missing path key"}
+{"func":"canonical_dir","path":"$HOME/prof/sub","case":"existing nested"}
+{"func":"canonical_dir","path":"$SLERMES_HOME/prof","case":"env placeholder alias"}
+{"func":"expand_user","path":"~/x","case":"tilde subpath"}
+{"func":"expand_user","path":"~","case":"bare tilde"}
+{"func":"expand_user","path":"a/b/","case":"trailing slash kept off"}
+{"func":"expand_user","path":"~/not/../kept","case":"dotdot kept by expanduser"}
+{"func":"expand_user","path":"notatilde","case":"no tilde"}
+{"func":"scope","profile_dir":"$HOME/prof","name":"work","case":"valid scope"}
+{"func":"scope","profile_dir":"$HOME/PROF/","name":"other label","case":"label kept, dir canonical"}
+{"func":"scope","profile_dir":"","name":"work","case":"empty profile_dir"}
+{"func":"scope","profile_dir":"$HOME/prof","name":"","case":"empty name"}
+{"func":"scope","profile_dir":"$HOME/prof","name":null,"case":"null name is empty"}
+{"func":"scope","profile_dir":"$HOME/prof","name":0,"case":"zero name is empty"}
+{"func":"scope","profile_dir":"$HOME/prof/sub","name":5,"case":"numeric label coerced"}
+{"func":"scope_equal","dir_a":"$HOME/prof","name_a":"alpha","dir_b":"$SLERMES_HOME/PROF/","name_b":"beta","case":"same folder different label"}
+{"func":"scope_equal","dir_a":"$HOME/prof","name_a":"alpha","dir_b":"$HOME/prof/sub","name_b":"alpha","case":"different folders"}
+{"func":"scope_equal","dir_a":"","name_a":"alpha","dir_b":"$HOME/prof","name_b":"beta","case":"invalid left scope"}
+{"func":"scope_equal","dir_a":"$HOME/prof","name_a":"alpha","dir_b":"$HOME/ghost","name_b":"beta","case":"missing folder key"}

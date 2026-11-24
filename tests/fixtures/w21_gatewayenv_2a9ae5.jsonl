@@ -1,0 +1,19 @@
+{"func":"home","case":"nothing_set","env":{}}
+{"func":"home","case":"no_env_key"}
+{"func":"home","case":"modern_home_only","env":{"QQBOT_HOME_CHANNEL":"  chat-1  "}}
+{"func":"home","case":"modern_home_with_name","env":{"QQBOT_HOME_CHANNEL":"chat-1","QQBOT_HOME_CHANNEL_NAME":"Team Desk"}}
+{"func":"home","case":"modern_name_unstripped","env":{"QQBOT_HOME_CHANNEL":"chat-1","QQBOT_HOME_CHANNEL_NAME":"  My Home  "}}
+{"func":"home","case":"legacy_home_only","env":{"QQ_HOME_CHANNEL":" legacy-chat "}}
+{"func":"home","case":"legacy_home_with_name_and_thread","env":{"QQ_HOME_CHANNEL":"legacy-chat","QQ_HOME_CHANNEL_NAME":"Legacy","QQ_HOME_CHANNEL_THREAD_ID":"t-9"}}
+{"func":"home","case":"both_set_modern_wins","env":{"QQBOT_HOME_CHANNEL":"modern","QQ_HOME_CHANNEL":"legacy","QQBOT_HOME_CHANNEL_NAME":"M","QQ_HOME_CHANNEL_NAME":"L"}}
+{"func":"home","case":"blank_modern_falls_back","env":{"QQBOT_HOME_CHANNEL":"","QQ_HOME_CHANNEL":"legacy"}}
+{"func":"home","case":"spaces_modern_falls_back","env":{"QQBOT_HOME_CHANNEL":"   ","QQ_HOME_CHANNEL":"legacy","QQ_HOME_CHANNEL_THREAD_ID":"t-2"}}
+{"func":"home","case":"thread_modern_wins","env":{"QQBOT_HOME_CHANNEL":"c","QQBOT_HOME_CHANNEL_THREAD_ID":"t-1","QQ_HOME_CHANNEL_THREAD_ID":"t-2"}}
+{"func":"home","case":"thread_blank_modern_legacy_used","env":{"QQBOT_HOME_CHANNEL":"c","QQBOT_HOME_CHANNEL_THREAD_ID":"","QQ_HOME_CHANNEL_THREAD_ID":"t-2"}}
+{"func":"home","case":"thread_both_blank","env":{"QQBOT_HOME_CHANNEL":"c","QQBOT_HOME_CHANNEL_THREAD_ID":"","QQ_HOME_CHANNEL_THREAD_ID":"  "}}
+{"func":"home","case":"blank_name_stays_blank","env":{"QQBOT_HOME_CHANNEL":"c","QQBOT_HOME_CHANNEL_NAME":""}}
+{"func":"home","case":"legacy_blank_name_stays_blank","env":{"QQ_HOME_CHANNEL":"c","QQ_HOME_CHANNEL_NAME":""}}
+{"func":"home","case":"unrelated_key_only","env":{"OTHER":"x","QQBOT_HOME_CHANNEL_NAME":"ignored"}}
+{"func":"authz","case":"authz_table"}
+{"func":"env_enable","case":"enable_credentials"}
+{"func":"plan","case":"override_plan"}

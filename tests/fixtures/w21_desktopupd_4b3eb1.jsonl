@@ -1,0 +1,47 @@
+{"func":"asar_header_check","size":4,"header_size":40,"payload_size":36,"json_size":32,"file_size":100,"case":"a consistent header"}
+{"func":"asar_header_check","size":4,"header_size":40,"payload_size":36,"json_size":32,"file_size":48,"case":"header exactly fills the file"}
+{"func":"asar_header_check","size":4,"header_size":40,"payload_size":36,"json_size":32,"file_size":47,"case":"file one byte short"}
+{"func":"asar_header_check","size":3,"header_size":40,"payload_size":36,"json_size":32,"file_size":100,"case":"wrong pickle size"}
+{"func":"asar_header_check","size":4,"header_size":44,"payload_size":36,"json_size":32,"file_size":100,"case":"header size disagrees with payload"}
+{"func":"asar_header_check","size":4,"header_size":40,"payload_size":40,"json_size":32,"file_size":100,"case":"payload size disagrees with the json"}
+{"func":"asar_header_check","size":4,"header_size":40,"payload_size":36,"json_size":0,"file_size":100,"case":"empty json header"}
+{"func":"asar_header_check","size":4,"header_size":44,"payload_size":40,"json_size":67108865,"file_size":100,"case":"json header over 64 MiB"}
+{"func":"asar_entry_path_check","name":"dist/app.js","case":"plain relative path"}
+{"func":"asar_entry_path_check","name":"dist/./app.js","case":"dot part is fine"}
+{"func":"asar_entry_path_check","name":"","case":"empty name"}
+{"func":"asar_entry_path_check","name":"/etc/passwd","case":"absolute path"}
+{"func":"asar_entry_path_check","name":"dist/../secret","case":"dotdot part"}
+{"func":"asar_entry_path_check","name":"dist\\app.js","case":"backslash in name"}
+{"func":"asar_entry_path_check","name":"C:app.js","case":"colon in name"}
+{"func":"asar_entry_check","name":"dist/app.js","length":6,"header_size":256,"offset":40,"file_size":400,"read_len":6,"case":"entry in range"}
+{"func":"asar_entry_check","name":"dist/app.js","length":0,"header_size":256,"offset":40,"file_size":400,"read_len":0,"case":"zero length entry"}
+{"func":"asar_entry_check","name":"dist/app.js","length":6,"header_size":256,"offset":200,"file_size":400,"read_len":6,"case":"entry past the end"}
+{"func":"asar_entry_check","name":"dist/app.js","length":6,"header_size":256,"offset":-1,"file_size":400,"read_len":6,"case":"negative offset"}
+{"func":"asar_entry_check","name":"dist/app.js","length":6,"header_size":256,"offset":40,"file_size":400,"read_len":6,"data_blank":true,"case":"blank entry bytes"}
+{"func":"asar_entry_check","name":"dist/app.js","length":6,"header_size":256,"offset":40,"unpacked":true,"file_size":100,"read_len":6,"case":"unpacked skips the range rule"}
+{"func":"asar_entry_check","name":"dist/app.js","length":6,"header_size":256,"offset":900,"unpacked":true,"file_size":400,"read_len":6,"case":"unpacked ignores a wild offset"}
+{"func":"asar_entry_check","name":"dist/app.js","length":6,"header_size":256,"offset":900,"unpacked":true,"file_size":400,"read_len":6,"data_blank":true,"case":"unpacked blank entry"}
+{"func":"asar_entry_check","name":"dist/../x.js","length":6,"header_size":256,"offset":40,"file_size":400,"read_len":6,"case":"bad path wins over the range"}
+{"func":"renderer_has_module_entry","html":"<html><head><script type=\"module\" src=\"./assets/index.js\"></script></head></html>","case":"local module script"}
+{"func":"renderer_has_module_entry","html":"<script type='module' src='./app.js'></script>","case":"single quoted module script"}
+{"func":"renderer_has_module_entry","html":"<SCRIPT TYPE=\"MODULE\" SRC=\"./app.js\"></SCRIPT>","case":"uppercase module script"}
+{"func":"renderer_has_module_entry","html":"<script data-src=\"x\" type=\"module\" src=\"./y.js\"></script>","case":"last src attribute wins"}
+{"func":"renderer_has_module_entry","html":"<link rel=\"modulepreload\" href=\"./a.js\">","case":"link tag is not a script"}
+{"func":"renderer_has_module_entry","html":"<script type=\"module\"></script>","case":"module script without a url"}
+{"func":"renderer_has_module_entry","html":"<script src=\"./x.js\"></script>","case":"classic script is not the module entry"}
+{"func":"renderer_has_module_entry","html":"<script type=\"module\" src=\"https://cdn.example/x.js\"></script>","case":"remote https entry"}
+{"func":"renderer_has_module_entry","html":"<script type=\"module\" src=\"//cdn.example/x.js\"></script>","case":"protocol relative entry"}
+{"func":"renderer_has_module_entry","html":"<img src=\"./x.png\">","case":"no script or link tag"}
+{"func":"renderer_has_module_entry","html":"","case":"empty html"}
+{"func":"renderer_has_module_entry","html":"<script type=\"module\" src=./unquoted.js></script>","case":"unquoted url does not match"}
+{"func":"root_to_verify","project_root":null,"checkout_root":"C:\\checkout","case":"no caller root uses the checkout"}
+{"func":"root_to_verify","project_root":"C:\\project","checkout_root":"C:\\checkout","has_packaged":true,"case":"caller root carries a packaged app"}
+{"func":"root_to_verify","project_root":"C:\\project","checkout_root":"C:\\checkout","has_packaged":false,"case":"caller root without a packaged app"}
+{"func":"root_to_verify","project_root":".","checkout_root":"C:\\checkout","has_packaged":false,"case":"empty caller root"}
+{"func":"verify","project_root":"C:\\project","checkout_root":"C:\\checkout","packaged":{"C:\\project":"C:\\project\\apps\\desktop\\Hermes.exe","C:\\checkout":"C:\\checkout\\apps\\desktop\\Hermes.exe"},"integrity_error":"","entry_error":"","build_needed":false,"case":"a healthy install"}
+{"func":"verify","project_root":"C:\\project","checkout_root":"C:\\checkout","packaged":{"C:\\checkout":"C:\\checkout\\apps\\desktop\\Hermes.exe"},"case":"caller root falls back to the checkout"}
+{"func":"verify","project_root":"C:\\project","checkout_root":"C:\\checkout","packaged":{},"case":"no executable anywhere"}
+{"func":"verify","project_root":null,"checkout_root":"C:\\checkout","packaged":{"C:\\checkout":"C:\\checkout\\apps\\desktop\\Hermes.exe"},"case":"no caller root verifies the checkout"}
+{"func":"verify","project_root":"C:\\project","checkout_root":"C:\\checkout","packaged":{"C:\\project":"C:\\project\\apps\\desktop\\Hermes.exe"},"integrity_error":"the signature does not match","case":"integrity failure"}
+{"func":"verify","project_root":"C:\\project","checkout_root":"C:\\checkout","packaged":{"C:\\project":"C:\\project\\apps\\desktop\\Hermes.exe"},"entry_error":"The updated Desktop archive or main entry is invalid: invalid ASAR header","case":"packaged entry failure"}
+{"func":"verify","project_root":"C:\\project","checkout_root":"C:\\checkout","packaged":{"C:\\project":"C:\\project\\apps\\desktop\\Hermes.exe"},"build_needed":true,"case":"stale build"}

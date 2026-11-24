@@ -1,0 +1,23 @@
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{},"case":"first ever tick fires"}
+{"func":"may_fire","chat_id":123,"now":101.0,"state":{"last_sent":{"123":100.0}},"case":"one second later is inside the interval"}
+{"func":"may_fire","chat_id":123,"now":102.0,"state":{"last_sent":{"123":100.0}},"case":"exactly two seconds passes the interval"}
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{"cooldown_until":{"123":105.0}},"case":"cooldown blocks"}
+{"func":"may_fire","chat_id":123,"now":106.0,"state":{"cooldown_until":{"123":105.0}},"case":"expired cooldown is popped and fires"}
+{"func":"in_cooldown","chat_id":123,"now":100.0,"state":{"cooldown_until":{"123":105.0}},"case":"in cooldown active"}
+{"func":"in_cooldown","chat_id":123,"now":105.0,"state":{"cooldown_until":{"123":105.0}},"case":"in cooldown expires at the boundary"}
+{"func":"in_cooldown","chat_id":"@other","now":100.0,"state":{"cooldown_until":{"123":105.0}},"case":"in cooldown other chat miss"}
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{"flood_remaining":0.5},"case":"flood window blocks"}
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{"flood_remaining":null},"case":"explicit null flood proceeds"}
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{"slot_remaining":0.001},"case":"send slot held blocks"}
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{"slot_remaining":0.0},"case":"zero slot proceeds"}
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{"ai_calls":{"123":[99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0,99.0]}},"case":"twenty calls in five seconds blocks"}
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{"ai_calls":{"123":[95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0]}},"case":"forty calls in thirty seconds blocks"}
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{"ai_calls":{"123":[69.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0,94.0]}},"case":"pruned oldest call frees a slot"}
+{"func":"may_fire","chat_id":"@chan","now":100.0,"state":{"cooldown_until":{"@chan":101.0}},"case":"username cooldown key"}
+{"func":"may_fire","chat_id":-100123,"now":100.0,"state":{},"case":"negative channel id"}
+{"func":"may_fire","chat_id":" 007 ","now":100.0,"state":{"last_sent":{"7":98.0}},"case":"numeric string normalizes to int key"}
+{"func":"may_fire","chat_id":true,"now":100.0,"state":{},"case":"bool chat id stringifies as True"}
+{"func":"may_fire","chat_id":null,"now":100.0,"state":{},"case":"null chat id stringifies as None"}
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{"last_sent":{"999":90.0,"123":99.9}},"case":"stale last_sent entry is pruned"}
+{"func":"in_cooldown","chat_id":123,"now":100.0,"state":[],"case":"wrong type state list"}
+{"func":"may_fire","chat_id":123,"now":100.0,"state":{"ai_calls":{"999":[]}},"case":"empty deque of another chat is dropped"}

@@ -1,0 +1,50 @@
+{"func": "identity", "case": "full", "cfg": {"command": "python", "args": ["-m", "srv", "--port", "1"], "url": ""}}
+{"func": "identity", "case": "cfg_null", "cfg": null}
+{"func": "identity", "case": "cfg_list", "cfg": ["x"]}
+{"func": "identity", "case": "cfg_empty", "cfg": {}}
+{"func": "identity", "case": "command_missing", "cfg": {"args": ["a"], "url": "ws://h"}}
+{"func": "identity", "case": "args_scalar_str", "cfg": {"command": "c", "args": "-x"}}
+{"func": "identity", "case": "args_scalar_int", "cfg": {"command": "c", "args": 7}}
+{"func": "identity", "case": "args_dict", "cfg": {"command": "c", "args": {"k": 1}}}
+{"func": "identity", "case": "args_empty_list", "cfg": {"command": "c", "args": []}}
+{"func": "identity", "case": "args_null", "cfg": {"command": "c", "args": null}}
+{"func": "identity", "case": "args_coerce", "cfg": {"command": "c", "args": [1, true, null, 1.5]}}
+{"func": "identity", "case": "url_number", "cfg": {"command": "c", "url": 8080}}
+{"func": "identity", "case": "command_number", "cfg": {"command": 0, "url": "u"}}
+{"func": "identity", "case": "env_expand", "cfg": {"command": "${HOME}/bin/py", "args": ["${PORT}"], "url": "ws://${HOST}:${PORT}"}, "env": {"HOME": "/h", "PORT": "9", "HOST": "box"}}
+{"func": "identity", "case": "env_prefix", "cfg": {"command": "${env:HOME}/py"}, "env": {"HOME": "/h"}}
+{"func": "identity", "case": "env_unset_kept", "cfg": {"command": "${MISSING}/py"}, "env": {"OTHER": "x"}}
+{"func": "identity", "case": "env_empty_value_kept", "cfg": {"command": "${EMPTY}/py"}, "env": {"EMPTY": ""}}
+{"func": "identity", "case": "env_spaces", "cfg": {"command": "${ HOME }/py"}, "env": {"HOME": "/h"}}
+{"func": "identity", "case": "env_no_brace", "cfg": {"command": "${HOME/py"}, "env": {"HOME": "/h"}}
+{"func": "identity", "case": "env_nested_values", "cfg": {"command": "${A}", "args": ["${B}", ["${C}"]]}, "env": {"A": "a", "B": "b", "C": "c"}}
+{"func": "identity", "case": "env_missing_key", "cfg": {"command": "${HOME}"}}
+{"func": "portable", "case": "empty_state", "state": {}}
+{"func": "portable", "case": "no_servers", "state": {"portable_servers": {}, "declared": {}, "registered": {}}}
+{"func": "portable", "case": "one_server_registered", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {}, "registered": {"s1": ["t1", "t2"]}}}
+{"func": "portable", "case": "lazy_only", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {}, "lazy": {"s1": ["t3"]}}}
+{"func": "portable", "case": "registered_and_lazy", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {}, "registered": {"s1": ["t1"]}, "lazy": {"s1": ["t2"]}}}
+{"func": "portable", "case": "native_same_identity", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {"s1": {"command": "c", "args": ["-x"]}}, "native": {"s1": {"command": "c", "args": ["-x"]}}, "registered": {"s1": ["t1"]}}}
+{"func": "portable", "case": "native_different_command", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {"s1": {"command": "c"}}, "native": {"s1": {"command": "other"}}, "registered": {"s1": ["t1"]}}}
+{"func": "portable", "case": "native_declared_missing", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {}, "native": {"s1": {"command": "c"}}, "registered": {"s1": ["t1"]}}}
+{"func": "portable", "case": "native_placeholder_equal", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {"s1": {"command": "${PY}", "url": "ws://${HOST}:1"}}, "native": {"s1": {"command": "/usr/bin/python", "url": "ws://box:1"}}, "env": {"PY": "/usr/bin/python", "HOST": "box"}, "registered": {"s1": ["t1"]}}}
+{"func": "portable", "case": "native_placeholder_differs", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {"s1": {"command": "${PY}"}}, "native": {"s1": {"command": "/usr/bin/python"}}, "env": {"PY": "/opt/python"}, "registered": {"s1": ["t1"]}}}
+{"func": "portable", "case": "native_not_dict", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {"s1": {"command": "c"}}, "native": "garbage", "registered": {"s1": ["t1"]}}}
+{"func": "portable", "case": "native_no_args_vs_empty_args", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {"s1": {"command": "c"}}, "native": {"s1": {"command": "c", "args": []}}, "registered": {"s1": ["t1"]}}}
+{"func": "portable", "case": "args_scalar_vs_list", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {"s1": {"command": "c", "args": ["-x"]}}, "native": {"s1": {"command": "c", "args": "-x"}}, "registered": {"s1": ["t1"]}}}
+{"func": "portable", "case": "two_servers_one_owner", "state": {"portable_servers": {"s1": "owner_a", "s2": "owner_a"}, "declared": {}, "registered": {"s1": ["t1"], "s2": ["t2"]}, "lazy": {"s1": ["t9"]}}}
+{"func": "portable", "case": "two_owners", "state": {"portable_servers": {"s1": "owner_a", "s2": "owner_b"}, "declared": {}, "registered": {"s1": ["t1"], "s2": ["t2"]}}}
+{"func": "portable", "case": "owner_not_string", "state": {"portable_servers": {"s1": 5}, "declared": {}, "registered": {"s1": ["t1"]}}}
+{"func": "portable", "case": "registered_not_list", "state": {"portable_servers": {"s1": "owner_a"}, "declared": {}, "registered": {"s1": "t1"}}}
+{"func": "ownership", "case": "empty", "state": {}}
+{"func": "ownership", "case": "plugins_only", "state": {"plugins": {"plug_a": ["ta", "tb"]}}}
+{"func": "ownership", "case": "builtin_subtracted", "state": {"plugins": {"plug_a": ["ta", "text_to_speech"]}, "core_tools": ["text_to_speech"]}}
+{"func": "ownership", "case": "toolset_builtin", "state": {"plugins": {"plug_a": ["ta", "term"]}, "core_tools": [], "toolsets": {"shell": {"tools": ["term"]}}}}
+{"func": "ownership", "case": "collision_two_plugins", "state": {"plugins": {"plug_a": ["shared", "ta"], "plug_b": ["shared", "tb"]}}}
+{"func": "ownership", "case": "portable_merge", "state": {"plugins": {"owner_a": ["ta"]}, "portable_servers": {"s1": "owner_a"}, "declared": {}, "registered": {"s1": ["tb"]}}}
+{"func": "ownership", "case": "portable_new_owner", "state": {"plugins": {}, "portable_servers": {"s1": "owner_c"}, "declared": {}, "registered": {"s1": ["tc"]}}}
+{"func": "ownership", "case": "collision_plugin_portable", "state": {"plugins": {"plug_a": ["shared"]}, "portable_servers": {"s1": "plug_b"}, "declared": {}, "registered": {"s1": ["shared", "tb"]}}}
+{"func": "ownership", "case": "all_builtin", "state": {"plugins": {"plug_a": ["x", "y"]}, "core_tools": ["x", "y"]}}
+{"func": "ownership", "case": "portable_native_filtered", "state": {"plugins": {}, "portable_servers": {"s1": "owner_a"}, "declared": {"s1": {"command": "c"}}, "native": {"s1": {"command": "z"}}, "registered": {"s1": ["t1"]}}}
+{"func": "ownership", "case": "duplicate_tools_in_one_plugin", "state": {"plugins": {"plug_a": ["ta", "ta", "tb"]}}}
+{"func": "ownership", "case": "three_owners_shared_everywhere", "state": {"plugins": {"p1": ["s"], "p2": ["s"], "p3": ["s", "u"]}}}

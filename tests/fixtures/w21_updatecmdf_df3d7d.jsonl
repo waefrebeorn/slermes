@@ -1,0 +1,19 @@
+{"case":"build_file_stamp_equal","func":"contains","sha":"abc123","identity":{"source":"build-file","sha":"abc123"},"probe":{"returncode":0}}
+{"case":"build_file_stamp_longer","func":"contains","sha":"abc123","identity":{"source":"build-file","sha":"abc1234def"},"probe":{"returncode":1}}
+{"case":"build_file_sha_longer","func":"contains","sha":"abc1234def","identity":{"source":"build-file","sha":"abc123"},"probe":{"returncode":1}}
+{"case":"build_file_unrelated","func":"contains","sha":"zzz999","identity":{"source":"build-file","sha":"abc123"},"probe":{"returncode":0}}
+{"case":"build_file_stamp_missing","func":"contains","sha":"abc123","identity":{"source":"build-file"},"probe":{"returncode":0}}
+{"case":"build_file_stamp_empty","func":"contains","sha":"abc123","identity":{"source":"build-file","sha":""},"probe":{"returncode":0}}
+{"case":"build_file_sha_empty","func":"contains","sha":"","identity":{"source":"build-file","sha":"abc123"},"probe":{"returncode":1}}
+{"case":"build_file_stamp_number","func":"contains","sha":"123","identity":{"source":"build-file","sha":123},"probe":{"returncode":1}}
+{"case":"build_file_stamp_null_probe_ok","func":"contains","sha":"abc123","identity":{"source":"build-file","sha":null},"probe":{"returncode":0}}
+{"case":"git_ancestor_ok","func":"contains","sha":"abc123","identity":{"source":"git","sha":"abc123"},"probe":{"returncode":0}}
+{"case":"git_not_ancestor","func":"contains","sha":"abc123","identity":{"source":"git","sha":"def456"},"probe":{"returncode":1}}
+{"case":"git_probe_raises","func":"contains","sha":"abc123","identity":{"source":"git","sha":"abc123"},"probe":{"error":"git missing"}}
+{"case":"git_probe_missing","func":"contains","sha":"abc123","identity":{"source":"git","sha":"abc123"}}
+{"case":"identity_missing_defaults_empty","func":"contains","sha":"abc123","probe":{"returncode":0}}
+{"case":"identity_null_probe_ok","func":"contains","sha":"abc123","identity":null,"probe":{"returncode":0}}
+{"case":"identity_not_dict","func":"contains","sha":"abc123","identity":["source","build-file"],"probe":{"returncode":0}}
+{"case":"source_absent_uses_probe","func":"contains","sha":"abc123","identity":{"sha":"abc123"},"probe":{"returncode":0}}
+{"case":"probe_returncode_128","func":"contains","sha":"abc123","identity":{"source":"git"},"probe":{"returncode":128}}
+{"case":"probe_error_null_uses_code","func":"contains","sha":"abc123","identity":{"source":"git"},"probe":{"error":null,"returncode":0}}

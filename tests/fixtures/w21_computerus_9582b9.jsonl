@@ -1,0 +1,33 @@
+{"case": "actions", "func": "actions"}
+{"case": "status-unsupported", "func": "status", "supported": false}
+{"case": "status-not-installed-default-cmd", "func": "status", "install_command": null, "installed": false, "missing": ["tigervnc", "xfwm4"], "supported": true}
+{"case": "status-not-installed-command", "func": "status", "install_command": "sudo apt-get install -y tigervnc", "installed": false, "missing": ["tigervnc"], "supported": true}
+{"case": "status-not-installed-empty-missing", "func": "status", "installed": false, "missing": [], "supported": true}
+{"case": "status-running-human", "display": ":17", "func": "status", "geometry": "1920x1080x24", "installed": true, "lease_view": {"holder": "human", "viewer_hash": "9f2c"}, "pid": 4321, "profile": "work", "running": true, "socket": "/run/xvnc-work.sock", "supported": true}
+{"case": "status-running-agent", "display": ":17", "func": "status", "geometry": "1280x800x24", "installed": true, "lease_view": {"holder": "agent", "viewer_hash": ""}, "pid": 9, "profile": "work", "running": true, "socket": "/tmp/xvnc.sock", "supported": true}
+{"blocker": "DISPLAY :17 is held by another X server.", "case": "status-blocker", "func": "status", "installed": true, "profile": "work", "supported": true}
+{"case": "status-installed-not-running", "func": "status", "installed": true, "profile": "night-shift", "supported": true}
+{"blocker": "", "case": "status-blocker-empty-string", "func": "status", "installed": true, "profile": "p", "supported": true}
+{"as_dict": {"display": ":17", "geometry": "1920x1080x24", "installed": true, "missing": [], "pid": 4321, "profile": "work", "running": true, "socket": "/run/xvnc-work.sock", "supported": true}, "case": "status-json-running", "func": "status", "installed": true, "json": true, "lease_view": {"holder": "human", "viewer_hash": "9f2c"}, "running": true, "supported": true}
+{"as_dict": {"blocker": null, "profile": "work", "running": false}, "case": "status-json-stopped", "func": "status", "installed": true, "json": true, "lease_view": {"holder": "agent", "viewer_hash": ""}, "running": false, "supported": true}
+{"case": "status-json-no-as-dict", "func": "status", "json": true, "lease_view": {"holder": "agent", "viewer_hash": ""}, "running": false}
+{"case": "start-ok", "display": ":17", "func": "start", "geometry": "1920x1080x24", "profile": "work"}
+{"case": "start-error", "error": "TigerVNC is not installed", "func": "start"}
+{"case": "start-error-empty", "error": "", "func": "start"}
+{"case": "stop-human", "func": "stop", "released_holder": "human", "stopped": true, "supported": true}
+{"case": "stop-human-forced", "force": true, "func": "stop", "released_holder": "agent", "stopped": true, "supported": true}
+{"case": "stop-agent", "func": "stop", "released_holder": "agent", "stopped": true, "supported": true}
+{"case": "stop-agent-idle", "func": "stop", "released_holder": "agent", "stopped": false, "supported": true}
+{"case": "stop-unsupported", "func": "stop", "released_holder": "human", "stopped": true, "supported": false}
+{"case": "install-unsupported", "func": "install", "supported": false}
+{"case": "install-already", "func": "install", "missing": [], "supported": true}
+{"case": "install-no-package-manager", "command": null, "func": "install", "missing": ["tigervnc"], "supported": true}
+{"answer": "n", "case": "install-tty-declined", "command": "sudo apt-get install -y tigervnc", "func": "install", "missing": ["tigervnc"], "supported": true, "tty": true}
+{"answer": "", "case": "install-tty-default-yes", "command": "sudo apt-get install -y tigervnc", "func": "install", "missing": ["tigervnc"], "supported": true, "tty": true}
+{"answer": "  YES  ", "case": "install-tty-uppercase", "command": "sudo apt-get install -y tigervnc", "func": "install", "missing": ["tigervnc"], "supported": true, "tty": true}
+{"case": "install-no-tty", "command": "sudo apt-get install -y tigervnc", "func": "install", "missing": ["tigervnc"], "rc": 0, "supported": true}
+{"answer": "n", "case": "install-yes-flag", "command": "sudo apt-get install -y tigervnc", "func": "install", "missing": ["tigervnc"], "supported": true, "tty": true, "yes": true}
+{"busy": true, "busy_message": "another install is running for this profile", "case": "install-busy", "command": "sudo apt-get install -y tigervnc", "func": "install", "missing": ["tigervnc"], "supported": true}
+{"case": "install-no-sudo", "command": "sudo apt-get install -y tigervnc xfwm4", "func": "install", "missing": ["tigervnc"], "no_sudo": true, "supported": true}
+{"case": "install-rc-three", "command": "sudo apt-get install -y tigervnc", "func": "install", "missing": ["tigervnc"], "rc": 3, "supported": true}
+{"after_missing": ["xfdesktop"], "case": "install-still-missing", "command": "sudo apt-get install -y tigervnc", "func": "install", "missing": ["tigervnc"], "rc": 0, "supported": true}

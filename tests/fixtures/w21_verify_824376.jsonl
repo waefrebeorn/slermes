@@ -1,0 +1,22 @@
+{"func":"spec","case":"verify parser spec"}
+{"func":"parse","argv":[],"case":"no arguments uses defaults"}
+{"func":"parse","argv":["."],"case":"positional path"}
+{"func":"parse","argv":["/proj","--detect-only"],"case":"path with detect only"}
+{"func":"parse","argv":["--save","--skip-start","--json"],"case":"all boolean flags"}
+{"func":"parse","argv":["--phase","build","--phase","test"],"case":"repeatable phase"}
+{"func":"parse","argv":["--phase","bootstrap"],"case":"single phase"}
+{"func":"parse","argv":["--port","8080"],"case":"port integer"}
+{"func":"parse","argv":["--port=-1"],"case":"port inline negative"}
+{"func":"parse","argv":["--timeout","2.5","--ready-timeout","1e3"],"case":"float timeouts"}
+{"func":"parse","argv":["--timeout","abc"],"case":"bad float timeout"}
+{"func":"parse","argv":["--phase","deploy"],"case":"invalid phase choice"}
+{"func":"parse","argv":["--port","0x10"],"case":"hex port rejected"}
+{"func":"parse","argv":["--nope"],"case":"unknown option"}
+{"func":"parse","argv":["a","b"],"case":"extra positional"}
+{"func":"parse","argv":["--detect-only=1"],"case":"store true with explicit value"}
+{"func":"parse","argv":["--port=9090"],"case":"inline port"}
+{"func":"parse","argv":["--","-weird"],"case":"terminator makes a dash positional"}
+{"func":"parse","argv":["--timeout"],"case":"missing option value"}
+{"func":"parse","argv":["-1.5"],"case":"negative number positional"}
+{"func":"parse","argv":["--port","007"],"case":"port leading zeros"}
+{"func":"parse","argv":["--skip-start","--phase","start","--port","5000","proj"],"case":"mixed flags and positional"}

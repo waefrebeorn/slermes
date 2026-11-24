@@ -206,6 +206,12 @@ fi
 # Windows pipes default to cp1252; harness output and oracle prose carry
 # UTF-8 (box-drawing, emoji). Pin the IO encoding for the oracle process.
 export PYTHONIOENCODING=utf-8
+# Native extensions inside the WindowsApps payload are refused there (Access is
+# denied); a user-writable copy of the same wheels loads, so it goes first.
+if [ -d "C:/Users/eman5/hermes-agent/sitecopy" ]; then
+  PYTHONPATH="C:/Users/eman5/hermes-agent/sitecopy${PYTHONPATH:+:$PYTHONPATH}"
+  export PYTHONPATH
+fi
 "$PYBIN" "tests/$ORACLE" < "$TMPH/harness.out"
 RC=$?
 rm -rf "$TMPH"
