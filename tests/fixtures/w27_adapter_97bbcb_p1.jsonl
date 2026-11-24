@@ -1,0 +1,45 @@
+{"func": "extract_message_payload", "case": "workspace-addons", "envelope": {"chat": {"messagePayload": {"message": {"name": "spaces/AAA/messages/1", "text": "hi"}, "space": {"name": "spaces/AAA", "type": "DM"}}}}}
+{"func": "extract_message_payload", "case": "native", "envelope": {"type": "MESSAGE", "message": {"name": "spaces/A/messages/2", "text": "yo"}, "space": {"name": "spaces/A", "spaceType": "SPACE"}}}
+{"func": "extract_message_payload", "case": "native-not-message", "envelope": {"type": "CARD_CLICKED", "message": {"name": "spaces/A/messages/3"}, "space": {"name": "spaces/A"}}}
+{"func": "extract_message_payload", "case": "native-no-type", "envelope": {"message": {"name": "spaces/A/messages/4", "space": {"name": "spaces/A/inner"}}}}
+{"func": "extract_message_payload", "case": "relay-full", "envelope": {"event_type": "MESSAGE", "sender_email": " Ann@Example.COM ", "text": "hello relay", "message_name": "relay-1", "sender_display_name": "Ann", "thread_name": "spaces/S/threads/T", "space_name": "spaces/S", "space_type": "SPACE"}}
+{"func": "extract_message_payload", "case": "relay-bot-lower", "envelope": {"sender_email": "bot@x.io", "text": "beep", "sender_type": " bot "}}
+{"func": "extract_message_payload", "case": "relay-no-text", "envelope": {"event_type": "MESSAGE", "sender_email": "x@y.z"}}
+{"func": "extract_message_payload", "case": "relay-not-message", "envelope": {"event_type": "TYPING", "sender_email": "x@y.z"}}
+{"func": "extract_message_payload", "case": "unknown", "envelope": {"foo": 1}}
+{"func": "extract_message_payload", "case": "relay-space-type-null", "envelope": {"event_type": "MESSAGE", "sender_email": "a@b.c", "space_name": "spaces/Q", "space_type": null}}
+{"func": "prepare_inbound", "case": "relay-ok", "envelope": {"event_type": "MESSAGE", "sender_email": "a@b.c", "text": "hey", "space_name": "spaces/Q"}, "dedup_seen": []}
+{"func": "prepare_inbound", "case": "native-ok", "envelope": {"type": "MESSAGE", "message": {"name": "spaces/A/messages/9", "sender": {"type": "HUMAN"}}, "space": {"name": "spaces/A"}}}
+{"func": "prepare_inbound", "case": "bot-dropped", "envelope": {"type": "MESSAGE", "message": {"name": "m1", "sender": {"type": "BOT"}}, "space": {"name": "spaces/A"}}}
+{"func": "prepare_inbound", "case": "relay-bot-dropped", "envelope": {"sender_email": "bot@x.io", "text": "b", "sender_type": "BOT"}}
+{"func": "prepare_inbound", "case": "dup-dropped", "envelope": {"type": "MESSAGE", "message": {"name": "spaces/A/messages/7"}, "space": {"name": "spaces/A"}}, "dedup_seen": ["spaces/A/messages/7", "other"]}
+{"func": "prepare_inbound", "case": "empty-name-never-dup", "envelope": {"type": "MESSAGE", "message": {"text": "x"}, "space": {"name": "spaces/A"}}, "dedup_seen": [""]}
+{"func": "prepare_inbound", "case": "unknown", "envelope": {"nothing": true}}
+{"func": "thread_body", "case": "plain", "text": "hello", "thread_id": null}
+{"func": "thread_body", "case": "threaded", "text": "hello", "thread_id": "spaces/S/threads/T"}
+{"func": "thread_body", "case": "empty-thread", "text": "hi", "thread_id": ""}
+{"func": "create_kwargs", "case": "no-thread", "chat_id": "spaces/S", "body": {"text": "hi"}}
+{"func": "create_kwargs", "case": "threaded", "chat_id": "spaces/S", "body": {"text": "hi", "thread": {"name": "spaces/S/threads/T"}}}
+{"func": "create_kwargs", "case": "empty-thread-name", "chat_id": "spaces/S", "body": {"text": "hi", "thread": {}}}
+{"func": "mime_for_message_type", "case": "image", "mime": "image/png"}
+{"func": "mime_for_message_type", "case": "audio", "mime": "audio/ogg"}
+{"func": "mime_for_message_type", "case": "video", "mime": "video/mp4"}
+{"func": "mime_for_message_type", "case": "pdf", "mime": "application/pdf"}
+{"func": "mime_for_message_type", "case": "empty", "mime": ""}
+{"func": "mime_for_message_type", "case": "upper", "mime": "IMAGE/PNG"}
+{"func": "route_pubsub_event", "case": "membership-created", "ce_type": "google.workspace.chat.membership.v1.created", "envelope": {"chat": {"membershipPayload": {"space": {"name": "spaces/NEW"}, "membership": {"member": {"type": "BOT", "name": "users/42"}}}}}, "bot_user_id": null}
+{"func": "route_pubsub_event", "case": "membership-created-known-bot", "ce_type": "google.workspace.chat.membership.v1.created", "envelope": {"chat": {"membershipPayload": {"space": {"name": "spaces/NEW"}, "membership": {"member": {"type": "BOT", "name": "users/42"}}}}}, "bot_user_id": "users/1"}
+{"func": "route_pubsub_event", "case": "membership-removed", "ce_type": "google.workspace.chat.membership.v1.removed", "envelope": {"chat": {"membershipPayload": {"space": {"name": "spaces/OLD"}}}}, "bot_user_id": "users/1"}
+{"func": "route_pubsub_event", "case": "card-clicked", "ce_type": "google.workspace.chat.buttonClicked", "envelope": {}, "bot_user_id": "users/1"}
+{"func": "route_pubsub_event", "case": "widget", "ce_type": "google.workspace.chat.widget.v1", "envelope": {}, "bot_user_id": null}
+{"func": "route_pubsub_event", "case": "message", "ce_type": "google.workspace.chat.message.v1.created", "envelope": {}, "bot_user_id": "users/1"}
+{"func": "build_message_event", "case": "dm-main-flow", "msg": {"name": "spaces/D/messages/1", "text": "  hi  ", "thread": {"name": "spaces/D/threads/T1"}, "sender": {"name": "users/9", "email": "A@B.C", "displayName": "Ann", "type": "HUMAN"}}, "envelope": {"space": {"name": "spaces/D", "spaceType": "DM", "displayName": "Ann DM"}}, "counts": {}, "authorized": null, "attachments": []}
+{"func": "build_message_event", "case": "dm-side-thread", "msg": {"name": "spaces/D/messages/2", "argumentText": "again", "thread": {"name": "spaces/D/threads/T2"}, "sender": {"name": "users/9", "email": "a@b.c"}}, "envelope": {"space": {"name": "spaces/D", "type": "DIRECT_MESSAGE"}}, "counts": {"spaces/D": {"spaces/D/threads/T2": 3}}, "authorized": null, "attachments": []}
+{"func": "build_message_event", "case": "group-thread", "msg": {"name": "spaces/G/messages/3", "text": "yo", "thread": {"name": "spaces/G/threads/T9"}, "sender": {"name": "users/3", "displayName": "Bo"}}, "envelope": {"space": {"name": "spaces/G", "spaceType": "SPACE"}}, "counts": {}, "authorized": null, "attachments": []}
+{"func": "build_message_event", "case": "slash-command", "msg": {"name": "spaces/G/messages/4", "text": "args here", "slashCommand": {"commandId": "7"}, "sender": {"name": "users/3"}}, "envelope": {"space": {"name": "spaces/G", "spaceType": "SPACE"}}, "counts": {}, "authorized": null, "attachments": []}
+{"func": "build_message_event", "case": "slash-already-slash", "msg": {"name": "spaces/G/messages/5", "text": "/status", "slashCommand": {"commandId": "7"}, "sender": {"name": "users/3"}}, "envelope": {"space": {"name": "spaces/G", "spaceType": "SPACE"}}, "counts": {}, "authorized": null, "attachments": []}
+{"func": "build_message_event", "case": "attachments-authorized-no-text", "msg": {"name": "spaces/G/messages/6", "attachment": [{"contentType": "image/png"}, {"contentType": "application/pdf"}], "sender": {"name": "users/3", "email": "c@d.e"}}, "envelope": {"space": {"name": "spaces/G", "spaceType": "SPACE"}}, "counts": {}, "authorized": true, "attachments": [{"path": "/cache/a.png", "mime": "image/png"}, {"path": "/cache/b.pdf", "mime": "application/pdf"}]}
+{"func": "build_message_event", "case": "attachments-denied", "msg": {"name": "spaces/G/messages/7", "attachment": [{"contentType": "image/png"}], "text": "see", "sender": {"name": "users/3"}}, "envelope": {"space": {"name": "spaces/G", "spaceType": "SPACE"}}, "counts": {}, "authorized": null, "attachments": [{"path": "/cache/a.png", "mime": "image/png"}]}
+{"func": "build_message_event", "case": "dm-no-thread-no-name", "msg": {"text": "hello", "sender": {}}, "envelope": {"space": {"name": "spaces/D", "spaceType": "DM"}}, "counts": {}, "authorized": null, "attachments": []}
+{"func": "route_pubsub_event", "case": "card-word-in-ce", "ce_type": "google.workspace.chat.card.v1.clicked", "envelope": {}, "bot_user_id": null}
+{"func": "extract_message_payload", "case": "native-empty-message", "envelope": {"type": "MESSAGE", "message": {}, "space": {"name": "spaces/A"}}}

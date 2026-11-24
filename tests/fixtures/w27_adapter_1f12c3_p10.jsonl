@@ -1,0 +1,17 @@
+{"func": "resolved_ids", "case": "sorted-unique", "ids": ["b", "a", "b"]}
+{"func": "resolved_ids", "case": "falsy-empty", "ids": []}
+{"func": "allow_all_users", "case": "env-true", "env_val": " TRUE ", "extra": {}}
+{"func": "allow_all_users", "case": "extra", "env_val": "", "extra": {"allow_all_users": true}}
+{"func": "allow_all_users", "case": "extra-string-no", "env_val": "", "extra": {"allow_all_users": "no"}}
+{"func": "allow_all_users", "case": "falsy-none", "env_val": "", "extra": {}}
+{"func": "gateway_allow_all", "case": "yes", "env_val": "yes"}
+{"func": "gateway_allow_all", "case": "falsy-empty", "env_val": ""}
+{"func": "gateway_allow_all", "case": "type-mismatch", "env_val": "TRUEISH"}
+{"func": "allow_bots", "case": "mentions", "env_val": "Mentions", "extra": {}}
+{"func": "allow_bots", "case": "extra", "env_val": "", "extra": {"allow_bots": "all"}}
+{"func": "allow_bots", "case": "falsy-none", "env_val": "", "extra": {}}
+{"func": "debounce_key", "case": "ids", "channel_id": 5, "author_id": 7}
+{"func": "debounce_key", "case": "falsy-null", "channel_id": null, "author_id": null}
+{"func": "window_seconds", "case": "split-larger", "delay": 0.6, "split_delay": 2.0}
+{"func": "window_seconds", "case": "delay-larger", "delay": 3.0, "split_delay": 2.0}
+{"func": "window_seconds", "case": "falsy-zero", "delay": 0, "split_delay": 0}

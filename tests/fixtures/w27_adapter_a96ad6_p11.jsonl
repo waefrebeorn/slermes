@@ -1,0 +1,42 @@
+{"func":"is_group_chat","case":"supergroup","message":{"chat":{"type":"supergroup"}}}
+{"func":"is_group_chat","case":"channel","message":{"chat":{"type":"channel"}}}
+{"func":"is_group_chat","case":"private","message":{"chat":{"type":"private"}}}
+{"func":"is_group_chat","case":"enum-private","message":{"chat":{"type":"ChatType.PRIVATE"}}}
+{"func":"is_group_chat","case":"no-chat","message":{}}
+{"func":"effective_message_thread_id","case":"forum-general","message":{"chat":{"type":"supergroup","is_forum":true}}}
+{"func":"effective_message_thread_id","case":"forum-topic","message":{"chat":{"type":"supergroup","is_forum":true},"message_thread_id":12}}
+{"func":"effective_message_thread_id","case":"plain-group-reply-anchor","message":{"chat":{"type":"group"},"message_thread_id":12}}
+{"func":"effective_message_thread_id","case":"group-topic-flag","message":{"chat":{"type":"group"},"is_topic_message":true,"message_thread_id":12}}
+{"func":"effective_message_thread_id","case":"dm-topic","message":{"chat":{"type":"private"},"is_topic_message":true,"message_thread_id":"9"}}
+{"func":"effective_message_thread_id","case":"dm-plain","message":{"chat":{"type":"private"}}}
+{"func":"is_reply_to_bot","case":"reply-to-bot","bot":{"id":99},"message":{"reply_to_message":{"message_id":5,"from_user":{"id":99}}}}
+{"func":"is_reply_to_bot","case":"reply-to-user","bot":{"id":99},"message":{"reply_to_message":{"message_id":5,"from_user":{"id":7}}}}
+{"func":"is_reply_to_bot","case":"no-bot","bot":null,"message":{"reply_to_message":{"message_id":5,"from_user":{"id":99}}}}
+{"func":"is_reply_to_bot","case":"topic-creation-anchor","bot":{"id":99},"message":{"message_thread_id":5,"reply_to_message":{"message_id":5,"forum_topic_created":{"name":"t"},"from_user":{"id":99}}}}
+{"func":"is_reply_to_bot","case":"topic-anchor-other-thread","bot":{"id":99},"message":{"message_thread_id":6,"reply_to_message":{"message_id":5,"forum_topic_created":{"name":"t"},"from_user":{"id":99}}}}
+{"func":"is_reply_to_bot","case":"no-reply","bot":{"id":99},"message":{}}
+{"func":"entity_type","case":"enum","entity":{"type":"MessageEntityType.MENTION"}}
+{"func":"entity_type","case":"plain","entity":{"type":"bot_command"}}
+{"func":"entity_type","case":"none","entity":null}
+{"func":"entity_span","case":"plain","source_text":"hello @MyBot now","entity":{"offset":6,"length":6}}
+{"func":"entity_span","case":"emoji-pair","source_text":"a🙂b","entity":{"offset":1,"length":2}}
+{"func":"entity_span","case":"split-pair","source_text":"a🙂b","entity":{"offset":2,"length":1}}
+{"func":"entity_span","case":"past-end","source_text":"abc","entity":{"offset":99,"length":1}}
+{"func":"entity_span","case":"negative-offset","source_text":"abc","entity":{"offset":-1,"length":2}}
+{"func":"entity_span","case":"zero-length","source_text":"abc","entity":{"offset":1,"length":0}}
+{"func":"entity_span","case":"truncated-end","source_text":"abc","entity":{"offset":2,"length":99}}
+{"func":"telegram_entity_text","case":"ascii","source_text":"abcdef","offset":1,"length":3}
+{"func":"telegram_entity_text","case":"emoji","source_text":"a🙂b","offset":1,"length":2}
+{"func":"telegram_entity_text","case":"split","source_text":"a🙂b","offset":2,"length":1}
+{"func":"telegram_entity_text","case":"negative","source_text":"abc","offset":-2,"length":1}
+{"func":"telegram_entity_text","case":"zero","source_text":"abc","offset":0,"length":0}
+{"func":"extract_bot_mention_usernames","case":"mention-entity","message":{"text":"hi @SomeBot","entities":[{"type":"mention","offset":3,"length":8}]}}
+{"func":"extract_bot_mention_usernames","case":"command-entity","message":{"text":"/new@MyBot now","entities":[{"type":"bot_command","offset":0,"length":9}]}}
+{"func":"extract_bot_mention_usernames","case":"raw-fallback","message":{"text":"hey @FooBot look"}}
+{"func":"extract_bot_mention_usernames","case":"raw-non-bot","message":{"text":"hey @someone"}}
+{"func":"extract_bot_mention_usernames","case":"obfuscated","message":{"text":"mail a@FooBot"}}
+{"func":"extract_bot_mention_usernames","case":"self-not-bot-shaped","message":{"text":"ping @hermes_helper"},"self_username":"hermes_helper"}
+{"func":"extract_bot_mention_usernames","case":"caption-entity","message":{"caption":"cc @CapBot","caption_entities":[{"type":"mention","offset":3,"length":7}]}}
+{"func":"extract_bot_mention_usernames","case":"dedupe","message":{"text":"@FooBot and @foobot"}}
+{"func":"extract_bot_mention_usernames","case":"entity-wins-over-raw","message":{"text":"@FooBot","entities":[{"type":"url","offset":0,"length":7}]}}
+{"func":"extract_bot_mention_usernames","case":"empty","message":{}}

@@ -1,0 +1,17 @@
+{"func": "record_debounce", "case": "records", "delay": 0.6, "automated": true, "mentioned": true, "now": 100.0, "split_delay": 2.0}
+{"func": "record_debounce", "case": "not-automated", "delay": 0.6, "automated": false, "mentioned": true, "now": 100.0, "split_delay": 2.0}
+{"func": "record_debounce", "case": "not-mentioned", "delay": 0.6, "automated": true, "mentioned": false, "now": 100.0, "split_delay": 2.0}
+{"func": "record_debounce", "case": "falsy-delay", "delay": 0, "automated": true, "mentioned": true, "now": 100.0, "split_delay": 2.0}
+{"func": "debounce_continuation", "case": "live-window", "delay": 0.6, "automated": true, "until": 200.0, "now": 100.0, "window": 2.0}
+{"func": "debounce_continuation", "case": "expired", "delay": 0.6, "automated": true, "until": 50.0, "now": 100.0, "window": 2.0}
+{"func": "debounce_continuation", "case": "not-automated", "delay": 0.6, "automated": false, "until": 200.0, "now": 100.0, "window": 2.0}
+{"func": "debounce_continuation", "case": "falsy-delay", "delay": 0, "automated": true, "until": 200.0, "now": 100.0, "window": 2.0}
+{"func": "free_response_channels", "case": "extra", "extra": {"free_response_channels": ["2", "1"]}}
+{"func": "free_response_channels", "case": "env", "extra": {}, "env_name": "DISCORD_FREE_RESPONSE_CHANNELS", "env": "4,5"}
+{"func": "free_response_channels", "case": "falsy-none", "extra": {}, "env_name": "DISCORD_FREE_RESPONSE_CHANNELS", "env": null}
+{"func": "raw_mentions", "case": "mixed", "content": "<@1> <@!22> <@&33> hi"}
+{"func": "raw_mentions", "case": "dedupe", "content": "<@5><@5>"}
+{"func": "raw_mentions", "case": "falsy-empty", "content": ""}
+{"func": "self_raw_mentioned", "case": "hit", "client_user_id": 22, "content": "<@!22>"}
+{"func": "self_raw_mentioned", "case": "miss", "client_user_id": 22, "content": "<@1>"}
+{"func": "self_raw_mentioned", "case": "falsy-no-client", "client_user_id": null, "content": "<@22>"}

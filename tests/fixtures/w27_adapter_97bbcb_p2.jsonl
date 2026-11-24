@@ -1,0 +1,76 @@
+{"func": "is_google_owned_host", "case": "googleapis", "url": "https://chat.googleapis.com/v1/x"}
+{"func": "is_google_owned_host", "case": "lh3", "url": "https://lh3.googleusercontent.com/a.png"}
+{"func": "is_google_owned_host", "case": "suffix-evil", "url": "https://spaces.googleusercontent.com.evil.io/x"}
+{"func": "is_google_owned_host", "case": "no-dot-boundary", "url": "https://notgoogleapis.com/x"}
+{"func": "is_google_owned_host", "case": "http", "url": "http://chat.googleapis.com/x"}
+{"func": "is_google_owned_host", "case": "evil", "url": "https://evil.example/x"}
+{"func": "is_google_owned_host", "case": "port", "url": "https://drive.google.com:443/f"}
+{"func": "is_google_owned_host", "case": "userinfo", "url": "https://user:pw@docs.google.com/f"}
+{"func": "is_google_owned_host", "case": "upper", "url": "https://CHAT.GoogleAPIs.COM/x"}
+{"func": "is_google_owned_host", "case": "garbage", "url": "not a url"}
+{"func": "is_google_owned_host", "case": "empty", "url": ""}
+{"func": "redact_sensitive", "case": "subscriptions", "text": "failed on projects/p1/subscriptions/s1 now"}
+{"func": "redact_sensitive", "case": "topics", "text": "topic projects/p2/topics/t9"}
+{"func": "redact_sensitive", "case": "both", "text": "both projects/a/subscriptions/b and projects/a/topics/c"}
+{"func": "redact_sensitive", "case": "sa-email", "text": "sa hermes@p1.iam.gserviceaccount.com leaked"}
+{"func": "redact_sensitive", "case": "two-sa", "text": "two a@b.iam.gserviceaccount.com c@d.iam.gserviceaccount.com"}
+{"func": "redact_sensitive", "case": "none", "text": "nothing secret here"}
+{"func": "redact_sensitive", "case": "empty", "text": ""}
+{"func": "redact_sensitive", "case": "empty-seg", "text": "projects//subscriptions/x"}
+{"func": "retry_class", "case": "429", "status": 429, "message": "boom"}
+{"func": "retry_class", "case": "503", "status": 503, "message": "boom"}
+{"func": "retry_class", "case": "502", "status": 502, "message": "x"}
+{"func": "retry_class", "case": "403", "status": 403, "message": "boom"}
+{"func": "retry_class", "case": "404", "status": 404, "message": "not found"}
+{"func": "retry_class", "case": "timeout", "status": null, "message": "Read timed out"}
+{"func": "retry_class", "case": "conn-reset", "status": null, "message": "Connection reset by peer"}
+{"func": "retry_class", "case": "conn-refused", "status": null, "message": "connection refused"}
+{"func": "retry_class", "case": "aborted-only", "status": null, "message": "socket aborted"}
+{"func": "retry_class", "case": "plain", "status": null, "message": "totally fine"}
+{"func": "retry_class", "case": "empty", "status": null, "message": ""}
+{"func": "validate_config", "case": "sub-mismatch", "extra": {"project_id": "p1", "subscription_name": "projects/p2/subscriptions/s"}}
+{"func": "validate_config", "case": "sub-bad", "extra": {"subscription_name": "p1/s"}}
+{"func": "validate_config", "case": "sub-with-project", "extra": {"project_id": "p1", "subscription_name": "projects/p1/subscriptions/s"}}
+{"func": "validate_config", "case": "sub-project-derived", "extra": {"subscription_name": "projects/p3/subscriptions/s"}}
+{"func": "validate_config", "case": "http-mode", "extra": {"http_events_url": "https://x/y", "project_id": ""}}
+{"func": "validate_config", "case": "no-project", "extra": {}}
+{"func": "validate_config", "case": "project-no-sub", "extra": {"project_id": "p1"}}
+{"func": "validate_config", "case": "sub-trailing-slash", "extra": {"subscription_name": "projects/p1/subscriptions/s/extra"}}
+{"func": "plugin_validate_config", "case": "http", "extra": {"http_events_url": "https://x"}}
+{"func": "plugin_validate_config", "case": "pubsub", "extra": {"project_id": "p", "subscription_name": "projects/p/subscriptions/s"}}
+{"func": "plugin_validate_config", "case": "partial", "extra": {"project_id": "p"}}
+{"func": "plugin_validate_config", "case": "none", "extra": {}}
+{"func": "is_connected", "case": "enabled-pubsub", "enabled": true, "extra": {"project_id": "p", "subscription_name": "projects/p/subscriptions/s"}}
+{"func": "is_connected", "case": "disabled", "enabled": false, "extra": {"project_id": "p", "subscription_name": "projects/p/subscriptions/s"}}
+{"func": "is_connected", "case": "enabled-empty", "enabled": true, "extra": {}}
+{"func": "space_id_ok", "case": "ok", "chat_id": "spaces/AAA"}
+{"func": "space_id_ok", "case": "users", "chat_id": "users/42"}
+{"func": "space_id_ok", "case": "empty-id", "chat_id": "spaces/"}
+{"func": "space_id_ok", "case": "space", "chat_id": "spaces/a b"}
+{"func": "space_id_ok", "case": "slash", "chat_id": "spaces/a/b"}
+{"func": "space_id_ok", "case": "bad-prefix", "chat_id": "rooms/x"}
+{"func": "thread_id_ok", "case": "ok", "thread_id": "spaces/A/threads/T"}
+{"func": "thread_id_ok", "case": "empty", "thread_id": "spaces/A/threads/"}
+{"func": "thread_id_ok", "case": "no-threads", "thread_id": "spaces/A"}
+{"func": "thread_id_ok", "case": "bad-head", "thread_id": "users/A/threads/T"}
+{"func": "thread_id_ok", "case": "extra", "thread_id": "spaces/A/threads/T/x"}
+{"func": "verify_http_event", "case": "not-configured", "auth_header": "Bearer t", "audience": "", "sa_emails": "", "claims": {"email": "a@b"}}
+{"func": "verify_http_event", "case": "missing-bearer", "auth_header": "token", "audience": "aud", "sa_emails": "a@b", "claims": {"email": "a@b"}}
+{"func": "verify_http_event", "case": "empty-bearer", "auth_header": "Bearer ", "audience": "aud", "sa_emails": "a@b", "claims": {"email": "a@b"}}
+{"func": "verify_http_event", "case": "invalid-claims", "auth_header": "Bearer t", "audience": "aud", "sa_emails": "a@b", "claims": null, "claims_error": true}
+{"func": "verify_http_event", "case": "wrong-identity", "auth_header": "Bearer t", "audience": "aud", "sa_emails": "a@b", "claims": {"email": "z@z"}}
+{"func": "verify_http_event", "case": "ok", "auth_header": "Bearer t", "audience": "aud", "sa_emails": "a@b", "claims": {"email": "a@b"}}
+{"func": "verify_http_event", "case": "ok-case-insensitive-list", "auth_header": "Bearer t", "audience": "aud", "sa_emails": " x@y , SA@Corp.COM ", "claims": {"email": " Sa@corp.com "}}
+{"func": "verify_http_event", "case": "no-email-claim", "auth_header": "Bearer t", "audience": "aud", "sa_emails": "a@b", "claims": {}}
+{"func": "int_setting", "case": "extra-int", "extra": {"max_messages": 4}, "key": "max_messages", "env_value": "9", "default": 1}
+{"func": "int_setting", "case": "env-string", "extra": {}, "key": "max_messages", "env_value": "12", "default": 1}
+{"func": "int_setting", "case": "env-bad", "extra": {}, "key": "max_messages", "env_value": "abc", "default": 1}
+{"func": "int_setting", "case": "env-underscore", "extra": {}, "key": "max_messages", "env_value": "1_024", "default": 1}
+{"func": "int_setting", "case": "extra-zero-uses-env", "extra": {"max_messages": 0}, "key": "max_messages", "env_value": "7", "default": 1}
+{"func": "int_setting", "case": "extra-string", "extra": {"max_messages": " 42 "}, "key": "max_messages", "env_value": "", "default": 1}
+{"func": "int_setting", "case": "default-only", "extra": {}, "key": "max_messages", "env_value": "", "default": 1048576}
+{"func": "int_setting", "case": "float-truncates", "extra": {"max_messages": 3.9}, "key": "max_messages", "env_value": "", "default": 1}
+{"func": "str_setting", "case": "extra", "extra": {"http_events_url": "  https://a/b  "}, "key": "http_events_url", "env_value": "https://env", "fallback": ""}
+{"func": "str_setting", "case": "env", "extra": {}, "key": "http_events_url", "env_value": "  https://env  ", "fallback": ""}
+{"func": "str_setting", "case": "fallback", "extra": {}, "key": "http_events_url", "env_value": "", "fallback": "  https://fb  "}
+{"func": "str_setting", "case": "all-empty", "extra": {}, "key": "http_events_url", "env_value": "", "fallback": ""}

@@ -1,0 +1,25 @@
+{"func":"bridge_url","case":"send","port":3000,"path":"send"}
+{"func":"bridge_url","case":"health","port":3001,"path":"health"}
+{"func":"bridge_url","case":"empty_path","port":3000,"path":""}
+{"func":"pidfile_parse","case":"three","text":"12345\n1699999999000\n3001"}
+{"func":"pidfile_parse","case":"one","text":"42"}
+{"func":"pidfile_parse","case":"blank_second","text":"42\n\n1699"}
+{"func":"pidfile_parse","case":"bom_pad","text":"\uFEFF 777 \n\n"}
+{"func":"pidfile_parse","case":"junk","text":"junk"}
+{"func":"pidfile_parse","case":"empty","text":""}
+{"func":"pidfile_parse","case":"float","text":"1.5"}
+{"func":"pidfile_parse","case":"underscore","text":"42\n+5_0\n"}
+{"func":"pidfile_parse","case":"crlf","text":"7\r\n8\r\n9\r\n"}
+{"func":"bridge_died","case":"passkey","has_process":true,"rc":78,"detail":"Bridge process died (exit code 78)","log":"bridge.log"}
+{"func":"bridge_died","case":"crash","has_process":true,"rc":1,"detail":"Bridge process died (exit code 1)","log":"bridge.log"}
+{"func":"bridge_died","case":"no_process","has_process":false,"rc":null,"code":"whatsapp_bridge_timeout","detail":"Bridge HTTP server did not start in 15s","log":"bridge.log"}
+{"func":"bridge_died","case":"clean_exit","has_process":true,"rc":0,"code":"whatsapp_bridge_exited","detail":"Bridge process died during connection","log":"bridge.log"}
+{"func":"bridge_died","case":"rc_null","has_process":true,"rc":null,"detail":"still running"}
+{"func":"is_connected","case":"config_extra","config":{"enabled":true,"extra":{"bridge_port":3000}},"env":""}
+{"func":"is_connected","case":"config_empty_extra_env","config":{"enabled":true,"extra":{}},"env":"1"}
+{"func":"is_connected","case":"env_yes","config":null,"env":" YES "}
+{"func":"is_connected","case":"env_on","config":null,"env":"on"}
+{"func":"is_connected","case":"config_disabled","config":{"enabled":false,"extra":{"a":1}},"env":"true"}
+{"func":"is_connected","case":"nothing","config":null,"env":""}
+{"func":"pidfile_parse","case":"cr_only","text":"7\r8"}
+{"func":"is_connected","case":"env_true_pad","config":null,"env":" TRUE "}

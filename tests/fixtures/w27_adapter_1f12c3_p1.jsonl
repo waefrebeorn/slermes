@@ -1,0 +1,50 @@
+{"func": "image_ext", "case": "jpeg", "content_type": "image/jpeg"}
+{"func": "image_ext", "case": "gif", "content_type": "image/gif"}
+{"func": "image_ext", "case": "falsy-empty", "content_type": ""}
+{"func": "image_ext", "case": "boundary-octet", "content_type": "application/octet-stream"}
+{"func": "md_link", "case": "normal", "label": "report.pdf", "url": "https://example.com/a b.pdf"}
+{"func": "md_link", "case": "label-is-url", "label": "https://example.com/x", "url": "https://y.z/q"}
+{"func": "md_link", "case": "escape-brackets", "label": "[draft] \\ path", "url": "https://x.y/ü?q=1&r=2"}
+{"func": "md_link", "case": "falsy-both", "label": "", "url": ""}
+{"func": "transport", "case": "connection-error", "type_name": "ConnectionError", "text": "boom"}
+{"func": "transport", "case": "boundary-timeout", "type_name": "TimeoutError", "text": "websocket closed"}
+{"func": "transport", "case": "marker", "type_name": "ValueError", "text": "Cannot write to closing transport"}
+{"func": "transport", "case": "no-marker", "type_name": "ValueError", "text": "boom 50035"}
+{"func": "truncate", "case": "normal", "text": "hello world", "limit": 5}
+{"func": "truncate", "case": "boundary-surrogate-fit", "text": "a😀b", "limit": 3}
+{"func": "truncate", "case": "boundary-surrogate-cut", "text": "a😀b", "limit": 2}
+{"func": "truncate", "case": "falsy-zero", "text": "abc", "limit": 0}
+{"func": "truncate", "case": "falsy-null", "text": null, "limit": 10}
+{"func": "needs_members", "case": "ids-only", "allowed_user_ids": ["123", "456"], "allowed_role_ids": null}
+{"func": "needs_members", "case": "username", "allowed_user_ids": ["alice"], "allowed_role_ids": null}
+{"func": "needs_members", "case": "roles-only", "allowed_user_ids": null, "allowed_role_ids": ["9"]}
+{"func": "needs_members", "case": "empty-both", "allowed_user_ids": [], "allowed_role_ids": []}
+{"func": "guidance", "case": "content-only", "needs_members": false}
+{"func": "guidance", "case": "members", "needs_members": true}
+{"func": "snowflake", "case": "epoch", "snowflake": "0"}
+{"func": "snowflake", "case": "real", "snowflake": "175928847299117063"}
+{"func": "snowflake", "case": "boundary-one-ms", "snowflake": "4194304"}
+{"func": "metadata_nonconv", "case": "flag-true", "metadata": {"non_conversational": true}}
+{"func": "metadata_nonconv", "case": "history-flag", "metadata": {"non_conversational_history": 1}}
+{"func": "metadata_nonconv", "case": "falsy-zero", "metadata": {"non_conversational": 0}}
+{"func": "metadata_nonconv", "case": "falsy-null", "metadata": null}
+{"func": "metadata_nonconv", "case": "type-mismatch", "metadata": "non_conversational"}
+{"func": "prompt_target", "case": "thread", "chat_id": "C1", "metadata": {"thread_id": "T1"}}
+{"func": "prompt_target", "case": "no-thread", "chat_id": "C1", "metadata": {"thread_id": null}}
+{"func": "prompt_target", "case": "falsy-metadata", "chat_id": "C1", "metadata": null}
+{"func": "looks_nonconv", "case": "working", "content": "⏳ Working — 12 min so far"}
+{"func": "looks_nonconv", "case": "self-review", "content": "💾 Self-improvement review: added notes"}
+{"func": "looks_nonconv", "case": "update-ok", "content": "✅ Hermes update finished"}
+{"func": "looks_nonconv", "case": "plain", "content": "hello there"}
+{"func": "looks_nonconv", "case": "falsy-empty", "content": ""}
+{"func": "looks_nonconv", "case": "gateway-online", "content": "♻️ Gateway online"}
+{"func": "clean_id", "case": "mention", "entry": " <@!123> "}
+{"func": "clean_id", "case": "user-prefix", "entry": "user:abc"}
+{"func": "clean_id", "case": "plain", "entry": " plain "}
+{"func": "ready_timeout", "case": "env-float", "env_name": "HERMES_GATEWAY_PLATFORM_CONNECT_TIMEOUT", "env": "12.5"}
+{"func": "ready_timeout", "case": "env-junk", "env_name": "HERMES_GATEWAY_PLATFORM_CONNECT_TIMEOUT", "env": "abc"}
+{"func": "ready_timeout", "case": "falsy-unset", "env_name": "HERMES_GATEWAY_PLATFORM_CONNECT_TIMEOUT", "env": null}
+{"func": "ready_timeout", "case": "boundary-negative", "env_name": "HERMES_GATEWAY_PLATFORM_CONNECT_TIMEOUT", "env": "-4"}
+{"func": "env_bool", "case": "yes", "env_name": "SLERMES_GATE", "env": "YES"}
+{"func": "env_bool", "case": "falsy-empty-default", "env_name": "SLERMES_GATE", "env": "", "default": true}
+{"func": "env_bool", "case": "zero", "env_name": "SLERMES_GATE", "env": "0"}

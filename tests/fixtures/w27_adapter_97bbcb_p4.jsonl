@@ -1,0 +1,69 @@
+{"func": "format_message", "case": "empty", "content": ""}
+{"func": "format_message", "case": "plain", "content": "plain text"}
+{"func": "format_message", "case": "bold", "content": "**bold** and *smile*"}
+{"func": "format_message", "case": "triple", "content": "***both***"}
+{"func": "format_message", "case": "header-h1", "content": "# Title\nbody"}
+{"func": "format_message", "case": "header-h3-trailing", "content": "### Deep ##\ntext"}
+{"func": "format_message", "case": "header-requires-space", "content": "#nospace\n# yes"}
+{"func": "format_message", "case": "link", "content": "see [docs](https://e.com/a) now"}
+{"func": "format_message", "case": "two-links", "content": "[a](b) [c](d)"}
+{"func": "format_message", "case": "inline-code-protects", "content": "`a**b**c` and **d**"}
+{"func": "format_message", "case": "fence", "content": "```\ncode **x**\n```\nafter"}
+{"func": "format_message", "case": "fence-lang", "content": "```py\nprint(1)\n```"}
+{"func": "format_message", "case": "fence-unclosed", "content": "```unclosed **x**"}
+{"func": "format_message", "case": "invisible", "content": "a\u200bb\u200c\u200d\u2060\ufeffc"}
+{"func": "format_message", "case": "double-spaces", "content": "a  b   c"}
+{"func": "format_message", "case": "combo", "content": "# Head\n\n**bold** `x` [l](u)\n\n```\nz\n```\n"}
+{"func": "format_message", "case": "unclosed", "content": "**unclosed bold"}
+{"func": "format_message", "case": "bold-across-newline-blocked", "content": "line1 **a\nb** line2"}
+{"func": "retry_plan", "case": "success-first", "randoms": [], "failures": 0}
+{"func": "retry_plan", "case": "one-failure", "randoms": [0.0], "failures": 1}
+{"func": "retry_plan", "case": "two-failures", "randoms": [0.5, 0.25], "failures": 2}
+{"func": "retry_plan", "case": "exhausted", "randoms": [0.9, 0.9], "failures": 3}
+{"func": "retry_plan", "case": "one-failure-mid-jitter", "randoms": [0.3333333333333333], "failures": 1}
+{"func": "reconnect_delay", "case": "a1", "attempt": 1}
+{"func": "reconnect_delay", "case": "a2", "attempt": 2}
+{"func": "reconnect_delay", "case": "a3", "attempt": 3}
+{"func": "reconnect_delay", "case": "a7", "attempt": 7}
+{"func": "reconnect_delay", "case": "a8", "attempt": 8}
+{"func": "reconnect_delay", "case": "a10", "attempt": 10}
+{"func": "reconnect_jitter", "case": "attempt1-half", "attempt": 1, "rand": 0.5}
+{"func": "reconnect_jitter", "case": "attempt3-zero", "attempt": 3, "rand": 0.0}
+{"func": "reconnect_jitter", "case": "attempt10-full", "attempt": 10, "rand": 1.0}
+{"func": "bot_spaces", "case": "home-only", "home": "spaces/H", "bootstrap": ""}
+{"func": "bot_spaces", "case": "bootstrap-only", "home": null, "bootstrap": "spaces/A, spaces/B"}
+{"func": "bot_spaces", "case": "both", "home": "spaces/H", "bootstrap": " spaces/A ,, spaces/B , "}
+{"func": "bot_spaces", "case": "none", "home": null, "bootstrap": ""}
+{"func": "sa_source_kind", "case": "inline-valid", "sa_value": " {\"type\":\"service_account\"}", "exists": false, "inline_valid": true, "file_valid": false, "multiplex": false, "env_has_sa": false, "has_google_auth": true, "adc_raises": false}
+{"func": "sa_source_kind", "case": "inline-invalid", "sa_value": "{not json", "exists": false, "inline_valid": false, "file_valid": false, "multiplex": false, "env_has_sa": false, "has_google_auth": true, "adc_raises": false}
+{"func": "sa_source_kind", "case": "not-found", "sa_value": "/no/such.json", "exists": false, "inline_valid": false, "file_valid": false, "multiplex": false, "env_has_sa": false, "has_google_auth": true, "adc_raises": false}
+{"func": "sa_source_kind", "case": "file-valid", "sa_value": "/tmp/sa.json", "exists": true, "inline_valid": false, "file_valid": true, "multiplex": false, "env_has_sa": false, "has_google_auth": true, "adc_raises": false}
+{"func": "sa_source_kind", "case": "file-invalid", "sa_value": "/tmp/sa.json", "exists": true, "inline_valid": false, "file_valid": false, "multiplex": false, "env_has_sa": false, "has_google_auth": true, "adc_raises": false}
+{"func": "sa_source_kind", "case": "adc-foreign", "sa_value": null, "exists": false, "inline_valid": false, "file_valid": false, "multiplex": true, "env_has_sa": true, "has_google_auth": true, "adc_raises": false}
+{"func": "sa_source_kind", "case": "adc-foreign-no-env", "sa_value": null, "exists": false, "inline_valid": false, "file_valid": false, "multiplex": true, "env_has_sa": false, "has_google_auth": false, "adc_raises": false}
+{"func": "sa_source_kind", "case": "adc-no-auth", "sa_value": null, "exists": false, "inline_valid": false, "file_valid": false, "multiplex": false, "env_has_sa": false, "has_google_auth": false, "adc_raises": false}
+{"func": "sa_source_kind", "case": "adc-failed", "sa_value": null, "exists": false, "inline_valid": false, "file_valid": false, "multiplex": false, "env_has_sa": false, "has_google_auth": true, "adc_raises": true}
+{"func": "sa_source_kind", "case": "adc-ok", "sa_value": null, "exists": false, "inline_valid": false, "file_valid": false, "multiplex": false, "env_has_sa": false, "has_google_auth": true, "adc_raises": false}
+{"func": "release_unadmitted", "case": "both", "msg": {"name": "spaces/A/messages/1", "space": {"name": "spaces/MSG"}, "thread": {"name": "spaces/A/threads/T"}}, "envelope": {"space": {"name": "spaces/ENV"}}}
+{"func": "release_unadmitted", "case": "no-thread", "msg": {"name": "m2", "space": {"name": "spaces/A"}}, "envelope": {}}
+{"func": "release_unadmitted", "case": "no-name", "msg": {"thread": {"name": "t"}}, "envelope": {"space": {"name": "spaces/A"}}}
+{"func": "outbound_thread_incr", "case": "threaded", "chat_id": "spaces/A", "resp": {"thread": {"name": "spaces/A/threads/T"}}}
+{"func": "outbound_thread_incr", "case": "no-thread", "chat_id": "spaces/A", "resp": {"name": "spaces/A/messages/1"}}
+{"func": "outbound_thread_incr", "case": "no-chat", "chat_id": "", "resp": {"thread": {"name": "spaces/A/threads/T"}}}
+{"func": "invalidate_identity", "case": "null", "identity": null}
+{"func": "invalidate_identity", "case": "legacy", "identity": "__legacy__"}
+{"func": "invalidate_identity", "case": "email", "identity": "a@b.c"}
+{"func": "loop_accepts", "case": "open", "present": true, "closed": false}
+{"func": "loop_accepts", "case": "closed", "present": true, "closed": true}
+{"func": "loop_accepts", "case": "missing", "present": false, "closed": false}
+{"func": "loop_accepts", "case": "missing-closed", "present": false, "closed": true}
+{"func": "format_message", "case": "fence-inline-no-newline", "content": "a ```b``` c"}
+{"func": "format_message", "case": "four-stars", "content": "****"}
+{"func": "format_message", "case": "header-trailing-spaces", "content": "## Head ##  \nnext"}
+{"func": "format_message", "case": "header-mid-document", "content": "para\n## h2\nmore"}
+{"func": "format_message", "case": "code-then-fence", "content": "`code` ``` fence"}
+{"func": "format_message", "case": "mixed-stars", "content": "***x** y*"}
+{"func": "format_message", "case": "two-fences", "content": "x\n```\nfence\n```\ny\n```\nz\n```"}
+{"func": "format_message", "case": "emoji", "content": "emoji \ud83d\ude00 ok"}
+{"func": "format_message", "case": "seven-hashes", "content": "####### seven"}
+{"func": "format_message", "case": "lone-hash", "content": "#"}

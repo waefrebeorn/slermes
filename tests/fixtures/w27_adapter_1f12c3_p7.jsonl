@@ -1,0 +1,41 @@
+{"func": "allowed_user", "case": "users-match", "user_id": "123", "allowed_users": ["123"], "allowed_roles": []}
+{"func": "allowed_user", "case": "wildcard", "user_id": "999", "allowed_users": ["*"], "allowed_roles": []}
+{"func": "allowed_user", "case": "no-lists-allow-all", "user_id": "1", "allowed_users": [], "allowed_roles": [], "discord_allow_all": true}
+{"func": "allowed_user", "case": "no-lists-channel", "user_id": "1", "allowed_users": [], "allowed_roles": [], "is_dm": false, "channel_ids": ["77", "88"], "allowed_channels": ["88"]}
+{"func": "allowed_user", "case": "no-lists-denied", "user_id": "1", "allowed_users": [], "allowed_roles": []}
+{"func": "allowed_user", "case": "no-lists-dm-no-channel", "user_id": "1", "allowed_users": [], "allowed_roles": [], "is_dm": true, "channel_ids": ["88"], "allowed_channels": ["88"]}
+{"func": "allowed_user", "case": "pairing", "user_id": "1", "allowed_users": ["2"], "allowed_roles": [], "pairing": true}
+{"func": "allowed_user", "case": "author-direct-role", "user_id": "123", "allowed_users": [], "allowed_roles": [7], "author_roles": [7], "author_guild_id": 5, "guild": {"id": 5, "members": {}}}
+{"func": "allowed_user", "case": "guild-member-role", "user_id": "123", "allowed_users": [], "allowed_roles": [7], "guild": {"id": 5, "members": {"123": [7]}}}
+{"func": "allowed_user", "case": "wrong-guild-role", "user_id": "123", "allowed_users": [], "allowed_roles": [7], "author_roles": [7], "author_guild_id": 9, "guild": {"id": 5, "members": {}}}
+{"func": "allowed_user", "case": "dm-no-guild", "user_id": "123", "allowed_users": [], "allowed_roles": [7], "is_dm": true}
+{"func": "allowed_user", "case": "dm-guild-role", "user_id": "123", "allowed_users": [], "allowed_roles": [7], "is_dm": true, "dm_role_auth_guild": 5, "client_guilds": {"5": {"id": 5, "members": {"123": [7]}}}}
+{"func": "allowed_user", "case": "users-miss-no-roles", "user_id": "9", "allowed_users": ["1"], "allowed_roles": []}
+{"func": "allowed_user", "case": "falsy-empty-user", "user_id": "", "allowed_users": [], "allowed_roles": []}
+{"func": "guild_role", "case": "hit", "guild": {"id": 5, "members": {"123": [7, 8]}}, "user_id": "123", "allowed_roles": [8]}
+{"func": "guild_role", "case": "miss", "guild": {"id": 5, "members": {"123": [1]}}, "user_id": "123", "allowed_roles": [8]}
+{"func": "guild_role", "case": "non-numeric", "guild": {"id": 5, "members": {"123": [7]}}, "user_id": "abc", "allowed_roles": [7]}
+{"func": "guild_role", "case": "falsy-no-member", "guild": {"id": 5, "members": {}}, "user_id": "123", "allowed_roles": [7]}
+{"func": "interaction_guild", "case": "direct", "interaction": {"guild_id": "42"}}
+{"func": "interaction_guild", "case": "via-channel", "interaction": {"guild_id": null, "channel": {"guild": {"id": "43"}}}}
+{"func": "interaction_guild", "case": "falsy-null", "interaction": {"guild_id": null, "channel": null}}
+{"func": "interaction_guild", "case": "zero-id", "interaction": {"guild_id": 0}}
+{"func": "forum_parent", "case": "forum", "channel": {"type": 15}}
+{"func": "forum_parent", "case": "text", "channel": {"type": 0}}
+{"func": "forum_parent", "case": "falsy-null", "channel": null}
+{"func": "forum_parent", "case": "object-type", "channel": {"type": {"value": 15}}}
+{"func": "parent_channel_id", "case": "parent-object", "channel": {"parent": {"id": 9}}}
+{"func": "parent_channel_id", "case": "parent-id", "channel": {"parent": null, "parent_id": 7}}
+{"func": "parent_channel_id", "case": "falsy-none", "channel": {"parent": null, "parent_id": null}}
+{"func": "effective_topic", "case": "own-topic", "channel": {"topic": "T1", "parent": {"topic": "P", "type": 15}}, "is_thread": true}
+{"func": "effective_topic", "case": "forum-parent", "channel": {"topic": "", "parent": {"topic": "P", "type": 15}}, "is_thread": true}
+{"func": "effective_topic", "case": "not-thread", "channel": {"topic": null, "parent": {"topic": "P", "type": 15}}, "is_thread": false}
+{"func": "attachment_type", "case": "photo", "att": {"content_type": "image/png"}}
+{"func": "attachment_type", "case": "video", "att": {"content_type": "video/mp4"}}
+{"func": "attachment_type", "case": "voice-marker", "att": {"content_type": "audio/ogg", "is_voice_message": true}}
+{"func": "attachment_type", "case": "audio-duration-waveform", "att": {"content_type": "audio/ogg", "duration": 1.2, "waveform": "AAAA"}}
+{"func": "attachment_type", "case": "document", "att": {"content_type": "text/plain"}}
+{"func": "attachment_type", "case": "falsy-empty", "att": {"content_type": ""}}
+{"func": "auto_thread_name", "case": "mentions-stripped", "content": "  <@123> hello   <#9> world ", "default_name": "Hermes"}
+{"func": "auto_thread_name", "case": "falsy-empty", "content": "   ", "default_name": "Hermes"}
+{"func": "auto_thread_name", "case": "boundary-long", "content": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "default_name": "Hermes"}

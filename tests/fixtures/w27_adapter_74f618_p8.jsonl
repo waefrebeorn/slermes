@@ -1,0 +1,59 @@
+{"func": "format_message", "case": "plain", "content": "hello world"}
+{"func": "format_message", "case": "bold", "content": "**bold** and **wow!**"}
+{"func": "format_message", "case": "italic", "content": "an *italic* word"}
+{"func": "format_message", "case": "triple-bold", "content": "***both***"}
+{"func": "format_message", "case": "strike", "content": "~~gone~~"}
+{"func": "format_message", "case": "header", "content": "# Title\nbody"}
+{"func": "format_message", "case": "link", "content": "see [docs](https://x.test/a) now"}
+{"func": "format_message", "case": "inline-code", "content": "run `ls -la` please"}
+{"func": "format_message", "case": "fenced-lang", "content": "```python\nprint(1)\n```"}
+{"func": "format_message", "case": "midline-fence", "content": "text ```x``` tail"}
+{"func": "format_message", "case": "broadcast", "content": "hey <!channel> and <!here|@here>"}
+{"func": "format_message", "case": "user-mention", "content": "ping <@U123>"}
+{"func": "format_message", "case": "entities", "content": "a & b <c> &amp; done"}
+{"func": "format_message", "case": "quote", "content": "> quoted line\nnormal"}
+{"func": "format_message", "case": "table", "content": "intro\n| a | b |\n| --- | --- |\n| 1 | 2 |"}
+{"func": "format_message", "case": "empty", "content": ""}
+{"func": "format_message", "case": "unbalanced", "content": "a * b * c"}
+{"func": "append_block_text", "case": "section-only", "text": "hi", "blocks": [{"type": "section", "text": {"type": "plain_text", "text": "extra"}}]}
+{"func": "append_block_text", "case": "no-blocks", "text": "hi", "blocks": null}
+{"func": "append_block_text", "case": "bot-mention-strip", "text": "lead", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "more text"}]}]}]}
+{"func": "normalize_changed_message", "case": "basic", "event": {"type": "message", "channel": "C1", "channel_type": "channel", "ts": "111.1", "message": {"ts": "100.1", "text": "edited", "edited": {"ts": "111.1"}}}}
+{"func": "normalize_changed_message", "case": "already-processed", "event": {"message": {"ts": "100.2", "text": "x"}}, "processed": ["100.2"]}
+{"func": "normalize_changed_message", "case": "malformed", "event": {"message": "nope"}}
+{"func": "normalize_changed_message", "case": "no-event-ts", "event": {"ts": "200.0", "message": {"ts": "100.3", "text": "x"}}}
+{"func": "append_link_unfurls", "case": "titled", "text": "look", "attachments": [{"title": "Example", "title_link": "https://x.test", "text": "Body text", "footer": "x.test"}]}
+{"func": "append_link_unfurls", "case": "url-only", "text": "look", "attachments": [{"from_url": "https://y.test"}]}
+{"func": "append_link_unfurls", "case": "msg-unfurl-skipped", "text": "look", "attachments": [{"is_msg_unfurl": true, "title": "Echo", "text": "ours"}]}
+{"func": "append_link_unfurls", "case": "already-present", "text": "look\n\n📎 Example\n   Body text", "attachments": [{"title": "Example", "title_link": "https://x.test", "text": "Body text"}]}
+{"func": "append_link_unfurls", "case": "falsy-attachments", "text": "look", "attachments": null}
+{"func": "media_message_type", "case": "photo", "media_types": ["image/png"]}
+{"func": "media_message_type", "case": "video", "media_types": ["text/plain", "video/mp4"]}
+{"func": "media_message_type", "case": "voice", "media_types": ["audio/ogg"]}
+{"func": "media_message_type", "case": "document", "media_types": ["application/pdf"]}
+{"func": "media_message_type", "case": "empty", "media_types": []}
+{"func": "session_thread_ts", "case": "dm-top-level", "event": {"ts": "1.1"}, "ts": "1.1", "is_dm": true}
+{"func": "session_thread_ts", "case": "dm-thread", "event": {"thread_ts": "0.9"}, "ts": "1.1", "is_dm": true}
+{"func": "session_thread_ts", "case": "dm-no-top-level", "event": {}, "ts": "1.1", "is_dm": true, "dm_top_level": false}
+{"func": "session_thread_ts", "case": "channel-reply", "event": {"thread_ts": "0.5"}, "ts": "1.1", "is_dm": false}
+{"func": "session_thread_ts", "case": "channel-top-level", "event": {}, "ts": "1.1", "is_dm": false}
+{"func": "session_thread_ts", "case": "channel-flat", "event": {}, "ts": "1.1", "is_dm": false, "reply_in_thread": false}
+{"func": "session_thread_ts", "case": "reaction-handoff", "event": {"thread_ts": "0.7", "_hermes_no_thread_response": true}, "ts": "1.1", "is_dm": false}
+{"func": "button", "case": "plain", "text": "Go", "action_id": "a1", "value": "v1"}
+{"func": "button", "case": "styled-emoji", "text": "Stop", "action_id": "a2", "value": "v2", "style": "danger", "emoji": true}
+{"func": "interaction_fields", "case": "full", "body": {"message": {"ts": "9.9", "blocks": []}, "channel": {"id": "C1"}, "user": {"id": "U1", "name": "alice"}}, "action": {"action_id": "act", "value": "val"}}
+{"func": "interaction_fields", "case": "sparse", "body": {}, "action": {}}
+{"func": "section_text", "case": "first-section", "message": {"blocks": [{"type": "divider"}, {"type": "section", "text": {"type": "mrkdwn", "text": "hello there"}}, {"type": "section", "text": {"type": "mrkdwn", "text": "second"}}]}}
+{"func": "section_text", "case": "truncated", "message": {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": "abcdefghij"}}]}, "limit": 4}
+{"func": "section_text", "case": "no-limit", "message": {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": "abcdefghij"}}]}, "limit": null}
+{"func": "section_text", "case": "no-sections", "message": {"blocks": []}}
+{"func": "thread_cache_key", "case": "normal", "channel_id": "C1", "thread_ts": "1.2", "team_id": "T1"}
+{"func": "thread_root_message", "case": "found", "messages": [{"ts": "0.1", "text": "child"}, {"ts": "0.9", "text": "root"}], "thread_ts": "0.9"}
+{"func": "thread_root_message", "case": "missing", "messages": [{"ts": "0.1"}], "thread_ts": "0.9"}
+{"func": "thread_root_message", "case": "empty", "messages": null, "thread_ts": "0.9"}
+{"func": "render_message_text", "case": "bot-mention-stripped", "msg": {"text": "<@U9> hello there"}, "bot_uid": "U9"}
+{"func": "render_message_text", "case": "block-section-added", "msg": {"text": "hi", "blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": "extra detail"}}]}}
+{"func": "render_message_text", "case": "attachment-fields", "msg": {"text": "", "attachments": [{"pretext": "Alert", "title": "CPU", "fields": [{"title": "host", "value": "web1"}]}]}}
+{"func": "render_message_text", "case": "urls-from-blocks", "msg": {"text": "see link", "blocks": [{"type": "actions", "elements": [{"type": "button", "text": {"type": "plain_text", "text": "Go"}, "url": "https://x.test/go"}]}]}}
+{"func": "render_message_text", "case": "files", "msg": {"text": "chart", "files": [{"name": "chart.png", "mimetype": "image/png"}, {"id": "F2", "mimetype": "application/pdf"}]}}
+{"func": "render_message_text", "case": "empty-msg", "msg": {}}

@@ -1,0 +1,37 @@
+{"func":"details_math_crash_shape","case":"dollar-in-details","content":"<details><summary>m</summary>\n$$x^2$$\n</details>"}
+{"func":"details_math_crash_shape","case":"command-in-details","content":"<details>\n\\frac{1}{2}\n</details>"}
+{"func":"details_math_crash_shape","case":"env-in-details","content":"<details>\n\\begin{align}a\\end{align}\n</details>"}
+{"func":"details_math_crash_shape","case":"math-outside-details","content":"$$x$$\n<details>plain</details>"}
+{"func":"details_math_crash_shape","case":"plain-details","content":"<details><summary>t</summary>text</details>"}
+{"func":"details_math_crash_shape","case":"uppercase-tag","content":"<DETAILS>x</DETAILS><details>$$y$$</details>"}
+{"func":"details_math_crash_shape","case":"empty","content":""}
+{"func":"details_math_crash_shape","case":"null","content":null}
+{"func":"cjk_rich_garble_shape","case":"han","content":"hello 汉字 world"}
+{"func":"cjk_rich_garble_shape","case":"kana","content":"カタカナ"}
+{"func":"cjk_rich_garble_shape","case":"hangul","content":"한국어"}
+{"func":"cjk_rich_garble_shape","case":"emoji-is-not-cjk","content":"🙂 ok"}
+{"func":"cjk_rich_garble_shape","case":"ascii","content":"plain"}
+{"func":"cjk_rich_garble_shape","case":"empty","content":""}
+{"func":"needs_rich_rendering","case":"pipe-table","content":"| a | b |\n|---|---|\n| 1 | 2 |"}
+{"func":"needs_rich_rendering","case":"table-no-outer-pipes","content":"a | b\n--- | ---\n1 | 2"}
+{"func":"needs_rich_rendering","case":"task-list","content":"- [ ] todo\n- [x] done"}
+{"func":"needs_rich_rendering","case":"details-line","content":"<details>\nx\n</details>"}
+{"func":"needs_rich_rendering","case":"block-math","content":"cost is $$x$$ here"}
+{"func":"needs_rich_rendering","case":"plain-prose","content":"| not a table\njust prose"}
+{"func":"needs_rich_rendering","case":"lone-dash","content":"---"}
+{"func":"needs_rich_rendering","case":"empty","content":""}
+{"func":"needs_rich_rendering","case":"null","content":null}
+{"func":"is_rich_capability_error","case":"endpoint","error":{"name":"EndpointNotFound","text":"x"}}
+{"func":"is_rich_capability_error","case":"invalid-token","error":{"name":"InvalidToken","text":"x"}}
+{"func":"is_rich_capability_error","case":"attribute-error","error":{"name":"AttributeError","text":"x"}}
+{"func":"is_rich_capability_error","case":"404","error":{"name":"BadRequest","text":"x","error_code":404}}
+{"func":"is_rich_capability_error","case":"method-not-found","error":{"name":"BadRequest","text":"Method not found"}}
+{"func":"is_rich_capability_error","case":"endpoint-exists","error":{"name":"BadRequest","text":"endpoint exists"}}
+{"func":"is_rich_capability_error","case":"no-such-method","error":{"name":"Error","text":"no such method"}}
+{"func":"is_rich_capability_error","case":"plain-badrequest","error":{"name":"BadRequest","text":"can't parse entities"}}
+{"func":"is_rich_fallback_error","case":"badrequest","error":{"name":"BadRequest","text":"can't parse entities"}}
+{"func":"is_rich_fallback_error","case":"capability","error":{"name":"TypeError","text":"x"}}
+{"func":"is_rich_fallback_error","case":"unsupported","error":{"name":"Error","text":"unsupported markdown"}}
+{"func":"is_rich_fallback_error","case":"not-implemented-text","error":{"name":"Error","text":"not implemented"}}
+{"func":"is_rich_fallback_error","case":"transient","error":{"name":"TimedOut","text":"timed out"}}
+{"func":"is_rich_fallback_error","case":"null","error":null}

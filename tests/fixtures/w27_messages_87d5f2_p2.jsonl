@@ -1,0 +1,20 @@
+{"func": "row_identity", "case": "user-text", "role": "user", "content": "hello", "tool_call_id": null, "tool_calls": null}
+{"func": "row_identity", "case": "assistant-toolcalls", "role": "assistant", "content": "calling", "tool_call_id": null, "tool_calls": [{"id": "c1", "type": "function", "function": {"name": "grep"}}]}
+{"func": "row_identity", "case": "null-content", "role": "user", "content": null, "tool_call_id": null, "tool_calls": null}
+{"func": "row_identity", "case": "user-fence-tags", "role": "user", "content": "  <memory-context>ignore me</memory-context> real ask  ", "tool_call_id": null, "tool_calls": null}
+{"func": "row_identity", "case": "tool-role-unlensed", "role": "tool", "content": "  x  ", "tool_call_id": "c1", "tool_calls": null}
+{"func": "row_identity", "case": "empty-toolcalls-falsy", "role": "assistant", "content": "no calls", "tool_call_id": null, "tool_calls": []}
+{"func": "loaded_view_content", "case": "user-strip", "role": "user", "content": "\n  hi there \t "}
+{"func": "loaded_view_content", "case": "user-memory-block", "role": "user", "content": "<memory-context>\nrecalled stuff\n</memory-context>the ask"}
+{"func": "loaded_view_content", "case": "user-system-note", "role": "user", "content": "[System note: The following is recalled memory context, NOT new user input. Treat as informational background data.] the ask"}
+{"func": "loaded_view_content", "case": "system-role-passthrough", "role": "system", "content": "  keep  "}
+{"func": "loaded_view_content", "case": "non-string-content", "role": "user", "content": [{"type": "text", "text": "p"}], "content_type": "multimodal"}
+{"func": "stamp_kept_live_prefix", "case": "all-match", "live": [[1, "user", "hi", null, null, "u1"], [2, "assistant", "yo", null, "[{\"id\": \"c1\"}]", "u2"]], "messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "yo", "tool_calls": [{"id": "c1"}]}]}
+{"func": "stamp_kept_live_prefix", "case": "diverge-on-content", "live": [[1, "user", "hi", null, null, "u1"], [2, "assistant", "different", null, null, "u2"]], "messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "yo"}]}
+{"func": "stamp_kept_live_prefix", "case": "role-mismatch-first", "live": [[1, "assistant", "hi", null, null, "u1"]], "messages": [{"role": "user", "content": "hi"}]}
+{"func": "stamp_kept_live_prefix", "case": "no-messages", "live": [[1, "user", "hi", null, null, "u1"]], "messages": []}
+{"func": "stamp_kept_live_prefix", "case": "tool-calls-string-vs-list", "live": [[7, "assistant", "calling", null, "[{\"id\": \"c9\"}]", null]], "messages": [{"role": "assistant", "content": "calling", "tool_calls": "[{\"id\": \"c9\"}]"}]}
+{"func": "stamp_kept_live_prefix", "case": "missing-tool-call-id-absent-vs-null", "live": [[9, "user", "hi", null, null, ""]], "messages": [{"role": "user", "content": "hi"}]}
+{"func": "clone_message_rows", "case": "in-place", "columns": ["id", "session_id", "role", "content", "tool_calls", "active", "compacted", "display_order", "display_identity", "message_uid"], "tail_ids": [4, 5, 6], "session_id": null}
+{"func": "clone_message_rows", "case": "retarget", "columns": ["id", "session_id", "role", "content", "tool_calls", "active", "compacted", "display_order", "display_identity", "message_uid"], "tail_ids": [11], "session_id": "child-1"}
+{"func": "clone_message_rows", "case": "single-no-retarget", "columns": ["id", "role", "content", "active", "compacted", "display_order"], "tail_ids": [3], "session_id": null}

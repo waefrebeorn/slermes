@@ -1,0 +1,48 @@
+{"func":"board_display_kwargs","case":"full","payload":{"slug":"web","name":"Web","description":"Front end","icon":"🌐","color":"#fff"}}
+{"func":"board_display_kwargs","case":"slug-only","payload":{"slug":"web"}}
+{"func":"resolve_project","case":"omitted","ref":null}
+{"func":"resolve_project","case":"blank","ref":"   "}
+{"func":"resolve_project","case":"unknown","ref":" nope ","projects":{"web":{"id":"p1","name":"Web","primary_path":"/repo/web"}}}
+{"func":"resolve_project","case":"found","ref":" web ","projects":{"web":{"id":"p1","name":"Web","primary_path":"/repo/web"}}}
+{"func":"resolve_project","case":"found-no-path","ref":"web","projects":{"web":{"id":"p1","name":"Web","primary_path":null}}}
+{"func":"resolve_project","case":"empty-path","ref":"web","projects":{"web":{"id":"p1","name":"Web","primary_path":""}}}
+{"func":"resolve_project","case":"connect-error","ref":"web","connect_error":true,"connect_message":"sqlite locked"}
+{"func":"default_workspace_kind","case":"no-workdir","board":{}}
+{"func":"default_workspace_kind","case":"blank-workdir","board":{"default_workdir":"   "}}
+{"func":"default_workspace_kind","case":"git-repo","board":{"default_workdir":"/repo/web"},"git":true}
+{"func":"default_workspace_kind","case":"plain-dir","board":{"default_workdir":"/srv/files"},"git":false}
+{"func":"default_workspace_kind","case":"probe-raises","board":{"default_workdir":"/gone"},"git":null}
+{"func":"annotate_board_meta","case":"unscoped","meta":{"slug":"default","name":"Default","project_id":null},"workspace_kind":"scratch","project":null}
+{"func":"annotate_board_meta","case":"scoped","meta":{"slug":"web","name":"Web","project_id":"p1"},"workspace_kind":"worktree","project":["p1","Web Project","/repo/web"]}
+{"func":"validated_profile_name","case":"strips","raw":" bob "}
+{"func":"validated_profile_name","case":"unknown","raw":"bob","exists":false}
+{"func":"validated_profile_name","case":"empty","raw":"   "}
+{"func":"validated_profile_name","case":"null","raw":null}
+{"func":"validated_profile_name","case":"lookup-raises-fails-open","raw":"bob","exists_raises":true}
+{"func":"validated_profile_name","case":"no-registry","raw":"bob","mod":false,"exists":false}
+{"func":"orchestration_settings","case":"explicit-known","config":{"kanban":{"orchestrator_profile":" bob ","default_assignee":"carol","auto_decompose":0}},"active":"alice","exists":["bob","carol"]}
+{"func":"orchestration_settings","case":"unknown-falls-back","config":{"kanban":{"orchestrator_profile":"ghost","default_assignee":""}},"active":"alice","exists":["bob"]}
+{"func":"orchestration_settings","case":"empty-config","config":{},"active":"alice","exists":[]}
+{"func":"orchestration_settings","case":"registry-raises","config":{"kanban":{"orchestrator_profile":"bob"}},"active":"alice","active_raises":true}
+{"func":"orchestration_settings","case":"explicit-nulls","config":{"kanban":{"auto_decompose":null,"auto_promote_children":null}},"active":null,"exists":[]}
+{"func":"since_param","case":"present","query":{"since":"12"}}
+{"func":"since_param","case":"zero-replays","query":{"since":" 0 "}}
+{"func":"since_param","case":"garbage","query":{"since":"junk"}}
+{"func":"since_param","case":"absent","query":{}}
+{"func":"since_param","case":"blank","query":{"since":"  "}}
+{"func":"since_param","case":"negative-clamps","query":{"since":"-9"}}
+{"func":"since_param","case":"float-string","query":{"since":"1.5"}}
+{"func":"since_param","case":"number","query":{"since":3.7}}
+{"func":"ws_board","case":"absent","raw":null}
+{"func":"ws_board","case":"empty","raw":""}
+{"func":"ws_board","case":"normalises","raw":" My-Board "}
+{"func":"ws_board","case":"malformed","raw":"BAD ONE"}
+{"func":"ws_board_live","case":"none","slug":null,"boards":["live"]}
+{"func":"ws_board_live","case":"default-always","slug":"default","boards":[]}
+{"func":"ws_board_live","case":"live","slug":"live","boards":["live","default"]}
+{"func":"ws_board_live","case":"archived-tombstone","slug":"gone","boards":["live"]}
+{"func":"list_boards_annotate","case":"two-boards","current":"web","boards":[{"slug":"default","name":"Default","project_id":null},{"slug":"web","name":"Web","project_id":"p1","archived":false}],"counts":{"default":{"todo":2,"done":1,"archived":4},"web":{"running":1}},"kinds":{"default":"scratch","web":"worktree"},"projects":{"p1":{"name":"Web Project"}}}
+{"func":"list_boards_annotate","case":"no-counts","current":"default","boards":[{"slug":"fresh"}],"counts":{},"kinds":{},"projects":{}}
+{"func":"list_boards_annotate","case":"empty-project-id","current":null,"boards":[{"slug":"x","project_id":""}],"counts":{"x":{}},"kinds":{"x":"dir"},"projects":{}}
+{"func":"profile_roster","case":"two-profiles","profiles":[{"name":"default","is_default":true,"model":"gpt-5","provider":"openai","description":"root","description_auto":false,"skill_count":12},{"name":"bob","is_default":false,"model":null,"provider":null,"description":null,"description_auto":true,"skill_count":null}]}
+{"func":"profile_roster","case":"empty","profiles":[]}

@@ -1,0 +1,45 @@
+{"func": "strip_markdown", "case": "bold-italic", "text": "**bold** and *it* here"}
+{"func": "strip_markdown", "case": "underscore-boundary", "text": "a __strong__ b _em_ c"}
+{"func": "strip_markdown", "case": "underscore-mid-word-kept", "text": "snake_case_name and _x_"}
+{"func": "strip_markdown", "case": "heading-fence-code", "text": "# Title\n```python\nprint(1)\n```\nuse `x` now"}
+{"func": "strip_markdown", "case": "heading-deep", "text": "###### six\n####### seven"}
+{"func": "strip_markdown", "case": "link-drop", "text": "see [docs](https://e.com/d) now"}
+{"func": "strip_markdown", "case": "link-keep", "text": "see [docs](https://e.com/d) now", "keep_link_targets": true}
+{"func": "strip_markdown", "case": "link-keep-nonhttp", "text": "mail [me](mailto:a@b.c) now", "keep_link_targets": true}
+{"func": "strip_markdown", "case": "link-keep-same-label", "text": "[https://e.com](https://e.com)", "keep_link_targets": true}
+{"func": "strip_markdown", "case": "link-keep-spaces", "text": "[ docs ]( https://e.com )", "keep_link_targets": true}
+{"func": "strip_markdown", "case": "newline-squeeze", "text": "  a\n\n\n\nb  "}
+{"func": "strip_markdown", "case": "unclosed-bold", "text": "**oops and *one"}
+{"func": "strip_markdown", "case": "empty", "text": ""}
+{"func": "strip_markdown", "case": "plain-passthrough", "text": "nothing to strip 42"}
+{"func": "format_message", "case": "md-on", "content": "**keep** [l](https://u)"}
+{"func": "format_message", "case": "md-off-env-false", "content": "**keep** [l](https://u)", "markdown_env": "false"}
+{"func": "format_message", "case": "md-off-env-zero", "content": "**keep**", "markdown_env": "0"}
+{"func": "sidecar_payload_text", "case": "md-no-url-verbatim", "text": "**hi** there", "send_markdown": true}
+{"func": "sidecar_payload_text", "case": "md-with-url-stripped", "text": "**hi** https://e.com x", "send_markdown": true}
+{"func": "sidecar_payload_text", "case": "plain-stripped", "text": "**hi** there", "send_markdown": false}
+{"func": "url_only_candidate", "case": "bare", "text": "  https://e.com/a?b=c  "}
+{"func": "url_only_candidate", "case": "prose", "text": "go to https://e.com now"}
+{"func": "url_only_candidate", "case": "no-netloc", "text": "https:///path"}
+{"func": "url_only_candidate", "case": "upper-scheme", "text": "HTTPS://E.COM/x"}
+{"func": "url_only_candidate", "case": "ftp", "text": "ftp://e.com/x"}
+{"func": "url_only_candidate", "case": "http-ok", "text": "http://127.0.0.1:8789/healthz"}
+{"func": "richlink_candidate", "case": "md-on-url", "text": "https://e.com/x"}
+{"func": "richlink_candidate", "case": "md-on-prose", "text": "see https://e.com/x"}
+{"func": "richlink_candidate", "case": "md-off-url", "text": "https://e.com/x", "markdown_env": "no"}
+{"func": "format_richlink_content", "case": "title-url", "content": {"url": "https://e.com", "title": "Title"}}
+{"func": "format_richlink_content", "case": "summary-eq-title", "content": {"url": "https://e.com", "title": "T", "summary": " T "}}
+{"func": "format_richlink_content", "case": "all-three", "content": {"url": "https://e.com", "title": "T", "summary": "S"}}
+{"func": "format_richlink_content", "case": "url-only", "content": {"url": " https://e.com "}}
+{"func": "format_richlink_content", "case": "nothing", "content": {}}
+{"func": "format_richlink_content", "case": "summary-no-title", "content": {"url": "u", "summary": "s"}}
+{"func": "strip_markdown", "case": "bold-wrapping-italic", "text": "**a *b* c**"}
+{"func": "strip_markdown", "case": "triple-star", "text": "***triple***"}
+{"func": "strip_markdown", "case": "strike-untouched", "text": "~~gone~~ stays"}
+{"func": "strip_markdown", "case": "fence-lang", "text": "```js\ncode\n```"}
+{"func": "strip_markdown", "case": "hash-no-space", "text": "#h1 no strip"}
+{"func": "strip_markdown", "case": "heading-mid-text", "text": "text\n# Head\nmore"}
+{"func": "strip_markdown", "case": "two-links-mixed-keep", "text": "[a](http://x) and [b](mailto:c)", "keep_link_targets": true}
+{"func": "strip_markdown", "case": "many-newlines", "text": "a\n\n\n\n\nb"}
+{"func": "strip_markdown", "case": "inline-code-only", "text": "run `ls -l` now"}
+{"func": "strip_markdown", "case": "underscore-adjacent", "text": "a__b__c and __d__"}

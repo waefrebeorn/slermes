@@ -1,0 +1,17 @@
+{"func": "gate_env", "case": "snapshot-hit", "snapshot": {"G": "v"}, "name": "G", "default": "d"}
+{"func": "gate_env", "case": "snapshot-empty-falls", "snapshot": {"G": ""}, "name": "G", "default": "d"}
+{"func": "gate_env", "case": "snapshot-miss", "snapshot": {}, "name": "G", "default": "d", "env_name": "G", "env": "E"}
+{"func": "gate_env", "case": "falsy-unset", "snapshot": null, "name": "G", "default": "", "env_name": "G", "env": null}
+{"func": "gate_raw", "case": "env-wins", "env_val": "E", "extra": {"k": "X"}, "extra_key": "k"}
+{"func": "gate_raw", "case": "extra", "env_val": "", "extra": {"k": "X"}, "extra_key": "k"}
+{"func": "gate_raw", "case": "falsy-none", "env_val": "", "extra": {}, "extra_key": "k"}
+{"func": "csv_set", "case": "csv", "raw": "a, b ,,c"}
+{"func": "csv_set", "case": "json-list", "raw": "[\"x\", \" y \"]"}
+{"func": "csv_set", "case": "list-input", "raw": ["a", "a", " b "]}
+{"func": "csv_set", "case": "falsy-null", "raw": null}
+{"func": "csv_set", "case": "falsy-empty", "raw": ""}
+{"func": "csv_set", "case": "malformed-json", "raw": "[oops"}
+{"func": "allowed_channels", "case": "env", "env_val": "1,2", "extra": {"allowed_channels": ["9"]}}
+{"func": "allowed_channels", "case": "extra", "env_val": "", "extra": {"allowed_channels": ["9", "8"]}}
+{"func": "ignored_channels", "case": "env", "env_val": "3", "extra": {}}
+{"func": "no_thread_channels", "case": "extra", "env_val": "", "extra": {"no_thread_channels": "4,5"}}

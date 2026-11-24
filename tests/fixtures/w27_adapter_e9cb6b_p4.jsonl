@@ -1,0 +1,93 @@
+{"func": "is_self_sender", "case": "exact", "user_id": "@bot:example.org", "sender": "@bot:example.org"}
+{"func": "is_self_sender", "case": "case_and_space", "user_id": "@bot:example.org", "sender": " @BOT:example.org "}
+{"func": "is_self_sender", "case": "other", "user_id": "@bot:example.org", "sender": "@other:x"}
+{"func": "is_self_sender", "case": "unknown_own", "user_id": "", "sender": "@any:x"}
+{"func": "is_self_sender", "case": "nulls", "user_id": null, "sender": null}
+{"func": "is_system_or_bridge_sender", "case": "s='@_telegram_123:server'", "sender": "@_telegram_123:server"}
+{"func": "is_system_or_bridge_sender", "case": "s='@alice:x'", "sender": "@alice:x"}
+{"func": "is_system_or_bridge_sender", "case": "s=''", "sender": ""}
+{"func": "is_system_or_bridge_sender", "case": "s='  '", "sender": "  "}
+{"func": "is_system_or_bridge_sender", "case": "s='@:x'", "sender": "@:x"}
+{"func": "is_system_or_bridge_sender", "case": "s='@_x:y'", "sender": "@_x:y"}
+{"func": "is_system_or_bridge_sender", "case": "s='alice'", "sender": "alice"}
+{"func": "is_system_or_bridge_sender", "case": "s='@__double:y'", "sender": "@__double:y"}
+{"func": "is_system_or_bridge_sender", "case": "null", "sender": null}
+{"func": "classify_inbound_media", "case": "image_default", "msgtype": "m.image", "mimetype": "", "content": {}}
+{"func": "classify_inbound_media", "case": "image_mime", "msgtype": "m.image", "mimetype": "image/webp", "content": {}}
+{"func": "classify_inbound_media", "case": "audio_plain", "msgtype": "m.audio", "mimetype": "", "content": {}}
+{"func": "classify_inbound_media", "case": "audio_voice", "msgtype": "m.audio", "mimetype": "", "content": {"org.matrix.msc3245.voice": {}}}
+{"func": "classify_inbound_media", "case": "audio_voice_null_marker", "msgtype": "m.audio", "mimetype": "", "content": {"org.matrix.msc3245.voice": null}}
+{"func": "classify_inbound_media", "case": "video", "msgtype": "m.video", "mimetype": "", "content": {}}
+{"func": "classify_inbound_media", "case": "file", "msgtype": "m.file", "mimetype": "", "content": {}}
+{"func": "classify_inbound_media", "case": "other", "msgtype": "m.other", "mimetype": "application/pdf", "content": {}}
+{"func": "classify_inbound_media", "case": "null_mime", "msgtype": "m.image", "mimetype": null, "content": {}}
+{"func": "voice_may_park", "case": "plain_voice", "room_id": "!r:x", "body": "", "content": {"msgtype": "m.audio", "org.matrix.msc3245.voice": {}}, "relates_to": {}, "mention_claimed": false, "require_mention": true, "free_rooms": [], "allowed_rooms": [], "bot_threads": [], "user_id": "@bot:x"}
+{"func": "voice_may_park", "case": "mentioned", "room_id": "!r:x", "body": "@bot hi", "content": {"msgtype": "m.audio", "org.matrix.msc3245.voice": {}}, "relates_to": {}, "mention_claimed": false, "require_mention": true, "free_rooms": [], "allowed_rooms": [], "bot_threads": [], "user_id": "@bot:x"}
+{"func": "voice_may_park", "case": "not_voice", "room_id": "!r:x", "body": "", "content": {"msgtype": "m.audio"}, "relates_to": {}, "mention_claimed": false, "require_mention": true, "free_rooms": [], "allowed_rooms": [], "bot_threads": [], "user_id": "@bot:x"}
+{"func": "voice_may_park", "case": "claimed", "room_id": "!r:x", "body": "", "content": {"msgtype": "m.audio", "org.matrix.msc3245.voice": {}}, "relates_to": {}, "mention_claimed": true, "require_mention": true, "free_rooms": [], "allowed_rooms": [], "bot_threads": [], "user_id": "@bot:x"}
+{"func": "voice_may_park", "case": "no_require_mention", "room_id": "!r:x", "body": "", "content": {"msgtype": "m.audio", "org.matrix.msc3245.voice": {}}, "relates_to": {}, "mention_claimed": false, "require_mention": false, "free_rooms": [], "allowed_rooms": [], "bot_threads": [], "user_id": "@bot:x"}
+{"func": "voice_may_park", "case": "free_room", "room_id": "!r:x", "body": "", "content": {"msgtype": "m.audio", "org.matrix.msc3245.voice": {}}, "relates_to": {}, "mention_claimed": false, "require_mention": true, "free_rooms": ["!r:x"], "allowed_rooms": [], "bot_threads": [], "user_id": "@bot:x"}
+{"func": "voice_may_park", "case": "not_allowed", "room_id": "!r:y", "body": "", "content": {"msgtype": "m.audio", "org.matrix.msc3245.voice": {}}, "relates_to": {}, "mention_claimed": false, "require_mention": true, "free_rooms": [], "allowed_rooms": ["!r:x"], "bot_threads": [], "user_id": "@bot:x"}
+{"func": "voice_may_park", "case": "in_bot_thread", "room_id": "!r:x", "body": "", "content": {"msgtype": "m.audio", "org.matrix.msc3245.voice": {}}, "relates_to": {"rel_type": "m.thread", "event_id": "$root"}, "mention_claimed": false, "require_mention": true, "free_rooms": [], "allowed_rooms": [], "bot_threads": ["$root"], "user_id": "@bot:x"}
+{"func": "voice_may_park", "case": "slash_body", "room_id": "!r:x", "body": "/model", "content": {"msgtype": "m.audio", "org.matrix.msc3245.voice": {}}, "relates_to": {}, "mention_claimed": false, "require_mention": true, "free_rooms": [], "allowed_rooms": [], "bot_threads": [], "user_id": "@bot:x"}
+{"func": "voice_may_park", "case": "null_content", "room_id": "!r:x", "body": "", "content": null, "relates_to": {}, "mention_claimed": false, "require_mention": true, "free_rooms": [], "allowed_rooms": [], "bot_threads": [], "user_id": "@bot:x"}
+{"func": "content_mentions_bot", "case": "msc_list", "user_id": "@bot:example.org", "body": "hi", "content": {"m.mentions": {"user_ids": ["@bot:example.org"]}}}
+{"func": "content_mentions_bot", "case": "body_text", "user_id": "@bot:example.org", "body": "hi @bot", "content": {}}
+{"func": "content_mentions_bot", "case": "junk_mentions", "user_id": "@bot:example.org", "body": "hi", "content": {"m.mentions": "junk"}}
+{"func": "content_mentions_bot", "case": "none", "user_id": "@bot:example.org", "body": "hi", "content": {}}
+{"func": "content_mentions_bot", "case": "formatted", "user_id": "@bot:example.org", "body": "x", "content": {"formatted_body": "<a href='https://matrix.to/#/@bot:example.org'>"}}
+{"func": "extract_invite_dm_signal", "case": "direct", "user_id": "@bot:example.org", "invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@bot:example.org", "content": {"membership": "invite", "is_direct": true}, "sender": "@alice:x"}]}}}
+{"func": "extract_invite_dm_signal", "case": "not_direct", "user_id": "@bot:example.org", "invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@bot:example.org", "content": {"membership": "invite"}, "sender": "@alice:x"}]}}}
+{"func": "extract_invite_dm_signal", "case": "other_state_key", "user_id": "@bot:example.org", "invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@other", "content": {"membership": "invite", "is_direct": true}}]}}}
+{"func": "extract_invite_dm_signal", "case": "joined_not_invite", "user_id": "@bot:example.org", "invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@bot:example.org", "content": {"membership": "join", "is_direct": true}, "sender": "@a:x"}]}}}
+{"func": "extract_invite_dm_signal", "case": "no_events", "user_id": "@bot:example.org", "invited_room": {}}
+{"func": "extract_invite_dm_signal", "case": "events_not_list", "user_id": "@bot:example.org", "invited_room": {"invite_state": {"events": "junk"}}}
+{"func": "extract_invite_dm_signal", "case": "no_user_id", "user_id": "", "invited_room": {"invite_state": {"events": [{"type": "m.room.member", "state_key": "@bot:example.org", "content": {"membership": "invite", "is_direct": true}}]}}}
+{"func": "extract_invite_dm_signal", "case": "null_room", "user_id": "@bot:example.org", "invited_room": null}
+{"func": "extract_invite_dm_signal", "case": "second_match", "user_id": "@bot:example.org", "invited_room": {"invite_state": {"events": [{"type": "other"}, {"type": "m.room.member", "state_key": "@bot:example.org", "content": {"membership": "invite", "is_direct": true}, "sender": "@b:x"}]}}}
+{"func": "matrix_prompt_expired", "case": "expired", "expires_at": 100.0, "now": 200.0}
+{"func": "matrix_prompt_expired", "case": "not_yet", "expires_at": 300.0, "now": 200.0}
+{"func": "matrix_prompt_expired", "case": "null", "expires_at": null, "now": 200.0}
+{"func": "matrix_prompt_expired", "case": "equal", "expires_at": 200.0, "now": 200.0}
+{"func": "matrix_prompt_expired", "case": "zero", "expires_at": 0.0, "now": 1.0}
+{"func": "is_authorized_user", "case": "allowed", "user_id": "@a:x", "allow_all": false, "allowed_users": ["@a:x"]}
+{"func": "is_authorized_user", "case": "not_allowed", "user_id": "@b:x", "allow_all": false, "allowed_users": ["@a:x"]}
+{"func": "is_authorized_user", "case": "allow_all", "user_id": "@b:x", "allow_all": true, "allowed_users": []}
+{"func": "is_authorized_user", "case": "empty_list", "user_id": "@b:x", "allow_all": false, "allowed_users": []}
+{"func": "is_authorized_user", "case": "nulls", "user_id": null, "allow_all": null, "allowed_users": null}
+{"func": "reactor_allowed", "case": "same_user", "sender": "@a:x", "requester": "@a:x", "require_sender": true}
+{"func": "reactor_allowed", "case": "different_user", "sender": "@b:x", "requester": "@a:x", "require_sender": true}
+{"func": "reactor_allowed", "case": "different_not_required", "sender": "@b:x", "requester": "@a:x", "require_sender": false}
+{"func": "reactor_allowed", "case": "no_requester", "sender": "@b:x", "requester": null, "require_sender": true}
+{"func": "reactor_allowed", "case": "require_default", "sender": "@b:x", "requester": "@a:x", "require_sender": null}
+{"func": "state_event_value", "case": "top_level", "event": {"name": "Room X"}, "key": "name"}
+{"func": "state_event_value", "case": "nested", "event": {"content": {"name": "Nested"}}, "key": "name"}
+{"func": "state_event_value", "case": "empty_value", "event": {"name": ""}, "key": "name"}
+{"func": "state_event_value", "case": "fallback_to_content", "event": {"name": "", "content": {"name": "C"}}, "key": "name"}
+{"func": "state_event_value", "case": "zero_value", "event": {"name": 0}, "key": "name"}
+{"func": "state_event_value", "case": "null_event", "event": null, "key": "name"}
+{"func": "state_event_value", "case": "missing_key", "event": {"topic": "t"}, "key": "name"}
+{"func": "state_event_value", "case": "number_stringify", "event": {"name": 42}, "key": "name"}
+{"func": "room_server_name", "case": "normal", "room_id": "!r:hs.example"}
+{"func": "room_server_name", "case": "no_colon", "room_id": "!r"}
+{"func": "room_server_name", "case": "multi_colon", "room_id": "!r:a:b"}
+{"func": "room_server_name", "case": "blank_tail", "room_id": "!r:  "}
+{"func": "room_server_name", "case": "empty", "room_id": ""}
+{"func": "room_identity", "case": "two_members_dm", "room_id": "!r:hs", "room_name": null, "canonical_alias": null, "member_count": 2, "is_direct": false}
+{"func": "room_identity", "case": "named_group", "room_id": "!r:hs", "room_name": "Name", "canonical_alias": null, "member_count": 5, "is_direct": false}
+{"func": "room_identity", "case": "named_two_members", "room_id": "!r:hs", "room_name": "Name", "canonical_alias": null, "member_count": 2, "is_direct": true}
+{"func": "room_identity", "case": "alias_only_direct", "room_id": "!r:hs", "room_name": null, "canonical_alias": "#a:hs", "member_count": null, "is_direct": true}
+{"func": "room_identity", "case": "unknown_count", "room_id": "!r:hs", "room_name": null, "canonical_alias": null, "member_count": null, "is_direct": false}
+{"func": "room_identity", "case": "no_server", "room_id": "!r", "room_name": null, "canonical_alias": null, "member_count": 3, "is_direct": false}
+{"func": "room_identity", "case": "blank_server", "room_id": "!r:  ", "room_name": null, "canonical_alias": null, "member_count": 1, "is_direct": false}
+{"func": "room_identity", "case": "conflict", "room_id": "!r:hs", "room_name": "Name", "canonical_alias": null, "member_count": null, "is_direct": true}
+{"func": "room_identity", "case": "empty_name_three", "room_id": "!r:hs", "room_name": "", "canonical_alias": null, "member_count": 3, "is_direct": true}
+{"func": "room_identity", "case": "one_member", "room_id": "!r:hs", "room_name": "Name", "canonical_alias": null, "member_count": 1, "is_direct": false}
+{"func": "presence_valid", "case": "s='online'", "state": "online"}
+{"func": "presence_valid", "case": "s='offline'", "state": "offline"}
+{"func": "presence_valid", "case": "s='unavailable'", "state": "unavailable"}
+{"func": "presence_valid", "case": "s='ONLINE'", "state": "ONLINE"}
+{"func": "presence_valid", "case": "s=''", "state": ""}
+{"func": "presence_valid", "case": "s='away'", "state": "away"}
+{"func": "presence_valid", "case": "null", "state": null}
+{"func": "state_event_value", "case": "list_event", "event": [], "key": "name"}

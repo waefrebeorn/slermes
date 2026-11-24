@@ -1,0 +1,29 @@
+{"func":"classify_bridge_message","case":"ptt","data":{"mediaType":"ptt","hasMedia":true}}
+{"func":"classify_bridge_message","case":"image","data":{"mediaType":"image/jpeg","hasMedia":true}}
+{"func":"classify_bridge_message","case":"sticker","data":{"mediaType":"sticker"}}
+{"func":"classify_bridge_message","case":"location","data":{"mediaType":"location","hasMedia":true}}
+{"func":"classify_bridge_message","case":"live_location","data":{"mediaType":"live_location"}}
+{"func":"classify_bridge_message","case":"audio","data":{"mediaType":"audio/ogg","hasMedia":true}}
+{"func":"classify_bridge_message","case":"video","data":{"mediaType":"video/mp4","hasMedia":true}}
+{"func":"classify_bridge_message","case":"doc","data":{"mediaType":"application/pdf","hasMedia":true}}
+{"func":"classify_bridge_message","case":"text","data":{"hasMedia":false,"mediaType":""}}
+{"func":"classify_bridge_message","case":"no_mediaType","data":{"hasMedia":1}}
+{"func":"classify_bridge_message","case":"empty","data":{}}
+{"func":"may_transcribe_at_gate","case":"on","data":{"isGroup":true,"mediaType":"ptt"},"extra":{"voice_mention_patterns":["hey hermes"]}}
+{"func":"may_transcribe_at_gate","case":"string_yes","data":{"isGroup":true,"mediaType":"ptt"},"extra":{"voice_mention_patterns":"yes"}}
+{"func":"may_transcribe_at_gate","case":"off","data":{"isGroup":true,"mediaType":"ptt"},"extra":{}}
+{"func":"may_transcribe_at_gate","case":"dm","data":{"isGroup":false,"mediaType":"ptt"},"extra":{"voice_mention_patterns":true}}
+{"func":"may_transcribe_at_gate","case":"audio","data":{"isGroup":true,"mediaType":"audio/ogg"},"extra":{"voice_mention_patterns":"1"}}
+{"func":"may_transcribe_at_gate","case":"false_string","data":{"isGroup":true,"mediaType":"ptt"},"extra":{"voice_mention_patterns":"False"}}
+{"func":"inject_document_text","case":"one_md","body":"caption","docs":[{"name":"doc_ab12_report.md","content":"hello\nworld"}]}
+{"func":"inject_document_text","case":"two_empty_body","body":"","docs":[{"name":"doc_1_a.txt","content":"alpha"},{"name":"notes.csv","content":"a,b"}]}
+{"func":"inject_document_text","case":"no_ext","body":"body","docs":[{"name":"payload","content":"zzz"}]}
+{"func":"inject_document_text","case":"too_big","body":"body","docs":[{"name":"big.log","content":"a","size":204800}]}
+{"func":"inject_document_text","case":"mixed","body":"b","docs":[{"name":"x.py","content":"print(1)"},{"name":"img.png","content":"binary"},{"name":"y.yaml","content":"k: v"}]}
+{"func":"inject_document_text","case":"empty","body":"keep","docs":[]}
+{"func":"delivery_status_line","case":"read","name":"Whatsapp","data":{"messageId":"3EB0","chatId":"6012@s.whatsapp.net","status":"read","recipientId":"6013","timestamp":1699999999}}
+{"func":"delivery_status_line","case":"error","name":"Whatsapp","data":{"messageId":"3EB0","chatId":"g@g.us","status":"failed","error":"boom","timestamp":1}}
+{"func":"delivery_status_line","case":"empty","name":"Whatsapp","data":{}}
+{"func":"delivery_status_line","case":"numeric","name":"Whatsapp","data":{"messageId":123,"chatId":456,"status":"delivered","timestamp":1699999999000}}
+{"func":"inject_document_text","case":"bom_content","body":"b","docs":[{"name":"doc_7f_bom.txt","content":"\uFEFFhello bom"}]}
+{"func":"delivery_status_line","case":"error_zero","name":"Whatsapp","data":{"messageId":"M","chatId":"c","status":"failed","recipientId":"","error":"x"}}

@@ -1,0 +1,38 @@
+{"func":"is_transient_typing_error","case":"retry-after","error":{"name":"RetryAfter","text":"x","retry_after":3}}
+{"func":"is_transient_typing_error","case":"429","error":{"name":"Error","text":"x","status_code":429}}
+{"func":"is_transient_typing_error","case":"503","error":{"name":"Error","text":"x","status_code":503}}
+{"func":"is_transient_typing_error","case":"404-not-transient","error":{"name":"Error","text":"x","status_code":404}}
+{"func":"is_transient_typing_error","case":"code-attr","error":{"name":"Error","text":"x","code":500}}
+{"func":"is_transient_typing_error","case":"rate-limit-text","error":{"name":"Error","text":"Too Many Requests: retry later"}}
+{"func":"is_transient_typing_error","case":"temporary-text","error":{"name":"Error","text":"temporary failure"}}
+{"func":"is_transient_typing_error","case":"oserror","error":{"name":"OSError","text":"broken pipe"}}
+{"func":"is_transient_typing_error","case":"permanent","error":{"name":"BadRequest","text":"chat not found","status_code":400}}
+{"func":"is_transient_typing_error","case":"null","error":null}
+{"func":"extra_bool","case":"missing-default-true","extra":{},"key":"k","env_name":"W27A_BOOL","default":"true","env":{}}
+{"func":"extra_bool","case":"env-wins","extra":{"k":false},"key":"k","env_name":"W27A_BOOL","default":"false","env":{"W27A_BOOL":"1"}}
+{"func":"extra_bool","case":"extra-bool-false","extra":{"k":false},"key":"k","env_name":"W27A_BOOL","default":"true","env":{}}
+{"func":"extra_bool","case":"extra-string-off","extra":{"k":" OFF "},"key":"k","env_name":"W27A_BOOL","default":"true","env":{}}
+{"func":"extra_bool","case":"extra-string-junk","extra":{"k":"maybe"},"key":"k","env_name":"W27A_BOOL","default":"true","env":{}}
+{"func":"extra_bool","case":"blank-extra-falls-to-default","extra":{"k":"  "},"key":"k","env_name":"W27A_BOOL","default":"yes","env":{}}
+{"func":"extra_bool","case":"fallback-key","extra":{"alt":true},"key":"k","env_name":"W27A_BOOL","default":"false","fallback_keys":["alt"],"env":{}}
+{"func":"extra_bool","case":"number-extra","extra":{"k":1},"key":"k","env_name":"W27A_BOOL","default":"false","env":{}}
+{"func":"extra_str_set","case":"list","extra":{"k":["a","b"," b ",""]},"key":"k","env_name":"W27A_SET","env":{}}
+{"func":"extra_str_set","case":"comma-string","extra":{"k":"a, b ,,c"},"key":"k","env_name":"W27A_SET","env":{}}
+{"func":"extra_str_set","case":"json-literal","extra":{"k":"[\"x\",\"y\"]"},"key":"k","env_name":"W27A_SET","env":{}}
+{"func":"extra_str_set","case":"malformed-literal","extra":{"k":"[\"x\","},"key":"k","env_name":"W27A_SET","env":{}}
+{"func":"extra_str_set","case":"env-wins","extra":{"k":"zzz"},"key":"k","env_name":"W27A_SET","env":{"W27A_SET":"p,q"}}
+{"func":"extra_str_set","case":"blank","extra":{"k":""},"key":"k","env_name":"W27A_SET","env":{}}
+{"func":"extra_str_set","case":"null","extra":{},"key":"k","env_name":"W27A_SET","env":{}}
+{"func":"extra_str_set","case":"empty-list","extra":{"k":[]},"key":"k","env_name":"W27A_SET","env":{}}
+{"func":"chat_type_str","case":"enum","chat":{"type":"ChatType.SUPERGROUP"}}
+{"func":"chat_type_str","case":"plain","chat":{"type":"private"}}
+{"func":"chat_type_str","case":"no-chat","chat":null}
+{"func":"chat_type_str","case":"missing-type","chat":{}}
+{"func":"chat_type_str","case":"padded","chat":{"type":" GROUP "}}
+{"func":"chat_id_str","case":"numeric","message":{"chat":{"id":5}}}
+{"func":"chat_id_str","case":"no-chat","message":{}}
+{"func":"chat_id_str","case":"null-id","message":{"chat":{"id":null}}}
+{"func":"chat_id_str","case":"string-id","message":{"chat":{"id":"@chan"}}}
+{"func":"topic_id_or_general","case":"general","thread_id":null}
+{"func":"topic_id_or_general","case":"topic","thread_id":5}
+{"func":"topic_id_or_general","case":"empty","thread_id":""}

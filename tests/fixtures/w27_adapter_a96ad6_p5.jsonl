@@ -1,0 +1,29 @@
+{"func":"looks_like_network_error","case":"networkerror","error":{"name":"NetworkError","text":""}}
+{"func":"looks_like_network_error","case":"timedout","error":{"name":"TimedOut","text":"timed out"}}
+{"func":"looks_like_network_error","case":"connectionerror","error":{"name":"ConnectionError","text":""}}
+{"func":"looks_like_network_error","case":"badrequest-veto","error":{"name":"BadRequest","text":"network"}}
+{"func":"looks_like_network_error","case":"retryafter-veto","error":{"name":"RetryAfter","text":"network"}}
+{"func":"looks_like_network_error","case":"oserror","error":{"name":"TransportFailure","text":"socket","os_error":true}}
+{"func":"looks_like_network_error","case":"plain-exception","error":{"name":"ValueError","text":"socket"}}
+{"func":"looks_like_network_error","case":"null","error":null}
+{"func":"exception_graph_matches","case":"name-in-nested","graph":[{"name":"TimedOut","text":"timed out"},{"name":"ConnectTimeout","text":""}],"name_marker":"connecttimeout"}
+{"func":"exception_graph_matches","case":"text-in-nested","graph":[{"name":"TimedOut","text":"timed out"},{"name":"ConnectError","text":"connect timed out"}],"name_marker":"nomatch","text_markers":["connect timed out"]}
+{"func":"exception_graph_matches","case":"root-only","graph":[{"name":"TimedOut","text":"timed out"}],"name_marker":"connecttimeout","text_markers":["connect timeout"]}
+{"func":"exception_graph_matches","case":"marker-substring","graph":[{"name":"XConnectTimeoutY","text":""}],"name_marker":"connecttimeout"}
+{"func":"exception_graph_matches","case":"no-markers","graph":[{"name":"Error","text":"boom"}],"name_marker":"connecttimeout"}
+{"func":"looks_like_connect_timeout","case":"wrapped","graph":[{"name":"TimedOut","text":""},{"name":"ConnectTimeout","text":""}]}
+{"func":"looks_like_connect_timeout","case":"text","graph":[{"name":"TimedOut","text":"Connect timed out"}]}
+{"func":"looks_like_connect_timeout","case":"plain-timeout","graph":[{"name":"TimedOut","text":"timed out"}]}
+{"func":"looks_like_pool_timeout","case":"class","graph":[{"name":"TimedOut","text":""},{"name":"PoolTimeout","text":""}]}
+{"func":"looks_like_pool_timeout","case":"text","graph":[{"name":"TimedOut","text":"pool timeout"}]}
+{"func":"looks_like_pool_timeout","case":"occupied","graph":[{"name":"TimedOut","text":"connection pool is occupied"}]}
+{"func":"looks_like_pool_timeout","case":"pool-without-occupied","graph":[{"name":"TimedOut","text":"connection pool"}]}
+{"func":"looks_like_pool_timeout","case":"miss","graph":[{"name":"TimedOut","text":"timed out"}]}
+{"func":"coerce_bool_extra","case":"true-string","extra":{"x":" TRUE "},"key":"x","default":false}
+{"func":"coerce_bool_extra","case":"off-string","extra":{"x":"off"},"key":"x","default":true}
+{"func":"coerce_bool_extra","case":"junk-string","extra":{"x":"maybe"},"key":"x","default":true}
+{"func":"coerce_bool_extra","case":"number","extra":{"x":3},"key":"x","default":false}
+{"func":"coerce_bool_extra","case":"zero","extra":{"x":0},"key":"x","default":true}
+{"func":"coerce_bool_extra","case":"null-value","extra":{"x":null},"key":"x","default":true}
+{"func":"coerce_bool_extra","case":"absent","extra":{},"key":"x","default":true}
+{"func":"coerce_bool_extra","case":"no-extra","extra":null,"key":"x","default":false}

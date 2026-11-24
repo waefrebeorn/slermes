@@ -1,0 +1,54 @@
+{"func": "is_voice_payload", "case": "voice-type", "payload": {"type": "voice", "name": "v.m4a"}}
+{"func": "is_voice_payload", "case": "caf-name-upper", "payload": {"type": "attachment", "name": "NOTE.CAF"}}
+{"func": "is_voice_payload", "case": "caf-mime", "payload": {"type": "attachment", "mimeType": "audio/x-caf"}}
+{"func": "is_voice_payload", "case": "png", "payload": {"type": "attachment", "name": "a.png", "mimeType": "image/png"}}
+{"func": "is_voice_payload", "case": "text", "payload": {"type": "text", "text": "hi"}}
+{"func": "cached_media_type", "case": "not-voice-empty-mime", "payload": {"type": "attachment"}, "mime": ""}
+{"func": "cached_media_type", "case": "voice-audio-mp4", "payload": {"type": "voice"}, "mime": "audio/mp4", "is_voice": true}
+{"func": "cached_media_type", "case": "voice-octet-caf", "payload": {"type": "attachment", "name": "x.caf"}, "mime": "application/octet-stream", "is_voice": true}
+{"func": "cached_media_type", "case": "voice-octet-other", "payload": {"type": "attachment", "name": "x.bin"}, "mime": "application/octet-stream", "is_voice": true}
+{"func": "cached_media_type", "case": "not-voice-mime", "payload": {"type": "attachment"}, "mime": "image/png"}
+{"func": "attachment_message_type", "case": "image", "mime": "image/jpeg"}
+{"func": "attachment_message_type", "case": "video-upper", "mime": "VIDEO/MP4"}
+{"func": "attachment_message_type", "case": "audio", "mime": "audio/x-caf"}
+{"func": "attachment_message_type", "case": "pdf", "mime": "application/pdf"}
+{"func": "attachment_message_type", "case": "empty", "mime": ""}
+{"func": "group_item_contents", "case": "mixed", "content": {"type": "group", "items": [{"content": {"type": "text", "text": "a"}}, "nope", {"nocontent": 1}, {"content": {"type": "voice"}}]}}
+{"func": "group_item_contents", "case": "items-not-list", "content": {"type": "group", "items": "abc"}}
+{"func": "group_item_contents", "case": "no-items", "content": {"type": "group"}}
+{"func": "richlink_url_from_content", "case": "text-url", "content": {"type": "text", "text": " https://e.com/x "}}
+{"func": "richlink_url_from_content", "case": "text-prose", "content": {"type": "text", "text": "go https://e.com/x"}}
+{"func": "richlink_url_from_content", "case": "richlink-url", "content": {"type": "richlink", "url": "https://e.com/r"}}
+{"func": "richlink_url_from_content", "case": "group-first", "content": {"type": "group", "items": [{"content": {"type": "text", "text": "no url"}}, {"content": {"type": "text", "text": "https://e.com/g"}}]}}
+{"func": "richlink_url_from_content", "case": "nested-group", "content": {"type": "group", "items": [{"content": {"type": "group", "items": [{"content": {"type": "richlink", "url": "https://e.com/n"}}]}}]}}
+{"func": "richlink_url_from_content", "case": "unknown", "content": {"type": "reaction", "url": "https://e.com/z"}}
+{"func": "is_richlink_preview_attachment", "case": "name-suffix-upper", "payload": {"type": "attachment", "name": "card.PLUGINPAYLOADATTACHMENT"}}
+{"func": "is_richlink_preview_attachment", "case": "id-suffix", "payload": {"type": "attachment", "id": "abc.pluginpayloadattachment"}}
+{"func": "is_richlink_preview_attachment", "case": "plain-file", "payload": {"type": "attachment", "name": "card.jpg"}}
+{"func": "is_richlink_preview_attachment", "case": "wrong-type", "payload": {"type": "voice", "name": "x.pluginpayloadattachment"}}
+{"func": "richlink_preview_label", "case": "attachment-name", "content": {"type": "attachment", "name": "card"}}
+{"func": "richlink_preview_label", "case": "attachment-id", "content": {"type": "attachment", "id": "id42"}}
+{"func": "richlink_preview_label", "case": "attachment-unnamed", "content": {"type": "attachment"}}
+{"func": "richlink_preview_label", "case": "group-two", "content": {"type": "group", "items": [{"content": {"type": "attachment", "name": "a"}}, {"content": {"type": "attachment", "id": "b"}}]}}
+{"func": "richlink_preview_label", "case": "group-empty", "content": {"type": "group", "items": []}}
+{"func": "richlink_preview_label", "case": "text-unknown", "content": {"type": "text", "text": "hi"}}
+{"func": "is_richlink_preview_content", "case": "preview-attachment", "content": {"type": "attachment", "name": "x.pluginpayloadattachment"}}
+{"func": "is_richlink_preview_content", "case": "group-all-previews", "content": {"type": "group", "items": [{"content": {"type": "attachment", "name": "a.pluginpayloadattachment"}}, {"content": {"type": "attachment", "id": "b.pluginpayloadattachment"}}]}}
+{"func": "is_richlink_preview_content", "case": "group-mixed", "content": {"type": "group", "items": [{"content": {"type": "attachment", "name": "a.pluginpayloadattachment"}}, {"content": {"type": "text", "text": "hi"}}]}}
+{"func": "is_richlink_preview_content", "case": "group-nondict-item", "content": {"type": "group", "items": [{"content": {"type": "attachment", "name": "a.pluginpayloadattachment"}}, 5]}}
+{"func": "is_richlink_preview_content", "case": "group-empty", "content": {"type": "group", "items": []}}
+{"func": "is_richlink_preview_content", "case": "text", "content": {"type": "text", "text": "a.pluginpayloadattachment"}}
+{"func": "reply_inner", "case": "reply-envelope", "content": {"type": "reply", "targetMessageId": "m9", "content": {"type": "text", "text": "inner"}}}
+{"func": "reply_inner", "case": "reply-nondict", "content": {"type": "reply", "content": "text"}}
+{"func": "reply_inner", "case": "plain", "content": {"type": "text", "text": "hi"}}
+{"func": "carries_voice", "case": "group-voice", "content": {"type": "group", "items": [{"content": {"type": "text", "text": "x"}}, {"content": {"type": "voice"}}]}}
+{"func": "carries_voice", "case": "group-caf", "content": {"type": "group", "items": [{"content": {"type": "attachment", "name": "a.caf"}}]}}
+{"func": "carries_voice", "case": "group-none", "content": {"type": "group", "items": [{"content": {"type": "text", "text": "x"}}]}}
+{"func": "carries_voice", "case": "voice", "content": {"type": "voice"}}
+{"func": "carries_voice", "case": "text", "content": {"type": "text", "text": "x"}}
+{"func": "mention_gate_text", "case": "text", "content": {"type": "text", "text": "@hermes agent hi"}}
+{"func": "mention_gate_text", "case": "text-null", "content": {"type": "text"}}
+{"func": "mention_gate_text", "case": "richlink", "content": {"type": "richlink", "url": "https://e.com", "title": "T"}}
+{"func": "mention_gate_text", "case": "group-mixed", "content": {"type": "group", "items": [{"content": {"type": "text", "text": "hey"}}, {"content": {"type": "attachment", "name": "a.png"}}, {"content": {"type": "text", "text": ""}}, {"content": {"type": "richlink", "url": "https://e.com"}}]}}
+{"func": "mention_gate_text", "case": "reaction", "content": {"type": "reaction", "emoji": "❤"}}
+{"func": "mention_gate_text", "case": "group-nested", "content": {"type": "group", "items": [{"content": {"type": "group", "items": [{"content": {"type": "text", "text": "deep"}}]}}, {"content": {"type": "text", "text": "shallow"}}]}}

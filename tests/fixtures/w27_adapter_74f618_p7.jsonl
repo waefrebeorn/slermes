@@ -1,0 +1,42 @@
+{"func": "resolve_thread_ts", "case": "thread-id", "reply_to": "1712345600.000100", "metadata": {"thread_id": "1712345600.000100"}}
+{"func": "resolve_thread_ts", "case": "thread-ts", "reply_to": null, "metadata": {"thread_ts": "1712345610.000200"}}
+{"func": "resolve_thread_ts", "case": "reply-to-fallback", "reply_to": "1712345620.000300", "metadata": {"user_id": "U1"}}
+{"func": "resolve_thread_ts", "case": "flat-synthetic-skip", "reply_to": "1712345630.000400", "metadata": {"thread_id": "1712345630.000400"}, "reply_in_thread": false}
+{"func": "resolve_thread_ts", "case": "flat-real-thread", "reply_to": "1712345640.000500", "metadata": {"thread_id": "1712345600.000100"}, "reply_in_thread": false}
+{"func": "resolve_thread_ts", "case": "nothing", "reply_to": null, "metadata": null}
+{"func": "reactions_enabled", "case": "default", "extra": null, "env": null}
+{"func": "reactions_enabled", "case": "extra-false", "extra": {"reactions": false}, "env": null}
+{"func": "reactions_enabled", "case": "env-no", "extra": {"reactions": ""}, "env": "no"}
+{"func": "reactions_enabled", "case": "extra-yes", "extra": {"reactions": "yes"}, "env": null}
+{"func": "extra_flag", "case": "true", "extra": {"feedback_buttons": true}, "key": "feedback_buttons"}
+{"func": "extra_flag", "case": "string-yes", "extra": {"dm_top_level_threads_as_sessions": "YES"}, "key": "dm_top_level_threads_as_sessions", "default": false}
+{"func": "extra_flag", "case": "absent-default", "extra": {}, "key": "markdown_blocks", "default": true}
+{"func": "extra_flag", "case": "junk-false", "extra": {"rich_blocks": "junk"}, "key": "rich_blocks", "default": true}
+{"func": "parse_users_info", "case": "display-name", "payload": {"user": {"name": "bob", "profile": {"display_name": "Bobby", "real_name": "Robert"}}}, "user_id": "U1"}
+{"func": "parse_users_info", "case": "real-name", "payload": {"user": {"name": "bob", "profile": {"real_name": "Robert"}}}, "user_id": "U1"}
+{"func": "parse_users_info", "case": "bot-flag", "payload": {"user": {"name": "helper", "is_bot": true}}, "user_id": "U2"}
+{"func": "parse_users_info", "case": "bot-id-profile", "payload": {"user": {"name": "helper", "profile": {"bot_id": "B1"}}}, "user_id": "U3"}
+{"func": "parse_users_info", "case": "no-user", "payload": {}, "user_id": "U4"}
+{"func": "parse_users_info", "case": "workflow-bot", "payload": {"user": {"is_workflow_bot": true, "name": "flow"}}, "user_id": "U5"}
+{"func": "reaction_triggers", "case": "null", "raw": null}
+{"func": "reaction_triggers", "case": "true", "raw": true}
+{"func": "reaction_triggers", "case": "false", "raw": false}
+{"func": "reaction_triggers", "case": "list", "raw": [":rocket:", "eyes", "rocket", ""]}
+{"func": "reaction_triggers", "case": "csv", "raw": "eyes, rocket  tada"}
+{"func": "reaction_triggers", "case": "all-star", "raw": "*"}
+{"func": "reaction_triggers", "case": "off", "raw": " off "}
+{"func": "reaction_trigger_target", "case": "channel-thread", "raw": " C123 : 1712345678.000100 "}
+{"func": "reaction_trigger_target", "case": "channel-only", "raw": "C123"}
+{"func": "reaction_trigger_target", "case": "null", "raw": null}
+{"func": "first_file_share", "case": "channel-match", "file_obj": {"shares": {"public": {"C2": [{"ts": "2.2"}], "C1": [{"ts": "1.1"}, {"ts": "1.2"}]}}}, "channel_id": "C1"}
+{"func": "first_file_share", "case": "fallback-first", "file_obj": {"shares": {"public": {"C9": [{"ts": "9.9"}]}}}, "channel_id": "C1"}
+{"func": "first_file_share", "case": "no-shares", "file_obj": {}, "channel_id": "C1"}
+{"func": "first_file_share", "case": "empty-bucket", "file_obj": {"shares": {"public": {}}}, "channel_id": "C1"}
+{"func": "synthetic_reaction_event", "case": "thumbsup", "event": {"reaction": "thumbsup", "user": "U1", "event_ts": "111.222", "item": {"type": "message", "channel": "C1", "ts": "1712345678.000100"}}, "action": "added", "thread_ts": "1712345678.000100", "team_id": "T1"}
+{"func": "synthetic_reaction_event", "case": "unknown-emoji", "event": {"reaction": "shipit", "user": "U2", "event_ts": "111.333", "item": {"type": "message", "channel": "C1", "ts": "1712345678.000200"}}, "action": "removed", "thread_ts": "1712345678.000200"}
+{"func": "synthetic_reaction_event", "case": "no-event-ts", "event": {"reaction": "fire", "user": "U3", "item": {"type": "message", "channel": "C1", "ts": "1712345678.000300"}}, "action": "added", "thread_ts": "1712345678.000300", "team_id": "T2"}
+{"func": "synthetic_reaction_event", "case": "target-channel", "event": {"reaction": "eyes", "user": "U4", "event_ts": "1.1", "item": {"type": "message", "channel": "C1", "ts": "1712345678.000400"}}, "action": "added", "thread_ts": "1712345678.000400", "team_id": "T1", "target_channel": "C9"}
+{"func": "synthetic_reaction_event", "case": "target-thread", "event": {"reaction": "eyes", "user": "U4", "event_ts": "1.2", "item": {"type": "message", "channel": "C1", "ts": "1712345678.000500"}}, "action": "added", "thread_ts": "1712345678.000500", "target_channel": "C9", "target_thread": "1712300000.000900"}
+{"func": "synthetic_reaction_event", "case": "target-dm", "event": {"reaction": "wave", "user": "U5", "event_ts": "1.3", "item": {"type": "message", "channel": "C1", "ts": "1712345678.000600"}}, "action": "added", "thread_ts": "1712345678.000600", "target_channel": "D77"}
+{"func": "build_identity_prompt", "case": "named", "name": "hermes"}
+{"func": "build_identity_prompt", "case": "empty", "name": ""}

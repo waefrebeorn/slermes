@@ -1,0 +1,80 @@
+{"func": "mention_pattern_texts", "case": "null-defaults", "raw": null}
+{"func": "mention_pattern_texts", "case": "csv", "raw": "custom, other thing"}
+{"func": "mention_pattern_texts", "case": "newline-and-comma", "raw": "a, b\nc"}
+{"func": "mention_pattern_texts", "case": "json-list-string", "raw": "[\"x y\", \"z\"]"}
+{"func": "mention_pattern_texts", "case": "list-input", "raw": ["one", " two "]}
+{"func": "mention_pattern_texts", "case": "list-blanks", "raw": ["", "  ", "keep"]}
+{"func": "mention_pattern_texts", "case": "empty-string", "raw": ""}
+{"func": "mention_pattern_texts", "case": "scalar-number", "raw": 1}
+{"func": "mention_match", "case": "default-agent", "text": "@hermes agent hi"}
+{"func": "mention_match", "case": "default-agent-case", "text": "@Hermes Agent, hi"}
+{"func": "mention_match", "case": "default-bare", "text": "hermes: hi"}
+{"func": "mention_match", "case": "no-space", "text": "hermesagent hi"}
+{"func": "mention_match", "case": "preceded-by-word", "text": "myhermes agent"}
+{"func": "mention_match", "case": "bang", "text": "hey @hermes!"}
+{"func": "mention_match", "case": "empty", "text": ""}
+{"func": "mention_match", "case": "upper", "text": "HEY HERMES AGENT"}
+{"func": "mention_match", "case": "custom-literal", "text": "say hey hermes now", "patterns": ["hey hermes"]}
+{"func": "mention_match", "case": "empty-pattern-list", "text": "@hermes agent hi", "patterns": []}
+{"func": "clean_mention_text", "case": "leading-agent", "text": "\t@Hermes Agent, hi there"}
+{"func": "clean_mention_text", "case": "leading-bare", "text": "@hermes hi"}
+{"func": "clean_mention_text", "case": "only-mention", "text": "  @hermes   "}
+{"func": "clean_mention_text", "case": "none", "text": "no mention here"}
+{"func": "clean_mention_text", "case": "colon-dash", "text": "@hermes: - do it"}
+{"func": "clean_mention_text", "case": "empty", "text": ""}
+{"func": "clean_mention_text", "case": "later-word-untouched", "text": "hermes agent writes hermes agent code"}
+{"func": "gate_stt_chat", "case": "group-voice-gated", "space_id": "s1", "space_type": "group", "content": {"type": "voice"}, "require_mention": true, "voice_gate_enabled": true}
+{"func": "gate_stt_chat", "case": "dm", "space_id": "s1", "space_type": "dm", "content": {"type": "voice"}, "require_mention": true, "voice_gate_enabled": true}
+{"func": "gate_stt_chat", "case": "text-only", "space_id": "s1", "space_type": "group", "content": {"type": "text", "text": "hi"}, "require_mention": true, "voice_gate_enabled": true}
+{"func": "gate_stt_chat", "case": "no-require-mention", "space_id": "s1", "space_type": "group", "content": {"type": "voice"}, "require_mention": false, "voice_gate_enabled": true}
+{"func": "gate_stt_chat", "case": "gate-off", "space_id": "s1", "space_type": "group", "content": {"type": "voice"}, "require_mention": true, "voice_gate_enabled": false}
+{"func": "gate_stt_chat", "case": "group-envelope-beside", "space_id": "s1", "space_type": "group", "content": {"type": "group", "items": [{"content": {"type": "text", "text": "x"}}, {"content": {"type": "attachment", "name": "v.caf"}}]}, "require_mention": true, "voice_gate_enabled": true}
+{"func": "gate_stt_chat", "case": "missing-id", "space_type": "group", "content": {"type": "voice"}, "require_mention": true, "voice_gate_enabled": true}
+{"func": "require_mention_flag", "case": "bool-true", "value": true}
+{"func": "require_mention_flag", "case": "yes", "value": "yes"}
+{"func": "require_mention_flag", "case": "value-beats-env", "value": false, "env": "true"}
+{"func": "require_mention_flag", "case": "env-on", "value": null, "env": "ON"}
+{"func": "require_mention_flag", "case": "both-null", "value": null, "env": null}
+{"func": "require_mention_flag", "case": "padded-true", "value": "  TRUE  "}
+{"func": "require_mention_flag", "case": "number-one", "value": 1}
+{"func": "markdown_enabled", "case": "default", "value": null}
+{"func": "markdown_enabled", "case": "false", "value": "false"}
+{"func": "markdown_enabled", "case": "padded-no", "value": " NO "}
+{"func": "markdown_enabled", "case": "true", "value": "true"}
+{"func": "markdown_enabled", "case": "empty", "value": ""}
+{"func": "reactions_enabled", "case": "default", "value": null}
+{"func": "reactions_enabled", "case": "true", "value": "true"}
+{"func": "reactions_enabled", "case": "on", "value": "on"}
+{"func": "reactions_enabled", "case": "one", "value": "1"}
+{"func": "reactions_enabled", "case": "no", "value": "no"}
+{"func": "autostart_enabled", "case": "default", "value": null}
+{"func": "autostart_enabled", "case": "false", "value": "false"}
+{"func": "autostart_enabled", "case": "padded-false-truthy", "value": " false "}
+{"func": "autostart_enabled", "case": "zero", "value": "0"}
+{"func": "autostart_enabled", "case": "no", "value": "no"}
+{"func": "is_recent_richlink_preview", "case": "within-window", "chat_id": "s1", "content": {"type": "attachment", "name": "c.pluginpayloadattachment"}, "last": 1000.0, "now": 1010.0}
+{"func": "is_recent_richlink_preview", "case": "expired", "chat_id": "s1", "content": {"type": "attachment", "name": "c.pluginpayloadattachment"}, "last": 1000.0, "now": 1031.0}
+{"func": "is_recent_richlink_preview", "case": "exactly-30", "chat_id": "s1", "content": {"type": "attachment", "name": "c.pluginpayloadattachment"}, "last": 1000.0, "now": 1030.0}
+{"func": "is_recent_richlink_preview", "case": "no-chat", "content": {"type": "attachment", "name": "c.pluginpayloadattachment"}, "last": 1000.0, "now": 1001.0}
+{"func": "is_recent_richlink_preview", "case": "not-preview", "chat_id": "s1", "content": {"type": "text", "text": "hi"}, "last": 1000.0, "now": 1001.0}
+{"func": "is_recent_richlink_preview", "case": "no-last", "chat_id": "s1", "content": {"type": "attachment", "name": "c.pluginpayloadattachment"}, "now": 1001.0}
+{"func": "is_recent_richlink_preview", "case": "group-all-previews", "chat_id": "any;-;+15551234567", "content": {"type": "group", "items": [{"content": {"type": "attachment", "name": "a.pluginpayloadattachment"}}]}, "last": 1000.0, "now": 1005.0}
+{"func": "record_recent_richlink", "case": "url", "chat_id": "any;-;+15551234567", "text": " https://e.com/x ", "now": 42.0}
+{"func": "record_recent_richlink", "case": "prose", "chat_id": "s1", "text": "go to https://e.com/x", "now": 42.0}
+{"func": "record_recent_richlink", "case": "no-chat", "text": "https://e.com/x", "now": 42.0}
+{"func": "mention_match", "case": "comma-not-space", "text": "@hermes, agent here"}
+{"func": "clean_mention_text", "case": "dash-continuation", "text": "@hermes-agent x"}
+{"func": "is_recent_richlink_preview", "case": "non-normalized-key", "chat_id": "space-9", "content": {"type": "attachment", "id": "z.pluginpayloadattachment"}, "last": 1000.0, "now": 1001.0}
+{"func": "mention_pattern_texts", "case": "list-with-nonstrings", "raw": [1, true, " real "]}
+{"func": "mention_match", "case": "explicit-default-shape", "text": "ping @hermes now", "patterns": ["(?<![\\w@])@?hermes\b[,:\\-]?"]}
+{"func": "mention_match", "case": "literal-anchored-no-hit", "text": "@hermes hi", "patterns": ["hermes"]}
+{"func": "clean_mention_text", "case": "literal-pattern-strip", "text": "hermes hi", "patterns": ["hermes"]}
+{"func": "gate_stt_chat", "case": "null-content", "space_id": "s1", "space_type": "group", "content": null, "require_mention": true, "voice_gate_enabled": true}
+{"func": "gate_stt_chat", "case": "upper-group-token", "space_id": "s1", "space_type": "GROUP", "content": {"type": "voice"}, "require_mention": true, "voice_gate_enabled": true}
+{"func": "require_mention_flag", "case": "number-two", "value": 2}
+{"func": "require_mention_flag", "case": "padded-yes", "value": " yes\t"}
+{"func": "markdown_enabled", "case": "zero-string", "value": "0"}
+{"func": "reactions_enabled", "case": "off-string", "value": "OFF"}
+{"func": "autostart_enabled", "case": "upper-false", "value": "FALSE"}
+{"func": "record_recent_richlink", "case": "empty-text", "chat_id": "s1", "text": "", "now": 7.0}
+{"func": "is_recent_richlink_preview", "case": "group-exactly-30", "chat_id": "any;-;+15551234567", "content": {"type": "group", "items": [{"content": {"type": "attachment", "name": "a.pluginpayloadattachment"}}]}, "last": 1000.0, "now": 1030.0}

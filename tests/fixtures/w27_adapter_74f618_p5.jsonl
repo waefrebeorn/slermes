@@ -1,0 +1,38 @@
+{"func": "timestamp_sort_key", "case": "with-fraction", "ts": "1712345678.000100"}
+{"func": "timestamp_sort_key", "case": "no-fraction", "ts": "1712345678"}
+{"func": "timestamp_sort_key", "case": "pair-marker", "pair": ["T1", "1712345678.0001"]}
+{"func": "timestamp_sort_key", "case": "junk", "ts": "abc"}
+{"func": "timestamp_sort_key", "case": "empty", "ts": ""}
+{"func": "discard_oldest", "case": "identity-two", "entries": ["T1:C1:1712345678.000100", "T1:C1:1712345600.000900", "T1:C1:1712345610.000050", "T1:C1:1712345620.000300", "T1:C1:1712345630.000700"], "count": 2, "mode": "identity"}
+{"func": "discard_oldest", "case": "suffix-one", "entries": ["T1:C1:1712345678.000100", "T1:C1:1712345600.000900", "T1:C1:1712345610.000050"], "count": 1, "mode": "suffix"}
+{"func": "discard_oldest", "case": "count-zero", "entries": ["1712345600.000100"], "count": 0}
+{"func": "discard_oldest", "case": "count-beyond-size", "entries": ["1712345600.000100", "1712345601.000200"], "count": 9}
+{"func": "evict_oldest", "case": "under-cap", "entries": ["1712345600.000100", "1712345601.000200"], "cap": 10}
+{"func": "evict_oldest", "case": "over-cap", "entries": ["1712345600.000100", "1712345601.000200", "1712345602.000300", "1712345603.000400", "1712345604.000500", "1712345605.000600"], "cap": 4}
+{"func": "evict_oldest", "case": "empty-set", "entries": [], "cap": 3}
+{"func": "trim_dict_entries", "case": "over-max", "mapping": {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5}, "max_size": 4}
+{"func": "trim_dict_entries", "case": "at-max", "mapping": {"a": 1, "b": 2}, "max_size": 4}
+{"func": "trim_dict_entries", "case": "empty", "mapping": {}, "max_size": 0}
+{"func": "metadata_team_id", "case": "scope-id", "metadata": {"scope_id": "T1", "team_id": "T2"}}
+{"func": "metadata_team_id", "case": "nested-source", "metadata": {"source": {"guild_id": "T9"}}}
+{"func": "metadata_team_id", "case": "falsy-first", "metadata": {"scope_id": "", "team_id": "T3"}}
+{"func": "metadata_team_id", "case": "none", "metadata": null}
+{"func": "metadata_team_id", "case": "empty-object", "metadata": {}}
+{"func": "workspace_event_id", "case": "team", "team_id": "T1", "event_id": "Ev1"}
+{"func": "workspace_event_id", "case": "no-team", "team_id": "", "event_id": "Ev1"}
+{"func": "workspace_message_marker", "case": "team", "team_id": "T1", "message_id": "1712345678.000100"}
+{"func": "workspace_message_marker", "case": "no-team", "team_id": "", "message_id": "1712345678.000100"}
+{"func": "truthy_config", "case": "yes", "value": "yes"}
+{"func": "truthy_config", "case": "padded-false", "value": " FALSE "}
+{"func": "truthy_config", "case": "number-one", "value": 1}
+{"func": "truthy_config", "case": "number-zero", "value": 0}
+{"func": "truthy_config", "case": "null", "value": null}
+{"func": "is_ignored_channel", "case": "wildcard", "channel_id": "C1", "ignored": ["*"]}
+{"func": "is_ignored_channel", "case": "thread-scoped", "channel_id": "C1:1712345678.000100", "ignored": ["C1"]}
+{"func": "is_ignored_channel", "case": "other-channel", "channel_id": "C2", "ignored": ["C1"]}
+{"func": "is_ignored_channel", "case": "falsy-id", "channel_id": "", "ignored": ["*"]}
+{"func": "workspace_thread_key", "case": "full", "team_id": "T1", "channel_id": "C1", "thread_ts": "1712345678.000100"}
+{"func": "workspace_thread_key", "case": "no-team", "team_id": "", "channel_id": "C1", "thread_ts": "1712345678.000100"}
+{"func": "workspace_thread_key", "case": "missing-ts", "team_id": "T1", "channel_id": "C1", "thread_ts": ""}
+{"func": "agent_view_context_key", "case": "full", "team_id": "T1", "user_id": "U1"}
+{"func": "agent_view_context_key", "case": "missing-user", "team_id": "T1", "user_id": null}

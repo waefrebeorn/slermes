@@ -1,0 +1,43 @@
+{"func": "result_flags", "case": "clean-completion", "result": {"completed": true, "partial": false, "failed": false}}
+{"func": "result_flags", "case": "interrupted-beats-completed", "result": {"completed": true, "interrupted": true}}
+{"func": "result_flags", "case": "not-a-dict", "result": "oops"}
+{"func": "result_flags", "case": "error-text", "result": {"completed": false, "error": "connection reset"}}
+{"func": "result_flags", "case": "completed-defaults-true", "result": {"final_response": "hi"}}
+{"func": "result_flags", "case": "error-object-passthrough", "result": {"completed": false, "partial": true, "failed": true, "error": {"code": "agent_error", "message": "boom"}}}
+{"func": "result_flags", "case": "partial-only", "result": {"completed": true, "partial": true}}
+{"func": "budget_exhausted", "case": "budget-exhausted", "result": {"turn_exit_reason": "budget_exhausted(12)"}}
+{"func": "budget_exhausted", "case": "max-iterations", "result": {"turn_exit_reason": "max_iterations_reached(40)"}}
+{"func": "budget_exhausted", "case": "user-cancelled", "result": {"turn_exit_reason": "user_cancelled"}}
+{"func": "budget_exhausted", "case": "absent", "result": {}}
+{"func": "budget_exhausted", "case": "non-string-reason", "result": {"turn_exit_reason": 7}}
+{"func": "budget_exhausted", "case": "not-a-dict", "result": 3}
+{"func": "budget_exhausted", "case": "prefix-inside-word", "result": {"turn_exit_reason": "not_budget_exhausted"}}
+{"func": "finish_reason", "case": "stop", "completed": true, "is_partial": false, "is_failed": false, "err_msg": null}
+{"func": "finish_reason", "case": "partial-truncated", "completed": true, "is_partial": true, "is_failed": false, "err_msg": "output truncated at 4096 tokens"}
+{"func": "finish_reason", "case": "partial-TRUNCATED-case-insensitive", "completed": false, "is_partial": true, "is_failed": false, "err_msg": "TRUNCATED by provider"}
+{"func": "finish_reason", "case": "agent-error-present", "completed": true, "is_partial": false, "is_failed": false, "err_msg": null, "agent_error": "RuntimeError: x"}
+{"func": "finish_reason", "case": "failed-no-error-text", "completed": true, "is_partial": false, "is_failed": true, "err_msg": null}
+{"func": "finish_reason", "case": "incomplete-with-error", "completed": false, "is_partial": false, "is_failed": false, "err_msg": "guardrail halt"}
+{"func": "finish_reason", "case": "budget-length", "completed": true, "is_partial": false, "is_failed": false, "err_msg": null, "budget_exhausted": true}
+{"func": "finish_reason", "case": "cancelled", "completed": false, "is_partial": false, "is_failed": false, "err_msg": null}
+{"func": "finish_reason", "case": "partial-non-truncation-error", "completed": false, "is_partial": true, "is_failed": false, "err_msg": "tool crashed"}
+{"func": "finish_reason", "case": "empty-error-text-is-falsy", "completed": false, "is_partial": true, "is_failed": false, "err_msg": ""}
+{"func": "response_status", "case": "interrupted", "result": {"interrupted": true, "failed": true}}
+{"func": "response_status", "case": "failed-flag", "result": {"failed": true}}
+{"func": "response_status", "case": "error-only", "result": {"error": "boom"}}
+{"func": "response_status", "case": "incomplete", "result": {"completed": false}}
+{"func": "response_status", "case": "completed", "result": {"completed": true}}
+{"func": "response_status", "case": "completed-truthy-string", "result": {"completed": "yes"}}
+{"func": "response_status", "case": "empty-result", "result": {}}
+{"func": "hermes_extras", "case": "budget-length", "completed": true, "is_partial": true, "is_failed": false, "err_msg": "truncated", "finish_reason": "length", "budget_exhausted": true}
+{"func": "hermes_extras", "case": "length-not-budget", "completed": true, "is_partial": true, "is_failed": false, "err_msg": "truncated", "finish_reason": "length"}
+{"func": "hermes_extras", "case": "stop-clean", "completed": true, "is_partial": false, "is_failed": false, "err_msg": "", "finish_reason": "stop"}
+{"func": "hermes_extras", "case": "error-null", "completed": false, "is_partial": false, "is_failed": true, "err_msg": null, "finish_reason": "error"}
+{"func": "settled", "case": "carries-response", "record": {"response": {"id": "resp_1"}}}
+{"func": "settled", "case": "claim-without-response", "record": {"fingerprint": "abc"}}
+{"func": "settled", "case": "null-response", "record": {"response": null}}
+{"func": "settled", "case": "no-record", "record": null}
+{"func": "fingerprint_keys", "case": "without-truncation", "body": {"input": "hi", "model": "m"}}
+{"func": "fingerprint_keys", "case": "with-truncation", "body": {"input": "hi", "truncation": "auto"}}
+{"func": "fingerprint_keys", "case": "null-truncation", "body": {"input": "hi", "truncation": null}}
+{"func": "fingerprint_keys", "case": "no-body"}

@@ -1,0 +1,34 @@
+{"func": "event_team_id", "case": "authorization-wins", "event": {"team": "T9"}, "body": {"authorizations": [{"team_id": "T1"}], "team_id": "T2"}, "installs": ["T1"]}
+{"func": "event_team_id", "case": "single-install-collapses", "event": {"team": "T9"}, "body": {"team_id": "T2"}, "installs": ["T1"]}
+{"func": "event_team_id", "case": "multi-install-no-match", "event": {"team": "T9"}, "body": {"team_id": "T2"}, "installs": ["T1", "T3"]}
+{"func": "event_team_id", "case": "no-install-set", "event": {"team": "T9"}, "body": {"team_id": "T2"}}
+{"func": "event_team_id", "case": "empty-install-set", "event": {"team_id": "T5"}, "body": null, "installs": []}
+{"func": "event_team_id", "case": "dict-team-name", "event": {"team": {"id": "T4"}}, "body": null}
+{"func": "event_team_id", "case": "body-dict-team", "event": {}, "body": {"team_id": {"id": "T6"}}}
+{"func": "event_team_id", "case": "nothing", "event": {}, "body": null}
+{"func": "event_team_id", "case": "multi-install-second-matches", "event": {"team": "T3"}, "body": {"team_id": "T2"}, "installs": ["T1", "T3"]}
+{"func": "team_in_install_set", "case": "known", "team_id": "T1", "installs": ["T1", "T2"]}
+{"func": "team_in_install_set", "case": "unknown", "team_id": "T9", "installs": ["T1"]}
+{"func": "team_in_install_set", "case": "empty", "team_id": "", "installs": ["T1"]}
+{"func": "is_foreign_author", "case": "foreign", "author_team": "T9", "resolved_team": "T1", "installs": ["T1"]}
+{"func": "is_foreign_author", "case": "sibling-install", "author_team": "T2", "resolved_team": "T1", "installs": ["T1", "T2"]}
+{"func": "is_foreign_author", "case": "same-team", "author_team": "T1", "resolved_team": "T1", "installs": ["T1"]}
+{"func": "is_foreign_author", "case": "empty-author", "author_team": "", "resolved_team": "T1", "installs": ["T1"]}
+{"func": "context_channel_id", "case": "direct", "context": {"channel_id": "C1"}}
+{"func": "context_channel_id", "case": "entity-dict", "context": {"entities": [{"type": "channel", "value": {"channel_id": "C2"}}]}}
+{"func": "context_channel_id", "case": "entity-string", "context": {"entities": [{"type": "context_channel_id", "value": "C3"}]}}
+{"func": "context_channel_id", "case": "not-dict", "context": "nope"}
+{"func": "context_channel_id", "case": "empty", "context": {}}
+{"func": "extract_assistant_meta", "case": "full", "event": {"assistant_thread": {"channel_id": "D1", "thread_ts": "1.1", "user_id": "U1", "team_id": "T1", "context": {"channel_id": "C9"}}}, "body": null, "installs": ["T1"]}
+{"func": "extract_assistant_meta", "case": "fallbacks", "event": {"channel": "C5", "thread_ts": "2.2", "user": "U2", "team": "T1"}, "body": null, "installs": ["T1"]}
+{"func": "extract_assistant_meta", "case": "foreign-team-dropped", "event": {"assistant_thread": {"team_id": "T9"}, "channel": "C5", "user": "U3"}, "body": null, "installs": ["T1"]}
+{"func": "extract_assistant_meta", "case": "event-app-context", "event": {"app_context": {"channel_id": "C7", "user_id": "U4"}, "message_ts": "3.3"}, "body": null}
+{"func": "extract_assistant_meta", "case": "empty-event", "event": {}, "body": null}
+{"func": "agent_view_event_fields", "case": "full", "event": {"context": {"channel_id": "C1"}, "user": "U1", "team_id": "T1"}, "body": null, "installs": ["T1"]}
+{"func": "agent_view_event_fields", "case": "user-id-key", "event": {"app_context": {"entities": [{"type": "x_channel_id", "value": "C2"}]}, "user_id": "U2", "team": {"id": "T2"}}, "body": null}
+{"func": "agent_view_event_fields", "case": "empty", "event": {}, "body": null}
+{"func": "suggested_prompts", "case": "dict-form", "raw": {"title": " Try these ", "prompts": [{"title": "One", "message": "do one"}, {"title": "Two", "message": "do two"}]}}
+{"func": "suggested_prompts", "case": "list-form", "raw": [{"title": "A", "message": "a"}, {"title": "", "message": "skip"}, "junk", {"title": "B", "message": "b"}]}
+{"func": "suggested_prompts", "case": "capped", "raw": [{"title": "1", "message": "1"}, {"title": "2", "message": "2"}, {"title": "3", "message": "3"}, {"title": "4", "message": "4"}, {"title": "5", "message": "5"}]}
+{"func": "suggested_prompts", "case": "not-a-list", "raw": "nope"}
+{"func": "suggested_prompts", "case": "null", "raw": null}

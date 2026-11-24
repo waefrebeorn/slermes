@@ -1,0 +1,116 @@
+{"func": "exec_approval_tier", "case": "all_choices", "choices": ["once", "session", "always", "deny"], "smart_denied": false}
+{"func": "exec_approval_tier", "case": "no_always", "choices": ["once", "deny"], "smart_denied": false}
+{"func": "exec_approval_tier", "case": "session_only", "choices": ["session", "deny"], "smart_denied": false}
+{"func": "exec_approval_tier", "case": "deny_only", "choices": ["deny"], "smart_denied": false}
+{"func": "exec_approval_tier", "case": "smart_denied_once", "choices": ["once"], "smart_denied": true}
+{"func": "exec_approval_tier", "case": "smart_denied_always", "choices": ["once", "always"], "smart_denied": true}
+{"func": "exec_approval_tier", "case": "empty", "choices": [], "smart_denied": false}
+{"func": "exec_approval_tier", "case": "null_choices", "choices": null, "smart_denied": false}
+{"func": "approval_reaction", "case": "tier=once", "tier": "once"}
+{"func": "approval_reaction", "case": "tier=session", "tier": "session"}
+{"func": "approval_reaction", "case": "tier=always", "tier": "always"}
+{"func": "approval_reaction", "case": "tier=deny", "tier": "deny"}
+{"func": "approval_reaction", "case": "tier=bogus", "tier": "bogus"}
+{"func": "approval_action", "case": "emoji='✅'", "emoji": "✅"}
+{"func": "approval_action", "case": "emoji='🌀'", "emoji": "🌀"}
+{"func": "approval_action", "case": "emoji='♾️'", "emoji": "♾️"}
+{"func": "approval_action", "case": "emoji='♾'", "emoji": "♾"}
+{"func": "approval_action", "case": "emoji='❌'", "emoji": "❌"}
+{"func": "approval_action", "case": "emoji='❎'", "emoji": "❎"}
+{"func": "approval_action", "case": "emoji='x'", "emoji": "x"}
+{"func": "approval_action", "case": "emoji=''", "emoji": ""}
+{"func": "flat_picker_choices", "case": "two_providers", "providers": [{"slug": "openai", "name": "OpenAI", "models": ["gpt-4", "o1"]}, {"slug": "anthropic", "name": "", "models": ["claude"]}, {"slug": "", "models": []}]}
+{"func": "flat_picker_choices", "case": "empty", "providers": []}
+{"func": "flat_picker_choices", "case": "null", "providers": null}
+{"func": "flat_picker_choices", "case": "truncate", "providers": [{"slug": "s", "name": "S", "models": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]}]}
+{"func": "flat_picker_choices", "case": "no_name_no_slug", "providers": [{"models": ["m1"]}]}
+{"func": "choice_picker_emoji", "case": "three", "choices": [{"value": "high", "label": "High", "is_current": true}, {"value": "low"}, {"value": 3}]}
+{"func": "choice_picker_emoji", "case": "empty", "choices": []}
+{"func": "choice_picker_emoji", "case": "null", "choices": null}
+{"func": "apply_relation_metadata", "case": "reply_only", "content": {"msgtype": "m.text", "body": "x"}, "reply_to": "$rep", "thread_id": null}
+{"func": "apply_relation_metadata", "case": "reply_and_thread", "content": {"msgtype": "m.text", "body": "x"}, "reply_to": "$rep", "thread_id": "$root"}
+{"func": "apply_relation_metadata", "case": "thread_only", "content": {"msgtype": "m.text", "body": "x"}, "reply_to": null, "thread_id": "$root"}
+{"func": "apply_relation_metadata", "case": "empty_thread", "content": {"msgtype": "m.text", "body": "x"}, "reply_to": "$rep", "thread_id": ""}
+{"func": "apply_relation_metadata", "case": "neither", "content": {"msgtype": "m.text", "body": "x"}, "reply_to": null, "thread_id": null}
+{"func": "apply_relation_metadata", "case": "existing_relates", "content": {"msgtype": "m.text", "m.relates_to": {"rel_type": "m.replace"}}, "reply_to": null, "thread_id": "$root"}
+{"func": "apply_relation_metadata", "case": "null_content", "content": null, "reply_to": "$rep", "thread_id": null}
+{"func": "protect_mention_regions", "case": "mixed", "text": "x `@a:b` [l](u) ```c``` @z:q"}
+{"func": "protect_mention_regions", "case": "fenced", "text": "```\n@a:b\n```"}
+{"func": "protect_mention_regions", "case": "inline", "text": "`code` plain"}
+{"func": "protect_mention_regions", "case": "link", "text": "[t](https://x/@a:b)"}
+{"func": "protect_mention_regions", "case": "empty", "text": ""}
+{"func": "protect_mention_regions", "case": "null", "text": null}
+{"func": "protect_mention_regions", "case": "unclosed", "text": "`open and [x](y"}
+{"func": "extract_outbound_mentions", "case": "t='hi @alice:example.org and @bob:ex.org'", "text": "hi @alice:example.org and @bob:ex.org"}
+{"func": "extract_outbound_mentions", "case": "t='@alice:example.org, @alice:example.org'", "text": "@alice:example.org, @alice:example.org"}
+{"func": "extract_outbound_mentions", "case": "t='x `@a:b` y'", "text": "x `@a:b` y"}
+{"func": "extract_outbound_mentions", "case": "t='[link](https://x/@a:b)'", "text": "[link](https://x/@a:b)"}
+{"func": "extract_outbound_mentions", "case": "t='```\\n@a:b\\n```'", "text": "```\n@a:b\n```"}
+{"func": "extract_outbound_mentions", "case": "t='@room hi'", "text": "@room hi"}
+{"func": "extract_outbound_mentions", "case": "t='hi @roomx'", "text": "hi @roomx"}
+{"func": "extract_outbound_mentions", "case": "t='@room'", "text": "@room"}
+{"func": "extract_outbound_mentions", "case": "t='a/@a:b or \\\\@a:b'", "text": "a/@a:b or \\@a:b"}
+{"func": "extract_outbound_mentions", "case": "t='@a:b:8080'", "text": "@a:b:8080"}
+{"func": "extract_outbound_mentions", "case": "t='no mentions here'", "text": "no mentions here"}
+{"func": "extract_outbound_mentions", "case": "t=''", "text": ""}
+{"func": "extract_outbound_mentions", "case": "null", "text": null}
+{"func": "has_outbound_room_mention", "case": "t='@room hi'", "text": "@room hi"}
+{"func": "has_outbound_room_mention", "case": "t='hi @roomx'", "text": "hi @roomx"}
+{"func": "has_outbound_room_mention", "case": "t='@room'", "text": "@room"}
+{"func": "has_outbound_room_mention", "case": "t='`@room`'", "text": "`@room`"}
+{"func": "has_outbound_room_mention", "case": "t='[@room](u)'", "text": "[@room](u)"}
+{"func": "has_outbound_room_mention", "case": "t='x@room'", "text": "x@room"}
+{"func": "has_outbound_room_mention", "case": "t='@room.'", "text": "@room."}
+{"func": "has_outbound_room_mention", "case": "t='@room:hs'", "text": "@room:hs"}
+{"func": "has_outbound_room_mention", "case": "null", "text": null}
+{"func": "inject_outbound_mention_links", "case": "basic", "text": "hi @alice:example.org"}
+{"func": "inject_outbound_mention_links", "case": "code_untouched", "text": "x `@a:b` y"}
+{"func": "inject_outbound_mention_links", "case": "link_untouched", "text": "[l](https://x/@a:b)"}
+{"func": "inject_outbound_mention_links", "case": "empty", "text": ""}
+{"func": "inject_outbound_mention_links", "case": "null", "text": null}
+{"func": "inject_outbound_mention_links", "case": "no_mentions", "text": "plain"}
+{"func": "is_bot_mentioned", "case": "exact_id", "user_id": "@bot:example.org", "body": "hey @bot:example.org", "formatted_body": null, "mention_user_ids": null}
+{"func": "is_bot_mentioned", "case": "localpart_word", "user_id": "@bot:example.org", "body": "hey@bot", "formatted_body": null, "mention_user_ids": null}
+{"func": "is_bot_mentioned", "case": "localpart_in_sentence", "user_id": "@bot:example.org", "body": "bot says", "formatted_body": null, "mention_user_ids": null}
+{"func": "is_bot_mentioned", "case": "upper", "user_id": "@bot:example.org", "body": "@BOT:x", "formatted_body": null, "mention_user_ids": null}
+{"func": "is_bot_mentioned", "case": "empty", "user_id": "@bot:example.org", "body": "", "formatted_body": null, "mention_user_ids": null}
+{"func": "is_bot_mentioned", "case": "formatted_link", "user_id": "@bot:example.org", "body": "x", "formatted_body": "<a href='https://matrix.to/#/@bot:example.org'>", "mention_user_ids": null}
+{"func": "is_bot_mentioned", "case": "msc3952_list", "user_id": "@bot:example.org", "body": "nothing", "formatted_body": null, "mention_user_ids": ["@bot:example.org"]}
+{"func": "is_bot_mentioned", "case": "empty_list", "user_id": "@bot:example.org", "body": "nothing", "formatted_body": null, "mention_user_ids": []}
+{"func": "is_bot_mentioned", "case": "no_user_id", "user_id": "", "body": "@bot hi", "formatted_body": null, "mention_user_ids": null}
+{"func": "is_bot_mentioned", "case": "word_boundary", "user_id": "@bot:example.org", "body": "robot", "formatted_body": null, "mention_user_ids": null}
+{"func": "is_bot_mentioned", "case": "string_mentions", "user_id": "@bot:example.org", "body": "x", "formatted_body": null, "mention_user_ids": "@bot:example.org"}
+{"func": "user_localpart", "case": "normal", "user_id": "@bot:example.org"}
+{"func": "user_localpart", "case": "no_server", "user_id": "@bot"}
+{"func": "user_localpart", "case": "empty", "user_id": ""}
+{"func": "user_localpart", "case": "multi_colon", "user_id": "@a:b:c"}
+{"func": "strip_mention", "case": "b='@bot:example.org hello'", "user_id": "@bot:example.org", "body": "@bot:example.org hello"}
+{"func": "strip_mention", "case": "b='@bot hi'", "user_id": "@bot:example.org", "body": "@bot hi"}
+{"func": "strip_mention", "case": "b='hi @bot, there'", "user_id": "@bot:example.org", "body": "hi @bot, there"}
+{"func": "strip_mention", "case": "b='Hermes Agent'", "user_id": "@bot:example.org", "body": "Hermes Agent"}
+{"func": "strip_mention", "case": "b='@bot:'", "user_id": "@bot:example.org", "body": "@bot:"}
+{"func": "strip_mention", "case": "b='@BOT:example.org  x'", "user_id": "@bot:example.org", "body": "@BOT:example.org  x"}
+{"func": "strip_mention", "case": "b='@bot'", "user_id": "@bot:example.org", "body": "@bot"}
+{"func": "strip_mention", "case": "b=''", "user_id": "@bot:example.org", "body": ""}
+{"func": "strip_mention", "case": "b='bot'", "user_id": "@bot:example.org", "body": "bot"}
+{"func": "strip_mention", "case": "null_body", "user_id": "@bot:example.org", "body": null}
+{"func": "strip_mention", "case": "no_user", "user_id": "", "body": "@bot  hi"}
+{"func": "mxc_to_http", "case": "mxc", "homeserver": "https://hs.example", "mxc_url": "mxc://hs.example/abc123"}
+{"func": "mxc_to_http", "case": "already_http", "homeserver": "https://hs.example", "mxc_url": "https://x/y"}
+{"func": "mxc_to_http", "case": "empty", "homeserver": "https://hs.example", "mxc_url": ""}
+{"func": "mxc_to_http", "case": "no_slash_hs", "homeserver": "", "mxc_url": "mxc://h/a"}
+{"func": "sanitize_link_url", "case": "u='  javascript:alert(1)'", "url": "  javascript:alert(1)"}
+{"func": "sanitize_link_url", "case": "u='data:text/html,x'", "url": "data:text/html,x"}
+{"func": "sanitize_link_url", "case": "u='JaVaScRiPt:x'", "url": "JaVaScRiPt:x"}
+{"func": "sanitize_link_url", "case": "u='a\"b'", "url": "a\"b"}
+{"func": "sanitize_link_url", "case": "u='https://x/y?a=1'", "url": "https://x/y?a=1"}
+{"func": "sanitize_link_url", "case": "u='vbscript:x'", "url": "vbscript:x"}
+{"func": "sanitize_link_url", "case": "u='javascriptx:y'", "url": "javascriptx:y"}
+{"func": "sanitize_link_url", "case": "u='x:y'", "url": "x:y"}
+{"func": "sanitize_link_url", "case": "u=''", "url": ""}
+{"func": "format_message", "case": "t='![alt](http://x/y.png) hi'", "content": "![alt](http://x/y.png) hi"}
+{"func": "format_message", "case": "t='a ![](u) b'", "content": "a ![](u) b"}
+{"func": "format_message", "case": "t='![x](y)![z](w)'", "content": "![x](y)![z](w)"}
+{"func": "format_message", "case": "t='no md'", "content": "no md"}
+{"func": "format_message", "case": "t='![a](b'", "content": "![a](b"}
+{"func": "flat_picker_choices", "case": "empty_object_provider", "providers": [{}, {"slug": "s", "models": ["m"]}]}

@@ -1,0 +1,129 @@
+{"func": "normalize_e2ee_mode", "case": "v='required'", "value": "required"}
+{"func": "normalize_e2ee_mode", "case": "v='Require'", "value": "Require"}
+{"func": "normalize_e2ee_mode", "case": "v='true'", "value": "true"}
+{"func": "normalize_e2ee_mode", "case": "v='1'", "value": "1"}
+{"func": "normalize_e2ee_mode", "case": "v='yes'", "value": "yes"}
+{"func": "normalize_e2ee_mode", "case": "v='on'", "value": "on"}
+{"func": "normalize_e2ee_mode", "case": "v='optional'", "value": "optional"}
+{"func": "normalize_e2ee_mode", "case": "v='prefer'", "value": "prefer"}
+{"func": "normalize_e2ee_mode", "case": "v='preferred'", "value": "preferred"}
+{"func": "normalize_e2ee_mode", "case": "v='junk'", "value": "junk"}
+{"func": "normalize_e2ee_mode", "case": "v=''", "value": ""}
+{"func": "normalize_e2ee_mode", "case": "v='  ON  '", "value": "  ON  "}
+{"func": "normalize_e2ee_mode", "case": "v=None", "value": null}
+{"func": "normalize_e2ee_mode", "case": "v=0", "value": 0}
+{"func": "normalize_e2ee_mode", "case": "v=1", "value": 1}
+{"func": "normalize_e2ee_mode", "case": "v=2", "value": 2}
+{"func": "normalize_e2ee_mode", "case": "v=True", "value": true}
+{"func": "normalize_e2ee_mode", "case": "v=False", "value": false}
+{"func": "resolve_e2ee_mode", "case": "explicit_optional", "explicit": "optional", "legacy_enabled": null}
+{"func": "resolve_e2ee_mode", "case": "explicit_empty_legacy_true", "explicit": "", "legacy_enabled": true}
+{"func": "resolve_e2ee_mode", "case": "explicit_null_legacy_false", "explicit": null, "legacy_enabled": false}
+{"func": "resolve_e2ee_mode", "case": "explicit_required_legacy_false", "explicit": "required", "legacy_enabled": false}
+{"func": "resolve_e2ee_mode", "case": "explicit_zero", "explicit": 0, "legacy_enabled": true}
+{"func": "env_truthy", "case": "v='true'", "value": "true"}
+{"func": "env_truthy", "case": "v='TRUE'", "value": "TRUE"}
+{"func": "env_truthy", "case": "v='1'", "value": "1"}
+{"func": "env_truthy", "case": "v='yes'", "value": "yes"}
+{"func": "env_truthy", "case": "v='no'", "value": "no"}
+{"func": "env_truthy", "case": "v=''", "value": ""}
+{"func": "env_truthy", "case": "v='on'", "value": "on"}
+{"func": "env_truthy", "case": "v='2'", "value": "2"}
+{"func": "env_truthy", "case": "v=None", "value": null}
+{"func": "env_truthy", "case": "v=1", "value": 1}
+{"func": "env_truthy", "case": "v=0", "value": 0}
+{"func": "env_number", "case": "int_ok", "value": "42", "default": 7, "want_float": false}
+{"func": "env_number", "case": "int_bad", "value": "4.2", "default": 7, "want_float": false}
+{"func": "env_number", "case": "int_padded", "value": " 42 ", "default": 7, "want_float": false}
+{"func": "env_number", "case": "int_null", "value": null, "default": 11, "want_float": false}
+{"func": "env_number", "case": "float_ok", "value": "2.5", "default": 0.5, "want_float": true}
+{"func": "env_number", "case": "float_bad", "value": "x", "default": 0.5, "want_float": true}
+{"func": "env_number", "case": "float_exp", "value": "1e3", "default": 0.5, "want_float": true}
+{"func": "env_number", "case": "int_blank", "value": "  ", "default": 3, "want_float": false}
+{"func": "csv_set", "case": "csv_string", "raw": " a, b ,,c "}
+{"func": "csv_set", "case": "list", "raw": ["a", " b ", "", 3]}
+{"func": "csv_set", "case": "empty_string", "raw": ""}
+{"func": "csv_set", "case": "null", "raw": null}
+{"func": "csv_set", "case": "number", "raw": 5}
+{"func": "csv_set", "case": "empty_list", "raw": []}
+{"func": "csv_set", "case": "dict", "raw": {"a": 1}}
+{"func": "csv_set", "case": "single", "raw": "solo"}
+{"func": "thread_root", "case": "thread", "relates_to": {"rel_type": "m.thread", "event_id": "$e"}}
+{"func": "thread_root", "case": "no_rel", "relates_to": {"event_id": "$e"}}
+{"func": "thread_root", "case": "other_rel", "relates_to": {"rel_type": "m.annotation", "event_id": "$e"}}
+{"func": "thread_root", "case": "empty_obj", "relates_to": {}}
+{"func": "thread_root", "case": "thread_no_id", "relates_to": {"rel_type": "m.thread"}}
+{"func": "thread_root", "case": "null", "relates_to": null}
+{"func": "extra_truthy", "case": "v=True", "configured": true}
+{"func": "extra_truthy", "case": "v=False", "configured": false}
+{"func": "extra_truthy", "case": "v='true'", "configured": "true"}
+{"func": "extra_truthy", "case": "v='1'", "configured": "1"}
+{"func": "extra_truthy", "case": "v='yes'", "configured": "yes"}
+{"func": "extra_truthy", "case": "v='no'", "configured": "no"}
+{"func": "extra_truthy", "case": "v=''", "configured": ""}
+{"func": "extra_truthy", "case": "v='off'", "configured": "off"}
+{"func": "extra_truthy", "case": "v=2", "configured": 2}
+{"func": "extra_truthy", "case": "v=1", "configured": 1}
+{"func": "extra_truthy", "case": "v=0", "configured": 0}
+{"func": "extra_truthy", "case": "v=None", "configured": null}
+{"func": "configured_bool", "case": "v=True", "configured": true}
+{"func": "configured_bool", "case": "v=False", "configured": false}
+{"func": "configured_bool", "case": "v='true'", "configured": "true"}
+{"func": "configured_bool", "case": "v='True'", "configured": "True"}
+{"func": "configured_bool", "case": "v='off'", "configured": "off"}
+{"func": "configured_bool", "case": "v='false'", "configured": "false"}
+{"func": "configured_bool", "case": "v='0'", "configured": "0"}
+{"func": "configured_bool", "case": "v='no'", "configured": "no"}
+{"func": "configured_bool", "case": "v='yes'", "configured": "yes"}
+{"func": "configured_bool", "case": "v='junk'", "configured": "junk"}
+{"func": "configured_bool", "case": "v=''", "configured": ""}
+{"func": "configured_bool", "case": "v=1", "configured": 1}
+{"func": "configured_bool", "case": "v=0", "configured": 0}
+{"func": "configured_bool", "case": "v=2", "configured": 2}
+{"func": "configured_bool", "case": "v=None", "configured": null}
+{"func": "configured_bool", "case": "v=[]", "configured": []}
+{"func": "configured_bool", "case": "v={}", "configured": {}}
+{"func": "parse_require_mention", "case": "v=True", "configured": true}
+{"func": "parse_require_mention", "case": "v='false'", "configured": "false"}
+{"func": "parse_require_mention", "case": "v='0'", "configured": "0"}
+{"func": "parse_require_mention", "case": "v='off'", "configured": "off"}
+{"func": "parse_require_mention", "case": "v='yes'", "configured": "yes"}
+{"func": "parse_require_mention", "case": "v='TRUE'", "configured": "TRUE"}
+{"func": "parse_require_mention", "case": "v=0", "configured": 0}
+{"func": "parse_require_mention", "case": "v=1", "configured": 1}
+{"func": "parse_require_mention", "case": "v=None", "configured": null}
+{"func": "parse_require_mention", "case": "v=''", "configured": ""}
+{"func": "parse_thread_require_mention", "case": "v=True", "configured": true}
+{"func": "parse_thread_require_mention", "case": "v='false'", "configured": "false"}
+{"func": "parse_thread_require_mention", "case": "v='0'", "configured": "0"}
+{"func": "parse_thread_require_mention", "case": "v='off'", "configured": "off"}
+{"func": "parse_thread_require_mention", "case": "v='yes'", "configured": "yes"}
+{"func": "parse_thread_require_mention", "case": "v=0", "configured": 0}
+{"func": "parse_thread_require_mention", "case": "v=1", "configured": 1}
+{"func": "parse_thread_require_mention", "case": "v=None", "configured": null}
+{"func": "extract_server_ed25519", "case": "ed_first", "keys": {"ed25519:AAA": "key1", "curve25519:X": "k2"}}
+{"func": "extract_server_ed25519", "case": "curve_first", "keys": {"curve25519:X": "k2", "ed25519:ZZZ": "k3"}}
+{"func": "extract_server_ed25519", "case": "none", "keys": {"curve25519:X": "k2"}}
+{"func": "extract_server_ed25519", "case": "empty", "keys": {}}
+{"func": "extract_server_ed25519", "case": "null", "keys": null}
+{"func": "extract_server_ed25519", "case": "nonstring_value", "keys": {"ed25519:A": 5}}
+{"func": "is_connected", "case": "both", "homeserver": "https://hs.example", "token": "tok"}
+{"func": "is_connected", "case": "no_token", "homeserver": "https://hs.example", "token": ""}
+{"func": "is_connected", "case": "blank_hs", "homeserver": "   ", "token": "tok"}
+{"func": "is_connected", "case": "null_both", "homeserver": null, "token": null}
+{"func": "is_connected", "case": "spaces_trimmed", "homeserver": " https://hs ", "token": " t "}
+{"func": "session_scope", "case": "v='auto'", "raw": "auto"}
+{"func": "session_scope", "case": "v='ROOM'", "raw": "ROOM"}
+{"func": "session_scope", "case": "v=' thread '", "raw": " thread "}
+{"func": "session_scope", "case": "v='junk'", "raw": "junk"}
+{"func": "session_scope", "case": "v=''", "raw": ""}
+{"func": "session_scope", "case": "v=None", "raw": null}
+{"func": "reactions_enabled", "case": "v='true'", "raw": "true"}
+{"func": "reactions_enabled", "case": "v='false'", "raw": "false"}
+{"func": "reactions_enabled", "case": "v='0'", "raw": "0"}
+{"func": "reactions_enabled", "case": "v='no'", "raw": "no"}
+{"func": "reactions_enabled", "case": "v='TRUE'", "raw": "TRUE"}
+{"func": "reactions_enabled", "case": "v='junk'", "raw": "junk"}
+{"func": "reactions_enabled", "case": "v=None", "raw": null}
+{"func": "reactions_enabled", "case": "v=True", "raw": true}
+{"func": "reactions_enabled", "case": "v=False", "raw": false}

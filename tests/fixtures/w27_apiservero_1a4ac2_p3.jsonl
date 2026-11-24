@@ -1,0 +1,48 @@
+{"func": "parse_chat_messages", "case": "system-user-assistant", "messages": [{"role": "system", "content": "be terse"}, {"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello"}]}
+{"func": "parse_chat_messages", "case": "two-systems-joined", "messages": [{"role": "system", "content": "one"}, {"role": "system", "content": "two"}, {"role": "user", "content": "hi"}]}
+{"func": "parse_chat_messages", "case": "system-parts-flattened", "messages": [{"role": "system", "content": [{"type": "text", "text": "alpha"}, {"type": "image_url", "image_url": "http://x/y.png"}, {"type": "text", "text": "beta"}]}, {"role": "user", "content": "q"}]}
+{"func": "parse_chat_messages", "case": "text-parts-collapse", "messages": [{"role": "user", "content": [{"type": "text", "text": "a"}, {"type": "text", "text": "b"}]}]}
+{"func": "parse_chat_messages", "case": "image-dict-part", "messages": [{"role": "user", "content": [{"type": "text", "text": "what is this"}, {"type": "image_url", "image_url": {"url": "https://example.com/a.png", "detail": "high"}}]}]}
+{"func": "parse_chat_messages", "case": "image-top-level-string", "messages": [{"role": "user", "content": [{"type": "input_image", "image_url": "  https://example.com/b.png  "}]}]}
+{"func": "parse_chat_messages", "case": "data-url-image", "messages": [{"role": "user", "content": [{"type": "image_url", "image_url": "data:image/png;base64,AAAA"}]}]}
+{"func": "parse_chat_messages", "case": "file-part-rejected", "messages": [{"role": "user", "content": [{"type": "file", "file": {"name": "a.pdf"}}]}]}
+{"func": "parse_chat_messages", "case": "unknown-part-rejected", "messages": [{"role": "system", "content": "s"}, {"role": "user", "content": [{"type": "nope"}]}]}
+{"func": "parse_chat_messages", "case": "missing-type-rejected", "messages": [{"role": "user", "content": [{"text": "no type"}]}]}
+{"func": "parse_chat_messages", "case": "invalid-detail-rejected", "messages": [{"role": "user", "content": [{"type": "image_url", "image_url": {"url": "https://x/y.png", "detail": "  "}}]}]}
+{"func": "parse_chat_messages", "case": "relative-url-rejected", "messages": [{"role": "user", "content": [{"type": "image_url", "image_url": "/local/a.png"}]}]}
+{"func": "parse_chat_messages", "case": "non-image-data-url-rejected", "messages": [{"role": "user", "content": [{"type": "image_url", "image_url": "data:audio/wav;base64,AAAA"}]}]}
+{"func": "parse_chat_messages", "case": "empty-messages", "messages": []}
+{"func": "parse_chat_messages", "case": "ignored-roles", "messages": [{"role": "tool", "content": "result"}, {"content": "no role"}, {"role": "user", "content": "final"}]}
+{"func": "parse_chat_messages", "case": "only-system", "messages": [{"role": "system", "content": "sys only"}]}
+{"func": "parse_responses_input", "case": "string-input", "input": "hello"}
+{"func": "parse_responses_input", "case": "array-of-strings", "input": ["first", "second"]}
+{"func": "parse_responses_input", "case": "dict-without-role", "input": [{"content": "no role here"}]}
+{"func": "parse_responses_input", "case": "reasoning-skipped", "input": [{"type": "reasoning", "summary": [{"type": "summary_text", "text": "t"}]}, {"role": "user", "content": "after reasoning"}]}
+{"func": "parse_responses_input", "case": "image-item", "input": [{"role": "user", "content": [{"type": "input_image", "image_url": "https://x/y.png"}]}]}
+{"func": "parse_responses_input", "case": "number-rejected", "input": 42}
+{"func": "parse_responses_input", "case": "null-rejected", "input": null}
+{"func": "parse_responses_input", "case": "bad-part-rejected", "input": [{"content": [{"type": "nope"}]}]}
+{"func": "parse_responses_input", "case": "bad-part-second-item", "input": ["ok", {"content": [{"type": "file"}]}]}
+{"func": "parse_conversation_history", "case": "basic", "conversation_history": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}]}
+{"func": "parse_conversation_history", "case": "reasoning-skipped", "conversation_history": [{"type": "reasoning", "summary": []}, {"role": "user", "content": "kept"}]}
+{"func": "parse_conversation_history", "case": "not-a-list", "conversation_history": "nope"}
+{"func": "parse_conversation_history", "case": "missing-content", "conversation_history": [{"role": "user"}]}
+{"func": "parse_conversation_history", "case": "missing-role", "conversation_history": [{"content": "x"}]}
+{"func": "parse_conversation_history", "case": "bad-image", "conversation_history": [{"role": "user", "content": [{"type": "image_url", "image_url": "ftp://x/y.png"}]}]}
+{"func": "parse_conversation_history", "case": "non-string-role", "conversation_history": [{"role": 5, "content": "x"}]}
+{"func": "parse_conversation_history", "case": "empty-list", "conversation_history": []}
+{"func": "stream_envelope", "case": "in-progress", "response_id": "resp_abc", "created_at": 1764000000, "model": "hermes-agent", "status": "in_progress"}
+{"func": "stream_envelope", "case": "failed", "response_id": "resp_def", "created_at": 1764000001, "model": "gpt-x", "status": "failed"}
+{"func": "terminal_envelope", "case": "completed-with-output", "response_id": "resp_1", "created_at": 1764000000, "model": "m", "status": "completed", "output": [{"type": "message", "role": "assistant", "content": [{"type": "output_text", "text": "hi"}]}], "usage": {"input_tokens": 11, "output_tokens": 5, "total_tokens": 16}}
+{"func": "terminal_envelope", "case": "failed-durable-error", "response_id": "resp_2", "created_at": 1764000002, "model": "m", "status": "failed", "output": [], "error": "boom", "usage": {"input_tokens": 1, "output_tokens": 2, "total_tokens": 3}, "durable_key": true}
+{"func": "terminal_envelope", "case": "failed-ephemeral-error", "response_id": "resp_3", "created_at": 1764000003, "model": "m", "status": "failed", "output": [], "error": "boom", "usage": {"input_tokens": 1, "output_tokens": 2, "total_tokens": 3}}
+{"func": "terminal_envelope", "case": "incomplete-null-error", "response_id": "resp_4", "created_at": 1764000004, "model": "m", "status": "incomplete", "output": [], "error": null, "usage": {}}
+{"func": "terminal_envelope", "case": "usage-partial-keys", "response_id": "resp_5", "created_at": 1764000005, "model": "m", "status": "completed", "output": [], "usage": {"input_tokens": 9}}
+{"func": "history_with_user", "case": "empty-history", "history": [], "user_message": "hello"}
+{"func": "history_with_user", "case": "existing-history", "history": [{"role": "user", "content": "a"}, {"role": "assistant", "content": "b"}], "user_message": "c"}
+{"func": "history_with_user", "case": "non-string-message", "history": [], "user_message": [{"type": "text", "text": "parts"}]}
+{"func": "final_items", "case": "text-only", "emitted_items": [], "final_response_text": "the answer"}
+{"func": "final_items", "case": "with-tool-item", "emitted_items": [{"type": "function_call", "name": "read_file", "arguments": "{\"content\": \"short\"}"}], "final_response_text": "done"}
+{"func": "final_items", "case": "error-only", "emitted_items": [], "final_response_text": "", "agent_error": "RuntimeError: boom"}
+{"func": "final_items", "case": "neither", "emitted_items": [], "final_response_text": ""}
+{"func": "final_items", "case": "long-tool-args-trimmed", "emitted_items": [{"type": "function_call", "name": "write_file", "arguments": "{\"content\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"path\": \"a.txt\"}"}], "final_response_text": "written"}

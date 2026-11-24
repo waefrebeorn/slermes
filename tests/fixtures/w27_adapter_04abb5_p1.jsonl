@@ -1,0 +1,60 @@
+{"func": "escape_mention", "case": "plain", "content": "@Fizz hello @FizzBuzz and x@Fizz", "error": "mention '@Fizz' does not match a current channel member"}
+{"func": "escape_mention", "case": "no-boundary", "content": "hi @@Fizz, ping", "error": "mention '@Fizz' does not match a current channel member"}
+{"func": "escape_mention", "case": "generic-error", "content": "@Fizz hi", "error": "boom"}
+{"func": "escape_mention", "case": "empty-name", "content": "@ hi", "error": "mention '@' does not match a current channel member"}
+{"func": "escape_mention", "case": "case-insensitive", "content": "@fizz lower and @FIZZ upper", "error": "mention '@Fizz' does not match a current channel member"}
+{"func": "escape_mention", "case": "dot-tail", "content": "@Fizz. ok", "error": "mention '@Fizz' does not match a current channel member"}
+{"func": "safe_filename", "case": "path", "value": "../../etc/passwd"}
+{"func": "safe_filename", "case": "empty", "value": ""}
+{"func": "safe_filename", "case": "dots", "value": ".."}
+{"func": "safe_filename", "case": "double-ext", "value": "report.tar.gz"}
+{"func": "safe_filename", "case": "trailing", "value": "  my file .  "}
+{"func": "safe_filename", "case": "dotfile", "value": ".bashrc"}
+{"func": "safe_filename", "case": "backslash", "value": "C:\\Users\\x\\buzz clip.PNG"}
+{"func": "safe_filename", "case": "long", "value": "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn.png"}
+{"func": "safe_filename", "case": "control", "value": "a\u0001bc.txt"}
+{"func": "attachment_origin", "case": "bare", "value": "https://relay.example.com"}
+{"func": "attachment_origin", "case": "hostport", "value": "example.com:8443"}
+{"func": "attachment_origin", "case": "ftp", "value": "ftp://h"}
+{"func": "attachment_origin", "case": "blank", "value": ""}
+{"func": "attachment_origin", "case": "case-dot", "value": "https://H.Example.COM./x"}
+{"func": "attachment_origin", "case": "wss", "value": "wss://relay.example.com:8443/path"}
+{"func": "effective_port", "case": "https", "url": "https://h/x"}
+{"func": "effective_port", "case": "explicit", "url": "http://h:8080/x"}
+{"func": "effective_port", "case": "ws", "url": "ws://h"}
+{"func": "effective_port", "case": "unknown", "url": "ftp://h"}
+{"func": "effective_port", "case": "bad-port", "url": "https://h:99999999/x"}
+{"func": "effective_port", "case": "noport-wss", "url": "wss://h/p"}
+{"func": "is_relay_media_url", "case": "match", "url": "https://r.example/media/0000000000000000000000000000000000000000000000000000000000000001.png", "relay_url": "https://r.example"}
+{"func": "is_relay_media_url", "case": "match-wss", "url": "https://r.example/media/abababababababababababababababababababababababababababababababab", "relay_url": "wss://r.example:443"}
+{"func": "is_relay_media_url", "case": "http-port", "url": "http://r.example/media/0000000000000000000000000000000000000000000000000000000000000001.png", "relay_url": "https://r.example"}
+{"func": "is_relay_media_url", "case": "host", "url": "https://other.example/media/0000000000000000000000000000000000000000000000000000000000000001.png", "relay_url": "https://r.example"}
+{"func": "is_relay_media_url", "case": "short-sha", "url": "https://r.example/media/000000000000000000000000000000000000000000000000000000000000000.png", "relay_url": "https://r.example"}
+{"func": "is_relay_media_url", "case": "trailing-slash", "url": "https://r.example/media/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff/", "relay_url": "https://r.example"}
+{"func": "is_relay_media_url", "case": "uppercase-hex", "url": "https://r.example/media/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.PNG", "relay_url": "https://r.example"}
+{"func": "is_relay_media_url", "case": "other-path", "url": "https://r.example/files/0000000000000000000000000000000000000000000000000000000000000001.png", "relay_url": "https://r.example"}
+{"func": "is_relay_media_url", "case": "port-diff", "url": "https://r.example:8443/media/0000000000000000000000000000000000000000000000000000000000000001.png", "relay_url": "https://r.example"}
+{"func": "find_relay_media_refs", "case": "mixed", "relay_url": "https://relay.example.com", "text": "look ![shot](https://relay.example.com/media/0000000000000000000000000000000000000000000000000000000000000001.png \"a shot\") and https://relay.example.com/media/abababababababababababababababababababababababababababababababab.jpg plus ![x](https://other.example/media/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.png)"}
+{"func": "find_relay_media_refs", "case": "bare-only", "relay_url": "https://relay.example.com", "text": "see https://relay.example.com/media/0000000000000000000000000000000000000000000000000000000000000001.png now"}
+{"func": "find_relay_media_refs", "case": "none", "relay_url": "https://relay.example.com", "text": "nothing here"}
+{"func": "find_relay_media_refs", "case": "dupe", "relay_url": "https://relay.example.com", "text": "![a](https://relay.example.com/media/abababababababababababababababababababababababababababababababab.png) https://relay.example.com/media/abababababababababababababababababababababababababababababababab.png"}
+{"func": "replace_media_refs", "case": "splice", "text": "hello world", "replacements": [[0, 5, "HI"], [5, 11, ""]]}
+{"func": "replace_media_refs", "case": "collapse", "text": "a\n\n\n\nb  \n c ", "replacements": []}
+{"func": "replace_media_refs", "case": "tabs", "text": "x \t\n y\t\t\n", "replacements": []}
+{"func": "hex_to_npub", "case": "zero-one", "hex": "0000000000000000000000000000000000000000000000000000000000000001"}
+{"func": "hex_to_npub", "case": "ff", "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"}
+{"func": "hex_to_npub", "case": "short", "hex": "abcd"}
+{"func": "hex_to_npub", "case": "nonhex", "hex": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"}
+{"func": "hex_to_npub", "case": "dotted", "hex": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"}
+{"func": "constants", "case": "table"}
+{"func": "find_relay_media_refs", "case": "title-single", "relay_url": "https://relay.example.com", "text": "![alt](https://relay.example.com/media/abababababababababababababababababababababababababababababababab.png 'cap') tail"}
+{"func": "find_relay_media_refs", "case": "no-title", "relay_url": "https://relay.example.com", "text": "![alt](https://relay.example.com/media/0000000000000000000000000000000000000000000000000000000000000001.jpg)"}
+{"func": "find_relay_media_refs", "case": "trailing-dot", "relay_url": "https://relay.example.com", "text": "see https://relay.example.com/media/0000000000000000000000000000000000000000000000000000000000000001.png. end"}
+{"func": "find_relay_media_refs", "case": "query", "relay_url": "https://relay.example.com", "text": "see https://relay.example.com/media/ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.png?x=1&y=2 end"}
+{"func": "find_relay_media_refs", "case": "upper-hex", "relay_url": "https://relay.example.com", "text": "see https://relay.example.com/media/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.PNG end"}
+{"func": "is_relay_media_url", "case": "relay-path", "url": "https://r.example/media/0000000000000000000000000000000000000000000000000000000000000001.png", "relay_url": "https://r.example/ns"}
+{"func": "safe_filename", "case": "spaces-only", "value": "    "}
+{"func": "safe_filename", "case": "utf8-cut", "value": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.txt"}
+{"func": "attachment_origin", "case": "relay-port", "value": "wss://relay.example.com:7000/x"}
+{"func": "effective_port", "case": "http-noport", "url": "http://h/p"}
+{"func": "hex_to_npub", "case": "whitespace", "hex": "00000000000000000000000000000000 00000000000000000000000000000001"}

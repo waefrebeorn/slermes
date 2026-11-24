@@ -1,0 +1,26 @@
+{"func": "tracker_contains", "case": "hit", "ids": ["1", "2", "3"], "message_id": "2"}
+{"func": "tracker_contains", "case": "miss", "ids": ["1"], "message_id": "2"}
+{"func": "tracker_contains", "case": "falsy-null", "ids": ["", "x"], "message_id": null}
+{"func": "tracker_contains", "case": "type-mismatch", "ids": ["5"], "message_id": 5}
+{"func": "dave_downgraded", "case": "downgraded", "creds": [null, null, null, true]}
+{"func": "dave_downgraded", "case": "full", "creds": ["k", 0, "s", false]}
+{"func": "dave_downgraded", "case": "falsy-zero", "creds": ["k", 0, "s", 0]}
+{"func": "config_value", "case": "extra-wins", "extra": {"key": "v"}, "key": "key", "default": "d"}
+{"func": "config_value", "case": "env-fallback", "extra": {}, "key": "key", "default": "d", "env_key": "SLERMES_GATE", "env": "E"}
+{"func": "config_value", "case": "falsy-empty-extra", "extra": {"key": ""}, "key": "key", "default": "d"}
+{"func": "config_value", "case": "zero-is-a-value", "extra": {"key": 0}, "key": "key", "default": "d"}
+{"func": "config_value", "case": "absent", "extra": {}, "key": "key", "default": "d"}
+{"func": "finite_positive_config_float", "case": "normal", "extra": {"k": "15"}, "key": "k", "default": 1.0}
+{"func": "finite_positive_config_float", "case": "boundary-zero", "extra": {"k": 0}, "key": "k", "default": 1.0}
+{"func": "finite_positive_config_float", "case": "nan", "extra": {"k": "nan"}, "key": "k", "default": 1.0}
+{"func": "finite_positive_config_float", "case": "negative", "extra": {"k": -2.5}, "key": "k", "default": 1.0}
+{"func": "finite_positive_config_float", "case": "bool-rejected", "extra": {"k": true}, "key": "k", "default": 1.0}
+{"func": "finite_positive_config_float", "case": "default-path", "extra": {}, "key": "k", "default": 15.0}
+{"func": "config_int", "case": "normal", "extra": {"k": "7"}, "key": "k", "default": 2}
+{"func": "config_int", "case": "fractional-disabled", "extra": {"k": 2.5}, "key": "k", "default": 2}
+{"func": "config_int", "case": "boundary-zero", "extra": {"k": "0"}, "key": "k", "default": 2}
+{"func": "config_int", "case": "junk", "extra": {"k": "15s"}, "key": "k", "default": 2}
+{"func": "config_int", "case": "env-int", "extra": {}, "key": "k", "default": 2, "env_key": "SLERMES_GATE", "env": "9"}
+{"func": "format_tool_preview", "case": "link", "preview": {"text": "docs", "url": "https://x.y/a b"}}
+{"func": "format_tool_preview", "case": "no-url", "preview": {"text": "plain text", "url": null}}
+{"func": "format_tool_preview", "case": "falsy-empty", "preview": {"text": "", "url": ""}}

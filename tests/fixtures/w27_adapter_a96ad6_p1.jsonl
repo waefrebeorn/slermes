@@ -1,0 +1,38 @@
+{"func":"bold_label_html","case":"plain","line":"Label: value"}
+{"func":"bold_label_html","case":"no-colon","line":"no colon here"}
+{"func":"bold_label_html","case":"escape","line":"A&B <x>: 5 > 4 \"q\" 'r'"}
+{"func":"bold_label_html","case":"empty","line":""}
+{"func":"bold_label_html","case":"multi-colon","line":"K: a: b"}
+{"func":"bold_label_html","case":"leading-colon","line":":rest"}
+{"func":"flood_cap_result","case":"half","wait":9.5}
+{"func":"flood_cap_result","case":"quarter","wait":0.25}
+{"func":"flood_cap_result","case":"three-quarter","wait":4.75}
+{"func":"env_float_clamped","case":"unset","name":"W27A_TEST_A","default":1.5,"env":{}}
+{"func":"env_float_clamped","case":"set","name":"W27A_TEST_A","default":1.5,"env":{"W27A_TEST_A":"3.25"}}
+{"func":"env_float_clamped","case":"junk","name":"W27A_TEST_A","default":2.0,"env":{"W27A_TEST_A":"abc"}}
+{"func":"env_float_clamped","case":"clamp-min","name":"W27A_TEST_A","default":2.0,"min_value":0.5,"env":{"W27A_TEST_A":"-4"}}
+{"func":"env_float_clamped","case":"clamp-max","name":"W27A_TEST_A","default":2.0,"max_value":10,"env":{"W27A_TEST_A":"99"}}
+{"func":"env_float_clamped","case":"inf","name":"W27A_TEST_A","default":7.5,"max_value":100,"env":{"W27A_TEST_A":"inf"}}
+{"func":"env_float_clamped","case":"nan","name":"W27A_TEST_A","default":7.5,"env":{"W27A_TEST_A":"nan"}}
+{"func":"env_float_clamped","case":"underscore","name":"W27A_TEST_A","default":1.0,"env":{"W27A_TEST_A":"1_0.5"}}
+{"func":"env_float_clamped","case":"spaces","name":"W27A_TEST_A","default":1.0,"env":{"W27A_TEST_A":"  2.5  "}}
+{"func":"env_float_clamped","case":"blank","name":"W27A_TEST_A","default":4.5,"env":{"W27A_TEST_A":""}}
+{"func":"notification_kwargs","case":"important-default","metadata":{}}
+{"func":"notification_kwargs","case":"all-mode","mode":"all","metadata":{}}
+{"func":"notification_kwargs","case":"notify","metadata":{"notify":true}}
+{"func":"notification_kwargs","case":"approval","metadata":{"is_approval_prompt":true}}
+{"func":"notification_kwargs","case":"no-metadata","metadata":null}
+{"func":"notification_kwargs","case":"falsy-notify","metadata":{"notify":0}}
+{"func":"normalize_chat_type","case":"private","chat_type":"private","is_forum":false}
+{"func":"normalize_chat_type","case":"supergroup-forum","chat_type":"supergroup","is_forum":true}
+{"func":"normalize_chat_type","case":"supergroup-plain","chat_type":"supergroup","is_forum":false}
+{"func":"normalize_chat_type","case":"padded-upper","chat_type":" GROUP ","is_forum":false}
+{"func":"normalize_chat_type","case":"null","chat_type":null,"is_forum":true}
+{"func":"normalize_chat_type","case":"empty","chat_type":"","is_forum":false}
+{"func":"normalize_chat_type","case":"channel","chat_type":"channel","is_forum":false}
+{"func":"gateway_chat_type","case":"enum-private","chat":{"type":"ChatType.PRIVATE"},"is_forum":false}
+{"func":"gateway_chat_type","case":"forum","chat":{"type":"supergroup"},"is_forum":true}
+{"func":"gateway_chat_type","case":"channel","chat":{"type":"channel"},"is_forum":false}
+{"func":"gateway_chat_type","case":"unknown-type","chat":{"type":"weird"},"is_forum":false}
+{"func":"gateway_chat_type","case":"no-chat","chat":null,"is_forum":false}
+{"func":"gateway_chat_type","case":"group","chat":{"type":"group"},"is_forum":false}

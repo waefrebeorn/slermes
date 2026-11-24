@@ -1,0 +1,35 @@
+{"func": "resolve_audio_ext", "case": "stt-name-ext", "file_obj": {"name": "clip.MP3"}, "mimetype": "video/mp4"}
+{"func": "resolve_audio_ext", "case": "mime-lookup", "file_obj": {"name": "clip.bin"}, "mimetype": "audio/ogg; codecs=opus"}
+{"func": "resolve_audio_ext", "case": "unknown-falls-back", "file_obj": {"name": "clip"}, "mimetype": "application/octet-stream"}
+{"func": "resolve_audio_ext", "case": "dotfile", "file_obj": {"name": ".hidden"}, "mimetype": ""}
+{"func": "resolve_audio_ext", "case": "falsy-file", "file_obj": null, "mimetype": null}
+{"func": "is_voice_clip", "case": "subtype", "file_obj": {"subtype": "slack_audio", "mimetype": "video/mp4"}}
+{"func": "is_voice_clip", "case": "name-prefix", "file_obj": {"name": "Audio_Message_1.mp4"}}
+{"func": "is_voice_clip", "case": "slack-video-not-voice", "file_obj": {"subtype": "slack_video", "name": "clip.mp4"}}
+{"func": "is_voice_clip", "case": "falsy-file", "file_obj": null}
+{"func": "attachment_label", "case": "name-wins", "file_obj": {"name": "chart.png", "id": "F1"}}
+{"func": "attachment_label", "case": "id-fallback", "file_obj": {"id": "F2"}}
+{"func": "attachment_label", "case": "none", "file_obj": null}
+{"func": "file_kind", "case": "image", "file_obj": {"mimetype": "image/png"}, "mimetype": "image/png"}
+{"func": "file_kind", "case": "audio", "file_obj": {"mimetype": "audio/mpeg"}, "mimetype": "audio/mpeg"}
+{"func": "file_kind", "case": "voice-clip", "file_obj": {"subtype": "slack_audio"}, "mimetype": "video/mp4"}
+{"func": "file_kind", "case": "video", "file_obj": {"name": "demo.mp4"}, "mimetype": "video/mp4"}
+{"func": "file_kind", "case": "document", "file_obj": {"name": "a.pdf"}, "mimetype": "application/pdf"}
+{"func": "describe_api_error", "case": "missing-scope-full", "response": {"error": "missing_scope", "needed": "files:read", "provided": "chat:write,channels:read"}, "file_obj": {"name": "chart.png"}}
+{"func": "describe_api_error", "case": "missing-scope-bare", "response": {"error": "missing_scope"}, "file_obj": null}
+{"func": "describe_api_error", "case": "token-revoked", "response": {"error": "token_revoked"}, "file_obj": {"id": "F9"}}
+{"func": "describe_api_error", "case": "file-gone", "response": {"error": "file_not_found"}, "file_obj": {"name": "old.csv"}}
+{"func": "describe_api_error", "case": "permission", "response": {"error": "restricted_action"}, "file_obj": {"name": "secret.pdf"}}
+{"func": "describe_api_error", "case": "unknown-code", "response": {"error": "weird_thing"}, "file_obj": {"name": "x"}}
+{"func": "describe_api_error", "case": "no-response", "response": null, "file_obj": {"name": "x"}}
+{"func": "describe_api_error", "case": "empty-error", "response": {"error": ""}, "file_obj": {"name": "x"}}
+{"func": "describe_download_failure", "case": "api-priority", "response": {"error": "file_deleted"}, "message": "Slack returned HTML instead of media", "file_obj": {"name": "gone.png"}}
+{"func": "describe_download_failure", "case": "html-body", "response": null, "message": "Slack returned HTML instead of media (text/html)", "file_obj": {"name": "chart.png"}}
+{"func": "describe_download_failure", "case": "non-image", "response": null, "message": "got non-image data back", "file_obj": null}
+{"func": "describe_download_failure", "case": "unrelated", "response": null, "message": "timeout", "file_obj": {"name": "x"}}
+{"func": "retryable_upload_error", "case": "status-429", "status_code": 429, "message": "boom"}
+{"func": "retryable_upload_error", "case": "status-503", "status_code": 503, "message": "boom"}
+{"func": "retryable_upload_error", "case": "status-404", "status_code": 404, "message": "boom"}
+{"func": "retryable_upload_error", "case": "body-marker", "status_code": null, "message": "connection reset by peer"}
+{"func": "retryable_upload_error", "case": "body-plain", "status_code": null, "message": "validation failed"}
+{"func": "retryable_upload_error", "case": "base-network", "status_code": null, "message": "Network is unreachable"}

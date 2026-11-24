@@ -1,0 +1,43 @@
+{"func":"status_refusal","case":"dispatchable-done","status":"done","unknown_detail":"unknown status: done"}
+{"func":"status_refusal","case":"running-is-refused","status":"running","unknown_detail":"unknown status: running"}
+{"func":"status_refusal","case":"unknown","status":"nope","unknown_detail":"unknown status: nope"}
+{"func":"status_refusal","case":"archived-not-a-verb","status":"archived","unknown_detail":"unknown status: archived"}
+{"func":"status_refusal","case":"omitted","status":null,"unknown_detail":"unknown status: None"}
+{"func":"status_refusal","case":"dispatchable-triage","status":"triage","unknown_detail":"x"}
+{"func":"status_table","case":"shape"}
+{"func":"patch_status_route","case":"archived","status":"archived"}
+{"func":"patch_status_route","case":"ready-verb","status":"ready"}
+{"func":"patch_status_route","case":"omitted","status":null}
+{"func":"open_parent_refusal","case":"done-two-blockers","task_id":"t1","status":"done","blockers":[["p1","todo"],["p2","running"]]}
+{"func":"open_parent_refusal","case":"review-one-blocker","task_id":"t7","status":"review","blockers":[["p9","blocked"]]}
+{"func":"open_parent_refusal","case":"none-blocking","task_id":"t1","status":"done","blockers":[]}
+{"func":"open_parent_refusal","case":"not-a-gated-status","task_id":"t1","status":"todo","blockers":[["p1","todo"]]}
+{"func":"open_parent_refusal","case":"blockers-absent","task_id":"t1","status":"review","blockers":null}
+{"func":"model_override_value","case":"strips","clear":false,"model_override":"  gpt-5  ","provider_override":"openai"}
+{"func":"model_override_value","case":"clear-wins","clear":true,"model_override":"gpt-5","provider_override":"openai"}
+{"func":"model_override_value","case":"blank-is-none","clear":false,"model_override":"   ","provider_override":null}
+{"func":"model_override_value","case":"absent","clear":false,"model_override":null}
+{"func":"reasoning_effort_value","case":"sets","clear":false,"reasoning_effort":"high"}
+{"func":"reasoning_effort_value","case":"none-is-a-value","clear":false,"reasoning_effort":"none"}
+{"func":"reasoning_effort_value","case":"clears","clear":true,"reasoning_effort":"high"}
+{"func":"override_wanted","case":"model-present","op":0,"clear":false,"value":"gpt-5"}
+{"func":"override_wanted","case":"model-cleared","op":0,"clear":true,"value":null}
+{"func":"override_wanted","case":"model-absent","op":0,"clear":false,"value":null}
+{"func":"override_wanted","case":"effort-present","op":1,"clear":false,"value":"none"}
+{"func":"override_wanted","case":"effort-absent","op":1,"clear":false,"value":null}
+{"func":"drag_route","case":"blocked-to-ready","current_status":"blocked","target":"ready"}
+{"func":"drag_route","case":"scheduled-to-ready","current_status":"scheduled","target":"ready"}
+{"func":"drag_route","case":"review-to-todo","current_status":"review","target":"todo"}
+{"func":"drag_route","case":"review-to-triage","current_status":"review","target":"triage"}
+{"func":"drag_route","case":"running-to-ready","current_status":"running","target":"ready"}
+{"func":"drag_route","case":"vanished-to-ready","current_status":null,"target":"ready"}
+{"func":"drag_route","case":"todo-to-ready","current_status":"todo","target":"ready"}
+{"func":"bulk_ids","case":"drops-blanks","ids":["a","","b"]}
+{"func":"bulk_ids","case":"empty","ids":[]}
+{"func":"bulk_ids","case":"all-blank","ids":[""]}
+{"func":"comment_body_gate","case":"blank","body":"   "}
+{"func":"comment_body_gate","case":"has-text","body":"a note"}
+{"func":"review_assignee_deferred","case":"deferred","status":"review","assignee":"alice"}
+{"func":"review_assignee_deferred","case":"no-assignee","status":"review","assignee":null}
+{"func":"review_assignee_deferred","case":"not-review","status":"todo","assignee":"alice"}
+{"func":"review_assignee_deferred","case":"empty-assignee-is-sent","status":"review","assignee":""}

@@ -1,0 +1,26 @@
+{"func":"bot_commands","case":"two","menu_commands":[["start","Start here"],["help","Help"]]}
+{"func":"bot_commands","case":"empty","menu_commands":[]}
+{"func":"bot_commands","case":"null-desc","menu_commands":[["a",null]]}
+{"func":"bot_commands","case":"numeric-desc","menu_commands":[["a",42]]}
+{"func":"is_id_like","case":"str","value":"123"}
+{"func":"is_id_like","case":"int","value":123}
+{"func":"is_id_like","case":"bool","value":true}
+{"func":"is_id_like","case":"null","value":null}
+{"func":"is_id_like","case":"list","value":[1]}
+{"func":"normalize_platform_event","case":"reaction","update":{"message_reaction":{"chat":{"id":-1001},"message_id":5,"new_reaction":[{"emoji":"👍"}]}}}
+{"func":"normalize_platform_event","case":"edited","update":{"edited_message":{"chat":{"id":7},"message_id":9,"text":"new"}}}
+{"func":"normalize_platform_event","case":"neither","update":{}}
+{"func":"normalize_platform_event","case":"null","update":null}
+{"func":"normalize_reaction_event","case":"emoji-and-custom","update":{"message_reaction":{"chat":{"id":-1001,"type":"supergroup"},"message_id":5,"new_reaction":[{"emoji":"🔥"},{"custom_emoji_id":"5368324170671202286"}]}}}
+{"func":"normalize_reaction_event","case":"cleared","update":{"message_reaction":{"chat":{"id":11},"message_id":6,"new_reaction":[]}}}
+{"func":"normalize_reaction_event","case":"string-chat-id","update":{"message_reaction":{"chat":{"id":"@chan"},"message_id":"8","new_reaction":[{"emoji":"ok"}]}}}
+{"func":"normalize_reaction_event","case":"no-reaction-attr","update":{}}
+{"func":"normalize_reaction_event","case":"bool-chat-id","update":{"message_reaction":{"chat":{"id":true},"message_id":5,"new_reaction":[]}}}
+{"func":"normalize_reaction_event","case":"missing-message-id","update":{"message_reaction":{"chat":{"id":1},"new_reaction":[]}}}
+{"func":"normalize_reaction_event","case":"bad-reaction-type","update":{"message_reaction":{"chat":{"id":1},"message_id":5,"new_reaction":"nope"}}}
+{"func":"normalize_message_edited_event","case":"text","update":{"edited_message":{"chat":{"id":7},"message_id":9,"text":"edited body","edit_date":"2024-05-01T12:00:00+00:00"}}}
+{"func":"normalize_message_edited_event","case":"caption","update":{"edited_message":{"chat":{"id":7},"message_id":9,"caption":"cap"}}}
+{"func":"normalize_message_edited_event","case":"topic-thread","update":{"edited_message":{"chat":{"id":7},"message_id":9,"text":"t","is_topic_message":true,"message_thread_id":44}}}
+{"func":"normalize_message_edited_event","case":"thread-not-topic","update":{"edited_message":{"chat":{"id":7},"message_id":9,"text":"t","message_thread_id":44}}}
+{"func":"normalize_message_edited_event","case":"no-message","update":{}}
+{"func":"normalize_message_edited_event","case":"bad-chat-id","update":{"edited_message":{"chat":{"id":true},"message_id":9,"text":"t"}}}

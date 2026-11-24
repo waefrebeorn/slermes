@@ -1,0 +1,47 @@
+{"func":"normalize_slug","case":"trim-and-lower","slug":"  My_Board "}
+{"func":"normalize_slug","case":"invalid-space","slug":"BAD SLUG!!"}
+{"func":"normalize_slug","case":"blank","slug":"   "}
+{"func":"normalize_slug","case":"none","slug":null}
+{"func":"normalize_slug","case":"digit-leading","slug":"9-lives_x"}
+{"func":"normalize_slug","case":"leading-dash","slug":"-bad"}
+{"func":"normalize_slug","case":"too-long","slug":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func":"normalize_slug","case":"quoted-embedded","slug":"it's bad"}
+{"func":"resolve_board","case":"omitted","board":null}
+{"func":"resolve_board","case":"empty-string","board":""}
+{"func":"resolve_board","case":"default-board","board":"default","exists":false,"archived":false}
+{"func":"resolve_board","case":"live-board","board":" Live ","exists":true,"archived":false}
+{"func":"resolve_board","case":"unknown-board","board":"ghost","exists":false,"archived":false}
+{"func":"resolve_board","case":"archived-board","board":"old","exists":true,"archived":true}
+{"func":"resolve_board","case":"malformed","board":"BAD ONE","exists":true,"archived":false}
+{"func":"existing_board_slug","case":"known","slug":" Web ","exists":true}
+{"func":"existing_board_slug","case":"unknown","slug":"ghost","exists":false}
+{"func":"existing_board_slug","case":"malformed","slug":"BAD ONE","exists":true}
+{"func":"existing_board_slug","case":"blank","slug":"  ","exists":true}
+{"func":"placeholders","case":"three","ids":["a","b","c"]}
+{"func":"placeholders","case":"empty","ids":[]}
+{"func":"attachment_dict","case":"full","attachment":{"id":7,"task_id":"t1","filename":"foo.pdf","content_type":"application/pdf","size":1024,"uploaded_by":"dash","stored_path":"/tmp/foo.pdf","created_at":1700000000}}
+{"func":"attachment_dict","case":"partial","attachment":{"id":9,"task_id":"t2","filename":"b.txt"}}
+{"func":"task_dict","case":"fresh-card","now":1000,"latest_summary":"wrapped up","current_run_started_at":950,"task":{"id":"t1","title":"Fix the thing","body":"details","assignee":"bob","status":"ready","priority":3,"created_by":"dash","created_at":900,"started_at":950,"completed_at":null,"workspace_kind":"scratch","workspace_path":null,"claim_lock":null,"claim_expires":null,"tenant":"acme","skills":["py"],"goal_mode":true}}
+{"func":"task_dict","case":"done-after-retry","now":2000,"task":{"id":"t2","title":"Ship it","body":null,"assignee":null,"status":"done","priority":0,"created_by":null,"created_at":1000,"started_at":0,"completed_at":1800,"workspace_kind":"worktree","workspace_path":"/w","claim_lock":"l","claim_expires":1500,"tenant":null}}
+{"func":"task_dict","case":"no-created-at","now":5,"task":{"id":"t3","title":"Orphan","body":null,"assignee":null,"status":"todo","priority":1,"created_by":null,"created_at":null,"started_at":null,"completed_at":42,"workspace_kind":"scratch","workspace_path":null,"claim_lock":null,"claim_expires":null,"tenant":null}}
+{"func":"task_dict","case":"unstarted","now":500,"task":{"id":"t4","title":"Queued","body":null,"assignee":null,"status":"triage","priority":0,"created_by":null,"created_at":450,"started_at":null,"completed_at":null,"workspace_kind":"scratch","workspace_path":null,"claim_lock":null,"claim_expires":null,"tenant":null}}
+{"func":"warnings_summary","case":"empty","diagnostics":[]}
+{"func":"warnings_summary","case":"mixed","diagnostics":[{"kind":"stale_claim","severity":"warning","last_seen_at":100},{"kind":"stale_claim","severity":"error","count":3,"last_seen_at":250},{"kind":"spawn_fail","severity":"bogus","last_seen_at":null}]}
+{"func":"warnings_summary","case":"single","diagnostics":[{"kind":"orphan_run","severity":"critical"}]}
+{"func":"attach_diagnostics","case":"clean","task":{"id":"t1","title":"x"},"diagnostics":[]}
+{"func":"attach_diagnostics","case":"dirty","task":{"id":"t1","title":"x"},"diagnostics":[{"kind":"orphan_run","severity":"error","count":2}]}
+{"func":"require_obj","case":"found","found":true,"obj":{"id":"t1"},"ident":"t1","label":"task"}
+{"func":"require_obj","case":"missing","found":false,"ident":"t9","label":"task"}
+{"func":"require_obj","case":"missing-run","found":false,"ident":7,"label":"run"}
+{"func":"require_ok","case":"lost","ok":false}
+{"func":"require_ok","case":"held","ok":true}
+{"func":"conflict","case":"parent-gate","detail":"Cannot move to 'ready': blocked by parent(s) not done"}
+{"func":"map_errors","case":"mapped","status":400,"types":["ValueError"],"exc":"ValueError","message":"bad status"}
+{"func":"map_errors","case":"unmapped","status":409,"types":["ValueError"],"exc":"RuntimeError","message":"boom"}
+{"func":"map_errors","case":"http-passthrough","status":400,"types":["ValueError"],"exc":"HTTPException","http_status":404,"http_detail":"gone"}
+{"func":"map_errors","case":"status-rejected","status":400,"types":["_StatusRejected","ValueError"],"exc":"_StatusRejected","message":"unknown status: nope"}
+{"func":"errors_to_500","case":"wrapped","prefix":"failed to list projects","exc":"ValueError","message":"db down"}
+{"func":"errors_to_500","case":"http-passthrough","prefix":"failed to list projects","exc":"HTTPException","http_status":400,"http_detail":"bad ref"}
+{"func":"link_tasks","case":"dedupe-and-drop","links":{"parents":["a","b","gone"],"children":["b","c","gone"]},"tasks":{"a":{"title":"A","status":"done"},"b":{"title":"B","status":"todo"},"c":{"title":"C","status":"running"}}}
+{"func":"link_tasks","case":"no-links","links":{"parents":[],"children":[]},"tasks":{}}
+{"func":"module_constants","case":"shape"}

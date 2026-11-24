@@ -1,0 +1,25 @@
+{"func": "backfill_channels", "case": "extra-list", "extra": {"missed_message_backfill": {"channels": ["2", "1", "1"]}}}
+{"func": "backfill_channels", "case": "extra-empty-list", "extra": {"missed_message_backfill": {"channels": []}}}
+{"func": "backfill_channels", "case": "extra-string", "extra": {"missed_message_backfill": {"channels": "a, b"}}}
+{"func": "backfill_channels", "case": "env-set", "extra": {}, "env_name": "DISCORD_MISSED_MESSAGE_BACKFILL_CHANNELS", "env": "7,8"}
+{"func": "backfill_channels", "case": "union-fallback", "extra": {}, "env_name": "DISCORD_MISSED_MESSAGE_BACKFILL_CHANNELS", "env": null, "allowed_channels": ["9"], "free_response": ["10", "9"]}
+{"func": "extra_flag", "case": "extra-false", "extra": {"require_mention": false}, "key": "require_mention", "env_default": "true", "truthy": false}
+{"func": "extra_flag", "case": "extra-string-no", "extra": {"require_mention": "no"}, "key": "require_mention", "env_default": "true", "truthy": false}
+{"func": "extra_flag", "case": "env-wins", "extra": {"require_mention": false}, "key": "require_mention", "env_default": "true", "truthy": false, "env_key": "SLERMES_GATE", "env": "true"}
+{"func": "extra_flag", "case": "default", "extra": {}, "key": "mine", "env_default": "false", "truthy": true}
+{"func": "extra_flag", "case": "type-mismatch", "extra": {"k": 0}, "key": "k", "env_default": "true", "truthy": false}
+{"func": "require_mention", "case": "default", "extra": {}}
+{"func": "require_mention", "case": "extra-off", "extra": {"require_mention": false}}
+{"func": "free_response_auto_thread", "case": "default", "extra": {}}
+{"func": "free_response_auto_thread", "case": "env-true", "extra": {}, "env_name": "DISCORD_FREE_RESPONSE_AUTO_THREAD", "env": "1"}
+{"func": "max_attachment_bytes", "case": "default", "extra": {}}
+{"func": "max_attachment_bytes", "case": "extra", "extra": {"max_attachment_bytes": 1024}}
+{"func": "max_attachment_bytes", "case": "env", "extra": {}, "env_name": "DISCORD_MAX_ATTACHMENT_BYTES", "env": "2048"}
+{"func": "max_attachment_bytes", "case": "junk", "extra": {"max_attachment_bytes": "x"}}
+{"func": "max_attachment_bytes", "case": "falsy-zero", "extra": {"max_attachment_bytes": -5}}
+{"func": "voice_attachment", "case": "marker-true", "marker": true}
+{"func": "voice_attachment", "case": "marker-false", "marker": false}
+{"func": "voice_attachment", "case": "callable-true", "marker": true, "callable": "true"}
+{"func": "voice_attachment", "case": "callable-raise", "marker": false, "callable": "raise"}
+{"func": "voice_attachment", "case": "duration-waveform", "marker": null, "duration": 1.4, "waveform": "AA"}
+{"func": "voice_attachment", "case": "falsy-none", "marker": null, "duration": null, "waveform": null}

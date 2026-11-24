@@ -1,0 +1,26 @@
+{"func": "unescape_entities", "case": "three-entities", "text": "a&amp;b &lt;x&gt; &amp;lt;"}
+{"func": "unescape_entities", "case": "no-entities", "text": "plain & text"}
+{"func": "unescape_entities", "case": "null-text", "text": null}
+{"func": "normalize_dedupe", "case": "emphasis", "text": "hello *world* and _you_ and ~~old~~"}
+{"func": "normalize_dedupe", "case": "link-label", "text": "see <https://example.com|Example> now"}
+{"func": "normalize_dedupe", "case": "date-fallback", "text": "<!date^1767225600^{date_short}^https://x.test|Jan 5, 2026>"}
+{"func": "normalize_dedupe", "case": "date-no-fallback", "text": "<!date^1767225600^{date_short}^https://x.test>"}
+{"func": "normalize_dedupe", "case": "bot-mention", "text": "  <@U9|hermes>  please look  ", "bot_uid": "U9"}
+{"func": "normalize_dedupe", "case": "permalink", "text": "link https://acme.slack.com/archives/C1ABC/p1712345678000100?thread_ts=1&cid=C1ABC done"}
+{"func": "normalize_dedupe", "case": "fenced-and-inline", "text": "before ```py\nprint(1)\n``` after `code here`"}
+{"func": "normalize_dedupe", "case": "whitespace", "text": "  a \n\t b   c  "}
+{"func": "normalize_dedupe", "case": "empty", "text": ""}
+{"func": "additional_text", "case": "quote-extra", "primary_text": "top line", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "top line"}]}, {"type": "rich_text_quote", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "quoted bit"}]}]}]}]}
+{"func": "additional_text", "case": "duplicate-only", "primary_text": "same words", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "same words"}]}]}]}
+{"func": "additional_text", "case": "table-block", "primary_text": "see table", "blocks": [{"type": "table", "rows": [[{"text": "h1"}, {"text": "h2"}], [{"text": "1"}, {"text": "2"}]]}]}
+{"func": "additional_text", "case": "preformatted-dup", "primary_text": "run this:\n```\nprint(1)\n```", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_preformatted", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "print(1)"}]}]}]}]}
+{"func": "additional_text", "case": "preformatted-new", "primary_text": "", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_preformatted", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "print(2)"}]}]}]}]}
+{"func": "additional_text", "case": "falsy-blocks", "blocks": null, "primary_text": "x"}
+{"func": "serialize_blocks", "case": "section-block", "blocks": [{"type": "section", "block_id": "b1", "text": {"type": "mrkdwn", "text": "hello"}, "accessory": {"type": "button", "text": {"type": "plain_text", "text": "Go"}, "url": "https://x.test", "value": ""}, "unknown_key": 42}]}
+{"func": "serialize_blocks", "case": "rich-text-only", "blocks": [{"type": "rich_text", "elements": []}]}
+{"func": "serialize_blocks", "case": "empty-blocks", "blocks": []}
+{"func": "serialize_blocks", "case": "truncated", "max_chars": 40, "blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}]}
+{"func": "serialize_blocks", "case": "falsy-blocks", "blocks": null}
+{"func": "extract_urls", "case": "nested-dedupe", "blocks": [{"type": "actions", "elements": [{"type": "button", "url": "https://a.test/1"}, {"type": "button", "url": "https://a.test/1"}, {"type": "image", "image_url": "https://a.test/i.png"}, {"type": "button", "url": "ftp://nope"}]}]}
+{"func": "extract_urls", "case": "no-urls", "blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": "x"}}]}
+{"func": "extract_urls", "case": "falsy-blocks", "blocks": null}

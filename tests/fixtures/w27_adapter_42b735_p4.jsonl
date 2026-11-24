@@ -1,0 +1,16 @@
+{"func":"bridge_media_type","case":"jpg","file_path":"/tmp/a.jpg","is_voice":false,"force_document":false}
+{"func":"bridge_media_type","case":"upper","file_path":"C:\\tmp\\a.JPEG","is_voice":false,"force_document":false}
+{"func":"bridge_media_type","case":"voice","file_path":"/tmp/a.ogg","is_voice":true,"force_document":false}
+{"func":"bridge_media_type","case":"forced","file_path":"/tmp/a.mp4","is_voice":false,"force_document":true}
+{"func":"bridge_media_type","case":"noext","file_path":"/tmp/payload","is_voice":false,"force_document":false}
+{"func":"bridge_media_type","case":"dotted","file_path":"/tmp/a.","is_voice":false,"force_document":false}
+{"func":"bridge_media_type","case":"dotfile","file_path":"/tmp/.bashrc","is_voice":false,"force_document":false}
+{"func":"bridge_media_type","case":"tgz","file_path":"/tmp/a.tar.gz","is_voice":false,"force_document":false}
+{"func":"bridge_media_type","case":"mp3","file_path":"/tmp/song.mp3","is_voice":false,"force_document":false}
+{"func":"normalize_outbound_mentions","case":"mixed","mentions":["6012","+6012","6012:47@s.whatsapp.net","x@lid","6013@lid","status@broadcast",""]}
+{"func":"normalize_outbound_mentions","case":"empty","mentions":[]}
+{"func":"normalize_outbound_mentions","case":"null","mentions":null}
+{"func":"normalize_outbound_mentions","case":"dupes","mentions":["6012@lid","6012@lid","6012"]}
+{"func":"normalize_outbound_mentions","case":"phone_format","mentions":["+60 12-345 6789","(60) 12.345"]}
+{"func":"constants","case":"tables"}
+{"func":"normalize_outbound_mentions","case":"numeric","mentions":[6012,"6013",true]}

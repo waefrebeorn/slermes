@@ -1,0 +1,25 @@
+{"func":"safe_ints","case":"mixed","tokens":[" 3 ","x","4.5","+7","-2","1_0"]}
+{"func":"safe_ints","case":"empty","tokens":[]}
+{"func":"safe_ints","case":"numbers","tokens":[123,"9",-4.5]}
+{"func":"safe_ints","case":"bad_underscores","tokens":["_1","1_","1__0"]}
+{"func":"auth_headers","case":"normal","token":"tok_abc"}
+{"func":"auth_headers","case":"empty","token":""}
+{"func":"auth_proof","case":"short","token":"tok_abc","challenge":"nonce-123"}
+{"func":"auth_proof","case":"empty_token","token":"","challenge":"x"}
+{"func":"auth_proof","case":"long_key","token":"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef","challenge":"nonce-with-a-longer-body-than-one-block-000000000000000000000000"}
+{"func":"config_fingerprint","case":"empty","env":{}}
+{"func":"config_fingerprint","case":"policy","env":{"WHATSAPP_DM_POLICY":"pairing","WHATSAPP_ALLOWED_USERS":"6012,6013","WHATSAPP_MODE":"self-chat"},"package_hash":"9f8e7d6c"}
+{"func":"config_fingerprint","case":"receipts","env":{"WHATSAPP_SEND_READ_RECEIPTS":"true","HERMES_IMAGE_CACHE_DIR":"/tmp/img","WHATSAPP_REPLY_PREFIX":""}}
+{"func":"config_fingerprint","case":"scalar_types","env":{"WHATSAPP_MAX_MESSAGE_LENGTH":4096,"WHATSAPP_DEBUG":true}}
+{"func":"fmt_uptime","case":"days","seconds":90061}
+{"func":"fmt_uptime","case":"exact_day","seconds":86400}
+{"func":"fmt_uptime","case":"hours","seconds":12345}
+{"func":"fmt_uptime","case":"minutes","seconds":125}
+{"func":"fmt_uptime","case":"seconds","seconds":59.9}
+{"func":"fmt_uptime","case":"negative","seconds":-5}
+{"func":"fmt_uptime","case":"string","seconds":" 12345 "}
+{"func":"fmt_uptime","case":"bad_string","seconds":"abc"}
+{"func":"fmt_uptime","case":"null","seconds":null}
+{"func":"fmt_uptime","case":"bool","seconds":true}
+{"func":"fmt_uptime","case":"underscore_literal","seconds":"1_000"}
+{"func":"config_fingerprint","case":"float_value","env":{"WHATSAPP_CHUNK_DELAY_MS":0.5}}

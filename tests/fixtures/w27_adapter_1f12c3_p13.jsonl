@@ -1,0 +1,14 @@
+{"func": "thread_created", "case": "named", "thread": {"id": 555, "name": "T"}, "name": "fallback"}
+{"func": "thread_created", "case": "no-name", "thread": {"id": 555, "name": null}, "name": "fallback"}
+{"func": "prompt_content", "case": "short", "header": "**H**", "body": "body", "code_block": false, "tail": "", "max_len": 2000, "marker": "... [truncated]"}
+{"func": "prompt_content", "case": "code-block", "header": "**H**", "body": "ls -la", "code_block": true, "tail": "\n_tail_", "max_len": 2000, "marker": "... [truncated]"}
+{"func": "prompt_content", "case": "long", "header": "**H**", "body": "x", "code_block": false, "tail": "", "max_len": 40, "marker": "... [truncated]"}
+{"func": "prompt_content", "case": "falsy-body", "header": "H", "body": null, "code_block": false, "tail": "", "max_len": 2000, "marker": "... [truncated]"}
+{"func": "approval_mentions", "case": "on", "flag": true, "ids": ["2", "1"]}
+{"func": "approval_mentions", "case": "off", "flag": false, "ids": ["1"]}
+{"func": "approval_mentions", "case": "no-numeric-ids", "flag": true, "ids": ["abc"]}
+{"func": "approval_mentions", "case": "falsy-empty", "flag": true, "ids": []}
+{"func": "forum_parts", "case": "with-starter", "thread": {"id": 10, "has_send": true, "message": {"id": 11}}}
+{"func": "forum_parts", "case": "no-starter", "thread": {"id": 10, "has_send": true, "message": null}}
+{"func": "forum_parts", "case": "wrapped-thread", "thread": {"id": 10, "has_send": false, "thread": {"id": 12}, "message": {"id": 13}}}
+{"func": "forum_parts", "case": "falsy-empty", "thread": {}}

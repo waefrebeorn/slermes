@@ -1,0 +1,48 @@
+{"func": "normalize_chat_key", "case": "dm-guid", "chat_id": "any;-;+15551234567"}
+{"func": "normalize_chat_key", "case": "bare-phone", "chat_id": "+15551234567"}
+{"func": "normalize_chat_key", "case": "short-digits", "chat_id": "any;-;+12345"}
+{"func": "normalize_chat_key", "case": "group-space", "chat_id": "space-abc"}
+{"func": "normalize_chat_key", "case": "trailing-junk", "chat_id": "any;-;+15551234567x"}
+{"func": "normalize_chat_key", "case": "empty", "chat_id": ""}
+{"func": "sent_text_key", "case": "guid", "chat_id": "any;-;+15551234567"}
+{"func": "sent_text_key", "case": "none", "chat_id": null}
+{"func": "sent_text_key", "case": "empty", "chat_id": ""}
+{"func": "is_dm_guid", "case": "yes", "text": "any;-;+15551234567"}
+{"func": "is_dm_guid", "case": "no", "text": "any;-;+1555"}
+{"func": "is_dm_guid", "case": "space", "text": "space-1"}
+{"func": "sidecar_error_from_response", "case": "structured", "path": "/send", "status_code": 500, "text": "boom", "data": {"ok": false, "error": "upstream down", "error_class": "transient", "retryable": true}}
+{"func": "sidecar_error_from_response", "case": "target-not-allowed", "path": "/send", "status_code": 403, "text": "raw vendor text", "data": {"error": "nope", "error_class": "target_not_allowed", "retryable": true}}
+{"func": "sidecar_error_from_response", "case": "parse-text-json", "path": "/send-attachment", "status_code": 502, "text": "{\"error\": \"bad gateway\", \"error_class\": \"upstream\", \"retryable\": false}"}
+{"func": "sidecar_error_from_response", "case": "parse-text-nonjson", "path": "/react", "status_code": 500, "text": "<html>oops</html>"}
+{"func": "sidecar_error_from_response", "case": "no-data-no-text", "path": "/send", "status_code": 500, "text": ""}
+{"func": "sidecar_error_from_response", "case": "retryable-number", "path": "/send", "status_code": 200, "text": "x", "data": {"retryable": 1}}
+{"func": "sidecar_error_from_response", "case": "empty-error-falls-back", "path": "/send", "status_code": 500, "text": "from text", "data": {"error": "", "error_class": ""}}
+{"func": "retryable_error", "case": "base-true", "error": "anything", "base_retryable": true}
+{"func": "retryable_error", "case": "pattern-upstream-unavailable", "error": "Upstream Unavailable: try later"}
+{"func": "retryable_error", "case": "pattern-internal-sidecar", "error": "internal sidecar error"}
+{"func": "retryable_error", "case": "pattern-overflow", "error": "reset reason: overflow, upstream_overflow"}
+{"func": "retryable_error", "case": "no-pattern", "error": "everything is fine"}
+{"func": "retryable_error", "case": "empty", "error": ""}
+{"func": "retryable_error", "case": "retryable-false-marker", "error": "upstream unavailable (retryable=false)"}
+{"func": "retryable_error", "case": "auth-or-config", "error": "auth_or_config: upstream unavailable"}
+{"func": "is_permanent_sidecar_failure", "case": "auth-or-config", "result": {"raw_response": {"error_class": "auth_or_config", "retryable": false}}}
+{"func": "is_permanent_sidecar_failure", "case": "target-not-allowed", "result": {"raw_response": {"error_class": "target_not_allowed", "retryable": false}}}
+{"func": "is_permanent_sidecar_failure", "case": "retryable-true", "result": {"raw_response": {"error_class": "auth_or_config", "retryable": true}}}
+{"func": "is_permanent_sidecar_failure", "case": "other-class", "result": {"raw_response": {"error_class": "transient", "retryable": false}}}
+{"func": "is_permanent_sidecar_failure", "case": "retryable-zero-number", "result": {"raw_response": {"error_class": "auth_or_config", "retryable": 0}}}
+{"func": "is_permanent_sidecar_failure", "case": "no-raw", "result": {}}
+{"func": "is_permanent_sidecar_failure", "case": "raw-string", "result": {"raw_response": "nope"}}
+{"func": "send_retry_is_final", "case": "permanent", "result": {"raw_response": {"error_class": "target_not_allowed", "retryable": false}}}
+{"func": "send_retry_is_final", "case": "not-permanent", "result": {"raw_response": {"error_class": "transient", "retryable": true}}}
+{"func": "constants", "case": "budgets"}
+{"func": "parse_timestamp", "case": "offset", "ts": "2026-11-24T01:17:00+00:00", "now": "2026-11-24T05:00:00+00:00"}
+{"func": "parse_timestamp", "case": "zulu", "ts": "2026-11-24T01:17:00Z", "now": "2026-11-24T05:00:00+00:00"}
+{"func": "parse_timestamp", "case": "negative-offset", "ts": "2026-11-24T01:17:00.250000-05:30", "now": "2026-11-24T05:00:00+00:00"}
+{"func": "parse_timestamp", "case": "space-separator-naive", "ts": "2026-11-24 01:17:00", "now": "2026-11-24T05:00:00+00:00"}
+{"func": "parse_timestamp", "case": "date-only", "ts": "2026-11-24", "now": "2026-11-24T05:00:00+00:00"}
+{"func": "parse_timestamp", "case": "fraction-short", "ts": "2026-11-24T01:17:00.5", "now": "2026-11-24T05:00:00+00:00"}
+{"func": "parse_timestamp", "case": "invalid", "ts": "yesterday-ish", "now": "2026-11-24T05:00:00+00:00"}
+{"func": "parse_timestamp", "case": "empty", "ts": "", "now": "2026-11-24T05:00:00+00:00"}
+{"func": "sidecar_error_from_response", "case": "long-text-200", "path": "/send", "status_code": 500, "text": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"}
+{"func": "sidecar_error_from_response", "case": "error-number-zero", "path": "/send", "status_code": 500, "text": "fallback text", "data": {"error": 0, "error_class": null}}
+{"func": "parse_timestamp", "case": "lowercase-t", "ts": "2026-11-24t01:17:00+00:00", "now": "2026-11-24T05:00:00+00:00"}

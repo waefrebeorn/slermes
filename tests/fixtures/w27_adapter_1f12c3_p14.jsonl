@@ -1,0 +1,18 @@
+{"func": "forum_thread_name", "case": "title", "message": "## Title here\nbody", "default_title": "New Post"}
+{"func": "forum_thread_name", "case": "first-line", "message": "\n  plain first  \nsecond", "default_title": "New Post"}
+{"func": "forum_thread_name", "case": "falsy-empty", "message": "   ", "default_title": "New Post"}
+{"func": "forum_thread_name", "case": "boundary-long", "message": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "default_title": "New Post"}
+{"func": "response_encoding", "case": "gzip", "get_encoding": "gzip", "encoding": "gzip"}
+{"func": "response_encoding", "case": "empty-falls", "get_encoding": "empty", "encoding": ""}
+{"func": "response_encoding", "case": "raise-falls", "get_encoding": "raise", "encoding": ""}
+{"func": "response_encoding", "case": "absent", "get_encoding": null, "encoding": null}
+{"func": "warn_missing_media", "case": "path", "path": "/tmp/x.png"}
+{"func": "warn_missing_media", "case": "falsy-empty", "path": ""}
+{"func": "apply_yaml", "case": "empty", "yaml_cfg": {}, "discord_cfg": {}}
+{"func": "apply_yaml", "case": "gates", "yaml_cfg": {"platforms": {"discord": {"extra": {"allowed_channels": ["1", "2"]}}}}, "discord_cfg": {"allow_from": ["a", "b"], "allow_all_users": true}}
+{"func": "apply_yaml", "case": "bool-keys", "yaml_cfg": {}, "discord_cfg": {"require_mention": false, "thread_require_mention": "true"}}
+{"func": "apply_yaml", "case": "backfill", "yaml_cfg": {}, "discord_cfg": {"missed_message_backfill": {"enabled": true, "limit": 5}, "history_backfill_limit": 30}}
+{"func": "apply_yaml", "case": "allow-mentions", "yaml_cfg": {}, "discord_cfg": {"allow_mentions": {"everyone": true}, "approval_mentions": true}}
+{"func": "apply_yaml", "case": "liveness-alias", "yaml_cfg": {}, "discord_cfg": {"liveness_interval_seconds": 5, "websocket_max_latency_seconds": 12}}
+{"func": "apply_yaml", "case": "reply-to-mode", "yaml_cfg": {}, "discord_cfg": {"reply_to_mode": false, "reactions": true}}
+{"func": "apply_yaml", "case": "platform-extra-only", "yaml_cfg": {"platforms": {"discord": {"extra": {"allow_bots": "mentions", "allowed_roles": ["9"]}}}}, "discord_cfg": {}}

@@ -1,0 +1,80 @@
+{"func": "html_escape", "case": "plain", "text": "hello"}
+{"func": "html_escape", "case": "entities", "text": "a & b <c> \"d\" 'e'"}
+{"func": "html_escape", "case": "empty", "text": ""}
+{"func": "html_escape", "case": "amp_only", "text": "&&&"}
+{"func": "html_escape", "case": "already_escaped", "text": "&lt;tag&gt;"}
+{"func": "html_escape", "case": "unicode", "text": "café →"}
+{"func": "html_escape", "case": "newline", "text": "a\nb\ttab"}
+{"func": "markdown_to_html_fallback", "case": "plain", "text": "hello"}
+{"func": "markdown_to_html_fallback", "case": "empty", "text": ""}
+{"func": "markdown_to_html_fallback", "case": "bold_italic", "text": "**bold** and *it*"}
+{"func": "markdown_to_html_fallback", "case": "header", "text": "# Head\npara"}
+{"func": "markdown_to_html_fallback", "case": "header_two", "text": "## Sub head"}
+{"func": "markdown_to_html_fallback", "case": "header_seven", "text": "####### seven"}
+{"func": "markdown_to_html_fallback", "case": "fenced_lang", "text": "```py\nx = 1 < 2\n```"}
+{"func": "markdown_to_html_fallback", "case": "fenced_plain", "text": "```\nx\n```"}
+{"func": "markdown_to_html_fallback", "case": "inline_code", "text": "`code <&>`"}
+{"func": "markdown_to_html_fallback", "case": "link", "text": "[link](https://x/y?a=1&b=2)"}
+{"func": "markdown_to_html_fallback", "case": "link_js", "text": "[bad](javascript:alert(1))"}
+{"func": "markdown_to_html_fallback", "case": "link_quoted", "text": "[q](https://x/y?q=\"1\")"}
+{"func": "markdown_to_html_fallback", "case": "blockquote", "text": "> quote\n> two\n\nreply"}
+{"func": "markdown_to_html_fallback", "case": "hr_dashes", "text": "---"}
+{"func": "markdown_to_html_fallback", "case": "hr_stars", "text": "***"}
+{"func": "markdown_to_html_fallback", "case": "hr_unders", "text": "___"}
+{"func": "markdown_to_html_fallback", "case": "hr_spaced", "text": "- - -"}
+{"func": "markdown_to_html_fallback", "case": "ul", "text": "- a\n- b"}
+{"func": "markdown_to_html_fallback", "case": "ol", "text": "1. one\n2) two"}
+{"func": "markdown_to_html_fallback", "case": "strike", "text": "a ~~strike~~ b"}
+{"func": "markdown_to_html_fallback", "case": "underscore_word", "text": "under_score_here"}
+{"func": "markdown_to_html_fallback", "case": "underscore_em", "text": "_em_ word"}
+{"func": "markdown_to_html_fallback", "case": "newlines", "text": "line1\nline2"}
+{"func": "markdown_to_html_fallback", "case": "script_tag", "text": "<script>alert(1)</script>"}
+{"func": "markdown_to_html_fallback", "case": "quotes", "text": "quote \" and ' apostrophe"}
+{"func": "markdown_to_html_fallback", "case": "nested", "text": "mix **b _c_ d** tail"}
+{"func": "markdown_to_html_fallback", "case": "bold_under", "text": "__strong__ word"}
+{"func": "markdown_to_html_fallback", "case": "fenced_then_blocks", "text": "```\nx\n```\n\n> q\n# h"}
+{"func": "markdown_to_html_fallback", "case": "already_escaped_bq", "text": "&gt; already\n&gt; escaped"}
+{"func": "markdown_to_html_fallback", "case": "list_then_text", "text": "- a\ntext"}
+{"func": "markdown_to_html_fallback", "case": "header_emphasis", "text": "# **bold** head"}
+{"func": "markdown_to_html_fallback", "case": "code_then_br", "text": "a `x` b\nc"}
+{"func": "markdown_to_html_fallback", "case": "dash_list_star", "text": "* star\n+ plus"}
+{"func": "markdown_to_html_fallback", "case": "ordered_paren", "text": "3) three"}
+{"func": "markdown_to_html_fallback", "case": "multi_para", "text": "para one\n\npara two"}
+{"func": "markdown_to_html_fallback", "case": "escaped_amp", "text": "a & b < c"}
+{"func": "markdown_to_html_fallback", "case": "link_and_code", "text": "`code` then [t](https://e.x/p)"}
+{"func": "markdown_to_html_fallback", "case": "bq_with_code", "text": "> `x` quote"}
+{"func": "markdown_to_html_fallback", "case": "deep_nest", "text": "**a *b* c**"}
+{"func": "markdown_to_html_fallback", "case": "null", "text": null}
+{"func": "markdown_to_html_fallback", "case": "triple_stars", "text": "***x***"}
+{"func": "markdown_to_html_fallback", "case": "intraword_star", "text": "a*b*c"}
+{"func": "markdown_to_html_fallback", "case": "star_alone", "text": "*"}
+{"func": "markdown_to_html_fallback", "case": "double_star", "text": "**"}
+{"func": "markdown_to_html_fallback", "case": "tilde_alone", "text": "~~"}
+{"func": "markdown_to_html_fallback", "case": "empty_link", "text": "[]()"}
+{"func": "markdown_to_html_fallback", "case": "empty_url", "text": "[a]()"}
+{"func": "markdown_to_html_fallback", "case": "empty_label", "text": "[](https://x)"}
+{"func": "markdown_to_html_fallback", "case": "paren_url", "text": "[a](https://x/y_(z))"}
+{"func": "markdown_to_html_fallback", "case": "fenced_trailing", "text": "```\nx\n``` tail"}
+{"func": "markdown_to_html_fallback", "case": "fenced_unknown_lang", "text": "```c++\nx\n```"}
+{"func": "markdown_to_html_fallback", "case": "fenced_no_lang_newline", "text": "```\n```"}
+{"func": "markdown_to_html_fallback", "case": "inline_unclosed", "text": "`open"}
+{"func": "markdown_to_html_fallback", "case": "escaped_backtick", "text": "\\`not code\\`"}
+{"func": "markdown_to_html_fallback", "case": "angle_in_code", "text": "`<b>&`"}
+{"func": "markdown_to_html_fallback", "case": "bq_gt_alone", "text": ">\nafter"}
+{"func": "markdown_to_html_fallback", "case": "bq_html_gt", "text": "&gt;\nafter"}
+{"func": "markdown_to_html_fallback", "case": "indented_ul", "text": "   - one\n   - two"}
+{"func": "markdown_to_html_fallback", "case": "tab_ul", "text": "\t- tabbed"}
+{"func": "markdown_to_html_fallback", "case": "header_trailing", "text": "## Head   "}
+{"func": "markdown_to_html_fallback", "case": "header_hash_only", "text": "#"}
+{"func": "markdown_to_html_fallback", "case": "header_no_space", "text": "#hashtag"}
+{"func": "markdown_to_html_fallback", "case": "list_mixed", "text": "- a\n1. b"}
+{"func": "markdown_to_html_fallback", "case": "text_then_list", "text": "intro\n- a"}
+{"func": "markdown_to_html_fallback", "case": "html_amp_entity", "text": "a &amp; b"}
+{"func": "markdown_to_html_fallback", "case": "nested_code_in_bold", "text": "**`x`**"}
+{"func": "markdown_to_html_fallback", "case": "link_in_bold", "text": "**[t](https://x)**"}
+{"func": "markdown_to_html_fallback", "case": "ul_inline_bold", "text": "- **b** item"}
+{"func": "markdown_to_html_fallback", "case": "bq_multi", "text": "&gt; a\n&gt; b"}
+{"func": "markdown_to_html_fallback", "case": "br_after_blockquote", "text": "> q\nnext"}
+{"func": "markdown_to_html_fallback", "case": "hr_trailing_spaces", "text": "---   "}
+{"func": "markdown_to_html_fallback", "case": "unicode_emoji", "text": "hi ✅ there"}
+{"func": "markdown_to_html_fallback", "case": "long_line", "text": "word word word word word word word word word word word word word word word word word word word word "}

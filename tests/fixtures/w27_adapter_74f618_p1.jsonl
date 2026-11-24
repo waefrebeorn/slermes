@@ -1,0 +1,39 @@
+{"func": "unfurl_kwargs", "case": "both-bools", "extra": {"unfurl_links": true, "unfurl_media": false}}
+{"func": "unfurl_kwargs", "case": "string-forms", "extra": {"unfurl_links": " TRUE ", "unfurl_media": "no"}}
+{"func": "unfurl_kwargs", "case": "junk-and-number", "extra": {"unfurl_links": "maybe", "unfurl_media": 1}}
+{"func": "unfurl_kwargs", "case": "falsy-extra", "extra": null}
+{"func": "unfurl_kwargs", "case": "empty-extra", "extra": {}}
+{"func": "is_table_row", "case": "pipes", "line": "  | a | b |  "}
+{"func": "is_table_row", "case": "no-pipe", "line": "hello world"}
+{"func": "is_table_row", "case": "blank", "line": "   "}
+{"func": "disp_width", "case": "ascii", "s": "hello"}
+{"func": "disp_width", "case": "cjk", "s": "日本語"}
+{"func": "disp_width", "case": "emoji", "s": "🚀ok"}
+{"func": "disp_width", "case": "empty", "s": ""}
+{"func": "pad", "case": "wide-cell", "cell": "表", "width": 5}
+{"func": "pad", "case": "already-wide", "cell": "表", "width": 1}
+{"func": "pad", "case": "ascii", "cell": "ab", "width": 4}
+{"func": "split_table_row", "case": "outer-pipes", "line": "| a | b |"}
+{"func": "split_table_row", "case": "bare", "line": "x|y|z"}
+{"func": "split_table_row", "case": "single-pipe", "line": "|"}
+{"func": "align_table", "case": "two-cols", "rows": ["| name | qty |", "| --- | --- |", "| a | 12 |", "| longer | 3 |"]}
+{"func": "align_table", "case": "short-rows", "rows": ["h1 | h2 | h3", "--- | --- | ---", "1 | 2"]}
+{"func": "align_table", "case": "single-row", "rows": ["only"]}
+{"func": "wrap_markdown_tables", "case": "inline-table", "text": "before\n| a | b |\n| --- | --- |\n| 1 | 2 |\nafter"}
+{"func": "wrap_markdown_tables", "case": "already-fenced", "text": "```\n| a | b |\n| --- | --- |\n| 1 | 2 |\n```"}
+{"func": "wrap_markdown_tables", "case": "no-table", "text": "just | text"}
+{"func": "wrap_markdown_tables", "case": "empty", "text": ""}
+{"func": "permalink_path", "case": "normal", "channel_id": "C01ABC", "message_ts": "1712345678.000100"}
+{"func": "permalink_path", "case": "null-channel", "channel_id": null, "message_ts": "1712345678.000100"}
+{"func": "permalink_path", "case": "empty-ts", "channel_id": "C01ABC", "message_ts": ""}
+{"func": "str_or_empty", "case": "zero", "value": 0}
+{"func": "str_or_empty", "case": "string", "value": "x"}
+{"func": "str_or_empty", "case": "int", "value": 5}
+{"func": "str_or_empty", "case": "null", "value": null}
+{"func": "int_or_zero", "case": "plain", "value": "42"}
+{"func": "int_or_zero", "case": "padded", "value": " 7 "}
+{"func": "int_or_zero", "case": "junk", "value": "x"}
+{"func": "int_or_zero", "case": "float-text", "value": "1.5"}
+{"func": "first_truthy", "case": "first-wins", "mapping": {"a": 0, "b": "bee", "c": "cee"}, "keys": ["a", "b", "c"]}
+{"func": "first_truthy", "case": "all-falsy", "mapping": {"a": 0, "b": "", "c": []}, "keys": ["a", "b", "c"]}
+{"func": "first_truthy", "case": "missing-keys", "mapping": {"z": 1}, "keys": ["a", "z"]}

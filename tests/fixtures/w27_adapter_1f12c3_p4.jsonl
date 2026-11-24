@@ -1,0 +1,28 @@
+{"func": "backfill_enabled", "case": "extra-dict-enabled", "extra": {"missed_message_backfill": {"enabled": true}}}
+{"func": "backfill_enabled", "case": "extra-string-yes", "extra": {"missed_message_backfill": {"enabled": " YES "}}}
+{"func": "backfill_enabled", "case": "extra-falsy-zero", "extra": {"missed_message_backfill": {"enabled": 0}}}
+{"func": "backfill_enabled", "case": "env-true", "env_name": "DISCORD_MISSED_MESSAGE_BACKFILL", "env": "true"}
+{"func": "backfill_enabled", "case": "falsy-unset", "env_name": "DISCORD_MISSED_MESSAGE_BACKFILL", "env": null}
+{"func": "backfill_enabled", "case": "type-mismatch", "extra": {"missed_message_backfill": "yes"}, "env_name": "DISCORD_MISSED_MESSAGE_BACKFILL", "env": null}
+{"func": "backfill_number", "case": "extra-value", "extra": {"missed_message_backfill": {"limit": 50}}, "key": "limit", "default": 100, "cast": "int", "lo": 1, "hi": 500}
+{"func": "backfill_number", "case": "clamp-hi", "extra": {"missed_message_backfill": {"limit": 9000}}, "key": "limit", "default": 100, "cast": "int", "lo": 1, "hi": 500}
+{"func": "backfill_number", "case": "clamp-lo", "extra": {"missed_message_backfill": {"limit": 0}}, "key": "limit", "default": 100, "cast": "int", "lo": 1, "hi": 500}
+{"func": "backfill_number", "case": "env-string", "extra": {}, "key": "limit", "default": 100, "cast": "int", "lo": 1, "hi": 500, "env_key": "DISCORD_MISSED_MESSAGE_BACKFILL_LIMIT", "env_name": "DISCORD_MISSED_MESSAGE_BACKFILL_LIMIT", "env": "250"}
+{"func": "backfill_number", "case": "junk-falls-to-default", "extra": {"missed_message_backfill": {"limit": "abc"}}, "key": "limit", "default": 100, "cast": "int", "lo": 1, "hi": 500}
+{"func": "backfill_number", "case": "no-hi", "extra": {"missed_message_backfill": {"window_seconds": 7200}}, "key": "window_seconds", "default": 21600, "cast": "float", "lo": 60, "hi": null}
+{"func": "window_seconds", "case": "default", "extra": {}}
+{"func": "window_seconds", "case": "extra", "extra": {"missed_message_backfill": {"window_seconds": 900}}}
+{"func": "backfill_limit", "case": "default", "extra": {}}
+{"func": "backfill_limit", "case": "extra", "extra": {"missed_message_backfill": {"limit": 25}}}
+{"func": "max_dispatches", "case": "default", "extra": {}}
+{"func": "max_attempts", "case": "extra", "extra": {"missed_message_backfill": {"max_attempts": 7}}}
+{"func": "down_notice", "case": "hermes-down", "content": "Hermes is down right now"}
+{"func": "down_notice", "case": "gateway-offline", "content": "The gateway is currently offline"}
+{"func": "down_notice", "case": "agent-unavailable", "content": "agent   was    unavailable"}
+{"func": "down_notice", "case": "plain", "content": "the agent is working"}
+{"func": "down_notice", "case": "falsy-empty", "content": ""}
+{"func": "down_notice", "case": "boundary-suffix", "content": "bmox is down"}
+{"func": "channel_ids", "case": "thread", "channel": {"id": "55", "parent_id": "44"}}
+{"func": "channel_ids", "case": "plain", "channel": {"id": "55", "parent_id": null}}
+{"func": "channel_ids", "case": "falsy-null", "channel": {"id": null, "parent_id": null}}
+{"func": "channel_ids", "case": "int-id", "channel": {"id": 123456789012345, "parent_id": 9}}

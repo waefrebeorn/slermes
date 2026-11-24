@@ -1,0 +1,87 @@
+{"func": "bang_split", "case": "normal", "text": "!model gpt-4"}
+{"func": "bang_split", "case": "underscore", "text": "!foo_bar x y"}
+{"func": "bang_split", "case": "no_rest", "text": "!x"}
+{"func": "bang_split", "case": "not_bang", "text": "hello world"}
+{"func": "bang_split", "case": "empty", "text": ""}
+{"func": "bang_split", "case": "digit_start", "text": "!1x"}
+{"func": "bang_split", "case": "newline_rest", "text": "!x y\nz"}
+{"func": "bang_split", "case": "trailing_newline", "text": "!x\n"}
+{"func": "bang_split", "case": "dash_name", "text": "!a-b c"}
+{"func": "bang_candidates", "case": "underscore", "name": "Foo_Bar"}
+{"func": "bang_candidates", "case": "plain", "name": "model"}
+{"func": "bang_candidates", "case": "empty", "name": ""}
+{"func": "bang_candidates", "case": "all_underscore", "name": "_x_"}
+{"func": "reply_fallback_extract", "case": "pill", "body": "> <@alice:example.org> quoted\n> more\n\nactual reply"}
+{"func": "reply_fallback_extract", "case": "no_pill", "body": "> plain quote\n>  second\nreply"}
+{"func": "reply_fallback_extract", "case": "not_quote", "body": "just text"}
+{"func": "reply_fallback_extract", "case": "empty", "body": ""}
+{"func": "reply_fallback_extract", "case": "null", "body": null}
+{"func": "reply_fallback_extract", "case": "quote_space_only", "body": "> "}
+{"func": "reply_fallback_extract", "case": "pill_empty", "body": "> <@a:b>\n> tail"}
+{"func": "reply_fallback_strip", "case": "basic", "body": "> q\n\nhi\nthere"}
+{"func": "reply_fallback_strip", "case": "quote_only", "body": "> q\n> r"}
+{"func": "reply_fallback_strip", "case": "no_quote", "body": "plain body"}
+{"func": "reply_fallback_strip", "case": "empty", "body": ""}
+{"func": "reply_fallback_strip", "case": "null", "body": null}
+{"func": "reply_fallback_strip", "case": "gt_alone", "body": ">\n\nbody"}
+{"func": "reply_fallback_split", "case": "basic", "body": "> <@a:b> q\n> r\n\nhello"}
+{"func": "reply_fallback_split", "case": "only_quote", "body": "> only quote"}
+{"func": "reply_fallback_split", "case": "quote_and_blank", "body": "> q\n\n"}
+{"func": "reply_fallback_split", "case": "plain", "body": "hello"}
+{"func": "reply_fallback_split", "case": "null", "body": null}
+{"func": "permanent_auth_error", "case": "forbidden", "errcode": "m_forbidden", "http_status": 403}
+{"func": "permanent_auth_error", "case": "unknown_500", "errcode": "M_UNKNOWN", "http_status": 500}
+{"func": "permanent_auth_error", "case": "no_errcode_401", "errcode": null, "http_status": 401}
+{"func": "permanent_auth_error", "case": "padded_token", "errcode": " m_unknown_token ", "http_status": null}
+{"func": "permanent_auth_error", "case": "empty_both", "errcode": "", "http_status": null}
+{"func": "permanent_auth_error", "case": "errcode_nonstring", "errcode": 123, "http_status": 403}
+{"func": "permanent_auth_error", "case": "string_status", "errcode": null, "http_status": "403"}
+{"func": "utf8_len", "case": "ascii", "text": "hello"}
+{"func": "utf8_len", "case": "multibyte", "text": "héllo → 世"}
+{"func": "utf8_len", "case": "empty", "text": ""}
+{"func": "utf8_len", "case": "emoji", "text": "✅🌀"}
+{"func": "max_message_length", "case": "num_string", "raw": "700"}
+{"func": "max_message_length", "case": "below_floor", "raw": "100"}
+{"func": "max_message_length", "case": "above_ceiling", "raw": "100000"}
+{"func": "max_message_length", "case": "not_a_number", "raw": "abc"}
+{"func": "max_message_length", "case": "null", "raw": null}
+{"func": "max_message_length", "case": "number", "raw": 1234}
+{"func": "max_message_length", "case": "bool_true", "raw": true}
+{"func": "max_message_length", "case": "padded", "raw": " 700 "}
+{"func": "max_message_length", "case": "blank", "raw": "  "}
+{"func": "max_message_length", "case": "float_number", "raw": 700.9}
+{"func": "max_message_length", "case": "neg", "raw": "-5"}
+{"func": "looks_like_transport_filename", "case": "image_jpg", "text": "photo.jpg", "kind": "image", "reject_spaces": false}
+{"func": "looks_like_transport_filename", "case": "image_spaces", "text": "My Photo.png", "kind": "image", "reject_spaces": false}
+{"func": "looks_like_transport_filename", "case": "media_spaces", "text": "My Photo.ogg", "kind": "media", "reject_spaces": true}
+{"func": "looks_like_transport_filename", "case": "media_opus", "text": "sound.opus", "kind": "media", "reject_spaces": true}
+{"func": "looks_like_transport_filename", "case": "dir_path", "text": "dir/photo.jpg", "kind": "image", "reject_spaces": false}
+{"func": "looks_like_transport_filename", "case": "wrong_ext", "text": "notes.txt", "kind": "image", "reject_spaces": false}
+{"func": "looks_like_transport_filename", "case": "upper_ext", "text": "clip.MP4", "kind": "media", "reject_spaces": true}
+{"func": "looks_like_transport_filename", "case": "no_ext", "text": "noext", "kind": "image", "reject_spaces": false}
+{"func": "looks_like_transport_filename", "case": "trailing_dot", "text": "x.", "kind": "image", "reject_spaces": false}
+{"func": "looks_like_transport_filename", "case": "empty", "text": "", "kind": "image", "reject_spaces": false}
+{"func": "looks_like_transport_filename", "case": "null", "text": null, "kind": "image", "reject_spaces": false}
+{"func": "looks_like_transport_filename", "case": "trailing_slash", "text": "photo.jpg/", "kind": "image", "reject_spaces": false}
+{"func": "looks_like_transport_filename", "case": "type_mismatch", "text": 5, "kind": "image", "reject_spaces": false}
+{"func": "is_bare_media_filename", "case": "image_name", "msgtype": "m.image", "body": "photo.jpg"}
+{"func": "is_bare_media_filename", "case": "image_caption", "msgtype": "m.image", "body": "look at this"}
+{"func": "is_bare_media_filename", "case": "file_pdf", "msgtype": "m.file", "body": "doc.pdf"}
+{"func": "is_bare_media_filename", "case": "audio_empty", "msgtype": "m.audio", "body": ""}
+{"func": "is_bare_media_filename", "case": "video_name", "msgtype": "m.video", "body": "clip.mp4"}
+{"func": "is_bare_media_filename", "case": "unknown_type", "msgtype": "m.notice", "body": "photo.jpg"}
+{"func": "event_timestamp_seconds", "case": "ms", "ts": 1700000000000}
+{"func": "event_timestamp_seconds", "case": "seconds", "ts": 1700000000}
+{"func": "event_timestamp_seconds", "case": "null", "ts": null}
+{"func": "event_timestamp_seconds", "case": "garbage", "ts": "not-a-number"}
+{"func": "event_timestamp_seconds", "case": "numeric_string", "ts": "1700000000000"}
+{"func": "event_timestamp_seconds", "case": "zero", "ts": 0}
+{"func": "redact_url_for_log", "case": "signed", "url": "https://hs.example/_matrix/media/v3/download/a/b?token=secret#frag"}
+{"func": "redact_url_for_log", "case": "mxc", "url": "mxc://hs.example/abc123?x=1"}
+{"func": "redact_url_for_log", "case": "empty", "url": ""}
+{"func": "redact_url_for_log", "case": "fragment_only", "url": "mxc://hs.example/abc#frag"}
+{"func": "redact_url_for_log", "case": "null", "url": null}
+{"func": "redact_url_for_log", "case": "plain_path", "url": "/_matrix/media/x?y=1"}
+{"func": "max_message_length", "case": "array_type", "raw": []}
+{"func": "redact_url_for_log", "case": "object_type", "url": {"a": 1}}
+{"func": "looks_like_transport_filename", "case": "empty_list_text", "text": [], "kind": "image", "reject_spaces": false}

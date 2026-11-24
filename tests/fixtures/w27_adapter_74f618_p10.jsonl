@@ -1,0 +1,56 @@
+{"func": "require_mention", "case": "default-true", "extra": null, "env": null}
+{"func": "require_mention", "case": "extra-false", "extra": {"require_mention": false}, "env": null}
+{"func": "require_mention", "case": "env-no", "extra": {"require_mention": ""}, "env": "no"}
+{"func": "require_mention", "case": "extra-string-off", "extra": {"require_mention": "OFF"}, "env": null}
+{"func": "require_mention", "case": "extra-zero-int", "extra": {"require_mention": 0}, "env": null}
+{"func": "extra_or_env_flag", "case": "extra-true", "extra": {"f": true}, "key": "f", "env": null}
+{"func": "extra_or_env_flag", "case": "env-wins", "extra": {"f": false}, "key": "f", "env": "true"}
+{"func": "extra_or_env_flag", "case": "blank-extra-false", "extra": {"f": ""}, "key": "f", "env": null}
+{"func": "extra_or_env_flag", "case": "strip-whitespace", "extra": {"f": " yes "}, "key": "f", "env": null, "strip": true}
+{"func": "extra_or_env_flag", "case": "absent", "extra": {}, "key": "f", "env": null}
+{"func": "extra_or_env_flag", "case": "int-one", "extra": {"f": 1}, "key": "f", "env": null}
+{"func": "addressed_other_user", "case": "other-user", "text": "  <@U2> please", "self_uids": ["U1"]}
+{"func": "addressed_other_user", "case": "other-user-label", "text": "<@U2|bob> hi", "self_uids": ["U1"]}
+{"func": "addressed_other_user", "case": "self", "text": "<@U1> hi", "self_uids": ["U1"]}
+{"func": "addressed_other_user", "case": "here-not-user", "text": "<!here> all", "self_uids": ["U1"]}
+{"func": "addressed_other_user", "case": "mid-text", "text": "hey <@U2>", "self_uids": ["U1"]}
+{"func": "addressed_other_user", "case": "empty", "text": "", "self_uids": ["U1"]}
+{"func": "is_free_channel", "case": "require-mention-default", "channel_id": "C1", "require_mention_channels": [], "free_response_channels": [], "require_mention": true}
+{"func": "is_free_channel", "case": "free-listed", "channel_id": "C1", "require_mention_channels": [], "free_response_channels": ["C1"], "require_mention": true}
+{"func": "is_free_channel", "case": "require-overrides-free", "channel_id": "C1", "require_mention_channels": ["C1"], "free_response_channels": ["C1"], "require_mention": true}
+{"func": "is_free_channel", "case": "global-off", "channel_id": "C2", "require_mention_channels": [], "free_response_channels": [], "require_mention": false}
+{"func": "reply_expected", "case": "addressed", "routing_text": "anything", "bot_uid": "U1", "channel_id": "C1", "addressed": true}
+{"func": "reply_expected", "case": "mentions-self-label", "routing_text": "<@U1|hermes> look", "bot_uid": "U1", "channel_id": "C1"}
+{"func": "reply_expected", "case": "mentions-self-bot-id", "routing_text": "<@U7> look", "bot_uid": null, "self_bot_uid": "U7", "channel_id": "C1"}
+{"func": "reply_expected", "case": "other-user", "routing_text": "<@U2> look", "bot_uid": "U1", "channel_id": "C1"}
+{"func": "reply_expected", "case": "followup-silence", "routing_text": "just chatting", "bot_uid": "U1", "channel_id": "C1", "channel_thread_followup": true, "thread_followup_silence": true}
+{"func": "reply_expected", "case": "own-session-free", "routing_text": "hello", "bot_uid": "U1", "channel_id": "C1", "opens_own_session": true, "free_channel": true}
+{"func": "reply_expected", "case": "own-session-gated", "routing_text": "hello", "bot_uid": "U1", "channel_id": "C1", "opens_own_session": true, "free_channel": false}
+{"func": "reply_expected", "case": "plain-followup", "routing_text": "hello", "bot_uid": "U1", "channel_id": "C1"}
+{"func": "message_mentions_self", "case": "plain-form", "text": "hi <@U1> there", "self_uids": ["U1"]}
+{"func": "message_mentions_self", "case": "label-form", "text": "<@U1|hermes>", "self_uids": ["U1"]}
+{"func": "message_mentions_self", "case": "other", "text": "<@U2>", "self_uids": ["U1"]}
+{"func": "message_mentions_self", "case": "empty-uids", "text": "<@U1>", "self_uids": []}
+{"func": "extra_or_env_channel_set", "case": "list", "raw": ["C1", " C2 ", ""], "coerce_scalar": false}
+{"func": "extra_or_env_channel_set", "case": "csv", "raw": "C1, C2 ,", "coerce_scalar": false}
+{"func": "extra_or_env_channel_set", "case": "numeric-scalar", "raw": 5, "coerce_scalar": true}
+{"func": "extra_or_env_channel_set", "case": "numeric-no-coerce", "raw": 5, "coerce_scalar": false}
+{"func": "extra_or_env_channel_set", "case": "null", "raw": null, "coerce_scalar": true}
+{"func": "extra_or_env_channel_set", "case": "env-wins", "raw": "C1", "env": "C9", "coerce_scalar": false}
+{"func": "slash_channel_gated", "case": "ignored", "channel_id": "C1", "ignored": ["C1"], "allowed": []}
+{"func": "slash_channel_gated", "case": "not-allowed", "channel_id": "C2", "ignored": [], "allowed": ["C1"]}
+{"func": "slash_channel_gated", "case": "allowed", "channel_id": "C1", "ignored": [], "allowed": ["C1"]}
+{"func": "slash_channel_gated", "case": "dm-exempt", "channel_id": "D1", "ignored": [], "allowed": ["C1"]}
+{"func": "slash_channel_gated", "case": "no-allowlist", "channel_id": "C5", "ignored": [], "allowed": []}
+{"func": "is_slack_cdn_url", "case": "files-host", "url": "https://files.slack.com/files-pri/T1-F1/x.png"}
+{"func": "is_slack_cdn_url", "case": "bare-host", "url": "https://slack.com/x"}
+{"func": "is_slack_cdn_url", "case": "http", "url": "http://files.slack.com/x"}
+{"func": "is_slack_cdn_url", "case": "lookalike", "url": "https://slack.com.evil.test/x"}
+{"func": "is_slack_cdn_url", "case": "other-host", "url": "https://example.com/x"}
+{"func": "is_slack_cdn_url", "case": "userinfo-port", "url": "https://bot@files.slack.com:443/x"}
+{"func": "is_slack_cdn_url", "case": "upper-host", "url": "https://FILES.SLACK.COM/x"}
+{"func": "is_slack_cdn_url", "case": "trailing-dot", "url": "https://slack.com./x"}
+{"func": "is_slack_cdn_url", "case": "no-scheme", "url": "files.slack.com/x"}
+{"func": "thread_rehydration_key", "case": "shared", "channel_id": "C1", "thread_ts": "1.1", "user_id": "U1", "team_id": "T1"}
+{"func": "thread_rehydration_key", "case": "per-user", "channel_id": "C1", "thread_ts": "1.1", "user_id": "U1", "team_id": "T1", "per_user": true}
+{"func": "thread_rehydration_key", "case": "empty-team", "channel_id": "C1", "thread_ts": "1.1", "user_id": "U1", "team_id": ""}

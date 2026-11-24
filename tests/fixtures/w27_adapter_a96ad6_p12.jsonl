@@ -1,0 +1,32 @@
+{"func":"message_mentions_bot","case":"mention-entity","bot":{"id":99},"current_username":"mybot","message":{"text":"hi @MyBot","entities":[{"type":"mention","offset":3,"length":6}]}}
+{"func":"message_mentions_bot","case":"mention-case-insensitive","bot":{"id":99},"current_username":"mybot","message":{"text":"hi @MYBOT","entities":[{"type":"mention","offset":3,"length":6}]}}
+{"func":"message_mentions_bot","case":"text-mention-id","bot":{"id":99},"current_username":"mybot","message":{"text":"hi there","entities":[{"type":"text_mention","offset":3,"length":5,"user":{"id":99}}]}}
+{"func":"message_mentions_bot","case":"command-at-bot","bot":{"id":99},"current_username":"mybot","message":{"text":"/new@MyBot","entities":[{"type":"bot_command","offset":0,"length":9}]}}
+{"func":"message_mentions_bot","case":"command-other-bot","bot":{"id":99},"current_username":"mybot","message":{"text":"/new@OtherBot","entities":[{"type":"bot_command","offset":0,"length":12}]}}
+{"func":"message_mentions_bot","case":"raw-fallback","bot":{"id":99},"current_username":"mybot","message":{"text":"yo @MyBot"}}
+{"func":"message_mentions_bot","case":"no-mention","bot":{"id":99},"current_username":"mybot","message":{"text":"nothing here"}}
+{"func":"message_mentions_bot","case":"no-bot","bot":null,"current_username":"mybot","message":{"text":"@MyBot"}}
+{"func":"sender_is_other_bot","case":"other","bot":{"id":99},"message":{"from_user":{"id":7,"is_bot":true}}}
+{"func":"sender_is_other_bot","case":"self","bot":{"id":99},"message":{"from_user":{"id":99,"is_bot":true}}}
+{"func":"sender_is_other_bot","case":"human","bot":{"id":99},"message":{"from_user":{"id":7,"is_bot":false}}}
+{"func":"sender_is_other_bot","case":"no-bot-known","bot":null,"message":{"from_user":{"id":7,"is_bot":true}}}
+{"func":"sender_is_other_bot","case":"no-sender","bot":{"id":99},"message":{}}
+{"func":"bot_sender_suppressed","case":"veto-other-bot","bots_require_mention":true,"bot":{"id":99},"current_username":"mybot","message":{"from_user":{"id":7,"is_bot":true},"text":"chatter"}}
+{"func":"bot_sender_suppressed","case":"other-bot-mentions","bots_require_mention":true,"bot":{"id":99},"current_username":"mybot","message":{"from_user":{"id":7,"is_bot":true},"text":"@MyBot ping"}}
+{"func":"bot_sender_suppressed","case":"flag-off","bots_require_mention":false,"bot":{"id":99},"current_username":"mybot","message":{"from_user":{"id":7,"is_bot":true},"text":"chatter"}}
+{"func":"bot_sender_suppressed","case":"human-sender","bots_require_mention":true,"bot":{"id":99},"current_username":"mybot","message":{"from_user":{"id":7,"is_bot":false},"text":"chatter"}}
+{"func":"media_message_type","case":"sticker","msg":{"sticker":{"file_id":"s"}}}
+{"func":"media_message_type","case":"photo","msg":{"photo":[{"file_id":"p1"},{"file_id":"p2"}]}}
+{"func":"media_message_type","case":"video-note","msg":{"video_note":{"file_id":"v"}}}
+{"func":"media_message_type","case":"voice","msg":{"voice":{"file_id":"vc"}}}
+{"func":"media_message_type","case":"document-fallback","msg":{"document":{"file_id":"d"}}}
+{"func":"media_message_type","case":"empty","msg":{}}
+{"func":"media_message_type","case":"falsy-photo","msg":{"photo":[],"audio":{"file_id":"a"}}}
+{"func":"append_observed_note","case":"both","existing":"old","note":"new"}
+{"func":"append_observed_note","case":"no-existing","existing":null,"note":"new"}
+{"func":"append_observed_note","case":"empty-note","existing":"old","note":""}
+{"func":"append_observed_note","case":"both-empty","existing":null,"note":null}
+{"func":"is_own_message","case":"self","bot":{"id":99},"message":{"from_user":{"id":99}}}
+{"func":"is_own_message","case":"other","bot":{"id":99},"message":{"from_user":{"id":7}}}
+{"func":"is_own_message","case":"no-bot","bot":null,"message":{"from_user":{"id":99}}}
+{"func":"is_own_message","case":"no-sender","bot":{"id":99},"message":{}}

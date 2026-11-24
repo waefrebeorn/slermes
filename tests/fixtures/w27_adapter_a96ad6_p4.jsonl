@@ -1,0 +1,28 @@
+{"func":"is_thread_not_found_error","case":"hit","error":{"name":"BadRequest","text":"Bad Request: message thread not found"}}
+{"func":"is_thread_not_found_error","case":"case-insensitive","error":{"name":"Error","text":"THREAD NOT FOUND"}}
+{"func":"is_thread_not_found_error","case":"miss","error":{"name":"Error","text":"message to be replied not found"}}
+{"func":"is_thread_not_found_error","case":"empty","error":null}
+{"func":"is_bad_request_error","case":"exact","error":{"name":"BadRequest","text":"x"}}
+{"func":"is_bad_request_error","case":"suffix","error":{"name":"telegram.error.BadRequest","text":"x"}}
+{"func":"is_bad_request_error","case":"lower","error":{"name":"badrequest","text":"x"}}
+{"func":"is_bad_request_error","case":"other","error":{"name":"NetworkError","text":"BadRequest"}}
+{"func":"is_bad_request_error","case":"null","error":null}
+{"func":"is_reply_anchor_missing_error","case":"first-wording","error":{"name":"BadRequest","text":"Bad Request: message to be replied not found"}}
+{"func":"is_reply_anchor_missing_error","case":"second-wording","error":{"name":"BadRequest","text":"Bad Request: reply message not found"}}
+{"func":"is_reply_anchor_missing_error","case":"miss","error":{"name":"BadRequest","text":"chat not found"}}
+{"func":"is_reply_anchor_missing_error","case":"null","error":null}
+{"func":"should_retry_without_dm_topic_reply_anchor","case":"all-true","error":{"name":"BadRequest","text":"message to be replied not found"},"metadata":{"telegram_dm_topic_reply_fallback":true},"reply_to_message_id":11}
+{"func":"should_retry_without_dm_topic_reply_anchor","case":"no-fallback","error":{"name":"BadRequest","text":"message to be replied not found"},"metadata":{},"reply_to_message_id":11}
+{"func":"should_retry_without_dm_topic_reply_anchor","case":"not-bad-request","error":{"name":"NetworkError","text":"message to be replied not found"},"metadata":{"telegram_dm_topic_reply_fallback":true},"reply_to_message_id":11}
+{"func":"should_retry_without_dm_topic_reply_anchor","case":"no-anchor","error":{"name":"BadRequest","text":"message to be replied not found"},"metadata":{"telegram_dm_topic_reply_fallback":true},"reply_to_message_id":null}
+{"func":"should_retry_without_dm_topic_reply_anchor","case":"wrong-text","error":{"name":"BadRequest","text":"chat not found"},"metadata":{"telegram_dm_topic_reply_fallback":true},"reply_to_message_id":11}
+{"func":"looks_like_polling_conflict","case":"class","error":{"name":"Conflict","text":"whatever"}}
+{"func":"looks_like_polling_conflict","case":"text-one","error":{"name":"Error","text":"Conflict: terminated by other getUpdates request"}}
+{"func":"looks_like_polling_conflict","case":"text-two","error":{"name":"Error","text":"another bot instance is running"}}
+{"func":"looks_like_polling_conflict","case":"miss","error":{"name":"TimedOut","text":"timed out"}}
+{"func":"looks_like_polling_conflict","case":"null","error":null}
+{"func":"looks_like_auth_error","case":"invalidtoken","error":{"name":"InvalidToken","text":"token"}}
+{"func":"looks_like_auth_error","case":"forbidden","error":{"name":"Forbidden","text":"bot was blocked"}}
+{"func":"looks_like_auth_error","case":"text-only-miss","error":{"name":"Error","text":"forbidden"}}
+{"func":"looks_like_auth_error","case":"bad-request","error":{"name":"BadRequest","text":"forbidden"}}
+{"func":"looks_like_auth_error","case":"null","error":null}

@@ -1,0 +1,38 @@
+{"func": "collect_block_mentions", "case": "flat-and-quoted", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "hi "}, {"type": "user", "user_id": "U111"}]}, {"type": "rich_text_quote", "elements": [{"type": "rich_text_section", "elements": [{"type": "user", "user_id": "U222"}]}]}, {"type": "rich_text_section", "elements": [{"type": "user"}]}]}]}
+{"func": "collect_block_mentions", "case": "nested-element-key", "blocks": [{"type": "section", "element": {"type": "user", "user_id": "U333"}}]}
+{"func": "collect_block_mentions", "case": "falsy-blocks", "blocks": null}
+{"func": "mention_detection_text", "case": "block-only-mention", "event": {"text": "  hello there  ", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_section", "elements": [{"type": "user", "user_id": "U9"}]}]}]}}
+{"func": "mention_detection_text", "case": "mention-already-flat", "event": {"text": "<@U9> ping", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_section", "elements": [{"type": "user", "user_id": "U9"}]}]}]}}
+{"func": "mention_detection_text", "case": "no-blocks", "event": {"text": "plain"}}
+{"func": "mention_detection_text", "case": "falsy-event", "event": {}}
+{"func": "slack_str_field", "case": "string", "el": {"text": "ok"}, "name": "text"}
+{"func": "slack_str_field", "case": "type-mismatch", "el": {"text": 123}, "name": "text"}
+{"func": "slack_str_field", "case": "absent", "el": {}, "name": "text"}
+{"func": "render_inline_element", "case": "text", "el": {"type": "text", "text": "hello"}}
+{"func": "render_inline_element", "case": "color", "el": {"type": "color", "value": "#ff0000"}}
+{"func": "render_inline_element", "case": "user", "el": {"type": "user", "user_id": "U42"}}
+{"func": "render_inline_element", "case": "broadcast-default", "el": {"type": "broadcast"}}
+{"func": "render_inline_element", "case": "emoji", "el": {"type": "emoji", "name": "rocket"}}
+{"func": "render_inline_element", "case": "link-label", "el": {"type": "link", "url": "https://x.test/a", "text": "docs"}}
+{"func": "render_inline_element", "case": "link-bare", "el": {"type": "link", "url": "https://x.test/a"}}
+{"func": "render_inline_element", "case": "message-mention", "el": {"type": "message_mention", "channel_id": "C7", "message_ts": "1700000000.000200"}}
+{"func": "render_inline_element", "case": "date-fallback", "el": {"type": "date", "fallback": "Jan 5, 2026", "timestamp": 1767225600}}
+{"func": "render_inline_element", "case": "unknown-empty", "el": {"type": "mystery"}}
+{"func": "render_inline_elements", "case": "mix", "elements": [{"type": "text", "text": "a "}, {"type": "user", "user_id": "U1"}, {"type": "text", "text": " b"}]}
+{"func": "render_inline_elements", "case": "empty-list", "elements": []}
+{"func": "extract_text_blocks", "case": "sections-quote-list", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "top line"}]}, {"type": "rich_text_quote", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "quoted"}]}]}, {"type": "rich_text_list", "style": "bullet", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "one"}]}, {"type": "rich_text_section", "elements": [{"type": "text", "text": "two"}]}]}]}]}
+{"func": "extract_text_blocks", "case": "ordered-and-code", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_list", "style": "ordered", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "first"}]}]}, {"type": "rich_text_preformatted", "language": "python", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "print(1)"}]}]}]}]}
+{"func": "extract_text_blocks", "case": "table-block", "blocks": [{"type": "table", "rows": [[{"type": "raw_text", "text": "a"}, {"type": "raw_text", "text": "b"}], [{"type": "raw_text", "text": "1"}, {"type": "raw_text", "text": "2"}]]}]}
+{"func": "extract_text_blocks", "case": "blank-section-skipped", "blocks": [{"type": "rich_text", "elements": [{"type": "rich_text_section", "elements": [{"type": "text", "text": "   "}]}, {"type": "rich_text_section", "elements": [{"type": "text", "text": "keep"}]}]}]}
+{"func": "extract_text_blocks", "case": "falsy-blocks", "blocks": null}
+{"func": "table_cell_text", "case": "nested", "value": {"elements": [{"text": "alpha"}, {"elements": [{"text": "beta"}]}]}}
+{"func": "table_cell_text", "case": "raw", "value": {"type": "raw_text", "text": "  raw  "}}
+{"func": "table_cell_text", "case": "scalar", "value": 5}
+{"func": "render_table_block", "case": "two-rows", "block": {"rows": [[{"text": "a"}, {"text": "b"}], [{"text": "1"}, {"text": "2"}]]}}
+{"func": "render_table_block", "case": "truncated", "block": {"rows": [[{"text": "0123456789012345678901234567890"}]]}, "max_chars": 25}
+{"func": "render_table_block", "case": "no-rows", "block": {"rows": "nope"}}
+{"func": "render_table_block", "case": "empty-cell-row-skipped", "block": {"rows": [[{"text": " "}, {"text": ""}], [{"text": "x"}]]}}
+{"func": "slack_error_is", "case": "match", "response": {"error": "invalid_blocks"}, "code": "invalid_blocks"}
+{"func": "slack_error_is", "case": "mismatch", "response": {"error": "ratelimited"}, "code": "invalid_blocks"}
+{"func": "slack_error_is", "case": "null-response", "response": null, "code": "invalid_blocks"}
+{"func": "slack_error_is", "case": "empty-response", "response": {}, "code": "invalid_blocks"}

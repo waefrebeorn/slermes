@@ -1,0 +1,28 @@
+{"func": "check_requirements", "case": "both", "relay": "https://relay.example.com", "key": "nsec1abc"}
+{"func": "check_requirements", "case": "no-key", "relay": "https://relay.example.com", "key": ""}
+{"func": "check_requirements", "case": "no-relay", "relay": "", "key": "nsec1abc"}
+{"func": "check_requirements", "case": "blank-relay", "relay": "   ", "key": "nsec1abc"}
+{"func": "validate_config", "case": "env", "relay_env": "https://relay.example.com", "extra": {}, "key": "nsec1abc"}
+{"func": "validate_config", "case": "extra", "relay_env": "", "extra": {"relay_url": "https://relay.example.com"}, "key": "nsec1abc"}
+{"func": "validate_config", "case": "no-key", "relay_env": "https://relay.example.com", "extra": {}, "key": ""}
+{"func": "validate_config", "case": "neither", "relay_env": "", "extra": {}, "key": "nsec1abc"}
+{"func": "apply_yaml_config", "case": "full", "buzz_cfg": {"extra": {"relay_url": "https://relay.example.com", "cli_path": "/usr/bin/buzz", "home_channel": "c1", "transport": "poll", "poll_interval": 5, "channels": ["a", "b"], "allowed_users": ["u"], "reaction_only_users": [], "allow_all_users": "TRUE", "require_mention": "no", "reply_in_thread": "off", "reply_to_mode": "all", "unknown_key": 1}}}
+{"func": "apply_yaml_config", "case": "flat", "buzz_cfg": {"relay_url": "https://relay.example.com", "channels": "x,y"}}
+{"func": "apply_yaml_config", "case": "empty", "buzz_cfg": {}}
+{"func": "apply_yaml_config", "case": "not-dict", "buzz_cfg": {"extra": "nope"}}
+{"func": "apply_yaml_config", "case": "blank-str", "buzz_cfg": {"relay_url": "", "cli_path": null, "channels": null}}
+{"func": "apply_yaml_config", "case": "lower-null", "buzz_cfg": {"require_mention": null}}
+{"func": "env_enablement", "case": "full", "env": {"BUZZ_RELAY_URL": " https://relay.example.com ", "BUZZ_PRIVATE_KEY": "nsec1abc", "BUZZ_CHANNELS": " c1 , ,c2 ", "BUZZ_POLL_INTERVAL": "7.5", "BUZZ_CLI_PATH": "/usr/bin/buzz", "BUZZ_HOME_CHANNEL": " home1 ", "BUZZ_HOME_CHANNEL_NAME": "Lobby"}}
+{"func": "env_enablement", "case": "minimal", "env": {"BUZZ_RELAY_URL": "https://relay.example.com", "BUZZ_PRIVATE_KEY": "nsec1abc"}}
+{"func": "env_enablement", "case": "no-key", "env": {"BUZZ_RELAY_URL": "https://relay.example.com"}}
+{"func": "env_enablement", "case": "bad-poll", "env": {"BUZZ_RELAY_URL": "https://relay.example.com", "BUZZ_PRIVATE_KEY": "nsec1abc", "BUZZ_CHANNELS": "c9", "BUZZ_POLL_INTERVAL": "abc"}}
+{"func": "env_enablement", "case": "home-default", "env": {"BUZZ_RELAY_URL": "https://relay.example.com", "BUZZ_PRIVATE_KEY": "nsec1abc", "BUZZ_CHANNELS": "c9"}}
+{"func": "standalone_send", "case": "no-relay", "relay": "", "key": "nsec1abc", "cli_path": "present", "chat_id": "c1", "home_channel": "", "thread_id": "", "reply_to_mode": "first", "message": "hi", "script": [[0, "{}", ""]]}
+{"func": "standalone_send", "case": "no-cli", "relay": "https://relay.example.com", "key": "nsec1abc", "cli_path": "", "chat_id": "c1", "home_channel": "", "thread_id": "", "reply_to_mode": "first", "message": "hi", "script": [[0, "{}", ""]]}
+{"func": "standalone_send", "case": "no-target", "relay": "https://relay.example.com", "key": "nsec1abc", "cli_path": "present", "chat_id": "  ", "home_channel": "", "thread_id": "", "reply_to_mode": "first", "message": "hi", "script": [[0, "{}", ""]]}
+{"func": "standalone_send", "case": "ok-thread-media", "relay": "https://relay.example.com", "key": "nsec1abc", "cli_path": "present", "chat_id": "c1", "home_channel": "", "thread_id": "t9", "reply_to_mode": "first", "message": "hi", "media_files": ["/tmp/a.png", ["/tmp/b.mp4", "x"]], "script": [[0, "{\"accepted\":true,\"event_id\":\"e1\"}", ""]]}
+{"func": "standalone_send", "case": "reply-off", "relay": "https://relay.example.com", "key": "nsec1abc", "cli_path": "present", "chat_id": "c1", "home_channel": "", "thread_id": "t9", "reply_to_mode": "off", "message": "hi", "script": [[0, "{\"accepted\":true,\"event_id\":\"e2\"}", ""]]}
+{"func": "standalone_send", "case": "home-target", "relay": "https://relay.example.com", "key": "nsec1abc", "cli_path": "present", "chat_id": "", "home_channel": "home1", "thread_id": "", "reply_to_mode": "first", "message": "hi", "script": [[0, "{\"accepted\":true,\"event_id\":\"e3\"}", ""]]}
+{"func": "standalone_send", "case": "escape-retry", "relay": "https://relay.example.com", "key": "nsec1abc", "cli_path": "present", "chat_id": "c1", "home_channel": "", "thread_id": "", "reply_to_mode": "first", "message": "@Bob hi", "script": [[2, "", "mention '@Bob' does not match a current channel member"], [0, "{\"accepted\":true,\"event_id\":\"e4\"}", ""]]}
+{"func": "standalone_send", "case": "receipt-error", "relay": "https://relay.example.com", "key": "nsec1abc", "cli_path": "present", "chat_id": "c1", "home_channel": "", "thread_id": "", "reply_to_mode": "first", "message": "hi", "script": [[0, "{\"accepted\":false,\"message\":\"nope\"}", ""]]}
+{"func": "standalone_send", "case": "cli-error", "relay": "https://relay.example.com", "key": "nsec1abc", "cli_path": "present", "chat_id": "c1", "home_channel": "", "thread_id": "", "reply_to_mode": "first", "message": "hi", "script": [[1, "", "  boom  "]]}

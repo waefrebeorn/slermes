@@ -1,0 +1,32 @@
+{"func": "canonical_replayed_user_content", "case": "user-plain", "msg": {"role": "user", "content": "hi"}}
+{"func": "canonical_replayed_user_content", "case": "assistant", "msg": {"role": "assistant", "content": "yo"}}
+{"func": "canonical_replayed_user_content", "case": "user-null-content", "msg": {"role": "user", "content": null}}
+{"func": "canonical_replayed_user_content", "case": "user-multimodal", "msg": {"role": "user", "content": [{"type": "text", "text": "p"}]}}
+{"func": "canonical_replayed_user_content", "case": "no-role", "msg": {"content": "x"}}
+{"func": "exact_replayed_user_clone_key", "case": "string", "timestamp": 1700000000, "content": "hello"}
+{"func": "exact_replayed_user_clone_key", "case": "list", "timestamp": 1700000001, "content": ["a", "b"]}
+{"func": "exact_replayed_user_clone_key", "case": "dict-sorted", "timestamp": 1700000002, "content": {"b": 2, "a": 1}}
+{"func": "exact_replayed_user_clone_key", "case": "null-ts", "timestamp": null, "content": "hello"}
+{"func": "exact_replayed_user_clone_key", "case": "empty-string", "timestamp": 1700000003, "content": ""}
+{"func": "exact_replayed_user_clone_key", "case": "empty-list", "timestamp": 1700000004, "content": []}
+{"func": "exact_replayed_user_clone_key", "case": "null-content", "timestamp": 1700000005, "content": null}
+{"func": "exact_replayed_user_clone_key", "case": "number-content", "timestamp": 1700000006, "content": 0}
+{"func": "find_duplicate_replayed_user_message", "case": "adjacent-user-dup", "messages": [{"role": "user", "content": "hi"}], "msg": {"role": "user", "content": "hi"}}
+{"func": "find_duplicate_replayed_user_message", "case": "no-duplicate", "messages": [{"role": "user", "content": "hi"}], "msg": {"role": "user", "content": "other"}}
+{"func": "find_duplicate_replayed_user_message", "case": "assistant-with-content-blocks", "messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "yo"}], "msg": {"role": "user", "content": "hi"}}
+{"func": "find_duplicate_replayed_user_message", "case": "blank-assistant-skips", "messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "", "tool_calls": null}], "msg": {"role": "user", "content": "hi"}}
+{"func": "find_duplicate_replayed_user_message", "case": "tool-row-skips", "messages": [{"role": "user", "content": "hi"}, {"role": "tool", "content": "out"}], "msg": {"role": "user", "content": "hi"}}
+{"func": "find_duplicate_replayed_user_message", "case": "non-user-msg", "messages": [{"role": "user", "content": "hi"}], "msg": {"role": "assistant", "content": "hi"}}
+{"func": "find_duplicate_replayed_user_message", "case": "empty-content-msg", "messages": [{"role": "user", "content": ""}], "msg": {"role": "user", "content": ""}}
+{"func": "find_duplicate_replayed_user_message", "case": "no-messages", "messages": [], "msg": {"role": "user", "content": "hi"}}
+{"func": "find_duplicate_replayed_user_message", "case": "newest-wins", "messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": ""}, {"role": "user", "content": "hi"}], "msg": {"role": "user", "content": "hi"}}
+{"func": "is_explicit_fork_child_row", "case": "tool-source", "session": {"id": "c", "source": "tool", "parent_session_id": "p"}}
+{"func": "is_explicit_fork_child_row", "case": "branched-marker-string-cfg", "session": {"id": "c", "source": "api", "parent_session_id": "p", "model_config": "{\"_branched_from\": \"p\"}"}}
+{"func": "is_explicit_fork_child_row", "case": "delegate-marker-dict-cfg", "session": {"id": "c", "parent_session_id": "p", "model_config": {"_delegate_from": "p"}}}
+{"func": "is_explicit_fork_child_row", "case": "marker-other-parent", "session": {"id": "c", "parent_session_id": "p", "model_config": {"_branched_from": "q"}}}
+{"func": "is_explicit_fork_child_row", "case": "no-parent-marker-present", "session": {"id": "c", "model_config": {"_branched_from": "q"}}}
+{"func": "is_explicit_fork_child_row", "case": "bad-json-cfg", "session": {"id": "c", "parent_session_id": "p", "model_config": "{not json"}}
+{"func": "is_explicit_fork_child_row", "case": "cfg-not-dict", "session": {"id": "c", "parent_session_id": "p", "model_config": [1, 2]}}
+{"func": "is_explicit_fork_child_row", "case": "reset-ignored", "session": {"id": "c", "parent_session_id": "p", "model_config": {"_reset_from": "p"}}}
+{"func": "is_explicit_fork_child_row", "case": "reset-included", "session": {"id": "c", "parent_session_id": "p", "model_config": {"_reset_from": "p"}}, "include_reset": true}
+{"func": "is_explicit_fork_child_row", "case": "plain-session", "session": {"id": "c", "parent_session_id": "p", "model_config": {"model": "x"}}}

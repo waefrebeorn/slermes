@@ -1,0 +1,17 @@
+{"func": "bots_inline_mention", "case": "default", "extra": {}}
+{"func": "bots_inline_mention", "case": "extra-string-off", "extra": {"bots_require_inline_mention": "false"}}
+{"func": "bots_inline_mention", "case": "env-off", "extra": {}, "env_name": "DISCORD_BOTS_REQUIRE_INLINE_MENTION", "env": "no"}
+{"func": "channel_keys_from", "case": "all", "channel": {"id": 5, "name": "gen", "parent_id": 7, "parent": {"name": "cat"}}}
+{"func": "channel_keys_from", "case": "parent-override", "channel": {"id": 5, "name": "gen", "parent_id": 7, "parent": {"name": "cat"}}, "parent_channel_id": "99"}
+{"func": "channel_keys_from", "case": "falsy-null", "channel": {"id": null, "name": null, "parent_id": null, "parent": null}}
+{"func": "channel_keys_from", "case": "blank-name", "channel": {"id": 5, "name": "  ", "parent_id": null, "parent": null}}
+{"func": "channel_keys", "case": "same-as-from", "channel": {"id": 5, "name": "gen", "parent_id": null, "parent": null}}
+{"func": "thread_require_mention", "case": "default", "extra": {}}
+{"func": "thread_require_mention", "case": "env", "extra": {}, "env_name": "DISCORD_THREAD_REQUIRE_MENTION", "env": "true"}
+{"func": "history_backfill", "case": "default", "extra": {}}
+{"func": "history_backfill", "case": "extra-off", "extra": {"history_backfill": false}}
+{"func": "history_backfill_limit", "case": "default", "extra": {}}
+{"func": "history_backfill_limit", "case": "extra", "extra": {"history_backfill_limit": 25}}
+{"func": "history_backfill_limit", "case": "junk-extra", "extra": {"history_backfill_limit": "x"}, "env_name": "DISCORD_HISTORY_BACKFILL_LIMIT", "env": "70"}
+{"func": "history_backfill_limit", "case": "env", "extra": {}, "env_name": "DISCORD_HISTORY_BACKFILL_LIMIT", "env": "80"}
+{"func": "history_backfill_limit", "case": "env-junk", "extra": {}, "env_name": "DISCORD_HISTORY_BACKFILL_LIMIT", "env": "nan?"}

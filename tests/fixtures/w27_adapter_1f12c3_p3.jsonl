@@ -1,0 +1,39 @@
+{"func": "classify_connect", "case": "login-failure", "type_name": "LoginFailure", "msg": "401 Unauthorized", "shown": null}
+{"func": "classify_connect", "case": "login-shown", "type_name": "LoginFailure", "msg": "401 Unauthorized", "shown": "proxy token hidden"}
+{"func": "classify_connect", "case": "intents-username", "type_name": "PrivilegedIntentsRequired", "msg": "x", "shown": null, "allowed_user_ids": ["alice"], "allowed_role_ids": []}
+{"func": "classify_connect", "case": "intents-roles", "type_name": "PrivilegedIntentsRequired", "msg": "x", "shown": null, "allowed_user_ids": ["123"], "allowed_role_ids": ["77"]}
+{"func": "classify_connect", "case": "unknown-type", "type_name": "RuntimeError", "msg": "boom", "shown": null}
+{"func": "classify_connect", "case": "falsy-empty", "type_name": "Exception", "msg": "", "shown": ""}
+{"func": "flush_deadline", "case": "env-unset", "env_name": "HERMES_GATEWAY_ADAPTER_DISCONNECT_TIMEOUT", "env": null}
+{"func": "flush_deadline", "case": "env-20", "env_name": "HERMES_GATEWAY_ADAPTER_DISCONNECT_TIMEOUT", "env": "20"}
+{"func": "flush_deadline", "case": "falsy-zero", "env_name": "HERMES_GATEWAY_ADAPTER_DISCONNECT_TIMEOUT", "env": "0"}
+{"func": "flush_deadline", "case": "boundary-junk", "env_name": "HERMES_GATEWAY_ADAPTER_DISCONNECT_TIMEOUT", "env": "abc"}
+{"func": "flush_deadline", "case": "env-small", "env_name": "HERMES_GATEWAY_ADAPTER_DISCONNECT_TIMEOUT", "env": "2"}
+{"func": "state_key", "case": "id", "app_id": "12345"}
+{"func": "state_key", "case": "falsy-null", "app_id": null}
+{"func": "state_key", "case": "falsy-zero", "app_id": 0}
+{"func": "state_key", "case": "falsy-empty", "app_id": ""}
+{"func": "state_key", "case": "number", "app_id": 42}
+{"func": "skip_reason", "case": "no-entry", "entry": null, "fingerprint": "fp", "now": 1000.0}
+{"func": "skip_reason", "case": "empty-entry", "entry": {}, "fingerprint": "fp", "now": 1000.0}
+{"func": "skip_reason", "case": "retry-future", "entry": {"retry_after_until": 4102444800.5}, "fingerprint": "fp", "now": 1000.0}
+{"func": "skip_reason", "case": "same-fingerprint-synced", "entry": {"fingerprint": "fp", "last_success_at": 900.0, "last_attempt_at": 800.0}, "fingerprint": "fp", "now": 1000.0}
+{"func": "skip_reason", "case": "stale-success", "entry": {"fingerprint": "fp", "last_success_at": 0, "last_attempt_at": 800.0}, "fingerprint": "fp", "now": 1000.0}
+{"func": "skip_reason", "case": "different-fingerprint", "entry": {"fingerprint": "other", "last_success_at": 900.0, "last_attempt_at": 800.0}, "fingerprint": "fp", "now": 1000.0}
+{"func": "mutation_interval", "case": "constant"}
+{"func": "extract_retry_after", "case": "float-clamped", "retry_after": 0.2}
+{"func": "extract_retry_after", "case": "string", "retry_after": "3"}
+{"func": "extract_retry_after", "case": "falsy-null", "retry_after": null}
+{"func": "extract_retry_after", "case": "headers-retry-after", "retry_after": null, "headers": {"Retry-After": "5"}}
+{"func": "extract_retry_after", "case": "headers-x-ratelimit", "retry_after": null, "headers": {"X-RateLimit-Reset-After": "7"}}
+{"func": "extract_retry_after", "case": "headers-empty", "retry_after": null, "headers": {}}
+{"func": "is_rate_limit", "case": "rate-limited", "type_name": "RateLimited", "retry_after": 2}
+{"func": "is_rate_limit", "case": "http-exception", "type_name": "HTTPException", "retry_after": 2}
+{"func": "is_rate_limit", "case": "falsy-zero", "type_name": "RateLimitError", "retry_after": 0}
+{"func": "is_rate_limit", "case": "no-retry-after", "type_name": "RateLimited", "retry_after": null}
+{"func": "unknown_interaction", "case": "code", "code": 10062}
+{"func": "unknown_interaction", "case": "code-string", "code": "10062"}
+{"func": "unknown_interaction", "case": "data-code", "code": null, "data_code": 10062}
+{"func": "unknown_interaction", "case": "status-404", "status": 404, "msg": "Unknown Interaction"}
+{"func": "unknown_interaction", "case": "status-404-other", "status": 404, "msg": "boom"}
+{"func": "unknown_interaction", "case": "falsy-code", "code": 400}

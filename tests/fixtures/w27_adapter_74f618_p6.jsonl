@@ -1,0 +1,50 @@
+{"func": "task_update_chunk", "case": "full", "task": {"id": "t1", "title": "Fetch page", "status": "complete"}}
+{"func": "task_update_chunk", "case": "unknown-status", "task": {"task_id": "t2", "title": "Work", "status": "weird"}}
+{"func": "task_update_chunk", "case": "missing-fields", "task": {}}
+{"func": "task_update_chunk", "case": "falsy-task", "task": null}
+{"func": "strip_stream_cursor", "case": "default-glyph", "text": "answer text ▍ "}
+{"func": "strip_stream_cursor", "case": "ellipsis", "text": "hold on…"}
+{"func": "strip_stream_cursor", "case": "custom-glyph", "text": "done###", "glyphs": ["###"]}
+{"func": "strip_stream_cursor", "case": "no-glyph", "text": "plain text"}
+{"func": "stream_key", "case": "thread-and-team", "chat_id": "C1", "metadata": {"thread_id": "1712345678.000100", "slack_team_id": "T1"}}
+{"func": "stream_key", "case": "thread-ts-only", "chat_id": "C1", "metadata": {"thread_ts": "1712345600.000200"}}
+{"func": "stream_key", "case": "no-thread", "chat_id": "C1", "metadata": {"user_id": "U1"}}
+{"func": "stream_key", "case": "flat-replies", "chat_id": "C1", "metadata": {"thread_id": "1712345678.000100"}, "reply_in_thread": false}
+{"func": "stream_key", "case": "scope-fallback", "chat_id": "C1", "metadata": {"thread_id": "1712345678.000100"}, "scope_id": "T7"}
+{"func": "stream_key", "case": "falsy-chat", "chat_id": "", "metadata": {"thread_id": "1.2"}}
+{"func": "mrkdwn_insensitive", "case": "markers", "text": "*Done:* _really_ ~old~  now"}
+{"func": "mrkdwn_insensitive", "case": "empty", "text": ""}
+{"func": "stream_relation", "case": "equal", "sent": "hello world", "text": "hello world"}
+{"func": "stream_relation", "case": "extends", "sent": "hello", "text": "hello there"}
+{"func": "stream_relation", "case": "leading-space", "sent": "final answer", "text": "  final answer and more"}
+{"func": "stream_relation", "case": "unrelated", "sent": "draft one", "text": "totally different"}
+{"func": "stream_relation", "case": "empty-sent", "sent": "  ", "text": "anything"}
+{"func": "default_status_text", "case": "no-start", "started": null, "now": 1000.0}
+{"func": "default_status_text", "case": "under-30", "started": 970.5, "now": 1000.0}
+{"func": "default_status_text", "case": "seconds", "started": 955.0, "now": 1000.0}
+{"func": "default_status_text", "case": "minutes", "started": 875.0, "now": 1000.0}
+{"func": "cron_continuable_surface", "case": "in-channel-upper", "raw": " IN_CHANNEL "}
+{"func": "cron_continuable_surface", "case": "thread", "raw": "thread"}
+{"func": "cron_continuable_surface", "case": "null", "raw": null}
+{"func": "slack_allow_bots", "case": "all", "raw": "ALL"}
+{"func": "slack_allow_bots", "case": "unknown", "raw": " Mentors "}
+{"func": "slack_allow_bots", "case": "null", "raw": null}
+{"func": "api_human_users", "case": "list", "raw": ["U1", " U2 ", "", "U1"]}
+{"func": "api_human_users", "case": "csv", "raw": "U3, U4 ,"}
+{"func": "api_human_users", "case": "null-raw", "raw": null}
+{"func": "event_declares_bot_sender", "case": "bot-id", "event": {"bot_id": "B1", "user": "U1"}, "human_users": []}
+{"func": "event_declares_bot_sender", "case": "bot-subtype", "event": {"subtype": "bot_message"}, "human_users": []}
+{"func": "event_declares_bot_sender", "case": "app-no-client-msg", "event": {"app_id": "A1", "user": "U2"}, "human_users": []}
+{"func": "event_declares_bot_sender", "case": "app-allowlisted-human", "event": {"app_id": "A1", "user": "U2"}, "human_users": ["U2"]}
+{"func": "event_declares_bot_sender", "case": "app-with-client-msg", "event": {"app_id": "A1", "user": "U2", "client_msg_id": "c1"}, "human_users": []}
+{"func": "event_declares_bot_sender", "case": "profile-is-bot", "event": {"user_profile": {"is_bot": true}}, "human_users": []}
+{"func": "event_declares_bot_sender", "case": "plain-human", "event": {"user": "U3"}, "human_users": []}
+{"func": "format_tool_preview", "case": "backtick", "preview_text": "cat `x` now"}
+{"func": "format_tool_preview", "case": "empty", "preview_text": ""}
+{"func": "markdown_block_payload", "case": "normal", "content": "**bold** text"}
+{"func": "markdown_block_payload", "case": "blank", "content": "   "}
+{"func": "markdown_block_payload", "case": "over-cap", "content": "abcdefghij", "max_chars": 5}
+{"func": "markdown_block_payload", "case": "empty", "content": ""}
+{"func": "append_feedback_block", "case": "enabled", "blocks": [{"type": "section"}], "enabled": true}
+{"func": "append_feedback_block", "case": "disabled", "blocks": [{"type": "section"}], "enabled": false}
+{"func": "append_feedback_block", "case": "null-blocks", "blocks": null, "enabled": true}

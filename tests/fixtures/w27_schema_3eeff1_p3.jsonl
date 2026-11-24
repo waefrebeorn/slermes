@@ -1,0 +1,69 @@
+{"func": "is_trigram_unavailable_error", "case": "trigram-exact", "message": "no such tokenizer: trigram"}
+{"func": "is_trigram_unavailable_error", "case": "trigram-upper", "message": "NO SUCH TOKENIZER: TRIGRAM"}
+{"func": "is_trigram_unavailable_error", "case": "trigram-in-message", "message": "unable to use function: no such tokenizer: trigram"}
+{"func": "is_trigram_unavailable_error", "case": "fts5-module", "message": "no such module: fts5"}
+{"func": "is_trigram_unavailable_error", "case": "fts5-module-case", "message": "No Such Module: FTS5"}
+{"func": "is_trigram_unavailable_error", "case": "fts4-module", "message": "no such module: fts4"}
+{"func": "is_trigram_unavailable_error", "case": "decode-utf8", "message": "Could not decode to UTF-8 column 'content' with text"}
+{"func": "is_trigram_unavailable_error", "case": "lock", "message": "database is locked"}
+{"func": "is_trigram_unavailable_error", "case": "empty", "message": ""}
+{"func": "is_fts5_unavailable_error", "case": "fts5-module", "message": "no such module: fts5"}
+{"func": "is_fts5_unavailable_error", "case": "trigram-only", "message": "no such tokenizer: trigram"}
+{"func": "is_fts5_unavailable_error", "case": "trigram-upper", "message": "no such tokenizer: TRIGRAM"}
+{"func": "is_fts5_unavailable_error", "case": "fts4-module", "message": "no such module: fts4"}
+{"func": "is_fts5_unavailable_error", "case": "lock", "message": "database is locked"}
+{"func": "is_fts5_unavailable_error", "case": "empty", "message": ""}
+{"func": "is_fts5_unavailable_error", "case": "module-word-elsewhere", "message": "no such module: json1 while fts5 works"}
+{"func": "db_has_legacy_inline_fts", "case": "absent", "table_sql": null}
+{"func": "db_has_legacy_inline_fts", "case": "inline-v11", "table_sql": "CREATE VIRTUAL TABLE messages_fts USING fts5(content, tokenize='unicode61')"}
+{"func": "db_has_legacy_inline_fts", "case": "inline-v22", "table_sql": "CREATE VIRTUAL TABLE messages_fts USING fts5(content, tokenize=\"porter unicode61\")"}
+{"func": "db_has_legacy_inline_fts", "case": "external-v23", "table_sql": "CREATE VIRTUAL TABLE messages_fts USING fts5(\n    content,\n    tool_name,\n    tool_calls,\n    content='messages_fts_src',\n    tokenize='unicode61'\n)"}
+{"func": "db_has_legacy_inline_fts", "case": "empty", "table_sql": ""}
+{"func": "db_has_trigram_tool_calls_projection", "case": "absent", "table_sql": null}
+{"func": "db_has_trigram_tool_calls_projection", "case": "v1-tool-calls", "table_sql": "CREATE VIRTUAL TABLE messages_fts_trigram USING fts5(\n    content,\n    tool_calls,\n    content='messages'\n)"}
+{"func": "db_has_trigram_tool_calls_projection", "case": "v1-tool-calls-upper", "table_sql": "CREATE VIRTUAL TABLE messages_fts_trigram USING fts5(\n    content,\n    TOOL_CALLS,\n    content='messages'\n)"}
+{"func": "db_has_trigram_tool_calls_projection", "case": "v3", "table_sql": "CREATE VIRTUAL TABLE messages_fts_trigram USING fts5(\n    content,\n    tool_name,\n    content='messages_fts_trigram_src'\n)"}
+{"func": "db_has_trigram_tool_calls_projection", "case": "empty", "table_sql": ""}
+{"func": "retired_cjk_index_present", "case": "none", "names": []}
+{"func": "retired_cjk_index_present", "case": "trigger", "names": ["messages_fts_cjk_insert"]}
+{"func": "retired_cjk_index_present", "case": "update-trigger", "names": ["messages_fts_cjk_update"]}
+{"func": "retired_cjk_index_present", "case": "view", "names": ["messages_fts_cjk_src"]}
+{"func": "retired_cjk_index_present", "case": "vtable", "names": ["messages_fts_cjk"]}
+{"func": "retired_cjk_index_present", "case": "shadow-docsize", "names": ["messages_fts_cjk_docsize"]}
+{"func": "retired_cjk_index_present", "case": "shadow-config", "names": ["messages_fts_cjk_config"]}
+{"func": "retired_cjk_index_present", "case": "case-mismatch", "names": ["MESSAGES_FTS_CJK"]}
+{"func": "retired_cjk_index_present", "case": "near-miss", "names": ["messages_fts_cjk2"]}
+{"func": "retired_cjk_index_present", "case": "unrelated", "names": ["messages", "sessions", "__STRUCTURED__"]}
+{"func": "retired_cjk_index_present", "case": "one-of-many", "names": ["x", "messages_fts_cjk_idx", "y"]}
+{"func": "title_rank", "case": "null", "source": null}
+{"func": "title_rank", "case": "derived", "source": "derived"}
+{"func": "title_rank", "case": "llm", "source": "llm"}
+{"func": "title_rank", "case": "user", "source": "user"}
+{"func": "title_rank", "case": "unknown", "source": "unknown"}
+{"func": "title_rank", "case": "empty", "source": ""}
+{"func": "title_rank", "case": "derived-upper", "source": "Derived"}
+{"func": "has_fts_trash", "case": "none", "tables": []}
+{"func": "has_fts_trash", "case": "plain", "tables": ["messages", "sessions", "__STRUCTURED__"]}
+{"func": "has_fts_trash", "case": "one-trash", "tables": ["messages", "fts_v22_trash_messages_fts_data"]}
+{"func": "has_fts_trash", "case": "all-trash", "tables": ["fts_v22_trash_messages_fts", "fts_v22_trash_messages_fts_data"]}
+{"func": "has_fts_trash", "case": "upper-prefix", "tables": ["FTS_V22_TRASH_messages_fts"]}
+{"func": "has_fts_trash", "case": "no-trailing-prefix", "tables": ["fts_v22_trash"]}
+{"func": "has_fts_trash", "case": "underscore-swapped", "tables": ["ftsXv22XtrashXmessages_fts"]}
+{"func": "has_fts_trash", "case": "other-prefix", "tables": ["fts_v23_trash_messages_fts"]}
+{"func": "next_title_in_lineage", "case": "no-rows", "base": "my session", "titles": []}
+{"func": "next_title_in_lineage", "case": "base-present", "base": "my session", "titles": ["my session"]}
+{"func": "next_title_in_lineage", "case": "base-and-two", "base": "my session", "titles": ["my session", "my session #2"]}
+{"func": "next_title_in_lineage", "case": "numbered-input", "base": "my session #2", "titles": ["my session", "my session #2"]}
+{"func": "next_title_in_lineage", "case": "numbered-input-no-rows", "base": "my session #2", "titles": []}
+{"func": "next_title_in_lineage", "case": "gap", "base": "my session", "titles": ["my session", "my session #7"]}
+{"func": "next_title_in_lineage", "case": "percent-in-base", "base": "50% off", "titles": ["50% off", "50% off #2", "500 off #9"]}
+{"func": "next_title_in_lineage", "case": "underscore-in-base", "base": "run_1", "titles": ["run_1", "run_1 #3", "runX1 #8"]}
+{"func": "next_title_in_lineage", "case": "backslash-in-base", "base": "a\\b", "titles": ["a\\b", "a\\b #4"]}
+{"func": "next_title_in_lineage", "case": "case-insensitive-like", "base": "My Session", "titles": ["MY SESSION #5"]}
+{"func": "next_title_in_lineage", "case": "unrelated", "base": "my session", "titles": ["other", "other #3"]}
+{"func": "next_title_in_lineage", "case": "empty-base", "base": "", "titles": ["", " #5"]}
+{"func": "next_title_in_lineage", "case": "suffix-without-digits", "base": "x", "titles": ["x #", "x #12"]}
+{"func": "next_title_in_lineage", "case": "double-suffix", "base": "a #2 #3", "titles": ["a #2 #3"]}
+{"func": "next_title_in_lineage", "case": "trailing-space", "base": "x ", "titles": ["x ", "x  #2"]}
+{"func": "next_title_in_lineage", "case": "nested-numbers", "base": "design", "titles": ["design #9", "design #10", "design #2"]}
+{"func": "constants", "case": "title-source-constants"}

@@ -1,0 +1,16 @@
+{"func": "constants", "case": "all"}
+{"func": "model_picker_reactions", "case": "table"}
+{"func": "choice_picker_reactions", "case": "table"}
+{"func": "approval_reaction_map", "case": "table"}
+{"func": "yaml_bridge", "case": "table"}
+{"func": "image_exts", "case": "set"}
+{"func": "media_exts", "case": "set"}
+{"func": "txn_id", "case": "normal", "ms": 1795508639004, "rand_hex": "deadbeef"}
+{"func": "txn_id", "case": "zero", "ms": 0, "rand_hex": "00000000"}
+{"func": "txn_id", "case": "empty_hex", "ms": 123, "rand_hex": ""}
+{"func": "duplicate_events", "case": "dedup", "ids": ["$a", "$a", "$b", "$c", "$d", "$a"]}
+{"func": "duplicate_events", "case": "skips_falsy", "ids": ["", "$a", "", "$a"]}
+{"func": "duplicate_events", "case": "empty", "ids": []}
+{"func": "duplicate_events", "case": "null", "ids": null}
+{"func": "duplicate_events", "case": "single", "ids": ["$only"]}
+{"func": "duplicate_events", "case": "all_same", "ids": ["$x", "$x", "$x", "$x"]}

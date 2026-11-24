@@ -1,0 +1,31 @@
+{"func": "encode_display_metadata", "case": "dict", "display_metadata": {"task_count": 2, "tags": ["a", "b"]}}
+{"func": "encode_display_metadata", "case": "pre-serialized", "display_metadata": "{ \"z\": true, \"n\": 1 }"}
+{"func": "encode_display_metadata", "case": "none", "display_metadata": null}
+{"func": "encode_display_metadata", "case": "empty-dict-falsy", "display_metadata": {}}
+{"func": "encode_display_metadata", "case": "empty-string-falsy", "display_metadata": ""}
+{"func": "encode_display_metadata", "case": "number-type-mismatch", "display_metadata": 7}
+{"func": "encode_display_metadata", "case": "bad-json-string", "display_metadata": "{not json"}
+{"func": "encode_display_metadata", "case": "json-string-not-object", "display_metadata": "[1, 2]"}
+{"func": "encode_display_metadata", "case": "unicode", "display_metadata": {"emoji": "👍", "text": "café"}}
+{"func": "decode_display_metadata", "case": "dict", "raw": {"reactions": [{"emoji": "x", "author": "user"}]}}
+{"func": "decode_display_metadata", "case": "json-text", "raw": "{\"task_count\": 3}"}
+{"func": "decode_display_metadata", "case": "double-encoded", "raw": "\"{\\\"legacy\\\": 1}\""}
+{"func": "decode_display_metadata", "case": "malformed", "raw": "{oops"}
+{"func": "decode_display_metadata", "case": "null", "raw": null}
+{"func": "decode_display_metadata", "case": "json-text-list-type-mismatch", "raw": "[1, 2, 3]"}
+{"func": "reasoning_json_text", "case": "list", "value": [{"type": "summary", "text": "s"}]}
+{"func": "reasoning_json_text", "case": "string-verbatim", "value": "raw reasoning text"}
+{"func": "reasoning_json_text", "case": "empty-falsy", "value": ""}
+{"func": "reasoning_json_text", "case": "empty-list-falsy", "value": []}
+{"func": "decoded_repair_row", "case": "user-plain", "row": {"id": 4, "role": "user", "content": "hello", "tool_call_id": null, "tool_name": null, "effect_disposition": null, "token_count": 5, "finish_reason": null, "tool_calls": null, "platform_message_id": null, "observed": 0, "_compressed_summary": 0, "api_content": null, "display_kind": null, "display_metadata": null, "message_uid": null, "tool_call_uids": null, "tool_call_uid": null, "absorbed_message_uids": null, "reasoning": null, "reasoning_content": null, "reasoning_details": null, "codex_reasoning_items": null, "codex_message_items": null}}
+{"func": "decoded_repair_row", "case": "assistant-reasoning", "row": {"role": "assistant", "content": "answer", "finish_reason": "stop", "reasoning": "why", "reasoning_content": null, "reasoning_details": "[{\"type\": \"think\"}]", "codex_reasoning_items": "[]", "codex_message_items": null, "tool_calls": "[{\"id\": \"c1\", \"type\": \"function\"}]", "platform_message_id": "pm-9", "observed": 1, "_compressed_summary": 1, "display_metadata": "{\"model_only\": true}", "tool_call_id": null, "tool_name": null, "effect_disposition": null, "token_count": null, "api_content": null, "display_kind": null, "message_uid": null, "tool_call_uids": null, "tool_call_uid": null, "absorbed_message_uids": null}}
+{"func": "decoded_repair_row", "case": "tool-bad-toolcalls", "row": {"role": "tool", "content": "out", "tool_call_id": "c1", "tool_name": "grep", "tool_calls": "{bad", "message_uid": "uid-1", "tool_call_uids": "{\"c1\": \"u1\"}", "tool_call_uid": "u1", "absorbed_message_uids": "[\"a\", \"b\", \"a\"]", "effect_disposition": null, "token_count": null, "finish_reason": null, "platform_message_id": null, "observed": null, "_compressed_summary": null, "api_content": null, "display_kind": null, "display_metadata": null, "reasoning": null, "reasoning_content": null, "reasoning_details": null, "codex_reasoning_items": null, "codex_message_items": null}}
+{"func": "bump_session_counters", "case": "unit-toolcalls", "session_id": "s1", "inserted": 1, "tool_calls": 2, "unit": true}
+{"func": "bump_session_counters", "case": "unit-plain", "session_id": "s1", "inserted": 1, "tool_calls": 0, "unit": true}
+{"func": "bump_session_counters", "case": "bulk-toolcalls", "session_id": "s2", "inserted": 5, "tool_calls": 3, "unit": false}
+{"func": "bump_session_counters", "case": "bulk-no-toolcalls", "session_id": "s2", "inserted": 4, "tool_calls": 0, "unit": false}
+{"func": "bump_session_counters", "case": "nothing-to-bump", "session_id": "s3", "inserted": 0, "tool_calls": 0, "unit": false}
+{"func": "reaction_list", "case": "mixed", "meta": {"reactions": [{"emoji": "x", "author": "user"}, "junk", {"emoji": "y", "author": "peer"}], "other": 1}}
+{"func": "reaction_list", "case": "no-reactions", "meta": {"delivery": "ok"}}
+{"func": "reaction_list", "case": "null-meta", "meta": null}
+{"func": "reaction_list", "case": "reactions-not-list", "meta": {"reactions": {"emoji": "x"}}}

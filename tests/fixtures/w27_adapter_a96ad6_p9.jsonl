@@ -1,0 +1,40 @@
+{"func":"rows_of_two","case":"empty","buttons":[]}
+{"func":"rows_of_two","case":"one","buttons":["a"]}
+{"func":"rows_of_two","case":"four","buttons":["a","b","c","d"]}
+{"func":"rows_of_two","case":"five","buttons":["a","b","c","d","e"]}
+{"func":"rows_of_two","case":"null","buttons":null}
+{"func":"ea_escape","case":"tags","text":"<b>A & B</b>"}
+{"func":"ea_escape","case":"quotes","text":"say \"hi\" and 'bye'"}
+{"func":"ea_escape","case":"empty","text":""}
+{"func":"missing_media_path_error","case":"plain","label":"Photo","path":"/tmp/a.png"}
+{"func":"missing_media_path_error","case":"workspace","label":"Video","path":"/workspace/out/x.mp4"}
+{"func":"missing_media_path_error","case":"output","label":"Doc","path":"/output/y.pdf"}
+{"func":"missing_media_path_error","case":"outputs","label":"Doc","path":"/outputs/z.pdf"}
+{"func":"missing_media_path_error","case":"prefix-lookalike","label":"Doc","path":"/workspacex/z.pdf"}
+{"func":"media_too_large_note","case":"mb","label":"photo","file_size":5242880,"max_bytes":20971520}
+{"func":"media_too_large_note","case":"small-limit","label":"photo","file_size":2097152,"max_bytes":1048576}
+{"func":"media_too_large_note","case":"numeric-string","label":"doc","file_size":"3145728","max_bytes":20971520}
+{"func":"media_too_large_note","case":"junk-string","label":"doc","file_size":"big","max_bytes":20971520}
+{"func":"media_too_large_note","case":"null-size","label":"doc","file_size":null,"max_bytes":20971520}
+{"func":"media_too_large_note","case":"bool-size","label":"doc","file_size":true,"max_bytes":20971520}
+{"func":"media_too_large_note","case":"zero-limit-floor","label":"doc","file_size":10,"max_bytes":0}
+{"func":"int_or_zero","case":"int","value":42}
+{"func":"int_or_zero","case":"numeric-string","value":" 12 "}
+{"func":"int_or_zero","case":"float","value":1.9}
+{"func":"int_or_zero","case":"negative-string","value":"-3"}
+{"func":"int_or_zero","case":"junk","value":"1.5"}
+{"func":"int_or_zero","case":"bool","value":true}
+{"func":"int_or_zero","case":"null","value":null}
+{"func":"int_or_zero","case":"empty-string","value":""}
+{"func":"int_or_zero","case":"list","value":[1]}
+{"func":"media_size_allowed","case":"under","source":{"file_size":1048576},"label":"photo","max_doc_bytes":20971520}
+{"func":"media_size_allowed","case":"over","source":{"file_size":31457280},"label":"photo","max_doc_bytes":20971520}
+{"func":"media_size_allowed","case":"zero-size","source":{"file_size":0},"label":"photo","max_doc_bytes":20971520}
+{"func":"media_size_allowed","case":"no-size","source":{},"label":"photo","max_doc_bytes":20971520}
+{"func":"media_size_allowed","case":"exactly-at-limit","source":{"file_size":20971520},"label":"photo","max_doc_bytes":20971520}
+{"func":"media_size_allowed","case":"null-source","source":null,"label":"photo","max_doc_bytes":20971520}
+{"func":"media_size_allowed","case":"local-api-limit","source":{"file_size":104857600},"label":"video","max_doc_bytes":2147483648}
+{"func":"caption_1024","case":"short","caption":"hello"}
+{"func":"caption_1024","case":"null","caption":null}
+{"func":"caption_1024","case":"empty","caption":""}
+{"func":"caption_1024","case":"long","caption":"yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"}

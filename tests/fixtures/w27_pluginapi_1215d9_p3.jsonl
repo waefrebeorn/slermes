@@ -1,0 +1,38 @@
+{"func":"cap","case":"truncates","s":"  hello world  ","n":5}
+{"func":"cap","case":"fits","s":"short","n":400}
+{"func":"cap","case":"none","s":null,"n":10}
+{"func":"cap","case":"unicode","s":"héllo wörld","n":4}
+{"func":"cap","case":"blank","s":"   ","n":5}
+{"func":"cap","case":"zero-budget","s":"abcdef","n":0}
+{"func":"cap","case":"exact-fit","s":"abcde","n":5}
+{"func":"estimate","case":"blank-title","title":"   ","body":"x","raw":"{}","model":"m1"}
+{"func":"estimate","case":"aux-missing","title":"Do it","body":null,"raw":"{}","aux":false}
+{"func":"estimate","case":"llm-raises","title":"Do it","body":null,"raw":"{}","llm_error":"RuntimeError"}
+{"func":"estimate","case":"strict-json","title":"Do it","body":"details","raw":"{\"est_tokens\": 1200, \"complexity\": \"m\", \"rationale\": \" ok \"}","model":"m1"}
+{"func":"estimate","case":"fenced-json","title":"Do it","body":null,"raw":"```json\n{\"est_tokens\": 300, \"complexity\": \"L\", \"rationale\": \"broad\"}\n```","model":"m2"}
+{"func":"estimate","case":"unparseable","title":"Do it","body":null,"raw":"no idea","model":"m1"}
+{"func":"estimate","case":"junk-fields","title":"Do it","body":null,"raw":"here you go: {\"est_tokens\": \"nope\", \"complexity\": \"XL\"} thanks","model":"m1"}
+{"func":"estimate","case":"partial","title":"Do it","body":null,"raw":"{\"est_tokens\": 5}","model":null}
+{"func":"estimate","case":"float-tokens","title":"Do it","body":null,"raw":"{\"est_tokens\": 12.9, \"complexity\": \"s\"}","model":"m3"}
+{"func":"config_shape","case":"full","config":{"dashboard":{"kanban":{"default_tenant":"acme","lane_by_profile":0,"include_archived_by_default":true,"render_markdown":false}}}}
+{"func":"config_shape","case":"empty","config":{}}
+{"func":"config_shape","case":"no-dashboard","config":{"kanban":{"default_tenant":"x"}}}
+{"func":"config_shape","case":"explicit-nulls","config":{"dashboard":{"kanban":{"default_tenant":null,"lane_by_profile":null,"include_archived_by_default":"yes","render_markdown":0}}}}
+{"func":"home_channels","case":"sorted-with-defaults","platforms":[{"value":"telegram","home_channel":{"chat_id":"c1","thread_id":null,"name":null}},{"value":"discord","home_channel":{"chat_id":"c2","thread_id":"th","name":"Den"}},{"value":"slack","home_channel":null}]}
+{"func":"home_channels","case":"none","platforms":[]}
+{"func":"home_for_platform","case":"found","homes":[{"platform":"telegram","chat_id":"c1","thread_id":"","name":"Home"},{"platform":"discord","chat_id":"c2","thread_id":"th","name":"Den"}],"platform":"discord","detail":"nope"}
+{"func":"home_for_platform","case":"missing","homes":[{"platform":"telegram","chat_id":"c1","thread_id":"","name":"Home"}],"platform":"slack","detail":"No home channel configured for platform 'slack'."}
+{"func":"home_channels_subscribed","case":"with-task","homes":[{"platform":"telegram","chat_id":"c1","thread_id":"","name":"Home"},{"platform":"discord","chat_id":"c2","thread_id":"th","name":"Den"}],"task_id":"t1","subs":[{"platform":"telegram","chat_id":"c1","thread_id":null},{"platform":"discord","chat_id":"c2","thread_id":"th"}]}
+{"func":"home_channels_subscribed","case":"no-task","homes":[{"platform":"telegram","chat_id":"c1","thread_id":"","name":"Home"}],"task_id":null,"subs":[{"platform":"telegram","chat_id":"c1","thread_id":null}]}
+{"func":"home_channels_subscribed","case":"partial-match","homes":[{"platform":"telegram","chat_id":"c1","thread_id":"","name":"Home"},{"platform":"discord","chat_id":"c2","thread_id":"other","name":"Den"}],"task_id":"t2","subs":[{"platform":"discord","chat_id":"c2","thread_id":"th"}]}
+{"func":"active_profile","case":"named","profile":"alice_2"}
+{"func":"active_profile","case":"empty-is-default","profile":""}
+{"func":"active_profile","case":"registry-raises","profile":"alice","raise":true}
+{"func":"model_options","case":"filters-and-falls-back","payload":{"providers":[{"slug":"openai","label":null,"models":["gpt-5"]},{"slug":"anthropic","models":[]},{"slug":"local","label":"Local","models":["llama"]}]}}
+{"func":"model_options","case":"catalog-raises","raise":true}
+{"func":"model_options","case":"no-providers","payload":{}}
+{"func":"diagnostics_list","case":"severity-filter","severity":"error","diags_by_task":{"t1":[{"kind":"a","severity":"warning","last_seen_at":10}],"t2":[{"kind":"b","severity":"critical","last_seen_at":5}],"t3":[{"kind":"c","severity":"error","last_seen_at":null}]}}
+{"func":"diagnostics_list","case":"no-filter-sorted","severity":null,"diags_by_task":{"t1":[{"kind":"a","severity":"warning","last_seen_at":10}],"t2":[{"kind":"b","severity":"critical","last_seen_at":5}],"t3":[{"kind":"c","severity":"error","last_seen_at":null}],"t4":[{"kind":"d","severity":"critical","last_seen_at":99}]},"rows":{"t2":{"title":"Two","status":"running","assignee":"bob"}}}
+{"func":"diagnostics_list","case":"empty","severity":null,"diags_by_task":{}}
+{"func":"diagnostics_list","case":"bogus-severity-drops-all","severity":"loud","diags_by_task":{"t1":[{"kind":"a","severity":"critical"}]}}
+{"func":"diagnostics_list","case":"tie-keeps-order","severity":null,"diags_by_task":{"t1":[{"kind":"a","severity":"error","last_seen_at":7}],"t2":[{"kind":"b","severity":"error","last_seen_at":7}],"t3":[{"kind":"c","severity":"error","last_seen_at":7}]}}

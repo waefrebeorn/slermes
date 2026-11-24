@@ -1,0 +1,28 @@
+{"func": "voice_fx", "case": "defaults", "fx": {}}
+{"func": "voice_fx", "case": "override", "fx": {"enabled": true, "lead_silence_ms": 50, "ambient_gain": 0.5}}
+{"func": "voice_fx", "case": "null-skipped", "fx": {"enabled": null, "ack_phrases": ["hi"]}}
+{"func": "voice_fx", "case": "unknown-key", "fx": {"nope": 1}}
+{"func": "int_config", "case": "value", "cfg": {"voice_playback_timeout_seconds": "9"}, "key": "voice_playback_timeout_seconds", "default": 120, "minimum": 1}
+{"func": "int_config", "case": "junk-default", "cfg": {"k": "abc"}, "key": "k", "default": 7, "minimum": 0}
+{"func": "int_config", "case": "clamp-min", "cfg": {"k": 3}, "key": "k", "default": 7, "minimum": 5}
+{"func": "int_config", "case": "falsy-absent", "cfg": {}, "key": "k", "default": 7, "minimum": 0}
+{"func": "voice_timeout", "case": "default", "cfg": {}}
+{"func": "voice_timeout", "case": "clamp", "cfg": {"voice_channel_inactivity_timeout_seconds": -30}}
+{"func": "playback_timeout", "case": "clamp", "cfg": {"voice_playback_timeout_seconds": 0}}
+{"func": "voice_timeout_limit", "case": "stored", "stored": 45}
+{"func": "voice_timeout_limit", "case": "string", "stored": "45"}
+{"func": "playback_timeout_limit", "case": "stored", "stored": 0}
+{"func": "mixer_active", "case": "active", "mixers": {"42": {"x": 1}}, "guild_id": 42}
+{"func": "mixer_active", "case": "null-value", "mixers": {"42": null}, "guild_id": 42}
+{"func": "mixer_active", "case": "falsy-empty", "mixers": {}, "guild_id": 42}
+{"func": "mixer_active", "case": "other-guild", "mixers": {"1": {"x": 1}}, "guild_id": 42}
+{"func": "channel_ids_allowed", "case": "intersect", "channel_ids": ["1", "2"], "allowed": ["2", "3"]}
+{"func": "channel_ids_allowed", "case": "wildcard", "channel_ids": ["1"], "allowed": ["*"]}
+{"func": "channel_ids_allowed", "case": "falsy-empty-ids", "channel_ids": [], "allowed": ["1"]}
+{"func": "channel_ids_allowed", "case": "falsy-empty-allowed", "channel_ids": ["1"], "allowed": []}
+{"func": "warn_fail_closed", "case": "warns", "state": {}}
+{"func": "warn_fail_closed", "case": "already-warned", "state": {"warned": true}}
+{"func": "warn_fail_closed", "case": "has-users", "state": {"allowed_users": ["1"]}}
+{"func": "warn_fail_closed", "case": "has-channels", "state": {"allowed_channels": ["1"]}}
+{"func": "warn_fail_closed", "case": "allow-all", "state": {"discord_allow_all": true}}
+{"func": "warn_fail_closed", "case": "gateway-allow-all", "state": {"gateway_allow_all": true}}

@@ -1,0 +1,18 @@
+{"func": "post_kwargs", "case": "plain", "chat_id": "C1", "text": "hello", "unfurl_kwargs": {}, "thread_id": null}
+{"func": "post_kwargs", "case": "unfurl-and-thread", "chat_id": "C1", "text": "hi", "unfurl_kwargs": {"unfurl_links": true, "unfurl_media": false}, "thread_id": "1.2"}
+{"func": "post_kwargs", "case": "non-str-text", "chat_id": "C2", "text": 5, "unfurl_kwargs": null, "thread_id": ""}
+{"func": "bot_tokens", "case": "csv", "raw_token": "xoxb-1, xoxb-2 ,", "saved": null}
+{"func": "bot_tokens", "case": "csv-plus-saved", "raw_token": "xoxb-1", "saved": {"T1": {"token": "xoxb-9", "team_name": "Acme"}, "T2": {"token": "xoxb-8"}}}
+{"func": "bot_tokens", "case": "saved-dup", "raw_token": "xoxb-1", "saved": {"T1": {"token": "xoxb-1"}}}
+{"func": "bot_tokens", "case": "saved-junk-entry", "raw_token": "", "saved": {"T1": "not-a-dict", "T2": {"token": ""}}}
+{"func": "bot_tokens", "case": "empty", "raw_token": "", "saved": null}
+{"func": "format_mrkdwn", "case": "bold", "text": "**bold** text"}
+{"func": "format_mrkdwn", "case": "empty", "text": ""}
+{"func": "format_mrkdwn", "case": "link", "text": "[docs](https://x.test)"}
+{"func": "model_picker_notice", "case": "constant"}
+{"func": "trim_dm_cache", "case": "under-cap", "mapping": {"a": "D1", "b": "D2"}, "max_size": 5}
+{"func": "trim_dm_cache", "case": "over-cap", "mapping": {"a": "D1", "b": "D2", "c": "D3", "d": "D4"}, "max_size": 2}
+{"func": "trim_dm_cache", "case": "empty", "mapping": {}, "max_size": 0}
+{"func": "is_connected", "case": "token", "token": "xoxb-1"}
+{"func": "is_connected", "case": "blank", "token": "   "}
+{"func": "is_connected", "case": "null", "token": null}
