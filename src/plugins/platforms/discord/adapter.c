@@ -2374,15 +2374,22 @@ json_t *w27_adapter_1f12c3_p11_is_bot_tag_debounce_continuation(const json_t *de
     return json_bool(true);
 }
 
-json_t *w27_adapter_1f12c3_p11_discord_free_response_channels(const json_t *extra, const json_t *env_raw)
+json_t *w27_adapter_1f12c3_p11_discord_free_response_channels(const json_t *extra,
+                                                              const json_t *env_name,
+                                                              const json_t *env_raw)
 {
+    static const char *const CANONICAL = "DISCORD_FREE_RESPONSE_CHANNELS";
     json_t *raw = NULL;
     json_t *out;
+    const char *nm = w27a1f_is_str(env_name) ? env_name->str_val : NULL;
     if (w27a1f_is_obj(extra) && json_has(extra, "free_response_channels"))
         raw = json_copy(json_obj_get(extra, "free_response_channels"));
     if (w27a1f_is_null(raw)) {
         json_free(raw);
-        raw = env_raw ? json_copy(env_raw) : json_null();
+        /* _gate_env looks the setting up by its own constant; a value filed under a
+         * different name is not this setting. */
+        if (nm && env_raw && strcmp(nm, CANONICAL) != 0) raw = json_null();
+        else raw = env_raw ? json_copy(env_raw) : json_null();
     }
     out = w27_adapter_1f12c3_p9_gate_csv_set(raw);
     json_free(raw);

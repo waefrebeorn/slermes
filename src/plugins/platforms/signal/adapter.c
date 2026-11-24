@@ -1296,7 +1296,11 @@ json_t *w29_adapter_d36d4e_p3_reaction_params(const json_t *account, const json_
 /* image error text needs the detail value for download/oversize */
 json_t *w29_adapter_d36d4e_p3_image_error_text(const json_t *reason, const json_t *detail) {
     const char *r = (reason && reason->type == JSON_STRING) ? reason->str_val : NULL;
+    /* `if reason:` guards the whole error map: an EMPTY reason skips it and
+     * send_image goes on to _send_file with its own failure text (the KeyError arm
+     * is only for a non-empty reason the map does not know). */
     if (!r) return json_null();
+    if (!r[0]) return json_string("RPC send with attachment failed");
     if (!strcmp(r, "missing")) return json_string("Image file not found");
     if (!strcmp(r, "download")) {
         char *d = py_str(detail);

@@ -31,7 +31,7 @@ int main(void) {
             out = w27_adapter_1f12c3_p11_is_bot_tag_debounce_continuation(json_obj_get(in, "delay"), json_obj_get(in, "automated"), json_obj_get(in, "until"), json_obj_get(in, "now"), json_obj_get(in, "window"));
         }
         else if (!strcmp(func, "free_response_channels")) {
-            out = w27_adapter_1f12c3_p11_discord_free_response_channels(json_obj_get(in, "extra"), json_obj_get(in, "env"));
+            out = w27_adapter_1f12c3_p11_discord_free_response_channels(json_obj_get(in, "extra"), json_obj_get(in, "env_name"), json_obj_get(in, "env"));
         }
         else if (!strcmp(func, "raw_mentions")) {
             out = w27_adapter_1f12c3_p11_raw_mentioned_user_ids(json_obj_get(in, "content"));

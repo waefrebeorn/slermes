@@ -1,0 +1,5 @@
+# Documented seam: the clock behind _parse_timestamp's fallback. The oracle injects a
+# fixed datetime.now(); the harness receives that instant as `now`. Perturbing it to
+# "" asks the port to answer a clock it was deliberately not given, so the key is
+# left alone and `used_now` is still exercised by unparseable ts values.
+parse_timestamp:now
