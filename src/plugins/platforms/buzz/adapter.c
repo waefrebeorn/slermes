@@ -870,7 +870,12 @@ json_t *w27_adapter_04abb5_replace_media_refs(const json_t *in) {
         const char *mid = json_string_value(json_get(e, 2));
         size_t cl = strlen(cur), ml = mid ? strlen(mid) : 0, pre, post;
         char *next;
-        if (start < 0 || end < start || (size_t)end > cl) continue;
+        /* Python slices CLAMP: text[:start] / text[end:] never raise, so a span
+         * past the end of the current string truncates instead of being skipped.
+         * Skipping it made a later, shorter span apply to stale text. */
+        if (start < 0 || end < start) continue;
+        if ((size_t)start > cl) start = (long)cl;
+        if ((size_t)end > cl) end = (long)cl;
         pre = (size_t)start;
         post = cl - (size_t)end;
         next = (char *)malloc(pre + ml + post + 1);
