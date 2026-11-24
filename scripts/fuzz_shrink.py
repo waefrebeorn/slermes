@@ -237,6 +237,12 @@ def main(argv=None) -> int:
         if not runner.mismatches(case):
             continue
         small = shrink(runner, case, args.verbose)
+        # Verify the reduction on its OWN, not inside a batch: a harness that keeps
+        # state between lines would otherwise let a batch-only mismatch pass for a
+        # minimal reproduction (seen on w29_sessions_2114c9_p4).
+        if not runner.mismatches(small):
+            print("\n%s %s: batch-only mismatch, does not reproduce alone" % (args.gate, case.get("case")))
+            continue
         shrunk += 1
         print("\n%s %s" % (args.gate, case.get("case")))
         print("  was:  %s" % json.dumps({k: v for k, v in case.items() if k != "out"}, ensure_ascii=False)[:200])
