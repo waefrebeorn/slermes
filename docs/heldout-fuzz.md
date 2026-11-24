@@ -68,7 +68,7 @@ python scripts/gate_fuzz.py w32_backup_1d0d4e_p1 --plan docs/wave32-plan.json --
 
 ## Known debt (still diverging under fuzz)
 
-**Wave 27 sweep — 37 of 75 gates after the first round of fixes.** Those are the
+**Wave 27 sweep — 33 of 75 gates (last full sweep: 39 bad, minus the 6 closed since it started).** Those are the
 largest modules (telegram 415 KB, slack 387 KB, discord 380 KB, matrix 177 KB,
 messages, buzz, schema, whatsapp, google_chat, photon, openai_routes, kanban api)
 and their authored fixtures passed 3129 cases with 0 mismatches; held-out inputs
