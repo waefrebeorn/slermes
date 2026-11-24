@@ -31,6 +31,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 os.environ.setdefault("USERPROFILE", "C:/Users/eman5")
 os.environ.setdefault("LOCALAPPDATA", "C:/Users/eman5/AppData/Local")
 BASELINE = ROOT / "tests" / ".build_health_baseline.json"
+CACHE = ROOT / ".testbin" / "health_cache.json"
+CACHE_VERSION = 1
 
 CFLAGS = None
 FLAGS_BY_FILE = {}
@@ -213,11 +215,68 @@ def check_many(paths):
     return out
 
 
+def census_digest(files):
+    """Cheap, sound invalidation key for the per-file syntax census.
+
+    cHash (USENIX ATC'17) showed up to 97% of compiler invocations in an
+    incrementally changing C tree are redundant, and that header edits are where
+    textual hashing usually over-invalidates. The census here compiles every
+    source under src/, so the honest key is: every source's identity PLUS every
+    header's identity (include/ and lib/, which are the only trees sources pull
+    in textually). size+mtime_ns is used instead of reading bytes: an edit
+    always moves mtime, and hashing ~4k files would cost more than it saves.
+    """
+    h = hashlib.sha256()
+    for f in files:
+        p = ROOT / f
+        try:
+            st = p.stat()
+        except OSError:
+            h.update(f.encode() + b"?")
+            continue
+        h.update(f.encode() + b"\0" + str(st.st_size).encode() + b":" + str(st.st_mtime_ns).encode())
+    for tree in ("include", "lib"):
+        base = ROOT / tree
+        if not base.is_dir():
+            continue
+        for hp in sorted(base.rglob("*.h")):
+            try:
+                st = hp.stat()
+            except OSError:
+                continue
+            h.update(str(hp).encode() + b"\0" + str(st.st_size).encode() + b":" + str(st.st_mtime_ns).encode())
+    return h.hexdigest()
+
+
+def cached_census(digest):
+    if not CACHE.exists():
+        return None
+    try:
+        blob = json.loads(CACHE.read_text())
+    except (OSError, ValueError):
+        return None
+    if blob.get("digest") != digest or blob.get("version") != CACHE_VERSION:
+        return None
+    return blob
+
+
+def store_census(digest, total, failing):
+    try:
+        CACHE.parent.mkdir(parents=True, exist_ok=True)
+        CACHE.write_text(json.dumps(
+            {"version": CACHE_VERSION, "digest": digest, "total": total,
+             "failing": [r["file"] for r in failing]}))
+    except OSError:
+        pass
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--save", action="store_true")
     ap.add_argument("--regress", action="store_true")
+    ap.add_argument("--no-cache", action="store_true",
+                    help="force a full syntax census even if the tree is unchanged")
     ap.add_argument("--no-link", action="store_true",
                     help="skip the link check (sources only)")
     args = ap.parse_args()
@@ -227,19 +286,30 @@ def main():
     global CFLAGS, FLAGS_BY_FILE
     FLAGS_BY_FILE = per_file
     CFLAGS = next(iter(per_file.values())) if per_file else real_cflags()
-    # 8 workers was the original default, but on this MSYS2 box that reliably
-    # produces spurious failures (ccache/env contention under concurrent
-    # spawns -- the same fork-exhaustion family as the oracle suite). 4 is the
-    # largest count that stays green; override with HEALTH_JOBS.
-    with ThreadPoolExecutor(max_workers=int(os.environ.get("HEALTH_JOBS", "4"))) as ex:
-        chunks = [files[i:i + 64] for i in range(0, len(files), 64)]
-        results = [r for rs in ex.map(check_many, chunks) for r in rs]
+    digest = census_digest(files)
+    cached = None if args.no_cache else cached_census(digest)
+    if cached is not None:
+        results = [{"file": f, "errors": 1} for f in cached.get("failing", [])]
+        total = cached.get("total", len(files))
+        print("Slermes build health: %d/%d clean, %d failing (cached census, "
+              "same source+header identity as the last run)" % (total - len(results), total, len(results)))
+    else:
+        # 8 workers was the original default, but on this MSYS2 box that reliably
+        # produces spurious failures (ccache/env contention under concurrent
+        # spawns -- the same fork-exhaustion family as the oracle suite). 4 is the
+        # largest count that stays green; override with HEALTH_JOBS.
+        with ThreadPoolExecutor(max_workers=int(os.environ.get("HEALTH_JOBS", "4"))) as ex:
+            chunks = [files[i:i + 64] for i in range(0, len(files), 64)]
+            results = [r for rs in ex.map(check_many, chunks) for r in rs]
+        total = len(files)
+        store_census(digest, total, results)
 
     failing = sorted(results, key=lambda r: -r["errors"])
     total = len(files)
     bad = len(failing)
 
-    print(f"Slermes build health: {total - bad}/{total} clean, {bad} failing")
+    if cached is None:
+        print(f"Slermes build health: {total - bad}/{total} clean, {bad} failing")
     if bad:
         print(f"Total compiler errors across failures: {sum(r['errors'] for r in failing)}")
     if args.list:
