@@ -50,14 +50,30 @@ Held-out fuzz (the only measure that can disagree with the author):
 
 | wave | clean | carrying findings | per-case | date |
 |---|---|---|---|---|
+| 25 | 37 | 20 | 5 | 2026-11-24 |
+| 26 | 42 | 18 | 5 | 2026-11-24 |
 | 27 | 39 | 36 | 5 | 2026-11-24 |
+| 28 | 7 | 25 | 5 | 2026-11-24 |
+| 29 | 6 | 24 | 5 | 2026-11-24 |
+| 30 | 7 | 17 | 5 | 2026-11-24 |
+| 31 | 14 | 9 | 5 | 2026-11-24 |
+| 32 | 10 | 11 | 5 | 2026-11-24 |
 | 34 | 5 | 10 | 5 | 2026-11-24 |
 
-Waves 25, 26 and 28-33 have **never** been swept held-out. That is the largest
-single unknown in this document, and it is a gate on any claim about the whole
-tree: the waves that were swept each lost between a quarter and two thirds of
-their gates to real divergences, so an unswept wave should be assumed to carry
-the same rate until measured.
+Wave 33 was still sweeping when this row was written.
+
+**247 of the 470 measured gates carry at least one real divergence** (123 clean /
+124 carrying for waves 25-32, plus 39/36 for 27 and 5/10 for 34). Every gate in
+those waves passed its authored fixture when it landed. That is the finding this
+document exists for: an authored gate and its port are written by the same author
+against the same understanding, so a green authored suite measures agreement with
+the author, not with the upstream code. Roughly half landed wrong.
+
+Waves 25-32 have now been swept (table above). Before this sweep they had **never**
+been held-out fuzzed, and the assumption recorded here turned out to be right:
+every one of them lost between a quarter and four fifths of its gates to real
+divergences. Any claim about "ported" that rests on an authored suite alone is
+now formally unsupported.
 
 ## Why the previous counts were wrong
 
