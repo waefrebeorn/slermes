@@ -1,0 +1,16 @@
+{"case":"ack-true","func":"ack_notice","rid":7,"in":{},"guest":true}
+{"case":"ack-false","func":"ack_notice","rid":7,"in":{},"guest":false}
+{"case":"ack-one","func":"ack_notice","rid":7,"in":{},"guest":1}
+{"case":"ack-zero","func":"ack_notice","rid":7,"in":{},"guest":0}
+{"case":"claim-trial","func":"claim_nudge","rid":7,"in":{"kind":"trial"}}
+{"case":"claim-connector","func":"claim_nudge","rid":7,"in":{"kind":"connector"}}
+{"case":"claim-empty","func":"claim_nudge","rid":7,"in":{"kind":""}}
+{"case":"claim-null","func":"claim_nudge","rid":7,"in":{"kind":null}}
+{"case":"claim-missing","func":"claim_nudge","rid":7,"in":{}}
+{"case":"claim-bogus","func":"claim_nudge","rid":7,"in":{"kind":"bogus"}}
+{"case":"claim-number","func":"claim_nudge","rid":7,"in":{"kind":5}}
+{"case":"challenge-ok","func":"challenge_result","rid":7,"in":{"url":"https://portal","outcome":"success","attempt":0}}
+{"case":"challenge-http","func":"challenge_result","rid":7,"in":{"url":"http://portal","outcome":"success","attempt":0}}
+{"case":"challenge-fail","func":"challenge_result","rid":7,"in":{"url":"https://portal","outcome":"failure","attempt":2}}
+{"case":"challenge-neg","func":"challenge_result","rid":7,"in":{"url":"https://portal","outcome":"success","attempt":-1}}
+{"case":"challenge-noattempt","func":"challenge_result","rid":7,"in":{"url":"https://portal","outcome":"success"}}

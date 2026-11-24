@@ -1,0 +1,43 @@
+{"func": "short_url", "case": "https", "url": "https://example.com/path/"}
+{"func": "short_url", "case": "http", "url": "http://host:8000/"}
+{"func": "short_url", "case": "both", "url": "https://a/https://b"}
+{"func": "short_url", "case": "plain", "url": "example.com/"}
+{"func": "short_url", "case": "multi", "url": "https://x/http://y//"}
+{"func": "effort", "case": "missing", "cfg": {}}
+{"func": "effort", "case": "none", "cfg": {"reasoning_effort": null}}
+{"func": "effort", "case": "false", "cfg": {"reasoning_effort": false}}
+{"func": "effort", "case": "upper", "cfg": {"reasoning_effort": " HIGH "}}
+{"func": "effort", "case": "text", "cfg": {"reasoning_effort": "minimal"}}
+{"func": "effort", "case": "num", "cfg": {"reasoning_effort": 0}}
+{"func": "format_aux", "case": "not-dict", "cfg": null}
+{"func": "format_aux", "case": "empty", "cfg": {}}
+{"func": "format_aux", "case": "auto", "cfg": {"provider": "auto", "model": "m"}}
+{"func": "format_aux", "case": "custom", "cfg": {"base_url": "https://x.io/v1/", "provider": "x", "model": "m", "reasoning_effort": "high"}}
+{"func": "format_aux", "case": "prov-model", "cfg": {"provider": "openai", "model": "gpt"}}
+{"func": "format_aux", "case": "prov-only", "cfg": {"provider": "openai"}}
+{"func": "delegation_cfg", "case": "missing", "cfg": {}}
+{"func": "delegation_cfg", "case": "null", "cfg": null}
+{"func": "delegation_cfg", "case": "basic", "cfg": {"delegation": {"provider": "p", "model": "m", "base_url": "u", "api_key": "k"}}}
+{"func": "delegation_cfg", "case": "defaults", "cfg": {"delegation": {}}}
+{"func": "delegation_cfg", "case": "effort", "cfg": {"delegation": {"reasoning_effort": false, "provider": "  p  "}}}
+{"func": "delegation_cfg", "case": "non-dict", "cfg": {"delegation": "x"}}
+{"func": "auto_name", "case": "local", "url": "http://localhost:11434"}
+{"func": "auto_name", "case": "ip", "url": "https://127.0.0.1:8080/v1"}
+{"func": "auto_name", "case": "runpod", "url": "https://abc.runpod.io/v1"}
+{"func": "auto_name", "case": "capital", "url": "https://example.com/v1/"}
+{"func": "auto_name", "case": "path", "url": "https://host/api/v1/"}
+{"func": "auto_name", "case": "upper", "url": "https://RunPod.io"}
+{"func": "api_key_value", "case": "ref", "info": {"api_key_ref": "${MY_KEY}"}, "resolved": "literal"}
+{"func": "api_key_value", "case": "keyenv", "info": {"key_env": "TOKEN"}, "resolved": ""}
+{"func": "api_key_value", "case": "keyenv-with-key", "info": {"key_env": "TOKEN", "api_key": "real"}, "resolved": ""}
+{"func": "api_key_value", "case": "resolved", "info": {}, "resolved": "  sk-abc  "}
+{"func": "api_key_value", "case": "none", "info": {}, "resolved": null}
+{"func": "api_key_value", "case": "ref-wins", "info": {"api_key_ref": " ${R} ", "key_env": "E"}, "resolved": "z"}
+{"func": "base_url_value", "case": "ref", "info": {"base_url_ref": "${URL}"}, "resolved": "http://x"}
+{"func": "base_url_value", "case": "resolved", "info": {}, "resolved": "  http://x  "}
+{"func": "base_url_value", "case": "empty", "info": {}, "resolved": null}
+{"func": "base_url_value", "case": "ref-wins", "info": {"base_url_ref": "${U}"}, "resolved": "http://y"}
+{"func": "stepfun", "case": "china", "url": "https://api.stepfun.com/v1"}
+{"func": "stepfun", "case": "upper", "url": " HTTPS://API.STEPFUN.COM "}
+{"func": "stepfun", "case": "intl", "url": "https://api.stepfun.com.cn"}
+{"func": "stepfun", "case": "other", "url": "https://x.com"}

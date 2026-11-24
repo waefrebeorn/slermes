@@ -1,0 +1,14 @@
+{"func":"short","text":"  hello world  ","limit":120}
+{"func":"short","text":"first line\nsecond line","limit":120}
+{"func":"short","text":"abcdefghij","limit":5}
+{"func":"short","text":"éééééééé","limit":4}
+{"func":"short","text":"abc  \t ","limit":null}
+{"func":"short","text":"","limit":120}
+{"func":"short","text":"line A\r\nline B","limit":120}
+{"func":"short","text":"The quick brown fox jumps over the lazy dog and then runs away fast","limit":30}
+{"func":"refusal_text","error":"plain error"}
+{"func":"refusal_text","error":"launch failed","data":{"field":"api_key"}}
+{"func":"refusal_text","error":"launch failed","data":{"detail":"bad token"}}
+{"func":"refusal_text","error":"HTTP 401","data":{"field":"key","detail":"invalid"}}
+{"func":"refusal_text","error":"oops","data":{"field":"","detail":""}}
+{"func":"refusal_text","error":"oops","data":{"field":"  spaced  ","detail":"  detail  "}}

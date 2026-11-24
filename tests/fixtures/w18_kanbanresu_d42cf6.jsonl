@@ -1,0 +1,19 @@
+{"case":"own_empty","func":"dispatcher_owned_run","task_value":""}
+{"case":"own_null","func":"dispatcher_owned_run","task_value":null}
+{"case":"own_spaces","func":"dispatcher_owned_run","task_value":"   "}
+{"case":"own_value","func":"dispatcher_owned_run","task_value":"task-1"}
+{"case":"own_padded","func":"dispatcher_owned_run","task_value":"  task-1  "}
+{"case":"own_tab","func":"dispatcher_owned_run","task_value":"\t\n"}
+{"case":"ref_empty_id","func":"kanban_resume_refusal","session_id":"","task_value":"","mode":"probe_true"}
+{"case":"ref_dispatcher","func":"kanban_resume_refusal","session_id":"s1","task_value":"task-9","mode":"probe_true"}
+{"case":"ref_no_probe","func":"kanban_resume_refusal","session_id":"s1","task_value":"","mode":"no_probe"}
+{"case":"ref_probe_true","func":"kanban_resume_refusal","session_id":"s1","task_value":"","mode":"probe_true"}
+{"case":"ref_probe_false","func":"kanban_resume_refusal","session_id":"s2","task_value":"","mode":"probe_false"}
+{"case":"ref_probe_other","func":"kanban_resume_refusal","session_id":"s3","task_value":"","mode":"probe_other"}
+{"case":"ref_probe_none","func":"kanban_resume_refusal","session_id":"s4","task_value":"","mode":"probe_none"}
+{"case":"ref_probe_raises","func":"kanban_resume_refusal","session_id":"s5","task_value":"","mode":"probe_raises"}
+{"case":"ref_persist_true","func":"kanban_resume_refusal","session_id":"s6","task_value":"","mode":"persistence_true"}
+{"case":"ref_persist_false","func":"kanban_resume_refusal","session_id":"s7","task_value":"","mode":"persistence_false"}
+{"case":"ref_persist_raises","func":"kanban_resume_refusal","session_id":"s8","task_value":"","mode":"persistence_raises"}
+{"case":"ref_unknown_mode","func":"kanban_resume_refusal","session_id":"s9","task_value":"","mode":"whatever"}
+{"case":"ref_missing_mode","func":"kanban_resume_refusal","session_id":"s10","task_value":""}

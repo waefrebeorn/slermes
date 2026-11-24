@@ -1,0 +1,10 @@
+{"func":"merge","case":"basic archived before live","display":[{"_row_id":"r1","role":"user"},{"_row_id":"a1","role":"summary"}],"live":[{"_row_id":"r1","role":"user"}]}
+{"func":"merge","case":"two groups of archived rows","display":[{"_row_id":"a1","t":"A1"},{"_row_id":"r1","t":"R1"},{"_row_id":"a2","t":"A2"},{"_row_id":"r2","t":"R2"}],"live":[{"_row_id":"r1","t":"R1"},{"_row_id":"r2","t":"R2"}]}
+{"func":"merge","case":"all display rows live","display":[{"_row_id":"r2","x":2},{"_row_id":"r1","x":1}],"live":[{"_row_id":"r1","x":1},{"_row_id":"r2","x":2}]}
+{"func":"merge","case":"all display rows archived","display":[{"_row_id":"a1","x":1},{"_row_id":"a2","x":2}],"live":[{"_row_id":"r1","x":9}]}
+{"func":"merge","case":"live sorted from stored order","display":[{"_row_id":"r3"},{"_row_id":"r1"},{"_row_id":"r2"}],"live":[{"_row_id":"r3"},{"_row_id":"r1"},{"_row_id":"r2"}]}
+{"func":"merge","case":"empty live returns archived display","display":[{"_row_id":"a1","m":"first"},{"_row_id":"a2","m":"second"}],"live":[]}
+{"func":"merge","case":"empty display returns sorted live","display":[],"live":[{"_row_id":"r2","v":2},{"_row_id":"r1","v":1}]}
+{"func":"merge","case":"archived key overwritten to true","display":[{"_row_id":"a1","archived":false,"keep":"z"},{"_row_id":"r1"}],"live":[{"_row_id":"r1"}]}
+{"func":"merge","case":"display live id absent from live rows","display":[{"_row_id":"rX","t":"X"},{"_row_id":"a1"}],"live":[{"_row_id":"r1"}]}
+{"func":"merge","case":"nested values and unicode ids","display":[{"_row_id":"é-arch","payload":{"k":[1,2]}},{"_row_id":"s-1","payload":{"k":3}}],"live":[{"_row_id":"s-1","payload":{"k":3}}]}

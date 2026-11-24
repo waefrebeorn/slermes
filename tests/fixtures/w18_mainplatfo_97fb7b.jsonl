@@ -1,0 +1,27 @@
+{"func": "yes_no", "case": "y", "response": "y"}
+{"func": "yes_no", "case": "Y", "response": "Y"}
+{"func": "yes_no", "case": "yes", "response": "yes"}
+{"func": "yes_no", "case": "YES", "response": "YES"}
+{"func": "yes_no", "case": "no", "response": "n"}
+{"func": "yes_no", "case": "empty", "response": ""}
+{"func": "yes_no", "case": "spaces", "response": "  yes  "}
+{"func": "yes_no", "case": "maybe", "response": "maybe"}
+{"func": "yes_no", "case": "eof", "response": null}
+{"func": "whatsapp_mode", "case": "current-bot", "current_mode": "bot", "choice": "1"}
+{"func": "whatsapp_mode", "case": "current-self", "current_mode": "self-chat", "choice": "2"}
+{"func": "whatsapp_mode", "case": "choose-1", "current_mode": null, "choice": "1"}
+{"func": "whatsapp_mode", "case": "choose-spaced", "current_mode": null, "choice": "  1  "}
+{"func": "whatsapp_mode", "case": "choose-2", "current_mode": null, "choice": "2"}
+{"func": "whatsapp_mode", "case": "choose-other", "current_mode": null, "choice": "x"}
+{"func": "whatsapp_mode", "case": "choose-empty", "current_mode": null, "choice": ""}
+{"func": "whatsapp_mode", "case": "cancel", "current_mode": null, "choice": null}
+{"func": "paired", "case": "empty", "creds": {}}
+{"func": "paired", "case": "no-me", "creds": {"x": 1}}
+{"func": "paired", "case": "me-empty", "creds": {"me": {}}}
+{"func": "paired", "case": "id-empty", "creds": {"me": {"id": ""}}}
+{"func": "paired", "case": "id-ok", "creds": {"me": {"id": "12345"}}}
+{"func": "paired", "case": "id-num", "creds": {"me": {"id": 5}}}
+{"func": "paired", "case": "me-str", "creds": {"me": "x"}}
+{"func": "paired", "case": "null", "creds": null}
+{"func": "paired", "case": "id-null", "creds": {"me": {"id": null}}}
+{"func": "paired", "case": "extra", "creds": {"me": {"id": "abc"}, "other": 1}}

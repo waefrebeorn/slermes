@@ -1,0 +1,15 @@
+{"func":"session_action_allowed","session":{"owner_task_id":"ownerT","task_id":"contT","session_key":"sessK"},"caller_task":"ownerT","caller_session":""}
+{"func":"session_action_allowed","session":{"owner_task_id":"ownerT","task_id":"contT","session_key":"sessK"},"caller_task":"contT","caller_session":""}
+{"func":"session_action_allowed","session":{"owner_task_id":"ownerT","task_id":"contT","session_key":"sessK"},"caller_task":"other","caller_session":"sessK"}
+{"func":"session_action_allowed","session":{"owner_task_id":"ownerT","task_id":"contT","session_key":"sessK"},"caller_task":"other","caller_session":"otherK","owns":[]}
+{"func":"session_action_allowed","session":{"owner_task_id":null,"task_id":"contT","session_key":"sessK"},"caller_task":"","caller_session":""}
+{"func":"session_action_allowed","session":{"owner_task_id":"ownerT","task_id":null,"session_key":null},"caller_task":"","caller_session":""}
+{"func":"session_action_allowed","session":{"owner_task_id":"ownerT","task_id":"contT","session_key":"sessK"},"caller_task":"x","caller_session":"y","owns":[["x","ownerT"]]}
+{"func":"session_action_allowed","session":{"owner_task_id":"ownerT","task_id":"contT","session_key":"sessK"},"caller_task":"other","caller_session":"k2","owns":[["k2","sessK"]]}
+{"func":"session_action_allowed","session":{"owner_task_id":"ownerT","task_id":"contT","session_key":"sessK"},"caller_task":"","caller_session":"sessK"}
+{"func":"session_action_allowed","session":{"owner_task_id":"","task_id":"contT","session_key":""},"caller_task":"contT","caller_session":""}
+{"func":"resolve_actionable","session_id":"pre","task_id":"t","full_id":"full-id","exists":false,"session":{"owner_task_id":"o","task_id":"t","session_key":"k"}}
+{"func":"resolve_actionable","session_id":"pre","task_id":"ownerT","full_id":"full-id-1","exists":true,"session":{"owner_task_id":"ownerT","task_id":"contT","session_key":"sessK"}}
+{"func":"resolve_actionable","session_id":"pre","task_id":"other","full_id":"full-id-2","exists":true,"caller_key":"otherK","session":{"owner_task_id":"ownerT","task_id":"contT","session_key":"sessK"},"owns":[]}
+{"func":"resolve_actionable","session_id":"pre","task_id":"other","full_id":"full-id-3","exists":true,"caller_key":"sessK","session":{"owner_task_id":"ownerT","task_id":"contT","session_key":"sessK"}}
+{"func":"resolve_actionable","session_id":"abc","task_id":"","full_id":"FULL","exists":true,"caller_key":"","session":{"owner_task_id":null,"task_id":null,"session_key":null}}

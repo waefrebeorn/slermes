@@ -1,0 +1,67 @@
+{"func": "check_claim", "case": "valid actor and room", "actor_subject": "owner-1", "room_id": "room-1"}
+{"func": "check_claim", "case": "empty actor", "actor_subject": "", "room_id": "room-1"}
+{"func": "check_claim", "case": "null actor", "actor_subject": null, "room_id": "room-1"}
+{"func": "check_claim", "case": "missing actor", "room_id": "room-1"}
+{"func": "check_claim", "case": "room starts with digit", "actor_subject": "act", "room_id": "9room"}
+{"func": "check_claim", "case": "room starts with dash", "actor_subject": "act", "room_id": "-room"}
+{"func": "check_claim", "case": "room with space", "actor_subject": "act", "room_id": "room 1"}
+{"func": "check_claim", "case": "room 128 chars", "actor_subject": "act", "room_id": "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"}
+{"func": "check_claim", "case": "room 129 chars", "actor_subject": "act", "room_id": "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"}
+{"func": "check_claim", "case": "all allowed punctuation", "actor_subject": "act", "room_id": "room:id._-9"}
+{"func": "check_claim", "case": "non-ascii room", "actor_subject": "act", "room_id": "roomé"}
+{"func": "check_claim", "case": "empty room", "actor_subject": "act", "room_id": ""}
+{"func": "check_claim", "case": "room with trailing newline", "actor_subject": "act", "room_id": "room\n"}
+{"func": "check_claim", "case": "room starts with dot", "actor_subject": "act", "room_id": ".room"}
+{"func": "check_claim", "case": "null room", "actor_subject": "act", "room_id": null}
+{"func": "attempt_retired", "case": "newer generation", "task": {"execution_generation": 5, "status": "running"}, "generation": 3}
+{"func": "attempt_retired", "case": "same gen queued", "task": {"execution_generation": 3, "status": "queued"}, "generation": 3}
+{"func": "attempt_retired", "case": "same gen running", "task": {"execution_generation": 3, "status": "running"}, "generation": 3}
+{"func": "attempt_retired", "case": "older current gen", "task": {"execution_generation": 3, "status": "queued"}, "generation": 5}
+{"func": "attempt_retired", "case": "bool generation", "task": {"execution_generation": 3, "status": "queued"}, "generation": true}
+{"func": "attempt_retired", "case": "string generation", "task": {"execution_generation": 6, "status": "queued"}, "generation": "3"}
+{"func": "attempt_retired", "case": "float generation", "task": {"execution_generation": 3, "status": "failed"}, "generation": 3.5}
+{"func": "attempt_retired", "case": "same gen cancelled", "task": {"execution_generation": 3, "status": "cancelled"}, "generation": 3}
+{"func": "attempt_retired", "case": "newer gen without status", "task": {"execution_generation": 7}, "generation": 3}
+{"func": "attempt_retired", "case": "string current generation", "task": {"execution_generation": "7", "status": "queued"}, "generation": 3}
+{"func": "attempt_retired", "case": "same gen settled", "task": {"execution_generation": 3, "status": "settled"}, "generation": 3}
+{"func": "attempt_retired", "case": "same gen stopping", "task": {"execution_generation": 2, "status": "stopping"}, "generation": 2}
+{"func": "attempt_retired", "case": "same gen deferred", "task": {"execution_generation": 3, "status": "deferred"}, "generation": 3}
+{"func": "attempt_retired", "case": "null generation", "task": {"execution_generation": 3, "status": "queued"}, "generation": null}
+{"func": "attempt_retired", "case": "zero generation same running", "task": {"execution_generation": 0, "status": "running"}, "generation": 0}
+{"func": "retired_attempt_conflict", "case": "conflict payload"}
+{"func": "start_ready", "case": "two prepared services", "state": "ready", "draining": false, "services": [{"transport_installed": true}, {"transport_installed": true}]}
+{"func": "start_ready", "case": "draining runner", "state": "ready", "draining": true, "services": [{"transport_installed": true}]}
+{"func": "start_ready", "case": "not ready", "state": "starting", "draining": false, "services": [{"transport_installed": true}]}
+{"func": "start_ready", "case": "missing service", "state": "ready", "draining": false, "services": [null]}
+{"func": "start_ready", "case": "transport not installed", "state": "ready", "draining": false, "services": [{"transport_installed": false}]}
+{"func": "start_ready", "case": "empty served set", "state": "ready", "draining": false, "services": []}
+{"func": "start_ready", "case": "missing state", "draining": false, "services": [{"transport_installed": true}]}
+{"func": "start_ready", "case": "truthy installed string", "state": "ready", "draining": false, "services": [{"transport_installed": "yes"}]}
+{"func": "start_ready", "case": "installed 1", "state": "ready", "draining": false, "services": [{"transport_installed": 1}]}
+{"func": "start_ready", "case": "second service unprepared", "state": "ready", "draining": false, "services": [{"transport_installed": true}, {"transport_installed": 0}]}
+{"func": "start_ready", "case": "non-object service", "state": "ready", "draining": false, "services": ["x"]}
+{"func": "start_ready", "case": "service object without key", "state": "ready", "draining": false, "services": [{}]}
+{"func": "room_profiles", "case": "seated local member kept", "local_profiles": ["a", "b"], "room": {"members": [{"profile": "c", "target": {"kind": "local"}}, {"profile": "a"}, {"profile": "d", "target": {"kind": "remote"}}]}}
+{"func": "room_profiles", "case": "members null", "local_profiles": [], "room": {"members": null}}
+{"func": "room_profiles", "case": "non-dict and non-str members", "local_profiles": ["z"], "room": {"members": [{"profile": "z"}, {"profile": 3}, null, "x"]}}
+{"func": "room_profiles", "case": "sorted union", "local_profiles": ["b"], "room": {"members": [{"profile": "a"}, {"profile": "b"}]}}
+{"func": "room_profiles", "case": "null target is local", "local_profiles": [], "room": {"members": [{"profile": "q", "target": null}]}}
+{"func": "room_profiles", "case": "empty target is local", "local_profiles": [], "room": {"members": [{"profile": "q", "target": {}}]}}
+{"func": "room_profiles", "case": "duplicate seated profile", "local_profiles": ["a"], "room": {"members": [{"profile": "a", "target": {"kind": "local"}}, {"profile": "a", "target": {"kind": "local"}}]}}
+{"func": "room_profiles", "case": "utf8 profile sorts after ascii", "local_profiles": ["é"], "room": {"members": [{"profile": "z"}]}}
+{"func": "room_profiles", "case": "missing members key", "local_profiles": ["m"], "room": {}}
+{"func": "room_profiles", "case": "kind not string defaults local", "local_profiles": [], "room": {"members": [{"profile": "k", "target": {"kind": 5}}]}}
+{"func": "stop_read", "case": "resolve_exact is a stop read", "operation": "resolve_exact"}
+{"func": "stop_read", "case": "execute is not a stop read", "operation": "execute"}
+{"func": "stop_read", "case": "discard is a stop read", "operation": "discard"}
+{"func": "stop_read", "case": "empty operation", "operation": ""}
+{"func": "stop_read", "case": "case sensitive", "operation": "Resume"}
+{"func": "stop_read", "case": "null operation", "operation": null}
+{"func": "attempt_retired", "case": "bool task generation is int(True)", "task": {"execution_generation": true, "status": "queued"}, "generation": 1}
+{"func": "attempt_retired", "case": "same gen failed", "task": {"execution_generation": 3, "status": "failed"}, "generation": 3}
+{"func": "check_claim", "case": "room 128 punctuation chars", "actor_subject": "act", "room_id": "ab.............................................................................................................................."}
+{"func": "room_profiles", "case": "members is an object", "local_profiles": ["m"], "room": {"members": {"profile": "n"}}}
+{"func": "room_profiles", "case": "local profiles missing", "room": {"members": [{"profile": "p", "target": {"kind": "local"}}]}}
+{"func": "start_ready", "case": "non-object service bool", "state": "ready", "draining": false, "services": [true]}
+{"func": "start_ready", "case": "draining truthy string", "state": "ready", "draining": "yes", "services": [{"transport_installed": true}]}
+{"func": "start_ready", "case": "state not ready but unprepared service", "state": "draining", "draining": false, "services": [null]}

@@ -1,0 +1,17 @@
+{"func":"constants"}
+{"func": "downgrade_reason", "has_skew": false, "skew": [], "update_in_progress": false, "predates": true}
+{"func": "downgrade_reason", "has_skew": true, "skew": [], "update_in_progress": false, "predates": true}
+{"func": "downgrade_reason", "has_skew": true, "skew": ["load-A", "checkout-B"], "update_in_progress": false, "predates": true}
+{"func": "downgrade_reason", "has_skew": true, "skew": ["load-A", "checkout-B"], "update_in_progress": true, "predates": true}
+{"func": "downgrade_reason", "has_skew": true, "skew": ["load-A", "checkout-B"], "update_in_progress": false, "predates": false}
+{"func": "downgrade_reason", "has_skew": true, "skew": ["load-A", "checkout-B", "extra"], "update_in_progress": false, "predates": true}
+{"func": "tree_predates", "sources": ["x = 1", "y = 2"], "read_error": false}
+{"func": "tree_predates", "sources": ["CREATE TABLE IF NOT EXISTS session_admissions"], "read_error": false}
+{"func": "tree_predates", "sources": [], "read_error": false}
+{"func": "tree_predates", "sources": ["abc"], "read_error": true}
+{"func": "watcher", "running": true, "max_polls": -1, "polls": [{"skew": ["A", "B"], "update_busy": false, "predates": true}, {"skew": ["A", "B"], "update_busy": false, "predates": true}]}
+{"func": "watcher", "running": true, "max_polls": -1, "polls": [{"skew": ["A", "B"], "update_busy": false, "predates": true}, {"skew": ["A", "B"], "update_busy": true, "predates": true}, {"skew": ["A", "B"], "update_busy": false, "predates": true}]}
+{"func": "watcher", "running": true, "max_polls": -1, "polls": [{"skew": ["A", "B"], "update_busy": false, "predates": true}]}
+{"func": "watcher", "running": true, "max_polls": 1, "polls": [{"skew": ["A", "B"], "update_busy": false, "predates": true}]}
+{"func": "watcher", "running": false, "max_polls": -1, "polls": [{"skew": ["A", "B"], "update_busy": false, "predates": true}]}
+{"func": "watcher", "running": true, "max_polls": -1, "polls": [{"skew": ["A", "B"], "update_error": true, "predates": true}, {"skew": ["A", "B"], "update_busy": false, "predates": true}]}

@@ -1,0 +1,17 @@
+{"func":"aws_keys","text":"credential_process = helper"}
+{"func":"aws_keys","text":"[default]\ncredential_process = /usr/bin/helper\n"}
+{"func":"aws_keys","text":"credential_process = x\n[default]\ncredential_process = y"}
+{"func":"aws_keys","text":"[ -f x ]\ncredential_process = y"}
+{"func":"aws_keys","text":"[default]   \n  credential_process   =   cmd --flag"}
+{"func":"aws_keys","text":"5|[default]\n6|credential_process = helper"}
+{"func":"aws_keys","text":"[default]\ncredential_process cmd"}
+{"func":"aws_keys","text":"[default]\ncredential_process=helper\ncredential_process = other"}
+{"func":"aws_keys","text":""}
+{"func":"outside","text":"hello world","spans":[]}
+{"func":"outside","text":"hello secret world","spans":[[6,12]]}
+{"func":"outside","text":"secret hello","spans":[[0,6]]}
+{"func":"outside","text":"hello secret","spans":[[6,12]]}
+{"func":"outside","text":"abc secret def token ghi","spans":[[4,10],[15,20]]}
+{"func":"outside","text":"","spans":[]}
+{"func":"outside","text":"MiXeD \u00e9\u00c9 case","spans":[]}
+{"func":"constants"}

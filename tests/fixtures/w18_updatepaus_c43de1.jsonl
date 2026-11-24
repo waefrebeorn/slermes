@@ -1,0 +1,14 @@
+{"func":"without","token":{"profiles":{"a":"1","b":"2"},"unmapped":[{"pid":"3"},{"pid":"1"}]},"pids":["1"],"case":"drop one profile and unmapped"}
+{"func":"without","token":{"profiles":{"a":"1"},"unmapped":[],"posix_units":[{"pid":"1"},{"pid":"2"}]},"pids":["2"],"case":"posix units filtered when present"}
+{"func":"without","token":{"profiles":{"a":"1"},"unmapped":[{"pid":"1"}]},"pids":[],"case":"no posix units key added"}
+{"func":"without","token":{"profiles":{"a":42,"b":43},"unmapped":[{"pid":42}]},"pids":["42"],"case":"numeric pid str coercion"}
+{"func":"without","token":{},"pids":["1"],"case":"empty token gets empty containers"}
+{"func":"has_work","token":{"profiles":{"a":1}},"case":"profiles are work"}
+{"func":"has_work","token":{"unmapped":[{"pid":1,"argv":["x"]}]},"case":"unmapped with argv is work"}
+{"func":"has_work","token":{"unmapped":[{"pid":1}]},"case":"unmapped without argv is not work"}
+{"func":"has_work","token":{"services":["svc"]},"case":"services are work"}
+{"func":"has_work","token":{},"case":"no work"}
+{"func":"has_work","token":{"cold_start_profiles":{"a":1}},"case":"cold start profiles are work"}
+{"func":"relaunch_keys","token":{"profiles":{"a":1,"b":2},"unmapped":[{"pid":3,"argv":["x"]},{"pid":4}],"posix_units":[{"unit":"u1"},{"label":"l2"}]},"case":"all key families sorted"}
+{"func":"relaunch_keys","token":{"posix_units":[{}]},"case":"missing unit label becomes None"}
+{"func":"relaunch_keys","token":{},"case":"empty token no keys"}

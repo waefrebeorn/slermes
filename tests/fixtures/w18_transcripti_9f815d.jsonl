@@ -1,0 +1,15 @@
+{"func":"resample","src_rate":16000,"dst_rate":16000,"chunks":["0100","0200"]}
+{"func":"resample","src_rate":16000,"dst_rate":8000,"chunks":["0100020003000400"]}
+{"func":"resample","src_rate":48000,"dst_rate":16000,"chunks":["010002000300040005000600"]}
+{"func":"resample","src_rate":16000,"dst_rate":24000,"chunks":["010002000300040005000600"]}
+{"func":"resample","src_rate":16000,"dst_rate":8000,"chunks":[]}
+{"func":"resample","src_rate":16000,"dst_rate":8000,"chunks":["01"]}
+{"func":"resample","src_rate":16000,"dst_rate":8000,"chunks":["01000200","03000400"]}
+{"func":"resample","src_rate":16000,"dst_rate":8000,"chunks":["0100020003"]}
+{"func":"resample","src_rate":16000,"dst_rate":24000,"chunks":["01000200","0300"]}
+{"func":"resample","src_rate":16000,"dst_rate":16000,"chunks":["ffff","0000","feff"]}
+{"func":"resample","src_rate":8000,"dst_rate":16000,"chunks":["0100020003000400"]}
+{"func":"resample","src_rate":16000,"dst_rate":8000,"chunks":["feffffff0000fa00"]}
+{"func":"error","provider":"openai","message":"bad thing"}
+{"func":"error","provider":"xai","message":""}
+{"func":"error","provider":"elevenlabs","message":"live transcription failed: boom"}

@@ -1,0 +1,10 @@
+{"func":"owned","kind":"systemd user unit","case":"user unit no foreign checkout"}
+{"func":"owned","kind":"launchd plist","foreign":"C:/other/checkout","case":"plist foreign checkout not owned"}
+{"func":"owned","kind":"unknown kind","foreign":"C:/other","case":"unknown kind always owned"}
+{"func":"owned","kind":"systemd system unit","foreign":"","case":"empty foreign string is still foreign"}
+{"func":"owned","kind":"Windows gateway launcher","foreign":"C:/x","case":"windows launcher has no definition probe"}
+{"func":"owned","kind":"systemd system unit","case":"missing foreign means owned"}
+{"func":"refreshers","platform":"win32","systemd":false,"case":"windows launcher"}
+{"func":"refreshers","platform":"darwin","systemd":false,"case":"launchd plist"}
+{"func":"refreshers","platform":"linux","systemd":true,"case":"systemd user unit"}
+{"func":"refreshers","platform":"linux","systemd":false,"case":"no systemd no refreshers"}

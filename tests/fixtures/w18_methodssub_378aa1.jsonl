@@ -1,0 +1,14 @@
+{"case":"child-ok","func":"child_session_id","in":{"record":{"agent":{"session_id":"child-1"}}}}
+{"case":"child-none","func":"child_session_id","in":{"record":{}}}
+{"case":"child-empty","func":"child_session_id","in":{"record":{"agent":{"session_id":""}}}}
+{"case":"child-nonstring","func":"child_session_id","in":{"record":{"agent":{"session_id":5}}}}
+{"case":"child-no-attr","func":"child_session_id","in":{"record":{"agent":{"other":"x"}}}}
+{"case":"child-string-agent","func":"child_session_id","in":{"record":{"agent":"child-1"}}}
+{"case":"stored-present","func":"stored_owner","in":{"db":{"sessions":["s1","s2"],"routing":{}},"owner_ids":["s1","agent:main:local:dm:x"],"namespaces":["main","work"]}}
+{"case":"stored-absent","func":"stored_owner","in":{"db":{"sessions":["s2"],"routing":{}},"owner_ids":["s1","agent:main:local:dm:x"],"namespaces":["main"]}}
+{"case":"route-resolved","func":"stored_owner","in":{"db":{"sessions":[],"routing":{"agent:main:local:dm:x":"s9"}},"owner_ids":[null,"agent:main:local:dm:x"],"namespaces":["main","work"]}}
+{"case":"route-empty-stored","func":"stored_owner","in":{"db":{"sessions":[],"routing":{"agent:main:local:dm:x":"s9"}},"owner_ids":["","agent:main:local:dm:x"],"namespaces":["main"]}}
+{"case":"route-ns-denied","func":"stored_owner","in":{"db":{"sessions":[],"routing":{"agent:main:local:dm:x":"s9"}},"owner_ids":["","agent:main:local:dm:x"],"namespaces":["work"]}}
+{"case":"route-short","func":"stored_owner","in":{"db":{"sessions":[],"routing":{}},"owner_ids":["","agent:main"],"namespaces":["main"]}}
+{"case":"route-badprefix","func":"stored_owner","in":{"db":{"sessions":[],"routing":{"api:main:x":"s9"}},"owner_ids":["","api:main:x"],"namespaces":["main"]}}
+{"case":"route-notfound","func":"stored_owner","in":{"db":{"sessions":[],"routing":{}},"owner_ids":["","agent:main:local:dm:y"],"namespaces":["main"]}}

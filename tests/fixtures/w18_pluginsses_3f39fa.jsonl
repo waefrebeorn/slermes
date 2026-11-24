@@ -1,0 +1,20 @@
+{"func":"env_key","name":"pane"}
+{"func":"env_key","name":"PANE"}
+{"func":"env_key","name":"Mixed_Case123"}
+{"func":"env_key","name":"_leading_underscore"}
+{"func":"env_key","name":""}
+{"func":"env_key","name":"a1_b2_C3"}
+{"func":"name_valid","name":"pane"}
+{"func":"name_valid","name":"_ok"}
+{"func":"name_valid","name":"A1_b2"}
+{"func":"name_valid","name":"HERMES_FOO"}
+{"func":"name_valid","name":"hermes_foo"}
+{"func":"name_valid","name":"1bad"}
+{"func":"name_valid","name":"bad-name"}
+{"func":"name_valid","name":""}
+{"func":"name_valid","name":"a b"}
+{"func":"name_valid","name":null}
+{"func":"name_valid","name":123}
+{"func":"name_valid","name":true}
+{"func":"name_valid","name":["x"]}
+{"func":"name_valid","name":"äbad"}

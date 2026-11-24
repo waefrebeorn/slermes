@@ -1,0 +1,14 @@
+{"func":"follow","case":"key present in live","target":{"a":1,"b":2},"live":{"b":9,"c":3},"key":"b"}
+{"func":"follow","case":"key absent removes from target","target":{"a":1,"b":2},"live":{"c":3},"key":"b"}
+{"func":"follow","case":"key added to target","target":{"a":1},"live":{"a":1,"new":"v"},"key":"new"}
+{"func":"follow","case":"null value copied","target":{"a":1},"live":{"a":null},"key":"a"}
+{"func":"follow","case":"nested object value","target":{},"live":{"agent":{"max_turns":5}},"key":"agent"}
+{"func":"follow","case":"empty target empty live","target":{},"live":{},"key":"x"}
+{"func":"follow","case":"array value","target":{},"live":{"k":[1,"two",null]},"key":"k"}
+{"func":"server_name","case":"mcp prefix strips to bare","servers":["github","filesystem"],"name":"mcp-github"}
+{"func":"server_name","case":"mcp name that is itself a server","servers":["mcp-github","github"],"name":"mcp-github"}
+{"func":"server_name","case":"plain name unchanged","servers":["github"],"name":"github"}
+{"func":"server_name","case":"bare prefix edge","servers":[],"name":"mcp-"}
+{"func":"server_name","case":"empty name","servers":[],"name":""}
+{"func":"server_name","case":"nested mcp prefix","servers":[],"name":"mcp-mcp-x"}
+{"func":"server_name","case":"servers includes null entry","servers":[null,"mcp-y"],"name":"mcp-x"}

@@ -1,0 +1,10 @@
+{"func":"entries_for","profiles":[],"skip":[]}
+{"func":"entries_for","profiles":[{"auth_type":"api_key","env_vars":["ANTHROPIC_API_KEY","ANTHROPIC_BASE_URL"],"display_name":"Anthropic","name":"anthropic","signup_url":"https://a.example"}],"skip":[]}
+{"func":"entries_for","profiles":[{"auth_type":"oauth","env_vars":["OAUTH_TOKEN"],"display_name":"X","name":"x","signup_url":null}],"skip":[]}
+{"func":"entries_for","profiles":[{"auth_type":"api_key","env_vars":["X_API_KEY"],"display_name":"","name":"fallback","signup_url":""}],"skip":[]}
+{"func":"entries_for","profiles":[{"auth_type":"api_key","env_vars":["K1","K2"],"display_name":"N","name":"n","signup_url":null}],"skip":["K1"]}
+{"func":"entries_for","profiles":[{"auth_type":"api_key","env_vars":["FOO_URL","BAR_KEY","BAZ_BASE_URL"],"display_name":"P","name":"p","signup_url":"http://p"}],"skip":[]}
+{"func":"entries_for","profiles":[{"auth_type":"api_key","env_vars":["DUP"],"display_name":"First","name":"first","signup_url":null},{"auth_type":"api_key","env_vars":["DUP","NEW"],"display_name":"Second","name":"second","signup_url":null}],"skip":[]}
+{"func":"entries_for","profiles":[{"auth_type":"api_key","env_vars":[],"display_name":"N","name":"n","signup_url":null}],"skip":[]}
+{"func":"entries_for","profiles":[{"auth_type":"api_key","env_vars":["A_B","C_KEY"],"display_name":"Ünïcode","name":"u","signup_url":"https://ü.example"}],"skip":[]}
+{"func":"entries_for","profiles":[{"auth_type":"api_key","env_vars":["K"],"display_name":"N","name":"n","signup_url":null}],"skip":["K"]}

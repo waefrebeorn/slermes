@@ -1,0 +1,24 @@
+{"func":"split_args","sub_text":""}
+{"func":"split_args","sub_text":"foo"}
+{"func":"split_args","sub_text":"foo bar "}
+{"func":"split_args","sub_text":"foo bar"}
+{"func":"split_args","sub_text":"  a   b  c  "}
+{"func":"extract_path_word","text":"hello /path/to/file"}
+{"func":"extract_path_word","text":"hello http://example.com/x"}
+{"func":"extract_path_word","text":"no-slash"}
+{"func":"extract_path_word","text":"a/b"}
+{"func":"score_path","filepath":"src/main.c","query":"main.c"}
+{"func":"score_path","filepath":"src/main.c","query":"main"}
+{"func":"score_path","filepath":"src/file_operations.c","query":"fo"}
+{"func":"score_path","filepath":"x","query":""}
+{"func":"score_path","filepath":"a/b/c.c","query":"zzz"}
+{"func":"score_path","filepath":"docs\\\\README.md","query":"readme.md"}
+{"func":"normalize_skill_token","token":"//My_Skill"}
+{"func":"normalize_skill_token","token":"/FOO"}
+{"func":"normalize_skill_token","token":"plain_name"}
+{"func":"completion_text","cmd_name":"model","word":"model"}
+{"func":"completion_text","cmd_name":"list","word":"list"}
+{"func":"completion_text","cmd_name":"list","word":"li"}
+{"func":"extract_context_word","text":"hey @file:"}
+{"func":"extract_context_word","text":"plain"}
+{"func":"extract_context_word","text":"@diff"}

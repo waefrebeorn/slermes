@@ -1,0 +1,31 @@
+{"func": "npm_path", "case": "win-cmd", "npm_path": "C:/Program Files/nodejs/npm.cmd"}
+{"func": "npm_path", "case": "posix", "npm_path": "/usr/bin/npm"}
+{"func": "npm_path", "case": "mnt-c", "npm_path": "/mnt/c/Program Files/nodejs/npm"}
+{"func": "npm_path", "case": "mnt-d", "npm_path": "/mnt/d/bin/npm"}
+{"func": "npm_path", "case": "mnt-long", "npm_path": "/mnt/usr/bin/npm"}
+{"func": "npm_path", "case": "backslash", "npm_path": "C:\\npm.exe"}
+{"func": "npm_path", "case": "exe-posix", "npm_path": "/usr/local/bin/npm.exe"}
+{"func": "npm_path", "case": "bare", "npm_path": "npm"}
+{"func": "npm_path", "case": "mnt-empty", "npm_path": "/mnt//npm"}
+{"func": "stamp", "case": "stamp-basic", "name": "hermes.exe.old.1700000000000"}
+{"func": "stamp", "case": "stamp-zero", "name": "hermes.exe.old.0"}
+{"func": "stamp", "case": "stamp-none", "name": "hermes.exe"}
+{"func": "stamp", "case": "stamp-bad", "name": "hermes.exe.old.abc"}
+{"func": "stamp", "case": "stamp-neg", "name": "hermes.exe.old.-5"}
+{"func": "stamp", "case": "stamp-last", "name": "a.old.1.old.2"}
+{"func": "stamp", "case": "stamp-space", "name": "hermes.exe.old. 42 "}
+{"func": "branch", "case": "main", "branch": "main"}
+{"func": "branch", "case": "empty", "branch": ""}
+{"func": "branch", "case": "strip", "branch": "  dev  "}
+{"func": "branch", "case": "spaces", "branch": "   "}
+{"func": "branch", "case": "null", "branch": null}
+{"func": "branch", "case": "slash", "branch": "feature/x"}
+{"func": "filter", "case": "drop-prefix", "shims": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe"], "entries": ["\\??\\C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe.old.1700"]}
+{"func": "filter", "case": "keep-new", "shims": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe"], "entries": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe.new"]}
+{"func": "filter", "case": "keep-other", "shims": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe"], "entries": ["C:\\other\\app.exe", "C:\\other\\app.exe.old.1"]}
+{"func": "filter", "case": "odd", "shims": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe"], "entries": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe.new", "orphan"]}
+{"func": "filter", "case": "multi", "shims": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe"], "entries": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe.old.1", "C:\\other\\app.exe", "C:\\other\\app.exe.old.2", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe.old.9"]}
+{"func": "filter", "case": "fwdslash", "shims": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe"], "entries": ["C:/Users/wubu/.hermes/venv/Scripts/hermes-agent.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe.old.3"]}
+{"func": "filter", "case": "mixedcase", "shims": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe"], "entries": ["c:\\USERS\\WUBU\\.HERMES\\VENV\\SCRIPTS\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe.old.4"]}
+{"func": "filter", "case": "other-target", "shims": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe"], "entries": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe.old.5"]}
+{"func": "filter", "case": "empty", "shims": ["C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes.exe", "C:\\Users\\wubu\\.hermes\\venv\\Scripts\\hermes-agent.exe"], "entries": []}

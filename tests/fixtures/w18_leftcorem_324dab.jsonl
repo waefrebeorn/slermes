@@ -1,0 +1,19 @@
+{"func": "first_cause", "case": "empty", "error": ""}
+{"func": "first_cause", "case": "plain", "error": "simple error"}
+{"func": "first_cause", "case": "strip", "error": "  leading and trailing  "}
+{"func": "first_cause", "case": "fatal", "error": "fatal: could not read. "}
+{"func": "first_cause", "case": "error-mid", "error": "line one\nerror: bad thing. "}
+{"func": "first_cause", "case": "blank-lines", "error": "alpha\n\n beta \n"}
+{"func": "first_cause", "case": "empty-cause", "error": "fatal: . "}
+{"func": "first_cause", "case": "first-match", "error": "error: first\nfatal: second"}
+{"func": "first_cause", "case": "crlf", "error": "noise\r\nfatal: broken repo\r\n"}
+{"func": "first_cause", "case": "dots", "error": "....   "}
+{"func": "delegation_routes", "case": "empty", "delegation": {}}
+{"func": "delegation_routes", "case": "missing", "delegation": {}}
+{"func": "delegation_routes", "case": "one", "delegation": {"backends": {"a": {"options": [{"provider": "x"}]}}}}
+{"func": "delegation_routes", "case": "filter", "delegation": {"backends": {"a": {"options": [1, {"model": "m"}, "s"]}}}}
+{"func": "delegation_routes", "case": "two-blocks", "delegation": {"backends": {"a": {"options": []}, "b": {"options": [{"p": 1}]}}}}
+{"func": "delegation_routes", "case": "non-dicts", "delegation": {"backends": {"a": "x", "b": {"no": "options"}}}}
+{"func": "delegation_routes", "case": "list", "delegation": {"backends": [1, 2]}}
+{"func": "delegation_routes", "case": "options-obj", "delegation": {"backends": {"a": {"options": {"p": 1}}}}}
+{"func": "delegation_routes", "case": "order", "delegation": {"backends": {"z": {"options": [{"k": "v"}, {"k2": 2}]}, "a": {"options": [{"x": 1}]}}}}

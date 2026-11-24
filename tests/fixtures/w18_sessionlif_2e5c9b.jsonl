@@ -1,0 +1,20 @@
+{"case":"lease-basic","func":"lease_metadata","in":{"live_session_id":"s-1"}}
+{"case":"lease-empty","func":"lease_metadata","in":{"live_session_id":""}}
+{"case":"src-tui","func":"is_gateway_owned_source","in":{"source":"tui"}}
+{"case":"src-empty","func":"is_gateway_owned_source","in":{"source":""}}
+{"case":"src-telegram","func":"is_gateway_owned_source","in":{"source":"telegram"}}
+{"case":"src-upper","func":"is_gateway_owned_source","in":{"source":"  TELEGRAM "}}
+{"case":"src-relay","func":"is_gateway_owned_source","in":{"source":"relay"}}
+{"case":"src-webhook","func":"is_gateway_owned_source","in":{"source":"webhook"}}
+{"case":"src-bogus","func":"is_gateway_owned_source","in":{"source":"bogus"}}
+{"case":"src-matrix","func":"is_gateway_owned_source","in":{"source":"MATRIX"}}
+{"case":"src-desktop","func":"is_gateway_owned_source","in":{"source":"desktop"}}
+{"case":"own-hint","func":"lifecycle_own_sid","in":{"session":{},"sid_hint":"hint-1"}}
+{"case":"own-stamped","func":"lifecycle_own_sid","in":{"session":{"_sid":"stamped-1"},"sid_hint":""}}
+{"case":"own-hint-wins","func":"lifecycle_own_sid","in":{"session":{"_sid":"stamped-1"},"sid_hint":"hint-2"}}
+{"case":"own-empty","func":"lifecycle_own_sid","in":{"session":{},"sid_hint":""}}
+{"case":"claim-none","func":"session_holds_transcript_claim","in":{"session":{},"now":100.0}}
+{"case":"claim-future","func":"session_holds_transcript_claim","in":{"session":{"_transcript_claims":{"a":200.0}},"now":100.0}}
+{"case":"claim-past","func":"session_holds_transcript_claim","in":{"session":{"_transcript_claims":{"a":50.0}},"now":100.0}}
+{"case":"claim-mixed","func":"session_holds_transcript_claim","in":{"session":{"_transcript_claims":{"a":50.0,"b":200.0}},"now":100.0}}
+{"case":"claim-boundary","func":"session_holds_transcript_claim","in":{"session":{"_transcript_claims":{"a":100.0}},"now":100.0}}

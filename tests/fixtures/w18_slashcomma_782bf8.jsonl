@@ -1,0 +1,16 @@
+{"func":"strip_resume_name","parts":["foo","bar"],"case":"join tokens"}
+{"func":"strip_resume_name","parts":["--all","foo","--cross-room","bar"],"case":"strip flags"}
+{"func":"strip_resume_name","parts":["<my session>"],"case":"angle wrap"}
+{"func":"strip_resume_name","parts":["[abc]"],"case":"bracket wrap"}
+{"func":"strip_resume_name","parts":["\"quoted\""],"case":"double quote wrap"}
+{"func":"strip_resume_name","parts":["'sq'"],"case":"single quote wrap"}
+{"func":"strip_resume_name","parts":[],"case":"empty parts"}
+{"func":"strip_resume_name","parts":["  spaced  "],"case":"strip whitespace"}
+{"func":"strip_resume_name","parts":["-x","--all"],"case":"trailing flag removed"}
+{"func":"telegram_private_chat_owner","platform":"telegram","chat_type":"dm","chat_id":"111","user_id":"222","case":"telegram dm"}
+{"func":"telegram_private_chat_owner","platform":"telegram","chat_type":"DM","chat_id":"111","user_id":"222","case":"case-insensitive dm"}
+{"func":"telegram_private_chat_owner","platform":"discord","chat_type":"dm","chat_id":"111","user_id":"222","case":"wrong platform"}
+{"func":"telegram_private_chat_owner","platform":"telegram","chat_type":"group","chat_id":"111","user_id":"222","case":"group scope"}
+{"func":"telegram_private_chat_owner","platform":"telegram","chat_type":"dm","chat_id":"","user_id":"222","case":"missing chat id"}
+{"func":"telegram_private_chat_owner","platform":"telegram","chat_type":"dm","chat_id":"111","user_id":"","case":"missing user id"}
+{"func":"telegram_private_chat_owner","platform":null,"chat_type":"dm","chat_id":"1","user_id":"2","case":"null platform"}

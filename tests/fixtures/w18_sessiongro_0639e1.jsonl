@@ -1,0 +1,45 @@
+{"func":"capability_for_method","method":"groups.send","case":"cap submit"}
+{"func":"capability_for_method","method":"groups.approve","case":"cap approve"}
+{"func":"capability_for_method","method":"profiles.list","case":"cap default read"}
+{"func":"capability_for_method","method":"bogus.method","case":"cap unknown"}
+{"func":"capability_for_method","method":"groups.peer.invite","case":"cap operator"}
+{"func":"capability_for_method","case":"cap absent method"}
+{"func":"fields_for_method","method":"groups.log","case":"fields log"}
+{"func":"fields_for_method","method":"groups.capabilities","case":"fields empty"}
+{"func":"fields_for_method","method":"groups.approve","case":"fields approve"}
+{"func":"fields_for_method","method":"groups.notreal","case":"fields unknown"}
+{"func":"params_allowed","method":"groups.log","params":{"room_id":"r1","since_seq":4,"limit":10},"case":"params log ok"}
+{"func":"params_allowed","method":"groups.log","params":{"room_id":"r1","bogus":1},"case":"params log extra"}
+{"func":"params_allowed","method":"groups.list","params":{"profile":"work","limit":5},"case":"params profile allowed"}
+{"func":"params_allowed","method":"groups.notreal","params":{},"case":"params unknown method"}
+{"func":"params_allowed","method":"groups.capabilities","params":{},"case":"params capabilities empty"}
+{"func":"params_allowed","method":"groups.capabilities","params":{"limit":1},"case":"params capabilities limit"}
+{"func":"params_allowed","method":"groups.state","params":"not-an-object","case":"params not a dict"}
+{"func":"refusal","reason":"permission_denied","case":"refusal plain"}
+{"func":"refusal","reason":"invalid_params","admitted":false,"case":"refusal admitted false"}
+{"func":"refusal","reason":"runtime_coordination_required","admitted":0,"case":"refusal admitted zero"}
+{"func":"refusal","reason":"profile_mismatch","admitted":null,"case":"refusal admitted null"}
+{"func":"ui_meta_revisions","meta":{"_ui_meta_revisions":{"avatar":3,"layout":-2,"bad":true,"note":"x"}},"case":"ui meta mixed"}
+{"func":"ui_meta_revisions","meta":{},"case":"ui meta absent"}
+{"func":"ui_meta_revisions","meta":{"_ui_meta_revisions":"nope"},"case":"ui meta not a dict"}
+{"func":"ui_meta_revisions","meta":null,"case":"ui meta null"}
+{"func":"ui_meta_revisions","meta":{"_ui_meta_revisions":{"zero":0,"big":12}},"case":"ui meta floor"}
+{"func":"stat_key","mtime_ns":"1731000000123456789","ctime_ns":"1731000000987654321","size":"4096","ino":"2814749767","case":"stat key big inode"}
+{"func":"stat_key","mtime_ns":"0","ctime_ns":"1","size":"0","ino":"2","case":"stat key small"}
+{"func":"has_avatar","home":"/nonexistent/hermes/profile","case":"avatar missing home"}
+{"func":"has_avatar","home":"C:/Users/eman5/slermes/src/gateway","case":"avatar repo dir"}
+{"func":"has_avatar","home":".","case":"avatar cwd"}
+{"func":"execution_control","method":"groups.retry","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":2},"service":{"task":{"identity":{"room_id":"room-1","task_id":"task-9","thread_id":"thr-3","turn_id":"turn-7"},"status":"queued","execution_generation":3,"cancel_generation":1}},"case":"retry ok"}
+{"func":"execution_control","method":"groups.discard","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":5},"service":{"task":{"identity":{"room_id":"room-1","task_id":"task-9","thread_id":"thr-3","turn_id":"turn-7"},"status":"queued","execution_generation":3,"cancel_generation":1}},"case":"discard ok"}
+{"func":"execution_control","method":"groups.retry","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":0},"service":{"task":{"identity":{"room_id":"room-1","task_id":"task-9","thread_id":"thr-3","turn_id":"turn-7"},"status":"queued","execution_generation":3,"cancel_generation":1}},"case":"retry generation zero"}
+{"func":"execution_control","method":"groups.retry","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":true},"service":{"task":{"identity":{"room_id":"room-1","task_id":"task-9","thread_id":"thr-3","turn_id":"turn-7"},"status":"queued","execution_generation":3,"cancel_generation":1}},"case":"retry generation bool"}
+{"func":"execution_control","method":"groups.retry","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":1.5},"service":{"task":{"identity":{"room_id":"room-1","task_id":"task-9","thread_id":"thr-3","turn_id":"turn-7"},"status":"queued","execution_generation":3,"cancel_generation":1}},"case":"retry generation float"}
+{"func":"execution_control","method":"groups.retry","params":{"room_id":"room-1","member_id":"","task_id":"task-9","execution_generation":2},"service":{"task":{"identity":{"room_id":"room-1","task_id":"task-9","thread_id":"thr-3","turn_id":"turn-7"},"status":"queued","execution_generation":3,"cancel_generation":1}},"case":"retry member blank"}
+{"func":"execution_control","method":"groups.discard","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":2},"service":{"error":{"type":"ValueError","message":"generation moved"}},"case":"discard service raises"}
+{"func":"execution_control","method":"groups.approve","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":4,"choice":"once","request_id":"req-77"},"service":{"result":{"approved_by":"lead","scope":"turn"}},"case":"approve ok"}
+{"func":"execution_control","method":"groups.approve","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":4,"choice":"always","request_id":"req-77"},"service":{"result":{}},"case":"approve bad choice"}
+{"func":"execution_control","method":"groups.approve","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":4,"choice":"deny","request_id":""},"service":{"result":{}},"case":"approve blank request"}
+{"func":"execution_control","method":"groups.approve","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":4,"choice":"deny","request_id":"req-78"},"service":{"error":{"type":"RuntimeError","message":"room approval is no longer pending"}},"case":"approve no longer pending"}
+{"func":"execution_control","method":"groups.approve","params":{"room_id":"room-1","member_id":"m-2","task_id":"task-9","execution_generation":4,"choice":"once","request_id":"req-79"},"service":{"error":{"type":"RuntimeError","message":"driver went away"}},"case":"approve other runtime error"}
+{"func":"execution_control","method":"groups.continue","params":{"room_id":"room-1","discussion_event_id":"evt-3"},"service":{"event":{"event_id":"evt-4","seq":12}},"case":"continue ok"}
+{"func":"execution_control","method":"groups.continue","params":{"room_id":"room-1"},"service":{"event":{"event_id":"evt-5","seq":13}},"case":"continue no discussion id"}

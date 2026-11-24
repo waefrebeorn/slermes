@@ -1,0 +1,17 @@
+{"func":"prompt_degraded","job":{"prompt":"hello"},"case":"usable prompt"}
+{"func":"prompt_degraded","job":{"prompt":"  "},"case":"blank prompt"}
+{"func":"prompt_degraded","job":{"name":"job1","prompt":"job1"},"case":"name as prompt"}
+{"func":"prompt_degraded","job":{"prompt":"job1","name":"job1 "},"case":"name padded"}
+{"func":"prompt_degraded","job":{"no_agent":true,"prompt":""},"case":"no_agent skip"}
+{"func":"prompt_degraded","job":{},"case":"missing prompt"}
+{"func":"prompt_degraded","job":{"prompt":"real","name":"real"},"case":"prompt equals name"}
+{"func":"cron_jobs_list","doc":{"jobs":[{"id":"1"},{"id":"2"}]},"case":"dict jobs"}
+{"func":"cron_jobs_list","doc":[{"id":"a"}],"case":"bare list"}
+{"func":"cron_jobs_list","doc":{"jobs":"bad"},"case":"malformed jobs"}
+{"func":"cron_jobs_list","doc":{},"case":"empty doc"}
+{"func":"snapshot_prompts_by_id","doc":{"jobs":[{"id":"1","prompt":"p1"},{"id":"2","prompt":"  "},{"id":"3"}]},"case":"snapshot prompts"}
+{"func":"snapshot_prompts_by_id","doc":[{"id":"a","prompt":"pa"}],"case":"bare list snapshot"}
+{"func":"snapshot_prompts_by_id","doc":{"jobs":"bad"},"case":"bad jobs"}
+{"func":"restore_degraded_prompts","jobs":[{"id":"1","prompt":"1"},{"id":"2","prompt":"good"},{"id":"3"}],"snap_prompts":{"1":"p1","3":"p3"},"apply":true,"case":"restore apply"}
+{"func":"restore_degraded_prompts","jobs":[{"id":"1","prompt":"1"}],"snap_prompts":{"1":"p1"},"apply":false,"case":"no apply"}
+{"func":"restore_degraded_prompts","jobs":[{"id":"1","prompt":"1"},{"id":"2","prompt":"2"}],"snap_prompts":{"1":"p1"},"apply":true,"case":"only known id"}

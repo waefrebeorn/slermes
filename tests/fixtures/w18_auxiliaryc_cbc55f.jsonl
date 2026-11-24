@@ -1,0 +1,12 @@
+{"func":"parse","final":{"output":[{"type":"message","content":[{"type":"output_text","text":"hi"}]}],"status":"completed","output_text":"hi"},"issuer_kind":null,"issuer_model":null,"_norm":{"content":"hi","tool_calls":null,"finish_reason":"stop"}}
+{"func":"parse","final":{"output":[],"status":"completed"},"issuer_kind":"openai","issuer_model":"gpt-x","_norm":{"content":"","tool_calls":null,"finish_reason":"stop"}}
+{"func":"parse","final":{"output":[],"status":"completed"},"issuer_kind":null,"issuer_model":null,"_norm":{"content":null,"tool_calls":[{"id":"c1","name":"f"}],"finish_reason":"tool_calls"}}
+{"func":"parse","final":{"output":[],"status":null,"incomplete_details":{"reason":"max_output_tokens"}},"issuer_kind":null,"issuer_model":null,"_norm":{"content":"partial","tool_calls":null,"finish_reason":"incomplete"}}
+{"func":"parse","final":{"output":[],"status":"INCOMPLETE"},"issuer_kind":null,"issuer_model":null,"_norm":{"content":"text","tool_calls":null,"finish_reason":"stop"}}
+{"func":"parse","final":{"output":[],"status":"incomplete"},"issuer_kind":null,"issuer_model":null,"_norm":{"content":null,"tool_calls":[],"finish_reason":"stop"}}
+{"func":"parse","final":{"output":[],"status":"incomplete"},"issuer_kind":null,"issuer_model":null,"_norm":{"content":"x","tool_calls":[{"id":"c2"}],"finish_reason":"tool_calls"}}
+{"func":"parse","final":{"output":[],"status":"completed","usage":{}},"issuer_kind":null,"issuer_model":null,"_norm":{"content":"ok","tool_calls":null,"finish_reason":"stop"}}
+{"func":"parse","final":{"output":[],"status":"completed","usage":{"input_tokens":12,"output_tokens":5,"total_tokens":17,"extra":1}},"issuer_kind":null,"issuer_model":null,"_norm":{"content":"ok","tool_calls":null,"finish_reason":"stop"}}
+{"func":"parse","final":{"output":[],"status":"failed","error":{"message":"bad"}},"issuer_kind":null,"issuer_model":null,"_norm":{"content":"","tool_calls":null,"finish_reason":"stop"}}
+{"func":"parse","final":{},"issuer_kind":"xai_responses","issuer_model":"grok","_norm":{"content":null,"tool_calls":null,"finish_reason":"content_filter"}}
+{"func":"parse","final":{"output":[],"status":"completed","usage":{"input_tokens":0,"output_tokens":0,"total_tokens":0}},"issuer_kind":null,"issuer_model":null,"_norm":{"content":"z","tool_calls":null,"finish_reason":"stop"}}

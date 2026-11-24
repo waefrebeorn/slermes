@@ -1,0 +1,16 @@
+{"func":"covered","key":"computer_use.backend","paths":["computer_use.backend","dashboard.kanban"]}
+{"func":"covered","key":"computer_use.backend.extra","paths":["computer_use.backend"]}
+{"func":"covered","key":"computer_use.backendish","paths":["computer_use.backend"]}
+{"func":"covered","key":"memory.retaindb","paths":["memory"]}
+{"func":"covered","key":"memory","paths":["memory.retaindb"]}
+{"func":"covered","key":"a.b.c","paths":["a","a.b"]}
+{"func":"covered","key":"anything","paths":[]}
+{"func":"covered","key":"","paths":[""]}
+{"func":"is_runtime_read_key","parts":["moa","presets","x","temperature"],"preset":true,"selection":[],"plugin":[]}
+{"func":"is_runtime_read_key","parts":["stt","provider"],"preset":false,"selection":["stt.provider"],"plugin":[]}
+{"func":"is_runtime_read_key","parts":["computer_use","backend"],"preset":false,"selection":[],"plugin":[]}
+{"func":"is_runtime_read_key","parts":["dashboard","kanban","tab"],"preset":false,"selection":[],"plugin":[]}
+{"func":"is_runtime_read_key","parts":["memory","retaindb"],"preset":false,"selection":[],"plugin":["memory.retaindb"]}
+{"func":"is_runtime_read_key","parts":["memory","retaindb","x"],"preset":false,"selection":[],"plugin":["memory.retaindb"]}
+{"func":"is_runtime_read_key","parts":["random","key"],"preset":false,"selection":[],"plugin":[]}
+{"func":"is_runtime_read_key","parts":[],"preset":false,"selection":[],"plugin":[]}

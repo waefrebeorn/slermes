@@ -1,0 +1,12 @@
+{"func":"chat_resolve_interrupt","result":null,"response":""}
+{"func":"chat_resolve_interrupt","result":null,"interrupt_msg":"hello","response":""}
+{"func":"chat_resolve_interrupt","result":{},"interrupt_msg":"x","response":""}
+{"func":"chat_resolve_interrupt","result":{"interrupted":true,"interrupt_message":"resumed"},"response":"Answ"}
+{"func":"chat_resolve_interrupt","result":{"interrupted":true,"interrupt_message":"resumed"},"response":""}
+{"func":"chat_resolve_interrupt","result":{"interrupted":true,"interrupt_message":""},"interrupt_msg":"typed","response":"r"}
+{"func":"chat_resolve_interrupt","result":{"interrupted":true},"interrupt_msg":"typed","response":"r"}
+{"func":"chat_resolve_interrupt","result":{"interrupted":false},"interrupt_msg":"typed","response":"r"}
+{"func":"chat_resolve_interrupt","result":{"interrupted":true,"interrupt_message":42},"response":"x"}
+{"func":"chat_resolve_interrupt","result":{"interrupted":1,"interrupt_message":"z"},"response":"y"}
+{"func":"chat_resolve_interrupt","result":{"interrupted":false},"interrupt_msg":"typed","response":"r","thread_alive":false,"interrupt_requested":true}
+{"func":"chat_resolve_interrupt","result":null,"interrupt_msg":"","response":""}

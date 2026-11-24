@@ -1,0 +1,10 @@
+{"func":"recorded","cwd":"C:/repo/.worktrees/foo","trees":{"c:\\repo\\.worktrees\\foo":{"path":"C:/repo/.worktrees/foo","branch":"feat/x","repo_root":"C:/repo"}},"existing":["c:\\repo\\.git"],"case":"direct recorded tree"}
+{"func":"recorded","cwd":"C:/repo/.worktrees/foo","trees":{"c:\\repo\\.worktrees\\foo":{"path":"C:/repo/.worktrees/foo","branch":"feat/x","repo_root":"C:/repo"}},"existing":[],"case":"repo git missing"}
+{"func":"recorded","cwd":"C:/repo/.worktrees/foo","trees":{"c:\\repo\\.worktrees\\foo":{"path":"C:/repo/wt/foo","branch":"feat/x","repo_root":"C:/repo"}},"existing":["c:\\repo\\.git"],"case":"tree not under worktrees dir"}
+{"func":"recorded","cwd":"C:/repo/.worktrees/foo","trees":{"c:\\repo\\.worktrees\\foo":{"path":"C:/repo/.worktrees/foo","branch":"","repo_root":"C:/repo"}},"existing":["c:\\repo\\.git"],"case":"empty branch"}
+{"func":"recorded","cwd":"C:/repo/.worktrees/foo/subdir","trees":{"c:\\repo\\.worktrees\\foo":{"path":"C:/repo/.worktrees/foo","branch":"feat/x","repo_root":"C:/repo"}},"existing":["c:\\repo\\.git"],"case":"cwd inside recorded tree"}
+{"func":"recorded","cwd":"C:/repo/.worktrees/foo/deep","trees":{"c:\\repo\\.worktrees\\foo\\deep":{"path":"C:/repo/wt/deep","branch":"b","repo_root":"C:/repo"},"c:\\repo\\.worktrees\\foo":{"path":"C:/repo/.worktrees/foo","branch":"feat/x","repo_root":"C:/repo"}},"existing":["c:\\repo\\.git"],"case":"first dict entry is terminal"}
+{"func":"recorded","cwd":"C:/repo/.worktrees/foo","trees":{},"existing":["c:\\repo\\.git"],"case":"empty records"}
+{"func":"key","path":"C:/Repo/.WorkTrees/Foo","case":"normcase lowercases"}
+{"func":"key","path":"C:\\Repo/.worktrees/Foo","case":"mixed separators"}
+{"func":"key","path":"C:/repo/.worktrees/foo/../bar","case":"dot dot collapsed"}

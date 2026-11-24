@@ -1,0 +1,19 @@
+{"func":"list_boards","list_raises":false,"boards":[{"slug":"alpha"},{"slug":"beta"},{}],"metadata":null}
+{"func":"list_boards","list_raises":true,"boards":null,"metadata":{"slug":"default-board","name":"Default"}}
+{"func":"board_slugs","list_raises":false,"boards":[{"slug":"alpha"},{"slug":""},{"slug":null},{}],"default_board":"MAIN"}
+{"func":"board_slugs","list_raises":true,"boards":null,"metadata":{"slug":"xyz"},"default_board":"MAIN"}
+{"func":"positive_int","cfg":{"cap":5},"key":"cap"}
+{"func":"positive_int","cfg":{"cap":" 7 "},"key":"cap"}
+{"func":"positive_int","cfg":{"cap":0},"key":"cap"}
+{"func":"positive_int","cfg":{"cap":"abc"},"key":"cap"}
+{"func":"positive_int","cfg":{},"key":"cap"}
+{"func":"auto_decompose","config_error":false,"cfg":{"kanban":{"auto_decompose":true,"auto_decompose_per_tick":5}}}
+{"func":"auto_decompose","config_error":false,"cfg":{"kanban":{"auto_decompose":false,"auto_decompose_per_tick":0}}}
+{"func":"auto_decompose","config_error":false,"cfg":{"kanban":{"auto_decompose_per_tick":"bogus"}}}
+{"func":"auto_decompose","config_error":true,"cfg":null}
+{"func":"gc_retention","config_error":false,"cfg":{"kanban":{"done_sub_retention_days":"14"}}}
+{"func":"gc_retention","config_error":false,"cfg":{"kanban":null}}
+{"func":"gc_retention","config_error":true,"cfg":null}
+{"func":"dispatch_allowed","import_error":false,"paused":false}
+{"func":"dispatch_allowed","import_error":false,"paused":true}
+{"func":"dispatch_allowed","import_error":true,"paused":true}

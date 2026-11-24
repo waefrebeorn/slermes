@@ -1,0 +1,16 @@
+{"func":"stamp_drift","binary":null,"stdout":"[]","case":"no installed node binary"}
+{"func":"stamp_drift","binary":"","stdout":"[]","case":"empty-string binary is still present"}
+{"func":"stamp_drift","binary":"C:/node/node.exe","stdout":"[]","case":"empty drift list"}
+{"func":"stamp_drift","binary":"C:/node/node.exe","stdout":"noise\n[\"a\",\"b\"]","case":"last line parsed"}
+{"func":"stamp_drift","binary":"C:/node/node.exe","stdout":"{\"x\":1}","case":"non-list object is None"}
+{"func":"stamp_drift","binary":"C:/node/node.exe","stdout":"","case":"empty stdout"}
+{"func":"stamp_drift","binary":"C:/node/node.exe","stdout":"   \n\t","case":"whitespace only"}
+{"func":"stamp_drift","binary":"C:/node/node.exe","stdout":"[]","fail":true,"case":"subprocess failure"}
+{"func":"packaged_desktop_reusable","resources_present":false,"baked":{"commit":"abc"},"prepared":{"commit":"abc"},"build_needed":false,"drift":[]}
+{"func":"packaged_desktop_reusable","resources_present":true,"baked":{"commit":"abc"},"prepared":{"commit":"abc"},"build_needed":false,"drift":[]}
+{"func":"packaged_desktop_reusable","resources_present":true,"baked":{"commit":"abc"},"prepared":{"commit":"def"},"build_needed":false,"drift":[]}
+{"func":"packaged_desktop_reusable","resources_present":true,"baked":{"commit":"abc"},"prepared":{"commit":"abc"},"build_needed":true,"drift":[]}
+{"func":"packaged_desktop_reusable","resources_present":true,"baked":{"commit":"abc"},"prepared":{"commit":"abc"},"build_needed":false,"drift":["commit"]}
+{"func":"packaged_desktop_reusable","resources_present":true,"baked":{"commit":"abc","x":[1,2]},"prepared":{"x":[1,2],"commit":"abc"},"build_needed":false,"drift":[]}
+{"func":"packaged_desktop_reusable","resources_present":true,"baked":{"commit":"","x":1},"prepared":{"commit":"","x":1},"build_needed":false,"drift":[]}
+{"func":"packaged_desktop_reusable","resources_present":true,"baked":null,"prepared":{},"build_needed":false,"drift":[]}

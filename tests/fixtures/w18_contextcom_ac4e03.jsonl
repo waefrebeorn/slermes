@@ -1,0 +1,17 @@
+{"func":"changed_rows","messages":[],"pruned":[]}
+{"func":"changed_rows","messages":[{"role":"user","content":"a"}],"pruned":[{"role":"user","content":"a"}]}
+{"func":"changed_rows","messages":[{"role":"user","content":"a"}],"pruned":[{"role":"user","content":"b"}]}
+{"func":"changed_rows","messages":[{"role":"user"},{"role":"assistant"},{"role":"tool"}],"pruned":[{"role":"user"},{"role":"assistant","x":1},{"role":"tool","y":2}]}
+{"func":"changed_rows","messages":[{"role":"tool","c":"long"}],"pruned":[]}
+{"func":"keep_running_turn","messages":[{"role":"user","content":"u"},{"role":"assistant","content":"a"}],"pruned":[{"role":"user","content":"u"},{"role":"assistant","content":"S"}],"turn_start":null}
+{"func":"keep_running_turn","messages":[{"role":"user","content":"u"},{"role":"assistant","content":"a"},{"role":"tool","content":"t"}],"pruned":[{"role":"user","content":"S"},{"role":"assistant","content":"S"},{"role":"tool","content":"S"}],"turn_start":0}
+{"func":"keep_running_turn","messages":[{"role":"user","content":"u"},{"role":"assistant","content":"a"},{"role":"tool","content":"t"}],"pruned":[{"role":"user","content":"S"},{"role":"assistant","content":"S"},{"role":"tool","content":"S"}],"turn_start":1}
+{"func":"keep_running_turn","messages":[{"role":"user","content":"u"},{"role":"assistant","content":"a"}],"pruned":[],"turn_start":5}
+{"func":"keep_running_turn","messages":[{"role":"user","content":"u"},{"role":"assistant","content":"a"}],"pruned":[],"turn_start":true}
+{"func":"keep_running_turn","messages":[{"role":"assistant","content":"a"}],"pruned":[],"turn_start":0}
+{"func":"would_prune","tokens":0,"current":null}
+{"func":"would_prune","tokens":100,"current":null}
+{"func":"would_prune","tokens":100,"current":50}
+{"func":"would_prune","tokens":100,"current":150}
+{"func":"would_prune","tokens":-5,"current":1000}
+{"func":"constants"}

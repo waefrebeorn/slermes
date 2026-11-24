@@ -1,0 +1,12 @@
+{"func":"parse_journal","raw":"{\"phase\":\"staging\",\"gen\":\"0123456789ab\",\"entries\":[],\"temps\":{}}","case":"journal case 0"}
+{"func":"parse_journal","raw":"{\"phase\":\"swapping\",\"gen\":\"abcdef012345\",\"entries\":[[\"a.txt\",true,\"s\",\"l\"]],\"temps\":{\"x\":\"y\"}}","case":"journal case 1"}
+{"func":"parse_journal","raw":"{\"phase\":\"committed\",\"gen\":\"0123456789ab\",\"entries\":[[\"b\",false,\"\",\"\"]]}","case":"journal case 2"}
+{"func":"parse_journal","raw":"{\"phase\":\"bad\",\"gen\":\"0123456789ab\",\"entries\":[]}","case":"journal case 3"}
+{"func":"parse_journal","raw":"{\"phase\":\"staging\",\"gen\":\"ABCDEF012345\",\"entries\":[]}","case":"journal case 4"}
+{"func":"parse_journal","raw":"{\"phase\":\"staging\",\"gen\":\"0123456789ab\",\"entries\":[[\"a/b\",true,\"s\",\"l\"]]}","case":"journal case 5"}
+{"func":"parse_journal","raw":"{\"phase\":\"staging\",\"gen\":\"0123456789ab\",\"entries\":[[\"..\",true,\"s\",\"l\"]]}","case":"journal case 6"}
+{"func":"parse_journal","raw":"{\"phase\":\"staging\",\"gen\":\"0123456789ab\",\"entries\":[[\"a\",1,\"s\",\"l\"]]}","case":"journal case 7"}
+{"func":"parse_journal","raw":"{\"phase\":\"staging\",\"gen\":\"0123456789ab\",\"entries\":[]}","case":"journal case 8"}
+{"func":"parse_journal","raw":"[]","case":"journal case 9"}
+{"func":"parse_journal","raw":"not json","case":"journal case 10"}
+{"func":"parse_journal","raw":"{\"phase\":\"swapping\",\"gen\":\"0123456789ab\",\"entries\":[[\"x\",true,\"s\",\"l\"],[\"y\",false,\"\",\"\"]],\"temps\":{\"a\":\"1\",\"b\":\"2\"}}","case":"journal case 11"}

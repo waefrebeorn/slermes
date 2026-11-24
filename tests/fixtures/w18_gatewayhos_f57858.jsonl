@@ -1,0 +1,12 @@
+{"case":"discard_ok_true","func":"discard_dead_host_record","sim":"ok_true"}
+{"case":"discard_ok_false","func":"discard_dead_host_record","sim":"ok_false"}
+{"case":"discard_import_err","func":"discard_dead_host_record","sim":"import_error"}
+{"case":"discard_call_err","func":"discard_dead_host_record","sim":"call_error"}
+{"case":"discard_unknown","func":"discard_dead_host_record","sim":"unexpected"}
+{"case":"discard_missing","func":"discard_dead_host_record"}
+{"case":"forget_ok_true","func":"forget_host_gateway_probe","sim":"ok_true"}
+{"case":"forget_ok_false","func":"forget_host_gateway_probe","sim":"ok_false"}
+{"case":"forget_import_err","func":"forget_host_gateway_probe","sim":"import_error"}
+{"case":"forget_call_err","func":"forget_host_gateway_probe","sim":"call_error"}
+{"case":"forget_unknown","func":"forget_host_gateway_probe","sim":"unexpected"}
+{"case":"forget_missing","func":"forget_host_gateway_probe"}

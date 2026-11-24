@@ -1,0 +1,11 @@
+{"func":"known_issue_warnings","known_issues":[]}
+{"func":"known_issue_warnings","known_issues":["The install hook needs Python 3.11"]}
+{"func":"known_issue_warnings","known_issues":["one","two","three"]}
+{"func":"known_issue_warnings","known_issues":[""]}
+{"func":"known_issue_warnings","known_issues":["a","","b"]}
+{"func":"known_issue_warnings","known_issues":["known issue: lower","UPPER Case"]}
+{"func":"known_issue_warnings","known_issues":["café — naïve"]}
+{"func":"known_issue_warnings","known_issues":["line1\nline2","tab\there"]}
+{"func":"known_issue_warnings","known_issues":["quote \" and slash \\ ok"]}
+{"func":"known_issue_warnings","known_issues":["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"]}
+{"func":"known_issue_warnings","known_issues":["<script>alert(1)</script>","a,b;c"]}

@@ -1,0 +1,24 @@
+{"func":"public_url_hosts","url":"https://Example.COM:8443/x","case":"case folded host"}
+{"func":"public_url_hosts","url":"http://[::1]:8080","case":"bracketed ipv6"}
+{"func":"public_url_hosts","url":"http://[::1","case":"malformed bracket fails closed"}
+{"func":"public_url_hosts","url":"","case":"unset url empty set"}
+{"func":"host_header","header":"localhost:9119","case":"authority port stripped"}
+{"func":"host_header","header":"Example.COM","case":"case folded"}
+{"func":"host_header","header":"[::1]:8080","case":"ipv6 bracket"}
+{"func":"host_header","header":"bad:abc","case":"non numeric port rejected"}
+{"func":"host_header","header":"  HOST:80  ","case":"whitespace stripped"}
+{"func":"is_accepted","header":"localhost:9","bound":"127.0.0.1","trusted":[],"case":"loopback alias"}
+{"func":"is_accepted","header":"evil.com","bound":"localhost","trusted":[],"case":"foreign host rejected"}
+{"func":"is_accepted","header":"evil.com","bound":"localhost","trusted":["evil.com"],"case":"trusted public host"}
+{"func":"is_accepted","header":"anything","bound":"0.0.0.0","trusted":[],"case":"all interfaces"}
+{"func":"should_auth","host":"127.0.0.1","allow_public":true,"case":"loopback never gated"}
+{"func":"should_auth","host":"192.168.1.1","allow_public":false,"case":"lan is public threat model"}
+{"func":"engage_gate","trusted":["localhost"],"case":"loopback public url no gate"}
+{"func":"engage_gate","trusted":["evil.com"],"case":"non loopback engages gate"}
+{"func":"loopback_origin","url":"http://localhost:9119","case":"explicit port"}
+{"func":"loopback_origin","url":"https://localhost","case":"default 443"}
+{"func":"loopback_origin","url":"http://[::1]:3","case":"ipv6 origin"}
+{"func":"loopback_origin","url":"http://example.com","case":"non loopback none"}
+{"func":"loopback_origin","url":"http://localhost:99999","case":"out of range port none"}
+{"func":"public_url_origins","url":"http://127.0.0.1:8080","case":"loopback proxy origin"}
+{"func":"public_url_origins","url":"","case":"unset empty"}

@@ -1,0 +1,13 @@
+{"case":"reply-empty","func":"reply","rid":7,"in":{},"write":{"mode":"ok","msg":""}}
+{"case":"reply-blank","func":"reply","rid":7,"in":{"id":"   "},"write":{"mode":"ok","msg":""}}
+{"case":"reply-null","func":"reply","rid":7,"in":{"id":null},"write":{"mode":"ok","msg":""}}
+{"case":"reply-zero","func":"reply","rid":7,"in":{"id":0},"write":{"mode":"ok","msg":""}}
+{"case":"reply-false","func":"reply","rid":7,"in":{"id":false},"write":{"mode":"ok","msg":""}}
+{"case":"reply-ok","func":"reply","rid":7,"in":{"id":"abc"},"write":{"mode":"ok","msg":""}}
+{"case":"reply-num","func":"reply","rid":7,"in":{"id":42},"write":{"mode":"ok","msg":""}}
+{"case":"reply-bool","func":"reply","rid":7,"in":{"id":true},"write":{"mode":"ok","msg":""}}
+{"case":"reply-trim","func":"reply","rid":7,"in":{"id":"  x  "},"write":{"mode":"ok","msg":""}}
+{"case":"reply-fields","func":"reply","rid":7,"in":{"id":"x","reply":"hello","error":"","reason":"why"},"write":{"mode":"ok","msg":""}}
+{"case":"reply-fields-coerce","func":"reply","rid":7,"in":{"id":"x","reply":0,"error":true,"reason":null},"write":{"mode":"ok","msg":""}}
+{"case":"reply-valueerror","func":"reply","rid":7,"in":{"id":"x"},"write":{"mode":"valueerror","msg":"bad id"}}
+{"case":"reply-error","func":"reply","rid":7,"in":{"id":"x"},"write":{"mode":"error","msg":"boom"}}

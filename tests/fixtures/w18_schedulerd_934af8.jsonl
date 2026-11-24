@@ -1,0 +1,12 @@
+{"func":"stamp","t":{"origin":{"scope_id":"scope-1"},"origin_target":true,"origin_user_id":"u1","is_relay":true},"route":{},"media":{}}
+{"func":"stamp","t":{"origin":{"scope_id":"scope-2"},"origin_target":true,"origin_user_id":"u2","is_relay":false},"route":{},"media":{}}
+{"func":"stamp","t":{"origin":{"scope_id":"scope-3"},"origin_target":false,"origin_user_id":"u3","is_relay":true},"route":{},"media":{}}
+{"func":"stamp","t":{"origin":{"scope_id":"scope-4"},"origin_target":false,"origin_user_id":"u4","is_relay":false},"route":{},"media":{}}
+{"func":"stamp","t":{"origin":{"scope_id":"scope-5"},"origin_target":true,"origin_user_id":"u5","is_relay":true},"route":{"scope_id":"keep-me"},"media":{"user_id":"keep-u"}}
+{"func":"stamp","t":{"origin":{"scope_id":42},"origin_target":true,"origin_user_id":7,"is_relay":true},"route":{},"media":{}}
+{"func":"stamp","t":{"origin":{},"origin_target":true,"origin_user_id":0,"is_relay":true},"route":{},"media":{}}
+{"func":"stamp","t":{"origin":{"scope_id":""},"origin_target":true,"origin_user_id":null,"is_relay":true},"route":{},"media":{}}
+{"func":"stamp","t":{"origin":{"scope_id":"s"},"origin_target":true,"origin_user_id":true,"is_relay":true},"route":{},"media":{}}
+{"func":"stamp","t":{"is_relay":false,"origin_target":false},"route":{},"media":{}}
+{"func":"stamp","t":{"origin":{"scope_id":2.5},"origin_target":true,"origin_user_id":false,"is_relay":true},"route":{},"media":{}}
+{"func":"stamp","t":{"origin":{"scope_id":"s9"},"origin_target":true,"origin_user_id":"u9","is_relay":true},"route":{"other":"x"},"media":{"other":"y"}}

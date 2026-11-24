@@ -1,0 +1,24 @@
+{"func": "held", "case": "empty", "record": {}}
+{"func": "held", "case": "held", "record": {"pinned": true, "catalog": {"name": "x"}}}
+{"func": "held", "case": "pinned-sha", "record": {"pinned": true, "catalog": {"name": "x", "pin": "sha"}}}
+{"func": "held", "case": "not-pinned", "record": {"pinned": false, "catalog": {"name": "x"}}}
+{"func": "held", "case": "pinned-int", "record": {"pinned": 1, "catalog": {}}}
+{"func": "held", "case": "cat-null", "record": {"pinned": true, "catalog": null}}
+{"func": "held", "case": "cat-list", "record": {"pinned": true, "catalog": []}}
+{"func": "held", "case": "not-dict", "record": "x"}
+{"func": "held", "case": "empty-pin", "record": {"pinned": true, "catalog": {"pin": ""}}}
+{"func": "summary", "case": "empty", "outcome": {"results": [], "skipped": []}}
+{"func": "summary", "case": "updated", "outcome": {"results": [{"status": "updated", "name": "foo", "detail": ""}], "skipped": []}}
+{"func": "summary", "case": "current", "outcome": {"results": [{"status": "current", "name": "bar", "detail": ""}], "skipped": []}}
+{"func": "summary", "case": "failed", "outcome": {"results": [{"status": "failed", "name": "baz", "detail": "boom"}], "skipped": []}}
+{"func": "summary", "case": "review", "outcome": {"results": [{"status": "needs_review", "name": "q", "detail": "widened"}], "skipped": []}}
+{"func": "summary", "case": "skip-only", "outcome": {"results": [], "skipped": [{"name": "foo", "reason": "pinned"}]}}
+{"func": "summary", "case": "mixed", "outcome": {"results": [{"status": "updated", "name": "a", "detail": ""}, {"status": "needs_review", "name": "b", "detail": "d"}, {"status": "failed", "name": "c", "detail": "oops"}], "skipped": [{"name": "d", "reason": "held with --ref"}]}}
+{"func": "slash", "case": "update-arg", "parts": ["update", "foo"]}
+{"func": "slash", "case": "update-all", "parts": ["update"], "outcome": {"results": [{"status": "updated", "name": "foo", "detail": ""}], "skipped": []}}
+{"func": "slash", "case": "auto-state", "parts": ["auto-update"], "state": {"auto_apply": true, "check_hours": 6}}
+{"func": "slash", "case": "auto-on", "parts": ["auto-update", "on"], "state": {"auto_apply": true, "check_hours": 6}}
+{"func": "slash", "case": "auto-off", "parts": ["auto-update", "off"], "state": {"auto_apply": false, "check_hours": 6.5}}
+{"func": "slash", "case": "auto-bad", "parts": ["auto-update", "bad"]}
+{"func": "slash", "case": "other-on", "parts": ["foo", "on"], "state": {"auto_apply": true, "check_hours": 6}}
+{"func": "slash", "case": "upper-on", "parts": ["auto-update", "ON"], "state": {"auto_apply": true, "check_hours": 6}}

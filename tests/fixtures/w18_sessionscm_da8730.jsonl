@@ -1,0 +1,29 @@
+{"func":"status_tag","status":"complete"}
+{"func":"status_tag","status":"interrupted"}
+{"func":"status_tag","status":"error"}
+{"func":"status_tag","status":"empty"}
+{"func":"status_tag","status":"running"}
+{"func":"status_tag","status":null}
+{"func":"status_tag","status":""}
+{"func":"label","session":{"id":"abc123","title":"  Hello World  ","preview":"preview text"}}
+{"func":"label","session":{"id":"abc123","title":"   ","preview":"  fallback  "}}
+{"func":"label","session":{"id":"abc123","title":"","preview":""}}
+{"func":"label","session":{"id":"solo","title":null,"preview":null}}
+{"func":"clip","text":"abcdefghij","n":5}
+{"func":"clip","text":"short","n":10}
+{"func":"clip","text":"abcdefghij","n":3}
+{"func":"clip","text":"abcdefghij","n":1}
+{"func":"clip","text":"","n":5}
+{"func":"msgs_str","session":{"message_count":12}}
+{"func":"msgs_str","session":{"message_count":0}}
+{"func":"msgs_str","session":{"message_count":-3}}
+{"func":"msgs_str","session":{"message_count":2.5}}
+{"func":"msgs_str","session":{"message_count":true}}
+{"func":"msgs_str","session":{"message_count":null}}
+{"func":"msgs_str","session":{}}
+{"func":"match","session":{"id":"S1","title":"Hello World","preview":"p","source":"cli"},"query":"hello"}
+{"func":"match","session":{"id":"S1","title":"Hello World","preview":"p","source":"cli"},"query":"CLI"}
+{"func":"match","session":{"id":"abc","title":"x","preview":"y","source":"z"},"query":"ABC"}
+{"func":"match","session":{"id":"abc","title":"x","preview":"y","source":"z"},"query":""}
+{"func":"match","session":{"id":"abc","title":"x","preview":"y","source":"z"},"query":"missing"}
+{"func":"match","session":{"title":"needle here","preview":"","source":"","id":"i"},"query":"NEEDLE"}

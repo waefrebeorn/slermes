@@ -1,0 +1,22 @@
+{"func":"gateway_is_remote","env_value":""}
+{"func":"gateway_is_remote","env_value":"   "}
+{"func":"gateway_is_remote","env_value":"ws://localhost:9222"}
+{"func":"gateway_is_remote","env_value":"ws://127.0.0.1:1"}
+{"func":"gateway_is_remote","env_value":"ws://[::1]:1"}
+{"func":"gateway_is_remote","env_value":"ws://example.com"}
+{"func":"gateway_is_remote","env_value":"wss://EXAMPLE.com:443"}
+{"func":"gateway_is_remote","env_value":"not-a-url"}
+{"func":"gateway_is_remote","env_value":"  ws://LOCALHOST  "}
+{"func":"normalize_cdp_url","cdp_url":"localhost:9222"}
+{"func":"normalize_cdp_url","cdp_url":"http://localhost:9222"}
+{"func":"normalize_cdp_url","cdp_url":"https://example.com"}
+{"func":"normalize_cdp_url","cdp_url":"ws://host:1234/path"}
+{"func":"normalize_cdp_url","cdp_url":"ftp://example.com"}
+{"func":"normalize_cdp_url","cdp_url":"http://"}
+{"func":"normalize_cdp_url","cdp_url":"http://host:notaport"}
+{"func":"normalize_cdp_url","cdp_url":"http://localhost:9222/devtools/browser/abc123"}
+{"func":"normalize_cdp_url","cdp_url":"http://example.com:8080/path?x=1#f"}
+{"func":"normalize_cdp_url","cdp_url":"wss://secure.example.com"}
+{"func":"normalize_cdp_url","cdp_url":"http://user:pass@host:9000/x"}
+{"func":"normalize_cdp_url","cdp_url":"http://[::1]:9222"}
+{"func":"normalize_cdp_url","cdp_url":"http://host:99999"}

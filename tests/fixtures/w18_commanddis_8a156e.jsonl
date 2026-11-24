@@ -1,0 +1,19 @@
+{"case":"item-default","func":"item","in":{"text":"/foo","meta":"m"}}
+{"case":"item-display","func":"item","in":{"text":"/foo","meta":"m","display":"Foo"}}
+{"case":"item-empty-display","func":"item","in":{"text":"/foo","meta":"m","display":""}}
+{"case":"item-null-display","func":"item","in":{"text":"/foo","meta":"m","display":null}}
+{"case":"root-meta-section","func":"details_root_meta","in":{"candidate":"tools"}}
+{"case":"root-meta-cycle","func":"details_root_meta","in":{"candidate":"cycle"}}
+{"case":"root-meta-global","func":"details_root_meta","in":{"candidate":"hidden"}}
+{"case":"root-meta-upper","func":"details_root_meta","in":{"candidate":"TOOLS"}}
+{"case":"not-details","func":"details_completions","in":{"text":"/mouse"}}
+{"case":"not-details-prefix","func":"details_completions","in":{"text":"/detailsx"}}
+{"case":"root-bare","func":"details_completions","in":{"text":"/details"}}
+{"case":"root-trailing","func":"details_completions","in":{"text":"/details "}}
+{"case":"root-prefix","func":"details_completions","in":{"text":"/details ex"}}
+{"case":"root-prefix-cycle","func":"details_completions","in":{"text":"/details cy"}}
+{"case":"section-modes","func":"details_completions","in":{"text":"/details tools "}}
+{"case":"section-mode-prefix","func":"details_completions","in":{"text":"/details tools ex"}}
+{"case":"section-mode-reset","func":"details_completions","in":{"text":"/details thinking re"}}
+{"case":"bad-section","func":"details_completions","in":{"text":"/details bogus "}}
+{"case":"too-many","func":"details_completions","in":{"text":"/details tools expanded x"}}

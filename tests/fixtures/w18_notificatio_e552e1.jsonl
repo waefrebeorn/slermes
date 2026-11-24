@@ -1,0 +1,17 @@
+{"case":"park-completion","func":"parkable","in":{"evt":{"type":"completion"}}}
+{"case":"park-restored","func":"parkable","in":{"evt":{"type":"async_delegation","restored":true}}}
+{"case":"park-not-restored","func":"parkable","in":{"evt":{"type":"async_delegation","restored":false}}}
+{"case":"park-no-restored-key","func":"parkable","in":{"evt":{"type":"async_delegation"}}}
+{"case":"park-restored-other","func":"parkable","in":{"evt":{"restored":true,"type":"heartbeat"}}}
+{"case":"prog-heartbeat","func":"is_progress","in":{"evt":{"type":"heartbeat"}}}
+{"case":"prog-watch","func":"is_progress","in":{"evt":{"type":"watch_patterns"}}}
+{"case":"prog-result","func":"is_progress","in":{"evt":{"type":"completion"}}}
+{"case":"prog-empty","func":"is_progress","in":{"evt":{}}}
+{"case":"key-set","func":"key","in":{"evt":{"session_key":"abc"}}}
+{"case":"key-empty","func":"key","in":{"evt":{}}}
+{"case":"admit-empty","func":"admit_locked","in":{"evt":{"type":"completion"},"key":"a","state":[]}}
+{"case":"admit-progress-empty","func":"admit_locked","in":{"evt":{"type":"heartbeat"},"key":"a","state":[]}}
+{"case":"admit-keyfull","func":"admit_locked","in":{"evt":{"type":"completion","session_key":"a"},"key":"a","state":[[0.0,{"type":"completion","session_key":"a"}],[0.0,{"type":"completion","session_key":"a"}],[0.0,{"type":"completion","session_key":"a"}],[0.0,{"type":"completion","session_key":"a"}]]}}
+{"case":"admit-samekey-progress","func":"admit_locked","in":{"evt":{"type":"completion","session_key":"a"},"key":"a","state":[[0.0,{"type":"completion","session_key":"a"}],[0.0,{"type":"completion","session_key":"a"}],[0.0,{"type":"completion","session_key":"a"}],[1.0,{"type":"watch_x","session_key":"a"}]]}}
+{"case":"admit-total-full-progress","func":"admit_locked","in":{"evt":{"type":"completion","session_key":"z"},"key":"z","state":[[1.0,{"type":"watch_x","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}],[0.0,{"type":"completion","session_key":"b"}]]}}
+{"case":"admit-other-progress","func":"admit_locked","in":{"evt":{"type":"completion","session_key":"z"},"key":"z","state":[[1.0,{"type":"watch_x","session_key":"b"}]]}}

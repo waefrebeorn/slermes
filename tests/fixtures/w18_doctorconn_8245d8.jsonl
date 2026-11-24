@@ -1,0 +1,17 @@
+{"func":"row","name":"CPU","status":"ok"}
+{"func":"row","name":"Memory","status":"warn","detail":"low"}
+{"func":"row","name":"Net","status":"fail","detail":"down","label":"Network"}
+{"func":"row","name":"X","status":"ok","detail":""}
+{"func":"row","name":"Disk","status":"warn","label":""}
+{"func":"openrouter_status","status_code":401}
+{"func":"openrouter_status","status_code":402}
+{"func":"openrouter_status","status_code":429}
+{"func":"openrouter_status","status_code":500}
+{"func":"openrouter_status","status_code":200}
+{"func":"probe_openrouter","key":"","status_code":200}
+{"func":"probe_openrouter","key":"sk-abc","status_code":200}
+{"func":"probe_openrouter","key":"sk-abc","error":"boom"}
+{"func":"probe_openrouter","key":"sk-abc","status_code":401}
+{"func":"probe_openrouter","key":"sk-abc","status_code":402}
+{"func":"probe_openrouter","key":"sk-abc","status_code":429}
+{"func":"probe_openrouter","key":"sk-abc","status_code":403}

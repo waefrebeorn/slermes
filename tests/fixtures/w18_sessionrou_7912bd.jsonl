@@ -1,0 +1,11 @@
+{"func":"messaging_platform","label":"telegram","case":"messaging platform"}
+{"func":"messaging_platform","label":"discord","case":"messaging platform discord"}
+{"func":"messaging_platform","label":"local","case":"local is None"}
+{"func":"messaging_platform","label":"api_server","case":"api_server is None"}
+{"func":"messaging_platform","label":"slack","case":"slack platform"}
+{"func":"messaging_platform","label":"weixin","case":"weixin platform"}
+{"func":"messaging_platform","label":"","case":"empty label"}
+{"func":"messaging_platform","label":"unknown","case":"unknown label"}
+{"func":"messaging_platform","label":"TELEGRAM","case":"case sensitive"}
+{"func":"messaging_platform","label":"feishu","case":"feishu platform"}
+{"func":"messaging_platform","label":null,"case":"null label"}

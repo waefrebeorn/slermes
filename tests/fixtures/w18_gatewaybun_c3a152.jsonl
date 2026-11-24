@@ -1,0 +1,17 @@
+{"func":"env_pairs","env":{},"prior":{}}
+{"func":"env_pairs","env":{"HERMES_BUNDLED_PLUGINS":"/share/plugins"},"prior":{}}
+{"func":"env_pairs","env":{"HERMES_BUNDLED_PLUGINS":"  /p  "},"prior":{"HERMES_BUNDLED_PLUGINS":"/fallback"}}
+{"func":"env_pairs","env":{"HERMES_BUNDLED_PLUGINS":""},"prior":{"HERMES_BUNDLED_PLUGINS":"/fallback"}}
+{"func":"env_pairs","env":{"HERMES_TUI_DIR":"/tui","HERMES_OPTIONAL_SKILLS":"/opt"},"prior":{}}
+{"func":"env_pairs","env":{"UNRELATED":"x"},"prior":{"HERMES_BUNDLED_LOCALES":"/loc"}}
+{"func":"env_pairs","env":{"HERMES_BUNDLED_PLUGINS":"\t\n","HERMES_BUNDLED_SKILLS":" s "},"prior":{}}
+{"func":"systemd_env_line","name":"X","value":"plain"}
+{"func":"systemd_env_line","name":"X","value":"a\\b\"c%d"}
+{"func":"systemd_env_line","name":"HERMES_BUNDLED_PLUGINS","value":"/p/with%20space"}
+{"func":"systemd_env_line","name":"X","value":""}
+{"func":"systemd_bundled_env_block","env":{"HERMES_BUNDLED_PLUGINS":"/p"},"prior":{}}
+{"func":"systemd_bundled_env_block","env":{},"prior":{"HERMES_TUI_DIR":"/t/100%","HERMES_BUNDLED_SKILLS":"/s\"q"}}
+{"func":"systemd_bundled_env_block","env":{},"prior":{}}
+{"func":"launchd_bundled_env_xml","env":{"HERMES_BUNDLED_PLUGINS":"/p&<>"},"prior":{}}
+{"func":"launchd_bundled_env_xml","env":{},"prior":{"HERMES_TUI_DIR":"/t&x"}}
+{"func":"launchd_bundled_env_xml","env":{},"prior":{}}

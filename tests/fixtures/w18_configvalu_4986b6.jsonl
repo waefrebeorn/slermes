@@ -1,0 +1,22 @@
+{"func":"voice","config":{}}
+{"func":"voice","config":{"voice":{}}}
+{"func":"voice","config":{"voice":{"auto_tts_mode":"all"}}}
+{"func":"voice","config":{"voice":{"auto_tts_mode":" ALL "}}}
+{"func":"voice","config":{"voice":{"auto_tts_mode":"voice_only"}}}
+{"func":"voice","config":{"voice":{"auto_tts_mode":"bad"}}}
+{"func":"voice","config":{"voice":{"auto_tts_mode":null}}}
+{"func":"voice","config":{"voice":{"auto_tts_mode":5}}}
+{"func":"voice","config":{"voice":{"auto_tts_mode":true}}}
+{"func":"voice","config":{"voice":{"submit_mode":"draft"}}}
+{"func":"voice","config":{"voice":{"submit_mode":"DIRECT"}}}
+{"func":"voice","config":{"voice":{"submit_mode":"nope"}}}
+{"func":"voice","config":{"voice":{"auto_tts_mode":"all","submit_mode":"direct"}}}
+{"func":"voice","config":{"voice":"not a dict"}}
+{"func":"timezone","config":{},"tz_available":true,"valid_zones":[]}
+{"func":"timezone","config":{"timezone":null},"tz_available":true,"valid_zones":[]}
+{"func":"timezone","config":{"timezone":5},"tz_available":true,"valid_zones":[]}
+{"func":"timezone","config":{"timezone":"UTC"},"tz_available":true,"valid_zones":["UTC","America/New_York"]}
+{"func":"timezone","config":{"timezone":" Mars/Olympus "},"tz_available":true,"valid_zones":["UTC"]}
+{"func":"timezone","config":{"timezone":"UTC"},"tz_available":false,"valid_zones":[]}
+{"func":"timezone","config":{"timezone":"   "},"tz_available":true,"valid_zones":[]}
+{"func":"timezone","config":{"timezone":"Asia/Tokyo"},"tz_available":true,"valid_zones":["Asia/Tokyo"]}

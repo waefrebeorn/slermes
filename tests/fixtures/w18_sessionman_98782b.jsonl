@@ -1,0 +1,17 @@
+{"func":"continuation_path","case":"three node chain","store":{"sessions":{"s1":{},"s2":{"parent_session_id":"s1","compression_child":true},"s3":{"parent_session_id":"s2","compression_child":true}}},"start":"s1","tip":"s3"}
+{"func":"continuation_path","case":"tip equals start","store":{"sessions":{"s1":{}}},"start":"s1","tip":"s1"}
+{"func":"continuation_path","case":"mid chain not compression child","store":{"sessions":{"s1":{},"s2":{"parent_session_id":"s1","compression_child":false},"s3":{"parent_session_id":"s2","compression_child":true}}},"start":"s1","tip":"s3"}
+{"func":"continuation_path","case":"missing tip row","store":{"sessions":{"s1":{}}},"start":"s1","tip":"missing"}
+{"func":"continuation_path","case":"chain ends before start","store":{"sessions":{"s1":{},"s2":{"parent_session_id":"sX","compression_child":true},"s3":{"parent_session_id":"s2","compression_child":true}}},"start":"s1","tip":"s3"}
+{"func":"continuation_path","case":"empty store","store":{"sessions":{}},"start":"a","tip":"b"}
+{"func":"compression_ancestors","case":"two ancestors root first","store":{"sessions":{"s1":{},"s2":{"parent_session_id":"s1","compression_child":true},"s3":{"parent_session_id":"s2","compression_child":true}}},"session_id":"s3"}
+{"func":"compression_ancestors","case":"not a compression child","store":{"sessions":{"s1":{}}},"session_id":"s1"}
+{"func":"compression_ancestors","case":"cycle protection","store":{"sessions":{"s1":{"parent_session_id":"s2","compression_child":true},"s2":{"parent_session_id":"s1","compression_child":true}}},"session_id":"s2"}
+{"func":"compression_ancestors","case":"self parent breaks","store":{"sessions":{"s1":{"parent_session_id":"s1","compression_child":true}}},"session_id":"s1"}
+{"func":"compression_ancestors","case":"missing parent row still listed","store":{"sessions":{"s2":{"parent_session_id":"gone","compression_child":true}}},"session_id":"s2"}
+{"func":"with_stop_cause","case":"interrupted with cause","accepted":{"interrupted":true,"final_response":"x"},"worker":{"stop_cause":"user stop"}}
+{"func":"with_stop_cause","case":"not interrupted","accepted":{"interrupted":false,"final_response":"x"},"worker":{"stop_cause":"user stop"}}
+{"func":"with_stop_cause","case":"empty cause is falsy","accepted":{"interrupted":true},"worker":{"stop_cause":""}}
+{"func":"with_stop_cause","case":"no interrupted key","accepted":{"final_response":"ok","usage":{}},"worker":{"stop_cause":"why"}}
+{"func":"with_stop_cause","case":"existing cause overwritten","accepted":{"interrupted":true,"interrupt_message":"old"},"worker":{"stop_cause":"new"}}
+{"func":"with_stop_cause","case":"worker without stop_cause","accepted":{"interrupted":true},"worker":{}}

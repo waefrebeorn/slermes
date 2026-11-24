@@ -1,0 +1,11 @@
+{"func":"close_late_result","result_raises":false,"has_handle":true}
+{"func":"close_late_result","result_raises":false,"has_handle":false}
+{"func":"close_late_result","result_raises":true,"has_handle":true}
+{"func":"close_late_result","result_raises":true,"has_handle":false}
+{"func":"defer_teardown","future_none":true,"future_done":false,"session_db_truthy":true,"invoke_callback":true}
+{"func":"defer_teardown","future_none":false,"future_done":true,"session_db_truthy":true,"invoke_callback":true}
+{"func":"defer_teardown","future_none":false,"future_done":false,"session_db_truthy":true,"invoke_callback":true}
+{"func":"defer_teardown","future_none":false,"future_done":false,"session_db_truthy":false,"invoke_callback":true}
+{"func":"defer_teardown","future_none":false,"future_done":false,"session_db_truthy":true,"invoke_callback":false}
+{"func":"reap_background","has_pid":true,"pid":"12345"}
+{"func":"reap_background","has_pid":false,"pid":"?","note":"missing pid attr"}

@@ -1,0 +1,14 @@
+{"func":"env","description":"d","prompt":"p","keys":{"foo":"bar","n":null,"flag":true}}
+{"func":"env","description":"only","prompt":"defaults"}
+{"func":"env","description":"é","prompt":"ü","keys":{"k":"v"}}
+{"func":"category","category":"provider","password_default":true,"advanced_default":true,"description":"P key","prompt":"P key"}
+{"func":"category","category":"tool","password_default":true,"advanced_default":false,"description":"T key","prompt":"T key"}
+{"func":"category","category":"setting","password_default":null,"advanced_default":false,"description":"S","prompt":"S"}
+{"func":"category","category":"provider","password_default":true,"advanced_default":true,"description":"d","prompt":"p","opts":{"url":"http://x","help":"h","tools":"t"}}
+{"func":"category","category":"provider","password_default":true,"advanced_default":true,"description":"d","prompt":"p","opts":{"url":null}}
+{"func":"category","category":"provider","password_default":true,"advanced_default":true,"description":"d","prompt":"p","opts":{"password":false}}
+{"func":"category","category":"provider","password_default":true,"advanced_default":true,"description":"d","prompt":"p","opts":{"password":null}}
+{"func":"category","category":"provider","password_default":true,"advanced_default":true,"description":"d","prompt":"p","opts":{"advanced":false}}
+{"func":"base_url","name":"OPENAI"}
+{"func":"base_url","name":"ANTHROPIC","prompt_name":"Anthropic"}
+{"func":"base_url","name":""}

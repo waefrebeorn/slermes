@@ -1,0 +1,16 @@
+{"func":"selected_provider_key_env","case":"key_env present","config":{"providers":{"work":{"key_env":"WORK_KEY"}}},"provider":"work"}
+{"func":"selected_provider_key_env","case":"api_key_env fallback","config":{"providers":{"work":{"api_key_env":"ALT_KEY"}}},"provider":"work"}
+{"func":"selected_provider_key_env","case":"key_env empty falls back","config":{"providers":{"work":{"key_env":"","api_key_env":"FALLBACK"}}},"provider":"work"}
+{"func":"selected_provider_key_env","case":"whitespace trimmed","config":{"providers":{"work":{"key_env":"  PADDED  "}}},"provider":"work"}
+{"func":"selected_provider_key_env","case":"whitespace only becomes null","config":{"providers":{"work":{"key_env":"   ","api_key_env":"IGNORED"}}},"provider":"work"}
+{"func":"selected_provider_key_env","case":"missing provider key","config":{"providers":{"work":{"key_env":"K"}}},"provider":"absent"}
+{"func":"selected_provider_key_env","case":"providers not dict","config":{"providers":[]},"provider":"work"}
+{"func":"selected_provider_key_env","case":"entry not dict","config":{"providers":{"work":"string"}},"provider":"work"}
+{"func":"selected_provider_key_env","case":"no providers section","config":{},"provider":"work"}
+{"func":"is_model_reset","case":"plain reset","payload":{"model":"reset"}}
+{"func":"is_model_reset","case":"case and whitespace","payload":{"model":"  RESET \n"}}
+{"func":"is_model_reset","case":"reset with confirm allowed","payload":{"model":"reset","confirm":"abc"}}
+{"func":"is_model_reset","case":"other model","payload":{"model":"gpt-4"}}
+{"func":"is_model_reset","case":"reset with extra flag refuses","payload":{"model":"reset","reasoning":"high"}}
+{"func":"is_model_reset","case":"reset with many flags refuses","payload":{"model":"reset","confirm":"x","provider":"custom"}}
+{"func":"is_model_reset","case":"tab padded reset","payload":{"model":"\treset\t"}}

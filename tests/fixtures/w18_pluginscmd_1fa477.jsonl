@@ -1,0 +1,11 @@
+{"func":"filter_entries","entries":[["alpha","1.0","A","bundled","/d","k1"],["beta","2.0","B","user","/d","k2"]],"no_bundled":false,"user":false,"enabled":false,"status_map":{}}
+{"func":"filter_entries","entries":[["alpha","1.0","A","bundled","/d","k1"],["beta","2.0","B","user","/d","k2"]],"no_bundled":true,"user":false,"enabled":false,"status_map":{}}
+{"func":"filter_entries","entries":[["alpha","1.0","A","bundled","/d","k1"],["beta","2.0","B","user","/d","k2"]],"no_bundled":false,"user":true,"enabled":false,"status_map":{}}
+{"func":"filter_entries","entries":[["alpha","1.0","A","bundled","/d","k1"],["beta","2.0","B","user","/d","k2"]],"no_bundled":true,"user":true,"enabled":false,"status_map":{}}
+{"func":"filter_entries","entries":[["a","1","a","user","/d","k"],["b","2","b","git","/d","k"],["c","3","c","bundled","/d","k"]],"no_bundled":false,"user":false,"enabled":true,"status_map":{"a":"enabled","b":"disabled","c":"enabled"}}
+{"func":"filter_entries","entries":[["a","1","a","user","/d","k"],["b","2","b","git","/d","k"],["c","3","c","bundled","/d","k"]],"no_bundled":true,"user":false,"enabled":true,"status_map":{"a":"disabled","b":"enabled","c":"enabled"}}
+{"func":"filter_entries","entries":[],"no_bundled":false,"user":false,"enabled":false,"status_map":{}}
+{"func":"filter_entries","entries":[],"no_bundled":true,"user":true,"enabled":true,"status_map":{}}
+{"func":"filter_entries","entries":[["solo","9.9","desc","git","/x","key"]],"no_bundled":false,"user":false,"enabled":true,"status_map":{}}
+{"func":"filter_entries","entries":[["nullsrc","1","d",null,"/d","k"],["empty","1","d","","/d","k"]],"no_bundled":true,"user":false,"enabled":false,"status_map":{}}
+{"func":"filter_entries","entries":[["ü","1","ü","user","/d","k"],["b","1","b","bundled","/d","k"]],"no_bundled":false,"user":true,"enabled":false,"status_map":{}}

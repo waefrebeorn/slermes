@@ -1,0 +1,14 @@
+{"func":"free_tier_route","free_tier_account":true,"inference_provider":"nous"}
+{"func":"free_tier_route","free_tier_account":true,"inference_provider":"openai"}
+{"func":"free_tier_route","free_tier_account":false,"inference_provider":"nous"}
+{"func":"free_tier_route","free_tier_account":true,"inference_provider":""}
+{"func":"as_payload","record":{"provider_configured":true,"inference_provider":"nous","free_tier_account":true,"has_identity":true,"other_providers":false,"error":"","failure":{},"finished_at":1000.0}}
+{"func":"as_payload","record":{"provider_configured":true,"inference_provider":"openai","free_tier_account":false,"has_identity":true,"other_providers":true,"error":"","failure":{"error_code":"expired","retryable":false},"finished_at":1000.0}}
+{"func":"as_payload","record":{"provider_configured":true,"inference_provider":"nous","free_tier_account":true,"has_identity":true,"other_providers":false,"error":"","failure":{"error":"overlap","free_tier_route":false},"finished_at":1000.0}}
+{"func":"as_payload","record":{"provider_configured":false,"inference_provider":"","free_tier_account":false,"has_identity":false,"other_providers":false,"error":"","failure":{},"finished_at":0.0}}
+{"func":"build_record","other":false,"state":null,"failure":{},"free_active":false,"is_guest":false,"inference_provider":"","finished_at":1000.0}
+{"func":"build_record","other":true,"state":{"id":"guest"},"failure":{},"free_active":false,"is_guest":true,"inference_provider":"openai","finished_at":1000.0}
+{"func":"build_record","other":false,"state":{"id":"guest"},"failure":{},"free_active":true,"is_guest":true,"inference_provider":"nous","finished_at":1000.0}
+{"func":"build_record","other":false,"state":{},"failure":{"error":"expired"},"free_active":false,"is_guest":false,"inference_provider":"","finished_at":1000.0}
+{"func":"build_record","other":false,"state":{"id":"u"},"failure":{"error":""},"free_active":false,"is_guest":false,"inference_provider":"openai","finished_at":1000.0}
+{"func":"build_record","other":true,"state":{"id":"u"},"failure":{"error":5},"free_active":false,"is_guest":false,"inference_provider":"nous","finished_at":1000.0}

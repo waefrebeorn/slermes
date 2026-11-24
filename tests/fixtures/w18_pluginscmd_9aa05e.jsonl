@@ -1,0 +1,44 @@
+{"func": "looks", "case": "basic", "identifier": "foo"}
+{"func": "looks", "case": "hyphen", "identifier": "hermes-plugin-x"}
+{"func": "looks", "case": "underscore", "identifier": "abc_123"}
+{"func": "looks", "case": "len64", "identifier": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "looks", "case": "empty", "identifier": ""}
+{"func": "looks", "case": "len65", "identifier": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "looks", "case": "slash", "identifier": "owner/repo"}
+{"func": "looks", "case": "url", "identifier": "https://x"}
+{"func": "looks", "case": "winpath", "identifier": "C:\\x"}
+{"func": "looks", "case": "upper", "identifier": "Foo"}
+{"func": "looks", "case": "git", "identifier": "git@host"}
+{"func": "looks", "case": "ssh", "identifier": "ssh://x"}
+{"func": "looks", "case": "file", "identifier": "file://x"}
+{"func": "looks", "case": "dot", "identifier": "x.y"}
+{"func": "pin", "case": "sha", "sidecar": {"sha": "abcd"}, "entry_sha": "abcd"}
+{"func": "pin", "case": "pin", "sidecar": {"pin": "abcd"}, "entry_sha": "abcd"}
+{"func": "pin", "case": "mismatch", "sidecar": {"sha": "aaaa", "pin": "bbbb"}, "entry_sha": "cccc"}
+{"func": "pin", "case": "empty-sha", "sidecar": {"sha": "abcd"}, "entry_sha": ""}
+{"func": "pin", "case": "case", "sidecar": {"sha": "ABCD"}, "entry_sha": "abcd"}
+{"func": "pin", "case": "null", "sidecar": {"sha": null, "pin": null}, "entry_sha": "x"}
+{"func": "platforms", "case": "basic", "platforms": ["windows", "macos", "linux", "WINDOWS"]}
+{"func": "platforms", "case": "empty", "platforms": []}
+{"func": "platforms", "case": "dups", "platforms": ["win32", "win32", "darwin"]}
+{"func": "platforms", "case": "other", "platforms": ["android", "ios"]}
+{"func": "added", "case": "desktop-new", "surface": "desktop", "old_set": [], "new_set": ["plugin.js"]}
+{"func": "added", "case": "desktop-old", "surface": "desktop", "old_set": ["x"], "new_set": ["y"]}
+{"func": "added", "case": "tools", "surface": "tools", "old_set": ["a", "b"], "new_set": ["b", "c"]}
+{"func": "added", "case": "hooks", "surface": "hooks", "old_set": [], "new_set": ["h1", "h2"]}
+{"func": "added", "case": "dups", "surface": "tools", "old_set": ["a"], "new_set": ["a", "a", "b"]}
+{"func": "added", "case": "empty", "surface": "tools", "old_set": [], "new_set": []}
+{"func": "delta", "case": "empty", "old_map": {}, "new_map": {}}
+{"func": "delta", "case": "caps", "old_map": {"capabilities": ["a"]}, "new_map": {"capabilities": ["a", "b"]}}
+{"func": "delta", "case": "desktop", "old_map": {"desktop": []}, "new_map": {"desktop": ["plugin.js"]}}
+{"func": "delta", "case": "multi", "old_map": {"tools": ["x"]}, "new_map": {"tools": ["x", "y"], "hooks": ["h"], "oauth": ["o"]}}
+{"func": "delta", "case": "none", "old_map": {"tools": ["x", "y"]}, "new_map": {"tools": ["x", "y"]}}
+{"func": "delta_lines", "case": "one", "delta": {"tools": ["a", "b"]}}
+{"func": "delta_lines", "case": "two", "delta": {"tools": ["a"], "hooks": ["h1", "h2"]}}
+{"func": "delta_lines", "case": "empty", "delta": {}}
+{"func": "delta_lines", "case": "desktop", "delta": {"desktop": ["plugin.js"]}}
+{"func": "pin_label", "case": "version", "version": "1.4.0", "sha": "abcdef123456"}
+{"func": "pin_label", "case": "nover", "version": "", "sha": "abcd1234"}
+{"func": "pin_label", "case": "short", "version": "v1", "sha": "abc"}
+{"func": "pin_label", "case": "empty", "version": "", "sha": ""}
+{"func": "pin_label", "case": "long", "version": "2.0", "sha": "0123456789abcdef"}

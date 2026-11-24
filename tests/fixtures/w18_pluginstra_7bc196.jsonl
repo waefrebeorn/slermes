@@ -1,0 +1,11 @@
+{"func":"deps_msg","before_reqs":["a>=1"],"after_reqs":["a>=1","b>=2"],"before_installs":true,"after_installs":true,"target_name":"myplug"}
+{"func":"deps_msg","before_reqs":[],"after_reqs":["requests","numpy"],"before_installs":true,"after_installs":true,"target_name":"web"}
+{"func":"deps_msg","before_reqs":[],"after_reqs":[],"before_installs":false,"after_installs":true,"target_name":"pkg"}
+{"func":"deps_msg","before_reqs":["x"],"after_reqs":["x"],"before_installs":true,"after_installs":true,"target_name":"nochange"}
+{"func":"deps_msg","before_reqs":["x"],"after_reqs":["x"],"before_installs":false,"after_installs":true,"target_name":"both"}
+{"func":"deps_msg","before_reqs":[],"after_reqs":["a","b","c"],"before_installs":false,"after_installs":false,"target_name":"abc"}
+{"func":"deps_msg","before_reqs":["a"],"after_reqs":["b","a","c"],"before_installs":true,"after_installs":true,"target_name":"dup"}
+{"func":"deps_msg","before_reqs":[],"after_reqs":[],"before_installs":true,"after_installs":false,"target_name":"down"}
+{"func":"deps_msg","before_reqs":[],"after_reqs":["single"],"before_installs":true,"after_installs":true,"target_name":""}
+{"func":"deps_msg","before_reqs":["a>=1"],"after_reqs":["a>=2"],"before_installs":true,"after_installs":true,"target_name":"ver"}
+{"func":"deps_msg","before_reqs":[],"after_reqs":["ü-package"],"before_installs":false,"after_installs":false,"target_name":"ünïcode"}

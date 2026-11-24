@@ -1,0 +1,14 @@
+{"func":"freeze","value":{"b":2,"a":1},"out":{"t":"dict","v":[[{"t":"str","v":"a"},{"t":"int","v":1}],[{"t":"str","v":"b"},{"t":"int","v":2}]]},"case":"dict sorted keys"}
+{"func":"freeze","value":[1,2,1],"out":{"t":"list","v":[{"t":"int","v":1},{"t":"int","v":2},{"t":"int","v":1}]},"case":"list keeps duplicate and order"}
+{"func":"freeze","value":{"__tuple__":[1,2]},"out":{"t":"tuple","v":[{"t":"int","v":1},{"t":"int","v":2}]},"case":"tuple marker"}
+{"func":"freeze","value":{"__set__":[3,1,2]},"out":{"t":"set","v":[{"t":"int","v":1},{"t":"int","v":2},{"t":"int","v":3}]},"case":"set marker sorted"}
+{"func":"freeze","value":{"__frozenset__":[2,1]},"out":{"t":"frozenset","v":[{"t":"int","v":1},{"t":"int","v":2}]},"case":"frozenset marker sorted"}
+{"func":"freeze","value":{"x":[1,{"y":2}]},"out":{"t":"dict","v":[[{"t":"str","v":"x"},{"t":"list","v":[{"t":"int","v":1},{"t":"dict","v":[[{"t":"str","v":"y"},{"t":"int","v":2}]]}]}]]},"case":"nested container"}
+{"func":"freeze","value":[true,null,"s"],"out":{"t":"list","v":[{"t":"bool","v":true},{"t":"NoneType","v":null},{"t":"str","v":"s"}]},"case":"bool none str list"}
+{"func":"freeze","value":42,"out":{"t":"int","v":42},"case":"scalar int"}
+{"func":"freeze","value":"hi","out":{"t":"str","v":"hi"},"case":"scalar str"}
+{"func":"freeze","value":3.5,"out":{"t":"float","v":3.5},"case":"scalar float"}
+{"func":"freeze","value":{"__set__":[2,"a",true]},"out":{"t":"set","v":[{"t":"bool","v":true},{"t":"int","v":2},{"t":"str","v":"a"}]},"case":"mixed set sorted by canonical form"}
+{"func":"freeze","value":{"__tuple__":[{"__set__":[2,1]},[3]]},"out":{"t":"tuple","v":[{"t":"set","v":[{"t":"int","v":1},{"t":"int","v":2}]},{"t":"list","v":[{"t":"int","v":3}]}]},"case":"tuple containing set and list"}
+{"func":"freeze","value":{},"out":{"t":"dict","v":[]},"case":"empty dict"}
+{"func":"freeze","value":[],"out":{"t":"list","v":[]},"case":"empty list"}

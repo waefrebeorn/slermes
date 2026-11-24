@@ -1,0 +1,21 @@
+{"func":"escape","text":"```code```","case":"two fences"}
+{"func":"escape","text":"no fences","case":"none"}
+{"func":"escape","text":"","case":"empty"}
+{"func":"escape","text":"````","case":"four backticks"}
+{"func":"escape","text":"a```b```c","case":"middle fences"}
+{"func":"escape","text":null,"case":"null passes through"}
+{"func":"open_span","text":"```py\nx=1","upto":6,"case":"open fence"}
+{"func":"open_span","text":"abc","upto":3,"case":"no fence"}
+{"func":"open_span","text":"```py\nx","upto":5,"case":"no newline"}
+{"func":"open_span","text":"a```b","upto":4,"case":"mid text"}
+{"func":"open_span","text":"","upto":0,"case":"empty"}
+{"func":"open_span","text":"a\nb```tag\nrest","upto":11,"case":"cut in tag"}
+{"func":"ensure_closed","text":"","case":"empty"}
+{"func":"ensure_closed","text":"plain","case":"plain"}
+{"func":"ensure_closed","text":"```py\nx=1","case":"odd fence"}
+{"func":"ensure_closed","text":"```py\nx=1\n```","case":"balanced"}
+{"func":"ensure_closed","text":"a ` b","case":"orphan inline"}
+{"func":"ensure_closed","text":"```a``` `x","case":"fenced plus orphan"}
+{"func":"ensure_closed","text":"text\n```\n","case":"trailing newline"}
+{"func":"ensure_closed","text":"`single","case":"single backtick"}
+{"func":"ensure_closed","text":"``double``","case":"double backtick pair"}

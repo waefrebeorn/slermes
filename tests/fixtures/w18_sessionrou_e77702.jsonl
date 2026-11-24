@@ -1,0 +1,22 @@
+{"func":"resolved_route","case":"auto provider","model_cfg":{"provider":"auto"},"config":{}}
+{"func":"resolved_route","case":"empty provider","model_cfg":{},"config":{}}
+{"func":"resolved_route","case":"plain provider lowercased","model_cfg":{"provider":"OpenAI"},"config":{}}
+{"func":"resolved_route","case":"ollama alias to custom with trailing slash","model_cfg":{"provider":"ollama","base_url":"http://host:11434/"},"config":{}}
+{"func":"resolved_route","case":"google alias with padded base url","model_cfg":{"provider":" GOOGLE ","base_url":" https://g.example/ "},"config":{}}
+{"func":"resolved_route","case":"named providers entry by key","model_cfg":{"provider":"work","base_url":""},"config":{"providers":{"work":{"name":"My Work","provider_key":"","base_url":"https://work.example/"}}}}
+{"func":"resolved_route","case":"named providers entry uses provider_key slug","model_cfg":{"provider":"work"},"config":{"providers":{"work":{"name":"X","provider_key":"my-key","base_url":"https://x/"}}}}
+{"func":"resolved_route","case":"named entry custom colon spelling","model_cfg":{"provider":"custom:work"},"config":{"providers":{"work":{"name":"N","base_url":"https://w/"}}}}
+{"func":"resolved_route","case":"legacy custom_providers name slug","model_cfg":{"provider":"legacy-prov"},"config":{"custom_providers":[{"name":"Legacy Prov","base_url":"https://l/"}]}}
+{"func":"resolved_route","case":"model_cfg not object acts empty","model_cfg":"garbage","config":{}}
+{"func":"resolved_route","case":"base url multiple trailing slashes","model_cfg":{"provider":"custom","base_url":"https://x///"},"config":{}}
+{"func":"configured_entry_key","case":"custom keyed entry","identity":"custom:work","config":{"providers":{"work":{"name":"N","base_url":"https://w/"}}}}
+{"func":"configured_entry_key","case":"no matching entry","identity":"custom:work","config":{"providers":{"other":{}}}}
+{"func":"configured_entry_key","case":"no custom prefix","identity":"work","config":{"providers":{"work":{}}}}
+{"func":"configured_entry_key","case":"padded upper identity","identity":" CUSTOM:WORK ","config":{"providers":{"work":{}}}}
+{"func":"configured_entry_key","case":"colon inside key","identity":"custom:work:x","config":{"providers":{"work:x":{}}}}
+{"func":"configured_entry_key","case":"legacy custom name has key of slug","identity":"custom:legacy-prov","config":{"custom_providers":[{"name":"Legacy Prov"}]}}
+{"func":"profile_route_identity","case":"empty model block","config":{"model":{}}}
+{"func":"profile_route_identity","case":"base url only becomes custom","config":{"model":{"base_url":"https://x/"}}}
+{"func":"profile_route_identity","case":"auto provider becomes custom","config":{"model":{"provider":"auto","base_url":"https://x/"}}}
+{"func":"profile_route_identity","case":"explicit ollama stays custom alias","config":{"model":{"provider":"ollama"}}}
+{"func":"profile_route_identity","case":"model block not object","config":{"model":"string"}}

@@ -1,0 +1,16 @@
+{"func":"desktop_folder_name","git_url":"https://github.com/acme/foo.git","subdir":"plugins/my-plugin"}
+{"func":"desktop_folder_name","git_url":"https://github.com/acme/foo.git","subdir":"plugins\\my-plugin"}
+{"func":"desktop_folder_name","git_url":"https://github.com/acme/foo.git","subdir":"desktop/ui"}
+{"func":"desktop_folder_name","git_url":"https://github.com/acme/foo.git","subdir":"a/./b/c"}
+{"func":"desktop_folder_name","git_url":"https://github.com/acme/foo.git","subdir":"desktop"}
+{"func":"desktop_folder_name","git_url":"https://github.com/acme/foo.git","subdir":""}
+{"func":"desktop_folder_name","git_url":"https://github.com/acme/foo.git","subdir":null}
+{"func":"desktop_folder_name","git_url":"git@github.com:acme/bar.git","subdir":""}
+{"func":"desktop_folder_name","git_url":"https://github.com/acme/baz/","subdir":"/"}
+{"func":"desktop_folder_name","git_url":"file:///tmp/repo.git","subdir":"x/y/."}
+{"func":"desktop_folder_name","git_url":"https://github.com/acme/foo.git","subdir":"a/desktop/b/desktop"}
+{"func":"repo_name","url":"https://github.com/acme/foo.git"}
+{"func":"repo_name","url":"git@github.com:acme/bar.git"}
+{"func":"repo_name","url":"https://github.com/acme/baz/"}
+{"func":"repo_name","url":"https://github.com/acme/foo"}
+{"func":"repo_name","url":""}
