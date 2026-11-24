@@ -2762,7 +2762,10 @@ json_t *w27_adapter_1f12c3_p14_standalone_response_encoding(const json_t *get_en
      * "gzip" for a response whose get_encoding had raised. */
     json_t *out;
     char *v;
-    if (w27a1f_is_null(get_encoding)) return json_string("utf-8");
+    /* `if callable(get_encoding)`: the seam models the method with a string
+     * sentinel, so anything that is not a string is a response WITHOUT the method
+     * and falls back to utf-8. */
+    if (!get_encoding || get_encoding->type != JSON_STRING) return json_string("utf-8");
     v = w27a1f_pystr(get_encoding);
     if (!v || !v[0] || !strcmp(v, "raise") || !strcmp(v, "empty")) {
         free(v);
