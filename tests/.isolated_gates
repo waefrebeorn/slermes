@@ -1,0 +1,17 @@
+# Gates that must run in a fresh interpreter.
+#
+# Most oracles run in one process (gate_batch.py) and are isolated by restoring
+# sys.modules, sys.path and os.environ around each run. A few depend on
+# process-global state that no Python-level restore can undo -- a cache inside a
+# CPython extension, codec/locale state, or a module that memoised a lookup at
+# import time. Those go here and pay one process each, so their verdict in a
+# batch equals their standalone verdict.
+#
+# Adding a gate here is not a fix: if a gate only fails in a batch, find the
+# leak first. These two read Telegram proxy/fallback state that an earlier
+# oracle in the same interpreter leaves behind (25 mismatches in a batch, 89
+# cases / 0 mismatches standalone with the identical binary and fixture).
+w33_telegramne_429779_p1
+w33_telegramne_429779_p2
+# same class: 160 cases / 0 mismatches standalone, 4 in a batch.
+w33_standalone_9f791b

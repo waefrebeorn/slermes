@@ -70,6 +70,12 @@ def _oracle_inproc(gate, harness_stdout: bytes):
     old = (sys.stdin, sys.stdout, sys.stderr)
     saved_mods = dict(sys.modules)
     saved_path = list(sys.path)
+    # sys.modules alone is not isolation: an oracle that patches os.environ
+    # (proxy lists, fallback IPs, HERMES_* flags) leaks into every later oracle
+    # in this interpreter. w33_telegramne_429779_p2 read a previous oracle's
+    # TELEGRAM_* variables and reported 25 mismatches that a standalone run
+    # (89 cases, 0 mismatches) did not reproduce.
+    saved_env = dict(os.environ)
     try:
         stdin = io.TextIOWrapper(io.BytesIO(harness_stdout), encoding="utf-8", errors="replace")
         sys.stdin, sys.stdout, sys.stderr = stdin, out, err
@@ -82,12 +88,46 @@ def _oracle_inproc(gate, harness_stdout: bytes):
     finally:
         sys.stdin, sys.stdout, sys.stderr = old
         sys.path[:] = saved_path
+        for key in [k for k in os.environ if k not in saved_env]:
+            del os.environ[key]
+        for key, val in saved_env.items():
+            if os.environ.get(key) != val:
+                os.environ[key] = val
         for name in [n for n in sys.modules if n not in saved_mods]:
             del sys.modules[name]
         for name, mod in saved_mods.items():
             if sys.modules.get(name) is not mod:
                 sys.modules[name] = mod
     return rc, get_out() + get_err()
+
+
+def _isolated_gates():
+    """Gates that must run in a FRESH interpreter (tests/.isolated_gates).
+
+    Some oracles legitimately depend on process-global state that in-process
+    restoration cannot undo (C-level caches inside a CPython extension, locale or
+    codec state, a module that memoised an env lookup at import). Those run one
+    process each: slower, but the same result as the standalone proof.
+    """
+    path = os.path.join(REPO, "tests", ".isolated_gates")
+    if not os.path.isfile(path):
+        return set()
+    out = set()
+    with open(path, encoding="utf-8") as fh:
+        for line in fh:
+            line = line.split("#", 1)[0].strip()
+            if line:
+                out.add(line)
+    return out
+
+
+def _oracle_subprocess(gate, harness_stdout: bytes):
+    path = os.path.join(REPO, "tests", "oracle_%s.py" % gate)
+    if not os.path.isfile(path):
+        return 127, "no tests/oracle_%s.py" % gate
+    r = subprocess.run([sys.executable, path], input=harness_stdout,
+                       capture_output=True, cwd=REPO)
+    return r.returncode, (r.stdout + r.stderr).decode("utf-8", "replace")
 
 
 def _stamp(gate, objs):
@@ -204,7 +244,10 @@ def verify(gates, jobs):
     for gate in gates:
         if gate in lines:
             continue
-        rc, text = _oracle_inproc(gate, payload.get(gate, b""))
+        if gate in ISOLATED:
+            rc, text = _oracle_subprocess(gate, payload.get(gate, b""))
+        else:
+            rc, text = _oracle_inproc(gate, payload.get(gate, b""))
         line = ""
         for cand in text.splitlines():
             if cand.startswith("ORACLE %s:" % gate):
@@ -229,6 +272,8 @@ def main():
     # Python child's stdout to a file, and Windows text mode then writes \r\n.
     # "w26_x\r" silently becomes "no harness tests/t_port_w26_x\r.c" for every
     # gate, which reads like a missing-file bug rather than a shell artifact.
+    global ISOLATED
+    ISOLATED = _isolated_gates()
     gates = [g.strip() for g in args.gates if g.strip()]
     if args.plan:
         gates += list(json.load(open(args.plan, encoding="utf-8")))
