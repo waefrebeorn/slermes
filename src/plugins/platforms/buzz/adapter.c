@@ -1534,11 +1534,14 @@ json_t *w27_adapter_04abb5_chat_info(const json_t *in) {
     if (!name && cli_path[0] && reply && reply->type == JSON_OBJECT) name = json_obj_get(reply, "name");
     type = w_dup("group");
     if (state && state->type == JSON_OBJECT) {
+        /* self._channel_state.get(chat_id) -- keyed by chat id, no flat fallback.
+         * A state map that does not carry THIS chat answers None upstream, which
+         * is the "group" default, not the map's own chat_type. */
         const json_t *st = json_obj_get(state, chat_id);
-        const json_t *ct;
-        if (!st || st->type != JSON_OBJECT) st = state;
-        ct = json_obj_get(st, "chat_type");
-        if (ct && ct->type == JSON_STRING && ct->str_val[0]) { free(type); type = w_dup(ct->str_val); }
+        if (st && st->type == JSON_OBJECT) {
+            const json_t *ct = json_obj_get(st, "chat_type");
+            if (ct && ct->type == JSON_STRING && ct->str_val[0]) { free(type); type = w_dup(ct->str_val); }
+        }
     }
     json_set(out, "name", (name && w_truthy(name)) ? json_copy(name) : json_string(chat_id));
     json_set(out, "type", json_string(type));
