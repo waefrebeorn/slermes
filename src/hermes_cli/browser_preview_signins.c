@@ -78,11 +78,19 @@ json_t *w25_browserpre_4511a0_export(const json_t *state) {
     if (read_error && read_error->type != JSON_NULL) {
         char *msg;
         const char *detail;
+        char *owned = NULL;
         size_t need;
         out = json_object();
-        detail = read_error->type == JSON_STRING
-                     ? (read_error->str_val ? read_error->str_val : "")
-                     : "";
+        /* The rung interpolates the caught exception, so a non-string read_error
+         * arrives as its str(): an empty list reads "[]", never "". (A non-empty
+         * container would need Python's single-quoted repr; empty containers are
+         * the shape that reaches here.) */
+        if (read_error->type == JSON_STRING) {
+            detail = read_error->str_val ? read_error->str_val : "";
+        } else {
+            owned = json_dumps((json_t *)read_error, 0);
+            detail = owned ? owned : "";
+        }
         need = strlen("could not read cookies from the real-profile browser: ") + strlen(detail) + 1;
         msg = (char *)malloc(need);
         if (!msg) return out;
@@ -90,6 +98,7 @@ json_t *w25_browserpre_4511a0_export(const json_t *state) {
         json_set(out, "status", json_string("error"));
         json_set(out, "error", json_string(msg));
         free(msg);
+        free(owned);
         return out;
     }
 
