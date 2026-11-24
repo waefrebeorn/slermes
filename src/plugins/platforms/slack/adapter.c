@@ -3341,11 +3341,16 @@ static int reactions_flag(const json_t *extra, const json_t *env) {
     char *low;
     size_t i;
     int out;
-    if (value && value->type != JSON_NULL &&
-        !(is_str(value) && is_blank(value->str_val))) {
-        configured = value;
-    } else if (env && is_str(env) && !is_blank(env->str_val)) {
+    /* Scoped secret first, but by PRESENCE, not truthiness: an empty mapping in
+     * the environment is still a configured value and stringifies to "{}" (which
+     * is not one of the off words). extra.reactions is used only when the scoped
+     * value is absent, and there a JSON false does disable reactions -- only a
+     * missing key or a blank string falls through to the "true" default. */
+    if (env && env->type != JSON_NULL) {
         configured = env;
+    } else if (value && value->type != JSON_NULL &&
+               !(is_str(value) && is_blank(value->str_val))) {
+        configured = value;
     } else {
         return 1; /* default "true" */
     }
@@ -3435,7 +3440,9 @@ static json_t *reaction_triggers(const json_t *raw) {
             free(s);
         }
     } else {
-        char *s = py_str(raw);
+        /* `text = str(raw or "")`: a falsy mapping/sequence stringifies to nothing,
+         * so raw={} is "no triggers configured" (None), not the literal "{}". */
+        char *s = py_truthy(raw) ? py_str(raw) : xstrdup("");
         char *t = strip_copy(s);
         char *low = xstrdup(t);
         for (i = 0; low[i]; i++) low[i] = (char)tolower((unsigned char)low[i]);
@@ -3599,8 +3606,10 @@ static json_t *synthetic_reaction_event(const json_t *event, const char *action,
     json_t *evts = jo(event, "event_ts");
     char *reaction_name = py_truthy(rv) ? py_str(rv) : xstrdup("");
     char *user_id = py_truthy(uv) ? py_str(uv) : xstrdup("None");
-    char *msg = py_truthy(msg_ts) ? py_str(msg_ts) : xstrdup("None");
-    char *chan = py_truthy(channel_id) ? py_str(channel_id) : xstrdup("None");
+    int has_msg = py_truthy(msg_ts);
+    int has_chan = py_truthy(channel_id);
+    char *msg = has_msg ? py_str(msg_ts) : xstrdup("None");
+    char *chan = has_chan ? py_str(channel_id) : xstrdup("None");
     const char *mapped = reaction_emoji(reaction_name);
     json_t *out = json_object();
     json_t *reaction_obj = json_object();
@@ -3635,7 +3644,9 @@ static json_t *synthetic_reaction_event(const json_t *event, const char *action,
     json_set(out, "_hermes_force_process", json_bool(1));
     json_set(reaction_obj, "name", json_string(reaction_name));
     json_set(reaction_obj, "action", json_string(action));
-    json_set(reaction_obj, "reacted_to_ts", json_string(msg));
+    /* the wire shape keeps a missing ts as null; stringifying it produced the
+     * text "None" in the payload */
+    json_set(reaction_obj, "reacted_to_ts", has_msg ? json_string(msg) : json_null());
     json_set(reaction_obj, "event_ts", evts ? json_copy(evts) : json_null());
     json_set(out, "_hermes_reaction", reaction_obj);
     if (team_id && team_id[0]) json_set(out, "team", json_string(team_id));
@@ -3643,7 +3654,7 @@ static json_t *synthetic_reaction_event(const json_t *event, const char *action,
         json_set(out, "channel", json_string(target_channel));
         json_set(out, "channel_type",
                  json_string(target_channel[0] == 'D' ? "im" : "channel"));
-        json_set(out, "_hermes_reaction_source_channel", json_string(chan));
+        json_set(out, "_hermes_reaction_source_channel", has_chan ? json_string(chan) : json_null());
         if (target_thread && target_thread[0]) {
             json_set(out, "thread_ts", json_string(target_thread));
         } else {
@@ -3661,9 +3672,12 @@ static json_t *synthetic_reaction_event(const json_t *event, const char *action,
 /* _build_identity_prompt */
 static char *build_identity_prompt(const char *name) {
     sb_t b;
-    const char *n = name ? name : "";
+    /* upstream strips the resolved handle: a stored name may carry padding, and
+     * the line reads '"@hermes"', not '"@ hermes"'. */
+    char *stripped = strip_copy(name ? name : "");
+    const char *n = stripped ? stripped : "";
     sb_init(&b);
-    if (!n[0]) return sb_take(&b);
+    if (!n[0]) { free(stripped); return sb_take(&b); }
     sb_adds(&b, "You are connected to this Slack workspace as the bot \"@");
     sb_adds(&b, n);
     sb_adds(&b, "\". The adapter already applied mention and channel routing; treat every "
@@ -3675,6 +3689,7 @@ static char *build_identity_prompt(const char *name) {
     sb_adds(&b, "\" is absent. In messages, each line is prefixed with the sender's name, and "
                 "visible mentions are shown as @DisplayName; a mention of any other participant "
                 "is not a mention of you, even if their name is similar.");
+    free(stripped);
     return sb_take(&b);
 }
 
