@@ -1,0 +1,5 @@
+w22_telegramli_e4312e	plugins/platforms/telegram/telegram_live_gates
+w22_availabili_9d8d88	hermes_platform/resolver/availability
+w22_pluginvali_a951b0	hermes_cli/plugin_validate_locales
+w22_processreg_606e65	tools/process_registry_results
+w22_vault_d2e854	hermes_cli/subcommands/vault

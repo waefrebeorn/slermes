@@ -1,0 +1,19 @@
+{"case":"enable","func":"enable"}
+{"case":"authz","func":"authz"}
+{"case":"overrides","func":"overrides"}
+{"case":"fallback-env-missing","func":"fallback"}
+{"case":"fallback-env-empty-object","func":"fallback","env":{}}
+{"case":"fallback-empty-string","func":"fallback","env":{"TELEGRAM_FALLBACK_IPS":""}}
+{"case":"fallback-blank","func":"fallback","env":{"TELEGRAM_FALLBACK_IPS":" "}}
+{"case":"fallback-single","func":"fallback","env":{"TELEGRAM_FALLBACK_IPS":"10.0.0.1"}}
+{"case":"fallback-pair","func":"fallback","env":{"TELEGRAM_FALLBACK_IPS":"10.0.0.1,10.0.0.2"}}
+{"case":"fallback-padded","func":"fallback","env":{"TELEGRAM_FALLBACK_IPS":" 10.0.0.1 , 10.0.0.2 , "}}
+{"case":"fallback-holes","func":"fallback","env":{"TELEGRAM_FALLBACK_IPS":"a,,b"}}
+{"case":"fallback-leading-trailing-comma","func":"fallback","env":{"TELEGRAM_FALLBACK_IPS":",10.0.0.1,"}}
+{"case":"fallback-only-separators","func":"fallback","env":{"TELEGRAM_FALLBACK_IPS":" , , "}}
+{"case":"fallback-value-number","func":"fallback","env":{"TELEGRAM_FALLBACK_IPS":7}}
+{"case":"fallback-value-null","func":"fallback","env":{"TELEGRAM_FALLBACK_IPS":null}}
+{"case":"fallback-env-string","func":"fallback","env":"TELEGRAM_FALLBACK_IPS"}
+{"case":"fallback-other-key","func":"fallback","env":{"TELEGRAM_HOME_CHANNEL":"-100123"}}
+{"case":"fallback-env-array","func":"fallback","env":["10.0.0.1"]}
+{"case":"extra-key-echo","func":"overrides","note":"echoed"}

@@ -1,0 +1,37 @@
+{"case":"delivery-empty","func":"delivery","teams_extra":{},"teams_delivery":{}}
+{"case":"delivery-no-blocks","func":"delivery"}
+{"case":"delivery-incoming-ok","func":"delivery","teams_extra":{"incoming_webhook_url":"https://x/hook"},"teams_delivery":{"mode":"incoming_webhook"}}
+{"case":"delivery-incoming-no-url","func":"delivery","teams_extra":{},"teams_delivery":{"mode":"incoming_webhook"}}
+{"case":"delivery-incoming-empty-url","func":"delivery","teams_extra":{"incoming_webhook_url":""},"teams_delivery":{"mode":"incoming_webhook"}}
+{"case":"delivery-graph-chat","func":"delivery","teams_extra":{"chat_id":"19:abc"},"teams_delivery":{"mode":"graph"}}
+{"case":"delivery-graph-team-only","func":"delivery","teams_extra":{"team_id":"t1"},"teams_delivery":{"mode":"graph"}}
+{"case":"delivery-graph-team-channel","func":"delivery","teams_extra":{"team_id":"t1","channel_id":"c1"},"teams_delivery":{"mode":"graph"}}
+{"case":"delivery-mode-padded-upper","func":"delivery","teams_extra":{},"teams_delivery":{"mode":"  GRAPH  ","chat_id":"19:abc"}}
+{"case":"delivery-mode-unknown","func":"delivery","teams_extra":{},"teams_delivery":{"mode":"smtp"}}
+{"case":"delivery-mode-from-extra","func":"delivery","teams_extra":{"delivery_mode":"incoming_webhook","incoming_webhook_url":"https://y"},"teams_delivery":{}}
+{"case":"delivery-delivery-wins","func":"delivery","teams_extra":{"delivery_mode":"incoming_webhook","incoming_webhook_url":"https://y"},"teams_delivery":{"mode":"graph","chat_id":"19:abc"}}
+{"case":"delivery-wrong-type-extra","func":"delivery","teams_extra":"nope","teams_delivery":{"mode":"graph","chat_id":"19:abc"}}
+{"case":"delivery-chat-zero","func":"delivery","teams_extra":{},"teams_delivery":{"mode":"graph","chat_id":0}}
+{"case":"config-no-platforms","func":"config"}
+{"case":"config-teams-null","func":"config","platforms":{"teams":null}}
+{"case":"config-teams-disabled","func":"config","platforms":{"teams":{"enabled":false,"extra":{"meeting_pipeline":{"retention_days":7}}}}}
+{"case":"config-enabled-no-extra","func":"config","platforms":{"teams":{"enabled":true}}}
+{"case":"config-enabled-empty-extra","func":"config","platforms":{"teams":{"enabled":true,"extra":{}}}}
+{"case":"config-enabled-mode-only","func":"config","platforms":{"teams":{"enabled":true,"extra":{"delivery_mode":"graph"}}}}
+{"case":"config-enabled-webhook","func":"config","platforms":{"teams":{"enabled":true,"extra":{"delivery_mode":"incoming_webhook","incoming_webhook_url":"https://x/hook"}}}}
+{"case":"config-enabled-graph-chat","func":"config","platforms":{"teams":{"enabled":true,"extra":{"delivery_mode":"graph","chat_id":"19:abc"}}}}
+{"case":"config-enabled-graph-team-channel","func":"config","platforms":{"teams":{"enabled":true,"extra":{"delivery_mode":"graph","team_id":"t1","channel_id":"c1"}}}}
+{"case":"config-enabled-graph-team-only","func":"config","platforms":{"teams":{"enabled":true,"extra":{"delivery_mode":"graph","team_id":"t1"}}}}
+{"case":"config-pipeline-preserved","func":"config","platforms":{"teams":{"enabled":true,"extra":{"meeting_pipeline":{"retention_days":7,"teams_delivery":{"mode":"graph","chat_id":"19:old"}},"chat_id":"19:new"}}}}
+{"case":"config-null-values-skipped","func":"config","platforms":{"teams":{"enabled":true,"extra":{"incoming_webhook_url":null,"chat_id":"","access_token":null}}}}
+{"case":"config-zero-value-copied","func":"config","platforms":{"teams":{"enabled":true,"extra":{"access_token":0}}}}
+{"case":"config-mode-number","func":"config","platforms":{"teams":{"enabled":true,"extra":{"delivery_mode":5}}}}
+{"case":"config-extra-not-object","func":"config","platforms":{"teams":{"enabled":true,"extra":"nope"}}}
+{"case":"bind-no-adapter","func":"bind","adapter":false}
+{"case":"bind-no-adapter-runtime-present","func":"bind","adapter":false,"runtime":true}
+{"case":"bind-runtime-present","func":"bind","adapter":true,"runtime":true}
+{"case":"bind-runtime-present-build-error","func":"bind","adapter":true,"runtime":true,"build_error":"boom"}
+{"case":"bind-build-error","func":"bind","adapter":true,"build_error":"store unavailable"}
+{"case":"bind-ok","func":"bind","adapter":true}
+{"case":"bind-ok-with-null-error","func":"bind","adapter":true,"build_error":null}
+{"case":"extra-key-echo","func":"bind","adapter":true,"note":"echoed"}

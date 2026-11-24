@@ -1,0 +1,26 @@
+{"case": "idle_nothing", "func": "state", "flags": {}}
+{"case": "busy_only", "func": "state", "flags": {"busy": true}}
+{"case": "reasoning_beats_busy", "func": "state", "flags": {"busy": true, "reasoning": true}}
+{"case": "tool_running_beats_reasoning", "func": "state", "flags": {"busy": true, "reasoning": true, "tool_running": true}}
+{"case": "awaiting_beats_tool", "func": "state", "flags": {"tool_running": true, "awaiting_input": true}}
+{"case": "completed_beats_awaiting", "func": "state", "flags": {"awaiting_input": true, "just_completed": true}}
+{"case": "celebrate_beats_completed", "func": "state", "flags": {"just_completed": true, "celebrate": true}}
+{"case": "error_beats_all", "func": "state", "flags": {"error": true, "celebrate": true, "just_completed": true, "awaiting_input": true, "tool_running": true, "reasoning": true, "busy": true}}
+{"case": "falsy_values_ignored", "func": "state", "flags": {"error": 0, "celebrate": "", "just_completed": null, "awaiting_input": false, "tool_running": [], "reasoning": {}, "busy": 0}}
+{"case": "truthy_string_flags", "func": "state", "flags": {"reasoning": "yes", "busy": "1"}}
+{"case": "wrong_type_flags", "func": "state", "flags": ["busy"]}
+{"case": "missing_flags", "func": "state"}
+{"case": "todos_null", "func": "todos", "todos": null}
+{"case": "todos_empty", "func": "todos", "todos": []}
+{"case": "todos_all_completed", "func": "todos", "todos": [{"status": "completed"}, {"text": "b", "status": "completed"}]}
+{"case": "todos_completed_and_cancelled", "func": "todos", "todos": [{"status": "completed"}, {"status": "cancelled"}]}
+{"case": "todos_one_pending", "func": "todos", "todos": [{"status": "completed"}, {"status": "pending"}]}
+{"case": "todos_missing_status", "func": "todos", "todos": [{"status": "completed"}, {"text": "no status"}]}
+{"case": "todos_status_uppercase", "func": "todos", "todos": [{"status": "Completed"}]}
+{"case": "todos_non_dict_items", "func": "todos", "todos": [{"status": "completed"}, "x", 3, null]}
+{"case": "todos_string_iterable", "func": "todos", "todos": "abc"}
+{"case": "todos_object_iterable", "func": "todos", "todos": {"a": 1}}
+{"case": "todos_number_raises", "func": "todos", "todos": 5}
+{"case": "todos_zero_falsy", "func": "todos", "todos": 0}
+{"case": "todos_bool_raises", "func": "todos", "todos": true}
+{"case": "todos_missing_key", "func": "todos"}

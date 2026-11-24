@@ -1,0 +1,14 @@
+{"case":"spec","func":"spec"}
+{"case":"build-default","func":"build"}
+{"case":"build-ok","func":"build","register":"ok"}
+{"case":"build-ok-weird-mode","func":"build","register":"maybe"}
+{"case":"build-error","func":"build","register":"error","message":"boom"}
+{"case":"build-error-empty-message","func":"build","register":"error","message":""}
+{"case":"build-error-import-style","func":"build","register":"error","message":"No module named 'hermes_cli.pets'"}
+{"case":"build-error-multiline","func":"build","register":"error","message":"line one\nline two"}
+{"case":"build-error-quotes","func":"build","register":"error","message":"can't wire \"pets\""}
+{"case":"build-error-unicode-escape","func":"build","register":"error","message":"tab\there"}
+{"case":"build-error-long","func":"build","register":"error","message":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"case":"build-extra-key","func":"build","register":"ok","note":"echoed"}
+{"case":"build-null-register","func":"build","register":null}
+{"case":"build-register-number","func":"build","register":7}

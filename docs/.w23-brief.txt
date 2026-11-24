@@ -1,0 +1,21 @@
+Repo C:/Users/eman5/slermes (C11 port of the Python quarry at C:/Users/eman5/hermes-agent, read-only). Your gates (gate<TAB>module, 2-3 of them) are in C:/Users/eman5/slermes/docs/.w23-assign-0.txt — read that first.
+
+Per gate exactly 5 files: include/noc_<gate>.h, src/<module>.c (replace the stub), tests/t_port_<gate>.c, tests/oracle_<gate>.py, tests/fixtures/<gate>.jsonl
+
+Read docs/PORT-KIT.md, then copy the shape of a proven gate: src/gateway/session_worker_reservation.c with tests/t_port_w22_sessionwor_277372.c, tests/oracle_w22_sessionwor_277372.py, tests/fixtures/w22_sessionwor_277372.jsonl (a hand-written reference port from wave 22).
+
+VERIFY with the fast runner (never run_all_oracles.sh):
+  C:/msys64/usr/bin/bash -lc 'cd /c/Users/eman5/slermes && source build/winlibs-env.sh && P=/c/Users/eman5/hermes-agent/.venv/Scripts/python.exe && make -j4 src/<module>.o && $P scripts/fast_gates.py <gate>'
+Your gate is NOT wired yet (central wiring happens after you finish), so verify by importing scripts/fast_gates.py and calling link()/run_gate() with the object list inline: ["src/<module>.o", "lib/libjson/json.o"] plus lib/libcrypto/crypto.o, lib/libbase64/base64.o or lib/libhash/hash.o if your port needs them. Report the exact DEPS row you need. Needs PASS <gate> (N cases, 0 mismatches). No claim without a real ORACLE line.
+
+Hard rules:
+- Oracle execs the LIVE python (ast FunctionDef/AsyncFunctionDef/ClassDef/Assign extraction, quarry sys.path.insert, stub only DB/network/config/clock seams, compare `out`).
+- Native extensions load from C:/Users/eman5/hermes-agent/sitecopy (the runner puts it on PYTHONPATH). Stub only if it still fails, quoting the exact error.
+- C: pure C11, ASCII only, no VLA, no strdup (static dup helper), copy strings before json_free, NUL-terminate after shortening, echo ALL input keys, int64 as decimal strings, never put `out` in a fixture. A buffer builder must terminate even when nothing was appended. The harness must read the same object the oracle reads (if the oracle takes r["world"], pass json_obj_get(in,"world"), not the request).
+- An incoming value can be a JSON number where Python has an int: convert with a node_text-style helper rather than json_get_str, which returns NULL.
+- Never name an enum constant, typedef, variable or macro something a system header may own: PC_NONE, uid_t, ERROR, DELETE, IN, OUT, OPTIONAL, NO_ERROR, interface, min, max. Prefix identifiers with the gate stem.
+- Two gates can share one module: check `grep -c 'w[0-9][0-9]_' src/<module>.c` first. If another gate's symbols are already in that file, APPEND your gate's functions with your own prefix and delete nothing.
+- Harnesses run with SLERMES_HOME and HOME at an isolated temp dir; test that explicitly.
+- Fixtures: >=12 cases, normal path + each branch + empty/missing keys + wrong types.
+Do not edit build/objects.mk, tests/run_all_oracles.sh or docs/organization-parity.*; do not git commit.
+Summary: gate names, exact case counts from the PASS lines, DEPS rows, and any extra object a gate needs.

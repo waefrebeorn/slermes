@@ -1,0 +1,24 @@
+{"case": "exact_name", "func": "current_name", "name": "hermes_agent.compat.finder", "moves": {"hermes_agent.compat.finder": "hermes_agent.compat.locate"}}
+{"case": "prefix_plus_suffix", "func": "current_name", "name": "hermes_agent.compat.finder.Finder", "moves": {"hermes_agent.compat.finder": "hermes_agent.compat.locate"}}
+{"case": "package_prefix", "func": "current_name", "name": "hermes_agent.compat.finder", "moves": {"hermes_agent.compat": "hermes.compat"}}
+{"case": "longest_prefix_wins", "func": "current_name", "name": "hermes.cli.main", "moves": {"hermes": "newtop", "hermes.cli": "other.pkg"}}
+{"case": "no_match", "func": "current_name", "name": "x.y.z", "moves": {"a.b": "c.d"}}
+{"case": "empty_name_empty_moves", "func": "current_name", "name": "", "moves": {}}
+{"case": "empty_name_root_key", "func": "current_name", "name": "", "moves": {"": "root"}}
+{"case": "empty_value", "func": "current_name", "name": "old.mod", "moves": {"old": ""}}
+{"case": "moves_missing", "func": "current_name", "name": "old.mod"}
+{"case": "moves_null", "func": "current_name", "name": "old.mod", "moves": null}
+{"case": "value_wrong_type", "func": "current_name", "name": "old.mod", "moves": {"old": 5}}
+{"case": "leading_dot_name", "func": "current_name", "name": ".mod", "moves": {"": "pkg"}}
+{"case": "child_parent_not_moved", "func": "child_names", "moves": {"pkg.old": "pkg.new"}}
+{"case": "child_derived", "func": "child_names", "moves": {"oldpkg.mod": "newpkg.mod2", "oldpkg": "newpkg"}}
+{"case": "child_skipped_when_equal", "func": "child_names", "moves": {"oldpkg.mod": "newpkg.mod", "oldpkg": "newpkg"}}
+{"case": "child_root_level_move", "func": "child_names", "moves": {"mod": "pkg.mod"}}
+{"case": "child_derived_already_key", "func": "child_names", "moves": {"oldpkg.mod": "x.y", "oldpkg": "newpkg", "newpkg.mod": "z"}}
+{"case": "child_empty_moves", "func": "child_names", "moves": {}}
+{"case": "child_moves_missing", "func": "child_names"}
+{"case": "child_wrong_type_value", "func": "child_names", "moves": {"oldpkg.mod": 5, "oldpkg": "newpkg"}}
+{"case": "strict_hit", "func": "strict_error", "name": "old.a", "moves": {"old.a": "new.a"}}
+{"case": "strict_parent_only", "func": "strict_error", "name": "old.a.b", "moves": {"old.a": "new.a"}}
+{"case": "strict_no_claim", "func": "strict_error", "name": "x.y", "moves": {}}
+{"case": "strict_derived_name", "func": "strict_error", "name": "newpkg.mod", "moves": {"oldpkg.mod": "newpkg.mod2", "oldpkg": "newpkg"}}

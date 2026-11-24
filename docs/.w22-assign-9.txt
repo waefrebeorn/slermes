@@ -1,0 +1,5 @@
+w22_telegramin_6b9a1e	plugins/platforms/telegram/telegram_intake
+w22_ffmpegutil_86b841	plugins/platforms/discord/ffmpeg_utils
+w22_gatewayenv_8633ba	plugins/platforms/sms/gateway_env
+w22_gatewaycha_382a68	hermes_cli/gateway_chat_startup
+w22_paths_5ce33e	hermes_agent/compat/paths

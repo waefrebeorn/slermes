@@ -1,0 +1,27 @@
+{"case":"list-number-1","func":"resolve","checkpoints":[{"hash":"aaa111"},{"hash":"bbb222"},{"hash":"ccc333"}],"ref":"1"}
+{"case":"list-number-3","func":"resolve","checkpoints":[{"hash":"aaa111"},{"hash":"bbb222"},{"hash":"ccc333"}],"ref":"3"}
+{"case":"list-number-out-of-range-short","func":"resolve","checkpoints":[{"hash":"aaa111"},{"hash":"bbb222"},{"hash":"ccc333"}],"ref":"4"}
+{"case":"leading-zero-short","func":"resolve","checkpoints":[{"hash":"aaa111"},{"hash":"bbb222"}],"ref":"0"}
+{"case":"leading-zero-double","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":"00"}
+{"case":"zero-padded-hash","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":"0123"}
+{"case":"hash-passthrough","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":"deadbeef"}
+{"case":"hash-all-digits-long","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":"123456"}
+{"case":"strip-spaces","func":"resolve","checkpoints":[{"hash":"aaa111"},{"hash":"bbb222"}],"ref":"  2  "}
+{"case":"strip-tabs-newline","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":"\t1\n"}
+{"case":"empty-ref","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":""}
+{"case":"missing-ref-key","func":"resolve","checkpoints":[{"hash":"aaa111"}]}
+{"case":"null-ref","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":null}
+{"case":"empty-checkpoints","func":"resolve","checkpoints":[],"ref":"1"}
+{"case":"empty-checkpoints-hash","func":"resolve","checkpoints":[],"ref":"deadbeef"}
+{"case":"five-entries-last","func":"resolve","checkpoints":[{"hash":"h1"},{"hash":"h2"},{"hash":"h3"},{"hash":"h4"},{"hash":"h5"}],"ref":"5"}
+{"case":"entry-without-hash","func":"resolve","checkpoints":[{"hash":"aaa111"},{"label":"second"}],"ref":"2"}
+{"case":"entry-hash-not-string","func":"resolve","checkpoints":[{"hash":42}],"ref":"1"}
+{"case":"wrong-type-number","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":5}
+{"case":"wrong-type-zero","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":0}
+{"case":"wrong-type-true","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":true}
+{"case":"wrong-type-false","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":false}
+{"case":"wrong-type-list","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":["1"]}
+{"case":"wrong-type-empty-list","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":[]}
+{"case":"checkpoints-not-a-list","func":"resolve","checkpoints":{"0":{"hash":"x"}},"ref":"1"}
+{"case":"whitespace-only-ref","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":"   "}
+{"case":"hash-with-space-inside","func":"resolve","checkpoints":[{"hash":"aaa111"}],"ref":"ab 12"}

@@ -1,0 +1,5 @@
+w22_apiserverc_6e486b	gateway/platforms/api_server_config_guard
+w22_telegramdi_2d8019	plugins/platforms/telegram/telegram_dice
+w22_clipboard_1504a0	hermes_cli/subcommands/clipboard
+w22_pluginhost_948f76	hermes_cli/plugin_host_http_auth
+w22_state_fd0065	agent/pet/state

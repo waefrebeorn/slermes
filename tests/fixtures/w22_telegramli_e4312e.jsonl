@@ -1,0 +1,29 @@
+{"func":"keys","case":"declaration-order"}
+{"func":"allowlist","case":"env-unset","user_id":"42"}
+{"func":"allowlist","case":"env-empty","user_id":"42","env":""}
+{"func":"allowlist","case":"env-blank","user_id":"42","env":"   \t "}
+{"func":"allowlist","case":"wildcard","user_id":"42","env":"*"}
+{"func":"allowlist","case":"member-with-spaces","user_id":"2","env":" 1 , 2 , 3 "}
+{"func":"allowlist","case":"not-member","user_id":"9","env":"1,2,3"}
+{"func":"allowlist","case":"only-empty-pieces","user_id":"9","env":",,,"}
+{"func":"allowlist","case":"missing-user-id","env":"1,2"}
+{"func":"allowlist","case":"nbspan-wrapped","user_id":"7","env":"\u00a07\u00a0"}
+{"func":"allowlist","case":"wildcard-among-members","user_id":"99","env":"1,*,2"}
+{"func":"allowlist","case":"non-string-env","user_id":"42","env":5}
+{"func":"allowlist","case":"numeric-user-id-no-match","user_id":42,"env":"42"}
+{"func":"refresh","case":"same-version","baseline_home":"/h","baseline_version":"v1","current_version":"v1"}
+{"func":"refresh","case":"changed-version","baseline_home":"/h","baseline_version":"v1","current_version":"v2"}
+{"func":"refresh","case":"no-baseline-home","baseline_home":null,"baseline_version":"v1","current_version":"v2"}
+{"func":"refresh","case":"empty-baseline-home","baseline_home":"","baseline_version":"v1","current_version":"v2"}
+{"func":"refresh","case":"both-tags-absent","baseline_home":"/h","baseline_version":null,"current_version":null}
+{"func":"refresh","case":"tag-appeared","baseline_home":"/h","baseline_version":null,"current_version":"v9"}
+{"func":"refresh","case":"missing-keys"}
+{"func":"merge","case":"replace-and-drop","extra":{"allow_from":["old"],"allowed_topics":["1"],"custom":"keep"},"platforms":{"telegram":{"extra":{"allow_from":["new"],"allow_bots":true}}},"platform":"telegram"}
+{"func":"merge","case":"platform-absent","extra":{"allow_from":["old"],"keep":"yes"},"platforms":{"discord":{"extra":{"allow_from":["d"]}}},"platform":"telegram"}
+{"func":"merge","case":"platform-null","extra":{"allow_from":["old"]},"platforms":{"telegram":null},"platform":"telegram"}
+{"func":"merge","case":"platform-empty-record","extra":{"allow_from":["old"]},"platforms":{"telegram":{}},"platform":"telegram"}
+{"func":"merge","case":"record-without-extra","extra":{"allow_from":["old"]},"platforms":{"telegram":{"other":1}},"platform":"telegram"}
+{"func":"merge","case":"no-extra-key","platforms":{"telegram":{"extra":{"allow_from":["x"]}}},"platform":"telegram"}
+{"func":"merge","case":"null-values-kept","extra":{"allow_from":["old"],"allowed_topics":["1"]},"platforms":{"telegram":{"extra":{"allow_from":null,"allowed_topics":["2"]}}},"platform":"telegram"}
+{"func":"merge","case":"missing-platform-key","extra":{"allow_from":["old"]},"platforms":{"telegram":{"extra":{"allow_from":["x"]}}}}
+{"func":"merge","case":"wrong-type-extra","extra":"nope","platforms":{"telegram":{"extra":{"allow_bots":false}}},"platform":"telegram"}

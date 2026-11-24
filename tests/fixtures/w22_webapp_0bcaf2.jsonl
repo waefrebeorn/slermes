@@ -1,0 +1,26 @@
+{"case": "spec_full", "func": "spec"}
+{"case": "parse_empty", "func": "parse", "flags": []}
+{"case": "parse_no_open", "func": "parse", "flags": ["--no-open"]}
+{"case": "parse_all_plain", "func": "parse", "flags": ["--no-open", "--force-build", "--skip-build"]}
+{"case": "parse_build_only", "func": "parse", "flags": ["--build-only"]}
+{"case": "parse_status", "func": "parse", "flags": ["--status"]}
+{"case": "parse_sign_out", "func": "parse", "flags": ["--sign-out"]}
+{"case": "parse_conflict_build_status", "func": "parse", "flags": ["--build-only", "--status"]}
+{"case": "parse_conflict_status_build", "func": "parse", "flags": ["--status", "--build-only"]}
+{"case": "parse_conflict_status_sign_out", "func": "parse", "flags": ["--status", "--sign-out"]}
+{"case": "parse_conflict_three", "func": "parse", "flags": ["--no-open", "--build-only", "--status"]}
+{"case": "parse_conflict_after_unknown", "func": "parse", "flags": ["--bogus", "--sign-out", "--build-only"]}
+{"case": "parse_duplicate_exclusive", "func": "parse", "flags": ["--status", "--status"]}
+{"case": "parse_duplicate_plain", "func": "parse", "flags": ["--no-open", "--no-open"]}
+{"case": "parse_unknown_long", "func": "parse", "flags": ["--bogus"]}
+{"case": "parse_unknown_positional", "func": "parse", "flags": ["pos"]}
+{"case": "parse_unknown_two", "func": "parse", "flags": ["--bogus", "other"]}
+{"case": "parse_abbrev_status", "func": "parse", "flags": ["--stat"]}
+{"case": "parse_abbrev_skip", "func": "parse", "flags": ["--skip-b"]}
+{"case": "parse_abbrev_ambiguous", "func": "parse", "flags": ["--s"]}
+{"case": "parse_abbrev_ambiguous_b", "func": "parse", "flags": ["--b"]}
+{"case": "parse_explicit_value", "func": "parse", "flags": ["--status=1"]}
+{"case": "parse_help", "func": "parse", "flags": ["-h"]}
+{"case": "parse_missing_flags", "func": "parse"}
+{"case": "parse_flags_not_list", "func": "parse", "flags": "--status"}
+{"case": "parse_flags_null", "func": "parse", "flags": null}

@@ -1,0 +1,50 @@
+{"case": "strip-escapes", "func": "strip_mdv2", "text": "hello \\*world\\* and \\_under\\_"}
+{"case": "strip-bold-italic-strike-spoil", "func": "strip_mdv2", "text": "**bold** and *it* and _ital_ and ~strike~ and ||spoil||"}
+{"case": "strip-snake-case", "func": "strip_mdv2", "text": "snake_case and _lead_ and x_y_z"}
+{"case": "strip-full-punct", "func": "strip_mdv2", "text": "a\\_b c\\\\d \\. \\! \\( \\) \\# \\+ \\- \\= \\| \\{ \\} \\> \\~ \\` \\[ \\]"}
+{"case": "strip-triple-star", "func": "strip_mdv2", "text": "***x***"}
+{"case": "strip-star-inside-bold", "func": "strip_mdv2", "text": "**a*b**"}
+{"case": "strip-lone-double", "func": "strip_mdv2", "text": "**"}
+{"case": "strip-lone-single", "func": "strip_mdv2", "text": "*"}
+{"case": "strip-underscore-adjacent", "func": "strip_mdv2", "text": "_a_b"}
+{"case": "strip-underscore-word", "func": "strip_mdv2", "text": "_a_ b_c"}
+{"case": "strip-empty", "func": "strip_mdv2", "text": ""}
+{"case": "strip-plain-code", "func": "strip_mdv2", "text": "code `a*b*c` tail"}
+{"case": "strip-adjacent-bold", "func": "strip_mdv2", "text": "**a**b**c**"}
+{"case": "strip-doubled-tilde", "func": "strip_mdv2", "text": "a ~~b~~"}
+{"case": "strip-two-bold", "func": "strip_mdv2", "text": "**x** **y**"}
+{"case": "strip-two-italic", "func": "strip_mdv2", "text": "*a* *b*"}
+{"case": "strip-two-under", "func": "strip_mdv2", "text": "_a_ _b_"}
+{"case": "strip-spoiler-tight", "func": "strip_mdv2", "text": "x||y||z"}
+{"case": "strip-only-backslashes", "func": "strip_mdv2", "text": "\\\\"}
+{"case": "strip-escape-nonpunct", "func": "strip_mdv2", "text": "a\\zb"}
+{"case": "strip-trailing-backslash", "func": "strip_mdv2", "text": "abc\\"}
+{"case": "strip-digit-boundary", "func": "strip_mdv2", "text": "1_a_2 and _b_ 3"}
+{"case": "strip-newline-body", "func": "strip_mdv2", "text": "_a\nb_"}
+{"case": "strip-unicode", "func": "strip_mdv2", "text": "café _naïve_ → ok"}
+{"case": "strip-missing-text", "func": "strip_mdv2"}
+{"case": "quotable-plain", "func": "quotable", "text": "**bold** and *it*", "mdv2": false}
+{"case": "quotable-inline-code", "func": "quotable", "text": "code `a*b*c` tail", "mdv2": false}
+{"case": "quotable-wrong-mdv2-flag", "func": "quotable", "text": "code `a*b*c` tail", "mdv2": true}
+{"case": "quotable-fenced", "func": "quotable", "text": "```py\na*b*c\n``` done", "mdv2": false}
+{"case": "quotable-fenced-unclosed", "func": "quotable", "text": "```unclosed *x*", "mdv2": false}
+{"case": "quotable-double-tick", "func": "quotable", "text": "``x``", "mdv2": false}
+{"case": "quotable-mdv2-code-escapes", "func": "quotable", "text": "`a\\`b\\\\c` x\\*y\\*", "mdv2": true}
+{"case": "quotable-mdv2-fence-escapes", "func": "quotable", "text": "```\na\\`b\n```", "mdv2": true}
+{"case": "quotable-mdv2-plain", "func": "quotable", "text": "plain \\*md\\*", "mdv2": true}
+{"case": "quotable-empty", "func": "quotable", "text": "", "mdv2": false}
+{"case": "quotable-only-code", "func": "quotable", "text": "`only`", "mdv2": false}
+{"case": "quotable-two-regions", "func": "quotable", "text": "a**b** `c*d*` e_f_ ```g*h``` z", "mdv2": false}
+{"case": "quotable-fence-then-inline", "func": "quotable", "text": "```x*y``` and `a_b`", "mdv2": false}
+{"case": "quotable-inline-across-newline", "func": "quotable", "text": "a `b\nc` d", "mdv2": false}
+{"case": "quotable-backtick-unclosed", "func": "quotable", "text": "a `b", "mdv2": false}
+{"case": "quotable-missing-text", "func": "quotable", "mdv2": false}
+{"case": "anchor-default-attr", "func": "anchor", "parts": 3, "dm_topic": false, "reply_to": "r1"}
+{"case": "anchor-attr-true", "func": "anchor", "parts": 3, "dm_topic": false, "reply_to": "r1", "anchor_multipart": true}
+{"case": "anchor-attr-false-single", "func": "anchor", "parts": 1, "dm_topic": false, "reply_to": "r1", "anchor_multipart": false}
+{"case": "anchor-attr-false-dm-on", "func": "anchor", "parts": 3, "dm_topic": true, "reply_to": "r1", "anchor_multipart": false}
+{"case": "anchor-attr-false-dm-off", "func": "anchor", "parts": 3, "dm_topic": false, "reply_to": "r1", "anchor_multipart": false}
+{"case": "anchor-attr-false-zero-parts", "func": "anchor", "parts": 0, "dm_topic": false, "reply_to": null, "anchor_multipart": false}
+{"case": "anchor-attr-true-null-reply", "func": "anchor", "parts": 2, "dm_topic": true, "reply_to": null, "anchor_multipart": true}
+{"case": "anchor-wrong-type-parts", "func": "anchor", "parts": "3", "dm_topic": false, "reply_to": "r1", "anchor_multipart": true}
+{"case": "const", "func": "const"}

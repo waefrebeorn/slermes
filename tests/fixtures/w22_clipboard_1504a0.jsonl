@@ -1,0 +1,14 @@
+{"case": "tree", "func": "parser"}
+{"case": "tree_extra_key_ignored", "func": "parser", "args": {"file": "/tmp/x.png"}}
+{"case": "cmd_out_only", "func": "cmd", "args": {"file": "/tmp/clip.png"}}
+{"case": "cmd_out_and_json", "func": "cmd", "args": {"file": "/tmp/clip.png", "json": true}}
+{"case": "cmd_json_false", "func": "cmd", "args": {"file": "a.png", "json": false}}
+{"case": "cmd_empty_namespace", "func": "cmd", "args": {}}
+{"case": "cmd_missing_args", "func": "cmd"}
+{"case": "cmd_null_args", "func": "cmd", "args": null}
+{"case": "cmd_string_args", "func": "cmd", "args": "not-a-namespace"}
+{"case": "cmd_number_args", "func": "cmd", "args": 7}
+{"case": "cmd_list_args", "func": "cmd", "args": ["file"]}
+{"case": "cmd_unicode_path", "func": "cmd", "args": {"file": "/tmp/\u00e9\u00e8 \u2713.png", "json": true}}
+{"case": "cmd_nested_args", "func": "cmd", "args": {"file": "x.png", "extra": {"deep": [1, 2, 3]}}}
+{"case": "cmd_bool_args", "func": "cmd", "args": true}

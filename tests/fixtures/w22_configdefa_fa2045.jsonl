@@ -1,0 +1,18 @@
+{"case": "plain_int_timeout", "func": "aux", "timeout": 30}
+{"case": "zero_timeout", "func": "aux", "timeout": 0}
+{"case": "negative_timeout", "func": "aux", "timeout": -5}
+{"case": "float_timeout", "func": "aux", "timeout": 12.5}
+{"case": "string_timeout", "func": "aux", "timeout": "45"}
+{"case": "null_timeout", "func": "aux", "timeout": null}
+{"case": "missing_timeout", "func": "aux"}
+{"case": "bool_timeout", "func": "aux", "timeout": true}
+{"case": "reasoning_off", "func": "aux", "timeout": 60, "reasoning_effort": false}
+{"case": "reasoning_on", "func": "aux", "timeout": 60, "reasoning_effort": true}
+{"case": "empty_extra", "func": "aux", "timeout": 20, "extra": {}}
+{"case": "extra_new_key", "func": "aux", "timeout": 20, "extra": {"temperature": 0.2, "tags": ["a", "b"]}}
+{"case": "extra_overrides_provider", "func": "aux", "timeout": 20, "extra": {"provider": "nous"}}
+{"case": "extra_binds_timeout_twice", "func": "aux", "timeout": 20, "extra": {"timeout": 99}}
+{"case": "extra_overrides_reasoning", "func": "aux", "timeout": 20, "reasoning_effort": false, "extra": {"reasoning_effort": "high"}}
+{"case": "extra_not_mapping", "func": "aux", "timeout": 20, "extra": ["provider", "nous"]}
+{"case": "extra_null", "func": "aux", "timeout": 20, "extra": null}
+{"case": "extra_deep_object", "func": "aux", "timeout": 20, "extra": {"extra_body": {"a": 1}}}

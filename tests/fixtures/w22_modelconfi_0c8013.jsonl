@@ -1,0 +1,20 @@
+{"case":"null-row","func":"update_config","row_config":null,"key":"model","value":"gpt-5"}
+{"case":"empty-text","func":"update_config","row_config":"","key":"temperature","value":0.2}
+{"case":"whitespace-text","func":"update_config","row_config":"   ","key":"x","value":true}
+{"case":"invalid-json","func":"update_config","row_config":"{","key":"x","value":1}
+{"case":"json-list","func":"update_config","row_config":"[]","key":"x","value":1}
+{"case":"json-string","func":"update_config","row_config":"\"str\"","key":"x","value":1}
+{"case":"set-existing","func":"update_config","row_config":"{\"model\": \"a\", \"temperature\": 0.7}","key":"temperature","value":0.2}
+{"case":"overwrite-model","func":"update_config","row_config":"{\"model\": \"a\", \"temperature\": 0.7}","key":"model","value":"b"}
+{"case":"remove-existing","func":"update_config","row_config":"{\"model\": \"a\", \"temperature\": 0.7}","key":"model","value":null}
+{"case":"remove-absent","func":"update_config","row_config":"{\"model\": \"a\"}","key":"missing","value":null}
+{"case":"missing-value-key","func":"update_config","row_config":"{\"model\": \"a\"}","key":"model"}
+{"case":"set-array","func":"update_config","row_config":"{\"a\": 1}","key":"tags","value":[1,2,"x"]}
+{"case":"set-object","func":"update_config","row_config":"{\"a\": 1}","key":"meta","value":{"b":{"c":2}}}
+{"case":"set-empty-string","func":"update_config","row_config":"{\"model\": \"a\"}","key":"model","value":""}
+{"case":"nested-marker","func":"update_config","row_config":"{\"_branched_from\": {\"id\": \"s0\"}, \"model\": \"a\"}","key":"model","value":"b"}
+{"case":"extract-plain","func":"json_extract","expression":"model_config","path":"$.model"}
+{"case":"extract-quote-path","func":"json_extract","expression":"sessions.model_config","path":"$.it's"}
+{"case":"extract-empty-path","func":"json_extract","expression":"model_config","path":""}
+{"case":"ids-sql","func":"select_ids_sql","key":"model"}
+{"case":"ids-sql-quote","func":"select_ids_sql","key":"it's"}

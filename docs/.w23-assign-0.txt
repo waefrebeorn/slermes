@@ -1,0 +1,3 @@
+w23_sharedmetr_68ac2c	hermes_cli/observability/shared_metrics_prepared_compaction
+w23_imagegener_6a7ba9	tools/image_generation_managed
+w23_core_082b31	hermes_platform/resolver/core

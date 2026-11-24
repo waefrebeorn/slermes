@@ -1,0 +1,5 @@
+w22_telegramre_8bc0fe	plugins/platforms/telegram/telegram_resolved_prompt
+w22_uipreferen_dd30c7	hermes_cli/web_routers/ui_preferences
+w22_gatewayenv_e84967	plugins/platforms/slack/gateway_env
+w22_promptreso_7bfabf	gateway/relay/prompt_resolvers
+w22_convention_a3be4b	persistence/core/conventions

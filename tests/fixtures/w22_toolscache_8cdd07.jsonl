@@ -1,0 +1,40 @@
+{"case": "token-none", "func": "member_key", "token": null}
+{"case": "token-good", "func": "member_key", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig"}
+{"case": "token-two-parts", "func": "member_key", "token": "aaa.bbb"}
+{"case": "token-four-parts", "func": "member_key", "token": "a.b.c.d"}
+{"case": "token-junk-payload", "func": "member_key", "token": "h.!!!.s"}
+{"case": "token-not-json", "func": "member_key", "token": "eyJhbGciOiJub25lIn0.bm90anNvbg.sig"}
+{"case": "token-claims-list", "func": "member_key", "token": "eyJhbGciOiJub25lIn0.WzEsMl0.sig"}
+{"case": "token-empty-sub", "func": "member_key", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiIifQ.sig"}
+{"case": "token-number-sub", "func": "member_key", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOjV9.sig"}
+{"case": "token-no-sub", "func": "member_key", "token": "eyJhbGciOiJub25lIn0.eyJuc3ViIjoieCJ9.sig"}
+{"case": "token-padding", "func": "member_key", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJhIn0.sig"}
+{"case": "token-empty", "func": "member_key", "token": ""}
+{"case": "slug-ok", "func": "slug_valid", "slug": "gmail_2024-x"}
+{"case": "slug-upper", "func": "slug_valid", "slug": "Gmail"}
+{"case": "slug-leading-dash", "func": "slug_valid", "slug": "-gmail"}
+{"case": "slug-empty", "func": "slug_valid", "slug": ""}
+{"case": "slug-underscore-first", "func": "slug_valid", "slug": "_x"}
+{"case": "cache-rel", "func": "cache_rel", "origin": "https://portal.example", "member_key": "0123456789abcdef", "slug": "gmail"}
+{"case": "cache-rel-empty-origin", "func": "cache_rel", "origin": "", "member_key": "0123456789abcdef", "slug": "gmail"}
+{"case": "home-isolated", "func": "home_env"}
+{"case": "plan-no-token-ok", "func": "read_plan", "token": null, "origin": "https://p", "slug": "gmail", "refresh": false, "now": 50.0, "cached": null, "listing": "ok", "connector": "c", "toolkit_version": "v1", "etag": "e1", "tools": 2}
+{"case": "plan-no-token-notmodified", "func": "read_plan", "token": null, "origin": "https://p", "slug": "gmail", "refresh": false, "now": 50.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "not_modified"}
+{"case": "plan-no-token-gateway", "func": "read_plan", "token": null, "origin": "https://p", "slug": "gmail", "refresh": false, "now": 50.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "gateway_unavailable"}
+{"case": "plan-fresh-cache", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 150.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "ok"}
+{"case": "plan-expired-cache", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 86501.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "ok"}
+{"case": "plan-age-exact-ttl", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 86500.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "ok"}
+{"case": "plan-age-negative", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 99.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "ok"}
+{"case": "plan-refresh-forced", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": true, "now": 150.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "ok"}
+{"case": "plan-notmodified-store", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 86501.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "not_modified"}
+{"case": "plan-notmodified-no-cache", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 10.0, "cached": null, "listing": "not_modified"}
+{"case": "plan-portal-cache", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 86501.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "portal_unavailable"}
+{"case": "plan-portal-no-cache", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 10.0, "cached": null, "listing": "portal_unavailable"}
+{"case": "plan-toolgateway-stale", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 86501.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "tool_gateway_error"}
+{"case": "plan-gateway-cache", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 86501.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "gateway_unavailable"}
+{"case": "plan-gateway-auth", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 86501.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "gateway_auth"}
+{"case": "plan-no-cache-ok", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 10.0, "cached": null, "listing": "ok", "connector": "c", "toolkit_version": "v1", "etag": "e1", "tools": 0}
+{"case": "plan-invalid-slug", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "Bad Slug", "refresh": false, "now": 10.0, "cached": null, "listing": "ok"}
+{"case": "plan-cache-wrong-type", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 10.0, "cached": "nope", "listing": "ok"}
+{"case": "plan-missing-listing", "func": "read_plan", "token": "eyJhbGciOiJub25lIn0.eyJzdWIiOiJtZW1iZXItMSJ9.sig", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 10.0, "cached": null}
+{"case": "plan-bad-token-fresh-cache", "func": "read_plan", "token": "a.b.c", "origin": "https://p", "slug": "gmail", "refresh": false, "now": 150.0, "cached": {"connector": "c", "toolkit_version": "v1", "etag": "e1", "fetched_at": 100.0, "tools": 2}, "listing": "ok", "connector": "c", "toolkit_version": "v1", "etag": "e1", "tools": 2}

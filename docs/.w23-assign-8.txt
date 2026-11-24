@@ -1,0 +1,2 @@
+w23_sidecarpat_472c0c	plugins/platforms/photon/sidecar_paths
+w23_chatcomple_c9e7a5	agent/chat_completion_wait_notice

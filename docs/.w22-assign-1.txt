@@ -1,0 +1,5 @@
+w22_locallinea_3bb0fd	persistence/sqlite/conversation/_store/local_lineage
+w22_gatewaycon_d39075	hermes_cli/gateway_connections_watch
+w22_configdefa_fa2045	hermes_cli/config_defaults_auxiliary
+w22_crypto_2e84d7	plugins/platforms/qqbot/crypto
+w22_webapp_0bcaf2	hermes_cli/subcommands/webapp

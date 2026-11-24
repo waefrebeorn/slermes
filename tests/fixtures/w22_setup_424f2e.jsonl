@@ -1,0 +1,24 @@
+{"case":"existing-defaults","func":"run","existing_url":"http://old:8080","existing_account":"+1555","existing_allowed":null,"existing_groups":"+1666","reconfigure":true,"which":true,"inputs":["","","",""],"yes":[true],"http":{"kind":"ok"}}
+{"case":"fresh-all-typed","func":"run","existing_url":null,"existing_account":null,"existing_allowed":null,"existing_groups":null,"reconfigure":true,"which":true,"inputs":["http://new:9000/"," +1222 ","","a,b"],"yes":[true],"http":{"kind":"ok"}}
+{"case":"declined-reconfigure","func":"run","existing_url":"http://old:8080","existing_account":"+1555","reconfigure":false,"which":true,"inputs":[],"yes":[],"http":{"kind":"ok"}}
+{"case":"eof-url","func":"run","reconfigure":true,"which":true,"inputs":[],"yes":[],"http":{"kind":"ok"}}
+{"case":"blank-url-default","func":"run","reconfigure":true,"which":true,"inputs":["","","+1",""],"yes":[],"http":{"kind":"ok"}}
+{"case":"status-declined","func":"run","reconfigure":true,"which":true,"inputs":["http://x"],"yes":[false],"http":{"kind":"status","status":500}}
+{"case":"status-continued","func":"run","reconfigure":true,"which":true,"inputs":["http://x","+1",""],"yes":[true],"http":{"kind":"status","status":503}}
+{"case":"probe-declined","func":"run","reconfigure":true,"which":true,"inputs":["http://x"],"yes":[false],"http":{"kind":"raise","message":"down"}}
+{"case":"probe-saved-anyway","func":"run","reconfigure":true,"which":true,"inputs":["http://x","+1",""],"yes":[true],"http":{"kind":"raise","message":"down"}}
+{"case":"eof-account","func":"run","reconfigure":true,"which":true,"inputs":["http://x"],"yes":[],"http":{"kind":"ok"}}
+{"case":"account-required","func":"run","reconfigure":true,"which":true,"inputs":["http://x",""],"yes":[],"http":{"kind":"ok"}}
+{"case":"account-existing-blank","func":"run","existing_account":"+1999","reconfigure":true,"which":true,"inputs":["http://x","",""],"yes":[],"http":{"kind":"ok"}}
+{"case":"eof-allowed","func":"run","reconfigure":true,"which":true,"inputs":["http://x","+1"],"yes":[],"http":{"kind":"ok"}}
+{"case":"allowed-blank-falls-to-account","func":"run","reconfigure":true,"which":true,"inputs":["http://x","+1",""],"yes":[],"http":{"kind":"ok"}}
+{"case":"allowed-existing","func":"run","reconfigure":true,"which":true,"existing_allowed":"+1777","inputs":["http://x","+1",""],"yes":[],"http":{"kind":"ok"}}
+{"case":"groups-star","func":"run","reconfigure":true,"which":true,"inputs":["http://x","+1","",""],"yes":[true],"http":{"kind":"ok"}}
+{"case":"groups-existing-blank","func":"run","reconfigure":true,"which":true,"existing_groups":"+1666","inputs":["http://x","+1","",""],"yes":[true],"http":{"kind":"ok"}}
+{"case":"eof-group","func":"run","reconfigure":true,"which":true,"inputs":["http://x","+1",""],"yes":[true],"http":{"kind":"ok"}}
+{"case":"groups-disabled-existing","func":"run","reconfigure":true,"which":true,"existing_groups":"+1666","inputs":["http://x","+1",""],"yes":[false],"http":{"kind":"ok"}}
+{"case":"inputs-wrong-type","func":"run","reconfigure":true,"which":true,"inputs":{"a":1},"yes":[],"http":{"kind":"ok"}}
+{"case":"trailing-slashes","func":"run","reconfigure":true,"which":true,"inputs":["http://x///","+1",""],"yes":[],"http":{"kind":"ok"}}
+{"case":"whitespace-trim","func":"run","reconfigure":true,"which":true,"inputs":["  http://x/  ","  +1888  ","  +1999  "],"yes":[],"http":{"kind":"ok"}}
+{"case":"which-missing","func":"run","reconfigure":true,"inputs":["","","+1",""],"yes":[],"http":{"kind":"ok"}}
+{"case":"existing-url-empty","func":"run","existing_url":"","reconfigure":true,"which":true,"inputs":["","","+1",""],"yes":[],"http":{"kind":"ok"}}

@@ -1,0 +1,37 @@
+{"func": "visibility", "case": "members"}
+{"func": "limits", "case": "window"}
+{"func": "ensure_utc", "case": "utc_z", "iso": "2020-01-01T00:00:00Z"}
+{"func": "ensure_utc", "case": "east_offset", "iso": "2020-01-01T10:00:00+05:30"}
+{"func": "ensure_utc", "case": "west_offset_fraction", "iso": "2020-01-01T00:00:00.123456-03:00"}
+{"func": "ensure_utc", "case": "compact_offset", "iso": "2020-01-01T10:00:00+0530"}
+{"func": "ensure_utc", "case": "short_fraction", "iso": "2020-01-01T10:00:00.5+00:00"}
+{"func": "ensure_utc", "case": "crosses_midnight", "iso": "2020-03-01T01:30:00+02:00"}
+{"func": "ensure_utc", "case": "leap_day", "iso": "2024-02-29T12:00:00+00:00"}
+{"func": "ensure_utc", "case": "naive_datetime", "iso": "2020-01-01T10:00:00"}
+{"func": "ensure_utc", "case": "naive_date", "iso": "2020-01-01"}
+{"func": "ensure_utc", "case": "garbage", "iso": "not-a-date"}
+{"func": "ensure_utc", "case": "bad_month", "iso": "2020-13-01T00:00:00+00:00"}
+{"func": "ensure_utc", "case": "missing", "iso": null}
+{"func": "stored", "case": "unset_null", "value": null}
+{"func": "stored", "case": "unset_empty", "value": ""}
+{"func": "stored", "case": "zero", "value": 0}
+{"func": "stored", "case": "one", "value": 1}
+{"func": "stored", "case": "true", "value": true}
+{"func": "stored", "case": "false", "value": false}
+{"func": "stored", "case": "fractional", "value": 1.5}
+{"func": "stored", "case": "negative", "value": -1}
+{"func": "stored", "case": "ceiling", "value": 4200000000.0}
+{"func": "stored", "case": "above_ceiling", "value": 4200000001.0}
+{"func": "stored", "case": "numeric_string", "value": "12"}
+{"func": "stored", "case": "padded_string", "value": " 12 "}
+{"func": "stored", "case": "exponent_string", "value": "1e3"}
+{"func": "stored", "case": "underscore_string", "value": "1_0"}
+{"func": "stored", "case": "hex_string", "value": "0x10"}
+{"func": "stored", "case": "comma_string", "value": "1,5"}
+{"func": "stored", "case": "inf_string", "value": "inf"}
+{"func": "stored", "case": "nan_string", "value": "nan"}
+{"func": "stored", "case": "overflow_string", "value": "1e400"}
+{"func": "stored", "case": "datetime_aware", "value": {"__dt__": "2020-01-01T10:00:00+05:30"}}
+{"func": "stored", "case": "datetime_naive", "value": {"__dt__": "2020-01-01T10:00:00"}}
+{"func": "stored", "case": "datetime_epoch", "value": {"__dt__": "1970-01-01T00:00:00Z"}}
+{"func": "stored", "case": "array_value", "value": [1, 2]}

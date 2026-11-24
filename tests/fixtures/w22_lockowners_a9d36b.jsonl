@@ -1,0 +1,19 @@
+{"case":"shm-write","func":"describe_range","sidecar":"-shm","start":120,"end":120}
+{"case":"shm-checkpoint","func":"describe_range","sidecar":"-shm","start":121,"end":121}
+{"case":"shm-recover","func":"describe_range","sidecar":"-shm","start":122,"end":122}
+{"case":"shm-deadman","func":"describe_range","sidecar":"-shm","start":128,"end":128}
+{"case":"shm-read-slot","func":"describe_range","sidecar":"-shm","start":125,"end":125}
+{"case":"shm-read-wide","func":"describe_range","sidecar":"-shm","start":124,"end":130}
+{"case":"shm-unknown-single","func":"describe_range","sidecar":"-shm","start":7,"end":7}
+{"case":"db-pending","func":"describe_range","sidecar":"","start":1073741824,"end":1073741824}
+{"case":"db-reserved","func":"describe_range","sidecar":"","start":1073741825,"end":1073741825}
+{"case":"db-shared","func":"describe_range","sidecar":"","start":1073741826,"end":1073741826}
+{"case":"db-bytes","func":"describe_range","sidecar":"","start":5,"end":9}
+{"case":"db-bytes-pending-start-wide","func":"describe_range","sidecar":"","start":1073741824,"end":1073741830}
+{"case":"parse-mixed","func":"parse_locks","text":"1: POSIX  ADVISORY  WRITE 4242 08:01:12345 0 EOF\n2: POSIX  ADVISORY  READ  4243 08:01:12345 0 EOF\n3: -> POSIX  ADVISORY  WRITE 4244 08:01:12346 0 EOF\n4: OFDLCK ADVISORY WRITE -1 08:01:12347 120 120\n5: POSIX  ADVISORY  WRITE 4245 08:01:12345 1073741824 1073741824\n6: POSIX  ADVISORY  WRITE 4246 08:02:12345 0 EOF\n7: POSIX  ADVISORY  WRITE xx 08:01:99999 0 EOF\n8: POSIX  ADVISORY  WRITE 4248 08:01:12345 0 zz\n9: POSIX  ADVISORY  WRITE 4249 08:01:12345:99 0 EOF\n10: POSIX ADVISORY WRITE 4250 08:01:12345 123 130\n11: short line","inodes":[{"major":8,"minor":1,"ino":"12345","sidecar":""},{"major":8,"minor":1,"ino":12346,"sidecar":"-wal"},{"major":8,"minor":1,"ino":"12347","sidecar":"-shm"}]}
+{"case":"parse-empty","func":"parse_locks","text":"","inodes":[]}
+{"case":"parse-no-inodes","func":"parse_locks","text":"1: POSIX  ADVISORY  WRITE 1 08:01:12345 0 EOF","inodes":[]}
+{"case":"parse-missing-inode","func":"parse_locks","text":"1: POSIX  ADVISORY  WRITE 1 08:01:12345 0 EOF","inodes":[{"major":8,"minor":1,"sidecar":""}]}
+{"case":"warn-none","func":"warning","path_name":"state.db","patience":45.4,"holders":[]}
+{"case":"warn-one","func":"warning","path_name":"state.db","patience":8.6,"holders":["pid 4242 (python) holds WAL write lock on state.db-wal"]}
+{"case":"warn-many","func":"warning","path_name":"state.db","patience":120,"holders":["pid 1 (a) holds PENDING lock on state.db","pid 2 (b) holds WAL write lock on state.db-wal"]}

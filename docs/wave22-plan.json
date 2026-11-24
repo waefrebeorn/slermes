@@ -2,7 +2,6 @@
  "w22_runtime_49223c": "plugins/teams_pipeline/runtime",
  "w22_webhookdel_ead437": "gateway/platforms/webhook_delivery",
  "w22_processreg_606e65": "tools/process_registry_results",
- "w22_processreg_cd9f60": "tools/process_registry_env_log",
  "w22_promptreso_7bfabf": "gateway/relay/prompt_resolvers",
  "w22_audit_b943f2": "hermes_cli/dashboard_auth/audit",
  "w22_telegramsp_8c7e95": "plugins/platforms/telegram/telegram_split",

@@ -1,0 +1,38 @@
+{"func": "actor", "case": "named", "source": {"user_id": "U123"}, "admin_ids": ["U9"], "admitted": true}
+{"func": "actor", "case": "missing_user", "source": {}, "admin_ids": [], "admitted": true}
+{"func": "actor", "case": "null_user", "source": {"user_id": null}, "admin_ids": ["U9", "U10"], "admitted": false}
+{"func": "actor", "case": "numeric_user", "source": {"user_id": 42}, "admin_ids": [], "admitted": true}
+{"func": "refusal_plan", "case": "exec_approval_choice", "state": {"kind": "exec_approval", "session_key": "sess-1", "request_id": "req-7"}, "actor": {"actor_id": "U123", "admin_ids": ["U9"], "admitted": true}, "option_id": "once", "requester": "Ana"}
+{"func": "refusal_plan", "case": "exec_approval_no_choice", "state": {"kind": "exec_approval", "session_key": "sess-1"}, "actor": {"actor_id": "U123", "admin_ids": [], "admitted": false}, "requester": ""}
+{"func": "refusal_plan", "case": "exec_approval_ok", "state": {"kind": "exec_approval", "session_key": "sess-1", "request_id": "req-7"}, "actor": {"actor_id": "U123", "admin_ids": ["U9"], "admitted": true}, "option_id": "deny"}
+{"func": "refusal_plan", "case": "slash_confirm", "state": {"kind": "slash_confirm", "session_key": "sess-2", "confirm_id": "cf-9"}, "actor": {"actor_id": "U5", "admin_ids": [], "admitted": true}, "requester": "Bo"}
+{"func": "refusal_plan", "case": "slash_missing_confirm", "state": {"kind": "slash_confirm", "session_key": "sess-2", "confirm_id": null}, "actor": {"actor_id": "U5", "admin_ids": ["U1"], "admitted": false}}
+{"func": "refusal_plan", "case": "slash_numeric_session", "state": {"kind": "slash_confirm", "session_key": 0, "confirm_id": 12}, "actor": {"actor_id": "U5", "admin_ids": [], "admitted": true}, "requester": "Cy"}
+{"func": "refusal_plan", "case": "clarify", "state": {"kind": "clarify", "clarify_id": "cl-3"}, "actor": {"actor_id": "U7", "admin_ids": [], "admitted": true}, "requester": "Dee"}
+{"func": "refusal_plan", "case": "unknown_kind", "state": {"session_key": "sess-3"}, "actor": {"actor_id": "U7", "admin_ids": ["U2"], "admitted": true}}
+{"func": "refusal_plan", "case": "admitted_default", "state": {"kind": "clarify", "clarify_id": "cl-4"}, "actor": {"actor_id": "U7", "admin_ids": []}, "requester": "Eve"}
+{"func": "exec_ack", "case": "approved_once", "option_id": "once", "count": 2}
+{"func": "exec_ack", "case": "approved_session", "option_id": "session", "count": 1, "actor": {"requester_id": "U1", "approvers": ["*"]}}
+{"func": "exec_ack", "case": "approved_always", "option_id": "always", "count": 1}
+{"func": "exec_ack", "case": "denied", "option_id": "deny", "count": 1}
+{"func": "exec_ack", "case": "unknown_option", "option_id": "maybe", "count": 1}
+{"func": "exec_ack", "case": "expired", "option_id": "once", "count": 0}
+{"func": "exec_ack", "case": "expired_null_choice", "count": 0}
+{"func": "slash_ack", "case": "once_with_text", "option_id": "once", "result_text": "Command finished"}
+{"func": "slash_ack", "case": "always_no_text", "option_id": "always"}
+{"func": "slash_ack", "case": "cancel_default", "option_id": "nope"}
+{"func": "slash_ack", "case": "null_option", "result_text": "Output"}
+{"func": "slash_ack", "case": "empty_text", "option_id": "once", "result_text": ""}
+{"func": "clarify", "case": "other", "option_id": "other", "choices": ["a", "b"]}
+{"func": "clarify", "case": "first_choice", "option_id": "c0", "choices": ["Yes", "No"]}
+{"func": "clarify", "case": "second_choice", "option_id": "c1", "choices": ["Yes", "No"]}
+{"func": "clarify", "case": "signed_index", "option_id": "c+1", "choices": ["Yes", "No"]}
+{"func": "clarify", "case": "out_of_range", "option_id": "c9", "choices": ["Yes", "No"]}
+{"func": "clarify", "case": "negative_index", "option_id": "c-1", "choices": ["Yes", "No"]}
+{"func": "clarify", "case": "not_an_index", "option_id": "cabc", "choices": ["Yes"]}
+{"func": "clarify", "case": "empty_index", "option_id": "c", "choices": ["Yes"]}
+{"func": "clarify", "case": "no_prefix", "option_id": "7", "choices": ["Yes", "No"]}
+{"func": "clarify", "case": "no_choices", "option_id": "c0"}
+{"func": "clarify", "case": "null_choices", "option_id": "other", "choices": null}
+{"func": "clarify", "case": "whitespace_index", "option_id": "c 1 ", "choices": ["Yes", "No"]}
+{"func": "clarify", "case": "underscore_index", "option_id": "c1_0", "choices": ["a","b","c","d","e","f","g","h","i","j","k"]}

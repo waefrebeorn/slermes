@@ -1,0 +1,33 @@
+{"case": "pairs_order", "func": "pairs"}
+{"case": "pinned_map", "func": "pinned_map"}
+{"case": "mime_js", "func": "mime_for", "ext": ".js"}
+{"case": "mime_mjs", "func": "mime_for", "ext": ".mjs"}
+{"case": "mime_cjs", "func": "mime_for", "ext": ".cjs"}
+{"case": "mime_css", "func": "mime_for", "ext": ".css"}
+{"case": "mime_json", "func": "mime_for", "ext": ".json"}
+{"case": "mime_map", "func": "mime_for", "ext": ".map"}
+{"case": "mime_svg", "func": "mime_for", "ext": ".svg"}
+{"case": "mime_wasm", "func": "mime_for", "ext": ".wasm"}
+{"case": "mime_webp", "func": "mime_for", "ext": ".webp"}
+{"case": "mime_webmanifest", "func": "mime_for", "ext": ".webmanifest"}
+{"case": "mime_woff", "func": "mime_for", "ext": ".woff"}
+{"case": "mime_woff2", "func": "mime_for", "ext": ".woff2"}
+{"case": "mime_ico", "func": "mime_for", "ext": ".ico"}
+{"case": "mime_uppercase_miss", "func": "mime_for", "ext": ".JS"}
+{"case": "mime_empty", "func": "mime_for", "ext": ""}
+{"case": "mime_missing_key", "func": "mime_for"}
+{"case": "mime_null", "func": "mime_for", "ext": null}
+{"case": "mime_wrong_type", "func": "mime_for", "ext": 7}
+{"case": "guess_js", "func": "guess", "url": "/assets/app.js"}
+{"case": "guess_js_upper", "func": "guess", "url": "/assets/app.JS"}
+{"case": "guess_mjs", "func": "guess", "url": "/dashboard/assets/chunk-4f2a.mjs"}
+{"case": "guess_css", "func": "guess", "url": "dist/styles.css"}
+{"case": "guess_manifest", "func": "guess", "url": "/app.webmanifest"}
+{"case": "guess_ico", "func": "guess", "url": "/favicon.ico"}
+{"case": "guess_no_suffix", "func": "guess", "url": "/assets/app"}
+{"case": "guess_dotfile", "func": "guess", "url": "/assets/.js"}
+{"case": "guess_dot_in_dir", "func": "guess", "url": "dir.js/file"}
+{"case": "guess_empty", "func": "guess", "url": ""}
+{"case": "guess_missing_key", "func": "guess"}
+{"case": "guess_null", "func": "guess", "url": null}
+{"case": "guess_backslash_path", "func": "guess", "url": "C:\\dist\\bundle.cjs"}

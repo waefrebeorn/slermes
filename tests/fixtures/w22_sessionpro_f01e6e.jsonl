@@ -1,0 +1,35 @@
+{"case": "socks5h-scheme", "func": "socks", "proxy_url": "socks5h://127.0.0.1:1080"}
+{"case": "socks-upper", "func": "socks", "proxy_url": "SOCKS5://proxy:1080"}
+{"case": "socks-plain", "func": "socks", "proxy_url": "socks://proxy:1080"}
+{"case": "socks-bare-token", "func": "socks", "proxy_url": "socks"}
+{"case": "http-proxy", "func": "socks", "proxy_url": "http://proxy:3128"}
+{"case": "socks-in-host-name", "func": "socks", "proxy_url": "https://socks.example.com:443"}
+{"case": "empty-proxy", "func": "socks", "proxy_url": ""}
+{"case": "socks-missing", "func": "socks"}
+{"case": "socks-connector-missing", "func": "redaction", "proxy_url": "socks5h://127.0.0.1:1080", "socks_available": false, "trust_env": true, "env": {}}
+{"case": "socks-connector-present", "func": "redaction", "proxy_url": "socks5h://127.0.0.1:1080", "socks_available": true, "trust_env": true, "env": {"https_proxy": "http://env-proxy:1"}}
+{"case": "http-proxy-wins", "func": "redaction", "proxy_url": "http://proxy:3128", "socks_available": false, "trust_env": false, "env": {"https_proxy": "http://env-proxy:1"}}
+{"case": "trust-env-off", "func": "redaction", "trust_env": false, "env": {"https_proxy": "http://env-proxy:1"}}
+{"case": "env-https", "func": "redaction", "trust_env": true, "env": {"https_proxy": "http://env-proxy:3128"}}
+{"case": "env-uppercase-key", "func": "redaction", "trust_env": true, "env": {"HTTPS_PROXY": "http://upper:3128"}}
+{"case": "env-unrendered-wins", "func": "redaction", "trust_env": true, "env": {"http_proxy": "http://user:secret@proxy:3128"}}
+{"case": "env-secret-before-plain", "func": "redaction", "trust_env": true, "env": {"all_proxy": "http://plain:8080", "http_proxy": "http://user:secret@proxy:3128"}}
+{"case": "env-first-plain", "func": "redaction", "trust_env": true, "env": {"https_proxy": "http://first:1", "http_proxy": "http://second:2"}}
+{"case": "env-ws-only", "func": "redaction", "trust_env": true, "env": {"ws_proxy": "ws://ws-proxy:9000"}}
+{"case": "env-grpc-only", "func": "redaction", "trust_env": true, "homeserver": "https://matrix.example.com", "env": {"grpc_proxy": "https://grpc-proxy:443"}}
+{"case": "env-stripped", "func": "redaction", "trust_env": true, "env": {"https_proxy": "   http://padded:3128   "}}
+{"case": "env-bare-authority", "func": "redaction", "trust_env": true, "env": {"https_proxy": "proxy:3128"}}
+{"case": "no-proxy-star", "func": "redaction", "trust_env": true, "homeserver": "https://matrix.example.com/_matrix/client", "env": {"https_proxy": "http://env-proxy:1", "no_proxy": "*"}}
+{"case": "no-proxy-star-no-target", "func": "redaction", "trust_env": true, "env": {"https_proxy": "http://env-proxy:1", "no_proxy": "*"}}
+{"case": "no-proxy-star-with-secret", "func": "redaction", "trust_env": true, "homeserver": "https://matrix.example.com", "env": {"http_proxy": "http://user:secret@proxy:3128", "no_proxy": "*"}}
+{"case": "no-proxy-star-socks-value", "func": "redaction", "trust_env": true, "homeserver": "https://matrix.example.com", "env": {"all_proxy": "socks5://user:secret@proxy:1", "no_proxy": "*"}}
+{"case": "no-proxy-host-match", "func": "redaction", "trust_env": true, "homeserver": "https://matrix.example.com:8443/_matrix/client", "env": {"https_proxy": "http://env-proxy:1", "no_proxy": "matrix.example.com"}}
+{"case": "no-proxy-no-match", "func": "redaction", "trust_env": true, "homeserver": "https://matrix.example.com", "env": {"https_proxy": "http://env-proxy:1", "no_proxy": "other.example.com"}}
+{"case": "no-proxy-upper-key", "func": "redaction", "trust_env": true, "homeserver": "https://matrix.example.com", "env": {"https_proxy": "http://env-proxy:1", "NO_PROXY": "*"}}
+{"case": "no-proxy-lower-key-not-exact", "func": "redaction", "trust_env": true, "homeserver": "https://matrix.example.com", "env": {"https_proxy": "http://env-proxy:1", "No_Proxy": "*"}}
+{"case": "env-empty", "func": "redaction", "trust_env": true, "env": {}}
+{"case": "env-missing", "func": "redaction", "trust_env": true}
+{"case": "env-blank-value", "func": "redaction", "trust_env": true, "env": {"https_proxy": "   "}}
+{"case": "no-proxy-only", "func": "redaction", "trust_env": true, "homeserver": "https://matrix.example.com", "env": {"no_proxy": "*"}}
+{"case": "socks-available-string", "func": "redaction", "proxy_url": "socks5://p:1", "socks_available": "yes", "trust_env": "on", "env": {"https_proxy": "http://env:1"}}
+{"case": "env-value-not-uppercase-spelling", "func": "redaction", "trust_env": true, "env": {"HtTp_PrOxY": "http://mixed:1"}}

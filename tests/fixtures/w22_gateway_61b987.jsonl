@@ -1,0 +1,18 @@
+{"case":"noargs","func":"sessions_query"}
+{"case":"platform-null","func":"sessions_query","platform":null}
+{"case":"platform-empty","func":"sessions_query","platform":""}
+{"case":"platform-telegram","func":"sessions_query","platform":"telegram"}
+{"case":"platform-mixed-case","func":"sessions_query","platform":"Telegram"}
+{"case":"platform-spaces","func":"sessions_query","platform":" tel "}
+{"case":"platform-number","func":"sessions_query","platform":123}
+{"case":"platform-false","func":"sessions_query","platform":false}
+{"case":"platform-object","func":"sessions_query","platform":{"a":1}}
+{"case":"platform-array","func":"sessions_query","platform":["slack"]}
+{"case":"inactive","func":"sessions_query","active_only":false}
+{"case":"inactive-with-platform","func":"sessions_query","platform":"slack","active_only":false}
+{"case":"active-zero","func":"sessions_query","active_only":0}
+{"case":"active-one","func":"sessions_query","active_only":1}
+{"case":"active-null","func":"sessions_query","active_only":null}
+{"case":"active-string","func":"sessions_query","active_only":"no"}
+{"case":"both","func":"sessions_query","platform":"telegram","active_only":true}
+{"case":"extra-key-echo","func":"sessions_query","platform":"telegram","active_only":false,"case_note":"echoed"}

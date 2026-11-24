@@ -1,0 +1,33 @@
+{"case": "guard_ok", "func": "admitted", "guard": {"kind": "ok"}}
+{"case": "guard_missing", "func": "admitted"}
+{"case": "guard_401", "func": "admitted", "guard": {"kind": "http", "status": 401}}
+{"case": "guard_401_detail", "func": "admitted", "guard": {"kind": "http", "status": 401, "detail": "no cookie"}}
+{"case": "guard_401_float", "func": "admitted", "guard": {"kind": "http", "status": 401.0}}
+{"case": "guard_403_reraises", "func": "admitted", "guard": {"kind": "http", "status": 403, "detail": "forbidden"}}
+{"case": "guard_500_reraises", "func": "admitted", "guard": {"kind": "http", "status": 500}}
+{"case": "guard_status_string", "func": "admitted", "guard": {"kind": "http", "status": "401"}}
+{"case": "guard_status_missing", "func": "admitted", "guard": {"kind": "http"}}
+{"case": "guard_status_true", "func": "admitted", "guard": {"kind": "http", "status": true}}
+{"case": "guard_raises_value_error", "func": "admitted", "guard": {"kind": "raise", "type": "ValueError", "detail": "boom"}}
+{"case": "guard_unknown_kind", "func": "admitted", "guard": {"kind": "weird"}}
+{"case": "guard_wrong_type", "func": "admitted", "guard": "ok"}
+{"case": "scope_full_auth", "func": "scope", "scope": {"type": "http", "path": "/api/x", "state": {"a": 1}}, "authenticated": true}
+{"case": "scope_full_unauth", "func": "scope", "scope": {"type": "http", "path": "/api/x", "state": {"a": 1}}, "authenticated": false}
+{"case": "scope_no_state", "func": "scope", "scope": {"type": "http", "path": "/"}, "authenticated": true}
+{"case": "scope_null_state", "func": "scope", "scope": {"type": "http", "state": null}, "authenticated": true}
+{"case": "scope_empty_state", "func": "scope", "scope": {"type": "http", "state": {}}, "authenticated": true}
+{"case": "scope_auth_int_1", "func": "scope", "scope": {"type": "http", "state": {"a": 1}}, "authenticated": 1}
+{"case": "scope_auth_string_true", "func": "scope", "scope": {"type": "http", "state": {"a": 1}}, "authenticated": "true"}
+{"case": "scope_auth_missing", "func": "scope", "scope": {"type": "http", "state": {"a": 1}}}
+{"case": "scope_pairs", "func": "scope", "scope": {"state": [["a", 1], ["b", 2]]}, "authenticated": true}
+{"case": "scope_pair_strings", "func": "scope", "scope": {"state": ["ab", "cd"]}, "authenticated": true}
+{"case": "scope_bad_pair", "func": "scope", "scope": {"state": [["a"]]}, "authenticated": true}
+{"case": "scope_bad_pair_scalar", "func": "scope", "scope": {"state": [1]}, "authenticated": true}
+{"case": "scope_state_string", "func": "scope", "scope": {"state": "ab"}, "authenticated": true}
+{"case": "scope_state_empty_string", "func": "scope", "scope": {"state": ""}, "authenticated": true}
+{"case": "scope_state_number", "func": "scope", "scope": {"state": 5}, "authenticated": true}
+{"case": "scope_state_bool", "func": "scope", "scope": {"state": true}, "authenticated": true}
+{"case": "scope_state_list_empty", "func": "scope", "scope": {"state": []}, "authenticated": true}
+{"case": "scope_missing", "func": "scope", "authenticated": true}
+{"case": "scope_non_mapping", "func": "scope", "scope": "not-a-scope", "authenticated": true}
+{"case": "scope_list", "func": "scope", "scope": [1, 2], "authenticated": true}

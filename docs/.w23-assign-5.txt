@@ -1,0 +1,3 @@
+w23_cuabackend_bf7126	tools/computer_use/cua_backend_capture
+w23_clisubagen_f7c046	hermes_cli/cli_subagent_monitor
+w23_client_785ca6	agent/lsp/client

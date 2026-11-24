@@ -1,0 +1,34 @@
+{"case": "empty-list", "func": "failures", "stdout": "noise\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[]"}
+{"case": "one-failure", "func": "failures", "stdout": "noise\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"hermes_cli.main\",\"ImportError\",\"cannot import name x\"]]"}
+{"case": "two-failures", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a.b\",\"ModuleNotFoundError\",\"no module a\"],[\"c\",\"RuntimeError\",\"boom\"]]"}
+{"case": "two-failures-validate", "func": "validate", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a.b\",\"ModuleNotFoundError\",\"no module a\"],[\"c\",\"RuntimeError\",\"boom\"]]"}
+{"case": "duplicate-module", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a\",\"E1\",\"m1\"],[\"a\",\"E2\",\"m2\"],[\"b\",\"E3\",\"m3\"]]"}
+{"case": "duplicate-module-validate", "func": "validate", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a\",\"E1\",\"m1\"],[\"a\",\"E2\",\"m2\"]]"}
+{"case": "empty-validate", "func": "validate", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[]"}
+{"case": "malformed-json", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__not json"}
+{"case": "payload-not-list", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__{\"a\":1}"}
+{"case": "payload-string", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__\"hello\""}
+{"case": "item-not-list", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a\",\"b\",\"c\"],\"x\"]"}
+{"case": "item-short", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a\",\"b\"]]"}
+{"case": "item-long", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a\",\"b\",\"c\",\"d\"]]"}
+{"case": "item-nonstr", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a\",\"b\",3]]"}
+{"case": "no-marker", "func": "failures", "stdout": "just some output"}
+{"case": "no-marker-rc", "func": "failures", "stdout": "oops", "rc": "7"}
+{"case": "no-marker-validate", "func": "validate", "stdout": "just some output", "rc": "2"}
+{"case": "empty-stdout", "func": "failures", "stdout": ""}
+{"case": "missing-stdout-key", "func": "failures"}
+{"case": "last-marker-wins", "func": "failures", "stdout": "__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[]\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"z\",\"E\",\"last\"]]"}
+{"case": "trailing-junk", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a\",\"b\",\"c\"]] trailing"}
+{"case": "trailing-newline", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a\",\"b\",\"c\"]]\n\n"}
+{"case": "brackets-in-strings", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"mod[x]\",\"ValueError\",\"bad ] token \\\"q\\\" {nested}\"]]"}
+{"case": "unicode-detail", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"m\",\"E\",\"café → boom\"]]"}
+{"case": "empty-strings", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"\",\"\",\"\"]]"}
+{"case": "timeout", "func": "failures", "mode": "timeout"}
+{"case": "timeout-validate", "func": "validate", "mode": "timeout"}
+{"case": "oserror", "func": "failures", "mode": "oserror"}
+{"case": "oserror-validate", "func": "validate", "mode": "oserror"}
+{"case": "probe-failure", "func": "probe_failure", "kind": "TimeoutExpired", "detail": "timed out before reporting import health"}
+{"case": "probe-failure-empty", "func": "probe_failure"}
+{"case": "modules", "func": "modules"}
+{"case": "rc-missing", "func": "failures", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[[\"a\",\"b\",\"c\"]]"}
+{"case": "rc-zero", "func": "validate", "stdout": "\n__HERMES_IMPORT_HEALTH_0123456789abcdef0123456789abcdef__[]", "rc": "0"}

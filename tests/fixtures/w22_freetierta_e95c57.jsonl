@@ -1,0 +1,41 @@
+{"case": "anon-anon-tier", "func": "anon", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl"}
+{"case": "anon-paid-tier", "func": "anon", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJwYWlkIn0.c2lnbmF0dXJl"}
+{"case": "anon-wrong-provider", "func": "anon", "provider": "anthropic", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl"}
+{"case": "anon-provider-case", "func": "anon", "provider": "Nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl"}
+{"case": "anon-no-claim", "func": "anon", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aWVyIjoiYW5vbnltb3VzIn0.c2lnbmF0dXJl"}
+{"case": "anon-extra-claims", "func": "anon", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1MSIsImFjY291bnRfdGllciI6ImFub255bW91cyIsImV4cCI6MX0.c2lnbmF0dXJl"}
+{"case": "anon-claims-not-object", "func": "anon", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.WyJhbm9ueW1vdXMiXQ.c2lnbmF0dXJl"}
+{"case": "anon-tier-not-string", "func": "anon", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOjF9.c2lnbmF0dXJl"}
+{"case": "anon-not-a-jwt", "func": "anon", "provider": "nous", "api_key": "abc"}
+{"case": "anon-bad-segments", "func": "anon", "provider": "nous", "api_key": "a.b.c"}
+{"case": "anon-body-not-json", "func": "anon", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.bm90IGpzb24.c2lnbmF0dXJl"}
+{"case": "anon-empty-body", "func": "anon", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..c2lnbmF0dXJl"}
+{"case": "anon-padded-body", "func": "anon", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMiLCJub3RlIjoieCJ9.c2lnbmF0dXJl"}
+{"case": "anon-missing-key", "func": "anon", "provider": "nous"}
+{"case": "anon-no-provider", "func": "anon", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl"}
+{"case": "clean-ok", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": "done"}}
+{"case": "clean-auto-continue", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": "done"}, "display_kind": "auto_continue"}
+{"case": "clean-other-display-kind", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": "done"}, "display_kind": "turn"}
+{"case": "clean-user-input", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": "done"}, "user_input": true}
+{"case": "clean-user-input-zero", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": "done"}, "user_input": 0}
+{"case": "clean-result-not-dict", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": "completed"}
+{"case": "clean-result-missing", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl"}
+{"case": "clean-not-completed", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": false, "final_response": "done"}}
+{"case": "clean-completed-missing", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"final_response": "done"}}
+{"case": "clean-pending-steer", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "pending_steer": true, "final_response": "done"}}
+{"case": "clean-user-intervened", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "user_intervened": true, "final_response": "done"}}
+{"case": "clean-blank-response", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": "   \n\t "}}
+{"case": "clean-missing-response", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true}}
+{"case": "clean-empty-response", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": ""}}
+{"case": "clean-numeric-response", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": 5}}
+{"case": "clean-zero-response", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": 0}}
+{"case": "clean-not-anonymous", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJwYWlkIn0.c2lnbmF0dXJl", "result": {"completed": true, "final_response": "done"}}
+{"case": "clean-answer-card", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": "answered", "pending_steer": false, "user_intervened": false}, "display_kind": "clarify_answer"}
+{"case": "record-ok", "func": "record", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "session": {"_turn_user_input": false}, "result": {"completed": true, "final_response": "done"}}
+{"case": "record-user-typed", "func": "record", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "session": {"_turn_user_input": true}, "result": {"completed": true, "final_response": "done"}}
+{"case": "record-no-ledger-key", "func": "record", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "session": {}, "result": {"completed": true, "final_response": "done"}}
+{"case": "record-session-missing", "func": "record", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "result": {"completed": true, "final_response": "done"}}
+{"case": "record-auto-continue", "func": "record", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "session": {"_turn_user_input": false}, "result": {"completed": true, "final_response": "done"}, "display_kind": "auto_continue"}
+{"case": "record-crashed-turn", "func": "record", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3RpZXIiOiJhbm9ueW1vdXMifQ.c2lnbmF0dXJl", "session": {"_turn_user_input": false}, "result": {"completed": false}}
+{"case": "clean-completed-number", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..c2lnbmF0dXJl", "result": {"completed": 1, "final_response": "x"}}
+{"case": "clean-display-kind-number", "func": "clean", "provider": "nous", "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..c2lnbmF0dXJl", "result": {"completed": true, "final_response": "x"}, "display_kind": 7}

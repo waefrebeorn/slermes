@@ -1,0 +1,17 @@
+{"func":"spec","case":"builder-spec"}
+{"func":"mount","case":"plain-parent","parent_prog":"hermes","taken":[]}
+{"func":"mount","case":"empty-parent-prog","parent_prog":"","taken":[]}
+{"func":"mount","case":"multi-word-parent","parent_prog":"hermes chat","taken":["chat"]}
+{"func":"mount","case":"taken-vault","parent_prog":"hermes","taken":["vault"]}
+{"func":"mount","case":"taken-vault-after-others","parent_prog":"hermes","taken":["chat","vault"]}
+{"func":"mount","case":"taken-other-name","parent_prog":"hermes","taken":["chat","login"]}
+{"func":"mount","case":"missing-parent-prog","taken":[]}
+{"func":"mount","case":"non-string-parent-prog","parent_prog":5,"taken":[]}
+{"func":"mount","case":"taken-null","parent_prog":"hermes","taken":null}
+{"func":"mount","case":"taken-not-array","parent_prog":"hermes","taken":"vault"}
+{"func":"mount","case":"taken-non-string-items","parent_prog":"hermes","taken":[1,2]}
+{"func":"mount","case":"space-parent","parent_prog":"  ","taken":[]}
+{"func":"mount","case":"missing-everything"}
+{"func": "mount", "case": "trailing-space-parent", "parent_prog": "hermes ", "taken": []}
+{"func": "mount", "case": "leading-space-parent", "parent_prog": " hermes", "taken": []}
+{"func": "mount", "case": "interior-spaces-parent", "parent_prog": "a  b", "taken": []}

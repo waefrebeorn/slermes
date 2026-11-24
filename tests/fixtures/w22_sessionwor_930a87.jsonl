@@ -1,0 +1,44 @@
+{"case": "dispatch_probed", "func": "plan", "operation": "delegation.dispatch", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}, "probe": {"alive": true, "birth_equal": true, "started_at": "2026-11-18T10:00:00Z"}}
+{"case": "dispatch_worker_gone", "func": "plan", "operation": "delegation.dispatch", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}, "probe": {"alive": false, "birth_equal": true, "started_at": "2026-11-18T10:00:00Z"}}
+{"case": "dispatch_birth_mismatch", "func": "plan", "operation": "delegation.dispatch", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}, "probe": {"alive": true, "birth_equal": false, "started_at": "2026-11-18T10:00:00Z"}}
+{"case": "dispatch_no_probe", "func": "plan", "operation": "delegation.dispatch", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "complete", "func": "plan", "operation": "delegation.complete", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "child", "func": "plan", "operation": "delegation.child", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "read", "func": "plan", "operation": "delegation.read", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "unscheduled", "func": "plan", "operation": "delegation.unscheduled", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "claim", "func": "plan", "operation": "delegation.claim", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "ack", "func": "plan", "operation": "delegation.ack", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "drop", "func": "plan", "operation": "delegation.drop", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "defer", "func": "plan", "operation": "delegation.defer", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "release", "func": "plan", "operation": "delegation.release", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "bare_dispatch_no_prefix", "func": "plan", "operation": "dispatch", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "unknown_name", "func": "plan", "operation": "delegation.nope", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "empty_operation", "func": "plan", "operation": "", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "missing_operation", "func": "plan", "operation": null, "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "trailing_dot", "func": "plan", "operation": "delegation.", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242, "worker_birth": "b-9"}}
+{"case": "receipt_missing_field", "func": "plan", "operation": "delegation.claim", "receipt": {"epoch": 7, "execution_id": "e-1", "session_id": "s-1", "generation": 2, "sequence": 3, "worker_pid": 4242}}
+{"case": "receipt_not_object", "func": "plan", "operation": "delegation.claim", "receipt": "nope"}
+{"case": "probe_live_no_start", "func": "probe", "probe": {"alive": true, "birth_equal": true}}
+{"case": "probe_live_started", "func": "probe", "probe": {"alive": true, "birth_equal": true, "started_at": "2026-11-18T10:00:00Z"}}
+{"case": "probe_gone", "func": "probe", "probe": {"alive": false, "birth_equal": false, "started_at": "x"}}
+{"case": "probe_birth_mismatch", "func": "probe", "probe": {"alive": true, "birth_equal": false, "started_at": "x"}}
+{"case": "probe_absent", "func": "probe"}
+{"case": "probe_empty_object", "func": "probe", "probe": {}}
+{"case": "verb_claim", "func": "delivery_verb", "name": "claim"}
+{"case": "verb_release", "func": "delivery_verb", "name": "release"}
+{"case": "verb_complete", "func": "delivery_verb", "name": "complete"}
+{"case": "verb_dispatch", "func": "delivery_verb", "name": "dispatch"}
+{"case": "verb_read", "func": "delivery_verb", "name": "read"}
+{"case": "verb_nope", "func": "delivery_verb", "name": "nope"}
+{"case": "verb_missing", "func": "delivery_verb", "name": null}
+{"case": "verdict_full_adopt", "func": "request_verdict", "params_keys": ["birth", "execution_id", "generation", "pid", "profile_id", "secret", "session_id", "epoch", "sequence", "operation", "payload"], "has_adopt": true}
+{"case": "verdict_full_no_adopt", "func": "request_verdict", "params_keys": ["birth", "execution_id", "generation", "pid", "profile_id", "secret", "session_id", "epoch", "sequence", "operation", "payload"], "has_adopt": false}
+{"case": "verdict_missing_key", "func": "request_verdict", "params_keys": ["birth", "execution_id", "generation", "pid", "profile_id", "secret", "session_id", "epoch", "sequence", "operation"], "has_adopt": true}
+{"case": "verdict_extra_key", "func": "request_verdict", "params_keys": ["birth", "execution_id", "generation", "pid", "profile_id", "secret", "session_id", "epoch", "sequence", "operation", "payload", "extra"], "has_adopt": true}
+{"case": "verdict_duplicate_key", "func": "request_verdict", "params_keys": ["birth", "execution_id", "generation", "pid", "profile_id", "secret", "session_id", "epoch", "sequence", "operation", "payload", "epoch"], "has_adopt": true}
+{"case": "verdict_shuffled", "func": "request_verdict", "params_keys": ["payload", "operation", "sequence", "epoch", "session_id", "secret", "profile_id", "pid", "generation", "execution_id", "birth"], "has_adopt": true}
+{"case": "verdict_empty", "func": "request_verdict", "params_keys": [], "has_adopt": true}
+{"case": "verdict_missing_key_absent", "func": "request_verdict", "has_adopt": true}
+{"case": "verdict_null_keys", "func": "request_verdict", "params_keys": null, "has_adopt": true}
+{"case": "verdict_non_string_key", "func": "request_verdict", "params_keys": ["birth", "execution_id", "generation", "pid", "profile_id", "secret", "session_id", "epoch", "sequence", "operation", 5], "has_adopt": true}
+{"case": "verdict_adopt_wrong_type", "func": "request_verdict", "params_keys": ["birth", "execution_id", "generation", "pid", "profile_id", "secret", "session_id", "epoch", "sequence", "operation", "payload"], "has_adopt": "yes"}

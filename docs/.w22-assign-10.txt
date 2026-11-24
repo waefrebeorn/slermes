@@ -1,0 +1,5 @@
+w22_telegramsp_8c7e95	plugins/platforms/telegram/telegram_split
+w22_sessionscm_632617	hermes_cli/sessions_cmd_repair_profiles
+w22_updatecmdv_ce00f8	hermes_cli/update_cmd_validation
+w22_audit_b943f2	hermes_cli/dashboard_auth/audit
+w22_refs_0a533f	agent/checkpoints/refs

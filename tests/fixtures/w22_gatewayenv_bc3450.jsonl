@@ -1,0 +1,28 @@
+{"case": "creds_list", "func": "env_enable_credentials"}
+{"case": "authz_table", "func": "authz"}
+{"case": "flag_1_enables", "func": "enabled_flag", "raw": "1", "has_platform": true, "yaml_enabled": true}
+{"case": "flag_true_beats_yaml_disable", "func": "enabled_flag", "raw": "true", "has_platform": true, "yaml_enabled": false}
+{"case": "flag_true_padded", "func": "enabled_flag", "raw": " TRUE ", "has_platform": true, "yaml_enabled": false}
+{"case": "flag_yes_no_entry", "func": "enabled_flag", "raw": "yes", "has_platform": false, "yaml_enabled": false}
+{"case": "flag_on_no_entry", "func": "enabled_flag", "raw": "on", "has_platform": false, "yaml_enabled": false}
+{"case": "flag_false_disables", "func": "enabled_flag", "raw": "false", "has_platform": true, "yaml_enabled": true}
+{"case": "flag_zero_disables", "func": "enabled_flag", "raw": "0", "has_platform": true, "yaml_enabled": true}
+{"case": "flag_no_upper_disables", "func": "enabled_flag", "raw": "NO", "has_platform": true, "yaml_enabled": true}
+{"case": "flag_false_no_entry", "func": "enabled_flag", "raw": "false", "has_platform": false, "yaml_enabled": false}
+{"case": "flag_off_is_neither", "func": "enabled_flag", "raw": "off", "has_platform": true, "yaml_enabled": true}
+{"case": "flag_empty_is_neither", "func": "enabled_flag", "raw": "", "has_platform": true, "yaml_enabled": true}
+{"case": "flag_number_string", "func": "enabled_flag", "raw": "2", "has_platform": true, "yaml_enabled": false}
+{"case": "flag_false_with_space", "func": "enabled_flag", "raw": "False ", "has_platform": true, "yaml_enabled": true}
+{"case": "flag_missing_raw", "func": "enabled_flag", "has_platform": true, "yaml_enabled": true}
+{"case": "flag_null_raw", "func": "enabled_flag", "raw": null, "has_platform": true, "yaml_enabled": true}
+{"case": "flag_wrong_type_raw", "func": "enabled_flag", "raw": 1, "has_platform": true, "yaml_enabled": true}
+{"case": "home_full", "func": "home_channel", "chat_id": "41791234567@c.us", "name": "Ops", "thread_id": "1720000000.0001", "configured": true}
+{"case": "home_default_name", "func": "home_channel", "chat_id": "41791234567@c.us", "configured": true}
+{"case": "home_empty_name", "func": "home_channel", "chat_id": "x", "name": "", "thread_id": "", "configured": true}
+{"case": "home_empty_chat", "func": "home_channel", "chat_id": "", "name": "Ops", "configured": true}
+{"case": "home_platform_absent", "func": "home_channel", "chat_id": "x", "configured": false}
+{"case": "home_null_chat", "func": "home_channel", "chat_id": null, "configured": true}
+{"case": "home_null_name", "func": "home_channel", "chat_id": "x", "name": null, "configured": true}
+{"case": "home_null_thread", "func": "home_channel", "chat_id": "x", "name": "Ops", "thread_id": null, "configured": true}
+{"case": "home_configured_missing", "func": "home_channel", "chat_id": "x"}
+{"case": "home_wrong_type_chat", "func": "home_channel", "chat_id": 42, "configured": true}

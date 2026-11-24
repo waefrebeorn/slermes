@@ -1,0 +1,20 @@
+{"case":"ensure_bypass","func":"ensure","bypass":true,"provider":false,"args":{}}
+{"case":"ensure_bypass_with_provider","func":"ensure","bypass":true,"provider":true,"args":{}}
+{"case":"ensure_resume","func":"ensure","bypass":false,"provider":false,"args":{"resume":"sess-1"}}
+{"case":"ensure_resume_empty","func":"ensure","bypass":false,"provider":false,"args":{"resume":""}}
+{"case":"ensure_resume_empty_list","func":"ensure","bypass":false,"provider":false,"args":{"resume":[]}}
+{"case":"ensure_gateway_url","func":"ensure","bypass":false,"provider":false,"gateway_url":"  http://127.0.0.1:9  ","args":{}}
+{"case":"ensure_gateway_url_blank","func":"ensure","bypass":false,"provider":false,"gateway_url":"   ","args":{}}
+{"case":"ensure_base_url","func":"ensure","bypass":false,"provider":false,"args":{"base_url":"http://b"}}
+{"case":"ensure_api_key","func":"ensure","bypass":false,"provider":false,"args":{"api_key":"sk-1"}}
+{"case":"ensure_provider_ready","func":"ensure","bypass":false,"provider":true,"args":{"resume":null}}
+{"case":"ensure_provider_missing","func":"ensure","bypass":false,"provider":false,"args":{"base_url":null}}
+{"case":"ensure_no_args_key","func":"ensure","bypass":false,"provider":true}
+{"case":"ensure_args_wrong_type","func":"ensure","bypass":false,"provider":false,"args":{"api_key":{"x":1}}}
+{"case":"launch_ok","func":"launch","import_ok":true,"bypass":false,"code":0}
+{"case":"launch_bypass_skips_consent","func":"launch","import_ok":true,"bypass":true,"code":3}
+{"case":"launch_ok_code7","func":"launch","import_ok":true,"bypass":false,"code":7}
+{"case":"launch_import_hint","func":"launch","import_ok":false,"bypass":false,"hint_handled":true}
+{"case":"launch_import_raises","func":"launch","import_ok":false,"bypass":false,"hint_handled":false}
+{"case":"launch_import_bypass_hint","func":"launch","import_ok":false,"bypass":true,"hint_handled":true}
+{"case":"launch_import_missing_hint_key","func":"launch","import_ok":false,"bypass":true}

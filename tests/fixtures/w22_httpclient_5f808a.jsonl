@@ -1,0 +1,28 @@
+{"case":"int-zero-allowed","func":"pos_int","raw":"0","default":10,"allow_zero":true}
+{"case":"int-zero-rejected","func":"pos_int","raw":"0","default":10,"allow_zero":false}
+{"case":"int-empty","func":"pos_int","raw":"","default":10}
+{"case":"int-spaces","func":"pos_int","raw":" 5 ","default":10}
+{"case":"int-garbage","func":"pos_int","raw":"abc","default":10}
+{"case":"int-negative","func":"pos_int","raw":"-3","default":10}
+{"case":"int-plus-sign","func":"pos_int","raw":"+7","default":10}
+{"case":"int-underscore","func":"pos_int","raw":"1_0","default":10}
+{"case":"int-float-text","func":"pos_int","raw":"2.5","default":10}
+{"case":"int-unset","func":"pos_int","default":10}
+{"case":"int-default-zero","func":"pos_int","raw":"","default":0,"allow_zero":true}
+{"case":"float-plain","func":"pos_float","raw":"2.5","default":2.0}
+{"case":"float-zero-int","func":"pos_float","raw":"0","default":2.0}
+{"case":"float-zero","func":"pos_float","raw":"0.0","default":2.0}
+{"case":"float-exp","func":"pos_float","raw":"1e3","default":2.0}
+{"case":"float-underscore","func":"pos_float","raw":"1_000.5","default":2.0}
+{"case":"float-garbage","func":"pos_float","raw":"abc","default":2.0}
+{"case":"float-negative","func":"pos_float","raw":"-1","default":2.0}
+{"case":"float-leading-dot","func":"pos_float","raw":" .5 ","default":2.0}
+{"case":"float-hex-rejected","func":"pos_float","raw":"0x10","default":2.0}
+{"case":"float-int-spelling","func":"pos_float","raw":"3","default":2.0}
+{"case":"float-unset","func":"pos_float","default":2.0}
+{"case":"limits-defaults","func":"limits","have_httpx":true}
+{"case":"limits-keepalive-off","func":"limits","max_keepalive":"0","have_httpx":true}
+{"case":"limits-garbage-keepalive","func":"limits","max_keepalive":"abc","expiry":"5","have_httpx":true}
+{"case":"limits-no-httpx","func":"limits","max_keepalive":"25","expiry":"0.5","have_httpx":false}
+{"case":"limits-tuned","func":"limits","max_keepalive":"25","expiry":"0.5","have_httpx":true}
+{"case":"limits-negative-and-empty","func":"limits","max_keepalive":"-4","expiry":"","have_httpx":true}

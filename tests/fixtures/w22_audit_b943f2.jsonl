@@ -1,0 +1,51 @@
+{"case": "short-string", "func": "bounded", "value": "hello"}
+{"case": "exact-256", "func": "bounded", "value": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"}
+{"case": "over-257", "func": "bounded", "value": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"}
+{"case": "over-300", "func": "bounded", "value": "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"}
+{"case": "number", "func": "bounded", "value": 42}
+{"case": "float", "func": "bounded", "value": 2.5}
+{"case": "bool", "func": "bounded", "value": true}
+{"case": "null", "func": "bounded", "value": null}
+{"case": "missing-value-key", "func": "bounded"}
+{"case": "array-mixed", "func": "bounded", "value": [1, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", null, false, {"k": "v"}]}
+{"case": "nested-dict", "func": "bounded", "value": {"a": {"b": {"c": "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"}}, "n": 1}}
+{"case": "empty-dict", "func": "bounded", "value": {}}
+{"case": "empty-array", "func": "bounded", "value": []}
+{"case": "unicode-short", "func": "bounded", "value": "café → ok"}
+{"case": "unicode-257", "func": "bounded", "value": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé"}
+{"case": "wrong-type-string", "func": "bounded", "value": "5"}
+{"case": "event-known", "func": "event_value", "name": "LOGIN_START"}
+{"case": "event-known-2", "func": "event_value", "name": "NATIVE_TOKEN_FAILURE"}
+{"case": "event-unknown", "func": "event_value", "name": "NOT_AN_EVENT"}
+{"case": "event-missing", "func": "event_value"}
+{"case": "event-lowercase", "func": "event_value", "name": "login_start"}
+{"case": "redacted-authorization", "func": "is_redacted", "key": "authorization"}
+{"case": "redacted-Authorization", "func": "is_redacted", "key": "Authorization"}
+{"case": "redacted-code", "func": "is_redacted", "key": "code"}
+{"case": "redacted-ticket", "func": "is_redacted", "key": "ticket"}
+{"case": "redacted-note", "func": "is_redacted", "key": "note"}
+{"case": "redacted-AUTHORIZATION", "func": "is_redacted", "key": "AUTHORIZATION"}
+{"case": "redacted-state", "func": "is_redacted", "key": "state"}
+{"case": "redacted-missing", "func": "is_redacted"}
+{"case": "line-basic", "func": "line", "ts": "2026-01-02T03:04:05+00:00", "event": "LOGIN_START", "fields": {"user": "u1", "ip": "10.0.0.1"}}
+{"case": "line-redacted", "func": "line", "ts": "2026-01-02T03:04:05+00:00", "event": "LOGIN_SUCCESS", "fields": {"authorization": "Bearer secret", "code": "abc", "user": "u1", "access_token": "t"}}
+{"case": "line-empty-fields", "func": "line", "ts": "2026-01-02T03:04:05+00:00", "event": "LOGOUT", "fields": {}}
+{"case": "line-no-fields-key", "func": "line", "ts": "2026-01-02T03:04:05+00:00", "event": "REVOKE"}
+{"case": "line-ts-override", "func": "line", "ts": "2026-01-02T03:04:05+00:00", "event": "REVOKE", "fields": {"ts": "overridden", "after": 1}}
+{"case": "line-long-field", "func": "line", "ts": "t0", "event": "PEER_CONTROL", "fields": {"detail": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "n": 3}}
+{"case": "line-nested", "func": "line", "ts": "t0", "event": "WS_TICKET_MINTED", "fields": {"ctx": {"a": ["yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", 1]}, "ok": true}}
+{"case": "line-unknown-event", "func": "line", "ts": "t0", "event": "NOPE", "fields": {"a": 1}}
+{"case": "line-null-ts", "func": "line", "ts": null, "event": "SESSION_REJECTED", "fields": {"r": "x"}}
+{"case": "line-unicode", "func": "line", "ts": "t0", "event": "SESSION_REJECTED", "fields": {"r": "→ café"}}
+{"case": "rot-below", "func": "rotation", "name": "dashboard-auth.log", "size": "100", "pending": "10", "existing": [1, 2]}
+{"case": "rot-at-limit", "func": "rotation", "name": "dashboard-auth.log", "size": "5242875", "pending": "5", "existing": [1, 2]}
+{"case": "rot-over", "func": "rotation", "name": "dashboard-auth.log", "size": "5243000", "pending": "5", "existing": [1, 2]}
+{"case": "rot-just-below", "func": "rotation", "name": "dashboard-auth.log", "size": "5242875", "pending": "4", "existing": [1, 2]}
+{"case": "rot-missing-file", "func": "rotation", "name": "dashboard-auth.log", "size": null, "pending": "999999999", "existing": [1]}
+{"case": "rot-no-backups", "func": "rotation", "name": "dashboard-auth.log", "size": "6000000", "pending": "1", "existing": []}
+{"case": "rot-only-one", "func": "rotation", "name": "dashboard-auth.log", "size": "6000000", "pending": "1", "existing": [1]}
+{"case": "rot-only-two", "func": "rotation", "name": "dashboard-auth.log", "size": "6000000", "pending": "1", "existing": [2]}
+{"case": "rot-pending-missing", "func": "rotation", "name": "a.log", "size": "5242880", "existing": [1]}
+{"case": "rot-name-empty", "func": "rotation", "name": "", "size": "5242880", "pending": "0", "existing": [1, 2, 3]}
+{"case": "line-fields-not-object", "func": "line", "ts": "t0", "event": "REVOKE", "fields": [1, 2]}
+{"case": "rotation-existing-not-list", "func": "rotation", "name": "a.log", "size": "5242880", "pending": "0", "existing": "12"}

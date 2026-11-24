@@ -1,0 +1,18 @@
+{"func": "escape", "case": "plain", "text": "Approved once by Ana"}
+{"func": "escape", "case": "entities", "text": "<b>A & B</b> \"quoted\" 'single'"}
+{"func": "escape", "case": "empty", "text": ""}
+{"func": "escape", "case": "utf8", "text": "ok \u2014 done"}
+{"func": "strip", "case": "one_line", "body": "Approve this?\nIf you don't answer within 10 minutes it expires.\n\n$ ls", "deadline": "If you don't answer within 10 minutes it expires.\n"}
+{"func": "strip", "case": "twice", "body": "a\nT\nb\nT\nc", "deadline": "T\n"}
+{"func": "strip", "case": "absent", "body": "no deadline here", "deadline": "missing line\n"}
+{"func": "strip", "case": "empty_needle", "body": "unchanged body", "deadline": ""}
+{"func": "strip", "case": "missing_body", "deadline": "x"}
+{"func": "plan", "case": "append", "body": "<b>Approve?</b>\n\nexpires\n", "deadline": "expires\n", "decision": "Approved once by Ana", "error": ""}
+{"func": "plan", "case": "append_escapes", "body": "Q & A", "deadline": "", "decision": "ok <yes> & 'no'", "error": ""}
+{"func": "plan", "case": "empty_body", "body": "", "deadline": "d", "decision": "Denied", "error": ""}
+{"func": "plan", "case": "null_body", "body": null, "deadline": "d", "decision": "Denied", "error": ""}
+{"func": "plan", "case": "number_body", "body": 5, "deadline": "d", "decision": "Denied", "error": ""}
+{"func": "plan", "case": "no_message", "message": false, "body": "ignored", "deadline": "d", "decision": "Denied", "error": ""}
+{"func": "plan", "case": "too_long", "body": "the prompt", "deadline": "", "decision": "Denied", "error": "BadRequest"}
+{"func": "plan", "case": "network", "body": "the prompt", "deadline": "", "decision": "Denied", "error": "NetworkError"}
+{"func": "plan", "case": "unexpected", "body": "the prompt", "deadline": "", "decision": "Denied", "error": "Forbidden"}

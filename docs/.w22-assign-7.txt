@@ -1,0 +1,5 @@
+w22_media_6187d8	persistence/sqlite/conversation/_store/media
+w22_gatewayenv_bc3450	plugins/platforms/whatsapp/gateway_env
+w22_sessionwor_930a87	gateway/session_worker_delegation
+w22_webassetmi_0a1f41	hermes_cli/web_asset_mime_types
+w22_finder_213faa	hermes_agent/compat/finder

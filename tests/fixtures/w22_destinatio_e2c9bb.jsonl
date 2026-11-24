@@ -1,0 +1,56 @@
+{"case": "localhost", "func": "loopback", "host": "localhost"}
+{"case": "localhost-upper", "func": "loopback", "host": "LOCALHOST"}
+{"case": "v4-127-0-0-1", "func": "loopback", "host": "127.0.0.1"}
+{"case": "v4-127-range", "func": "loopback", "host": "127.9.9.9"}
+{"case": "v4-short-form", "func": "loopback", "host": "127.1"}
+{"case": "v4-private", "func": "loopback", "host": "10.0.0.1"}
+{"case": "v4-zero", "func": "loopback", "host": "0.0.0.0"}
+{"case": "v4-five-parts", "func": "loopback", "host": "127.0.0.1.5"}
+{"case": "v4-leading-zero", "func": "loopback", "host": "0127.0.0.1"}
+{"case": "v6-unspecified-loopback", "func": "loopback", "host": "::1"}
+{"case": "v6-unspecified", "func": "loopback", "host": "::"}
+{"case": "v6-mapped-loopback", "func": "loopback", "host": "::ffff:127.0.0.1"}
+{"case": "v6-mapped-public", "func": "loopback", "host": "::ffff:10.0.0.1"}
+{"case": "v6-doc", "func": "loopback", "host": "2001:db8::1"}
+{"case": "v6-zone", "func": "loopback", "host": "fe80::1%25eth0"}
+{"case": "empty-host", "func": "loopback", "host": ""}
+{"case": "host-missing", "func": "loopback"}
+{"case": "display-userinfo", "func": "display", "url": "https://user:pass@example.com:8443/path?q=1#f"}
+{"case": "display-ipv6-loopback", "func": "display", "url": "http://[::1]:8080/x"}
+{"case": "display-ipv6-global", "func": "display", "url": "https://[2001:db8::1]:443/x"}
+{"case": "display-bad-port", "func": "display", "url": "https://u:***@host:abc/x"}
+{"case": "display-broken-ipv6", "func": "display", "url": "http://[::1"}
+{"case": "display-scheme-not-netloc", "func": "display", "url": "user:pass@host/x"}
+{"case": "display-user-only", "func": "display", "url": "https://user@example.com/x"}
+{"case": "display-plain", "func": "display", "url": "https://example.com:443"}
+{"case": "display-uppercase", "func": "display", "url": "HTTPS://User:Pw@Example.COM/A"}
+{"case": "display-no-userinfo", "func": "display", "url": "https://config.nousresearch.com/api"}
+{"case": "display-empty", "func": "display", "url": ""}
+{"case": "display-password-only", "func": "display", "url": "https://:pw@example.com/x"}
+{"case": "checked-https", "func": "checked", "url": "https://config.nousresearch.com", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-loopback-name", "func": "checked", "url": "http://localhost:8080/x", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-loopback-v6", "func": "checked", "url": "http://[::1]:9000", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-loopback-v4", "func": "checked", "url": "http://127.0.0.2", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-http-private", "func": "checked", "url": "http://10.0.0.1", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-http-public", "func": "checked", "url": "http://example.com", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-ftp", "func": "checked", "url": "ftp://example.com", "env_name": "NOUS_IDP_TOKEN_URL"}
+{"case": "checked-no-scheme", "func": "checked", "url": "config.nousresearch.com", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-userinfo", "func": "checked", "url": "https://user:pass@example.com", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-query", "func": "checked", "url": "https://example.com?x=1", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-fragment", "func": "checked", "url": "https://example.com#f", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-no-host", "func": "checked", "url": "https://", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-empty-authority", "func": "checked", "url": "https:///path", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-bad-port", "func": "checked", "url": "https://example.com:abc", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-broken-ipv6", "func": "checked", "url": "https://[::1", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-port-range", "func": "checked", "url": "https://example.com:70000", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-upper-scheme", "func": "checked", "url": "HTTPS://Example.COM", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-upper-loopback", "func": "checked", "url": "HTTP://LocalHost", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-path", "func": "checked", "url": "https://example.com/path", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-padded-port", "func": "checked", "url": "https://example.com:0443", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-user-only", "func": "checked", "url": "https://user@example.com", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-empty-url", "func": "checked", "url": "", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-no-env-name", "func": "checked", "url": "https://example.com"}
+{"case": "checked-empty-query", "func": "checked", "url": "https://example.com?", "env_name": "HERMES_PLANE_URL"}
+{"case": "checked-port-zero", "func": "checked", "url": "https://example.com:0", "env_name": "HERMES_PLANE_URL"}
+{"case": "display-empty-query", "func": "display", "url": "https://example.com?"}
+{"case": "checked-uppercase-host-plain", "func": "checked", "url": "https://EXAMPLE.com/Path", "env_name": "HERMES_PLANE_URL"}

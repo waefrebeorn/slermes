@@ -1,0 +1,29 @@
+{"case":"env_empty","func":"e2ee","env":{}}
+{"case":"mode_required","func":"e2ee","env":{"MATRIX_E2EE_MODE":"required"}}
+{"case":"mode_padded","func":"e2ee","env":{"MATRIX_E2EE_MODE":"  ReQuIrEd  "}}
+{"case":"mode_require","func":"e2ee","env":{"MATRIX_E2EE_MODE":"require"}}
+{"case":"mode_optional","func":"e2ee","env":{"MATRIX_E2EE_MODE":"optional"}}
+{"case":"mode_prefer","func":"e2ee","env":{"MATRIX_E2EE_MODE":"prefer"}}
+{"case":"mode_preferred","func":"e2ee","env":{"MATRIX_E2EE_MODE":"preferred"}}
+{"case":"mode_off","func":"e2ee","env":{"MATRIX_E2EE_MODE":"off"}}
+{"case":"mode_blank","func":"e2ee","env":{"MATRIX_E2EE_MODE":"   "}}
+{"case":"mode_empty_string","func":"e2ee","env":{"MATRIX_E2EE_MODE":""}}
+{"case":"mode_null","func":"e2ee","env":{"MATRIX_E2EE_MODE":null}}
+{"case":"mode_beats_false_switch","func":"e2ee","env":{"MATRIX_E2EE_MODE":"required","MATRIX_ENCRYPTION":"no"}}
+{"case":"switch_one","func":"e2ee","env":{"MATRIX_ENCRYPTION":"1"}}
+{"case":"switch_yes_upper","func":"e2ee","env":{"MATRIX_ENCRYPTION":" YES "}}
+{"case":"switch_on","func":"e2ee","env":{"MATRIX_ENCRYPTION":"on"}}
+{"case":"switch_true","func":"e2ee","env":{"MATRIX_ENCRYPTION":"true"}}
+{"case":"switch_zero","func":"e2ee","env":{"MATRIX_ENCRYPTION":"0"}}
+{"case":"switch_off_word","func":"e2ee","env":{"MATRIX_ENCRYPTION":"off"}}
+{"case":"device_only","func":"e2ee","env":{"MATRIX_DEVICE_ID":"DEVICE1"}}
+{"case":"device_blank","func":"e2ee","env":{"MATRIX_DEVICE_ID":""}}
+{"case":"device_null","func":"e2ee","env":{"MATRIX_DEVICE_ID":null}}
+{"case":"mode_and_device","func":"e2ee","env":{"MATRIX_E2EE_MODE":"Prefer","MATRIX_DEVICE_ID":"DEVICE2"}}
+{"case":"env_array","func":"e2ee","env":[]}
+{"case":"env_number","func":"e2ee","env":7}
+{"case":"env_string","func":"e2ee","env":"MATRIX_ENCRYPTION=1"}
+{"case":"env_missing","func":"e2ee"}
+{"case":"authz","func":"authz"}
+{"case":"enable_credentials","func":"enable_credentials"}
+{"case":"env_overrides","func":"env_overrides"}

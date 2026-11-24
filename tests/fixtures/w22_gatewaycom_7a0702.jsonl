@@ -1,0 +1,20 @@
+{"case":"verb-start-list","func":"verb","cmd":["systemctl","--user","start","hermes-gateway"]}
+{"case":"verb-stop-list","func":"verb","cmd":["systemctl","--user","stop","hermes-gateway"]}
+{"case":"verb-restart-list","func":"verb","cmd":["systemctl","--user","restart","hermes-gateway"]}
+{"case":"verb-no-verb-list","func":"verb","cmd":["systemctl","--user","enable","hermes-gateway"]}
+{"case":"verb-empty-list","func":"verb","cmd":[]}
+{"case":"verb-string","func":"verb","cmd":"systemctl --user restart hermes-gateway"}
+{"case":"verb-string-no-verb","func":"verb","cmd":"systemctl daemon-reload"}
+{"case":"verb-missing-cmd","func":"verb"}
+{"case":"explain-unavailable","func":"explain","kind":"unavailable"}
+{"case":"explain-cpe-start","func":"explain","kind":"cpe","cmd":["systemctl","--user","start","hermes-gateway"],"returncode":1}
+{"case":"explain-cpe-stop","func":"explain","kind":"cpe","cmd":["systemctl","--user","stop","hermes-gateway"],"returncode":3}
+{"case":"explain-cpe-string-restart","func":"explain","kind":"cpe","cmd":"systemctl --user restart hermes-gateway","returncode":2}
+{"case":"explain-cpe-no-rc","func":"explain","kind":"cpe","cmd":["systemctl","--user","start","hermes-gateway"]}
+{"case":"explain-cpe-signal-known","func":"explain","kind":"cpe","cmd":["systemctl","--user","stop","hermes-gateway"],"returncode":-15}
+{"case":"explain-cpe-signal-unknown","func":"explain","kind":"cpe","cmd":["systemctl","--user","stop","hermes-gateway"],"returncode":-9}
+{"case":"explain-other-exception","func":"explain","kind":"other","message":"boom"}
+{"case":"explain-missing-kind","func":"explain","cmd":["systemctl","--user","start","hermes-gateway"]}
+{"case":"explain-cpe-rc-as-string","func":"explain","kind":"cpe","cmd":["systemctl","--user","start","hermes-gateway"],"returncode":"4"}
+{"case": "verb-list-with-number", "func": "verb", "cmd": ["systemctl", 42, "stop", "hermes-gateway"]}
+{"case": "explain-cpe-number-cmd", "func": "explain", "kind": "cpe", "cmd": ["systemctl", 42, "restart"], "returncode": 1}

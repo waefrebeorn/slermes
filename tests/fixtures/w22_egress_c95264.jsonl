@@ -1,0 +1,12 @@
+{"case":"parser-spec","func":"spec"}
+{"case":"dispatch-all","func":"dispatch","has_sub":true,"has_func":true,"func_is_self":false}
+{"case":"dispatch-no-sub","func":"dispatch","has_sub":false,"has_func":true,"func_is_self":false}
+{"case":"dispatch-no-func","func":"dispatch","has_sub":true,"has_func":false,"func_is_self":false}
+{"case":"dispatch-self","func":"dispatch","has_sub":true,"has_func":true,"func_is_self":true}
+{"case":"dispatch-none","func":"dispatch","has_sub":false,"has_func":false,"func_is_self":false}
+{"case":"dispatch-no-sub-self","func":"dispatch","has_sub":false,"has_func":true,"func_is_self":true}
+{"case":"dispatch-no-func-self","func":"dispatch","has_sub":true,"has_func":false,"func_is_self":true}
+{"case":"dispatch-missing-keys","func":"dispatch"}
+{"case":"dispatch-missing-self","func":"dispatch","has_sub":true,"has_func":true}
+{"case":"dispatch-string-flags","func":"dispatch","has_sub":true,"has_func":true,"func_is_self":false}
+{"case":"dispatch-all-self","func":"dispatch","has_sub":true,"has_func":true,"func_is_self":true}

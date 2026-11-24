@@ -1,0 +1,5 @@
+w22_adaptercom_02f6a6	plugins/platforms/discord/adapter_component_auth
+w22_httpclient_5f808a	gateway/platforms/_http_client_limits
+w22_webhookdel_ead437	gateway/platforms/webhook_delivery
+w22_processreg_cd9f60	tools/process_registry_env_log
+w22_queryrewri_d659a2	plugins/memory/query_rewrite

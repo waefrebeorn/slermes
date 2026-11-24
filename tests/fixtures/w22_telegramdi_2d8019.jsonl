@@ -1,0 +1,24 @@
+{"case": "handled_die", "func": "handle", "msg": {}, "dice": {"emoji": "🎲", "value": 6}, "authorized": true, "proceed": true, "observe": false, "update_id": 11}
+{"case": "observed_roll", "func": "handle", "msg": {}, "dice": {"emoji": "🎯", "value": 3}, "authorized": true, "proceed": false, "observe": true, "update_id": 12}
+{"case": "neither_process_nor_observe", "func": "handle", "msg": {}, "dice": {"emoji": "🎲", "value": 2}, "authorized": true, "proceed": false, "observe": false, "update_id": 13}
+{"case": "unauthorized_blocks", "func": "handle", "msg": {}, "dice": {"emoji": "🏀", "value": 5}, "authorized": false, "proceed": true, "observe": true, "update_id": 14}
+{"case": "unauthorized_observed", "func": "handle", "msg": {}, "dice": {"emoji": "🎳", "value": 4}, "authorized": false, "proceed": false, "observe": true, "update_id": 15}
+{"case": "no_message", "func": "handle", "msg": null, "dice": {"emoji": "🎲", "value": 6}, "authorized": true, "proceed": true, "observe": true, "update_id": 16}
+{"case": "message_key_missing", "func": "handle", "dice": {"emoji": "🎲", "value": 6}, "authorized": true, "proceed": true, "observe": true, "update_id": 17}
+{"case": "dice_attribute_missing", "func": "handle", "msg": {}, "authorized": true, "proceed": true, "observe": true, "update_id": 18}
+{"case": "dice_null", "func": "handle", "msg": {}, "dice": null, "authorized": true, "proceed": true, "observe": true, "update_id": 19}
+{"case": "scalar_message_has_no_dice", "func": "handle", "msg": "not-a-message", "dice": {"emoji": "🎲", "value": 1}, "authorized": true, "proceed": true, "observe": true, "update_id": 20}
+{"case": "roll_one", "func": "handle", "msg": {}, "dice": {"emoji": "🎯", "value": 1}, "authorized": true, "proceed": true, "observe": false, "update_id": 0}
+{"case": "roll_zero", "func": "handle", "msg": {}, "dice": {"emoji": "🎲", "value": 0}, "authorized": true, "proceed": true, "observe": false, "update_id": 1}
+{"case": "string_roll_value", "func": "handle", "msg": {}, "dice": {"emoji": "🎰", "value": "5"}, "authorized": true, "proceed": true, "observe": false, "update_id": 2}
+{"case": "dice_missing_emoji", "func": "handle", "msg": {}, "dice": {"value": 4}, "authorized": true, "proceed": true, "observe": false, "update_id": 3}
+{"case": "dice_missing_value", "func": "handle", "msg": {}, "dice": {"emoji": "⚽"}, "authorized": true, "proceed": true, "observe": false, "update_id": 4}
+{"case": "update_id_missing_handled", "func": "handle", "msg": {}, "dice": {"emoji": "🎲", "value": 6}, "authorized": true, "proceed": true, "observe": false}
+{"case": "update_id_missing_observed", "func": "handle", "msg": {}, "dice": {"emoji": "🎲", "value": 6}, "authorized": true, "proceed": false, "observe": true}
+{"case": "authorized_truthy_string", "func": "handle", "msg": {}, "dice": {"emoji": "🎲", "value": 6}, "authorized": "yes", "proceed": true, "observe": false, "update_id": 5}
+{"case": "proceed_empty_string_observed", "func": "handle", "msg": {}, "dice": {"emoji": "🎲", "value": 6}, "authorized": true, "proceed": "", "observe": true, "update_id": 6}
+{"case": "emoji_basketball", "func": "handle", "msg": {}, "dice": {"emoji": "🏀", "value": 2}, "authorized": true, "proceed": true, "observe": true, "update_id": 7}
+{"case": "text_slot", "func": "text", "emoji": "🎰", "value": 7}
+{"case": "text_no_emoji", "func": "text", "value": 7}
+{"case": "text_no_value", "func": "text", "emoji": "🎲"}
+{"case": "text_bool_value", "func": "text", "emoji": "x", "value": true}

@@ -1,0 +1,38 @@
+{"case": "val-log-drops-extras", "func": "validate", "delivery": {"deliver": "log", "deliver_extra": {"chat_id": "1", "secret": "s"}}}
+{"case": "val-telegram-whitelist", "func": "validate", "delivery": {"deliver": "telegram", "deliver_extra": {"chat_id": "9", "message_thread_id": 3, "junk": 1}}}
+{"case": "val-telegram-thread-id", "func": "validate", "delivery": {"deliver": "telegram", "deliver_extra": {"thread_id": "t"}}}
+{"case": "val-mirror-route-profile", "func": "validate", "delivery": {"deliver": "slack", "deliver_extra": {"chat_id": "c"}, "profile": "work", "mirror": true, "route": "r1"}}
+{"case": "val-empty-profile-mirror-false", "func": "validate", "delivery": {"deliver": "slack", "deliver_extra": {"chat_id": "c"}, "profile": "", "mirror": false}}
+{"case": "val-mirror-true-no-route", "func": "validate", "delivery": {"deliver": "log", "deliver_extra": {}, "mirror": true}}
+{"case": "val-missing-extra", "func": "validate", "delivery": {"deliver": "log"}}
+{"case": "val-unknown-key", "func": "validate", "delivery": {"deliver": "log", "deliver_extra": {}, "secret": "s"}}
+{"case": "val-deliver-not-str", "func": "validate", "delivery": {"deliver": 5, "deliver_extra": {}}}
+{"case": "val-extra-not-dict", "func": "validate", "delivery": {"deliver": "log", "deliver_extra": []}}
+{"case": "val-unknown-platform", "func": "validate", "delivery": {"deliver": "nope", "deliver_extra": {}}}
+{"case": "val-builtin-mattermost", "func": "validate", "delivery": {"deliver": "mattermost", "deliver_extra": {"chat_id": "1", "thread_id": "t"}}}
+{"case": "val-github-ok", "func": "validate", "delivery": {"deliver": "github_comment", "deliver_extra": {"repo": "org/repo", "pr_number": 12, "body": "long"}}}
+{"case": "val-github-str-number", "func": "validate", "delivery": {"deliver": "github_comment", "deliver_extra": {"repo": "org/re.po_1-x", "pr_number": "012"}}}
+{"case": "val-github-bad-repo", "func": "validate", "delivery": {"deliver": "github_comment", "deliver_extra": {"repo": "a/b/c", "pr_number": 1}}}
+{"case": "val-github-zero", "func": "validate", "delivery": {"deliver": "github_comment", "deliver_extra": {"repo": "a/b", "pr_number": 0}}}
+{"case": "val-github-float", "func": "validate", "delivery": {"deliver": "github_comment", "deliver_extra": {"repo": "a/b", "pr_number": 1.5}}}
+{"case": "val-github-no-repo", "func": "validate", "delivery": {"deliver": "github_comment", "deliver_extra": {"pr_number": "7"}}}
+{"case": "val-mirror-number", "func": "validate", "delivery": {"deliver": "log", "deliver_extra": {}, "mirror": 1}}
+{"case": "val-route-number", "func": "validate", "delivery": {"deliver": "log", "deliver_extra": {}, "route": 5}}
+{"case": "val-profile-number", "func": "validate", "delivery": {"deliver": "log", "deliver_extra": {}, "profile": 7}}
+{"case": "val-not-dict", "func": "validate", "delivery": "nope"}
+{"case": "val-missing-delivery", "func": "validate"}
+{"case": "val-log-json-values-kept", "func": "validate", "delivery": {"deliver": "log", "deliver_extra": null}}
+{"case": "snap-has-chat", "func": "snapshot", "delivery": {"deliver": "telegram", "deliver_extra": {"chat_id": "9"}}, "home": "777"}
+{"case": "snap-home-fills", "func": "snapshot", "delivery": {"deliver": "telegram", "deliver_extra": {}}, "home": "777"}
+{"case": "snap-no-home", "func": "snapshot", "delivery": {"deliver": "telegram", "deliver_extra": {}}}
+{"case": "snap-log-exempt", "func": "snapshot", "delivery": {"deliver": "log", "deliver_extra": {}}}
+{"case": "snap-github-exempt", "func": "snapshot", "delivery": {"deliver": "github_comment", "deliver_extra": {"repo": "a/b", "pr_number": 2}}}
+{"case": "snap-invalid", "func": "snapshot", "delivery": {"deliver": "nope", "deliver_extra": {}}, "home": "777"}
+{"case": "snap-empty-chat-fills", "func": "snapshot", "delivery": {"deliver": "telegram", "deliver_extra": {"chat_id": ""}}, "home": "42"}
+{"case": "dig-legacy", "func": "digest", "chat_id": "webhook:r1:delivery-1", "routes": {"r1": {"chat_id": "9", "deliver": "telegram", "n": 3, "z": true, "meta": {"b": 2, "a": 1}, "tags": ["x", "y"]}}, "route": {"chat_id": "9", "deliver": "telegram", "n": 3, "z": true, "meta": {"b": 2, "a": 1}, "tags": ["x", "y"]}}
+{"case": "dig-legacy-plain", "func": "digest", "chat_id": "a:b", "routes": {"b": {"k": "v"}}, "route": {"k": "v"}}
+{"case": "dig-route-missing", "func": "digest", "chat_id": "webhook:gone:d", "routes": {"r1": {"chat_id": "9", "deliver": "telegram", "n": 3, "z": true, "meta": {"b": 2, "a": 1}, "tags": ["x", "y"]}}, "route": null}
+{"case": "dig-v2-token", "func": "digest", "chat_id": "webhook:v2:WyJkZWZhdWx0IiwicjIiLCJkMiJd", "routes": {"r2": {"route": "r2", "profile": null, "nested": {"k": [{"y": 1, "x": "v"}]}}}, "route": {"route": "r2", "profile": null, "nested": {"k": [{"y": 1, "x": "v"}]}}}
+{"case": "dig-empty-chat", "func": "digest", "chat_id": "", "routes": {"r1": {"chat_id": "9", "deliver": "telegram", "n": 3, "z": true, "meta": {"b": 2, "a": 1}, "tags": ["x", "y"]}}, "route": null}
+{"case": "dig-array-route", "func": "digest", "chat_id": "webhook:r3:x", "routes": {"r3": [1, {"b": 2, "a": [true, null]}]}, "route": [1, {"b": 2, "a": [true, null]}]}
+{"case": "dig-scalar-route", "func": "digest", "chat_id": "webhook:r4:x", "routes": {"r4": "plain"}, "route": "plain"}

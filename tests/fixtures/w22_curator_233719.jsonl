@@ -1,0 +1,15 @@
+{"case":"spec","func":"spec"}
+{"case":"wired_clean","func":"wiring"}
+{"case":"wired_null_exc","func":"wiring","exc":null}
+{"case":"broken_import","func":"wiring","probe":"broken_import","exc":{"type":"ModuleNotFoundError","message":"import of hermes_cli.curator halted; None in sys.modules"}}
+{"case":"exc_import_error","func":"wiring","exc":{"type":"ImportError","message":"No module named 'hermes_cli.curator'"}}
+{"case":"exc_module_not_found","func":"wiring","exc":{"type":"ModuleNotFoundError","message":"No module named 'hermes_cli.curator'"}}
+{"case":"exc_attribute","func":"wiring","exc":{"type":"AttributeError","message":"'Namespace' object has no attribute set_defaults"}}
+{"case":"exc_runtime","func":"wiring","exc":{"type":"RuntimeError","message":"curator table is inconsistent"}}
+{"case":"exc_value_empty","func":"wiring","exc":{"type":"ValueError","message":""}}
+{"case":"exc_no_message","func":"wiring","exc":{"type":"TypeError"}}
+{"case":"escapes_keyboard","func":"wiring","exc":{"type":"KeyboardInterrupt","message":"operator aborted"}}
+{"case":"escapes_systemexit","func":"wiring","exc":{"type":"SystemExit","message":"2"}}
+{"case":"escapes_base","func":"wiring","exc":{"type":"BaseException","message":"bare"}}
+{"case":"escapes_generator_exit","func":"wiring","exc":{"type":"GeneratorExit","message":""}}
+{"case":"exc_wrong_type","func":"wiring","exc":"ImportError: broken"}

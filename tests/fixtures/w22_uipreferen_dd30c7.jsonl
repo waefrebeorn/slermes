@@ -1,0 +1,24 @@
+{"func": "routes", "case": "declared"}
+{"func": "model", "case": "defaults", "body": {}}
+{"func": "model", "case": "values_and_seed", "body": {"values": {"theme": "dark", "density": null}, "seed": true}}
+{"func": "model", "case": "seed_token_yes", "body": {"seed": "yes"}}
+{"func": "model", "case": "seed_token_off", "body": {"seed": "off"}}
+{"func": "model", "case": "seed_float", "body": {"seed": 1.0}}
+{"func": "model", "case": "seed_int_bad", "body": {"seed": 2}}
+{"func": "model", "case": "seed_empty_string", "body": {"seed": ""}}
+{"func": "model", "case": "seed_null", "body": {"seed": null}}
+{"func": "model", "case": "values_int", "body": {"values": {"zoom": 3}}}
+{"func": "model", "case": "values_bool", "body": {"values": {"compact": true}}}
+{"func": "model", "case": "values_null", "body": {"values": null}}
+{"func": "model", "case": "values_list", "body": {"values": ["a"]}}
+{"func": "model", "case": "body_string", "body": "nope"}
+{"func": "model", "case": "unknown_key_ignored", "body": {"extra": 1, "values": {}}}
+{"func": "get", "case": "read", "doc": {"theme": "dark", "sidebar": "wide"}}
+{"func": "get", "case": "busy", "error": "busy", "error_msg": "preferences store is locked"}
+{"func": "get", "case": "error_uncaught", "error": "error", "error_msg": "corrupt document"}
+{"func": "patch", "case": "write", "body": {"values": {"theme": "light", "density": null}, "seed": true}}
+{"func": "patch", "case": "write_empty", "body": {"values": {}}}
+{"func": "patch", "case": "write_seed_false", "body": {"values": {"theme": "dark"}}}
+{"func": "patch", "case": "invalid_body_422", "body": {"values": {"zoom": 3}}}
+{"func": "patch", "case": "error_400", "body": {"values": {"theme": "dark"}}, "error": "error", "error_msg": "unwritable preferences document"}
+{"func": "patch", "case": "busy_503", "body": {"values": {"theme": "dark"}}, "error": "busy", "error_msg": "preferences store is locked"}

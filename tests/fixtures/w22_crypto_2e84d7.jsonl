@@ -1,0 +1,55 @@
+{"case": "bind_key_shape", "func": "bind_key"}
+{"case": "aes256_hello", "func": "decrypt", "enc": "AAECAwQFBgcICQoLL2e6d6onl/81O4oEbSgjbc2dBXu7", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "aes256_empty_plaintext", "func": "decrypt", "enc": "AAECAwQFBgcICQoL9MLbHcOIBaN7khccXQqBzA==", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "aes256_nonce8", "func": "decrypt", "enc": "AAECAwQFBgc6PpweMG8/L4YgobuarmybhYHkqZr5qz1sIyQ=", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "aes256_nonce16", "func": "decrypt", "enc": "AAECAwQFBgcICQoLDA0ODxQF2AJcgSQI/4avTHXKQ9031vQTNyZ1Y8JVT97O7RX77Ok=", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "aes256_nonce128", "func": "decrypt", "enc": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn/3t5gEX06iPmH0BnDpY3Cx2hLvZlZnVILn", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "aes128_key", "func": "decrypt", "enc": "AAECAwQFBgcICQoL8gnU/1QjBj3Jswmd6pCrz7kaVLBGcA==", "key": "AAECAwQFBgcICQoLDA0ODw=="}
+{"case": "aes192_key", "func": "decrypt", "enc": "AAECAwQFBgcICQoLh5xRqqCLrC3VxRxRtlZbCCbAoE9hCg==", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYX"}
+{"case": "utf8_plaintext", "func": "decrypt", "enc": "AAECAwQFBgcICQoLL8F/d6mK4vkL07dpLXpsy+bauerrsyZWCnkIPPu1", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "long_plaintext", "func": "decrypt", "enc": "AAECAwQFBgcICQoLdzPkKPHQ9Cy1eKe6g9pMWLXhvw3ASm1PDFLTsiVQMIMzI5rJmfYqoUSVTd68sh4P1mBQvGjll+8JoBIgKNLH3cQJ8E3r6BZQLmeeW9m4NtEIu/tRQlZlX8XErv1Kw424/c9h35Rw+imqKQiFcEwRTohUVp7V8h2jfc5l/rbTWDmDazD3huT/Zj7WcJgN637xAsHVAg0oo3u+bNxCzOXR16OmrCbdyvpJn1rty+2zso6r+fIbu5pBj1Hq9vBJ/IfCIX++zzvq7vAHZ+HVjnTvs9lHyEcPM47ER6ai/nF5vcl3FuKY3hkzFGB0jD2DJkRomKKLRqkFv5IvUldCua92tCLmyqmt63oNQ+pEMI8UCjvoh/74try5lkEeX2I+wYx8OTrueYj2+iKkCwJjOqSS4Kz/bWlxrf8mqgIpI6EKfdD5pE0Zv1VO3pvZSxFv4ClXpS3vvawltzt9lk5RtYh4zmsczeyzY0ryEJ6WEKOAVB+8xC9I3MI09KnSDOXsZmsBkbb27r8+4+2TQ8pKCHcqvtI6XoirFWTjBSnud3/Vj2MvTW9S8+BjQZSN6mXHwYCUb1hwJyq0GNzXiNHesp4pT0JDnuycZItI3S3YbsGl52Jdv11l+6MuDXH2joUnyL6NKd4bMqOm6flpkzS82p/Ztaab6aOD8N/rCsHi1Emk0H7UmZ9k", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "control_chars", "func": "decrypt", "enc": "AAECAwQFBgcICQoLK2u4fvTvrnLjJKWCk5gNAvez4xasHjEYr09vP1COvp+HwF1T3JWHEA==", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "whitespace_b64", "func": "decrypt", "enc": "  AAECAwQF\nBgcICQoLNHK3eKCB4jr2b58nfYiLUOI2uwk+Rg==  ", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "wrong_key", "func": "decrypt", "enc": "AAECAwQFBgcICQoLL2e6d6onl/81O4oEbSgjbc2dBXu7", "key": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="}
+{"case": "tampered_tag", "func": "decrypt", "enc": "AAECAwQFBgcICQoLL2e6d6onl/81O4oEbSgjbc2dBXu6", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "tampered_ciphertext", "func": "decrypt", "enc": "AAECAwQFBgcICQoL0Ge6d6onl/81O4oEbSgjbc2dBXu7", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "raw_too_short_for_nonce", "func": "decrypt", "enc": "YWJjZGU=", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "raw_nonce_only", "func": "decrypt", "enc": "AAECAwQFBgcICQoLMTIzNDU2Nzg=", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "key_too_short", "func": "decrypt", "enc": "AAECAwQFBgcICQoLP919XLihhUplo4KwU2Gknqk=", "key": "c2hvcnQ="}
+{"case": "key_bad_padding", "func": "decrypt", "enc": "d2hhdGV2ZXI=", "key": "YQ"}
+{"case": "enc_bad_padding", "func": "decrypt", "enc": "YQ", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "enc_length_mod1", "func": "decrypt", "enc": "A", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "empty_enc", "func": "decrypt", "enc": "", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "non_utf8_plaintext", "func": "decrypt", "enc": "AAECAwQFBgcICQoLuPyFKuQRh0TPJ8+ZPT9AvwpM", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "overlong_utf8", "func": "decrypt", "enc": "AAECAwQFBgcICQoLh4K4UzS+DgKh15aofv3MyYxB", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "surrogate_utf8", "func": "decrypt", "enc": "AAECAwQFBgcICQoLqqJWlOVdxZ+slEicHwLujvtqlg==", "key": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="}
+{"case": "hex_empty", "func": "b64_encode_hex", "hex": ""}
+{"case": "hex_one_byte", "func": "b64_encode_hex", "hex": "00"}
+{"case": "hex_ff", "func": "b64_encode_hex", "hex": "ff"}
+{"case": "hex_words", "func": "b64_encode_hex", "hex": "deadbeef"}
+{"case": "hex_32_bytes", "func": "b64_encode_hex", "hex": "0000000000000000000000000000000000000000000000000000000000000000"}
+{"case": "hex_upper", "func": "b64_encode_hex", "hex": "DEADBEEF"}
+{"case": "hex_odd", "func": "b64_encode_hex", "hex": "abc"}
+{"case": "hex_bad_chars", "func": "b64_encode_hex", "hex": "zz"}
+{"case": "hex_space", "func": "b64_encode_hex", "hex": "a b4"}
+{"case": "hex_prefix", "func": "b64_encode_hex", "hex": "0x41"}
+{"case": "decode_empty", "func": "b64_decode_len", "text": ""}
+{"case": "decode_YQeqeq", "func": "b64_decode_len", "text": "YQ=="}
+{"case": "decode_YQ", "func": "b64_decode_len", "text": "YQ"}
+{"case": "decode_YQeq", "func": "b64_decode_len", "text": "YQ="}
+{"case": "decode_YQeqeqeq", "func": "b64_decode_len", "text": "YQ==="}
+{"case": "decode_abcdeq", "func": "b64_decode_len", "text": "abcd="}
+{"case": "decode_abc", "func": "b64_decode_len", "text": "abc"}
+{"case": "decode_a", "func": "b64_decode_len", "text": "a"}
+{"case": "decode_ab-cd", "func": "b64_decode_len", "text": "ab-cd"}
+{"case": "decode_ab_cd", "func": "b64_decode_len", "text": "ab cd"}
+{"case": "decode_!!!!", "func": "b64_decode_len", "text": "!!!!"}
+{"case": "decode_aGVsbG8eq", "func": "b64_decode_len", "text": "aGVsbG8="}
+{"case": "decode_YQeqeq", "func": "b64_decode_len", "text": "  YQ==  "}
+{"case": "decode_AAAA", "func": "b64_decode_len", "text": "AAAA"}
+{"case": "decode_AAeqeq", "func": "b64_decode_len", "text": "AA=="}
+{"case": "decode_AAAeq", "func": "b64_decode_len", "text": "AAA="}
+{"case": "decode_eqYQeqeq", "func": "b64_decode_len", "text": "=YQ=="}
+{"case": "decode_YQeqeqAA", "func": "b64_decode_len", "text": "YQ==AA"}
+{"case": "decode_aGVsbG8", "func": "b64_decode_len", "text": "aGVsbG8"}
+{"case": "decode_AAA", "func": "b64_decode_len", "text": "AAA"}

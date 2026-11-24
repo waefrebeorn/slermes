@@ -1,0 +1,19 @@
+{"case": "handler_returns_dict", "func": "middleware", "outcome": "return", "value": {"status": 200, "ok": true}}
+{"case": "handler_returns_null", "func": "middleware", "outcome": "return", "value": null}
+{"case": "handler_returns_string", "func": "middleware", "outcome": "return", "value": "ok"}
+{"case": "handler_returns_list", "func": "middleware", "outcome": "return", "value": [1, 2, 3]}
+{"case": "handler_returns_missing_value", "func": "middleware", "outcome": "return"}
+{"case": "outcome_missing_defaults_to_return", "func": "middleware", "value": {"a": 1}}
+{"case": "outcome_empty_defaults_to_return", "func": "middleware", "outcome": "", "value": 7}
+{"case": "outage_string_code", "func": "middleware", "outcome": "config_unavailable", "code": "remote_unreachable"}
+{"case": "outage_int_code", "func": "middleware", "outcome": "config_unavailable", "code": 42}
+{"case": "outage_null_code", "func": "middleware", "outcome": "config_unavailable", "code": null}
+{"case": "outage_true_code", "func": "middleware", "outcome": "config_unavailable", "code": true}
+{"case": "outage_float_code", "func": "middleware", "outcome": "config_unavailable", "code": 3.5}
+{"case": "outage_empty_code", "func": "middleware", "outcome": "config_unavailable", "code": ""}
+{"case": "outage_zero_code", "func": "middleware", "outcome": "config_unavailable", "code": 0}
+{"case": "outage_code_attribute_missing", "func": "middleware", "outcome": "config_unavailable"}
+{"case": "runtime_error_escapes", "func": "middleware", "outcome": "runtime_error", "value": {"ignored": true}}
+{"case": "runtime_error_with_code", "func": "middleware", "outcome": "runtime_error", "code": "still_escapes"}
+{"case": "body_only", "func": "body", "code": "backend_down"}
+{"case": "body_only_empty", "func": "body", "code": ""}

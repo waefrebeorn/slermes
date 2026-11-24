@@ -1,0 +1,17 @@
+{"func": "home", "case": "no_env", "env": {}}
+{"func": "home", "case": "empty_chat", "env": {"SLACK_HOME_CHANNEL": "", "SLACK_HOME_CHANNEL_NAME": "general"}}
+{"func": "home", "case": "null_values", "env": {"SLACK_HOME_CHANNEL": null, "SLACK_HOME_CHANNEL_NAME": null, "SLACK_HOME_CHANNEL_THREAD_ID": null}}
+{"func": "home", "case": "fresh_entry", "env": {"SLACK_HOME_CHANNEL": "C0123", "SLACK_HOME_CHANNEL_NAME": "general", "SLACK_HOME_CHANNEL_THREAD_ID": "1700.5"}}
+{"func": "home", "case": "fresh_no_extras", "env": {"SLACK_HOME_CHANNEL": "C0123"}}
+{"func": "home", "case": "fresh_empty_name", "env": {"SLACK_HOME_CHANNEL": "C0123", "SLACK_HOME_CHANNEL_NAME": "", "SLACK_HOME_CHANNEL_THREAD_ID": ""}}
+{"func": "home", "case": "existing_same_chat", "env": {"SLACK_HOME_CHANNEL": "C0123"}, "existing": {"enabled": true, "chat_id": "C0123", "user_id": "U9", "scope_id": "T9"}}
+{"func": "home", "case": "existing_other_chat", "env": {"SLACK_HOME_CHANNEL": "C9999", "SLACK_HOME_CHANNEL_NAME": "random"}, "existing": {"enabled": true, "chat_id": "C0123", "user_id": "U9", "scope_id": "T9"}}
+{"func": "home", "case": "existing_disabled", "env": {"SLACK_HOME_CHANNEL": "C0123"}, "existing": {"enabled": false, "chat_id": "C0123"}}
+{"func": "home", "case": "existing_no_home", "env": {"SLACK_HOME_CHANNEL": "C0123"}, "existing": {"enabled": true}}
+{"func": "home", "case": "existing_no_provenance", "env": {"SLACK_HOME_CHANNEL": "C0123"}, "existing": {"enabled": true, "chat_id": "C0123"}}
+{"func": "home", "case": "existing_missing_keys", "env": {"SLACK_HOME_CHANNEL": "C0123", "SLACK_HOME_CHANNEL_THREAD_ID": "1700.5"}, "existing": {}}
+{"func": "authz", "case": "table"}
+{"func": "env_enable_credentials", "case": "names"}
+{"func": "env_overrides", "case": "steps"}
+{"func": "home", "case": "existing_null_chat", "env": {"SLACK_HOME_CHANNEL": "C0123"}, "existing": {"enabled": true, "chat_id": null, "user_id": "U9"}}
+{"func": "home", "case": "existing_user_only", "env": {"SLACK_HOME_CHANNEL": "C0123", "SLACK_HOME_CHANNEL_THREAD_ID": "1700.5"}, "existing": {"enabled": true, "chat_id": "C0123", "user_id": "U9"}}

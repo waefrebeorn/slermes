@@ -1,0 +1,21 @@
+{"case":"expand_dollar","func":"expand","value":"$SLERMES_HOME/bin/ffmpeg"}
+{"case":"expand_braced","func":"expand","value":"${SLERMES_HOME}/bin/ffmpeg.exe"}
+{"case":"expand_percent","func":"expand","value":"%SLERMES_HOME%/ffmpeg"}
+{"case":"expand_home_env","func":"expand","value":"$HOME/hermes/ffmpeg"}
+{"case":"expand_home_join","func":"expand","value":"~/ffmpeg"}
+{"case":"expand_home_only","func":"expand","value":"~"}
+{"case":"expand_unknown","func":"expand","value":"$NOPE_UNSET_VAR/ffmpeg"}
+{"case":"expand_plain","func":"expand","value":"C:/tools/ffmpeg.exe"}
+{"case":"expand_empty","func":"expand","value":""}
+{"case":"expand_missing","func":"expand"}
+{"case":"resolve_explicit_trim","func":"resolve","ffmpeg_path":"  C:/tools/ffmpeg.exe  ","shared":"C:/shared/ffmpeg","local_appdata":null}
+{"case":"resolve_explicit_expands","func":"resolve","ffmpeg_path":"$SLERMES_HOME/ff/ffmpeg","shared":null,"local_appdata":null}
+{"case":"resolve_explicit_percent","func":"resolve","ffmpeg_path":"%SLERMES_HOME%/ffmpeg","shared":"C:/shared/ffmpeg","local_appdata":null}
+{"case":"resolve_explicit_home","func":"resolve","ffmpeg_path":"~/bin/ffmpeg","shared":"C:/shared/ffmpeg","local_appdata":null}
+{"case":"resolve_blank_explicit_shared","func":"resolve","ffmpeg_path":"   ","shared":"C:/shared/ffmpeg","local_appdata":"$SLERMES_HOME/wg","seed":["Microsoft/WinGet/Packages/Gyan.FFmpeg_A/1.0/bin/ffmpeg.exe"]}
+{"case":"resolve_winget_two","func":"resolve","ffmpeg_path":"","shared":null,"local_appdata":"$SLERMES_HOME/wg2","seed":["Microsoft/WinGet/Packages/Gyan.FFmpeg_A/1.0/bin/ffmpeg.exe","Microsoft/WinGet/Packages/gyan.FFmpeg_Z/9.9/bin/ffmpeg.exe"]}
+{"case":"resolve_winget_nonmatch","func":"resolve","ffmpeg_path":null,"shared":"","local_appdata":"$SLERMES_HOME/wg3","seed":["Microsoft/WinGet/Packages/Gyan.FFmpeg_A/1.0/bin/ffprobe.exe"]}
+{"case":"resolve_no_winget_dir","func":"resolve","ffmpeg_path":null,"shared":null,"local_appdata":"$SLERMES_HOME/absent"}
+{"case":"resolve_unset_local","func":"resolve","ffmpeg_path":null,"shared":null,"local_appdata":null}
+{"case":"resolve_empty_local","func":"resolve","ffmpeg_path":"","shared":"","local_appdata":""}
+{"case":"resolve_winget_deep","func":"resolve","ffmpeg_path":"","shared":"","local_appdata":"$SLERMES_HOME/wg4/","seed":["Microsoft/WinGet/Packages/Gyan.FFmpeg_B/2.1/bin/ffmpeg.exe"]}

@@ -1,0 +1,44 @@
+{"case": "prefix", "func": "prefix"}
+{"case": "spillover_prefix", "func": "spillover_prefix"}
+{"case": "empty_payload", "func": "retire_media", "payload": {}}
+{"case": "attachments_only", "func": "retire_media", "payload": {"attachments_v1": {"media": [{"path": "/home/u/pic.png", "kind": "image"}, {"path": "/home/u/doc.pdf"}]}}}
+{"case": "native_text_only", "func": "retire_media", "payload": {"native_text_v1": {"media": [{"path": "C:\\tmp\\note.txt"}]}}}
+{"case": "api_turn_only", "func": "retire_media", "payload": {"api_turn_v1": {"media": [{"path": "/srv/api/out.png", "sha256": "abc"}]}}}
+{"case": "all_sources_order", "func": "retire_media", "request_id": "hosted:req-1", "media_root": "C:/media/native-inputs", "payload": {"attachments_v1": {"media": [{"path": "/a/1.png"}]}, "native_text_v1": {"media": [{"path": "/a/2.txt"}]}, "api_turn_v1": {"media": [{"path": "/a/3.png"}]}, "text": "\n[Shared attachment] file: C:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/brief.pdf\n"}}
+{"case": "media_key_absent", "func": "retire_media", "payload": {"attachments_v1": {"other": []}}}
+{"case": "reference_missing_path", "func": "retire_media", "payload": {"attachments_v1": {"media": [{"kind": "image"}]}}}
+{"case": "reference_wrong_type_path", "func": "retire_media", "payload": {"attachments_v1": {"media": [{"path": 7}]}}}
+{"case": "payload_not_object", "func": "retire_media", "payload": "nope"}
+{"case": "payload_missing", "func": "retire_media"}
+{"case": "attachments_not_object", "func": "retire_media", "payload": {"attachments_v1": [{"path": "/a/1.png"}]}}
+{"case": "api_turn_not_object", "func": "retire_media", "payload": {"api_turn_v1": "x"}}
+{"case": "hosted_document", "func": "retire_media", "request_id": "hosted:req-1", "media_root": "C:/media/native-inputs", "payload": {"text": "prefix\n[Shared attachment] file: C:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/brief.pdf\nsuffix"}}
+{"case": "hosted_two_lines_blank_between", "func": "retire_media", "request_id": "hosted:req-2", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: C:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/a.pdf\n\n[Shared attachment] file: C:/media/native-inputs/fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210/b.docx\n"}}
+{"case": "hosted_consecutive_lines", "func": "retire_media", "request_id": "hosted:req-3", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: C:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/a.pdf\n[Shared attachment] file: C:/media/native-inputs/fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210/b.docx\n"}}
+{"case": "hosted_unterminated_line", "func": "retire_media", "request_id": "hosted:req-4", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: C:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/a.pdf"}}
+{"case": "hosted_api_image_rejected", "func": "retire_media", "request_id": "hosted:req-5", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: C:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/api_abababababababababababababababab.png\n"}}
+{"case": "hosted_wrong_root", "func": "retire_media", "request_id": "hosted:req-6", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: C:/elsewhere/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/brief.pdf\n"}}
+{"case": "hosted_not_hosted_request", "func": "retire_media", "request_id": "agent:req-7", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: C:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/brief.pdf\n"}}
+{"case": "hosted_text_not_str", "func": "retire_media", "request_id": "hosted:req-8", "media_root": "C:/media/native-inputs", "payload": {"text": 42}}
+{"case": "hosted_relative_path", "func": "retire_media", "request_id": "hosted:req-9", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: relative/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/brief.pdf\n"}}
+{"case": "hosted_hex_uppercase", "func": "retire_media", "request_id": "hosted:req-10", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: C:/media/native-inputs/0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF/brief.pdf\n"}}
+{"case": "hosted_hex_short", "func": "retire_media", "request_id": "hosted:req-11", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: C:/media/native-inputs/abc/brief.pdf\n"}}
+{"case": "hosted_deep_path", "func": "retire_media", "request_id": "hosted:req-12", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: C:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/nested/brief.pdf\n"}}
+{"case": "hosted_root_case_insensitive", "func": "retire_media", "request_id": "hosted:req-13", "media_root": "C:/Media/Native-Inputs", "payload": {"text": "\n[Shared attachment] file: c:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/brief.pdf\n"}}
+{"case": "hosted_backslash_path", "func": "retire_media", "request_id": "hosted:req-14", "media_root": "C:/media/native-inputs", "payload": {"text": "\n[Shared attachment] file: C:\\media\\native-inputs\\0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\\brief.pdf\n"}}
+{"case": "hosted_media_root_absent", "func": "retire_media", "request_id": "hosted:req-15", "payload": {"text": "\n[Shared attachment] file: C:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/brief.pdf\n"}}
+{"case": "hosted_no_newline_prefix", "func": "retire_media", "request_id": "hosted:req-16", "media_root": "C:/media/native-inputs", "payload": {"text": "[Shared attachment] file: C:/media/native-inputs/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef/brief.pdf\n"}}
+{"case": "spill_single", "func": "spillover_records", "rows": [{"content": "see cache/spillover/abc.txt now", "api_content": null}]}
+{"case": "spill_backslash", "func": "spillover_records", "rows": [{"content": "C:\\cache\\spillover\\run.log", "api_content": null}]}
+{"case": "spill_json_escaped", "func": "spillover_records", "rows": [{"content": "{\"path\":\"cache\\\\spillover\\\\a-b_c.d\"}", "api_content": null}]}
+{"case": "pruned_single", "func": "spillover_records", "rows": [{"content": "cache/pruned/x.json", "api_content": null}]}
+{"case": "spill_and_pruned", "func": "spillover_records", "rows": [{"content": "cache/spillover/one.txt then cache/pruned/two.json", "api_content": null}]}
+{"case": "spill_only_in_api_content", "func": "spillover_records", "rows": [{"content": null, "api_content": "cache/spillover/api.txt"}]}
+{"case": "spill_no_pointer", "func": "spillover_records", "rows": [{"content": "nothing here", "api_content": null}]}
+{"case": "spill_non_string", "func": "spillover_records", "rows": [{"content": 7, "api_content": null}]}
+{"case": "spill_multiple_rows", "func": "spillover_records", "rows": [{"content": "cache/spillover/a.txt", "api_content": null}, {"content": "cache/spillover/b.txt and cache/pruned/c.json", "api_content": "cache/spillover/d.txt"}]}
+{"case": "spill_name_stops_at_space", "func": "spillover_records", "rows": [{"content": "cache/spillover/a b.txt", "api_content": null}]}
+{"case": "spill_embedded_word", "func": "spillover_records", "rows": [{"content": "/tmp/myspillover/x.txt", "api_content": null}]}
+{"case": "spill_empty_rows", "func": "spillover_records", "rows": []}
+{"case": "spill_rows_missing", "func": "spillover_records"}
+{"case": "spill_double_backslash_run", "func": "spillover_records", "rows": [{"content": "cache\\\\\\spillover\\\\name2.txt", "api_content": null}]}

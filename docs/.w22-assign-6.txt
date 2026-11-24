@@ -1,0 +1,5 @@
+w22_gateway_61b987	persistence/sqlite/conversation/_store/gateway
+w22_gatewayenv_1c1b2e	plugins/platforms/telegram/gateway_env
+w22_sessionwor_277372	gateway/session_worker_reservation
+w22_runtime_49223c	plugins/teams_pipeline/runtime
+w22_pets_b45cc9	hermes_cli/subcommands/pets
