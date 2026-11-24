@@ -1,0 +1,38 @@
+{"case":"note-no-state","func":"note","subagent_id":"sa-1","note":"tick","now":1750000123.5}
+{"case":"note-stopped","func":"note","subagent_id":"sa-1","note":"parent closed","now":1750000123.5,"state":"stopped"}
+{"case":"note-superseded-unpin","func":"note","subagent_id":"sa-2","note":"moved on","now":1.5,"state":"superseded","unpin":true}
+{"case":"note-expired-no-from","func":"note","subagent_id":"sa-3","note":"pick up","now":5.0,"state":"expired","from_states":[],"unstarted_claim":true}
+{"case":"note-two-from-rc0","func":"note","subagent_id":"sa-4","note":"n","now":7.25,"state":"stopped","from_states":["resumable","superseded"],"unpin":true,"rowcount":0}
+{"case":"note-resumable-unstarted","func":"note","subagent_id":"sa-5","note":"n","now":9.0,"state":"resumable","from_states":["expired"],"unstarted_claim":true}
+{"case":"note-completed-unpinned","func":"note","subagent_id":"sa-6","note":"archive","now":11.75,"state":"completed","from_states":["expired","stopped"],"unpin":true,"unstarted_claim":true}
+{"case":"cancel-expired","func":"cancel_expired","subagent_id":"sa-6","note":"cancelled","now":12.0}
+{"case":"cancel-expired-rc0","func":"cancel_expired","subagent_id":"sa-6","note":"cancelled","now":12.5,"rowcount":0}
+{"case":"cancel-manual-stopped","func":"cancel_manual_claim","subagent_id":"sa-7","state":"stopped","note":"stop it","now":3.0}
+{"case":"cancel-manual-superseded","func":"cancel_manual_claim","subagent_id":"sa-7","state":"superseded","note":"moved","now":4.0,"rowcount":0}
+{"case":"parent-gone","func":"parent_note","tip_end_reason":null,"tip_exists":false}
+{"case":"parent-open","func":"parent_note","tip_end_reason":null,"tip_exists":true}
+{"case":"parent-automatic-idle","func":"parent_note","tip_end_reason":"idle_timeout","tip_exists":true}
+{"case":"parent-automatic-empty","func":"parent_note","tip_end_reason":"","tip_exists":true}
+{"case":"parent-deliberate-close","func":"parent_note","tip_end_reason":"user_close","tip_exists":true}
+{"case":"parent-deliberate-reset","func":"parent_note","tip_end_reason":"session_reset","tip_exists":true}
+{"case":"parent-automatic-shutdown","func":"parent_note","tip_end_reason":"tui_shutdown","tip_exists":true}
+{"case":"pred-owed","func":"predicates","record":{"subagent_id":"sa-8","state":"resumable","pinned":true,"stop_cause":null,"owner_pid":1,"owner_started_at":2,"document":{"auto_promised":true},"created_at":0.0,"updated_at":0.0,"expires_at":null}}
+{"case":"pred-gave-up","func":"predicates","record":{"subagent_id":"sa-8","state":"resumable","pinned":true,"stop_cause":null,"owner_pid":1,"owner_started_at":2,"document":{"auto_promised":true,"auto_gave_up":"boom"},"created_at":0.0,"updated_at":0.0,"expires_at":null}}
+{"case":"pred-promised-null","func":"predicates","record":{"subagent_id":"sa-8","state":"resumable","pinned":false,"stop_cause":null,"owner_pid":null,"owner_started_at":null,"document":{"auto_promised":null},"created_at":0.0,"updated_at":0.0,"expires_at":null}}
+{"case":"pred-unstarted","func":"predicates","record":{"subagent_id":"sa-9","state":"claimed","pinned":true,"stop_cause":null,"owner_pid":5,"owner_started_at":6,"document":{"auto_claim":"par-1","auto_attempts":2},"created_at":1.0,"updated_at":2.0,"expires_at":null}}
+{"case":"pred-claimed-manual","func":"predicates","record":{"subagent_id":"sa-9","state":"claimed","pinned":true,"stop_cause":null,"owner_pid":5,"owner_started_at":6,"document":{"auto_attempts":0},"created_at":1.0,"updated_at":2.0,"expires_at":null}}
+{"case":"pred-attempts-str","func":"predicates","record":{"subagent_id":"sa-10","state":"resumable","pinned":true,"stop_cause":null,"owner_pid":null,"owner_started_at":null,"document":{"auto_attempts":"3"},"created_at":0.0,"updated_at":0.0,"expires_at":null}}
+{"case":"pred-attempts-float","func":"predicates","record":{"subagent_id":"sa-10","state":"resumable","pinned":true,"stop_cause":null,"owner_pid":null,"owner_started_at":null,"document":{"auto_attempts":1.9},"created_at":0.0,"updated_at":0.0,"expires_at":null}}
+{"case":"pred-attempts-true","func":"predicates","record":{"subagent_id":"sa-10","state":"resumable","pinned":true,"stop_cause":null,"owner_pid":null,"owner_started_at":null,"document":{"auto_attempts":true},"created_at":0.0,"updated_at":0.0,"expires_at":null}}
+{"case":"pred-clean","func":"predicates","record":{"subagent_id":"sa-11","state":"expired","pinned":false,"stop_cause":null,"owner_pid":null,"owner_started_at":null,"document":{},"created_at":0.0,"updated_at":0.0,"expires_at":null}}
+{"case":"hand-back-plain","func":"hand_back","subagent_id":"sa-9","state":"resumable","promised":true,"found":[null,null]}
+{"case":"hand-back-cancel-wins","func":"hand_back","subagent_id":"sa-9","state":"resumable","promised":true,"found":["stopped","parent stopped it"]}
+{"case":"hand-back-cancel-superseded","func":"hand_back","subagent_id":"sa-9","state":"superseded","owner_pid":42,"found":["superseded","gone"]}
+{"case":"hand-back-not-found","func":"hand_back","subagent_id":"sa-9","state":"resumable","owner_pid":7,"found":null}
+{"case":"hand-back-no-promise","func":"hand_back","subagent_id":"sa-9","state":"stopped","found":[null,null]}
+{"case":"hand-back-promise-false","func":"hand_back","subagent_id":"sa-9","state":"resumable","promised":false,"found":[null,null]}
+{"case":"hand-back-cancel-resumable","func":"hand_back","subagent_id":"sa-9","state":"resumable","owner_pid":5,"found":["resumable","still wanted"]}
+{"case":"refusal-cancelled","func":"refusal","subagent_id":"sa-5","kind":"cancelled","attempts":1,"note":"boom","owner_pid":3}
+{"case":"refusal-transient","func":"refusal","subagent_id":"sa-5","kind":"transient","attempts":0,"note":"busy","owner_pid":3}
+{"case":"refusal-permanent","func":"refusal","subagent_id":"sa-5","kind":"permanent","attempts":2,"note":"no model","owner_pid":3}
+{"case":"constants","func":"constants"}

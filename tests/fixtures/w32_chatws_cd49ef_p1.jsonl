@@ -1,0 +1,46 @@
+{"func": "console_run", "case": "flow-mixed", "query": {}, "msgs": [{"type": "websocket.receive", "text": "{\"type\": \"ping\"}"}, {"type": "websocket.receive", "text": "not json"}, {"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"ls\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"   \"}"}, {"type": "websocket.receive", "text": "{\"type\": \"confirm\", \"command\": \"rm\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"cancel\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"bogus\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"  PING \"}"}, {"type": "websocket.disconnect"}], "results": [{"status": "ok", "command": "ls", "output": "a\n", "confirmation_message": null}]}
+{"func": "console_run", "case": "confirm-flow", "query": {}, "msgs": [{"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"rm\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"cancel\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"ls\"}"}, {"type": "websocket.disconnect"}], "results": [{"status": "confirm_required", "command": "rm", "output": null, "confirmation_message": null}, {"status": "ok", "command": "ls", "output": "x", "confirmation_message": null}]}
+{"func": "console_run", "case": "confirm-then-run", "query": {}, "msgs": [{"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"rm -rf tmp\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"ls\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"confirm\", \"command\": \"rm -rf tmp\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"cancel\"}"}, {"type": "websocket.disconnect"}], "results": [{"status": "confirm_required", "command": "rm -rf tmp", "output": null, "confirmation_message": null}, {"status": "ok", "command": "rm -rf tmp", "output": "gone\n", "confirmation_message": null}]}
+{"func": "console_run", "case": "confirm-implicit", "query": {}, "msgs": [{"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"git push\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"confirm\"}"}, {"type": "websocket.disconnect"}], "results": [{"status": "confirm_required", "command": "git push", "output": null, "confirmation_message": "Push for real?"}, {"status": "ok", "command": "git push", "output": null, "confirmation_message": null}]}
+{"func": "console_run", "case": "confirm-mismatch", "query": {}, "msgs": [{"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"rm\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"confirm\", \"command\": \"rm2\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"confirm\", \"command\": \" rm \"}"}, {"type": "websocket.disconnect"}], "results": [{"status": "confirm_required", "command": "rm", "output": null, "confirmation_message": null}, {"status": "clear", "command": "rm", "output": null, "confirmation_message": null}]}
+{"func": "console_run", "case": "error-result", "query": {}, "msgs": [{"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"boom\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"command\", \"command\": \"boom2\"}"}, {"type": "websocket.disconnect"}], "results": [{"status": "error", "command": "boom", "output": "kaboom", "confirmation_message": null}, {"status": "error", "command": "boom2", "output": null, "confirmation_message": null}]}
+{"func": "console_run", "case": "clear-exit", "query": {}, "msgs": [{"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"clear\"}"}, {"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"exit\"}"}, {"type": "websocket.disconnect"}], "results": [{"status": "clear", "command": "clear", "output": null, "confirmation_message": null}, {"status": "exit", "command": "exit", "output": null, "confirmation_message": null}]}
+{"func": "console_run", "case": "unknown-status", "query": {}, "msgs": [{"type": "websocket.receive", "text": "{\"type\": \"input\", \"line\": \"odd\"}"}, {"type": "websocket.disconnect"}], "results": [{"status": "weird", "command": "odd", "output": null, "confirmation_message": null}]}
+{"func": "console_run", "case": "profile-custom", "query": {"profile": " work "}, "msgs": [{"type": "websocket.disconnect"}], "results": []}
+{"func": "console_run", "case": "profile-default", "query": {"profile": "current"}, "msgs": [{"type": "websocket.disconnect"}], "results": []}
+{"func": "console_run", "case": "idle-zero-messages", "query": {}, "msgs": [{"type": "websocket.disconnect"}], "results": []}
+{"func": "console_run", "case": "bytes-frame", "query": {}, "msgs": [{"type": "websocket.receive", "bytes_hex": "7b2274797065223a2270696e67227d"}, {"type": "websocket.receive", "bytes_hex": "7b2274797065223a22636c69227d"}, {"type": "websocket.receive", "bytes_hex": "ff7b7d"}, {"type": "websocket.disconnect"}], "results": []}
+{"func": "console_run", "case": "empty-inputs", "query": {}, "msgs": [{"type": "websocket.receive", "text": "{\"type\": \"input\"}"}, {"type": "websocket.receive"}, {"type": "websocket.receive", "text": "{\"type\": \"command\", \"command\": \"echo hi\"}"}, {"type": "websocket.disconnect"}], "results": [{"status": "ok", "command": "echo hi", "output": "hi\n", "confirmation_message": null}]}
+{"func": "console_run", "case": "no-type-keys", "query": {}, "msgs": [{"type": "websocket.receive", "text": "{}"}, {"type": "websocket.receive", "text": "{\"type\": 5}"}, {"type": "websocket.receive", "text": "{\"type\": null}"}, {"type": "websocket.disconnect"}], "results": []}
+{"func": "console_payload", "case": "object", "text": "{\"type\": \"ping\"}"}
+{"func": "console_payload", "case": "array", "text": "[1, 2]"}
+{"func": "console_payload", "case": "bad-json", "text": "{oops"}
+{"func": "console_payload", "case": "none"}
+{"func": "console_payload", "case": "empty-text", "text": ""}
+{"func": "console_payload", "case": "invalid-utf8", "bytes_hex": "ff7b7d"}
+{"func": "console_payload", "case": "overlong-utf8", "bytes_hex": "c080"}
+{"func": "console_payload", "case": "bytes-object", "bytes_hex": "7b2274797065223a2263616e63656c227d"}
+{"func": "console_payload", "case": "text-wins", "text": "{\"type\": \"ping\"}", "bytes_hex": "ff"}
+{"func": "channel_key", "case": "valid", "channel": "chan-1_2.x"}
+{"func": "channel_key", "case": "space", "channel": "ab c"}
+{"func": "channel_key", "case": "empty", "channel": ""}
+{"func": "channel_key", "case": "absent"}
+{"func": "channel_key", "case": "slash", "channel": "a/b"}
+{"func": "channel_key", "case": "too-long", "channel": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "channel_key", "case": "max-len", "channel": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "channel_key", "case": "trailing-newline", "channel": "ch1\n"}
+{"func": "channel_key", "case": "double-newline", "channel": "ch1\n\n"}
+{"func": "channel_key", "case": "inner-newline", "channel": "ch\n1"}
+{"func": "channel_key", "case": "non-ascii", "channel": "é"}
+{"func": "marker_session", "case": "plain", "doc": "{\"session_id\": \"sess-42\"}"}
+{"func": "marker_session", "case": "bom", "doc": "﻿{\"session_id\": \"sess-bom\"}"}
+{"func": "marker_session", "case": "padded", "doc": "{\"session_id\": \"  padded  \"}"}
+{"func": "marker_session", "case": "blank", "doc": "{\"session_id\": \"   \"}"}
+{"func": "marker_session", "case": "empty-sid", "doc": "{\"session_id\": \"\"}"}
+{"func": "marker_session", "case": "int-id", "doc": "{\"session_id\": 7}"}
+{"func": "marker_session", "case": "bool-id", "doc": "{\"session_id\": true}"}
+{"func": "marker_session", "case": "false-id", "doc": "{\"session_id\": false}"}
+{"func": "marker_session", "case": "no-key", "doc": "{\"other\": \"x\"}"}
+{"func": "marker_session", "case": "missing"}
+{"func": "marker_session", "case": "bad-json", "doc": "{not json"}
+{"func": "marker_session", "case": "empty-doc", "doc": ""}

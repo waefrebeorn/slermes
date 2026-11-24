@@ -1,0 +1,50 @@
+{"func": "methods", "case": "index"}
+{"func": "enums", "case": "closed-sets"}
+{"func": "profile_scoped", "case": "profile-keys"}
+{"func": "params_spec", "case": "empty-model", "method": "tools.list"}
+{"func": "params_spec", "case": "skills-manage", "method": "skills.manage"}
+{"func": "params_spec", "case": "plugins-manage", "method": "plugins.manage"}
+{"func": "params_spec", "case": "oauth-callback", "method": "mcp.servers.oauth.callback"}
+{"func": "params_spec", "case": "unknown-method", "method": "mcp.servers.list"}
+{"func": "validate_params", "case": "session-scoped-empty", "method": "tools.list", "params": {}}
+{"func": "validate_params", "case": "session-scoped-null", "method": "tools.list", "params": {"session_id": null}}
+{"func": "validate_params", "case": "session-scoped-extra", "method": "tools.list", "params": {"tools": true}}
+{"func": "validate_params", "case": "skills-defaults", "method": "skills.manage", "params": {}}
+{"func": "validate_params", "case": "skills-browse", "method": "skills.manage", "params": {"action": "browse", "page": 2, "page_size": 20}}
+{"func": "validate_params", "case": "skills-bad-action", "method": "skills.manage", "params": {"action": "nope"}}
+{"func": "validate_params", "case": "skills-bad-page", "method": "skills.manage", "params": {"page": "x"}}
+{"func": "validate_params", "case": "skills-three-faults", "method": "skills.manage", "params": {"action": "nope", "page": "x", "bogus": 1}}
+{"func": "validate_params", "case": "configure-missing", "method": "tools.configure", "params": {}}
+{"func": "validate_params", "case": "configure-names-type", "method": "tools.configure", "params": {"action": "enable", "names": "toolset"}}
+{"func": "validate_params", "case": "configure-ok", "method": "tools.configure", "params": {"action": "disable", "names": ["files", "web:search"], "profile": "work", "session_id": "s1"}}
+{"func": "validate_params", "case": "plugins-defaults", "method": "plugins.manage", "params": {}}
+{"func": "validate_params", "case": "plugins-settings", "method": "plugins.manage", "params": {"action": "settings", "key": "demo", "values": {"level": 2, "label": "x"}}}
+{"func": "validate_params", "case": "plugins-values-type", "method": "plugins.manage", "params": {"values": []}}
+{"func": "validate_params", "case": "plugins-enable-type", "method": "plugins.manage", "params": {"enable": {}}}
+{"func": "validate_params", "case": "plugins-names-type", "method": "plugins.manage", "params": {"names": {"a": 1}}}
+{"func": "validate_params", "case": "server-name-missing", "method": "mcp.servers.test", "params": {}}
+{"func": "validate_params", "case": "server-name-type", "method": "mcp.servers.test", "params": {"name": 3}}
+{"func": "validate_params", "case": "oauth-poll-session-missing", "method": "mcp.servers.oauth.poll", "params": {"name": "srv"}}
+{"func": "validate_params", "case": "oauth-poll-ok", "method": "mcp.servers.oauth.poll", "params": {"name": "srv", "session_id": "flow-1"}}
+{"func": "validate_params", "case": "add-config-any", "method": "mcp.servers.add", "params": {"name": "srv", "config": {"url": "https://x", "args": ["-y", 1], "env": {"K": null}}, "preset": "github"}}
+{"func": "validate_params", "case": "learning-frames", "method": "learning.frames", "params": {"cols": 12, "rows": 8, "frames": 3}}
+{"func": "validate_params", "case": "plugins-list-extra", "method": "plugins.list", "params": {"x": 1}}
+{"func": "validate_params", "case": "unknown-method", "method": "tools.nope", "params": {}}
+{"func": "normalize_params", "case": "skills-defaults", "method": "skills.manage", "params": {}}
+{"func": "normalize_params", "case": "plugins-toggle", "method": "plugins.manage", "params": {"action": "toggle", "key": "demo", "enable": true, "names": ["a", "b"]}}
+{"func": "normalize_params", "case": "add-preset", "method": "mcp.servers.add", "params": {"name": "srv", "config": {"url": "https://x", "headers": {"Authorization": "Bearer ENV"}}}}
+{"func": "normalize_params", "case": "configure-full", "method": "tools.configure", "params": {"action": "disable", "names": ["files"], "profile": "work", "session_id": "s1"}}
+{"func": "normalize_params", "case": "invalid", "method": "skills.manage", "params": {"action": "nope"}}
+{"func": "normalize_params", "case": "unknown-method", "method": "mcp.servers.status", "params": {}}
+{"func": "validate_result", "case": "remove-ok", "method": "mcp.servers.remove", "result": {"ok": true, "removed": false}}
+{"func": "validate_result", "case": "remove-missing", "method": "mcp.servers.remove", "result": {}}
+{"func": "validate_result", "case": "remove-extra", "method": "mcp.servers.remove", "result": {"ok": true, "removed": false, "zzz": 1}}
+{"func": "validate_result", "case": "skills-dict", "method": "skills.manage", "result": {"skills": {"research": ["arxiv"]}}}
+{"func": "validate_result", "case": "skills-not-dict", "method": "skills.manage", "result": {"skills": []}}
+{"func": "validate_result", "case": "poll-tools-nested", "method": "mcp.servers.oauth.poll", "result": {"ok": false, "status": "pending", "tools": [{"name": "t", "description": "d"}]}}
+{"func": "validate_result", "case": "poll-bad-status", "method": "mcp.servers.oauth.poll", "result": {"ok": true, "status": "weird"}}
+{"func": "validate_result", "case": "catalog-entry", "method": "plugins.catalog.lookup", "result": {"status": "found", "entry": {"name": "n", "repo": "r", "sha": "s", "subdir": "d", "tier": "community"}}}
+{"func": "validate_result", "case": "plugins-activation", "method": "plugins.manage", "result": {"ok": true, "gateway_reloaded": true, "activation": {"name": "demo", "key": "demo", "activated_now": {"hooks": ["h"]}}}}
+{"func": "validate_result", "case": "unknown-method", "method": "reload.skills", "result": {}}
+{"func": "validate_params", "case": "oauth-poll-null-session", "method": "mcp.servers.oauth.poll", "params": {"name": "srv", "session_id": null}}
+{"func": "validate_result", "case": "remove-null-bool", "method": "mcp.servers.remove", "result": {"ok": true, "removed": null}}

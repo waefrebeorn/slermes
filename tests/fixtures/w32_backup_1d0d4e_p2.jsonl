@@ -1,0 +1,19 @@
+{"func": "constants", "case": "budgets"}
+{"func": "ledger_probe", "case": "ledger-probe"}
+{"func": "epoch_sql", "case": "epoch-statements"}
+{"func": "uses_wal", "case": "wal-header", "header_hex": "53514c69746520666f726d6174203300100002"}
+{"func": "uses_wal", "case": "rollback-header", "header_hex": "53514c69746520666f726d6174203300100001"}
+{"func": "uses_wal", "case": "short-header", "header_hex": "53514c69746520666f726d61742033001000"}
+{"func": "uses_wal", "case": "empty-header", "header_hex": ""}
+{"func": "verify", "case": "missing", "path": "v_missing.db", "check_header": true, "run_pragma": true, "max_bytes": 2147483648, "file": {"kind": "missing", "size": 0, "header_hex": ""}}
+{"func": "verify", "case": "too-small", "path": "v_small.db", "check_header": true, "run_pragma": true, "max_bytes": 2147483648, "file": {"kind": "tiny", "size": 50, "header_hex": ""}}
+{"func": "verify", "case": "bad-magic", "path": "v_bad.db", "check_header": true, "run_pragma": true, "max_bytes": 2147483648, "file": {"kind": "bytes", "size": 450, "header_hex": "4e4f5453514c4954454e4f5453514c49"}}
+{"func": "verify", "case": "bad-magic-no-checks", "path": "v_bad2.db", "check_header": false, "run_pragma": false, "max_bytes": 2147483648, "file": {"kind": "bytes", "size": 450, "header_hex": "4e4f5453514c4954454e4f5453514c49"}}
+{"func": "verify", "case": "integrity-ok", "path": "v_ok.db", "check_header": true, "run_pragma": true, "max_bytes": 2147483648, "file": {"kind": "sqlite", "size": 8192, "header_hex": "53514c69746520666f726d6174203300", "rows": ["ok"]}}
+{"func": "verify", "case": "probe-over-max", "path": "v_big.db", "check_header": true, "run_pragma": true, "max_bytes": 4096, "file": {"kind": "sqlite", "size": 8192, "header_hex": "53514c69746520666f726d6174203300", "rows": ["ok"]}}
+{"func": "verify", "case": "probe-disabled-max0", "path": "v_zero.db", "check_header": true, "run_pragma": true, "max_bytes": 0, "file": {"kind": "sqlite", "size": 8192, "header_hex": "53514c69746520666f726d6174203300", "rows": ["ok"]}}
+{"func": "verify", "case": "header-only", "path": "v_hdr.db", "check_header": true, "run_pragma": false, "max_bytes": 2147483648, "file": {"kind": "sqlite", "size": 8192, "header_hex": "53514c69746520666f726d6174203300", "rows": ["ok"]}}
+{"func": "epoch_decision", "case": "stage-floor", "dst_name": "state.db", "dst_resolved_name": "state.db", "floor": 9, "src_epoch": 4}
+{"func": "epoch_decision", "case": "floor-not-above", "dst_name": "state.db", "dst_resolved_name": "state.db", "floor": 3, "src_epoch": 4}
+{"func": "epoch_decision", "case": "other-name", "dst_name": "sessions.db", "dst_resolved_name": "sessions.db", "floor": 9, "src_epoch": 4}
+{"func": "epoch_decision", "case": "resolved-is-state", "dst_name": "work.db", "dst_resolved_name": "state.db", "floor": 9, "src_epoch": 1}

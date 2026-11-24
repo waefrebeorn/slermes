@@ -1,0 +1,22 @@
+{"func": "stamp", "case": "utc-micros", "epoch": 1723456789.123456}
+{"func": "stamp", "case": "year-end", "epoch": 1735689599.999999}
+{"func": "stamp", "case": "epoch-half", "epoch": 0.5}
+{"func": "stamp", "case": "new-year-micro", "epoch": 1609459200.000001}
+{"func": "paths", "case": "standard", "home": "/data/state", "stamp": "2026-11-24T12-00-00-123456Z", "pid": 4321}
+{"func": "paths", "case": "sessions-db", "home": "/var/lib/hermes", "stamp": "2026-01-02T03-04-05-000007Z", "pid": 7, "db_name": "sessions.db"}
+{"func": "paths", "case": "relative-home", "home": "", "stamp": "2026-05-06T07-08-09-000000Z", "pid": 0}
+{"func": "prune", "case": "five-kept-two", "names": ["state.db.pre-update-emergency-20260101T000000-000000Z-1.bak", "state.db.pre-update-emergency-20260102T000000-000000Z-1.bak", "state.db.pre-update-emergency-20260103T000000-000000Z-1.bak", "state.db.pre-update-emergency-20260104T000000-000000Z-1.bak", "state.db.pre-update-emergency-20260105T000000-000000Z-1.bak", "notes.txt", "state.db.pre-update-emergency-20260106T000000-000000Z-1.bak-journal"]}
+{"func": "prune", "case": "two-only", "names": ["state.db.pre-update-emergency-b.bak", "state.db.pre-update-emergency-a.bak"]}
+{"func": "prune", "case": "no-matches", "names": ["a.bak", "state.db.pre-update-emergency-x.partial"]}
+{"func": "prune", "case": "single", "names": ["state.db.pre-update-emergency-only.bak"]}
+{"func": "reclaim", "case": "stale-fresh-boundary", "now": 1700000000, "names": ["state.db.pre-update-emergency-A.partial", "state.db.pre-update-emergency-B.partial-journal", "state.db.pre-update-emergency-C.partial", "state.db.pre-update-emergency-D.bak", "notes.txt", "state.db.pre-update-emergency-E.partial"], "mtimes": [1699992000, 1699992500, 1699999100, 1699988000, 1600000000, 1699992800]}
+{"func": "reclaim", "case": "all-fresh", "now": 1700000000, "names": ["state.db.pre-update-emergency-A.partial", "state.db.pre-update-emergency-B.partial"], "mtimes": [1699999990, 1699992801]}
+{"func": "reclaim", "case": "empty", "now": 1700000000, "names": [], "mtimes": []}
+{"func": "step_plan", "case": "floor-256", "rate_pages": 1000, "rate_seconds": 0.5}
+{"func": "step_plan", "case": "measured-20k", "rate_pages": 100000, "rate_seconds": 0.5}
+{"func": "step_plan", "case": "zero-seconds", "rate_pages": 10, "rate_seconds": 0.0}
+{"func": "step_plan", "case": "small-rate", "rate_pages": 3, "rate_seconds": 1.0}
+{"func": "hold", "case": "refuse-5s", "rate_pages": 100000, "rate_seconds": 0.5, "total": 1000000}
+{"func": "hold", "case": "refuse-half", "rate_pages": 1000, "rate_seconds": 0.5, "total": 1000}
+{"func": "hold", "case": "allow-small", "rate_pages": 1000, "rate_seconds": 0.5, "total": 100}
+{"func": "hold", "case": "no-progress", "rate_pages": 0, "rate_seconds": 0.0, "total": 123456}

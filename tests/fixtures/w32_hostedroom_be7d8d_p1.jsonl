@@ -1,0 +1,48 @@
+{"func": "budget", "case": "default_floor", "max_active_events": 1, "value_type": "int"}
+{"func": "budget", "case": "below_floor", "max_active_events": 7, "value_type": "int"}
+{"func": "budget", "case": "exactly_floor", "max_active_events": 64, "value_type": "int"}
+{"func": "budget", "case": "raised", "max_active_events": 128, "value_type": "int"}
+{"func": "budget", "case": "raised_large", "max_active_events": 4096, "value_type": "int"}
+{"func": "budget", "case": "zero", "max_active_events": 0, "value_type": "int"}
+{"func": "budget", "case": "negative", "max_active_events": -5, "value_type": "int"}
+{"func": "budget", "case": "bool_is_not_int", "max_active_events": true, "value_type": "bool"}
+{"func": "budget", "case": "float_is_not_int", "max_active_events": 12.0, "value_type": "float"}
+{"func": "budget", "case": "string_is_not_int", "max_active_events": "64", "value_type": "str"}
+{"func": "budget", "case": "none_is_not_int", "max_active_events": null, "value_type": "null"}
+{"func": "capacity", "case": "fresh_file", "cached": null, "stored": null, "budget": 64}
+{"func": "capacity", "case": "fresh_file_with_larger_record", "cached": null, "stored": 96, "budget": 64}
+{"func": "capacity", "case": "cached_covers_budget", "cached": 64, "stored": 96, "budget": 64}
+{"func": "capacity", "case": "cached_below_budget", "cached": 32, "stored": null, "budget": 64}
+{"func": "capacity", "case": "larger_budget_arrives", "cached": 64, "stored": null, "budget": 128}
+{"func": "capacity", "case": "cached_above_budget", "cached": 200, "stored": 200, "budget": 128}
+{"func": "transcript_bound", "case": "default_budget", "max_active_events": 64}
+{"func": "transcript_bound", "case": "minimal_budget", "max_active_events": 1}
+{"func": "transcript_bound", "case": "raised_budget", "max_active_events": 100}
+{"func": "transcript_bound", "case": "zero_budget", "max_active_events": 0}
+{"func": "snapshot_thread", "case": "oldest_pending", "stopped_through_seq": 0, "threads": [{"thread_id": "t2", "discussion_event_id": "d2", "completed": 0, "latest_user_seq": 40}, {"thread_id": "t1", "discussion_event_id": "d1", "completed": 0, "latest_user_seq": 20}]}
+{"func": "snapshot_thread", "case": "skips_completed", "stopped_through_seq": 0, "threads": [{"thread_id": "t1", "discussion_event_id": "d1", "completed": 1, "latest_user_seq": 10}, {"thread_id": "t2", "discussion_event_id": "d2", "completed": 0, "latest_user_seq": 30}]}
+{"func": "snapshot_thread", "case": "tie_breaks_on_thread_id", "stopped_through_seq": 0, "threads": [{"thread_id": "tb", "discussion_event_id": "db", "completed": 0, "latest_user_seq": 30}, {"thread_id": "ta", "discussion_event_id": "da", "completed": 0, "latest_user_seq": 30}]}
+{"func": "snapshot_thread", "case": "below_stop_watermark", "stopped_through_seq": 30, "threads": [{"thread_id": "t1", "discussion_event_id": "d1", "completed": 0, "latest_user_seq": 30}, {"thread_id": "t2", "discussion_event_id": "d2", "completed": 0, "latest_user_seq": 12}]}
+{"func": "snapshot_thread", "case": "all_completed", "stopped_through_seq": 0, "threads": [{"thread_id": "t1", "discussion_event_id": "d1", "completed": 1, "latest_user_seq": 9}]}
+{"func": "snapshot_thread", "case": "no_threads", "stopped_through_seq": 5, "threads": []}
+{"func": "replay_state", "case": "current_schema", "has_state": true, "schema_version": 5}
+{"func": "replay_state", "case": "newer_schema", "has_state": true, "schema_version": 6}
+{"func": "replay_state", "case": "old_schema", "has_state": true, "schema_version": 4}
+{"func": "replay_state", "case": "never_migrated", "has_state": false, "schema_version": null}
+{"func": "replay_state", "case": "absent_row_with_version", "has_state": false, "schema_version": 5}
+{"func": "sync_step", "case": "caught_up", "cursor": 20, "latest_seq": 20, "rows": 0, "next_cursor": 20, "through_seq": 20}
+{"func": "sync_step", "case": "page_applied", "cursor": 10, "latest_seq": 20, "rows": 5, "next_cursor": 15, "through_seq": 10}
+{"func": "sync_step", "case": "empty_page", "cursor": 10, "latest_seq": 20, "rows": 0, "next_cursor": 12, "through_seq": 10}
+{"func": "sync_step", "case": "cursor_stuck", "cursor": 10, "latest_seq": 20, "rows": 3, "next_cursor": 10, "through_seq": 10}
+{"func": "sync_step", "case": "next_cursor_missing", "cursor": 10, "latest_seq": 20, "rows": 3, "next_cursor": null, "through_seq": 10}
+{"func": "sync_step", "case": "taken_by_other_worker", "cursor": 10, "latest_seq": 20, "rows": 3, "next_cursor": 15, "through_seq": 18}
+{"func": "sync_step", "case": "cursor_row_gone", "cursor": 10, "latest_seq": 20, "rows": 3, "next_cursor": 15, "through_seq": null}
+{"func": "settled_sources", "case": "non_pass_settlements", "events": [{"seq": 1, "event_id": "u1", "kind": "message.user", "payload": {"thread_id": "t1"}}, {"seq": 2, "event_id": "s1", "kind": "turn.settled", "payload": {"discussion_event_id": "u1", "passed": false}}, {"seq": 3, "event_id": "s2", "kind": "turn.settled", "payload": {"discussion_event_id": "u1", "passed": true}}, {"seq": 4, "event_id": "s3", "kind": "turn.settled", "payload": {"discussion_event_id": "u9"}}]}
+{"func": "settled_sources", "case": "already_projected", "events": [{"seq": 1, "event_id": "u1", "kind": "message.user", "payload": {}}, {"seq": 2, "event_id": "u1", "kind": "turn.settled", "payload": {"discussion_event_id": "u1"}}]}
+{"func": "settled_sources", "case": "no_settlements", "events": [{"seq": 1, "event_id": "u1", "kind": "message.member", "payload": {"discussion_event_id": "u5"}}]}
+{"func": "settled_sources", "case": "ordered_and_distinct", "events": [{"seq": 1, "event_id": "a1", "kind": "turn.settled", "payload": {"discussion_event_id": "z9"}}, {"seq": 2, "event_id": "a2", "kind": "turn.settled", "payload": {"discussion_event_id": "b2"}}, {"seq": 3, "event_id": "a3", "kind": "turn.settled", "payload": {"discussion_event_id": "z9"}}]}
+{"func": "settled_sources", "case": "empty", "events": []}
+{"func": "task_event_ids", "case": "dtask_prefix", "task_id": "dtask:abc123"}
+{"func": "task_event_ids", "case": "bare_id", "task_id": "abc123"}
+{"func": "task_event_ids", "case": "empty", "task_id": ""}
+{"func": "task_event_ids", "case": "none", "task_id": null}

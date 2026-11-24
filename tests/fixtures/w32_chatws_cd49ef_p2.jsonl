@@ -1,0 +1,41 @@
+{"func": "sidecar_gate", "case": "allow", "chat_enabled": true, "auth_ok": true, "request_allowed": true, "allow_internal": false, "socket": null}
+{"func": "sidecar_gate", "case": "chat-disabled", "chat_enabled": false, "auth_ok": true, "request_allowed": true, "allow_internal": false, "socket": null}
+{"func": "sidecar_gate", "case": "bad-auth", "chat_enabled": true, "auth_ok": false, "request_allowed": true, "allow_internal": false, "socket": null}
+{"func": "sidecar_gate", "case": "request-denied", "chat_enabled": true, "auth_ok": true, "request_allowed": false, "allow_internal": false, "socket": null}
+{"func": "sidecar_gate", "case": "all-false", "chat_enabled": false, "auth_ok": false, "request_allowed": false, "allow_internal": false, "socket": null}
+{"func": "sidecar_gate", "case": "internal-socket", "chat_enabled": true, "auth_ok": true, "request_allowed": true, "allow_internal": true, "socket": "gateway"}
+{"func": "sidecar_gate", "case": "auth-fails-first", "chat_enabled": false, "auth_ok": false, "request_allowed": true, "allow_internal": false, "socket": null}
+{"func": "event_state", "case": "fresh"}
+{"func": "event_state", "case": "existing", "has_channels": true, "has_lock": true, "channels": {"a": ["w1", "w2"], "b": ["w3"]}}
+{"func": "event_state", "case": "channels-no-lock", "has_channels": true, "has_lock": false, "channels": {"a": ["w1", "w2"]}}
+{"func": "event_state", "case": "lock-only", "has_lock": true, "channels": {"a": ["w1"]}}
+{"func": "event_state", "case": "empty-channels", "has_channels": true, "has_lock": true, "channels": {}}
+{"func": "lease_holder", "case": "found", "entries": [{"session_id": "s1", "pid": 4242}], "session_id": "s1", "raises": false}
+{"func": "lease_holder", "case": "second-entry", "entries": [{"session_id": "s1", "pid": "42"}, {"session_id": "s1", "pid": 99}], "session_id": "s1", "raises": false}
+{"func": "lease_holder", "case": "string-pid", "entries": [{"session_id": "s1", "pid": "42"}], "session_id": "s1", "raises": false}
+{"func": "lease_holder", "case": "bool-pid", "entries": [{"session_id": "s1", "pid": true}], "session_id": "s1", "raises": false}
+{"func": "lease_holder", "case": "false-pid", "entries": [{"session_id": "s1", "pid": false}], "session_id": "s1", "raises": false}
+{"func": "lease_holder", "case": "fractional-pid", "entries": [{"session_id": "s1", "pid": 4.5}], "session_id": "s1", "raises": false}
+{"func": "lease_holder", "case": "no-match", "entries": [{"session_id": "s2", "pid": 7}], "session_id": "s1", "raises": false}
+{"func": "lease_holder", "case": "empty-sid", "entries": [{"session_id": "s1", "pid": 7}], "session_id": "", "raises": false}
+{"func": "lease_holder", "case": "null-sid", "entries": [{"session_id": "s1", "pid": 7}], "session_id": null, "raises": false}
+{"func": "lease_holder", "case": "raises", "entries": [{"session_id": "s1", "pid": 7}], "session_id": "s1", "raises": true}
+{"func": "lease_holder", "case": "empty-registry", "entries": [], "session_id": "s1", "raises": false}
+{"func": "broadcast", "case": "two-subs", "channels": {"a": ["w1", "w2"]}, "channel": "a", "payload": "{\"t\":1}", "failing": []}
+{"func": "broadcast", "case": "middle-fails", "channels": {"a": ["w1", "w2", "w3"]}, "channel": "a", "payload": "hi", "failing": ["w2"]}
+{"func": "broadcast", "case": "all-fail", "channels": {"a": ["w1", "w2"]}, "channel": "a", "payload": "hi", "failing": ["w1", "w2"]}
+{"func": "broadcast", "case": "other-channel", "channels": {"a": ["w1"]}, "channel": "b", "payload": "hi", "failing": []}
+{"func": "broadcast", "case": "no-subscribers", "channels": {}, "channel": "a", "payload": "hi", "failing": []}
+{"func": "broadcast", "case": "three-subs-empty-payload", "channels": {"a": ["w1", "w2", "w3"]}, "channel": "a", "payload": "", "failing": []}
+{"func": "marker_state", "case": "no-channel", "channel": null, "marker_channels": [], "active_file": null, "resume": "s1", "force_fresh": false, "marker_doc": null}
+{"func": "marker_state", "case": "invalid-channel", "channel": "bad chan", "marker_channels": ["bad chan"], "active_file": "bad.json", "resume": "s1", "force_fresh": false, "marker_doc": null}
+{"func": "marker_state", "case": "read-resume", "channel": "ch1", "marker_channels": [], "active_file": "ch1.json", "resume": null, "force_fresh": false, "marker_doc": "{\"session_id\": \"from-file\"}"}
+{"func": "marker_state", "case": "preexisting-channel", "channel": "ch1", "marker_channels": ["ch1"], "active_file": "ch1.json", "resume": null, "force_fresh": false, "marker_doc": "{\"session_id\": \"from-file\"}"}
+{"func": "marker_state", "case": "explicit-resume", "channel": "ch1", "marker_channels": [], "active_file": "ch1.json", "resume": "explicit", "force_fresh": false, "marker_doc": "{\"session_id\": \"from-file\"}"}
+{"func": "marker_state", "case": "force-fresh", "channel": "ch1", "marker_channels": [], "active_file": "ch1.json", "resume": "explicit", "force_fresh": true, "marker_doc": "{\"session_id\": \"from-file\"}"}
+{"func": "marker_state", "case": "force-fresh-preexisting", "channel": "ch1", "marker_channels": ["ch1"], "active_file": "ch1.json", "resume": null, "force_fresh": true, "marker_doc": "{\"session_id\": \"from-file\"}"}
+{"func": "marker_state", "case": "no-marker-file", "channel": "ch1", "marker_channels": [], "active_file": "ch1.json", "resume": null, "force_fresh": false, "marker_doc": null}
+{"func": "marker_state", "case": "blank-marker", "channel": "ch1", "marker_channels": [], "active_file": "ch1.json", "resume": null, "force_fresh": false, "marker_doc": "{\"session_id\": \"  \"}"}
+{"func": "marker_state", "case": "empty-resume-string", "channel": "ch1", "marker_channels": [], "active_file": "ch1.json", "resume": "", "force_fresh": false, "marker_doc": "{\"session_id\": \"from-file\"}"}
+{"func": "marker_state", "case": "bom-marker", "channel": "ch1", "marker_channels": [], "active_file": "ch1.json", "resume": null, "force_fresh": false, "marker_doc": "﻿{\"session_id\": \"bom-sess\"}"}
+{"func": "marker_state", "case": "trailing-newline-channel", "channel": "ch1\n", "marker_channels": [], "active_file": "ch1.json", "resume": null, "force_fresh": false, "marker_doc": "{\"session_id\": \"s\"}"}

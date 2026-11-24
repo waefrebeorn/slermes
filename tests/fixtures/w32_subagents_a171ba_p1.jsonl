@@ -1,0 +1,22 @@
+{"case":"running-row","func":"record_shape","row":["sa-1","running",1,null,7712,1750000000,"{\"unit_id\": \"u-1\", \"goal\": \"do it\"}",1750000001.5,1750000002.5,null]}
+{"case":"null-record","func":"record_shape","row":["sa-2","expired",0,"owner_gone",null,null,null,0.0,0.0,1750000100.0]}
+{"case":"empty-record","func":"record_shape","row":["sa-3","resumable",1,"occ",42,1000,"{}",1.0,2.0,3.0]}
+{"case":"stopped-row","func":"record_shape","row":["sa-4","stopped",false,"parent_stop",0,1,"{\"auto_note\": \"n\", \"auto_promised\": false}",1717000000.125,1717000000.875,1717003600.0]}
+{"case":"route-full","func":"route_shape","delegation_id":"d-1","row":["sess-a","ui-a","par-1","orig-sid","{\"goal\": \"x\", \"n\": [1, 2]}","{\"status\": \"ok\"}",1749999000.0,1750000000.25]}
+{"case":"route-nulls","func":"route_shape","delegation_id":"d-2","row":["sess-b",null,null,"",null,"",1.0,2.0]}
+{"case":"upsert-full","func":"upsert","subagent_id":"sa-4","now":1750000123.5,"write":{"state":"running","pinned":true,"stop_cause":null,"owner_pid":7712,"owner_started_at":1750000000,"expires_at":1750100000.0,"document":{"goal":"g","state":"running","stop_cause":"x","auto_claim":"par-1","auto_cancel":{"state":"stopped"},"unit_id":"u-1","auto_promised":true,"auto_attempts":1}}}
+{"case":"upsert-empty-doc","func":"upsert","subagent_id":"sa-5","now":10.5,"write":{"state":"resumable","pinned":false,"stop_cause":"occ","owner_pid":null,"owner_started_at":null,"expires_at":null,"document":{}}}
+{"case":"upsert-run-only-doc","func":"upsert","subagent_id":"sa-6","now":99.0,"write":{"state":"completed","pinned":true,"stop_cause":null,"owner_pid":3,"owner_started_at":4,"expires_at":123.0,"document":{"state":"completed","stop_cause":"done","auto_claim":null,"auto_cancel":null}}}
+{"case":"limits-ttl24-cap5","func":"apply_limits","now":1750000123.5,"limits":{"ttl_hours":24,"max_resumable":5}}
+{"case":"limits-frac-negcap","func":"apply_limits","now":1000.0,"limits":{"ttl_hours":0.5,"max_resumable":-3}}
+{"case":"limits-ttl72-cap0","func":"apply_limits","now":1717000000.75,"limits":{"ttl_hours":72,"max_resumable":0}}
+{"case":"completion-full","func":"insert_completion","now":1750000123.5,"completion":{"unit_id":"d-1","unit_updated_at":1749999500.0,"event":{"delegation_id":"d-1","session_key":"sk-1","origin_ui_session_id":"ui-1","parent_session_id":"p-1","origin_session_id":"os-1","dispatched_at":1749999000.0,"goal":"g","goals":["a","b"],"is_batch":false},"result":{"status":"failed","error":"boom"},"owner_pid":7712,"owner_started_at":1750000000}}
+{"case":"completion-minimal","func":"insert_completion","now":5.0,"completion":{"unit_id":"d-2","unit_updated_at":1.0,"event":{"delegation_id":"d-2"},"result":{},"owner_pid":9,"owner_started_at":null}}
+{"case":"completion-empty-fallbacks","func":"insert_completion","now":7.0,"completion":{"unit_id":"d-3","unit_updated_at":2.0,"event":{"delegation_id":"d-3","session_key":"","origin_ui_session_id":null,"parent_session_id":null,"origin_session_id":"","dispatched_at":0,"completed_at":0},"result":{"ok":true},"owner_pid":1,"owner_started_at":2}}
+{"case":"guard-applies","func":"recover_guard","row":["running",7712,1750000000],"recovery":{"owner_pid":7712,"owner_started_at":1750000000}}
+{"case":"guard-owner-moved","func":"recover_guard","row":["running",7712,1750000000],"recovery":{"owner_pid":7713,"owner_started_at":1750000000}}
+{"case":"guard-state-moved","func":"recover_guard","row":["resumable",7712,1750000000],"recovery":{"owner_pid":7712,"owner_started_at":1750000000}}
+{"case":"guard-no-row","func":"recover_guard","row":null,"recovery":{"owner_pid":7712,"owner_started_at":1750000000}}
+{"case":"guard-claimed-nulls","func":"recover_guard","row":["claimed",null,null],"recovery":{"owner_pid":null,"owner_started_at":null}}
+{"case":"guard-started-at-moved","func":"recover_guard","row":["claimed",7,1000],"recovery":{"owner_pid":7,"owner_started_at":1001}}
+{"case":"constants","func":"constants"}

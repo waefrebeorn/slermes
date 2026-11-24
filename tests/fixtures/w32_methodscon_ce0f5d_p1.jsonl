@@ -1,0 +1,70 @@
+{"func": "normalize_word", "case": "trim-and-lower", "value": "  FAST  "}
+{"func": "normalize_word", "case": "mixed-case", "value": "MixedCase"}
+{"func": "normalize_word", "case": "null-is-blank", "value": null}
+{"func": "normalize_word", "case": "false-is-blank", "value": false}
+{"func": "normalize_word", "case": "zero-is-blank", "value": 0}
+{"func": "normalize_word", "case": "empty-is-blank", "value": ""}
+{"func": "normalize_word", "case": "true-keeps-text", "value": true}
+{"func": "normalize_word", "case": "empty-array-is-blank", "value": []}
+{"func": "normalize_word", "case": "array-repr-lowered", "value": ["A", 1]}
+{"func": "normalize_word", "case": "float-keeps-text", "value": 1.5}
+{"func": "normalize_raw_word", "case": "null-is-blank", "value": null}
+{"func": "normalize_raw_word", "case": "false-keeps-text", "value": false}
+{"func": "normalize_raw_word", "case": "zero-keeps-text", "value": 0}
+{"func": "normalize_raw_word", "case": "empty-array-keeps-text", "value": []}
+{"func": "normalize_raw_word", "case": "trim-and-lower", "value": "  OFF "}
+{"func": "bool_word", "case": "true-word", "value": "TRUE"}
+{"func": "bool_word", "case": "zero-word", "value": "0"}
+{"func": "bool_word", "case": "unknown-word", "value": "y"}
+{"func": "bool_word", "case": "json-true", "value": true}
+{"func": "bool_word", "case": "null-word", "value": null}
+{"func": "service_tier_word", "case": "priority", "tier": "priority"}
+{"func": "service_tier_word", "case": "null-tier", "tier": null}
+{"func": "service_tier_word", "case": "empty-tier", "tier": ""}
+{"func": "service_tier_word", "case": "ultrafast", "tier": "ultrafast"}
+{"func": "service_tier_word", "case": "cold", "tier": "cold"}
+{"func": "fast_set", "case": "status-priority", "rid": 11, "value": "status", "current_tier": "priority"}
+{"func": "fast_set", "case": "status-none", "rid": 12, "value": "status", "current_tier": null}
+{"func": "fast_set", "case": "toggle-from-priority", "rid": 13, "value": "TOGGLE", "current_tier": "priority"}
+{"func": "fast_set", "case": "toggle-from-cold", "rid": 14, "value": "toggle", "current_tier": "cold"}
+{"func": "fast_set", "case": "blank-from-none", "rid": 15, "value": "", "current_tier": null}
+{"func": "fast_set", "case": "ultra-alias", "rid": 16, "value": "ultra", "current_tier": null}
+{"func": "fast_set", "case": "cold-word", "rid": 17, "value": "cold", "current_tier": null}
+{"func": "fast_set", "case": "off-word", "rid": 18, "value": "off", "current_tier": "ultrafast"}
+{"func": "fast_set", "case": "unknown-word", "rid": 19, "value": "bogus", "current_tier": null}
+{"func": "verbose_set", "case": "explicit-verbose", "rid": 21, "value": "verbose", "current": null}
+{"func": "verbose_set", "case": "cycle-from-off", "rid": 22, "value": "cycle", "current": "off"}
+{"func": "verbose_set", "case": "cycle-wraps", "rid": 23, "value": "cycle", "current": "verbose"}
+{"func": "verbose_set", "case": "cycle-unknown-current", "rid": 24, "value": "cycle", "current": "bogus"}
+{"func": "verbose_set", "case": "blank-cycles", "rid": 25, "value": null, "current": "all"}
+{"func": "verbose_set", "case": "upper-word", "rid": 26, "value": "ALL", "current": null}
+{"func": "verbose_set", "case": "unknown-word", "rid": 27, "value": "BOGUS", "current": null}
+{"func": "word_set", "case": "busy-trim", "rid": 31, "key": "busy", "value": " steer "}
+{"func": "word_set", "case": "busy-unknown", "rid": 32, "key": "busy", "value": "bogus"}
+{"func": "word_set", "case": "approval-smart", "rid": 33, "key": "approvals.mode", "value": "smart"}
+{"func": "word_set", "case": "approval-legacy-alias", "rid": 34, "key": "approval_mode", "value": "off"}
+{"func": "word_set", "case": "approval-unknown", "rid": 35, "key": "approvals.mode", "value": "yolo"}
+{"func": "word_set", "case": "details-mode-expanded", "rid": 36, "key": "details_mode", "value": "expanded"}
+{"func": "word_set", "case": "thinking-mode-full", "rid": 37, "key": "thinking_mode", "value": "full"}
+{"func": "word_set", "case": "thinking-mode-collapsed", "rid": 38, "key": "thinking_mode", "value": "collapsed"}
+{"func": "word_set", "case": "theme-dark", "rid": 39, "key": "theme", "value": "dark"}
+{"func": "word_set", "case": "theme-unknown", "rid": 40, "key": "theme", "value": "sepia"}
+{"func": "word_set", "case": "indicator-upper", "rid": 41, "key": "indicator", "value": "EMOJI"}
+{"func": "word_set", "case": "indicator-zero", "rid": 42, "key": "indicator", "value": 0}
+{"func": "word_set", "case": "indicator-empty-array", "rid": 43, "key": "indicator", "value": []}
+{"func": "word_set", "case": "voice-gpt-live", "rid": 44, "key": "voice.voice_chat_mode", "value": "gpt-live"}
+{"func": "word_set", "case": "voice-trim", "rid": 45, "key": "voice.voice_chat_mode", "value": "chained "}
+{"func": "word_set", "case": "voice-unknown", "rid": 46, "key": "voice.voice_chat_mode", "value": "walkie"}
+{"func": "details_section", "case": "thinking-collapsed", "rid": 51, "key": "details_mode.thinking", "value": "collapsed"}
+{"func": "details_section", "case": "tools-clears", "rid": 52, "key": "details_mode.tools", "value": ""}
+{"func": "details_section", "case": "unknown-section", "rid": 53, "key": "details_mode.nope", "value": "hidden"}
+{"func": "details_section", "case": "dotted-section", "rid": 54, "key": "details_mode.thinking.extra", "value": "hidden"}
+{"func": "details_section", "case": "bad-mode", "rid": 55, "key": "details_mode.activity", "value": "bogus"}
+{"func": "resolve_key", "case": "model", "rid": 61, "key": "model"}
+{"func": "resolve_key", "case": "approval-alias", "rid": 62, "key": "approval_mode"}
+{"func": "resolve_key", "case": "details-prefix", "rid": 63, "key": "details_mode.thinking"}
+{"func": "resolve_key", "case": "details-exact-beats-prefix", "rid": 64, "key": "details_mode"}
+{"func": "resolve_key", "case": "display-toggle", "rid": 65, "key": "display.in_app_tips"}
+{"func": "resolve_key", "case": "workdir-alias", "rid": 66, "key": "workdir"}
+{"func": "resolve_key", "case": "unknown", "rid": 67, "key": "nope"}
+{"func": "resolve_key", "case": "near-miss-prefix", "rid": 68, "key": "details_modes.thinking"}

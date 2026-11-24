@@ -1,0 +1,56 @@
+{"func": "text", "case": "plain_string", "mapping": {"k": "hello"}, "key": "k", "value_type": "str"}
+{"func": "text", "case": "empty_string", "mapping": {"k": ""}, "key": "k", "value_type": "str"}
+{"func": "text", "case": "missing_key", "mapping": {"other": 1}, "key": "k", "value_type": "int"}
+{"func": "text", "case": "null_value", "mapping": {"k": null}, "key": "k", "value_type": "null"}
+{"func": "text", "case": "int_value", "mapping": {"k": 42}, "key": "k", "value_type": "int"}
+{"func": "text", "case": "zero_int", "mapping": {"k": 0}, "key": "k", "value_type": "int"}
+{"func": "text", "case": "negative_int", "mapping": {"k": -7}, "key": "k", "value_type": "int"}
+{"func": "text", "case": "float_value", "mapping": {"k": 2.5}, "key": "k", "value_type": "float"}
+{"func": "text", "case": "integral_float", "mapping": {"k": 2.0}, "key": "k", "value_type": "float"}
+{"func": "text", "case": "zero_float", "mapping": {"k": 0.0}, "key": "k", "value_type": "float"}
+{"func": "text", "case": "true_bool", "mapping": {"k": true}, "key": "k", "value_type": "bool"}
+{"func": "text", "case": "false_bool", "mapping": {"k": false}, "key": "k", "value_type": "bool"}
+{"func": "text", "case": "empty_list", "mapping": {"k": []}, "key": "k", "value_type": "int"}
+{"func": "text", "case": "int_list", "mapping": {"k": [1, 2]}, "key": "k", "value_type": "int"}
+{"func": "text", "case": "string_list", "mapping": {"k": ["a"]}, "key": "k", "value_type": "int"}
+{"func": "text", "case": "empty_object", "mapping": {"k": {}}, "key": "k", "value_type": "int"}
+{"func": "text", "case": "small_object", "mapping": {"k": {"a": 1}}, "key": "k", "value_type": "int"}
+{"func": "apply_handler", "case": "user_message", "kind": "message.user"}
+{"func": "apply_handler", "case": "member_message", "kind": "message.member"}
+{"func": "apply_handler", "case": "settled", "kind": "turn.settled"}
+{"func": "apply_handler", "case": "deferred", "kind": "turn.deferred"}
+{"func": "apply_handler", "case": "room_activity", "kind": "room.activity"}
+{"func": "apply_handler", "case": "room_continued", "kind": "room.continued"}
+{"func": "apply_handler", "case": "stop_requested", "kind": "room.stop_requested"}
+{"func": "apply_handler", "case": "unknown_kind", "kind": "room.unknown"}
+{"func": "named_sql", "case": "delete_active", "name": "delete_active"}
+{"func": "named_sql", "case": "transcript", "name": "transcript"}
+{"func": "named_sql", "case": "room_columns", "name": "room_columns"}
+{"func": "named_sql", "case": "unknown", "name": "nope"}
+{"func": "schema_ddl", "case": "all_statements"}
+{"func": "reopened", "case": "kinds_and_placeholders"}
+{"func": "publication_query", "case": "deferred", "status": "deferred"}
+{"func": "publication_query", "case": "settled", "status": "settled"}
+{"func": "publication_query", "case": "failed", "status": "failed"}
+{"func": "publication_query", "case": "cancelled", "status": "cancelled"}
+{"func": "publication_query", "case": "unknown_status", "status": "bogus"}
+{"func": "event_seqs", "case": "dedupe_and_sort", "source_event_seq": 10, "event_seqs": [3, 10, 7]}
+{"func": "event_seqs", "case": "source_only", "source_event_seq": 10, "event_seqs": []}
+{"func": "event_seqs", "case": "no_context", "source_event_seq": 4, "event_seqs": null}
+{"func": "event_seqs", "case": "many_seqs", "source_event_seq": 1, "event_seqs": [9, 8, 7, 6, 5, 4, 3, 2]}
+{"func": "settled_check", "case": "matching_member_message", "row": {"kind": "message.member", "payload": {"discussion_event_id": "d1"}}, "discussion_event_id": "d1"}
+{"func": "settled_check", "case": "other_discussion", "row": {"kind": "message.member", "payload": {"discussion_event_id": "d2"}}, "discussion_event_id": "d1"}
+{"func": "settled_check", "case": "not_a_member_message", "row": {"kind": "message.user", "payload": {"discussion_event_id": "d1"}}, "discussion_event_id": "d1"}
+{"func": "settled_check", "case": "no_row", "row": null, "discussion_event_id": "d1"}
+{"func": "receipt", "case": "deferred_retry", "kind": "turn.deferred", "payload": {"task_id": "dtask:a", "execution_generation": 4, "member_id": "m1", "seen_through_seq": 12}}
+{"func": "receipt", "case": "settled_with_message", "kind": "turn.settled", "payload": {"task_id": "dtask:a", "message_event_id": "e9", "member_id": "m2", "seen_through_seq": 30}}
+{"func": "receipt", "case": "settled_without_message", "kind": "turn.settled", "payload": {"task_id": "dtask:a", "member_id": "m2"}}
+{"func": "receipt", "case": "failed_no_task", "kind": "turn.failed", "payload": {"member_id": "m3", "seen_through_seq": 5}}
+{"func": "receipt", "case": "cancelled_zero_seen", "kind": "turn.cancelled", "payload": {"task_id": "dtask:b", "member_id": "m4", "seen_through_seq": 0}}
+{"func": "receipt", "case": "member_message", "kind": "message.member", "payload": {"task_id": "dtask:c", "member_id": "m5", "seen_through_seq": 8}}
+{"func": "receipt", "case": "unknown_kind", "kind": "room.routed", "payload": {}}
+{"func": "transcript_retention", "case": "below_window", "seqs": [5, 3, 1]}
+{"func": "transcript_retention", "case": "exactly_window", "seqs": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]}
+{"func": "transcript_retention", "case": "over_window", "seqs": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]}
+{"func": "transcript_retention", "case": "sparse_seqs", "seqs": [100, 4, 88, 7, 12, 30, 2, 55, 61, 9, 17, 40, 3, 21, 33, 44, 66, 77, 91, 5, 45, 67, 11, 13, 19]}
+{"func": "transcript_retention", "case": "empty", "seqs": []}

@@ -1,0 +1,41 @@
+{"func": "voice_label", "case": "name-category", "voice": {"name": "Ann", "category": "premade"}}
+{"func": "voice_label", "case": "no-category", "voice": {"name": "Ann", "category": ""}}
+{"func": "voice_label", "case": "voice-id-fallback", "voice": {"voice_id": "v1"}}
+{"func": "voice_label", "case": "empty-voice", "voice": {}}
+{"func": "voice_label", "case": "blank-name-and-category", "voice": {"name": "   ", "category": "  "}}
+{"func": "voice_label", "case": "blank-category", "voice": {"name": "Ann", "category": " "}}
+{"func": "voice_label", "case": "number-name", "voice": {"name": 5}}
+{"func": "voice_label", "case": "type-mismatch", "voice": []}
+{"func": "voices", "case": "shape-and-sort", "payload": {"voices": [{"voice_id": "b", "name": "Zed", "category": "premade"}, {"voice_id": "a", "name": "amy", "category": ""}, {"nope": 1}, {"voice_id": "  "}, 7, {"voice_id": "c"}]}}
+{"func": "voices", "case": "empty-list", "payload": {"voices": []}}
+{"func": "voices", "case": "null-voices", "payload": {"voices": null}}
+{"func": "voices", "case": "missing-voices-key", "payload": {}}
+{"func": "voices", "case": "non-dict-items", "payload": {"voices": [7, "x", null]}}
+{"func": "voices", "case": "string-voices", "payload": {"voices": "abc"}}
+{"func": "voices", "case": "object-voices", "payload": {"voices": {"a": {"voice_id": "z"}}}}
+{"func": "voices", "case": "blank-id-and-number-id", "payload": {"voices": [{"voice_id": "  "}, {"voice_id": 7}, {"voice_id": 0}]}}
+{"func": "voices", "case": "name-keeps-spaces", "payload": {"voices": [{"voice_id": "a", "name": "  Amy  "}]}}
+{"func": "voices", "case": "sort-ties-stable", "payload": {"voices": [{"voice_id": "1", "name": "Same"}, {"voice_id": "2", "name": "same"}]}}
+{"func": "voices", "case": "type-mismatch", "payload": {"voices": 5}}
+{"func": "voices", "case": "payload-null", "payload": null}
+{"func": "voices", "case": "http-401", "payload": {"voices": []}, "http_status": 401}
+{"func": "voices", "case": "http-403", "payload": {"voices": []}, "http_status": 403}
+{"func": "voices", "case": "http-500", "payload": {"voices": []}, "http_status": 500}
+{"func": "sdp_session", "case": "ok", "sdp": "v=0\r\n", "result": {"session_id": "s1", "sdp_answer": "v=0"}}
+{"func": "sdp_session", "case": "blank-sdp", "sdp": "   "}
+{"func": "sdp_session", "case": "null-sdp", "sdp": null}
+{"func": "sdp_session", "case": "value-error", "sdp": "v=0", "error_kind": "value", "error_text": "failed to unmarshal SDP"}
+{"func": "sdp_session", "case": "runtime-error", "sdp": "v=0", "error_kind": "runtime", "error_text": "vendor down"}
+{"func": "sdp_session", "case": "type-mismatch-sdp", "sdp": 5}
+{"func": "sdp_session", "case": "result-not-a-mapping", "sdp": "v=0", "result": ["x"]}
+{"func": "lease", "case": "acquire", "lease": "desktop:read-aloud", "active": true, "result": {"leases": 2, "action": "acquired"}}
+{"func": "lease", "case": "release-trimmed", "lease": "  desktop:conversation  ", "active": false, "result": {"leases": 0, "action": "released"}}
+{"func": "lease", "case": "empty-lease", "lease": "", "active": true, "result": {}}
+{"func": "lease", "case": "null-lease", "lease": null}
+{"func": "lease", "case": "falsy-array-lease", "lease": [], "result": {}}
+{"func": "lease", "case": "numeric-error", "lease": "desktop:x", "active": true, "result": {"action": "acquired", "error": 5}}
+{"func": "lease", "case": "bool-error", "lease": "desktop:x", "active": true, "result": {"action": "acquired", "error": true}}
+{"func": "lease", "case": "blank-error-kept", "lease": "desktop:x", "active": true, "result": {"action": "acquired", "error": ""}}
+{"func": "lease", "case": "warm-failure", "lease": "desktop:x", "active": true, "result": null, "error_text": "warm failed"}
+{"func": "lease", "case": "active-absent", "lease": "desktop:y", "result": {"leases": 1, "action": "acquired"}}
+{"func": "lease", "case": "active-null", "lease": "desktop:y", "active": null, "result": {"leases": 1, "action": "acquired"}}

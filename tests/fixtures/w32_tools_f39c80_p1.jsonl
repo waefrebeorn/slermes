@@ -1,0 +1,55 @@
+{"case":"cfg-strip","func":"cfg_value","terminal_cfg":{"ssh_host":"  box  "},"cfg_key":"ssh_host","env_var":"TERMINAL_SSH_HOST","env_map":{"TERMINAL_SSH_HOST":"envhost"}}
+{"case":"cfg-null-env","func":"cfg_value","terminal_cfg":{"ssh_host":null},"cfg_key":"ssh_host","env_var":"TERMINAL_SSH_HOST","env_map":{"TERMINAL_SSH_HOST":"  envhost  "}}
+{"case":"cfg-blank-env-missing","func":"cfg_value","terminal_cfg":{"ssh_host":"   "},"cfg_key":"ssh_host","env_var":"TERMINAL_SSH_HOST","env_map":{}}
+{"case":"cfg-number-zero","func":"cfg_value","terminal_cfg":{"backend":0},"cfg_key":"backend","env_var":"TERMINAL_BACKEND","env_map":{}}
+{"case":"cfg-bool-true","func":"cfg_value","terminal_cfg":{"enabled":true},"cfg_key":"enabled","env_var":"TERMINAL_ENABLED","env_map":{}}
+{"case":"cfg-env-whitespace","func":"cfg_value","terminal_cfg":{},"cfg_key":"ssh_user","env_var":"TERMINAL_SSH_USER","env_map":{"TERMINAL_SSH_USER":"   "}}
+{"case":"ssh-both-cfg","func":"probe_ssh","terminal_cfg":{"ssh_host":"box.local","ssh_user":"me"},"env_map":{}}
+{"case":"ssh-missing-user","func":"probe_ssh","terminal_cfg":{"ssh_host":"box.local"},"env_map":{"TERMINAL_SSH_USER":""}}
+{"case":"ssh-missing-both","func":"probe_ssh","terminal_cfg":{},"env_map":{}}
+{"case":"ssh-env-fallback","func":"probe_ssh","terminal_cfg":{"ssh_host":null,"ssh_user":"  "},"env_map":{"TERMINAL_SSH_HOST":"envhost","TERMINAL_SSH_USER":"envuser"}}
+{"case":"modal-direct","func":"probe_modal","has_direct":true,"direct_raises":false,"env_map":{}}
+{"case":"modal-direct-raises-env","func":"probe_modal","has_direct":true,"direct_raises":true,"env_map":{"MODAL_TOKEN_ID":"id","MODAL_TOKEN_SECRET":"secret"}}
+{"case":"modal-only-id","func":"probe_modal","has_direct":false,"direct_raises":false,"env_map":{"MODAL_TOKEN_ID":"id"}}
+{"case":"modal-none","func":"probe_modal","has_direct":false,"direct_raises":false,"env_map":{"MODAL_TOKEN_ID":"","MODAL_TOKEN_SECRET":"secret"}}
+{"case":"daytona-set","func":"probe_daytona","env_map":{"DAYTONA_API_KEY":"key"}}
+{"case":"daytona-missing","func":"probe_daytona","env_map":{}}
+{"case":"docker-not-found","func":"probe_docker","state":{"found":false}}
+{"case":"docker-ready","func":"probe_docker","state":{"found":true,"runtime":"docker","hint":"start Docker Desktop","outcome":"ok","returncode":0}}
+{"case":"docker-unreachable","func":"probe_docker","state":{"found":true,"runtime":"podman","hint":"systemctl --user start podman.socket","outcome":"ok","returncode":125}}
+{"case":"docker-timeout","func":"probe_docker","state":{"found":true,"runtime":"docker","hint":"","outcome":"timeout"}}
+{"case":"docker-error","func":"probe_docker","state":{"found":true,"runtime":"docker","hint":"","outcome":"error","error":"permission denied"}}
+{"case":"backends-upper","func":"backends_payload","rows":[{"name":"local","label":"Local","description":"Run commands directly."},{"name":"docker","label":"Docker / Podman","description":"Container."},{"name":"ssh","label":"SSH","description":"Remote."}],"config":{"terminal":{"backend":"  DOCKER  "}},"probes":{"local":{"status":"ready","detail":""},"docker":{"status":"ready","detail":""},"ssh":{"status":"needs_setup","detail":"Set terminal.ssh_host"}}}
+{"case":"backends-unknown-falls-local","func":"backends_payload","rows":[{"name":"local","label":"Local","description":"Run commands directly."},{"name":"docker","label":"Docker / Podman","description":"Container."}],"config":{"terminal":{"backend":"podman"}},"probes":{"local":{"status":"ready","detail":""},"docker":{"status":"needs_setup","detail":"Docker CLI not found"}}}
+{"case":"backends-missing-backend","func":"backends_payload","rows":[{"name":"local","label":"Local","description":"Run commands directly."}],"config":{},"probes":{"local":{"status":"ready","detail":""}}}
+{"case":"backends-non-dict-terminal","func":"backends_payload","rows":[{"name":"local","label":"Local","description":"Run commands directly."}],"config":{"terminal":"docker"},"probes":{"local":{"status":"ready","detail":""}}}
+{"case":"select-padded","func":"select_backend","rows":[{"name":"local","label":"Local","description":"d"},{"name":"docker","label":"Docker","description":"d"}],"backend":"  LOCAL  ","config":{}}
+{"case":"select-case","func":"select_backend","rows":[{"name":"local","label":"Local","description":"d"},{"name":"docker","label":"Docker","description":"d"}],"backend":"Docker","config":{"terminal":{"backend":"local"}}}
+{"case":"select-unknown","func":"select_backend","rows":[{"name":"docker","label":"Docker","description":"d"},{"name":"local","label":"Local","description":"d"},{"name":"ssh","label":"SSH","description":"d"}],"backend":"podman","config":{}}
+{"case":"select-null","func":"select_backend","rows":[{"name":"local","label":"Local","description":"d"}],"backend":null,"config":{}}
+{"case":"no-models","func":"no_models","name":"image_gen"}
+{"case":"plugin-image-name","func":"model_plugin","ts_key":"image_gen","row":{"name":"r","image_gen_plugin_name":"openai-images","imagegen_backend":"fal"}}
+{"case":"plugin-image-backend","func":"model_plugin","ts_key":"image_gen","row":{"name":"r","imagegen_backend":"fal"}}
+{"case":"plugin-video","func":"model_plugin","ts_key":"video_gen","row":{"name":"r","video_gen_plugin_name":"veo"}}
+{"case":"plugin-other","func":"model_plugin","ts_key":"web","row":{"name":"r","image_gen_plugin_name":"openai-images"}}
+{"case":"section-image","func":"catalog_section","name":"image_gen"}
+{"case":"section-stt","func":"catalog_section","name":"stt"}
+{"case":"models-current-padded","func":"models_payload","name":"image_gen","config":{"image_gen":{"model":"  gpt-image-1  "}},"row":{"name":"openai","image_gen_plugin_name":"openai-images"},"catalog":{"gpt-image-1":{"display":"GPT Image 1","speed":"fast","strengths":"text","price":"$0.04"},"dall-e-3":{"display":"DALL-E 3","speed":"medium","strengths":"style","price":"$0.08"}},"default_model":"dall-e-3"}
+{"case":"models-current-falls-default","func":"models_payload","name":"image_gen","config":{"image_gen":{"model":"retired-model"}},"row":{"name":"openai","image_gen_plugin_name":"openai-images"},"catalog":{"gpt-image-1":{"display":"GPT Image 1"},"dall-e-3":{"display":"DALL-E 3"}},"default_model":"dall-e-3"}
+{"case":"models-current-none","func":"models_payload","name":"image_gen","config":{"image_gen":{"model":"retired-model"}},"row":{"name":"openai","image_gen_plugin_name":"openai-images"},"catalog":{"gpt-image-1":{"display":"GPT Image 1"}},"default_model":"nope"}
+{"case":"models-no-row","func":"models_payload","name":"image_gen","config":{"image_gen":{"model":"gpt-image-1"}},"row":null,"catalog":{"gpt-image-1":{"display":"GPT Image 1"}},"default_model":"gpt-image-1"}
+{"case":"models-video-empty","func":"models_payload","name":"video_gen","config":{},"row":{"name":"video-row","video_gen_plugin_name":"veo"},"catalog":{},"default_model":null}
+{"case":"models-section-not-dict","func":"models_payload","name":"video_gen","config":{"video_gen":["x"]},"row":{"name":"video-row","video_gen_plugin_name":"veo"},"catalog":{"veo-3":{"display":"Veo 3","price":"$0.40"}},"default_model":"veo-3"}
+{"case":"select-model-ok","func":"model_select","name":"image_gen","model":" dall-e-3 ","config":{},"row":{"name":"openai","image_gen_plugin_name":"openai-images"},"catalog":{"gpt-image-1":{},"dall-e-3":{}}}
+{"case":"select-model-unknown","func":"model_select","name":"image_gen","model":"nope","config":{},"row":{"name":"openai","image_gen_plugin_name":"openai-images"},"catalog":{"dall-e-3":{}}}
+{"case":"select-model-no-plugin","func":"model_select","name":"image_gen","model":"dall-e-3","config":{},"row":null,"catalog":{"dall-e-3":{}}}
+{"case":"select-model-blank","func":"model_select","name":"image_gen","model":"   ","config":{},"row":{"name":"openai","image_gen_plugin_name":"openai-images"},"catalog":{"dall-e-3":{}}}
+{"case":"select-model-null","func":"model_select","name":"image_gen","model":null,"config":{},"row":{"name":"openai","image_gen_plugin_name":"openai-images"},"catalog":{"dall-e-3":{}}}
+{"case":"select-model-no-catalog","func":"model_select","name":"stt","model":"whisper-1","config":{},"row":{"name":"openai"},"catalog":{"whisper-1":{}}}
+{"case":"provider-by-name","func":"provider_row","ts_key":"image_gen","rows":[{"name":"fal","badge":"A"},{"name":"nous","badge":"B"}],"provider":"nous","active_flags":{"fal":false,"nous":true}}
+{"case":"provider-first-active","func":"provider_row","ts_key":"image_gen","rows":[{"name":"fal","badge":"A"},{"name":"nous","badge":"B"}],"provider":null,"active_flags":{"fal":false,"nous":true}}
+{"case":"provider-none-active","func":"provider_row","ts_key":"image_gen","rows":[{"name":"fal","badge":"A"}],"provider":null,"active_flags":{"fal":false}}
+{"case":"provider-unknown-name","func":"provider_row","ts_key":"image_gen","rows":[{"name":"fal","badge":"A"}],"provider":"zzz","active_flags":{"fal":true}}
+{"case":"known-ok","func":"require_known","name":"web","known":["web","image_gen"]}
+{"case":"known-unknown","func":"require_known","name":"nope","known":["web","image_gen"]}
+{"case":"constants","func":"constants"}

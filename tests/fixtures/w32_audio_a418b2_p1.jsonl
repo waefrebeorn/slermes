@@ -1,0 +1,46 @@
+{"func": "extension", "case": "mime-mpeg", "mime_type": "audio/mpeg"}
+{"func": "extension", "case": "mime-params-upper", "mime_type": "Audio/WAV; codecs=1"}
+{"func": "extension", "case": "mime-video-webm", "mime_type": "video/webm"}
+{"func": "extension", "case": "mime-unknown", "mime_type": "application/octet-stream"}
+{"func": "extension", "case": "mime-none", "mime_type": null}
+{"func": "extension", "case": "mime-empty", "mime_type": ""}
+{"func": "extension", "case": "mime-zero", "mime_type": 0}
+{"func": "extension", "case": "mime-array", "mime_type": []}
+{"func": "extension", "case": "mime-object", "mime_type": {}}
+{"func": "extension", "case": "mime-space-padded", "mime_type": "  audio/x-m4a  "}
+{"func": "transcribe", "case": "ok-header-mime", "data_url": "data:audio/webm;base64,aGVsbG8=", "mime_type": null, "result": {"success": true, "transcript": "  hi there  ", "provider": "whisper"}}
+{"func": "transcribe", "case": "ok-empty-transcript-body", "data_url": "data:audio/x-wav;base64,aGVsbG8=", "mime_type": null, "result": {"success": true, "transcript": "", "provider": null}}
+{"func": "transcribe", "case": "ok-explicit-mime-wins", "data_url": "data:audio/webm;base64,aGVsbG8=", "mime_type": "audio/wav; codecs=2", "result": {"success": true, "transcript": "ok", "provider": "eleven"}}
+{"func": "transcribe", "case": "invalid-payload", "data_url": "hello"}
+{"func": "transcribe", "case": "no-base64-marker", "data_url": "data:audio/webm,aGVsbG8="}
+{"func": "transcribe", "case": "non-audio", "data_url": "data:text/plain;base64,aGVsbG8="}
+{"func": "transcribe", "case": "bad-base64-chars", "data_url": "data:audio/webm;base64,!!!!"}
+{"func": "transcribe", "case": "bad-base64-padding", "data_url": "data:audio/webm;base64,aGVsbG8"}
+{"func": "transcribe", "case": "empty-audio", "data_url": "data:audio/webm;base64,"}
+{"func": "transcribe", "case": "size-at-limit", "max_bytes": 5, "data_url": "data:audio/webm;base64,aGVsbG8=", "result": {"success": true, "transcript": "x", "provider": "p"}}
+{"func": "transcribe", "case": "size-over-limit", "max_bytes": 4, "data_url": "data:audio/webm;base64,aGVsbG8=", "result": {"success": true, "transcript": "x", "provider": "p"}}
+{"func": "transcribe", "case": "mime-only-spaces", "data_url": "data:audio/webm;base64,aGVsbG8=", "mime_type": "   ", "result": {"success": true, "transcript": "x"}}
+{"func": "transcribe", "case": "mime-codec-space", "data_url": "data:audio/webm;base64,aGVsbG8=", "mime_type": "audio/wav ;codecs", "result": {"success": true, "transcript": "x"}}
+{"func": "transcribe", "case": "empty-transcript-is-silence", "data_url": "data:audio/webm;base64,aGVsbG8=", "result": {"success": false, "error": "Empty transcript for file", "provider": "whisper"}}
+{"func": "transcribe", "case": "provider-error", "data_url": "data:audio/webm;base64,aGVsbG8=", "result": {"success": false, "error": "provider down"}}
+{"func": "transcribe", "case": "provider-error-default", "data_url": "data:audio/webm;base64,aGVsbG8=", "result": {"success": false}}
+{"func": "transcribe", "case": "type-mismatch-url", "data_url": 5}
+{"func": "transcribe", "case": "falsy-url-zero", "data_url": 0}
+{"func": "transcribe", "case": "no-comma", "data_url": "data:audio/webm;base64"}
+{"func": "transcribe", "case": "transcript-number", "data_url": "data:audio/webm;base64,aGVsbG8=", "result": {"success": true, "transcript": 42, "provider": "p"}}
+{"func": "speak", "case": "ok-mp3", "text": "hello", "file_exists": true, "audio_b64": "AQIDBP8=", "tts_result": {"success": true, "provider": "edge", "file_path": "C:/tmp/out.mp3"}}
+{"func": "speak", "case": "ok-json-string-upper-ext", "text": "hi", "file_exists": true, "audio_b64": "AQIDBP8=", "tts_result": "{\"success\": true, \"provider\": \"piper\", \"file_path\": \"voice.OGG\"}"}
+{"func": "speak", "case": "ok-unknown-ext", "text": "hi", "file_exists": true, "audio_b64": "AQIDBP8=", "tts_result": {"success": true, "provider": "p", "file_path": "x.bin"}}
+{"func": "speak", "case": "ok-no-ext", "text": "hi", "file_exists": true, "audio_b64": "AQIDBP8=", "tts_result": {"success": true, "provider": "p", "file_path": "/tmp/noext"}}
+{"func": "speak", "case": "ok-empty-audio", "text": "hi", "file_exists": true, "audio_b64": "", "tts_result": {"success": true, "provider": "p", "file_path": "a.wav"}}
+{"func": "speak", "case": "blank-text", "text": "   "}
+{"func": "speak", "case": "empty-text", "text": ""}
+{"func": "speak", "case": "none-text", "text": null}
+{"func": "speak", "case": "invalid-tts-json", "text": "hi", "tts_result": "not json"}
+{"func": "speak", "case": "tts-failure", "text": "hi", "tts_result": {"success": false, "error": "boom"}}
+{"func": "speak", "case": "tts-failure-default", "text": "hi", "tts_result": {"success": false}}
+{"func": "speak", "case": "missing-path", "text": "hi", "tts_result": {"success": true, "file_path": ""}}
+{"func": "speak", "case": "file-gone", "text": "hi", "file_exists": false, "tts_result": {"success": true, "provider": "edge", "file_path": "gone.flac"}}
+{"func": "speak", "case": "type-mismatch-text", "text": 7}
+{"func": "speak", "case": "path-not-a-string", "text": "hi", "tts_result": {"success": true, "file_path": 7}}
+{"func": "speak", "case": "path-is-a-list", "text": "hi", "tts_result": {"success": true, "file_path": ["x"]}}

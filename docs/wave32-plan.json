@@ -1,0 +1,23 @@
+{
+  "w32_audio_a418b2_p1": "hermes_cli/web_routers/audio",
+  "w32_audio_a418b2_p2": "hermes_cli/web_routers/audio",
+  "w32_backup_1d0d4e_p1": "persistence/sqlite/admin/_backup",
+  "w32_backup_1d0d4e_p2": "persistence/sqlite/admin/_backup",
+  "w32_chatws_cd49ef_p1": "hermes_cli/web_routers/chat_ws",
+  "w32_chatws_cd49ef_p2": "hermes_cli/web_routers/chat_ws",
+  "w32_clituirunt_1dc8f7": "hermes_cli/cli_tui_runtime_mixin",
+  "w32_events_3805ad": "tui_gateway/contracts/events",
+  "w32_hostedroom_be7d8d_p1": "persistence/sqlite/gateway/hosted_room_policy",
+  "w32_hostedroom_be7d8d_p2": "persistence/sqlite/gateway/hosted_room_policy",
+  "w32_methodscon_ce0f5d_p1": "tui_gateway/methods_config_set",
+  "w32_methodscon_ce0f5d_p2": "tui_gateway/methods_config_set",
+  "w32_pluginvali_b2daaa_p1": "hermes_cli/plugin_validate_core_override",
+  "w32_pluginvali_b2daaa_p2": "hermes_cli/plugin_validate_core_override",
+  "w32_routing_fa91a2_p1": "persistence/sqlite/gateway/routing",
+  "w32_routing_fa91a2_p2": "persistence/sqlite/gateway/routing",
+  "w32_subagents_a171ba_p1": "persistence/sqlite/authority/subagents",
+  "w32_subagents_a171ba_p2": "persistence/sqlite/authority/subagents",
+  "w32_tools_f39c80_p1": "hermes_cli/web_routers/tools",
+  "w32_tools_f39c80_p2": "hermes_cli/web_routers/tools",
+  "w32_toolsmcppl_39bf88": "tui_gateway/contracts/tools_mcp_plugins"
+}

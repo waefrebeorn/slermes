@@ -1,0 +1,56 @@
+{"func": "err", "case": "unknown-key", "rid": 7, "code": 4002, "message": "unknown config key: nope"}
+{"func": "err", "case": "managed-key", "rid": "abc", "code": 4030, "message": "Cannot set 'model.default': it is managed by your administrator"}
+{"func": "ok", "case": "object-result", "rid": 1, "result": {"a": 1, "b": [true, null]}}
+{"func": "ok", "case": "null-result", "rid": 2, "result": null}
+{"func": "kv", "case": "plain", "rid": 3, "key": "busy", "value": "queue", "extra": null}
+{"func": "kv", "case": "with-extra", "rid": 4, "key": "theme", "value": "dark", "extra": {"warning": "", "confirm_required": false}}
+{"func": "model_ok", "case": "defaults", "rid": 5, "key": "model", "value": "gpt-x"}
+{"func": "model_ok", "case": "confirm-message-sets-flag", "rid": 6, "key": "model", "value": "o3-pro", "warning": "expensive", "confirm_message": "This model is expensive; continue?", "scope": "global"}
+{"func": "model_ok", "case": "warning-without-confirm", "rid": 7, "key": "model", "value": "m2", "warning": "deferred", "confirm_message": "", "scope": "session"}
+{"func": "model_ok", "case": "extra-fields", "rid": 8, "key": "model", "value": "m3", "extra": {"deferred": true}}
+{"func": "confirm_required", "case": "empty", "confirm_message": ""}
+{"func": "confirm_required", "case": "text", "confirm_message": "sure?"}
+{"func": "confirm_required", "case": "null", "confirm_message": null}
+{"func": "confirm_required", "case": "zero", "confirm_message": 0}
+{"func": "reasoning", "case": "show", "rid": 10, "value": "show", "scope": ""}
+{"func": "reasoning", "case": "hide-upper", "rid": 11, "value": "HIDE", "scope": ""}
+{"func": "reasoning", "case": "full", "rid": 12, "value": "full", "scope": ""}
+{"func": "reasoning", "case": "short", "rid": 13, "value": "short", "scope": ""}
+{"func": "reasoning", "case": "effort-high", "rid": 14, "value": "high", "scope": ""}
+{"func": "reasoning", "case": "effort-none-word", "rid": 15, "value": "none", "scope": ""}
+{"func": "reasoning", "case": "unknown", "rid": 16, "value": "bogus", "scope": ""}
+{"func": "reasoning", "case": "empty", "rid": 17, "value": "", "scope": ""}
+{"func": "reasoning", "case": "true-word", "rid": 18, "value": true, "scope": ""}
+{"func": "toggle_set", "case": "density-toggle-from-on", "rid": 20, "key": "density", "value": "toggle", "display": {"tui_compact": true}}
+{"func": "toggle_set", "case": "density-on", "rid": 21, "key": "density", "value": "on", "display": {}}
+{"func": "toggle_set", "case": "density-unknown", "rid": 22, "key": "density", "value": "bogus", "display": {}}
+{"func": "toggle_set", "case": "battery-yes", "rid": 23, "key": "battery", "value": "yes", "display": {}}
+{"func": "toggle_set", "case": "battery-toggle-from-off", "rid": 24, "key": "battery", "value": "toggle", "display": {"battery": false}}
+{"func": "toggle_set", "case": "timestamps-zero", "rid": 25, "key": "timestamps", "value": "0", "display": {}}
+{"func": "toggle_set", "case": "timestamps-toggle-default", "rid": 26, "key": "timestamps", "value": "", "display": {}}
+{"func": "toggle_set", "case": "statusbar-toggle-from-off", "rid": 27, "key": "statusbar", "value": "toggle", "display": {"tui_statusbar": "off"}}
+{"func": "toggle_set", "case": "statusbar-toggle-from-bottom", "rid": 28, "key": "statusbar", "value": "toggle", "display": {"tui_statusbar": "bottom"}}
+{"func": "toggle_set", "case": "statusbar-bottom", "rid": 29, "key": "statusbar", "value": "bottom", "display": {}}
+{"func": "toggle_set", "case": "statusbar-toggle-missing", "rid": 30, "key": "statusbar", "value": "toggle", "display": {}}
+{"func": "toggle_set", "case": "statusbar-toggle-false", "rid": 31, "key": "statusbar", "value": "toggle", "display": {"tui_statusbar": false}}
+{"func": "toggle_set", "case": "mouse-toggle-from-off", "rid": 32, "key": "mouse", "value": "toggle", "display": {"mouse_tracking": "off"}}
+{"func": "toggle_set", "case": "mouse-toggle-from-wheel", "rid": 33, "key": "mouse", "value": "toggle", "display": {"mouse_tracking": "wheel"}}
+{"func": "toggle_set", "case": "mouse-one", "rid": 34, "key": "mouse", "value": "1", "display": {}}
+{"func": "toggle_set", "case": "mouse-unknown", "rid": 35, "key": "mouse", "value": "bogus", "display": {}}
+{"func": "toggle_set", "case": "mouse-number-zero", "rid": 36, "key": "mouse", "value": 0, "display": {}}
+{"func": "toggle_set", "case": "mouse-blank-flips-legacy", "rid": 37, "key": "mouse", "value": null, "display": {"tui_mouse": "buttons"}}
+{"func": "bool_set", "case": "display-toggle-yes", "rid": 40, "key": "display.in_app_tips", "value": "yes", "cfg_key": null}
+{"func": "bool_set", "case": "daybreak-off", "rid": 41, "key": "daybreak", "value": "off", "cfg_key": "agent.daybreak"}
+{"func": "bool_set", "case": "display-toggle-unknown", "rid": 42, "key": "display.in_app_tips", "value": "maybe", "cfg_key": null}
+{"func": "bool_set", "case": "number-one", "rid": 43, "key": "display.message_reactions", "value": 1, "cfg_key": null}
+{"func": "is_stale_session", "case": "stale-model", "rid": 50, "key": "model", "session_id_present": true, "session_exists": false, "scope": ""}
+{"func": "is_stale_session", "case": "global-honoured", "rid": 51, "key": "model", "session_id_present": true, "session_exists": false, "scope": "global"}
+{"func": "is_stale_session", "case": "existing-session", "rid": 52, "key": "model", "session_id_present": true, "session_exists": true, "scope": ""}
+{"func": "is_stale_session", "case": "unscoped-key", "rid": 53, "key": "busy", "session_id_present": true, "session_exists": false, "scope": ""}
+{"func": "is_stale_session", "case": "reasoning-scoped", "rid": 54, "key": "reasoning", "session_id_present": true, "session_exists": false, "scope": "session"}
+{"func": "is_stale_session", "case": "no-session-id", "rid": 55, "key": "model", "session_id_present": false, "session_exists": false, "scope": ""}
+{"func": "is_stale_session", "case": "global-upper", "rid": 56, "key": "fast", "session_id_present": true, "session_exists": false, "scope": " GLOBAL "}
+{"func": "prompt_set", "case": "store-text", "rid": 60, "value": "You are terse."}
+{"func": "prompt_set", "case": "clear-word", "rid": 61, "value": "clear"}
+{"func": "prompt_set", "case": "clear-is-case-sensitive", "rid": 62, "value": "CLEAR"}
+{"func": "prompt_set", "case": "empty-string-stored", "rid": 63, "value": ""}

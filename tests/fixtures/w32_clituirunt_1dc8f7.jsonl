@@ -1,0 +1,46 @@
+{"func": "closing_session", "case": "close_agent_wins", "agent": {"session_id": "S1"}, "session_id": "S0", "gateway_session_open": false}
+{"func": "closing_session", "case": "close_gateway_open", "agent": null, "session_id": "S0", "gateway_session_open": true}
+{"func": "closing_session", "case": "close_no_agent_gateway_closed", "agent": null, "session_id": "S0", "gateway_session_open": false}
+{"func": "closing_session", "case": "close_agent_key_absent", "session_id": "S9", "gateway_session_open": true}
+{"func": "hold_step", "case": "hold_turn_first", "turn": "TURN", "done": false, "item": "ITEM"}
+{"func": "hold_step", "case": "hold_done_item", "turn": null, "done": true, "item": "ITEM"}
+{"func": "hold_step", "case": "hold_wait", "turn": null, "done": false, "item": "ITEM"}
+{"func": "hold_step", "case": "hold_done_null_item", "turn": null, "done": true, "item": null}
+{"func": "hold_step", "case": "hold_turn_zero", "turn": 0, "done": true, "item": "ITEM"}
+{"func": "hold_step", "case": "hold_drain_raises", "turn": null, "done": false, "item": "ITEM", "drain_raises": true}
+{"func": "build_application", "case": "app_all_extra", "kitty": true, "cpr_output": true, "steady_cursor": true, "vim_mode": true, "refresh_interval": 0.25}
+{"func": "build_application", "case": "app_plain", "kitty": false, "cpr_output": false, "steady_cursor": false, "vim_mode": false}
+{"func": "build_application", "case": "app_display_empty", "kitty": false, "cpr_output": false, "steady_cursor": false, "vim_mode": false, "display_present": true}
+{"func": "build_application", "case": "app_interval_string", "kitty": false, "cpr_output": false, "steady_cursor": false, "vim_mode": false, "refresh_interval": "1.5"}
+{"func": "build_application", "case": "app_interval_int", "kitty": false, "cpr_output": false, "steady_cursor": false, "vim_mode": true, "refresh_interval": 2}
+{"func": "build_application", "case": "app_kitty_only", "kitty": true, "cpr_output": false, "steady_cursor": false, "vim_mode": false}
+{"func": "build_application", "case": "app_cursor_only", "kitty": false, "cpr_output": false, "steady_cursor": true, "vim_mode": false}
+{"func": "signal_plan", "case": "sig_win32_no_hup", "platform": "win32", "has_sighup": false}
+{"func": "signal_plan", "case": "sig_win32_hup", "platform": "win32", "has_sighup": true}
+{"func": "signal_plan", "case": "sig_linux_hup", "platform": "linux", "has_sighup": true}
+{"func": "signal_plan", "case": "sig_darwin_no_hup", "platform": "darwin", "has_sighup": false}
+{"func": "slash_input", "case": "slash_seed", "input": "/model", "command_ok": true, "app_running": true, "pending_seed": "SEED", "should_exit": false}
+{"func": "slash_input", "case": "slash_empty_seed_fails", "input": "/bad", "command_ok": false, "app_running": true, "pending_seed": "", "should_exit": false}
+{"func": "slash_input", "case": "slash_interrupted", "input": "/slow", "command_ok": "kbi", "app_running": true, "pending_seed": "SEED", "should_exit": false}
+{"func": "slash_input", "case": "slash_zero_seed_no_exit_app", "input": "/bad", "command_ok": false, "app_running": false, "pending_seed": 0, "should_exit": true}
+{"func": "slash_input", "case": "slash_null_seed", "input": "/x", "command_ok": true, "app_running": true, "pending_seed": null, "should_exit": false}
+{"func": "slash_input", "case": "slash_false_seed", "input": "/x", "command_ok": true, "app_running": false, "pending_seed": false, "should_exit": false}
+{"func": "after_turn", "case": "turn_interrupted_labels", "has_running_tool_labels": true, "last_turn_interrupted": true}
+{"func": "after_turn", "case": "turn_voice_tts_barge", "voice_mode": true, "voice_continuous": true, "voice_tts": true, "barge_capture": true, "goal_raises": true}
+{"func": "after_turn", "case": "turn_voice_recording", "voice_mode": true, "voice_continuous": true, "voice_recording": true}
+{"func": "after_turn", "case": "turn_no_voice_both_raise", "goal_raises": true, "loop_raises": true}
+{"func": "after_turn", "case": "turn_voice_restart", "voice_mode": true, "voice_continuous": true}
+{"func": "after_turn", "case": "turn_voice_not_continuous", "voice_mode": true, "voice_continuous": false}
+{"func": "shutdown_plan", "case": "down_full_discard", "agent": {"session_id": "S1"}, "agent_running": true, "detach_on_exit": false, "gateway_owns": false, "voice_recorder": true, "session_db": true, "delete_on_exit": false, "delete_returns": true, "watchdog_armed": false, "active_worktree": "WT"}
+{"func": "shutdown_plan", "case": "down_detached_gateway_owns", "agent": {"session_id": "S1"}, "agent_running": true, "detach_on_exit": true, "gateway_owns": true, "session_db": true, "delete_on_exit": true, "watchdog_armed": true}
+{"func": "shutdown_plan", "case": "down_viewer_disconnected", "agent": {"session_id": "S1"}, "agent_running": true, "detach_on_exit": false, "gateway_owns": false, "session_db": true, "delete_on_exit": false, "session_id": "S0", "gateway_session_open": true, "viewer_disconnected": true}
+{"func": "shutdown_plan", "case": "down_delete_no_agent", "agent": null, "agent_running": false, "session_db": true, "delete_on_exit": true, "session_id": "S0", "gateway_session_open": true, "watchdog_armed": true}
+{"func": "shutdown_plan", "case": "down_bare_no_row", "agent": null, "agent_running": false, "session_db": true, "delete_on_exit": false, "session_id": "S0", "gateway_session_open": false}
+{"func": "shutdown_plan", "case": "down_gateway_idle", "agent": {"session_id": "S2"}, "agent_running": false, "gateway_owns": true, "session_db": true, "delete_on_exit": false}
+{"func": "shutdown_plan", "case": "down_worktree_ask_interrupted", "agent": {"session_id": "S3"}, "agent_running": true, "gateway_owns": false, "session_db": false, "watchdog_armed": false, "active_worktree": "WT2", "ask_raises": true}
+{"func": "shutdown_plan", "case": "down_no_db", "agent": {"session_id": "S4"}, "agent_running": true, "detach_on_exit": true, "gateway_owns": true, "session_db": false, "delete_on_exit": false, "watchdog_armed": true}
+{"func": "hold_step", "case": "hold_turn_empty_string", "turn": "", "done": true, "item": "ITEM"}
+{"func": "hold_step", "case": "hold_object_item", "turn": null, "done": true, "item": {"k": [1, 2], "z": null}}
+{"func": "slash_input", "case": "slash_truthy_int", "input": "/x", "command_ok": 1, "app_running": false, "pending_seed": {"seed": "deep"}, "should_exit": false}
+{"func": "after_turn", "case": "turn_voice_tts_restart", "voice_mode": true, "voice_continuous": true, "voice_tts": true, "has_running_tool_labels": true}
+{"func": "shutdown_plan", "case": "down_gateway_no_session_id", "agent": null, "agent_running": false, "session_db": true, "delete_on_exit": true, "session_id": null, "gateway_session_open": true, "watchdog_armed": true}

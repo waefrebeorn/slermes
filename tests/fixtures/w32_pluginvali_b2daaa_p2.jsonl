@@ -1,0 +1,57 @@
+{"func":"render","case":"bare-name","chain":{"kind":"name","id":"mgr"}}
+{"func":"render","case":"public-attr","chain":{"kind":"attr","value":{"kind":"name","id":"mgr"},"attr":"hooks"}}
+{"func":"render","case":"private-attr","chain":{"kind":"attr","value":{"kind":"name","id":"mgr"},"attr":"_hooks"}}
+{"func":"render","case":"subscript","chain":{"kind":"sub","value":{"kind":"attr","value":{"kind":"name","id":"mgr"},"attr":"_hooks"}}}
+{"func":"render","case":"call","chain":{"kind":"call","func":{"kind":"name","id":"get_plugin_manager"}}}
+{"func":"render","case":"attr-of-call","chain":{"kind":"attr","value":{"kind":"call","func":{"kind":"name","id":"get_plugin_manager"}},"attr":"_hooks"}}
+{"func":"render","case":"call-of-attr","chain":{"kind":"call","func":{"kind":"attr","value":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"_hooks"},"attr":"append"}}}
+{"func":"render","case":"attr-of-subscript","chain":{"kind":"attr","value":{"kind":"sub","value":{"kind":"name","id":"m"}},"attr":"append"}}
+{"func":"render","case":"constant","chain":{"kind":"const","value":"hermes_cli"}}
+{"func":"render","case":"binop","chain":{"kind":"binop"}}
+{"func":"render","case":"sys-modules-item","chain":{"kind":"sub","value":{"kind":"attr","value":{"kind":"name","id":"sys"},"attr":"modules"}}}
+{"func":"dotted","case":"name","chain":{"kind":"name","id":"x"}}
+{"func":"dotted","case":"two-segments","chain":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"x"}}
+{"func":"dotted","case":"three-segments","chain":{"kind":"attr","value":{"kind":"attr","value":{"kind":"name","id":"sys"},"attr":"modules"},"attr":"get"}}
+{"func":"dotted","case":"subscript-stops","chain":{"kind":"sub","value":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"x"}}}
+{"func":"dotted","case":"call-stops","chain":{"kind":"call","func":{"kind":"name","id":"f"}}}
+{"func":"dotted","case":"attr-of-call","chain":{"kind":"attr","value":{"kind":"call","func":{"kind":"name","id":"f"}},"attr":"x"}}
+{"func":"dotted","case":"attr-of-subscript","chain":{"kind":"attr","value":{"kind":"sub","value":{"kind":"name","id":"m"}},"attr":"x"}}
+{"func":"dotted","case":"attr-of-constant","chain":{"kind":"attr","value":{"kind":"const","value":0},"attr":"x"}}
+{"func":"dotted","case":"constant","chain":{"kind":"const","value":0}}
+{"func":"has_private_segment","case":"private-attr","chain":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"_hooks"}}
+{"func":"has_private_segment","case":"public-attr","chain":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"hooks"}}
+{"func":"has_private_segment","case":"private-after-call","chain":{"kind":"attr","value":{"kind":"call","func":{"kind":"name","id":"get_plugin_manager"}},"attr":"_hooks"}}
+{"func":"has_private_segment","case":"dunder-dict","chain":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"__dict__"}}
+{"func":"has_private_segment","case":"private-under-subscript","chain":{"kind":"sub","value":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"_middleware"}}}
+{"func":"has_private_segment","case":"public-call","chain":{"kind":"call","func":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"public"}}}
+{"func":"has_private_segment","case":"private-then-mutator","chain":{"kind":"attr","value":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"_hooks"},"attr":"append"}}
+{"func":"has_private_segment","case":"sys-modules","chain":{"kind":"attr","value":{"kind":"name","id":"sys"},"attr":"modules"}}
+{"func":"has_private_segment","case":"private-call-func","chain":{"kind":"call","func":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"_reset"}}}
+{"func":"has_mutator_call","case":"append-attr","chain":{"kind":"attr","value":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"_hooks"},"attr":"append"}}
+{"func":"has_mutator_call","case":"clear-call","chain":{"kind":"call","func":{"kind":"attr","value":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"_hooks"},"attr":"clear"}}}
+{"func":"has_mutator_call","case":"setdefault-then-append","chain":{"kind":"call","func":{"kind":"attr","value":{"kind":"call","func":{"kind":"attr","value":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"_hooks"},"attr":"setdefault"}},"attr":"append"}}}
+{"func":"has_mutator_call","case":"plain-get","chain":{"kind":"call","func":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"get"}}}
+{"func":"has_mutator_call","case":"slice-target","chain":{"kind":"sub","value":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"_hooks"}}}
+{"func":"has_mutator_call","case":"pop-not-called","chain":{"kind":"attr","value":{"kind":"name","id":"m"},"attr":"pop"}}
+{"func":"has_mutator_call","case":"registry-add","chain":{"kind":"attr","value":{"kind":"name","id":"registry"},"attr":"add"}}
+{"func":"func_key","case":"alias-hit","dotted":"obj.bind","aliases":{"bind":"patch_attr"}}
+{"func":"func_key","case":"no-alias","dotted":"set","aliases":{}}
+{"func":"func_key","case":"last-segment","dotted":"a.b.c","aliases":{"c":"zz"}}
+{"func":"func_key","case":"empty-dotted","dotted":"","aliases":{"":"empty"}}
+{"func":"func_key","case":"alias-other-name","dotted":"pkg.serve","aliases":{"serve":"server","bind":"x"}}
+{"func":"func_key","case":"head-alias-ignored","dotted":"helper.patch","aliases":{"helper":"other"}}
+{"func":"helper_indices","case":"table-hit","table":{"patch":[0]},"call":{"kind":"call","func":{"kind":"attr","value":{"kind":"name","id":"p"},"attr":"patch"}},"aliases":{},"containers":[]}
+{"func":"helper_indices","case":"list-display-receiver","table":{"append":[0]},"call":{"kind":"call","func":{"kind":"attr","value":{"kind":"list"},"attr":"append"}},"aliases":{},"containers":[]}
+{"func":"helper_indices","case":"ctor-receiver","table":{"add":[0]},"call":{"kind":"call","func":{"kind":"attr","value":{"kind":"call","func":{"kind":"name","id":"set"}},"attr":"add"}},"aliases":{},"containers":[]}
+{"func":"helper_indices","case":"container-name-receiver","table":{"add":[0]},"call":{"kind":"call","func":{"kind":"attr","value":{"kind":"name","id":"seen"},"attr":"add"}},"aliases":{},"containers":["seen"]}
+{"func":"helper_indices","case":"other-name-receiver","table":{"add":[0]},"call":{"kind":"call","func":{"kind":"attr","value":{"kind":"name","id":"other"},"attr":"add"}},"aliases":{},"containers":["seen"]}
+{"func":"helper_indices","case":"alias-resolves-helper","table":{"patch_attr":[1]},"call":{"kind":"call","func":{"kind":"attr","value":{"kind":"name","id":"p"},"attr":"patch"}},"aliases":{"patch":"patch_attr"},"containers":[]}
+{"func":"helper_indices","case":"unknown-name","table":{"patch":[0]},"call":{"kind":"call","func":{"kind":"name","id":"unknown"}},"aliases":{},"containers":[]}
+{"func":"helper_indices","case":"unsorted-table","table":{"patch":[2,0,1,1]},"call":{"kind":"call","func":{"kind":"name","id":"patch"}},"aliases":{},"containers":[]}
+{"func":"helper_indices","case":"empty-table","table":{},"call":{"kind":"call","func":{"kind":"name","id":"patch"}},"aliases":{},"containers":[]}
+{"func":"helper_indices","case":"rebound-ctor-not-exempt","table":{"add":[1]},"call":{"kind":"call","func":{"kind":"attr","value":{"kind":"call","func":{"kind":"name","id":"set"}},"attr":"add"}},"aliases":{},"containers":[],"rebound":["set"]}
+{"func":"report","case":"clean","hits":[]}
+{"func":"report","case":"one-hit","hits":["AIAgent._replace_primary_openai_client (__init__.py:12)"]}
+{"func":"report","case":"eight-hits","hits":["h1 (__init__.py:1)","h2 (__init__.py:2)","h3 (__init__.py:3)","h4 (__init__.py:4)","h5 (__init__.py:5)","h6 (__init__.py:6)","h7 (__init__.py:7)","h8 (__init__.py:8)"]}
+{"func":"report","case":"nine-hits","hits":["h1 (__init__.py:1)","h2 (__init__.py:2)","h3 (__init__.py:3)","h4 (__init__.py:4)","h5 (__init__.py:5)","h6 (__init__.py:6)","h7 (__init__.py:7)","h8 (__init__.py:8)","h9 (__init__.py:9)"]}
+{"func":"report","case":"twelve-hits","hits":["h1 (a.py:1)","h2 (a.py:2)","h3 (a.py:3)","h4 (a.py:4)","h5 (a.py:5)","h6 (a.py:6)","h7 (a.py:7)","h8 (a.py:8)","h9 (a.py:9)","h10 (a.py:10)","h11 (a.py:11)","h12 (a.py:12)"]}

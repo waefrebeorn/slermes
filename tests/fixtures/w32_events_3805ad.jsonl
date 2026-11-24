@@ -1,0 +1,35 @@
+{"func": "catalog", "case": "all-events"}
+{"func": "schema_all", "case": "all-schemas"}
+{"func": "schema", "case": "delta", "event": "message.delta"}
+{"func": "schema", "case": "skin-open", "event": "skin.changed"}
+{"func": "schema", "case": "no-payload", "event": "voice.interrupted"}
+{"func": "schema", "case": "undeclared", "event": "nope.nope"}
+{"func": "schema", "case": "session-info", "event": "session.info"}
+{"func": "schema", "case": "pet-changed", "event": "pet.changed"}
+{"func": "schema", "case": "not-a-string", "event": 7}
+{"func": "problems", "case": "delta-missing-and-extra", "event": "message.delta", "payload": {"turn_id": "t1", "bogus": 1}}
+{"func": "problems", "case": "delta-ok", "event": "message.delta", "payload": {"text": "hi"}}
+{"func": "problems", "case": "delta-boundary-null", "event": "message.delta", "payload": {"text": null, "segment": 2}}
+{"func": "problems", "case": "delta-absent-payload", "event": "message.delta"}
+{"func": "problems", "case": "payloadless-empty", "event": "voice.interrupted", "payload": {}}
+{"func": "problems", "case": "payloadless-full", "event": "voice.interrupted", "payload": {"x": 1}}
+{"func": "problems", "case": "payloadless-absent", "event": "voice.interrupted"}
+{"func": "problems", "case": "undeclared-event", "event": "nope", "payload": {}}
+{"func": "problems", "case": "payload-not-object", "event": "message.delta", "payload": [1, 2]}
+{"func": "problems", "case": "open-extra-allowed", "event": "skin.changed", "payload": {"name": "s", "anything": true}}
+{"func": "problems", "case": "message-complete", "event": "message.complete", "payload": {"text": "", "usage": null, "status": "complete"}}
+{"func": "problems", "case": "tool-start-two-missing", "event": "tool.start", "payload": {"name": "grep"}}
+{"func": "problems", "case": "no-event-key"}
+{"func": "enums", "case": "wire-enums"}
+{"func": "select", "case": "open-only", "filter": {"open": true}}
+{"func": "select", "case": "closed-only", "filter": {"open": false}}
+{"func": "select", "case": "by-payload", "filter": {"payload": "SubagentEventPayload"}}
+{"func": "select", "case": "doc-moa", "filter": {"doc_has": "MoA"}}
+{"func": "select", "case": "no-filter", "filter": {}}
+{"func": "select", "case": "absent-filter"}
+{"func": "frames", "case": "mixed", "frames": [{"event": "message.delta", "payload": {"text": "a"}}, {"event": "message.delta", "payload": {}}, {"event": "voice.interrupted", "payload": {"x": 1}}, {"event": "unknown.ev", "payload": {}}, {"event": "notification.clear", "payload": {"key": "disk"}}]}
+{"func": "frames", "case": "empty", "frames": []}
+{"func": "problems", "case": "setup-open-required", "event": "setup.ready", "payload": {"provider_configured": true}}
+{"func": "select", "case": "open-and-doc", "filter": {"open": true, "doc_has": "pet"}}
+{"func": "schema", "case": "subagent", "event": "subagent.complete"}
+{"func": "frames", "case": "payloadless-ok", "frames": [{"event": "voice.interrupted"}, {"event": "skin.changed", "payload": {}}]}

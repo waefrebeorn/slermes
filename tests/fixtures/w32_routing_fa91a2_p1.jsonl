@@ -1,0 +1,38 @@
+{"func": "normalize_profile", "case": "missing", "value": null}
+{"func": "normalize_profile", "case": "empty", "value": ""}
+{"func": "normalize_profile", "case": "blank", "value": "   "}
+{"func": "normalize_profile", "case": "padded", "value": "  work  "}
+{"func": "normalize_profile", "case": "plain", "value": "default"}
+{"func": "normalize_profile", "case": "inner-space", "value": " a b "}
+{"func": "route_namespace", "case": "missing", "session_key": null}
+{"func": "route_namespace", "case": "main", "session_key": "agent:main:telegram:42"}
+{"func": "route_namespace", "case": "secondary", "session_key": "agent:work:telegram:42"}
+{"func": "route_namespace", "case": "empty-ns", "session_key": "agent::telegram:42"}
+{"func": "route_namespace", "case": "two-parts", "session_key": "agent:main"}
+{"func": "route_namespace", "case": "foreign", "session_key": "x:y:z"}
+{"func": "route_namespace", "case": "not-agent-prefix", "session_key": "worker:agent:main:1"}
+{"func": "upsert_plan", "case": "no-key", "now": 1700000000.0, "session_key": "", "entry_json": "{\"session_id\": \"s1\"}"}
+{"func": "upsert_plan", "case": "no-entry", "now": 1700000000.0, "session_key": "agent:main:telegram:42", "entry_json": ""}
+{"func": "upsert_plan", "case": "main-scope", "now": 1700000000.5, "session_key": "agent:main:telegram:42", "entry_json": "{\"session_id\": \"s1\", \"source\": \"telegram\"}", "routing_scope": ""}
+{"func": "upsert_plan", "case": "secondary-scope", "now": 1700000123.25, "session_key": "agent:work:telegram:7", "entry_json": "{\"session_id\": \"s2\"}", "routing_scope": "work"}
+{"func": "origin_query", "case": "no-platform", "platform": "", "chat_id": "42"}
+{"func": "origin_query", "case": "no-chat", "platform": "telegram", "chat_id": ""}
+{"func": "origin_query", "case": "chat-only", "platform": "telegram", "chat_id": "42", "user_id": "u1"}
+{"func": "origin_query", "case": "with-thread", "platform": "telegram", "chat_id": "42", "thread_id": "7", "user_id": "u1"}
+{"func": "never_active_query", "case": "negative", "now": 1700000000.0, "older_than_days": -1}
+{"func": "never_active_query", "case": "negative-fraction", "now": 1700000000.0, "older_than_days": -2.5}
+{"func": "never_active_query", "case": "zero", "now": 1700000000.0, "older_than_days": 0}
+{"func": "never_active_query", "case": "week", "now": 1700000000.0, "older_than_days": 7}
+{"func": "never_active_query", "case": "month", "now": 1699999999.5, "older_than_days": 30}
+{"func": "peer_plan", "case": "no-session-key", "source": "telegram", "user_id": "u1", "session_key": null, "chat_id": "42", "chat_type": "private"}
+{"func": "peer_plan", "case": "key-only", "source": "telegram", "user_id": "u1", "session_key": "agent:main:telegram:42", "chat_id": null, "chat_type": null}
+{"func": "peer_plan", "case": "key-and-tuple", "owner": "work", "source": "telegram", "user_id": "u1", "session_key": "agent:work:telegram:42", "chat_id": "42", "chat_type": "private", "thread_id": "7"}
+{"func": "peer_plan", "case": "tuple-unowned", "owner": null, "source": "discord", "user_id": null, "session_key": "agent:main:discord:1", "chat_id": "c9", "chat_type": "guild"}
+{"func": "record_peer_plan", "case": "no-session-key", "now": 1700000000.0, "session_id": "s1", "source": "telegram", "session_key": null}
+{"func": "record_peer_plan", "case": "no-session-id", "now": 1700000000.0, "session_id": "", "source": "telegram", "session_key": "agent:main:telegram:42"}
+{"func": "record_peer_plan", "case": "insert-missing-row", "now": 1700000001.75, "owner": "default", "session_id": "s1", "source": "telegram", "user_id": "u1", "session_key": "agent:main:telegram:42", "chat_id": "42", "chat_type": "private", "thread_id": "7", "display_name": "Ada", "origin_json": "{\"k\": 1}", "transport_profile": "tp1"}
+{"func": "record_peer_plan", "case": "insert-null-optional", "now": 1700000002.0, "owner": null, "session_id": "s2", "source": "discord", "session_key": "agent:main:discord:9"}
+{"func": "record_peer_plan", "case": "compression-ancestors", "now": 1700000003.5, "owner": "work", "session_id": "s3", "source": "telegram", "user_id": "u1", "session_key": "agent:work:telegram:42", "chat_id": "42", "chat_type": "private", "thread_id": "7", "display_name": "Ada", "origin_json": "{\"k\": 1}", "transport_profile": "tp1", "include_compression_ancestors": true}
+{"func": "enable_topic_plan", "case": "capabilities-null", "now": 1700000004.0, "chat_id": "42", "user_id": "u1", "profile_name": "default"}
+{"func": "enable_topic_plan", "case": "capabilities-true", "now": 1700000005.5, "chat_id": 42, "user_id": 7, "profile_name": "  work  ", "has_topics_enabled": true, "allows_users_to_create_topics": false}
+{"func": "enable_topic_plan", "case": "capabilities-false-true", "now": 1700000006.0, "chat_id": "99", "user_id": "u2", "profile_name": " ", "has_topics_enabled": false, "allows_users_to_create_topics": true}
