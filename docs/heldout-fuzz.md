@@ -68,7 +68,13 @@ python scripts/gate_fuzz.py w32_backup_1d0d4e_p1 --plan docs/wave32-plan.json --
 
 ## Known debt (still diverging under fuzz)
 
-**Wave 27 sweep — 33 of 75 gates (last full sweep: 39 bad, minus the 6 closed since it started).** Those are the
+**Wave 27 sweep — 36 of 75 gates (measured, post-fix).**
+
+Measured 2026-11-24 with `--per-case 5 --jobs 4` after the buzz, discord,
+google_chat, matrix and schema fixes: **39 clean / 36 carrying findings, no
+harness crashes** (`EXIT=1` comes from the mismatches, every line reports `ok`).
+Wave 34, swept the same way at `--per-case 5`: **5 clean / 10 carrying findings**,
+which is why it stays unlanded despite 15/15 authored gates. Those are the
 largest modules (telegram 415 KB, slack 387 KB, discord 380 KB, matrix 177 KB,
 messages, buzz, schema, whatsapp, google_chat, photon, openai_routes, kanban api)
 and their authored fixtures passed 3129 cases with 0 mismatches; held-out inputs
