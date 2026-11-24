@@ -154,7 +154,10 @@ json_t *w26_telegramba_f62536_merged_text(const json_t *text, const json_t *inco
         out = json_string(joined);
         free(joined);
     } else {
-        out = src ? json_string(src) : json_null();
+        /* `text` is returned unchanged when there is nothing to merge, whatever
+         * its type: upstream hands back the same object, so a caller that passed
+         * [] gets [] back, not None. */
+        out = src ? json_string(src) : (text ? json_copy(text) : json_null());
     }
     /* notes were prepended while walking backwards: restore the original order */
     for (i = nkept; i-- > 0;) {
