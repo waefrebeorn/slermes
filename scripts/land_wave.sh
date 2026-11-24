@@ -16,6 +16,11 @@ export PATH=/mingw64/bin:$PATH
 export USERPROFILE='C:/Users/eman5'
 export LOCALAPPDATA='C:/Users/eman5/AppData/Local'
 cd /c/Users/eman5/slermes || exit 2
+# winlibs-env.sh sets LIBRARY_PATH/CPATH and the ccache/home exports the link
+# needs; a bare `export PATH` build links with rc 2 and no diagnostic at all, so
+# this is sourced before any make.
+# shellcheck disable=SC1091
+source build/winlibs-env.sh
 LOG=".testbin/w${W}_land.log"
 : > "$LOG"
 
@@ -26,7 +31,8 @@ echo "=== PATHS" | tee -a "$LOG"
 C:/Users/eman5/hermes-agent/.venv/Scripts/python.exe - "$W" <<'PY' | tee -a "$LOG"
 import json, os, sys
 w = sys.argv[1]
-root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+root = os.getcwd()
+assert os.path.isdir(os.path.join(root, "docs")), "run land_wave.sh from the repo root"
 plan = json.load(open(os.path.join(root, "docs", "wave%s-plan.json" % w), encoding="utf-8"))
 paths = ["docs/wave%s-plan.json" % w, "build/objects.mk", "tests/run_all_oracles.sh"]
 missing = []
@@ -77,7 +83,20 @@ Gates green + full build rc 0 + build health clean before this commit.
 MSG
 echo "FILES=$(git show --name-only --pretty=format: HEAD | grep -c .)" | tee -a "$LOG"
 git log --oneline -1 | tee -a "$LOG"
-git push origin main >> "$LOG" 2>&1
-echo "PUSH_RC=$?" | tee -a "$LOG"
+# Push must be self-verifying: a commit that never reaches origin is invisible
+# from the local tree, and a backgrounded landing can be cut off between
+# commit and push. Retry until remote head matches local head, and record it.
+LOCAL_SHA=$(git rev-parse HEAD)
+SYNCED=no
+for attempt in 1 2 3; do
+    git push origin main >> "$LOG" 2>&1
+    echo "PUSH_RC=$?" | tee -a "$LOG"
+    REMOTE_SHA=$(git ls-remote origin refs/heads/main | cut -f1)
+    echo "attempt $attempt local=$LOCAL_SHA remote=$REMOTE_SHA" | tee -a "$LOG"
+    if [ "$REMOTE_SHA" = "$LOCAL_SHA" ]; then SYNCED=yes; break; fi
+    sleep 5
+done
+echo "SYNCED=$SYNCED" | tee -a "$LOG"
+[ "$SYNCED" = yes ] || { echo "ABORT: committed but not pushed -- run git push origin main"; exit 7; }
 git ls-remote origin refs/heads/main | tee -a "$LOG"
 echo "=== DONE $(date +%H:%M:%S)" | tee -a "$LOG"

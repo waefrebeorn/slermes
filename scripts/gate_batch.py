@@ -52,7 +52,15 @@ def _capture():
 
 
 def _oracle_inproc(gate, harness_stdout: bytes):
-    """Run tests/oracle_<gate>.py in this interpreter; return (rc, text)."""
+    """Run tests/oracle_<gate>.py in this interpreter; return (rc, text).
+
+    Every oracle gets the module table and sys.path it would have had in a fresh
+    process: without that, the first oracle to import a name as a *namespace*
+    package (hermes_constants resolves that way when the quarry copy is not yet
+    first on sys.path) leaves it in sys.modules and every later oracle fails with
+    "cannot import name X from hermes_constants (unknown location)". One
+    interpreter for all oracles is only safe with per-oracle isolation.
+    """
     path = os.path.join(REPO, "tests", "oracle_%s.py" % gate)
     if not os.path.isfile(path):
         return 127, "no tests/oracle_%s.py" % gate
@@ -60,6 +68,8 @@ def _oracle_inproc(gate, harness_stdout: bytes):
     err, get_err = _capture()
     rc = 0
     old = (sys.stdin, sys.stdout, sys.stderr)
+    saved_mods = dict(sys.modules)
+    saved_path = list(sys.path)
     try:
         stdin = io.TextIOWrapper(io.BytesIO(harness_stdout), encoding="utf-8", errors="replace")
         sys.stdin, sys.stdout, sys.stderr = stdin, out, err
@@ -71,6 +81,12 @@ def _oracle_inproc(gate, harness_stdout: bytes):
         err.write(traceback.format_exc())
     finally:
         sys.stdin, sys.stdout, sys.stderr = old
+        sys.path[:] = saved_path
+        for name in [n for n in sys.modules if n not in saved_mods]:
+            del sys.modules[name]
+        for name, mod in saved_mods.items():
+            if sys.modules.get(name) is not mod:
+                sys.modules[name] = mod
     return rc, get_out() + get_err()
 
 
@@ -123,12 +139,28 @@ def verify(gates, jobs):
     fg.INCS = fg.include_args()
     fg.FULL_CACHE = []
     os.makedirs(fg.HARNESS_DIR, exist_ok=True)
+    # Native extensions inside the WindowsApps payload fail to load in-process
+    # ("DLL load failed ... Access is denied"); the same wheels copied to a normal
+    # directory load fine, and PYTHONPATH alone cannot fix an already-running
+    # interpreter, so the copy goes on sys.path explicitly.
+    if os.path.isdir(fg.SITECOPY) and fg.SITECOPY not in sys.path:
+        sys.path.insert(0, fg.SITECOPY)
 
     missing = set()
+    unwired = []
     for gate in gates:
-        for obj in fg.objects_for(gate, fg.DEPS, fg.FULL_CACHE):
+        objs = fg.objects_for(gate, fg.DEPS, fg.FULL_CACHE)
+        if gate not in fg.DEPS and not any(o.startswith("src/") for o in objs):
+            unwired.append(gate)
+        for obj in objs:
             if not obj.startswith("@") and not os.path.isfile(os.path.join(REPO, obj)):
                 missing.add(obj)
+    if unwired:
+        # A gate with no DEPS entry silently links against json.o alone and dies
+        # with "collect2 ... undefined reference" to its own port symbols. Say
+        # what is actually wrong: the gate is not wired.
+        print("NOT WIRED (no DEPS entry): %s -- run scripts/wave_land.py wire"
+              % " ".join(unwired), file=sys.stderr)
     if missing:
         subprocess.run(["make", "-j%d" % jobs] + sorted(missing), cwd=REPO,
                        capture_output=True, text=True, errors="replace")
