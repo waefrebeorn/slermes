@@ -1167,8 +1167,12 @@ json_t *w27_adapter_04abb5_mention_pubkeys(const json_t *in) {
             if (!m || m->type != JSON_OBJECT) continue;
             pk = json_get_str(m, "pubkey", "");
             name = json_get_str(m, "name", "");
-            if (!pk[0] || !name[0]) continue;
-            if (self_pk[0] && !strcmp(pk, self_pk)) continue;
+            /* A member whose pubkey is null still contributes a CANDIDATE: the
+             * live code appends it to by_name[name], so two members sharing a
+             * display name are ambiguous and tag nobody. Dropping the null here
+             * left one candidate and woke a name Python deliberately refuses. */
+            if (!name[0]) continue;
+            if (self_pk[0] && pk[0] && !strcmp(pk, self_pk)) continue;
             lkey = w_lower(name);
             for (k = 0; k < nkeys; k++)
                 if (!strcmp(keys[k], lkey)) break;
@@ -1227,10 +1231,18 @@ json_t *w27_adapter_04abb5_mention_pubkeys(const json_t *in) {
                 size_t c;
                 int have = 0;
                 for (c = 0; c < json_len(found); c++) {
-                    const char *f = json_string_value(json_get(found, c));
-                    if (f && !strcmp(f, pk)) { have = 1; break; }
+                    const json_t *f = json_get(found, c);
+                    if (!pk[0]) {
+                        if (f && f->type == JSON_NULL) { have = 1; break; }
+                    } else {
+                        const char *fv = json_string_value(f);
+                        if (fv && !strcmp(fv, pk)) { have = 1; break; }
+                    }
                 }
-                if (!have) json_append(found, json_string(pk));
+                /* A single candidate that is a null pubkey still reaches found
+                 * upstream (the live code appends whatever the member list held),
+                 * so it must be emitted as JSON null rather than skipped. */
+                if (!have) json_append(found, pk[0] ? json_string(pk) : json_null());
             }
             free(text);
             text = next;
