@@ -673,6 +673,10 @@ json_t *w29_hostedroom_8927a5_p2_load_task(const json_t *row, const json_t *iden
 /* PoP: w29_hostedroom_8927a5_p2_active_room @ hosted_room_driver.py:_load_active_room */
 json_t *w29_hostedroom_8927a5_p2_active_room(const json_t *room, int no_table) {
     if (no_table || jnone(room)) return err_obj("RoomUnavailableError", "hosted room does not exist");
+    /* row["disbanded_at"] is an INDEX, not .get(): a row without the key raises
+     * KeyError rather than reading as "not disbanded". */
+    if (room && room->type == JSON_OBJECT && !json_has(room, "disbanded_at"))
+        return err_obj("KeyError", "'disbanded_at'");
     if (!jnone(jget(room, "disbanded_at"))) return err_obj("RoomUnavailableError", "hosted room is disbanded");
     return json_null();
 }
