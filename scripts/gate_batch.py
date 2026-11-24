@@ -30,6 +30,12 @@ import runpy
 import shutil
 import subprocess
 import sys
+
+try:  # a port's output is arbitrary bytes; do not die on a console code page
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except (AttributeError, ValueError):
+    pass
 import tempfile
 import time
 import traceback

@@ -35,6 +35,15 @@ import os
 import random
 import subprocess
 import sys
+
+# A mismatch line can carry any byte sequence the port produced. Printing it with
+# the console code page raised UnicodeEncodeError and aborted the WHOLE sweep
+# mid-wave, so earlier runs silently reported a fraction of their gates.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except (AttributeError, ValueError):
+    pass
 from concurrent.futures import ThreadPoolExecutor
 
 REPO = os.getcwd()
