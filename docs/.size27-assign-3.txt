@@ -1,0 +1,1 @@
+plugins/platforms/matrix/adapter	w27_adapter_e9cb6b_p1,w27_adapter_e9cb6b_p2,w27_adapter_e9cb6b_p3,w27_adapter_e9cb6b_p4,w27_adapter_e9cb6b_p5,w27_adapter_e9cb6b_p6

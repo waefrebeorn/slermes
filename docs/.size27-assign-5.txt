@@ -1,0 +1,1 @@
+plugins/platforms/buzz/adapter	w27_adapter_04abb5_p1,w27_adapter_04abb5_p2,w27_adapter_04abb5_p3,w27_adapter_04abb5_p4

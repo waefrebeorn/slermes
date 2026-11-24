@@ -1,0 +1,1 @@
+plugins/platforms/google_chat/adapter	w27_adapter_97bbcb_p1,w27_adapter_97bbcb_p2,w27_adapter_97bbcb_p3,w27_adapter_97bbcb_p4

@@ -1,0 +1,1 @@
+plugins/platforms/photon/adapter	w27_adapter_878564_p1,w27_adapter_878564_p2,w27_adapter_878564_p3,w27_adapter_878564_p4,w27_adapter_878564_p5
