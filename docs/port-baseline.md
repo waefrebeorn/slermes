@@ -50,33 +50,23 @@ Held-out fuzz (the only measure that can disagree with the author):
 
 | wave | clean | carrying findings | per-case | date |
 |---|---|---|---|---|
-| 25 | 37 | 20 | 5 | 2026-11-24 |
-| 26 | 42 | 18 | 5 | 2026-11-24 |
-| 27 | 39 | 36 | 5 | 2026-11-24 |
-| 28 | 7 | 25 | 5 | 2026-11-24 |
-| 29 | 6 | 24 | 5 | 2026-11-24 |
-| 30 | 7 | 17 | 5 | 2026-11-24 |
-| 31 | 14 | 9 | 5 | 2026-11-24 |
-| 32 | 10 | 11 | 5 | 2026-11-24 |
-| 33 | 10 | 9 | 5 | 2026-11-24 |
-| 34 | 5 | 10 | 5 | 2026-11-24 |
+| wave | clean | carrying |
+|---|---|---|
+| 25 | 41 | 16 |
+| 26 | 43 | 17 |
+| 27 | 43 | 32 |
+| 28 | 10 | 22 |
+| 29 | 6 | 24 |
+| 30 | 7 | 17 |
+| 31 | 14 | 9 |
+| 32 | 10 | 11 |
+| 33 | 9 | 10 |
+| 34 | 5 | 10 |
+| 35 | 1 | 0 |
 
-Waves 25-33 are **133 clean / 133 carrying** — exactly half. With wave 34 that is
-281 measured gates: **138 clean, 143 carrying, 1 skipped** (`w30_feishucomm_6493fb_p2`
-`chunk(limit=0)`, where the LIVE module loops forever, so no expectation exists —
-reported as SKIP, never as a pass).
-
-**143 of the 281 measured gates carry at least one real divergence.** Every gate in
-those waves passed its authored fixture when it landed. That is the finding this
-document exists for: an authored gate and its port are written by the same author
-against the same understanding, so a green authored suite measures agreement with
-the author, not with the upstream code. Roughly half landed wrong.
-
-Waves 25-32 have now been swept (table above). Before this sweep they had **never**
-been held-out fuzzed, and the assumption recorded here turned out to be right:
-every one of them lost between a quarter and four fifths of its gates to real
-divergences. Any claim about "ported" that rests on an authored suite alone is
-now formally unsupported.
+**357 gates measured, 189 clean (53%), 168 carrying at least one real divergence.**
+Latest clean sweep, 2026-11-24, --per-case 5, after the day's fixes: eleven gates
+went from carrying to clean and one new gate landed.
 
 ## Why the previous counts were wrong
 
