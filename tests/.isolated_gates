@@ -15,3 +15,6 @@ w33_telegramne_429779_p1
 w33_telegramne_429779_p2
 # same class: 160 cases / 0 mismatches standalone, 4 in a batch.
 w33_standalone_9f791b
+# w34_sessions_67685b: the declarations ARE pydantic models; another oracle's
+# hermes_seam_stubs pydantic stand-in makes ConfigDict | dict a TypeError.
+w34_sessions_67685b
