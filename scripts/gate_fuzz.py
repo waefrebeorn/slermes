@@ -135,9 +135,11 @@ def perturb_value(v, rng, pool):
     return out
 
 
-def variants_for_case(case, rng, pools, per_case):
+def variants_for_case(case, rng, pools, per_case, seams=frozenset()):
     """Yield input-only variants of one fixture case."""
-    keys = [k for k in case if k not in KEEP and not is_discriminator(k)]
+    func = case.get("func")
+    keys = [k for k in case if k not in KEEP and not is_discriminator(k)
+            and k not in seams and ("%s:%s" % (func, k)) not in seams]
     made = 0
     tries = 0
     while made < per_case and tries < per_case * 6:
@@ -176,10 +178,21 @@ def fuzz_gate(gate, module, per_case, jobs, min_cases, seed):
     if not cases:
         return gate, "no cases", 0, 0, []
 
+    # A documented seam is not a divergence: if the port says a field is I/O it
+    # does not model, perturbing that field measures the seam, not the port.
+    seams = set(KEEP)
+    seam_file = os.path.join(REPO, "tests", "fuzz_seams", "%s.txt" % gate)
+    if os.path.isfile(seam_file):
+        with open(seam_file, encoding="utf-8") as fh:
+            for line in fh:
+                name = line.split("#", 1)[0].strip()
+                if name:
+                    seams.add(name)
+
     pools = {}
     for c in cases:
         for k, v in c.items():
-            if k in KEEP:
+            if k in seams or ("%s:%s" % (c.get("func"), k)) in seams:
                 continue
             pools.setdefault(k, [])
             if len(pools[k]) < 12:
@@ -188,7 +201,7 @@ def fuzz_gate(gate, module, per_case, jobs, min_cases, seed):
     rng = random.Random("%s/%d" % (gate, seed))
     variants = []
     for c in cases:
-        for v in variants_for_case(c, rng, pools, per_case):
+        for v in variants_for_case(c, rng, pools, per_case, seams):
             variants.append(v)
     if not variants:
         return gate, "no variants", 0, 0, []

@@ -1,0 +1,5 @@
+# Documented seam: `_custom_endpoint_response` reads cfg.custom_providers through
+# the legacy normalisation the port does not model (fixtures keep it empty).
+# `func:key` limits the exclusion to the one reader, so every other function
+# still gets its cfg perturbed.
+custom_endpoint_response:cfg
