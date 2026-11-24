@@ -167,9 +167,11 @@ static int rtc_carries_whole(const json_t *spec, const char *content) {
     fmt_v = json_obj_get(spec, "fmt");
     unit_v = json_obj_get(spec, "len_fn");
     base = base_v && base_v->type == JSON_BOOL && base_v->bool_val;
-    unit = (unit_v && unit_v->type == JSON_STRING) ? unit_v->str_val : "len";
+    /* Only a BasePlatformAdapter supplies a per-chat length UNIT. A plain adapter
+     * falls back to len(), i.e. code points -- so three emoji are length 3, not the
+     * 6 UTF-16 units a per-chat unit would report. */
+    unit = (base && unit_v && unit_v->type == JSON_STRING) ? unit_v->str_val : "len";
     fmt = (fmt_v && fmt_v->type == JSON_STRING) ? fmt_v->str_val : "none";
-    (void)base;
     /* getattr(adapter, "MAX_MESSAGE_LENGTH", 4096): absent means the default;
      * a present non-int limit never fits (isinstance(limit, int) is False). */
     if (!limit_v || limit_v->type == JSON_NULL) limit = (double)RTC_DEFAULT_MAX_MESSAGE_LENGTH;

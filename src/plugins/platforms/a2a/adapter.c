@@ -314,6 +314,20 @@ static char *a2a_urljoin(const char *base, const char *ref) {
     clean = a2a_remove_dot_segments(merged);
     free(merged);
 
+    /* CPython's urljoin drops the root when ".." climbs past it: from a root-relative
+     * base, urljoin("/", "../up/") is "up/" while urljoin("/a/", "../up/") stays
+     * "/up/". RFC 3986 clamps at the root instead, which is what the merge above
+     * does, so the clamp is undone here when the climbs outnumber the base's
+     * segments. */
+    if (origin_len == 0 && clean && clean[0] == '/') {
+        size_t depth = 0, ups = 0, k;
+        for (k = 0; k < path_len; k++) {
+            if (path[k] != '/' && (k == 0 || path[k - 1] == '/')) depth++;
+        }
+        for (k = 0; ref[k] == '.' && ref[k + 1] == '.' && ref[k + 2] == '/'; k += 3) ups++;
+        if (ups > depth) memmove(clean, clean + 1, strlen(clean));
+    }
+
     sb_init(&b);
     sb_addn(&b, base, origin_len);
     sb_add(&b, clean ? clean : "");

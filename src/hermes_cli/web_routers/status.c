@@ -166,7 +166,12 @@ static int st_key_allowed_str(const char *s, const json_t *configured) {
     size_t i;
     if (!s) return 0;
     if (strchr(s, ':')) return st_is_key_str(s);
-    if (!configured || configured->type != JSON_ARRAY) return 1;
+    /* `configured is None or key in configured`: only an ABSENT set passes keys
+     * through. An empty set is a loaded-but-empty config and admits nothing --
+     * treating it as None was failing open, which is exactly what the docstring
+     * in the upstream module warns about. */
+    if (!configured || configured->type == JSON_NULL) return 1;
+    if (configured->type != JSON_ARRAY) return 0;
     for (i = 0; i < json_len(configured); i++)
         if (st_eq_str(json_get(configured, i), s)) return 1;
     return 0;
