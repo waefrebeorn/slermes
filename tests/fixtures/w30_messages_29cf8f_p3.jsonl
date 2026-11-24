@@ -1,0 +1,27 @@
+{"func":"sql_latest_dialogue","case":"l1_found","session_id":"s1","row":["hello there"]}
+{"func":"sql_latest_dialogue","case":"l2_missing","session_id":"s2","row":null}
+{"func":"sql_message_storage_state","case":"u1_row","message_id":5,"row":{"session_id":"s1","active":1,"compacted":0}}
+{"func":"sql_message_storage_state","case":"u2_no_row","message_id":6,"row":null}
+{"func":"sql_terminal_payloads","case":"t1_rows","since_ts":1700000000.5,"rows":[["{\"cmd\": \"ls\"}"],["{\"cmd\": \"pwd\"}"]]}
+{"func":"sql_terminal_payloads","case":"t2_empty","since_ts":12,"rows":[]}
+{"func":"sql_blocked_payloads","case":"b1_rows","since_ts":12.5,"rows":[["call_1","BLOCKED by policy"],["call_2",null]]}
+{"func":"sql_blocked_payloads","case":"b2_empty","since_ts":0,"rows":[]}
+{"func":"sql_has_any_message","case":"h1_both","table":true,"any":true}
+{"func":"sql_has_any_message","case":"h2_no_table","table":false,"any":true}
+{"func":"sql_has_any_message","case":"h3_empty_table","table":true,"any":false}
+{"func":"sql_spillover_reference","case":"s1_rows","rows":[["spillover:c","api-c"],["d",null]]}
+{"func":"sql_spillover_reference","case":"s2_empty","rows":[]}
+{"func":"sql_filter","case":"f1"}
+{"func":"timeline_page","case":"p1_page","session_id":"s1","result":{"entries":[{"row_id":11,"preview":"first prompt","timestamp":1.5},{"row_id":12,"preview":"second prompt","timestamp":2.25}],"pagination":{"limit":10,"after_row_id":0,"returned":2,"total":5,"has_more":true,"next_cursor":12}}}
+{"func":"timeline_page","case":"p2_empty","session_id":"s2","result":{"entries":[],"pagination":{"limit":50,"after_row_id":3,"returned":0,"total":3,"has_more":false,"next_cursor":null}}}
+{"func":"prompt_page","case":"q1_page","session_id":"s1","row_id":7,"result":{"messages":[{"id":7,"session_id":"s1","active":1,"compacted":0,"role":"user","content":"prompt","timestamp":3.0}],"pagination":{"row_id":7,"limit":120,"returned":1,"offset":4,"total":9,"has_older":true,"has_newer":true}}}
+{"func":"prompt_page","case":"q2_missing","session_id":"s1","row_id":8,"result":null}
+{"func":"anchored_window","case":"a1_window","session_id":"s1","anchor":5,"around":{"window":[{"id":4,"session_id":"s1","active":1,"compacted":0,"role":"user","content":"a","timestamp":1},{"id":5,"session_id":"s1","active":1,"compacted":0,"role":"assistant","content":"b","timestamp":2}],"messages_before":2,"messages_after":7}}
+{"func":"anchored_view","case":"v1_view","session_id":"s1","anchor":5,"view":{"window":[{"id":5,"session_id":"s1","active":1,"compacted":0,"role":"user","content":"b","timestamp":2}],"messages_before":0,"messages_after":0,"bookend_start":[{"id":1,"session_id":"s1","active":1,"compacted":0,"role":"user","content":"start","timestamp":0.5}],"bookend_end":[]}}
+{"func":"pr_url_hits","case":"r1_hits","session_ids":["s1","s2"],"hits":[{"session_id":"s1","content":"opened #12"},{"session_id":"s2","content":"fixes #34"}]}
+{"func":"handoff_map","case":"m1_rows","shown_ids":[7,8],"segment_ids":["s1"],"found":{"7":[{"id":7,"session_id":"s1","active":1,"compacted":0,"role":"user","content":"x","timestamp":1.5}],"8":[]}}
+{"func":"watermark","case":"w1_last","session_id":"s1","last":5}
+{"func":"watermark","case":"w2_none","session_id":"s1","last":null}
+{"func":"watermark","case":"w3_zero","session_id":"s1","last":0}
+{"func":"anchored_view","case":"v2_empty_bookends","session_id":"s2","anchor":3,"view":{"window":[],"messages_before":3,"messages_after":4,"bookend_start":[],"bookend_end":[]}}
+{"func":"sql_blocked_payloads","case":"b3_null_id","since_ts":3.5,"rows":[[null,"approval needed"]]}

@@ -1,0 +1,74 @@
+{"func":"idle_stop_seconds","case":"default","cfg":{}}
+{"func":"idle_stop_seconds","case":"configured","cfg":{"idle_stop_minutes":45}}
+{"func":"idle_stop_seconds","case":"zero-is-off","cfg":{"idle_stop_minutes":0}}
+{"func":"idle_stop_seconds","case":"negative-is-off","cfg":{"idle_stop_minutes":-5}}
+{"func":"idle_stop_seconds","case":"fractional","cfg":{"idle_stop_minutes":0.1}}
+{"func":"idle_stop_seconds","case":"string-number","cfg":{"idle_stop_minutes":"15"}}
+{"func":"idle_stop_seconds","case":"string-junk","cfg":{"idle_stop_minutes":"abc"}}
+{"func":"idle_stop_seconds","case":"null","cfg":{"idle_stop_minutes":null}}
+{"func":"idle_stop_seconds","case":"inf-never","cfg":{"idle_stop_minutes":"inf"}}
+{"func":"idle_stop_seconds","case":"nan","cfg":{"idle_stop_minutes":"nan"}}
+{"func":"idle_stop_seconds","case":"overflows-to-inf","cfg":{"idle_stop_minutes":"1e308"}}
+{"func":"idle_stop_seconds","case":"bool-true","cfg":{"idle_stop_minutes":true}}
+{"func":"idle_seconds","case":"activity","now":1000.0,"activity_mtime":940.0,"env_mtime":100.0}
+{"func":"idle_seconds","case":"falls-back-to-env","now":1000.0,"activity_mtime":null,"env_mtime":700.0}
+{"func":"idle_seconds","case":"never-stamped","now":1000.0,"activity_mtime":null,"env_mtime":null}
+{"func":"idle_seconds","case":"future-mtime","now":1000.0,"activity_mtime":1200.0,"env_mtime":100.0}
+{"func":"idle_seconds","case":"just-now","now":1000.0,"activity_mtime":1000.0,"env_mtime":null}
+{"func":"idle_due","case":"due-agent","limit":1800.0,"running":true,"launcher":null,"current":null,"idle":2000.0,"holder":"agent"}
+{"func":"idle_due","case":"not-yet","limit":1800.0,"running":true,"launcher":null,"current":null,"idle":1000.0,"holder":"agent"}
+{"func":"idle_due","case":"auto-stop-off","limit":0.0,"running":true,"launcher":null,"current":null,"idle":99999.0,"holder":"agent"}
+{"func":"idle_due","case":"screen-down","limit":1800.0,"running":false,"launcher":null,"current":null,"idle":99999.0,"holder":"agent"}
+{"func":"idle_due","case":"same-launcher","limit":1800.0,"running":true,"launcher":{"pid":5,"create_time":100.0},"current":{"pid":5,"create_time":100.0},"idle":2000.0,"holder":null}
+{"func":"idle_due","case":"replacement-pid","limit":1800.0,"running":true,"launcher":{"pid":5,"create_time":100.0},"current":{"pid":6,"create_time":100.0},"idle":2000.0,"holder":null}
+{"func":"idle_due","case":"no-launcher-now","limit":1800.0,"running":true,"launcher":{"pid":5,"create_time":100.0},"current":null,"idle":2000.0,"holder":null}
+{"func":"idle_due","case":"restarted-elsewhere","limit":1800.0,"running":true,"launcher":{"pid":5,"create_time":100.0},"current":{"pid":5,"create_time":100.5},"idle":2000.0,"holder":null}
+{"func":"idle_due","case":"one-tick-drift","limit":1800.0,"running":true,"launcher":{"pid":5,"create_time":100.0},"current":{"pid":5,"create_time":100.001},"idle":2000.0,"holder":null}
+{"func":"idle_due","case":"human-within-lease","limit":1800.0,"running":true,"launcher":null,"current":null,"idle":2000.0,"holder":"human"}
+{"func":"idle_due","case":"human-abandoned","limit":1800.0,"running":true,"launcher":null,"current":null,"idle":8000.0,"holder":"human"}
+{"func":"idle_due","case":"human-short-window-floor","limit":60.0,"running":true,"launcher":null,"current":null,"idle":700.0,"holder":"human"}
+{"func":"idle_due","case":"human-short-window-held","limit":60.0,"running":true,"launcher":null,"current":null,"idle":500.0,"holder":"human"}
+{"func":"should_auto_start","case":"opt-in-headless","supported":true,"env":{},"missing":[],"auto_start":true}
+{"func":"should_auto_start","case":"opt-out","supported":true,"env":{},"missing":[],"auto_start":false}
+{"func":"should_auto_start","case":"not-linux","supported":false,"env":{},"missing":[],"auto_start":true}
+{"func":"should_auto_start","case":"has-display","supported":true,"env":{"DISPLAY":":0"},"missing":[],"auto_start":true}
+{"func":"should_auto_start","case":"has-wayland","supported":true,"env":{"WAYLAND_DISPLAY":"wayland-0"},"missing":[],"auto_start":true}
+{"func":"should_auto_start","case":"packages-missing","supported":true,"env":{},"missing":["Xvnc"],"auto_start":true}
+{"func":"tool_placement","case":"gateway","where":"gateway","reason":""}
+{"func":"tool_placement","case":"terminal-down","where":"terminal","reason":"","sandbox_running":false,"published":{}}
+{"func":"tool_placement","case":"refused","where":"refused","reason":"terminal.backend is modal and cannot host a screen"}
+{"func":"ensure_started_for_tool","case":"up","where":"gateway","env":{"DISPLAY":":21"},"published":{"DISPLAY":":21"}}
+{"func":"ensure_started_for_tool","case":"refused","where":"refused","reason":"nope","env":{},"published":{}}
+{"func":"ensure_started_for_tool","case":"terminal","where":"terminal","env":{},"published":{},"supported":true,"missing":[],"auto_start":false}
+{"func":"ensure_started_for_tool","case":"auto-start","where":"gateway","env":{},"published":{},"supported":true,"missing":[],"auto_start":true}
+{"func":"ensure_started_for_tool","case":"no-auto-start","where":"gateway","env":{},"published":{},"supported":true,"missing":[],"auto_start":false}
+{"func":"start","case":"refused","where":"refused","reason":"placement refused by policy","supported":true,"missing":[]}
+{"func":"start","case":"terminal","where":"terminal","backend":"docker","supported":true,"missing":[]}
+{"func":"start","case":"not-linux","where":"gateway","supported":false,"missing":[]}
+{"func":"start","case":"no-package-manager","where":"gateway","supported":true,"missing":["Xvnc","xfwm4"],"pm":null,"installable":false,"install_command":null}
+{"func":"start","case":"unprivileged-no-sudo","where":"gateway","supported":true,"missing":["Xvnc","xfwm4"],"pm":"apt","installable":false,"install_command":"apt-get install -y --no-install-recommends Xvnc"}
+{"func":"start","case":"installable","where":"gateway","supported":true,"missing":["Xvnc"],"pm":"apt","installable":true,"install_command":"sudo apt-get install -y --no-install-recommends tigervnc-standalone-server"}
+{"func":"start","case":"proceed","where":"gateway","supported":true,"missing":[],"pm":"apt","installable":true}
+{"func":"status","case":"running","profile":null,"supported":true,"missing":[],"pid":1234,"env":{"DISPLAY":":21"},"socket":"/s/bot-desktop/rfb.sock","geometry":"1440x900","install_command":"sudo apt-get install -y x","browser":"/usr/bin/chromium","memory_available_mb":500,"memory_limit_mb":2000,"blocker":"Not enough free memory for a desktop"}
+{"func":"status","case":"stopped-clean-with-pressure","profile":"work","supported":true,"missing":[],"pid":null,"env":{},"socket":null,"geometry":"1440x900","install_command":"sudo apt-get install -y x","browser":"/usr/bin/chromium","memory_available_mb":100,"memory_limit_mb":2000,"blocker":"Not enough free memory for a desktop: 100 MB available of 2000 MB, 1536 MB needed (bot_desktop.min_free_memory_mb)"}
+{"func":"status","case":"stopped-missing-packages","profile":null,"supported":true,"missing":["Xvnc","xfwm4"],"pid":null,"env":{},"socket":null,"geometry":"1600x1000","install_command":"sudo apt-get install -y tigervnc-standalone-server xfwm4","browser":"/usr/bin/chromium","memory_available_mb":4000,"memory_limit_mb":8000,"blocker":"unused when something is missing"}
+{"func":"status","case":"pid-but-no-display","profile":null,"supported":true,"missing":[],"pid":1234,"env":{},"socket":null,"geometry":"1440x900","install_command":null,"browser":null,"memory_available_mb":300,"memory_limit_mb":1000,"blocker":"Not enough free memory for a desktop"}
+{"func":"status","case":"not-linux","profile":null,"supported":false,"missing":["Xvnc","xfwm4","xfce4-panel","xfdesktop","xfsettingsd","dbus-run-session","xauth","xdpyinfo","setxkbmap","xprop"],"pid":null,"env":{},"socket":null,"geometry":"1440x900","install_command":"sudo apt-get install -y x","browser":"/usr/bin/chromium","memory_available_mb":500,"memory_limit_mb":2000,"blocker":"Not enough free memory for a desktop"}
+{"func":"sandbox_status","case":"running","profile":null,"backend":"docker","missing":[],"published":{"DISPLAY":":31"},"advice":null,"image_hint":"nousresearch/hermes-sandbox:desktop","switch":null,"geometry":"1440x900","env":true}
+{"func":"sandbox_status","case":"missing-hint","profile":"work","backend":"docker","missing":["Xvnc"],"published":{},"advice":null,"image_hint":"nousresearch/hermes-sandbox:desktop","switch":null,"geometry":"1440x900","env":true}
+{"func":"sandbox_status","case":"missing-advice","profile":null,"backend":"ssh","missing":["Xvnc","xfwm4"],"published":{},"advice":"install tigervnc in the image","image_hint":"nousresearch/hermes-sandbox:desktop","switch":null,"geometry":"1440x900","env":true}
+{"func":"sandbox_status","case":"docker-switch","profile":null,"backend":"docker","missing":["Xvnc"],"published":{},"advice":null,"image_hint":"nousresearch/hermes-sandbox:desktop","switch":{"current_image":"debian:bookworm","target_image":"nousresearch/hermes-sandbox:desktop","containers":["c1","c2"]},"geometry":"1440x900","env":true}
+{"func":"sandbox_status","case":"ssh-switch-ignored","profile":null,"backend":"ssh","missing":["Xvnc"],"published":{},"advice":null,"image_hint":"nousresearch/hermes-sandbox:desktop","switch":{"current_image":"a","target_image":"b","containers":["c1"]},"geometry":"1440x900","env":true}
+{"func":"sandbox_status","case":"no-sandbox-yet","profile":null,"backend":"docker","missing":[],"published":{},"advice":null,"image_hint":"nousresearch/hermes-sandbox:desktop","switch":null,"geometry":"1440x900","env":false}
+{"func":"stop","case":"kill-launcher","marker":false,"where":"gateway","still_due":null,"supported":true,"launcher_pid":5,"sandbox_stopped":false,"reaped":false}
+{"func":"stop","case":"reap-orphan","marker":false,"where":"gateway","still_due":null,"supported":true,"launcher_pid":null,"sandbox_stopped":false,"reaped":true}
+{"func":"stop","case":"nothing-to-reap","marker":false,"where":"gateway","still_due":null,"supported":true,"launcher_pid":null,"sandbox_stopped":false,"reaped":false}
+{"func":"stop","case":"kept-before-lock","marker":false,"where":"gateway","still_due":false,"supported":true,"launcher_pid":5,"sandbox_stopped":false,"reaped":false}
+{"func":"stop","case":"still-due","marker":false,"where":"gateway","still_due":true,"supported":true,"launcher_pid":5,"sandbox_stopped":false,"reaped":false}
+{"func":"stop","case":"not-linux","marker":false,"where":"gateway","still_due":null,"supported":false,"launcher_pid":null,"sandbox_stopped":false,"reaped":false}
+{"func":"stop","case":"sandbox-marker","marker":true,"where":"gateway","still_due":null,"supported":true,"launcher_pid":null,"sandbox_stopped":true,"reaped":false}
+{"func":"stop","case":"sandbox-marker-kept","marker":true,"where":"gateway","still_due":false,"supported":true,"launcher_pid":null,"sandbox_stopped":true,"reaped":false}
+{"func":"stop","case":"terminal-placement","marker":false,"where":"terminal","backend":"docker","still_due":null,"supported":true,"launcher_pid":null,"sandbox_stopped":true,"reaped":false}
+{"func":"in_sandbox","case":"terminal","where":"terminal","backend":"docker"}
+{"func":"in_sandbox","case":"gateway","where":"gateway","backend":"local"}
+{"func":"in_sandbox","case":"refused","where":"refused","backend":"modal","reason":"cannot host a screen"}

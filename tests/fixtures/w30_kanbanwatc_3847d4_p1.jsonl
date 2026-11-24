@@ -1,0 +1,59 @@
+{"func":"constants","case":"kind-tables"}
+{"func":"diagnostic_event","case":"crashed","event":{"kind":"crashed","payload":null}}
+{"func":"diagnostic_event","case":"gave-up","event":{"kind":"gave_up","payload":{}}}
+{"func":"diagnostic_event","case":"timed-out-payload","event":{"kind":"timed_out","payload":{"limit_seconds":90}}}
+{"func":"diagnostic_event","case":"blocked-needs-input","event":{"kind":"blocked","payload":{"kind":"needs_input","reason":"pick a lane"}}}
+{"func":"diagnostic_event","case":"blocked-other-kind","event":{"kind":"blocked","payload":{"kind":"dependency"}}}
+{"func":"diagnostic_event","case":"blocked-bare","event":{"kind":"blocked","payload":null}}
+{"func":"diagnostic_event","case":"block-loop-needs-input","event":{"kind":"block_loop_detected","payload":{"kind":"needs_input"}}}
+{"func":"diagnostic_event","case":"status-blocked","event":{"kind":"status","payload":{"status":"blocked"}}}
+{"func":"diagnostic_event","case":"status-triage","event":{"kind":"status","payload":{"status":"triage"}}}
+{"func":"diagnostic_event","case":"status-done","event":{"kind":"status","payload":{"status":"done"}}}
+{"func":"diagnostic_event","case":"completed","event":{"kind":"completed","payload":{"summary":"x"}}}
+{"func":"diagnostic_event","case":"empty-payload","event":{"kind":"status","payload":{}}}
+{"func":"first_line","case":"multiline","text":"first line here\nsecond line\n","limit":5}
+{"func":"first_line","case":"only-spaces","text":"    ","limit":3}
+{"func":"first_line","case":"leading-blanks","text":"\n\n  hi there","limit":5}
+{"func":"first_line","case":"zero-limit","text":"abcdef","limit":0}
+{"func":"first_line","case":"crlf","text":"one\r\ntwo","limit":50}
+{"func":"clip","case":"short","event":{"payload":{"reason":"disk full"}},"key":"reason","tkey":"gateway.kanban.ping.reason_suffix","limit":160}
+{"func":"clip","case":"long","event":{"payload":{"error":"xqy"} },"key":"error","tkey":"gateway.kanban.ping.last_error","limit":3}
+{"func":"clip","case":"absent","event":{"payload":{"status":"done"}},"key":"reason","tkey":"gateway.kanban.ping.reason_suffix","limit":160}
+{"func":"clip","case":"unicode","event":{"payload":{"reason":"héllo wörld"}},"key":"reason","tkey":"gateway.kanban.ping.triage_recurrences","limit":4}
+{"func":"clip","case":"no-payload","event":{"kind":"blocked"},"key":"reason","tkey":"gateway.kanban.ping.reason_suffix","limit":160}
+{"func":"safe_review_reason","case":"empty","value":null,"redacted":"","limit":160}
+{"func":"safe_review_reason","case":"users-path","value":"please fix the parser at /Users/bob/proj/x.py; then rerun","redacted":"please fix the parser at /Users/bob/proj/x.py; then rerun","limit":160}
+{"func":"safe_review_reason","case":"windows-path","value":"windows path C:\\Users\\bob\\proj\\main.c, and more","redacted":"windows path C:\\Users\\bob\\proj\\main.c, and more","limit":160}
+{"func":"safe_review_reason","case":"url-creds","value":"see https://user:pass@example.com/x for details","redacted":"see https://***:***@example.com/x for details","limit":160}
+{"func":"safe_review_reason","case":"truncated","value":"the reviewer wants the timeout constant moved out of the poll loop and into the settings module","redacted":"the reviewer wants the timeout constant moved out of the poll loop and into the settings module","limit":40}
+{"func":"safe_review_reason","case":"colon-prefix","value":"prefix:/Users/bob/a.py and /home/ann/b.py","redacted":"prefix:/Users/bob/a.py and /home/ann/b.py","limit":160}
+{"func":"safe_review_reason","case":"word-prefix","value":"dir/Users/bob/a.py stays, /var/log/x.log goes","redacted":"dir/Users/bob/a.py stays, /var/log/x.log goes","limit":160}
+{"func":"safe_review_reason","case":"whitespace","value":"  too   many\t\ttabs \n and newlines  ","redacted":"  too   many\t\ttabs \n and newlines  ","limit":160}
+{"func":"format_event","case":"completed-summary","event":{"kind":"completed","payload":{"summary":"migrated the schema\nsecond line"}},"sub":{"task_id":"t-1","platform":"slack","chat_id":"C1"},"task":{"title":"Migrate schema","assignee":"bob","result":"ignored"},"board":"main"}
+{"func":"format_event","case":"completed-result-fallback","event":{"kind":"completed","payload":{}},"sub":{"task_id":"t-2","platform":"slack","chat_id":"C1"},"task":{"title":"Fix poller","assignee":null,"result":"patched the poller\nmore"},"board":"main"}
+{"func":"format_event","case":"completed-nothing","event":{"kind":"completed","payload":null},"sub":{"task_id":"t-3","platform":"slack","chat_id":"C1"},"task":{"title":"No result","result":null},"board":null}
+{"func":"format_event","case":"review-requested","event":{"kind":"review_requested","payload":{"summary":"implementation is in branch wip-42"}},"sub":{"task_id":"t-4","platform":"discord","chat_id":"D1"},"task":{"title":"Ship it","assignee":"ann"},"board":"ops"}
+{"func":"format_event","case":"review-requested-bare","event":{"kind":"review_requested","payload":{}},"sub":{"task_id":"t-5","platform":"discord","chat_id":"D1"},"task":{"title":"Ship it"},"board":"ops"}
+{"func":"format_event","case":"changes-full","event":{"kind":"changes_requested","payload":{"reason":"please move the retry constant","reviewer":"ann","implementer":"bob"}},"sub":{"task_id":"t-6","platform":"slack","chat_id":"C9"},"task":{"title":"Retries","assignee":"bob"},"board":"main"}
+{"func":"format_event","case":"changes-default","event":{"kind":"changes_requested","payload":{}},"sub":{"task_id":"t-7","platform":"slack","chat_id":"C9"},"task":{"title":"Retries"},"board":"main"}
+{"func":"format_event","case":"changes-long-reason","event":{"kind":"changes_requested","payload":{"reason":"the reviewer wants the timeout constant moved out of the poll loop and into the settings module please","reviewer":"ann"}},"sub":{"task_id":"t-8","platform":"teams","chat_id":"T1"},"task":{"title":"Timeouts"},"board":"b1"}
+{"func":"format_event","case":"block-loop-decision","event":{"kind":"block_loop_detected","payload":{"kind":"needs_input","recurrences":3,"reason":"same cause"}},"sub":{"task_id":"t-9","platform":"slack","chat_id":"C2"},"task":{"title":"Loop"},"board":"main"}
+{"func":"format_event","case":"block-loop-attention","event":{"kind":"block_loop_detected","payload":{"kind":"dependency","recurrences":"4","reason":"upstream 502"}},"sub":{"task_id":"t-10","platform":"slack","chat_id":"C2"},"task":{"title":"Loop"},"board":null}
+{"func":"format_event","case":"gave-up","event":{"kind":"gave_up","payload":{"failures":3,"error":"spawn failed"}},"sub":{"task_id":"t-11","platform":"slack","chat_id":"C3"},"task":{"title":"Retry me"},"board":"main"}
+{"func":"format_event","case":"gave-up-bare","event":{"kind":"gave_up","payload":{}},"sub":{"task_id":"t-12","platform":"slack","chat_id":"C3"},"task":{"title":"Retry me"},"board":"main"}
+{"func":"format_event","case":"timed-out-90","event":{"kind":"timed_out","payload":{"limit_seconds":90}},"sub":{"task_id":"t-13","platform":"slack","chat_id":"C4"},"task":{"title":"Slow"},"board":"main"}
+{"func":"format_event","case":"timed-out-150","event":{"kind":"timed_out","payload":{"limit_seconds":150}},"sub":{"task_id":"t-14","platform":"slack","chat_id":"C4"},"task":{"title":"Slow"},"board":"main"}
+{"func":"format_event","case":"timed-out-none","event":{"kind":"timed_out","payload":{}},"sub":{"task_id":"t-15","platform":"slack","chat_id":"C4"},"task":{"title":"Slow"},"board":"main"}
+{"func":"format_event","case":"blocked","event":{"kind":"blocked","payload":{"kind":"needs_input","reason":"which board?"}},"sub":{"task_id":"t-16","platform":"slack","chat_id":"C5"},"task":{"title":"Ask"},"board":"main"}
+{"func":"format_event","case":"crashed","event":{"kind":"crashed","payload":null},"sub":{"task_id":"t-17","platform":"slack","chat_id":"C6"},"task":{"title":"Crashy"},"board":"main"}
+{"func":"format_event","case":"status","event":{"kind":"status","payload":{"status":"in_review"}},"sub":{"task_id":"t-18","platform":"slack","chat_id":"C7"},"task":{"title":"Move"},"board":"main"}
+{"func":"format_event","case":"archived-silent","event":{"kind":"archived","payload":{"status":"archived"}},"sub":{"task_id":"t-19","platform":"slack","chat_id":"C8"},"task":{"title":"Gone"},"board":"main"}
+{"func":"format_event","case":"no-task-no-board","event":{"kind":"crashed","payload":null},"sub":{"task_id":"t-20","platform":"slack","chat_id":"C8"},"task":null,"board":null}
+{"func":"format_event","case":"title-truncated","event":{"kind":"crashed","payload":null},"sub":{"task_id":"t-21","platform":"slack","chat_id":"C8"},"task":{"title":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},"board":"main"}
+{"func":"format_batch","case":"mixed","events":[{"kind":"completed","payload":{"summary":"first handoff"}},{"kind":"archived","payload":{}},{"kind":"blocked","payload":{"reason":"later"}}],"sub":{"task_id":"t-30","platform":"slack","chat_id":"C1"},"task":{"title":"Batch"},"board":"main"}
+{"func":"format_batch","case":"empty","events":[],"sub":{"task_id":"t-31","platform":"slack","chat_id":"C1"},"task":{"title":"Batch"},"board":"main"}
+{"func":"format_batch","case":"changes-then-completed","events":[{"kind":"changes_requested","payload":{"reason":"needs tests","reviewer":"ann"}},{"kind":"completed","payload":{"summary":"added tests"}}],"sub":{"task_id":"t-32","platform":"slack","chat_id":"C1"},"task":{"title":"Batch"},"board":"main"}
+{"func":"ping_plan","case":"notify-skips-sent","events":[{"id":3,"kind":"completed","payload":{"summary":"a"}},{"id":1,"kind":"crashed","payload":{}}],"sub":{"task_id":"t-40","platform":"slack","chat_id":"C1","delivery_mode":"notify","last_ping_event_id":2},"task":{"title":"Pings"},"board":"main","is_push_adapter":true}
+{"func":"ping_plan","case":"wake-only","events":[{"id":5,"kind":"completed","payload":{"summary":"a"}}],"sub":{"task_id":"t-41","platform":"slack","chat_id":"C1","delivery_mode":"wake"},"task":{"title":"Pings"},"board":"main","is_push_adapter":true}
+{"func":"ping_plan","case":"non-push-wake","events":[{"id":6,"kind":"completed","payload":{"summary":"a"}},{"id":7,"kind":"archived","payload":{}}],"sub":{"task_id":"t-42","platform":"api_server","chat_id":"sess-1","delivery_mode":"notify+wake"},"task":{"title":"Pings"},"board":"main","is_push_adapter":false}
+{"func":"ping_plan","case":"silent-only","events":[{"id":8,"kind":"archived","payload":{}},{"id":9,"kind":"unblocked","payload":{}}],"sub":{"task_id":"t-43","platform":"slack","chat_id":"C1"},"task":{"title":"Pings"},"board":"main"}

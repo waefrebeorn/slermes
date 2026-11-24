@@ -1,0 +1,65 @@
+{"func": "quote_cwd_for_cd", "case": "bare-tilde", "cwd": "~"}
+{"func": "quote_cwd_for_cd", "case": "tilde-slash", "cwd": "~/"}
+{"func": "quote_cwd_for_cd", "case": "tilde-subdir-space", "cwd": "~/a b"}
+{"func": "quote_cwd_for_cd", "case": "tilde-subdir-quote", "cwd": "~/a'b"}
+{"func": "quote_cwd_for_cd", "case": "plain-space", "cwd": "/x y"}
+{"func": "quote_cwd_for_cd", "case": "empty", "cwd": ""}
+{"func": "quote_cwd_for_cd", "case": "safe", "cwd": "/usr/local/bin"}
+{"func": "quote_cwd_for_cd", "case": "dash", "cwd": "-dash"}
+{"func": "quote_shell_path", "case": "empty", "path": ""}
+{"func": "quote_shell_path", "case": "safe", "path": "/tmp/hermes-snap-a.sh"}
+{"func": "quote_shell_path", "case": "space", "path": "a b"}
+{"func": "quote_shell_path", "case": "single-quote", "path": "it's"}
+{"func": "quote_shell_path", "case": "dollar", "path": "$x"}
+{"func": "quote_shell_path", "case": "newline", "path": "a\nb"}
+{"func": "quote_shell_path", "case": "semicolon", "path": "a;b"}
+{"func": "stdin_redirect", "case": "plain", "command": "cat", "path": "/tmp/f"}
+{"func": "stdin_redirect", "case": "space-and-quote", "command": "bash -s", "path": "/tmp/a'b c"}
+{"func": "stdin_redirect", "case": "empty-path", "command": "wc -c", "path": ""}
+{"func": "stdin_heredoc", "case": "plain", "command": "cat", "stdin_data": "body", "token": "abcdef123456"}
+{"func": "stdin_heredoc", "case": "data-trailing-newline", "command": "cat", "stdin_data": "body\n", "token": "abcdef123456"}
+{"func": "stdin_heredoc", "case": "empty-data", "command": "cat", "stdin_data": "", "token": "abcdef123456"}
+{"func": "stdin_heredoc", "case": "command-with-quote", "command": "printf 'hi'", "stdin_data": "x", "token": "001122334455"}
+{"func": "staged_stdin_path", "case": "plain", "temp_dir": "/tmp", "token": "8d7cb5e3498a4555b62b43443a4d93b9"}
+{"func": "staged_stdin_path", "case": "trailing-slash", "temp_dir": "/tmp/", "token": "abc"}
+{"func": "staged_stdin_path", "case": "empty-temp-dir", "temp_dir": "", "token": "abc"}
+{"func": "staged_stdin_path", "case": "slash-only", "temp_dir": "///", "token": "abc"}
+{"func": "split_cwd_marker", "case": "basic", "output": "hi\n\n__HERMES_CWD_abcdef123456__/tmp__HERMES_CWD_abcdef123456__\n", "marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "split_cwd_marker", "case": "absent", "output": "hello", "marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "split_cwd_marker", "case": "lone-marker", "output": "a__HERMES_CWD_abcdef123456__b", "marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "split_cwd_marker", "case": "empty-path", "output": "a\n__HERMES_CWD_abcdef123456____HERMES_CWD_abcdef123456__\n", "marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "split_cwd_marker", "case": "no-leading-newline", "output": "__HERMES_CWD_abcdef123456__/x__HERMES_CWD_abcdef123456__", "marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "split_cwd_marker", "case": "no-trailing-newline", "output": "a\n__HERMES_CWD_abcdef123456__/x__HERMES_CWD_abcdef123456__", "marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "split_cwd_marker", "case": "two-pairs-last-wins", "output": "a\n__HERMES_CWD_abcdef123456__/1__HERMES_CWD_abcdef123456__\nb\n__HERMES_CWD_abcdef123456__/2__HERMES_CWD_abcdef123456__\n", "marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "split_cwd_marker", "case": "whitespace-path", "output": "x\n\n__HERMES_CWD_abcdef123456__  /w y  __HERMES_CWD_abcdef123456__\n", "marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "split_cwd_marker", "case": "empty-marker", "output": "a__HERMES_CWD_abcdef123456____HERMES_CWD_abcdef123456__", "marker": ""}
+{"func": "parse_cwd_marker", "case": "with-pipestatus", "output": "out\n\n__HERMES_PIPE_abcdef123456__0 1__HERMES_PIPE_abcdef123456__\n\n__HERMES_CWD_abcdef123456__/x y__HERMES_CWD_abcdef123456__\n", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "parse_cwd_marker", "case": "bad-pipestatus", "output": "out\n\n__HERMES_PIPE_abcdef123456__0 x__HERMES_PIPE_abcdef123456__\n\n__HERMES_CWD_abcdef123456__/w__HERMES_CWD_abcdef123456__\n", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "parse_cwd_marker", "case": "no-pipe-marker", "output": "out\n\n__HERMES_CWD_abcdef123456__/w__HERMES_CWD_abcdef123456__\n", "pipe_marker": "", "cwd_marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "parse_cwd_marker", "case": "no-markers", "output": "plain", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "parse_cwd_marker", "case": "empty-path", "output": "a\n__HERMES_CWD_abcdef123456____HERMES_CWD_abcdef123456__\n", "pipe_marker": "", "cwd_marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "parse_cwd_marker", "case": "negative-statuses", "output": "o\n\n__HERMES_PIPE_abcdef123456__-1 +2__HERMES_PIPE_abcdef123456__\n\n__HERMES_CWD_abcdef123456__/w__HERMES_CWD_abcdef123456__\n", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "wrap_command", "case": "basic", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "command": "echo hi"}
+{"func": "wrap_command", "case": "no-snapshot", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": false, "persist_env": true, "cwd_fallback": false, "command": "echo hi"}
+{"func": "wrap_command", "case": "no-persist", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": false, "cwd_fallback": false, "command": "echo hi"}
+{"func": "wrap_command", "case": "chain-one", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "command": "echo hi", "chain": ["t1"]}
+{"func": "wrap_command", "case": "chain-two", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "command": "echo hi", "chain": ["t1", "t2"]}
+{"func": "wrap_command", "case": "cwd-fallback", "cwd": "/gone dir", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": true, "command": "ls"}
+{"func": "wrap_command", "case": "command-quote", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "command": "echo 'hi'"}
+{"func": "wrap_command", "case": "command-heredoc", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "command": "cat <<EOF\nx\nEOF"}
+{"func": "wrap_command", "case": "command-trailing-backslash", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "command": "echo hi \\"}
+{"func": "wrap_command", "case": "no-pipe-marker", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "command": "true"}
+{"func": "wrap_command", "case": "passthrough", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "command": "env", "passthrough_names": ["BAR", "FOO"]}
+{"func": "wrap_command", "case": "tilde-cwd", "cwd": "~/x y", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "command": "pwd"}
+{"func": "wrap_command", "case": "empty-command", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__", "cwd_fallback_marker": "__HERMES_CWDFB_abcdef123456__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "command": ""}
+{"func": "bootstrap_script", "case": "plain", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "cwd_marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "bootstrap_script", "case": "excluded-names", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "cwd_marker": "__HERMES_CWD_abcdef123456__", "excluded_names": ["ZZZ", "FOO", "FOO"]}
+{"func": "bootstrap_script", "case": "cwd-with-spaces", "cwd": "/a b/c", "snapshot_path": "/x y/s.sh", "cwd_marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "bootstrap_script", "case": "excluded-invalid", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "cwd_marker": "__HERMES_CWD_abcdef123456__", "excluded_names": ["bad name", "", "OK_1"]}
+{"func": "bootstrap_script", "case": "tilde-cwd", "cwd": "~/proj", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "cwd_marker": "__HERMES_CWD_abcdef123456__", "excluded_names": []}
+{"func": "parse_cwd_marker", "case": "underscore-statuses", "output": "o\n\n__HERMES_PIPE_abcdef123456__1_0 2__HERMES_PIPE_abcdef123456__\n\n__HERMES_CWD_abcdef123456__/w__HERMES_CWD_abcdef123456__\n", "pipe_marker": "__HERMES_PIPE_abcdef123456__", "cwd_marker": "__HERMES_CWD_abcdef123456__"}
+{"func": "split_cwd_marker", "case": "whitespace-only-path", "output": "a\n\n__M__    __M__\n", "marker": "__M__"}
+{"func": "stdin_heredoc", "case": "token-truncates", "command": "cat", "stdin_data": "x", "token": "0123456789abcdef"}
+{"func": "staged_stdin_path", "case": "token-empty", "temp_dir": "/tmp", "token": ""}
+{"func": "wrap_command", "case": "chain-empty", "command": "echo hi", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "pipe_marker": "", "cwd_marker": "__M__", "snapshot_ready": true, "persist_env": true, "cwd_fallback": false, "chain": []}
+{"func": "bootstrap_script", "case": "excluded-type-mismatch", "cwd": "/tmp", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "cwd_marker": "__M__", "excluded_names": "FOO"}

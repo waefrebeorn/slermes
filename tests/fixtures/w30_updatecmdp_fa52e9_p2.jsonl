@@ -1,0 +1,45 @@
+{"case":"names-units","func":"names","entries":[{"unit":"hermes-gateway.service","pid":4242},{"unit":"hermes-gateway-work.service","pid":5151}]}
+{"case":"names-single-unit","func":"names","entries":[{"unit":"hermes-gateway.service","pid":4242}]}
+{"case":"names-empty","func":"names","entries":[]}
+{"case":"names-label","func":"names","entries":[{"label":"ai.hermes.gateway","pid":6262}]}
+{"case":"names-blank-unit-keeps-label","func":"names","entries":[{"unit":"","label":"ai.hermes.gateway","pid":6262}]}
+{"case":"names-bare-pid","func":"names","entries":[{"pid":7373}]}
+{"case":"names-mixed","func":"names","entries":[{"unit":"hermes-gateway.service"},{"label":"ai.hermes.gateway"},{"unit":"","label":"","pid":8484}]}
+{"case":"describe-units-and-bare","func":"describe","token":{"posix_units":[{"kind":"systemd","unit":"hermes-gateway.service","pid":4242},{"kind":"launchd","label":"ai.hermes.gateway","pid":5151}],"unmapped":[{"pid":6262,"argv":["gateway","run"],"home":"/home/u/.hermes"},{"pid":7373,"home":"/home/u/.hermes"}]}}
+{"case":"describe-empty-token","func":"describe","token":{"posix_units":[],"unmapped":[]}}
+{"case":"describe-blank-fields","func":"describe","token":{"posix_units":[{"unit":"","label":""}],"unmapped":[]}}
+{"case":"describe-bare-without-argv","func":"describe","token":{"posix_units":[],"unmapped":[{"pid":8484}]}}
+{"case":"drain-ack-pausing","func":"drain_ack","home":"/home/u/.hermes","ack":{"pausing":true,"already_stopping":false}}
+{"case":"drain-ack-already-stopping","func":"drain_ack","home":"/home/u/.hermes","ack":{"already_stopping":true}}
+{"case":"drain-ack-empty","func":"drain_ack","home":"/home/u/.hermes","ack":{}}
+{"case":"drain-ack-null","func":"drain_ack","home":"/home/u/.hermes","ack":null}
+{"case":"drain-ack-no-home","func":"drain_ack","home":null,"ack":{"pausing":true}}
+{"case":"drain-ack-error","func":"drain_ack","home":"/home/u/.hermes","ack":{"pausing":true},"raises":true}
+{"case":"marker-external-supervisor","func":"supervisor_marker","pid":4242,"argv_external":true,"env":{"XPC_SERVICE_NAME":"ai.hermes.gateway"},"respawning_unit":null}
+{"case":"marker-s6","func":"supervisor_marker","pid":4242,"argv_external":false,"env":{"HERMES_S6_SUPERVISED_CHILD":"1"},"respawning_unit":null}
+{"case":"marker-systemd-unit","func":"supervisor_marker","pid":4242,"argv_external":false,"env":{"HERMES_S6_SUPERVISED_CHILD":""},"respawning_unit":"hermes-gateway.service"}
+{"case":"marker-launchd-job","func":"supervisor_marker","pid":4242,"argv_external":false,"env":{"XPC_SERVICE_NAME":"ai.hermes.gateway"},"respawning_unit":null}
+{"case":"marker-terminal-app-shell","func":"supervisor_marker","pid":4242,"argv_external":false,"env":{"XPC_SERVICE_NAME":"application.com.googlecode.iterm2"},"respawning_unit":null}
+{"case":"marker-xpc-zero","func":"supervisor_marker","pid":4242,"argv_external":false,"env":{"XPC_SERVICE_NAME":"0"},"respawning_unit":null}
+{"case":"marker-xpc-empty","func":"supervisor_marker","pid":4242,"argv_external":false,"env":{"XPC_SERVICE_NAME":""},"respawning_unit":null}
+{"case":"marker-env-unreadable","func":"supervisor_marker","pid":4242,"argv_external":false,"env":{"XPC_SERVICE_NAME":"ai.hermes.gateway"},"env_error":true,"respawning_unit":null}
+{"case":"marker-plain-bare","func":"supervisor_marker","pid":4242,"argv_external":false,"env":{},"respawning_unit":null}
+{"case":"left-running-mixed","func":"left_running","units":[{"scope":"system","unit":"hermes-gateway.service","pid":4242,"escape_ok":false},{"scope":"user","unit":"hermes-gateway-work.service","pid":5151,"escape_ok":true}],"jobs":[{"label":"ai.hermes.gateway","pid":6262,"ancestor":true},{"label":"ai.hermes.gateway-work","pid":7373,"ancestor":false}],"needs_sudo":true,"sudo_ok":false,"xpc":null}
+{"case":"left-running-system-escape","func":"left_running","units":[{"scope":"system","unit":"hermes-gateway.service","pid":4242,"escape_ok":true}],"jobs":[],"needs_sudo":true,"sudo_ok":true,"xpc":null}
+{"case":"left-running-system-cgroup-unproven","func":"left_running","units":[{"scope":"system","unit":"hermes-gateway.service","pid":4242,"escape_ok":false}],"jobs":[],"needs_sudo":true,"sudo_ok":true,"xpc":null}
+{"case":"left-running-user-cgroup-unproven","func":"left_running","units":[{"scope":"user","unit":"hermes-gateway-work.service","pid":5151,"escape_ok":false}],"jobs":[],"needs_sudo":false,"sudo_ok":false,"xpc":null}
+{"case":"left-running-inside-job","func":"left_running","units":[],"jobs":[{"label":"ai.hermes.gateway","pid":6262,"ancestor":false}],"needs_sudo":false,"sudo_ok":false,"xpc":"ai.hermes.gateway"}
+{"case":"left-running-all-kept","func":"left_running","units":[{"scope":"user","unit":"hermes-gateway.service","pid":4242,"escape_ok":true},{"scope":"user","unit":"hermes-gateway-work.service","pid":5151,"escape_ok":true}],"jobs":[{"label":"ai.hermes.gateway","pid":6262,"ancestor":false}],"needs_sudo":false,"sudo_ok":false,"xpc":"com.apple.Terminal"}
+{"case":"abort-mixed-units","func":"abort_unsettled","why":"hermes-gateway.service is still stopping from an earlier `hermes update --force`","token":{"platform":"posix","resume_needed":true,"posix_stopped":true,"posix_units":[{"kind":"systemd","scope":"user","unit":"hermes-gateway.service","pid":4242},{"kind":"launchd","label":"ai.hermes.gateway","pid":5151}],"unmapped":[],"unmapped_pids":[]}}
+{"case":"abort-empty-token","func":"abort_unsettled","why":"the stop job did not settle","token":{"platform":"posix"}}
+{"case":"replay-env-s6","func":"bare_replay_env","env":{"HERMES_S6_SUPERVISED_CHILD":"1","HERMES_HOME":"/home/u/.hermes","HERMES_UPDATE_PAUSED":"1","_HERMES_GATEWAY":"1"}}
+{"case":"replay-env-external-supervisor","func":"bare_replay_env","env":{"HERMES_GATEWAY_EXTERNAL_SUPERVISOR":" TRUE ","PATH":"/usr/bin","HERMES_GATEWAY_PROFILE_PIN":"0"}}
+{"case":"replay-env-invocation-id","func":"bare_replay_env","env":{"INVOCATION_ID":"abc123","JOURNAL_STREAM":"8:1","PATH":"/usr/bin"}}
+{"case":"replay-env-markers-only","func":"bare_replay_env","env":{"XPC_SERVICE_NAME":"ai.hermes.gateway","LAUNCHD_SOCKET":"/tmp/x","NOTIFY_SOCKET":"/run/y","WATCHDOG_USEC":"1000","WATCHDOG_PID":"4242","PATH":"/usr/bin"}}
+{"case":"replay-env-clean","func":"bare_replay_env","env":{"PATH":"/usr/bin","HERMES_HOME":"/home/u/.hermes"}}
+{"case":"home-pid-zero","func":"gateway_on_home","home_pid":0,"exclude":[]}
+{"case":"home-pid-excluded","func":"gateway_on_home","home_pid":4242,"exclude":[4242,5151]}
+{"case":"home-pid-adopted","func":"gateway_on_home","home_pid":6262,"exclude":[4242,5151]}
+{"case":"home-pid-string","func":"gateway_on_home","home_pid":"4321","exclude":[]}
+{"case":"home-pid-null","func":"gateway_on_home","home_pid":null,"exclude":[]}
+{"case":"home-pid-unreadable","func":"gateway_on_home","home_pid":6262,"error":true,"exclude":[]}

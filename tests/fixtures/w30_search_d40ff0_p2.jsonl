@@ -1,0 +1,94 @@
+{"func": "sql_constants", "case": "pinned-sql"}
+{"func": "filter_clauses", "case": "default"}
+{"func": "filter_clauses", "case": "include-inactive", "include_inactive": true}
+{"func": "filter_clauses", "case": "source-empty", "source_filter": []}
+{"func": "filter_clauses", "case": "source-two", "source_filter": ["cli", "web"]}
+{"func": "filter_clauses", "case": "exclude-one", "exclude_sources": ["cron"]}
+{"func": "filter_clauses", "case": "exclude-two", "exclude_sources": ["cron", "subagent"], "include_inactive": true}
+{"func": "filter_clauses", "case": "role-two", "role_filter": ["user", "assistant"]}
+{"func": "filter_clauses", "case": "role-empty", "role_filter": []}
+{"func": "filter_clauses", "case": "window", "after_ts": 100, "before_ts": 200}
+{"func": "filter_clauses", "case": "after-only", "after_ts": 1700000000}
+{"func": "filter_clauses", "case": "before-only", "before_ts": 1700000000}
+{"func": "filter_clauses", "case": "seeded", "where": ["x = 1"], "params": ["p"]}
+{"func": "filter_clauses", "case": "everything", "include_inactive": false, "source_filter": ["cli"], "exclude_sources": ["cron"], "role_filter": ["user"], "after_ts": 10, "before_ts": 20}
+{"func": "select_sql", "case": "simple", "snippet_sql": "SNIP", "from_sql": "FROMX", "where": ["a", "b"], "order_by": "ORD", "limit_sql": "LIM"}
+{"func": "select_sql", "case": "no-where", "snippet_sql": "S", "from_sql": "F", "where": [], "order_by": "O", "limit_sql": "L"}
+{"func": "select_sql", "case": "fmt-join", "snippet_sql": "snippet(messages_fts, -1, '>>>', '<<<', '...', 40) AS snippet", "from_sql": "messages_fts\n            JOIN messages m ON m.id = messages_fts.rowid", "where": ["messages_fts MATCH ?", "(m.active = 1 OR m.compacted = 1)"], "order_by": "ORDER BY rank", "limit_sql": "LIMIT ? OFFSET ?"}
+{"func": "fts_match_sql", "case": "rank", "table": "messages_fts", "match_query": "docker", "order_by_sql": "ORDER BY rank", "limit": 20, "offset": 0, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "fts_match_sql", "case": "newest", "table": "messages_fts", "match_query": "\"docker networking\"", "order_by_sql": "ORDER BY m.timestamp DESC, rank", "limit": 5, "offset": 40, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "fts_match_sql", "case": "trigram", "table": "messages_fts_trigram", "match_query": "\"广西桂林\"", "order_by_sql": "ORDER BY m.timestamp ASC, rank", "limit": 10, "offset": 0, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "fts_match_sql", "case": "filters", "table": "messages_fts", "match_query": "q", "order_by_sql": "ORDER BY rank", "limit": 20, "offset": 0, "include_inactive": true, "source_filter": ["cli", "web"], "exclude_sources": ["cron"], "role_filter": ["user"], "after_ts": 100, "before_ts": 200}
+{"func": "like_boolean", "case": "two-terms", "query": "docker networking"}
+{"func": "like_boolean", "case": "phrase-neg-or", "query": "\"docker networking\" tls NOT foo OR bar*"}
+{"func": "like_boolean", "case": "single", "query": "docker"}
+{"func": "like_boolean", "case": "empty", "query": ""}
+{"func": "like_boolean", "case": "only-and", "query": "AND"}
+{"func": "like_boolean", "case": "not-only", "query": "NOT foo"}
+{"func": "like_boolean", "case": "near", "query": "a NEAR b"}
+{"func": "like_boolean", "case": "all-negated-group", "query": "x NOT a NOT b"}
+{"func": "like_boolean", "case": "or-empty-group", "query": "a OR OR b"}
+{"func": "like_boolean", "case": "leading-or", "query": "OR a"}
+{"func": "like_boolean", "case": "wildcard", "query": "*foo*"}
+{"func": "like_boolean", "case": "quoted-star", "query": "\"foo*\""}
+{"func": "like_boolean", "case": "multi-or", "query": "a OR b OR c"}
+{"func": "like_boolean", "case": "underscore-term", "query": "a_b c%d"}
+{"func": "like_boolean", "case": "cjk", "query": "广西 OR 桂林"}
+{"func": "like_fallback", "case": "default", "query": "docker networking", "limit": 20, "offset": 0, "sort": null, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "like_fallback", "case": "oldest", "query": "docker", "limit": 5, "offset": 0, "sort": "oldest", "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "like_fallback", "case": "oldest-padded", "query": "docker", "limit": 5, "offset": 0, "sort": "  OLDEST ", "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "like_fallback", "case": "newest-invalid", "query": "docker", "limit": 5, "offset": 0, "sort": "newest", "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "like_fallback", "case": "empty-predicate", "query": "AND", "limit": 20, "offset": 0, "sort": null, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "like_fallback", "case": "filters", "query": "docker", "limit": 3, "offset": 10, "sort": "oldest", "include_inactive": true, "source_filter": ["cli"], "exclude_sources": null, "role_filter": ["user"], "after_ts": 1, "before_ts": 2}
+{"func": "gap", "case": "basic", "fts_query": "docker networking", "limit": 20, "meta": {"high_water": 1000, "progress": 400}, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "gap", "case": "no-meta", "fts_query": "docker", "limit": 20, "meta": null, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "gap", "case": "zero-highwater", "fts_query": "docker", "limit": 20, "meta": {"high_water": 0, "progress": 0}, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "gap", "case": "null-highwater", "fts_query": "docker", "limit": 20, "meta": {"high_water": null}, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "gap", "case": "limit-zero", "fts_query": "docker", "limit": 0, "meta": {"high_water": 100}, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "gap", "case": "ops-only", "fts_query": "AND OR NOT NEAR", "limit": 20, "meta": {"high_water": 100}, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "gap", "case": "phrases", "fts_query": "\"docker networking\" tls", "limit": 7, "meta": {"high_water": 5000, "progress": 4999}, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "gap", "case": "no-progress", "fts_query": "docker", "limit": 20, "meta": {"high_water": 100}, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "gap", "case": "filters", "fts_query": "docker", "limit": 4, "meta": {"high_water": 100, "progress": 50}, "include_inactive": true, "source_filter": ["cli"], "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "cjk_like", "case": "two-tokens", "query": "广西 OR 桂林", "limit": 20, "offset": 0, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "cjk_like", "case": "wildcard", "query": "广西*", "limit": 20, "offset": 0, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "cjk_like", "case": "single", "query": "漓江", "limit": 5, "offset": 5, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "cjk_like", "case": "and-join", "query": "广西 AND 桂林", "limit": 20, "offset": 0, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "cjk_like", "case": "filters", "query": "广西 OR 桂林", "limit": 20, "offset": 0, "include_inactive": true, "source_filter": ["cron"], "exclude_sources": ["subagent"], "role_filter": ["user"], "after_ts": 3, "before_ts": 4}
+{"func": "cjk_like", "case": "quoted", "query": "\"广西 桂林\"", "limit": 20, "offset": 0, "include_inactive": false, "source_filter": null, "exclude_sources": null, "role_filter": null, "after_ts": null, "before_ts": null}
+{"func": "session_rank", "case": "mixed", "query": "abc", "limit": 20, "rows": [{"id": "abc123", "title": "one"}, {"id": "abc999", "title": "two"}, {"id": "zzz", "_lineage_root_id": "abc123", "title": "three"}, {"id": "qqq", "title": "four"}, {"id": "ABC5", "title": "five"}]}
+{"func": "session_rank", "case": "exact", "query": "abc123", "limit": 20, "rows": [{"id": "abc123", "title": "one"}, {"id": "abc999", "title": "two"}, {"id": "zzz", "_lineage_root_id": "abc123", "title": "three"}, {"id": "qqq", "title": "four"}, {"id": "ABC5", "title": "five"}]}
+{"func": "session_rank", "case": "padded", "query": "  ABC  ", "limit": 20, "rows": [{"id": "abc123", "title": "one"}, {"id": "abc999", "title": "two"}, {"id": "zzz", "_lineage_root_id": "abc123", "title": "three"}, {"id": "qqq", "title": "four"}, {"id": "ABC5", "title": "five"}]}
+{"func": "session_rank", "case": "limit-one", "query": "abc", "limit": 1, "rows": [{"id": "abc123", "title": "one"}, {"id": "abc999", "title": "two"}, {"id": "zzz", "_lineage_root_id": "abc123", "title": "three"}, {"id": "qqq", "title": "four"}, {"id": "ABC5", "title": "five"}]}
+{"func": "session_rank", "case": "limit-zero", "query": "abc", "limit": 0, "rows": [{"id": "abc123", "title": "one"}, {"id": "abc999", "title": "two"}, {"id": "zzz", "_lineage_root_id": "abc123", "title": "three"}, {"id": "qqq", "title": "four"}, {"id": "ABC5", "title": "five"}]}
+{"func": "session_rank", "case": "empty-query", "query": "", "limit": 20, "rows": [{"id": "abc123", "title": "one"}, {"id": "abc999", "title": "two"}, {"id": "zzz", "_lineage_root_id": "abc123", "title": "three"}, {"id": "qqq", "title": "four"}, {"id": "ABC5", "title": "five"}]}
+{"func": "session_rank", "case": "no-match", "query": "nope", "limit": 20, "rows": [{"id": "abc123", "title": "one"}, {"id": "abc999", "title": "two"}, {"id": "zzz", "_lineage_root_id": "abc123", "title": "three"}, {"id": "qqq", "title": "four"}, {"id": "ABC5", "title": "five"}]}
+{"func": "session_rank", "case": "no-rows", "query": "abc", "limit": 20, "rows": []}
+{"func": "session_rank", "case": "null-ids", "query": "a", "limit": 20, "rows": [{"id": null, "title": "n"}, {"id": "", "title": "e"}, {"id": "ab", "title": "x"}]}
+{"func": "order_by", "case": "null", "sort": null}
+{"func": "order_by", "case": "absent"}
+{"func": "order_by", "case": "newest", "sort": "newest"}
+{"func": "order_by", "case": "oldest", "sort": "oldest"}
+{"func": "order_by", "case": "padded-upper", "sort": " OLDEST "}
+{"func": "order_by", "case": "rank", "sort": "rank"}
+{"func": "order_by", "case": "number", "sort": 5}
+{"func": "order_by", "case": "mixed-case", "sort": "Newest"}
+{"func": "route", "case": "empty", "query": "", "fts_stale": false, "fts_enabled": true, "trigram_available": false}
+{"func": "route", "case": "spaces", "query": "   ", "fts_stale": false, "fts_enabled": true, "trigram_available": false}
+{"func": "route", "case": "punctuation-only", "query": "()[]", "fts_stale": false, "fts_enabled": true, "trigram_available": false}
+{"func": "route", "case": "operator-only", "query": "AND", "fts_stale": false, "fts_enabled": true, "trigram_available": false}
+{"func": "route", "case": "fts", "query": "docker networking", "fts_stale": false, "fts_enabled": true, "trigram_available": false}
+{"func": "route", "case": "tool-role", "query": "docker", "role_filter": ["tool"], "fts_stale": false, "fts_enabled": true, "trigram_available": false}
+{"func": "route", "case": "tool-role-stale", "query": "docker", "role_filter": ["tool"], "fts_stale": true, "fts_enabled": true, "trigram_available": false}
+{"func": "route", "case": "stale", "query": "docker", "fts_stale": true, "fts_enabled": true, "trigram_available": false}
+{"func": "route", "case": "disabled", "query": "docker", "fts_stale": false, "fts_enabled": false, "trigram_available": false}
+{"func": "route", "case": "cjk-trigram", "query": "广西桂林", "fts_stale": false, "fts_enabled": true, "trigram_available": true}
+{"func": "route", "case": "cjk-no-trigram", "query": "广西桂林", "fts_stale": false, "fts_enabled": true, "trigram_available": false}
+{"func": "route", "case": "cjk-cron-source", "query": "广西桂林", "source_filter": ["cron"], "fts_stale": false, "fts_enabled": true, "trigram_available": true}
+{"func": "route", "case": "cjk-short-token", "query": "广西 OR 桂林", "fts_stale": false, "fts_enabled": true, "trigram_available": true}
+{"func": "route", "case": "latin-hyphen", "query": "chat-send", "fts_stale": false, "fts_enabled": true, "trigram_available": false}
+{"func": "describe_path", "case": "stale", "query": "docker", "fts_stale": true, "trigram_available": false}
+{"func": "describe_path", "case": "empty", "query": "", "fts_stale": false, "trigram_available": false}
+{"func": "describe_path", "case": "latin", "query": "docker", "fts_stale": false, "trigram_available": false}
+{"func": "describe_path", "case": "cjk-like", "query": "广西桂林", "fts_stale": false, "trigram_available": false}
+{"func": "describe_path", "case": "cjk-trigram", "query": "广西桂林", "fts_stale": false, "trigram_available": true}
+{"func": "describe_path", "case": "punct", "query": "!!!", "fts_stale": false, "trigram_available": false}

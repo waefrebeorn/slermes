@@ -1,0 +1,94 @@
+{"func":"state_dir","case":"plain","home":"/home/hermes/.hermes"}
+{"func":"state_dir","case":"trailing-slash","home":"/srv/h/"}
+{"func":"state_dir","case":"root","home":"/"}
+{"func":"is_supported_host","case":"linux","platform":"linux"}
+{"func":"is_supported_host","case":"linux2","platform":"linux2"}
+{"func":"is_supported_host","case":"win32","platform":"win32"}
+{"func":"is_supported_host","case":"darwin","platform":"darwin"}
+{"func":"missing_binaries","case":"all-present","present":["Xvnc","xfwm4","xfce4-panel","xfdesktop","xfsettingsd","dbus-run-session","xauth","xdpyinfo","setxkbmap","xprop"]}
+{"func":"missing_binaries","case":"none-present","present":[]}
+{"func":"missing_binaries","case":"no-xvnc","present":["xfwm4","xfce4-panel","xfdesktop","xfsettingsd","dbus-run-session","xauth","xdpyinfo","setxkbmap","xprop"]}
+{"func":"missing_binaries","case":"no-panel-no-xauth","present":["Xvnc","xfwm4","xfdesktop","xfsettingsd","dbus-run-session","xdpyinfo","setxkbmap","xprop"]}
+{"func":"package_manager","case":"apt-first","which":["apt-get","dnf"]}
+{"func":"package_manager","case":"dnf-first","which":["dnf","pacman"]}
+{"func":"package_manager","case":"pacman","which":["pacman"]}
+{"func":"package_manager","case":"none","which":[]}
+{"func":"package_manager","case":"unrelated","which":["curl","bash"]}
+{"func":"is_root","case":"root","euid":0}
+{"func":"is_root","case":"user","euid":1000}
+{"func":"is_root","case":"no-geteuid","euid":null}
+{"func":"installable","case":"root-with-apt","which":["apt-get"],"euid":0}
+{"func":"installable","case":"user-with-sudo","which":["apt-get","sudo"],"euid":1000}
+{"func":"installable","case":"user-no-sudo","which":["apt-get"],"euid":1000}
+{"func":"installable","case":"no-pm","which":[],"euid":0}
+{"func":"install_command","case":"apt-root","which":["apt-get"],"euid":0}
+{"func":"install_command","case":"apt-sudo","which":["apt-get"],"euid":1000}
+{"func":"install_command","case":"dnf-root","which":["dnf"],"euid":0}
+{"func":"install_command","case":"pacman-user","which":["pacman"],"euid":1000}
+{"func":"install_command","case":"none","which":["zypper"],"euid":0}
+{"func":"launcher_identity","case":"live","pidfile":"1234 1780000000.5","create_time":1780000000.5,"alive":true}
+{"func":"launcher_identity","case":"stale-create-time","pidfile":"1234 1780000000.5","create_time":1780000000.6,"alive":true}
+{"func":"launcher_identity","case":"exactly-one-tick","pidfile":"1234 100.0","create_time":100.01,"alive":true}
+{"func":"launcher_identity","case":"zombie","pidfile":"1234 1780000000.5","create_time":1780000000.5,"alive":false}
+{"func":"launcher_identity","case":"legacy-single-number","pidfile":"1234","create_time":1780000000.5,"alive":true}
+{"func":"launcher_identity","case":"missing-file","pidfile":null,"create_time":1.0,"alive":true}
+{"func":"launcher_identity","case":"not-a-pid","pidfile":"abc 1.0","create_time":1.0,"alive":true}
+{"func":"launcher_identity","case":"no-create-time","pidfile":"1234 1.0","create_time":null,"alive":true}
+{"func":"launcher_identity","case":"unparsable-born","pidfile":"1234 1.0x","create_time":1.0,"alive":true}
+{"func":"launcher_identity","case":"wrapped-newline","pidfile":"1234 1780000000.5\n","create_time":1780000000.5,"alive":true}
+{"func":"launcher_pid","case":"live","pidfile":"4242 100.25","create_time":100.25,"alive":true}
+{"func":"launcher_pid","case":"dead","pidfile":"4242 100.25","create_time":100.25,"alive":false}
+{"func":"recorded_launcher_pid","case":"live-or-dead","pidfile":"1234 1780000000.5"}
+{"func":"recorded_launcher_pid","case":"legacy","pidfile":"1234"}
+{"func":"recorded_launcher_pid","case":"missing","pidfile":null}
+{"func":"recorded_launcher_pid","case":"trailing-space-only","pidfile":"1234   "}
+{"func":"recorded_launcher_pid","case":"not-a-pid","pidfile":"x 1.0"}
+{"func":"x_lock_pid","case":"spaces","raw":"  4242\n"}
+{"func":"x_lock_pid","case":"plain","raw":"21"}
+{"func":"x_lock_pid","case":"signed","raw":"+77"}
+{"func":"x_lock_pid","case":"garbage","raw":"abc"}
+{"func":"x_lock_pid","case":"empty","raw":""}
+{"func":"x_lock_pid","case":"float","raw":"12.5"}
+{"func":"x_lock_pid","case":"no-file","raw":null}
+{"func":"x_socket_bound","case":"bound","unix_table":"Num       RefCount Protocol Flags    Type St Inode Path\n00000000: 00000002 00000000 00010000 0001 01 34567 @/tmp/.X11-unix/X21\n","num":21}
+{"func":"x_socket_bound","case":"other-display","unix_table":"Num       RefCount Protocol Flags    Type St Inode Path\n00000000: 00000002 00000000 00010000 0001 01 34567 @/tmp/.X11-unix/X22\n","num":21}
+{"func":"x_socket_bound","case":"no-table","unix_table":null,"num":21}
+{"func":"x_socket_bound","case":"trailing-space","unix_table":"00000000: 00000002 0 0 00010000 0001 01 34567 @/tmp/.X11-unix/X20   \n","num":20}
+{"func":"x_socket_bound","case":"not-x11","unix_table":"00000000: 00000002 00000000 00010000 0001 01 34568 /run/user/1000/bus\n","num":21}
+{"func":"display_in_use","case":"lock-alive","lock_pid":42,"alive":true,"socket_bound":false}
+{"func":"display_in_use","case":"stale-lock","lock_pid":42,"alive":false,"socket_bound":false}
+{"func":"display_in_use","case":"socket-only","lock_pid":null,"alive":false,"socket_bound":true}
+{"func":"display_in_use","case":"free","lock_pid":null,"alive":false,"socket_bound":false}
+{"func":"pick_display","case":"reuse-recorded","recorded":"21","in_use":[]}
+{"func":"pick_display","case":"recorded-taken","recorded":"21","in_use":[21]}
+{"func":"pick_display","case":"no-recorded","recorded":null,"in_use":[]}
+{"func":"pick_display","case":"recorded-junk","recorded":"abc","in_use":[20,21,22]}
+{"func":"pick_display","case":"recorded-outside-band","recorded":"95","in_use":[]}
+{"func":"pick_display","case":"band-exhausted","recorded":null,"in_use":[20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89]}
+{"func":"published_env","case":"up","launcher_pid":7,"raw":"DISPLAY=:21\nXAUTHORITY=/s/Xauthority\nDBUS_SESSION_BUS_ADDRESS=unix:path=/run/bus\n"}
+{"func":"published_env","case":"no-launcher","launcher_pid":null,"raw":"DISPLAY=:21\n"}
+{"func":"published_env","case":"no-file","launcher_pid":7,"raw":null}
+{"func":"published_env","case":"sandbox","marker":true,"launcher_pid":null,"sandbox_published":{"DISPLAY":":31","XAUTHORITY":"/sandbox/Xauthority"}}
+{"func":"published_env","case":"blank-values","launcher_pid":7,"raw":"DISPLAY = :21 \nNOEQUALS\nXAUTHORITY=/a\nXAUTHORITY=/b\n"}
+{"func":"rfb_socket_path","case":"up","launcher_pid":7,"exists":true,"state_dir":"/s/bot-desktop"}
+{"func":"rfb_socket_path","case":"socket-gone","launcher_pid":7,"exists":false,"state_dir":"/s/bot-desktop"}
+{"func":"rfb_socket_path","case":"no-launcher","launcher_pid":null,"exists":true,"state_dir":"/s/bot-desktop"}
+{"func":"rfb_socket_path","case":"sandboxed","marker":true,"launcher_pid":7,"exists":true,"state_dir":"/s/bot-desktop"}
+{"func":"is_running","case":"up","env":{"DISPLAY":":21"}}
+{"func":"is_running","case":"down","env":{}}
+{"func":"is_running","case":"blank-display","env":{"DISPLAY":""}}
+{"func":"is_running","case":"null-display","env":{"DISPLAY":null}}
+{"func":"host_published_env","case":"host","marker":false,"published":{"DISPLAY":":21"}}
+{"func":"host_published_env","case":"sandboxed","marker":true,"published":{"DISPLAY":":21"}}
+{"func":"host_published_env","case":"down","marker":false,"published":null}
+{"func":"desktop_env","case":"merge-published","base":{"PATH":"/usr/bin","DISPLAY":":0","WAYLAND_DISPLAY":"wayland-0"},"published":{"DISPLAY":":21","XAUTHORITY":"/s/Xauthority"},"marker":false}
+{"func":"desktop_env","case":"sandbox-strips-seat","base":{"PATH":"/usr/bin","DISPLAY":":0","XAUTHORITY":"/home/u/.Xauthority","DBUS_SESSION_BUS_ADDRESS":"unix:path=/run/u/bus","WAYLAND_DISPLAY":"wayland-0","HOME":"/home/u"},"published":null,"marker":true}
+{"func":"desktop_env","case":"down-unchanged","base":{"PATH":"/usr/bin","DISPLAY":":0"},"published":null,"marker":false}
+{"func":"geometry","case":"configured","cfg":{"geometry":"1600x1000"}}
+{"func":"geometry","case":"default","cfg":{}}
+{"func":"geometry","case":"blank","cfg":{"geometry":""}}
+{"func":"geometry","case":"null","cfg":{"geometry":null}}
+{"func":"geometry","case":"number","cfg":{"geometry":1920}}
+{"func":"x_socket_bound","case":"mid-line-path","unix_table":"00000000: 00000002 00000000 00010000 0001 01 34567 @/tmp/.X11-unix/X21 /run/something\n","num":21}
+{"func":"x_socket_bound","case":"empty-table","unix_table":"","num":21}
+{"func":"published_env","case":"crlf","launcher_pid":7,"raw":"DISPLAY=:21\r\nXAUTHORITY=/s/Xa\r\n"}

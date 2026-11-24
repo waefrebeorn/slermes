@@ -1,0 +1,49 @@
+{"func": "constants", "case": "all-tables"}
+{"func": "xai_promote_top", "case": "static-fallback", "ids": ["grok-4.6", "grok-build-0.1", "grok-4.5", "grok-4.3", "grok-4.20-0309-reasoning", "grok-4.20-0309-non-reasoning", "grok-4.20-multi-agent-0309"]}
+{"func": "xai_promote_top", "case": "already-first", "ids": ["grok-4.6", "grok-4.5", "grok-build-0.1"]}
+{"func": "xai_promote_top", "case": "top-absent", "ids": ["grok-4.5", "grok-4.3", "grok-build-0.1"]}
+{"func": "xai_promote_top", "case": "empty", "ids": []}
+{"func": "xai_promote_top", "case": "top-last", "ids": ["grok-4.20-0309-reasoning", "grok-4.3", "grok-4.6"]}
+{"func": "xai_promote_top", "case": "duplicate-top", "ids": ["grok-4.5", "grok-4.6", "grok-4.6", "grok-build-0.1"]}
+{"func": "xai_merge_curated_extras", "case": "no-extras-present", "ids": ["grok-4.20-0309-reasoning", "grok-4.20-0309-non-reasoning", "grok-4.20-multi-agent-0309", "grok-4.3", "grok-build-0.1"]}
+{"func": "xai_merge_curated_extras", "case": "extras-present", "ids": ["grok-4.6", "grok-4.5", "grok-composer-2.5-fast", "grok-4.3"]}
+{"func": "xai_merge_curated_extras", "case": "partly-present-after-head", "ids": ["grok-4.6", "grok-4.3", "grok-build-0.1"]}
+{"func": "xai_merge_curated_extras", "case": "empty", "ids": []}
+{"func": "xai_finalize_catalog", "case": "static-fallback", "ids": ["grok-4.6", "grok-build-0.1", "grok-4.5", "grok-4.3", "grok-4.20-0309-reasoning", "grok-4.20-0309-non-reasoning", "grok-4.20-multi-agent-0309"]}
+{"func": "xai_finalize_catalog", "case": "models-dev-shaped", "ids": ["grok-4.20-0309-non-reasoning", "grok-4.20-0309-reasoning", "grok-4.3", "grok-4.5", "grok-4.6", "grok-build-0.1", "grok-imagine-image"]}
+{"func": "xai_finalize_catalog", "case": "no-top", "ids": ["grok-imagine-video", "grok-imagine-video-1.5"]}
+{"func": "provider_group_for_slug", "case": "kimi", "slug": "kimi"}
+{"func": "provider_group_for_slug", "case": "trimmed-upper", "slug": "  XAI-OAuth\t"}
+{"func": "provider_group_for_slug", "case": "ungrouped", "slug": "nous"}
+{"func": "provider_group_for_slug", "case": "null", "slug": null}
+{"func": "provider_group_for_slug", "case": "empty", "slug": ""}
+{"func": "provider_group_for_slug", "case": "tencent", "slug": "tencent-tokenplan"}
+{"func": "group_providers", "case": "mixed", "slugs": ["nous", "kimi-coding", "zai", "kimi-coding-cn", "openai-api"]}
+{"func": "group_providers", "case": "reverse", "slugs": ["openai-api", "openai-codex", "zai", "minimax-cn", "minimax"]}
+{"func": "group_providers", "case": "dups-and-blanks", "slugs": ["zai", " ZAI ", "", null, "zai", "opencode-zen", "opencode-go"]}
+{"func": "group_providers", "case": "single-member-group", "slugs": ["gemini", "nous"]}
+{"func": "group_providers", "case": "empty", "slugs": []}
+{"func": "group_providers", "case": "ungrouped-only", "slugs": ["nous", "openrouter", "ai-gateway"]}
+{"func": "group_providers", "case": "qwen-all-seven", "slugs": ["qwen-oauth", "alibaba-token-plan-cn", "alibaba", "alibaba-cn", "alibaba-coding-plan", "alibaba-coding-plan-cn", "alibaba-token-plan"]}
+{"func": "group_providers", "case": "minimax-pair", "slugs": ["minimax", "minimax-oauth", "minimax-cn", "stepfun"]}
+{"func": "plugin_provider_enters_picker", "case": "builtin", "name": "nous"}
+{"func": "plugin_provider_enters_picker", "case": "builtin-twin", "name": "xai-oauth"}
+{"func": "plugin_provider_enters_picker", "case": "plugin", "name": "acme-inference"}
+{"func": "provider_models", "case": "nous", "slug": "nous"}
+{"func": "provider_models", "case": "alibaba-cn", "slug": "alibaba-cn"}
+{"func": "provider_models", "case": "bedrock", "slug": "bedrock"}
+{"func": "provider_models", "case": "empty-row", "slug": "azure-foundry"}
+{"func": "provider_models", "case": "unknown", "slug": "not-a-provider"}
+{"func": "provider_label", "case": "openai-api", "slug": "openai-api"}
+{"func": "provider_label", "case": "custom", "slug": "custom"}
+{"func": "provider_label", "case": "unknown", "slug": "not-a-provider"}
+{"func": "provider_alias", "case": "glm", "key": "glm"}
+{"func": "provider_alias", "case": "ollama-local", "key": "ollama"}
+{"func": "provider_alias", "case": "x-ai", "key": "x-ai"}
+{"func": "provider_alias", "case": "unknown", "key": "not-an-alias"}
+{"func": "canonical_provider_row", "case": "qwen-oauth", "slug": "qwen-oauth"}
+{"func": "canonical_provider_row", "case": "moa", "slug": "moa"}
+{"func": "canonical_provider_row", "case": "unknown", "slug": "not-a-provider"}
+{"func": "group_members", "case": "qwen", "gid": "qwen"}
+{"func": "group_members", "case": "google", "gid": "google"}
+{"func": "group_members", "case": "unknown", "gid": "nope"}

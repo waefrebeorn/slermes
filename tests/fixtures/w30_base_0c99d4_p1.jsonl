@@ -1,0 +1,82 @@
+{"func": "sandbox_dir", "case": "custom-dir", "env": {"TERMINAL_SANDBOX_DIR": "sb"}}
+{"func": "sandbox_dir", "case": "custom-trailing-slash", "env": {"TERMINAL_SANDBOX_DIR": "sb/"}}
+{"func": "sandbox_dir", "case": "custom-absolute", "env": {"TERMINAL_SANDBOX_DIR": "/abs/sb//x/"}}
+{"func": "sandbox_dir", "case": "custom-empty-home-fallback", "env": {"TERMINAL_SANDBOX_DIR": "", "HERMES_HOME": "hh"}}
+{"func": "sandbox_dir", "case": "custom-null-home-fallback", "env": {"TERMINAL_SANDBOX_DIR": null, "HERMES_HOME": "hh"}}
+{"func": "sandbox_dir", "case": "home-normalises", "env": {"HERMES_HOME": "hh//deep/"}}
+{"func": "sandbox_dir", "case": "home-blank-uses-localappdata", "env": {"HERMES_HOME": "   ", "LOCALAPPDATA": "la"}}
+{"func": "sandbox_dir", "case": "home-blank-suffix", "env": {"LOCALAPPDATA": "la", "HERMES_DATA_DIR_SUFFIX": "-dev"}}
+{"func": "uses_host_filesystem", "case": "true", "value": true}
+{"func": "uses_host_filesystem", "case": "false", "value": false}
+{"func": "uses_host_filesystem", "case": "int-one", "value": 1}
+{"func": "uses_host_filesystem", "case": "string-true", "value": "true"}
+{"func": "uses_host_filesystem", "case": "null", "value": null}
+{"func": "uses_host_filesystem", "case": "attr-absent", "value": true, "present": false}
+{"func": "activity_due", "case": "fires", "last_touch": 0, "start": 0, "now": 100, "has_cb": true, "label": "run"}
+{"func": "activity_due", "case": "interval-not-reached", "last_touch": 95, "start": 0, "now": 100, "has_cb": true, "label": "x"}
+{"func": "activity_due", "case": "boundary-equal", "last_touch": 90, "start": 0, "now": 100, "has_cb": true, "label": "x"}
+{"func": "activity_due", "case": "custom-interval-zero", "last_touch": 0, "start": 0, "now": 100, "interval": 0}
+{"func": "activity_due", "case": "custom-interval-long", "last_touch": 0, "start": 0, "now": 100, "interval": 200}
+{"func": "activity_due", "case": "subsecond-truncates", "last_touch": 0, "start": 99.5, "now": 100, "has_cb": true, "label": "L"}
+{"func": "activity_due", "case": "callback-raises", "last_touch": 0, "start": 0, "now": 5, "has_cb": true, "label": "z", "raise": true}
+{"func": "activity_due", "case": "no-callback", "last_touch": 0, "start": 0, "now": 250, "label": "solo"}
+{"func": "env_name_valid", "case": "plain", "name": "PATH"}
+{"func": "env_name_valid", "case": "leading-underscore", "name": "_x9"}
+{"func": "env_name_valid", "case": "leading-digit", "name": "9x"}
+{"func": "env_name_valid", "case": "hyphen", "name": "A-B"}
+{"func": "env_name_valid", "case": "empty", "name": ""}
+{"func": "env_name_valid", "case": "null", "name": null}
+{"func": "env_name_valid", "case": "space", "name": "A B"}
+{"func": "env_name_valid", "case": "non-ascii", "name": "É"}
+{"func": "snapshot_exclusions", "case": "not-profile-scoped", "profile_scoped": false, "multiplex": true, "names": ["FOO"]}
+{"func": "snapshot_exclusions", "case": "multiplex-off", "profile_scoped": true, "multiplex": false, "names": ["FOO"]}
+{"func": "snapshot_exclusions", "case": "merged-sorted", "profile_scoped": true, "multiplex": true, "names": ["FOO", "bar"], "additional": ["BAZ"]}
+{"func": "snapshot_exclusions", "case": "invalid-dropped", "profile_scoped": true, "multiplex": true, "names": ["bad name", "", "OK_1", 7]}
+{"func": "snapshot_exclusions", "case": "dedupe", "profile_scoped": true, "multiplex": true, "names": ["Z", "A", "A"]}
+{"func": "snapshot_exclusions", "case": "names-not-list", "profile_scoped": true, "multiplex": true, "names": {"a": 1}}
+{"func": "sudo_nopasswd", "case": "unsupported", "supported": false, "probe_rc": 0}
+{"func": "sudo_nopasswd", "case": "rc-zero", "supported": true, "probe_rc": 0}
+{"func": "sudo_nopasswd", "case": "rc-one", "supported": true, "probe_rc": 1}
+{"func": "sudo_nopasswd", "case": "probe-raises", "supported": true, "probe_raises": true}
+{"func": "sudo_nopasswd", "case": "rc-null", "supported": true, "probe_rc": null}
+{"func": "sudo_nopasswd", "case": "rc-false-is-zero", "supported": true, "probe_rc": false}
+{"func": "probe_nonlogin", "case": "login-dead", "detail": "snapshot failed", "snapshot_timeout": 30, "probe_rc": 0}
+{"func": "probe_nonlogin", "case": "rc1-uses-stdout", "detail": "snapshot failed", "snapshot_timeout": 5, "probe_rc": 1, "probe_stdout": "  bash: not found  "}
+{"func": "probe_nonlogin", "case": "rc1-blank-stdout", "detail": "snapshot failed", "snapshot_timeout": 30, "probe_rc": 1, "probe_stdout": "   "}
+{"func": "probe_nonlogin", "case": "probe-raises", "detail": "snapshot failed", "snapshot_timeout": 30, "probe_raises": true, "probe_exc": "spawn denied"}
+{"func": "probe_nonlogin", "case": "empty-detail", "detail": "", "snapshot_timeout": 30, "probe_rc": 1}
+{"func": "init_paths", "case": "short-id", "temp_dir": "/tmp", "session_id": "abc123456789"}
+{"func": "init_paths", "case": "trailing-slash", "temp_dir": "/tmp/", "session_id": "abc123456789"}
+{"func": "init_paths", "case": "twelve", "temp_dir": "/var/hermes", "session_id": "abcdef123456"}
+{"func": "init_paths", "case": "long-id-truncates", "temp_dir": "/x", "session_id": "0123456789abcdef"}
+{"func": "init_paths", "case": "empty-temp-dir", "temp_dir": "", "session_id": "999999999999"}
+{"func": "init_paths", "case": "slash-only", "temp_dir": "///", "session_id": "999999999999"}
+{"func": "session_markers", "case": "plain", "session_id": "xy"}
+{"func": "session_markers", "case": "empty-id", "session_id": ""}
+{"func": "task_snapshot_path", "case": "normal", "snapshot_path": "/tmp/hermes-snap-a.sh", "task_id": "t1"}
+{"func": "task_snapshot_path", "case": "short-path", "snapshot_path": "ab", "task_id": "t1"}
+{"func": "task_snapshot_path", "case": "empty-task", "snapshot_path": "/x/.sh", "task_id": ""}
+{"func": "task_snapshot_path", "case": "unicode-task", "snapshot_path": "/tmp/s.sh", "task_id": "café-1"}
+{"func": "update_cwd", "case": "moves", "output": "hi\n\n__HERMES_CWD_s1__/w__HERMES_CWD_s1__\n", "cwd_marker": "__HERMES_CWD_s1__", "pipe_marker": "", "move_session": true, "env_cwd": "/old"}
+{"func": "update_cwd", "case": "no-move", "output": "hi\n\n__HERMES_CWD_s1__/w__HERMES_CWD_s1__\n", "cwd_marker": "__HERMES_CWD_s1__", "pipe_marker": "", "move_session": false, "env_cwd": "/old"}
+{"func": "update_cwd", "case": "pipestatus", "output": "out\n\n__HERMES_PIPE_s1__0 1__HERMES_PIPE_s1__\n\n__HERMES_CWD_s1__/x y__HERMES_CWD_s1__\n", "cwd_marker": "__HERMES_CWD_s1__", "pipe_marker": "__HERMES_PIPE_s1__", "move_session": true, "env_cwd": "/old"}
+{"func": "update_cwd", "case": "bad-pipestatus", "output": "out\n\n__HERMES_PIPE_s1__0 x__HERMES_PIPE_s1__\n\n__HERMES_CWD_s1__/w__HERMES_CWD_s1__\n", "cwd_marker": "__HERMES_CWD_s1__", "pipe_marker": "__HERMES_PIPE_s1__", "move_session": true, "env_cwd": "/old"}
+{"func": "update_cwd", "case": "no-marker", "output": "plain", "cwd_marker": "__HERMES_CWD_s1__", "pipe_marker": "__HERMES_PIPE_s1__", "move_session": true, "env_cwd": "/old"}
+{"func": "update_cwd", "case": "empty-path", "output": "a\n__HERMES_CWD_s1____HERMES_CWD_s1__\n", "cwd_marker": "__HERMES_CWD_s1__", "pipe_marker": "", "move_session": true, "env_cwd": "/old"}
+{"func": "update_cwd", "case": "empty-markers", "output": "a\n__HERMES_CWD_s1____HERMES_CWD_s1__\n", "cwd_marker": "", "pipe_marker": "", "move_session": true, "env_cwd": "/only"}
+{"func": "fetch_realpath", "case": "last-absolute", "remote_path": "/x", "result": {"returncode": 0, "output": "noise\n/real/path  \n"}}
+{"func": "fetch_realpath", "case": "rc-nonzero", "remote_path": "/x", "result": {"returncode": 1, "output": "/real/path\n"}}
+{"func": "fetch_realpath", "case": "no-absolute", "remote_path": "/x", "result": {"returncode": 0, "output": "noise\n"}}
+{"func": "fetch_realpath", "case": "string-rc", "remote_path": "/x", "result": {"returncode": "0", "output": "\n/a\n/b\n"}}
+{"func": "fetch_realpath", "case": "empty-output", "remote_path": "/x", "result": {"returncode": 0, "output": ""}}
+{"func": "fetch_realpath", "case": "rc-false", "remote_path": "/x", "result": {"returncode": false, "output": "/p\n"}}
+{"func": "usable_cwd", "case": "identity", "cwd": "/x"}
+{"func": "usable_cwd", "case": "empty", "cwd": ""}
+{"func": "temp_dir", "case": "constant"}
+{"func": "script_kwargs", "case": "home-tilde-space", "cwd": "~/a b", "snap": null, "snapshot_path": "/tmp/hermes-snap-a.sh", "cwd_marker": "__HERMES_CWD_s1__"}
+{"func": "script_kwargs", "case": "snap-override", "cwd": "/work dir", "snap": "/tmp/othe r.sh", "snapshot_path": "/tmp/hermes-snap-a.sh", "cwd_marker": "__HERMES_CWD_s1__"}
+{"func": "script_kwargs", "case": "bare-tilde", "cwd": "~", "snap": "", "snapshot_path": "/tmp/hermes-snap-a.sh", "cwd_marker": "__HERMES_CWD_s1__"}
+{"func": "uses_host_filesystem", "case": "absent-value"}
+{"func": "probe_nonlogin", "case": "string-rc", "detail": "d", "snapshot_timeout": 30, "probe_rc": "0"}
+{"func": "activity_due", "case": "interval-boundary-sub", "last_touch": 0.5, "start": 0, "now": 10.5, "has_cb": true, "label": "k"}
+{"func": "task_snapshot_path", "case": "long-task", "snapshot_path": "/tmp/hermes-snap-abcdef123456.sh", "task_id": "delegate:session-42:step-7"}

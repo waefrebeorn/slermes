@@ -1,0 +1,57 @@
+{"func":"platform_names","case":"mixed","mapping":["Slack","slack",{"value":"discord"},"TEAMS"]}
+{"func":"platform_names","case":"empty","mapping":[]}
+{"func":"platform_names","case":"enums-only","mapping":[{"value":"api_server"},{"value":"SIGNAL"}]}
+{"func":"collect_scope","case":"single","notifier_profile":"alpha","profile_adapters":{},"adapters":["slack","discord"],"multiplex":false,"routes":[]}
+{"func":"collect_scope","case":"profile-adapters","notifier_profile":"alpha","profile_adapters":{"beta":["teams"]," gamma ":["slack"]},"adapters":[{"value":"slack"}],"multiplex":false,"routes":[]}
+{"func":"collect_scope","case":"multiplex-routes","notifier_profile":"default","profile_adapters":{},"adapters":["slack","teams"],"multiplex":true,"routes":[{"profile":"beta","enabled":true,"platform":"slack"},{"profile":"gamma","enabled":false,"platform":"slack"},{"profile":"delta","enabled":true,"platform":"teams"},{"profile":"eps","enabled":true,"platform":{"value":"slack"}},{"profile":"zeta","enabled":true,"platform":"email"}]}
+{"func":"collect_scope","case":"no-notifier","notifier_profile":null,"profile_adapters":{"beta":[]},"adapters":[],"multiplex":false,"routes":[]}
+{"func":"chat_type_of","case":"sub-normalized","sub":{"chat_type":" Thread "},"metadata":{}}
+{"func":"chat_type_of","case":"metadata-fallback","sub":{},"metadata":{"chat_type":"Forum_Post"}}
+{"func":"chat_type_of","case":"empty-sub-wins","sub":{"chat_type":""},"metadata":{"chat_type":"dm"}}
+{"func":"chat_type_of","case":"none","sub":{},"metadata":null}
+{"func":"wake_scope_id","case":"scope-id-wins","sub":{"chat_id":"C1","delivery_metadata":{"scope_id":"T1","guild_id":"G1"}},"resolver":{"present":true,"value":"R1"}}
+{"func":"wake_scope_id","case":"guild-fallback","sub":{"chat_id":"C2","delivery_metadata":{"scope_id":"","guild_id":"G2"}},"resolver":null}
+{"func":"wake_scope_id","case":"team-id","sub":{"chat_id":"C3","delivery_metadata":{"team_id":"TM3"}}}
+{"func":"wake_scope_id","case":"resolver","sub":{"chat_id":"C4","delivery_metadata":null},"resolver":{"present":true,"value":"R4"}}
+{"func":"wake_scope_id","case":"resolver-empty","sub":{"chat_id":"C5","delivery_metadata":{}},"resolver":{"present":true,"value":null}}
+{"func":"wake_scope_id","case":"no-resolver","sub":{"chat_id":"C6"},"resolver":{"present":false,"value":"RX"}}
+{"func":"wake_scope_id","case":"meta-not-dict","sub":{"chat_id":"C7","delivery_metadata":"nope"},"resolver":{"present":true,"value":"R7"}}
+{"func":"anchorless_warn","case":"thread-id","sub":{"task_id":"t1","chat_id":"C1","thread_id":"TH1"},"platform":"slack","warned":[]}
+{"func":"anchorless_warn","case":"parent-anchored","sub":{"task_id":"t1","chat_id":"C1","thread_id":"TH1","delivery_metadata":{"parent_chat_id":"P1"}},"platform":"slack","warned":[]}
+{"func":"anchorless_warn","case":"metadata-thread-type","sub":{"task_id":"t2","chat_id":"C2","chat_type":"dm","delivery_metadata":{"chat_type":"thread"}},"platform":"slack","warned":[]}
+{"func":"anchorless_warn","case":"dm-ignored","sub":{"task_id":"t3","chat_id":"C3","chat_type":"dm"},"platform":"slack","warned":[]}
+{"func":"anchorless_warn","case":"already-warned","sub":{"task_id":"t4","chat_id":"C4","thread_id":"TH4"},"platform":"slack","warned":[["t4","slack","C4","TH4"]]}
+{"func":"anchorless_warn","case":"topic-empty-thread","sub":{"task_id":"t5","chat_id":"C5","thread_id":"","chat_type":"topic"},"platform":"slack","warned":[]}
+{"func":"unroutable_warn","case":"first","sub":{"task_id":"t6","chat_id":"C6"},"platform":"slack","warned":[]}
+{"func":"unroutable_warn","case":"again","sub":{"task_id":"t6","chat_id":"C6"},"platform":"slack","warned":[["t6","slack","C6",""]]}
+{"func":"resolve_adapter","case":"single-tenant-passthrough","platform":"slack","adapter":"other","multiplex":false,"primary_profile":"default","sub":{"task_id":"t1","chat_id":"C1"}}
+{"func":"resolve_adapter","case":"secondary-credential","platform":"slack","adapter":"other","multiplex":true,"primary_profile":"default","sub":{"task_id":"t1","chat_id":"C1"}}
+{"func":"resolve_adapter","case":"own-platform","platform":"slack","adapter":"primary","multiplex":true,"owner_profile":"alpha","primary_profile":"default","own_platforms":["slack"],"sub":{"task_id":"t1","chat_id":"C1"}}
+{"func":"resolve_adapter","case":"route-served","platform":"slack","adapter":"absent","multiplex":true,"owner_profile":"alpha","primary_profile":"default","served":["alpha"],"routes":[{"profile":"alpha","plain":true}],"sub":{"task_id":"t1","chat_id":"C1"}}
+{"func":"resolve_adapter","case":"route-not-served","platform":"slack","adapter":"absent","multiplex":true,"owner_profile":"alpha","primary_profile":"default","served":["default"],"routes":[{"profile":"alpha","plain":true}],"sub":{"task_id":"t1","chat_id":"C1"}}
+{"func":"resolve_adapter","case":"route-pinned-elsewhere","platform":"slack","adapter":"absent","multiplex":true,"owner_profile":"alpha","primary_profile":"default","served":["alpha"],"routes":[{"profile":"beta","plain":true}],"sub":{"task_id":"t2","chat_id":"C2","thread_id":"TH2"}}
+{"func":"resolve_adapter","case":"route-relaxed-claim","platform":"slack","adapter":"absent","multiplex":true,"owner_profile":"alpha","primary_profile":"default","served":["alpha"],"routes":[{"profile":"alpha","plain":false,"relaxed":true}],"sub":{"task_id":"t3","chat_id":"C3"}}
+{"func":"resolve_adapter","case":"no-routes-primary-profile","platform":"slack","adapter":"absent","multiplex":true,"primary_profile":"default","sub":{"task_id":"t4","chat_id":"C4"}}
+{"func":"resolve_adapter","case":"no-routes-foreign-profile","platform":"slack","adapter":"absent","multiplex":true,"owner_profile":"alpha","primary_profile":"default","sub":{"task_id":"t5","chat_id":"C5"}}
+{"func":"resolve_adapter","case":"api-server-owned","platform":"api_server","adapter":"absent","multiplex":true,"owner_profile":"alpha","primary_profile":"default","api_server_owned":true,"sub":{"task_id":"t6","chat_id":"sess-9"}}
+{"func":"resolve_adapter","case":"api-server-unowned","platform":"api_server","adapter":"absent","multiplex":true,"owner_profile":"alpha","primary_profile":"default","api_server_owned":false,"sub":{"task_id":"t7","chat_id":"sess-9"}}
+{"func":"resolve_adapter","case":"second-route-wins","platform":"slack","adapter":"absent","multiplex":true,"owner_profile":"alpha","primary_profile":"default","served":["alpha"],"routes":[{"profile":"beta","plain":false,"relaxed":false},{"profile":"alpha","plain":true}],"sub":{"task_id":"t8","chat_id":"C8"}}
+{"func":"wake_plan","case":"notify-only","events":[{"id":1,"kind":"completed","payload":{"summary":"done thing"}}],"sub":{"task_id":"t10","platform":"slack","chat_id":"C10","delivery_mode":"notify"},"task":{"title":"Notify","assignee":"bob","session_id":"sess-1"},"board":"main","split":false,"is_push_adapter":true}
+{"func":"wake_plan","case":"wake-completed","events":[{"id":2,"kind":"completed","payload":{"summary":"migrated\nsecond"}}],"sub":{"task_id":"t11","platform":"slack","chat_id":"C11","delivery_mode":"notify+wake"},"task":{"title":"Wake me","assignee":"ann","session_id":"sess-2"},"board":"main","split":false,"is_push_adapter":true}
+{"func":"wake_plan","case":"wake-non-push","events":[{"id":3,"kind":"crashed","payload":{}}],"sub":{"task_id":"t12","platform":"api_server","chat_id":"sess-3","delivery_mode":"wake"},"task":{"title":"Raw session","assignee":null,"session_id":"worker-9"},"board":null,"split":false,"is_push_adapter":false}
+{"func":"wake_plan","case":"split-two-groups","events":[{"id":4,"kind":"completed","payload":{"summary":"all good"}},{"id":5,"kind":"crashed","payload":{}}],"sub":{"task_id":"t13","platform":"slack","chat_id":"C13","delivery_mode":"notify+wake"},"task":{"title":"Split","assignee":"bob","session_id":"sess-4"},"board":"ops","split":true,"is_push_adapter":true}
+{"func":"wake_plan","case":"split-diagnostic-only","events":[{"id":6,"kind":"timed_out","payload":{"limit_seconds":300}}],"sub":{"task_id":"t14","platform":"slack","chat_id":"C14","delivery_mode":"notify+wake"},"task":{"title":"Timeouts","assignee":"bob"},"board":"ops","split":true,"is_push_adapter":true}
+{"func":"wake_plan","case":"changes-review-detail","events":[{"id":7,"kind":"changes_requested","payload":{"reason":"needs tests","reviewer":"ann"}}],"sub":{"task_id":"t15","platform":"slack","chat_id":"C15","delivery_mode":"notify+wake"},"task":{"title":"Review","assignee":"bob","session_id":"sess-5"},"board":"main","split":false,"is_push_adapter":true}
+{"func":"wake_plan","case":"multi-kind-joiner","events":[{"id":8,"kind":"blocked","payload":{"reason":"x"}},{"id":9,"kind":"completed","payload":{}}],"sub":{"task_id":"t16","platform":"slack","chat_id":"C16","delivery_mode":"notify+wake"},"task":{"title":"Multi","assignee":"bob"},"board":"main","split":false,"is_push_adapter":true}
+{"func":"wake_plan","case":"no-events","events":[],"sub":{"task_id":"t17","platform":"slack","chat_id":"C17","delivery_mode":"notify+wake"},"task":{"title":"Empty"},"board":"main","split":true,"is_push_adapter":true}
+{"func":"failure_step","case":"first","count":0,"sub":{"task_id":"t20","platform":"slack","chat_id":"C20"}}
+{"func":"failure_step","case":"five","count":5,"sub":{"task_id":"t21","platform":"slack","chat_id":"C21"}}
+{"func":"failure_step","case":"last-before-drop","count":10,"sub":{"task_id":"t22","platform":"slack","chat_id":"C22"}}
+{"func":"failure_step","case":"drop","count":11,"sub":{"task_id":"t23","platform":"slack","chat_id":"C23"}}
+{"func":"after_delivery","case":"archived-push","task":{"status":"archived"},"is_push":true}
+{"func":"after_delivery","case":"done-non-push","task":{"status":"done"},"is_push":false}
+{"func":"after_delivery","case":"no-task","task":null,"is_push":true}
+{"func":"after_delivery","case":"blocked-push","task":{"status":"blocked"},"is_push":true}
+{"func":"wake_plan","case":"served-profile-multiplex","events":[{"id":10,"kind":"completed","payload":{"summary":"served"}}],"sub":{"task_id":"t18","platform":"slack","chat_id":"C18","notifier_profile":"alpha","delivery_mode":"notify+wake"},"task":{"title":"Served","assignee":"bob","session_id":"sess-6"},"board":"main","split":false,"is_push_adapter":true,"multiplex":true}
+{"func":"wake_plan","case":"served-profile-single-tenant","events":[{"id":11,"kind":"completed","payload":{"summary":"solo"}}],"sub":{"task_id":"t19","platform":"slack","chat_id":"C19","notifier_profile":"alpha","delivery_mode":"notify+wake"},"task":{"title":"Solo","assignee":"bob","session_id":"sess-7"},"board":"main","split":false,"is_push_adapter":true,"multiplex":false}
+{"func":"wake_plan","case":"served-profile-missing","events":[{"id":12,"kind":"crashed","payload":{}}],"sub":{"task_id":"t20","platform":"slack","chat_id":"C20","delivery_mode":"wake"},"task":{"title":"No profile"},"board":"main","split":false,"is_push_adapter":false,"multiplex":true}

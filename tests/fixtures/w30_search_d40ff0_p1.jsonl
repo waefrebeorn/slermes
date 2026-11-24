@@ -1,0 +1,154 @@
+{"func": "constants", "case": "query-constants"}
+{"func": "sanitize", "case": "plain", "query": "hello world"}
+{"func": "sanitize", "case": "colon-quote-dotted", "query": "TODO: fix \"chat-send\" my-app.config.ts AND foo*"}
+{"func": "sanitize", "case": "leading-and", "query": "AND docker images"}
+{"func": "sanitize", "case": "trailing-and", "query": "docker images AND"}
+{"func": "sanitize", "case": "only-and", "query": "AND"}
+{"func": "sanitize", "case": "double-and", "query": "x AND AND y"}
+{"func": "sanitize", "case": "leading-or", "query": "OR  foo"}
+{"func": "sanitize", "case": "trailing-not", "query": "foo not"}
+{"func": "sanitize", "case": "leading-android", "query": "ANDROID stuff"}
+{"func": "sanitize", "case": "leading-star", "query": " *nimb"}
+{"func": "sanitize", "case": "star-run", "query": "na**me*"}
+{"func": "sanitize", "case": "unmatched-quote", "query": "quote \"unclosed"}
+{"func": "sanitize", "case": "unmatched-quote-front", "query": "\"open end"}
+{"func": "sanitize", "case": "two-phrases", "query": "two \"a b\" three"}
+{"func": "sanitize", "case": "empty-phrase", "query": "a \"\" b"}
+{"func": "sanitize", "case": "dotted", "query": "P2.2"}
+{"func": "sanitize", "case": "dotted-chain", "query": "my-app.config.ts"}
+{"func": "sanitize", "case": "underscore", "query": "snake_case_name"}
+{"func": "sanitize", "case": "dot-space", "query": "a. b"}
+{"func": "sanitize", "case": "trailing-dot", "query": "trailing."}
+{"func": "sanitize", "case": "leading-dot", "query": ".hidden"}
+{"func": "sanitize", "case": "cjk-mixed", "query": "广西 桂林"}
+{"func": "sanitize", "case": "percent-latin", "query": "50% off"}
+{"func": "sanitize", "case": "percent-cjk", "query": "50% 广西"}
+{"func": "sanitize", "case": "brackets", "query": "TODO: fix (hidden) [x] {y} <z>"}
+{"func": "sanitize", "case": "at-hash", "query": "a@b.com #tag"}
+{"func": "sanitize", "case": "quoted-operator", "query": "\"AND\" foo"}
+{"func": "sanitize", "case": "hyphen-token", "query": "a -b c"}
+{"func": "sanitize", "case": "empty", "query": ""}
+{"func": "sanitize", "case": "spaces-only", "query": "   "}
+{"func": "sanitize", "case": "tab-sep", "query": "foo\tbar"}
+{"func": "sanitize", "case": "punct-run", "query": "a|b ~c ^d"}
+{"func": "sanitize", "case": "backslash-quote", "query": "a\\b 'c'"}
+{"func": "sanitize", "case": "dollars", "query": "$HOME = x ? y"}
+{"func": "sanitize", "case": "two-dotted", "query": "one.two three"}
+{"func": "sanitize", "case": "trailing-hyphen", "query": "foo- bar"}
+{"func": "sanitize", "case": "just-star", "query": "*"}
+{"func": "sanitize", "case": "stars-between", "query": "a * b"}
+{"func": "sanitize", "case": "quoted-and-star", "query": "\"a b\" * c"}
+{"func": "sanitize", "case": "semicolons", "query": "x;y!z?"}
+{"func": "sanitize", "case": "cjk-quoted", "query": "\"广西桂林\" 阳朔"}
+{"func": "sanitize", "case": "long-ascii", "query": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+{"func": "sanitize", "case": "long-cjk", "query": "广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广广"}
+{"func": "sanitize", "case": "mixed-2100", "query": "ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab "}
+{"func": "quote_tokens", "case": "plain", "raw": "docker networking tls"}
+{"func": "quote_tokens", "case": "phrase", "raw": "a \"b c\" OR d"}
+{"func": "quote_tokens", "case": "inner-quote", "raw": "x\"\"y"}
+{"func": "quote_tokens", "case": "quote-only", "raw": "\"a b\""}
+{"func": "quote_tokens", "case": "empty", "raw": ""}
+{"func": "quote_tokens", "case": "operators", "raw": "AND x OR y NOT z"}
+{"func": "quote_tokens", "case": "near-kept", "raw": "a NEAR b"}
+{"func": "quote_tokens", "case": "lower-operators", "raw": "a and b or c"}
+{"func": "quote_tokens", "case": "cjk", "raw": "广西 OR 桂林"}
+{"func": "non_op_tokens", "case": "mixed", "raw": "a AND b OR c NOT d near"}
+{"func": "non_op_tokens", "case": "only-ops", "raw": "AND OR NOT"}
+{"func": "non_op_tokens", "case": "empty", "raw": ""}
+{"func": "non_op_tokens", "case": "spaces", "raw": "  a\tb  c "}
+{"func": "non_op_tokens", "case": "operators-lower", "raw": "a and b"}
+{"func": "strip_wildcards", "case": "many", "raw": "nimb* 广西* * ** foo"}
+{"func": "strip_wildcards", "case": "none", "raw": "no stars"}
+{"func": "strip_wildcards", "case": "all-star", "raw": "*"}
+{"func": "strip_wildcards", "case": "prefix-cjk", "raw": "广西*"}
+{"func": "strip_wildcards", "case": "middle-star", "raw": "ni*mb"}
+{"func": "strip_wildcards", "case": "empty", "raw": ""}
+{"func": "strip_wildcards", "case": "operators-star", "raw": "AND* x AND"}
+{"func": "or_relaxed", "case": "two-words", "query": "docker networking tls"}
+{"func": "or_relaxed", "case": "phrase-tls", "query": "\"docker networking\" tls"}
+{"func": "or_relaxed", "case": "explicit-or", "query": "a OR b"}
+{"func": "or_relaxed", "case": "explicit-not", "query": "a NOT b"}
+{"func": "or_relaxed", "case": "and-only", "query": "a AND b"}
+{"func": "or_relaxed", "case": "single", "query": "single"}
+{"func": "or_relaxed", "case": "empty", "query": ""}
+{"func": "or_relaxed", "case": "quoted-empty", "query": "\"\" x"}
+{"func": "or_relaxed", "case": "lower-or", "query": "a or b"}
+{"func": "or_relaxed", "case": "phrase-only", "query": "\"a b\" \"c d\""}
+{"func": "trigram_eligible", "case": "three", "query": "foo bar"}
+{"func": "trigram_eligible", "case": "short", "query": "fo bar"}
+{"func": "trigram_eligible", "case": "quoted", "query": "\"foo\" bar"}
+{"func": "trigram_eligible", "case": "cjk", "query": "广西桂林 阳朔"}
+{"func": "trigram_eligible", "case": "empty", "query": ""}
+{"func": "trigram_eligible", "case": "operators-only", "query": "AND OR"}
+{"func": "trigram_eligible", "case": "mixed-len", "query": "abc de fgh"}
+{"func": "short_cjk", "case": "mixed", "raw": "广西 OR 桂林"}
+{"func": "short_cjk", "case": "long", "raw": "广西桂林阳朔"}
+{"func": "short_cjk", "case": "latin-cjk", "raw": "hello 广"}
+{"func": "short_cjk", "case": "no-cjk", "raw": "hello"}
+{"func": "short_cjk", "case": "empty", "raw": ""}
+{"func": "short_cjk", "case": "all-long", "raw": "广西桂林 漓江山水"}
+{"func": "trigram_route_ok", "case": "avail-cjk", "raw": "广西桂林", "trigram_available": true}
+{"func": "trigram_route_ok", "case": "unavail-cjk", "raw": "广西桂林", "trigram_available": false}
+{"func": "trigram_route_ok", "case": "short-token", "raw": "广西 OR 桂林仔", "trigram_available": true}
+{"func": "trigram_route_ok", "case": "latin", "raw": "hello", "trigram_available": true}
+{"func": "trigram_route_ok", "case": "empty", "raw": "", "trigram_available": true}
+{"func": "trigram_route_ok", "case": "two-each", "raw": "广西 OR 桂林 OR 漓江", "trigram_available": true}
+{"func": "trigram_route_ok", "case": "avail-long", "raw": "漓江山水甲天下", "trigram_available": true}
+{"func": "is_cjk", "case": "cp-4E00", "codepoint": 19968}
+{"func": "is_cjk", "case": "cp-9FFF", "codepoint": 40959}
+{"func": "is_cjk", "case": "cp-3040", "codepoint": 12352}
+{"func": "is_cjk", "case": "cp-30A0", "codepoint": 12448}
+{"func": "is_cjk", "case": "cp-AC00", "codepoint": 44032}
+{"func": "is_cjk", "case": "cp-41", "codepoint": 65}
+{"func": "is_cjk", "case": "cp-A000", "codepoint": 40960}
+{"func": "is_cjk", "case": "cp-20000", "codepoint": 131072}
+{"func": "is_cjk", "case": "cp-2A6DF", "codepoint": 173791}
+{"func": "is_cjk", "case": "cp-303F", "codepoint": 12351}
+{"func": "is_cjk", "case": "cp-4DBF", "codepoint": 19903}
+{"func": "is_cjk", "case": "cp-0", "codepoint": 0}
+{"func": "contains_cjk", "case": "latin", "text": "hello"}
+{"func": "contains_cjk", "case": "cjk", "text": "广西"}
+{"func": "contains_cjk", "case": "empty", "text": ""}
+{"func": "contains_cjk", "case": "halfwidth", "text": "ｱ"}
+{"func": "contains_cjk", "case": "mixed", "text": "hi 广"}
+{"func": "contains_cjk", "case": "korean", "text": "한국어"}
+{"func": "count_cjk", "case": "mixed", "text": "广西桂林abc"}
+{"func": "count_cjk", "case": "empty", "text": ""}
+{"func": "count_cjk", "case": "latin", "text": "abc"}
+{"func": "count_cjk", "case": "many", "text": "一二三四五"}
+{"func": "escape_like", "case": "wildcards", "term": "a_b%c\\d"}
+{"func": "escape_like", "case": "empty", "term": ""}
+{"func": "escape_like", "case": "plain", "term": "plain"}
+{"func": "escape_like", "case": "only-underscore", "term": "_"}
+{"func": "escape_like", "case": "only-percent", "term": "%"}
+{"func": "like_params", "case": "underscore", "term": "a_b"}
+{"func": "like_params", "case": "percent", "term": "50%"}
+{"func": "like_params", "case": "plain", "term": "docker"}
+{"func": "like_params", "case": "backslash", "term": "a\\b"}
+{"func": "flatten_text", "case": "string", "decoded": "hello"}
+{"func": "flatten_text", "case": "parts", "decoded": [{"type": "text", "text": "one"}, {"type": "image", "url": "x"}, {"type": "text", "text": "two"}]}
+{"func": "flatten_text", "case": "image-only", "decoded": [{"type": "image"}]}
+{"func": "flatten_text", "case": "empty-texts", "decoded": [{"type": "text", "text": ""}, {"type": "text", "text": "  "}]}
+{"func": "flatten_text", "case": "number", "decoded": 7}
+{"func": "flatten_text", "case": "null", "decoded": null}
+{"func": "flatten_text", "case": "object", "decoded": {"type": "text", "text": "x"}}
+{"func": "flatten_text", "case": "empty-list", "decoded": []}
+{"func": "flatten_text", "case": "no-type", "decoded": [{"text": "x"}, {"type": "text", "text": "y"}]}
+{"func": "flatten_text", "case": "whitespace-pad", "decoded": [{"type": "text", "text": "  a  "}]}
+{"func": "fields", "case": "null", "fields": null}
+{"func": "fields", "case": "two", "fields": ["id", "role"]}
+{"func": "fields", "case": "dup-reorder", "fields": ["role", "id", "role"]}
+{"func": "fields", "case": "str", "fields": "id"}
+{"func": "fields", "case": "unknown", "fields": ["bogus"]}
+{"func": "fields", "case": "unknown-multi", "fields": ["bogus", "alpha", "bogus"]}
+{"func": "fields", "case": "empty", "fields": []}
+{"func": "fields", "case": "all", "fields": ["id", "session_id", "role", "snippet", "timestamp", "tool_name", "source", "model", "session_started", "context"]}
+{"func": "fields", "case": "context-only", "fields": ["context"]}
+{"func": "fields", "case": "mixed-unknown", "fields": ["zeta", "id", "beta"]}
+{"func": "backfill_info", "case": "half", "phase": "base", "total": 500, "indexed": 200}
+{"func": "backfill_info", "case": "full", "phase": "base", "total": 100, "indexed": 100}
+{"func": "backfill_info", "case": "zero", "phase": "base", "total": 0, "indexed": 0}
+{"func": "backfill_info", "case": "over", "phase": "base", "total": 100, "indexed": 150}
+{"func": "backfill_info", "case": "almost", "phase": "base", "total": 1000, "indexed": 999}
+{"func": "backfill_info", "case": "tiny", "phase": "base", "total": 3, "indexed": 1}
+{"func": "backfill_info", "case": "empty", "phase": "base", "total": 10, "indexed": 0}

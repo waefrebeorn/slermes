@@ -1,0 +1,47 @@
+{"case":"fmt-plain","func":"format_message","content":"hello world, no images here"}
+{"case":"fmt-one","func":"format_message","content":"look ![cat](https://mm.example.com/api/v4/files/a1.png) here"}
+{"case":"fmt-two","func":"format_message","content":"![a](u1) and ![b](u2)"}
+{"case":"fmt-nested","func":"format_message","content":"![![x](y)](z)"}
+{"case":"fmt-empty-alt","func":"format_message","content":"pre ![](https://h/i.png) post"}
+{"case":"fmt-unclosed","func":"format_message","content":"![a](b"}
+{"case":"fmt-link-not-image","func":"format_message","content":"[a](b) stays a link"}
+{"case":"fmt-empty-paren","func":"format_message","content":"![a]()"}
+{"case":"mentions-bare","func":"with_mentions_disabled","payload":{"channel_id":"c1","message":"hi"}}
+{"case":"mentions-merge","func":"with_mentions_disabled","payload":{"channel_id":"c1","message":"hi","props":{"foo":1,"disable_mentions":false}}}
+{"case":"mentions-nondict-props","func":"with_mentions_disabled","payload":{"message":"x","props":"nope"}}
+{"case":"ids-csv","func":"channel_id_set","raw":" a, b ,, c "}
+{"case":"ids-list","func":"channel_id_set","raw":["a"," b ","",5]}
+{"case":"ids-null","func":"channel_id_set","raw":null}
+{"case":"ids-empty","func":"channel_id_set","raw":""}
+{"case":"result-ok","func":"post_result","data":{"id":"p-1"},"error":"Failed to create post"}
+{"case":"result-no-id","func":"post_result","data":{"name":"x"},"error":"Failed to create post"}
+{"case":"result-null","func":"post_result","data":null,"error":"Failed to create post"}
+{"case":"url-name-query","func":"url_filename","url":"https://mm.example.com/api/v4/files/abc.png?x=1","fallback":"image.png"}
+{"case":"url-name-trailing","func":"url_filename","url":"https://h/path/","fallback":"fallback.bin"}
+{"case":"url-name-plain","func":"url_filename","url":"plain.txt","fallback":"fb.bin"}
+{"case":"info-full","func":"channel_info","data":{"display_name":"General","name":"general","type":"O"},"chat_id":"c1"}
+{"case":"info-dm","func":"channel_info","data":{"name":"dm","type":"D"},"chat_id":"c1"}
+{"case":"info-private","func":"channel_info","data":{"type":"P","display_name":""},"chat_id":"c-p"}
+{"case":"info-unknown-type","func":"channel_info","data":{"type":"X","name":"n"},"chat_id":"c1"}
+{"case":"info-empty","func":"channel_info","data":null,"chat_id":"c1"}
+{"case":"api-path","func":"api_request_url","base_url":"https://mm.example.com","path":"/posts"}
+{"case":"api-path-relative","func":"api_request_url","base_url":"https://mm.example.com","path":"users/me"}
+{"case":"api-traversal","func":"api_request_url","base_url":"https://mm.example.com","path":"posts/../../etc/passwd"}
+{"case":"auth-header","func":"auth_header","token":"abc123"}
+{"case":"req-headers","func":"request_headers","token":"abc123"}
+{"case":"broken-404-rootid","func":"broken_thread_root","status":404,"error":"{\"message\":\"Invalid RootId parameter\"}"}
+{"case":"broken-400-notfound","func":"broken_thread_root","status":400,"error":"Post not found"}
+{"case":"broken-500","func":"broken_thread_root","status":500,"error":"Invalid RootId parameter"}
+{"case":"broken-empty-body","func":"broken_thread_root","status":404,"error":""}
+{"case":"broken-403","func":"broken_thread_root","status":403,"error":"thread invalid"}
+{"case":"broken-400-generic","func":"broken_thread_root","status":400,"error":"channel not found"}
+{"case":"backoff-zero","func":"reconnect_step","delay":2.0,"rnd":0.0}
+{"case":"backoff-half","func":"reconnect_step","delay":2.0,"rnd":0.5}
+{"case":"backoff-forty","func":"reconnect_step","delay":40.0,"rnd":0.25}
+{"case":"url-token-config","func":"url_and_token","config":{"extra":{"url":"https://mm.example.com/"},"token":"tok-cfg"},"env":{}}
+{"case":"url-token-env","func":"url_and_token","config":{"extra":{}},"env":{"MATTERMOST_URL":"https://env.example.com","MATTERMOST_TOKEN":"tok-env"}}
+{"case":"url-token-none","func":"url_and_token","config":{"extra":{}},"env":{}}
+{"case":"valid-ok","func":"validate_config","config":{"extra":{"url":"https://mm.example.com"},"token":"tok"},"env":{}}
+{"case":"valid-blank-token","func":"validate_config","config":{"extra":{"url":"https://mm.example.com"},"token":""},"env":{}}
+{"case":"valid-env-only","func":"validate_config","config":{"extra":{}},"env":{"MATTERMOST_URL":"https://env.example.com","MATTERMOST_TOKEN":"tok-env"}}
+{"case":"constants","func":"constants"}

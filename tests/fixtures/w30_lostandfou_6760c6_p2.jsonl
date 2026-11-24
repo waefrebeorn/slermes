@@ -1,0 +1,56 @@
+{"func":"quoted_columns","case":"two","columns":["id","source"]}
+{"func":"quoted_columns","case":"empty","columns":[]}
+{"func":"quoted_columns","case":"one","columns":["session_id"]}
+{"func":"insert_sql","case":"sessions_prefix","table":"sessions","columns":["id","source","started_at"]}
+{"func":"insert_sql","case":"empty_columns","table":"t","columns":[]}
+{"func":"select_sql","case":"messages","table":"messages","columns":["id","content"]}
+{"func":"select_sql","case":"no_columns","table":"t","columns":[]}
+{"func":"copy_columns","case":"shared_only","source":["id","source","x"],"dest":["id","source","y"],"auxiliary":false}
+{"func":"copy_columns","case":"auxiliary_missing","source":[],"dest":[],"auxiliary":true}
+{"func":"copy_columns","case":"no_auxiliary","source":["id"],"dest":[],"auxiliary":false}
+{"func":"copy_columns","case":"all_shared","source":["a","b"],"dest":["b","a"],"auxiliary":false}
+{"func":"sessions_prefix_columns","case":"source_at_one","columns":["id","source","started_at","runtime_revision","runtime_generation","title"],"defaults":{"2":"","5":""},"cells":["20240101_120000_abcdef","cli","x"]}
+{"func":"sessions_prefix_columns","case":"source_at_three","columns":["id","source","started_at","runtime_revision","runtime_generation","title"],"defaults":{"2":"","5":""},"cells":["20240101_120000_abcdef",5,7,"cli"]}
+{"func":"sessions_prefix_columns","case":"no_runtime_columns","columns":["id","source","started_at"],"defaults":{"2":""},"cells":["20240101_120000_abcdef","cli"]}
+{"func":"insert_prefix_plan","case":"substituted_id","table":"messages","columns":["id","session_id","role"],"cells":[null,"20240101_120000_abcdef","user"],"substitutes":{"0":7}}
+{"func":"insert_prefix_plan","case":"no_substitute","table":"messages","columns":["id","session_id","role"],"cells":[null,"20240101_120000_abcdef","user"]}
+{"func":"insert_prefix_plan","case":"truncated_to_columns","table":"sessions","columns":["id","source"],"cells":["20240101_120000_abcdef","cli","extra","more"]}
+{"func":"insert_prefix_plan","case":"empty_cells","table":"sessions","columns":["id","source"],"cells":[]}
+{"func":"insert_named_plan","case":"override_id","table":"messages","layout":["id","session_id","role","content"],"cells":[null,"20240101_120000_abcdef","user","hi"],"dest_columns":["id","session_id","role","content"],"substitutes":{"0":99},"overrides":{"id":42}}
+{"func":"insert_named_plan","case":"ambiguous_positions","table":"sessions","layout":["id",null,"source","started_at"],"cells":["20240101_120000_abcdef","junk","cli",1700000000],"dest_columns":["id","source","started_at","title"],"substitutes":{"3":"best-effort recovered"},"overrides":null}
+{"func":"insert_named_plan","case":"absent_notnull_takes_substitute","table":"sessions","layout":["id"],"cells":["20240101_120000_abcdef"],"dest_columns":["id","source","title"],"substitutes":{"2":""},"overrides":null}
+{"func":"insert_named_plan","case":"removed_source_column","table":"sessions","layout":["id","legacy_only"],"cells":["20240101_120000_abcdef","x"],"dest_columns":["id","source"],"substitutes":{},"overrides":null}
+{"func":"insert_named_plan","case":"override_new_key","table":"messages","layout":["session_id"],"cells":["20240101_120000_abcdef"],"dest_columns":["id","session_id"],"substitutes":{},"overrides":{"id":5}}
+{"func":"layout_consensus","case":"disagree","survivors":[["id","source"],["id",null]]}
+{"func":"layout_consensus","case":"agree","survivors":[["id","source"],["id","source"]]}
+{"func":"layout_consensus","case":"single","survivors":[["id","runtime_revision"]]}
+{"func":"layout_consensus","case":"none","survivors":[]}
+{"func":"records","case":"legacy_sessions","tables":[{"columns":["rootpgno","pgno","nfield","id","c0","c1","c2"],"rows":[[1,2,14,55,"20240101_120000_abcdef","cli","x"]]}]}
+{"func":"records","case":"nfield_string","tables":[{"columns":["rootpgno","pgno","nfield","id","c0","c1"],"rows":[[1,2,"18",56,"20240101_120000_abcdef","gpt-4"]]}]}
+{"func":"records","case":"nfield_unparseable","tables":[{"columns":["rootpgno","pgno","nfield","id","c0"],"rows":[[1,2,"abc",57,"20240101_120000_abcdef"]]}]}
+{"func":"records","case":"wrong_head_columns","tables":[{"columns":["pgno","rootpgno","nfield","id"],"rows":[[1,2,14,58]]}]}
+{"func":"records","case":"nfield_null","tables":[{"columns":["rootpgno","pgno","nfield","id"],"rows":[[1,2,null,59]]}]}
+{"func":"records","case":"nfield_negative","tables":[{"columns":["rootpgno","pgno","nfield","id"],"rows":[[1,2,-3,60]]}]}
+{"func":"records","case":"messages_rowid","tables":[{"columns":["rootpgno","pgno","nfield","id","c0","c1","c2"],"rows":[[1,2,3,61,null,"20240101_120000_abcdef","user"]]}]}
+{"func":"stub_plan","case":"two_orphans","orphans":[{"session_id":"b","started_at":1700000000,"message_count":3},{"session_id":"a","started_at":null,"message_count":0}],"taken_titles":[],"label":"best-effort recovered"}
+{"func":"stub_plan","case":"title_taken","orphans":[{"session_id":"a","started_at":1700000000,"message_count":2}],"taken_titles":["[best-effort recovered 1] session metadata was unreadable"],"label":"best-effort recovered"}
+{"func":"stub_plan","case":"setdefault_keeps_first","orphans":[{"session_id":"a","started_at":1700000000,"message_count":4},{"session_id":"a","started_at":0,"message_count":0,"setdefault":true}],"taken_titles":[],"label":"best-effort recovered"}
+{"func":"stub_plan","case":"overwrite_message_row","orphans":[{"session_id":"a","started_at":1700000000,"message_count":4},{"session_id":"a","started_at":1800000000,"message_count":9}],"taken_titles":[],"label":"best-effort recovered"}
+{"func":"fts_rebuild_sql","case":"messages_fts","table":"messages_fts"}
+{"func":"fts_rebuild_sql","case":"trigram","table":"messages_fts_trigram"}
+{"func":"stub_title","case":"third","label":"best-effort recovered","sequence":3}
+{"func":"unrecognized_widths","case":"already_present","widths":[14],"width":14}
+{"func":"unrecognized_widths","case":"new_width","widths":[14],"width":9}
+{"func":"unrecognized_widths","case":"empty","widths":[],"width":7}
+{"func":"recover_details","case":"usable_first","attempts":[{"command":".recover --ignore-freelist","dump_returncode":0,"load_returncode":0,"dump_stderr_tail":"","load_stderr_tail":"","usable":true}]}
+{"func":"recover_details","case":"not_a_database","attempts":[{"command":".recover --ignore-freelist","dump_returncode":26,"load_returncode":1,"dump_stderr_tail":"Error: file is not a database\n","load_stderr_tail":"","usable":false},{"command":".recover","dump_returncode":26,"load_returncode":1,"dump_stderr_tail":"Error: file is not a database\n","load_stderr_tail":"","usable":false}]}
+{"func":"recover_details","case":"load_tail_fallback","attempts":[{"command":".recover --ignore-freelist","dump_returncode":1,"load_returncode":1,"dump_stderr_tail":"","load_stderr_tail":"  disk I/O error  ","usable":false}]}
+{"func":"recover_details","case":"no_attempts","attempts":[]}
+{"func":"wal_refusal","case":"vulnerable","binary":"/usr/bin/sqlite3","version":[3,45,1]}
+{"func":"wal_refusal","case":"fixed","binary":"/opt/sqlite3","version":[3,51,3]}
+{"func":"wal_refusal","case":"backport","binary":"/opt/sqlite3","version":[3,50,7]}
+{"func":"row_invariants_hold","case":"clean_rows","kind":"sessions","layout":["id","cwd","handoff_error","handoff_state"],"rows":[["s1","/work",null,null],["s2",null,null,null]]}
+{"func":"row_invariants_hold","case":"error_without_state","kind":"sessions","layout":["id","cwd","handoff_error","handoff_state"],"rows":[["s1","/work","boom",null]]}
+{"func":"row_invariants_hold","case":"error_with_state","kind":"sessions","layout":["id","cwd","handoff_error","handoff_state"],"rows":[["s1",null,"boom","failed"]]}
+{"func":"row_invariants_hold","case":"no_handoff_columns","kind":"sessions","layout":["id","cwd"],"rows":[["s1","/work"]]}
+{"func":"row_invariants_hold","case":"other_table","kind":"messages","layout":["id","handoff_error"],"rows":[["m1","boom"]]}

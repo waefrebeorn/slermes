@@ -1,0 +1,108 @@
+{"func":"normalize_custom_provider_name","case":"p1-norm-name-1","value":"  Work Gateway "}
+{"func":"normalize_custom_provider_name","case":"p1-norm-name-2","value":"NOUS"}
+{"func":"normalize_custom_provider_name","case":"p1-norm-name-3","value":"custom:Edge Node"}
+{"func":"normalize_base_url_for_match","case":"p1-norm-url-1","value":" HTTPS://GW.Corp.Example/v1/// "}
+{"func":"normalize_base_url_for_match","case":"p1-norm-url-2","value":null}
+{"func":"normalize_base_url_for_match","case":"p1-norm-url-3","value":"https://edge.example/v1"}
+{"func":"clean","case":"p1-clean-1","value":null}
+{"func":"clean","case":"p1-clean-2","value":"  sk-abc123  "}
+{"func":"clean","case":"p1-clean-3","value":true}
+{"func":"clean","case":"p1-clean-4","value":0}
+{"func":"clean","case":"p1-clean-5","value":12}
+{"func":"clean","case":"p1-clean-6","value":false}
+{"func":"custom_provider_slug","case":"p1-slug-1","display_name":"Work Gateway","provider_key":""}
+{"func":"custom_provider_slug","case":"p1-slug-2","display_name":"Work Gateway","provider_key":"work"}
+{"func":"custom_provider_slug","case":"p1-slug-3","display_name":"","provider_key":" custom:Edge "}
+{"func":"custom_provider_aliases","case":"p1-aliases-1","display_name":"Work Gateway","provider_key":"work"}
+{"func":"custom_provider_aliases","case":"p1-aliases-2","display_name":"Edge Node","provider_key":"custom:edge"}
+{"func":"custom_provider_aliases","case":"p1-aliases-3","display_name":"","provider_key":""}
+{"func":"normalize_route_base_url","case":"p1-route-1","value":"HTTPS://API.Example.com/v1/"}
+{"func":"normalize_route_base_url","case":"p1-route-2","value":"https://h:443/v1"}
+{"func":"normalize_route_base_url","case":"p1-route-3","value":"https://h:8443/v1/"}
+{"func":"normalize_route_base_url","case":"p1-route-4","value":"api.example.com/v1"}
+{"func":"normalize_route_base_url","case":"p1-route-5","value":"https://user@Host:9000/v1/?a=1#frag"}
+{"func":"normalize_route_base_url","case":"p1-route-6","value":"https://h/v1/?"}
+{"func":"normalize_route_base_url","case":"p1-route-7","value":"HTTP://H/v1"}
+{"func":"base_url_hostname","case":"p1-host-1","value":"https://API.OpenAI.com./v1"}
+{"func":"base_url_hostname","case":"p1-host-2","value":"gw.corp.example:8080/v1"}
+{"func":"base_url_hostname","case":"p1-host-3","value":""}
+{"func":"base_url_hostname","case":"p1-host-4","value":"https://proxy.test/api.anthropic.com/v1"}
+{"func":"route_key","case":"p1-routekey-1","value":" https://GW.Corp.Example/v1/ "}
+{"func":"route_key","case":"p1-routekey-2","value":null}
+{"func":"entry_url","case":"p1-entryurl-1","entry":{"api":"https://api.example/v1","url":"https://url.example/v1","base_url":"https://base.example/v1"}}
+{"func":"entry_url","case":"p1-entryurl-2","entry":{"url":"https://url.example/v1","base_url":"https://base.example/v1"}}
+{"func":"entry_url","case":"p1-entryurl-3","entry":{"base_url":""}}
+{"func":"entry_url","case":"p1-entryurl-4","entry":{}}
+{"func":"filter_capabilities","case":"p1-caps-1","value":{"tools":true,"vision":"no","reasoning":false,"count":1}}
+{"func":"filter_capabilities","case":"p1-caps-2","value":"not-a-dict"}
+{"func":"filter_capabilities","case":"p1-caps-3","value":{}}
+{"func":"is_provider_enabled","case":"p1-enabled-1","entry":{"name":"Off","enabled":false}}
+{"func":"is_provider_enabled","case":"p1-enabled-2","entry":{"name":"StrOff","enabled":" Off "}}
+{"func":"is_provider_enabled","case":"p1-enabled-3","entry":{"name":"StrOn","enabled":"yes"}}
+{"func":"is_provider_enabled","case":"p1-enabled-4","entry":{}}
+{"func":"is_provider_enabled","case":"p1-enabled-5","entry":null}
+{"func":"is_provider_enabled","case":"p1-enabled-6","entry":{"enabled":null}}
+{"func":"normalize_extra_headers","case":"p1-headers-1","value":{"X-Tenant":"acme","X-Null":null,"X-Num":2,"X-Bool":true}}
+{"func":"normalize_extra_headers","case":"p1-headers-2","value":{}}
+{"func":"normalize_extra_headers","case":"p1-headers-3","value":"nope"}
+{"func":"canonical_api_mode","case":"p1-mode-1","value":"openai"}
+{"func":"canonical_api_mode","case":"p1-mode-2","value":" Responses "}
+{"func":"canonical_api_mode","case":"p1-mode-3","value":"Custom_Mode"}
+{"func":"parse_api_mode","case":"p1-parse-1","value":"anthropic-messages"}
+{"func":"parse_api_mode","case":"p1-parse-2","value":"plugin_mode","registered":["plugin_mode"]}
+{"func":"parse_api_mode","case":"p1-parse-3","value":"bogus"}
+{"func":"parse_api_mode","case":"p1-parse-4","value":5}
+{"func":"parse_api_mode","case":"p1-parse-5","value":"  CHAT_COMPLETIONS  "}
+{"func":"shadowed_by_builtin","case":"p1-shadow-1","requested_norm":"nous","canonical":"nous"}
+{"func":"shadowed_by_builtin","case":"p1-shadow-2","requested_norm":"kimi","canonical":"kimi-coding"}
+{"func":"shadowed_by_builtin","case":"p1-shadow-3","requested_norm":"custom:work","canonical":"custom:work"}
+{"func":"shadowed_by_builtin","case":"p1-shadow-4","requested_norm":"nous","canonical":"nous","auth_error":true}
+{"func":"builtin_named_entries","case":"p1-builtin-1","requested_norm":"nous","providers":{"Nous":{"name":"Nous Primary","url":"https://inference.nous.example/v1"},"nous-aux":{"name":"Aux","base_url":"https://aux.example/v1"}}}
+{"func":"builtin_named_entries","case":"p1-builtin-2","requested_norm":"work","providers":{"Nous":{"base_url":"https://inference.nous.example/v1"}}}
+{"func":"builtin_name_user_entry","case":"p1-userentry-1","name":"Nous","canonical":"nous","providers":{"Nous":{"name":"Nous Primary","base_url":"https://inference.nous.example/v1"}}}
+{"func":"builtin_name_user_entry","case":"p1-userentry-2","name":"nous","canonical":"nous","providers":{"Nous":{"name":"Nous Tuning","api_mode":"chat_completions"}}}
+{"func":"builtin_name_user_entry","case":"p1-userentry-3","name":"work","canonical":"work","providers":{"work":{"name":"Work","base_url":"https://gw.corp.example/v1"}}}
+{"func":"builtin_name_user_entry","case":"p1-userentry-4","name":"auto","canonical":"auto","providers":{"auto":{"base_url":"https://a.example/v1"}}}
+{"func":"persisted_provider_id","case":"p1-persist-1","provider":"Nous","canonical":"nous","providers":{"Nous":{"name":"Nous Primary","base_url":"https://inference.nous.example/v1"}}}
+{"func":"persisted_provider_id","case":"p1-persist-2","provider":"openrouter","canonical":"openrouter","providers":{"Nous":{"base_url":"https://inference.nous.example/v1"}}}
+{"func":"key_env_secret","case":"p1-keyenv-1","entry":{"key_env":"WORK_KEY"},"seams":{"secrets":{"WORK_KEY":"  sk-work-123  "}}}
+{"func":"key_env_secret","case":"p1-keyenv-2","entry":{"api_key_env":"NOUS_KEY"},"seams":{"secrets":{"NOUS_KEY":"sk-nous-1"}}}
+{"func":"key_env_secret","case":"p1-keyenv-3","entry":{"key_env":"MISSING"},"seams":{"secrets":{}}}
+{"func":"key_env_secret","case":"p1-keyenv-4","entry":{"api_key":"sk-inline"},"seams":{"secrets":{}}}
+{"func":"model_cfg_key_env_for","case":"p1-mcfg-1","model_cfg":{"base_url":"https://gw.corp.example/v1","key_env":"MODEL_KEY"},"base_url":"https://gw.corp.example/v1/","seams":{"secrets":{"MODEL_KEY":"sk-model-1"}}}
+{"func":"model_cfg_key_env_for","case":"p1-mcfg-2","model_cfg":{"base_url":"https://gw.corp.example/v1","key_env":"MODEL_KEY"},"base_url":"https://other.example/v1","seams":{"secrets":{"MODEL_KEY":"sk-model-1"}}}
+{"func":"model_cfg_key_env_for","case":"p1-mcfg-3","model_cfg":{"key_env":"MODEL_KEY"},"base_url":"","seams":{"secrets":{"MODEL_KEY":"sk-model-1"}}}
+{"func":"lift_model_capabilities","case":"p1-liftcaps-1","entry":{"capabilities":{"tools":true,"vision":"maybe"},"models":{"gpt-x":{"reasoning":true,"vision":false}}},"model":"gpt-x"}
+{"func":"lift_model_capabilities","case":"p1-liftcaps-2","entry":{"models":{"gpt-x":{"reasoning":true}}},"model":"gpt-y"}
+{"func":"lift_model_capabilities","case":"p1-liftcaps-3","entry":{"capabilities":{}},"model":null}
+{"func":"lift_common_custom_fields","case":"p1-liftcommon-1","entry":{"extra_body":{"top_k":5},"extra_headers":{"X-Tenant":"acme","X-Null":null},"capabilities":{"tools":true},"api_mode":"responses"},"provider_key":"work","key_env":"WORK_KEY","api_mode":"codex_responses"}
+{"func":"lift_common_custom_fields","case":"p1-liftcommon-2","entry":{"extra_body":"not-a-dict","extra_headers":"nope"},"provider_key":"","key_env":"","api_mode":null}
+{"func":"match_new_style_provider","case":"p1-new-1","requested_norm":"work","providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1","key_env":"WORK_KEY","default_model":"gpt-x","api_mode":"responses","capabilities":{"tools":true},"extra_body":{"top_k":5},"extra_headers":{"X-Tenant":"acme","X-Null":null}},"off":{"name":"Off","base_url":"https://off.example/v1","enabled":false}},"seams":{"secrets":{"WORK_KEY":"sk-work-123"}}}
+{"func":"match_new_style_provider","case":"p1-new-2","requested_norm":"work-gateway","providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1","key_env":"WORK_KEY","api_key":"sk-inline","default_model":"gpt-x","transport":"anthropic"}},"seams":{"secrets":{"WORK_KEY":""}}}
+{"func":"match_new_style_provider","case":"p1-new-3","requested_norm":"work","providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1","key_env":"WORK_KEY"}},"resolve_credentials":false,"seams":{"secrets":{"WORK_KEY":"sk-work-123"}}}
+{"func":"match_new_style_provider","case":"p1-new-4","requested_norm":"work","providers":{"work":{"name":"Work Gateway","api":"","base_url":"https://gw.corp.example/v1","key_cmd":"vault read -field=key"}},"seams":{"secrets":{}}}
+{"func":"match_new_style_provider","case":"p1-new-5","requested_norm":"nope","providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}},"seams":{"secrets":{}}}
+{"func":"match_legacy_custom_provider","case":"p1-legacy-1","requested_norm":"edge","custom_providers":[{"name":"Edge Node","base_url":"https://edge.example/v1","provider_key":"edge","model":"m1","api_mode":"responses","api_key":"sk-edge-1","capabilities":{"tools":true}}],"seams":{"secrets":{}}}
+{"func":"match_legacy_custom_provider","case":"p1-legacy-2","requested_norm":"edge-node","custom_providers":[{"name":"Edge Node","base_url":"https://edge.example/v1","key_env":"EDGE_KEY"}],"seams":{"secrets":{"EDGE_KEY":"sk-edge-2"}}}
+{"func":"match_legacy_custom_provider","case":"p1-legacy-3","requested_norm":"edge","custom_providers":[{"name":"Edge Node","base_url":null},{"name":"Edge Two","base_url":"https://e2.example/v1","provider_key":"edge"}],"seams":{"secrets":{}}}
+{"func":"match_legacy_custom_provider","case":"p1-legacy-4","requested_norm":"edge","custom_providers":[],"seams":{"secrets":{}}}
+{"func":"compatible_entry_path","case":"p1-path-1","config":{"providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}}},"entry":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1","provider_key":"work"}}
+{"func":"compatible_entry_path","case":"p1-path-2","config":{"custom_providers":[{"name":"Edge Node","base_url":"https://edge.example/v1"},{"name":"Edge Two","base_url":"https://e2.example/v1"}]},"entry":{"name":"Edge Two","base_url":"https://e2.example/v1"},"normalized":[{"name":"Edge Node","base_url":"https://edge.example/v1"},{"name":"Edge Two","base_url":"https://e2.example/v1"}]}
+{"func":"compatible_entry_path","case":"p1-path-3","config":{"providers":{"work":{"name":"Work Gateway"}}},"entry":{"name":"Ghost","base_url":"https://g.example/v1","provider_key":"ghost"}}
+{"func":"select_named_custom_provider","case":"p1-select-1","requested_provider":"work","config":{"providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1","key_env":"WORK_KEY"}}},"seams":{"secrets":{"WORK_KEY":"sk-work-123"}}}
+{"func":"select_named_custom_provider","case":"p1-select-2","requested_provider":"nous","canonical":"nous","config":{"providers":{"Nous":{"name":"Nous Primary","base_url":"https://inference.nous.example/v1"},"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}}},"seams":{"secrets":{}}}
+{"func":"select_named_custom_provider","case":"p1-select-3","requested_provider":"edge","config":{"custom_providers":[{"name":"Edge Node","base_url":"https://edge.example/v1","provider_key":"edge"}]},"seams":{"compatible":[{"name":"Edge Node","base_url":"https://edge.example/v1","provider_key":"edge"}],"normalized":[{"name":"Edge Node","base_url":"https://edge.example/v1","provider_key":"edge"}]}}
+{"func":"select_named_custom_provider","case":"p1-select-4","requested_provider":"edge","config":{"custom_providers":{"name":"Edge Node","base_url":"https://edge.example/v1"}},"seams":{"secrets":{}}}
+{"func":"select_named_custom_provider","case":"p1-select-5","requested_provider":"Off","config":{"providers":{"off":{"name":"Off","base_url":"https://off.example/v1","enabled":false}}},"seams":{"secrets":{}}}
+{"func":"select_named_custom_provider","case":"p1-select-6","requested_provider":"auto","config":{"providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}}},"seams":{"secrets":{}}}
+{"func":"select_named_custom_provider","case":"p1-select-7","requested_provider":"work","config":null,"seams":{"load_config":{"providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}}},"secrets":{}}}
+{"func":"named_custom_provider_config_path","case":"p1-namedpath-1","requested_provider":"work-gateway","config":{"providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}}},"seams":{"secrets":{}}}
+{"func":"named_custom_provider_config_path","case":"p1-namedpath-2","requested_provider":"nope","config":{"providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}}},"seams":{"secrets":{}}}
+{"func":"custom_provider_config_path_for_url","case":"p1-urlpath-1","base_url":"https://edge.example/v1/","config":{"custom_providers":[{"name":"Edge Node","base_url":"https://edge.example/v1"}]},"seams":{"compatible":[{"name":"Edge Node","base_url":"https://edge.example/v1"}],"normalized":[{"name":"Edge Node","base_url":"https://edge.example/v1"}]}}
+{"func":"custom_provider_config_path_for_url","case":"p1-urlpath-2","base_url":"https://nowhere.example/v1","config":{"custom_providers":[{"name":"Edge Node","base_url":"https://edge.example/v1"}]},"seams":{"compatible":[{"name":"Edge Node","base_url":"https://edge.example/v1"}],"normalized":[{"name":"Edge Node","base_url":"https://edge.example/v1"}]}}
+{"func":"custom_provider_config_path_for_url","case":"p1-urlpath-3","base_url":"https://edge.example/v1","config":{"custom_providers":{"name":"Edge Node"}},"seams":{"secrets":{}}}
+{"func":"codex_model_provider_id","case":"p1-codex-1","requested_provider":"work","config":{"providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}}},"seams":{"secrets":{}}}
+{"func":"codex_model_provider_id","case":"p1-codex-2","requested_provider":"custom","config":{"providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}}},"seams":{"secrets":{}}}
+{"func":"codex_model_provider_id","case":"p1-codex-3","requested_provider":"edge","config":{"custom_providers":[{"name":"Edge Node","base_url":"https://edge.example/v1","provider_key":"edge"}]},"seams":{"compatible":[{"name":"Edge Node","base_url":"https://edge.example/v1","provider_key":"edge"}],"normalized":[{"name":"Edge Node","base_url":"https://edge.example/v1","provider_key":"edge"}]}}
+{"func":"has_named_custom_provider","case":"p1-has-1","requested_provider":"work","config":{"providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}}},"seams":{"secrets":{}}}
+{"func":"has_named_custom_provider","case":"p1-has-2","requested_provider":"nope","config":{"providers":{"work":{"name":"Work Gateway","base_url":"https://gw.corp.example/v1"}}},"seams":{"secrets":{}}}
