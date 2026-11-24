@@ -1,0 +1,34 @@
+{"func": "tail_text", "case": "three-lines", "raw": "a\nb\nc"}
+{"func": "tail_text", "case": "limit-two", "raw": "a\nb\nc\n", "lines": 2}
+{"func": "tail_text", "case": "crlf", "raw": "one\r\ntwo\r\n"}
+{"func": "tail_text", "case": "empty", "raw": ""}
+{"func": "tail_text", "case": "whitespace-only", "raw": "   \n\t\n"}
+{"func": "tail_text", "case": "truncated", "raw": "abcdefghij", "chars": 4}
+{"func": "tail_text", "case": "exact-chars", "raw": "abcde", "chars": 5}
+{"func": "tail_text", "case": "lines-zero", "raw": "a\nb\nc", "lines": 0}
+{"func": "tail_text", "case": "odd-separators", "raw": "a\n\u000bb\u001cc"}
+{"func": "tail_text", "case": "line-separator-2028", "raw": "x\u2028y"}
+{"func": "tail_text", "case": "lone-cr", "raw": "p\rq\rr"}
+{"func": "tail_text", "case": "null-raw", "raw": null}
+{"func": "tail_text", "case": "wrong-type-raw", "raw": []}
+{"func": "tail_text", "case": "strip-edges", "raw": "\n\n  head\nbody  \n\n"}
+{"func": "tails", "case": "mixed", "contents": {"0": "a\nb", "1": "", "2": null}}
+{"func": "tails", "case": "empty-map", "contents": {}}
+{"func": "tails", "case": "null-map", "contents": null}
+{"func": "tails", "case": "padded-index", "contents": {"turn-7": "\n\nlast line\n"}}
+{"func": "git_hint", "case": "clean", "head": "abc1234 fix the bug", "branch": "main", "status": "", "cwd": "/repo", "cwd_is_dir": true}
+{"func": "git_hint", "case": "dirty-two", "head": "abc1234 fix the bug", "branch": "main", "status": " M a.py\n?? b.py\n", "cwd": "/repo", "cwd_is_dir": true}
+{"func": "git_hint", "case": "status-failed", "head": "abc1234 fix", "branch": "dev", "status": null, "cwd": "/repo", "cwd_is_dir": true}
+{"func": "git_hint", "case": "branch-failed", "head": "abc1234 fix", "branch": null, "status": "", "cwd": "/repo", "cwd_is_dir": true}
+{"func": "git_hint", "case": "no-checkout", "head": null, "branch": "main", "status": "", "cwd": "/repo", "cwd_is_dir": true}
+{"func": "git_hint", "case": "not-a-dir", "head": "abc1234 fix", "branch": "main", "status": "", "cwd": "/missing", "cwd_is_dir": false}
+{"func": "git_hint", "case": "empty-cwd", "head": "abc1234 fix", "branch": "main", "status": "", "cwd": "", "cwd_is_dir": true}
+{"func": "git_hint", "case": "padded-branch", "head": "  abc1234 fix  ", "branch": "  dev  ", "status": "", "cwd": "/repo", "cwd_is_dir": true}
+{"func": "git_hint", "case": "empty-branch", "head": "abc1234 fix", "branch": "", "status": "", "cwd": "/repo", "cwd_is_dir": true}
+{"func": "git_hint", "case": "empty-head", "head": "", "branch": "main", "status": "", "cwd": "/repo", "cwd_is_dir": true}
+{"func": "git_hint", "case": "crlf-status", "head": "abc1234 fix", "branch": "main", "status": " M a.py\r\n M b.py\r\n", "cwd": "/repo", "cwd_is_dir": true}
+{"func": "git_hint", "case": "cwd-is-dir-missing", "head": "abc1234 fix", "branch": "main", "status": "", "cwd": "/repo"}
+{"func": "constants", "case": "bounds"}
+{"func": "constants", "case": "table-with-note", "note": "unknown keys do not change the tables"}
+{"func": "constants", "case": "table-with-null", "note": null}
+{"func": "constants", "case": "table-with-list", "note": []}

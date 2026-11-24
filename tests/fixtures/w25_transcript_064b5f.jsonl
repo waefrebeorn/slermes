@@ -1,0 +1,21 @@
+{"func":"quote","case":"space","path":"/tmp/a b/ggml-base.bin"}
+{"func":"quote","case":"empty","path":""}
+{"func":"quote","case":"safe","path":"/opt/whisper/bin/whisper-cli"}
+{"func":"quote","case":"apostrophe","path":"/tmp/o'brien/x.bin"}
+{"func":"quote","case":"winpath","path":"C:\\Users\\e x\\ggml-base.bin"}
+{"func":"quote","case":"dotslash","path":"/tmp/./a//b.bin"}
+{"func":"model_dir","case":"home","home":"/home/u"}
+{"func":"model_dir","case":"empty","home":""}
+{"func":"model_dir","case":"win","home":"C:\\Users\\e"}
+{"func":"model_dir","case":"root","home":"/"}
+{"func":"command","case":"installed","binary":"/opt/w/whisper-cli","models_dir":"/home/u/cache/whisper.cpp","language":"en"}
+{"func":"command","case":"missing_engine","binary":null,"models_dir":"/x","language":"en"}
+{"func":"command","case":"spaces","binary":"C:\\Program Files\\w\\whisper-cli.exe","models_dir":"C:\\Users\\e\\cache\\whisper.cpp","language":"en"}
+{"func":"command","case":"auto_lang","binary":"whisper","models_dir":"","language":"auto"}
+{"func":"validate_model","case":"base","model_name":"base"}
+{"func":"validate_model","case":"small","model_name":"small"}
+{"func":"validate_model","case":"empty","model_name":""}
+{"func":"validate_model","case":"none","model_name":null}
+{"func":"validate_model","case":"bool","model_name":true}
+{"func":"validate_model","case":"case","model_name":"Base"}
+{"func":"model_files","case":"table"}

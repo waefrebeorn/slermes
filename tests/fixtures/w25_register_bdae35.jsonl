@@ -1,0 +1,14 @@
+{"func":"parse_send_target","case":"group_padded","ref":" group:  abc12 "}
+{"func":"parse_send_target","case":"group_empty","ref":"group:   "}
+{"func":"parse_send_target","case":"phone","ref":"+15550100"}
+{"func":"parse_send_target","case":"empty","ref":""}
+{"func":"parse_send_target","case":"case_sensitive","ref":"Group:abc"}
+{"func":"parse_send_target","case":"group_inner_space","ref":"group:x y"}
+{"func":"is_connected","case":"extra_both","extra":{"http_url":"http://h","account":" +1 "},"env":{"SIGNAL_HTTP_URL":"","SIGNAL_ACCOUNT":""}}
+{"func":"is_connected","case":"env_both","extra":{},"env":{"SIGNAL_HTTP_URL":" http://e ","SIGNAL_ACCOUNT":"+2"}}
+{"func":"is_connected","case":"split","extra":{"http_url":"http://h"},"env":{"SIGNAL_ACCOUNT":"+1"}}
+{"func":"is_connected","case":"all_blank","extra":{"http_url":"   ","account":""},"env":{"SIGNAL_HTTP_URL":" ","SIGNAL_ACCOUNT":""}}
+{"func":"is_connected","case":"extra_null","extra":null,"env":{"SIGNAL_HTTP_URL":"http://x","SIGNAL_ACCOUNT":"9"}}
+{"func":"is_connected","case":"no_env","extra":{"http_url":"","account":""},"env":null}
+{"func":"platform_hint","case":"bytes"}
+{"func":"register_spec","case":"entry"}

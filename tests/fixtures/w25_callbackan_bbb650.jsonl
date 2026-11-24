@@ -1,0 +1,26 @@
+{"func": "is_stale_query_error", "case": "too-old", "message": "BadRequest: Query is too old and response timeout expired or query id is invalid", "exc_type": "BadRequest", "badrequest_importable": false}
+{"func": "is_stale_query_error", "case": "upper-case", "message": "QUERY IS TOO OLD", "exc_type": "Exception", "badrequest_importable": false}
+{"func": "is_stale_query_error", "case": "id-invalid", "message": "BadRequest: query id is invalid", "exc_type": "BadRequest", "badrequest_importable": false}
+{"func": "is_stale_query_error", "case": "response-timeout", "message": "response timeout expired", "exc_type": "BadRequest", "badrequest_importable": false}
+{"func": "is_stale_query_error", "case": "unrelated-error", "message": "BadRequest: message to edit not found", "exc_type": "BadRequest", "badrequest_importable": false}
+{"func": "is_stale_query_error", "case": "empty-message", "message": "", "exc_type": "Exception", "badrequest_importable": false}
+{"func": "is_stale_query_error", "case": "near-miss", "message": "query is old", "exc_type": "BadRequest", "badrequest_importable": false}
+{"func": "answer_callback", "case": "bare-answer", "text": null, "show_alert": false, "fault": null}
+{"func": "answer_callback", "case": "text-toast", "text": "Saved", "show_alert": false, "fault": null}
+{"func": "answer_callback", "case": "text-alert", "text": "Denied", "show_alert": true, "fault": null}
+{"func": "answer_callback", "case": "stale-refused", "text": "Saved", "show_alert": false, "fault": {"message": "BadRequest: Query is too old and response timeout expired or query id is invalid", "exc_type": "BadRequest", "badrequest_importable": false}}
+{"func": "answer_callback", "case": "other-error-raises", "text": "Saved", "show_alert": false, "fault": {"message": "BadRequest: message to edit not found", "exc_type": "BadRequest", "badrequest_importable": false}}
+{"func": "answer_callback", "case": "zero-text", "text": 0, "show_alert": false, "fault": null}
+{"func": "answer_callback", "case": "empty-text", "text": "", "show_alert": false, "fault": null}
+{"func": "answer_or_note", "case": "answered-early", "text": "ok", "chat_id": 123, "message_thread_id": null, "is_topic_message": false, "fault": null}
+{"func": "answer_or_note", "case": "stale-falls-back", "text": "Picker expired", "chat_id": 123, "message_thread_id": null, "is_topic_message": false, "fault": {"message": "BadRequest: Query is too old and response timeout expired or query id is invalid", "exc_type": "BadRequest", "badrequest_importable": false}}
+{"func": "answer_or_note", "case": "stale-in-topic", "text": "Picker expired", "chat_id": -100123, "message_thread_id": 55, "is_topic_message": true, "fault": {"message": "BadRequest: Query is too old and response timeout expired or query id is invalid", "exc_type": "BadRequest", "badrequest_importable": false}}
+{"func": "answer_or_note", "case": "topic-flag-is-not-true", "text": "Picker expired", "chat_id": -100123, "message_thread_id": 55, "is_topic_message": 1, "fault": {"message": "BadRequest: Query is too old and response timeout expired or query id is invalid", "exc_type": "BadRequest", "badrequest_importable": false}}
+{"func": "answer_or_note", "case": "no-chat-id", "text": "Picker expired", "chat_id": null, "message_thread_id": 55, "is_topic_message": true, "fault": {"message": "BadRequest: Query is too old and response timeout expired or query id is invalid", "exc_type": "BadRequest", "badrequest_importable": false}}
+{"func": "answer_or_note", "case": "no-message", "text": "Picker expired", "no_message": true, "fault": {"message": "BadRequest: Query is too old and response timeout expired or query id is invalid", "exc_type": "BadRequest", "badrequest_importable": false}}
+{"func": "answer_or_note", "case": "send-fails", "text": "Picker expired", "chat_id": 7, "message_thread_id": null, "is_topic_message": false, "fault": {"message": "BadRequest: Query is too old and response timeout expired or query id is invalid", "exc_type": "BadRequest", "badrequest_importable": false}, "send_fault": true}
+{"func": "refuse_tap", "case": "requester-alice", "requester": "alice", "refusal": "Only alice can answer this approval."}
+{"func": "refuse_tap", "case": "requester-null", "requester": null, "refusal": ""}
+{"func": "refuse_tap", "case": "requester-empty", "requester": "", "refusal": ""}
+{"func": "refuse_tap", "case": "long-requester-sliced", "requester": "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU", "refusal": "Only UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU can answer this approval."}
+{"func": "constants", "case": "table"}

@@ -1,0 +1,29 @@
+{"func": "adapter_persistence", "case": "runtime-authority-handle", "runtime": true, "cache_closed": false, "override": null, "home_store": false, "authority_present": true, "authority_persistence": true}
+{"func": "adapter_persistence", "case": "runtime-cache-closed", "runtime": true, "cache_closed": true, "override": null, "home_store": false, "authority_present": true, "authority_persistence": true}
+{"func": "adapter_persistence", "case": "runtime-no-authority", "runtime": true, "cache_closed": false, "override": null, "home_store": true, "authority_present": false, "authority_persistence": false}
+{"func": "adapter_persistence", "case": "runtime-authority-without-handle", "runtime": true, "cache_closed": false, "override": null, "home_store": false, "authority_present": true, "authority_persistence": false}
+{"func": "adapter_persistence", "case": "runtime-ignores-override", "runtime": true, "cache_closed": false, "override": "handle", "home_store": true, "authority_present": false, "authority_persistence": false}
+{"func": "adapter_persistence", "case": "plain-home-store-cached", "runtime": false, "cache_closed": false, "override": null, "home_store": true, "authority_present": false, "authority_persistence": false}
+{"func": "adapter_persistence", "case": "plain-cache-closed", "runtime": false, "cache_closed": true, "override": null, "home_store": true, "authority_present": false, "authority_persistence": false}
+{"func": "adapter_persistence", "case": "plain-override-handle", "runtime": false, "cache_closed": false, "override": "handle", "home_store": false, "authority_present": false, "authority_persistence": false}
+{"func": "adapter_persistence", "case": "plain-override-not-a-handle", "runtime": false, "cache_closed": false, "override": "other", "home_store": false, "authority_present": false, "authority_persistence": false}
+{"func": "adapter_persistence", "case": "plain-override-other-cache-closed", "runtime": false, "cache_closed": true, "override": "other", "home_store": false, "authority_present": false, "authority_persistence": false}
+{"func": "adapter_persistence", "case": "plain-no-store-anywhere", "runtime": false, "cache_closed": false, "override": null, "home_store": false, "authority_present": false, "authority_persistence": false}
+{"func": "selected_session_db", "case": "authority-open", "authority_present": true, "cache_closed": false}
+{"func": "selected_session_db", "case": "authority-cache-closed", "authority_present": true, "cache_closed": true}
+{"func": "selected_session_db", "case": "no-authority", "authority_present": false, "cache_closed": false}
+{"func": "selected_session_db", "case": "no-authority-cache-closed", "authority_present": false, "cache_closed": true}
+{"func": "authority_store", "case": "has-handle", "has_store": true}
+{"func": "authority_store", "case": "no-handle", "has_store": false}
+{"func": "authority_store", "case": "flag-absent"}
+{"func": "delete_removed", "case": "int-true", "removed": 1}
+{"func": "delete_removed", "case": "int-zero", "removed": 0}
+{"func": "delete_removed", "case": "empty-string", "removed": ""}
+{"func": "delete_removed", "case": "nonempty-string", "removed": "0"}
+{"func": "delete_removed", "case": "empty-list", "removed": []}
+{"func": "delete_removed", "case": "one-item-list", "removed": [0]}
+{"func": "delete_removed", "case": "empty-object", "removed": {}}
+{"func": "delete_removed", "case": "object", "removed": {"a": 1}}
+{"func": "delete_removed", "case": "null", "removed": null}
+{"func": "delete_removed", "case": "float-zero", "removed": 0.5}
+{"func": "delete_removed", "case": "false", "removed": false}

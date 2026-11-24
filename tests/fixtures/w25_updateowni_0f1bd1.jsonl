@@ -1,0 +1,30 @@
+{"func": "install_key", "case": "repo", "path": "C:\\Users\\eman5\\slermes"}
+{"func": "install_key", "case": "dev-tree", "path": "C:\\Users\\eman5\\dev-tree"}
+{"func": "install_key", "case": "generation", "path": "C:\\Users\\eman5\\installs\\gen1"}
+{"func": "install_key", "case": "empty", "path": "C:\\Users\\eman5\\hermes-agent"}
+{"func": "install_key", "case": "unicode", "path": "C:\\Users\\eman5\\søren"}
+{"func": "install_key", "case": "deep", "path": "C:\\Users\\eman5\\installs\\4fbb0c97fb71efb5\\environments\\gen1\\venv"}
+{"func": "owning_root", "case": "in-tree-venv", "diag": {"prefix": "C:\\Users\\eman5\\installs\\myinstall\\venv", "base_prefix": "C:\\Python311", "project_root": "C:\\Users\\eman5\\dev-tree", "main_py": true, "pm_owner": null, "pythonpath": []}}
+{"func": "owning_root", "case": "own-checkout", "diag": {"prefix": "C:\\Users\\eman5\\installs\\myinstall\\venv", "base_prefix": "C:\\Python311", "project_root": "C:\\Users\\eman5\\installs\\myinstall", "main_py": true, "pm_owner": null, "pythonpath": []}}
+{"func": "owning_root", "case": "system-interpreter", "diag": {"prefix": "C:\\Python311", "base_prefix": "C:\\Python311", "project_root": "C:\\Users\\eman5\\dev-tree", "main_py": true, "pm_owner": null, "pythonpath": []}}
+{"func": "owning_root", "case": "not-a-venv-name", "diag": {"prefix": "C:\\Users\\eman5\\installs\\myinstall\\myenv", "base_prefix": "C:\\Python311", "project_root": "C:\\Users\\eman5\\dev-tree", "main_py": true, "pm_owner": null, "pythonpath": []}}
+{"func": "owning_root", "case": "pm-generation", "diag": {"prefix": "C:\\Users\\eman5\\installs\\4fbb0c97fb71efb5\\environments\\gen1\\venv", "base_prefix": "C:\\Python311", "project_root": "C:\\Users\\eman5\\dev-tree", "main_py": false, "pm_owner": "C:\\Users\\eman5\\installs\\gen1", "pythonpath": []}}
+{"func": "owning_root", "case": "pm-generation-missing", "diag": {"prefix": "C:\\Users\\eman5\\installs\\4fbb0c97fb71efb5\\environments\\gen1\\venv", "base_prefix": "C:\\Python311", "project_root": "C:\\Users\\eman5\\dev-tree", "main_py": false, "pm_owner": null, "pythonpath": []}}
+{"func": "owning_root", "case": "pythonpath-pinned", "diag": {"prefix": "C:\\Users\\eman5\\installs\\myinstall\\venv", "base_prefix": "C:\\Python311", "project_root": "C:\\Users\\eman5\\dev-tree", "main_py": true, "pm_owner": null, "pythonpath": ["C:\\Users\\eman5\\dev-tree"]}}
+{"func": "owning_root", "case": "dot-venv", "diag": {"prefix": "C:\\Users\\eman5\\dev\\.venv", "base_prefix": "C:\\Python311", "project_root": "C:\\Users\\eman5\\dev-tree", "main_py": true, "pm_owner": null, "pythonpath": []}}
+{"func": "owning_root", "case": "empty-pythonpath-entry", "diag": {"prefix": "C:\\Users\\eman5\\installs\\myinstall\\venv", "base_prefix": "C:\\Python311", "project_root": "C:\\Users\\eman5\\dev-tree", "main_py": true, "pm_owner": null, "pythonpath": ["", "C:\\Users\\eman5\\other"]}}
+{"func": "pm_owner", "case": "record-matches-key", "diag": {"venv": "C:\\Users\\eman5\\installs\\4fbb0c97fb71efb5\\environments\\gen1\\venv", "record": "C:\\Users\\eman5\\slermes", "main_py": true}}
+{"func": "pm_owner", "case": "key-mismatch", "diag": {"venv": "C:\\Users\\eman5\\installs\\deadbeefdeadbeef\\environments\\gen1\\venv", "record": "C:\\Users\\eman5\\slermes", "main_py": true}}
+{"func": "pm_owner", "case": "not-environments", "diag": {"venv": "C:\\Users\\eman5\\installs\\4fbb0c97fb71efb5\\envs\\gen1\\venv", "record": "C:\\Users\\eman5\\slermes", "main_py": true}}
+{"func": "pm_owner", "case": "record-missing", "diag": {"venv": "C:\\Users\\eman5\\installs\\4fbb0c97fb71efb5\\environments\\gen1\\venv", "record": null, "main_py": true}}
+{"func": "pm_owner", "case": "record-padded", "diag": {"venv": "C:\\Users\\eman5\\installs\\4fbb0c97fb71efb5\\environments\\gen1\\venv", "record": "\ufeff  C:\\Users\\eman5\\slermes \n", "main_py": true}}
+{"func": "pm_owner", "case": "no-main-py", "diag": {"venv": "C:\\Users\\eman5\\installs\\4fbb0c97fb71efb5\\environments\\gen1\\venv", "record": "C:\\Users\\eman5\\slermes", "main_py": false}}
+{"func": "pm_owner", "case": "second-generation", "diag": {"venv": "C:\\Users\\eman5\\installs\\ab6860cbf4da6daf\\environments\\g2\\venv", "record": "C:\\Users\\eman5\\dev-tree", "main_py": true}}
+{"func": "retarget", "case": "update-yes", "req": {"owner": "C:\\Users\\eman5\\installs\\gen1", "prefix": "C:\\Users\\eman5\\installs\\gen1\\venv", "project_root": "C:\\Users\\eman5\\dev-tree", "executable": "C:\\Users\\eman5\\installs\\gen1\\venv\\Scripts\\python.exe", "args": ["update", "--yes"]}}
+{"func": "retarget", "case": "no-args", "req": {"owner": "C:\\Users\\eman5\\installs\\gen1", "prefix": "C:\\Users\\eman5\\installs\\gen1\\venv", "project_root": "C:\\Users\\eman5\\dev-tree", "executable": "C:\\Users\\eman5\\installs\\gen1\\venv\\Scripts\\python.exe", "args": []}}
+{"func": "retarget", "case": "missing-owner", "req": {"owner": null, "prefix": "C:\\Users\\eman5\\installs\\gen1\\venv", "project_root": "C:\\Users\\eman5\\dev-tree", "executable": "python.exe", "args": ["update"]}}
+{"func": "retarget", "case": "many-args", "req": {"owner": "C:\\Users\\eman5\\installs\\gen1", "prefix": "C:\\Users\\eman5\\installs\\gen1\\venv", "project_root": "C:\\Users\\eman5\\dev-tree", "executable": "C:\\Users\\eman5\\installs\\gen1\\venv\\Scripts\\python.exe", "args": ["update", "--force", "-v"]}}
+{"func": "constants", "case": "tables"}
+{"func": "constants", "case": "table-with-note", "note": "unknown keys do not change the tables"}
+{"func": "constants", "case": "table-with-null", "note": null}
+{"func": "constants", "case": "table-with-list", "note": []}

@@ -1,0 +1,13 @@
+{"func": "delegation_delivery", "case": "normal", "session_id": "s1", "content": "done", "metadata": {"delegation_id": "d-42", "model": "x", "tokens": 10}}
+{"func": "delegation_delivery", "case": "suppressed-hidden", "session_id": "s1", "content": "c", "metadata": {"delegation_id": "d-1", "presentation_suppressed": true}}
+{"func": "delegation_delivery", "case": "notice-null", "session_id": "s1", "content": "c", "metadata": {"delegation_id": "d-1", "delivery_notice": null}}
+{"func": "delegation_delivery", "case": "missing-id", "session_id": "s1", "content": "c", "metadata": {}}
+{"func": "delegation_delivery", "case": "empty-id", "session_id": "s1", "content": "c", "metadata": {"delegation_id": ""}}
+{"func": "delegation_delivery", "case": "zero-id", "session_id": "s1", "content": "c", "metadata": {"delegation_id": 0}}
+{"func": "delegation_delivery", "case": "empty-list-id", "session_id": "s1", "content": "c", "metadata": {"delegation_id": []}}
+{"func": "delegation_delivery", "case": "numeric-id", "session_id": "s1", "content": "c", "metadata": {"delegation_id": 7, "presentation_suppressed": "yes"}}
+{"func": "completion_note", "case": "normal", "session_id": "s2", "admission_id": "a-9", "content": "note", "display_kind": "completion_note", "metadata": {"model": "m"}}
+{"func": "completion_note", "case": "empty-metadata", "session_id": "s2", "admission_id": "a-9", "content": "note", "display_kind": "completion_note", "metadata": {}}
+{"func": "completion_note", "case": "existing-key-overwritten", "session_id": "s2", "admission_id": "a-2", "content": "note", "display_kind": "hidden", "metadata": {"completion_admission": "old", "x": [1, 2]}}
+{"func": "completion_note", "case": "numeric-admission", "session_id": "s2", "admission_id": 0, "content": "note", "display_kind": "completion_note", "metadata": {"k": null}}
+{"func": "constants", "case": "table"}

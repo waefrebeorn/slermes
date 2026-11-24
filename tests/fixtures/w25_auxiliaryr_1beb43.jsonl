@@ -1,0 +1,17 @@
+{"func":"retry_after","case":"header_capitalized","exc":{"headers":{"Retry-After":"2.5"}}}
+{"func":"retry_after","case":"header_lower_number","exc":{"headers":{"retry-after":3}}}
+{"func":"retry_after","case":"header_bool","exc":{"headers":{"Retry-After":true}}}
+{"func":"retry_after","case":"body_nested","exc":{"body":{"error":{"retry_after":1.5}}}}
+{"func":"retry_after","case":"metadata_only","exc":{"metadata":{"Retry-After":"7"}}}
+{"func":"retry_after","case":"zero_header_blocks_body","exc":{"headers":{"Retry-After":0},"body":{"retry_after":9}}}
+{"func":"retry_after","case":"zero_body_falls_to_metadata","exc":{"body":{"retry_after":0},"metadata":{"Retry-After":"7"}}}
+{"func":"wait","case":"attempt1_no_jitter","exc":{},"attempt":1,"jitter":0.0}
+{"func":"wait","case":"attempt1_half","exc":{},"attempt":1,"jitter":0.5}
+{"func":"wait","case":"attempt2_quarter","exc":{},"attempt":2,"jitter":0.25}
+{"func":"wait","case":"attempt70_capped","exc":{},"attempt":70,"jitter":0.5}
+{"func":"wait","case":"attempt_negative","exc":{},"attempt":-3,"jitter":0.25}
+{"func":"wait","case":"declared_short_wins","exc":{"headers":{"Retry-After":"2.5"}},"attempt":2,"jitter":0.5}
+{"func":"wait","case":"declared_at_cap","exc":{"headers":{"Retry-After":5}},"attempt":1,"jitter":0.0}
+{"func":"wait","case":"declared_over_cap","exc":{"headers":{"Retry-After":5.5}},"attempt":1,"jitter":0.0}
+{"func":"constants","case":"ladder_budget"}
+{"func":"retry_after","case":"headers_shadow_metadata","exc":{"headers":{"Retry-After":true},"metadata":{"Retry-After":"2"}}}

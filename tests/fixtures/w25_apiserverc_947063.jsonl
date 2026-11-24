@@ -1,0 +1,24 @@
+{"func":"allowed_fields","case":"table"}
+{"func":"sanitize","case":"filter","body":{"name":"a","bogus":1,"prompt":"p"},"allowed":["name","prompt","schedule"]}
+{"func":"sanitize","case":"keeps_all_allowed","body":{"timezone":"UTC","name":"n","deliver":"telegram"},"allowed":["deliver","enabled","name","prompt","repeat","schedule","skill","skills","timezone"]}
+{"func":"sanitize","case":"list_body","body":[],"allowed":["name"]}
+{"func":"sanitize","case":"null_body","body":null,"allowed":["name"]}
+{"func":"sanitize","case":"string_body","body":"x","allowed":["name"]}
+{"func":"invalid_update","case":"empty","sanitized":{}}
+{"func":"invalid_update","case":"name_not_str","sanitized":{"name":5}}
+{"func":"invalid_update","case":"prompt_none","sanitized":{"prompt":null}}
+{"func":"invalid_update","case":"schedule_list","sanitized":{"schedule":["x"]}}
+{"func":"invalid_update","case":"name_too_long","sanitized":{"name":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+{"func":"invalid_update","case":"prompt_cap","sanitized":{"name":"ok","prompt":"p"},"prompt_error":"Prompt must be ≤ 5000 characters"}
+{"func":"invalid_update","case":"prompt_ok","sanitized":{"name":"ok","prompt":"p"},"prompt_error":null}
+{"func":"invalid_update","case":"name_cap_short","sanitized":{"name":"abc"},"max_name_length":2}
+{"func":"invalid_update","case":"sanitized_null","sanitized":null}
+{"func":"invalid_update","case":"prompt_num","sanitized":{"name":"x","prompt":5}}
+{"func":"job_status","case":"found","job":{"id":"j1"},"notify":true}
+{"func":"job_status","case":"not_found","job":null,"notify":true}
+{"func":"job_status","case":"empty_obj","job":{},"notify":false}
+{"func":"job_status","case":"empty_list","job":[],"notify":false}
+{"func":"job_status","case":"zero","job":0,"notify":true}
+{"func":"job_status","case":"no_notify","job":"x","notify":false}
+{"func":"job_status","case":"invalid_input","job":null,"notify":true,"error":{"kind":"invalid","message":"invalid schedule"}}
+{"func":"job_status","case":"store_error","job":{"id":"j"},"notify":true,"error":{"kind":"other","message":"kaboom"}}

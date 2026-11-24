@@ -1,0 +1,34 @@
+{"func": "parse_branch_args", "case": "title-only", "raw": "release-2"}
+{"func": "parse_branch_args", "case": "flag-only", "raw": "--here"}
+{"func": "parse_branch_args", "case": "flag-and-title", "raw": "--here release-2"}
+{"func": "parse_branch_args", "case": "flag-uppercase", "raw": "--HERE Fix bug"}
+{"func": "parse_branch_args", "case": "empty", "raw": ""}
+{"func": "parse_branch_args", "case": "falsy-null", "raw": null}
+{"func": "parse_branch_args", "case": "padded", "raw": "  --here   spaced  "}
+{"func": "parse_branch_args", "case": "title-with-spaces", "raw": "title with spaces"}
+{"func": "parse_branch_args", "case": "flag-then-tab", "raw": "--here\tx"}
+{"func": "parse_branch_args", "case": "whitespace-only", "raw": "  "}
+{"func": "branch_thread_parent", "case": "discord-group", "source": {"platform": "discord", "chat_id": "ch1", "chat_type": "group"}}
+{"func": "branch_thread_parent", "case": "discord-dm", "source": {"platform": "discord", "chat_id": "dm1", "chat_type": "dm"}}
+{"func": "branch_thread_parent", "case": "discord-thread-with-parent", "source": {"platform": "discord", "chat_id": "t1", "chat_type": "thread", "thread_id": "t1", "parent_chat_id": "ch1"}}
+{"func": "branch_thread_parent", "case": "discord-thread-no-parent", "source": {"platform": "discord", "chat_id": "t1", "chat_type": "thread", "thread_id": "t1"}}
+{"func": "branch_thread_parent", "case": "discord-threadid-group", "source": {"platform": "discord", "chat_id": "ch9", "chat_type": "group", "thread_id": "t9", "parent_chat_id": "ch1"}}
+{"func": "branch_thread_parent", "case": "telegram-forum", "source": {"platform": "telegram", "chat_id": "-100123", "chat_type": "group"}}
+{"func": "branch_thread_parent", "case": "slack-thread", "source": {"platform": "slack", "chat_id": "C42", "chat_type": "thread", "thread_id": "1.2"}}
+{"func": "branch_thread_parent", "case": "matrix-room", "source": {"platform": "matrix", "chat_id": "!room:matrix", "chat_type": "group"}}
+{"func": "branch_thread_parent", "case": "cli-local", "source": {"platform": "local", "chat_id": "local", "chat_type": "dm"}}
+{"func": "branch_thread_parent", "case": "unknown-platform", "source": {"platform": "irc", "chat_id": "#x", "chat_type": "group"}}
+{"func": "branch_thread_parent", "case": "falsy-empty-chat-id", "source": {"platform": "telegram", "chat_id": "", "chat_type": "group"}}
+{"func": "branch_dest_source", "case": "discord-new-title", "source": {"platform": "discord", "chat_id": "t1", "chat_name": "old chat", "chat_type": "thread", "thread_id": "t1", "parent_chat_id": "ch1"}, "parent_id": "ch1", "thread_id": "t2", "title": "New"}
+{"func": "branch_dest_source", "case": "discord-empty-title-fallback", "source": {"platform": "discord", "chat_id": "ch1", "chat_name": "old chat", "chat_type": "group", "parent_chat_id": "ch1"}, "parent_id": "ch1", "thread_id": "t2", "title": ""}
+{"func": "branch_dest_source", "case": "discord-null-title-fallback", "source": {"platform": "discord", "chat_id": "ch1", "chat_name": null, "chat_type": "group"}, "parent_id": "ch1", "thread_id": "t2", "title": null}
+{"func": "branch_dest_source", "case": "telegram-thread", "source": {"platform": "telegram", "chat_id": "grp:1:2", "chat_name": "G", "chat_type": "thread"}, "parent_id": "-100", "thread_id": "77", "title": "T"}
+{"func": "branch_dest_source", "case": "slack-group", "source": {"platform": "slack", "chat_id": "C1", "chat_name": "S", "chat_type": "group"}, "parent_id": "C0", "thread_id": "9.9", "title": ""}
+{"func": "branch_dest_source", "case": "matrix-dm", "source": {"platform": "matrix", "chat_id": "!r", "chat_name": "M", "chat_type": "dm"}, "parent_id": "!p", "thread_id": "8", "title": "x"}
+{"func": "branch_dest_source", "case": "numeric-ids", "source": {"platform": "telegram", "chat_id": 111, "chat_name": "N", "chat_type": "group"}, "parent_id": 123, "thread_id": 456, "title": ""}
+{"func": "format_thread_ref", "case": "discord", "platform": "discord", "thread_id": "999"}
+{"func": "format_thread_ref", "case": "telegram", "platform": "telegram", "thread_id": "42"}
+{"func": "format_thread_ref", "case": "falsy-null-platform", "platform": null, "thread_id": "42"}
+{"func": "format_thread_ref", "case": "slack", "platform": "slack", "thread_id": "1.2"}
+{"func": "format_thread_ref", "case": "numeric-id", "platform": "discord", "thread_id": 7}
+{"func": "constants", "case": "tables"}

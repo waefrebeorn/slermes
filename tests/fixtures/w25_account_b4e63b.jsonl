@@ -1,0 +1,14 @@
+{"func": "matching_open_operation", "case": "one-name-open", "names": ["slack"], "alias": null, "repair_id": null, "profile_home": "/h", "open": {"slack": "op-1"}}
+{"func": "matching_open_operation", "case": "no-open", "names": ["slack"], "alias": "work", "repair_id": null, "profile_home": null, "open": {}}
+{"func": "matching_open_operation", "case": "two-names-same-op", "names": ["slack", "gmail"], "alias": null, "repair_id": null, "profile_home": null, "open": {"slack": "op-1", "gmail": "op-1"}}
+{"func": "matching_open_operation", "case": "two-names-two-ops", "names": ["slack", "gmail"], "alias": null, "repair_id": null, "profile_home": null, "open": {"slack": "op-1", "gmail": "op-2"}}
+{"func": "matching_open_operation", "case": "found-and-missing", "names": ["slack", "gmail"], "alias": null, "repair_id": null, "profile_home": null, "open": {"slack": "op-1"}}
+{"func": "matching_open_operation", "case": "missing-then-found", "names": ["gmail", "slack"], "alias": null, "repair_id": null, "profile_home": null, "open": {"slack": "op-1"}}
+{"func": "matching_open_operation", "case": "empty-names", "names": [], "alias": null, "repair_id": null, "profile_home": null, "open": {"slack": "op-1"}}
+{"func": "matching_open_operation", "case": "names-as-string", "names": "ab", "alias": null, "repair_id": null, "profile_home": null, "open": {}}
+{"func": "plan", "case": "connect", "names": ["slack"], "action": "connect", "alias": "work", "repair_id": null}
+{"func": "plan", "case": "repair", "names": ["slack"], "action": "reconnect", "alias": null, "repair_id": "acct-9"}
+{"func": "plan", "case": "three-names", "names": ["slack", "gmail", "notion"], "action": "connect", "alias": null, "repair_id": null}
+{"func": "plan", "case": "empty-names", "names": [], "action": "connect", "alias": null, "repair_id": null}
+{"func": "plan", "case": "empty-alias", "names": ["slack"], "action": "connect", "alias": "", "repair_id": ""}
+{"func": "constants", "case": "table"}

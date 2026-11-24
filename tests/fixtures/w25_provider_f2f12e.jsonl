@@ -1,0 +1,23 @@
+{"func": "resolve_search_mode", "case": "default-env", "mode_env": "agentic"}
+{"func": "resolve_search_mode", "case": "uppercase-spaces", "mode_env": "  FAST  "}
+{"func": "resolve_search_mode", "case": "one-shot-mixed", "mode_env": "One-Shot"}
+{"func": "resolve_search_mode", "case": "unknown-narrowed", "mode_env": "turbo"}
+{"func": "resolve_search_mode", "case": "empty-string", "mode_env": ""}
+{"func": "resolve_search_mode", "case": "none-env", "mode_env": null}
+{"func": "resolve_search_mode", "case": "whitespace-only", "mode_env": "   "}
+{"func": "search_plan", "case": "normal", "query": "rust async runtime", "limit": 5, "mode_env": "agentic"}
+{"func": "search_plan", "case": "cap-50", "query": "x", "limit": 50, "mode_env": "fast"}
+{"func": "search_plan", "case": "cap-exact-20", "query": "x", "limit": 20, "mode_env": "one-shot"}
+{"func": "search_plan", "case": "zero-limit", "query": "x", "limit": 0, "mode_env": "agentic"}
+{"func": "search_plan", "case": "float-limit", "query": "x", "limit": 7.5, "mode_env": "agentic"}
+{"func": "search_plan", "case": "query-object", "query": {"q": 1}, "limit": 3, "mode_env": ""}
+{"func": "search_plan", "case": "bad-mode-env", "query": "x", "limit": 2, "mode_env": "turbo"}
+{"func": "search_hits", "case": "normal", "results": [{"url": "https://a.example/x", "title": "A", "excerpts": ["one", "two"]}, {"url": "https://b.example/y", "title": "B", "excerpts": ["alpha beta", "gamma"]}]}
+{"func": "search_hits", "case": "empty-results", "results": []}
+{"func": "search_hits", "case": "null-results", "results": null}
+{"func": "search_hits", "case": "all-null-fields", "results": [{"url": null, "title": null, "excerpts": null}]}
+{"func": "search_hits", "case": "falsy-zeros", "results": [{"url": 0, "title": 0.0, "excerpts": []}]}
+{"func": "search_hits", "case": "nonstring-url-int", "results": [{"url": 12, "title": false, "excerpts": [""]}]}
+{"func": "search_hits", "case": "empty-excerpt-items", "results": [{"url": "u", "title": "t", "excerpts": ["a", "", "b"]}]}
+{"func": "search_hits", "case": "three-rows", "results": [{"url": "u1", "title": "t1", "excerpts": ["x"]}, {"url": "u2", "title": "t2"}, {"url": "u3", "title": "t3", "excerpts": ["z z"]}]}
+{"func": "constants", "case": "table"}

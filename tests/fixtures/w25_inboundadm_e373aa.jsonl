@@ -1,0 +1,20 @@
+{"func": "lane_key", "case": "relay-string-chat", "source": {"platform": {"value": "relay"}, "chat_id": "chat-1"}}
+{"func": "lane_key", "case": "numeric-chat-id", "source": {"platform": {"value": "relay"}, "chat_id": 12345}}
+{"func": "lane_key", "case": "empty-chat-id", "source": {"platform": {"value": "telegram"}, "chat_id": ""}}
+{"func": "lane_key", "case": "absent-chat-id", "source": {"platform": {"value": "discord"}}}
+{"func": "lane_key", "case": "null-chat-id", "source": {"platform": {"value": "relay"}, "chat_id": null}}
+{"func": "admit_action", "case": "commit-no-receipt", "kind": "ok", "receipt": null, "consumer_reply": null}
+{"func": "admit_action", "case": "false-receipt-is-not-none", "kind": "ok", "receipt": false, "consumer_reply": "hello"}
+{"func": "admit_action", "case": "commit-with-receipt", "kind": "ok", "receipt": {"session": "s-1"}, "consumer_reply": "ignored"}
+{"func": "admit_action", "case": "deliver-consumed-reply", "kind": "ok", "receipt": null, "consumer_reply": {"text": "hello"}}
+{"func": "admit_action", "case": "empty-consumer-reply-is-falsy", "kind": "ok", "receipt": null, "consumer_reply": ""}
+{"func": "admit_action", "case": "empty-receipt-object-commits", "kind": "ok", "receipt": {}, "consumer_reply": "hello"}
+{"func": "admit_action", "case": "parked-route-refused", "kind": "parked"}
+{"func": "admit_action", "case": "permanent-permission-denied", "kind": "authority", "reason": "permission_denied"}
+{"func": "admit_action", "case": "permanent-profile-mismatch", "kind": "authority", "reason": "profile_mismatch"}
+{"func": "admit_action", "case": "permanent-invalid-params", "kind": "authority", "reason": "invalid_params"}
+{"func": "admit_action", "case": "transient-session-busy", "kind": "authority", "reason": "session_busy"}
+{"func": "admit_action", "case": "transient-queue-full", "kind": "authority", "reason": "queue_full"}
+{"func": "admit_action", "case": "transient-null-reason", "kind": "authority", "reason": null}
+{"func": "admit_action", "case": "transient-empty-reason", "kind": "authority", "reason": ""}
+{"func": "constants", "case": "permanent-set"}

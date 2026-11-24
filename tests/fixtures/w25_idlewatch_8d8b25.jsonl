@@ -1,0 +1,16 @@
+{"func":"next_check_in","case":"window-30-idle-0","limit":30,"idle":0}
+{"func":"next_check_in","case":"window-45-idle-10","limit":45,"idle":10}
+{"func":"next_check_in","case":"auto-stop-off","limit":0,"idle":5}
+{"func":"next_check_in","case":"idle-none","limit":30,"idle":null}
+{"func":"next_check_in","case":"idle-past-window","limit":20,"idle":100}
+{"func":"next_check_in","case":"idle-empty-list","limit":60,"idle":[]}
+{"func":"next_check_in","case":"fractional-window","limit":12.5,"idle":2.25}
+{"func":"next_check_in","case":"off-custom-default","limit":0,"idle":0,"default_minutes":10}
+{"func":"own_launcher","case":"no-argv","argv":[]}
+{"func":"own_launcher","case":"pid-alive","argv":["4242"],"born":1700000000.5}
+{"func":"own_launcher","case":"pid-gone","argv":["4242"],"born":null}
+{"func":"own_launcher","case":"padded-pid","argv":["0042"]}
+{"func":"own_launcher","case":"non-digit","argv":["pid"]}
+{"func":"own_launcher","case":"empty-arg","argv":[""]}
+{"func":"own_launcher","case":"extra-args","argv":["7","--once"],"born":12.25}
+{"func":"constants","case":"cadence"}

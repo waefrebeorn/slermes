@@ -1,0 +1,19 @@
+{"func":"owned_by_profile","case":"nothing-pinned","definition":"/etc/systemd/system/hermes-gateway-work.service","profile_dir":"/home/u/.hermes/profiles/work","raw":null,"resolved_raw":null,"resolved_profile":"/home/u/.hermes/profiles/work"}
+{"func":"owned_by_profile","case":"same-home","definition":"/etc/systemd/system/hermes-gateway-work.service","profile_dir":"/home/u/.hermes/profiles/work","raw":"/home/u/.hermes","resolved_raw":"/home/u/.hermes","resolved_profile":"/home/u/.hermes"}
+{"func":"owned_by_profile","case":"other-install","definition":"/etc/systemd/system/hermes-gateway-work.service","profile_dir":"/home/u/.hermes/profiles/work","raw":"/opt/other/.hermes","resolved_raw":"/opt/other/.hermes","resolved_profile":"/home/u/.hermes"}
+{"func":"owned_by_profile","case":"both-unresolved","definition":"/etc/systemd/system/hermes-gateway-work.service","profile_dir":"/home/u/.hermes/profiles/work","raw":"/weird/home","resolved_raw":null,"resolved_profile":null}
+{"func":"owned_by_profile","case":"one-unresolved","definition":"/etc/systemd/system/hermes-gateway-work.service","profile_dir":"/home/u/.hermes/profiles/work","raw":"/weird/home","resolved_raw":null,"resolved_profile":"/home/u/.hermes"}
+{"func":"owned_by_profile","case":"tilde-pinned-home","definition":"/home/u/.config/systemd/user/hermes-gateway-work.service","profile_dir":"/home/u/.hermes/profiles/work","raw":"~/.hermes","resolved_raw":"/home/u/.hermes","resolved_profile":"/home/u/.hermes"}
+{"func":"system_unit","case":"no-unit","svc_name":"hermes-gateway-work","unit":"/etc/systemd/system/hermes-gateway-work.service","exists":false,"owned":true,"is_root":true,"stop_rc":0}
+{"func":"system_unit","case":"not-owned","svc_name":"hermes-gateway-work","unit":"/etc/systemd/system/hermes-gateway-work.service","exists":true,"owned":false,"is_root":true,"stop_rc":0}
+{"func":"system_unit","case":"non-root","svc_name":"hermes-gateway-work","unit":"/etc/systemd/system/hermes-gateway-work.service","exists":true,"owned":true,"is_root":false,"stop_rc":0}
+{"func":"system_unit","case":"root-removed","svc_name":"hermes-gateway-work","unit":"/etc/systemd/system/hermes-gateway-work.service","exists":true,"owned":true,"is_root":true,"stop_rc":0}
+{"func":"system_unit","case":"root-stop-failed","svc_name":"hermes-gateway-work","unit":"/etc/systemd/system/hermes-gateway-work.service","exists":true,"owned":true,"is_root":true,"stop_rc":3}
+{"func":"system_unit","case":"truthy-string-root","svc_name":"hermes-gateway-work","unit":"/etc/systemd/system/hermes-gateway-work.service","exists":true,"owned":true,"is_root":"yes","stop_rc":0}
+{"func":"windows_task","case":"task-removed","task_name":"hermes-gateway-work","registered":true,"delete_code":0,"err":"","entries":[]}
+{"func":"windows_task","case":"task-remains","task_name":"hermes-gateway-work","registered":true,"delete_code":5,"err":"  Access is denied. \n","entries":[]}
+{"func":"windows_task","case":"startup-entries","task_name":"hermes-gateway-work","registered":false,"delete_code":0,"err":"","entries":[["C:\\Users\\u\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\hermes-gateway-work.vbs",true],["C:\\Users\\u\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\hermes-gateway-work.cmd",false]]}
+{"func":"windows_task","case":"nothing","task_name":"hermes-gateway-work","registered":false,"delete_code":0,"err":"","entries":[]}
+{"func":"windows_task","case":"task-and-both-entries","task_name":"hermes-gateway-work","registered":true,"delete_code":0,"err":"","entries":[["C:\\Startup\\a.vbs",true],["C:\\Startup\\a.cmd",true]]}
+{"func":"windows_task","case":"quote-in-name","task_name":"hermes's gateway","registered":true,"delete_code":0,"err":"","entries":[]}
+{"func":"constants","case":"layout"}

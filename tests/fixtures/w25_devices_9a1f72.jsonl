@@ -1,0 +1,17 @@
+{"func": "probe_devices", "case": "full-list", "stdout": "[{\"type\": 1, \"total\": 8589934592, \"description\": \"NVIDIA GeForce RTX 4070\", \"free\": 123456789}, {\"type\": 0, \"total\": 0, \"description\": \"CPU\", \"free\": 0}, {\"type\": 2, \"total\": 17179869184, \"description\": \"Intel(R) Iris Xe Graphics\", \"free\": 987654321}]", "returncode": 0, "raise": "none"}
+{"func": "probe_devices", "case": "boundaries", "stdout": "[{\"type\": 1, \"total\": 0, \"description\": \"zero total\"}, {\"type\": 1, \"total\": -1, \"description\": \"negative total\"}, {\"type\": 3, \"total\": 4294967296, \"description\": \"accel row\"}, {\"type\": 1, \"total\": 4294967296, \"description\": 5}, {\"type\": 1, \"total\": 4294967296, \"description\": null}, \"not-an-object\", {\"type\": \"1\", \"total\": 4294967296, \"description\": \"string type\"}, {\"type\": 1, \"total\": 2.5, \"description\": \"fractional total\"}]", "returncode": 0, "raise": "none"}
+{"func": "probe_devices", "case": "python-bool-and-float-types", "stdout": "[{\"type\": true, \"total\": true, \"description\": \"bool type and total\"}, {\"type\": false, \"total\": 1024, \"description\": \"bool false type\"}, {\"type\": 1.0, \"total\": 1024, \"description\": \"float one type\"}, {\"type\": 2, \"total\": 1024, \"description\": \"plain igpu\"}]", "returncode": 0, "raise": "none"}
+{"func": "probe_devices", "case": "nonzero-exit-ignores-stdout", "stdout": "[{\"type\": 1, \"total\": 8, \"description\": \"not even parsed\"}", "returncode": 1, "raise": "none"}
+{"func": "probe_devices", "case": "child-timeout", "stdout": "[{\"type\": 1, \"total\": 8589934592, \"description\": \"NVIDIA GeForce RTX 4070\", \"free\": 123456789}, {\"type\": 0, \"total\": 0, \"description\": \"CPU\", \"free\": 0}, {\"type\": 2, \"total\": 17179869184, \"description\": \"Intel(R) Iris Xe Graphics\", \"free\": 987654321}]", "returncode": 0, "raise": "timeout"}
+{"func": "probe_devices", "case": "child-oserror", "stdout": "[{\"type\": 1, \"total\": 8589934592, \"description\": \"NVIDIA GeForce RTX 4070\", \"free\": 123456789}, {\"type\": 0, \"total\": 0, \"description\": \"CPU\", \"free\": 0}, {\"type\": 2, \"total\": 17179869184, \"description\": \"Intel(R) Iris Xe Graphics\", \"free\": 987654321}]", "returncode": 0, "raise": "oserror"}
+{"func": "probe_devices", "case": "undecodable-stdout", "stdout": "not json at all", "returncode": 0, "raise": "none"}
+{"func": "probe_devices", "case": "decoded-null-not-a-list", "stdout": "null", "returncode": 0, "raise": "none"}
+{"func": "probe_devices", "case": "empty-list", "stdout": "[]", "returncode": 0, "raise": "none"}
+{"func": "probe_devices", "case": "decoded-object-not-a-list", "stdout": "{\"type\": 1}", "returncode": 0, "raise": "none"}
+{"func": "library", "directory": "C:/engines/llama", "name": "ggml-base", "nt": true}
+{"func": "library", "directory": "C:/engines/llama", "name": "ggml-base", "nt": false}
+{"func": "library", "directory": "C:/engines/llama/", "name": "ggml", "nt": true}
+{"func": "library", "directory": "", "name": "ggml-vulkan", "nt": true}
+{"func": "library", "directory": "engines/llama", "name": "", "nt": false}
+{"func": "library", "directory": "/opt/llama", "name": "ggml"}
+{"func": "constants", "case": "device-types"}

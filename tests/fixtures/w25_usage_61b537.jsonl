@@ -1,0 +1,12 @@
+{"func": "snapshot_document", "case": "codex-full", "snapshot": {"provider": "codex", "source": "oauth", "title": "Codex (ChatGPT plan)", "plan": "pro", "fetched_at": "2026-11-24T10:00:00+00:00", "windows": [{"label": "5h", "used_percent": 42.5, "reset_at": "2026-11-24T15:00:00+00:00", "detail": "35 of 60 min"}, {"label": "weekly", "used_percent": 12, "reset_at": null, "detail": null}], "details": ["banked resets: 2", "account: a@b.c"], "unavailable_reason": null}}
+{"func": "snapshot_document", "case": "empty-windows", "snapshot": {"provider": "anthropic", "source": "oauth", "title": null, "plan": null, "fetched_at": "2026-01-02T03:04:05", "windows": [], "details": [], "unavailable_reason": "no windows returned"}}
+{"func": "snapshot_document", "case": "falsy-reset-and-absent-keys", "snapshot": {"provider": "openrouter", "fetched_at": "2026-05-06T07:08:09.500000+00:00", "windows": [{"label": "credits", "used_percent": 0, "reset_at": "", "detail": ""}, {"label": "anon", "used_percent": null}]}}
+{"func": "snapshot_document", "case": "type-mismatch-list", "snapshot": []}
+{"func": "snapshot_document", "case": "absent", "snapshot": null}
+{"func": "snapshot_document", "case": "windows-not-a-list", "snapshot": {"provider": "x", "windows": "nope"}}
+{"func": "no_usage_message", "case": "normal", "provider": "codex"}
+{"func": "no_usage_message", "case": "empty", "provider": ""}
+{"func": "no_usage_message", "case": "none", "provider": null}
+{"func": "no_usage_message", "case": "number", "provider": 7}
+{"func": "no_usage_message", "case": "absent"}
+{"func": "constants", "case": "parser-contract"}

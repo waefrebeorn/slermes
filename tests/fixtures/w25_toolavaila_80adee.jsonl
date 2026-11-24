@@ -1,0 +1,21 @@
+{"func": "filter_enabled", "case": "composite-bundle-expands", "unavailable": [{"name": "web", "tools": ["web_search", "web_fetch"], "env_vars": ["EXA_API_KEY"]}, {"name": "terminal", "tools": ["terminal"], "env_vars": []}, {"name": "spotify", "tools": ["spotify_play"], "env_vars": []}], "enabled": ["hermes-cli"], "resolve": {"hermes-cli": ["web_search", "web_fetch", "terminal"]}}
+{"func": "filter_enabled", "case": "direct-name-listed", "unavailable": [{"name": "web", "tools": ["web_search"]}, {"name": "spotify", "tools": ["spotify_play"]}], "enabled": ["spotify"], "resolve": {}}
+{"func": "filter_enabled", "case": "no-match-filtered-out", "unavailable": [{"name": "web", "tools": ["web_search"]}], "enabled": ["hermes-cli"], "resolve": {"hermes-cli": ["shell", "read_file"]}}
+{"func": "filter_enabled", "case": "empty-selection-means-everything", "unavailable": [{"name": "web", "tools": ["web_search"]}, {"name": "spotify", "tools": ["spotify_play"]}], "enabled": [], "resolve": {}}
+{"func": "filter_enabled", "case": "unknown-selection-name", "unavailable": [{"name": "web", "tools": ["web_search"]}], "enabled": ["ghost"], "resolve": null}
+{"func": "filter_enabled", "case": "tools-null", "unavailable": [{"name": "web", "tools": null}], "enabled": ["hermes-cli"], "resolve": {"hermes-cli": ["web_search"]}}
+{"func": "filter_enabled", "case": "name-absent-tools-match", "unavailable": [{"tools": ["web_search"]}], "enabled": ["hermes-cli"], "resolve": {"hermes-cli": ["web_fetch", "web_search"]}}
+{"func": "filter_enabled", "case": "resolve-null-expansion", "unavailable": [{"name": "web", "tools": ["web_search"]}], "enabled": ["hermes-cli"], "resolve": {"hermes-cli": null}}
+{"func": "warning_lines", "case": "terminal-with-reason", "unavailable": [{"name": "terminal", "env_vars": ["TERMINAL_ENV"]}], "terminal_reason": "docker daemon is not running", "terminal_backend": "docker"}
+{"func": "warning_lines", "case": "terminal-without-reason", "unavailable": [{"name": "terminal"}], "terminal_reason": null, "terminal_backend": "docker"}
+{"func": "warning_lines", "case": "web-multi-provider", "unavailable": [{"name": "web", "env_vars": ["EXA_API_KEY", "TAVILY_API_KEY", "BRAVE_API_KEY"]}], "terminal_reason": null, "terminal_backend": "local"}
+{"func": "warning_lines", "case": "generic-missing-keys", "unavailable": [{"name": "spotify", "env_vars": ["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET"]}], "terminal_reason": null, "terminal_backend": "local"}
+{"func": "warning_lines", "case": "mixed-order", "unavailable": [{"name": "web", "env_vars": ["EXA_API_KEY"]}, {"name": "spotify", "env_vars": ["SPOTIFY_CLIENT_ID"]}, {"name": "terminal"}, {"name": "linear", "env_vars": ["LINEAR_API_KEY"]}], "terminal_reason": "podman is missing", "terminal_backend": "docker"}
+{"func": "warning_lines", "case": "empty-list", "unavailable": [], "terminal_reason": null, "terminal_backend": "local"}
+{"func": "warning_lines", "case": "nameless-row-skipped", "unavailable": [{"env_vars": null}], "terminal_reason": null, "terminal_backend": "local"}
+{"func": "warning_lines", "case": "empty-env-vars-skipped", "unavailable": [{"name": "notion", "env_vars": []}], "terminal_reason": null, "terminal_backend": "local"}
+{"func": "terminal_line", "case": "docker-with-reason", "backend": "docker", "reason": "no daemon socket"}
+{"func": "terminal_line", "case": "docker-unknown-reason", "backend": "docker", "reason": null}
+{"func": "terminal_line", "case": "empty-reason-string", "backend": "local", "reason": ""}
+{"func": "terminal_line", "case": "backend-absent-defaults-local", "reason": "binary missing"}
+{"func": "constants", "case": "tables"}

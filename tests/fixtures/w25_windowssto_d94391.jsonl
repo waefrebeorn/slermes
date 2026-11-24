@@ -1,0 +1,13 @@
+{"func": "main_result", "case": "check-two-updates", "plan": {"mode": "check", "packages": ["Contoso.App_1.0.0.0_x64", "Fabrikam.Tool_2.3.1.0_neutral"]}}
+{"func": "main_result", "case": "check-no-updates", "plan": {"mode": "check", "packages": []}}
+{"func": "main_result", "case": "check-packages-absent", "plan": {"mode": "check"}}
+{"func": "main_result", "case": "download-completed", "plan": {"mode": "download", "packages": ["Contoso.App_1.0"], "overall_state": "COMPLETED", "hwnd": 131072}}
+{"func": "main_result", "case": "download-state-mismatch", "plan": {"mode": "download", "packages": ["Contoso.App_1.0"], "overall_state": "ERROR", "hwnd": 131072}}
+{"func": "main_result", "case": "install-no-hwnd", "plan": {"mode": "install", "packages": ["Contoso.App_1.0"], "overall_state": "COMPLETED"}}
+{"func": "main_result", "case": "install-hwnd-zero", "plan": {"mode": "install", "packages": ["Contoso.App_1.0"], "hwnd": 0}}
+{"func": "main_result", "case": "install-completed", "plan": {"mode": "install", "packages": ["Contoso.App_1.0", "Fabrikam.Tool_2.3"], "overall_state": "COMPLETED", "hwnd": 42}}
+{"func": "main_result", "case": "request-raised", "plan": {"mode": "download", "packages": ["Contoso.App_1.0"], "hwnd": 7, "request_error": "A task was canceled."}}
+{"func": "main_result", "case": "query-raised", "plan": {"mode": "check", "get_error": "The Store service is unavailable."}}
+{"func": "main_result", "case": "apartment-init-raised", "plan": {"mode": "check", "init_error": "Failed to initialize a single-threaded apartment"}}
+{"func": "main_result", "case": "absent-plan", "plan": null}
+{"func": "constants", "case": "cli-contract"}

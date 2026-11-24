@@ -1,0 +1,21 @@
+{"func": "constants", "case": "module"}
+{"func": "portable", "case": "full-record", "cookie": {"name": "sid", "value": "abc", "domain": ".example.com", "path": "/", "expires": 1767225600.5, "httpOnly": true, "secure": true, "session": false, "sameSite": "Lax", "size": 42, "priority": "High", "sourcePort": 443}}
+{"func": "portable", "case": "subset-fields", "cookie": {"name": "n", "value": "v", "domain": "d"}}
+{"func": "portable", "case": "partitioned-chips", "cookie": {"name": "n", "domain": "d", "partitionKey": {"topLevelSite": "https://a"}}}
+{"func": "portable", "case": "partition-key-empty", "cookie": {"name": "n", "domain": "d", "partitionKey": ""}}
+{"func": "portable", "case": "no-name", "cookie": {"value": "v", "domain": "d"}}
+{"func": "portable", "case": "empty-name", "cookie": {"name": "", "domain": "d"}}
+{"func": "portable", "case": "no-domain", "cookie": {"name": "n", "value": "v"}}
+{"func": "portable", "case": "empty-object", "cookie": {}}
+{"func": "portable", "case": "name-number", "cookie": {"name": 42, "domain": "d"}}
+{"func": "export", "case": "disabled-no-err", "cdp_url": null, "err": null, "raw": null, "read_error": null}
+{"func": "export", "case": "error-with-err", "cdp_url": null, "err": "no consent", "raw": null, "read_error": null}
+{"func": "export", "case": "empty-err-is-disabled", "cdp_url": null, "err": "", "raw": null, "read_error": null}
+{"func": "export", "case": "read-failure", "cdp_url": "ws://127.0.0.1:9/x", "err": null, "read_error": "Timed out"}
+{"func": "export", "case": "ok-skips", "cdp_url": "ws://127.0.0.1:9/x", "err": null, "read_error": null, "raw": [{"name": "a", "value": "1", "domain": ".x", "path": "/"}, {"name": "b", "value": "2", "domain": ".x", "partitionKey": {"site": "s"}}, {"value": "3", "domain": ".x"}]}
+{"func": "export", "case": "ok-empty", "cdp_url": "ws://127.0.0.1:9/x", "err": null, "read_error": null, "raw": []}
+{"func": "run_code", "case": "json-pipe-ok", "json": true, "isatty": false, "result": {"status": "ok"}}
+{"func": "run_code", "case": "json-pipe-error", "json": true, "isatty": false, "result": {"status": "error", "error": "x"}}
+{"func": "run_code", "case": "json-pipe-disabled", "json": true, "isatty": false, "result": {"status": "disabled"}}
+{"func": "run_code", "case": "tty-refused", "json": true, "isatty": true, "result": {"status": "ok"}}
+{"func": "run_code", "case": "no-json-flag", "json": false, "isatty": false, "result": {"status": "ok"}}

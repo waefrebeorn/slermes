@@ -1,0 +1,17 @@
+{"func": "constants", "case": "module"}
+{"func": "request_may_have_delivered", "case": "flagged-lost", "request_error": true, "kind": "lost", "error_text": "read timeout"}
+{"func": "request_may_have_delivered", "case": "flagged-server-error", "request_error": true, "kind": "server_error", "error_text": "502"}
+{"func": "request_may_have_delivered", "case": "unflagged-lost", "request_error": false, "kind": "lost", "error_text": "timeout"}
+{"func": "request_may_have_delivered", "case": "flagged-unknown-kind", "request_error": true, "kind": "", "error_text": "boom"}
+{"func": "unconfirmed_media_result", "case": "ambiguous", "request_error": true, "kind": "lost", "error_text": "read timeout", "error_type": "FakeErr", "what": "photo", "as_failure": false}
+{"func": "unconfirmed_media_result", "case": "as-failure", "request_error": true, "kind": "lost", "error_text": "read timeout", "error_type": "FakeErr", "what": "animation", "as_failure": true}
+{"func": "unconfirmed_media_result", "case": "server-error-is-definite", "request_error": true, "kind": "server_error", "error_text": "502", "error_type": "FakeErr", "what": "photo", "as_failure": false}
+{"func": "unconfirmed_media_result", "case": "unflagged", "request_error": false, "kind": "lost", "error_text": "timeout", "error_type": "FakeErr", "what": "photo", "as_failure": false}
+{"func": "unconfirmed_media_result", "case": "empty-error-text", "request_error": true, "kind": "lost", "error_text": "", "error_type": "FakeErr", "what": "document", "as_failure": true}
+{"func": "retry_plan", "case": "first-ok", "attempts": [{"ok": true}], "reset": true, "what": "photo"}
+{"func": "retry_plan", "case": "unsent-then-ok", "attempts": [{"ok": false, "kind": "unsent", "error_text": "connect"}, {"ok": true}], "reset": true, "what": "photo"}
+{"func": "retry_plan", "case": "unsent-then-ok-no-reset", "attempts": [{"ok": false, "kind": "unsent", "error_text": "connect"}, {"ok": true}], "reset": false, "what": "photo"}
+{"func": "retry_plan", "case": "budget-spent", "attempts": [{"ok": false, "kind": "unsent"}, {"ok": false, "kind": "unsent"}, {"ok": false, "kind": "unsent"}, {"ok": true}], "reset": true, "what": "video"}
+{"func": "retry_plan", "case": "server-error-then-lost", "attempts": [{"ok": false, "kind": "server_error"}, {"ok": false, "kind": "lost"}], "reset": true, "what": "photo"}
+{"func": "retry_plan", "case": "refused-first", "attempts": [{"ok": false, "kind": "refused"}], "reset": true, "what": "photo"}
+{"func": "retry_plan", "case": "unsent-unsent-server-error", "attempts": [{"ok": false, "kind": "unsent"}, {"ok": false, "kind": "unsent"}, {"ok": false, "kind": "server_error"}], "reset": true, "what": "photo"}

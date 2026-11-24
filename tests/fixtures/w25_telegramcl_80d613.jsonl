@@ -1,0 +1,20 @@
+{"func":"ident","case":"int","value":5}
+{"func":"ident","case":"str","value":"42"}
+{"func":"ident","case":"none","value":null}
+{"func":"ident","case":"bool","value":true}
+{"func":"ident","case":"empty","value":""}
+{"func":"ident","case":"negative","value":-7}
+{"func":"from_sent","case":"full","session_key":"telegram:dm:1","msg":{"chat_id":-100200,"message_id":77,"message_thread_id":9}}
+{"func":"from_sent","case":"no_msg","session_key":"telegram:dm:2","msg":null}
+{"func":"from_sent","case":"chat_only","session_key":"telegram:dm:3","msg":{"chat_id":"-1"}}
+{"func":"from_sent","case":"null_mid","session_key":"telegram:dm:4","msg":{"chat_id":1,"message_id":null,"message_thread_id":3}}
+{"func":"tap_matches","case":"same_message","prompt":{"session_key":"s","chat_id":"-100","message_id":"7","thread_id":"3"},"query":{"id":"q1","from_id":"u1","message":{"chat_id":-100,"message_id":7,"message_thread_id":3}},"denial":"Denied: tap on another message"}
+{"func":"tap_matches","case":"other_message","prompt":{"session_key":"s","chat_id":"-100","message_id":"7","thread_id":"3"},"query":{"id":"q2","from_id":"u1","message":{"chat_id":-100,"message_id":8,"message_thread_id":3}},"denial":"Denied: tap on another message"}
+{"func":"tap_matches","case":"unbound_prompt","prompt":{"session_key":"s","chat_id":"-100","message_id":null,"thread_id":"3"},"query":{"id":"q3","from_id":"u1","message":{"chat_id":-100,"message_id":8}},"denial":"Denied"}
+{"func":"tap_matches","case":"no_query_message","prompt":{"session_key":"s","chat_id":"-100","message_id":"7"},"query":{"id":"q4","from_id":"u1","message":null},"denial":"Denied"}
+{"func":"tap_matches","case":"null_chat_both","prompt":{"session_key":"s","chat_id":null,"message_id":"7"},"query":{"id":"q5","from_id":"u1","message":{"chat_id":null,"message_id":"7"}},"denial":"Denied"}
+{"func":"tap_matches","case":"other_chat","prompt":{"session_key":"s","chat_id":"-100","message_id":"7"},"query":{"id":"q6","from_id":"u1","message":{"chat_id":"-99","message_id":"7"}},"denial":"Denied: tap on another message"}
+{"func":"audit_line","case":"resolved","clarify_id":"c1","choice":"yes please","caller_id":"u1","query_id":"q1","chat":"-100","message":"7"}
+{"func":"audit_line","case":"empty_choice","clarify_id":"c2","choice":"","caller_id":"u2","query_id":"q2","chat":"-100","message":"8"}
+{"func":"audit_line","case":"nulls","clarify_id":"c3","choice":"y","caller_id":null,"query_id":null,"chat":null,"message":null}
+{"func":"audit_line","case":"numeric_caller","clarify_id":"c4","choice":"n","caller_id":42,"query_id":"q4","chat":"-5","message":"6"}

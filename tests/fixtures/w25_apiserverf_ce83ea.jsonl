@@ -1,0 +1,21 @@
+{"func": "constants", "case": "module"}
+{"func": "is_draining", "case": "no-flags"}
+{"func": "is_draining", "case": "in-process-drain", "draining": true}
+{"func": "is_draining", "case": "external-drain", "draining": false, "external_drain": 1}
+{"func": "is_draining", "case": "both-false", "draining": false, "external_drain": 0}
+{"func": "is_draining", "case": "empty-string-falsy", "draining": ""}
+{"func": "startup_gate", "case": "no-runner", "has_runner": false, "job_id": "j1", "received_at": 0.0, "now": 0.0}
+{"func": "startup_gate", "case": "running", "has_runner": true, "running": true, "job_id": "j1", "received_at": 0.0, "now": 0.0}
+{"func": "startup_gate", "case": "running-missing-default", "has_runner": true, "job_id": "j1", "received_at": 0.0, "now": 0.0}
+{"func": "startup_gate", "case": "draining-refuses", "has_runner": true, "draining": true, "running": true, "job_id": "j1", "received_at": 0.0, "now": 0.0}
+{"func": "startup_gate", "case": "external-drain-refuses", "has_runner": true, "external_drain": 1, "running": true, "job_id": "j2", "received_at": 0.0, "now": 0.0}
+{"func": "startup_gate", "case": "not-running-polls", "has_runner": true, "running": false, "job_id": "j1", "received_at": 0.0, "now": 0.0}
+{"func": "startup_gate", "case": "not-running-halfway", "has_runner": true, "running": false, "job_id": "j1", "received_at": 100.0, "now": 105.0}
+{"func": "startup_gate", "case": "not-running-at-deadline", "has_runner": true, "running": false, "job_id": "j1", "received_at": 0.0, "now": 7.0}
+{"func": "startup_gate", "case": "not-running-past-deadline", "has_runner": true, "running": false, "job_id": "j1", "received_at": 0.0, "now": 31.5}
+{"func": "startup_gate", "case": "running-zero-number", "has_runner": true, "running": 0, "job_id": "j1", "received_at": 0.0, "now": 6.0}
+{"func": "startup_gate", "case": "running-empty-string", "has_runner": true, "running": "", "job_id": "j1", "received_at": 0.0, "now": 6.95}
+{"func": "live_adapters", "case": "adapters-live", "has_runner": true, "running": true, "adapters": [{"name": "telegram"}], "job_id": "j1", "received_at": 0.0, "now": 0.0}
+{"func": "live_adapters", "case": "adapters-empty", "has_runner": true, "running": true, "adapters": [], "job_id": "j1", "received_at": 0.0, "now": 0.0}
+{"func": "live_adapters", "case": "adapters-absent", "has_runner": true, "running": true, "job_id": "j1", "received_at": 0.0, "now": 0.0}
+{"func": "live_adapters", "case": "no-runner-null-adapters", "has_runner": false, "job_id": "j1", "received_at": 0.0, "now": 0.0}

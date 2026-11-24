@@ -1,0 +1,18 @@
+{"func": "constants", "case": "purpose-algorithms-leeway"}
+{"func": "verify", "case": "good-inline-token", "token": "eyJhbGciOiJSUzI1NiJ9.inline.sig", "audience": "cron-fire", "jwks_or_key": "-----BEGIN PUBLIC KEY-----\nMIIB\n-----END PUBLIC KEY-----", "issuer": "https://portal.nous.test", "leeway": 30, "decode": {"ok": true, "claims": {"purpose": "cron_fire", "aud": "cron-fire", "exp": 1763000000, "iss": "https://portal.nous.test", "job_id": "j-1"}}}
+{"func": "verify", "case": "good-jwks-token", "token": "eyJhbGciOiJSUzI1NiJ9.jwks.sig", "audience": "cron-fire", "jwks_or_key": "https://portal.nous.test/api/jwks", "decode": {"ok": true, "claims": {"purpose": "cron_fire", "aud": "cron-fire", "exp": 1763000000}}}
+{"func": "verify", "case": "wrong-purpose", "token": "t", "audience": "cron-fire", "jwks_or_key": "https://portal.nous.test/api/jwks", "decode": {"ok": true, "claims": {"purpose": "agent", "aud": "cron-fire", "exp": 1763000000}}}
+{"func": "verify", "case": "missing-purpose", "token": "t", "audience": "cron-fire", "jwks_or_key": "https://portal.nous.test/api/jwks", "decode": {"ok": true, "claims": {"aud": "cron-fire", "exp": 1763000000}}}
+{"func": "verify", "case": "decode-fails", "token": "t", "audience": "cron-fire", "jwks_or_key": "-----BEGIN PUBLIC KEY-----\nMIIB\n", "decode": {"ok": false}}
+{"func": "verify", "case": "empty-token", "token": "", "audience": "cron-fire", "jwks_or_key": "https://portal.nous.test/api/jwks", "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}
+{"func": "verify", "case": "missing-audience", "token": "t", "audience": "", "jwks_or_key": "https://portal.nous.test/api/jwks", "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}
+{"func": "verify", "case": "no-key-configured", "token": "t", "audience": "cron-fire", "jwks_or_key": null, "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}
+{"func": "verify", "case": "non-string-key", "token": "t", "audience": "cron-fire", "jwks_or_key": 5, "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}
+{"func": "verify", "case": "http-scheme-jwks", "token": "t", "audience": "cron-fire", "jwks_or_key": "http://localhost:8080/jwks.json", "decode": {"ok": true, "claims": {"purpose": "cron_fire", "aud": "cron-fire"}}}
+{"func": "plan", "case": "defaults", "token": "t", "audience": "cron-fire", "jwks_or_key": "inline-pem", "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}
+{"func": "plan", "case": "issuer-configured", "token": "t", "audience": "cron-fire", "jwks_or_key": "inline-pem", "issuer": "https://portal.nous.test", "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}
+{"func": "plan", "case": "space-issuer-is-kept", "token": "t", "audience": "cron-fire", "jwks_or_key": "inline-pem", "issuer": "   ", "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}
+{"func": "plan", "case": "zero-leeway", "token": "t", "audience": "cron-fire", "jwks_or_key": "inline-pem", "leeway": 0, "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}
+{"func": "plan", "case": "wide-leeway", "token": "t", "audience": "cron-fire", "jwks_or_key": "inline-pem", "leeway": 120, "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}
+{"func": "plan", "case": "leeway-null-passes-through", "token": "t", "audience": "cron-fire", "jwks_or_key": "inline-pem", "leeway": null, "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}
+{"func": "plan", "case": "jwks-audience-with-issuer", "token": "t", "audience": "cron-fire", "jwks_or_key": "https://portal.nous.test/api/jwks", "issuer": "portal", "leeway": 5, "decode": {"ok": true, "claims": {"purpose": "cron_fire"}}}

@@ -1,0 +1,23 @@
+{"func":"diff","case":"session-mode","cmd":"diff session","result":{"enabled":true}}
+{"func":"diff","case":"session-stat-upper","cmd":"/diff SESSION --STAT","result":{"enabled":true}}
+{"func":"diff","case":"no-session","cmd":"diff","result":{"enabled":true}}
+{"func":"diff","case":"runs-of-spaces-trailing","cmd":"/diff  session   stat  ","result":{"enabled":true}}
+{"func":"diff","case":"null-result","cmd":"diff session","result":null}
+{"func":"diff","case":"not-enabled","cmd":"diff session","result":{"enabled":false}}
+{"func":"diff","case":"leading-space","cmd":" diff session","result":{"enabled":true}}
+{"func":"diff","case":"null-cmd","cmd":null,"result":{"enabled":true}}
+{"func":"handoff","case":"queued-kept","cmd":"/handoff telegram","session_id":"abcdef123456","agent_running":false,"kept":true,"home_name":"box"}
+{"func":"handoff","case":"no-platform","cmd":"/handoff","session_id":"abcdef123456","agent_running":false,"kept":true,"home_name":null}
+{"func":"handoff","case":"agent-busy","cmd":"/handoff Telegram","session_id":"abcdef123456","agent_running":true,"kept":true,"home_name":null}
+{"func":"handoff","case":"not-kept","cmd":"/handoff discord","session_id":"abcdef123456","agent_running":false,"kept":false,"home_name":null}
+{"func":"handoff","case":"multiword-arg","cmd":"/handoff   Slack  Pro","session_id":"abcdef123456","agent_running":false,"kept":true,"home_name":"h"}
+{"func":"handoff","case":"empty-cmd","cmd":"","session_id":"abcdef123456","agent_running":false,"kept":true,"home_name":null}
+{"func":"run","case":"diff-true","canonical":"diff","cmd":"diff session","conn":true,"route":"true"}
+{"func":"run","case":"unknown-canonical","canonical":"model","cmd":"model x","conn":true,"route":"true"}
+{"func":"run","case":"no-connection","canonical":"diff","cmd":"diff session","conn":false,"route":"true"}
+{"func":"run","case":"reload-false","canonical":"reload","cmd":"reload","conn":true,"route":"false"}
+{"func":"run","case":"handoff-exit","canonical":"handoff","cmd":"handoff x","conn":true,"route":"exit"}
+{"func":"run","case":"error-with-detail","canonical":"diff","cmd":"diff session","conn":true,"route":"raise","error":"invalid_params","detail":"no checkpoint"}
+{"func":"run","case":"error-plain","canonical":"handoff","cmd":"handoff x","conn":true,"route":"raise","error":"boom","detail":null}
+{"func":"run","case":"empty-detail-falls-back","canonical":"diff","cmd":"diff session","conn":true,"route":"raise","error":"invalid_params","detail":""}
+{"func":"constants","case":"routes"}

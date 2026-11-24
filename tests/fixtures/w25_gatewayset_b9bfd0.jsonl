@@ -1,0 +1,43 @@
+{"func": "is_setting", "case": "setting-busy", "canonical": "busy"}
+{"func": "is_setting", "case": "setting-toolsets", "canonical": "toolsets"}
+{"func": "is_setting", "case": "setting-cron", "canonical": "cron"}
+{"func": "is_setting", "case": "setting-personality", "canonical": "personality"}
+{"func": "is_setting", "case": "boundary-empty", "canonical": ""}
+{"func": "is_setting", "case": "falsy-null", "canonical": null}
+{"func": "is_setting", "case": "case-sensitive", "canonical": "Busy"}
+{"func": "is_setting", "case": "type-mismatch-number", "canonical": 0}
+{"func": "split_arg", "case": "normal", "cmd": "busy queue"}
+{"func": "split_arg", "case": "no-arg", "cmd": "personality"}
+{"func": "split_arg", "case": "empty", "cmd": ""}
+{"func": "split_arg", "case": "falsy-null", "cmd": null}
+{"func": "split_arg", "case": "extra-spaces", "cmd": "  footer   ascii  "}
+{"func": "split_arg", "case": "trailing-space-only", "cmd": "review   "}
+{"func": "split_arg", "case": "multiword-arg", "cmd": "cron run --every 5m"}
+{"func": "split_arg", "case": "tab-separated", "cmd": "fast\ton"}
+{"func": "mirror_busy", "case": "queue", "arg": "queue"}
+{"func": "mirror_busy", "case": "upper-steer", "arg": "STEER"}
+{"func": "mirror_busy", "case": "mixed-interrupt", "arg": "Interrupt"}
+{"func": "mirror_busy", "case": "unknown-mode", "arg": "stop"}
+{"func": "mirror_busy", "case": "falsy-empty", "arg": ""}
+{"func": "mirror_busy", "case": "unstripped", "arg": " queue "}
+{"func": "mirror_busy", "case": "type-mismatch-number", "arg": 1}
+{"func": "unbounded", "case": "cron-write", "canonical": "cron", "arg": "run 3", "cron_read": null}
+{"func": "unbounded", "case": "cron-read", "canonical": "cron", "arg": "list", "cron_read": {"output": "jobs"}}
+{"func": "unbounded", "case": "other-command", "canonical": "busy", "arg": "queue", "cron_read": null}
+{"func": "unbounded", "case": "unclosed-quote", "canonical": "cron", "arg": "run 'unclosed", "cron_read": null}
+{"func": "unbounded", "case": "boundary-empty-arg", "canonical": "cron", "arg": "", "cron_read": null}
+{"func": "unbounded", "case": "quoted-arg", "canonical": "cron", "arg": "run --target \"a b\"", "cron_read": null}
+{"func": "unbounded", "case": "escaped-quote", "canonical": "cron", "arg": "run --target \\'x", "cron_read": null}
+{"func": "call_command", "case": "with-arg", "canonical": "busy", "arg": "queue"}
+{"func": "call_command", "case": "no-arg", "canonical": "footer", "arg": ""}
+{"func": "call_command", "case": "falsy-null-arg", "canonical": "personality", "arg": null}
+{"func": "call_command", "case": "multiword", "canonical": "cron", "arg": "run 5m"}
+{"func": "render", "case": "two-lines", "canonical": "footer", "reply": {"output": "ok\nsecond"}}
+{"func": "render", "case": "empty-output", "canonical": "footer", "reply": {"output": ""}}
+{"func": "render", "case": "falsy-null-reply", "canonical": "footer", "reply": null}
+{"func": "render", "case": "trailing-newline", "canonical": "approvals", "reply": {"output": "a\n"}}
+{"func": "render", "case": "verbatim-toolsets", "canonical": "toolsets", "reply": {"output": "t1\n\nt2"}}
+{"func": "render", "case": "prefixed-blank-line", "canonical": "fast", "reply": {"output": "x\n\ny"}}
+{"func": "render", "case": "crlf", "canonical": "busy", "reply": {"output": "a\r\nb"}}
+{"func": "render", "case": "stopped", "canonical": "fast", "reply": {"output": "ignored"}, "stopped": true}
+{"func": "constants", "case": "tables"}

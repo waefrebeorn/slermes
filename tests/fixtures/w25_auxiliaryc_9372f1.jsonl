@@ -1,0 +1,33 @@
+{"func": "constants", "case": "declared-keys"}
+{"func": "normalize_api_key", "case": "plain-string", "raw": "sk-abc"}
+{"func": "normalize_api_key", "case": "padded-string", "raw": "  sk-abc \t"}
+{"func": "normalize_api_key", "case": "blank-string", "raw": "   "}
+{"func": "normalize_api_key", "case": "callable-passes-through", "raw": {"__callable__": true}}
+{"func": "normalize_api_key", "case": "none-is-empty", "raw": null}
+{"func": "normalize_api_key", "case": "number-is-empty", "raw": 42}
+{"func": "normalize_api_key", "case": "bool-is-empty", "raw": true}
+{"func": "declares_credential", "case": "api-key", "entry": {"api_key": "k"}}
+{"func": "declares_credential", "case": "key-env-blank", "entry": {"key_env": "   "}}
+{"func": "declares_credential", "case": "key-cmd", "entry": {"key_cmd": "op read x"}}
+{"func": "declares_credential", "case": "api-key-env", "entry": {"api_key_env": "ACME_KEY"}}
+{"func": "declares_credential", "case": "no-credential", "entry": {"base_url": "http://localhost:8080/v1", "name": "local"}}
+{"func": "declares_credential", "case": "provenance-verdict", "entry": {"declares_credential": true}}
+{"func": "declares_credential", "case": "provenance-verdict-false", "entry": {"declares_credential": false, "api_key": "k"}}
+{"func": "identity", "case": "inline-key", "base_url": "https://acme.test/v1", "provider": "acme", "found": true, "entry": {"api_key": " sk-inline ", "name": "acme"}, "scoped_key_env": ""}
+{"func": "identity", "case": "key-env-scoped", "base_url": "https://acme.test/v1", "provider": "acme", "found": true, "entry": {"key_env": "ACME_API_KEY"}, "scoped_key_env": "sk-from-env"}
+{"func": "identity", "case": "api-key-env-fallback", "base_url": "https://acme.test/v1", "provider": "acme", "found": true, "entry": {"api_key_env": "ACME_API_KEY"}, "scoped_key_env": "sk-from-alt-env"}
+{"func": "identity", "case": "key-env-wins-over-api-key-env", "base_url": "https://acme.test/v1", "provider": "acme", "found": true, "entry": {"key_env": "A", "api_key_env": "B"}, "scoped_key_env": "sk-first"}
+{"func": "identity", "case": "key-cmd-only", "base_url": "https://acme.test/v1", "provider": "acme", "found": true, "entry": {"key_cmd": " op read v1/x "}, "scoped_key_env": ""}
+{"func": "identity", "case": "not-found", "base_url": "https://acme.test/v1", "provider": "acme", "found": false, "entry": {"api_key": "k"}, "scoped_key_env": ""}
+{"func": "identity", "case": "entry-declares-nothing", "base_url": "http://localhost:8080/v1", "provider": "local", "found": true, "entry": {"name": "local"}, "scoped_key_env": ""}
+{"func": "identity", "case": "all-blank-parts", "base_url": "https://acme.test/v1", "provider": "acme", "found": true, "entry": {"api_key": "  ", "key_cmd": "  "}, "scoped_key_env": ""}
+{"func": "fast_provider", "case": "main-not-custom", "runtime": {"requested_provider": "acme", "base_url": "https://acme.test/v1"}, "main_provider": "nous", "found": true, "owns": true, "entry": {"provider_key": "custom:acme"}, "known": []}
+{"func": "fast_provider", "case": "custom-owns-entry", "runtime": {"requested_provider": "acme", "base_url": "https://acme.test/v1"}, "main_provider": "custom", "found": true, "owns": true, "entry": {"provider_key": "custom:acme"}, "known": []}
+{"func": "fast_provider", "case": "requested-custom-falls-back", "runtime": {"requested_provider": "custom", "base_url": "https://acme.test/v1"}, "main_provider": "custom", "found": true, "owns": true, "entry": {"provider_key": "custom:acme"}, "known": []}
+{"func": "fast_provider", "case": "requested-blank", "runtime": {"requested_provider": "   ", "base_url": "https://acme.test/v1"}, "main_provider": "custom", "found": true, "owns": true, "entry": {"provider_key": "custom:acme"}, "known": []}
+{"func": "fast_provider", "case": "requested-absent", "runtime": {"base_url": "https://acme.test/v1"}, "main_provider": "custom", "found": true, "owns": true, "entry": {"provider_key": "custom:acme"}, "known": []}
+{"func": "fast_provider", "case": "entry-does-not-own-url", "runtime": {"requested_provider": "acme", "base_url": "https://other.test/v1"}, "main_provider": "custom", "found": true, "owns": false, "entry": {"provider_key": "custom:acme"}, "known": []}
+{"func": "fast_provider", "case": "registry-name-rejected", "runtime": {"requested_provider": "acme", "base_url": "https://acme.test/v1"}, "main_provider": "custom", "found": true, "owns": true, "entry": {"provider_key": "anthropic"}, "known": ["anthropic", "openai"]}
+{"func": "fast_provider", "case": "no-provider-key", "runtime": {"requested_provider": "acme", "base_url": "https://acme.test/v1"}, "main_provider": "custom", "found": true, "owns": true, "entry": {"name": "acme"}, "known": []}
+{"func": "fast_provider", "case": "entry-not-found", "runtime": {"requested_provider": "acme", "base_url": "https://acme.test/v1"}, "main_provider": "custom", "found": false, "owns": false, "entry": null, "known": []}
+{"func": "fast_provider", "case": "numeric-main-provider", "runtime": {"requested_provider": "acme", "base_url": "https://acme.test/v1"}, "main_provider": 5, "found": true, "owns": true, "entry": {"provider_key": "custom:acme"}, "known": []}

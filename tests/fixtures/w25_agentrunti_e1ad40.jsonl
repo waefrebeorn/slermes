@@ -1,0 +1,19 @@
+{"func": "cleanup", "case": "both-pools-dead", "plan": {"primary": true, "request_client": true, "dead": {"primary": 2, "request": 1}}}
+{"func": "cleanup", "case": "primary-clean", "plan": {"primary": true, "dead": {"primary": 0}}}
+{"func": "cleanup", "case": "no-clients", "plan": {"primary": false, "request_client": false}}
+{"func": "cleanup", "case": "cache-is-primary", "plan": {"primary": true, "request_client": true, "same": true, "dead": {"primary": 3}}}
+{"func": "cleanup", "case": "probe-raised-on-request", "plan": {"primary": true, "request_client": true, "dead": {"primary": 1}, "probe_error": ["request"]}}
+{"func": "cleanup", "case": "cleanup-raised-on-request", "plan": {"primary": true, "request_client": true, "dead": {"primary": 1, "request": 2}, "cleanup_error": ["request"]}}
+{"func": "cleanup", "case": "request-only-pool", "plan": {"primary": false, "request_client": true, "dead": {"request": 4}}}
+{"func": "cleanup", "case": "probe-raised-only-pool", "plan": {"primary": false, "request_client": true, "probe_error": ["primary"]}}
+{"func": "cleanup", "case": "dead-absent", "plan": {"primary": true}}
+{"func": "cleanup", "case": "falsy-zero-dead", "plan": {"primary": true, "dead": {"primary": 0.0}}}
+{"func": "cleanup", "case": "type-mismatch-list", "plan": []}
+{"func": "socket_probe", "case": "eof", "kind": "eof"}
+{"func": "socket_probe", "case": "data", "kind": "data"}
+{"func": "socket_probe", "case": "blocking", "kind": "blocking"}
+{"func": "socket_probe", "case": "oserror", "kind": "oserror"}
+{"func": "socket_probe", "case": "setblocking-error", "kind": "setblocking_error"}
+{"func": "socket_probe", "case": "unknown-kind", "kind": "half-open"}
+{"func": "socket_probe", "case": "absent"}
+{"func": "constants", "case": "logger-and-reason"}

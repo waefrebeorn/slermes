@@ -1,0 +1,30 @@
+{"func":"normalize_name","case":"mixed-case","name":"Bob"}
+{"func":"normalize_name","case":"padded-default","name":" default "}
+{"func":"normalize_name","case":"upper-default","name":"DEFAULT"}
+{"func":"normalize_name","case":"hyphenated","name":"Paid-Tier"}
+{"func":"normalize_name","case":"whitespace-padded","name":"\talpha\n"}
+{"func":"normalize_name","case":"empty","name":""}
+{"func":"normalize_name","case":"spaces-only","name":"   "}
+{"func":"normalize_name","case":"error-seam-number","name":5}
+{"func":"settled_flag","case":"explicit-true","value":true}
+{"func":"settled_flag","case":"retired-false","value":false}
+{"func":"settled_flag","case":"unset-null","value":null}
+{"func":"settled_flag","case":"zero","value":0}
+{"func":"settled_flag","case":"string-true","value":"true"}
+{"func":"settled_flag","case":"one","value":1}
+{"func":"serves_home","case":"not-named-profile","named":false,"verdict":null,"served":["bob"],"home_name":"bob"}
+{"func":"serves_home","case":"explicit-true-wins","named":true,"verdict":true,"served":null,"home_name":"bob"}
+{"func":"serves_home","case":"standalone-secondary","named":true,"verdict":false,"served":["bob"],"home_name":"bob"}
+{"func":"serves_home","case":"recorded-set-hit","named":true,"verdict":null,"served":["alpha","Bob"],"home_name":"bob"}
+{"func":"serves_home","case":"recorded-empty-set","named":true,"verdict":null,"served":[],"home_name":"bob"}
+{"func":"serves_home","case":"no-recorded-set","named":true,"verdict":null,"served":null,"home_name":"bob"}
+{"func":"serves_home","case":"home-name-uppercase","named":true,"verdict":null,"served":["bob"],"home_name":"BOB"}
+{"func":"serves_home","case":"numeric-profile-id","named":true,"verdict":null,"served":["5"],"home_name":"5"}
+{"func":"serves_home","case":"zero-verdict-not-none","named":true,"verdict":0,"served":["bob"],"home_name":"bob"}
+{"func":"serves_home","case":"not-named-beats-verdict","named":0,"verdict":true,"served":["bob"],"home_name":"bob"}
+{"func":"implied_serves","case":"unanswered-keeps-host","named":true,"verdict":null}
+{"func":"implied_serves","case":"explicit-true","named":true,"verdict":true}
+{"func":"implied_serves","case":"standalone","named":true,"verdict":false}
+{"func":"implied_serves","case":"zero-verdict-identity","named":true,"verdict":0}
+{"func":"implied_serves","case":"not-named","named":false,"verdict":null}
+{"func":"implied_serves","case":"not-named-with-true","named":false,"verdict":true}

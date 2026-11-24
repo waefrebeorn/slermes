@@ -1,0 +1,35 @@
+{"func": "constants", "case": "module"}
+{"func": "sanitize", "case": "plain", "value": "hello world", "limit": 300}
+{"func": "sanitize", "case": "crlf-and-control", "value": "  a\r\n\ttab\u0007b  ", "limit": 300}
+{"func": "sanitize", "case": "empty-string", "value": "", "limit": 300}
+{"func": "sanitize", "case": "none-value", "value": null, "limit": 300}
+{"func": "sanitize", "case": "number-not-str", "value": 42, "limit": 300}
+{"func": "sanitize", "case": "bool-not-str", "value": true, "limit": 300}
+{"func": "sanitize", "case": "exact-limit", "value": "abcdef", "limit": 6}
+{"func": "sanitize", "case": "over-limit", "value": "abcdef", "limit": 3}
+{"func": "sanitize", "case": "utf8-codepoints", "value": "h\u00e9llo\u2192xyz", "limit": 3}
+{"func": "sanitize", "case": "html-injection", "value": "<b>&\"'</b>", "limit": 300}
+{"func": "sanitize", "case": "zero-limit", "value": "abc", "limit": 0}
+{"func": "format_diagnostic", "case": "full", "d": {"severity": 2, "range": {"start": {"line": 4, "character": 9}}, "message": "unused variable", "code": "F841", "source": "pyflakes"}}
+{"func": "format_diagnostic", "case": "empty-dict", "d": {}}
+{"func": "format_diagnostic", "case": "severity-zero-falsy", "d": {"severity": 0, "message": "m"}}
+{"func": "format_diagnostic", "case": "severity-four", "d": {"severity": 4, "message": "m"}}
+{"func": "format_diagnostic", "case": "severity-unknown", "d": {"severity": 9, "message": "m"}}
+{"func": "format_diagnostic", "case": "severity-string", "d": {"severity": "2", "message": "m"}}
+{"func": "format_diagnostic", "case": "message-number", "d": {"message": 42}}
+{"func": "format_diagnostic", "case": "range-null", "d": {"range": null, "message": "m"}}
+{"func": "format_diagnostic", "case": "line-float", "d": {"range": {"start": {"line": 2.9, "character": 0}}, "message": "m"}}
+{"func": "format_diagnostic", "case": "line-string", "d": {"range": {"start": {"line": "7"}}, "message": "m"}}
+{"func": "report_for_file", "case": "default-severity-only", "file_path": "a.py", "diagnostics": [{"message": "err"}, {"severity": 2, "message": "warn"}, {"severity": 1, "message": "err2"}]}
+{"func": "report_for_file", "case": "severities-1-2", "file_path": "a.py", "severities": [1, 2], "diagnostics": [{"message": "err"}, {"severity": 2, "message": "warn"}, {"severity": 3, "message": "info"}]}
+{"func": "report_for_file", "case": "cap-two-of-three", "file_path": "a.py", "max_per_file": 2, "diagnostics": [{"message": "a"}, {"message": "b"}, {"message": "c"}]}
+{"func": "report_for_file", "case": "no-diagnostics", "file_path": "a.py", "diagnostics": []}
+{"func": "report_for_file", "case": "none-pass-filter", "file_path": "a.py", "diagnostics": [{"severity": 2, "message": "w"}]}
+{"func": "report_for_file", "case": "path-escapes", "file_path": "f\"x<y>&'z.py", "diagnostics": [{"message": "a<b"}]}
+{"func": "report_for_file", "case": "cap-zero", "file_path": "a.py", "max_per_file": 0, "diagnostics": [{"message": "a"}, {"message": "b"}, {"message": "c"}]}
+{"func": "report_for_file", "case": "severity-zero-is-error", "file_path": "a.py", "severities": [1], "diagnostics": [{"severity": 0, "message": "z"}]}
+{"func": "truncate", "case": "short", "s": "abc", "limit": 4000}
+{"func": "truncate", "case": "exact", "s": "abcdefghij", "limit": 10}
+{"func": "truncate", "case": "over", "s": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "limit": 12}
+{"func": "truncate", "case": "thousands", "s": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", "limit": 40}
+{"func": "truncate", "case": "zero-limit", "s": "abcdef", "limit": 0}

@@ -1,0 +1,36 @@
+{"func": "constants", "case": "poll-and-activity"}
+{"func": "route_key", "case": "full", "child": {"provider": "nous", "base_url": "https://api.nous.test/v1", "model": "hermes-4", "api_mode": "chat"}}
+{"func": "route_key", "case": "empty-child", "child": {}}
+{"func": "route_key", "case": "explicit-nulls", "child": {"provider": null, "base_url": null, "model": null, "api_mode": null}}
+{"func": "route_key", "case": "partial", "child": {"provider": "nous", "model": "m"}}
+{"func": "route_key", "case": "non-string-values", "child": {"provider": 7, "base_url": true, "model": [1, 2], "api_mode": {"k": "v"}}}
+{"func": "route_key", "case": "extra-keys-ignored", "child": {"provider": "p", "base_url": "u", "model": "m", "api_mode": "responses", "tools": ["a"], "system": "s"}}
+{"func": "caches_prompts", "case": "true", "child": {"_use_prompt_caching": true}}
+{"func": "caches_prompts", "case": "false", "child": {"_use_prompt_caching": false}}
+{"func": "caches_prompts", "case": "absent", "child": {}}
+{"func": "caches_prompts", "case": "int-one-is-not-true", "child": {"_use_prompt_caching": 1}}
+{"func": "caches_prompts", "case": "string-true-is-not-true", "child": {"_use_prompt_caching": "true"}}
+{"func": "caches_prompts", "case": "null", "child": {"_use_prompt_caching": null}}
+{"func": "first_response_started", "case": "one-call", "child": {"session_api_calls": 1}}
+{"func": "first_response_started", "case": "zero-calls-no-activity", "child": {"session_api_calls": 0}}
+{"func": "first_response_started", "case": "absent-calls-chunk-activity", "child": {"_last_activity_desc": "receiving stream response"}}
+{"func": "first_response_started", "case": "other-activity", "child": {"session_api_calls": 0, "_last_activity_desc": "waiting on provider"}}
+{"func": "first_response_started", "case": "null-calls-chunk-activity", "child": {"session_api_calls": null, "_last_activity_desc": "receiving stream response"}}
+{"func": "first_response_started", "case": "fractional-call-count", "child": {"session_api_calls": 0.5}}
+{"func": "first_response_started", "case": "bool-true-counts-as-one", "child": {"session_api_calls": true}}
+{"func": "first_response_started", "case": "two-calls", "child": {"session_api_calls": 2, "_last_activity_desc": null}}
+{"func": "for_children", "case": "two-cached-children", "children": [{"_use_prompt_caching": true}, {"_use_prompt_caching": true}], "max_wait_s": 5}
+{"func": "for_children", "case": "zero-wait", "children": [{"_use_prompt_caching": true}, {"_use_prompt_caching": true}], "max_wait_s": 0}
+{"func": "for_children", "case": "negative-wait", "children": [{"_use_prompt_caching": true}, {"_use_prompt_caching": true}], "max_wait_s": -1}
+{"func": "for_children", "case": "single-child", "children": [{"_use_prompt_caching": true}], "max_wait_s": 5}
+{"func": "for_children", "case": "no-children", "children": [], "max_wait_s": 5}
+{"func": "for_children", "case": "leader-uncached", "children": [{"_use_prompt_caching": false}, {"_use_prompt_caching": true}], "max_wait_s": 5}
+{"func": "for_children", "case": "later-siblings-cached-only", "children": [{"_use_prompt_caching": false}, {"_use_prompt_caching": true}, {"_use_prompt_caching": true}], "max_wait_s": 5}
+{"func": "for_children", "case": "fractional-wait-three-children", "children": [{"_use_prompt_caching": true}, {"_use_prompt_caching": true}, {"_use_prompt_caching": true}], "max_wait_s": 0.25}
+{"func": "follows", "case": "same-object", "leader": {"provider": "nous", "model": "m", "_use_prompt_caching": true}, "child": {"provider": "nous", "model": "m", "_use_prompt_caching": true}, "same": true}
+{"func": "follows", "case": "same-route-cached", "leader": {"provider": "nous", "base_url": "u", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "child": {"provider": "nous", "base_url": "u", "model": "m", "api_mode": "chat", "_use_prompt_caching": true}, "same": false}
+{"func": "follows", "case": "different-model", "leader": {"provider": "nous", "model": "m1", "_use_prompt_caching": true}, "child": {"provider": "nous", "model": "m2", "_use_prompt_caching": true}, "same": false}
+{"func": "follows", "case": "different-base-url", "leader": {"provider": "nous", "base_url": "u1", "_use_prompt_caching": true}, "child": {"provider": "nous", "base_url": "u2", "_use_prompt_caching": true}, "same": false}
+{"func": "follows", "case": "child-uncached", "leader": {"provider": "nous", "model": "m"}, "child": {"provider": "nous", "model": "m", "_use_prompt_caching": false}, "same": false}
+{"func": "follows", "case": "absent-api-mode-matches-null", "leader": {"provider": "nous", "model": "m", "api_mode": null, "_use_prompt_caching": true}, "child": {"provider": "nous", "model": "m", "_use_prompt_caching": true}, "same": false}
+{"func": "follows", "case": "different-provider", "leader": {"provider": "nous", "model": "m", "_use_prompt_caching": true}, "child": {"provider": "openrouter", "model": "m", "_use_prompt_caching": true}, "same": false}

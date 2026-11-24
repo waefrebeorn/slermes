@@ -1,0 +1,29 @@
+{"func": "reapply_repairs", "case": "no-repairs", "kwargs": {"temperature": 0.2, "max_tokens": 64}, "repairs": []}
+{"func": "reapply_repairs", "case": "temperature-present", "kwargs": {"model": "m", "temperature": 0.2}, "repairs": ["temperature"]}
+{"func": "reapply_repairs", "case": "temperature-absent-unchanged", "kwargs": {"model": "m"}, "repairs": ["temperature"]}
+{"func": "reapply_repairs", "case": "temperature-null-value-is-present", "kwargs": {"model": "m", "temperature": null}, "repairs": ["temperature"]}
+{"func": "reapply_repairs", "case": "reasoning-floor-none-effort", "kwargs": {"reasoning_effort": "none", "model": "m"}, "repairs": ["reasoning_floor"]}
+{"func": "reapply_repairs", "case": "reasoning-floor-null-effort", "kwargs": {"reasoning_effort": null}, "repairs": ["reasoning_floor"]}
+{"func": "reapply_repairs", "case": "reasoning-floor-numeric-zero-effort", "kwargs": {"reasoning_effort": 0}, "repairs": ["reasoning_floor"]}
+{"func": "reapply_repairs", "case": "reasoning-floor-uppercase-disabled", "kwargs": {"reasoning_effort": "NONE"}, "repairs": ["reasoning_floor"]}
+{"func": "reapply_repairs", "case": "reasoning-floor-config-disabled", "kwargs": {"_reasoning_config": {"enabled": false, "budget": 1024}}, "repairs": ["reasoning_floor"]}
+{"func": "reapply_repairs", "case": "reasoning-floor-config-enabled-untouched", "kwargs": {"_reasoning_config": {"enabled": true}}, "repairs": ["reasoning_floor"]}
+{"func": "reapply_repairs", "case": "reasoning-floor-extra-body-disabled", "kwargs": {"extra_body": {"reasoning": {"enabled": false}, "seed": 7}}, "repairs": ["reasoning_floor"]}
+{"func": "reapply_repairs", "case": "reasoning-floor-extra-body-effort-off", "kwargs": {"extra_body": {"reasoning": {"effort": "off"}}}, "repairs": ["reasoning_floor"]}
+{"func": "reapply_repairs", "case": "reasoning-strip-fields", "kwargs": {"reasoning_effort": "high", "_reasoning_config": {"enabled": true}, "extra_body": {"reasoning": {"effort": "low"}, "seed": 1}, "model": "m"}, "repairs": ["reasoning"]}
+{"func": "reapply_repairs", "case": "reasoning-strip-drops-empty-extra-body", "kwargs": {"extra_body": {"thinking_budget": 256}}, "repairs": ["reasoning"]}
+{"func": "reapply_repairs", "case": "reasoning-strip-null-values-unchanged", "kwargs": {"reasoning_effort": null}, "repairs": ["reasoning"]}
+{"func": "reapply_repairs", "case": "structured-output-top-and-extra", "kwargs": {"response_format": {"type": "json_object"}, "extra_body": {"response_format": {"type": "json"}, "seed": 2}}, "repairs": ["structured_output"]}
+{"func": "reapply_repairs", "case": "structured-output-absent-unchanged", "kwargs": {"model": "m"}, "repairs": ["structured_output"]}
+{"func": "reapply_repairs", "case": "max-tokens-always-strips", "kwargs": {"max_tokens": 64, "max_completion_tokens": 128}, "repairs": ["max_tokens"]}
+{"func": "reapply_repairs", "case": "max-tokens-absent-still-new", "kwargs": {"model": "m"}, "repairs": ["max_tokens"]}
+{"func": "reapply_repairs", "case": "full-chain", "kwargs": {"model": "m", "temperature": 0.3, "max_tokens": 64, "response_format": {"type": "json_object"}, "reasoning_effort": "none", "extra_body": {"reasoning": {"enabled": false}, "seed": 3}}, "repairs": ["temperature", "structured_output", "reasoning_floor", "reasoning", "max_tokens"]}
+{"func": "reapply_repairs", "case": "chain-order-repeat", "kwargs": {"reasoning_effort": "none"}, "repairs": ["reasoning_floor", "reasoning"]}
+{"func": "ladder_route", "case": "model-and-cap", "kwargs": {"model": "gpt-x", "max_tokens": 64}, "tag": "", "task": null, "provider": "nous", "base_url": "https://api.example/v1", "client_base_url": null}
+{"func": "ladder_route", "case": "zero-cap-falls-through", "kwargs": {"model": "m", "max_tokens": 0, "max_completion_tokens": 128}, "tag": "", "task": null, "provider": "", "base_url": "", "client_base_url": null}
+{"func": "ladder_route", "case": "no-cap-no-model", "kwargs": {}, "tag": "", "task": null, "provider": "", "base_url": "", "client_base_url": null}
+{"func": "ladder_route", "case": "async-tag", "kwargs": {"model": "m"}, "tag": " (async)", "task": "title_generation", "provider": "", "base_url": "", "client_base_url": null}
+{"func": "ladder_route", "case": "client-base-when-base-empty", "kwargs": {"model": "m"}, "tag": "", "task": null, "provider": "", "base_url": "", "client_base_url": "http://localhost:8080/v1"}
+{"func": "ladder_route", "case": "explicit-base-wins", "kwargs": {"model": "m"}, "tag": "", "task": null, "provider": "", "base_url": "https://explicit/v1", "client_base_url": "http://ignored"}
+{"func": "ladder_route", "case": "empty-cap-both", "kwargs": {"max_tokens": "", "max_completion_tokens": null}, "tag": "", "task": null, "provider": "", "base_url": "", "client_base_url": null}
+{"func": "constants", "case": "tables"}

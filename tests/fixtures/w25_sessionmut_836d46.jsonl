@@ -1,0 +1,20 @@
+{"func":"edit_policy","case":"acp-select-new","source":"acp","old_policy":"default","payload_policy":"acceptEdits"}
+{"func":"edit_policy","case":"acp-already-set","source":"acp","old_policy":"default","payload_policy":"default"}
+{"func":"edit_policy","case":"non-acp-refused","source":"agent","old_policy":"default","payload_policy":"default"}
+{"func":"edit_policy","case":"acp-none-none","source":"acp","old_policy":null,"payload_policy":null}
+{"func":"edit_policy","case":"acp-none-to-default","source":"acp","old_policy":null,"payload_policy":"default"}
+{"func":"edit_policy","case":"empty-source-refused","source":"","old_policy":"default","payload_policy":"default"}
+{"func":"edit_policy","case":"int-vs-float","source":"acp","old_policy":1,"payload_policy":1.0}
+{"func":"workspace","case":"replace-terminal-cwd","cwd":"/new/proj","isdir":true,"branch":"main","root":"/repo","terminal_json":"{\"TERMINAL_CWD\": \"/old\", \"SHELL\": \"bash\"}"}
+{"func":"workspace","case":"append-terminal-cwd","cwd":"/new/proj","isdir":true,"branch":null,"root":null,"terminal_json":"{\"SHELL\": \"bash\"}"}
+{"func":"workspace","case":"not-a-dir","cwd":"/nope","isdir":false,"branch":null,"root":null,"terminal_json":"{\"SHELL\": \"bash\"}"}
+{"func":"workspace","case":"truthy-flag-empty-terminal","cwd":"/x","isdir":1,"branch":"dev","root":"/r2","terminal_json":"{}"}
+{"func":"workspace","case":"middle-key-order","cwd":"/x","isdir":true,"branch":"dev","root":"/r2","terminal_json":"{\"A\": 1, \"TERMINAL_CWD\": \"/old\", \"B\": 2}"}
+{"func":"workspace","case":"zero-flag","cwd":"/x","isdir":0,"branch":"dev","root":"/r2","terminal_json":"{}"}
+{"func":"reasoning","case":"pin-level","effort":"high","ignore_user_config":false,"profile":{"level":"low"},"frozen":{"level":"high","x":1}}
+{"func":"reasoning","case":"empty-string-pins","effort":"","ignore_user_config":false,"profile":{"level":"low"},"frozen":{"level":"high"}}
+{"func":"reasoning","case":"reset-to-profile","effort":null,"ignore_user_config":false,"profile":{"level":"low"},"frozen":{"level":"high"}}
+{"func":"reasoning","case":"reset-bypass","effort":null,"ignore_user_config":true,"profile":{"level":"low"},"frozen":{"level":"high"}}
+{"func":"reasoning","case":"zero-effort-pins","effort":0,"ignore_user_config":false,"profile":{"level":"low"},"frozen":{"level":"high"}}
+{"func":"reasoning","case":"reset-empty-profile","effort":null,"ignore_user_config":false,"profile":{},"frozen":{"level":"high"}}
+{"func":"constants","case":"prepare-table"}

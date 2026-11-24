@@ -1,0 +1,17 @@
+{"func":"credentials","case":"oauth-bearer","connection_id":"conn-1","snapshot":{"entry":{"authMode":"oauth"},"url":"https://gw.example","token":null,"headers":{"X-Extra":"1"},"tokens":{"accessToken":"at-9"}}}
+{"func":"credentials","case":"token-mode","connection_id":"conn-1","snapshot":{"entry":{"authMode":"token"},"url":"https://gw.example","token":"tok","headers":{},"tokens":null}}
+{"func":"credentials","case":"oauth-not-signed-in","connection_id":"conn-1","snapshot":{"entry":{"authMode":"oauth"},"url":"https://gw.example","token":null,"headers":{},"tokens":null}}
+{"func":"credentials","case":"oauth-empty-tokens","connection_id":"conn-1","snapshot":{"entry":{"authMode":"oauth"},"url":"https://gw.example","token":null,"headers":{},"tokens":{}}}
+{"func":"credentials","case":"empty-token","connection_id":"conn-1","snapshot":{"entry":{"authMode":"token"},"url":"https://gw.example","token":"","headers":{},"tokens":null}}
+{"func":"credentials","case":"no-address","connection_id":"conn-1","snapshot":{"entry":{"authMode":"token"},"url":null,"token":"tok","headers":{},"tokens":null}}
+{"func":"credentials","case":"oauth-empty-address","connection_id":"conn-1","snapshot":{"entry":{"authMode":"oauth"},"url":"","token":null,"headers":{},"tokens":{"accessToken":"at-1"}}}
+{"func":"credentials","case":"oauth-overwrites-stored","connection_id":"conn-1","snapshot":{"entry":{"authMode":"oauth"},"url":"https://gw.example","token":null,"headers":{"Authorization":"old"},"tokens":{"accessToken":"at-2"}}}
+{"func":"probe","case":"ok-version","base_url":"https://gw.example","status":200,"body":{"version":"1.2.3"},"json_error":false,"net_error":null}
+{"func":"probe","case":"ok-null-body","base_url":"https://gw.example","status":200,"body":null,"json_error":false,"net_error":null}
+{"func":"probe","case":"ok-empty-version","base_url":"https://gw.example","status":200,"body":{"version":""},"json_error":false,"net_error":null}
+{"func":"probe","case":"refused-401","base_url":"https://gw.example","status":401,"body":null,"json_error":false,"net_error":null}
+{"func":"probe","case":"server-500","base_url":"https://gw.example","status":500,"body":null,"json_error":false,"net_error":null}
+{"func":"probe","case":"redirect-302","base_url":"https://gw.example","status":302,"body":{"version":"x"},"json_error":false,"net_error":null}
+{"func":"probe","case":"unreachable","base_url":"https://gw.example","status":200,"body":null,"json_error":false,"net_error":"boom"}
+{"func":"probe","case":"not-json","base_url":"https://gw.example","status":200,"body":{"version":"1.0"},"json_error":true,"net_error":null}
+{"func":"constants","case":"timeout"}

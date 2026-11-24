@@ -1,0 +1,25 @@
+{"func":"contact_text","case":"full-card","contact":{"first_name":"Ada","last_name":"Lovelace","phone_number":"+155****1234","user_id":4242,"vcard":"BEGIN:VCARD\nFN:Ada Lovelace\nEND:VCARD"}}
+{"func":"contact_text","case":"first-name-only","contact":{"first_name":"Ada"}}
+{"func":"contact_text","case":"last-name-only","contact":{"last_name":"Lovelace"}}
+{"func":"contact_text","case":"phone-and-id-no-name","contact":{"phone_number":"+155****0000","user_id":7}}
+{"func":"contact_text","case":"all-empty-strings","contact":{"first_name":"","last_name":"","phone_number":"","user_id":"","vcard":""}}
+{"func":"contact_text","case":"null-contact","contact":null}
+{"func":"contact_text","case":"empty-object","contact":{}}
+{"func":"contact_text","case":"falsy-numeric-id","contact":{"first_name":"Ada","user_id":0}}
+{"func":"contact_text","case":"bool-phone-renders-python-str","contact":{"phone_number":true,"user_id":false}}
+{"func":"contact_text","case":"vcard-only","contact":{"vcard":"BEGIN:VCARD"}}
+{"func":"contact_text","case":"error-seam-name-int","contact":{"first_name":5,"last_name":"Byron"}}
+{"func":"contact_text","case":"error-seam-vcard-int","contact":{"first_name":"Ada","vcard":5}}
+{"func":"drop_matching","case":"mixed-sessions","pending":[{"key":"a","session":"sess-1","task_done":false},{"key":"b","session":"sess-2","task_done":true},{"key":"c","session":"sess-1","task_done":null}],"session_key":"sess-1"}
+{"func":"drop_matching","case":"none-match","pending":[{"key":"a","session":"sess-2","task_done":false}],"session_key":"sess-1"}
+{"func":"drop_matching","case":"empty-buffer","pending":[],"session_key":"sess-1"}
+{"func":"drop_matching","case":"all-match","pending":[{"key":"a","session":"s","task_done":false},{"key":"b","session":"s","task_done":false},{"key":"c","session":"s","task_done":null}],"session_key":"s"}
+{"func":"drop_matching","case":"null-key-matches-absent","pending":[{"key":"a","task_done":null},{"key":"b","session":null,"task_done":true}],"session_key":null}
+{"func":"drop_matching","case":"bool-equals-one","pending":[{"key":"a","session":1,"task_done":false},{"key":"b","session":"1","task_done":false}],"session_key":true}
+{"func":"drop_matching","case":"empty-string-key","pending":[{"key":"a","session":"","task_done":null}],"session_key":""}
+{"func":"discard_media_buffers","case":"both-buffers-hit","session_key":"sess-1","photo_batches":[{"key":"p1","session":"sess-1","task_done":false},{"key":"p2","session":"sess-1","task_done":true},{"key":"p3","session":"sess-2","task_done":false}],"media_group_events":[{"key":"m1","session":"sess-1","task_done":false},{"key":"m2","session":"sess-9","task_done":null}]}
+{"func":"discard_media_buffers","case":"both-empty","session_key":"sess-1","photo_batches":[],"media_group_events":[]}
+{"func":"discard_media_buffers","case":"photos-only","session_key":"sess-1","photo_batches":[{"key":"p1","session":"sess-1","task_done":null},{"key":"p2","session":"sess-1","task_done":null}],"media_group_events":[]}
+{"func":"discard_media_buffers","case":"media-only","session_key":"sess-1","photo_batches":[],"media_group_events":[{"key":"m1","session":"sess-1","task_done":false},{"key":"m2","session":"sess-1","task_done":false}]}
+{"func":"discard_media_buffers","case":"no-match","session_key":"sess-1","photo_batches":[{"key":"p1","session":"sess-2","task_done":false}],"media_group_events":[{"key":"m1","session":"sess-3","task_done":false}]}
+{"func":"constants","case":"contact-literals","probe":null}

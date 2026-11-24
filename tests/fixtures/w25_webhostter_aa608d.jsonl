@@ -1,0 +1,39 @@
+{"func": "profile", "case": "padded", "query_params": {"profile": " work "}}
+{"func": "profile", "case": "absent", "query_params": {}}
+{"func": "profile", "case": "empty", "query_params": {"profile": ""}}
+{"func": "profile", "case": "none", "query_params": {"profile": null}}
+{"func": "profile", "case": "zero", "query_params": {"profile": 0}}
+{"func": "profile", "case": "empty-list", "query_params": {"profile": []}}
+{"func": "profile", "case": "spaces-only", "query_params": {"profile": "   "}}
+{"func": "profile", "case": "missing-map", "query_params": null}
+{"func": "profile", "case": "tab-padded", "query_params": {"profile": "\tlab\n"}}
+{"func": "entry", "case": "found-second", "registry": {"connections": [{"id": "a", "kind": "ssh"}, {"id": "b", "kind": "ssh"}]}, "connection_id": "b"}
+{"func": "entry", "case": "missing", "registry": {"connections": [{"id": "a"}, {"id": "b"}]}, "connection_id": "z"}
+{"func": "entry", "case": "empty-registry", "registry": {"connections": []}, "connection_id": "a"}
+{"func": "entry", "case": "duplicate-first-wins", "registry": {"connections": [{"id": "a", "n": 1}, {"id": "a", "n": 2}]}, "connection_id": "a"}
+{"func": "entry", "case": "int-vs-string", "registry": {"connections": [{"id": 1}]}, "connection_id": "1"}
+{"func": "entry", "case": "bool-vs-int", "registry": {"connections": [{"id": true, "n": 7}]}, "connection_id": 1}
+{"func": "entry", "case": "null-id-matches-null", "registry": {"connections": [{"id": null, "n": 3}]}, "connection_id": null}
+{"func": "dial_fields_changed", "case": "identical", "before": {"kind": "ssh", "host": "h", "port": 22}, "after": {"kind": "ssh", "host": "h", "port": 22}}
+{"func": "dial_fields_changed", "case": "kind-differs", "before": {"kind": "ssh", "host": "h"}, "after": {"kind": "local", "host": "h"}}
+{"func": "dial_fields_changed", "case": "host-differs", "before": {"kind": "ssh", "host": "h1"}, "after": {"kind": "ssh", "host": "h2"}}
+{"func": "dial_fields_changed", "case": "token-differs", "before": {"kind": "ssh", "token": "t1"}, "after": {"kind": "ssh", "token": "t2"}}
+{"func": "dial_fields_changed", "case": "headers-differ", "before": {"kind": "ssh", "headers": {"a": "1"}}, "after": {"kind": "ssh", "headers": {"a": "2"}}}
+{"func": "dial_fields_changed", "case": "absent-vs-null", "before": {"kind": "ssh"}, "after": {"kind": "ssh", "user": null}}
+{"func": "dial_fields_changed", "case": "port-int-vs-string", "before": {"kind": "ssh", "port": 22}, "after": {"kind": "ssh", "port": "22"}}
+{"func": "dial_fields_changed", "case": "port-int-vs-float", "before": {"kind": "ssh", "port": 22}, "after": {"kind": "ssh", "port": 22.0}}
+{"func": "dial_fields_changed", "case": "both-empty"}
+{"func": "dial_fields_changed", "case": "headers-reordered", "before": {"kind": "ssh", "headers": {"a": "1", "b": "2"}}, "after": {"kind": "ssh", "headers": {"b": "2", "a": "1"}}}
+{"func": "dial_fields_changed", "case": "non-dial-field-differs", "before": {"kind": "ssh", "label": "one"}, "after": {"kind": "ssh", "label": "two"}}
+{"func": "matches", "case": "exact", "owner": {"connection_id": "c1", "store_path": "/h/connections.json", "profile": "work"}, "selected": {"connection_id": "c1", "store_path": "/h/connections.json"}, "query_params": {"profile": "work"}}
+{"func": "matches", "case": "no-selection", "owner": {"connection_id": "c1", "store_path": "/h/connections.json", "profile": "work"}, "selected": null, "query_params": {"profile": "work"}}
+{"func": "matches", "case": "other-connection", "owner": {"connection_id": "c1", "store_path": "/h/connections.json", "profile": "work"}, "selected": {"connection_id": "c2", "store_path": "/h/connections.json"}, "query_params": {"profile": "work"}}
+{"func": "matches", "case": "other-store-path", "owner": {"connection_id": "c1", "store_path": "/h/connections.json", "profile": "work"}, "selected": {"connection_id": "c1", "store_path": "/other/connections.json"}, "query_params": {"profile": "work"}}
+{"func": "matches", "case": "profile-padded", "owner": {"connection_id": "c1", "store_path": "/h/c.json", "profile": "work"}, "selected": {"connection_id": "c1", "store_path": "/h/c.json"}, "query_params": {"profile": " work "}}
+{"func": "matches", "case": "profile-current-default", "owner": {"connection_id": "c1", "store_path": "/h/c.json", "profile": "current"}, "selected": {"connection_id": "c1", "store_path": "/h/c.json"}, "query_params": {}}
+{"func": "matches", "case": "profile-absent-vs-null", "owner": {"connection_id": "c1", "store_path": "/h/c.json", "profile": null}, "selected": {"connection_id": "c1", "store_path": "/h/c.json"}, "query_params": {"profile": "current"}}
+{"func": "matches", "case": "profile-differs", "owner": {"connection_id": "c1", "store_path": "/h/c.json", "profile": "work"}, "selected": {"connection_id": "c1", "store_path": "/h/c.json"}, "query_params": {"profile": "home"}}
+{"func": "constants", "case": "tables"}
+{"func": "constants", "case": "table-with-note", "note": "unknown keys do not change the tables"}
+{"func": "constants", "case": "table-with-null", "note": null}
+{"func": "constants", "case": "table-with-list", "note": []}

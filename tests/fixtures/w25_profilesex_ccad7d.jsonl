@@ -1,0 +1,32 @@
+{"func": "should_redact", "case": "markdown", "path": "notes/session.md"}
+{"func": "should_redact", "case": "upper-suffix", "path": "README.MD"}
+{"func": "should_redact", "case": "env-example", "path": "profiles/dev/.env.example"}
+{"func": "should_redact", "case": "config-copy", "path": "config.yaml.bak-my-note"}
+{"func": "should_redact", "case": "not-a-config-copy", "path": "cfg.yaml.bak"}
+{"func": "should_redact", "case": "cursorrules-no-suffix", "path": "d/.cursorrules"}
+{"func": "should_redact", "case": "binary-suffix", "path": "state.db"}
+{"func": "should_redact", "case": "windows-sep", "path": "d\\sub\\x.TXT"}
+{"func": "should_redact", "case": "trailing-sep", "path": "d/x.md/"}
+{"func": "should_redact", "case": "empty", "path": ""}
+{"func": "masked_envelopes", "case": "nested-dict", "node": {"api": {"openai": {"encoding": "plain", "value": "sk-live-1"}, "model": "gpt"}}}
+{"func": "masked_envelopes", "case": "array-root", "node": [{"encoding": "plain", "value": "a"}, {"encoding": "plain", "value": ""}]}
+{"func": "masked_envelopes", "case": "scalar-root", "node": "plain text"}
+{"func": "masked_envelopes", "case": "null-root", "node": null}
+{"func": "masked_envelopes", "case": "envelope-nonstring-value", "node": {"k": {"encoding": "plain", "value": 5}}}
+{"func": "masked_envelopes", "case": "envelope-extra-key", "node": {"k": {"encoding": "plain", "value": "s", "extra": 1}}}
+{"func": "masked_envelopes", "case": "list-of-lists", "node": [[{"encoding": "b64", "value": "zz"}], []]}
+{"func": "mask_envelopes_text", "case": "single-envelope", "text": "{\"api_key\": {\"encoding\": \"plain\", \"value\": \"sk-123\"}}"}
+{"func": "mask_envelopes_text", "case": "mixed-list", "text": "[{\"encoding\": \"plain\", \"value\": \"x\"}, 1, \"plain\"]"}
+{"func": "mask_envelopes_text", "case": "no-envelope", "text": "{\"a\": 1}"}
+{"func": "mask_envelopes_text", "case": "invalid-json", "text": "not json at all"}
+{"func": "mask_envelopes_text", "case": "unicode-sibling", "text": "{\"n\": \"\u00fc\", \"k\": {\"encoding\": \"plain\", \"value\": \"s\"}}"}
+{"func": "mask_envelopes_text", "case": "empty-value-untouched", "text": "{\"k\": {\"encoding\": \"plain\", \"value\": \"\"}}"}
+{"func": "mask_envelopes_text", "case": "empty-text", "text": ""}
+{"func": "gateway_store_match", "case": "connections", "name": "gateway-connections.json"}
+{"func": "gateway_store_match", "case": "tokens", "name": "gateway-connection-tokens.json"}
+{"func": "gateway_store_match", "case": "lock-sidecar", "name": "gateway-connections.json.lock"}
+{"func": "gateway_store_match", "case": "corrupt-sidecar", "name": "gateway-connections.json.corrupt-1700000000000"}
+{"func": "gateway_store_match", "case": "dangling-dot", "name": "gateway-connections.json."}
+{"func": "gateway_store_match", "case": "prefixed", "name": "xgateway-connections.json"}
+{"func": "gateway_store_match", "case": "suffix-junk", "name": "gateway-connections.jsonx"}
+{"func": "constants", "case": "scrub-tables"}

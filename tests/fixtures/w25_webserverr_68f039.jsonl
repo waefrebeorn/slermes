@@ -1,0 +1,36 @@
+{"func": "position", "case": "plain", "digits": "123"}
+{"func": "position", "case": "leading-zeros", "digits": "0007"}
+{"func": "position", "case": "empty", "digits": ""}
+{"func": "position", "case": "all-zeros", "digits": "0000"}
+{"func": "position", "case": "nineteen-digits", "digits": "1000000000000000000"}
+{"func": "position", "case": "twenty-digits", "digits": "10000000000000000000"}
+{"func": "position", "case": "zeros-then-too-long", "digits": "000000100000000000000000"}
+{"func": "byte_range", "case": "closed", "header": "bytes=0-9", "size": 100}
+{"func": "byte_range", "case": "open-ended", "header": "bytes=90-", "size": 100}
+{"func": "byte_range", "case": "suffix", "header": "bytes=-10", "size": 100}
+{"func": "byte_range", "case": "suffix-longer-than-file", "header": "bytes=-200", "size": 100}
+{"func": "byte_range", "case": "no-header", "header": null, "size": 100}
+{"func": "byte_range", "case": "multi-range-ignored", "header": "bytes=0-9,20-29", "size": 100}
+{"func": "byte_range", "case": "past-end", "header": "bytes=200-300", "size": 100}
+{"func": "byte_range", "case": "zero-suffix", "header": "bytes=-0", "size": 100}
+{"func": "byte_range", "case": "empty-file-suffix", "header": "bytes=-5", "size": 0}
+{"func": "byte_range", "case": "last-before-first", "header": "bytes=5-3", "size": 100}
+{"func": "byte_range", "case": "case-and-spaces", "header": "Bytes = 0 - 4", "size": 100}
+{"func": "byte_range", "case": "other-unit", "header": "items=0-4", "size": 100}
+{"func": "byte_range", "case": "empty-spec", "header": "bytes=", "size": 100}
+{"func": "byte_range", "case": "huge-last", "header": "bytes=0-99999999999999999999", "size": 100}
+{"func": "byte_range", "case": "start-past-end", "header": "bytes=200-", "size": 50}
+{"func": "byte_range", "case": "empty-header", "header": "", "size": 7}
+{"func": "response", "case": "whole-file", "request": {"method": "GET", "headers": {}}, "target": "/srv/media/a b.mp4", "size": 100, "media_type": "video/mp4"}
+{"func": "response", "case": "ranged", "request": {"method": "GET", "headers": {"range": "bytes=0-9"}}, "target": "/srv/media/a.mp4", "size": 100, "media_type": "video/mp4"}
+{"func": "response", "case": "head-ranged", "request": {"method": "HEAD", "headers": {"Range": "bytes=10-19"}}, "target": "/srv/media/a.mp4", "size": 100, "media_type": "audio/mpeg"}
+{"func": "response", "case": "empty-file", "request": {"method": "GET", "headers": {}}, "target": "/srv/media/empty.wav", "size": 0, "media_type": "audio/wav"}
+{"func": "response", "case": "unsatisfiable", "request": {"method": "GET", "headers": {"range": "bytes=500-600"}}, "target": "/srv/a.mp4", "size": 100, "media_type": "video/mp4"}
+{"func": "response", "case": "utf8-name", "request": {"method": "GET", "headers": {}}, "target": "/srv/clips/é 1.mp4", "size": 3, "media_type": "video/mp4"}
+{"func": "response", "case": "trailing-slash", "request": {"method": "GET", "headers": {}}, "target": "/srv/media/a.mp4/", "size": 5, "media_type": "video/mp4"}
+{"func": "response", "case": "null-range-header", "request": {"method": "GET", "headers": {"range": null}}, "target": "/srv/a.mp4", "size": 12, "media_type": "video/mp4"}
+{"func": "response", "case": "suffix-range", "request": {"method": "GET", "headers": {"range": "bytes=-4"}}, "target": "/srv/a.mp4", "size": 12, "media_type": "video/mp4"}
+{"func": "constants", "case": "module"}
+{"func": "constants", "case": "table-with-note", "note": "unknown keys do not change the tables"}
+{"func": "constants", "case": "table-with-null", "note": null}
+{"func": "constants", "case": "table-with-list", "note": []}

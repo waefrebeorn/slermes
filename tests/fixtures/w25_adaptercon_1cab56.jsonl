@@ -1,0 +1,37 @@
+{"func": "dm_role_auth_guild", "case": "normal-int", "raw": 1234567890123456}
+{"func": "dm_role_auth_guild", "case": "numeric-string", "raw": "987654321"}
+{"func": "dm_role_auth_guild", "case": "padded-string", "raw": " 42 "}
+{"func": "dm_role_auth_guild", "case": "boundary-zero", "raw": 0}
+{"func": "dm_role_auth_guild", "case": "negative", "raw": -5}
+{"func": "dm_role_auth_guild", "case": "empty-string", "raw": ""}
+{"func": "dm_role_auth_guild", "case": "falsy-null", "raw": null}
+{"func": "dm_role_auth_guild", "case": "non-numeric", "raw": "abc"}
+{"func": "dm_role_auth_guild", "case": "float-truncates", "raw": 1.9}
+{"func": "dm_role_auth_guild", "case": "type-mismatch-bool", "raw": true}
+{"func": "discord_prompt_timeout", "case": "normal", "raw": 300}
+{"func": "discord_prompt_timeout", "case": "below-min", "raw": 10}
+{"func": "discord_prompt_timeout", "case": "boundary-zero", "raw": 0}
+{"func": "discord_prompt_timeout", "case": "at-max", "raw": 4294966}
+{"func": "discord_prompt_timeout", "case": "over-max", "raw": 999999999}
+{"func": "discord_prompt_timeout", "case": "empty-string", "raw": ""}
+{"func": "discord_prompt_timeout", "case": "falsy-null", "raw": null}
+{"func": "discord_prompt_timeout", "case": "numeric-string", "raw": "600"}
+{"func": "discord_prompt_timeout", "case": "non-numeric", "raw": "soon"}
+{"func": "discord_prompt_timeout", "case": "float-truncates", "raw": 45.9}
+{"func": "exec_approval_gate", "case": "on-with-admins", "extra": {"require_admin_for_exec_approval": true, "allow_admin_from": ["1", "2"]}}
+{"func": "exec_approval_gate", "case": "on-yes-string", "extra": {"require_admin_for_exec_approval": "yes", "allow_admin_from": "7,8"}}
+{"func": "exec_approval_gate", "case": "on-fail-closed", "extra": {"require_admin_for_exec_approval": true}}
+{"func": "exec_approval_gate", "case": "explicit-off", "extra": {"require_admin_for_exec_approval": false, "allow_admin_from": ["1"]}}
+{"func": "exec_approval_gate", "case": "empty-extra", "extra": {}}
+{"func": "exec_approval_gate", "case": "falsy-null-extra", "extra": null}
+{"func": "exec_approval_gate", "case": "uppercase-true-scalar-id", "extra": {"require_admin_for_exec_approval": "TRUE", "allow_admin_from": 123}}
+{"func": "exec_approval_gate", "case": "no-is-off", "extra": {"require_admin_for_exec_approval": "no"}}
+{"func": "coerce_id_list", "case": "list-with-blanks", "raw": [" a ", "b", "", "a"]}
+{"func": "coerce_id_list", "case": "comma-string", "raw": "1, 2 ,3"}
+{"func": "coerce_id_list", "case": "scalar-int", "raw": 555}
+{"func": "coerce_id_list", "case": "falsy-null", "raw": null}
+{"func": "coerce_id_list", "case": "empty-string", "raw": ""}
+{"func": "coerce_id_list", "case": "int-list", "raw": [1, 2]}
+{"func": "coerce_id_list", "case": "whitespace-only", "raw": "  "}
+{"func": "coerce_id_list", "case": "dedupe-sort", "raw": ["b", "a", "b"]}
+{"func": "constants", "case": "bounds"}

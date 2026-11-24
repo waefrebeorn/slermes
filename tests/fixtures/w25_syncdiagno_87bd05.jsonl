@@ -1,0 +1,43 @@
+{"func": "supported", "case": "typescript", "server_id": "typescript", "unsupported": false}
+{"func": "supported", "case": "already-rejected", "server_id": "typescript", "unsupported": true}
+{"func": "supported", "case": "other-server", "server_id": "pyright", "unsupported": false}
+{"func": "supported", "case": "no-server-id", "server_id": null, "unsupported": false}
+{"func": "supported", "case": "numeric-server", "server_id": 1, "unsupported": false}
+{"func": "supported", "case": "zero-flag", "server_id": "typescript", "unsupported": 0}
+{"func": "supported", "case": "truthy-string-flag", "server_id": "typescript", "unsupported": "yes"}
+{"func": "supported", "case": "case-sensitive", "server_id": "TypeScript", "unsupported": false}
+{"func": "from_tsserver", "case": "full", "item": {"startLocation": {"line": 3, "offset": 5}, "endLocation": {"line": 3, "offset": 10}, "message": "Cannot find name 'x'.", "category": "error", "code": 2304, "source": "typescript"}}
+{"func": "from_tsserver", "case": "defaults", "item": {"startLocation": {}, "endLocation": {"line": 1}}}
+{"func": "from_tsserver", "case": "warning", "item": {"startLocation": {"line": 2, "offset": 1}, "endLocation": {"line": 2, "offset": 4}, "category": "warning", "message": "unused"}}
+{"func": "from_tsserver", "case": "suggestion", "item": {"startLocation": {"line": 9, "offset": 2}, "endLocation": {"line": 9, "offset": 2}, "category": "suggestion"}}
+{"func": "from_tsserver", "case": "message-severity", "item": {"startLocation": {"line": 1, "offset": 1}, "endLocation": {"line": 1, "offset": 1}, "category": "message"}}
+{"func": "from_tsserver", "case": "unknown-category", "item": {"startLocation": {"line": 1, "offset": 1}, "endLocation": {"line": 1, "offset": 1}, "category": "telemetry"}}
+{"func": "from_tsserver", "case": "numeric-category", "item": {"startLocation": {"line": 1, "offset": 1}, "endLocation": {"line": 1, "offset": 1}, "category": 1}}
+{"func": "from_tsserver", "case": "no-message", "item": {"startLocation": {"line": 1, "offset": 1}, "endLocation": {"line": 1, "offset": 1}, "message": ""}}
+{"func": "from_tsserver", "case": "zero-message", "item": {"startLocation": {"line": 1, "offset": 1}, "endLocation": {"line": 1, "offset": 1}, "message": 0}}
+{"func": "from_tsserver", "case": "empty-source", "item": {"startLocation": {"line": 1, "offset": 1}, "endLocation": {"line": 1, "offset": 1}, "source": ""}}
+{"func": "from_tsserver", "case": "custom-source", "item": {"startLocation": {"line": 1, "offset": 1}, "endLocation": {"line": 1, "offset": 1}, "source": "eslint"}}
+{"func": "from_tsserver", "case": "code-absent", "item": {"startLocation": {"line": 1, "offset": 1}, "endLocation": {"line": 1, "offset": 1}, "code": null}}
+{"func": "from_tsserver", "case": "code-string", "item": {"startLocation": {"line": 1, "offset": 1}, "endLocation": {"line": 1, "offset": 1}, "code": "TS2304"}}
+{"func": "from_tsserver", "case": "not-an-object", "item": "nope"}
+{"func": "from_tsserver", "case": "no-end", "item": {"startLocation": {"line": 1, "offset": 1}}}
+{"func": "from_tsserver", "case": "bad-start", "item": {"startLocation": 5, "endLocation": {"line": 1, "offset": 1}}}
+{"func": "request", "case": "both-bodies", "req": {"server_id": "typescript", "unsupported": false, "timeout": 2.5, "replies": [{"kind": "ok", "reply": {"success": true, "body": [{"startLocation": {"line": 1, "offset": 1}, "endLocation": {"line": 1, "offset": 3}, "message": "a", "category": "error"}]}}, {"kind": "ok", "reply": {"body": [{"startLocation": {"line": 4, "offset": 2}, "endLocation": {"line": 4, "offset": 6}, "message": "b", "category": "warning"}]}}]}}
+{"func": "request", "case": "first-timeout", "req": {"server_id": "typescript", "unsupported": false, "timeout": 2.5, "replies": [{"kind": "timeout"}]}}
+{"func": "request", "case": "second-timeout", "req": {"server_id": "typescript", "unsupported": false, "timeout": 0.5, "replies": [{"kind": "ok", "reply": {"body": []}}, {"kind": "timeout"}]}}
+{"func": "request", "case": "request-rejected", "req": {"server_id": "typescript", "unsupported": false, "timeout": 1.0, "replies": [{"kind": "request_error"}]}}
+{"func": "request", "case": "protocol-trouble", "req": {"server_id": "typescript", "unsupported": false, "timeout": 1.0, "replies": [{"kind": "ok", "reply": {"body": []}}, {"kind": "protocol_error"}]}}
+{"func": "request", "case": "body-not-a-list", "req": {"server_id": "typescript", "unsupported": false, "timeout": 1.0, "replies": [{"kind": "ok", "reply": {"body": {"x": 1}}}]}}
+{"func": "request", "case": "success-false", "req": {"server_id": "typescript", "unsupported": false, "timeout": 1.0, "replies": [{"kind": "ok", "reply": {"success": false, "body": []}}]}}
+{"func": "request", "case": "reply-not-a-dict", "req": {"server_id": "typescript", "unsupported": false, "timeout": 1.0, "replies": [{"kind": "ok", "reply": 5}]}}
+{"func": "request", "case": "other-server", "req": {"server_id": "pyright", "unsupported": false, "timeout": 1.0, "replies": []}}
+{"func": "request", "case": "already-unsupported", "req": {"server_id": "typescript", "unsupported": true, "timeout": 1.0, "replies": []}}
+{"func": "request", "case": "zero-timeout", "req": {"server_id": "typescript", "unsupported": false, "timeout": 0, "replies": []}}
+{"func": "request", "case": "negative-timeout", "req": {"server_id": "typescript", "unsupported": false, "timeout": -1.5, "replies": []}}
+{"func": "request", "case": "empty-bodies", "req": {"server_id": "typescript", "unsupported": false, "timeout": 3.0, "replies": [{"kind": "ok", "reply": {"body": []}}, {"kind": "ok", "reply": {"body": []}}]}}
+{"func": "request", "case": "bad-items-filtered", "req": {"server_id": "typescript", "unsupported": false, "timeout": 3.0, "replies": [{"kind": "ok", "reply": {"body": ["nope", {"message": "no locations"}, {"startLocation": {"line": 2, "offset": 2}, "endLocation": {"line": 2, "offset": 5}, "message": "real"}]}}, {"kind": "ok", "reply": {"body": []}}]}}
+{"func": "request", "case": "no-replies", "req": {"server_id": "typescript", "unsupported": false, "timeout": 1.0}}
+{"func": "constants", "case": "tables"}
+{"func": "constants", "case": "table-with-note", "note": "unknown keys do not change the tables"}
+{"func": "constants", "case": "table-with-null", "note": null}
+{"func": "constants", "case": "table-with-list", "note": []}

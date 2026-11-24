@@ -1,0 +1,18 @@
+{"func": "constants", "case": "paths-and-timeout"}
+{"func": "discover", "case": "normal", "payload": {"client_id": "cid-1", "authorize_url": "https://accounts.google.com/o/oauth2/v2/auth", "scope": "openid email"}}
+{"func": "discover", "case": "strips-padding", "payload": {"client_id": "  cid-2\t", "authorize_url": " https://a/b ", "scope": " scope  x ", "extra": "ignored"}}
+{"func": "discover", "case": "blank-and-null-fields", "payload": {"client_id": "   ", "authorize_url": null, "scope": ""}}
+{"func": "discover", "case": "empty-payload", "payload": {}}
+{"func": "discover", "case": "type-mismatch-numbers-bool", "payload": {"client_id": true, "authorize_url": 7, "scope": "s"}}
+{"func": "discover", "case": "falsy-zero-is-missing", "payload": {"client_id": 0, "authorize_url": [], "scope": "s"}}
+{"func": "discover", "case": "payload-not-an-object", "payload": []}
+{"func": "broker", "case": "exchange-normal", "grant": {"grant_type": "authorization_code", "code": "auth-code", "code_verifier": "verifier", "redirect_uri": "http://127.0.0.1:8080/cb", "client_id": "dropped-by-broker"}, "nas": {"status": 200, "payload": {"access_token": "at-1", "token_type": "Bearer", "expires_in": 3599}}}
+{"func": "broker", "case": "refresh-normal", "grant": {"grant_type": "refresh_token", "refresh_token": "rt-1", "scope": "dropped"}, "nas": {"status": 200, "payload": {"access_token": "at-2", "refresh_token": "rt-2"}}}
+{"func": "broker", "case": "refresh-rejected-is-relogin", "grant": {"grant_type": "refresh_token", "refresh_token": "rt-dead"}, "nas": {"status": 502}}
+{"func": "broker", "case": "exchange-rejected", "grant": {"grant_type": "authorization_code", "code": "bad"}, "nas": {"status": 400, "payload": {"error": "invalid_grant"}}}
+{"func": "broker", "case": "not-configured-404", "grant": {"grant_type": "authorization_code", "code": "c"}, "nas": {"status": 404}}
+{"func": "broker", "case": "broker-unreachable", "grant": {"grant_type": "refresh_token", "refresh_token": "rt-3"}, "nas": {"status": 200, "raise": "ConnectError"}}
+{"func": "broker", "case": "no-nous-login", "grant": {"grant_type": "authorization_code", "code": "c"}, "nas": {"token_error": true}}
+{"func": "broker", "case": "unknown-grant-type", "grant": {"grant_type": "device_code", "code": "c"}, "nas": {"status": 200, "payload": {}}}
+{"func": "broker", "case": "missing-grant-type", "grant": {"code": "c"}, "nas": {"status": 200, "payload": {}}}
+{"func": "broker", "case": "empty-payload-preserved", "grant": {"grant_type": "authorization_code", "code": "c", "code_verifier": "v"}, "nas": {"status": 200, "payload": {}}}
