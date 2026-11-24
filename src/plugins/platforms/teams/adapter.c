@@ -518,6 +518,16 @@ json_t *w29_adapter_1c52a4_p2_document_filename(const char *name,
     const json_t *ft = content ? json_obj_get(content, "fileType") : NULL;
     char *raw, *clean, *out;
     size_t n;
+    /* `if not download_url: return None` runs BEFORE the filename is derived: a
+     * download-info attachment with no pre-authed URL is skipped outright, so no
+     * name is ever reported for it. */
+    if (content) {
+        const json_t *u = json_obj_get(content, "downloadUrl");
+        if (!ta_truthy(u)) u = json_obj_get(content, "download_url");
+        if (!ta_truthy(u)) return json_null();
+    } else {
+        return json_null();
+    }
     if (name && *name) return json_string(name);
     if (!ta_truthy(ft) && content) ft = json_obj_get(content, "file_type");
     if (!ta_truthy(ft)) return json_string("document");
