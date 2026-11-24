@@ -1,0 +1,70 @@
+{"func": "parse_comma_list", "case": "csv-spaces", "value": " a, b ,, c "}
+{"func": "parse_comma_list", "case": "csv-empty", "value": ""}
+{"func": "parse_comma_list", "case": "csv-single", "value": "only"}
+{"func": "parse_comma_list", "case": "csv-tabs", "value": "\ta\t,\tb\n"}
+{"func": "redact_id", "case": "long", "value": "1234567890"}
+{"func": "redact_id", "case": "short", "value": "abc"}
+{"func": "redact_id", "case": "empty", "value": ""}
+{"func": "redact_id", "case": "null", "value": null}
+{"func": "redact_id", "case": "numeric", "value": 123456}
+{"func": "redact_id", "case": "four", "value": "1234"}
+{"func": "path_suffix", "case": "posix-upper", "path": "/var/tmp/report.PDF"}
+{"func": "path_suffix", "case": "win-double", "path": "C:\\x\\y.tar.gz"}
+{"func": "path_suffix", "case": "none", "path": "nodot"}
+{"func": "path_suffix", "case": "dotfile", "path": "/etc/.bashrc"}
+{"func": "path_suffix", "case": "trailing-dot", "path": "/tmp/foo."}
+{"func": "is_image_ext", "case": "png-upper", "ext": ".PNG"}
+{"func": "is_image_ext", "case": "pdf", "ext": ".pdf"}
+{"func": "is_audio_ext", "case": "opus", "ext": ".opus"}
+{"func": "is_audio_ext", "case": "aac", "ext": ".AAC"}
+{"func": "is_audio_ext", "case": "png", "ext": ".png"}
+{"func": "mime_for_ext", "case": "img-upper", "ext": ".JPG"}
+{"func": "mime_for_ext", "case": "aac", "ext": ".aac"}
+{"func": "mime_for_ext", "case": "pdf", "ext": ".pdf"}
+{"func": "mime_for_ext", "case": "dots", "ext": "..png"}
+{"func": "display_name", "case": "local", "obj": {"localDisplayName": "Bob"}}
+{"func": "display_name", "case": "falls-to-default", "obj": {}, "profile_key": "profile", "default": "D"}
+{"func": "display_name", "case": "profile-nested", "obj": {"profile": {"displayName": "P"}}}
+{"func": "display_name", "case": "explicit-null", "obj": {"localDisplayName": "", "profile": {"displayName": null}}}
+{"func": "display_name", "case": "member-profile", "obj": {"memberProfile": {"displayName": "Mem"}}, "profile_key": "memberProfile"}
+{"func": "may_receive_file", "case": "direct-authorized", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42}}}, "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "may_receive_file", "case": "direct-denied", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42}}}, "group_allow_from": [], "authorized_ids": ["7"]}
+{"func": "may_receive_file", "case": "group-star-member-ok", "item": {"chatInfo": {"type": "group", "groupInfo": {"groupId": 9}}, "chatItem": {"chatDir": {"groupMember": {"memberId": 5}}}}, "group_allow_from": ["*"], "authorized_ids": ["5"]}
+{"func": "may_receive_file", "case": "group-not-allowed", "item": {"chatInfo": {"type": "group", "groupInfo": {"groupId": 9}}, "chatItem": {"chatDir": {"groupMember": {"memberId": 5}}}}, "group_allow_from": ["3"], "authorized_ids": ["5"]}
+{"func": "may_receive_file", "case": "unknown-type", "item": {"chatInfo": {"type": "channel"}}, "group_allow_from": ["*"], "authorized_ids": ["5"]}
+{"func": "ts_iso", "case": "zulu", "ts": "2026-01-02T03:04:05Z"}
+{"func": "ts_iso", "case": "fraction", "ts": "2026-01-02T03:04:05.120"}
+{"func": "ts_iso", "case": "offset", "ts": "2026-01-02T03:04:05-05:00"}
+{"func": "ts_iso", "case": "date-only", "ts": "2026-01-02"}
+{"func": "ts_iso", "case": "bad", "ts": "2026-02-30T03:04:05Z"}
+{"func": "ts_iso", "case": "word", "ts": "nonsense"}
+{"func": "ts_iso", "case": "hm-only", "ts": "2026-01-02 03:04"}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "hello"}}}}, "case": "direct-text", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": ""}}, "chatItem": {"chatDir": {"type": "directRcv"}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "hi"}}}}, "case": "direct-no-name", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "profile": {"displayName": "Prof"}}}, "chatItem": {"chatDir": {"type": "directRcv"}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "hi"}}}}, "case": "direct-profile-name", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directSnd"}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "mine"}}}}, "case": "own-message", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "content": {"type": "sndMsgContent", "msgContent": {"type": "text", "text": "x"}}}}, "case": "not-rcv-content", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "link"}}}}, "case": "link-no-text", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "image"}}, "file": {"fileId": 3, "fileSource": {"filePath": "/tmp/pic.png"}}}}, "case": "image-path", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "file"}}, "file": {"fileId": 4, "fileSource": {"filePath": "/tmp/doc.pdf"}}}}, "case": "document-path", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "voice"}}, "file": {"fileId": 7, "fileName": "note.OGG"}}}, "case": "voice-defer", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "voice"}}, "file": {"fileId": 7, "fileName": "note.ogg"}}}, "case": "voice-denied", "group_allow_from": [], "authorized_ids": ["9"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "meta": {"createdAt": "2026-03-04T05:06:07+02:00"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "late"}}}}, "case": "createdat-fallback", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "meta": {"itemTs": "not-a-date"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "badts"}}}}, "case": "bad-ts", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "direct", "contact": {"localDisplayName": "Ghost"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "who"}}}}, "case": "no-sender", "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "item": {"chatInfo": {"type": "group", "groupInfo": {"groupId": 9, "groupProfile": {"displayName": "Team"}}}, "chatItem": {"chatDir": {"type": "groupRcv", "groupMember": {"memberId": 5, "memberProfile": {"displayName": "Ann"}}}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "gm"}}}}, "case": "group-star", "group_allow_from": ["*"], "authorized_ids": []}
+{"func": "chat_item", "item": {"chatInfo": {"type": "group", "groupInfo": {"groupId": 9, "localDisplayName": "Team"}}, "chatItem": {"chatDir": {"type": "groupRcv", "groupMember": {"memberId": 5}}, "meta": {"itemTs": "2026-01-02T03:04:05Z"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "gm"}}}}, "case": "group-named", "group_allow_from": ["9"], "authorized_ids": []}
+{"func": "chat_item", "item": {"chatInfo": {"type": "group", "groupInfo": {"groupId": 9, "localDisplayName": "Team"}}, "chatItem": {"chatDir": {"type": "groupRcv", "groupMember": {"memberId": 5}}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "gm"}}}}, "case": "group-denied", "group_allow_from": ["3"], "authorized_ids": []}
+{"func": "chat_item", "item": {"chatInfo": {"type": "group", "groupInfo": {"groupId": 9, "localDisplayName": "Team"}}, "chatItem": {"chatDir": {"type": "groupRcv", "groupMember": {"memberId": 5}}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "gm"}}}}, "case": "group-no-allowlist", "group_allow_from": [], "authorized_ids": []}
+{"func": "chat_item", "case": "unsupported-chat", "item": {"chatInfo": {"type": "channel"}, "chatItem": {}}, "group_allow_from": [], "authorized_ids": []}
+{"func": "ts_iso", "case": "micro-truncate", "ts": "2026-01-02T03:04:05.1234567"}
+{"func": "ts_iso", "case": "offset-nocolon", "ts": "2026-01-02T03:04:05+0530"}
+{"func": "ts_iso", "case": "lowercase-t", "ts": "2026-01-02t03:04:05z"}
+{"func": "ts_iso", "case": "month-13", "ts": "2026-13-01T00:00:00"}
+{"func": "ts_iso", "case": "hour-25", "ts": "2026-01-02T25:00:00"}
+{"func": "ts_iso", "case": "trailing-junk", "ts": "2026-01-02T03:04:05Zx"}
+{"func": "mime_for_ext", "case": "webp", "ext": ".webp"}
+{"func": "mime_for_ext", "case": "m4a", "ext": ".M4A"}
+{"func": "chat_item", "case": "empty-text", "item": {"chatInfo": {"type": "direct", "contact": {"contactId": 42, "localDisplayName": "Bob"}}, "chatItem": {"chatDir": {"type": "directRcv"}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": ""}}}}, "group_allow_from": [], "authorized_ids": ["42"]}
+{"func": "chat_item", "case": "group-anon-member", "item": {"chatInfo": {"type": "group", "groupInfo": {"groupId": 9}}, "chatItem": {"chatDir": {"type": "groupRcv", "groupMember": {"memberId": 5}}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "anon"}}}}, "group_allow_from": ["*"], "authorized_ids": []}
+{"func": "chat_item", "case": "group-chat-name-defaults-to-id", "item": {"chatInfo": {"type": "group", "groupInfo": {"groupId": 9}}, "chatItem": {"chatDir": {"type": "groupRcv", "groupMember": {"memberId": 5, "localDisplayName": "Ann"}}, "content": {"type": "rcvMsgContent", "msgContent": {"type": "text", "text": "x"}}}}, "group_allow_from": ["*"], "authorized_ids": []}

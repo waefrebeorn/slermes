@@ -1,0 +1,97 @@
+{"func":"model_name","case":"strip-anthropic-prefix","model":"anthropic/claude-opus-4.6"}
+{"func":"model_name","case":"preserve-dots-dashscope","model":"anthropic/qwen3.5-plus","preserve_dots":true}
+{"func":"model_name","case":"bedrock-region-prefix","model":"us.anthropic.claude-sonnet-4.6-v1:0"}
+{"func":"model_name","case":"non-claude-keeps-dots","model":"gpt-5.4"}
+{"func":"model_name","case":"uppercase-anthropic-prefix","model":"Anthropic/Claude-Sonnet-4.6"}
+{"func":"model_name","case":"bare-bedrock-id","model":"anthropic.claude-opus-4-6"}
+{"func":"model_name","case":"no-prefix-kept","model":"claude-haiku-5.5"}
+{"func":"tools","case":"dedupe-and-cache-control","tools":[{"type":"function","function":{"name":"a","description":"Tool A","parameters":{"type":"object","properties":{"x":{"type":"string"}}}}},{"type":"function","function":{"name":"a","description":"dup","parameters":{}}},{"type":"function","function":{"name":"b"},"cache_control":{"type":"ephemeral"}}]}
+{"func":"tools","case":"nullable-union-collapse","tools":[{"type":"function","function":{"name":"q","description":"","parameters":{"type":"object","properties":{"term":{"anyOf":[{"type":"string","title":"Term"},{"type":"null"}],"description":"outer"},"limit":{"oneOf":[{"type":"integer"},{"type":"null"}]}},"required":["term"]}}}]}
+{"func":"tools","case":"top-level-oneof-dropped","tools":[{"type":"function","function":{"name":"t","parameters":{"oneOf":[{"type":"object","properties":{"a":{"type":"string"}}},{"type":"object","properties":{"b":{"type":"number"}}}]}}}]}
+{"func":"normalize_schema","case":"object-without-properties","schema":{"type":"object"}}
+{"func":"normalize_schema","case":"empty-list-schema","schema":[]}
+{"func":"normalize_schema","case":"non-dict-schema","schema":"nope"}
+{"func":"content_part","case":"text-output-only-siblings","part":{"type":"text","text":"  hi  ","parsed_output":{"a":1},"citations":null}}
+{"func":"content_part","case":"input-text-ignores-citations","part":{"type":"input_text","text":"q","citations":[{"x":1}]}}
+{"func":"content_part","case":"text-citations-kept","part":{"type":"text","text":"cited","citations":[{"source":"doc"}]}}
+{"func":"content_part","case":"image-url-dict-remote","part":{"type":"image_url","image_url":{"url":"https://example.com/a.png"}}}
+{"func":"content_part","case":"image-url-dict-data-png","part":{"type":"image_url","image_url":{"url":"data:image/png;base64,iVBORw0KGgo="}}}
+{"func":"content_part","case":"image-url-string","part":{"type":"input_image","image_url":"data:image/webp;base64,AAAA"}}
+{"func":"content_part","case":"image-svg-placeholder","part":{"type":"image_url","image_url":{"url":"data:image/svg+xml;base64,AAA"}}}
+{"func":"content_part","case":"image-jpg-alias","part":{"type":"image_url","image_url":{"url":"data:image/jpg;base64,ZZZZ"}}}
+{"func":"content_part","case":"unknown-type-passthrough-cc","part":{"type":"weird","foo":1,"cache_control":{"type":"ephemeral","ttl":5}}}
+{"func":"content_part","case":"string-part","part":"plain"}
+{"func":"content_part","case":"null-part","part":null}
+{"func":"content_list","case":"mixed-parts","content":[null,"hi",{"type":"text","text":""}]}
+{"func":"image_block","case":"url-no-scheme-data","url":"  data:image/gif;base64,R0lGOD  "}
+{"func":"image_block","case":"bad-data-url-no-comma","url":"data:image/tiff;base64"}
+{"func":"sanitize_replay","case":"text-extra-fields-cc","block":{"type":"text","text":"kept","parsed_output":{"z":1},"caller":{"id":"c"},"cache_control":{"type":"ephemeral"}}}
+{"func":"sanitize_replay","case":"blank-text-dropped","block":{"type":"text","text":"   ","cache_control":{"type":"ephemeral"}}}
+{"func":"sanitize_replay","case":"thinking-signed","block":{"type":"thinking","thinking":"plan","signature":"sig-1","extra":1}}
+{"func":"sanitize_replay","case":"thinking-unsigned","block":{"type":"thinking","thinking":"plan"}}
+{"func":"sanitize_replay","case":"redacted-no-data","block":{"type":"redacted_thinking","signature":"x"}}
+{"func":"sanitize_replay","case":"redacted-with-data","block":{"type":"redacted_thinking","data":"blob"}}
+{"func":"sanitize_replay","case":"tool-use-id-sanitized","block":{"type":"tool_use","id":"call/1:2","name":"ls","input":{"p":"/"},"cache_control":{"type":"ephemeral"}}}
+{"func":"sanitize_replay","case":"image-non-dict-source","block":{"type":"image","source":"nope"}}
+{"func":"sanitize_replay","case":"unknown-type-dropped","block":{"type":"server_tool_use","id":"s"}}
+{"func":"sanitize_replay","case":"not-a-dict","block":"text"}
+{"func":"split_blank","case":"two-blanks-last-cc-wins","blocks":[{"type":"text","text":"x"},{"type":"text","text":"   ","cache_control":{"type":"ephemeral"}},{"type":"image","source":{"type":"url","url":"u"}},{"type":"text","text":"","cache_control":{"type":"ephemeral","ttl":1}}]}
+{"func":"split_blank","case":"nothing-blank","blocks":[{"type":"text","text":"ok"},{"type":"tool_use","id":"t","name":"n","input":{}}]}
+{"func":"is_blank","case":"text-null","block":{"type":"text","text":null}}
+{"func":"is_blank","case":"text-int","block":{"type":"text","text":5}}
+{"func":"is_blank","case":"image-not-text","block":{"type":"image","source":{}}}
+{"func":"safe_text","case":"none","text":null}
+{"func":"safe_text","case":"whitespace","text":" \t\n "}
+{"func":"safe_text","case":"keeps","text":" value "}
+{"func":"sanitize_tool_id","case":"empty","id":""}
+{"func":"sanitize_tool_id","case":"null","id":null}
+{"func":"sanitize_tool_id","case":"punctuated","id":"a b/c:d"}
+{"func":"parse_tool_args","case":"bad-json","raw":"{not json"}
+{"func":"parse_tool_args","case":"good-json","raw":"{\"path\": \"/tmp\"}"}
+{"func":"parse_tool_args","case":"non-string","raw":{"already":true}}
+{"func":"tool_result_content","case":"plain-string","message":{"content":"done"}}
+{"func":"tool_result_content","case":"empty-string","message":{"content":""}}
+{"func":"tool_result_content","case":"null-content","message":{"content":null}}
+{"func":"tool_result_content","case":"dict-content-dumped","message":{"content":{"a":1,"b":[1,2]}}}
+{"func":"tool_result_content","case":"list-with-image","message":{"content":[{"type":"text","text":"see"},{"type":"image_url","image_url":{"url":"https://x/y.png"}}]}}
+{"func":"tool_result_content","case":"list-text-only-falls-back","message":{"content":[{"type":"text","text":"only"}]}}
+{"func":"tool_result_content","case":"multimodal-summary","message":{"content":{"_multimodal":true,"content":[{"type":"text","text":""}],"text_summary":"summary text"}}}
+{"func":"tool_result_content","case":"stashed-blocks","message":{"content":"see attached","_anthropic_content_blocks":[{"type":"image","source":{"type":"base64","media_type":"image/png","data":"AA"}}]}}
+{"func":"content_parts_blocks","case":"text-and-image","parts":[{"type":"text","text":"cap"},{"type":"image_url","image_url":{"url":"data:image/png;base64,AA"}},{"type":"weird","x":1}]}
+{"func":"route","case":"direct-anthropic","base_url":null,"model":"claude-opus-4-6"}
+{"func":"route","case":"anthropic-host","base_url":"https://api.anthropic.com","model":null}
+{"func":"route","case":"deepseek-anthropic","base_url":"https://api.deepseek.com/anthropic","model":"deepseek-chat"}
+{"func":"route","case":"moonshot-host","base_url":"https://api.moonshot.ai/anthropic","model":null}
+{"func":"route","case":"kimi-coding","base_url":"https://api.kimi.com/coding/","model":null}
+{"func":"route","case":"kimi-model-on-relay","base_url":"https://relay.example.com/v1","model":"moonshotai/kimi-k2.5"}
+{"func":"route","case":"minimax","base_url":"https://api.minimax.io/anthropic","model":null}
+{"func":"route","case":"bedrock-runtime","base_url":"https://bedrock-runtime.us-east-1.amazonaws.com","model":null}
+{"func":"route","case":"vertex","base_url":"https://us-central1-aiplatform.googleapis.com","model":null}
+{"func":"route","case":"unknown-relay","base_url":"https://relay.example.com/v1","model":"claude-opus-4-6"}
+{"func":"route","case":"azure-anthropic","base_url":"https://my.services.ai.azure.com/anthropic","model":null}
+{"func":"replays_prior","case":"opus-46","route":"native","model":"claude-opus-4-6"}
+{"func":"replays_prior","case":"opus-44","route":"native","model":"claude-opus-4-4"}
+{"func":"replays_prior","case":"claude-3-last-turn-only","route":"native","model":"claude-3-5-haiku-20241022"}
+{"func":"replays_prior","case":"sonnet-46","route":"native","model":"anthropic.claude-sonnet-4-6-v1:0"}
+{"func":"replays_prior","case":"haiku-55","route":"native","model":"claude-haiku-5-5"}
+{"func":"replays_prior","case":"opus-4-snapshot","route":"native","model":"claude-opus-4-20250514"}
+{"func":"replays_prior","case":"fable-default","route":"native","model":"claude-fable-5"}
+{"func":"replays_prior","case":"mythos-under","route":"native","model":"claude-mythos-4-9"}
+{"func":"replays_prior","case":"non-claude","route":"native","model":"gpt-5"}
+{"func":"replays_prior","case":"minimax-always","route":"minimax","model":"gpt-5"}
+{"func":"replays_prior","case":"third-party","route":"third_party","model":"claude-opus-4-6"}
+{"func":"issuer_foreign","case":"nova-issuer","message":{"reasoning_details":[{"type":"bedrock.native_assistant","model":"amazon.nova-pro-v1:0"}]}}
+{"func":"issuer_foreign","case":"claude-issuer","message":{"reasoning_details":[{"type":"bedrock.native_assistant","model":"anthropic.claude-opus-4-6-v1:0"}]}}
+{"func":"issuer_foreign","case":"no-details","message":{"content":"x"}}
+{"func":"issuer_foreign","case":"thinking-detail-only","message":{"reasoning_details":[{"type":"thinking","thinking":"x"}]}}
+{"func":"issuer_foreign","case":"unresolved-profile-arn","message":{"reasoning_details":[{"type":"bedrock.native_assistant","model":"arn:aws:bedrock:us-east-1:1:application-inference-profile/abc"}]}}
+{"func":"issuer_foreign","case":"deepseek-issuer","message":{"reasoning_details":[{"type":"bedrock.native_assistant","model":"deepseek.r1-v1:0"}]}}
+{"func":"issuer_foreign","case":"gpt6-issuer","message":{"reasoning_details":[{"type":"bedrock.native_assistant","model":"openai.gpt-6-2025"}]}}
+{"func":"content_part","case":"int-part","part":42}
+{"func":"content_part","case":"bool-part","part":true}
+{"func":"image_block","case":"null-url","url":null}
+{"func":"split_blank","case":"empty-blocks","blocks":[]}
+{"func":"route","case":"trailing-space-slash","base_url":" https://api.deepseek.com/anthropic/ ","model":"deepseek-chat"}
+{"func":"route","case":"bedrock-apac-host","base_url":"https://bedrock-runtime.ap-southeast-2.amazonaws.com","model":null}
+{"func":"model_name","case":"apac-bedrock-id","model":"apac.anthropic.claude-opus-4.6-v1:0"}
+{"func":"replays_prior","case":"uppercase-model","route":"native","model":"Claude-Opus-4-6"}

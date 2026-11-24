@@ -1,0 +1,33 @@
+{"case":"classic_empty","func":"classic_only_policy","launch":{}}
+{"case":"classic_run_budget_int","func":"classic_only_policy","launch":{"run_budget":5}}
+{"case":"classic_run_budget_string","func":"classic_only_policy","launch":{"run_budget":"2.5"}}
+{"case":"classic_run_budget_zero","func":"classic_only_policy","launch":{"run_budget":0}}
+{"case":"classic_run_budget_false","func":"classic_only_policy","launch":{"run_budget":false}}
+{"case":"classic_run_budget_true","func":"classic_only_policy","launch":{"run_budget":true}}
+{"case":"classic_run_budget_null","func":"classic_only_policy","launch":{"run_budget":null}}
+{"case":"classic_verbose_true","func":"classic_only_policy","launch":{"verbose":true}}
+{"case":"classic_verbose_zero","func":"classic_only_policy","launch":{"verbose":0}}
+{"case":"classic_verbose_string","func":"classic_only_policy","launch":{"verbose":"yes"}}
+{"case":"classic_both","func":"classic_only_policy","launch":{"run_budget":12,"verbose":true}}
+{"case":"policy_empty","func":"creation_policy","launch":{},"env":{}}
+{"case":"policy_route","func":"creation_policy","launch":{"model":"m1","provider":"p1","api_key":"k","base_url":"http://x"},"env":{}}
+{"case":"policy_toolsets_list","func":"creation_policy","launch":{"toolsets":["a","b"]},"env":{}}
+{"case":"policy_toolsets_string","func":"creation_policy","launch":{"toolsets":" a, b ,, c "},"env":{}}
+{"case":"policy_toolsets_empty_list","func":"creation_policy","launch":{"toolsets":[]},"env":{}}
+{"case":"policy_skills_string","func":"creation_policy","launch":{"skills":"a,b"},"env":{}}
+{"case":"policy_skills_list_dedup","func":"creation_policy","launch":{"skills":["a,b","c"," a "]},"env":{}}
+{"case":"policy_skills_empty_dropped","func":"creation_policy","launch":{"skills":""},"env":{}}
+{"case":"policy_identity_zero_kept","func":"creation_policy","launch":{"max_turns":0,"checkpoints":false,"pass_session_id":true},"env":{}}
+{"case":"policy_zero_number_kept","func":"creation_policy","launch":{"max_turns":0},"env":{}}
+{"case":"policy_classic_appended","func":"creation_policy","launch":{"model":"m1","run_budget":7,"verbose":true},"env":{}}
+{"case":"policy_env_yolo_and_hooks","func":"creation_policy","launch":{"model":"m1"},"env":{"HERMES_YOLO_MODE":"1","HERMES_SAFE_MODE":"off","HERMES_ACCEPT_HOOKS":" TRUE "}}
+{"case":"policy_env_overrides_ignore_rules","func":"creation_policy","launch":{"ignore_rules":["x"]},"env":{"HERMES_IGNORE_RULES":"yes"}}
+{"case":"policy_env_truthy_number","func":"creation_policy","launch":{},"env":{"HERMES_YOLO_MODE":"0","HERMES_IGNORE_USER_CONFIG":"on"}}
+{"case":"resume_no_flags","func":"resume_classic_differs","launch":{},"snapshot":{"info":{}}}
+{"case":"resume_verbose_matches","func":"resume_classic_differs","launch":{"verbose":true},"snapshot":{"info":{"launch_request":{"verbose":true}}}}
+{"case":"resume_verbose_differs","func":"resume_classic_differs","launch":{"verbose":true},"snapshot":{"info":{"launch_request":{}}}}
+{"case":"resume_verbose_false_vs_true","func":"resume_classic_differs","launch":{"verbose":true},"snapshot":{"info":{"launch_request":{"verbose":false}}}}
+{"case":"resume_budget_matches_numeric","func":"resume_classic_differs","launch":{"run_budget":"3"},"snapshot":{"info":{"launch_request":{"run_budget":3}}}}
+{"case":"resume_both_differ","func":"resume_classic_differs","launch":{"run_budget":2,"verbose":true},"snapshot":{"info":{}}}
+{"case":"resume_no_info","func":"resume_classic_differs","launch":{"verbose":true},"snapshot":{}}
+{"case":"resume_verbose_zero_is_no_flag","func":"resume_classic_differs","launch":{"verbose":0},"snapshot":{"info":{"launch_request":{"verbose":true}}}}

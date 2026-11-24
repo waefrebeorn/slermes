@@ -1,0 +1,64 @@
+{"func": "send_cmd", "case": "dm", "chat_id": "12345", "items": [{"msgContent": {"type": "text", "text": "hi"}}]}
+{"func": "send_cmd", "case": "group", "chat_id": "group:42", "items": [{"msgContent": {"type": "text", "text": "hi"}}]}
+{"func": "send_cmd", "case": "empty-id", "chat_id": "", "items": [{"msgContent": {"type": "text", "text": ""}}]}
+{"func": "send_cmd", "case": "image-item", "chat_id": "77", "items": [{"filePath": "/tmp/a.png", "msgContent": {"type": "image", "image": "data:image/jpg;base64,AA", "text": "cap"}}]}
+{"func": "split_media", "case": "plain", "content": "just words"}
+{"func": "split_media", "case": "one-tag", "content": "MEDIA:/tmp/a.ogg"}
+{"func": "split_media", "case": "tag-and-text", "content": "see MEDIA:/tmp/a.png now MEDIA:/tmp/b.pdf"}
+{"func": "split_media", "case": "dangling-tag", "content": "MEDIA:"}
+{"func": "split_media", "case": "tag-only-word", "content": "  MEDIA:/x/y.wav  "}
+{"func": "is_voice_ext", "case": "ogg", "ext": ".ogg"}
+{"func": "is_voice_ext", "case": "aac", "ext": ".aac"}
+{"func": "is_voice_ext", "case": "mp3-upper", "ext": ".MP3"}
+{"func": "send_item", "case": "image", "kind": "image", "path": "/tmp/a.png", "caption": "cap", "thumb": "data:image/jpg;base64,AA"}
+{"func": "send_item", "case": "image-no-caption", "kind": "image", "path": "/tmp/a.png", "caption": null, "thumb": ""}
+{"func": "send_item", "case": "document-null-caption", "kind": "document", "path": "/tmp/a.pdf", "caption": null}
+{"func": "send_item", "case": "document-caption", "kind": "document", "path": "/tmp/a.pdf", "caption": "doc"}
+{"func": "send_item", "case": "voice", "kind": "voice", "path": "/tmp/a.ogg", "caption": "v", "duration": 7}
+{"func": "send_item", "case": "voice-zero", "kind": "voice", "path": "/tmp/a.ogg", "duration": 0}
+{"func": "corr_id", "case": "first", "counter": 1, "now_ms": 1767323045123}
+{"func": "corr_id", "case": "nth", "counter": 42, "now_ms": 1767323045999}
+{"func": "corr_id", "case": "standalone", "now_ms": 1767323045000}
+{"func": "retry_math", "case": "initial", "backoff": 2.0, "rnd": 0.5}
+{"func": "retry_math", "case": "cap", "backoff": 40.0, "rnd": 0.9}
+{"func": "retry_math", "case": "write-min", "backoff": 0.02, "rnd": 0.0}
+{"func": "retry_math", "case": "no-jitter", "backoff": 60.0, "rnd": 0.0}
+{"func": "health_stale", "case": "fresh", "elapsed": 299.5}
+{"func": "health_stale", "case": "stale", "elapsed": 300.5}
+{"func": "init_config", "case": "defaults", "env": {}, "extra": {}}
+{"func": "init_config", "case": "trailing-slash", "env": {}, "extra": {"ws_url": "ws://127.0.0.1:5225///"}}
+{"func": "init_config", "case": "env-auto-false", "env": {"SIMPLEX_AUTO_ACCEPT": " FALSE "}, "extra": {}}
+{"func": "init_config", "case": "env-auto-zero", "env": {"SIMPLEX_AUTO_ACCEPT": "0"}, "extra": {}}
+{"func": "init_config", "case": "env-auto-empty", "env": {"SIMPLEX_AUTO_ACCEPT": ""}, "extra": {"auto_accept": false}}
+{"func": "init_config", "case": "groups-from-extra", "env": {}, "extra": {"group_allowed": "b, a, b", "auto_accept": true}}
+{"func": "init_config", "case": "groups-from-env", "env": {"SIMPLEX_GROUP_ALLOWED": " g1 , g2 "}, "extra": {}}
+{"func": "init_config", "case": "batch-delay", "env": {"HERMES_SIMPLEX_TEXT_BATCH_DELAY": "1.5"}, "extra": {}}
+{"func": "config_gate", "case": "both", "env": {"SIMPLEX_WS_URL": "ws://h:1"}, "extra": {}, "websockets": true}
+{"func": "config_gate", "case": "no-websockets", "env": {"SIMPLEX_WS_URL": "ws://h:1"}, "extra": {}, "websockets": false}
+{"func": "config_gate", "case": "extra-url", "env": {}, "extra": {"ws_url": "ws://h:2"}, "websockets": true}
+{"func": "config_gate", "case": "nothing", "env": {}, "extra": {}, "websockets": true}
+{"func": "config_gate", "case": "blank-env", "env": {"SIMPLEX_WS_URL": ""}, "extra": {}, "websockets": true}
+{"func": "env_enablement", "case": "blank", "env": {}}
+{"func": "env_enablement", "case": "blank-spaces", "env": {"SIMPLEX_WS_URL": "   "}}
+{"func": "env_enablement", "case": "full", "env": {"SIMPLEX_WS_URL": " ws://h:1 ", "SIMPLEX_AUTO_ACCEPT": "No", "SIMPLEX_GROUP_ALLOWED": " g1 , g2 ", "SIMPLEX_HOME_CHANNEL": " 42 ", "SIMPLEX_HOME_CHANNEL_NAME": "Home2"}}
+{"func": "env_enablement", "case": "url-only", "env": {"SIMPLEX_WS_URL": "ws://h:1", "SIMPLEX_AUTO_ACCEPT": " "}}
+{"func": "get_chat_info", "case": "dm", "chat_id": "12345"}
+{"func": "get_chat_info", "case": "group", "chat_id": "group:42"}
+{"func": "list_channels", "case": "both", "contacts_resp": {"contacts": [{"contactId": 1, "localDisplayName": "Ann"}, {"contactId": 2}, {"localDisplayName": "NoId"}, {"foo": 1}, 5]}, "groups_resp": {"groups": [{"groupId": 10, "groupProfile": {"displayName": "G"}}, [{"groupId": 11}], {"groupId": null, "localDisplayName": "N"}, 7]}}
+{"func": "list_channels", "case": "ws-down", "contacts_resp": null}
+{"func": "list_channels", "case": "contacts-empty", "contacts_resp": {}, "groups_resp": {}}
+{"func": "prepare_image", "case": "webp", "file_path": "C:/x/y.WEBP"}
+{"func": "prepare_image", "case": "png", "file_path": "C:/x/y.png"}
+{"func": "prepare_image", "case": "jpeg", "file_path": "/tmp/z.JPEG"}
+{"func": "text_batch_key", "case": "dm", "platform": "simplex", "chat_id": "12345"}
+{"func": "text_batch_key", "case": "group", "platform": "simplex", "chat_id": "group:42"}
+{"func": "split_media", "case": "adjacent", "content": "MEDIA:aMEDIA:b"}
+{"func": "split_media", "case": "leading-space", "content": "  hello  "}
+{"func": "retry_math", "case": "max-rnd", "backoff": 2.0, "rnd": 1.0}
+{"func": "retry_math", "case": "mid", "backoff": 16.0, "rnd": 0.25}
+{"func": "list_channels", "case": "no-groups", "contacts_resp": {"contacts": [{"contactId": 1, "localDisplayName": "Ann"}]}}
+{"func": "list_channels", "case": "groups-ok-no-contacts", "contacts_resp": {}, "groups_resp": {"groups": [{"groupId": 3, "localDisplayName": "Team"}]}}
+{"func": "init_config", "case": "auto-false-extra", "env": {}, "extra": {"auto_accept": false}}
+{"func": "env_enablement", "case": "no-home", "env": {"SIMPLEX_WS_URL": "ws://h:1", "SIMPLEX_AUTO_ACCEPT": "true"}}
+{"func": "config_gate", "case": "spaces-url", "env": {"SIMPLEX_WS_URL": "  "}, "extra": {}, "websockets": true}
+{"func": "send_item", "case": "image-voice-ext", "kind": "image", "path": "/tmp/a.ogg", "caption": "", "thumb": "x"}

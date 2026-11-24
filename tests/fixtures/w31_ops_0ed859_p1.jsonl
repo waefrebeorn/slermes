@@ -1,0 +1,31 @@
+{"func":"webhook_route_summary","case":"minimal","name":"deploy","route":{},"base_url":"http://h:3000"}
+{"func":"webhook_route_summary","case":"full","name":"deploy","route":{"description":"ship it","events":["deploy","push"],"deliver":"telegram","deliver_only":true,"prompt":"go","script":"a.sh","skills":["x","y"],"created_at":"2026-01-02T03:04:05Z","signature":"github","secret":"s3cr3t","enabled":true},"base_url":"https://dash.example/api"}
+{"func":"webhook_route_summary","case":"enabled_false","name":"n","route":{"enabled":false},"base_url":"http://h"}
+{"func":"webhook_route_summary","case":"enabled_zero_stays_on","name":"n","route":{"enabled":0},"base_url":"http://h"}
+{"func":"webhook_route_summary","case":"enabled_null_stays_on","name":"n","route":{"enabled":null},"base_url":"http://h"}
+{"func":"webhook_route_summary","case":"falsy_events_and_skills","name":"n","route":{"events":"","skills":null,"secret":""},"base_url":"http://h"}
+{"func":"webhook_route_summary","case":"events_mapping_keys","name":"n","route":{"events":{"a":1,"b":2}},"base_url":"http://h"}
+{"func":"webhook_route_summary","case":"deliver_only_string_truthy","name":"n","route":{"deliver_only":"yes"},"base_url":"http://h"}
+{"func":"dashboard_route_signature","case":"explicit_pin","requested":"github","expected":{"signature":"linear"}}
+{"func":"dashboard_route_signature","case":"omitted_keeps_stored_pin","requested":null,"expected":{"signature":"linear"}}
+{"func":"dashboard_route_signature","case":"missing_record_pins_generic","requested":null}
+{"func":"dashboard_route_signature","case":"expected_null_pins_generic","requested":null,"expected":null}
+{"func":"dashboard_route_signature","case":"stored_record_without_pin","requested":null,"expected":{"description":"d"}}
+{"func":"dashboard_route_signature","case":"explicit_generic","requested":"generic","expected":{}}
+{"func":"webhook_key_in","case":"found_messy","subscriptions":{"my-route":{"deliver":"log"},"other":{}},"name":"  My-Route "}
+{"func":"webhook_key_in","case":"missing","subscriptions":{"my-route":{}},"name":"nope"}
+{"func":"webhook_key_in","case":"empty_name","subscriptions":{"a":{}},"name":""}
+{"func":"webhook_key_in","case":"empty_snapshot","subscriptions":{},"name":"a"}
+{"func":"webhook_name_verdict","case":"normalises","name":" My Hook "}
+{"func":"webhook_name_verdict","case":"spaces_to_hyphens","name":"a b c"}
+{"func":"webhook_name_verdict","case":"bad_punctuation","name":"Bad!Name"}
+{"func":"webhook_name_verdict","case":"empty","name":""}
+{"func":"webhook_name_verdict","case":"leading_hyphen","name":"-lead"}
+{"func":"webhook_name_verdict","case":"underscore_ok","name":"ok_name-2"}
+{"func":"webhook_name_verdict","case":"upper_folds","name":"ALPHA_BETA"}
+{"func":"webhook_name_verdict","case":"tab_rejected","name":"a\tb"}
+{"func":"webhook_deliver_verdict","case":"deliver_only_default_log","deliver_only":true}
+{"func":"webhook_deliver_verdict","case":"deliver_only_real_target","deliver_only":true,"deliver":"telegram"}
+{"func":"webhook_deliver_verdict","case":"log_without_deliver_only","deliver_only":false,"deliver":"log"}
+{"func":"webhook_deliver_verdict","case":"deliver_null","deliver_only":true,"deliver":null}
+{"func":"webhook_deliver_verdict","case":"deliver_log_explicit","deliver_only":true,"deliver":"log"}

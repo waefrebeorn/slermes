@@ -1,0 +1,87 @@
+{"func": "valid_code", "case": "plain", "code": "invalid_room_grant"}
+{"func": "valid_code", "case": "shortest", "code": "a"}
+{"func": "valid_code", "case": "digits_and_underscore", "code": "run_not_found_2"}
+{"func": "valid_code", "case": "upper_first", "code": "Run"}
+{"func": "valid_code", "case": "leading_underscore", "code": "_hidden"}
+{"func": "valid_code", "case": "too_long", "code": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "valid_code", "case": "max_len", "code": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "valid_code", "case": "hyphen_rejected", "code": "run-not-found"}
+{"func": "valid_code", "case": "number", "code": 404}
+{"func": "valid_code", "case": "null", "code": null}
+{"func": "response_error_code", "case": "error_object", "detail": "{\"error\":{\"code\":\"run_not_found\"}}"}
+{"func": "response_error_code", "case": "legacy_room_grant", "detail": "{\"error\":{\"code\":\"invalid_room_dispatch\",\"message\":\"room grant is not valid\"}}"}
+{"func": "response_error_code", "case": "legacy_capability", "detail": "{\"error\":{\"code\":\"invalid_room_dispatch\",\"message\":\"Room Capability Catalog Changed for profile\"}}"}
+{"func": "response_error_code", "case": "legacy_policy", "detail": "{\"error\":{\"code\":\"invalid_room_dispatch\",\"message\":\"Execution Policy changed mid-turn\"}}"}
+{"func": "response_error_code", "case": "legacy_unmatched", "detail": "{\"error\":{\"code\":\"invalid_room_dispatch\",\"message\":\"nothing to see\"}}"}
+{"func": "response_error_code", "case": "bare_code", "detail": "{\"code\":\"approval_not_pending\"}"}
+{"func": "response_error_code", "case": "invalid_error_code_falls_back", "detail": "{\"error\":{\"code\":\"BAD CODE\"},\"code\":\"stale_generation\"}"}
+{"func": "response_error_code", "case": "non_object_error", "detail": "{\"error\":\"nope\"}"}
+{"func": "response_error_code", "case": "array_payload", "detail": "[1,2]"}
+{"func": "response_error_code", "case": "not_json", "detail": "peer exploded"}
+{"func": "response_error_code", "case": "empty", "detail": ""}
+{"func": "response_error_code", "case": "null", "detail": null}
+{"func": "run_path", "case": "bare", "run_id": "abc", "suffix": []}
+{"func": "run_path", "case": "reserved_chars", "run_id": "a b/c?d#e", "suffix": []}
+{"func": "run_path", "case": "approval", "run_id": "run_1-2", "suffix": ["approval"]}
+{"func": "run_path", "case": "resolve_unknown", "run_id": "run-3", "suffix": ["resolve-unknown"]}
+{"func": "run_path", "case": "utf8", "run_id": "résumé", "suffix": []}
+{"func": "run_path", "case": "unreserved_kept", "run_id": "Ab._-~9", "suffix": []}
+{"func": "run_path", "case": "numeric_run_id", "run_id": 41, "suffix": ["stop"]}
+{"func": "run_status", "case": "quiet", "full": {"run_id": "run-1", "status": "running", "tool": "shell", "progress_at": 12.5, "secret": "dropped"}}
+{"func": "run_status", "case": "approval_lifted", "full": {"run_id": "run-2", "status": "waiting_for_approval", "execution_generation": 5, "pending_controls": [{"kind": "clarify", "prompt_id": "p-clarify"}, {"kind": "approval", "prompt_id": "p-appr", "command": "rm -rf /tmp/x", "choices": ["once", "deny"], "timeout_s": 60, "extra": "dropped"}]}}
+{"func": "run_status", "case": "controls_without_approval", "full": {"run_id": "run-3", "status": "running", "pending_controls": [{"kind": "clarify", "prompt_id": "p-1"}]}}
+{"func": "run_status", "case": "empty_controls", "full": {"run_id": "run-4", "status": "running", "pending_controls": []}}
+{"func": "run_status", "case": "approval_null_overrides", "full": {"run_id": "run-5", "status": "running", "approval": {"request_id": "old"}, "pending_controls": []}}
+{"func": "next_poll_delay", "case": "cold_start", "cached": null, "poll_min_seconds": 0.1, "poll_max_seconds": 2.0}
+{"func": "next_poll_delay", "case": "doubling", "cached": {"delay": 0.5}, "poll_min_seconds": 0.1, "poll_max_seconds": 2.0}
+{"func": "next_poll_delay", "case": "clamped_max", "cached": {"delay": 1.5}, "poll_min_seconds": 0.1, "poll_max_seconds": 2.0}
+{"func": "next_poll_delay", "case": "clamped_min", "cached": {"delay": 0.01}, "poll_min_seconds": 0.25, "poll_max_seconds": 2.0}
+{"func": "next_poll_delay", "case": "cold_with_wide_bounds", "cached": null, "poll_min_seconds": 2.0, "poll_max_seconds": 8.0}
+{"func": "require_room_grant", "case": "valid", "grant": "grant-abc"}
+{"func": "require_room_grant", "case": "empty", "grant": ""}
+{"func": "require_room_grant", "case": "null", "grant": null}
+{"func": "require_room_grant", "case": "compat", "grant": "compat"}
+{"func": "require_room_grant", "case": "compatibility_only", "grant": "compatibility-only"}
+{"func": "require_room_grant", "case": "number", "grant": 17}
+{"func": "request", "case": "get_with_grant", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "GET", "path": "/v1/runs/run-1", "room_grant": "grant-abc", "body": null, "headers": null, "response": {"kind": "ok", "raw": "{\"run_id\":\"run-1\",\"status\":\"running\"}"}}
+{"func": "request", "case": "post_body_and_header", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "POST", "path": "/v1/runs", "room_grant": "", "body": {"input": "hi", "hosted_room_dispatch": {"task_id": "task-abc", "generation": 3}, "flag": true, "empty": null}, "headers": {"Idempotency-Key": "room:task-abc:3", "X-Trace": "t-1"}, "response": {"kind": "ok", "raw": "{\"run_id\":\"run-9\",\"replayed\":true}"}}
+{"func": "request", "case": "http_409_conflict", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "POST", "path": "/v1/runs", "room_grant": "grant-abc", "body": {"input": "hi"}, "headers": null, "response": {"kind": "http", "status": 409, "detail": "{\"error\":{\"code\":\"idempotency_key_conflict\"}}"}}
+{"func": "request", "case": "http_409_permission", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "POST", "path": "/v1/runs", "room_grant": "grant-abc", "body": {"input": "hi"}, "headers": null, "response": {"kind": "http", "status": 409, "detail": "{\"error\":{\"code\":\"permission_denied\"}}"}}
+{"func": "request", "case": "http_503_get", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "GET", "path": "/v1/runs/run-1", "room_grant": "grant-abc", "body": null, "headers": null, "response": {"kind": "http", "status": 503, "detail": ""}}
+{"func": "request", "case": "unreachable_dns_post", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "POST", "path": "/v1/runs", "room_grant": "grant-abc", "body": {"input": "hi"}, "headers": null, "response": {"kind": "unreachable", "gaierror": true}}
+{"func": "request", "case": "unreachable_econnrefused", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "POST", "path": "/v1/runs", "room_grant": "grant-abc", "body": {"input": "hi"}, "headers": null, "response": {"kind": "unreachable", "oserror": true, "errno_name": "ECONNREFUSED"}}
+{"func": "request", "case": "rejected_eacces", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "POST", "path": "/v1/runs", "room_grant": "grant-abc", "body": {"input": "hi"}, "headers": null, "response": {"kind": "unreachable", "oserror": true, "errno_name": "EACCES"}}
+{"func": "request", "case": "non_json_body", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "GET", "path": "/v1/room-members/capabilities", "room_grant": "grant-abc", "body": null, "headers": null, "response": {"kind": "ok", "raw": "not json at all"}}
+{"func": "request", "case": "non_object_body", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "GET", "path": "/v1/room-members/capabilities", "room_grant": "grant-abc", "body": null, "headers": null, "response": {"kind": "ok", "raw": "[1,2,3]"}}
+{"func": "request", "case": "declared_too_large", "base_url": "https://peer.example", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "method": "GET", "path": "/v1/runs/run-1", "room_grant": "grant-abc", "body": null, "headers": null, "response": {"kind": "ok", "raw": "{}", "declared": 16777217}}
+{"func": "admission_body", "case": "standard", "dispatch": {"protocol_version": 2, "room_id": "room-alpha", "home_install_id": "inst-home", "authority_gateway_id": "gw-authority", "authority_epoch": 4, "member_id": "member-7", "target_install_id": "inst-target", "target_profile": "default", "task_id": "task-abc", "execution_generation": 7, "source_event_seq": 11, "cancellation_scope_id": "scope-1", "prompt": "hello room", "prompt_digest": "7050f166dc608e9d7e435dfcd36e2fdda843e5fafe50f7aed9556fb93483e23c", "capability_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "execution_policy_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "trace_id": "trace-9"}}
+{"func": "admission_body", "case": "other_generation", "dispatch": {"protocol_version": 2, "room_id": "room-alpha", "home_install_id": "inst-home", "authority_gateway_id": "gw-authority", "authority_epoch": 4, "member_id": "member-7", "target_install_id": "inst-target", "target_profile": "default", "task_id": "task-abc", "execution_generation": 12, "source_event_seq": 11, "cancellation_scope_id": "scope-1", "prompt": "hello room", "prompt_digest": "7050f166dc608e9d7e435dfcd36e2fdda843e5fafe50f7aed9556fb93483e23c", "capability_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "execution_policy_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "trace_id": "trace-9"}}
+{"func": "invitation_body", "case": "with_status_ttl", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "room_id": "room-alpha", "home_install_id": "inst-home", "authority_gateway_id": "gw-authority", "authority_epoch": 4, "member_id": "member-7", "grant_id": "grant-abc", "ttl_seconds": 3600, "status_ttl_seconds": 7200}
+{"func": "invitation_body", "case": "default_ttl", "api_key": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", "room_id": "room-alpha", "home_install_id": "inst-home", "authority_gateway_id": "gw-authority", "authority_epoch": 4, "member_id": "member-7", "grant_id": "grant-abc"}
+{"func": "invitation_body", "case": "no_api_key", "api_key": "", "room_id": "room-alpha", "home_install_id": "inst-home", "authority_gateway_id": "gw-authority", "authority_epoch": 4, "member_id": "member-7", "grant_id": "grant-abc"}
+{"func": "digest_check", "case": "matching", "catalog": {"execution_policy": {"policy_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}, "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, "capability_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "execution_policy_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+{"func": "digest_check", "case": "policy_drift", "catalog": {"execution_policy": {"policy_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}, "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, "capability_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "execution_policy_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+{"func": "digest_check", "case": "capability_drift_no_policy_pin", "catalog": {"execution_policy": {"policy_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}, "catalog_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}, "capability_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "execution_policy_digest": null}
+{"func": "digest_check", "case": "policy_before_capability", "catalog": {"execution_policy": {"policy_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}, "catalog_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}, "capability_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "execution_policy_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+{"func": "digest_check", "case": "nothing_pinned", "catalog": {"execution_policy": {"policy_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}, "catalog_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}, "capability_digest": null, "execution_policy_digest": null}
+{"func": "pre_admission", "case": "dns_post", "ambiguous": true, "gaierror": true}
+{"func": "pre_admission", "case": "refused_post", "ambiguous": true, "oserror": true, "errno_name": "ECONNREFUSED"}
+{"func": "pre_admission", "case": "unreachable_post", "ambiguous": true, "oserror": true, "errno_name": "ENETUNREACH"}
+{"func": "pre_admission", "case": "permission_post", "ambiguous": true, "oserror": true, "errno_name": "EACCES"}
+{"func": "pre_admission", "case": "dns_get_is_uncertain", "ambiguous": false, "gaierror": true}
+{"func": "pre_admission", "case": "plain_error", "ambiguous": true}
+{"func": "http_error", "case": "401_grant_renewal", "method": "POST", "path": "/v1/runs", "status": 401, "detail": "{\"error\":{\"code\":\"invalid_room_grant\"}}"}
+{"func": "http_error", "case": "403_capability_drift", "method": "GET", "path": "/v1/runs/run-1", "status": 403, "detail": "{\"error\":{\"code\":\"room_capability_catalog_changed\"}}"}
+{"func": "http_error", "case": "403_policy_drift", "method": "POST", "path": "/v1/room-members/grants/refresh", "status": 403, "detail": "{\"error\":{\"code\":\"room_execution_policy_changed\"}}"}
+{"func": "http_error", "case": "500_get_not_ambiguous", "method": "GET", "path": "/v1/runs/run-1", "status": 500, "detail": ""}
+{"func": "http_error", "case": "500_post_ambiguous", "method": "POST", "path": "/v1/runs", "status": 500, "detail": ""}
+{"func": "http_error", "case": "400_admission_legacy", "method": "POST", "path": "/v1/runs", "status": 400, "detail": "{\"error\":{\"code\":\"invalid_room_dispatch\",\"message\":\"room grant expired\"}}"}
+{"func": "http_error", "case": "429_retryable", "method": "GET", "path": "/v1/runs/run-1", "status": 429, "detail": "{\"error\":{\"code\":\"slow_down\"}}"}
+{"func": "http_error", "case": "404_run_not_found", "method": "GET", "path": "/v1/runs/run-1", "status": 404, "detail": "{\"error\":{\"code\":\"run_not_found\"}}"}
+{"func": "http_error", "case": "409_no_code_uncertain", "method": "POST", "path": "/v1/runs", "status": 409, "detail": "gateway says no"}
+{"func": "http_error", "case": "409_conflict_readable", "method": "POST", "path": "/v1/runs", "status": 409, "detail": "{\"error\":{\"code\":\"idempotency_key_conflict\"}}"}
+{"func": "http_error", "case": "detail_truncated_at_500", "method": "GET", "path": "/v1/runs/run-1", "status": 400, "detail": "{\"error\":{\"code\":\"run_not_found\"},\"pad\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}"}
+{"func": "budget_error", "case": "size_status", "kind": "", "budget": "size", "ambiguous": false}
+{"func": "budget_error", "case": "size_error_body", "kind": " error", "budget": "size", "ambiguous": true}
+{"func": "budget_error", "case": "time_status", "kind": "", "budget": "time", "ambiguous": true}
+{"func": "budget_error", "case": "time_error_body", "kind": " error", "budget": "time", "ambiguous": false}

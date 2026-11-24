@@ -1,0 +1,47 @@
+{"func":"pool_entry_summary","case":"full","index":1,"entry":{"id":"ab12cd","label":"key #1","auth_type":"api_key","source":"manual","priority":0,"last_status":"ok","request_count":7,"access_token":"sk-live-0123456789abcdef","refresh_token":"r3fresh"}}
+{"func":"pool_entry_summary","case":"short_token_masked","index":2,"entry":{"id":"x","label":"k","auth_type":"api_key","source":"manual","priority":1,"last_status":"error","request_count":0,"access_token":"abc"}}
+{"func":"pool_entry_summary","case":"no_token","index":3,"entry":{"id":"x","access_token":null,"refresh_token":null}}
+{"func":"pool_entry_summary","case":"token_absent","index":4,"entry":{"id":"x"}}
+{"func":"pool_entry_summary","case":"token_controls_stripped","index":5,"entry":{"id":"x","access_token":"sk-\u0000abc\u007fdefghijklm"}}
+{"func":"pool_entry_summary","case":"token_zero_width","index":6,"entry":{"id":"x","access_token":"sk-\u200babcdefghijkl"}}
+{"func":"pool_entry_summary","case":"token_c1_control","index":7,"entry":{"id":"x","access_token":"\u0080xxxxxxxxxxxxxxxxxxxxx"}}
+{"func":"safe_backup_upload_name","case":"windows_path","filename":"C:\\Users\\eman5\\Downloads\\My Backup.zip"}
+{"func":"safe_backup_upload_name","case":"null_name","filename":null}
+{"func":"safe_backup_upload_name","case":"tar_gz_gets_zip","filename":"weird name!!.tar.gz"}
+{"func":"safe_backup_upload_name","case":"trailing_slash","filename":"a/b/"}
+{"func":"safe_backup_upload_name","case":"upper_zip_kept","filename":"backup.ZIP"}
+{"func":"safe_backup_upload_name","case":"dots_only","filename":"..."}
+{"func":"safe_backup_upload_name","case":"drive_only","filename":"C:"}
+{"func":"safe_backup_upload_name","case":"no_extension","filename":"plain"}
+{"func":"hook_body_fields","case":"strips","event":" pre_tool ","command":" ./run.sh "}
+{"func":"hook_body_fields","case":"missing_event","event":"","command":"x"}
+{"func":"hook_body_fields","case":"blank_command","event":"post","command":"   "}
+{"func":"hook_event_verdict","case":"known_event","event":"PostToolUse","command":"x","valid_hooks":["PreToolUse","PostToolUse"]}
+{"func":"hook_event_verdict","case":"unknown_event","event":"Nope","command":"x","valid_hooks":["PreToolUse","PostToolUse"]}
+{"func":"hook_event_verdict","case":"duplicate_events_sorted","event":"zzz","command":"x","valid_hooks":["b","a","c"]}
+{"func":"hook_event_verdict","case":"registry_unavailable","event":"Whatever","command":"x","valid_hooks":null}
+{"func":"hook_event_verdict","case":"bad_body_first","event":" ","command":"x","valid_hooks":["a"]}
+{"func":"spawn_import_argv","case":"archive_only","archive":"/tmp/x.zip","force":false,"keep_host":false,"messaging_off":false}
+{"func":"spawn_import_argv","case":"force","archive":"/tmp/x.zip","force":true}
+{"func":"spawn_import_argv","case":"keep_host_messaging_off","archive":"/tmp/x.zip","force":false,"keep_host":true,"messaging_off":true}
+{"func":"spawn_import_argv","case":"keep_host_keeps_messaging","archive":"/tmp/x.zip","force":true,"keep_host":true,"messaging_off":false}
+{"func":"memory_reset_target","case":"default_all_both_exist","memory_exists":true,"user_exists":true}
+{"func":"memory_reset_target","case":"memory_only","target":"memory","memory_exists":true,"user_exists":true}
+{"func":"memory_reset_target","case":"user_missing","target":"user","memory_exists":true,"user_exists":false}
+{"func":"memory_reset_target","case":"bogus_target","target":"everything","memory_exists":true,"user_exists":true}
+{"func":"memory_reset_target","case":"upper_and_spaces","target":" All ","memory_exists":false,"user_exists":true}
+{"func":"memory_reset_target","case":"empty_defaults_all","target":"","memory_exists":false,"user_exists":false}
+{"func":"pairing_approve_target","case":"request_id","platform":" Telegram ","request_id":"0123456789abcdef","code":null}
+{"func":"pairing_approve_target","case":"code_upper","platform":"Discord","request_id":null,"code":" ab cd12 "}
+{"func":"pairing_approve_target","case":"code_shaped_16_hex","platform":"discord","code":"0123456789ABCDEF"}
+{"func":"pairing_approve_target","case":"no_target","platform":"telegram","request_id":null,"code":null}
+{"func":"pairing_approve_target","case":"blank_request_id_blocks_code","platform":"telegram","request_id":"   ","code":"abc12345"}
+{"func":"pairing_approve_target","case":"no_platform","platform":"","request_id":"0123456789abcdef"}
+{"func":"pairing_approve_target","case":"request_id_wins_over_code","platform":"telegram","request_id":"deadbeefdeadbeef","code":"abc12345"}
+{"func":"backup_download_verdict","case":"inside_and_file","backup_dir":"C:/Users/eman5/hermes/backups","resolved":"C:/Users/eman5/hermes/backups/hermes-backup-2026.zip","is_file":true}
+{"func":"backup_download_verdict","case":"outside_dir","backup_dir":"C:/Users/eman5/hermes/backups","resolved":"C:/Users/eman5/hermes/.env","is_file":true}
+{"func":"backup_download_verdict","case":"missing","backup_dir":"C:/Users/eman5/hermes/backups","resolved":null,"resolve_error":"not_found"}
+{"func":"backup_download_verdict","case":"not_a_file","backup_dir":"C:/Users/eman5/hermes/backups","resolved":"C:/Users/eman5/hermes/backups/sub","is_file":false}
+{"func":"backup_download_verdict","case":"invalid_path","backup_dir":"C:/Users/eman5/hermes/backups","resolved":"nul","resolve_error":"invalid"}
+{"func":"backup_download_verdict","case":"sibling_prefix","backup_dir":"C:/Users/eman5/hermes/backups","resolved":"C:/Users/eman5/hermes/backups-evil/x.zip","is_file":true}
+{"func":"backup_download_verdict","case":"root_itself","backup_dir":"C:/Users/eman5/hermes/backups","resolved":"C:/Users/eman5/hermes/backups","is_file":false}

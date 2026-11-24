@@ -1,0 +1,20 @@
+{"func": "to_markdown_v2", "case": 0, "content": "hello *world* and **bold**"}
+{"func": "to_markdown_v2", "case": 1, "content": "**a *i* b** and ***x***"}
+{"func": "to_markdown_v2", "case": 2, "content": "`code *x*` and ``y`z``"}
+{"func": "to_markdown_v2", "case": 3, "content": "```py\nx = 1\n```\nafter"}
+{"func": "to_markdown_v2", "case": 4, "content": "Here is the code: ```bash\nls -la\n``` done"}
+{"func": "to_markdown_v2", "case": 5, "content": "[link](https://x.com/a) and [bad](Title)"}
+{"func": "to_markdown_v2", "case": 6, "content": "[t](https://x.com/a(b)c) tail"}
+{"func": "to_markdown_v2", "case": 7, "content": "see https://x.com/a**b** ok"}
+{"func": "to_markdown_v2", "case": 8, "content": "*see https://x.com/a* ok"}
+{"func": "to_markdown_v2", "case": 9, "content": "# Title\n\n## Sub **x**\n### three"}
+{"func": "to_markdown_v2", "case": 10, "content": "> quoted *x*\n>> nested\nplain"}
+{"func": "to_markdown_v2", "case": 11, "content": "**> expand\n> body||"}
+{"func": "to_markdown_v2", "case": 12, "content": "~~gone~~ and ||hidden||"}
+{"func": "to_markdown_v2", "case": 13, "content": "a (b) {c} [d](http://x)"}
+{"func": "to_markdown_v2", "case": 14, "content": "astral 🚀 *x* 🧑‍🚀 end"}
+{"func": "to_markdown_v2", "case": 15, "content": "escaped \\*not italic\\* **Use \\*args**"}
+{"func": "to_markdown_v2", "case": 16, "content": "- item **bold**\n- item *it*"}
+{"func": "to_markdown_v2", "case": 17, "content": "**unclosed bold"}
+{"func": "to_markdown_v2", "case": 18, "content": "x ```y``` z"}
+{"func": "to_markdown_v2", "case": 19, "content": "2*3 = 6 and **2*3 = 6**"}

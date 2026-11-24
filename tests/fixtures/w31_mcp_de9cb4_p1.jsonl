@@ -1,0 +1,42 @@
+{"func": "constants", "case": "module-notes-and-budgets"}
+{"func": "validate_names", "case": "authorize-configured-ok", "action": "authorize", "names": ["files", "github"], "catalog": ["files", "github", "sentry"], "configured": ["files", "github"], "hosted": null}
+{"func": "validate_names", "case": "install-catalog-ok", "action": "install", "names": ["sentry"], "catalog": ["files", "github", "sentry"], "configured": [], "hosted": null}
+{"func": "validate_names", "case": "authorize-unknown-plain", "action": "authorize", "names": ["nope"], "catalog": ["files", "sentry"], "configured": ["files"], "hosted": null}
+{"func": "validate_names", "case": "authorize-unknown-misrouted", "action": "authorize", "names": ["slack"], "catalog": ["files"], "configured": ["files"], "hosted": ["slack", "gmail"]}
+{"func": "validate_names", "case": "install-unknown-already-configured", "action": "install", "names": ["files"], "catalog": ["sentry"], "configured": ["files", "github"], "hosted": []}
+{"func": "validate_names", "case": "install-unknown-empty-catalog", "action": "install", "names": ["ghost"], "catalog": [], "configured": [], "hosted": []}
+{"func": "validate_names", "case": "authorize-unknown-empty-side", "action": "authorize", "names": ["ghost"], "catalog": [], "configured": [], "hosted": []}
+{"func": "validate_names", "case": "catalog-read-fails", "action": "authorize", "names": ["files"], "catalog": [], "configured": ["files"], "hosted": null, "catalog_error": "manifest is not readable"}
+{"func": "validate_names", "case": "configured-read-fails", "action": "authorize", "names": ["files"], "catalog": ["files"], "configured": [], "hosted": null, "configured_error": "config.yaml is locked"}
+{"func": "validate_names", "case": "mixed-misrouted-wins", "action": "enable", "names": ["ghost", "gmail"], "catalog": ["files"], "configured": ["files"], "hosted": ["gmail"]}
+{"func": "validate_names", "case": "empty-names", "action": "authorize", "names": [], "catalog": [], "configured": [], "hosted": null}
+{"func": "validate_names", "case": "hosted-set-case-sensitive", "action": "authorize", "names": ["Gmail"], "catalog": [], "configured": [], "hosted": ["gmail"]}
+{"func": "validate_names", "case": "foreign-both-known", "action": "enable", "names": ["sentry"], "catalog": ["sentry"], "configured": ["files"], "hosted": ["sentry"]}
+{"func": "misrouted_error", "case": "connect-hint", "action": "install", "name": "slack"}
+{"func": "bare_error_text", "case": "cancelled-no-message", "exc_class": "CancelledError", "exc_message": ""}
+{"func": "bare_error_text", "case": "timeout-no-message", "exc_class": "TimeoutError", "exc_message": ""}
+{"func": "bare_error_text", "case": "custom-class-no-message", "exc_class": "ConfigRejected", "exc_message": ""}
+{"func": "bare_error_text", "case": "not-an-exception", "exc_class": null, "exc_message": "the server said no"}
+{"func": "bare_error_text", "case": "not-an-exception-empty", "exc_class": null, "exc_message": ""}
+{"func": "bare_error_text", "case": "message-is-a-bare-name", "exc_class": "RuntimeError", "exc_message": "TimeoutError"}
+{"func": "detail", "case": "credential-replaced", "exc_class": "RuntimeError", "exc_message": "the token sk-live-9f3 was rejected", "target": "sentry", "approved_env": {"sentry": {"SENTRY_TOKEN": "sk-live-9f3", "EMPTY": ""}}}
+{"func": "detail", "case": "empty-message-bare", "exc_class": "CancelledError", "exc_message": "", "target": "files", "approved_env": {}}
+{"func": "detail", "case": "no-approved-env", "exc_class": "OSError", "exc_message": "could not spawn node: No such file", "target": "files", "approved_env": {"files": {}}}
+{"func": "detail", "case": "two-values-both-replaced", "exc_class": "RuntimeError", "exc_message": "id abc and secret xyz both bad", "target": "srv", "approved_env": {"srv": {"A": "abc", "B": "xyz", "C": ""}}}
+{"func": "detail", "case": "other-target-not-touched", "exc_class": "RuntimeError", "exc_message": "value abc leaked", "target": "other", "approved_env": {"srv": {"A": "abc"}}}
+{"func": "tool_error_body", "case": "short", "message": "unknown MCP server(s) for install: ghost."}
+{"func": "tool_error_body", "case": "bounded", "message": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+{"func": "answer_env", "case": "mixed-scalars", "env": {"A": "text", "B": 10, "C": 1.5, "D": true, "E": null}}
+{"func": "answer_env", "case": "absent-env", "env": null}
+{"func": "answer_env", "case": "empty-env", "env": {}}
+{"func": "answer_env", "case": "env-is-a-list", "env": ["A", "B"]}
+{"func": "catalog_instructions", "case": "post-install-text", "present": true, "post_install": "Restart the session to load the tools."}
+{"func": "catalog_instructions", "case": "post-install-null", "present": true, "post_install": null}
+{"func": "catalog_instructions", "case": "post-install-empty", "present": true, "post_install": ""}
+{"func": "catalog_instructions", "case": "no-entry", "present": false, "post_install": "ignored"}
+{"func": "cancel_note", "case": "no-flow", "has_flow": false, "cancelled": false}
+{"func": "cancel_note", "case": "cancel-answered-false", "has_flow": true, "cancelled": false}
+{"func": "cancel_note", "case": "cancel-answered-true", "has_flow": true, "cancelled": true}
+{"func": "retry_error", "case": "no-runner", "runner": false, "settled": false}
+{"func": "retry_error", "case": "settled", "runner": true, "settled": true}
+{"func": "retry_error", "case": "re-runnable", "runner": true, "settled": false}

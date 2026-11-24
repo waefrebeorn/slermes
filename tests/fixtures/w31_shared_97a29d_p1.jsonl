@@ -1,0 +1,53 @@
+{"case":"sm-equal","func":"secrets_match","provided":"s3cret-token","expected":"s3cret-token"}
+{"case":"sm-diff","func":"secrets_match","provided":"s3cret-token","expected":"s3cret-tokeN"}
+{"case":"sm-empty-expected","func":"secrets_match","provided":"","expected":""}
+{"case":"sm-none-expected","func":"secrets_match","provided":"x","expected":null}
+{"case":"sm-none-provided","func":"secrets_match","provided":null,"expected":"x"}
+{"case":"sm-int-provided","func":"secrets_match","provided":123,"expected":"123"}
+{"case":"sm-unicode","func":"secrets_match","provided":"héllo✓","expected":"héllo✓"}
+{"case":"sm-prefix","func":"secrets_match","provided":"abc","expected":"abcd"}
+{"case":"sm-signature","func":"secrets_match","provided":"sha256=9f2c","expected":"sha256=9f2c"}
+{"case":"tf-inside","func":"timestamp_fresh","raw":"1000","window":300,"now":1200}
+{"case":"tf-edge","func":"timestamp_fresh","raw":"1000","window":300,"now":1300}
+{"case":"tf-outside","func":"timestamp_fresh","raw":"1000","window":300,"now":1400}
+{"case":"tf-past-edge","func":"timestamp_fresh","raw":1000,"window":300,"now":700}
+{"case":"tf-garbage","func":"timestamp_fresh","raw":"abc","window":300,"now":1000}
+{"case":"tf-null","func":"timestamp_fresh","raw":null,"window":300,"now":1000}
+{"case":"tf-float-trunc","func":"timestamp_fresh","raw":1000.9,"window":0,"now":1000}
+{"case":"tf-underscore","func":"timestamp_fresh","raw":"1_0","window":5,"now":9}
+{"case":"tf-bool","func":"timestamp_fresh","raw":true,"window":0.5,"now":1}
+{"case":"tf-floatstr","func":"timestamp_fresh","raw":"12.5","window":300,"now":12}
+{"case":"tf-ws","func":"timestamp_fresh","raw":" 42 ","window":0,"now":42}
+{"case":"tf-sign","func":"timestamp_fresh","raw":"-5","window":0,"now":-5}
+{"case":"dj-list","func":"decode_json_list_literal","raw":"[\"a\",\"b\"]"}
+{"case":"dj-ws-list","func":"decode_json_list_literal","raw":"  \n [-100,-200] "}
+{"case":"dj-object","func":"decode_json_list_literal","raw":"{\"a\":1}"}
+{"case":"dj-malformed","func":"decode_json_list_literal","raw":"[1,2"}
+{"case":"dj-trailing","func":"decode_json_list_literal","raw":"[1,2] junk"}
+{"case":"dj-csv","func":"decode_json_list_literal","raw":"a,b,c"}
+{"case":"dj-null","func":"decode_json_list_literal","raw":null}
+{"case":"dj-int","func":"decode_json_list_literal","raw":7}
+{"case":"dj-empty","func":"decode_json_list_literal","raw":""}
+{"case":"dj-nested","func":"decode_json_list_literal","raw":"[{\"id\":1},[2],null]"}
+{"case":"cp-digit","func":"coerce_port","value":"8080","default":443}
+{"case":"cp-ws","func":"coerce_port","value":"  80  ","default":443}
+{"case":"cp-floatstr","func":"coerce_port","value":"12.5","default":443}
+{"case":"cp-bool","func":"coerce_port","value":true,"default":443}
+{"case":"cp-null","func":"coerce_port","value":null,"default":443}
+{"case":"cp-negfloat","func":"coerce_port","value":-7.9,"default":443}
+{"case":"cp-hex","func":"coerce_port","value":"0x10","default":443}
+{"case":"cp-plus","func":"coerce_port","value":"+42","default":443}
+{"case":"cp-underscore","func":"coerce_port","value":"8_080","default":443}
+{"case":"cp-empty","func":"coerce_port","value":"","default":443}
+{"case":"cp-list","func":"coerce_port","value":[1],"default":443}
+{"case":"bem-plain","func":"bridged_env_marker","name":"TELEGRAM_REACTIONS"}
+{"case":"bem-empty","func":"bridged_env_marker","name":""}
+{"case":"bem-int","func":"bridged_env_marker","name":42}
+{"case":"bem-null","func":"bridged_env_marker","name":null}
+{"case":"bem-proxy","func":"bridged_env_marker","name":"TELEGRAM_PROXY"}
+{"case":"nl-connect","func":"request_never_left","chain":[["ConnectError","Exception","BaseException","object"]]}
+{"case":"nl-pool","func":"request_never_left","chain":[["PoolTimeout","Exception","BaseException","object"]]}
+{"case":"nl-timeout","func":"request_never_left","chain":[["ReadTimeout","Exception","BaseException","object"]]}
+{"case":"nl-second","func":"request_never_left","chain":[["ReadTimeout","Exception","BaseException","object"],["ClientConnectorDNSError","Exception","BaseException","object"]]}
+{"case":"nl-empty","func":"request_never_left","chain":[]}
+{"case":"nl-conn-refused","func":"request_never_left","chain":[["ConnectionRefusedError","Exception","BaseException","object"]]}

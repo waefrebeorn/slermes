@@ -1,0 +1,26 @@
+{"func": "escape_mdv2", "case": 0, "text": "a_b*c[d]e(f)g"}
+{"func": "escape_mdv2", "case": 1, "text": "😀 *x* ~y~ `z`"}
+{"func": "escape_mdv2", "case": 2, "text": ""}
+{"func": "escape_mdv2", "case": 3, "text": "\\already"}
+{"func": "escape_mdv2", "case": 4, "text": "1.5-2+3=5|6! > #tag"}
+{"func": "escape_mdv2", "case": 5, "text": "🧑‍🚀 ✅ café"}
+{"func": "url_end", "case": 6, "url": "https://x.com/a).,"}
+{"func": "url_end", "case": 7, "url": "https://x.com/a(b)c)"}
+{"func": "url_end", "case": 8, "url": "https://x.com/a("}
+{"func": "url_end", "case": 9, "url": "https://x.com/a✅."}
+{"func": "url_end", "case": 10, "url": "plain"}
+{"func": "url_end", "case": 11, "url": "https://x.com/a)'\"?!"}
+{"func": "link_target_renders", "case": 12, "target": "https://x.com/a"}
+{"func": "link_target_renders", "case": 13, "target": "Title"}
+{"func": "link_target_renders", "case": 14, "target": "mailto:a@b.c"}
+{"func": "link_target_renders", "case": 15, "target": "@session:abc"}
+{"func": "link_target_renders", "case": 16, "target": "x.com/a"}
+{"func": "link_target_renders", "case": 17, "target": "x.com"}
+{"func": "link_target_renders", "case": 18, "target": "ünï.com"}
+{"func": "link_target_renders", "case": 19, "target": "https://x.com/a b"}
+{"func": "link_target_renders", "case": 20, "target": "  https://x.com/a  "}
+{"func": "crosses_quote_edge", "case": 21, "text": "a\n> b", "start": 0, "end": 5}
+{"func": "crosses_quote_edge", "case": 22, "text": "a\nb", "start": 0, "end": 3}
+{"func": "crosses_quote_edge", "case": 23, "text": "plain text", "start": 0, "end": 10}
+{"func": "crosses_quote_edge", "case": 24, "text": "> a\nb", "start": 0, "end": 5}
+{"func": "crosses_quote_edge", "case": 25, "text": "🚀 x\n> y", "start": 0, "end": 9}

@@ -1,0 +1,46 @@
+{"func": "chain_step_sql", "case": "live_fragments", "jx_branched": "json_extract((CASE WHEN json_valid(child.model_config) THEN child.model_config ELSE json_object() END), '$._branched_from')", "jx_delegate": "json_extract((CASE WHEN json_valid(child.model_config) THEN child.model_config ELSE json_object() END), '$._delegate_from')", "reset_child": "json_extract((CASE WHEN json_valid(child.model_config) THEN child.model_config ELSE json_object() END), '$._reset_from') IS NOT NULL OR EXISTS (SELECT 1 FROM sessions p            WHERE p.id = child.parent_session_id            AND p.end_reason IN ('session_reset', 'session_switch', 'idle', 'daily', 'suspended', 'resume_pending_expired')            AND child.session_key IS NOT NULL            AND child.session_key != ''            AND child.session_key = p.session_key)", "last_active": "COALESCE((SELECT MAX(_act_v.v) FROM (SELECT child.last_activity_at AS v UNION ALL SELECT (SELECT MAX(_act_m.timestamp) FROM messages _act_m INDEXED BY idx_messages_session WHERE _act_m.session_id = child.id AND _act_m.timestamp BETWEEN 0.0 AND 4200000000.0)) _act_v WHERE _act_v.v BETWEEN 0.0 AND 4200000000.0), (SELECT _win.v FROM (SELECT child.started_at AS v) _win WHERE _win.v BETWEEN 0.0 AND 4200000000.0))"}
+{"func": "unset_ancestor_sql", "case": "live_fragment", "unset_sql": "COALESCE(s.created_source, '') IN ('', 'unknown', 'local')"}
+{"func": "unstamped_edge_sql", "case": "live_fragments", "unset_parent": "COALESCE(parent.created_source, '') IN ('', 'unknown', 'local')", "unset_child": "COALESCE(child.created_source, '') IN ('', 'unknown', 'local')", "non_continuation": "  AND COALESCE(json_extract((CASE WHEN json_valid(child.model_config) THEN child.model_config ELSE json_object() END), '$._branched_from'), '') != parent.id\n  AND COALESCE(json_extract((CASE WHEN json_valid(child.model_config) THEN child.model_config ELSE json_object() END), '$._delegate_from'), '') != parent.id\n  AND COALESCE(json_extract((CASE WHEN json_valid(child.model_config) THEN child.model_config ELSE json_object() END), '$._reset_from'), '') != parent.id\n  AND COALESCE(child.source, '') != 'tool'\n"}
+{"func": "record_cooldown", "case": "with_error", "session_id": "s1", "cooldown_until": 123.5, "error": "err"}
+{"func": "record_cooldown", "case": "no_session", "session_id": "", "cooldown_until": 1.0, "error": null}
+{"func": "record_cooldown", "case": "null_deadline", "session_id": "s2", "cooldown_until": null, "error": null}
+{"func": "clear_cooldown", "case": "session", "session_id": "s1"}
+{"func": "clear_cooldown", "case": "no_session", "session_id": ""}
+{"func": "finalize_orphans", "case": "epoch", "now": 700000.0}
+{"func": "read_number", "case": "seven", "value": 7, "kind": "int", "zero": 0}
+{"func": "read_number", "case": "null", "value": null, "kind": "int", "zero": 0}
+{"func": "read_number", "case": "text", "value": "12", "kind": "int", "zero": 0}
+{"func": "read_number", "case": "bad_text", "value": "nope", "kind": "int", "zero": 0}
+{"func": "read_number", "case": "float_trunc", "value": 3.9, "kind": "int", "zero": 0}
+{"func": "read_number", "case": "bool", "value": true, "kind": "int", "zero": 0}
+{"func": "read_number", "case": "hexish", "value": " 0x10 ", "kind": "int", "zero": 0}
+{"func": "read_number", "case": "negative", "value": -5, "kind": "int", "zero": 0}
+{"func": "read_number", "case": "float_value", "value": 3.9, "kind": "float", "zero": 0.0}
+{"func": "read_number", "case": "float_text", "value": "1e3", "kind": "float", "zero": 0.0}
+{"func": "read_number", "case": "float_bad", "value": "bad", "kind": "float", "zero": 0.0}
+{"func": "read_number", "case": "zero_floor", "value": 3, "kind": "int", "zero": 5}
+{"func": "streak_write", "case": "three", "column": "compression_fallback_streak", "session_id": "s1", "streak": 3}
+{"func": "streak_write", "case": "negative", "column": "compression_fallback_streak", "session_id": "s1", "streak": -2}
+{"func": "streak_write", "case": "text", "column": "compression_fallback_streak", "session_id": "s1", "streak": "5"}
+{"func": "streak_write", "case": "float_trunc", "column": "compression_fallback_streak", "session_id": "s1", "streak": 2.7}
+{"func": "streak_write", "case": "bool", "column": "compression_fallback_streak", "session_id": "s1", "streak": true}
+{"func": "streak_write", "case": "no_session", "column": "compression_fallback_streak", "session_id": "", "streak": 3}
+{"func": "streak_write", "case": "ineffective_column", "column": "compression_ineffective_count", "session_id": "s1", "streak": 2}
+{"func": "streak_write", "case": "overload_column", "column": "compression_overload_streak", "session_id": "s9", "streak": 0}
+{"func": "deadline_write", "case": "value", "session_id": "s1", "deadline": 99.5}
+{"func": "deadline_write", "case": "zero", "session_id": "s1", "deadline": 0}
+{"func": "deadline_write", "case": "negative", "session_id": "s1", "deadline": -3}
+{"func": "deadline_write", "case": "null", "session_id": "s1", "deadline": null}
+{"func": "deadline_write", "case": "bad_text", "session_id": "s1", "deadline": "bad"}
+{"func": "deadline_write", "case": "text", "session_id": "s1", "deadline": "3600"}
+{"func": "deadline_write", "case": "no_session", "session_id": "", "deadline": 5}
+{"func": "overload_bump", "case": "row", "session_id": "s1", "row": [4]}
+{"func": "overload_bump", "case": "no_row", "session_id": "s1", "row": null}
+{"func": "overload_bump", "case": "no_session", "session_id": "", "row": [4]}
+{"func": "overload_bump", "case": "text_row", "session_id": "s1", "row": ["7"]}
+{"func": "parent_gate", "case": "automatic", "parent_exists": true, "ended_at_set": true, "end_reason": "tui_shutdown", "automatic_reason": true}
+{"func": "parent_gate", "case": "recoverable", "parent_exists": true, "ended_at_set": true, "end_reason": "agent_close", "automatic_reason": true}
+{"func": "parent_gate", "case": "deliberate", "parent_exists": true, "ended_at_set": true, "end_reason": "session_reset", "automatic_reason": false}
+{"func": "parent_gate", "case": "compression", "parent_exists": true, "ended_at_set": true, "end_reason": "compression", "automatic_reason": false}
+{"func": "parent_gate", "case": "open_parent", "parent_exists": true, "ended_at_set": false, "end_reason": null, "automatic_reason": false}
+{"func": "parent_gate", "case": "missing", "parent_exists": false, "ended_at_set": false, "end_reason": null, "automatic_reason": false}

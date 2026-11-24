@@ -1,0 +1,79 @@
+{"func": "note", "case": "simple", "prompt": "fix the flaky test"}
+{"func": "note", "case": "empty", "prompt": ""}
+{"func": "note", "case": "spaced-preserved", "prompt": "  spaced  "}
+{"func": "note", "case": "non-ascii", "prompt": "patcher le bug ☕"}
+{"func": "config", "case": "defaults", "cfg": {}}
+{"func": "config", "case": "desktop-not-dict", "cfg": {"desktop": "nope"}}
+{"func": "config", "case": "ac-not-dict", "cfg": {"desktop": {"auto_continue": 5}}}
+{"func": "config", "case": "full", "cfg": {"desktop": {"auto_continue": {"enabled": false, "freshness_minutes": 30, "max_attempts": 5}}}}
+{"func": "config", "case": "strings", "cfg": {"desktop": {"auto_continue": {"freshness_minutes": "2.5", "enabled": "yes", "max_attempts": "4"}}}}
+{"func": "config", "case": "bad-minutes", "cfg": {"desktop": {"auto_continue": {"freshness_minutes": "soon", "enabled": "0", "max_attempts": "x"}}}}
+{"func": "config", "case": "negative", "cfg": {"desktop": {"auto_continue": {"freshness_minutes": -5, "max_attempts": -3}}}}
+{"func": "config", "case": "null-enabled", "cfg": {"desktop": {"auto_continue": {"enabled": null}}}}
+{"func": "config", "case": "freshness-null", "cfg": {"desktop": {"auto_continue": {"freshness_minutes": null, "max_attempts": 0}}}}
+{"func": "busy_mode", "case": "drain-forces-queue", "queued": true, "configured": "steer", "compression": false}
+{"func": "busy_mode", "case": "compression-demotes-steer", "configured": "steer", "compression": true}
+{"func": "busy_mode", "case": "interrupt-kept", "configured": "interrupt", "compression": false}
+{"func": "busy_mode", "case": "queue-mode-kept", "configured": "queue", "compression": true}
+{"func": "busy_mode", "case": "null-configured", "configured": null, "compression": true}
+{"func": "busy_mode", "case": "drain-null-configured", "queued": true, "configured": null, "compression": true}
+{"func": "inflight_original", "case": "present", "session": {"inflight_turn": {"user": "  hello  "}}}
+{"func": "inflight_original", "case": "absent", "session": {"inflight_turn": null}}
+{"func": "inflight_original", "case": "no-session-key", "session": {}}
+{"func": "inflight_original", "case": "non-dict-turn", "session": {"inflight_turn": "x"}}
+{"func": "inflight_original", "case": "falsy-user", "session": {"inflight_turn": {"user": 0}}}
+{"func": "inflight_original", "case": "int-user", "session": {"inflight_turn": {"user": 42}}}
+{"func": "sanitize_entry", "case": "drop-exact", "entry": {"text": "orig"}, "original": "orig"}
+{"func": "sanitize_entry", "case": "rewrite-blank-line-merge", "entry": {"text": "orig\n\nlater"}, "original": "orig"}
+{"func": "sanitize_entry", "case": "rewrite-newline-merge", "entry": {"text": "orig\nlater"}, "original": "orig"}
+{"func": "sanitize_entry", "case": "keep-image", "entry": {"text": "orig", "image_paths": ["a.png"]}, "original": "orig"}
+{"func": "sanitize_entry", "case": "keep-author", "entry": {"text": "orig", "turn_author": {"id": "u2"}}, "original": "orig"}
+{"func": "sanitize_entry", "case": "non-dict", "entry": "hi", "original": "orig"}
+{"func": "sanitize_entry", "case": "empty-original", "entry": {"text": "anything"}, "original": ""}
+{"func": "sanitize_entry", "case": "merge-equals-original", "entry": {"text": "orig\n\norig"}, "original": "orig"}
+{"func": "sanitize_entry", "case": "unrelated", "entry": {"text": "other"}, "original": "orig"}
+{"func": "set_queue", "case": "head-only", "session": {"queued_prompt": {"text": "a"}, "queued_prompts": [{"text": "b"}]}, "entries": [{"text": "x"}]}
+{"func": "set_queue", "case": "two-entries", "session": {"queued_prompt": null}, "entries": [{"text": "a"}, {"text": "b"}]}
+{"func": "set_queue", "case": "empty", "session": {"queued_prompt": {"text": "a"}, "queued_prompts": [{"text": "b"}]}, "entries": []}
+{"func": "set_queue", "case": "keeps-other-keys", "session": {"running": true, "queued_prompt": null}, "entries": [{"text": "z"}]}
+{"func": "enqueue", "case": "self-duplicate-dropped", "session": {"inflight_turn": {"user": "orig"}}, "text": "orig", "transport": null}
+{"func": "enqueue", "case": "fresh-slot", "session": {"inflight_turn": {"user": "orig"}}, "text": "hi", "transport": "t1"}
+{"func": "enqueue", "case": "merge-head", "session": {"inflight_turn": {"user": "orig"}, "queued_prompt": {"text": "a", "transport": null}}, "text": "b", "transport": "t2"}
+{"func": "enqueue", "case": "append-second", "session": {"queued_prompt": {"text": "a"}, "queued_prompts": [{"text": "b"}]}, "text": "c", "transport": "t3"}
+{"func": "enqueue", "case": "drop-stale-head-then-merge", "session": {"inflight_turn": {"user": "orig"}, "queued_prompt": {"text": "orig"}, "queued_prompts": [{"text": "later"}]}, "text": "new", "transport": "t4"}
+{"func": "enqueue", "case": "image-payload-appends", "session": {"inflight_turn": {"user": "orig"}, "queued_prompt": {"text": "a"}}, "text": "cap", "transport": "t5", "image_paths": ["/x.png"]}
+{"func": "enqueue", "case": "authored-appends", "session": {"queued_prompt": {"text": "a"}}, "text": "a", "transport": "t6", "turn_author": {"id": "u2", "name": "bob"}}
+{"func": "enqueue", "case": "empty-head-merge", "session": {"inflight_turn": {"user": "orig"}, "queued_prompt": {"text": ""}}, "text": "hi", "transport": null}
+{"func": "enqueue", "case": "drop-head-no-remainder", "session": {"inflight_turn": {"user": "orig"}, "queued_prompt": {"text": "orig"}, "queued_prompts": [{"text": "keep"}]}, "text": "keep", "transport": "t7"}
+{"func": "enqueue", "case": "no-inflight", "session": {"queued_prompt": {"text": "a"}}, "text": "b", "transport": "t8"}
+{"func": "inflight_snapshot", "case": "no-turn", "session": {"inflight_turn": null}}
+{"func": "inflight_snapshot", "case": "empty-turn", "session": {"inflight_turn": {}}}
+{"func": "inflight_snapshot", "case": "basic", "session": {"inflight_turn": {"user": " hi ", "assistant": "", "streaming": true}}}
+{"func": "inflight_snapshot", "case": "full", "session": {"inflight_turn": {"user": "go", "assistant": "partial", "streaming": true, "display_kind": "auto_continue", "display_metadata": {"notification_category": "diagnostic"}, "corrections": ["stop", "wait"], "correction_offsets": [3, 7]}}}
+{"func": "inflight_snapshot", "case": "offset-missing", "session": {"inflight_turn": {"user": "go", "assistant": "x", "corrections": ["a", "b"], "correction_offsets": [1]}}}
+{"func": "inflight_snapshot", "case": "offset-float", "session": {"inflight_turn": {"user": "go", "assistant": "x", "corrections": ["a"], "correction_offsets": [3.5]}}}
+{"func": "inflight_snapshot", "case": "blank-correction-skipped", "session": {"inflight_turn": {"user": "go", "assistant": "xy", "corrections": ["a", "   ", "c"], "correction_offsets": [1, 2, 9]}}}
+{"func": "inflight_snapshot", "case": "error", "session": {"inflight_turn": {"user": "u", "assistant": "", "error": "boom", "status": "failed", "recoverable": true, "error_surface": {"layer": "provider", "code": "x", "retryable": true}}}}
+{"func": "inflight_snapshot", "case": "error-default-status", "session": {"inflight_turn": {"user": "u", "error": "boom", "status": ""}}}
+{"func": "inflight_snapshot", "case": "display-kind-empty", "session": {"inflight_turn": {"user": "u", "display_kind": "", "streaming": false}}}
+{"func": "queued_snapshot", "case": "str", "session": {"queued_prompt": {"text": " hi ", "transport": "t"}}}
+{"func": "queued_snapshot", "case": "absent", "session": {"queued_prompt": null}}
+{"func": "queued_snapshot", "case": "blank", "session": {"queued_prompt": {"text": "   "}}}
+{"func": "queued_snapshot", "case": "list-parts", "session": {"queued_prompt": {"text": [" a ", "b", " ", null]}}}
+{"func": "queued_snapshot", "case": "dict-text", "session": {"queued_prompt": {"text": {"type": "text", "text": " y "}}}}
+{"func": "queued_snapshot", "case": "non-dict", "session": {"queued_prompt": "plain"}}
+{"func": "maybe_schedule", "case": "fresh", "session": {"session_key": "k"}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "dead", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "bot_room", "session": {"session_key": "k", "source": "bot_room"}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "dead", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "no-marker", "session": {"session_key": "k"}, "marker": null, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "dead", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "auto-continue-false", "session": {"session_key": "k"}, "marker": {"auto_continue": false, "writer_pid": 7, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "dead", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "writer-alive-other-pid", "session": {"session_key": "k"}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "alive", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "writer-alive-same-pid", "session": {"session_key": "k"}, "marker": {"auto_continue": true, "writer_pid": 999, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "alive", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "stale", "session": {"session_key": "k"}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "dead", "now": 5000.0, "pid": 999}
+{"func": "maybe_schedule", "case": "disabled", "session": {"session_key": "k"}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": "off"}}}, "writer_state": "dead", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "attempts-exhausted", "session": {"session_key": "k"}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 2, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "dead", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "already-scheduled", "session": {"session_key": "k", "_auto_continue_scheduled": true}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "dead", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "attempt-increments", "session": {"session_key": "k"}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 1, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "dead", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "boundary-age-equals-window", "session": {"session_key": "k"}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "dead", "now": 1900.0, "pid": 999}
+{"func": "maybe_schedule", "case": "max-attempts-zero", "session": {"session_key": "k"}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"max_attempts": 0}}}, "writer_state": "dead", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "writer-missing-pid", "session": {"session_key": "k"}, "marker": {"auto_continue": true, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "alive", "now": 1100.0, "pid": 999}
+{"func": "maybe_schedule", "case": "profile-home", "session": {"session_key": "k", "profile_home": "/tmp/prof"}, "marker": {"auto_continue": true, "writer_pid": 7, "started_at": 1000.0, "attempts": 0, "prompt": "finish the migration", "notification_category": "diagnostic"}, "cfg": {"desktop": {"auto_continue": {"enabled": true, "freshness_minutes": 15, "max_attempts": 2}}}, "writer_state": "dead", "now": 1100.0, "pid": 999}

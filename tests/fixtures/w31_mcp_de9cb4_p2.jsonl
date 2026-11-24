@@ -1,0 +1,54 @@
+{"func": "missing_required", "case": "all-missing", "declared": [{"name": "SENTRY_TOKEN", "prompt": "Token", "required": true}, {"name": "SENTRY_ORG", "prompt": "Org", "required": true}], "env": {}}
+{"func": "missing_required", "case": "one-provided", "declared": [{"name": "A", "required": true}, {"name": "B", "required": true}], "env": {"A": "v"}}
+{"func": "missing_required", "case": "optional-skipped", "declared": [{"name": "A", "required": false}, {"name": "B", "required": true}], "env": {}}
+{"func": "missing_required", "case": "empty-value-still-missing", "declared": [{"name": "A", "required": true}], "env": {"A": ""}}
+{"func": "missing_required", "case": "zero-is-a-value-in-python-but-falsy", "declared": [{"name": "A", "required": true}], "env": {"A": 0}}
+{"func": "missing_required", "case": "required-key-absent", "declared": [{"name": "A"}, {"name": "B", "prompt": "x"}], "env": {"B": "set"}}
+{"func": "missing_required", "case": "no-declared", "declared": [], "env": {"A": "v"}}
+{"func": "missing_required", "case": "spec-without-a-name", "declared": [{"prompt": "Token", "required": true}], "env": {"None": "misleading"}}
+{"func": "install_now_message", "case": "two-missing", "required": [{"name": "SENTRY_TOKEN", "required": true}, {"name": "SENTRY_ORG", "required": true}], "home": "C:/home/u/.hermes"}
+{"func": "install_now_message", "case": "one-missing-after-optional", "required": [{"name": "OPTIONAL_X", "required": false}, {"name": "SENTRY_TOKEN", "required": true}], "home": "/home/u/.hermes"}
+{"func": "install_now_message", "case": "single-missing", "required": [{"name": "GITHUB_TOKEN"}], "home": "/tmp/h"}
+{"func": "late_key", "case": "profile-key-wins", "profile_key": "prof-1", "home_key": "home-1", "session_key": "s-9"}
+{"func": "late_key", "case": "falls-back-to-home", "profile_key": "", "home_key": "home-1", "session_key": "s-9"}
+{"func": "late_key", "case": "profile-key-null", "profile_key": null, "home_key": "home-2", "session_key": "s-1"}
+{"func": "target_snapshot", "case": "minimal-pending", "target": {"name": "files", "kind": "mcp", "action": "authorize", "state": "pending"}}
+{"func": "target_snapshot", "case": "initiated-with-url-and-phase", "target": {"name": "sentry", "kind": "mcp", "action": "install", "state": "initiated", "connect_url": "https://example.invalid/oauth?x=1", "phase": "authorize", "detail": "waiting for the provider", "instructions": "Restart to load the tools."}}
+{"func": "target_snapshot", "case": "url-suppressed", "target": {"name": "sentry", "kind": "mcp", "action": "authorize", "state": "initiated", "connect_url": "https://example.invalid/x", "detail": "open the link"}, "with_url": false}
+{"func": "target_snapshot", "case": "connected-with-row-extras", "target": {"name": "files", "kind": "mcp", "action": "authorize", "state": "connected", "required_env": [{"name": "A", "required": true}], "launch": {"kind": "stdio", "target": "npx"}, "connection_id": "conn-7", "attempt": "att-2"}}
+{"func": "target_snapshot", "case": "alias-drawn", "target": {"name": "gmail", "kind": "connector", "action": "connect", "state": "initiated", "alias": "work"}}
+{"func": "target_snapshot", "case": "extra-overrides-base", "target": {"name": "files", "kind": "mcp", "action": "authorize", "state": "connected", "extra": {"state": "forced", "tools": ["read", "write"]}}}
+{"func": "target_snapshot", "case": "plugin-failed-is-resolved", "target": {"name": "flaky", "kind": "plugin", "action": "install", "state": "failed", "detail": "boom"}}
+{"func": "target_snapshot", "case": "phase-only-when-initiated", "target": {"name": "files", "kind": "mcp", "action": "install", "state": "pending", "phase": "authorize"}}
+{"func": "no_card_result", "case": "one-initiated-one-pending", "op_id": "op-fixed", "deadline_at": 1000.5, "action": "authorize", "targets": [{"name": "files", "state": "initiated", "connect_url": "https://example.invalid/a", "detail": "open it"}, {"name": "sentry", "state": "pending"}]}
+{"func": "no_card_result", "case": "all-settled", "op_id": "op-2", "deadline_at": 10.0, "action": "enable", "targets": [{"name": "files", "state": "connected"}, {"name": "sentry", "state": "failed", "detail": "set TOKEN first"}]}
+{"func": "no_card_result", "case": "empty-targets", "op_id": "op-3", "deadline_at": 0.0, "action": "install", "targets": []}
+{"func": "no_card_result", "case": "row-extras-dropped", "op_id": "op-4", "deadline_at": 5.0, "action": "install", "targets": [{"name": "files", "state": "connected", "launch": {"kind": "stdio"}, "connection_id": "c1", "extra": {"tools": ["read"]}}]}
+{"func": "answer_plan", "case": "skip-pending", "answer": "{\"targets\": [{\"name\": \"files\", \"status\": \"skipped\"}]}", "targets": [{"name": "files", "state": "pending"}], "runner": true}
+{"func": "answer_plan", "case": "approve-pending", "answer": "{\"targets\": [{\"name\": \"files\", \"status\": \"approved\"}]}", "targets": [{"name": "files", "state": "pending"}], "runner": true}
+{"func": "answer_plan", "case": "retry-failed", "answer": "{\"targets\": [{\"name\": \"files\", \"status\": \"approved\"}]}", "targets": [{"name": "files", "state": "failed"}], "runner": true}
+{"func": "answer_plan", "case": "approved-initiated-is-nothing", "answer": "{\"targets\": [{\"name\": \"files\", \"status\": \"approved\"}]}", "targets": [{"name": "files", "state": "initiated"}], "runner": true}
+{"func": "answer_plan", "case": "approved-without-runner", "answer": "{\"targets\": [{\"name\": \"files\", \"status\": \"approved\"}]}", "targets": [{"name": "files", "state": "pending"}], "runner": false}
+{"func": "answer_plan", "case": "unknown-target", "answer": "{\"targets\": [{\"name\": \"ghost\", \"status\": \"approved\"}]}", "targets": [{"name": "files", "state": "pending"}], "runner": true}
+{"func": "answer_plan", "case": "name-normalised", "answer": "{\"targets\": [{\"name\": \"  SenTry \\t\", \"status\": \"SKIPPED\"}]}", "targets": [{"name": "sentry", "state": "failed"}], "runner": true}
+{"func": "answer_plan", "case": "settle-continue-unresolved", "answer": "{\"targets\": [], \"settled_by\": \"continue\"}", "targets": [{"name": "files", "state": "pending"}], "runner": true}
+{"func": "answer_plan", "case": "settle-continue-all-resolved", "answer": "{\"targets\": [], \"settled_by\": \"continue\"}", "targets": [{"name": "files", "state": "connected"}, {"name": "sentry", "state": "skipped"}], "runner": true}
+{"func": "answer_plan", "case": "settle-other-reason", "answer": "{\"targets\": [], \"settled_by\": \"deadline\"}", "targets": [{"name": "files", "state": "pending"}], "runner": true}
+{"func": "answer_plan", "case": "answer-is-not-json", "answer": "not json at all", "targets": [{"name": "files", "state": "pending"}], "runner": true}
+{"func": "answer_plan", "case": "answer-is-not-an-object", "answer": "5", "targets": [{"name": "files", "state": "pending"}], "runner": true}
+{"func": "answer_plan", "case": "entry-not-an-object", "answer": "{\"targets\": [\"files\", {\"name\": \"files\", \"status\": \"skipped\"}]}", "targets": [{"name": "files", "state": "pending"}], "runner": true}
+{"func": "answer_plan", "case": "no-targets-key", "answer": "{\"settled_by\": \"continue\"}", "targets": [], "runner": true}
+{"func": "answer_plan", "case": "skip-already-skipped", "answer": "{\"targets\": [{\"name\": \"files\", \"status\": \"skipped\"}]}", "targets": [{"name": "files", "state": "skipped"}], "runner": true}
+{"func": "installs_with_oauth", "case": "own-oauth", "auth_type": "oauth", "auth_provider": ""}
+{"func": "installs_with_oauth", "case": "provider-mediated", "auth_type": "oauth", "auth_provider": "github"}
+{"func": "installs_with_oauth", "case": "env-auth", "auth_type": "env", "auth_provider": ""}
+{"func": "installs_with_oauth", "case": "provider-null", "auth_type": "oauth", "auth_provider": null}
+{"func": "actor_for", "case": "failed-is-the-users-move", "state": "failed"}
+{"func": "actor_for", "case": "pending-is-the-backends", "state": "pending"}
+{"func": "actor_for", "case": "initiated-is-the-backends", "state": "initiated"}
+{"func": "actor_for", "case": "expired-is-the-backends", "state": "expired"}
+{"func": "observable", "case": "pending-live", "settled": false, "state": "pending"}
+{"func": "observable", "case": "initiated-live", "settled": false, "state": "initiated"}
+{"func": "observable", "case": "connected-not-live", "settled": false, "state": "connected"}
+{"func": "observable", "case": "settled-blocks", "settled": true, "state": "pending"}
+{"func": "observable", "case": "failed-not-live", "settled": false, "state": "failed"}
