@@ -52,7 +52,10 @@ json_t *w25_inboundadm_e373aa_lane_key(const json_t *request) {
     const json_t *value = platform && platform->type == JSON_OBJECT ? json_obj_get(platform, "value") : NULL;
     const json_t *chat_id = source && source->type == JSON_OBJECT ? json_obj_get(source, "chat_id") : NULL;
     json_t *out = json_array();
-    json_append(out, (value && value->type == JSON_STRING) ? json_copy(value) : json_string(""));
+    /* The lane key carries the platform value AS IS: a missing or non-string
+     * platform is None, not "". */
+    json_append(out, (value && value->type == JSON_STRING) ? json_copy(value)
+                                                          : (value ? json_copy(value) : json_null()));
     json_append(out, chat_id ? json_copy(chat_id) : json_null());
     return out;
 }
