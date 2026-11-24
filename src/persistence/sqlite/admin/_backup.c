@@ -35,6 +35,24 @@
 /* shared helpers                                                      */
 /* ------------------------------------------------------------------ */
 
+/* Windows glob semantics: `home.glob(prefix + "*.bak")` matches case-insensitively
+ * on this platform, so "STATE.DB.PRE-UPDATE-EMERGENCY-A.BAK" is a survivor even
+ * though the literal prefix is lower-case. strncmp/strcmp dropped it. */
+static int bp_starts_ci(const char *s, const char *pre) {
+    size_t n;
+    if (!s || !pre) return 0;
+    n = strlen(pre);
+    return _strnicmp(s, pre, n) == 0;
+}
+
+static int bp_ends_ci(const char *s, const char *suf) {
+    size_t a, b;
+    if (!s || !suf) return 0;
+    a = strlen(s);
+    b = strlen(suf);
+    return a >= b && _strnicmp(s + (a - b), suf, b) == 0;
+}
+
 static int bp_starts(const char *s, const char *pre) {
     size_t n;
     if (!s || !pre) return 0;
@@ -194,7 +212,7 @@ json_t *w32_backup_1d0d4e_p1_prune_survivors(const json_t *req) {
         const char *s;
         if (!v || v->type != JSON_STRING || !v->str_val) continue;
         s = v->str_val;
-        if (!bp_starts(s, prefix) || !bp_ends(s, ".bak")) continue;
+        if (!bp_starts_ci(s, prefix) || !bp_ends_ci(s, ".bak")) continue;
         if (strlen(s) < strlen(prefix) + 4) continue;
         if (strchr(s, '/')) continue;
         if (bp_seen(matched, kept, s)) continue;

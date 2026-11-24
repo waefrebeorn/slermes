@@ -522,6 +522,18 @@ static void pv_puts_pystr(pv_sb *sb, const json_t *v, const char *key, const jso
     pv_sb_puts(sb, "None");
 }
 
+/* A chain segment as Python str() would print it: a null/missing attr or id is
+ * the literal text "None". The oracle models ast.Name(id=str(spec.get("id"))),
+ * so an absent id and an explicit null both render "None"; without this the C
+ * emitted "mgr." where Python gives "mgr.None". */
+static const char *pv_text(const json_t *node, const char *key) {
+    const json_t *f = pv_field(node, key);
+    if (!f || f->type == JSON_NULL) return "None";
+    if (f->type == JSON_STRING) return f->str_val ? f->str_val : "";
+    if (f->type == JSON_BOOL) return f->bool_val ? "True" : "False";
+    return "None";
+}
+
 static void pv_render_into(const json_t *n, pv_sb *sb, int depth) {
     const char *kind;
     if (depth > PV_MAX_DEPTH) {
@@ -532,7 +544,7 @@ static void pv_render_into(const json_t *n, pv_sb *sb, int depth) {
     if (strcmp(kind, "attr") == 0) {
         pv_render_into(pv_field(n, "value"), sb, depth + 1);
         pv_sb_putc(sb, '.');
-        pv_puts_pystr(sb, NULL, "attr", n);
+        pv_sb_puts(sb, pv_text(n, "attr"));
     } else if (strcmp(kind, "sub") == 0) {
         pv_render_into(pv_field(n, "value"), sb, depth + 1);
         pv_sb_puts(sb, "[...]");
@@ -540,13 +552,7 @@ static void pv_render_into(const json_t *n, pv_sb *sb, int depth) {
         pv_render_into(pv_field(n, "func"), sb, depth + 1);
         pv_sb_puts(sb, "()");
     } else if (strcmp(kind, "name") == 0) {
-        const json_t *id = pv_field(n, "id");
-        if ((!id || id->type == JSON_NULL) && depth == 0) {
-            /* _render(node) for a Name with id None RETURNS None. */
-            sb->is_null = 1;
-            return;
-        }
-        pv_puts_pystr(sb, NULL, "id", n);
+        pv_sb_puts(sb, pv_text(n, "id"));
     } else {
         pv_sb_puts(sb, "<core>");
     }
@@ -555,12 +561,6 @@ static void pv_render_into(const json_t *n, pv_sb *sb, int depth) {
 char *w32_pluginvali_b2daaa_p2_render(const json_t *chain) {
     pv_sb sb = {0};
     pv_render_into(chain, &sb, 0);
-    if (sb.is_null) {
-        free(sb.buf);
-        sb.buf = NULL;
-        sb.len = sb.cap = 0;
-        return NULL;   /* Python returned None */
-    }
     return pv_sb_take(&sb);
 }
 
@@ -574,10 +574,10 @@ static void pv_dotted_into(const json_t *chain, pv_sb *sb) {
     int first = 1;
 
     while (n < PV_MAX_PARTS && pv_is_kind(cur, "attr")) {
-        segs[n++] = json_get_str(cur, "attr", "");
+        segs[n++] = pv_text(cur, "attr");
         cur = pv_field(cur, "value");
     }
-    if (pv_is_kind(cur, "name")) name = json_get_str(cur, "id", NULL);
+    if (pv_is_kind(cur, "name")) name = pv_text(cur, "id");
     if (name) {
         pv_sb_puts(sb, name);
         first = 0;

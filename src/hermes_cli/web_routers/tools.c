@@ -445,7 +445,13 @@ json_t *w32_tools_f39c80_p1_backends_payload(const json_t *rows, const json_t *c
             tt_set(entry, "active", json_bool(!strcmp(name, active)));
             if (probe && probe->type == JSON_OBJECT) {
                 tt_set(entry, "status", tt_getd(probe, "status", json_string("unavailable")));
-                tt_set(entry, "detail", tt_getd(probe, "detail", json_string("")));
+                /* probes report detail only on failure: an absent key is None
+                 * upstream (dict.get), not the empty string the fixture-shaped
+                 * case happened to prefer. */
+                {
+                    const json_t *dv = tt_jget(probe, "detail");
+                    tt_set(entry, "detail", dv ? json_copy(dv) : json_null());
+                }
             } else {
                 /* The seam's own unknown-backend answer. */
                 size_t need = strlen(name) + sizeof("Unknown backend: ") + 1;

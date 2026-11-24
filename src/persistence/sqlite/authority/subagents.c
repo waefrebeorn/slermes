@@ -630,9 +630,13 @@ json_t *w32_subagents_a171ba_p2_hand_back(const json_t *req) {
     sa_sb b;
     char *sql, *rexpr = NULL;
 
-    if (!found || found->type != JSON_ARRAY || json_len(found) < 2) return json_null();
+    if (!found || found->type != JSON_ARRAY) return json_null();
+    /* A short row is not a refusal: upstream indexes a row tuple, and a missing
+     * slot is simply None (the automatic-cancel arms then take the false
+     * branch). Requiring len>=2 turned a 1-element row into a NULL result that
+     * Python still answered with a full statement. */
     cancel_state_v = json_get(found, 0);
-    cancel_note_v = json_get(found, 1);
+    cancel_note_v = json_len(found) > 1 ? json_get(found, 1) : NULL;
     has_owner = owner && owner->type != JSON_NULL;
     write_promised = promised && promised->type != JSON_NULL;
     if (write_promised) mark = sa_truthy(promised) ? "true" : "false";
