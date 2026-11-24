@@ -586,18 +586,27 @@ static void restore_identity_columns(const json_t *row, json_t *msg) {
 static json_t *decode_content(const json_t *content) { return json_copy(content); }
 
 /* messages._encode_content on its representable domain. */
-static json_t *encode_content(const json_t *content) {
+/* sanitize==0 keeps the text verbatim: _row_identity already ran the content
+ * through _loaded_view_content, which sanitises ONLY for the user/assistant
+ * roles. Sanitising again here stripped memory-context blocks from any other
+ * role -- a "USER" row lost its block while Python kept it. */
+static json_t *encode_content_ex(const json_t *content, int sanitize) {
     if (!content) return NULL;
     if (content->type == JSON_STRING) {
-        char *clean = sanitize_context(content->str_val);
-        json_t *r = json_string(clean);
-        free(clean);
-        return r;
+        if (!sanitize) return json_string(content->str_val);
+        {
+            char *clean = sanitize_context(content->str_val);
+            json_t *r = json_string(clean);
+            free(clean);
+            return r;
+        }
     }
     if (content->type == JSON_NULL || content->type == JSON_NUMBER || content->type == JSON_BOOL)
         return json_copy(content);
     return NULL; /* structured parts ride the NUL sentinel: seamed */
 }
+
+static json_t *encode_content(const json_t *content) { return encode_content_ex(content, 1); }
 
 /* messages._decode_display_metadata's core, on an already-held value. */
 static json_t *decode_display_metadata(const json_t *raw) {
@@ -659,7 +668,7 @@ static json_t *row_identity(const json_t *role, const json_t *content, const jso
                             const json_t *tool_calls) {
     json_t *arr = json_array();
     append_val(arr, json_copy(role));
-    append_val(arr, encode_content(loaded_view_content(role, content)));
+    append_val(arr, encode_content_ex(loaded_view_content(role, content), 0));
     append_val(arr, json_copy(tool_call_id));
     append_val(arr, py_truthy(tool_calls) ? py_dumps_json(tool_calls, 0, 0) : json_null());
     return arr;
