@@ -225,7 +225,11 @@ def main():
     ap.add_argument("--repeat", type=int, default=1)
     args = ap.parse_args()
 
-    gates = list(args.gates)
+    # Strip CR: on this host a gate list is routinely produced by redirecting a
+    # Python child's stdout to a file, and Windows text mode then writes \r\n.
+    # "w26_x\r" silently becomes "no harness tests/t_port_w26_x\r.c" for every
+    # gate, which reads like a missing-file bug rather than a shell artifact.
+    gates = [g.strip() for g in args.gates if g.strip()]
     if args.plan:
         gates += list(json.load(open(args.plan, encoding="utf-8")))
     if not gates:
