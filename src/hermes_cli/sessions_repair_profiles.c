@@ -766,6 +766,9 @@ json_t *w34_sessionsre_3cc180_p2_voice_modes(const json_t *req)
     const char *sp = sr_field(store, "profile", "default");
     json_t *out = json_array();
     json_t *data = sr_parse_content(req);
+    /* The store label is `profile or "default"`: an empty profile name is the
+     * default store, not a nameless one. */
+    if (!sp || !sp[0]) sp = "default";
     const char **keys = NULL;
     size_t nk = 0, i, cap;
 
