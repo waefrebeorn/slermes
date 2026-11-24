@@ -151,7 +151,7 @@ async def dispatch_shape(r):
     a.handle_message = handle_message
     a.send_reaction = send_reaction
     await a._dispatch_message(
-        text=r.get("text") or "", chat_id=r.get("chat_id") or "c1", chat_type="group",
+        text=r.get("text") or "", chat_id=r.get("chat_id") or "", chat_type="group",
         user_id="u1", user_name="U", message_id="m1", created_at=0,
         media_urls=list(r.get("media_urls") or []), media_types=list(r.get("media_types") or []),
         message_type=live.MessageType(r.get("message_type") or "text"),
