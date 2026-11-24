@@ -42,7 +42,8 @@ Gates (`tests/oracle_*.py`):
 |---|---|---|
 | >= 5 cases | **2295** | 112,210 authored cases total |
 | no fixture | **146** | oracle exists, nothing ever drives the harness |
-| fixture < 5 cases | **73** | legacy `cn_*` single-case gates; cannot pin a difference |
+| fixture < 5 cases | **1** | cannot pin a difference |
+| constants-only surface | **72** | one case carries the whole table — size is the shape, not a gap |
 | no harness | **3** | oracle without `tests/t_port_<gate>.c` |
 
 Held-out fuzz (the only measure that can disagree with the author):
@@ -72,6 +73,32 @@ Three failure modes, each caught in this project:
   leaked into the shared interpreter. A gate whose verdict depends on run order
   is not a gate; `tests/.isolated_gates` exists for exactly this, and the batch
   verdict must equal the standalone verdict before a wave may land.
+
+## Correction after classification (same day, same tree)
+
+Two gap classes were mis-labelled by name alone, and the corrected split changes
+what the standard can claim:
+
+- **The 146 "no fixture" gates are 145 stdin-driven oracles plus one oddity.** They
+  run, but they have no `tests/fixtures/<gate>.jsonl`, and `scripts/gate_fuzz.py`
+  perturbs *that file* — so **145 gates cannot be held-out fuzzed at all**. They
+  are not passing; they are unmeasured. This is a bigger hole than the 36 known
+  wave-27 divergences, because those at least have a verdict.
+- **The 2365 "untriaged" sources split 525 / 1840.** 525 sit at the same relative
+  path as an upstream `.py` (`src/agent/api_error_summary.c` <- 
+  `agent/api_error_summary.py`): real module ports that never claimed credit, so
+  neither the PoP count nor the pending count sees them. The other 1840 have no
+  upstream module — helpers, generated data, libs — and are not ports at all.
+
+So the backlog order changes: the 145 un-fuzzable gates and the 525 unclaimed
+module ports come first, because a gate nobody can perturb is indistinguishable
+from no gate.
+
+**And 72 of the 73 "vacuous" fixtures are not gaps at all.** They are
+`{"func": "constants"}` gates: the single case compares the entire constant table,
+so one case is the whole surface and more cases would test the same bytes twice.
+`scripts/port_audit.py` now separates `constants`-only fixtures from genuinely
+under-sized ones — 72 by shape, 1 real.
 
 ## Open gaps (tackled in order)
 

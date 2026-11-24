@@ -91,6 +91,24 @@ def audit_gates() -> dict:
             counted.append(row)
         if not harness.is_file():
             no_harness.append(row)
+    # A single-case fixture is only "vacuous" when it could have had more: the
+    # 72 `{"func": "constants"}` gates compare the WHOLE table in one case, so
+    # their size is the shape of the surface, not a gap.
+    constant_surface = []
+    if vacuous:
+        still = []
+        for row in vacuous:
+            path = FIXTURES / f"{row['gate']}.jsonl"
+            try:
+                first = json.loads(path.read_text(encoding="utf-8").splitlines()[0])
+            except (OSError, ValueError, IndexError):
+                first = {}
+            if first.get("func") == "constants":
+                constant_surface.append(row)
+            else:
+                still.append(row)
+        vacuous = still
+
     for fixture in sorted(FIXTURES.glob("*.jsonl")):
         gate = fixture.name[:-len(".jsonl")]
         if gate not in oracle_names:
@@ -99,6 +117,7 @@ def audit_gates() -> dict:
         "with_cases": counted,
         "no_fixture": no_fixture,
         "vacuous": vacuous,
+        "constant_surface": constant_surface,
         "no_harness": no_harness,
         "orphan_fixtures": orphan_fixtures,
     }
@@ -126,6 +145,7 @@ def main(argv: list[str] | None = None) -> int:
             "with_cases": len(gates["with_cases"]),
             "no_fixture": len(gates["no_fixture"]),
             "vacuous": len(gates["vacuous"]),
+            "constant_surface": len(gates["constant_surface"]),
             "no_harness": len(gates["no_harness"]),
             "orphan_fixtures": len(gates["orphan_fixtures"]),
             "authored_cases": sum(g["cases"] for g in gates["with_cases"]),
@@ -150,6 +170,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  with >= {VACUOUS_CASES} cases        {g['with_cases']}  ({g['authored_cases']} authored cases)")
     print(f"  no fixture              {g['no_fixture']}   <- nothing ever drives the harness")
     print(f"  fixture < {VACUOUS_CASES} cases       {g['vacuous']}   <- cannot pin a difference")
+    print(f"  constants-only surface  {g['constant_surface']}   <- whole table in one case, by shape")
     print(f"  no harness              {g['no_harness']}")
     print(f"  orphan fixtures         {g['orphan_fixtures']}")
 

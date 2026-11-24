@@ -9,7 +9,8 @@
  "gates": {
   "with_cases": 2295,
   "no_fixture": 146,
-  "vacuous": 73,
+  "vacuous": 1,
+  "constant_surface": 72,
   "no_harness": 3,
   "orphan_fixtures": 0,
   "authored_cases": 112210
@@ -48298,6 +48299,12 @@
    ],
    "vacuous": [
     {
+     "gate": "memory_available",
+     "cases": 4
+    }
+   ],
+   "constant_surface": [
+    {
      "gate": "cn_00cfb3ece3",
      "cases": 1
     },
@@ -48584,10 +48591,6 @@
     {
      "gate": "cn_fad49a65cf",
      "cases": 1
-    },
-    {
-     "gate": "memory_available",
-     "cases": 4
     }
    ],
    "no_harness": [
