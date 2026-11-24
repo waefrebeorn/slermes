@@ -95,10 +95,16 @@ repo cannot support. The next unit of work is triage, not porting:
 4. only then make `gate_fuzz` a blocking step in `land_wave.sh`, so a wave cannot
    land on authored fixtures alone again.
 
-**P0 — a hang, not a wrong answer.** `w33_portabilit_b54bb9` stops responding on a
-perturbed `validate_payload` case carrying a very long title (the harness hits the
-120 s ceiling the audit enforces). An unbounded input must fail fast, not spin:
-this is the first thing to fix, ahead of any count below.
+**P0 — measured, not a hang: a 100× constant in payload validation.**
+`w33_portabilit_b54bb9`'s `validate_payload` processes a 1 MB import payload in
+**14.5 s** and 500 KB in **6.5 s** — 2.2× time for 2× input, so it is linear, but
+the throughput is ~70 KB/s where the live Python module does the same work in
+tens of milliseconds. The audit first reported this as a hang because the 120 s
+ceiling tripped while walking 780 generated cases in one process; run alone, the
+worst case completes. Still a defect worth fixing (an import path that spends
+minutes of CPU on a large-but-legal payload is a denial-of-service surface), just
+a different one than "unbounded loop": profile the per-character work in
+`pb_core_validate_session` (title/byte accounting) before touching correctness.
 
 Sweep of 2026-11-24 (`--per-case 5`, wave 33 plan). These gates pass their
 authored fixtures but diverge on held-out inputs:
