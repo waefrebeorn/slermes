@@ -235,6 +235,18 @@ json_t *w26_cache_8bdf62_write_payload(const json_t *req) {
     return out;
 }
 
+/* CachedFetch(secrets=dict(raw.get("secrets") or {}), fetched_at=raw.get("fetched_at")):
+ * the entry is RECONSTRUCTED, so a partial object gains its defaults instead of
+ * being echoed verbatim. */
+static json_t *cc_entry_shape(const json_t *raw) {
+    json_t *out = json_object();
+    const json_t *sec = raw ? json_obj_get(raw, "secrets") : NULL;
+    const json_t *fresh = raw ? json_obj_get(raw, "fetched_at") : NULL;
+    json_set(out, "secrets", (sec && sec->type == JSON_OBJECT) ? json_copy(sec) : json_object());
+    json_set(out, "fetched_at", fresh ? json_copy(fresh) : json_null());
+    return out;
+}
+
 json_t *w26_cache_8bdf62_lookup(const json_t *req) {
     const json_t *memory = json_obj_get(req, "memory");
     const json_t *key = json_obj_get(req, "key");
@@ -249,14 +261,14 @@ json_t *w26_cache_8bdf62_lookup(const json_t *req) {
         /* L1 first: a fresh in-process entry never reaches the disk. */
         if (cc_is_obj(mem) && cc_fresh(json_obj_get(mem, "fetched_at"), ttl, now)) {
             json_set(out, "source", json_string("memory"));
-            json_set(out, "entry", json_copy(mem));
+            json_set(out, "entry", cc_entry_shape(mem));
             return out;
         }
     }
     if (cc_is_obj(disk)) {
         /* L2 answered; SecretCache.lookup promotes it into L1. */
         json_set(out, "source", json_string("disk"));
-        json_set(out, "entry", json_copy(disk));
+        json_set(out, "entry", cc_entry_shape(disk));
         return out;
     }
     json_set(out, "source", json_null());
