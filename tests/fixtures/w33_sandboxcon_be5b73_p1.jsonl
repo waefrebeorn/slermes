@@ -1,0 +1,16 @@
+{"func": "hosted_scope", "case": "defaults", "agent": "agentA"}
+{"func": "hosted_scope", "case": "tenant-and-user", "agent": "agentB", "tenant": "globex", "user": "u9"}
+{"func": "hosted_scope", "case": "agent-with-dots", "agent": "agent.sales.7", "tenant": "acme", "user": "ops"}
+{"func": "hosted_scope", "case": "user-is-email", "agent": "agentC", "tenant": "acme", "user": "a.b+c@example.com"}
+{"func": "marker", "case": "acme-agentA", "tenant": "acme", "agent": "agentA"}
+{"func": "marker", "case": "acme-agentB", "tenant": "acme", "agent": "agentB"}
+{"func": "marker", "case": "dotted", "tenant": "acme.co", "agent": "u-1"}
+{"func": "marker", "case": "empty-both", "tenant": "", "agent": ""}
+{"func": "marker", "case": "agent-with-slash", "tenant": "acme", "agent": "team/a"}
+{"func": "identity_key", "case": "plain", "tenant": "acme", "agent": "agentA"}
+{"func": "identity_key", "case": "space-and-slash", "tenant": "acme corp", "agent": "a/b?c"}
+{"func": "identity_key", "case": "non-ascii", "tenant": "ténant", "agent": "agentA"}
+{"func": "identity_key", "case": "unreserved-kept", "tenant": "a_b.c-d~e", "agent": "Z9"}
+{"func": "identity_key", "case": "empty-agent", "tenant": "acme", "agent": ""}
+{"func": "checks_table", "case": "all"}
+{"func": "constants", "case": "literals"}

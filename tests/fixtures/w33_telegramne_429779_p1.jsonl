@@ -1,0 +1,67 @@
+{"func": "env_number", "case": "int-512", "key": "K", "env": {"K": "512"}, "default": 8, "cast": "int"}
+{"func": "env_number", "case": "int-missing", "key": "K", "env": {}, "default": 8, "cast": "int"}
+{"func": "env_number", "case": "int-padded", "key": "K", "env": {"K": "  12  "}, "default": 8, "cast": "int"}
+{"func": "env_number", "case": "int-float-text", "key": "K", "env": {"K": "12.5"}, "default": 8, "cast": "int"}
+{"func": "env_number", "case": "int-garbage", "key": "K", "env": {"K": "abc"}, "default": 8, "cast": "int"}
+{"func": "env_number", "case": "int-underscore", "key": "K", "env": {"K": "1_000"}, "default": 8, "cast": "int"}
+{"func": "env_number", "case": "int-plus", "key": "K", "env": {"K": "+7"}, "default": 8, "cast": "int"}
+{"func": "env_number", "case": "int-negative", "key": "K", "env": {"K": "-3"}, "default": 8, "cast": "int"}
+{"func": "env_number", "case": "float-exp", "key": "K", "env": {"K": "1e3"}, "default": 2.5, "cast": "float"}
+{"func": "env_number", "case": "float-hex", "key": "K", "env": {"K": "0x10"}, "default": 2.5, "cast": "float"}
+{"func": "env_number", "case": "float-empty", "key": "K", "env": {"K": ""}, "default": 2.5, "cast": "float"}
+{"func": "env_number", "case": "float-underscore", "key": "K", "env": {"K": "1_0.5"}, "default": 2.5, "cast": "float"}
+{"func": "ptb_request_kwargs", "case": "defaults", "env": {}}
+{"func": "ptb_request_kwargs", "case": "pool64-timeout1.5", "env": {"HERMES_TELEGRAM_HTTP_POOL_SIZE": "64", "HERMES_TELEGRAM_HTTP_POOL_TIMEOUT": "1.5"}}
+{"func": "ptb_request_kwargs", "case": "bad-pool-exp-read", "env": {"HERMES_TELEGRAM_HTTP_POOL_SIZE": "lots", "HERMES_TELEGRAM_HTTP_READ_TIMEOUT": "1e1"}}
+{"func": "ptb_request_kwargs", "case": "all-five", "env": {"HERMES_TELEGRAM_HTTP_POOL_SIZE": "128", "HERMES_TELEGRAM_HTTP_POOL_TIMEOUT": "8", "HERMES_TELEGRAM_HTTP_CONNECT_TIMEOUT": "3.5", "HERMES_TELEGRAM_HTTP_READ_TIMEOUT": "5", "HERMES_TELEGRAM_HTTP_WRITE_TIMEOUT": "7.25"}}
+{"func": "ptb_request_kwargs", "case": "negative-pool", "env": {"HERMES_TELEGRAM_HTTP_POOL_SIZE": "-4"}}
+{"func": "getupdates_keepalive", "case": "win32", "platform": "win32"}
+{"func": "getupdates_keepalive", "case": "linux", "platform": "linux"}
+{"func": "getupdates_keepalive", "case": "darwin", "platform": "darwin"}
+{"func": "keepalive_options", "case": "posix-all", "avail": ["TCP_KEEPIDLE", "TCP_KEEPINTVL", "TCP_KEEPCNT"]}
+{"func": "keepalive_options", "case": "idle-only", "avail": ["TCP_KEEPIDLE"]}
+{"func": "keepalive_options", "case": "bsd-keepalive", "avail": ["TCP_KEEPALIVE", "TCP_KEEPINTVL", "TCP_KEEPCNT"]}
+{"func": "keepalive_options", "case": "no-idle", "avail": ["TCP_KEEPINTVL", "TCP_KEEPCNT"]}
+{"func": "keepalive_options", "case": "none", "avail": []}
+{"func": "keepalive_options", "case": "count-only", "avail": ["TCP_KEEPCNT"]}
+{"func": "proxy_target_hosts", "case": "local-bot-api", "base_url": "http://127.0.0.1:8081", "fallback_ips": ["149.154.166.110", "149.154.167.220"]}
+{"func": "proxy_target_hosts", "case": "trailing-slash", "base_url": "https://api.example.com/telegram/", "fallback_ips": ["149.154.166.110", "149.154.167.220"]}
+{"func": "proxy_target_hosts", "case": "bare-host", "base_url": "api.example.com", "fallback_ips": ["149.154.166.110", "149.154.167.220"]}
+{"func": "proxy_target_hosts", "case": "ipv6", "base_url": "http://[::1]:8080", "fallback_ips": ["149.154.166.110", "149.154.167.220"]}
+{"func": "proxy_target_hosts", "case": "bad-port", "base_url": "http://host:abc/", "fallback_ips": ["149.154.166.110", "149.154.167.220"]}
+{"func": "proxy_target_hosts", "case": "port-zero", "base_url": "http://host:0/", "fallback_ips": ["149.154.166.110", "149.154.167.220"]}
+{"func": "proxy_target_hosts", "case": "https-default-port", "base_url": "https://host/", "fallback_ips": ["149.154.166.110", "149.154.167.220"]}
+{"func": "proxy_target_hosts", "case": "uppercase", "base_url": "http://API.Example.COM/telegram/", "fallback_ips": ["149.154.166.110", "149.154.167.220"]}
+{"func": "proxy_target_hosts", "case": "no-host", "base_url": "/x", "fallback_ips": ["149.154.166.110", "149.154.167.220"]}
+{"func": "proxy_target_hosts", "case": "none", "base_url": null, "fallback_ips": ["149.154.166.110", "149.154.167.220"]}
+{"func": "proxy_target_hosts", "case": "no-fallback", "base_url": null, "fallback_ips": []}
+{"func": "bot_api_urls", "case": "bare", "extra": {"base_url": "http://127.0.0.1:8081"}}
+{"func": "bot_api_urls", "case": "bare-slash", "extra": {"base_url": "http://127.0.0.1:8081/"}}
+{"func": "bot_api_urls", "case": "path", "extra": {"base_url": "https://h/telegram/"}}
+{"func": "bot_api_urls", "case": "bot-path", "extra": {"base_url": "https://h/bot"}}
+{"func": "bot_api_urls", "case": "padded-empty-file", "extra": {"base_url": "  https://h:1/  ", "base_file_url": ""}}
+{"func": "bot_api_urls", "case": "own-file-url", "extra": {"base_url": "https://h/x", "base_file_url": "https://f/file/bot/"}}
+{"func": "bot_api_urls", "case": "no-base", "extra": {}}
+{"func": "bot_api_urls", "case": "file-only", "extra": {"base_file_url": "https://f"}}
+{"func": "bot_api_urls", "case": "none", "extra": null}
+{"func": "bot_api_urls", "case": "root-path", "extra": {"base_url": "/x"}}
+{"func": "verify_decision", "case": "bool-true", "extra": {"tls_classic_key_exchange": true}}
+{"func": "verify_decision", "case": "bool-false", "extra": {"tls_classic_key_exchange": false}}
+{"func": "verify_decision", "case": "string-yes", "extra": {"tls_classic_key_exchange": "yes"}}
+{"func": "verify_decision", "case": "string-padded", "extra": {"tls_classic_key_exchange": " TRUE "}}
+{"func": "verify_decision", "case": "string-off", "extra": {"tls_classic_key_exchange": "off"}}
+{"func": "verify_decision", "case": "string-maybe", "extra": {"tls_classic_key_exchange": "maybe"}}
+{"func": "verify_decision", "case": "null", "extra": {"tls_classic_key_exchange": null}}
+{"func": "verify_decision", "case": "int-1", "extra": {"tls_classic_key_exchange": 1}}
+{"func": "verify_decision", "case": "int-0", "extra": {"tls_classic_key_exchange": 0}}
+{"func": "verify_decision", "case": "list", "extra": {"tls_classic_key_exchange": []}}
+{"func": "verify_decision", "case": "object", "extra": {"tls_classic_key_exchange": {"a": 1}}}
+{"func": "verify_decision", "case": "empty-string", "extra": {"tls_classic_key_exchange": ""}}
+{"func": "verify_decision", "case": "string-1", "extra": {"tls_classic_key_exchange": "1"}}
+{"func": "verify_decision", "case": "missing-key", "extra": {}}
+{"func": "verify_decision", "case": "no-extra", "extra": null}
+{"func": "classic_proxy_decision", "case": "https-classic", "proxy_url": "https://proxy.local:3128", "is_str": true, "verify_is_classic": true}
+{"func": "classic_proxy_decision", "case": "https-plain", "proxy_url": "https://proxy.local:3128", "is_str": true, "verify_is_classic": false}
+{"func": "classic_proxy_decision", "case": "http-classic", "proxy_url": "http://proxy.local:3128", "is_str": true, "verify_is_classic": true}
+{"func": "classic_proxy_decision", "case": "none", "proxy_url": null, "is_str": true, "verify_is_classic": true}
+{"func": "classic_proxy_decision", "case": "not-str", "proxy_url": "https://proxy.local:3128", "is_str": false, "verify_is_classic": true}

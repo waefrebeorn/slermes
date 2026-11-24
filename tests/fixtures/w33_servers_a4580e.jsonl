@@ -1,0 +1,76 @@
+{"case": "ext_py", "func": "ext_or_basename", "path": "src/main.py"}
+{"case": "ext_upper", "func": "ext_or_basename", "path": "SRC/Main.PY"}
+{"case": "ext_blade_compound", "func": "ext_or_basename", "path": "views/home.blade.php"}
+{"case": "ext_blade_compound_upper", "func": "ext_or_basename", "path": "views/home.BLADE.PHP"}
+{"case": "ext_dockerfile_bare", "func": "ext_or_basename", "path": "Dockerfile"}
+{"case": "ext_dockerfile_nested", "func": "ext_or_basename", "path": "ops/docker/Dockerfile"}
+{"case": "ext_extensionless_notes", "func": "ext_or_basename", "path": "notes"}
+{"case": "ext_dotfile", "func": "ext_or_basename", "path": ".bashrc"}
+{"case": "ext_last_segment", "func": "ext_or_basename", "path": "dist/pkg.tar.gz"}
+{"case": "ext_trailing_dot", "func": "ext_or_basename", "path": "foo."}
+{"case": "ext_trailing_slash", "func": "ext_or_basename", "path": "pkg/dir/"}
+{"case": "ext_empty", "func": "ext_or_basename", "path": ""}
+{"case": "lid_ts", "func": "language_id", "path": "web/src/app.ts"}
+{"case": "lid_mjs", "func": "language_id", "path": "web/src/app.mjs"}
+{"case": "lid_blade", "func": "language_id", "path": "res/views/index.blade.php"}
+{"case": "lid_unknown", "func": "language_id", "path": "a/b.zzz"}
+{"case": "lid_dockerfile_basename", "func": "language_id", "path": "Dockerfile"}
+{"case": "lid_server_override", "func": "language_id", "path": "y.svelte", "srv_language_id": "custom-svelte"}
+{"case": "lid_empty_override", "func": "language_id", "path": "z.py", "srv_language_id": ""}
+{"case": "table", "func": "language_table"}
+{"case": "match_header", "func": "matches", "path": "inc/a.h", "extensions": [".c", ".h"]}
+{"case": "match_cpp_not_c", "func": "matches", "path": "inc/a.hpp", "extensions": [".c", ".h"]}
+{"case": "match_dockerfile_exact", "func": "matches", "path": "ops/Dockerfile", "extensions": [".dockerfile", "Dockerfile"]}
+{"case": "match_dockerfile_lower", "func": "matches", "path": "ops/dockerfile", "extensions": [".dockerfile", "Dockerfile"]}
+{"case": "match_case_insensitive_ext", "func": "matches", "path": "a.PHP", "extensions": [".php"]}
+{"case": "find_py", "func": "find_server", "path": "a/b/main.py"}
+{"case": "find_tsx", "func": "find_server", "path": "a/b/App.tsx"}
+{"case": "find_blade_before_php", "func": "find_server", "path": "a/b/home.blade.php"}
+{"case": "find_php", "func": "find_server", "path": "a/b/home.php"}
+{"case": "find_dockerfile", "func": "find_server", "path": "deploy/Dockerfile"}
+{"case": "find_none", "func": "find_server", "path": "a/b/file.unknownext"}
+{"case": "find_ps1", "func": "find_server", "path": "win/deploy.ps1"}
+{"case": "find_custom_wins", "func": "find_server", "path": "a/b/main.py", "custom": {"mypy": {"command": ["mypy-ls"], "extensions": [".py"]}}}
+{"case": "find_custom_builtin_id_ignored", "func": "find_server", "path": "a/b/main.py", "custom": {"pyright": {"command": ["x"], "extensions": [".py"]}}}
+{"case": "find_custom_new_ext", "func": "find_server", "path": "a/b/tmpl.foo", "custom": {"foolang": {"command": ["foo-ls", "--stdio"], "extensions": [".FOO"]}}}
+{"case": "registry", "func": "registry"}
+{"case": "custom_min", "func": "custom_servers", "cfg": {"x": {"command": ["bin", "a"], "extensions": [".X", "y"]}}}
+{"case": "custom_empty_description", "func": "custom_servers", "cfg": {"x": {"command": ["bin"], "extensions": [".X"], "description": "", "language_id": null}}}
+{"case": "custom_zero_description", "func": "custom_servers", "cfg": {"x": {"command": ["bin"], "extensions": [".X"], "description": 0}}}
+{"case": "custom_true_description", "func": "custom_servers", "cfg": {"x": {"command": ["bin"], "extensions": [".X"], "description": true}}}
+{"case": "custom_int_description", "func": "custom_servers", "cfg": {"x": {"command": ["bin"], "extensions": [".X"], "description": 5}}}
+{"case": "custom_int_language_id", "func": "custom_servers", "cfg": {"x": {"command": ["bin"], "extensions": [".X"], "language_id": 7}}}
+{"case": "custom_builtin_shadow", "func": "custom_servers", "cfg": {"pyright": {"command": ["bin"], "extensions": [".X"]}}}
+{"case": "custom_command_not_list", "func": "custom_servers", "cfg": {"x": {"command": "bin", "extensions": [".X"]}}}
+{"case": "custom_command_empty_arg", "func": "custom_servers", "cfg": {"x": {"command": ["bin", ""], "extensions": [".X"]}}}
+{"case": "custom_no_extensions", "func": "custom_servers", "cfg": {"x": {"command": ["bin"], "extensions": []}}}
+{"case": "custom_non_string_ext", "func": "custom_servers", "cfg": {"x": {"command": ["bin"], "extensions": [".X", 3]}}}
+{"case": "custom_empty_command", "func": "custom_servers", "cfg": {"x": {"command": [], "extensions": [".X"]}}}
+{"case": "custom_cfg_not_dict", "func": "custom_servers", "cfg": {"x": "notadict"}}
+{"case": "custom_missing_ext_key", "func": "custom_servers", "cfg": {"x": {"command": ["bin"]}}}
+{"case": "custom_full", "func": "custom_servers", "cfg": {"x": {"command": ["bin"], "extensions": [".X"], "root_markers": [], "description": "d", "language_id": "customlang"}}}
+{"case": "custom_bare_ext_case", "func": "custom_servers", "cfg": {"mk": {"command": ["mk-ls"], "extensions": [".X", "Y", "Makefile"]}}}
+{"case": "find_custom_bare_ext", "func": "find_server", "path": "src/Makefile", "custom": {"mk": {"command": ["mk-ls"], "extensions": ["Makefile"]}}}
+{"case": "find_custom_bare_ext_lower_miss", "func": "find_server", "path": "src/Makefile", "custom": {"mk": {"command": ["mk-ls"], "extensions": ["makefile"]}}}
+{"case": "root_no_markers", "func": "root_decision", "markers": null, "found": "/elsewhere", "found_plain": "/elsewhere", "workspace": "/ws", "excludes": null}
+{"case": "root_no_markers_empty_ws", "func": "root_decision", "markers": null, "found": null, "found_plain": null, "workspace": "", "excludes": null}
+{"case": "root_hit", "func": "root_decision", "markers": ["Cargo.toml"], "found": "/proj", "found_plain": null, "workspace": "/ws", "excludes": []}
+{"case": "root_miss_falls_back", "func": "root_decision", "markers": ["Cargo.toml"], "found": null, "found_plain": null, "workspace": "/ws", "excludes": []}
+{"case": "root_exclude_fired", "func": "root_decision", "markers": ["package.json"], "found": null, "found_plain": "/deno-proj", "workspace": "/ws", "excludes": ["deno.json"]}
+{"case": "root_exclude_inactive", "func": "root_decision", "markers": ["package.json"], "found": null, "found_plain": null, "workspace": "/ws", "excludes": ["deno.json"]}
+{"case": "root_empty_found_falls_back", "func": "root_decision", "markers": ["go.mod"], "found": "", "found_plain": null, "workspace": "/ws", "excludes": []}
+{"case": "root_empty_marker_list", "func": "root_decision", "markers": [], "found": "/hit", "found_plain": null, "workspace": "/ws", "excludes": []}
+{"case": "safe_pyright", "func": "untrusted_safe", "server_id": "pyright"}
+{"case": "safe_gopls", "func": "untrusted_safe", "server_id": "gopls"}
+{"case": "safe_svelte", "func": "untrusted_safe", "server_id": "svelte-language-server"}
+{"case": "safe_powershell", "func": "untrusted_safe", "server_id": "powershell"}
+{"case": "safe_empty", "func": "untrusted_safe", "server_id": ""}
+{"case": "spawn_trusted_base_init", "func": "simple_spawn", "bin": "/opt/pyright-langserver", "args": ["--stdio"], "trusted": true, "base_init": {"python": {"pythonPath": "/p/bin/python"}}, "untrusted_init": {"isTrusted": false}, "seed": false}
+{"case": "spawn_untrusted_switch", "func": "simple_spawn", "bin": "/opt/svelteserver", "args": ["--stdio"], "trusted": false, "base_init": {"x": 1}, "untrusted_init": {"isTrusted": false}, "seed": false}
+{"case": "spawn_untrusted_no_switch", "func": "simple_spawn", "bin": "/opt/clangd", "args": ["--background-index", "--clang-tidy"], "trusted": false, "base_init": {"telemetry": {"enabled": false}}, "untrusted_init": null, "seed": false}
+{"case": "spawn_binary_missing", "func": "simple_spawn", "bin": null, "args": ["--stdio"], "trusted": false, "base_init": null, "untrusted_init": null, "seed": false}
+{"case": "spawn_no_init", "func": "simple_spawn", "bin": "/opt/gopls", "args": [], "trusted": false, "base_init": null, "untrusted_init": null, "seed": true}
+{"case": "spawn_seed_and_args", "func": "simple_spawn", "bin": "/opt/typescript-language-server", "args": ["--stdio"], "trusted": false, "base_init": {"tsserver": {"path": "/opt/typescript/lib"}}, "untrusted_init": null, "seed": true}
+{"case": "argv_tail", "func": "custom_argv", "bin": "/usr/local/bin/foo-ls", "command": ["foo-ls", "--stdio", "--trace"]}
+{"case": "argv_unresolved", "func": "custom_argv", "bin": null, "command": ["~/.local/bin/bar-ls"]}
+{"case": "argv_single", "func": "custom_argv", "bin": "/b", "command": ["only"]}

@@ -1,0 +1,39 @@
+{"case": "config-defaults", "payload": {}, "func": "config"}
+{"case": "config-full", "payload": {"transcript_preferred": false, "transcript_required": "yes", "transcription_fallback": 0, "ffmpeg_extract_audio": true, "stt_model": "base", "transcript_min_chars": "120", "tmpDir": "teams-tmp", "teamsDelivery": {"channel_id": "c-1"}, "notion": {"database_id": "db-1"}, "linear": {"team_id": "tm-1"}}, "func": "config"}
+{"case": "config-alias-null", "payload": {"transcript_preferred": null, "stt_model": "", "sttModel": "small", "transcript_min_chars": 0, "tmp_dir": "", "notion": {}}, "func": "config"}
+{"case": "org-user", "payload": {"meetingOrganizer": {"user": {"id": "u-1"}}}, "func": "organizer_user_id"}
+{"case": "org-identity", "payload": {"organizer": {"identity": {"user": {"id": "  u-2  "}}}}, "func": "organizer_user_id"}
+{"case": "org-flat-fallback", "payload": {"organizer": {"user": {}}, "organizerUserId": "u-3"}, "func": "organizer_user_id"}
+{"case": "org-none", "payload": {}, "func": "organizer_user_id"}
+{"case": "org-blank", "payload": {"organizerUserId": "   "}, "func": "organizer_user_id"}
+{"case": "pr-slash", "resource": "/users/org-1/onlineMeetings/meet-1/transcripts/t-1", "func": "parse_resource"}
+{"case": "pr-quoted", "resource": "/users('org%202')/onlineMeetings('m-2')/recordings('r-2')", "func": "parse_resource"}
+{"case": "pr-comm", "resource": "/communications/onlineMeetings/m-3", "func": "parse_resource"}
+{"case": "pr-sentinel", "resource": "/users/u-1/onlineMeetings/getAllTranscripts", "func": "parse_resource"}
+{"case": "pr-garbage", "resource": " /beta/me/onlineMeetings ", "func": "parse_resource"}
+{"case": "pr-empty", "resource": "", "func": "parse_resource"}
+{"case": "tl-literal", "value": "abc-transcript-1", "odata_type": "", "func": "transcript_like"}
+{"case": "tl-odata", "value": "opaque-id", "odata_type": "#microsoft.graph.callTranscript", "func": "transcript_like"}
+{"case": "tl-base64", "value": "eHgtVHJhbnNjcmlwdFYyLWJsb2IteXk=", "odata_type": "", "func": "transcript_like"}
+{"case": "tl-plain", "value": "AAMkAGI2TAAAAAAA", "odata_type": "", "func": "transcript_like"}
+{"case": "ia-odata", "notification": {"resourceData": {"id": "abc", "@odata.type": "#microsoft.graph.callTranscript"}}, "resource_data": {"id": "abc", "@odata.type": "#microsoft.graph.callTranscript"}, "func": "is_artifact"}
+{"case": "ia-resource", "notification": {"resource": "/users/u/onlineMeetings/m/transcripts", "resourceData": {"id": "xyz"}}, "resource_data": {"id": "xyz"}, "func": "is_artifact"}
+{"case": "ia-meeting", "notification": {"resource": "/users/u/onlineMeetings/m", "resourceData": {"id": "m-1"}}, "resource_data": {"id": "m-1"}, "func": "is_artifact"}
+{"case": "mi-resource-path", "notification": {"id": "n-1", "changeType": "created", "resource": "/users/org-1/onlineMeetings/meet-1", "resourceData": {"id": "meet-1", "tenantId": "t-1", "meetingId": "meet-1"}}, "func": "meeting_ids"}
+{"case": "mi-resource-data-id", "notification": {"id": "n-2", "resourceData": {"id": "meet-9"}}, "func": "meeting_ids"}
+{"case": "mi-transcript-id", "notification": {"id": "n-3", "resource": "callTranscripts/getAllTranscripts", "resourceData": {"id": "t-id", "@odata.type": "#microsoft.graph.callTranscript"}}, "func": "meeting_ids"}
+{"case": "mi-receipt-fallback", "notification": {"id": "n-4"}, "func": "meeting_ids"}
+{"case": "mi-sha-fallback", "notification": {"changeType": "updated", "resourceData": {}}, "func": "meeting_ids"}
+{"case": "mi-odata-path", "notification": {"id": "n-5", "changeType": "created", "resourceData": {"@odata.id": "users('org-9')/onlineMeetings('meet-9')/transcripts('t-9')", "id": "t-9"}}, "func": "meeting_ids"}
+{"case": "rk-id", "notification": {"id": "n-1", "resource": "/x"}, "func": "receipt_key"}
+{"case": "rk-sha", "notification": {"changeType": "created", "clientState": "s"}, "func": "receipt_key"}
+{"case": "rk-nested", "notification": {"changeType": "updated", "resourceData": {"id": "m-1", "@odata.type": "#microsoft.graph.callRecording"}, "sub": {"a": true, "b": [1, 2]}}, "func": "receipt_key"}
+{"case": "rg-received", "job": {"status": "received"}, "func": "run_gate"}
+{"case": "rg-completed", "job": {"status": "completed"}, "func": "run_gate"}
+{"case": "rg-active", "job": {"status": "summarizing"}, "func": "run_gate"}
+{"case": "rg-writing", "job": {"status": "writing_linear"}, "func": "run_gate"}
+{"case": "rg-unknown", "job": {"status": "queued"}, "func": "run_gate"}
+{"case": "rg-empty", "job": {"status": ""}, "func": "run_gate"}
+{"case": "fd-hit", "jobs": [{"job_id": "job-a", "event_id": "e-1", "source_event_type": "created", "dedupe_key": "id:n-1", "status": "received"}, {"job_id": "job-b", "event_id": "e-2", "source_event_type": "created", "dedupe_key": "id:n-2", "status": "completed"}], "dedupe_key": "id:n-2", "func": "find_dedupe"}
+{"case": "fd-miss", "jobs": [{"job_id": "job-a", "event_id": "e-1", "source_event_type": "created", "dedupe_key": "id:n-1", "status": "received"}, {"job_id": "job-b", "event_id": "e-2", "source_event_type": "created", "dedupe_key": "id:n-2", "status": "completed"}], "dedupe_key": "id:n-9", "func": "find_dedupe"}
+{"case": "fd-empty", "jobs": [], "dedupe_key": "id:n-1", "func": "find_dedupe"}

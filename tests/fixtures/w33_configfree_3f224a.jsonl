@@ -1,0 +1,91 @@
+{"func": "status_payload", "case": "guest-trial-fresh", "identity": {"state": {"auth_method": "anonymous", "welcome_claim": true, "guest_notice_shown": false}, "guest_allowed": true, "trial_blocker": null, "nudge_due_in": 0, "connector_nudge_due_in": null, "mint_failure": null, "challenge": null}}
+{"func": "status_payload", "case": "guest-trial-notice-shown", "identity": {"state": {"auth_method": "anonymous", "welcome_claim": true, "guest_notice_shown": true}, "guest_allowed": true, "trial_blocker": null, "nudge_due_in": null, "connector_nudge_due_in": null, "mint_failure": null, "challenge": null}}
+{"func": "status_payload", "case": "no-identity-claimable", "identity": {"state": null, "guest_allowed": true, "trial_blocker": null, "nudge_due_in": null, "connector_nudge_due_in": null, "mint_failure": null, "challenge": null}}
+{"func": "status_payload", "case": "no-identity-mint-failure", "identity": {"state": null, "guest_allowed": true, "trial_blocker": null, "nudge_due_in": 45, "connector_nudge_due_in": null, "mint_failure": {"error": "The Nous service had a hiccup. Try again in a moment.", "error_code": "anon_server_error", "retryable": true, "retry_after": 15}, "challenge": null}}
+{"func": "status_payload", "case": "no-identity-blocked", "identity": {"state": null, "guest_allowed": true, "trial_blocker": "a provider is configured", "nudge_due_in": null, "connector_nudge_due_in": null, "mint_failure": {"error": "x", "error_code": "anon_unreachable", "retryable": true, "retry_after": 15}, "challenge": null}}
+{"func": "status_payload", "case": "guest-without-trial-nudges", "identity": {"state": {"auth_method": "anonymous", "welcome_claim": false}, "guest_allowed": true, "trial_blocker": "guests are switched off", "nudge_due_in": 0, "connector_nudge_due_in": 12, "mint_failure": {"error": "y", "error_code": "anon_rate_limited", "retryable": true, "retry_after": 0}, "challenge": null}}
+{"func": "status_payload", "case": "guest-trial-guests-off", "identity": {"state": {"auth_method": "anonymous", "welcome_claim": true}, "guest_allowed": false, "trial_blocker": "guests are switched off", "nudge_due_in": null, "connector_nudge_due_in": null, "mint_failure": null, "challenge": null}}
+{"func": "status_payload", "case": "state-not-object", "identity": {"state": "nous", "guest_allowed": true, "trial_blocker": null, "nudge_due_in": null, "connector_nudge_due_in": null, "mint_failure": null, "challenge": null}}
+{"func": "status_payload", "case": "challenge-and-failure", "identity": {"state": null, "guest_allowed": false, "trial_blocker": null, "nudge_due_in": null, "connector_nudge_due_in": 3, "mint_failure": {"error": "Your session ended. A new one starts on its own.", "error_code": "anon_credential_dead", "retryable": false, "retry_after": 0}, "challenge": {"type": "browser", "url": "https://portal.nousresearch.com/c/1", "required": true, "expires_in": 91, "message": "check", "attempt": 1}}}
+{"func": "status_payload", "case": "identity-null", "identity": null}
+{"func": "guest_state", "case": "guest", "state": {"auth_method": "anonymous"}}
+{"func": "guest_state", "case": "api-key", "state": {"auth_method": "api_key", "welcome_claim": true}}
+{"func": "guest_state", "case": "null", "state": null}
+{"func": "guest_state", "case": "not-object", "state": ["anonymous"]}
+{"func": "guest_state", "case": "no-method", "state": {"welcome_claim": true}}
+{"func": "free_inference", "case": "guest-claim-allowed", "state": {"auth_method": "anonymous", "welcome_claim": true}, "guest_allowed": true}
+{"func": "free_inference", "case": "guest-claim-guests-off", "state": {"auth_method": "anonymous", "welcome_claim": true}, "guest_allowed": false}
+{"func": "free_inference", "case": "guest-no-claim", "state": {"auth_method": "anonymous", "welcome_claim": false}, "guest_allowed": true}
+{"func": "free_inference", "case": "claim-is-number", "state": {"auth_method": "anonymous", "welcome_claim": 1}, "guest_allowed": true}
+{"func": "free_inference", "case": "claim-is-string", "state": {"auth_method": "anonymous", "welcome_claim": "true"}, "guest_allowed": true}
+{"func": "free_inference", "case": "not-guest", "state": {"auth_method": "api_key", "welcome_claim": true}, "guest_allowed": true}
+{"func": "free_inference", "case": "null-state", "state": null, "guest_allowed": true}
+{"func": "guest_without_tier", "case": "guest-no-trial", "state": {"auth_method": "anonymous", "welcome_claim": false}, "guest_allowed": true}
+{"func": "guest_without_tier", "case": "guest-with-trial", "state": {"auth_method": "anonymous", "welcome_claim": true}, "guest_allowed": true}
+{"func": "guest_without_tier", "case": "guest-trial-guests-off", "state": {"auth_method": "anonymous", "welcome_claim": true}, "guest_allowed": false}
+{"func": "guest_without_tier", "case": "not-guest", "state": {"auth_method": "api_key"}, "guest_allowed": true}
+{"func": "notice_pending", "case": "not-yet-shown", "state": {"auth_method": "anonymous", "welcome_claim": true, "guest_notice_shown": false}, "guest_allowed": true}
+{"func": "notice_pending", "case": "already-shown", "state": {"auth_method": "anonymous", "welcome_claim": true, "guest_notice_shown": true}, "guest_allowed": true}
+{"func": "notice_pending", "case": "no-trial", "state": {"auth_method": "anonymous", "welcome_claim": false}, "guest_allowed": true}
+{"func": "notice_pending", "case": "guests-off", "state": {"auth_method": "anonymous", "welcome_claim": true}, "guest_allowed": false}
+{"func": "notice_pending", "case": "flag-truthy-string", "state": {"auth_method": "anonymous", "welcome_claim": true, "guest_notice_shown": "yes"}, "guest_allowed": true}
+{"func": "failure_copy", "case": "gate-closed", "code": "anon_gate_closed", "retry_after": null}
+{"func": "failure_copy", "case": "rate-limited-zero", "code": "anon_rate_limited", "retry_after": 0}
+{"func": "failure_copy", "case": "rate-limited-5", "code": "anon_rate_limited", "retry_after": 5}
+{"func": "failure_copy", "case": "rate-limited-20", "code": "anon_rate_limited", "retry_after": 20}
+{"func": "failure_copy", "case": "rate-limited-120", "code": "anon_rate_limited", "retry_after": 120}
+{"func": "failure_copy", "case": "rate-limited-150-hit", "code": "anon_rate_limited", "retry_after": 150}
+{"func": "failure_copy", "case": "rate-limited-210-hit", "code": "anon_rate_limited", "retry_after": 210}
+{"func": "failure_copy", "case": "rate-limited-3600", "code": "anon_rate_limited", "retry_after": 3600}
+{"func": "failure_copy", "case": "rate-limited-4000", "code": "anon_rate_limited", "retry_after": 4000}
+{"func": "failure_copy", "case": "rate-limited-7200", "code": "anon_rate_limited", "retry_after": 7200}
+{"func": "failure_copy", "case": "rate-limited-90000", "code": "anon_rate_limited", "retry_after": 90000}
+{"func": "failure_copy", "case": "rate-limited-string", "code": "anon_rate_limited", "retry_after": "45"}
+{"func": "failure_copy", "case": "rate-limited-bool", "code": "anon_rate_limited", "retry_after": true}
+{"func": "failure_copy", "case": "rate-limited-non-numeric", "code": "anon_rate_limited", "retry_after": "soon"}
+{"func": "failure_copy", "case": "unknown-code", "code": "anon_not_a_code", "retry_after": 90}
+{"func": "failure_copy", "case": "code-null", "code": null, "retry_after": 30}
+{"func": "failure_copy", "case": "unreachable", "code": "anon_unreachable", "retry_after": null}
+{"func": "mint_payload", "case": "waiting", "failure": {"code": "anon_rate_limited", "message": "wait a bit", "retryable": true, "retry_after": 90.5, "not_before": 100.5}, "now": 10}
+{"func": "mint_payload", "case": "terminal", "failure": {"code": "anon_gate_closed", "message": "closed", "retryable": false, "retry_after": 0, "not_before": 100}, "now": 10}
+{"func": "mint_payload", "case": "past", "failure": {"code": "anon_unreachable", "message": "down", "retryable": true, "retry_after": 15, "not_before": 10}, "now": 20}
+{"func": "mint_payload", "case": "rounded", "failure": {"code": "anon_server_error", "message": "hiccup", "retryable": true, "retry_after": 12.3456, "not_before": 12.3456}, "now": 0}
+{"func": "mint_payload", "case": "no-failure", "failure": null, "now": 0}
+{"func": "challenge_parse", "case": "browser-ok", "payload": {"challenges": [{"type": "browser", "url": "https://portal.nousresearch.com/api/anonymous/challenge/t1", "expires_in": 120, "interval": 2}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "required-false", "payload": {"challenges": [{"type": "browser", "url": "https://portal.nousresearch.com/c/1", "required": false}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "required-null", "payload": {"challenges": [{"type": "browser", "url": "https://portal.nousresearch.com/c/1", "required": null}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "clamp-low", "payload": {"challenges": [{"type": "browser", "url": "https://portal.nousresearch.com/c/1", "expires_in": 10, "interval": 0.2}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "clamp-high", "payload": {"challenges": [{"type": "browser", "url": "https://portal.nousresearch.com/c/1", "expires_in": 5000, "interval": 20}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "number-defaults", "payload": {"challenges": [{"type": "browser", "url": "https://portal.nousresearch.com/c/1", "expires_in": "abc", "interval": true}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "message-long", "payload": {"message": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "challenges": [{"type": "browser", "url": "https://portal.nousresearch.com/c/1"}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "message-sanitized", "payload": {"message": "  step\tone\n\n step\ttwo  ", "challenges": [{"type": "browser", "url": "https://portal.nousresearch.com/c/1"}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "off-origin", "payload": {"challenges": [{"type": "browser", "url": "https://evil.example/c/1"}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "scheme-mismatch", "payload": {"challenges": [{"type": "browser", "url": "http://portal.nousresearch.com/c/1"}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "port-mismatch", "payload": {"challenges": [{"type": "browser", "url": "https://portal.nousresearch.com:8443/c/1"}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "skips-non-browser", "payload": {"challenges": [{"type": "pow", "url": "https://portal.nousresearch.com/p"}, {"type": "browser", "url": "https://portal.nousresearch.com/c/2"}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "no-list", "payload": {"challenges": {"type": "browser"}}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "empty-list", "payload": {"challenges": []}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "url-control-char", "payload": {"challenges": [{"type": "browser", "url": "https://portal.nousresearch.com/c/\u0007"}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "netloc-case", "payload": {"challenges": [{"type": "browser", "url": "https://PORTAL.NousResearch.com/c/1"}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_parse", "case": "no-host", "payload": {"challenges": [{"type": "browser", "url": "https:///c/1"}]}, "portal": "https://portal.nousresearch.com"}
+{"func": "challenge_payload", "case": "live", "rec": {"pending": {"url": "https://portal.nousresearch.com/c/1", "required": true, "expires_in": 120, "interval": 2, "message": "check", "attempt": 1}, "deadline": 100.4, "outcome": null}, "now": 10}
+{"func": "challenge_payload", "case": "expired", "rec": {"pending": {"url": "https://portal.nousresearch.com/c/1", "required": true, "expires_in": 120, "interval": 2, "message": "check", "attempt": 0}, "deadline": 5, "outcome": null}, "now": 10}
+{"func": "challenge_payload", "case": "closed-by-host", "rec": {"pending": {"url": "https://portal.nousresearch.com/c/1", "required": true, "expires_in": 120, "interval": 2, "message": "check", "attempt": 0}, "deadline": 100, "outcome": "closed"}, "now": 10}
+{"func": "challenge_payload", "case": "timeout", "rec": {"pending": {"url": "https://portal.nousresearch.com/c/1", "required": false, "expires_in": 120, "interval": 2, "message": "check", "attempt": 2}, "deadline": 1000, "outcome": "timeout"}, "now": 900}
+{"func": "challenge_payload", "case": "error", "rec": {"pending": {"url": "https://portal.nousresearch.com/c/1", "required": true, "expires_in": 120, "interval": 2, "message": "check", "attempt": 0}, "deadline": 200, "outcome": "error"}, "now": 10}
+{"func": "challenge_payload", "case": "none-pending", "rec": {"pending": null, "deadline": 0, "outcome": null}, "now": 0}
+{"func": "challenge_outcome", "case": "match", "rec": {"pending": {"url": "https://portal.nousresearch.com/c/1", "required": true, "expires_in": 120, "interval": 2, "message": "check", "attempt": 2}, "deadline": 100, "outcome": null}, "url": "https://portal.nousresearch.com/c/1", "attempt": 2, "now": 10}
+{"func": "challenge_outcome", "case": "stale-attempt", "rec": {"pending": {"url": "https://portal.nousresearch.com/c/1", "required": true, "expires_in": 120, "interval": 2, "message": "check", "attempt": 2}, "deadline": 100, "outcome": null}, "url": "https://portal.nousresearch.com/c/1", "attempt": 1, "now": 10}
+{"func": "challenge_outcome", "case": "other-url", "rec": {"pending": {"url": "https://portal.nousresearch.com/c/1", "required": true, "expires_in": 120, "interval": 2, "message": "check", "attempt": 2}, "deadline": 100, "outcome": null}, "url": "https://portal.nousresearch.com/c/2", "attempt": 2, "now": 10}
+{"func": "challenge_outcome", "case": "expired", "rec": {"pending": {"url": "https://portal.nousresearch.com/c/1", "required": true, "expires_in": 120, "interval": 2, "message": "check", "attempt": 2}, "deadline": 5, "outcome": null}, "url": "https://portal.nousresearch.com/c/1", "attempt": 2, "now": 10}
+{"func": "challenge_outcome", "case": "no-pending", "rec": {"pending": null, "deadline": 100, "outcome": null}, "url": "https://portal.nousresearch.com/c/1", "attempt": 0, "now": 10}
+{"func": "claim_blocker", "case": "not-desktop", "ask": {"assume_fresh": false, "configured": null, "provider_configured": false, "on_local_desktop_backend": false, "guest_allowed": true, "has_nous_identity": false, "machine_used": false, "trial_reserved": false}}
+{"func": "claim_blocker", "case": "guests-off", "ask": {"assume_fresh": false, "configured": null, "provider_configured": false, "on_local_desktop_backend": true, "guest_allowed": false, "has_nous_identity": false, "machine_used": false, "trial_reserved": false}}
+{"func": "claim_blocker", "case": "identity-exists", "ask": {"assume_fresh": false, "configured": null, "provider_configured": false, "on_local_desktop_backend": true, "guest_allowed": true, "has_nous_identity": true, "machine_used": false, "trial_reserved": false}}
+{"func": "claim_blocker", "case": "provider-configured", "ask": {"assume_fresh": false, "configured": null, "provider_configured": true, "on_local_desktop_backend": true, "guest_allowed": true, "has_nous_identity": false, "machine_used": false, "trial_reserved": false}}
+{"func": "claim_blocker", "case": "machine-used", "ask": {"assume_fresh": false, "configured": false, "provider_configured": true, "on_local_desktop_backend": true, "guest_allowed": true, "has_nous_identity": false, "machine_used": true, "trial_reserved": false}}
+{"func": "claim_blocker", "case": "machine-reserved", "ask": {"assume_fresh": false, "configured": false, "provider_configured": false, "on_local_desktop_backend": true, "guest_allowed": true, "has_nous_identity": false, "machine_used": true, "trial_reserved": true}}
+{"func": "claim_blocker", "case": "machine-unused", "ask": {"assume_fresh": false, "configured": false, "provider_configured": false, "on_local_desktop_backend": true, "guest_allowed": true, "has_nous_identity": false, "machine_used": false, "trial_reserved": false}}
+{"func": "claim_blocker", "case": "assume-fresh", "ask": {"assume_fresh": true, "configured": false, "provider_configured": false, "on_local_desktop_backend": true, "guest_allowed": true, "has_nous_identity": false, "machine_used": true, "trial_reserved": false}}
+{"func": "claim_blocker", "case": "configured-true-shortcircuits", "ask": {"assume_fresh": false, "configured": true, "provider_configured": false, "on_local_desktop_backend": true, "guest_allowed": true, "has_nous_identity": false, "machine_used": true, "trial_reserved": false}}
+{"func": "claim_blocker", "case": "ask-null", "ask": null}

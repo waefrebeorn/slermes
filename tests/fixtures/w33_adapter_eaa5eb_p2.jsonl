@@ -1,0 +1,142 @@
+{"case": "pd0-own-echo", "nick": "hermes-bot", "sender": "hermes-bot", "target": "#c", "text": "hi", "func": "privmsg_decision"}
+{"case": "pd1-dm-plain", "nick": "hermes-bot", "sender": "alice", "target": "alice", "text": "hello", "func": "privmsg_decision"}
+{"case": "pd2-dm-ctcp-action", "nick": "hermes-bot", "sender": "alice", "target": "alice", "text": "\u0001ACTION waves\u0001", "func": "privmsg_decision"}
+{"case": "pd3-dm-other-ctcp", "nick": "hermes-bot", "sender": "alice", "target": "alice", "text": "\u0001VERSION\u0001", "func": "privmsg_decision"}
+{"case": "pd4-chan-colon", "nick": "hermes-bot", "sender": "alice", "target": "#c", "text": "hermes-bot: run it", "func": "privmsg_decision"}
+{"case": "pd5-chan-comma", "nick": "hermes-bot", "sender": "alice", "target": "#c", "text": "HERMES-BOT, status", "func": "privmsg_decision"}
+{"case": "pd6-chan-space", "nick": "hermes-bot", "sender": "alice", "target": "#c", "text": "hermes-bot ping", "func": "privmsg_decision"}
+{"case": "pd7-chan-unaddressed", "nick": "hermes-bot", "sender": "alice", "target": "#c", "text": "just chatting", "func": "privmsg_decision"}
+{"case": "pd8-chan-ctcp-action", "nick": "hermes-bot", "sender": "alice", "target": "#c", "text": "\u0001ACTION waves\u0001", "func": "privmsg_decision"}
+{"case": "pd9-allow-ok", "nick": "hermes-bot", "sender": "Alice", "target": "alice", "text": "hi", "allowed_users": ["alice"], "func": "privmsg_decision"}
+{"case": "pd10-allow-denied", "nick": "hermes-bot", "sender": "bob", "target": "bob", "text": "hi", "allowed_users": ["alice"], "func": "privmsg_decision"}
+{"case": "pd11-allow-upper", "nick": "hermes-bot", "sender": "ALICE", "target": "alice", "text": "hi", "allowed_users": ["alice"], "func": "privmsg_decision"}
+{"case": "pd12-amp-channel", "nick": "hermes-bot", "sender": "alice", "target": "&local", "text": "hermes-bot: go", "func": "privmsg_decision"}
+{"case": "pd13-prefix-partial-word", "nick": "hermes", "sender": "alice", "target": "#c", "text": "hermes-bot is great", "func": "privmsg_decision"}
+{"case": "pd14-empty-dm", "nick": "hermes-bot", "sender": "alice", "target": "alice", "text": "", "func": "privmsg_decision"}
+{"case": "pd15-addressed-empty", "nick": "hermes-bot", "sender": "alice", "target": "#c", "text": "hermes-bot:    ", "func": "privmsg_decision"}
+{"case": "pd16-dm-empty-allowlist", "nick": "hermes-bot", "sender": "carol", "target": "carol", "text": "hey", "allowed_users": [], "func": "privmsg_decision"}
+{"case": "pd17-chan-action-addressed", "nick": "hermes-bot", "sender": "alice", "target": "#c", "text": "\u0001ACTION hermes-bot: waves\u0001", "func": "privmsg_decision"}
+{"case": "pd18-chan-addressed-allow-denied", "nick": "hermes-bot", "sender": "bob", "target": "#c", "text": "hermes-bot: go", "allowed_users": ["alice"], "func": "privmsg_decision"}
+{"case": "pd19-chan-addressed-allow-ok", "nick": "hermes-bot", "sender": "alice", "target": "#c", "text": "hermes-bot: go", "allowed_users": ["alice"], "func": "privmsg_decision"}
+{"case": "pd20-empty-nick-channel", "nick": "", "sender": "alice", "target": "#c", "text": "hello", "func": "privmsg_decision"}
+{"case": "pd21-empty-nick-dm", "nick": "", "sender": "alice", "target": "alice", "text": "hello", "func": "privmsg_decision"}
+{"case": "pd22-nonstring-allowlist", "nick": "hermes-bot", "sender": "alice", "target": "alice", "text": "hi", "allowed_users": [1, null, "alice"], "func": "privmsg_decision"}
+{"case": "nc0", "nickname": "hermes-bot", "current_nick": "hermes-bot", "func": "next_nick_collision"}
+{"case": "nc1", "nickname": "hermes-bot", "current_nick": "hermes-bot_1", "func": "next_nick_collision"}
+{"case": "nc2", "nickname": "hermes-bot", "current_nick": "hermes-bot_2", "func": "next_nick_collision"}
+{"case": "nc3", "nickname": "hermes", "current_nick": "hermes_007", "func": "next_nick_collision"}
+{"case": "nc4", "nickname": "bot_", "current_nick": "bot__3", "func": "next_nick_collision"}
+{"case": "nc5", "nickname": "x9", "current_nick": "x9_10", "func": "next_nick_collision"}
+{"case": "nc6", "nickname": "hermes-bot", "current_nick": "other", "func": "next_nick_collision"}
+{"case": "nc7", "nickname": "a_1_2", "current_nick": "a_1_2_3", "func": "next_nick_collision"}
+{"case": "nc8", "nickname": "hermes-bot", "current_nick": "hermes-bot_0", "func": "next_nick_collision"}
+{"case": "nc9", "nickname": "hermes", "current_nick": "hermes_1_22", "func": "next_nick_collision"}
+{"case": "nb0", "nickname": "hermes-bot", "func": "standalone_nick_base"}
+{"case": "nb1", "nickname": "hermes-bot_cron1", "func": "standalone_nick_base"}
+{"case": "nb2", "nickname": "hermes-bot-2", "func": "standalone_nick_base"}
+{"case": "nb3", "nickname": "12345", "func": "standalone_nick_base"}
+{"case": "nb4", "nickname": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "func": "standalone_nick_base"}
+{"case": "nb5", "nickname": "my_bot_007", "func": "standalone_nick_base"}
+{"case": "nb6", "nickname": "", "func": "standalone_nick_base"}
+{"case": "nb7", "nickname": "-_-", "func": "standalone_nick_base"}
+{"case": "nb8", "nickname": "cron_bot_9", "func": "standalone_nick_base"}
+{"case": "nb9", "nickname": "hermes-bot_cron-07", "func": "standalone_nick_base"}
+{"case": "nb10", "nickname": "0123456789abcdefghijklmnopqrstuvwxyz", "func": "standalone_nick_base"}
+{"case": "sn0", "nick_base": "hermes-bot", "attempts": 0, "func": "standalone_nick"}
+{"case": "sn1", "nick_base": "hermes-bot", "attempts": 1, "func": "standalone_nick"}
+{"case": "sn2", "nick_base": "hermes-bot", "attempts": 12, "func": "standalone_nick"}
+{"case": "sn3", "nick_base": "abcdefghijklmnopqrstuvwx", "attempts": 1, "func": "standalone_nick"}
+{"case": "sn4", "nick_base": "", "attempts": 0, "func": "standalone_nick"}
+{"case": "sn5", "nick_base": "short", "attempts": 5, "func": "standalone_nick"}
+{"case": "sn6", "nick_base": "abcdefghijklmnopqrstuvwx", "attempts": 9, "func": "standalone_nick"}
+{"case": "sn7", "nick_base": "hermes-bot", "attempts": 6, "func": "standalone_nick"}
+{"case": "sn8", "nick_base": "a", "attempts": 2, "func": "standalone_nick"}
+{"case": "sn9", "nick_base": "verylongbasename0000000", "attempts": 4, "func": "standalone_nick"}
+{"case": "nr0", "nick_base": "hermes-bot", "collisions": 0, "func": "nick_retry"}
+{"case": "nr1", "nick_base": "hermes-bot", "collisions": 1, "func": "nick_retry"}
+{"case": "nr2", "nick_base": "hermes-bot", "collisions": 5, "func": "nick_retry"}
+{"case": "nr3", "nick_base": "hermes-bot", "collisions": 6, "func": "nick_retry"}
+{"case": "nr4", "nick_base": "hermes-bot", "collisions": 7, "func": "nick_retry"}
+{"case": "nr5", "nick_base": "abcdefghijklmnopqrstuvwx", "collisions": 3, "func": "nick_retry"}
+{"case": "nr6", "nick_base": "", "collisions": 2, "func": "nick_retry"}
+{"case": "nr7", "nick_base": "abcdefghijklmnopqrstuvwx", "collisions": 9, "func": "nick_retry"}
+{"case": "nr8", "nick_base": "hermes-bot", "collisions": 3, "func": "nick_retry"}
+{"case": "nr9", "nick_base": "hermes-bot", "collisions": 4, "func": "nick_retry"}
+{"case": "st0", "server": "irc.libera.chat", "channel": "#hermes", "chat_id": "#room", "port": 6697, "nickname": "hermes-bot", "message": "hi", "func": "standalone_target"}
+{"case": "st1", "server": "irc.libera.chat", "channel": "#hermes", "chat_id": "", "port": 6697, "nickname": "hermes-bot", "message": "hi", "func": "standalone_target"}
+{"case": "st2", "server": "irc.libera.chat", "channel": "#hermes", "chat_id": "bad id", "port": 6697, "nickname": "hermes-bot", "message": "hi", "func": "standalone_target"}
+{"case": "st3", "server": "irc.libera.chat", "channel": "#hermes", "chat_id": "a\nb", "port": 6697, "nickname": "hermes-bot", "message": "hi", "func": "standalone_target"}
+{"case": "st4", "server": "", "channel": "#hermes", "chat_id": "#room", "port": 6697, "nickname": "hermes-bot", "message": "hi", "func": "standalone_target"}
+{"case": "st5", "server": "irc.libera.chat", "channel": "", "chat_id": "#room", "port": 6697, "nickname": "hermes-bot", "message": "hi", "func": "standalone_target"}
+{"case": "st6", "server": "irc.libera.chat", "channel": "#hermes", "chat_id": "#room", "port": "notaport", "nickname": "hermes-bot", "message": "hi", "func": "standalone_target"}
+{"case": "st7", "server": "irc.libera.chat", "channel": "#hermes", "chat_id": "#room", "port": "  8080  ", "nickname": "hermes-bot", "message": "hi", "func": "standalone_target"}
+{"case": "st8", "server": "irc.libera.chat", "channel": "#hermes", "chat_id": "#room", "port": null, "nickname": "hermes-bot", "message": "hi", "func": "standalone_target"}
+{"case": "st9", "server": "irc.libera.chat", "channel": "#hermes", "chat_id": "alice", "port": 6667, "nickname": "bot_123", "message": "hello", "func": "standalone_target"}
+{"case": "st10", "server": "irc.libera.chat", "channel": "#hermes", "chat_id": "+modeless", "port": 6697, "nickname": "hermes-bot", "message": "hi", "func": "standalone_target"}
+{"case": "sln0", "message": "hello world", "target": "#hermes", "func": "standalone_lines"}
+{"case": "sln1", "message": "", "target": "#hermes", "func": "standalone_lines"}
+{"case": "sln2", "message": "   \n  ", "target": "#hermes", "func": "standalone_lines"}
+{"case": "sln3", "message": "**bold** and [link](http://x)", "target": "#hermes", "func": "standalone_lines"}
+{"case": "sln4", "message": "line1\nline2\n\nline3", "target": "#hermes", "func": "standalone_lines"}
+{"case": "sln5", "message": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word ", "target": "#hermes", "func": "standalone_lines"}
+{"case": "sln6", "message": "a\rb", "target": "#hermes", "func": "standalone_lines"}
+{"case": "sln7", "message": "line one\r\nline two", "target": "#hermes", "func": "standalone_lines"}
+{"case": "sln8", "message": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word ", "target": "nick", "func": "standalone_lines"}
+{"case": "sln9", "message": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "target": "#hermes", "func": "standalone_lines"}
+{"case": "sln10", "message": "word word word word word word word word word word ", "target": "#cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "func": "standalone_lines"}
+{"case": "sln11", "message": "+modeless", "target": "#fallback", "func": "standalone_lines"}
+{"case": "ic0", "target": "#x", "func": "is_channel"}
+{"case": "ic1", "target": "&x", "func": "is_channel"}
+{"case": "ic2", "target": "+x", "func": "is_channel"}
+{"case": "ic3", "target": "!x", "func": "is_channel"}
+{"case": "ic4", "target": "nick", "func": "is_channel"}
+{"case": "ic5", "target": "", "func": "is_channel"}
+{"case": "ic6", "target": "##", "func": "is_channel"}
+{"case": "ic7", "target": "#", "func": "is_channel"}
+{"case": "ic8", "target": " ", "func": "is_channel"}
+{"case": "ic9", "target": "-x", "func": "is_channel"}
+{"case": "ic10", "target": "éx", "func": "is_channel"}
+{"case": "ci0", "chat_id": "#chan", "func": "chat_info"}
+{"case": "ci1", "chat_id": "&chan", "func": "chat_info"}
+{"case": "ci2", "chat_id": "nick", "func": "chat_info"}
+{"case": "ci3", "chat_id": "", "func": "chat_info"}
+{"case": "ci4", "chat_id": "+x", "func": "chat_info"}
+{"case": "ci5", "chat_id": "!", "func": "chat_info"}
+{"case": "ci6", "chat_id": "chan name", "func": "chat_info"}
+{"case": "ci7", "chat_id": "#chan/sub", "func": "chat_info"}
+{"case": "ci8", "chat_id": "-x", "func": "chat_info"}
+{"case": "ci9", "chat_id": "é", "func": "chat_info"}
+{"case": "ee0", "env": {"IRC_SERVER": "irc.libera.chat", "IRC_CHANNEL": "#hermes"}, "func": "env_enablement"}
+{"case": "ee1", "env": {"IRC_SERVER": "irc.libera.chat", "IRC_CHANNEL": "#hermes", "IRC_PORT": "6697", "IRC_NICKNAME": "hermes-bot", "IRC_USE_TLS": "TRUE", "IRC_SERVER_PASSWORD": "s3cret", "IRC_NICKSERV_PASSWORD": "nickpass"}, "func": "env_enablement"}
+{"case": "ee2", "env": {"IRC_SERVER": " irc.libera.chat ", "IRC_CHANNEL": " #hermes "}, "func": "env_enablement"}
+{"case": "ee3", "env": {"IRC_SERVER": "irc.libera.chat", "IRC_CHANNEL": "#hermes", "IRC_USE_TLS": "0"}, "func": "env_enablement"}
+{"case": "ee4", "env": {"IRC_SERVER": "irc.libera.chat", "IRC_CHANNEL": "#hermes", "IRC_USE_TLS": "no"}, "func": "env_enablement"}
+{"case": "ee5", "env": {"IRC_SERVER": "irc.libera.chat", "IRC_CHANNEL": "#hermes", "IRC_PORT": "notaport"}, "func": "env_enablement"}
+{"case": "ee6", "env": {"IRC_SERVER": "irc.libera.chat", "IRC_CHANNEL": "#hermes", "IRC_HOME_CHANNEL": "#ops", "IRC_HOME_CHANNEL_NAME": "Ops"}, "func": "env_enablement"}
+{"case": "ee7", "env": {"IRC_SERVER": "irc.libera.chat", "IRC_CHANNEL": "#hermes", "IRC_HOME_CHANNEL": "", "IRC_HOME_CHANNEL_NAME": "Ignored"}, "func": "env_enablement"}
+{"case": "ee8", "env": {"IRC_SERVER": "irc.libera.chat"}, "func": "env_enablement"}
+{"case": "ee9", "env": {"IRC_CHANNEL": "#hermes"}, "func": "env_enablement"}
+{"case": "ee10", "env": {"IRC_SERVER": "   ", "IRC_CHANNEL": "#hermes"}, "func": "env_enablement"}
+{"case": "ee11", "env": {"IRC_SERVER": "irc.libera.chat", "IRC_CHANNEL": "#hermes", "IRC_NICKNAME": "  "}, "func": "env_enablement"}
+{"case": "ee12", "env": {"IRC_SERVER": "irc.libera.chat", "IRC_CHANNEL": "#hermes", "IRC_PORT": "0"}, "func": "env_enablement"}
+{"case": "ee13", "env": {"IRC_SERVER": "irc.libera.chat", "IRC_CHANNEL": "#hermes", "IRC_PORT": "6697 ", "IRC_USE_TLS": "Yes"}, "func": "env_enablement"}
+{"case": "sc0", "extra": {"server": "cfg.example", "channel": "#cfg"}, "env": {}, "func": "server_channel"}
+{"case": "sc1", "extra": {"server": "cfg.example", "channel": "#cfg"}, "env": {"IRC_SERVER": "env.example", "IRC_CHANNEL": "#env"}, "func": "server_channel"}
+{"case": "sc2", "extra": {}, "env": {"IRC_SERVER": "env.example", "IRC_CHANNEL": "#env"}, "func": "server_channel"}
+{"case": "sc3", "extra": {"server": "cfg.example"}, "env": {"IRC_CHANNEL": "#env"}, "func": "server_channel"}
+{"case": "sc4", "extra": {"server": "", "channel": ""}, "env": {"IRC_SERVER": "", "IRC_CHANNEL": ""}, "func": "server_channel"}
+{"case": "sc5", "extra": {"port": 6697}, "env": {"IRC_SERVER": null}, "func": "server_channel"}
+{"case": "sc6", "extra": {"server": "cfg.example", "channel": "#cfg"}, "env": {"IRC_SERVER": "  ", "IRC_CHANNEL": "#env"}, "func": "server_channel"}
+{"case": "sc7", "extra": {"server": 123}, "env": {}, "func": "server_channel"}
+{"case": "sc8", "extra": {"server": "cfg", "channel": "#cfg"}, "env": {"IRC_SERVER": null, "IRC_CHANNEL": null}, "func": "server_channel"}
+{"case": "sc9", "extra": {"server": "x", "channel": "#y"}, "env": {"IRC_SERVER": "z"}, "func": "server_channel"}
+{"case": "cr0", "extra": {"server": "a", "channel": "#b"}, "env": {}, "func": "config_ready"}
+{"case": "cr1", "extra": {"server": "a"}, "env": {"IRC_CHANNEL": "#b"}, "func": "config_ready"}
+{"case": "cr2", "extra": {}, "env": {"IRC_SERVER": "a", "IRC_CHANNEL": "#b"}, "func": "config_ready"}
+{"case": "cr3", "extra": {"server": "a"}, "env": {}, "func": "config_ready"}
+{"case": "cr4", "extra": {}, "env": {}, "func": "config_ready"}
+{"case": "cr5", "extra": {"channel": "#b"}, "env": {}, "func": "config_ready"}
+{"case": "cr6", "extra": {}, "env": {"IRC_SERVER": ""}, "func": "config_ready"}
+{"case": "cr7", "extra": {"server": 0, "channel": 0}, "env": {}, "func": "config_ready"}
+{"case": "cr8", "extra": {"server": "a", "channel": "#b"}, "env": {"IRC_SERVER": "", "IRC_CHANNEL": ""}, "func": "config_ready"}
+{"case": "cr9", "extra": {"server": "a", "channel": "#b"}, "env": {"IRC_SERVER": "x", "IRC_CHANNEL": null}, "func": "config_ready"}

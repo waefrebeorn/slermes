@@ -1,0 +1,21 @@
+{
+  "w33_adapter_eaa5eb_p1": "plugins/platforms/irc/adapter",
+  "w33_adapter_eaa5eb_p2": "plugins/platforms/irc/adapter",
+  "w33_configfree_3f224a": "tui_gateway/contracts/config_free_tier_control",
+  "w33_interactio_95c25f_p1": "plugins/model-providers/gemini/interactions",
+  "w33_interactio_95c25f_p2": "plugins/model-providers/gemini/interactions",
+  "w33_maintenanc_3e1b75_p1": "persistence/sqlite/housekeeping/maintenance",
+  "w33_maintenanc_3e1b75_p2": "persistence/sqlite/housekeeping/maintenance",
+  "w33_pipeline_540ecf_p1": "plugins/teams_pipeline/pipeline",
+  "w33_pipeline_540ecf_p2": "plugins/teams_pipeline/pipeline",
+  "w33_portabilit_b54bb9": "persistence/sqlite/housekeeping/_portability",
+  "w33_runtime_dd441a_p1": "persistence/authority/runtime",
+  "w33_runtime_dd441a_p2": "persistence/authority/runtime",
+  "w33_sandboxcon_be5b73_p1": "tools/environments/sandbox_conformance",
+  "w33_sandboxcon_be5b73_p2": "tools/environments/sandbox_conformance",
+  "w33_servers_a4580e": "agent/lsp/servers",
+  "w33_standalone_9f791b": "plugins/platforms/telegram/standalone",
+  "w33_telegramne_429779_p1": "plugins/platforms/telegram/telegram_network",
+  "w33_telegramne_429779_p2": "plugins/platforms/telegram/telegram_network",
+  "w33_updatecmdf_6721f6": "hermes_cli/update_cmd_fleet_verify"
+}

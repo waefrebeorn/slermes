@@ -1,0 +1,90 @@
+{"func": "fleet_probe_expected", "case": "plan-gateway-pre-null", "plan_runtimes": [{"kind": "gateway", "profile": "a"}], "pre_restart_pids": null, "restarted_services": [], "killed_pids": []}
+{"func": "fleet_probe_expected", "case": "serve-only-plan", "plan_runtimes": [{"kind": "serve", "profile": "a"}], "pre_restart_pids": [], "restarted_services": [], "killed_pids": []}
+{"func": "fleet_probe_expected", "case": "dashboard-only-plan", "plan_runtimes": [{"kind": "dashboard"}], "pre_restart_pids": [], "restarted_services": null, "killed_pids": null}
+{"func": "fleet_probe_expected", "case": "restarted-services-signal", "plan_runtimes": null, "pre_restart_pids": [], "restarted_services": ["hermes-gateway"], "killed_pids": []}
+{"func": "fleet_probe_expected", "case": "killed-pids-signal", "plan_runtimes": null, "pre_restart_pids": [], "restarted_services": [], "killed_pids": [5]}
+{"func": "fleet_probe_expected", "case": "pre-pids-nonempty", "plan_runtimes": null, "pre_restart_pids": [11], "restarted_services": [], "killed_pids": []}
+{"func": "fleet_probe_expected", "case": "nothing-expected", "plan_runtimes": [], "pre_restart_pids": [], "restarted_services": [], "killed_pids": []}
+{"func": "fleet_probe_expected", "case": "plan-runtime-kindless", "plan_runtimes": [{"profile": "a"}, {"kind": "gateway"}], "pre_restart_pids": [], "restarted_services": [], "killed_pids": []}
+{"func": "identity_pending", "case": "unknown-new-pid", "row": {"state": "unknown", "code_sha": null, "pid": 9}, "pre_restart_pids": [1, 2]}
+{"func": "identity_pending", "case": "unknown-surviving-pid", "row": {"state": "unknown", "code_sha": null, "pid": 2}, "pre_restart_pids": [1, 2]}
+{"func": "identity_pending", "case": "unknown-with-sha", "row": {"state": "unknown", "code_sha": "abc123", "pid": 9}, "pre_restart_pids": [1]}
+{"func": "identity_pending", "case": "current-state", "row": {"state": "current", "code_sha": null, "pid": 9}, "pre_restart_pids": [1]}
+{"func": "identity_pending", "case": "no-pid-snapshot", "row": {"state": "unknown", "code_sha": null, "pid": 9}, "pre_restart_pids": null}
+{"func": "identity_pending", "case": "pid-string-never-matches", "row": {"state": "unknown", "code_sha": null, "pid": "9"}, "pre_restart_pids": [9]}
+{"func": "identity_pending", "case": "pid-bool-matches-one", "row": {"state": "unknown", "code_sha": null, "pid": true}, "pre_restart_pids": [1]}
+{"func": "identity_pending", "case": "state-missing", "row": {"code_sha": null, "pid": 9}, "pre_restart_pids": [1]}
+{"func": "identity_pending", "case": "state-numeric", "row": {"state": 5, "code_sha": null, "pid": 9}, "pre_restart_pids": [1]}
+{"func": "live_gateway_pids", "case": "grouped-and-dropped", "rows": [{"pid": 5, "profile": "a", "state": "current"}, {"pid": 5, "profile": "a", "state": "stale"}, {"pid": 6, "profile": "a", "state": "down"}]}
+{"func": "live_gateway_pids", "case": "empty-profile-skipped", "rows": [{"pid": 5, "profile": "", "state": "current"}, {"pid": 6, "profile": "b", "state": "unknown"}]}
+{"func": "live_gateway_pids", "case": "numeric-profile", "rows": [{"pid": 8, "profile": 7, "state": "current"}]}
+{"func": "live_gateway_pids", "case": "string-pid-skipped", "rows": [{"pid": "8", "profile": "a", "state": "current"}]}
+{"func": "live_gateway_pids", "case": "null-pid-skipped", "rows": [{"pid": null, "profile": "a", "state": "current"}, {"pid": 4, "profile": "a"}]}
+{"func": "live_gateway_pids", "case": "zero-profile-skipped", "rows": [{"pid": 3, "profile": 0, "state": "current"}]}
+{"func": "live_gateway_pids", "case": "no-rows", "rows": []}
+{"func": "is_serve_unit", "case": "exact-serve", "name": "hermes-serve.service"}
+{"func": "is_serve_unit", "case": "hyphen-serve", "name": "hermes-serve-foo.service"}
+{"func": "is_serve_unit", "case": "bare-serve", "name": "hermes-serve"}
+{"func": "is_serve_unit", "case": "bare-dashboard", "name": "hermes-dashboard"}
+{"func": "is_serve_unit", "case": "numbered-dashboard", "name": "hermes-dashboard-2.service"}
+{"func": "is_serve_unit", "case": "gateway-unit", "name": "hermes-gateway.service"}
+{"func": "is_serve_unit", "case": "gateway-serve-hybrid", "name": "hermes-gateway-serve.service"}
+{"func": "is_serve_unit", "case": "null-name", "name": null}
+{"func": "is_serve_unit", "case": "empty-name", "name": ""}
+{"func": "is_serve_unit", "case": "listing-marker", "name": "systemd-user (listing unavailable)"}
+{"func": "restart_phase_owes_gateway", "case": "complete-phase", "restart": {"incomplete": false, "failed_or_stale_units": ["hermes-gateway"], "phase_errors": []}}
+{"func": "restart_phase_owes_gateway", "case": "incomplete-no-failures", "restart": {"incomplete": true, "failed_or_stale_units": [], "phase_errors": []}}
+{"func": "restart_phase_owes_gateway", "case": "serve-only-failures", "restart": {"incomplete": true, "failed_or_stale_units": ["hermes-serve-a.service"], "phase_errors": []}}
+{"func": "restart_phase_owes_gateway", "case": "serve-and-dashboard-failures", "restart": {"incomplete": true, "failed_or_stale_units": ["hermes-serve-a.service", "hermes-dashboard"], "phase_errors": []}}
+{"func": "restart_phase_owes_gateway", "case": "gateway-among-failures", "restart": {"incomplete": true, "failed_or_stale_units": ["hermes-serve-a.service", "hermes-gateway"], "phase_errors": []}}
+{"func": "restart_phase_owes_gateway", "case": "phase-error-anyway", "restart": {"incomplete": true, "failed_or_stale_units": [], "phase_errors": ["boom"]}}
+{"func": "restart_phase_owes_gateway", "case": "listing-marker-failure", "restart": {"incomplete": true, "failed_or_stale_units": ["systemd-user (listing unavailable)"], "phase_errors": []}}
+{"func": "split_unaccounted", "case": "none", "outcomes": []}
+{"func": "split_unaccounted", "case": "serve-only", "outcomes": [{"outcome": "unaccounted", "kind": "serve", "pid": 9}]}
+{"func": "split_unaccounted", "case": "dashboard-and-serve", "outcomes": [{"outcome": "unaccounted", "kind": "dashboard", "pid": 4}, {"outcome": "unaccounted", "kind": "serve", "pid": 9}, {"outcome": "unaccounted", "kind": "serve", "pid": 9}]}
+{"func": "split_unaccounted", "case": "gateway-missed", "outcomes": [{"outcome": "unaccounted", "kind": "gateway", "pid": 3}]}
+{"func": "split_unaccounted", "case": "kindless-missed", "outcomes": [{"outcome": "unaccounted", "pid": 3}]}
+{"func": "split_unaccounted", "case": "non-unaccounted-ignored", "outcomes": [{"outcome": "deferred", "kind": "gateway", "pid": 3}, {"outcome": "restarted", "kind": "serve", "pid": 8}]}
+{"func": "split_unaccounted", "case": "string-pid-serve", "outcomes": [{"outcome": "unaccounted", "kind": "serve", "pid": "9"}]}
+{"func": "owed_restart_reason", "case": "gateway-only", "restart": {"failed_or_stale_units": []}, "stopped": [], "gateway_owed": true, "stale_serves": [], "down_serves": []}
+{"func": "owed_restart_reason", "case": "gateway-with-stopped-pids", "restart": {"failed_or_stale_units": []}, "stopped": [12, 11], "gateway_owed": true, "stale_serves": [], "down_serves": []}
+{"func": "owed_restart_reason", "case": "nothing-classified-fallback", "restart": {"failed_or_stale_units": []}, "stopped": [], "gateway_owed": false, "stale_serves": [], "down_serves": []}
+{"func": "owed_restart_reason", "case": "serve-units-only", "restart": {"failed_or_stale_units": ["hermes-serve-b.service", "hermes-serve-a.service"]}, "stopped": [], "gateway_owed": false, "stale_serves": [], "down_serves": []}
+{"func": "owed_restart_reason", "case": "serve-units-deduped", "restart": {"failed_or_stale_units": ["hermes-serve-a.service", "hermes-serve-a"]}, "stopped": [], "gateway_owed": false, "stale_serves": [], "down_serves": []}
+{"func": "owed_restart_reason", "case": "down-serves-only", "restart": {"failed_or_stale_units": []}, "stopped": [], "gateway_owed": false, "stale_serves": [], "down_serves": [8, 6]}
+{"func": "owed_restart_reason", "case": "stale-minus-down", "restart": {"failed_or_stale_units": []}, "stopped": [], "gateway_owed": false, "stale_serves": [8, 7, 6], "down_serves": [6, 8]}
+{"func": "owed_restart_reason", "case": "stale-only", "restart": {"failed_or_stale_units": []}, "stopped": [], "gateway_owed": false, "stale_serves": [7], "down_serves": []}
+{"func": "owed_restart_reason", "case": "everything-owed", "restart": {"failed_or_stale_units": ["hermes-serve-a.service", "hermes-gateway", "hermes-dashboard-2"]}, "stopped": [21], "gateway_owed": true, "stale_serves": [5, 6], "down_serves": [6]}
+{"func": "row_is_external", "case": "external", "row": {"state": "external", "pid": 3}}
+{"func": "row_is_external", "case": "current", "row": {"state": "current", "pid": 3}}
+{"func": "row_is_external", "case": "not-a-dict", "row": null}
+{"func": "restarted_units_gone", "case": "no-units", "units": [], "responses": {}}
+{"func": "restarted_units_gone", "case": "loaded-inactive", "units": ["user/hermes-gateway"], "responses": {"user/hermes-gateway": "LoadState=loaded\nActiveState=inactive\n"}}
+{"func": "restarted_units_gone", "case": "loaded-active", "units": ["user/hermes-gateway"], "responses": {"user/hermes-gateway": "LoadState=loaded\nActiveState=active\n"}}
+{"func": "restarted_units_gone", "case": "loaded-activating", "units": ["user/hermes-gateway"], "responses": {"user/hermes-gateway": "LoadState=loaded\nActiveState=activating\n"}}
+{"func": "restarted_units_gone", "case": "loaded-reloading", "units": ["user/hermes-gateway"], "responses": {"user/hermes-gateway": "LoadState=loaded\nActiveState=reloading\n"}}
+{"func": "restarted_units_gone", "case": "not-found-loadstate", "units": ["system/hermes-gateway-x"], "responses": {"system/hermes-gateway-x": "LoadState=not-found\nActiveState=inactive\n"}}
+{"func": "restarted_units_gone", "case": "systemctl-missing", "units": ["user/hermes-gateway"], "responses": {}}
+{"func": "restarted_units_gone", "case": "unknown-scope", "units": ["bogus/hermes-gateway"], "responses": {"bogus/hermes-gateway": "LoadState=loaded\nActiveState=inactive\n"}}
+{"func": "restarted_units_gone", "case": "no-scope-separator", "units": ["hermes-gateway"], "responses": {"system/hermes-gateway": "LoadState=loaded\nActiveState=inactive\n"}}
+{"func": "restarted_units_gone", "case": "two-scopes-both-dead", "units": ["user/hermes-gateway", "system/hermes-gateway"], "responses": {"user/hermes-gateway": "LoadState=loaded\nActiveState=failed\n", "system/hermes-gateway": "LoadState=loaded\nActiveState=inactive\n"}}
+{"func": "restarted_units_gone", "case": "second-unit-alive", "units": ["user/hermes-gateway", "system/hermes-gateway"], "responses": {"user/hermes-gateway": "LoadState=loaded\nActiveState=inactive\n", "system/hermes-gateway": "LoadState=loaded\nActiveState=active\n"}}
+{"func": "restarted_units_gone", "case": "crlf-props", "units": ["user/hermes-gateway"], "responses": {"user/hermes-gateway": "LoadState=loaded\r\nActiveState=inactive\r\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "no-pids", "unit": "hermes-gateway", "pids": [], "responses": {"user/hermes-gateway": "LoadState=loaded\nMainPID=42\n", "system/hermes-gateway": "LoadState=loaded\nMainPID=42\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "serve-unit-name-gate", "unit": "hermes-serve-a.service", "pids": [42], "responses": {"user/hermes-serve-a.service": "LoadState=loaded\nMainPID=42\n", "system/hermes-serve-a.service": "LoadState=loaded\nMainPID=42\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "both-scopes-match", "unit": "hermes-gateway", "pids": [42], "responses": {"user/hermes-gateway": "LoadState=loaded\nMainPID=42\n", "system/hermes-gateway": "LoadState=loaded\nMainPID=42\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "one-scope-not-found", "unit": "hermes-gateway", "pids": [42], "responses": {"user/hermes-gateway": "LoadState=loaded\nMainPID=42\n", "system/hermes-gateway": "LoadState=not-found\nMainPID=0\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "no-scope-loaded", "unit": "hermes-gateway", "pids": [42], "responses": {"user/hermes-gateway": "LoadState=not-found\nMainPID=0\n", "system/hermes-gateway": "LoadState=not-found\nMainPID=0\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "twin-other-pid", "unit": "hermes-gateway", "pids": [42], "responses": {"user/hermes-gateway": "LoadState=loaded\nMainPID=42\n", "system/hermes-gateway": "LoadState=loaded\nMainPID=7\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "mainpid-not-a-number", "unit": "hermes-gateway", "pids": [42], "responses": {"user/hermes-gateway": "LoadState=loaded\nMainPID=abc\n", "system/hermes-gateway": "LoadState=loaded\nMainPID=42\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "mainpid-missing-reads-zero", "unit": "hermes-gateway-x", "pids": [0], "responses": {"user/hermes-gateway-x": "LoadState=loaded\nActiveState=active\n", "system/hermes-gateway-x": "LoadState=not-found\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "systemctl-missing", "unit": "hermes-gateway", "pids": [42], "responses": {}}
+{"func": "constants", "case": "reason-literals"}
+{"func": "restarted_units_gone", "case": "duplicate-property-last-wins", "units": ["user/hermes-gateway"], "responses": {"user/hermes-gateway": "LoadState=not-found\nLoadState=loaded\nActiveState=inactive\n"}}
+{"func": "restarted_units_gone", "case": "empty-stdout", "units": ["user/hermes-gateway"], "responses": {"user/hermes-gateway": ""}}
+{"func": "gateway_unit_runs_one_of", "case": "mainpid-padded", "unit": "hermes-gateway", "pids": [42], "responses": {"user/hermes-gateway": "LoadState=loaded\nMainPID= 42 \n", "system/hermes-gateway": "LoadState=loaded\nMainPID=42\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "mainpid-plus-sign", "unit": "hermes-gateway", "pids": [42], "responses": {"user/hermes-gateway": "LoadState=loaded\nMainPID=+42\n", "system/hermes-gateway": "LoadState=not-found\n"}}
+{"func": "gateway_unit_runs_one_of", "case": "mainpid-negative", "unit": "hermes-gateway", "pids": [3], "responses": {"user/hermes-gateway": "LoadState=loaded\nMainPID=-3\n", "system/hermes-gateway": "LoadState=not-found\n"}}
+{"func": "owed_restart_reason", "case": "down-serves-deduped", "restart": {"failed_or_stale_units": []}, "stopped": [], "gateway_owed": false, "stale_serves": [], "down_serves": [8, 8, 3]}
+{"func": "restart_phase_owes_gateway", "case": "incomplete-numeric-truthy", "restart": {"incomplete": 1, "failed_or_stale_units": ["hermes-gateway"], "phase_errors": []}}
+{"func": "identity_pending", "case": "empty-pid-snapshot", "row": {"state": "unknown", "code_sha": null, "pid": 9}, "pre_restart_pids": []}

@@ -1,0 +1,49 @@
+{"func": "input_steps", "case": "user-text", "messages": [{"role": "user", "content": "hello"}]}
+{"func": "input_steps", "case": "system-developer-fold", "messages": [{"role": "system", "content": "sys A"}, {"role": "developer", "content": [{"type": "text", "text": "dev B"}]}, {"role": "user", "content": "u1"}, {"role": "user", "content": [{"type": "text", "text": "u2"}, {"type": "text", "text": ""}]}, {"role": "assistant", "content": "a1"}]}
+{"func": "input_steps", "case": "images", "messages": [{"role": "user", "content": [{"type": "text", "text": "look"}, {"type": "image_url", "image_url": {"url": "data:image/png;base64,aGVsbG8="}}, {"type": "image_url", "image_url": {"url": "https://x/y.png"}}, {"type": "image_url", "image_url": {"url": "data:image/svg+xml;base64,aGVsbG8="}}]}]}
+{"func": "input_steps", "case": "assistant-tools", "messages": [{"role": "assistant", "content": "thinking out loud", "extra_content": {"google": {"thought_signature": "SIG1"}}, "tool_calls": [{"id": "call_a1", "type": "function", "function": {"name": "search", "arguments": "{\"q\": \"cats\"}"}}, {"id": "call_a2", "function": {"name": "open", "arguments": "not json"}}]}, {"role": "tool", "tool_call_id": "call_a1", "content": "{\"ok\": true}"}, {"role": "tool", "tool_call_id": "call_a2", "content": "plain text"}]}
+{"func": "input_steps", "case": "assistant-call-no-thought", "messages": [{"role": "user", "content": "q"}, {"role": "assistant", "content": null, "tool_calls": [{"id": "call_b1", "function": {"name": "ping", "arguments": "{}"}}]}]}
+{"func": "input_steps", "case": "tool-result-schema", "messages": [{"role": "tool", "tool_call_id": "call_c1", "name": "describe", "content": "{\"$ref\": \"#/$defs/Foo\", \"type\": \"object\"}"}, {"role": "tool", "tool_call_id": "call_c2", "content": "[1, 2]"}]}
+{"func": "input_steps", "case": "tool-result-image", "messages": [{"role": "tool", "tool_call_id": "call_d1", "content": [{"type": "text", "text": "see"}, {"type": "image_url", "image_url": {"url": "data:image/webp;base64,YQ=="}}]}]}
+{"func": "image", "case": "data-url-ok", "item": {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64, aGVs bG8="}}}
+{"func": "image", "case": "not-data", "item": {"type": "image_url", "image_url": {"url": "http://x/y.png"}}}
+{"func": "image", "case": "malformed-b64", "item": {"type": "image_url", "image_url": {"url": "data:image/png;base64,!!!notbase64"}}}
+{"func": "image", "case": "missing-padding", "item": {"type": "image_url", "image_url": {"url": "data:image/png;base64,aGVsbG8"}}}
+{"func": "image", "case": "bad-mime", "item": {"type": "image_url", "image_url": {"url": "data:text/plain;base64,aGVsbG8="}}}
+{"func": "content_blocks", "case": "scalar-string", "content": "solo"}
+{"func": "content_blocks", "case": "none", "content": null}
+{"func": "content_blocks", "case": "mixed", "content": ["plain", {"type": "text", "text": "dict text"}, {"type": "text", "text": ""}, {"type": "image_url", "image_url": {"url": "data:image/png;base64,YQ=="}}, 7]}
+{"func": "call_arguments", "case": "json-string", "tool_call": {"function": {"arguments": "{\"a\": 1}"}}}
+{"func": "call_arguments", "case": "bad-json", "tool_call": {"function": {"arguments": "{oops"}}}
+{"func": "call_arguments", "case": "dict-args", "tool_call": {"function": {"arguments": {"a": 1}}}}
+{"func": "call_arguments", "case": "array-json", "tool_call": {"function": {"arguments": "[1,2]"}}}
+{"func": "function_result", "case": "names", "names": {"call_e1": "lookup"}, "message": {"tool_call_id": "call_e1", "content": "{\"x\": 1}"}}
+{"func": "function_result", "case": "name-attr", "message": {"tool_call_id": "call_e2", "name": "fallback_name", "content": "plain"}}
+{"func": "tools", "case": "declaration", "tools": [{"type": "function", "function": {"name": "search", "description": "find things", "parameters": {"type": "object", "properties": {"q": {"type": "string"}}, "required": ["q"], "$defs": {"X": {"type": "string"}}, "$schema": "http://json-schema.org/draft-07/schema#"}}}, {"type": "function", "function": {"name": ""}}, {"type": "not-function"}]}
+{"func": "tools", "case": "ref-inline", "tools": [{"type": "function", "function": {"name": "lookup", "parameters": {"type": "object", "properties": {"a": {"$ref": "#/$defs/A"}}, "$defs": {"A": {"type": "string", "description": "id"}}}}}]}
+{"func": "tool_choice", "case": "auto", "tool_choice": "auto"}
+{"func": "tool_choice", "case": "required", "tool_choice": "required"}
+{"func": "tool_choice", "case": "none", "tool_choice": "none"}
+{"func": "tool_choice", "case": "bogus", "tool_choice": "whatever"}
+{"func": "tool_choice", "case": "named", "tool_choice": {"type": "function", "function": {"name": "search"}}}
+{"func": "tool_choice", "case": "null", "tool_choice": null}
+{"func": "response_format", "case": "json-object", "response_format": {"type": "json_object"}}
+{"func": "response_format", "case": "json-schema-nospec", "response_format": {"type": "json_schema"}}
+{"func": "response_format", "case": "text", "response_format": {"type": "text"}}
+{"func": "response_format", "case": "json-schema-ref", "response_format": {"type": "json_schema", "json_schema": {"name": "x", "schema": {"type": "object", "properties": {"a": {"$ref": "#/$defs/A"}}, "$defs": {"A": {"type": "string"}}, "$schema": "http://x"}}}}
+{"func": "request", "case": "baseline", "model": "gemini-3-pro", "messages": [{"role": "user", "content": "hi"}]}
+{"func": "request", "case": "generation", "model": "gemini-3-flash", "messages": [{"role": "user", "content": "hi"}], "temperature": 0.4, "top_p": 0.9, "max_tokens": 1024, "stop": ["END"], "thinking_config": {"thinking_level": " Low ", "include_thoughts": true}}
+{"func": "request", "case": "stop-string", "model": "gemini-3-pro", "stop": "STOP", "messages": [{"role": "user", "content": "hi"}]}
+{"func": "request", "case": "bad-level", "model": "gemini-3-pro", "messages": [{"role": "user", "content": "hi"}], "thinking_config": {"thinkingLevel": "ultra"}}
+{"func": "request", "case": "thinking-off", "model": "gemini-3-pro", "messages": [{"role": "user", "content": "hi"}], "max_tokens": 64, "thinking_config": {"include_thoughts": false, "thinking_budget": 0}}
+{"func": "request", "case": "big-budget", "model": "gemini-3-pro", "max_tokens": 100000, "messages": [{"role": "user", "content": "hi"}]}
+{"func": "request", "case": "tools-format-suppressed", "model": "gemini-3-pro", "messages": [{"role": "user", "content": "hi"}], "tools": [{"type": "function", "function": {"name": "search", "parameters": {"type": "object"}}}], "tool_choice": "required", "response_format": {"type": "json_object"}}
+{"func": "request", "case": "named-choice-suppressed", "model": "gemini-3-pro", "messages": [{"role": "user", "content": "hi"}], "tools": [{"type": "function", "function": {"name": "search", "parameters": {"type": "object"}}}], "tool_choice": {"function": {"name": "search"}}, "response_format": {"type": "json_object"}}
+{"func": "request", "case": "auto-choice-format-kept", "model": "gemini-3-pro", "messages": [{"role": "user", "content": "hi"}], "tools": [{"type": "function", "function": {"name": "search", "parameters": {"type": "object"}}}], "tool_choice": "auto", "response_format": {"type": "json_object"}}
+{"func": "request", "case": "choice-without-tools", "model": "gemini-3-pro", "messages": [{"role": "user", "content": "hi"}], "tool_choice": "required"}
+{"func": "request", "case": "string-max-tokens", "model": "gemini-3-pro", "messages": [{"role": "user", "content": "hi"}], "max_tokens": "2048"}
+{"func": "request", "case": "budget-only-headroom", "model": "gemini-3-pro", "messages": [{"role": "user", "content": "hi"}], "max_tokens": 100, "thinking_config": {"thinking_budget": 2000}}
+{"func": "tools", "case": "no-parameters", "tools": [{"type": "function", "function": {"name": "ping"}}]}
+{"func": "input_steps", "case": "empty-messages", "messages": []}
+{"func": "content_blocks", "case": "number", "content": 7}
+{"func": "continuation", "case": "hop", "request": {"model": "m", "store": true, "input": []}, "interaction_id": "int_1", "token": "tok"}

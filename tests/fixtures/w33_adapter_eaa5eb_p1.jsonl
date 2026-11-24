@@ -1,0 +1,130 @@
+{"case": "pm0", "raw": ":nick!user@host PRIVMSG #chan :hello world", "func": "parse_message"}
+{"case": "pm1", "raw": "PING :tok", "func": "parse_message"}
+{"case": "pm2", "raw": ":", "func": "parse_message"}
+{"case": "pm3", "raw": "", "func": "parse_message"}
+{"case": "pm4", "raw": ":x", "func": "parse_message"}
+{"case": "pm5", "raw": "001 hermes-bot :Welcome to the network", "func": "parse_message"}
+{"case": "pm6", "raw": "PRIVMSG #chan :", "func": "parse_message"}
+{"case": "pm7", "raw": "NICK newnick", "func": "parse_message"}
+{"case": "pm8", "raw": ":srv 433 * hermes-bot :Nickname is already in use", "func": "parse_message"}
+{"case": "pm9", "raw": "  PING  :x  ", "func": "parse_message"}
+{"case": "pm10", "raw": ":pfx CMD a b :trail :more", "func": "parse_message"}
+{"case": "pm11", "raw": "CMD\t:a", "func": "parse_message"}
+{"case": "pm12", "raw": ":onlyprefix", "func": "parse_message"}
+{"case": "pm13", "raw": "PRIVMSG #c :\u0001ACTION waves\u0001", "func": "parse_message"}
+{"case": "en0", "prefix": "nick!user@host", "func": "extract_nick"}
+{"case": "en1", "prefix": "nick", "func": "extract_nick"}
+{"case": "en2", "prefix": "", "func": "extract_nick"}
+{"case": "en3", "prefix": "!u@h", "func": "extract_nick"}
+{"case": "en4", "prefix": "nick!a!b", "func": "extract_nick"}
+{"case": "en5", "prefix": "NICK!x", "func": "extract_nick"}
+{"case": "en6", "prefix": "nick@host", "func": "extract_nick"}
+{"case": "en7", "prefix": ":nick", "func": "extract_nick"}
+{"case": "en8", "prefix": "a!b!c!d", "func": "extract_nick"}
+{"case": "en9", "prefix": " host!x", "func": "extract_nick"}
+{"case": "en10", "prefix": "nick!user@host extra", "func": "extract_nick"}
+{"case": "en11", "prefix": "!", "func": "extract_nick"}
+{"case": "sm0", "text": "**bold** text", "func": "strip_markdown"}
+{"case": "sm1", "text": "__under__ here", "func": "strip_markdown"}
+{"case": "sm2", "text": "*it* and **bold**", "func": "strip_markdown"}
+{"case": "sm3", "text": "snake_case_name and _emph_", "func": "strip_markdown"}
+{"case": "sm4", "text": "`code` here", "func": "strip_markdown"}
+{"case": "sm5", "text": "![alt](http://x/y.png)", "func": "strip_markdown"}
+{"case": "sm6", "text": "see [docs](http://e.com/a) now", "func": "strip_markdown"}
+{"case": "sm7", "text": "[a](b) [c](d)", "func": "strip_markdown"}
+{"case": "sm8", "text": "**a *b* c**", "func": "strip_markdown"}
+{"case": "sm9", "text": "a_b_c", "func": "strip_markdown"}
+{"case": "sm10", "text": "under_score at end_", "func": "strip_markdown"}
+{"case": "sm11", "text": "```py\nprint(1)```", "func": "strip_markdown"}
+{"case": "sm12", "text": "***x***", "func": "strip_markdown"}
+{"case": "sm13", "text": "**unclosed", "func": "strip_markdown"}
+{"case": "sm14", "text": "`a` `b`", "func": "strip_markdown"}
+{"case": "sm15", "text": "__init__ and _x_", "func": "strip_markdown"}
+{"case": "sm16", "text": "**a\nb**", "func": "strip_markdown"}
+{"case": "sm17", "text": "plain text, nothing to do", "func": "strip_markdown"}
+{"case": "sm18", "text": "x [one](http://1) ![two](http://2.png) __y__", "func": "strip_markdown"}
+{"case": "sm19", "text": "multi_line\n*with marks*\n", "func": "strip_markdown"}
+{"case": "sm20", "text": "![alt](x)", "func": "strip_markdown"}
+{"case": "sm21", "text": "a [b] (c)", "func": "strip_markdown"}
+{"case": "sm22", "text": "[text](url", "func": "strip_markdown"}
+{"case": "sm23", "text": "`*a*`", "func": "strip_markdown"}
+{"case": "sm24", "text": "**__mixed__**", "func": "strip_markdown"}
+{"case": "cp0", "paragraph": "hello world this is a long line", "limit": 10, "func": "chunk_paragraph"}
+{"case": "cp1", "paragraph": "a b c a b c a b c a b c a b c ", "limit": 7, "func": "chunk_paragraph"}
+{"case": "cp2", "paragraph": "short", "limit": 100, "func": "chunk_paragraph"}
+{"case": "cp3", "paragraph": "", "limit": 10, "func": "chunk_paragraph"}
+{"case": "cp4", "paragraph": "héllo wörld ünïcode", "limit": 7, "func": "chunk_paragraph"}
+{"case": "cp5", "paragraph": "😀😀😀😀", "limit": 5, "func": "chunk_paragraph"}
+{"case": "cp6", "paragraph": "no-spaces-at-all-long-token", "limit": 8, "func": "chunk_paragraph"}
+{"case": "cp7", "paragraph": "x", "limit": 1, "func": "chunk_paragraph"}
+{"case": "cp8", "paragraph": "aaaa bbbb cccc dddd", "limit": 3, "func": "chunk_paragraph"}
+{"case": "cp9", "paragraph": "one two three four five six", "limit": 2, "func": "chunk_paragraph"}
+{"case": "cp10", "paragraph": "trailing spaces   ", "limit": 6, "func": "chunk_paragraph"}
+{"case": "cp11", "paragraph": "ééééé", "limit": 3, "func": "chunk_paragraph"}
+{"case": "cp12", "paragraph": "ab  cd  ef  gh", "limit": 5, "func": "chunk_paragraph"}
+{"case": "sl0", "paragraphs": ["abc def", "ghi"], "limit": 4, "func": "split_lines"}
+{"case": "sl1", "paragraphs": [], "limit": 10, "func": "split_lines"}
+{"case": "sl2", "paragraphs": ["a\nb"], "limit": 10, "func": "split_lines"}
+{"case": "sl3", "paragraphs": ["", "  ", "kept"], "limit": 5, "func": "split_lines"}
+{"case": "sl4", "paragraphs": ["one two", "three four"], "limit": 3, "func": "split_lines"}
+{"case": "sl5", "paragraphs": ["solo"], "limit": 100, "func": "split_lines"}
+{"case": "sl6", "paragraphs": ["aa bb cc", "dd ee ff"], "limit": 5, "func": "split_lines"}
+{"case": "sl7", "paragraphs": ["xé y"], "limit": 3, "func": "split_lines"}
+{"case": "sl8", "paragraphs": ["  lead", "trail  "], "limit": 4, "func": "split_lines"}
+{"case": "sl9", "paragraphs": ["a b c d e f g"], "limit": 3, "func": "split_lines"}
+{"case": "sl10", "paragraphs": [""], "limit": 10, "func": "split_lines"}
+{"case": "pb0", "target": "#hermes", "func": "privmsg_budget"}
+{"case": "pb1", "target": "nick", "func": "privmsg_budget"}
+{"case": "pb2", "target": "#a-really-long-channel-name-here", "func": "privmsg_budget"}
+{"case": "pb3", "target": "", "func": "privmsg_budget"}
+{"case": "pb4", "target": "#héllo", "func": "privmsg_budget"}
+{"case": "pb5", "target": "&local", "func": "privmsg_budget"}
+{"case": "pb6", "target": "#cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "func": "privmsg_budget"}
+{"case": "pb7", "target": "!", "func": "privmsg_budget"}
+{"case": "pb8", "target": "#x y", "func": "privmsg_budget"}
+{"case": "pb9", "target": "#😀", "func": "privmsg_budget"}
+{"case": "pb10", "target": "chan", "func": "privmsg_budget"}
+{"case": "spm0", "content": "hello world", "target": "#hermes", "max_message_length": 450, "func": "split_message"}
+{"case": "spm1", "content": "**hi** there", "target": "#hermes", "max_message_length": 450, "func": "split_message"}
+{"case": "spm2", "content": "", "target": "#hermes", "max_message_length": 450, "func": "split_message"}
+{"case": "spm3", "content": "\n\n   \n", "target": "#hermes", "max_message_length": 450, "func": "split_message"}
+{"case": "spm4", "content": "one two three four five six seven eight nine ten", "target": "#hermes", "max_message_length": 20, "func": "split_message"}
+{"case": "spm5", "content": "para one\n\npara two\n\npara three", "target": "#c", "max_message_length": 12, "func": "split_message"}
+{"case": "spm6", "content": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word ", "target": "#hermes", "max_message_length": 450, "func": "split_message"}
+{"case": "spm7", "content": "word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word ", "target": "nick", "max_message_length": 100, "func": "split_message"}
+{"case": "spm8", "content": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "target": "#hermes", "max_message_length": 450, "func": "split_message"}
+{"case": "spm9", "content": "line1\nline2\nline3", "target": "#room", "max_message_length": 450, "func": "split_message"}
+{"case": "spm10", "content": "exactlyten", "target": "#c", "max_message_length": 10, "func": "split_message"}
+{"case": "spm11", "content": "elevenchars", "target": "#c", "max_message_length": 10, "func": "split_message"}
+{"case": "spm12", "content": "[t](u) **b**", "target": "#c", "max_message_length": 8, "func": "split_message"}
+{"case": "el0", "line": "PRIVMSG #c :hi", "func": "encode_line"}
+{"case": "el1", "line": "", "func": "encode_line"}
+{"case": "el2", "line": "PING", "func": "encode_line"}
+{"case": "el3", "line": "a\rb", "func": "encode_line"}
+{"case": "el4", "line": "héllo", "func": "encode_line"}
+{"case": "el5", "line": "QUIT :bye", "func": "encode_line"}
+{"case": "el6", "line": "NICK hermes-bot_1", "func": "encode_line"}
+{"case": "el7", "line": "JOIN #c", "func": "encode_line"}
+{"case": "el8", "line": "USER bot 0 * :Hermes Agent", "func": "encode_line"}
+{"case": "el9", "line": "PONG :tok", "func": "encode_line"}
+{"case": "so0", "text": "a\rb", "func": "sanitize_outbound"}
+{"case": "so1", "text": "a\nb", "func": "sanitize_outbound"}
+{"case": "so2", "text": "a\r\nb", "func": "sanitize_outbound"}
+{"case": "so3", "text": "", "func": "sanitize_outbound"}
+{"case": "so4", "text": "normal text", "func": "sanitize_outbound"}
+{"case": "so5", "text": "join #c\r\nQUIT :x", "func": "sanitize_outbound"}
+{"case": "so6", "text": "\r", "func": "sanitize_outbound"}
+{"case": "so7", "text": "\n", "func": "sanitize_outbound"}
+{"case": "so8", "text": "  ", "func": "sanitize_outbound"}
+{"case": "so9", "text": "tab\there", "func": "sanitize_outbound"}
+{"case": "so10", "text": "a\rb\nc\rd", "func": "sanitize_outbound"}
+{"case": "pr0", "params": ["tok"], "func": "ping_reply"}
+{"case": "pr1", "params": [], "func": "ping_reply"}
+{"case": "pr2", "params": ["a", "b"], "func": "ping_reply"}
+{"case": "pr3", "params": ["x y"], "func": "ping_reply"}
+{"case": "pr4", "params": [""], "func": "ping_reply"}
+{"case": "pr5", "params": ["t1", "t2", "t3"], "func": "ping_reply"}
+{"case": "pr6", "params": ["#chan"], "func": "ping_reply"}
+{"case": "pr7", "params": ["a:b"], "func": "ping_reply"}
+{"case": "pr8", "params": [" lead"], "func": "ping_reply"}
+{"case": "pr9", "params": ["é"], "func": "ping_reply"}

@@ -1,0 +1,160 @@
+{"func": "caption_split", "case": "no-media", "text": "hello", "media": []}
+{"func": "caption_split", "case": "single-photo", "text": "hi", "media": [["x.png", false]]}
+{"func": "caption_split", "case": "trimmed", "text": "  hi  ", "media": [["x.png", false]]}
+{"func": "caption_split", "case": "two-files", "text": "hi", "media": [["x.png", false], ["y.png", false]]}
+{"func": "caption_split", "case": "voice-note", "text": "hi", "media": [["x.ogg", true]]}
+{"func": "caption_split", "case": "ogg-not-a-note", "text": "hi", "media": [["x.ogg", false]]}
+{"func": "caption_split", "case": "opus-not-a-note", "text": "hi", "media": [["x.opus", false]]}
+{"func": "caption_split", "case": "pdf", "text": "doc", "media": [["x.pdf", false]]}
+{"func": "caption_split", "case": "zip", "text": "doc", "media": [["x.zip", false]]}
+{"func": "caption_split", "case": "gif", "text": "gif", "media": [["x.gif", false]]}
+{"func": "caption_split", "case": "no-ext", "text": "hi", "media": [["noext", false]]}
+{"func": "caption_split", "case": "dotfile", "text": "hi", "media": [[".png", false]]}
+{"func": "caption_split", "case": "upper-ext", "text": "hi", "media": [["x.PNG", false]]}
+{"func": "caption_split", "case": "dir-path", "text": "clip", "media": [["media/sub/clip.MP4", false]]}
+{"func": "caption_split", "case": "cap-1024", "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "media": [["x.png", false]]}
+{"func": "caption_split", "case": "cap-1025", "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "media": [["x.png", false]]}
+{"func": "caption_split", "case": "null-text", "text": null, "media": [["x.png", false]]}
+{"func": "caption_split", "case": "empty-text", "text": "", "media": [["x.png", false]]}
+{"func": "caption_split", "case": "blank-text", "text": " \n\t ", "media": [["x.png", false]]}
+{"func": "caption_split", "case": "media-null", "text": "hi", "media": null}
+{"func": "media_kind", "case": "png", "path": "a.png", "is_voice": false, "force_document": false}
+{"func": "media_kind", "case": "png-forced", "path": "a.png", "is_voice": false, "force_document": true}
+{"func": "media_kind", "case": "png-voice-flag", "path": "a.png", "is_voice": true, "force_document": false}
+{"func": "media_kind", "case": "mp4-forced", "path": "a.mp4", "is_voice": false, "force_document": true}
+{"func": "media_kind", "case": "mov", "path": "a.mov", "is_voice": false, "force_document": false}
+{"func": "media_kind", "case": "ogg-note", "path": "a.ogg", "is_voice": true, "force_document": false}
+{"func": "media_kind", "case": "ogg-not-note", "path": "a.ogg", "is_voice": false, "force_document": false}
+{"func": "media_kind", "case": "opus-note", "path": "a.opus", "is_voice": true, "force_document": false}
+{"func": "media_kind", "case": "mp3", "path": "a.mp3", "is_voice": false, "force_document": false}
+{"func": "media_kind", "case": "m4a-upper", "path": "a.M4A", "is_voice": false, "force_document": false}
+{"func": "media_kind", "case": "pdf", "path": "a.pdf", "is_voice": false, "force_document": false}
+{"func": "media_kind", "case": "no-ext", "path": "a", "is_voice": false, "force_document": false}
+{"func": "media_kind", "case": "gif", "path": "a.gif", "is_voice": false, "force_document": false}
+{"func": "media_kind", "case": "windows-path", "path": "C:\\\\tmp\\\\a.JPG", "is_voice": false, "force_document": false}
+{"func": "album_shape", "case": "empty", "media": [], "force_document": false, "caption": null}
+{"func": "album_shape", "case": "single", "media": [["a.png", false]], "force_document": false, "caption": null}
+{"func": "album_shape", "case": "two-photos", "media": [["a.png", false], ["b.jpg", false]], "force_document": false, "caption": null}
+{"func": "album_shape", "case": "three-photos", "media": [["a.png", false], ["b.webp", false], ["c.jpeg", false]], "force_document": false, "caption": null}
+{"func": "album_shape", "case": "with-gif", "media": [["a.png", false], ["b.gif", false]], "force_document": false, "caption": null}
+{"func": "album_shape", "case": "voice-note", "media": [["a.png", false], ["b.png", true]], "force_document": false, "caption": null}
+{"func": "album_shape", "case": "forced", "media": [["a.png", false], ["b.png", false]], "force_document": true, "caption": null}
+{"func": "album_shape", "case": "caption-empty", "media": [["a.png", false], ["b.png", false]], "force_document": false, "caption": ""}
+{"func": "album_shape", "case": "caption-set", "media": [["a.png", false], ["b.png", false]], "force_document": false, "caption": "cap"}
+{"func": "album_shape", "case": "with-video", "media": [["a.png", false], ["b.mp4", false]], "force_document": false, "caption": null}
+{"func": "album_shape", "case": "no-ext", "media": [["a.png", false], ["b", false]], "force_document": false, "caption": null}
+{"func": "thread_kwargs", "case": "one-str", "thread_id": "1"}
+{"func": "thread_kwargs", "case": "one-int", "thread_id": 1}
+{"func": "thread_kwargs", "case": "null", "thread_id": null}
+{"func": "thread_kwargs", "case": "empty", "thread_id": ""}
+{"func": "thread_kwargs", "case": "zero", "thread_id": "0"}
+{"func": "thread_kwargs", "case": "seven", "thread_id": 7}
+{"func": "thread_kwargs", "case": "supergroup", "thread_id": "-1001234"}
+{"func": "thread_kwargs", "case": "padded", "thread_id": " 42 "}
+{"func": "thread_kwargs", "case": "leading-zeros", "thread_id": "007"}
+{"func": "thread_is_name", "case": "null", "thread_id": null}
+{"func": "thread_is_name", "case": "empty", "thread_id": ""}
+{"func": "thread_is_name", "case": "blank", "thread_id": " "}
+{"func": "thread_is_name", "case": "zero", "thread_id": 0}
+{"func": "thread_is_name", "case": "digits", "thread_id": " 12 "}
+{"func": "thread_is_name", "case": "word", "thread_id": "abc"}
+{"func": "thread_is_name", "case": "dash", "thread_id": "-"}
+{"func": "thread_is_name", "case": "negative", "thread_id": "-12"}
+{"func": "thread_is_name", "case": "plus", "thread_id": "+5"}
+{"func": "thread_is_name", "case": "underscore", "thread_id": "1_0"}
+{"func": "thread_is_name", "case": "supergroup", "thread_id": "-1001234"}
+{"func": "thread_is_name", "case": "int-id", "thread_id": 42}
+{"func": "thread_is_name", "case": "trailing-word", "thread_id": "12a"}
+{"func": "thread_not_found", "case": "message", "error": "Bad Request: message thread not found"}
+{"func": "thread_not_found", "case": "upper", "error": "THREAD NOT FOUND"}
+{"func": "thread_not_found", "case": "clean", "error": "Bad Request: chat not found"}
+{"func": "thread_not_found", "case": "empty", "error": ""}
+{"func": "html_tag_present", "case": "bold", "text": "plain & <b>bold</b>"}
+{"func": "html_tag_present", "case": "entities", "text": "x &amp; y &lt; z"}
+{"func": "html_tag_present", "case": "cot", "text": "<CoT>prose</CoT>"}
+{"func": "html_tag_present", "case": "generic", "text": "List<int> & <i>it</i>"}
+{"func": "html_tag_present", "case": "dq-attr", "text": "<a href=\"x>y\">l</a>"}
+{"func": "html_tag_present", "case": "sq-attr", "text": "<a href='p>q'>l</a>"}
+{"func": "html_tag_present", "case": "unquoted", "text": "<a href=a>b>"}
+{"func": "html_tag_present", "case": "body", "text": "<body>x</body>"}
+{"func": "html_tag_present", "case": "class", "text": "<b class=x>y</b>"}
+{"func": "html_tag_present", "case": "space-name", "text": "< b>y</b>"}
+{"func": "html_tag_present", "case": "bare", "text": "a<b"}
+{"func": "html_tag_present", "case": "code", "text": "<code>if a < b</code>"}
+{"func": "html_tag_present", "case": "double", "text": "<<b>>"}
+{"func": "html_tag_present", "case": "self-close", "text": "<b/>"}
+{"func": "html_tag_present", "case": "numeric-ent", "text": "&#39;quoted&#x41;"}
+{"func": "html_tag_present", "case": "bare-amp", "text": "&;"}
+{"func": "html_tag_present", "case": "emoji", "text": "<tg-emoji emoji-id=\"5\">e</tg-emoji>"}
+{"func": "html_tag_present", "case": "blockquote", "text": "<blockquote expandable>q</blockquote>"}
+{"func": "html_tag_present", "case": "mixed", "text": "<s>s</s><strong>t</strong>"}
+{"func": "html_tag_present", "case": "upper-tag", "text": "<B>X</B>"}
+{"func": "html_tag_present", "case": "newline-tag", "text": "<em\n>x</em>"}
+{"func": "html_tag_present", "case": "plain", "text": "nothing to escape"}
+{"func": "html_tag_present", "case": "empty", "text": ""}
+{"func": "escape_markup", "case": "bold", "text": "plain & <b>bold</b>"}
+{"func": "escape_markup", "case": "entities", "text": "x &amp; y &lt; z"}
+{"func": "escape_markup", "case": "cot", "text": "<CoT>prose</CoT>"}
+{"func": "escape_markup", "case": "generic", "text": "List<int> & <i>it</i>"}
+{"func": "escape_markup", "case": "dq-attr", "text": "<a href=\"x>y\">l</a>"}
+{"func": "escape_markup", "case": "sq-attr", "text": "<a href='p>q'>l</a>"}
+{"func": "escape_markup", "case": "unquoted", "text": "<a href=a>b>"}
+{"func": "escape_markup", "case": "body", "text": "<body>x</body>"}
+{"func": "escape_markup", "case": "class", "text": "<b class=x>y</b>"}
+{"func": "escape_markup", "case": "space-name", "text": "< b>y</b>"}
+{"func": "escape_markup", "case": "bare", "text": "a<b"}
+{"func": "escape_markup", "case": "code", "text": "<code>if a < b</code>"}
+{"func": "escape_markup", "case": "double", "text": "<<b>>"}
+{"func": "escape_markup", "case": "self-close", "text": "<b/>"}
+{"func": "escape_markup", "case": "numeric-ent", "text": "&#39;quoted&#x41;"}
+{"func": "escape_markup", "case": "bare-amp", "text": "&;"}
+{"func": "escape_markup", "case": "emoji", "text": "<tg-emoji emoji-id=\"5\">e</tg-emoji>"}
+{"func": "escape_markup", "case": "blockquote", "text": "<blockquote expandable>q</blockquote>"}
+{"func": "escape_markup", "case": "mixed", "text": "<s>s</s><strong>t</strong>"}
+{"func": "escape_markup", "case": "upper-tag", "text": "<B>X</B>"}
+{"func": "escape_markup", "case": "newline-tag", "text": "<em\n>x</em>"}
+{"func": "escape_markup", "case": "plain", "text": "nothing to escape"}
+{"func": "escape_markup", "case": "empty", "text": ""}
+{"func": "fallback_ips", "case": "seed-default", "env": {}, "configured": ""}
+{"func": "fallback_ips", "case": "seed-absent", "env": {}}
+{"func": "fallback_ips", "case": "one-ip", "env": {}, "configured": "1.2.3.4"}
+{"func": "fallback_ips", "case": "two-ips", "env": {}, "configured": "1.2.3.4, 5.6.7.8"}
+{"func": "fallback_ips", "case": "dupes-kept", "env": {}, "configured": "1.2.3.4,1.2.3.4, 5.6.7.8"}
+{"func": "fallback_ips", "case": "private", "env": {}, "configured": "10.0.0.1"}
+{"func": "fallback_ips", "case": "loopback", "env": {}, "configured": "127.0.0.1"}
+{"func": "fallback_ips", "case": "link-local", "env": {}, "configured": "169.254.1.1"}
+{"func": "fallback_ips", "case": "unspecified", "env": {}, "configured": "0.0.0.0"}
+{"func": "fallback_ips", "case": "ipv6", "env": {}, "configured": "::1"}
+{"func": "fallback_ips", "case": "mixed-garbage", "env": {}, "configured": "not-an-ip, 8.8.8.8"}
+{"func": "fallback_ips", "case": "list-form", "env": {}, "configured": ["1.2.3.4", "5.6.7.8"]}
+{"func": "fallback_ips", "case": "list-mixed", "env": {}, "configured": ["1.2.3.4", 9]}
+{"func": "fallback_ips", "case": "leading-zero", "env": {}, "configured": "01.2.3.4"}
+{"func": "fallback_ips", "case": "trailing-dot", "env": {}, "configured": "1.2.3.4."}
+{"func": "fallback_ips", "case": "one-bad-one-good", "env": {}, "configured": "8.8.8.8, 10.0.0.1, 1.1.1.1"}
+{"func": "fallback_ips", "case": "out-of-range", "env": {}, "configured": "999.1.1.1"}
+{"func": "fallback_ips", "case": "padded", "env": {}, "configured": "  1.2.3.4  ,  "}
+{"func": "fallback_ips", "case": "blank", "env": {}, "configured": "  "}
+{"func": "fallback_ips", "case": "disable-1", "env": {"HERMES_TELEGRAM_DISABLE_FALLBACK_IPS": "1"}, "configured": "1.2.3.4"}
+{"func": "fallback_ips", "case": "disable-true", "env": {"HERMES_TELEGRAM_DISABLE_FALLBACK_IPS": "true"}, "configured": ""}
+{"func": "fallback_ips", "case": "disable-yes-upper", "env": {"HERMES_TELEGRAM_DISABLE_FALLBACK_IPS": "YES"}, "configured": ""}
+{"func": "fallback_ips", "case": "disable-on-padded", "env": {"HERMES_TELEGRAM_DISABLE_FALLBACK_IPS": " on "}, "configured": ""}
+{"func": "fallback_ips", "case": "disable-zero", "env": {"HERMES_TELEGRAM_DISABLE_FALLBACK_IPS": "0"}, "configured": ""}
+{"func": "fallback_ips", "case": "disable-off", "env": {"HERMES_TELEGRAM_DISABLE_FALLBACK_IPS": "off"}, "configured": ""}
+{"func": "resolve_token", "case": "config-wins", "config_token": "CONF", "scoped_token": "SCOPED"}
+{"func": "resolve_token", "case": "scoped-fallback", "config_token": null, "scoped_token": "SCOPED"}
+{"func": "resolve_token", "case": "empty-config", "config_token": "", "scoped_token": "SCOPED"}
+{"func": "resolve_token", "case": "nothing", "config_token": null, "scoped_token": ""}
+{"func": "resolve_token", "case": "absent-scoped", "config_token": null}
+{"func": "resolve_token", "case": "config-only", "config_token": "CONF"}
+{"func": "resolve_token", "case": "zero-config", "config_token": 0, "scoped_token": "S"}
+{"func": "album_shape", "case": "dotfile-names", "media": [[".png", false], [".jpg", false]], "force_document": false, "caption": null}
+{"func": "album_shape", "case": "dotfile-mixed", "media": [[".png", false], ["b.png", false]], "force_document": false, "caption": null}
+{"func": "album_shape", "case": "gzip-tar", "media": [["a.tar.gz", false], ["b.png", false]], "force_document": false, "caption": null}
+{"func": "caption_split", "case": "nbsp-text", "text": "\u00a0hi\u00a0", "media": [["a.png", false]]}
+{"func": "caption_split", "case": "ideographic-space", "text": "\u3000hi\u3000", "media": [["a.png", false]]}
+{"func": "caption_split", "case": "utf8-length", "text": "h\u00e9llo w\u00f6rld", "media": [["a.png", false]]}
+{"func": "caption_split", "case": "utf8-cap-1025", "text": "\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9", "media": [["a.png", false]]}
+{"func": "escape_markup", "case": "utf8", "text": "h\u00e9llo & <b>w\u00f6rld</b>"}
+{"func": "html_tag_present", "case": "nbsp-attr", "text": "<b\u00a0class=x>y</b>"}
+{"func": "thread_kwargs", "case": "nbsp-pad", "thread_id": "\u00a07\u00a0"}
+{"func": "thread_is_name", "case": "nbsp-pad", "thread_id": "\u00a012\u00a0"}
