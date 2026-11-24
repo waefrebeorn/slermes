@@ -148,3 +148,36 @@ python scripts/gate_fuzz.py --plan docs/wave<N>-plan.json --per-case 6 --jobs 4 
 Until then it runs as an audit and its findings are fixed in follow-up commits —
 gates are green on their own fixtures, and every number quoted above is a
 re-measured run of the command shown.
+
+## What the field does, and what this harness borrowed
+
+Checked against how the problem is handled elsewhere (2026-11-24):
+
+- **Differential testing alone is known to be insufficient for translated code.**
+  Kaizen (arXiv 2607.04058) opens by noting that translated programs "compile and
+  pass developer-written tests" yet still diverge — which is exactly what the sweep
+  found here: 168 of 357 gates were green on their authored suite and wrong on
+  inputs the author did not write. Their fix is the one adopted next: **metamorphic
+  fuzzing** (mutations that must not change the answer) plus **grammar-based input
+  generation** for behavioural diversity.
+- **Cross-language differential testing of JSON parsers** (ACM 10.1145/3634737.3657003)
+  is the closest published analogue to this work: same input, two implementations,
+  compare values. Their emphasis on *type-directed* input generation matches the
+  per-key value pools here.
+- **Shrinking** is the standard property-testing answer to unusable reports
+  (Hypothesis: "reduce a failing input to a simpler input that still fails"). This
+  harness now does the same, in `scripts/fuzz_shrink.py`.
+
+### scripts/fuzz_shrink.py
+
+    python scripts/fuzz_shrink.py --plan docs/waveNN-plan.json <gate> [--case id]
+
+Reduces a mismatching held-out case to a minimal one with the same disagreement:
+drop optional keys, empty containers, zero numbers, truncate and case-fold strings,
+and probe the values Python treats specially (`"0"`, `"None"`, `"false"`, `"[]"`,
+`"{}"`). Candidates are evaluated in batches — one harness run, one oracle run per
+round — because paying interpreter startup per probe timed out on a 200-case gate.
+
+Why it matters: the minimal case *is* the specification. `sdp="0"` with an absent
+`result` turned a 300-byte random object into "the route accepts a falsy result as
+an empty mapping", which was a two-line fix.
