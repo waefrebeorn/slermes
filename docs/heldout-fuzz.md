@@ -68,7 +68,7 @@ python scripts/gate_fuzz.py w32_backup_1d0d4e_p1 --plan docs/wave32-plan.json --
 
 ## Known debt (still diverging under fuzz)
 
-**Wave 27 sweep — the biggest signal so far: 47 of 75 gates.** Those are the
+**Wave 27 sweep — 44 of 75 gates after the first round of fixes.** Those are the
 largest modules (telegram 415 KB, slack 387 KB, discord 380 KB, matrix 177 KB,
 messages, buzz, schema, whatsapp, google_chat, photon, openai_routes, kanban api)
 and their authored fixtures passed 3129 cases with 0 mismatches; held-out inputs
@@ -94,6 +94,14 @@ repo cannot support. The next unit of work is triage, not porting:
    whole tree reports `held-out fuzz: N gates, 0 bad`;
 4. only then make `gate_fuzz` a blocking step in `land_wave.sh`, so a wave cannot
    land on authored fixtures alone again.
+
+**A quarter of the first sweep's findings were the tool arguing with itself.**
+Perturbing a key that restates another key's fact — `found` next to a `names`
+list, `count` next to the rows — models a state the live code cannot produce: the
+oracle derives the number, the harness passes the fixture's number, and the
+"divergence" is the pair disagreeing. `gate_fuzz` now skips
+`found/count/total/n/size/len/...`; `w27_schema_3eeff1_p2` went from 4 findings to
+0 with no port change at all. Every count below is post-fix.
 
 **P0 — measured, not a hang: a 100× constant in payload validation.**
 `w33_portabilit_b54bb9`'s `validate_payload` processes a 1 MB import payload in
