@@ -295,8 +295,9 @@ json_t *w26_provider_9eacd0_query_for_urls(const json_t *req) {
         b = path_len;
         while (a < b && path[a] == '/') a++;
         while (b > a && path[b - 1] == '/') b--;
-        if (a == b && netloc[0] && !prx_words_has(&words, netloc))
-            prx_words_add(&words, netloc);
+        /* The netloc is appended WITHOUT the de-duplication the path words get:
+         * two bare URLs of the same host contribute it twice. */
+        if (a == b && netloc[0]) prx_words_add(&words, netloc);
     }
 
     if (words.n > 0) {
