@@ -717,12 +717,16 @@ json_t *w32_audio_a418b2_p2_sdp_session(const json_t *req) {
             return au_status(502, au_str(json_obj_get(req, "error_text")));
     }
 
-    if (!result || result->type != JSON_OBJECT) return au_raised("TypeError");
+    /* the oracle seam is `result or {}`: an absent or FALSY result becomes an empty
+     * mapping and the route still answers 200; only a truthy non-mapping reaches the
+     * live code's mapping access and raises TypeError there. */
+    if (!au_truthy(result)) result = NULL;
+    else if (result->type != JSON_OBJECT) return au_raised("TypeError");
 
     out = json_object();
     json_set(out, "status", json_number(200.0));
     json_set(out, "ok", json_bool(1));
-    {
+    if (result) {
         size_t i, n = json_object_size(result);
         for (i = 0; i < n; i++) {
             const char *k = json_object_get_key_at(result, i);
