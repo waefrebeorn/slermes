@@ -68,6 +68,33 @@ python scripts/gate_fuzz.py w32_backup_1d0d4e_p1 --plan docs/wave32-plan.json --
 
 ## Known debt (still diverging under fuzz)
 
+**Wave 27 sweep — the biggest signal so far: 47 of 75 gates.** Those are the
+largest modules (telegram 415 KB, slack 387 KB, discord 380 KB, matrix 177 KB,
+messages, buzz, schema, whatsapp, google_chat, photon, openai_routes, kanban api)
+and their authored fixtures passed 3129 cases with 0 mismatches; held-out inputs
+still find divergence in 63% of their gates. Samples, each a different mechanism:
+
+| gate | held-out divergence | reading |
+|---|---|---|
+| `w27_adapter_04abb5_p1` | `effective_port py=80 c=None` | missing scheme default |
+| `w27_adapter_04abb5_p1` | `is_relay_media_url py=True c=False` | relay-URL predicate |
+| `w27_adapter_1f12c3_p14` | `forum_thread_name py='New Post' c='New Postx'` | truncation arm |
+| `w27_adapter_1f12c3_p14` | `response_encoding py='utf-8' c='gzip'` | header precedence |
+| `w27_adapter_e9cb6b_p2` | `csv_set py=['3','a','b'] c=['3','3','a','a','b','b']` | no dedupe on a set |
+| `w27_messages_87d5f2_p2` | C stripped a `<memory-context>` segment Python kept | filter rule |
+
+**Decision: new waves pause here.** Landing more gates as "green" while 63% of the
+largest wave has a known held-out divergence would make the gate count a claim the
+repo cannot support. The next unit of work is triage, not porting:
+
+1. classify each of the 47 as artefact (fuzz modelled an impossible input) or
+   defect (port disagrees with Python on a reachable input);
+2. fix the defects, re-run `gate_fuzz` per gate until it reports 0;
+3. re-run the same sweep on waves 28-33 (their debt is listed below) until the
+   whole tree reports `held-out fuzz: N gates, 0 bad`;
+4. only then make `gate_fuzz` a blocking step in `land_wave.sh`, so a wave cannot
+   land on authored fixtures alone again.
+
 **P0 — a hang, not a wrong answer.** `w33_portabilit_b54bb9` stops responding on a
 perturbed `validate_payload` case carrying a very long title (the harness hits the
 120 s ceiling the audit enforces). An unbounded input must fail fast, not spin:
