@@ -1735,12 +1735,17 @@ json_t *w27_adapter_04abb5_ws_message(const json_t *in) {
         const json_t *detail_node = len > 2 ? json_get(message, len - 1) : NULL;
         char *detail = detail_node ? w_str(detail_node) : w_dup("subscription closed");
         char *sub_id = len > 1 ? w_str(json_get(message, 1)) : w_dup("");
-        const json_t *ch = (subs && subs->type == JSON_OBJECT && sub_id[0]) ? json_obj_get(subs, sub_id) : NULL;
+        /* subscriptions.get(sub_id) runs for ANY sub_id, including "" -- a dict may
+         * carry an empty key. The channel is then used for its TRUTHINESS upstream:
+         * `if not (rejected and closed_channel): raise`, so an empty channel id is
+         * falsy and the frame raises instead of dropping the channel. */
+        const json_t *ch = (subs && subs->type == JSON_OBJECT) ? json_obj_get(subs, sub_id) : NULL;
         const char *closed_channel = (ch && ch->type == JSON_STRING) ? ch->str_val : NULL;
+        int has_channel = closed_channel && closed_channel[0];
         char *lower = w_lower(detail);
         int rejected = strstr(lower, "restricted") || strstr(lower, "not a channel member") || strstr(lower, "auth-required");
         free(lower);
-        if (!(rejected && closed_channel)) {
+        if (!(rejected && has_channel)) {
             json_set(out, "action", json_string("raise"));
             json_set(out, "detail", json_string(detail));
             free(detail); free(sub_id);
