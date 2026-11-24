@@ -58,12 +58,15 @@ Held-out fuzz (the only measure that can disagree with the author):
 | 30 | 7 | 17 | 5 | 2026-11-24 |
 | 31 | 14 | 9 | 5 | 2026-11-24 |
 | 32 | 10 | 11 | 5 | 2026-11-24 |
+| 33 | 10 | 9 | 5 | 2026-11-24 |
 | 34 | 5 | 10 | 5 | 2026-11-24 |
 
-Wave 33 was still sweeping when this row was written.
+Waves 25-33 are **133 clean / 133 carrying** — exactly half. With wave 34 that is
+281 measured gates: **138 clean, 143 carrying, 1 skipped** (`w30_feishucomm_6493fb_p2`
+`chunk(limit=0)`, where the LIVE module loops forever, so no expectation exists —
+reported as SKIP, never as a pass).
 
-**247 of the 470 measured gates carry at least one real divergence** (123 clean /
-124 carrying for waves 25-32, plus 39/36 for 27 and 5/10 for 34). Every gate in
+**143 of the 281 measured gates carry at least one real divergence.** Every gate in
 those waves passed its authored fixture when it landed. That is the finding this
 document exists for: an authored gate and its port are written by the same author
 against the same understanding, so a green authored suite measures agreement with
