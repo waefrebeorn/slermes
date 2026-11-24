@@ -319,6 +319,16 @@ json_t *w29_sessions_2114c9_p1_optional_list(const json_t *req) {
     if (!values || values->type == JSON_NULL) return json_null();
     if (values->type == JSON_ARRAY) return json_copy(values);
     if (values->type == JSON_STRING) return sr_chars(values->str_val);
+    if (values->type == JSON_OBJECT) {
+        /* list(a_mapping) is its KEYS: {} is [], not None */
+        json_t *out = json_array();
+        size_t i, n = json_object_size(values);
+        for (i = 0; i < n; i++) {
+            const char *k = json_object_get_key_at(values, i);
+            if (k) json_append(out, json_string(k));
+        }
+        return out;
+    }
     return json_null();
 }
 
