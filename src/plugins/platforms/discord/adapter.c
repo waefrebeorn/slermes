@@ -236,6 +236,11 @@ static char *w27a1f_pystr(const json_t *v)
         return w27a1f_strdup(tmp);
     }
     if (w27a1f_is_str(v)) return w27a1f_strdup(v->str_val ? v->str_val : "");
+    /* str({}) is "{}" and str([]) is "[]" -- the empty containers are part of the
+     * value surface (a config default, a debounce key), not "no value". A
+     * non-empty repr stays a seam: Python uses single-quoted repr there. */
+    if (v->type == JSON_OBJECT) return w27a1f_strdup(json_object_size(v) == 0 ? "{}" : "");
+    if (v->type == JSON_ARRAY) return w27a1f_strdup(json_len(v) == 0 ? "[]" : "");
     return w27a1f_strdup("");
 }
 
@@ -1971,17 +1976,30 @@ static int w27a1f_blanks(const char *s)
 }
 
 /* sorted, de-duplicated string array from an owned list of malloc'd strings */
+/* sorted(set(items)) with an explicit de-duplication pass: the previous version
+ * relied on qsort ordering equal keys adjacently and kept a duplicate when it did
+ * not (ids ["b","a","b","b","a","b"] answered ["a","b","b"]). Linear scan over
+ * the kept items, then insertion sort -- O(n^2) over a handful of ids, and it does
+ * not depend on the comparator being invoked at all. */
 static json_t *w27a1f_sorted_unique(char **items, size_t n)
 {
     json_t *out = json_array();
-    size_t i;
+    size_t i, kept = 0;
     if (!n) return out;
-    qsort(items, n, sizeof(char *), (int (*)(const void *, const void *))w27a1f_cmp_str);
     for (i = 0; i < n; i++) {
-        if (i && !strcmp(items[i], items[i - 1])) { free(items[i]); continue; }
-        json_append(out, json_string(items[i]));
+        size_t j, dup = 0;
+        for (j = 0; j < kept; j++)
+            if (!strcmp(items[j], items[i])) { dup = 1; break; }
+        if (dup) { free(items[i]); continue; }
+        items[kept++] = items[i];
     }
-    for (; i < n; i++) free(items[i]);
+    for (i = 1; i < kept; i++) {
+        char *cur = items[i];
+        size_t j = i;
+        while (j > 0 && strcmp(items[j - 1], cur) > 0) { items[j] = items[j - 1]; j--; }
+        items[j] = cur;
+    }
+    for (i = 0; i < kept; i++) json_append(out, json_string(items[i]));
     return out;
 }
 
@@ -2031,7 +2049,12 @@ json_t *w27_adapter_1f12c3_p8_missed_message_backfill_channels(const json_t *ext
 static json_t *w27a1f_extra_or_secret(const json_t *extra, const char *key, const json_t *env_raw)
 {
     if (env_raw) {
-        char *env = w27a1f_strip_dup(w27a1f_str_or(env_raw, ""));
+        char *env;
+        /* The env rung stringifies whatever it was handed: a mapping/sequence
+         * arrives as str({}) / str([]) rather than as "unset". Only a real
+         * string gets the strip-then-empty-means-unset treatment. */
+        if (env_raw->type != JSON_STRING) return w27a1f_json_own(w27a1f_pystr(env_raw));
+        env = w27a1f_strip_dup(w27a1f_str_or(env_raw, ""));
         if (env && env[0]) { json_t *r = json_string(env); free(env); return r; }
         free(env);
     }
