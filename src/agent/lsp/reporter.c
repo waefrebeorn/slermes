@@ -144,6 +144,11 @@ static void rp_str_of(const json_t *v, char *buf, size_t n) {
     case JSON_BOOL:   snprintf(buf, n, "%s", v->bool_val ? "True" : "False"); return;
     case JSON_NUMBER: rp_num_str(v->num_val, buf, n); return;
     case JSON_STRING: snprintf(buf, n, "%s", v->str_val ? v->str_val : ""); return;
+    /* str() of an EMPTY container is "[]" / "{}" -- that text is what gets
+     * sanitized and shown. A non-empty container would need Python's
+     * single-quoted repr, which stays a documented gap. */
+    case JSON_ARRAY:  snprintf(buf, n, "%s", json_len(v) ? "" : "[]"); return;
+    case JSON_OBJECT: snprintf(buf, n, "%s", json_object_size(v) ? "" : "{}"); return;
     default:          snprintf(buf, n, "%s", ""); return;
     }
 }
@@ -226,6 +231,13 @@ static void rp_sanitize_into(const json_t *value, long long limit, rp_buf *out) 
     if (limit >= 0) {
         size_t bytes = rp_prefix_bytes(s + start, (size_t)limit);
         if (start + bytes < end) end = start + bytes;
+    } else {
+        /* Python slicing: raw.strip()[:limit] with a NEGATIVE limit drops the last
+         * |limit| characters ("abc"[:-1] == "ab"). The port treated any negative
+         * limit as "no cap" and answered the whole string. */
+        size_t drop = (size_t)(-limit);
+        if (end - start > drop) end -= drop;
+        else end = start;
     }
     {
         char *tmp = (char *)malloc(end - start + 1);
