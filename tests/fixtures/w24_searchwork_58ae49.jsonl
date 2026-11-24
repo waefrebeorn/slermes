@@ -1,0 +1,33 @@
+{"func": "constants", "case": "hook-table"}
+{"func": "handle", "case": "plain-query", "query": "cats", "safe_limit": 5}
+{"func": "handle", "case": "limit-missing", "query": "dogs"}
+{"func": "handle", "case": "limit-zero", "query": "dogs", "safe_limit": 0}
+{"func": "handle", "case": "limit-numeric-string", "query": "dogs", "safe_limit": "7"}
+{"func": "handle", "case": "limit-float-truncates", "query": "dogs", "safe_limit": 2.9}
+{"func": "handle", "case": "limit-negative-clamps", "query": "dogs", "safe_limit": -3}
+{"func": "handle", "case": "limit-padded-string", "query": "dogs", "safe_limit": " 4 "}
+{"func": "handle", "case": "limit-underscore-string", "query": "dogs", "safe_limit": "1_0"}
+{"func": "handle", "case": "limit-garbage-errors", "query": "dogs", "safe_limit": "abc"}
+{"func": "handle", "case": "limit-empty-string", "query": "dogs", "safe_limit": ""}
+{"func": "handle", "case": "limit-null", "query": "dogs", "safe_limit": null}
+{"func": "handle", "case": "limit-list", "query": "dogs", "safe_limit": []}
+{"func": "handle", "case": "limit-true", "query": "dogs", "safe_limit": true}
+{"func": "handle", "case": "query-null", "query": null, "safe_limit": 2}
+{"func": "handle", "case": "query-empty", "query": "", "safe_limit": 2}
+{"func": "handle", "case": "query-int", "query": 5, "safe_limit": 2}
+{"func": "handle", "case": "query-true", "query": true, "safe_limit": 2}
+{"func": "handle", "case": "hook-empty-enabled", "query": "cats", "test_hook": "empty", "hooks_enabled": true}
+{"func": "handle", "case": "hook-empty-refused", "query": "cats", "test_hook": "empty", "hooks_enabled": false}
+{"func": "handle", "case": "hook-unknown-string", "query": "cats", "test_hook": "nope", "hooks_enabled": true}
+{"func": "handle", "case": "hook-unknown-quoted", "query": "cats", "test_hook": "it's", "hooks_enabled": true}
+{"func": "handle", "case": "hook-unknown-int", "query": "cats", "test_hook": 7, "hooks_enabled": true}
+{"func": "handle", "case": "hook-unknown-bool", "query": "cats", "test_hook": true, "hooks_enabled": true}
+{"func": "handle", "case": "hook-unknown-refused-first", "query": "cats", "test_hook": "nope", "hooks_enabled": false}
+{"func": "handle", "case": "hook-null-searches", "query": "cats", "test_hook": null, "safe_limit": 3}
+{"func": "handle", "case": "hook-empty-string-searches", "query": "cats", "test_hook": "", "safe_limit": 3}
+{"func": "handle", "case": "hook-false-searches", "query": "cats", "test_hook": false, "safe_limit": 3}
+{"func": "normalize", "case": "plain", "query": "x", "safe_limit": "3"}
+{"func": "normalize", "case": "garbage-limit", "query": "x", "safe_limit": "abc"}
+{"func": "normalize", "case": "falsy-pair", "query": null, "safe_limit": null}
+{"func": "normalize", "case": "zero-limit", "query": "x", "safe_limit": 0}
+{"func": "normalize", "case": "int-query", "query": 5, "safe_limit": 9}

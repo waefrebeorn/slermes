@@ -1,0 +1,61 @@
+{"func": "constants", "case": "patterns"}
+{"func": "decide", "case": "no-row"}
+{"func": "decide", "case": "local-only-skips", "snapshot": {"run_id": "r1", "status": "running", "contract": "local-only"}}
+{"func": "decide", "case": "empty-contract-skips", "snapshot": {"run_id": "r1", "status": "running", "contract": ""}}
+{"func": "decide", "case": "null-contract-skips", "snapshot": {"run_id": "r1", "status": "running", "contract": null}}
+{"func": "decide", "case": "running-prepares", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "assignee": "octocat"}
+{"func": "decide", "case": "ready-prepares", "snapshot": {"run_id": "r1", "status": "ready", "contract": "o/r"}, "assignee": "octocat"}
+{"func": "decide", "case": "blocked-prepares", "snapshot": {"run_id": "r1", "status": "blocked", "contract": "o/r"}, "assignee": "octocat"}
+{"func": "decide", "case": "review-prepares", "snapshot": {"run_id": "r1", "status": "review", "contract": "o/r"}, "assignee": "octocat"}
+{"func": "decide", "case": "done-refuses", "snapshot": {"run_id": "r1", "status": "done", "contract": "o/r"}, "assignee": "octocat"}
+{"func": "decide", "case": "null-status-refuses", "snapshot": {"run_id": "r1", "status": null, "contract": "o/r"}, "assignee": "octocat"}
+{"func": "decide", "case": "run-mismatch-refuses", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "expected_run_id": "r2", "assignee": "octocat"}
+{"func": "decide", "case": "run-matches", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "expected_run_id": "r1", "assignee": "octocat"}
+{"func": "decide", "case": "numeric-run-equal", "snapshot": {"run_id": 5, "status": "running", "contract": "o/r"}, "expected_run_id": 5, "assignee": "octocat"}
+{"func": "decide", "case": "numeric-vs-string-run-refuses", "snapshot": {"run_id": 5, "status": "running", "contract": "o/r"}, "expected_run_id": "5", "assignee": "octocat"}
+{"func": "decide", "case": "expected-run-null-not-checked", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "expected_run_id": null, "assignee": "octocat"}
+{"func": "decide", "case": "publish-binds-contract", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "metadata": {"published_pr": "https://github.com/o/r/pull/42"}, "assignee": "octocat"}
+{"func": "decide", "case": "publish-other-repo-keeps-contract", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "metadata": {"published_pr": "https://github.com/x/y/pull/42"}, "assignee": "octocat"}
+{"func": "decide", "case": "publish-trailing-slash-no-match", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "metadata": {"published_pr": "https://github.com/o/r/pull/42/"}, "assignee": "octocat"}
+{"func": "decide", "case": "publish-non-string", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "metadata": {"published_pr": 42}, "assignee": "octocat"}
+{"func": "decide", "case": "publish-null", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "metadata": {"published_pr": null}, "assignee": "octocat"}
+{"func": "decide", "case": "metadata-not-dict", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "metadata": ["published_pr"], "assignee": "octocat"}
+{"func": "decide", "case": "metadata-absent", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}, "assignee": "octocat"}
+{"func": "decide", "case": "numeric-contract-passed-through", "snapshot": {"run_id": "r1", "status": "running", "contract": 5}, "assignee": "octocat"}
+{"func": "decide", "case": "assignee-null", "snapshot": {"run_id": "r1", "status": "running", "contract": "o/r"}}
+{"func": "decide", "case": "publish-binds-and-run-checked", "snapshot": {"run_id": "r1", "status": "ready", "contract": "o/r"}, "expected_run_id": "r1", "metadata": {"published_pr": "https://github.com/o/r/pull/1"}, "assignee": "octo"}
+{"func": "pr_match", "case": "valid", "url": "https://github.com/o/r/pull/42"}
+{"func": "pr_match", "case": "dots-and-dashes", "url": "https://github.com/my-org/my.repo/pull/7"}
+{"func": "pr_match", "case": "zero-number", "url": "https://github.com/o/r/pull/0"}
+{"func": "pr_match", "case": "leading-zero", "url": "https://github.com/o/r/pull/0123"}
+{"func": "pr_match", "case": "missing-number", "url": "https://github.com/o/r/pull/"}
+{"func": "pr_match", "case": "extra-segment", "url": "https://github.com/o/r/pull/4/files"}
+{"func": "pr_match", "case": "other-host", "url": "https://gitlab.com/o/r/pull/4"}
+{"func": "pr_match", "case": "three-path-parts", "url": "https://github.com/o/r/s/pull/4"}
+{"func": "pr_match", "case": "trailing-newline", "url": "https://github.com/o/r/pull/4\n"}
+{"func": "pr_match", "case": "number", "url": 42}
+{"func": "pr_match", "case": "null", "url": null}
+{"func": "contract_ok", "case": "local-only", "value": "local-only"}
+{"func": "contract_ok", "case": "null-normalizes", "value": null}
+{"func": "contract_ok", "case": "absent-normalizes"}
+{"func": "contract_ok", "case": "repo", "value": "owner/repo"}
+{"func": "contract_ok", "case": "pr-url", "value": "https://github.com/owner/repo/pull/12"}
+{"func": "contract_ok", "case": "repo-without-slash", "value": "owner"}
+{"func": "contract_ok", "case": "repo-two-slashes", "value": "a/b/c"}
+{"func": "contract_ok", "case": "other-host-url", "value": "https://gitlab.com/owner/repo/pull/12"}
+{"func": "contract_ok", "case": "number", "value": 5}
+{"func": "contract_ok", "case": "list", "value": ["owner/repo"]}
+{"func": "contract_ok", "case": "empty-string", "value": ""}
+{"func": "record_outcome", "case": "snapshot-changed", "snapshot_matches": false, "receipt": {"ok": true}}
+{"func": "record_outcome", "case": "ok-true", "snapshot_matches": true, "receipt": {"ok": true, "classification": "accepted", "recovery": ""}}
+{"func": "record_outcome", "case": "ok-true-with-detail", "snapshot_matches": true, "receipt": {"ok": true, "classification": "accepted", "detail": "ignored", "recovery": "r"}}
+{"func": "record_outcome", "case": "ok-false-full", "snapshot_matches": true, "receipt": {"ok": false, "classification": "red", "detail": "checks failed", "recovery": "push again"}}
+{"func": "record_outcome", "case": "ok-false-no-detail", "snapshot_matches": true, "receipt": {"ok": false, "classification": "red", "recovery": "push again"}}
+{"func": "record_outcome", "case": "ok-false-null-detail", "snapshot_matches": true, "receipt": {"ok": false, "classification": "red", "detail": null, "recovery": "retry"}}
+{"func": "record_outcome", "case": "ok-missing", "snapshot_matches": true, "receipt": {"classification": "red", "recovery": "r"}}
+{"func": "record_outcome", "case": "classification-missing", "snapshot_matches": true, "receipt": {"ok": false, "recovery": "r"}}
+{"func": "record_outcome", "case": "recovery-missing", "snapshot_matches": true, "receipt": {"ok": false, "classification": "red"}}
+{"func": "record_outcome", "case": "null-ok", "snapshot_matches": true, "receipt": {"ok": null, "classification": "red", "detail": "d", "recovery": "r"}}
+{"func": "record_outcome", "case": "zero-ok", "snapshot_matches": true, "receipt": {"ok": 0, "classification": "red", "detail": "d", "recovery": "r"}}
+{"func": "record_outcome", "case": "empty-receipt", "snapshot_matches": true, "receipt": {}}
+{"func": "record_outcome", "case": "receipt-missing", "snapshot_matches": true}

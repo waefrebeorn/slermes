@@ -1,0 +1,54 @@
+{"func": "constants", "case": "tables"}
+{"func": "markers", "case": "system-marker", "api_kwargs": {"model": "claude-sonnet-4-5", "system": [{"type": "text", "text": "hi", "cache_control": {"type": "ephemeral"}}]}}
+{"func": "markers", "case": "nested-message-marker", "api_kwargs": {"messages": [{"role": "user", "content": [{"type": "text", "text": "hi"}, {"type": "text", "text": "x", "cache_control": {"type": "ephemeral"}}]}]}}
+{"func": "markers", "case": "tools-marker", "api_kwargs": {"tools": [{"name": "t", "cache_control": null}]}}
+{"func": "markers", "case": "no-markers", "api_kwargs": {"model": "gpt-5.1", "messages": [{"role": "user", "content": "hi"}]}}
+{"func": "markers", "case": "empty-kwargs", "api_kwargs": {}}
+{"func": "markers", "case": "marker-outside-watched-keys", "api_kwargs": {"model": "gpt-5.1", "extra_body": {"cache_control": {"type": "ephemeral"}}}}
+{"func": "markers", "case": "wrong-type-kwargs", "api_kwargs": ["not", "a", "dict"]}
+{"func": "replayable", "case": "plain", "api_kwargs": {"model": "gpt-5.1", "messages": []}}
+{"func": "replayable", "case": "budget-thinking", "api_kwargs": {"model": "claude-sonnet-4-5", "thinking": {"type": "enabled", "budget_tokens": 8000}}}
+{"func": "replayable", "case": "adaptive-thinking", "api_kwargs": {"model": "claude-opus-4-8", "thinking": {"type": "adaptive"}}}
+{"func": "replayable", "case": "enabled-without-budget", "api_kwargs": {"model": "claude-sonnet-4-5", "thinking": {"type": "enabled"}}}
+{"func": "replayable", "case": "claude-reasoning-adaptive-model", "api_kwargs": {"model": "claude-opus-4-8", "extra_body": {"reasoning": {"enabled": true, "effort": "high"}}}}
+{"func": "replayable", "case": "claude-reasoning-legacy-model", "api_kwargs": {"model": "claude-sonnet-4-5", "extra_body": {"reasoning": {"enabled": true}}}}
+{"func": "replayable", "case": "reasoning-effort-none", "api_kwargs": {"model": "claude-sonnet-4-5", "extra_body": {"reasoning": {"enabled": true, "effort": "none"}}}}
+{"func": "replayable", "case": "reasoning-disabled", "api_kwargs": {"model": "claude-sonnet-4-5", "extra_body": {"reasoning": {"enabled": false}}}}
+{"func": "replayable", "case": "non-claude-with-reasoning", "api_kwargs": {"model": "gpt-5.1", "extra_body": {"reasoning": {"enabled": true}}}}
+{"func": "replayable", "case": "extra-body-wrong-type", "api_kwargs": {"model": "claude-opus-4-8", "extra_body": "nope"}}
+{"func": "replayable", "case": "wrong-type-kwargs", "api_kwargs": "nope"}
+{"func": "cap", "case": "gpt-5", "model": "gpt-5.1"}
+{"func": "cap", "case": "namespaced-gpt-6", "model": "openai/gpt-6-mini"}
+{"func": "cap", "case": "o-series", "model": "o3-mini"}
+{"func": "cap", "case": "claude", "model": "claude-sonnet-4-5"}
+{"func": "cap", "case": "gpt-4o", "model": "gpt-4o"}
+{"func": "cap", "case": "gpt-10-not-in-family", "model": "gpt-10"}
+{"func": "cap", "case": "empty", "model": ""}
+{"func": "cap", "case": "null-model", "model": null}
+{"func": "cap", "case": "slash-before-family", "model": "mistral/gpt-5"}
+{"func": "cap", "case": "wrong-type-model", "model": 5}
+{"func": "bounded", "case": "strips-stream-and-sets-cap", "api_kwargs": {"model": "gpt-5.1", "messages": [{"role": "user", "content": "hi"}], "stream": true, "stream_options": {"include_usage": true}, "max_tokens": 4096}, "model": "gpt-5.1"}
+{"func": "bounded", "case": "keeps-max-completion-tokens-key", "api_kwargs": {"model": "gpt-5.1", "max_completion_tokens": 800}, "model": "gpt-5.1"}
+{"func": "bounded", "case": "drops-extra-body-output-caps", "api_kwargs": {"model": "gemini-3", "extra_body": {"max_output_tokens": 65535, "top_k": 5, "max_tokens": 9}}, "model": "gemini-3"}
+{"func": "bounded", "case": "keeps-other-extra-body", "api_kwargs": {"model": "gemini-3", "extra_body": {"top_k": 5, "thinking_config": {"include_thoughts": true}}}, "model": "gemini-3"}
+{"func": "bounded", "case": "no-extra-body-added", "api_kwargs": {"model": "claude-sonnet-4-5", "messages": []}, "model": "claude-sonnet-4-5"}
+{"func": "bounded", "case": "claude-cap-1", "api_kwargs": {"model": "claude-opus-4-8", "max_tokens": 32000}, "model": "claude-opus-4-8"}
+{"func": "bounded", "case": "wrong-type-kwargs", "api_kwargs": 3, "model": "gpt-5.1"}
+{"func": "honoured", "case": "effective-under-cap", "api_kwargs": {"model": "gpt-5.1", "messages": []}, "model": "gpt-5.1", "api_mode": "chat_completions", "client": {"effective": 1}}
+{"func": "honoured", "case": "effective-over-cap", "api_kwargs": {"model": "gpt-5.1", "messages": []}, "model": "gpt-5.1", "api_mode": "chat_completions", "client": {"effective": 32}}
+{"func": "honoured", "case": "openai-sdk-sends-as-given", "api_kwargs": {"model": "gpt-5.1", "messages": []}, "model": "gpt-5.1", "api_mode": "chat_completions", "client": {"kind": "openai"}}
+{"func": "honoured", "case": "unknown-client-not-warmed", "api_kwargs": {"model": "gpt-5.1", "messages": []}, "model": "gpt-5.1", "api_mode": "chat_completions", "client": {"kind": "acp"}}
+{"func": "honoured", "case": "anthropic-sdk-anthropic-mode", "api_kwargs": {"model": "claude-opus-4-8", "messages": []}, "model": "claude-opus-4-8", "api_mode": "anthropic_messages", "client": {"kind": "anthropic"}}
+{"func": "honoured", "case": "anthropic-sdk-missing", "api_kwargs": {"model": "claude-opus-4-8", "messages": []}, "model": "claude-opus-4-8", "api_mode": "anthropic_messages", "client": {"kind": "anthropic", "sdk": {"anthropic": false}}}
+{"func": "honoured", "case": "non-chat-cap-is-existing-max-completion-tokens", "api_kwargs": {"model": "claude-opus-4-8", "max_completion_tokens": 99}, "model": "claude-opus-4-8", "api_mode": "anthropic_messages", "client": {"effective": 50}}
+{"func": "honoured", "case": "non-chat-cap-too-high", "api_kwargs": {"model": "claude-opus-4-8", "max_completion_tokens": 99}, "model": "claude-opus-4-8", "api_mode": "anthropic_messages", "client": {"effective": 100}}
+{"func": "honoured", "case": "anthropic-client-on-chat-wire", "api_kwargs": {"model": "claude-opus-4-8"}, "model": "claude-opus-4-8", "api_mode": "chat_completions", "client": {"kind": "anthropic"}}
+{"func": "adaptive", "case": "opus-4-8", "model": "claude-opus-4-8"}
+{"func": "adaptive", "case": "sonnet-4-5-legacy", "model": "claude-sonnet-4-5"}
+{"func": "adaptive", "case": "kimi-prefix", "model": "kimi-k2.5"}
+{"func": "adaptive", "case": "namespaced-kimi", "model": "moonshotai/kimi-k2.5"}
+{"func": "adaptive", "case": "bare-k3", "model": "k3"}
+{"func": "adaptive", "case": "gpt-not-adaptive", "model": "gpt-5.1"}
+{"func": "adaptive", "case": "empty", "model": ""}
+{"func": "adaptive", "case": "padded-model-name", "model": "  claude-sonnet-4-7  "}
+{"func": "adaptive", "case": "null-model", "model": null}

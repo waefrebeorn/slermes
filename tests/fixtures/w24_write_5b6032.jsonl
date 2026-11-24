@@ -1,0 +1,30 @@
+{"func": "constants", "case": "write-budgets"}
+{"func": "describe_code", "case": "module-qualname", "code": {"co_filename": "/a/b/store.py", "co_name": "write", "co_qualname": "Store.write"}}
+{"func": "describe_code", "case": "backslash-path-is-opaque", "code": {"co_filename": "C:\\a\\b\\x.py", "co_name": "f"}}
+{"func": "describe_code", "case": "empty-filename", "code": {"co_filename": "", "co_name": "f"}}
+{"func": "describe_code", "case": "no-attributes", "code": {}}
+{"func": "describe_code", "case": "qualname-null-falls-back", "code": {"co_filename": "m.py", "co_name": "write", "co_qualname": null}}
+{"func": "describe_code", "case": "qualname-empty-falls-back", "code": {"co_filename": "m.py", "co_name": "write", "co_qualname": ""}}
+{"func": "describe_code", "case": "both-names-empty", "code": {"co_filename": "m.py", "co_name": "", "co_qualname": ""}}
+{"func": "describe_code", "case": "no-extension", "code": {"co_filename": "/a/b/noext", "co_name": "f"}}
+{"func": "describe_code", "case": "double-suffix", "code": {"co_filename": "/a/x.py.py", "co_name": "f"}}
+{"func": "describe_code", "case": "suffix-only", "code": {"co_filename": "/a/.py", "co_name": "f"}}
+{"func": "describe_code", "case": "qualname-only", "code": {"co_filename": "m.py", "co_qualname": "Q"}}
+{"func": "describe_site", "case": "not-a-tuple", "site": null}
+{"func": "describe_site", "case": "caller-and-callback", "site": [{"co_filename": "/s/a.py", "co_qualname": "A.go"}, {"co_filename": "/s/b.py", "co_name": "cb"}]}
+{"func": "describe_site", "case": "callback-only", "site": [null, {"co_filename": "/s/b.py", "co_name": "cb"}]}
+{"func": "describe_site", "case": "caller-only", "site": [{"co_filename": "/s/a.py", "co_name": "go"}, null]}
+{"func": "describe_site", "case": "neither", "site": [null, null]}
+{"func": "describe_site", "case": "empty-tuple", "site": []}
+{"func": "describe_site", "case": "short-tuple", "site": [{"co_filename": "/s/a.py", "co_name": "go"}]}
+{"func": "describe_site", "case": "long-tuple", "site": [null, null, null]}
+{"func": "describe_site", "case": "site-is-a-string", "site": "abc"}
+{"func": "maintenance", "case": "checkpoint-only", "write_count": 50, "checkpoint_every": 50, "fts_every": 1000}
+{"func": "maintenance", "case": "both-due", "write_count": 1000, "checkpoint_every": 50, "fts_every": 1000}
+{"func": "maintenance", "case": "nothing-due", "write_count": 1, "checkpoint_every": 50, "fts_every": 1000}
+{"func": "maintenance", "case": "both-due-from-1000", "write_count": 1000, "checkpoint_every": 1000, "fts_every": 1000}
+{"func": "maintenance", "case": "every-write", "write_count": 50, "checkpoint_every": 1, "fts_every": 1}
+{"func": "maintenance", "case": "zero-count", "write_count": 0, "checkpoint_every": 50, "fts_every": 1000}
+{"func": "maintenance", "case": "negative-count", "write_count": -50, "checkpoint_every": 50, "fts_every": 1000}
+{"func": "maintenance", "case": "zero-checkpoint-period", "write_count": 50, "checkpoint_every": 0, "fts_every": 1000}
+{"func": "maintenance", "case": "zero-fts-period", "write_count": 50, "checkpoint_every": 50, "fts_every": 0}

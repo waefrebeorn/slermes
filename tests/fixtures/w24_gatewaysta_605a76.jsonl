@@ -1,0 +1,24 @@
+{"func": "verdict", "case": "incompatible-with-reason", "observed": {"state": "incompatible", "reason_code": "protocol_mismatch"}}
+{"func": "verdict", "case": "incompatible-null-reason", "observed": {"state": "incompatible", "reason_code": null}}
+{"func": "verdict", "case": "incompatible-empty-reason", "observed": {"state": "incompatible", "reason_code": ""}}
+{"func": "verdict", "case": "incompatible-missing-reason-key", "observed": {"state": "incompatible"}}
+{"func": "verdict", "case": "incompatible-numeric-reason", "observed": {"state": "incompatible", "reason_code": 42}}
+{"func": "verdict", "case": "running-is-servable", "observed": {"state": "running", "reason_code": "protocol_mismatch"}}
+{"func": "verdict", "case": "state-not-a-string", "observed": {"state": 0, "reason_code": "x"}}
+{"func": "verdict", "case": "discovery-raises", "raises": true, "observed": {"state": "incompatible", "reason_code": "x"}}
+{"func": "report_lines", "case": "incompatible-with-pid", "observed": {"state": "incompatible", "reason_code": "protocol_mismatch"}, "pids": [1234]}
+{"func": "report_lines", "case": "incompatible-service-managed", "observed": {"state": "incompatible", "reason_code": "protocol_mismatch"}, "pids": []}
+{"func": "report_lines", "case": "incompatible-null-pids", "observed": {"state": "incompatible", "reason_code": "protocol_mismatch"}, "pids": null}
+{"func": "report_lines", "case": "incompatible-unknown-reason", "observed": {"state": "incompatible"}, "pids": [7]}
+{"func": "report_lines", "case": "two-pids", "observed": {"state": "incompatible", "reason_code": "schema_v9"}, "pids": [111, 222]}
+{"func": "report_lines", "case": "pid-zero", "observed": {"state": "incompatible", "reason_code": "schema_v9"}, "pids": [0]}
+{"func": "report_lines", "case": "servable-prints-nothing", "observed": {"state": "running"}, "pids": [99]}
+{"func": "report_lines", "case": "discovery-raises-prints-nothing", "raises": true, "observed": {"state": "incompatible", "reason_code": "x"}, "pids": [99]}
+{"func": "standalone_note", "case": "one-opted-out", "active": "default", "roster": ["default", "work", "main"], "served": ["main"]}
+{"func": "standalone_note", "case": "sorted-multiple", "active": "default", "roster": ["zeta", "default", "alpha", "beta"], "served": []}
+{"func": "standalone_note", "case": "active-null-is-default", "active": null, "roster": ["default", "work"], "served": []}
+{"func": "standalone_note", "case": "active-other-profile-is-silent", "active": "work", "roster": ["default", "extra"], "served": []}
+{"func": "standalone_note", "case": "nothing-opted-out", "active": "default", "roster": ["default", "main"], "served": ["main"]}
+{"func": "standalone_note", "case": "only-default-extra", "active": "default", "roster": ["default"], "served": []}
+{"func": "standalone_note", "case": "empty-roster", "active": "default", "roster": [], "served": ["main"]}
+{"func": "standalone_note", "case": "served-covers-roster", "active": "default", "roster": ["a", "b", "default"], "served": ["a", "b"]}

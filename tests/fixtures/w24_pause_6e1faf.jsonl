@@ -1,0 +1,17 @@
+{"func": "pause_output", "reason": "deploy freeze", "engaged": false, "state": {"reason": "deploy freeze"}, "path": "/tmp/home/ESTOP", "case": "pause-fresh"}
+{"func": "pause_output", "reason": null, "engaged": true, "state": {"reason": "hold"}, "path": "/tmp/home/ESTOP", "case": "pause-already"}
+{"func": "pause_output", "reason": "x", "engaged": false, "state": null, "path": "/tmp/home/ESTOP", "case": "pause-no-state"}
+{"func": "pause_output", "reason": null, "engaged": false, "state": {}, "path": "", "case": "pause-empty-state"}
+{"func": "pause_output", "engaged": true, "state": {"reason": 0}, "path": "/e", "case": "pause-falsy-reason-zero"}
+{"func": "pause_output", "engaged": false, "state": {"reason": ""}, "path": "/e", "case": "pause-falsy-reason-empty"}
+{"func": "pause_output", "engaged": false, "state": {"reason": 42}, "path": "C:\\home\\ESTOP", "case": "pause-numeric-reason"}
+{"func": "pause_output", "engaged": false, "state": {"reason": true}, "path": "/e", "case": "pause-bool-reason"}
+{"func": "resume_output", "disengaged": true, "path": "/tmp/home/ESTOP", "case": "resume-yes"}
+{"func": "resume_output", "disengaged": false, "path": "/tmp/home/ESTOP", "case": "resume-no"}
+{"func": "resume_output", "disengaged": false, "path": "", "case": "resume-empty-path"}
+{"func": "resume_output", "disengaged": true, "path": "C:\\Users\\x\\AppData\\Local\\hermes\\ESTOP", "case": "resume-win-path"}
+{"func": "parser_spec", "which": "pause", "field": "help", "case": "spec-pause-help"}
+{"func": "parser_spec", "which": "pause", "field": "description", "case": "spec-pause-desc"}
+{"func": "parser_spec", "which": "pause", "field": "reason_default", "case": "spec-pause-reason"}
+{"func": "parser_spec", "which": "resume", "field": "all", "case": "spec-resume-all"}
+{"func": "parser_spec", "which": "pause", "field": "all", "case": "spec-pause-all"}

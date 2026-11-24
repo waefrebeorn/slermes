@@ -1,0 +1,26 @@
+{"func":"board_name_ok","case":"name-basic","name":"main"}
+{"func":"board_name_ok","case":"name-single-char","name":"a"}
+{"func":"board_name_ok","case":"name-empty","name":""}
+{"func":"board_name_ok","case":"name-uppercase","name":"Main"}
+{"func":"board_name_ok","case":"name-leading-dash","name":"-x"}
+{"func":"board_name_ok","case":"name-mixed","name":"main_x-1"}
+{"func":"board_name_ok","case":"name-64-chars","name":"abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+{"func":"board_name_ok","case":"name-65-chars","name":"abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+{"func":"board_name_ok","case":"name-space","name":"bad name"}
+{"func":"board_name_ok","case":"name-non-ascii","name":"mäin"}
+{"func":"board_name_ok","case":"name-int-typeerror","name":42}
+{"func":"board_name_ok","case":"name-null","name":null}
+{"func":"attachment_roots","case":"roots-no-boards","root":"C:/herslermes"}
+{"func":"attachment_roots","case":"roots-filtered","root":"C:/h","boards":[{"name":"main","is_symlink":false,"has_db":true},{"name":"Ops","is_symlink":false,"has_db":true},{"name":"nowal","is_symlink":false,"has_db":false},{"name":"link","is_symlink":true,"has_db":true},{"name":"b-2","is_symlink":false,"has_db":true}]}
+{"func":"attachment_roots","case":"roots-override","root":"C:/h","override":"D:/att","boards":[{"name":"main","is_symlink":false,"has_db":true}]}
+{"func":"attachment_roots","case":"roots-override-blank","root":"C:/h","override":"   "}
+{"func":"attachment_roots","case":"roots-override-trailing-slash","root":"C:/h","override":"D:/att/"}
+{"func":"attachment_roots","case":"roots-root-trailing-slash","root":"C:/h/"}
+{"func":"attachment_roots","case":"roots-root-double-slash","root":"C:/h//x"}
+{"func":"attachment_roots","case":"roots-root-empty","root":""}
+{"func":"attachment_roots","case":"roots-empty-boards","root":"C:/h","boards":[]}
+{"func":"board_db_paths","case":"db-two-boards","root":"C:/h","boards":[{"name":"main"},{"name":"ops"}]}
+{"func":"board_db_paths","case":"db-one-board","root":"C:/h","boards":[{"name":"main"}]}
+{"func":"board_db_paths","case":"db-no-boards","root":"C:/h","boards":[]}
+{"func":"board_db_paths","case":"db-root-empty","root":"","boards":[{"name":"main"}]}
+{"func":"constants","case":"constants"}

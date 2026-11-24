@@ -1,0 +1,35 @@
+{"func": "constants", "case": "budget"}
+{"func": "prefix", "case": "empty-list", "model_ids": []}
+{"func": "prefix", "case": "single-id", "model_ids": ["global.anthropic.claude-sonnet-4-5-20250929-v1:0"]}
+{"func": "prefix", "case": "short-catalog-keeps-names", "model_ids": ["gpt-5.1", "gpt-5.2"]}
+{"func": "prefix", "case": "over-budget-namespace", "model_ids": ["global.anthropic.claude-sonnet-4-5-20250929-v1:0", "global.anthropic.claude-opus-4-5-20251101-v1:0"]}
+{"func": "prefix", "case": "no-dot-in-common", "model_ids": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab"]}
+{"func": "prefix", "case": "prefix-eats-an-id", "model_ids": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.b"]}
+{"func": "prefix", "case": "wrong-type-member", "model_ids": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 5]}
+{"func": "prefix", "case": "wrong-type-container", "model_ids": {"a": "b"}}
+{"func": "label", "case": "short-id", "model_id": "gpt-5.1", "prefix": "", "suffix": ""}
+{"func": "label", "case": "with-suffix", "model_id": "claude-sonnet-4-5", "prefix": "", "suffix": "Large"}
+{"func": "label", "case": "prefix-and-slash-tail", "model_id": "global.anthropic.claude-sonnet-4-5-20250929-v1:0", "prefix": "global.anthropic.", "suffix": ""}
+{"func": "label", "case": "over-budget-elides-middle", "model_id": "Llama-3.3-70B-Instruct-Q4_K_M-GGUF-extra-long-name", "prefix": "", "suffix": ""}
+{"func": "label", "case": "suffix-shrinks-room", "model_id": "claude-sonnet-4-5-20250929", "prefix": "", "suffix": "Extra Large Thinking"}
+{"func": "label", "case": "multibyte-counted-as-codepoints", "model_id": "ααααααααααααααααααααααααααααααααααααααααααααα", "prefix": "", "suffix": ""}
+{"func": "label", "case": "null-prefix-and-suffix", "model_id": "gpt-5.2", "prefix": null, "suffix": null}
+{"func": "label", "case": "omitted-prefix", "model_id": "hf.co/org/model-x", "suffix": "Small"}
+{"func": "label", "case": "wrong-type-id", "model_id": 5, "prefix": "", "suffix": ""}
+{"func": "label", "case": "wrong-type-prefix", "model_id": "gpt-5.1", "prefix": 5, "suffix": ""}
+{"func": "around", "case": "fits", "name": "gpt-5.1", "others": ["gpt-5.2"], "room": 44}
+{"func": "around", "case": "early-difference", "name": "llama-3.3-70b-instruct", "others": ["mistral-7b-instruct"], "room": 20}
+{"func": "around", "case": "late-difference-window", "name": "aaaaaaaaaaaaaaaaaaaaaa-20250929-v1:0", "others": ["aaaaaaaaaaaaaaaaaaaaaa-20251101-v1:0"], "room": 20}
+{"func": "around", "case": "no-lookalikes", "name": "meta-llama/llama-3.3-70b-instruct", "others": [], "room": 20}
+{"func": "around", "case": "tiny-room", "name": "meta-llama/llama-3.3-70b-instruct", "others": [""], "room": 8}
+{"func": "around", "case": "exact-fit", "name": "abcdefghij", "others": [""], "room": 10}
+{"func": "around", "case": "wrong-type-name", "name": null, "others": [""], "room": 10}
+{"func": "labels", "case": "short-catalog", "model_ids": ["gpt-5.1", "gpt-5.2"], "suffixes": {}}
+{"func": "labels", "case": "empty-catalog", "model_ids": [], "suffixes": {}}
+{"func": "labels", "case": "org-only-difference", "model_ids": ["meta-llama/llama-3.3-70b-instruct", "nousresearch/llama-3.3-70b-instruct"], "suffixes": {}}
+{"func": "labels", "case": "duplicate-ids-get-ordinals", "model_ids": ["gpt-5.1", "gpt-5.1"], "suffixes": {}}
+{"func": "labels", "case": "duplicate-with-plan-suffix", "model_ids": ["a/x", "a/x"], "suffixes": {"a/x": "Large"}}
+{"func": "labels", "case": "plan-suffix-differs", "model_ids": ["global.anthropic.claude-sonnet-4-5-20250929-v1:0", "global.anthropic.claude-opus-4-5-20251101-v1:0"], "suffixes": {"global.anthropic.claude-sonnet-4-5-20250929-v1:0": "Large", "global.anthropic.claude-opus-4-5-20251101-v1:0": "Small"}}
+{"func": "labels", "case": "three-way-clash", "model_ids": ["org1/a/same-model-name", "org2/a/same-model-name", "org3/a/same-model-name"], "suffixes": {}}
+{"func": "labels", "case": "wrong-type-container", "model_ids": "nope", "suffixes": {}}
+{"func": "labels", "case": "wrong-type-member", "model_ids": ["ok", null], "suffixes": {}}

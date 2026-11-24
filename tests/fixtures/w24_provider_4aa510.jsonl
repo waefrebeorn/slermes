@@ -1,0 +1,45 @@
+{"func": "constants", "case": "provider-literals"}
+{"func": "setup_schema", "case": "picker-entry"}
+{"func": "headers", "case": "keyed", "api_key": "tvly-abc123"}
+{"func": "headers", "case": "empty-key-keyless", "api_key": ""}
+{"func": "headers", "case": "null-key-keyless", "api_key": null}
+{"func": "headers", "case": "absent-key-keyless"}
+{"func": "headers", "case": "zero-key-keyless", "api_key": 0}
+{"func": "headers", "case": "numeric-key", "api_key": 5}
+{"func": "search_payload", "case": "under-cap", "query": "cats", "limit": 5}
+{"func": "search_payload", "case": "over-cap", "query": "cats", "limit": 25}
+{"func": "search_payload", "case": "at-cap", "query": "cats", "limit": 20}
+{"func": "search_payload", "case": "bool-limit-kept", "query": "cats", "limit": true}
+{"func": "search_payload", "case": "float-limit", "query": "cats", "limit": 2.5}
+{"func": "search_payload", "case": "null-limit", "query": "cats", "limit": null}
+{"func": "search_payload", "case": "string-limit", "query": "cats", "limit": "5"}
+{"func": "search_payload", "case": "null-query", "query": null, "limit": 3}
+{"func": "normalize_search", "case": "two-results", "response": {"results": [{"title": "A", "url": "https://a", "content": "aa"}, {"title": "B", "url": "https://b", "content": "bb"}]}}
+{"func": "normalize_search", "case": "empty-results", "response": {"results": []}}
+{"func": "normalize_search", "case": "absent-results", "response": {}}
+{"func": "normalize_search", "case": "results-null", "response": {"results": null}}
+{"func": "normalize_search", "case": "results-string", "response": {"results": "ab"}}
+{"func": "normalize_search", "case": "result-not-dict", "response": {"results": [1, 2]}}
+{"func": "normalize_search", "case": "missing-fields", "response": {"results": [{}]}}
+{"func": "normalize_search", "case": "null-title", "response": {"results": [{"title": null, "url": "u", "content": "c"}]}}
+{"func": "normalize_search", "case": "response-not-dict", "response": ["results"]}
+{"func": "normalize_documents", "case": "raw-content", "response": {"results": [{"url": "https://a", "title": "A", "raw_content": "raw", "content": "plain"}]}}
+{"func": "normalize_documents", "case": "empty-raw-falls-back", "response": {"results": [{"url": "https://a", "title": "A", "raw_content": "", "content": "plain"}]}}
+{"func": "normalize_documents", "case": "absent-raw-falls-back", "response": {"results": [{"url": "https://a", "content": "plain"}]}}
+{"func": "normalize_documents", "case": "no-content-at-all", "response": {"results": [{"url": "https://a"}]}}
+{"func": "normalize_documents", "case": "failed-results", "response": {"results": [], "failed_results": [{"url": "https://x", "error": "boom"}]}}
+{"func": "normalize_documents", "case": "failed-result-default-error", "response": {"failed_results": [{"url": "https://x"}]}}
+{"func": "normalize_documents", "case": "failed-urls", "response": {"failed_urls": ["https://y", "https://z"]}}
+{"func": "normalize_documents", "case": "failed-urls-non-string", "response": {"failed_urls": [5, {"a": 1}]}}
+{"func": "normalize_documents", "case": "all-three-blocks", "response": {"results": [{"url": "https://a", "title": "A", "content": "aa"}], "failed_results": [{"url": "https://x", "error": "e"}], "failed_urls": ["https://y"]}}
+{"func": "normalize_documents", "case": "results-null", "response": {"results": null}}
+{"func": "normalize_documents", "case": "empty-response", "response": {}}
+{"func": "missing_key_error", "case": "search", "action": "search"}
+{"func": "missing_key_error", "case": "extract", "action": "extract"}
+{"func": "missing_key_error", "case": "absent-action"}
+{"func": "auth", "case": "keyed", "api_key": "tvly-abc", "keyless": false, "action": "search"}
+{"func": "auth", "case": "no-key-no-keyless", "api_key": null, "keyless": false, "action": "search"}
+{"func": "auth", "case": "empty-key-no-keyless", "api_key": "", "keyless": false, "action": "extract"}
+{"func": "auth", "case": "forced-keyless-with-key", "api_key": "tvly-abc", "keyless": true, "action": "search"}
+{"func": "auth", "case": "forced-keyless-no-key", "api_key": null, "keyless": true, "action": "extract"}
+{"func": "auth", "case": "keyless-flag-non-bool", "api_key": "tvly-abc", "keyless": 1, "action": "search"}

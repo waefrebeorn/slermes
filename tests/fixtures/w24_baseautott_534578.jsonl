@@ -1,0 +1,28 @@
+{"func": "constants", "case": "literal-table"}
+{"func": "synthesize", "case": "no-requirements", "requirements": false, "clean_text": "hello", "output_path": "out.ogg", "tts": {"success": true, "file_paths": ["a.mp3"]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "empty-clean-text", "requirements": true, "clean_text": "", "output_path": "out.ogg", "tts": {"success": true, "file_paths": ["a.mp3"]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "null-clean-text", "requirements": true, "clean_text": null, "output_path": "out.ogg", "tts": {"success": true, "file_paths": ["a.mp3"]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "success-false", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": false, "file_paths": ["a.mp3"]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "success-null", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": null, "file_paths": ["a.mp3"]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "success-absent-keeps", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"file_paths": ["a.mp3"]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "both-exist", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": ["a.mp3", "b.ogg"]}, "existing": ["a.mp3", "b.ogg"]}
+{"func": "synthesize", "case": "one-missing", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": ["a.mp3", "b.ogg"]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "file-paths-empty-falls-back", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": [], "file_path": "c.mp3"}, "existing": ["c.mp3"]}
+{"func": "synthesize", "case": "file-paths-empty-no-file-path", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": []}, "existing": []}
+{"func": "synthesize", "case": "file-paths-null-file-path", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": null, "file_path": "c.mp3"}, "existing": ["c.mp3"]}
+{"func": "synthesize", "case": "no-paths-at-all", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true}, "existing": []}
+{"func": "synthesize", "case": "file-path-missing-on-disk", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": null, "file_path": "gone.mp3"}, "existing": []}
+{"func": "synthesize", "case": "empty-string-path-skipped", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": ["", "a.mp3"]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "zero-path-skipped", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": [0, "a.mp3"]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "int-path-raises", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": [5]}, "existing": []}
+{"func": "synthesize", "case": "late-int-path-discards-batch", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": ["a.mp3", 7]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "output-path-null", "requirements": true, "clean_text": "hi", "output_path": null, "tts": {"success": true, "file_paths": ["a.mp3"]}, "existing": ["a.mp3"]}
+{"func": "synthesize", "case": "existing-nonstring-entry", "requirements": true, "clean_text": "hi", "output_path": "out.ogg", "tts": {"success": true, "file_paths": ["a.mp3"]}, "existing": [3, "a.mp3"]}
+{"func": "profile_scope", "case": "resolver-and-source", "resolver": true, "source": "discord"}
+{"func": "profile_scope", "case": "resolver-null-source", "resolver": true, "source": null}
+{"func": "profile_scope", "case": "resolver-missing-source", "resolver": true}
+{"func": "profile_scope", "case": "no-resolver", "resolver": false, "source": "discord"}
+{"func": "profile_scope", "case": "noncallable-resolver", "resolver": true, "noncallable": true, "source": "discord"}
+{"func": "profile_scope", "case": "zero-source-not-none", "resolver": true, "source": 0}
+{"func": "profile_scope", "case": "empty-source-not-none", "resolver": true, "source": ""}
+{"func": "profile_scope", "case": "false-source-not-none", "resolver": true, "source": false}

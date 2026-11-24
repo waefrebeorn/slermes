@@ -1,0 +1,32 @@
+{"func": "constants", "case": "relay-tables"}
+{"func": "ask", "case": "no-answer", "answer": null}
+{"func": "ask", "case": "ok-payload", "answer": {"ok": true, "platforms": [{"platform": "telegram"}], "dm_links": {}}}
+{"func": "ask", "case": "ok-empty", "answer": {"ok": true}}
+{"func": "ask", "case": "ok-keeps-other-keys", "answer": {"ok": true, "message": "m", "n": 2}}
+{"func": "ask", "case": "not-ready-code", "answer": {"ok": false, "error": "relay_not_provisioned"}}
+{"func": "ask", "case": "not-ready-with-message", "answer": {"ok": false, "error": "connector_unreachable", "message": "socket closed"}}
+{"func": "ask", "case": "refused-default-code", "answer": {"ok": false}}
+{"func": "ask", "case": "refused-other-code", "answer": {"ok": false, "error": "permission_denied"}}
+{"func": "ask", "case": "ok-falsy-zero", "answer": {"ok": 0, "error": ""}}
+{"func": "ask", "case": "ok-absent", "answer": {"error": "connector_unavailable"}}
+{"func": "ask", "case": "error-bool", "answer": {"ok": false, "error": true}}
+{"func": "ask", "case": "error-number", "answer": {"ok": false, "error": 42}}
+{"func": "ask", "case": "answer-is-string", "answer": "nope"}
+{"func": "ask", "case": "answer-is-int", "answer": 5}
+{"func": "ask", "case": "answer-is-float", "answer": 5.5}
+{"func": "ask", "case": "answer-is-list", "answer": [1]}
+{"func": "ask", "case": "answer-is-bool", "answer": true}
+{"func": "params", "case": "status", "action": "status"}
+{"func": "params", "case": "request", "action": "request", "platform": "telegram"}
+{"func": "params", "case": "state", "action": "state", "code": "abc123"}
+{"func": "params", "case": "unlink", "action": "unlink", "platform": "discord", "platform_user_id": "u-9"}
+{"func": "params", "case": "request-without-platform", "action": "request"}
+{"func": "params", "case": "unlink-without-user", "action": "unlink", "platform": "slack"}
+{"func": "params", "case": "unknown-action", "action": "bogus"}
+{"func": "not_ready", "case": "relay-not-provisioned", "code": "relay_not_provisioned"}
+{"func": "not_ready", "case": "connector-unreachable", "code": "connector_unreachable"}
+{"func": "not_ready", "case": "connector-unavailable", "code": "connector_unavailable"}
+{"func": "not_ready", "case": "other-code", "code": "permission_denied"}
+{"func": "not_ready", "case": "empty-code", "code": ""}
+{"func": "not_ready", "case": "null-code", "code": null}
+{"func": "not_ready", "case": "number-code", "code": 42}

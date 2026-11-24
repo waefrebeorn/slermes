@@ -1,0 +1,28 @@
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-n1x-2e03", "pci_id": 771952862}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-vendor-only", "pci_id": 4318}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-min-device", "pci_id": 771756254}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-max-device", "pci_id": 775885022}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-above-max", "pci_id": 775950558}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-below-min", "pci_id": 771690718}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-vendor-mismatch", "pci_id": 771952863}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-negative", "pci_id": -1}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-float-typeerror", "pci_id": 1.5}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-string-typeerror", "pci_id": "0x2E0310DE"}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-bool", "pci_id": true}
+{"func": "is_nvidia_n1x_pci_id", "case": "pci-null", "pci_id": null}
+{"func": "classify_nvidia_platform", "case": "cls-win-arm-n1x-cpu", "os_family": "win32", "native_arch": "arm64", "cpu_model": "NVIDIA N1X", "gpu_class": "nvidia", "nvidia_gpus": []}
+{"func": "classify_nvidia_platform", "case": "cls-win-arm-n1x-underscore", "os_family": "win32", "native_arch": "arm64", "cpu_model": "nvidia_n1x_laptop", "gpu_class": "nvidia", "nvidia_gpus": []}
+{"func": "classify_nvidia_platform", "case": "cls-win-arm-n1x-gpu", "os_family": "win32", "native_arch": "arm64", "cpu_model": "Generic", "gpu_class": "nvidia", "nvidia_gpus": [{"name": "NVIDIA", "pci_id": 771952862}]}
+{"func": "classify_nvidia_platform", "case": "cls-win-arm-other-gpu", "os_family": "win32", "native_arch": "arm64", "cpu_model": "Generic", "gpu_class": "nvidia", "nvidia_gpus": [{"name": "NVIDIA", "pci_id": 305402078}]}
+{"func": "classify_nvidia_platform", "case": "cls-win-x64-n1x-cpu", "os_family": "win32", "native_arch": "x86_64", "cpu_model": "N1X", "gpu_class": "nvidia", "nvidia_gpus": []}
+{"func": "classify_nvidia_platform", "case": "cls-linux-arm-gb10-gpu", "os_family": "linux", "native_arch": "arm64", "cpu_model": "Generic", "gpu_class": "nvidia", "nvidia_gpus": [{"name": "NVIDIA GB10", "pci_id": null}]}
+{"func": "classify_nvidia_platform", "case": "cls-linux-arm-dgx-cpu", "os_family": "linux6.1", "native_arch": "arm64", "cpu_model": "dgx_spark", "gpu_class": "nvidia", "nvidia_gpus": []}
+{"func": "classify_nvidia_platform", "case": "cls-linux-arm-gb200", "os_family": "linux", "native_arch": "arm64", "cpu_model": "Generic", "gpu_class": "nvidia", "nvidia_gpus": [{"name": "NVIDIA GB200", "pci_id": null}]}
+{"func": "classify_nvidia_platform", "case": "cls-linux-x64-gb10", "os_family": "linux", "native_arch": "x86_64", "cpu_model": "Generic", "gpu_class": "nvidia", "nvidia_gpus": [{"name": "NVIDIA GB10", "pci_id": null}]}
+{"func": "classify_nvidia_platform", "case": "cls-no-nvidia", "os_family": "", "native_arch": "arm64", "cpu_model": "Generic", "gpu_class": "", "nvidia_gpus": [{"name": "NVIDIA GB10", "pci_id": null}]}
+{"func": "classify_nvidia_platform", "case": "cls-win-arm-none", "os_family": "win32", "native_arch": "arm64", "cpu_model": null, "gpu_class": "", "nvidia_gpus": []}
+{"func": "classify_nvidia_platform", "case": "cls-win-arm-cpu-int", "os_family": "win32", "native_arch": "arm64", "cpu_model": 42, "gpu_class": "nvidia", "nvidia_gpus": []}
+{"func": "classify_nvidia_platform", "case": "cls-linux-arm-lowercase-gb10", "os_family": "linux", "native_arch": "arm64", "cpu_model": "Generic", "gpu_class": "nvidia", "nvidia_gpus": [{"name": "nvidia corporation device gb10", "pci_id": null}]}
+{"func": "classify_nvidia_platform", "case": "cls-darwin-arm-gb10", "os_family": "darwin", "native_arch": "arm64", "cpu_model": "Generic", "gpu_class": "nvidia", "nvidia_gpus": [{"name": "NVIDIA GB10", "pci_id": null}]}
+{"func": "classify_nvidia_platform", "case": "cls-linux-arm-empty-gpus", "os_family": "linux", "native_arch": "arm64", "cpu_model": "generic cpu", "gpu_class": "nvidia", "nvidia_gpus": []}
+{"func": "constants", "case": "constants"}

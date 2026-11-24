@@ -1,0 +1,19 @@
+{"case":"sessionres-idle","func":"retired_reset_policy","config":{"session_reset":{"mode":"idle"}}}
+{"case":"sessionres-padded-upper","func":"retired_reset_policy","config":{"session_reset":{"mode":"  DAILY "}}}
+{"case":"sessionres-both","func":"retired_reset_policy","config":{"session_reset":{"mode":"both"}}}
+{"case":"sessionres-untimed","func":"retired_reset_policy","config":{"session_reset":{"mode":"off"}}}
+{"case":"sessionres-null-mode","func":"retired_reset_policy","config":{"session_reset":{"mode":null}}}
+{"case":"sessionres-empty-mode","func":"retired_reset_policy","config":{"session_reset":{"mode":""}}}
+{"case":"sessionres-gateway-form","func":"retired_reset_policy","config":{"gateway":{"session_reset":{"mode":"idle"}}}}
+{"case":"sessionres-top-level-wins","func":"retired_reset_policy","config":{"session_reset":{"mode":"idle"},"gateway":{"session_reset":{"mode":"daily"}}}}
+{"case":"sessionres-top-level-untimed-falls-through","func":"retired_reset_policy","config":{"session_reset":{"mode":"never"},"gateway":{"session_reset":{"mode":"both"}}}}
+{"case":"sessionres-block-is-string","func":"retired_reset_policy","config":{"session_reset":"idle"}}
+{"case":"sessionres-empty-config","func":"retired_reset_policy","config":{}}
+{"case":"sessionres-null-config","func":"retired_reset_policy","config":null}
+{"case":"sessionres-gateway-scalar","func":"retired_reset_policy","config":{"gateway":"x"}}
+{"case":"sessionres-mode-number","func":"retired_reset_policy","config":{"session_reset":{"mode":1}}}
+{"case":"sessionres-notice-top","func":"format_notice","path":"session_reset","mode":"idle"}
+{"case":"sessionres-notice-gateway","func":"format_notice","path":"gateway.session_reset","mode":"daily"}
+{"case":"sessionres-notice-empty","func":"format_notice","path":"","mode":""}
+{"case":"sessionres-notice-null","func":"format_notice","path":null,"mode":null}
+{"case":"sessionres-constants","func":"constants"}

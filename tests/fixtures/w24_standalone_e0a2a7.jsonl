@@ -1,0 +1,48 @@
+{"func": "constants", "case": "retry-table"}
+{"func": "api_url", "case": "plain-path", "path": "channels/1/messages"}
+{"func": "api_url", "case": "leading-slash", "path": "/channels/2/messages"}
+{"func": "api_url", "case": "double-slashes", "path": "//x//y"}
+{"func": "api_url", "case": "empty-path", "path": ""}
+{"func": "api_url", "case": "slash-only", "path": "/"}
+{"func": "api_url", "case": "null-path", "path": null}
+{"func": "api_url", "case": "int-path", "path": 5}
+{"func": "api_url", "case": "missing-path"}
+{"func": "seconds", "case": "number", "value": 3.5}
+{"func": "seconds", "case": "zero", "value": 0}
+{"func": "seconds", "case": "negative", "value": -1}
+{"func": "seconds", "case": "over-cap", "value": 120}
+{"func": "seconds", "case": "at-cap", "value": 60}
+{"func": "seconds", "case": "numeric-string", "value": "3.5"}
+{"func": "seconds", "case": "padded-string", "value": "  7  "}
+{"func": "seconds", "case": "exponent-string", "value": "1e3"}
+{"func": "seconds", "case": "underscore-string", "value": "1_0"}
+{"func": "seconds", "case": "dot-five", "value": ".5"}
+{"func": "seconds", "case": "one-dot", "value": "1."}
+{"func": "seconds", "case": "inf-string", "value": "inf"}
+{"func": "seconds", "case": "neg-inf-string", "value": "-inf"}
+{"func": "seconds", "case": "nan-string", "value": "nan"}
+{"func": "seconds", "case": "garbage-string", "value": "abc"}
+{"func": "seconds", "case": "empty-string", "value": ""}
+{"func": "seconds", "case": "null", "value": null}
+{"func": "seconds", "case": "list", "value": []}
+{"func": "seconds", "case": "object", "value": {}}
+{"func": "seconds", "case": "true", "value": true}
+{"func": "pace", "case": "single-200", "responses": [{"status": 200}]}
+{"func": "pace", "case": "remaining-zero-sets-bucket", "responses": [{"status": 200, "headers": {"X-RateLimit-Remaining": "0", "X-RateLimit-Reset-After": "2"}}]}
+{"func": "pace", "case": "remaining-zero-numeric", "responses": [{"status": 200, "headers": {"X-RateLimit-Remaining": 0, "X-RateLimit-Reset-After": 0.5}}]}
+{"func": "pace", "case": "remaining-nonzero-ignored", "responses": [{"status": 200, "headers": {"X-RateLimit-Remaining": "3", "X-RateLimit-Reset-After": "9"}}]}
+{"func": "pace", "case": "remaining-false-ignored", "responses": [{"status": 200, "headers": {"X-RateLimit-Remaining": false, "X-RateLimit-Reset-After": "9"}}]}
+{"func": "pace", "case": "429-then-200-header", "responses": [{"status": 429, "headers": {"Retry-After": "1.5"}}, {"status": 200}]}
+{"func": "pace", "case": "429-body-overrides-header", "responses": [{"status": 429, "headers": {"Retry-After": "1"}, "body": "{\"retry_after\": 0.25}"}, {"status": 200}]}
+{"func": "pace", "case": "429-invalid-body-uses-header", "responses": [{"status": 429, "headers": {"Retry-After": "2"}, "body": "not json at all"}, {"status": 200}]}
+{"func": "pace", "case": "429-list-body-uses-header", "responses": [{"status": 429, "headers": {"Retry-After": "0.5"}, "body": "[1, 2]"}, {"status": 200}]}
+{"func": "pace", "case": "429-empty-body-uses-header", "responses": [{"status": 429, "headers": {"Retry-After": "1.25"}, "body": ""}, {"status": 200}]}
+{"func": "pace", "case": "429-no-hints-defaults-one", "responses": [{"status": 429}, {"status": 204}]}
+{"func": "pace", "case": "429-clamped-to-60", "responses": [{"status": 429, "headers": {"Retry-After": "120"}}, {"status": 200}]}
+{"func": "pace", "case": "429-negative-clamped-zero", "responses": [{"status": 429, "headers": {"Retry-After": "-3"}}, {"status": 200}]}
+{"func": "pace", "case": "429-garbage-header-defaults-one", "responses": [{"status": 429, "headers": {"Retry-After": "abc"}}, {"status": 200}]}
+{"func": "pace", "case": "six-429s-exhaust-retries", "responses": [{"status": 429}, {"status": 429}, {"status": 429}, {"status": 429}, {"status": 429}, {"status": 429}, {"status": 429}]}
+{"func": "pace", "case": "five-429s-then-200", "responses": [{"status": 429}, {"status": 429}, {"status": 429}, {"status": 429}, {"status": 429}, {"status": 200}]}
+{"func": "pace", "case": "500-not-retried", "responses": [{"status": 500, "headers": {"Retry-After": "3"}}]}
+{"func": "pace", "case": "429-then-429-then-200", "responses": [{"status": 429, "headers": {"Retry-After": "0.5"}}, {"status": 429, "headers": {"Retry-After": "0.25"}}, {"status": 200}]}
+{"func": "pace", "case": "no-responses", "responses": []}

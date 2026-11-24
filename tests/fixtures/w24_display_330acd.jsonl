@@ -1,0 +1,33 @@
+{"func": "connected_slugs", "case": "mixed", "items": [{"connector": "Stripe", "connected": true}, {"connector": "github", "connected": false}]}
+{"func": "connected_slugs", "case": "all-connected-sorted", "items": [{"connector": "stripe", "connected": true}, {"connector": "github", "connected": true}, {"connector": "airtable", "connected": true}]}
+{"func": "connected_slugs", "case": "case-duplicates", "items": [{"connector": "Stripe", "connected": true}, {"connector": "stripe", "connected": true}]}
+{"func": "connected_slugs", "case": "missing-connector-key", "items": [{"connected": true}]}
+{"func": "connected_slugs", "case": "non-dict-entry", "items": ["stripe", {"connector": "github", "connected": true}]}
+{"func": "connected_slugs", "case": "connected-truthy-number", "items": [{"connector": "linear", "connected": 1}]}
+{"func": "connected_slugs", "case": "connected-zero", "items": [{"connector": "linear", "connected": 0}]}
+{"func": "connected_slugs", "case": "items-null", "items": null}
+{"func": "connected_slugs", "case": "empty-list", "items": []}
+{"func": "connected_slugs", "case": "numeric-connector", "items": [{"connector": 123, "connected": true}]}
+{"func": "apply_answer", "case": "typed-word", "raw": "{\"said\": \"continue\"}"}
+{"func": "apply_answer", "case": "typed-word-padded", "raw": "{\"said\": \"  hello  \"}"}
+{"func": "apply_answer", "case": "empty-said", "raw": "{\"said\": \"\"}"}
+{"func": "apply_answer", "case": "blank-said", "raw": "{\"said\": \"   \"}"}
+{"func": "apply_answer", "case": "settled-continue", "raw": "{\"settled_by\": \"continue\"}"}
+{"func": "apply_answer", "case": "settled-deadline", "raw": "{\"settled_by\": \"deadline\"}"}
+{"func": "apply_answer", "case": "said-null", "raw": "{\"said\": null}"}
+{"func": "apply_answer", "case": "empty-object", "raw": "{}"}
+{"func": "apply_answer", "case": "numeric-said", "raw": "{\"said\": 5}"}
+{"func": "apply_answer", "case": "not-json", "raw": "not json"}
+{"func": "apply_answer", "case": "json-list", "raw": "[1, 2]"}
+{"func": "apply_answer", "case": "raw-null", "raw": null}
+{"func": "result", "case": "newly-connected", "items": [{"connector": "stripe", "connected": true}, {"connector": "github", "connected": true}], "before": ["stripe"], "suggested": ["gmail", "stripe"]}
+{"func": "result", "case": "timed-out", "items": [{"connector": "stripe", "connected": true}], "before": [], "suggested": [], "settled_by": "deadline"}
+{"func": "result", "case": "with-said", "items": [], "before": [], "suggested": ["gmail"], "said": "connect gmail"}
+{"func": "result", "case": "empty-said-omitted", "items": [], "before": [], "suggested": [], "said": ""}
+{"func": "result", "case": "nothing-new", "items": [{"connector": "stripe", "connected": true}], "before": ["stripe", "gone"], "suggested": []}
+{"func": "result", "case": "items-null", "items": null, "before": ["stripe"], "suggested": []}
+{"func": "result", "case": "suggested-absent", "items": [], "before": []}
+{"func": "result", "case": "settled-continue-no-timeout", "items": [], "before": [], "suggested": [], "settled_by": "continue"}
+{"func": "result", "case": "before-non-strings", "items": [{"connector": "stripe", "connected": true}], "before": [1, null, "stripe"], "suggested": []}
+{"func": "result", "case": "disconnected-rows-ignored", "items": [{"connector": "stripe", "connected": false}, {"connector": "github", "connected": true}], "before": [], "suggested": ["stripe"]}
+{"func": "constants", "case": "card-table"}

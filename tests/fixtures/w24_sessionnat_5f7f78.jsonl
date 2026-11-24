@@ -1,0 +1,27 @@
+{"func": "relay_match", "case": "route-and-relay", "envelope": {"route": "telegram:relay:42", "provenance": {"relay": true}}, "session_key": "telegram:relay:42"}
+{"func": "relay_match", "case": "route-mismatch", "envelope": {"route": "telegram:relay:42", "provenance": {"relay": true}}, "session_key": "telegram:relay:7"}
+{"func": "relay_match", "case": "empty-provenance", "envelope": {"route": "s1", "provenance": {}}, "session_key": "s1"}
+{"func": "relay_match", "case": "no-provenance-key", "envelope": {"route": "s1"}, "session_key": "s1"}
+{"func": "relay_match", "case": "relay-false-still-present", "envelope": {"route": "s1", "provenance": {"relay": false}}, "session_key": "s1"}
+{"func": "relay_match", "case": "route-number-vs-string", "envelope": {"route": 1, "provenance": {"relay": true}}, "session_key": "1"}
+{"func": "relay_match", "case": "both-null-route", "envelope": {"route": null, "provenance": {"relay": true}}, "session_key": null}
+{"func": "relay_match", "case": "provenance-list", "envelope": {"route": "s1", "provenance": ["relay", "telegram"]}, "session_key": "s1"}
+{"func": "relay_match", "case": "envelope-null", "envelope": null, "session_key": "s1"}
+{"func": "relay_match", "case": "provenance-number", "envelope": {"route": "s1", "provenance": 5}, "session_key": "s1"}
+{"func": "retry_plan", "case": "first-attempt-recovers", "running": true, "attempts": [true]}
+{"func": "retry_plan", "case": "second-attempt-recovers", "running": true, "attempts": [false, true]}
+{"func": "retry_plan", "case": "all-four-fail", "running": true, "attempts": [false, false, false, false]}
+{"func": "retry_plan", "case": "last-attempt-recovers", "running": true, "attempts": [false, false, false, true]}
+{"func": "retry_plan", "case": "not-running-stops-after-first-sleep", "running": false, "attempts": []}
+{"func": "retry_plan", "case": "no-attempts-exhausts", "running": true, "attempts": []}
+{"func": "retry_plan", "case": "falsy-truthy-attempts", "running": true, "attempts": [0, 1]}
+{"func": "retry_plan", "case": "running-absent-defaults-true", "attempts": [false, false, true]}
+{"func": "retry_plan", "case": "wrong-type-attempts", "running": true, "attempts": {"0": true}}
+{"func": "recovered_source", "case": "verified-payload", "payload": {"native_text_v1": {"route": "s1", "provenance": {"relay": true}}}, "refused": false, "fallback": "old-entry"}
+{"func": "recovered_source", "case": "refused-falls-back", "payload": {"native_text_v1": {"route": "s1"}}, "refused": true, "fallback": "old-entry"}
+{"func": "recovered_source", "case": "no-payload-falls-back", "payload": null, "refused": false, "fallback": "old-entry"}
+{"func": "recovered_source", "case": "falsy-payload-is-still-payload", "payload": 0, "refused": false, "fallback": "old-entry"}
+{"func": "recovered_source", "case": "empty-list-payload", "payload": [], "refused": false, "fallback": "old-entry"}
+{"func": "recovered_source", "case": "fallback-null-tag", "payload": null, "refused": false, "fallback": null}
+{"func": "recovered_source", "case": "refused-flag-string", "payload": "p", "refused": "no", "fallback": "old-entry"}
+{"func": "constants", "case": "retry-ladder"}

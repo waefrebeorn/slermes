@@ -1,0 +1,43 @@
+{"func": "normalize_chat_id", "case": "int-passthrough", "v": 42}
+{"func": "normalize_chat_id", "case": "negative-channel-keep", "v": -1001234567890}
+{"func": "normalize_chat_id", "case": "numeric-string-ws", "v": "  -100200300  "}
+{"func": "normalize_chat_id", "case": "underscore-literal", "v": "1_000"}
+{"func": "normalize_chat_id", "case": "username-form", "v": " @Some_Channel "}
+{"func": "normalize_chat_id", "case": "none", "v": null}
+{"func": "normalize_chat_id", "case": "bool", "v": true}
+{"func": "normalize_chat_id", "case": "float-text", "v": 42.5}
+{"func": "looks_like_username", "case": "four-char-floor", "v": "@abcd"}
+{"func": "looks_like_username", "case": "three-char-too-short", "v": "@abc"}
+{"func": "looks_like_username", "case": "32-char-ceiling", "v": "@abcdefghijklmnopqrstuvwxyz012345"}
+{"func": "looks_like_username", "case": "33-char-too-long", "v": "@abcdefghijklmnopqrstuvwxyz0123456"}
+{"func": "looks_like_username", "case": "no-at", "v": "abcd"}
+{"func": "looks_like_username", "case": "dash-not-word", "v": "@abc-d"}
+{"func": "looks_like_username", "case": "padded-valid", "v": "  @Valid_1  "}
+{"func": "looks_like_username", "case": "none", "v": null}
+{"func": "looks_like_username", "case": "numeric", "v": 12345}
+{"func": "parse_username_target", "case": "valid", "v": "  @news_bot "}
+{"func": "parse_username_target", "case": "invalid-short", "v": "@ab"}
+{"func": "parse_username_target", "case": "numeric-id", "v": "-100123"}
+{"func": "parse_username_target", "case": "empty", "v": ""}
+{"func": "parse_username_target", "case": "none", "v": null}
+{"func": "parse_username_target", "case": "bool", "v": false}
+{"func": "parse_username_target", "case": "embedded-at", "v": "hi @abcd"}
+{"func": "parse_send_target", "case": "chat-only", "ref": "123456"}
+{"func": "parse_send_target", "case": "negative-chat-topic", "ref": "-1009876543210:42"}
+{"func": "parse_send_target", "case": "padded-pair", "ref": "  77:9  "}
+{"func": "parse_send_target", "case": "named-dm-topic", "ref": "5: Planning Notes"}
+{"func": "parse_send_target", "case": "named-dm-colon-inside", "ref": "5:a:b"}
+{"func": "parse_send_target", "case": "topic-empty", "ref": "123:"}
+{"func": "parse_send_target", "case": "username-target", "ref": " @chan_nel "}
+{"func": "parse_send_target", "case": "empty", "ref": ""}
+{"func": "parse_send_target", "case": "garbage", "ref": "not a target at all"}
+{"func": "parse_send_target", "case": "space-inside-id", "ref": "12 34"}
+{"func": "parse_message_id", "case": "int-positive", "v": 77}
+{"func": "parse_message_id", "case": "zero", "v": 0}
+{"func": "parse_message_id", "case": "negative", "v": -4}
+{"func": "parse_message_id", "case": "digit-string-ws", "v": "  812 "}
+{"func": "parse_message_id", "case": "plus-sign", "v": "+9"}
+{"func": "parse_message_id", "case": "bool-never", "v": true}
+{"func": "parse_message_id", "case": "none", "v": null}
+{"func": "parse_message_id", "case": "synthetic-json-anchor", "v": "{\"wake\":\"kanban\",\"n\":3}"}
+{"func": "constants", "case": "patterns"}

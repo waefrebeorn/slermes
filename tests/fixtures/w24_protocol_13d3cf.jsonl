@@ -1,0 +1,59 @@
+{"func": "constants", "case": "type-set"}
+{"func": "nonempty_str", "case": "normal", "value": "ping"}
+{"func": "nonempty_str", "case": "empty", "value": ""}
+{"func": "nonempty_str", "case": "space-only", "value": " "}
+{"func": "nonempty_str", "case": "null", "value": null}
+{"func": "nonempty_str", "case": "absent"}
+{"func": "nonempty_str", "case": "zero", "value": 0}
+{"func": "nonempty_str", "case": "false", "value": false}
+{"func": "nonempty_str", "case": "empty-list", "value": []}
+{"func": "make_request", "case": "normal", "type": "ping", "token": "t0k", "payload": {"a": 1}, "req_id": "r1", "uuid": "00000000000000000000000000000000"}
+{"func": "make_request", "case": "uuid-fallback-absent", "type": "status", "token": "t0k", "payload": {}, "uuid": "00000000000000000000000000000000"}
+{"func": "make_request", "case": "empty-req-id-takes-uuid", "type": "status", "token": "t0k", "payload": {}, "req_id": "", "uuid": "00000000000000000000000000000000"}
+{"func": "make_request", "case": "numeric-req-id-kept", "type": "say", "token": "t0k", "payload": {"text": "hi"}, "req_id": 5, "uuid": "00000000000000000000000000000000"}
+{"func": "make_request", "case": "unknown-type", "type": "bogus", "token": "t0k", "payload": {}, "req_id": "r1", "uuid": "00000000000000000000000000000000"}
+{"func": "make_request", "case": "empty-type", "type": "", "token": "t0k", "payload": {}, "req_id": "r1", "uuid": "00000000000000000000000000000000"}
+{"func": "make_request", "case": "non-string-type", "type": 5, "token": "t0k", "payload": {}, "req_id": "r1", "uuid": "00000000000000000000000000000000"}
+{"func": "make_request", "case": "empty-token-allowed", "type": "ping", "token": "", "payload": {}, "req_id": "r1", "uuid": "00000000000000000000000000000000"}
+{"func": "make_request", "case": "token-null", "type": "ping", "token": null, "payload": {}, "req_id": "r1", "uuid": "00000000000000000000000000000000"}
+{"func": "make_request", "case": "payload-list", "type": "ping", "token": "t0k", "payload": [], "req_id": "r1", "uuid": "00000000000000000000000000000000"}
+{"func": "make_request", "case": "payload-absent", "type": "ping", "token": "t0k", "req_id": "r1", "uuid": "00000000000000000000000000000000"}
+{"func": "make_response", "case": "normal", "req_id": "r1", "payload": {"ok": true}}
+{"func": "make_response", "case": "empty-payload", "req_id": "r1", "payload": {}}
+{"func": "make_response", "case": "payload-list", "req_id": "r1", "payload": [1, 2]}
+{"func": "make_response", "case": "payload-null", "req_id": "r1", "payload": null}
+{"func": "make_response", "case": "null-id", "req_id": null, "payload": {"ok": true}}
+{"func": "make_error", "case": "string", "req_id": "r1", "error": "token mismatch"}
+{"func": "make_error", "case": "null", "req_id": "r1", "error": null}
+{"func": "make_error", "case": "bool", "req_id": "r1", "error": true}
+{"func": "make_error", "case": "int", "req_id": "r1", "error": 7}
+{"func": "make_error", "case": "list", "req_id": "r1", "error": [1, "x"]}
+{"func": "make_error", "case": "dict", "req_id": "r1", "error": {"code": 2}}
+{"func": "make_error", "case": "absent-error"}
+{"func": "encode", "case": "envelope", "msg": {"type": "ping", "id": "r1", "token": "t", "payload": {}}}
+{"func": "encode", "case": "nested", "msg": {"a": [1, 2, {"b": null}], "c": true}}
+{"func": "encode", "case": "empty-object", "msg": {}}
+{"func": "encode", "case": "non-ascii", "msg": {"type": "say", "text": "héllo — meet"}}
+{"func": "encode", "case": "no-spaces-in-strings", "msg": {"type": "say", "text": "a b  c"}}
+{"func": "decode", "case": "valid-envelope", "raw": "{\"type\": \"ping\", \"id\": \"r1\", \"token\": \"t\", \"payload\": {\"a\": 1}}"}
+{"func": "decode", "case": "malformed-brace", "raw": "{"}
+{"func": "decode", "case": "empty-string", "raw": ""}
+{"func": "decode", "case": "scalar", "raw": "5"}
+{"func": "decode", "case": "null-literal", "raw": "null"}
+{"func": "decode", "case": "list", "raw": "[]"}
+{"func": "decode", "case": "non-string-type", "raw": "{\"type\": 1, \"id\": \"r1\"}"}
+{"func": "decode", "case": "missing-id", "raw": "{\"type\": \"ping\"}"}
+{"func": "decode", "case": "id-not-string", "raw": "{\"type\": \"ping\", \"id\": [\"r1\"]}"}
+{"func": "validate_request", "case": "valid", "msg": {"type": "ping", "id": "r1", "token": "t0k", "payload": {}}, "expected_token": "t0k"}
+{"func": "validate_request", "case": "type-missing", "msg": {"id": "r1", "token": "t0k", "payload": {}}, "expected_token": "t0k"}
+{"func": "validate_request", "case": "type-non-string", "msg": {"type": 5, "id": "r1", "token": "t0k", "payload": {}}, "expected_token": "t0k"}
+{"func": "validate_request", "case": "unknown-type", "msg": {"type": "bogus", "id": "r1", "token": "t0k", "payload": {}}, "expected_token": "t0k"}
+{"func": "validate_request", "case": "id-missing", "msg": {"type": "ping", "token": "t0k", "payload": {}}, "expected_token": "t0k"}
+{"func": "validate_request", "case": "id-empty", "msg": {"type": "ping", "id": "", "token": "t0k", "payload": {}}, "expected_token": "t0k"}
+{"func": "validate_request", "case": "token-missing", "msg": {"type": "ping", "id": "r1", "payload": {}}, "expected_token": "t0k"}
+{"func": "validate_request", "case": "token-mismatch", "msg": {"type": "ping", "id": "r1", "token": "bad", "payload": {}}, "expected_token": "t0k"}
+{"func": "validate_request", "case": "payload-not-dict", "msg": {"type": "ping", "id": "r1", "token": "t0k", "payload": []}, "expected_token": "t0k"}
+{"func": "validate_request", "case": "payload-missing", "msg": {"type": "ping", "id": "r1", "token": "t0k"}, "expected_token": "t0k"}
+{"func": "validate_request", "case": "msg-not-dict", "msg": ["ping"], "expected_token": "t0k"}
+{"func": "validate_request", "case": "expected-token-numeric-seam", "msg": {"type": "ping", "id": "r1", "token": "5", "payload": {}}, "expected_token": 5}
+{"func": "validate_request", "case": "type-outranks-token", "msg": {"type": "bogus", "id": "r1", "token": "bad", "payload": {}}, "expected_token": "t0k"}

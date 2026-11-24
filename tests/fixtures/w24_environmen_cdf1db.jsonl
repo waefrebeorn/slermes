@@ -1,0 +1,36 @@
+{"func": "manifest_path", "case": "absolute", "root": "/proj"}
+{"func": "manifest_path", "case": "trailing-slash", "root": "/proj/"}
+{"func": "manifest_path", "case": "empty-root", "root": ""}
+{"func": "manifest_path", "case": "filesystem-root", "root": "/"}
+{"func": "manifest_path", "case": "relative", "root": "proj"}
+{"func": "manifest_path", "case": "drive-path", "root": "C:/x/y"}
+{"func": "manifest_path", "case": "double-slash", "root": "a//b"}
+{"func": "manifest_path", "case": "nested-trailing", "root": "a/b/"}
+{"func": "recipe", "case": "classic-aliases", "raw": {"name": " A ", "port": "8080", "readiness_path": "health", "bootstrap": [" x ", "", 3], "installCommands": "npm i", "kind": "", "startCommand": " run "}}
+{"func": "recipe", "case": "camel-only", "raw": {"appLabel": "B", "startPort": 70000}}
+{"func": "recipe", "case": "empty-name", "raw": {"name": ""}}
+{"func": "recipe", "case": "no-name", "raw": {"kind": "node"}}
+{"func": "recipe", "case": "port-bool", "raw": {"name": "x", "port": true}}
+{"func": "recipe", "case": "readiness-relative", "raw": {"name": "x", "readinessPath": "rel"}}
+{"func": "recipe", "case": "readiness-spaces", "raw": {"name": "x", "readinessPath": "/health "}}
+{"func": "recipe", "case": "port-decimal-string", "raw": {"name": "x", "port": "80.5"}}
+{"func": "recipe", "case": "port-max", "raw": {"name": "x", "port": 65535}}
+{"func": "recipe", "case": "null-raw", "raw": null}
+{"func": "recipe", "case": "list-raw", "raw": [1, 2]}
+{"func": "recipe", "case": "blank-name-falls-through", "raw": {"name": "  ", "appLabel": "B"}}
+{"func": "recipe", "case": "blank-kind", "raw": {"name": "x", "kind": "  "}}
+{"func": "recipe", "case": "evidence-filter", "raw": {"name": "x", "evidence": ["e1", "  ", 5]}}
+{"func": "parse_manifest", "case": "wrapped", "text": "{\"version\": 1, \"recipe\": {\"name\": \"R\", \"kind\": \"node\"}}"}
+{"func": "parse_manifest", "case": "bare", "text": "{\"name\": \"Bare\"}"}
+{"func": "parse_manifest", "case": "corrupt", "text": "{"}
+{"func": "parse_manifest", "case": "bom", "text": "\ufeff{\"name\": \"Bom\"}"}
+{"func": "parse_manifest", "case": "array", "text": "[1, 2]"}
+{"func": "parse_manifest", "case": "null-text", "text": null}
+{"func": "parse_manifest", "case": "empty-text", "text": ""}
+{"func": "parse_manifest", "case": "null-recipe", "text": "{\"version\": 1, \"recipe\": null}"}
+{"func": "source", "case": "saved", "saved_present": true}
+{"func": "source", "case": "none", "saved_present": false}
+{"func": "source", "case": "missing"}
+{"func": "save_payload", "case": "valid", "recipe": {"name": "App", "kind": "node", "port": 3000}, "updated_at": "2026-11-24T00:00:00+00:00"}
+{"func": "save_payload", "case": "invalid-recipe", "recipe": {"kind": "node"}, "updated_at": "2026-11-24T00:00:00+00:00"}
+{"func": "constants", "case": "manifest"}

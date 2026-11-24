@@ -1,0 +1,33 @@
+{"func":"refresh_key","case":"session-none","session_id":null}
+{"func":"refresh_key","case":"session-absent"}
+{"func":"refresh_key","case":"session-normal","session_id":"sess-abc123"}
+{"func":"refresh_key","case":"session-empty","session_id":""}
+{"func":"refresh_key","case":"session-spaces","session_id":"tg: 42"}
+{"func":"refresh_key","case":"session-int-typeerror","session_id":42}
+{"func":"refresh_key","case":"session-false-typeerror","session_id":false}
+{"func":"next_epoch","case":"epoch-zero","current":0}
+{"func":"next_epoch","case":"epoch-normal","current":41}
+{"func":"next_epoch","case":"epoch-none","current":null}
+{"func":"next_epoch","case":"epoch-numeric-text","current":"  12 "}
+{"func":"next_epoch","case":"epoch-float-truncates","current":3.9}
+{"func":"next_epoch","case":"epoch-negative","current":-5}
+{"func":"next_epoch","case":"epoch-true","current":true}
+{"func":"next_epoch","case":"epoch-valueerror","current":"abc"}
+{"func":"epoch_from_row","case":"row-none","row":null}
+{"func":"epoch_from_row","case":"row-empty","row":[]}
+{"func":"epoch_from_row","case":"row-empty-object","row":{}}
+{"func":"epoch_from_row","case":"row-null-cell","row":[null]}
+{"func":"epoch_from_row","case":"row-int","row":[41]}
+{"func":"epoch_from_row","case":"row-text","row":[" 7 "]}
+{"func":"epoch_from_row","case":"row-float","row":[3.9]}
+{"func":"epoch_from_row","case":"row-empty-text","row":[""]}
+{"func":"epoch_from_row","case":"row-bool","row":[true]}
+{"func":"epoch_from_row","case":"row-valueerror","row":["abc"]}
+{"func":"count_from_row","case":"count-none","row":null}
+{"func":"count_from_row","case":"count-empty","row":[]}
+{"func":"count_from_row","case":"count-int","row":[7]}
+{"func":"count_from_row","case":"count-zero","row":[0]}
+{"func":"count_from_row","case":"count-text","row":["12"]}
+{"func":"count_from_row","case":"count-null-cell","row":[null]}
+{"func":"count_from_row","case":"count-empty-text","row":[""]}
+{"func":"constants","case":"constants"}

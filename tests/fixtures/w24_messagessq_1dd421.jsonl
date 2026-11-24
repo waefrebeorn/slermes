@@ -1,0 +1,41 @@
+{"func": "coerce_ts", "value": 1730000000.5, "default": 7.0, "case": "ts-number"}
+{"func": "coerce_ts", "value": "1730000000", "default": 7.0, "case": "ts-numeric-string"}
+{"func": "coerce_ts", "value": " 12.5 ", "default": 7.0, "case": "ts-spaced-string"}
+{"func": "coerce_ts", "value": "1_0", "default": 7.0, "case": "ts-underscore-string"}
+{"func": "coerce_ts", "value": null, "default": 7.0, "case": "ts-none"}
+{"func": "coerce_ts", "value": "", "default": 7.0, "case": "ts-empty-string"}
+{"func": "coerce_ts", "value": "abc", "default": 7.0, "case": "ts-garbage-string"}
+{"func": "coerce_ts", "value": -5, "default": 7.0, "case": "ts-negative"}
+{"func": "coerce_ts", "value": 5000000000, "default": 7.0, "case": "ts-too-large"}
+{"func": "coerce_ts", "value": 4200000000, "default": 7.0, "case": "ts-max-boundary"}
+{"func": "coerce_ts", "value": [], "default": 7.0, "case": "ts-list"}
+{"func": "coerce_ts", "value": {}, "default": 7.0, "case": "ts-object"}
+{"func": "coerce_ts", "value": true, "default": 7.0, "case": "ts-true"}
+{"func": "coerce_ts", "value": 0, "default": 7.0, "case": "ts-zero"}
+{"func": "coerce_ts", "value": null, "case": "ts-default-absent"}
+{"func": "parse_tool_calls", "tool_calls": [{"id": "1", "type": "function"}], "case": "ptc-list"}
+{"func": "parse_tool_calls", "tool_calls": "[{\"id\": \"1\"}]", "case": "ptc-json-str"}
+{"func": "parse_tool_calls", "tool_calls": "not json", "case": "ptc-bad-json"}
+{"func": "parse_tool_calls", "tool_calls": "", "case": "ptc-empty-str"}
+{"func": "parse_tool_calls", "tool_calls": null, "case": "ptc-null"}
+{"func": "parse_tool_calls", "tool_calls": "null", "case": "ptc-json-null-str"}
+{"func": "parse_tool_calls", "tool_calls": 5, "case": "ptc-number"}
+{"func": "parse_tool_calls", "tool_calls": {"a": 1}, "case": "ptc-object"}
+{"func": "tool_calls_count", "tool_calls": null, "case": "tcc-none"}
+{"func": "tool_calls_count", "tool_calls": [], "case": "tcc-empty-list"}
+{"func": "tool_calls_count", "tool_calls": [{"id": "1"}, {"id": "2"}], "case": "tcc-list"}
+{"func": "tool_calls_count", "tool_calls": "[]", "case": "tcc-string"}
+{"func": "tool_calls_count", "tool_calls": 0, "case": "tcc-zero"}
+{"func": "tool_calls_count", "tool_calls": {}, "case": "tcc-object"}
+{"func": "tool_calls_len", "raw": "[]", "scalar": 3, "case": "tcl-json-empty-list"}
+{"func": "tool_calls_len", "raw": "[{\"a\": 1}]", "scalar": 3, "case": "tcl-json-list"}
+{"func": "tool_calls_len", "raw": null, "scalar": 3, "case": "tcl-none"}
+{"func": "tool_calls_len", "raw": "x", "scalar": 3, "case": "tcl-bad-json"}
+{"func": "tool_calls_len", "raw": "\"abc\"", "scalar": 3, "case": "tcl-json-string"}
+{"func": "tool_calls_len", "raw": 0, "scalar": 3, "case": "tcl-zero"}
+{"func": "tool_calls_len", "raw": 5, "scalar": 3, "case": "tcl-number"}
+{"func": "tool_calls_len", "raw": {"a": 1}, "scalar": 2, "case": "tcl-object"}
+{"func": "tool_calls_len", "raw": [1, 2, 3], "case": "tcl-list"}
+{"func": "write_columns", "case": "columns"}
+{"func": "schema_keys", "case": "schema"}
+{"func": "constants", "case": "const"}

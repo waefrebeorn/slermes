@@ -1,0 +1,24 @@
+{"func": "bearer", "headers": {"Authorization": "Bearer abc.def"}, "case": "bearer-token"}
+{"func": "bearer", "headers": {"Authorization": "Basic xyz"}, "case": "bearer-basic"}
+{"func": "bearer", "headers": {}, "case": "bearer-absent"}
+{"func": "bearer", "headers": {"Authorization": ""}, "case": "bearer-empty"}
+{"func": "bearer", "headers": {"Authorization": "Bearer "}, "case": "bearer-prefix-only"}
+{"func": "bearer", "headers": {"X-Hermes-Session-Token": "tok"}, "case": "bearer-token-header"}
+{"func": "entry_url", "entry": {"id": "conn-1", "kind": "remote", "label": "Prod Gateway", "url": "https://gw.example", "host": "ssh://gw.example"}, "case": "entry-url-wins"}
+{"func": "entry_url", "entry": {"id": "c2", "kind": "remote", "label": "L", "url": null, "host": "ssh://h"}, "case": "entry-host-fallback"}
+{"func": "entry_url", "entry": {"id": "c3", "kind": "remote", "label": "L", "url": "", "host": ""}, "case": "entry-id-fallback"}
+{"func": "entry_url", "entry": null, "case": "entry-none"}
+{"func": "entry_url", "entry": {"id": "c5", "kind": "remote", "url": "https://x"}, "case": "entry-url-only"}
+{"func": "resolve", "connection_id": "conn-1", "entry": {"id": "conn-1", "kind": "remote", "label": "Prod Gateway", "url": "https://gw.example", "host": "ssh://gw.example"}, "reach": {"kind": "ok", "base_url": "https://gw.example", "headers": {"Authorization": "Bearer t"}}, "case": "resolve-ok-bearer"}
+{"func": "resolve", "connection_id": "conn-1", "entry": {"id": "conn-1", "kind": "remote", "label": "Prod Gateway", "url": "https://gw.example", "host": "ssh://gw.example"}, "reach": {"kind": "ok", "base_url": "https://gw.example", "headers": {"X-Hermes-Session-Token": "st"}}, "case": "resolve-ok-session-token"}
+{"func": "resolve", "connection_id": "conn-1", "entry": {"id": "conn-1", "kind": "remote", "label": "Prod Gateway", "url": "https://gw.example", "host": "ssh://gw.example"}, "reach": {"kind": "ok", "base_url": "https://gw.example", "headers": {}}, "case": "resolve-no-credential"}
+{"func": "resolve", "connection_id": "conn-1", "entry": {"id": "conn-1", "kind": "local", "label": "This Mac"}, "reach": {"kind": "ok"}, "case": "resolve-local"}
+{"func": "resolve", "connection_id": "ghost", "entry": null, "reach": {"kind": "ok"}, "case": "resolve-no-entry"}
+{"func": "resolve", "connection_id": "conn-1", "entry": {"id": "conn-1", "kind": "remote", "label": "Prod Gateway", "url": "https://gw.example", "host": "ssh://gw.example"}, "reach": {"kind": "nosuch", "message": "gone"}, "case": "resolve-nosuch"}
+{"func": "resolve", "connection_id": "conn-1", "entry": {"id": "conn-1", "kind": "remote", "label": "Prod Gateway", "url": "https://gw.example", "host": "ssh://gw.example"}, "reach": {"kind": "error", "message": "token expired"}, "case": "resolve-reach-error"}
+{"func": "resolve", "connection_id": "conn-1", "entry": {"id": "conn-1", "kind": "remote", "label": "Prod Gateway", "url": "https://gw.example", "host": "ssh://gw.example"}, "reach": {"kind": "ok", "base_url": "https://gw.example", "headers": {"X-Other": "1"}}, "case": "resolve-other-header-only"}
+{"func": "own_ticket", "path": "/api/host-terminal", "case": "ticket-host-terminal"}
+{"func": "own_ticket", "path": "/api/webapp/socket", "case": "ticket-other"}
+{"func": "own_ticket", "path": "", "case": "ticket-empty"}
+{"func": "own_ticket", "path": null, "case": "ticket-null"}
+{"func": "constants", "case": "const"}

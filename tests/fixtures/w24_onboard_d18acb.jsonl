@@ -1,0 +1,58 @@
+{"func": "url", "case": "plain-id", "task_id": "abc123"}
+{"func": "url", "case": "reserved-chars", "task_id": "a b/c?d=e&f"}
+{"func": "url", "case": "empty-id", "task_id": ""}
+{"func": "url", "case": "utf8-id", "task_id": "\u4e2d\u6587"}
+{"func": "url", "case": "unreserved-kept", "task_id": "~._-AZaz09"}
+{"func": "url", "case": "hash-and-percent", "task_id": "a#b%c"}
+{"func": "url", "case": "null-id", "task_id": null}
+{"func": "url", "case": "number-id", "task_id": 5}
+{"func": "poll_result", "case": "completed", "data": {"retcode": 0, "data": {"status": 2, "bot_appid": 123, "bot_encrypt_secret": "c2VjcmV0", "user_openid": "oid-1"}}}
+{"func": "poll_result", "case": "pending-no-fields", "data": {"data": {"status": 1}}}
+{"func": "poll_result", "case": "empty-body", "data": {"data": {}}}
+{"func": "poll_result", "case": "no-data-key", "data": {}}
+{"func": "poll_result", "case": "status-out-of-range", "data": {"data": {"status": 9}}}
+{"func": "poll_result", "case": "status-string", "data": {"data": {"status": "2"}}}
+{"func": "poll_result", "case": "status-bool", "data": {"data": {"status": true}}}
+{"func": "poll_result", "case": "status-float", "data": {"data": {"status": 1.0}}}
+{"func": "poll_result", "case": "data-null", "data": {"data": null}}
+{"func": "poll_result", "case": "data-string", "data": {"data": "x"}}
+{"func": "poll_result", "case": "wrapper-null", "data": null}
+{"func": "poll_result", "case": "appid-null", "data": {"data": {"status": 3, "bot_appid": null}}}
+{"func": "portal_error", "case": "ok-zero", "data": {"retcode": 0, "msg": "ok"}}
+{"func": "portal_error", "case": "ok-no-msg", "data": {"retcode": 0}}
+{"func": "portal_error", "case": "fail-with-msg", "data": {"retcode": 1001, "msg": "bad key"}, "fail_msg": "create_bind_task failed"}
+{"func": "portal_error", "case": "fail-default-msg", "data": {"retcode": 1001}, "fail_msg": "create_bind_task failed"}
+{"func": "portal_error", "case": "retcode-absent", "data": {}, "fail_msg": "poll_bind_result failed"}
+{"func": "portal_error", "case": "retcode-string-zero", "data": {"retcode": "0"}, "fail_msg": "poll_bind_result failed"}
+{"func": "portal_error", "case": "msg-null", "data": {"retcode": 1001, "msg": null}, "fail_msg": "fallback"}
+{"func": "portal_error", "case": "retcode-false", "data": {"retcode": false}}
+{"func": "portal_error", "case": "wrapper-null", "data": null, "fail_msg": "fallback"}
+{"func": "portal_error", "case": "msg-number", "data": {"retcode": 5, "msg": 123}, "fail_msg": "fallback"}
+{"func": "create_result", "case": "task-id", "data": {"retcode": 0, "data": {"task_id": "t-1"}}}
+{"func": "create_result", "case": "empty-data", "data": {"retcode": 0, "data": {}}}
+{"func": "create_result", "case": "no-data-key", "data": {"retcode": 0}}
+{"func": "create_result", "case": "empty-task-id", "data": {"data": {"task_id": ""}}}
+{"func": "create_result", "case": "zero-task-id", "data": {"data": {"task_id": 0}}}
+{"func": "create_result", "case": "numeric-task-id", "data": {"data": {"task_id": 123}}}
+{"func": "create_result", "case": "data-string", "data": {"data": "x"}}
+{"func": "create_result", "case": "wrapper-null", "data": null}
+{"func": "expiry", "case": "first", "refresh_count": 0}
+{"func": "expiry", "case": "last-refresh", "refresh_count": 2}
+{"func": "expiry", "case": "give-up", "refresh_count": 3}
+{"func": "expiry", "case": "beyond", "refresh_count": 4}
+{"func": "expiry", "case": "negative", "refresh_count": -1}
+{"func": "expiry", "case": "bool", "refresh_count": true}
+{"func": "expiry", "case": "string", "refresh_count": "2"}
+{"func": "expiry", "case": "float-integral", "refresh_count": 2.0}
+{"func": "expiry", "case": "float-fraction", "refresh_count": 3.5}
+{"func": "expiry", "case": "null", "refresh_count": null}
+{"func": "status_name", "case": "none", "status": 0}
+{"func": "status_name", "case": "pending", "status": 1}
+{"func": "status_name", "case": "completed", "status": 2}
+{"func": "status_name", "case": "expired", "status": 3}
+{"func": "status_name", "case": "out-of-range", "status": 4}
+{"func": "status_name", "case": "negative", "status": -1}
+{"func": "status_name", "case": "string", "status": "1"}
+{"func": "status_name", "case": "bool", "status": true}
+{"func": "status_name", "case": "null", "status": null}
+{"func": "constants", "case": "onboarding-table"}

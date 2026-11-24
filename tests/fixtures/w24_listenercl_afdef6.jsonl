@@ -1,0 +1,12 @@
+{"func": "session", "case": "use-before-offer", "offered": false, "ops": [{"op": "use", "client_id": "c1", "portal_url": "https://portal"}]}
+{"func": "session", "case": "offered-use", "offered": true, "ops": [{"op": "use", "client_id": "c1", "portal_url": "https://portal"}]}
+{"func": "session", "case": "use-then-undo", "offered": true, "ops": [{"op": "use", "client_id": "c1", "portal_url": "p"}, {"op": "undo", "id": 0}]}
+{"func": "session", "case": "undo-twice", "offered": true, "ops": [{"op": "use", "client_id": "c1", "portal_url": "p"}, {"op": "undo", "id": 0}, {"op": "undo", "id": 0}]}
+{"func": "session", "case": "swap-raises", "offered": true, "swap_raises": true, "ops": [{"op": "use", "client_id": "c1", "portal_url": "p"}]}
+{"func": "session", "case": "offer-op-mid-session", "offered": false, "ops": [{"op": "use", "client_id": "c0", "portal_url": "p0"}, {"op": "offer"}, {"op": "use", "client_id": "c1", "portal_url": "p1"}]}
+{"func": "session", "case": "current-reads-state", "offered": true, "ops": [{"op": "current"}, {"op": "use", "client_id": "cx", "portal_url": "py"}, {"op": "current"}, {"op": "undo", "id": 0}, {"op": "current"}]}
+{"func": "session", "case": "empty-ops", "offered": true, "ops": []}
+{"func": "session", "case": "missing-ops-key", "offered": false}
+{"func": "session", "case": "two-uses-undo-first", "offered": true, "ops": [{"op": "use", "client_id": "a", "portal_url": "ua"}, {"op": "use", "client_id": "b", "portal_url": "ub"}, {"op": "current"}, {"op": "undo", "id": 0}]}
+{"func": "session", "case": "non-string-tuple", "offered": true, "ops": [{"op": "use", "client_id": 5, "portal_url": null}]}
+{"func": "session", "case": "undo-unknown-id", "offered": true, "ops": [{"op": "use", "client_id": "c1", "portal_url": "p"}, {"op": "undo", "id": 7}]}

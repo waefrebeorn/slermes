@@ -1,0 +1,34 @@
+{"func": "constants", "case": "layer-table"}
+{"func": "layer", "case": "unrestricted-body", "member": {"mode": "unrestricted", "connectors": ["gmail"], "disabled_connectors": ["slack"]}}
+{"func": "layer", "case": "deny-all-body", "member": {"mode": "deny-all", "connectors": ["gmail"], "disabled_connectors": []}}
+{"func": "layer", "case": "allow-body", "member": {"mode": "allow", "connectors": ["gmail", "slack"], "disabled_connectors": []}}
+{"func": "layer", "case": "deny-body", "member": {"mode": "deny", "connectors": [], "disabled_connectors": ["linear"]}}
+{"func": "layer", "case": "null-member-defaults", "member": null}
+{"func": "layer", "case": "unknown-mode", "member": {"mode": "everything", "connectors": [], "disabled_connectors": []}}
+{"func": "layer", "case": "non-str-mode", "member": {"mode": 5, "connectors": [], "disabled_connectors": []}}
+{"func": "layer", "case": "allow-without-connectors", "member": {"mode": "allow"}}
+{"func": "connector_write", "case": "enable-existing-in-allow", "member": {"mode": "allow", "connectors": ["gmail", "slack"], "disabled_connectors": []}, "change": {"connector": "gmail", "enabled": true}}
+{"func": "connector_write", "case": "disable-in-allow", "member": {"mode": "allow", "connectors": ["gmail", "slack"], "disabled_connectors": []}, "change": {"connector": "gmail", "enabled": false}}
+{"func": "connector_write", "case": "enable-new-in-allow", "member": {"mode": "allow", "connectors": ["gmail"], "disabled_connectors": []}, "change": {"connector": "linear", "enabled": true}}
+{"func": "connector_write", "case": "disable-in-deny-layer", "member": {"mode": "deny", "connectors": [], "disabled_connectors": ["linear"]}, "change": {"connector": "linear", "enabled": false}}
+{"func": "connector_write", "case": "unrestricted-disable", "member": null, "change": {"connector": "slack", "enabled": false}}
+{"func": "connector_write", "case": "unrestricted-enable-with-throwing-body", "member": {"mode": "unrestricted", "connectors": ["gmail"], "disabled_connectors": ["slack"]}, "change": {"connector": "gmail", "enabled": true}}
+{"func": "connector_write", "case": "invalid-slug", "member": null, "change": {"connector": "Bad Slug", "enabled": true}}
+{"func": "connector_write", "case": "empty-slug", "member": null, "change": {"connector": "", "enabled": true}}
+{"func": "connector_write", "case": "non-str-connector", "member": null, "change": {"connector": 5, "enabled": true}}
+{"func": "connector_write", "case": "missing-connector", "member": null, "change": {"enabled": true}}
+{"func": "connector_write", "case": "enabled-int-equals-allow", "member": {"mode": "allow", "connectors": [], "disabled_connectors": []}, "change": {"connector": "gmail", "enabled": 1}}
+{"func": "connector_write", "case": "enabled-string-not-equal", "member": {"mode": "allow", "connectors": ["gmail"], "disabled_connectors": []}, "change": {"connector": "gmail", "enabled": "true"}}
+{"func": "connector_write", "case": "unknown-mode-wins", "member": {"mode": "nope", "connectors": [], "disabled_connectors": []}, "change": {"connector": "gmail", "enabled": true}}
+{"func": "tools_write", "case": "allow-layer-on-connector", "member": {"mode": "allow", "connectors": ["gmail"], "disabled_connectors": []}, "change": {"connector": "gmail", "disabled_tools": ["send_email", "read_email"]}}
+{"func": "tools_write", "case": "connector-off-in-allow", "member": {"mode": "allow", "connectors": ["slack"], "disabled_connectors": []}, "change": {"connector": "gmail", "disabled_tools": []}}
+{"func": "tools_write", "case": "deny-layer-on-enabled-connector", "member": {"mode": "deny", "connectors": [], "disabled_connectors": ["linear"]}, "change": {"connector": "gmail", "disabled_tools": ["create_issue"]}}
+{"func": "tools_write", "case": "deny-layer-on-disabled-connector", "member": {"mode": "deny", "connectors": [], "disabled_connectors": ["linear"]}, "change": {"connector": "linear", "disabled_tools": []}}
+{"func": "tools_write", "case": "unrestricted-layer", "member": null, "change": {"connector": "gmail", "disabled_tools": ["send_email"]}}
+{"func": "tools_write", "case": "empty-tool-slug", "member": {"mode": "allow", "connectors": ["gmail"], "disabled_connectors": []}, "change": {"connector": "gmail", "disabled_tools": ["ok", ""]}}
+{"func": "tools_write", "case": "tool-slug-boundary-256", "member": {"mode": "allow", "connectors": ["gmail"], "disabled_connectors": []}, "change": {"connector": "gmail", "disabled_tools": ["tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"]}}
+{"func": "tools_write", "case": "tool-slug-too-long", "member": {"mode": "allow", "connectors": ["gmail"], "disabled_connectors": []}, "change": {"connector": "gmail", "disabled_tools": ["ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"]}}
+{"func": "tools_write", "case": "non-str-tool", "member": {"mode": "allow", "connectors": ["gmail"], "disabled_connectors": []}, "change": {"connector": "gmail", "disabled_tools": [5]}}
+{"func": "tools_write", "case": "missing-disabled-tools", "member": {"mode": "allow", "connectors": ["gmail"], "disabled_connectors": []}, "change": {"connector": "gmail"}}
+{"func": "tools_write", "case": "off-policy-wins-over-bad-tools", "member": {"mode": "allow", "connectors": ["slack"], "disabled_connectors": []}, "change": {"connector": "gmail", "disabled_tools": [""]}}
+{"func": "tools_write", "case": "invalid-slug", "member": null, "change": {"connector": "Gmail", "disabled_tools": []}}

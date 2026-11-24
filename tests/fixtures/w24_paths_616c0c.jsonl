@@ -1,0 +1,44 @@
+{"func": "encode", "segments": ["model", "providers", "openai"], "case": "enc-basic"}
+{"func": "encode", "segments": ["a.b", "c\\d"], "case": "enc-escapes"}
+{"func": "encode", "segments": [], "case": "enc-empty-list"}
+{"func": "encode", "segments": [""], "case": "enc-empty-seg"}
+{"func": "encode", "segments": ["é", "ü"], "case": "enc-unicode"}
+{"func": "encode", "segments": ["a", 1], "case": "enc-type-mismatch"}
+{"func": "encode", "segments": null, "case": "enc-none"}
+{"func": "decode", "encoded": "model.providers", "case": "dec-basic"}
+{"func": "decode", "encoded": "a\\.b", "case": "dec-escaped-dot"}
+{"func": "decode", "encoded": "a\\\\b", "case": "dec-escaped-backslash"}
+{"func": "decode", "encoded": ".a", "case": "dec-leading-dot"}
+{"func": "decode", "encoded": "a.", "case": "dec-trailing-dot"}
+{"func": "decode", "encoded": "a..b", "case": "dec-double-dot"}
+{"func": "decode", "encoded": "a\\", "case": "dec-trailing-backslash"}
+{"func": "decode", "encoded": "a\\x", "case": "dec-bad-escape"}
+{"func": "decode", "encoded": "__proto__", "case": "dec-proto"}
+{"func": "decode", "encoded": "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a", "case": "dec-too-many-segments"}
+{"func": "decode", "encoded": "", "case": "dec-empty"}
+{"func": "decode", "encoded": "a\tb", "case": "dec-control-char"}
+{"func": "decode", "encoded": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "case": "dec-long-segment"}
+{"func": "decode", "encoded": "é.ü", "case": "dec-unicode"}
+{"func": "validate", "segments": ["a", "b"], "case": "val-ok"}
+{"func": "validate", "segments": [], "case": "val-empty"}
+{"func": "validate", "segments": ["a"], "encoded": "a.b", "case": "val-explicit-encoded"}
+{"func": "validate", "segments": ["__proto__"], "encoded": "x", "case": "val-proto"}
+{"func": "validate", "segments": ["a"], "encoded": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", "case": "val-encoded-too-long"}
+{"func": "validate", "segments": [1], "case": "val-type-mismatch"}
+{"func": "validate", "segments": [1], "encoded": "x", "case": "val-type-mismatch-encoded"}
+{"func": "covers", "lock": ["a"], "path": ["a", "b"], "case": "cov-prefix"}
+{"func": "covers", "lock": ["a", "b"], "path": ["a"], "case": "cov-longer-lock"}
+{"func": "covers", "lock": ["a", "b"], "path": ["a", "b"], "case": "cov-equal"}
+{"func": "covers", "lock": [], "path": ["a"], "case": "cov-empty-lock"}
+{"func": "covers", "lock": ["a"], "path": ["b"], "case": "cov-mismatch"}
+{"func": "covering_lock", "locks": [[["a"], "read"], [["b"], "write"]], "path": ["a", "x"], "case": "cl-first"}
+{"func": "covering_lock", "locks": [[["a"], "read"]], "path": ["c"], "case": "cl-none"}
+{"func": "covering_lock", "locks": [], "path": ["a"], "case": "cl-empty"}
+{"func": "covering_lock", "locks": [[["a", "b"], 3]], "path": ["a", "b", "c"], "case": "cl-numeric-level"}
+{"func": "from_dotted", "dotted": "model.providers", "case": "fd-basic"}
+{"func": "from_dotted", "dotted": "a\\.b", "case": "fd-escaped"}
+{"func": "from_dotted", "dotted": "a..b", "case": "fd-double-dot"}
+{"func": "from_dotted", "dotted": "a\\q", "case": "fd-bad-escape"}
+{"func": "from_dotted", "dotted": "", "case": "fd-empty"}
+{"func": "from_dotted", "dotted": "__proto__.x", "case": "fd-proto"}
+{"func": "constants", "case": "const"}

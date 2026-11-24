@@ -1,0 +1,24 @@
+{"func":"coerce_list","case":"list-csv","value":"a,b, c "}
+{"func":"coerce_list","case":"list-empty-string","value":""}
+{"func":"coerce_list","case":"list-none","value":null}
+{"func":"coerce_list","case":"list-double-comma","value":"a,,b"}
+{"func":"coerce_list","case":"list-zero","value":0}
+{"func":"coerce_list","case":"list-int","value":42}
+{"func":"coerce_list","case":"list-float","value":1.5}
+{"func":"coerce_list","case":"list-true","value":true}
+{"func":"coerce_list","case":"list-false","value":false}
+{"func":"coerce_list","case":"list-mixed","value":[1," x ",null]}
+{"func":"coerce_list","case":"list-empty-array","value":[]}
+{"func":"coerce_list","case":"list-empty-object","value":{}}
+{"func":"coerce_list","case":"list-nested-comma","value":["a,b"]}
+{"func":"coerce_list","case":"list-padded-csv","value":" a , "}
+{"func":"coerce_list","case":"list-object-item","value":[{"k":1}]}
+{"func":"build_user_agent","case":"ua-normal","qqbot_version":"1.1.0","py_major":3,"py_minor":14,"py_micro":9,"os_name":"Windows","hermes_version":"0.0.0"}
+{"func":"build_user_agent","case":"ua-linux","qqbot_version":"1.1.0","py_major":3,"py_minor":11,"py_micro":9,"os_name":"Linux","hermes_version":"1.2.3"}
+{"func":"build_user_agent","case":"ua-default-version","py_major":3,"py_minor":13,"py_micro":1,"os_name":"Darwin","hermes_version":"dev"}
+{"func":"build_user_agent","case":"ua-custom-version","qqbot_version":"2.0.0","py_major":3,"py_minor":12,"py_micro":0,"os_name":"Windows","hermes_version":"9.9.9"}
+{"func":"build_user_agent","case":"ua-empty","qqbot_version":"","py_major":0,"py_minor":0,"py_micro":0,"os_name":"","hermes_version":""}
+{"func":"api_headers","case":"headers-ua","user_agent":"QQBotAdapter/1.1.0"}
+{"func":"api_headers","case":"headers-empty-ua","user_agent":""}
+{"func":"api_headers","case":"headers-absent"}
+{"func":"constants","case":"constants"}

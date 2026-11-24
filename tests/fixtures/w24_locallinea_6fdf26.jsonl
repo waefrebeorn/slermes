@@ -1,0 +1,47 @@
+{"func": "constants", "case": "prefixes-and-identity"}
+{"func": "receipt", "case": "object", "raw": "{\"lineage\": [\"a\", \"b\"]}"}
+{"func": "receipt", "case": "empty-object", "raw": "{}"}
+{"func": "receipt", "case": "json-list", "raw": "[\"a\"]"}
+{"func": "receipt", "case": "json-null", "raw": "null"}
+{"func": "receipt", "case": "not-json", "raw": "not json at all"}
+{"func": "receipt", "case": "null-raw", "raw": null}
+{"func": "receipt", "case": "number-raw", "raw": 5}
+{"func": "moved", "case": "all-rows", "rows": [["own1", "t1", "telegram"], ["own2", "t2", "slack"]]}
+{"func": "moved", "case": "narrowed", "rows": [["own1", "t1", "telegram"], ["own2", "t2", "slack"]], "target_ids": ["t1"]}
+{"func": "moved", "case": "narrowed-empty", "rows": [["own1", "t1", "telegram"]], "target_ids": []}
+{"func": "moved", "case": "narrowed-miss", "rows": [["own1", "t1", "telegram"]], "target_ids": ["zz"]}
+{"func": "moved", "case": "duplicate-owner-last-wins", "rows": [["own1", "t1", "telegram"], ["own1", "t2", "slack"]]}
+{"func": "moved", "case": "wrong-type-rows", "rows": {"own1": "t1"}}
+{"func": "release_keys", "case": "two-owners", "owners": ["own1", "own2"]}
+{"func": "release_keys", "case": "one-owner", "owners": ["own1"]}
+{"func": "release_keys", "case": "no-owners", "owners": []}
+{"func": "release_keys", "case": "empty-owner-name", "owners": [""]}
+{"func": "handoff", "case": "lineage-follows", "moved": {"own1": ["t1", "telegram"]}, "receipts": {"own1": "{\"lineage\": [\"seg2\", \"seg3\"]}"}}
+{"func": "handoff", "case": "no-receipt-row", "moved": {"own1": ["t1", "telegram"]}}
+{"func": "handoff", "case": "receipt-without-lineage", "moved": {"own1": ["t1", "telegram"]}, "receipts": {"own1": "{\"other\": 1}"}}
+{"func": "handoff", "case": "receipt-null-value", "moved": {"own1": ["t1", "telegram"]}, "receipts": {"own1": null}}
+{"func": "handoff", "case": "lineage-not-a-list", "moved": {"own1": ["t1", "telegram"]}, "receipts": {"own1": "{\"lineage\": \"seg2\"}"}}
+{"func": "handoff", "case": "lineage-non-string", "moved": {"own1": ["t1", "telegram"]}, "receipts": {"own1": "{\"lineage\": [1, 2]}"}}
+{"func": "handoff", "case": "dedupe-owner-and-lineage", "moved": {"own1": ["t1", "telegram"]}, "receipts": {"own1": "{\"lineage\": [\"own1\", \"seg2\", \"seg2\"]}"}}
+{"func": "handoff", "case": "mixed-malformed-and-good", "moved": {"own1": ["t1", "telegram"], "own2": ["t2", "slack"]}, "receipts": {"own1": "garbage", "own2": "{\"lineage\": [\"s2\"]}"}}
+{"func": "handoff", "case": "empty-moved", "moved": {}}
+{"func": "segment_root", "case": "target-at-head", "segments": ["own1", "seg2"], "target": "own1", "end_reasons": {}}
+{"func": "segment_root", "case": "target-not-in-segments", "segments": ["own1", "seg2"], "target": "zz", "end_reasons": {}}
+{"func": "segment_root", "case": "walk-back-compression", "segments": ["own1", "seg2", "seg3"], "target": "seg3", "end_reasons": {"seg2": "compression", "own1": "compression"}}
+{"func": "segment_root", "case": "stop-at-non-compression", "segments": ["own1", "seg2", "seg3"], "target": "seg3", "end_reasons": {"seg2": "user_new"}}
+{"func": "segment_root", "case": "missing-end-reason-stops", "segments": ["own1", "seg2"], "target": "seg2", "end_reasons": {}}
+{"func": "segment_root", "case": "null-target-not-present", "segments": ["own1"], "target": null, "end_reasons": {}}
+{"func": "title_moves", "case": "moves-over-empty-head-title", "owner": "own1", "head": "seg1", "owner_row": ["My chat", "user", 0], "head_row": [null, null]}
+{"func": "title_moves", "case": "equal-rank-stays", "owner": "own1", "head": "seg1", "owner_row": ["My chat", "user", 0], "head_row": ["Other", "user"]}
+{"func": "title_moves", "case": "head-is-owner", "owner": "own1", "head": "own1", "owner_row": ["My chat", "user", 0], "head_row": ["Other", "user"]}
+{"func": "title_moves", "case": "owner-row-missing", "owner": "own1", "head": "seg1", "owner_row": null, "head_row": [null, null]}
+{"func": "title_moves", "case": "owner-title-falsy", "owner": "own1", "head": "seg1", "owner_row": ["", "user", 0], "head_row": [null, null]}
+{"func": "title_moves", "case": "head-row-missing", "owner": "own1", "head": "seg1", "owner_row": ["My chat", "user", 0], "head_row": null}
+{"func": "title_moves", "case": "moves-over-derived", "owner": "own1", "head": "seg1", "owner_row": ["My chat", "user", 0], "head_row": ["Gen", "derived"]}
+{"func": "title_moves", "case": "lower-rank-at-owner-stays", "owner": "own1", "head": "seg1", "owner_row": ["Gen", "derived", 0], "head_row": ["Gen2", "llm"]}
+{"func": "title_moves", "case": "null-source-ranks-as-user", "owner": "own1", "head": "seg1", "owner_row": ["My chat", null, 0], "head_row": ["Gen", "llm"]}
+{"func": "title_rank", "case": "null", "source": null}
+{"func": "title_rank", "case": "user", "source": "user"}
+{"func": "title_rank", "case": "llm", "source": "llm"}
+{"func": "title_rank", "case": "derived", "source": "derived"}
+{"func": "title_rank", "case": "unknown", "source": "zzz"}

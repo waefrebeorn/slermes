@@ -1,0 +1,42 @@
+{"func": "constants", "case": "module-constants"}
+{"func": "parse_body", "case": "empty", "text": ""}
+{"func": "parse_body", "case": "whitespace-only", "text": "   "}
+{"func": "parse_body", "case": "object", "text": "{\"error\": \"boom\", \"message\": \"nope\"}"}
+{"func": "parse_body", "case": "nested-object", "text": "{\"a\": {\"b\": [1, 2, 3]}, \"c\": null}"}
+{"func": "parse_body", "case": "array", "text": "[1, 2]"}
+{"func": "parse_body", "case": "number", "text": "5"}
+{"func": "parse_body", "case": "string", "text": "\"hello\""}
+{"func": "parse_body", "case": "json-null", "text": "null"}
+{"func": "parse_body", "case": "truncated", "text": "{\"a\":"}
+{"func": "parse_body", "case": "absent-text"}
+{"func": "retry_after", "case": "integer", "value": "3"}
+{"func": "retry_after", "case": "padded", "value": " 3 "}
+{"func": "retry_after", "case": "fractional", "value": "1.5"}
+{"func": "retry_after", "case": "negative", "value": "-2"}
+{"func": "retry_after", "case": "zero-text", "value": "0"}
+{"func": "retry_after", "case": "empty", "value": ""}
+{"func": "retry_after", "case": "not-a-number", "value": "soon"}
+{"func": "retry_after", "case": "absent"}
+{"func": "retry_after", "case": "null-value", "value": null}
+{"func": "base_url", "case": "unset", "env": null}
+{"func": "base_url", "case": "empty-string", "env": ""}
+{"func": "base_url", "case": "blank", "env": "   "}
+{"func": "base_url", "case": "trailing-slash", "env": "https://plane.example/"}
+{"func": "base_url", "case": "padded-multi-slash", "env": "  https://plane.example///  "}
+{"func": "base_url", "case": "only-slashes", "env": "///"}
+{"func": "base_url", "case": "with-prefix", "env": "http://localhost:8080/prefix"}
+{"func": "instance_id", "case": "unset", "env": null}
+{"func": "instance_id", "case": "empty-string", "env": ""}
+{"func": "instance_id", "case": "padded", "env": "  inst-7  "}
+{"func": "instance_id", "case": "plain", "env": "inst-9"}
+{"func": "response_error", "case": "no-body", "status": 502, "body": {}}
+{"func": "response_error", "case": "body-error", "status": 502, "body": {"error": "boom"}}
+{"func": "response_error", "case": "empty-error", "status": 403, "body": {"error": ""}}
+{"func": "response_error", "case": "null-error", "status": 500, "body": {"error": null}}
+{"func": "response_error", "case": "zero-error", "status": 200, "body": {"error": 0}}
+{"func": "response_error", "case": "bool-error", "status": 404, "body": {"error": true}}
+{"func": "response_message", "case": "no-body", "status": 500, "body": {}}
+{"func": "response_message", "case": "body-message", "status": 500, "body": {"message": "nope"}}
+{"func": "response_message", "case": "empty-message", "status": 500, "body": {"message": ""}}
+{"func": "response_message", "case": "false-message", "status": 500, "body": {"message": false}}
+{"func": "response_message", "case": "body-not-object", "status": 401, "body": null}

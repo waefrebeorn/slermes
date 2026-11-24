@@ -1,0 +1,20 @@
+{"func": "take", "case": "same-source-same-store-taken-once", "bound": {"store": "store1", "source": "event1", "taken": false, "applied": false}, "event_source": "event1", "store": "store1", "calls": 2}
+{"func": "take", "case": "no-binding", "bound": null, "event_source": "event1", "store": "store1"}
+{"func": "take", "case": "other-event-source", "bound": {"store": "store1", "source": "event1", "taken": false, "applied": false}, "event_source": "event2", "store": "store1"}
+{"func": "take", "case": "other-store", "bound": {"store": "store1", "source": "event1", "taken": false, "applied": false}, "event_source": "event1", "store": "store2"}
+{"func": "take", "case": "already-taken", "bound": {"store": "store1", "source": "event1", "taken": true, "applied": true}, "event_source": "event1", "store": "store1"}
+{"func": "take", "case": "null-source-matches-null-event", "bound": {"store": "store1", "source": null, "taken": false, "applied": false}, "event_source": null, "store": "store1"}
+{"func": "take", "case": "null-store-matches-null-admission", "bound": {"store": null, "source": "event1", "taken": false, "applied": false}, "event_source": "event1", "store": null}
+{"func": "take", "case": "applied-flag-preserved", "bound": {"store": "store1", "source": "event1", "taken": false, "applied": true}, "event_source": "event1", "store": "store1"}
+{"func": "take", "case": "bound-not-a-rewrite", "bound": "not-a-rewrite", "event_source": "event1", "store": "store1"}
+{"func": "take", "case": "zero-calls", "bound": {"store": "store1", "source": "event1", "taken": false, "applied": false}, "event_source": "event1", "store": "store1", "calls": 0}
+{"func": "take", "case": "three-calls", "bound": {"store": "store1", "source": "event1", "taken": false, "applied": false}, "event_source": "event1", "store": "store1", "calls": 3}
+{"func": "take", "case": "empty-tokens", "bound": {"store": "", "source": "", "taken": false, "applied": false}, "event_source": "", "store": ""}
+{"func": "rewrite", "case": "defaults", "store": "store1", "source": "event1"}
+{"func": "rewrite", "case": "null-pair", "store": null, "source": null}
+{"func": "rewrite", "case": "string-tokens", "store": "s", "source": "e"}
+{"func": "rewrite", "case": "missing-args"}
+{"func": "identity", "case": "same-token", "a": "x", "b": "x"}
+{"func": "identity", "case": "different-token", "a": "x", "b": "y"}
+{"func": "identity", "case": "both-null", "a": null, "b": null}
+{"func": "identity", "case": "one-null", "a": null, "b": "x"}

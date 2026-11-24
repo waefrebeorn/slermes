@@ -1,0 +1,43 @@
+{"func": "command", "case": "profile-command", "env_vars": [], "env": {}, "process_command": "claude"}
+{"func": "command", "case": "env-override-stripped", "env_vars": ["W24_A"], "env": {"W24_A": "  cc-wrapper  "}, "process_command": "claude"}
+{"func": "command", "case": "blank-override-skips", "env_vars": ["W24_A", "W24_B"], "env": {"W24_A": "   ", "W24_B": "b-cmd"}, "process_command": "claude"}
+{"func": "command", "case": "override-unset-uses-profile", "env_vars": ["W24_A"], "env": {}, "process_command": "fallback"}
+{"func": "command", "case": "empty-both", "env_vars": ["W24_A"], "env": {"W24_A": ""}, "process_command": ""}
+{"func": "command", "case": "no-process-command-key", "env_vars": ["W24_A"], "env": {}}
+{"func": "command", "case": "process-command-null", "env_vars": [], "env": {}, "process_command": null}
+{"func": "command", "case": "process-command-number", "env_vars": [], "env": {}, "process_command": 5}
+{"func": "command", "case": "process-command-zero", "env_vars": [], "env": {}, "process_command": 0}
+{"func": "command", "case": "no-env-vars-key", "env": {}, "process_command": "claude"}
+{"func": "command", "case": "wrong-type-env-vars", "env_vars": 5, "env": {}, "process_command": "claude"}
+{"func": "lookup", "case": "bare-name", "command": "claude"}
+{"func": "lookup", "case": "empty-command", "command": ""}
+{"func": "lookup", "case": "null-command", "command": null}
+{"func": "lookup", "case": "number-command", "command": 5}
+{"func": "lookup", "case": "relative-dot-slash", "command": "./bin/agent", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5"}
+{"func": "lookup", "case": "absolute-windows", "command": "C:\\tools\\agent.exe", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5"}
+{"func": "lookup", "case": "percent-var", "command": "%W24_DIR%/bin/agent", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5", "env": {"W24_DIR": "C:/w24"}}
+{"func": "lookup", "case": "dollar-var", "command": "$W24_DIR/bin/agent", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5", "env": {"W24_DIR": "C:/w24"}}
+{"func": "lookup", "case": "brace-var", "command": "${W24_DIR}/bin", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5", "env": {"W24_DIR": "C:/w24"}}
+{"func": "lookup", "case": "tilde-bin", "command": "~/bin/agent", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5"}
+{"func": "lookup", "case": "tilde-alone-no-separator", "command": "~", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5"}
+{"func": "lookup", "case": "tilde-trailing-sep", "command": "~/bin/", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5"}
+{"func": "lookup", "case": "dotdot-collapse", "command": "bin/../agent", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5"}
+{"func": "lookup", "case": "double-separator", "command": "a//b", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5"}
+{"func": "lookup", "case": "unknown-var-verbatim", "command": "%NOPE%/x", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5"}
+{"func": "lookup", "case": "parent-escape", "command": "../up/agent", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5"}
+{"func": "lookup", "case": "dot-component", "command": "x/./y", "cwd": "C:/Users/eman5/slermes", "home": "C:/Users/eman5"}
+{"func": "lookup", "case": "no-cwd-seam", "command": "claude", "home": "C:/Users/eman5"}
+{"func": "launch_env_names", "case": "no-profiles", "profiles": []}
+{"func": "launch_env_names", "case": "one-external-profile", "profiles": [{"auth_type": "external_process", "process_command_env_vars": ["W24_CLAUDE", "W24_CC"], "process_args_env_var": "W24_ARGS"}]}
+{"func": "launch_env_names", "case": "non-external-excluded", "profiles": [{"auth_type": "api_key", "process_command_env_vars": ["W24_OTHER"], "process_args_env_var": "W24_OTHER_ARGS"}]}
+{"func": "launch_env_names", "case": "duplicates-deduped", "profiles": [{"auth_type": "external_process", "process_command_env_vars": ["W24_SHARED"], "process_args_env_var": "W24_ARGS"}, {"auth_type": "external_process", "process_command_env_vars": ["W24_SHARED", "W24_CC"], "process_args_env_var": "W24_ARGS"}]}
+{"func": "launch_env_names", "case": "empty-names-dropped", "profiles": [{"auth_type": "external_process", "process_command_env_vars": ["", "W24_CLAUDE"], "process_args_env_var": null}]}
+{"func": "launch_env_names", "case": "args-var-only", "profiles": [{"auth_type": "external_process", "process_command_env_vars": [], "process_args_env_var": "W24_ARGS_ONLY"}]}
+{"func": "launch_env_names", "case": "missing-vars-attribute", "profiles": [{"auth_type": "external_process", "process_args_env_var": "W24_ARGS_ONLY"}]}
+{"func": "launch_env_names", "case": "profiles-absent"}
+{"func": "launch_env_names", "case": "non-object-profile-entry", "profiles": ["nope", {"auth_type": "external_process", "process_command_env_vars": ["W24_CLAUDE"], "process_args_env_var": null}]}
+{"func": "denylist", "case": "union", "profiles": [{"auth_type": "external_process", "process_command_env_vars": ["W24_CLAUDE"], "process_args_env_var": "W24_ARGS"}], "launch_env": ["W24_LEGACY", "W24_ARGS"]}
+{"func": "denylist", "case": "empty", "profiles": [], "launch_env": []}
+{"func": "denylist", "case": "launch-env-null", "profiles": [{"auth_type": "external_process", "process_command_env_vars": ["W24_CLAUDE"], "process_args_env_var": null}], "launch_env": null}
+{"func": "denylist", "case": "wrong-type-launch-env", "profiles": [], "launch_env": "W24_X"}
+{"func": "denylist", "case": "empty-strings-dropped", "profiles": [], "launch_env": ["", "W24_LEGACY"]}

@@ -1,0 +1,43 @@
+{"func": "is_visually_empty", "case": "plain-text", "text": "hello"}
+{"func": "is_visually_empty", "case": "empty", "text": ""}
+{"func": "is_visually_empty", "case": "ascii-whitespace", "text": "  \t\n\r\f\v "}
+{"func": "is_visually_empty", "case": "invisible-only", "text": "\u200b\u200c\u200d\u2060\ufeff\u00ad\u180e\u200e\u200f\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069"}
+{"func": "is_visually_empty", "case": "invisible-wrapped", "text": "\u200b hi \u200b"}
+{"func": "is_visually_empty", "case": "none", "text": null}
+{"func": "is_visually_empty", "case": "zero", "text": 0}
+{"func": "is_visually_empty", "case": "false", "text": false}
+{"func": "is_visually_empty", "case": "no-text-key"}
+{"func": "is_visually_empty", "case": "unicode-space", "text": "\u00a0\u3000\u2003"}
+{"func": "is_visually_empty", "case": "soft-hyphen-only", "text": "\u00ad"}
+{"func": "is_visually_empty", "case": "soft-hyphen-inside", "text": "h\u00adi"}
+{"func": "is_visually_empty", "case": "cjk", "text": "\u4f60\u597d"}
+{"func": "is_visually_empty", "case": "number-type-mismatch", "text": 5}
+{"func": "notification_kwargs", "case": "important-no-notify", "mode": "important", "notify": null}
+{"func": "notification_kwargs", "case": "important-notify", "mode": "important", "notify": true}
+{"func": "notification_kwargs", "case": "important-explicit-false", "mode": "important", "notify": false}
+{"func": "notification_kwargs", "case": "all-no-notify", "mode": "all", "notify": null}
+{"func": "notification_kwargs", "case": "all-notify", "mode": "all", "notify": true}
+{"func": "notification_kwargs", "case": "case-mismatch", "mode": "IMPORTANT", "notify": null}
+{"func": "notification_kwargs", "case": "mode-none", "mode": null, "notify": null}
+{"func": "notification_kwargs", "case": "notify-one", "mode": "important", "notify": 1}
+{"func": "notification_kwargs", "case": "notify-empty-string", "mode": "important", "notify": ""}
+{"func": "metadata", "case": "thread-string", "thread_id": "42", "notify": null}
+{"func": "metadata", "case": "thread-int-notify", "thread_id": 42, "notify": true}
+{"func": "metadata", "case": "no-thread-notify", "thread_id": null, "notify": true}
+{"func": "metadata", "case": "nothing", "thread_id": null, "notify": null}
+{"func": "metadata", "case": "no-thread-false", "thread_id": null, "notify": false}
+{"func": "metadata", "case": "thread-float", "thread_id": 1.5, "notify": null}
+{"func": "metadata", "case": "thread-bool", "thread_id": true, "notify": null}
+{"func": "metadata", "case": "thread-empty-string", "thread_id": "", "notify": null}
+{"func": "metadata", "case": "thread-zero", "thread_id": 0, "notify": 1}
+{"func": "resolve_mode", "case": "env-all", "env": "all", "cfg": null}
+{"func": "resolve_mode", "case": "env-padded-important", "env": " IMPORTANT ", "cfg": null}
+{"func": "resolve_mode", "case": "env-unknown", "env": "bogus", "cfg": "all"}
+{"func": "resolve_mode", "case": "env-empty-cfg-all", "env": "", "cfg": "all"}
+{"func": "resolve_mode", "case": "env-unset-cfg-unset"}
+{"func": "resolve_mode", "case": "env-unset-cfg-padded", "cfg": "  Important "}
+{"func": "resolve_mode", "case": "env-unset-cfg-unknown", "cfg": "nope"}
+{"func": "resolve_mode", "case": "env-unset-cfg-bool", "cfg": true}
+{"func": "resolve_mode", "case": "env-whitespace-cfg-important", "env": "\t\n", "cfg": "important"}
+{"func": "resolve_mode", "case": "env-important", "env": "important", "cfg": "all"}
+{"func": "constants", "case": "tables"}

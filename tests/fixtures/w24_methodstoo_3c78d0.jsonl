@@ -1,0 +1,22 @@
+{"func": "run_command", "case": "full-session", "handler": "H", "arg": "cmd", "platform": "discord", "session": {"session_key": "abc", "cwd": "/tmp", "source": "discord"}}
+{"func": "run_command", "case": "null-session", "handler": "H", "arg": "cmd", "platform": "discord", "session": null}
+{"func": "run_command", "case": "empty-session", "handler": "H", "arg": "cmd", "platform": "discord", "session": {}}
+{"func": "run_command", "case": "list-session", "handler": "H", "arg": "cmd", "platform": "", "session": []}
+{"func": "run_command", "case": "empty-key", "handler": "H", "arg": "cmd", "platform": "cli", "session": {"session_key": "", "cwd": ""}}
+{"func": "run_command", "case": "zero-key", "handler": "H", "arg": "cmd", "platform": "cli", "session": {"session_key": 0}}
+{"func": "run_command", "case": "int-key", "handler": "H", "arg": "cmd", "platform": "cli", "session": {"session_key": 5}}
+{"func": "run_command", "case": "bool-key", "handler": "H", "arg": "cmd", "platform": "cli", "session": {"session_key": true}}
+{"func": "run_command", "case": "dict-agent-falls-back", "handler": "H", "arg": "cmd", "platform": "cli", "session": {"session_key": "k", "agent": {"session_id": "zzz"}}}
+{"func": "run_command", "case": "int-cwd", "handler": "H", "arg": "cmd", "platform": "cli", "session": {"session_key": "k", "cwd": 5}}
+{"func": "run_command", "case": "empty-arg", "handler": "H", "arg": "", "platform": "cli", "session": {"session_key": "k"}}
+{"func": "run_command", "case": "missing-everything", "handler": "H"}
+{"func": "handler_lookup", "case": "unbound-name", "name": "deploy"}
+{"func": "handler_lookup", "case": "unbound-empty", "name": ""}
+{"func": "dispatch", "case": "absent", "name": "deploy", "arg": "x", "absent": true, "handler_present": true}
+{"func": "dispatch", "case": "absent-wins-over-bind", "name": "deploy", "arg": "x", "absent": true, "bind_fails": true, "handler_present": true}
+{"func": "dispatch", "case": "bind-fails-registry", "name": "deploy", "arg": "x", "bind_fails": true, "registry": true, "handler_present": true}
+{"func": "dispatch", "case": "bind-fails-user-command", "name": "deploy", "arg": "x", "bind_fails": true, "registry": false, "handler_present": true}
+{"func": "dispatch", "case": "no-handler", "name": "deploy", "arg": "x", "handler_present": false}
+{"func": "dispatch", "case": "runs", "name": "deploy", "arg": "now", "handler_present": true, "platform": "discord", "session": {"session_key": "s1", "cwd": "/w"}}
+{"func": "dispatch", "case": "runs-null-session", "name": "deploy", "arg": "", "handler_present": true, "platform": "", "session": null}
+{"func": "dispatch", "case": "registry-bind-ok-runs", "name": "deploy", "arg": "a", "handler_present": true, "registry": true, "platform": "cli", "session": {"session_key": "s2"}}

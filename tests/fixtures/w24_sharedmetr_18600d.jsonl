@@ -1,0 +1,28 @@
+{"func": "answer", "case": "enabled-only", "enabled": true}
+{"func": "answer", "case": "both-true", "enabled": true, "send": true}
+{"func": "answer", "case": "both-false", "enabled": false, "send": false}
+{"func": "answer", "case": "send-without-enabled", "enabled": false, "send": true}
+{"func": "answer", "case": "int-one", "enabled": 1, "send": 0}
+{"func": "answer", "case": "word-off", "enabled": "off", "send": "T"}
+{"func": "answer", "case": "missing-enabled"}
+{"func": "answer", "case": "null-enabled", "enabled": null}
+{"func": "answer", "case": "missing-send", "send": true}
+{"func": "answer", "case": "bad-send", "enabled": true, "send": "maybe"}
+{"func": "answer", "case": "two-words", "enabled": "2"}
+{"func": "consent_view", "case": "no-config"}
+{"func": "consent_view", "case": "wrong-type-config", "config": "nope"}
+{"func": "consent_view", "case": "empty-section", "config": {"telemetry": {"shared_metrics": {}}}}
+{"func": "consent_view", "case": "opted-in", "config": {"telemetry": {"shared_metrics": {"enabled": true, "send": true}}}}
+{"func": "consent_view", "case": "enabled-one-not-true", "config": {"telemetry": {"shared_metrics": {"enabled": 1}}}}
+{"func": "consent_view", "case": "no-thanks-current", "config": {"telemetry": {"shared_metrics": {"enabled": false, "send": false, "offer_version": 2}}}}
+{"func": "consent_view", "case": "no-thanks-old", "config": {"telemetry": {"shared_metrics": {"enabled": false, "offer_version": 1}}}}
+{"func": "consent_view", "case": "send-key-only", "config": {"telemetry": {"shared_metrics": {"send": false}}}}
+{"func": "consent_view", "case": "managed-install", "config": {"telemetry": {"shared_metrics": {"enabled": true}}}, "managed": true}
+{"func": "consent_view", "case": "telemetry-not-dict", "config": {"telemetry": []}, "managed": 1}
+{"func": "set_answer", "case": "empty-target", "target": {}, "enabled": true, "send": true}
+{"func": "set_answer", "case": "keep-other-keys", "target": {"model": "m1", "telemetry": {"shared_metrics": {"offer_version": 1}, "extra": 2}}, "enabled": true, "send": false}
+{"func": "set_answer", "case": "no-thanks", "target": {"telemetry": {}}, "enabled": false, "send": true}
+{"func": "set_answer", "case": "telemetry-not-dict", "target": {"telemetry": "str"}, "enabled": false, "send": false}
+{"func": "set_answer", "case": "section-not-dict", "target": {"telemetry": {"shared_metrics": [1, 2]}}, "enabled": true, "send": true}
+{"func": "set_answer", "case": "missing-target", "enabled": true, "send": true}
+{"func": "constants", "case": "offer"}

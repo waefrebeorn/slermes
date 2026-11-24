@@ -1,0 +1,15 @@
+{"func": "dispatch_list", "rid": 7, "params": {}, "behavior": {"result": {"sessions": [{"source": "chrome", "id": "a1"}], "offset": 0}}, "case": "list-defaults"}
+{"func": "dispatch_list", "rid": 8, "params": {"source": "chrome", "offset": 5, "limit": 10}, "behavior": {"result": {"sessions": [{"source": "chrome", "id": "a1"}], "offset": 0}}, "case": "list-explicit"}
+{"func": "dispatch_list", "rid": 9, "params": {"source": null}, "behavior": {"result": []}, "case": "list-source-null"}
+{"func": "dispatch_list", "rid": 10, "params": {"offset": null}, "behavior": {"result": []}, "case": "list-offset-null"}
+{"func": "dispatch_list", "rid": 11, "params": {}, "behavior": {"raise": "ValueError", "message": "bad source"}, "case": "list-value-error"}
+{"func": "dispatch_list", "rid": 12, "params": {}, "behavior": {"raise": "OSError", "message": "no such folder"}, "case": "list-os-error"}
+{"func": "dispatch_list", "rid": "abc", "params": {"limit": 0}, "behavior": {}, "case": "list-null-result"}
+{"func": "dispatch_history", "rid": 21, "importing": true, "params": {"id": "s1", "profile": "work"}, "behavior": {"db": true, "profile_name": "work", "result": {"id": "s1", "messages": [{"role": "user", "content": "hi"}]}}, "case": "hist-import-ok"}
+{"func": "dispatch_history", "rid": 22, "importing": false, "params": {"id": "s1", "profile": null}, "behavior": {"db": true, "profile_name": "launch", "result": {"id": "s1", "messages": [{"role": "user", "content": "hi"}]}}, "case": "hist-preview-ok"}
+{"func": "dispatch_history", "rid": 23, "importing": true, "params": {"id": "s1"}, "behavior": {"db": false}, "case": "hist-db-unavailable"}
+{"func": "dispatch_history", "rid": 24, "importing": true, "params": {"id": "nope"}, "behavior": {"db": true, "profile_name": "launch", "raise": "ValueError", "message": "no session 'nope'"}, "case": "hist-value-error"}
+{"func": "dispatch_history", "rid": 25, "importing": false, "params": {"id": "s1"}, "behavior": {"db": true, "profile_name": "launch", "raise": "OSError", "message": "io"}, "case": "hist-os-error"}
+{"func": "dispatch_history", "rid": 26, "importing": false, "params": {}, "behavior": {"db": true, "profile_name": "launch", "result": null}, "case": "hist-no-id"}
+{"func": "methods", "case": "methods"}
+{"func": "constants", "case": "const"}

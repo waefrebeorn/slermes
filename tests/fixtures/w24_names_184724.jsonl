@@ -1,0 +1,34 @@
+{"func": "constants", "case": "module-literals"}
+{"func": "is_connector_name", "case": "prefixed", "name": "connectors__github__search_issues"}
+{"func": "is_connector_name", "case": "bare-prefix", "name": "connectors__"}
+{"func": "is_connector_name", "case": "not-prefixed", "name": "github_search_issues"}
+{"func": "is_connector_name", "case": "empty-string", "name": ""}
+{"func": "is_connector_name", "case": "null", "name": null}
+{"func": "is_connector_name", "case": "absent"}
+{"func": "is_connector_name", "case": "number", "name": 42}
+{"func": "is_connector_name", "case": "list", "name": ["connectors__a__b"]}
+{"func": "is_connector_name", "case": "sentinel", "name": "connectors__execute"}
+{"func": "parse_connector_name", "case": "normal", "name": "connectors__github__search_issues"}
+{"func": "parse_connector_name", "case": "tool-keeps-underscores", "name": "connectors__slack__chat_postMessage_v2"}
+{"func": "parse_connector_name", "case": "extra-separator-stays-in-tool", "name": "connectors__a__b__c"}
+{"func": "parse_connector_name", "case": "sentinel-splits", "name": "connectors__execute"}
+{"func": "parse_connector_name", "case": "empty-tool", "name": "connectors__github__"}
+{"func": "parse_connector_name", "case": "empty-connector", "name": "connectors____"}
+{"func": "parse_connector_name", "case": "wrong-prefix", "name": "github__repo__issues"}
+{"func": "parse_connector_name", "case": "null", "name": null}
+{"func": "parse_connector_name", "case": "number", "name": 7}
+{"func": "parse_connector_name", "case": "dict", "name": {"raw": "connectors__a__b"}}
+{"func": "format_connector_name", "case": "normal", "connector": "github", "tool": "search_issues"}
+{"func": "format_connector_name", "case": "strips-conventional-prefix", "connector": "github", "tool": "GITHUB_search_issues"}
+{"func": "format_connector_name", "case": "prefix-only-once", "connector": "github", "tool": "GITHUB_GITHUB_x"}
+{"func": "format_connector_name", "case": "empty-tool", "connector": "slack", "tool": ""}
+{"func": "format_connector_name", "case": "empty-connector", "connector": "", "tool": "ping"}
+{"func": "format_connector_name", "case": "mixed-case-connector", "connector": "GitHub", "tool": "GITHUB_x"}
+{"func": "format_connector_name", "case": "tool-null", "connector": "github", "tool": null}
+{"func": "format_connector_name", "case": "connector-number", "connector": 5, "tool": "x"}
+{"func": "vendor_slug_candidates", "case": "normal", "connector": "github", "tool": "search"}
+{"func": "vendor_slug_candidates", "case": "empty-tool", "connector": "slack", "tool": ""}
+{"func": "vendor_slug_candidates", "case": "empty-connector", "connector": "", "tool": "search"}
+{"func": "vendor_slug_candidates", "case": "mixed-case", "connector": "Google_Meet", "tool": "list"}
+{"func": "vendor_slug_candidates", "case": "tool-null", "connector": "github", "tool": null}
+{"func": "vendor_slug_candidates", "case": "connector-list", "connector": ["github"], "tool": "search"}

@@ -1,0 +1,37 @@
+{"func": "shlex_quote", "case": "empty", "s": ""}
+{"func": "shlex_quote", "case": "plain", "s": "abc"}
+{"func": "shlex_quote", "case": "space", "s": "a b"}
+{"func": "shlex_quote", "case": "single-quote", "s": "it's"}
+{"func": "shlex_quote", "case": "safe-punctuation", "s": "a=1,b:2/@x%y+z"}
+{"func": "shlex_quote", "case": "dollar", "s": "$HOME"}
+{"func": "shlex_quote", "case": "non-ascii", "s": "héllo"}
+{"func": "shlex_quote", "case": "path-chars", "s": "a/b-c.d,e:f"}
+{"func": "shlex_quote", "case": "newline", "s": "a\nb"}
+{"func": "prepend_unset", "case": "no-names", "cmd": "ls -la", "names": []}
+{"func": "prepend_unset", "case": "sorted", "cmd": "env", "names": ["B_TOKEN", "A_TOKEN"]}
+{"func": "prepend_unset", "case": "duplicate-names", "cmd": "env", "names": ["K", "K", "J"]}
+{"func": "prepend_unset", "case": "space-in-name", "cmd": "env", "names": ["A B"]}
+{"func": "prepend_unset", "case": "quote-in-name", "cmd": "env", "names": ["it's"]}
+{"func": "prepend_unset", "case": "multiline-cmd", "cmd": "cd /tmp\necho hi", "names": ["SCOPE"]}
+{"func": "prepend_unset", "case": "null-names", "cmd": "env", "names": null}
+{"func": "bash_argv", "case": "no-login", "cmd": "echo hi", "login": false}
+{"func": "bash_argv", "case": "login", "cmd": "echo hi", "login": true}
+{"func": "bash_argv", "case": "empty-cmd", "cmd": "", "login": false}
+{"func": "bash_argv", "case": "multiline", "cmd": "cd /tmp\npwd", "login": true}
+{"func": "client_env_with", "case": "empty-values-inherit", "values": {}, "environ": {"PATH": "/usr/bin"}}
+{"func": "client_env_with", "case": "merge", "values": {"A": "1"}, "environ": {"B": "2"}}
+{"func": "client_env_with", "case": "override-existing", "values": {"A": "new"}, "environ": {"A": "old", "B": "2"}}
+{"func": "client_env_with", "case": "no-environ", "values": {"X": "1"}, "environ": null}
+{"func": "resolve_passthrough", "case": "empty", "explicit_forward": [], "passthrough": [], "env": {}, "hermes_env": {}, "multiplex": false, "internal_secret": [], "blocklisted": [], "global_env": []}
+{"func": "resolve_passthrough", "case": "blocklist-drops-implicit", "explicit_forward": ["DOCKER_HOST"], "passthrough": ["SKILL_TOKEN", "OPENAI_API_KEY"], "env": {"SKILL_TOKEN": "abc", "OPENAI_API_KEY": "sk-live"}, "hermes_env": {}, "multiplex": false, "internal_secret": [], "blocklisted": ["OPENAI_API_KEY"], "global_env": []}
+{"func": "resolve_passthrough", "case": "explicit-bypasses-blocklist", "explicit_forward": ["OPENAI_API_KEY"], "passthrough": [], "env": {"OPENAI_API_KEY": "sk-explicit"}, "hermes_env": {}, "multiplex": false, "internal_secret": ["OPENAI_API_KEY"], "blocklisted": ["OPENAI_API_KEY"], "global_env": []}
+{"func": "resolve_passthrough", "case": "internal-secret-drops-implicit", "explicit_forward": [], "passthrough": ["AUXILIARY_X_API_KEY", "SAFE_TOKEN"], "env": {"AUXILIARY_X_API_KEY": "s", "SAFE_TOKEN": "ok"}, "hermes_env": {}, "multiplex": false, "internal_secret": ["AUXILIARY_X_API_KEY"], "blocklisted": [], "global_env": []}
+{"func": "resolve_passthrough", "case": "hermes-env-fallback", "explicit_forward": ["DOCKER_HOST"], "passthrough": [], "env": {}, "hermes_env": {"DOCKER_HOST": "unix:///run/docker.sock"}, "multiplex": false, "internal_secret": [], "blocklisted": [], "global_env": []}
+{"func": "resolve_passthrough", "case": "empty-env-value-falls-through", "explicit_forward": ["K"], "passthrough": [], "env": {"K": ""}, "hermes_env": {"K": "from-env-file"}, "multiplex": false, "internal_secret": [], "blocklisted": [], "global_env": []}
+{"func": "resolve_passthrough", "case": "multiplex-unset-missing", "explicit_forward": [], "passthrough": ["PROFILE_TOKEN"], "env": {}, "hermes_env": {}, "multiplex": true, "internal_secret": [], "blocklisted": [], "global_env": []}
+{"func": "resolve_passthrough", "case": "multiplex-global-not-unset", "explicit_forward": [], "passthrough": ["PATH_EXTRA"], "env": {}, "hermes_env": {}, "multiplex": true, "internal_secret": [], "blocklisted": [], "global_env": ["PATH_EXTRA"]}
+{"func": "resolve_passthrough", "case": "multiplex-invalid-name-not-unset", "explicit_forward": [], "passthrough": ["9BAD", "GOOD_NAME"], "env": {}, "hermes_env": {}, "multiplex": true, "internal_secret": [], "blocklisted": [], "global_env": []}
+{"func": "resolve_passthrough", "case": "present-value-wins-over-unset", "explicit_forward": [], "passthrough": ["SCOPED"], "env": {"SCOPED": "v"}, "hermes_env": {}, "multiplex": true, "internal_secret": [], "blocklisted": [], "global_env": []}
+{"func": "resolve_passthrough", "case": "sorted-keys", "explicit_forward": ["Z_VAR"], "passthrough": ["B_VAR", "A_VAR"], "env": {"Z_VAR": "z", "B_VAR": "b", "A_VAR": "a"}, "hermes_env": {}, "multiplex": true, "internal_secret": [], "blocklisted": [], "global_env": []}
+{"func": "constants", "case": "patterns"}
+{"func": "client_env_with", "case": "null-values-inherit", "values": null, "environ": {"PATH": "/usr/bin"}}

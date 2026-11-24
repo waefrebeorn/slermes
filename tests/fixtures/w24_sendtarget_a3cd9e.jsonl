@@ -1,0 +1,27 @@
+{"func": "parse_nonempty", "case": "padded", "ref": "  chat  "}
+{"func": "parse_nonempty", "case": "plain", "ref": "chat"}
+{"func": "parse_nonempty", "case": "empty", "ref": ""}
+{"func": "parse_nonempty", "case": "spaces-only", "ref": "   "}
+{"func": "parse_nonempty", "case": "tabs-and-newline", "ref": "\t x \n"}
+{"func": "parse_nonempty", "case": "inner-space", "ref": "a b"}
+{"func": "regex_stripped", "case": "unpadded-match", "pattern": "[a-z]+", "ref": "  abc  ", "matched": false}
+{"func": "regex_stripped", "case": "padded-pattern", "pattern": " *[a-z]+ *", "ref": "  abc  ", "matched": true}
+{"func": "regex_stripped", "case": "strip-to-empty", "pattern": " *", "ref": "   ", "matched": true}
+{"func": "regex_stripped", "case": "plain", "pattern": "[a-z]+", "ref": "abc", "matched": true}
+{"func": "regex_stripped", "case": "no-match", "pattern": "x+", "ref": "abc", "matched": false}
+{"func": "regex_groups", "case": "two-groups", "pattern": "tg:([0-9]+):([0-9]+)", "ref": "tg:12:34", "matched": true, "group1": "12", "group2": "34", "thread_group": true}
+{"func": "regex_groups", "case": "missing-thread", "pattern": "tg:([0-9]+):([0-9]+)", "ref": "tg:12", "matched": false, "group1": null, "group2": null}
+{"func": "regex_groups", "case": "thread-suppressed", "pattern": "tg:([0-9]+)", "ref": "tg:77", "matched": true, "group1": "77", "group2": null, "thread_group": false}
+{"func": "regex_groups", "case": "thread-default", "pattern": "tg:([0-9]+)", "ref": "tg:77", "matched": true, "group1": "77", "group2": null}
+{"func": "regex_groups", "case": "optional-at", "pattern": "@?([a-z]+)", "ref": "@bob", "matched": true, "group1": "bob", "group2": null}
+{"func": "regex_groups", "case": "alt-words", "pattern": "(x+)-(y+)", "ref": "x-y", "matched": true, "group1": "x", "group2": "y"}
+{"func": "regex_groups", "case": "trailing-newline", "pattern": "tg:([0-9]+):([0-9]+)", "ref": "tg:12:34\n", "matched": false, "group1": null, "group2": null}
+{"func": "regex_groups", "case": "discord-ids", "pattern": "discord-([0-9]+)-([0-9]+)", "ref": "discord-5-6", "matched": true, "group1": "5", "group2": "6", "thread_group": 1}
+{"func": "policy", "case": "defaults"}
+{"func": "policy", "case": "media", "media": true}
+{"func": "policy", "case": "discord-label", "label": "discord", "all_sends": true}
+{"func": "policy", "case": "reply-file", "reply_file_over": 40}
+{"func": "policy", "case": "reply-file-string", "reply_file_over": "7"}
+{"func": "policy", "case": "null-label", "label": null}
+{"func": "policy", "case": "text-direct", "mentions": true, "text_direct": true, "captionable": true}
+{"func": "constants", "case": "module-constants"}

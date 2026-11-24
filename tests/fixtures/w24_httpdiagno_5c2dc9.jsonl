@@ -1,0 +1,32 @@
+{"case":"httpdiag-reason-padded","func":"connector_reason","body":"{\"error\": \"   bad request  \"}"}
+{"case":"httpdiag-reason-plain","func":"connector_reason","body":"{\"error\":\"rate limited\"}"}
+{"case":"httpdiag-reason-other-key","func":"connector_reason","body":"{\"message\":\"no error key\"}"}
+{"case":"httpdiag-reason-number","func":"connector_reason","body":"{\"error\": 503}"}
+{"case":"httpdiag-reason-html","func":"connector_reason","body":"<html><body>403 Forbidden</body></html>"}
+{"case":"httpdiag-reason-empty","func":"connector_reason","body":""}
+{"case":"httpdiag-reason-array","func":"connector_reason","body":"[]"}
+{"case":"httpdiag-reason-empty-string","func":"connector_reason","body":"{\"error\":\"\"}"}
+{"case":"httpdiag-reason-null-body","func":"connector_reason","body":null}
+{"case":"httpdiag-reason-null-error","func":"connector_reason","body":"{\"error\":null}"}
+{"case":"httpdiag-proxy-no-headers","func":"answered_by_proxy","headers":null}
+{"case":"httpdiag-proxy-empty","func":"answered_by_proxy","headers":{}}
+{"case":"httpdiag-proxy-via","func":"answered_by_proxy","headers":{"Via":"1.1 squid"}}
+{"case":"httpdiag-proxy-lower-via","func":"answered_by_proxy","headers":{"via":"1.1 squid"}}
+{"case":"httpdiag-proxy-proxy-status","func":"answered_by_proxy","headers":{"Proxy-Status":"envoy; error=http_protocol_error"}}
+{"case":"httpdiag-proxy-x-squid-error","func":"answered_by_proxy","headers":{"X-Squid-Error":"ERR_DNS_FAIL"}}
+{"case":"httpdiag-proxy-server-cloudflare","func":"answered_by_proxy","headers":{"Server":"cloudflare"}}
+{"case":"httpdiag-proxy-server-edge","func":"answered_by_proxy","headers":{"Server":"railway-edge"}}
+{"case":"httpdiag-proxy-server-nginx","func":"answered_by_proxy","headers":{"Server":"nginx/1.25.3"}}
+{"case":"httpdiag-proxy-empty-via","func":"answered_by_proxy","headers":{"Via":""}}
+{"case":"httpdiag-proxy-upper-server","func":"answered_by_proxy","headers":{"Server":"Envoy/1.29"}}
+{"case":"httpdiag-proxy-lower-server-key","func":"answered_by_proxy","headers":{"server":"SQUID/6.10"}}
+{"case":"httpdiag-proxy-server-and-via","func":"answered_by_proxy","headers":{"Server":"nginx","Via":"1.1 inets"}}
+{"case":"httpdiag-scrub-one","func":"scrub","text":"token abc rejected","secrets":["abc"]}
+{"case":"httpdiag-scrub-none","func":"scrub","text":"nothing to hide","secrets":[]}
+{"case":"httpdiag-scrub-falsy-secrets","func":"scrub","text":"token abc","secrets":[null,""]}
+{"case":"httpdiag-scrub-twice","func":"scrub","text":"a-b-a","secrets":["a"]}
+{"case":"httpdiag-scrub-two-secrets","func":"scrub","text":"sk-1 and sk-2","secrets":["sk-1","sk-2"]}
+{"case":"httpdiag-scrub-empty-text","func":"scrub","text":"","secrets":["x"]}
+{"case":"httpdiag-scrub-overlap","func":"scrub","text":"abc","secrets":["abc","***"]}
+{"case":"httpdiag-scrub-null-text","func":"scrub","text":null,"secrets":["x"]}
+{"case":"httpdiag-constants","func":"constants"}

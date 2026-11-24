@@ -1,0 +1,20 @@
+{"func": "constants", "case": "names"}
+{"func": "resolve", "case": "local-is-gateway", "backend": "local", "setting": "terminal", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "docker-auto", "backend": "docker", "setting": "auto", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "ssh-auto", "backend": "ssh", "setting": "auto", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "ssh-gateway-optin", "backend": "ssh", "setting": "gateway", "plugin_streams": true, "host_isolated": false}
+{"func": "resolve", "case": "modal-refused", "backend": "modal", "setting": "auto", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "modal-terminal-setting-still-refused", "backend": "modal", "setting": "terminal", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "plugin-streams-in-process", "backend": "plugx", "setting": "auto", "plugin_streams": true, "host_isolated": false}
+{"func": "resolve", "case": "plugin-streams-host-isolated", "backend": "plugx", "setting": "auto", "plugin_streams": true, "host_isolated": true}
+{"func": "resolve", "case": "plugin-streams-gateway-optin-beats-isolation", "backend": "plugx", "setting": "Gateway", "plugin_streams": true, "host_isolated": true}
+{"func": "resolve", "case": "plugin-streams-not-a-real-true", "backend": "plugx", "setting": "auto", "plugin_streams": 1, "host_isolated": false}
+{"func": "resolve", "case": "plugin-streams-string-true", "backend": "plugx", "setting": "auto", "plugin_streams": "true", "host_isolated": false}
+{"func": "resolve", "case": "setting-whitespace-and-case", "backend": "docker", "setting": "  TERMINAL  ", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "setting-unknown-falls-back-to-auto", "backend": "docker", "setting": "sandboxed", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "setting-null", "backend": "docker", "setting": null, "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "backend-null-defaults-local", "backend": null, "setting": "auto", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "backend-empty-string-defaults-local", "backend": "", "setting": "auto", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "backend-number", "backend": 5, "setting": "auto", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "vercel-refused", "backend": "vercel", "setting": "auto", "plugin_streams": false, "host_isolated": false}
+{"func": "resolve", "case": "daytona-refused", "backend": "daytona", "setting": "auto", "plugin_streams": false, "host_isolated": true}

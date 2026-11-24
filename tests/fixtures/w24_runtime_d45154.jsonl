@@ -1,0 +1,36 @@
+{"case":"runtime-termux-prefix","func":"termux","env":{"PREFIX":"/data/data/com.termux/files/usr"}}
+{"case":"runtime-termux-version","func":"termux","env":{"PREFIX":"/usr","TERMUX_VERSION":"0.118.0"}}
+{"case":"runtime-termux-empty-env","func":"termux","env":{}}
+{"case":"runtime-termux-plain-prefix","func":"termux","env":{"PREFIX":"/usr/local"}}
+{"case":"runtime-termux-both-empty","func":"termux","env":{"PREFIX":"","TERMUX_VERSION":""}}
+{"case":"runtime-termux-null-values","func":"termux","env":{"PREFIX":null,"TERMUX_VERSION":null}}
+{"case":"runtime-termux-binding","func":"termux","env":{"PREFIX":"prefix"}}
+{"case":"runtime-wsl-microsoft","func":"wsl","proc":{"proc_version":"Linux version 5.15.90.1-microsoft-standard-WSL2 (gcc) #1 SMP"}}
+{"case":"runtime-wsl-plain-linux","func":"wsl","proc":{"proc_version":"Linux version 6.1.0-13-amd64 (debian-kernel) #1 SMP"}}
+{"case":"runtime-wsl-upper","func":"wsl","proc":{"proc_version":"Linux version MICROSOFT"}}
+{"case":"runtime-wsl-empty","func":"wsl","proc":{"proc_version":""}}
+{"case":"runtime-wsl-unreadable","func":"wsl","proc":{"proc_version":null}}
+{"case":"runtime-proc-docker","func":"proc_marker","proc":{"content":"12:memory:/docker/0123456789abcdef\n11:cpu:/docker/0123456789abcdef"}}
+{"case":"runtime-proc-init-scope","func":"proc_marker","proc":{"content":"0::/init.scope"}}
+{"case":"runtime-proc-empty","func":"proc_marker","proc":{"content":""}}
+{"case":"runtime-proc-kubepods","func":"proc_marker","proc":{"content":"0::/kubepods/besteffort/pod1234"}}
+{"case":"runtime-proc-lxc-marker","func":"proc_marker","proc":{"content":"4:memory:/lxc/payload"}}
+{"case":"runtime-proc-custom-lxc","func":"proc_marker","proc":{"content":"4:memory:/lxc/payload","markers":["lxc"]}}
+{"case":"runtime-proc-custom-empty-markers","func":"proc_marker","proc":{"content":"12:memory:/docker/abc","markers":[]}}
+{"case":"runtime-proc-containerd","func":"proc_marker","proc":{"content":"0::/system.slice/containerd.service"}}
+{"case":"runtime-root-plain","func":"root_mount","proc":{"content":"36 35 98:0 / / rw,relatime shared:1 - ext4 /dev/root rw"}}
+{"case":"runtime-root-containerd","func":"root_mount","proc":{"content":"100 99 0:50 / / rw,relatime - overlay overlay rw,lowerdir=/var/lib/containerd/io.containerd.snapshotter"}}
+{"case":"runtime-root-nonroot-containerd","func":"root_mount","proc":{"content":"200 36 0:22 / /var/lib/containerd/vol rw - ext4 /dev/sda1 rw"}}
+{"case":"runtime-root-empty","func":"root_mount","proc":{"content":""}}
+{"case":"runtime-root-custom-ext4","func":"root_mount","proc":{"content":"36 35 98:0 / / rw - ext4 /dev/root rw","markers":["ext4"]}}
+{"case":"runtime-root-custom-empty","func":"root_mount","proc":{"content":"100 99 0:50 / / rw - overlay overlay rw,lowerdir=/containerd","markers":[]}}
+{"case":"runtime-root-mixed-lines","func":"root_mount","proc":{"content":"200 36 0:22 / /var/lib/kubepods rw - ext4 /dev/sda1 rw\n36 35 98:0 / / rw - ext4 /dev/root rw"}}
+{"case":"runtime-root-short-line","func":"root_mount","proc":{"content":"36 35 98:0 /"}}
+{"case":"runtime-container-nothing","func":"container","env":{}}
+{"case":"runtime-container-dockerenv","func":"container","env":{"dockerenv":true}}
+{"case":"runtime-container-containerenv","func":"container","env":{"containerenv":true}}
+{"case":"runtime-container-k8s","func":"container","env":{"k8s_host":"10.96.0.1"}}
+{"case":"runtime-container-cgroup","func":"container","env":{"cgroup":"0::/docker/abc"}}
+{"case":"runtime-container-mountinfo","func":"container","env":{"mountinfo":"100 99 0:50 / / rw - overlay overlay rw,lowerdir=/run/containerd/x"}}
+{"case":"runtime-container-host","func":"container","env":{"cgroup":"0::/init.scope","mountinfo":"36 35 98:0 / / rw - ext4 /dev/root rw"}}
+{"case":"runtime-container-lxc-flag-off","func":"container","env":{"dockerenv":false,"cgroup":"4:memory:/lxc/payload"}}

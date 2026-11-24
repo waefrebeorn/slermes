@@ -1,0 +1,26 @@
+{"func": "constants", "case": "module-tags"}
+{"func": "agent_surface", "case": "bare-agent", "agent": {}}
+{"func": "agent_surface", "case": "callback-present", "agent": {"connection_callback": true}}
+{"func": "agent_surface", "case": "callback-null-side", "agent": {"connection_callback": null, "side_agent": true}}
+{"func": "agent_surface", "case": "callback-falsy-zero", "agent": {"connection_callback": 0, "side_agent": true}}
+{"func": "agent_surface", "case": "callback-empty-string", "agent": {"connection_callback": "", "side_agent": true}}
+{"func": "agent_surface", "case": "side-true", "agent": {"side_agent": 1}}
+{"func": "agent_surface", "case": "side-empty-string", "agent": {"side_agent": ""}}
+{"func": "agent_surface", "case": "side-empty-list", "agent": {"side_agent": []}}
+{"func": "agent_surface", "case": "side-empty-object", "agent": {"side_agent": {}}}
+{"func": "agent_surface", "case": "side-truthy-string", "agent": {"side_agent": "yes"}}
+{"func": "agent_surface", "case": "side-null", "agent": {"side_agent": null}}
+{"func": "tool_drops", "case": "bare-agent", "agent": {}}
+{"func": "tool_drops", "case": "side-agent", "agent": {"side_agent": true}}
+{"func": "tool_drops", "case": "side-false", "agent": {"side_agent": false}}
+{"func": "tool_drops", "case": "side-truthy-string", "agent": {"side_agent": "0"}}
+{"func": "tool_drops", "case": "side-null", "agent": {"side_agent": null}}
+{"func": "surface_scope", "case": "empty-ops", "ops": []}
+{"func": "surface_scope", "case": "default-get", "ops": [{"op": "get"}]}
+{"func": "surface_scope", "case": "scope-card", "ops": [{"op": "scope", "surface": "card", "ops": [{"op": "get"}]}, {"op": "get"}]}
+{"func": "surface_scope", "case": "scope-null-surface", "ops": [{"op": "scope", "surface": null, "ops": [{"op": "get"}]}, {"op": "get"}]}
+{"func": "surface_scope", "case": "scope-number-surface", "ops": [{"op": "scope", "surface": 7, "ops": [{"op": "get"}]}]}
+{"func": "surface_scope", "case": "scope-nested", "ops": [{"op": "scope", "surface": "side", "ops": [{"op": "get"}, {"op": "scope", "surface": "card", "ops": [{"op": "get"}]}, {"op": "get"}]}, {"op": "get"}]}
+{"func": "surface_scope", "case": "scope-without-surface", "ops": [{"op": "scope", "ops": [{"op": "get"}]}, {"op": "get"}]}
+{"func": "surface_scope", "case": "unknown-op", "ops": [{"op": "reset"}, {"op": "get"}]}
+{"func": "surface_scope", "case": "ops-not-a-list", "ops": "get"}

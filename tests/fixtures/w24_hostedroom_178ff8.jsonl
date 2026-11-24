@@ -1,0 +1,22 @@
+{"func": "fenced_update", "case": "one-row", "rowcount": 1}
+{"func": "fenced_update", "case": "zero-rows", "rowcount": 0}
+{"func": "fenced_update", "case": "two-rows", "rowcount": 2}
+{"func": "fenced_update", "case": "null-rowcount", "rowcount": null}
+{"func": "fenced_update", "case": "missing-rowcount"}
+{"func": "epoch", "case": "match", "epoch": 3, "row_present": true, "row_epoch": 3}
+{"func": "epoch", "case": "mismatch", "epoch": 4, "row_present": true, "row_epoch": 3}
+{"func": "epoch", "case": "row-missing", "epoch": 3, "row_present": false}
+{"func": "epoch", "case": "float-epoch", "epoch": 3, "epoch_type": "float", "row_present": true, "row_epoch": 3}
+{"func": "epoch", "case": "bool-epoch", "epoch": true, "epoch_type": "bool", "row_present": true, "row_epoch": 1}
+{"func": "epoch", "case": "str-epoch", "epoch": "3", "epoch_type": "str", "row_present": true, "row_epoch": 3}
+{"func": "epoch", "case": "null-epoch", "epoch": null, "epoch_type": "null", "row_present": true, "row_epoch": null}
+{"func": "table_exists", "case": "present", "row_present": true}
+{"func": "table_exists", "case": "absent", "row_present": false}
+{"func": "table_exists", "case": "missing-key"}
+{"func": "table_columns", "case": "normal", "rows": [["0", "id", "INTEGER"], ["1", "room_id", "TEXT"]]}
+{"func": "table_columns", "case": "dup-and-order", "rows": [["1", "b", "TEXT"], ["0", "a", "TEXT"], ["2", "b", "INTEGER"]]}
+{"func": "table_columns", "case": "empty", "rows": []}
+{"func": "table_columns", "case": "short-row", "rows": [["0", "a", "TEXT"], ["1"]]}
+{"func": "table_columns", "case": "non-string-name", "rows": [["0", 7, "TEXT"]]}
+{"func": "table_columns", "case": "wrong-type", "rows": {"a": 1}}
+{"func": "constants", "case": "kinds"}

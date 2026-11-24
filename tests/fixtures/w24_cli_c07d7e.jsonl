@@ -1,0 +1,32 @@
+{"func": "dispatch", "case": "cmd-run", "cmd": "run"}
+{"func": "dispatch", "case": "cmd-list", "cmd": "list"}
+{"func": "dispatch", "case": "cmd-approve", "cmd": "approve"}
+{"func": "dispatch", "case": "cmd-remove", "cmd": "remove"}
+{"func": "dispatch", "case": "cmd-status", "cmd": "status"}
+{"func": "dispatch", "case": "cmd-ping", "cmd": "ping"}
+{"func": "dispatch", "case": "unknown", "cmd": "bogus"}
+{"func": "dispatch", "case": "empty-string", "cmd": ""}
+{"func": "dispatch", "case": "null-cmd", "cmd": null}
+{"func": "dispatch", "case": "number-cmd", "cmd": 5}
+{"func": "format_list", "case": "empty", "nodes": []}
+{"func": "format_list", "case": "null-nodes", "nodes": null}
+{"func": "format_list", "case": "one-node", "nodes": [{"name": "lab", "url": "ws://10.0.0.5:18789", "token": "abcdef123456"}]}
+{"func": "format_list", "case": "two-nodes", "nodes": [{"name": "a", "url": "ws://a:1", "token": "AAAAAA1"}, {"name": "b", "url": "ws://b:2", "token": "BBBBBB2"}]}
+{"func": "format_list", "case": "short-token", "nodes": [{"name": "c", "url": "ws://c:3", "token": "xyz"}]}
+{"func": "format_list", "case": "exact-six-token", "nodes": [{"name": "d", "url": "ws://d:4", "token": "123456"}]}
+{"func": "approve_message", "case": "plain", "name": "lab", "url": "ws://10.0.0.5:18789"}
+{"func": "approve_message", "case": "quote-in-name", "name": "la'b", "url": "ws://x:1"}
+{"func": "approve_message", "case": "empty-name", "name": "", "url": "ws://x:1"}
+{"func": "remove_result", "case": "removed", "name": "lab", "ok": true}
+{"func": "remove_result", "case": "absent", "name": "lab", "ok": false}
+{"func": "remove_result", "case": "zero-ok", "name": "lab", "ok": 0}
+{"func": "remove_result", "case": "quote-name", "name": "o'brien", "ok": true}
+{"func": "run_banner", "case": "defaults", "host": "0.0.0.0", "port": 18789, "display_name": "hermes-meet-node", "token": "tok-123456"}
+{"func": "run_banner", "case": "custom-port", "host": "127.0.0.1", "port": 9000, "display_name": "meet box", "token": "abc"}
+{"func": "run_banner", "case": "empty-name", "host": "::", "port": 1, "display_name": "", "token": "t"}
+{"func": "ping_fail", "case": "runtime", "name": "lab", "error": "connection refused"}
+{"func": "ping_fail", "case": "quotes", "name": "lab", "error": "bad \"handshake\""}
+{"func": "ping_fail", "case": "backslash-and-newline", "name": "lab", "error": "path\\x\nnext"}
+{"func": "ping_missing", "case": "unregistered", "name": "ghost"}
+{"func": "ping_missing", "case": "quote-name", "name": "gh'ost"}
+{"func": "constants", "case": "parser-defaults"}

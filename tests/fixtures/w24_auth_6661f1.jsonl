@@ -1,0 +1,24 @@
+{"func": "constants", "case": "ttl-table"}
+{"func": "sign", "case": "basic", "payload": "hello", "secret": "key"}
+{"func": "sign", "case": "empty-payload", "payload": "", "secret": "key"}
+{"func": "sign", "case": "empty-secret", "payload": "hello", "secret": ""}
+{"func": "sign", "case": "unicode-payload", "payload": "héllo→ok", "secret": "sécret"}
+{"func": "sign", "case": "multi-block-payload", "payload": "abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789abcd", "secret": "k"}
+{"func": "sign", "case": "long-secret-over-64", "payload": "x", "secret": "0123456789012345678901234567890123456789012345678901234567890123456789"}
+{"func": "sign", "case": "null-payload", "payload": null, "secret": "key"}
+{"func": "sign", "case": "int-payload", "payload": 42, "secret": "key"}
+{"func": "make_token", "case": "ttl-zero", "payload": "gw-01", "secret": "k", "ttl_seconds": 0, "now": 1700000000}
+{"func": "make_token", "case": "ttl-negative", "payload": "gw-01", "secret": "k", "ttl_seconds": -5, "now": 1700000000}
+{"func": "make_token", "case": "ttl-300", "payload": "gw-01", "secret": "k", "ttl_seconds": 300, "now": 1700000000}
+{"func": "make_token", "case": "ttl-one", "payload": "gateway:primary", "secret": "s3cr3t", "ttl_seconds": 1, "now": 1700000000}
+{"func": "make_token", "case": "ttl-bool-true", "payload": "gw", "secret": "k", "ttl_seconds": true, "now": 1700000000}
+{"func": "make_token", "case": "ttl-null-errors", "payload": "gw", "secret": "k", "ttl_seconds": null, "now": 1700000000}
+{"func": "make_token", "case": "ttl-absent-defaults-zero", "payload": "gw", "secret": "k", "now": 1700000000}
+{"func": "make_token", "case": "float-now-truncates", "payload": "gw", "secret": "k", "ttl_seconds": 60, "now": 1700000000.75}
+{"func": "make_token", "case": "empty-secret", "payload": "gw", "secret": "", "ttl_seconds": 10, "now": 1700000000}
+{"func": "make_upgrade_token", "case": "default-ttl", "gateway_id": "gw-9", "secret": "k", "now": 1700000000}
+{"func": "make_upgrade_token", "case": "ttl-zero", "gateway_id": "gw-9", "secret": "k", "ttl_seconds": 0, "now": 1700000000}
+{"func": "make_upgrade_token", "case": "ttl-60", "gateway_id": "gw-9", "secret": "k", "ttl_seconds": 60, "now": 1700000000}
+{"func": "make_upgrade_token", "case": "missing-secret", "gateway_id": "gw-9", "now": 1700000000}
+{"func": "make_upgrade_token", "case": "ttl-negative", "gateway_id": "gw-9", "secret": "k", "ttl_seconds": -5, "now": 1700000000}
+{"func": "make_upgrade_token", "case": "float-now", "gateway_id": "gw-9", "secret": "k", "ttl_seconds": 300, "now": 1700000000.5}

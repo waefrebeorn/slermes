@@ -1,0 +1,22 @@
+{"func": "constants", "case": "camel-boundary"}
+{"func": "label", "case": "docker", "env": {"class_name": "DockerEnvironment"}}
+{"func": "label", "case": "vercel-sandbox", "env": {"class_name": "VercelSandboxEnvironment"}}
+{"func": "label", "case": "ssh", "env": {"class_name": "SSHEnvironment"}}
+{"func": "label", "case": "stamped-plugin-name", "env": {"class_name": "DockerEnvironment", "backend_name": "  podman  "}}
+{"func": "label", "case": "stamped-blank-falls-back", "env": {"class_name": "DockerEnvironment", "backend_name": "   "}}
+{"func": "label", "case": "stamped-wrong-type", "env": {"class_name": "ModalEnvironment", "backend_name": 5}}
+{"func": "label", "case": "bare-environment-class", "env": {"class_name": "Environment"}}
+{"func": "label", "case": "digit-then-upper", "env": {"class_name": "MyCool2Env"}}
+{"func": "label", "case": "none-env", "env": null}
+{"func": "label", "case": "scalar-env", "env": 5}
+{"func": "note", "case": "local-backend", "env": {"class_name": "DockerEnvironment", "is_local": true}, "sudo_stdin": "hunter2"}
+{"func": "note", "case": "remote-backend-logs", "env": {"class_name": "DockerEnvironment"}, "sudo_stdin": "hunter2"}
+{"func": "note", "case": "no-password", "env": {"class_name": "DockerEnvironment"}, "sudo_stdin": null}
+{"func": "note", "case": "empty-password", "env": {"class_name": "DockerEnvironment"}, "sudo_stdin": ""}
+{"func": "note", "case": "newline-only-password", "env": {"class_name": "DockerEnvironment"}, "sudo_stdin": "\n\n"}
+{"func": "note", "case": "spaces-are-a-password", "env": {"class_name": "DockerEnvironment"}, "sudo_stdin": "  "}
+{"func": "note", "case": "stamped-name-in-message", "env": {"class_name": "DockerEnvironment", "backend_name": "Podman"}, "sudo_stdin": "pw\n"}
+{"func": "note", "case": "none-env-still-logs", "env": null, "sudo_stdin": "pw"}
+{"func": "note", "case": "truthy-is-local", "env": {"class_name": "DockerEnvironment", "is_local": 1}, "sudo_stdin": "pw"}
+{"func": "note", "case": "wrong-type-password", "env": {"class_name": "DockerEnvironment"}, "sudo_stdin": 5}
+{"func": "note", "case": "ssh-backend-message", "env": {"class_name": "SSHEnvironment"}, "sudo_stdin": "pw"}

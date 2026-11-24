@@ -1,0 +1,53 @@
+{"func": "constants", "case": "geometry-and-taxonomy"}
+{"func": "clamp_scale", "case": "normal", "scale": 0.33}
+{"func": "clamp_scale", "case": "below-floor", "scale": 0.05}
+{"func": "clamp_scale", "case": "above-ceiling", "scale": 5.0}
+{"func": "clamp_scale", "case": "at-ceiling", "scale": 3.0}
+{"func": "clamp_scale", "case": "at-floor", "scale": 0.1}
+{"func": "clamp_scale", "case": "falsy-zero", "scale": 0}
+{"func": "clamp_scale", "case": "negative", "scale": -2}
+{"func": "clamp_scale", "case": "bool-true", "scale": true}
+{"func": "cols_for_scale", "case": "default-scale", "scale": 0.33}
+{"func": "cols_for_scale", "case": "full-scale", "scale": 1.0}
+{"func": "cols_for_scale", "case": "petdex-0.7", "scale": 0.7}
+{"func": "cols_for_scale", "case": "falsy-zero-uses-default", "scale": 0}
+{"func": "cols_for_scale", "case": "null-uses-default", "scale": null}
+{"func": "cols_for_scale", "case": "empty-string-uses-default", "scale": ""}
+{"func": "cols_for_scale", "case": "big-clamps-to-ceiling-scale", "scale": 3.0}
+{"func": "resolve_cols", "case": "explicit-wins", "scale": 0.33, "unicode_cols": 40}
+{"func": "resolve_cols", "case": "explicit-zero-falls-back", "scale": 1.0, "unicode_cols": 0}
+{"func": "resolve_cols", "case": "explicit-null-falls-back", "scale": 1.0, "unicode_cols": null}
+{"func": "resolve_cols", "case": "numeric-string", "scale": 0.33, "unicode_cols": "24"}
+{"func": "resolve_cols", "case": "numeric-string-zero-falls-back", "scale": 0.7, "unicode_cols": "0"}
+{"func": "resolve_cols", "case": "float-truncates", "scale": 0.33, "unicode_cols": 3.9}
+{"func": "resolve_cols", "case": "negative-falls-back", "scale": 0.33, "unicode_cols": -4}
+{"func": "resolve_cols", "case": "bool-true-is-one", "scale": 3.0, "unicode_cols": true}
+{"func": "state_aliases_for", "case": "aliased-wave", "state": "wave"}
+{"func": "state_aliases_for", "case": "aliased-jump", "state": "jump"}
+{"func": "state_aliases_for", "case": "aliased-run", "state": "run"}
+{"func": "state_aliases_for", "case": "plain-idle", "state": "idle"}
+{"func": "state_aliases_for", "case": "codex-row-name", "state": "waving"}
+{"func": "state_aliases_for", "case": "unknown-name", "state": "dance"}
+{"func": "state_aliases_for", "case": "null-is-None", "state": null}
+{"func": "state_aliases_for", "case": "number-coerced", "state": 5}
+{"func": "state_aliases_for", "case": "bool-coerced", "state": true}
+{"func": "state_rows_for_grid", "case": "null-is-legacy", "row_count": null}
+{"func": "state_rows_for_grid", "case": "eight-is-legacy", "row_count": 8}
+{"func": "state_rows_for_grid", "case": "nine-is-codex", "row_count": 9}
+{"func": "state_rows_for_grid", "case": "twelve-is-codex", "row_count": 12}
+{"func": "state_rows_for_grid", "case": "float-truncates-to-nine", "row_count": 9.9}
+{"func": "state_rows_for_grid", "case": "numeric-string", "row_count": "9"}
+{"func": "state_rows_for_grid", "case": "junk-string-is-zero", "row_count": "abc"}
+{"func": "state_rows_for_grid", "case": "empty-string-is-zero", "row_count": ""}
+{"func": "state_row_index", "case": "run-codex", "state": "run", "row_count": 9}
+{"func": "state_row_index", "case": "run-legacy", "state": "run", "row_count": 8}
+{"func": "state_row_index", "case": "wave-legacy", "state": "wave", "row_count": 8}
+{"func": "state_row_index", "case": "wave-codex-via-alias", "state": "wave", "row_count": 9}
+{"func": "state_row_index", "case": "jump-legacy", "state": "jump", "row_count": 8}
+{"func": "state_row_index", "case": "waiting-not-in-legacy", "state": "waiting", "row_count": 8}
+{"func": "state_row_index", "case": "idle-default-grid", "state": "idle", "row_count": null}
+{"func": "state_row_index", "case": "unknown-falls-to-idle", "state": "dance", "row_count": 9}
+{"func": "state_row_index", "case": "null-state", "state": null, "row_count": 9}
+{"func": "cols_for_scale", "case": "round-half-even-up", "scale": 0.8125}
+{"func": "cols_for_scale", "case": "round-half-even-down", "scale": 0.7708333333333334}
+{"func": "cols_for_scale", "case": "round-half-even-down-32", "scale": 1.3541666666666667}

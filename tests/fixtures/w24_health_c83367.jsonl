@@ -1,0 +1,19 @@
+{"func": "constants", "case": "module-states"}
+{"func": "latch", "case": "mark-then-read", "ops": [{"op": "mark", "path": "/tmp/w24h/a/state.db", "reason": "database disk image is malformed"}, {"op": "state", "path": "/tmp/w24h/a/state.db"}, {"op": "reason", "path": "/tmp/w24h/a/state.db"}]}
+{"func": "latch", "case": "clean-before-mark", "ops": [{"op": "state", "path": "/tmp/w24h/b/state.db"}, {"op": "reason", "path": "/tmp/w24h/b/state.db"}]}
+{"func": "latch", "case": "first-reason-wins", "ops": [{"op": "mark", "path": "/tmp/w24h/c/state.db", "reason": "first"}, {"op": "mark", "path": "/tmp/w24h/c/state.db", "reason": "second"}, {"op": "reason", "path": "/tmp/w24h/c/state.db"}]}
+{"func": "latch", "case": "second-path-does-not-move-first", "ops": [{"op": "mark", "path": "/tmp/w24h/d/one.db", "reason": "one"}, {"op": "mark", "path": "/tmp/w24h/d/two.db", "reason": "two"}, {"op": "state", "path": "/tmp/w24h/d/one.db"}, {"op": "reason", "path": "/tmp/w24h/d/two.db"}]}
+{"func": "latch", "case": "reset-one-path", "ops": [{"op": "mark", "path": "/tmp/w24h/e/one.db", "reason": "one"}, {"op": "mark", "path": "/tmp/w24h/e/two.db", "reason": "two"}, {"op": "reset", "path": "/tmp/w24h/e/one.db"}, {"op": "state", "path": "/tmp/w24h/e/one.db"}, {"op": "state", "path": "/tmp/w24h/e/two.db"}]}
+{"func": "latch", "case": "reset-all", "ops": [{"op": "mark", "path": "/tmp/w24h/f/one.db", "reason": "one"}, {"op": "mark", "path": "/tmp/w24h/f/two.db", "reason": "two"}, {"op": "reset_all"}, {"op": "state", "path": "/tmp/w24h/f/one.db"}, {"op": "state", "path": "/tmp/w24h/f/two.db"}]}
+{"func": "latch", "case": "reset-unknown-path", "ops": [{"op": "reset", "path": "/tmp/w24h/g/none.db"}, {"op": "state", "path": "/tmp/w24h/g/none.db"}]}
+{"func": "latch", "case": "unknown-op", "ops": [{"op": "note"}, {"op": "state", "path": "/tmp/w24h/h/state.db"}]}
+{"func": "latch", "case": "reason-null", "ops": [{"op": "mark", "path": "/tmp/w24h/i/state.db", "reason": null}, {"op": "reason", "path": "/tmp/w24h/i/state.db"}]}
+{"func": "latch", "case": "reason-bool", "ops": [{"op": "mark", "path": "/tmp/w24h/j/state.db", "reason": true}, {"op": "reason", "path": "/tmp/w24h/j/state.db"}]}
+{"func": "latch", "case": "reason-number", "ops": [{"op": "mark", "path": "/tmp/w24h/k/state.db", "reason": 42}, {"op": "reason", "path": "/tmp/w24h/k/state.db"}]}
+{"func": "latch", "case": "reason-empty-string", "ops": [{"op": "mark", "path": "/tmp/w24h/l/state.db", "reason": ""}, {"op": "reason", "path": "/tmp/w24h/l/state.db"}, {"op": "state", "path": "/tmp/w24h/l/state.db"}]}
+{"func": "latch", "case": "ops-not-a-list", "ops": {"op": "mark"}}
+{"func": "log_message", "case": "text-reason", "path": "/tmp/w24h/m/state.db", "reason": "database disk image is malformed"}
+{"func": "log_message", "case": "number-reason", "path": "/tmp/w24h/n/state.db", "reason": 11}
+{"func": "log_message", "case": "null-reason", "path": "/tmp/w24h/o/state.db", "reason": null}
+{"func": "log_message", "case": "bool-reason", "path": "/tmp/w24h/p/state.db", "reason": false}
+{"func": "log_message", "case": "empty-reason", "path": "/tmp/w24h/q/state.db", "reason": ""}

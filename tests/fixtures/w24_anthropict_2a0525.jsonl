@@ -1,0 +1,52 @@
+{"func": "claude_family_version", "case": "opus-4-5", "model": "claude-opus-4-5"}
+{"func": "claude_family_version", "case": "snapshot-date-is-zero-minor", "model": "claude-opus-4-20250514"}
+{"func": "claude_family_version", "case": "claude3-family-ordered", "model": "claude-3-5-haiku-20241022"}
+{"func": "claude_family_version", "case": "sonnet-4-6-dot", "model": "anthropic/claude-sonnet-4.6"}
+{"func": "claude_family_version", "case": "haiku-5-5-upper", "model": "CLAUDE-HAIKU-5_5"}
+{"func": "claude_family_version", "case": "padded", "model": "  claude-fable-2-0  "}
+{"func": "claude_family_version", "case": "not-claude", "model": "gpt-4o"}
+{"func": "claude_family_version", "case": "none", "model": null}
+{"func": "claude_family_version", "case": "number", "model": 42}
+{"func": "claude_family_version", "case": "long-minor-rejected", "model": "claude-opus-4.123"}
+{"func": "model_preserves_prior_thinking", "case": "opus-4-5-keep", "model": "claude-opus-4-5"}
+{"func": "model_preserves_prior_thinking", "case": "opus-4-4-last-turn-only", "model": "claude-opus-4-4"}
+{"func": "model_preserves_prior_thinking", "case": "sonnet-4-6-keep", "model": "claude-sonnet-4-6"}
+{"func": "model_preserves_prior_thinking", "case": "sonnet-4-5-last-turn-only", "model": "claude-sonnet-4-5"}
+{"func": "model_preserves_prior_thinking", "case": "haiku-5-5-keep", "model": "claude-haiku-5-5"}
+{"func": "model_preserves_prior_thinking", "case": "haiku-5-4-last-turn-only", "model": "claude-haiku-5-4"}
+{"func": "model_preserves_prior_thinking", "case": "claude-3-last-turn-only", "model": "claude-3-7-sonnet-latest"}
+{"func": "model_preserves_prior_thinking", "case": "claude-3-dot-form", "model": "claude-3.5-sonnet"}
+{"func": "model_preserves_prior_thinking", "case": "unknown-family-default", "model": "claude-mythos-1"}
+{"func": "model_preserves_prior_thinking", "case": "bare-claude-keeps", "model": "claude"}
+{"func": "model_preserves_prior_thinking", "case": "non-claude", "model": "gpt-4o"}
+{"func": "model_preserves_prior_thinking", "case": "none", "model": null}
+{"func": "model_preserves_prior_thinking", "case": "empty", "model": ""}
+{"func": "model_preserves_prior_thinking", "case": "snapshot-date-opus", "model": "claude-opus-4-20250514"}
+{"func": "thinking_route", "case": "direct-anthropic", "base_url": "https://api.anthropic.com", "model": "claude-opus-4-5"}
+{"func": "thinking_route", "case": "no-base-url", "base_url": null, "model": "claude-opus-4-5"}
+{"func": "thinking_route", "case": "minimax", "base_url": "https://api.minimax.io/anthropic", "model": "MiniMax-M2"}
+{"func": "thinking_route", "case": "minimax-cn", "base_url": "https://api.minimaxi.com/anthropic/", "model": "MiniMax-M2"}
+{"func": "thinking_route", "case": "kimi-coding", "base_url": "https://api.kimi.com/coding", "model": null}
+{"func": "thinking_route", "case": "deepseek-anthropic", "base_url": "https://api.deepseek.com/anthropic", "model": "deepseek-v4-flash"}
+{"func": "thinking_route", "case": "deepseek-openai-path", "base_url": "https://api.deepseek.com/v1", "model": null}
+{"func": "thinking_route", "case": "openrouter-relay", "base_url": "https://openrouter.ai/api/v1", "model": "anthropic/claude-opus-4-5"}
+{"func": "thinking_route", "case": "nous-portal", "base_url": "https://inference-api.nousresearch.com/v1", "model": "x"}
+{"func": "thinking_route", "case": "bedrock", "base_url": "https://bedrock-runtime.us-east-1.amazonaws.com", "model": "claude-opus-4-5"}
+{"func": "thinking_route", "case": "vertex-regional", "base_url": "https://us-central1-aiplatform.googleapis.com", "model": "claude-sonnet-4-6"}
+{"func": "thinking_route", "case": "azure-foundry", "base_url": "https://acme.services.ai.azure.com/anthropic", "model": "claude-opus-4-5"}
+{"func": "thinking_route", "case": "moonshot-cn", "base_url": "https://api.moonshot.cn/anthropic", "model": "moonshot-v1-8k"}
+{"func": "thinking_route", "case": "model-kimi-private-gw", "base_url": "https://gw.internal.example/v1", "model": "moonshotai/kimi-k2.5"}
+{"func": "thinking_route", "case": "deepseek-model-on-relay", "base_url": "https://relay.example/anthropic", "model": "deepseek-v4-pro"}
+{"func": "thinking_route", "case": "lookalike-path-not-kimi", "base_url": "https://evil.example/moonshot.ai", "model": null}
+{"func": "thinking_route", "case": "empty-base-url", "base_url": "", "model": null}
+{"func": "route_replays_prior_thinking", "case": "minimax-always", "route": "minimax", "model": "anything"}
+{"func": "route_replays_prior_thinking", "case": "native-keeps", "route": "native", "model": "claude-opus-4-5"}
+{"func": "route_replays_prior_thinking", "case": "native-claude3-no", "route": "native", "model": "claude-3-5-sonnet"}
+{"func": "route_replays_prior_thinking", "case": "kimi-no", "route": "kimi", "model": "claude-opus-4-5"}
+{"func": "route_replays_prior_thinking", "case": "none-route", "route": null, "model": "claude-opus-4-5"}
+{"func": "native_preserves_prior_thinking", "case": "anthropic-opus-4-5", "base_url": "https://api.anthropic.com", "model": "claude-opus-4-5"}
+{"func": "native_preserves_prior_thinking", "case": "anthropic-claude3", "base_url": "https://api.anthropic.com", "model": "claude-3-5-sonnet"}
+{"func": "native_preserves_prior_thinking", "case": "minimax-any-model", "base_url": "https://api.minimax.io/anthropic", "model": "gpt"}
+{"func": "native_preserves_prior_thinking", "case": "third-party-relay", "base_url": "https://relay.example", "model": "claude-opus-4-5"}
+{"func": "native_preserves_prior_thinking", "case": "kimi", "base_url": "https://api.kimi.com/coding", "model": "claude-opus-4-5"}
+{"func": "constants", "case": "tables"}
