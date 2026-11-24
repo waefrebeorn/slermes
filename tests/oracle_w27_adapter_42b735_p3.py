@@ -106,7 +106,9 @@ def delivery_status_line(req):
 
     handler = Capture()
     inst = NamedAdapter.__new__(NamedAdapter)
-    inst._fixture_name = str(req.get("name") or "Whatsapp")
+    # The fixture name is the whole input: substituting a default here would feed
+    # the live code a different value than the C harness receives.
+    inst._fixture_name = str(req.get("name") or "")
     live.logger.addHandler(handler)
     try:
         live.logger.setLevel(logging.INFO)

@@ -836,8 +836,10 @@ json_t *w27_adapter_42b735_p3_delivery_status_line(const json_t *req) {
     } else {
         error = jd_strdup("");
     }
+    /* the log format interpolates the raw values, so a missing field prints the
+     * TEXT "None" rather than an empty slot */
     line = jd_fmt("[%s] WhatsApp delivery status: message=%s chat=%s status=%s%s at=%s%s",
-                  name, mid ? mid : "", chat ? chat : "", status ? status : "",
+                  name, mid ? mid : "None", chat ? chat : "None", status ? status : "None",
                   recipient ? recipient : "", ts ? ts : "", error ? error : "");
     out = json_string(line);
     free(mid); free(chat); free(status); free(ts); free(recipient); free(error); free(line);
