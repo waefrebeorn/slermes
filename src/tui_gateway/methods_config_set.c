@@ -160,10 +160,14 @@ static void ms_repr_into(ms_sb *b, const json_t *v) {
 static void ms_repr_string_into(ms_sb *b, const char *s) {
     char esc[3];
     size_t i;
-    ms_sb_add(b, "'");
+    char quote = '\'';
+    /* Python picks the quote that needs less escaping: a string holding ' but no
+     * " is repr'd with double quotes (["''"] shows as "['']"). */
+    if (strchr(s, '\'') && !strchr(s, '"')) quote = '"';
+    ms_sb_add(b, quote == '\'' ? "'" : "\"");
     for (i = 0; s[i]; i++) {
         unsigned char c = (unsigned char)s[i];
-        if (c == '\\' || c == '\'') {
+        if (c == '\\' || c == (unsigned char)quote) {
             esc[0] = '\\';
             esc[1] = (char)c;
             esc[2] = '\0';
@@ -180,7 +184,7 @@ static void ms_repr_string_into(ms_sb *b, const char *s) {
             ms_sb_add(b, esc);
         }
     }
-    ms_sb_add(b, "'");
+    ms_sb_add(b, quote == '\'' ? "'" : "\"");
 }
 
 /* Python str(): strings verbatim, everything else through repr(). */
