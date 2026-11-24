@@ -223,8 +223,8 @@ def fuzz_gate(gate, module, per_case, jobs, min_cases, seed):
         payload = fin.read()
     try:
         o = subprocess.run([PY, oracle], input=payload.decode("utf-8", "replace"),
-                           capture_output=True, text=True, errors="replace",
-                           timeout=args_timeout() * 2)
+                           capture_output=True, text=True, encoding="utf-8",
+                           errors="replace", timeout=args_timeout() * 2)
     except subprocess.TimeoutExpired:
         # The LIVE module hung, not the port. That is neither a divergence the port
         # can be blamed for nor a pass, so the gate is reported as SKIP and the
