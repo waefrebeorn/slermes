@@ -48,6 +48,13 @@ def args_timeout():
     return GATE_TIMEOUT
 
 
+# Keys that restate a fact another key already carries (a row-count next to the
+# row list, an index next to the array). Perturbing one without the other models
+# a state the live code can never see: fixture {"names": [...3...], "found": 6}
+# with found pushed to 2 reports "missing triggers" for a list of three.
+DERIVED_KEYS = {"found", "count", "total", "n", "num", "size", "len", "length"}
+
+
 def is_discriminator(key):
     """Keys that select WHICH case is being modelled, not the data for it.
 
@@ -56,7 +63,7 @@ def is_discriminator(key):
     divergence is the harness talking to itself. Same for `kind`.
     """
     k = key.lower()
-    return k == "kind" or k.endswith("_type") or k.endswith("_kind")
+    return k == "kind" or k.endswith("_type") or k.endswith("_kind") or k in DERIVED_KEYS
 
 
 def harness_exe(gate):

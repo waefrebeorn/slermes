@@ -585,8 +585,18 @@ json_t *w27_schema_3eeff1_constants(void) {
 
 /* ── p2: _fts_index_is_misaligned_source ─────────────────────────────── */
 int w27_schema_3eeff1_fts_index_is_misaligned_source(const json_t *table_sql) {
-    if (!table_sql || table_sql->type != JSON_STRING) return 0;   /* no row */
-    return strstr(table_sql->str_val, "messages_fts_src") == NULL;
+    if (!table_sql || table_sql->type == JSON_NULL) return 0;     /* no row */
+    if (table_sql->type == JSON_STRING)
+        return strstr(table_sql->str_val, "messages_fts_src") == NULL;
+    /* Upstream tests `"messages_fts_src" not in (row[0] or "")`: a FALSY column
+     * value (0, [], {}) becomes "" and therefore reports misaligned, which the
+     * port answered as "not a string -> False". A truthy non-string raises
+     * TypeError upstream, so it stays False here and shows up as live-error. */
+    if ((table_sql->type == JSON_NUMBER && table_sql->num_val == 0.0) ||
+        (table_sql->type == JSON_ARRAY && json_len(table_sql) == 0) ||
+        (table_sql->type == JSON_OBJECT && json_object_size(table_sql) == 0))
+        return 1;
+    return 0;
 }
 
 /* ── p2: _live_pk_columns ────────────────────────────────────────────── */
