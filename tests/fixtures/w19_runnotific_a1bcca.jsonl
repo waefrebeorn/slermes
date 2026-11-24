@@ -1,0 +1,38 @@
+{"func": "notice_expired", "age_seconds": 0, "stat_ok": true}
+{"func": "notice_expired", "age_seconds": 1799, "stat_ok": true}
+{"func": "notice_expired", "age_seconds": 1801, "stat_ok": true}
+{"func": "notice_expired", "age_seconds": 3600, "stat_ok": true}
+{"func": "notice_expired", "age_seconds": 0, "stat_ok": false}
+{"func": "send_restart", "exists": false, "replay": false, "raw": "{\"platform\":\"telegram\",\"chat_id\":\"42\",\"thread_id\":null}", "claimed": null, "age_seconds": 0, "deliver": {"result": ["telegram", "42", null], "keep": false, "raises": false}}
+{"func": "send_restart", "exists": true, "replay": false, "raw": "{\"platform\":\"telegram\",\"chat_id\":\"42\",\"thread_id\":null}", "claimed": null, "age_seconds": 0, "deliver": {"result": ["telegram", "42", null], "keep": false, "raises": false}}
+{"func": "send_restart", "exists": true, "replay": true, "raw": "{\"platform\":\"telegram\",\"chat_id\":\"42\",\"thread_id\":null}", "claimed": "{\"platform\":\"telegram\",\"chat_id\":\"42\",\"thread_id\":null}", "age_seconds": 0, "deliver": {"result": ["telegram", "42", null], "keep": false, "raises": false}}
+{"func": "send_restart", "exists": true, "replay": true, "raw": "{\"platform\":\"telegram\",\"chat_id\":\"42\",\"thread_id\":null}", "claimed": "different", "age_seconds": 0, "deliver": {"result": ["telegram", "42", null], "keep": false, "raises": false}}
+{"func": "send_restart", "exists": true, "replay": false, "raw": "{\"platform\":\"telegram\",\"chat_id\":\"42\",\"thread_id\":null}", "claimed": null, "age_seconds": 3600, "deliver": {"result": null, "keep": false, "raises": false}}
+{"func": "send_restart", "exists": true, "replay": false, "raw": "{\"platform\":\"telegram\",\"chat_id\":\"42\",\"thread_id\":null}", "claimed": null, "age_seconds": 0, "deliver": {"result": null, "keep": false, "raises": true}}
+{"func": "send_restart", "exists": true, "replay": false, "raw": "{\"platform\":\"telegram\",\"chat_id\":\"42\",\"thread_id\":null}", "claimed": null, "age_seconds": 0, "deliver": {"result": null, "keep": true, "raises": false}}
+{"func": "send_restart", "exists": true, "replay": false, "raw": "not json at all", "claimed": null, "age_seconds": 0, "deliver": {"result": ["x", "y", null], "keep": false, "raises": false}}
+{"func": "send_restart", "exists": true, "replay": false, "raw": "﻿{\"platform\":\"telegram\",\"chat_id\":\"42\",\"thread_id\":null}", "claimed": null, "age_seconds": 0, "deliver": {"result": ["telegram", "42", null], "keep": false, "raises": false}}
+{"func": "send_restart", "exists": true, "replay": true, "raw": "{\"platform\":\"telegram\",\"chat_id\":\"42\",\"thread_id\":null}", "claimed": null, "age_seconds": 0, "deliver": {"result": ["telegram", "42", null], "keep": false, "raises": false}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": "42", "thread_id": null}, "ctx": {"platform_known": true, "transport_present": true}}
+{"func": "deliver", "data": {"platform": "discord", "chat_id": "9", "thread_id": "7"}, "ctx": {"platform_known": true, "transport_present": true}}
+{"func": "deliver", "data": {"platform": null, "chat_id": "9"}, "ctx": {"platform_known": true, "transport_present": true}}
+{"func": "deliver", "data": {"platform": "telegram"}, "ctx": {"platform_known": true, "transport_present": true}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": ""}, "ctx": {"platform_known": true, "transport_present": true}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": "42", "thread_id": null}, "ctx": {"platform_known": true, "transport_present": true, "platform_cfg": {"gateway_restart_notification": false}}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": "42", "thread_id": null}, "ctx": {"platform_known": true, "transport_present": false}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": "42", "thread_id": null}, "ctx": {"platform_known": true, "transport_present": true, "send_failed": true, "error": "chat not found", "reconnect_only": false}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": "42", "thread_id": null}, "ctx": {"platform_known": true, "transport_present": true, "send_failed": true, "error": "send path degraded", "reconnect_only": true}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": "42", "thread_id": null, "delivered_via_upstream_relay": true, "user_id": "u1", "scope_id": "s1"}, "ctx": {"platform_known": true, "transport_present": true, "metadata": {"thread_id": "7"}}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": "42", "thread_id": null, "delivered_via_upstream_relay": true, "user_id": "u2", "scope_id": ""}, "ctx": {"platform_known": true, "transport_present": true}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": "42", "thread_id": null}, "ctx": {"platform_known": false, "transport_present": true}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": 987654321}, "ctx": {"platform_known": true, "transport_present": true}}
+{"func": "deliver", "data": {"platform": "telegram", "chat_id": "42", "thread_id": null}, "ctx": {"platform_known": true, "transport_present": true, "metadata": {"thread_id": "3"}, "send_failed": true, "reconnect_only": true}}
+{"func": "schedule_wanted", "context_present": false}
+{"func": "schedule_wanted", "context_present": true, "restart_requested": true, "requester_pending": true}
+{"func": "schedule_wanted", "context_present": true, "draining": true, "planned_pending": true}
+{"func": "schedule_wanted", "context_present": true, "requester_pending": true}
+{"func": "schedule_wanted", "context_present": true, "planned_pending": true}
+{"func": "schedule_wanted", "context_present": true}
+{"func": "ttl"}
+{"func": "note_boot", "context_present": true}
+{"func": "note_boot", "context_present": false}

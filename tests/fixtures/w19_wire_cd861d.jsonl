@@ -1,0 +1,17 @@
+{"func": "execute_error_family", "code": "TOOL_NOT_ALLOWED", "out": "product"}
+{"func": "execute_error_family", "code": "PROVIDER_TIMEOUT", "out": "backend"}
+{"func": "execute_error_family", "code": "TOOL_NOT_FOUND", "out": "product"}
+{"func": "execute_error_family", "code": "FILE_TOO_LARGE", "out": "product"}
+{"func": "execute_error_family", "code": "FILE_UPLOAD_FAILED", "out": "backend"}
+{"func": "execute_error_family", "code": "NOPE", "family": null, "out": null}
+{"func": "execute_error_family", "code": "", "out": null}
+{"func": "execute_error_family", "code": "TOOL_NOT_ALLOWED", "family": "backend", "out": "backend"}
+{"func": "execute_error_family", "code": "PROVIDER_ERROR", "family": "product", "out": "product"}
+{"func": "execute_error_family", "code": "PROVIDER_ERROR", "family": "bogus", "out": "backend"}
+{"func": "execute_error_family", "code": "FILE_NOT_FOUND", "family": "nonsense", "out": "product"}
+{"func": "execute_error_status", "code": "CONNECTION_EXPIRED", "out": 409}
+{"func": "execute_error_status", "code": "PROVIDER_RATE_LIMITED", "out": 429}
+{"func": "execute_error_status", "code": "GATEWAY_ERROR", "out": 500}
+{"func": "execute_error_status", "code": "ALIAS_UNKNOWN", "out": 422}
+{"func": "execute_error_status", "code": "FILE_TOO_LARGE", "out": -1}
+{"func": "file_max_bytes", "out": 20971520}

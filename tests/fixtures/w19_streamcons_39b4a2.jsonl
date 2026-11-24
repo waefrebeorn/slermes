@@ -1,0 +1,72 @@
+{"func":"edit_skipped","raw_response":{"skipped":true}}
+{"func":"edit_skipped","raw_response":{"skipped":false}}
+{"func":"edit_skipped","raw_response":{"skipped":"yes"}}
+{"func":"edit_skipped","raw_response":null}
+{"func":"edit_skipped","raw_response":"not-a-dict"}
+{"func":"visible_prefix","last_sent_text":"hello |","cursor":"|"}
+{"func":"visible_prefix","last_sent_text":"hello there","cursor":null}
+{"func":"visible_prefix","last_sent_text":"a | b |","cursor":"|"}
+{"func":"visible_prefix","last_sent_text":"","cursor":"|"}
+{"func":"continuation_text","final_text":"Hello world, this is a long answer.","last_sent_text":"","fallback_prefix":"","cursor":null}
+{"func":"continuation_text","final_text":"Hello world, this is a long answer.","last_sent_text":"Hello world,","cursor":null}
+{"func":"continuation_text","final_text":"Hello world, this is a long answer.","last_sent_text":"Hello wor","cursor":null}
+{"func":"continuation_text","final_text":"Hello world, this is a long answer.","last_sent_text":"H","cursor":null,"fragment_can_be_replaced":true}
+{"func":"continuation_text","final_text":"Hello world, this is a long answer.","last_sent_text":"H","cursor":null,"fragment_can_be_replaced":false}
+{"func":"continuation_text","final_text":"Intro\n```py\nline1\nline2\n```\nDone.","last_sent_text":"Intro\n```py\nline1\n","cursor":null}
+{"func":"continuation_text","final_text":"Intro\n```\nx\n```","last_sent_text":"Intro\n```\nx\n","cursor":null}
+{"func":"continuation_text","final_text":"  leading spaces then text","last_sent_text":"leading spaces","cursor":null}
+{"func":"continuation_text","final_text":"abc","last_sent_text":"zzz","cursor":null}
+{"func":"continuation_text","final_text":"Hello world","fallback_prefix":"Hello ","last_sent_text":"ignored","cursor":null}
+{"func":"prose_resume_point","final_text":"hello world","cut":8}
+{"func":"prose_resume_point","final_text":"hello world","cut":6}
+{"func":"prose_resume_point","final_text":"helloworld","cut":4}
+{"func":"prose_resume_point","final_text":"helloworld tail","cut":4}
+{"func":"prose_resume_point","final_text":"x","cut":0}
+{"func":"prose_resume_point","final_text":"","cut":0}
+{"func":"prose_resume_point","final_text":"ab\ncd ef","cut":5}
+{"func":"fragment_can_be_replaced","message_id":"m1","preserve_partial":false,"adapter_can_delete":true}
+{"func":"fragment_can_be_replaced","message_id":"__no_edit__","preserve_partial":false,"adapter_can_delete":true}
+{"func":"fragment_can_be_replaced","message_id":null,"preserve_partial":false,"adapter_can_delete":true}
+{"func":"fragment_can_be_replaced","message_id":"m1","preserve_partial":true,"adapter_can_delete":true}
+{"func":"fragment_can_be_replaced","message_id":"m1","preserve_partial":false,"adapter_can_delete":false}
+{"func":"send_failure_may_have_delivered","retryable":true,"error":"timeout"}
+{"func":"send_failure_may_have_delivered","delivery_uncertain":true,"error":"boom"}
+{"func":"send_failure_may_have_delivered","error":"Request timed out"}
+{"func":"send_failure_may_have_delivered","error":"connection reset by peer","exc_name":"ConnectError"}
+{"func":"send_failure_may_have_delivered","error":null,"exc_name":"TimeoutError"}
+{"func":"send_failure_may_have_delivered","error":"boom","exc_name":"SendResult"}
+{"func":"is_flood_error","error":"Flood control exceeded"}
+{"func":"is_flood_error","error":"retry after 5 seconds"}
+{"func":"is_flood_error","error":"Rate limit hit"}
+{"func":"is_flood_error","error":"boom"}
+{"func":"is_flood_error","error":null}
+{"func":"flood_retry_delay","error":"flood control","retry_after":5,"max_wait":30}
+{"func":"flood_retry_delay","error":"flood control","retry_after":60,"max_wait":30}
+{"func":"flood_retry_delay","error":"boom","retry_after":5,"max_wait":30}
+{"func":"flood_retry_delay","error":"flood control","retry_after":null,"max_wait":30}
+{"func":"flood_retry_delay","error":"flood control","retry_after":"abc","max_wait":30}
+{"func":"flood_retry_delay","error":"flood control","retry_after":-2,"max_wait":30}
+{"func":"flood_retry_delay","error":"flood control","retry_after":0,"max_wait":30}
+{"func":"adopt_partial_head","text":"Hello world","raw_response":{"partial_overflow":true,"delivered_prefix":"Hello","last_message_id":"m1"}}
+{"func":"adopt_partial_head","text":"Nope","raw_response":{"partial_overflow":true,"delivered_prefix":"Hello"}}
+{"func":"adopt_partial_head","text":"Hello world","raw_response":{"partial_overflow":true,"delivered_prefix":"   "}}
+{"func":"adopt_partial_head","text":"Hello world","raw_response":{"partial_overflow":false,"delivered_prefix":"Hello"}}
+{"func":"adopt_partial_head","text":"Hello world","raw_response":null}
+{"func":"adopt_partial_head","text":"Hello world","raw_response":{"partial_overflow":true,"delivered_prefix":"Hello"},"result_message_id":"m9"}
+{"func":"adopt_partial_head","text":"Hello world","raw_response":{"partial_overflow":true,"delivered_prefix":"Hello","last_message_id":""}}
+{"func":"raw_message_limit","is_base":true,"max_message_length":1000,"chat_limit":1200,"cap_kind":"int","cap":1500}
+{"func":"raw_message_limit","is_base":true,"max_message_length":1000,"chat_limit":1200,"cap_kind":"int","cap":1100}
+{"func":"raw_message_limit","is_base":true,"max_message_length":1000,"chat_limit_raises":true,"cap_kind":"int","cap":1500}
+{"func":"raw_message_limit","is_base":false,"max_message_length":1000,"cap_kind":"int","cap":1500}
+{"func":"raw_message_limit","is_base":true,"max_message_length":1000,"chat_limit":1200,"cap_kind":"float","cap":5000}
+{"func":"raw_message_limit","is_base":true,"max_message_length":1000,"chat_limit":800,"cap_kind":"none"}
+{"func":"open_code_fence_span","text":"Intro\n```py\nline1\n","upto":18}
+{"func":"open_code_fence_span","text":"Intro\n```py\nline1\n```\ndone","upto":24}
+{"func":"open_code_fence_span","text":"Intro\n```py extra\n","upto":10}
+{"func":"open_code_fence_span","text":"no fences here","upto":5}
+{"func":"ensure_closed_code_fences","text":"```python\ncode"}
+{"func":"ensure_closed_code_fences","text":"plain `code` here"}
+{"func":"ensure_closed_code_fences","text":"one `tick"}
+{"func":"ensure_closed_code_fences","text":"```a``` b `c"}
+{"func":"ensure_closed_code_fences","text":""}
+{"func":"ensure_closed_code_fences","text":"```\nblock\n```\n"}

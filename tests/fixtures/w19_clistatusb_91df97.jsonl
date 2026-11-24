@@ -1,0 +1,65 @@
+{"func":"threshold","value":55,"ladder":[[50,"warn"]],"fallback":"good"}
+{"func":"threshold","value":10,"ladder":[[50,"warn"]],"fallback":"good"}
+{"func":"threshold","value":70,"ladder":[[70,"good"],[40,"warn"]],"fallback":"bad"}
+{"func":"threshold","value":0,"ladder":[[10,"bad"],[5,"warn"]],"fallback":"dim"}
+{"func":"finite","v":null}
+{"func":"finite","v":-0.8}
+{"func":"finite","v":2.5}
+{"func":"finite","v":2000000}
+{"func":"context_style","percent":null}
+{"func":"context_style","percent":96}
+{"func":"context_style","percent":81}
+{"func":"context_style","percent":80}
+{"func":"context_style","percent":49}
+{"func":"cache_style","pct":70}
+{"func":"cache_style","pct":69.9}
+{"func":"cache_style","pct":39}
+{"func":"battery_style","category":"good"}
+{"func":"battery_style","category":"bogus"}
+{"func":"battery_style","category":null}
+{"func":"compression_style","count":10}
+{"func":"compression_style","count":5}
+{"func":"compression_style","count":4}
+{"func":"context_bar","percent":0,"width":10}
+{"func":"context_bar","percent":50,"width":10}
+{"func":"context_bar","percent":100,"width":10}
+{"func":"context_bar","percent":33,"width":10}
+{"func":"context_bar","percent":50,"width":5}
+{"func":"context_bar","percent":null,"width":10}
+{"func":"prompt_elapsed","start":null,"duration":0,"live":false,"now":5000}
+{"func":"prompt_elapsed","start":1000,"duration":0,"live":false,"now":1061}
+{"func":"prompt_elapsed","start":1000,"duration":0,"live":true,"now":4600}
+{"func":"prompt_elapsed","start":0,"duration":0,"live":false,"now":90061}
+{"func":"prompt_elapsed","start":null,"duration":45,"live":false,"now":5000}
+{"func":"trim","text":"hello world","max_width":8}
+{"func":"trim","text":"hello world","max_width":3}
+{"func":"trim","text":"hello world","max_width":2}
+{"func":"trim","text":"hello world","max_width":0}
+{"func":"trim","text":"short","max_width":10}
+{"func":"trim","text":"abcdefgh   ","max_width":6}
+{"func":"title_badge","title":"My session","width":80}
+{"func":"title_badge","title":"My session","width":23}
+{"func":"title_badge","title":"  ","width":80}
+{"func":"title_badge","title":"a very long session title here","width":24}
+{"func":"right_align","text":"model ctx 12% dur 1m","title":"Sess","width":60}
+{"func":"right_align","text":"model ctx 12% dur 1m","title":"","width":60}
+{"func":"right_align","text":"model","title":"A title that is quite long indeed","width":40}
+{"func":"minimal_chrome","width":63}
+{"func":"minimal_chrome","width":64}
+{"func":"scrollback","width":null}
+{"func":"scrollback","width":0}
+{"func":"scrollback","width":-5}
+{"func":"scrollback","width":200}
+{"func":"cache_rate","snapshot":{"cache_hit_pct":42.25},"precision":1}
+{"func":"cache_rate","snapshot":{"session_cache_read_tokens":300,"session_prompt_tokens":1000},"precision":0}
+{"func":"cache_rate","snapshot":{},"precision":1}
+{"func":"goal","snapshot":{"goal_active":true,"goal_turns_used":3,"goal_max_turns":20}}
+{"func":"goal","snapshot":{"goal_active":true,"goal_max_turns":0}}
+{"func":"goal","snapshot":{"goal_active":false,"goal_turns_used":1}}
+{"func":"stash_age","stashed_at":100,"now":105}
+{"func":"stash_age","stashed_at":100,"now":150}
+{"func":"stash_age","stashed_at":100,"now":250}
+{"func":"stash_age","stashed_at":100,"now":3700}
+{"func":"field_set","cfg":{"display":{"status_bar":{"fields":["model","context_pct"]}}}}
+{"func":"field_set","cfg":{}}
+{"func":"field_set","cfg":{"display":{"status_bar":{"fields":[]}}}}

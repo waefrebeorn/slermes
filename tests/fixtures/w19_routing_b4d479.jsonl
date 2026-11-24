@@ -1,0 +1,36 @@
+{"func":"route_namespace","session_key":"agent:main:telegram:dm:123"}
+{"func":"route_namespace","session_key":"agent:work:qqbot:group:g1"}
+{"func":"route_namespace","session_key":"agent:onlytwo"}
+{"func":"route_namespace","session_key":""}
+{"func":"route_namespace","session_key":null}
+{"func":"route_namespace","session_key":"other:main:telegram:dm:1"}
+{"func":"normalize_topic_profile_name","profile_name":"  work  "}
+{"func":"normalize_topic_profile_name","profile_name":""}
+{"func":"normalize_topic_profile_name","profile_name":null}
+{"func":"normalize_topic_profile_name","profile_name":"\tdefault\n"}
+{"func":"route","members":{"provider":"openai","base_url":"https://api.openai.com/v1","api_mode":"responses"},"keep_falsy":false}
+{"func":"route","members":{"provider":"","base_url":"","api_mode":""},"keep_falsy":true}
+{"func":"route","members":{"provider":"","base_url":"","api_mode":"","other":"x"},"keep_falsy":false}
+{"func":"route","members":{"provider":5,"base_url":"u","api_mode":null},"keep_falsy":true}
+{"func":"gateway_runtime","model_config":{"gateway_runtime":{"provider":"custom","base_url":"https://b","api_mode":""}}}
+{"func":"gateway_runtime","model_config":{"gateway_runtime":{"provider":"","model":"m"},"provider":"openai","base_url":"https://t"}}
+{"func":"gateway_runtime","model_config":{"provider":"deepseek","base_url":"https://d"},"billing_provider":"anthropic"}
+{"func":"gateway_runtime","model_config":{},"billing_provider":"custom","billing_base_url":"  https://self.example/v1  "}
+{"func":"gateway_runtime","model_config":{},"billing_provider":"auto"}
+{"func":"gateway_runtime","model_config":{}}
+{"func":"gateway_runtime","model_config":null,"billing_provider":"  Custom  ","billing_base_url":""}
+{"func":"gateway_runtime","model_config":{"gateway_runtime":{"base_url":"https://nested","api_mode":"chat"}}}
+{"func":"gateway_runtime","model_config":{"provider":"  ","base_url":7,"api_mode":"responses"}}
+{"func":"resume_route","model_config":{"gateway_runtime":{"provider":"x","model":"  m-nested  "}},"model":"column"}
+{"func":"resume_route","model_config":"{\"model\": \"from-text\", \"provider\": \"openai\"}"}
+{"func":"resume_route","model_config":"not-json-at-all"}
+{"func":"resume_route","model_config":{"browser_model_lock":{"confirmed":true,"model":"locked"},"model":"picked"},"model":"locked"}
+{"func":"resume_route","model_config":{"browser_model_lock":{"confirmed":false,"model":"locked"},"model":"picked"},"model":"locked"}
+{"func":"resume_route","model_config":{},"model":"  column-only  "}
+{"func":"resume_route","model_config":{"model":"cfg-model"},"model":"cfg-model","billing_provider":"custom","billing_base_url":"https://b"}
+{"func":"resume_route","model_config":{"model":"cfg-model"},"model":"other","billing_provider":"custom","billing_base_url":"https://b"}
+{"func":"resume_route","model_config":5,"model":"col"}
+{"func":"is_empty","runtime":{"provider":null,"base_url":null,"api_mode":null}}
+{"func":"is_empty","runtime":{"provider":"x","base_url":null,"api_mode":null}}
+{"func":"is_empty","runtime":{}}
+{"func":"constants"}

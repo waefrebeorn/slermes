@@ -1,0 +1,101 @@
+{"func":"constants"}
+{"func":"ws_proxy","env":{"WSS_PROXY":"http://wss.example:8080","https_proxy":"http://other"}}
+{"func":"ws_proxy","env":{"https_proxy":"http://lower.example:3128"}}
+{"func":"ws_proxy","env":{"ALL_PROXY":"http://all.example:1080"}}
+{"func":"ws_proxy","env":{"WSS_PROXY":"","HTTPS_PROXY":""}}
+{"func":"ws_proxy","env":{}}
+{"func":"parse_json","raw":"{\"op\":0,\"t\":\"READY\",\"d\":{\"session_id\":\"s1\"}}"}
+{"func":"parse_json","raw":"[1,2,3]"}
+{"func":"parse_json","raw":"not json at all"}
+{"func":"parse_json","raw":"null"}
+{"func":"parse_gateway_session_key","session_key":"agent:main:qqbot:dm:CH1"}
+{"func":"parse_gateway_session_key","session_key":"agent:work:qqbot:group:G1:U1"}
+{"func":"parse_gateway_session_key","session_key":"agent::qqbot:dm:CH1"}
+{"func":"parse_gateway_session_key","session_key":"qqbot:dm:CH1"}
+{"func":"parse_gateway_session_key","session_key":"agent:main:qqbot:dm"}
+{"func":"is_authorized_interaction","session_key":"agent:main:qqbot:dm:CH1","event":{"operator_openid":"CH1"}}
+{"func":"is_authorized_interaction","session_key":"agent:main:qqbot:dm:CH1","event":{"operator_openid":"CH2"}}
+{"func":"is_authorized_interaction","session_key":"agent:main:qqbot:group:G1:U1","event":{"operator_openid":"U1","group_openid":"G1"}}
+{"func":"is_authorized_interaction","session_key":"agent:main:qqbot:group:G1:U1","event":{"operator_openid":"U1","group_openid":"G2"}}
+{"func":"is_authorized_interaction","session_key":"agent:main:qqbot:group:G1:U1","event":{"operator_openid":"U2","group_openid":"G1"}}
+{"func":"is_authorized_interaction","session_key":"agent:main:telegram:dm:CH1","event":{"operator_openid":"CH1"}}
+{"func":"is_authorized_interaction","session_key":"agent:main:qqbot:guild:C1:U1","event":{"operator_openid":"U1","guild_id":"C1"}}
+{"func":"is_authorized_interaction","session_key":"agent:main:qqbot:c2c:","event":{"operator_openid":""}}
+{"func":"append_block","text":"","block":"[voice] hi"}
+{"func":"append_block","text":"question","block":"[voice] hi"}
+{"func":"append_block","text":"   ","block":"[file] a.pdf"}
+{"func":"merge_quote_into","text":"answer","quote_block":""}
+{"func":"merge_quote_into","text":"","quote_block":"[Quoted message]:\nhi"}
+{"func":"merge_quote_into","text":"answer","quote_block":"[Quoted message]:\nhi"}
+{"func":"detect_message_type","media_urls":[],"media_types":[]}
+{"func":"detect_message_type","media_urls":["u1"],"media_types":[]}
+{"func":"detect_message_type","media_urls":["u1"],"media_types":["audio/amr"]}
+{"func":"detect_message_type","media_urls":["u1"],"media_types":["Voice"]}
+{"func":"detect_message_type","media_urls":["u1"],"media_types":["video/mp4"]}
+{"func":"detect_message_type","media_urls":["u1"],"media_types":["image/png"]}
+{"func":"detect_message_type","media_urls":["u1"],"media_types":["application/pdf"]}
+{"func":"opt_str","value":"  hello  "}
+{"func":"opt_str","value":"   "}
+{"func":"opt_str","value":5}
+{"func":"opt_str","value":null}
+{"func":"is_voice_content_type","content_type":"voice","filename":""}
+{"func":"is_voice_content_type","content_type":"audio/amr","filename":"x.bin"}
+{"func":"is_voice_content_type","content_type":"file","filename":"a.wav"}
+{"func":"is_voice_content_type","content_type":"","filename":"a.silk"}
+{"func":"is_voice_content_type","content_type":"","filename":"A.WAV"}
+{"func":"is_voice_content_type","content_type":"image/png","filename":"a.jpg"}
+{"func":"guess_ext_from_data","hex":"232153494c4b0102"}
+{"func":"guess_ext_from_data","hex":"02210102"}
+{"func":"guess_ext_from_data","hex":"524946460000"}
+{"func":"guess_ext_from_data","hex":"664c61430000"}
+{"func":"guess_ext_from_data","hex":"fff32000"}
+{"func":"guess_ext_from_data","hex":"4f6767530000"}
+{"func":"guess_ext_from_data","hex":"3026b2750000"}
+{"func":"guess_ext_from_data","hex":"00010203"}
+{"func":"guess_ext_from_data","hex":""}
+{"func":"looks_like_silk","hex":"232153494c4b"}
+{"func":"looks_like_silk","hex":"52494646"}
+{"func":"rest_path","chat_type":"c2c","target_id":"U1","endpoint":"messages"}
+{"func":"rest_path","chat_type":"group","target_id":"G1","endpoint":"files"}
+{"func":"messages_path","chat_type":"c2c","target_id":"U9"}
+{"func":"messages_path","chat_type":"guild","target_id":"C9"}
+{"func":"build_text_body","content":"hello","reply_to":"m1","markdown":false,"max_len":4000,"msg_seq":4242}
+{"func":"build_text_body","content":"hello","reply_to":null,"markdown":false,"max_len":4000,"msg_seq":4242}
+{"func":"build_text_body","content":"hello","reply_to":"m1","markdown":true,"max_len":4000,"msg_seq":4242}
+{"func":"build_text_body","content":"0123456789","reply_to":null,"markdown":false,"max_len":5,"msg_seq":4242}
+{"func":"is_url","source":"https://example.com/a.png"}
+{"func":"is_url","source":"HTTP://EXAMPLE.COM"}
+{"func":"is_url","source":"ftp://example.com"}
+{"func":"is_url","source":"notaurl"}
+{"func":"is_url","source":""}
+{"func":"is_url","source":"mailto:a@b.example"}
+{"func":"strip_at_mention","content":"@bot hello there"}
+{"func":"strip_at_mention","content":"  @bot   hello  "}
+{"func":"strip_at_mention","content":"hello"}
+{"func":"strip_at_mention","content":"@bot"}
+{"func":"entry_matches","entries":["*"],"target":"anyone"}
+{"func":"entry_matches","entries":["a","B"],"target":"b"}
+{"func":"entry_matches","entries":["a"],"target":"c"}
+{"func":"entry_matches","entries":[],"target":"a"}
+{"func":"guess_chat_type","chat_type_map":{"G1":"group"},"chat_id":"G1"}
+{"func":"guess_chat_type","chat_type_map":{"G1":"group"},"chat_id":"unknown"}
+{"func":"parse_qq_timestamp","raw":"2024-01-02T03:04:05"}
+{"func":"parse_qq_timestamp","raw":"2024-01-02T03:04:05+08:00"}
+{"func":"parse_qq_timestamp","raw":"2024-01-02T03:04:05.500"}
+{"func":"parse_qq_timestamp","raw":"2024-01-02T03:04:05Z"}
+{"func":"parse_qq_timestamp","raw":"2024-01-02"}
+{"func":"parse_qq_timestamp","raw":"1700000000000"}
+{"func":"parse_qq_timestamp","raw":"1700000000123"}
+{"func":"parse_qq_timestamp","raw":""}
+{"func":"parse_qq_timestamp","raw":"not-a-date"}
+{"func":"parse_qq_timestamp","raw":"1700000000"}
+{"func":"resolve_stt_config","extra":{"stt":{"baseUrl":"https://b.example/v1/","apiKey":"***","model":"","timeout":30}}}
+{"func":"resolve_stt_config","extra":{"stt":{"apiKey":"***"}}}
+{"func":"resolve_stt_config","extra":{"stt":{"apiKey":"***","provider":"openai"}}}
+{"func":"resolve_stt_config","extra":{"stt":{"enabled":false,"apiKey":"***"}},"env":{"QQ_STT_API_KEY":"***"}}
+{"func":"resolve_stt_config","extra":{},"env":{"QQ_STT_API_KEY":"***","QQ_STT_BASE_URL":"https://env.example/v1/","QQ_STT_MODEL":"m1"}}
+{"func":"resolve_stt_config","extra":{},"env":{"QQ_STT_API_KEY":"***"}}
+{"func":"resolve_stt_config","extra":{},"env":{}}
+{"func":"resolve_stt_config","extra":{"stt":{"apiKey":"***","provider":"mystery"}}}
+{"func":"resolve_stt_config","extra":{"stt":{"api_key":"***","base_url":"https://c.example","timeout":"15"}}}
+{"func":"resolve_stt_config","extra":{"stt":{"baseUrl":"https://b.example","timeout":"bogus"}},"env":{"QQ_STT_API_KEY":"***"}}

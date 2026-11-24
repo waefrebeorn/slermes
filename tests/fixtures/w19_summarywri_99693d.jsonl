@@ -1,0 +1,39 @@
+{"func": "parse_bool", "value": " YES ", "default": false}
+{"func": "parse_bool", "value": "Off", "default": true}
+{"func": "parse_bool", "value": true, "default": false}
+{"func": "parse_bool", "value": false, "default": true}
+{"func": "parse_bool", "value": 1, "default": false}
+{"func": "parse_bool", "value": null, "default": true}
+{"func": "parse_bool", "value": "maybe", "default": true}
+{"func": "parse_bool", "value": "0", "default": true}
+{"func": "parse_bool", "value": "\ttrue\n", "default": false}
+{"func": "text", "value": "  hi there  ", "fallback": "(no summary)"}
+{"func": "text", "value": "", "fallback": "fb"}
+{"func": "text", "value": null, "fallback": "fb"}
+{"func": "text", "value": 0, "fallback": "fb"}
+{"func": "text", "value": "   ", "fallback": "fb"}
+{"func": "text", "value": 42, "fallback": "fb"}
+{"func": "bullet_lines", "values": ["a", " b ", ""]}
+{"func": "bullet_lines", "values": []}
+{"func": "bullet_lines", "values": null}
+{"func": "bullet_lines", "values": ["  "]}
+{"func": "bullet_lines", "values": ["already - dashes", "x"]}
+{"func": "title", "payload": {"title": "Weekly sync"}}
+{"func": "title", "payload": {"title": "", "meeting_ref": {"meeting_id": "m-1"}}}
+{"func": "title", "payload": {"meeting_ref": {}}}
+{"func": "title", "payload": {}}
+{"func": "title", "payload": {"title": "", "meeting_ref": {"meeting_id": ""}}}
+{"func": "title", "payload": {"title": "T", "meeting_ref": {"meeting_id": "m-9"}}}
+{"func": "render_markdown", "payload": {"title": "Sync", "summary": "all good", "key_decisions": ["ship it"], "action_items": ["bob"], "risks": []}}
+{"func": "render_markdown", "payload": {"summary": null, "key_decisions": null}}
+{"func": "render_markdown", "payload": {"title": "", "summary": "  spaced  ", "action_items": ["  ", "real "], "risks": ["r1", "r2"]}}
+{"func": "render_html", "payload": {"title": "Sync <1>", "summary": "a & b", "key_decisions": ["<x>"], "action_items": ["q\"t"], "risks": []}}
+{"func": "render_html", "payload": {"summary": "ok"}}
+{"func": "render_html", "payload": {"title": "O'Brien & Co", "summary": "  ", "risks": [" risk & reward "]}}
+{"func": "render_html", "payload": {"meeting_ref": {"meeting_id": "m<2>"}, "summary": "s", "key_decisions": ["", "k"]}}
+{"func": "resolve_config", "platform_cfg": {"extra": {"delivery_mode": "graph"}, "token": "tok", "home_channel_chat_id": "19:abc"}, "config": {"chat_id": "c1"}, "env": {"TEAMS_DELIVERY_MODE": "incoming_webhook", "TEAMS_CHAT_ID": "", "TEAMS_TEAM_ID": "t1"}}
+{"func": "resolve_config", "platform_cfg": null, "config": null, "env": {"TEAMS_INCOMING_WEBHOOK_URL": "https://x"}}
+{"func": "resolve_config", "platform_cfg": null, "config": {"delivery_mode": "", "incoming_webhook_url": "https://cfg"}, "env": {"TEAMS_INCOMING_WEBHOOK_URL": "https://env", "TEAMS_DELIVERY_MODE": "graph"}}
+{"func": "resolve_config", "platform_cfg": {"extra": {"access_token": "***"}, "token": "fromtoken"}, "config": {}, "env": {"TEAMS_GRAPH_ACCESS_TOKEN": "***"}}
+{"func": "resolve_config", "platform_cfg": {"extra": null, "token": "", "home_channel_chat_id": ""}, "config": {"channel_id": "ch"}, "env": {}}
+{"func": "resolve_config", "platform_cfg": null, "config": {"delivery_mode": "graph", "team_id": "t"}, "env": {"TEAMS_CHANNEL_ID": "c2", "TEAMS_TEAM_ID": "envteam", "TEAMS_CHAT_ID": "chat9"}}

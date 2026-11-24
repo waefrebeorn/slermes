@@ -1,0 +1,18 @@
+{"func":"stored_profile","value":"  alice  "}
+{"func":"stored_profile","value":""}
+{"func":"stored_profile","value":null}
+{"func":"stored_profile","value":"   "}
+{"func":"stored_profile","value":"bob"}
+{"func":"find_crossed","owner":"alice","ledgered":[2],"rows":[{"id":1,"session_key":"agent:main:telegram:1","profile_name":"default","parent_session_id":null,"message_count":5,"parent_session_key":null},{"id":2,"session_key":"agent:alice:telegram:2","profile_name":"bob","parent_session_id":1,"message_count":0,"parent_session_key":"agent:main:telegram:1"},{"id":3,"session_key":"cli:3","profile_name":"alice","message_count":3},{"id":4,"session_key":"agent:main~:telegram:4","profile_name":"  ","parent_session_id":2,"message_count":"7","parent_session_key":"agent:alice:telegram:2"}]}
+{"func":"find_crossed","owner":"default","ledgered":[],"rows":[]}
+{"func":"find_crossed","owner":"default","ledgered":["s-9"],"rows":[{"id":"s-9","session_key":"agent:bob:slack:1","profile_name":"bob","parent_session_id":null,"message_count":12,"parent_session_key":null}]}
+{"func":"find_crossed","owner":"bob","ledgered":[],"rows":[{"id":7,"session_key":"agent:bob:sms:1","profile_name":"  bob  ","parent_session_id":null,"message_count":2,"parent_session_key":null}]}
+{"func":"less_topic_rows","has_profile":true,"rows":[{"chat_id":1,"thread_id":2,"session_key":"agent:alice:telegram:1"},{"chat_id":1,"thread_id":3,"session_key":"agent:main:telegram:9"},{"chat_id":2,"thread_id":1,"session_key":"agent:main~:telegram:4"}]}
+{"func":"less_topic_rows","has_profile":false,"rows":[{"chat_id":1,"thread_id":2,"session_key":"agent:alice:telegram:1"}]}
+{"func":"less_topic_rows","has_profile":true,"rows":[]}
+{"func":"key_profiles","session_keys":["agent:main:a","agent:bob:a","agent:main~:a","agent:bob:b",null,"xyz","agent::a"]}
+{"func":"key_profiles","session_keys":[]}
+{"func":"import_moved","profile_name":"alice","id_present":true,"parent_present":false,"title_present":false,"session":{"id":"s1","title":"Existing","profile_name":"default","parent_session_id":"p1"}}
+{"func":"import_moved","profile_name":"alice","id_present":false,"parent_present":false,"title_present":true,"session":{"id":"abcdefghijklmnop","title":"Chat about things","profile_name":"default","parent_session_id":"p1"}}
+{"func":"import_moved","profile_name":"alice","id_present":false,"parent_present":true,"title_present":false,"session":{"id":"short","title":null,"profile_name":"","parent_session_id":"p1"}}
+{"func":"import_moved","profile_name":"alice","id_present":false,"parent_present":false,"title_present":true,"session":{"id":"0123456789abcdef","title":"weekly sync","profile_name":"default"}}

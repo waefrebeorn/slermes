@@ -1,0 +1,40 @@
+{"func": "normalize", "out": {"managed": [], "mcp": [], "error": null}, "raw": null}
+{"func": "normalize", "out": {"managed": [{"name": "gmail", "alias": null, "to": null}], "mcp": [], "error": null}, "raw": "Gmail"}
+{"func": "normalize", "out": {"managed": [], "mcp": ["linear"], "error": null}, "raw": {"name": "Linear", "mcp": true}}
+{"func": "normalize", "out": {"managed": [{"name": "a", "alias": null, "to": null}, {"name": "b", "alias": null, "to": null}], "mcp": [], "error": null}, "raw": ["a", "a", {"name": " b "}]}
+{"func": "normalize", "out": {"managed": [], "mcp": [], "error": "unknown target field(s) url: a target is {\"name\": \"<slug>\"} or {\"name\": \"<server>\", \"mcp\": true}. Transport, URLs and credentials come from the catalog manifest, never from the call."}, "raw": [{"name": "x", "url": "http://example"}]}
+{"func": "normalize", "out": {"managed": [], "mcp": [], "error": "'alias' and 'to' name hosted connector accounts; an MCP target takes neither."}, "raw": [{"name": "x", "mcp": true, "alias": "a"}]}
+{"func": "normalize", "out": {"managed": [], "mcp": [], "error": "every target needs a non-empty 'name'."}, "raw": [{"name": ""}]}
+{"func": "normalize", "out": {"managed": [], "mcp": [], "error": "'connectors' must be a list of names or {name, mcp} objects."}, "raw": 5}
+{"func": "normalize", "out": {"managed": [{"name": "linear", "alias": "work", "to": null}], "mcp": [], "error": null}, "raw": [{"name": "Linear", "mcp": false, "alias": " work ", "to": null}]}
+{"func": "normalize", "out": {"managed": [{"name": "dup", "alias": null, "to": null}], "mcp": [], "error": null}, "raw": [{"name": "dup"}, {"name": "dup", "alias": null}]}
+{"func": "normalize", "out": {"managed": [{"name": "dup", "alias": null, "to": null}, {"name": "dup", "alias": "a", "to": null}], "mcp": [], "error": null}, "raw": [{"name": "dup"}, {"name": "dup", "alias": "a"}]}
+{"func": "normalize", "out": {"managed": [{"name": "m1", "alias": null, "to": null}, {"name": "m2", "alias": null, "to": null}], "mcp": ["m1"], "error": null}, "raw": ["m1", {"name": "m1", "mcp": true}, "m2"]}
+{"func": "normalize", "out": {"managed": [{"name": "x", "alias": null, "to": "y"}], "mcp": [], "error": null}, "raw": [{"name": "x", "mcp": 0, "to": " y "}]}
+{"func": "normalize", "out": {"managed": [], "mcp": [], "error": "unknown target field(s) aaa, zzz: a target is {\"name\": \"<slug>\"} or {\"name\": \"<server>\", \"mcp\": true}. Transport, URLs and credentials come from the catalog manifest, never from the call."}, "raw": [{"name": "x", "zzz": 1, "aaa": 2}]}
+{"func": "validate", "out": null, "action": "status", "managed": [], "mcp": []}
+{"func": "validate", "out": "action must be one of display, status, connect, reconnect, rename, install, enable, authorize. install, enable, authorize apply to local MCP servers (targets {\"name\": ..., \"mcp\": true}); the rest apply to managed connectors. Disconnecting an account is done by the user in the Nous Portal dashboard, not through this tool.", "action": "bogus", "managed": [], "mcp": []}
+{"func": "validate", "out": "'install' is an MCP action: every target must carry \"mcp\": true (got managed connector(s) gmail). Managed connectors use connect / reconnect / status.", "action": "install", "managed": [{"name": "gmail"}], "mcp": []}
+{"func": "validate", "out": "'install' requires 'connectors': the MCP server name(s), e.g. [{\"name\": \"linear\", \"mcp\": true}].", "action": "install", "managed": [], "mcp": []}
+{"func": "validate", "out": "'status' is a managed-connector action; MCP targets (linear) use install, enable, authorize.", "action": "status", "managed": [], "mcp": ["linear"]}
+{"func": "validate", "out": "display takes connector slugs to suggest (e.g. [\"gmail\"]); accounts are named on connect.", "action": "display", "managed": [{"name": "gmail", "alias": "work"}], "mcp": []}
+{"func": "validate", "out": "rename takes exactly one target {\"name\": \"<slug>\", \"alias\": \"<current name>\", \"to\": \"<new name>\"}. Use action status to list each connector's accounts.", "action": "rename", "managed": [{"name": "a", "alias": "x", "to": "y"}, {"name": "b", "alias": "z", "to": "w"}], "mcp": []}
+{"func": "validate", "out": "'to' 'Bad Alias' is not a valid account name: use 1-32 lowercase letters, digits or '-', starting with a letter or digit.", "action": "rename", "managed": [{"name": "a", "alias": "work", "to": "Bad Alias"}], "mcp": []}
+{"func": "validate", "out": null, "action": "rename", "managed": [{"name": "a", "alias": "work", "to": "job"}], "mcp": []}
+{"func": "validate", "out": "a call with an 'alias' takes that one target only; name other accounts in separate calls.", "action": "connect", "managed": [{"name": "a", "alias": "one"}, {"name": "b"}], "mcp": []}
+{"func": "validate", "out": "'alias' 'Bad!' is not a valid account name: use 1-32 lowercase letters, digits or '-', starting with a letter or digit.", "action": "connect", "managed": [{"name": "a", "alias": "Bad!"}], "mcp": []}
+{"func": "validate", "out": null, "action": "reconnect", "managed": [{"name": "a", "alias": "Bad!"}], "mcp": []}
+{"func": "validate", "out": "'to' is the new name of an account and applies to action rename only.", "action": "connect", "managed": [{"name": "a", "to": "b"}], "mcp": []}
+{"func": "validate", "out": "rename takes exactly one target {\"name\": \"<slug>\", \"alias\": \"<current name>\", \"to\": \"<new name>\"}. Use action status to list each connector's accounts.", "action": "rename", "managed": [], "mcp": []}
+{"func": "validate", "out": null, "action": "status", "managed": [{"name": "a", "alias": "9lives"}], "mcp": []}
+{"func": "manage", "out": {"kind": "managed", "action": "status", "targets": []}, "args": {}}
+{"func": "manage", "out": {"kind": "managed", "action": "status", "targets": ["gmail"]}, "args": {"action": "STATUS", "connectors": ["gmail"]}}
+{"func": "manage", "out": {"kind": "mcp", "action": "install", "targets": ["linear"]}, "args": {"action": "install", "connectors": [{"name": "linear", "mcp": true}]}}
+{"func": "manage", "out": {"error": "'install' is an MCP action: every target must carry \"mcp\": true (got managed connector(s) gmail). Managed connectors use connect / reconnect / status."}, "args": {"action": "install", "connectors": ["gmail"]}}
+{"func": "manage", "out": {"kind": "managed", "action": "connect", "targets": ["gmail"]}, "args": {"action": "connect", "connectors": "gmail"}}
+{"func": "manage", "out": {"kind": "managed", "action": "status", "targets": []}, "args": {"action": null, "connectors": null}}
+{"func": "manage", "out": {"error": "unknown target field(s) bogus: a target is {\"name\": \"<slug>\"} or {\"name\": \"<server>\", \"mcp\": true}. Transport, URLs and credentials come from the catalog manifest, never from the call."}, "args": {"action": "connect", "connectors": [{"name": "x", "bogus": 1}]}}
+{"func": "manage", "out": {"kind": "managed", "action": "rename", "targets": ["gmail"]}, "args": {"action": "rename", "connectors": [{"name": "gmail", "alias": "work", "to": "job"}]}}
+{"func": "manage", "out": {"kind": "managed", "action": "status", "targets": []}, "args": {"connectors": []}}
+{"func": "manage", "out": {"error": "'authorize' is an MCP action: every target must carry \"mcp\": true (got managed connector(s) x). Managed connectors use connect / reconnect / status."}, "args": {"action": " authorize ", "connectors": [{"name": "linear", "mcp": true}, "x"]}}
+{"func": "manage", "out": {"error": "a call with an 'alias' takes that one target only; name other accounts in separate calls."}, "args": {"action": "connect", "connectors": ["Gmail", {"name": "gmail", "alias": "work"}]}}

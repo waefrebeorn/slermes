@@ -1,0 +1,12 @@
+{"func": "reservation_superseded", "row": {"authority_epoch": 4, "authority_gateway_id": "gw-a"}, "gateway_id": "gw-a", "epoch": 3, "out": true}
+{"func": "reservation_superseded", "row": {"authority_epoch": 4, "authority_gateway_id": "gw-a"}, "gateway_id": "gw-a", "epoch": 4, "out": false}
+{"func": "reservation_superseded", "row": {"authority_epoch": 4, "authority_gateway_id": "gw-a"}, "gateway_id": "gw-b", "epoch": 4, "out": true}
+{"func": "reservation_superseded", "row": {"authority_epoch": 4, "authority_gateway_id": "gw-a"}, "gateway_id": "gw-a", "epoch": 5, "out": false}
+{"func": "reservation_superseded", "row": {"authority_epoch": "9", "authority_gateway_id": "gw-a"}, "gateway_id": "gw-a", "epoch": 9, "out": false}
+{"func": "reservation_superseded", "row": {"authority_epoch": 0, "authority_gateway_id": "gw-a"}, "gateway_id": "gw-a", "epoch": 0, "out": false}
+{"func": "reservation_values", "claims": {"room_id": "r1", "member_id": "m1", "target_profile": "p1", "authority_gateway_id": "gw-a", "authority_epoch": 5}, "out": ["r1", "m1", "p1", "gw-a", 5]}
+{"func": "reservation_values", "claims": {"room_id": "r2", "member_id": "m2", "target_profile": "p2", "authority_gateway_id": "gw-b", "authority_epoch": null}, "out": ["r2", "m2", "p2", "gw-b", 0]}
+{"func": "reservation_values", "claims": {"room_id": "r3", "member_id": "m3", "target_profile": "p3", "authority_gateway_id": "gw-c", "authority_epoch": "7"}, "out": ["r3", "m3", "p3", "gw-c", 7]}
+{"func": "reservation_values", "claims": {"room_id": "r4", "member_id": "m4", "target_profile": "p4", "authority_gateway_id": "gw-d", "authority_epoch": 0}, "out": ["r4", "m4", "p4", "gw-d", 0]}
+{"func": "remote_run_identity", "record": {"room_id": "r1", "home_install_id": "h1", "authority_gateway_id": "gw-a", "authority_epoch": 2, "member_id": "m1", "target_install_id": "t1", "target_profile": "p1", "task_id": "k1", "execution_generation": 3, "run_id": "ignored", "session_id": "ignored"}, "out": ["r1", "h1", "gw-a", 2, "m1", "t1", "p1", "k1", 3]}
+{"func": "remote_run_identity", "record": {"room_id": "r9", "home_install_id": "h9", "authority_gateway_id": "gw-z", "authority_epoch": 0, "member_id": "m9", "target_install_id": null, "target_profile": "nope", "task_id": "k9", "execution_generation": 1}, "out": ["r9", "h9", "gw-z", 0, "m9", null, "nope", "k9", 1]}

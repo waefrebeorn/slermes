@@ -1,0 +1,25 @@
+{"func": "all_origins", "urls": ["https://Example.com/login?x=1"], "out": ["https://example.com"]}
+{"func": "all_origins", "urls": ["https://example.com:443/a", "HTTP://example.com:8080/b"], "out": ["https://example.com", "http://example.com:8080"]}
+{"func": "all_origins", "urls": ["https://a.com", "https://A.com/", "https://a.com/x"], "out": ["https://a.com"]}
+{"func": "all_origins", "urls": ["androidapp://com.foo.bar"], "out": ["androidapp://com.foo.bar"]}
+{"func": "all_origins", "urls": ["not a url", ""], "out": []}
+{"func": "all_origins", "urls": ["https://user:pw@Host.Example:8443/a"], "out": ["https://host.example:8443"]}
+{"func": "all_origins", "urls": ["ftp://files.example.com/pub", "ftp://files.example.com:21/x"], "out": ["ftp://files.example.com", "ftp://files.example.com:21"]}
+{"func": "all_origins", "urls": ["http://example.com:80/", "  https://padded.example.com/x  "], "out": ["http://example.com", "https://padded.example.com"]}
+{"func": "all_origins", "urls": [], "out": []}
+{"func": "all_origins", "urls": ["https://[::1]:8443/x"], "out": ["https://::1:8443"]}
+{"func": "all_origins", "urls": ["https://ok.example.com", 42, null], "out": ["https://ok.example.com"]}
+{"func": "web_origins", "origins": ["https://a.com", "androidapp://x"], "out": ["https://a.com"]}
+{"func": "web_origins", "origins": ["androidapp://x"], "out": ["androidapp://x"]}
+{"func": "web_origins", "origins": ["http://a.com", "https://b.com", "ftp://c"], "out": ["http://a.com", "https://b.com"]}
+{"func": "web_origins", "origins": ["ftp://x"], "out": ["ftp://x"]}
+{"func": "item_selector", "handle": "op:abc", "item_vaults": {"abc": "v1"}, "out": {"args": ["abc", "--vault", "v1"]}}
+{"func": "item_selector", "handle": "op:abc", "item_vaults": {"abc": ""}, "out": {"args": ["abc"]}}
+{"func": "item_selector", "handle": "op:abc", "item_vaults": {}, "listed_vaults": {"abc": "v2"}, "out": {"args": ["abc", "--vault", "v2"]}}
+{"func": "item_selector", "handle": "op:zzz", "item_vaults": {}, "listed_vaults": {}, "out": {"error": "1Password login not found; list logins again"}}
+{"func": "item_selector", "handle": "abc", "item_vaults": {"abc": "v1"}, "out": {"error": "1Password login not found; list logins again"}}
+{"func": "env", "cfg": {"account": "acme"}, "environ": {"PATH": "/usr/bin", "HOME": "/h", "OP_CONNECT_TOKEN": "launch", "SECRET": "x"}, "secrets": {"OP_CONNECT_HOST": "connect.example", "OP_CONNECT_TOKEN": "tok"}, "session_token": "tok123", "out": {"PATH": "/usr/bin", "HOME": "/h", "OP_CONNECT_HOST": "connect.example", "OP_CONNECT_TOKEN": "tok", "NO_COLOR": "1", "OP_ACCOUNT": "acme", "OP_SESSION_acme": "tok123"}}
+{"func": "env", "cfg": {"account": "acme"}, "service_token": "svc", "session_token": "tok123", "environ": {"PATH": "/usr/bin"}, "secrets": {}, "out": {"PATH": "/usr/bin", "NO_COLOR": "1", "OP_ACCOUNT": "acme", "OP_SERVICE_ACCOUNT_TOKEN": "svc"}}
+{"func": "env", "cfg": {}, "session_token": "tok123", "environ": {"OP_LOAD_DESKTOP_APP_SETTINGS": "0", "OP_CONNECT_HOST": "nope"}, "secrets": {}, "out": {"OP_LOAD_DESKTOP_APP_SETTINGS": "0", "NO_COLOR": "1", "OP_SESSION": "tok123"}}
+{"func": "env", "cfg": {"account": ""}, "environ": {}, "secrets": {}, "out": {"NO_COLOR": "1"}}
+{"func": "env", "cfg": {"account": "work"}, "environ": {"OP_ACCOUNT": "envacct", "TMP": "/tmp", "OP_CONNECT_TOKEN": "launch"}, "secrets": {"OP_CONNECT_TOKEN": ""}, "out": {"TMP": "/tmp", "OP_ACCOUNT": "work", "NO_COLOR": "1"}}

@@ -1,0 +1,14 @@
+{"func": "server_child_env", "base_env": {"PATH": "/usr/bin", "HOME": "/home/u", "GH_TOKEN": "ghp_x", "OPENAI_API_KEY": "sk-x", "OMP_NUM_THREADS": "4"}}
+{"func": "server_child_env", "base_env": {"openai_api_key": "sk-x", "hf_token": "hf_y", "cuda_visible_devices": "0"}}
+{"func": "server_child_env", "base_env": {"TOKENIZERS_PARALLELISM": "false", "X_APITOKEN": "1", "APITOKEN": "2", "API_KEY": "3"}}
+{"func": "server_child_env", "base_env": {"DB_PASSWORD_HASH": "h", "PASSWORD": "p", "SSH_PASSWORD_FILE": "/x"}}
+{"func": "server_child_env", "base_env": {"_CREDENTIALS_FILE": "/c", "CREDENTIALS_FILE": "/c", "AWS_ACCESS_KEY_ID": "AKIA"}}
+{"func": "server_child_env", "base_env": {"MY_SECRET_KEY": "s", "SECRETS_DIR": "/s", "AWS_SECRET_ACCESS_KEY": "k"}}
+{"func": "server_child_env", "base_env": {"HF_TOKEN": "t", "GH_TOKEN": "t", "TELEGRAM_BOT_TOKEN": "t", "TEMP": "/tmp"}}
+{"func": "server_child_env", "base_env": {}}
+{"func": "server_child_env", "base_env": {"CUDA_VISIBLE_DEVICES": "0,1", "HSA_OVERRIDE_GFX_VERSION": "11.0.0", "TMP": "/tmp", "TZ": "UTC"}}
+{"func": "server_child_env", "base_env": {"api_key": "k", "token": "t", "secret": "s", "password": "p", "credentials": "c"}}
+{"func": "server_child_env", "base_env": {"Path": "/bin", "gh_token": "x", "PythonPath": "/py"}}
+{"func": "server_child_env", "base_env": {"MY_API_KEY_2": "k", "K2": "v", "ZZ_TOKENIZED": "1"}}
+{"func": "server_child_env", "base_env": {"NVIDIA_API_KEY": "n", "NVIDIA_VISIBLE_DEVICES": "all", "NVIDIA_DRIVER_CAPABILITIES": "compute"}}
+{"func": "server_child_env", "base_env": {"A": "1", "b": "2", "_token_": "3", "__TOKEN__": "4"}}

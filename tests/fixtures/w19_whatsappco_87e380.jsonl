@@ -1,0 +1,213 @@
+{"func": "header_to_bold", "inner": "Title"}
+{"func": "header_to_bold", "inner": "  Title  "}
+{"func": "header_to_bold", "inner": "**Title**"}
+{"func": "header_to_bold", "inner": "*Title*"}
+{"func": "header_to_bold", "inner": "**  **"}
+{"func": "header_to_bold", "inner": ""}
+{"func": "header_to_bold", "inner": "*"}
+{"func": "header_to_bold", "inner": "a * b"}
+{"func": "sanitize_outbound_text", "content": "hello​world"}
+{"func": "sanitize_outbound_text", "content": "a b c"}
+{"func": "sanitize_outbound_text", "content": "﻿start"}
+{"func": "sanitize_outbound_text", "content": "normal"}
+{"func": "sanitize_outbound_text", "content": ""}
+{"func": "sanitize_outbound_text", "content": "👨‍👩"}
+{"func": "sanitize_outbound_text", "content": "x⁠y"}
+{"func": "sanitize_outbound_text", "content": "a　b"}
+{"func": "sanitize_outbound_text", "content": "t ab᠎"}
+{"func": "effective_reply_prefix", "mode": null, "reply_prefix": null, "env_prefix": null}
+{"func": "effective_reply_prefix", "mode": "self-chat", "reply_prefix": "hi\\nthere", "env_prefix": null}
+{"func": "effective_reply_prefix", "mode": "cloud", "reply_prefix": "x", "env_prefix": null}
+{"func": "effective_reply_prefix", "mode": "", "reply_prefix": null, "env_prefix": null}
+{"func": "effective_reply_prefix", "mode": "self-chat", "reply_prefix": null, "env_prefix": "ENV\\n"}
+{"func": "effective_reply_prefix", "mode": "SELF-CHAT", "reply_prefix": null, "env_prefix": null}
+{"func": "outgoing_chunk_limit", "prefix_len": 30}
+{"func": "outgoing_chunk_limit", "prefix_len": 0}
+{"func": "outgoing_chunk_limit", "prefix_len": 4096}
+{"func": "outgoing_chunk_limit", "prefix_len": 5000}
+{"func": "outgoing_chunk_limit", "prefix_len": 1000}
+{"func": "normalize_whatsapp_id", "value": null}
+{"func": "normalize_whatsapp_id", "value": ""}
+{"func": "normalize_whatsapp_id", "value": "  123:4@lid  "}
+{"func": "normalize_whatsapp_id", "value": "123@lid"}
+{"func": "normalize_whatsapp_id", "value": "123:4"}
+{"func": "normalize_whatsapp_id", "value": "123:abc@lid"}
+{"func": "normalize_whatsapp_id", "value": " +1555:9@s.whatsapp.net "}
+{"func": "is_broadcast_chat", "chat_id": "status@broadcast"}
+{"func": "is_broadcast_chat", "chat_id": "123@broadcast"}
+{"func": "is_broadcast_chat", "chat_id": "  ABC@Newsletter  "}
+{"func": "is_broadcast_chat", "chat_id": null}
+{"func": "is_broadcast_chat", "chat_id": ""}
+{"func": "is_broadcast_chat", "chat_id": "123@s.whatsapp.net"}
+{"func": "is_broadcast_chat", "chat_id": "STATUS@BROADCAST"}
+{"func": "coerce_allow_list", "raw": null}
+{"func": "coerce_allow_list", "raw": "a, b ,, c"}
+{"func": "coerce_allow_list", "raw": ["+123", " +456 "]}
+{"func": "coerce_allow_list", "raw": "[\"-100\",\"-200\"]"}
+{"func": "coerce_allow_list", "raw": "[1, 2]"}
+{"func": "coerce_allow_list", "raw": "single"}
+{"func": "coerce_allow_list", "raw": "[\"bad\""}
+{"func": "coerce_allow_list", "raw": ""}
+{"func": "coerce_allow_list", "raw": 5}
+{"func": "coerce_allow_list", "raw": "b,a,dupe,a"}
+{"func": "select_allowlist", "extra": {"allow_from": []}, "config_keys": ["allow_from", "allowFrom"], "env_keys": ["WHATSAPP_ALLOWED"], "env": {}}
+{"func": "select_allowlist", "extra": {}, "config_keys": ["allow_from", "allowFrom"], "env_keys": ["WHATSAPP_ALLOWED"], "env": {"WHATSAPP_ALLOWED": "1,2"}}
+{"func": "select_allowlist", "extra": {"allowFrom": "9"}, "config_keys": ["allow_from", "allowFrom"], "env_keys": [], "env": {}}
+{"func": "select_allowlist", "extra": {}, "config_keys": ["allow_from"], "env_keys": ["A", "B"], "env": {}}
+{"func": "select_allowlist", "extra": {"allow_from": null}, "config_keys": ["allow_from"], "env_keys": ["A"], "env": {"A": "z"}}
+{"func": "select_allowlist", "extra": {}, "config_keys": ["allow_from"], "env_keys": ["A", "B"], "env": {"A": "", "B": "x,y"}}
+{"func": "select_allowlist", "extra": {"allow_from": ["-1"]}, "config_keys": ["allow_from"], "env_keys": ["A"], "env": {"A": "z"}}
+{"func": "bot_ids_from_message", "data": {"botIds": ["123:1@lid", "456@lid", "123@lid"]}}
+{"func": "bot_ids_from_message", "data": {"botIds": []}}
+{"func": "bot_ids_from_message", "data": {}}
+{"func": "bot_ids_from_message", "data": {"botIds": [" 77:9@s.whatsapp.net "]}}
+{"func": "bot_ids_from_message", "data": {"botIds": null}}
+{"func": "message_is_reply_to_bot", "data": {"botIds": ["123@lid"], "quotedParticipant": "123:4@lid"}}
+{"func": "message_is_reply_to_bot", "data": {"botIds": ["123@lid"], "quotedParticipant": "999@lid"}}
+{"func": "message_is_reply_to_bot", "data": {"botIds": [], "quotedParticipant": "123@lid"}}
+{"func": "message_is_reply_to_bot", "data": {"botIds": ["123@lid"], "quotedParticipant": null}}
+{"func": "message_mentions_bot", "data": {"botIds": ["123@lid"], "mentionedIds": ["123:5@lid"]}}
+{"func": "message_mentions_bot", "data": {"botIds": ["123@lid"], "body": "hey @123 what"}}
+{"func": "message_mentions_bot", "data": {"botIds": ["123@lid"], "body": "hey 123"}}
+{"func": "message_mentions_bot", "data": {"botIds": ["123@lid"], "body": "nothing"}}
+{"func": "message_mentions_bot", "data": {"botIds": [], "body": "@123"}}
+{"func": "message_mentions_bot", "data": {"botIds": ["123@lid"], "body": "@999"}}
+{"func": "message_mentions_bot", "data": {"botIds": ["123@lid"], "body": "@123"}}
+{"func": "message_mentions_bot", "data": {"botIds": ["123@lid"], "body": "ping @123:4 please"}}
+{"func": "clean_bot_mention_text", "text": "@1234 hi", "data": {"botIds": ["1234@lid"]}}
+{"func": "clean_bot_mention_text", "text": "@12345 hi", "data": {"botIds": ["1234@lid"]}}
+{"func": "clean_bot_mention_text", "text": "@1234, hello", "data": {"botIds": ["1234@lid"]}}
+{"func": "clean_bot_mention_text", "text": "@1234: hello", "data": {"botIds": ["1234@lid"]}}
+{"func": "clean_bot_mention_text", "text": "no mention", "data": {"botIds": ["1234@lid"]}}
+{"func": "clean_bot_mention_text", "text": "@1234", "data": {"botIds": ["1234@lid"]}}
+{"func": "clean_bot_mention_text", "text": "", "data": {"botIds": ["1234@lid"]}}
+{"func": "clean_bot_mention_text", "text": "x @1234-@1234", "data": {"botIds": ["1234@lid"]}}
+{"func": "clean_bot_mention_text", "text": "@1234 test @5678", "data": {"botIds": ["1234@lid", "5678@lid"]}}
+{"func": "clean_bot_mention_text", "text": " hi @1234 ", "data": {"botIds": ["1234@lid"]}}
+{"func": "format_message", "content": "**bold** and *italic*"}
+{"func": "format_message", "content": "# Header"}
+{"func": "format_message", "content": "## **Title**"}
+{"func": "format_message", "content": "[click](https://x.y)"}
+{"func": "format_message", "content": "`code *x*` and **b**"}
+{"func": "format_message", "content": "```js\nlet a = 1 * 2;\n```\n**ok**"}
+{"func": "format_message", "content": "~~gone~~"}
+{"func": "format_message", "content": "__under__"}
+{"func": "format_message", "content": "a __b__ c"}
+{"func": "format_message", "content": "*bullet item"}
+{"func": "format_message", "content": "**a** **b**"}
+{"func": "format_message", "content": "line1\n# h2\nline3"}
+{"func": "format_message", "content": ""}
+{"func": "format_message", "content": "plain text"}
+{"func": "format_message", "content": "snake_case_name"}
+{"func": "format_message", "content": "**bold _italic_**"}
+{"func": "format_message", "content": "~~a~~ and ~~b~~"}
+{"func": "format_message", "content": "* a *b*"}
+{"func": "format_message", "content": "*a*b*"}
+{"func": "format_message", "content": "a ** b ** c"}
+{"func": "format_message", "content": "**a\nb**"}
+{"func": "format_message", "content": "## Traffic ##"}
+{"func": "format_message", "content": "text with `inline` code"}
+{"func": "format_message", "content": "**x**\n* y"}
+{"func": "format_message", "content": "[a](b) and [c](d)"}
+{"func": "format_message", "content": "#"}
+{"func": "format_message", "content": "# "}
+{"func": "format_message", "content": "**a**b*"}
+{"func": "format_message", "content": "*a**b*"}
+{"func": "format_message", "content": "***a***"}
+{"func": "format_message", "content": "text ```\ncode\n``` more"}
+{"func": "format_message", "content": "a [b](c) d [e](f)"}
+{"func": "format_message", "content": "## a #"}
+{"func": "format_message", "content": "# a\n## b"}
+{"func": "format_message", "content": "*x*\n*y*"}
+{"func": "format_message", "content": "** a **"}
+{"func": "format_message", "content": "a **b\nc** d"}
+{"func": "format_message", "content": "​**bold**​"}
+{"func": "format_message", "content": "`unclosed"}
+{"func": "format_message", "content": "```unclosed\ncode"}
+{"func": "format_message", "content": "~~a\nb~~"}
+{"func": "format_message", "content": "__a\nb__"}
+{"func": "format_message", "content": "*a\nb*"}
+{"func": "format_message", "content": "line\n\n# head"}
+{"func": "format_message", "content": "* *x*"}
+{"func": "format_message", "content": "**bold** *it* `code` [l](u)"}
+{"func": "format_message", "content": "****************"}
+{"func": "format_message", "content": "*a* **b** __c__ ~~d~~"}
+{"func": "format_message", "content": "  # spaced header"}
+{"func": "format_message", "content": "x\n  \n# h\n"}
+{"func": "format_message", "content": "# # double"}
+{"func": "format_message", "content": "a*b*c"}
+{"func": "format_message", "content": "a **b** c **d"}
+{"func": "format_message", "content": "**unclosed"}
+{"func": "format_message", "content": "__unclosed"}
+{"func": "format_message", "content": "''"}
+{"func": "format_message", "content": "~~x~~~"}
+{"func": "format_message", "content": "~]b*_-"}
+{"func": "format_message", "content": "_[a*)`*_]"}
+{"func": "format_message", "content": "_`_)]*-"}
+{"func": "format_message", "content": "_`bba*aa]*"}
+{"func": "format_message", "content": "*)-~"}
+{"func": "format_message", "content": "]~)_a"}
+{"func": "format_message", "content": ")-b~_"}
+{"func": "format_message", "content": "ab`[_) _a*"}
+{"func": "format_message", "content": "`(b)]\n[(a("}
+{"func": "format_message", "content": "#`\n~ \n"}
+{"func": "format_message", "content": "_a#)"}
+{"func": "format_message", "content": "[ (#a__)"}
+{"func": "format_message", "content": "~\n[~(]*"}
+{"func": "format_message", "content": "_\n)a\n-[[ [a"}
+{"func": "format_message", "content": "a\n(_-_#("}
+{"func": "format_message", "content": "b_*  #bab-(#"}
+{"func": "format_message", "content": "]b[*([~a_(*`"}
+{"func": "format_message", "content": "#~ `]]-(_~(])"}
+{"func": "format_message", "content": "~-]-)"}
+{"func": "format_message", "content": " ][b]"}
+{"func": "format_message", "content": "~_~~"}
+{"func": "format_message", "content": "b`*("}
+{"func": "format_message", "content": "a~##*~])[aa[~ "}
+{"func": "format_message", "content": ")abb *(-\n-b\n)]"}
+{"func": "format_message", "content": "]]_(b]*"}
+{"func": "format_message", "content": "_`(~"}
+{"func": "format_message", "content": "[a"}
+{"func": "format_message", "content": "_"}
+{"func": "format_message", "content": "a"}
+{"func": "format_message", "content": ")_["}
+{"func": "format_message", "content": "*_-`a]~b#["}
+{"func": "format_message", "content": "[(__-((((#"}
+{"func": "format_message", "content": "~_"}
+{"func": "format_message", "content": "[ #(- ~)*`)["}
+{"func": "format_message", "content": " )*"}
+{"func": "format_message", "content": ")#b-_ -#)[~[\n"}
+{"func": "format_message", "content": "))\n)"}
+{"func": "format_message", "content": "b`a\n\n\n"}
+{"func": "format_message", "content": "`\n`-] \n``)([ *"}
+{"func": "format_message", "content": "\n"}
+{"func": "format_message", "content": "(#` a"}
+{"func": "format_message", "content": "(\n [[_"}
+{"func": "format_message", "content": "_`(`"}
+{"func": "format_message", "content": "`(aa-*"}
+{"func": "format_message", "content": "b[\nb_-b_"}
+{"func": "format_message", "content": "\n \n`(~]"}
+{"func": "format_message", "content": "b[_\n ](] _ ~~"}
+{"func": "format_message", "content": "*~a"}
+{"func": "format_message", "content": "\nb~a-a(b"}
+{"func": "format_message", "content": "~))~**"}
+{"func": "format_message", "content": " b_) ~]-`--`*"}
+{"func": "format_message", "content": "`#)`\n"}
+{"func": "format_message", "content": "[#)]-~* [("}
+{"func": "format_message", "content": "a-)]-)~)~))"}
+{"func": "format_message", "content": "-"}
+{"func": "format_message", "content": "\n~a*\n\n~~"}
+{"func": "format_message", "content": "(a "}
+{"func": "format_message", "content": ")*"}
+{"func": "format_message", "content": "b)))(\n"}
+{"func": "format_message", "content": "_)*``#*\n_)()*"}
+{"func": "format_message", "content": "_([a)a)` #())"}
+{"func": "format_message", "content": "()` )#)`-(~]_"}
+{"func": "format_message", "content": "([_b`]_"}
+{"func": "format_message", "content": "b#\n_"}
+{"func": "format_message", "content": "~ bb[~#~(` _]"}
+{"func": "format_message", "content": "~b-`~ ])"}
+{"func": "format_message", "content": "[]`[[_ "}
+{"func": "format_message", "content": "*[)(( "}
+{"func": "format_message", "content": "]"}
+{"func": "format_message", "content": ")a#)__"}

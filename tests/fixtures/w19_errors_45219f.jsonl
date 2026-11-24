@@ -1,0 +1,46 @@
+{"func": "is_no_more_rows", "out": true, "msg": "SQLITE: No More Rows Available"}
+{"func": "is_no_more_rows", "out": false, "msg": "database is locked"}
+{"func": "is_transient", "out": true, "kind": "operational", "code": 5, "msg": "database is locked"}
+{"func": "is_transient", "out": true, "kind": "operational", "code": null, "msg": "database table is locked"}
+{"func": "is_transient", "out": true, "kind": "operational", "code": 6, "msg": "vtable constructor failed: messages_fts"}
+{"func": "is_transient", "out": true, "kind": "operational", "msg": "disk I/O error"}
+{"func": "is_transient", "out": false, "kind": "operational", "msg": "unable to open database file"}
+{"func": "is_transient", "out": false, "kind": "database", "code": 5, "msg": "database is locked"}
+{"func": "is_transient", "out": false, "kind": "runtime", "msg": "database is busy"}
+{"func": "is_transient", "out": true, "kind": "operational", "code": 1, "msg": "database is busy"}
+{"func": "is_malformed_schema", "out": true, "kind": "database", "msg": "malformed DATABASE schema: duplicate messages_fts"}
+{"func": "is_malformed_schema", "out": false, "kind": "database", "msg": "database disk image is malformed"}
+{"func": "is_malformed_schema", "out": true, "kind": "corrupt", "msg": "malformed database schema (x)"}
+{"func": "is_malformed_schema", "out": true, "kind": "integrity", "msg": "malformed database schema"}
+{"func": "is_malformed_schema", "out": false, "kind": "runtime", "msg": "malformed database schema"}
+{"func": "classify", "out": "locked", "exc": "database is locked"}
+{"func": "classify", "out": "corrupt", "exc": "disk image is malformed"}
+{"func": "classify", "out": "disk", "exc": "SQLITE_FULL: database or disk is full"}
+{"func": "classify", "out": "disk", "exc": "attempt to write a readonly database"}
+{"func": "classify", "out": "session_row_missing", "exc": "FOREIGN KEY constraint failed"}
+{"func": "classify", "out": "turn_lease", "exc": "turn lease holder no longer owns this transcript"}
+{"func": "classify", "out": "compression_closed", "exc": "session is closed by compression"}
+{"func": "classify", "out": "replaced", "exc": "state.db was replaced underneath the gateway"}
+{"func": "classify", "out": "deleted_wal", "exc": "a live process holds a deleted state.db-wal generation"}
+{"func": "classify", "out": "fts_index", "exc": "fts5: corruption found in messages_fts_data"}
+{"func": "classify", "out": "unknown", "exc": "fts5: something odd in messages_fts_config"}
+{"func": "classify", "out": "fts_index", "exc": "database corruption in messages_fts_idx"}
+{"func": "classify", "out": "unknown", "exc": "totally unknown failure"}
+{"func": "classify", "out": "unknown", "exc": ""}
+{"func": "classify", "out": "fts_index", "exc": {"kind": "operational", "code": 267, "msg": "database disk image is malformed"}}
+{"func": "classify", "out": "locked", "exc": {"kind": "operational", "code": 5, "msg": "anything"}}
+{"func": "classify", "out": "session_row_missing", "exc": {"kind": "operational", "code": 787, "msg": "anything"}}
+{"func": "classify", "out": "corrupt", "exc": {"kind": "corrupt", "code": null, "msg": "database disk image is malformed"}}
+{"func": "classify", "out": "deleted_wal", "exc": {"kind": "deleted_wal", "msg": "x"}}
+{"func": "classify", "out": "turn_lease", "exc": {"kind": "turn_lease", "msg": "x"}}
+{"func": "classify", "out": "unknown", "exc": {"kind": "prune_stale", "msg": "row vanished"}}
+{"func": "classify", "out": "unknown", "exc": {"kind": null, "msg": null}}
+{"func": "is_fts_scoped", "out": true, "code": 267, "msg": "whatever"}
+{"func": "is_fts_scoped", "out": false, "code": 11, "msg": "fts5: corrupt messages_fts_data"}
+{"func": "is_fts_scoped", "out": true, "msg": "fts5: corruption found in messages_fts_data"}
+{"func": "is_fts_scoped", "out": false, "msg": "fts5: corruption found in other_table"}
+{"func": "is_fts_scoped", "out": false, "msg": "messages_fts_data is corrupt"}
+{"func": "compression_closed_msg", "out": "Session 'abc-123' is closed by compression; adopt its live continuation before appending messages", "session_id": "abc-123"}
+{"func": "compression_closed_msg", "out": "Session \"it's here\" is closed by compression; adopt its live continuation before appending messages", "session_id": "it's here"}
+{"func": "compression_closed_msg", "out": "Session 'say \"hi\" and don\\'t' is closed by compression; adopt its live continuation before appending messages", "session_id": "say \"hi\" and don't"}
+{"func": "compression_closed_msg", "out": "Session '' is closed by compression; adopt its live continuation before appending messages", "session_id": ""}

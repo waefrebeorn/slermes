@@ -1,0 +1,36 @@
+{"func":"bare_model_id","model":"google/gemini-3.8-flash"}
+{"func":"bare_model_id","model":"Gemini/Gemini-2.5-pro"}
+{"func":"bare_model_id","model":"  gemini-3-flash  "}
+{"func":"bare_model_id","model":"google/   "}
+{"func":"bare_model_id","model":null}
+{"func":"bare_model_id","model":"gemma-3-27b"}
+{"func":"uses_thinking_level","model":"gemini-3-flash"}
+{"func":"uses_thinking_level","model":"gemini-2.5-pro"}
+{"func":"uses_thinking_level","model":"gemini-flash-latest"}
+{"func":"uses_thinking_level","model":"google/gemini-4-argon"}
+{"func":"uses_thinking_level","model":"gemini-3x"}
+{"func":"uses_thinking_level","model":"gemma-3-27b"}
+{"func":"configured_api","model":"gemini-3-flash","bare":"gemini-3-flash","config":{"providers":{"gemini":{"gemini_api":"generate_content"}}}}
+{"func":"configured_api","model":"gemini-3-flash","bare":"gemini-3-flash","config":{"providers":{"gemini":{"gemini_api":"interactions","models":{"gemini-3-flash":{"gemini_api":"GENERATE_CONTENT "}}}}}}
+{"func":"configured_api","model":"gemini-3-flash","bare":"gemini-3-flash","config":{"providers":{"gemini":{"gemini_api":"interactions","models":{"gemini-3-flash":{"gemini_api":"bogus"}}}}}}
+{"func":"configured_api","model":"gemini-3-flash","bare":"gemini-3-flash","config":{"providers":{"gemini":{"gemini_api":"interactions","models":{"gemini-3-flash":{"gemini_api":"auto"}}}}}}
+{"func":"configured_api","model":"gemini-3-flash","bare":"gemini-3-flash","config_unreadable":true,"config":{"providers":{"gemini":{"gemini_api":"interactions"}}}}
+{"func":"configured_api","model":"gemini-3-flash","bare":"gemini-3-flash","config":null}
+{"func":"configured_api","model":"gemini-3-flash","bare":"gemini-3-flash","config":{"providers":null}}
+{"func":"configured_api","model":"gemini-3-flash","bare":"gemini-3-flash","config":{"providers":{"gemini":{"gemini_api":1}}}}
+{"func":"configured_api","model":"google/gemini-3.8-flash","bare":"gemini-3.8-flash","config":{"providers":{"gemini":{"models":{"gemini-3.8-flash":{"gemini_api":"interactions"}}}}}}
+{"func":"uses_interactions","model":"gemini-3-flash","base_url":"https://generativelanguage.googleapis.com/v1beta","config":{}}
+{"func":"uses_interactions","model":"gemini-2.5-pro","base_url":"https://generativelanguage.googleapis.com/v1beta","config":{}}
+{"func":"uses_interactions","model":"gemini-3-flash","base_url":"https://us-central1-aiplatform.googleapis.com","config":{}}
+{"func":"uses_interactions","model":"gemini-3-flash","base_url":"https://generativelanguage.googleapis.com/v1beta","config":{"providers":{"gemini":{"gemini_api":"generate_content"}}}}
+{"func":"uses_interactions","model":"gemini-2.5-pro","base_url":"https://generativelanguage.googleapis.com/v1beta","config":{"providers":{"gemini":{"gemini_api":"interactions"}}}}
+{"func":"uses_interactions","model":"gemini-3-flash","base_url":"https://generativelanguage.googleapis.com/v1beta","config_unreadable":true,"config":null}
+{"func":"uses_interactions","model":"google/gemini-4-argon","base_url":"https://GENERATIVELANGUAGE.googleapis.com","config":{}}
+{"func":"uses_interactions","model":"gemini-3-flash","base_url":null,"config":{}}
+{"func":"continues","interaction":{"status":"requires_continuation","id":"abc","continuation_token":"tok"}}
+{"func":"continues","interaction":{"status":"requires_continuation","id":"","continuation_token":"tok"}}
+{"func":"continues","interaction":{"status":"requires_continuation","id":"abc","continuation_token":""}}
+{"func":"continues","interaction":{"status":"requires_continuation","id":"abc","continuation_token":5}}
+{"func":"continues","interaction":{"status":"completed","id":"abc","continuation_token":"tok"}}
+{"func":"continues","interaction":{"status":"requires_continuation","continuation_token":"tok"}}
+{"func":"continues","interaction":{}}

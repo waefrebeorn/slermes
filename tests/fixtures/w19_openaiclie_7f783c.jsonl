@@ -1,0 +1,29 @@
+{"func": "realtime_url"}
+{"func": "decode_audio", "b64": ""}
+{"func": "decode_audio", "b64": "aGVsbG8="}
+{"func": "decode_audio", "b64": "AA=="}
+{"func": "decode_audio", "b64": "AAA="}
+{"func": "decode_audio", "b64": "AAAA"}
+{"func": "decode_audio", "b64": "////"}
+{"func": "decode_audio", "b64": "abcde"}
+{"func": "decode_audio", "b64": "!!"}
+{"func": "decode_audio", "b64": "aGVs bG8="}
+{"func": "decode_audio", "b64": "aGVsbG8==="}
+{"func": "decode_audio", "b64": "/wD/"}
+{"func": "decode_audio", "b64": "aGVs-bG8"}
+{"func": "read_queue", "exists": false, "text": "", "uuid": "U1"}
+{"func": "read_queue", "exists": true, "text": "", "uuid": "U1"}
+{"func": "read_queue", "exists": true, "text": "{\"id\":\"a\",\"text\":\"hi\"}\n\n{\"text\":\"b\"}\n", "uuid": "U1"}
+{"func": "read_queue", "exists": true, "text": "{\"id\":\"a\"\n{\"id\":\"b\"}\n", "uuid": "U1"}
+{"func": "read_queue", "exists": true, "text": "[1,2]\n\"str\"\n42\n{\"id\":\"c\"}\n", "uuid": "U1"}
+{"func": "read_queue", "exists": true, "text": "\ufeff{\"id\":\"a\"}\n", "uuid": "U1"}
+{"func": "read_queue", "exists": true, "text": "{\"id\":\"a\",\"text\":\"x\"}\r\n{\"text\":\"y\",\"n\":2}\r\n", "uuid": "U2"}
+{"func": "read_queue", "exists": true, "text": "{\"id\":\"a\",\"meta\":{\"k\":[1,true,null]},\"text\":\"h\u00e9llo\"}\n   \n", "uuid": "U1"}
+{"func": "rewrite_queue", "entries": [{"id": "a", "text": "hi"}]}
+{"func": "rewrite_queue", "entries": []}
+{"func": "rewrite_queue", "entries": [{"n": 3, "ok": true, "v": null, "arr": [1, 2], "o": {"k": "v"}}]}
+{"func": "rewrite_queue", "entries": [{"text": "h\u00e9llo\n\"q\"\t\\z"}]}
+{"func": "rewrite_queue", "entries": [{"id": "a"}, {"id": "b"}]}
+{"func": "append_processed", "entry": {"id": "a", "text": "hi"}, "result": {"ok": true, "bytes_written": 4}}
+{"func": "append_processed", "entry": {}, "result": {"ok": false, "error": "boom"}}
+{"func": "append_processed", "entry": {"text": "x"}, "result": {"ok": true, "bytes_written": 0, "duration_ms": 0.0}}

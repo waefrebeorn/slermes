@@ -1,0 +1,23 @@
+{"func": "geo_prefix", "region_name": "us-east-1", "out": "us."}
+{"func": "geo_prefix", "region_name": "EU-CENTRAL-2", "out": "eu."}
+{"func": "geo_prefix", "region_name": "ap-southeast-2", "out": "ap."}
+{"func": "geo_prefix", "region_name": "us-gov-west-1", "out": "us."}
+{"func": "geo_prefix", "region_name": "me-central-1", "out": "me."}
+{"func": "geo_prefix", "region_name": "", "out": ""}
+{"func": "geo_prefix", "region_name": "cn-north-1", "out": ""}
+{"func": "geo_prefix", "region_name": null, "out": ""}
+{"func": "geo_prefix", "region_name": "af-south-1", "out": "af."}
+{"func": "routable", "model_id": "us.anthropic.claude-sonnet-4-6", "region_name": "eu-west-1", "out": false}
+{"func": "routable", "model_id": "eu.anthropic.claude-sonnet-4-6", "region_name": "eu-central-2", "out": true}
+{"func": "routable", "model_id": "global.anthropic.claude-sonnet-4-6", "region_name": "ap-northeast-1", "out": true}
+{"func": "routable", "model_id": "anthropic.claude-sonnet-4-6", "region_name": "sa-east-1", "out": true}
+{"func": "routable", "model_id": "apac.anthropic.claude-haiku-4-5", "region_name": "ap-southeast-1", "out": true}
+{"func": "routable", "model_id": "jp.anthropic.claude-haiku-4-5", "region_name": "ap-northeast-1", "out": true}
+{"func": "routable", "model_id": "us.meta.llama4-maverick", "region_name": "xx-unknown-1", "out": true}
+{"func": "routable", "model_id": "US.ANTHROPIC.CLAUDE-SONNET-4-6", "region_name": "us-east-1", "out": true}
+{"func": "routable", "model_id": "ca.amazon.nova-pro", "region_name": "us-east-1", "out": false}
+{"func": "text_model_ids", "region": "us-east-1", "models": [{"id": "anthropic.claude-sonnet-4-6"}, {"id": "us.anthropic.claude-sonnet-4-6"}, {"id": "global.anthropic.claude-sonnet-4-6"}, {"id": "eu.anthropic.claude-sonnet-4-6"}, {"id": "amazon.nova-lite"}, {"id": "global.amazon.nova-lite"}, {"id": "us.stability.sdxl"}, {"id": "meta.llama4-scout"}, {"id": "cohere.embed-english"}, {"id": "us.anthropic.claude-3-safeguard"}, {"id": "zzz.custom-model"}, {"id": "global.zzz.custom-model"}], "out": ["us.anthropic.claude-sonnet-4-6", "global.anthropic.claude-sonnet-4-6", "global.amazon.nova-lite", "meta.llama4-scout", "global.zzz.custom-model"]}
+{"func": "text_model_ids", "region": "ap-southeast-1", "models": [{"id": "apac.anthropic.claude-opus-4-6"}, {"id": "jp.anthropic.claude-opus-4-6"}, {"id": "us.anthropic.claude-opus-4-6"}, {"id": "global.deepseek.v3"}, {"id": "deepseek.v3"}, {"id": "eu.amazon.nova-micro"}], "out": ["apac.anthropic.claude-opus-4-6", "jp.anthropic.claude-opus-4-6", "global.deepseek.v3"]}
+{"func": "text_model_ids", "region": "eu-west-1", "models": [], "out": []}
+{"func": "text_model_ids", "region": "eu-west-1", "models": [{"id": "global.twelvelabs.pegasus"}, {"id": "twelvelabs.pegasus"}, {"id": "stability.stable-image"}, {"id": "amazon.nova-pro"}, {"id": "melody.palmyra-vision"}], "out": ["amazon.nova-pro"]}
+{"func": "text_model_ids", "region": "us-west-2", "models": [{"id": "global.anthropic.claude-haiku-4-5"}, {"id": "us.anthropic.claude-haiku-4-5"}, {"id": "anthropic.claude-haiku-4-5"}, {"id": "meta.llama4-scout"}, {"id": "us.meta.llama4-scout"}], "out": ["us.anthropic.claude-haiku-4-5", "global.anthropic.claude-haiku-4-5", "us.meta.llama4-scout"]}

@@ -1,0 +1,60 @@
+{"func": "media_base_url", "url": "wss://connector.example/relay"}
+{"func": "media_base_url", "url": "ws://127.0.0.1:8788/relay/"}
+{"func": "media_base_url", "url": "wss://connector.example/relay/relay"}
+{"func": "media_base_url", "url": "   wss://c.example/relay   "}
+{"func": "media_base_url", "url": ""}
+{"func": "media_base_url", "url": "wss://c.example/"}
+{"func": "media_base_url", "url": "custom://x/relay"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://connector.example/relay/media/abc"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "http://connector.example/relay/media/abc"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://other.example/relay/media/abc"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://connector.example:443/relay/media/abc"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://connector.example:8443/relay/media/abc"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://connector.example/relay/mediax/abc"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://connector.example/chat/relay/media/abc"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://evil\\@connector.example/relay/media/x"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://connector.example/relay/media/../secret"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://connector.example/relay/media/%2e%2e/secret"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://CONNECTOR.example/relay/media/AbC"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "ftp://connector.example/relay/media/x"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": ""}
+{"func": "is_relay_media_url", "base_url": "https://connector.example/base", "url": "https://connector.example/base/relay/media/x"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example/base/", "url": "https://connector.example/base/relay/media/x"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example/base", "url": "https://connector.example/relay/media/x"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://connector.example./relay/media/x"}
+{"func": "is_relay_media_url", "base_url": "https://connector.example", "url": "https://connector.example/relay/media/a%20b?x=1#frag"}
+{"func": "enabled", "base_url": "https://x", "gateway_id": "gw", "secret": "sec"}
+{"func": "enabled", "base_url": "", "gateway_id": "gw", "secret": "sec"}
+{"func": "enabled", "base_url": "///", "gateway_id": "gw", "secret": "sec"}
+{"func": "enabled", "base_url": "https://x", "gateway_id": "", "secret": "sec"}
+{"func": "enabled", "base_url": "https://x", "gateway_id": "gw", "secret": ""}
+{"func": "clean_filename", "name": "dir/sub/file.txt"}
+{"func": "clean_filename", "name": "C:\\Users\\a\\b.pdf"}
+{"func": "clean_filename", "name": "  ..  "}
+{"func": "clean_filename", "name": "\u202eevil.exe"}
+{"func": "clean_filename", "name": "a\nb.txt"}
+{"func": "clean_filename", "name": ""}
+{"func": "clean_filename", "name": "."}
+{"func": "clean_filename", "name": "   spaced name .mkv  "}
+{"func": "clean_filename", "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.txt"}
+{"func": "clean_filename", "name": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"}
+{"func": "clean_filename", "name": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz.eeeeeeeeeeeeeeeeeeee"}
+{"func": "clean_filename", "name": "\ufeffzero\u200bwidth\u00addoc.md"}
+{"func": "cd_filename", "header": "attachment; filename=\"plain.txt\""}
+{"func": "cd_filename", "header": "attachment; filename*=UTF-8''r%C3%A9sum%C3%A9.pdf"}
+{"func": "cd_filename", "header": "inline; filename=\"a b.txt\"; size=12"}
+{"func": "cd_filename", "header": "attachment"}
+{"func": "cd_filename", "header": "attachment; filename*=iso-8859-1''f%FCr.el"}
+{"func": "cd_filename", "header": "attachment; filename*=UTF-8''%E2%82%AC.txt; filename=\"fallback.txt\""}
+{"func": "cd_filename", "header": "attachment; filename=\"q\\\"x.txt\""}
+{"func": "cd_filename", "header": "attachment; filename=\"../../etc/passwd\""}
+{"func": "cd_filename", "header": "attachment; filename*=bogus"}
+{"func": "cd_filename", "header": "attachment; FILENAME=\"X.TXT\""}
+{"func": "cd_filename", "header": "attachment;;;filename=x.txt"}
+{"func": "cd_filename", "header": ""}
+{"func": "warn_foreign_rehost", "base_url": "https://connector.example", "url": "https://public.example/relay/media/x", "seen": []}
+{"func": "warn_foreign_rehost", "base_url": "https://connector.example", "url": "https://public.example/relay/media/x", "seen": [["https", "public.example", 443]]}
+{"func": "warn_foreign_rehost", "base_url": "https://connector.example", "url": "https://connector.example/relay/media/x", "seen": []}
+{"func": "warn_foreign_rehost", "base_url": "https://connector.example", "url": "https://public.example/other/x", "seen": []}
+{"func": "warn_foreign_rehost", "base_url": "https://connector.example", "url": "https://public.example:8080/relay/media/x", "seen": [["https", "public.example", 443]]}
+{"func": "warn_foreign_rehost", "base_url": "https://connector.example", "url": "", "seen": []}

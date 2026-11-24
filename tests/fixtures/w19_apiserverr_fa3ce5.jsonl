@@ -1,0 +1,20 @@
+{"func": "identity_bound", "max_identities": null, "max_size": 100}
+{"func": "identity_bound", "max_identities": 5, "max_size": 100}
+{"func": "identity_bound", "max_identities": 0, "max_size": 3}
+{"func": "identity_bound", "max_identities": null, "max_size": 1}
+{"func": "identity_bound", "max_identities": 500, "max_size": 7}
+{"func": "identity_bound", "max_identities": null, "max_size": 0}
+{"func": "put_plan", "response_id": "idem:abc123", "data": {"id": "resp_1"}}
+{"func": "put_plan", "response_id": "resp_42", "data": {"id": "resp_42"}}
+{"func": "put_plan", "response_id": "idem:", "data": {}}
+{"func": "put_plan", "response_id": "", "data": {}}
+{"func": "put_plan", "response_id": "xidem:y", "data": {}}
+{"func": "put_plan", "response_id": "IDEM:upper", "data": {}}
+{"func": "delete_result", "row_deleted": 1, "forgotten": 0}
+{"func": "delete_result", "row_deleted": 0, "forgotten": 2}
+{"func": "delete_result", "row_deleted": 0, "forgotten": 0}
+{"func": "delete_result", "row_deleted": 3, "forgotten": 1}
+{"func": "request_key_matches", "has_row": false, "fingerprint": "fp-a", "key": "k1"}
+{"func": "request_key_matches", "has_row": true, "stored_fp": "fp-a", "fingerprint": "fp-a", "key": "k2"}
+{"func": "request_key_matches", "has_row": true, "stored_fp": "fp-a", "fingerprint": "fp-b", "key": "k3"}
+{"func": "request_key_matches", "has_row": true, "stored_fp": "", "fingerprint": "", "key": "k4"}

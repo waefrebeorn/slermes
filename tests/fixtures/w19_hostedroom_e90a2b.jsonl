@@ -1,0 +1,43 @@
+{"func": "route_identity", "stored_rows": [{"room_id": "room-1", "member_id": "m-1", "cancellation_scope_id": "cancel-stored", "trace_id": "trace-stored"}, {"room_id": "room-2", "member_id": "m-2", "cancellation_scope_id": "", "trace_id": ""}], "home_install_id": "home-1", "room_id": "room-1", "member_id": "m-1"}
+{"func": "route_identity", "stored_rows": [{"room_id": "room-1", "member_id": "m-1", "cancellation_scope_id": "cancel-stored", "trace_id": "trace-stored"}, {"room_id": "room-2", "member_id": "m-2", "cancellation_scope_id": "", "trace_id": ""}], "home_install_id": "home-1", "room_id": "room-2", "member_id": "m-2"}
+{"func": "route_identity", "stored_rows": [{"room_id": "room-1", "member_id": "m-1", "cancellation_scope_id": "cancel-stored", "trace_id": "trace-stored"}, {"room_id": "room-2", "member_id": "m-2", "cancellation_scope_id": "", "trace_id": ""}], "home_install_id": "home-1", "room_id": "room-3", "member_id": "m-1"}
+{"func": "route_identity", "stored_rows": [], "home_install_id": "home-9", "room_id": "room-9", "member_id": "m-9"}
+{"func": "dispatch", "binding": {"room_id": "room-1", "gateway_id": "gw-1", "authority_epoch": 3}, "route": {"home_install_id": "home-1", "member_id": "m-1", "target_install_id": "inst-1", "target_profile": "work", "capability_digest": "cap-abc", "cancellation_scope_id": "cancel-room-1", "trace_id": "trace-xyz", "grant": "grant-1"}, "args": {"room_id": "room-1", "task_id": "task-1", "target_profile": "work", "execution_generation": 4, "source_event_seq": 7, "prompt": "hello room", "trace_id": "trace-xyz"}}
+{"func": "dispatch", "binding": {"room_id": "room-1", "gateway_id": "gw-1", "authority_epoch": 3}, "route": {"home_install_id": "home-1", "member_id": "m-1", "target_install_id": "inst-1", "target_profile": "work", "capability_digest": "cap-abc", "cancellation_scope_id": "cancel-room-1", "trace_id": "trace-xyz", "grant": "grant-1"}, "args": {"room_id": "room-1", "task_id": "task-2", "target_profile": "work", "execution_generation": 1, "source_event_seq": 1, "prompt": "a longer prompt with spaces", "trace_id": "trace-xyz"}}
+{"func": "dispatch", "binding": {"room_id": "room-1", "gateway_id": "gw-1", "authority_epoch": 3}, "route": {"home_install_id": "home-1", "member_id": "m-1", "target_install_id": "inst-1", "target_profile": "work", "capability_digest": "cap-abc", "cancellation_scope_id": "cancel-room-1", "trace_id": "trace-xyz", "grant": "grant-1", "execution_policy_digest": "pol-1"}, "args": {"room_id": "room-1", "task_id": "task-1", "target_profile": "work", "execution_generation": 4, "source_event_seq": 7, "prompt": "hello room", "trace_id": "trace-xyz"}}
+{"func": "failover_order", "active": 0, "now": 0, "last_probe": 0, "interval": 60, "candidates": 3}
+{"func": "failover_order", "active": 2, "now": 100, "last_probe": 0, "interval": 60, "candidates": 3}
+{"func": "failover_order", "active": 2, "now": 30, "last_probe": 0, "interval": 60, "candidates": 3}
+{"func": "failover_order", "active": 1, "now": 100, "last_probe": 90, "interval": 60, "candidates": 2}
+{"func": "failover_order", "active": 0, "now": 100, "last_probe": 0, "interval": 60, "candidates": 1}
+{"func": "failover_call", "active": 0, "now": 0, "last_probe": 0, "interval": 60, "outcomes": [{"raises": false, "ambiguous": false, "retryable": false}, {"raises": false, "ambiguous": false, "retryable": false}, {"raises": false, "ambiguous": false, "retryable": false}]}
+{"func": "failover_call", "active": 1, "now": 100, "last_probe": 0, "interval": 60, "outcomes": [{"raises": false, "ambiguous": false, "retryable": false}, {"raises": true, "ambiguous": false, "retryable": true}, {"raises": false, "ambiguous": false, "retryable": false}]}
+{"func": "failover_call", "active": 1, "now": 100, "last_probe": 0, "interval": 60, "outcomes": [{"raises": true, "ambiguous": false, "retryable": true}, {"raises": true, "ambiguous": false, "retryable": true}, {"raises": false, "ambiguous": false, "retryable": false}]}
+{"func": "failover_call", "active": 0, "now": 0, "last_probe": 0, "interval": 60, "outcomes": [{"raises": true, "ambiguous": true, "retryable": true}, {"raises": false, "ambiguous": false, "retryable": false}]}
+{"func": "failover_call", "active": 0, "now": 0, "last_probe": 0, "interval": 60, "outcomes": [{"raises": true, "ambiguous": false, "retryable": false}, {"raises": false, "ambiguous": false, "retryable": false}]}
+{"func": "failover_call", "active": 0, "now": 0, "last_probe": 0, "interval": 60, "outcomes": [{"raises": true, "ambiguous": false, "retryable": true}, {"raises": true, "ambiguous": false, "retryable": true}]}
+{"func": "failover_call", "active": 1, "now": 100, "last_probe": 90, "interval": 60, "outcomes": [{"raises": false, "ambiguous": false, "retryable": false}, {"raises": true, "ambiguous": false, "retryable": true}]}
+{"func": "failover_call", "active": 2, "now": 100, "last_probe": 0, "interval": 60, "outcomes": [{"raises": false, "ambiguous": false, "retryable": false}, {"raises": false, "ambiguous": false, "retryable": false}, {"raises": false, "ambiguous": false, "retryable": false}]}
+{"func": "validate", "profile": "work", "source": "bot_room", "title": "Group: room-1", "route_profile": "work", "room_id": "room-1"}
+{"func": "validate", "profile": "work", "source": "telegram", "title": null, "route_profile": "work", "room_id": "room-1"}
+{"func": "validate", "profile": "home", "source": "bot_room", "title": null, "route_profile": "work", "room_id": "room-1"}
+{"func": "validate", "profile": "work", "source": "bot_room", "title": "Group: other", "route_profile": "work", "room_id": "room-1"}
+{"func": "validate", "profile": "work", "source": "bot_room", "title": null, "route_profile": "work", "room_id": "room-1"}
+{"func": "submit_guard", "profile": "work", "source": "bot_room", "route_profile": "work", "session_id": "s1", "member_id": "m-1", "route_member_id": "m-1", "self_session_id": null, "attachments_present": false}
+{"func": "submit_guard", "profile": "work", "source": "bot_room", "route_profile": "work", "session_id": "s1", "member_id": "m-1", "route_member_id": "m-1", "self_session_id": "s1", "attachments_present": false}
+{"func": "submit_guard", "profile": "work", "source": "bot_room", "route_profile": "work", "session_id": "s1", "member_id": "m-1", "route_member_id": "m-1", "self_session_id": "s2", "attachments_present": false}
+{"func": "submit_guard", "profile": "work", "source": "bot_room", "route_profile": "work", "session_id": "s1", "member_id": "m-1", "route_member_id": "m-1", "self_session_id": null, "attachments_present": true}
+{"func": "submit_guard", "profile": "work", "source": "bot_room", "route_profile": "work", "session_id": "s1", "member_id": "m-2", "route_member_id": "m-1", "self_session_id": null, "attachments_present": false}
+{"func": "submit_guard", "profile": "work", "source": "slack", "route_profile": "work", "session_id": "s1", "member_id": null, "route_member_id": "m-1", "self_session_id": null, "attachments_present": false}
+{"func": "submit_guard", "profile": "home", "source": "bot_room", "route_profile": "work", "session_id": "s1", "member_id": null, "route_member_id": "m-1", "self_session_id": null, "attachments_present": false}
+{"func": "interrupt", "dispatch_task_id": "task-1", "expected_task_id": "task-1", "task_id": "task-1", "execution_generation": 2, "has_stop_receipt": true}
+{"func": "interrupt", "dispatch_task_id": "task-1", "expected_task_id": "task-9", "task_id": "task-1", "execution_generation": 2, "has_stop_receipt": true}
+{"func": "interrupt", "dispatch_task_id": null, "expected_task_id": "task-1", "task_id": "task-1", "execution_generation": 2, "has_stop_receipt": true}
+{"func": "interrupt", "dispatch_task_id": null, "expected_task_id": "task-1", "task_id": "task-1", "execution_generation": null, "has_stop_receipt": true}
+{"func": "interrupt", "dispatch_task_id": null, "expected_task_id": "task-1", "task_id": "task-1", "execution_generation": 0, "has_stop_receipt": true}
+{"func": "interrupt", "dispatch_task_id": null, "expected_task_id": "task-1", "task_id": "task-2", "execution_generation": 2, "has_stop_receipt": true}
+{"func": "seq", "source_event_seq": 1}
+{"func": "seq", "source_event_seq": 5}
+{"func": "seq", "source_event_seq": 0}
+{"func": "seq", "source_event_seq": true}
+{"func": "bind_args", "binding": {"room_id": "room-1", "gateway_id": "gw-1", "authority_epoch": 3}, "route": {"home_install_id": "home-1", "member_id": "m-1", "target_install_id": "inst-1", "target_profile": "work", "capability_digest": "cap-abc", "cancellation_scope_id": "cancel-room-1", "trace_id": "trace-xyz", "grant": "grant-1"}}

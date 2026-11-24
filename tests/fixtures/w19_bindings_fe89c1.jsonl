@@ -1,0 +1,16 @@
+{"func":"new_receipt","binding":{"profile_id":"default","principal_id":"user:1","request_id":"req-1","session_id":"s-1","route":"api_server","entry":{"platform":"api_server","chat_id":"c1"},"policy":{"mode":"owner"}}}
+{"func":"new_receipt","binding":{"profile_id":"p2","principal_id":"u2","request_id":"req-2","session_id":"s-2","route":"telegram","entry":{},"policy":{},"legacy_session_id":"legacy-9"}}
+{"func":"new_receipt","binding":{"profile_id":"p3","principal_id":"u3","request_id":"req-3","session_id":"s-3","route":"local","entry":{"a":1},"policy":{"b":2},"lineage":["s-0","s-1"]}}
+{"func":"new_receipt","binding":{"profile_id":"p4","principal_id":"u4","request_id":"req-4","session_id":"s-4","route":"local","entry":{},"policy":{},"legacy_session_id":"leg-1","lineage":[]}}
+{"func":"api_binding","receipt":{"profile_id":"default","session_id":"s-1","route":"api_server","entry":{"platform":"api_server"},"declared_key":"dk","room_identity":["room-a","g1"],"room_generation":3,"storage_source":"api_server"}}
+{"func":"api_binding","receipt":{"profile_id":"p2","session_id":"s-2","route":"webhook","entry":{},"room_generation":"7"}}
+{"func":"api_binding","receipt":null}
+{"func":"api_binding","receipt":{"profile_id":"p3","session_id":"s-3","route":"local","entry":{},"storage_source":"local","room_identity":[],"room_generation":0}}
+{"func":"binding_marks","policy":"owned","legacy":true,"owner":"s-9"}
+{"func":"binding_marks","policy":null,"legacy":false,"owner":null}
+{"func":"handoff_head","owner":"s-7","head":"s-8"}
+{"func":"handoff_head","owner":null,"head":"s-8"}
+{"func":"legacy_adoption_scan","ids":["s-3","s-1","s-2"],"marked":["b","a","b"]}
+{"func":"legacy_adoption_scan","ids":[],"marked":[]}
+{"func":"lineages","found":[["s-1",["s-1","s-2"]],["s-3",["s-3"]]]}
+{"func":"lineages","found":[]}

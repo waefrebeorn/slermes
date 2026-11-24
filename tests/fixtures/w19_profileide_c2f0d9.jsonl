@@ -1,0 +1,18 @@
+{"func": "profile_namespace", "out": "agent:work:", "profile": "work"}
+{"func": "profile_namespace", "out": "agent:work:", "profile": "  work  "}
+{"func": "profile_namespace", "out": "agent::", "profile": ""}
+{"func": "profile_namespace", "out": "agent::", "profile": null}
+{"func": "profile_namespace", "out": "agent:research:", "profile": "\tresearch\n"}
+{"func": "profile_namespace", "out": "agent:CamelCase-9:", "profile": "CamelCase-9"}
+{"func": "rekey_as_dict", "out": {}, "counts": {}}
+{"func": "rekey_as_dict", "out": {"sessions_profile_name": 3, "gateway_heartbeats_profile": 0}, "counts": {"sessions_profile_name": 3, "gateway_heartbeats_profile": 0, "sessions_session_key": null}}
+{"func": "rekey_as_dict", "out": {"sessions_session_key": 7, "gateway_routing": 2, "local_policy_receipts": 1}, "counts": {"local_policy_receipts": 1, "gateway_routing": 2, "sessions_session_key": 7}}
+{"func": "rekey_as_dict", "out": {}, "counts": {"sessions_profile_name": null, "gateway_heartbeats_profile": null, "sessions_session_key": null, "sessions_origin_json": null, "delivery_obligations_adapter_profile": null, "delivery_obligations_session_key": null, "telegram_dm_topic_mode_profile_name": null, "telegram_dm_topic_bindings_profile_name": null, "telegram_dm_topic_bindings_session_key": null, "gateway_routing": null, "api_binding_receipts": null, "local_policy_receipts": null}}
+{"func": "rekey_as_dict", "out": {"sessions_origin_json": 9, "telegram_dm_topic_mode_profile_name": 6, "telegram_dm_topic_bindings_profile_name": 5, "telegram_dm_topic_bindings_session_key": 4, "api_binding_receipts": 0}, "counts": {"telegram_dm_topic_bindings_session_key": 4, "telegram_dm_topic_bindings_profile_name": 5, "telegram_dm_topic_mode_profile_name": 6, "api_binding_receipts": 0, "sessions_origin_json": 9}}
+{"func": "purge_as_dict", "out": {}, "counts": {}}
+{"func": "purge_as_dict", "out": {"gateway_routing": 2, "gateway_heartbeats": 0, "delivery_obligations": 5}, "counts": {"gateway_routing": 2, "gateway_heartbeats": 0, "delivery_obligations": 5}}
+{"func": "purge_as_dict", "out": {"telegram_dm_topic_bindings": 1}, "counts": {"telegram_dm_topic_bindings": 1, "telegram_dm_topic_mode": null, "delivery_obligations": null, "gateway_heartbeats": null, "gateway_routing": null}}
+{"func": "purge_as_dict", "out": {"telegram_dm_topic_mode": 8}, "counts": {"telegram_dm_topic_mode": 8}}
+{"func": "collision", "out": {"str": "profile routing collision in scope telegram:1:2", "entity": "profile", "entity_id": "work"}, "new_name": "work", "message": "profile routing collision in scope telegram:1:2"}
+{"func": "collision", "out": {"str": "profile identity collision in gateway_routing", "entity": "profile", "entity_id": ""}, "new_name": "", "message": "profile identity collision in gateway_routing"}
+{"func": "collision", "out": {"str": "", "entity": "profile", "entity_id": "x"}, "new_name": "x", "message": ""}

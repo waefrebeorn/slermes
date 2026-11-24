@@ -1,0 +1,42 @@
+{"func": "chunk", "content": "short message", "max_length": 4096, "utf16": false}
+{"func": "chunk", "content": "The gateway keeps a per-chat queue so a slow transcription delays only its own chat. Every inbound message is admitted once and answered once, and a reconnect replays only what was not acknowledged.", "max_length": 80, "utf16": false}
+{"func": "chunk", "content": "The gateway keeps a per-chat queue so a slow transcription delays only its own chat. Every inbound message is admitted once and answered once, and a reconnect replays only what was not acknowledged.", "max_length": 120, "utf16": false}
+{"func": "chunk", "content": "line one\nline two\nline three\nline four\nline five", "max_length": 30}
+{"func": "chunk", "content": "Intro paragraph before the code.\n\n```python\ndef f(x):\n    return x + 1\n\ndef g(y):\n    return y * 2\n```\n\nTrailing paragraph after the code block.", "max_length": 70, "utf16": false}
+{"func": "chunk", "content": "```js\nconst a = 1;\nconst a = 1;\nconst a = 1;\nconst a = 1;\nconst a = 1;\nconst a = 1;\nconst a = 1;\nconst a = 1;\nconst a = 1;\nconst a = 1;\nconst a = 1;\nconst a = 1;\n", "max_length": 60, "utf16": false}
+{"func": "chunk", "content": "before ```inline code here``` after the span and more words", "max_length": 30}
+{"func": "chunk", "content": "see [the documentation](https://example.com/very/long/path) for details", "max_length": 30}
+{"func": "chunk", "content": "escaped \\[not a link\\] and [real](https://x.example/y) tail", "max_length": 28}
+{"func": "chunk", "content": "Intro.\n\n| a | b |\n| - | - |\n| 1 | 2 |\n\nOutro.", "max_length": 40, "utf16": false}
+{"func": "chunk", "content": "Lead in.\n\n| name | value |\n| --- | --- |\n| row0 | 0 |\n| row1 | 7 |\n| row2 | 14 |\n| row3 | 21 |\n| row4 | 28 |\n| row5 | 35 |\n| row6 | 42 |\n| row7 | 49 |\n\nAfter the table.", "max_length": 60, "utf16": false}
+{"func": "chunk", "content": "Lead in.\n\n| name | value |\n| --- | --- |\n| row0 | 0 |\n| row1 | 7 |\n| row2 | 14 |\n| row3 | 21 |\n| row4 | 28 |\n| row5 | 35 |\n| row6 | 42 |\n| row7 | 49 |\n\nAfter the table.", "max_length": 90, "utf16": false}
+{"func": "chunk", "content": "hello 🚀 world hello 🚀 world hello 🚀 world hello 🚀 world hello 🚀 world hello 🚀 world ", "max_length": 25, "utf16": true}
+{"func": "chunk", "content": "hello 🚀 world hello 🚀 world hello 🚀 world hello 🚀 world hello 🚀 world hello 🚀 world ", "max_length": 25, "utf16": false}
+{"func": "chunk", "content": "abcdefghij", "max_length": 0, "utf16": false}
+{"func": "chunk", "content": "abcdefghij", "max_length": 1, "utf16": false}
+{"func": "chunk", "content": "", "max_length": 10, "utf16": false}
+{"func": "chunk", "content": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "max_length": 50, "utf16": false}
+{"func": "open_link", "text": "[a](b)"}
+{"func": "open_link", "text": "text [label](https://example.com"}
+{"func": "open_link", "text": "escaped \\[not a link"}
+{"func": "open_link", "text": "[a](b) then [c"}
+{"func": "open_link", "text": "plain ] bracket"}
+{"func": "open_link", "text": ""}
+{"func": "fence_state", "text": "```python\nx = 1\n", "in_code": false, "lang": ""}
+{"func": "fence_state", "text": "```\ncode\n```\n", "in_code": false, "lang": ""}
+{"func": "fence_state", "text": "still open\n", "in_code": true, "lang": "python"}
+{"func": "fence_state", "text": "closing\n```\n", "in_code": true, "lang": "py"}
+{"func": "fence_state", "text": "  ```  rust  \nlet x = 1;", "in_code": false, "lang": ""}
+{"func": "row_start", "text": "| h1 | h2 |\n| --- | --- |\n| a | b |\n| c | d |\n", "split_at": 32}
+{"func": "row_start", "text": "| h1 | h2 |\n| --- | --- |\n| a | b |\n| c | d |\n", "split_at": 10}
+{"func": "row_start", "text": "plain text line\nanother line", "split_at": 12}
+{"func": "row_start", "text": "| h1 | h2 |\n| --- | --- |\n| a | b |\n| c | d |\n", "split_at": 46}
+{"func": "rollback", "text": "| h1 | h2 |\n| --- | --- |\n| a | b |\n| c | d |\n", "split_at": 32, "max_units": 80, "utf16": false}
+{"func": "rollback", "text": "| h1 | h2 |\n| --- | --- |\n| a | b |\n| c | d |\n", "split_at": 32, "max_units": 10, "utf16": false}
+{"func": "rollback", "text": "| h1 | h2 |\n| --- | --- |\n| a | b |\n| c | d |\n", "split_at": 46, "max_units": 80, "utf16": false}
+{"func": "rollback", "text": "no table\nhere", "split_at": 5, "max_units": 80, "utf16": false}
+{"func": "rollback", "text": "| h1 | h2 |\n| --- | --- |\n| a | b |\n| c | d |\n", "split_at": 32, "max_units": 80, "utf16": true}
+{"func": "header_repeat", "chunk": "| h1 | h2 |\n| --- | --- |\n| a | b |", "rest": "| c | d |\n", "max_units": 40}
+{"func": "header_repeat", "chunk": "| h1 | h2 |\n| --- | --- |\n| a | b |", "rest": "plain", "max_units": 40}
+{"func": "header_repeat", "chunk": "| h1 | h2 |\n| --- | --- |\n| a | b |", "rest": "| c | d |\n", "max_units": 4}
+{"func": "header_repeat", "chunk": "no table at all", "rest": "| c | d |", "max_units": 40}

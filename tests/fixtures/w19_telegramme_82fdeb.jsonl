@@ -1,0 +1,22 @@
+{"func":"flood_wait_seconds","retry_after":7}
+{"func":"flood_wait_seconds","retry_after":"12.5"}
+{"func":"flood_wait_seconds","retry_after":{"total_seconds":3.25}}
+{"func":"flood_wait_seconds","retry_after":true}
+{"func":"flood_wait_seconds","retry_after":"abc"}
+{"func":"flood_wait_seconds","retry_after":null,"text":"Flood control exceeded. Retry in 42 seconds"}
+{"func":"flood_wait_seconds","text":"Too Many Requests: retry after 1.5s"}
+{"func":"flood_wait_seconds","text":"retry 30"}
+{"func":"flood_wait_seconds","text":"Retry In 9 more"}
+{"func":"flood_wait_seconds","text":"no flood here"}
+{"func":"known_window_message","wait":3.5}
+{"func":"known_window_message","wait":0}
+{"func":"known_window_message","wait":12.34}
+{"func":"recover_action","wait_present":false,"wait":0,"stage":0,"known_window":false,"inline_cap":5}
+{"func":"recover_action","wait_present":true,"wait":3,"stage":0,"known_window":false,"inline_cap":5}
+{"func":"recover_action","wait_present":true,"wait":0,"stage":0,"known_window":false,"inline_cap":5}
+{"func":"recover_action","wait_present":true,"wait":6,"stage":0,"known_window":false,"inline_cap":5}
+{"func":"recover_action","wait_present":true,"wait":3,"stage":1,"known_window":false,"inline_cap":5}
+{"func":"recover_action","wait_present":true,"wait":4,"stage":2,"known_window":false,"inline_cap":5}
+{"func":"recover_action","wait_present":true,"wait":4,"stage":2,"known_window":true,"inline_cap":5}
+{"func":"recover_action","wait_present":true,"wait":100,"stage":0,"known_window":true,"inline_cap":5}
+{"func":"recover_action","wait_present":true,"wait":2,"stage":3,"known_window":false,"inline_cap":5}

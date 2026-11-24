@@ -1,0 +1,38 @@
+{"func": "handoff_rows", "messages": [{"role": "user", "content": "hi", "_db_persisted": true, "_micro_compact_marker": 1, "tool_calls": [], "name": "t"}], "out": [{"role": "user", "content": "hi", "tool_calls": []}]}
+{"func": "handoff_rows", "messages": ["raw", 5, null, {"content": "c", "risk": "high"}], "out": ["raw", 5, null, {"content": "c"}]}
+{"func": "handoff_rows", "messages": [], "out": []}
+{"func": "handoff_rows", "messages": [{"_micro_compact_marker": 2, "worker_note": "x"}], "out": [{}]}
+{"func": "handoff_rows", "messages": [{"role": "assistant", "tool_name": "bash", "_compressed_summary": "sum", "_compressed_summary_has_user_turn": true}], "out": [{"role": "assistant", "tool_name": "bash", "_compressed_summary": "sum", "_compressed_summary_has_user_turn": true}]}
+{"func": "cas_rows", "held": [{"role": "user", "_db_persisted": true, "risk": "x", "_micro_compact_marker": 3}], "out": [{"role": "user", "_db_persisted": true}]}
+{"func": "cas_rows", "held": ["str", {"content": "c", "_db_persisted": false}], "out": [{"content": "c", "_db_persisted": false}]}
+{"func": "cas_rows", "held": [], "out": []}
+{"func": "declared_scope_identity", "identity": ["s-1", true, 3], "out": ["s-1", true, 3]}
+{"func": "declared_scope_identity", "identity": [], "out": []}
+{"func": "is_explicit_fork_child", "identity": ["s-1", true], "out": "s-1"}
+{"func": "is_explicit_fork_child", "identity": [false, "s-0"], "out": false}
+{"func": "is_explicit_fork_child", "identity": [0, "s-0"], "out": 0}
+{"func": "receipt_journal", "candidate": {"kind": "compression.outbox", "body": {"n": 1}}, "result": {}, "scope": {"session_id": "s-0", "worker_id": "w1"}, "out": {"kind": "compression.outbox", "body": {"n": 1}}}
+{"func": "receipt_journal", "candidate": {"kind": "compression.outbox"}, "result": {"worker_assignment": {"parent": "s-0", "session_id": "s-9"}}, "scope": {"session_id": "s-0", "worker_id": "w1"}, "out": {"kind": "compression.outbox", "scope": {"session_id": "s-9", "worker_id": "w1"}}}
+{"func": "receipt_journal", "candidate": {"kind": "compression.outbox", "scope": {"session_id": "s-0"}}, "result": {"worker_assignment": {"parent": "s-0", "session_id": "s-9"}}, "scope": {"session_id": "s-0", "worker_id": "w1"}, "out": {"kind": "compression.outbox", "scope": {"session_id": "s-9", "worker_id": "w1"}}}
+{"func": "receipt_journal", "candidate": {"kind": "compression.outbox"}, "result": {"worker_assignment": {"parent": "s-7", "session_id": "s-9"}}, "scope": {"session_id": "s-0"}, "out": {"error": "outbox_scope_mismatch"}}
+{"func": "receipt_journal", "candidate": {"kind": "compression.outbox"}, "result": {"worker_assignment": {"session_id": "s-9"}}, "scope": {"session_id": "s-0"}, "out": {"error": "KeyError: 'parent'"}}
+{"func": "fallback_streak", "streak": 5, "out": 5}
+{"func": "fallback_streak", "streak": -3, "out": 0}
+{"func": "fallback_streak", "streak": "7", "out": 7}
+{"func": "fallback_streak", "streak": 2.9, "out": 2}
+{"func": "fallback_streak", "streak": null, "out": {"error": "TypeError"}}
+{"func": "fallback_streak", "streak": "x", "out": {"error": "ValueError"}}
+{"func": "fallback_streak", "streak": true, "out": 1}
+{"func": "ineffective_count", "count": 0, "out": 0}
+{"func": "ineffective_count", "count": " 12 ", "out": 12}
+{"func": "ineffective_count", "count": -1, "out": 0}
+{"func": "recovery_deadline", "deadline": 0, "out": {"value": null}}
+{"func": "recovery_deadline", "deadline": 12.5, "out": {"value": 12.5}}
+{"func": "recovery_deadline", "deadline": -4, "out": {"value": null}}
+{"func": "recovery_deadline", "deadline": "3.5", "out": {"value": 3.5}}
+{"func": "recovery_deadline", "deadline": "abc", "out": {"value": null}}
+{"func": "recovery_deadline", "deadline": null, "out": {"value": null}}
+{"func": "recovery_deadline", "deadline": false, "out": {"value": null}}
+{"func": "session_readable", "scope_session_id": "s-0", "requested": "s-0", "readable_ids": [], "out": {"allowed": true}}
+{"func": "session_readable", "scope_session_id": "s-0", "requested": "s-5", "readable_ids": ["s-5", "s-6"], "out": {"allowed": true}}
+{"func": "session_readable", "scope_session_id": "s-0", "requested": "s-7", "readable_ids": ["s-5", "s-6"], "out": {"error": "permission_denied"}}

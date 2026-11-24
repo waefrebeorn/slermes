@@ -1,0 +1,16 @@
+{"func":"same_prefix","agent_messages":[{"role":"user","content":"hi"}],"prefix":[{"role":"user","content":"hi"}]}
+{"func":"same_prefix","agent_messages":[{"role":"user","content":"hi","timestamp":1,"reasoning":null,"_db_persisted":true}],"prefix":[{"role":"user","content":"hi"}]}
+{"func":"same_prefix","agent_messages":[{"role":"assistant","content":"a","tool_calls":[{"id":"1"}]}],"prefix":[{"role":"assistant","content":"a","tool_calls":[{"id":"2"}]}]}
+{"func":"same_prefix","agent_messages":[{"role":"user","content":"hi"}],"prefix":[{"role":"user","content":"hi"},{"role":"assistant","content":"yo"}]}
+{"func":"same_prefix","agent_messages":[1,2],"prefix":[true,2]}
+{"func":"same_prefix","agent_messages":["a"],"prefix":["b"]}
+{"func":"same_prefix","agent_messages":[{"role":"user"}],"prefix":[{"role":"user","content":null}]}
+{"func":"same_prefix","agent_messages":[{"role":"user","content":{"a":1,"b":2}}],"prefix":[{"role":"user","content":{"b":2,"a":1}}]}
+{"func":"same_prefix","agent_messages":[{"role":"user","content":{"a":1}}],"prefix":[{"role":"user","content":{"a":2}}]}
+{"func":"start_index","conversation_history":[],"user_message":"hi","result":{"messages":[{"role":"user","content":"hi"}],"_messages_are_turn_suffix":true}}
+{"func":"start_index","conversation_history":[{"role":"user","content":"x"}],"user_message":"hi","result":{}}
+{"func":"start_index","conversation_history":[{"role":"user","content":"x"}],"user_message":"hi","result":{"messages":[{"role":"user","content":"x"},{"role":"assistant","content":"y"},{"role":"user","content":"hi"},{"role":"assistant","content":"z"}]},"reanchor_idx":2}
+{"func":"start_index","conversation_history":[{"role":"user","content":"x"},{"role":"assistant","content":"y"}],"user_message":"hi","result":{"messages":[{"role":"user","content":"x","timestamp":1},{"role":"assistant","content":"y","finish_reason":"stop"},{"role":"user","content":"hi"},{"role":"assistant","content":"z"}]}}
+{"func":"start_index","conversation_history":[{"role":"user","content":"x"},{"role":"assistant","content":"y"}],"user_message":"hi","result":{"messages":[{"role":"user","content":"x"},{"role":"assistant","content":"y"}]}}
+{"func":"start_index","conversation_history":[{"role":"user","content":"x"}],"user_message":"hi","result":{"messages":[{"role":"assistant","content":"unrelated"},{"role":"user","content":"other"}]}}
+{"func":"start_index","conversation_history":[],"user_message":"hi","result":{"messages":[]}}

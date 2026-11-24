@@ -1,0 +1,17 @@
+{"func": "moved_key", "key": "agent:work:telegram:42", "old": "work", "new": "home", "out": "agent:home:telegram:42"}
+{"func": "moved_key", "key": "agent:work2:telegram:42", "old": "work", "new": "home", "out": null}
+{"func": "moved_key", "key": null, "old": "work", "new": "home", "out": null}
+{"func": "moved_key", "key": 42, "old": "work", "new": "home", "out": null}
+{"func": "moved_key", "key": "agent:work:", "old": "work", "new": "home", "out": "agent:home:"}
+{"func": "moved_key", "key": "agent:work:slack:C1:thread:9", "old": "work", "new": "research team", "out": "agent:research team:slack:C1:thread:9"}
+{"func": "rekey_entry", "entry": {"session_key": "agent:work:telegram:42", "origin": {"profile": "work", "kind": "gateway"}, "route": "r1"}, "old": "work", "new": "home", "out": {"changed": true, "entry": {"session_key": "agent:home:telegram:42", "origin": {"profile": "home", "kind": "gateway"}, "route": "r1"}}}
+{"func": "rekey_entry", "entry": {"session_key": "agent:other:telegram:42", "origin": {"profile": "work"}}, "old": "work", "new": "home", "out": {"changed": true, "entry": {"session_key": "agent:other:telegram:42", "origin": {"profile": "home"}}}}
+{"func": "rekey_entry", "entry": {"session_key": "agent:work:telegram:42", "origin": {"profile": "home"}}, "old": "work", "new": "home", "out": {"changed": true, "entry": {"session_key": "agent:home:telegram:42", "origin": {"profile": "home"}}}}
+{"func": "rekey_entry", "entry": {"session_key": "agent:work:telegram:42", "origin": "not-a-dict"}, "old": "work", "new": "home", "out": {"changed": true, "entry": {"session_key": "agent:home:telegram:42", "origin": "not-a-dict"}}}
+{"func": "rekey_entry", "entry": {"profile_id": "work", "extra": [1, 2, 3], "cursor": "2026-01-01"}, "old": "work", "new": "home", "out": {"changed": false, "entry": {"profile_id": "work", "extra": [1, 2, 3], "cursor": "2026-01-01"}}}
+{"func": "rekey_entry", "entry": {"session_key": "agent:work:telegram:1", "origin": {"profile": "work", "profile_id": "work"}}, "old": "work", "new": "home", "out": {"changed": true, "entry": {"session_key": "agent:home:telegram:1", "origin": {"profile": "home", "profile_id": "work"}}}}
+{"func": "rekey_allowed", "old": "work ", "new": "home", "out": true}
+{"func": "rekey_allowed", "old": "   ", "new": "home", "out": false}
+{"func": "rekey_allowed", "old": "work", "new": " work", "out": false}
+{"func": "rekey_allowed", "old": null, "new": null, "out": false}
+{"func": "rekey_allowed", "old": "\twork\n", "new": "home", "out": true}

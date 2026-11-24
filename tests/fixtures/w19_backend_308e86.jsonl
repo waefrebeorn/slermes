@@ -1,0 +1,33 @@
+{"func": "store_error", "message": "database is locked", "is_lock": true}
+{"func": "store_error", "message": "database is locked", "is_lock": true, "is_disk_full": true}
+{"func": "store_error", "message": "disk I/O error"}
+{"func": "store_error", "message": "no more rows available", "no_more_rows": true}
+{"func": "store_error", "message": "fts5: corruption found", "fts_corrupt": true}
+{"func": "store_error", "message": "malformed database schema (messages)", "malformed": true}
+{"func": "store_error", "message": "something odd", "classify": "corrupt"}
+{"func": "store_error", "message": "unable to open database file"}
+{"func": "store_error", "message": "UNIQUE constraint failed: messages.id"}
+{"func": "store_error", "message": "Disk I/O Error", "fts_corrupt": true}
+{"func": "store_error", "message": "unable to open database file", "classify": "corrupt"}
+{"func": "translate", "exc_kind": 0}
+{"func": "translate", "exc_kind": 1, "message": "wal generation gone"}
+{"func": "translate", "exc_kind": 2, "message": "file replaced"}
+{"func": "translate", "exc_kind": 3, "message": "state.db corrupt"}
+{"func": "translate", "exc_kind": 4, "message": "database is locked", "is_lock": true}
+{"func": "translate", "exc_kind": 4, "message": "disk I/O error"}
+{"func": "translate", "exc_kind": 5, "exc_name": "RuntimeError", "message": "boom"}
+{"func": "translate", "exc_kind": 4, "message": "unable to open database file"}
+{"func": "register_repository", "already_registered": [], "attribute": "sessions", "capabilities": {"full_text_search": true}}
+{"func": "register_repository", "already_registered": ["sessions"], "attribute": "sessions"}
+{"func": "register_repository", "already_registered": [], "attribute": "bogus"}
+{"func": "register_repository", "already_registered": ["sessions"], "attribute": "messages", "capabilities": {"nope": true}}
+{"func": "register_repository", "already_registered": [], "attribute": "health", "capabilities": null}
+{"func": "register_repository", "already_registered": [], "attribute": "messages", "capabilities": {"physical_admin": false, "remote": true}}
+{"func": "open_plan", "store_keys": ["h1", "h2"], "scope_key": "h1", "profile_dir": "/p/one", "closed": false}
+{"func": "open_plan", "store_keys": ["h1"], "scope_key": "h9", "profile_dir": "/p/nine", "closed": true}
+{"func": "open_plan", "store_keys": ["h1"], "scope_key": "h1", "profile_dir": "/p/one", "closed": true}
+{"func": "open_plan", "store_keys": [], "scope_key": "h1", "profile_dir": "C:\\Tenant 1", "closed": false}
+{"func": "usable", "has_holder": true, "read_only": true, "registry_owned": false}
+{"func": "usable", "has_holder": true, "read_only": false, "registry_owned": false}
+{"func": "usable", "has_holder": false, "read_only": true, "registry_owned": true}
+{"func": "usable", "has_holder": true, "read_only": false, "registry_owned": true}

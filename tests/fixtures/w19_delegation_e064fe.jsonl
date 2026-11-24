@@ -1,0 +1,16 @@
+{"func":"delegation_payload","kind":"bare","value":"deleg-001"}
+{"func":"delegation_payload","kind":"bare","value":42}
+{"func":"delegation_payload","kind":"bare","value":null}
+{"func":"delegation_payload","kind":"payload","value":{"delegation_id":"d1","extra":{"nested":[1,2]}}}
+{"func":"delegation_payload","kind":"payload","value":[1,2,3]}
+{"func":"delegation_payload","kind":"payload","value":"not-a-mapping"}
+{"func":"delegation_payload","kind":"completion","value":{"event":{"delegation_id":"d2","status":"completed"},"result":{"ok":true}}}
+{"func":"delegation_payload","kind":"completion","value":{"event":{},"result":null,"delivery":"pending"}}
+{"func":"delegation_payload","kind":"completion","value":{"event":{"delegation_id":"d3"},"result":{"partial":[1]},"delivery":"delivered"}}
+{"func":"delegation_payload","kind":"dispatch","value":{"delegation_id":"d4","task":{"goal":"summarise"},"dispatched_at":1731000000.5,"session_key":"sk-1","parent_session_id":"p1","origin_ui_session_id":"u1","origin_session_id":"o1"}}
+{"func":"delegation_payload","kind":"dispatch","value":{"delegation_id":"d5","task":null,"dispatched_at":0,"session_key":"","parent_session_id":"p2","origin_ui_session_id":"u2","origin_session_id":"o2"}}
+{"func":"delegation_payload","kind":"child","value":{"delegation_id":"d6","entry":{"task_index":2,"status":"ok"}}}
+{"func":"delegation_payload","kind":"claim","value":{"delegation_id":"d7","claim_id":"claim-9"}}
+{"func":"delegation_payload","kind":"record","value":{"delegation_id":"d8","claim_id":"claim-10"}}
+{"func":"delegation_payload","kind":"record","value":"degenerate"}
+{"func":"delegation_payload","kind":"","value":"d9"}

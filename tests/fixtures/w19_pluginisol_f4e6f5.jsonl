@@ -1,0 +1,41 @@
+{"func":"hermes_module","module":"agent.estop"}
+{"func":"hermes_module","module":"tools.registry"}
+{"func":"hermes_module","module":"hermes_agent.compat.paths"}
+{"func":"hermes_module","module":"gateway.platforms.base"}
+{"func":"hermes_module","module":"myplugin"}
+{"func":"hermes_module","module":"json"}
+{"func":"hermes_module","module":""}
+{"func":"dedupe","items":["a","b","a","c","b"]}
+{"func":"dedupe","items":[]}
+{"func":"dedupe","items":["x"]}
+{"func":"dedupe","items":[1,"1",1,true]}
+{"func":"python_files","paths":["__init__.py","plugin.py","test_top.py","conftest.py","pkg/mod.py","pkg/test_inner.py","tests/test_plugin.py","docs/x.py","__pycache__/m.py","node_modules/n.py",".hidden/z.py","dashboard/api.py"]}
+{"func":"python_files","paths":["single.py"]}
+{"func":"python_files","paths":["a/b/c/notpy.txt"]}
+{"func":"ctx_method","name":"register_platform","rel":"plugin.py","line":12}
+{"func":"ctx_method","name":"register_cli_command","rel":"plugin.py","line":3}
+{"func":"ctx_method","name":"subscribe","rel":"pkg/mod.py","line":7}
+{"func":"ctx_method","name":"emit","rel":"pkg/mod.py","line":8}
+{"func":"ctx_method","name":"post_message","rel":"plugin.py","line":21}
+{"func":"ctx_method","name":"register_hook","rel":"plugin.py","line":30}
+{"func":"hook_note","hook":"pre_gateway_dispatch"}
+{"func":"hook_note","hook":"post_turn"}
+{"func":"registry_call","target":"tools.registry.register","model_provider":false,"rel":"plugin.py","line":5}
+{"func":"registry_call","target":"providers.register_provider","model_provider":true,"rel":"plugin.py","line":6}
+{"func":"registry_call","target":"providers.register_provider","model_provider":false,"rel":"plugin.py","line":7}
+{"func":"registry_call","target":"myregistry.register","model_provider":false,"rel":"plugin.py","line":8}
+{"func":"registry_call","target":"gateway.platform_registry.deregister","model_provider":false,"rel":"plugin.py","line":9}
+{"func":"registry_call","target":"hermes_cli.foo.bar","model_provider":false,"rel":"plugin.py","line":10}
+{"func":"patch_reason","owner":"agent.state","attr":"MODEL","rel":"plugin.py","line":9}
+{"func":"setattr_reason","owner":"tools.registry","rel":"pkg/mod.py","line":14}
+{"func":"manifest_kind_reason","kind":"platform"}
+{"func":"manifest_kind_reason","kind":"  Platform  "}
+{"func":"manifest_kind_reason","kind":"tool"}
+{"func":"manifest_kind_reason","kind":null}
+{"func":"streaming_marker","source":"return StreamingResponse(gen())"}
+{"func":"streaming_marker","source":"app.websocket('/x')"}
+{"func":"streaming_marker","source":"class WebSocket: pass"}
+{"func":"streaming_marker","source":"plain handler"}
+{"func":"report","verdict":"host","reasons":[],"notes":["n"],"ctx_methods":["subscribe","register_tool","subscribe"]}
+{"func":"report","verdict":"in_process","reasons":["r1","r2"],"notes":[],"ctx_methods":[]}
+{"func":"report","verdict":"portable","reasons":[],"notes":[],"ctx_methods":[]}

@@ -1,0 +1,42 @@
+{"func": "output_tail", "out": "…def", "output": "abcdef", "limit": 3}
+{"func": "output_tail", "out": "abcdef", "output": "abcdef", "limit": 10}
+{"func": "output_tail", "out": "abcdef", "output": "abcdef", "limit": 6}
+{"func": "output_tail", "out": "…abcdef", "output": "abcdef", "limit": 0}
+{"func": "output_tail", "out": "…cdef", "output": "abcdef", "limit": -2}
+{"func": "output_tail", "out": "", "output": "", "limit": 5}
+{"func": "output_tail", "out": "…wörld", "output": "héllo wörld", "limit": 5}
+{"func": "output_tail", "out": "héllo wörld", "output": "héllo wörld", "limit": 11}
+{"func": "output_tail", "out": "…キスト", "output": "日本語テキスト", "limit": 3}
+{"func": "marker_profile", "out": "work", "data": {"profile": " work "}}
+{"func": "marker_profile", "out": "work", "data": {"profile": "", "session_key": "agent:work:telegram:123:456"}}
+{"func": "marker_profile", "out": null, "data": {"session_key": "agent:main:telegram:123:456"}}
+{"func": "marker_profile", "out": null, "data": {"session_key": "agent::telegram:123:456"}}
+{"func": "marker_profile", "out": "main", "data": {"session_key": "agent:main~:telegram:9:8"}}
+{"func": "marker_profile", "out": null, "data": {"session_key": "agent:a:b:c"}}
+{"func": "marker_profile", "out": null, "data": {}}
+{"func": "marker_profile", "out": "profile7", "data": {"profile": null, "session_key": "agent:profile7:x:y:z"}}
+{"func": "marker_profile", "out": "explicit", "data": {"profile": "explicit", "session_key": "agent:other:x:y:z"}}
+{"func": "marker_age", "out": 1800, "data": {"timestamp": "2026-11-23T10:00:00"}, "now_iso": "2026-11-23T10:30:00"}
+{"func": "marker_age", "out": 0, "data": {"timestamp": "2026-11-23T10:00:00+02:00"}, "now_iso": "2026-11-23T08:00:00Z"}
+{"func": "marker_age", "out": -0.25, "data": {"timestamp": "2026-11-23T10:00:00.500000+02:00"}, "now_iso": "2026-11-23T09:00:00.250000+01:00"}
+{"func": "marker_age", "out": 7200, "data": {"timestamp": " 2026-11-23 10:00:00 "}, "now_iso": "2026-11-23 12:00:00"}
+{"func": "marker_age", "out": null, "data": {}, "now_iso": "2026-11-23T10:00:00"}
+{"func": "marker_age", "out": null, "data": {"timestamp": ""}, "now_iso": "2026-11-23T10:00:00"}
+{"func": "marker_age", "out": null, "data": {"timestamp": "not a date"}, "now_iso": "2026-11-23T10:00:00"}
+{"func": "marker_age", "out": null, "data": {"timestamp": null}, "now_iso": "2026-11-23T10:00:00"}
+{"func": "marker_age", "out": -86400, "data": {"timestamp": "2026-11-24T10:00:00Z"}, "now_iso": "2026-11-23T10:00:00Z"}
+{"func": "read_since", "out": {"text": "llo", "offset": 5}, "data": "hello", "offset": 2}
+{"func": "read_since", "out": {"text": "", "offset": 5}, "data": "hello", "offset": 5}
+{"func": "read_since", "out": {"text": "", "offset": 5}, "data": "hello", "offset": 9}
+{"func": "read_since", "out": {"text": "", "offset": 2}, "data": "hello", "offset": 2, "io_error": true}
+{"func": "read_since", "out": {"text": "é", "offset": 3}, "data": "aé", "offset": 1}
+{"func": "read_since", "out": {"text": "�", "offset": 3}, "data": "aé", "offset": 2}
+{"func": "read_since", "out": {"text": "", "offset": 0}, "data": "", "offset": 0}
+{"func": "update_paths", "out": {"pending": "C:\\hermes-home\\.update_pending.json", "claimed": "C:\\hermes-home\\.update_pending.claimed.json", "output": "C:\\hermes-home\\.update_output.txt", "exit_code": "C:\\hermes-home\\.update_exit_code", "prompt": "C:\\hermes-home\\.update_prompt.json", "response": "C:\\hermes-home\\.update_response"}, "hermes_home": "C:/hermes-home"}
+{"func": "update_paths", "out": {"pending": "C:\\temp\\prof\\.update_pending.json", "claimed": "C:\\temp\\prof\\.update_pending.claimed.json", "output": "C:\\temp\\prof\\.update_output.txt", "exit_code": "C:\\temp\\prof\\.update_exit_code", "prompt": "C:\\temp\\prof\\.update_prompt.json", "response": "C:\\temp\\prof\\.update_response"}, "hermes_home": "C:/temp/prof/"}
+{"func": "update_paths", "out": {"pending": ".update_pending.json", "claimed": ".update_pending.claimed.json", "output": ".update_output.txt", "exit_code": ".update_exit_code", "prompt": ".update_prompt.json", "response": ".update_response"}, "hermes_home": ""}
+{"func": "update_exit_code", "out": 0, "text": "0"}
+{"func": "update_exit_code", "out": 2, "text": " 2 "}
+{"func": "update_exit_code", "out": 1, "text": ""}
+{"func": "update_exit_code", "out": 124, "text": "124\n"}
+{"func": "update_exit_code", "out": null, "text": "abc"}

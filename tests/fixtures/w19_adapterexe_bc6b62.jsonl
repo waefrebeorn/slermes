@@ -1,0 +1,24 @@
+{"func": "init_buttons", "out": []}
+{"func": "init_buttons", "allow_once": false, "out": ["allow_once"]}
+{"func": "init_buttons", "allow_permanent": false, "out": ["allow_always"]}
+{"func": "init_buttons", "allow_session": false, "out": ["allow_session", "allow_always"]}
+{"func": "init_buttons", "smart_denied": true, "out": ["allow_session", "allow_always"]}
+{"func": "init_buttons", "smart_denied": true, "allow_once": false, "out": ["allow_session", "allow_always", "allow_once"]}
+{"func": "init_buttons", "allow_session": false, "allow_permanent": false, "out": ["allow_session", "allow_always"]}
+{"func": "check_auth", "uid": "7", "out": {"ok": true, "warned": false}}
+{"func": "check_auth", "base_ok": false, "uid": "7", "out": {"ok": false, "warned": false}}
+{"func": "check_auth", "require_admin": true, "admin_user_ids": ["7"], "uid": "7", "out": {"ok": true, "warned": false}}
+{"func": "check_auth", "require_admin": true, "admin_user_ids": ["7"], "uid": "8", "out": {"ok": false, "warned": false}}
+{"func": "check_auth", "require_admin": true, "admin_user_ids": [], "uid": "8", "out": {"ok": false, "warned": true}}
+{"func": "check_auth", "require_admin": true, "admin_user_ids": [" 7 ", ""], "uid": "7", "out": {"ok": true, "warned": false}}
+{"func": "check_auth", "require_admin": true, "admin_user_ids": ["7"], "uid": null, "out": {"ok": false, "warned": false}}
+{"func": "footer_key", "reason": "resolved", "out": "platform.discord.approval.already_resolved"}
+{"func": "footer_key", "reason": "timeout", "out": "platform.discord.prompt.expired_footer"}
+{"func": "footer_key", "reason": "gone", "out": "platform.discord.approval.no_longer_pending"}
+{"func": "footer_key", "reason": "other", "out": "platform.discord.slash_confirm.resolved_cancel"}
+{"func": "resolve_outcome", "gate_ok": false, "out": {"actions": ["return"], "finalize_color": null, "finalize_text": null, "resolved": false, "backend_settled": false}}
+{"func": "resolve_outcome", "refusal": true, "out": {"actions": ["refuse"], "finalize_color": null, "finalize_text": null, "resolved": false, "backend_settled": false}}
+{"func": "resolve_outcome", "resolve_raises": true, "count": 2, "out": {"actions": ["click_failed"], "finalize_color": null, "finalize_text": null, "resolved": false, "backend_settled": false}}
+{"func": "resolve_outcome", "count": 0, "request_id": "req-1", "out": {"actions": ["no_longer_pending"], "finalize_color": null, "finalize_text": null, "resolved": true, "backend_settled": false}}
+{"func": "resolve_outcome", "count": 0, "color": "green", "out": {"actions": ["finalize"], "finalize_color": "dark_grey", "finalize_text": "platform.discord.approval.expired", "resolved": true, "backend_settled": false}}
+{"func": "resolve_outcome", "count": 3, "color": "purple", "out": {"actions": ["finalize"], "finalize_color": "purple", "finalize_text": "platform.discord.approval.by_user", "resolved": true, "backend_settled": true}}

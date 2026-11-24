@@ -1,0 +1,31 @@
+{"func":"js_only","path":"app/src/index.js"}
+{"func":"js_only","path":"component.tsx"}
+{"func":"js_only","path":"view.vue"}
+{"func":"js_only","path":"view.svelte"}
+{"func":"js_only","path":"module.py"}
+{"func":"js_only","path":""}
+{"func":"js_only","path":"bundle.js.map"}
+{"func":"py_only","path":"pkg/mod.py"}
+{"func":"py_only","path":"notebook.ipynb"}
+{"func":"py_only","path":"stub.pyi"}
+{"func":"py_only","path":"MAIN.PY"}
+{"func":"py_only","path":"a.py.js"}
+{"func":"not_docs","path":"README.md"}
+{"func":"not_docs","path":"config/deploy.yml"}
+{"func":"not_docs","path":"data.json"}
+{"func":"not_docs","path":"main.go"}
+{"func":"not_docs","path":""}
+{"func":"count"}
+{"func":"names"}
+{"func":"rule","name":"demo_rule","reminder":"do not do that","triggers":{"regex":"\\bdemo\\(","substrings":["demo("]}}
+{"func":"rule","name":"no_triggers","reminder":"plain reminder","triggers":{}}
+{"func":"pattern","name":"github_actions_workflow","probe_paths":[".github/workflows/ci.yml",".github/workflows/ci.yaml","app/.github/workflows/x.yml","src/main.py","","ci.yml"]}
+{"func":"pattern","name":"child_process_exec","probe_paths":["run.js","run.py","deep/run.ts","Makefile"]}
+{"func":"pattern","name":"eval_injection","probe_paths":["x.py","notes.md","README.txt","app.js",".json"]}
+{"func":"pattern","name":"pickle_deserialization","probe_paths":["a.py","a.go","model.pkl"]}
+{"func":"pattern","name":"os_system_injection","probe_paths":["shell.py","shell.sh",""]}
+{"func":"pattern","name":"unsafe_yaml_load"}
+{"func":"pattern","name":"script_src_without_sri"}
+{"func":"pattern","name":"tls_verification_disabled"}
+{"func":"pattern","name":"new_function_injection"}
+{"func":"pattern","name":"not_a_rule"}

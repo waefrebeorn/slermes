@@ -1,0 +1,38 @@
+{"func": "domain_list", "value": ["a.com", "  b.com  ", null, "   ", 7, "c.com"]}
+{"func": "domain_list", "value": ["1.com", "2.com", "3.com", "4.com", "5.com", "6.com", "7.com"]}
+{"func": "domain_list", "value": "notalist"}
+{"func": "domain_list", "value": []}
+{"func": "coerce", "cast": "int", "value": "42", "default": 5}
+{"func": "coerce", "cast": "int", "value": "4.2", "default": 7}
+{"func": "coerce", "cast": "int", "value": true, "default": 0}
+{"func": "coerce", "cast": "float", "value": "1e3", "default": 90}
+{"func": "coerce", "cast": "float", "value": "timed out", "default": 90}
+{"func": "coerce", "cast": "str", "value": 12, "default": ""}
+{"func": "coerce", "cast": "str", "value": true, "default": ""}
+{"func": "coerce", "cast": "str", "value": null, "default": "d"}
+{"func": "tool", "cfg": {}}
+{"func": "tool", "cfg": {"allowed_domains": ["x.com"], "excluded_domains": ["y.com"]}}
+{"func": "tool", "cfg": {"allowed_domains": [" x.com ", "", "y.com"]}}
+{"func": "tool", "cfg": {"excluded_domains": ["spam.example"], "allowed_domains": []}}
+{"func": "prompt", "query": "rust async runtime", "limit": 3}
+{"func": "prompt", "query": "", "limit": 10}
+{"func": "collect", "resp": {"output": [{"type": "message", "content": [{"type": "output_text", "text": "hello", "annotations": [{"type": "url_citation", "url": "https://a.example", "start_index": 0, "end_index": 2}, {"bogus": 1}]}, {"type": "tool_use", "text": "ignored"}]}, {"type": "message", "content": "notalist"}, {"type": "other"}]}}
+{"func": "collect", "resp": {}}
+{"func": "collect", "resp": {"output": [{"type": "message", "content": [{"type": "output_text", "text": "   ", "annotations": []}]}]}}
+{"func": "parse", "text": "Here you go: {\"results\": [{\"title\": \"A\", \"url\": \"https://a.example\", \"description\": \" first \"}, {\"title\": \"B\", \"url\": \" \"}]}", "limit": 5}
+{"func": "parse", "text": "{\"results\": []}"}
+{"func": "parse", "text": "not json at all"}
+{"func": "parse", "text": "{\"results\": [{\"url\": \"https://a.example\"}, {\"url\": \"https://b.example\", \"title\": \"B\"}]}", "limit": 1}
+{"func": "annotations", "annotations": [{"type": "url_citation", "url": "https://a.example", "start_index": 4, "end_index": 9}, {"type": "url_citation", "url": "https://a.example"}, {"type": "url_citation", "url": "https://b.example", "start_index": 2, "end_index": 5}, {"type": "other", "url": "https://c.example"}], "joined": "xx foo bar baz", "limit": 5}
+{"func": "annotations", "annotations": [{"type": "url_citation", "url": "https://a.example", "start_index": 9, "end_index": 4}], "joined": "abcdef", "limit": 5}
+{"func": "extract", "resp": {"output": [{"type": "message", "content": [{"type": "output_text", "text": "{\"results\": [{\"title\":\"T\",\"url\":\"https://t.example\",\"description\":\"D\"}]}"}]}]}, "limit": 5}
+{"func": "extract", "resp": {"output": [{"type": "message", "content": [{"type": "output_text", "text": "see this", "annotations": [{"type": "url_citation", "url": "https://ann.example", "start_index": 4, "end_index": 8}]}]}]}, "limit": 5}
+{"func": "extract", "resp": {"citations": ["https://c1.example", "", "https://c2.example", 5]}, "limit": 5}
+{"func": "extract", "resp": {"output": [], "citations": "nope"}, "limit": 5}
+{"func": "web_config", "cfg": {"web": {"xai": {"model": "grok-x", "timeout": 30}}}}
+{"func": "web_config", "cfg": {"web": {"xai": "notadict"}}}
+{"func": "web_config", "cfg": {}}
+{"func": "clamp", "limit": 250}
+{"func": "clamp", "limit": "abc"}
+{"func": "clamp", "limit": 0}
+{"func": "clamp", "limit": "77"}

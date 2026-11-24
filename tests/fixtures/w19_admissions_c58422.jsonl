@@ -1,0 +1,27 @@
+{"func": "raise_gate", "gate_kind": 0}
+{"func": "raise_gate", "gate_kind": 1, "reason": "FenceStale"}
+{"func": "raise_gate", "gate_kind": 1, "reason": "ProofRejected", "field": "epoch"}
+{"func": "raise_gate", "gate_kind": 1, "reason": "UnknownExecution", "field": "generation", "detail": "no live claim"}
+{"func": "raise_gate", "gate_kind": 1, "reason": "FenceStale", "detail": "epoch moved"}
+{"func": "raise_gate", "gate_kind": 2}
+{"func": "raise_gate", "gate_kind": 3, "reason": "FenceStale", "field": "owner_epoch", "detail": "drained"}
+{"func": "refusal", "reason": "FenceStale"}
+{"func": "refusal", "reason": "ProofRejected", "field": "digest"}
+{"func": "refusal", "reason": "UnknownExecution", "field": "generation", "detail": "terminal tombstone"}
+{"func": "refusal", "reason": "", "field": "", "detail": ""}
+{"func": "steer_replayed", "status": "terminal", "outcome": "steering"}
+{"func": "steer_replayed", "status": "terminal", "outcome": "steered"}
+{"func": "steer_replayed", "status": "terminal", "outcome": "completed"}
+{"func": "steer_replayed", "status": "queued", "outcome": "steering"}
+{"func": "steer_replayed", "status": "terminal", "outcome": null}
+{"func": "steer_replayed", "status": null, "outcome": "steered"}
+{"func": "steer_replayed", "status": "unknown", "outcome": "steered"}
+{"func": "coerce_record", "intent": "queue", "status": "queued"}
+{"func": "coerce_record", "intent": "steer", "status": "terminal"}
+{"func": "coerce_record", "intent": "redirect", "status": "unknown"}
+{"func": "coerce_record", "intent": "queue", "status": "started"}
+{"func": "coerce_record", "intent": "bogus", "status": "queued"}
+{"func": "coerce_record", "intent": "queue", "status": "bogus"}
+{"func": "coerce_record", "intent": null, "status": "queued"}
+{"func": "coerce_record", "intent": "QUEUE", "status": "queued"}
+{"func": "coerce_record", "intent": "queue", "status": null}

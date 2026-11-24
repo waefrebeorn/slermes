@@ -1,0 +1,56 @@
+{"func":"one_line","value":null,"limit":80}
+{"func":"one_line","value":"","limit":80}
+{"func":"one_line","value":"  a  b\tc\n","limit":80}
+{"func":"one_line","value":"   ","limit":80}
+{"func":"one_line","value":"abcdefghij","limit":80}
+{"func":"one_line","value":123,"limit":80}
+{"func":"one_line","value":3.5,"limit":80}
+{"func":"one_line","value":true,"limit":80}
+{"func":"one_line","value":["a","b"],"limit":80}
+{"func":"one_line","value":{"k":"v"},"limit":80}
+{"func":"one_line","value":"zzzz","limit":2}
+{"func":"one_line","value":"zzzz","limit":0}
+{"func":"one_line","value":"\u200bzero\u200b","limit":80}
+{"func":"one_line","value":"a\u00a0b\u3000c","limit":80}
+{"func":"one_line","value":"  compression  x ","limit":80}
+{"func":"cause","cls":"SessionRowMissing"}
+{"func":"cause","cls":"StoreQuarantined"}
+{"func":"cause","cls":"DeletedWalGeneration"}
+{"func":"cause","cls":"CompressionInProgress"}
+{"func":"cause","cls":"DiskFull"}
+{"func":"cause","cls":"UnknownExecution"}
+{"func":"cause","cls":"SessionWriteGuarded"}
+{"func":"message","cls":"NotFound","args":{"entity":"session","entity_id":"abc"}}
+{"func":"message","cls":"NotFound","args":{"entity":"session","entity_id":"a'b"}}
+{"func":"message","cls":"SessionRowMissing","args":{"session_id":"s1"}}
+{"func":"message","cls":"Conflict","args":{"entity":"session","entity_id":"abc"}}
+{"func":"message","cls":"CompressionClosed","args":{"session_id":"s1","tip":"s2"}}
+{"func":"message","cls":"CompressionBusy","args":{"session_id":"s1"}}
+{"func":"message","cls":"CompressionBusy","args":{"session_id":"s1","message":"custom text"}}
+{"func":"message","cls":"CompressionInProgress","args":{"session_id":"s1"}}
+{"func":"message","cls":"TurnLeaseLost","args":{"session_id":"s1"}}
+{"func":"message","cls":"SessionWriteGuarded","args":{"session_id":"s1"}}
+{"func":"message","cls":"RewindRefused","args":{"session_id":"s1","reason":"history_changed"}}
+{"func":"message","cls":"RewindRefused","args":{"session_id":"s1","reason":"handoff_lost","message":"custom"}}
+{"func":"message","cls":"ExportTooLarge","args":{"session_id":"s1","message_count":1234,"limit":1000}}
+{"func":"message","cls":"ExportTooLarge","args":{"session_id":"s1","message_count":5,"limit":1234567}}
+{"func":"message","cls":"CapabilityUnsupported","args":{"capability":"rooms"}}
+{"func":"message","cls":"AuthorityRefusal","args":{"reason":"session_busy"}}
+{"func":"message","cls":"FenceStale","args":{"kind":"stale_epoch","entity":"epoch","entity_id":"1"}}
+{"func":"message","cls":"UnknownExecution","args":{"entity":"session","entity_id":"s1"}}
+{"func":"message","cls":"ProofRejected","args":{"entity":"session","entity_id":"s1"}}
+{"func":"message","cls":"HandoffUnsettled","args":{"reason":"session_busy"}}
+{"func":"message","cls":"RetiredSessionError","args":{"session_id":"s1"}}
+{"func":"message","cls":"DeclarativeDrift","args":{"detail":"detail here"}}
+{"func":"message","cls":"TransientStoreError","args":{"message":"boom"}}
+{"func":"busy_refusal","exc":"CompressionInProgress","args":{"session_id":"s1"}}
+{"func":"busy_refusal","exc":"TurnLeaseLost","args":{"session_id":"s1"}}
+{"func":"in_group","cls":"DiskFull","group":"store_failures"}
+{"func":"in_group","cls":"CompressionInProgress","group":"mutation_guards"}
+{"func":"in_group","cls":"TurnLeaseLost","group":"store_failures"}
+{"func":"in_group","cls":"SearchIndexCorrupt","group":"corrupt"}
+{"func":"in_group","cls":"SessionRowMissing","group":"cause"}
+{"func":"is_kind","cls":"CompressionInProgress","base":"CompressionBusy"}
+{"func":"is_kind","cls":"StoreReplaced","base":"PermanentStoreError"}
+{"func":"rewind_text","reason":"target_changed"}
+{"func":"rewind_text","reason":"nope"}

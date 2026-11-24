@@ -1,0 +1,47 @@
+{"func": "clean_filename", "name": "C:\\Users\\John Doe\\report.PDF"}
+{"func": "clean_filename", "name": "../../etc/passwd"}
+{"func": "clean_filename", "name": "bad\nname‮.txt"}
+{"func": "clean_filename", "name": "  .  "}
+{"func": "clean_filename", "name": null}
+{"func": "clean_filename", "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt"}
+{"func": "clean_filename", "name": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+{"func": "clean_filename", "name": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc.dddddddddddddddddddd"}
+{"func": "clean_filename", "name": "  spaced name .md  "}
+{"func": "clean_filename", "name": "na​me.txt"}
+{"func": "clean_filename", "name": "tab\there.txt"}
+{"func": "clean_filename", "name": "file."}
+{"func": "command_text", "text": "@image:/tmp/foo.png\n\n/moa ask something"}
+{"func": "command_text", "text": "@file:C:\\a b\\x.png\n@url:http://x/y\n   /compress here 3"}
+{"func": "command_text", "text": "  plain text  "}
+{"func": "command_text", "text": "@image:no-colon-here"}
+{"func": "command_text", "text": "@IMAGE:UP.PNG\n/New"}
+{"func": "is_command", "text": "@image:/tmp/a.png\n/new", "allow_gateway_control": true}
+{"func": "is_command", "text": "/new", "allow_gateway_control": false}
+{"func": "is_command", "text": "hello", "allow_gateway_control": true}
+{"func": "get_command", "text": "/model@hermesbot some arg"}
+{"func": "get_command", "text": "/a/b"}
+{"func": "get_command", "text": "/COMPRESS"}
+{"func": "get_command", "text": "@file:/x y/z.md\n/status"}
+{"func": "get_command", "text": "not a command"}
+{"func": "get_command_args", "text": "/compress here 5"}
+{"func": "get_command_args", "text": "/compress --aggressive"}
+{"func": "get_command_args", "text": "/compress a-b-c"}
+{"func": "get_command_args", "text": "hello world"}
+{"func": "get_command_args", "text": "/reset"}
+{"func": "get_command_args", "text": "@image:/p/q.png\n/undo 3"}
+{"func": "sender_id", "user_id": "u1", "source_user_id": "s1"}
+{"func": "sender_id", "user_id": null, "source_user_id": "s1"}
+{"func": "sender_id", "user_id": null, "source_user_id": null}
+{"func": "absorb_reply_expected", "self_reply_expected": null, "other_reply_expected": true}
+{"func": "absorb_reply_expected", "self_reply_expected": true, "other_reply_expected": false}
+{"func": "absorb_reply_expected", "self_reply_expected": false, "other_reply_expected": false}
+{"func": "absorb_reply_expected", "self_reply_expected": null, "other_reply_expected": false}
+{"func": "absorb_turn_input", "self_user_id": "u1", "self_user_name": "Ann", "self_source_user_id": "u1", "other_user_id": "u1", "other_user_name": "Ann", "other_source_user_id": "u1", "self_reply_expected": null, "other_reply_expected": true}
+{"func": "absorb_turn_input", "self_user_id": "u1", "self_user_name": "Ann", "self_source_user_id": "u1", "other_user_id": "u2", "other_user_name": "Bob", "other_source_user_id": "u2", "self_reply_expected": true, "other_reply_expected": false}
+{"func": "absorb_turn_input", "self_user_id": null, "self_user_name": null, "self_source_user_id": "u9", "other_user_id": null, "other_user_name": null, "other_source_user_id": "u9", "self_reply_expected": null, "other_reply_expected": null}
+{"func": "extend_media", "self_urls": ["/a.png"], "self_types": ["image/png"], "self_names": ["a.png"], "other_urls": ["/b.pdf"], "other_types": ["application/pdf"], "other_names": ["b.pdf"]}
+{"func": "extend_media", "self_urls": ["/a.png"], "self_types": ["image/png"], "self_names": [], "other_urls": ["/b.pdf"], "other_types": ["application/pdf"], "other_names": []}
+{"func": "extend_media", "self_urls": ["/a.png", "/c.jpg"], "self_types": ["image/png", "image/jpeg"], "self_names": ["a.png"], "other_urls": ["/b.pdf"], "other_types": ["application/pdf"], "other_names": null}
+{"func": "accept_interrupt", "events": [{"rewritten_from": 1}, {"rewritten_from": 2}, {}]}
+{"func": "accept_interrupt", "events": [{}]}
+{"func": "accept_interrupt", "events": [{"rewritten_from": 2}, {}, {"rewritten_from": null}]}

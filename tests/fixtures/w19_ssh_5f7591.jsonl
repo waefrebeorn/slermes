@@ -1,0 +1,22 @@
+{"func": "sync_error", "reason": "scp failed: no route", "subject": "File sync to root@host", "out": {"reason": "scp failed: no route", "retry_hint": "File sync to root@host failed \u2014 verify the SSH connection is healthy, then retry."}}
+{"func": "sync_error", "reason": "remote mkdir failed", "subject": "Remote directory setup on h", "what": "the connection", "out": {"reason": "remote mkdir failed", "retry_hint": "Remote directory setup on h failed \u2014 verify the connection is healthy, then retry."}}
+{"func": "private_runtime_dir", "mode": 16832, "uid": 1000, "my_uid": 1000, "out": true}
+{"func": "private_runtime_dir", "mode": 16877, "uid": 1000, "my_uid": 1000, "out": false}
+{"func": "private_runtime_dir", "mode": 16832, "uid": 1001, "my_uid": 1000, "out": false}
+{"func": "private_runtime_dir", "mode": 33216, "uid": 1000, "my_uid": 1000, "out": false}
+{"func": "private_runtime_dir", "mode": 16832, "uid": 1000, "my_uid": 1000, "lstat_fails": true, "out": false}
+{"func": "control_socket_for", "control_socket": "/tmp/hermes-ssh-1000/0123456789abcdef.sock", "send_env": [], "out": "/tmp/hermes-ssh-1000/0123456789abcdef.sock"}
+{"func": "control_socket_for", "control_socket": "/tmp/hermes-ssh-1000/0123456789abcdef.sock", "send_env": ["FOO"], "out": "/tmp/hermes-ssh-1000/012345679520437c.sock"}
+{"func": "control_socket_for", "control_socket": "/tmp/hermes-ssh-1000/0123456789abcdef.sock", "send_env": ["FOO", "BAR"], "out": "/tmp/hermes-ssh-1000/012345678d35c97b.sock"}
+{"func": "control_socket_for", "control_socket": "/tmp/hermes-ssh-1000/0123456789abcdef.sock", "send_env": ["BAR", "FOO"], "out": "/tmp/hermes-ssh-1000/0123456739b3ba51.sock"}
+{"func": "target_flags", "port": 22, "key_path": "", "out": []}
+{"func": "target_flags", "port": 2222, "key_path": "", "out": ["-p", "2222"]}
+{"func": "target_flags", "port": 2222, "key_path": "/home/u/.ssh/id_ed25519", "out": ["-p", "2222", "-i", "/home/u/.ssh/id_ed25519"]}
+{"func": "target_flags", "port_flag": "-P", "port": 2200, "key_path": "/k", "out": ["-P", "2200", "-i", "/k"]}
+{"func": "build_ssh_command", "control_socket": "/tmp/hermes-ssh-1000/0123456789abcdef.sock", "user": "root", "host": "h.example", "port": 22, "multiplex": false, "out": ["ssh", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new", "-o", "ConnectTimeout=10", "root@h.example"]}
+{"func": "build_ssh_command", "control_socket": "/tmp/hermes-ssh-1000/0123456789abcdef.sock", "user": "root", "host": "h.example", "port": 22, "multiplex": true, "out": ["ssh", "-o", "ControlPath=/tmp/hermes-ssh-1000/0123456789abcdef.sock", "-o", "ControlMaster=auto", "-o", "ControlPersist=300", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new", "-o", "ConnectTimeout=10", "root@h.example"]}
+{"func": "build_ssh_command", "control_socket": "/tmp/hermes-ssh-1000/0123456789abcdef.sock", "user": "alice", "host": "10.0.0.5", "port": 2222, "key_path": "/home/alice/.ssh/id_rsa", "multiplex": true, "send_env": ["OPENAI_API_KEY"], "extra_args": ["-v"], "out": ["ssh", "-o", "ControlPath=/tmp/hermes-ssh-1000/012345671bd0074c.sock", "-o", "ControlMaster=auto", "-o", "ControlPersist=300", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new", "-o", "ConnectTimeout=10", "-o", "SendEnv=OPENAI_API_KEY", "-p", "2222", "-i", "/home/alice/.ssh/id_rsa", "-v", "alice@10.0.0.5"]}
+{"func": "build_ssh_command", "control_socket": "/tmp/hermes-ssh-1000/0123456789abcdef.sock", "user": "alice", "host": "10.0.0.5", "port": 22, "multiplex": false, "send_env": ["B", "A"], "extra_args": [], "out": ["ssh", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new", "-o", "ConnectTimeout=10", "-o", "SendEnv=A", "-o", "SendEnv=B", "alice@10.0.0.5"]}
+{"func": "ensure_ssh_available", "available": ["ssh", "scp"], "out": null}
+{"func": "ensure_ssh_available", "available": ["scp"], "out": "SSH is not installed or not in PATH. Install OpenSSH client: apt install openssh-client"}
+{"func": "ensure_ssh_available", "available": [], "out": "SSH is not installed or not in PATH. Install OpenSSH client: apt install openssh-client"}

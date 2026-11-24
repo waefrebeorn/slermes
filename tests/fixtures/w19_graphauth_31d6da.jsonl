@@ -1,0 +1,34 @@
+{"func": "format_error", "error": "boom", "out": "boom"}
+{"func": "format_error", "error": {"code": "BadRequest", "message": "bad thing"}, "out": "BadRequest: bad thing"}
+{"func": "format_error", "error": {"message": "only msg"}, "out": "only msg"}
+{"func": "format_error", "error": {"code": "NoMessage"}, "out": null}
+{"func": "format_error", "error": 42, "out": null}
+{"func": "format_error", "error": null, "out": null}
+{"func": "format_error", "error": {"code": 500, "message": "server"}, "out": "500: server"}
+{"func": "format_error", "error": {"code": "E", "message": ""}, "out": null}
+{"func": "token_url", "authority_url": "https://login.microsoftonline.com/", "tenant_id": "/tenant-1/", "out": "https://login.microsoftonline.com/tenant-1/oauth2/v2.0/token"}
+{"func": "token_url", "authority_url": "https://login.microsoftonline.com", "tenant_id": "  contoso  ", "out": "https://login.microsoftonline.com/contoso/oauth2/v2.0/token"}
+{"func": "token_url", "authority_url": "https://graph.example/v2/", "tenant_id": "contoso", "out": "https://graph.example/v2/contoso/oauth2/v2.0/token"}
+{"func": "from_env", "env_map": {"MSGRAPH_TENANT_ID": "contoso.onmicrosoft.com", "MSGRAPH_CLIENT_ID": "client-1", "MSGRAPH_CLIENT_SECRET": "s3cret"}, "required": true, "out": {"tenant_id": "contoso.onmicrosoft.com", "client_id": "client-1", "client_secret": "s3cret", "scope": "https://graph.microsoft.com/.default", "authority_url": "https://login.microsoftonline.com"}}
+{"func": "from_env", "env_map": {"MSGRAPH_TENANT_ID": "t", "MSGRAPH_CLIENT_ID": "c"}, "required": true, "out": {"error": "Missing Microsoft Graph configuration: MSGRAPH_CLIENT_SECRET"}}
+{"func": "from_env", "env_map": {"MSGRAPH_TENANT_ID": "t"}, "required": false, "out": null}
+{"func": "from_env", "env_map": {"MSGRAPH_TENANT_ID": "", "MSGRAPH_CLIENT_ID": "  ", "MSGRAPH_CLIENT_SECRET": ""}, "required": true, "out": {"error": "Missing Microsoft Graph configuration: MSGRAPH_TENANT_ID, MSGRAPH_CLIENT_ID, MSGRAPH_CLIENT_SECRET"}}
+{"func": "from_env", "env_map": {"MSGRAPH_TENANT_ID": " t ", "MSGRAPH_CLIENT_ID": "c", "MSGRAPH_CLIENT_SECRET": "s", "MSGRAPH_SCOPE": "  https://graph.microsoft.com/.default  ", "MSGRAPH_AUTHORITY_URL": " https://login.microsoftonline.com/ "}, "required": true, "out": {"tenant_id": "t", "client_id": "c", "client_secret": "s", "scope": "https://graph.microsoft.com/.default", "authority_url": "https://login.microsoftonline.com/"}}
+{"func": "is_expired", "expires_at": 1000, "now": 900, "skew_seconds": 120, "out": true}
+{"func": "is_expired", "expires_at": 2000, "now": 900, "skew_seconds": 120, "out": false}
+{"func": "is_expired", "expires_at": 1000, "now": 1000, "skew_seconds": -5, "out": true}
+{"func": "is_expired", "expires_at": 1500, "now": 1000, "skew_seconds": 600, "out": true}
+{"func": "expires_in", "expires_at": 1000.7, "now": 900, "out": 100}
+{"func": "expires_in", "expires_at": 900, "now": 1000, "out": 0}
+{"func": "fresh_cached", "has_cached": 0, "expires_at": 5000, "now": 1000, "skew_seconds": 120, "out": false}
+{"func": "fresh_cached", "has_cached": 1, "expires_at": 1300, "now": 1000, "skew_seconds": 120, "out": true}
+{"func": "fresh_cached", "has_cached": 1, "expires_at": 1100, "now": 1000, "skew_seconds": 120, "out": false}
+{"func": "inspect_health", "tenant_id": "t-1", "client_id": "c-1", "has_cached": 0, "now": 1000, "skew_seconds": -3, "out": {"configured": true, "tenant_id": "t-1", "client_id": "c-1", "scope": "https://graph.microsoft.com/.default", "authority_url": "https://login.microsoftonline.com", "token_url": "https://login.microsoftonline.com/t-1/oauth2/v2.0/token", "cached": false, "expires_in_seconds": null, "is_expired": null, "refresh_skew_seconds": 0}}
+{"func": "inspect_health", "tenant_id": "t-1", "client_id": "c-1", "scope": "https://graph.microsoft.com/.default", "authority_url": "https://login.microsoftonline.com/", "has_cached": 1, "expires_at": 1300, "now": 1000, "skew_seconds": 60, "out": {"configured": true, "tenant_id": "t-1", "client_id": "c-1", "scope": "https://graph.microsoft.com/.default", "authority_url": "https://login.microsoftonline.com/", "token_url": "https://login.microsoftonline.com/t-1/oauth2/v2.0/token", "cached": true, "expires_in_seconds": 300, "is_expired": false, "refresh_skew_seconds": 60}}
+{"func": "inspect_health", "tenant_id": "t-2", "client_id": "c-2", "has_cached": 1, "expires_at": 900, "now": 1000, "skew_seconds": 120, "out": {"configured": true, "tenant_id": "t-2", "client_id": "c-2", "scope": "https://graph.microsoft.com/.default", "authority_url": "https://login.microsoftonline.com", "token_url": "https://login.microsoftonline.com/t-2/oauth2/v2.0/token", "cached": true, "expires_in_seconds": 0, "is_expired": true, "refresh_skew_seconds": 120}}
+{"func": "error_detail", "is_json": false, "text": "  boom \n", "out": "boom"}
+{"func": "error_detail", "is_json": false, "text": "   ", "out": "unknown error"}
+{"func": "error_detail", "is_json": true, "payload": {"error_description": "AADSTS7000215: invalid secret"}, "text": "ignored", "out": "AADSTS7000215: invalid secret"}
+{"func": "error_detail", "is_json": true, "payload": {"error": {"code": "invalid_client", "message": "bad secret"}}, "text": "", "out": "invalid_client: bad secret"}
+{"func": "error_detail", "is_json": true, "payload": {"error": "bare failure"}, "out": "bare failure"}
+{"func": "error_detail", "is_json": true, "payload": {"error": {"code": "only_code"}}, "out": "only_code"}

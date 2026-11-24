@@ -1,0 +1,14 @@
+{"func":"rows","rows":null}
+{"func":"rows","rows":[]}
+{"func":"rows","rows":[{"role":"user","content":"hi"},{"role":"assistant","content":"yo","seq":2}]}
+{"func":"compaction_payload","messages":[{"role":"user","content":"a"},{"role":"assistant","content":"b"}],"model_config_patch":null,"watermark":null,"lock_holder":null,"tail_count":0,"carried_messages":[],"covered_ids":null,"unresolved_held":null,"held_for_cas":null}
+{"func":"compaction_payload","messages":[{"role":"system","content":"summary"}],"model_config_patch":{"model":"x"},"watermark":42,"lock_holder":"lease-7","tail_count":3,"carried_messages":[{"role":"user","content":"tail"}],"covered_ids":[1,2,3],"unresolved_held":[{"id":9,"reason":"open"}],"held_for_cas":[{"id":11,"digest":"d"}]}
+{"func":"compaction_payload","messages":[],"model_config_patch":{},"watermark":0,"lock_holder":"","tail_count":7,"carried_messages":null,"covered_ids":[],"unresolved_held":[],"held_for_cas":[]}
+{"func":"compaction_payload","messages":[{"role":"user"}],"covered_ids":[5],"unresolved_held":[],"held_for_cas":[],"tail_count":1}
+{"func":"publication_payload","child_session_id":"child-1","source":"compression","messages":[{"role":"user","content":"seed"}]}
+{"func":"publication_payload","child_session_id":"child-2","source":"compaction","messages":[],"model":"gpt","model_config":{"temperature":0.2},"system_prompt":"sys","cwd":"/tmp","profile_name":"default","compression_lock_holder":"h-1","require_compression_lease":false,"require_lease_refresh":true,"lease_ttl_seconds":12.5,"watermark":10,"watermark_ceiling":99}
+{"func":"publication_payload","child_session_id":"child-3","source":"compression","messages":[{"role":"user","content":"x"}],"model":null,"model_config":null,"system_prompt":null,"cwd":null,"profile_name":null,"compression_lock_holder":null,"require_compression_lease":true,"require_lease_refresh":false,"lease_ttl_seconds":300.0,"watermark":0,"watermark_ceiling":0}
+{"func":"publication_payload","child_session_id":"child-4","source":"compression","messages":[{"role":"tool","content":"{}"}],"model":"m","watermark":3}
+{"func":"publication_payload","child_session_id":"child-5","source":"compression","messages":[{"role":"user","content":"y"}],"lease_ttl_seconds":0.1,"require_compression_lease":true,"watermark_ceiling":12345}
+{"func":"rows","rows":[{"a":1,"b":[1,2,{"c":null}]},{"nested":{"k":"v"}}]}
+{"func":"bogus","x":1}

@@ -1,0 +1,26 @@
+{"func":"display_base_url","value":""}
+{"func":"display_base_url","value":"https://openrouter.ai/api/v1"}
+{"func":"display_base_url","value":"https://user:pw@api.example.com:8443/v1/chat?token=secret#frag"}
+{"func":"display_base_url","value":"HTTPS://User:Pw@Host/Path"}
+{"func":"display_base_url","value":"http://host:abc/x"}
+{"func":"display_base_url","value":"http://host:99999/x"}
+{"func":"display_base_url","value":"host/v1"}
+{"func":"display_base_url","value":"http://user@/x"}
+{"func":"display_base_url","value":"http://[::1]:8080/v1"}
+{"func":"display_base_url","value":"//host/path"}
+{"func":"display_base_url","value":"  http://host/a "}
+{"func":"display_base_url","value":"http://h@t:1/x"}
+{"func":"display_base_url","value":"file:///c:/x"}
+{"func":"display_base_url","value":"http://host:0/x"}
+{"func":"settings_display","settings":{"session_key":"telegram:42","model":"gpt-4o","provider":"openai","base_url":"https://user:pw@api.example.com:8443/v1?x=1"}}
+{"func":"settings_display","settings":{"session_key":"k","model":"m","provider":"p","base_url":""}}
+{"func":"settings_display","settings":{"session_key":"k","model":"m","provider":"p","base_url":"not a url"}}
+{"func":"resolve_settings","model_cfg":{"default":"gpt-4o","provider":"openai","base_url":"https://api.openai.com/v1"},"key":"telegram:42","override":null,"store_override":null,"has_channel":false}
+{"func":"resolve_settings","model_cfg":{"model":"claude-sonnet-4","base_url":"https://anthropic.example/v1"},"key":"discord:7","override":{},"store_override":null,"has_channel":false}
+{"func":"resolve_settings","model_cfg":{},"key":"slack:1","override":null,"store_override":null,"has_channel":false}
+{"func":"resolve_settings","model_cfg":null,"key":"local:1","override":{"model":"  override-model  ","provider":"moa"},"store_override":null,"has_channel":false}
+{"func":"resolve_settings","model_cfg":"bare-model","key":"k1","override":null,"store_override":null,"has_channel":false}
+{"func":"resolve_settings","model_cfg":{},"key":"k2","override":null,"store_override":{"model":"stored-model","base_url":"https://stored.example/v2"},"has_channel":false}
+{"func":"resolve_settings","model_cfg":{"default":"cfg-default","provider":"cfg-prov"},"key":"k3","override":{"model":""},"store_override":{"model":"stored"},"has_channel":true,"channel_model":"chan-model","channel_provider":""}
+{"func":"resolve_settings","model_cfg":{"default":"cfg-default"},"key":"k4","override":null,"store_override":null,"has_channel":true,"channel_model":null,"channel_provider":"chan-prov"}
+{"func":"resolve_settings","model_cfg":{"default":0,"provider":"","base_url":""},"key":"","override":{"provider":"  spaced  "},"store_override":null,"has_channel":false}

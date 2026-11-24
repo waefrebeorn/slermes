@@ -1,0 +1,20 @@
+{"func":"scoped","before":"SELECT id FROM sessions WHERE started_at >= ?","after":" ORDER BY started_at DESC","alias":""}
+{"func":"scoped","before":"SELECT m.session_id FROM messages m WHERE s.started_at >= ?","after":" AND m.role = 'assistant'","alias":"s."}
+{"func":"scoped","before":"SELECT 1 WHERE x >= ?","after":""}
+{"func":"local_surface","alias":""}
+{"func":"local_surface","alias":"s."}
+{"func":"query_sql","base":"_GET_SESSIONS","has_index":true,"local_surfaces":true}
+{"func":"query_sql","base":"_GET_TOOL_CALLS","has_index":true,"local_surfaces":true}
+{"func":"query_sql","base":"_GET_TOOL_CALLS","has_index":false,"local_surfaces":true}
+{"func":"query_sql","base":"_GET_SKILL_CALLS","has_index":false,"local_surfaces":false}
+{"func":"query_sql","base":"_GET_MESSAGE_STATS","has_index":true,"local_surfaces":false}
+{"func":"query_sql","base":"_GET_MODEL_USAGE","has_index":false,"local_surfaces":false}
+{"func":"query_sql","base":"_GET_TOOL_NAMES","has_index":true,"local_surfaces":false}
+{"func":"query_sql","base":"_NOPE","has_index":true,"local_surfaces":true}
+{"func":"query_params","cutoff":1700000000.5,"source":null,"local_surfaces":true}
+{"func":"query_params","cutoff":1700000000.5,"source":"telegram","local_surfaces":true}
+{"func":"query_params","cutoff":1700000000.5,"source":"telegram","local_surfaces":false}
+{"func":"query_params","cutoff":0,"source":"","local_surfaces":true}
+{"func":"insight_wait","read_only":false,"read_busy_timeout_s":7.5}
+{"func":"insight_wait","read_only":true,"read_busy_timeout_s":7.5}
+{"func":"insight_wait","read_only":true,"read_busy_timeout_s":0}

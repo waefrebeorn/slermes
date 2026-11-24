@@ -1,0 +1,22 @@
+{"func": "derive", "kind": "local", "profile_id": "prof-1", "principal_id": "owner", "base_request_id": "req-abc", "generation": 0}
+{"func": "derive", "kind": "local", "profile_id": "prof-1", "principal_id": "owner", "base_request_id": "req-abc", "generation": 1}
+{"func": "derive", "kind": "local", "profile_id": "profil\u00e9", "principal_id": "nice user", "base_request_id": "req:\"q\"\\x", "generation": 12}
+{"func": "derive", "kind": "local", "profile_id": "", "principal_id": "", "base_request_id": "", "generation": 2}
+{"func": "derive", "kind": "api", "session_id": "api-0123456789abcdef", "generation": 0}
+{"func": "derive", "kind": "api", "session_id": "api-0123456789abcdef", "generation": 1}
+{"func": "derive", "kind": "api", "session_id": "sess-xyz", "generation": 7}
+{"func": "derive", "kind": "room", "identity": ["home-install", "room-1", "member-9", "profile-a"], "generation": 0}
+{"func": "derive", "kind": "room", "identity": ["home-install", "room-1", "member-9", "profile-a"], "generation": 3}
+{"func": "derive", "kind": "room", "identity": ["h", "r", "m", ""], "generation": 1}
+{"func": "mutation_call", "operation": "set_policy", "payload": {"policy": {"model": "m"}}, "payload_callable": true}
+{"func": "mutation_call", "operation": "set_policy", "payload": {"policy": {"model": "m"}}, "payload_callable": false}
+{"func": "mutation_call", "operation": null, "payload": {"a": 1}, "payload_callable": true}
+{"func": "mutation_call", "operation": "", "payload": null, "payload_callable": true}
+{"func": "mutation_call", "operation": "delete", "payload": null, "payload_callable": false}
+{"func": "legacy_prepared", "is_none": true}
+{"func": "legacy_prepared", "is_none": false, "receipt": {"kind": "local", "id": "r1"}, "target": "t-1", "target_revision": 7, "values": {"policy": {"model": "m2"}, "git": {"branch": "main"}, "tools_changed": true}}
+{"func": "legacy_prepared", "is_none": false, "receipt": {"kind": "local"}, "target": "", "target_revision": 0, "values": {}}
+{"func": "legacy_prepared", "is_none": false, "receipt": null, "target": "t", "target_revision": 3, "values": {"messages": [1, 2, 3], "summary": null}}
+{"func": "chat_params", "request_id": "req-1", "operation": "model", "payload": {"model": "gpt-5"}, "expected_revision": 4, "expected_generation": 2}
+{"func": "chat_params", "request_id": "req-2", "operation": "reasoning", "payload": {}, "expected_revision": 0, "expected_generation": 0}
+{"func": "chat_params", "request_id": "", "operation": "", "payload": {"k": [{"n": 1}]}, "expected_revision": 9, "expected_generation": 9}

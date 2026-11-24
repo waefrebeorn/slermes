@@ -1,0 +1,29 @@
+{"func":"safe_int","value":42}
+{"func":"safe_int","value":" 12 "}
+{"func":"safe_int","value":"1_0"}
+{"func":"safe_int","value":"3.9"}
+{"func":"safe_int","value":true}
+{"func":"safe_int","value":3.9}
+{"func":"safe_int","value":null}
+{"func":"safe_int","value":""}
+{"func":"safe_int","value":"-7"}
+{"func":"safe_int","value":[1]}
+{"func":"safe_int","value":"abc"}
+{"func":"compression_method","fallback_used":true}
+{"func":"compression_method","failure_error_prev":"aux blew up"}
+{"func":"compression_method","fallback_used":false,"failure_error_prev":null}
+{"func":"note_aux_fallback","telemetry":{"fallback_used":false,"failure_class":null},"route":{}}
+{"func":"note_aux_fallback","telemetry":{"fallback_used":false,"failure_class":null},"route":{"failed_model":"aux-1","fallback_label":"main-agent(gemini)","failure":"boom"}}
+{"func":"note_aux_fallback","telemetry":{"fallback_used":false,"failure_class":"quota"},"route":{"failed_model":"aux-2","fallback_label":"main-agent(gemini)","failure":"quota exceeded"}}
+{"func":"note_aux_fallback","telemetry":{"fallback_used":false,"failure_class":null},"route":{"failed_model":"aux-3","fallback_label":"main-agent(gemini)","failure":"1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123     "}}
+{"func":"note_aux_fallback","telemetry":{"fallback_used":false,"failure_class":null},"route":{"failed_model":"aux-4","fallback_label":"fallback_chain(x)","failure":"nope"}}
+{"func":"record_aux_call","rough":[1200],"max_tokens":500,"duration_ms":250,"aux_provider":"openai","aux_model":"gpt-x","effective_aux_context":8000,"phase_timings":{"queue_wait_ms":30,"prompt_build_ms":12,"summary_generation_ms":400,"commit_ms":7},"telemetry":{"event":"compression_attempt","aux_prompt_tokens":null,"aux_output_reservation":null,"aux_provider":"","aux_model":"","effective_aux_context":null,"fit_margin":null,"aux_call_duration_ms":null,"queue_wait_ms":null,"prompt_build_ms":null,"time_to_first_progress_ms":null,"summary_generation_ms":null,"commit_ms":null}}
+{"func":"record_aux_call","rough":[1000],"max_tokens":"400","duration_ms":-5,"aux_provider":"","aux_model":"","effective_aux_context":6000,"phase_timings":{"queue_wait_ms":30,"summary_generation_ms":400,"time_to_first_progress_ms":"55"},"telemetry":{"event":"compression_attempt","aux_prompt_tokens":900,"aux_output_reservation":400,"aux_provider":"openai","aux_model":"gpt-x","effective_aux_context":8000,"fit_margin":6700,"aux_call_duration_ms":100,"queue_wait_ms":40,"prompt_build_ms":12,"time_to_first_progress_ms":5,"summary_generation_ms":0,"commit_ms":7}}
+{"func":"record_aux_call","rough":[300],"max_tokens":null,"duration_ms":10,"aux_provider":null,"aux_model":null,"effective_aux_context":null,"phase_timings":null,"telemetry":{"event":"compression_attempt","aux_prompt_tokens":null,"aux_output_reservation":null,"aux_provider":"","aux_model":"","effective_aux_context":null,"fit_margin":null,"aux_call_duration_ms":null,"queue_wait_ms":null,"prompt_build_ms":null,"time_to_first_progress_ms":null,"summary_generation_ms":null,"commit_ms":null}}
+{"func":"record_effect","fallback_used":true,"messages_before":20,"compressed_len":5,"tokens_before":5000,"rough":[1200],"tool_results_pruned":3,"reasoning_items_pruned":1,"last_dropped_count":2,"telemetry":{"event":"compression_attempt","method":"none","items_dropped":0,"messages_before":null,"messages_after":null,"tokens_before":null,"tokens_after":null,"tokens_reclaimed":null,"token_count_method":null,"tool_results_pruned":null,"reasoning_items_pruned":null}}
+{"func":"record_effect","fallback_used":false,"failure_error_prev":"aux died","messages_before":9,"compressed_len":3,"tokens_before":2100,"rough":[900],"tool_results_pruned":0,"reasoning_items_pruned":0,"last_dropped_count":null,"telemetry":{"event":"compression_attempt","method":"none","items_dropped":0,"messages_before":null,"messages_after":null,"tokens_before":null,"tokens_after":null,"tokens_reclaimed":null,"token_count_method":null,"tool_results_pruned":null,"reasoning_items_pruned":null}}
+{"func":"record_committed_effect","before_len":20,"after_len":6,"rough":[5000,1200],"telemetry":{"event":"compression_attempt","messages_before":19,"messages_after":7,"tokens_before":4800,"tokens_after":1300,"tokens_reclaimed":3500,"token_count_method":"estimate_rough"}}
+{"func":"record_regions","head_len":2,"middle_len":4,"tail_len":3,"rough":[900,2500,800],"telemetry":{"event":"compression_attempt","protected_head_tokens":null,"middle_window_tokens":null,"protected_tail_tokens":null}}
+{"func":"begin_telemetry","attempt_id":"a1","session_id":null,"trigger_source":null,"seed":{"session_id":"s9","trigger_source":"manual","overflow_reason":"context"},"provider":"nous","model":"deepseek","context_length":200000,"current_tokens":150000,"threshold_tokens":"120000"}
+{"func":"begin_telemetry","attempt_id":null,"session_id":"s1","trigger_source":"overflow","seed":{"attempt_id":"seedA","overflow_reason":null},"provider":null,"model":null,"context_length":null,"current_tokens":null,"threshold_tokens":null}
+{"func":"begin_telemetry","attempt_id":"a3","session_id":"","trigger_source":"","seed":null,"provider":"nous","model":"","context_length":"131072","current_tokens":0,"threshold_tokens":131072}
