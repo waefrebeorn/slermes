@@ -317,9 +317,16 @@ static char *fc_truncate(const char *text, size_t limit) {
 
 /* _chunk_text */
 static json_t *fc_chunk_text(const char *text, size_t limit) {
-    json_t *out = json_array();
-    char *cur = fc_dup(text ? text : "");
+    json_t *out;
+    char *cur;
     int any = 0;
+    /* limit == 0 used to spin forever: every pass cut nothing, appended "", and
+     * left `cur` unchanged. Upstream cannot reach that state either -- its
+     * range(step) raises ValueError -- so a zero limit yields no value rather
+     * than a hang. Held-out fuzz found this with {"text":"abc","limit":0}. */
+    if (!limit) return json_null();
+    out = json_array();
+    cur = fc_dup(text ? text : "");
     while (fc_u8_len(cur) > limit) {
         size_t pref = fc_u8_off(cur, limit);
         size_t cut = pref;
