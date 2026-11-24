@@ -71,6 +71,9 @@ static char *ta_pystr(const json_t *v) {
 /* str(value or ""): the module's name normaliser. */
 static char *ta_name(const json_t *v) {
     char *s;
+    /* The lines interpolate the name with an f-string, so a null name renders as
+     * the text "None" ("• None"), not as an empty slot. */
+    if (!v || v->type == JSON_NULL) return ta_dup("None");
     if (!ta_truthy(v)) return ta_dup("");
     s = ta_pystr(v);
     return s ? s : ta_dup("");
