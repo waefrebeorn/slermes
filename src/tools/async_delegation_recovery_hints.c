@@ -122,6 +122,9 @@ json_t *w25_asyncdeleg_9f3438_tail_text(const json_t *raw, long long lines, long
     json_t *out;
 
     if (!raw || raw->type != JSON_STRING) return json_null();
+    /* upstream seeks to size - chars*4 before reading: with a non-positive char
+     * budget it reads nothing and answers None, whatever the file holds. */
+    if (chars <= 0) return json_null();
     s = raw->str_val ? raw->str_val : "";
     len = strlen(s);
     if (len == 0) return json_null();
@@ -165,7 +168,13 @@ json_t *w25_asyncdeleg_9f3438_tail_text(const json_t *raw, long long lines, long
         tl = strlen(tail);
         cut = (char *)malloc(tl + 4);
         if (!cut) { free(tail); free(joined); return json_null(); }
-        snprintf(cut, tl + 4, "\xE2\x80\xA6%s", tail); /* U+2026 HORIZONTAL ELLIPSIS */
+        /* U+2026 HORIZONTAL ELLIPSIS as three explicit bytes: the same string
+         * written through a format escape depended on how the compiler read the
+         * source, and the ellipsis reached the output as one bad byte. */
+        cut[0] = (char)0xE2;
+        cut[1] = (char)0x80;
+        cut[2] = (char)0xA6;
+        memcpy(cut + 3, tail, tl + 1);
         out = json_string(cut);
         free(cut);
         free(tail);
