@@ -784,6 +784,10 @@ static int google_owned_host(const char *url) {
     int ok = 0;
 
     if (!url || !url[0]) return 0;
+    /* urlparse() strips leading/trailing C0 controls and spaces first, so
+     * " https://lh3.googleusercontent.com/a.png" is still an https URL. */
+    while (*url && (unsigned char)*url <= 0x20) url++;
+    if (!url[0]) return 0;
     /* urlparse: scheme must be https, hostname is what follows "//" up to /?#:  */
     scheme_end = strstr(url, "://");
     if (!scheme_end) return 0;
@@ -844,7 +848,10 @@ json_t *w27_gchat_p2_is_google_owned_host(const json_t *req) {
 
 /* --- _redact_sensitive --- */
 
-static int is_seg_char(unsigned char c) { return c != '/' && !(c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v'); }
+/* [^/\s]+ needs ONE OR MORE characters: the NUL terminator is not a segment
+ * character, or the scans walk past the end of the buffer (and a trailing
+ * "topics/" with nothing after it wrongly matches). */
+static int is_seg_char(unsigned char c) { return c != '\0' && c != '/' && !(c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v'); }
 
 static int is_local_char(unsigned char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_' ||
