@@ -2018,6 +2018,11 @@ json_t *w27_adapter_a96ad6_p10_chat_id_str(const json_t *req) {
     char *s;
     json_t *r;
     if (jd_is_none(chat)) return json_string("");
+    /* str(getattr(getattr(msg, "chat", None), "id", "")): the DEFAULT applies to
+     * a missing key (-> ""), while a key that is present and None stringifies to
+     * "None". Treating both as missing is the bug the fuzz found, in one
+     * direction; treating both as "None" is the same bug in the other. */
+    if (!jd_get(chat, "id")) return json_string("");
     s = jd_str_of(jd_get(chat, "id"));
     if (!s) s = jd_dup("");
     r = json_string(s);
