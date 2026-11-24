@@ -1,0 +1,15 @@
+{"func":"namespace_error","name":"good","builtin_names":["local","vault"],"builtin_prefixes":["vault_","local:"]}
+{"func":"namespace_error","name":"Bad","builtin_names":["local"],"builtin_prefixes":["local:"]}
+{"func":"namespace_error","name":"local","builtin_names":["local","vault"],"builtin_prefixes":["vault_","local:"]}
+{"func":"namespace_error","name":"vault_x","builtin_names":["local"],"builtin_prefixes":["vault_"]}
+{"func":"namespace_error","name":"a1_b","builtin_names":["local"],"builtin_prefixes":["local:"]}
+{"func":"static_name","provider":{"is_subclass":true,"name":"good","prefix":"good:","builtin_names":["local"],"builtin_prefixes":["local:"]}}
+{"func":"static_name","provider":{"is_subclass":true,"name":"Bad","prefix":"Bad:","builtin_names":["local"],"builtin_prefixes":["local:"]}}
+{"func":"static_name","provider":{"is_subclass":true,"name":"good","prefix":"bad:","builtin_names":["local"],"builtin_prefixes":["local:"]}}
+{"func":"static_name","provider":{"is_subclass":true,"name":"local","prefix":"local:","builtin_names":["local"],"builtin_prefixes":["local:"]}}
+{"func":"static_name","provider":{"is_subclass":true,"name":"good","prefix":"good:","needs_unlock":true,"builtin_names":["local"],"builtin_prefixes":["local:"]}}
+{"func":"static_name","provider":{"is_subclass":true,"overrides_getattribute":true,"name":"good","prefix":"good:","builtin_names":["local"],"builtin_prefixes":["local:"]}}
+{"func":"static_name","provider":{"is_subclass":false,"name":"good","prefix":"good:","builtin_names":["local"],"builtin_prefixes":["local:"]}}
+{"func":"static_name","provider":{"is_subclass":true,"name":123,"prefix":"good:","builtin_names":["local"],"builtin_prefixes":["local:"]}}
+{"func":"enabled_plugin_backends","registry":[{"name":"alpha"},{"name":"local"},{"name":"beta"}],"cfg":{"alpha":{"enabled":true},"local":{"enabled":true},"beta":{"enabled":false}},"builtin_names":["local"],"builtin_prefixes":["local:"]}
+{"func":"enabled_plugin_backends","registry":[{"name":"zulu"},{"name":"gamma"}],"cfg":{"zulu":{"enabled":true},"gamma":{"enabled":true}},"builtin_names":["local"],"builtin_prefixes":["local:"]}

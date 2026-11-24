@@ -1,0 +1,11 @@
+{"func":"async_key","case":"static key","client":{"is_openai":true,"api_key":"***","provider":null}}
+{"func":"async_key","case":"callable provider","client":{"is_openai":true,"api_key":"ignored","provider":"tok-from-cmd"}}
+{"func":"async_key","case":"not openai ignores provider","client":{"is_openai":false,"api_key":"***","provider":"tok-ignored"}}
+{"func":"async_key","case":"null key","client":{"is_openai":true,"api_key":null,"provider":null}}
+{"func":"async_key","case":"empty key","client":{"is_openai":true,"api_key":"","provider":null}}
+{"func":"async_key","case":"numeric provider stringified","client":{"is_openai":true,"api_key":"old","provider":12345}}
+{"func":"headers","case":"mapping","client":{"is_openai":true,"headers":{"X-A":"1","X-B":"2"}}}
+{"func":"headers","case":"not mapping","client":{"is_openai":true,"headers":"notmapping"}}
+{"func":"headers","case":"null","client":{"is_openai":true,"headers":null}}
+{"func":"headers","case":"plain client","client":{"is_openai":false,"headers":{"X-A":"1"}}}
+{"func":"headers","case":"empty mapping","client":{"is_openai":true,"headers":{}}}

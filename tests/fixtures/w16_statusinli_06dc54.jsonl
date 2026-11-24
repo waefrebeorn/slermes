@@ -1,0 +1,20 @@
+{"func":"inline_source_flag_index","tokens":["python","-c","print(1)"]}
+{"func":"command_line_runs_inline_source","tokens":["python","-c","print(1)"]}
+{"func":"inline_source_flag_index","tokens":["python","-X","utf8","-c","x"]}
+{"func":"command_line_runs_inline_source","tokens":["python","-X","utf8","-c","x"]}
+{"func":"inline_source_flag_index","tokens":["python","-m","hermes_cli.main"]}
+{"func":"command_line_runs_inline_source","tokens":["python","-m","hermes_cli.main"]}
+{"func":"inline_source_flag_index","tokens":["python","--","-c"]}
+{"func":"inline_source_flag_index","tokens":["python","-IsB","-c","x"]}
+{"func":"command_line_runs_inline_source","tokens":["python","-IsB","-c","x"]}
+{"func":"inline_source_flag_index","tokens":["python","-Xc","src"]}
+{"func":"inline_source_flag_index","tokens":["python","-c","import os, sys, runpy; runpy.run_module('hermes_cli.main', run_name='__main__', alter_sys=True)","gateway","run"]}
+{"func":"command_line_runs_inline_source","tokens":["python","-c","import os, sys, runpy; runpy.run_module('hermes_cli.main', run_name='__main__', alter_sys=True)","gateway","run"]}
+{"func":"inline_source_flag_index","tokens":["python"]}
+{"func":"inline_source_flag_index","tokens":["python","-q","-c","x"]}
+{"func":"inline_source_flag_index","tokens":["python","-W","ignore","-c","x"]}
+{"func":"inline_source_flag_index","tokens":["python","--jit","-c","x"]}
+{"func":"inline_source_flag_index","tokens":["python","--check-hash-based-pycs","-c","x"]}
+{"func":"inline_source_flag_index","tokens":["python","-u","-c"]}
+{"func":"inline_source_flag_index","tokens":["python","-"]}
+{"func":"inline_source_flag_index","tokens":[]}

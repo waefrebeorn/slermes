@@ -1,0 +1,14 @@
+{"func":"model_provider_params","case":"both","params":{"model":"  gpt-4 ","provider":" openai "}}
+{"func":"model_provider_params","case":"null and number","params":{"model":null,"provider":5}}
+{"func":"model_provider_params","case":"missing","params":{}}
+{"func":"model_provider_params","case":"falsy bools","params":{"model":false,"provider":true}}
+{"func":"model_provider_params","case":"empty strings","params":{"model":"","provider":"  "}}
+{"func":"clean_revisions","case":"mixed","raw":{"a":3,"b":-2,"c":true,"d":2.5,"e":"9"}}
+{"func":"clean_revisions","case":"empty","raw":{}}
+{"func":"clean_revisions","case":"all invalid","raw":{"x":false,"y":null,"z":"1"}}
+{"func":"clean_names","case":"mixed","values":[" a ","b","","  ",null,5,true]}
+{"func":"clean_names","case":"empty","values":[]}
+{"func":"clean_names","case":"dupes","values":["z","a","z","a","b"]}
+{"func":"bots_title","case":"dict","meta":{"hermes-bots":{"title":"Hello"}}}
+{"func":"bots_title","case":"not dict","meta":{"hermes-bots":"nope"}}
+{"func":"bots_title","case":"missing","meta":{}}

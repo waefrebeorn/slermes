@@ -1,0 +1,27 @@
+{"func":"classify_login","control":{"autocomplete":"current-password","index":0,"label":"","name":"","type":"password"}}
+{"func":"classify_login","control":{"autocomplete":"new-password","index":0,"label":"","name":"","type":"password"}}
+{"func":"classify_login","control":{"autocomplete":"","index":1,"label":"","name":"","type":"password"}}
+{"func":"classify_login","control":{"autocomplete":"","index":2,"label":"","name":"","type":"email"}}
+{"func":"classify_login","control":{"autocomplete":"","index":3,"label":"","name":"","type":"tel"}}
+{"func":"classify_login","control":{"autocomplete":"","index":4,"label":"Email Address","name":"","type":"text"}}
+{"func":"classify_login","control":{"autocomplete":"","index":5,"label":"Phone number","name":"","type":"text"}}
+{"func":"classify_login","control":{"autocomplete":"","index":6,"label":"User Name","name":"","type":"text"}}
+{"func":"classify_login","control":{"autocomplete":"","index":7,"label":"Confirm Password","name":"","type":"password"}}
+{"func":"classify_login","control":{"autocomplete":"","index":8,"label":"whatever","name":"","type":"text"}}
+{"func":"classify_login","control":{"autocomplete":"username","index":9,"label":"","name":"","type":"password"}}
+{"func":"classify_checkout","control":{"autocomplete":"cc-number","index":0,"label":"","name":"","type":"text"}}
+{"func":"classify_checkout","control":{"autocomplete":"country","index":1,"label":"","name":"","type":"text"}}
+{"func":"classify_checkout","control":{"autocomplete":"","index":2,"label":"","name":"","type":"password"}}
+{"func":"classify_checkout","control":{"autocomplete":"","index":3,"label":"Card Number","name":"","type":"text"}}
+{"func":"classify_checkout","control":{"autocomplete":"","index":4,"label":"expiry month","name":"","type":"text"}}
+{"func":"classify_checkout","control":{"autocomplete":"","index":5,"label":"address line 2","name":"","type":"text"}}
+{"func":"classify_checkout","control":{"autocomplete":"","index":6,"label":"zip code","name":"","type":"text"}}
+{"func":"classify_otp","controls":[{"autocomplete":"one-time-code","index":0,"label":"","name":"","type":"text"}]}
+{"func":"classify_otp","controls":[{"autocomplete":"","index":1,"label":"verification code","name":"","type":"text"}]}
+{"func":"classify_otp","controls":[{"autocomplete":"","index":2,"label":"security code","name":"","type":"button"}]}
+{"func":"classify_otp","controls":[{"autocomplete":"","index":3,"label":"security code","name":"","type":"tel"}]}
+{"func":"select_password","controls":[{"autocomplete":"","index":1,"label":"","name":"","type":"password"},{"autocomplete":"","index":0,"label":"","name":"","type":"password"}],"password":"s3cr3t"}
+{"func":"select_password","controls":[{"autocomplete":"","index":0,"label":"","name":"","type":"text"}],"password":"s3cr3t"}
+{"func":"select_checkout","controls":[{"autocomplete":"cc-exp-month","index":0,"label":"","name":"","type":"text"},{"autocomplete":"cc-exp-year","index":1,"label":"","name":"","type":"text"},{"autocomplete":"cc-exp","index":2,"label":"","name":"","type":"text"}],"secret":{"exp_month":"3","exp_year":"2028"},"map":{"exp_month":"cc-exp-month","exp_year":"cc-exp-year"}}
+{"func":"build_otp_fills","controls":[{"autocomplete":"","index":0,"formIndex":0,"maxLength":1,"label":"","name":"","type":"text"},{"autocomplete":"","index":1,"formIndex":0,"maxLength":1,"label":"","name":"","type":"text"},{"autocomplete":"","index":2,"formIndex":0,"maxLength":1,"label":"","name":"","type":"text"},{"autocomplete":"","index":3,"formIndex":0,"maxLength":1,"label":"","name":"","type":"text"}],"code":"1234"}
+{"func":"build_otp_fills","controls":[{"autocomplete":"","index":5,"formIndex":0,"maxLength":6,"label":"code","name":"","type":"text"},{"autocomplete":"","index":9,"formIndex":0,"maxLength":6,"label":"code","name":"","type":"text"}],"code":"999999"}

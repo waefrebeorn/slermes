@@ -1,0 +1,22 @@
+{"func":"strlist","value":[" a ","", "b"],"case":"strip and drop empty"}
+{"func":"strlist","value":"not a list","case":"non list"}
+{"func":"strlist","value":[1,2.5,true,null],"case":"scalar coercion"}
+{"func":"strlist","value":[],"case":"empty list"}
+{"func":"kind","raw":{"kind":"bool"},"choices":[],"case":"explicit bool"}
+{"func":"kind","raw":{"default":true},"choices":[],"case":"bool default"}
+{"func":"kind","raw":{"type":"INTEGER"},"choices":[],"case":"explicit integer"}
+{"func":"kind","raw":{"default":7},"choices":[],"case":"int default"}
+{"func":"kind","raw":{"default":1.5},"choices":[],"case":"float default"}
+{"func":"kind","raw":{"secret":true,"kind":"bool"},"choices":[],"case":"secret wins"}
+{"func":"kind","raw":{},"choices":["a"],"case":"choices select"}
+{"func":"kind","raw":{},"choices":[],"case":"plain text"}
+{"func":"coerce","value":true,"default":false,"case":"bool true"}
+{"func":"coerce","value":null,"default":true,"case":"null default"}
+{"func":"coerce","value":"","default":true,"case":"empty string default"}
+{"func":"coerce","value":0,"default":true,"case":"zero number"}
+{"func":"coerce","value":" YES ","default":false,"case":"yes string"}
+{"func":"coerce","value":"OFF","default":true,"case":"off string"}
+{"func":"coerce","value":"maybe","default":false,"case":"invalid error"}
+{"func":"normschema","raw_schema":[],"case":"empty schema"}
+{"func":"normschema","raw_schema":[{"key":"api_key","choices":["a","b"],"required":true,"env_var":"MY_KEY"}],"case":"key label title select env"}
+{"func":"normschema","raw_schema":[{"key":"  ","label":"ignored"},{"key":"x","label":"  Custom Label  ","default":null,"when":{"a":"b"},"minimum":0,"maximum":10,"step":1}],"case":"skip blank key keep extras"}

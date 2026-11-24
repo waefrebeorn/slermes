@@ -1,0 +1,27 @@
+{"case": 1, "func": "age", "ts": "1000", "now": "1000"}
+{"case": 2, "func": "age", "ts": "1000", "now": "1059"}
+{"case": 3, "func": "age", "ts": "1000", "now": "1060"}
+{"case": 4, "func": "age", "ts": "1000", "now": "4599"}
+{"case": 5, "func": "age", "ts": "1000", "now": "4600"}
+{"case": 6, "func": "age", "ts": "1000", "now": "95399"}
+{"case": 7, "func": "age", "ts": "1000", "now": "95400"}
+{"case": 8, "func": "age", "ts": "1000", "now": "174400"}
+{"case": 9, "func": "age", "ts": "1000", "now": "900"}
+{"case": 10, "func": "age", "ts": "abc", "now": "1000"}
+{"case": 11, "func": "age", "ts": "", "now": "1000"}
+{"case": 12, "func": "cap", "text": "hello", "limit": 120}
+{"case": 13, "func": "cap", "text": "  a  b\tc  ", "limit": 120}
+{"case": 14, "func": "cap", "text": "abcdefghij", "limit": 10}
+{"case": 15, "func": "cap", "text": "12345", "limit": 5}
+{"case": 16, "func": "cap", "text": "", "limit": 5}
+{"case": 17, "func": "meta", "metadata": {"z": 1, "a": 2, "m": {"y": 3, "b": 4}}}
+{"case": 18, "func": "meta", "metadata": {"list": [3, 1, 2], "flag": true, "none": null}}
+{"case": 19, "func": "meta", "metadata": null}
+{"case": 20, "func": "meta", "metadata": {}}
+{"case": 21, "func": "meta", "metadata": "hello"}
+{"case": 22, "func": "tail", "items": [1, 2, 3], "cap": 10, "noun": "attempt"}
+{"case": 23, "func": "tail", "items": [1, 2, 3], "cap": 2, "noun": "attempt"}
+{"case": 24, "func": "tail", "items": [1, 2, 3, 4], "cap": 1, "noun": "comment"}
+{"case": 25, "func": "tail", "items": [1, 2, 3], "cap": 0, "noun": "attempt"}
+{"case": 26, "func": "tail", "items": [1], "cap": 1, "noun": "item"}
+{"case": 27, "func": "tail", "items": [], "cap": 2, "noun": "item"}

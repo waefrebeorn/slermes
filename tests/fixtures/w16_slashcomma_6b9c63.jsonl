@@ -1,0 +1,14 @@
+{"func": "paired_dm", "platform": "TELEGRAM", "chat_type": "dm", "chat_id": "1"}
+{"func": "paired_dm", "platform": "ntfy", "chat_type": "dm", "chat_id": "1"}
+{"func": "paired_dm", "platform": "raft", "chat_type": "private", "chat_id": "1"}
+{"func": "paired_dm", "platform": "a2a", "chat_type": "dm", "chat_id": "1"}
+{"func": "paired_dm", "platform": "telegram", "chat_type": "group", "chat_id": "1"}
+{"func": "paired_dm", "platform": "telegram", "chat_type": "DM", "chat_id": "1"}
+{"func": "paired_dm", "platform": "telegram", "chat_type": "dm", "chat_id": ""}
+{"func": "paired_dm", "platform": "telegram", "chat_type": "private", "chat_id": null}
+{"func": "paired_dm", "platform": {"value": "NTFY"}, "chat_type": "dm", "chat_id": "1"}
+{"func": "attempt_key", "platform": "TELEGRAM", "chat_id": "123", "user_id": "42"}
+{"func": "attempt_key", "platform": {"value": "Discord"}, "chat_id": "9", "user_id": null}
+{"func": "attempt_key", "platform": "telegram", "chat_id": "c", "user_id": ""}
+{"func": "attempt_key", "platform": "ntfy", "chat_id": "c", "user_id": "u"}
+{"func": "attempt_key", "platform": "telegram", "chat_id": "c", "user_id": 0}

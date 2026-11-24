@@ -1,0 +1,18 @@
+{"func":"nous_args","args":{},"case":"all defaults"}
+{"func":"nous_args","args":{"portal_url":"https://portal","inference_url":"https://inf","client_id":"cid","scope":"s","ca_bundle":"/ca.pem","no_browser":true,"insecure":true,"timeout":42},"case":"all fields"}
+{"func":"nous_args","args":{"no_browser":"false","insecure":2,"timeout":0},"case":"truthiness + falsy timeout"}
+{"func":"nous_args","args":{"timeout":"custom-timeout","no_browser":"","insecure":null},"case":"string timeout, empty string bool"}
+{"func":"nous_args","args":{"portal_url":null,"client_id":null,"timeout":false},"case":"null preserved, false timeout"}
+{"func":"nous_args","args":{"no_browser":[],"insecure":{},"timeout":0.0},"case":"empty containers falsy, float zero"}
+{"func":"nous_args","args":{"timeout":15,"no_browser":1,"insecure":0},"case":"int timeout 15, numeric bools"}
+{"func":"nous_args","args":{"scope":"a","no_browser":true},"case":"partial"}
+{"func":"zai_endpoint","current":"","selected":null,"override":"","case":"cancel keeps empty"}
+{"func":"zai_endpoint","current":"https://api.z.ai/api/paas/v4/","selected":0,"override":"","case":"pick global"}
+{"func":"zai_endpoint","current":"custom","selected":1,"override":"","case":"pick china"}
+{"func":"zai_endpoint","current":"custom","selected":2,"override":"","case":"pick coding-global"}
+{"func":"zai_endpoint","current":"https://open.bigmodel.cn/api/coding/paas/v4","selected":3,"override":"","case":"pick coding-cn"}
+{"func":"zai_endpoint","current":"keep-me","selected":4,"override":"","case":"custom cancelled"}
+{"func":"zai_endpoint","current":"keep-me","selected":4,"override":"ftp://bad","case":"custom invalid scheme"}
+{"func":"zai_endpoint","current":"keep-me","selected":4,"override":"https://example.com/v1/","case":"custom https rstrip"}
+{"func":"zai_endpoint","current":"keep-me","selected":4,"override":"http://proxy.local/","case":"custom http rstrip"}
+{"func":"zai_endpoint","current":"  https://api.z.ai/api/paas/v4/  ","selected":4,"override":"http://x/","case":"normalized current ignored for custom"}

@@ -1,0 +1,23 @@
+{"func":"parse_room_deliver_token","part":"room:abc"}
+{"func":"parse_room_deliver_token","part":"  ROOM:AbC@prof1  "}
+{"func":"parse_room_deliver_token","part":"room:a.b_c:12@d-3"}
+{"func":"parse_room_deliver_token","part":"room:"}
+{"func":"parse_room_deliver_token","part":"room:@prof"}
+{"func":"parse_room_deliver_token","part":"http:abc"}
+{"func":"parse_room_deliver_token","part":null}
+{"func":"parse_room_deliver_token","part":""}
+{"func":"parse_room_deliver_token","part":"   "}
+{"func":"parse_room_deliver_token","part":"room:abc@"}
+{"func":"parse_room_deliver_token","part":"room:-bad"}
+{"func":"parse_room_deliver_token","part":"room:a@b@c"}
+{"func":"parse_room_deliver_token","part":"room:9x"}
+{"func":"resolve_room_target","job":{"id":"j1"},"address":"abc@prof"}
+{"func":"resolve_room_target","job":{"id":"j2"},"address":""}
+{"func":"resolve_room_target","job":{},"address":null}
+{"func":"resolve_room_target","job":{},"address":0}
+{"func":"resolve_room_target","job":{},"address":false}
+{"func":"resolve_room_target","job":{},"address":42}
+{"func":"profile_hint","room_id":"abc","profile":"beta"}
+{"func":"profile_hint","room_id":"abc","profile":null}
+{"func":"profile_hint","room_id":"main~2","profile":""}
+{"func":"profile_hint","room_id":"r1","profile":7}

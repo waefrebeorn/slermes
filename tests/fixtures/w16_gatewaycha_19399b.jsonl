@@ -1,0 +1,20 @@
+{"case": 1, "func": "preview", "text": "hello   world"}
+{"case": 2, "func": "preview", "text": "a\tb\nc\r\nd"}
+{"case": 3, "func": "preview", "text": "\u001b[31mred\u001b[0m text"}
+{"case": 4, "func": "preview", "text": 123}
+{"case": 5, "func": "preview", "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"case": 6, "func": "preview", "text": ""}
+{"case": 7, "func": "quoted", "row": {"text": "hi there", "admission_id": "a1"}, "fallback": "lost turn"}
+{"case": 8, "func": "quoted", "row": {"admission_id": "a2"}, "fallback": "queued message"}
+{"case": 9, "func": "lines", "pending": [{"status": "unknown", "admission_id": "L1", "text": "lost text"}], "interactive": true}
+{"case": 10, "func": "lines", "pending": [{"status": "unknown", "admission_id": "L1", "text": ""}], "interactive": false}
+{"case": 11, "func": "lines", "pending": [{"status": "unknown", "admission_id": "L1", "text": "one"}, {"status": "unknown", "admission_id": "L2"}, {"status": "queued", "admission_id": "Q1", "text": "queued text"}], "interactive": true}
+{"case": 12, "func": "lines", "pending": [{"status": "queued", "admission_id": "Q1"}], "interactive": true}
+{"case": 13, "func": "lines", "pending": [{"status": "unknown", "admission_id": "L1"}, {"status": "queued", "admission_id": "Q1"}], "interactive": false}
+{"case": 14, "func": "lines", "pending": [], "interactive": true}
+{"case": 15, "func": "lost", "snapshot": {"pending": [{"status": "queued", "admission_id": "X"}, {"status": "unknown", "admission_id": "Y", "text": "t"}]}, "id": "Y"}
+{"case": 16, "func": "lost", "snapshot": {"pending": [{"status": "unknown", "admission_id": "Y"}]}, "id": "Z"}
+{"case": 17, "func": "oneshot", "receipt": {"admission_id": "adm-7"}}
+{"case": 18, "func": "oneshot", "receipt": {"voice_stopped": true, "admission_id": "adm-8"}}
+{"case": 19, "func": "oneshot", "receipt": null}
+{"case": 20, "func": "oneshot", "receipt": {}}

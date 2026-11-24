@@ -1,0 +1,12 @@
+{"case":"noreason-fallback","func":"no_pty_reason","in":{"pty_fallback":"the pty library crashed","pty_available":true}}
+{"case":"noreason-outputlog","func":"no_pty_reason","in":{"output_log":"/tmp/log","pty_available":true}}
+{"case":"noreason-no-pty","func":"no_pty_reason","in":{"pty_available":false}}
+{"case":"noreason-empty","func":"no_pty_reason","in":{"pty_available":true}}
+{"case":"exited-no-process","func":"already_exited_error","in":{"process_exists":false,"pty_available":true}}
+{"case":"exited-stdin-open","func":"already_exited_error","in":{"process_exists":true,"stdin_open":true,"pty_available":true}}
+{"case":"exited-reason","func":"already_exited_error","in":{"process_exists":true,"stdin_open":false,"pty_fallback":"spawn failed","pty_available":true}}
+{"case":"exited-no-reason","func":"already_exited_error","in":{"process_exists":true,"stdin_open":false,"pty_available":true}}
+{"case":"stdin-nonlocal","func":"stdin_unavailable_error","in":{"process_exists":false,"pty_available":true}}
+{"case":"stdin-reason","func":"stdin_unavailable_error","in":{"process_exists":true,"output_log":"log","pty_available":true}}
+{"case":"stdin-no-reason","func":"stdin_unavailable_error","in":{"process_exists":true,"pty_available":true}}
+{"case":"stdin-no-pty","func":"stdin_unavailable_error","in":{"process_exists":true,"pty_available":false}}

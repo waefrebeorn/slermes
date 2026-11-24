@@ -1,0 +1,48 @@
+{"func": "normalize_event", "case": "event subagent.start", "event": "subagent.start"}
+{"func": "normalize_event", "case": "event subagent.complete", "event": "subagent.complete"}
+{"func": "normalize_event", "case": "event subagent.text", "event": "subagent.text"}
+{"func": "normalize_event", "case": "event subagent.spawn_requested", "event": "subagent.spawn_requested"}
+{"func": "normalize_event", "case": "event _thinking", "event": "_thinking"}
+{"func": "normalize_event", "case": "event reasoning.available", "event": "reasoning.available"}
+{"func": "normalize_event", "case": "event tool.started", "event": "tool.started"}
+{"func": "normalize_event", "case": "event tool.completed", "event": "tool.completed"}
+{"func": "normalize_event", "case": "event subagent_progress", "event": "subagent_progress"}
+{"func": "normalize_event", "case": "event delegate.task_progress", "event": "delegate.task_progress"}
+{"func": "normalize_event", "case": "event delegate.task_thinking", "event": "delegate.task_thinking"}
+{"func": "normalize_event", "case": "event delegate.tool_started", "event": "delegate.tool_started"}
+{"func": "normalize_event", "case": "event delegate.tool_completed", "event": "delegate.tool_completed"}
+{"func": "normalize_event", "case": "event unknown.event", "event": "unknown.event"}
+{"func": "normalize_event", "case": "event ", "event": ""}
+{"func": "normalize_event", "case": "event null", "event": null}
+{"func": "format_duration", "case": "zero", "seconds": 0}
+{"func": "format_duration", "case": "negative", "seconds": -3}
+{"func": "format_duration", "case": "five", "seconds": 5}
+{"func": "format_duration", "case": "four half", "seconds": 4.5}
+{"func": "format_duration", "case": "two half", "seconds": 2.5}
+{"func": "format_duration", "case": "three half", "seconds": 3.5}
+{"func": "format_duration", "case": "one half", "seconds": 1.5}
+{"func": "format_duration", "case": "half", "seconds": 0.5}
+{"func": "format_duration", "case": "one twenty", "seconds": 120}
+{"func": "format_duration", "case": "one nineteen", "seconds": 119}
+{"func": "format_duration", "case": "ninety", "seconds": 90}
+{"func": "format_duration", "case": "one fifty", "seconds": 150}
+{"func": "format_duration", "case": "null", "seconds": null}
+{"func": "format_duration", "case": "string", "seconds": "5"}
+{"func": "short", "case": "short text", "text": "abc", "n": 5}
+{"func": "short", "case": "long text", "text": "abcdefgh", "n": 3}
+{"func": "short", "case": "zero n", "text": "abc", "n": 0}
+{"func": "short", "case": "empty", "text": "", "n": 4}
+{"func": "short", "case": "exact", "text": "abcd", "n": 4}
+{"func": "child_task_message", "case": "no context", "goal": "do the thing", "context": null}
+{"func": "child_task_message", "case": "empty context", "goal": "do the thing", "context": ""}
+{"func": "child_task_message", "case": "whitespace context", "goal": "do the thing", "context": "  \n "}
+{"func": "child_task_message", "case": "real context", "goal": "do the thing", "context": "repo conventions"}
+{"func": "child_task_message", "case": "unicode", "goal": "代理任务", "context": "规则 A"}
+{"func": "child_system_prompt", "case": "leaf bare", "opts": {"workspace_path": null, "role": "leaf", "max_spawn_depth": 2, "child_depth": 1}}
+{"func": "child_system_prompt", "case": "leaf workspace", "opts": {"workspace_path": "C:/Users/eman5/slermes", "role": "leaf", "max_spawn_depth": 2, "child_depth": 1, "context_files": ""}}
+{"func": "child_system_prompt", "case": "leaf workspace with context", "opts": {"workspace_path": "C:/Users/eman5/slermes", "role": "leaf", "max_spawn_depth": 2, "child_depth": 1, "context_files": "# AGENTS.md\nbe careful\n"}}
+{"func": "child_system_prompt", "case": "whitespace workspace", "opts": {"workspace_path": "   ", "role": "leaf", "max_spawn_depth": 2, "child_depth": 1, "context_files": "ignored"}}
+{"func": "child_system_prompt", "case": "orchestrator leaf note", "opts": {"workspace_path": null, "role": "orchestrator", "max_spawn_depth": 2, "child_depth": 1}}
+{"func": "child_system_prompt", "case": "orchestrator nested note", "opts": {"workspace_path": null, "role": "orchestrator", "max_spawn_depth": 3, "child_depth": 1}}
+{"func": "child_system_prompt", "case": "orchestrator depth two", "opts": {"workspace_path": null, "role": "orchestrator", "max_spawn_depth": 3, "child_depth": 2}}
+{"func": "child_system_prompt", "case": "orchestrator with workspace", "opts": {"workspace_path": "C:/repo", "role": "orchestrator", "max_spawn_depth": 2, "child_depth": 1, "context_files": "ctx"}}

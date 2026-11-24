@@ -1,0 +1,17 @@
+{"func": "local_backend", "policy_json": "{\"TERMINAL_ENV\": \"local\"}"}
+{"func": "local_backend", "policy_json": "{\"TERMINAL_ENV\": \"LOCAL\"}"}
+{"func": "local_backend", "policy_json": "{\"TERMINAL_ENV\": \"  local   \"}"}
+{"func": "local_backend", "policy_json": "{\"TERMINAL_ENV\": \"remote\"}"}
+{"func": "local_backend", "policy_json": "{\"TERMINAL_ENV\": \"\"}"}
+{"func": "local_backend", "policy_json": "{\"TERMINAL_ENV\": null}"}
+{"func": "local_backend", "policy_json": "{\"TERMINAL_ENV\": false}"}
+{"func": "local_backend", "policy_json": "{\"TERMINAL_ENV\": true}"}
+{"func": "local_backend", "policy_json": "{\"TERMINAL_ENV\": 5}"}
+{"func": "local_backend", "policy_json": "{\"TERMINAL_ENV\": 0}"}
+{"func": "local_backend", "policy_json": null, "env_value": "LOCAL"}
+{"func": "local_backend", "policy_json": null, "env_value": "docker"}
+{"func": "local_backend", "policy_json": null, "env_value": ""}
+{"func": "should_persist", "saved": "old", "cwd": "/tmp/new"}
+{"func": "should_persist", "saved": "same", "cwd": "same"}
+{"func": "should_persist", "saved": null, "cwd": "/tmp/x"}
+{"func": "should_persist", "saved": "x", "cwd": ""}

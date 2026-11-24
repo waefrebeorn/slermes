@@ -1,0 +1,17 @@
+{"case":"exit_term","func":"exit_status","signum":15}
+{"case":"exit_hup","func":"exit_status","signum":1}
+{"case":"exit_int","func":"exit_status","signum":2}
+{"case":"exit_zero","func":"exit_status","signum":0}
+{"case":"sig_windows","func":"signals","available":[15]}
+{"case":"sig_both","func":"signals","available":[15,1]}
+{"case":"sig_hup_only","func":"signals","available":[1]}
+{"case":"sig_none","func":"signals","available":[]}
+{"case":"sig_extra","func":"signals","available":[15,2,1]}
+{"case":"guard_main_dfl","func":"guard","is_main":true,"signals":[15],"prev_kinds":["DFL"]}
+{"case":"guard_ignored","func":"guard","is_main":true,"signals":[15],"prev_kinds":["IGN"]}
+{"case":"guard_custom","func":"guard","is_main":true,"signals":[15],"prev_kinds":["custom"]}
+{"case":"guard_worker","func":"guard","is_main":false,"signals":[15],"prev_kinds":["DFL"]}
+{"case":"guard_both_dfl","func":"guard","is_main":true,"signals":[15,1],"prev_kinds":["DFL","DFL"]}
+{"case":"guard_mixed","func":"guard","is_main":true,"signals":[15,1],"prev_kinds":["DFL","custom"]}
+{"case":"guard_empty","func":"guard","is_main":true,"signals":[],"prev_kinds":[]}
+{"case":"guard_no_prev","func":"guard","is_main":true,"signals":[15,1],"prev_kinds":[]}

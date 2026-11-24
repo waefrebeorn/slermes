@@ -1,0 +1,14 @@
+{"func":"validate_editor","source":"acp","editor":null,"case":"None editor accepted"}
+{"func":"validate_editor","source":"acp","editor":{},"case":"empty mapping accepted"}
+{"func":"validate_editor","source":"acp","editor":{"edit_approval_policy":"ask"},"case":"explicit ask accepted"}
+{"func":"validate_editor","source":"acp","editor":{"mcp_servers":[]},"case":"empty servers accepted"}
+{"func":"validate_editor","source":"local","editor":{},"case":"non acp source refused"}
+{"func":"validate_editor","source":"cli","editor":{"edit_approval_policy":"ask"},"case":"cli source refused"}
+{"func":"validate_editor","source":"acp","editor":"text","case":"string editor refused"}
+{"func":"validate_editor","source":"acp","editor":["x"],"case":"list editor refused"}
+{"func":"validate_editor","source":"acp","editor":{"zzz":1,"aaa":2},"case":"multiple unknown keys sorted"}
+{"func":"validate_editor","source":"acp","editor":{"edit_approval_policy":"confirm"},"case":"non ask policy refused"}
+{"func":"validate_editor","source":"acp","editor":{"edit_approval_policy":null},"case":"null policy refused"}
+{"func":"validate_editor","source":"acp","editor":{"mcp_servers":"x"},"case":"string servers refused"}
+{"func":"validate_editor","source":"acp","editor":{"mcp_servers":{}},"case":"mapping servers refused"}
+{"func":"validate_editor","source":"acp","editor":{"mcp_servers":[{"name":"a"}]},"case":"valid full editor"}

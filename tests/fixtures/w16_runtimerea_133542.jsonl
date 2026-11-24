@@ -1,0 +1,22 @@
+{"case":"sfx_noprovider_null","func":"suffix","provider":null,"profile_present":true,"hint":"ignored","hint_kind":0}
+{"case":"sfx_empty_provider","func":"suffix","provider":"","profile_present":true,"hint":"ignored","hint_kind":0}
+{"case":"sfx_no_profile","func":"suffix","provider":"nous","profile_present":false,"hint":"ignored","hint_kind":0}
+{"case":"sfx_plain","func":"suffix","provider":"nous","profile_present":true,"hint":"Run `hermes auth add nous`","hint_kind":0}
+{"case":"sfx_strip_lower","func":"suffix","provider":"  OPENAI  ","profile_present":true,"hint":"  Add a key first  ","hint_kind":0}
+{"case":"sfx_hook_raises","func":"suffix","provider":"bedrock","profile_present":true,"hint":"never","hint_kind":1}
+{"case":"sfx_nonstring","func":"suffix","provider":"bedrock","profile_present":true,"hint":"never","hint_kind":2}
+{"case":"sfx_blank_hint","func":"suffix","provider":"custom","profile_present":true,"hint":"   ","hint_kind":0}
+{"case":"sfx_tab_provider","func":"suffix","provider":"\tNous\n","profile_present":true,"hint":"hint here","hint_kind":0}
+{"case":"cred_usable","func":"creds","api_key":"secret-abc","api_key_callable":false,"command":null,"usable_secrets":["secret-abc"]}
+{"case":"cred_aws_sdk","func":"creds","api_key":"aws-sdk","api_key_callable":false,"command":null,"usable_secrets":[]}
+{"case":"cred_no_key","func":"creds","api_key":"  no-key-required ","api_key_callable":false,"command":null,"usable_secrets":[]}
+{"case":"cred_empty","func":"creds","api_key":"","api_key_callable":false,"command":null,"usable_secrets":[]}
+{"case":"cred_callable","func":"creds","api_key":null,"api_key_callable":true,"command":null,"usable_secrets":[]}
+{"case":"cred_command","func":"creds","api_key":null,"api_key_callable":false,"command":"vault run","usable_secrets":[]}
+{"case":"cred_bad","func":"creds","api_key":"bad-key","api_key_callable":false,"command":"","usable_secrets":["good-key"]}
+{"case":"cred_whitespace_key","func":"creds","api_key":"  good-key\t","api_key_callable":false,"command":null,"usable_secrets":["good-key"]}
+{"case":"cred_null_key","func":"creds","api_key":null,"api_key_callable":false,"command":null,"usable_secrets":[]}
+{"case":"fail_generic","func":"failure","error_text":"boom","has_error_code":false,"error_code":""}
+{"case":"fail_custom","func":"failure","error_text":"no runtime","has_error_code":true,"error_code":"E42"}
+{"case":"fail_empty","func":"failure","error_text":"","has_error_code":false,"error_code":""}
+{"case":"fail_custom_empty_code","func":"failure","error_text":"unavailable","has_error_code":true,"error_code":""}

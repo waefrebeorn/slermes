@@ -1,0 +1,18 @@
+{"func":"minted_key","case":"valid","value":"20260101_120000_ab12cd"}
+{"func":"minted_key","case":"uppercase hex","value":"20260101_120000_AB12CD"}
+{"func":"minted_key","case":"short date","value":"20260101_12000_ab12cd"}
+{"func":"minted_key","case":"non-digit date","value":"abcdefgh_120000_ab12cd"}
+{"func":"minted_key","case":"g in hex","value":"20260101_120000_ab12cg"}
+{"func":"minted_key","case":"too long","value":"20260101_120000_ab12cde"}
+{"func":"minted_key","case":"empty","value":""}
+{"func":"minted_key","case":"null","value":null}
+{"func":"minted_key","case":"trailing newline","value":"20260101_120000_ab12cd\n"}
+{"func":"minted_key","case":"dashes","value":"20260101-120000-ab12cd"}
+{"func":"lookup_key","case":"session key","session":{"session_key":"abc"},"fallback":"fb"}
+{"func":"lookup_key","case":"empty session","session":{},"fallback":"fb"}
+{"func":"lookup_key","case":"empty key","session":{"session_key":""},"fallback":"fb"}
+{"func":"lookup_key","case":"numeric key","session":{"session_key":123},"fallback":"fb"}
+{"func":"lookup_key","case":"null key","session":{"session_key":null},"fallback":"fb"}
+{"func":"lookup_key","case":"agent none","session":{"session_key":"abc","agent":null},"fallback":"fb"}
+{"func":"lookup_key","case":"bool key","session":{"session_key":false},"fallback":"fb"}
+{"func":"build_constants","case":"static build wait constants"}

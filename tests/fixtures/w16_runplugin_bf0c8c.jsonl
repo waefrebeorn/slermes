@@ -1,0 +1,15 @@
+{"func":"plugin_admission","row":{"request_id":"[\"plugin\",\"pid\",\"key\",\"uuid\"]","principal_id":"automation:x"}}
+{"func":"plugin_admission","row":{"request_id":"[\"plugin\"]","principal_id":"automation:"}}
+{"func":"plugin_admission","row":{"request_id":"[\"person\"]","principal_id":"automation:x"}}
+{"func":"plugin_admission","row":{"request_id":"{\"a\":1}","principal_id":"automation:x"}}
+{"func":"plugin_admission","row":{"request_id":"[","principal_id":"automation:x"}}
+{"func":"plugin_admission","row":{"request_id":"[\"plugin\"]","principal_id":"human:1"}}
+{"func":"plugin_admission","row":{"request_id":"[1,2]","principal_id":"automation:x"}}
+{"func":"plugin_admission","row":{"request_id":"[\"Plugin\"]","principal_id":"automation:x"}}
+{"func":"plugin_admission","row":{"request_id":"[ \"plugin\" ]","principal_id":"automation:x"}}
+{"func":"plugin_admission","row":{"request_id":"[\"plugin\"]"}}
+{"func":"plugin_admission","row":{"request_id":"[\"plugin\"]","principal_id":42}}
+{"func":"plugin_admission","row":{"request_id":"[\"plugin\",\"a\",\"b\"]","principal_id":"automation:bot"}}
+{"func":"plugin_admission","row":{"request_id":"[\"plugin\"] trailing","principal_id":"automation:x"}}
+{"func":"plugin_admission","row":{"request_id":123,"principal_id":"automation:x"}}
+{"func":"plugin_admission","row":{"request_id":"[]","principal_id":"automation:x"}}

@@ -1,0 +1,24 @@
+{"case": 1, "func": "tls", "data": [22, 3, 1, 0, 5], "offset": 0}
+{"case": 2, "func": "tls", "data": [0, 0, 0, 23, 3, 3, 0, 16], "offset": 3}
+{"case": 3, "func": "tls", "data": [21, 3, 4, 72, 0]}
+{"case": 4, "func": "tls", "data": [1, 3, 1, 0, 5]}
+{"case": 5, "func": "tls", "data": [22, 2, 1, 0, 5]}
+{"case": 6, "func": "tls", "data": [22, 3, 5, 0, 5]}
+{"case": 7, "func": "tls", "data": [22, 3, 1, 0, 0]}
+{"case": 8, "func": "tls", "data": [22, 3, 1, 72, 0]}
+{"case": 9, "func": "tls", "data": [22, 3, 1, 72, 1]}
+{"case": 10, "func": "tls", "data": [22, 3, 1], "offset": 0}
+{"case": 11, "func": "ok", "messages": ["ok"]}
+{"case": 12, "func": "ok", "messages": [" OK "]}
+{"case": 13, "func": "ok", "messages": ["ok", "ok"]}
+{"case": 14, "func": "ok", "messages": []}
+{"case": 15, "func": "ok", "messages": ["database is locked"]}
+{"case": 16, "func": "names", "messages": ["wrong # of entries in index idx_a"]}
+{"case": 17, "func": "names", "messages": ["row 12 missing from index idx_b"]}
+{"case": 18, "func": "names", "messages": ["wrong # of entries in index idx_a", "row 1 missing from index idx_b", "wrong # of entries in index idx_a"]}
+{"case": 19, "func": "names", "messages": ["wrong # of entries in index idx_a", "malformed database"]}
+{"case": 20, "func": "names", "messages": []}
+{"case": 21, "func": "names", "messages": [""]}
+{"case": 22, "func": "names", "messages": ["row x missing from index idx_c"]}
+{"case": 23, "func": "names", "messages": ["wrong # of entries in index "]}
+{"case": 24, "func": "names", "messages": ["  row 7 missing from index  idx_z  "]}

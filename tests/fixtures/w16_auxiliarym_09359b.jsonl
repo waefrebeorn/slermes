@@ -1,0 +1,18 @@
+{"func":"netloc","case":"ip port","base_url":"http://127.0.0.1:8080/x"}
+{"func":"netloc","case":"uppercase host","base_url":"HTTP://Host.Example:9000/path"}
+{"func":"netloc","case":"userinfo","base_url":"https://user:pw@HOST:1234/"}
+{"func":"netloc","case":"no scheme no netloc","base_url":"host:8080"}
+{"func":"netloc","case":"empty","base_url":""}
+{"func":"netloc","case":"bad ipv6","base_url":"http://[::1"}
+{"func":"netloc","case":"relative","base_url":"/relative/path"}
+{"func":"netloc","case":"ws path","base_url":"ws://localhost:9222/json"}
+{"func":"netloc","case":"balanced ipv6 with userinfo","base_url":"http://key:***@[::1]:80/x"}
+{"func":"netloc","case":"query","base_url":"http://host:80?q=1"}
+{"func":"netloc","case":"fragment","base_url":"http://host:80#frag"}
+{"func":"netloc","case":"null","base_url":null}
+{"func":"managed","case":"match","base_url":"http://127.0.0.1:8080/x","managed":"127.0.0.1:8080"}
+{"func":"managed","case":"case-insensitive host","base_url":"http://LOCALHOST:9222","managed":"localhost:9222"}
+{"func":"managed","case":"mismatch","base_url":"http://localhost:9222","managed":"127.0.0.1:8080"}
+{"func":"managed","case":"empty url","base_url":"","managed":"localhost:9222"}
+{"func":"managed","case":"empty managed","base_url":"http://x:1","managed":""}
+{"func":"managed","case":"bad ipv6","base_url":"http://[::1","managed":"[::1"}

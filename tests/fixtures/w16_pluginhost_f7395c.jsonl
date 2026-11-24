@@ -1,0 +1,17 @@
+{"func":"decode","value":"plain string","case":"scalar string"}
+{"func":"decode","value":42,"case":"scalar number"}
+{"func":"decode","value":null,"case":"scalar null"}
+{"func":"decode","value":[1,"two",true,null],"case":"array of scalars"}
+{"func":"decode","value":{"a":1,"b":{"c":[2,3]}},"case":"nested plain dict"}
+{"func":"decode","value":{"__record__":"Foo","fields":{"x":1,"y":"z"}},"case":"record with fields"}
+{"func":"decode","value":{"__record__":"Foo"},"case":"record missing fields"}
+{"func":"decode","value":{"__record__":"Foo","fields":{}},"case":"record empty fields"}
+{"func":"decode","value":{"__record__":"Foo","fields":null},"case":"record null fields"}
+{"func":"decode","value":{"__bytes__":"aGVsbG8="},"case":"bytes hello"}
+{"func":"decode","value":{"__bytes__":"YWJjZA=="},"case":"bytes abcd"}
+{"func":"decode","value":{"__opaque__":"SDKClient","repr":"<client>"},"case":"opaque with repr"}
+{"func":"decode","value":{"__opaque__":"Thing","repr":0},"case":"opaque falsy repr"}
+{"func":"decode","value":{"__callable__":7,"name":"f"},"case":"ref marker passes through without resolve"}
+{"func":"decode","value":[{"__bytes__":"aGk="},{"__record__":"R","fields":{"k":true}}],"case":"nested special values"}
+{"func":"host_unsupported","overrides":false,"case":"plain profile supported"}
+{"func":"host_unsupported","overrides":true,"case":"override create_client unsupported"}

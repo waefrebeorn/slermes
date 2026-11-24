@@ -1,0 +1,15 @@
+{"func":"zero_width","seq":""}
+{"func":"zero_width","seq":"abc"}
+{"func":"zero_width","seq":"\u001b[31m"}
+{"func":"image_rows","image":{"mode":"kitty","color":"#FF8000","placeholder":["IMG","  "],"transmit":"RAW"}}
+{"func":"image_rows","image":{"mode":"kitty","color":"#000000","placeholder":["X"],"transmit":""}}
+{"func":"image_rows","image":{"mode":"kitty","color":"#00ff80","placeholder":["a","b","c"],"transmit":"T"}}
+{"func":"image_rows","image":{"mode":"iterm","rows":3,"transmit":"RAW123"}}
+{"func":"image_rows","image":{"mode":"iterm","rows":1,"transmit":"X"}}
+{"func":"image_rows","image":{"mode":"iterm","rows":2,"transmit":""}}
+{"func":"image_rows","image":{"mode":"halfblock","cells":[[[[255,0,0,255],[0,255,0,255]],[[0,0,255,255],[0,0,0,0]]],[[[10,20,30,255],[40,50,60,255]]]]}}
+{"func":"image_rows","image":{"mode":"halfblock","cells":[[[[1,2,3,255],[0,0,0,0]]]]}}
+{"func":"image_rows","image":{"mode":"halfblock","cells":[[[[0,0,0,0],[4,5,6,255]]]]}}
+{"func":"image_rows","image":{"mode":"halfblock","cells":[[[[0,0,0,0],[0,0,0,0]]]]}}
+{"func":"image_rows","image":{"mode":"weird","cells":[]}}
+{"func":"constants"}

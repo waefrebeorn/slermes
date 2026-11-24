@@ -1,0 +1,9 @@
+{"func":"profile_units","profile":"beta","home":"/h","authority":{"cron_count":1,"managed_units":[{"kind":"managed","session":"m1","pid":111}],"side_count":1},"pid":999,"units":[{"kind":"chat","session":"agent:beta:s1"},{"kind":"chat","session":"agent:main:s2"},{"kind":"cron","job_id":"x"}]}
+{"func":"profile_units","profile":"default","home":"/h","authority":{"cron_count":0,"managed_units":[],"side_count":0},"pid":7,"units":[{"kind":"chat","session":"agent:main:s3"},{"kind":"chat","session":"agent:beta:s1"}]}
+{"func":"profile_units","profile":"main","home":"/h","authority":{"cron_count":0,"managed_units":[],"side_count":0},"pid":7,"units":[{"kind":"chat","session":"agent:main~:s4"},{"kind":"chat","session":"agent:main:sX"}]}
+{"func":"profile_units","profile":null,"home":null,"authority":null,"pid":5,"units":[{"kind":"chat","session":"agent:main:s1"},{"kind":"chat","session":"agent:beta:s2"}]}
+{"func":"profile_units","profile":"beta","home":null,"authority":{"cron_count":2,"managed_units":[],"side_count":3},"pid":5,"units":[{"kind":"chat","session":"agent:beta:s1"}]}
+{"func":"profile_units","profile":"","home":"/h","authority":{"cron_count":0,"managed_units":[],"side_count":0},"pid":2,"units":[{"kind":"chat","session":"agent:main:z"}]}
+{"func":"profile_units","profile":"beta","home":"/h","authority":{"cron_count":0,"managed_units":[],"side_count":0},"pid":2,"units":[{"kind":"chat","session":null},{"kind":"chat"},{"kind":"side_agent","pid":1}]}
+{"func":"profile_units","profile":"beta","home":"/h","authority":{"cron_count":0,"managed_units":[],"side_count":2},"pid":8,"units":[]}
+{"func":"profile_units","profile":"beta","home":"/h","authority":{"cron_count":2,"managed_units":[{"kind":"managed","session":"m","pid":4}],"side_count":1},"pid":10,"units":[{"kind":"chat","session":"agent:beta:k"}]}

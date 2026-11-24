@@ -1,0 +1,15 @@
+{"func":"execution_state","pending":[],"case":"empty pending idle"}
+{"func":"execution_state","pending":[{"status":"started"}],"case":"one started running"}
+{"func":"execution_state","pending":[{"status":"unknown"},{"status":"started"}],"case":"unknown dominates"}
+{"func":"execution_state","pending":[{"status":"idle"}],"case":"idle status stays idle"}
+{"func":"execution_state","pending":[{"status":"started"},{"status":"unknown"}],"case":"unknown dominates regardless of order"}
+{"func":"execution_state","pending":[{"status":"queued"}],"case":"unrecognized status idle"}
+{"func":"execution_state","pending":[{"status":"started"},{"status":"started"}],"case":"many started running"}
+{"func":"execution_state","pending":[{"status":"idle"},{"status":"unknown"},{"status":"started"}],"case":"mixed statuses"}
+{"func":"masked_pending","rows":[{"admission_id":"a","seq":3},{"admission_id":"b","seq":1}],"settling":{},"case":"empty settling returns rows unchanged"}
+{"func":"masked_pending","rows":[{"admission_id":"a","seq":3},{"admission_id":"b","seq":1}],"settling":{"a":{"admission_id":"a","seq":0}},"case":"settling overwrites existing then sorted"}
+{"func":"masked_pending","rows":[{"admission_id":"a","seq":5}],"settling":{"b":{"admission_id":"b","seq":2}},"case":"settling adds new row"}
+{"func":"masked_pending","rows":[{"admission_id":"a","seq":9},{"admission_id":"a","seq":1}],"settling":{},"case":"duplicate admission id unchanged without settling"}
+{"func":"masked_pending","rows":[{"admission_id":"a","seq":9},{"admission_id":"a","seq":1}],"settling":{"z":{"admission_id":"z","seq":0}},"case":"duplicate admission id last wins then sorted"}
+{"func":"masked_pending","rows":[{"admission_id":"b","seq":2},{"admission_id":"a","seq":2}],"settling":{"x":{"admission_id":"x","seq":2}},"case":"stable order on equal seq"}
+{"func":"masked_pending","rows":[],"settling":{"only":{"admission_id":"only","seq":7}},"case":"only settling rows"}

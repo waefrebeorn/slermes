@@ -1,0 +1,12 @@
+{"func":"refused_info"}
+{"func":"constants"}
+{"func":"profile_refusal","profile":"beta"}
+{"func":"profile_refusal","profile":null}
+{"func":"profile_refusal","profile":""}
+{"func":"notice_due","sent":[],"now":100.0,"profile":"p","platform":"discord","chat_id":"c1"}
+{"func":"notice_due","sent":[["p","discord","c1",100.0]],"now":100.0,"profile":"p","platform":"discord","chat_id":"c1"}
+{"func":"notice_due","sent":[["p","discord","c1",100.0]],"now":160.0,"profile":"p","platform":"discord","chat_id":"c1"}
+{"func":"notice_due","sent":[["p","discord","c1",100.0]],"now":159.9,"profile":"p","platform":"discord","chat_id":"c1"}
+{"func":"notice_due","sent":[["p","discord","c1",0.0],["p","slack","c2",150.0]],"now":100.0,"profile":"p","platform":"discord","chat_id":"c1"}
+{"func":"notice_due","sent":[["p","discord","c1",100.0]],"now":200.0,"profile":"q","platform":"discord","chat_id":"c1"}
+{"func":"notice_due","sent":[["p","discord","c1",200.0]],"now":100.0,"profile":"p","platform":"discord","chat_id":"c1"}

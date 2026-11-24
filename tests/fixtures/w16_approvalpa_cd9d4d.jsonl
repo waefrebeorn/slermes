@@ -1,0 +1,36 @@
+{"func": "substitution_depth", "case": "empty command", "command": ""}
+{"func": "substitution_depth", "case": "plain command", "command": "echo hello world"}
+{"func": "substitution_depth", "case": "one substitution", "command": "echo $(foo)"}
+{"func": "substitution_depth", "case": "nested substitution", "command": "echo $(a $(b))"}
+{"func": "substitution_depth", "case": "single-quoted substitution is data", "command": "echo '$(foo)'"}
+{"func": "substitution_depth", "case": "double-quoted substitution counts", "command": "echo \"$(foo)\""}
+{"func": "substitution_depth", "case": "escaped dollar is literal", "command": "echo \\$(foo)"}
+{"func": "substitution_depth", "case": "comment hides substitution", "command": "echo hi # $(foo)\n"}
+{"func": "substitution_depth", "case": "hash glued to close paren still runs", "command": "echo $(echo a)# hi\n"}
+{"func": "substitution_depth", "case": "arithmetic shift not heredoc", "command": "echo $((1<<2))"}
+{"func": "substitution_depth", "case": "single quoted payload measured separately", "command": "echo 'x $(a) y'"}
+{"func": "substitution_depth", "case": "paren balance inside frame", "command": "echo $(case x in (a) echo $(b);; esac)"}
+{"func": "substitution_depth", "case": "quoted heredoc body skipped", "command": "cat <<'E'\n$(a)\nE\n$(b)\n"}
+{"func": "substitution_depth", "case": "unquoted heredoc body counted", "command": "cat <<E\n$(a)\nE\n"}
+{"func": "scan_shell", "case": "scan plain", "opts": {"subst": "", "brace": false, "stop_unterminated": false, "naive_backtick": false, "comments": false, "text": "abc", "start": 0, "end": null}}
+{"func": "scan_shell", "case": "scan quotes", "opts": {"subst": "", "brace": false, "stop_unterminated": false, "naive_backtick": false, "comments": false, "text": "a'b\"c\\d", "start": 0, "end": null}}
+{"func": "scan_shell", "case": "scan subst", "opts": {"subst": "u", "brace": false, "stop_unterminated": false, "naive_backtick": false, "comments": false, "text": "x$(a b)y", "start": 0, "end": null}}
+{"func": "scan_shell", "case": "scan no subst", "opts": {"subst": "", "brace": false, "stop_unterminated": false, "naive_backtick": false, "comments": false, "text": "x$(a)y", "start": 0, "end": null}}
+{"func": "scan_shell", "case": "scan q subst", "opts": {"subst": "q", "brace": false, "stop_unterminated": false, "naive_backtick": false, "comments": false, "text": "a\"$(b)\"c", "start": 0, "end": null}}
+{"func": "scan_shell", "case": "scan naive tick", "opts": {"subst": "u", "brace": false, "stop_unterminated": false, "naive_backtick": true, "comments": false, "text": "a`b\\`c`d", "start": 0, "end": null}}
+{"func": "scan_shell", "case": "scan balanced tick", "opts": {"subst": "u", "brace": false, "stop_unterminated": false, "naive_backtick": false, "comments": false, "text": "a`b\\`c`d", "start": 0, "end": null}}
+{"func": "scan_shell", "case": "scan unterminated", "opts": {"subst": "u", "brace": false, "stop_unterminated": true, "naive_backtick": false, "comments": false, "text": "x$(a", "start": 0, "end": null}}
+{"func": "scan_shell", "case": "scan comments", "opts": {"subst": "u", "brace": false, "stop_unterminated": false, "naive_backtick": false, "comments": true, "text": "echo hi # $(x)\necho $(y)", "start": 0, "end": null}}
+{"func": "scan_shell", "case": "scan brace", "opts": {"subst": "u", "brace": true, "stop_unterminated": false, "naive_backtick": false, "comments": false, "text": "x${a:-b}y", "start": 0, "end": null}}
+{"func": "scan_shell", "case": "scan end bound", "opts": {"subst": "", "brace": false, "stop_unterminated": false, "naive_backtick": false, "comments": false, "text": "abcdef", "start": 1, "end": 3}}
+{"func": "dollar_paren_end", "case": "balanced", "command": "x$(a $(b))y", "start": 1}
+{"func": "dollar_paren_end", "case": "unterminated", "command": "x$(a b", "start": 1}
+{"func": "dollar_paren_end", "case": "quoted close is data", "command": "x$(echo \")\")z", "start": 1}
+{"func": "backtick_end", "case": "simple", "command": "x`abc`y", "start": 1}
+{"func": "backtick_end", "case": "escaped backtick", "command": "x`a\\`b`y", "start": 1}
+{"func": "backtick_end", "case": "unterminated", "command": "x`abc", "start": 1}
+{"func": "heredoc_bodies", "case": "quoted body span", "command": "cat <<'E'\nbody\nE\nrest", "newline": 9, "pending": [["E", false, true]]}
+{"func": "heredoc_bodies", "case": "unquoted body no span", "command": "cat <<E\nbody\nE\nrest", "newline": 7, "pending": [["E", false, false]]}
+{"func": "heredoc_bodies", "case": "strip tabs", "command": "x\n\tE\ny", "newline": 0, "pending": [["E", true, true]]}
+{"func": "heredoc_bodies", "case": "continuation joins lines", "command": "cat <<E\na\\\nE\nE\nz", "newline": 7, "pending": [["E", false, false]]}
+{"func": "heredoc_bodies", "case": "second pending delimiter", "command": "x\nA\ny\nB\nz", "newline": 0, "pending": [["A", false, true], ["B", false, true]]}

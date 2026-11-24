@@ -1,0 +1,24 @@
+{"func":"layout_from_config","display":{}}
+{"func":"layout_from_config","display":{"cli_layout":"classic"}}
+{"func":"layout_from_config","display":{"cli_layout":"MODERN"}}
+{"func":"layout_from_config","display":{"cli_layout":"  classic  "}}
+{"func":"layout_from_config","display":{"cli_layout":null}}
+{"func":"layout_from_config","display":{"cli_layout":""}}
+{"func":"layout_from_config","display":{"cli_layout":"x"}}
+{"func":"layout_from_config","display":null}
+{"func":"busy_input_mode_from_config","display":{}}
+{"func":"busy_input_mode_from_config","display":{"busy_input_mode":"queue"}}
+{"func":"busy_input_mode_from_config","display":{"busy_input_mode":" QUEUE "}}
+{"func":"busy_input_mode_from_config","display":{"busy_input_mode":null}}
+{"func":"busy_input_mode_from_config","display":{"busy_input_mode":""}}
+{"func":"fg","hex_color":"#FFBF00","bold":false}
+{"func":"fg","hex_color":"#FFBF00","bold":true}
+{"func":"fg","hex_color":"FF0000","bold":false}
+{"func":"fg","hex_color":"zzz","bold":false}
+{"func":"fg","hex_color":"#GGHHII","bold":true}
+{"func":"fg","hex_color":"","bold":false}
+{"func":"fg","hex_color":"#0102FF","bold":false}
+{"func":"reasoning_text_line","line":"hello"}
+{"func":"reasoning_text_line","line":""}
+{"func":"reasoning_text_line","line":"a\tb"}
+{"func":"constants"}

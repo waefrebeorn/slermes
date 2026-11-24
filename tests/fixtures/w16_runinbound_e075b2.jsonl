@@ -1,0 +1,12 @@
+{"func":"hook_choice","results":[{"action":"handled","reply":"hi"}],"session_key":"s1"}
+{"func":"hook_choice","results":[{"action":"handled","reply":"   "}],"session_key":"s1"}
+{"func":"hook_choice","results":[{"action":"handled","reply":"  ok  "}],"session_key":"s1"}
+{"func":"hook_choice","results":[{"action":"handled","reply":123}],"session_key":"s1"}
+{"func":"hook_choice","results":[{"action":"handled"}],"session_key":"s1"}
+{"func":"hook_choice","results":[{"action":"other","reply":"x"}],"session_key":"s1"}
+{"func":"hook_choice","results":[{"action":"handled","reply":"a"},{"action":"handled","reply":"b"}],"session_key":"s1"}
+{"func":"hook_choice","results":[],"session_key":"s1"}
+{"func":"hook_choice","mode":"has_hook_false","results":[{"action":"handled","reply":"x"}],"session_key":"s1"}
+{"func":"hook_choice","mode":"hook_error","results":[],"session_key":"s1"}
+{"func":"hook_choice","results":[{"action":"handled","reply":""},{"action":"handled","reply":"second"}],"session_key":"s1"}
+{"func":"hook_choice","results":["not-a-dict",null,{"action":"handled","reply":"done"}],"session_key":"s1"}

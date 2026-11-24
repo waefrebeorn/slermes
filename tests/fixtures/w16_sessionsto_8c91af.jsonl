@@ -1,0 +1,21 @@
+{"func":"take","roles":[],"latest":false,"limit":5,"case":"empty roles"}
+{"func":"take","roles":["user","assistant"],"latest":false,"limit":1,"case":"single take"}
+{"func":"take","roles":["user","tool","tool","assistant"],"latest":false,"limit":1,"case":"oldest extends over tool run"}
+{"func":"take","roles":["tool","assistant"],"latest":false,"limit":1,"case":"oldest stops at assistant"}
+{"func":"take","roles":["tool","tool","assistant"],"latest":true,"limit":1,"case":"latest extends over tool run"}
+{"func":"take","roles":["user","assistant"],"latest":true,"limit":5,"case":"latest capped by length"}
+{"func":"take","roles":["tool"],"latest":true,"limit":1,"case":"single tool latest"}
+{"func":"take","roles":["tool","tool","tool"],"latest":false,"limit":0,"case":"zero limit still takes tool run"}
+{"func":"cut","roles":["a","b","c","d"],"latest":false,"taken":4,"case":"oldest half at boundary"}
+{"func":"cut","roles":["a","b","tool","d"],"latest":false,"taken":4,"case":"oldest backs off tool"}
+{"func":"cut","roles":["a","tool","tool","d"],"latest":false,"taken":4,"case":"oldest backs off two tools"}
+{"func":"cut","roles":["a","b","c"],"latest":false,"taken":1,"case":"single kept"}
+{"func":"cut","roles":["a","b","c","d"],"latest":true,"taken":4,"case":"latest half"}
+{"func":"cut","roles":["a","tool","c","d"],"latest":true,"taken":4,"case":"latest backs off tool"}
+{"func":"cut","roles":[],"latest":false,"taken":0,"case":"zero roles"}
+{"func":"sent","handoffs":[[],[]],"latest":true,"item":[0,0],"case":"latest slot zero is None"}
+{"func":"sent","handoffs":[[],[]],"latest":true,"item":[0,2],"case":"latest slot two"}
+{"func":"sent","handoffs":[[{},{}]],"latest":false,"item":[0,2],"case":"oldest end of group is None"}
+{"func":"sent","handoffs":[[{},{}]],"latest":false,"item":[0,0],"case":"oldest first slot"}
+{"func":"sent","handoffs":[[{}],[]],"latest":false,"item":[0,0],"case":"oldest single handoff"}
+{"func":"sent","handoffs":[[{},{},{}]],"latest":false,"item":[0,1],"case":"oldest middle slot"}

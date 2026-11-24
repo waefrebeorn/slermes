@@ -1,0 +1,21 @@
+{"func":"skipped","name":"__pycache__","case":"dunder cache"}
+{"func":"skipped","name":"__MACOSX__","case":"dunder uppercase"}
+{"func":"skipped","name":"__","case":"bare dunder"}
+{"func":"skipped","name":"normal_plugin","case":"normal dir"}
+{"func":"skipped","name":".claude-plugin","case":"foreign claude"}
+{"func":"skipped","name":".kimi-plugin","case":"foreign kimi"}
+{"func":"skipped","name":".cursor-pluginX","case":"near miss foreign"}
+{"func":"skipped","name":"_single_","case":"single underscore"}
+{"func":"skipped","name":"","case":"empty name"}
+{"func":"ep_group","eps":{"hermes_agent.plugins":["a","b"],"other":["c"]},"group":"hermes_agent.plugins","case":"dict hit"}
+{"func":"ep_group","eps":{"hermes_agent.plugins":["a"]},"group":"missing","case":"dict miss"}
+{"func":"ep_group","eps":{},"group":"anything","case":"empty dict"}
+{"func":"ep_group","eps":[{"group":"g1","name":"a"},{"group":"g2","name":"b"},{"group":"g1","name":"c"}],"group":"g1","case":"list filter"}
+{"func":"ep_group","eps":[{"group":"g2","name":"b"}],"group":"g1","case":"list no match"}
+{"func":"winners","manifests":[{"name":"kanban","key":"","source":"bundled","path":"bundled/kanban"}],"case":"single bundled"}
+{"func":"winners","manifests":[{"name":"kanban","key":"","source":"bundled","path":"bundled/kanban"},{"name":"kanban","key":"","source":"user","path":"user/kanban"}],"case":"user overrides same dir"}
+{"func":"winners","manifests":[{"name":"kanban","key":"","source":"bundled","path":"bundled/kanban"},{"name":"kanban","key":"","source":"user","path":"user/impostor"}],"case":"impostor skipped"}
+{"func":"winners","manifests":[{"name":"foo","key":"cat/foo","source":"bundled","path":"b/cat/foo"},{"name":"foo","key":"cat/foo","source":"user","path":"u/cat/foo"}],"case":"category key override"}
+{"func":"winners","manifests":[{"name":"dup","key":"","source":"user","path":"u/dup"},{"name":"dup","key":"","source":"project","path":"p/dup"}],"case":"later project wins"}
+{"func":"winners","manifests":[],"case":"empty list"}
+{"func":"winners","manifests":[{"name":"z","key":"k","source":"bundled","path":"b/z"},{"name":"y","key":"k","source":"bundled","path":"b/y"}],"case":"same key later wins without impostor guard"}

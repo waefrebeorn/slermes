@@ -1,0 +1,22 @@
+{"case":"debt_no_start","func":"debt","pre":"pre1","target":"tgt1","run_start_head":null}
+{"case":"debt_empty_start","func":"debt","pre":"pre1","target":"tgt1","run_start_head":""}
+{"case":"debt_start_equals_pre","func":"debt","pre":"aaa111","target":"tgt1","run_start_head":"aaa111"}
+{"case":"debt_later_move","func":"debt","pre":"bbb222","target":"tgt1","run_start_head":"aaa111"}
+{"case":"debt_empty_pre","func":"debt","pre":"","target":"tgt1","run_start_head":"aaa111"}
+{"case":"table_nested","func":"table","obj":{"a":{"b":{"c":1,"d":2}}},"keys":["a","b"]}
+{"case":"table_scalar_step","func":"table","obj":{"a":5},"keys":["a","b"]}
+{"case":"table_missing","func":"table","obj":{},"keys":["a"]}
+{"case":"table_no_keys","func":"table","obj":{"x":1},"keys":[]}
+{"case":"sf_null","func":"startup","pyproject":null,"undeclared":["x.py"]}
+{"case":"sf_empty","func":"startup","pyproject":"","undeclared":["x.py","y.py"]}
+{"case":"sf_other_section","func":"startup","pyproject":"[project]\nname = \"demo\"\n","undeclared":["x.py"]}
+{"case":"sf_declared_two","func":"startup","pyproject":"[tool.hermes]\nupdate-startup-files = [\"a.py\", \"b/c.py\"]\n","undeclared":["x.py"]}
+{"case":"sf_declared_empty","func":"startup","pyproject":"[tool.hermes]\nupdate-startup-files = []\n","undeclared":["x.py"]}
+{"case":"sf_non_list","func":"startup","pyproject":"[tool.hermes]\nupdate-startup-files = \"a.py\"\n","undeclared":["x.py"]}
+{"case":"sf_empty_item","func":"startup","pyproject":"[tool.hermes]\nupdate-startup-files = [\"a.py\", \"\"]\n","undeclared":["x.py"]}
+{"case":"sf_invalid_toml","func":"startup","pyproject":"[[bad\n","undeclared":["x.py"]}
+{"case":"sf_single_quotes","func":"startup","pyproject":"[tool.hermes]\nupdate-startup-files = ['a.py', \"b.py\"]\n","undeclared":[]}
+{"case":"sf_trailing_comment","func":"startup","pyproject":"[tool.hermes]\nupdate-startup-files = [\"a.py\"] # keep\n","undeclared":["x.py"]}
+{"case":"sf_spaced_section","func":"startup","pyproject":"[ tool.hermes ]\nupdate-startup-files = [ \"z.py\" ]\n","undeclared":["x.py"]}
+{"case":"sf_escaped_quote","func":"startup","pyproject":"[tool.hermes]\nupdate-startup-files = [\"a\\\"b.py\"]\n","undeclared":[]}
+{"case":"sf_undeclared_empty","func":"startup","pyproject":"[tool.hermes]\nother = 1\n","undeclared":[]}

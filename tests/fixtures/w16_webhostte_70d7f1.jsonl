@@ -1,0 +1,24 @@
+{"func":"lc","env":{},"platform":"linux","case":"linux no LANG"}
+{"func":"lc","env":{"LANG":"en_US.UTF-8"},"platform":"linux","case":"linux LANG set"}
+{"func":"lc","env":{"LC_ALL":"C"},"platform":"linux","case":"LC_ALL blocks"}
+{"func":"lc","env":{"LC_CTYPE":"UTF-8"},"platform":"linux","case":"LC_CTYPE blocks"}
+{"func":"lc","env":{},"platform":"darwin","case":"darwin"}
+{"func":"lc","env":{"LANG":"en_US.UTF-8"},"platform":"darwin","case":"darwin ignores LANG"}
+{"func":"lc","env":{},"platform":"win32","case":"win32 none"}
+{"func":"lc","env":{"LANG":"","LC_ALL":""},"platform":"linux","case":"empty values falsy"}
+{"func":"dim","raw":"5","default":10,"maximum":100,"case":"plain string"}
+{"func":"dim","raw":"0","default":10,"maximum":100,"case":"clamp min"}
+{"func":"dim","raw":"-5","default":10,"maximum":100,"case":"negative clamp"}
+{"func":"dim","raw":"1000","default":10,"maximum":100,"case":"clamp max"}
+{"func":"dim","raw":"abc","default":7,"maximum":100,"case":"invalid default"}
+{"func":"dim","raw":null,"default":9,"maximum":100,"case":"null default"}
+{"func":"dim","raw":"","default":6,"maximum":100,"case":"empty default"}
+{"func":"dim","raw":"1_000","default":10,"maximum":2000,"case":"underscores"}
+{"func":"dim","raw":5.7,"default":10,"maximum":100,"case":"number truncated"}
+{"func":"dim","raw":true,"default":10,"maximum":100,"case":"bool one clamped"}
+{"func":"dim","raw":"5","default":10,"maximum":0,"case":"maximum below min"}
+{"func":"allowed","host_terminal":false,"auth_required":false,"bound_host":"localhost","loopback_hosts":["localhost"],"case":"policy off"}
+{"func":"allowed","host_terminal":true,"auth_required":true,"bound_host":"example.com","loopback_hosts":[],"case":"auth required"}
+{"func":"allowed","host_terminal":true,"auth_required":false,"bound_host":" LOCALHOST ","loopback_hosts":["localhost","127.0.0.1"],"case":"loopback stripped"}
+{"func":"allowed","host_terminal":true,"auth_required":false,"bound_host":"example.com","loopback_hosts":["localhost"],"case":"remote refused"}
+{"func":"allowed","host_terminal":true,"auth_required":false,"bound_host":"","loopback_hosts":[""],"case":"empty host matches empty"}

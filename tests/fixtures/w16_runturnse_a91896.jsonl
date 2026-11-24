@@ -1,0 +1,11 @@
+{"func":"busy_notice","enabled":false,"allowed":true,"timeout":300,"started":1000,"now":1300,"agent_is_pending":true,"state_is_none":false,"busy_ack_ts":0,"case":"busy ack disabled"}
+{"func":"busy_notice","enabled":true,"allowed":false,"timeout":300,"started":1000,"now":1300,"agent_is_pending":true,"state_is_none":false,"busy_ack_ts":0,"case":"bot peer not allowed"}
+{"func":"busy_notice","enabled":true,"allowed":true,"timeout":0,"started":1000,"now":1300,"agent_is_pending":true,"state_is_none":false,"busy_ack_ts":0,"case":"timeout disabled"}
+{"func":"busy_notice","enabled":true,"allowed":true,"timeout":300,"started":1000,"now":1300,"agent_is_pending":true,"state_is_none":true,"busy_ack_ts":0,"case":"no state"}
+{"func":"busy_notice","enabled":true,"allowed":true,"timeout":300,"started":0,"now":1300,"agent_is_pending":true,"state_is_none":false,"busy_ack_ts":0,"case":"never started"}
+{"func":"busy_notice","enabled":true,"allowed":true,"timeout":300,"started":1000,"now":1300,"agent_is_pending":false,"state_is_none":false,"busy_ack_ts":0,"case":"agent not pending"}
+{"func":"busy_notice","enabled":true,"allowed":true,"timeout":300,"started":1000,"now":1100,"agent_is_pending":true,"state_is_none":false,"busy_ack_ts":0,"case":"before stall timeout"}
+{"func":"busy_notice","enabled":true,"allowed":true,"timeout":300,"started":1000,"now":1400,"agent_is_pending":true,"state_is_none":false,"busy_ack_ts":1380,"case":"recent ack debounce"}
+{"func":"busy_notice","enabled":true,"allowed":true,"timeout":300,"started":1000,"now":1125,"agent_is_pending":true,"state_is_none":false,"busy_ack_ts":0,"case":"two minutes wait"}
+{"func":"busy_notice","enabled":true,"allowed":true,"timeout":300,"started":1000,"now":1060,"agent_is_pending":true,"state_is_none":false,"busy_ack_ts":0,"case":"one minute wait"}
+{"func":"busy_notice","enabled":true,"allowed":true,"timeout":300,"started":1000,"now":4600,"agent_is_pending":true,"state_is_none":false,"busy_ack_ts":0,"case":"sixty minutes wait"}

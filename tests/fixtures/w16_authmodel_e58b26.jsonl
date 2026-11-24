@@ -1,0 +1,10 @@
+{"func":"picker_order","model_ids":[],"current_model":""}
+{"func":"picker_order","model_ids":["a","b","c"],"current_model":"b"}
+{"func":"picker_order","model_ids":["a","b","a"],"current_model":"a"}
+{"func":"picker_order","model_ids":["a","b"],"current_model":"z"}
+{"func":"picker_order","model_ids":["x","y","x","z"],"current_model":"y"}
+{"func":"picker_order","model_ids":["a"],"current_model":"a"}
+{"func":"picker_order","current_model":""}
+{"func":"picker_order","model_ids":["a","b","c"]}
+{"func":"picker_order","model_ids":["nous/max","nous/mini","openai/gpt","nous/max"],"current_model":"openai/gpt"}
+{"func":"constants"}

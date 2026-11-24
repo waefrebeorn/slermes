@@ -1,0 +1,8 @@
+{"func":"pick","case":"some and missing","params":{"a":1,"b":2,"c":3},"keys":["a","c","z"]}
+{"func":"pick","case":"empty params","params":{},"keys":["x","y"]}
+{"func":"pick","case":"no keys","params":{"a":1},"keys":[]}
+{"func":"pick","case":"null and bool values","params":{"a":null,"b":false,"c":0},"keys":["a","b","c"]}
+{"func":"pick","case":"nested value","params":{"obj":{"k":1}},"keys":["obj","none"]}
+{"func":"messaging_sources","case":"constant tuple"}
+{"func":"tree_excluded_sources","case":"constant list"}
+{"func":"error_codes","case":"constant codes"}

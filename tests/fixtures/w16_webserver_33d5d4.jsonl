@@ -1,0 +1,23 @@
+{"func":"infer","value":"hello","case":"string"}
+{"func":"infer","value":5,"case":"number"}
+{"func":"infer","value":true,"case":"boolean"}
+{"func":"infer","value":[1,2],"case":"list"}
+{"func":"infer","value":{"a":1},"case":"object"}
+{"func":"infer","value":null,"case":"null is string type"}
+{"func":"cmdblock","value":[],"case":"not a dict"}
+{"func":"cmdblock","value":{},"case":"empty dict missing command"}
+{"func":"cmdblock","value":{"command":"/bin/sh"},"case":"type absent command present"}
+{"func":"cmdblock","value":{"type":" COMMAND ","command":"sh"},"case":"type case spaces"}
+{"func":"cmdblock","value":{"type":"docker","command":"sh"},"case":"wrong type"}
+{"func":"cmdblock","value":{"command":"   "},"case":"blank command"}
+{"func":"cmdblock","value":{"command":5},"case":"non string command"}
+{"func":"normalize","config":{"model":{"default":"gpt-x","context_length":8192},"other":1},"case":"dict model with context"}
+{"func":"normalize","config":{"model":{"name":"fallback-name"}},"case":"name fallback"}
+{"func":"normalize","config":{"model":"plain","other":"keep"},"case":"string model"}
+{"func":"normalize","config":{"other":1},"case":"missing model"}
+{"func":"normalize","config":{"model":{"default":"m","context_length":"8192"}},"case":"string context becomes zero"}
+{"func":"known","cfg":{},"base_url":"","case":"empty base url"}
+{"func":"known","cfg":{"model":{"base_url":"HTTPS://Example.COM/"}},"base_url":" https://example.com ","case":"model match trailing case"}
+{"func":"known","cfg":{"providers":{"p":{"url":"http://localhost:11434"}}},"base_url":"http://localhost:11434/","case":"providers dict url"}
+{"func":"known","cfg":{"custom_providers":[{"base_url":"http://a/"}]},"base_url":"http://A","case":"custom list base url"}
+{"func":"known","cfg":{"model":{"base_url":"http://one"},"providers":{"p":{"api":"http://two"}}},"base_url":"http://three","case":"no match"}

@@ -1,0 +1,10 @@
+{"func":"item","case":"basic","text":"hello","meta":"m"}
+{"func":"item","case":"display given","text":"hello","meta":"m","display":"SHOWN"}
+{"func":"item","case":"display empty string stays","text":"t","meta":"m","display":""}
+{"func":"item","case":"display null -> text","text":"t","meta":"m","display":null}
+{"func":"item","case":"numeric and bool values","text":7,"meta":true,"display":3}
+{"func":"item","case":"missing text and meta","display":"D"}
+{"func":"item","case":"unicode text","text":"café","meta":"ü","display":"café"}
+{"func":"at_hints","case":"static directive table"}
+{"func":"builtin_prefixes","case":"sorted builtin set"}
+{"func":"item","case":"false display is not None","text":"t","meta":"m","display":false}

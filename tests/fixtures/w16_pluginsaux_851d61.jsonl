@@ -1,0 +1,17 @@
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"my_task","display_name":"My Task","description":"does things","defaults":null,"inherit_from":null,"registered":{},"case":"valid minimal"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"my_task2","display_name":"T2","description":"d2","defaults":{"provider":"x","timeout":5,"extra":{"a":1}},"inherit_from":null,"registered":{},"case":"defaults override base"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"","display_name":"T","description":"d","defaults":null,"inherit_from":null,"registered":{},"case":"empty key invalid"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":null,"display_name":"T","description":"d","defaults":null,"inherit_from":null,"registered":{},"case":"null key invalid"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":7,"display_name":"T","description":"d","defaults":null,"inherit_from":null,"registered":{},"case":"numeric key invalid"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"bad-key","display_name":"T","description":"d","defaults":null,"inherit_from":null,"registered":{},"case":"hyphen key invalid chars"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"vision","display_name":"T","description":"d","defaults":null,"inherit_from":null,"registered":{},"case":"reserved builtin key"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"audit","display_name":"T","description":"d","defaults":null,"inherit_from":null,"registered":{"audit":{"plugin":"other"}},"case":"duplicate other owner"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"audit","display_name":"T","description":"d","defaults":null,"inherit_from":null,"registered":{"audit":{"plugin":"owner-a"}},"case":"re-register same owner"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"my_vision","display_name":"T","description":"d","defaults":{"provider":"x"},"inherit_from":"vision","registered":{},"case":"inherit builtin keeps defaults only"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"reviewer","display_name":"T","description":"d","defaults":null,"inherit_from":"background_review","registered":{},"case":"inherit core block"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"self_ref","display_name":"T","description":"d","defaults":null,"inherit_from":"self_ref","registered":{},"case":"self inheritance degrades"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"unknown_base","display_name":"T","description":"d","defaults":null,"inherit_from":"nonexistent","registered":{},"case":"unknown base degrades"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"nb","display_name":"T","description":"d","defaults":null,"inherit_from":null,"registered":{},"case":"null inherit"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"nb2","display_name":"T","description":"d","defaults":null,"inherit_from":5,"registered":{},"case":"non-string inherit degrades"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"nb3","display_name":"T","description":"d","defaults":null,"inherit_from":"","registered":{},"case":"empty inherit degrades"}
+{"func":"build_entry","me":"demo","owner":"owner-a","key":"child","display_name":"T","description":"d","defaults":{},"inherit_from":"parent_task","registered":{"parent_task":{"plugin":"owner-a"}},"case":"inherit registered plugin task"}

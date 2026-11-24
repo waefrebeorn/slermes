@@ -1,0 +1,19 @@
+{"func": "limit", "section": {"max_concurrent_children": 5}, "key": "max_concurrent_children"}
+{"func": "limit", "section": {"max_concurrent_children": 0}, "key": "max_concurrent_children"}
+{"func": "limit", "section": {"max_concurrent_children": -3}, "key": "max_concurrent_children"}
+{"func": "limit", "section": {"max_concurrent_children": "7"}, "key": "max_concurrent_children"}
+{"func": "limit", "section": {"max_concurrent_children": " 8 "}, "key": "max_concurrent_children"}
+{"func": "limit", "section": {"max_concurrent_children": "abc"}, "key": "max_concurrent_children"}
+{"func": "limit", "section": {}, "key": "max_concurrent_children"}
+{"func": "limit", "section": {"max_concurrent_children": null}, "key": "max_concurrent_children"}
+{"func": "limit", "section": {"max_spawn_depth": 3}, "key": "max_spawn_depth"}
+{"func": "limit", "section": {"max_spawn_depth": 2.9}, "key": "max_spawn_depth"}
+{"func": "limit", "section": {"max_spawn_depth": true}, "key": "max_spawn_depth"}
+{"func": "limit", "section": {"max_spawn_depth": false}, "key": "max_spawn_depth"}
+{"func": "limit", "section": {"max_spawn_depth": null}, "key": "max_spawn_depth"}
+{"func": "root_execution_id", "execution_id": "exec-1"}
+{"func": "root_execution_id", "execution_id": "exec-1/child:abc"}
+{"func": "root_execution_id", "execution_id": "/child:x"}
+{"func": "root_execution_id", "execution_id": "a/child:b/child:c"}
+{"func": "is_child", "execution_id": "exec-1"}
+{"func": "is_child", "execution_id": "exec-1/child:abc"}

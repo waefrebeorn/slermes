@@ -1,0 +1,28 @@
+{"func":"is_oauth_pool_payload","entry":{}}
+{"func":"is_oauth_pool_payload","entry":{"auth_type":"oauth"}}
+{"func":"is_oauth_pool_payload","entry":{"auth_type":" OAUTH "}}
+{"func":"is_oauth_pool_payload","entry":{"refresh_token":" "}}
+{"func":"is_oauth_pool_payload","entry":{"refresh_token":"tok"}}
+{"func":"is_oauth_pool_payload","entry":{"access_token":"sk-ant-oat-xyz"}}
+{"func":"is_oauth_pool_payload","entry":{"access_token":"sk-ant-oat"}}
+{"func":"is_oauth_pool_payload","entry":{"auth_type":"api_key"}}
+{"func":"is_oauth_pool_payload","entry":null}
+{"func":"is_forkable_pool_row","provider_id":"nous","entry":{"refresh_token":"tok"}}
+{"func":"is_forkable_pool_row","provider_id":"nous","entry":{"refresh_token":"  "}}
+{"func":"is_forkable_pool_row","provider_id":"anthropic","entry":{"refresh_token":"tok"}}
+{"func":"is_forkable_pool_row","provider_id":"xai-oauth","entry":{"access_token":"sk-ant-oat-x"}}
+{"func":"is_forkable_pool_row","provider_id":"openai-codex","entry":{"auth_type":"api_key"}}
+{"func":"block_tokens","block":{"tokens":{"refresh_token":"r"}}}
+{"func":"block_tokens","block":{"refresh_token":"r"}}
+{"func":"block_tokens","block":{"tokens":null}}
+{"func":"block_tokens","block":{"x":1}}
+{"func":"is_pkce_row","row":{"source":"abc_hermes_pkce"}}
+{"func":"is_pkce_row","row":{"source":"manual:hermes_pkce"}}
+{"func":"is_pkce_row","row":{"source":"other"}}
+{"func":"is_pkce_row","row":{}}
+{"func":"sign","x":1,"y":2}
+{"func":"sign","x":2,"y":1}
+{"func":"sign","x":3,"y":3}
+{"func":"sign","x":null,"y":1}
+{"func":"sign","x":1,"y":null}
+{"func":"constants"}

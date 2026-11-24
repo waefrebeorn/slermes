@@ -1,0 +1,10 @@
+{"case": 1, "func": "env", "env": {"PATH": "/bin", "SECRET_TOKEN": "abc", "HOME": "/u"}}
+{"case": 2, "func": "env", "env": {"path": "/lower", "user": "bob", "hErMeS_hOmE": "/h"}, "deployment_names": []}
+{"case": 3, "func": "env", "env": {"LC_ALL": "C", "LC_MESSAGES": "en", "LANGUAGE": "de", "XDG_ACTIVATION_TOKEN": "secret"}}
+{"case": 4, "func": "env", "env": {"MY_PROXY": "http://x", "HTTPS_PROXY": "http://p", "HERMES_KANBAN_HOME": "/k", "RANDOM": "v"}, "deployment_names": ["MY_PROXY"]}
+{"case": 5, "func": "env", "env": {}, "deployment_names": []}
+{"case": 6, "func": "env", "env": {"XDG_RUNTIME_DIR": "/run", "XDG_STATE_HOME": "/state", "XDG_DATA_HOME": "/data", "TERMUX_VERSION": "1"}}
+{"case": 7, "func": "env", "env": {"SSH_AUTH_SOCK": "/sock", "DISPLAY": ":0", "HTTP_PROXY": "p", "ALL_PROXY": "q", "NO_PROXY": "r"}}
+{"case": 8, "func": "env", "env": {"Z_PATH": "1", "LCX_FOO": "2", "LC_": "3", "LC_X": "4", "PROGRAMFILES(X86)": "5"}}
+{"case": 9, "func": "env", "env": {"HERMES_MODEL": "gpt", "HERMES_LANGUAGE": "en", "HERMES_GATEWAY_LOCK_DIR": "/l", "PROCESSOR_ARCHITEW6432": "x"}}
+{"case": 10, "func": "env", "env": {"CONFIG_BACKEND": "file", "CONFIG_PLANE": "local", "OTHER": "x"}, "deployment_names": ["CONFIG_BACKEND", "CONFIG_PLANE"]}

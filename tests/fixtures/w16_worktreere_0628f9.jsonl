@@ -1,0 +1,17 @@
+{"func":"read","data":{"repos":["a","b"]},"case":"two repos"}
+{"func":"read","data":{"repos":[]},"case":"empty repos"}
+{"func":"read","data":{"repos":"not a list"},"case":"wrong repos type"}
+{"func":"read","data":{},"case":"missing repos key"}
+{"func":"read","data":{"repos":[null,1,"","x"]},"case":"keep only nonempty strings"}
+{"func":"registered","repos":["a","b","c"],"existing":["a","c"],"case":"existing subset"}
+{"func":"registered","repos":[],"existing":[],"case":"empty registry"}
+{"func":"registered","repos":["a"],"existing":[],"case":"no existing repos"}
+{"func":"registered","repos":["a","a"],"existing":["a"],"case":"no dedupe on read"}
+{"func":"merge","current":[],"repo":"new","existing":[],"case":"fresh repo added"}
+{"func":"merge","current":["a"],"repo":"a","existing":["a"],"case":"early return unchanged"}
+{"func":"merge","current":["a","a","b"],"repo":"a","existing":["a"],"case":"dedupe stale drop"}
+{"func":"merge","current":["a","b"],"repo":"c","existing":["a"],"case":"stale dropped new added"}
+{"func":"merge","current":["a"],"repo":"b","existing":[],"case":"all stale replaced"}
+{"func":"merge","current":[],"repo":"","existing":[],"case":"empty repo noop"}
+{"func":"merge","current":["x"],"repo":"x","existing":[],"case":"stale then re-add"}
+{"func":"merge","current":["b","a","b"],"repo":"a","existing":["a","b"],"case":"dedupe preserves order"}

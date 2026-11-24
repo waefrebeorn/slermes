@@ -1,0 +1,20 @@
+{"func": "attribution", "case": "no task id", "state": {"task_id": null, "active": {}, "recent": {}}}
+{"func": "attribution", "case": "empty task id", "state": {"task_id": "", "active": {}, "recent": {}}}
+{"func": "attribution", "case": "non-string task id", "state": {"task_id": 42, "active": {"42": {"goal": "g"}}, "recent": {}}}
+{"func": "attribution", "case": "active record", "state": {"task_id": "s1", "active": {"s1": {"goal": "g", "delegation_id": "d1"}}, "recent": {}}}
+{"func": "attribution", "case": "active empty falls through", "state": {"task_id": "s1", "active": {"s1": {}}, "recent": {"s1": {"goal": "recent", "delegation_id": "d2"}}}}
+{"func": "attribution", "case": "recent record", "state": {"task_id": "s1", "active": {}, "recent": {"s1": {"goal": "recent"}}}}
+{"func": "attribution", "case": "missing fields", "state": {"task_id": "s1", "active": {"s1": {"state": "resumable"}}, "recent": {}}}
+{"func": "attribution", "case": "null fields", "state": {"task_id": "s1", "active": {"s1": {"goal": null, "delegation_id": null}}, "recent": {}}}
+{"func": "resume_spec", "case": "valid spec", "record": {"agent": {"_delegate_resume": {"route": {"name": "r"}, "toolsets": ["a"]}, "session_id": "sid-1"}, "model": "m1"}}
+{"func": "resume_spec", "case": "no route key", "record": {"agent": {"_delegate_resume": {"toolsets": []}, "session_id": "sid-1"}, "model": "m1"}}
+{"func": "resume_spec", "case": "build not dict", "record": {"agent": {"_delegate_resume": "oops", "session_id": "sid-1"}, "model": "m1"}}
+{"func": "resume_spec", "case": "no session id", "record": {"agent": {"_delegate_resume": {"route": {}}, "session_id": ""}, "model": "m1"}}
+{"func": "resume_spec", "case": "session overrides", "record": {"agent": {"_delegate_resume": {"route": {}, "session_id": "old"}, "session_id": "new"}, "model": "m1"}}
+{"func": "resume_spec", "case": "model missing", "record": {"agent": {"_delegate_resume": {"route": {}}, "session_id": "sid"}}}
+{"func": "resume_spec", "case": "no agent", "record": {"model": "m1"}}
+{"func": "resume_spec", "case": "route null value", "record": {"agent": {"_delegate_resume": {"route": null}, "session_id": "sid"}, "model": null}}
+{"func": "public_record", "case": "mixed keys", "record": {"subagent_id": "s1", "goal": "g", "depth": 1, "agent": {"x": 1}, "owner_session_id": "os", "owner_transport": "t", "owner_session_record": {}, "accepting_steer": true, "status": "running"}}
+{"func": "public_record", "case": "only private", "record": {"agent": {}, "owner_session_id": "os", "owner_transport": "t", "owner_session_record": {}, "accepting_steer": false}}
+{"func": "public_record", "case": "nested public", "record": {"goal": "g", "meta": {"a": [1, 2, null], "b": false}}}
+{"func": "public_record", "case": "empty record", "record": {}}

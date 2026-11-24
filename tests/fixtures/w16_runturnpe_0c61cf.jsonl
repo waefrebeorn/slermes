@@ -1,0 +1,10 @@
+{"func":"add_failed_turn_notice","response":null,"notice":"FAILED","case":"None response returns notice"}
+{"func":"add_failed_turn_notice","response":"","notice":"FAILED","case":"empty response returns notice"}
+{"func":"add_failed_turn_notice","response":"   ","notice":"FAILED","case":"whitespace-only response returns notice"}
+{"func":"add_failed_turn_notice","response":"hello","notice":"FAILED","case":"plain join"}
+{"func":"add_failed_turn_notice","response":"  hello  ","notice":"FAILED","case":"strip spaces"}
+{"func":"add_failed_turn_notice","response":"\t\n hi \n","notice":"FAILED","case":"strip tabs and newlines"}
+{"func":"add_failed_turn_notice","response":"multi\nline","notice":"N2","case":"embedded newline preserved"}
+{"func":"add_failed_turn_notice","response":"hello","notice":"","case":"empty notice"}
+{"func":"add_failed_turn_notice","response":"hello","notice":"a\nb","case":"notice with newline"}
+{"func":"add_failed_turn_notice","response":" x ","notice":"part1\npart2","case":"combined strip and multiline notice"}

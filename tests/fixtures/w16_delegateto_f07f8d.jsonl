@@ -1,0 +1,25 @@
+{"func": "refusal", "case": "one-shot", "opts": {"oneshot": true, "worker": false, "paused": false, "depth": 0, "max_spawn": 2, "runtime_db": false}}
+{"func": "refusal", "case": "worker", "opts": {"oneshot": false, "worker": true, "paused": false, "depth": 0, "max_spawn": 2, "runtime_db": false}}
+{"func": "refusal", "case": "runtime db", "opts": {"oneshot": false, "worker": false, "paused": false, "depth": 0, "max_spawn": 2, "runtime_db": true}}
+{"func": "refusal", "case": "paused", "opts": {"oneshot": false, "worker": false, "paused": true, "depth": 0, "max_spawn": 2, "runtime_db": false}}
+{"func": "refusal", "case": "depth at max", "opts": {"oneshot": false, "worker": false, "paused": false, "depth": 2, "max_spawn": 2, "runtime_db": false}}
+{"func": "refusal", "case": "depth below max", "opts": {"oneshot": false, "worker": false, "paused": false, "depth": 1, "max_spawn": 2, "runtime_db": false}}
+{"func": "refusal", "case": "zero max", "opts": {"oneshot": false, "worker": false, "paused": false, "depth": 0, "max_spawn": 0, "runtime_db": false}}
+{"func": "refusal", "case": "precedence oneshot over worker", "opts": {"oneshot": true, "worker": true, "paused": true, "depth": 9, "max_spawn": 2, "runtime_db": true}}
+{"func": "validate", "case": "missing sid", "args": {"subagent_id": null, "message": "do it"}}
+{"func": "validate", "case": "blank sid", "args": {"subagent_id": "  \t ", "message": "do it"}}
+{"func": "validate", "case": "missing message", "args": {"subagent_id": "abc", "message": null}}
+{"func": "validate", "case": "blank message", "args": {"subagent_id": "abc", "message": " \n\t "}}
+{"func": "validate", "case": "valid trimmed", "args": {"subagent_id": "  abc  ", "message": "  do it  "}}
+{"func": "validate", "case": "empty both", "args": {"subagent_id": "", "message": ""}}
+{"func": "validate", "case": "unicode sid", "args": {"subagent_id": "代理-42", "message": " go "}}
+{"func": "claim_resume", "case": "live running", "state": {"sid": "s1", "active": {"s1": {"goal": "g"}}, "recent": {}, "own_live": true, "own_recent": false}}
+{"func": "claim_resume", "case": "live unowned falls through", "state": {"sid": "s1", "active": {"s1": {"goal": "g"}}, "recent": {"s1": {"goal": "g", "delegation_id": "d", "state": "resumable", "resume": {"route": {"name": "r"}, "goal": "g"}}}, "own_live": false, "own_recent": true}}
+{"func": "claim_resume", "case": "unknown recent", "state": {"sid": "s1", "active": {}, "recent": {}, "own_live": false, "own_recent": true}}
+{"func": "claim_resume", "case": "recent unowned", "state": {"sid": "s1", "active": {}, "recent": {"s1": {"goal": "g", "delegation_id": "d", "state": "resumable", "resume": {}}}, "own_live": false, "own_recent": false}}
+{"func": "claim_resume", "case": "stopping", "state": {"sid": "s-42", "active": {}, "recent": {"s-42": {"goal": "g", "delegation_id": "d", "state": "stopping", "resume": {"a": 1}}}, "own_live": false, "own_recent": true}}
+{"func": "claim_resume", "case": "resume missing", "state": {"sid": "s1", "active": {}, "recent": {"s1": {"goal": "g", "delegation_id": "d", "state": "resumable", "resume": null}}, "own_live": false, "own_recent": true}}
+{"func": "claim_resume", "case": "resume success", "state": {"sid": "s1", "active": {}, "recent": {"s1": {"goal": "g", "delegation_id": "d", "state": "resumable", "resume": {"route": {"name": "r"}, "goal": "g"}}}, "own_live": false, "own_recent": true}}
+{"func": "claim_resume", "case": "active empty dict owned", "state": {"sid": "s1", "active": {"s1": {}}, "recent": {}, "own_live": true, "own_recent": false}}
+{"func": "not_found", "case": "not found simple", "sid": "abc"}
+{"func": "not_found", "case": "not found empty sid", "sid": ""}

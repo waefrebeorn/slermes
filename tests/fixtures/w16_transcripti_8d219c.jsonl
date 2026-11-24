@@ -1,0 +1,25 @@
+{"case":"ul-openai-default","func":"upload_limit","in":{"provider":"openai","model":null,"max_file_size":26214400}}
+{"case":"ul-openai-whisper","func":"upload_limit","in":{"provider":"openai","model":"whisper-1"}}
+{"case":"ul-openai-gpt4o","func":"upload_limit","in":{"provider":"openai","model":"gpt-4o-transcribe"}}
+{"case":"ul-mistral","func":"upload_limit","in":{"provider":"mistral","model":null}}
+{"case":"ul-groq","func":"upload_limit","in":{"provider":"groq","model":null}}
+{"case":"ul-xai","func":"upload_limit","in":{"provider":"xai","model":null}}
+{"case":"ul-elevenlabs","func":"upload_limit","in":{"provider":"elevenlabs","model":null}}
+{"case":"ul-unknown","func":"upload_limit","in":{"provider":"deepinfra","model":null,"max_file_size":26214400}}
+{"case":"fits-over","func":"fits","in":{"size":300,"max_bytes":200,"max_seconds":null,"duration":null}}
+{"case":"fits-no-duration","func":"fits","in":{"size":100,"max_bytes":200,"max_seconds":60,"duration":null}}
+{"case":"fits-ok","func":"fits","in":{"size":100,"max_bytes":200,"max_seconds":60,"duration":30}}
+{"case":"fits-over-time","func":"fits","in":{"size":100,"max_bytes":200,"max_seconds":60,"duration":90}}
+{"case":"fits-no-cap","func":"fits","in":{"size":100,"max_bytes":200,"max_seconds":null,"duration":900}}
+{"case":"ex-over-bytes","func":"exceeds","in":{"size":300,"max_bytes":200,"max_seconds":null,"probe_duration":null}}
+{"case":"ex-no-cap","func":"exceeds","in":{"size":100,"max_bytes":200,"max_seconds":null,"probe_duration":null}}
+{"case":"ex-over-time","func":"exceeds","in":{"size":100,"max_bytes":200,"max_seconds":60,"probe_duration":90}}
+{"case":"ex-unknown-duration","func":"exceeds","in":{"size":100,"max_bytes":200,"max_seconds":60,"probe_duration":null}}
+{"case":"ex-under","func":"exceeds","in":{"size":100,"max_bytes":200,"max_seconds":60,"probe_duration":20}}
+{"case":"cut-none","func":"cut_points","in":{"duration":100,"target":30,"silences":[]}}
+{"case":"cut-silences","func":"cut_points","in":{"duration":100,"target":30,"silences":[28.0,58.5,89.0]}}
+{"case":"cut-tiny-duration","func":"cut_points","in":{"duration":10,"target":30,"silences":[5]}}
+{"case":"cut-big-lookback","func":"cut_points","in":{"duration":1000,"target":600,"silences":[560,900]}}
+{"case":"cut-empty","func":"cut_points","in":{"duration":0,"target":10,"silences":[]}}
+{"case":"too-large","func":"too_large","in":{"size":31457280,"max_bytes":26214400,"reason":"ffmpeg was not found"}}
+{"case":"too-large-small","func":"too_large","in":{"size":1572864,"max_bytes":1048576,"reason":"re-encoding produced no file"}}

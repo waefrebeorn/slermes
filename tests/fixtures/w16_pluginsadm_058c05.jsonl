@@ -1,0 +1,13 @@
+{"func":"conflict_message","cause":"uv lock failed","plugin":"my-plugin","case":"named plugin"}
+{"func":"conflict_message","cause":"resolver cause","plugin":null,"case":"generic selection"}
+{"func":"conflict_message","cause":"resolver cause","case":"plugin key absent"}
+{"func":"conflict_message","cause":"conflict","plugin":"","case":"empty plugin -> generic"}
+{"func":"conflict_message","cause":"conflict","plugin":0,"case":"zero plugin -> generic"}
+{"func":"conflict_message","cause":"conflict","plugin":false,"case":"false plugin -> generic"}
+{"func":"conflict_message","cause":"conflict","plugin":true,"case":"true plugin str"}
+{"func":"conflict_message","cause":"conflict","plugin":42,"case":"numeric plugin str"}
+{"func":"conflict_message","cause":"boom","plugin":[],"case":"empty list plugin -> generic"}
+{"func":"conflict_message","cause":null,"plugin":"p","case":"null cause -> None"}
+{"func":"conflict_message","cause":"","plugin":"p","case":"empty cause"}
+{"func":"conflict_message","cause":"multiple  spaces & punctuation: [x]","plugin":"plugin-with-dash","case":"punctuation preserved"}
+{"func":"conflict_message","cause":"caf\u00e9 \u4e2d\u6587","plugin":"\u63d2\u4ef6","case":"unicode strings"}

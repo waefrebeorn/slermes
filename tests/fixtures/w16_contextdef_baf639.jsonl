@@ -1,0 +1,10 @@
+{"func":"key","profile_home":"/home/prof","model":"  GPT-4 ","base_url":"https://x/"}
+{"func":"key","profile_home":"C:\\Users\\x","model":"","base_url":""}
+{"func":"key","profile_home":"/p","model":null,"base_url":"https://a////"}
+{"func":"key","profile_home":"/p","model":"model-1","base_url":"https://b/api/"}
+{"func":"was_context_defaulted","profile_home":"/home/prof","records":[{"model":"m","base_url":"b","window":"262144"}],"context_length":"262144","model":"m","base_url":"b/"}
+{"func":"was_context_defaulted","profile_home":"/home/prof","records":[{"model":"m","base_url":"b","window":"262144"}],"context_length":"1","model":"m","base_url":"b"}
+{"func":"was_context_defaulted","profile_home":"/home/prof","records":[{"model":"m","base_url":"b","window":"262144"}],"context_length":"262144","model":"other","base_url":"b"}
+{"func":"record_resolution","profile_home":"/home/prof","records":[],"max_records":"512","outer_present":true,"flag":true,"context_length":"131072","model":"m","base_url":"b/"}
+{"func":"record_resolution","profile_home":"/home/prof","records":[{"model":"m","base_url":"b","window":"1"}],"max_records":"512","outer_present":true,"flag":false,"context_length":"999","model":"m","base_url":"b"}
+{"func":"record_resolution","profile_home":"/home/prof","records":[{"model":"a","base_url":"x","window":"1"}],"max_records":"1","outer_present":false,"flag":true,"context_length":"7","model":"b","base_url":"y"}

@@ -1,0 +1,23 @@
+{"func": "seconds", "raw": 300, "default_value": 60}
+{"func": "seconds", "raw": -5, "default_value": 60}
+{"func": "seconds", "raw": 0, "default_value": 60}
+{"func": "seconds", "raw": "120.5", "default_value": 60}
+{"func": "seconds", "raw": " 45 ", "default_value": 60}
+{"func": "seconds", "raw": "abc", "default_value": 60}
+{"func": "seconds", "raw": "", "default_value": 7}
+{"func": "seconds", "raw": null, "default_value": 60}
+{"func": "seconds", "raw": true, "default_value": 60}
+{"func": "seconds", "raw": [1], "default_value": 60}
+{"func": "section", "config": {"sessions": {"x": 1}, "dashboard": {"y": 2}}, "key": "sessions"}
+{"func": "section", "config": {"sessions": "bad"}, "key": "sessions"}
+{"func": "section", "config": {}, "key": "sessions"}
+{"func": "pending_reason", "record": "{\"op\": \"abc\", \"reason\": \"new_session\"}"}
+{"func": "pending_reason", "record": "{\"reason\": \"ws_orphan_reap\"}"}
+{"func": "pending_reason", "record": "bare-reason"}
+{"func": "pending_reason", "record": "{}"}
+{"func": "pending_reason", "record": "[1, 2]"}
+{"func": "is_reset_reason", "reason": "tui_close"}
+{"func": "is_reset_reason", "reason": "new_session"}
+{"func": "is_reset_reason", "reason": "ws_orphan_reap"}
+{"func": "is_orphan_reason", "reason": "startup_orphan_reap"}
+{"func": "is_orphan_reason", "reason": "new_session"}

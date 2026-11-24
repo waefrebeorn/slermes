@@ -1,0 +1,18 @@
+{"case": 1, "func": "refusal", "refusal": {"confirm_message": "Guard says no"}, "confirmed": false}
+{"case": 2, "func": "refusal", "refusal": {"confirm_message": "Guard says no"}, "confirmed": true}
+{"case": 3, "func": "refusal", "refusal": {"confirm_message": ""}, "confirmed": false}
+{"case": 4, "func": "refusal", "refusal": {"confirm_message": "multi\nline"}, "confirmed": true}
+{"case": 5, "func": "title", "refusal": {"warnings": [{"title": "Cost warning"}]}}
+{"case": 6, "func": "title", "refusal": {"warnings": []}}
+{"case": 7, "func": "title", "refusal": {}}
+{"case": 8, "func": "title", "refusal": {"warnings": [{"title": "A"}, {"title": "B"}]}}
+{"case": 9, "func": "choice", "raw": "y", "choices": [["once", "Switch anyway", "Switch anyway desc"], ["cancel", "Cancel", "Keep current model"]]}
+{"case": 10, "func": "choice", "raw": "1", "choices": [["once", "Switch anyway", "Switch anyway desc"], ["cancel", "Cancel", "Keep current model"]]}
+{"case": 11, "func": "choice", "raw": "2", "choices": [["once", "Switch anyway", "Switch anyway desc"], ["cancel", "Cancel", "Keep current model"]]}
+{"case": 12, "func": "choice", "raw": "3", "choices": [["once", "Switch anyway", "Switch anyway desc"], ["cancel", "Cancel", "Keep current model"]]}
+{"case": 13, "func": "choice", "raw": "  YES \t", "choices": [["once", "Switch anyway", "Switch anyway desc"], ["cancel", "Cancel", "Keep current model"]]}
+{"case": 14, "func": "choice", "raw": "9", "choices": [["once", "Switch anyway", "Switch anyway desc"], ["cancel", "Cancel", "Keep current model"]]}
+{"case": 15, "func": "choice", "raw": "", "choices": [["once", "Switch anyway", "Switch anyway desc"], ["cancel", "Cancel", "Keep current model"]]}
+{"case": 16, "func": "choice", "raw": "once", "choices": [["once", "Switch anyway", "Switch anyway desc"], ["cancel", "Cancel", "Keep current model"]]}
+{"case": 17, "func": "choice", "raw": "blah", "choices": [["once", "Switch anyway", "Switch anyway desc"], ["cancel", "Cancel", "Keep current model"]]}
+{"case": 18, "func": "choice", "raw": null, "choices": [["once", "Switch anyway", "Switch anyway desc"], ["cancel", "Cancel", "Keep current model"]]}

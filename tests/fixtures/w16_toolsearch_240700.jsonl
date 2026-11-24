@@ -1,0 +1,27 @@
+{"case":"schema-basic","func":"schema_for_local","in":{"node":{"type":"object","properties":{"x":{"type":"string"}}}}}
+{"case":"schema-nullable-str","func":"schema_for_local","in":{"node":{"type":"string","nullable":true}}}
+{"case":"schema-nullable-list","func":"schema_for_local","in":{"node":{"type":["integer","string"],"nullable":true}}}
+{"case":"schema-nullable-ref","func":"schema_for_local","in":{"node":{"$ref":"#/defs/X","nullable":true}}}
+{"case":"schema-literals","func":"schema_for_local","in":{"node":{"enum":[1,2],"const":3,"nullable":true}}}
+{"case":"schema-array","func":"schema_for_local","in":{"node":[{"type":"null"},{"nullable":true,"type":"number"}]}}
+{"case":"ref-local","func":"schema_has_external","in":{"node":{"a":{"$ref":"#/x"}}}}
+{"case":"ref-external","func":"schema_has_external","in":{"node":{"a":{"$ref":"https://x/y"}}}}
+{"case":"ref-literal","func":"schema_has_external","in":{"node":{"enum":[{"$ref":"http://x"}]}}}
+{"case":"norm-empty","func":"normalize_entries","in":{"args":{},"bridge_names":[]}}
+{"case":"norm-legacy","func":"normalize_entries","in":{"args":{"name":" search ","arguments":{"x":1}},"bridge_names":[]}}
+{"case":"norm-batch","func":"normalize_entries","in":{"args":{"calls":[{"name":"a","arguments":"{\"k\":1}"},{"name":"b","arguments":{}}]},"bridge_names":[]}}
+{"case":"norm-bridge","func":"normalize_entries","in":{"args":{"calls":[{"name":"bridge","arguments":{}}]},"bridge_names":["bridge"]}}
+{"case":"norm-string-envelope","func":"normalize_entries","in":{"args":{"calls":"[{\"name\":\"a\",\"arguments\":{}}]"},"bridge_names":[]}}
+{"case":"norm-bad-name","func":"normalize_entries","in":{"args":{"calls":[{"name":"  ","arguments":{}}]},"bridge_names":[]}}
+{"case":"norm-empty-str-args","func":"normalize_entries","in":{"args":{"calls":[{"name":"a","arguments":"  "}]},"bridge_names":[]}}
+{"case":"batch-one","func":"local_batch_error","in":{"entries":[{"name":"search","arguments":{"q":"x"}}]}}
+{"case":"batch-two","func":"local_batch_error","in":{"entries":[{"name":"go","arguments":{}},{"name":"stop","arguments":{}}]}}
+{"case":"unavail-reason","func":"unavailable_in_session","in":{"name":"clarify"}}
+{"case":"session-missing","func":"session_unavailable","in":{"name":"clarify","session_names":["terminal"],"in_core":true,"registered":true}}
+{"case":"session-present","func":"session_unavailable","in":{"name":"terminal","session_names":["terminal"],"in_core":true,"registered":true}}
+{"case":"session-noctx","func":"session_unavailable","in":{"name":"clarify","session_names":null,"in_core":true,"registered":true}}
+{"case":"session-scope","func":"session_unavailable","in":{"name":"x","session_names":[],"in_core":true,"registered":true,"out_of_scope":"guarded"}}
+{"case":"not-core","func":"not_deferrable","in":{"name":"terminal","core_or_registered":true,"session_names":["terminal"]}}
+{"case":"not-core-missing","func":"not_deferrable","in":{"name":"terminal","core_or_registered":true,"session_names":[]}}
+{"case":"not-unknown","func":"not_deferrable","in":{"name":"foo","core_or_registered":false,"all_tool_names":["mcp__srv__foo","other"]}}
+{"case":"not-unknown-none","func":"not_deferrable","in":{"name":"foo","core_or_registered":false,"all_tool_names":[]}}

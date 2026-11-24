@@ -1,0 +1,17 @@
+{"func": "unlock_params", "backend": "kwallet", "display_name": "KDE Wallet"}
+{"func": "unlock_params", "backend": "", "display_name": ""}
+{"func": "unlock_params", "backend": null, "display_name": "x"}
+{"func": "save_login_params", "origin": "https://x.example", "site": "x.example"}
+{"func": "save_login_params", "origin": "", "site": "local"}
+{"func": "code_params", "site": "mail.example", "hint": " emailed code "}
+{"func": "code_params", "site": "s", "hint": null}
+{"func": "save_login", "raw": "{\"password\": \"s3cr3t\", \"username\": \"u\"}"}
+{"func": "save_login", "raw": "{\"password\": \"\"}"}
+{"func": "save_login", "raw": "{\"username\": \"u\"}"}
+{"func": "save_login", "raw": "not json"}
+{"func": "save_login", "raw": ""}
+{"func": "save_login", "raw": null}
+{"func": "save_login", "raw": "[1, 2]"}
+{"func": "save_login", "raw": "{\"password\": 0}"}
+{"func": "save_login", "raw": "{\"password\": true, \"n\": 3}"}
+{"func": "timeouts"}

@@ -1,0 +1,13 @@
+{"func":"committed_row_id","message":{"_row_id":12,"_db_persisted":true}}
+{"func":"committed_row_id","message":{"_row_id":5}}
+{"func":"committed_row_id","message":{"_row_id":0,"_db_persisted":true}}
+{"func":"committed_row_id","message":{"_row_id":true,"_db_persisted":true}}
+{"func":"receipt","messages":[{"role":"user","_row_id":1,"_db_persisted":true,"content":"hi"},{"role":"assistant","_row_id":2,"_db_persisted":true,"content":"yo","tool_calls":[]}],"start":"0","history":[],"raw":"yo","status":"complete","compression_unchanged":true}
+{"func":"receipt","messages":[{"role":"user","content":"hi"}],"start":"0","history":[],"raw":"yo","status":"complete","compression_unchanged":true}
+{"func":"receipt","messages":[{"role":"assistant","_row_id":1,"_db_persisted":true}],"start":"0","history":[],"raw":"yo","status":"complete","compression_unchanged":true}
+{"func":"receipt","messages":[{"role":"user","_row_id":1,"_db_persisted":true},{"role":"assistant","_row_id":2,"_db_persisted":true,"content":"yo"}],"start":"0","history":[{"_row_id":1,"_db_persisted":true}],"raw":"yo","status":"complete","compression_unchanged":true}
+{"func":"receipt","messages":[{"role":"user","_row_id":1,"_db_persisted":true,"content":"hi"},{"role":"assistant","_row_id":2,"_db_persisted":true,"content":"yo","tool_calls":[]}],"start":"0","history":[],"raw":"yo","status":"exhausted","compression_unchanged":true}
+{"func":"receipt","messages":[{"role":"user","_row_id":1,"_db_persisted":true,"display_kind":"hidden"},{"role":"assistant","_row_id":2,"_db_persisted":true,"content":"yo"}],"start":"0","history":[],"raw":"yo","status":"complete","compression_unchanged":true}
+{"func":"receipt","messages":[{"role":"user","_row_id":1,"_db_persisted":true,"content":"hi"},{"role":"assistant","_row_id":2,"_db_persisted":true,"content":"yo"}],"start":"0","history":[{"role":"other"}],"raw":"yo","status":"complete","compression_unchanged":true}
+{"func":"receipt","messages":[{"role":"user","_row_id":1,"_db_persisted":true,"content":"hi"},{"role":"assistant","_row_id":2,"_db_persisted":true,"content":"yo","tool_calls":[]}],"start":"0","history":[],"raw":"yo","status":"complete","compression_unchanged":false}
+{"func":"receipt","messages":[{"role":"user","_row_id":1,"_db_persisted":true,"content":"a"},{"role":"user","_row_id":3,"_db_persisted":true,"content":"b"},{"role":"assistant","_row_id":4,"_db_persisted":true,"content":"yo","tool_calls":[]}],"start":"0","history":[],"raw":"yo","status":"complete","compression_unchanged":true}

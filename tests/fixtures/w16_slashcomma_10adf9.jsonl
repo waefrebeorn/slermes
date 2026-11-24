@@ -1,0 +1,16 @@
+{"func": "mgr_call", "prefix": "/subgoal remove", "result": {"ok": true}}
+{"func": "mgr_call", "prefix": "/subgoal clear", "result": null, "exc_class": "ValueError", "exc_msg": "bad index"}
+{"func": "mgr_call", "prefix": "x", "result": null, "exc_class": "RuntimeError", "exc_msg": "oops"}
+{"func": "mgr_call", "prefix": "x", "result": 5}
+{"func": "mgr_call", "prefix": "x", "result": [1, 2]}
+{"func": "quiet_bool", "value": true, "raises": false}
+{"func": "quiet_bool", "value": 0, "raises": false}
+{"func": "quiet_bool", "value": "hi", "raises": false}
+{"func": "quiet_bool", "value": null, "raises": false}
+{"func": "quiet_bool", "value": true, "raises": true}
+{"func": "loop_route", "src": {"platform": "telegram", "chat_id": "1", "chat_type": "private", "user_id": "u", "profile": "p"}}
+{"func": "loop_route", "src": {"platform": {"value": "local"}, "chat_id": "", "user_id": null}}
+{"func": "loop_route", "src": {}}
+{"func": "loop_route", "src": {"platform": "", "chat_id": "1"}}
+{"func": "loop_route", "src": {"platform": {"value": ""}, "chat_type": "dm"}}
+{"func": "loop_route", "src": {"platform": 123, "chat_id": 0, "user_id": 42}}

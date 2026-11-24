@@ -1,0 +1,19 @@
+{"func":"exit_status","code":0,"case":"zero"}
+{"func":"exit_status","code":1,"case":"one"}
+{"func":"exit_status","code":130,"case":"positive 130"}
+{"func":"exit_status","code":-1,"case":"negative one"}
+{"func":"exit_status","code":-15,"case":"negative signal"}
+{"func":"exit_status","code":-130,"case":"negative 130"}
+{"func":"owed","case":"missing message"}
+{"func":"owed","completion_message":"","case":"empty message"}
+{"func":"owed","completion_message":"✓ Code updated!","case":"checkmark suppressed"}
+{"func":"owed","completion_message":"Stashed local changes","case":"owed message"}
+{"func":"owed","completion_message":"  ✓ leading spaces","case":"space before checkmark is owed"}
+{"func":"write_result","receipt":{"update_id":"u-42"},"code":0,"result_receipt":{"outcome":"success"},"pm_receipt":{"id":"p1"},"case":"full result"}
+{"func":"write_result","receipt":{"update_id":"u-7"},"code":130,"result_receipt":null,"case":"no receipt null pm"}
+{"func":"write_result","receipt":{"update_id":"u-9"},"code":1,"case":"pm receipt omitted"}
+{"func":"report_owed","desktop":false,"reason":"some reason","case":"desktop off"}
+{"func":"report_owed","desktop":true,"reason":"tail lost","case":"desktop on no record"}
+{"func":"report_owed","desktop":true,"reason":"tail lost","record":{"stages":[]},"case":"empty stages"}
+{"func":"report_owed","desktop":true,"reason":"tail lost","record":{"stages":[{"name":"deps"},{"name":"build"}]},"case":"build stage present"}
+{"func":"report_owed","desktop":true,"reason":"owner died","record":{"stages":[{"name":"deps"}]},"case":"no build stage"}

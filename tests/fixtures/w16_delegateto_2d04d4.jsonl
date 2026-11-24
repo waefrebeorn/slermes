@@ -1,0 +1,21 @@
+{"func": "resolve_wake", "case": "oneshot inline", "opts": {"oneshot_session": true, "wake_sid": "s1", "history_delivery": true, "finite": null, "single_query": "", "async_supported": true, "async_raises": false}}
+{"func": "resolve_wake", "case": "finite true", "opts": {"oneshot_session": false, "finite": true, "wake_sid": "s1", "history_delivery": true, "async_supported": true, "async_raises": false}}
+{"func": "resolve_wake", "case": "single query env", "opts": {"finite": null, "single_query": "1", "wake_sid": "s1", "history_delivery": true, "async_supported": false, "async_raises": false}}
+{"func": "resolve_wake", "case": "single query zero", "opts": {"finite": null, "single_query": "0", "wake_sid": "s1", "history_delivery": true, "async_supported": false, "async_raises": false}}
+{"func": "resolve_wake", "case": "async supported", "opts": {"finite": null, "single_query": "", "wake_sid": "s1", "history_delivery": true, "async_supported": true, "async_raises": false}}
+{"func": "resolve_wake", "case": "async probe raises", "opts": {"finite": null, "single_query": "", "wake_sid": "s1", "history_delivery": true, "async_supported": false, "async_raises": true}}
+{"func": "resolve_wake", "case": "finite false async no", "opts": {"finite": false, "single_query": "", "wake_sid": "s1", "history_delivery": true, "async_supported": false, "async_raises": false}}
+{"func": "resolve_wake", "case": "wake with history", "opts": {"finite": null, "single_query": "", "wake_sid": "s-77", "history_delivery": true, "async_supported": false, "async_raises": false}}
+{"func": "resolve_wake", "case": "wake without history", "opts": {"finite": null, "single_query": "", "wake_sid": "s-77", "history_delivery": false, "async_supported": false, "async_raises": false}}
+{"func": "resolve_wake", "case": "no wake", "opts": {"finite": null, "single_query": "", "wake_sid": "", "history_delivery": true, "async_supported": false, "async_raises": false}}
+{"func": "resolve_wake", "case": "empty defaults", "opts": {"finite": null}}
+{"func": "batch_progress", "case": "empty children", "child_agents": []}
+{"func": "batch_progress", "case": "one summary", "child_agents": [{"api_call_count": 3, "current_tool": "bash", "last_activity_ts": 123.5}]}
+{"func": "batch_progress", "case": "tool null", "child_agents": [{"api_call_count": 0, "current_tool": null, "last_activity_ts": null}]}
+{"func": "batch_progress", "case": "missing keys", "child_agents": [{}]}
+{"func": "batch_progress", "case": "throwing child", "child_agents": [{"raises": true}]}
+{"func": "batch_progress", "case": "mixed children", "child_agents": [{"api_call_count": 1, "current_tool": "", "last_activity_ts": 0}, {"raises": true}, {"api_call_count": 9, "current_tool": "write_file", "last_activity_ts": 99}]}
+{"func": "batch_progress", "case": "truthy number tool", "child_agents": [{"api_call_count": 2, "current_tool": 1, "last_activity_ts": 3}]}
+{"func": "batch_progress", "case": "null child", "child_agents": [null]}
+{"func": "sync_note", "case": "no async note", "reason": "no_async"}
+{"func": "sync_note", "case": "capacity note", "reason": "at_capacity"}

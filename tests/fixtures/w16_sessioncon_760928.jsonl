@@ -1,0 +1,10 @@
+{"func":"refused_turn_result","row":{"payload":{"finite":true}},"refusal":"refused","case":"finite true failed result"}
+{"func":"refused_turn_result","row":{"payload":{"finite":false}},"refusal":"refused","case":"finite false fallback result"}
+{"func":"refused_turn_result","row":{"payload":{}},"refusal":"refused","case":"finite missing fallback"}
+{"func":"refused_turn_result","row":{"payload":{"finite":null}},"refusal":"refused","case":"finite null fallback"}
+{"func":"refused_turn_result","row":{"payload":{"finite":1}},"refusal":"refused","case":"finite int one is not True"}
+{"func":"refused_turn_result","row":{"payload":{"finite":"true"}},"refusal":"refused","case":"finite string is not True"}
+{"func":"refused_turn_result","row":{"payload":{"finite":true},"subagent_id":null},"refusal":"","case":"empty refusal finite"}
+{"func":"refused_turn_result","row":{"payload":{"finite":false}},"refusal":null,"case":"null refusal fallback"}
+{"func":"refused_turn_result","row":{"payload":{"finite":true},"session_id":"abc"},"refusal":"blocked by policy","case":"finite true with extra row keys"}
+{"func":"refused_turn_result","row":{"payload":{"finite":true},"extra":{"a":1}},"refusal":"multi word refusal","case":"finite true plus nested extra"}

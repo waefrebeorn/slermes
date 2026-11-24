@@ -1,0 +1,14 @@
+{"case":"prepared_flag","func":"prepared"}
+{"case":"lock_wait_seconds","func":"lock_wait"}
+{"case":"immediate","func":"acquire","wait":0.0,"clocks":[0.0,0.0],"acquire":[true],"holder_pid":0,"holder_reason":null}
+{"case":"fail_fast_zero_wait","func":"acquire","wait":0.0,"clocks":[10.0,10.0],"acquire":[false],"holder_pid":0,"holder_reason":null}
+{"case":"one_retry_pid","func":"acquire","wait":10.0,"clocks":[0.0,1.0,3.0],"acquire":[false,true],"holder_pid":123,"holder_reason":null}
+{"case":"timeout","func":"acquire","wait":2.0,"clocks":[0.0,1.0,3.0,5.0],"acquire":[false,false,false],"holder_pid":0,"holder_reason":null}
+{"case":"holder_reason","func":"acquire","wait":30.0,"clocks":[0.0,1.0],"acquire":[false],"holder_pid":456,"holder_reason":"unwritable"}
+{"case":"two_notices","func":"acquire","wait":120.0,"clocks":[0.0,0.5,61.0,62.0,70.0],"acquire":[false,false,false,false],"holder_pid":0,"holder_reason":null}
+{"case":"no_pid","func":"acquire","wait":10.0,"clocks":[0.0,1.0,3.0],"acquire":[false,true],"holder_pid":0,"holder_reason":null}
+{"case":"two_failures_then_ok","func":"acquire","wait":5.0,"clocks":[0.0,1.0,2.0,3.0],"acquire":[false,false,true],"holder_pid":77,"holder_reason":null}
+{"case":"empty_clocks","func":"acquire","wait":0.0,"clocks":[],"acquire":[false],"holder_pid":0,"holder_reason":null}
+{"case":"default_acquire_true","func":"acquire","wait":0.0,"clocks":[0.0],"acquire":[],"holder_pid":0,"holder_reason":null}
+{"case":"negative_wait","func":"acquire","wait":-1.0,"clocks":[0.0,0.0],"acquire":[false],"holder_pid":0,"holder_reason":null}
+{"case":"empty_reason_string","func":"acquire","wait":10.0,"clocks":[0.0,1.0,3.0],"acquire":[false,true],"holder_pid":9,"holder_reason":""}

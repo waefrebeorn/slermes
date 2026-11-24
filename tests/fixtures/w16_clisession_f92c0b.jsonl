@@ -1,0 +1,16 @@
+{"case":1,"func":"squash","text":"hello world"}
+{"case":2,"func":"squash","text":"  a\t b\n\n c \r d  "}
+{"case":3,"func":"squash","text":"abcdefghijklmnopqrstuvwxyz","limit":10}
+{"case":4,"func":"squash","text":"","limit":5}
+{"case":5,"func":"squash","text":"one   two","limit":200}
+{"case":6,"func":"squash","text":"123456789","limit":9}
+{"case":7,"func":"undo","content":"plain string"}
+{"case":8,"func":"undo","content":[{"type":"text","text":"first"},{"type":"image","text":"ignored"},{"type":"text","text":"second"}]}
+{"case":9,"func":"undo","content":[{"type":"text","text":""},{"type":"text","text":"kept"}]}
+{"case":10,"func":"undo","content":42}
+{"case":11,"func":"undo","content":[]}
+{"case":12,"func":"title","session_id":"sid-1","tip":"tip-9"}
+{"case":13,"func":"title","session_id":"sid-2","tip":null}
+{"case":14,"func":"title","session_id":"sid-3","tip":"","db":true}
+{"case":15,"func":"title","session_id":"sid-4","tip":"tip-x","db":false}
+{"case":16,"func":"title","session_id":"","tip":"tip-y"}

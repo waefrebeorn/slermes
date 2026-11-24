@@ -1,0 +1,15 @@
+{"func":"print_items","items":[],"label":"New settings","key":"name","case":"empty prints nothing"}
+{"func":"print_items","items":[{"name":"API_KEY","description":"  an api key  "}],"label":"New settings","key":"name","case":"one item description stripped"}
+{"func":"print_items","items":["bare"],"label":"New settings","key":"name","case":"bare string item"}
+{"func":"print_items","items":[{"nick":"fallback"}],"label":"New settings","key":"name","fallback_key":"nick","case":"fallback key used"}
+{"func":"print_items","items":[{"description":"d"}],"label":"New settings","key":"name","case":"missing name question mark"}
+{"func":"print_items","items":[{"key":"k0"},{"key":"k1"},{"key":"k2"},{"key":"k3"},{"key":"k4"},{"key":"k5"},{"key":"k6"},{"key":"k7"},{"key":"k8"},{"key":"k9"}],"label":"New options","key":"key","case":"truncate after eight"}
+{"func":"print_items","items":[{"name":0}],"label":"X","key":"name","case":"falsy name becomes question mark"}
+{"func":"print_items","items":[{"name":"k","description":""}],"label":"X","key":"name","case":"empty description no dash"}
+{"func":"ask","assume_yes":true,"gateway_mode":true,"gateway_reply":"Y","input_reply":"yes","is_interactive":true,"case":"assume yes wins"}
+{"func":"ask","assume_yes":false,"gateway_mode":true,"gateway_reply":" YES ","input_reply":"y","is_interactive":true,"case":"gateway reply normalized"}
+{"func":"ask","assume_yes":false,"gateway_mode":true,"gateway_reply":"","input_reply":"y","is_interactive":true,"case":"gateway reply empty"}
+{"func":"ask","assume_yes":false,"gateway_mode":false,"gateway_reply":"y","input_reply":"y","is_interactive":false,"case":"non interactive auto"}
+{"func":"ask","assume_yes":false,"gateway_mode":false,"input_reply":" YES\n","is_interactive":true,"case":"input normalized"}
+{"func":"ask","assume_yes":false,"gateway_mode":false,"input_reply":null,"is_interactive":true,"case":"EOFError"}
+{"func":"ask","assume_yes":false,"gateway_mode":false,"input_reply":"__UDE__","is_interactive":true,"case":"unicode decode error"}

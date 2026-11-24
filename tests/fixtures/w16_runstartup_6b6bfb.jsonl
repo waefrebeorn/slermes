@@ -1,0 +1,11 @@
+{"func":"liveness_plan","config":null,"floor_handle":null,"watchdog":null}
+{"func":"liveness_plan","config":{"loop_watchdog":false},"floor_handle":null,"watchdog":null}
+{"func":"liveness_plan","config":{"loop_watchdog":true},"floor_handle":"h","watchdog":{"alive":true}}
+{"func":"liveness_plan","config":{"loop_watchdog_probe_interval_s":12.5,"loop_watchdog_probe_timeout_s":4,"loop_watchdog_max_strikes":7},"floor_handle":null,"watchdog":{"alive":false}}
+{"func":"liveness_plan","config":{"loop_watchdog_probe_interval_s":"9.5","loop_watchdog_probe_timeout_s":"2","loop_watchdog_max_strikes":"5"},"floor_handle":null,"watchdog":null}
+{"func":"liveness_plan","config":{"loop_watchdog":true},"floor_handle":"h","watchdog":null}
+{"func":"liveness_plan","config":{"loop_watchdog":false},"floor_handle":"h","watchdog":{"alive":false}}
+{"func":"liveness_plan","config":null,"floor_handle":"h","watchdog":{"alive":true}}
+{"func":"liveness_plan","config":{"loop_watchdog":1},"floor_handle":null,"watchdog":null}
+{"func":"liveness_plan","config":{"loop_watchdog":0},"floor_handle":null,"watchdog":null}
+{"func":"liveness_plan","config":{"loop_watchdog_probe_interval_s":0,"loop_watchdog_probe_timeout_s":-3,"loop_watchdog_max_strikes":0},"floor_handle":null,"watchdog":{"alive":false}}

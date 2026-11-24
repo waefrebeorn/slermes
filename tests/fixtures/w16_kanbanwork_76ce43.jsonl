@@ -1,0 +1,15 @@
+{"func":"rotation_config","cfg":{},"case":"empty -> defaults"}
+{"func":"rotation_config","cfg":{"worker_log_rotate_bytes":4096,"worker_log_backup_count":3},"case":"both override"}
+{"func":"rotation_config","cfg":{"worker_log_rotate_bytes":0},"case":"rotate below min -> default"}
+{"func":"rotation_config","cfg":{"worker_log_backup_count":0},"case":"backup zero allowed"}
+{"func":"rotation_config","cfg":{"worker_log_rotate_bytes":"8192","worker_log_backup_count":"2"},"case":"numeric strings"}
+{"func":"rotation_config","cfg":{"worker_log_rotate_bytes":" 1024 ","worker_log_backup_count":-5},"case":"strip string, negative backup -> default"}
+{"func":"rotation_config","cfg":{"worker_log_rotate_bytes":null,"worker_log_backup_count":true},"case":"null fallback, bool True -> 1"}
+{"func":"rotation_config","cfg":{"worker_log_rotate_bytes":"abc","worker_log_backup_count":false},"case":"junk -> default, bool False -> 0 fallback"}
+{"func":"rotation_config","cfg":{"worker_log_rotate_bytes":2097151.9,"worker_log_backup_count":7},"case":"float truncated then below min -> default"}
+{"func":"rotated_path","log":"worker.log","gen":1,"case":"simple suffix"}
+{"func":"rotated_path","log":"worker.log.1","gen":2,"case":"already rotated"}
+{"func":"rotated_path","log":"worker","gen":3,"case":"no suffix"}
+{"func":"rotated_path","log":".hidden","gen":1,"case":"hidden file"}
+{"func":"rotated_path","log":"worker.tar.gz","gen":10,"case":"multi-dot suffix"}
+{"func":"rotated_path","log":"a.b","gen":0,"case":"zero generation"}
