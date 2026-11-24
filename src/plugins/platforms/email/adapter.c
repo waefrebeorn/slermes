@@ -901,7 +901,9 @@ static char *ea_parseaddr_addr(const char *value) {
     if (lt >= 0) {
         char *display, *unq, *addr, *prefix, *tmp;
         size_t k;
-        if (gt < 0) return ea_dup("");
+        /* parseaddr answers the address up to the END of a value whose angle-addr
+         * was never closed: parseaddr("John <j@x") is ("John", "j@x"). */
+        if (gt < 0) gt = (long)n;
         for (k = (size_t)gt + 1; k < n; k++)
             if (!ea_py_space((unsigned char)value[k])) return ea_dup("");  /* text after > */
         prefix = ea_ndup(value, (size_t)lt);
@@ -912,13 +914,9 @@ static char *ea_parseaddr_addr(const char *value) {
         display = ea_strip(tmp);
         free(tmp);
         addr = ea_strip(ea_ndup(value + lt + 1, (size_t)gt - (size_t)lt - 1));
-        if (strchr(display, '@')) {
-            char *dl = ea_lower_dup(display), *al = ea_lower_dup(addr);
-            int same = !strcmp(dl, al);
-            free(dl);
-            free(al);
-            if (!same) { free(display); free(addr); return ea_dup(""); }
-        }
+        /* A phrase holding "@" is not a phrase: parseaddr("a@x <a@x>") is ("", ""),
+         * even when the two sides are the same text. */
+        if (strchr(display, '@')) { free(display); free(addr); return ea_dup(""); }
         free(display);
         return addr;
     }
