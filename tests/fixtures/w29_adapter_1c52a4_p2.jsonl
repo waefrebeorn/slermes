@@ -1,0 +1,44 @@
+{"func":"mentions_bot","case":"fallback-at-tag","entities":[],"text":"hi <at>Hermes</at> what's up","bot_ids":["28:bot"]}
+{"func":"mentions_bot","case":"fallback-no-tag","entities":[],"text":"hi there","bot_ids":["28:bot"]}
+{"func":"mentions_bot","case":"entity-bot","entities":[{"type":"mention","mentioned":{"id":"28:bot"}}],"text":"","bot_ids":["28:bot"]}
+{"func":"mentions_bot","case":"entity-other-bot","entities":[{"type":"mention","mentioned":{"id":"28:bot"}}],"text":"","bot_ids":["28:other"]}
+{"func":"mentions_bot","case":"entity-user-tag-ignored","entities":[{"type":"mention","mentioned":{"id":"29:user"}}],"text":"<at>x</at>","bot_ids":["28:bot"]}
+{"func":"mentions_bot","case":"non-mention-entity","entities":[{"type":"messageReaction"}],"text":"<at>","bot_ids":["28:bot"]}
+{"func":"mentions_bot","case":"mention-without-id","entities":[{"type":"mention"}],"text":"","bot_ids":["28:bot"]}
+{"func":"mentions_bot","case":"empty-id-in-bot-ids","entities":[{"type":"mention"}],"text":"","bot_ids":["28:bot",""]}
+{"func":"mentions_bot","case":"two-mentions-first-bot","entities":[{"type":"mention","mentioned":{"id":"28:bot"}},{"type":"mention","mentioned":{"id":"29:x"}}],"text":"","bot_ids":["28:bot"]}
+{"func":"mentions_bot","case":"null-entities","entities":null,"text":"<at>H</at>","bot_ids":[]}
+{"func":"approval_body","case":"cmd-and-desc","cmd":"rm -rf /tmp/x","desc":"user asked","always":false,"header":"Approval required","reason_label":"Reason"}
+{"func":"approval_body","case":"both-empty","cmd":"","desc":"","always":false,"header":"Approval required","reason_label":"Reason"}
+{"func":"approval_body","case":"always-empty","cmd":"","desc":"","always":true,"header":"Approval required","reason_label":"Reason"}
+{"func":"approval_body","case":"cmd-only","cmd":"ls -la","desc":"","always":false,"header":"Approval required","reason_label":"Reason"}
+{"func":"approval_body","case":"desc-only","cmd":"","desc":"why","always":false,"header":"Approval required","reason_label":"Reason"}
+{"func":"approval_body","case":"multiline","cmd":"echo \"hi\"\nline2","desc":"multi\nline","always":false,"header":"Approval required","reason_label":"Reason"}
+{"func":"media_type","case":"image","kinds":["image"]}
+{"func":"media_type","case":"video-beats-audio","kinds":["audio","video"]}
+{"func":"media_type","case":"audio","kinds":["audio"]}
+{"func":"media_type","case":"none","kinds":[]}
+{"func":"media_type","case":"document-beats-image","kinds":["document","image"]}
+{"func":"media_type","case":"document-last","kinds":["video","document"]}
+{"func":"media_type","case":"unknown-kind","kinds":["sticker"]}
+{"func":"attachment_skip","case":"html-no-url","content_type":"text/html","content_url":null}
+{"func":"attachment_skip","case":"html-with-url","content_type":"text/html","content_url":"https://example.com/body.html"}
+{"func":"attachment_skip","case":"plain-no-url","content_type":"text/plain","content_url":null}
+{"func":"attachment_skip","case":"card-adaptive","content_type":"application/vnd.microsoft.card.adaptive","content_url":null}
+{"func":"attachment_skip","case":"card-hero-with-url","content_type":"application/vnd.microsoft.card.hero","content_url":"https://smba.trafficmanager.net/x"}
+{"func":"attachment_skip","case":"image-url","content_type":"image/png","content_url":"https://example.com/a.png"}
+{"func":"attachment_skip","case":"pdf-bf-url","content_type":"application/pdf","content_url":"https://smba.trafficmanager.net/f"}
+{"func":"attachment_skip","case":"uppercase-text-html","content_type":"TEXT/HTML","content_url":null}
+{"func":"document_filename","content_type":"application/vnd.microsoft.teams.file.download.info","case":"named","name":"report.pdf","content":{"downloadUrl":"https://smba.trafficmanager.net/f","fileType":".pdf"}}
+{"func":"document_filename","content_type":"application/vnd.microsoft.teams.file.download.info","case":"fileType-dot","name":null,"content":{"downloadUrl":"https://smba.trafficmanager.net/f","fileType":".docx"}}
+{"func":"document_filename","content_type":"application/vnd.microsoft.teams.file.download.info","case":"file_type-underscore","name":"","content":{"downloadUrl":"https://smba.trafficmanager.net/f","file_type":"pptx"}}
+{"func":"document_filename","content_type":"application/vnd.microsoft.teams.file.download.info","case":"no-type","name":null,"content":{"downloadUrl":"https://smba.trafficmanager.net/f"}}
+{"func":"document_filename","content_type":"application/vnd.microsoft.teams.file.download.info","case":"double-dot","name":null,"content":{"downloadUrl":"https://smba.trafficmanager.net/f","fileType":"..pdf"}}
+{"func":"document_filename","content_type":"application/vnd.microsoft.teams.file.download.info","case":"blank-fileType-fallback","name":null,"content":{"downloadUrl":"https://smba.trafficmanager.net/f","fileType":"","file_type":".xlsx"}}
+{"func":"threaded_reply","case":"digits","reply_to":"123"}
+{"func":"threaded_reply","case":"zero","reply_to":"0"}
+{"func":"threaded_reply","case":"empty","reply_to":""}
+{"func":"threaded_reply","case":"null","reply_to":null}
+{"func":"threaded_reply","case":"trailing-letter","reply_to":"12a"}
+{"func":"threaded_reply","case":"leading-space","reply_to":" 12"}
+{"func":"threaded_reply","case":"leading-zeros","reply_to":"0042"}

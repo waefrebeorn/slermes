@@ -1,0 +1,45 @@
+{"func":"parse_comma_list","case":"normal","value":"alice, bob ,, * "}
+{"func":"parse_comma_list","case":"boundary-empty","value":""}
+{"func":"parse_comma_list","case":"type-mismatch-int","value":42}
+{"func":"guess_extension","case":"png","data_b64":"iVBORw0KGgo="}
+{"func":"guess_extension","case":"boundary-empty","data_b64":""}
+{"func":"guess_extension","case":"ogg","data_b64":"T2dnUwACAAA="}
+{"func":"guess_extension","case":"aac-sync","data_b64":"//FQgAA="}
+{"func":"guess_extension","case":"webp-riff","data_b64":"UklGRgAAAABXRUJQVlA4IA=="}
+{"func":"guess_extension","case":"zip-pk","data_b64":"UEsDBA=="}
+{"func":"guess_extension","case":"m4a-ftyp","data_b64":"AAAAIGZ0eXBNNEEgAAAAAA=="}
+{"func":"guess_extension","case":"mp4-ftyp","data_b64":"AAAAGGZ0eXBpc29t"}
+{"func":"guess_extension","case":"id3-mp3","data_b64":"SUQzBAA="}
+{"func":"guess_extension","case":"type-mismatch-int","data_b64":5}
+{"func":"is_image_ext","case":"upper-png","ext":".PNG"}
+{"func":"is_image_ext","case":"boundary-empty","ext":""}
+{"func":"is_image_ext","case":"falsy-null","ext":null}
+{"func":"is_image_ext","case":"not-image","ext":".pdf"}
+{"func":"is_audio_ext","case":"upper-m4a","ext":".M4A"}
+{"func":"is_audio_ext","case":"not-audio","ext":".png"}
+{"func":"is_audio_ext","case":"type-mismatch-int","ext":7}
+{"func":"ext_to_mime","case":"jpeg","ext":".jpeg"}
+{"func":"ext_to_mime","case":"boundary-empty","ext":""}
+{"func":"ext_to_mime","case":"padded-unknown","ext":" .XYZ "}
+{"func":"ext_to_mime","case":"padded-png","ext":" .PNG "}
+{"func":"render_mentions","case":"two-mentions","text":"hi \ufffc and \ufffc!","mentions":[{"start":3,"length":1,"number":"acct-a"},{"start":9,"length":1,"uuid":"u-9"}]}
+{"func":"render_mentions","case":"no-placeholder","text":"plain text","mentions":[{"start":0,"length":1,"number":"acct-a"}]}
+{"func":"render_mentions","case":"empty-mentions","text":"hi \ufffc","mentions":[]}
+{"func":"render_mentions","case":"default-identifier","text":"hey \ufffc","mentions":[{"start":4,"length":1}]}
+{"func":"is_signal_service_id","case":"pni-prefix","value":"PNI:1234"}
+{"func":"is_signal_service_id","case":"u-prefix","value":"u:abcdef"}
+{"func":"is_signal_service_id","case":"uuid-hyphenated","value":"123e4567-e89b-12d3-a456-426614174000"}
+{"func":"is_signal_service_id","case":"uuid-braces","value":"{123e4567e89b12d3a456426614174000}"}
+{"func":"is_signal_service_id","case":"boundary-empty","value":""}
+{"func":"is_signal_service_id","case":"not-a-uuid","value":"not-a-uuid"}
+{"func":"looks_like_e164_number","case":"valid-eleven","value":"+15550001234"}
+{"func":"looks_like_e164_number","case":"boundary-short","value":"+123456"}
+{"func":"looks_like_e164_number","case":"boundary-long","value":"+1234567890123456"}
+{"func":"looks_like_e164_number","case":"missing-plus","value":"15550001234"}
+{"func":"looks_like_e164_number","case":"falsy-null","value":null}
+{"func":"validate_signal_config","case":"extra-pair","extra":{"http_url":"http://127.0.0.1:8080","account":"acct-a"},"env":{}}
+{"func":"validate_signal_config","case":"env-fallback","extra":{},"env":{"SIGNAL_HTTP_URL":"http://daemon","SIGNAL_ACCOUNT":"acct-b"}}
+{"func":"validate_signal_config","case":"nothing","extra":{},"env":{}}
+{"func":"validate_signal_config","case":"blank-extra-falls-back","extra":{"http_url":"   ","account":"acct-c"},"env":{"SIGNAL_HTTP_URL":"http://daemon"}}
+{"func":"validate_signal_config","case":"type-mismatch-int","extra":{"http_url":42,"account":"acct-a"},"env":{}}
+{"func":"check_signal_requirements","case":"constant"}

@@ -1,0 +1,46 @@
+{"func": "constants", "case": "budgets"}
+{"func": "reply_timeout", "case": "unset", "env": null}
+{"func": "reply_timeout", "case": "below_floor", "env": "0.5"}
+{"func": "reply_timeout", "case": "seconds", "env": "600"}
+{"func": "reply_timeout", "case": "garbage", "env": "bogus"}
+{"func": "reply_timeout", "case": "absurd", "env": "1e18"}
+{"func": "reply_timeout", "case": "whitespace", "env": "  42  "}
+{"func": "reply_timeout", "case": "empty", "env": ""}
+{"func": "reply_timeout", "case": "trailing_junk", "env": "12s"}
+{"func": "reply_timeout", "case": "scientific", "env": "2.5e2"}
+{"func": "orphan_timeout", "case": "unset", "env": null}
+{"func": "orphan_timeout", "case": "reply_window", "env": "600"}
+{"func": "orphan_timeout", "case": "below_floor", "env": "1"}
+{"func": "orphan_timeout", "case": "absurd", "env": "1e18"}
+{"func": "orphan_timeout", "case": "garbage", "env": "abc"}
+{"func": "clean_slug", "case": "served", "value": "/sales bot/"}
+{"func": "clean_slug", "case": "default_alias", "value": "default"}
+{"func": "clean_slug", "case": "root_alias_padded", "value": "  //root//  "}
+{"func": "clean_slug", "case": "first_segment", "value": "team/a/b"}
+{"func": "clean_slug", "case": "null", "value": null}
+{"func": "clean_slug", "case": "number", "value": 5}
+{"func": "clean_slug", "case": "empty", "value": ""}
+{"func": "join_url", "case": "root_agent", "base": "http://127.0.0.1:9900/", "prefix": ""}
+{"func": "join_url", "case": "served_agent", "base": "https://hub.example.com/a2a", "prefix": "/research/"}
+{"func": "join_url", "case": "both_empty", "base": "", "prefix": ""}
+{"func": "join_url", "case": "base_query", "base": "https://h.example/p?x=1", "prefix": "dept"}
+{"func": "join_url", "case": "dot_segments", "base": "https://h.example/a/b/", "prefix": "../up"}
+{"func": "join_url", "case": "whitespace_base", "base": "  https://h.example/a2a  ", "prefix": "deep/link"}
+{"func": "safe_context_slug", "case": "punctuation", "value": "session/one two", "max_len": null}
+{"func": "safe_context_slug", "case": "all_stripped", "value": "  ...--", "max_len": 96}
+{"func": "safe_context_slug", "case": "truncated", "value": "a/very long context title here", "max_len": 12}
+{"func": "safe_context_slug", "case": "kept", "value": "ctx_2024.11.24-AAA", "max_len": 96}
+{"func": "safe_context_slug", "case": "hash_only", "value": "###", "max_len": 5}
+{"func": "safe_context_slug", "case": "zero_limit", "value": "abcdef", "max_len": 0}
+{"func": "safe_context_slug", "case": "empty", "value": "", "max_len": null}
+{"func": "server_class", "case": "ipv6_loopback", "host": "::1"}
+{"func": "server_class", "case": "ipv6_wildcard", "host": "::"}
+{"func": "server_class", "case": "ipv4", "host": "127.0.0.1"}
+{"func": "server_class", "case": "hostname", "host": "localhost"}
+{"func": "server_class", "case": "wildcard_v4", "host": "0.0.0.0"}
+{"func": "client_ip", "case": "mapped_v4", "addr": "::ffff:203.0.113.7"}
+{"func": "client_ip", "case": "mapped_garbage", "addr": "::ffff:zz"}
+{"func": "client_ip", "case": "plain_v4", "addr": "198.51.100.4"}
+{"func": "client_ip", "case": "ipv6", "addr": "2001:db8::1"}
+{"func": "client_ip", "case": "empty", "addr": ""}
+{"func": "client_ip", "case": "unset", "addr": null}

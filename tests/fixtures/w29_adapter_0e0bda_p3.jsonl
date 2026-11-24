@@ -1,0 +1,39 @@
+{"func": "method_lookup", "case": "v1_send", "method": "SendMessage"}
+{"func": "method_lookup", "case": "legacy_send", "method": "message/send"}
+{"func": "method_lookup", "case": "v1_get", "method": "GetTask"}
+{"func": "method_lookup", "case": "legacy_get", "method": "tasks/get"}
+{"func": "method_lookup", "case": "v1_cancel", "method": "CancelTask"}
+{"func": "method_lookup", "case": "v1_push_create", "method": "CreateTaskPushNotificationConfig"}
+{"func": "method_lookup", "case": "legacy_push_set", "method": "tasks/pushNotificationConfig/set"}
+{"func": "method_lookup", "case": "legacy_push_old_alias", "method": "tasks/pushNotification/set"}
+{"func": "method_lookup", "case": "unknown", "method": "tasks/explode"}
+{"func": "method_lookup", "case": "empty", "method": ""}
+{"func": "find_task_error", "case": "task_id", "req_id": null, "params": {"taskId": "task-1"}}
+{"func": "find_task_error", "case": "legacy_id", "req_id": 7, "params": {"id": "task-2"}}
+{"func": "find_task_error", "case": "no_id", "req_id": "abc", "params": {}}
+{"func": "find_task_error", "case": "prefers_task_id", "req_id": 1, "params": {"taskId": "t-9", "id": "other"}}
+{"func": "push_op_error", "case": "no_task", "req_id": 1, "params": {}}
+{"func": "push_op_error", "case": "not_found", "req_id": 2, "params": {"taskId": "t-9"}}
+{"func": "push_create_error", "case": "empty", "req_id": 1, "params": {}}
+{"func": "push_create_error", "case": "no_config", "req_id": 1, "params": {"taskId": "t"}}
+{"func": "push_create_error", "case": "empty_url", "req_id": 1, "params": {"taskId": "t", "config": {"url": ""}}}
+{"func": "push_create_error", "case": "store_miss", "req_id": 1, "params": {"taskId": "t", "pushNotificationConfig": {"url": "https://cb.example/x"}}}
+{"func": "push_create_error", "case": "config_alias", "req_id": 2, "params": {"taskId": "t2", "config": {"url": "https://cb.example/y"}}}
+{"func": "push_create_error", "case": "no_task_id", "req_id": 3, "params": {"config": {"url": "https://cb.example/z"}}}
+{"func": "inline_push_url", "case": "direct", "params": {"configuration": {"taskPushNotificationConfig": {"url": "https://cb.example/1"}}}}
+{"func": "inline_push_url", "case": "nested", "params": {"configuration": {"taskPushNotificationConfig": {"pushNotificationConfig": {"url": "https://cb.example/2"}}}}}
+{"func": "inline_push_url", "case": "empty_configuration", "params": {"configuration": {}}}
+{"func": "inline_push_url", "case": "empty_url", "params": {"configuration": {"taskPushNotificationConfig": {"url": ""}}}}
+{"func": "inline_push_url", "case": "absent", "params": {}}
+{"func": "note_forwarded", "case": "fresh", "order": ["a", "b"], "input_id": "c", "max": null}
+{"func": "note_forwarded", "case": "retry", "order": ["a", "b", "c"], "input_id": "a", "max": null}
+{"func": "note_forwarded", "case": "evicts_oldest", "order": ["a", "b", "c"], "input_id": "d", "max": 3}
+{"func": "note_forwarded", "case": "single_slot", "order": [], "input_id": "x", "max": 1}
+{"func": "note_forwarded", "case": "retry_evicts", "order": ["1", "2", "3"], "input_id": "1", "max": 2}
+{"func": "note_forwarded", "case": "default_cap", "order": [], "input_id": "k", "max": null}
+{"func": "forget_forwarded", "case": "drops", "order": ["a", "b", "c"], "input_id": "b"}
+{"func": "forget_forwarded", "case": "absent", "order": ["a", "b"], "input_id": "zz"}
+{"func": "forget_forwarded", "case": "empty", "order": [], "input_id": "a"}
+{"func": "chat_info", "case": "context", "chat_id": "ctx-1"}
+{"func": "chat_info", "case": "empty", "chat_id": ""}
+{"func": "chat_info", "case": "unset", "chat_id": null}

@@ -1,0 +1,47 @@
+{"func": "codex_http_error", "case": "unauthorized-401", "status": 401}
+{"func": "codex_http_error", "case": "forbidden-403", "status": 403}
+{"func": "codex_http_error", "case": "timeout-408", "status": 408}
+{"func": "codex_http_error", "case": "rate-limited-429", "status": 429}
+{"func": "codex_http_error", "case": "server-down-500", "status": 500}
+{"func": "codex_http_error", "case": "server-down-503", "status": 503}
+{"func": "codex_http_error", "case": "bad-request-400", "status": 400}
+{"func": "codex_http_error", "case": "ok-200", "status": 200}
+{"func": "http_error_detail", "case": "error-dict-message-code", "payload": {"error": {"message": "bad thing happened", "code": "invalid_request"}}, "text": ""}
+{"func": "http_error_detail", "case": "error-dict-whitespace-stripped", "payload": {"error": {"error_description": "   uses device authorization   "}}, "text": ""}
+{"func": "http_error_detail", "case": "error-string", "payload": {"error": "insufficient_quota"}, "text": ""}
+{"func": "http_error_detail", "case": "payload-detail", "payload": {"detail": "Not Found"}, "text": ""}
+{"func": "http_error_detail", "case": "payload-error-description", "payload": {"message": "  ", "error_description": "try later"}, "text": ""}
+{"func": "http_error_detail", "case": "null-payload-text-fallback", "payload": null, "text": "  gateway exploded  "}
+{"func": "http_error_detail", "case": "null-payload-empty-text", "payload": null, "text": ""}
+{"func": "http_error_detail", "case": "error-dict-code-null-is-None", "payload": {"error": {"message": "", "code": null}}, "text": "ignored"}
+{"func": "http_error_detail", "case": "json-raises-text-fallback", "payload": {"error": {"message": "unused"}}, "json_raises": true, "text": "raw body text"}
+{"func": "codex_start_error", "case": "device-auth-not-enabled", "status": 403, "payload": {"error": {"message": "device authorization not enabled for this account"}}, "text": ""}
+{"func": "codex_start_error", "case": "invalid-client-generic", "status": 400, "payload": {"error": {"message": "invalid_client"}}, "text": ""}
+{"func": "codex_start_error", "case": "no-detail-500", "status": 500, "payload": null, "text": ""}
+{"func": "codex_start_error", "case": "unknown-status", "status": null, "payload": null, "text": "  upstream reset  "}
+{"func": "codex_start_error", "case": "enable-word-triggers-hint", "status": 400, "payload": {"error": {"error_description": "Enable device flow in settings"}}, "text": ""}
+{"func": "codex_user_code", "case": "interval-five", "device_data": {"user_code": "ABCD-1234", "device_auth_id": "dai_001", "interval": 5}}
+{"func": "codex_user_code", "case": "interval-clamped-to-three", "device_data": {"user_code": "ABCD-1234", "device_auth_id": "dai_001", "interval": 2}}
+{"func": "codex_user_code", "case": "interval-string", "device_data": {"user_code": "ABCD-1234", "device_auth_id": "dai_001", "interval": "9"}}
+{"func": "codex_user_code", "case": "interval-missing-defaults-five", "device_data": {"user_code": "ABCD-1234", "device_auth_id": "dai_001"}}
+{"func": "codex_user_code", "case": "interval-float-truncates", "device_data": {"user_code": "ABCD-1234", "device_auth_id": "dai_001", "interval": 7.9}}
+{"func": "codex_user_code", "case": "missing-user-code", "device_data": {"device_auth_id": "dai_001", "interval": 5}}
+{"func": "codex_user_code", "case": "missing-device-auth-id", "device_data": {"user_code": "ABCD-1234", "interval": 5}}
+{"func": "codex_exchange", "case": "form-built", "client_id": "app_fixture_client", "code_resp": {"authorization_code": "ac_fixture_001", "code_verifier": "verifier_fixture_001"}}
+{"func": "codex_exchange", "case": "missing-verifier", "client_id": "app_fixture_client", "code_resp": {"authorization_code": "ac_fixture_001"}}
+{"func": "codex_exchange", "case": "empty-code", "client_id": "app_fixture_client", "code_resp": {"authorization_code": "", "code_verifier": "verifier_fixture_001"}}
+{"func": "codex_cancelled", "case": "cancelled-true", "sess": {"cancelled": true, "status": "pending"}}
+{"func": "codex_cancelled", "case": "cancelled-false", "sess": {"cancelled": false, "status": "approved"}}
+{"func": "codex_cancelled", "case": "cancelled-missing", "sess": {"status": "pending"}}
+{"func": "gc_survivors", "case": "mixed-ages", "now": 1000000, "sessions": [{"session_id": "s-old", "created_at": 999000}, {"session_id": "s-fresh", "created_at": 999500}, {"session_id": "s-new", "created_at": 999999}]}
+{"func": "gc_survivors", "case": "all-fresh", "now": 1000000, "sessions": [{"session_id": "a", "created_at": 999900}, {"session_id": "b", "created_at": 999999}]}
+{"func": "gc_survivors", "case": "boundary-exactly-ttl", "now": 1000000, "sessions": [{"session_id": "edge", "created_at": 999100}, {"session_id": "just-old", "created_at": 999099}]}
+{"func": "gc_survivors", "case": "empty-table", "now": 1000000, "sessions": []}
+{"func": "device_start", "case": "minimax-shaped", "session_id": "fixture-sid-0001", "provider_id": "minimax-oauth", "profile": null, "created_at": 1700000000, "fields": {"user_code": "MM-1234", "code_verifier": "verifier_fixture_001", "state": "state_fixture_001", "region": "global"}, "user_code": "MM-1234", "verification_url": "https://minimax.example.test/device", "expires_in": 600, "poll_interval": 5}
+{"func": "device_start", "case": "xai-shaped-profile", "session_id": "fixture-sid-0002", "provider_id": "xai-oauth", "profile": "  Work  ", "created_at": 1700000123, "fields": {"device_code": "dc_fixture_001", "interval": 5}, "user_code": "XAI-9999", "verification_url": "https://xai.example.test/device?code=XAI-9999", "expires_in": 900, "poll_interval": 5}
+{"func": "device_start", "case": "no-extra-fields", "session_id": "fixture-sid-0003", "provider_id": "nous", "profile": "current", "created_at": 1700000999, "fields": {}, "user_code": "NOUS-0001", "verification_url": "https://portal.example.test/device", "expires_in": 300, "poll_interval": 3}
+{"func": "validate_profile", "case": "named", "profile": "  Work  "}
+{"func": "validate_profile", "case": "current", "profile": "current"}
+{"func": "validate_profile", "case": "empty", "profile": ""}
+{"func": "validate_profile", "case": "none", "profile": null}
+{"func": "codex_start_error", "case": "json-raises-text-only", "status": 502, "payload": {"error": {"message": "unused"}}, "json_raises": true, "text": "  bad gateway  "}

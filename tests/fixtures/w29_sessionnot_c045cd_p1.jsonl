@@ -1,0 +1,44 @@
+{"func":"current_keys","case":"session-key-collapses-to-one","sid":"sid1","session":{"session_key":"key1"}}
+{"func":"current_keys","case":"agent-session-id-wins","sid":"sid1","session":{"session_key":"key1","agent":{"session_id":"agentK"}}}
+{"func":"current_keys","case":"two-distinct-keys-sorted","sid":"same","session":{"session_key":"other"}}
+{"func":"current_keys","case":"empty-session-keeps-blank","sid":"sid9","session":{}}
+{"func":"current_keys","case":"empty-agent-id-falls-to-session-key","sid":"sid2","session":{"session_key":"key2","agent":{"session_id":""}}}
+{"func":"current_keys","case":"numeric-agent-id-stringified","sid":"sid3","session":{"agent":{"session_id":7}}}
+{"func":"session_matches","case":"session-key-hit","session":{"session_key":"k2"},"keys":["k2","x"]}
+{"func":"session_matches","case":"lookup-key-hit","session":{"session_key":"k2","agent":{"session_id":"k9"}},"keys":["k9"]}
+{"func":"session_matches","case":"empty-keys-never-match-nonblank","session":{"session_key":"k2"},"keys":[]}
+{"func":"session_matches","case":"blank-session-key-matches-blank-key","session":{"session_key":""},"keys":[""]}
+{"func":"session_matches","case":"numeric-key-not-string-match","session":{"session_key":5},"keys":[5]}
+{"func":"requires_owner","case":"completion-with-session-key","evt":{"type":"completion","session_key":"k"}}
+{"func":"requires_owner","case":"ownerless-completion","evt":{"type":"completion","output":"x"}}
+{"func":"requires_owner","case":"delegation-always","evt":{"type":"async_delegation"}}
+{"func":"requires_owner","case":"blank-origin-not-addressed","evt":{"type":"completion","origin_ui_session_id":""}}
+{"func":"dedup_key","case":"completion-named-session","evt":{"type":"completion","session_id":"s1"}}
+{"func":"dedup_key","case":"completion-anonymous","evt":{"type":"completion"}}
+{"func":"dedup_key","case":"watch-match-event-id-supersedes","evt":{"type":"watch_match","session_id":"s1","event_id":"ev9","command":"c"}}
+{"func":"dedup_key","case":"watch-match-content-keyed","evt":{"type":"watch_match","session_id":"s1","command":"cmd","pattern":"pat","output":"out","suppressed":true,"message_id":"m7"}}
+{"func":"dedup_key","case":"heartbeat-seq","evt":{"type":"heartbeat","session_id":"s1","seq":3}}
+{"func":"dedup_key","case":"watch-overflow-defaults","evt":{"type":"watch_overflow_dropped","session_id":"s1","command":"cmd"}}
+{"func":"dedup_key","case":"delegation-id-only","evt":{"type":"async_delegation","delegation_id":"d1"}}
+{"func":"dedup_key","case":"delegation-task-failure-index","evt":{"type":"async_delegation","delegation_id":"d1","task_failure_notice":true,"results":[{"task_index":2,"status":"failed"}]}}
+{"func":"dedup_key","case":"delegation-task-failure-no-results","evt":{"type":"async_delegation","delegation_id":"d1","task_failure_notice":true,"results":[]}}
+{"func":"dedup_key","case":"watch-disabled-event-id","evt":{"type":"watch_disabled","session_id":"s1","event_id":"ev2"}}
+{"func":"dedup_key","case":"unknown-type-session-only","evt":{"type":"command_exit","session_id":"s1"}}
+{"func":"refusal_backoff","case":"first-refusal","session":{}}
+{"func":"refusal_backoff","case":"doubles","session":{"_notif_refusal_delay":2.0}}
+{"func":"refusal_backoff","case":"capped-at-poll-period","session":{"_notif_refusal_delay":4.0}}
+{"func":"refusal_backoff","case":"zero-retries-default","session":{"_notif_refusal_delay":0}}
+{"func":"loop_route","case":"routed-chat","state":{"route":{"platform":"telegram","chat_id":"42"}}}
+{"func":"loop_route","case":"platform-without-chat","state":{"route":{"platform":"telegram"}}}
+{"func":"loop_route","case":"no-route","state":{}}
+{"func":"loop_route","case":"null-route","state":{"route":null}}
+{"func":"process_owners","case":"ids-plus-key","session":{"session_key":"k","agent":{"_process_owner_task_ids":["t1","t2"]}}}
+{"func":"process_owners","case":"blank-key-dropped","session":{"session_key":"","agent":{"_process_owner_task_ids":["t1",""]}}}
+{"func":"process_owners","case":"key-only","session":{"session_key":"k"}}
+{"func":"constants","case":"all-constants"}
+{"func": "dedup_key", "case": "watch-match-blank-event-id-content-keyed", "evt": {"type": "watch_match", "event_id": "", "session_id": "s1"}}
+{"func": "dedup_key", "case": "watch-overflow-suppressed-false", "evt": {"type": "watch_overflow_dropped", "session_id": "s1", "command": "c", "message": "m", "suppressed": false}}
+{"func": "refusal_backoff", "case": "quarter-second-doubles", "session": {"_notif_refusal_delay": 0.1}}
+{"func": "session_matches", "case": "agent-key-stringified-number", "session": {"agent": {"session_id": 11}}, "keys": ["11"]}
+{"func": "process_owners", "case": "duplicates-collapse", "session": {"session_key": "t1", "agent": {"_process_owner_task_ids": ["t1", "t1", "t2"]}}}
+{"func": "process_owners", "case": "empty-id-list", "session": {"session_key": "k", "agent": {"_process_owner_task_ids": []}}}

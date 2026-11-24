@@ -1,0 +1,55 @@
+{"func":"unwrap_sync_message","case":"note-to-self-dest","envelope_data":{"syncMessage":{"sentMessage":{"destinationNumber":"acct-a","message":"note","timestamp":5000}}},"account":"acct-a","recent_sent":{}}
+{"func":"unwrap_sync_message","case":"foreign-destination","envelope_data":{"syncMessage":{"sentMessage":{"destinationNumber":"acct-z","message":"x","timestamp":5001}}},"account":"acct-a","recent_sent":{}}
+{"func":"unwrap_sync_message","case":"group-sync-sent","envelope_data":{"syncMessage":{"sentMessage":{"groupInfo":{"groupId":"g1"},"message":"to group","timestamp":5002}}},"account":"acct-a","recent_sent":{}}
+{"func":"unwrap_sync_message","case":"echo-of-own-send","envelope_data":{"syncMessage":{"sentMessage":{"destinationNumber":"acct-a","message":"echo","timestamp":5003}}},"account":"acct-a","recent_sent":{"5003":1}}
+{"func":"unwrap_sync_message","case":"read-receipt-no-sent","envelope_data":{"syncMessage":{"readMessages":[{"timestamp":5004}]}},"account":"acct-a","recent_sent":{}}
+{"func":"unwrap_sync_message","case":"type-mismatch-envelope","envelope_data":42,"account":"acct-a","recent_sent":{}}
+{"func":"apply_group_mention_rules","case":"strip-own-mention","text":"hi @acct-a there","data_message":{"message":"hi @acct-a there"},"account":"acct-a","require_mention":false,"uuid_by_number":{}}
+{"func":"apply_group_mention_rules","case":"require-mention-absent","text":"hello everyone","data_message":{"message":"hello everyone","mentions":[]},"account":"acct-a","require_mention":true,"uuid_by_number":{}}
+{"func":"apply_group_mention_rules","case":"require-mention-metadata","text":"hello bot","data_message":{"message":"hello bot","mentions":[{"number":"acct-a","start":0,"length":1}]},"account":"acct-a","require_mention":true,"uuid_by_number":{}}
+{"func":"apply_group_mention_rules","case":"strip-bot-uuid","text":"hi @uuid-b and @acct-a","data_message":{"message":"hi @uuid-b and @acct-a"},"account":"acct-a","require_mention":false,"uuid_by_number":{"acct-a":"uuid-b"}}
+{"func":"apply_group_mention_rules","case":"boundary-empty-text","text":"","data_message":{},"account":"acct-a","require_mention":false,"uuid_by_number":{}}
+{"func":"apply_group_mention_rules","case":"no-account","text":"hi @acct-a","data_message":{},"account":"","require_mention":true,"uuid_by_number":{}}
+{"func":"group_allowed","case":"wildcard","group_id":"g1","allow":["*"],"account":"acct-a"}
+{"func":"group_allowed","case":"no-allowlist","group_id":"g1","allow":[],"account":"acct-a"}
+{"func":"group_allowed","case":"explicit-id","group_id":"g1","allow":["g0","g1"],"account":"acct-a"}
+{"func":"group_allowed","case":"id-not-listed","group_id":"g2","allow":["g0","g1"],"account":"acct-a"}
+{"func":"remember_recipient_identifiers","case":"uuid-service-id","number":"acct-b","service_id":"123e4567-e89b-12d3-a456-426614174000","maps":{},"account":"acct-a"}
+{"func":"remember_recipient_identifiers","case":"invalid-service-id","number":"acct-b","service_id":"not-a-uuid","maps":{},"account":"acct-a"}
+{"func":"remember_recipient_identifiers","case":"falsy-number","number":"","service_id":"u:abc","maps":{},"account":"acct-a"}
+{"func":"remember_recipient_identifiers","case":"merges-existing","number":"acct-b","service_id":"PNI:99","maps":{"number_to_uuid":{"acct-c":"u:zzz"},"uuid_to_number":{"u:zzz":"acct-c"}},"account":"acct-a"}
+{"func":"extract_quote_author","case":"author-first","quote":{"author":"acct-q","authorUuid":"u-q"}}
+{"func":"extract_quote_author","case":"author-uuid-fallback","quote":{"authorUuid":"u-q"}}
+{"func":"extract_quote_author","case":"type-mismatch-list","quote":["acct-q"]}
+{"func":"extract_quote_author","case":"no-keys","quote":{"text":"hi"}}
+{"func":"quote_references_own_message","case":"id-in-sent-cache","reply_to_id":"777","reply_to_author":null,"sent_timestamps":["777"],"account":"acct-a","uuid_by_number":{},"number_by_uuid":{}}
+{"func":"quote_references_own_message","case":"author-is-account","reply_to_id":null,"reply_to_author":"acct-a","sent_timestamps":[],"account":"acct-a","uuid_by_number":{},"number_by_uuid":{}}
+{"func":"quote_references_own_message","case":"author-uuid-mapped","reply_to_id":null,"reply_to_author":"uuid-b","sent_timestamps":[],"account":"acct-a","uuid_by_number":{"acct-a":"uuid-b"},"number_by_uuid":{}}
+{"func":"quote_references_own_message","case":"author-number-mapped","reply_to_id":null,"reply_to_author":"acct-b","sent_timestamps":[],"account":"acct-a","uuid_by_number":{},"number_by_uuid":{"acct-b":"acct-a"}}
+{"func":"quote_references_own_message","case":"unrelated-author","reply_to_id":"778","reply_to_author":"acct-z","sent_timestamps":["777"],"account":"acct-a","uuid_by_number":{},"number_by_uuid":{}}
+{"func":"remember_sent_message_timestamp","case":"evicts-oldest","cache":["1","2","3"],"timestamp":4,"max":3,"account":"acct-a"}
+{"func":"remember_sent_message_timestamp","case":"touch-moves-to-tail","cache":["1","2","3"],"timestamp":1,"max":3,"account":"acct-a"}
+{"func":"remember_sent_message_timestamp","case":"falsy-null-timestamp","cache":["1","2"],"timestamp":null,"max":5,"account":"acct-a"}
+{"func":"remember_sent_message_timestamp","case":"zero-timestamp-kept","cache":[],"timestamp":0,"max":5,"account":"acct-a"}
+{"func":"extract_contact_uuid","case":"nested-profile","contact":{"number":"acct-b","profile":{"serviceId":"u:abc"}},"phone":"acct-b","account":"acct-a"}
+{"func":"extract_contact_uuid","case":"top-level-uuid","contact":{"uuid":"u:abc","recipient":"acct-b"},"phone":"acct-b","account":"acct-a"}
+{"func":"extract_contact_uuid","case":"phone-mismatch","contact":{"uuid":"u:abc","number":"acct-z"},"phone":"acct-b","account":"acct-a"}
+{"func":"extract_contact_uuid","case":"type-mismatch-string","contact":"acct-b","phone":"acct-b","account":"acct-a"}
+{"func":"consume_sent_timestamp","case":"hit","recent":{"1000":1,"1001":2},"ts":1000,"account":"acct-a"}
+{"func":"consume_sent_timestamp","case":"miss","recent":{"1000":1},"ts":1002,"account":"acct-a"}
+{"func":"consume_sent_timestamp","case":"falsy-zero","recent":{"0":1},"ts":0,"account":"acct-a"}
+{"func":"consume_sent_timestamp","case":"null-value-is-miss","recent":{"1000":null},"ts":1000,"account":"acct-a"}
+{"func":"envelope_decision","case":"dm-text-quote","envelope":{"envelope":{"sourceNumber":"acct-b","sourceName":"Ann","sourceUuid":"u-b","timestamp":1700000000000,"dataMessage":{"message":"hello **world**","quote":{"id":777,"author":"acct-a","authorName":"Bot","text":"yo"}}}},"account":"acct-a","allow":[],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":["777"],"ignore_attachments":true}
+{"func":"envelope_decision","case":"group-wildcard-mention","envelope":{"envelope":{"sourceNumber":"acct-b","timestamp":5,"dataMessage":{"message":"hey @acct-a now","groupInfo":{"groupId":"g1","groupName":"G"}}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":true,"recent_sent":{},"sent_cache":[],"ignore_attachments":true}
+{"func":"envelope_decision","case":"group-not-allowed","envelope":{"envelope":{"sourceNumber":"acct-b","timestamp":5,"dataMessage":{"message":"hi","groupInfo":{"groupId":"g9"}}}},"account":"acct-a","allow":["g1"],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":[],"ignore_attachments":true}
+{"func":"envelope_decision","case":"group-mention-required-absent","envelope":{"envelope":{"sourceNumber":"acct-b","timestamp":5,"dataMessage":{"message":"hello","groupInfo":{"groupId":"g1"},"mentions":[]}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":true,"recent_sent":{},"sent_cache":[],"ignore_attachments":true}
+{"func":"envelope_decision","case":"story-ignored","envelope":{"envelope":{"sourceNumber":"acct-b","storyMessage":{"id":"s1"},"dataMessage":{"message":"story text"}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":[],"ignore_attachments":true}
+{"func":"envelope_decision","case":"self-message-dropped","envelope":{"envelope":{"sourceNumber":"acct-a","dataMessage":{"message":"self"}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":[],"ignore_attachments":true}
+{"func":"envelope_decision","case":"contentless-dropped","envelope":{"envelope":{"sourceNumber":"acct-b","dataMessage":{"message":"   "}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":[],"ignore_attachments":true}
+{"func":"envelope_decision","case":"attachment-photo","envelope":{"envelope":{"sourceNumber":"acct-b","dataMessage":{"message":"","attachments":[{"id":"a1","contentType":"image/jpeg"}]}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":[],"media_types":["image/jpeg"],"ignore_attachments":false}
+{"func":"envelope_decision","case":"attachment-voice","envelope":{"envelope":{"sourceNumber":"acct-b","dataMessage":{"message":"listen","attachments":[{"id":"a1"}]}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":[],"media_types":["audio/ogg"],"ignore_attachments":false}
+{"func":"envelope_decision","case":"attachment-document","envelope":{"envelope":{"sourceNumber":"acct-b","dataMessage":{"message":"file","attachments":[{"id":"a1"}]}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":[],"media_types":["application/pdf"],"ignore_attachments":false}
+{"func":"envelope_decision","case":"edit-message","envelope":{"envelope":{"sourceUuid":"bob","editMessage":{"dataMessage":{"message":"edited text","timestamp":9}}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":[],"ignore_attachments":true}
+{"func":"envelope_decision","case":"note-to-self","envelope":{"envelope":{"sourceNumber":"acct-a","syncMessage":{"sentMessage":{"destinationNumber":"acct-a","message":"note to self","timestamp":6000}}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":[],"ignore_attachments":true}
+{"func":"envelope_decision","case":"note-to-self-echo","envelope":{"envelope":{"sourceNumber":"acct-a","syncMessage":{"sentMessage":{"destinationNumber":"acct-a","message":"echo","timestamp":6001}}}},"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":false,"recent_sent":{"6001":1},"sent_cache":[],"ignore_attachments":true}
+{"func":"envelope_decision","case":"type-mismatch-envelope","envelope":42,"account":"acct-a","allow":["*"],"ignore_stories":true,"require_mention":false,"recent_sent":{},"sent_cache":[],"ignore_attachments":true}

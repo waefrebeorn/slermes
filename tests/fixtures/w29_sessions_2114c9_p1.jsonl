@@ -1,0 +1,38 @@
+{"func":"stripped","case":"pads","value":"  arc  "}
+{"func":"stripped","case":"blank","value":"   "}
+{"func":"stripped","case":"none","value":null}
+{"func":"stripped","case":"not-a-string","value":42}
+{"func":"stripped","case":"empty","value":""}
+{"func":"json_value","case":"object","text":"{\"a\":1}"}
+{"func":"json_value","case":"array","text":"[1,2]"}
+{"func":"json_value","case":"garbage","text":"not json"}
+{"func":"json_value","case":"empty","text":""}
+{"func":"json_value","case":"none","text":null}
+{"func":"tool_pin","case":"resolved-hash","text":"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"}
+{"func":"tool_pin","case":"pinned-tools","text":"{\"tools\":[\"read\",\"write\"]}"}
+{"func":"tool_pin","case":"short-hash","text":"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a0"}
+{"func":"tool_pin","case":"none","text":null}
+{"func":"ids","case":"two","values":["sess-a","sess-b"]}
+{"func":"ids","case":"empty","values":[]}
+{"func":"removed","case":"dedupe","values":["a","b","a","c","b"]}
+{"func":"removed","case":"single","values":["only"]}
+{"func":"listed","case":"none","values":null}
+{"func":"listed","case":"empty","values":[]}
+{"func":"listed","case":"two","values":["x","y"]}
+{"func":"optional_list","case":"none","values":null}
+{"func":"optional_list","case":"empty","values":[]}
+{"func":"optional_list","case":"two","values":["x","y"]}
+{"func":"sql_limit","case":"no-limit","window":{"limit":null,"offset":0}}
+{"func":"sql_limit","case":"fifty","window":{"limit":50,"offset":100}}
+{"func":"sql_limit","case":"absent-limit","window":{"offset":5}}
+{"func":"sql_limit","case":"no-window"}
+{"func":"last_active","case":"float","row":{"last_active":12.5,"started_at":1.0}}
+{"func":"last_active","case":"unset","row":{"last_active":null,"started_at":1.0}}
+{"func":"last_active","case":"numeric-text","row":{"last_active":"7"}}
+{"func":"last_active","case":"bool","row":{"last_active":true}}
+{"func":"parse_model_config","case":"json-text","raw":"{\"a\":1,\"_delegate_from\":\"p\"}"}
+{"func":"parse_model_config","case":"blank-text","raw":"   "}
+{"func":"parse_model_config","case":"garbage","raw":"garbage{"}
+{"func":"parse_model_config","case":"object","raw":{"x":2}}
+{"func":"parse_model_config","case":"none","raw":null}
+{"func":"parse_model_config","case":"array-text","raw":"[1,2,3]"}

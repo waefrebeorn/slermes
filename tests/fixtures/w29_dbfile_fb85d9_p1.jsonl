@@ -1,0 +1,48 @@
+{"case": "page4096", "func": "header", "hex": "53514c69746520666f726d6174203300100000000000000000000007000000800000000000000000000000000000000000000000000000000000000000000003000000004e55643600000000000000000000000000000000000000000000008100000000"}
+{"case": "page_size_raw_1_is_65536", "func": "header", "hex": "53514c69746520666f726d6174203300000100000000000000000001000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000"}
+{"case": "page8192_u32_max", "func": "header", "hex": "53514c69746520666f726d61742033002000000000000000ffffffff010203040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"}
+{"case": "short_99", "func": "header", "hex": "53514c69746520666f726d61742033001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"}
+{"case": "empty", "func": "header", "hex": ""}
+{"case": "wrong_magic", "func": "header", "hex": "53514c69746520666f726d6174203200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"}
+{"case": "magic_only_100_low_bytes", "func": "header", "hex": "53514c69746520666f726d617420330000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"}
+{"case": "reads_offset_68", "func": "appid", "header": "53514c69746520666f726d6174203300100000000000000000000007000000800000000000000000000000000000000000000000000000000000000000000003000000004e55643600000000000000000000000000000000000000000000008100000000"}
+{"case": "null_header", "func": "appid", "header": null}
+{"case": "short_71", "func": "appid", "header": "53514c69746520666f726d617420330010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"}
+{"case": "bad_magic", "func": "appid", "header": "53514c69746520666f726d6174203320100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"}
+{"case": "zero_appid", "func": "appid", "header": "53514c69746520666f726d6174203300100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"}
+{"case": "both", "func": "sidecars", "stat": {"-shm": [2049, 891002], "-wal": [2049, 891001]}}
+{"case": "wal_only", "func": "sidecars", "stat": {"-shm": null, "-wal": [2049, 891003]}}
+{"case": "none", "func": "sidecars", "stat": {"-shm": null, "-wal": null}}
+{"case": "no_symlinks", "func": "watched", "path": "/home/u/.hermes/state.db", "resolve": {}}
+{"case": "symlinked_parent", "func": "watched", "path": "/home/u/.hermes/state.db", "resolve": {"/home/u/.hermes": "/mnt/data/.hermes"}}
+{"case": "symlinked_db_file", "func": "watched", "path": "/home/u/.hermes/state.db", "resolve": {"/home/u/.hermes": "/mnt/data/.hermes", "/home/u/.hermes/state.db": "/mnt/data/.hermes/state.db"}}
+{"case": "symlinked_db_file_only", "func": "watched", "path": "/home/u/.hermes/state.db", "resolve": {"/home/u/.hermes/state.db": "/mnt/x/state.db"}}
+{"case": "unnormalized_path", "func": "watched", "path": "/home/u//.hermes/./x/../state.db", "resolve": {}}
+{"case": "same_inode", "func": "unlinked_identity", "identity": [2049, 891001], "stat": [2049, 891001]}
+{"case": "new_inode", "func": "unlinked_identity", "identity": [2049, 891001], "stat": [2049, 900111]}
+{"case": "new_device", "func": "unlinked_identity", "identity": [2049, 891001], "stat": [2050, 891001]}
+{"case": "path_gone", "func": "unlinked_identity", "identity": [2049, 891001], "stat": null}
+{"case": "same_live_file", "fd_stat": [2049, 891001], "func": "unlinked_fd", "watched_stat": [2049, 891001]}
+{"case": "replaced", "fd_stat": [2049, 891001], "func": "unlinked_fd", "watched_stat": [2049, 891777]}
+{"case": "fd_closed_enoent", "fd_stat": {"errno": 2}, "func": "unlinked_fd", "watched_stat": [2049, 891001]}
+{"case": "process_gone_esrch", "fd_stat": {"errno": 3}, "func": "unlinked_fd", "watched_stat": [2049, 891001]}
+{"case": "permission_denied_fails_closed", "fd_stat": {"errno": 13}, "func": "unlinked_fd", "watched_stat": [2049, 891001]}
+{"case": "watched_unstatable", "fd_stat": [2049, 891001], "func": "unlinked_fd", "watched_stat": null}
+{"case": "found", "fds": [[3, [1, 5]], [17, [2049, 891001]], [18, [2049, 891002]]], "func": "own_fd", "identity": [2049, 891001]}
+{"case": "not_held", "fds": [[17, [2049, 891001]]], "func": "own_fd", "identity": [2049, 891009]}
+{"case": "no_identity", "fds": [[17, [2049, 891001]]], "func": "own_fd", "identity": null}
+{"case": "fds_unreadable", "fds": null, "func": "own_fd", "identity": [2049, 891001]}
+{"case": "empty_identity", "fds": [[17, [2049, 891001]]], "func": "own_fd", "identity": []}
+{"case": "operator_own", "euid": 1000, "func": "oplink", "link_uid": 1000, "target_exists": true, "target_uid": 1000}
+{"case": "target_other_user", "euid": 1000, "func": "oplink", "link_uid": 1000, "target_exists": true, "target_uid": 0}
+{"case": "link_other_user", "euid": 1000, "func": "oplink", "link_uid": 0, "target_exists": true, "target_uid": 1000}
+{"case": "dangling", "euid": 1000, "func": "oplink", "link_uid": 1000, "target_exists": false, "target_uid": null}
+{"case": "root_operator", "euid": 0, "func": "oplink", "link_uid": 0, "target_exists": true, "target_uid": 0}
+{"case": "dedupes_and_orders", "func": "holder_pids", "holders": [[77, "/srv/hermes/state.db-wal"], [42, "/srv/hermes/state.db"], [77, "/srv/hermes/state.db-shm"], [42, "/srv/hermes/state.db-wal"], [99, "/srv/other/state.db"]], "path": "/srv/hermes/state.db"}
+{"case": "deleted_suffix_and_zero_pid", "func": "holder_pids", "holders": [[0, "/srv/hermes/state.db"], [-5, "/srv/hermes/state.db-wal"], [7, "/srv/hermes/state.db-shm (deleted)"]], "path": "/srv/hermes/state.db"}
+{"case": "no_holders", "func": "holder_pids", "holders": [], "path": "/srv/hermes/state.db"}
+{"case": "unrelated_paths", "func": "holder_pids", "holders": [[11, "/srv/hermes/state.db.bak"], [12, "/srv/hermes/state.db-walx"]], "path": "/srv/hermes/state.db"}
+{"case": "deleted_suffix", "func": "canon", "path": "/srv/hermes/state.db-wal (deleted)"}
+{"case": "dotdot_and_dot", "func": "canon", "path": "/srv//hermes/./x/../state.db"}
+{"case": "plain", "func": "canon", "path": "/srv/hermes/state.shm.d"}
+{"case": "trailing_slash", "func": "canon", "path": "/srv/hermes/"}

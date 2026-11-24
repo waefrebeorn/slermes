@@ -1,0 +1,44 @@
+{"func":"is_key","case":"grammar_ok","key":"default:telegram"}
+{"func":"is_key","case":"grammar_upper_segment","key":"Default:Telegram"}
+{"func":"is_key","case":"grammar_two_colons","key":"a:b:c"}
+{"func":"is_key","case":"grammar_null","key":null}
+{"func":"is_key","case":"grammar_digit_start","key":"7p:9q"}
+{"func":"is_key","case":"grammar_64_char_segments","key":"pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp:qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"}
+{"func":"is_key","case":"grammar_65_char_segment","key":"ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp:q"}
+{"func":"is_key","case":"grammar_trailing_hyphen_ok","key":"reviewer:foo-bar_2"}
+{"func":"key_allowed","case":"plain_no_config","key":"telegram","configured":null}
+{"func":"key_allowed","case":"plain_not_configured","key":"discord","configured":["telegram","slack"]}
+{"func":"key_allowed","case":"plain_configured","key":"slack","configured":["telegram","slack"]}
+{"func":"key_allowed","case":"namespaced_grammar_checked_unconditionally","key":"alpha:discord","configured":[]}
+{"func":"key_allowed","case":"namespaced_invalid_space","key":"bad key:x","configured":null}
+{"func":"key_allowed","case":"non_string_key","key":7,"configured":null}
+{"func":"public_entry","case":"strip_writer_stamps","value":{"state":"connected","writer_pid":4242,"writer_start_time":88.5,"error":null}}
+{"func":"public_entry","case":"plain_scalar","value":"connected"}
+{"func":"public_entry","case":"array_passthrough","value":[1,2,3]}
+{"func":"merge","case":"fold_other_profile","gateway_platforms":{"telegram":{"state":"connected"}},"profile_platforms":{"alpha":{"discord":{"state":"fatal","error_code":"auth"}},"beta":{"slack":{"state":"starting"}}},"active":"default"}
+{"func":"merge","case":"skip_active_profile","gateway_platforms":{"telegram":{"state":"connected"}},"profile_platforms":{"default":{"discord":{"state":"fatal"}}},"active":"default"}
+{"func":"merge","case":"skip_bad_namespace_and_non_dict","gateway_platforms":{},"profile_platforms":{"Alpha":{"discord":{"state":"fatal"}},"alpha":{"already:namespaced":{"state":"fatal"},"discord":"not-a-dict","slack":{"state":"ok"}}},"active":"default"}
+{"func":"merge","case":"never_overwrites_existing","gateway_platforms":{"alpha:discord":{"state":"connected"}},"profile_platforms":{"alpha":{"discord":{"state":"fatal"}}},"active":"default"}
+{"func":"project","case":"running_keeps_allowed","gateway_platforms":{"telegram":{"state":"connected","writer_pid":1},"alpha:discord":{"state":"fatal"},"x:y:z":{"state":"fatal"}},"configured":["telegram","alpha:discord"],"gateway_running":true,"gateway_state":"running"}
+{"func":"project","case":"stopped_clears","gateway_platforms":{"telegram":{"state":"connected"}},"configured":null,"gateway_running":false,"gateway_state":"stopped"}
+{"func":"project","case":"startup_failed_keeps_fatal","gateway_platforms":{"telegram":{"state":"fatal","error_code":"auth"},"discord":{"state":"connected"},"slack":{"error_code":"x"}},"configured":null,"gateway_running":false,"gateway_state":"startup_failed"}
+{"func":"project","case":"degraded_clears","gateway_platforms":{"telegram":{"state":"connected"}},"configured":null,"gateway_running":false,"gateway_state":"degraded"}
+{"func":"gateway_view","case":"running_stale_heartbeat","local_runtime":{"gateway_state":"running","platforms":{"telegram":{"state":"connected"}},"exit_reason":null},"remote_body":null,"gateway_running":true,"pid":4242,"configured":["telegram"],"retained_state":null,"stale":true,"heartbeat_age":42.5}
+{"func":"gateway_view","case":"running_fresh_heartbeat","local_runtime":{"gateway_state":"degraded","platforms":{"telegram":{"state":"connected"}},"exit_reason":"platform backoff"},"remote_body":null,"gateway_running":true,"pid":7,"configured":null,"retained_state":null,"stale":false,"heartbeat_age":3}
+{"func":"gateway_view","case":"stopped_retained_state","local_runtime":{"gateway_state":"startup_failed","exit_reason":"auth failed","platforms":{"telegram":{"state":"fatal"},"discord":{"state":"connected"}}},"remote_body":null,"gateway_running":false,"pid":null,"configured":null,"retained_state":"stopped","stale":false,"heartbeat_age":null}
+{"func":"gateway_view","case":"remote_promoted_when_local_absent","local_runtime":null,"remote_body":{"gateway_state":"degraded","platforms":{"telegram":{"state":"connected"}},"exit_reason":"boom"},"gateway_running":true,"pid":99,"configured":null,"retained_state":null,"stale":false,"heartbeat_age":null}
+{"func":"gateway_view","case":"remote_overrides_stopped","local_runtime":{"gateway_state":"stopped","platforms":{"telegram":{"state":"connected"}}},"remote_body":{"gateway_state":"running"},"gateway_running":true,"pid":99,"configured":null,"retained_state":null,"stale":false,"heartbeat_age":null}
+{"func":"gateway_view","case":"no_runtime_but_alive","local_runtime":null,"remote_body":{"gateway_state":"running"},"gateway_running":true,"pid":12,"configured":["telegram"],"retained_state":null,"stale":false,"heartbeat_age":null}
+{"func":"gateway_view","case":"served_profiles_multiplexer","local_runtime":{"gateway_state":"running","served_profiles":["default","alpha","beta"],"platforms":{}},"remote_body":null,"gateway_running":true,"pid":1,"configured":null,"retained_state":null,"stale":false,"heartbeat_age":null}
+{"func":"gateway_view","case":"served_profiles_null_when_stopped","local_runtime":{"gateway_state":"stopped","served_profiles":["default","alpha"],"platforms":{}},"remote_body":null,"gateway_running":false,"pid":null,"configured":null,"retained_state":"stopped","stale":false,"heartbeat_age":null}
+{"func":"component_health","case":"all_healthy","gateway_running":true,"gateway_state":"running","gateway_platforms":{"telegram":{"state":"connected"},"discord":{"state":"running"}},"dashboard":{"status":"ok","uptime_seconds":10},"storage":{"status":"ok"}}
+{"func":"component_health","case":"disabled_ignored_mixed_states","gateway_running":false,"gateway_state":"stopped","gateway_platforms":{"telegram":{"status":"connected"},"discord":{"state":"disabled"},"slack":{"state":"error"}},"dashboard":{"status":"ok"},"storage":{"status":"ok"}}
+{"func":"component_health","case":"storage_corrupt","gateway_running":true,"gateway_state":"draining","gateway_platforms":{},"dashboard":{"status":"ok"},"storage":{"status":"degraded","detail":"corrupt"}}
+{"func":"component_health","case":"storage_probe_error","gateway_running":true,"gateway_state":"running","gateway_platforms":{"telegram":{"state":"ok"}},"dashboard":{"status":"ok"},"storage":{"status":"ok"},"storage_error":true}
+{"func":"overall","case":"all_ok","components":{"gateway":{"status":"ok"},"storage":{"status":"ok"}}}
+{"func":"overall","case":"one_degraded","components":{"gateway":{"status":"ok"},"storage":{"status":"degraded"}}}
+{"func":"overall","case":"empty_components","components":{}}
+{"func":"fts_rebuild","case":"quarter_done","store_exists":true,"rebuild":{"total":120,"indexed":30}}
+{"func":"fts_rebuild","case":"clamped_at_100","store_exists":true,"rebuild":{"total":50,"indexed":80}}
+{"func":"fts_rebuild","case":"absent_store","store_exists":false,"rebuild":{"total":50,"indexed":10}}
+{"func":"fts_rebuild","case":"no_rebuild","store_exists":true,"rebuild":null}

@@ -1,0 +1,29 @@
+{"func":"constants","case":"module budget"}
+{"func":"poll_interval","case":"clamped at poll seconds"}
+{"func":"latest_config_version","case":"int version","default_config":{"_config_version":54}}
+{"func":"latest_config_version","case":"non-int falls back to 1"}
+{"func":"latest_config_version","case":"missing document falls back to 1"}
+{"func":"effective_ok","case":"well formed body","body":{"config":{},"profileVersion":3,"locks":[]}}
+{"func":"effective_ok","case":"profileVersion must be an int","body":{"config":{},"profileVersion":"3","locks":[]}}
+{"func":"effective_ok","case":"locks must be a list","body":{"config":{},"profileVersion":3,"locks":{}}}
+{"func":"effective_ok","case":"config must be a mapping","body":{"config":[],"profileVersion":3,"locks":[]}}
+{"func":"profile_writer","case":"profile level reports 5","body":{"levels":[{"kind":"org","writerConfigVersion":4},{"kind":"profile","writerConfigVersion":5}]}}
+{"func":"profile_writer","case":"stored null","body":{"levels":[{"kind":"profile"}]}}
+{"func":"profile_writer","case":"non-int slot is unknown","body":{"levels":[{"kind":"profile","writerConfigVersion":"9"}]}}
+{"func":"profile_writer","case":"no profile level","body":{"levels":[{"kind":"org","writerConfigVersion":4}]}}
+{"func":"value_refusal","case":"secret literal is a value refusal","status":400,"error":"config_secret_literal"}
+{"func":"value_refusal","case":"unparseable request is not","status":400,"error":"config_request_invalid"}
+{"func":"value_refusal","case":"wrong status","status":500,"error":"config_value_invalid"}
+{"func":"value_refusal","case":"level too large","status":413,"error":"config_level_too_large"}
+{"func":"write_error","case":"locked refusal","status":403,"body":{"error":"config_key_locked","message":"no","path":"a.b","lockedBy":"org"}}
+{"func":"write_error","case":"value refusal with path and reason","status":400,"body":{"error":"config_secret_literal","message":"bad value","path":"x.y","reason":"looks secret"}}
+{"func":"write_error","case":"value refusal without extras","status":400,"body":{"error":"config_value_invalid","message":"value out of range"}}
+{"func":"write_error","case":"unmapped status","status":500,"body":{}}
+{"func":"write_error","case":"plane error code","status":503,"body":{"error":"plane_down"}}
+{"func":"note_level","case":"debug note","note":"debug:dropped a fetch"}
+{"func":"note_level","case":"warning note","note":"ignoring malformed lock entry {'path': 'x'}"}
+{"func":"capabilities","case":"defaults"}
+{"func":"doctor_warnings","case":"managed file present","managed":"managed-config.yaml"}
+{"func":"doctor_warnings","case":"no managed file","managed":null}
+{"func":"destination","case":"profile label","profile":"work"}
+{"func":"destination","case":"quote in profile label","profile":"it's"}

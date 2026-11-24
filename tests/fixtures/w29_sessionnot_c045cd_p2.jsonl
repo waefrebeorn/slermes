@@ -1,0 +1,38 @@
+{"func":"first_line","case":"clip-first-line","value":"first\nsecond","limit":5}
+{"func":"first_line","case":"strip-then-clip","value":"  hello world  ","limit":100}
+{"func":"first_line","case":"whitespace-only","value":"   ","limit":10}
+{"func":"first_line","case":"empty-value","value":"","limit":0}
+{"func":"first_line","case":"clip-two","value":"abc","limit":2}
+{"func":"first_line","case":"crlf-first-line","value":"a\r\nb","limit":50}
+{"func":"first_line","case":"number-value","value":42,"limit":10}
+{"func":"kb_completed","case":"result-handoff","task":{"result":"done well"},"payload":{},"title":"Fix it"}
+{"func":"kb_completed","case":"summary-beats-result","task":{"result":"from-result"},"payload":{"summary":"from-summary\nmore"},"title":"Ship it"}
+{"func":"kb_completed","case":"no-handoff","task":{},"payload":{},"title":"T"}
+{"func":"kb_timed_out","case":"numeric-limit","task":{},"payload":{"limit_seconds":30}}
+{"func":"kb_timed_out","case":"string-limit","task":{},"payload":{"limit_seconds":"45"}}
+{"func":"kb_timed_out","case":"missing-limit","task":{},"payload":{}}
+{"func":"kb_timed_out","case":"unparsable-limit","task":{},"payload":{"limit_seconds":"abc"}}
+{"func":"kb_timed_out","case":"float-limit-truncated","task":{},"payload":{"limit_seconds":12.9}}
+{"func":"kanban_text","case":"completed-with-slug-and-assignee","sub":{"task_id":"t1"},"task":{"title":"Title","assignee":"alice"},"ev":{"kind":"completed","payload":{"summary":"summary text"}},"board_slug":"board"}
+{"func":"kanban_text","case":"blocked-with-reason","sub":{"task_id":"t2"},"task":{"title":"Blocked thing"},"ev":{"kind":"blocked","payload":{"reason":"waiting"}},"board_slug":""}
+{"func":"kanban_text","case":"gave-up-with-error","sub":{"task_id":"t3"},"task":{},"ev":{"kind":"gave_up","payload":{"error":"boom"}},"board_slug":""}
+{"func":"kanban_text","case":"crashed-no-payload","sub":{"task_id":"t4"},"task":{"title":"Crash"},"ev":{"kind":"crashed"}}
+{"func":"kanban_text","case":"timed-out","sub":{"task_id":"t5"},"task":{"title":"Slow"},"ev":{"kind":"timed_out","payload":{"limit_seconds":90}},"board_slug":"ops"}
+{"func":"kanban_text","case":"status-move","sub":{"task_id":"t6"},"task":{"title":"Move"},"ev":{"kind":"status","payload":{"status":"running"}},"board_slug":""}
+{"func":"kanban_text","case":"archived-is-silent","sub":{"task_id":"t7"},"task":{"title":"Old"},"ev":{"kind":"archived"},"board_slug":""}
+{"func":"kanban_text","case":"unblocked-is-silent","sub":{"task_id":"t8"},"ev":{"kind":"unblocked"},"board_slug":""}
+{"func":"kanban_text","case":"missing-kind-is-silent","sub":{"task_id":"t9"},"ev":{},"board_slug":""}
+{"func":"kanban_text","case":"title-falls-back-to-task-id","sub":{"task_id":"t10"},"task":{"assignee":"bob"},"ev":{"kind":"completed","payload":{}},"board_slug":""}
+{"func":"delegation_meta","case":"mixed-results-with-duration","evt":{"delegation_id":"d1","results":[{"status":"completed"},{"status":"failed"}],"total_duration_seconds":12.5},"display_text":"two tasks"}
+{"func":"delegation_meta","case":"no-results","evt":{"delegation_id":"d2"},"display_text":"one task"}
+{"func":"delegation_meta","case":"all-unknown-counted-complete","evt":{"delegation_id":"d3","results":[{"status":"queued"},{"status":"queued"},{"status":"queued"}]},"display_text":"three"}
+{"func":"delegation_meta","case":"zero-total-falls-back-to-duration","evt":{"delegation_id":"d4","total_duration_seconds":0,"duration_seconds":4},"display_text":"fallback"}
+{"func":"prepend_note","case":"string-prefix","run_message":"do the thing","note":"context"}
+{"func":"prepend_note","case":"list-prefix","run_message":[{"type":"text","text":"do it"}],"note":"context"}
+{"func":"prepend_note","case":"empty-note-untouched","run_message":"do the thing","note":""}
+{"func":"prepend_note","case":"non-string-message-untouched","run_message":7,"note":"context"}
+{"func": "kb_completed", "case": "summary-clipped-at-200", "task": {}, "payload": {"summary": "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"}, "title": "T"}
+{"func": "kanban_text", "case": "title-clipped-at-120", "sub": {"task_id": "t11"}, "task": {"title": "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"}, "ev": {"kind": "completed", "payload": {}}, "board_slug": ""}
+{"func": "kanban_text", "case": "reason-clipped-at-160", "sub": {"task_id": "t12"}, "task": {"title": "B"}, "ev": {"kind": "blocked", "payload": {"reason": "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"}}, "board_slug": ""}
+{"func": "kanban_text", "case": "error-clipped-at-200", "sub": {"task_id": "t13"}, "task": {"title": "G"}, "ev": {"kind": "gave_up", "payload": {"error": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}}, "board_slug": ""}
+{"func": "first_line", "case": "negative-limit-drops-tail", "value": "abcdef", "limit": -2}

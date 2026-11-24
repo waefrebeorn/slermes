@@ -1,0 +1,27 @@
+{"func":"list_entry","case":"minimal","row":{"id":"s-1","model_config":"{}","started_at":100.0,"preview":"hello world","last_active":101.0,"last_read_at":null}}
+{"func":"list_entry","case":"unread-watermark","row":{"id":"s-2","model_config":"{}","started_at":100.0,"last_active":130.0,"last_read_at":120.0}}
+{"func":"list_entry","case":"explicit-flag-wins","row":{"id":"s-3","model_config":"{}","started_at":100.0,"last_active":130.0,"last_read_at":120.0,"unread":false}}
+{"func":"list_entry","case":"started-at-fallback","row":{"id":"s-4","model_config":"{}","started_at":9.0,"last_active":null,"last_read_at":5.0}}
+{"func":"list_entry","case":"lineage","row":{"id":"s-5","model_config":"{\"_reset_from\":\"root\"}","started_at":100.0,"preview":"","last_active":100.0,"_lineage_root_id":"root","_lineage_ids":["s-5","root"],"continuation_kind":"reset"}}
+{"func":"list_entry","case":"compact","compact":true,"row":{"id":"s-6","model_config":"{}","started_at":100.0,"last_active":100.0,"last_read_at":null}}
+{"func":"recency_entry","case":"plain","row":{"id":"s-7","model_config":"{}","started_at":50.0,"last_active":"75.5"}}
+{"func":"roster_session","case":"fields","fields":{"id":"s-8","resolved_id":"s-8","title":"Bot Chat","root_title":"Bot Chat","preview":"hi","started_at":10.0,"last_active":20.0,"message_count":3}}
+{"func":"roster_session","case":"none","fields":null}
+{"func":"roster_summary","case":"short","root":{"id":"s-9","title":"Root t"},"target":{"title":"Tip t","started_at":10.0,"last_activity_at":15.0,"message_count":4},"tip":"s-9b","text":"  hello \n  there  "}
+{"func":"roster_summary","case":"long-preview","root":{"id":"s-10","title":null},"target":{"title":null,"started_at":10.0,"last_activity_at":null,"message_count":0},"tip":"s-10","text":"alpha bravo charlie delta echo foxtrot golf hotel india juliet kilo lima mike november oscar papa quebec romeo sierra tango uniform victor whiskey"}
+{"func":"roster_summary","case":"null-text","root":{"id":"s-11","title":"r"},"target":{"title":"t","started_at":0,"last_activity_at":0,"message_count":7},"tip":"s-11","text":null}
+{"func":"roster_summary","case":"zero-start","root":{"id":"s-12","title":"r"},"target":{"title":"t","started_at":0,"last_activity_at":1700000000.5,"message_count":1},"tip":"s-12","text":"x"}
+{"func":"roster_last_session","case":"same-row","canonical":{"id":"c-1","resolved_id":"c-1","title":"Bot Chat","root_title":"Bot Chat","preview":"p","started_at":1.0,"last_active":2.0,"message_count":1},"latest":{"id":"c-1","resolved_id":"c-1","title":"Bot Chat","root_title":"Bot Chat","preview":"p","started_at":1.0,"last_active":3.0,"message_count":2}}
+{"func":"roster_last_session","case":"different-row","canonical":{"id":"c-2"},"latest":{"id":"s-13"}}
+{"func":"roster_last_session","case":"no-latest","canonical":{"id":"c-3"},"latest":null}
+{"func":"list_row","case":"full","row":{"id":"s-14","source":"cli","title":"T","started_at":1700000000.5,"ended_at":1700000100.0,"message_count":8,"model":"m","hidden":false,"archived":true}}
+{"func":"list_row","case":"nulls","row":{"id":"s-15","source":null,"title":null,"started_at":null,"ended_at":null,"message_count":0,"model":null,"hidden":null,"archived":0}}
+{"func":"live_listing_row","case":"full","row":{"id":"s-16","source":"gateway","title":"T","started_at":1700000000.5,"ended_at":null,"message_count":2,"model":"m","hidden":1,"archived":false,"runtime_revision":"3","runtime_generation":null,"target_ended_at":1700000200.0}}
+{"func":"live_listing_row","case":"defaults","row":{"id":"s-17","source":null,"title":null,"started_at":0,"ended_at":null,"message_count":0,"model":null,"hidden":false,"archived":false,"runtime_revision":null,"runtime_generation":4.7,"target_ended_at":null}}
+{"func":"pending_by_session","case":"grouped","rows":[{"target_session_id":"s-18","admission_id":"a-1","seq":1,"status":"queued"},{"target_session_id":"s-18","admission_id":"a-2","seq":2,"status":"started"},{"target_session_id":"s-19","admission_id":"a-3","seq":3,"status":"unknown"}]}
+{"func":"pending_by_session","case":"empty","rows":[]}
+{"func":"recent_entry","case":"full","row":{"id":"s-20","source":"cli","model":"m","title":"T","started_at":1700000000.5,"ended_at":null,"end_reason":null,"message_count":4,"tool_call_count":2,"last_active":1700000300.0,"preview":"  hi  ","_lineage_root_id":"root","unread":true}}
+{"func":"recent_entry","case":"empty-cells","row":{"id":"s-21","source":null,"model":null,"title":null,"started_at":null,"ended_at":null,"end_reason":null,"message_count":0,"tool_call_count":0,"last_active":null,"preview":null,"_lineage_root_id":null,"unread":false}}
+{"func":"worker_session","case":"trimmed","row":{"id":"k-1","source":"  Kanban ","title":null,"last_active":null}}
+{"func":"worker_session","case":"plain","row":{"id":"k-2","source":"oneshot","title":"Worker","last_active":1700000000.5}}
+{"func":"worker_session","case":"blank-source","row":{"id":"k-3","source":"   ","title":"","last_active":0}}

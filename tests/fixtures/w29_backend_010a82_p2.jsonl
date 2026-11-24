@@ -1,0 +1,29 @@
+{"func":"install","case":"full body","latest":54,"etag":null,"body":{"config":{"model":{"name":"gpt"},"terminal":{"timeout":30}},"profileVersion":7,"locks":[{"path":"org.secret","level":"org"}],"levels":[{"kind":"org","writerConfigVersion":54},{"kind":"profile","writerConfigVersion":54}],"provenance":{"model.name":"org"}}}
+{"func":"install","case":"oldest writer wins","latest":54,"etag":null,"body":{"config":{"a":1},"profileVersion":7,"locks":[],"levels":[{"kind":"org","writerConfigVersion":12},{"kind":"profile","writerConfigVersion":54}]}}
+{"func":"install","case":"no levels","latest":54,"etag":null,"body":{"config":{"a":1},"profileVersion":1,"locks":[],"levels":[]}}
+{"func":"install","case":"empty lock path is malformed","latest":54,"etag":null,"body":{"config":{},"profileVersion":2,"locks":[{"path":"","level":1}],"levels":[]}}
+{"func":"install","case":"lock without a path is malformed","latest":54,"etag":null,"body":{"config":{},"profileVersion":2,"locks":[{"level":1}],"levels":[]}}
+{"func":"install","case":"response etag wins","latest":54,"etag":"W/\"abc\"","body":{"config":{},"profileVersion":2,"locks":[],"levels":[],"etag":"body-etag"}}
+{"func":"install","case":"body etag used when response has none","latest":54,"etag":null,"body":{"config":{},"profileVersion":2,"locks":[],"levels":[],"etag":"body-etag"}}
+{"func":"install","case":"reserved version is replaced","latest":54,"etag":null,"body":{"config":{"_config_version":99,"a":1},"profileVersion":2,"locks":[],"levels":[{"kind":"profile","writerConfigVersion":54}]}}
+{"func":"diff_base","case":"server config when no migrated base","state":{"base":null,"server_config":{"a":1,"_config_version":5}}}
+{"func":"diff_base","case":"migrated base wins","state":{"base":{"b":2,"_config_version":6},"server_config":{"a":1}}}
+{"func":"version_of","case":"public tuple","state":{"changed_ns":1000,"etag":"e1","gen":3}}
+{"func":"version_of","case":"private migration tuple","state":{"changed_ns":1000,"etag":"e1","gen":3,"private":{"serial":7,"gen":2}}}
+{"func":"cache_version","case":"identity","version":[1000,"e1",3]}
+{"func":"exists","case":"plane always resolves"}
+{"func":"locked","case":"first covering lock","locks":[[["a"],"org"],[["a","b"],"team"]],"dotted":"a.b.c"}
+{"func":"locked","case":"exact lock","locks":[[["a"],"org"],[["a","b"],"team"]],"dotted":"a.b"}
+{"func":"locked","case":"no covering lock","locks":[[["a","b"],"team"]],"dotted":"a"}
+{"func":"first_change","case":"nested value differs","path":["a"],"sent":{"x":1,"y":2},"found":true,"got":{"x":1,"y":3}}
+{"func":"first_change","case":"missing on read back","path":["a"],"sent":1,"found":false,"got":2}
+{"func":"first_change","case":"equal value","path":["a"],"sent":1,"found":true,"got":1}
+{"func":"first_change","case":"type differs","path":["a"],"sent":"5","found":true,"got":5}
+{"func":"inherited_notes","case":"upper level still supplies","server_config":{"a":{"b":1},"c":2},"unsets":[["a","b"],["c","d"],["c"]]}
+{"func":"migration_check_input","case":"older stamp needs a check","server_config":{"model":{"name":"x"},"_config_version":12},"other_writers":[12],"profile_writer":{"kind":"int","value":12},"has_writer":false,"sets":[[["terminal","timeout"],30]],"unsets":[],"latest":54,"floor":12}
+{"func":"migration_check_input","case":"current stamp needs none","server_config":{"model":{"name":"x"}},"other_writers":[12],"profile_writer":{"kind":"int","value":12},"has_writer":true,"sets":[[["terminal","timeout"],30]],"unsets":[],"latest":54,"floor":12}
+{"func":"migration_check_input","case":"no sets means no write","server_config":{"model":{"name":"x"}},"other_writers":[12],"profile_writer":{"kind":"int","value":12},"has_writer":false,"sets":[],"unsets":[],"latest":54,"floor":12}
+{"func":"migration_check_input","case":"below the floor is not migrated","server_config":{"model":{"name":"x"}},"other_writers":[12],"profile_writer":{"kind":"int","value":12},"has_writer":false,"sets":[[["a"],1]],"unsets":[],"latest":54,"floor":20}
+{"func":"describe","case":"not fetched yet","url":"https://plane.example","instance_id":"","now":1042,"state":null}
+{"func":"describe","case":"fetched profile","url":"https://plane.example","instance_id":"inst-1","now":1042,"state":{"profile":"work","profile_version":7,"locks_count":2,"fetched_at":1000,"last_error":null}}
+{"func":"describe","case":"poll error and never fetched","url":"https://plane.example","instance_id":"inst-1","now":1042,"state":{"profile":"work","profile_version":7,"locks_count":0,"fetched_at":0,"last_error":"HTTP 503"}}

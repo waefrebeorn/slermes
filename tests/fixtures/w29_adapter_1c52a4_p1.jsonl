@@ -1,0 +1,56 @@
+{"func":"allowed_host","case":"teams-root","url":"https://smba.trafficmanager.net/teams/","check_port":false}
+{"func":"allowed_host","case":"teams-root-portcheck","url":"https://smba.trafficmanager.net/teams/","check_port":true}
+{"func":"allowed_host","case":"custom-port-nocheck","url":"https://smba.trafficmanager.net:8443/x","check_port":false}
+{"func":"allowed_host","case":"custom-port-check","url":"https://smba.trafficmanager.net:8443/x","check_port":true}
+{"func":"allowed_host","case":"nonnumeric-port-nocheck","url":"https://smba.trafficmanager.net:abc/x","check_port":false}
+{"func":"allowed_host","case":"nonnumeric-port-check","url":"https://smba.trafficmanager.net:abc/x","check_port":true}
+{"func":"allowed_host","case":"http-scheme","url":"http://smba.trafficmanager.net/","check_port":false}
+{"func":"allowed_host","case":"uppercase","url":"HTTPS://SMBA.TrafficManager.NET/x","check_port":true}
+{"func":"allowed_host","case":"userinfo","url":"https://user:pw@smba.trafficmanager.net/x","check_port":true}
+{"func":"allowed_host","case":"suffix-lookalike","url":"https://smba.trafficmanager.net.evil.com/","check_port":true}
+{"func":"allowed_host","case":"explicit-443","url":"https://smba.trafficmanager.net:443/","check_port":true}
+{"func":"allowed_host","case":"ipv6","url":"https://[::1]/","check_port":true}
+{"func":"allowed_host","case":"empty-host","url":"https:///path","check_port":false}
+{"func":"allowed_host","case":"gov-tenant","url":"https://smba.infra.gov.teams.microsoft.us/teams","check_port":true}
+{"func":"allowed_host","case":"query-only","url":"https://smba.trafficmanager.net?x=1","check_port":true}
+{"func":"allowed_host","case":"fragment-only","url":"https://smba.trafficmanager.net#frag","check_port":true}
+{"func":"allowed_host","case":"not-a-url","url":"not a url","check_port":false}
+{"func":"allowed_host","case":"empty","url":"","check_port":false}
+{"func":"attachment_url","case":"connector-8443","url":"https://smba.trafficmanager.net:8443/x"}
+{"func":"attachment_url","case":"connector-443","url":"https://smba.trafficmanager.net:443/x"}
+{"func":"attachment_url","case":"connector-plain","url":"https://smba.trafficmanager.net/x"}
+{"func":"service_url","case":"adds-slash","raw":"https://smba.trafficmanager.net/teams"}
+{"func":"service_url","case":"keeps-slash","raw":"https://smba.trafficmanager.net/teams/"}
+{"func":"service_url","case":"empty","raw":""}
+{"func":"service_url","case":"null","raw":null}
+{"func":"service_url","case":"wrong-scheme","raw":"http://smba.trafficmanager.net/"}
+{"func":"service_url","case":"port-allowed-without-check","raw":"https://smba.trafficmanager.net:8443/x"}
+{"func":"conv_id_valid","case":"thread-skype","chat_id":"28:abc-def_ghi.jkl@thread.skype"}
+{"func":"conv_id_valid","case":"bare","chat_id":"abc123"}
+{"func":"conv_id_valid","case":"space","chat_id":"a b"}
+{"func":"conv_id_valid","case":"empty","chat_id":""}
+{"func":"conv_id_valid","case":"trailing-newline","chat_id":"abc\n"}
+{"func":"conv_id_valid","case":"slash","chat_id":"a/b"}
+{"func":"conv_id_valid","case":"non-ascii","chat_id":"é"}
+{"func":"conv_id_valid","case":"tacv2","chat_id":"19:meeting_abc@thread.tacv2"}
+{"func":"token_request","case":"tenant-guid","tenant_id":"72f988bf-86f1-41af-91ab-2d7cd011db47","client_id":"app-id","client_secret":"s3cr3t"}
+{"func":"token_request","case":"empty-tenant","tenant_id":"","client_id":"c","client_secret":"s"}
+{"func":"require_mention","case":"default-off","extra":{},"env":{}}
+{"func":"require_mention","case":"extra-true","extra":{"require_mention":true},"env":{}}
+{"func":"require_mention","case":"env-beats-extra-false","extra":{"require_mention":false},"env":{"TEAMS_REQUIRE_MENTION":"true"}}
+{"func":"require_mention","case":"env-false-beats-extra-true","extra":{"require_mention":true},"env":{"TEAMS_REQUIRE_MENTION":"false"}}
+{"func":"require_mention","case":"extra-no","extra":{"require_mention":"no"},"env":{}}
+{"func":"require_mention","case":"extra-YES","extra":{"require_mention":"YES"},"env":{}}
+{"func":"require_mention","case":"extra-zero","extra":{"require_mention":0},"env":{}}
+{"func":"require_mention","case":"extra-null","extra":{"require_mention":null},"env":{}}
+{"func":"require_mention","case":"blank-env-falls-through","extra":{"require_mention":"off"},"env":{"TEAMS_REQUIRE_MENTION":"  "}}
+{"func":"card_action_denied","case":"no-allowlist","env":{},"aad_object_id":"u1","user_id":"u1","deny_text":"DENY_ALLOWLIST","unauth_text":"DENY_NOT_AUTHORIZED"}
+{"func":"card_action_denied","case":"allow-all-true","env":{"TEAMS_ALLOW_ALL_USERS":"true"},"aad_object_id":"u1","deny_text":"DENY_ALLOWLIST","unauth_text":"DENY_NOT_AUTHORIZED"}
+{"func":"card_action_denied","case":"allow-all-one","env":{"TEAMS_ALLOW_ALL_USERS":"1"},"aad_object_id":"u1","deny_text":"DENY_ALLOWLIST","unauth_text":"DENY_NOT_AUTHORIZED"}
+{"func":"card_action_denied","case":"allowlist-aad-hit","env":{"TEAMS_ALLOW_ALL_USERS":"0","TEAMS_ALLOWED_USERS":" u1 , u2 "},"aad_object_id":"u2","user_id":"u9","deny_text":"DENY_ALLOWLIST","unauth_text":"DENY_NOT_AUTHORIZED"}
+{"func":"card_action_denied","case":"allowlist-miss","env":{"TEAMS_ALLOW_ALL_USERS":"0","TEAMS_ALLOWED_USERS":" u1 , u2 "},"aad_object_id":"u9","user_id":"u9","deny_text":"DENY_ALLOWLIST","unauth_text":"DENY_NOT_AUTHORIZED"}
+{"func":"card_action_denied","case":"wildcard","env":{"TEAMS_ALLOWED_USERS":"*"},"aad_object_id":"zzz","deny_text":"DENY_ALLOWLIST","unauth_text":"DENY_NOT_AUTHORIZED"}
+{"func":"card_action_denied","case":"empty-csv","env":{"TEAMS_ALLOW_ALL_USERS":"false","TEAMS_ALLOWED_USERS":""},"aad_object_id":"u1","deny_text":"DENY_ALLOWLIST","unauth_text":"DENY_NOT_AUTHORIZED"}
+{"func":"card_action_denied","case":"id-fallback","env":{"TEAMS_ALLOWED_USERS":"u1"},"aad_object_id":null,"user_id":"u1","deny_text":"DENY_ALLOWLIST","unauth_text":"DENY_NOT_AUTHORIZED"}
+{"func":"card_action_denied","case":"aad-wins-over-id","env":{"TEAMS_ALLOWED_USERS":"u1"},"aad_object_id":"u1","user_id":"u2","deny_text":"DENY_ALLOWLIST","unauth_text":"DENY_NOT_AUTHORIZED"}
+{"func":"constants","case":"all"}

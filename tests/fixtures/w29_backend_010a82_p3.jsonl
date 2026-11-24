@@ -1,0 +1,26 @@
+{"func":"intent","case":"keyed set into an existing section","server_config":{"terminal":{"persistent":true}},"st_base":null,"read_base":null,"private":false,"document":null,"set":{"terminal.timeout":30},"unset":[]}
+{"func":"intent","case":"keyed set equal to the base value is pinned","server_config":{"a":1},"st_base":null,"document":null,"set":{"a":1},"unset":[]}
+{"func":"intent","case":"keyed unset removes one leaf","server_config":{"a":{"b":1,"c":2}},"st_base":null,"document":null,"set":{},"unset":["a.b"]}
+{"func":"intent","case":"document save replaces and drops","server_config":{"model":{"name":"x"},"terminal":{"timeout":30}},"st_base":null,"document":{"model":{"name":"y"}},"set":{},"unset":[]}
+{"func":"intent","case":"document diffs against the read base","server_config":{"a":1},"st_base":{"a":1},"read_base":{"a":1,"b":2},"private":false,"document":{"b":2},"set":{},"unset":[]}
+{"func":"intent","case":"private migration ignores the read base","server_config":{"a":1},"st_base":{"a":1},"read_base":{"a":1,"b":2},"private":true,"document":{"a":1,"b":3},"set":{},"unset":[]}
+{"func":"intent","case":"document must be a mapping","server_config":{},"st_base":null,"document":5,"set":{},"unset":[]}
+{"func":"intent","case":"document save drops a locked subtree","server_config":{"org":{"x":1},"model":{"name":"x"}},"st_base":null,"locks":[[["org"],"team"]],"document":{"org":{"x":2},"model":{"name":"y"}},"set":{},"unset":[]}
+{"func":"intent","case":"refused omission of a locked prefix","server_config":{"org":{"x":1}},"st_base":null,"locks":[[["org"],"team"]],"refused_prefixes":["org"],"document":{"org":{"x":2}},"set":{},"unset":[]}
+{"func":"intent","case":"document save pins a named leaf","server_config":{"model":{"name":"x"}},"st_base":null,"pinned_keys":["model.name"],"document":{"model":{"name":"x"}},"set":{},"unset":[]}
+{"func":"intent","case":"dotted key with an escaped dot","server_config":{},"st_base":null,"document":null,"set":{"a\\.b":1},"unset":[]}
+{"func":"intent","case":"integer beyond 2^53 goes as a string","server_config":{},"st_base":null,"document":{"n":9007199254740992},"set":{},"unset":[]}
+{"func":"intent","case":"a change adding a new section stays leaf level","server_config":{"model":{"name":"x"}},"st_base":null,"document":null,"set":{"terminal.timeout":30},"unset":[]}
+{"func":"patch_body","case":"simple keyed set","server_config":{},"st_base":null,"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"sets":[[["a"],1]],"unsets":[],"pinned":[]}
+{"func":"patch_body","case":"no change is no body","server_config":{"a":1},"st_base":null,"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"sets":[],"unsets":[],"pinned":[]}
+{"func":"patch_body","case":"older writer stamp is not raised","server_config":{},"st_base":null,"profile_version":7,"profile_writer":{"kind":"int","value":12},"latest":54,"sets":[[["a"],1]],"unsets":[],"pinned":[]}
+{"func":"patch_body","case":"unknown writer stamp stays absent","server_config":{},"st_base":null,"profile_version":7,"profile_writer":{"kind":"unknown"},"latest":54,"sets":[[["a"],1]],"unsets":[],"pinned":[]}
+{"func":"patch_body","case":"set under a lock is refused","server_config":{},"st_base":null,"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"locks":[[["a"],"org"]],"sets":[[["a","b"],1]],"unsets":[],"pinned":[]}
+{"func":"patch_body","case":"unset under a lock is refused","server_config":{"a":{"b":1}},"st_base":null,"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"locks":[[["a"],"org"]],"sets":[],"unsets":[["a","b"]],"pinned":[]}
+{"func":"patch_body","case":"secret literal is refused","server_config":{},"st_base":null,"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"sets":[[["model","api_key"],"sk-123"]],"unsets":[],"pinned":[]}
+{"func":"patch_body","case":"secret placeholder is sent","server_config":{},"st_base":null,"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"sets":[[["model","api_key"],"${OPENAI_KEY}"]],"unsets":[],"pinned":[]}
+{"func":"patch_body","case":"pinned leaf equal to the base is still sent","server_config":{"model":{"name":"x"}},"st_base":null,"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"sets":[[["model","name"],"x"]],"unsets":[],"pinned":[["model","name"]]}
+{"func":"patch_body","case":"pinned leaf under a lock is dropped","server_config":{"model":{"name":"x"}},"st_base":null,"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"locks":[[["model","name"],"org"]],"sets":[[["model","name"],"x"]],"unsets":[],"pinned":[["model","name"]]}
+{"func":"patch_body","case":"unset is encoded","server_config":{"a":1,"b":2},"st_base":null,"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"sets":[],"unsets":[["a"]],"pinned":[]}
+{"func":"patch_body","case":"empty mapping becomes a mapping","server_config":{},"st_base":null,"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"sets":[[["a"],{}]],"unsets":[],"pinned":[]}
+{"func":"patch_body","case":"migrated base is the diff base","server_config":{"a":1,"_config_version":12},"st_base":{"a":1},"profile_version":7,"profile_writer":{"kind":"null"},"latest":54,"sets":[[["b"],2]],"unsets":[],"pinned":[]}

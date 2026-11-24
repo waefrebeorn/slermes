@@ -1,0 +1,54 @@
+{"func": "truncate_token", "case": "long-tail", "value": "abcdefghijkl", "visible": 6}
+{"func": "truncate_token", "case": "short-passthrough", "value": "abc", "visible": 6}
+{"func": "truncate_token", "case": "empty-string", "value": "", "visible": 6}
+{"func": "truncate_token", "case": "none-token", "value": null, "visible": 6}
+{"func": "truncate_token", "case": "jwt-signature-tail", "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyLTEifQ.SflKxwRJSONsig", "visible": 6}
+{"func": "truncate_token", "case": "callable-bearer", "value": {"__callable__": true}, "visible": 6}
+{"func": "truncate_token", "case": "visible-three", "value": "abcdef", "visible": 3}
+{"func": "truncate_token", "case": "exact-boundary", "value": "abcdef", "visible": 6}
+{"func": "epoch_ms_to_iso", "case": "whole-seconds", "value": 1700000000000}
+{"func": "epoch_ms_to_iso", "case": "millisecond-fraction", "value": 1700000000123}
+{"func": "epoch_ms_to_iso", "case": "microsecond-fraction", "value": 1700000000123.456}
+{"func": "epoch_ms_to_iso", "case": "epoch-zero-is-none", "value": 0}
+{"func": "epoch_ms_to_iso", "case": "none-value", "value": null}
+{"func": "status_card", "case": "full-with-last-refresh", "raw": {"logged_in": true}, "source": "nous_portal", "source_label": "Nous Portal", "token_preview": "…abcdef", "expires_at": "2026-01-01T00:00:00+00:00", "has_refresh_token": true, "last_refresh_present": true, "last_refresh": "2025-12-31T23:00:00+00:00"}
+{"func": "status_card", "case": "minimal-omit-last-refresh", "raw": {"logged_in": false}, "source": "qwen_cli", "source_label": "Qwen CLI", "token_preview": null, "expires_at": null, "has_refresh_token": false}
+{"func": "status_card", "case": "last-refresh-null-is-kept", "raw": {"logged_in": true}, "source": "xai_oauth", "source_label": "xAI", "token_preview": "…999999", "expires_at": null, "has_refresh_token": true, "last_refresh_present": true, "last_refresh": null}
+{"func": "resolve_provider_status", "case": "nous-local-snapshot", "provider_id": "nous", "raw": {"logged_in": true, "access_token": "nous-tok-1234567890", "access_expires_at": "2026-01-01T00:00:00+00:00", "has_refresh_token": true, "free_tier": true, "account_tier": "pro", "portal_base_url": "https://portal.example.test"}}
+{"func": "resolve_provider_status", "case": "nous-defaults", "provider_id": "nous", "raw": {"logged_in": false, "access_token": "", "portal_base_url": ""}}
+{"func": "resolve_provider_status", "case": "codex-card", "provider_id": "openai-codex", "raw": {"logged_in": true, "api_key": "sk-codex-abcdef123456", "source": "openai_codex", "auth_mode": "chatgpt", "last_refresh": "2025-12-01T10:00:00+00:00"}}
+{"func": "resolve_provider_status", "case": "qwen-epoch-expiry", "provider_id": "qwen-oauth", "raw": {"logged_in": true, "api_key": "qwen-key-009988", "auth_file": "/home/u/.qwen/auth.json", "expires_at_ms": 1700000000000, "has_refresh_token": false}}
+{"func": "resolve_provider_status", "case": "minimax-region-cn", "provider_id": "minimax-oauth", "raw": {"logged_in": true, "region": "cn", "expires_at": "2026-02-02T00:00:00+00:00"}}
+{"func": "resolve_provider_status", "case": "minimax-no-region", "provider_id": "minimax-oauth", "raw": {"logged_in": true}}
+{"func": "resolve_provider_status", "case": "xai-auth-store-label", "provider_id": "xai-oauth", "raw": {"logged_in": true, "api_key": "xai-token-777777", "auth_store": "/home/u/.xai/auth.json", "source": "xai_oauth", "last_refresh": null}}
+{"func": "resolve_provider_status", "case": "generic-plugin-row", "provider_id": "acme-ai", "raw": {"logged_in": true, "provider": "acme", "access_token": "acme-token-0123456789", "expires_at": "2026-03-03T00:00:00+00:00", "has_refresh_token": true, "name": "Acme AI"}}
+{"func": "resolve_provider_status", "case": "generic-logged-out", "provider_id": "acme-ai", "raw": {"logged_in": false, "name": "Acme AI"}}
+{"func": "resolve_provider_status", "case": "generic-no-raw", "provider_id": "acme-ai", "raw": null}
+{"func": "resolve_provider_status", "case": "status-fn-wins", "provider_id": "acme-ai", "status_fn": true, "raw": {"logged_in": true, "custom": "shape"}}
+{"func": "resolve_provider_status", "case": "getter-raises", "provider_id": "nous", "raises": "auth store unreadable"}
+{"func": "claude_disconnect", "case": "windows-powershell", "platform": "win32"}
+{"func": "claude_disconnect", "case": "macos-keychain", "platform": "darwin"}
+{"func": "claude_disconnect", "case": "linux-rm", "platform": "linux"}
+{"func": "disconnect_command", "case": "claude-code-darwin", "provider": {"id": "claude-code", "name": "Claude Code", "flow": "external"}, "platform": "darwin"}
+{"func": "disconnect_command", "case": "claude-code-win32", "provider": {"id": "claude-code", "name": "Claude Code", "flow": "external"}, "platform": "win32"}
+{"func": "disconnect_command", "case": "non-claude-external", "provider": {"id": "copilot", "name": "GitHub Copilot", "flow": "external"}, "platform": "linux"}
+{"func": "disconnect_command", "case": "device-code-provider", "provider": {"id": "nous", "name": "Nous", "flow": "device_code"}, "platform": "linux"}
+{"func": "disconnect_command", "case": "anthropic-external", "provider": {"id": "anthropic", "name": "Anthropic", "flow": "external"}, "platform": "linux"}
+{"func": "disconnect_hint", "case": "claude-code-run-command", "provider": {"id": "claude-code", "name": "Claude Code", "flow": "external"}, "status": {}}
+{"func": "disconnect_hint", "case": "external-cli-only", "provider": {"id": "copilot", "name": "GitHub Copilot", "flow": "external"}, "status": {}}
+{"func": "disconnect_hint", "case": "anthropic-owned-exception", "provider": {"id": "anthropic", "name": "Anthropic", "flow": "external"}, "status": {"source": "pkce_file"}}
+{"func": "disconnect_hint", "case": "env-var-source", "provider": {"id": "nous", "name": "Nous", "flow": "device_code"}, "status": {"source": "env_var"}}
+{"func": "disconnect_hint", "case": "nothing-to-say", "provider": {"id": "nous", "name": "Nous", "flow": "device_code"}, "status": {"source": "auth_store"}}
+{"func": "disconnect_http_error", "case": "conflict-409", "status_code": 409, "provider_name": "Nous"}
+{"func": "disconnect_http_error", "case": "server-500", "status_code": 500, "provider_name": "Claude Code"}
+{"func": "reject_detail", "case": "claude-code-has-command", "provider": {"id": "claude-code", "name": "Claude Code", "flow": "external"}, "status": {}}
+{"func": "reject_detail", "case": "external-cli-only", "provider": {"id": "copilot", "name": "GitHub Copilot", "flow": "external"}, "status": {}}
+{"func": "reject_detail", "case": "device-code-allowed", "provider": {"id": "nous", "name": "Nous", "flow": "device_code"}, "status": {"source": "auth_store"}}
+{"func": "reject_detail", "case": "env-var-hint", "provider": {"id": "nous", "name": "Nous", "flow": "device_code"}, "status": {"source": "env_var"}}
+{"func": "profile_name", "case": "strips-whitespace", "profile": "  Work  "}
+{"func": "profile_name", "case": "current-lowercase", "profile": "current"}
+{"func": "profile_name", "case": "current-padded-upper", "profile": " CURRENT "}
+{"func": "profile_name", "case": "empty-string", "profile": ""}
+{"func": "profile_name", "case": "none-profile", "profile": null}
+{"func": "profile_name", "case": "named-profile", "profile": "Personal"}
+{"func": "truncate_token", "case": "visible-zero-is-whole-string", "value": "abcdef", "visible": 0}

@@ -1,0 +1,25 @@
+{"func":"local_chat","case":"constant"}
+{"func":"sql_literal","case":"plain","text":"$._reset_from"}
+{"func":"sql_literal","case":"quote","text":"it's a 'quoted' path"}
+{"func":"json_extract","case":"delegate-marker","expression":"s.model_config","path":"$._delegate_from"}
+{"func":"json_extract","case":"prefixed","expression":"child.model_config","path":"$._branch_from"}
+{"func":"reset_child","case":"alias-s","alias":"s"}
+{"func":"reset_child","case":"alias-sess","alias":"sess"}
+{"func":"legacy_reset_child","case":"default-reasons","alias":"s","reasons_sql":"'session_reset', 'session_switch', 'idle', 'daily', 'suspended', 'resume_pending_expired'"}
+{"func":"legacy_reset_child","case":"placeholders","alias":"child","reasons_sql":"?, ?, ?"}
+{"func":"descendants","case":"cte"}
+{"func":"session_last_active","case":"alias-s","alias":"s"}
+{"func":"session_last_active","case":"alias-sess","alias":"sess"}
+{"func":"last_active_select","case":"statement"}
+{"func":"owner_filter","case":"operator","operator":true,"subject":"u-1"}
+{"func":"owner_filter","case":"subject","operator":false,"subject":"u-1"}
+{"func":"roster_sqls","case":"operator","operator":true,"subject":"u-1"}
+{"func":"roster_sqls","case":"owner","operator":false,"subject":"u-42"}
+{"func":"fragments","case":"tables"}
+{"func":"title_refusal","case":"held","text":"Title 'Morning notes' is already in use by session sess-9"}
+{"func":"title_refusal","case":"held-greedy","text":"Title 'a' is already in use by session b' is already in use by session c"}
+{"func":"title_refusal","case":"held-empty-title","text":"Title '' is already in use by session holder-1"}
+{"func":"title_refusal","case":"canonical","text":"This is the bot's canonical Bot Chat and it is locked"}
+{"func":"title_refusal","case":"too-long","text":"Title too long (120 chars, max 80)"}
+{"func":"title_refusal","case":"unrelated","text":"some other ValueError"}
+{"func":"title_refusal","case":"none","text":null}

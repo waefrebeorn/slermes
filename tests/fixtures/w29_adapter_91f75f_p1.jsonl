@@ -1,0 +1,55 @@
+{"func":"constants","case":"module-budgets"}
+{"func":"csv_set","case":"json-list-string","raw":"[\"-100\",\"-200\",\" -100 \"]"}
+{"func":"csv_set","case":"native-list","raw":[" a ","b",5,null,true,""]}
+{"func":"csv_set","case":"none","raw":null}
+{"func":"csv_set","case":"csv-with-blanks","raw":" a , ,b "}
+{"func":"csv_set","case":"bool","raw":true}
+{"func":"csv_set","case":"malformed-json-list","raw":"[bad"}
+{"func":"csv_set","case":"int","raw":12}
+{"func":"csv_set","case":"empty-string","raw":""}
+{"func":"csv_set","case":"star","raw":"*"}
+{"func":"csv_set","case":"dupes-case","raw":"b,a,a,B"}
+{"func":"normalize_markdown","case":"numbered-after-text","text":"a\n1. b\n2. c"}
+{"func":"normalize_markdown","case":"numbered-first","text":"1. first"}
+{"func":"normalize_markdown","case":"fence-dedent","text":"x\n  ```py\ncode\n```"}
+{"func":"normalize_markdown","case":"empty","text":""}
+{"func":"normalize_markdown","case":"numbered-after-blank","text":"foo\n\n1. bar"}
+{"func":"normalize_markdown","case":"two-digit-numbered","text":"para\n10. ten\n## end"}
+{"func":"normalize_markdown","case":"trailing-newline","text":"a\n"}
+{"func":"normalize_markdown","case":"numbered-run","text":"1. a\n2. b"}
+{"func":"normalize_markdown","case":"not-a-list","text":"a\n1.b\n2. c"}
+{"func":"require_mention","case":"true","configured":"true"}
+{"func":"require_mention","case":"upper","configured":"TRUE"}
+{"func":"require_mention","case":"false","configured":"false"}
+{"func":"require_mention","case":"on","configured":"on"}
+{"func":"require_mention","case":"zero","configured":0}
+{"func":"require_mention","case":"empty-list","configured":[]}
+{"func":"require_mention","case":"nonempty-list","configured":["x"]}
+{"func":"require_mention","case":"none","configured":null}
+{"func":"is_user_allowed","case":"lower-match","allowed_users":"Alice,Bob","sender_id":"alice","sender_staff_id":""}
+{"func":"is_user_allowed","case":"staff-match","allowed_users":"alice","sender_id":"carol","sender_staff_id":"ALICE"}
+{"func":"is_user_allowed","case":"no-ids","allowed_users":"alice","sender_id":null,"sender_staff_id":""}
+{"func":"is_user_allowed","case":"empty-allowlist","allowed_users":"","sender_id":"alice","sender_staff_id":""}
+{"func":"is_user_allowed","case":"wildcard","allowed_users":"*","sender_id":"z","sender_staff_id":null}
+{"func":"is_user_allowed","case":"json-list","allowed_users":"[\"alice\"]","sender_id":"Alice","sender_staff_id":null}
+{"func":"should_process_message","case":"dm-passes","message":{"is_group":false,"chat_id":"","text":"hi","is_in_at_list":false,"allowed_chats":"g1","require_mention":"true"}}
+{"func":"should_process_message","case":"group-not-listed","message":{"is_group":true,"chat_id":"g3","text":"hey","is_in_at_list":true,"allowed_chats":"g1,g2","require_mention":"false"}}
+{"func":"should_process_message","case":"group-listed-mention-off","message":{"is_group":true,"chat_id":"g1","text":"hey","is_in_at_list":false,"allowed_chats":"g1,g2","require_mention":"false"}}
+{"func":"should_process_message","case":"group-at-list","message":{"is_group":true,"chat_id":"g1","text":"hey","is_in_at_list":true,"allowed_chats":null,"require_mention":"true"}}
+{"func":"should_process_message","case":"group-wake-word","message":{"is_group":true,"chat_id":"g1","text":"hey bot","is_in_at_list":false,"require_mention":"true","pattern_hits":[false,true]}}
+{"func":"should_process_message","case":"group-empty-text-hits","message":{"is_group":true,"chat_id":"g1","text":"","is_in_at_list":false,"require_mention":"true","pattern_hits":[true]}}
+{"func":"should_process_message","case":"group-free-response","message":{"is_group":true,"chat_id":"g9","text":"hey","is_in_at_list":false,"require_mention":"true","free_response_chats":"g8, g9"}}
+{"func":"should_process_message","case":"group-no-chat-id","message":{"is_group":true,"chat_id":"","text":"hey","is_in_at_list":false,"require_mention":"true"}}
+{"func":"should_process_message","case":"group-unset-settings","message":{"is_group":true,"chat_id":"g1","text":"hey","is_in_at_list":false,"allowed_chats":null,"require_mention":null}}
+{"func":"should_process_message","case":"group-wildcard-chats","message":{"is_group":true,"chat_id":"g1","text":"hey","is_in_at_list":false,"allowed_chats":"*","require_mention":"1"}}
+{"func":"is_sdk_incompat","case":"direct-typeerror","chain":[{"type":"TypeError","msg":"'coroutine' object does not support the asynchronous context manager protocol"}]}
+{"func":"is_sdk_incompat","case":"attribute-only","chain":[{"type":"AttributeError","msg":"module 'websockets' has no attribute 'exceptions'"}]}
+{"func":"is_sdk_incompat","case":"chained-context","chain":[{"type":"AttributeError","msg":"module 'websockets' has no attribute 'exceptions'","context":1},{"type":"TypeError","msg":"'coroutine' object does not support the asynchronous context manager protocol"}]}
+{"func":"is_sdk_incompat","case":"chained-cause","chain":[{"type":"RuntimeError","msg":"stream died","cause":1},{"type":"TypeError","msg":"connect() got an unexpected keyword: not an asynchronous context manager"}]}
+{"func":"is_sdk_incompat","case":"typeerror-other-message","chain":[{"type":"TypeError","msg":"unsupported operand type(s)"}]}
+{"func":"is_sdk_incompat","case":"beyond-four-hops","chain":[{"type":"RuntimeError","msg":"a","context":1},{"type":"RuntimeError","msg":"b","context":2},{"type":"RuntimeError","msg":"c","context":3},{"type":"RuntimeError","msg":"d","context":4},{"type":"TypeError","msg":"asynchronous context manager"}]}
+{"func":"is_sdk_incompat","case":"typeerror-subclass","chain":[{"type":"ConnectTypeError","msg":"needs an asynchronous context manager","te":true}]}
+{"func":"is_sdk_incompat","case":"empty-chain","chain":[]}
+{"func":"chat_info","case":"dm","chat_id":"abc"}
+{"func":"chat_info","case":"group-upper","chat_id":"MyGROUP-1"}
+{"func":"chat_info","case":"group-exact","chat_id":"GROUP"}
