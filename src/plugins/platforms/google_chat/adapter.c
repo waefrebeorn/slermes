@@ -947,7 +947,9 @@ json_t *w27_gchat_p2_retry_class(const json_t *req) {
             retryable = 1;
         }
         free(low);
-        json_set(out, "status", json_null());
+        /* `status` is an echo of the exception's status field: a non-int value is
+         * carried through as-is rather than flattened to null. */
+        json_set(out, "status", st ? json_copy(st) : json_null());
     }
     json_set(out, "retryable", json_bool(retryable != 0));
     return out;
