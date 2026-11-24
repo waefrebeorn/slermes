@@ -28,7 +28,7 @@ int main(void) {
             out = w27_adapter_1f12c3_p14_derive_forum_thread_name(json_obj_get(in, "message"), json_obj_get(in, "default_title"));
         }
         else if (!strcmp(func, "response_encoding")) {
-            out = w27_adapter_1f12c3_p14_standalone_response_encoding(json_obj_get(in, "encoding"));
+            out = w27_adapter_1f12c3_p14_standalone_response_encoding(json_obj_get(in, "get_encoding"));
         }
         else if (!strcmp(func, "warn_missing_media")) {
             out = w27_adapter_1f12c3_p14_standalone_warn_missing_media(json_obj_get(in, "path"));

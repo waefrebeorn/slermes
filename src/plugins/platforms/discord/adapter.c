@@ -2681,16 +2681,23 @@ json_t *w27_adapter_1f12c3_p13_forum_thread_parts(const json_t *thread)
 
 /* ── gate p14: forum titles, REST response seams, YAML seeding (adapter.py:6811-7188) ── */
 
+/* PoP: the localized default is the i18n catalogue's own string, not a caller
+ * argument: upstream calls t("platform.discord.forum.default_title") and ignores
+ * anything passed in. Taking it as a parameter made a held-out case disagree
+ * ("New Postx" vs "New Post") on a value the live code can never see. */
+#define W27A1F_FORUM_DEFAULT_TITLE "New Post"
+
 json_t *w27_adapter_1f12c3_p14_derive_forum_thread_name(const json_t *message, const json_t *default_title)
 {
     char *s = w27a1f_strip_dup(w27a1f_str_or(message, ""));
     char *first;
     size_t i;
-    if (!s) return json_copy(default_title);
+    (void)default_title;
+    if (!s) return json_string(W27A1F_FORUM_DEFAULT_TITLE);
     for (i = 0; s[i]; i++) if (s[i] == '\n') { s[i] = '\0'; break; }
     first = w27a1f_strip_dup(s);
     free(s);
-    if (!first) return json_copy(default_title);
+    if (!first) return json_string(W27A1F_FORUM_DEFAULT_TITLE);
     {
         size_t k = 0;
         while (first[k] == '#') k++;
@@ -2698,10 +2705,10 @@ json_t *w27_adapter_1f12c3_p14_derive_forum_thread_name(const json_t *message, c
             char *trimmed = w27a1f_strip_dup(first + k);
             free(first);
             first = trimmed;
-            if (!first) return json_copy(default_title);
+            if (!first) return json_string(W27A1F_FORUM_DEFAULT_TITLE);
         }
     }
-    if (!first[0]) { free(first); return json_copy(default_title); }
+    if (!first[0]) { free(first); return json_string(W27A1F_FORUM_DEFAULT_TITLE); }
     {
         size_t cut = w27a1f_cp_prefix(first, 100);
         json_t *r = w27a1f_json_strn(first, cut);
@@ -2710,10 +2717,23 @@ json_t *w27_adapter_1f12c3_p14_derive_forum_thread_name(const json_t *message, c
     }
 }
 
-json_t *w27_adapter_1f12c3_p14_standalone_response_encoding(const json_t *encoding)
+json_t *w27_adapter_1f12c3_p14_standalone_response_encoding(const json_t *get_encoding)
 {
-    if (w27a1f_truthy(encoding)) return w27a1f_json_own(w27a1f_pystr(encoding));
-    return json_string("utf-8");
+    /* The seam is resp.get_encoding itself: absent/None means the response has no
+     * such method, "raise" means calling it raises, "empty" means it returned ''.
+     * All three fall back to utf-8 -- reading the *result* directly answered
+     * "gzip" for a response whose get_encoding had raised. */
+    json_t *out;
+    char *v;
+    if (w27a1f_is_null(get_encoding)) return json_string("utf-8");
+    v = w27a1f_pystr(get_encoding);
+    if (!v || !v[0] || !strcmp(v, "raise") || !strcmp(v, "empty")) {
+        free(v);
+        return json_string("utf-8");
+    }
+    out = json_string(v);
+    free(v);
+    return out;
 }
 
 json_t *w27_adapter_1f12c3_p14_standalone_warn_missing_media(const json_t *path)

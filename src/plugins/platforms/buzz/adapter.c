@@ -641,6 +641,9 @@ json_t *w27_adapter_04abb5_effective_port(const json_t *in) {
     json_t *res = json_null();
     w_urlsplit(raw, &u);
     free(raw);
+    /* Held-out fuzzing found no gain from dropping the whole-URL guard: urlsplit
+     * failures (bad port included) must answer None, and only a *host-less* URL
+     * falls through to the scheme default. Kept as-is after the experiment. */
     if (u.bad) { w_url_clear(&u); return json_null(); }
     if (u.bad_port) { w_url_clear(&u); return json_null(); }
     if (u.has_port) res = json_number(u.port);

@@ -681,6 +681,14 @@ json_t *w27_adapter_env_number(const json_t *value, const json_t *dflt, int want
 }
 
 /* PoP: w27_adapter_csv_set @ plugins/platforms/matrix/adapter.py:_csv_set */
+/* Python builds a set: duplicates collapse before the port's sort. Without this
+ * "a,a,b" produced ['a','a','b'] where the live module answers ['a','b']. */
+static int w27_already_have(char **items, size_t n, const char *v) {
+    for (size_t i = 0; i < n; i++)
+        if (!strcmp(items[i], v)) return 1;
+    return 0;
+}
+
 json_t *w27_adapter_csv_set(const json_t *raw) {
     char **items = NULL;
     size_t n = 0, cap = 0;
@@ -690,6 +698,7 @@ json_t *w27_adapter_csv_set(const json_t *raw) {
             char *t = w27_strip(v);
             free(v);
             if (!t[0]) { free(t); continue; }
+            if (w27_already_have(items, n, t)) { free(t); continue; }
             if (n == cap) { cap = cap ? cap * 2 : 8; items = (char **)realloc(items, cap * sizeof(char *)); }
             items[n++] = t;
         }
@@ -702,7 +711,7 @@ json_t *w27_adapter_csv_set(const json_t *raw) {
             char *part = w27_strdup2(p, len);
             char *t = w27_strip(part);
             free(part);
-            if (t[0]) {
+            if (t[0] && !w27_already_have(items, n, t)) {
                 if (n == cap) { cap = cap ? cap * 2 : 8; items = (char **)realloc(items, cap * sizeof(char *)); }
                 items[n++] = t;
             } else free(t);
