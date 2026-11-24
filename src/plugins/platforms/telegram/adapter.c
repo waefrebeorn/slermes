@@ -1001,6 +1001,18 @@ static int jd_details_line_shape(const char *content) {
 }
 
 /* The five math alternations of _RICH_MATH_IN_DETAILS_RE, DOTALL|IGNORECASE. */
+/* case-insensitive n-byte compare, for the re.IGNORECASE patterns */
+static int jd_ncmp_ci(const char *a, const char *b, size_t n) {
+    size_t i;
+    for (i = 0; i < n; i++) {
+        int ca = tolower((unsigned char)a[i]);
+        int cb = tolower((unsigned char)b[i]);
+        if (ca != cb) return 1;
+        if (!ca) return 0;
+    }
+    return 0;
+}
+
 static int jd_math_in(const char *s) {
     static const char *const CMDS[] = {"sum", "frac", "alpha", "beta", "gamma", "delta", "theta",
                                        "lambda", "mu", "pi", "sigma", "int", "prod", "sqrt", "lim",
@@ -1018,16 +1030,18 @@ static int jd_math_in(const char *s) {
         if (s[i + 1] == '(' && strstr(s + i + 2, "\\)")) return 1;
         {
             size_t c;
+            /* the upstream pattern is compiled re.IGNORECASE, so \BEGIN{ALIGN}
+             * counts as math exactly like \begin{align} */
             for (c = 0; c < sizeof(CMDS) / sizeof(CMDS[0]); c++) {
                 size_t l = strlen(CMDS[c]);
-                if (!strncmp(s + i + 1, CMDS[c], l)) return 1;
+                if (!jd_ncmp_ci(s + i + 1, CMDS[c], l)) return 1;
             }
         }
-        if (!strncmp(s + i + 1, "begin{", 6)) {
+        if (!jd_ncmp_ci(s + i + 1, "begin{", 6)) {
             size_t e;
             for (e = 0; e < sizeof(ENVS) / sizeof(ENVS[0]); e++) {
                 size_t l = strlen(ENVS[e]);
-                if (!strncmp(s + i + 7, ENVS[e], l) && s[i + 7 + l] == '}') return 1;
+                if (!jd_ncmp_ci(s + i + 7, ENVS[e], l) && s[i + 7 + l] == '}') return 1;
             }
         }
     }
