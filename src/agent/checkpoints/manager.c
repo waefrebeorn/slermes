@@ -34,6 +34,7 @@
  * and the restore/diff decisions.
  */
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -471,6 +472,25 @@ json_t *w28_manager_87eef2_p1_meta_path(const char *store, const char *dir_hash)
     return json_string(buf);
 }
 
+/* Path.resolve() half of _normalize_path: an empty or relative path is anchored
+ * at the working directory, so "" means "here" rather than "nothing". Only the
+ * common prefix matters below (relative_to cancels it), but the prefix has to
+ * exist on both sides or a relative base is compared against an absolute root. */
+static void posix_abs(const char *norm, char *out, size_t cap) {
+    size_t i;
+    if (norm[0] == '/' || (norm[0] && norm[1] == ':')) {
+        snprintf(out, cap, "%s", norm);
+    } else {
+        char cwd[2048];
+        if (!getcwd(cwd, sizeof cwd)) snprintf(out, cap, "%s", norm);
+        else if (norm[0]) snprintf(out, cap, "%s/%s", cwd, norm);
+        else snprintf(out, cap, "%s", cwd);
+    }
+    /* getcwd() on Windows answers with backslashes; the relative_to walk below
+     * splits on '/', so a mixed-separator absolute path never matches itself. */
+    for (i = 0; out[i]; i++) if (out[i] == '\\') out[i] = '/';
+}
+
 /* _normalize_path(base).relative_to(_normalize_path(working_dir)) + lock. */
 json_t *w28_manager_87eef2_p1_store_pathspecs(const char *base, const char *working_dir) {
     json_t *out = json_array();
@@ -480,10 +500,18 @@ json_t *w28_manager_87eef2_p1_store_pathspecs(const char *base, const char *work
     sb_t rel, lock;
     int absolute;
 
-    posix_norm(base, nb, sizeof(nb));
-    posix_norm(working_dir, nw, sizeof(nw));
-    absolute = (nb[0] == '/');
-    if (absolute != (nw[0] == '/')) return out;         /* different drive/root */
+    {
+        char tmp[4096];
+        /* anchor first, then normalise: posix_norm() is written for absolute
+         * paths and answers "" for a relative one, which would have made a
+         * relative base look like the working directory itself. */
+        posix_abs(base, tmp, sizeof(tmp));
+        posix_norm(tmp, nb, sizeof(nb));
+        posix_abs(working_dir, tmp, sizeof(tmp));
+        posix_norm(tmp, nw, sizeof(nw));
+    }
+    absolute = (nb[0] == '/') || (nb[0] && nb[1] == ':');
+    if (absolute != ((nw[0] == '/') || (nw[0] && nw[1] == ':'))) return out; /* different drive/root */
     nbn = posix_parts(nb, pb, 64);
     nwn = posix_parts(nw, pw, 64);
     if (nbn < nwn) return out;                          /* not relative_to */
