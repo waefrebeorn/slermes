@@ -2641,12 +2641,19 @@ json_t *w27_adapter_1f12c3_p13_approval_mention_content(const json_t *flag, cons
     if (!n) { free(items); return json_null(); }
     qsort(items, n, sizeof(char *), w27a1f_cmp_str);
     w27a1f_sb_init(&b);
-    for (i = 0; i < n; i++) {
-        if (i) w27a1f_sb_putc(&b, ' ');
-        w27a1f_sb_puts(&b, "<@");
-        w27a1f_sb_puts(&b, items[i]);
-        w27a1f_sb_putc(&b, '>');
-        free(items[i]);
+    {
+        int first = 1;
+        for (i = 0; i < n; i++) {
+            /* upstream iterates a SET of allowed ids, so a duplicated id emits
+             * one mention: ['2','1','2','1'] is "<@1> <@2>", not four tags. */
+            if (i && !strcmp(items[i], items[i - 1])) { free(items[i]); continue; }
+            if (!first) w27a1f_sb_putc(&b, ' ');
+            first = 0;
+            w27a1f_sb_puts(&b, "<@");
+            w27a1f_sb_puts(&b, items[i]);
+            w27a1f_sb_putc(&b, '>');
+            free(items[i]);
+        }
     }
     free(items);
     out = w27a1f_json_own(w27a1f_sb_take(&b));
