@@ -91,6 +91,17 @@ else
     echo "   SKIPPED (src/tools/setup_beat_tool.o not built)"
 fi
 
+echo "== connectors_validation_oracle (differential: connectors validation vs tool.py)"
+if command -v "$PYBIN" >/dev/null 2>&1; then
+    if PATH="/c/msys64/mingw64/bin:$PATH" "$PYBIN" tests/oracle/connectors_validation_oracle.py; then
+        :
+    else
+        echo "   ORACLE FAIL"; fail=1
+    fi
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo
 [ $fail -eq 0 ] && echo "unit tests: PASS" || echo "unit tests: FAIL"
 exit $fail
