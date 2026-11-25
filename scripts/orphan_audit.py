@@ -41,16 +41,20 @@ def orphans() -> list:
     return out
 
 
-def try_compile(files) -> dict:
-    """Compile in one make invocation; report which objects appeared."""
+def try_compile(files, chunk=60) -> dict:
+    """Compile in chunks; 903 object paths on one command line is WinError 206."""
     res = {}
-    args = ["make", "-j4", "-k"] + [f[:-2] + ".o" for f in files]
-    proc = subprocess.run(args, cwd=str(REPO), capture_output=True, text=True,
-                          errors="replace")
-    log = (proc.stdout or "") + (proc.stderr or "")
-    for f in files:
-        res[f] = (REPO / (f[:-2] + ".o")).exists()
-    res["_errors"] = [ln for ln in log.splitlines() if " error:" in ln][:20]
+    errors = []
+    for i in range(0, len(files), chunk):
+        batch = files[i:i + chunk]
+        args = ["make", "-j4", "-k"] + [f[:-2] + ".o" for f in batch]
+        proc = subprocess.run(args, cwd=str(REPO), capture_output=True, text=True,
+                              errors="replace")
+        log = (proc.stdout or "") + (proc.stderr or "")
+        errors += [ln for ln in log.splitlines() if " error:" in ln][:40]
+        for f in batch:
+            res[f] = (REPO / (f[:-2] + ".o")).exists()
+    res["_errors"] = errors[:20]
     return res
 
 

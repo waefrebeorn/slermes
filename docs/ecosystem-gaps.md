@@ -167,3 +167,52 @@ and the board has sat near 60 % clean for three sweeps because gate-level triage
 one defect at a time in code that is otherwise whole. The parts above are chosen by
 *consequence* — can the thing run, is the interactive face there, is the claim honest —
 not by which gate is cheap to close.
+
+## 7. P5 result: the product runs, and it was hiding its own code
+
+**One end-to-end flow now passes** (`scripts/flow_mcp.sh`):
+
+```
+POST /mcp initialize  -> {"result":{"protocolVersion":"2025-03-26","serverInfo":{"name":"hermes-c-mcp"}}}
+POST /mcp tools/list  -> {"result":{"tools":[{"name":"transcribe",...}]}}
+```
+
+Three faults were stacked, none of them visible on the gate board:
+
+1. `src/mcp_serve.c` — 400+ lines, a whole HTTP/JSON-RPC server — **was never listed in
+   `build/objects.mk`**. Four one-line stubs in `infrastructure_stubs.c` shadowed its API,
+   so the command could only print "Failed to start server". This is the placeholder class
+   from P3, except here the *real* implementation was already written.
+2. On Windows a `SOCKET` is not a file descriptor: `read()`/`write()`/`close()` fail on
+   one. The server accepted connections and answered **nothing** — `netstat` said
+   LISTENING, curl timed out at 0 bytes. Needs `recv`/`send`/`closesocket`/`ioctlsocket`.
+3. The link then failed with `Permission denied` on `slermes.exe` — a leftover server
+   process holding the file. Not a build fault; a discipline fault.
+
+### The structural consequence
+
+`scripts/orphan_audit.py`: **903 `.c` files, 7.6 MB, are absent from `build/objects.mk`.**
+The binary ships **19 % fewer translation units than the tree contains.**
+
+| tree | orphan files | KB |
+|---|---|---|
+| `src/gateway` | 88 | 1,680 |
+| `src/hermes_cli` | 149 | 1,339 |
+| `src/agent` | 130 | 1,137 |
+| `src/tools` | 113 | 1,116 |
+| `src/cli` | 26 | 924 |
+| `src/plugins` | 213 | 431 |
+| `src/tui_gateway` | 38 | 17 |
+
+This reorders the plan. Before P3 kills placeholder PoPs or P4 ports `tui_gateway`, the tree
+has to stop hiding finished work: **an orphan that compiles is free progress, and an orphan
+that does not compile is a real backlog item rather than an absence.** The `todo` bucket from
+section 2a is therefore not 1,110 files of unported work — part of it is written and merely
+unlinked, and the two cannot be told apart until each orphan is compiled.
+
+**New P2.5 (now ahead of P3):** compile every orphan in batches, wire the clean ones into
+`objects.mk`, and re-derive the surface table. Exit criteria: `orphan_audit.py` reports 0
+compile-clean orphans left unwired, `LINK_RC=0`, and `flow_mcp.sh` still passes.
+
+Note for the tooling: 903 object paths on one `make` command line is `WinError 206` on this
+box — compile in chunks of 60.
