@@ -1030,7 +1030,7 @@ char* process_registry_list(const char *task_id_filter, const char *session_key)
         char uptime_buf[64];
         format_uptime_short((int)(time(NULL) - s->started_at), uptime_buf, sizeof(uptime_buf));
         pthread_mutex_lock(&s->lock);
-        char cmd[2048]; strncpy(cmd, s->command, 200); cmd[200]='\0';
+        char cmd[2048]; hermes_strlcpy(cmd, s->command, 200); cmd[200]='\0';
         char cwd[512]; strncpy(cwd, s->cwd, sizeof(cwd)-1); cwd[sizeof(cwd)-1]='\0';
         bool exited = !s->running;
         int exit_code = s->exit_code;

@@ -25,6 +25,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_core_types.h"
 
 /* ── Shared function: identical body to gateway_health_export's _otlp_config ── */
 
@@ -191,7 +192,7 @@ static char *redact_for_export_impl(const char *text, bool rewrite_secret_litera
     char *q3 = out;
     while ((q3 = strstr(q3, "gh")) != NULL) {
         char prefix[4];
-        strncpy(prefix, q3, 4);
+        hermes_strlcpy(prefix, q3, 4);
         prefix[3] = '\0'; /* gh + X */
         char c = prefix[2];
         if (c == 'p' || c == 'o' || c == 'u' || c == 's' || c == 'r') {

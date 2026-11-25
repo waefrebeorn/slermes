@@ -15,6 +15,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <pthread.h>
+#include "hermes_core_types.h"
 
 /* ── Scope result ────────────────────────────────────────────────────── */
 typedef struct {
@@ -292,8 +293,8 @@ int relay_adapter_with_scope(const char *chat_id, metadata_entry_t *meta_in,
     if (!has_guild && count < max_out) {
         const char *guild = scope_lookup(chat_id);
         if (guild) {
-            strncpy(meta_out[count].key, "guild_id", 255);
-            strncpy(meta_out[count].value, guild, 1023);
+            hermes_strlcpy(meta_out[count].key, "guild_id", 255);
+            hermes_strlcpy(meta_out[count].value, guild, 1023);
             count++;
         }
     }
@@ -463,7 +464,7 @@ static void *send_worker(void *arg) {
 
     if (!t || !t->connected) {
         ctx->result.success = false;
-        strncpy(ctx->result.error, "no transport", 1023);
+        hermes_strlcpy(ctx->result.error, "no transport", 1023);
         ctx->done = true;
         pthread_cond_signal(&ctx->cond);
         pthread_mutex_unlock(&ctx->lock);
@@ -532,7 +533,7 @@ relay_send_result_t relay_adapter_send(const char *chat_id, const char *content,
 
     if (!t) {
         result.success = false;
-        strncpy(result.error, "no transport", 1023);
+        hermes_strlcpy(result.error, "no transport", 1023);
         return result;
     }
 
@@ -544,9 +545,9 @@ relay_send_result_t relay_adapter_send(const char *chat_id, const char *content,
         .done = false,
         .metadata_count = 0,
     };
-    strncpy(ctx.chat_id, chat_id ? chat_id : "", 255);
-    strncpy(ctx.content, content ? content : "", 4095);
-    strncpy(ctx.reply_to, reply_to ? reply_to : "", 255);
+    hermes_strlcpy(ctx.chat_id, chat_id ? chat_id : "", 255);
+    hermes_strlcpy(ctx.content, content ? content : "", 4095);
+    hermes_strlcpy(ctx.reply_to, reply_to ? reply_to : "", 255);
     if (metadata && meta_count > 0) {
         ctx.metadata_count = meta_count < 32 ? meta_count : 32;
         memcpy(ctx.metadata, metadata, ctx.metadata_count * sizeof(metadata_entry_t));
@@ -582,13 +583,13 @@ static void *get_chat_info_worker(void *arg) {
     pthread_mutex_lock(&ctx->lock);
 
     if (!ctx->transport || !ctx->transport->connected) {
-        strncpy(ctx->result.name, ctx->chat_id, 255);
-        strncpy(ctx->result.type, "dm", 63);
+        hermes_strlcpy(ctx->result.name, ctx->chat_id, 255);
+        hermes_strlcpy(ctx->result.type, "dm", 63);
         ctx->result.json[0] = '\0';
     } else {
         /* In production: send get_chat_info frame, wait for result */
-        strncpy(ctx->result.name, ctx->chat_id, 255);
-        strncpy(ctx->result.type, "group", 63);
+        hermes_strlcpy(ctx->result.name, ctx->chat_id, 255);
+        hermes_strlcpy(ctx->result.type, "group", 63);
         snprintf(ctx->result.json, sizeof(ctx->result.json),
                  "{\"name\":\"%s\",\"type\":\"group\"}", ctx->chat_id);
     }
@@ -613,7 +614,7 @@ relay_chat_info_t relay_adapter_get_chat_info(const char *chat_id) {
         .lock = PTHREAD_MUTEX_INITIALIZER,
         .done = false,
     };
-    strncpy(ctx.chat_id, chat_id ? chat_id : "", 255);
+    hermes_strlcpy(ctx.chat_id, chat_id ? chat_id : "", 255);
 
     pthread_t worker;
     pthread_create(&worker, NULL, get_chat_info_worker, &ctx);
@@ -641,7 +642,7 @@ relay_send_result_t relay_adapter_send_follow_up(const char *session_key, const 
 
     if (!t) {
         result.success = false;
-        strncpy(result.error, "no transport", 1023);
+        hermes_strlcpy(result.error, "no transport", 1023);
         return result;
     }
 
@@ -653,8 +654,8 @@ relay_send_result_t relay_adapter_send_follow_up(const char *session_key, const 
         .done = false,
         .metadata_count = 0,
     };
-    strncpy(ctx.chat_id, session_key ? session_key : "", 255);
-    strncpy(ctx.content, content ? content : "", 4095);
+    hermes_strlcpy(ctx.chat_id, session_key ? session_key : "", 255);
+    hermes_strlcpy(ctx.content, content ? content : "", 4095);
 
     /* Build follow_up frame with kind */
     char kind_frame[256];
@@ -721,8 +722,8 @@ bool relay_adapter_on_interrupt(const char *session_key, const char *chat_id) {
         .lock = PTHREAD_MUTEX_INITIALIZER,
         .done = false,
     };
-    strncpy(ctx.session_key, session_key ? session_key : "", 255);
-    strncpy(ctx.chat_id, chat_id ? chat_id : "", 255);
+    hermes_strlcpy(ctx.session_key, session_key ? session_key : "", 255);
+    hermes_strlcpy(ctx.chat_id, chat_id ? chat_id : "", 255);
 
     pthread_t worker;
     pthread_create(&worker, NULL, on_interrupt_worker, &ctx);

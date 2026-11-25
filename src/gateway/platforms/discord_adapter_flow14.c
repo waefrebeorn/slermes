@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "hermes_core_types.h"
 
 #define DA14_TEXT_LIMIT 100
 #define DA14_MAX_APP_COMMANDS 100
@@ -894,7 +895,7 @@ static json_t *da14_auto_register(da14_ctx_t *ctx, json_t *already, int *dropped
                                   const char *name, const char *description, const char *args_hint) {
     char *low = da14_lower(name);
     char dn[33];
-    strncpy(dn, low, 32); dn[32] = '\0';
+    hermes_strlcpy(dn, low, 32); dn[32] = '\0';
     if (da14_arr_has(already, dn)) { free(low); return NULL; }
     if (json_len(already) >= DA14_MAX_APP_COMMANDS - 1) { (*dropped)++; free(low); return NULL; }
 

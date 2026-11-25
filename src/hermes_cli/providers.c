@@ -9,6 +9,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "port_provider_registry.h"
+#include "hermes_core_types.h"
 
 
 /* === dissolved from ports_wrappers.c === */
@@ -132,10 +133,10 @@ int hermes_cli_providers_custom_provider_aliases(const char *arg) {
         if (dn > 511) dn = 511;
         memcpy(display, arg, dn);
         display[dn] = '\0';
-        strncpy(pkey, tab + 1, 511);
+        hermes_strlcpy(pkey, tab + 1, 511);
         pkey[511] = '\0';
     } else {
-        strncpy(display, arg, 511);
+        hermes_strlcpy(display, arg, 511);
         display[511] = '\0';
     }
 

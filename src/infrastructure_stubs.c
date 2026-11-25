@@ -11,6 +11,7 @@
 #include <errno.h>
 #include "hermes_logger.h"
 #include "libjson/json.h"
+#include "hermes_core_types.h"
 
 /* stub_shadowed defines (auto) */
 #define agent_backend_identity_build stub_shadowed_agent_backend_identity_build
@@ -302,7 +303,7 @@ char *stub_shadowed_profile_read_profile_meta(const char *p) { (void)p; return s
 const char *i18n_t(const char *key) { return key ? key : ""; }
 char *i18n_t_fmt(const char *key, ...) {
     char *buf = malloc(4096);
-    if (buf) { strncpy(buf, key ? key : "", 4095); buf[4095] = '\0'; }
+    if (buf) { hermes_strlcpy(buf, key ? key : "", 4095); buf[4095] = '\0'; }
     return buf;
 }
 
@@ -343,7 +344,7 @@ int stub_shadowed_relay_runtime_retain_managed_execution(const char *sid) {
         if (strcmp(g_relay_rts[i].sid, sid) == 0) { g_relay_rts[i].ref++; return 0; }
     }
     if (g_relay_rt_count < 32) {
-        strncpy(g_relay_rts[g_relay_rt_count].sid, sid, 63);
+        hermes_strlcpy(g_relay_rts[g_relay_rt_count].sid, sid, 63);
         g_relay_rts[g_relay_rt_count].ref = 1;
         g_relay_rt_count++;
     }

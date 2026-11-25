@@ -3,6 +3,7 @@
  */
 
 #include "app_desktop_internals.h"
+#include "hermes_core_types.h"
 
 void ui_draw_settings_tabs(WINDOW *win, int y, int w) {
     int cx = 1;
@@ -239,8 +240,8 @@ void ui_draw_command_palette(void) {
     app.palette_filtered_count = filtered;
     for (int i = 0; i < filtered; i++) {
         app.palette_filtered_indices[i] = indices[i];
-        strncpy(app.palette_labels[i], cmds[indices[i]].label, 63);
-        strncpy(app.palette_actions[i], cmds[indices[i]].action, 63);
+        hermes_strlcpy(app.palette_labels[i], cmds[indices[i]].label, 63);
+        hermes_strlcpy(app.palette_actions[i], cmds[indices[i]].action, 63);
     }
     if (app.palette_sel >= filtered) app.palette_sel = filtered - 1;
     if (app.palette_sel < 0) app.palette_sel = 0;

@@ -290,8 +290,8 @@ moa_project_context_t *moa_project_get_or_create(const char *working_dir) {
     if (sqlite3_prepare_v2(pm->db, sql, -1, &stmt, NULL) == SQLITE_OK) {
         sqlite3_bind_text(stmt, 1, project_id, -1, SQLITE_STATIC);
         if (sqlite3_step(stmt) == SQLITE_ROW) {
-            strncpy(ctx->project_name, sqlite3_column_text(stmt, 0) ? (char*)sqlite3_column_text(stmt, 0) : "", sizeof(ctx->project_name) - 1);
-            strncpy(ctx->goal, sqlite3_column_text(stmt, 1) ? (char*)sqlite3_column_text(stmt, 1) : "", sizeof(ctx->goal) - 1);
+            hermes_strlcpy(ctx->project_name, sqlite3_column_text(stmt, 0) ? (char*)sqlite3_column_text(stmt, 0) : "", sizeof(ctx->project_name) - 1);
+            hermes_strlcpy(ctx->goal, sqlite3_column_text(stmt, 1) ? (char*)sqlite3_column_text(stmt, 1) : "", sizeof(ctx->goal) - 1);
             // Parse JSON fields (simplified - in production use proper JSON parser)
             const char *pref_models = (const char*)sqlite3_column_text(stmt, 4);
             if (pref_models) strncpy(ctx->preferred_models_json, pref_models, sizeof(ctx->preferred_models_json) - 1);

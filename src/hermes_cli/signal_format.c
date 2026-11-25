@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pcre2.h>
+#include "hermes_core_types.h"
 
 /* ---------- small helpers ---------- */
 
@@ -150,7 +151,7 @@ int gateway_signal_markdown_to_signal(const char *input,
         if (styles_n >= styles_cap_dyn) { styles_cap_dyn = styles_cap_dyn?styles_cap_dyn*2:16; \
             styles_arr = realloc(styles_arr, styles_cap_dyn*sizeof(style_entry_t)); } \
         styles_arr[styles_n].start = (st); styles_arr[styles_n].len = (ln); \
-        strncpy(styles_arr[styles_n].style, (sty), 15); styles_arr[styles_n].style[15]='\0'; \
+        hermes_strlcpy(styles_arr[styles_n].style, (sty), 15); styles_arr[styles_n].style[15]='\0'; \
         styles_n++; } while(0)
 
     /* Phase 3: code blocks ```...``` -> inner (MONOSPACE).

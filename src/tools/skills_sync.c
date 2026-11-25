@@ -165,6 +165,7 @@ json_t *list_user_modified_bundled_skills(void)
 
 #include <openssl/md5.h>
 #include <openssl/sha.h>
+#include "hermes_core_types.h"
 
 /* PoP: get_bundled_dir @ tools/skills_sync.py:_get_bundled_dir */
 /* Port of Python tools/skills_sync.py:_get_bundled_dir().
@@ -415,7 +416,7 @@ json_t *discover_bundled_skills(const char *bundled_dir)
     struct stack_entry { char path[4096]; } *stack = malloc(1024 * sizeof(struct stack_entry));
     if (!stack) { closedir(dir); return arr; }
     int stack_top = 0;
-    strncpy(stack[stack_top++].path, bundled_dir, 4095);
+    hermes_strlcpy(stack[stack_top++].path, bundled_dir, 4095);
     stack[stack_top - 1].path[4095] = '\0';
 
     while (stack_top > 0) {
@@ -435,7 +436,7 @@ json_t *discover_bundled_skills(const char *bundled_dir)
 
             if (S_ISDIR(st.st_mode)) {
                 if (stack_top < 1023) {
-                    strncpy(stack[stack_top++].path, full_path, 4095);
+                    hermes_strlcpy(stack[stack_top++].path, full_path, 4095);
                     stack[stack_top - 1].path[4095] = '\0';
                 }
             } else if (strcmp(entry->d_name, "SKILL.md") == 0) {
@@ -506,7 +507,7 @@ json_t *skill_file_list(const char *skill_dir)
     struct stack_entry { char path[4096]; char rel[4096]; } *stack = malloc(1024 * sizeof(struct stack_entry));
     if (!stack) return arr;
     int stack_top = 0;
-    strncpy(stack[stack_top].path, skill_dir, 4095);
+    hermes_strlcpy(stack[stack_top].path, skill_dir, 4095);
     stack[stack_top].path[4095] = '\0';
     stack[stack_top].rel[0] = '\0';
     stack_top++;
@@ -526,7 +527,7 @@ json_t *skill_file_list(const char *skill_dir)
             if (cur.rel[0]) {
                 snprintf(full_rel, sizeof(full_rel), "%s/%s", cur.rel, entry->d_name);
             } else {
-                strncpy(full_rel, entry->d_name, 4095);
+                hermes_strlcpy(full_rel, entry->d_name, 4095);
                 full_rel[4095] = '\0';
             }
 
@@ -535,9 +536,9 @@ json_t *skill_file_list(const char *skill_dir)
 
             if (S_ISDIR(st.st_mode)) {
                 if (stack_top < 1023) {
-                    strncpy(stack[stack_top].path, full_path, 4095);
+                    hermes_strlcpy(stack[stack_top].path, full_path, 4095);
                     stack[stack_top].path[4095] = '\0';
-                    strncpy(stack[stack_top].rel, full_rel, 4095);
+                    hermes_strlcpy(stack[stack_top].rel, full_rel, 4095);
                     stack[stack_top].rel[4095] = '\0';
                     stack_top++;
                 }
@@ -589,7 +590,7 @@ json_t *optional_skill_index(void)
     struct stack_entry { char path[4096]; char rel[4096]; } *stack = malloc(1024 * sizeof(struct stack_entry));
     if (!stack) { closedir(dir); free(optional_dir); return index; }
     int stack_top = 0;
-    strncpy(stack[stack_top].path, optional_dir, 4095);
+    hermes_strlcpy(stack[stack_top].path, optional_dir, 4095);
     stack[stack_top].path[4095] = '\0';
     stack[stack_top].rel[0] = '\0';
     stack_top++;
@@ -609,7 +610,7 @@ json_t *optional_skill_index(void)
             if (cur.rel[0]) {
                 snprintf(full_rel, sizeof(full_rel), "%s/%s", cur.rel, entry->d_name);
             } else {
-                strncpy(full_rel, entry->d_name, 4095);
+                hermes_strlcpy(full_rel, entry->d_name, 4095);
                 full_rel[4095] = '\0';
             }
 
@@ -618,9 +619,9 @@ json_t *optional_skill_index(void)
 
             if (S_ISDIR(st.st_mode)) {
                 if (stack_top < 1023) {
-                    strncpy(stack[stack_top].path, full_path, 4095);
+                    hermes_strlcpy(stack[stack_top].path, full_path, 4095);
                     stack[stack_top].path[4095] = '\0';
-                    strncpy(stack[stack_top].rel, full_rel, 4095);
+                    hermes_strlcpy(stack[stack_top].rel, full_rel, 4095);
                     stack[stack_top].rel[4095] = '\0';
                     stack_top++;
                 }
@@ -1275,7 +1276,7 @@ void rmtree_writable(const char *path)
     struct stack_entry { char path[4096]; bool is_dir; } *stack = malloc(1024 * sizeof(struct stack_entry));
     if (!stack) { free(target_resolved); free(skills_resolved); return; }
     int stack_top = 0;
-    strncpy(stack[stack_top].path, target_resolved, 4095);
+    hermes_strlcpy(stack[stack_top].path, target_resolved, 4095);
     stack[stack_top].path[4095] = '\0';
     stack[stack_top].is_dir = true;
     stack_top++;
@@ -1297,7 +1298,7 @@ void rmtree_writable(const char *path)
                     struct stat child_st;
                     if (stat(child_path, &child_st) == 0) {
                         if (stack_top < 1023) {
-                            strncpy(stack[stack_top].path, child_path, 4095);
+                            hermes_strlcpy(stack[stack_top].path, child_path, 4095);
                             stack[stack_top].path[4095] = '\0';
                             stack[stack_top].is_dir = S_ISDIR(child_st.st_mode);
                             stack_top++;

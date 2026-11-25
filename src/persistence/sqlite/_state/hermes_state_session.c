@@ -16,6 +16,7 @@
 #include <sqlite3.h>
 #include "hermes_json.h"
 #include "hermes_logger.h"
+#include "hermes_core_types.h"
 
 extern char *stat_db_file_identity(const char *path);
 extern char *stat_sqlite_sidecar_identity(const char *db_path);
@@ -119,7 +120,7 @@ int reclaim_stale_running_handoffs(const char *error, sqlite3 *conn) {
     if (count > 0) {
         if (sqlite3_prepare_v2(conn, "UPDATE sessions SET handoff_state = 'failed', handoff_error = ? WHERE handoff_state = 'running'", -1, &st, NULL) == SQLITE_OK) {
             char truncated[501];
-            strncpy(truncated, error, 500);
+            hermes_strlcpy(truncated, error, 500);
             truncated[500] = '\0';
             sqlite3_bind_text(st, 1, truncated, -1, SQLITE_TRANSIENT);
             sqlite3_step(st);

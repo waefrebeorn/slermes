@@ -614,7 +614,7 @@ auth_entry_t *auth_store_load(const char *hermes_home, int *out_count) {
         json_node_t *node = root->c.items[i];
         if (!provider || !node || node->type != JSON_OBJECT) continue;
 
-        strncpy(entries[i].provider, provider, 63);
+        hermes_strlcpy(entries[i].provider, provider, 63);
         entries[i].provider[63] = '\0';
 
         const char *at = json_object_get_string(node, "access_token", "");

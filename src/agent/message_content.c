@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <time.h>
+#include "hermes_core_types.h"
 
 
 /* Port of Python: _field */
@@ -59,7 +60,7 @@ char *flatten_message_text(const char *message_json)
         /* Single text message */
         const char *text = message_content_field(message_json, "text");
         if (text) {
-            strncpy(output, text, 16383);
+            hermes_strlcpy(output, text, 16383);
             output[16383] = '\0';
             return output;
         }

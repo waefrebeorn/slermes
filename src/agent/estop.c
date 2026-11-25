@@ -29,6 +29,7 @@
 #include <time.h>
 #include "json.h"
 #include "agent_estop.h"
+#include "hermes_core_types.h"
 
 static const char *ESTOP_SENTINEL_NAME = "ESTOP";
 
@@ -251,7 +252,7 @@ int estop_check_paused(const char *component)
     }
     int first = (pget_logged(component) < 0);
     if (first && g_logged_count < ESTOP_LOGGED_MAX) {
-        strncpy(g_logged[g_logged_count], component ? component : "", 63);
+        hermes_strlcpy(g_logged[g_logged_count], component ? component : "", 63);
         g_logged[g_logged_count][63] = '\0';
         g_logged_count++;
     }

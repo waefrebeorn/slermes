@@ -11,6 +11,7 @@
 #include "json.h"
 #include "session_recap.h"
 #include <hermes_json.h>
+#include "hermes_core_types.h"
 
 /* PoP: session_coerce_text @ hermes_cli/session_recap.py:_coerce_text */
 void session_coerce_text(const json_t *value, char *out, size_t out_cap) {
@@ -291,7 +292,7 @@ void session_summarise_tool_activity(const json_t *tool_calls, json_t **counts_o
     long counts[256];
     size_t ci = 0;
     for (size_t i = 0; i < counter->c.count && ci < 256; i++) {
-        strncpy(names[ci], counter->c.keys[i], 255);
+        hermes_strlcpy(names[ci], counter->c.keys[i], 255);
         names[ci][255] = '\0';
         counts[ci] = counter->c.items[i]->type == JSON_NUMBER ? (long)counter->c.items[i]->num_val : 0;
         ci++;
@@ -327,7 +328,7 @@ char *session_build_recap(const json_t *messages, const char *session_title,
         snprintf(header, sizeof(header), "Session recap — %s", session_title);
     } else if (session_id && session_id[0]) {
         char short_id[9];
-        strncpy(short_id, session_id, 8);
+        hermes_strlcpy(short_id, session_id, 8);
         short_id[8] = '\0';
         snprintf(header, sizeof(header), "Session recap — %s", short_id);
     } else {

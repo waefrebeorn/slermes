@@ -64,7 +64,7 @@ static void contract_field_set(goals_contract_t *c, int i, const char *v) {
         case 3: dst = c->boundaries; break;
         case 4: dst = c->stop_when; break;
     }
-    if (dst) { strncpy(dst, v ? v : "", 1023); dst[1023] = '\0'; }
+    if (dst) { hermes_strlcpy(dst, v ? v : "", 1023); dst[1023] = '\0'; }
 }
 
 static void contract_trim(char *s) {

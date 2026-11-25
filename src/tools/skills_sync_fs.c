@@ -17,6 +17,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <openssl/md5.h>
+#include "hermes_core_types.h"
 
 /* Shared recursive-dir walker (mirrors Python sorted(directory.rglob('*')):
  * visits every entry; calls `on_file`(full_path, rel_path) for regular
@@ -39,20 +40,20 @@ static void walk_dir(const char *root, const char *rel, walk_file_t on_file, voi
     int n = 0;
     while ((entry = readdir(dir)) != NULL && n < 1024) {
         if (entry->d_name[0] == '.') continue;
-        strncpy(names[n], entry->d_name, 255);
+        hermes_strlcpy(names[n], entry->d_name, 255);
         names[n][255] = '\0';
         n++;
     }
     closedir(dir);
     /* insertion sort by name */
     for (int i = 1; i < n; i++) {
-        char key[256]; strncpy(key, names[i], 255); key[255] = '\0';
+        char key[256]; hermes_strlcpy(key, names[i], 255); key[255] = '\0';
         int j = i - 1;
         while (j >= 0 && strcmp(names[j], key) > 0) {
-            strncpy(names[j + 1], names[j], 255); names[j + 1][255] = '\0';
+            hermes_strlcpy(names[j + 1], names[j], 255); names[j + 1][255] = '\0';
             j--;
         }
-        strncpy(names[j + 1], key, 255); names[j + 1][255] = '\0';
+        hermes_strlcpy(names[j + 1], key, 255); names[j + 1][255] = '\0';
     }
 
     for (int i = 0; i < n; i++) {

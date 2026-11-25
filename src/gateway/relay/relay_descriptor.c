@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "hermes_core_types.h"
 
 /* capability_descriptor_t now lives in port_gateway_relay_ws_transport.h. */
 
@@ -17,7 +18,7 @@ capability_descriptor_t capability_descriptor_from_platform_entry(
     bool supports_threads, const char *md_dialect) {
     
     capability_descriptor_t desc = {0};
-    strncpy(desc.markdown_dialect, md_dialect ? md_dialect : "plain", 63);
+    hermes_strlcpy(desc.markdown_dialect, md_dialect ? md_dialect : "plain", 63);
     desc.supports_draft_streaming = supports_draft;
     desc.supports_edit = supports_edit;
     desc.supports_threads = supports_threads;

@@ -25,6 +25,7 @@
 #include "libwebsocket/websocket.h"
 
 #include "relay_ws_transport.h"
+#include "hermes_core_types.h"
 
 /* ── Constants ───────────────────────────────────────────────────────── */
 #define WS_HANDSHAKE_TIMEOUT_MS  30000
@@ -220,7 +221,7 @@ int ws_transport_upgrade_headers(ws_transport_t *t, ws_header_t *headers, int ma
     if (t->upgrade_secret[0] && t->gateway_id[0]) {
         /* In production: call make_upgrade_token(gateway_id, upgrade_secret) */
         /* Simplified: build a bearer token from gateway_id */
-        strncpy(headers[0].key, "Authorization", 255);
+        hermes_strlcpy(headers[0].key, "Authorization", 255);
         snprintf(headers[0].value, 1024, "Bearer ws_token_%s", t->gateway_id);
         return 1;
     }
@@ -499,7 +500,7 @@ static bool ws_request_response(ws_transport_t *t, const char *action_json,
         pending->active = true;
         pending->done = false;
         pending->success = false;
-        strncpy(pending->request_id, request_id, 63);
+        hermes_strlcpy(pending->request_id, request_id, 63);
         pthread_mutex_init(&pending->lock, NULL);
         pthread_cond_init(&pending->cond, NULL);
     }

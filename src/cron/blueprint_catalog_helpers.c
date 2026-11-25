@@ -21,6 +21,7 @@
 #include <string.h>
 #include <strings.h>
 #include <stdbool.h>
+#include "hermes_core_types.h"
 
 
 
@@ -292,8 +293,8 @@ char *blueprint_catalog_resolve_schedule(const char *schedule_template, const ch
     char repl[16][64];
     int nrepl = 0;
     /* helper to add a replacement */
-#define ADD_REPL(k, v) do { if (nrepl<16){ strncpy(repl[nrepl], (k), 31); repl[nrepl][31]='\0'; \
-        strncpy(repl[nrepl+1], (v), 63); repl[nrepl+1][63]='\0'; nrepl+=2; } } while(0)
+#define ADD_REPL(k, v) do { if (nrepl<16){ hermes_strlcpy(repl[nrepl], (k), 31); repl[nrepl][31]='\0'; \
+        hermes_strlcpy(repl[nrepl+1], (v), 63); repl[nrepl+1][63]='\0'; nrepl+=2; } } while(0)
 
     const char *sched = schedule_template;
     /* time -> minute/hour */

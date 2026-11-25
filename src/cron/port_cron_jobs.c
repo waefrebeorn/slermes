@@ -1,3 +1,4 @@
+#include "hermes_core_types.h"
 /*
  * port_cron_jobs.c — C11 port of cron/jobs.py
  *
@@ -110,7 +111,7 @@ json_t *cronjobs_normalize_job_record(const json_t *job) {
         else label = "cron job";
         /* first 50 chars, then strip; empty → "cron job" */
         char buf[64];
-        strncpy(buf, label ? label : "", 50);
+        hermes_strlcpy(buf, label ? label : "", 50);
         buf[50] = '\0';
         char *nm = str_strip_dup(buf);
         free(script);
@@ -223,6 +224,7 @@ bool cronjobs_save_jobs(const json_t *jobs) {
 
 #include "uuid.h"
 
+
 /* ── CRUD ─────────────────────────────────────────────────────────── */
 
 /* PoP: cronjobs_create_job @ cron/jobs.py:create_job */
@@ -320,7 +322,7 @@ json_t *cronjobs_create_job(const cronjobs_create_opts *o, char **err) {
     else if (no_agent && script) label = script;
     else label = "cron job";
     char label_buf[64];
-    strncpy(label_buf, label, 50); label_buf[50] = '\0';
+    hermes_strlcpy(label_buf, label, 50); label_buf[50] = '\0';
     char *label_stripped = str_strip_dup(label_buf);
 
     json_t *job = json_object();

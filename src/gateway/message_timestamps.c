@@ -8,6 +8,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <time.h>
+#include "hermes_core_types.h"
 
 
 /* Port of Python: _parse_timestamp_match */
@@ -102,7 +103,7 @@ void render_user_content_with_timestamp(const char *content, const char *timesta
     
     char ts[64];
     if (timestamp) {
-        strncpy(ts, timestamp, 63);
+        hermes_strlcpy(ts, timestamp, 63);
         ts[63] = '\0';
     } else {
         coerce_message_timestamp(content, ts, sizeof(ts));

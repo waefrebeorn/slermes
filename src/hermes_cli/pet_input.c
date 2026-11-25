@@ -330,7 +330,7 @@ int cli__submit_editor_buffer(const char *buffer_text) {
         g_cli.should_exit = 1;  /* process_command path sets should_exit */
     } else {
         if (g_cli.pending_count < 16) {
-            strncpy(g_cli.pending_input[g_cli.pending_count], p, 1023);
+            hermes_strlcpy(g_cli.pending_input[g_cli.pending_count], p, 1023);
             g_cli.pending_input[g_cli.pending_count][1023] = '\0';
             g_cli.pending_count++;
         }

@@ -1978,6 +1978,7 @@ char *probe_remote_backend(const char *env_type) {
 #include <ctype.h>
 #include <stdbool.h>
 #include <time.h>
+#include "hermes_core_types.h"
 
 
 /* Port of Python: _dynamic_context_file_max_chars */
@@ -2006,7 +2007,7 @@ static int n_truncation_warnings = 0;
 
 void record_truncation_warning(const char *warning) {
     if (!warning || n_truncation_warnings >= MAX_WARNINGS) return;
-    strncpy(truncation_warnings[n_truncation_warnings], warning, 511);
+    hermes_strlcpy(truncation_warnings[n_truncation_warnings], warning, 511);
     truncation_warnings[n_truncation_warnings][511] = '\0';
     n_truncation_warnings++;
 }

@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+#include "hermes_core_types.h"
 
 /* PoP: argv @ hermes_cli/session_listing.py:parse_session_listing_args */
 /* Minimal shlex.split: splits on whitespace, honors ' and " quoting, drops
@@ -181,7 +182,7 @@ char *session_listing_format_gateway(const char *rows_json,
         off += snprintf(line + off, sizeof line - (size_t)off, " — `%s`", sid);
         if (*spv) {
             char pv40[41];
-            strncpy(pv40, spv, 40); pv40[40] = '\0';
+            hermes_strlcpy(pv40, spv, 40); pv40[40] = '\0';
             off += snprintf(line + off, sizeof line - (size_t)off, " — _%s_", pv40);
         }
         off += snprintf(line + off, sizeof line - (size_t)off, "\n");

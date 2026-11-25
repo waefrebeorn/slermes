@@ -868,12 +868,12 @@ char *tool_search_build_catalog_listing(const tool_catalog_t *catalog,
         if (gi < 0) {
             gi = ngroups;
             if (ngroups < CATALOG_MAX_ENTRIES) {
-                strncpy(glabels[ngroups], label, 127);
+                hermes_strlcpy(glabels[ngroups], label, 127);
                 glabels[ngroups][127] = '\0';
                 ngroups++;
             }
         }
-        strncpy(groups[i], label, 127);
+        hermes_strlcpy(groups[i], label, 127);
         groups[i][127] = '\0';
     }
 
@@ -899,12 +899,12 @@ char *tool_search_build_catalog_listing(const tool_catalog_t *catalog,
         int key = sorted_idx[i];
         int j = i - 1;
         char key_grp[128], key_name[128];
-        strncpy(key_grp, groups[key], 127); key_grp[127] = '\0';
-        strncpy(key_name, catalog->entries[key].name, 127); key_name[127] = '\0';
+        hermes_strlcpy(key_grp, groups[key], 127); key_grp[127] = '\0';
+        hermes_strlcpy(key_name, catalog->entries[key].name, 127); key_name[127] = '\0';
         while (j >= 0) {
             char cmp_grp[128], cmp_name[128];
-            strncpy(cmp_grp, groups[sorted_idx[j]], 127); cmp_grp[127] = '\0';
-            strncpy(cmp_name, catalog->entries[sorted_idx[j]].name, 127); cmp_name[127] = '\0';
+            hermes_strlcpy(cmp_grp, groups[sorted_idx[j]], 127); cmp_grp[127] = '\0';
+            hermes_strlcpy(cmp_name, catalog->entries[sorted_idx[j]].name, 127); cmp_name[127] = '\0';
             int cmp = strcmp(cmp_grp, key_grp);
             if (cmp < 0 || (cmp == 0 && strcmp(cmp_name, key_name) < 0)) break;
             sorted_idx[j + 1] = sorted_idx[j];
@@ -1094,12 +1094,12 @@ char *tool_search_build_catalog_listing_with_form(const tool_catalog_t *catalog,
         }
         if (gi < 0) {
             gi = ngroups;
-            strncpy(glabels[ngroups], label, 127);
+            hermes_strlcpy(glabels[ngroups], label, 127);
             glabels[ngroups][127] = '\0';
             gcounts[ngroups] = 0;
             ngroups++;
         }
-        strncpy(groups[i], label, 127);
+        hermes_strlcpy(groups[i], label, 127);
         groups[i][127] = '\0';
         gcounts[gi]++;
     }
@@ -1133,12 +1133,12 @@ char *tool_search_build_catalog_listing_with_form(const tool_catalog_t *catalog,
         int key = sorted_idx[i];
         int j = i - 1;
         char key_grp[128], key_name[128];
-        strncpy(key_grp, groups[key], 127); key_grp[127] = '\0';
-        strncpy(key_name, catalog->entries[key].name, 127); key_name[127] = '\0';
+        hermes_strlcpy(key_grp, groups[key], 127); key_grp[127] = '\0';
+        hermes_strlcpy(key_name, catalog->entries[key].name, 127); key_name[127] = '\0';
         while (j >= 0) {
             char cmp_grp[128], cmp_name[128];
-            strncpy(cmp_grp, groups[sorted_idx[j]], 127); cmp_grp[127] = '\0';
-            strncpy(cmp_name, catalog->entries[sorted_idx[j]].name, 127); cmp_name[127] = '\0';
+            hermes_strlcpy(cmp_grp, groups[sorted_idx[j]], 127); cmp_grp[127] = '\0';
+            hermes_strlcpy(cmp_name, catalog->entries[sorted_idx[j]].name, 127); cmp_name[127] = '\0';
             int cmp = strcmp(cmp_grp, key_grp);
             if (cmp < 0 || (cmp == 0 && strcmp(cmp_name, key_name) < 0)) break;
             sorted_idx[j + 1] = sorted_idx[j];
@@ -1356,7 +1356,7 @@ char *tool_search_available_source_summary(const tool_catalog_t *catalog) {
         }
         if (gi < 0) {
             gi = ngroups;
-            strncpy(glabels[ngroups], label, 127);
+            hermes_strlcpy(glabels[ngroups], label, 127);
             glabels[ngroups][127] = '\0';
             gcounts[ngroups] = 0;
             ngroups++;
@@ -1368,22 +1368,22 @@ char *tool_search_available_source_summary(const tool_catalog_t *catalog) {
     char sorted_labels[CATALOG_MAX_ENTRIES][128];
     int sorted_counts[CATALOG_MAX_ENTRIES];
     for (int i = 0; i < ngroups; i++) {
-        strncpy(sorted_labels[i], glabels[i], 127);
+        hermes_strlcpy(sorted_labels[i], glabels[i], 127);
         sorted_labels[i][127] = '\0';
         sorted_counts[i] = gcounts[i];
     }
     for (int i = 1; i < ngroups; i++) {
         char key[128];
-        strncpy(key, sorted_labels[i], 127); key[127] = '\0';
+        hermes_strlcpy(key, sorted_labels[i], 127); key[127] = '\0';
         int key_count = sorted_counts[i];
         int j = i - 1;
         while (j >= 0 && strcmp(sorted_labels[j], key) > 0) {
-            strncpy(sorted_labels[j + 1], sorted_labels[j], 127);
+            hermes_strlcpy(sorted_labels[j + 1], sorted_labels[j], 127);
             sorted_labels[j + 1][127] = '\0';
             sorted_counts[j + 1] = sorted_counts[j];
             j--;
         }
-        strncpy(sorted_labels[j + 1], key, 127);
+        hermes_strlcpy(sorted_labels[j + 1], key, 127);
         sorted_labels[j + 1][127] = '\0';
         sorted_counts[j + 1] = key_count;
     }

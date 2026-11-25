@@ -1,3 +1,4 @@
+#include "hermes_core_types.h"
 /*
  * port_gateway_platforms_helpers.c — C port of gateway/platforms/helpers.py
  *
@@ -62,7 +63,7 @@ int helpers_is_duplicate(const char *msg_id)
     if (_dedup_count < _dedup_max_size) {
         DedupEntry *ne = calloc(1, sizeof(DedupEntry));
         if (ne) {
-            strncpy(ne->msg_id, msg_id, 127);
+            hermes_strlcpy(ne->msg_id, msg_id, 127);
             ne->msg_id[127] = '\0';
             ne->timestamp = now;
             bool ok = false;
@@ -125,6 +126,7 @@ typedef struct {
 } BatchEntry;
 
 #include "hive.h"
+#include "hermes_core_types.h"
 static hive_t *_batch = NULL;   /* of BatchEntry* (heap) */
 static pthread_mutex_t _batch_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -243,7 +245,7 @@ void helpers_mark(const char *thread_id)
     if (!_threads) _threads = hive_new(16);
     ThreadEntry *t = calloc(1, sizeof(ThreadEntry));
     if (t) {
-        strncpy(t->thread_id, thread_id, 127);
+        hermes_strlcpy(t->thread_id, thread_id, 127);
         t->thread_id[127] = '\0';
         bool ok = false;
         hive_insert(_threads, t, &ok);

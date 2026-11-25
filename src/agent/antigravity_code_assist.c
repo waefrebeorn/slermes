@@ -13,6 +13,7 @@
 #include <time.h>
 #include <pthread.h>
 #include "libhttp/http.h"
+#include "hermes_core_types.h"
 
 /* ── Constants ───────────────────────────────────────────────────────── */
 #define ANTIGRAVITY_ENDPOINT "https://daily-cloudcode-pa.sandbox.googleapis.com"
@@ -68,34 +69,34 @@ int antigravity_build_headers(const char *access_token, const char *accept,
     if (!access_token || !headers || max_headers <= 0) return 0;
 
     int count = 0;
-    strncpy(headers[count].key, "Content-Type", 255);
-    strncpy(headers[count].value, "application/json", 1023);
+    hermes_strlcpy(headers[count].key, "Content-Type", 255);
+    hermes_strlcpy(headers[count].value, "application/json", 1023);
     count++;
 
-    strncpy(headers[count].key, "Accept", 255);
-    strncpy(headers[count].value, accept ? accept : "application/json", 1023);
+    hermes_strlcpy(headers[count].key, "Accept", 255);
+    hermes_strlcpy(headers[count].value, accept ? accept : "application/json", 1023);
     count++;
 
-    strncpy(headers[count].key, "Authorization", 255);
+    hermes_strlcpy(headers[count].key, "Authorization", 255);
     snprintf(headers[count].value, 1024, "Bearer %s", access_token);
     count++;
 
-    strncpy(headers[count].key, "User-Agent", 255);
-    strncpy(headers[count].value, "antigravity/1.0.0 windows/amd64", 1023);
+    hermes_strlcpy(headers[count].key, "User-Agent", 255);
+    hermes_strlcpy(headers[count].value, "antigravity/1.0.0 windows/amd64", 1023);
     count++;
 
-    strncpy(headers[count].key, "X-Goog-Api-Client", 255);
-    strncpy(headers[count].value, "google-cloud-sdk vscode_cloudshelleditor/0.1", 1023);
+    hermes_strlcpy(headers[count].key, "X-Goog-Api-Client", 255);
+    hermes_strlcpy(headers[count].value, "google-cloud-sdk vscode_cloudshelleditor/0.1", 1023);
     count++;
 
     char metadata[512];
     antigravity_client_metadata(metadata, sizeof(metadata));
-    strncpy(headers[count].key, "Client-Metadata", 255);
-    strncpy(headers[count].value, metadata, 1023);
+    hermes_strlcpy(headers[count].key, "Client-Metadata", 255);
+    hermes_strlcpy(headers[count].value, metadata, 1023);
     count++;
 
     /* x-activity-request-id: UUID */
-    strncpy(headers[count].key, "x-activity-request-id", 255);
+    hermes_strlcpy(headers[count].key, "x-activity-request-id", 255);
     snprintf(headers[count].value, 1024, "%08lx%08lx%08lx%08lx",
              (unsigned long)time(NULL), (unsigned long)(size_t)pthread_self(),
              (unsigned long)rand(), (unsigned long)clock());
@@ -210,30 +211,30 @@ antigravity_project_context_t antigravity_resolve_project_context(
 
     /* Priority: configured > env > discovered > default */
     if (configured_project_id && configured_project_id[0]) {
-        strncpy(ctx.project_id, configured_project_id, 255);
-        strncpy(ctx.source, "config", 63);
+        hermes_strlcpy(ctx.project_id, configured_project_id, 255);
+        hermes_strlcpy(ctx.source, "config", 63);
         return ctx;
     }
 
     if (env_project_id && env_project_id[0]) {
-        strncpy(ctx.project_id, env_project_id, 255);
-        strncpy(ctx.source, "env", 63);
+        hermes_strlcpy(ctx.project_id, env_project_id, 255);
+        hermes_strlcpy(ctx.source, "env", 63);
         return ctx;
     }
 
     /* Try to discover via load_code_assist */
     antigravity_project_info_t info = antigravity_load_code_assist(access_token, NULL, NULL);
     if (info.project_id[0]) {
-        strncpy(ctx.project_id, info.project_id, 255);
-        strncpy(ctx.managed_project_id, info.project_id, 255);
-        strncpy(ctx.source, "discovered", 63);
+        hermes_strlcpy(ctx.project_id, info.project_id, 255);
+        hermes_strlcpy(ctx.managed_project_id, info.project_id, 255);
+        hermes_strlcpy(ctx.source, "discovered", 63);
         return ctx;
     }
 
     /* Fall back to default project */
-    strncpy(ctx.project_id, "default-antigravity-project", 255);
-    strncpy(ctx.managed_project_id, "default-antigravity-project", 255);
-    strncpy(ctx.source, "default", 63);
+    hermes_strlcpy(ctx.project_id, "default-antigravity-project", 255);
+    hermes_strlcpy(ctx.managed_project_id, "default-antigravity-project", 255);
+    hermes_strlcpy(ctx.source, "default", 63);
     return ctx;
 }
 
@@ -332,7 +333,7 @@ model_id_list_t antigravity_ids_from_sort(const char *sort_json) {
             char id[128];
             antigravity_model_id_from_value(key, id, sizeof(id));
             if (id[0] && result.count < MAX_MODELS) {
-                strncpy(result.ids[result.count], id, 127);
+                hermes_strlcpy(result.ids[result.count], id, 127);
                 result.count++;
             }
             continue;
@@ -351,7 +352,7 @@ model_id_list_t antigravity_ids_from_sort(const char *sort_json) {
             }
             id[i] = '\0';
             if (i > 0) {
-                strncpy(result.ids[result.count], id, 127);
+                hermes_strlcpy(result.ids[result.count], id, 127);
                 result.count++;
             }
             p = quote;
@@ -409,7 +410,7 @@ model_id_list_t antigravity_raw_model_ids(const char *payload_json) {
         }
         id[i] = '\0';
         if (i > 0) {
-            strncpy(result.ids[result.count], id, 127);
+            hermes_strlcpy(result.ids[result.count], id, 127);
             result.count++;
         }
         p = quote;
@@ -475,9 +476,9 @@ model_id_list_t antigravity_filter_agent_model_ids(const model_id_list_t *all_id
         }
         if (skip_deprecated) continue;
 
-        strncpy(seen[seen_count], mid, 127);
+        hermes_strlcpy(seen[seen_count], mid, 127);
         seen_count++;
-        strncpy(result.ids[result.count], mid, 127);
+        hermes_strlcpy(result.ids[result.count], mid, 127);
         result.count++;
     }
 
@@ -528,13 +529,13 @@ model_id_list_t antigravity_parse_agent_model_ids(const char *payload_json) {
                     if (antigravity_is_recommended_sort(sort_obj)) {
                         model_id_list_t ids = antigravity_ids_from_sort(sort_obj);
                         for (int j = 0; j < ids.count && recommended.count < MAX_MODELS; j++) {
-                            strncpy(recommended.ids[recommended.count], ids.ids[j], 127);
+                            hermes_strlcpy(recommended.ids[recommended.count], ids.ids[j], 127);
                             recommended.count++;
                         }
                     } else {
                         model_id_list_t ids = antigravity_ids_from_sort(sort_obj);
                         for (int j = 0; j < ids.count && rest.count < MAX_MODELS; j++) {
-                            strncpy(rest.ids[rest.count], ids.ids[j], 127);
+                            hermes_strlcpy(rest.ids[rest.count], ids.ids[j], 127);
                             rest.count++;
                         }
                     }
@@ -544,11 +545,11 @@ model_id_list_t antigravity_parse_agent_model_ids(const char *payload_json) {
             
             /* Add recommended first, then rest */
             for (int j = 0; j < recommended.count && result.count < MAX_MODELS; j++) {
-                strncpy(result.ids[result.count], recommended.ids[j], 127);
+                hermes_strlcpy(result.ids[result.count], recommended.ids[j], 127);
                 result.count++;
             }
             for (int j = 0; j < rest.count && result.count < MAX_MODELS; j++) {
-                strncpy(result.ids[result.count], rest.ids[j], 127);
+                hermes_strlcpy(result.ids[result.count], rest.ids[j], 127);
                 result.count++;
             }
         }
@@ -557,7 +558,7 @@ model_id_list_t antigravity_parse_agent_model_ids(const char *payload_json) {
     /* Fall back to defaults if no models found */
     if (result.count == 0) {
         for (int i = 0; default_ids[i] && result.count < MAX_MODELS; i++) {
-            strncpy(result.ids[result.count], default_ids[i], 127);
+            hermes_strlcpy(result.ids[result.count], default_ids[i], 127);
             result.count++;
         }
     }

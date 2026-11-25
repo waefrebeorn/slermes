@@ -3,6 +3,7 @@
  */
 
 #include "app_desktop_internals.h"
+#include "hermes_core_types.h"
 
 void ui_draw_titlebar(void) {
     if (!ui.wins[PANEL_TITLEBAR]) return;
@@ -58,9 +59,9 @@ void ui_draw_sidebar(void) {
         /* Apply search filter */
         if (ui.sidebar_search_active && ui.sidebar_search_len > 0) {
             char lower_title[256], lower_q[128];
-            strncpy(lower_title, app.session_titles[i], 255);
+            hermes_strlcpy(lower_title, app.session_titles[i], 255);
             for (int c = 0; lower_title[c]; c++) lower_title[c] = tolower((unsigned char)lower_title[c]);
-            strncpy(lower_q, ui.sidebar_search, 127);
+            hermes_strlcpy(lower_q, ui.sidebar_search, 127);
             for (int c = 0; lower_q[c]; c++) lower_q[c] = tolower((unsigned char)lower_q[c]);
             if (!strstr(lower_title, lower_q)) continue;
         }

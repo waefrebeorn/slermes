@@ -1,3 +1,4 @@
+#include "hermes_core_types.h"
 /*
  * port_agent_antigravity_oauth.c — Port of Python agent/antigravity_oauth.py
  */
@@ -47,7 +48,7 @@ file_list_t antigravity_iter_discovery_files(void) {
             FILE *f = fopen(path, "r");
             if (f) {
                 fclose(f);
-                strncpy(result.files[result.count], path, 1023);
+                hermes_strlcpy(result.files[result.count], path, 1023);
                 result.count++;
             }
         }
@@ -114,6 +115,7 @@ bool antigravity_run_oauth_login_pure(char *token_out, size_t out_sz) {
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+
 
 /* Port of Python: _discover_client_credentials */
 char *discover_client_credentials(void)

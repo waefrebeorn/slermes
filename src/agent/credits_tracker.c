@@ -1,3 +1,4 @@
+#include "hermes_core_types.h"
 /*
  * credits_tracker.c — Credits tracking for Nous inference API.
  *
@@ -427,7 +428,7 @@ void credits_tracker_evaluate_notices(const credits_state_t *state,
     /* Helper: add a key to active set */
     #define LATCH_ADD(key) do { \
         if (latch->active_count < 16) { \
-            strncpy(latch->active_keys[latch->active_count], (key), 63); \
+            hermes_strlcpy(latch->active_keys[latch->active_count], (key), 63); \
             latch->active_keys[latch->active_count][63] = '\0'; \
             latch->active_count++; \
         } \
@@ -477,7 +478,7 @@ void credits_tracker_evaluate_notices(const credits_state_t *state,
     if (target_band != latch->usage_band) {
         /* Clear existing usage notice if active */
         if (LATCH_ACTIVE(CREDITS_USAGE_KEY)) {
-            strncpy(to_clear[*n_to_clear], CREDITS_USAGE_KEY, 63);
+            hermes_strlcpy(to_clear[*n_to_clear], CREDITS_USAGE_KEY, 63);
             to_clear[*n_to_clear][63] = '\0';
             (*n_to_clear)++;
             LATCH_REMOVE(CREDITS_USAGE_KEY);
@@ -516,7 +517,7 @@ void credits_tracker_evaluate_notices(const credits_state_t *state,
         (*n_to_show)++;
         LATCH_ADD(CREDITS_GRANT_KEY);
     } else if (LATCH_ACTIVE(CREDITS_GRANT_KEY) && !grant_cond) {
-        strncpy(to_clear[*n_to_clear], CREDITS_GRANT_KEY, 63);
+        hermes_strlcpy(to_clear[*n_to_clear], CREDITS_GRANT_KEY, 63);
         to_clear[*n_to_clear][63] = '\0';
         (*n_to_clear)++;
         LATCH_REMOVE(CREDITS_GRANT_KEY);
@@ -534,7 +535,7 @@ void credits_tracker_evaluate_notices(const credits_state_t *state,
         (*n_to_show)++;
         LATCH_ADD(CREDITS_DEPLETED);
     } else if (LATCH_ACTIVE(CREDITS_DEPLETED) && !depleted_cond) {
-        strncpy(to_clear[*n_to_clear], CREDITS_DEPLETED, 63);
+        hermes_strlcpy(to_clear[*n_to_clear], CREDITS_DEPLETED, 63);
         to_clear[*n_to_clear][63] = '\0';
         (*n_to_clear)++;
         LATCH_REMOVE(CREDITS_DEPLETED);
@@ -657,6 +658,7 @@ bool credits_tracker_dev_fixture(credits_state_t *state) {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 
 /* PoP: model @ agent/credits_tracker.py:is_free_tier_model */
 

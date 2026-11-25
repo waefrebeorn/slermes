@@ -44,6 +44,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "noc_w27_adapter_04abb5_p1.h"
+#include "hermes_core_types.h"
 
 /* ── small string helpers ─────────────────────────────────────────────── */
 
@@ -1215,7 +1216,7 @@ json_t *w27_adapter_04abb5_mention_pubkeys(const json_t *in) {
                 if (!dup) {
                     pklists[k] = (char *)realloc(pklists[k], (pkn[k] + 1) * 65 + 1);
                     memset(pklists[k] + pkn[k] * 65, 0, 65);
-                    strncpy(pklists[k] + pkn[k] * 65, pk, 64);
+                    hermes_strlcpy(pklists[k] + pkn[k] * 65, pk, 64);
                     pkn[k]++;
                 }
             }

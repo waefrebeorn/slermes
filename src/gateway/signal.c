@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include "hermes_core_types.h"
 
 /* Maximum number of sent message timestamps to track */
 #define MAX_SENT_TIMESTAMPS 256
@@ -87,7 +88,7 @@ void remember_sent_message_timestamp(const char* timestamp)
 
     /* Add new entry */
     if (sent_timestamp_count < MAX_SENT_TIMESTAMPS) {
-        strncpy(sent_timestamps[sent_timestamp_count].key, timestamp, 63);
+        hermes_strlcpy(sent_timestamps[sent_timestamp_count].key, timestamp, 63);
         sent_timestamps[sent_timestamp_count].key[63] = '\0';
         sent_timestamps[sent_timestamp_count].active = true;
         sent_timestamp_count++;
@@ -95,7 +96,7 @@ void remember_sent_message_timestamp(const char* timestamp)
         /* FIFO-evict oldest */
         memmove(&sent_timestamps[0], &sent_timestamps[1],
                 (MAX_SENT_TIMESTAMPS - 1) * sizeof(sent_timestamp_entry_t));
-        strncpy(sent_timestamps[MAX_SENT_TIMESTAMPS - 1].key, timestamp, 63);
+        hermes_strlcpy(sent_timestamps[MAX_SENT_TIMESTAMPS - 1].key, timestamp, 63);
         sent_timestamps[MAX_SENT_TIMESTAMPS - 1].key[63] = '\0';
         sent_timestamps[MAX_SENT_TIMESTAMPS - 1].active = true;
     }

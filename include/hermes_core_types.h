@@ -1314,6 +1314,8 @@ void hermes_config_merge(hermes_config_t *dst, const hermes_config_t *src);
  *
  * Behaviour is the one callers actually want: copy, truncate at cap-1, always terminate.
  * It does NOT pad with zeros; nothing in this tree reads past the terminator. */
+#ifndef HERMES_STRLCPY_DEFINED
+#define HERMES_STRLCPY_DEFINED
 static inline size_t hermes_strlcpy(char *dst, const char *src, size_t cap) {
     size_t n;
     if (!dst || cap == 0) return 0;
@@ -1327,3 +1329,4 @@ static inline size_t hermes_strlcpy(char *dst, const char *src, size_t cap) {
     dst[n] = '\0';
     return n;
 }
+#endif /* HERMES_STRLCPY_DEFINED */

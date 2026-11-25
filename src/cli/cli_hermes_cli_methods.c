@@ -34,6 +34,7 @@
 /* Declared in src/hermes_cli/runtime_provider.c (no public header). */
 extern char *canonical_custom_identity(const char *base_url, const char *config_provider);
 #include <time.h>
+#include "hermes_core_types.h"
 
 /* ── extern declarations for functions not yet in public headers ────────── */
 
@@ -1545,8 +1546,8 @@ char *hcli_build_status_bar_text(hcli_t *self, int width) {
         snprintf(parts[nparts++], 128, "⚕ %s", model_short ? model_short : "?");
         if (battery_label && *battery_label) {
             /* insert battery at front */
-            for (int i = nparts; i > 0; i--) strncpy(parts[i], parts[i-1], 127);
-            strncpy(parts[0], battery_label, 127);
+            for (int i = nparts; i > 0; i--) hermes_strlcpy(parts[i], parts[i-1], 127);
+            hermes_strlcpy(parts[0], battery_label, 127);
             nparts++;
         }
         snprintf(parts[nparts++], 128, "%s", percent_label);

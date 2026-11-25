@@ -13,6 +13,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <limits.h>
+#include "hermes_core_types.h"
 
 /* ================================================================
  *  Test-mode overrides
@@ -663,7 +664,7 @@ bool file_is_cross_profile_target(const char *path, char *warning_out, size_t wa
         memcpy(first, rel, flen);
         first[flen] = '\0';
     } else {
-        strncpy(first, rel, 127);
+        hermes_strlcpy(first, rel, 127);
     }
 
     const char *active = resolve_active_profile_name();
@@ -690,7 +691,7 @@ bool file_is_cross_profile_target(const char *path, char *warning_out, size_t wa
             memcpy(pname, rest, plen);
             pname[plen] = '\0';
         } else {
-            strncpy(pname, rest, 127);
+            hermes_strlcpy(pname, rest, 127);
         }
 
         if (pslash) {
@@ -703,7 +704,7 @@ bool file_is_cross_profile_target(const char *path, char *warning_out, size_t wa
                 memcpy(aname, arest, alen);
                 aname[alen] = '\0';
             } else {
-                strncpy(aname, arest, 127);
+                hermes_strlcpy(aname, arest, 127);
             }
             for (int i = 0; profile_scoped_areas[i]; i++) {
                 if (strcmp(aname, profile_scoped_areas[i]) == 0) {

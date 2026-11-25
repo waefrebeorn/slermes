@@ -1,3 +1,4 @@
+#include "hermes_core_types.h"
 /*
  * port_hermes_cli_update_cmd.c — C11 port of pure helpers from
  * hermes_cli/update_cmd.py.
@@ -1677,13 +1678,13 @@ int uc_commit_staged_replacements(const char **staged_pairs)
         struct stat st;
         if (stat(dst, &st) == 0) {
             if (util_rename_replace(dst, backup) != 0) goto rollback;
-            strncpy(swapped[swapped_count], dst, 4095);
+            hermes_strlcpy(swapped[swapped_count], dst, 4095);
             swapped[swapped_count][4095] = '\0';
-            strncpy(backups[swapped_count], backup, 4095);
+            hermes_strlcpy(backups[swapped_count], backup, 4095);
             backups[swapped_count][4095] = '\0';
             swapped_count++;
         } else {
-            strncpy(swapped[swapped_count], dst, 4095);
+            hermes_strlcpy(swapped[swapped_count], dst, 4095);
             swapped[swapped_count][4095] = '\0';
             backups[swapped_count][0] = '\0';
             swapped_count++;
@@ -4238,7 +4239,7 @@ char *update_cmd_print_completion(const char *message) {
  */
 
 #include "hermes_agent.h"
-#include "hermes_core_types.h"
+
 #include "hermes_json.h"
 #include "hermes_logger.h"
 #include <stdio.h>

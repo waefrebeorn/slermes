@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include "hermes_json.h"
 #include "desktop_state.h"
+#include "hermes_core_types.h"
 
 /* Module-local state for auxiliary models + analytics. */
 desktop_auxiliary_model_t g_auxiliary_models[16];
@@ -146,7 +147,7 @@ bool desktop_auxiliary_model_set(const char *task, const char *model_id) {
     /* Update existing or add new */
     for (int i = 0; i < g_auxiliary_count; i++) {
         if (strcmp(g_auxiliary_models[i].task, task) == 0) {
-            strncpy(g_auxiliary_models[i].model_id, model_id, 255);
+            hermes_strlcpy(g_auxiliary_models[i].model_id, model_id, 255);
             g_auxiliary_models[i].is_active = true;
             return true;
         }
@@ -154,8 +155,8 @@ bool desktop_auxiliary_model_set(const char *task, const char *model_id) {
 
     if (g_auxiliary_count >= 16) return false;
     desktop_auxiliary_model_t *m = &g_auxiliary_models[g_auxiliary_count++];
-    strncpy(m->task, task, 127);
-    strncpy(m->model_id, model_id, 255);
+    hermes_strlcpy(m->task, task, 127);
+    hermes_strlcpy(m->model_id, model_id, 255);
     m->is_active = true;
     return true;
 }

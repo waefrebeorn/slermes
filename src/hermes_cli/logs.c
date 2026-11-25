@@ -36,6 +36,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include "hermes_core_types.h"
 
 /* forward declaration (defined below cli_logs_tail) */
 void cli_logs_follow(const char *path, const char *min_level,
@@ -445,7 +446,7 @@ void cli_logs_list(void)
         if (!hermes_dirent_is_file(dir, e->d_name)) continue;
         size_t L = strlen(e->d_name);
         if (L < 4 || strcmp(e->d_name + L - 4, ".log") != 0) continue;
-        if (nn < 128) strncpy(names[nn++], e->d_name, 255);
+        if (nn < 128) hermes_strlcpy(names[nn++], e->d_name, 255);
     }
     closedir(d);
     /* simple bubble sort by name */

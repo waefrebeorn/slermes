@@ -69,6 +69,7 @@
 #else
 #include <pwd.h>
 #include "port_utils_ports.h"
+#include "hermes_core_types.h"
 #endif
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -1216,7 +1217,7 @@ int desktop_env_list(char keys[][256], int max_count) {
     env_entry_t *entry;
     while (hive_iter_next(h, &it, &hnd, (void **)&entry)) {
         if (count >= max_count) break;
-        strncpy(keys[count], entry->key, 255);
+        hermes_strlcpy(keys[count], entry->key, 255);
         keys[count][255] = '\0';
         count++;
     }
@@ -1351,7 +1352,7 @@ bool desktop_oauth_login(const char *provider, oauth_cb cb) {
     if (!state) {
         if (g_oauth_count >= 8) return false;
         state = &g_oauth_states[g_oauth_count++];
-        strncpy(state->provider, provider, 63);
+        hermes_strlcpy(state->provider, provider, 63);
     }
 
     state->logged_in = false;

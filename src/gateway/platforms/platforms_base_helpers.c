@@ -341,7 +341,7 @@ int gw_base__merge_pending_message_event(const char *session_key, const char *te
         }
     }
     if (g_gw.pending_n < 128) {
-        strncpy(g_gw.pending_session[g_gw.pending_n], session_key, 191);
+        hermes_strlcpy(g_gw.pending_session[g_gw.pending_n], session_key, 191);
         g_gw.pending_session[g_gw.pending_n][191] = '\0';
         snprintf(g_gw.pending_text[g_gw.pending_n], 2048, "%s", text ? text : "");
         g_gw.pending_n++;
@@ -569,14 +569,14 @@ void gw_base__set_auto_tts_default(int on) {
 void gw_base__auto_tts_enable_chat(const char *chat_id) {
     gw_base_init();
     pthread_mutex_lock(&g_gw.lock);
-    if (g_gw.auto_tts_enabled_n < 64) { strncpy(g_gw.auto_tts_enabled[g_gw.auto_tts_enabled_n], chat_id?chat_id:"", 63); g_gw.auto_tts_enabled_n++; }
+    if (g_gw.auto_tts_enabled_n < 64) { hermes_strlcpy(g_gw.auto_tts_enabled[g_gw.auto_tts_enabled_n], chat_id?chat_id:"", 63); g_gw.auto_tts_enabled_n++; }
     pthread_mutex_unlock(&g_gw.lock);
 }
 /* PoP: gw_base__auto_tts_disable_chat @ gateway/platforms/base.py: (voice off) */
 void gw_base__auto_tts_disable_chat(const char *chat_id) {
     gw_base_init();
     pthread_mutex_lock(&g_gw.lock);
-    if (g_gw.auto_tts_disabled_n < 64) { strncpy(g_gw.auto_tts_disabled[g_gw.auto_tts_disabled_n], chat_id?chat_id:"", 63); g_gw.auto_tts_disabled_n++; }
+    if (g_gw.auto_tts_disabled_n < 64) { hermes_strlcpy(g_gw.auto_tts_disabled[g_gw.auto_tts_disabled_n], chat_id?chat_id:"", 63); g_gw.auto_tts_disabled_n++; }
     pthread_mutex_unlock(&g_gw.lock);
 }
 
@@ -769,7 +769,7 @@ int gw_base__keep_typing(const char *chat_id, float interval) {
     /* In C the event loop drives typing; this records the chat as typing-active. */
     gw_base_init();
     pthread_mutex_lock(&g_gw.lock);
-    if (g_gw.typing_paused_n < 64) { strncpy(g_gw.typing_paused[g_gw.typing_paused_n], chat_id?chat_id:"", 63); g_gw.typing_paused_n++; }
+    if (g_gw.typing_paused_n < 64) { hermes_strlcpy(g_gw.typing_paused[g_gw.typing_paused_n], chat_id?chat_id:"", 63); g_gw.typing_paused_n++; }
     pthread_mutex_unlock(&g_gw.lock);
     (void)interval;
     return 0;
@@ -781,7 +781,7 @@ int gw_base__stop_typing_refresh(const char *chat_id) {
     for (int i = 0; i < g_gw.typing_paused_n; i++)
         if (strcmp(g_gw.typing_paused[i], chat_id?chat_id:"") == 0) {
             g_gw.typing_paused[i][0] = '\0';
-            strncpy(g_gw.typing_paused[i], g_gw.typing_paused[g_gw.typing_paused_n-1], 63);
+            hermes_strlcpy(g_gw.typing_paused[i], g_gw.typing_paused[g_gw.typing_paused_n-1], 63);
             g_gw.typing_paused_n--; i--;
         }
     pthread_mutex_unlock(&g_gw.lock);
@@ -963,11 +963,11 @@ int gw_base__queue_text_debounce(const char *session_key, const char *text, cons
     if (!g_debounce) g_debounce = calloc(64, sizeof(gw_base_debounce_t));
     if (g_debounce) {
         for (int i = 0; i < g_debounce_n; i++) if (strcmp(g_debounce[i].session, session_key?session_key:"") == 0) { st = &g_debounce[i]; break; }
-        if (!st && g_debounce_n < 64) { strncpy(g_debounce[g_debounce_n].session, session_key?session_key:"", 191); st = &g_debounce[g_debounce_n]; g_debounce_n++; }
+        if (!st && g_debounce_n < 64) { hermes_strlcpy(g_debounce[g_debounce_n].session, session_key?session_key:"", 191); st = &g_debounce[g_debounce_n]; g_debounce_n++; }
     }
     if (st) {
         if (st->text[0]) { int L = strlen(st->text); if (L < 4000) snprintf(st->text+L, 4096-L, "\n%s", text?text:""); }
-        else strncpy(st->text, text?text:"", 4095);
+        else hermes_strlcpy(st->text, text?text:"", 4095);
         st->active = 1;
     }
     (void)identity;
@@ -990,8 +990,8 @@ int gw_base__flush_text_debounce_now(const char *session_key) {
     if (found < 0) { pthread_mutex_unlock(&g_gw.lock); return 0; }
     /* push into pending map */
     if (g_gw.pending_n < 128) {
-        strncpy(g_gw.pending_session[g_gw.pending_n], session_key?session_key:"", 191);
-        strncpy(g_gw.pending_text[g_gw.pending_n], g_debounce[found].text, 2047);
+        hermes_strlcpy(g_gw.pending_session[g_gw.pending_n], session_key?session_key:"", 191);
+        hermes_strlcpy(g_gw.pending_text[g_gw.pending_n], g_debounce[found].text, 2047);
         g_gw.pending_n++;
     }
     for (int i = found; i < g_debounce_n-1; i++) g_debounce[i] = g_debounce[i+1];
@@ -1039,8 +1039,8 @@ int gw_base__start_session_processing(const char *session_key, const char *text)
     gw_base_init();
     pthread_mutex_lock(&g_gw.lock);
     if (g_gw.pending_n < 128) {
-        strncpy(g_gw.pending_session[g_gw.pending_n], session_key?session_key:"", 191);
-        strncpy(g_gw.pending_text[g_gw.pending_n], text?text:"", 2047);
+        hermes_strlcpy(g_gw.pending_session[g_gw.pending_n], session_key?session_key:"", 191);
+        hermes_strlcpy(g_gw.pending_text[g_gw.pending_n], text?text:"", 2047);
         g_gw.pending_n++;
     }
     pthread_mutex_unlock(&g_gw.lock);

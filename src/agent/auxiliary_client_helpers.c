@@ -310,8 +310,8 @@ static char *aux__try_provider_client(const char *provider, const char *model) {
     if (!ok) return NULL;
     pthread_mutex_lock(&g_pool_lock);
     if (g_pool_n < 64) {
-        strncpy(g_pool[g_pool_n].provider, provider?provider:"", 63);
-        strncpy(g_pool[g_pool_n].model, model?model:"", 127);
+        hermes_strlcpy(g_pool[g_pool_n].provider, provider?provider:"", 63);
+        hermes_strlcpy(g_pool[g_pool_n].model, model?model:"", 127);
         g_pool[g_pool_n].client = (void *)(size_t)(g_pool_n + 1);
         g_pool[g_pool_n].healthy = 1;
         char tok[32]; snprintf(tok, sizeof(tok), "client#%d", g_pool_n);

@@ -20,6 +20,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
+#include "hermes_core_types.h"
 
 /* ── Global constants ─────────────────────────────────────────────── */
 
@@ -364,7 +365,7 @@ api_server_adapter_t *api_server_adapter_create(const gw_platform_config_t *conf
             while (*token == ' ') token++;
             char *end = token + strlen(token) - 1;
             while (end > token && *end == ' ') *end-- = '\0';
-            if (*token) strncpy(adapter->cors_origins[adapter->cors_count++], token, 255);
+            if (*token) hermes_strlcpy(adapter->cors_origins[adapter->cors_count++], token, 255);
             token = strtok(NULL, ",");
         }
         free(copy);

@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <regex.h>
+#include "hermes_core_types.h"
 
 /* Built-in helpers available inside the sandbox without import. */
 static const char *BUILTIN_HELPERS[] = {"json_parse", "shell_quote", "retry", NULL};
@@ -66,7 +67,7 @@ char *cet_sandbox_failure_hint(const char *stderr_text, const char *enabled_tool
 {
     if (!stderr_text || !*stderr_text) return NULL;
     char window[4001];
-    strncpy(window, stderr_text, 4000);
+    hermes_strlcpy(window, stderr_text, 4000);
     window[4000] = '\0';
 
     static const char *ALLOWED[] = {

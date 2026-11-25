@@ -3,6 +3,7 @@
  */
 
 #include "app_desktop_internals.h"
+#include "hermes_core_types.h"
 
 void ui_init(void) {
     memset(&ui, 0, sizeof(ui));
@@ -62,14 +63,14 @@ void ui_init(void) {
     };
     app.model_count = 0;
     for (int i = 0; default_models[i] && app.model_count < APP_MAX_SESSIONS; i++) {
-        strncpy(app.model_names[app.model_count++], default_models[i], 127);
+        hermes_strlcpy(app.model_names[app.model_count++], default_models[i], 127);
     }
 
     /* Profiles */
     const char *default_profiles[] = {"default", "dev", "research", "creative", NULL};
     app.profile_count = 0;
     for (int i = 0; default_profiles[i] && app.profile_count < APP_MAX_PROFILES; i++) {
-        strncpy(app.profile_names[app.profile_count++], default_profiles[i], 127);
+        hermes_strlcpy(app.profile_names[app.profile_count++], default_profiles[i], 127);
     }
     app.active_profile = 0;
 
@@ -84,30 +85,30 @@ void ui_init(void) {
     };
     app.session_count = sizeof(demos) / sizeof(demos[0]);
     for (int i = 0; i < app.session_count; i++) {
-        strncpy(app.session_ids[i], demos[i].id, 63);
+        hermes_strlcpy(app.session_ids[i], demos[i].id, 63);
         snprintf(app.session_titles[i], 255, "%s", demos[i].title);
     }
     app.session_sel = 0;
 
     /* Background tasks */
     app.bg_task_count = 2;
-    strncpy(app.bg_tasks[0].id, "task_1", 63);
-    strncpy(app.bg_tasks[0].label, "parity-scan", 127);
+    hermes_strlcpy(app.bg_tasks[0].id, "task_1", 63);
+    hermes_strlcpy(app.bg_tasks[0].label, "parity-scan", 127);
     app.bg_tasks[0].running = true;
-    strncpy(app.bg_tasks[1].id, "task_2", 63);
-    strncpy(app.bg_tasks[1].label, "build-check", 127);
+    hermes_strlcpy(app.bg_tasks[1].id, "task_2", 63);
+    hermes_strlcpy(app.bg_tasks[1].label, "build-check", 127);
     app.bg_tasks[1].running = false;
     app.bg_tasks[1].has_error = false;
 
     /* Subagents */
     app.subagent_count = 1;
-    strncpy(app.subagents[0].id, "sub_1", 63);
-    strncpy(app.subagents[0].task, "audit-parity", 127);
+    hermes_strlcpy(app.subagents[0].id, "sub_1", 63);
+    hermes_strlcpy(app.subagents[0].task, "audit-parity", 127);
     app.subagents[0].running = true;
 
     /* Update available */
     app.update_available = false;
-    strncpy(app.update_version, "0.17.1", 31);
+    hermes_strlcpy(app.update_version, "0.17.1", 31);
 
     calc_layout();
 

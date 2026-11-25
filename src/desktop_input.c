@@ -3,6 +3,7 @@
  */
 
 #include "app_desktop_internals.h"
+#include "hermes_core_types.h"
 
 void filter_palette_commands(void) {
     /* Already handled inline in ui_draw_command_palette — this is for
@@ -28,8 +29,8 @@ void filter_palette_commands(void) {
     for (int i = 0; i < n && fi < APP_MAX_PALETTE_CMDS; i++) {
         if (app.palette_query_len == 0) {
             app.palette_filtered_indices[fi] = i;
-            strncpy(app.palette_labels[fi], cmds[i].label, 63);
-            strncpy(app.palette_actions[fi], cmds[i].action, 63);
+            hermes_strlcpy(app.palette_labels[fi], cmds[i].label, 63);
+            hermes_strlcpy(app.palette_actions[fi], cmds[i].action, 63);
             fi++;
         } else {
             char h[256];
@@ -37,8 +38,8 @@ void filter_palette_commands(void) {
             for (int c = 0; h[c]; c++) h[c] = tolower((unsigned char)h[c]);
             if (strstr(h, q_lower)) {
                 app.palette_filtered_indices[fi] = i;
-                strncpy(app.palette_labels[fi], cmds[i].label, 63);
-                strncpy(app.palette_actions[fi], cmds[i].action, 63);
+                hermes_strlcpy(app.palette_labels[fi], cmds[i].label, 63);
+                hermes_strlcpy(app.palette_actions[fi], cmds[i].action, 63);
                 fi++;
             }
         }
@@ -111,8 +112,8 @@ void ui_handle_dialog(int key) {
                 if (strcmp(app.session_ids[i], app.confirm_session_id) == 0) { idx = i; break; }
             if (idx >= 0) {
                 for (int i = idx; i < app.session_count - 1; i++) {
-                    strncpy(app.session_ids[i], app.session_ids[i + 1], 63);
-                    strncpy(app.session_titles[i], app.session_titles[i + 1], 255);
+                    hermes_strlcpy(app.session_ids[i], app.session_ids[i + 1], 63);
+                    hermes_strlcpy(app.session_titles[i], app.session_titles[i + 1], 255);
                 }
                 app.session_count--;
                 if (app.session_sel >= app.session_count && app.session_count > 0)
@@ -128,7 +129,7 @@ void ui_handle_dialog(int key) {
     } else if (app.rename_active) {
         if (key == '\n' || key == KEY_ENTER) {
             if (app.rename_buf[0] && app.session_sel >= 0 && app.session_sel < app.session_count) {
-                strncpy(app.session_titles[app.session_sel], app.rename_buf, 255);
+                hermes_strlcpy(app.session_titles[app.session_sel], app.rename_buf, 255);
                 app_desktop_notify(&app, "Session renamed", 2);
             }
             app.rename_active = false;
@@ -405,9 +406,9 @@ void ui_handle_normal(int key) {
                     /* Check search filter */
                     if (ui.sidebar_search_active && ui.sidebar_search_len > 0) {
                         char lower_t[256], lower_q[128];
-                        strncpy(lower_t, app.session_titles[i], 255);
+                        hermes_strlcpy(lower_t, app.session_titles[i], 255);
                         for (int c = 0; lower_t[c]; c++) lower_t[c] = tolower((unsigned char)lower_t[c]);
-                        strncpy(lower_q, ui.sidebar_search, 127);
+                        hermes_strlcpy(lower_q, ui.sidebar_search, 127);
                         for (int c = 0; lower_q[c]; c++) lower_q[c] = tolower((unsigned char)lower_q[c]);
                         if (!strstr(lower_t, lower_q)) continue;
                     }

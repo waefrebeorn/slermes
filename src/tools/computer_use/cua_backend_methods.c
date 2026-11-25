@@ -1,3 +1,4 @@
+#include "hermes_core_types.h"
 #define _GNU_SOURCE
 /*
  * port_cua_backend_methods.c — real, self-contained ports of the pure-logic
@@ -391,7 +392,7 @@ json_t *cua_apps_from_windows(const json_t *raw_windows)
             if (strcmp(seen[s], key) == 0) { dup = 1; break; }
         if (dup) continue;
         if (n_seen < 256) {
-            strncpy(seen[n_seen], key, 63);
+            hermes_strlcpy(seen[n_seen], key, 63);
             seen[n_seen][63] = '\0';
             n_seen++;
         }
@@ -422,6 +423,7 @@ json_t *cua_apps_from_windows(const json_t *raw_windows)
 #include <sys/stat.h>
 #include "../../lib/libyaml/yaml.h"
 #include "tools_config_cua.h"
+
 
 static int (*cua_contract_install_hook)(bool upgrade, bool show_installer_progress) = NULL;
 extern char **environ;
