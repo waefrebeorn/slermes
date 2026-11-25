@@ -162,6 +162,19 @@ else
     echo "   SKIPPED (no python on PATH)"
 fi
 
+echo "== vault_local_backend_oracle (local backend over real vault files vs LocalLoginBackend)"
+if command -v "$FERNET_PY" >/dev/null 2>&1; then
+    PATH="/c/msys64/mingw64/bin:$PATH" PYTHONPATH="${FERNET_PYTHONPATH:-}" "$FERNET_PY" tests/oracle/vault_local_backend_oracle.py
+    rc=$?
+    if [ $rc -eq 3 ]; then
+        echo "   ORACLE SKIPPED (needs cryptography + USERPROFILE/HOME)"
+    elif [ $rc -ne 0 ]; then
+        echo "   ORACLE FAIL"; fail=1
+    fi
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo
 [ $fail -eq 0 ] && echo "unit tests: PASS" || echo "unit tests: FAIL"
 exit $fail
