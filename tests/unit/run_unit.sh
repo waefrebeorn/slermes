@@ -39,6 +39,20 @@ else
     echo "   SKIPPED (src/port_missing_impl.o not built)"
 fi
 
+echo "== onboarding_flow_oracle (differential: C port vs session_rules.onboarding_flow)"
+# The port's contract is "same answer as Python", so the check is a real differential run over the
+# quarry flow, not a hand-written expectation table.
+PYBIN="${PYTHON:-python}"
+if command -v "$PYBIN" >/dev/null 2>&1; then
+    if PATH="/c/msys64/mingw64/bin:$PATH" "$PYBIN" tests/oracle/onboarding_flow_oracle.py; then
+        :
+    else
+        echo "   ORACLE FAIL"; fail=1
+    fi
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo
 [ $fail -eq 0 ] && echo "unit tests: PASS" || echo "unit tests: FAIL"
 exit $fail
