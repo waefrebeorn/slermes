@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define FERNET_VERSION 0x80
 #define FERNET_MIN_LEN (1 + 8 + FERNET_IV_LEN + 16 + 32)   /* one padding block of ciphertext */
@@ -207,6 +208,16 @@ char *fernet_encrypt(const char *secret, const unsigned char *plain, size_t len,
     return token;
 }
 
+char *fernet_encrypt_random(const char *secret, const unsigned char *plain, size_t len, char **err)
+{
+    unsigned char iv[FERNET_IV_LEN];
+    if (!crypto_random_bytes(iv, sizeof iv)) {
+        if (err) *err = err_new("no entropy for an IV");
+        return NULL;
+    }
+    return fernet_encrypt(secret, plain, len, iv, (long long)time(NULL), err);
+}
+
 /* ── decrypt ────────────────────────────────────────────────────────────────── */
 
 unsigned char *fernet_decrypt(const char *secret, const char *token,
@@ -274,6 +285,9 @@ unsigned char *fernet_decrypt(const char *secret, const char *token,
         return NULL;
     }
     if (out_len) *out_len = plain_len;
+    /* The header promises a NUL-terminated buffer for convenience; callers that need the exact bytes
+     * still have *out_len, and a body that legitimately contains NULs is their business, not ours. */
+    plain[plain_len] = '\0';
     return plain;
 }
 

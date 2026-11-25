@@ -29,6 +29,10 @@ int fernet_key_split(const char *secret,
 char *fernet_encrypt(const char *secret, const unsigned char *plain, size_t len,
                      const unsigned char iv[FERNET_IV_LEN], long long ts, char **err);
 
+/* Encrypt with a random IV and the current time -- what a real writer must use. Reusing an IV across
+ * two ciphertexts under the same key is the one mistake CBC does not forgive. */
+char *fernet_encrypt_random(const char *secret, const unsigned char *plain, size_t len, char **err);
+
 /* Decrypt and verify. ttl < 0 disables the age check. Returns malloc'd plaintext (NUL-terminated for
  * convenience, but trust *out_len) or NULL with a malloc'd *err: "invalid token" for a bad HMAC, a bad
  * version, a bad length or bad padding, "expired" when the token is older than ttl. */
