@@ -1,0 +1,4 @@
+Metadata-Version: 2.1
+Name: acme-plugin
+Version: 1.2.3
+Summary: Acme entry-point plugin for the fixture test

@@ -1,0 +1,11 @@
+[hermes_agent.plugins]
+acme_tools = acme_plugin.tools:register
+acme_llm = acme_plugin.llm:register
+
+[hermes_agent.plugin_capabilities]
+acme_tools.tools.override = acme_plugin.tools:register
+acme_tools.llm.model_override = acme_plugin.llm:register
+acme_llm.llm.model_override = acme_plugin.llm:register
+acme_llm.bogus.thing = acme_plugin.llm:register
+acme_llm.llm.model_override = acme_plugin.llm:register
+tools.override = acme_plugin.other:register

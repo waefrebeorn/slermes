@@ -190,8 +190,10 @@ static void ensure_weixin_dir(void) {
     }
 }
 
-/* PoP: ctx_token_path @ plugins/platforms/weixin/adapter.py:_token_path */
-static void ctx_token_path(char *buf, size_t sz) {
+/* PoP: ctx_token_path @ plugins/platforms/weixin/adapter.py:_token_path
+ * Shared with weixin_http.c, which calls it for the same g_wx account state -- it is static here
+ * only by accident of how the module was split, and that made the sibling TU bind to a stub. */
+void ctx_token_path(char *buf, size_t sz) {
     const char *home = getenv("SLERMES_HOME");
     if (!home || !*home) home = getenv("HOME");
     if (!home) home = ".";

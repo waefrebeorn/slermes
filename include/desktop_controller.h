@@ -40,4 +40,10 @@ void desktop_controller_set_gateway_connected(bool connected);
 /* Set active profile */
 void desktop_controller_set_active_profile(const char *profile);
 
+/* Read back what the controller is showing. None of these are in the header the shell was
+ * written against; they exist so the state machine can be tested without a window. */
+const char *desktop_controller_get_message(void);
+const char *desktop_controller_get_active_profile(void);
+bool desktop_controller_gateway_connected(void);
+
 #endif /* DESKTOP_CONTROLLER_H */
