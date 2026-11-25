@@ -1419,13 +1419,14 @@ json_t *w28_adapter_ca7894_verify_sender_auth(const json_t *in) {
     }
     {
         char *c0 = ea_strip(clauses[0]);
-        char *as = ea_lower_dup(authserv);
         size_t k;
         int eq;
+        /* Only the HEADER's authserv token is lower-cased; the configured id is
+         * compared as given. So "mx.example.com;..." against "MX.EXAMPLE.COM" is
+         * UNTRUSTED, while "MX.EXAMPLE.COM;..." against "mx.example.com" is trusted. */
         for (k = 0; c0[k]; k++) c0[k] = ea_lower((unsigned char)c0[k]);
-        eq = !strcmp(c0, as);
+        eq = !strcmp(c0, authserv ? authserv : "");
         free(c0);
-        free(as);
         if (!eq) {
             out = ea_verdict_json(0, "no Authentication-Results from trusted authserv-id");
             goto done;
@@ -1627,7 +1628,10 @@ json_t *w28_adapter_ca7894_reply_threading(const json_t *in) {
     const char *ctx_msgid = (mj && mj->type == JSON_STRING) ? mj->str_val : NULL;
     const char *reply_to = (rj && rj->type == JSON_STRING) ? rj->str_val : NULL;
     const char *subject_src = ctx_subject ? ctx_subject : "Hermes Agent";
-    const char *original = (reply_to && reply_to[0]) ? reply_to : ctx_msgid;
+    /* An empty message id is falsy in Python, so the threading headers are None
+     * rather than "" -- the port was emitting empty strings. */
+    const char *original = (reply_to && reply_to[0]) ? reply_to
+                           : ((ctx_msgid && ctx_msgid[0]) ? ctx_msgid : NULL);
     json_t *out = json_object();
     sb_t subj;
     sb_init(&subj);
