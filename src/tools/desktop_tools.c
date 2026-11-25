@@ -459,6 +459,60 @@ static char *handle_react_to_message(const char *args_json, const char *task_id)
     return json_text(out);
 }
 
+
+/* PoP: manage_catalog @ tools/connectors/catalog_tool.py:manage_catalog
+ *
+ * Order matters upstream: argument validation runs first, and only then the desktop-only guard, so
+ * a caller with a bad action hears about the action rather than about the missing window. */
+static char *handle_manage_catalog(const char *args_json, const char *task_id) {
+    (void)task_id;
+    static const char *const actions[] = { "search", "install" };
+    static const char *const kinds[]   = { "plugin", "skill" };
+    static const char *const top_keys[] = { "action", "kind", "query", "items", "reason" };
+
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *action = args ? json_get_str(args, "action", "") : "";
+    const char *kind = args ? json_get_str(args, "kind", "") : "";
+    const json_t *items = args ? json_obj_get(args, "items") : NULL;
+
+    if (args && args->type == JSON_OBJECT) {
+        /* unknown parameter(s) ... */
+        for (size_t i = 0; i < json_object_size(args); i++) {
+            const char *k = json_object_get_key_at(args, i);
+            if (!k) continue;
+            bool known = false;
+            for (size_t j = 0; j < sizeof top_keys / sizeof *top_keys; j++)
+                if (strcmp(k, top_keys[j]) == 0) { known = true; break; }
+            if (!known) {
+                char msg[256];
+                snprintf(msg, sizeof msg,
+                         "unknown parameter '%s': manage_catalog takes action, kind, query, items and reason. "
+                         "The host decides source, version, profile and settings.", k);
+                json_free(args);
+                return err_json(msg);
+            }
+        }
+    }
+    if (!action || !*action || !one_of(action, actions, sizeof actions / sizeof *actions)) {
+        json_free(args);
+        return err_json("action must be one of search, install.");
+    }
+    if (kind && *kind && !one_of(kind, kinds, sizeof kinds / sizeof *kinds)) {
+        json_free(args);
+        return err_json("kind must be one of plugin, skill.");
+    }
+    if (strcmp(action, "install") == 0) {
+        if (!items || items->type != JSON_ARRAY || json_len((json_t *)items) == 0) {
+            json_free(args);
+            return err_json("install needs 'items': [{\"kind\": \"plugin\", \"id\": \"<catalog id>\"}, ...].");
+        }
+    }
+    json_free(args);
+    return err_json("manage_catalog is available only in the Hermes desktop app, where the approval card "
+                    "can be drawn. Tell the user to install from a terminal instead: `hermes plugins "
+                    "install <id>` for a plugin, `hermes skills install <id>` for a skill.");
+}
+
 void registry_init_desktop_ui(void) {
     registry_register("set_theme",
         "Set the Hermes desktop app's accent colour, light/dark mode and layout, or show a picker card. "
@@ -540,6 +594,16 @@ void registry_init_desktop_ui(void) {
           "\"messages_back\":{\"type\":\"integer\",\"description\":\"How many user messages back to react to (0 = the latest).\"}},"
           "\"required\":[\"emoji\"]}",
         handle_react_to_message);
+    registry_register("manage_catalog",
+        "Find and install Hermes catalog plugins and hub skills for the user. 'search' lists matches and changes nothing; 'install' shows the user an approval card.",
+        "{\"type\":\"object\",\"properties\":{"
+          "\"action\":{\"type\":\"string\",\"enum\":[\"search\",\"install\"]},"
+          "\"kind\":{\"type\":\"string\",\"enum\":[\"plugin\",\"skill\"]},"
+          "\"query\":{\"type\":\"string\",\"description\":\"search: text to match.\"},"
+          "\"items\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"kind\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"}}}},"
+          "\"reason\":{\"type\":\"string\"}},"
+          "\"required\":[\"action\"]}",
+        handle_manage_catalog);
     registry_register("read_terminal",
         "Read the in-app terminal pane beside this chat. No args = visible screen + total_lines; page scrollback with start_line (0 = oldest) + count.",
         "{\"type\":\"object\",\"properties\":{"
