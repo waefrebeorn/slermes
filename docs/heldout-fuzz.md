@@ -252,5 +252,11 @@ per character cannot measure anything large.
   `fetched_at: "1970-01-01T00:00:00"` live and `null` in the port; every authored case
   that omits the stamp wants `null`. Tried flipping the port to the epoch: measured
   authored 0 -> 3 mismatches and held-out 1 -> 16, so the two shapes are genuinely
-  different upstream and the difference is NOT "absent vs present". Reverted. The shape
-  that separates them has not been identified; guessing cost 16 findings in one edit.
+  different upstream and the difference is NOT "absent vs present". A second attempt
+  split the two shapes explicitly (key ABSENT -> epoch, key present but null -> null) and
+  measured authored 0 -> 1, held-out 1 -> 8, so that is not the rule either. Both
+  reverted; the gate stays at authored 12 PASS / held-out 1. STOP HERE: two failed
+  hypotheses on one field means the input shape is not understood, and a third guess
+  would churn a green tree for nothing. The way forward is to read `snapshot_of` in the
+  oracle (how it materialises `fetched_at` for each fixture shape) before touching the
+  port again -- not to keep flipping the C.
