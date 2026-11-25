@@ -82,6 +82,38 @@ Each has a differential oracle against the quarry (`tests/oracle/onboarding_*_or
   could only ever answer "Connectors are not available in this session." is a name without behaviour,
   and this file exists to avoid counting those.
 
+## Live browser: what works, what does not
+
+`browser_cdp` was dead and looked like a configuration problem. Two defects fixed:
+
+* `lib/libwebsocket` used `read()`/`write()`/`close()` on a socket. On Windows a socket is not a CRT
+  file descriptor: `connect` "succeeded" and the handshake never left the process. Every byte now goes
+  through `ws_io_send`/`ws_io_recv`/`ws_io_close`.
+* `cdp_send_command` returned the first frame that arrived, which is often an *event*
+  (`executionContextCreated`, `loadEventFired`) rather than the response. It now matches the response
+  id and discards events.
+
+Verified live against headless Edge 158 (`--remote-debugging-port=9222`), one MCP server per check:
+
+```
+browser_cdp {cmd: Runtime.evaluate, params: {expression: "1+1", returnByValue: true}}
+  -> {"id":1,"result":{"result":{"type":"number","value":2,"description":"2"}}}
+```
+
+The vault fill path was then driven end to end against a local page (`http://127.0.0.1:8899/`, a form
+with an email and a password input): `vl_build_inspection_js` -> classify -> `select_password` ->
+`vl_build_fill_js` -> `Runtime.evaluate`. In one evaluation it reported `{"filled":1}` and the
+password input held the value. A wrong `expected_origin` correctly refused with
+`{"refused":"origin_changed","found":"http://127.0.0.1:8899"}`.
+
+**Unresolved, and the reason `fill` is still unregistered:** the same chain across *separate* MCP calls
+is not reliable in this target. Mutations issued in one call sometimes have no effect while a
+subsequent read shows a page that already has them, and the shadow-root walk reports five roots on a
+page with none -- i.e. some calls are not landing in the document that was just read. Whether the
+client re-attaches to a different context or this headless target recycles its renderer is
+undetermined. The next step is to log `Runtime.executionContextCreated`/`Destroyed` events and print
+the `contextId` of every `Runtime.evaluate`, which distinguishes the two cases in one run.
+
 ## Standing gates
 
 ```
