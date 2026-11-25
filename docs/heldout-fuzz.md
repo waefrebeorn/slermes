@@ -265,9 +265,15 @@ per character cannot measure anything large.
   all -> "1970-01-01T00:00:00") and measured **authored 0 -> 3, held-out 1 -> 16**.
   Reverted again.
 
-  So the oracle's own source contradicts the authored expectations on this field. That
-  makes it a **fixture-versus-oracle conflict**, not a port bug: the recorded `out` in
-  `tests/fixtures/w25_usage_61b537.jsonl` disagrees with what the oracle computes for the
-  same shape. Resolving it means regenerating those expectations from live, which changes
-  the authored baseline and is a decision to take deliberately -- not something to slip in
-  while chasing one counter. Gate stays at authored 12 PASS / held-out 1.
+  **Correction to my own conclusion:** I called this a fixture-versus-oracle conflict and
+  said the fixture was stale. It is not. The fixtures here are **input-only** -- there is
+  no recorded `out` key at all; the expectation is computed by the oracle on every run.
+  A regeneration script I wrote confirmed it in the only way that matters: it wanted to
+  "change" all 12 lines because none of them carried an `out` to compare against, i.e. it
+  would have ADDED an expectation instead of refreshing one. Deleted, not run.
+
+  So the disagreement is genuinely shape-dependent inside live code: the authored shapes
+  (all with a real ISO string) answer `null` for a stamp the port also answers `null` for,
+  while `snapshot: {}` answers the epoch. The input that separates them is still
+  unidentified, and **three port-side attempts plus one wrong theory about the fixtures**
+  is where I stop and hand it on. Gate stays at authored 12 PASS / held-out 1.
