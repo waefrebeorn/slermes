@@ -162,6 +162,11 @@ int main(int argc, char **argv) {
     /* C06: Load .env file into process environment (port of Python env_loader.py) */
     load_env();
 
+    /* Every ported tool module registers itself through one of the 90
+     * registry_init_<module>() entry points; nothing ran them, so the registry was nearly empty. */
+    extern void hermes_tools_register_all(void);
+    hermes_tools_register_all();
+
     if (argc > 1 && (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-v") == 0)) {
         print_banner();
         return 0;

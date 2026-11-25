@@ -193,6 +193,7 @@ CUPBOARD_ORPHANS = src/port_missing_impl.o src/acp/acp_protocol.o \
     src/cron/scripts/__init__.o \
     src/desktop_app.o \
     src/desktop_controller.o \
+    src/tools/registry_init_all.o \
     src/desktop_gui.o \
     src/desktop_input.o \
     src/desktop_pty.o \
