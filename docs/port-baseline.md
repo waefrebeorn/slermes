@@ -50,25 +50,23 @@ Held-out fuzz (the only measure that can disagree with the author):
 
 | wave | clean | carrying findings | per-case | date |
 |---|---|---|---|---|
-| wave | clean | carrying |
-|---|---|---|
-| 25 | 43 | 14 |
-| 26 | 47 | 13 |
-| 27 | 48 | 27 |
-| 28 | 11 | 21 |
-| 29 | 12 | 18 |
-| 30 | 9 | 14 |
-| 31 | 15 | 8 |
-| 32 | 12 | 9 |
-| 33 | 10 | 8 |
-| 34 | 7 | 8 |
-| 35 | 1 | 0 |
+| wave | clean | carrying | skipped |
+|---|---|---|---|
+| 25 | 43 | 14 | 0 |
+| 26 | 47 | 13 | 0 |
+| 27 | 48 | 27 | 0 |
+| 28 | 11 | 21 | 0 |
+| 29 | 12 | 18 | 0 |
+| 30 | 9 | 14 | 1 |
+| 31 | 15 | 8 | 0 |
+| 32 | 12 | 9 | 0 |
+| 33 | 11 | 7 | 1 |
+| 34 | 7 | 8 | 0 |
+| 35 | 1 | 0 | 0 |
 
-**357 gates measured, 215 clean (60%), 140 carrying, 2 skipped** (upstream hangs).
-Sweep of 2026-11-24 with the summary parser fixed: gate_fuzz used to read the
-oracle's "ORACLE ... N cases" line from stdout only, so an oracle reporting on
-stderr was scored as 0 cases and called VACUOUS. Three gates still report
-`cases=0` and are listed as unmeasured rather than clean.
+**357 gates: 216 clean (61%), 139 carrying, 2 skipped** (the live module hangs on the
+input, so no expectation exists). Measured 2026-11-24 with buffered harnesses; no
+gate is left in the "0 cases" state that used to read as vacuous.
 
 ## Why the previous counts were wrong
 
