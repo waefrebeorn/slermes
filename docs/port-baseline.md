@@ -53,21 +53,22 @@ Held-out fuzz (the only measure that can disagree with the author):
 | wave | clean | carrying |
 |---|---|---|
 | 25 | 43 | 14 |
-| 26 | 46 | 14 |
+| 26 | 47 | 13 |
 | 27 | 48 | 27 |
 | 28 | 11 | 21 |
 | 29 | 12 | 18 |
-| 30 | 8 | 16 |
+| 30 | 9 | 14 |
 | 31 | 15 | 8 |
-| 32 | 11 | 10 |
-| 33 | 9 | 10 |
-| 34 | 6 | 9 |
+| 32 | 12 | 9 |
+| 33 | 10 | 8 |
+| 34 | 7 | 8 |
 | 35 | 1 | 0 |
 
-**357 gates measured, 210 clean (59%), 147 carrying at least one real divergence.**
-Sweep of 2026-11-24 (third of the day). Three further gates were fixed while this
-sweep was running (`w26_cache_8bdf62`, `w26_provider_9eacd0`,
-`w26_sessionmes_de1f3f`), so wave 26 is one sweep behind its own tree.
+**357 gates measured, 215 clean (60%), 140 carrying, 2 skipped** (upstream hangs).
+Sweep of 2026-11-24 with the summary parser fixed: gate_fuzz used to read the
+oracle's "ORACLE ... N cases" line from stdout only, so an oracle reporting on
+stderr was scored as 0 cases and called VACUOUS. Three gates still report
+`cases=0` and are listed as unmeasured rather than clean.
 
 ## Why the previous counts were wrong
 
