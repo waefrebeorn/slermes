@@ -18,6 +18,7 @@
 #include "hermes_agent.h"
 #include "kanban_db.h"
 #include "base64.h"
+#include "libhttp/http.h"
 
 /* src/hermes_cli/kanban_db.c -- the review transition; no header declares it. */
 int kanban_request_review(sqlite3 *conn, const char *task_id, const char *summary,
@@ -435,6 +436,99 @@ static char *handle_attach(const char *args_json, const char *task_id) {
     return txt ? txt : kb_err("serialize failed");
 }
 
+
+/* PoP: handle_attach_url @ tools/kanban_tools.py:_handle_attach_url */
+static char *handle_attach_url(const char *args_json, const char *task_id) {
+    (void)task_id;
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *tid = default_task_id(args ? json_get_str(args, "task_id", "") : NULL);
+    const char *url = args ? json_get_str(args, "url", "") : "";
+    const char *name = args ? json_get_str(args, "filename", "") : "";
+    const char *ctype = args ? json_get_str(args, "content_type", "") : "";
+
+    if (!tid || !*tid) { json_free(args); return kb_err("task_id is required (or set HERMES_KANBAN_TASK)"); }
+    if (!url || !*url) { json_free(args); return kb_err("url is required"); }
+    if (strncmp(url, "http://", 7) != 0 && strncmp(url, "https://", 8) != 0) {
+        json_free(args); return kb_err("url must be http:// or https://");
+    }
+    const char *scope = enforce_ownership(tid);
+    if (scope) { json_free(args); return kb_err(scope); }
+    if (!*tid || strchr(tid, '/') || strchr(tid, '\\') || strcmp(tid, "..") == 0) {
+        json_free(args); return kb_err("task_id is not a valid path component");
+    }
+
+    http_t *h = http_new(30);
+    if (!h) { json_free(args); return kb_err("cannot create the HTTP client"); }
+    http_resp_t *resp = http_get(h, url, NULL);
+    if (!resp || resp->status < 200 || resp->status >= 300) {
+        int st = resp ? resp->status : -1;
+        if (resp) http_resp_free(resp);
+        http_free(h);
+        json_free(args);
+        char msg[128]; snprintf(msg, sizeof msg, "failed to fetch the URL (HTTP %d)", st);
+        return kb_err(msg);
+    }
+
+    /* Default the stored name from the URL's last path segment. */
+    char derived[256] = "attachment.bin";
+    if (!name || !*name) {
+        const char *q = strchr(url, '?');
+        size_t ulen = q ? (size_t)(q - url) : strlen(url);
+        const char *slash = NULL;
+        for (size_t i = 0; i < ulen; i++) if (url[i] == '/') slash = url + i;
+        if (slash && slash + 1 < url + ulen) {
+            size_t n = ulen - (size_t)(slash + 1 - url);
+            if (n >= sizeof derived) n = sizeof derived - 1;
+            memcpy(derived, slash + 1, n);
+            derived[n] = '\0';
+        }
+        name = derived;
+    }
+    if (resp->body_len > 25u * 1024u * 1024u) {
+        http_resp_free(resp); http_free(h); json_free(args);
+        return kb_err("fetched content exceeds the 25 MB attachment cap");
+    }
+
+    char home[1024], dir[1200], stored[1600];
+    hermes_get_home(home, sizeof home);
+    snprintf(dir, sizeof dir, "%s/kanban", home);              mkdir(dir, 0755);
+    snprintf(dir, sizeof dir, "%s/kanban/attachments", home);  mkdir(dir, 0755);
+    snprintf(dir, sizeof dir, "%s/kanban/attachments/%s", home, tid); mkdir(dir, 0755);
+    snprintf(stored, sizeof stored, "%s/%s", dir, leaf_name(name));
+
+    FILE *f = fopen(stored, "wb");
+    if (!f) {
+        http_resp_free(resp); http_free(h); json_free(args);
+        return kb_err("cannot write the attachment file");
+    }
+    size_t wrote = fwrite(resp->body, 1, resp->body_len, f);
+    fclose(f);
+    size_t nbytes = resp->body_len;
+    http_resp_free(resp);
+    http_free(h);
+    if (wrote != nbytes) { json_free(args); return kb_err("short write while storing the attachment"); }
+
+    sqlite3 *conn = kdb_connect(NULL);
+    if (!conn) { json_free(args); return kb_err("cannot open the kanban board"); }
+    int rc = kdb_add_attachment(conn, tid, leaf_name(name), stored,
+                                ctype && *ctype ? ctype : "application/octet-stream",
+                                (long)nbytes, getenv("HERMES_PROFILE") ? getenv("HERMES_PROFILE") : "hermes");
+    kdb_close(conn);
+    if (rc <= 0) { json_free(args); return kb_err("the board rejected the attachment (unknown task?)"); }
+
+    json_t *out = json_object();
+    json_set(out, "ok", json_bool(true));
+    json_set(out, "task_id", json_string(tid));
+    json_set(out, "attachment_id", json_number((double)rc));
+    json_set(out, "filename", json_string(leaf_name(name)));
+    json_set(out, "stored_path", json_string(stored));
+    json_set(out, "size", json_number((double)nbytes));
+    json_free(args);
+    char *txt = json_serialize_pretty(out, JSON_INDENT(2));
+    json_free(out);
+    return txt ? txt : kb_err("serialize failed");
+}
+
 /* PoP: handle_request_review @ tools/kanban_tools.py:_handle_request_review */
 static char *handle_request_review(const char *args_json, const char *task_id) {
     (void)task_id;
@@ -523,6 +617,10 @@ void registry_init_kanban(void) {
         "Hand a finished, self-verified task to a reviewer. Moves the task to the review column. Unlike kanban_block this is not a blocker.",
         "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\",\"description\":\"Task id. If omitted, defaults to HERMES_KANBAN_TASK from the env.\"},\"summary\":{\"type\":\"string\",\"description\":\"What was implemented and how it was verified, in one or two sentences.\"},\"reviewer\":{\"type\":\"string\",\"description\":\"Optional reviewer profile.\"},\"metadata\":{\"type\":\"object\",\"description\":\"Optional structured metadata for the event payload.\"}},\"required\":[\"summary\"]}",
         handle_request_review);
+    registry_register("kanban_attach_url",
+        "Attach a file to a task by URL. Fetches the content, stores it as a real attachment under the task's attachments dir (25 MB cap) and records it on the board.",
+        "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\",\"description\":\"Task id. If omitted, defaults to HERMES_KANBAN_TASK from the env.\"},\"url\":{\"type\":\"string\",\"description\":\"http(s) URL to fetch.\"},\"filename\":{\"type\":\"string\",\"description\":\"File name to store it under; defaults to the URL's last path segment.\"},\"content_type\":{\"type\":\"string\",\"description\":\"Optional MIME type.\"}},\"required\":[\"url\"]}",
+        handle_attach_url);
     registry_register("kanban_link",
         "Add a parent->child dependency edge. Cycles and self-links rejected.",
         "{\"type\":\"object\",\"properties\":{\"parent_id\":{\"type\":\"string\"},\"child_id\":{\"type\":\"string\"}},\"required\":[\"parent_id\",\"child_id\"]}",
