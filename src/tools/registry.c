@@ -687,13 +687,32 @@ char *registry_dispatch(const char *name, const char *args_json,
             pthread_mutex_unlock(&g_registry_mutex);
             /* Sanitize error results — strip CDATA, role tags, fences from tool
              * error messages before they enter conversation history.
-             * Port of Python model_tools._sanitize_tool_error(). */
+             * Port of Python model_tools._sanitize_tool_error().
+             *
+             * The envelope must survive: sanitising the whole string turned
+             * {"error": "..."} into "[TOOL_ERROR] {"error": "..."}", which no JSON
+             * client can parse (the MCP server answered -32603 for every such tool).
+             * Sanitise the message field and keep the object. */
             if (result && strncmp(result, "{\"error\"", 7) == 0 && tool_error_sanitize) {
-                char *sanitized = tool_error_sanitize(result);
-                if (sanitized) {
-                    free(result);
-                    result = sanitized;
+                json_t *obj = json_parse(result, NULL);
+                const json_t *msg = obj ? json_obj_get(obj, "error") : NULL;
+                if (obj && msg && msg->type == JSON_STRING) {
+                    char *clean = tool_error_sanitize(msg->str_val ? msg->str_val : "");
+                    if (clean) {
+                        const char *tag = "[TOOL_ERROR] ";
+                        size_t tag_len = strlen(tag);
+                        json_set(obj, "error",
+                                 json_string(strncmp(clean, tag, tag_len) == 0 ? clean + tag_len : clean));
+                        free(clean);
+                        char *rebuilt = json_serialize(obj);
+                        if (rebuilt) { free(result); result = rebuilt; }
+                    }
+                } else if (!obj) {
+                    /* Not JSON after all: the old behaviour is the only thing to do. */
+                    char *sanitized = tool_error_sanitize(result);
+                    if (sanitized) { free(result); result = sanitized; }
                 }
+                json_free(obj);
                 /* P1: tag the error with its retry class so the agent loop can
                  * decide whether to retry. Non-destructive: appends a field. */
                 tool_error_class_t cls = tool_classify_error(result);

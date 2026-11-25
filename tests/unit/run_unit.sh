@@ -75,6 +75,22 @@ else
     echo "   SKIPPED (no python on PATH)"
 fi
 
+echo "== test_setup_beat (the onboarding tool end to end, on a real state.db)"
+SB_OBJS="src/tools/setup_beat_tool.o src/agent/onboarding_flow_apply.o src/agent/onboarding_reminders.o \
+    src/agent/onboarding_task_catalog.o src/agent/onboarding_task_catalog_data.o src/agent/onboarding_text.o \
+    src/cli/paths.o src/tools/registry.o src/persistence/sqlite/_state/hermes_state_open.o \
+    src/persistence/sqlite/_state/hermes_state_lifecycle.o lib/libdb/sqlite3.o lib/libjson/json.o"
+if [ -f src/tools/setup_beat_tool.o ]; then
+    if $CCBIN -O1 -w -I include -I lib -I lib/libdb -include hermes_win32.h -D_GNU_SOURCE -include stdlib.h \
+            tests/unit/test_setup_beat.c $SB_OBJS -o "$OUT/t_sb.exe" 2>"$OUT/t_sb.build.log"; then
+        SB_TEST_HOME="$OUT/sb_home" "$OUT/t_sb.exe" || fail=1
+    else
+        echo "   BUILD FAIL"; sed -n '1,6p' "$OUT/t_sb.build.log"; fail=1
+    fi
+else
+    echo "   SKIPPED (src/tools/setup_beat_tool.o not built)"
+fi
+
 echo
 [ $fail -eq 0 ] && echo "unit tests: PASS" || echo "unit tests: FAIL"
 exit $fail

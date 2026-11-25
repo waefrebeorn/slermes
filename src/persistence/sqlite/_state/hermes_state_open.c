@@ -346,12 +346,12 @@ hermes_state_db_t *hermes_state_db_open(const char *path) {
         "PRAGMA temp_store=memory;",
         NULL, NULL, NULL);
     char *err = NULL;
-    if (sqlite3_exec(h->db, HERMES_STATE_SCHEMA_SQL, NULL, NULL, &err) != SQLITE_OK) {
-        if (err) sqlite3_free(err);
-        sqlite3_close(h->db);
-        free(h);
-        return NULL;
-    }
+    /* The schema SQL carries indexes over columns that only exist after the ALTER TABLE
+     * migrations below (sessions.parent_session_id among them). On a database created by an older
+     * build those indexes fail and, before this, the whole open failed -- the tool could not read its
+     * own state on a real install. So: try, and on failure migrate the columns and try once more. */
+    int schema_rc = sqlite3_exec(h->db, HERMES_STATE_SCHEMA_SQL, NULL, NULL, &err);
+    if (err) { sqlite3_free(err); err = NULL; }
     /* Migrate legacy DBs that predate title_source / last_read_at (Python
      * ALTER TABLE ADD COLUMN migration; duplicate-column errors are fine). */
     {
@@ -359,7 +359,10 @@ hermes_state_db_t *hermes_state_db_open(const char *path) {
             "title_source TEXT", "last_read_at REAL",
             "last_activity_at REAL",
             "last_activity_description TEXT",
-            "last_activity_provenance TEXT", NULL
+            "last_activity_provenance TEXT",
+            "parent_session_id TEXT",
+            "end_reason TEXT",
+            "ended_at REAL", NULL
         };
         for (int i = 0; sess_cols[i]; i++) {
             char *sql = NULL;
@@ -373,6 +376,16 @@ hermes_state_db_t *hermes_state_db_open(const char *path) {
     }
     /* Deferred indexes and FTS layout: a fresh DB is born at the current
      * layout (Python: fresh DBs get FTS_STORAGE_VERSION immediately). */
+    if (schema_rc != SQLITE_OK) {
+        /* Retry the schema now that the legacy columns exist. Only here does an open actually fail. */
+        char *err2 = NULL;
+        if (sqlite3_exec(h->db, HERMES_STATE_SCHEMA_SQL, NULL, NULL, &err2) != SQLITE_OK) {
+            if (err2) sqlite3_free(err2);
+            sqlite3_close(h->db);
+            free(h);
+            return NULL;
+        }
+    }
     sqlite3_exec(h->db, HERMES_STATE_DEFERRED_INDEX_SQL, NULL, NULL, NULL);
     if (sqlite3_exec(h->db, HERMES_STATE_FTS_SQL, NULL, NULL, &err) != SQLITE_OK) {
         if (err) { sqlite3_free(err); err = NULL; }
