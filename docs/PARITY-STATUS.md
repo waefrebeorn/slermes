@@ -55,12 +55,27 @@ Each has a differential oracle against the quarry (`tests/oracle/onboarding_*_or
   A faithful port means either embedding the engine or redefining the tool — both are decisions, not
   ports. Do not ship a handler that pretends to execute code.
 * **`browser_vault`** (`tools/browser_vault_tool.py:738`) reads the *browser profile* credential
-  store (logins, cards, addresses as handles) and fills them on the live page. The C tree has
-  `src/agent/browser_provider.c` and the vault *helper* `w15_browservau_3f8d5c_saved_origins(meta)`,
-  but no store behind it. `include/hermes_vault.h` is a different thing — a service/key/value store
-  with a master key, not browser logins.
-* **`manage_connections`** (`tools/connectors/tool.py`) manages hosted connectors: client state,
-  OAuth, MCP install. `grep -rl connectors src/` finds no store in C at all.
+  store (logins, cards, addresses as handles) and fills them on the live page. The C tree has real
+  pieces: `src/agent/vault_backends/local.c` implements a local backend over a records array
+  (`w22_local_259750_list_items`, `get_meta`, `resolve_password`, `resolve_otp`), and
+  `w15_browservau_3f8d5c_saved_origins`, `w11_browservau_c65b17_list(backends, can_prompt)`. What is
+  missing is the registry that loads those records — `src/agent/vault_backends/__init__.c`,
+  `base.c`, `browser.c`, `unlock.c` are `port_pending` stubs, so nothing enumerates enabled backends
+  or opens the vault file. `include/hermes_vault.h` is a different store (service/key/value with a
+  master key), not browser logins.
+
+  Consequence: `browser_vault`'s `list` action is reachable once that registry exists; `fill`,
+  `save_login`, `enter_code` and `unlock` additionally need a live page and the backend unlock path.
+* **`manage_connections`** (`tools/connectors/tool.py`). Correction to an earlier note in this file:
+  the C tree does have a substantial connectors port — `src/tools/connectors/` is ~3.8k lines, and
+  `w19_tool_6f4666_manage_connections(args)` already performs upstream's validation and target
+  normalization, returning the request (`{"kind":"managed"|"mcp","action","targets"}`) or the same
+  error strings. What is missing is *execution*: every action — `status`, `display`, `connect`,
+  `rename`, the MCP ops — goes through the hosted portal client (`PortalConnectorClient`,
+  `managed_client(creates_guest=True)` in `tools/connectors/managed.py`), which is live network I/O
+  against the Hermes backend and has no C counterpart. So the tool is not registered: a handler that
+  could only ever answer "Connectors are not available in this session." is a name without behaviour,
+  and this file exists to avoid counting those.
 
 ## Standing gates
 
