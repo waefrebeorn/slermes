@@ -247,3 +247,10 @@ per character cannot measure anything large.
   gateway verdict of *not authorized*, and the port read an empty array as the ABSENT
   verdict, which fell through to the allow-all default and admitted the sender. Empty
   list = False verdict; absent = fall through. Gate now 7 -> 0, 350 cases.
+
+* **`w25_usage_61b537` / `snapshot_document`** — `snapshot: {}` answers
+  `fetched_at: "1970-01-01T00:00:00"` live and `null` in the port; every authored case
+  that omits the stamp wants `null`. Tried flipping the port to the epoch: measured
+  authored 0 -> 3 mismatches and held-out 1 -> 16, so the two shapes are genuinely
+  different upstream and the difference is NOT "absent vs present". Reverted. The shape
+  that separates them has not been identified; guessing cost 16 findings in one edit.
