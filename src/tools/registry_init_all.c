@@ -25,6 +25,7 @@ void registry_init_cronjob(void);
 void registry_init_curator_backup(void);
 void registry_init_delegate(void);
 void registry_init_desktop_ui(void);
+void registry_init_project_tools(void);
 void registry_init_discord(void);
 void registry_init_env_probe(void);
 void registry_init_exec_code(void);
@@ -82,6 +83,7 @@ void hermes_tools_register_all(void)
     registry_init_curator_backup();
     registry_init_delegate();
     registry_init_desktop_ui();
+    registry_init_project_tools();
     registry_init_discord();
     registry_init_env_probe();
     registry_init_exec_code();
