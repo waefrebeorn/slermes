@@ -249,3 +249,40 @@ call pure functions, not processes.
 
 Order: `-lopengl32` first (free, unblocks the GL cluster), then the spawn/wait shim (biggest
 class, 63+52 files overlap heavily), then PDCurses or an explicit scope decision.
+
+## 9. The orphan gap is closed: 877 translation units linked
+
+`unshadow.py` converged in one pass — 877 objects, link `rc=0`, zero stub collisions, zero
+candidate faults. `build/objects.mk` went from 3,560 to **4,437 objects**.
+
+The reason it worked now and not four attempts earlier is not that the loop improved. Each
+failure was measuring the next blocker, and the blockers were fixed by hand between runs:
+
+| blocker | fix |
+|---|---|
+| 375 undefined references (`fork`/`wait`/`dlopen`) | `hermes_posix_compat.c` |
+| 5 candidate files that did not compile | gettid, timed join, `strlwr`, `char*`/`json_t*`, private config type |
+| `__imp_gl*` unresolved | `-lopengl32` |
+| 26 `multiple definition` in `infrastructure_stubs.o` | disappeared once the real objects were in the same set |
+
+Verified after wiring: `LINK_RC=0`, `port object gate: PASS`, health `1159/1159`,
+`flow_mcp.sh` PASS, and six string-carrying gates unchanged (`w28_adapter_ca7894_p3` 70/0,
+`w28_files_ee43ed_p1` 85/0, `w32_methodscon_ce0f5d_p1` 70/0, `w29_hostedroom_8927a5_p3` 77/0,
+`w25_reporter_f01f70` 35/0, `w26_provider_9eacd0` 24/0).
+
+**Measured state after:**
+
+```
+ported files  1878 (8068 behaviour PoP lines)     done     1878 files  18755 KB  39.0%
+pending hdrs   570                                 todo     1110 files  16629 KB  23.1%
+placeholder    542                                 seam      812 files  25406 KB  16.9%
+no claim      2366                                 outside   219 files   7197 KB   4.5%
+gates >= 5    2296 (112240 cases)                  empty     795 files    435 KB  16.5%
+no fixture     146                                 total    4814 files  68422 KB
+```
+
+What is still outside the product: **89 superseded duplicate splits** (their symbols live in
+linked monoliths; deciding which copy is authoritative is a per-symbol judgement) and **26
+files that do not compile** — the curses/termios/ConPTY class, which are design decisions
+rather than renames. 8 of 52 `fork()` call sites have migrated to the seam; the rest need a
+pipe-based variant (`hermes_popen`) before they can move.
