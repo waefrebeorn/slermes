@@ -1,3 +1,4 @@
+#include "hermes_posix_compat.h"
 /* linux_desktop_entry.c — Port of hermes_cli/linux_desktop_entry.py.
  * Install and remove the Linux XDG desktop entry (hermes.desktop).
  *
@@ -140,27 +141,19 @@ char *lde_render_desktop_entry(const char *exec_command, const char *icon) {
 /* PoP: lde_run_quiet @ hermes_cli/linux_desktop_entry.py:_run_quiet */
 bool lde_run_quiet(const char *const *cmd, int cmd_count) {
     if (!cmd || cmd_count <= 0) return false;
-    pid_t pid = fork();
-    if (pid < 0) return false;
-    if (pid == 0) {
-        /* child: stdout/stderr -> DEVNULL */
-        int devnull = open("/dev/null", O_WRONLY);
-        if (devnull >= 0) {
-            dup2(devnull, 1);
-            dup2(devnull, 2);
-            if (devnull > 2) close(devnull);
-        }
-        char **argv = malloc((size_t)(cmd_count + 1) * sizeof(char *));
-        if (!argv) _exit(127);
-        for (int i = 0; i < cmd_count; i++) argv[i] = (char *)cmd[i];
-        argv[cmd_count] = NULL;
-        execvp(argv[0], argv);
-        _exit(127);
-    }
-    int status = 0;
-    /* Python timeout=60 — block with a bounded wait (no alarm to keep it simple). */
-    if (waitpid(pid, &status, 0) == -1) return false;
-    if (WIFEXITED(status)) return WEXITSTATUS(status) == 0;
+    /* Was fork + dup2(/dev/null) + execvp + waitpid. spawn_in does the redirection and
+     * hermes_wait returns the child's status, so "ran and exited 0" is one call away. */
+    char **argv = malloc((size_t)(cmd_count + 1) * sizeof(char *));
+    if (!argv) return false;
+    for (int i = 0; i < cmd_count; i++) argv[i] = (char *)cmd[i];
+    argv[cmd_count] = NULL;
+
+    hermes_pid_t pid = hermes_spawn_in(NULL, argv, 1);
+    free(argv);
+    if (pid == (hermes_pid_t)-1) return false;
+    int status = -1;
+    if (hermes_wait(pid, 60000, &status) != HERMES_WAIT_EXITED) return false;
+    return status == 0;
     return false;
 }
 

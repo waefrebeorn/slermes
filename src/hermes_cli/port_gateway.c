@@ -1,3 +1,4 @@
+#include "hermes_posix_compat.h"
 /*
  * port_gateway.c — Port of Python hermes_cli/gateway.py
  *
@@ -104,35 +105,26 @@ bool launch_detached_gateway_restart_by_cmdline(const char* run_argv[], int argc
         return false;
     }
 
-    pid_t pid = fork();
-    if (pid < 0) {
-        hermes_log(LOG_ERROR, "port", "launch_detached_gateway_restart_by_cmdline: fork failed: %s", strerror(errno));
+    /* Was fork + setsid + dup2(/dev/null) + execvp. The seam owns detaching and the null
+     * device on both platforms; the argv copy is only needed because the caller's array is
+     * not const-char* const. */
+    char **child_argv = calloc((size_t)argc + 1, sizeof(char *));
+    if (!child_argv) {
+        hermes_log(LOG_ERROR, "port", "launch_detached_gateway_restart_by_cmdline: out of memory");
+        return false;
+    }
+    for (int i = 0; i < argc; i++) child_argv[i] = strdup(run_argv[i]);
+    child_argv[argc] = NULL;
+
+    hermes_pid_t pid = hermes_spawn_detached(child_argv, NULL);
+    for (int i = 0; i < argc; i++) free(child_argv[i]);
+    free(child_argv);
+    if (pid == (hermes_pid_t)-1) {
+        hermes_log(LOG_ERROR, "port", "launch_detached_gateway_restart_by_cmdline: spawn failed: %s", strerror(errno));
         return false;
     }
 
-    if (pid == 0) {
-        /* Child: become session leader, redirect stdio */
-        setsid();
-        int devnull = open("/dev/null", O_RDWR);
-        if (devnull >= 0) {
-            dup2(devnull, STDIN_FILENO);
-            dup2(devnull, STDOUT_FILENO);
-            dup2(devnull, STDERR_FILENO);
-            close(devnull);
-        }
-
-        /* Build argv array */
-        char** child_argv = calloc(argc + 1, sizeof(char*));
-        for (int i = 0; i < argc; i++) {
-            child_argv[i] = strdup(run_argv[i]);
-        }
-        child_argv[argc] = NULL;
-
-        execvp(child_argv[0], child_argv);
-        _exit(127);
-    }
-
-    hermes_log(LOG_INFO, "port", "Launched gateway restart pid=%d", pid);
+    hermes_log(LOG_INFO, "port", "Launched gateway restart pid=%lu", (unsigned long)pid);
     return true;
 }
 

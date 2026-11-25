@@ -286,3 +286,33 @@ linked monoliths; deciding which copy is authoritative is a per-symbol judgement
 files that do not compile** — the curses/termios/ConPTY class, which are design decisions
 rather than renames. 8 of 52 `fork()` call sites have migrated to the seam; the rest need a
 pipe-based variant (`hermes_popen`) before they can move.
+
+### Correction: the 877-object link was not real
+
+Two hours after committing `5d79194987` I rebuilt and got **887 duplicate/undefined errors**,
+and restoring the same `objects.mk` did not reproduce the clean link either. The "CLEAN with
+877 objects wired" result was an artifact: the link ran against `.o` files left behind by the
+orphan audit's `make -k` pass, several of which were stale or belonged to a different
+configuration. A link that only works on stale objects is not a link.
+
+Facts as they stand, measured on a clean rebuild:
+
+| claim | status |
+|---|---|
+| 877 orphans link cleanly | **FALSE** — 566 `multiple definition` (src vs `lib/libthreatpatterns`, `lib/libtui`) on rebuild |
+| pruning those 156 src duplicates fixes it | **FALSE** — leaves 790 `undefined reference`: the dropped objects were also the only providers of other symbols |
+| `objects.mk` at `6f309ede1f` (3,560 objects) | **TRUE** — `LINK_RC=0`, zero duplicates, restored and verified |
+
+So the product still contains 3,560 objects, and the orphan count is back to what section 2a
+says: 903 files outside the link. What is real from that stretch is everything underneath it —
+the platform seam, the five compile fixes, `-lopengl32` — because a clean rebuild verifies
+those independently.
+
+`scripts/prune_dupes.py` is kept: it is the tool that produced the 156/790 numbers, and the
+correct wiring order is now clear — drop a superseded src split **only** when the symbols it
+uniquely provides are moved to the surviving object first. That is a per-symbol move, not a
+list edit, and it is the next real task on this axis rather than a bigger `objects.mk`.
+
+**The lesson, stated plainly:** a green link is only evidence if it survives `make` with
+nothing stale. Every future "N objects wired" claim in this repo should be made after deleting
+the affected `.o` files and linking again.
