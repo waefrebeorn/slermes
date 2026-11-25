@@ -205,6 +205,36 @@ int main(int argc, char **argv) {
         return hermes_gateway_main(argc - 1, argv + 1);
     }
 
+    if (argc > 1 && strcmp(argv[1], "logs") == 0) {
+        /* Port of hermes_cli/main.py:2506 cmd_logs: `logs list` lists the files, anything else
+         * tails one of them with the same filters the Python CLI accepts. */
+        extern void cli_logs_list(void);
+        extern void cli_logs_tail(const char *log_name, int num_lines, int follow,
+                                  const char *level, const char *session,
+                                  const char *since, const char *component);
+
+        const char *log_name = "agent";
+        int num_lines = 50;
+        int follow = 0;
+        const char *level = NULL, *session = NULL, *since = NULL, *component = NULL;
+
+        for (int i = 2; i < argc; i++) {
+            const char *a = argv[i];
+            if (!strcmp(a, "list")) { cli_logs_list(); return 0; }
+            if ((!strcmp(a, "-n") || !strcmp(a, "--lines")) && i + 1 < argc) { num_lines = atoi(argv[++i]); continue; }
+            if (!strcmp(a, "-f") || !strcmp(a, "--follow")) { follow = 1; continue; }
+            if (!strcmp(a, "--level") && i + 1 < argc) { level = argv[++i]; continue; }
+            if (!strcmp(a, "--session") && i + 1 < argc) { session = argv[++i]; continue; }
+            if (!strcmp(a, "--since") && i + 1 < argc) { since = argv[++i]; continue; }
+            if (!strcmp(a, "--component") && i + 1 < argc) { component = argv[++i]; continue; }
+            if (a[0] != '-') { log_name = a; continue; }
+            fprintf(stderr, "logs: unrecognized option %s\n", a);
+            return 2;
+        }
+        cli_logs_tail(log_name, num_lines, follow, level, session, since, component);
+        return 0;
+    }
+
     if (argc > 1 && strcmp(argv[1], "cron") == 0) {
         /* Forward declare — defined in scheduler.c */
         extern int hermes_cron_main(int, char**);
