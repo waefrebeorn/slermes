@@ -277,3 +277,14 @@ per character cannot measure anything large.
   while `snapshot: {}` answers the epoch. The input that separates them is still
   unidentified, and **three port-side attempts plus one wrong theory about the fixtures**
   is where I stop and hand it on. Gate stays at authored 12 PASS / held-out 1.
+
+* **`w28_files_ee43ed_p1` / `file_url_path` (3 remaining)** — the held-out cases carry
+  `url: "", nt: 0, seams: {}` and live answers `path: ""`, while in a 425-case batch the
+  port answers either a separator refusal or `"\\home\\u\\a.txt"`. The SAME shape probed
+  alone passes, which first looked like cross-case state in the harness. Two things were
+  ruled out by measurement: the function has no statics, and initialising its `out`
+  buffer changed nothing (3 -> 3), so `out` is always written and the uninitialised-stack
+  theory is dead — reverted to keep the tree free of unverified changes.
+  What remains untested: the batch echo path, i.e. whether the harness re-serialises
+  `out` from a shared buffer. Next step is to print the raw harness line for one of those
+  three cases instead of reading the frozen behaviour through the oracle.
