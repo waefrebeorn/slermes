@@ -2158,8 +2158,11 @@ json_t *w27_adapter_1f12c3_p9_gate_env(const json_t *snapshot, const json_t *nam
         if (w27a1f_truthy(v)) return w27a1f_json_own(w27a1f_pystr(v));
         return w27a1f_json_own(w27a1f_pystr(dflt));
     }
-    if (env_raw) {
-        char *env = w27a1f_strip_dup(w27a1f_str_or(env_raw, ""));
+    if (env_raw && env_raw->type != JSON_NULL) {
+        /* The seam writes str(val) into the environment, so a mapping arrives as
+         * the text "{}" and a number as "0" -- not as "". A null POPS the variable
+         * instead of setting it, which is the default path below. */
+        char *env = w27a1f_strip_dup(w27a1f_pystr(env_raw));
         json_t *r;
         if (!env || !env[0]) { free(env); return w27a1f_json_own(w27a1f_pystr(dflt)); }
         r = json_string(env);
