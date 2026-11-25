@@ -134,8 +134,11 @@ char *discover_client_credentials(void)
     return NULL;
 }
 
-/* Port of Python: _extract_client_credential_candidates_from_text */
-char *extract_client_credential_candidates_from_text(const char *content)
+/* Port of Python: _extract_client_credential_candidates_from_text
+ * Python returns a LIST of candidate strings, so the port returns a json array. The
+ * declaration said char * and the body returned json_t* -- a type lie the compiler only
+ * caught when this file was finally built as part of an orphan audit. */
+json_t *extract_client_credential_candidates_from_text(const char *content)
 {
     if (!content) {
         hermes_log(LOG_WARNING, "port", "extract_client_credential_candidates: null content");

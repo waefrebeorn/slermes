@@ -478,7 +478,24 @@ void cch_join_worker_for_relay_teardown(cch_stream_worker *worker,
     clock_gettime(CLOCK_REALTIME, &ts);
     ts.tv_sec += 2;
     ts.tv_nsec += 0;
+#if defined(__linux__)
     int rc = pthread_timedjoin_np(worker->thread, NULL, &ts);
+#else
+    /* mingw-w64 has no pthread_timedjoin_np. Poll tryjoin to the same deadline so the
+     * caller sees the identical EBUSY/ETIMEDOUT contract instead of failing to build. */
+    int rc;
+    for (;;) {
+        void *ret = NULL;
+        rc = pthread_tryjoin_np(worker->thread, &ret);
+        if (rc == 0) break;
+        struct timespec now;
+        clock_gettime(CLOCK_REALTIME, &now);
+        if (now.tv_sec > ts.tv_sec ||
+            (now.tv_sec == ts.tv_sec && now.tv_nsec >= ts.tv_nsec)) { rc = ETIMEDOUT; break; }
+        struct timespec nap = {0, 10 * 1000 * 1000};  /* 10 ms */
+        nanosleep(&nap, NULL);
+    }
+#endif
     if (rc == EBUSY || rc == ETIMEDOUT) {
         /* still alive after the join timeout */
         fprintf(stderr,

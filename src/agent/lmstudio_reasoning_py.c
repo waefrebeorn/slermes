@@ -13,17 +13,18 @@
  * The caller passes a struct with enabled, effort, and allowed_options
  * fields that mirrors the Python dict structure.
  */
-typedef struct {
-    int enabled;              /* 1 if reasoning is enabled, 0 if disabled */
-    const char *effort;       /* User's effort choice: "low", "medium", "high" */
-    const char *const *allowed_options;  /* NULL-terminated array or NULL */
-} lmstudio_reasoning_config_t;
+/* The config type and the resolver both live in lmstudio_reasoning.h. This file used to
+ * re-declare the struct (with an extra allowed_options field) and call the resolver with
+ * three arguments -- a private type and a private arity that only compiled as long as
+ * nothing checked them. Use the header's type; keep allowed_options as a parameter of this
+ * wrapper only, because that is where the Python dict carried the model's option list. */
 
 const char *resolve_lmstudio_effort_from_config(const lmstudio_reasoning_config_t *config,
-                                                 const char *const *allowed_options)
+                                                const char *const *allowed_options)
 {
     if (!config) return "medium";  /* Default */
-    
-    return resolve_lmstudio_effort(config->enabled, config->effort,
-                                   allowed_options ? allowed_options : config->allowed_options);
+
+    /* The header's resolver takes (config, allowed_options) -- the config carries enabled
+     * and effort. Python's signature is (reasoning_config, allowed_options) exactly. */
+    return resolve_lmstudio_effort(config, allowed_options);
 }

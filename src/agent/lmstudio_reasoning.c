@@ -45,7 +45,7 @@ const char *lmstudio_map_effort_alias(const char *effort) {
 
 /* ── Helpers ───────────────────────────────────────────────── */
 
-static void strlwr(char *dest, const char *src, size_t n) {
+static void lmstudio_strlwr(char *dest, const char *src, size_t n) {
     if (!dest || n == 0) return;
     size_t i;
     for (i = 0; src[i] && i + 1 < n; i++)
@@ -82,7 +82,7 @@ const char *resolve_lmstudio_effort(const lmstudio_reasoning_config_t *reasoning
     } else if (effort && effort[0]) {
         /* Lowercase the effort into a static buffer */
         static char lower[64];
-        strlwr(lower, effort, sizeof(lower));
+        lmstudio_strlwr(lower, effort, sizeof(lower));
 
         /* Map aliases — returns either static alias string or lower */
         const char *mapped = lmstudio_map_effort_alias(lower);

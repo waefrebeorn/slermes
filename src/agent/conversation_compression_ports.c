@@ -15,8 +15,13 @@
 #include <unistd.h>
 #include <time.h>
 #include <pthread.h>
+#if defined(_WIN32)
+#include <windows.h>
+#endif
 #include <stdint.h>
-#include <sys/syscall.h>
+#if defined(__linux__)
+#include <sys/syscall.h>   /* SYS_gettid: Linux only */
+#endif
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -26,11 +31,23 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
+/* Thread identity for the lock holder. Linux uses the raw tid; Windows has no syscall()
+ * and no SYS_gettid, and GetCurrentThreadId() is the same identity the kernel reports. */
+static long ccp_thread_id(void) {
+#if defined(__linux__)
+    return (long)syscall(SYS_gettid);
+#elif defined(_WIN32)
+    return (long)GetCurrentThreadId();
+#else
+    return (long)(size_t)pthread_self();
+#endif
+}
+
 /* PoP: ccp_compression_lock_holder @ agent/conversation_compression.py:_compression_lock_holder */
 char *ccp_compression_lock_holder(void) {
     /* Python: pid:tid:agent-instance:uuid. */
     char *out = NULL;
-    asprintf(&out, "%ld:%ld:agent:%ld", (long)getpid(), (long)syscall(SYS_gettid),
+    asprintf(&out, "%ld:%ld:agent:%ld", (long)getpid(), ccp_thread_id(),
              (long)(time(NULL) ^ (unsigned long)getpid()));
     return out;
 }
