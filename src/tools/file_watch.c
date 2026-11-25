@@ -28,7 +28,7 @@ static const char *SCHEMA = "{"
       "\"recursive\":{\"type\":\"boolean\",\"description\":\"Watch directory recursively (default: false)\",\"default\":false}"
     "},"
     "\"required\":[\"path\"]"
-"\"}";
+"}";
 
 /* Convert event name string to inotify mask */
 static uint32_t event_name_to_mask(const char *name) {

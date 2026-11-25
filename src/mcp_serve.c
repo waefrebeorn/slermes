@@ -115,7 +115,24 @@ static json_t *mcp_serve_tools_list(void) {
         json_t *tool = json_object();
         json_set(tool, "name", json_string(reg->tools[i].name));
         json_set(tool, "description", json_string(reg->tools[i].description));
-        json_set(tool, "inputSchema", json_string(reg->tools[i].schema_json));
+        /* MCP requires inputSchema to be a JSON *object*; the registry stores it as text, so a
+         * string-typed schema here is a protocol error every client has to work around. Parse it
+         * and embed the object. A schema that will not parse is a real defect in the tool
+         * definition, so it is surfaced as an object carrying the parse failure rather than
+         * shipped as a string the client cannot read. */
+        json_t *schema = reg->tools[i].schema_json
+            ? json_parse(reg->tools[i].schema_json, NULL)
+            : NULL;
+        if (schema && schema->type == JSON_OBJECT) {
+            json_set(tool, "inputSchema", schema);
+        } else {
+            json_free(schema);
+            json_t *fallback = json_object();
+            json_set(fallback, "type", json_string("object"));
+            json_set(fallback, "properties", json_object());
+            json_set(fallback, "x-schema-error", json_string("registry schema_json is not a JSON object"));
+            json_set(tool, "inputSchema", fallback);
+        }
         json_array_append(tools, tool);
     }
 
@@ -272,11 +289,18 @@ static char *mcp_serve_handle_request(const char *body) {
  *  HTTP helpers
  * ================================================================ */
 
-/* Send HTTP response */
+/* Send HTTP response. The body can outgrow any fixed buffer -- tools/list is already past 64 KiB
+ * with the current registry -- so a truncated response is a protocol error, not a cosmetic one.
+ * Small bodies use the stack; large ones get their own allocation. */
 static void send_http_response(int client_fd, int status, const char *status_text,
                                 const char *content_type, const char *body) {
-    char resp[65536];
-    int n = snprintf(resp, sizeof(resp),
+    const char *b = body ? body : "";
+    size_t blen = strlen(b);
+    size_t need = blen + 512;
+    char stackbuf[8192];
+    char *resp = (need <= sizeof stackbuf) ? stackbuf : malloc(need);
+    if (!resp) return;
+    int n = snprintf(resp, need,
         "HTTP/1.1 %d %s\r\n"
         "Content-Type: %s\r\n"
         "Content-Length: %zu\r\n"
@@ -288,12 +312,14 @@ static void send_http_response(int client_fd, int status, const char *status_tex
         "%s",
         status, status_text,
         content_type,
-        strlen(body),
-        body);
+        blen,
+        b);
     if (n > 0) {
-        ssize_t written = mcp_sock_write(client_fd, resp, (size_t)n);
+        size_t total = (size_t)n < need ? (size_t)n : need - 1;
+        ssize_t written = mcp_sock_write(client_fd, resp, total);
         (void)written;
     }
+    if (resp != stackbuf) free(resp);
 }
 
 /* ================================================================

@@ -37,7 +37,7 @@ static const char *SCHEMA = "{"
       "\"new_id\":{\"type\":\"string\",\"description\":\"New session ID for branch operation\"},"
       "\"tag_filter\":{\"type\":\"string\",\"description\":\"Filter list by tag\"},"
       "\"limit\":{\"type\":\"number\",\"description\":\"Max results for list\",\"default\":50},"
-      "\"key\":{\"type\":\"string\",\"description\":\"Meta key (for get_meta/set_meta)\"},\n      \"\"value\":{\"type\":\"string\",\"description\":\"Meta value (for set_meta)\"},\n      \"\"retention_days\":{\"type\":\"number\",\"description\":\"Retention days for prune\",\"default\":0}"
+      "\"key\":{\"type\":\"string\",\"description\":\"Meta key (for get_meta/set_meta)\"},\n      \"value\":{\"type\":\"string\",\"description\":\"Meta value (for set_meta)\"},\n      \"retention_days\":{\"type\":\"number\",\"description\":\"Retention days for prune\",\"default\":0}"
     "},"
     "\"required\":[\"operation\"]"
 "}";

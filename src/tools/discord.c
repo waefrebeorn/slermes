@@ -435,7 +435,18 @@ void registry_init_discord(void) {
         "discord_admin",
         "Manage a Discord server: create_channel, kick_member, ban_member, add_role, remove_role, search_members, list_pins, pin_message, unpin_message, create_thread. "
         "Requires DISCORD_BOT_TOKEN and appropriate permissions.",
-        NULL,
+        "{\"type\":\"object\",\"properties\":{"
+          "\"action\":{\"type\":\"string\",\"description\":\"Admin action to run.\"},"
+          "\"channel_id\":{\"type\":\"string\"},"
+          "\"guild_id\":{\"type\":\"string\"},"
+          "\"user_id\":{\"type\":\"string\"},"
+          "\"role_id\":{\"type\":\"string\"},"
+          "\"message_id\":{\"type\":\"string\"},"
+          "\"name\":{\"type\":\"string\"},"
+          "\"query\":{\"type\":\"string\"},"
+          "\"reason\":{\"type\":\"string\"},"
+          "\"limit\":{\"type\":\"integer\"}},"
+          "\"required\":[\"action\"]}",
         discord_handler
     );
 }

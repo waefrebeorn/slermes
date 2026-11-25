@@ -34,6 +34,15 @@ probe "tools/list"  '{"jsonrpc":"2.0","id":2,"method":"tools/list"}'            
 # A listing is not execution: read_file must return the repository README through the same
 # JSON-RPC path, or the registry is only a table of names.
 probe "tools/call"  '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"read_file","arguments":{"path":"README.md","limit":2}}}' 'Slermes'
+# Every published schema must be a usable JSON-Schema object; a typo in one C string literal is
+# otherwise invisible until a client tries to consume it.
+if command -v python >/dev/null 2>&1; then
+  if python scripts/check_tool_schemas.py --url "$URL" >> .testbin/flow-mcp.log 2>&1; then
+    echo "   ok    tool schemas"
+  else
+    echo "   FAIL  tool schemas (see .testbin/flow-mcp.log)"; fail=1
+  fi
+fi
 
 if [ $fail -ne 0 ]; then
   echo "flow-mcp: FAIL"; sed -n '1,10p' .testbin/flow-mcp.log; exit 1

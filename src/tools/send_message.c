@@ -201,7 +201,7 @@ char *validate_media_path(const char *path) {
     return NULL;
 }
 
-static const char *SCHEMA = "{\""
+static const char *SCHEMA = "{"
     "\"type\":\"object\","
     "\"properties\":{"
       "\"action\":{\"type\":\"string\",\"description\":\"Action: 'send' (default) or 'list' (show available platforms)\"},"
