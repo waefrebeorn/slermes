@@ -295,6 +295,75 @@ static char *handle_desktop_preview(const char *args_json, const char *task_id) 
     return err_json("desktop_preview is only available in the Hermes desktop app.");
 }
 
+
+/* PoP: annotate_preview_tool @ tools/annotate_preview_tool.py:annotate_preview_tool */
+static char *handle_annotate_preview(const char *args_json, const char *task_id) {
+    (void)task_id;
+    static const char *const actions[] = { "add", "hold", "remove", "clear" };
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *action = args ? json_get_str(args, "action", "add") : "add";
+    const char *ref = args ? json_get_str(args, "ref", "") : "";
+    const char *selector = args ? json_get_str(args, "selector", "") : "";
+
+    if (!action || !*action) action = "add";
+    if (!one_of(action, actions, sizeof actions / sizeof *actions)) {
+        json_free(args);
+        return err_json("action must be one of: add, hold, remove, clear.");
+    }
+    /* add/hold/remove need something to point at; clear does not. */
+    if (strcmp(action, "clear") != 0 && (!ref || !*ref) && (!selector || !*selector)) {
+        json_free(args);
+        return err_json("add needs a ref from drive_preview action='elements' (e.g. 'btn-sign-in') or a CSS selector.");
+    }
+    json_free(args);
+    return err_json("annotate_preview is only available in the Hermes desktop app.");
+}
+
+/* PoP: drive_preview_tool @ tools/drive_preview_tool.py:drive_preview_tool */
+static char *handle_drive_preview(const char *args_json, const char *task_id) {
+    (void)task_id;
+    static const char *const actions[] = { "elements", "click", "hover", "type", "scroll", "press",
+                                           "strobe", "back", "forward", "reload" };
+    static const char *const needs_target[] = { "click", "hover", "type", "press" };
+    static const char *const scroll_to[] = { "top", "bottom" };
+
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *action = args ? json_get_str(args, "action", "") : "";
+    const char *ref = args ? json_get_str(args, "ref", "") : "";
+    const char *selector = args ? json_get_str(args, "selector", "") : "";
+    const char *key = args ? json_get_str(args, "key", "") : "";
+    const char *to = args ? json_get_str(args, "to", "") : "";
+    const json_t *text = args ? json_obj_get(args, "text") : NULL;
+    const json_t *amount = args ? json_obj_get(args, "amount") : NULL;
+    const json_t *limit = args ? json_obj_get(args, "limit") : NULL;
+    char msg[160];
+
+    if (!action || !one_of(action, actions, sizeof actions / sizeof *actions)) {
+        json_free(args);
+        return err_json("action must be one of: elements, click, hover, type, scroll, press, strobe, back, forward, reload.");
+    }
+    if (one_of(action, needs_target, sizeof needs_target / sizeof *needs_target) &&
+        (!ref || !*ref) && (!selector || !*selector)) {
+        snprintf(msg, sizeof msg, "%s needs a ref from action='elements' (e.g. 'btn-sign-in') or a CSS selector.", action);
+        json_free(args);
+        return err_json(msg);
+    }
+    if (strcmp(action, "type") == 0 && !text) {
+        json_free(args); return err_json("type needs the text to enter.");
+    }
+    if (strcmp(action, "press") == 0 && (!key || !*key)) {
+        json_free(args); return err_json("press needs a key, e.g. 'Enter' or 'Escape'.");
+    }
+    if (to && *to && !one_of(to, scroll_to, sizeof scroll_to / sizeof *scroll_to)) {
+        json_free(args); return err_json("to must be one of: top, bottom.");
+    }
+    if ((amount && amount->type != JSON_NUMBER) || (limit && limit->type != JSON_NUMBER)) {
+        json_free(args); return err_json("amount and max must be integers.");
+    }
+    json_free(args);
+    return err_json("drive_preview is only available in the Hermes desktop app.");
+}
+
 void registry_init_desktop_ui(void) {
     registry_register("set_theme",
         "Set the Hermes desktop app's accent colour, light/dark mode and layout, or show a picker card. "
@@ -346,6 +415,28 @@ void registry_init_desktop_ui(void) {
           "\"label\":{\"type\":\"string\",\"description\":\"Optional tab label.\"}},"
           "\"required\":[\"action\"]}",
         handle_desktop_preview);
+    registry_register("annotate_preview",
+        "Put one annotation up in the in-app browser preview, take one down, or clear them all. add/hold/remove need a ref or selector; clear takes them all down.",
+        "{\"type\":\"object\",\"properties\":{"
+          "\"action\":{\"type\":\"string\",\"enum\":[\"add\",\"hold\",\"remove\",\"clear\"]},"
+          "\"ref\":{\"type\":\"string\",\"description\":\"Ref from drive_preview action='elements'.\"},"
+          "\"selector\":{\"type\":\"string\",\"description\":\"CSS selector to annotate.\"},"
+          "\"label\":{\"type\":\"string\",\"description\":\"Optional label on the annotation.\"}},"
+          "\"required\":[]}",
+        handle_annotate_preview);
+    registry_register("drive_preview",
+        "Drive the in-app browser preview: inventory elements, click, hover, type, scroll, press a key, or navigate back/forward/reload.",
+        "{\"type\":\"object\",\"properties\":{"
+          "\"action\":{\"type\":\"string\",\"enum\":[\"elements\",\"click\",\"hover\",\"type\",\"scroll\",\"press\",\"strobe\",\"back\",\"forward\",\"reload\"]},"
+          "\"ref\":{\"type\":\"string\"},"
+          "\"selector\":{\"type\":\"string\"},"
+          "\"text\":{\"type\":\"string\",\"description\":\"Text to enter for action='type'.\"},"
+          "\"key\":{\"type\":\"string\",\"description\":\"Key for action='press', e.g. Enter.\"},"
+          "\"to\":{\"type\":\"string\",\"enum\":[\"top\",\"bottom\"]},"
+          "\"amount\":{\"type\":\"integer\"},"
+          "\"limit\":{\"type\":\"integer\"}},"
+          "\"required\":[\"action\"]}",
+        handle_drive_preview);
     registry_register("read_terminal",
         "Read the in-app terminal pane beside this chat. No args = visible screen + total_lines; page scrollback with start_line (0 = oldest) + count.",
         "{\"type\":\"object\",\"properties\":{"
