@@ -1592,7 +1592,7 @@ json_t *project_facts_for(const char *cwd) {
     
     char resolved[1024];
     if (realpath(cwd, resolved) == NULL) {
-        strncpy(resolved, cwd, sizeof(resolved));
+        hermes_strlcpy(resolved, cwd, sizeof(resolved));
         resolved[sizeof(resolved)-1] = '\0';
     }
     

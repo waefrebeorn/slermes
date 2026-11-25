@@ -2518,11 +2518,11 @@ static void cu_prune_dir(const char *dir, const char *prefix, int keep)
         for (int i = pass + 1; i < n; i++)
             if (mtimes[i] < mtimes[min_i]) min_i = i;
         if (min_i != pass) {
-            char tmpn[256]; strncpy(tmpn, names[pass], sizeof(tmpn));
+            char tmpn[256]; hermes_strlcpy(tmpn, names[pass], sizeof(tmpn));
             time_t tmpt = mtimes[pass];
-            strncpy(names[pass], names[min_i], sizeof(names[pass]));
+            hermes_strlcpy(names[pass], names[min_i], sizeof(names[pass]));
             mtimes[pass] = mtimes[min_i];
-            strncpy(names[min_i], tmpn, sizeof(names[min_i]));
+            hermes_strlcpy(names[min_i], tmpn, sizeof(names[min_i]));
             mtimes[min_i] = tmpt;
         }
     }

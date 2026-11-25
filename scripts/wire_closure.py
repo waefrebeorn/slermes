@@ -32,6 +32,10 @@ def link() -> tuple:
          'LOCALAPPDATA=C:\\Users\\eman5\\AppData\\Local'],
         cwd=str(REPO), capture_output=True, text=True, errors="replace")
     log = (proc.stdout or "") + (proc.stderr or "")
+    try:
+        (REPO / ".testbin" / "closure_last.log").write_text(log, encoding="utf-8")
+    except OSError:
+        pass
     return proc.returncode, log
 
 

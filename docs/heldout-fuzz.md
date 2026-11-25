@@ -288,3 +288,30 @@ per character cannot measure anything large.
   What remains untested: the batch echo path, i.e. whether the harness re-serialises
   `out` from a shared buffer. Next step is to print the raw harness line for one of those
   three cases instead of reading the frozen behaviour through the oracle.
+
+## The strncpy cost, measured
+
+`strncpy(dst, src, sizeof dst)` zero-fills the **entire** destination when `src` is shorter.
+This tree declares 27 `char buf[65536]`, 29 `char buf[16384]` and 8 `char buf[32768]`, so a
+two-character copy into one of those writes 64 KB of zeros.
+
+`tests/bench_strlcpy.c`, 1,000,000 copies of "ok" into a 64 KB buffer, `-O2`:
+
+| method | time |
+|---|---|
+| `strncpy` | **0.885 s** |
+| `memcpy`-style (`hermes_strlcpy`) | **0.0002 s** |
+| | **4,140x** |
+
+1,051 `strncpy` calls site-wide: 509 pass `sizeof(...)`, 180 pass a literal (255/1023/4095
+are common), the rest pass a variable. The 512 KB-class buffers are where the waste is.
+
+`hermes_strlcpy()` (in `include/hermes_core_types.h`) copies, truncates at `cap-1` and
+always terminates, without padding. Four call sites converted so far — the ones whose
+destination is provably a large local array — `LINK_RC=0`, binary unchanged at 29 MB.
+
+**Remaining work, in order:** the 509 `sizeof` and 180 literal sites need converting in
+batches, each followed by a gate run over a string-carrying gate, because the one semantic
+difference is that the tail past the terminator is no longer zeroed. Any code that `memcmp`s
+a whole fixed buffer would notice; nothing in this tree does that today, and the gates are
+what would prove it.

@@ -251,3 +251,4 @@ tests/watercup/twin_convert_skipped.json
 tests/watercup/pop_index_unresolved.json
 tests/watercup/unresolved_paths.json
 /*.dll
+.hermes-tmp.*
