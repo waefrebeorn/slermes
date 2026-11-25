@@ -66,6 +66,24 @@ int main(void)
         hermes_dlclose(h);
     }
 
+    /* ── 3. spawn_in: cwd is honoured ─────────────────────────────────────── */
+#ifdef _WIN32
+    char *argv2[] = { (char *)"cmd", (char *)"/c", (char *)"exit 3", NULL };
+#else
+    char *argv2[] = { (char *)"sh", (char *)"-c", (char *)"exit 3", NULL };
+#endif
+    hermes_pid_t pid2 = hermes_spawn_in(".", argv2, 1);
+    if (pid2 == (hermes_pid_t)-1) {
+        printf("FAIL spawn_in: errno=%d\n", errno);
+        failures++;
+    } else {
+        int st2 = -1;
+        int rc2 = hermes_wait(pid2, 30000, &st2);
+        if (rc2 == HERMES_WAIT_EXITED && st2 == 3)
+            printf("ok   spawn_in: silent child in cwd returned 3\n");
+        else { printf("FAIL spawn_in: rc=%d status=%d\n", rc2, st2); failures++; }
+    }
+
     printf(failures ? "posix_compat: FAIL\n" : "posix_compat: PASS\n");
     return failures ? 1 : 0;
 }

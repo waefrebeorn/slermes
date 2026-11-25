@@ -55,6 +55,15 @@ hermes_pid_t hermes_spawn(char *const argv[]);
  */
 int hermes_wait(hermes_pid_t pid, int timeout_ms, int *status);
 
+/**
+ * hermes_spawn_in — like hermes_spawn, but runs the child in @p cwd and, when @p silent is
+ * non-zero, with stdout/stderr redirected to the platform's null device.
+ *
+ * The double pattern (chdir + freopen + execvp inside fork) is what most call sites in this
+ * tree actually do, so it belongs in the seam rather than being rewritten 52 times.
+ */
+hermes_pid_t hermes_spawn_in(const char *cwd, char *const argv[], int silent);
+
 /** hermes_kill — terminate the child if it is still running. Returns 0 on success. */
 int hermes_kill(hermes_pid_t pid);
 

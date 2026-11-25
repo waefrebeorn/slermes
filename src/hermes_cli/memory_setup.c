@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include <dlfcn.h>
+#include "hermes_posix_compat.h"   /* dlopen/dlsym/dlclose/dlerror, Windows-aware */
 
 
 
@@ -156,8 +156,8 @@ static int cli_memory_import_available(const char *imp_name)
     /* 2) dlopen fallback for packages already on the linker path. */
     char dlname[256];
     snprintf(dlname, sizeof(dlname), "lib%s.so", imp_name);
-    void *h = dlopen(dlname, RTLD_LAZY | RTLD_NOLOAD);
-    if (h) { dlclose(h); return 1; }
+    void *h = hermes_dlopen(dlname);
+    if (h) { hermes_dlclose(h); return 1; }
 
     return 0;
 }

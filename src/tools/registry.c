@@ -1787,7 +1787,7 @@ int tools_registry_check_tool_availability(const char *arg) {
  * ================================================================== */
 
 #include <limits.h>
-#include <dlfcn.h>
+#include "hermes_posix_compat.h"   /* dlopen/dlsym/dlclose/dlerror, Windows-aware */
 #include "hermes_logger.h"
 #include "port_web_server_paths.h"   /* get_hermes_home() */
 

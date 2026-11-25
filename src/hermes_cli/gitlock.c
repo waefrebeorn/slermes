@@ -8,6 +8,7 @@
  * the remote tip doesn't report a false "update available".
  */
 #define _POSIX_C_SOURCE 200809L
+#include "hermes_posix_compat.h"
 #include "gitlock.h"
 #include "hermes_json.h"
 
@@ -42,27 +43,17 @@ int git_proc_running(void)
  * matching capture_output=True usage where only returncode is read. */
 static int gitlock_run_git(const char *repo_root, char *const argv[])
 {
-    /* Flush parent stdio first: the forked child's freopen() would otherwise
-     * flush the inherited (duplicated) stdout buffer to the original fd,
-     * duplicating the caller's output. */
+    /* Was: fork / chdir / freopen("/dev/null") / execvp / waitpid. That is the exact shape
+     * 52 files in this tree repeat, so it lives in the platform seam now -- CreateProcess
+     * with lpCurrentDirectory and NUL handles on Windows, fork+execvp elsewhere. */
     fflush(NULL);
-    pid_t pid = fork();
-    if (pid < 0)
+    hermes_pid_t pid = hermes_spawn_in(repo_root, argv, 1);
+    if (pid == (hermes_pid_t)-1)
         return -1;
-    if (pid == 0) {
-        if (chdir(repo_root) != 0)
-            _exit(127);
-        freopen("/dev/null", "w", stdout);
-        freopen("/dev/null", "w", stderr);
-        execvp(argv[0], argv);
-        _exit(127);
-    }
     int status = 0;
-    if (waitpid(pid, &status, 0) < 0)
+    if (hermes_wait(pid, -1, &status) != HERMES_WAIT_EXITED)
         return -1;
-    if (WIFEXITED(status))
-        return WEXITSTATUS(status);
-    return -1;
+    return status;
 }
 
 /* PoP: clear_stale_git_locks @ hermes_cli/gitlock.py:clear_stale_git_locks */

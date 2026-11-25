@@ -83,6 +83,49 @@ hermes_pid_t hermes_spawn(char *const argv[])
     return pi.dwProcessId;
 }
 
+hermes_pid_t hermes_spawn_in(const char *cwd, char *const argv[], int silent)
+{
+    if (!argv || !argv[0]) { errno = EINVAL; return (hermes_pid_t)-1; }
+
+    size_t cap = 4096;
+    for (int i = 0; argv[i]; i++) cap += strlen(argv[i]) * 2 + 4;
+    char *line = (char *)calloc(cap, 1);
+    if (!line) { errno = ENOMEM; return (hermes_pid_t)-1; }
+    for (int i = 0; argv[i]; i++) {
+        if (i) strncat(line, " ", cap - strlen(line) - 1);
+        append_quoted(line, cap, argv[i]);
+    }
+
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+    memset(&si, 0, sizeof si);
+    si.cb = sizeof si;
+    HANDLE nul = INVALID_HANDLE_VALUE;
+    if (silent) {
+        nul = CreateFileA("NUL", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+        if (nul != INVALID_HANDLE_VALUE) {
+            si.dwFlags = STARTF_USESTDHANDLES;
+            si.hStdOutput = nul;
+            si.hStdError = nul;
+            si.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+        }
+    }
+
+    char exe[MAX_PATH];
+    if (strchr(argv[0], '\\') || strchr(argv[0], '/')) snprintf(exe, sizeof exe, "%s", argv[0]);
+    else if (!SearchPathA(NULL, argv[0], ".exe", (DWORD)sizeof exe, exe, NULL))
+        snprintf(exe, sizeof exe, "%s", argv[0]);
+
+    BOOL ok = CreateProcessA(exe, line, NULL, NULL, silent ? TRUE : FALSE, 0, NULL,
+                             (cwd && *cwd) ? cwd : NULL, &si, &pi);
+    free(line);
+    if (nul != INVALID_HANDLE_VALUE) CloseHandle(nul);
+    if (!ok) { errno = ENOENT; return (hermes_pid_t)-1; }
+    CloseHandle(pi.hThread);
+    CloseHandle(pi.hProcess);
+    return pi.dwProcessId;
+}
+
 /* CreateProcess hands back handles, but hermes_spawn returned only the pid. Open a handle
  * for waiting by pid; this keeps the public type identical to POSIX's pid_t. */
 static HANDLE open_by_pid(hermes_pid_t pid)
@@ -174,6 +217,22 @@ hermes_pid_t hermes_spawn(char *const argv[])
     return pid;
 }
 
+hermes_pid_t hermes_spawn_in(const char *cwd, char *const argv[], int silent)
+{
+    pid_t pid = fork();
+    if (pid < 0) return (hermes_pid_t)-1;
+    if (pid == 0) {
+        if (cwd && *cwd && chdir(cwd) != 0) _exit(127);
+        if (silent) {
+            freopen("/dev/null", "w", stdout);
+            freopen("/dev/null", "w", stderr);
+        }
+        execvp(argv[0], argv);
+        _exit(127);
+    }
+    return pid;
+}
+
 int hermes_wait(hermes_pid_t pid, int timeout_ms, int *status)
 {
     if (timeout_ms < 0) {
@@ -197,9 +256,9 @@ int hermes_wait(hermes_pid_t pid, int timeout_ms, int *status)
 
 int hermes_kill(hermes_pid_t pid) { return kill(pid, SIGTERM); }
 
-void *hermes_dlopen(const char *path) { return dlopen(path, RTLD_NOW); }
-void *hermes_dlsym(void *h, const char *s) { return dlsym(h, s); }
-int   hermes_dlclose(void *h) { return dlclose(h); }
-const char *hermes_dlerror(void) { return dlerror(); }
+void *hermes_dlopen(const char *path) { return hermes_dlopen(path); }
+void *hermes_dlsym(void *h, const char *s) { return hermes_dlsym(h, s); }
+int   hermes_dlclose(void *h) { return hermes_dlclose(h); }
+const char *hermes_dlerror(void) { return hermes_dlerror(); }
 
 #endif /* _WIN32 */

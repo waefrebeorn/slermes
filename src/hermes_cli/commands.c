@@ -360,7 +360,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include <dlfcn.h>
+#include "hermes_posix_compat.h"   /* dlopen/dlsym/dlclose/dlerror, Windows-aware */
 #include <dirent.h>
 #include <sys/stat.h>
 #include <sys/statvfs.h>
