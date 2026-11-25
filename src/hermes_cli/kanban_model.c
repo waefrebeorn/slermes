@@ -364,6 +364,7 @@ void kdb_attach_free(kanban_attach_t *a)
     free(a->content_type); free(a->uploaded_by); free(a);
 }
 
+long        kdb_attach_id(const kanban_attach_t *a){ return a ? a->id : 0; }
 const char *kdb_attach_filename(const kanban_attach_t *a){ return a ? a->filename : NULL; }
 const char *kdb_attach_stored_path(const kanban_attach_t *a){ return a ? a->stored_path : NULL; }
 const char *kdb_attach_content_type(const kanban_attach_t *a){ return a ? a->content_type : NULL; }

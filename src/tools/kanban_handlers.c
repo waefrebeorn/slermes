@@ -16,6 +16,17 @@
 #include "hermes_json.h"
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
+#include "kanban_db.h"
+#include "base64.h"
+
+/* src/hermes_cli/kanban_db.c -- the review transition; no header declares it. */
+int kanban_request_review(sqlite3 *conn, const char *task_id, const char *summary,
+                          const char *metadata_json, const char *reviewer_in,
+                          long expected_run_id, bool force,
+                          char *out_reason, size_t reason_sz);
+
+#include <sys/stat.h>
+#include <errno.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -292,6 +303,179 @@ static char *handle_link(const char *args_json, const char *task_id) {
     return strdup(out);
 }
 
+
+/* ==================================================================
+ *  Attachments and the review handoff.
+ *
+ *  The engine (src/hermes_cli/kanban_tasks.c, kanban_db.c) already implements
+ *  kdb_add_attachment / kdb_list_attachments / kanban_request_review; these
+ *  handlers are the tool-facing half, with the same worker scoping the other
+ *  kanban handlers use.
+ * ================================================================== */
+
+static char *kb_err(const char *msg) {
+    char buf[512];
+    snprintf(buf, sizeof buf, "{\"ok\":false,\"error\":\"%s\"}", msg ? msg : "error");
+    return strdup(buf);
+}
+
+/* PoP: handle_attachments @ tools/kanban_tools.py:_handle_attachments */
+static char *handle_attachments(const char *args_json, const char *task_id) {
+    (void)task_id;
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *tid = default_task_id(args ? json_get_str(args, "task_id", "") : NULL);
+    if (!tid || !*tid) { json_free(args); return kb_err("task_id is required (or set HERMES_KANBAN_TASK)"); }
+    const char *scope = enforce_ownership(tid);
+    if (scope) { json_free(args); return kb_err(scope); }
+
+    sqlite3 *conn = kdb_connect(NULL);
+    if (!conn) { json_free(args); return kb_err("cannot open the kanban board"); }
+
+    int n = 0;
+    kanban_attach_t **list = kdb_list_attachments(conn, tid, &n);
+    json_t *out = json_object();
+    json_set(out, "ok", json_bool(true));
+    json_set(out, "task_id", json_string(tid));
+    json_t *arr = json_array();
+    for (int i = 0; i < n; i++) {
+        json_t *o = json_object();
+        json_set(o, "id", json_number((double)kdb_attach_id(list[i])));
+        json_set(o, "filename", json_string(kdb_attach_filename(list[i]) ? kdb_attach_filename(list[i]) : ""));
+        json_set(o, "content_type", json_string(kdb_attach_content_type(list[i]) ? kdb_attach_content_type(list[i]) : ""));
+        json_set(o, "size", json_number((double)kdb_attach_size(list[i])));
+        json_set(o, "stored_path", json_string(kdb_attach_stored_path(list[i]) ? kdb_attach_stored_path(list[i]) : ""));
+        json_append(arr, o);
+    }
+    if (list) kdb_attachment_list_free(list);
+    json_set(out, "attachments", arr);
+    json_set(out, "count", json_number((double)n));
+    kdb_close(conn);
+    json_free(args);
+
+    char *txt = json_serialize_pretty(out, JSON_INDENT(2));
+    json_free(out);
+    return txt ? txt : kb_err("serialize failed");
+}
+
+/* Only the leaf of a caller-supplied name is kept: "a/b/report.pdf" -> "report.pdf". */
+static const char *leaf_name(const char *path) {
+    const char *slash = strrchr(path, '/');
+    const char *bslash = strrchr(path, '\\\\');
+    const char *cut = slash > bslash ? slash : bslash;
+    return cut ? cut + 1 : path;
+}
+
+/* PoP: handle_attach @ tools/kanban_tools.py:_handle_attach */
+static char *handle_attach(const char *args_json, const char *task_id) {
+    (void)task_id;
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *tid = default_task_id(args ? json_get_str(args, "task_id", "") : NULL);
+    const char *name = args ? json_get_str(args, "filename", "") : "";
+    const char *b64 = args ? json_get_str(args, "content_base64", "") : "";
+    const char *ctype = args ? json_get_str(args, "content_type", "") : "";
+
+    if (!tid || !*tid) { json_free(args); return kb_err("task_id is required (or set HERMES_KANBAN_TASK)"); }
+    if (!name || !*name) { json_free(args); return kb_err("filename is required"); }
+    if (!b64 || !*b64) { json_free(args); return kb_err("content_base64 is required"); }
+    const char *scope = enforce_ownership(tid);
+    if (scope) { json_free(args); return kb_err(scope); }
+
+    size_t nbytes = 0;
+    unsigned char *bytes = base64_decode(b64, &nbytes);
+    if (!bytes) { json_free(args); return kb_err("content_base64 is not valid base64"); }
+    if (nbytes > 25u * 1024u * 1024u) {
+        free(bytes); json_free(args);
+        return kb_err("decoded content exceeds the 25 MB attachment cap");
+    }
+
+    /* The task id becomes a path component: refuse anything with a separator or a dot-dot. */
+    if (!*tid || strchr(tid, '/') || strchr(tid, '\\') || strcmp(tid, "..") == 0) {
+        free(bytes); json_free(args); return kb_err("task_id is not a valid path component");
+    }
+    char home[1024], dir[1200], stored[1600];
+    hermes_get_home(home, sizeof home);
+    /* mkdir(2) creates one level: build the chain, ignoring EEXIST at each step. */
+    snprintf(dir, sizeof dir, "%s/kanban", home);
+    mkdir(dir, 0755);
+    snprintf(dir, sizeof dir, "%s/kanban/attachments", home);
+    mkdir(dir, 0755);
+    snprintf(dir, sizeof dir, "%s/kanban/attachments/%s", home, tid);
+    mkdir(dir, 0755);
+    snprintf(stored, sizeof stored, "%s/%s", dir, leaf_name(name));
+
+    FILE *f = fopen(stored, "wb");
+    if (!f) {
+        char msg[256]; snprintf(msg, sizeof msg, "cannot write attachment: %s", strerror(errno));
+        free(bytes); json_free(args); return kb_err(msg);
+    }
+    size_t wrote = fwrite(bytes, 1, nbytes, f);
+    fclose(f);
+    free(bytes);
+    if (wrote != nbytes) { json_free(args); return kb_err("short write while storing the attachment"); }
+
+    sqlite3 *conn = kdb_connect(NULL);
+    if (!conn) { json_free(args); return kb_err("cannot open the kanban board"); }
+    int rc = kdb_add_attachment(conn, tid, leaf_name(name), stored,
+                                ctype && *ctype ? ctype : "application/octet-stream",
+                                (long)nbytes, getenv("HERMES_PROFILE") ? getenv("HERMES_PROFILE") : "hermes");
+    kdb_close(conn);
+
+    if (rc <= 0) { json_free(args); return kb_err("the board rejected the attachment (unknown task?)"); }
+
+    json_t *out = json_object();
+    json_set(out, "ok", json_bool(true));
+    json_set(out, "task_id", json_string(tid));
+    json_set(out, "attachment_id", json_number((double)rc));
+    json_set(out, "filename", json_string(leaf_name(name)));
+    json_set(out, "stored_path", json_string(stored));
+    json_set(out, "size", json_number((double)nbytes));
+    json_free(args);
+    char *txt = json_serialize_pretty(out, JSON_INDENT(2));
+    json_free(out);
+    return txt ? txt : kb_err("serialize failed");
+}
+
+/* PoP: handle_request_review @ tools/kanban_tools.py:_handle_request_review */
+static char *handle_request_review(const char *args_json, const char *task_id) {
+    (void)task_id;
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *tid = default_task_id(args ? json_get_str(args, "task_id", "") : NULL);
+    const char *summary = args ? json_get_str(args, "summary", "") : "";
+    const char *reviewer = args ? json_get_str(args, "reviewer", "") : "";
+    const json_t *meta = args ? json_obj_get(args, "metadata") : NULL;
+
+    if (!tid || !*tid) { json_free(args); return kb_err("task_id is required (or set HERMES_KANBAN_TASK)"); }
+    if (!summary || !*summary) { json_free(args); return kb_err("summary is required - describe what was implemented and how it was verified"); }
+    const char *scope = enforce_ownership(tid);
+    if (scope) { json_free(args); return kb_err(scope); }
+
+    char *meta_json = NULL;
+    if (meta) meta_json = json_serialize((json_t *)meta);
+
+    sqlite3 *conn = kdb_connect(NULL);
+    if (!conn) { free(meta_json); json_free(args); return kb_err("cannot open the kanban board"); }
+
+    char reason[512] = "";
+    int ok = kanban_request_review(conn, tid, summary, meta_json,
+                                   reviewer && *reviewer ? reviewer : NULL,
+                                   -1, false, reason, sizeof reason);
+    kdb_close(conn);
+    free(meta_json);
+
+    json_t *out = json_object();
+    json_set(out, "ok", json_bool(ok != 0));
+    json_set(out, "task_id", json_string(tid));
+    if (ok) {
+        json_set(out, "status", json_string("review"));
+    } else {
+        json_set(out, "error", json_string(reason[0] ? reason : "could not request review (unknown id or not in running/ready)"));
+    }
+    json_free(args);
+    char *txt = json_serialize_pretty(out, JSON_INDENT(2));
+    json_free(out);
+    return txt ? txt : kb_err("serialize failed");
+}
+
 /* ---- registration ---- */
 
 void registry_init_kanban(void) {
@@ -327,6 +511,18 @@ void registry_init_kanban(void) {
         "Move a blocked Kanban task back to ready. Orchestrator-only.",
         "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\"}},\"required\":[\"task_id\"]}",
         handle_unblock);
+    registry_register("kanban_attachments",
+        "List a task's attached files, with the absolute on-disk path you can read. Rows carry id, filename, content_type, size and uploader.",
+        "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\",\"description\":\"Task id. If omitted, defaults to HERMES_KANBAN_TASK from the env.\"}},\"required\":[]}",
+        handle_attachments);
+    registry_register("kanban_attach",
+        "Attach a file to a task by passing its bytes inline (base64). Stored as a real attachment (not a comment link), capped at 25 MB.",
+        "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\",\"description\":\"Task id. If omitted, defaults to HERMES_KANBAN_TASK from the env.\"},\"filename\":{\"type\":\"string\",\"description\":\"File name to store it under. Directory components are stripped.\"},\"content_base64\":{\"type\":\"string\",\"description\":\"The file contents, base64-encoded. Max 25 MB decoded.\"},\"content_type\":{\"type\":\"string\",\"description\":\"Optional MIME type.\"}},\"required\":[\"filename\",\"content_base64\"]}",
+        handle_attach);
+    registry_register("kanban_request_review",
+        "Hand a finished, self-verified task to a reviewer. Moves the task to the review column. Unlike kanban_block this is not a blocker.",
+        "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\",\"description\":\"Task id. If omitted, defaults to HERMES_KANBAN_TASK from the env.\"},\"summary\":{\"type\":\"string\",\"description\":\"What was implemented and how it was verified, in one or two sentences.\"},\"reviewer\":{\"type\":\"string\",\"description\":\"Optional reviewer profile.\"},\"metadata\":{\"type\":\"object\",\"description\":\"Optional structured metadata for the event payload.\"}},\"required\":[\"summary\"]}",
+        handle_request_review);
     registry_register("kanban_link",
         "Add a parent->child dependency edge. Cycles and self-links rejected.",
         "{\"type\":\"object\",\"properties\":{\"parent_id\":{\"type\":\"string\"},\"child_id\":{\"type\":\"string\"}},\"required\":[\"parent_id\",\"child_id\"]}",

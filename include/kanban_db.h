@@ -162,6 +162,7 @@ long        kdb_comment_created_at(const kanban_comment_t *c);
 long        kdb_comment_id(const kanban_comment_t *c);
 
 /* Attachment */
+long        kdb_attach_id(const kanban_attach_t *a);
 const char *kdb_attach_filename(const kanban_attach_t *a);
 const char *kdb_attach_stored_path(const kanban_attach_t *a);
 const char *kdb_attach_content_type(const kanban_attach_t *a);
