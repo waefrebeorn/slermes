@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cache_is_warm\",\"ret\":0}\n", "cache_is_warm", (int)cache_is_warm());
   pet_clear_manifest_cache();
   pet_prefetch_manifest();

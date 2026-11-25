@@ -16,7 +16,7 @@ extern char *file_safety_get_safe_write_roots(void);
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char *roots = file_safety_get_safe_write_roots();
     if (!roots) roots = strdup("[]");
     printf("%s\n", roots);

@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"delegated_child_context_enter\",\"ret\":0}\n", "delegated_child_context_enter", (int)delegated_child_context_enter());
   delegated_child_context_exit();
   printf("{\"func\":\"is_delegated_child_context\",\"ret\":0}\n", "is_delegated_child_context", (int)is_delegated_child_context());

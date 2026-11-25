@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cli_tools_feishu_drive_tool__check_feishu\",\"ret\":0}\n", "cli_tools_feishu_drive_tool__check_feishu", cli_tools_feishu_drive_tool__check_feishu());
   return 0;
 }

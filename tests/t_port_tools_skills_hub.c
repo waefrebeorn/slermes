@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"skills_hub_is_available\",\"ret\":%d}\n", (int)skills_hub_is_available());
   return 0;
 }

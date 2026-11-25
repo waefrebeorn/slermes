@@ -9,7 +9,7 @@ json_t *dab_bounded_value(const json_t *value, int max_len, const char *marker);
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     static const char *const inputs[] = {
         "null",

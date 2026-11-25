@@ -63,7 +63,7 @@ static void emit_int(int cs, const char *fn, const char *in, long v)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* clamp_fraction */
     emit_num(1, "clamp_fraction", "{\"value\":0.4}", mpu_clamp_fraction(0.4));

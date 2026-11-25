@@ -21,7 +21,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     struct { const char *m, *b, *t; } cases[] = {
         {"gpt-4o", "https://api.openai.com/v1",
          "{\"gpt-4o@api.openai.com\":2100,\"claude@api.anthropic.com\":4000}"},

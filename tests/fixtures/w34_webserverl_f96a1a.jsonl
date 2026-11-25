@@ -1,0 +1,115 @@
+{"func": "constants", "case": "module-literals"}
+{"func": "valid_marker", "case": "linux-jiffies", "marker": "linux:12345"}
+{"func": "valid_marker", "case": "win-filetime", "marker": "win:638288640000000000"}
+{"func": "valid_marker", "case": "winms-unix-ms", "marker": "winms:1693267200000"}
+{"func": "valid_marker", "case": "ps-full-render", "marker": "ps:Sat Aug 29 15:04:31 2026"}
+{"func": "valid_marker", "case": "ps-truncated-token", "marker": "ps:Sat"}
+{"func": "valid_marker", "case": "ps-four-tokens", "marker": "ps:Sat Aug 2026 15:04"}
+{"func": "valid_marker", "case": "linux-nondigit", "marker": "linux:12a"}
+{"func": "valid_marker", "case": "linux-leading-space", "marker": "linux: 1"}
+{"func": "valid_marker", "case": "unknown-prefix", "marker": "solaris:1"}
+{"func": "valid_marker", "case": "empty-value", "marker": "linux:"}
+{"func": "valid_marker", "case": "no-separator", "marker": "noprefix"}
+{"func": "valid_marker", "case": "colon-in-value", "marker": "linux:1:2"}
+{"func": "valid_marker", "case": "ps-five-tokens", "marker": "ps:Sat Aug 29 2026 15:04:31"}
+{"func": "valid_marker", "case": "ps-no-time", "marker": "ps:Sat Aug 29 2026 Sep"}
+{"func": "markers_match", "case": "identical-linux", "actual": "linux:111", "expected": "linux:111"}
+{"func": "markers_match", "case": "linux-mismatch", "actual": "linux:111", "expected": "linux:222"}
+{"func": "markers_match", "case": "win-to-winms-bridge", "actual": "win:638288640000000000", "expected": "winms:1693267200000"}
+{"func": "markers_match", "case": "win-to-winms-off-by-one", "actual": "win:638288640000000000", "expected": "winms:1693267200001"}
+{"func": "markers_match", "case": "winms-first-is-not-bridge", "actual": "winms:1693267200000", "expected": "win:638288640000000000"}
+{"func": "markers_match", "case": "different-family", "actual": "linux:1", "expected": "winms:5"}
+{"func": "markers_match", "case": "win-not-integer", "actual": "win:abc", "expected": "winms:5"}
+{"func": "markers_match", "case": "win-leading-space", "actual": "win: 638288640000000000", "expected": "winms:1693267200000"}
+{"func": "markers_match", "case": "identical-ps", "actual": "ps:Sat Aug 29 15:04:31 2026", "expected": "ps:Sat Aug 29 15:04:31 2026"}
+{"func": "mismatch_conclusive", "case": "linux-vs-linux", "actual": "linux:1", "expected": "linux:2"}
+{"func": "mismatch_conclusive", "case": "ps-inconclusive", "actual": "ps:Sat Aug 29 15:04:31 2026", "expected": "ps:Sat Aug 29 16:04:31 2026"}
+{"func": "mismatch_conclusive", "case": "expected-ps-inconclusive", "actual": "linux:1", "expected": "ps:Sat Aug 29 15:04:31 2026"}
+{"func": "mismatch_conclusive", "case": "win-vs-winms", "actual": "win:638288640000000000", "expected": "winms:1693267200000"}
+{"func": "orphaned", "case": "marker-match", "desktop_pid": 4242, "expected": {"kind": "marker", "value": "linux:101"}, "probe": {"kind": "marker", "value": "linux:101"}, "pid": {"kind": "bool", "value": true}}
+{"func": "orphaned", "case": "marker-reuse", "desktop_pid": 4242, "expected": {"kind": "marker", "value": "linux:101"}, "probe": {"kind": "marker", "value": "linux:202"}, "pid": {"kind": "bool", "value": true}}
+{"func": "orphaned", "case": "ps-inconclusive-degrades-alive", "desktop_pid": 4242, "expected": {"kind": "marker", "value": "ps:Sat Aug 29 15:04:31 2026"}, "probe": {"kind": "marker", "value": "ps:Sat Aug 29 16:04:31 2026"}, "pid": {"kind": "bool", "value": true}}
+{"func": "orphaned", "case": "ps-inconclusive-degrades-gone", "desktop_pid": 4242, "expected": {"kind": "marker", "value": "ps:Sat Aug 29 15:04:31 2026"}, "probe": {"kind": "marker", "value": "ps:Sat Aug 29 16:04:31 2026"}, "pid": {"kind": "bool", "value": false}}
+{"func": "orphaned", "case": "probe-lookup", "desktop_pid": 4242, "expected": {"kind": "marker", "value": "linux:101"}, "probe": {"kind": "lookup"}, "pid": {"kind": "bool", "value": true}}
+{"func": "orphaned", "case": "probe-error-falls-back-alive", "desktop_pid": 4242, "expected": {"kind": "marker", "value": "linux:101"}, "probe": {"kind": "error"}, "pid": {"kind": "bool", "value": true}}
+{"func": "orphaned", "case": "probe-error-falls-back-gone", "desktop_pid": 4242, "expected": {"kind": "marker", "value": "linux:101"}, "probe": {"kind": "error"}, "pid": {"kind": "bool", "value": false}}
+{"func": "orphaned", "case": "no-marker-alive", "desktop_pid": 4242, "expected": null, "probe": {"kind": "marker", "value": "linux:101"}, "pid": {"kind": "bool", "value": true}}
+{"func": "orphaned", "case": "no-marker-gone", "desktop_pid": 4242, "expected": null, "probe": {"kind": "marker", "value": "linux:101"}, "pid": {"kind": "bool", "value": false}}
+{"func": "orphaned", "case": "pid-probe-raises", "desktop_pid": 4242, "expected": null, "probe": {"kind": "error"}, "pid": {"kind": "error"}}
+{"func": "orphaned", "case": "generation-bridge-alive", "desktop_pid": 4242, "expected": {"kind": "marker", "value": "win:638288640000000000"}, "probe": {"kind": "marker", "value": "winms:1693267200000"}, "pid": {"kind": "bool", "value": true}}
+{"func": "watchdog_plan", "case": "pid-only", "parent_pid": "1234", "start_marker": null, "nonce": null, "poll_env": null}
+{"func": "watchdog_plan", "case": "marker-and-nonce", "parent_pid": "1234", "start_marker": "linux:99", "nonce": "n1", "poll_env": null}
+{"func": "watchdog_plan", "case": "marker-without-nonce", "parent_pid": "1234", "start_marker": "linux:99", "nonce": null, "poll_env": null}
+{"func": "watchdog_plan", "case": "nonce-without-marker", "parent_pid": "1234", "start_marker": null, "nonce": "n1", "poll_env": null}
+{"func": "watchdog_plan", "case": "unusable-marker", "parent_pid": "1234", "start_marker": "ps:Sat", "nonce": "n1", "poll_env": null}
+{"func": "watchdog_plan", "case": "padded-nonce", "parent_pid": "1234", "start_marker": "linux:99", "nonce": "n1 ", "poll_env": null}
+{"func": "watchdog_plan", "case": "empty-marker-and-nonce", "parent_pid": "1234", "start_marker": "", "nonce": "", "poll_env": null}
+{"func": "watchdog_plan", "case": "empty-pid", "parent_pid": "", "start_marker": null, "nonce": null, "poll_env": null}
+{"func": "watchdog_plan", "case": "zero-pid", "parent_pid": "0", "start_marker": null, "nonce": null, "poll_env": null}
+{"func": "watchdog_plan", "case": "negative-pid", "parent_pid": "-5", "start_marker": null, "nonce": null, "poll_env": null}
+{"func": "watchdog_plan", "case": "junk-pid", "parent_pid": "abc", "start_marker": null, "nonce": null, "poll_env": null}
+{"func": "watchdog_plan", "case": "not-a-number-pid", "parent_pid": "12.5", "start_marker": null, "nonce": null, "poll_env": null}
+{"func": "watchdog_plan", "case": "padded-pid", "parent_pid": " 42 ", "start_marker": null, "nonce": null, "poll_env": null}
+{"func": "watchdog_plan", "case": "poll-seconds", "parent_pid": "1234", "start_marker": null, "nonce": null, "poll_env": "5"}
+{"func": "watchdog_plan", "case": "poll-clamped", "parent_pid": "1234", "start_marker": null, "nonce": null, "poll_env": "0.2"}
+{"func": "watchdog_plan", "case": "poll-junk", "parent_pid": "1234", "start_marker": null, "nonce": null, "poll_env": "nope"}
+{"func": "watchdog_plan", "case": "poll-empty", "parent_pid": "1234", "start_marker": null, "nonce": null, "poll_env": ""}
+{"func": "watchdog_plan", "case": "poll-scientific", "parent_pid": "1234", "start_marker": "linux:99", "nonce": "n1", "poll_env": "1e1"}
+{"func": "addr_in_use", "case": "posix-eaddrinuse", "errno": 98}
+{"func": "addr_in_use", "case": "macos-eaddrinuse", "errno": 48}
+{"func": "addr_in_use", "case": "winsock-errno", "errno": 10048}
+{"func": "addr_in_use", "case": "windows-native-errno", "errno": 100}
+{"func": "addr_in_use", "case": "connection-refused", "errno": 111}
+{"func": "addr_in_use", "case": "winerror-only", "errno": null, "winerror": 10048}
+{"func": "addr_in_use", "case": "access-denied", "errno": 13}
+{"func": "addr_in_use", "case": "zero-errno", "errno": 0}
+{"func": "port_preflight", "case": "ipv4-conflict", "host": "127.0.0.1", "port": 8080, "errno": 98, "bind": "raise"}
+{"func": "port_preflight", "case": "ipv6-conflict", "host": "::1", "port": 8080, "errno": 100, "bind": "raise"}
+{"func": "port_preflight", "case": "ephemeral-never-probed", "host": "127.0.0.1", "port": 0, "errno": 98, "bind": "raise"}
+{"func": "port_preflight", "case": "other-bind-error", "host": "127.0.0.1", "port": 8080, "errno": 111, "bind": "raise"}
+{"func": "port_preflight", "case": "generic-probe-error", "host": "127.0.0.1", "port": 8080, "errno": null, "bind": "error"}
+{"func": "port_preflight", "case": "probe-succeeds", "host": "localhost", "port": 9000, "errno": null, "bind": "ok"}
+{"func": "port_preflight", "case": "winerror-conflict", "host": "localhost", "port": 9000, "errno": 13, "winerror": 10048, "bind": "raise"}
+{"func": "sentinel", "case": "dashboard-port", "port": 8080}
+{"func": "sentinel", "case": "ephemeral-port", "port": 0}
+{"func": "hint", "case": "loopback", "host": "127.0.0.1", "port": 8080}
+{"func": "hint", "case": "wildcard", "host": "0.0.0.0", "port": 0}
+{"func": "allow_ips", "case": "empty-config", "config": {}}
+{"func": "allow_ips", "case": "no-config", "config": null}
+{"func": "allow_ips", "case": "null-key", "config": {"trusted_proxies": null}}
+{"func": "allow_ips", "case": "empty-string", "config": {"trusted_proxies": ""}}
+{"func": "allow_ips", "case": "bare-string", "config": {"trusted_proxies": "10.1.2.3"}}
+{"func": "allow_ips", "case": "cidr-normalized", "config": {"trusted_proxies": ["10.0.0.5/24"]}}
+{"func": "allow_ips", "case": "loopback-duplicate", "config": {"trusted_proxies": ["::1", "127.0.0.1"]}}
+{"func": "allow_ips", "case": "unbounded-and-junk", "config": {"trusted_proxies": ["0.0.0.0/0", "::/0", "*", "", 42, null, true]}}
+{"func": "allow_ips", "case": "ipv6-compressed", "config": {"trusted_proxies": ["2001:DB8:0:0:0:0:0:1"]}}
+{"func": "allow_ips", "case": "ipv6-network-host-bits", "config": {"trusted_proxies": ["fe80::1/64"]}}
+{"func": "allow_ips", "case": "ipv4-netmask", "config": {"trusted_proxies": ["10.0.0.0/255.255.0.0"]}}
+{"func": "allow_ips", "case": "prefix-out-of-range", "config": {"trusted_proxies": ["10.0.0.5/33"]}}
+{"func": "allow_ips", "case": "octet-out-of-range", "config": {"trusted_proxies": ["300.1.1.1"]}}
+{"func": "allow_ips", "case": "short-quad", "config": {"trusted_proxies": ["127.1"]}}
+{"func": "allow_ips", "case": "not-a-list", "config": {"trusted_proxies": 5}}
+{"func": "allow_ips", "case": "object-entry", "config": {"trusted_proxies": {"a": 1}}}
+{"func": "allow_ips", "case": "padded-entry", "config": {"trusted_proxies": [" 10.2.3.4 "]}}
+{"func": "allow_ips", "case": "ipv4-mapped", "config": {"trusted_proxies": ["::ffff:192.168.0.1"]}}
+{"func": "allow_ips", "case": "unspecified-v6", "config": {"trusted_proxies": ["::"]}}
+{"func": "allow_ips", "case": "host-prefix-128", "config": {"trusted_proxies": ["2001:db8::/128", "10.0.0.0/32"]}}
+{"func": "browser", "case": "not-requested", "host": "127.0.0.1", "port": 8080, "profile": "", "open_browser": false, "platform": "linux", "display": ":0", "wayland": null}
+{"func": "browser", "case": "headless-linux", "host": "127.0.0.1", "port": 8080, "profile": "", "open_browser": true, "platform": "linux", "display": null, "wayland": null}
+{"func": "browser", "case": "linux-display", "host": "127.0.0.1", "port": 8080, "profile": "", "open_browser": true, "platform": "linux", "display": ":0", "wayland": null}
+{"func": "browser", "case": "linux-wayland-wildcard", "host": "0.0.0.0", "port": 8080, "profile": "", "open_browser": true, "platform": "linux", "display": null, "wayland": "wayland-0"}
+{"func": "browser", "case": "v6-any-maps-to-loopback", "host": "::", "port": 9001, "profile": "", "open_browser": true, "platform": "darwin", "display": null, "wayland": null}
+{"func": "browser", "case": "v6-loopback-bracketed", "host": "::1", "port": 8080, "profile": "", "open_browser": true, "platform": "win32", "display": null, "wayland": null}
+{"func": "browser", "case": "v6-scope-id", "host": "fe80::1%eth0", "port": 8080, "profile": "", "open_browser": true, "platform": "win32", "display": null, "wayland": null}
+{"func": "browser", "case": "already-bracketed", "host": "[::1]", "port": 8080, "profile": "", "open_browser": true, "platform": "win32", "display": null, "wayland": null}
+{"func": "browser", "case": "bracketed-non-host", "host": "[localhost]", "port": 8080, "profile": "", "open_browser": true, "platform": "win32", "display": null, "wayland": null}
+{"func": "browser", "case": "profile-quoted", "host": "127.0.0.1", "port": 8080, "profile": "my profile", "open_browser": true, "platform": "win32", "display": null, "wayland": null}
+{"func": "browser", "case": "profile-safe-slash", "host": "127.0.0.1", "port": 8080, "profile": "a/b?c", "open_browser": true, "platform": "win32", "display": null, "wayland": null}
+{"func": "browser", "case": "profile-utf8", "host": "127.0.0.1", "port": 8080, "profile": "café", "open_browser": true, "platform": "win32", "display": null, "wayland": null}
+{"func": "browser", "case": "padded-host", "host": " 127.0.0.1 ", "port": 8080, "profile": "", "open_browser": true, "platform": "win32", "display": null, "wayland": null}
+{"func": "allow_ips", "case": "ipv6-netmask-rejected", "config": {"trusted_proxies": ["2001:db8::/ffff:ffff::"]}}
+{"func": "allow_ips", "case": "ipv6-compress-tie", "config": {"trusted_proxies": ["1:0:2:3:4:5:6:7", "1:2:3:4:5:6:7::", "::2:3:4:5:6:7:8", "2001:db8:0:1:1:1:1:1", "0:0:1::", "1::2::3", ":::"]}}
+{"func": "allow_ips", "case": "ipv4-noncontiguous-mask", "config": {"trusted_proxies": ["10.0.0.0/255.0.255.0"]}}
+{"func": "browser", "case": "empty-host", "host": "", "port": 8080, "profile": "", "open_browser": true, "platform": "win32", "display": null, "wayland": null}
+{"func": "valid_marker", "case": "ps-tab-separated", "marker": "ps:Sat\tAug 29 15:04:31 2026"}
+{"func": "markers_match", "case": "negative-delta", "actual": "win:0", "expected": "winms:-62135596800000"}

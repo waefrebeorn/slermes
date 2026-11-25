@@ -49,7 +49,7 @@ static void prog_case(const char *v, int marked)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _strip_marker_for_comparison */
     strip_case("[]");

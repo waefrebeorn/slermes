@@ -34,7 +34,7 @@ static int opt_bool(const json_t *in, const char *key) {
 
 int main(void) {
     static char line[1 << 20];
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, (int)sizeof line, stdin)) {
         json_t *in, *out = NULL;
         const char *func;
@@ -98,6 +98,7 @@ int main(void) {
             emit_key(k, json_copy(json_object_get_at(in, i)));
         }
         fputs("}\n", stdout);
+        fflush(stdout);
         json_free(out);
         json_free(in);
     }

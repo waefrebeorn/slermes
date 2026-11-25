@@ -47,7 +47,7 @@ static void emit_window(const char *label, int ok, double now, double exp, const
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char *s, *err = NULL;
 
     /* ---- _task_update ---- */

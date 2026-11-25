@@ -7,7 +7,7 @@
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     /* (me, owner, key, dn, desc, defaults, inherit, registered, builtin) */
     /* defaults/registered are raw JSON object tokens; builtin is a JSON array. */
     struct { const char *me, *owner, *key, *dn, *desc, *defaults, *inh, *reg, *bi; } C[] = {

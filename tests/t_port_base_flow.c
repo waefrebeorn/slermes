@@ -449,7 +449,7 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     for (size_t i = 0; i < sizeof(BF_CASES) / sizeof(BF_CASES[0]); i++) {
         char *err = NULL;
         json_t *c = json_parse(BF_CASES[i], &err);

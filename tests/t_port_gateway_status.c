@@ -36,7 +36,7 @@ static void emit_bool(const char *fn, const char *label, int v)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char *s;
 
     /* ---- _scope_hash ---- */

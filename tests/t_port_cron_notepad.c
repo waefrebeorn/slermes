@@ -49,7 +49,7 @@ static void set_case(const char *name, const char *job, const char *key,
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     char root[] = ".testbin/cn_XXXXXX";
     if (!mkdtemp(root)) return 1;

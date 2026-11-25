@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cli_tools_url_safety__global_allow_private_urls\",\"ret\":0}\n", "cli_tools_url_safety__global_allow_private_urls", cli_tools_url_safety__global_allow_private_urls());
   cli_tools_url_safety__reset_allow_private_cache();
   return 0;

@@ -38,7 +38,7 @@ static void emit_err(const char *fn, const char *label, const char *out)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char buf[MT_ERR_MAX];
 
     /* ---- _str_arg ---- */

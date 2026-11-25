@@ -20,7 +20,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     static const char *const inputs[] = {
         NULL, "", "   ", "0", "1", "512", "1023", "1023.9", "1024", "1536",

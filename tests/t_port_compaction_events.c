@@ -94,7 +94,7 @@ static const char *const TCV_S[] = {
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _closed */
     emit_closed(1, "\"summarize\"",

@@ -138,7 +138,7 @@ static void emit_preflight(const char *case_name, const char *mode,
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char root[] = ".testbin/bsq_XXXXXX";
     if (!mkdtemp(root)) { printf("{\"family\":\"error\",\"case\":\"mkdtemp\"}\n"); return 1; }
 

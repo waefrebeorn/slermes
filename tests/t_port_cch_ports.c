@@ -68,7 +68,7 @@ static void bedrock_case(const char *id)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     const int C = 7;                        /* current_image_token_cost stub */
 
     /* _payload_chars */

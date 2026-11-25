@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cli_tools_tool_backend_helpers_fal_key_is_configured\",\"ret\":0}\n", "cli_tools_tool_backend_helpers_fal_key_is_configured", cli_tools_tool_backend_helpers_fal_key_is_configured());
   return 0;
 }

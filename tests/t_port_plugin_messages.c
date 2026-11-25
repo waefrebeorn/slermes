@@ -20,7 +20,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _err: (code, detail). */
     static const char *const er[][2] = {

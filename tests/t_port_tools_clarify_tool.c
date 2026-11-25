@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cli_tools_clarify_tool_check_clarify_requirements\",\"ret\":0}\n", "cli_tools_clarify_tool_check_clarify_requirements", (int)cli_tools_clarify_tool_check_clarify_requirements());
   return 0;
 }

@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cli_tools_write_approval_is_background\",\"ret\":0}\n", "cli_tools_write_approval_is_background", cli_tools_write_approval_is_background());
   printf("{\"func\":\"cli_tools_write_approval__interactive_approval_available\",\"ret\":0}\n", "cli_tools_write_approval__interactive_approval_available", cli_tools_write_approval__interactive_approval_available());
   return 0;

@@ -308,7 +308,7 @@ static void parse_url_case(const char *base_url, const char *scheme)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _normalize_base_url */
     run("normalize_base_url", "base_url", "");

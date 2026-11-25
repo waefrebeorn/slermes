@@ -23,7 +23,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     /* sequence: platform,user_id pairs */
     static const char *const seq[][2] = {
         {"tg", "a"}, {"tg", "b"}, {"tg", "c"}, {"tg", "a"},

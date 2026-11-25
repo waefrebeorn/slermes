@@ -1,0 +1,70 @@
+{"func": "turn_isolation_enabled", "case": "on", "cfg": {"turn_isolation": true}, "child_env_is_1": 0}
+{"func": "turn_isolation_enabled", "case": "off", "cfg": {"turn_isolation": false}, "child_env_is_1": 0}
+{"func": "turn_isolation_enabled", "case": "truthy-string", "cfg": {"turn_isolation": "yes"}, "child_env_is_1": 0}
+{"func": "turn_isolation_enabled", "case": "child-process-never-isolates", "cfg": {"turn_isolation": true}, "child_env_is_1": 1}
+{"func": "turn_isolation_enabled", "case": "zero", "cfg": {"turn_isolation": 0}, "child_env_is_1": 0}
+{"func": "turn_isolation_enabled", "case": "missing-key", "cfg": {"dashboard": {"turn_isolation": true}}, "child_env_is_1": 0}
+{"func": "session_uses_compute_host", "case": "active-flag", "cfg": {"turn_isolation": true}, "child_env_is_1": 0, "session": {"_compute_host_active": true}}
+{"func": "session_uses_compute_host", "case": "lazy-agent-ready", "cfg": {"turn_isolation": true}, "child_env_is_1": 0, "session": {"agent_ready": true}}
+{"func": "session_uses_compute_host", "case": "agent-built-in-process", "cfg": {"turn_isolation": true}, "child_env_is_1": 0, "session": {"agent": {"id": 1}, "agent_ready": true}}
+{"func": "session_uses_compute_host", "case": "empty-session", "cfg": {"turn_isolation": true}, "child_env_is_1": 0, "session": {}}
+{"func": "session_uses_compute_host", "case": "isolation-off", "cfg": {"turn_isolation": false}, "child_env_is_1": 0, "session": {"_compute_host_active": true}}
+{"func": "session_uses_compute_host", "case": "agent-null-ready-null", "cfg": {"turn_isolation": true}, "child_env_is_1": 0, "session": {"agent": null, "agent_ready": null}}
+{"func": "session_uses_compute_host", "case": "child-process", "cfg": {"turn_isolation": true}, "child_env_is_1": 1, "session": {"_compute_host_active": true}}
+{"func": "active_session_lease_vouch", "case": "live-lease", "session": {"session_key": "sk1", "active_session_lease": {"lease_id": "L1", "session_id": "sk1", "released": false, "enabled": true}}}
+{"func": "active_session_lease_vouch", "case": "released", "session": {"session_key": "sk1", "active_session_lease": {"lease_id": "L1", "session_id": "sk1", "released": true, "enabled": true}}}
+{"func": "active_session_lease_vouch", "case": "disabled", "session": {"session_key": "sk1", "active_session_lease": {"lease_id": "L1", "session_id": "sk1", "released": false, "enabled": false}}}
+{"func": "active_session_lease_vouch", "case": "rotated-key-mismatch", "session": {"session_key": "sk2", "active_session_lease": {"lease_id": "L1", "session_id": "sk1", "released": false, "enabled": true}}}
+{"func": "active_session_lease_vouch", "case": "no-lease", "session": {"session_key": "sk1"}}
+{"func": "active_session_lease_vouch", "case": "null-lease", "session": {"session_key": "sk1", "active_session_lease": null}}
+{"func": "active_session_lease_vouch", "case": "no-session-key", "session": {"active_session_lease": {"lease_id": "L1", "session_id": "s1", "released": false, "enabled": true}}}
+{"func": "active_session_lease_vouch", "case": "numeric-ids", "session": {"session_key": 9, "active_session_lease": {"lease_id": 7, "session_id": 9, "released": false, "enabled": true}}}
+{"func": "metadata_mirror", "case": "present", "session": {"_metadata_mirror": {"model": "m1", "usage": {"in": 3}}}}
+{"func": "metadata_mirror", "case": "null-mirror", "session": {"_metadata_mirror": null}}
+{"func": "metadata_mirror", "case": "absent", "session": {"session_key": "sk1"}}
+{"func": "metadata_mirror", "case": "no-session", "session": null}
+{"func": "open_request_matches", "case": "match", "session": {"_compute_host_open_request": {"id": "r1", "method": "clarify"}}, "request_id": "r1"}
+{"func": "open_request_matches", "case": "other-id", "session": {"_compute_host_open_request": {"id": "r1"}}, "request_id": "r2"}
+{"func": "open_request_matches", "case": "mirror-not-a-dict", "session": {"_compute_host_open_request": "r1"}, "request_id": "r1"}
+{"func": "open_request_matches", "case": "null-id-null-request", "session": {"_compute_host_open_request": {"id": null}}, "request_id": null}
+{"func": "open_request_matches", "case": "int-float-equal", "session": {"_compute_host_open_request": {"id": 3}}, "request_id": 3.0}
+{"func": "open_request_matches", "case": "absent-mirror", "session": {}, "request_id": "r1"}
+{"func": "adopt_frame_meta", "case": "rotate-and-bump", "session": {"session_key": "a", "history_version": 2}, "frame": {"session_key": "b", "history_version": 5}}
+{"func": "adopt_frame_meta", "case": "same-key-bump", "session": {"session_key": "a", "history_version": 2}, "frame": {"session_key": "a", "history_version": 7}}
+{"func": "adopt_frame_meta", "case": "keep-newer-version", "session": {"session_key": "a", "history_version": 9}, "frame": {"session_key": "b", "history_version": 3}}
+{"func": "adopt_frame_meta", "case": "null-history-version", "session": {"session_key": "a", "history_version": 4}, "frame": {"session_key": null, "history_version": null}}
+{"func": "adopt_frame_meta", "case": "empty-frame", "session": {"session_key": "a", "history_version": 1}, "frame": {}}
+{"func": "adopt_frame_meta", "case": "no-history-yet", "session": {}, "frame": {"history_version": 4}}
+{"func": "adopt_frame_meta", "case": "first-key", "session": {}, "frame": {"session_key": "b"}}
+{"func": "control_frame", "case": "adds-defaults", "payload": {"text": "hi"}, "command": "/compress focus"}
+{"func": "control_frame", "case": "no-payload", "payload": null, "command": ""}
+{"func": "control_frame", "case": "explicit-null-command", "payload": {"type": "ping", "command": null}, "command": "/model x"}
+{"func": "control_frame", "case": "keeps-type", "payload": {"type": "control", "command": "/model x"}, "command": "ignored"}
+{"func": "compress_wait_seconds", "case": "defaults", "cfg": {}}
+{"func": "compress_wait_seconds", "case": "short-ceiling", "cfg": {"compression": {"context_timeout_seconds": 0, "context_total_ceiling_seconds": 300}}}
+{"func": "compress_wait_seconds", "case": "huge-ceiling-capped", "cfg": {"compression": {"context_total_ceiling_seconds": 2000}}}
+{"func": "compress_wait_seconds", "case": "long-idle", "cfg": {"compression": {"context_timeout_seconds": 900}}}
+{"func": "compress_wait_seconds", "case": "tiny-ceiling-floors-at-120", "cfg": {"compression": {"context_timeout_seconds": 0, "context_total_ceiling_seconds": 50}}}
+{"func": "compress_wait_seconds", "case": "negative-ceiling-ignored", "cfg": {"compression": {"context_timeout_seconds": 0, "context_total_ceiling_seconds": -5}}}
+{"func": "compress_wait_seconds", "case": "compression-not-a-dict", "cfg": {"compression": []}}
+{"func": "compress_wait_seconds", "case": "string-ceiling", "cfg": {"compression": {"context_timeout_seconds": 0, "context_total_ceiling_seconds": "400"}}}
+{"func": "compress_wait_seconds", "case": "garbage-ceiling", "cfg": {"compression": {"context_total_ceiling_seconds": "x"}}}
+{"func": "ack_error", "case": "control-error", "rid": "r1", "ack": {"type": "control.error", "message": "boom"}, "code": 4009, "default": "compute-host compress failed"}
+{"func": "ack_error", "case": "error-no-message", "rid": "r2", "ack": {"type": "error"}, "code": 5019, "default": "fallback"}
+{"func": "ack_error", "case": "result-passthrough", "rid": "r3", "ack": {"type": "result", "result": {}}, "code": 4009, "default": "x"}
+{"func": "ack_error", "case": "null-message", "rid": "r4", "ack": {"type": "control.error", "message": null}, "code": 4009, "default": "fallback"}
+{"func": "ack_error", "case": "numeric-id", "rid": 7, "ack": {"type": "error", "message": "bad"}, "code": 5000, "default": "d"}
+{"func": "turn_frame", "case": "full", "rid": "r1", "sid": "s1", "text": "hello", "session": {"session_key": "sk1", "cwd": "C:/work", "source": "cli", "explicit_cwd": true, "history": [{"role": "user", "content": "hi"}], "history_version": 3, "cols": 100, "profile_home": "C:/home/p1", "model_override": "m2", "pending_model_switch": {"model": "m3"}, "auth_user_id": "u1", "create_reasoning_override": {"effort": "high"}, "create_service_tier_override": "flex", "attached_images": ["a.png"]}}
+{"func": "turn_frame", "case": "display-hints", "rid": "r2", "sid": "s2", "text": "run it", "display_kind": "notice", "display_metadata": {"kind": "x"}, "session": {"session_key": "sk2", "cwd": "C:/work2", "source": "cli", "explicit_cwd": true, "history": [], "history_version": 1, "cols": 80}}
+{"func": "turn_frame", "case": "empty-image-paths", "rid": "r3", "sid": "s3", "text": "t", "image_paths": [], "session": {"session_key": "sk3", "cwd": "C:/w", "source": "cli", "explicit_cwd": true, "attached_images": ["a.png"]}}
+{"func": "turn_frame", "case": "explicit-image-paths", "rid": "r4", "sid": "s4", "text": "t", "image_paths": ["b.png", "c.png"], "session": {"session_key": "sk4", "cwd": "C:/w", "source": "cli", "explicit_cwd": true, "attached_images": ["a.png"]}}
+{"func": "turn_frame", "case": "minimal-session", "rid": "r9", "sid": "s9", "text": "bare", "session": {"cwd": "C:/work", "source": "cli", "history_version": 0}}
+{"func": "turn_frame", "case": "launch-artifact-desktop", "rid": "r5", "sid": "s5", "text": "t", "session": {"cwd": "C:/w", "source": "desktop", "explicit_cwd": false, "history_version": 2}}
+{"func": "turn_frame", "case": "desktop-but-explicit-cwd", "rid": "r6", "sid": "s6", "text": "t", "session": {"cwd": "C:/w/picked", "source": "desktop", "explicit_cwd": true, "history_version": 2}}
+{"func": "turn_frame", "case": "cols-zero-defaults", "rid": "r7", "sid": "s7", "text": "t", "session": {"session_key": "sk7", "cwd": "C:/w", "source": "cli", "explicit_cwd": true, "cols": 0}}
+{"func": "turn_frame", "case": "cols-string", "rid": "r8", "sid": "s8", "text": "t", "session": {"session_key": "sk8", "cwd": "C:/w", "source": "cli", "explicit_cwd": true, "cols": "120"}}
+{"func": "turn_frame", "case": "lease-rides", "rid": "r10", "sid": "s10", "text": "t", "session": {"session_key": "sk10", "cwd": "C:/w", "source": "cli", "explicit_cwd": true, "active_session_lease": {"lease_id": "L9", "session_id": "sk10", "released": false, "enabled": true}}}
+{"func": "turn_frame", "case": "released-lease-not-vouched", "rid": "r11", "sid": "s11", "text": "t", "session": {"session_key": "sk11", "cwd": "C:/w", "source": "cli", "explicit_cwd": true, "active_session_lease": {"lease_id": "L9", "session_id": "sk11", "released": true, "enabled": true}}}
+{"func": "turn_frame", "case": "queued-generation", "rid": "r12", "sid": "s12", "text": "t", "queued_prompt_generation": 4, "session": {"session_key": "sk12", "cwd": "C:/w", "source": "cli", "explicit_cwd": true}}
+{"func": "turn_frame", "case": "stripped-source", "rid": "r13", "sid": "s13", "text": "t", "session": {"session_key": "sk13", "cwd": "C:/w", "source": "  desktop  ", "explicit_cwd": false}}
+{"func": "turn_frame", "case": "structured-text", "rid": "r14", "sid": "s14", "text": {"parts": [{"text": "hi"}]}, "session": {"session_key": "sk14", "cwd": "C:/w", "source": "cli", "explicit_cwd": true}}

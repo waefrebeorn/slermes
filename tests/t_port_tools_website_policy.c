@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cli_tools_website_policy__get_default_config_path\",\"ret\":%s}\n", js(cli_tools_website_policy__get_default_config_path()));
   cli_tools_website_policy__invalidate_cache();
   return 0;

@@ -21,7 +21,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _open_dm_opted_in: (env0, env1). */
     static const char *const ov[][2] = {

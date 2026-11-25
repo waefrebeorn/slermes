@@ -121,7 +121,7 @@ static void kw_case(const char *fn, const char *kwargs_json)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _allowlisted: hit, miss, empty, and the trailing-"unknown" member */
     allowlisted_case("pip", "install_methods");

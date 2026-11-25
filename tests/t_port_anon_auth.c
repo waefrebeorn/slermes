@@ -54,7 +54,7 @@ static void emit_json(int cs, const char *fn, const char *in, json_t *out)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* friendly_wait */
     {

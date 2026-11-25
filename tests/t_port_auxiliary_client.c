@@ -53,7 +53,7 @@ static const char *const RECENCY[] = {
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ac_bare_model */
     for (size_t i = 0; i < sizeof(MODELS) / sizeof(MODELS[0]); i++) {
@@ -63,6 +63,7 @@ int main(void)
         printf(",\"out\":");
         jstr(b ? b : "");
         fputs("}\n", stdout);
+        fflush(stdout);
         free(b);
     }
 
@@ -94,6 +95,7 @@ int main(void)
                 else fputs("null", stdout);
             }
             fputs("}\n", stdout);
+        fflush(stdout);
 
             printf("{\"fn\":\"spark\",\"arg\":");
             jstr(MODELS[i]);
@@ -134,6 +136,7 @@ int main(void)
         printf(",\"out\":");
         jstr(key);
         fputs("}\n", stdout);
+        fflush(stdout);
     }
 
     /* ── base_url_hostname / host_matches / nvidia ── */
@@ -159,6 +162,7 @@ int main(void)
             printf(",\"out\":");
             if (h) { jstr(h); free(h); } else fputs("null", stdout);
             fputs("}\n", stdout);
+        fflush(stdout);
 
             printf("{\"fn\":\"nvidia\",\"arg\":");
             jstr(URLS[i]);
@@ -216,6 +220,7 @@ int main(void)
             if (h) { char *s = json_serialize(h); jstr(s ? s : ""); free(s); json_free(h); }
             else fputs("null", stdout);
             fputs("}\n", stdout);
+        fflush(stdout);
         }
     }
 
@@ -237,6 +242,7 @@ int main(void)
                         if (h) { char *s = json_serialize(h); jstr(s ? s : ""); free(s); json_free(h); }
                         else fputs("null", stdout);
                         fputs("}\n", stdout);
+        fflush(stdout);
                     }
                 }
             }
@@ -275,6 +281,7 @@ int main(void)
             printf("],\"out\":");
             jstr(picked);
             fputs("}\n", stdout);
+        fflush(stdout);
         }
     }
 
@@ -294,6 +301,7 @@ int main(void)
             printf(",\"out\":");
             jstr(out);
             fputs("}\n", stdout);
+        fflush(stdout);
         }
     }
 
@@ -322,6 +330,7 @@ int main(void)
             printf(",\"hit\":%d,\"out\":", hit);
             if (hit) jstr(out); else fputs("null", stdout);
             fputs("}\n", stdout);
+        fflush(stdout);
         }
     }
 
@@ -382,6 +391,7 @@ int main(void)
             printf(",\"out\":");
             jstr(out);
             fputs("}\n", stdout);
+        fflush(stdout);
         }
     }
 
@@ -444,6 +454,7 @@ int main(void)
                 printf(",\"out\":");
                 jstr(s ? s : "");
                 fputs("}\n", stdout);
+        fflush(stdout);
                 free(s);
                 json_free(kw);
                 json_free(fmt);

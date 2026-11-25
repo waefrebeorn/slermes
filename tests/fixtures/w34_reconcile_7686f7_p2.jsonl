@@ -1,0 +1,30 @@
+{"func": "history_tables", "case": "both", "names": ["sessions", "messages"]}
+{"func": "history_tables", "case": "sessions-only", "names": ["sessions"]}
+{"func": "history_tables", "case": "messages-only", "names": ["messages"]}
+{"func": "history_tables", "case": "none", "names": []}
+{"func": "history_tables", "case": "extra-tables", "names": ["meta", "sessions", "messages", "runs"]}
+{"func": "history_tables", "case": "wrong-case", "names": ["Sessions", "messages"]}
+{"func": "history_tables", "case": "null", "names": null}
+{"func": "integrity_problem", "case": "clean", "rows": [["ok"]]}
+{"func": "integrity_problem", "case": "clean-upper", "rows": [["OK"]]}
+{"func": "integrity_problem", "case": "first-three", "rows": [["ok"], ["row 1 missing"], ["row2 bad"], ["row3 bad"], ["row4 bad"]]}
+{"func": "integrity_problem", "case": "empty", "rows": []}
+{"func": "integrity_problem", "case": "two", "rows": [[""], ["fine"], ["also bad"]]}
+{"func": "integrity_problem", "case": "scalars", "rows": [[5], [true], [null]]}
+{"func": "integrity_problem", "case": "short-rows", "rows": [[], ["x"]]}
+{"func": "integrity_problem", "case": "skips-ok-rows", "rows": [["ok"], ["a"], ["Ok"], ["b"], ["c"], ["d"]]}
+{"func": "budget", "case": "mid", "deadline": 10.0, "now": 7.25}
+{"func": "budget", "case": "expired-exactly", "deadline": 10.0, "now": 10.0}
+{"func": "budget", "case": "past", "deadline": 10.0, "now": 12.5}
+{"func": "budget", "case": "under-floor", "deadline": 3.0, "now": 2.99}
+{"func": "budget", "case": "full", "deadline": 3.0, "now": 0.0}
+{"func": "budget", "case": "zero", "deadline": 0.0, "now": 0.0}
+{"func": "budget_check", "case": "ok", "expired": false, "remaining": 2.5}
+{"func": "budget_check", "case": "expired", "expired": true, "remaining": 2.5}
+{"func": "budget_check", "case": "no-time-left", "expired": false, "remaining": 0.0}
+{"func": "budget_check", "case": "negative", "expired": false, "remaining": -1.0}
+{"func": "budget_check", "case": "expired-and-zero", "expired": true, "remaining": 0.0}
+{"func": "constants", "case": "browse-budgets"}
+{"func": "integrity_problem", "case": "null-rows", "rows": null}
+{"func": "history_tables", "case": "non-string-entries", "names": [1, "sessions", "messages"]}
+{"func": "budget", "case": "tiny-positive", "deadline": 1.0, "now": 0.99}

@@ -49,7 +49,7 @@ static const char *const PATHS[] = {
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     for (size_t i = 0; i < sizeof(CMDS) / sizeof(CMDS[0]); i++) {
         char *vals[16];
@@ -83,6 +83,7 @@ int main(void)
         printf(",\"out\":");
         if (name) { jstr(name); free(name); } else fputs("null", stdout);
         fputs("}\n", stdout);
+        fflush(stdout);
     }
     return 0;
 }

@@ -36,12 +36,13 @@ static json_t *finish(json_t *in, const char *func, json_t *out) {
         emit_key(k, json_copy(json_object_get_at(in, i)));
     }
     fputs("}\n", stdout);
+        fflush(stdout);
     return out;
 }
 
 int main(void) {
     char line[32768];
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, sizeof(line), stdin)) {
         json_t *in, *out = NULL;
         const char *func;

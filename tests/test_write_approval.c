@@ -46,7 +46,7 @@ static void rmrf(const char *path) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     printf("=== Write-Approval Store Test Suite ===\n");
 
     /* Isolated HERMES_HOME so we don't touch the real user store. */

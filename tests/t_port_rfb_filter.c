@@ -16,7 +16,7 @@ static int hexval(char c)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     static const char *const cases[] = {
         /* fixed types */
         "00",              /* SetPixelFormat -> 20 */

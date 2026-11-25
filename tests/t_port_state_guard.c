@@ -74,7 +74,7 @@ static void path_case(int cs, const char *resolved, const char *root)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _running_under_pytest: env truthiness (unset NULL / "" both falsy). */
     env_case(1, NULL, NULL, NULL);

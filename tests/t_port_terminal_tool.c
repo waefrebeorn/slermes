@@ -33,7 +33,7 @@ static void emit_str(const char *fn, const char *label, const char *v)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- _docker_volume_uses_host_path ---- */
     emit_bool("_docker_volume_uses_host_path", "abs",       tt_volume_uses_host_path("/Users/me:/data"));

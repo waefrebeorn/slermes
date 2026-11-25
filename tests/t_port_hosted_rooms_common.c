@@ -89,7 +89,7 @@ static void emit_utf8(const char *label, const char *const *parts, int n)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- identifier ---- */
     emit_ident("simple",     2, "abc", 128, 1);

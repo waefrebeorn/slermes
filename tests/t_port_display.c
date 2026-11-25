@@ -44,6 +44,7 @@ static void emit_str(const char *fn, const char *arg, const char *out)
     fputs(",\"out\":", stdout);
     if (out) jstr(out); else fputs("null", stdout);
     fputs("}\n", stdout);
+        fflush(stdout);
 }
 static void emit_free(const char *fn, const char *arg, char *out)
 {
@@ -55,6 +56,7 @@ static void emit_rgb_fn(const char *fn, int r, int g, int b, int dom, char *out)
     printf("{\"fn\":\"%s\",\"r\":%d,\"g\":%d,\"b\":%d,\"dominant\":%d,\"out\":", fn, r, g, b, dom);
     jstr(out);
     fputs("}\n", stdout);
+        fflush(stdout);
     free(out);
 }
 static void preview_case(const char *fn, char *(*f)(const char *, long),
@@ -66,6 +68,7 @@ static void preview_case(const char *fn, char *(*f)(const char *, long),
     printf(",\"max_len\":%ld,\"out\":", max_len);
     if (out) jstr(out); else fputs("null", stdout);
     fputs("}\n", stdout);
+        fflush(stdout);
     free(out);
 }
 static void primary_case(const char *tool, const char *args, long ml)
@@ -78,6 +81,7 @@ static void primary_case(const char *tool, const char *args, long ml)
     printf(",\"max_len\":%ld,\"out\":", ml);
     if (out) jstr(out); else fputs("null", stdout);
     fputs("}\n", stdout);
+        fflush(stdout);
     free(out);
 }
 static void bridge_case(const char *tool, int friendly)
@@ -88,6 +92,7 @@ static void bridge_case(const char *tool, int friendly)
     printf(",\"friendly\":%d,\"out\":", friendly);
     if (out) jstr(out); else fputs("null", stdout);
     fputs("}\n", stdout);
+        fflush(stdout);
     free(out);
 }
 static void neutral_case(const char *tool, const char *result_json)
@@ -107,6 +112,7 @@ static void cute_case(const char *fn, char *(*f)(const char *, long), const char
     printf(",\"limit\":%ld,\"out\":", limit);
     jstr(out);
     fputs("}\n", stdout);
+        fflush(stdout);
     free(out);
 }
 /* Build {"code": "# <n copies of ch>"} for browser_exec label tests. */
@@ -136,7 +142,7 @@ static const char *const SEGS[] = {
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     for (size_t i = 0; i < sizeof(TEXTS) / sizeof(TEXTS[0]); i++) {
         char o[4096];
@@ -146,6 +152,7 @@ int main(void)
         printf(",\"out\":");
         jstr(o);
         fputs("}\n", stdout);
+        fflush(stdout);
     }
     for (size_t i = 0; i < sizeof(TEXTS) / sizeof(TEXTS[0]); i++) {
         long lim[] = {0, 1, 2, 3, 4, 5, 10, -1};
@@ -157,6 +164,7 @@ int main(void)
             printf(",\"lim\":%ld,\"out\":", lim[k]);
             jstr(o);
             fputs("}\n", stdout);
+        fflush(stdout);
         }
     }
     for (size_t i = 0; i < sizeof(TEXTS) / sizeof(TEXTS[0]); i++) {
@@ -169,6 +177,7 @@ int main(void)
             printf(",\"n\":%zu,\"out\":", n[k]);
             jstr(o);
             fputs("}\n", stdout);
+        fflush(stdout);
         }
     }
     for (size_t i = 0; i < sizeof(SEGS) / sizeof(SEGS[0]); i++) {
@@ -179,6 +188,7 @@ int main(void)
         printf(",\"out\":");
         jwords(w, n);
         fputs("}\n", stdout);
+        fflush(stdout);
         for (int k = 0; k < n; k++)
             free(w[k]);
 
@@ -189,6 +199,7 @@ int main(void)
         printf(",\"out\":");
         jstr(o);
         fputs("}\n", stdout);
+        fflush(stdout);
 
         char *s[64];
         int ns = st_split_shell_compound(SEGS[i], s, 0, 64);
@@ -197,6 +208,7 @@ int main(void)
         printf(",\"out\":");
         jwords(s, ns);
         fputs("}\n", stdout);
+        fflush(stdout);
         for (int k = 0; k < ns; k++)
             free(s[k]);
 
@@ -207,6 +219,7 @@ int main(void)
         printf(",\"out\":");
         jstr(h);
         fputs("}\n", stdout);
+        fflush(stdout);
 
         char c[4096];
         st_clean_shell_segment(SEGS[i], c, sizeof(c));
@@ -215,6 +228,7 @@ int main(void)
         printf(",\"out\":");
         jstr(c);
         fputs("}\n", stdout);
+        fflush(stdout);
 
         printf("{\"fn\":\"echo\",\"arg\":");
         jstr(SEGS[i]);
@@ -227,6 +241,7 @@ int main(void)
         printf(",\"out\":");
         jstr(sm);
         fputs("}\n", stdout);
+        fflush(stdout);
     }
 
     /* ── pure formatting ports (disp_*) ── */
@@ -269,6 +284,7 @@ int main(void)
             printf(",\"max_len\":%ld,\"code_block\":%d,\"out\":", vc[i].ml, vc[i].cb);
             jstr(out);
             fputs("}\n", stdout);
+        fflush(stdout);
             free(out);
         }
     }
@@ -287,6 +303,7 @@ int main(void)
             printf(",\"per_goal_len\":%ld,\"out\":", dg[i].pgl);
             jstr(out);
             fputs("}\n", stdout);
+        fflush(stdout);
             free(out);
         }
     }

@@ -24,7 +24,7 @@ static void jstr(const char *s) {
 static turn_tally_t *mk_tally(void) { return turn_tally_new(); }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* --- format_elapsed --- */
     {

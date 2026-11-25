@@ -76,7 +76,7 @@ static void seed_file(const char *path, const json_t *preload) {
 
 int main(void) {
     char line[65536];
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, sizeof(line), stdin)) {
         json_t *in, *out = NULL, *result = NULL;
         json_t *file_view = NULL;
@@ -133,6 +133,7 @@ int main(void) {
             emit_key(k, json_copy(json_object_get_at(in, i)));
         }
         fputs("}\n", stdout);
+        fflush(stdout);
         json_free(out);
         json_free(in);
         free(resolved);

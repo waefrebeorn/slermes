@@ -38,7 +38,7 @@ static void emit(const char *label, const char *bot, const char *desc,
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     emit("assistant-default", "Hermes", "Your Hermes agent on Slack", 1, NULL, NULL);
     emit("none",             "Hermes", "Your Hermes agent on Slack", 0, NULL, NULL);

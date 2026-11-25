@@ -29,7 +29,7 @@ static void emit(const char *label, int managed, int active, const char *provide
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     emit("managed",        1, 1, "anthropic");
     emit("managed-notact", 1, 0, NULL);

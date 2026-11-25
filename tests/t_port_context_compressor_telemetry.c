@@ -35,7 +35,7 @@ static void raw_or_null(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- _safe_int: value is a raw JSON token. */
     {

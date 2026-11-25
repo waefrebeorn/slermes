@@ -95,7 +95,7 @@ static json_t *dispatch(json_t *in, const char *func) {
 
 int main(void) {
     char line[65536];
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, sizeof(line), stdin)) {
         if (!strchr(line, '{')) continue;
         json_t *in = json_parse(line, NULL);
@@ -118,6 +118,7 @@ int main(void) {
             json_free(copy);
         }
         fputs("}\n", stdout);
+        fflush(stdout);
         json_free(out);
         json_free(in);
     }

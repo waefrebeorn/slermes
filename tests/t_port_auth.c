@@ -45,7 +45,7 @@ static const char *const URLS[] = {
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     for (size_t i = 0; i < sizeof(VALUES) / sizeof(VALUES[0]); i++) {
         printf("{\"fn\":\"nonempty\",\"arg\":");
@@ -90,6 +90,7 @@ int main(void)
             printf(",\"ok\":%d,\"warned\":%d,\"out\":", ok, warned);
             jstr(out);
             fputs("}\n", stdout);
+        fflush(stdout);
         }
     }
 
@@ -105,6 +106,7 @@ int main(void)
         printf(",\"out\":");
         jstr(out);
         fputs("}\n", stdout);
+        fflush(stdout);
     }
     return 0;
 }

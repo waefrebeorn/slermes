@@ -19,7 +19,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     static const char *const locals[] = {
         "http://localhost:5006", "https://127.0.0.1/v1", "http://[::1]",

@@ -64,7 +64,7 @@ static const case_t CASES[] = {
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     size_t n = sizeof(CASES) / sizeof(CASES[0]);
     for (size_t i = 0; i < n; i++) {
         const case_t *c = &CASES[i];

@@ -298,7 +298,7 @@ static void test_date_at(void) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     printf("=== learning_graph_render_test ===\n");
     test_compute_recency();
     test_category_counts();

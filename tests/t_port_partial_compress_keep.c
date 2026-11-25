@@ -30,7 +30,7 @@ static const int NCASES = sizeof(CASES) / sizeof(CASES[0]);
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     for (int i = 0; i < NCASES; i++) {
         int r = cmd_compress_coerce_keep_value(CASES[i].token);
         char tok_json[64];

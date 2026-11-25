@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"image_gen_load_fal_client\",\"ret\":0}\n", "image_gen_load_fal_client", image_gen_load_fal_client());
   return 0;
 }

@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   cli_tools_tool_output_limits__reset_tool_output_limits_cache();
   printf("{\"func\":\"cli_tools_tool_output_limits_get_max_bytes\",\"ret\":0}\n", "cli_tools_tool_output_limits_get_max_bytes", cli_tools_tool_output_limits_get_max_bytes());
   printf("{\"func\":\"cli_tools_tool_output_limits_get_max_lines\",\"ret\":0}\n", "cli_tools_tool_output_limits_get_max_lines", cli_tools_tool_output_limits_get_max_lines());

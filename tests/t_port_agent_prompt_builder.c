@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   clear_backend_probe_cache();
   printf("{\"func\":\"skill_should_show\",\"ret\":0}\n", "skill_should_show", (int)skill_should_show());
   return 0;

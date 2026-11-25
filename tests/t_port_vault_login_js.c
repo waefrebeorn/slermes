@@ -34,7 +34,7 @@ static void emit_json_str(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     static const char *const nonces[] = {
         "abc123", "", "n\"q", "back\\slash", "line\nbreak", "\xc3\xa9-unicode",

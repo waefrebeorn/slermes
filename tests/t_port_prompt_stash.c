@@ -42,7 +42,7 @@ static double fixed_clock(void) { return clk_state; }
 static prompt_stash_t *mk(void) { return prompt_stash_new(PROMPT_STASH_MAX_ITEMS, fixed_clock); }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     /* --- build_preview --- */
     {
         char *p1 = prompt_stash_build_preview("hello world", 60);

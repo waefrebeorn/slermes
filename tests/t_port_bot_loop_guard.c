@@ -7,7 +7,7 @@
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _as_bool: raw JSON scalar + default. */
     static const char *const braws[] = {

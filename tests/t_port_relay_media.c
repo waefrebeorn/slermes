@@ -35,7 +35,7 @@ static void emit(const char *tag, const char *in_, const char *out)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* --- _content_disposition_filename: plain filename --- */
     {

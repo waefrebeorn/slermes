@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cli_pt_input_extras_install_ignored_terminal_sequences\",\"ret\":0}\n", "cli_pt_input_extras_install_ignored_terminal_sequences", cli_pt_input_extras_install_ignored_terminal_sequences());
   return 0;
 }

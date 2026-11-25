@@ -82,7 +82,7 @@ static json_t *chunk_delta(json_t *delta, const char *finish_reason)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ================= tc_acc ================= */
     run("tc_acc", "{\"deltas\":[{\"index\":0,\"id\":\"c1\",\"function\":{\"name\":\"read_file\",\"arguments\":\"{\"}},{\"index\":0,\"function\":{\"arguments\":\"}\"}}],\"materialize\":true}");

@@ -179,7 +179,7 @@ static void run_case(const char *func, const json_t *in, json_t *out) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char *line = NULL;
     size_t cap = 0;
     ssize_t len;

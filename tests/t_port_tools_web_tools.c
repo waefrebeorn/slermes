@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   web_ensure_web_plugins_loaded();
   printf("{\"func\":\"web_ddgs_package_importable\",\"ret\":0}\n", "web_ddgs_package_importable", (int)web_ddgs_package_importable());
   printf("{\"func\":\"web_get_extract_char_limit\",\"ret\":0}\n", "web_get_extract_char_limit", web_get_extract_char_limit());

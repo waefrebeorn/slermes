@@ -18,7 +18,7 @@ static const char *str_arg(const json_t *in, const char *key) {
 
 int main(void) {
     char line[32768];
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, sizeof(line), stdin)) {
         json_t *in, *out;
         const char *func;
@@ -44,6 +44,7 @@ int main(void) {
             emit_key(k, json_copy(json_object_get_at(in, i)));
         }
         fputs("}\n", stdout);
+        fflush(stdout);
         json_free(out);
         json_free(in);
     }

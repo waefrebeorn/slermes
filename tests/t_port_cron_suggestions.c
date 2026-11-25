@@ -45,7 +45,7 @@ static void emit_case(const char *name, json_t *store, json_t *ret,
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0); /* unbuffered so we see output before hang */
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20); /* unbuffered so we see output before hang */
     /* Use a fresh temp HERMES_HOME (set by runner via env). */
     json_t *store;
 

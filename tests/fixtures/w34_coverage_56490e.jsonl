@@ -1,0 +1,51 @@
+{"func": "text_of", "case": "string", "content": "hello\nworld"}
+{"func": "text_of", "case": "parts", "content": [{"type": "text", "text": "a"}, {"type": "image_url", "image_url": {"url": "u"}}, {"type": "input_text", "text": "b"}, {"type": "output_text", "text": "c"}, {"type": "tool_use", "text": "skip"}]}
+{"func": "text_of", "case": "scalar-content", "content": 5}
+{"func": "text_of", "case": "empty-list", "content": []}
+{"func": "text_of", "case": "falsey-and-numbers", "content": [{"type": "text", "text": true}, {"type": "text", "text": 0}, {"type": "text", "text": 2}, {"type": "text", "text": 2.5}]}
+{"func": "text_of", "case": "missing-content"}
+{"func": "text_of", "case": "non-dict-parts", "content": ["x", {"type": "text", "text": "y"}, null]}
+{"func": "text_of", "case": "only-image", "content": [{"type": "image_url", "image_url": {"url": "u"}}, {"type": "text"}]}
+{"func": "holds_as_block", "case": "whole-line", "inner": "hello", "outer": "head\nhello\ntail"}
+{"func": "holds_as_block", "case": "mid-line", "inner": "hello", "outer": "head\nxhello\ntail"}
+{"func": "holds_as_block", "case": "second-occurrence", "inner": "a", "outer": "xa\na\nb"}
+{"func": "holds_as_block", "case": "blanks-beside", "inner": "hello", "outer": "  hello  \n"}
+{"func": "holds_as_block", "case": "identical", "inner": "abc", "outer": "abc"}
+{"func": "holds_as_block", "case": "empty-inner-blank-outer", "inner": "", "outer": " "}
+{"func": "holds_as_block", "case": "empty-inner-text", "inner": "", "outer": "abc"}
+{"func": "holds_as_block", "case": "multi-line-inner", "inner": "a\nb", "outer": "x\na\nb\ny"}
+{"func": "holds_as_block", "case": "tail-half", "inner": "b", "outer": "a\nb"}
+{"func": "holds_as_block", "case": "ends-mid-word", "inner": "a", "outer": "a\nx"}
+{"func": "images_replaced", "case": "swap-image", "stored": [{"type": "text", "text": "look"}, {"type": "image_url", "image_url": {"url": "u"}}], "held": [{"type": "text", "text": "look"}, {"type": "text", "text": "[image]"}]}
+{"func": "images_replaced", "case": "equal-lists", "stored": [{"type": "text", "text": "x"}, 1], "held": [{"type": "text", "text": "x"}, 1]}
+{"func": "images_replaced", "case": "length-differs", "stored": [{"type": "image_url"}], "held": []}
+{"func": "images_replaced", "case": "text-changed", "stored": [{"type": "text", "text": "a"}], "held": [{"type": "text", "text": "b"}]}
+{"func": "images_replaced", "case": "image-to-image", "stored": [{"type": "image_url"}], "held": [{"type": "image"}]}
+{"func": "images_replaced", "case": "second-run-image", "stored": [{"type": "image_url"}, {"type": "text", "text": "a"}], "held": [{"type": "text", "text": "a"}, {"type": "text", "text": "a"}]}
+{"func": "images_replaced", "case": "not-lists", "stored": "x", "held": [{"type": "text", "text": "x"}]}
+{"func": "carried_tail_slots", "case": "two-in-tail", "carried": {"1": 5, "2": 7, "3": 10}, "compacted_count": 10, "tail_count": 3}
+{"func": "carried_tail_slots", "case": "zero-tail", "carried": {"1": 9}, "compacted_count": 10, "tail_count": 0}
+{"func": "carried_tail_slots", "case": "tail-over-compacted", "carried": {"4": 0}, "compacted_count": 2, "tail_count": 5}
+{"func": "carried_tail_slots", "case": "empty-carried", "carried": {}, "compacted_count": 5, "tail_count": 2}
+{"func": "uncounted_merged_rows", "case": "mixed", "tail": [{"_merged_durable_rows": 3}, {"_row_id": 4, "_merged_durable_rows": 5}, {"_unnamed_durable_rows": 2}]}
+{"func": "uncounted_merged_rows", "case": "absorbed-subtracts", "tail": [{"_merged_durable_rows": 4, "_absorbed_row_ids": [1, 2]}]}
+{"func": "uncounted_merged_rows", "case": "over-absorbed-floors", "tail": [{"_merged_durable_rows": 2, "_absorbed_row_ids": [1, 2, 3]}]}
+{"func": "uncounted_merged_rows", "case": "bool-row-id", "tail": [{"_row_id": true, "_merged_durable_rows": 3}]}
+{"func": "uncounted_merged_rows", "case": "non-int-stamps", "tail": [{"_merged_durable_rows": "3", "_unnamed_durable_rows": true}]}
+{"func": "uncounted_merged_rows", "case": "empty-tail", "tail": []}
+{"func": "uncounted_merged_rows", "case": "non-object-entries", "tail": [1, null, {"_unnamed_durable_rows": 1}]}
+{"func": "tail_originals", "case": "plain-window", "covered_active": [1, 2, 3, 4, 5], "tail_count": 2, "merged_away": []}
+{"func": "tail_originals", "case": "merge-widens", "covered_active": [1, 2, 3, 4, 5], "tail_count": 2, "merged_away": [5]}
+{"func": "tail_originals", "case": "one-widen", "covered_active": [1, 2, 3, 4, 5], "tail_count": 3, "merged_away": [4]}
+{"func": "tail_originals", "case": "zero-tail-is-whole-list", "covered_active": [1, 2, 3, 4, 5], "tail_count": 0, "merged_away": []}
+{"func": "tail_originals", "case": "empty-covered", "covered_active": [], "tail_count": 3, "merged_away": []}
+{"func": "tail_originals", "case": "tail-over-length", "covered_active": [1, 2, 3, 4, 5], "tail_count": 9, "merged_away": []}
+{"func": "tail_originals", "case": "merge-outside-window", "covered_active": [1, 2, 3, 4, 5], "tail_count": 2, "merged_away": [1]}
+{"func": "images_replaced", "case": "key-order-equal", "stored": [{"type": "text", "text": "a", "x": 1}], "held": [{"x": 1, "text": "a", "type": "text"}]}
+{"func": "holds_as_block", "case": "nbsp-edges", "inner": "a", "outer": "x\n\u00a0a\u00a0\ny"}
+{"func": "holds_as_block", "case": "crlf-tabs", "inner": "cell", "outer": "a\r\n\tcell\t\r\nb"}
+{"func": "holds_as_block", "case": "two-hits-first-fails", "inner": "z", "outer": "az\na\nz"}
+{"func": "carried_tail_slots", "case": "boundary-inclusive", "carried": {"1": 7, "2": 6}, "compacted_count": 10, "tail_count": 3}
+{"func": "tail_originals", "case": "duplicate-merge-ids", "covered_active": [1, 2, 3, 4, 5], "tail_count": 2, "merged_away": [5, 5, 4]}
+{"func": "uncounted_merged_rows", "case": "zero-merged-one-unnamed", "tail": [{"_merged_durable_rows": 1, "_unnamed_durable_rows": 1}]}
+{"func": "text_of", "case": "empty-string-part-only", "content": [{"type": "text", "text": ""}]}

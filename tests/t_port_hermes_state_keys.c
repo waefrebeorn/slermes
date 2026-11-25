@@ -99,7 +99,7 @@ static void emit_run(int cs, const char *req, const char *job)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* cron_request_id */
     emit_str(1, "cron_request_id",

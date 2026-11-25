@@ -72,7 +72,7 @@ static void listed_case(const char *cfg, const char *names_json, const char *own
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _toolset_listed */
     listed_case("{}", "[]", "");

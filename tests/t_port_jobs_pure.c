@@ -188,7 +188,7 @@ static json_t *run_case(const char *func, const json_t *in) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     size_t n = sizeof cases / sizeof cases[0];
     for (size_t i = 0; i < n; i++) {
         char *err = NULL;

@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"tools_interrupt__ThreadAwareEventProxy_is_set\",\"ret\":0}\n", "tools_interrupt__ThreadAwareEventProxy_is_set", tools_interrupt__ThreadAwareEventProxy_is_set());
   return 0;
 }

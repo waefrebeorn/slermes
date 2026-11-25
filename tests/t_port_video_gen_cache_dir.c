@@ -16,7 +16,7 @@ extern char *video_gen_cache_dir(void);
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     /* C's home resolver reads SLERMES_HOME (fallback $HOME/.slermes); the test
      * runner exports HERMES_HOME. Align them so C and Python resolve to the
      * same temp root. */

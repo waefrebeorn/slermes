@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"tts_tool_import_edge_tts\",\"ret\":0}\n", "tts_tool_import_edge_tts", (int)tts_tool_import_edge_tts());
   printf("{\"func\":\"tts_tool_import_elevenlabs\",\"ret\":0}\n", "tts_tool_import_elevenlabs", (int)tts_tool_import_elevenlabs());
   printf("{\"func\":\"tts_tool_import_openai_client\",\"ret\":0}\n", "tts_tool_import_openai_client", (int)tts_tool_import_openai_client());

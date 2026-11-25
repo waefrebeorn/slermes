@@ -11,7 +11,7 @@ static void emit_key(const char *key, json_t *v) {
 }
 int main(void) {
     char line[32768];
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, sizeof(line), stdin)) {
         if (!strchr(line, '{')) continue;
         json_t *in = json_parse(line, NULL);
@@ -37,6 +37,7 @@ int main(void) {
             fputs(",", stdout); emit_key(k, json_copy(json_object_get_at(in, i)));
         }
         fputs("}\n", stdout);
+        fflush(stdout);
         json_free(out); json_free(in);
     }
     return 0;

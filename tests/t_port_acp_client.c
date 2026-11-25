@@ -76,7 +76,7 @@ static char *strip_quotes(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* result / error: C takes id as a JSON value; emit in decoded form too */
     {

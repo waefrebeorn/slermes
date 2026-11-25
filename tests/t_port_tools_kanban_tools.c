@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"profile_has_kanban_toolset\",\"ret\":0}\n", "profile_has_kanban_toolset", (int)profile_has_kanban_toolset());
   printf("{\"func\":\"check_kanban_mode\",\"ret\":0}\n", "check_kanban_mode", (int)check_kanban_mode());
   printf("{\"func\":\"check_kanban_orchestrator_mode\",\"ret\":0}\n", "check_kanban_orchestrator_mode", (int)check_kanban_orchestrator_mode());

@@ -55,7 +55,7 @@ static void emit_msg(const char *name, const char *key, const char *raw,
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     emit_settings("null_config", NULL);
     emit_settings("empty_object", "{}");

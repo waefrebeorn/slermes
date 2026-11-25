@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   install_safe_stdio();
   /* The helper is void; emit a contract record so the differential runner
    * has something to compare (the call must complete without crashing). */

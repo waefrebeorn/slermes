@@ -20,7 +20,7 @@ static char *str_or_empty(json_t *in, const char *k) {
 
 int main(void) {
     char line[32768];
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, sizeof(line), stdin)) {
         if (!strchr(line, '{')) continue;
         json_t *in = json_parse(line, NULL);
@@ -57,6 +57,7 @@ int main(void) {
             emit_key(k, json_copy(json_object_get_at(in, i)));
         }
         fputs("}\n", stdout);
+        fflush(stdout);
         free(tmp);
         json_free(out);
         json_free(in);

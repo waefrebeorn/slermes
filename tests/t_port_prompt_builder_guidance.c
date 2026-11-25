@@ -46,7 +46,7 @@ static void emit(const char *name /* JSON token: "darwin" or null */,
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     G_CTX = prompt_builder_guidance_init();
     if (!G_CTX) return 2;
     emit("\"darwin\"", "darwin");

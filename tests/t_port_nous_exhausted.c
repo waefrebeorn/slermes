@@ -24,7 +24,7 @@ static void emit(const char *name, const char *state_json)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     /* no buckets -> false */
     emit("no_buckets", "{}");
     /* all buckets have remaining>0 -> false */

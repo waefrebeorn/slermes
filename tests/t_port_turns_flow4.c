@@ -65,7 +65,7 @@ static void tf4_seed_scaffolds(tf4_ctx_t *ctx, const json_t *in) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     json_t *empty_args = json_object();
     char *line;
     while ((line = tf4_read_line(stdin)) != NULL) {

@@ -202,7 +202,7 @@ static json_t *gl_run_case(const char *func, json_t *in) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char line[1 << 20];
     while (fgets(line, sizeof line, stdin)) {
         if (line[0] != '{') continue;

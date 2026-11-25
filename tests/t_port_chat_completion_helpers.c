@@ -84,7 +84,7 @@ static void emit_sse(const char *label, const char *text)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- _status_code_from_value ---- */
     emit_code("_status_code_from_value", "int-ok",   cch_status_code_from_value(1, 200, NULL));

@@ -4,7 +4,7 @@
 #include "noc_cn_70050f77ca.h"
 int main(void) {
     char line[8192];
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, sizeof(line), stdin)) {
         if (!strchr(line, '{')) continue;
         json_t *in = json_parse(line, NULL);

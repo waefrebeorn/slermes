@@ -49,7 +49,7 @@ static void emit(const char *model, const char *base_url,
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     /* 1-4: suffix / stealth / no-base / empty-model rules (no cache). */
     emit("nvidia/nemotron-3-ultra:free", "", NULL, NULL);
     emit("stealth/preview-x", "", NULL, NULL);

@@ -56,7 +56,7 @@ static void emit_survived(const char *label, const char *const *t)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- _wait_status_from_returncode ---- */
     emit_wait("zero",     0);

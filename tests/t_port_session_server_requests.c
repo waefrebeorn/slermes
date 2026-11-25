@@ -37,7 +37,7 @@ int main(void)
         "null",
         "{}",
     };
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     for (size_t i = 0; i < sizeof(frames) / sizeof(frames[0]); i++) {
         printf("{\"in\":");
         jstr(frames[i]);

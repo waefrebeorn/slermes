@@ -45,7 +45,7 @@ static json_t *lines_to_json(char **lines, int n)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     const char *hh = getenv("HERMES_HOME");
     char logdir[4096];
     snprintf(logdir, sizeof(logdir), "%s/logs", hh ? hh : ".");

@@ -83,7 +83,7 @@ static void const_msg_case(int cs, const char *fn, char *(*f)(void))
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _is_no_more_rows: message-scoped, case-insensitive, no type gate. */
     pred_case(1, "_is_no_more_rows", se_is_no_more_rows, SE_OPERATIONAL,

@@ -26,7 +26,7 @@ static void jstr(const char *s)
 
 int main(int argc, char **argv)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     /* Use a repo-relative forward-slash dir (no backslashes) so emitted paths
      * are plain JSON — independent of the caller's TEMP/HOME. */
     char dir[1024];

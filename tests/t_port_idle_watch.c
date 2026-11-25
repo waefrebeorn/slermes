@@ -6,7 +6,7 @@
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     struct { double limit; int inull; double idle; } cs[] = {
         {0.0, 0, 0.0},      /* <=0 -> 1800 */
         {-5.0, 1, 0.0},     /* <=0 -> 1800, idle null */

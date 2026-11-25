@@ -84,7 +84,7 @@ int main(void)
     static const char *ARGV_RESTART[] = { "systemctl", "--user", "restart", "hermes-gateway" };
     static const char *ARGV_NOVERB[]  = { "systemctl", "--user", "status", "hermes-gateway" };
 
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     emit_verb("verb_start", "systemctl --user start hermes-gateway");
     emit_verb("verb_stop", "systemctl --user stop hermes-gateway");

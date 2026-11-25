@@ -36,7 +36,7 @@ static void emit(const char *label, const char *json, int json_mode, int quiet)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     const char *ok_note   = "{\"success\":true,\"note\":\"delivered to telegram\"}";
     const char *ok_nonote = "{\"success\":true}";

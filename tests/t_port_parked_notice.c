@@ -6,7 +6,7 @@
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     /* (sent entries, now, profile, platform, chat) */
     struct { const char *sent; double now; const char *p, *pl, *ch; } C[] = {
         /* course: old entry evicted -> due */

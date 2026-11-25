@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"todo_tool_check_requirements\",\"ret\":%d}\n", (int)todo_tool_check_requirements());
   printf("{\"func\":\"todo_tool_has_items\",\"ret\":%d}\n", todo_tool_has_items());
   return 0;

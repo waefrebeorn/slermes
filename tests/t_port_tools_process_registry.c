@@ -147,7 +147,7 @@ static void run_case(const pr_case_t *c) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     for (size_t i = 0; i < sizeof(CASES) / sizeof(CASES[0]); i++)
         run_case(&CASES[i]);
     return 0;

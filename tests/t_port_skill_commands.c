@@ -75,7 +75,7 @@ static void emit_diff(const char *label, const char *const *before, const char *
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- slugify_skill_name ---- */
     emit_slug("Foo Bar");

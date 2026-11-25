@@ -34,7 +34,7 @@ static void emit_frame(const char *label, const char *out)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char buf[SV_FRAME_MAX];
     char *s;
 

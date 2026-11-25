@@ -33,7 +33,7 @@ static void emit(const char *fn, const char *label, const char *out)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- long_size_bucket: boundaries of every bucket ---- */
     EMIT_FN("smc_long_size_bucket", "0",     smc_long_size_bucket(0));

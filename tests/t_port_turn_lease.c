@@ -21,7 +21,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _holder_desc: (owner_key, generation, present). */
     struct { const char *k; long long g; int p; } h[] = {

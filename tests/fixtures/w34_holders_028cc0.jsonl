@@ -1,0 +1,111 @@
+{"func": "looks_like_python_executable", "case": "posix-py3.11", "program": "/usr/bin/python3.11"}
+{"func": "looks_like_python_executable", "case": "windows-exe", "program": "C:\\Python311\\python.exe"}
+{"func": "looks_like_python_executable", "case": "bare-python", "program": "python"}
+{"func": "looks_like_python_executable", "case": "pypy3", "program": "pypy3"}
+{"func": "looks_like_python_executable", "case": "suffix-letter", "program": "pythonw"}
+{"func": "looks_like_python_executable", "case": "suffix-abi-tag", "program": "python3.11-32"}
+{"func": "looks_like_python_executable", "case": "not-python", "program": "hermes"}
+{"func": "looks_like_python_executable", "case": "prefixed-name", "program": "generic_python3"}
+{"func": "looks_like_python_executable", "case": "dir-with-python", "program": "/opt/python/bin/node"}
+{"func": "python_execution_target", "case": "module-m", "argv": ["python", "-m", "hermes_cli.main", "x"]}
+{"func": "python_execution_target", "case": "module-attached", "argv": ["python", "-mpkg.mod"]}
+{"func": "python_execution_target", "case": "dash-c", "argv": ["python", "-c", "print(1)"]}
+{"func": "python_execution_target", "case": "script", "argv": ["python", "run_agent.py"]}
+{"func": "python_execution_target", "case": "only-interpreter", "argv": ["python"]}
+{"func": "python_execution_target", "case": "dashdash-script", "argv": ["python", "--", "weird.py"]}
+{"func": "python_execution_target", "case": "dashdash-empty", "argv": ["python", "--"]}
+{"func": "python_execution_target", "case": "short-W-operand", "argv": ["python", "-W", "ignore", "script.py"]}
+{"func": "python_execution_target", "case": "short-W-attached", "argv": ["python", "-Wignore", "script.py"]}
+{"func": "python_execution_target", "case": "long-jit-operand", "argv": ["python", "--jit", "off", "x.py"]}
+{"func": "python_execution_target", "case": "long-jit-equals", "argv": ["python", "--jit=off", "x.py"]}
+{"func": "python_execution_target", "case": "Xdev-then-c", "argv": ["python", "-Xdev", "-c", "x"]}
+{"func": "python_execution_target", "case": "Q-attached-then-script", "argv": ["python", "-Qwarn", "s.py"]}
+{"func": "python_execution_target", "case": "triple-flag", "argv": ["python", "-uB", "main.py"]}
+{"func": "looks_like_hermes", "case": "executable", "argv": ["/usr/bin/hermes"]}
+{"func": "looks_like_hermes", "case": "agent-exe", "argv": ["hermes-agent.exe"]}
+{"func": "looks_like_hermes", "case": "acp-exe", "argv": ["C:\\tools\\hermes-acp.EXE", "serve"]}
+{"func": "looks_like_hermes", "case": "module-main", "argv": ["python3", "-m", "hermes_cli.main"]}
+{"func": "looks_like_hermes", "case": "module-acp", "argv": ["python3", "-m", "acp_adapter"]}
+{"func": "looks_like_hermes", "case": "script-abs", "argv": ["python3", "/opt/hermes/hermes_cli/main.py"]}
+{"func": "looks_like_hermes", "case": "script-rel", "argv": ["python3", "run_agent.py"]}
+{"func": "looks_like_hermes", "case": "script-backslash", "argv": ["python3", "C:\\hermes\\hermes_cli\\main.py"]}
+{"func": "looks_like_hermes", "case": "dash-c", "argv": ["python3", "-c", "import hermes"]}
+{"func": "looks_like_hermes", "case": "foreign-binary", "argv": ["node", "hermes"]}
+{"func": "looks_like_hermes", "case": "other-module", "argv": ["/usr/bin/python3.9", "-m", "other_module"]}
+{"func": "looks_like_hermes", "case": "module-prefix-only", "argv": ["python3", "-m", "acp_adapter.cli"]}
+{"func": "looks_like_hermes", "case": "empty", "argv": []}
+{"func": "argv_flag_value", "case": "last-wins", "argv": ["--profile", "tim", "-p=x", "--profile=timothy"], "flags": ["--profile", "-p"]}
+{"func": "argv_flag_value", "case": "token-exact", "argv": ["--profiles", "y", "--profile=tim"], "flags": ["--profile", "-p"]}
+{"func": "argv_flag_value", "case": "missing-operand", "argv": ["hermes", "--profile"], "flags": ["--profile", "-p"]}
+{"func": "argv_flag_value", "case": "non-str-token", "argv": ["--profile", 3, "--profile=x"], "flags": ["--profile", "-p"]}
+{"func": "argv_flag_value", "case": "no-flags", "argv": ["hermes", "gateway", "run"], "flags": []}
+{"func": "argv_flag_value", "case": "home-flag", "argv": ["--hermes-home", "C:\\h", "--hermes-home=C:\\h2"], "flags": ["--hermes-home"]}
+{"func": "argv_env_home", "case": "env-style", "argv": ["env", "HERMES_HOME=/a", "hermes"]}
+{"func": "argv_env_home", "case": "last-wins", "argv": ["env", "HERMES_HOME=/a", "HERMES_HOME=/b"]}
+{"func": "argv_env_home", "case": "empty-value", "argv": ["env", "HERMES_HOME=", "hermes"]}
+{"func": "argv_env_home", "case": "absent", "argv": ["hermes", "gateway", "run"]}
+{"func": "argv_env_home", "case": "non-str", "argv": ["hermes", 7]}
+{"func": "sqlite_family", "case": "posix", "base": "/a/state.db"}
+{"func": "sqlite_family", "case": "bare", "base": "state.db"}
+{"func": "sqlite_family", "case": "windows", "base": "C:\\data\\.hermes\\state.db"}
+{"func": "norm_path", "case": "dotdot", "value": "C:/data/x/../y"}
+{"func": "norm_path", "case": "case-and-dotdot", "value": "/a/B/../c"}
+{"func": "norm_path", "case": "dot-and-trailing-sep", "value": "./a/./b/"}
+{"func": "norm_path", "case": "drive-root", "value": "C:/"}
+{"func": "norm_path", "case": "root-overdotdot", "value": "C:/a/../../.."}
+{"func": "norm_path", "case": "empty", "value": ""}
+{"func": "norm_path", "case": "dotdot-rel", "value": ".."}
+{"func": "norm_path", "case": "mixcase", "value": "A/B"}
+{"func": "norm_path", "case": "dupe-seps", "value": "C://data//x"}
+{"func": "norm_path", "case": "rel-updown", "value": "a/../../b"}
+{"func": "canonical_sqlite_path", "case": "deleted-suffix", "path": "C:/a/b/state.db (deleted)"}
+{"func": "canonical_sqlite_path", "case": "mixed-case", "path": "C:/A/B.TXT"}
+{"func": "canonical_sqlite_path", "case": "rooted-no-drive", "path": "/tmp/x.db"}
+{"func": "canonical_sqlite_path", "case": "dotdot", "path": "C:/a/../b/state.db-wal"}
+{"func": "canonical_sqlite_path", "case": "relative", "path": "state.db (deleted)"}
+{"func": "argv_path_tokens", "case": "mixed", "argv": ["--db=/abs/p", "/x", "-y", "z", "/a/../b"]}
+{"func": "argv_path_tokens", "case": "none", "argv": ["hermes", "--flag", "x", "-x=/rel", "C:/x"]}
+{"func": "argv_path_tokens", "case": "non-str", "argv": [1, "/x", null, "/y"]}
+{"func": "argv_path_tokens", "case": "equals-root", "argv": ["--db=/a/b/../c", "run"]}
+{"func": "names_other_profile", "case": "other-name", "normalized": "C:\\root\\profiles\\bob", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "names_other_profile", "case": "our-name", "normalized": "C:\\root\\profiles\\bob", "install_root": "C:\\root", "our_profile": "bob"}
+{"func": "names_other_profile", "case": "no-our-profile", "normalized": "C:\\root\\profiles\\bob", "install_root": "C:\\root", "our_profile": null}
+{"func": "names_other_profile", "case": "empty-our-profile", "normalized": "C:\\root\\profiles\\bob", "install_root": "C:\\root", "our_profile": ""}
+{"func": "names_other_profile", "case": "no-root", "normalized": "C:\\root\\profiles\\bob", "install_root": null, "our_profile": "alice"}
+{"func": "names_other_profile", "case": "outside-root", "normalized": "C:\\elsewhere\\state.db", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "names_other_profile", "case": "empty-name", "normalized": "C:\\root\\profiles\\", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "names_other_profile", "case": "nested-file", "normalized": "C:\\root\\profiles\\bob\\state.db", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "names_other_profile", "case": "root-as-string", "normalized": "c:\\root\\profiles\\bob", "install_root": "C:/root", "our_profile": "alice"}
+{"func": "argv_home_selection", "case": "home-ours", "argv": ["--hermes-home", "C:\\h1"], "this_home": "C:\\h1", "install_root": null, "our_profile": null}
+{"func": "argv_home_selection", "case": "home-other", "argv": ["--hermes-home", "C:/h2"], "this_home": "C:\\h1", "install_root": null, "our_profile": null}
+{"func": "argv_home_selection", "case": "env-home-ours", "argv": ["env", "HERMES_HOME=C:\\h1", "hermes"], "this_home": "C:\\h1", "install_root": null, "our_profile": null}
+{"func": "argv_home_selection", "case": "profile-ours", "argv": ["--profile", "alice"], "this_home": "C:\\root\\profiles\\alice", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "argv_home_selection", "case": "profile-other", "argv": ["-p", "bob"], "this_home": "C:\\root\\profiles\\alice", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "argv_home_selection", "case": "default-ours", "argv": ["--profile", "default"], "this_home": "C:\\root", "install_root": "C:\\root", "our_profile": null}
+{"func": "argv_home_selection", "case": "default-no-root", "argv": ["--profile", "default"], "this_home": "C:\\custom", "install_root": null, "our_profile": null}
+{"func": "argv_home_selection", "case": "named-no-root", "argv": ["--profile", "bob"], "this_home": "C:\\custom", "install_root": "C:\\root", "our_profile": null}
+{"func": "argv_home_selection", "case": "nothing", "argv": ["hermes", "gateway", "run"], "this_home": "C:\\h1", "install_root": null, "our_profile": null}
+{"func": "argv_home_selection", "case": "home-beats-profile", "argv": ["--hermes-home=C:\\h9", "--profile", "bob"], "this_home": "C:\\h1", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "argv_scoped_to_other_home", "case": "other-hermes-state-db", "argv": ["hermes", "--db=/home/demo/.hermes/state.db"], "db_path": "C:\\data\\.hermes\\state.db", "install_root": null, "our_profile": null}
+{"func": "argv_scoped_to_other_home", "case": "our-sidecar", "argv": ["hermes", "--db=C:\\data\\.hermes\\state.db-wal"], "db_path": "C:\\data\\.hermes\\state.db", "install_root": null, "our_profile": null}
+{"func": "argv_scoped_to_other_home", "case": "no-evidence", "argv": ["hermes"], "db_path": "C:\\data\\.hermes\\state.db", "install_root": null, "our_profile": null}
+{"func": "argv_scoped_to_other_home", "case": "profile-other", "argv": ["hermes", "--profile", "bob"], "db_path": "C:\\root\\profiles\\alice\\state.db", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "argv_scoped_to_other_home", "case": "profile-ours", "argv": ["hermes", "--profile", "alice", "--db=/home/demo/.hermes/state.db"], "db_path": "C:\\root\\profiles\\alice\\state.db", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "argv_scoped_to_other_home", "case": "argv0-is-our-home", "argv": ["C:\\data\\.hermes\\hermes.exe"], "db_path": "C:\\data\\.hermes\\state.db", "install_root": null, "our_profile": null}
+{"func": "argv_scoped_to_other_home", "case": "other-profile-token", "argv": ["hermes", "C:\\root\\profiles\\bob\\state.db"], "db_path": "C:\\root\\profiles\\alice\\state.db", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "argv_scoped_to_other_home", "case": "shared-root-neutral", "argv": ["C:\\root\\hermes.exe", "--flag"], "db_path": "C:\\root\\profiles\\alice\\state.db", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "argv_scoped_to_other_home", "case": "our-home-token", "argv": ["hermes", "C:\\root\\profiles\\alice\\notes.txt"], "db_path": "C:\\root\\profiles\\alice\\state.db", "install_root": "C:\\root", "our_profile": "alice"}
+{"func": "argv_scoped_to_other_home", "case": "state-db-name-token", "argv": ["hermes", "/srv/other/state.db"], "db_path": "C:\\data\\.hermes\\state.db", "install_root": null, "our_profile": null}
+{"func": "describe_holder_pid", "case": "simple", "pid": 12, "argv": ["/usr/bin/hermes", "gateway", "run"]}
+{"func": "describe_holder_pid", "case": "unavailable-empty", "pid": 7, "argv": []}
+{"func": "describe_holder_pid", "case": "unavailable-null", "pid": 7, "argv": null}
+{"func": "describe_holder_pid", "case": "collapse-space", "pid": 3, "argv": ["/usr/bin/hermes", "  gateway   run  "]}
+{"func": "describe_holder_pid", "case": "windows-path", "pid": 44, "argv": ["C:\\Program Files\\hermes.exe", "-p", "alice"]}
+{"func": "describe_holder_pid", "case": "truncate-80", "pid": 9, "argv": ["/usr/bin/python3", "-m", "hermes_cli.main", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"]}
+{"func": "held_store_refusal", "case": "quiet", "db_path": "state.db", "holders": [], "command": "optimize-storage", "profile_arg": "", "docs_url": "https://docs/x", "force_hint": "--force"}
+{"func": "held_store_refusal", "case": "single", "db_path": "state.db", "holders": [[5, "C:\\d\\state.db"]], "command": "optimize-storage", "profile_arg": "", "docs_url": "https://docs/x", "force_hint": "--force"}
+{"func": "held_store_refusal", "case": "grouped-sorted", "db_path": "state.db", "holders": [[9, "C:\\d\\state.db-wal"], [5, "C:\\d\\state.db"], [5, "C:\\d\\state.db"], [5, "C:\\d\\state.db (deleted)"], [9, "C:\\d\\state.db-shm"]], "command": "vacuum", "profile_arg": "-p alice ", "docs_url": "https://docs/x", "force_hint": null}
+{"func": "held_store_refusal", "case": "unknown-holder", "db_path": "state.db", "holders": [[-1, "open-file scan failed: nope"], [4, "state.db"]], "command": "rebuild-indexes", "profile_arg": "", "docs_url": "https://docs/x", "force_hint": "--force"}
+{"func": "held_store_refusal", "case": "uninspectable-plus-alive", "db_path": "state.db", "holders": [[3, "uninspectable holder: hermes gateway"], [3, "state.db-wal"]], "command": "optimize-storage", "profile_arg": "", "docs_url": "https://docs/x", "force_hint": "-f"}
+{"func": "held_store_refusal", "case": "no-force-hint", "db_path": "state.db", "holders": [[2, "state.db"]], "command": "vacuum", "profile_arg": "", "docs_url": "https://docs/x", "force_hint": ""}
+{"func": "held_store_refusal", "case": "long-unknown-truncated", "db_path": "state.db", "holders": [[-1, "open-file scan failed: zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"]], "command": "vacuum", "profile_arg": "", "docs_url": "https://docs/x", "force_hint": null}

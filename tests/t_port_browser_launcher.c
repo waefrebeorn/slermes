@@ -44,7 +44,7 @@ static void emit_argv(const char *label,
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- _has_display ---- */
     static const char *e1[] = { "DISPLAY", ":0", NULL };

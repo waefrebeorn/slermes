@@ -68,7 +68,7 @@ static void emit(const char *name, const afc_error_t *e,
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     const char *host = "portal.nousresearch.com", *retry = "hermes portal";
 

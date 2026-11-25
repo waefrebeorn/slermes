@@ -63,7 +63,7 @@ static void emit_marker(const char *label, int is_file, const char *text)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- is_object_id ---- */
     emit_bool("is_object_id", "sha1",      er_is_object_id("0123456789abcdef0123456789abcdef01234567"));

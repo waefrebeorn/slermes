@@ -138,7 +138,7 @@ static void emit_otp(const char *name, const struct fx *fxs, int n, const char *
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* login classification */
     static const struct fx login[] = {

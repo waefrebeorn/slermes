@@ -48,7 +48,7 @@ static void emit_entries(const char *label, char **e, int n)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char *s;
     int n = 0;
     char **e;

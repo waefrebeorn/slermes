@@ -211,7 +211,7 @@ static void test_delete_skill(void) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     printf("=== learning_mutations_test ===\n");
 
     test_parse();

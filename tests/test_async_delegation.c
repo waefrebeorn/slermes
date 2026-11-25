@@ -129,7 +129,7 @@ static int wait_completed(const char *id) {
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     printf("=== Async Delegation Test Suite ===\n");
     async_delegation_init();
     async_delegation_reset_for_tests();

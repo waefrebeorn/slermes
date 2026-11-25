@@ -45,7 +45,7 @@ static void emit_kv(const char *k, const char *v)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     static const struct scenario SC[] = {
         /* plain nesting */
         { "{}", "set", "a.b.c", "\"x\"", 0 },
@@ -106,6 +106,7 @@ int main(void)
             printf("%d,", rc);
             emit_kv("out", json_serialize(root));
             fputs("}\n", stdout);
+        fflush(stdout);
         } else if (strcmp(s->op, "get") == 0) {
             json_t *v = cfg_get_nested(root, s->key);
             printf("0,");
@@ -114,12 +115,14 @@ int main(void)
             } else {
                 emit_kv("out", json_serialize(v));
                 fputs("}\n", stdout);
+        fflush(stdout);
             }
         } else if (strcmp(s->op, "unset") == 0) {
             int rc = cfg_unset_nested(root, s->key);
             printf("%d,", rc);
             emit_kv("out", json_serialize(root));
             fputs("}\n", stdout);
+        fflush(stdout);
         } else {
             char *segs[64];
             int n = cfg_split_key_path(s->key, segs, 64);
@@ -136,6 +139,7 @@ int main(void)
             }
             for (int k = 0; k < n; k++) free(segs[k]);
             fputs("}\n", stdout);
+        fflush(stdout);
         }
         json_free(root);
     }

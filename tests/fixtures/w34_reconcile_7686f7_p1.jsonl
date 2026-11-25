@@ -1,0 +1,61 @@
+{"func": "json_file", "case": "object", "raw": "{\"a\": 1, \"b\": [1, 2]}", "bare_pid_ok": false}
+{"func": "json_file", "case": "object-bom", "raw": "\ufeff{\"a\": 1}", "bare_pid_ok": false}
+{"func": "json_file", "case": "bare-pid", "raw": "  42  ", "bare_pid_ok": true}
+{"func": "json_file", "case": "bare-pid-not-allowed", "raw": "42", "bare_pid_ok": false}
+{"func": "json_file", "case": "bare-pid-negative", "raw": "-7", "bare_pid_ok": true}
+{"func": "json_file", "case": "bare-pid-plus", "raw": "+8", "bare_pid_ok": true}
+{"func": "json_file", "case": "bare-pid-underscore", "raw": "1_0", "bare_pid_ok": true}
+{"func": "json_file", "case": "bare-pid-underscore-not-allowed", "raw": "1_0", "bare_pid_ok": false}
+{"func": "json_file", "case": "float-not-a-pid", "raw": "4.0", "bare_pid_ok": true}
+{"func": "json_file", "case": "bool-is-a-pid", "raw": "true", "bare_pid_ok": true}
+{"func": "json_file", "case": "bool-not-allowed", "raw": "true", "bare_pid_ok": false}
+{"func": "json_file", "case": "array", "raw": "[1, 2]", "bare_pid_ok": true}
+{"func": "json_file", "case": "empty", "raw": "", "bare_pid_ok": true}
+{"func": "json_file", "case": "whitespace", "raw": "   ", "bare_pid_ok": true}
+{"func": "json_file", "case": "truncated-object", "raw": "{\"a\": 1", "bare_pid_ok": true}
+{"func": "json_file", "case": "null", "raw": "null", "bare_pid_ok": true}
+{"func": "json_file", "case": "string", "raw": "\"str\"", "bare_pid_ok": true}
+{"func": "same_home", "case": "case-and-separators", "left": "C:/w34home/x", "right": "c:\\W34HOME\\X"}
+{"func": "same_home", "case": "siblings", "left": "C:/w34home/x", "right": "C:/w34home/y"}
+{"func": "same_home", "case": "dot-and-trailing-sep", "left": "C:/w34home/./x/", "right": "C:\\w34home\\x"}
+{"func": "same_home", "case": "parent-ref", "left": "C:/w34home/a/../b", "right": "C:/w34home/b"}
+{"func": "same_home", "case": "double-sep", "left": "C:/w34home//x", "right": "C:/w34home/x"}
+{"func": "profile_label", "case": "named", "path": "C:/w34home/profiles/alpha"}
+{"func": "profile_label", "case": "upper", "path": "C:/w34home/profiles/Alpha"}
+{"func": "profile_label", "case": "dotted", "path": "C:/w34home/profiles/alpha.beta"}
+{"func": "profile_label", "case": "one-char", "path": "C:/w34home/profiles/a"}
+{"func": "profile_label", "case": "digit-first", "path": "C:/w34home/profiles/9lives"}
+{"func": "profile_label", "case": "root-only", "path": "C:/w34home/profiles"}
+{"func": "profile_label", "case": "other-parent", "path": "C:/w34home/notprofiles/alpha"}
+{"func": "profile_label", "case": "root-profiles", "path": "C:/profiles/alpha"}
+{"func": "profile_label", "case": "len64", "path": "C:/w34home/profiles/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "profile_label", "case": "len65", "path": "C:/w34home/profiles/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+{"func": "profile_label", "case": "leading-underscore", "path": "C:/w34home/profiles/_alpha"}
+{"func": "profile_label", "case": "default-name", "path": "C:/w34home/profiles/default"}
+{"func": "repair_command", "case": "named", "home": "C:/w34home/profiles/alpha"}
+{"func": "repair_command", "case": "unlabelled", "home": "C:/w34home/other"}
+{"func": "repair_command", "case": "default-name", "home": "C:/w34home/profiles/default"}
+{"func": "repair_command", "case": "messy-spelling", "home": "C:/w34home//other/."}
+{"func": "owner_remedy", "case": "named", "home": "C:/w34home/profiles/beta"}
+{"func": "owner_remedy", "case": "unlabelled", "home": "C:/w34home/other"}
+{"func": "owner_remedy", "case": "default-name", "home": "C:/w34home/profiles/default"}
+{"func": "owning_gateway_restart", "case": "no-lock", "home": "C:/w34home/profiles/alpha", "lock_text": null}
+{"func": "owning_gateway_restart", "case": "owner-other-profile", "home": "C:/w34home/profiles/alpha", "lock_text": "{\"hermes_home\": \"C:/w34home/profiles/beta\"}"}
+{"func": "owning_gateway_restart", "case": "owner-same-home", "home": "C:/w34home/profiles/alpha", "lock_text": "{\"hermes_home\": \"c:\\\\W34HOME\\\\profiles\\\\ALPHA\"}"}
+{"func": "owning_gateway_restart", "case": "owner-unlabelled", "home": "C:/w34home/profiles/alpha", "lock_text": "{\"hermes_home\": \"C:/w34home/other\"}"}
+{"func": "owning_gateway_restart", "case": "owner-empty", "home": "C:/w34home/profiles/alpha", "lock_text": "{\"hermes_home\": \"\"}"}
+{"func": "owning_gateway_restart", "case": "bare-pid-lock", "home": "C:/w34home/profiles/alpha", "lock_text": "1234"}
+{"func": "owning_gateway_restart", "case": "owner-not-a-string", "home": "C:/w34home/profiles/alpha", "lock_text": "{\"hermes_home\": 5}"}
+{"func": "owning_gateway_restart", "case": "garbage-lock", "home": "C:/w34home/profiles/alpha", "lock_text": "not json"}
+{"func": "owning_gateway_restart", "case": "host-home-named-owner", "home": "C:/w34home/other", "lock_text": "{\"hermes_home\": \"C:/w34home/profiles/gamma\"}"}
+{"func": "lagging_damaged", "case": "detail", "detail": "row 3 missing from index idx_messages"}
+{"func": "lagging_damaged", "case": "empty", "detail": ""}
+{"func": "profile_label", "case": "trailing-sep", "path": "C:/w34home/profiles/alpha/"}
+{"func": "profile_label", "case": "upper-parent", "path": "C:/w34home/PROFILES/alpha"}
+{"func": "profile_label", "case": "dotted-spelling", "path": "C:/w34home/./profiles/alpha"}
+{"func": "json_file", "case": "pid-object-passthrough", "raw": "{\"pid\": 99}", "bare_pid_ok": true}
+{"func": "json_file", "case": "padded-array", "raw": "  [1]  ", "bare_pid_ok": false}
+{"func": "json_file", "case": "negative-float", "raw": "-0.5", "bare_pid_ok": true}
+{"func": "same_home", "case": "different-drives", "left": "C:/w34home/x", "right": "D:/w34home/x"}
+{"func": "repair_command", "case": "trailing-sep", "home": "C:/w34home/profiles/beta/"}
+{"func": "owning_gateway_restart", "case": "owner-messy-spelling", "home": "C:/w34home/profiles/alpha", "lock_text": "{\"hermes_home\": \"C:/w34home/profiles/beta/./\"}"}

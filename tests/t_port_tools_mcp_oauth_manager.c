@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cli_tools_mcp_oauth_manager__make_hermes_provider_class\",\"ret\":0}\n", "cli_tools_mcp_oauth_manager__make_hermes_provider_class", cli_tools_mcp_oauth_manager__make_hermes_provider_class());
   cli_tools_mcp_oauth_manager_reset_manager_for_tests();
   return 0;

@@ -21,7 +21,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _compression_method: (fallback, has_aux_error). */
     static const int ms[][2] = {{0,0},{1,0},{0,1},{1,1}};

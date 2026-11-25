@@ -124,7 +124,7 @@ static void echo_val(const json_t *v) {
 int main(void) {
     char *line = (char *)malloc(LINE_CAP);
     if (!line) return 1;
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, (int)LINE_CAP, stdin)) {
         json_t *in, *out;
         const char *func;
@@ -153,6 +153,7 @@ int main(void) {
             echo_val(json_object_get_at(in, i));
         }
         fputs("}\n", stdout);
+        fflush(stdout);
         json_free(out);
         json_free(in);
     }

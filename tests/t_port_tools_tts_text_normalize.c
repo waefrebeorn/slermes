@@ -289,7 +289,7 @@ static void run_one(const char *func, const char *in)
 
 int main(int argc, char **argv)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     if (argc < 2) {
         fprintf(stderr, "usage: %s <cases.in>\n", argv[0]);
         return 2;

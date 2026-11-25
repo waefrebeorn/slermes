@@ -21,7 +21,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* prompt_with_note: count<=1 -> prompt unchanged; >1 -> note appended. */
     static const char *const prompts[] = { "seen", "started build", "" };

@@ -105,7 +105,7 @@ int main(void)
     static const char *TS_DUP[] = { "bot_room", "bot_room" };
     static const char *TS_ONE[] = { "bot_room" };
 
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     emit_digest("digest_basic", "room1", TS_BASIC, 2, "manual", 100);
     /* hep_policy_digest takes an already-sorted list, like Python's unsigned dict. */

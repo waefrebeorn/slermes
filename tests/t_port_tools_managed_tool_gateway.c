@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cli_tools_managed_tool_gateway_auth_json_path\",\"ret\":%s}\n", js(cli_tools_managed_tool_gateway_auth_json_path()));
   printf("{\"func\":\"cli_tools_managed_tool_gateway_get_tool_gateway_scheme\",\"ret\":%s}\n", js(cli_tools_managed_tool_gateway_get_tool_gateway_scheme()));
   return 0;

@@ -1,0 +1,14 @@
+{"func":"constants"}
+{"func":"modes"}
+{"func":"mode_to_policy"}
+{"func":"policy_to_mode"}
+{"func":"policy_for_mode","mode":"default"}
+{"func":"policy_for_mode","mode":"accept_edits"}
+{"func":"policy_for_mode","mode":"dont_ask"}
+{"func":"policy_for_mode","mode":"unknown","fallback":"fallback-value"}
+{"func":"policy_for_mode","mode":null,"fallback":null}
+{"func":"mode_for_policy","policy":"ask"}
+{"func":"mode_for_policy","policy":"workspace_session"}
+{"func":"mode_for_policy","policy":"session"}
+{"func":"mode_for_policy","policy":"unknown"}
+{"func":"mode_for_policy","policy":null}

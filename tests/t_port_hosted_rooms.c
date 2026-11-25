@@ -134,7 +134,7 @@ static void emit_user_event(const char *label, const char *client_id)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- bounded_int ---- */
     emit_bounded("ok",        1, 5,   "bad", 0, 0, 0);

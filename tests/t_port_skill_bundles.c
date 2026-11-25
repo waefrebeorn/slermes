@@ -89,7 +89,7 @@ static void emit_resolve(const char *label, const char *cmd, const char *const *
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- get_bundle_key ---- */
     emit_key("simple", "My Bundle");

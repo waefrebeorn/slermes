@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"check_camofox_available\",\"ret\":0}\n", "check_camofox_available", (int)check_camofox_available());
   printf("{\"func\":\"_managed_persistence_enabled\",\"ret\":0}\n", "_managed_persistence_enabled", (int)_managed_persistence_enabled());
   printf("{\"func\":\"_adopt_existing_tab_enabled\",\"ret\":0}\n", "_adopt_existing_tab_enabled", (int)_adopt_existing_tab_enabled());

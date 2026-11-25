@@ -87,7 +87,7 @@ static void digest_case(const char *name, int missing, const char *bytes)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
 #ifndef UPR_SKIP_HASH
     /* _install_key */

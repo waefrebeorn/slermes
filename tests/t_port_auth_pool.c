@@ -72,7 +72,7 @@ static const char *const DISKS[] = {
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     for (size_t i = 0; i < sizeof(ROWS) / sizeof(ROWS[0]); i++) {
         json_t *row = json_parse(ROWS[i], NULL);
@@ -85,6 +85,7 @@ int main(void)
         printf(",\"refresh\":");
         jstr(rt);
         fputs("}\n", stdout);
+        fflush(stdout);
         json_free(row);
     }
 
@@ -98,6 +99,7 @@ int main(void)
         printf(",\"out\":");
         jlist(ids, n);
         fputs("}\n", stdout);
+        fflush(stdout);
         for (int k = 0; k < n; k++)
             free(ids[k]);
 
@@ -144,6 +146,7 @@ int main(void)
             jstr(ser ? ser : "");
             free(ser);
             fputs("}\n", stdout);
+        fflush(stdout);
             for (int k = 0; k < n; k++)
                 free(out[k]);
             json_free(sup);
@@ -172,6 +175,7 @@ int main(void)
                     printf(",\"cleared\":%d,\"out\":", cleared[c]);
                     jstr(out);
                     fputs("}\n", stdout);
+        fflush(stdout);
                     json_free(entry);
                     json_free(disk);
                 }

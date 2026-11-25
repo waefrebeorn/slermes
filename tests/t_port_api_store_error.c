@@ -7,7 +7,7 @@
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     struct { const char *r; int rt; } cases[] = {
         {"invalid_params", 1}, {"runtime_draining", 1},
         {"storage_unavailable", 1}, {"chain_moved", 1},

@@ -129,7 +129,7 @@ static void emit_sentinel(const char *line) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     const char *s = getenv("SLERMES_HOME");
     if (!s || !*s) s = getenv("HOME");
     snprintf(g_scratch, sizeof(g_scratch), "%s", s ? s : ".");

@@ -171,7 +171,7 @@ static json_t *ucr_run_case(const char *func, const json_t *in) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char *line = (char *)malloc(1 << 20);
     if (!line) return 1;
     while (fgets(line, 1 << 20, stdin)) {

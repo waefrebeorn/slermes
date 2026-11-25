@@ -81,7 +81,7 @@ int main(void)
         "not enough space", "diskfull", "SQLITE_FULL",
     };
 
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     for (size_t i = 0; i < sizeof(providers) / sizeof(providers[0]); i++)
         emit_pred_int("custom_endpoint", providers[i] ? providers[i] : "null",

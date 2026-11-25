@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"is_bundled_skills_opt_out\",\"ret\":0}\n", "is_bundled_skills_opt_out", (int)is_bundled_skills_opt_out());
   return 0;
 }

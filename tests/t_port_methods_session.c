@@ -62,7 +62,7 @@ static void emit_int_param(const char *label, const char *const *params,
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- is_truthy_value ---- */
     emit_bool("is_truthy_value", "true",   ms_is_truthy(2, "true", 0, 0));

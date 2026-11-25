@@ -61,7 +61,7 @@ static void emit_remote(const char *label, const char *backend, int attr)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- _strip_yaml_frontmatter ---- */
     emit_strip("no-frontmatter", "# Title\nbody\n");

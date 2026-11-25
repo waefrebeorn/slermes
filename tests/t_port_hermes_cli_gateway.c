@@ -17,7 +17,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"supports_systemd_services\",\"ret\":0}\n", "supports_systemd_services", (int)supports_systemd_services());
   return 0;
 }

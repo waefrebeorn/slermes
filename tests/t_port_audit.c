@@ -35,7 +35,7 @@ static void one_case(int idx, const char *lit)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     one_case(0, "\"short\"");
     one_case(1, "123");
     one_case(2, "true");

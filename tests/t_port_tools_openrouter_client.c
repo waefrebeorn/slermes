@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"cli_tools_openrouter_client_check_api_key\",\"ret\":0}\n", "cli_tools_openrouter_client_check_api_key", cli_tools_openrouter_client_check_api_key());
   return 0;
 }

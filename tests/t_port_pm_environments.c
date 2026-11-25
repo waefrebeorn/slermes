@@ -42,7 +42,7 @@ static void emit_str(int cs, const char *fn, const char *in, const char *out)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char b[8192];
 
     /* install_key — sha256(canonical)[:16] */

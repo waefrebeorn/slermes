@@ -70,7 +70,7 @@ static void emit_trim(const char *label, double *samples, int n, double now)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* ---- _human_gb ---- */
     emit_gb("one",     1073741824.0);

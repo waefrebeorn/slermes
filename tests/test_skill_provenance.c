@@ -21,7 +21,7 @@ static int passed = 0, failed = 0;
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     printf("=== Skill Provenance Test Suite ===\n");
 
     /* Default origin is "foreground" (mirrors Python ContextVar default). */

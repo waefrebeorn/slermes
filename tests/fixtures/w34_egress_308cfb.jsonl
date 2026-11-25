@@ -1,0 +1,67 @@
+{"func":"is_egress_decline","case":"code-decline","result":{"success":false,"code":"egress_declined"}}
+{"func":"is_egress_decline","case":"success-wins","result":{"success":true,"code":"egress_declined"}}
+{"func":"is_egress_decline","case":"ambiguous-is-transport","result":{"success":false,"ambiguous":true,"code":"egress_declined"}}
+{"func":"is_egress_decline","case":"uniform-text","result":{"success":false,"error":"Telegram egress declined: target is not an approved destination for this connection"}}
+{"func":"is_egress_decline","case":"text-uppercased","result":{"success":false,"error":"DISCORD EGRESS DECLINED: nope"}}
+{"func":"is_egress_decline","case":"ordinary-failure","result":{"success":false,"error":"connection reset by peer"}}
+{"func":"is_egress_decline","case":"not-a-dict","result":"egress declined: x"}
+{"func":"is_egress_decline","case":"success-zero-is-falsey","result":{"success":0,"error":"egress declined: x"}}
+{"func":"is_egress_decline","case":"code-zero-not-code","result":{"success":false,"code":0,"error":"connection reset"}}
+{"func":"is_egress_decline","case":"code-mismatch-falls-to-text","result":{"success":false,"code":"other_code","error":"slack egress declined: blocked"}}
+{"func":"is_egress_decline","case":"empty-object","result":{}}
+{"func":"is_egress_decline","case":"padded-code-is-not-the-code","result":{"success":false,"code":" egress_declined","error":"no marker here"}}
+{"func":"declined_send","case":"raw-structured-decline","result":{"raw_response":{"success":false,"code":"egress_declined"}}}
+{"func":"declined_send","case":"raw-success","result":{"raw_response":{"success":true}}}
+{"func":"declined_send","case":"raw-null-text-decline","result":{"raw_response":null,"error":"Telegram egress declined: no"}}
+{"func":"declined_send","case":"ack-lost-is-transport","result":{"error":"ack lost while awaiting write"}}
+{"func":"declined_send","case":"text-decline-no-raw","result":{"error":"Egress Declined: no"}}
+{"func":"declined_send","case":"empty-projection","result":{}}
+{"func":"declined_send","case":"raw-not-dict-uses-error","result":{"raw_response":"opaque","error":"telegram egress declined: nope"}}
+{"func":"decline_error","case":"verbatim","result":{"success":false,"error":"Telegram egress declined: target is not an approved destination for this connection"}}
+{"func":"decline_error","case":"no-error-key","result":{"success":false}}
+{"func":"decline_error","case":"empty-error-is-default","result":{"error":""}}
+{"func":"decline_error","case":"not-a-dict","result":42}
+{"func":"decline_log_line","case":"react-string-chat","op":"react","chat_id":"-100200300","result":{"error":"discord egress declined: no"}}
+{"func":"decline_log_line","case":"typing-int-chat","op":"typing","chat_id":456,"result":{"success":false,"error":"slack egress declined: no"}}
+{"func":"is_missing_gateway_relay","case":"exact-module","module_not_found":true,"name":"gateway.relay.egress"}
+{"func":"is_missing_gateway_relay","case":"package-prefix","module_not_found":true,"name":"gateway.relay"}
+{"func":"is_missing_gateway_relay","case":"nested-dependency-is-fault","module_not_found":true,"name":"gateway.relay.dependency"}
+{"func":"is_missing_gateway_relay","case":"plain-importerror-is-fault","module_not_found":false,"name":"gateway.relay.egress"}
+{"func":"is_missing_gateway_relay","case":"no-name-is-fault","module_not_found":true,"name":null}
+{"func":"has_live_native_adapter","case":"no-runner","platform":"discord"}
+{"func":"has_live_native_adapter","case":"adapter-no-config-entry","platform":"discord","runner_present":true,"adapter_present":true,"native_config":null}
+{"func":"has_live_native_adapter","case":"adapter-disabled","platform":"discord","runner_present":true,"adapter_present":true,"native_config":{"enabled":false}}
+{"func":"has_live_native_adapter","case":"adapter-enabled","platform":"discord","runner_present":true,"adapter_present":true,"native_config":{"enabled":true}}
+{"func":"has_live_native_adapter","case":"no-adapter","platform":"discord","runner_present":true,"adapter_present":false}
+{"func":"has_live_native_adapter","case":"config-fault","platform":"discord","runner_present":true,"adapter_present":true,"config_error":true}
+{"func":"relay_routed_platform","case":"generic-plane","platform":"relay","route_unknown":true}
+{"func":"relay_routed_platform","case":"empty-name","platform":"   "}
+{"func":"relay_routed_platform","case":"fronted-no-native","platform":" Discord ","fronted":["discord","slack"]}
+{"func":"relay_routed_platform","case":"fronted-native-enabled","platform":"discord","fronted":["discord"],"runner_present":true,"adapter_present":true,"native_config":{"enabled":true}}
+{"func":"relay_routed_platform","case":"not-fronted","platform":"telegram","fronted":["discord"]}
+{"func":"relay_routed_platform","case":"fronted-config-fault","platform":"discord","fronted":["discord"],"runner_present":true,"adapter_present":true,"config_error":true}
+{"func":"session_ids","case":"threaded-origin","platform":"discord","entries":[{"id":"789:9","thread_id":"9"}]}
+{"func":"session_ids","case":"matrix-id-never-split","platform":"matrix","entries":[{"id":"!room:server.org"}]}
+{"func":"session_ids","case":"thread-suffix-mismatch","platform":"discord","entries":[{"id":"789:9","thread_id":"8"}]}
+{"func":"session_ids","case":"mixed-shapes","platform":"telegram","entries":[{"id":12345},{"id":"","thread_id":"1"},{"id":"-100:4","thread_id":4},"junk",{"thread_id":"5"}]}
+{"func":"attested_relay_targets","case":"three-provenances","platform":"discord","sources":{"discord":{"home":"1","directory":[{"id":"2"},{"id":""},{"nope":1}],"sessions":[{"id":"3:33","thread_id":"33"}]}}}
+{"func":"attested_relay_targets","case":"relay-plane-union","platform":"relay","fronted":["discord","slack"],"sources":{"relay":{"home":"home"},"discord":{"home":"1"},"slack":{"directory":[{"id":"2"}]}}}
+{"func":"attested_relay_targets","case":"relay-plane-fault","platform":"relay","route_unknown":true,"sources":{}}
+{"func":"is_unresolved_handle","case":"telegram-handle-no-credential","platform":"telegram","target":"@public_channel"}
+{"func":"is_unresolved_handle","case":"telegram-handle-native-credential","platform":"telegram","target":"@public_channel","native_credential":true}
+{"func":"is_unresolved_handle","case":"telegram-numeric-id","platform":"telegram","target":"123456"}
+{"func":"is_unresolved_handle","case":"discord-handle-not-exempt","platform":"discord","target":"@public_channel"}
+{"func":"is_unresolved_handle","case":"explicit-token-absent","platform":"telegram","target":"@chan","native_token_present":true,"native_token":null}
+{"func":"is_unresolved_handle","case":"explicit-token-present","platform":"telegram","target":"@chan","native_token_present":true,"native_token":"bot-token"}
+{"func":"authorize_relay_target","case":"native-platform-passes","platform":"discord","chat_id":"123","fronted":["discord"],"runner_present":true,"adapter_present":true,"native_config":{"enabled":true}}
+{"func":"authorize_relay_target","case":"attested-parent","platform":"discord","chat_id":"123","fronted":["discord"],"sources":{"discord":{"home":"123"}}}
+{"func":"authorize_relay_target","case":"unattested-chat","platform":"discord","chat_id":"999","fronted":["discord"],"sources":{"discord":{"home":"123"}},"native_token_present":false}
+{"func":"authorize_relay_target","case":"thread-unattested","platform":"discord","chat_id":"-100A","thread_id":"9","fronted":["discord"],"sources":{"discord":{"home":"-100A"}}}
+{"func":"authorize_relay_target","case":"thread-bound","platform":"discord","chat_id":"-100A","thread_id":"7","fronted":["discord"],"sources":{"discord":{"sessions":[{"id":"-100A:7","thread_id":"7"}]}}}
+{"func":"authorize_relay_target","case":"thread-equals-parent","platform":"discord","chat_id":"-100A","thread_id":"-100A","fronted":["discord"],"sources":{"discord":{"home":"-100A"}}}
+{"func":"authorize_relay_target","case":"telegram-handle-deferred","platform":"telegram","chat_id":"@public_channel","fronted":["telegram"],"native_token_present":false}
+{"func":"authorize_relay_target","case":"telegram-handle-native-token","platform":"telegram","chat_id":"@public_channel","fronted":["telegram"],"native_token_present":true,"native_token":"bot-token"}
+{"func":"authorize_relay_target","case":"routing-unknown","platform":"discord","chat_id":"123","route_unknown":true}
+{"func":"authorize_relay_target","case":"empty-chat","platform":"discord","chat_id":"   ","fronted":["discord"],"sources":{"discord":{"home":"123"}}}
+{"func":"authorize_relay_target","case":"relay-plane-union-attests","platform":"relay","chat_id":"555","fronted":["discord"],"sources":{"discord":{"directory":[{"id":"555"}]}}}
+{"func":"authorize_relay_target","case":"relay-plane-union-refuses","platform":"relay","chat_id":"555","fronted":["discord"],"sources":{"discord":{"home":"999"}}}

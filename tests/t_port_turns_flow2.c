@@ -70,7 +70,7 @@ static char *read_line(FILE *f) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     json_t *empty_args = json_object();
     char *line;
     while ((line = read_line(stdin)) != NULL) {

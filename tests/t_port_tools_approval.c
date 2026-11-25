@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"is_yolo_mode_frozen\",\"ret\":0}\n", "is_yolo_mode_frozen", (int)is_yolo_mode_frozen());
   printf("{\"func\":\"is_approval_bypass_active\",\"ret\":0}\n", "is_approval_bypass_active", (int)is_approval_bypass_active());
   printf("{\"func\":\"_is_interactive_cli\",\"ret\":0}\n", "_is_interactive_cli", (int)_is_interactive_cli());

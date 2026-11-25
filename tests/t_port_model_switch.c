@@ -80,7 +80,7 @@ static void str_case(const char *fn, const char *in_json, const char *out)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _clean */
     clean_case("null");

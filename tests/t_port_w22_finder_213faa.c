@@ -25,7 +25,7 @@ static json_t *opt_str(char *s) {
 
 int main(void) {
     char line[65536];
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, sizeof(line), stdin)) {
         json_t *in, *out = NULL;
         const char *func;
@@ -59,6 +59,7 @@ int main(void) {
             emit_key(k, json_copy(json_object_get_at(in, i)));
         }
         fputs("}\n", stdout);
+        fflush(stdout);
         json_free(out);
         json_free(in);
     }

@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"voice_mode__audio_available\",\"ret\":0}\n", "voice_mode__audio_available", voice_mode__audio_available());
   printf("{\"func\":\"voice_mode__termux_api_app_installed\",\"ret\":0}\n", "voice_mode__termux_api_app_installed", voice_mode__termux_api_app_installed());
   printf("{\"func\":\"voice_mode__termux_voice_capture_available\",\"ret\":0}\n", "voice_mode__termux_voice_capture_available", voice_mode__termux_voice_capture_available());

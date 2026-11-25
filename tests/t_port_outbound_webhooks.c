@@ -21,7 +21,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     static const char *const evs[]  = {"session_start", "pre_tool_call", "post_tool_call"};
     static const char *const prs[]  = {"work", "default", "prof2"};

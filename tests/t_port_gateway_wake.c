@@ -26,7 +26,7 @@ static void emit_json_str(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     struct { int has, val, name; } pushes[] = {
         { 0, 0, 0 }, { 1, 0, 1 }, { 1, 1, 2 }, { 0, 1, 3 },

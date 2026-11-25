@@ -54,7 +54,7 @@ static int flag(json_t *in, const char *key) {
 int main(void) {
     char line[131072];
     char a[64], b[64], c[64], d[64], e[64];
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     while (fgets(line, sizeof(line), stdin)) {
         json_t *in, *out = NULL;
         const char *func;
@@ -110,6 +110,7 @@ int main(void) {
             emit_key(k, json_copy(json_object_get_at(in, i)));
         }
         fputs("}\n", stdout);
+        fflush(stdout);
         json_free(out);
         json_free(in);
     }

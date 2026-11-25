@@ -103,7 +103,7 @@ static void pp_case(const char *entries_json, const char *existing)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* _quote_cmd_script_arg */
     quote_case("");

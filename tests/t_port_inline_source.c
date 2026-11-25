@@ -94,7 +94,7 @@ static const char *const CASES[] = {
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     for (size_t i = 0; i < sizeof(CASES) / sizeof(CASES[0]); i++) {
         const char *tok[64];
         size_t n = split(CASES[i], tok, 64);

@@ -1,0 +1,59 @@
+{"func": "classify_refused_owner", "case": "other-session", "own_session": 1, "owner_session": 2, "own_elevated": false, "owner_elevated": false}
+{"func": "classify_refused_owner", "case": "elevated-flag", "own_session": 1, "owner_session": 1, "own_elevated": false, "owner_elevated": true}
+{"func": "classify_refused_owner", "case": "elevated-unknown-probe", "own_session": 1, "owner_session": 1, "own_elevated": false, "owner_elevated": null}
+{"func": "classify_refused_owner", "case": "same-session-floor", "own_session": 1, "owner_session": 1, "own_elevated": false, "owner_elevated": false}
+{"func": "classify_refused_owner", "case": "own-elevated-wins", "own_session": null, "owner_session": 2, "own_elevated": true, "owner_elevated": true}
+{"func": "classify_refused_owner", "case": "own-session-unknown", "own_session": null, "owner_session": 1, "own_elevated": false, "owner_elevated": true}
+{"func": "classify_refused_owner", "case": "owner-session-unknown", "own_session": 1, "owner_session": null, "own_elevated": false, "owner_elevated": null}
+{"func": "classify_refused_owner", "case": "both-unknown", "own_session": null, "owner_session": null, "own_elevated": false, "owner_elevated": false}
+{"func": "refused_owner_remedy", "case": "elevated", "reason": "gateway_elevated", "pid": 4321, "owner_session": 1}
+{"func": "refused_owner_remedy", "case": "other-session-zero", "reason": "gateway_other_session", "pid": 99, "owner_session": 0}
+{"func": "refused_owner_remedy", "case": "other-session-unknown", "reason": "gateway_other_session", "pid": 77, "owner_session": null}
+{"func": "judge_pipe_server", "case": "readable-same", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": "S-1-5-21-1111-2222-3333-1001", "pipe": null, "pid": 100, "own_elevated": false, "own_session": 1, "server_session": 1, "server_elevated": false}
+{"func": "judge_pipe_server", "case": "readable-other-user", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": "S-1-5-21-1111-2222-3333-1002", "pipe": null, "pid": 101, "own_elevated": false, "own_session": 1, "server_session": 1, "server_elevated": false}
+{"func": "judge_pipe_server", "case": "readable-elevated-token", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": "S-1-5-21-1111-2222-3333-1001", "pipe": {"owner": "S-1-5-21-1111-2222-3333-1001", "dacl": [[0, "S-1-5-21-1111-2222-3333-1001"]]}, "pid": 102, "own_elevated": false, "own_session": 1, "server_session": 1, "server_elevated": true}
+{"func": "judge_pipe_server", "case": "readable-owner-admin-decides", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": "S-1-5-21-1111-2222-3333-1001", "pipe": {"owner": "S-1-5-32-544", "dacl": [[0, "S-1-5-21-1111-2222-3333-1001"]]}, "pid": 103, "own_elevated": false, "own_session": 1, "server_session": 1, "server_elevated": null}
+{"func": "judge_pipe_server", "case": "readable-owner-user-decides", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": "S-1-5-21-1111-2222-3333-1001", "pipe": {"owner": "S-1-5-21-1111-2222-3333-1001", "dacl": [[0, "S-1-5-21-1111-2222-3333-1001"]]}, "pid": 104, "own_elevated": false, "own_session": 1, "server_session": 1, "server_elevated": null}
+{"func": "judge_pipe_server", "case": "own-elevated-ok", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": "S-1-5-21-1111-2222-3333-1001", "pipe": null, "pid": 105, "own_elevated": true, "own_session": 1, "server_session": 1, "server_elevated": true}
+{"func": "judge_pipe_server", "case": "readable-cross-session", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": "S-1-5-21-1111-2222-3333-1001", "pipe": null, "pid": 106, "own_elevated": false, "own_session": 2, "server_session": 1, "server_elevated": true}
+{"func": "judge_pipe_server", "case": "unreadable-private-same-session", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": null, "pipe": {"owner": "S-1-5-21-1111-2222-3333-1001", "dacl": [[0, "S-1-5-21-1111-2222-3333-1001"]]}, "pid": 107, "own_elevated": false, "own_session": 1, "server_session": 1, "server_elevated": null}
+{"func": "judge_pipe_server", "case": "unreadable-private-no-session", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": null, "pipe": {"owner": "S-1-5-21-1111-2222-3333-1001", "dacl": [[0, "S-1-5-21-1111-2222-3333-1001"]]}, "pid": 108, "own_elevated": false, "own_session": 1, "server_session": null, "server_elevated": null}
+{"func": "judge_pipe_server", "case": "unreadable-admin-other-session", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": null, "pipe": {"owner": "S-1-5-32-544", "dacl": [[0, "S-1-5-21-1111-2222-3333-1001"]]}, "pid": 109, "own_elevated": false, "own_session": 1, "server_session": 2, "server_elevated": null}
+{"func": "judge_pipe_server", "case": "unreadable-denied-ace", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": null, "pipe": {"owner": "S-1-5-21-1111-2222-3333-1001", "dacl": [[1, "S-1-5-21-1111-2222-3333-1001"]]}, "pid": 110, "own_elevated": false, "own_session": 1, "server_session": 1, "server_elevated": null}
+{"func": "judge_pipe_server", "case": "unreadable-foreign-owner", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": null, "pipe": {"owner": "S-1-5-21-1111-2222-3333-1002", "dacl": [[0, "S-1-5-21-1111-2222-3333-1001"]]}, "pid": 111, "own_elevated": false, "own_session": 1, "server_session": 1, "server_elevated": null}
+{"func": "judge_pipe_server", "case": "unreadable-no-pipe", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": null, "pipe": null, "pid": 112, "own_elevated": false, "own_session": 1, "server_session": 1, "server_elevated": null}
+{"func": "judge_pipe_server", "case": "readable-null-elevation-null-pipe", "own_sid": "S-1-5-21-1111-2222-3333-1001", "process_sid": "S-1-5-21-1111-2222-3333-1001", "pipe": null, "pid": 113, "own_elevated": false, "own_session": 1, "server_session": 1, "server_elevated": null}
+{"func": "peer_subject", "case": "client-token", "client_sid": "S-1-5-21-1111-2222-3333-1001", "client_pid": true, "pid_sid": "S-1-5-21-1111-2222-3333-1001", "own_sid": "S-1-5-21-1111-2222-3333-1001"}
+{"func": "peer_subject", "case": "fallback-to-pid", "client_sid": null, "client_pid": true, "pid_sid": "S-1-5-21-1111-2222-3333-1001", "own_sid": "S-1-5-21-1111-2222-3333-1001"}
+{"func": "peer_subject", "case": "pid-unidentified", "client_sid": null, "client_pid": false, "pid_sid": "S-1-5-21-1111-2222-3333-1001", "own_sid": "S-1-5-21-1111-2222-3333-1001"}
+{"func": "peer_subject", "case": "other-user-token", "client_sid": "S-1-5-21-1111-2222-3333-1002", "client_pid": true, "pid_sid": "S-1-5-21-1111-2222-3333-1002", "own_sid": "S-1-5-21-1111-2222-3333-1001"}
+{"func": "peer_subject", "case": "pid-token-unreadable", "client_sid": null, "client_pid": true, "pid_sid": null, "own_sid": "S-1-5-21-1111-2222-3333-1001"}
+{"func": "remaining_ms", "case": "417ms", "remaining": 0.417}
+{"func": "remaining_ms", "case": "truncate-4ms", "remaining": 0.0042}
+{"func": "remaining_ms", "case": "sub-ms-floor", "remaining": 0.0004}
+{"func": "remaining_ms", "case": "zero", "remaining": 0}
+{"func": "remaining_ms", "case": "negative", "remaining": -0.25}
+{"func": "remaining_ms", "case": "2.5s", "remaining": 2.5}
+{"func": "accept_outcome", "case": "connected", "error": 0}
+{"func": "accept_outcome", "case": "operation-aborted", "error": 995}
+{"func": "accept_outcome", "case": "access-denied", "error": 5}
+{"func": "accept_outcome", "case": "no-data", "error": 233}
+{"func": "pipe_open_action", "case": "absent", "code": 2, "phase": "open"}
+{"func": "pipe_open_action", "case": "inaccessible", "code": 5, "phase": "open"}
+{"func": "pipe_open_action", "case": "busy-then-wait", "code": 231, "phase": "open"}
+{"func": "pipe_open_action", "case": "other-open", "code": 0, "phase": "open"}
+{"func": "pipe_open_action", "case": "other-open2", "code": 1234, "phase": "open"}
+{"func": "pipe_open_action", "case": "wait-timeout", "code": 121, "phase": "wait"}
+{"func": "pipe_open_action", "case": "wait-other", "code": 6, "phase": "wait"}
+{"func": "pipe_dacl", "case": "user-sid", "sid": "S-1-5-21-1111-2222-3333-1001"}
+{"func": "pipe_dacl", "case": "system-sid", "sid": "S-1-5-18"}
+{"func": "pipe_create_mode", "case": "first", "first": true}
+{"func": "pipe_create_mode", "case": "additional", "first": false}
+{"func": "constants", "case": "pipe-budgets"}
+{"func": "read_step", "case": "first-chunk", "maximum": 524288, "before": 0, "count": 100}
+{"func": "read_step", "case": "room-left", "maximum": 4096, "before": 3000, "count": 1000}
+{"func": "read_step", "case": "exactly-full", "maximum": 65536, "before": 0, "count": 65536}
+{"func": "read_step", "case": "over-limit", "maximum": 65536, "before": 0, "count": 65537}
+{"func": "read_step", "case": "tiny-exact", "maximum": 10, "before": 0, "count": 10}
+{"func": "read_step", "case": "tiny-over", "maximum": 10, "before": 0, "count": 11}
+{"func": "read_step", "case": "closed", "maximum": 10, "before": 5, "count": 0}

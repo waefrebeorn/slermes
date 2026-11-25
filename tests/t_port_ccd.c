@@ -7,7 +7,7 @@
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     json_t *d = ccl_cli_config_defaults();
     char *s = json_serialize(d);
     printf("{\"tag\":\"ccd\",\"case\":0,\"out\":");

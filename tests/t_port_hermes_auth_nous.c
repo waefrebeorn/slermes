@@ -30,7 +30,7 @@ static void emit_obj(json_t *o)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     static const char *const toks[] = { NULL, "", "   ", "abcdef123456",
                                         " access-token-xyz ", "UPPER Case" };

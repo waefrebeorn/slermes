@@ -58,7 +58,7 @@ static void emit_str(const char *family, const char *case_name,
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     /* carry */
     {

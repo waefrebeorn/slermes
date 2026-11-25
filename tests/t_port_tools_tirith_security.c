@@ -15,7 +15,7 @@ static const char *js(const char *s){
   *q++='"'; *q=0; return b[t];
 }
 int main(void){
-  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IOFBF, 1u << 20);
   printf("{\"func\":\"load_security_config\",\"ret\":%s}\n", js(load_security_config()));
   reset_spawn_warning_state();
   printf("{\"func\":\"_get_hermes_home\",\"ret\":%s}\n", js(_get_hermes_home()));

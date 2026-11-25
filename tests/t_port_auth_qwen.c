@@ -29,7 +29,7 @@ static void emit_json_str(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     {
         char *p = qwen_auth_path("/home/u");

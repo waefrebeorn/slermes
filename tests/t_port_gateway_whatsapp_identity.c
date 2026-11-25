@@ -19,7 +19,7 @@ static void jstr(const char *s)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
 
     static const char *const norm[] = {
         "6012:47@s.whatsapp.net", "6012@lid", "+6012", "", "+6012345678",

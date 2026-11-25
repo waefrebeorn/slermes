@@ -204,7 +204,7 @@ static int cp_is_windows_arg(const json_t *in) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     for (size_t i = 0; i < sizeof CASES / sizeof CASES[0]; i++) {
         const char *fn = CASES[i].func;
         json_t *in = json_parse(CASES[i].in, NULL);

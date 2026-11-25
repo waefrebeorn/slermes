@@ -67,7 +67,7 @@ static void free_records(char ***recs, int n)
 
 int main(void)
 {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     char *s;
     int n = 0;
     char ***recs;

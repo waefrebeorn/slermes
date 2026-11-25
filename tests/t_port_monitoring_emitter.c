@@ -41,7 +41,7 @@ static void sub_count(void *ctx, const json_t *batch) {
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IOFBF, 1u << 20);
     /* small object builders */
     /* json_t *jobj2(const char *k, const char *v) */
 
