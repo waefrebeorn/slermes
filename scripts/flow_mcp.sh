@@ -31,6 +31,9 @@ probe() { # name, payload, needle
 
 probe "initialize"  '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' '"serverInfo"'
 probe "tools/list"  '{"jsonrpc":"2.0","id":2,"method":"tools/list"}'              '"tools"'
+# A listing is not execution: read_file must return the repository README through the same
+# JSON-RPC path, or the registry is only a table of names.
+probe "tools/call"  '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"read_file","arguments":{"path":"README.md","limit":2}}}' 'Slermes'
 
 if [ $fail -ne 0 ]; then
   echo "flow-mcp: FAIL"; sed -n '1,10p' .testbin/flow-mcp.log; exit 1
