@@ -1488,21 +1488,40 @@ static char *cdp_send_command(const char *method, const char *params_json) {
         return NULL;
     }
 
-    /* Receive response (reconnect on failure) */
+    /* Receive the response for THIS id. A CDP page also emits events — executionContextCreated,
+     * loadEventFired, consoleAPICalled — and they arrive interleaved with responses. Returning the
+     * first frame that happens to arrive hands back an event as if it were the answer, which is how a
+     * query "sometimes" returns a stale or empty result while the page is fine. So: read until the id
+     * matches, and throw the events away. */
     for (int attempt = 0; attempt < 2; attempt++) {
-        ws_frame_t frame;
-        int r = ws_recv(g_cdp_ws, &frame, 15);
-        if (r > 0 && frame.opcode == WS_OP_TEXT) {
-            char *resp = strndup((const char *)frame.payload, frame.len);
-            ws_frame_free(&frame);
-            if (resp) return resp;
+        if (!g_cdp_ws) {
+            g_cdp_ws = ws_connect(cdp_get_url(), 10);
+            if (!g_cdp_ws) break;
+            /* A reconnect loses the previous exchange: send again before waiting. */
+            if (ws_send(g_cdp_ws, WS_OP_TEXT, msg, (size_t)n) < 0) {
+                ws_close(g_cdp_ws); g_cdp_ws = NULL; break;
+            }
         }
-        if (r > 0) ws_frame_free(&frame);
+        for (int hop = 0; hop < 64; hop++) {
+            ws_frame_t frame;
+            int r = ws_recv(g_cdp_ws, &frame, 15);
+            if (r <= 0) break;
+            char *text = (frame.opcode == WS_OP_TEXT)
+                             ? strndup((const char *)frame.payload, frame.len) : NULL;
+            ws_frame_free(&frame);
+            if (!text) continue;
 
-        /* Try reconnecting */
-        ws_close(g_cdp_ws); g_cdp_ws = NULL;
-        g_cdp_ws = ws_connect(cdp_get_url(), 10);
-        if (!g_cdp_ws) break;
+            json_t *parsed = json_parse(text, NULL);
+            const json_t *idv = parsed ? json_obj_get(parsed, "id") : NULL;
+            long long got = (idv && idv->type == JSON_NUMBER)
+                                ? (long long)json_number_value(idv) : -1;
+            json_free(parsed);
+            if (got == (long long)g_cdp_msg_id) return text;   /* the answer */
+            free(text);                                        /* an event, or another id */
+        }
+
+        ws_close(g_cdp_ws);
+        g_cdp_ws = NULL;
     }
 
     return NULL;

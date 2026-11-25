@@ -6,6 +6,8 @@
 #include "browser_vault_fill_plan.h"
 #include "hermes_json.h"
 
+extern json_t *w16_vaultlogin_58f247_select_password(const json_t *classified, const char *password);
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -59,6 +61,13 @@ int main(int argc, char **argv) {
         json_t *r = vault_identifier_fill(classified, pw, strcmp(argv[4], "-") ? argv[4] : NULL);
         json_free(classified);
         json_free(pw);
+        return emit(r);
+    }
+    if (!strcmp(argv[1], "select")) {
+        if (argc < 4) { fprintf(stderr, "select needs classified, password\n"); return 2; }
+        json_t *classified = load(argv[2]);
+        json_t *r = w16_vaultlogin_58f247_select_password(classified, strcmp(argv[3], "-") ? argv[3] : NULL);
+        json_free(classified);
         return emit(r);
     }
     fprintf(stderr, "unknown command\n");

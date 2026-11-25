@@ -23,6 +23,21 @@
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
 
+/* Winsock: on Windows a socket is not a CRT file descriptor, so read()/write()/close() do not talk
+ * to it. Every byte this client moves goes through these, which is the one place that knows the
+ * difference. Getting this wrong is silent: the connect "succeeds" and the handshake never leaves the
+ * process. */
+#ifdef _WIN32
+#include <winsock2.h>
+#define ws_io_send(fd, buf, len) send((SOCKET)(fd), (const char *)(buf), (int)(len), 0)
+#define ws_io_recv(fd, buf, len) recv((SOCKET)(fd), (char *)(buf), (int)(len), 0)
+#define ws_io_close(fd)          closesocket((SOCKET)(fd))
+#else
+#define ws_io_send(fd, buf, len) (int)write((fd), (buf), (size_t)(len))
+#define ws_io_recv(fd, buf, len) (int)read((fd), (buf), (size_t)(len))
+#define ws_io_close(fd)          ws_io_close(fd)
+#endif
+
 /* ================================================================
  *  Internal
  * ================================================================ */
@@ -37,13 +52,13 @@ struct ws_t {
 /* Helper: write_raw — uses SSL_write if ssl is set, otherwise write() */
 static int write_raw(ws_t *ws, const void *buf, int len) {
     if (ws->ssl) return SSL_write(ws->ssl, buf, len);
-    return (int)write(ws->fd, buf, (size_t)len);
+    return ws_io_send(ws->fd, buf, len);
 }
 
 /* Helper: read_raw — uses SSL_read if ssl is set, otherwise read() */
 static int read_raw(ws_t *ws, void *buf, int len) {
     if (ws->ssl) return SSL_read(ws->ssl, buf, len);
-    return (int)read(ws->fd, buf, (size_t)len);
+    return ws_io_recv(ws->fd, buf, len);
 }
 
 /* Base64 encode */
@@ -148,7 +163,7 @@ ws_t *ws_connect(const char *url, int timeout_sec) {
 
     /* Resolve host */
     struct hostent *he = gethostbyname(host);
-    if (!he) { close(fd); return NULL; }
+    if (!he) { ws_io_close(fd); return NULL; }
 
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
@@ -161,7 +176,7 @@ ws_t *ws_connect(const char *url, int timeout_sec) {
     fcntl(fd, F_SETFL, flags | O_NONBLOCK);
 
     int rc = connect(fd, (struct sockaddr *)&addr, sizeof(addr));
-    if (rc < 0 && errno != EINPROGRESS) { close(fd); return NULL; }
+    if (rc < 0 && errno != EINPROGRESS) { ws_io_close(fd); return NULL; }
 
     /* Wait for connect with timeout */
     fd_set wset;
@@ -169,13 +184,13 @@ ws_t *ws_connect(const char *url, int timeout_sec) {
     FD_SET(fd, &wset);
     struct timeval tv = {timeout_sec, 0};
     rc = select(fd + 1, NULL, &wset, NULL, &tv);
-    if (rc <= 0) { close(fd); return NULL; }
+    if (rc <= 0) { ws_io_close(fd); return NULL; }
 
     /* Check socket error */
     int so_error = 0;
     socklen_t len = sizeof(so_error);
     if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &so_error, &len) < 0 || so_error != 0) {
-        close(fd);
+        ws_io_close(fd);
         return NULL;
     }
 
@@ -188,15 +203,15 @@ ws_t *ws_connect(const char *url, int timeout_sec) {
 
     if (use_ssl) {
         ctx = SSL_CTX_new(TLS_client_method());
-        if (!ctx) { close(fd); return NULL; }
+        if (!ctx) { ws_io_close(fd); return NULL; }
         SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, NULL);
 
         ssl = SSL_new(ctx);
-        if (!ssl) { SSL_CTX_free(ctx); close(fd); return NULL; }
+        if (!ssl) { SSL_CTX_free(ctx); ws_io_close(fd); return NULL; }
         SSL_set_fd(ssl, fd);
 
         if (SSL_connect(ssl) != 1) {
-            SSL_free(ssl); SSL_CTX_free(ctx); close(fd);
+            SSL_free(ssl); SSL_CTX_free(ctx); ws_io_close(fd);
             return NULL;
         }
     }
@@ -219,8 +234,9 @@ ws_t *ws_connect(const char *url, int timeout_sec) {
     /* Send upgrade request */
     if (ssl) {
         SSL_write(ssl, req, req_len);
-    } else {
-        write(fd, req, (size_t)req_len);
+    } else if (ws_io_send(fd, req, req_len) != req_len) {
+        ws_io_close(fd);
+        return NULL;
     }
 
     /* Read response */
@@ -229,12 +245,12 @@ ws_t *ws_connect(const char *url, int timeout_sec) {
     if (ssl) {
         n = SSL_read(ssl, resp, sizeof(resp) - 1);
     } else {
-        n = (int)read(fd, resp, sizeof(resp) - 1);
+        n = ws_io_recv(fd, resp, sizeof(resp) - 1);
     }
     if (n <= 0) {
         if (ssl) { SSL_free(ssl); SSL_CTX_free(ctx); }
         else if (ctx) SSL_CTX_free(ctx);
-        close(fd); return NULL;
+        ws_io_close(fd); return NULL;
     }
     resp[n] = '\0';
 
@@ -242,7 +258,7 @@ ws_t *ws_connect(const char *url, int timeout_sec) {
     if (strstr(resp, "101") == NULL) {
         if (ssl) { SSL_free(ssl); SSL_CTX_free(ctx); }
         else if (ctx) SSL_CTX_free(ctx);
-        close(fd);
+        ws_io_close(fd);
         return NULL;
     }
 
@@ -260,7 +276,7 @@ ws_t *ws_connect(const char *url, int timeout_sec) {
     if (!ws) {
         if (ssl) { SSL_free(ssl); SSL_CTX_free(ctx); }
         else if (ctx) SSL_CTX_free(ctx);
-        close(fd); return NULL;
+        ws_io_close(fd); return NULL;
     }
     ws->ctx = ctx;
     ws->ssl = ssl;

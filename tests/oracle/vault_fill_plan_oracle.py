@@ -49,8 +49,8 @@ def build_exe() -> Path:
         return exe
     build = subprocess.run(
         ["gcc", "-O1", "-w", "-I", "include", "-I", "lib", "-I", "lib/libjson",
-         "src/tools/browser_vault_fill_plan.c", "tests/unit/vault_fill_plan_diff.c",
-         "lib/libjson/json.o", "-o", str(exe)],
+         "src/tools/browser_vault_fill_plan.c", "src/agent/vault_login_classifier.c",
+         "tests/unit/vault_fill_plan_diff.c", "lib/libjson/json.o", "-o", str(exe)],
         cwd=str(REPO), capture_output=True, text=True)
     if build.returncode != 0:
         print("cannot build the harness:")
@@ -163,9 +163,40 @@ def main() -> int:
           json.loads(subprocess.run([str(exe), "ident", str(cl_path), str(pw_path), "-"],
                                     capture_output=True, text=True).stdout))
 
+    # ── password pick ────────────────────────────────────────────────────────
+    # select_password_fill takes ALREADY-CLASSIFIED controls. The C port used to re-classify its
+    # argument, so a caller following upstream's contract got an empty fill -- invisible, and it read
+    # as "nothing to fill" in a live browser. Compared here so it cannot silently drift again.
+    from agent.vault_login_classifier import select_password_fill
+
+    def cl(index, token, score, form_index=0):
+        return ClassifiedLoginControl(control=LoginControl(index=index, form_index=form_index,
+                                                           autocomplete="", name="", label="",
+                                                           type=""),
+                                      score=score, token=token)
+
+    select_grids = [
+        ("single", [cl(1, "current-password", 100)], "hunter2"),
+        ("higher-score-wins", [cl(1, "current-password", 90), cl(4, "current-password", 100)], "pw"),
+        ("tie-lower-index", [cl(5, "current-password", 100), cl(2, "current-password", 100)], "pw"),
+        ("ignores-other-tokens", [cl(0, "email", 100), cl(3, "current-password", 95)], "pw"),
+        ("no-password-field", [cl(0, "email", 100)], "pw"),
+        ("empty-password", [cl(1, "current-password", 100)], ""),
+    ]
+    for name, classified, password in select_grids:
+        path = REPO / ".testbin" / "fp_select.json"
+        path.write_text(json.dumps([
+            {"index": c.control.index, "token": c.token, "score": c.score,
+             "form_index": c.control.form_index} for c in classified]), encoding="utf-8")
+        want_sel = select_password_fill(classified, password)
+        have_sel = json.loads(subprocess.run(
+            [str(exe), "select", str(path), password or "-"],
+            capture_output=True, text=True).stdout)
+        check(f"select[{name}]", want_sel, have_sel)
+
     print(f"vault-fill-plan oracle: {agree} agree, {failed} problem(s)")
     if not args.keep:
-        for name in ("fp_origins.json", "fp_classified.json", "fp_pw.json"):
+        for name in ("fp_origins.json", "fp_classified.json", "fp_pw.json", "fp_select.json"):
             (REPO / ".testbin" / name).unlink(missing_ok=True)
     return 0 if failed == 0 else 1
 

@@ -280,6 +280,14 @@ static Classified *classify_controls(const json_t *controls, size_t *out_n, int 
     for (i = 0; i < n; ++i) {
         Control c;
         control_init(&c, json_get(controls, i));
+        {
+            json_t *el = json_get(controls, i);
+            if (el && el->type == JSON_OBJECT) {
+                for (size_t z = 0; z < el->c.count; ++z)
+                    fprintf(stderr, " %s", el->c.keys && el->c.keys[z] ? el->c.keys[z] : "(null)");
+                fprintf(stderr, "\n");
+            }
+        }
         if (mode == 1) { /* otp */
             char *ac = lower_dup(c.autocomplete);
             char *searchable = normalize(c.name, c.label);
@@ -372,24 +380,32 @@ static json_t *fill_obj(long long index, const char *token, const char *value) {
     return o;
 }
 
-json_t *w16_vaultlogin_58f247_select_password(const json_t *controls, const char *password) {
+/* tools/browser_vault_tool.py types this as select_password_fill(classified, password): it takes
+ * ALREADY-CLASSIFIED controls and filters them. The C port re-classified its argument instead, which
+ * means a caller following upstream's contract -- passing classified objects, exactly as
+ * _identifier_fill's neighbour does -- got an empty fill. In a live browser that reads as "nothing to
+ * fill", which is silent and safe-looking; it was found by driving a real page, not by reading code. */
+json_t *w16_vaultlogin_58f247_select_password(const json_t *classified, const char *password) {
     json_t *arr = json_array();
-    size_t n = 0, i;
-    Classified *list;
     long long best_index = 0;
     int best_score = 0, found = 0;
-    if (!password || !password[0]) { (void)controls; return arr; }
-    list = classify_controls(controls, &n, 0);
-    for (i = 0; i < n; ++i) {
-        if (!strcmp(list[i].token, "current-password")) {
-            if (!found || list[i].score > best_score ||
-                (list[i].score == best_score && list[i].c->index < best_index)) {
-                found = 1; best_score = list[i].score; best_index = list[i].c->index;
-            }
+    if (!password || !password[0]) return arr;
+    if (!classified || classified->type != JSON_ARRAY) return arr;
+
+    for (size_t i = 0; i < json_len(classified); ++i) {
+        const json_t *c = json_get(classified, i);
+        const char *token = json_get_str(c, "token", "");
+        if (!token || strcmp(token, "current-password")) continue;
+        const json_t *idx = json_obj_get(c, "index");
+        long long index = idx && idx->type == JSON_NUMBER ? (long long)json_number_value(idx) : 0;
+        const json_t *sc = json_obj_get(c, "score");
+        int score = sc && sc->type == JSON_NUMBER ? (int)json_number_value(sc) : 0;
+        /* min(key=lambda c: (-c.score, c.control.index)) */
+        if (!found || score > best_score || (score == best_score && index < best_index)) {
+            found = 1; best_score = score; best_index = index;
         }
     }
     if (found) json_append(arr, fill_obj(best_index, "current-password", password));
-    free_classified(list, n);
     return arr;
 }
 
