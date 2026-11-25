@@ -242,11 +242,8 @@ per character cannot measure anything large.
   triage fix. The other four findings on this gate -- charset labels resolved the way
   `codecs.lookup` does -- are fixed.
 
-* **`w28_adapter_ca7894_p3` / `sender_accepted` (1 remaining)** — held-out case
-  `sender:"None", env:{EMAIL_ALLOW_ALL_USERS:"true"}` answers `{accepted: False,
-  log: "debug"}` live and `{accepted: True, log: ""}` in the port. The "None" text is
-  a fixture sentinel whose live meaning is not yet pinned: `_is_automated_sender`
-  matches none of `_NOREPLY_PATTERNS` for "none", so the rejection comes from
-  somewhere else on the absent-sender path. A speculative patch (treat "None" as an
-  absent sender) was built and measured: no change, 1 -> 1, so it was reverted rather
-  than kept. The gate's other six findings on this adapter are fixed (7 -> 1).
+* **`w28_adapter_ca7894_p3` / `sender_accepted`** — CLOSED. The `"None"` sender was a
+  red herring: the real difference was the verdict seam. `authorized: []` models a
+  gateway verdict of *not authorized*, and the port read an empty array as the ABSENT
+  verdict, which fell through to the allow-all default and admitted the sender. Empty
+  list = False verdict; absent = fall through. Gate now 7 -> 0, 350 cases.

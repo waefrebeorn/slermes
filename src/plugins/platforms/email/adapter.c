@@ -1848,6 +1848,11 @@ json_t *w28_adapter_ca7894_sender_accepted(const json_t *in) {
             }
             if (authz && authz->type == JSON_BOOL) {
                 granted = authz->bool_val ? 1 : 0;
+            } else if (authz && authz->type == JSON_ARRAY) {
+                /* The seam records the gateway verdicts it was asked for: an EMPTY
+                 * list is a verdict of "not authorized", not the absent verdict that
+                 * would fall through to the allow-all default. */
+                granted = json_len(authz) ? 1 : 0;
             } else {
                 int allow_all = 0;
                 if (env) {
