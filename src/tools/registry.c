@@ -265,6 +265,34 @@ static bool registry_register_ex_locked(const char *name, const char *descriptio
                           const char *schema_json, const char *toolset,
                           char *(*handler)(const char *args_json, const char *task_id),
                           const char *const *requires_env, size_t requires_env_n,
+                          int max_result_size_chars);
+
+/* Register `alias` as the same tool as `target`.
+ *
+ * The Python product names its tools (toolsets.BUILTIN_TOOL_NAMES: todo_list, process_manage,
+ * cronjob_manage); the C modules registered them under shorter names, so a model calling the
+ * documented name got "unknown tool". An alias copies the definition -- description, schema,
+ * handler, toolset -- and leaves the original in place, so nothing that dispatches by the old name
+ * breaks. */
+bool registry_alias(const char *alias, const char *target)
+{
+    if (!alias || !target) return false;
+    pthread_mutex_lock(&g_registry_mutex);
+    tool_t *src = find_unlocked(target);
+    bool ok = false;
+    if (src && src->handler) {
+        ok = registry_register_ex_locked(alias, src->description, src->schema_json,
+                                         src->toolset, src->handler,
+                                         NULL, 0, 0);
+    }
+    pthread_mutex_unlock(&g_registry_mutex);
+    return ok;
+}
+
+static bool registry_register_ex_locked(const char *name, const char *description,
+                          const char *schema_json, const char *toolset,
+                          char *(*handler)(const char *args_json, const char *task_id),
+                          const char *const *requires_env, size_t requires_env_n,
                           int max_result_size_chars)
 {
     if (!name || !handler) return false;

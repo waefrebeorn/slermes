@@ -139,6 +139,8 @@ char *registry_describe(const char *name);
 
 /* Register a tool with the given name/description/schema and handler.
  * Registers into the "" (default) toolset. */
+bool registry_alias(const char *alias, const char *target);
+
 bool registry_register(const char *name, const char *description,
                         const char *schema_json,
                         char *(*handler)(const char *args_json, const char *task_id));

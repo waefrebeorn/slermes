@@ -12,6 +12,8 @@
  */
 #include <stdbool.h>
 
+bool registry_alias(const char *alias, const char *target);
+
 void registry_init_ansi_strip(void);
 void registry_init_approval(void);
 void registry_init_browser(void);
@@ -67,6 +69,7 @@ void hermes_tools_register_all(void)
     if (done) return;
     done = true;
 
+
     registry_init_ansi_strip();
     registry_init_approval();
     registry_init_browser();
@@ -113,4 +116,14 @@ void hermes_tools_register_all(void)
     registry_init_x_search();
     registry_init_xai_http();
     registry_init_yuanbao_tools();
+    /* The Python product exposes these tools under these names (toolsets.BUILTIN_TOOL_NAMES).
+     * Without the alias a model asking for "todo_list" gets "unknown tool" even though the
+     * implementation is registered as "todo". */
+    static const struct { const char *alias, *target; } CANONICAL_ALIASES[] = {
+        { "todo_list",      "todo"     },
+        { "process_manage", "process"  },
+        { "cronjob_manage", "cronjob"  },
+    };
+    for (size_t i = 0; i < sizeof CANONICAL_ALIASES / sizeof CANONICAL_ALIASES[0]; i++)
+        registry_alias(CANONICAL_ALIASES[i].alias, CANONICAL_ALIASES[i].target);
 }
