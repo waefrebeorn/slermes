@@ -196,10 +196,45 @@ an empty mapping", which was a two-line fix.
 Same answer (0 mismatches) — this is not a divergence, it is a 35x slowdown, and it
 is the difference between a gate that is measured and one that is not.
 
-Root cause located, not fixed: `lib/libjson/json.c:json_append` reallocates to
-exactly `(count + 1) * sizeof(json_t *)` on **every** append, so building an array of
-N elements copies O(N^2) bytes. `json_append` is the whole tree's array builder, so
-this is a global cost, not a gate-local one. Fixing it means giving the container a
-capacity field and growing geometrically — a header change that needs a full
-rebuild and a re-run of every gate, so it is scheduled as its own change rather
-than smuggled in behind a triage fix.
+**CORRECTION (same day).** The first diagnosis here said `json_append`'s
+one-slot-at-a-time `realloc` was the cause. It is not. Geometric growth was
+implemented (capacity field in the container, doubling in `json_append`/`json_set`,
+utilities zeroed at every creation site) and **the same case still took 50.66 s
+against 49.18 s before** — no improvement, so the change was reverted rather than
+kept on the strength of a plausible story.
+
+What the scaling experiment actually shows (same structure, one long string, its
+length varied):
+
+| string length | input bytes | wall time |
+|---|---|---|
+| 250k | 0.75 MB | 0.78 s |
+| 500k | 1.50 MB | 1.50 s |
+| 1M | 3.00 MB | 2.97 s |
+| 2M | 6.00 MB | 8.68 s |
+| 5.2M | 15.7 MB | 49-51 s |
+
+Super-linear from ~1 MB, and ~11x slower per byte than Python even at 3 MB. The
+suspect is the per-character path in the parser/serializer (a 5M-character string is
+handled in ~50 s, i.e. ~10 us per character, which no single-pass loop should cost),
+**not** array growth.
+
+Timed directly with `tests/bench_json_probe.c` (added for exactly this question):
+
+| document | bytes | parse | dump |
+|---|---|---|---|
+| the whole 15.7 MB fixture line | 15.7 MB | 0.017 s | 0.018 s |
+| just its `out` payload | 5.2 MB | 0.006 s | 0.006 s |
+
+**The JSON library is not slow.** Neither is array growth, and neither is string
+handling there. The 50 s is inside the port's own `validate_payload` path
+(`src/persistence/sqlite/housekeeping/_portability.c`), which on the same input
+finishes in 1.39 s in Python. Two suspects, both in that file and neither yet
+tested:
+
+* `pb_core_validate_session` rebuilds `measured` by deep-copying every session field
+  (`json_copy` per key) only to measure its size — a full duplicate of the payload
+  before anything is validated;
+* whatever re-walks that duplicate per message.
+
+Next step is to instrument those two calls, not to guess again.
