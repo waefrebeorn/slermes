@@ -249,9 +249,14 @@ def fuzz_gate(gate, module, per_case, jobs, min_cases, seed):
     with open(filled, "rb") as fin:
         payload = fin.read()
     try:
+        # The oracle is a CHILD process printing arbitrary fixture text: on a
+        # console code page it raises UnicodeEncodeError mid-run and dies without
+        # its ORACLE summary line, which then looked like "0 cases". Force UTF-8
+        # on the child's own streams.
+        child_env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
         o = subprocess.run([PY, oracle], input=payload.decode("utf-8", "replace"),
                            capture_output=True, text=True, encoding="utf-8",
-                           errors="replace", timeout=args_timeout() * 2)
+                           errors="replace", timeout=args_timeout() * 2, env=child_env)
     except subprocess.TimeoutExpired:
         # The LIVE module hung, not the port. That is neither a divergence the port
         # can be blamed for nor a pass, so the gate is reported as SKIP and the
@@ -261,13 +266,21 @@ def fuzz_gate(gate, module, per_case, jobs, min_cases, seed):
     detail = [ln for ln in (o.stderr or "").splitlines() if ln.startswith("MISMATCH")]
     real = [ln for ln in detail if "live-error" not in ln]
     noise = [ln for ln in detail if "live-error" in ln]
-    total = 0
-    for ln in (o.stdout or "").splitlines():
+    total = None
+    # Some oracles report on stderr (they print diagnostics there and the summary
+    # follows), so the count is read from BOTH streams -- reading stdout alone
+    # turned a measured 350-case run into "0 cases".
+    for ln in ((o.stdout or "") + "\n" + (o.stderr or "")).splitlines():
         if ln.startswith("ORACLE") and "cases," in ln:
             try:
                 total = int(ln.split(":")[1].split("cases")[0].strip())
             except (IndexError, ValueError):
                 pass
+    # A missing summary is NOT zero cases: it means the run said nothing about
+    # itself, and calling that "vacuous" reads as measured. Separate the two.
+    if total is None:
+        return (gate, "BAD (no oracle summary: unmeasured)", 0,
+                max(1, len(real)), ["(summary) no 'ORACLE ... cases' line on stdout"])
     note = "ok"
     if total < min_cases:
         note = "VACUOUS (%d cases < %d)" % (total, min_cases)
