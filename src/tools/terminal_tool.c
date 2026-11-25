@@ -9,6 +9,24 @@
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+/* statvfs(3) is POSIX-only. Provide the same shape on Windows via GetDiskFreeSpaceEx so the
+ * free-space check keeps working instead of being compiled out. */
+#ifdef _WIN32
+struct hermes_statvfs { unsigned long f_bsize, f_frsize, f_blocks, f_bfree, f_bavail; };
+static int statvfs(const char *path, struct hermes_statvfs *st) {
+    ULARGE_INTEGER free_b, total_b, avail_b;
+    if (!GetDiskFreeSpaceExA(path, &avail_b, &total_b, &free_b)) return -1;
+    st->f_bsize = 4096;
+    st->f_frsize = 4096;
+    st->f_blocks = (unsigned long)(total_b.QuadPart / st->f_bsize);
+    st->f_bfree  = (unsigned long)(free_b.QuadPart / st->f_bsize);
+    st->f_bavail = (unsigned long)(avail_b.QuadPart / st->f_bsize);
+    return 0;
+}
+#define statvfs_t struct hermes_statvfs
+#else
+#define statvfs_t struct statvfs
+#endif
 #include "env_passthrough.h"
 #include "file_sync.h"
 #include "file_state.h"
@@ -734,7 +752,7 @@ void terminal_evict_environment(const char *task_id) {
 /* ─── check_disk_usage_warning() ─── */
 /* PoP: check_disk_usage_warning @ tools/terminal_tool.py:check_disk_usage_warning */
 json_t *check_disk_usage_warning(void) {
-    struct statvfs sv;
+    statvfs_t sv;
     if (statvfs("/", &sv) != 0) return NULL;
     unsigned long total = sv.f_blocks * sv.f_frsize;
     unsigned long available = sv.f_bavail * sv.f_frsize;

@@ -1,0 +1,1 @@
+plugins/platforms/teams/adapter	w29_adapter_1c52a4_p1,w29_adapter_1c52a4_p2

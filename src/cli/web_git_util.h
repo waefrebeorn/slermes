@@ -8,7 +8,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
-#include "port_web_git.h"
+/* port_web_git.h never existed in this tree; the module is self-contained. */
 
 void classify_cb_adapter(const char *tag, const char *xy, const char *path, void *ud);
 bool entry_staged(const char *tag, const char *xy);

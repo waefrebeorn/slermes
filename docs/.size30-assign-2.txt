@@ -1,0 +1,1 @@
+tools/bot_desktop/runtime	w30_runtime_3588a2_p1,w30_runtime_3588a2_p2

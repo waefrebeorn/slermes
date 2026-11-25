@@ -1,0 +1,6 @@
+w20_prompts_c0fcfd	agent/pet/generate/prompts
+w20_auxiliarys_066a48	agent/auxiliary_stream_watchdog
+w20_windowsapp_53b288	hermes_cli/windows_appinstaller_update
+w20_search_de6deb	persistence/sqlite/conversation/search
+w20_workerlife_dacc9a	persistence/sqlite/conversation/_store/worker_lifecycle
+w20_wecomcrypt_8809d5	plugins/platforms/wecom/wecom_crypto

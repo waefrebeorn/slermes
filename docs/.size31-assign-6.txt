@@ -1,0 +1,1 @@
+gateway/stream_consumer_transport	w31_streamcons_1c03c4_p1,w31_streamcons_1c03c4_p2

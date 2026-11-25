@@ -1,0 +1,1 @@
+hermes_cli/model_switch_providers	w28_modelswitc_6dc907_p1,w28_modelswitc_6dc907_p2,w28_modelswitc_6dc907_p3

@@ -8,7 +8,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
-#include "port_web_git.h"
+/* port_web_git.h never existed in this tree; the module is self-contained. */
 
 #ifndef UNTRACKED_LINE_MAX_BYTES
 #define UNTRACKED_LINE_MAX_BYTES (1024 * 1024)

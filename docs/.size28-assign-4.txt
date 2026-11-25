@@ -1,0 +1,1 @@
+tui_gateway/hosted_room_driver	w28_hostedroom_3fa737_p1,w28_hostedroom_3fa737_p2,w28_hostedroom_3fa737_p3

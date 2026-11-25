@@ -1,0 +1,1 @@
+plugins/platforms/mattermost/adapter	w30_adapter_7683aa_p1,w30_adapter_7683aa_p2

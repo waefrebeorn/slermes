@@ -1,0 +1,5 @@
+w24_telegramgr_e8bd89	plugins/platforms/telegram/telegram_group_observe
+w24_client_64e0a3	plugins/config_backends/remote/client
+w24_foreignses_93c0f0	hermes_cli/foreign_sessions_browser
+w24_sendtarget_a3cd9e	gateway/platforms/send_targets
+w24_cli_c07d7e	plugins/google_meet/node/cli

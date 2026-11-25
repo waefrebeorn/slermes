@@ -1330,3 +1330,22 @@ static inline size_t hermes_strlcpy(char *dst, const char *src, size_t cap) {
     return n;
 }
 #endif /* HERMES_STRLCPY_DEFINED */
+#ifndef HERMES_STRSTR_LOWER_DEFINED
+#define HERMES_STRSTR_LOWER_DEFINED
+/* Case-insensitive "does haystack contain needle". Every call site in the tree uses it as a
+ * boolean predicate (tui_fullscreen.c had its own static copy with this exact signature), so
+ * the shared definition returns bool rather than a pointer. */
+static inline bool strstr_lower(const char *haystack, const char *needle)
+{
+    if (!haystack || !needle) return false;
+    size_t nl = strlen(needle);
+    if (!nl) return true;
+    for (; *haystack; haystack++) {
+        size_t i = 0;
+        while (i < nl && haystack[i] &&
+               tolower((unsigned char)haystack[i]) == tolower((unsigned char)needle[i])) i++;
+        if (i == nl) return true;
+    }
+    return false;
+}
+#endif /* HERMES_STRSTR_LOWER_DEFINED */

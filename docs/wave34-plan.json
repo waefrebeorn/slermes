@@ -1,0 +1,17 @@
+{
+  "w34_computehos_e233d0": "tui_gateway/compute_host_bridge",
+  "w34_coverage_56490e": "persistence/sqlite/conversation/_store/coverage",
+  "w34_egress_308cfb": "gateway/relay/egress",
+  "w34_holders_028cc0": "persistence/sqlite/_state/holders",
+  "w34_hostedwork_56ec19": "persistence/sqlite/gateway/_hosted_work",
+  "w34_pluginsins_608012": "hermes_cli/plugins_install_scan",
+  "w34_reconcile_7686f7_p1": "persistence/sqlite/admin/_reconcile",
+  "w34_reconcile_7686f7_p2": "persistence/sqlite/admin/_reconcile",
+  "w34_runtimeboo_7f06de": "gateway/runtime_bootstrap_windows",
+  "w34_sessions_67685b": "tui_gateway/contracts/sessions",
+  "w34_sessionsre_3cc180_p1": "hermes_cli/sessions_repair_profiles",
+  "w34_sessionsre_3cc180_p2": "hermes_cli/sessions_repair_profiles",
+  "w34_webhostter_a3f534_p1": "hermes_cli/web_host_terminal_sessions",
+  "w34_webhostter_a3f534_p2": "hermes_cli/web_host_terminal_sessions",
+  "w34_webserverl_f96a1a": "hermes_cli/web_server_lifecycle"
+}

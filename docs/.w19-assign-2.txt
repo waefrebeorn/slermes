@@ -1,0 +1,6 @@
+w19_doctor_60f499	persistence/sqlite/admin/_doctor
+w19_whatsappco_87e380	gateway/platforms/whatsapp_common
+w19_maintenanc_c262d4	persistence/sqlite/admin/_maintenance
+w19_voicementi_2db922	plugins/platforms/matrix/voice_mention
+w19_subagents_8f6344	persistence/authority/subagents
+w19_runshutdow_75cb3d	gateway/run_shutdown_home_notice

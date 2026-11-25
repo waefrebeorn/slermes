@@ -1,0 +1,6 @@
+w21_sharedmetr_b6c0a5	hermes_cli/observability/shared_metrics_drift
+w21_retirement_867fec	persistence/sqlite/housekeeping/_retirement
+w21_basestream_dce4b8	gateway/platforms/base_streaming_tts
+w21_webservers_cb0f6d	hermes_cli/web_server_static_assets
+w21_configsect_61e00a	hermes_cli/config_section_guard
+w21_browser_30d956	hermes_cli/subcommands/browser

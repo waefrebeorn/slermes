@@ -1,0 +1,6 @@
+w19_profilerep_3b4c1c	persistence/sqlite/admin/profile_repair
+w19_deliveryle_311300	persistence/sqlite/gateway/_delivery_ledger
+w19_schedulerd_4551a7	cron/scheduler_delivery_standalone
+w19_adaptervau_0f2138	plugins/platforms/slack/adapter_vault_code
+w19_telegramhe_c40f34	plugins/platforms/telegram/telegram_held_inbound
+w19_telegramva_544569	plugins/platforms/telegram/telegram_vault_code

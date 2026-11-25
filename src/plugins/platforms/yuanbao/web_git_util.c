@@ -5,6 +5,7 @@
  * resolution and git-status letter classification. No file-scope state.
  */
 #include "cli/web_git_util.h"
+#include "../../../../lib/libjson/json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,0 +1,5 @@
+w24_telegramco_889ade	plugins/platforms/telegram/telegram_context
+w24_telegramid_756e5b	plugins/platforms/telegram/telegram_ids
+w24_remotecomm_c4bdad	tools/environments/remote_common
+w24_anthropict_2a0525	agent/anthropic_thinking_policy
+w24_live_416722	tools/connectors/live

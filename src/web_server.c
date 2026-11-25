@@ -27,7 +27,14 @@
 #include <arpa/inet.h>
 #include <openssl/sha.h>
 #include <dirent.h>
+#ifdef __linux__
 #include <linux/limits.h>
+#else
+#include <limits.h>
+#ifndef PATH_MAX
+#define PATH_MAX 260
+#endif
+#endif
 
 #define PORT 5174
 #define STATIC_DIR "./web_app_dist"
@@ -1077,7 +1084,9 @@ static int count_jobs(const char *json) {
 }
 
 /* Extract a JSON string field value after "key" — caller must free */
-static char *json_get_str(const char *json, const char *key, const char *endp) {
+/* Renamed: libjson/json.h declares json_get_str with a different signature; a static of the same
+ * name is a conflicting-types error once both are in one link. */
+static char *web_json_get_str(const char *json, const char *key, const char *endp) {
     char search[256];
     snprintf(search, sizeof(search), "\"%s\"", key);
     const char *p = json;
@@ -1293,8 +1302,8 @@ static void h_cron_export_schedule(void) {
         memcpy(obj, obj_start, obj_len);
         obj[obj_len] = '\0';
 
-        name_buf = json_get_str(obj, "name", obj + obj_len);
-        schedule_buf = json_get_str(obj, "schedule", obj + obj_len);
+        name_buf = web_json_get_str(obj, "name", obj + obj_len);
+        schedule_buf = web_json_get_str(obj, "schedule", obj + obj_len);
 
         if (!first_ev) JSON(",");
         first_ev = 0;

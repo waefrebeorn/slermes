@@ -64,6 +64,15 @@ LIB_OBJ_FILTERED := $(if $(WHISPER_LIBS),$(filter-out lib/whisper_cpp/whisper_st
 NCURSES_LIBS := $(wildcard /usr/lib/x86_64-linux-gnu/libncursesw.so /usr/lib/x86_64-linux-gnu/libncursesw.so.6)
 PANEL_LIBS   := $(wildcard /usr/lib/x86_64-linux-gnu/libpanelw.so /usr/lib/x86_64-linux-gnu/libpanelw.so.6)
 TINFO_LIBS   := $(wildcard /usr/lib/x86_64-linux-gnu/libtinfo.so /usr/lib/x86_64-linux-gnu/libtinfo.so.6)
+# On Windows the paths above never match, so the ncurses cluster was silently left out of the
+# link line and every TUI translation unit failed with `undefined reference to __imp_wattr_on`
+# and 68 friends. MSYS2's native Win32 ncurses is ABI-compatible with the winlibs toolchain.
+ifeq ($(NCURSES_LIBS),)
+  ifneq ($(wildcard C:/msys64/mingw64/lib/libncursesw.a),)
+    NCURSES_LIBS := -LC:/msys64/mingw64/lib -lncursesw
+    PANEL_LIBS   := -LC:/msys64/mingw64/lib -lpanelw
+  endif
+endif
 # The link line carries every object in the tree, which blows past the Windows
 # command-line limit (~32k); gcc then reports "Argument list too long" and the
 # build dies at the final step with all objects already compiled. Put the
@@ -73,11 +82,26 @@ TINFO_LIBS   := $(wildcard /usr/lib/x86_64-linux-gnu/libtinfo.so /usr/lib/x86_64
 # closure to the oracle runner. The response file is created and deleted inside
 # one recipe, so `make -n` never produces it and a consumer that extracts the
 # link command verbatim references a file that does not exist.
+# Duplicate definitions are resolved after compilation, never by unlinking a file: the losing
+# copy of a symbol is made local to its own object with objcopy. Because a rebuild restores the
+# global symbol, this must run immediately before the link, every time.
+PYTHON_FOR_DEDUP ?= python
+DEDUP_CMD = -@$(PYTHON_FOR_DEDUP) scripts/localize_dupes.py --write >/dev/null 2>&1 || true
+# The entry point is not a symbol to be decided by a heuristic: src/main.o owns main/WinMain and
+# the desktop launcher variants (main_desktop.c, desktop_gui.c, desktop_app.c) must not win.
+ENTRY_FIX = -@objcopy --globalize-symbol=main --globalize-symbol=WinMain --globalize-symbol=SDL_main src/main.o \
+             2>/dev/null || true; \
+           for o in src/main_desktop.o src/desktop_gui.o src/desktop_app.o; do \
+             [ -f $$o ] && objcopy --localize-symbol=main --localize-symbol=WinMain --localize-symbol=SDL_main $$o 2>/dev/null || true; \
+           done
+
 SLERMES_OBJS = $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(PET_OBJ) $(DESKTOP_CORE_OBJ) $(LIB_OBJ_FILTERED) $(WHISPER_EXTRA_OBJ)
 slermes: $(SLERMES_OBJS)
 	@: > slermes.link.rsp; for o in $^; do echo $$o >> slermes.link.rsp; done
-	$(CC) $(CFLAGS) -o $@ @slermes.link.rsp $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -L C:/winlibs/extra-libs -lstdc++ -lws2_32 -lpcre2-8 -ltre -lSDL2 -lSDL2_ttf -lSDL2main -lgdi32 -lopengl32 \
-		$(if $(NCURSES_LIBS),$(NCURSES_LIBS)) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS)) \
+	$(DEDUP_CMD)
+	$(ENTRY_FIX)
+	$(CC) $(CFLAGS) -o $@ @slermes.link.rsp $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -L C:/winlibs/extra-libs -lstdc++ -lcomctl32 -lmoldname -lmingwex -lws2_32 C:/winlibs/mingw64/x86_64-w64-mingw32/lib/libmingw32.a C:/winlibs/mingw64/x86_64-w64-mingw32/lib/libmingwex.a -lpcre2-8 -ltre -lSDL2 -lSDL2_ttf -lSDL2main -lgdi32 -lopengl32 \
+		$(if $(NCURSES_LIBS),$(NCURSES_LIBS),-lncursesw) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS)) \
 		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
 	@rm -f slermes.link.rsp
 	@echo "  slermes binary: $@ $$(ls -lh $@ | awk '{print $$5}')$(if $(WHISPER_LIBS), with whisper, without whisper)"

@@ -1,0 +1,1 @@
+plugins/platforms/a2a/adapter	w29_adapter_0e0bda_p1,w29_adapter_0e0bda_p2,w29_adapter_0e0bda_p3

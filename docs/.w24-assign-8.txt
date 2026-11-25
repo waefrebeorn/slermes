@@ -1,0 +1,5 @@
+w24_bridgeowne_2dcbff	plugins/platforms/whatsapp/bridge_ownership
+w24_messagingr_cf3c4b	hermes_cli/web_routers/messaging_relay
+w24_health_c83367	persistence/sqlite/_state/health
+w24_write_5b6032	persistence/sqlite/_state/write
+w24_turn_6ea05a	tools/connectors/turn

@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "hermes_posix_compat.h"
 #include <string.h>
 #include <stdarg.h>
 #include <unistd.h>

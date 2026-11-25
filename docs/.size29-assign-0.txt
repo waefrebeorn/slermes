@@ -1,0 +1,1 @@
+plugins/platforms/signal/adapter	w29_adapter_d36d4e_p1,w29_adapter_d36d4e_p2,w29_adapter_d36d4e_p3

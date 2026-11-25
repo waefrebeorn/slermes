@@ -25,6 +25,7 @@
  */
 
 #include <stdbool.h>
+#include "hermes_agent.h"
 #include <stddef.h>
 
 #ifdef __cplusplus

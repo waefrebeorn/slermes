@@ -1,0 +1,1 @@
+persistence/sqlite/gateway/hosted_room_policy	w32_hostedroom_be7d8d_p1,w32_hostedroom_be7d8d_p2

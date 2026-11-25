@@ -4,6 +4,7 @@
  * Split from skills_hub.c (soul.md: self-contained modules). Catalog
  * fetching, item parsing, and search; no file-scope state.
  */
+#include "hive.h"
 #include "hermes_core_types.h"
 #include "hermes_fs.h"       /* fs_mkdir_p */   /* HERMES_PATH_MAX */
 #include "hermes_skills_hub.h"
@@ -83,30 +84,40 @@ static hub_skill_meta_t parse_skill_item(json_node_t *item) {
     return meta;
 }
 
+/* Case-insensitive contains that tolerates NULL fields (catalog entries are partially filled). */
+static bool field_has(const char *field, const char *needle)
+{
+    return field && needle && strcasestr(field, needle) != NULL;
+}
+
+/* The catalog keeps its entries in a hive of heap hub_skill_meta_t*, not in a landlocked array
+ * (include/hermes_skills_hub.h:80). This walked `cat->count` / `cat->skills[i]`, which cannot
+ * compile against an opaque hive -- it was written against an older layout and, being an orphan,
+ * was never compiled. Rewritten on the hive iterator. */
 int search_catalog(const skills_catalog_t *cat, const char *query,
-                           hub_skill_meta_t *results, int limit, int offset) {
-    if (!cat || !results || limit <= 0) return 0;
+                   hub_skill_meta_t *results, int limit, int offset) {
+    if (!cat || !results || limit <= 0 || !cat->skills) return 0;
 
     bool empty_query = (!query || !query[0]);
-    int found = 0;
+    int found = 0, skipped = 0;
+    hive_iter_t it = HIVE_ITER_INIT;
+    hive_handle_t hnd;
+    void *pv = NULL;
 
-    for (int i = 0; i < cat->count && found < limit; i++) {
-        bool match = false;
-        if (empty_query) {
-            match = true;
-        } else {
-            const hub_skill_meta_t *s = &cat->skills[i];
-            if (strcasestr(s->name, query)) match = true;
-            else if (strcasestr(s->title, query)) match = true;
-            else if (strcasestr(s->description, query)) match = true;
-            else if (strcasestr(s->category, query)) match = true;
-            else if (strcasestr(s->tags, query)) match = true;
-            else if (strcasestr(s->slug, query)) match = true;
+    hive_iter_begin(cat->skills, &it);
+    while (found < limit && hive_iter_next(cat->skills, &it, &hnd, &pv)) {
+        const hub_skill_meta_t *s = (const hub_skill_meta_t *)pv;
+        if (!s) continue;
+
+        bool match = empty_query;
+        if (!match) {
+            match = field_has(s->name, query) || field_has(s->title, query) ||
+                    field_has(s->description, query) || field_has(s->category, query) ||
+                    field_has(s->tags, query) || field_has(s->slug, query);
         }
-        if (match) {
-            if (offset > 0) { offset--; continue; }
-            results[found++] = cat->skills[i];
-        }
+        if (!match) continue;
+        if (skipped < offset) { skipped++; continue; }
+        results[found++] = *s;
     }
     return found;
 }
@@ -152,11 +163,18 @@ bool fetch_browsesh_source(skill_source_t *src) {
         size_t n = json_len(skills_arr);
         if (n > SKILLS_HUB_MAX_SKILLS) n = SKILLS_HUB_MAX_SKILLS;
 
-        for (size_t i = 0; i < n; i++) {
+        /* The catalog stores entries as a hive of heap-allocated hub_skill_meta_t* (see
+         * include/hermes_skills_hub.h:80); this indexed the hive as if it were an array. */
+        if (!src->catalog.skills) src->catalog.skills = hive_new(0);
+        for (size_t i = 0; src->catalog.skills && i < n; i++) {
             json_node_t *item = json_get(skills_arr, i);
             if (!item) continue;
-            src->catalog.skills[src->catalog.count] = parse_skill_item(item);
-            src->catalog.count++;
+            hub_skill_meta_t *meta = (hub_skill_meta_t *)malloc(sizeof *meta);
+            if (!meta) break;
+            *meta = parse_skill_item(item);
+            bool ok = false;
+            hive_insert(src->catalog.skills, meta, &ok);
+            if (!ok) { free(meta); break; }
         }
     }
 

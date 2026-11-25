@@ -1,0 +1,6 @@
+w21_telegramvo_2f1ab7	plugins/platforms/telegram/telegram_voice_mention
+w21_managerpro_68c845	agent/checkpoints/manager_profile_rename
+w21_basedelive_f1f9e2	gateway/platforms/base_delivery_ledger
+w21_connectors_0e0582	hermes_cli/subcommands/connectors
+w21_processreg_cf2ea3	tools/process_registry_env_scope
+w21_targets_e73d84	gateway/outbound/targets

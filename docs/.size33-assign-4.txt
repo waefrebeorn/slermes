@@ -1,0 +1,1 @@
+plugins/model-providers/gemini/interactions	w33_interactio_95c25f_p1,w33_interactio_95c25f_p2

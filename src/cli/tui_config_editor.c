@@ -5,6 +5,7 @@
  * tui.config_editor + tui.agent + tui.panes + tui.modal_mode (via
  * tui_state.h) and the render-core entry points; no file-scope state.
  */
+#include "hermes_core_types.h"
 #include "tui_state.h"
 #include <curses.h>
 #include <stdio.h>

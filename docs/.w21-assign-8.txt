@@ -1,0 +1,6 @@
+w21_adapteraut_272509	plugins/platforms/discord/adapter_authorization
+w21_apiserverr_694120	gateway/platforms/api_server_room_dispatch
+w21_statuspubl_e796de	hermes_cli/web_routers/status_public
+w21_gatewayenv_2a9ae5	plugins/platforms/qqbot/gateway_env
+w21_gatewaycha_3d5133	hermes_cli/gateway_chat_listing
+w21_uploads_23e65f	hermes_cli/web_routers/uploads

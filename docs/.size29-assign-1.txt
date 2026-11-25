@@ -1,0 +1,1 @@
+persistence/sqlite/gateway/hosted_room_driver	w29_hostedroom_8927a5_p1,w29_hostedroom_8927a5_p2,w29_hostedroom_8927a5_p3

@@ -1,0 +1,6 @@
+w19_conversati_84b9cf	agent/conversation_compression_manual
+w19_schemahist_ddcbcb	persistence/sqlite/admin/_schema_history
+w19_hostedroom_e90a2b	tui_gateway/hosted_room_peer_transport
+w19_basechunki_b0f787	gateway/platforms/base_chunking
+w19_event_eea6c7	gateway/platforms/event
+w19_runnotific_a1bcca	gateway/run_notifications_restart

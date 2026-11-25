@@ -1,0 +1,6 @@
+w20_hostedroom_d4f060	persistence/sqlite/gateway/_hosted_rooms_legacy_import
+w20_terminalto_4615fc	tools/terminal_tool_macos_open
+w20_gatewayrun_1cb73c	hermes_cli/gateway_runtime_progress
+w20_gpuadapter_3b3bcc	hermes_platform/host/gpu_adapters
+w20_configmode_b2613d	hermes_cli/config_model_section
+w20_worktree_959719	hermes_cli/subcommands/worktree

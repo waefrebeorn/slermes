@@ -137,7 +137,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR cmd_line, 
     /* Initialize common controls */
     INITCOMMONCONTROLSEX icex = {0};
     icex.dwSize = sizeof(icex);
-    icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES | ICC_BAR_CLASSES | ICC_EDIT_CLASSES;
+    icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES | ICC_BAR_CLASSES | /* ICC_EDIT_CLASSES exists in the Windows 8+ SDK; MinGW ships the classic list only. */
+#define ICC_EDIT_CLASSES (ICC_STANDARD_CLASSES | 0x00010000);
     InitCommonControlsEx(&icex);
     
     /* Initialize app state */

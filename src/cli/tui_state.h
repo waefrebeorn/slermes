@@ -256,8 +256,8 @@ static const char *tui_notification_latest(void) {
 
 /* Forward declarations for TUI subsystems (defined later, used earlier) */
 static void tui_slash_init_all(void);
-static void tui_model_picker_init(void);
-static void tui_draw_model_picker(void);
+void tui_model_picker_init(void);
+void tui_draw_model_picker(void);
 static bool tui_gateway_connect(void);
 static void tui_gateway_send(const char *method, const char *params);
 static void tui_gateway_process_message(const char *msg);

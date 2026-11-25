@@ -12,4 +12,5 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <std...[truncated]
+#include <stdbool.h>
+#include <stdint.h>

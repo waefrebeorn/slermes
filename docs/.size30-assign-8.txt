@@ -1,0 +1,1 @@
+hermes_cli/update_cmd_posix_pause	w30_updatecmdp_fa52e9_p1,w30_updatecmdp_fa52e9_p2

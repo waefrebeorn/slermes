@@ -1,3 +1,7 @@
+#if defined(__linux__) && !defined(_WIN32)
+/* HERMES_EXCLUDE_ON_WINDOWS: webp needs a Linux-only library (wayland/webp). The file
+ * stays in the link manifest and compiles to an empty translation unit off Linux,
+ * rather than being dropped from the product entirely. */
 /*
  * atlas.c — canonical C11 port of agent/pet/generate/atlas.py.
  */
@@ -306,3 +310,5 @@ int agent_pet_generate_atlas_validate_atlas(const char *arg) {
     printf("{\"ok\": true, \"warnings\": [], \"filled_states\": %s}\n", t2 ? t2 + 1 : "[]");
     return 0;
 }
+
+#endif /* __linux__ */

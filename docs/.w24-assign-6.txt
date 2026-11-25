@@ -1,0 +1,5 @@
+w24_hostedroom_178ff8	persistence/sqlite/gateway/_hosted_rooms_common
+w24_sharedmetr_18600d	hermes_cli/web_routers/shared_metrics
+w24_hostedroom_d92036	gateway/hosted_room_work_lineage
+w24_modelmetad_ad7f50	agent/model_metadata_token_memo
+w24_environmen_cdf1db	agent/verify/environment

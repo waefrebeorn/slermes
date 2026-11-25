@@ -1,3 +1,7 @@
+#if defined(__linux__) && !defined(_WIN32)
+/* HERMES_EXCLUDE_ON_WINDOWS: wayland needs a Linux-only library (wayland/webp). The file
+ * stays in the link manifest and compiles to an empty translation unit off Linux,
+ * rather than being dropped from the product entirely. */
 /*
  * window_wayland.c — Wayland backend for the cross-platform window API.
  * No X11. Linux targets Wayland only.
@@ -250,3 +254,5 @@ void window_set_mouse_pos(window_t *w, int x, int y) { (void)w; (void)x; (void)y
 const char *window_clipboard_get(window_t *w) { (void)w; return NULL; }
 void window_clipboard_set(window_t *w, const char *text) { (void)w; (void)text; }
 void window_enable_dnd(window_t *w, bool enable) { (void)w; (void)enable; }
+
+#endif /* __linux__ */

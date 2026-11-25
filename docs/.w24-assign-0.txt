@@ -1,0 +1,5 @@
+w24_promptrefr_587f3f	persistence/sqlite/conversation/_store/prompt_refresh
+w24_wstickets_fa7658	hermes_cli/dashboard_auth/ws_tickets
+w24_basekanban_865998	gateway/platforms/base_kanban_media
+w24_utils_e39793	plugins/platforms/qqbot/utils
+w24_products_7eaca0	hermes_platform/host/products

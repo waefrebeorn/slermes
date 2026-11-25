@@ -1,0 +1,1 @@
+hermes_cli/models_catalog_static	w30_modelscata_4ee086

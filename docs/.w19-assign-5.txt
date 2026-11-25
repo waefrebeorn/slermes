@@ -1,0 +1,6 @@
+w19_hostedroom_beaf1a	persistence/sqlite/gateway/hosted_room_replicas
+w19_pluginisol_f4e6f5	hermes_cli/plugin_isolation_audit
+w19_errors_c3b6af	persistence/core/errors
+w19_sessionmod_09f8f1	gateway/platforms/session_model
+w19_usageanaly_6ec515	persistence/sqlite/conversation/usage_analytics
+w19_bindings_fe89c1	persistence/sqlite/authority/bindings

@@ -1,0 +1,5 @@
+w24_telegrampi_acbcc8	plugins/platforms/telegram/telegram_picker_labels
+w24_sudopasswo_63ce58	tools/environments/sudo_password_note
+w24_replay_2d5a10	agent/prompt_cache_lifecycle/replay
+w24_policy_2a6f06	tools/connectors/portal/policy
+w24_placement_282518	tools/bot_desktop/placement

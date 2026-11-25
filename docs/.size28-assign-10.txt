@@ -1,0 +1,1 @@
+plugins/platforms/email/adapter	w28_adapter_ca7894_p1,w28_adapter_ca7894_p2,w28_adapter_ca7894_p3

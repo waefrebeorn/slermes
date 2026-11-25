@@ -1,0 +1,1 @@
+plugins/platforms/irc/adapter	w33_adapter_eaa5eb_p1,w33_adapter_eaa5eb_p2

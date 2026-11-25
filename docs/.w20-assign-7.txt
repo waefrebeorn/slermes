@@ -1,0 +1,6 @@
+w20_gatewayrun_a66bb8	hermes_cli/gateway_runtime_attach
+w20_slashworke_cdc456	tui_gateway/slash_worker_client
+w20_runturnrun_9ce529	gateway/run_turn_runner_approval_text
+w20_dispatch_c9fbe4	tools/connectors/dispatch
+w20_contextcom_7fc1af	agent/context_compressor_durable
+w20_vocabulary_975e41	persistence/workers/vocabulary

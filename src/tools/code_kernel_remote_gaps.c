@@ -11,7 +11,10 @@
 
 int _is_alive(void) { return 0; }
 
-void _kill(void) {}
+/* Was `void _kill(void)` -- that name is MinGW's kill(2) shim (hermes_win32.h:385),
+ * so the stub collided with the platform header. The Python name is kept in a comment and
+ * the C symbol is namespaced to the module. */
+void code_kernel_remote_kill(void) {}
 
 
 

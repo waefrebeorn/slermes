@@ -1,0 +1,6 @@
+w19_backend_308e86	persistence/sqlite/_backend
+w19_prunerewri_17bd63	persistence/sqlite/conversation/_store/prune_rewrite
+w19_admissions_c58422	persistence/authority/admissions
+w19_processes_bd7796	hermes_cli/local_runtime/processes
+w19_apiserverr_fa3ce5	gateway/platforms/api_server_response_store
+w19_summarywri_99693d	plugins/platforms/teams/summary_writer

@@ -1,0 +1,1 @@
+tools/environments/sandbox_conformance	w33_sandboxcon_be5b73_p1,w33_sandboxcon_be5b73_p2

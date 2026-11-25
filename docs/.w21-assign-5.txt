@@ -1,0 +1,6 @@
+w21_telegramme_52d000	plugins/platforms/telegram/telegram_media_budget
+w21_telegramst_ddf41d	plugins/platforms/telegram/telegram_status
+w21_hostedroom_3970cb	gateway/hosted_room_authority_history
+w21_methodsplu_29402f	tui_gateway/methods_plugin_catalog
+w21_approvalwi_56c32a	tools/approval_windows_hardline
+w21_thumbnail_f864e8	tools/bot_desktop/thumbnail

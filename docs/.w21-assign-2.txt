@@ -1,0 +1,6 @@
+w21_sessionlis_08fd81	persistence/sqlite/conversation/_store/session_list
+w21_agentrunti_df442e	agent/agent_runtime_helpers_placeholders
+w21_mediadownl_8ef7a9	plugins/platforms/matrix/media_download
+w21_register_55dd31	plugins/platforms/qqbot/register
+w21_mainprofil_8ddd4c	hermes_cli/main_profile_recovery
+w21_emitter_1f24b4	agent/monitoring/emitter

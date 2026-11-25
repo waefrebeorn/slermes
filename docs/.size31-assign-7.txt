@@ -1,0 +1,1 @@
+plugins/platforms/simplex/adapter	w31_adapter_c93276_p1,w31_adapter_c93276_p2

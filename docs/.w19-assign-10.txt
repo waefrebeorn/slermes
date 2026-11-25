@@ -1,0 +1,6 @@
+w19_hostedroom_5e13e6	persistence/sqlite/gateway/hosted_room_peers
+w19_ssh_5f7591	tools/environments/ssh
+w19_clicommand_b3f78e	hermes_cli/cli_commands_handoff
+w19_onepasswor_6beff4	agent/vault_backends/onepassword
+w19_wire_cd861d	tools/connectors/gateway/wire
+w19_adapterexe_bc6b62	plugins/platforms/discord/adapter_exec_approval_view

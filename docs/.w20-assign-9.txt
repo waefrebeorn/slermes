@@ -1,0 +1,6 @@
+w20_adapterhtm_fd926b	plugins/platforms/matrix/adapter_html
+w20_gatewayset_984e2d	hermes_cli/gateway_setup_service
+w20_windowspro_18c6a5	gateway/windows_proactor_accept
+w20_economics_90c7dd	agent/prompt_cache_lifecycle/economics
+w20_telegramov_43149b	plugins/platforms/telegram/telegram_overflow_edit
+w20_chatcomple_449db3	agent/chat_completion_helpers_relay

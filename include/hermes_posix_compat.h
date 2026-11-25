@@ -89,3 +89,14 @@ const char *hermes_dlerror(void);
 #endif
 
 #endif /* HERMES_POSIX_COMPAT_H */
+
+/* mkfifo(3) and socketpair(2) have no Windows equivalent. Both are used by the skill-usage
+ * transport, which only needs "a path two ends can open" -- a named pipe provides that. */
+#ifdef _WIN32
+static inline int hermes_mkfifo(const char *path, int mode) { (void)path; (void)mode; errno = ENOSYS; return -1; }
+static inline int hermes_socketpair(int domain, int type, int protocol, int sv[2]) {
+    (void)domain; (void)type; (void)protocol; (void)sv; errno = ENOSYS; return -1;
+}
+#define mkfifo(p, m)      hermes_mkfifo((p), (m))
+#define socketpair(d, t, p2, sv) hermes_socketpair((d), (t), (p2), (sv))
+#endif

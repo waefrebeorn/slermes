@@ -1,0 +1,6 @@
+w21_adapterrea_e0609e	plugins/platforms/slack/adapter_reactions_context
+w21_methodstoo_16216e	tui_gateway/methods_tools_plugin_servers
+w21_adapteropu_d51886	plugins/platforms/discord/adapter_opus
+w21_registry_5bbc35	plugins/google_meet/node/registry
+w21_auxiliaryc_fb830d	agent/auxiliary_client_registry
+w21_fdwait_850f24	tools/environments/fd_wait

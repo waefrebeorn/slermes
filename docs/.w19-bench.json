@@ -1,0 +1,12 @@
+{
+ "w19_subagents_8f6344": "persistence/authority/subagents",
+ "w19_apiserverr_fa3ce5": "gateway/platforms/api_server_response_store",
+ "w19_event_eea6c7": "gateway/platforms/event",
+ "w19_delegation_e064fe": "persistence/workers/delegations",
+ "w19_wire_cd861d": "tools/connectors/gateway/wire",
+ "w19_adapterexe_bc6b62": "plugins/platforms/discord/adapter_exec_approval_view",
+ "w19_runnotific_a1bcca": "gateway/run_notifications_restart",
+ "w19_openaiclie_7f783c": "plugins/google_meet/realtime/openai_client",
+ "w19_summarywri_99693d": "plugins/platforms/teams/summary_writer",
+ "w19_runshutdow_75cb3d": "gateway/run_shutdown_home_notice"
+}

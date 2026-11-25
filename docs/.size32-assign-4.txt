@@ -1,0 +1,1 @@
+hermes_cli/web_routers/chat_ws	w32_chatws_cd49ef_p1,w32_chatws_cd49ef_p2

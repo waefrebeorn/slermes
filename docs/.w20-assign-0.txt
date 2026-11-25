@@ -1,0 +1,6 @@
+w20_models_59cc22	plugins/teams_pipeline/models
+w20_sharedsess_a7d92d	hermes_cli/shared_session_attach
+w20_setupfiles_7eb3bd	plugins/platforms/google_chat/setup_files
+w20_tcpsite_d7fd64	gateway/platforms/tcp_site
+w20_sharedmetr_d8839c	hermes_cli/observability/shared_metrics_subscriber
+w20_adapterima_cff594	plugins/platforms/slack/adapter_image_batch

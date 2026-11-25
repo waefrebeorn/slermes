@@ -1,3 +1,4 @@
+#include "hermes_posix_compat.h"
 /* Slermes C port — agent/verify/runner.py (dataclass methods + standalone helpers) */
 
 #include <stdbool.h>
@@ -32,6 +33,18 @@ char *runner_tail(const char *text, int limit)
 
 /* PoP: runner_phase_result_ok @ agent/verify/runner.py:ok */
 /* PhaseResult.ok: exit_code == 0 and not timed_out */
+
+/* killpg(2) has no Windows equivalent, and a child started through the platform seam has no
+ * process group there; the closest correct action is to kill that pid. */
+static int hermes_killpg(int pid, int sig) {
+#ifdef _WIN32
+    (void)sig;
+    return hermes_kill((hermes_pid_t)pid);
+#else
+    return killpg(pid, sig);
+#endif
+}
+
 bool runner_phase_result_ok(int exit_code, bool timed_out)
 {
     return exit_code == 0 && !timed_out;
@@ -263,7 +276,7 @@ void runner_terminate_process_group(pid_t pid)
     if (pid <= 0) return;
 
     /* Try SIGTERM on the process group (pid is the group leader via start_new_session) */
-    killpg(pid, SIGTERM);
+    hermes_killpg(pid, SIGTERM);
 
     /* Wait up to 10 seconds */
     int status;
@@ -276,7 +289,7 @@ void runner_terminate_process_group(pid_t pid)
     }
 
     /* SIGKILL fallback */
-    killpg(pid, SIGKILL);
+    hermes_killpg(pid, SIGKILL);
     for (int i = 0; i < 50; i++) {
         pid_t ret = waitpid(pid, &status, WNOHANG);
         if (ret == pid) return;

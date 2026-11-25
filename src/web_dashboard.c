@@ -43,7 +43,9 @@
 
 static int g_dash_port = DASH_PORT;
 static char g_dash_host[64] = "127.0.0.1";
-static char g_dash_web_dir[1024] = "";
+/* Was static: web_dashboard_http.c and the dashboard CLI reference it as an extern, so a
+ * file-static definition left those references permanently undefined. */
+char g_dash_web_dir[1024] = "";
 static volatile bool g_dash_running = false;
 static pthread_t g_dash_thread;
 static int g_dash_fd = -1;

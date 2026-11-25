@@ -1,0 +1,6 @@
+w21_telegramty_a78c8c	plugins/platforms/telegram/telegram_typing_gate
+w21_apiservert_4998c3	gateway/platforms/api_server_turn_boundary
+w21_kanbandbde_905b79	hermes_cli/kanban_db_default_assignee
+w21_authdeclar_1a88fd	hermes_cli/auth_declared_providers
+w21_turnrecove_8c1d4a	agent/turn_recovery_autorecover
+w21_verify_824376	hermes_cli/subcommands/verify

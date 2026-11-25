@@ -1,3 +1,4 @@
+#include "hermes_posix_compat.h"
 /*
  * shutdown_forensics.c — Capture context when the gateway receives SIGTERM/SIGINT.
  *
@@ -309,44 +310,38 @@ int forensics_spawn_diagnostic(const char *log_path,
     int fd = open(log_path, O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (fd < 0) return -1;
 
-    /* Format timeout string for execlp */
-    char timeout_str[16];
-    snprintf(timeout_str, sizeof(timeout_str), "%d",
-             timeout_seconds > 0 ? timeout_seconds : 30);
+    /* Build the diagnostic script (the child used to build it after the fork). */
+    char script[4096];
+    snprintf(script, sizeof(script),
+        "echo '=== shutdown diagnostic @ %s ===\n'"
+        "echo '--- date ---'\ndate -u +%%Y-%%m-%%dT%%H:%%M:%%SZ\n"
+        "echo '--- ps auxf (top 60 by cpu) ---'\n"
+        "ps auxf --sort=-pcpu 2>/dev/null | head -60\n"
+        "echo '--- pstree of self ---'\n"
+        "pstree -plau %d 2>/dev/null | head -40 || true\n"
+        "echo '--- /proc/loadavg ---'\n"
+        "cat /proc/loadavg 2>/dev/null || true\n"
+        "echo '--- recent dmesg/syslog ---'\n"
+        "dmesg -T 2>/dev/null | tail -20 || journalctl --user -n 20 --no-pager 2>/dev/null | tail -20 || true\n"
+        "echo '=== end ===\n'",
+        signal_name, (int)getpid());
+    close(fd);   /* the seam opens the log itself */
 
-    pid_t child = fork();
-    if (child == 0) {
-        /* Child: detach from process group, redirect stdout to fd, exec bash */
-        setsid();
-        close(0); /* close stdin */
-        dup2(fd, STDOUT_FILENO);
-        dup2(fd, STDERR_FILENO);
-        close(fd);
-        /* Build the diagnostic script */
-        char script[4096];
-        snprintf(script, sizeof(script),
-            "echo '=== shutdown diagnostic @ %s ==='\n"
-            "echo '--- date ---'\ndate -u +%%Y-%%m-%%dT%%H:%%M:%%SZ\n"
-            "echo '--- ps auxf (top 60 by cpu) ---'\n"
-            "ps auxf --sort=-pcpu 2>/dev/null | head -60\n"
-            "echo '--- pstree of self ---'\n"
-            "pstree -plau %d 2>/dev/null | head -40 || true\n"
-            "echo '--- /proc/loadavg ---'\n"
-            "cat /proc/loadavg 2>/dev/null || true\n"
-            "echo '--- recent dmesg/syslog ---'\n"
-            "dmesg -T 2>/dev/null | tail -20 || journalctl --user -n 20 --no-pager 2>/dev/null | tail -20 || true\n"
-            "echo '=== end ==='\n",
-            signal_name, (int)getpid());
-
-        execlp("timeout", "timeout",
-               timeout_str,
-               "bash", "-c", script, NULL);
-        execlp("bash", "bash", "-c", script, NULL);
-        _exit(1);
+    /* Was fork + setsid + close(0) + dup2(fd) + execlp(timeout bash -c ...). The seam owns
+     * detaching and the log redirect on both platforms; timeout(1) does not exist on
+     * Windows, so the deadline is enforced by hermes_wait instead of a wrapper binary. */
+    char *argv[4];
+    argv[0] = (char *)"bash";
+    argv[1] = (char *)"-c";
+    argv[2] = script;
+    argv[3] = NULL;
+    hermes_pid_t child = hermes_spawn_detached(argv, log_path);
+    if (child != (hermes_pid_t)-1 && timeout_seconds > 0) {
+        int status = 0;
+        if (hermes_wait(child, timeout_seconds * 1000, &status) == HERMES_WAIT_TIMEOUT)
+            hermes_kill(child);
     }
-
-    close(fd);
-    return child > 0 ? (int)child : -1;
+    return (child == (hermes_pid_t)-1) ? -1 : (int)child;
 }
 
 /* ================================================================

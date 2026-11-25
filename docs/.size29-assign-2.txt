@@ -1,0 +1,1 @@
+tui_gateway/session_notifications	w29_sessionnot_c045cd_p1,w29_sessionnot_c045cd_p2

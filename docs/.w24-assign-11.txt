@@ -1,0 +1,5 @@
+w24_standalone_e0a2a7	plugins/platforms/discord/standalone_rest
+w24_methodstoo_3c78d0	tui_gateway/methods_tools_plugin_commands
+w24_searchwork_58ae49	plugins/web/ddgs/_search_worker
+w24_baseautott_534578	gateway/platforms/base_auto_tts
+w24_auth_6661f1	gateway/relay/auth

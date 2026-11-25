@@ -1,0 +1,1 @@
+tui_gateway/methods_config_set	w32_methodscon_ce0f5d_p1,w32_methodscon_ce0f5d_p2

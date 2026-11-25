@@ -1,0 +1,6 @@
+w21_telegram_15532d	persistence/sqlite/conversation/_store/telegram
+w21_runturnrun_ac2ad3	gateway/run_turn_runner_approval_transport
+w21_hostedroom_0f248d	tui_gateway/hosted_room_prepare_stall
+w21_gatewaylau_1a86bf	hermes_cli/gateway_launchd_runtime
+w21_errors_5bcef1	tools/connectors/gateway/errors
+w21_services_87bff3	persistence/sqlite/services

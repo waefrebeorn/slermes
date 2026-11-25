@@ -1,0 +1,6 @@
+w19_cuabackend_0e9d63	tools/computer_use/cua_backend_daemon
+w19_runtime_3ded45	persistence/sqlite/authority/runtime
+w19_media_dc1e86	gateway/relay/media
+w19_usage_8ec762	persistence/sqlite/conversation/usage
+w19_patterns_a4e066	plugins/security-guidance/patterns
+w19_openaiclie_7f783c	plugins/google_meet/realtime/openai_client

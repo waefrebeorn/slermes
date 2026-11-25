@@ -1,0 +1,1 @@
+plugins/platforms/dingtalk/adapter	w29_adapter_91f75f_p1,w29_adapter_91f75f_p2

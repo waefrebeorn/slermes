@@ -1,0 +1,6 @@
+w19_executions_57e1de	persistence/sqlite/workers/executions
+w19_telegramme_82fdeb	plugins/platforms/telegram/telegram_media_flood
+w19_contextcom_bbabd0	agent/context_compressor_window
+w19_client_ead47a	plugins/model-providers/gemini/client
+w19_delegation_e064fe	persistence/workers/delegations
+w19_contextcom_da88c1	agent/context_compressor_telemetry

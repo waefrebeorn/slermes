@@ -68,51 +68,73 @@ static char *fmt_alloc(const char *fmt, ...)
     return out;
 }
 
-void ts_tally_clear(ts_tally_t *tally)
+void ts_tally_clear(turn_tally_t *tally)
 {
     if (!tally) return;
-    for (int i = 0; i < tally->n_verbs; i++) {
+    for (size_t i = 0; i < tally->n_verbs; i++) {
         free(tally->verbs[i].verb);
-        for (int j = 0; j < tally->verbs[i].n_nouns; j++)
-            free(tally->verbs[i].nouns[j]);
+        for (size_t j = 0; j < tally->verbs[i].n_nouns; j++)
+            free(tally->verbs[i].nouns[j].plural);
+        free(tally->verbs[i].nouns);
     }
+    free(tally->verbs);
     memset(tally, 0, sizeof(*tally));
 }
 
-void ts_tally_init(ts_tally_t *tally)
+void ts_tally_init(turn_tally_t *tally)
 {
     if (tally) memset(tally, 0, sizeof(*tally));
 }
 
-int ts_tally_total_tools(const ts_tally_t *tally)
+/* Renamed: include/port_turn_summary.h declares turn_tally_total_tools and
+ * src/agent/turn_summary.c implements it against the same struct. Two definitions of one name
+ * cannot both be global, and this file is the collector side of the module. */
+int ts_tally_total_tools(const turn_tally_t *tally)
 {
     if (!tally) return 0;
     int total = tally->other_tools;
-    for (int i = 0; i < tally->n_verbs; i++)
-        for (int j = 0; j < tally->verbs[i].n_nouns; j++)
-            total += tally->verbs[i].counts[j];
+    for (size_t i = 0; i < tally->n_verbs; i++)
+        for (size_t j = 0; j < tally->verbs[i].n_nouns; j++)
+            total += tally->verbs[i].nouns[j].count;
     return total;
 }
 
-static ts_verb_group_t *find_or_add_verb(ts_tally_t *tally, const char *verb)
+static verb_entry_t *find_or_add_verb(turn_tally_t *tally, const char *verb)
 {
-    for (int i = 0; i < tally->n_verbs; i++)
-        if (strcmp(tally->verbs[i].verb, verb) == 0) return &tally->verbs[i];
-    if (tally->n_verbs >= TS_MAX_VERBS) return NULL;
-    ts_verb_group_t *g = &tally->verbs[tally->n_verbs++];
-    memset(g, 0, sizeof(*g));
+    for (size_t i = 0; i < tally->n_verbs; i++)
+        if (tally->verbs[i].verb && strcmp(tally->verbs[i].verb, verb) == 0)
+            return &tally->verbs[i];
+
+    if (tally->n_verbs == tally->cap_verbs) {
+        size_t cap = tally->cap_verbs ? tally->cap_verbs * 2 : 8;
+        verb_entry_t *grown = (verb_entry_t *)realloc(tally->verbs, cap * sizeof *grown);
+        if (!grown) return NULL;
+        tally->verbs = grown;
+        tally->cap_verbs = cap;
+    }
+    verb_entry_t *g = &tally->verbs[tally->n_verbs++];
+    memset(g, 0, sizeof *g);
     g->verb = dup_str(verb);
     return g;
 }
 
-static void bump_noun(ts_verb_group_t *g, const char *plural)
+static void bump_noun(verb_entry_t *g, const char *plural)
 {
-    for (int i = 0; i < g->n_nouns; i++) {
-        if (strcmp(g->nouns[i], plural) == 0) { g->counts[i] += 1; return; }
+    for (size_t i = 0; i < g->n_nouns; i++) {
+        if (g->nouns[i].plural && strcmp(g->nouns[i].plural, plural) == 0) {
+            g->nouns[i].count += 1;
+            return;
+        }
     }
-    if (g->n_nouns >= TS_MAX_NOUNS) return;
-    g->nouns[g->n_nouns] = dup_str(plural);
-    g->counts[g->n_nouns] = 1;
+    if (g->n_nouns == g->cap_nouns) {
+        size_t cap = g->cap_nouns ? g->cap_nouns * 2 : 4;
+        noun_entry_t *grown = (noun_entry_t *)realloc(g->nouns, cap * sizeof *grown);
+        if (!grown) return;
+        g->nouns = grown;
+        g->cap_nouns = cap;
+    }
+    g->nouns[g->n_nouns].plural = dup_str(plural);
+    g->nouns[g->n_nouns].count = 1;
     g->n_nouns++;
 }
 
@@ -168,7 +190,7 @@ int ts_extract_line_deltas(const char *tool_name, const char *result,
 }
 
 /* PoP: ts_tally_record @ agent/turn_summary.py:record_tool */
-void ts_tally_record(ts_tally_t *tally, const char *tool_name,
+void ts_tally_record(turn_tally_t *tally, const char *tool_name,
                      const char *result_json, int is_error)
 {
     if (!tally || !tool_name || is_error || tool_name[0] == '_') return;
@@ -183,7 +205,7 @@ void ts_tally_record(ts_tally_t *tally, const char *tool_name,
     }
     if (!verb) { tally->other_tools += 1; return; }
 
-    ts_verb_group_t *g = find_or_add_verb(tally, verb);
+    verb_entry_t *g = find_or_add_verb(tally, verb);
     if (!g) return;
     bump_noun(g, plural);
 
@@ -251,33 +273,34 @@ static int verb_rank(const char *verb)
 }
 
 /* PoP: ts_format_summary @ agent/turn_summary.py:format_turn_summary */
-char *ts_format_summary(double elapsed_seconds, const ts_tally_t *tally,
+char *ts_format_summary(double elapsed_seconds, const turn_tally_t *tally,
                         int max_segments)
 {
-    ts_tally_t empty;
+    turn_tally_t empty;
     if (!tally) { ts_tally_init(&empty); tally = &empty; }
 
     /* ordered = priority verbs present, then the rest in insertion order */
-    int order[TS_MAX_VERBS], n_order = 0;
+    int order[64], n_order = 0;   /* distinct verbs are bounded by the tool table */
     for (size_t p = 0; p < sizeof(VERB_PRIORITY) / sizeof(VERB_PRIORITY[0]); p++)
-        for (int i = 0; i < tally->n_verbs; i++)
-            if (strcmp(tally->verbs[i].verb, VERB_PRIORITY[p]) == 0)
-                order[n_order++] = i;
-    for (int i = 0; i < tally->n_verbs; i++)
-        if (verb_rank(tally->verbs[i].verb) < 0) order[n_order++] = i;
+        for (size_t i = 0; i < tally->n_verbs && n_order < 64; i++)
+            if (tally->verbs[i].verb && strcmp(tally->verbs[i].verb, VERB_PRIORITY[p]) == 0)
+                order[n_order++] = (int)i;
+    for (size_t i = 0; i < tally->n_verbs && n_order < 64; i++)
+        if (tally->verbs[i].verb && verb_rank(tally->verbs[i].verb) < 0)
+            order[n_order++] = (int)i;
 
     char **segments = (char **)calloc((size_t)n_order + 2, sizeof(char *));
     int n_seg = 0;
     if (!segments) return NULL;
 
     for (int k = 0; k < n_order; k++) {
-        const ts_verb_group_t *g = &tally->verbs[order[k]];
+        const verb_entry_t *g = &tally->verbs[order[k]];
         char parts[512];
         size_t used = 0;
         parts[0] = '\0';
-        for (int j = 0; j < g->n_nouns; j++) {
-            if (g->counts[j] == 0) continue;
-            char *part = ts_pluralize(g->counts[j], g->nouns[j]);
+        for (size_t j = 0; j < g->n_nouns; j++) {
+            if (!g->nouns[j].plural || g->nouns[j].count == 0) continue;
+            char *part = ts_pluralize(g->nouns[j].count, g->nouns[j].plural);
             if (!part) continue;
             used += (size_t)snprintf(parts + used, sizeof(parts) - used, "%s%s",
                                      used ? ", " : "", part);

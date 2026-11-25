@@ -1683,6 +1683,37 @@ static cu_action_t *win_wait(void *state, double seconds) {
 }
 
 /* ── Factory ──────────────────────────────────────────────────────── */
+/* ── vtable adapters ───────────────────────────────────────────────────
+ * cu_backend_t's function-pointer slots take no state argument while the win_* implementations
+ * take `void *state` (the per-backend struct the factory allocates). Rather than change a public
+ * header and every call site, the Windows backend adapts: the state lives in a file-static that
+ * make_windows_backend() installs. */
+static windows_state_t *g_win_state;
+
+static bool cu_win_is_available(void) { return win_is_available(); }
+static bool cu_win_start(void) { return win_start(g_win_state); }
+static void cu_win_stop(void) { win_stop(g_win_state); }
+static cu_capture_t *cu_win_capture(const char *mode, const char *app)
+{ return win_capture(g_win_state, mode, app); }
+static cu_action_t *cu_win_click(int element, int x, int y, const char *button,
+                                 int click_count, const char *modifiers)
+{ return win_click(g_win_state, element, x, y, button, click_count, modifiers); }
+static cu_action_t *cu_win_drag(int from_element, int to_element, int from_x, int from_y,
+                                int to_x, int to_y, const char *button, const char *modifiers)
+{ return win_drag(g_win_state, from_element, to_element, from_x, from_y, to_x, to_y,
+                  button, modifiers); }
+static cu_action_t *cu_win_scroll(const char *direction, int amount, int element, int x,
+                                  int y, const char *modifiers)
+{ return win_scroll(g_win_state, direction, amount, element, x, y, modifiers); }
+static cu_action_t *cu_win_type_text(const char *text) { return win_type_text(g_win_state, text); }
+static cu_action_t *cu_win_key(const char *keys) { return win_key(g_win_state, keys); }
+static cu_action_t *cu_win_list_apps(void) { return win_list_apps(g_win_state); }
+static cu_action_t *cu_win_focus_app(const char *app, bool raise_window)
+{ return win_focus_app(g_win_state, app, raise_window); }
+static cu_action_t *cu_win_set_value(const char *value, int element)
+{ return win_set_value(g_win_state, value, element); }
+static cu_action_t *cu_win_wait(double seconds) { return win_wait(g_win_state, seconds); }
+
 /* PoP: make_windows_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.is_available */
 static cu_backend_t *make_windows_backend(void) {
     windows_state_t *st = (windows_state_t *)calloc(1, sizeof(windows_state_t));
@@ -1691,19 +1722,21 @@ static cu_backend_t *make_windows_backend(void) {
     cu_backend_t *b = (cu_backend_t *)calloc(1, sizeof(cu_backend_t));
     if (!b) { free(st); return NULL; }
 
-    b->is_available = win_is_available;
-    b->start = win_start;
-    b->stop = win_stop;
-    b->capture = win_capture;
-    b->click = win_click;
-    b->drag = win_drag;
-    b->scroll = win_scroll;
-    b->type_text = win_type_text;
-    b->key = win_key;
-    b->list_apps = win_list_apps;
-    b->focus_app = win_focus_app;
-    b->set_value = win_set_value;
-    b->wait = win_wait;
+    g_win_state = st;
+    b->state = st;
+    b->is_available = cu_win_is_available;
+    b->start = cu_win_start;
+    b->stop = cu_win_stop;
+    b->capture = cu_win_capture;
+    b->click = cu_win_click;
+    b->drag = cu_win_drag;
+    b->scroll = cu_win_scroll;
+    b->type_text = cu_win_type_text;
+    b->key = cu_win_key;
+    b->list_apps = cu_win_list_apps;
+    b->focus_app = cu_win_focus_app;
+    b->set_value = cu_win_set_value;
+    b->wait = cu_win_wait;
     b->state = st;
     return b;
 }

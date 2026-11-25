@@ -10,7 +10,9 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#ifdef __linux__
 #include <sys/prctl.h>
+#endif
 #include <time.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -330,12 +332,12 @@ int main_u_has_any_provider_configured(const char *arg) {
             if (ser) {
                 size_t L = strlen(ser);
                 const char *name = (L >= 2 && ser[0] == '"') ? ser + 1 : ser;
-                if (name && *name) { json_free(ser); json_free(cfg); return 1; }
-                json_free(ser);
+                if (name && *name) { json_free((json_t *)ser); json_free((json_t *)cfg); return 1; }
+                json_free((json_t *)ser);
             }
         }
-        if (model_name && *model_name) { json_free(cfg); return 1; }
-        json_free(cfg);
+        if (model_name && *model_name) { json_free((json_t *)cfg); return 1; }
+        json_free((json_t *)cfg);
     }
     /* 2) Any provider API-key / base-url env var present. */
     const char *env_vars[] = {
@@ -1038,7 +1040,7 @@ int main_u_set_reasoning_effort(const char *arg) {
     /* Python: config["agent"]["reasoning_effort"] = effort. Persist it. */
     json_t *v = json_string(arg ? arg : "medium");
     int rc = config_py_save_value("agent.reasoning_effort", v);
-    json_free(v);
+    json_free((json_t *)v);
     if (rc == 0)
         printf("  reasoning_effort set to '%s'\n", arg ? arg : "medium");
     else
@@ -3413,7 +3415,7 @@ char *dashboard_procs_exclude_pids_from_env(void) {
         }
     }
     char *out = json_serialize(arr);
-    json_free(arr);
+    json_free((json_t *)arr);
     return out;
 }
 

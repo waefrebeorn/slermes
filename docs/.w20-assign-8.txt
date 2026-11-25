@@ -1,0 +1,6 @@
+w20_telegramfl_e6bdc8	plugins/platforms/telegram/telegram_flood_cooldown
+w20_telegrampo_0aa0d4	plugins/platforms/telegram/telegram_pool
+w20_executions_2cbbe5	persistence/sqlite/workers/_executions
+w20_updatecmds_2cdfe8	hermes_cli/update_cmd_stale_survivors
+w20_contextcom_4ebd6d	agent/context_compressor_summary
+w20_vocabulary_6f97e2	persistence/authority/vocabulary

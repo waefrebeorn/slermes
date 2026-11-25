@@ -1,0 +1,1 @@
+tui_gateway/hosted_room_service	w28_hostedroom_e01c0e_p1,w28_hostedroom_e01c0e_p2,w28_hostedroom_e01c0e_p3
