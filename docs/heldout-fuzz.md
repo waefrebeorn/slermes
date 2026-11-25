@@ -182,65 +182,33 @@ Why it matters: the minimal case *is* the specification. `sdp="0"` with an absen
 `result` turned a 300-byte random object into "the route accepts a falsy result as
 an empty mapping", which was a two-line fix.
 
-## A slow port is an unmeasured gate
+## A slow RUNNER is an unmeasured gate
 
-`w33_portabilit_b54bb9` cannot be scored: five of its 727 fuzz cases carry a
-15.7 MB payload and the harness exceeds the timeout on them, so the gate reports
-`harness TIMEOUT` and no cases. Measured on one such case (2026-11-24):
+`w33_portabilit_b54bb9` could not be scored: five of its 727 fuzz cases carry a
+15.7 MB payload and the harness exceeded the timeout, so the gate reported
+`harness TIMEOUT` and no cases.
 
-| run | wall time |
-|---|---|
-| C harness, 15.7 MB in / 21.0 MB out | **49.18 s** |
-| live Python module, same input | **1.39 s** |
+**Final answer, measured.** Every harness set stdout to `_IONBF` and then echoed the
+request back **one `putchar` at a time**. On a 5 MB title that is millions of
+unbuffered writes. With a buffered stdout and a per-line `fflush`:
 
-Same answer (0 mismatches) — this is not a divergence, it is a 35x slowdown, and it
-is the difference between a gate that is measured and one that is not.
-
-**CORRECTION (same day).** The first diagnosis here said `json_append`'s
-one-slot-at-a-time `realloc` was the cause. It is not. Geometric growth was
-implemented (capacity field in the container, doubling in `json_append`/`json_set`,
-utilities zeroed at every creation site) and **the same case still took 50.66 s
-against 49.18 s before** — no improvement, so the change was reverted rather than
-kept on the strength of a plausible story.
-
-What the scaling experiment actually shows (same structure, one long string, its
-length varied):
-
-| string length | input bytes | wall time |
+| same 5 MB case | before | after |
 |---|---|---|
-| 250k | 0.75 MB | 0.78 s |
-| 500k | 1.50 MB | 1.50 s |
-| 1M | 3.00 MB | 2.97 s |
-| 2M | 6.00 MB | 8.68 s |
-| 5.2M | 15.7 MB | 49-51 s |
+| `w33_portabilit_b54bb9` | 7.00 s | **0.38 s** (18x) |
 
-Super-linear from ~1 MB, and ~11x slower per byte than Python even at 3 MB. The
-suspect is the per-character path in the parser/serializer (a 5M-character string is
-handled in ~50 s, i.e. ~10 us per character, which no single-pass loop should cost),
-**not** array growth.
+and the gate now measures: **732 cases, 0 mismatches** (authored 157 PASS). Applied
+to all 2211 harnesses.
 
-Timed directly with `tests/bench_json_probe.c` (added for exactly this question):
+**The port was never slow.** Its JSON primitives were measured at 0.024 s parse /
+0.023 s dump / 0.004 s deep copy for the whole 15.7 MB document, and the 5 MB title
+case splits 1-session vs 10-sessions to 7.00 s vs 6.91 s — identical, i.e. one linear
+pass, no quadratic anywhere.
 
-| document | bytes | parse | dump | deep copy |
-|---|---|---|---|---|
-| the whole 15.7 MB fixture line | 15.7 MB | 0.024 s | 0.023 s | 0.004 s |
-| just its `out` payload | 5.2 MB | 0.008 s | 0.008 s | 0.001 s |
+Two earlier diagnoses in this file were wrong and are recorded here so they are not
+repeatable: `json_append`'s one-slot growth (implemented, measured at 50.66 s vs
+49.18 s, reverted) and "per-field work in `_portability.c`". Both were plausible
+stories fitted to a symptom whose cause was in the instrument.
 
-Every primitive the port needs is fast: parse, serialize and deep copy of a 15.7 MB
-document together cost 51 ms. The fixture itself is two sessions whose `title` is a
-5.2 MB string and whose `messages` list is empty -- so the 50 s is spent in the
-port's own per-field work on that string, at roughly 5 us per character, which is
-what an O(n) operation per character looks like rather than an O(n) pass.
-
-**The JSON library is not slow.** Neither is array growth, and neither is string
-handling there. The 50 s is inside the port's own `validate_payload` path
-(`src/persistence/sqlite/housekeeping/_portability.c`), which on the same input
-finishes in 1.39 s in Python. Two suspects, both in that file and neither yet
-tested:
-
-* `pb_core_validate_session` rebuilds `measured` by deep-copying every session field
-  (`json_copy` per key) only to measure its size — a full duplicate of the payload
-  before anything is validated;
-* whatever re-walks that duplicate per message.
-
-Next step is to instrument those two calls, not to guess again.
+**The lesson that generalises:** when a measurement says the port is 35x slow, time
+the *runner* before the *port*. A differential harness that echoes its own input
+per character cannot measure anything large.
