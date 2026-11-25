@@ -300,7 +300,9 @@ typedef struct {
 /* Forward declaration for file_mutation_tracker_t (defined in file_mutation_verifier.h) */
 typedef struct file_mutation_tracker_t file_mutation_tracker_t;
 
-typedef struct {
+/* Tagged so that a translation unit can forward-declare it ("struct agent_state;") instead of
+ * inventing its own typedef, which used to conflict with this definition. */
+typedef struct agent_state {
     message_t       **messages;
     size_t            message_count;
     size_t            message_capacity;

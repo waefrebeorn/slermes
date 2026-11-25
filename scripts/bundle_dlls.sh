@@ -23,6 +23,13 @@ PATH="$MINGW/bin:$PATH" ldd "$EXE" 2>/dev/null \
       [ -f "$dll" ] && cp -u "$dll" . 2>/dev/null
     done
 
+# The curses DLLs come from MSYS2 and `ldd` reports them as "not found" (they are resolved by the
+# loader, not by the shell's PATH), so the closure above cannot copy them. Copy them by name: the
+# TUI is unusable without them and the binary needs them beside it to start from a bare PATH.
+for dll in libncursesw6.dll libpanelw6.dll libtinfo6.dll; do
+    [ -f "$MINGW/bin/$dll" ] && cp -u "$MINGW/bin/$dll" . 2>/dev/null
+done
+
 # Verify the point of the exercise: no PATH help, real output, rc 0.
 out=$(env -u PATH PATH=/usr/bin:/bin ./"$EXE" --version 2>&1); rc=$?
 case "$rc:$out" in

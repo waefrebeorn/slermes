@@ -12,7 +12,7 @@
  * `fallback_exit_code` calls is the seam: its two `output` strings come in.
  */
 #include "hermes_json.h"
-#include "noc_w22_processreg_cd9f60.h"
+#include "noc_w22_processreg_606e65.h"
 
 #include <stdio.h>
 #include <stdlib.h>

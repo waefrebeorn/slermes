@@ -112,18 +112,18 @@ bool tui_display_image_kitty(const char *path, int max_width, int max_height) {
     tui.image_viewer.image_displayed = true;
     return true;
 }
-void tui_display_image(const char *path) {
-    if (!path) return;
+bool tui_display_image(const char *path) {
+    if (!path) return false;
 
     strncpy(tui.image_viewer.image_path, path, sizeof(tui.image_viewer.image_path) - 1);
 
     /* Try kitty protocol */
     if (tui_display_image_kitty(path, tui.panes[PANE_HISTORY].cols, tui.panes[PANE_HISTORY].rows))
-        return;
+        return true;
 
     /* Try sixel */
     if (tui_display_image_sixel(path))
-        return;
+        return true;
 
     /* Fallback: show image info */
     tui_history_add(MSG_ROLE_INFO, "[Image] Terminal does not support inline images", false);

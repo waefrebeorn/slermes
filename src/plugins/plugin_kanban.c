@@ -935,6 +935,9 @@ static char *kanban_update_task_column(const char *board_slug,
  *  Plugin interface
  * ================================================================ */
 
+/* `interface` is a Windows macro (objbase.h/oleidl.h): without this the declaration below
+ * becomes "static plugin_interface_t struct = {". */
+#undef interface
 static plugin_interface_t interface = {
     .type                = PLUGIN_KANBAN,
     .kanban_create_board = kanban_create_board,

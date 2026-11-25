@@ -3,8 +3,9 @@
 
 #include <stddef.h>
 
-/* Forward declaration — the concrete struct is agent_state_t. */
-struct agent_state_t;
+/* No forward declaration of the agent state: agent_state_t is an anonymous-struct typedef in
+ * hermes_core_types.h, so "struct agent_state_t" is a different, incomplete type and the two
+ * declarations conflict. Every function here already takes void *state. */
 
 /*
  * todo_hydrate.h — Port of Python run_agent.AIAgent._hydrate_todo_store

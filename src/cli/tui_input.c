@@ -176,16 +176,3 @@ static int tui_find_emoji(const char *prefix) {
  *  P195: SESSION BROWSER
  * ================================================================== */
 
-/* Case-insensitive substring match helper */
-static bool strstr_lower(const char *haystack, const char *needle) {
-    if (!haystack || !needle || !*needle) return false;
-    size_t nlen = strlen(needle);
-    while (*haystack) {
-        if (tolower((unsigned char)*haystack) == tolower((unsigned char)needle[0])) {
-            if (strncasecmp(haystack, needle, nlen) == 0)
-                return true;
-        }
-        haystack++;
-    }
-    return false;
-}

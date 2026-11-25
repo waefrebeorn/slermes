@@ -38,6 +38,12 @@ const char *plugin_meta_name(void) {
 }
 
 const char *plugin_meta_version(void) {
+#ifndef SPOTIFY_PLUGIN_VERSION
+/* The standalone src/plugins/Makefile passes this on the command line; the main build does not,
+ * so the module carries its own default rather than failing to compile. */
+#define SPOTIFY_PLUGIN_VERSION "1.0.0"
+#endif
+
     return SPOTIFY_PLUGIN_VERSION;
 }
 
@@ -479,6 +485,9 @@ static char *spotify_search(const char *query, const char *type) {
     return out;
 }
 
+/* `interface` is a Windows macro (objbase.h/oleidl.h): without this the declaration below
+ * becomes "static plugin_interface_t struct = {". */
+#undef interface
 static plugin_interface_t interface = {
     .type = PLUGIN_SPOTIFY,
     .spotify_play    = spotify_play,

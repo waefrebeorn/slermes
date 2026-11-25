@@ -6,6 +6,7 @@
  * render-core entry points. No file-scope state of its own.
  */
 #include "tui_state.h"
+#include "hermes_agent.h"   /* agent_session_list/load/delete/export, registry_dispatch */
 #include "hermes_json.h"
 #include <curses.h>
 #include <string.h>

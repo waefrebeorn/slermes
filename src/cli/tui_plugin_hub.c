@@ -6,6 +6,9 @@
  * and the render-core entry points; no file-scope state.
  */
 #include "tui_state.h"
+/* The real plugin API: plugin_registry_t, plugin_t, plugin_name()/plugin_version()/plugin_type_str().
+ * tui_state.h only carries the TUI overlay state, never the plugin types this hub walks. */
+#include "libplugin/plugin.h"
 #include <curses.h>
 #include <stdio.h>
 #include <string.h>

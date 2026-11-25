@@ -91,13 +91,16 @@ DEDUP_CMD = -@$(PYTHON_FOR_DEDUP) scripts/localize_dupes.py --write >/dev/null 2
 # the desktop launcher variants (main_desktop.c, desktop_gui.c, desktop_app.c) must not win.
 ENTRY_FIX = -@objcopy --globalize-symbol=main --globalize-symbol=WinMain --globalize-symbol=SDL_main src/main.o \
              2>/dev/null || true; \
-           for o in src/main_desktop.o src/desktop_gui.o src/desktop_app.o; do \
+           for o in src/main_desktop.o src/desktop_gui.o src/desktop_app.o src/web_server.o src/agent/test_omarchy_usage_main.o; do \
              [ -f $$o ] && objcopy --localize-symbol=main --localize-symbol=WinMain --localize-symbol=SDL_main $$o 2>/dev/null || true; \
            done
 
 SLERMES_OBJS = $(PHASE5_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_PORT_EXTRA_OBJ) $(PORT_OBJ) $(PET_OBJ) $(DESKTOP_CORE_OBJ) $(LIB_OBJ_FILTERED) $(WHISPER_EXTRA_OBJ)
-slermes: $(SLERMES_OBJS)
-	@: > slermes.link.rsp; for o in $^; do echo $$o >> slermes.link.rsp; done
+# The recipes below decide the entry point and the duplicate resolution, so a change to this
+# makefile must force a relink -- otherwise an edit to ENTRY_FIX/DEDUP is silently ignored because
+# every object is already newer than the binary.
+slermes: $(SLERMES_OBJS) build/targets.mk build/objects.mk
+	@: > slermes.link.rsp; for o in $^; do case "$$o" in *.mk) continue;; esac; echo $$o >> slermes.link.rsp; done
 	$(DEDUP_CMD)
 	$(ENTRY_FIX)
 	$(CC) $(CFLAGS) -o $@ @slermes.link.rsp $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) -L C:/winlibs/extra-libs -lstdc++ -lcomctl32 -lmoldname -lmingwex -lws2_32 C:/winlibs/mingw64/x86_64-w64-mingw32/lib/libmingw32.a C:/winlibs/mingw64/x86_64-w64-mingw32/lib/libmingwex.a -lpcre2-8 -ltre -lSDL2 -lSDL2_ttf -lSDL2main -lgdi32 -lopengl32 \

@@ -11,6 +11,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* src/agent/provider_metadata.c: the model catalog as a JSON array string. */
+char *model_metadata_list_json(void);
+
 void tui_model_picker_init(void) {
     tui.model_picker.count = 0;
     tui.model_picker.selected = 0;

@@ -100,7 +100,9 @@ static const char *safe_command_preview(const char *command, int limit) {
  *  Execution
  * ================================================================ */
 
-static char *run_command(const char *command, int timeout_sec) {
+/* Shared with terminal_cmd.c, which src/tools/terminal_cmd.h declares. It was `static` here, so the
+ * sibling TU had no definition to bind to and the link reported `run_command` undefined. */
+char *run_command(const char *command, int timeout_sec) {
     if (!command) return strdup("{\"error\": \"No command provided\"}");
 
     /* Use popen with a simple exec */
@@ -174,7 +176,7 @@ extern int forkpty(int *__amaster, char *__name,
                    const struct winsize *__winp);
 #endif
 #if defined(__linux__) || defined(__APPLE__)
-static char *run_command_pty(const char *command, int timeout_sec, const char *sudo_password) {
+char *run_command_pty(const char *command, int timeout_sec, const char *sudo_password) {
     if (!command) return strdup("{\"error\": \"No command provided\"}");
 
     int master_fd;

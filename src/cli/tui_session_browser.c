@@ -7,6 +7,11 @@
  * (tui_fullscreen_session_browse) is already public in tui_fullscreen.h.
  */
 #include "tui_state.h"
+#include "hermes_agent.h"   /* agent_session_list/load/delete/export, registry_dispatch */
+
+/* Defined further down in this file; tui_fullscreen.h owns the public declaration but this TU
+ * only needs the prototype before its first use. */
+void tui_fullscreen_session_browse(void);
 #include <curses.h>
 #include <stdio.h>
 #include <string.h>
