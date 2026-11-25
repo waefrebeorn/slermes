@@ -230,9 +230,30 @@ static const char *ea_codec_of(const char *label) {
         { "ascii", "ascii" }, { "us-ascii", "ascii" }, { "usascii", "ascii" },
         { "646", "ascii" }, { "ansi_x3.4-1968", "ascii" }, { "cp367", "ascii" },
     };
+    /* Python resolves a label through codecs.normalize_encoding(), which throws
+     * away everything that is not alphanumeric: "latin-" and "latin - 1" and
+     * "iso-8859" all reach the SAME codec as "latin-1". Matching the raw label
+     * alone answered NULL for those and fell through to UTF-8. */
+    static const struct { const char *norm; const char *codec; } NORMED[] = {
+        { "latin1", "latin-1" }, { "latin", "latin-1" }, { "l1", "latin-1" },
+        { "iso88591", "latin-1" }, { "iso8859", "latin-1" }, { "cp819", "latin-1" },
+        { "utf8", "utf-8" }, { "utf", "utf-8" }, { "u8", "utf-8" }, { "utf8sig", "utf-8" },
+        { "ascii", "ascii" }, { "usascii", "ascii" }, { "646", "ascii" }, { "cp367", "ascii" },
+        { "unknown8bit", "utf-8" }, { "unknown", "utf-8" }, { "xunknown", "utf-8" },
+        { "default", "utf-8" },
+    };
     size_t i;
+    char norm[64];
+    size_t j = 0;
     for (i = 0; i < sizeof(MAP) / sizeof(MAP[0]); i++)
         if (!strcmp(MAP[i].alias, label)) return MAP[i].codec;
+    for (i = 0; label[i] && j + 1 < sizeof norm; i++) {
+        unsigned char c = (unsigned char)label[i];
+        if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) norm[j++] = (char)c;
+    }
+    norm[j] = '\0';
+    for (i = 0; i < sizeof(NORMED) / sizeof(NORMED[0]); i++)
+        if (!strcmp(NORMED[i].norm, norm)) return NORMED[i].codec;
     return NULL;
 }
 
