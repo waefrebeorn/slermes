@@ -47,6 +47,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <ctype.h>
 #include <stdbool.h>
 
@@ -1564,7 +1565,6 @@ done:
 json_t *w28_adapter_ca7894_trim_seen_uids(const json_t *in) {
     const json_t *uids = in ? json_obj_get(in, "uids") : NULL;
     double dmax = in ? json_get_num(in, "max", 2000.0) : 2000.0;
-    size_t max = (dmax < 0) ? 0 : (size_t)dmax;
     json_t *arr = json_array();
     const char **vals;
     long *keys;
@@ -1599,8 +1599,19 @@ json_t *w28_adapter_ca7894_trim_seen_uids(const json_t *in) {
         keys[j] = kv;
     }
     {
+        /* sorted_uids[-(max // 2):] -- Python floor division and Python slice
+         * semantics, so a NEGATIVE max is not "no limit": max=-1 gives half=-1 and
+         * keeps sorted[1:], i.e. drops the first entry instead of keeping all.
+         * max=0 gives half 0 and x[-0:] keeps everything. */
+        long half = (long)floor(dmax / 2.0);
         size_t start = 0;
-        if (n > max) start = (max / 2) ? n - (max / 2) : 0;  /* x[-0:] keeps all */
+        if ((double)n > dmax) {
+            if (half > 0) start = ((size_t)half < n) ? n - (size_t)half : 0;
+            else if (half < 0) {
+                size_t drop = (size_t)(-half);
+                start = drop < n ? drop : n;
+            }
+        }
         for (i = start; i < n; i++) json_append(arr, json_string(vals[i]));
     }
     free(vals);
