@@ -22,9 +22,19 @@ PY_BIN = PY_QUARRY / ".venv" / "Scripts" / "python.exe"
 
 
 def c_tool_names() -> list[str]:
-    out = subprocess.run([str(EXE), "tools"], cwd=REPO, capture_output=True, text=True, errors="replace")
+    # The binary needs its DLLs; the loader looks at PATH first, and a winlibs-only PATH has no
+    # curses/panel, which silently yields zero output and looks like an empty registry.
+    env = dict(os.environ)
+    mingw = r"C:/msys64/mingw64/bin"
+    env["PATH"] = mingw + ";" + env.get("PATH", "")
+    out = subprocess.run([str(EXE), "tools"], cwd=REPO, capture_output=True, text=True,
+                         errors="replace", env=env)
     names = []
-    for line in out.stdout.replace("\r", "").splitlines():
+    lines = out.stdout.replace("\r", "").splitlines()
+    if "Registered tools" not in out.stdout:
+        sys.exit(f"'slermes tools' produced no registry (rc={out.returncode}): "
+                 f"{(out.stdout or out.stderr).strip()[:200]}")
+    for line in lines:
         if not line.startswith("  ") or " \u2014 " not in line:
             continue
         name = line.strip().split(" \u2014 ")[0].split(" [")[0]
