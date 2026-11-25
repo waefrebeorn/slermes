@@ -181,3 +181,25 @@ round — because paying interpreter startup per probe timed out on a 200-case g
 Why it matters: the minimal case *is* the specification. `sdp="0"` with an absent
 `result` turned a 300-byte random object into "the route accepts a falsy result as
 an empty mapping", which was a two-line fix.
+
+## A slow port is an unmeasured gate
+
+`w33_portabilit_b54bb9` cannot be scored: five of its 727 fuzz cases carry a
+15.7 MB payload and the harness exceeds the timeout on them, so the gate reports
+`harness TIMEOUT` and no cases. Measured on one such case (2026-11-24):
+
+| run | wall time |
+|---|---|
+| C harness, 15.7 MB in / 21.0 MB out | **49.18 s** |
+| live Python module, same input | **1.39 s** |
+
+Same answer (0 mismatches) — this is not a divergence, it is a 35x slowdown, and it
+is the difference between a gate that is measured and one that is not.
+
+Root cause located, not fixed: `lib/libjson/json.c:json_append` reallocates to
+exactly `(count + 1) * sizeof(json_t *)` on **every** append, so building an array of
+N elements copies O(N^2) bytes. `json_append` is the whole tree's array builder, so
+this is a global cost, not a gate-local one. Fixing it means giving the container a
+capacity field and growing geometrically — a header change that needs a full
+rebuild and a re-run of every gate, so it is scheduled as its own change rather
+than smuggled in behind a triage fix.
