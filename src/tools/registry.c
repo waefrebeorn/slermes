@@ -281,9 +281,19 @@ bool registry_alias(const char *alias, const char *target)
     tool_t *src = find_unlocked(target);
     bool ok = false;
     if (src && src->handler) {
-        ok = registry_register_ex_locked(alias, src->description, src->schema_json,
-                                         src->toolset, src->handler,
-                                         NULL, 0, 0);
+        /* Copy first: registry_register_ex_locked may realloc(g_registry.tools), which invalidates
+         * `src`. Reading the fields afterwards was a use-after-free that faulted in strlen() at
+         * startup, because the freed slot held a garbage pointer. */
+        char description[sizeof src->description];
+        char schema[sizeof src->schema_json];
+        char toolset[sizeof src->toolset];
+        snprintf(description, sizeof description, "%s", src->description);
+        snprintf(schema, sizeof schema, "%s", src->schema_json);
+        snprintf(toolset, sizeof toolset, "%s", src->toolset);
+        char *(*handler)(const char *, const char *) = src->handler;
+
+        ok = registry_register_ex_locked(alias, description, schema, toolset,
+                                         handler, NULL, 0, 0);
     }
     pthread_mutex_unlock(&g_registry_mutex);
     return ok;
