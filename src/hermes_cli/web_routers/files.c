@@ -391,7 +391,18 @@ json_t *w28_files_ee43ed_p1_file_url_path(const json_t *req) {
     char url[W28_BIG], path[W28_BIG], host[W28_MAX_PART], out[W28_BIG];
     int nt = json_get_bool(req, "nt", true) ? 1 : 0;
     snprintf(url, sizeof(url), "%s", json_get_str(req, "url", ""));
-    if (strncasecmp(url, "file:", 5)) return verdict_obj(false, 400, "not a file: URL");
+    /* An EMPTY url is not "another scheme": urlparse("") has no scheme and no path,
+     * and _file_url_path answers the empty path for it. Only a url that actually
+     * names a scheme the helper refuses is rejected. */
+    {
+        /* urlsplit() strips leading C0 controls and spaces before it reads the
+         * scheme, so " file:///a%2fb" is still a file: URL (and is still refused for
+         * encoding a separator). Testing the raw first byte called it a foreign
+         * scheme instead. */
+        const char *p = url;
+        while (*p && (unsigned char)*p <= 0x20) p++;
+        if (*p && strncasecmp(p, "file:", 5)) return verdict_obj(false, 400, "not a file: URL");
+    }
     const char *rest = url + 5;
     /* authority: urlparse reads netloc up to the next '/', '?' or '#' */
     host[0] = '\0';
