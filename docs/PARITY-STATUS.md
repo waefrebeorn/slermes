@@ -54,18 +54,23 @@ Each has a differential oracle against the quarry (`tests/oracle/onboarding_*_or
   Python engine. There is no Python engine in this binary; `browser_cdp` already covers evaluate.
   A faithful port means either embedding the engine or redefining the tool — both are decisions, not
   ports. Do not ship a handler that pretends to execute code.
-* **`browser_vault`** (`tools/browser_vault_tool.py:738`) reads the *browser profile* credential
-  store (logins, cards, addresses as handles) and fills them on the live page. The C tree has real
-  pieces: `src/agent/vault_backends/local.c` implements a local backend over a records array
-  (`w22_local_259750_list_items`, `get_meta`, `resolve_password`, `resolve_otp`), and
-  `w15_browservau_3f8d5c_saved_origins`, `w11_browservau_c65b17_list(backends, can_prompt)`. What is
-  missing is the registry that loads those records — `src/agent/vault_backends/__init__.c`,
-  `base.c`, `browser.c`, `unlock.c` are `port_pending` stubs, so nothing enumerates enabled backends
-  or opens the vault file. `include/hermes_vault.h` is a different store (service/key/value with a
-  master key), not browser logins.
+* **`browser_vault`** (`tools/browser_vault_tool.py:738`) reads the credential store (logins, cards,
+  addresses as handles) and fills them on the live page. The store half is now real and proven:
 
-  Consequence: `browser_vault`'s `list` action is reachable once that registry exists; `fill`,
-  `save_login`, `enter_code` and `unlock` additionally need a live page and the backend unlock path.
+  | layer | file | verified by |
+  |---|---|---|
+  | Fernet tokens | `src/agent/fernet.c` | spec vectors byte-for-byte + interop with `cryptography` (`fernet` 19) |
+  | encrypted document | `src/agent/vault_file.c` | C reads the vault Python writes and vice versa (`vault-file` 20) |
+  | local backend | `src/agent/vault_local_store.c` | vs `LocalLoginBackend` over the same files (`vault-local-backend` 16) |
+  | `action=list` | `src/tools/browser_vault_list.c` | vs `browser_vault_list()` on a populated and an empty vault (`browser-vault-list` 8) |
+
+  Still missing, and why the tool stays unregistered: `fill`, `save_login` and `enter_code` need the
+  live page and its supervisor (`_ensure_supervisor`, `_fenced_page_op`), `unlock` needs
+  `vault_backends/unlock.py` and a masked prompt owned by the surface, and the manager backends
+  (1Password, Bitwarden) need their CLIs plus the session unlock store. Registering the four with a
+  handler that can only ever answer "no browser session" is the stub this file exists to prevent; the
+  `list` result alone is honest but it is one action out of five, so the name stays unclaimed until
+  the session path exists.
 * **`manage_connections`** (`tools/connectors/tool.py`). Correction to an earlier note in this file:
   the C tree does have a substantial connectors port — `src/tools/connectors/` is ~3.8k lines, and
   `w19_tool_6f4666_manage_connections(args)` already performs upstream's validation and target
