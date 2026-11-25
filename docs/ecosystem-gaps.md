@@ -55,6 +55,36 @@ Two of these are the real structural gaps, and neither is a gate:
 `542 placeholder PoP lines` are the third: a `*_pending` symbol that records an intention
 as though it were a measurement. These inflate the ported count without moving behaviour.
 
+### 2a. The claimless surface, classified (P2)
+
+`scripts/classify_surface.py` over all 4,813 `.c` files:
+
+| bucket | files | KB | what it is |
+|---|---|---|---|
+| **done** | 1,878 | 18,755 | a real (non-placeholder) PoP claim, no pending admission |
+| **todo** | 1,110 | 16,628 | real function bodies, **no claim at all** |
+| **seam** | 811 | 25,391 | touches files, sockets, TLS, processes — needs an environment, not a pure oracle |
+| **outside** | 219 | 7,196 | C-only trees with no Python counterpart (`cli`, `pet`, `lv`, `lua`, `desktop`, `compat`, `ports`, `provider`) |
+| **empty** | 795 | 435 | ~550 B each: placeholder TUs, no bodies |
+| **total** | 4,813 | 68,405 | |
+
+`todo + seam + outside + empty = 2,935`, exactly the audit's 570 pending headers plus 2,365
+no-claim files. Two of those buckets decide what "coverage" can mean from here:
+
+* **`todo` is the real porting backlog: 1,110 files / 16.6 MB of code that exists and has
+  never been compared to anything.** It is not smaller than the done bucket — it is nearly
+  the same size. Any percentage that omits it is a percentage of the wrong set.
+* **`seam` is bigger still, in bytes: 811 files / 25.4 MB — 37 % of the tree's source.**
+  These cannot be closed by value→value oracles at all; they need environment-level tests
+  or an explicit "documented seam" decision. This is where P5's end-to-end flow earns its
+  keep.
+
+**Retracted on the way:** my first classifier used a return-type regex and reported
+*1,346 empty files / 28 %*; a second cut flipped 1,877 into "empty" because a missing body
+was the only branch that absorbed unclaimed code. Both were wrong for the same reason — a
+heuristic tuned to prove a story. The trustworthy check is the one now in the tool:
+`empty` holds 795 files averaging 550 B, i.e. it is only ever true placeholders.
+
 ## 3. The artifact gap — the finding to act on first
 
 `slermes.exe` (29.75 MB) **runs**, and answers:
@@ -106,10 +136,9 @@ Copy the seven DLLs beside the binary, add a `scripts/smoke.sh` that runs
 `tests/verify_build_health.py`. Exit criterion: `./slermes.exe --version` prints the
 banner with no PATH help, and the health gate fails if it ever stops doing so.
 
-**P2 — Classify the unclaimed surface (measurement, not porting).**
-Sort the 2,365 no-claim files and 570 pending headers into four buckets with counts:
-*done*, *seam*, *out of scope*, *todo*. Exit criterion: a table in this file where the
-four counts sum to 2,935, so the completion ratio becomes a real denominator.
+**P2 — Classify the unclaimed surface (measurement, not porting).** ✅ **DONE** —
+`scripts/classify_surface.py`, table in section 2a: 2,935 claimless files resolved into
+todo 1,110 / seam 811 / outside 219 / empty 795, summing exactly.
 
 **P3 — Kill the placeholder class.**
 542 `*_pending` PoP lines either become behaviour with a gate or become *todo* in P2's
