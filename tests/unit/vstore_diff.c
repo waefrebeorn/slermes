@@ -51,6 +51,8 @@ int main(int argc, char **argv) {
             res = v ? json_string(v) : json_null();
             free(v);
         }
+        else if (strcmp(op, "fields") == 0) res = w6_vaultstore_6d2c23_fields(value);
+        else if (strcmp(op, "required") == 0) res = w6_vaultstore_6d2c23_required_fields(value);
         else if (strcmp(op, "scrub") == 0) {
             char *s = w6_vaultstore_6d2c23_scrub_secret_from_text(value, secret);
             res = s ? json_string(s) : json_null();

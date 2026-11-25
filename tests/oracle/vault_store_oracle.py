@@ -63,6 +63,9 @@ def cases() -> list[dict]:
     ]
     for i, v in enumerate(ORIGINS):
         out.append({"name": f"origin[{i}]", "op": "origin", "value": v})
+    for kind in ("login", "payment", "address"):
+        out.append({"name": f"fields[{kind}]", "op": "fields", "value": kind})
+        out.append({"name": f"required[{kind}]", "op": "required", "value": kind})
     for i, v in enumerate(OTPS):
         out.append({"name": f"otp[{i}]", "op": "otp", "value": v})
     for i, (text, secret) in enumerate(SCRUB_TEXT):
@@ -87,6 +90,13 @@ def expected(case: dict):
             return ("ok", vs.normalize_origin(case["value"]))
         if op == "otp":
             return ("ok", vs.normalize_otp_secret(case["value"]))
+        if op == "fields":
+            kind = case["value"]
+            return ("ok", dict(vs.PAYMENT_FIELDS if kind == "payment" else
+                               vs.ADDRESS_FIELDS if kind == "address" else {}))
+        if op == "required":
+            kind = case["value"]
+            return ("ok", list(vs.REQUIRED_FIELDS.get(kind, ())))
         if op == "scrub":
             return ("ok", vs.scrub_secret_from_text(case["value"], case["secret"]))
     except Exception as exc:                                   # noqa: BLE001 - the refusal IS the answer
