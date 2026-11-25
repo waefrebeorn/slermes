@@ -8,6 +8,40 @@
 #include "commands_shared.h"
 #include <sys/stat.h>
 #include "hermes_core_types.h"
+#include "hermes_json.h"
+
+/* src/port_missing_impl.c: manifests for plugins installed as Python entry points. They are not
+ * .so files in the plugins directory, so the directory scan below can never see them. */
+json_t *discover_entrypoint_manifests(void);
+
+/* One line per entry-point plugin, matching the directory listing's shape. */
+static void print_entrypoint_plugins(void)
+{
+    json_t *manifests = discover_entrypoint_manifests();
+    if (!manifests) return;
+    size_t n = json_len(manifests);
+    if (n == 0) { json_free(manifests); return; }
+
+    printf("Entry-point plugins:\n");
+    for (size_t i = 0; i < n; i++) {
+        const json_t *m = json_get(manifests, i);
+        const char *name = json_get_str(m, "name", "?");
+        const char *ver = json_get_str(m, "version", "");
+        const char *desc = json_get_str(m, "description", "");
+        const json_t *caps = json_obj_get(m, "capabilities");
+        size_t ncaps = (caps && caps->type == JSON_ARRAY) ? json_len(caps) : 0;
+        printf("  %s %s%s%s", name, ver[0] ? "v" : "", ver,
+               ncaps ? " [" : "");
+        for (size_t c = 0; c < ncaps; c++) {
+            const json_t *cap = json_get(caps, c);
+            printf("%s%s", c ? ", " : "", cap && cap->str_val ? cap->str_val : "?");
+        }
+        printf("%s%s\n", ncaps ? "]" : "",
+               desc[0] ? "" : "");
+        if (desc[0]) printf("      %s\n", desc);
+    }
+    json_free(manifests);
+}
 
 /* /plugins: List installed plugins and their status */
 void cmd_plugins(const char *args, agent_state_t *state) {
@@ -32,7 +66,9 @@ void cmd_plugins(const char *args, agent_state_t *state) {
 
         DIR *d = opendir(plugins_dir);
         if (!d) {
-            printf("  Error: cannot open plugins directory\n");
+            /* No directory is not "no plugins": entry-point plugins live in site-packages. */
+            printf("  Directory not present\n");
+            print_entrypoint_plugins();
             return;
         }
 
@@ -63,6 +99,7 @@ void cmd_plugins(const char *args, agent_state_t *state) {
         }
         closedir(d);
         printf("  Total plugins: %d\n", count);
+        print_entrypoint_plugins();
         return;
     }
 
