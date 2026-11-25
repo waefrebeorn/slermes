@@ -1558,7 +1558,7 @@ CUPBOARD_CLI = src/cli/cli_gaps_2026_08_25.o src/cli/cli.o \
  src/cli/port_access_policy.o src/cli/config_env_file.o \
  src/cli/cli_hermes_cli_methods.o
 
-CUPBOARD_AGENT = src/agent/turn_summary.o src/agent/redact_helpers.o \
+CUPBOARD_AGENT = src/agent/onboarding_flow_apply.o src/agent/turn_summary.o src/agent/redact_helpers.o \
  src/agent/repetition_guard.o src/agent/port_agent_turn_context.o \
  src/agent/tts_provider.o src/agent/interrupt_compat.o \
  src/agent/web_search_registry.o src/agent/video_gen_provider.o \
