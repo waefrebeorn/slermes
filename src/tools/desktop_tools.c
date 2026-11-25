@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 /* src/gateway/local_desktop_ui.c -- theme.apply / theme.pick over an injected answer. */
 json_t *w10_localdeskt_b6c610_theme(const json_t *in);
@@ -153,6 +154,147 @@ static char *handle_read_terminal(const char *args_json, const char *task_id) {
     return err_json("read_terminal is only available in the Hermes desktop app.");
 }
 
+
+/* ---------------------------------------------------------------- */
+/* show_tip, gui_tour, read_window_below, desktop_preview            */
+/* ---------------------------------------------------------------- */
+
+static char *ok_json(const char *key, const char *value) {
+    json_t *o = json_object();
+    json_set(o, "success", json_bool(true));
+    if (key) json_set(o, key, json_string(value ? value : ""));
+    return json_text(o);
+}
+
+/* PoP: tip_tool @ tools/tip_tool.py:tip_tool */
+static char *handle_show_tip(const char *args_json, const char *task_id) {
+    (void)task_id;
+    static const char *const sides[] = { "top", "right", "bottom", "left" };
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *text = args ? json_get_str(args, "text", "") : "";
+    const char *selector = args ? json_get_str(args, "selector", "") : "";
+    const char *side = args ? json_get_str(args, "side", "") : "";
+
+    if (!text || !*text) { json_free(args); return err_json("tip needs text - the one line the bubble says."); }
+    if (!selector || !*selector) {
+        json_free(args);
+        return err_json("tip needs a selector to point at. Call tour(action='targets') to see what's on screen.");
+    }
+    if (side && *side && !one_of(side, sides, sizeof sides / sizeof *sides)) {
+        json_free(args); return err_json("side must be one of: top, right, bottom, left.");
+    }
+    json_free(args);
+    return err_json("tip is only available in the Hermes desktop app.");
+}
+
+/* PoP: tour_tool @ tools/tour_tool.py:tour_tool */
+static char *handle_gui_tour(const char *args_json, const char *task_id) {
+    (void)task_id;
+    static const char *const actions[]  = { "targets", "show", "start", "next", "prev", "stop" };
+    static const char *const surfaces[] = { "app", "preview" };
+    static const char *const sides[]    = { "top", "right", "bottom", "left" };
+
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *action  = args ? json_get_str(args, "action", "") : "";
+    const char *surface = args ? json_get_str(args, "surface", "") : "";
+    const char *side    = args ? json_get_str(args, "side", "") : "";
+    const json_t *steps = args ? json_obj_get(args, "steps") : NULL;
+    bool has_point = false;
+
+    if (!action || !one_of(action, actions, sizeof actions / sizeof *actions)) {
+        json_free(args);
+        return err_json("action must be one of: targets, show, start, next, prev, stop.");
+    }
+    if (surface && *surface && !one_of(surface, surfaces, sizeof surfaces / sizeof *surfaces)) {
+        json_free(args); return err_json("surface must be one of: app, preview.");
+    }
+    if (side && *side && !one_of(side, sides, sizeof sides / sizeof *sides)) {
+        json_free(args); return err_json("side must be one of: top, right, bottom, left.");
+    }
+    if (args) {
+        const char *sel = json_get_str(args, "selector", "");
+        const char *tit = json_get_str(args, "title", "");
+        const char *txt = json_get_str(args, "text", "");
+        has_point = (sel && *sel) || (tit && *tit) || (txt && *txt);
+    }
+    if (strcmp(action, "show") == 0 && !has_point) {
+        json_free(args);
+        return err_json("show needs a selector (and/or title/text for the popover).");
+    }
+    if (strcmp(action, "start") == 0 && steps == NULL &&
+        surface && *surface && strcmp(surface, "app") != 0) {
+        json_free(args);
+        return err_json("The built-in tour runs on surface='app'; pass steps for a preview tour.");
+    }
+    if (strcmp(action, "start") == 0 && steps != NULL) {
+        if (steps->type != JSON_ARRAY || json_len((json_t *)steps) == 0) {
+            json_free(args);
+            return err_json("start needs a non-empty steps array, or no steps for the built-in tour.");
+        }
+    }
+    json_free(args);
+    if (strcmp(action, "targets") == 0)
+        return err_json("tour is only available in the Hermes desktop app.");
+    return err_json("tour is only available in the Hermes desktop app.");
+}
+
+/* PoP: read_window_below_tool @ tools/read_window_tool.py:read_window_below_tool */
+static char *handle_read_window_below(const char *args_json, const char *task_id) {
+    (void)args_json; (void)task_id;
+    return err_json("read_window_below is only available in the Hermes desktop app.");
+}
+
+/* Bare domains become https:// URLs; an existing path is passed through as a file target. */
+static void normalise_target(const char *in, char *out, size_t sz) {
+    out[0] = '\0';
+    if (!in) return;
+    while (*in == ' ' || *in == '\t') in++;
+    size_t n = strlen(in);
+    while (n && (in[n - 1] == ' ' || in[n - 1] == '\t' || in[n - 1] == '\r' || in[n - 1] == '\n')) n--;
+    if (!n || n >= sz) return;
+
+    char tmp[1024];
+    snprintf(tmp, sizeof tmp, "%.*s", (int)n, in);
+    if (strstr(tmp, "://") || tmp[0] == '/' || tmp[0] == '.' || tmp[0] == '~' ||
+        strchr(tmp, '\\') || strchr(tmp, ':') || strchr(tmp, '/')) {
+        snprintf(out, sz, "%s", tmp);
+    } else {
+        snprintf(out, sz, "https://%s", tmp);
+    }
+}
+
+/* PoP: _handle_preview @ tools/preview_tool.py:_handle_preview */
+static char *handle_desktop_preview(const char *args_json, const char *task_id) {
+    (void)task_id;
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *action = args ? json_get_str(args, "action", "") : "";
+    const char *url = args ? json_get_str(args, "url", "") : "";
+
+    if (!action || (strcmp(action, "open") && strcmp(action, "close") && strcmp(action, "read"))) {
+        json_free(args);
+        return err_json("action must be one of: open, close, read.");
+    }
+    if (strcmp(action, "read") == 0) {
+        json_free(args);
+        return err_json("preview read must run inside a desktop session (no GUI callback here).");
+    }
+    if (strcmp(action, "open") == 0) {
+        char target[1024];
+        normalise_target(url, target, sizeof target);
+        if (!target[0]) {
+            json_free(args);
+            return err_json("url is required - a web URL (https://...), a localhost dev server, or a file path to show in the preview pane.");
+        }
+        struct stat st;
+        if (stat(target, &st) == 0 && (st.st_mode & S_IFDIR)) {
+            json_free(args);
+            return err_json("directories are not previewable - pass a file path or a URL.");
+        }
+    }
+    json_free(args);
+    return err_json("desktop_preview is only available in the Hermes desktop app.");
+}
+
 void registry_init_desktop_ui(void) {
     registry_register("set_theme",
         "Set the Hermes desktop app's accent colour, light/dark mode and layout, or show a picker card. "
@@ -170,6 +312,40 @@ void registry_init_desktop_ui(void) {
           "\"pane\":{\"type\":\"string\",\"enum\":[\"chat\",\"files\",\"terminal\",\"review\",\"sessions\"],\"description\":\"Which pane to reveal.\"}},"
           "\"required\":[\"pane\"]}",
         handle_focus_pane);
+    registry_register("show_tip",
+        "Point at something in the Hermes desktop GUI and say one line about it. Fire-and-forget: a tip is not a question.",
+        "{\"type\":\"object\",\"properties\":{"
+          "\"text\":{\"type\":\"string\",\"description\":\"The one line the bubble says.\"},"
+          "\"selector\":{\"type\":\"string\",\"description\":\"data-tour handle or CSS selector to point at.\"},"
+          "\"title\":{\"type\":\"string\",\"description\":\"Optional bubble title.\"},"
+          "\"side\":{\"type\":\"string\",\"enum\":[\"top\",\"right\",\"bottom\",\"left\"]}},"
+          "\"required\":[\"text\",\"selector\"]}",
+        handle_show_tip);
+    registry_register("gui_tour",
+        "Run or query a guided tour of the desktop GUI: list targets, show one step, start/next/prev/stop a tour.",
+        "{\"type\":\"object\",\"properties\":{"
+          "\"action\":{\"type\":\"string\",\"enum\":[\"targets\",\"show\",\"start\",\"next\",\"prev\",\"stop\"]},"
+          "\"surface\":{\"type\":\"string\",\"enum\":[\"app\",\"preview\"]},"
+          "\"selector\":{\"type\":\"string\"},"
+          "\"title\":{\"type\":\"string\"},"
+          "\"text\":{\"type\":\"string\"},"
+          "\"side\":{\"type\":\"string\",\"enum\":[\"top\",\"right\",\"bottom\",\"left\"]},"
+          "\"steps\":{\"type\":\"array\",\"items\":{\"type\":\"object\"}},"
+          "\"preset\":{\"type\":\"string\"}},"
+          "\"required\":[\"action\"]}",
+        handle_gui_tour);
+    registry_register("read_window_below",
+        "Identify the app window behind the Hermes desktop window (what the user is in). Metadata only; never captures pixels.",
+        "{\"type\":\"object\",\"properties\":{},\"required\":[]}",
+        handle_read_window_below);
+    registry_register("desktop_preview",
+        "Open, close, or read the preview pane beside the chat: a web URL, a localhost dev server, or a file path (HTML renders live).",
+        "{\"type\":\"object\",\"properties\":{"
+          "\"action\":{\"type\":\"string\",\"enum\":[\"open\",\"close\",\"read\"]},"
+          "\"url\":{\"type\":\"string\",\"description\":\"Web URL (bare domains fine), localhost dev server, or file path.\"},"
+          "\"label\":{\"type\":\"string\",\"description\":\"Optional tab label.\"}},"
+          "\"required\":[\"action\"]}",
+        handle_desktop_preview);
     registry_register("read_terminal",
         "Read the in-app terminal pane beside this chat. No args = visible screen + total_lines; page scrollback with start_line (0 = oldest) + count.",
         "{\"type\":\"object\",\"properties\":{"
