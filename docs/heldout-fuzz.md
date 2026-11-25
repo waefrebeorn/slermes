@@ -223,3 +223,13 @@ per character cannot measure anything large.
   cannot reproduce a path-collapse artefact without hard-coding the fixture's parent
   directory. Left open deliberately: the authored suite is 17/17, and inventing
   `"profiles"` inside the port would be a fake fix for a test-seam quirk.
+
+* **`w28_repair_1f5388_p3` / `repair_flow`** — held-out cases with a `db_path` that does
+  not exist (`"0"`) answer `{"error": "0 does not exist"}` live and `{"error": null}` in
+  the port. The live code runs `Path(db_path).exists()` **before** any scenario branch,
+  so existence is not a scenario name. Attempted fix: `stat()` the path first. Measured
+  result **worse** -- authored 33 cases went from 0 to 5 mismatches and held-out from 16
+  to 27 findings -- because the oracle and the harness run in different working
+  directories, so a relative path means different things to each. Reverted. Fixing it
+  honestly needs the harness to carry an `exists` seam (the fixture's `seams` object is
+  empty today), which is a fixture change, not a port change.
