@@ -844,7 +844,7 @@ CUPBOARD_PORT_MISC = src/skills/skills_parser.o src/sandbox_escape.o \
  lib/libwubuoffice/src/wubuzip/canon.o \
  lib/libwubuoffice/src/wubuzip/fixedcode.o \
  lib/libwubuoffice/src/wubuzip/limitcode.o src/provider/token_exchange.o \
- src/hermes_logging.o src/mcp_serve.o src/infrastructure_stubs.o src/pm/port_pm_environments.o
+ src/hermes_logging.o src/mcp_serve.o src/hermes_posix_compat.o src/infrastructure_stubs.o src/pm/port_pm_environments.o
 
 
 # ── Object File Lists ──────────────────────────────────────────────
