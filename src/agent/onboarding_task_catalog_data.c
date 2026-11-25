@@ -263,3 +263,24 @@ const onboarding_task_t ONB_TASKS[] = {
 };
 
 const int ONB_TASK_COUNT = 13;
+
+const onboarding_task_t ONB_OWN_TASK = { "own",
+  "",
+  ONB_GATE_NEVER, "",
+  {
+        "hermes-agent",
+        NULL
+    },
+  "build the task they named in their own words",
+  {
+        "Also load the skills that fit what they asked.",
+        "If you know what it is, say the first slice in one line and start. If not, ask one short question (a clarify with three concrete options is fine).",
+        "Cut a big ask to a first slice and say so in one line.",
+        "Show a first version early, then refine it.",
+        NULL
+    },
+  "Whatever fits the task; a page is one self-contained HTML file, open in the preview pane.",
+  "Real data only, designed with the skills when it is a page.",
+  "The first slice is shown and you said where its files are." };
+
+const char *const ONB_EVERY_TASK_SKILL = "humanizer";

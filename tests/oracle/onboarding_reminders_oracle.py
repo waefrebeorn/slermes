@@ -2,8 +2,8 @@
 """Differential oracle: agent.onboarding_text.reminder (Python) vs the C port.
 
 Every reminder key is generated from real flow records, rendered by the Python layer, and compared
-with the C output for the same record. Keys the C port does not implement (the ``build_*`` guidance,
-which needs each catalog task's prompt fields and skills) are reported as *skipped*, never as agreed.
+with the C output for the same record. Nothing is skipped: the ``build_*`` guidance is included, since
+the C port renders it from the same generated catalog.
 
 Usage:  python tests/oracle/onboarding_reminders_oracle.py [--keep]
 Env:    HERMES_QUARRY (default C:/Users/eman5/hermes-agent)
@@ -30,8 +30,7 @@ ALL_KEYS = [
     "after_name", "after_theme", "after_layout", "offer_first", "after_connectors", "after_plugins",
     "after_tour", "after_build", "tour_quick", "tour_full", "tour_skip", "moved_on", "skip_all",
     "complete", "already_theme", "already_layout", "wrote", "timed_out",
-    # Not ported in C (needs each catalog task's prompt fields and skills): these must be reported
-    # as skipped, never as agreement.
+    # The catalog-driven guidance: rendered from the generated task table.
     "build_hermes", "build_own",
 ]
 
@@ -102,7 +101,8 @@ def main() -> int:
     if not exe.exists():
         build = subprocess.run(
             ["gcc", "-O1", "-w", "-I", "include", "-I", "lib", "-I", "lib/libjson",
-             "src/agent/onboarding_reminders.c", "tests/unit/oremind_diff.c",
+             "src/agent/onboarding_reminders.c", "src/agent/onboarding_task_catalog.c",
+             "src/agent/onboarding_task_catalog_data.c", "tests/unit/oremind_diff.c",
              "lib/libjson/json.o", "-o", str(exe)],
             cwd=str(REPO), capture_output=True, text=True)
         if build.returncode != 0:
@@ -143,7 +143,7 @@ def main() -> int:
         else:
             agree += 1
 
-    print(f"onboarding-reminders oracle: {agree} agree, {skipped} not ported (build_*), {failed} mismatched")
+    print(f"onboarding-reminders oracle: {agree} agree, {skipped} not ported, {failed} mismatched")
     if not args.keep:
         for p in (tin, tout):
             p.unlink(missing_ok=True)

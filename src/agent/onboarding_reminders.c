@@ -8,6 +8,7 @@
  * differential oracle lists them as skipped, not as passing.
  */
 #include "onboarding_reminders.h"
+#include "onboarding_task_catalog.h"
 #include "hermes_json.h"
 
 #include <stdbool.h>
@@ -256,11 +257,202 @@ static char *reminder_timed_out(const char *beat) {
     return sb_take(&b);
 }
 
+
+/* ── build_guidance: the prompt once a first task is picked ─────────────────────────────────── */
+
+#define NPM_URL "https://cdn.jsdelivr.net/npm/"
+
+static const char *CLOSE_LINE =
+    "When the first thing is built and shown, ask with clarify: \"How does this look?\" with the choices "
+    "\"Looks right\", \"Change something\" and \"Take it further\", exactly. Put the next-step idea in your text. "
+    "After they answer, call setup_beat(beat=\"done\").";
+
+static const char *HOW_TO_WORK[] = {
+    "Real data only: this computer, their connected apps, the live web. Never mock or invent data.",
+    "First reply: one line, then a tool call. At most two checks and one question before you start. "
+    "Something visible within a minute, finished within five.",
+    "Save every file in ~/hermes-first-task/ and say where. No test files.",
+    "Install or connect anything once, with exact ids. Never search the whole disk.",
+    "Write the words they read with humanizer: short, plain, specific.",
+    NULL
+};
+
+static const char *PAGE_LINES[] = {
+    "One self-contained HTML file, laid out for the pane (often about 600px wide) and able to widen.",
+    "A standalone page: it sets its own background, font and colours. The preview pane does not theme it; "
+    "the theme variables are only for ::preview widgets in the chat.",
+    "It moves within a second: a diagram that draws itself, a dot that runs a path, numbers that count up to "
+    "real values.",
+    "Libraries, only what the page needs, each pinned as " NPM_URL "<package>@<version>/<file>: gsap@3.13.0 for "
+    "motion, with its DrawSVGPlugin, MotionPathPlugin and ScrollTrigger (register each); d3@7.9.0 for charts of "
+    "real numbers; p5@1.11.3 for a 2D figure they drag or tune; matter-js@0.20.0 for physics; katex@0.16.11 "
+    "with its CSS and auto-render for maths; tone@15.0.4 for sound, started on a click; roughjs@4.6.6 for a "
+    "hand-drawn look.",
+    "3D: three@0.170.0 is ES modules only. Use an import map: \"three\" to its build/three.module.js, "
+    "\"three/addons/\" to its examples/jsm/.",
+    NULL
+};
+
+static const char *CONNECTORS_LINE =
+    "Never route around a connector. "
+    "Reading a connected app: check it with manage_connections(action=\"status\"). Find its tools with tool_search "
+    "using the app slug, then the slug plus an action (a bare slug misses actions). tool_describe every action you "
+    "need in one batch, then call them through tool_call(calls=[{\"name\": \"connectors__<slug>__<ACTION>\", "
+    "\"arguments\": {...}}]). Resolve names to ids before acting. Read only; ask before any write, and say that a "
+    "write may run as the connector's bot.";
+
+static const char *OS_MACOS =
+    "This Mac: check with `which brew` and `ls -d /Applications/<App>.app`; install with "
+    "`brew install --cask <app>`; on Apple silicon check `lipo -archs` for a binary's architecture.";
+static const char *OS_WINDOWS =
+    "This PC: check with `winget list --accept-source-agreements`; install with `winget install <id> "
+    "--accept-source-agreements --accept-package-agreements` (without both flags a fresh profile hangs "
+    "on an agreements prompt).";
+static const char *OS_LINUX =
+    "This Linux machine: check with `which`, and `flatpak list` when flatpak is there; install with "
+    "`flatpak install -y flathub <id>`. Anything that needs sudo is listed for the user, never run.";
+static const char *ARM_WINDOWS =
+    "On Windows on Arm, read arm64 vs x64 from winget's install output, not the manifest, and say when "
+    "an app is x64 only.";
+static const char *SPARK_LINE = "This machine is built for local models; say so once when it fits what they asked.";
+static const char *REMOTE_LINE =
+    "Hermes runs on another computer than the user's: say which machine anything is installed on.";
+
+static const char *PREVIEW_CALL =
+    "tool_call {\"calls\":[{\"name\":\"desktop_preview\",\"arguments\":{\"action\":\"open\",\"url\":\"<file>\"}}]}";
+
+static bool in_list(const char *const *list, const char *v) {
+    if (!list || !v) return false;
+    for (int i = 0; list[i]; i++) if (strcmp(list[i], v) == 0) return true;
+    return false;
+}
+
+static void sb_bullets(sb_t *b, const char *title, const char *const *lines) {
+    sb_add(b, title);
+    sb_add(b, ":");
+    for (int i = 0; lines && lines[i]; i++) {
+        sb_add(b, "\n- ");
+        sb_add(b, lines[i]);
+    }
+}
+
+/* _preview_line: every host shows results in the app's preview pane; remote hosts do not reload it. */
+static void sb_preview_line(sb_t *b, const json_t *facts) {
+    const char *src = facts ? json_get_str(facts, "facts_source", "local") : "local";
+    sb_add(b, "Show results in the preview pane beside the chat with ");
+    sb_add(b, PREVIEW_CALL);
+    sb_add(b, "; it shows HTML, images and PDFs. ");
+    if (strcmp(src, "remote") == 0)
+        sb_add(b, "On this host it does not reload by itself: open it again after each change.");
+    else
+        sb_add(b, "Open it once, early: it reloads when the file changes, so keep improving the same file "
+                  "while they watch.");
+    sb_add(b, " Say it is open only after the call succeeds.");
+}
+
+/* task_skills with the identity resolver upstream defaults to: an entry a|b keeps every name. */
+static void sb_skills(sb_t *b, const onboarding_task_t *task) {
+    bool first = true;
+    for (int pass = 0; pass < 2; pass++) {
+        if (pass == 1) {
+            if (!first) sb_add(b, ", ");
+            sb_add(b, ONB_EVERY_TASK_SKILL);
+            first = false;
+            break;
+        }
+        for (int i = 0; task->skills[i]; i++) {
+            const char *entry = task->skills[i];
+            char buf[256];
+            snprintf(buf, sizeof buf, "%s", entry);
+            char *save = NULL;
+            for (char *tok = strtok_r(buf, "|", &save); tok; tok = strtok_r(NULL, "|", &save)) {
+                if (!first) sb_add(b, ", ");
+                sb_add(b, tok);
+                first = false;
+            }
+        }
+    }
+}
+
+static void sb_task_prompt(sb_t *b, const onboarding_task_t *task, const char *label) {
+    const char *shown = (label && *label) ? label : task->label;
+    if (shown && *shown) {
+        sb_add(b, "They picked \"");
+        sb_add(b, shown);
+        sb_add(b, "\". ");
+    }
+    sb_add(b, "Your job: ");
+    sb_add(b, task->goal ? task->goal : "");
+    sb_add(b, ".\nLoad these skills with skill_view first: ");
+    sb_skills(b, task);
+    sb_add(b, ".\nSteps:");
+    for (int i = 0; task->steps[i]; i++) {
+        char line[32];
+        snprintf(line, sizeof line, "\n%d. ", i + 1);
+        sb_add(b, line);
+        sb_add(b, task->steps[i]);
+    }
+    sb_add(b, "\nOutput: ");
+    sb_add(b, task->output ? task->output : "");
+    sb_add(b, "\nQuality bar: ");
+    sb_add(b, task->quality ? task->quality : "");
+    sb_add(b, "\nDone when: ");
+    sb_add(b, task->done ? task->done : "");
+}
+
+static char *build_guidance(const char *option, const json_t *facts, const char *label) {
+    static const char *const PAGE_TASKS[] = {
+        "hermes", "explain", "brief", "week", "youtube", "site", "repo", "own", NULL
+    };
+    static const char *const CONNECTOR_TASKS[] = { "brief", "week", NULL };
+
+    const onboarding_task_t *task = onboarding_catalog_task_or_own(option);
+    sb_t b; sb_init(&b);
+
+    sb_task_prompt(&b, task, label);
+
+    sb_add(&b, "\n\n");
+    sb_bullets(&b, "How to work", HOW_TO_WORK);
+    /* _preview_line rides inside the work list, after the fixed lines. */
+    sb_add(&b, "\n- ");
+    sb_preview_line(&b, facts);
+    if (in_list(CONNECTOR_TASKS, option)) {
+        sb_add(&b, "\n- ");
+        sb_add(&b, CONNECTORS_LINE);
+    }
+
+    if (in_list(PAGE_TASKS, option)) {
+        sb_add(&b, "\n\n");
+        sb_bullets(&b, "When you make a page", PAGE_LINES);
+    }
+
+    const char *os = facts ? json_get_str(facts, "os", "linux") : "linux";
+    const char *arch = facts ? json_get_str(facts, "arch", "") : "";
+    const char *nvidia = facts ? json_get_str(facts, "nvidia_platform", "") : "";
+    const char *src = facts ? json_get_str(facts, "facts_source", "local") : "local";
+
+    const char *host[4];
+    int n = 0;
+    host[n++] = (strcmp(os, "macos") == 0) ? OS_MACOS
+              : (strcmp(os, "windows") == 0) ? OS_WINDOWS : OS_LINUX;
+    if (strcmp(os, "windows") == 0 && strcmp(arch, "arm64") == 0) host[n++] = ARM_WINDOWS;
+    if (strcmp(nvidia, "rtx_spark") == 0 || strcmp(nvidia, "dgx_spark") == 0) host[n++] = SPARK_LINE;
+    if (strcmp(src, "remote") == 0) host[n++] = REMOTE_LINE;
+    host[n] = NULL;
+
+    sb_add(&b, "\n\n");
+    sb_bullets(&b, "This computer", host);
+
+    sb_add(&b, "\n\nWhen it is shown:\n");
+    sb_add(&b, CLOSE_LINE);
+
+    return sb_take(&b);
+}
+
 /* ── public entry points ──────────────────────────────────────────────────────────────────── */
 
 char *onboarding_reminder(const char *key, const json_t *record, const json_t *facts,
                           const char *beat, const json_t *seam) {
-    (void)facts;
     if (!key || !*key) return strdup("");
 
     if (strcmp(key, "wrote") == 0 || strcmp(key, "timed_out") == 0) {
@@ -268,8 +460,23 @@ char *onboarding_reminder(const char *key, const json_t *record, const json_t *f
         if (!b || !*b) b = "build";
         return strcmp(key, "wrote") == 0 ? reminder_wrote(record, b) : reminder_timed_out(b);
     }
-    /* build_* keys need the task catalog's prompt fields and skills: not ported, said plainly. */
-    if (strncmp(key, "build_", 6) == 0) return NULL;
+    if (strncmp(key, "build_", 6) == 0) {
+        /* build_<option>: the prompt for the first task the card settled. */
+        const char *option = key + 6;
+        const char *label = "";
+        const json_t *picks = rec_picks(record);
+        if (picks) {
+            const json_t *opts = json_obj_get(picks, "build_options");
+            if (opts && opts->type == JSON_ARRAY) {
+                for (size_t i = 0; i < json_len((json_t *)opts); i++) {
+                    const json_t *o = json_get(opts, i);
+                    const char *id = json_get_str(o, "id", NULL);
+                    if (id && strcmp(id, option) == 0) { label = json_get_str(o, "label", ""); break; }
+                }
+            }
+        }
+        return build_guidance(option, facts, label);
+    }
 
     if (strncmp(key, "already_", 8) == 0) {
         sb_t b; sb_init(&b);

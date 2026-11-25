@@ -105,6 +105,12 @@ const onboarding_task_t ONB_TASKS[] = {
 const int ONB_TASK_COUNT = %d;
 """ % (cat.MAX_PICKS, cat.MAX_LABEL, cstr(cat.FIXED_ID), "".join(rows), len(cat.FIRST_TASKS))
 
+    own = cat.OWN_TASK
+    own_row = ("const onboarding_task_t ONB_OWN_TASK = { %s,\n  %s,\n  ONB_GATE_NEVER, \"\",\n  %s,\n  %s,\n  %s,\n  %s,\n  %s,\n  %s };\n"
+               % (cstr(own.id), cstr(own.label), cstr_array(own.skills), cstr(own.goal),
+                  cstr_array(own.steps), cstr(own.output), cstr(own.quality), cstr(own.done)))
+    body += "\n" + own_row + "\nconst char *const ONB_EVERY_TASK_SKILL = %s;\n" % cstr(cat.EVERY_TASK_SKILL)
+
     out = REPO / "src" / "agent" / "onboarding_task_catalog_data.c"
     out.write_text(body, encoding="utf-8", newline="")
     print(f"wrote {out.relative_to(REPO)}: {len(cat.FIRST_TASKS)} tasks")

@@ -12,6 +12,11 @@ const onboarding_task_t *onboarding_catalog_find(const char *id) {
     return NULL;
 }
 
+const onboarding_task_t *onboarding_catalog_task_or_own(const char *id) {
+    const onboarding_task_t *t = onboarding_catalog_find(id);
+    return t ? t : &ONB_OWN_TASK;
+}
+
 static bool arr_has(const json_t *arr, const char *s) {
     if (!arr || arr->type != JSON_ARRAY || !s) return false;
     for (size_t i = 0; i < json_len((json_t *)arr); i++) {

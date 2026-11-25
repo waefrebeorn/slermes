@@ -34,12 +34,16 @@ typedef struct {
 } onboarding_task_t;
 
 extern const onboarding_task_t ONB_TASKS[];
+extern const onboarding_task_t ONB_OWN_TASK;   /* the "own words" row */
+extern const char *const ONB_EVERY_TASK_SKILL; /* loaded last for every task */
 extern const int ONB_TASK_COUNT;
 extern const int ONB_MAX_PICKS;
 extern const int ONB_MAX_LABEL;
 extern const char *const ONB_FIXED_ID;
 
 const onboarding_task_t *onboarding_catalog_find(const char *id);
+/* find() with the own-task fallback upstream uses (TASK_BY_ID.get(option, OWN_TASK)). */
+const onboarding_task_t *onboarding_catalog_task_or_own(const char *id);
 
 /* True when the task may be picked on this machine with these picks. */
 bool onboarding_catalog_eligible(const onboarding_task_t *task, const json_t *facts, const json_t *picks);
