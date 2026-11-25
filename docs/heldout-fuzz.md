@@ -221,10 +221,16 @@ handled in ~50 s, i.e. ~10 us per character, which no single-pass loop should co
 
 Timed directly with `tests/bench_json_probe.c` (added for exactly this question):
 
-| document | bytes | parse | dump |
-|---|---|---|---|
-| the whole 15.7 MB fixture line | 15.7 MB | 0.017 s | 0.018 s |
-| just its `out` payload | 5.2 MB | 0.006 s | 0.006 s |
+| document | bytes | parse | dump | deep copy |
+|---|---|---|---|---|
+| the whole 15.7 MB fixture line | 15.7 MB | 0.024 s | 0.023 s | 0.004 s |
+| just its `out` payload | 5.2 MB | 0.008 s | 0.008 s | 0.001 s |
+
+Every primitive the port needs is fast: parse, serialize and deep copy of a 15.7 MB
+document together cost 51 ms. The fixture itself is two sessions whose `title` is a
+5.2 MB string and whose `messages` list is empty -- so the 50 s is spent in the
+port's own per-field work on that string, at roughly 5 us per character, which is
+what an O(n) operation per character looks like rather than an O(n) pass.
 
 **The JSON library is not slow.** Neither is array growth, and neither is string
 handling there. The 50 s is inside the port's own `validate_payload` path

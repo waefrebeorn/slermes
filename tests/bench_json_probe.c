@@ -40,8 +40,16 @@ int main(int argc, char **argv) {
     if (!node) { fprintf(stderr, "parse error: %s\n", err ? err : "?"); free(err); free(buf); return 1; }
     out = json_dumps(node, 0);
     t2 = now_s();
-    printf("in=%ld out=%zu parse=%.3fs dump=%.3fs\n",
-           size, out ? strlen(out) : 0, t1 - t0, t2 - t1);
+    {
+        double t3, t4;
+        json_t *cp;
+        t3 = now_s();
+        cp = json_copy(node);
+        t4 = now_s();
+        printf("in=%ld out=%zu parse=%.3fs dump=%.3fs copy=%.3fs\n",
+               size, out ? strlen(out) : 0, t1 - t0, t2 - t1, t4 - t3);
+        json_free(cp);
+    }
     free(out);
     json_free(node);
     free(buf);
