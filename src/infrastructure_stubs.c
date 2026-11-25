@@ -411,10 +411,9 @@ int registry_validate_args(const char *a) { (void)a; return 1; }
 
 /* ── MCP ── */
 int stub_shadowed_mcp_init_all(void) { return 0; }
-void mcp_serve_set_port(int p) { (void)p; }
-int mcp_serve_start(void) { return 0; }
-int mcp_serve_stop(void) { return 0; }
-int mcp_serve_is_running(void) { return 0; }
+/* mcp_serve_set_port / start / stop / is_running live in src/mcp_serve.c, which was
+ * ported but never added to build/objects.mk -- so a stub here shadowed a real 400-line
+ * server implementation and mcp-serve could only ever print "Failed to start server". */
 int stub_shadowed_mcp_mark_lifecycle_started(void *s) { (void)s; return 0; }
 int stub_shadowed_mcp_reconnect_or_reraise_group(void *s) { (void)s; return 0; }
 int stub_shadowed_mcp_wait_for_lazy_reconnect(void *s) { (void)s; return 0; }

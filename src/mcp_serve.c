@@ -29,6 +29,42 @@
 #include <netinet/in.h>
 #include <fcntl.h>
 #include <errno.h>
+
+/* ── socket compat ────────────────────────────────────────────────────────────
+ * A SOCKET is not a file descriptor on Windows: read()/write()/close() fail on one,
+ * which is why this server accepted a connection and then closed it without sending a
+ * byte. The accept loop, the handler and the response writer all go through these. */
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#define MCP_SOCK_CLOSE(fd) closesocket((SOCKET)(uintptr_t)(fd))
+static ssize_t mcp_sock_read(int fd, void *buf, size_t n) {
+    return (ssize_t)recv((SOCKET)(uintptr_t)fd, (char *)buf, (int)n, 0);
+}
+static ssize_t mcp_sock_write(int fd, const void *buf, size_t n) {
+    return (ssize_t)send((SOCKET)(uintptr_t)fd, (const char *)buf, (int)n, 0);
+}
+static int mcp_sock_nonblock(int fd) {
+    u_long on = 1;
+    return ioctlsocket((SOCKET)(uintptr_t)fd, FIONBIO, &on) == 0 ? 0 : -1;
+}
+static int mcp_sock_wouldblock(void) {
+    int e = WSAGetLastError();
+    return e == WSAEWOULDBLOCK;
+}
+#else
+#define MCP_SOCK_CLOSE(fd) close(fd)
+static ssize_t mcp_sock_read(int fd, void *buf, size_t n) { return read(fd, buf, n); }
+static ssize_t mcp_sock_write(int fd, const void *buf, size_t n) { return write(fd, buf, n); }
+static int mcp_sock_nonblock(int fd) {
+    int flags = fcntl(fd, F_GETFL, 0);
+    return fcntl(fd, F_SETFL, flags | O_NONBLOCK) == 0 ? 0 : -1;
+}
+static int mcp_sock_wouldblock(void) {
+    return errno == EAGAIN || errno == EWOULDBLOCK;
+}
+#endif
+
 #include <signal.h>
 
 /* ================================================================
@@ -255,7 +291,7 @@ static void send_http_response(int client_fd, int status, const char *status_tex
         strlen(body),
         body);
     if (n > 0) {
-        ssize_t written = write(client_fd, resp, (size_t)n);
+        ssize_t written = mcp_sock_write(client_fd, resp, (size_t)n);
         (void)written;
     }
 }
@@ -266,9 +302,9 @@ static void send_http_response(int client_fd, int status, const char *status_tex
 
 static void handle_mcp_request(int client_fd) {
     char buf[MCP_SERVE_BUF_SIZE];
-    ssize_t n = read(client_fd, buf, sizeof(buf) - 1);
+    ssize_t n = mcp_sock_read(client_fd, buf, sizeof(buf) - 1);
     if (n <= 0) {
-        close(client_fd);
+        MCP_SOCK_CLOSE(client_fd);
         return;
     }
     buf[n] = '\0';
@@ -278,7 +314,7 @@ static void handle_mcp_request(int client_fd) {
     if (sscanf(buf, "%15s %1023s", method, path) < 2) {
         send_http_response(client_fd, 400, "Bad Request",
                            "text/plain", "Bad Request");
-        close(client_fd);
+        MCP_SOCK_CLOSE(client_fd);
         return;
     }
 
@@ -286,7 +322,7 @@ static void handle_mcp_request(int client_fd) {
     if (strcmp(method, "OPTIONS") == 0) {
         send_http_response(client_fd, 204, "No Content",
                            "text/plain", "");
-        close(client_fd);
+        MCP_SOCK_CLOSE(client_fd);
         return;
     }
 
@@ -295,7 +331,7 @@ static void handle_mcp_request(int client_fd) {
         send_http_response(client_fd, 200, "OK",
                            "application/json",
                            "{\"status\":\"ok\",\"server\":\"hermes-c-mcp\"}");
-        close(client_fd);
+        MCP_SOCK_CLOSE(client_fd);
         return;
     }
 
@@ -307,7 +343,7 @@ static void handle_mcp_request(int client_fd) {
         if (!body_start) {
             send_http_response(client_fd, 400, "Bad Request",
                                "text/plain", "Malformed HTTP request");
-            close(client_fd);
+            MCP_SOCK_CLOSE(client_fd);
             return;
         }
         body_start += 4;
@@ -317,7 +353,7 @@ static void handle_mcp_request(int client_fd) {
         if (!body) {
             send_http_response(client_fd, 500, "Internal Server Error",
                                "text/plain", "OOM");
-            close(client_fd);
+            MCP_SOCK_CLOSE(client_fd);
             return;
         }
         memcpy(body, body_start, body_size);
@@ -330,14 +366,14 @@ static void handle_mcp_request(int client_fd) {
                            resp_body ? resp_body : "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32603,\"message\":\"Internal error\"},\"id\":null}");
         free(body);
         free(resp_body);
-        close(client_fd);
+        MCP_SOCK_CLOSE(client_fd);
         return;
     }
 
     /* 404 for everything else */
     send_http_response(client_fd, 404, "Not Found",
                        "text/plain", "Not Found");
-    close(client_fd);
+    MCP_SOCK_CLOSE(client_fd);
 }
 
 /* ================================================================
@@ -383,8 +419,7 @@ static void *mcp_serve_run(void *arg) {
     printf("[mcp-serve] Endpoint: POST http://localhost:%d/mcp\n", g_serve_port);
 
     /* Non-blocking so we can check g_serve_running */
-    int flags = fcntl(g_server_fd, F_GETFL, 0);
-    fcntl(g_server_fd, F_SETFL, flags | O_NONBLOCK);
+    mcp_sock_nonblock(g_server_fd);
 
     while (g_serve_running) {
         struct sockaddr_in client_addr;
@@ -394,7 +429,7 @@ static void *mcp_serve_run(void *arg) {
 
         if (client_fd >= 0) {
             handle_mcp_request(client_fd);
-        } else if (errno != EAGAIN && errno != EWOULDBLOCK) {
+        } else if (!mcp_sock_wouldblock()) {
             if (g_serve_running) {
                 perror("[mcp-serve] accept");
                 sleep(1);
@@ -404,7 +439,7 @@ static void *mcp_serve_run(void *arg) {
         }
     }
 
-    close(g_server_fd);
+    MCP_SOCK_CLOSE(g_server_fd);
     g_server_fd = -1;
     printf("[mcp-serve] Server stopped\n");
     return NULL;
