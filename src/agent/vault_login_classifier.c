@@ -16,6 +16,7 @@
 #include "noc_w16_vaultlogin_58f247.h"
 
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
