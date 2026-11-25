@@ -102,6 +102,17 @@ else
     echo "   SKIPPED (no python on PATH)"
 fi
 
+echo "== vault_store_oracle (differential: vault helpers vs agent.vault_store)"
+if command -v "$PYBIN" >/dev/null 2>&1; then
+    if PATH="/c/msys64/mingw64/bin:$PATH" "$PYBIN" tests/oracle/vault_store_oracle.py; then
+        :
+    else
+        echo "   ORACLE FAIL"; fail=1
+    fi
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo
 [ $fail -eq 0 ] && echo "unit tests: PASS" || echo "unit tests: FAIL"
 exit $fail
