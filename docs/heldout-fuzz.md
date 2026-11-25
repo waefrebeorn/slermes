@@ -233,3 +233,11 @@ per character cannot measure anything large.
   directories, so a relative path means different things to each. Reverted. Fixing it
   honestly needs the harness to carry an `exists` seam (the fixture's `seams` object is
   empty today), which is a fixture change, not a port change.
+
+* **`w28_adapter_ca7894_p1` / `safe_decode` (3 remaining)** — a payload containing a
+  NUL byte (`b64 "AGK="` -> `\x00b`) comes back truncated, because a JSON string in
+  this tree is a bare `char *` with no length. Python strings carry NULs fine. Fixing
+  it means a length-carrying string representation in `libjson` (a `str_len` beside
+  `str_val`, touching every accessor in the tree), which is a model change and not a
+  triage fix. The other four findings on this gate -- charset labels resolved the way
+  `codecs.lookup` does -- are fixed.
