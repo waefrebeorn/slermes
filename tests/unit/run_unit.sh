@@ -124,6 +124,17 @@ else
     echo "   SKIPPED (no python on PATH)"
 fi
 
+echo "== fill_js_oracle (differential: fill script builder vs build_fill_js)"
+if command -v "$PYBIN" >/dev/null 2>&1; then
+    if PATH="/c/msys64/mingw64/bin:$PATH" "$PYBIN" tests/oracle/fill_js_oracle.py; then
+        :
+    else
+        echo "   ORACLE FAIL"; fail=1
+    fi
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo
 [ $fail -eq 0 ] && echo "unit tests: PASS" || echo "unit tests: FAIL"
 exit $fail
