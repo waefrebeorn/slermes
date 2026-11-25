@@ -560,19 +560,24 @@ json_t *w30_updatecmdp_fa52e9_p2_left_running(const json_t *req) {
             const char *label;
             int ancestor;
             if (!j || j->type != JSON_OBJECT) continue;
-            label = pp_text(json_obj_get(j, "label"));
-            if (!label) label = "";
+            /* The label is carried AS IS (a null stays null) and compared only
+             * when it is a string: None == "0" is False, and a notice naming a
+             * missing label renders Python's "None". */
+            {
+                const json_t *label_node = json_obj_get(j, "label");
+                label = (label_node && label_node->type == JSON_STRING) ? pp_text(label_node) : NULL;
+            }
             ancestor = pp_truthy(json_obj_get(j, "ancestor"));
-            if (ancestor || (xpc_value && strcmp(xpc_value, label) == 0)) {
+            if (ancestor || (xpc_value && label && strcmp(xpc_value, label) == 0)) {
                 pp_sb b = {NULL, 0, 0};
                 char *msg;
                 sb_printf(&b, "  \xe2\x86\xb7 %s keeps running until after the update "
-                              "(this update runs inside its launchd job)", label);
+                              "(this update runs inside its launchd job)", label ? label : "None");
                 msg = sb_take(&b);
                 json_append(notices, json_string(msg ? msg : ""));
                 free(msg);
             } else {
-                json_append(keep_jobs, json_string(label));
+                json_append(keep_jobs, label ? json_string(label) : json_null());
             }
         }
     }
