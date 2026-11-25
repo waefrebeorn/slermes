@@ -257,6 +257,17 @@ per character cannot measure anything large.
   measured authored 0 -> 1, held-out 1 -> 8, so that is not the rule either. Both
   reverted; the gate stays at authored 12 PASS / held-out 1. STOP HERE: two failed
   hypotheses on one field means the input shape is not understood, and a third guess
-  would churn a green tree for nothing. The way forward is to read `snapshot_of` in the
-  oracle (how it materialises `fetched_at` for each fixture shape) before touching the
-  port again -- not to keep flipping the C.
+  would churn a green tree for nothing.
+
+  I then DID read `snapshot_of`, which says plainly:
+  `fields["fetched_at"] = _dt(fields["fetched_at"]) or datetime.datetime(1970, 1, 1)` —
+  every falsy stamp becomes the epoch. Implemented exactly that (absent, null, "" and 0
+  all -> "1970-01-01T00:00:00") and measured **authored 0 -> 3, held-out 1 -> 16**.
+  Reverted again.
+
+  So the oracle's own source contradicts the authored expectations on this field. That
+  makes it a **fixture-versus-oracle conflict**, not a port bug: the recorded `out` in
+  `tests/fixtures/w25_usage_61b537.jsonl` disagrees with what the oracle computes for the
+  same shape. Resolving it means regenerating those expectations from live, which changes
+  the authored baseline and is a decision to take deliberately -- not something to slip in
+  while chasing one counter. Gate stays at authored 12 PASS / held-out 1.
