@@ -212,3 +212,14 @@ stories fitted to a symptom whose cause was in the instrument.
 **The lesson that generalises:** when a measurement says the port is 35x slow, time
 the *runner* before the *port*. A differential harness that echoes its own input
 per character cannot measure anything large.
+
+## Open conflicts (recorded, not papered over)
+
+* **`w25_gatewayrun_b1c386` / `serves_home`** — held-out case `named:true,
+  verdict:null, served:[], home_name:""` answers `False` live and `ValueError` in the
+  port. The oracle builds `Path("C:/w25gate/profiles") / ""`, which collapses to the
+  parent directory, so the profile name it normalizes is the literal `"profiles"` —
+  not the empty string the port is handed. The port only receives the *name*, so it
+  cannot reproduce a path-collapse artefact without hard-coding the fixture's parent
+  directory. Left open deliberately: the authored suite is 17/17, and inventing
+  `"profiles"` inside the port would be a fake fix for a test-seam quirk.
