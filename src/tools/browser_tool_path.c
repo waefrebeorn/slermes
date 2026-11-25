@@ -1,3 +1,4 @@
+#include "hermes_posix_compat.h"
 /*
  * browser_tool_path.c — focused concern module extracted from
  * port_browser_tool.c (refactor-first monolith split). Port of
@@ -168,17 +169,17 @@ static char *bt_path_which(const char *name, const char *path_override) {
 /* node_tool_runnable: a candidate is trusted only when it executes. */
 static int bt_path_node_tool_runnable(const char *path) {
     if (!path) return 0;
-    pid_t pid = fork();
-    if (pid < 0) return 0;
-    if (pid == 0) {
-        int devnull = open("/dev/null", O_WRONLY);
-        if (devnull >= 0) { dup2(devnull, STDOUT_FILENO); dup2(devnull, STDERR_FILENO); }
-        execl(path, path, "--version", (char *)NULL);
-        _exit(127);
-    }
-    int status = 0;
-    if (waitpid(pid, &status, 0) < 0) return 0;
-    return WIFEXITED(status) && WEXITSTATUS(status) == 0;
+    /* Was fork + dup2(/dev/null) + execl + waitpid. The seam does the redirection and the
+     * waiting, and gets the same "did it run and exit 0" answer on both platforms. */
+    char *argv[3];
+    argv[0] = (char *)path;
+    argv[1] = (char *)"--version";
+    argv[2] = NULL;
+    hermes_pid_t pid = hermes_spawn_in(NULL, argv, 1);
+    if (pid == (hermes_pid_t)-1) return 0;
+    int status = -1;
+    if (hermes_wait(pid, 30000, &status) != HERMES_WAIT_EXITED) return 0;
+    return status == 0;
 }
 
 /* PoP: browser_resolve_npx_bin @ tools/browser_tool.py:_resolve_npx_bin */

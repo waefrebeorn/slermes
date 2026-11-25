@@ -1,3 +1,4 @@
+#include "hermes_posix_compat.h"
 /*
  * port_gateway_shutdown_forensics.c — C port of gateway/shutdown_forensics.py
  */
@@ -134,26 +135,21 @@ json_node_t* cli_gateway_shutdown_forensics_snapshot_shutdown_context(int receiv
 /* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:spawn_async_diagnostic */
 int cli_gateway_shutdown_forensics_spawn_async_diagnostic(const char *log_path, const char *signal_name) {
     if (!log_path || !signal_name) return -1;
-    int fd = open(log_path, O_WRONLY | O_CREAT | O_APPEND, 0644);
-    if (fd < 0) return -1;
-    pid_t child = fork();
-    if (child == 0) {
-        setsid();
-        close(0);
-        dup2(fd, STDOUT_FILENO);
-        dup2(fd, STDERR_FILENO);
-        close(fd);
-        char script[2048];
-        snprintf(script, sizeof(script),
-            "echo '=== shutdown diagnostic @ %s ==='\n"
-            "date -u +%%Y-%%m-%%dT%%H:%%M:%%SZ\n"
-            "ps auxf --sort=-pcpu 2>/dev/null | head -60\n"
-            "echo '=== end ==='\n", signal_name);
-        execlp("bash", "bash", "-c", script, NULL);
-        _exit(1);
-    }
-    close(fd);
-    return child > 0 ? child : -1;
+    /* Was fork + setsid + dup2(log) + execlp(bash -c ...). The seam owns detach, the log
+     * redirect and the platform's null device now -- DETACHED_PROCESS on Windows. */
+    char script[2048];
+    snprintf(script, sizeof(script),
+        "echo '=== shutdown diagnostic @ %s ==='\n"
+        "date -u +%%Y-%%m-%%dT%%H:%%M:%%SZ\n"
+        "ps auxf --sort=-pcpu 2>/dev/null | head -60\n"
+        "echo '=== end ==='\n", signal_name);
+    char *argv[4];
+    argv[0] = (char *)"bash";
+    argv[1] = (char *)"-c";
+    argv[2] = script;
+    argv[3] = NULL;
+    hermes_pid_t child = hermes_spawn_detached(argv, log_path);
+    return (child == (hermes_pid_t)-1) ? -1 : (int)child;
 }
 
 /* PoP: pending @ gateway/shutdown_forensics.py:format_context_for_log */

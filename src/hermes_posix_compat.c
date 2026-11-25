@@ -83,6 +83,62 @@ hermes_pid_t hermes_spawn(char *const argv[])
     return pi.dwProcessId;
 }
 
+hermes_pid_t hermes_spawn_detached(char *const argv[], const char *log_path)
+{
+    if (!argv || !argv[0]) { errno = EINVAL; return (hermes_pid_t)-1; }
+
+    size_t cap = 4096;
+    for (int i = 0; argv[i]; i++) cap += strlen(argv[i]) * 2 + 4;
+    char *line = (char *)calloc(cap, 1);
+    if (!line) { errno = ENOMEM; return (hermes_pid_t)-1; }
+    for (int i = 0; argv[i]; i++) {
+        if (i) strncat(line, " ", cap - strlen(line) - 1);
+        append_quoted(line, cap, argv[i]);
+    }
+
+    /* Inheritable handles: CreateProcessA with bInheritHandles=TRUE only passes handles
+     * created with bInheritHandle set. Without this the child ran with no stdout at all and
+     * the log stayed empty -- caught by tests/test_posix_compat.c, not by the compiler. */
+    SECURITY_ATTRIBUTES sa;
+    memset(&sa, 0, sizeof sa);
+    sa.nLength = sizeof sa;
+    sa.bInheritHandle = TRUE;
+
+    HANDLE out = INVALID_HANDLE_VALUE, in = INVALID_HANDLE_VALUE;
+    if (log_path && *log_path) {
+        out = CreateFileA(log_path, FILE_APPEND_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                          &sa, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    }
+    if (out == INVALID_HANDLE_VALUE) {
+        out = CreateFileA("NUL", GENERIC_WRITE, FILE_SHARE_WRITE, &sa, OPEN_EXISTING, 0, NULL);
+    }
+    in = CreateFileA("NUL", GENERIC_READ, FILE_SHARE_READ, &sa, OPEN_EXISTING, 0, NULL);
+
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+    memset(&si, 0, sizeof si);
+    si.cb = sizeof si;
+    si.dwFlags = STARTF_USESTDHANDLES;
+    si.hStdInput = (in != INVALID_HANDLE_VALUE) ? in : GetStdHandle(STD_INPUT_HANDLE);
+    si.hStdOutput = out;
+    si.hStdError = out;
+
+    char exe[MAX_PATH];
+    if (strchr(argv[0], '\\') || strchr(argv[0], '/')) snprintf(exe, sizeof exe, "%s", argv[0]);
+    else if (!SearchPathA(NULL, argv[0], ".exe", (DWORD)sizeof exe, exe, NULL))
+        snprintf(exe, sizeof exe, "%s", argv[0]);
+
+    BOOL ok = CreateProcessA(exe, line, NULL, NULL, TRUE,
+                             DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP, NULL, NULL, &si, &pi);
+    free(line);
+    if (out != INVALID_HANDLE_VALUE) CloseHandle(out);
+    if (in != INVALID_HANDLE_VALUE) CloseHandle(in);
+    if (!ok) { errno = ENOENT; return (hermes_pid_t)-1; }
+    CloseHandle(pi.hThread);
+    CloseHandle(pi.hProcess);
+    return pi.dwProcessId;
+}
+
 hermes_pid_t hermes_spawn_in(const char *cwd, char *const argv[], int silent)
 {
     if (!argv || !argv[0]) { errno = EINVAL; return (hermes_pid_t)-1; }
@@ -102,7 +158,11 @@ hermes_pid_t hermes_spawn_in(const char *cwd, char *const argv[], int silent)
     si.cb = sizeof si;
     HANDLE nul = INVALID_HANDLE_VALUE;
     if (silent) {
-        nul = CreateFileA("NUL", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+        SECURITY_ATTRIBUTES sa;
+        memset(&sa, 0, sizeof sa);
+        sa.nLength = sizeof sa;
+        sa.bInheritHandle = TRUE;
+        nul = CreateFileA("NUL", GENERIC_WRITE, FILE_SHARE_WRITE, &sa, OPEN_EXISTING, 0, NULL);
         if (nul != INVALID_HANDLE_VALUE) {
             si.dwFlags = STARTF_USESTDHANDLES;
             si.hStdOutput = nul;
@@ -204,6 +264,7 @@ const char *hermes_dlerror(void) { return g_dl_error; }
 #include <spawn.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 extern char **environ;
 
@@ -213,6 +274,27 @@ hermes_pid_t hermes_spawn(char *const argv[])
     if (posix_spawnp(&pid, argv[0], NULL, NULL, argv, environ) != 0) {
         errno = ENOENT;
         return (hermes_pid_t)-1;
+    }
+    return pid;
+}
+
+hermes_pid_t hermes_spawn_detached(char *const argv[], const char *log_path)
+{
+    pid_t pid = fork();
+    if (pid < 0) return (hermes_pid_t)-1;
+    if (pid == 0) {
+        setsid();
+        int null_in = open("/dev/null", O_RDONLY);
+        if (null_in >= 0) { dup2(null_in, STDIN_FILENO); close(null_in); }
+        if (log_path && *log_path) {
+            int fd = open(log_path, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            if (fd >= 0) { dup2(fd, STDOUT_FILENO); dup2(fd, STDERR_FILENO); close(fd); }
+        } else {
+            int devnull = open("/dev/null", O_WRONLY);
+            if (devnull >= 0) { dup2(devnull, STDOUT_FILENO); dup2(devnull, STDERR_FILENO); close(devnull); }
+        }
+        execvp(argv[0], argv);
+        _exit(127);
     }
     return pid;
 }

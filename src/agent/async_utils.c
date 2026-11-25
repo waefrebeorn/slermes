@@ -1,3 +1,4 @@
+#include "hermes_posix_compat.h"
 /*
  * async_utils.c — Port of Python agent/async_utils.py
  *
@@ -78,14 +79,10 @@ void terminate_subprocess(pid_t pid) {
 
 /* Port of Python: bootstrap_process_runner() — spawn a runner subprocess.
  * Returns the child pid, or -1 on failure. argv is a NULL-terminated list. */
-pid_t bootstrap_process_runner(char *const argv[]) {
-    if (!argv || !argv[0]) return -1;
-    pid_t pid = fork();
-    if (pid == 0) {
-        execvp(argv[0], argv);
-        _exit(127);
-    }
-    return pid;
+hermes_pid_t bootstrap_process_runner(char *const argv[]) {
+    if (!argv || !argv[0]) return (hermes_pid_t)-1;
+    /* fork+execvp -> the seam; CreateProcess with execvp's PATH search on Windows. */
+    return hermes_spawn(argv);
 }
 
 /* === merged from port_async_utils.c === */

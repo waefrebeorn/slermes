@@ -84,6 +84,30 @@ int main(void)
         else { printf("FAIL spawn_in: rc=%d status=%d\n", rc2, st2); failures++; }
     }
 
+    /* ── 4. detached child writes to its log ──────────────────────────────── */
+    {
+        const char *logf = ".testbin/detached_probe.log";
+        remove(logf);
+#ifdef _WIN32
+        char *argv3[] = { (char *)"cmd", (char *)"/c", (char *)"echo detached-ok", NULL };
+#else
+        char *argv3[] = { (char *)"sh", (char *)"-c", (char *)"echo detached-ok", NULL };
+#endif
+        hermes_pid_t pid3 = hermes_spawn_detached(argv3, logf);
+        if (pid3 == (hermes_pid_t)-1) {
+            printf("FAIL spawn_detached: errno=%d\n", errno);
+            failures++;
+        } else {
+            int st3 = -1;
+            hermes_wait(pid3, 30000, &st3);
+            FILE *f = fopen(logf, "rb");
+            char buf[64] = {0};
+            if (f) { fread(buf, 1, sizeof buf - 1, f); fclose(f); }
+            if (strstr(buf, "detached-ok")) printf("ok   spawn_detached: log captured output\n");
+            else { printf("FAIL spawn_detached: log=%s\n", buf); failures++; }
+        }
+    }
+
     printf(failures ? "posix_compat: FAIL\n" : "posix_compat: PASS\n");
     return failures ? 1 : 0;
 }

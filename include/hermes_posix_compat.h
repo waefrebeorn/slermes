@@ -64,6 +64,15 @@ int hermes_wait(hermes_pid_t pid, int timeout_ms, int *status);
  */
 hermes_pid_t hermes_spawn_in(const char *cwd, char *const argv[], int silent);
 
+/**
+ * hermes_spawn_detached — start a child that outlives the caller.
+ *
+ * Detaches from the session (setsid on POSIX, DETACHED_PROCESS on Windows), redirects stdin
+ * from the null device, and sends stdout+stderr to @p log_path in append mode (NULL means
+ * the null device). Returns the child pid, or -1 with errno set.
+ */
+hermes_pid_t hermes_spawn_detached(char *const argv[], const char *log_path);
+
 /** hermes_kill — terminate the child if it is still running. Returns 0 on success. */
 int hermes_kill(hermes_pid_t pid);
 
