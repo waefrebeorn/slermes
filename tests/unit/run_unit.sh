@@ -135,6 +135,20 @@ else
     echo "   SKIPPED (no python on PATH)"
 fi
 
+echo "== fernet_oracle (spec vectors + interop with cryptography)"
+FERNET_PY="${FERNET_PY:-$PYBIN}"
+if command -v "$FERNET_PY" >/dev/null 2>&1; then
+    PATH="/c/msys64/mingw64/bin:$PATH" "$FERNET_PY" tests/oracle/fernet_oracle.py
+    rc=$?
+    if [ $rc -eq 3 ]; then
+        echo "   ORACLE SKIPPED (cryptography not importable -- set FERNET_PY)"
+    elif [ $rc -ne 0 ]; then
+        echo "   ORACLE FAIL"; fail=1
+    fi
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo
 [ $fail -eq 0 ] && echo "unit tests: PASS" || echo "unit tests: FAIL"
 exit $fail
