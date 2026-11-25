@@ -15,9 +15,20 @@ that introduced it — not that the name appears in the registry.
 | `desktop_project` | create / switch by slug, name or id / list against the real `projects.db` |
 | `manage_catalog` | validation order (unknown key, action, kind, items) then upstream's desktop-only text |
 | `xai_video_edit`, `xai_video_extend` | prompt, video_url, provider gate, auth gate — in upstream's order |
+| `setup_beat` | done / skip / value events end to end on a real state.db, record persisted, reminder rendered; cards answer the desktop-only line |
 
 `xai_video_*` submit/poll is implemented (real endpoints, bounded poll, terminal-status detection)
 but its success path has never executed: no xAI credentials on this machine. Treat as unproven.
+
+## Onboarding: ported in three verified pieces
+
+`session_rules/onboarding_flow.py:apply` -> `src/agent/onboarding_flow_apply.c`
+`agent/onboarding_text.py` reminders -> `src/agent/onboarding_reminders.c`
+`session_rules/onboarding_first_tasks.py` -> `src/agent/onboarding_task_catalog_data.c` (generated)
+
+Each has a differential oracle against the quarry (`tests/oracle/onboarding_*_oracle.py`), and
+`tests/unit/test_setup_beat.c` drives the tool on a real state.db. Not ported: `build_guidance` (the
+`build_*` reminder keys), which needs each task's prompt fields and a skill-name resolver.
 
 ## Protocol defects found while verifying (fixed)
 
@@ -28,10 +39,16 @@ but its success path has never executed: no xAI credentials on this machine. Tre
   `image_generate`, `discord_admin`), all repaired.
 * `scripts/check_tool_schemas.py` now runs inside `scripts/flow_mcp.sh`, so a future typo fails the
   gate instead of reaching a client.
+* `registry_dispatch` sanitised whole error results: `{"error": ...}` came back as
+  `[TOOL_ERROR] {...}`, unparseable, and the MCP server answered -32603 for every such tool. The
+  message field is sanitised now, the envelope survives.
+* `hermes_state_db_open` returned NULL on any database an older build had made — the schema SQL
+  indexes columns the ALTER TABLE migrations add later (`sessions.parent_session_id`), and the first
+  exec failing aborted the open. Migrations now run after a failed pass and the schema is retried.
 
-## Remaining four — each needs a subsystem, not a handler
+## Remaining three — each needs a subsystem, not a handler
 
-`browser_exec`, `browser_vault`, `manage_connections`, `setup_beat`
+`browser_exec`, `browser_vault`, `manage_connections`
 
 * **`browser_exec`** (`tools/browser_use_cli.py:1047`) runs arbitrary `code` in the browser-use
   Python engine. There is no Python engine in this binary; `browser_cdp` already covers evaluate.
@@ -44,12 +61,6 @@ but its success path has never executed: no xAI credentials on this machine. Tre
   with a master key, not browser logins.
 * **`manage_connections`** (`tools/connectors/tool.py`) manages hosted connectors: client state,
   OAuth, MCP install. `grep -rl connectors src/` finds no store in C at all.
-* **`setup_beat`** (`tools/setup_beat_tool.py`) needs the onboarding *run record* store plus the
-  desktop card roundtrip. The C tree has `agent/onboarding_record.c`, `agent/onboarding_text.c` and
-  the flow port in `include/noc_w17_onboarding_4983bc.h` (next_beat, is_active, valid_answer,
-  build_values, constants) — but **no event application**: `session_rules/onboarding_flow.py` is
-  429 lines with a `Beat` table and the reduce that turns `Answered`/`Skipped`/`Done` into the next
-  record. Port that first, then the tool.
 
 ## Standing gates
 
