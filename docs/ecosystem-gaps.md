@@ -216,3 +216,36 @@ compile-clean orphans left unwired, `LINK_RC=0`, and `flow_mcp.sh` still passes.
 
 Note for the tooling: 903 object paths on one `make` command line is `WinError 206` on this
 box — compile in chunks of 60.
+
+## 8. The Windows-portability backlog (measured by pattern scan)
+
+The orphan compile audit finished: of 903 files missing from the link manifest, **872
+compile clean and 31 fail**. The 31 are not random — they are the POSIX surface, and a
+pattern scan over `src/**/*.c` sizes the whole class:
+
+| POSIX dependency | files | why it cannot work on Windows |
+|---|---|---|
+| `sys/wait.h` | **63** | header exists in mingw, the functions behind it do not |
+| `fork()` | **52** | no `fork` on Windows; needs `CreateProcess` |
+| `ncurses` | 15 | not shipped in the winlibs toolchain at all |
+| `termios.h` | 15 | no terminal control block |
+| `dlfcn.h` | 4 | needs `LoadLibrary`/`GetProcAddress` |
+| `pthread_timedjoin_np` | 3 | non-portable GNU extension |
+| `sys/syscall.h` | 1 | Linux-only |
+| `strlwr()` conflicting decl | 1 | mingw already declares it differently |
+
+**This is why the closure loop stalls.** It converged to 785 candidate objects and then
+failed with no guilty object to drop, because the remaining undefined references are
+`__imp_gl*` (needs `-lopengl32`, which exists in the toolchain) and the `fork`/`wait` family
+(which silently do not exist). Wiring more files cannot fix a call to a function the
+platform does not have.
+
+**The big part this names:** a single POSIX-compatibility layer — `spawn`/`wait` on
+`CreateProcess`, `LoadLibrary` for `dlopen`, a termios shim for the TUI, and either a
+vendored `pdcurses` or a decision that the curses TUI is not part of the Windows target.
+Until that exists, **52 files' worth of behaviour is unbuildable on the platform the port is
+being developed on**, and every one of them is invisible to the gate board because gates
+call pure functions, not processes.
+
+Order: `-lopengl32` first (free, unblocks the GL cluster), then the spawn/wait shim (biggest
+class, 63+52 files overlap heavily), then PDCurses or an explicit scope decision.
