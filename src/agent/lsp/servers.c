@@ -493,11 +493,14 @@ json_t *w33_servers_a4580e_root_decision(const json_t *req) {
     const json_t *excludes = json_obj_get(req, "excludes");
     const char *ws = json_get_str(req, "workspace", "");
     const char *f = (found && found->type == JSON_STRING) ? found->str_val : NULL;
-    const char *p = (plain && plain->type == JSON_STRING) ? plain->str_val : NULL;
     if (!ws) ws = "";
     /* markers=None means "always the workspace root": the walk never runs. */
     if (!markers || markers->type == JSON_NULL) return json_string(ws);
-    if (!f && w33_truthy(excludes) && p) return json_null();  /* exclude fired */
+    /* The second walk's answer is tested with "is not None", not "is a string":
+     * found_plain=0 still means the marker WAS found without excludes, so the
+     * exclude fired and the answer is None. */
+    if (!f && w33_truthy(excludes) && plain && plain->type != JSON_NULL)
+        return json_null();  /* exclude fired */
     if (f && f[0]) return json_string(f);
     return json_string(ws);
 }
