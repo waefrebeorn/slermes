@@ -1592,12 +1592,45 @@ int kanban_request_review(sqlite3 *conn, const char *task_id,
     #undef RR_FAIL
 }
 
-/* PoP: kanban_request_changes @ hermes_cli/kanban_db.py:request_changes */
+/* Defined below; the transition this builds on. */
+int kanban_reopen_review_task(sqlite3 *conn, const char *task_id);
+
+/* PoP: kanban_request_changes @ hermes_cli/kanban_db.py:request_changes
+ *
+ * Was a stub that returned success without touching the board, which is worse than missing: a tool
+ * built on it would report a review handoff that never happened. The transition itself already
+ * exists (kanban_reopen_review_task: parent re-gating, stale-run close, implementer recovery from
+ * the review_requested event, consecutive_failures preserved); this adds the two things
+ * request_changes needs on top -- a mandatory reason, and an event that records it. */
 int kanban_request_changes(const char *task_id, const char *reason,
                             char *out_impl, size_t out_sz) {
-    (void)task_id; (void)reason;
-    if (out_impl) snprintf(out_impl, out_sz, "");
-    return 1;
+    if (out_impl && out_sz) out_impl[0] = '\0';
+    if (!task_id || !*task_id) return 0;
+    if (!reason || !reason[strspn(reason, " \t\r\n")]) return 0;   /* reason is required */
+
+    sqlite3 *conn = kdb_connect(NULL);
+    if (!conn) return 0;
+
+    int ok = kanban_reopen_review_task(conn, task_id);
+
+    if (ok) {
+        /* The reopen already moved the card; record why, and hand back the implementer it assigned. */
+        char payload[512];
+        snprintf(payload, sizeof payload, "{\"reason\":\"%s\"}", reason);
+        kdb_append_event(conn, task_id, -1, "changes_requested", payload);
+
+        sqlite3_stmt *st = NULL;
+        if (sqlite3_prepare_v2(conn, "SELECT assignee FROM tasks WHERE id = ?", -1, &st, NULL) == SQLITE_OK) {
+            sqlite3_bind_text(st, 1, task_id, -1, SQLITE_TRANSIENT);
+            if (sqlite3_step(st) == SQLITE_ROW) {
+                const char *a = (const char *)sqlite3_column_text(st, 0);
+                if (a && out_impl && out_sz) snprintf(out_impl, out_sz, "%s", a);
+            }
+            sqlite3_finalize(st);
+        }
+    }
+    kdb_close(conn);
+    return ok;
 }
 
 /* PoP: kanban_reopen_review_task @ hermes_cli/kanban_db.py:reopen_review_task */

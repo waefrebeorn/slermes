@@ -20,7 +20,9 @@
 #include "base64.h"
 #include "libhttp/http.h"
 
-/* src/hermes_cli/kanban_db.c -- the review transition; no header declares it. */
+/* src/hermes_cli/kanban_db.c -- the review transitions; no header declares them. */
+int kanban_request_changes(const char *task_id, const char *reason,
+                           char *out_impl, size_t out_sz);
 int kanban_request_review(sqlite3 *conn, const char *task_id, const char *summary,
                           const char *metadata_json, const char *reviewer_in,
                           long expected_run_id, bool force,
@@ -529,6 +531,38 @@ static char *handle_attach_url(const char *args_json, const char *task_id) {
     return txt ? txt : kb_err("serialize failed");
 }
 
+
+/* PoP: handle_request_changes @ tools/kanban_tools.py:_handle_request_changes */
+static char *handle_request_changes(const char *args_json, const char *task_id) {
+    (void)task_id;
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *tid = default_task_id(args ? json_get_str(args, "task_id", "") : NULL);
+    const char *reason = args ? json_get_str(args, "reason", "") : "";
+
+    if (!tid || !*tid) { json_free(args); return kb_err("task_id is required (or set HERMES_KANBAN_TASK)"); }
+    if (!reason || !*reason) {
+        json_free(args);
+        return kb_err("reason is required - describe the changes needed");
+    }
+
+    char impl[128] = "";
+    int ok = kanban_request_changes(tid, reason, impl, sizeof impl);
+
+    json_t *out = json_object();
+    json_set(out, "ok", json_bool(ok != 0));
+    json_set(out, "task_id", json_string(tid));
+    if (ok) {
+        json_set(out, "status", json_string("ready"));
+        if (impl[0]) json_set(out, "implementer", json_string(impl));
+    } else {
+        json_set(out, "error", json_string("could not request changes (task not found, not in review, or reason is blank)"));
+    }
+    json_free(args);
+    char *txt = json_serialize_pretty(out, JSON_INDENT(2));
+    json_free(out);
+    return txt ? txt : kb_err("serialize failed");
+}
+
 /* PoP: handle_request_review @ tools/kanban_tools.py:_handle_request_review */
 static char *handle_request_review(const char *args_json, const char *task_id) {
     (void)task_id;
@@ -617,6 +651,10 @@ void registry_init_kanban(void) {
         "Hand a finished, self-verified task to a reviewer. Moves the task to the review column. Unlike kanban_block this is not a blocker.",
         "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\",\"description\":\"Task id. If omitted, defaults to HERMES_KANBAN_TASK from the env.\"},\"summary\":{\"type\":\"string\",\"description\":\"What was implemented and how it was verified, in one or two sentences.\"},\"reviewer\":{\"type\":\"string\",\"description\":\"Optional reviewer profile.\"},\"metadata\":{\"type\":\"object\",\"description\":\"Optional structured metadata for the event payload.\"}},\"required\":[\"summary\"]}",
         handle_request_review);
+    registry_register("kanban_request_changes",
+        "Return a review-owned task to its implementer with the changes that are needed. Moves the card out of review and reassigns it to whoever implemented it.",
+        "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\",\"description\":\"Task id. If omitted, defaults to HERMES_KANBAN_TASK from the env.\"},\"reason\":{\"type\":\"string\",\"description\":\"Describe the changes needed. Required.\"}},\"required\":[\"reason\"]}",
+        handle_request_changes);
     registry_register("kanban_attach_url",
         "Attach a file to a task by URL. Fetches the content, stores it as a real attachment under the task's attachments dir (25 MB cap) and records it on the board.",
         "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\",\"description\":\"Task id. If omitted, defaults to HERMES_KANBAN_TASK from the env.\"},\"url\":{\"type\":\"string\",\"description\":\"http(s) URL to fetch.\"},\"filename\":{\"type\":\"string\",\"description\":\"File name to store it under; defaults to the URL's last path segment.\"},\"content_type\":{\"type\":\"string\",\"description\":\"Optional MIME type.\"}},\"required\":[\"url\"]}",
