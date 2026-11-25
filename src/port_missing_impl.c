@@ -255,21 +255,5 @@ tui_global_state_t tui;
 
 
 
-/* model_picker_state_t has no `visible` flag: an empty list (count == 0) is what makes the
- * overlay not draw, so that is what "closed" means here. */
-void tui_model_picker_init(void)
-{
-    memset(&tui.model_picker, 0, sizeof tui.model_picker);
-}
 
-void tui_draw_model_picker(void)
-{
-    /* The overlay is painted by the main draw loop when count > 0; there is no curses surface
-     * to write to from here. */
-}
 
-void tui_redraw_status(void)
-{
-    /* The status line is repainted by the main draw loop on the next frame; there is no
-     * dirty flag in tui_global_state_t, so this is the caller's request and nothing more. */
-}

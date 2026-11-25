@@ -51,6 +51,25 @@
 #include "chat_render.h"
 #include "chat_composer.h"
 #include "slermes_home.h"
+#include "hermes_posix_compat.h"   /* mkfifo/socketpair shims on Windows */
+
+/* struct dirent has no d_type on Windows, and DT_* are still defined there, so the macro test
+ * cannot be trusted. Classify by lstat/stat of "<dir>/<name>" instead, which gives the caller the
+ * DT_DIR/DT_REG/DT_LNK answer it was written to test. */
+static unsigned char hermes_type_at(const char *dir, const char *name)
+{
+    char path[1024];
+    struct stat st;
+    if (!dir || !name) return 0;
+    snprintf(path, sizeof path, "%s/%s", dir, name);
+    if (stat(path, &st) != 0) return 0;
+#ifdef DT_DIR
+    if (S_ISDIR(st.st_mode)) return DT_DIR;
+    if (S_ISREG(st.st_mode)) return DT_REG;
+    if (S_ISLNK(st.st_mode)) return DT_LNK;
+#endif
+    return S_ISDIR(st.st_mode) ? 4 : (S_ISREG(st.st_mode) ? 8 : 10);
+}
 
 /* ── Forward definitions (hoisted; used by early helpers below, defined
  *    in full further down the file). Kept here so the translation unit is
@@ -290,8 +309,8 @@ static const char *tui_notification_latest(void) {
 
 /* Forward declarations for TUI subsystems (defined later, used earlier) */
 static void tui_slash_init_all(void);
-static void tui_model_picker_init(void);
-static void tui_draw_model_picker(void);
+void tui_model_picker_init(void);
+void tui_draw_model_picker(void);
 static bool tui_gateway_connect(void);
 static void tui_gateway_send(const char *method, const char *params);
 static void tui_gateway_process_message(const char *msg);
@@ -1349,7 +1368,7 @@ static void tui_redraw_history(void) {
  *  P194: STATUS BAR — model, tokens, iterations, budget
  * ================================================================== */
 
-static void tui_redraw_status(void) {
+void tui_redraw_status(void) {
     WINDOW *win = tui.panes[PANE_STATUS].win;
     if (!win) return;
 
@@ -1920,7 +1939,7 @@ static void tui_input_delete_to_end(void) {
 }
 
 /* Redraw the input pane — handles multi-line wrap */
-static void tui_redraw_input(void) {
+void tui_redraw_input(void) {
     WINDOW *win = tui.panes[PANE_INPUT].win;
     if (!win) return;
 
@@ -2080,19 +2099,6 @@ static void tui_input_insert_char(char ch) {
  *  P195: SESSION BROWSER
  * ================================================================== */
 
-/* Case-insensitive substring match helper */
-static bool strstr_lower(const char *haystack, const char *needle) {
-    if (!haystack || !needle || !*needle) return false;
-    size_t nlen = strlen(needle);
-    while (*haystack) {
-        if (tolower((unsigned char)*haystack) == tolower((unsigned char)needle[0])) {
-            if (strncasecmp(haystack, needle, nlen) == 0)
-                return true;
-        }
-        haystack++;
-    }
-    return false;
-}
 
 /* Draw session browser overlay */
 static void tui_draw_session_browser(void) {
@@ -3298,14 +3304,14 @@ static void tui_draw_skill_browser(void) {
         while ((entry = readdir(d)) != NULL && y < w_rows - 3) {
             /* Skip hidden and non-directory entries */
             if (entry->d_name[0] == '.') continue;
-            if (entry->d_type != DT_DIR && entry->d_type != DT_LNK && entry->d_type != DT_REG) continue;
+            if (hermes_type_at(skill_dir, entry->d_name) != DT_DIR && hermes_type_at(skill_dir, entry->d_name) != DT_LNK && hermes_type_at(skill_dir, entry->d_name) != DT_REG) continue;
             /* Only show .md files and directories */
             size_t nlen = strlen(entry->d_name);
-            if (entry->d_type == DT_REG && (nlen < 3 || strcmp(entry->d_name + nlen - 3, ".md") != 0))
+            if (hermes_type_at(skill_dir, entry->d_name) == DT_REG && (nlen < 3 || strcmp(entry->d_name + nlen - 3, ".md") != 0))
                 continue;
 
             char display[256];
-            if (entry->d_type == DT_DIR) {
+            if (hermes_type_at(skill_dir, entry->d_name) == DT_DIR) {
                 snprintf(display, sizeof(display), " [%s]", entry->d_name);
             } else {
                 snprintf(display, sizeof(display), "   %s", entry->d_name);
@@ -4145,7 +4151,7 @@ static void tui_process_input(const char *line) {
  * ================================================================== */
 
 /* Initialize model picker: fetch model list from metadata */
-static void tui_model_picker_init(void) {
+void tui_model_picker_init(void) {
     tui.model_picker.count = 0;
     tui.model_picker.selected = 0;
     tui.model_picker.scroll_offset = 0;
@@ -4182,7 +4188,7 @@ static void tui_model_picker_init(void) {
 }
 
 /* Draw the model picker overlay window */
-static void tui_draw_model_picker(void) {
+void tui_draw_model_picker(void) {
     int win_height = 18;
     int win_width = 50;
     int start_y = (tui.rows - win_height) / 2;
