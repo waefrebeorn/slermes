@@ -18,6 +18,14 @@
 #include "hermes_core_types.h"
 #include "registry.h"
 
+#include <sqlite3.h>
+#include <limits.h>
+
+/* src/persistence/sqlite/_state/hermes_state_msgs.c -- the session store's message row helpers. */
+void hermes_state_set_message_reaction(sqlite3 *conn, const char *session_id,
+                                       long long row_id, const char *reaction);
+char *hermes_state_get_message_role(sqlite3 *conn, const char *session_id, long long row_id);
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -364,6 +372,93 @@ static char *handle_drive_preview(const char *args_json, const char *task_id) {
     return err_json("drive_preview is only available in the Hermes desktop app.");
 }
 
+
+/* PoP: react_to_message_tool @ tools/react_to_message_tool.py:react_to_message_tool
+ *
+ * The reaction is persisted in the session store (messages.reaction, author "agent"); the live
+ * repaint through the desktop bridge is best effort upstream and is absent here, which is not an
+ * error -- the row is what the user sees on reload. */
+static char *handle_react_to_message(const char *args_json, const char *task_id) {
+    (void)task_id;
+    json_t *args = json_parse(args_json ? args_json : "{}", NULL);
+    const char *emoji = args ? json_get_str(args, "emoji", "") : "";
+    const json_t *row_arg = args ? json_obj_get(args, "message_row_id") : NULL;
+    const json_t *back_arg = args ? json_obj_get(args, "messages_back") : NULL;
+
+    const char *session_key = getenv("HERMES_SESSION_ID");
+    if (!session_key || !*session_key) session_key = getenv("HERMES_SESSION_KEY");
+    if (!session_key || !*session_key) {
+        json_free(args);
+        return err_json("No session is attached to this turn, so there is no message to react to.");
+    }
+
+    char home[PATH_MAX], dbpath[PATH_MAX + 32];
+    hermes_get_home(home, sizeof home);
+    snprintf(dbpath, sizeof dbpath, "%s/state.db", home);
+
+    sqlite3 *conn = NULL;
+    if (sqlite3_open_v2(dbpath, &conn, SQLITE_OPEN_READWRITE, NULL) != SQLITE_OK || !conn) {
+        if (conn) sqlite3_close(conn);
+        json_free(args);
+        return err_json("The session store is not available, so there is no message to react to.");
+    }
+
+    long long row_id = -1;
+    if (row_arg && row_arg->type == JSON_NUMBER) {
+        row_id = (long long)row_arg->num_val;
+    } else {
+        long long back = 0;
+        if (back_arg && back_arg->type == JSON_NUMBER) back = (long long)back_arg->num_val;
+        if (back < 0) back = 0;
+        sqlite3_stmt *st = NULL;
+        if (sqlite3_prepare_v2(conn,
+                "SELECT id FROM messages WHERE session_id = ? AND role = 'user' "
+                "ORDER BY id DESC LIMIT 1 OFFSET ?", -1, &st, NULL) == SQLITE_OK) {
+            sqlite3_bind_text(st, 1, session_key, -1, SQLITE_TRANSIENT);
+            sqlite3_bind_int64(st, 2, back);
+            if (sqlite3_step(st) == SQLITE_ROW) row_id = sqlite3_column_int64(st, 0);
+            sqlite3_finalize(st);
+        }
+        if (row_id < 0) {
+            char msg[128];
+            if (back) snprintf(msg, sizeof msg, "No user message found %lld back.", back);
+            else      snprintf(msg, sizeof msg, "No user message to react to yet.");
+            sqlite3_close(conn);
+            json_free(args);
+            return err_json(msg);
+        }
+    }
+
+    /* A row outside this session must not be reacted to. */
+    char *role = hermes_state_get_message_role(conn, session_key, row_id);
+    if (!role) {
+        sqlite3_close(conn);
+        json_free(args);
+        char msg[96];
+        snprintf(msg, sizeof msg, "Message %lld is not part of this conversation.", row_id);
+        return err_json(msg);
+    }
+    free(role);
+
+    /* An empty emoji retracts the reaction. */
+    hermes_state_set_message_reaction(conn, session_key, row_id, (emoji && *emoji) ? emoji : NULL);
+    sqlite3_close(conn);
+
+    json_t *out = json_object();
+    json_set(out, "success", json_bool(true));
+    json_set(out, "row_id", json_number((double)row_id));
+    json_t *reactions = json_array();
+    if (emoji && *emoji) {
+        json_t *r = json_object();
+        json_set(r, "emoji", json_string(emoji));
+        json_set(r, "author", json_string("agent"));
+        json_append(reactions, r);
+    }
+    json_set(out, "reactions", reactions);
+    json_free(args);
+    return json_text(out);
+}
+
 void registry_init_desktop_ui(void) {
     registry_register("set_theme",
         "Set the Hermes desktop app's accent colour, light/dark mode and layout, or show a picker card. "
@@ -437,6 +532,14 @@ void registry_init_desktop_ui(void) {
           "\"limit\":{\"type\":\"integer\"}},"
           "\"required\":[\"action\"]}",
         handle_drive_preview);
+    registry_register("react_to_message",
+        "React to a message in the conversation with an emoji (an empty emoji retracts it). Defaults to the latest user message.",
+        "{\"type\":\"object\",\"properties\":{"
+          "\"emoji\":{\"type\":\"string\",\"description\":\"Emoji to react with; empty string retracts.\"},"
+          "\"message_row_id\":{\"type\":\"integer\",\"description\":\"Message row id; defaults to the latest user message.\"},"
+          "\"messages_back\":{\"type\":\"integer\",\"description\":\"How many user messages back to react to (0 = the latest).\"}},"
+          "\"required\":[\"emoji\"]}",
+        handle_react_to_message);
     registry_register("read_terminal",
         "Read the in-app terminal pane beside this chat. No args = visible screen + total_lines; page scrollback with start_line (0 = oldest) + count.",
         "{\"type\":\"object\",\"properties\":{"
