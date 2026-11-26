@@ -252,3 +252,10 @@ tests/watercup/pop_index_unresolved.json
 tests/watercup/unresolved_paths.json
 /*.dll
 .hermes-tmp.*
+
+# Harness debris: a watercup probe whose fixture is a bare word (hello, world, test123, NULL) writes
+# it into the repo root, and an old run committed two of those. Never let them back in.
+/hello/
+/NULL
+/world/
+/test123
