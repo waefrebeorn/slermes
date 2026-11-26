@@ -437,6 +437,54 @@ static const char *browser_navigate_to(const char *url) {
 
 /* Port of Python tools/browser_tool.py:browser_navigate(). */
 /* browser_navigate: Navigate to a URL */
+/* ── CDP-backed browsing ────────────────────────────────────────────────────────────────────────
+ *
+ * These handlers were written as an HTTP scraper: they fetched the URL themselves, stored the HTML in
+ * g_tab, and every other browser_* tool read that g_tab. Against a real browser that is the wrong
+ * thing altogether -- the page the user sees is not the page we fetched, nothing we do reaches it, and
+ * snapshot/click/press could only ever answer "No page loaded" unless OUR navigate had run first.
+ *
+ * When a browser is attached the page is driven over CDP instead, and the scraper stays only as the
+ * fallback for a process with no browser.
+ */
+static int cdp_attached(void) { return cdp_get_url() != NULL; }
+
+/* Page.navigate, then report what the page actually became. */
+static char *cdp_navigate(const char *url) {
+    json_t *params = json_object();
+    json_set(params, "url", json_string(url));
+    char *params_json = json_serialize(params);
+    json_free(params);
+    char *resp = browser_cdp_send_raw(NULL, "Page.navigate", params_json, NULL, 20);
+    free(params_json);
+    if (!resp) return NULL;
+
+    json_t *out = json_object();
+    const json_t *root = json_parse(resp, NULL);
+    const json_t *res = root ? json_obj_get(root, "result") : NULL;
+    const json_t *frame = res ? json_obj_get(res, "frameId") : NULL;
+    const json_t *err = res ? json_obj_get(res, "errorText") : NULL;
+    if (err && err->type == JSON_STRING) {
+        json_set(out, "error", json_copy((json_t *)err));
+        json_set(out, "url", json_string(url));
+    } else {
+        json_set(out, "url", json_string(url));
+        json_set(out, "status", json_string("loaded"));
+        if (frame && frame->type == JSON_STRING) json_set(out, "frame_id", json_copy((json_t *)frame));
+        char *href = browser_cdp_evaluate("document.location.href");
+        char *title = browser_cdp_evaluate("document.title");
+        json_set(out, "resolved_url", json_string(href ? href : url));
+        json_set(out, "title", json_string(title ? title : ""));
+        free(href);
+        free(title);
+    }
+    json_free((json_t *)root);
+    char *s = json_serialize(out);
+    json_free(out);
+    free(resp);
+    return s;
+}
+
 /* PoP: browser_navigate_handler @ tools/browser_tool.py:navigate */
 char *browser_navigate_handler(const char *args_json, const char *task_id) {
     (void)task_id;
@@ -466,6 +514,14 @@ char *browser_navigate_handler(const char *args_json, const char *task_id) {
     if (!url_is_safe(url)) {
         json_free(args);
         return strdup("{\"error\":\"Blocked: URL targets a private or internal address\"}");
+    }
+
+    /* An attached browser wins: it is the page the session can see and act on. */
+    if (cdp_attached()) {
+        char *cdp_result = cdp_navigate(url);
+        json_free(args);
+        if (cdp_result) return cdp_result;
+        /* fall through to the scraper only if CDP could not drive the page */
     }
 
     const char *err = browser_navigate_to(url);
@@ -506,11 +562,212 @@ char *browser_navigate_handler(const char *args_json, const char *task_id) {
     return result;
 }
 
+/* A snapshot of the page as the BROWSER sees it: url, title, visible text, and every interactive
+ * control with a stable ref. The refs are stamped as attributes so click/type can address them, which
+ * is the whole point of a snapshot -- a text dump the next call cannot act on is a dead end. */
+static char *cdp_snapshot_js(void) {
+    return
+    "(() => {"
+    "  const roots = [];"
+    "  (function walk(r) { roots.push(r);"
+    "    for (const e of r.querySelectorAll('*')) if (e.shadowRoot) walk(e.shadowRoot); })(document);"
+    "  const vis = (e) => { const r = e.getBoundingClientRect(); if (r.width <= 0 || r.height <= 0) return false;"
+    "    const s = getComputedStyle(e); return s.visibility !== 'hidden' && s.display !== 'none'; };"
+    "  const out = [];"
+    "  const sel = 'a,button,input,select,textarea,[role=button],[role=link],[role=checkbox],[contenteditable=true]';"
+    "  let n = 0;"
+    "  for (const root of roots) {"
+    "    for (const e of root.querySelectorAll(sel)) {"
+    "      if (!vis(e)) continue;"
+    "      const ref = 'e' + (n++);"
+    "      e.setAttribute('data-hermes-ref', ref);"
+    "      let label = (e.innerText || e.value || e.getAttribute('aria-label') || e.getAttribute('placeholder') || e.getAttribute('name') || '').trim();"
+    "      out.push({ ref, tag: e.tagName.toLowerCase(), type: e.getAttribute('type') || '',"
+    "                 label: label.slice(0, 120), name: e.getAttribute('name') || '',"
+    "                 value: (e.value === undefined ? '' : String(e.value)).slice(0, 80),"
+    "                 href: e.getAttribute('href') || '',"
+    "                 in_shadow: root !== document });"
+    "    }"
+    "  }"
+    "  return JSON.stringify({ url: location.href, title: document.title,"
+    "    text: (document.body ? document.body.innerText : '').slice(0, 2000),"
+    "    elements: out, element_count: out.length });"
+    "})()";
+}
+
+static char *cdp_snapshot(void) {
+    char *raw = browser_cdp_evaluate(cdp_snapshot_js());
+    if (!raw) return NULL;
+    json_t *parsed = json_parse(raw, NULL);
+    free(raw);
+    if (!parsed || parsed->type != JSON_OBJECT) {
+        json_free(parsed);
+        return NULL;
+    }
+    /* The script already returns the shape the tool promises; only the status is ours to add. */
+    json_set(parsed, "status", json_string("loaded"));
+    char *out = json_serialize(parsed);
+    json_free(parsed);
+    return out;
+}
+
+static char *cdp_images(void) {
+    const char *js =
+        "(() => { const imgs = [...document.images].map((i, n) => ({"
+        "  index: n, src: i.currentSrc || i.src, alt: i.alt || '',"
+        "  width: i.naturalWidth, height: i.naturalHeight,"
+        "  visible: !!(i.getBoundingClientRect().width > 0) }));"
+        "  return JSON.stringify({ images: imgs, count: imgs.length, url: location.href }); })()";
+    char *raw = browser_cdp_evaluate(js);
+    if (!raw) return NULL;
+    json_t *parsed = json_parse(raw, NULL);
+    free(raw);
+    if (!parsed || parsed->type != JSON_OBJECT) {
+        json_free(parsed);
+        return NULL;
+    }
+    char *out = json_serialize(parsed);
+    json_free(parsed);
+    return out;
+}
+
+/* ── acting on the page ──────────────────────────────────────────────────────────────────────── */
+
+/* The refs a snapshot stamped are how these address a control. Without that, click/type were writing
+ * into a local form array of our own invention and the browser never saw a keystroke. */
+static char *cdp_click(const char *ref) {
+    /* A ref is one of our own stamps (eN). Accept only that shape: it goes into a selector, and a
+     * caller-supplied string with a quote in it would either break the script or inject one. */
+    char safe[64];
+    size_t n = 0;
+    for (const char *q = ref; q && *q && n < sizeof(safe) - 1; q++) {
+        if ((*q >= 'a' && *q <= 'z') || (*q >= 'A' && *q <= 'Z') ||
+            (*q >= '0' && *q <= '9') || *q == '-' || *q == '_')
+            safe[n++] = *q;
+        else return strdup("{\"error\": \"ref must be a snapshot ref (letters, digits, - and _)\"}");
+    }
+    safe[n] = '\0';
+    if (n == 0) return strdup("{\"error\": \"empty ref\"}");
+
+    size_t cap = n + 2048;
+    char *js = (char *)malloc(cap);
+    if (!js) return NULL;
+    snprintf(js, cap,
+        "(() => { const roots = []; (function walk(r) { roots.push(r); for (const e of r.querySelectorAll('*')) if (e.shadowRoot) walk(e.shadowRoot); })(document); const el = roots.map(r => r.querySelector('[data-hermes-ref=\"%s\"]')).find(Boolean);"
+        " if (!el) return JSON.stringify({error: 'no element with that ref (take a fresh snapshot)'});"
+        " el.scrollIntoView({block: 'center'});"
+        " el.click();"
+        " return JSON.stringify({status: 'clicked', ref: '%s', tag: el.tagName.toLowerCase()}); })()",
+        safe, safe);
+    char *out = browser_cdp_evaluate(js);
+    free(js);
+    return out;
+}
+
+static char *cdp_type(const char *ref, const char *text) {
+    char safe[64];
+    size_t n = 0;
+    for (const char *q = ref; q && *q && n < sizeof(safe) - 1; q++) {
+        if ((*q >= 'a' && *q <= 'z') || (*q >= 'A' && *q <= 'Z') ||
+            (*q >= '0' && *q <= '9') || *q == '-' || *q == '_')
+            safe[n++] = *q;
+        else return strdup("{\"error\": \"ref must be a snapshot ref (letters, digits, - and _)\"}");
+    }
+    safe[n] = '\0';
+    if (n == 0) return strdup("{\"error\": \"empty ref\"}");
+
+    /* The text is arbitrary: JSON-encode it and use that as a JS string literal, quotes included. */
+    char *lit = json_escape_string(text ? text : "");
+    if (!lit) return NULL;
+
+    size_t cap = n + strlen(lit) + 4096;   /* the script is long; truncation would be a silent syntax error */
+    char *js = (char *)malloc(cap);
+    if (!js) { free(lit); return NULL; }
+    snprintf(js, cap,
+        "(() => { const roots = []; (function walk(r) { roots.push(r); for (const e of r.querySelectorAll('*')) if (e.shadowRoot) walk(e.shadowRoot); })(document); const el = roots.map(r => r.querySelector('[data-hermes-ref=\"%s\"]')).find(Boolean);"
+        " if (!el) return JSON.stringify({error: 'no element with that ref (take a fresh snapshot)'});"
+        " el.scrollIntoView({block: 'center'}); el.focus();"
+        " const proto = el.tagName === 'TEXTAREA' ? window.HTMLTextAreaElement.prototype"
+        "             : (el.tagName === 'SELECT' ? window.HTMLSelectElement.prototype"
+        "             : window.HTMLInputElement.prototype);"
+        " const setter = Object.getOwnPropertyDescriptor(proto, 'value');"
+        " if (setter && setter.set) setter.set.call(el, %s); else el.value = %s;"
+        " el.dispatchEvent(new InputEvent('input', {bubbles: true, composed: true, inputType: 'insertText'}));"
+        " el.dispatchEvent(new Event('change', {bubbles: true, composed: true}));"
+        " return JSON.stringify({status: 'typed', ref: '%s', value: String(el.value)}); })()",
+        safe, lit, lit, safe);
+    free(lit);
+    char *out = browser_cdp_evaluate(js);
+    free(js);
+    return out;
+}
+
+/* A real key event reaches the page: Tab moves focus, Enter submits, Escape closes. A synthetic
+ * KeyboardEvent would not move anything. */
+static char *cdp_press(const char *key) {
+    struct { const char *name; const char *code; int vk; } map[] = {
+        {"Tab", "Tab", 9}, {"Enter", "Enter", 13}, {"Escape", "Escape", 27},
+        {"Backspace", "Backspace", 8}, {"ArrowDown", "ArrowDown", 40}, {"ArrowUp", "ArrowUp", 38},
+        {"ArrowLeft", "ArrowLeft", 37}, {"ArrowRight", "ArrowRight", 39}, {" ", "Space", 32},
+    };
+    const char *code = key; int vk = 0;
+    for (size_t i = 0; i < sizeof(map)/sizeof(map[0]); i++) {
+        if (strcmp(map[i].name, key) == 0) { code = map[i].code; vk = map[i].vk; break; }
+    }
+    if (key && strlen(key) == 1 && vk == 0) { vk = (unsigned char)key[0]; }
+
+    json_t *p1 = json_object();
+    json_set(p1, "type", json_string("keyDown"));
+    json_set(p1, "key", json_string(key));
+    json_set(p1, "code", json_string(code));
+    json_set(p1, "windowsVirtualKeyCode", json_number(vk));
+    json_set(p1, "nativeVirtualKeyCode", json_number(vk));
+    char *pj = json_serialize(p1);
+    json_free(p1);
+    char *r1 = browser_cdp_send_raw(NULL, "Input.dispatchKeyEvent", pj, NULL, 15);
+
+    json_t *p2 = json_object();
+    json_set(p2, "type", json_string("keyUp"));
+    json_set(p2, "key", json_string(key));
+    json_set(p2, "code", json_string(code));
+    json_set(p2, "windowsVirtualKeyCode", json_number(vk));
+    json_set(p2, "nativeVirtualKeyCode", json_number(vk));
+    char *pj2 = json_serialize(p2);
+    json_free(p2);
+    char *r2 = browser_cdp_send_raw(NULL, "Input.dispatchKeyEvent", pj2, NULL, 15);
+    free(pj); free(pj2);
+    int ok = (r1 != NULL) && (r2 != NULL);
+    free(r1); free(r2);
+
+    json_t *out = json_object();
+    json_set(out, "status", json_string(ok ? "pressed" : "failed"));
+    json_set(out, "key", json_string(key));
+    if (!ok) json_set(out, "error", json_string("the browser did not accept the key event"));
+    char *s = json_serialize(out);
+    json_free(out);
+    return s;
+}
+
+static char *cdp_scroll(const char *direction, double amount) {
+    double dy = strcmp(direction, "up") == 0 ? -amount : amount;
+    char js[320];
+    snprintf(js, sizeof(js),
+             "(() => { window.scrollBy(0, %.0f);"
+             " return JSON.stringify({status: 'scrolled', y: window.scrollY,"
+             "  max: Math.max(0, document.documentElement.scrollHeight - innerHeight)}); })()", dy);
+    return browser_cdp_evaluate(js);
+}
+
 /* Port of Python tools/browser_tool.py:browser_snapshot(). */
 /* browser_snapshot: Get current page state with scroll support */
 /* PoP: browser_snapshot_handler @ tools/browser_tool.py:snapshot */
 char *browser_snapshot_handler(const char *args_json, const char *task_id) {
     (void)task_id;
+    /* An attached browser answers from the live page; g_tab only exists for the no-browser fallback. */
+    if (cdp_attached()) {
+        char *live = cdp_snapshot();
+        if (live) return live;
+    }
     if (!g_tab.html) {
         return strdup("{\"error\": \"No page loaded. Navigate to a URL first.\"}");
     }
@@ -856,6 +1113,12 @@ char *browser_click_handler(const char *args_json, const char *task_id) {
         return strdup("{\"error\": \"Missing 'ref' or 'target' parameter\"}");
     }
 
+    /* An attached browser: click the element the snapshot stamped. */
+    if (cdp_attached()) {
+        char *live = cdp_click(target[0] == '@' ? target + 1 : target);
+        if (live) { json_free(args); return live; }
+    }
+
     if (!g_tab.html) {
         json_free(args);
         return strdup("{\"error\": \"No page loaded. Navigate to a URL first.\"}");
@@ -973,6 +1236,12 @@ char *browser_type_handler(const char *args_json, const char *task_id) {
     }
     if (!text) text = "";
 
+    if (cdp_attached()) {
+        /* Free only on the way out: the fallback below reads ref/text, which point into args. */
+        char *live = cdp_type(ref, text);
+        if (live) { json_free(args); return live; }
+    }
+
     /* Store in form state */
     int idx = -1;
     for (int i = 0; i < g_tab.form_count; i++) {
@@ -1015,6 +1284,12 @@ char *browser_scroll_handler(const char *args_json, const char *task_id) {
 
     const char *direction = json_get_str(args, "direction", "down");
     if (!direction || !*direction) direction = "down";
+
+    if (cdp_attached()) {
+        double amount = json_get_num(args, "amount", 600);
+        char *live = cdp_scroll(direction, amount > 0 ? amount : 600);
+        if (live) { json_free(args); return live; }
+    }
 
     if (!g_tab.html) {
         json_free(args);
@@ -1084,6 +1359,10 @@ char *browser_get_images_handler(const char *args_json, const char *task_id) {
     (void)args_json; (void)task_id;
 
     if (!g_tab.html) {
+        if (cdp_attached()) {
+            char *live = cdp_images();
+            if (live) return live;
+        }
         return strdup("{\"error\": \"No page loaded. Navigate to a URL first.\", \"images\": [], \"count\": 0}");
     }
 
@@ -1239,6 +1518,12 @@ char *browser_press_handler(const char *args_json, const char *task_id) {
     if (!key || !*key) {
         json_free(args);
         return strdup("{\"error\": \"Missing 'key' parameter\"}");
+    }
+
+    /* An attached browser gets a real key event (Tab moves focus, Enter submits). */
+    if (cdp_attached()) {
+        char *live = cdp_press(key);
+        if (live) { json_free(args); return live; }
     }
 
     if (!g_tab.html) {

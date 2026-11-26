@@ -106,6 +106,31 @@ with an email and a password input): `vl_build_inspection_js` -> classify -> `se
 password input held the value. A wrong `expected_origin` correctly refused with
 `{"refused":"origin_changed","found":"http://127.0.0.1:8899"}`.
 
+**The browser_* cluster now drives the page instead of scraping it.**
+
+`browser_navigate`, `browser_snapshot`, `browser_click`, `browser_type`, `browser_press`,
+`browser_scroll` and `browser_get_images` were an HTTP scraper: navigate fetched the URL itself into
+`g_tab`, and every other tool read that copy -- so against a real browser they could only ever answer
+"No page loaded" (a string that exists nowhere upstream), and click/type wrote into a local form array
+the browser never saw.
+
+With a browser attached they now act on the live page:
+
+```
+navigate https://example.com/        -> {"status":"loaded","resolved_url":"https://example.com/","title":"Example Domain"}
+snapshot                             -> live url/title/text + ref'd controls (document AND open shadow roots)
+click {ref:"e0"}                     -> {"status":"clicked"} and the page really navigated (iana.org)
+type  {ref:"e0"}                     -> {"status":"typed"}, the input's value changes in the DOM
+press {key:"Tab"}                    -> real Input.dispatchKeyEvent (focus moves)
+scroll {direction:"down"}            -> window.scrollBy, reports y and max
+get_images                           -> the live document's images
+```
+
+Typing was verified inside a custom element (open shadow root holding its own form): the shadow input
+values change, and snapshot lists those controls with `in_shadow: true`.
+
+The scraper stays only as the fallback when no browser is attached.
+
 **`browser_vault` is registered with two actions, both driven through a live page:**
 
 ```
