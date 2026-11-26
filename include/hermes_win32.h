@@ -800,9 +800,14 @@ static inline void *memmem(const void *haystack, size_t haystacklen,
  * translation unit that pulls in the Windows headers first (guiddef.h -> winnt.h -> string.h)
  * gets "static declaration of 'strndup' follows non-static declaration" and fails to build --
  * that is what stopped tests/unit's setup_beat build. */
-#if !defined(_GNU_SOURCE) && !(defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE + 0 >= 200809L) && \
-    !(defined(_XOPEN_SOURCE) && _XOPEN_SOURCE + 0 >= 700) && \
-    !(defined(__STDC_VERSION__) && __STDC_VERSION__ + 0 >= 202311L)
+/* The guard cannot be keyed on the feature macros. winlibs' <string.h> never declares strndup at
+ * all, so a TU that defines _GNU_SOURCE/_POSIX_C_SOURCE still needs this body -- keying on them
+ * (an earlier attempt) left src/tools/delegate_tool.c with "implicit declaration of strndup" and a
+ * build that failed while a stale object hid it. The one build that must NOT see this body is the
+ * MSYS2-header one (tests/unit), because MSYS2's <string.h> declares strndup itself and a static
+ * definition after a non-static declaration is an error: that build passes
+ * -DHERMES_NO_STRNDUP_SHIM. */
+#if !defined(HERMES_NO_STRNDUP_SHIM)
 static inline char *strndup(const char *s, size_t n) {
     if (!s) return NULL;
     size_t len = 0;

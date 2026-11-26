@@ -11,7 +11,10 @@ cd "$REPO"
 OUT="$REPO/.testbin"
 mkdir -p "$OUT"
 
-INC="-I include -I src -I C:/msys64/mingw64/include/SDL2 -I C:/msys64/mingw64/include -DSDL_MAIN_HANDLED"
+# -DHERMES_NO_STRNDUP_SHIM: this build puts MSYS2's headers on the include path, and MSYS2's
+# <string.h> declares strndup; the winlibs shim in include/hermes_win32.h would then be a static
+# definition after a non-static declaration.
+INC="-I include -I src -I C:/msys64/mingw64/include/SDL2 -I C:/msys64/mingw64/include -DSDL_MAIN_HANDLED -DHERMES_NO_STRNDUP_SHIM"
 CCBIN="${CC:-gcc}"
 fail=0
 
