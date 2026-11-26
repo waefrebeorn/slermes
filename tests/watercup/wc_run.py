@@ -484,9 +484,10 @@ def _port_symbol_set():
     return syms
 
 
-def _object_defs(obj):
+def _object_defs(obj, global_only=True):
     nm = os.environ.get("NM") or "nm"
-    r = subprocess.run([nm, "-g", "--defined-only", obj],
+    args = [nm] + (["-g"] if global_only else []) + ["--defined-only", obj]
+    r = subprocess.run(args,
                        capture_output=True, text=True, errors="replace")
     out = set()
     for line in (r.stdout or "").splitlines():
@@ -1574,6 +1575,27 @@ def run_cup_gate(gd, g, verbose=False):
                 fails.extend(drift)
         except (ValueError, KeyError):
             lines.append("    (golden.json unreadable — ignored)")
+
+    # A harness that DEFINES the traced function measures its own transcription:
+    # it agrees with Python by construction and says nothing about src/. Not fatal
+    # (41 such gates exist and conversions are per-gate work), but it must never
+    # read as ordinary parity evidence.
+    try:
+        _hobj = os.path.join(BUILD, "%s.%s.o" % (g["name"], os.path.basename(g["c_src"])))
+        if os.path.exists(_hobj):
+            # Any symbol the harness defines that the PORT also defines means the
+            # harness carries its own copy. Match on the real symbol set, not the
+            # gate's declared c_fn: generated gates name the PYTHON fn there
+            # ("_should_exclude") while the harness defines the C one.
+            _own = _object_defs(_hobj, global_only=False)
+            _clash = sorted(s for s in _own & _port_symbol_set()
+                            if not s.startswith((".", "_")))
+            if _clash:
+                lines.append("    COPY HARNESS: harness.c defines %s itself -- these cups "
+                             "measure the transcription, not the port"
+                             % ", ".join(_clash[:4]))
+    except Exception:
+        pass
 
     if verbose:
         lines.append("    [verbose] C cups: %s" % c_cups)

@@ -48,17 +48,11 @@ C_KEYWORDS = {
 
 
 def port_symbols() -> set[str]:
-    if not ARCHIVE.exists():
-        print("missing %s -- build the port first" % ARCHIVE, file=sys.stderr)
-        return set()
-    r = subprocess.run(["nm", "-g", "--defined-only", str(ARCHIVE)],
-                       capture_output=True, text=True, errors="replace")
-    out = set()
-    for line in r.stdout.splitlines():
-        parts = line.split()
-        if len(parts) >= 3:
-            out.add(parts[2])
-    return out
+    # Rebuilds the archive when stale: a stale archive reported fresh symbols absent
+    # (backup_should_exclude is T in backup.o and was reported missing).
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from _gate_audit_common import port_symbols as _ps
+    return _ps()
 
 
 def classify(gdir: Path, port: set[str], shim_names: set[str]) -> tuple[str, str]:
@@ -72,14 +66,18 @@ def classify(gdir: Path, port: set[str], shim_names: set[str]) -> tuple[str, str
     txt = re.sub(r"//[^\n]*", " ", txt)
     defined = {m.group(1) for m in DEF_RE.finditer(txt)} - C_KEYWORDS
     base = cfn.split(".")[-1]
+    if "gap_sentinel" in txt:
+        return "GAP", base
+    if base and base in shim_names:
+        return "SHIM", base
     if base and base in defined:
+        # The harness ships its own implementation: the cups measure the
+        # transcription, whatever the port does.
         return "COPY", base
     if base and base in port:
         return "PORT", base
-    if base and any(s in shim_names for s in (base,)):
-        return "SHIM", base
-    if cfn and re.search(r"\b%s\s*\(" % re.escape(base), txt):
-        return "PORT?", base  # referenced, not defined here, not in the archive
+    if base and re.search(r"\b%s\s*\(" % re.escape(base), txt):
+        return "MISSING", base  # calls a symbol the built port does not export
     return "UNKNOWN", base
 
 

@@ -54,19 +54,12 @@ CALL_RE = re.compile(r"\b([A-Za-z_]\w*)\s*\(")
 
 
 def nm_archive_symbols() -> set[str]:
-    """Defined-and-exported symbols in the prebuilt object archive."""
-    if not ARCHIVE.exists():
-        raise SystemExit("missing %s — build the port (or run one gate) first" % ARCHIVE)
-    nm = os.environ.get("NM") or "nm"
-    r = subprocess.run([nm, "-g", "--defined-only", str(ARCHIVE)],
-                       capture_output=True, text=True, errors="replace")
-    if r.returncode != 0:
-        raise SystemExit("nm failed: " + (r.stderr or "")[:400])
-    syms = set()
-    for line in r.stdout.splitlines():
-        parts = line.split()
-        if len(parts) >= 3:
-            syms.add(parts[2])
+    """Defined-and-exported symbols in the prebuilt object archive (rebuilt if stale)."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from _gate_audit_common import port_symbols
+    syms = port_symbols()
+    if not syms:
+        raise SystemExit("no port symbols -- build the port first")
     return syms
 
 
