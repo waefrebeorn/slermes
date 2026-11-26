@@ -212,6 +212,35 @@
 #define models_fetch_deepinfra_catalog stub_shadowed_models_fetch_deepinfra_catalog
 #define models_fireworks_pricing_from_models_dev stub_shadowed_models_fireworks_pricing_from_models_dev
 
+/* Same class: the stub was `int <name>(void)` while the real function takes arguments and returns
+ * json_t* or a string (web_server_wrappers.c for the cron wrappers, and the ports for cleanup,
+ * device name, control socket, send-message target parsing and browser-control scope). A stub
+ * that answers 0 for "create the cron job" is the canonical plausible-looking lie. */
+#define ws_u_create_cron_job_sync stub_shadowed_ws_u_create_cron_job_sync
+#define ws_u_update_cron_job_sync stub_shadowed_ws_u_update_cron_job_sync
+#define ws_u_trigger_cron_job_sync stub_shadowed_ws_u_trigger_cron_job_sync
+#define ws_u_resume_cron_job_sync stub_shadowed_ws_u_resume_cron_job_sync
+#define ws_u_pause_cron_job_sync stub_shadowed_ws_u_pause_cron_job_sync
+#define ws_u_list_cron_jobs_sync stub_shadowed_ws_u_list_cron_jobs_sync
+#define ws_u_list_cron_job_runs_sync stub_shadowed_ws_u_list_cron_job_runs_sync
+#define ws_u_find_cron_job_profile stub_shadowed_ws_u_find_cron_job_profile
+#define ws_u_delete_cron_job_sync stub_shadowed_ws_u_delete_cron_job_sync
+#define ws_u_call_cron_for_profile stub_shadowed_ws_u_call_cron_for_profile
+#define emm_cleanup stub_shadowed_emm_cleanup
+#define elc_cleanup stub_shadowed_elc_cleanup
+#define ssc_set_device_name stub_shadowed_ssc_set_device_name
+#define control_socket_identify_gateway stub_shadowed_control_socket_identify_gateway
+#define image_gen_path_looks_like_absolute_file_path stub_shadowed_image_gen_path_looks_like_absolute_file_path
+#define send_message_target_parse_target_ref stub_shadowed_send_message_target_parse_target_ref
+#define send_message_target_telegram_retry_delay stub_shadowed_send_message_target_telegram_retry_delay
+#define skills_sync_is_opted_in stub_shadowed_skills_sync_is_opted_in
+#define skills_sync_set_opted_in stub_shadowed_skills_sync_set_opted_in
+#define bcb_browser_control_enabled stub_shadowed_bcb_browser_control_enabled
+#define bcb_broker_scope_for_session stub_shadowed_bcb_broker_scope_for_session
+#define bcb_broker_select stub_shadowed_bcb_broker_select
+#define bcb_scope_free stub_shadowed_bcb_scope_free
+#define cgw_systemd_restart stub_shadowed_cgw_systemd_restart
+
 /* ═══════════════════════════════════════════════════════════════
  * infrastructure_stubs.c — implementations for critical primitives
  * that ports reference but had no C implementation.
