@@ -13,9 +13,18 @@ static inline int slermes_fnmatch_impl(const char *p, const char *s, int flags)
     for (; *p; p++, s++) {
         if (*p == '*') {
             while (*p == '*') p++;
-            if (!*p) return 0;
-            for (; *s; s++)
+            if (!*p) {
+                /* Trailing '*': with FNM_PATHNAME it still may not swallow a separator, or
+                 * "src/*" would match "src/a/b.c" and every glob would mean something else. */
+                if (flags & FNM_PATHNAME) {
+                    for (const char *t = s; *t; t++) if (*t == '/') return FNM_NOMATCH;
+                }
+                return 0;
+            }
+            for (; *s; s++) {
+                if ((flags & FNM_PATHNAME) && *s == '/') return FNM_NOMATCH;
                 if (slermes_fnmatch_impl(p, s, flags) == 0) return 0;
+            }
             return FNM_NOMATCH;
         } else if (*p == '?') {
             if (!*s) return FNM_NOMATCH;

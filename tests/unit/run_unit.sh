@@ -201,6 +201,20 @@ else
     echo "   SKIPPED (no python on PATH)"
 fi
 
+echo "== file_search_oracle (search_files vs a python implementation over a fixture tree)"
+if command -v "$FERNET_PY" >/dev/null 2>&1; then
+    USERPROFILE='C:\Users\eman5' LOCALAPPDATA='C:\Users\eman5\AppData\Local' \
+        "$FERNET_PY" tests/oracle/file_search_oracle.py
+    rc=$?
+    if [ $rc -eq 3 ]; then
+        echo "   ORACLE SKIPPED"
+    elif [ $rc -ne 0 ]; then
+        echo "   ORACLE FAIL"; fail=1
+    fi
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo
 [ $fail -eq 0 ] && echo "unit tests: PASS" || echo "unit tests: FAIL"
 exit $fail

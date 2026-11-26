@@ -8,6 +8,7 @@
 #include "hermes_agent.h"
 #include "sandbox.h"
 #include "hermes_json.h"
+#include "file_search.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -71,9 +72,12 @@ static const char *SCHEMA_WRITE = "{"
     static const char *SCHEMA_SEARCH = "{"
         "\"type\":\"object\","
         "\"properties\":{"
-          "\"pattern\":{\"type\":\"string\",\"description\":\"Search pattern\"},"
+          "\"pattern\":{\"type\":\"string\",\"description\":\"Regex (content) or glob (target=files)\"},"
           "\"path\":{\"type\":\"string\",\"description\":\"Directory to search\"},"
-          "\"file_glob\":{\"type\":\"string\",\"description\":\"File glob filter\"}"
+          "\"file_glob\":{\"type\":\"string\",\"description\":\"File glob filter, e.g. *.c or src/*.h\"},"
+          "\"target\":{\"type\":\"string\",\"enum\":[\"content\",\"files\"],\"description\":\"Search file contents or find files by name\"},"
+          "\"output_mode\":{\"type\":\"string\",\"enum\":[\"content\",\"files_only\",\"count\"],\"description\":\"How to report content matches\"},"
+          "\"limit\":{\"type\":\"number\",\"description\":\"Max matches (content, default 50) or paths (files, default 200)\"}"
         "},"
         "\"required\":[\"pattern\"]"
     "}";
@@ -878,7 +882,10 @@ char *file_write_handler(const char *args_json, const char *task_id) {
 /* PoP: file_search_handler @ tools/file_operations.py:FileOperations.search */
 char *file_search_handler(const char *args_json, const char *task_id) {
     (void)task_id;
-    return handle_search(args_json);
+    /* In-process search. The previous handler ran `grep -rn ... 2>/dev/null | head -50` through popen;
+     * a native Windows binary has no POSIX PATH, so grep was not found, the error went to /dev/null, and
+     * every search answered "no matches" -- which reads as proof that the code does not exist. */
+    return file_search_run(args_json);
 }
 
 /* PoP: file_diff_handler @ tools/file_operations.py:FileOperations.diff */
