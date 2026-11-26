@@ -51,6 +51,29 @@ def rpc(url: str, method: str, params: dict | None = None, timeout: float = 30):
         return json.loads(r.read().decode())
 
 
+
+_PROSE_ONLY = {"ok", "success", "action", "message", "status", "kind", "mode", "hint", "detail", "error"}
+
+
+def _unwrap(res):
+    """MCP wraps a tool's JSON in content blocks; unwrap the first text block."""
+    if isinstance(res, dict) and isinstance(res.get("content"), list):
+        for block in res["content"]:
+            if isinstance(block, dict) and block.get("type") == "text":
+                try:
+                    return json.loads(block["text"])
+                except Exception:                                # noqa: BLE001
+                    return {"_raw": block.get("text", "")[:200]}
+    return res if isinstance(res, dict) else {"_raw": str(res)[:200]}
+
+
+def _prose_only(res: dict) -> bool:
+    if not (res.get("ok") is True or res.get("success") is True):
+        return False
+    data = {k: v for k, v in res.items() if k not in _PROSE_ONLY}
+    return not data and isinstance(res.get("message"), str) and bool(res["message"])
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default="http://127.0.0.1:9100/mcp")
@@ -79,12 +102,16 @@ def main() -> int:
                 findings.append((name, "CRASH", str(e)[:100]))
                 break
 
-        res = results[name]
+        res = _unwrap(results[name])
         text = json.dumps(res)
         if res == {}:
             findings.append((name, "EMPTY", "returned {} -- no shape, no reason"))
         elif res.get("error") and any(f in str(res["error"]) for f in FALSE_ABSENCE):
             findings.append((name, "ABSENCE", str(res["error"])[:100]))
+        elif _prose_only(res):
+            # Success on empty arguments with nothing but words about itself. computer_use list_apps
+            # answered {"ok": true, "message": "Use tasklist or EnumWindows"} exactly like this.
+            findings.append((name, "PROSE", json.dumps(res)[:100]))
 
     if args.json:
         with open(args.json, "w", encoding="utf-8") as fh:
