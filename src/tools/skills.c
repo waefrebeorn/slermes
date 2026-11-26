@@ -1164,10 +1164,22 @@ skill_search_result_t *skill_search(const char *query, const char *tag_filter,
             if (text_match(sk->category, query))      score += 0.15f;
             if (text_match(sk->author, query))        score += 0.1f;
 
-            /* Also search the SKILL.md content if cached */
-            const char *content = skill_cache_get(sk->name);
-            if (content && text_match(content, query)) {
-                score += 0.25f;
+            /* Read the body directly. Going through skill_cache_get() meant one skill_cache_preload()
+             * per scanned skill, and each preload runs a full skills_scan_all(): O(n^2) over 232 skills,
+             * and it corrupted the heap -- the next HTTP call in the same process died
+             * (skill_search -> web_get: server gone, 4 runs out of 4; with max_results=1, which stops
+             * after the first match, it survived). One bounded read per skill keeps content search
+             * without the cache's shared-state churn. */
+            /* Always read the body: gating this on "metadata already matched" hid every skill that only
+             * mentions the term in its text (12 SKILL.md files contain "vault"; two matched by name). */
+            {
+                char sk_path[HERMES_PATH_MAX];
+                snprintf(sk_path, sizeof(sk_path), "%s/SKILL.md", sk->path);
+                char *body = read_file(sk_path);
+                if (body) {
+                    if (text_match(body, query)) score += 0.25f;
+                    free(body);
+                }
             }
 
             if (score <= 0.0f) continue; /* No match */
