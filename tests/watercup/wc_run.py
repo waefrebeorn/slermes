@@ -439,6 +439,95 @@ def _resolve_cflags(g):
     return compat + std_inc + defs + extra_inc + cflags
 
 
+_PORT_SYMS = []
+
+
+def _port_symbol_set():
+    """Every symbol the PORT defines, as one set (cached per archive mtime).
+
+    Used for one purpose: refusing a gate that supplies its own copy of a port
+    symbol. Such a gate links its own definition first (with
+    -Wl,--allow-multiple-definition) and the port object is never reached, so the
+    cups come from the gate, not the port. That gate can be green forever while
+    the port is wrong -- and one was: agent_markdown_tables_is_table_divider
+    answered from its shims.c until a negative control (shim forced to `true`)
+    moved every cup.
+    """
+    if _PORT_SYMS:
+        return _PORT_SYMS[0]
+    archive = _watercup_object_archive()
+    cache = os.path.join(BUILD, "_port_symbols.json")
+    want = os.path.getmtime(archive), os.path.getsize(archive)
+    try:
+        if os.path.exists(cache):
+            blob = json.load(open(cache))
+            if tuple(blob.get("key", ())) == want:
+                _PORT_SYMS.append(set(blob["syms"]))
+                return _PORT_SYMS[0]
+    except (ValueError, KeyError, OSError):
+        pass
+    nm = os.environ.get("NM") or "nm"
+    r = subprocess.run([nm, "-g", "--defined-only", archive],
+                       capture_output=True, text=True, errors="replace")
+    syms = set()
+    for line in (r.stdout or "").splitlines():
+        parts = line.split()
+        if len(parts) >= 3:
+            syms.add(parts[2])
+    if syms:
+        try:
+            with open(cache, "w") as f:
+                json.dump({"key": list(want), "syms": sorted(syms)}, f)
+        except OSError:
+            pass
+    _PORT_SYMS.append(syms)
+    return syms
+
+
+def _object_defs(obj):
+    nm = os.environ.get("NM") or "nm"
+    r = subprocess.run([nm, "-g", "--defined-only", obj],
+                       capture_output=True, text=True, errors="replace")
+    out = set()
+    for line in (r.stdout or "").splitlines():
+        parts = line.split()
+        if len(parts) >= 3:
+            out.add(parts[2])
+    return out
+
+
+def _refuse_shadowing_port_symbols(tag, gate_dir, extra_real):
+    """Fail closed when a gate-local source defines a symbol the PORT defines.
+
+    Gate-local means "lives under tests/watercup/": harnesses and fixtures. A
+    vendored library is different -- a gate may legitimately compile
+    lib/libjson/json.c instead of linking json.o, and the runner drops the .o.
+    """
+    local = [e for e in extra_real
+             if "tests/watercup/" in e.replace("\\", "/")]
+    if not local:
+        return
+    port = _port_symbol_set()
+    if not port:
+        return
+    import glob as _glob_shadow
+    for e in local:
+        # Objects are named "<tag>.x<N>.<basename>.o"; glob so the check works both
+        # before this build compiles them and on later cached runs.
+        pats = [os.path.join(BUILD, "%s.x*.%s.o" % (tag, os.path.basename(e))),
+                os.path.join(BUILD, "%s.%s.o" % (tag, os.path.basename(e)))]
+        objs = sorted({o for pat in pats for o in _glob_shadow.glob(pat)})
+        hits = sorted({sym for o in objs for sym in _object_defs(o)} & port)
+        if hits:
+            raise RuntimeError(
+                "GATE SHADOWS THE PORT for %s: %s defines %s, which the port also defines, "
+                "and the gate's object is linked FIRST -- the cups would come from the gate, "
+                "not the port. Delete the gate-local copy and have %s call the port's symbol "
+                "(or, if the port genuinely lacks it, implement it in src/)."
+                % (tag, os.path.basename(e), ", ".join(hits[:6]),
+                   os.path.basename(os.path.dirname(e)) + "/" + "harness.c"))
+
+
 def build_harness(gate_dir, g, force=False):
     """Compile the gate's harness. Skips the compile when the binary is newer
     than every input (harness.c, watercup.h, extra_src, gate.json) unless
@@ -446,6 +535,11 @@ def build_harness(gate_dir, g, force=False):
     src = os.path.join(gate_dir, g["c_src"])
     out = os.path.join(BUILD, g["name"])
     os.makedirs(BUILD, exist_ok=True)
+    extra = [os.path.join(REPO, e) for e in g.get("extra_src", [])]
+    # Fail closed BEFORE any link: a gate-local copy of a port symbol would win
+    # the link and the cups would measure the copy. Checked on cached binaries
+    # too, so a shim cannot pass by having been built once before this rule.
+    _refuse_shadowing_port_symbols(g["name"], gate_dir, extra)
 
     if not force and os.path.exists(out):
         bin_mtime = os.path.getmtime(out)
@@ -456,7 +550,6 @@ def build_harness(gate_dir, g, force=False):
             return out  # fresh — skip rebuild
 
     cflags = _resolve_cflags(g)
-    extra = [os.path.join(REPO, e) for e in g.get("extra_src", [])]
     # The Windows system set belongs on the FIRST link, not only on the retry: a port file that
     # reaches the HTTP layer names WSAPoll/__imp_shutdown, and dropping -lws2_32 from the first
     # attempt made the gate report "undefined reference to `WSAPoll'" as if the port were missing.
@@ -514,6 +607,9 @@ def build_harness(gate_dir, g, force=False):
             break
     if compile_fail:
         raise RuntimeError(compile_fail)
+    # Now the objects exist, so a shim shipped by the gate cannot slip through the
+    # pre-build check (which can only see objects from an earlier build).
+    _refuse_shadowing_port_symbols(tag, gate_dir, extra_real)
 
     if any(e == os.path.join(REPO, "src/infrastructure_stubs.c")
            for e in extra):
@@ -1282,6 +1378,32 @@ def _run_twin_isolated(g, inputs, timeout=None):
 # Gate kinds
 # ──────────────────────────────────────────────────────────────────────
 
+def _no_oracle_verdict(g):
+    """Why this gate cannot be a differential gate (None when it can).
+
+    23 gates carry a py_module that is not a Python module at all: a prose label
+    ("(contract -- no LIVE python twin)"), an empty string, a .cjs file, or a raw
+    .c path. Each read as "TWIN FAIL (exit 1)" with an empty message, which looks
+    like a broken twin rather than a gate with no oracle.
+    """
+    m = g.get("py_module")
+    # An EMPTY py_module is not a verdict: self-contained twins (regex_split_semantics)
+    # import the live stdlib themselves and are real oracles. Only the shapes that
+    # provably cannot carry a Python oracle are named here.
+    if not m:
+        return None
+    if isinstance(m, str) and m.strip().endswith(".cjs"):
+        return ("JS ORACLE: py_module %s is JavaScript; the Python walker cannot run it "
+                "(needs a node twin)" % m)
+    if isinstance(m, str) and m.strip().endswith(".c"):
+        return ("C-ONLY ORACLE: py_module %s is C source; there is no live Python side "
+                "to diff against" % m)
+    if isinstance(m, str) and not re.match(r"^[\w./-]+$", m.strip()):
+        return ("NO ORACLE: py_module is a label (%s), not a module -- nothing is "
+                "compared against live Python, so a green here would not be parity" % m)
+    return None
+
+
 def run_cup_gate(gd, g, verbose=False):
     """Trace-cup diff: C cups vs LIVE-twin cups over the shared input walk.
     Returns (fail_count, detail_lines)."""
@@ -1293,6 +1415,12 @@ def run_cup_gate(gd, g, verbose=False):
         return 1, ["  ERROR (untraceable): %s:%s executes destructive live "
                    "flows — excluded from tracing"
                    % (g.get("py_module"), g.get("py_fn"))]
+    _nooracle = _no_oracle_verdict(g)
+    if _nooracle:
+        # Building this harness would print cups that nothing compares against; a
+        # "green" here would be a parity claim with no oracle behind it. Say what
+        # the gate is and stop.
+        return 1, ["  " + _nooracle]
     out = build_harness(gd, g)
     c_cups = run_harness(out, g)
     twin = load_twin(g)
@@ -1363,17 +1491,69 @@ def run_cup_gate(gd, g, verbose=False):
                    "fixtures do not vary the answer, so this gate cannot prove parity"
                    % (c_cups[0], py_cups[0])]
 
+    # Input-blind twin: the C side moves with the input, the twin answers ONE cup
+    # for every input. That is not a port bug report, it is the twin never seeing
+    # the input (a dotted/property fn that resolved to nothing, or a method whose
+    # receiver was a permissive dummy). Say which, instead of printing N mismatches.
+    if len(g["inputs"]) >= 2 and len(set(c_cups)) > 1 and len(set(py_cups)) == 1:
+        return 1, ["  TWIN BLIND: C cups vary with the input but the twin answered one cup "
+                   "(%s) for all %d inputs -- the twin never received the input "
+                   "(dotted/property fn, or it needs a real receiver object)."
+                   % (py_cups[0][:12], len(g["inputs"]))]
+
+    # Typed, re-verified exclusions. "NULL" is a C null pointer; Python None is a
+    # different value and a fn may legitimately RAISE on it. That divergence is real
+    # but unrepresentable in a bool/str cup, so a gate may declare the input out of
+    # domain -- with a reason, and with the claim re-checked on every run: if Python
+    # stops raising, the exclusion is stale and fails closed.
+    ood = {str(x) for x in (g.get("inputs_out_of_domain") or [])}
+    ood_raises = g.get("out_of_domain_raises")
+    if ood and not (g.get("out_of_domain_reason") and ood_raises):
+        return 1, ["  GATE DEFECT: inputs_out_of_domain needs BOTH out_of_domain_reason "
+                   "and out_of_domain_raises (the exception the live fn throws there) -- "
+                   "an exclusion must carry its evidence"]
+    # The evidence is checked, not trusted: the twin's cup for an out-of-domain input
+    # must be exactly the cup of "ERROR:<declared exception>". If the live fn stops
+    # raising (behaviour change, or the exclusion was invented), this fails closed.
+    _ood_cup = None
+    if ood and ood_raises:
+        _c = Cup(_label or g.get("c_fn") or g["name"])
+        if _br is not None:
+            _c.branch(bool(_br))
+        _c.valstr("ERROR:%s" % ood_raises)
+        _ood_cup = _c.finalize()
+
     fails = []
     lines = []
+    ood_seen = []
     for i, (inp, cc, pc) in enumerate(zip(g["inputs"], c_cups, py_cups)):
+        if str(inp) in ood:
+            if pc != _ood_cup:
+                fails.append(i)
+                lines.append("    [%d] %s  OUT-OF-DOMAIN CLAIM IS STALE: Python answered "
+                             "%s, not the declared ERROR:%s -- the exclusion no longer "
+                             "describes the live fn"
+                             % (i, str(inp)[:24], pc[:12], ood_raises))
+            else:
+                ood_seen.append(i)
+                lines.append("    [%d] %s  OUT OF DOMAIN: live Python raises %s (verified)"
+                             % (i, str(inp)[:24], ood_raises))
+            continue
         if cc != pc:
             fails.append(i)
             lines.append("    [%d] %s  C=%s  PY=%s  <<< CUP MISMATCH (FAP)"
                          % (i, str(inp)[:24], cc[:12], pc[:12]))
+    if ood_seen:
+        lines.append("  -> %d input(s) out of domain (%s); %d cup(s) compared"
+                     % (len(ood_seen), g.get("out_of_domain_reason", "")[:80],
+                        len(c_cups) - len(ood_seen)))
     if fails:
         lines.append("  -> %d cup mismatches (FAP)" % len(fails))
-    else:
+    elif not ood_seen:
         lines.append("  -> all %d cups MATCH LIVE Python" % len(c_cups))
+    else:
+        lines.append("  -> %d/%d cups MATCH LIVE Python"
+                     % (len(c_cups) - len(ood_seen), len(c_cups)))
 
     # Golden-cup pinning: a gate may pin its passing cups so any future
     # behavioral change (either side) is caught even without a twin change.
@@ -1407,6 +1587,20 @@ def run_unit_gate(gd, g, verbose=False):
     boolean/invariant rather than a branch-ladder trace (allowlist parity,
     control-char escaping, ...)."""
     lines = []
+    # A generated thin twin (one that imports watercup_twin_runtime and names
+    # PY_MODULE) cannot run when py_module is a prose label: the label is not a
+    # module, so the twin dies in load_live. A HAND-WRITTEN self-contained twin is
+    # fine with a prose py_module -- it imports what it needs itself.
+    _tp = os.path.join(gd, "twin.py")
+    if os.path.exists(_tp):
+        try:
+            _src = open(_tp, encoding="utf-8", errors="ignore").read()
+        except OSError:
+            _src = ""
+        if "watercup_twin_runtime" in _src:
+            _v = _no_oracle_verdict(g)
+            if _v:
+                return 1, ["  " + _v]
     out = build_harness(gd, g)
     rh = subprocess.run([out], capture_output=True, text=True, encoding="utf-8", errors="replace")
     if rh.returncode != 0:
@@ -1417,11 +1611,20 @@ def run_unit_gate(gd, g, verbose=False):
     if os.path.exists(twin_path):
         # env=os.environ so the operator-state sandbox (HERMES_HOME) reaches the
         # child; a unit twin importing a live module must not touch the real home.
+        # The twin imports watercup_twin_runtime from tests/watercup; with cwd=gd that
+        # is not on sys.path, so every such gate died with ModuleNotFoundError and read
+        # as a broken twin.
+        _env = dict(os.environ)
+        _env["PYTHONPATH"] = HERE + (os.pathsep + _env["PYTHONPATH"] if _env.get("PYTHONPATH") else "")
         rt = subprocess.run([sys.executable, twin_path], capture_output=True,
-                            text=True, encoding="utf-8", errors="replace", cwd=gd, env=os.environ)
+                            text=True, encoding="utf-8", errors="replace", cwd=gd, env=_env)
         if rt.returncode != 0:
+            _why = (rt.stdout or "").strip() or (rt.stderr or "").strip() or "(no output)"
+            if len(_why) > 700:
+                # A traceback's headline is its LAST line; the first 300 chars are frames.
+                _why = _why[:280] + "\n    ...\n" + _why[-400:]
             lines.append("  TWIN FAIL (exit %d):\n%s"
-                         % (rt.returncode, rt.stdout.strip()))
+                         % (rt.returncode, _why))
             return 1, lines
     else:
         lines.append("  (no twin.py — harness-only unit gate)")

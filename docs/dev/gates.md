@@ -134,3 +134,44 @@ Quote which one you mean.
   a script argument, never as an environment prefix.
 - `VAR=... make` style invocations that need env must `export` inside the
   child shell.
+
+## Gate integrity rules (enforced by the runner, not by memory)
+
+A gate is evidence only when the number it prints came out of the port. Three
+shapes break that promise and all three used to look green:
+
+1. **The gate ships its own copy of a port symbol.** `shims.c` linked ahead of
+   the prebuilt objects wins with `-Wl,--allow-multiple-definition`, so the cups
+   measure the gate. `agent_markdown_tables_is_table_divider` did exactly this;
+   a negative control (shim forced to `return true`) moved every cup, proving the
+   port was never called. **Rule:** `wc_run.build_harness` now nms every
+   gate-local object (anything under `tests/watercup/`) against the port symbol
+   set and fails closed with `GATE SHADOWS THE PORT`. Vendored libs
+   (`lib/libjson/json.c`) are exempt: the runner drops the matching `.o`.
+2. **The harness calls a symbol the port never had.** It links only because a
+   shim supplied it. Same refusal catches it when the shim is gate-local; the
+   audit script `scripts/audit_gate_shims.py` classifies every remaining shim as
+   FAKE / SHADOWED / DEAD and exits non-zero on the first two.
+3. **The twin never receives the input.** A dotted/property `py_fn`
+   (`Cls.available`) used to resolve to nothing -> `ERROR:TypeError` for every
+   input, one constant cup that read like five port defects. Now: dotted paths
+   are walked, a `property` resolves to its getter, `TwinBase.call()` is the hook
+   for building a real receiver, and the runner reports `TWIN BLIND` (C cups vary,
+   twin answered one) instead of N phantom mismatches.
+
+## Out-of-domain inputs carry evidence, not silence
+
+`"NULL"` is a C null pointer; Python `None` is a different value and a function
+may legitimately raise on it. A bool/str cup cannot express "raises". A gate may
+declare
+
+```json
+"inputs_out_of_domain": ["NULL"],
+"out_of_domain_raises": "TypeError",
+"out_of_domain_reason": "split_table_row(None) raises TypeError ..."
+```
+
+and the runner recomputes the twin's cup for that input every run, requiring it to
+equal `Cup(label).valstr("ERROR:TypeError")`. If the live function stops raising,
+the exclusion is stale and the gate fails closed. An exclusion without both
+fields is a gate defect, not a pass.

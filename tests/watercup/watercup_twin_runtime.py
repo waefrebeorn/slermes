@@ -22,6 +22,14 @@ from watercup_py import Cup
 
 QUARRY = ensure_sys_path()
 
+# Windows CPython has no time.tzset(); a live module that calls it (timezone
+# handling in cron/datetime paths) then dies with AttributeError, which reads as a
+# twin failure rather than a platform fact. The no-op keeps the twin runnable; the
+# platform difference is recorded here, not hidden in a gate.
+import time as _time
+if not hasattr(_time, "tzset"):
+    _time.tzset = lambda: None
+
 
 def load_live(py_module: str):
     """Load a quarry module inside its real package context.
@@ -67,14 +75,42 @@ class _DummySelf:
         return _DummySelf()
 
 
+def _unwrap(obj):
+    """A property is not callable but its getter is: gates name properties."""
+    if isinstance(obj, property):
+        return obj.fget
+    return obj
+
+
+def _dotted(mod, path: str):
+    """Walk "Class.attr" / "a.b.c" through getattr. None if any hop is missing."""
+    obj = mod
+    for part in path.split("."):
+        if obj is None:
+            return None
+        obj = getattr(obj, part, None)
+    return obj
+
+
 def resolve_fn(mod, py_fn: str):
-    """Module-level fn, else a method on any class in the LIVE module."""
-    f = getattr(mod, py_fn, None)
-    if f is not None:
+    """Module-level fn, dotted attribute path, else a method on a class in the module.
+
+    A dotted name used to resolve to NOTHING (getattr(mod, "Class.attr") is None and
+    hasattr(cls, "Class.attr") is False), so the twin answered ERROR:TypeError for
+    every input -- one constant cup, which reads like a port defect. Dotted paths are
+    now walked, and a property resolves to its getter.
+    """
+    if "." in py_fn:
+        f = _unwrap(_dotted(mod, py_fn))
+        if callable(f):
+            return f
+        return None
+    f = _unwrap(getattr(mod, py_fn, None))
+    if callable(f):
         return f
     for _n, obj in vars(mod).items():
         if inspect.isclass(obj) and hasattr(obj, py_fn):
-            m = getattr(obj, py_fn)
+            m = _unwrap(getattr(obj, py_fn))
             if callable(m):
                 return m.__get__(_DummySelf(), obj)
     return None
@@ -176,6 +212,17 @@ class TwinBase:
     def norm(self, c, result):
         c.valstr(str(result))
 
+    def call(self, inp, inputs, idx=0):
+        """Override when the fn needs a real receiver/argument objects.
+
+        The shared walker hands the fn the raw input text, which is right for a
+        module-level `f(text)`. A method on a snapshot/config object needs the
+        object built from the text first -- otherwise `self` is a permissive dummy
+        and every input answers the same cup. Gates whose twin overrides this build
+        the receiver with the SAME parse the C harness uses.
+        """
+        return call_fn(self._fn, inp, inputs, idx)
+
     def trace(self, inp, inputs, idx=0):
         # The cup seed is folded into the hash, so it MUST be the label the harness passes to
         # WCUP_BEGIN. Generated twins carry a C_FN that often differs from it ("numeric" for a
@@ -189,7 +236,7 @@ class TwinBase:
         if _b is not None:
             c.branch(bool(_b))
         try:
-            result = call_fn(self._fn, inp, inputs, idx)
+            result = self.call(inp, inputs, idx)
             if result is None and not getattr(self, "NORM_NONE", False):
                 # C writes `result ? result : ""`, so a None answer is the empty string on that
                 # side. Rendering None as the four letters "None" mismatched every gate that can
