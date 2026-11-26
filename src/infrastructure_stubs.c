@@ -466,7 +466,11 @@ int stub_shadowed_relay_active_turn(void) { return 0; }
 /* ── main.c + agent lifecycle ── */
 int stub_shadowed_cmd_update(int argc, char **argv) { (void)argc; (void)argv; return 0; }
 int stub_shadowed_hermes_secrets_init(void) { return 0; }
-int tools_init_all(void) { return 0; }
+/* tools_init_all() is NOT stubbed here. The real one is src/tools/tool_init.c (void return,
+ * include/hermes_agent.h:51) and it registers the tool table: a stub `int tools_init_all(void)
+ * { return 0; }` at this spot won the link by name and made every tools_init_all() call a no-op
+ * that reported success. Signatures disagree (int vs void), which is the same defect shape as the
+ * kanban "task_id" stub. Removed so the real initializer is the one in the binary. */
 void *stub_shadowed_get_registry(void) { return NULL; }
 
 typedef struct { char dummy[64]; } agent_t;
