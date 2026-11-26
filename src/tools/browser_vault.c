@@ -279,8 +279,23 @@ json_t *browser_vault_fill(const char *base, const char *handle, const char *pas
         json_free(controls);
         free(controls_json);
 
-        json_t *fills = w16_vaultlogin_58f247_select_password(classified, password);
-        char *fills_json = fills ? json_serialize(fills) : NULL;
+        json_t *pw_fills = w16_vaultlogin_58f247_select_password(classified, password);
+
+        /* The identifier is metadata, not a secret, and upstream fills it too -- a password-only fill
+         * leaves the user typing their own username after we already knew it. */
+        const char *identifier = json_string_value_safe(json_obj_get(meta, "identifier"));
+        json_t *id_fills = vault_identifier_fill(classified, pw_fills, identifier);
+
+        json_t *fills = json_array();
+        if (id_fills && id_fills->type == JSON_ARRAY)
+            for (size_t i = 0; i < json_len(id_fills); i++)
+                json_append(fills, json_copy(json_get(id_fills, i)));
+        if (pw_fills && pw_fills->type == JSON_ARRAY)
+            for (size_t i = 0; i < json_len(pw_fills); i++)
+                json_append(fills, json_copy(json_get(pw_fills, i)));
+        json_free(id_fills);
+
+        char *fills_json = json_serialize(fills);
         json_free(classified);
 
         char *fill_js = fills_json ? vl_build_fill_js(fills_json, origin, nonce) : NULL;
@@ -303,6 +318,7 @@ json_t *browser_vault_fill(const char *base, const char *handle, const char *pas
                                                                : "the fill script did not report a result")));
         }
         json_free(result);
+        json_free(pw_fills);
         json_free(fills);
     }
     free(err);

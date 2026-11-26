@@ -110,7 +110,8 @@ password input held the value. A wrong `expected_origin` correctly refused with
 
 ```
 action=list   -> items with handle/label/kind/origin/identifier; never a password
-action=fill   -> success:true, item_id, origin, filled:1   (3/3 separate calls, password in the field)
+action=fill   -> success:true, item_id, origin, filled:2   (username + password; 3/3 separate calls)
+                 shadow DOM: a custom element with its own <form> fills too (filled:2 there as well)
                  handle + wrong page_origin -> refused: origin_mismatch, naming both origins
                  unknown handle              -> {"error":"no vault item with id 'vault_nope'"}
                  password arg                -> one-off fill without touching the stored secret
