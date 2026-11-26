@@ -10,13 +10,17 @@ SOTA, Windows silent-divergence traps) plus probes against this tree.
 comes from — measured against a freshly rebuilt object archive, not a stale one:
 
 ```
-GAP       13303   58.9%   real__ sentinel: harness returns the fn's name for every input
-PORT       8300   36.7%   calls a symbol the built port exports
+GAP       13300   58.8%   real__ sentinel: harness returns the fn's name for every input
+PORT       8303   36.7%   calls a symbol the built port exports
 MISSING     776    3.4%   calls a symbol the built port does not export
 UNKNOWN     182    0.8%
 COPY         41    0.2%   harness defines the port's own function locally
 BROKEN        1    0.0%
 ```
+
+One gate is non-discriminating BY CONSTRUCTION: `gateway_acp_acp_get_id` calls
+`acp_get_id(NULL)` for every input, so no fixture can ever make it discriminate
+(counted by the audit's `input_used` check).
 
 Only the PORT class is parity evidence today. That is the number to quote, not
 "22.6k gates". The first run of this audit was wrong in both directions because it
@@ -99,3 +103,15 @@ Ranked by "wrong answer, exit 0", not by crash. Probes measured in this tree:
    either dead code (`static`), an unbuilt object, or a real gap. Triage per file.
 4. **Windows probes.** One probe per silent trap in §4, starting with binary
    round-trip, errno mapping, and `util_rename_replace`.
+
+### Addendum — one real conversion landed, one research-backed pattern
+
+`libcron_next_run` was `ERROR: No such file or directory: croniter.py`: a bare
+third-party `py_module` was resolved as a path inside the quarry, its fixtures were
+the generic `hello`/`world` placeholders, and `croniter.get_next` is a method, not a
+module function. All three fixed — bare names now `import_module` (with the quarry's
+own venv `site-packages` on `sys.path`), inputs are `expr|from_epoch` probes
+(`*/5 * * * *`, weekday ranges, `@daily`, an impossible Feb 30, an invalid
+expression), and the twin emits the harness's three `WCUP_BRANCH` points itself
+because `TwinBase.branch()` can only emit one. Result: **5/5 cups match live
+croniter** — the port's `cron_next` now has real evidence behind it, not a sentinel.

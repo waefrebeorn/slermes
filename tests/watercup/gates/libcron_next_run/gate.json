@@ -14,11 +14,11 @@
     "lib/libcron/cron.c"
   ],
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "*/5 * * * *|1700000000",
+    "0 9 * * 1-5|1700000000",
+    "@daily|1700000000",
+    "0 0 30 2 *|1700000000",
+    "not a cron|1700000000"
   ],
-  "notes": "Next-run computation (lib/libcron/cron.c vs LIVE croniter engine used by hermes_cli/cron.py). Probes 'expr|from_epoch' (UTC): steps, lists, ranges, month/dow names, @specials, Feb 29, impossible dates, out-of-range fields."
+  "notes": "Next-run computation (lib/libcron/cron.c vs LIVE croniter engine used by hermes_cli/cron.py). Probes 'expr|from_epoch' (UTC): steps, lists, ranges, month/dow names, @specials, Feb 29, impossible dates, out-of-range fields. Fixtures are expr|from_epoch probes (generic placeholders made the gate non-discriminating)."
 }

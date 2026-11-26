@@ -81,6 +81,37 @@ def classify(gdir: Path, port: set[str], shim_names: set[str]) -> tuple[str, str
     return "UNKNOWN", base
 
 
+def _input_used(gdir: Path) -> bool:
+    """Does the harness body actually use its per-case argument?
+
+    gateway_acp_acp_get_id calls acp_get_id(NULL) for every input, so no fixture
+    can ever make it discriminate -- it is non-discriminating BY CONSTRUCTION, not
+    by bad fixtures. Cheap tell: the parameter name appears only in its own
+    declaration inside the traced function.
+    """
+    try:
+        src = (gdir / "harness.c").read_text(errors="ignore")
+    except OSError:
+        return True
+    m = re.search(r"static\s+void\s+trace_one\s*\(\s*(?:const\s+)?char\s*\*\s*(\w+)\s*\)",
+                  src)
+    if not m:
+        return True
+    name = m.group(1)
+    start = src.index("{", m.end())
+    depth, i = 0, start
+    while i < len(src):
+        if src[i] == "{":
+            depth += 1
+        elif src[i] == "}":
+            depth -= 1
+            if depth == 0:
+                break
+        i += 1
+    body = src[start:i]
+    return len(re.findall(r"\b%s\b" % re.escape(name), body)) > 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--list", metavar="CLASS", help="print gate names of one class")
@@ -98,7 +129,8 @@ def main() -> int:
             txt = shim.read_text(errors="ignore")
             shim_names = {m.group(1) for m in DEF_RE.finditer(txt)} - C_KEYWORDS
         cls, sym = classify(gdir, port, shim_names)
-        rows.append({"gate": gdir.name, "class": cls, "symbol": sym})
+        rows.append({"gate": gdir.name, "class": cls, "symbol": sym,
+                     "input_used": _input_used(gdir)})
 
     counts = Counter(r["class"] for r in rows)
     if args.list:
@@ -113,7 +145,10 @@ def main() -> int:
     for cls, n in counts.most_common():
         print("%-8s %6d  %5.1f%%" % (cls, n, 100.0 * n / max(total, 1)))
     print("total    %6d" % total)
-    print("\nPORT is parity evidence; COPY measures a hand transcription; "
+    blind = sum(1 for r in rows if not r["input_used"])
+    print("\ninput ignored by the harness: %d gate(s) -- non-discriminating BY "
+          "CONSTRUCTION (no fixture can fix them)" % blind)
+    print("PORT is parity evidence; COPY measures a hand transcription; "
           "SHIM measures the gate. Only COPY->PORT conversion changes what a green means.")
     return 0
 

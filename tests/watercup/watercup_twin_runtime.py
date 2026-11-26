@@ -8,6 +8,7 @@ The normalization expression is evaluated with `result` bound to the live
 return value. It is generator-produced code (trusted), and keeps the exact
 per-gate cup semantics the C harness mirrors.
 """
+import importlib
 import importlib.util as ilu
 import json
 import re
@@ -21,6 +22,16 @@ from watercup_paths import ensure_sys_path, quarry_root
 from watercup_py import Cup
 
 QUARRY = ensure_sys_path()
+
+# Third-party modules the LIVE code imports (croniter, yaml, ...) live in the
+# quarry's own venv, not in this interpreter. Without this, a gate over such a
+# module dies with "No module named croniter" inside load_live -- which reads like
+# a broken twin rather than a missing path.
+import sys as _sys
+for _cand in (os.path.join(str(QUARRY), ".venv", "Lib", "site-packages"),
+              os.path.join(str(QUARRY), ".venv", "lib", "python3.12", "site-packages")):
+    if os.path.isdir(_cand) and _cand not in _sys.path:
+        _sys.path.append(_cand)
 
 # Windows CPython has no time.tzset(); a live module that calls it (timezone
 # handling in cron/datetime paths) then dies with AttributeError, which reads as a
@@ -38,6 +49,14 @@ def load_live(py_module: str):
     registered; prefer the REAL package (__init__.py exports) and fall back
     to a namespace-style module only when the real import fails.
     """
+    # A BARE name ("croniter") is a third-party module, not a path inside the
+    # quarry: spec_from_file_location then looked for <quarry>/croniter.py and died
+    # with FileNotFoundError. Import it by name first.
+    if "/" not in py_module and not py_module.endswith(".py"):
+        try:
+            return importlib.import_module(py_module)
+        except Exception:
+            pass
     parts = py_module[:-3].split("/") if py_module.endswith(".py") else py_module.split("/")
     mod_name = ".".join(parts)
     if mod_name in sys.modules:
