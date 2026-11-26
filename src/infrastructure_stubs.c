@@ -199,35 +199,15 @@
  * ═══════════════════════════════════════════════════════════════ */
 
 /* ── Home directory ── */
-static char g_slermes_home[4096] = "";
-static pthread_once_t g_home_once = PTHREAD_ONCE_INIT;
-
-static void init_home(void) {
-    const char *home = getenv("HERMES_HOME");
-    if (home && *home) {
-        strncpy(g_slermes_home, home, sizeof(g_slermes_home) - 1);
-    } else {
-        const char *user_home = getenv("HOME");
-        if (user_home) {
-            snprintf(g_slermes_home, sizeof(g_slermes_home), "%s/.hermes", user_home);
-        } else {
-            strcpy(g_slermes_home, "/tmp/.hermes");
-        }
-    }
-    mkdir(g_slermes_home, 0755);
-    char logs[4200];
-    snprintf(logs, sizeof(logs), "%s/logs", g_slermes_home);
-    mkdir(logs, 0755);
-}
-
-static void ensure_home(void) {
-    if (g_slermes_home[0] == '\0') pthread_once(&g_home_once, init_home);
-}
-
-const char *stub_shadowed_get_hermes_home(void) { ensure_home(); return g_slermes_home; }
-const char *slermes_home(void) { ensure_home(); return g_slermes_home; }
-const char *hermes_home_dir(void) { ensure_home(); return g_slermes_home; }
-const char *stub_shadowed_hermes_get_home(void) { ensure_home(); return g_slermes_home; }
+/* Home resolution is owned by src/slermes_home.c (resolve_home()/slermes_home()). Its comment states
+ * the hard rule this stub broke: HERMES_HOME is the PYTHON project's home (~/.hermes) and must never
+ * become the slermes root, or slermes reads and writes state.db / sessions / gateway.pid / cron /
+ * kanban / config.yaml inside a live hermes install. The stub put HERMES_HOME first, and it was the
+ * definition in the binary, so the real resolver never ran. These helpers now delegate to it. */
+extern const char *slermes_home(void);
+const char *stub_shadowed_get_hermes_home(void) { return slermes_home(); }
+const char *hermes_home_dir(void) { return slermes_home(); }
+const char *stub_shadowed_hermes_get_home(void) { return slermes_home(); }
 
 /* ── Hermes config ── */
 static char g_config_path[4096] = "";
@@ -479,12 +459,13 @@ int stub_shadowed_cli_main(int argc, char **argv) { (void)argc; (void)argv; retu
 /* ── Misc critical ── */
 int stub_shadowed_is_seen(const char *id) { (void)id; return 0; }
 int stub_shadowed_mark_seen(const char *id) { (void)id; return 0; }
-int api_server_is_running(void) { return 0; }
-int api_server_start(void) { return 0; }
-int api_server_stop(void) { return 0; }
-void *acp_server_new(void) { return calloc(1, 64); }
-void acp_server_free(void *s) { free(s); }
-int acp_server_run(void *s) { (void)s; return 0; }
+/* The api_server_* and acp_server_* lifecycles are NOT stubbed here. The real implementations are
+ * src/hermes_cli/api_server.c (bool api_server_is_running(void) :1521, void api_server_stop(void)
+ * :1502) and src/acp/server.c (acp_server_t *acp_server_new(void) :964, acp_server_free,
+ * acp_server_run). The stubs disagreed with all of them -- `int` returns for a `void`/`bool` API, and
+ * acp_server_new handed back calloc(1, 64) for a struct that is far larger, so any caller touching
+ * its fields wrote past the end of the allocation. api_server_stop() returning 0 is the same lie as
+ * the kanban stub: it reported success and stopped nothing. */
 char *fill_blueprint(void *bp) { (void)bp; return strdup("{}"); }
 int stub_shadowed_clear_session_cwd(void) { return 0; }
 int stub_shadowed_is_container(void) { return 0; }
