@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import socket
 import urllib.request
 from pathlib import Path
 
@@ -99,7 +100,27 @@ CASES = [
     ("kanban_attachments", {}),               # no task_id: must name the missing field
     ("kanban_complete", {}),                  # ditto
     ("mcp_resource_read", {"server": "nonexistent", "uri": "file:///x"}),
+    # Fourth wave: integrations this box does not have configured. The honest answer names the
+    # missing integration; the lie is an empty list or a bare "not found" that reads like "no
+    # entities / no channels / no results" when nothing was ever asked.
+    ("ha_list_entities", {}),
+    ("ha_get_state", {"entity_id": "sensor.nonexistent"}),
+    ("discord", {"action": "list_guilds"}),
+    ("feishu_drive_list", {}),
+    ("yb_query_group_info", {"group_code": "0"}),
+    ("x_search", {"query": "slermes agent"}),
+    ("mcp_prompt_get", {"server": "nonexistent", "name": "x"}),
+    ("file_batch", {"action": "copy", "files": [str(T / "ok.json")], "dest": str(T / "batch_out")}),
 ]
+
+
+def _server_alive(url: str) -> bool:
+    """A refused connection means the process died, not that the tool failed."""
+    try:
+        with socket.create_connection(("127.0.0.1", 9100), timeout=3):
+            return True
+    except OSError:
+        return False
 
 
 def rpc(url: str, method: str, params=None, timeout: float = 90):
@@ -176,11 +197,24 @@ def main() -> int:
 
     ensure_fixtures()
     results, suspects = {}, []
+    dead_after = None
     for tool, arguments in CASES:
+        if dead_after:
+            # One tool took the whole server down. Reporting "TRANSPORT" for every case after it
+            # turned a single crash into eight suspects and hid the culprit; name the case that was
+            # running when the server died and stop.
+            suspects.append((tool, "SKIPPED", f"server died after {dead_after}"))
+            continue
         try:
             res = rpc(args.url, "tools/call", {"name": tool, "arguments": arguments})["result"]
         except Exception as e:                                 # noqa: BLE001
             res = {"_transport": f"{type(e).__name__}: {str(e)[:80]}"}
+            if not _server_alive(args.url):
+                dead_after = tool
+                suspects.append((tool, "CRASHED", "server process gone after this call"))
+                results[f"{tool}:{json.dumps(arguments)[:40]}"] = res
+                print(f"{tool:20} SERVER GONE after this call")
+                continue
         results[f"{tool}:{json.dumps(arguments)[:40]}"] = res
         line = brief(res)
         print(f"{tool:20} {line}")

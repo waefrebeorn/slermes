@@ -30,12 +30,33 @@ static bool g_symlink_check_enabled = true;
 
 /* Initialize sandbox with default allowed directories */
 void sandbox_init(void) {
+    /* HOME is the POSIX spelling; Windows sets USERPROFILE and usually leaves HOME unset. With only
+     * getenv("HOME") the allowlist ended up holding just "/tmp" -- a path no Windows API resolves --
+     * so every file_batch move/copy/delete answered "Source path not allowed" for files in the
+     * repository itself. Same for the temp directory: /tmp is meaningless here. */
+#ifdef _WIN32
+    /* USERPROFILE first, not HOME: the MSYS launcher exports HOME=/c/Users/... and realpath() cannot
+     * resolve that spelling here, so the entry was stored as "/c/Users/eman5" and never matched the
+     * "C:\\Users\\..." paths the Windows APIs produce -- every sandboxed file operation refused. */
+    const char *home = getenv("USERPROFILE");
+    if (!home || !*home) home = getenv("HOME");
+#else
     const char *home = getenv("HOME");
-    if (home) {
+#endif
+    if (home && *home) {
         sandbox_add_allowed_dir(home);
     }
+#ifdef _WIN32
+    const char *tmp = getenv("TEMP");
+    if (!tmp || !*tmp) tmp = getenv("TMP");
+    if (tmp && *tmp) sandbox_add_allowed_dir(tmp);
+#else
     sandbox_add_allowed_dir("/tmp");
-    sandbox_add_allowed_dir(getenv("SLERMES_HOME") ? getenv("SLERMES_HOME") : "");
+#endif
+    const char *slermes_home_env = getenv("SLERMES_HOME");
+    if (slermes_home_env && *slermes_home_env) {
+        sandbox_add_allowed_dir(slermes_home_env);
+    }
     g_sandbox_enabled = true;
 }
 
@@ -139,6 +160,16 @@ static bool is_unsafe_symlink(const char *path) {
 }
 
 /* Check if a path is within an allowed directory */
+
+/* Compare paths with one separator convention. realpath() returns the native form for a path that
+ * exists ("C:\\Users\\eman5\\...") while the allowlist entry can hold either spelling, so a raw
+ * strncmp rejected "C:/Users/eman5/slermes/file" against the entry "C:/Users/eman5" -- every
+ * sandboxed file operation answered "Source path not allowed" for files plainly inside the home
+ * directory. */
+static void sb_norm_seps(char *p) {
+    for (; p && *p; p++) if (*p == '\\') *p = '/';
+}
+
 bool sandbox_check_path(const char *path) {
     if (!path || !*path) return false;
     if (!g_sandbox_enabled) return true;
@@ -166,15 +197,22 @@ bool sandbox_check_path(const char *path) {
         }
     }
 
+    sb_norm_seps(check_path);
+
     /* Check if the path (or its parent) is in allowed dirs */
     bool allowed = false;
     for (int i = 0; i < g_allowed_dir_count; i++) {
         if (!g_allowed_dirs[i]) continue;
         size_t dlen = strlen(g_allowed_dirs[i]);
 
-        /* Allow exact match or subpath */
-        if (strncmp(check_path, g_allowed_dirs[i], dlen) == 0) {
-            if (check_path[dlen] == '\0' || check_path[dlen] == '/') {
+        /* Allow exact match or subpath, on a normalised separator convention. */
+        char entry[4096];
+        snprintf(entry, sizeof(entry), "%s", g_allowed_dirs[i]);
+        sb_norm_seps(entry);
+        size_t elen = strlen(entry);
+        while (elen > 1 && entry[elen - 1] == '/') entry[--elen] = '\0';
+        if (strncmp(check_path, entry, elen) == 0) {
+            if (check_path[elen] == '\0' || check_path[elen] == '/') {
                 allowed = true;
                 break;
             }

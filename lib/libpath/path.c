@@ -236,7 +236,21 @@ char *path_abs(const char *path) {
 }
 
 bool path_is_absolute(const char *path) {
-    return path && path[0] == '/';
+    if (!path || !*path) return false;
+    /* POSIX: a leading separator. This also covers the MSYS-style "/c/Users/..." spelling. */
+    if (path[0] == '/') return true;
+#ifdef _WIN32
+    /* Windows: a drive root ("C:/x", "C:\\x") or a UNC/rooted-backslash path ("\\\\server\\share",
+     * "\\x"). Without this, "C:/Users/..." answered is_absolute == false, so path_join resolved it
+     * against the cwd and every containment/sandbox check compared the wrong string -- path_security
+     * reported is_absolute:false for an absolute Windows path and file_batch refused a file inside
+     * the repository with "Source path not allowed".
+     * pathlib semantics: "C:" alone is drive-relative (not absolute), "C:/" and "C:\\" are. */
+    if (path[0] == '\\') return true;
+    if (((path[0] >= 'A' && path[0] <= 'Z') || (path[0] >= 'a' && path[0] <= 'z')) &&
+        path[1] == ':' && (path[2] == '/' || path[2] == '\\')) return true;
+#endif
+    return false;
 }
 
 /* ─── Pattern matching ───────────────────────────────────── */
