@@ -251,6 +251,15 @@ else
     echo "   SKIPPED (no python on PATH)"
 fi
 
+echo "== shadowed stubs (a placeholder that replaces a real implementation answers plausibly wrong)"
+if command -v "$FERNET_PY" >/dev/null 2>&1; then
+    # Report only: 39 shadowed names is a work item, not a signal. It exits 1 while any remain, so
+    # the gate would fail on day one and stop meaning anything. Read the number, do not gate it.
+    "$FERNET_PY" scripts/scan_shadowed_stubs.py | head -3
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo "== scanner selftest (the freed-pointer scanner must still see the shape it was written for)"
 if command -v "$FERNET_PY" >/dev/null 2>&1; then
     USERPROFILE='C:\Users\eman5' LOCALAPPDATA='C:\Users\eman5\AppData\Local' \
