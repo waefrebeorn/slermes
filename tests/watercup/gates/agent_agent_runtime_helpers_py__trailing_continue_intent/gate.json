@@ -8,9 +8,9 @@
   "py_fn": "trailing_continue_intent",
   "inputs": [
     "hello",
-    "world",
+    "Hello World-X",
     "",
-    "test123",
+    "a_b-c",
     "NULL"
   ],
   "extra_src": [

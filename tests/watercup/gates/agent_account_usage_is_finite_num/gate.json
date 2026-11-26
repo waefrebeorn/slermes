@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "account_usage_is_finite_num",
-  "py_module": "agent/account_usage.py",
+  "py_module": "agent/account_usage_nous.py",
   "py_fn": "_is_finite_num",
   "cflags": [
     "-I",
@@ -20,14 +20,13 @@
     "-lm"
   ],
   "extra_src": [
-    "tests/watercup/gates/agent_account_usage_is_finite_num/shims.c",
     "lib/libjson/json.c"
   ],
   "inputs": [
+    "0",
     "hello",
-    "world",
     "",
-    "test123",
+    "1.5",
     "NULL"
   ]
 }

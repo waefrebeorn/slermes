@@ -13,7 +13,6 @@
     "lib/libjson"
   ],
   "extra_src": [
-    "tests/watercup/gates/gateway_acp_acp_get_id/shims.c",
     "lib/libjson/json.c"
   ],
   "py_module": "agent/copilot_acp_client.py",

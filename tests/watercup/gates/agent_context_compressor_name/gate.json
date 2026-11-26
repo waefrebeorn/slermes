@@ -21,7 +21,6 @@
     "src/hermes_cli"
   ],
   "extra_src": [
-    "tests/watercup/gates/agent_context_compressor_name/shims.c",
     "lib/libjson/json.c"
   ],
   "ldflags": [

@@ -19,7 +19,6 @@
     "src/agent"
   ],
   "extra_src": [
-    "tests/watercup/gates/agent_trajectory_has_incomplete_scratchpad/shims.c",
     "lib/libjson/json.c"
   ],
   "inputs": [

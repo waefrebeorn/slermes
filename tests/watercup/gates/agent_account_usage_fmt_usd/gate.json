@@ -4,7 +4,7 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "account_usage_fmt_usd",
-  "py_module": "agent/account_usage.py",
+  "py_module": "agent/account_usage_nous.py",
   "py_fn": "_fmt_usd",
   "cflags": [
     "-I",
@@ -24,10 +24,10 @@
     "lib/libjson/json.c"
   ],
   "inputs": [
-    0.0,
-    1.5,
-    3.14159,
-    1024.0,
-    -2.5
+    "0.0",
+    "1.5",
+    "-2.5",
+    "1024",
+    "hello"
   ]
 }

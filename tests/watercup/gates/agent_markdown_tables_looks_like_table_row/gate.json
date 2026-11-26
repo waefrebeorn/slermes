@@ -19,15 +19,14 @@
     "src/agent"
   ],
   "extra_src": [
-    "tests/watercup/gates/agent_markdown_tables_looks_like_table_row/shims.c",
     "lib/libjson/json.c"
   ],
   "inputs": [
     "hello",
-    "world",
+    "| a | b |",
     "",
-    "test123",
-    "NULL"
+    "a_b-c",
+    "| x |"
   ],
   "notes": "True when row could plausibly be a markdown table row."
 }

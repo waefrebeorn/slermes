@@ -19,7 +19,6 @@
     "src/hermes_cli"
   ],
   "extra_src": [
-    "tests/watercup/gates/cli_accent_hex/shims.c",
     "lib/libjson/json.c"
   ],
   "inputs": [

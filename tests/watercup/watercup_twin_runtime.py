@@ -86,7 +86,10 @@ def _strtol(s):
 
 
 def _strtod(s):
-    m = re.match(r"[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?", str(s))
+    """strtod: a leading number, else 0.0 ("" and "hello" both read as zero, as in C)."""
+    if s is None:
+        return None
+    m = re.match(r"\s*[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?", str(s))
     return float(m.group()) if m else 0.0
 
 
@@ -97,6 +100,10 @@ def _coerce_param(p, v):
     every input -- an ERROR cup that made the gate look like a port gap. The generated twins carry
     their own _cvt for outputs; this is the same rule for arguments.
     """
+    # Harness convention: the text "NULL" is the null pointer, not the four characters. Passing it
+    # through as a string made a twin answer "Null" where the C port answered "".
+    if isinstance(v, str) and v == "NULL":
+        return None
     a = str(p.annotation) if p.annotation is not p.empty else ""
     al = a.lower()
     if not al or "any" in al or al.endswith("str") or al == "str":
@@ -111,6 +118,8 @@ def _coerce_param(p, v):
             return v.strip().lower() == "true"
         return _strtol(v) != 0
     if ("int" in al and "point" not in al and "print" not in al):
+        # strtol semantics, which is what the C harness does with the same text: "hello" is 0, not
+        # None. Answering None made one side read "$0.00" and the other "".
         return _strtol(v)
     if "float" in al or "double" in al:
         return _strtod(v)
@@ -173,9 +182,21 @@ class TwinBase:
         # harness that begins "account_usage_is_finite_num"), and then every case mismatched no
         # matter what the port returned. wc_run sets _cup_label from the harness source.
         c = Cup(getattr(self, "_cup_label", self.C_FN))
+        # WCUP_BRANCH(n) folds "B<depth>:<0|1>" into the cup. A harness that branches and a twin
+        # that does not can never agree, whatever the port answers -- wc_run reads the harness's
+        # literal branch and hands it over the same way it hands over the label.
+        _b = getattr(self, "_branch", None)
+        if _b is not None:
+            c.branch(bool(_b))
         try:
             result = call_fn(self._fn, inp, inputs, idx)
-            self.norm(c, result)
+            if result is None and not getattr(self, "NORM_NONE", False):
+                # C writes `result ? result : ""`, so a None answer is the empty string on that
+                # side. Rendering None as the four letters "None" mismatched every gate that can
+                # return None. A twin that wants its own rendering sets NORM_NONE = True.
+                c.valstr("")
+            else:
+                self.norm(c, result)
         except Exception as e:
             c.valstr(f"ERROR:{type(e).__name__}")
         return c.finalize()

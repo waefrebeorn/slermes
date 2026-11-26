@@ -19,7 +19,6 @@
     "src/tools"
   ],
   "extra_src": [
-    "tests/watercup/gates/agent_account_usage_available/shims.c",
     "lib/libjson/json.c"
   ],
   "inputs": [

@@ -19,14 +19,13 @@
     "src/tools"
   ],
   "extra_src": [
-    "tests/watercup/gates/agent_account_usage_title_case_slug/shims.c",
     "lib/libjson/json.c"
   ],
   "inputs": [
     "hello",
-    "world",
+    "Hello World-X",
     "",
-    "test123",
+    "a_b-c",
     "NULL"
   ]
 }

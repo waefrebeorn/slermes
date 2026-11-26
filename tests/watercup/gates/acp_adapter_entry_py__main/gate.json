@@ -8,9 +8,9 @@
   "py_fn": "main",
   "inputs": [
     "hello",
-    "world",
+    "Hello World-X",
     "",
-    "test123",
+    "a_b-c",
     "NULL"
   ],
   "extra_src": [

@@ -7,10 +7,10 @@
   "py_module": "agent/agent_init.py",
   "py_fn": "_normalize_run_budget_seconds",
   "inputs": [
+    "0",
     "hello",
-    "world",
     "",
-    "test123",
+    "1.5",
     "NULL"
   ],
   "extra_src": [

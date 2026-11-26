@@ -8,9 +8,9 @@
   "py_fn": "_provider_default_routes",
   "inputs": [
     "hello",
-    "world",
+    "Hello World-X",
     "",
-    "test123",
+    "a_b-c",
     "NULL"
   ],
   "extra_src": [

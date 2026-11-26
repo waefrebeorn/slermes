@@ -7,10 +7,10 @@
   "py_module": "agent/agent_runtime_helpers.py",
   "py_fn": "copy_reasoning_content_for_api",
   "inputs": [
+    "0",
     "hello",
-    "world",
     "",
-    "test123",
+    "1.5",
     "NULL"
   ],
   "extra_src": [

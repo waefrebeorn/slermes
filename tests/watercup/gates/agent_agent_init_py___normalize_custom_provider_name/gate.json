@@ -7,10 +7,10 @@
   "py_module": "agent/agent_init.py",
   "py_fn": "_normalize_custom_provider_name",
   "inputs": [
+    "0",
     "hello",
-    "world",
     "",
-    "test123",
+    "1.5",
     "NULL"
   ],
   "extra_src": [

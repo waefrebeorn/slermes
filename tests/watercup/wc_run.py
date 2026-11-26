@@ -47,6 +47,7 @@ import contextlib
 import hashlib
 import importlib.util
 import json
+import pathlib
 import os
 import re
 import shutil
@@ -1031,6 +1032,54 @@ def load_live_module(py_module):
     return mod
 
 
+def _invalidate_on_header_change():
+    """Drop cached gate objects when watercup.h changes.
+
+    The cup macros live in that header: a harness object built before the boolean canonicalisation
+    keeps hashing the old way, so the gate reported a mismatch the current code cannot reproduce —
+    building the same harness by hand gave the right cup. A header change invalidates every object.
+    """
+    hdr = os.path.join(REPO, "tests", "watercup", "watercup.h")
+    stamp_path = os.path.join(BUILD, "_watercup_h.sha")
+    try:
+        import hashlib
+        cur = hashlib.sha256(open(hdr, "rb").read()).hexdigest()
+    except OSError:
+        return
+    try:
+        old = open(stamp_path, encoding="utf-8").read().strip()
+    except OSError:
+        old = ""
+    if old == cur:
+        return
+    import glob as _g
+    for pat in ("*.o", "*.exe"):
+        for f in _g.glob(os.path.join(BUILD, pat)):
+            try:
+                os.remove(f)
+            except OSError:
+                pass
+    try:
+        os.makedirs(BUILD, exist_ok=True)
+        open(stamp_path, "w", encoding="utf-8").write(cur)
+    except OSError:
+        pass
+
+
+def _harness_branch(gate_dir_path, g):
+    """The harness's literal WCUP_BRANCH(cond), True/False, or None when it is not a constant."""
+    try:
+        src = (pathlib.Path(gate_dir_path) /
+               (g.get("c_src") or "harness.c")).read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    m = re.search(r"WCUP_BRANCH\(([^)]*)\)", src)
+    if not m:
+        return None
+    expr = m.group(1).strip()
+    return True if expr in ("1", "true", "TRUE") else False if expr in ("0", "false", "FALSE") else None
+
+
 def _harness_cup_label(gate_dir, g):
     """The string the harness passes to WCUP_BEGIN -- the cup's seed."""
     path = os.path.join(gate_dir, g.get("c_src", "harness.c"))
@@ -1256,6 +1305,13 @@ def run_cup_gate(gd, g, verbose=False):
             _inst._cup_label = _label
         else:
             twin._cup_label = _label
+    _br = _harness_branch(gd, g)
+    if _br is not None:
+        _inst2 = getattr(twin, "_t", None)
+        if _inst2 is not None:
+            _inst2._branch = _br
+        else:
+            twin._branch = _br
 
     if _is_entry_point(g):
         # Isolated: never import this twin in-process.
@@ -1501,6 +1557,8 @@ def main():
     if unknown:
         print("Unknown gates: %s" % ", ".join(unknown), file=sys.stderr)
         return 2
+
+    _invalidate_on_header_change()
 
     if args.each_isolated:
         return _run_each_isolated(selected, args)
