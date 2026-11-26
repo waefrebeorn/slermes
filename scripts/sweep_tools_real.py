@@ -54,6 +54,9 @@ CASES = [
     ("kanban_list", {}),
     ("todo_list", {}),
     ("process", {"action": "list"}),
+    # computer_use list_apps answered {"ok": true, "message": "Use tasklist or EnumWindows"} until
+    # the Windows backend was implemented; keep it in the sweep so PROSE-only success stays caught.
+    ("computer_use", {"action": "list_apps"}),
 ]
 
 
@@ -78,6 +81,19 @@ def brief(res: dict, limit: int = 150) -> str:
         else:
             keep[k] = v
     return json.dumps(keep)[:limit]
+
+
+
+_PROSE_ONLY = {"ok", "success", "action", "message", "status", "kind", "mode", "hint", "detail", "error"}
+
+
+def _empty_success(res: dict) -> bool:
+    """A success reply that carries no data at all -- only words about itself."""
+    succeeded = res.get("ok") is True or res.get("success") is True
+    if not succeeded:
+        return False
+    data = {k: v for k, v in res.items() if k not in _PROSE_ONLY}
+    return len(data) == 0 and isinstance(res.get("message"), str) and bool(res["message"])
 
 
 def ensure_fixtures() -> None:
@@ -130,6 +146,10 @@ def main() -> int:
             suspects.append((tool, "ABSENCE", line))
         elif isinstance(res, dict) and res == {}:
             suspects.append((tool, "EMPTY", line))
+        elif isinstance(res, dict) and _empty_success(res):
+            # ok:true and nothing but a sentence. computer_use list_apps answered
+            # {"ok": true, "message": "Use tasklist or EnumWindows"} for weeks.
+            suspects.append((tool, "PROSE", line))
 
     if args.json:
         Path(args.json).write_text(json.dumps(results, indent=1), encoding="utf-8")
