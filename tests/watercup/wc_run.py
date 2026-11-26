@@ -1120,6 +1120,9 @@ SIDE_EFFECTING_FNS = frozenset({
     "_init_shadow_repo", "_run_git", "_init_store", "_touch_project",
     "restore", "clear_legacy", "_dirty_split", "worktree_list",
     "_ensure_file_checkpoint", "_maybe_checkpoint_wal",
+    # _animate() runs a frames loop against the terminal: tracing it hangs the shard (a live
+    # spinner never returns). Never import it in-process.
+    "_animate",
 })
 
 
