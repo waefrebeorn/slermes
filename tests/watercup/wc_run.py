@@ -1274,6 +1274,14 @@ def run_cup_gate(gd, g, verbose=False):
         return 1, ["MISMATCH count: C=%d Py=%d  <<< harness/twin arity differs"
                    % (len(c_cups), len(py_cups))]
 
+    # A gate whose cups do not move with the input proves nothing: both sides answer one constant
+    # (junk fixtures like "hello"/"test123" never reach the branch under test). Reporting five
+    # mismatches for it reads as five port defects; say what it is instead.
+    if len(g["inputs"]) >= 2 and len(set(c_cups)) == 1 and len(set(py_cups)) == 1:
+        return 1, ["  NON-DISCRIMINATING: every input produced one cup (C=%s Py=%s) -- the "
+                   "fixtures do not vary the answer, so this gate cannot prove parity"
+                   % (c_cups[0], py_cups[0])]
+
     fails = []
     lines = []
     for i, (inp, cc, pc) in enumerate(zip(g["inputs"], c_cups, py_cups)):
@@ -1384,6 +1392,8 @@ def main():
                     help="append a gated-surface coverage summary")
     ap.add_argument("--force", action="store_true",
                     help="rebuild every harness (ignore freshness)")
+    ap.add_argument("--gate-file", default="",
+                    help="read gate names from a file (one per line) instead of naming them")
     ap.add_argument("--shard", default="",
                     help="K/N: run only the K-th of N interleaved slices (drives a "
                          "parallel fleet run; each shard is an independent process)")
@@ -1399,6 +1409,10 @@ def main():
         print(str(e), file=sys.stderr)
         return 2
     selected = args.gates if args.gates else all_gates
+    if args.gate_file:
+        names = [ln.strip() for ln in open(args.gate_file, encoding="utf-8")
+                 if ln.strip() and not ln.startswith("#")]
+        selected = [g for g in names if g in all_gates]
     if args.shard:
         try:
             k, n = (int(x) for x in args.shard.split("/"))
