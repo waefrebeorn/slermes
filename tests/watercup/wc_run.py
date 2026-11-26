@@ -882,7 +882,24 @@ _VENDORED_SYMS = {}
 
 
 def _build_vendored_syms():
+    """Symbols exported by the vendored objects.
+
+    `nm` over every vendored .o costs ~20s, and --each-isolated starts a fresh process per gate, so
+    it ran 5,931 times. Cache it beside the archive, keyed on the member mtimes.
+    """
     import subprocess as _sp
+    import glob as _glob_v
+    cache = os.path.join(BUILD, "_vendored_syms.json")
+    members = sorted(_glob_v.glob(os.path.join(REPO, "lib", "**", "*.o"), recursive=True))
+    stamp = {m: os.path.getmtime(m) for m in members}
+    try:
+        with open(cache, encoding="utf-8") as f:
+            blob = json.load(f)
+        if blob.get("stamp") == {k: v for k, v in stamp.items()}:
+            _VENDORED_SYMS.update(blob["syms"])
+            return members
+    except (OSError, ValueError, KeyError):
+        pass
     seen_dirs = []
     for base in _VENDORED_OBJ_DIRS:
         for root, _, files in os.walk(os.path.join(REPO, base)):
@@ -897,6 +914,11 @@ def _build_vendored_syms():
                     if len(parts) >= 2 and parts[-2] in ("T", "W", "D", "B", "R"):
                         _VENDORED_SYMS.setdefault(parts[-1], p)
                 seen_dirs.append(p)
+    try:
+        with open(cache, "w", encoding="utf-8") as f:
+            json.dump({"stamp": stamp, "syms": _VENDORED_SYMS}, f)
+    except OSError:
+        pass
     return seen_dirs
 
 
