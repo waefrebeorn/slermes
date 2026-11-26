@@ -182,8 +182,8 @@ char *cvl_run_conversation(const char *kwargs_json) {
     const char *sys = json_get_str(kw, "system_message", NULL);
     if (!sys) sys = json_get_str(kw, "system", NULL);
     const char *session_key = json_get_str(kw, "session_key", NULL);
-    json_free(kw);
 
+    json_free(kw);
     if (!msg || !*msg) return strdup("{\"error\":\"no message\"}");
 
     /* Resolve the agent state: session-keyed from the gateway cache when

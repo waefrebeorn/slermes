@@ -142,9 +142,9 @@ char *x_search_handler(const char *args_json, const char *task_id) {
         char today[16];
         strftime(today, sizeof(today), "%Y-%m-%d", utc);
         if (strcmp(from_date, today) > 0) {
-            json_free(args);
             char *e = malloc(256);
             snprintf(e, 256, "{\"error\":\"from_date (%s) is in the future (today is %s)\"}", from_date, today);
+            json_free(args);
             return e;
         }
     }

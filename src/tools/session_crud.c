@@ -556,14 +556,21 @@ char *session_crud_handler(const char *args_json, const char *task_id) {
         } else {
             session_meta_t meta;
             if (db_load_meta(db, session_id, &meta)) {
-                const char *found_value = NULL;
+                /* found_value pointed into obj, which is freed before the reply is built. */
+                char found_buf[1024] = "";
+                bool found = false;
                 if (meta.meta_json[0]) {
                     json_node_t *obj = json_parse(meta.meta_json, NULL);
                     if (obj) {
-                        found_value = json_object_get_string(obj, meta_key, NULL);
+                        const char *v = json_object_get_string(obj, meta_key, NULL);
+                        if (v) {
+                            snprintf(found_buf, sizeof(found_buf), "%s", v);
+                            found = true;
+                        }
                         json_free(obj);
                     }
                 }
+                const char *found_value = found ? found_buf : NULL;
                 json_object_set(result, "operation", json_new_string("get_meta"));
                 json_object_set(result, "session_id", json_new_string(session_id));
                 json_object_set(result, "key", json_new_string(meta_key));

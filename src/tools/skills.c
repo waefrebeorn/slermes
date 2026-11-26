@@ -2308,9 +2308,14 @@ static char *skills_hub_handler(const char *args_json, const char *task_id) {
         char *err = NULL;
         json_node_t *args = json_parse(args_json, &err);
         if (args) {
-            action  = json_get_str(args, "action", "");
-            query   = json_get_str(args, "query", "");
-            slug    = json_get_str(args, "slug", "");
+            /* These three are used long after the parse tree is released (the hub search and the
+             * install both take them). json_get_str points into args, so own the strings. */
+            const char *a = json_get_str(args, "action", "");
+            const char *q = json_get_str(args, "query", "");
+            const char *sl = json_get_str(args, "slug", "");
+            if (a) action = strdup(a);
+            if (q) query = strdup(q);
+            if (sl) slug = strdup(sl);
             limit   = (size_t)json_get_num(args, "limit", 20);
             json_free(args);
         }
@@ -2349,6 +2354,9 @@ static char *skills_hub_handler(const char *args_json, const char *task_id) {
 
     char *out = json_serialize(result);
     json_free(result);
+    free((char *)action);
+    free((char *)query);
+    free((char *)slug);
     return out;
 }
 
@@ -2483,8 +2491,13 @@ bool skill_install_from_hub(const char *slug, char *error_out, size_t err_sz) {
         return false;
     }
 
-    const char *skill_md_url = json_get_str(detail, "skillMdUrl", "");
-    const char *name = json_get_str(detail, "name", slug);
+    /* Both point into `detail`, which is freed below but used for the rest of the install (the fetch
+     * URL and the destination directory), so own them. */
+    char md_url[1024];
+    char name[256];
+    snprintf(md_url, sizeof(md_url), "%s", json_get_str(detail, "skillMdUrl", ""));
+    snprintf(name, sizeof(name), "%s", json_get_str(detail, "name", slug));
+    const char *skill_md_url = md_url;
     if (!skill_md_url[0]) {
         if (error_out) snprintf(error_out, err_sz, "No skillMdUrl for '%s'", slug);
         json_free(detail);

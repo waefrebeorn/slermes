@@ -595,13 +595,15 @@ static char *handle_hex(const char *args_json) {
         FILE *fs = fopen(path, "rb");
         long fsize = 0;
         if (fs) { fseek(fs, 0, SEEK_END); fsize = ftell(fs); fclose(fs); }
-        json_free(args);
+        /* `path` points into args, and it is echoed back in the reply: freeing args first made the
+         * response's own path field a read of freed memory. */
         json_node_t *r = json_new_object();
         json_object_set(r, "path", json_new_string(path));
         json_object_set(r, "offset", json_new_number((double)start_off));
         json_object_set(r, "bytes_read", json_new_number(0.0));
         json_object_set(r, "file_size", json_new_number((double)fsize));
         json_object_set(r, "hex", json_new_string(""));
+        json_free(args);
         char *out = json_serialize(r);
         json_free(r);
         return out;
