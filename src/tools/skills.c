@@ -1992,8 +1992,13 @@ char *skills_search_handler(const char *args_json, const char *task_id) {
         char *err = NULL;
         json_node_t *args = json_parse(args_json, &err);
         if (args) {
-            query = json_get_str(args, "query", NULL);
-            tags = json_get_str(args, "tags", NULL);
+            /* json_get_str returns a pointer INTO args: keeping it past json_free(args) meant the query
+             * was read from freed memory, which is how skill_search answered query:"" and ignored the
+             * search entirely while still returning results. */
+            const char *q = json_get_str(args, "query", NULL);
+            const char *t = json_get_str(args, "tags", NULL);
+            if (q) query = strdup(q);
+            if (t) tags = strdup(t);
             max_results = (size_t)json_get_num(args, "max_results", 20);
             search_hub = json_get_num(args, "hub", 0) > 0.0;
             json_free(args);
@@ -2043,6 +2048,8 @@ char *skills_search_handler(const char *args_json, const char *task_id) {
 
     char *out = json_serialize(result);
     json_free(result);
+    free((char *)query);
+    free((char *)tags);
     return out;
 }
 
