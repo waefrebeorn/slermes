@@ -105,16 +105,19 @@ char *kanban_create_task(const kanban_task_spec_t *spec)
 
     char *id = kdb_create_task(conn, &cspec, parents);
 
-    /* initial_status: engine defaults to todo; legacy allowed "running"/"blocked"/
-     * "triage". We honor triage via spec->triage; for explicit initial_status we
-     * transition if needed (best-effort, matches legacy default behavior). */
-    if (id && spec->initial_status && *spec->initial_status &&
-        strcmp(spec->initial_status, "triage") != 0 &&
-        strcmp(spec->initial_status, "running") == 0) {
-        kdb_assign_task(conn, id, spec->assignee);
-        kdb_claim_task(conn, id, -1, NULL);
-        kdb_complete_task(conn, id, NULL, "auto-accepted", NULL, NULL, -1);
-        kdb_recompute_ready(conn, -1);
+    /* initial_status: upstream validates it against {running, blocked} (kanban_db.py
+     * VALID_INITIAL_STATUSES) and initial_task_state() decides the stored status. "running" means
+     * assigned and claimed -- this used to also call kdb_complete_task(..., "auto-accepted"), so a
+     * task created as running came back done, with a result string upstream never writes.
+     * "blocked" parks it for human ops. */
+    if (id && spec->initial_status && *spec->initial_status) {
+        if (strcmp(spec->initial_status, "running") == 0) {
+            kdb_assign_task(conn, id, spec->assignee);
+            kdb_claim_task(conn, id, -1, NULL);
+            kdb_recompute_ready(conn, -1);
+        } else if (strcmp(spec->initial_status, "blocked") == 0) {
+            kdb_block_task(conn, id, "initial_status", NULL, -1);
+        }
     }
 
     for (int i = 0; i < np; i++) free(parents[i]);
@@ -182,6 +185,15 @@ bool kanban_heartbeat(const char *tid)
 /* List all task ids on the default board. Returns a NULL-terminated array
  * (caller frees with kanban_all_task_ids_free). `limit` <= 0 => no cap
  * (and *limit is set to the count). */
+/* PoP: kanban_recompute_ready @ tools/kanban_tools.py:_handle_list (kb.recompute_ready(conn))
+ * Upstream promotes dependencies cleared since the last dispatcher tick before listing, so an
+ * orchestrator sees a task become ready immediately instead of one tick late. */
+int kanban_recompute_ready(void) {
+    sqlite3 *conn = adapter_conn();
+    if (!conn) return 0;
+    return kdb_recompute_ready(conn, -1);
+}
+
 char **kanban_all_task_ids(int *limit)
 {
     sqlite3 *conn = adapter_conn();

@@ -101,13 +101,27 @@ static char *handle_list(const char *args_json, const char *task_id) {
     const char *status   = json_get_str(args, "status", "");
     const char *tenant   = json_get_str(args, "tenant", "");
     bool include_archived = json_get_bool(args, "include_archived", false);
-    int limit = (int)json_get_num(args, "limit", KANBAN_LIST_LIMIT_DEFAULT);
-    if (limit < 1) limit = 1;
-    if (limit > KANBAN_LIST_LIMIT_MAX) limit = KANBAN_LIST_LIMIT_MAX;
+    /* limit is the caller's number and stays that way. kanban_all_task_ids() writes the number of
+     * ids it found back through its pointer, so passing &limit made every reply report
+     * "limit": <count> -- a request for 50 answered limit 1. Ask for one more than the caller wants,
+     * the way upstream does, so truncation is visible without dumping the board. */
+    long limit_arg = (long)json_get_num(args, "limit", KANBAN_LIST_LIMIT_DEFAULT);
+    if (limit_arg < 1 || limit_arg > KANBAN_LIST_LIMIT_MAX) {
+        json_free(args);
+        char why[128];
+        snprintf(why, sizeof(why),
+                 "{\"error\":\"limit must be between 1 and %d\"}", KANBAN_LIST_LIMIT_MAX);
+        return strdup(why);
+    }
+    int limit = (int)limit_arg;
+    int fetch = limit + 1;
+
+    /* Dependencies cleared since the last dispatcher tick become ready before we list. */
+    kanban_recompute_ready();
 
     /* The engine's list covers all boards; for the tool we filter by the
      * default board via the adapter. We gather via kanban_read_task per id. */
-    char **ids = kanban_all_task_ids(&limit);  /* adapter helper */
+    char **ids = kanban_all_task_ids(&fetch);  /* adapter helper */
     json_t *tasks = json_array();
     int count = 0;
     bool truncated = false;
@@ -135,6 +149,11 @@ static char *handle_list(const char *args_json, const char *task_id) {
     json_set(result, "count", json_number((double)count));
     json_set(result, "limit", json_number((double)limit));
     json_set(result, "truncated", json_bool(truncated));
+    if (truncated && limit < KANBAN_LIST_LIMIT_MAX)
+        json_set(result, "next_limit", json_number((double)(limit * 2 > KANBAN_LIST_LIMIT_MAX
+                                                               ? KANBAN_LIST_LIMIT_MAX : limit * 2)));
+    else
+        json_set(result, "next_limit", json_null());
     char *out = json_serialize(result);
     json_free(result);
     json_free(args);
@@ -240,6 +259,13 @@ static char *handle_create(const char *args_json, const char *task_id) {
     spec.workspace_path = json_get_str(args, "workspace_path", "");
     spec.triage = json_get_bool(args, "triage", false);
     spec.initial_status = json_get_str(args, "initial_status", "");
+    /* Upstream validates this (kanban_db.py: VALID_INITIAL_STATUSES) and raises; accepting any
+     * string here means a typo is silently ignored and the task lands in the default state. */
+    if (*spec.initial_status && strcmp(spec.initial_status, "running") != 0 &&
+        strcmp(spec.initial_status, "blocked") != 0) {
+        json_free(args);
+        return strdup("{\"error\":\"initial_status must be one of: blocked, running\"}");
+    }
     spec.created_by = getenv("HERMES_PROFILE");
     if (!spec.created_by || !*spec.created_by) spec.created_by = "worker";
     if (!*spec.title || !*spec.assignee) {
