@@ -30,8 +30,23 @@ DEF_RE = re.compile(
     r"^(?!\s)(?:[A-Za-z_][\w \t\*]*?[\s\*])(\w+)\s*\(([^;{]*)\)\s*\{", re.M)
 
 
+_COMMENT_RE = re.compile(r"/\*.*?\*/|//[^\n]*", re.S)
+_STRING_RE = re.compile(r'"(?:\\.|[^"\\])*"')
+
+
+def strip_comments(text: str) -> str:
+    """Definitions inside /* ... */ and // ... are not definitions.
+
+    agent_pet atlas, delegate_tool and turn_retry_state each carry a commented-out definition beside
+    the real one; without this the report claimed 31 missing symbols that were never compiled."""
+    # Blank the comment bodies (keeping newlines so line-based regexes still work), then the string
+    # literals, so a definition-like fragment inside either cannot match.
+    text = _COMMENT_RE.sub(lambda m: "\n" * m.group(0).count("\n"), text)
+    return _STRING_RE.sub('""', text)
+
+
 def source_defs(path: Path) -> list[str]:
-    text = path.read_text(encoding="utf-8", errors="replace")
+    text = strip_comments(path.read_text(encoding="utf-8", errors="replace"))
     out = []
     # A `static` prototype earlier in the file makes the later unstyled definition internal. That is
     # C, not a defect: memory_storage.c declares 32 vtable helpers static at the top and defines them

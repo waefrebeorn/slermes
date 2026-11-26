@@ -84,6 +84,7 @@ def main() -> int:
 
     agree = failed = 0
     accepted: list[str] = []
+    gateway_blocked: list[str] = []
     for case in case_list:
         name = case["name"]
         want = json.loads(manage_connections(case["args"]))
@@ -92,6 +93,12 @@ def main() -> int:
             # Upstream accepted it, so it would go on to the hosted client and there is nothing to
             # compare in C. Counted apart, never as agreement.
             accepted.append(name)
+            continue
+        # A gateway we cannot reach fails before upstream ever validates its arguments, so its answer
+        # says nothing about validation. Comparing against it reported three "problems" that were the
+        # missing portal token, not a disagreement in C.
+        if "portal access token" in str(want.get("error", "")):
+            gateway_blocked.append(name)
             continue
         if have == want:
             agree += 1
@@ -102,9 +109,12 @@ def main() -> int:
             print(f"   got:  {have}")
 
     print(f"connectors-validation oracle: {agree} agree, {len(accepted)} accepted by upstream "
-          f"(execution path, not compared), {failed} problem(s)")
+          f"(execution path, not compared), {len(gateway_blocked)} blocked by the gateway, "
+          f"{failed} problem(s)")
     if accepted:
         print(f"  not compared: {', '.join(accepted)}")
+    if gateway_blocked:
+        print(f"  gateway unavailable: {', '.join(gateway_blocked)}")
     if not args.keep:
         for p in (tin, tout):
             p.unlink(missing_ok=True)

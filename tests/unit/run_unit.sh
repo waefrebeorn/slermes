@@ -42,7 +42,24 @@ fi
 echo "== onboarding_flow_oracle (differential: C port vs session_rules.onboarding_flow)"
 # The port's contract is "same answer as Python", so the check is a real differential run over the
 # quarry flow, not a hand-written expectation table.
-PYBIN="${PYTHON:-python}"
+# The oracles import the Python quarry, and the quarry resolves its own home directory through
+# Path.home(), which needs USERPROFILE/LOCALAPPDATA/HOME. A shell started by a launcher that strips
+# the environment makes every one of them fail with "Could not determine home directory" while the C
+# side is untouched, so provide the defaults here the same way build/config.mk does for make.
+export USERPROFILE="${USERPROFILE:-C:/Users/eman5}"
+export LOCALAPPDATA="${LOCALAPPDATA:-C:/Users/eman5/AppData/Local}"
+export HOME="${HOME:-/c/Users/eman5}"
+
+# The oracles import the Python quarry (agent/, utils/, tools/), which needs the quarry's own
+# dependencies -- ruamel.yaml and snowballstemmer are not in a bare interpreter, and without them
+# four differential oracles "fail" on an import while the C side is fine. Prefer the quarry venv.
+if [ -n "${PYTHON:-}" ]; then
+    PYBIN="$PYTHON"
+elif [ -x /c/Users/eman5/hermes-agent/.venv/Scripts/python.exe ]; then
+    PYBIN=/c/Users/eman5/hermes-agent/.venv/Scripts/python.exe
+else
+    PYBIN=python
+fi
 if command -v "$PYBIN" >/dev/null 2>&1; then
     if PATH="/c/msys64/mingw64/bin:$PATH" "$PYBIN" tests/oracle/onboarding_flow_oracle.py; then
         :

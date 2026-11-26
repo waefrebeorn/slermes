@@ -144,6 +144,8 @@ void turn_retry_state_set_invalid_encrypted_content_retry_attempted(turn_retry_s
 
 /* PoP: turn_retry_state_get_image_shrink_retry_attempted @ agent/turn_retry_state.py:TurnRetryState */
 bool turn_retry_state_get_image_shrink_retry_attempted(const turn_retry_state_t *s) {
+    return s ? s->f[IDX_image_shrink_retry_attempted] : false;
+}
 
 /* PoP: turn_retry_state_get_native_compaction_reject_retry_attempted @ agent/turn_retry_state.py:TurnRetryState */
 bool turn_retry_state_get_native_compaction_reject_retry_attempted(const turn_retry_state_t *s) {
@@ -152,8 +154,6 @@ bool turn_retry_state_get_native_compaction_reject_retry_attempted(const turn_re
 /* PoP: turn_retry_state_set_native_compaction_reject_retry_attempted @ agent/turn_retry_state.py:TurnRetryState */
 void turn_retry_state_set_native_compaction_reject_retry_attempted(turn_retry_state_t *s, bool v) {
     if (s) s->f[IDX_native_compaction_reject_retry_attempted] = v;
-}
-    return s ? s->f[IDX_image_shrink_retry_attempted] : false;
 }
 /* PoP: turn_retry_state_set_image_shrink_retry_attempted @ agent/turn_retry_state.py:TurnRetryState */
 void turn_retry_state_set_image_shrink_retry_attempted(turn_retry_state_t *s, bool v) {

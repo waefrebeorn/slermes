@@ -793,7 +793,16 @@ static inline void *memmem(const void *haystack, size_t haystacklen,
 /* strndup() is a POSIX/GNU extension that MSYS2's runtime provides and the
  * winlibs UCRT runtime does not. ~50 call sites in this tree use it, so it is
  * shimmed here rather than at each one. Semantics match POSIX: at most n bytes
- * are copied and the result is always NUL-terminated. */
+ * are copied and the result is always NUL-terminated.
+ *
+ * The guard mirrors mingw-w64's own <string.h>, which declares strndup under
+ * _GNU_SOURCE / _POSIX_C_SOURCE >= 200809 / _XOPEN_SOURCE >= 700 / C23. Without it a
+ * translation unit that pulls in the Windows headers first (guiddef.h -> winnt.h -> string.h)
+ * gets "static declaration of 'strndup' follows non-static declaration" and fails to build --
+ * that is what stopped tests/unit's setup_beat build. */
+#if !defined(_GNU_SOURCE) && !(defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE + 0 >= 200809L) && \
+    !(defined(_XOPEN_SOURCE) && _XOPEN_SOURCE + 0 >= 700) && \
+    !(defined(__STDC_VERSION__) && __STDC_VERSION__ + 0 >= 202311L)
 static inline char *strndup(const char *s, size_t n) {
     if (!s) return NULL;
     size_t len = 0;
@@ -804,6 +813,7 @@ static inline char *strndup(const char *s, size_t n) {
     out[len] = '\0';
     return out;
 }
+#endif /* runtime does not declare strndup */
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
