@@ -78,23 +78,23 @@ bool msg_has_payload(const json_t *msg)
 
     json_t *content = json_obj_get(msg, "content");
 
-    /* Python: if isinstance(content, str): if content.strip(): return True */
-    if (content && content->type == JSON_STRING)
-        return json_str_nonblank(content);
-
-    /* Python: elif isinstance(content, list): for block in content: ... */
-    if (content && content->type == JSON_ARRAY)
-        return content_list_has_payload(content);
-
-    /* Python: elif content not in (None, ""): return True
-     * i.e. content is a dict / number / bool / any non-None, non-empty-string
-     * value.  Note Python `not in (None, "")` is NOT a truthiness check:
-     * False, {}, 0, [] all pass (a list would have been caught above, so
-     * only dict/number/bool reach here). */
-    if (content && content->type != JSON_NULL && content->type != JSON_STRING)
-        return true;
-
-    /* content is None or "" — fall through to structural checks */
+    /* Python (session_rules/turns.py:1439) is
+     *     _content_has_payload(msg.get("content")) or bool(<structural fields>)
+     * — the structural checks are ORed in, so they always run. Returning early for a string
+     * content made every later check unreachable whenever content was a JSON string, and a
+     * Codex turn that persists `content: ""` with its text in codex_message_items was reported as
+     * having no payload: the repair then rewrote a designed-empty turn.
+     * tests/watercup caught it; the gate's notes name the same two inputs. */
+    bool content_payload = false;
+    if (content && content->type == JSON_STRING) {
+        content_payload = json_str_nonblank(content);
+    } else if (content && content->type == JSON_ARRAY) {
+        content_payload = content_list_has_payload(content);
+    } else if (content && content->type != JSON_NULL) {
+        /* Python: `content not in (None, "")` — not a truthiness test: False, {}, 0 all count. */
+        content_payload = true;
+    }
+    if (content_payload) return true;
 
     /* Python:
      *   if msg.get("tool_calls"): return True

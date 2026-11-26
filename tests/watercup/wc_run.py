@@ -57,6 +57,14 @@ from contextlib import suppress
 
 os.environ["WATERCUP_NO_BROWSER"] = "1"
 
+# The gate's Python twin imports the quarry (agent/, utils/, gateway/), which resolves its own home
+# through Path.home(); a launcher that strips USERPROFILE makes every gate fail with "Could not
+# determine home directory" while the C side is untouched. Default the three variables the same way
+# build/config.mk and tests/unit/run_unit.sh do.
+os.environ.setdefault("USERPROFILE", "C:/Users/eman5")
+os.environ.setdefault("LOCALAPPDATA", "C:/Users/eman5/AppData/Local")
+os.environ.setdefault("HOME", "C:/Users/eman5")
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 GATES = os.path.join(HERE, "gates")
 BUILD = os.path.join(HERE, "build")
