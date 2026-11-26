@@ -16,6 +16,7 @@
  *   - build_execute_code_schema (returns schema dict, C has static SCHEMA)
  */
 
+#include "terminal_cmd.h"        /* run_command: the native shell runner */
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_json.h"
@@ -51,18 +52,80 @@ static bool has_bwrap(void) {
     return found;
 }
 
+#ifdef _WIN32
+/* A native process cannot see /tmp: mkstemps("/tmp/...") failed, and the tool answered "Cannot create
+ * temp file" for every call. Use the real temp directory, and a name unique per process+counter. */
+static int exec_temp_file(char *out, size_t cap) {
+    char dir[MAX_PATH];
+    if (!GetTempPathA(sizeof(dir), dir)) snprintf(dir, sizeof(dir), ".\\");
+    static unsigned counter = 0;
+    snprintf(out, cap, "%sslermes_exec_%lu_%u.py", dir,
+             (unsigned long)GetCurrentProcessId(), ++counter);
+    FILE *f = fopen(out, "wb");
+    if (!f) return -1;
+    fclose(f);
+    return 0;
+}
+
+/* Which interpreter? The one the operator named, else whatever the machine actually has. */
+static const char *py_exe(void) {
+    const char *env = getenv("HERMES_PYTHON");
+    if (!env || !*env) env = getenv("SLERMES_PYTHON");
+    if (env && *env) return env;
+    static char found[MAX_PATH];
+    static int resolved = 0;
+    if (!resolved) {
+        resolved = 1;
+        const char *cands[] = { "python.exe", "python3.exe", "py.exe", NULL };
+        for (size_t i = 0; cands[i]; i++) {
+            char loc[MAX_PATH];
+            if (SearchPathA(NULL, cands[i], NULL, sizeof(loc), loc, NULL)) {
+                snprintf(found, sizeof(found), "%s", loc);
+                return found;
+            }
+        }
+        snprintf(found, sizeof(found), "python");
+    }
+    return found;
+}
+#endif
+
 /* Port of Python: execute_code (simplified — local subprocess, no RPC) */
 static char *run_python(const char *code, int timeout_sec, bool sandbox_mode) {
     if (!code) return strdup("{\"error\":\"No code provided\"}");
 
     /* Write code to temp file */
+#ifdef _WIN32
+    char tmp_path[MAX_PATH + 40];
+    if (exec_temp_file(tmp_path, sizeof(tmp_path)) != 0)
+        return strdup("{\"error\":\"Cannot create temp file\"}");
+    int fd = -1;
+#else
     char tmp_path[] = "/tmp/hermes_exec_XXXXXX.py";
     int fd = mkstemps(tmp_path, 3);
     if (fd < 0) return strdup("{\"error\":\"Cannot create temp file\"}");
+#endif
+#ifdef _WIN32
+    FILE *f = fopen(tmp_path, "wb");
+    if (!f) return strdup("{\"error\":\"Cannot write temp file\"}");
+#else
     FILE *f = fdopen(fd, "w");
     if (!f) { close(fd); return strdup("{\"error\":\"Cannot write temp file\"}"); }
+#endif
     fputs(code, f);
     fclose(f);
+
+#ifdef _WIN32
+    /* One native runner for both tools: it owns the timeout and the merged output. */
+    {
+        char cmd[2048];
+        snprintf(cmd, sizeof(cmd), "\"%s\" \"%s\"", py_exe(), tmp_path);
+        char *res = run_command(cmd, timeout_sec > 0 ? timeout_sec : EXEC_DEFAULT_TIMEOUT);
+        DeleteFileA(tmp_path);
+        if (res) return res;
+        return strdup("{\"error\":\"could not start python\"}");
+    }
+#endif
 
     /* Build command with timeout and optional sandbox */
     char cmd[65536];

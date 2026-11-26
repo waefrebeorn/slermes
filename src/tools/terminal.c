@@ -100,11 +100,205 @@ static const char *safe_command_preview(const char *command, int limit) {
  *  Execution
  * ================================================================ */
 
+#ifdef _WIN32
+/* ── native execution ────────────────────────────────────────────────────────────────────────────
+ *
+ * The old path was `timeout 30 sh -c '(<cmd>) 2>&1' 2>/dev/null || true` through popen(). On Windows
+ * none of `timeout`, `sh` or a POSIX shell need exist; `2>/dev/null` is not even valid there, so the
+ * whole line goes to cmd.exe, fails, and the caller gets exit_code 1 with empty output -- the terminal
+ * tool, of all things, could not run `echo hello`. `|| true` then hid the failure as well.
+ *
+ * This runs the command for real: a shell chosen from the environment or from the usual install
+ * locations, CreateProcess with merged stdout/stderr, a real timeout that terminates the process, and
+ * the process's own exit code.
+ */
+static int win_shell_path(char *out, size_t cap) {
+    const char *env = getenv("HERMES_SHELL");
+    if (!env || !*env) env = getenv("SLERMES_SHELL");
+    if (env && *env) {
+        snprintf(out, cap, "%s", env);
+        return 1;
+    }
+    /* Prefer bash when one is installed: the tool's own documentation and the commands agents write
+     * are POSIX. A file check is honest about what exists on this machine. */
+    static const char *candidates[] = {
+        "C:/msys64/usr/bin/bash.exe",
+        "C:/msys64/mingw64/bin/bash.exe",
+        "C:/Program Files/Git/bin/bash.exe",
+        "C:/Program Files/Git/usr/bin/bash.exe",
+        NULL,
+    };
+    for (size_t i = 0; candidates[i]; i++) {
+        FILE *f = fopen(candidates[i], "rb");
+        if (f) { fclose(f); snprintf(out, cap, "%s", candidates[i]); return 1; }
+    }
+    /* cmd.exe always exists and tells the truth about what it can run. */
+    snprintf(out, cap, "%s", getenv("COMSPEC") ? getenv("COMSPEC") : "C:\\Windows\\System32\\cmd.exe");
+    return 2;   /* 2 == not bash */
+}
+
+static char *run_command_win32(const char *command, int timeout_sec) {
+    char shell[MAX_PATH * 2];
+    int kind = win_shell_path(shell, sizeof(shell));
+    int is_bash = (kind == 1);
+
+    /* A script file instead of a -c string: no quoting rules to get wrong, and the user's command
+     * arrives byte for byte. */
+    char tmpdir[MAX_PATH];
+    if (!GetTempPathA(sizeof(tmpdir), tmpdir)) snprintf(tmpdir, sizeof(tmpdir), ".\\");
+    char script[MAX_PATH + 32];
+    snprintf(script, sizeof(script), "%sslermes_cmd_%lu.%s", tmpdir,
+             (unsigned long)GetCurrentProcessId(), is_bash ? "sh" : "bat");
+
+    FILE *sf = fopen(script, "wb");
+    if (!sf) {
+        char buf[256];
+        snprintf(buf, sizeof(buf), "{\"error\": \"cannot write the command script: %s\"}",
+                 safe_command_preview(command, 80));
+        return strdup(buf);
+    }
+    if (!is_bash) fputs("@echo off\r\n", sf);
+    fputs(command, sf);
+    fputs(is_bash ? "\n" : "\r\n", sf);
+    if (!is_bash) fputs("exit /b %ERRORLEVEL%\r\n", sf);
+    fclose(sf);
+
+    char cmdline[MAX_PATH * 3];
+    snprintf(cmdline, sizeof(cmdline), is_bash ? "\"%s\" --login \"%s\"" : "\"%s\" /d /s /c \"%s\"",
+             shell, script);
+
+    SECURITY_ATTRIBUTES sa = { sizeof(sa), NULL, TRUE };
+    HANDLE rd = NULL, wr = NULL;
+    if (!CreatePipe(&rd, &wr, &sa, 0)) {
+        DeleteFileA(script);
+        return strdup("{\"error\": \"CreatePipe failed\"}");
+    }
+    SetHandleInformation(rd, HANDLE_FLAG_INHERIT, 0);
+
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+    memset(&si, 0, sizeof(si));
+    si.cb = sizeof(si);
+    si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+    si.wShowWindow = SW_HIDE;
+    si.hStdOutput = wr;
+    si.hStdError = wr;
+    si.hStdInput = NULL;
+
+    if (!CreateProcessA(NULL, cmdline, NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
+        CloseHandle(rd);
+        CloseHandle(wr);
+        DeleteFileA(script);
+        char buf[256];
+        snprintf(buf, sizeof(buf),
+                 "{\"error\": \"could not start the shell (%s): %lu\"}", shell,
+                 (unsigned long)GetLastError());
+        return strdup(buf);
+    }
+    CloseHandle(wr);
+
+    size_t max_bytes = (size_t)tool_output_get_max_bytes();
+    size_t cap = 4096, len = 0;
+    char *output = (char *)malloc(cap);
+    if (!output) {
+        TerminateProcess(pi.hProcess, 1);
+        CloseHandle(pi.hProcess); CloseHandle(pi.hThread); CloseHandle(rd);
+        DeleteFileA(script);
+        return strdup("{\"error\": \"OOM\"}");
+    }
+    output[0] = '\0';
+
+    DWORD wait_ms = (DWORD)((timeout_sec > 0 ? timeout_sec : DEFAULT_TIMEOUT) * 1000);
+    int timed_out = 0;
+    char chunk[4096];
+    for (;;) {
+        DWORD avail = 0;
+        if (!PeekNamedPipe(rd, NULL, 0, NULL, &avail, NULL)) break;
+        if (avail > 0) {
+            DWORD got = 0;
+            if (!ReadFile(rd, chunk, sizeof(chunk) - 1, &got, NULL) || got == 0) break;
+            if (len + got + 1 >= max_bytes) {
+                size_t room = max_bytes > len + 16 ? max_bytes - len - 16 : 0;
+                memcpy(output + len, chunk, room);
+                len += room;
+                memcpy(output + len, "\n...[truncated]", 16);
+                len += 16;
+                output[len] = '\0';
+                TerminateProcess(pi.hProcess, 124);
+                timed_out = 2;   /* truncated, not a timeout */
+                break;
+            }
+            if (len + got + 1 > cap) {
+                cap = (len + got + 1) * 2;
+                char *nb = (char *)realloc(output, cap);
+                if (!nb) break;
+                output = nb;
+            }
+            memcpy(output + len, chunk, got);
+            len += got;
+            output[len] = '\0';
+            continue;
+        }
+        if (WaitForSingleObject(pi.hProcess, 25) == WAIT_OBJECT_0) {
+            /* drain anything left */
+            DWORD left = 0;
+            while (PeekNamedPipe(rd, NULL, 0, NULL, &left, NULL) && left > 0) {
+                DWORD got = 0;
+                if (!ReadFile(rd, chunk, sizeof(chunk) - 1, &got, NULL) || got == 0) break;
+                if (len + got + 1 > cap) {
+                    cap = (len + got + 1) * 2;
+                    char *nb = (char *)realloc(output, cap);
+                    if (!nb) break;
+                    output = nb;
+                }
+                memcpy(output + len, chunk, got);
+                len += got;
+                output[len] = '\0';
+            }
+            break;
+        }
+        wait_ms = wait_ms > 25 ? wait_ms - 25 : 0;
+        if (wait_ms == 0) {
+            TerminateProcess(pi.hProcess, 124);
+            WaitForSingleObject(pi.hProcess, 2000);
+            timed_out = 1;
+            break;
+        }
+    }
+
+    DWORD exit_code = 0;
+    GetExitCodeProcess(pi.hProcess, &exit_code);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+    CloseHandle(rd);
+    DeleteFileA(script);
+
+    json_node_t *result = json_new_object();
+    json_object_set(result, "exit_code", json_new_number((double)exit_code));
+    json_object_set(result, "output", json_new_string(output));
+    json_object_set(result, "command", json_new_string(command));
+    json_object_set(result, "shell", json_new_string(shell));
+    json_object_set(result, "status", json_new_string(
+        timed_out == 1 ? "timeout" : (exit_code == 0 ? "success" : "error")));
+    json_object_set(result, "truncated", json_new_bool(timed_out == 2));
+    if (timed_out == 1) {
+        json_object_set(result, "error", json_new_string("the command exceeded its timeout and was stopped"));
+    }
+    char *json_out = json_serialize(result);
+    json_free(result);
+    free(output);
+    return json_out;
+}
+#endif /* _WIN32 */
+
 /* Shared with terminal_cmd.c, which src/tools/terminal_cmd.h declares. It was `static` here, so the
  * sibling TU had no definition to bind to and the link reported `run_command` undefined. */
 char *run_command(const char *command, int timeout_sec) {
     if (!command) return strdup("{\"error\": \"No command provided\"}");
 
+#ifdef _WIN32
+    return run_command_win32(command, timeout_sec);
+#else
     /* Use popen with a simple exec */
     char full_cmd[16384];
     snprintf(full_cmd, sizeof(full_cmd),
@@ -164,6 +358,7 @@ char *run_command(const char *command, int timeout_sec) {
     json_free(result);
     free(output);
     return json_out;
+#endif /* !_WIN32 */
 }
 
 /* F09: PTY mode execution using forkpty */
