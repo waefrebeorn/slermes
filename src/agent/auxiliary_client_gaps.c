@@ -83,11 +83,8 @@ double aux_stream_deadline(double deadline) {
     return deadline;
 }
 
-/* PoP: client_declares @ agent/auxiliary_client.py:_client_declares */
-int client_declares(const char *client_obj, const char *flag) {
-    (void)client_obj; (void)flag;
-    return 0;
-}
+/* client_declares moved to src/agent/client_declares.c: it now answers from a declaration
+ * registry instead of returning a constant 0 for every client and flag. */
 
 /* PoP: nous_policy_blocks @ agent/auxiliary_client.py:nous_policy_blocks */
 char *nous_policy_blocks(void) {
@@ -164,10 +161,52 @@ char *compression_fast_lane_controls(void) {
     return strdup("{}");
 }
 
-/* PoP: managed_local_netloc @ agent/auxiliary_managed_local.py:_managed_local_netloc */
+/* PoP: managed_local_netloc @ agent/auxiliary_managed_local.py:_managed_local_netloc
+ *
+ * Python returns "host:port" of the managed local llama-server ("" when none), read from the
+ * supervisor state file. 0 for every input was indistinguishable from "no managed server". The C
+ * signature returns a predicate over the same state: 1 when the state file names a netloc. */
 int managed_local_netloc(const char *netloc) {
-    (void)netloc;
-    return 0;
+    (void)netloc;                        /* the Python fn takes no argument; the walk passes one */
+    static time_t cached_at;
+    static int cached = -1;
+    time_t now = time(NULL);
+    if (cached >= 0 && now - cached_at < 5) return cached;   /* _MANAGED_LOCAL_STATE_TTL_S */
+
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) home = getenv("HOME");
+    cached = 0;
+    if (home && *home) {
+        char path[4096];
+        snprintf(path, sizeof path, "%s/local_runtime/state.json", home);
+        FILE *f = fopen(path, "r");
+        if (!f) {
+            snprintf(path, sizeof path, "%s/state/local_runtime.json", home);
+            f = fopen(path, "r");
+        }
+        if (f) {
+            char buf[8192];
+            size_t n = fread(buf, 1, sizeof buf - 1, f);
+            fclose(f);
+            buf[n] = '\0';
+            char *err = NULL;
+            json_t *root = json_parse(buf, &err);
+            free(err);
+            if (root) {
+                json_t *bu = json_obj_get(root, "base_url");
+                const char *url = bu && bu->type == JSON_STRING ? bu->str_val : NULL;
+                if (url && *url) {
+                    const char *s2 = url;
+                    const char *scheme = strstr(url, "://");
+                    if (scheme) s2 = scheme + 3;
+                    if (*s2 && *s2 != '/') cached = 1;      /* an authority, hence a netloc */
+                }
+                json_free(root);
+            }
+        }
+    }
+    cached_at = now;
+    return cached;
 }
 
 /* PoP: is_managed_local_endpoint @ agent/auxiliary_managed_local.py:_is_managed_local_endpoint */
@@ -198,10 +237,47 @@ int is_managed_local_endpoint(const char *base_url, const char *managed_netloc) 
     return 1;
 }
 
-/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
+/* PoP: affordable_max_tokens_from_error @ agent/auxiliary_client.py:_affordable_max_tokens_from_error
+ *
+ * 4096 was a constant: the retry budget for a credit-limited 402 was invented, not read from the
+ * provider's own sentence. Python parses "...but can only afford 7117" (thousands separators
+ * allowed), keeps a 64-token margin so provider-side rounding cannot 402 the retry again, and
+ * treats anything under 512 as exhaustion (returns None -> 0 here). */
+#define AC_AFFORDABLE_MARGIN 64
+#define AC_AFFORDABLE_FLOOR  512
+
+static const char *ac_ci_find(const char *hay, const char *needle) {
+    if (!hay || !needle || !*needle) return NULL;
+    size_t n = strlen(needle);
+    for (const char *p = hay; *p; p++) {
+        size_t i = 0;
+        while (i < n && p[i] && tolower((unsigned char)p[i]) == tolower((unsigned char)needle[i])) i++;
+        if (i == n) return p;
+    }
+    return NULL;
+}
+
 int affordable_max_tokens_from_error(const char *error) {
-    (void)error;
-    return 4096;
+    if (!error || !*error) return 0;
+    const char *tail = ac_ci_find(error, "can only afford");
+    if (!tail) return 0;
+    tail += strlen("can only afford");
+    while (*tail == ' ' || *tail == '\t' || *tail == '\n' || *tail == '\r') tail++;
+    if (*tail < '0' || *tail > '9') return 0;
+    long long value = 0;
+    for (const char *q = tail; *q; q++) {
+        if (*q >= '0' && *q <= '9') {
+            value = value * 10 + (*q - '0');
+            if (value > 2000000000LL) { /* saturate: this return type cannot hold more */ 
+                value = 2000000000LL;
+                break;
+            }
+        } else if (*q != ',') {
+            break;                       /* the count ended */
+        }
+    }
+    long long capped = value - AC_AFFORDABLE_MARGIN;
+    return capped >= AC_AFFORDABLE_FLOOR ? (int)capped : 0;
 }
 
 /* PoP: create_with_progress_once @ agent/auxiliary_client.py:_create_with_progress_once */

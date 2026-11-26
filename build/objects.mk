@@ -11,6 +11,29 @@
 
 
 # ── CLI_OBJ ──
+CLI_OBJ = $(CUPBOARD_ORPHANS) $(CUPBOARD_HERMES_CLI) $(CUPBOARD_CLI) \
+    $(CUPBOARD_AGENT) $(CUPBOARD_GATEWAY) $(CUPBOARD_TOOLS) $(CUPBOARD_CRON) \
+    $(CUPBOARD_MISC) $(PORT_OBJ)
+
+# ── PORT_OBJ ──
+PORT_OBJ = $(CUPBOARD_PORT_HERMES_CLI) $(CUPBOARD_PORT_CLI) \
+    $(CUPBOARD_PORT_AGENT) $(CUPBOARD_PORT_WIRED) $(CUPBOARD_PORT_GATEWAY) \
+    $(CUPBOARD_PORT_TOOLS) $(CUPBOARD_PORT_CRON) $(CUPBOARD_PORT_PLUGINS) \
+    $(CUPBOARD_PORT_MISC) $(PORTS_LINKED_OBJ) $(CUPBOARD_UNBUILT_MODS)
+
+# ── Object File Lists ──────────────────────────────────────────────
+# build/objects.mk -- cupboards and jars.
+#
+# Each CUPBOARD_* variable holds one subsystem's object files (the jars).
+# Add a new object to its subsystem's cupboard, never to a global list.
+# CLI_OBJ and PORT_OBJ are concatenations of their cupboards.
+#
+# Regenerate:  python scripts/organize_objects.py
+# Verify only: python scripts/organize_objects.py --check
+# Included by the top-level Makefile.
+
+
+# ── CLI_OBJ ──
 CUPBOARD_ORPHANS = src/port_missing_impl.o src/acp/acp_protocol.o \
     src/acp/events.o \
     src/acp/permissions.o \
@@ -28,6 +51,7 @@ CUPBOARD_ORPHANS = src/port_missing_impl.o src/acp/acp_protocol.o \
     src/agent/background_review.o \
     src/agent/bedrock_adapter.o \
     src/agent/billing_view.o \
+    src/agent/client_declares.o \
     src/agent/chat_completion_helpers_ports.o \
     src/agent/chat_completion_helpers_tool_calls.o \
     src/agent/chat_completion_nonstream.o \
@@ -918,15 +942,8 @@ CUPBOARD_ORPHANS = src/port_missing_impl.o src/acp/acp_protocol.o \
     src/window_win32.o \
     src/xdg-shell-protocol.o
 
-CLI_OBJ = $(CUPBOARD_ORPHANS) $(CUPBOARD_HERMES_CLI) $(CUPBOARD_CLI) $(CUPBOARD_AGENT) \
-    $(CUPBOARD_GATEWAY) $(CUPBOARD_TOOLS) $(CUPBOARD_CRON) $(CUPBOARD_MISC) \
-    $(PORT_OBJ)
 
 # ── PORT_OBJ ──
-PORT_OBJ = $(CUPBOARD_PORT_HERMES_CLI) $(CUPBOARD_PORT_CLI) \
-    $(CUPBOARD_PORT_AGENT) $(CUPBOARD_PORT_WIRED) $(CUPBOARD_PORT_GATEWAY) \
-    $(CUPBOARD_PORT_TOOLS) $(CUPBOARD_PORT_CRON) $(CUPBOARD_PORT_PLUGINS) \
-    $(CUPBOARD_PORT_MISC) $(PORTS_LINKED_OBJ) $(CUPBOARD_UNBUILT_MODS)
 
 # ── Object File Lists ──────────────────────────────────────────────
 # build/objects.mk -- cupboards and jars.

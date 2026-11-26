@@ -14,7 +14,8 @@
     -2.5
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/agent_init.c"
   ],
   "cflags": [
     "-I",

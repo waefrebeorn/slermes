@@ -13,7 +13,9 @@
     "test123",
     "NULL"
   ],
-  "extra_src": [],
+  "extra_src": [
+    "src/agent/account_usage.c"
+  ],
   "cflags": [
     "-I",
     "include",

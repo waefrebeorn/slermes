@@ -1281,6 +1281,9 @@ def main():
                     help="append a gated-surface coverage summary")
     ap.add_argument("--force", action="store_true",
                     help="rebuild every harness (ignore freshness)")
+    ap.add_argument("--shard", default="",
+                    help="K/N: run only the K-th of N interleaved slices (drives a "
+                         "parallel fleet run; each shard is an independent process)")
     args = ap.parse_args()
 
     all_gates = discover_gates()
@@ -1293,6 +1296,17 @@ def main():
         print(str(e), file=sys.stderr)
         return 2
     selected = args.gates if args.gates else all_gates
+    if args.shard:
+        try:
+            k, n = (int(x) for x in args.shard.split("/"))
+        except ValueError:
+            print("--shard wants K/N", file=sys.stderr)
+            return 2
+        if not (1 <= k <= n):
+            print("--shard wants 1 <= K <= N", file=sys.stderr)
+            return 2
+        # Interleaved, not chunked: a crash-heavy prefix must not land in one shard.
+        selected = [g for i, g in enumerate(selected) if i % n == k - 1]
     unknown = [g for g in selected if g not in all_gates]
     if unknown:
         print("Unknown gates: %s" % ", ".join(unknown), file=sys.stderr)

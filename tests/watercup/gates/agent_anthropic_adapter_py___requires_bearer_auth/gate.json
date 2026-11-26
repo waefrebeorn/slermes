@@ -13,7 +13,9 @@
     "test123",
     "NULL"
   ],
-  "extra_src": [],
+  "extra_src": [
+    "src/agent/anthropic_adapter_ports.c"
+  ],
   "cflags": [
     "-I",
     "include",

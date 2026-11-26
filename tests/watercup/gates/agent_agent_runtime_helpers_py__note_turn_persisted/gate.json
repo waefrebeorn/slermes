@@ -14,7 +14,8 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/agent_runtime_helpers.c"
   ],
   "cflags": [
     "-I",

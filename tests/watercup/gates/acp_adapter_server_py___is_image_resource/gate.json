@@ -14,7 +14,8 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/acp_adapter/acp_adapter_server.c"
   ],
   "cflags": [
     "-I",
