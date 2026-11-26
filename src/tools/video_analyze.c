@@ -30,6 +30,52 @@ static const char *SCHEMA = "{"
 "}";
 
 /* Run command and capture full output */
+#ifdef _WIN32
+#include "terminal_cmd.h"
+
+/* Was popen() into a /tmp temp file: on Windows the interpreter is not there and /tmp does not exist,
+ * so every probe returned NULL and the tool said "ffprobe returned no output" about a file it had
+ * successfully stat'd. Use the native runner and hand back its stdout. */
+static char *run_cmd_full(const char *fmt, ...) {
+    char cmd[8192];
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(cmd, sizeof(cmd), fmt, ap);
+    va_end(ap);
+
+    char *rj = run_command(cmd, 120);
+    if (!rj) return NULL;
+    json_t *j = json_parse(rj, NULL);
+    const char *out = j ? json_get_str(j, "output", "") : "";
+    char *res = (out && *out) ? strdup(out) : NULL;
+    if (j) json_free(j);
+    free(rj);
+    return res;
+}
+
+/* ffprobe ships beside ffmpeg but is not on the server's PATH. Resolve it once, and let the caller
+ * say "ffprobe is not installed" instead of "returned no output". */
+static const char *probe_bin(void) {
+    static char found[MAX_PATH];
+    static int resolved = 0;
+    if (!resolved) {
+        resolved = 1;
+        const char *env = getenv("HERMES_FFPROBE");
+        if (env && *env) {
+            snprintf(found, sizeof(found), "%s", env);
+        } else if (SearchPathA(NULL, "ffprobe.exe", NULL, sizeof(found), found, NULL)) {
+            /* found */
+        } else {
+            const char *lad = getenv("LOCALAPPDATA");
+            if (lad && *lad) {
+                snprintf(found, sizeof(found), "%s\\Microsoft\\WinGet\\Links\\ffprobe.exe", lad);
+                if (GetFileAttributesA(found) == INVALID_FILE_ATTRIBUTES) found[0] = '\0';
+            }
+        }
+    }
+    return found[0] ? found : NULL;
+}
+#else
 static char *run_cmd_full(const char *fmt, ...) {
     char cmd[8192];
     va_list ap;
@@ -65,6 +111,8 @@ static char *run_cmd_full(const char *fmt, ...) {
     unlink(tmp);
     return out;
 }
+static const char *probe_bin(void) { return "ffprobe"; }
+#endif /* _WIN32 */
 
 /* Check if URL has a known video extension */
 static bool has_video_extension(const char *path) {
@@ -96,6 +144,20 @@ char *video_analyze_handler(const char *args_json, const char *task_id) {
     if (!video_url) {
         json_object_set(result, "error", json_new_string("Missing video_url"));
     } else {
+        /* A file:// URL is a local file: it used to fall into the remote branch's stat-less path and be
+         * answered "File not found" while sitting right there. `norm` must outlive the branch -- the
+         * first version declared it inside the if and left video_url dangling, which killed the server. */
+        char norm[MAX_PATH * 2] = "";
+        if (strncmp(video_url, "file://", 7) == 0) {
+            const char *p = video_url + 7;
+            if (strncmp(p, "localhost/", 10) == 0) p += 9;
+            while (*p == '/') p++;                    /* file:///C:/... -> C:/... */
+            snprintf(norm, sizeof(norm), "%s", p);
+#ifdef _WIN32
+            for (char *q = norm; *q; q++) if (*q == '/') *q = '\\';
+#endif
+            video_url = norm;
+        }
         bool is_local = (strncmp(video_url, "http://", 7) != 0 &&
                          strncmp(video_url, "https://", 8) != 0 &&
                          strncmp(video_url, "data:", 5) != 0);
@@ -114,9 +176,10 @@ char *video_analyze_handler(const char *args_json, const char *task_id) {
 
                 /* Metadata analysis via ffprobe */
                 if (strcmp(analysis, "metadata") == 0 || strcmp(analysis, "audio") == 0) {
-                    char *ffprobe_out = run_cmd_full(
-                        "ffprobe -v quiet -print_format json -show_format -show_streams '%s' 2>/dev/null",
-                        video_url);
+                    const char *ffp = probe_bin();
+                    char *ffprobe_out = ffp ? run_cmd_full(
+                        "\"%s\" -v quiet -print_format json -show_format -show_streams \"%s\" 2>/dev/null",
+                        ffp, video_url) : NULL;
                     if (ffprobe_out && strlen(ffprobe_out) > 0) {
                         char *parse_err = NULL;
                         json_node_t *probe = json_parse(ffprobe_out, &parse_err);
@@ -130,10 +193,17 @@ char *video_analyze_handler(const char *args_json, const char *task_id) {
                                 for (size_t i = 0; i < n; i++) {
                                     json_node_t *s = json_get(streams, i);
                                     const char *codec_type = json_get_str(s, "codec_type", "unknown");
-                                    if (strcmp(codec_type, "video") == 0) {
-                                        json_append(video_streams, s);
-                                    } else if (strcmp(codec_type, "audio") == 0) {
-                                        json_append(audio_streams, s);
+                                    bool want_video = (strcmp(codec_type, "video") == 0);
+                                    bool want_audio = (strcmp(codec_type, "audio") == 0);
+                                    if (want_video || want_audio) {
+                                        /* These arrays used to take the stream nodes themselves, and
+                                         * then json_free(probe) released them: the reply carried freed
+                                         * nodes and serialising it killed the server (WinError 10054).
+                                         * Copy through the wire form so the reply owns its subtrees. */
+                                        char *wire = json_serialize(s);
+                                        json_node_t *copy = wire ? json_parse(wire, NULL) : NULL;
+                                        free(wire);
+                                        if (copy) json_append(want_video ? video_streams : audio_streams, copy);
                                     }
                                 }
                                 if (json_len(video_streams) > 0)
@@ -162,7 +232,9 @@ char *video_analyze_handler(const char *args_json, const char *task_id) {
                         }
                         free(parse_err);
                     } else {
-                        json_object_set(result, "probe_warning", json_new_string("ffprobe returned no output"));
+                        json_object_set(result, "probe_warning", json_new_string(
+                            probe_bin() ? "ffprobe returned no output"
+                                        : "ffprobe is not installed on this machine (install ffmpeg, or set HERMES_FFPROBE)"));
                     }
                     free(ffprobe_out);
                 }
@@ -195,6 +267,27 @@ char *video_analyze_handler(const char *args_json, const char *task_id) {
             json_object_set(result, "video_url", json_new_string(video_url));
             json_object_set(result, "note", json_new_string("Remote URL; metadata limited. Download locally for full analysis."));
         }
+    }
+
+    /* Upstream video_analyze returns {success, analysis} from a multimodal model; this port has no
+     * vision call at all (grep: zero provider references in this file). Returning bare ffprobe metadata
+     * reads like "analysed, found nothing", so say what actually happened. */
+    if (!json_object_get(result, "error")) {
+        const char *keys[] = {"OPENAI_API_KEY", "XAI_API_KEY", "ANTHROPIC_API_KEY",
+                              "GOOGLE_API_KEY", "GEMINI_API_KEY", "VOICE_TOOLS_OPENAI_KEY", NULL};
+        bool have_key = false;
+        for (size_t i = 0; keys[i]; i++) {
+            const char *v = getenv(keys[i]);
+            if (v && *v) { have_key = true; break; }
+        }
+        json_object_set(result, "success", json_new_bool(false));
+        json_object_set(result, "analysis", json_new_string(""));
+        json_object_set(result, "error", json_new_string(have_key
+            ? "Video analysis is not wired to a multimodal model in this port; only the ffprobe metadata "
+              "above is available."
+            : "No video analysis model configured: no vision provider key is set (OPENAI_API_KEY, "
+              "XAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY). Only the ffprobe metadata above is "
+              "available."));
     }
 
     char *json_out = json_serialize(result);
