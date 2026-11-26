@@ -181,6 +181,18 @@
 #define save_entry stub_shadowed__save_entry
 #define save_entries stub_shadowed__save_entries
 
+/* The kanban tools call these with a `kanban_task_spec_t *`; the stub here takes three char*
+ * and returns strdup("task_id"), so `kanban_create` reported a task that was never created.
+ * Rename the stubs out of the way so the link binds to src/tools/kanban_adapter.c. */
+#define kanban_create_task stub_shadowed_kanban_create_task
+#define kanban_read_task stub_shadowed_kanban_read_task
+#define kanban_add_comment stub_shadowed_kanban_add_comment
+#define kanban_link_tasks stub_shadowed_kanban_link_tasks
+#define kanban_block_task stub_shadowed_kanban_block_task
+#define kanban_unblock_task stub_shadowed_kanban_unblock_task
+#define kanban_complete_task stub_shadowed_kanban_complete_task
+#define kanban_heartbeat stub_shadowed_kanban_heartbeat
+
 /* ═══════════════════════════════════════════════════════════════
  * infrastructure_stubs.c — implementations for critical primitives
  * that ports reference but had no C implementation.

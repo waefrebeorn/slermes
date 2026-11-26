@@ -230,7 +230,10 @@ static char *handle_create(const char *args_json, const char *task_id) {
     memset(&spec, 0, sizeof(spec));
     spec.title = json_get_str(args, "title", "");
     spec.assignee = json_get_str(args, "assignee", "");
+    /* Python's kanban_create spells this field "description"; callers use both. Reading only "body"
+     * silently discarded the description of every task created by an upstream-shaped caller. */
     spec.body = json_get_str(args, "body", "");
+    if (!*spec.body) spec.body = json_get_str(args, "description", "");
     spec.priority = (int)json_get_num(args, "priority", 0);
     spec.tenant = json_get_str(args, "tenant", "");
     spec.workspace_kind = json_get_str(args, "workspace_kind", "");
@@ -238,7 +241,7 @@ static char *handle_create(const char *args_json, const char *task_id) {
     spec.triage = json_get_bool(args, "triage", false);
     spec.initial_status = json_get_str(args, "initial_status", "");
     spec.created_by = getenv("HERMES_PROFILE");
-    if (spec.created_by) spec.created_by = "worker";
+    if (!spec.created_by || !*spec.created_by) spec.created_by = "worker";
     if (!*spec.title || !*spec.assignee) {
         json_free(args);
         return strdup("{\"error\":\"title and assignee are required\"}");
@@ -246,11 +249,24 @@ static char *handle_create(const char *args_json, const char *task_id) {
     char *new_id = kanban_create_task(&spec);
     json_free(args);
     if (!new_id) return strdup("{\"error\":\"create failed\"}");
+
+    /* Report the status the store actually gave the row. This used to print "running" while the
+     * engine stored "ready" -- an answer that contradicted the board it had just written. */
+    const char *status = "created";
+    char status_buf[32];
+    json_t *stored = kanban_read_task(new_id);
+    if (stored) {
+        const char *st = json_get_str(stored, "status", "");
+        if (st && *st) {
+            snprintf(status_buf, sizeof(status_buf), "%s", st);
+            status = status_buf;
+        }
+        json_free(stored);
+    }
     char out[256];
     snprintf(out, sizeof(out),
              "{\"ok\":true,\"task_id\":\"%s\",\"status\":\"%s\"}",
-             new_id, spec.initial_status && *spec.initial_status ? spec.initial_status
-                      : (spec.triage ? "triage" : "running"));
+             new_id, status);
     free(new_id);
     return strdup(out);
 }

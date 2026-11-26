@@ -162,15 +162,23 @@ static json_t *mcp_serve_tool_call(const char *tool_name, const char *args_json)
     }
 
     json_t *result = json_parse(result_str, NULL);
-    free(result_str);
 
     if (!result) {
+        /* "Tool result is not valid JSON" told the caller nothing it could act on: which tool, how long
+         * was the text, and what did it start with. Carry the evidence. */
         json_t *err = json_object();
         json_set(err, "code", json_number(-32603));
         json_set(err, "message", json_string("Tool result is not valid JSON"));
+        json_set(err, "tool", json_string(tool_name));
+        json_set(err, "result_bytes", json_number((double)strlen(result_str ? result_str : "")));
+        char preview[241];
+        snprintf(preview, sizeof(preview), "%.240s", result_str ? result_str : "");
+        json_set(err, "result_preview", json_string(preview));
+        free(result_str);
         return err;
     }
 
+    free(result_str);
     return result;
 }
 
