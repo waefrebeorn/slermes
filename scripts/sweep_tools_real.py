@@ -90,6 +90,15 @@ CASES = [
     ("skills_guard", {"path": str(REPO / "skills")}),
     ("patch", {"path": str(T / "patch_probe.txt"), "old_string": "alpha",
                "new_string": "beta", "dry_run": True}),
+    # Third wave: the read/status actions of the skill tool family, and an action the schema names
+    # but that needs no network. Anything that answers {} or "not found" here is carrying nothing.
+    ("skill_bundle", {"action": "list"}),
+    ("skill_cache", {"action": "status"}),
+    ("skill_curator", {"action": "get_stale_days"}),
+    ("skill_hub", {"action": "search", "query": "vault", "limit": 3}),
+    ("kanban_attachments", {}),               # no task_id: must name the missing field
+    ("kanban_complete", {}),                  # ditto
+    ("mcp_resource_read", {"server": "nonexistent", "uri": "file:///x"}),
 ]
 
 

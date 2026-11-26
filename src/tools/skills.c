@@ -2378,6 +2378,17 @@ static char *skills_hub_handler(const char *args_json, const char *task_id) {
         size_t count = 0;
         skill_search_result_t *sr = skill_search_hub(
             strcmp(action, "list") == 0 ? "" : query, &count, limit);
+        if (!sr) {
+            /* skill_search_hub returns NULL when the catalogue fetch fails, and this handler used to
+             * report that as `{"count": 0, "results": []}` -- indistinguishable from "no matches".
+             * Offline, that is the answer a user gets for a search that never ran. Say so. */
+            char *out = strdup("{\"error\":\"skill hub catalogue unreachable (network fetch failed or "
+                               "the catalogue is empty)\",\"count\":0,\"hub_unavailable\":true,"
+                               "\"_retry_class\":\"permanent\"}");
+            free((void *)action); free((void *)query); free((void *)slug);
+            json_free(result);
+            return out;
+        }
         json_set(result, "count", json_new_number((double)count));
         json_set(result, "action", json_new_string(action));
         json_node_t *arr = json_new_array();
