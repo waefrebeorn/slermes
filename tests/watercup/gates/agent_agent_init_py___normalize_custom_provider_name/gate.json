@@ -15,7 +15,9 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/agent_init.c"
+    "src/agent/agent_init.c",
+    "src/agent/logger.c",
+    "src/hermes_cli/fs_replace.c"
   ],
   "cflags": [
     "-I",

@@ -14,7 +14,8 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/chat_completion_helpers.c"
   ],
   "cflags": [
     "-I",

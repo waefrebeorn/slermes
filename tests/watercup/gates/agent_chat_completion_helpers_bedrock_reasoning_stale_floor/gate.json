@@ -7,7 +7,9 @@
   "py_module": "agent/chat_completion_helpers.py",
   "py_fn": "_bedrock_reasoning_stale_floor",
   "cflags": [],
-  "extra_src": [],
+  "extra_src": [
+    "src/agent/reasoning_timeouts.c"
+  ],
   "inputs": [
     "hello",
     "world",

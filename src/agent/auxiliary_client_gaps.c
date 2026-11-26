@@ -150,11 +150,72 @@ int resolve_compression_fast_lane(const char *actual_provider_norm, const char *
     return non_reasoning ? 1 : 0;
 }
 
-/* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
-int compression_config_claims_fast_lane(const char *config) {
-    (void)config;
-    return 0;
+/* PoP: compression_config_claims_fast_lane @ agent/auxiliary_client.py:_compression_config_claims_fast_lane
+ *
+ * Python: provider not in {"", "auto"} and model.lower() not in {"", "auto"} and non_reasoning,
+ * where non_reasoning means parse_reasoning_effort() answered {"enabled": False} -- only an
+ * EXPLICIT disablement certifies a non-reasoning route (hermes_constants.parse_reasoning_effort:
+ * "none" / "false" / "disabled" / YAML false, or a dict with enabled:false). A missing or
+ * unparseable value is not a claim. The canonical effort parser lives in hermes_constants; this is
+ * the subset that decides the flag, kept here so the predicate has one owner.
+ */
+int compression_config_claims_fast_lane(const char *config_json) {
+    if (!config_json || !*config_json) return 0;
+    char *err = NULL;
+    json_t *cfg = json_parse(config_json, &err);
+    free(err);
+    if (!cfg || cfg->type != JSON_OBJECT) {
+        if (cfg) json_free(cfg);
+        return 0;
+    }
+    json_t *pv = json_obj_get(cfg, "provider");
+    json_t *mv = json_obj_get(cfg, "model");
+    json_t *rv = json_obj_get(cfg, "reasoning_effort");
+    const char *provider = pv && pv->type == JSON_STRING ? pv->str_val : "";
+    const char *model = mv && mv->type == JSON_STRING ? mv->str_val : "";
+
+    char prov[128];
+    size_t i = 0;
+    while (provider[i] == ' ' || provider[i] == '\t') i++;
+    size_t j = 0;
+    for (; provider[i] && j < sizeof prov - 1; i++, j++) prov[j] = (char)tolower((unsigned char)provider[i]);
+    while (j > 0 && (prov[j - 1] == ' ' || prov[j - 1] == '\t')) j--;
+    prov[j] = '\0';
+
+    char md[256];
+    i = 0;
+    while (model[i] == ' ' || model[i] == '\t') i++;
+    j = 0;
+    for (; model[i] && j < sizeof md - 1; i++, j++) md[j] = model[i];
+    while (j > 0 && (md[j - 1] == ' ' || md[j - 1] == '\t')) j--;
+    md[j] = '\0';
+
+    int explicit_route = (prov[0] && strcmp(prov, "auto") != 0) &&
+                         (md[0] && strcmp(md, "auto") != 0);
+
+    int non_reasoning = 0;
+    if (rv) {
+        if (rv->type == JSON_BOOL) {
+            non_reasoning = (rv->bool_val == false);      /* reasoning_effort: false */
+        } else if (rv->type == JSON_OBJECT) {
+            json_t *en = json_obj_get(rv, "enabled");
+            if (en && en->type == JSON_BOOL && en->bool_val == false) non_reasoning = 1;
+        } else if (rv->type == JSON_STRING) {
+            char eff[64];
+            size_t k = 0;
+            const char *src = rv->str_val;
+            while (*src == ' ' || *src == '\t') src++;
+            for (; *src && k < sizeof eff - 1; src++, k++) eff[k] = (char)tolower((unsigned char)*src);
+            while (k > 0 && (eff[k - 1] == ' ' || eff[k - 1] == '\t')) k--;
+            eff[k] = '\0';
+            if (strcmp(eff, "none") == 0 || strcmp(eff, "false") == 0 ||
+                strcmp(eff, "disabled") == 0) non_reasoning = 1;
+        }
+    }
+    json_free(cfg);
+    return explicit_route && non_reasoning;
 }
+
 
 /* superseded by flow port (PoP credit moved there; wave13 DUP fix) */
 char *compression_fast_lane_controls(void) {

@@ -4,11 +4,24 @@
 #include <string.h>
 #include "watercup.h"
 
-extern int _codex_event_has_content(const char *input);
+/* The port takes a parsed event: codex_event_has_content(const json_t *). The walk hands over raw text, so parse
+ * it here; an input that is not a JSON object carries no payload, and Python's _field() on a
+ * non-object also answers False. */
+#include "hermes_json.h"
+extern int codex_event_has_content(const json_t *event);
+static int codex_event_has_content_shim(const char *input) {
+    if (!input || !*input || strcmp(input, "NULL") == 0) return 0;
+    char *err = NULL;
+    json_t *ev = json_parse(input, &err);
+    free(err);
+    int r = ev ? codex_event_has_content(ev) : 0;
+    if (ev) json_free(ev);
+    return r;
+}
 
 static void trace_one(const char *input) {
     WCUP_BEGIN("_codex_event_has_content");
-    int result = _codex_event_has_content(input);
+    int result = codex_event_has_content_shim(input);
     WCUP_VALINT(result);
     char cup[32];
     WCUP_FINALIZE(cup, sizeof cup);

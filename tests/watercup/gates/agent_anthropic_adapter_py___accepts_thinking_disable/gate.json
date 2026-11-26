@@ -15,7 +15,9 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/anthropic_adapter_ports.c"
+    "src/agent/anthropic_adapter_ports.c",
+    "lib/libhttp/http.c",
+    "src/hermes_cli/anthropic_adapter.c"
   ],
   "cflags": [
     "-I",

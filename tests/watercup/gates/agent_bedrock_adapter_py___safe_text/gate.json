@@ -14,7 +14,8 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/bedrock_adapter.c"
   ],
   "cflags": [
     "-I",

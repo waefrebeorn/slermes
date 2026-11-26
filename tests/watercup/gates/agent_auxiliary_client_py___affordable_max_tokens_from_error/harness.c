@@ -4,11 +4,11 @@
 #include <string.h>
 #include "watercup.h"
 
-extern int _affordable_max_tokens_from_error(const char *input);
+extern int affordable_max_tokens_from_error(const char *input);
 
 static void trace_one(const char *input) {
     WCUP_BEGIN("_affordable_max_tokens_from_error");
-    int result = _affordable_max_tokens_from_error(input);
+    int result = affordable_max_tokens_from_error(input);
     WCUP_VALINT(result);
     char cup[32];
     WCUP_FINALIZE(cup, sizeof cup);

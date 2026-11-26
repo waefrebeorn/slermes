@@ -15,7 +15,16 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/acp_adapter/acp_adapter_server.c"
+    "src/acp_adapter/acp_adapter_server.c",
+    "src/acp/server.c",
+    "src/acp/edit_approval.c",
+    "src/acp/events.c",
+    "src/acp/permissions.c",
+    "src/acp/resource.c",
+    "src/agent/agent_loop.c",
+    "src/agent/conversation_loop.c",
+    "src/tools/registry.c",
+    "src/tools/tool_init.c"
   ],
   "cflags": [
     "-I",

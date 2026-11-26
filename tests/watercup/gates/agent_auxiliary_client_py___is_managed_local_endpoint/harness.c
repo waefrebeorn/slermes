@@ -4,11 +4,11 @@
 #include <string.h>
 #include "watercup.h"
 
-extern int _is_managed_local_endpoint(const char *input);
+extern int is_managed_local_endpoint(const char *base_url, const char *managed_netloc);
 
 static void trace_one(const char *input) {
     WCUP_BEGIN("_is_managed_local_endpoint");
-    int result = _is_managed_local_endpoint(input);
+    int result = is_managed_local_endpoint(input, NULL);
     WCUP_VALINT(result);
     char cup[32];
     WCUP_FINALIZE(cup, sizeof cup);

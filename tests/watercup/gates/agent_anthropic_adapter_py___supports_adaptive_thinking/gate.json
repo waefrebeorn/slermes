@@ -15,7 +15,15 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/hermes_cli/anthropic_adapter.c"
+    "src/hermes_cli/anthropic_adapter.c",
+    "src/agent/anthropic_adapter_ports.c",
+    "src/agent/logger.c",
+    "src/hermes_cli/auth.c",
+    "lib/libcredentialfiles/credential_files.c",
+    "lib/libcrypto/crypto.c",
+    "lib/libhttp/http.c",
+    "src/hermes_cli/fs_replace.c",
+    "src/hermes_cli/kanban_db.c"
   ],
   "cflags": [
     "-I",

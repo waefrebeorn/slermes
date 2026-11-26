@@ -14,6 +14,8 @@
     "NULL"
   ],
   "extra_src": [
+    "src/agent/port_auxiliary_client.c",
+    "src/hermes_cli/port_version_info.c",
     "lib/libjson/json.c"
   ],
   "cflags": [

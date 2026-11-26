@@ -15,7 +15,15 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/agent_runtime_helpers.c"
+    "src/agent/agent_runtime_helpers.c",
+    "src/agent/logger.c",
+    "src/hermes_cli/config_py_io.c",
+    "lib/libyaml/yaml.c",
+    "src/cli/paths.c",
+    "src/cron/jobs.c",
+    "src/hermes_cli/config.c",
+    "src/hermes_cli/config_py_pure.c",
+    "src/hermes_cli/fs_replace.c"
   ],
   "cflags": [
     "-I",

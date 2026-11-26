@@ -4,11 +4,11 @@
 #include <string.h>
 #include "watercup.h"
 
-extern int _compression_config_claims_fast_lane(const char *input);
+extern int compression_config_claims_fast_lane(const char *config_json);
 
 static void trace_one(const char *input) {
     WCUP_BEGIN("_compression_config_claims_fast_lane");
-    int result = _compression_config_claims_fast_lane(input);
+    int result = compression_config_claims_fast_lane(input);
     WCUP_VALINT(result);
     char cup[32];
     WCUP_FINALIZE(cup, sizeof cup);

@@ -15,7 +15,13 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/provider_anthropic.c"
+    "src/agent/provider_anthropic.c",
+    "lib/libcrypto/crypto.c",
+    "lib/libhttp/http.c",
+    "src/agent/logger.c",
+    "src/agent/provider_profile_apply.c",
+    "src/hermes_cli/fs_replace.c",
+    "src/tools/url_safety.c"
   ],
   "cflags": [
     "-I",

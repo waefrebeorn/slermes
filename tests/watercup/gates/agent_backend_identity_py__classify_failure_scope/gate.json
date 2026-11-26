@@ -15,7 +15,8 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/backend_identity.c"
+    "src/agent/backend_identity.c",
+    "src/hermes_cli/provider_registry.c"
   ],
   "cflags": [
     "-I",

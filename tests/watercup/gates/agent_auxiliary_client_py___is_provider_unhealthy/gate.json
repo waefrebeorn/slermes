@@ -15,7 +15,14 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/auxiliary_client.c"
+    "src/agent/auxiliary_client.c",
+    "lib/libhttp/http.c",
+    "src/agent/logger.c",
+    "src/agent/port_agent_secret_scope.c",
+    "src/agent/prompt_caching.c",
+    "src/agent/relay_llm.c",
+    "src/provider/token_exchange.c",
+    "src/tools/url_safety.c"
   ],
   "cflags": [
     "-I",

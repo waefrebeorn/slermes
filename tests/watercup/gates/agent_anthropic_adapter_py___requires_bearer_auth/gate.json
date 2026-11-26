@@ -14,7 +14,10 @@
     "NULL"
   ],
   "extra_src": [
-    "src/agent/anthropic_adapter_ports.c"
+    "src/agent/anthropic_adapter_ports.c",
+    "lib/libhttp/http.c",
+    "lib/libjson/json.c",
+    "src/hermes_cli/anthropic_adapter.c"
   ],
   "cflags": [
     "-I",

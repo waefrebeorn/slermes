@@ -14,7 +14,15 @@
     "NULL"
   ],
   "extra_src": [
-    "src/agent/anthropic_adapter.c"
+    "src/agent/anthropic_adapter.c",
+    "src/agent/logger.c",
+    "src/hermes_cli/bedrock_adapter.c",
+    "src/hermes_cli/provider_registry.c",
+    "lib/libjson/json.c",
+    "lib/libyaml/yaml.c",
+    "src/hermes_cli/config_py_io.c",
+    "src/hermes_cli/fs_replace.c",
+    "src/slermes_home.c"
   ],
   "cflags": [
     "-I",

@@ -15,7 +15,16 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/auxiliary_client_runtime.c"
+    "src/agent/auxiliary_client_runtime.c",
+    "lib/libhash/hash.c",
+    "lib/libyaml/yaml.c",
+    "src/agent/auxiliary_client.c",
+    "src/agent/auxiliary_client_helpers.c",
+    "src/agent/llm_client.c",
+    "src/agent/logger.c",
+    "src/cli/config.c",
+    "src/hermes_cli/moa_config.c",
+    "src/hermes_cli/provider_registry.c"
   ],
   "cflags": [
     "-I",

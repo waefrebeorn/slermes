@@ -4,11 +4,11 @@
 #include <string.h>
 #include "watercup.h"
 
-extern int _managed_local_netloc(const char *input);
+extern int managed_local_netloc(const char *input);
 
 static void trace_one(const char *input) {
     WCUP_BEGIN("_managed_local_netloc");
-    int result = _managed_local_netloc(input);
+    int result = managed_local_netloc(input);
     WCUP_VALINT(result);
     char cup[32];
     WCUP_FINALIZE(cup, sizeof cup);

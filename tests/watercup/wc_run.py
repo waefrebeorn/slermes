@@ -421,7 +421,13 @@ def _resolve_cflags(g):
     # these flags are safe on Linux/macOS too.
     compat = ["-include", "hermes_win32.h", "-D_GNU_SOURCE",
               "-I", os.path.join(REPO, "include", "compat")]
-    return compat + std_inc + cflags
+    # The version defines the real build passes (build/config.mk). A port unit added through
+    # extra_src that mentions HERMES_VERSION failed to compile without them, and the gate read as
+    # "the harness cannot build" rather than "the runner forgot a define".
+    defs = ['-DHERMES_VERSION="0.0.0-slermes"',
+            '-DHERMES_RELEASE_DATE="2026.9.24"',
+            '-DATADIR="/share/slermes/docs"']
+    return compat + std_inc + defs + cflags
 
 
 def build_harness(gate_dir, g, force=False):
@@ -442,7 +448,10 @@ def build_harness(gate_dir, g, force=False):
 
     cflags = _resolve_cflags(g)
     extra = [os.path.join(REPO, e) for e in g.get("extra_src", [])]
-    libs = g.get("ldflags", [])
+    # The Windows system set belongs on the FIRST link, not only on the retry: a port file that
+    # reaches the HTTP layer names WSAPoll/__imp_shutdown, and dropping -lws2_32 from the first
+    # attempt made the gate report "undefined reference to `WSAPoll'" as if the port were missing.
+    libs = _plat_syslibs(g.get("ldflags", [])) if os.name == "nt" else g.get("ldflags", [])
 
     # Two-step build: compile each TU to .o, then link. A single
     # `cc -o out a.c b.c` is a LINK step, and ccache explicitly refuses to

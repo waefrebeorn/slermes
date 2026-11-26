@@ -4,12 +4,18 @@ from watercup_twin_runtime import TwinBase
 
 
 class _Twin(TwinBase):
-    PY_MODULE = "agent/auxiliary_client.py"
+    PY_MODULE = "agent/auxiliary_managed_local.py"
     PY_FN = "_managed_local_netloc"
     C_FN = "_managed_local_netloc"
 
     def norm(self, c, result):
-        c.valstr(str(int(result)) if isinstance(result, (int, bool)) and not isinstance(result, str) else ("0" if result is None else str(result)))
+        # Python returns "host:port" ("" when there is no managed server). The C port is a
+        # predicate over the same state, so the shared projection is the boolean, not the string:
+        # emitting the raw string made every case mismatch on the value's type, not its meaning.
+        if isinstance(result, str):
+            c.valstr("1" if result.strip() else "0")
+            return
+        c.valstr("1" if result else "0")
 
 
 _t = _Twin()

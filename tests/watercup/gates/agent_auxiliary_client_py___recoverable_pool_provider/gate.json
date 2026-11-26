@@ -15,7 +15,13 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/auxiliary_client_helpers.c"
+    "src/agent/auxiliary_client_helpers.c",
+    "src/agent/auxiliary_client.c",
+    "src/agent/context.c",
+    "src/agent/llm_client.c",
+    "src/agent/provider.c",
+    "src/agent/provider_metadata.c",
+    "src/cli/config.c"
   ],
   "cflags": [
     "-I",

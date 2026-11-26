@@ -4,7 +4,10 @@
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "usage_model_from_account",
-  "extra_src": [],
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/billing_usage.c"
+  ],
   "cflags": [
     "-I",
     "include",

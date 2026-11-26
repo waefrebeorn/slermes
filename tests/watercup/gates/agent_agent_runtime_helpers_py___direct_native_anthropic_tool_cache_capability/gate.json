@@ -15,7 +15,9 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/runtime_helpers_ports.c"
+    "src/agent/runtime_helpers_ports.c",
+    "src/hermes_cli/config_py_io.c",
+    "src/hermes_cli/provider_registry.c"
   ],
   "cflags": [
     "-I",
@@ -26,5 +28,15 @@
     "lib/libjson",
     "-I",
     "src"
+  ],
+  "ldflags": [
+    "-lws2_32",
+    "-lgdi32",
+    "-lcrypt32",
+    "-ladvapi32",
+    "-luser32",
+    "-lshell32",
+    "-lole32",
+    "-luuid"
   ]
 }

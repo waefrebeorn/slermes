@@ -15,7 +15,8 @@
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/battery.c"
+    "src/agent/battery.c",
+    "src/battery.c"
   ],
   "cflags": [
     "-I",

@@ -14,7 +14,8 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/billing_view.c"
   ],
   "cflags": [
     "-I",
