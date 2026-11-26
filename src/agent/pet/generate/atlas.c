@@ -1,9 +1,11 @@
-#if defined(__linux__) && !defined(_WIN32)
-/* HERMES_EXCLUDE_ON_WINDOWS: webp needs a Linux-only library (wayland/webp). The file
- * stays in the link manifest and compiles to an empty translation unit off Linux,
- * rather than being dropped from the product entirely. */
 /*
  * atlas.c — canonical C11 port of agent/pet/generate/atlas.py.
+ *
+ * This file used to be wrapped in `#if defined(__linux__) && !defined(_WIN32)` because it includes
+ * <webp/encode.h> for the lossless encoder. That made all sixteen functions vanish on Windows while
+ * their prototypes and callers stayed, so a stub answered for them. Only atlas_to_webp_bytes needs
+ * libwebp, and it already prefers an external `cwebp`; the native encoder is now the conditional
+ * part. Without libwebp the function says so instead of the symbol not existing.
  */
 
 #include "hermes_json.h"
@@ -13,8 +15,17 @@
 #include <string.h>
 #include "pngdec.h"
 #include <math.h>
-#include <webp/encode.h>
-#include <webp/mux.h>
+
+#if defined(__has_include)
+#  if __has_include(<webp/encode.h>)
+#    include <webp/encode.h>
+#    include <webp/mux.h>
+#    define HERMES_HAVE_WEBP 1
+#  endif
+#endif
+#ifndef HERMES_HAVE_WEBP
+#  define HERMES_HAVE_WEBP 0
+#endif
 
 
 /* === dissolved from ports_wrappers.c === */
@@ -80,6 +91,9 @@ int agent_pet_generate_atlas_u_sever_expected_gutters(const char *arg) {
     if (!arg || !*arg) { printf("\n"); return 0; }
     const char *t1 = strchr(arg, '\t');
     const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    /* The third field is the expected result; this port prints a summary instead of returning the
+     * severed crops, which is why t2 is only unused here -- see the note at the top of the file. */
+    (void)t2;
     long count = strtol(arg, NULL, 10);
     if (count <= 1) { printf("no gutters (single frame)\n"); return 0; }
     int state = t1 && t1[1] == '1';
@@ -238,8 +252,13 @@ int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) {
 
     /* Try the external cwebp binary first (it handles JPEG/PNG/etc.). */
     char cmd[1600];
+#if defined(_WIN32)
+    snprintf(cmd, sizeof(cmd),
+             "cwebp -quiet -lossless -q 100 -exact \"%s\" -o - 2>NUL", arg);
+#else
     snprintf(cmd, sizeof(cmd),
              "cwebp -quiet -lossless -q 100 -exact '%s' -o - 2>/dev/null", arg);
+#endif
     FILE *fp = popen(cmd, "r");
     if (fp) {
         char buf[1024];
@@ -252,6 +271,12 @@ int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) {
         }
     }
 
+#if !HERMES_HAVE_WEBP
+    /* No cwebp on PATH and no libwebp in this build: say so. Returning an empty result would look
+     * like an empty atlas. */
+    printf("error: no WebP encoder available (cwebp not on PATH and this build has no libwebp)\n");
+    return 0;
+#else
     /* Native fallback: decode via pngdec + libwebp lossless encode. */
     pngdec_image_t *img = pngdec_decode_file(arg);
     if (!img || !img->pixels || img->channels < 3) {
@@ -294,6 +319,7 @@ int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) {
     fwrite(webp_out, 1, webp_size, stdout);
     WebPFree(webp_out);
     return 0;
+#endif /* HERMES_HAVE_WEBP */
 }
 
 /* PoP: agent_pet_generate_atlas_validate_atlas @ agent/pet/generate/atlas.py:validate_atlas */
@@ -310,5 +336,3 @@ int agent_pet_generate_atlas_validate_atlas(const char *arg) {
     printf("{\"ok\": true, \"warnings\": [], \"filled_states\": %s}\n", t2 ? t2 + 1 : "[]");
     return 0;
 }
-
-#endif /* __linux__ */

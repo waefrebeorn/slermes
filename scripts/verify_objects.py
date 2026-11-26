@@ -88,7 +88,12 @@ def main() -> int:
         want_json = Path(sys.argv[sys.argv.index("--json") + 1])
 
     sources = [p for p in (REPO / "src").rglob("*.c")]
-    all_objs = list((REPO / "src").rglob("*.o"))
+    # Every object in the link, not just src/: scripts/localize_dupes.py deliberately makes the
+    # losing copy of a duplicate definition local (t) so the link can carry every translation unit,
+    # and the keeper usually lives in lib/ -- src/agent/threat_patterns.o is localized while
+    # lib/libthreatpatterns/threat_patterns.o keeps the global symbol. Scanning only src/ reported
+    # that as five missing symbols.
+    all_objs = list((REPO / "src").rglob("*.o")) + list((REPO / "lib").rglob("*.o"))
     exported = object_globals(all_objs)
     print(f"sources: {len(sources)}  objects: {len(all_objs)}  exported symbols: {len(exported)}")
 

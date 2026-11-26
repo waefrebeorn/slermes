@@ -708,7 +708,7 @@ typedef struct {
 
 /* Port of Python: load_gateway_config */
 /* PoP: gateway_config_load @ gateway/config.py:load_gateway_config */
-bool gateway_config_load(const char *config_dir, gateway_config_t *out_cfg) {
+static bool gateway_config_load_raw(const char *config_dir, gateway_config_t *out_cfg) {
     if (!out_cfg) return false;
 
     /* Load base hermes config */
@@ -839,6 +839,19 @@ bool gateway_config_load(const char *config_dir, gateway_config_t *out_cfg) {
     return true;
 }
 
+/* PoP: gateway_config_load @ gateway/config.py:load_gateway_config
+ * Upstream applies the GATEWAY_* environment overrides and then validates, right before returning.
+ * gateway_config_apply_env_overrides() was defined, declared, and never called by anything, so the
+ * whole env-override path did nothing. It runs here, on the success path only, so a missing config
+ * still reports the way it did. */
+void gateway_config_apply_env_overrides(gateway_config_t *cfg); /* see include/hermes_gateway_config.h */
+
+bool gateway_config_load(const char *config_dir, gateway_config_t *out_cfg) {
+    if (!gateway_config_load_raw(config_dir, out_cfg)) return false;
+    gateway_config_apply_env_overrides(out_cfg);
+    return true;
+}
+
 /* Port of Python: _validate_gateway_config */
 bool gateway_config_validate(const gateway_config_t *cfg, json_node_t *issues_obj) {
     if (!cfg) return false;
@@ -889,6 +902,7 @@ bool gateway_config_validate(const gateway_config_t *cfg, json_node_t *issues_ob
     }
 
     return valid;
+}
 
 /* Port of Python: _apply_env_overrides */
 /* PoP: gateway_config_apply_env_overrides @ gateway/config.py:_apply_env_overrides */
@@ -916,7 +930,6 @@ void gateway_config_apply_env_overrides(gateway_config_t *cfg) {
                     cfg->max_concurrent_sessions = (int)val;
         }
     }
-}
 }
 
 /* Check if a platform is connected */

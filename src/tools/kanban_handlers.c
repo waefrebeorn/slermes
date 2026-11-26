@@ -197,8 +197,26 @@ static char *handle_block(const char *args_json, const char *task_id) {
     if (ownership) { json_free(args); return strdup("{\"error\":\"ownership violation\"}"); }
     json_t *t = kanban_read_task(tid);
     if (!t) { json_free(args); char err[256]; snprintf(err,sizeof(err),"{\"error\":\"task %s not found\"}",tid); return strdup(err); }
-    /* engine block */
-    bool ok = kanban_block_task(tid, reason, sticky ? "sticky" : NULL) ? true : false;
+    /* Upstream validates `kind` against kanban_db.VALID_BLOCK_KINDS and has no `sticky` argument at
+     * all: a block reason recorded by an explicit kanban_block is what makes a block survive
+     * auto-promotion, and a re-kind to needs_input is how the engine marks it. This used to pass the
+     * literal "sticky" as the block kind, so the store held a kind that is not in the enum and the
+     * real `kind` argument was never read. */
+    const char *kind = json_get_str(args, "kind", "");
+    static const char *VALID_KINDS[] = {"dependency", "needs_input", "capability", "transient", NULL};
+    if (*kind) {
+        bool known = false;
+        for (int i = 0; VALID_KINDS[i]; i++)
+            if (strcmp(kind, VALID_KINDS[i]) == 0) { known = true; break; }
+        if (!known) {
+            json_free(t);
+            json_free(args);
+            return strdup("{\"error\":\"kind must be one of: capability, dependency, needs_input, transient (or omit it)\"}");
+        }
+    } else if (sticky) {
+        kind = "needs_input";   /* the legacy sticky flag maps to the kind upstream re-kinds to */
+    }
+    bool ok = kanban_block_task(tid, reason, *kind ? kind : NULL) ? true : false;
     json_free(t);
     json_free(args);
     if (!ok) return strdup("{\"error\":\"block failed\"}");

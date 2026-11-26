@@ -122,6 +122,28 @@ def main() -> int:
     else:
         check("parent/child probe could create its tasks", False, f"parent={pid!r} child={cid!r}")
 
+    # block: `kind` is validated upstream against VALID_BLOCK_KINDS, and the legacy `sticky` flag is
+    # not a kind at all -- it used to be written into the kind column verbatim.
+    bt = call("kanban_create", {"title": "probe block", "assignee": "probe"})
+    bid = str(bt.get("task_id", ""))
+    if bid.startswith("t_"):
+        bad_kind = call("kanban_block", {"task_id": bid, "reason": "probe", "kind": "banana"})
+        check("an unknown block kind is refused", "error" in bad_kind, json.dumps(bad_kind)[:120])
+        stuck = call("kanban_block", {"task_id": bid, "reason": "probe needs input",
+                                      "kind": "needs_input"})
+        check("a valid block kind is accepted", stuck.get("ok") is True, json.dumps(stuck)[:120])
+        after = call("kanban_show", {"task_id": bid})
+        after_task = after.get("task") if isinstance(after.get("task"), dict) else {}
+        check("show reports the blocked status", after_task.get("status") == "blocked",
+              f"status={after_task.get('status')!r}")
+        st = call("kanban_create", {"title": "probe sticky", "assignee": "probe"})
+        sid = str(st.get("task_id", ""))
+        sticky_ok = call("kanban_block", {"task_id": sid, "reason": "sticky probe", "sticky": True})
+        check("the legacy sticky flag still blocks", sticky_ok.get("ok") is True,
+              json.dumps(sticky_ok)[:120])
+    else:
+        check("block probe could create its task", False, json.dumps(bt)[:120])
+
     print(f"\n{fails} failed assertion(s)")
     return fails
 
