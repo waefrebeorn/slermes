@@ -60,7 +60,19 @@ def main() -> int:
             else:
                 shadowed.append(entry)
 
+    # The decisive question is not "is the name defined twice" but "which definition does the link
+    # bind". src/infrastructure_stubs.c neutralises a shadow by renaming it at compile time
+    # (#define <name> stub_shadowed_<name>), so an un-renamed shadow is the one the product runs --
+    # that is how tools_init_all, i18n_t, slermes_home, api_server_stop and the nine cron wrappers
+    # were found. Report that set first and treat it as fatal.
+    stub_src = (REPO / "src" / "infrastructure_stubs.c").read_text(encoding="utf-8", errors="replace")
+    renamed = set(re.findall(r"#define (\S+) stub_shadowed_\1\b", stub_src))
+    live_shadows = [e for e in (shadowed + mismatched) if e[0] not in renamed]
+
     print(f"stub functions: {len(stub_defs)}")
+    print(f"the link binds the STUB (not renamed to stub_shadowed_*): {len(live_shadows)}")
+    for name, sargs, (path, rargs) in live_shadows:
+        print(f"  {name:52} stub{sargs}  vs real{rargs} in {path}")
     print(f"shadow a real implementation: {len(shadowed)}")
     for name, sargs, (path, rargs) in shadowed[:15]:
         print(f"  {name:44} real in {path}")

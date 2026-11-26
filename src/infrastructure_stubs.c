@@ -241,6 +241,28 @@
 #define bcb_scope_free stub_shadowed_bcb_scope_free
 #define cgw_systemd_restart stub_shadowed_cgw_systemd_restart
 
+/* Duplicate bodies with the SAME signature as the real function: harmless only while nobody
+ * edits one copy. The real ones (file_text_ops.c, file_pagination_ops.c, skills_sync_client.c,
+ * billing_view.c, cua_backend_helpers2.c, coding_context.c) are the definitions the port
+ * tests against, so the stub copies are renamed and become unreachable. */
+#define file_text_ops_expand_path stub_shadowed_file_text_ops_expand_path
+#define bcb_get_browser_control_broker stub_shadowed_bcb_get_browser_control_broker
+#define file_text_ops_strip_terminal_fence_leaks stub_shadowed_file_text_ops_strip_terminal_fence_leaks
+#define file_text_ops_strip_bom stub_shadowed_file_text_ops_strip_bom
+#define file_text_ops_parse_search_context_line stub_shadowed_file_text_ops_parse_search_context_line
+#define file_text_ops_normalize_line_endings stub_shadowed_file_text_ops_normalize_line_endings
+#define file_text_ops_has_bom stub_shadowed_file_text_ops_has_bom
+#define file_text_ops_detect_line_ending stub_shadowed_file_text_ops_detect_line_ending
+#define clamp_read_limit stub_shadowed_clamp_read_limit
+#define clamp_search_limit stub_shadowed_clamp_search_limit
+#define file_pagination_ops_pattern_has_regex_newline stub_shadowed_file_pagination_ops_pattern_has_regex_newline
+#define file_pagination_ops_normalize_search_pagination stub_shadowed_file_pagination_ops_normalize_search_pagination
+#define file_pagination_ops_normalize_read_pagination stub_shadowed_file_pagination_ops_normalize_read_pagination
+#define file_pagination_ops_is_line_oriented_newline_error stub_shadowed_file_pagination_ops_is_line_oriented_newline_error
+#define build_billing_state stub_shadowed_build_billing_state
+#define cub_is_available stub_shadowed_cub_is_available
+#define file_text_ops_add_line_numbers stub_shadowed_file_text_ops_add_line_numbers
+
 /* ═══════════════════════════════════════════════════════════════
  * infrastructure_stubs.c — implementations for critical primitives
  * that ports reference but had no C implementation.
@@ -254,7 +276,10 @@
  * definition in the binary, so the real resolver never ran. These helpers now delegate to it. */
 extern const char *slermes_home(void);
 const char *stub_shadowed_get_hermes_home(void) { return slermes_home(); }
-const char *hermes_home_dir(void) { return slermes_home(); }
+/* hermes_home_dir is NOT defined here: the real signature is
+ * `char *hermes_home_dir(char *out, size_t sz)` (src/util_str.c). A `const char *(void)` delegate
+ * bound to those call sites would ignore (out, sz) and hand back a static pointer -- the same
+ * wrong-signature lie in the other direction. */
 const char *stub_shadowed_hermes_get_home(void) { return slermes_home(); }
 
 /* ── Hermes config ── */
@@ -893,7 +918,10 @@ char *file_pagination_ops_normalize_read_pagination(int offset, int limit, int d
     json_free(root);
     return s;
 }
-int file_pagination_ops_maybe_warn_line_oriented_newline_pattern(const char *pattern) { (void)pattern; return 0; }
+/* file_pagination_ops_maybe_warn_line_oriented_newline_pattern is NOT stubbed here. The real one is
+ * src/tools/file_pagination_ops.c:112 `json_t *...(json_t *result, const char *pattern)`; the stub was
+ * `int ...(const char *pattern)` returning 0 -- "no warning" for every file, with the caller then
+ * using a json_t* it never received. */
 int file_pagination_ops_is_line_oriented_newline_error(const char *error) { (void)error; return 0; }
 
 /* Approval system */
