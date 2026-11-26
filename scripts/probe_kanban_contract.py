@@ -144,6 +144,20 @@ def main() -> int:
     else:
         check("block probe could create its task", False, json.dumps(bt)[:120])
 
+    # schedule: upstream registers kanban_schedule; ours did not, so a client calling it got
+    # "unknown tool" while the engine (kdb_schedule_task) sat unwired.
+    sc = call("kanban_create", {"title": "probe schedule", "assignee": "probe"})
+    scid = str(sc.get("task_id", ""))
+    if scid.startswith("t_"):
+        parked = call("kanban_schedule", {"task_id": scid, "reason": "later"})
+        check("schedule parks the task", parked.get("ok") is True, json.dumps(parked)[:120])
+        sched = call("kanban_show", {"task_id": scid})
+        sched_task = sched.get("task") if isinstance(sched.get("task"), dict) else {}
+        check("show reports the scheduled status", sched_task.get("status") == "scheduled",
+              f"status={sched_task.get('status')!r}")
+    else:
+        check("schedule probe could create its task", False, json.dumps(sc)[:120])
+
     print(f"\n{fails} failed assertion(s)")
     return fails
 

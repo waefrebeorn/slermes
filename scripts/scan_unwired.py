@@ -39,6 +39,46 @@ def prototypes() -> dict[str, str]:
     return out
 
 
+
+def _rg_binary() -> str:
+    """rg is not always on PATH when this runs from a launcher that strips the environment."""
+    import shutil
+    for cand in ("rg", r"C:/msys64/mingw64/bin/rg.exe", r"C:/msys64/usr/bin/rg.exe"):
+        found = shutil.which(cand) if not cand.endswith(".exe") else (cand if Path(cand).exists() else None)
+        if found:
+            return found
+    return "rg"
+
+
+def _rg(args: list[str]) -> str:
+    import subprocess
+    return subprocess.run([_rg_binary(), *args], cwd=str(REPO), capture_output=True, text=True,
+                          errors="replace").stdout
+
+
+def _rg_counts() -> dict[str, int]:
+    """name -> number of `name(` occurrences in .c/.h under the scan roots."""
+    from collections import Counter
+    out = _rg(["-o", "--no-filename", r"\b\w+\s*\(", "-g", "*.c", "-g", "*.h",
+               "src", "lib", "tests", "tools"])
+    c: Counter[str] = Counter()
+    for line in out.splitlines():
+        c[line.rstrip("( ").strip()] += 1
+    return dict(c)
+
+
+def _rg_defs() -> dict[str, int]:
+    """name -> number of file-scope definitions (a heuristic: line starts with a type, ends with `{`)."""
+    from collections import Counter
+    out = _rg(["--no-filename", r"^[A-Za-z_][\w \t\*]*?[\s\*](\w+)\s*\([^;{]*\)\s*\{",
+               "-r", "$1", "-g", "*.c", "src", "lib", "tests", "tools"])
+    c: Counter[str] = Counter()
+    for line in out.splitlines():
+        if line.strip():
+            c[line.strip()] += 1
+    return dict(c)
+
+
 def main() -> int:
     top = 400
     if "--top" in sys.argv:
@@ -48,21 +88,14 @@ def main() -> int:
         want_json = Path(sys.argv[sys.argv.index("--json") + 1])
 
     protos = prototypes()
-    # One pass over the tree, counting "identifier(" occurrences. Comparing each prototype against
-    # every file in turn is 4000 x 4900 regex scans and never finishes; this is 4900 scans total.
-    calls: dict[str, int] = {}
-    defs: dict[str, int] = {}
-    for c in list((REPO / "src").rglob("*.c")) + list((REPO / "lib").rglob("*.c")):
-        text = c.read_text(encoding="utf-8", errors="replace")
-        for name in re.findall(r"\b(\w+)\s*\(", text):
-            calls[name] = calls.get(name, 0) + 1
-        for name in re.findall(r"^[A-Za-z_][\w \t\*]*?[\s\*](\w+)\s*\([^;{]*\)\s*\{", text, re.M):
-            defs[name] = defs.get(name, 0) + 1
+    # Counting with a per-file regex in Python took longer than the build. ripgrep finds every
+    # "identifier(" in the tree in one pass; the counts are then compared in Python.
+    counts = _rg_counts()
+    defs = _rg_defs()
 
     unwired: dict[str, str] = {}
     for name, header in protos.items():
-        # every "use" is a call; definitions are counted separately and do not make it wired
-        if calls.get(name, 0) - defs.get(name, 0) <= 0:
+        if counts.get(name, 0) - defs.get(name, 0) <= 0:
             unwired[name] = header
 
     print(f"prototypes: {len(protos)}  unwired: {len(unwired)}")

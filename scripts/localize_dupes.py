@@ -29,10 +29,60 @@ OBJCOPY = "objcopy"
 ENTRY = {"main", "wmain", "SDL_main", "WinMain", "wWinMain", "DllMain"}
 
 _CACHE = {}
+_DISK_CACHE = REPO / "build" / ".dupes_symbols.json"
+_DISK = {}
+try:
+    import json as _json
+    _DISK = _json.loads(_DISK_CACHE.read_text(encoding="utf-8"))
+except Exception:                                                # noqa: BLE001
+    _DISK = {}
+_JSON = None
+try:
+    import json as _j
+    _JSON = _j
+except Exception:                                                # noqa: BLE001
+    pass
+
+
+def _flush_cache():
+    """main() has several early returns (nothing duplicated is the common case), so the cache is
+    written on exit rather than at the end of one branch."""
+    try:
+        _DISK_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        tmp = _DISK_CACHE.with_suffix(".tmp")
+        tmp.write_text(_JSON.dumps(_DISK), encoding="utf-8")
+        tmp.replace(_DISK_CACHE)
+    except Exception as e:                                       # noqa: BLE001
+        print("  cache not written: %s" % e)
+
+
+import atexit as _atexit
+_atexit.register(_flush_cache)
+
+
+def _fingerprint(obj: str):
+    """(mtime_ns, size) -- enough to know an object has not been rescanned for nothing.
+
+    This step runs on every link and used to spawn `nm` once per linked object (about 4,900 process
+    starts, minutes of the link). An object only changes when something rebuilds it, so the symbol
+    scan is cached on disk and only the rebuilt objects are rescanned.
+    """
+    try:
+        st = (REPO / obj).stat()
+        return [st.st_mtime_ns, st.st_size]
+    except OSError:
+        return None
 
 
 def scan(obj):
     if obj in _CACHE:
+        return _CACHE[obj]
+    fp = _fingerprint(obj)
+    cached = _DISK.get(obj)
+    if fp is not None and cached and cached.get("fp") == fp:
+        d = {k: v for k, v in cached["d"]}
+        u = set(cached["u"])
+        _CACHE[obj] = (d, u)
         return _CACHE[obj]
     try:
         out = subprocess.run(["nm", "-g", obj], cwd=str(REPO),
@@ -49,6 +99,8 @@ def scan(obj):
         elif len(p) == 2 and p[0] == "U":
             u.add(p[1])
     _CACHE[obj] = (d, u)
+    if fp is not None:
+        _DISK[obj] = {"fp": fp, "d": list(d.items()), "u": sorted(u)}
     return _CACHE[obj]
 
 
@@ -123,6 +175,7 @@ def main(argv):
             print("  FAILED %s: %s" % (obj, (r.stderr or "").strip()[:120]))
     print("objects localized    : %d" % changed)
     print("objcopy failures     : %d" % failed)
+    _flush_cache()
     return 0
 
 

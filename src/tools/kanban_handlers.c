@@ -89,6 +89,40 @@ static char *handle_show(const char *args_json, const char *task_id) {
     return out ? out : strdup("{\"error\":\"OOM\"}");
 }
 
+/* PoP: handle_schedule @ tools/kanban_tools.py:_handle_schedule */
+static char *handle_schedule(const char *args_json, const char *task_id) {
+    (void)task_id;
+    json_t *args = json_parse(args_json, NULL);
+    if (!args) return strdup("{\"error\":\"Invalid JSON\"}");
+    const char *tid = default_task_id(json_get_str(args, "task_id", ""));
+    if (!tid || !*tid) { json_free(args); return strdup("{\"error\":\"task_id is required\"}"); }
+    const char *ownership = enforce_ownership(tid);
+    if (ownership) { json_free(args); return strdup("{\"error\":\"ownership violation\"}"); }
+    json_t *t = kanban_read_task(tid);
+    if (!t) {
+        json_free(args);
+        char err[256];
+        snprintf(err, sizeof(err), "{\"error\":\"task %s not found\"}", tid);
+        return strdup(err);
+    }
+    const char *reason = json_get_str(args, "reason", "");
+    /* Upstream: the goal loop treats `scheduled` as terminal like `blocked`, so a goal_mode task must
+     * not be parked this way -- it would be an escape hatch around the completion judge. */
+    if (json_get_bool(t, "goal_mode", false)) {
+        json_free(t);
+        json_free(args);
+        return strdup("{\"error\":\"goal_mode tasks cannot be scheduled: use kanban_block with kind "
+                      "in ['dependency', 'needs_input'] or kanban_complete\"}");
+    }
+    json_free(t);
+    bool ok = kanban_schedule(tid, reason) ? true : false;
+    json_free(args);
+    if (!ok)
+        return strdup("{\"error\":\"could not schedule the task (unknown id or not in "
+                      "todo/ready/running/blocked)\"}");
+    return strdup("{\"ok\":true,\"status\":\"scheduled\"}");
+}
+
 static char *handle_list(const char *args_json, const char *task_id) {
     (void)task_id;
     const char *guard = require_orchestrator("kanban_list");
@@ -698,6 +732,10 @@ void registry_init_kanban(void) {
         "Mark your current task as blocked. Provide a reason. Use sticky=true if this should survive auto-promotion.",
         "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\"},\"reason\":{\"type\":\"string\"},\"sticky\":{\"type\":\"boolean\"}},\"required\":[]}",
         handle_block);
+    registry_register("kanban_schedule",
+        "Park the current task until an orchestrator re-gates it. Provide an optional reason.",
+        "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\"},\"reason\":{\"type\":\"string\"}},\"required\":[]}",
+        handle_schedule);
     registry_register("kanban_heartbeat",
         "Extend the liveness window for this task.",
         "{\"type\":\"object\",\"properties\":{\"task_id\":{\"type\":\"string\"}},\"required\":[]}",

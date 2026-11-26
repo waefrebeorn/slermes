@@ -269,6 +269,14 @@ json_t *kanban_show_task(const char *tid) {
     return out;
 }
 
+/* PoP: kanban_schedule @ tools/kanban_tools.py:_handle_schedule (kb.schedule_task) */
+int kanban_schedule(const char *tid, const char *reason) {
+    if (!tid || !*tid) return 0;
+    sqlite3 *conn = adapter_conn();
+    if (!conn) return 0;
+    return kdb_schedule_task(conn, tid, reason && *reason ? reason : NULL, -1);
+}
+
 /* PoP: kanban_recompute_ready @ tools/kanban_tools.py:_handle_list (kb.recompute_ready(conn))
  * Upstream promotes dependencies cleared since the last dispatcher tick before listing, so an
  * orchestrator sees a task become ready immediately instead of one tick late. */
