@@ -5,14 +5,12 @@
 #include <ctype.h>
 #include "watercup.h"
 #include "libjson/json.h"
+#include "hermes_account_usage.h"
 
-/* Minimal struct matching src/tools/account_usage.c */
-typedef struct {
-    int window_count;
-    int detail_count;
-    char unavailable_reason[256];
-} account_usage_snapshot_t;
-
+/* The generated harness re-declared a three-field stand-in for account_usage_snapshot_t
+ * ("minimal struct matching ..."). The real struct starts with provider/source/fetched_at, so
+ * snap->window_count read the provider buffer: the gate crashed on one input and compared garbage on
+ * the rest. Use the declared type. */
 extern bool account_usage_available(const account_usage_snapshot_t *snap);
 
 static void parse_input(const char *input, account_usage_snapshot_t *snap) {
@@ -20,19 +18,19 @@ static void parse_input(const char *input, account_usage_snapshot_t *snap) {
     if (!input || !*input) return;
     /* Format: "windows,details,reason_or_NULL" */
     char buf[512];
-    strncpy(buf, input, sizeof(buf)-1);
-    buf[sizeof(buf)-1] = '\0';
-    
+    strncpy(buf, input, sizeof(buf) - 1);
+    buf[sizeof(buf) - 1] = '\0';
+
     char *saveptr = NULL;
     char *tok = strtok_r(buf, ",", &saveptr);
     if (tok) snap->window_count = atoi(tok);
-    
+
     tok = strtok_r(NULL, ",", &saveptr);
     if (tok) snap->detail_count = atoi(tok);
-    
+
     tok = strtok_r(NULL, ",", &saveptr);
     if (tok && strcmp(tok, "NULL") != 0) {
-        strncpy(snap->unavailable_reason, tok, sizeof(snap->unavailable_reason)-1);
+        strncpy(snap->unavailable_reason, tok, sizeof(snap->unavailable_reason) - 1);
     }
 }
 

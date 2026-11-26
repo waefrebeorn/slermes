@@ -22,10 +22,10 @@
     "lib/libjson/json.c"
   ],
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "0,0,NULL",
+    "1,0,NULL",
+    "0,1,NULL",
+    "1,2,NULL",
+    "0,0,error"
   ]
 }
