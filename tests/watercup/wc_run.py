@@ -189,6 +189,30 @@ def _newer_than(path, mtime):
         return False
 
 
+def _cc_env():
+    """Environment for compiler/linker children, with a temp dir they can use.
+
+    On this box the runner inherits TMP/TMPDIR in a POSIX spelling; gcc's spawn of
+    cc1/as then dies with rc=1 and an EMPTY stderr, and the gate is reported as a build
+    failure with nothing to act on. Give every child a native temp directory.
+    """
+    env = dict(os.environ)
+    home = None
+    for k in ("TMP", "TEMP", "TMPDIR"):
+        v = env.get(k) or ""
+        if len(v) > 2 and v[1] == ":" and v[2] in ("\\", "/"):
+            home = home or v
+        env.pop(k, None)
+    if not home:
+        home = os.path.abspath(BUILD)
+        try:
+            os.makedirs(home, exist_ok=True)
+        except OSError:
+            pass
+    env["TMP"] = env["TEMP"] = env["TMPDIR"] = home
+    return env
+
+
 def _compiler():
     """Compiler command for harness builds, ccache-fronted when available.
 
@@ -201,10 +225,16 @@ def _compiler():
     override = os.environ.get("WATERCUP_CC", "").strip()
     if override:
         return override.split()
-    # Prefer gcc: on the Windows dev box "cc" resolves to MSYS2's compiler
-    # (whose headers/backend the project does not build with) while winlibs
-    # gcc is first on PATH as "gcc". On Linux cc and gcc are equivalent.
-    cc = "gcc" if shutil.which("gcc") else "cc"
+    # Winlibs gcc FIRST, by full path. On this box shutil.which("gcc") finds
+    # C:\msys64\mingw64\bin\gcc.EXE, which is not the compiler the project builds
+    # with and which fails on these Windows paths with rc=1 and an EMPTY stderr --
+    # so every gate that needed it read as a build failure with nothing after the
+    # colon. The MSYS2 toolchain only works from its own bash with /mingw64/bin first.
+    _winlibs = "C:/winlibs/mingw64/bin/gcc.exe"
+    if os.name == "nt" and os.path.exists(_winlibs):
+        cc = _winlibs
+    else:
+        cc = "gcc" if shutil.which("gcc") else "cc"
     if shutil.which("ccache") and _ccache_works(cc):
         return ["ccache", cc]
     return [cc]
@@ -248,7 +278,7 @@ def _linker():
     override = os.environ.get("WATERCUP_CC", "").strip()
     if override:
         return override.split()[0]
-    return "gcc" if shutil.which("gcc") else "cc"
+    return _compiler()[-1]                      # the compiler itself, never the ccache front-end
 
 
 def _run_link(args):
@@ -265,7 +295,8 @@ def _run_link(args):
                          for a in norm))
     try:
         return subprocess.run([args[0], "@" + rsp],
-                              capture_output=True, text=True, encoding="utf-8", errors="replace")
+                              capture_output=True, text=True, encoding="utf-8", errors="replace",
+                              env=_cc_env())
     finally:
         try:
             os.remove(rsp)
@@ -296,7 +327,8 @@ def _compile_one(g, src_path):
     obj = os.path.join(BUILD, "%s.xr.%s.o" % (tag, os.path.basename(src_path)))
     cf = _resolve_cflags(g)
     ccmd = _compiler() + ["-I", HERE] + cf + ["-c", src_path, "-o", obj]
-    r = subprocess.run(ccmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    r = subprocess.run(ccmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                       env=_cc_env())
     return obj if r.returncode == 0 else None
 
 
@@ -342,7 +374,8 @@ def _compile_stub_shadowed(g, keep_srcs):
     obj = os.path.join(BUILD, "%s.stub.o" % g["name"])
     ccmd = _compiler() + ["-I", HERE] + _resolve_cflags(g) + \
            ["-c", tmp, "-o", obj]
-    r = subprocess.run(ccmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    r = subprocess.run(ccmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                       env=_cc_env())
     return obj if r.returncode == 0 else None
 
 
@@ -447,12 +480,17 @@ def build_harness(gate_dir, g, force=False):
         # of failing on siblings' undefined symbols.
         ccmd = (_compiler() + ["-I", HERE] + cflags + _GC_FLAGS
                 + ["-c", s, "-o", obj])
-        r = subprocess.run(ccmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        r = subprocess.run(ccmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                       env=_cc_env())
         if r.returncode != 0:
+            # Print the WHOLE command. Showing only the first six words hid the source
+            # file and "-c/-o", so a failed compile read as "gcc -I <dir> -include
+            # hermes_win32.h -D_GNU_SOURCE" with nothing to act on.
+            _msg = (r.stderr or "") + (r.stdout or "")
             compile_fail = ("BUILD FAIL (compile %s) for %s [cmd: %s]:\n%s%s" % (
-                os.path.basename(s), g["name"], " ".join(ccmd[:6]),
-                r.stderr,
-                "" if (r.stderr or "").strip() else
+                os.path.basename(s), g["name"], " ".join(ccmd),
+                _msg,
+                "" if _msg.strip() else
                 "(the compiler exited %d with no message -- a broken ccache or a missing compiler"
                 " does this; see _ccache_works)" % r.returncode))
             break

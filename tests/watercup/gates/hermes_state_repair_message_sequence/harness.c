@@ -101,6 +101,48 @@ int rs_parse(const char *text, repair_msg_t *out, int max) {
         out[n].tool_call_id = dup_str(v && v->type == JSON_STRING ? v->str_val : NULL);
         v = json_obj_get(o, "tool_call_ids");
         out[n].tool_call_ids = dup_str(v && v->type == JSON_STRING ? v->str_val : NULL);
+        if (!out[n].tool_call_ids) {
+            /* A live assistant row carries tool_calls: [{id, function:{name,arguments}}]. The port
+             * consumes the flattened form described in hermes_state_repair.c: entries joined by ";",
+             * each "id[,call_id]". Passing the list unflattened left the id set empty, so a tool
+             * result that matched a real tool_call was dropped as stray (repairs=1 where Python
+             * answers 0 and keeps the row). */
+            json_t *tc = json_obj_get(o, "tool_calls");
+            if (tc && tc->type == JSON_ARRAY && tc->c.count > 0) {
+                size_t cap = 32, len = 0;
+                char *flat = malloc(cap);
+                if (flat) {
+                    flat[0] = '\0';
+                    for (size_t k = 0; k < tc->c.count; k++) {
+                        json_t *call = tc->c.items[k];
+                        if (!call || call->type != JSON_OBJECT) continue;
+                        json_t *cid = json_obj_get(call, "id");
+                        json_t *fn = json_obj_get(call, "function");
+                        json_t *alt = fn && fn->type == JSON_OBJECT
+                                      ? json_obj_get(fn, "call_id") : NULL;
+                        const char *a = cid && cid->type == JSON_STRING ? cid->str_val : NULL;
+                        const char *b = alt && alt->type == JSON_STRING ? alt->str_val : NULL;
+                        if (!a && !b) continue;
+                        size_t need = len + (len ? 1 : 0) + (a ? strlen(a) : 0)
+                                      + (b ? strlen(b) + 1 : 0) + 2;
+                        if (need > cap) {
+                            while (cap < need) cap *= 2;
+                            char *grown = realloc(flat, cap);
+                            if (!grown) { free(flat); flat = NULL; break; }
+                            flat = grown;
+                        }
+                        if (len) flat[len++] = ';';
+                        if (a) { size_t l = strlen(a); memcpy(flat + len, a, l); len += l; }
+                        if (b) { flat[len++] = ','; size_t l = strlen(b); memcpy(flat + len, b, l); len += l; }
+                        flat[len] = '\0';
+                    }
+                    if (flat) {
+                        if (flat[0]) out[n].tool_call_ids = flat;
+                        else free(flat);
+                    }
+                }
+            }
+        }
         v = json_obj_get(o, "finish_reason");
         out[n].finish_reason = dup_str(v && v->type == JSON_STRING ? v->str_val : NULL);
         v = json_obj_get(o, "reasoning_content");
