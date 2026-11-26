@@ -44,16 +44,22 @@ def main() -> int:
         listing = sys.argv[sys.argv.index("--list") + 1]
 
     harnesses = sorted(GATES.glob("*/harness.c"))
-    sentinels, real = [], []
+    sentinels, externs, real = [], [], []
     for h in harnesses:
         text = h.read_text(encoding="utf-8", errors="replace")
         if "GAP sentinel" in text or re.search(r"gap_sentinel\s*\(", text):
             sentinels.append(h)
+        elif re.search(r"^extern\s", text, re.M):
+            externs.append(h)
         else:
             real.append(h)
 
     print(f"harnesses          : {len(harnesses)}")
-    print(f"  GAP sentinels    : {len(sentinels)}  (return a constant; cannot fail)")
+    print(f"  GAP sentinels    : {len(sentinels)}  (gap_sentinel() returns a constant; cannot fail)")
+    print(f"  extern templates : {len(externs)}  (declare `extern <fn>` and call it, but extra_src does"
+          f" not carry the defining .c -- they cannot link)")
+    print(f"  self-contained   : {len(real)}  (define their own implementation: the only ones that can"
+          f" build as configured)")
 
     # A real gate names the C function it exercises (usually in a WCUP_BEGIN("...") or an extern).
     syms = binary_symbols()
@@ -71,13 +77,51 @@ def main() -> int:
         print(f"    linked         : {printed}  (subject exported by slermes.exe)")
         print(f"    unlinked       : {len(missing)}  (names an extern the binary does not export --"
               f" these build-fail, so they are sentinels in disguise)")
+
+        # An unlinked gate whose c_fn is not a name in its own Python module was generated with a
+        # fabricated signature: agent_monitoring_gateway_health_py___base_attrs declares
+        # `extern int str_in_list(const char *input)` while py_fn is _base_attrs, and neither that
+        # helper nor that shape exists in agent/monitoring/gateway_health.py. Those are not a porting
+        # list, they are broken harnesses, and the difference matters when picking work.
+        fabricated, real_gap = [], []
+        quarry = Path(r"C:/Users/eman5/hermes-agent")
+        for path, names in missing:
+            gate_dir = REPO / Path(path).parent
+            meta = gate_dir / "gate.json"
+            c_fn = py_mod = ""
+            if meta.exists():
+                try:
+                    cfg = json.loads(meta.read_text(encoding="utf-8"))
+                    c_fn = str(cfg.get("c_fn") or "")
+                    py_mod = str(cfg.get("py_module") or "")
+                except Exception:                                # noqa: BLE001
+                    pass
+            src = quarry / py_mod
+            text = src.read_text(encoding="utf-8", errors="replace") if src.exists() else ""
+            # A name that merely appears somewhere in the module (in a string, a variable, a call)
+            # is not a function; require a definition. `value` and `preview` passed the loose test and
+            # were reported as port gaps.
+            defined = bool(re.search(rf"def _?{re.escape(c_fn)}\s*\(", text)) if c_fn else False
+            if c_fn and not defined:
+                fabricated.append((path, c_fn))
+            else:
+                real_gap.append((path, c_fn, names))
+        print(f"      fabricated c_fn: {len(fabricated)}  (c_fn is not a name in the gate's Python module)")
+        for path, c_fn in fabricated[:6]:
+            print(f"        {path:66} {c_fn}")
+        print(f"      real port gaps : {len(real_gap)}  (Python has the name; the C side does not)")
+        for path, c_fn, names in real_gap[:10]:
+            print(f"        {path:66} {c_fn} -> {', '.join(names[:2])}")
         for path, names in missing[:10]:
             print(f"    {path:72} {', '.join(names)}")
         if want_json:
             want_json.write_text(json.dumps({
                 "sentinels": [str(p.relative_to(REPO)) for p in sentinels],
+                "extern_templates": [str(p.relative_to(REPO)) for p in externs],
                 "real": [str(p.relative_to(REPO)) for p in real],
                 "real_missing_subject": missing,
+                "fabricated_c_fn": fabricated,
+                "real_port_gaps": real_gap,
             }, indent=1), encoding="utf-8")
             print(f"wrote {want_json}")
     else:

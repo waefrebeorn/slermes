@@ -65,60 +65,59 @@ struct tool_dispatch_arg {
     int  *duration_ms_out;  /* S14 gap #13: latency tracking */
 };
 
-/* PoP: is_trivial_prompt @ agent/conversation_loop.py:is_trivial_prompt */
-static int is_trivial_prompt(const char *text)
+/* PoP: is_trivial_prompt @ agent/memory_provider.py:is_trivial_prompt
+ *
+ * Two things were wrong with this port. It was `static`, so tests/watercup's gate for
+ * agent/memory_provider.is_trivial_prompt could not link it and the gate reported "port needs an
+ * unlinked subsystem" while the port existed. And the word was measured as the run up to the first
+ * whitespace, so the two multi-word entries in TRIVIAL_PROMPT_RE -- "thank you" and "go ahead" --
+ * could never match: "thank you" answered 0 while Python answers True. The match is a prefix test
+ * followed by the punctuation tail, which the regex does with `[...]*$`. */
+int is_trivial_prompt(const char *text)
 {
     if (!text) return 1;
-    /* strip leading/trailing whitespace */
     const char *s = text;
     while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
     if (*s == '\0') return 1;
-    /* slash commands */
-    if (*s == '/') return 1;
-    /* TRIVIAL_PROMPT_RE pattern (case-insensitive): */
-    /* ^(yes|no|ok|okay|sure|thanks|thank you|y|n|yep|nope|yeah|nah| */
-    /* hi|hey|hello|yo|sup| */
-    /* continue|go ahead|do it|proceed|got it|cool|nice|great|done|next|lgtm|k) */
-    /* [\s!?.:;,"'～—–…()\[\]{}<>*&^%$#@!+=` ]*$ */
+    if (*s == '/') return 1;                       /* slash commands */
+
     static const char *TRIVIAL_WORDS[] = {
         "yes","no","ok","okay","sure","thanks","thank you","y","n",
         "yep","nope","yeah","nah","hi","hey","hello","yo","sup",
         "continue","go ahead","do it","proceed","got it","cool",
         "nice","great","done","next","lgtm","k", NULL
     };
-    /* find end of the word portion */
-    const char *e = s;
-    while (*e && *e != ' ' && *e != '\t' && *e != '\n' && *e != '\r') e++;
-    size_t wlen = (size_t)(e - s);
+
     for (size_t i = 0; TRIVIAL_WORDS[i]; i++) {
         const char *w = TRIVIAL_WORDS[i];
         size_t wl = strlen(w);
-        if (wl == wlen && strncasecmp(s, w, wlen) == 0) {
-            /* match: rest must be only [\\s!?.:;,"'\\u2018\\u2019\\u201c\\u201d\\u2014\\u2013\\u2026()\\[\\]{}<>*&^%$#@!+=`\\u00a0]* */
-            const char *r = e;
-            while (*r) {
-                char c = *r;
-                if (c == ' ' || c == '\t' || c == '\n' || c == '\r') { r++; continue; }
-                if (c == '!' || c == '?' || c == '.' || c == ',' || c == ';' ||
-                    c == ':' || c == '"' || c == '\'' || c == '~' || c == '*' ||
-                    c == '(' || c == ')' || c == '[' || c == ']' ||
-                    c == '{' || c == '}' || c == '<' || c == '>' ||
-                    c == '&' || c == '^' || c == '%' || c == '$' ||
-                    c == '#' || c == '@' || c == '+' || c == '=' ||
-                    c == '`' || (unsigned char)c == 0xC2) {
-                    /* 0xC2 = start of U+00A0 (nbsp) or U+201x etc. two-byte UTF-8 */
-                    if ((unsigned char)c == 0xC2) {
-                        /* skip the two-byte UTF-8 sequence */
-                        r += (r[1] ? 2 : 1);
-                    } else {
-                        r++;
-                    }
-                    continue;
-                }
-                return 0; /* non-trivial trailing char */
+        if (strncasecmp(s, w, wl) != 0) continue;
+
+        const char *r = s + wl;
+        int tail_ok = 1;
+        while (*r) {
+            char c = *r;
+            if (c == ' ' || c == '\t' || c == '\n' || c == '\r') { r++; continue; }
+            if (c == '!' || c == '?' || c == '.' || c == ',' || c == ';' ||
+                c == ':' || c == '"' || c == '\'' || c == '~' || c == '*' ||
+                c == '(' || c == ')' || c == '[' || c == ']' ||
+                c == '{' || c == '}' || c == '<' || c == '>' ||
+                c == '&' || c == '^' || c == '%' || c == '$' ||
+                c == '#' || c == '@' || c == '+' || c == '=' || c == '`') {
+                r++;
+                continue;
             }
-            return 1; /* matched trivial pattern */
+            /* The regex's tail class also lists the unicode quotes and dashes. They arrive as
+             * multi-byte UTF-8; accept a continuation byte run as punctuation. */
+            if ((unsigned char)c >= 0x80) {
+                r++;
+                while ((unsigned char)*r >= 0x80 && (unsigned char)*r < 0xC0) r++;
+                continue;
+            }
+            tail_ok = 0;
+            break;
         }
+        if (tail_ok) return 1;
     }
     return 0;
 }
