@@ -101,7 +101,11 @@ SB_OBJS="src/tools/setup_beat_tool.o src/agent/onboarding_flow_apply.o src/agent
     src/cli/paths.o src/tools/registry.o src/persistence/sqlite/_state/hermes_state_open.o \
     src/persistence/sqlite/_state/hermes_state_lifecycle.o lib/libdb/sqlite3.o lib/libjson/json.o"
 if [ -f src/tools/setup_beat_tool.o ]; then
-    if $CCBIN -O1 -w -I include -I lib -I lib/libdb -include hermes_win32.h -D_GNU_SOURCE -include stdlib.h \
+    # -DHERMES_NO_STRNDUP_SHIM: this line passes -D_GNU_SOURCE, and with MSYS2's <string.h> on the
+    # include path that header declares strndup itself -- so the shim's static body in
+    # hermes_win32.h would be "static declaration follows non-static declaration" (which is exactly
+    # how this test build failed). The winlibs product build keeps the shim.
+    if $CCBIN -O1 -w -I include -I lib -I lib/libdb -include hermes_win32.h -D_GNU_SOURCE -DHERMES_NO_STRNDUP_SHIM -include stdlib.h \
             tests/unit/test_setup_beat.c $SB_OBJS -o "$OUT/t_sb.exe" 2>"$OUT/t_sb.build.log"; then
         SB_TEST_HOME="$OUT/sb_home" "$OUT/t_sb.exe" || fail=1
     else

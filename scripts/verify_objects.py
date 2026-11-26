@@ -65,6 +65,45 @@ def source_defs(path: Path) -> list[str]:
     return sorted(set(out))
 
 
+def platform_excluded(src: Path, name: str) -> bool:
+    """True when the definition of `name` sits in a branch this build compiles out.
+
+    Walks back from the definition to the nearest #if/#ifdef/#elif whose condition names a
+    platform, and answers yes when that condition cannot hold on the host we build for.
+    """
+    try:
+        lines = src.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return False
+    idx = None
+    pat = re.compile(r"^\s*(?:[A-Za-z_][\w \t\*]*\s+)?\*?\s*" + re.escape(name) + r"\s*\(")
+    for i, line in enumerate(lines):
+        if not pat.match(line) or line.lstrip().startswith(("#", "//", "*")):
+            continue
+        # A prototype and the definition both match; only the definition opens a body. Without
+        # this check run_command_pty's forward declaration was picked and its `#if defined(__linux__)`
+        # guard -- which sits directly above the definition -- was never seen.
+        tail = line[line.find("(") :]
+        if "{" in tail or any(l.strip().startswith("{") for l in lines[i + 1 : i + 3]):
+            idx = i
+            break
+    if idx is None:
+        return False
+    for line in reversed(lines[:idx]):
+        st = line.strip()
+        if not st.startswith("#"):
+            continue
+        m = re.match(r"#\s*(if|ifdef|ifndef|elif)\s+(.*)", st)
+        if not m:
+            continue
+        cond = m.group(2)
+        if re.search(r"\b__(linux|APPLE|unix)__\b", cond) and not re.search(r"_WIN32", cond):
+            return True
+        if re.search(r"\b_WIN32\b", cond) and m.group(1) == "ifndef":
+            return True
+    return False
+
+
 def object_globals(objs: list[Path]) -> set[str]:
     """nm only takes so many arguments -- Windows caps the command line, so walk in batches."""
     out: set[str] = set()
@@ -110,7 +149,19 @@ def main() -> int:
         # cheap pre-filter: does this object export anything at all?
         lack = [d for d in defs if d not in exported]
         if lack:
-            broken[str(src.relative_to(REPO))] = lack
+            # Two kinds of honest absence must not be reported as a stale object:
+            #   - `main`: this tree keeps alternative entry points (src/main.c, main_desktop.c,
+            #     desktop_gui.c, agent/test_omarchy_usage_main.c) that the product link does not use
+            #     as its entry;
+            #   - a definition inside a platform block the Windows build compiles out, e.g.
+            #     src/tools/terminal.c's run_command_pty under `#if defined(__linux__) || __APPLE__`.
+            kept = []
+            for d in lack:
+                if d == "main" or platform_excluded(src, d):
+                    continue
+                kept.append(d)
+            if kept:
+                broken[str(src.relative_to(REPO))] = kept
 
     print(f"sources without an object: {len(missing_obj)}")
     print(f"objects that do not define what their source defines: {len(broken)}")
