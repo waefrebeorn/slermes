@@ -78,6 +78,18 @@ static char *cookie_jar_read(const char *path) {
 /* Write cookie entries (null-terminated array of "name=value") to jar file. */
 static bool cookie_jar_write(const char *path, const char *entries[], int count) {
     if (!path || !*path || !entries) return false;
+    /* Opening with "w" truncates before we know there is anything to write. A response with no
+     * Set-Cookie therefore wiped the user's jar -- the call looked successful and every cookie was
+     * gone. Leave an existing jar alone when the update carries nothing. */
+    if (count <= 0) {
+        FILE *probe = fopen(path, "rb");
+        if (probe) {
+            fseek(probe, 0, SEEK_END);
+            long have = ftell(probe);
+            fclose(probe);
+            if (have > 0) return true;   /* nothing to add; nothing to destroy */
+        }
+    }
     FILE *f = fopen(path, "w");
     if (!f) return false;
     for (int i = 0; i < count; i++) {
@@ -221,6 +233,10 @@ char *web_get_handler(const char *args_json, const char *task_id) {
     char *cookies_copy = cookies ? strdup(cookies) : NULL;
     char *auth_type_copy = auth_type ? strdup(auth_type) : NULL;
     char *save_path_copy = save_path ? strdup(save_path) : NULL;
+    /* `cookie_jar` was the one argument not copied before json_free(args), and it is dereferenced
+     * twice after it (loading the jar, then writing it back) -- i.e. the tool opened a filesystem
+     * path read out of freed memory. */
+    char *cookie_jar_copy = cookie_jar ? strdup(cookie_jar) : NULL;
     bool include_body_val = json_object_get_bool(args, "include_body", true);
 
     /* Redirect following params */
@@ -239,6 +255,7 @@ char *web_get_handler(const char *args_json, const char *task_id) {
         free(cookies_copy);
         free(auth_type_copy);
         free(save_path_copy);
+        free(cookie_jar_copy);
         free(ua_copy);
         return strdup("{\"error\":\"Missing url\"}");
     }
@@ -257,6 +274,7 @@ char *web_get_handler(const char *args_json, const char *task_id) {
             free(cookies_copy);
             free(auth_type_copy);
             free(save_path_copy);
+        free(cookie_jar_copy);
             free(ua_copy);
             free(url_copy);
             return strdup(result);
@@ -271,6 +289,7 @@ char *web_get_handler(const char *args_json, const char *task_id) {
         free(cookies_copy);
         free(auth_type_copy);
         free(save_path_copy);
+        free(cookie_jar_copy);
         free(ua_copy);
         free(url_copy);
         return strdup("{\"error\":\"URL blocked by SSRF protection: private or internal address\"}");
@@ -279,8 +298,8 @@ char *web_get_handler(const char *args_json, const char *task_id) {
     /* Load cookie jar if specified */
     char *jar_cookies_str = NULL;
     char merged_cookies[8192] = {0};
-    if (cookie_jar && cookie_jar[0]) {
-        char *jar_data = cookie_jar_read(cookie_jar);
+    if (cookie_jar_copy && cookie_jar_copy[0]) {
+        char *jar_data = cookie_jar_read(cookie_jar_copy);
         if (jar_data) {
             /* Parse lines into Cookie header string (name=val; name=val) */
             char *line = jar_data;
@@ -391,6 +410,7 @@ char *web_get_handler(const char *args_json, const char *task_id) {
         free(cookies_copy);
         free(auth_type_copy);
         free(save_path_copy);
+        free(cookie_jar_copy);
         free(ua_copy);
         free(url_copy);
         return strdup("{\"error\":\"HTTP request failed\"}");
@@ -420,8 +440,8 @@ char *web_get_handler(const char *args_json, const char *task_id) {
     }
 
     /* Save updated cookies to jar if enabled */
-    if (cookie_jar && cookie_jar[0] && resp && resp->headers) {
-        cookie_jar_update(cookie_jar, resp->headers);
+    if (cookie_jar_copy && cookie_jar_copy[0] && resp && resp->headers) {
+        cookie_jar_update(cookie_jar_copy, resp->headers);
     }
 
     char *json_out = json_serialize(result);
@@ -435,6 +455,7 @@ char *web_get_handler(const char *args_json, const char *task_id) {
     free(cookies_copy);
     free(ua_copy);
     free(save_path_copy);
+    free(cookie_jar_copy);
     free(url_copy);
     return json_out;
 }
@@ -696,7 +717,12 @@ char *web_search_handler(const char *args_json, const char *task_id) {
     if (lang_ptr) {
         snprintf(lang_buf, sizeof(lang_buf), "%s", lang_ptr);
     }
+    /* `query` points into args. The google/brave/searxng paths URL-encode it into encoded_query
+     * first, but tavily/firecrawl/xai need the raw string -- which was being read from args after
+     * json_free(args) below. Copy it before the object goes away. */
+    char *query_copy = strdup(query);
     json_free(args);
+    if (!query_copy) return strdup("{\"error\":\"OOM\"}");
 
     /* Resolve backend: arg → config → default */
     const char *backend = backend_buf[0] ? backend_buf : NULL;
@@ -713,15 +739,16 @@ char *web_search_handler(const char *args_json, const char *task_id) {
     else if (strcmp(backend, "brave") == 0)
         result = search_brave(client, encoded_query, count);
     else if (strcmp(backend, "tavily") == 0)
-        result = search_tavily(client, query, count); /* Tavily POST needs raw query */
+        result = search_tavily(client, query_copy, count); /* Tavily POST needs raw query */
     else if (strcmp(backend, "firecrawl") == 0)
-        result = search_firecrawl(client, query, count);
+        result = search_firecrawl(client, query_copy, count);
     else if (strcmp(backend, "xai") == 0)
-        result = search_xai(client, query, count);
+        result = search_xai(client, query_copy, count);
     else /* searxng default */
         result = search_searxng(client, encoded_query, count, lang_buf);
 
     http_client_free(client);
+    free(query_copy);
     return result ? result : strdup("{\"error\":\"Search failed\"}");
 }
 
@@ -929,27 +956,42 @@ char *web_extract_handler(const char *args_json, const char *task_id) {
         return result;
     }
 
+    /* url, extract_prompt and format all point into args, and every branch below runs after this
+     * free -- the custom-prompt path was handing a freed prompt string to the delegate. Copy first. */
+    char *url_own = url ? strdup(url) : NULL;
+    char *prompt_own = extract_prompt ? strdup(extract_prompt) : NULL;
+    char *format_own = format ? strdup(format) : NULL;
     json_free(args);
 
     /* Single URL mode (backward compatible) */
-    if (!url) return strdup("{\"error\":\"Missing url. Provide 'url' (string) or 'urls' (array).\"}");
+    if (!url_own) {
+        free(prompt_own);
+        free(format_own);
+        return strdup("{\"error\":\"Missing url. Provide 'url' (string) or 'urls' (array).\"}");
+    }
 
     /* Secret exfiltration prevention */
     {
-        const char *secret_found = url_has_secret(url);
+        const char *secret_found = url_has_secret(url_own);
         if (secret_found) {
             char result[256];
             snprintf(result, sizeof(result),
                      "{\"success\":false,\"error\":\"Blocked: URL contains what appears to be a %s API key. Secrets must not be sent in URLs.\"}",
                      secret_found);
+            free(url_own);
+            free(prompt_own);
+            free(format_own);
             return strdup(result);
         }
     }
 
-    if (is_custom_prompt)
-        return web_extract_delegate(url, extract_prompt, timeout, format);
-
-    return web_extract_native(url, timeout);
+    char *extracted = is_custom_prompt
+        ? web_extract_delegate(url_own, prompt_own ? prompt_own : "", timeout, format_own ? format_own : "markdown")
+        : web_extract_native(url_own, timeout);
+    free(url_own);
+    free(prompt_own);
+    free(format_own);
+    return extracted;
 }
 
 /* Legacy: Python delegate for LLM-based extraction with prompt */

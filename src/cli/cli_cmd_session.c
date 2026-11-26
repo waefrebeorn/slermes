@@ -896,7 +896,10 @@ void cmd_session_import(const char *args, agent_state_t *state) {
 
     /* Check for our export format: { "format": "hermes-session-export", ... } */
     const char *format = json_object_get_string(root, "format", "");
-    const char *session_id = json_object_get_string(root, "session_id", "");
+    /* json_object_get_string points INTO root, and root is freed before the final printf -- the
+     * success message read a freed string. Hold our own copy. */
+    char *session_id_own = strdup(json_object_get_string(root, "session_id", ""));
+    const char *session_id = session_id_own ? session_id_own : "";
     const char *title = json_object_get_string(root, "title", "");
     const char *model = json_object_get_string(root, "model", "");
 
@@ -968,6 +971,7 @@ void cmd_session_import(const char *args, agent_state_t *state) {
         printf("Error: failed to save session '%s'\n", session_id);
         free(msgs_str);
         json_free(root);
+        free(session_id_own);
         return;
     }
 
@@ -980,6 +984,7 @@ void cmd_session_import(const char *args, agent_state_t *state) {
     json_free(root);
     printf("Session '%s' imported successfully (%zu messages, '%s').\n",
            session_id, meta.message_count, meta.model[0] ? meta.model : "no model");
+    free(session_id_own);
 }
 
 /* ================================================================

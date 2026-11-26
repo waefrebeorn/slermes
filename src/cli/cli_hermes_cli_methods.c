@@ -1291,7 +1291,10 @@ void hcli_restore_session_model(hcli_t *self, const json_t *session_meta, bool q
         return;
     }
 
+    /* Points into `runtime`, which is freed before the announcement below. */
+    char *stored_provider_own = NULL;
     const char *stored_provider = json_get_str(runtime, "provider", NULL);
+    if (stored_provider) stored_provider_own = strdup(stored_provider);
     const char *stored_base_url = json_get_str(runtime, "base_url", NULL);
     const char *stored_api_mode = json_get_str(runtime, "api_mode", NULL);
 
@@ -1334,6 +1337,7 @@ void hcli_restore_session_model(hcli_t *self, const json_t *session_meta, bool q
 
     free(canon);
     json_free(runtime);
+    if (stored_provider_own) { stored_provider = stored_provider_own; }
 
     /* Announce. */
     char msg[256];
@@ -1352,6 +1356,7 @@ void hcli_restore_session_model(hcli_t *self, const json_t *session_meta, bool q
             self->console_print_fn(self, dm);
         }
     }
+    free(stored_provider_own);
 }
 
 /* PoP: finalize_preloaded_skills @ cli.py:HermesCLI.finalize_preloaded_skills */
