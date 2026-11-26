@@ -227,6 +227,22 @@ static char *handle_read(const char *args_json) {
 /* PoP: handle_write @ hermes_cli/win_pty_bridge.py:write */
 /* PoP: handle_write @ todo_tool:write */
 /* superseded by src/tools/file_operations_flow.c fo_write_file (PoP credit moved there; wave13 DUP fix) */
+/* Hand-built JSON could not survive a Windows path: `C:\Users\...` pasted into a string literal makes
+ * `\U`, which is not a JSON escape, and a lenient reader collapsed it into `C:Users...` -- an error
+ * naming a file that does not exist in that form. Build the object with the API instead. */
+static char *file_error_json2(const char *prefix, const char *path, const char *reason)
+{
+    json_node_t *r = json_new_object();
+    if (!r) return strdup("{\"error\":\"OOM\"}");
+    char msg[1024];
+    snprintf(msg, sizeof(msg), "%s%s%s%s", prefix ? prefix : "",
+             path ? path : "", reason ? ": " : "", reason ? reason : "");
+    json_object_set(r, "error", json_new_string(msg));
+    char *out = json_serialize(r);
+    json_free(r);
+    return out;
+}
+
 static char *handle_write(const char *args_json) {
     if (!args_json) return strdup("{\"error\":\"No args\"}");
     char *err = NULL;
@@ -493,10 +509,8 @@ static char *handle_diff(const char *args_json) {
     /* Read file A */
     FILE *fa = fopen(path_a, "rb");
     if (!fa) {
-        char buf[1024];
-        snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", path_a, strerror(errno));
         json_free(args);
-        return strdup(buf);
+        return file_error_json2("Cannot open ", path_a, strerror(errno));
     }
     fseek(fa, 0, SEEK_END);
     long size_a = ftell(fa);
@@ -512,10 +526,8 @@ static char *handle_diff(const char *args_json) {
     FILE *fb = fopen(path_b, "rb");
     if (!fb) {
         free(content_a);
-        char buf[1024];
-        snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", path_b, strerror(errno));
         json_free(args);
-        return strdup(buf);
+        return file_error_json2("Cannot open ", path_b, strerror(errno));
     }
     fseek(fb, 0, SEEK_END);
     long size_b = ftell(fb);
@@ -647,10 +659,8 @@ static char *handle_hex(const char *args_json) {
 
     FILE *f = fopen(path, "rb");
     if (!f) {
-        char buf[512];
-        snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", path, strerror(errno));
         json_free(args);
-        return strdup(buf);
+        return file_error_json2("Cannot open ", path, strerror(errno));
     }
 
     /* Seek to offset */
@@ -925,10 +935,8 @@ static char *handle_hash(const char *args_json) {
         /* Read file, hash manually */
         FILE *f = fopen(path, "rb");
         if (!f) {
-            char buf[512];
-            snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", path, strerror(errno));
             json_free(args);
-            return strdup(buf);
+            return file_error_json2("Cannot open ", path, strerror(errno));
         }
         fseek(f, 0, SEEK_END);
         long sz = ftell(f);
@@ -944,10 +952,8 @@ static char *handle_hash(const char *args_json) {
     } else if (strcmp(algo, "md5") == 0) {
         FILE *f = fopen(path, "rb");
         if (!f) {
-            char buf[512];
-            snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", path, strerror(errno));
             json_free(args);
-            return strdup(buf);
+            return file_error_json2("Cannot open ", path, strerror(errno));
         }
         fseek(f, 0, SEEK_END);
         long sz = ftell(f);
@@ -969,7 +975,9 @@ static char *handle_hash(const char *args_json) {
 
     if (!hash_hex) {
         json_free(args);
-        return strdup("{\"error\":\"Hash computation failed\"}");
+        /* Name the file and the reason: "Hash computation failed" told the caller nothing about which
+         * path it could not read. */
+        return file_error_json2("Cannot open ", path, strerror(errno));
     }
 
     json_node_t *result = json_new_object();
