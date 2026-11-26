@@ -57,6 +57,23 @@ CASES = [
     # computer_use list_apps answered {"ok": true, "message": "Use tasklist or EnumWindows"} until
     # the Windows backend was implemented; keep it in the sweep so PROSE-only success stays caught.
     ("computer_use", {"action": "list_apps"}),
+    # Read-only tools with the arguments their schema requires. Empty-argument sweeps never reach
+    # these: they refuse on the missing field and the work path stays unexercised.
+    ("memory", {"target": "memory", "action": "list"}),
+    ("session_crud", {"operation": "list", "limit": 3}),
+    ("cronjob", {"action": "list"}),
+    ("cron_cmd", {"action": "list"}),
+    ("process_manage", {"action": "list"}),
+    ("approval_status", {}),
+    ("skill_usage", {"action": "list"}),
+    ("mcp_prompt_list", {}),
+    ("mcp_resource_list", {}),
+    ("read_terminal", {"count": 5}),
+    ("terminal", {"command": "echo sweep-probe"}),
+    ("execute_code", {"code": "print(6*7)"}),
+    ("web_search", {"query": "slermes agent", "count": 2}),
+    ("web_extract", {"url": "http://127.0.0.1:8899/"}),
+    ("write_file", {"path": str(T / "sweep_write.txt"), "content": "sweep\n"}),
 ]
 
 
