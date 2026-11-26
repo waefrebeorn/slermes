@@ -17,7 +17,13 @@ static void trace_one(const char *a, const char *b) {
 }
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s gw_base__interrupt_session_activity <a> <b>\n", argv[0]); return 2; }
-    trace_one(argv[1], argv[2]);
+    /* One cup per input: argv[2..] are the inputs (the runner's protocol). The generated body
+     * printed a single cup and fed the fn NAME as the first argument, so every such gate either
+     * failed the arity check or compared a constant. The second parameter is the next input in the
+     * walk, wrapping -- exactly what the twin's call_fn feeds. */
+    int n = argc - 2;
+    if (n < 1) { fprintf(stderr, "usage: %s <fn> <input>...\n", argv[0]); return 2; }
+    for (int i = 2; i < argc; i++)
+        trace_one(argv[i], argv[2 + ((i - 2 + 1) % n)]);
     return 0;
 }

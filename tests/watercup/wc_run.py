@@ -512,6 +512,25 @@ def build_harness(gate_dir, g, force=False):
         if stub_obj:
             objs.append(stub_obj)
 
+    # WATERCUP_LINK=full: link the harness against every prebuilt object from the start.
+    # The incremental attempts below resolve one port unit at a time, and a port unit's real
+    # closure (config_py_io.c -> yaml_*, util_rename_replace, hermes_get_home, ...) is most of
+    # the program -- chasing it round after round both times out and leaves the gate unbuilt.
+    if os.environ.get("WATERCUP_LINK", "").strip() == "full":
+        # One archive of every prebuilt object, built once per fleet run: linking ~4,900 loose
+        # objects takes ~40s per gate (the driver honours --gc-sections inside a member), while an
+        # archive pulls only the members the harness needs.
+        _sysf = _plat_syslibs(["-lm", "-lssl", "-lcrypto", "-lz", "-lpcre2-8", "-ltre", "-lstdc++"])
+        _ar = _watercup_object_archive()
+        _vl = ([_linker(), "-Wl,--allow-multiple-definition"]
+               + [objs[0]] + [_ar] + objs[1:]
+               + ["-o", out] + _GC_LINK + _EXTRA_LIBDIR + _sysf + libs)
+        _rf = _run_link(_vl)
+        if _rf.returncode == 0:
+            return out
+        raise RuntimeError("BUILD FAIL (link, full tier) for %s:\n%s"
+                           % (g["name"], (_rf.stderr or "").strip()[:1500]))
+
     lcmd = [_linker()] + objs + ["-o", out] + _GC_LINK + ["-lm"] + libs
     r = _run_link(lcmd)
     if r.returncode != 0:
@@ -833,6 +852,21 @@ _MISSING_SYMBOL_CACHE = {}
 # lib/ dynamically — a hardcoded list misses libs like libregex whose symbols
 # block many gates. Index every symbol each .o defines.
 _VENDORED_OBJ_DIRS = ["lib"]
+def _nm_tool():
+    """nm by full path when PATH does not carry the toolchain.
+
+    A bare "nm" raised FileNotFoundError at import time -- the runner died before running a single
+    gate, with the traceback naming subprocess rather than the missing tool.
+    """
+    found = shutil.which("nm")
+    if found:
+        return found
+    for cand in ("C:/winlibs/mingw64/bin/nm.exe", "C:/msys64/mingw64/bin/nm.exe"):
+        if os.path.exists(cand):
+            return cand
+    return "nm"
+
+
 _VENDORED_SYMS = {}
 
 
@@ -845,7 +879,8 @@ def _build_vendored_syms():
                 if not fn.endswith(".o"):
                     continue
                 p = os.path.join(root, fn)
-                r = _sp.run(["nm", p], capture_output=True, text=True, encoding="utf-8", errors="replace")
+                r = _sp.run([_nm_tool(), p], capture_output=True, text=True,
+                            encoding="utf-8", errors="replace")
                 for line in (r.stdout or "").split("\n"):
                     parts = line.split()
                     if len(parts) >= 2 and parts[-2] in ("T", "W", "D", "B", "R"):
@@ -855,6 +890,30 @@ def _build_vendored_syms():
 
 
 _build_vendored_syms()
+
+
+_ARCHIVE_CACHE = []
+
+
+def _watercup_object_archive():
+    """Every prebuilt object (minus main.o) in one archive, rebuilt when any member is newer."""
+    import glob as _glob_a
+    if _ARCHIVE_CACHE:
+        return _ARCHIVE_CACHE[0]
+    path = os.path.join(BUILD, "_all_objects.a")
+    objs = sorted(_glob_a.glob(os.path.join(REPO, "src", "**", "*.o"), recursive=True)
+                  + _glob_a.glob(os.path.join(REPO, "lib", "**", "*.o"), recursive=True))
+    objs = [o for o in objs if os.path.basename(o) != "main.o"]
+    newest = max((os.path.getmtime(o) for o in objs), default=0)
+    if not (os.path.exists(path) and os.path.getmtime(path) >= newest):
+        rsp = os.path.join(BUILD, "_ar_members.rsp")
+        with open(rsp, "w") as f:
+            f.write("\n".join(o.replace("\\", "/") for o in objs))
+        ar = shutil.which("ar") or "C:/winlibs/mingw64/bin/ar.exe"
+        subprocess.run([ar, "rcs", path, "@" + rsp], capture_output=True,
+                       stdin=subprocess.DEVNULL)
+    _ARCHIVE_CACHE.append(path)
+    return path
 
 
 def _resolve_missing_symbols(missing, gate_name):
