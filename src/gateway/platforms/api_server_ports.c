@@ -626,7 +626,7 @@ json_t *apis_auto_truncate_response_history(const json_t *history, int limit) {
     size_t n_summ = 0;
     for (size_t i = 0; i < n && n_summ < 256; i++) {
         const json_t *msg = json_array_get(history, i);
-            if (msg && context_compressor__is_compaction_summary_message(msg))
+        if (msg && context_compressor__is_compaction_summary_message(msg))
             summary_idx[n_summ++] = i;
     }
     if (n_summ == 0) {

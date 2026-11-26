@@ -243,6 +243,14 @@ else
     echo "   SKIPPED (no python on PATH)"
 fi
 
+echo "== misbrace-if scan (an if whose body sits at or left of it runs unconditionally)"
+if command -v "$FERNET_PY" >/dev/null 2>&1; then
+    "$FERNET_PY" scripts/scan_misbrace_if.py
+    if [ $? -ne 0 ]; then echo "   MISBRACE FAIL"; fail=1; fi
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo "== scanner selftest (the freed-pointer scanner must still see the shape it was written for)"
 if command -v "$FERNET_PY" >/dev/null 2>&1; then
     USERPROFILE='C:\Users\eman5' LOCALAPPDATA='C:\Users\eman5\AppData\Local' \

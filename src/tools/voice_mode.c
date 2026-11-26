@@ -1269,11 +1269,17 @@ static char *voice_speak_handler(const char *args_json, const char *task_id) {
 
     const char *text = json_get_str(args, "text", "");
 
-    if (!text || !*text)
-    json_free(args);
+    /* Same misplaced brace as transcribe_audio_handler below: the free and the error return were
+     * unconditional, so speak_text answered "Missing 'text' parameter" for every call. */
+    if (!text || !*text) {
+        json_free(args);
         return strdup("{\"error\": \"Missing 'text' parameter\"}");
+    }
 
-    voice_speak(text);
+    char *text_copy = strdup(text);
+    json_free(args);
+    voice_speak(text_copy);
+    free(text_copy);
     return strdup("{\"status\": \"spoken\"}");
 }
 
@@ -1288,11 +1294,21 @@ static char *transcribe_audio_handler(const char *args_json, const char *task_id
     const char *model = json_get_str(args, "model", NULL);
 
 
-    if (!file_path || !*file_path)
-    json_free(args);
+    /* The if had no braces: json_free(args) and the "Missing file_path" return were both unconditional,
+     * so this tool answered "Missing file_path" for every call it ever received -- with a path, without
+     * one, valid or not. The two argument strings also pointed into args and were used after the free. */
+    if (!file_path || !*file_path) {
+        json_free(args);
         return strdup("{\"error\":\"Missing file_path\"}");
+    }
 
-    char *result = transcribe_audio(file_path, model);
+    char *path_copy = strdup(file_path);
+    char *model_copy = model ? strdup(model) : NULL;
+    json_free(args);
+
+    char *result = transcribe_audio(path_copy, model_copy);
+    free(path_copy);
+    free(model_copy);
     if (!result)
         return strdup("{\"error\":\"Transcription failed\"}");
 

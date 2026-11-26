@@ -417,9 +417,17 @@ static char *yb_query_group_info_handler(const char *args_json, const char *task
 
     const char *group_code = json_object_get_string(args, "group_code", "");
 
-    if (!group_code || !*group_code)
-    json_free(args);
+    /* Braces: the free and the error return used to run for every call, so this tool could only ever
+     * answer "group_code required" -- and group_code pointed into the freed args. */
+    if (!group_code || !*group_code) {
+        json_free(args);
         return strdup("{\"success\":false,\"error\":\"group_code required\"}");
+    }
+    /* A stack copy: nothing to free on any path, nothing dangling in the reply below. */
+    char gc_buf[256];
+    snprintf(gc_buf, sizeof(gc_buf), "%s", group_code);
+    json_free(args);
+    group_code = gc_buf;
 
     char *resp = yuanbao_query_group_info(group_code, 15);
     if (!resp)
@@ -504,9 +512,14 @@ static char *yb_get_group_member_list_handler(const char *args_json, const char 
     uint32_t offset = (uint32_t)json_object_get_number(args, "offset", 0);
     uint32_t limit = (uint32_t)json_object_get_number(args, "limit", 200);
 
-    if (!group_code || !*group_code)
-    json_free(args);
+    if (!group_code || !*group_code) {
+        json_free(args);
         return strdup("{\"success\":false,\"error\":\"group_code required\"}");
+    }
+    char gc_buf[256];
+    snprintf(gc_buf, sizeof(gc_buf), "%s", group_code);
+    json_free(args);
+    group_code = gc_buf;
 
     char *resp = yuanbao_get_group_member_list(group_code, offset, limit, 15);
     if (!resp)
