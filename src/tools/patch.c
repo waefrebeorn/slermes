@@ -1188,7 +1188,7 @@ char *patch_apply_v4a(const char *patch_content, bool dry_run)
                 }
 
                 if (!hunk_error && current) {
-                    f = fopen(ops[i].file_path, "w");
+                    f = fopen(ops[i].file_path, "wb");
                     if (!f) {
                         json_object_set(op_result, "error", json_new_string("Cannot open file for writing"));
                         any_error = true;
@@ -1236,7 +1236,7 @@ char *patch_apply_v4a(const char *patch_content, bool dry_run)
                 char *slash = strrchr(dir_copy, '/');
                 if (slash) { *slash = '\0'; mkdir(dir_copy, 0755); }
 
-                FILE *f = fopen(ops[i].file_path, "w");
+                FILE *f = fopen(ops[i].file_path, "wb");
                 if (!f) {
                     json_object_set(op_result, "error", json_new_string("Cannot open file for writing"));
                     any_error = true; free(add_content); break;
@@ -1591,7 +1591,10 @@ static char *apply_patch(const char *path, const char *old_str,
     /* Write back (or preview in dry_run mode) */
     size_t written = 0;
     if (!dry_run) {
-        f = fopen(path, "w");
+        /* "wb", not "w": a text-mode fopen turns every LF into CRLF, so patching one line rewrote the
+         * whole file's line endings (alpha\nbeta\ngamma\n -> alpha\r\nBETA\r\ngamma\r\n) and reported
+         * the pre-conversion byte count. Reads are "rb" already, so the bytes now round-trip. */
+        f = fopen(path, "wb");
         if (!f) {
             free(content);
             free(unescaped_new_str);
