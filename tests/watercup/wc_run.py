@@ -1119,6 +1119,9 @@ ENTRY_POINT_FNS = frozenset({"main"})
 # Neither can produce a meaningful cup; both only damage. Skip with an
 # honest error verdict instead of executing.
 UNTRACEABLE_FNS = frozenset({
+    # Interactive flows: they wait on a human (device-code sign-in, QR approval) or run a whole
+    # backup. Imported in-process they never return and the shard dies silently.
+    "_codex_device_code_login", "dingtalk_qr_auth", "create_pre_update_backup",
     "_cmd_update_impl", "_tool_override_allowed",
 })
 
@@ -1378,6 +1381,49 @@ def coverage_report():
 # Main
 # ──────────────────────────────────────────────────────────────────────
 
+def _run_each_isolated(selected, args):
+    """One subprocess per gate, with a wall clock.
+
+    In-process runs are faster but a single interactive gate ends the shard: a device-code login or
+    a QR approval waits for a human forever, and a spinner never returns. Isolation also survives a
+    harness access violation.
+    """
+    import subprocess as _sp
+    green = 0
+    verdicts = {"GREEN": 0, "MISMATCH": 0, "NON-DISCRIMINATING": 0, "BUILD": 0, "CRASH": 0, "OTHER": 0}
+    for name in selected:
+        cmd = [sys.executable, os.path.abspath(__file__), name]
+        try:
+            r = _sp.run(cmd, capture_output=True, text=True, encoding="utf-8",
+                        errors="replace", timeout=args.timeout, cwd=REPO)
+            out = (r.stdout or "") + (r.stderr or "")
+        except _sp.TimeoutExpired:
+            print("-- %s --\n  TIMEOUT after %ss (gate blocked)" % (name, args.timeout))
+            verdicts["CRASH"] += 1
+            continue
+        print("-- %s --" % name)
+        for line in out.splitlines():
+            if ("  ->" in line or "ERROR:" in line or "MISMATCH" in line
+                    or "NON-DISCRIMINATING" in line or "TIMEOUT" in line):
+                print(line)
+        if "cups MATCH LIVE Python" in out:
+            green += 1; verdicts["GREEN"] += 1
+        elif "NON-DISCRIMINATING" in out:
+            verdicts["NON-DISCRIMINATING"] += 1
+        elif "BUILD FAIL" in out:
+            verdicts["BUILD"] += 1
+        elif "MISMATCH" in out:
+            verdicts["MISMATCH"] += 1
+        elif "CRASH" in out or "exit" in out:
+            verdicts["CRASH"] += 1
+        else:
+            verdicts["OTHER"] += 1
+    print("\n%d gate(s): %d green, %d mismatch, %d non-discriminating, %d build fail, %d crash/timeout"
+          % (len(selected), verdicts["GREEN"], verdicts["MISMATCH"],
+             verdicts["NON-DISCRIMINATING"], verdicts["BUILD"], verdicts["CRASH"]))
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="Project-wide water-cup trace-cup parity runner")
@@ -1392,6 +1438,11 @@ def main():
                     help="append a gated-surface coverage summary")
     ap.add_argument("--force", action="store_true",
                     help="rebuild every harness (ignore freshness)")
+    ap.add_argument("--timeout", type=float, default=90.0,
+                    help="per-gate wall clock for --each-isolated")
+    ap.add_argument("--each-isolated", action="store_true",
+                    help="run every gate as its own subprocess (a gate that blocks or segfaults "
+                         "costs one gate, not the shard)")
     ap.add_argument("--gate-file", default="",
                     help="read gate names from a file (one per line) instead of naming them")
     ap.add_argument("--shard", default="",
@@ -1428,6 +1479,9 @@ def main():
     if unknown:
         print("Unknown gates: %s" % ", ".join(unknown), file=sys.stderr)
         return 2
+
+    if args.each_isolated:
+        return _run_each_isolated(selected, args)
 
     if not args.json:
         print("=== Water-Cup project-wide parity run ===")
