@@ -1563,7 +1563,7 @@ CUPBOARD_AGENT = src/tools/browser_vault_fill_plan.o src/tools/browser_vault_lis
  src/agent/repetition_guard.o src/agent/port_agent_turn_context.o \
  src/agent/tts_provider.o src/agent/interrupt_compat.o \
  src/agent/web_search_registry.o src/agent/video_gen_provider.o \
- src/agent/trace_upload.o src/agent/tool_result_classification.o \
+ src/agent/trace_upload.o src/agent/tool_result_classification.o src/agent/tool_result_summary.o \
  src/agent/thread_scoped_output.o src/agent/subscription_view.o \
  src/agent/stream_single_writer.o src/agent/rate_limit_tracker.o \
  src/agent/oneshot.o src/agent/moa_trace.o src/agent/kanban_stop.o \

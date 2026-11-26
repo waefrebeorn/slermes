@@ -59,6 +59,12 @@ def transform(path: Path, apply: bool) -> int:
         span = "".join(scanner.clean(l) for l in lines[fi + 1:return_idx + 1])
         if not re.search(rf"(?<![.>\w]){re.escape(ptr)}\b", span):
             continue                            # the pointer is not used before the return
+        # Moving the free down must not leave an *earlier* exit with nothing freed: if any line
+        # between the old and new position returns, the rewrite would leak on that path.
+        between = [scanner.clean(l) for l in lines[fi:return_idx]]
+        if any(re.search(r"\b(return|goto)\b", l) for l in between):
+            print(f"{path}:{fi+1}: SKIP -- another exit sits between the free and the message")
+            continue
         edits.append((fi, return_idx, obj, ptr))
 
     edits = sorted(set(edits))            # the scanner can report one site twice

@@ -22,6 +22,12 @@ context_compressor_t *context_compressor_new(const char *model,
                                              double threshold_percent);
 void context_compressor_free(context_compressor_t *cc);
 
+/* One-line summary of a single tool call + result.
+ * PoP: _summarize_tool_result @ agent/context_compressor.py:_summarize_tool_result
+ * Defined in src/agent/llm_client.c; exposed so a differential harness can compare it with Python. */
+void compress_summarize_tool(const char *tool_name, const char *tool_args,
+                             const char *tool_content, char *out, size_t out_sz);
+
 /* ── micro-compaction orchestration (pure array/struct ops) ───────────── */
 /* PoP: _resolve_compact_cursor @ agent/context_compressor.py:_resolve_compact_cursor */
 long cc_resolve_compact_cursor(context_compressor_t *cc, const json_t *messages,

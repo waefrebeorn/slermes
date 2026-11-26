@@ -33,7 +33,9 @@ int moa_u_moa_privacy_mode(const char *arg) {
         printf("none\n");
         return 0;
     }
-    const char *pf = json_get_str(cfg, "privacy_filter", "");
+    /* pf points into cfg, which is freed before the comparisons below read it. */
+    char pf[128];
+    snprintf(pf, sizeof(pf), "%s", json_get_str(cfg, "privacy_filter", ""));
     json_free(cfg);
     if (!*pf || strcmp(pf, "none") == 0 || strcmp(pf, "off") == 0) {
         printf("none\n");

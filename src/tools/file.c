@@ -866,9 +866,9 @@ static char *handle_hash(const char *args_json) {
     } else if (strcmp(algo, "md5") == 0) {
         FILE *f = fopen(path, "rb");
         if (!f) {
-            json_free(args);
             char buf[512];
             snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", path, strerror(errno));
+            json_free(args);
             return strdup(buf);
         }
         fseek(f, 0, SEEK_END);

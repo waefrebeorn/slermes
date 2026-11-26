@@ -215,6 +215,20 @@ else
     echo "   SKIPPED (no python on PATH)"
 fi
 
+echo "== tool_summary_oracle (C tool-result summary vs agent/context_compressor._summarize_tool_result)"
+if command -v "$FERNET_PY" >/dev/null 2>&1; then
+    USERPROFILE='C:\Users\eman5' LOCALAPPDATA='C:\Users\eman5\AppData\Local' \
+        "$FERNET_PY" tests/oracle/tool_summary_oracle.py
+    rc=$?
+    if [ $rc -eq 3 ]; then
+        echo "   ORACLE SKIPPED"
+    elif [ $rc -ne 0 ]; then
+        echo "   ORACLE FAIL"; fail=1
+    fi
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo "== scanner selftest (the freed-pointer scanner must still see the shape it was written for)"
 if command -v "$FERNET_PY" >/dev/null 2>&1; then
     USERPROFILE='C:\Users\eman5' LOCALAPPDATA='C:\Users\eman5\AppData\Local' \
