@@ -258,7 +258,8 @@ int stub_shadowed_config_py_atomic_config_write(const char *data) { (void)data; 
  * One definition, in the port. */
 
 /* ── Billing ── */
-const char *billing_fallback_portal_url(void) { return "https://billing.hermes.ai"; }
+/* billing_fallback_portal_url is NOT stubbed here. The real one is src/agent/billing_view.c, so the
+ * URL is whatever that port computes instead of a hardcoded constant in the stub file. */
 
 char *billing_format_money(double amount) {
     char *buf = malloc(64);
@@ -347,29 +348,21 @@ int stub_shadowed_relay_runtime_scope_push(const char *sid) { (void)sid; return 
 int stub_shadowed_relay_runtime_subscribers_flush(void) { return 0; }
 
 /* ── File text ops ── */
-char *file_text_ops_escape_shell_arg(const char *arg) {
-    if (!arg) return strdup("''");
-    size_t len = strlen(arg);
-    char *e = malloc(len * 4 + 3);
-    if (!e) return strdup("''");
-    e[0] = '\'';
-    size_t j = 1;
-    for (size_t i = 0; i < len; i++) {
-        /* Upstream: "'" + arg.replace("'", "'\"'\"'") + "'". */
-        if (arg[i] == '\'') {
-            e[j++] = '\''; e[j++] = '"'; e[j++] = '\'';
-            e[j++] = '"'; e[j++] = '\'';
-        }
-        else e[j++] = arg[i];
-    }
-    e[j++] = '\''; e[j] = '\0';
-    return e;
-}
+/* file_text_ops_escape_shell_arg is NOT stubbed here. The real one is
+ * src/tools/file_text_ops.c:250 (PoP: tools/file_operations.py:_escape_shell_arg) and does the same
+ * single-quote wrap; it returns NULL on allocation failure where this stub returned "''", which would
+ * have handed an empty argument to a shell. */
 
 /* ── Kanban ── */
-char *kanban_create_task(const char *b, const char *t, const char *d) { (void)b; (void)t; (void)d; return strdup("task_id"); }
-char *kanban_read_task(const char *b, const char *tid) { (void)b; (void)tid; return strdup("{}"); }
-int kanban_add_comment(const char *b, const char *tid, const char *c) { (void)b; (void)tid; (void)c; return 0; }
+/* The kanban entry points are NOT stubbed here. Real ones, with the real signatures from
+ * include/hermes_kanban.h: src/tools/kanban_adapter.c:44 `char *kanban_create_task(const
+ * kanban_task_spec_t *spec)`, :320 `json_t *kanban_read_task(const char *tid)`, :129 `bool
+ * kanban_add_comment(const char *tid, const char *author, const char *body)`.
+ *
+ * These stubs had (const char *, const char *, const char *) shapes and answered the literal strings
+ * "task_id" and "{}" -- the original kanban lie. The link step renamed them to stub_shadowed_* so the
+ * real ones bound, which is why the binary worked while this text still sat here: one failed rename
+ * and every kanban call would bind a three-char* function to a one-struct-pointer call. */
 
 /* ── Agent backend identity ── */
 typedef struct { char did[128]; } agent_backend_id_t;
@@ -424,7 +417,8 @@ const char *stub_shadowed_lookup_by_session_id(const char *id) { (void)id; retur
 
 /* ── Skills sync ── */
 int skills_sync_is_opted_in(void) { return 0; }
-int skills_sync_feature_enabled(void) { return 0; }
+/* skills_sync_feature_enabled is NOT stubbed here. The real one is src/tools/skills_sync_client.c;
+ * the stub answered 0 (= disabled) for every install, so the feature could never turn on. */
 int skills_sync_set_opted_in(int o) { (void)o; return 0; }
 
 /* ── Proposals ── */
@@ -538,7 +532,9 @@ char *send_message_target_telegram_retry_delay(void) { return strdup("1"); }
 
 /* ── WS helpers ── */
 int ws_u_create_cron_job_sync(void) { return 0; }
-int ws_load_configured_gateway_platforms(void) { return 0; }
+/* ws_load_configured_gateway_platforms is NOT stubbed here. The real one is
+ * src/hermes_cli/web_server_wrappers.c; the stub returned 0 (= "nothing configured") for every
+ * gateway, which is a plausible-looking answer that hides the config. */
 
 /* ── Time ── */
 char *stub_shadowed_utc_now_iso(void) { return strdup("2026-01-01T00:00:00Z"); }
