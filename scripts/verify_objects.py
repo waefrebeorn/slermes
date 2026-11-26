@@ -65,6 +65,45 @@ def source_defs(path: Path) -> list[str]:
     return sorted(set(out))
 
 
+
+def object_defs_map(objs: list[Path]) -> dict[str, set[str]]:
+    """Every symbol each object DEFINES, global or local -- batched.
+
+    Name presence in the union of all objects is not ownership: a stub elsewhere can satisfy the name
+    for the file that owns the implementation (that is how tools_init_all and i18n_t stayed hidden).
+    And scripts/localize_dupes.py deliberately makes the losing copy of a duplicate local, so a
+    correct object may hold its symbol as `t` rather than `T`. Requiring the definition in the
+    object's own symbol table satisfies both.
+
+    One nm per object costs 2m54s over this tree; batched (Windows caps the command line, hence the
+    groups) it is a few seconds. nm prefixes each line with the file path when given several inputs.
+    """
+    out: dict[str, set[str]] = {str(o): set() for o in objs}
+    for i in range(0, len(objs), 300):
+        group = objs[i:i + 300]
+        try:
+            r = subprocess.run([NM] + [str(o) for o in group], capture_output=True, text=True,
+                               encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        # nm with several inputs prints a "<file>:" header and then bare symbol lines; the earlier
+        # version assumed "path: symbol" on every line and reported 4,309 objects as missing
+        # hundreds of symbols each.
+        cur = None
+        for line in r.stdout.splitlines():
+            st = line.strip()
+            if not st:
+                continue
+            if st.endswith(":") and " " not in st:
+                cur = st[:-1].strip()
+                continue
+            parts = st.split()
+            if cur and len(parts) >= 2 and parts[-2] != "U":
+                if cur in out:
+                    out[cur].add(parts[-1])
+    return out
+
+
 def platform_excluded(src: Path, name: str) -> bool:
     """True when the definition of `name` sits in a branch this build compiles out.
 
@@ -97,7 +136,11 @@ def platform_excluded(src: Path, name: str) -> bool:
         if not m:
             continue
         cond = m.group(2)
-        if re.search(r"\b__(linux|APPLE|unix)__\b", cond) and not re.search(r"_WIN32", cond):
+        linuxish = re.search(r"\b__(linux|APPLE|unix)__\b", cond)
+        win = re.search(r"_WIN32", cond)
+        # `#if defined(__linux__) && !defined(_WIN32)` (src/window_wayland.c line 1) IS the
+        # Windows-excluded case; the first version rejected it merely because _WIN32 appeared.
+        if linuxish and (not win or "!defined(_WIN32)" in cond or "!_WIN32" in cond):
             return True
         if re.search(r"\b_WIN32\b", cond) and m.group(1) == "ifndef":
             return True
@@ -136,6 +179,7 @@ def main() -> int:
     exported = object_globals(all_objs)
     print(f"sources: {len(sources)}  objects: {len(all_objs)}  exported symbols: {len(exported)}")
 
+    own_defs = object_defs_map([p.with_suffix(".o") for p in sources if p.with_suffix(".o").exists()])
     broken: dict[str, list[str]] = {}
     missing_obj: list[str] = []
     for src in sources:
@@ -147,7 +191,14 @@ def main() -> int:
         if not defs:
             continue
         # cheap pre-filter: does this object export anything at all?
-        lack = [d for d in defs if d not in exported]
+        own = own_defs.get(str(obj), set())
+        # No fallback to the union of all objects: a stub in another translation unit can satisfy the
+        # name for the file that owns the implementation, and that is precisely the state
+        # tools_init_all / i18n_t / slermes_home were in while this check reported zero.
+        # This tree neutralises a shadow by macro-renaming it at compile time
+        # (#define <name> stub_shadowed_<name>). The source still spells the original name, so an
+        # object holding only the renamed symbol is correct.
+        lack = [d for d in defs if d not in own and ("stub_shadowed_" + d) not in own]
         if lack:
             # Two kinds of honest absence must not be reported as a stale object:
             #   - `main`: this tree keeps alternative entry points (src/main.c, main_desktop.c,
@@ -176,7 +227,16 @@ def main() -> int:
             os.utime(REPO / path, None)
             n += 1
         print(f"touched {n} source(s); run make to rebuild them")
-    return 1 if broken else 0
+    if "--fail-on-drift" in sys.argv and (broken or missing_obj):
+        # For the build: an object that does not define what its source defines is a stale object,
+        # and a link over it produces a binary that does not contain the code the tree says it does.
+        # tools_init_all, i18n_t, delegate_tool's 13 functions and the cron web wrappers were all in
+        # this state while the link reported success, so make this fatal.
+        print(f"FAIL: {len(broken)} object(s) do not define their source's symbols, "
+              f"{len(missing_obj)} source(s) have no object "
+              f"(rebuild them: python scripts/verify_objects.py --fix)", file=sys.stderr)
+        return 1
+    return 0
 
 
 if __name__ == "__main__":

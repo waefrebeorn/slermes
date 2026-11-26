@@ -107,6 +107,12 @@ slermes: $(SLERMES_OBJS) build/targets.mk build/objects.mk
 		$(if $(NCURSES_LIBS),$(NCURSES_LIBS),-lncursesw) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS)) \
 		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
 	@rm -f slermes.link.rsp
+	@$(PYTHON_FOR_DEDUP) scripts/verify_objects.py --fail-on-drift >build/.objgate.log 2>&1 || \
+	  { echo "  OBJECT GATE: FAIL -- an object does not define what its source defines"; \
+	    tail -8 build/.objgate.log; \
+	    echo "  (rebuild the named objects: python scripts/verify_objects.py --fix && make)"; \
+	    rm -f build/.objgate.log; exit 1; }
+	@rm -f build/.objgate.log
 	@echo "  slermes binary: $@ $$(ls -lh $@ | awk '{print $$5}')$(if $(WHISPER_LIBS), with whisper, without whisper)"
 
 # Print the resolved slermes object closure, one per line. Consumed by
