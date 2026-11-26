@@ -12,6 +12,7 @@
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "browser_tool_cdp.h"
+#include "browser_vault.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "hermes_url_safety.h"
@@ -1430,6 +1431,40 @@ static char g_cdp_url[512] = {0};
 static int g_cdp_msg_id = 0;
 
 /* Get CDP URL from config or env */
+/* Evaluate an expression in the attached page and return its value as a JSON string (caller frees).
+ *
+ * This exists because the tree already grew a SECOND CDP client (browser_cdp_tool.c) and that one still
+ * reads a single frame per call, so a tool built on it silently gets events as answers. Everything that
+ * needs the page goes through this one, which is the client proven against a live browser.
+ */
+char *browser_cdp_evaluate(const char *expression) {
+    if (!expression) return NULL;
+    json_t *params = json_object();
+    json_set(params, "expression", json_string(expression));
+    json_set(params, "returnByValue", json_bool(1));
+    json_set(params, "awaitPromise", json_bool(1));
+    char *params_json = json_serialize(params);
+    json_free(params);
+    if (!params_json) return NULL;
+
+    char *resp = cdp_send_command("Runtime.evaluate", params_json);
+    free(params_json);
+    if (!resp) return NULL;
+
+    char *out = NULL;
+    json_t *root = json_parse(resp, NULL);
+    free(resp);
+    if (root) {
+        const json_t *inner = json_obj_get(root, "result");
+        const json_t *deep = inner ? json_obj_get(inner, "result") : NULL;
+        const json_t *val = deep ? json_obj_get(deep, "value") : NULL;
+        if (val && val->type == JSON_STRING) out = strdup(json_string_value(val));
+        else if (val) out = json_serialize((json_t *)val);
+        json_free(root);
+    }
+    return out;
+}
+
 const char *cdp_get_url(void) {
     if (g_cdp_url[0]) return g_cdp_url;
     const char *env = getenv("CAMOFOX_WS_URL");
@@ -1854,6 +1889,20 @@ void registry_init_browser(void) {
         "{\"type\":\"object\",\"properties\":{},\"required\":[]}",
         browser_generate_pdf_handler);
 
+
+    registry_register("browser_vault",
+        "The saved-login vault. action=list returns the item metadata the model may see (never a "
+        "secret); action=fill puts a saved login into the page that is open now, and refuses unless "
+        "that page is an origin the item was saved for. save_login, enter_code and unlock are not "
+        "implemented and are not offered.",
+        "{\"type\":\"object\",\"properties\":{"
+        "\"action\":{\"type\":\"string\",\"enum\":[\"list\",\"fill\"],"
+        "\"description\":\"list the vault, or fill a login into the open page\"},"
+        "\"handle\":{\"type\":\"string\",\"description\":\"item id; omit to use the single login saved for this origin\"},"
+        "\"password\":{\"type\":\"string\",\"description\":\"one-off password instead of the stored one\"},"
+        "\"page_origin\":{\"type\":\"string\",\"description\":\"test-only override for the open page origin\"}},"
+        "\"required\":[\"action\"]}",
+        browser_vault_tool);
 
     registry_register("browser_supervisor",
         "Check browser CDP connection health and supervisor status. Returns connection state, version info, and command statistics. Use this to diagnose CDP connectivity before browser_cdp/browser_vision/browser_console operations.",

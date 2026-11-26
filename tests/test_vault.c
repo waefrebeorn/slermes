@@ -60,7 +60,7 @@ int main(void) {
     vault_set_path(vault_path);
 
     /* Load empty vault (file doesn't exist yet, should fail gracefully) */
-    TEST("load non-existent vault", !vault_load());
+    TEST("load non-existent vault", !agent_vault_load());
 
     /* Store credentials */
     TEST("store api_key for openai", vault_store("openai", "api_key", "sk-test123"));
@@ -112,7 +112,7 @@ int main(void) {
     TEST("lock clears data", vault_retrieve("openai", "api_key") == NULL);
 
     /* Verify load works */
-    TEST("load vault from file", vault_load());
+    TEST("load vault from file", agent_vault_load());
     {
         const char *v = vault_retrieve("openai", "api_key");
         TEST("reloaded openai api_key matches", v && strcmp(v, "sk-test123") == 0);
@@ -132,7 +132,7 @@ int main(void) {
 
     /* Reload and verify update persisted */
     vault_lock();
-    vault_load();
+    agent_vault_load();
     {
         const char *v = vault_retrieve("openai", "api_key");
         TEST("persisted update after reload", v && strcmp(v, "sk-updated") == 0);
@@ -179,11 +179,11 @@ int main(void) {
 
         /* Try to load with wrong key */
         vault_set_master_key("wrong-key");
-        TEST("wrong key fails to decrypt", !vault_load());
+        TEST("wrong key fails to decrypt", !agent_vault_load());
 
         /* Original key still works */
         vault_set_master_key("original-key");
-        TEST("original key reloads correctly", vault_load());
+        TEST("original key reloads correctly", agent_vault_load());
         const char *v = vault_retrieve("test", "key");
         TEST("data intact after wrong-key attempt", v && strcmp(v, "secret-value") == 0);
     }
@@ -207,7 +207,7 @@ int main(void) {
 
         /* New key should work */
         vault_set_master_key("new-passphrase");
-        TEST("new key loads vault", vault_load());
+        TEST("new key loads vault", agent_vault_load());
         {
             const char *v = vault_retrieve("rotate_service", "key1");
             TEST("data survives key rotation", v && strcmp(v, "rotate-value") == 0);
@@ -216,12 +216,12 @@ int main(void) {
         /* Old key should not work */
         vault_lock();
         vault_set_master_key("old-passphrase");
-        TEST("old key fails after rotation", !vault_load());
+        TEST("old key fails after rotation", !agent_vault_load());
 
         /* Rotate from file with old passphrase */
         vault_lock();
         vault_set_master_key("new-passphrase");
-        vault_load();
+        agent_vault_load();
         vault_store("second_service", "key2", "second-value");
         vault_save();
         vault_lock();
@@ -232,7 +232,7 @@ int main(void) {
         vault_lock();
 
         vault_set_master_key("final-passphrase");
-        TEST("final key loads rotated vault", vault_load());
+        TEST("final key loads rotated vault", agent_vault_load());
         {
             const char *v1 = vault_retrieve("rotate_service", "key1");
             const char *v2 = vault_retrieve("second_service", "key2");

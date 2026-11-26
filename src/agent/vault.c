@@ -259,7 +259,7 @@ bool vault_save(void) {
 }
 
 /* Load vault from encrypted file */
-bool vault_load(void) {
+bool agent_vault_load(void) {
     if (!g_master_key_set) return false;
 
     const char *path = vault_get_path();
@@ -420,7 +420,7 @@ bool vault_rotate_key(const char *old_passphrase, const char *new_passphrase) {
     memcpy(g_master_key, old_key, sizeof(g_master_key));
     g_master_key_set = true;
 
-    load_ok = vault_load();
+    load_ok = agent_vault_load();
     if (!load_ok) {
         /* Restore original key on failure */
         memcpy(g_master_key, saved_key, sizeof(g_master_key));

@@ -44,4 +44,7 @@ bool check_browser_scroll_requirements(void);
 bool check_browser_back_requirements(void);
 bool check_browser_press_requirements(void);
 
+/* Evaluate an expression in the attached page; returns the JSON value as a string (caller frees). */
+char *browser_cdp_evaluate(const char *expression);
+
 #endif /* SLERMES_BROWSER_TOOL_CDP_H */

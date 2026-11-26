@@ -252,7 +252,7 @@ static void test_vault_integration(void) {
     vault_save();
     vault_lock();
     vault_set_master_key("test-vault-key");
-    vault_load();
+    agent_vault_load();
 
     const char *v = tool_config_get("testvault", "api_key");
     assert(v != NULL);

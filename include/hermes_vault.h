@@ -12,7 +12,11 @@ bool vault_has_master_key(void);
 void vault_lock(void);
 void vault_set_path(const char *path);
 bool vault_save(void);
-bool vault_load(void);
+/* agent/vault.py's load. NOT `vault_load`: src/agent/vault_file.c owns that name for the encrypted
+ * login vault, and a duplicate symbol with a different signature links happily and then calls the
+ * wrong function -- which is exactly what happened (vault_local_store's three-argument call resolved
+ * to this zero-argument one, so every vault read failed). */
+bool agent_vault_load(void);
 bool vault_store(const char *service, const char *key, const char *value);
 const char *vault_retrieve(const char *service, const char *key);
 bool vault_delete(const char *service, const char *key);

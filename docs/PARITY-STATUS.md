@@ -106,6 +106,21 @@ with an email and a password input): `vl_build_inspection_js` -> classify -> `se
 password input held the value. A wrong `expected_origin` correctly refused with
 `{"refused":"origin_changed","found":"http://127.0.0.1:8899"}`.
 
+**`browser_vault` is registered with two actions, both driven through a live page:**
+
+```
+action=list   -> items with handle/label/kind/origin/identifier; never a password
+action=fill   -> success:true, item_id, origin, filled:1   (3/3 separate calls, password in the field)
+                 handle + wrong page_origin -> refused: origin_mismatch, naming both origins
+                 unknown handle              -> {"error":"no vault item with id 'vault_nope'"}
+                 password arg                -> one-off fill without touching the stored secret
+                 action=unlock               -> {"error":"... save_login, enter_code and unlock are not implemented"}
+```
+
+The join needed one thing no layer could do alone -- reaching the page -- so `browser.c` now exposes
+`browser_cdp_evaluate()`, and the tool uses that client rather than the second CDP implementation in
+`browser_cdp_tool.c` (which still reads a single frame per call).
+
 **Resolved.** The "some calls land elsewhere" artifact was not CDP at all. Two defects stacked:
 `ws_io_send` called `send()` once per header and once per payload, so a 2 KB script could go out
 truncated and be silently dropped by the browser; and `src/tools/registry.c` kept a process-wide
