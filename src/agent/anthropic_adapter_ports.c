@@ -838,7 +838,6 @@ char *anthropic_adapter_scrub_blank_text_blocks(const char *arg) {
         }
         /* replace content with scrubbed list */
         json_set(msg, "content", new_content);
-        json_free(new_content);
     }
     char *result = json_serialize(j);
     json_free(j);

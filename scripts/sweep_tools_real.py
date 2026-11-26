@@ -24,6 +24,7 @@ REPO = Path(__file__).resolve().parents[1]
 T = REPO / ".testbin"
 PAGE = "http://127.0.0.1:8899/"
 
+
 CASES = [
     ("read_file", {"path": str(REPO / "README.md")}),
     ("file_hash", {"path": str(T / "empty.bin")}),
@@ -182,6 +183,11 @@ def ensure_fixtures() -> None:
         "broken.py": "def add(a, b)\n    return a +\n",
         "a.txt": "alpha\nbeta\ngamma\n",
         "empty.bin": "",
+        # The media cases point at these. .testbin gets pruned, and a run after a prune scored
+        # video_analyze/transcribe_audio as ABSENCE suspects for truthfully reporting a file that
+        # the sweep itself never created.
+        "clip.mp4": "",
+        "tone.mp3": "",
     }
     for name, body in files.items():
         path = T / name
@@ -190,6 +196,7 @@ def ensure_fixtures() -> None:
 
 
 def main() -> int:
+    ensure_fixtures()
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default="http://127.0.0.1:9100/mcp")
     ap.add_argument("--json", default="")

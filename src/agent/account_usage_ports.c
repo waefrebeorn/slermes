@@ -165,7 +165,6 @@ char *acu_snapshot_from_credits_state(const char *credits_json) {
         json_set(w, "label", json_string("monthly-grant"));
         json_set(w, "used_percent", json_number(frac * 100.0));
         json_append(windows, w);
-        json_free(w);
     }
     json_set(snap, "windows", windows);
 
@@ -175,7 +174,6 @@ char *acu_snapshot_from_credits_state(const char *credits_json) {
         json_t *d = json_array();
         json_append(d, json_string(detail));
         json_set(snap, "details", d);
-        json_free(d);
         free(detail);
     }
 

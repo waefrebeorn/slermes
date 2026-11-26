@@ -422,7 +422,6 @@ char *sm_create_package_in_transaction(sqlite3 *db, const struct sm_datetime *no
             json_set(m, "dimensions", dims ? dims : json_object());
             json_set(m, "value", json_number((double)(val - pkg)));
             json_append(metrics, m);
-            json_free(m);
         }
     }
     if (mstmt) sqlite3_finalize(mstmt);
@@ -675,7 +674,6 @@ json_t *sm_counter_snapshot(shared_metrics_store_t *store) {
         json_set(row, "value", json_number((double)sqlite3_column_int(stmt, 4)));
         json_set(row, "packaged_value", json_number((double)sqlite3_column_int(stmt, 5)));
         json_append(arr, row);
-        json_free(row);
     }
     sqlite3_finalize(stmt);
     sqlite3_close(db);

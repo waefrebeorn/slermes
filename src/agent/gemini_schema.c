@@ -116,7 +116,6 @@ static json_t *sanitize_node(json_t *node) {
                 json_t *sanitized = sanitize_node(node->c.items[i]);
                 if (sanitized) {
                     json_append(arr, sanitized);
-                    json_free(sanitized);
                 } else if (node->c.items[i]) {
                     json_append(arr, node->c.items[i]);
                 }

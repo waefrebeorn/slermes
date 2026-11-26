@@ -743,7 +743,6 @@ int hermes_cli_cron_cron_edit(const char *args_json) {
     if (final_skills) {
         if (json_len(final_skills) == 0) json_set(upd, "skills", json_null());
         else json_set(upd, "skills", final_skills);
-        json_free(final_skills);
     }
 
     char *err = NULL;

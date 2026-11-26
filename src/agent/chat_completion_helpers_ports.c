@@ -157,7 +157,6 @@ char *cch_merge_nous_portal_messages_extra_body(const char *arg) {
         if (!eb) {
             eb = json_object();
             json_set(j, "extra_body", eb);
-            json_free(eb);
         }
         if (eb->type == JSON_OBJECT)
             json_set(eb, "session_id", json_string(t1 + 1));

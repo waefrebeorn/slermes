@@ -894,7 +894,6 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
     json_t *orig = json_object();
     json_set(orig, "content", json_string(user_prompt));
     json_append(agg_parts, orig);
-    json_free(orig);
 
     for (int i = 0; i < healthy_count; i++) {
         if (tasks[i].result) {
@@ -908,12 +907,10 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
             json_t *resp = json_object();
             json_set(resp, "content", json_string(tasks[i].result));
             json_append(agg_parts, resp);
-            json_free(resp);
         }
     }
 
     json_set(agg_prompt_json, "parts", agg_parts);
-    json_free(agg_parts);
     char *agg_prompt = json_serialize(agg_prompt_json);
     json_free(agg_prompt_json);
 
@@ -984,7 +981,6 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
         }
     }
     json_set(result, "reference_responses", ref_responses);
-    json_free(ref_responses);
 
     json_set(result, "aggregator_response", json_string(agg_response ? agg_response : ""));
     json_set(result, "aggregator_model", json_string(agg_response ? "aggregator" : "fallback"));
@@ -998,7 +994,6 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
         json_set(health, MOA_PROVIDERS[p].name, h);
     }
     json_set(result, "provider_health", health);
-    json_free(health);
 
     // Include research metadata if available
     if (research) {
@@ -1014,7 +1009,6 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
             json_set(model_scores, research->model_ids[i], json_number(research->model_scores[i]));
         }
         json_set(research_json, "model_scores", model_scores);
-        json_free(model_scores);
 
         // Top sources
         json_t *top_sources = json_array();
@@ -1027,10 +1021,8 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id) {
             json_append(top_sources, src);
         }
         json_set(research_json, "top_sources", top_sources);
-        json_free(top_sources);
 
         json_set(result, "research", research_json);
-        json_free(research_json);
     }
 
     free(agg_response);

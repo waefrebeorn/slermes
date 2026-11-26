@@ -210,7 +210,6 @@ char *psize_compute_skills_breakdown(const char *arg) {
                 json_set(entry, "index_line_bytes", json_number((double)line_len));
                 json_set(entry, "skill_md_bytes", json_null());
                 json_append(out, entry);
-                json_free(entry);
             } else if (strncmp(line, SKILL_LINE_PREFIX, strlen(SKILL_LINE_PREFIX)) == 0) {
                 const char *rest = line + strlen(SKILL_LINE_PREFIX);
                 const char *colon = strstr(rest, ": ");
@@ -230,7 +229,6 @@ char *psize_compute_skills_breakdown(const char *arg) {
                 json_set(entry, "index_line_bytes", json_number((double)line_len));
                 json_set(entry, "skill_md_bytes", json_null());
                 json_append(out, entry);
-                json_free(entry);
                 free(name);
             }
             free(line);
@@ -264,7 +262,6 @@ char *psize_compute_toolsets_breakdown(const char *arg) {
         json_set(entry, "json_bytes", json_number((double)(ser ? strlen(ser) : 0)));
         free(ser);
         json_append(out, entry);
-        json_free(entry);
         free(name);
     }
     char *result = json_serialize(out);

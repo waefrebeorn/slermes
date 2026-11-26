@@ -551,7 +551,6 @@ bool cc_micro_compact_defrag_rolling_summary(cc_micro_compact_state_t *st,
             char *rendered = render_micro_marker_content(st->micro_compact_rolling_summary);
             json_t *new_content = json_string(rendered);
             json_set(msg, "content", new_content);
-            json_free(new_content);
             free(rendered);
             json_obj_del(msg, "_db_persisted");
             st->flush_scan_cursor_invalidated = true;

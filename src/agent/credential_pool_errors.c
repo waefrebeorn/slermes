@@ -174,6 +174,5 @@ json_t *w16_credential_c298e3_normalize_error_context(const json_t *error_contex
     parsed = w16_credential_c298e3_parse_absolute_timestamp(reset_at);
     /* reset_delay_from_message seam pinned to None by the oracle: no time.time() branch. */
     if (parsed->type != JSON_NULL) json_set(out, "reset_at", parsed);
-    json_free(parsed);
     return out;
 }

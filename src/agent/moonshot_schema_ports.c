@@ -129,7 +129,6 @@ char *msc_sanitize_moonshot_tools(const char *tools_json) {
             json_t *repaired = msc_repair_node(json_copy(params), true);
             if (repaired) {
                 json_set(fn, "parameters", repaired);
-                json_free(repaired);
             }
         }
         json_append(sanitized, json_copy(tool));
