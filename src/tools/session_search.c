@@ -459,7 +459,14 @@ char *session_search_handler(const char *args_json, const char *task_id) {
                 char meta[2048];
             } match_result_t;
 
-            match_result_t matches[MAX_MATCH_FILES];
+            /* ~6.9 KB per entry x 512 entries = 3.5 MB of stack: every call to this tool overflowed the
+             * 1 MB stack and killed the whole MCP server (WinError 10054 from outside), taking all 141
+             * other tools with it. The array lives on the heap now. */
+            match_result_t *matches = calloc(MAX_MATCH_FILES, sizeof(match_result_t));
+            if (!matches) {
+                json_object_set(result, "error", json_new_string("out of memory for the match buffer"));
+                return json_serialize(result);
+            }
             int match_count = 0;
 
             /* List .json files (not .meta.json) */
@@ -510,7 +517,11 @@ char *session_search_handler(const char *args_json, const char *task_id) {
                     /* Compute relevance score */
                     double score = compute_score(content, query, (size_t)fst.st_size);
 
-                    if (score < min_score) {
+                    /* `score < min_score` with the default min_score of 0 kept every file: a
+                     * non-matching session scores exactly 0.0, and 0 < 0 is false. Every query returned
+                     * the same first-N sessions -- "zzz_no_such_term" answered with 10 results and 15
+                     * matches, identical to a real query. No occurrence means no match. */
+                    if (score <= 0.0 || score < min_score) {
                         free(content);
                         continue;
                     }
@@ -592,6 +603,7 @@ char *session_search_handler(const char *args_json, const char *task_id) {
                 json_object_set(result, "role_filter", json_new_string(role_filter));
             if (session_id_filter && *session_id_filter)
                 json_object_set(result, "session_id_filter", json_new_string(session_id_filter));
+                free(matches);
             }  /* close inner else (discovery) */
         }  /* close stat-ok else */
     }

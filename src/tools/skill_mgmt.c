@@ -146,14 +146,46 @@ static const char *validate_name(const char *name) {
 }
 
 /* Build the full path to a skill's SKILL.md */
+/* Skills live at <root>/<name> or one category level down (<root>/devops/<name>). The flat form made
+ * every nested skill answer "Skill not found" -- skill_view("apple-notes") on a skill that is right
+ * there at skills/apple/apple-notes/SKILL.md. */
+static bool skill_resolve_dir(const char *skills_dir, const char *name, char *buf, size_t bufsz) {
+    char probe[2048];
+    snprintf(buf, bufsz, "%s/%s", skills_dir, name);
+    snprintf(probe, sizeof(probe), "%s/SKILL.md", buf);
+    struct stat st;
+    if (stat(probe, &st) == 0) return true;
+
+    DIR *d = opendir(skills_dir);
+    if (!d) return false;
+    bool found = false;
+    struct dirent *ent;
+    while (!found && (ent = readdir(d)) != NULL) {
+        if (ent->d_name[0] == '.' || strcmp(ent->d_name, "..") == 0) continue;
+        char cat[2048];
+        snprintf(cat, sizeof(cat), "%s/%s", skills_dir, ent->d_name);
+        if (stat(cat, &st) != 0 || !S_ISDIR(st.st_mode)) continue;
+        snprintf(buf, bufsz, "%s/%s", cat, name);
+        snprintf(probe, sizeof(probe), "%s/SKILL.md", buf);
+        if (stat(probe, &st) == 0) found = true;
+    }
+    closedir(d);
+    return found;
+}
+
 static void skill_sk_path(const char *skills_dir, const char *name,
                           char *buf, size_t bufsz) {
-    snprintf(buf, bufsz, "%s/%s/SKILL.md", skills_dir, name);
+    char dir[2048];
+    if (skill_resolve_dir(skills_dir, name, dir, sizeof(dir)))
+        snprintf(buf, bufsz, "%s/SKILL.md", dir);
+    else
+        snprintf(buf, bufsz, "%s/%s/SKILL.md", skills_dir, name);
 }
 
 /* Build the full path to a skill directory */
 static void skill_dir_path(const char *skills_dir, const char *name,
                            char *buf, size_t bufsz) {
+    if (skill_resolve_dir(skills_dir, name, buf, bufsz)) return;
     snprintf(buf, bufsz, "%s/%s", skills_dir, name);
 }
 

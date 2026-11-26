@@ -39,9 +39,16 @@
 static const char *get_skills_dir(void) {
     static char buf[PATH_MAX_LEN];
     if (buf[0]) return buf;
-    const char *home = getenv("HOME");
-    if (!home) home = "/home/wubu";
+    const char *home = getenv("HERMES_HOME");
+    if (!home) home = getenv("HOME");
+    if (!home) home = ".";
+    /* `$HOME/.hermes/skills` only. When the install keeps skills at `$HOME/skills` this answered
+     * "No skills directory found" on a machine with 258 of them -- the curator feature was dead, and
+     * said so as if the user had no skills. Same two-step resolution skills.c uses. */
     snprintf(buf, sizeof(buf), "%s/.hermes/skills", home);
+    struct stat st;
+    if (stat(buf, &st) != 0 || !S_ISDIR(st.st_mode))
+        snprintf(buf, sizeof(buf), "%s/skills", home);
     return buf;
 }
 
@@ -53,9 +60,9 @@ static const char *get_skills_dir(void) {
 static const char *get_backups_dir(void) {
     static char buf[PATH_MAX_LEN];
     if (buf[0]) return buf;
-    const char *home = getenv("HOME");
-    if (!home) home = "/home/wubu";
-    snprintf(buf, sizeof(buf), "%s/.hermes/skills/.curator_backups", home);
+    /* Inside whichever skills directory was actually found, so a snapshot lands beside the skills it
+     * is a snapshot of. */
+    snprintf(buf, sizeof(buf), "%s/.curator_backups", get_skills_dir());
     return buf;
 }
 
@@ -83,24 +90,18 @@ static void utc_timestamp(char *buf, size_t len) {
 }
 
 static int is_valid_snapshot_name(const char *name) {
-    /* Match: YYYY-MM-DDTHH-MM-SSZ or YYYY-MM-DDTHH-MM-SSZ-NN */
-    if (strlen(name) < 20) return 0;
-    for (int i = 0; i < 19; i++) {
-        if (i == 4 || i == 7 || i == 13 || i == 16) {
-            if (name[i] != '-' && name[i] != 'T' && name[i] != 'Z') {
-                if (i == 10 && name[i] == 'T') continue;
-                if (i == 4 && name[i] == '-') continue;
-                if (i == 7 && name[i] == '-') continue;
-                if (i == 10 && name[i] == 'T') continue;
-                if (i == 13 && name[i] == '-') continue;
-                if (i == 16 && name[i] == '-') continue;
-                return 0;
-            }
-        } else {
-            if (name[i] < '0' || name[i] > '9') return 0;
-        }
-    }
-    return name[19] == 'Z';
+    /* Accept exactly what _utc_id() writes: YYYY-MM-DDTHH-MM-SSZ, optionally with a -NN suffix.
+     * The index table this replaces demanded a DIGIT at offset 10, where the generator writes 'T', so
+     * every snapshot it had just made was invisible to curator_list (count 0 right after a successful
+     * 4.9 MB snapshot). */
+    int y, mo, d, h, mi, sec;
+    if (!name || strlen(name) < 20) return 0;
+    if (sscanf(name, "%4d-%2d-%2dT%2d-%2d-%2d", &y, &mo, &d, &h, &mi, &sec) != 6) return 0;
+    if (mo < 1 || mo > 12 || d < 1 || d > 31 || h > 23 || mi > 59 || sec > 60) return 0;
+    char tail = name[19];
+    if (tail == '\0' || tail == 'Z') return 1;
+    if (tail == '-' || (tail >= '0' && tail <= '9')) return 1;
+    return 0;
 }
 
 
@@ -203,17 +204,33 @@ int curator_backup_config_keep(void) {
 /* Port of Python agent/curator_backup.py _count_skill_files().
  * Counts SKILL.md files recursively, excluding .curator_backups and .hub.
  * Returns the count as int (0 on error). */
-static int count_skill_files(const char *base) {
-    char cmd[PATH_MAX_LEN];
-    snprintf(cmd, sizeof(cmd),
-             "find '%s' -name 'SKILL.md' -not -path '*/.curator_backups/*' -not -path '*/.hub/*' 2>/dev/null | wc -l",
-             base);
-    FILE *p = popen(cmd, "r");
-    if (!p) return 0;
+/* `find ... | wc -l` is POSIX: on Windows it counted 0 skills in a tree that produced a 4.9 MB
+ * snapshot. Walk the directory instead, skipping the backup and hub subtrees. */
+static int count_skill_files_walk(const char *dir, int depth) {
+    if (!dir || depth > 12) return 0;
+    DIR *d = opendir(dir);
+    if (!d) return 0;
     int count = 0;
-    fscanf(p, "%d", &count);
-    pclose(p);
+    struct dirent *ent;
+    while ((ent = readdir(d)) != NULL) {
+        if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0) continue;
+        if (strcmp(ent->d_name, ".curator_backups") == 0 || strcmp(ent->d_name, ".hub") == 0) continue;
+        char path[PATH_MAX_LEN];
+        snprintf(path, sizeof(path), "%s/%s", dir, ent->d_name);
+        struct stat st;
+        if (stat(path, &st) != 0) continue;
+        if (S_ISDIR(st.st_mode)) {
+            count += count_skill_files_walk(path, depth + 1);
+        } else if (strcmp(ent->d_name, "SKILL.md") == 0) {
+            count++;
+        }
+    }
+    closedir(d);
     return count;
+}
+
+static int count_skill_files(const char *base) {
+    return count_skill_files_walk(base, 0);
 }
 
 /* AG26: Port of Python agent/curator_backup.py:_write_manifest().

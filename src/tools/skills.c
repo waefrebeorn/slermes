@@ -72,10 +72,47 @@ static void skill_path(const char *name, char *buf, size_t sz) {
     snprintf(buf, sz, "%s/%s", sd, name);
 }
 
-static void skill_sk_path(const char *name, char *buf, size_t sz) {
+static bool file_exists(const char *path);
+
+/* Skills are directories holding a SKILL.md, either directly under the skills root or one category
+ * level down (apple/apple-notes/SKILL.md). The flat assumption made every nested skill invisible:
+ * skill_view("apple-notes") answered "Skill not found" while the directory sat there with its body. */
+static bool resolve_skill_dir(const char *name, char *buf, size_t sz) {
     char sd[HERMES_PATH_MAX];
     skills_dir(sd, sizeof(sd));
-    snprintf(buf, sz, "%s/%s/SKILL.md", sd, name);
+
+    char sk[HERMES_PATH_MAX + 16];
+    snprintf(buf, sz, "%s/%s", sd, name);
+    snprintf(sk, sizeof(sk), "%s/SKILL.md", buf);
+    if (file_exists(sk)) return true;
+
+    DIR *d = opendir(sd);
+    if (!d) return false;
+    bool found = false;
+    struct dirent *ent;
+    while (!found && (ent = readdir(d)) != NULL) {
+        if (ent->d_name[0] == '.' || strcmp(ent->d_name, "..") == 0) continue;
+        char cat[HERMES_PATH_MAX];
+        snprintf(cat, sizeof(cat), "%s/%s", sd, ent->d_name);
+        struct stat st;
+        if (stat(cat, &st) != 0 || !S_ISDIR(st.st_mode)) continue;
+        snprintf(buf, sz, "%s/%s", cat, name);
+        snprintf(sk, sizeof(sk), "%s/SKILL.md", buf);
+        if (file_exists(sk)) found = true;
+    }
+    closedir(d);
+    return found;
+}
+
+static void skill_sk_path(const char *name, char *buf, size_t sz) {
+    char dir[HERMES_PATH_MAX];
+    if (resolve_skill_dir(name, dir, sizeof(dir)))
+        snprintf(buf, sz, "%s/SKILL.md", dir);
+    else {
+        char sd[HERMES_PATH_MAX];
+        skills_dir(sd, sizeof(sd));
+        snprintf(buf, sz, "%s/%s/SKILL.md", sd, name);
+    }
 }
 
 static void skill_prov_path(const char *name, char *buf, size_t sz) {
@@ -346,15 +383,10 @@ static void scan_dir_recursive(skill_list_t *list, const char *dir_path) {
                 /* Recurse into subdirectory */
                 scan_dir_recursive(list, fullpath);
             }
-        } else if (S_ISREG(st.st_mode)) {
-            /* Check for .md files that might be standalone skills */
-            const char *ext = strrchr(entry->d_name, '.');
-            if (ext && strcasecmp(ext, ".md") == 0) {
-                char name[256];
-                snprintf(name, sizeof(name), "%.*s", (int)(ext - entry->d_name), entry->d_name);
-                scan_add_skill(list, name, fullpath);
-            }
         }
+        /* A loose .md file is a note, not a skill: counting them made skills_list report 1177
+         * "skills" in a directory that holds 232 real ones plus someone's session notes. Upstream
+         * registers a skill by its SKILL.md only. */
     }
     closedir(dir);
 }
