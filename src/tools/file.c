@@ -8,6 +8,7 @@
 #include "hermes_agent.h"
 #include "sandbox.h"
 #include "hermes_json.h"
+#include "file_lint.h"
 #include "file_search.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -240,6 +241,50 @@ static char *handle_write(const char *args_json) {
         return strdup("{\"error\":\"Invalid path or missing content\"}");
     }
 
+    /* Fail-closed pre-write gate (port of FileOperations._fail_closed_syntax_error). The tool's own
+     * schema promises "Auto-runs syntax checks on .py/.json/.yaml/.toml" and nothing ran any: a write
+     * that would corrupt a .json/.yaml/.toml reported success. A structured-format write that does not
+     * parse is refused before a byte touches disk; .py is advisory and rides along as a warning. */
+    {
+        const char *dot = strrchr(path, '.');
+        bool is_json = dot && strcasecmp(dot, ".json") == 0;
+        bool is_toml = dot && strcasecmp(dot, ".toml") == 0;
+        bool is_yaml = dot && (strcasecmp(dot, ".yaml") == 0 || strcasecmp(dot, ".yml") == 0);
+        bool is_py   = dot && strcasecmp(dot, ".py") == 0;
+
+        if (is_json || is_toml || is_yaml) {
+            char *verdict = is_json ? file_lint_json(content)
+                           : is_toml ? file_lint_toml(content)
+                                     : file_lint_yaml(content);
+            bool ok = true, skipped = false;
+            char reason[400] = "";
+            if (verdict) {
+                json_node_t *v = json_parse(verdict, NULL);
+                if (v) {
+                    const json_t *vv = json_obj_get(v, "valid");
+                    const json_t *sk = json_obj_get(v, "skipped");
+                    const json_t *er = json_obj_get(v, "error");
+                    if (vv && vv->type == JSON_BOOL) ok = vv->bool_val;
+                    if (sk && sk->type == JSON_BOOL) skipped = sk->bool_val;
+                    if (er && er->type == JSON_STRING && er->str_val)
+                        snprintf(reason, sizeof(reason), "%s", er->str_val);
+                    json_free(v);
+                }
+                free(verdict);
+            }
+            if (!ok && !skipped) {
+                char buf[1024];
+                snprintf(buf, sizeof(buf),
+                         "{\"error\":\"Refusing to write '%s': candidate content fails %s syntax "
+                         "validation (%s). The file was NOT created or modified. Fix the content and "
+                         "retry.\"}", path, dot, reason[0] ? reason : "does not parse");
+                json_free(args);
+                return strdup(buf);
+            }
+        }
+        (void)is_py;
+    }
+
     /* Ensure parent dir exists */
     char dir[4096];
     snprintf(dir, sizeof(dir), "%s", path);
@@ -291,9 +336,40 @@ static char *handle_write(const char *args_json) {
         return strdup(buf);
     }
 
+    /* Advisory: a .py that does not compile still gets written (upstream lints after the write), but
+     * the caller is told, so it cannot read the success as "this Python is fine". */
+    char lint_note[512] = "";
+    {
+        const char *dot = strrchr(path, '.');
+        if (dot && strcasecmp(dot, ".py") == 0) {
+            char *verdict = file_lint_python(NULL, content);
+            if (verdict) {
+                json_node_t *v = json_parse(verdict, NULL);
+                if (v) {
+                    const json_t *vv = json_obj_get(v, "valid");
+                    const json_t *sk = json_obj_get(v, "skipped");
+                    const json_t *er = json_obj_get(v, "error");
+                    const json_t *rs = json_obj_get(v, "reason");
+                    if (sk && sk->type == JSON_BOOL && sk->bool_val) {
+                        /* The checker could not run. Say that, instead of letting a successful write
+                         * imply the Python was checked. */
+                        snprintf(lint_note, sizeof(lint_note), "not checked (%s)",
+                                 (rs && rs->type == JSON_STRING && rs->str_val) ? rs->str_val : "checker unavailable");
+                    } else if (vv && vv->type == JSON_BOOL && !vv->bool_val) {
+                        snprintf(lint_note, sizeof(lint_note), "%s",
+                                 (er && er->type == JSON_STRING && er->str_val) ? er->str_val : "does not compile");
+                    }
+                    json_free(v);
+                }
+                free(verdict);
+            }
+        }
+    }
+
     json_node_t *result = json_new_object();
     json_object_set(result, "path", json_new_string(path));
     json_object_set(result, "bytes_written", json_new_number((double)strlen(content)));
+    if (lint_note[0]) json_object_set(result, "lint_warning", json_new_string(lint_note));
     json_object_set(result, "success", json_new_bool(true));
 
     char *json_out = json_serialize(result);

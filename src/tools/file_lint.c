@@ -1,3 +1,4 @@
+#include "terminal_cmd.h"
 /*
  * file_lint.c — in-process syntax linters (faithful port of
  * tools/file_operations.py:_lint_*_inproc).
@@ -52,6 +53,74 @@ void file_lint_free(file_lint_t *ctx)
 }
 
 /* Reusable result builder shared by every linter. */
+#ifdef _WIN32
+
+/* The lint runner used to be `popen("<python> script target")`. On this box popen hands the line to
+ * cmd.exe, `python` is not on that PATH, and the failed launch came back as exit code 1 with a message
+ * on stderr -- so a *valid* Python file was reported invalid with "python: not found" as its syntax
+ * error. Run it through the native runner and be explicit about the three outcomes. */
+static const char *lint_python_exe(void) {
+    static char found[MAX_PATH];
+    static int resolved = 0;
+    if (!resolved) {
+        resolved = 1;
+        const char *env = getenv("HERMES_PYTHON");
+        if (!env || !*env) env = getenv("SLERMES_PYTHON");
+        if (env && *env) {
+            snprintf(found, sizeof(found), "%s", env);
+        } else {
+            const char *cands[] = { "python.exe", "python3.exe", "py.exe", NULL };
+            found[0] = '\0';
+            for (size_t i = 0; cands[i]; i++) {
+                char loc[MAX_PATH];
+                if (SearchPathA(NULL, cands[i], NULL, sizeof(loc), loc, NULL)) {
+                    snprintf(found, sizeof(found), "%s", loc);
+                    break;
+                }
+            }
+            /* The interpreter on this box is installed under %LOCALAPPDATA%\hermes\tools and is not
+             * on the server's PATH, so "no python" was a statement about the PATH, not the machine.
+             * Enumerate the versioned directory and use its python.exe. */
+            if (!found[0]) {
+                const char *lad = getenv("LOCALAPPDATA");
+                if (lad && *lad) {
+                    char pattern[MAX_PATH];
+                    snprintf(pattern, sizeof(pattern), "%s\\hermes\\tools\\python-*", lad);
+                    WIN32_FIND_DATAA fd;
+                    HANDLE h = FindFirstFileA(pattern, &fd);
+                    if (h != INVALID_HANDLE_VALUE) {
+                        do {
+                            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) continue;
+                            char exe[MAX_PATH];
+                            snprintf(exe, sizeof(exe), "%s\\hermes\\tools\\%s\\python.exe", lad, fd.cFileName);
+                            if (GetFileAttributesA(exe) != INVALID_FILE_ATTRIBUTES) {
+                                snprintf(found, sizeof(found), "%s", exe);
+                                break;
+                            }
+                        } while (FindNextFileA(h, &fd));
+                        FindClose(h);
+                    }
+                }
+            }
+        }
+    }
+    return found[0] ? found : NULL;
+}
+#endif /* _WIN32 */
+
+/* valid:null, skipped:true -- the checker could not run, so the file's validity is unknown. */
+static char *build_result_skipped(const char *reason)
+{
+    json_t *root = json_object();
+    if (!root) return NULL;
+    json_set(root, "valid", json_null());
+    json_set(root, "skipped", json_bool(true));
+    json_set(root, "reason", json_string(reason ? reason : "checker unavailable"));
+    char *out = json_serialize(root);
+    json_free(root);
+    return out;
+}
+
 static char *build_result(bool valid, const char *error)
 {
     json_t *root = json_object();
@@ -110,19 +179,60 @@ static char *lint_via_python(const file_lint_t *ctx, const char *mod_text,
     fclose(f);
     free(script);
 
-    const char *bin = (ctx && ctx->python_bin) ? ctx->python_bin : "python";
+    const char *bin = (ctx && ctx->python_bin) ? ctx->python_bin : NULL;
+#ifdef _WIN32
+    if (!bin || !*bin) bin = lint_python_exe();
+    if (!bin) { unlink(script_path); unlink(tmpl);
+                return build_result_skipped("no python interpreter found on this machine"); }
+#else
+    if (!bin || !*bin) bin = "python";
+#endif
     char cmd[4096];
     /* MSYS popen() passes the string through cmd.exe; quoting each path
      * makes cmd treat the whole line as one command name. All three paths
      * are quote-free here (temp files are relative), so leave them bare. */
-    int nw = snprintf(cmd, sizeof(cmd), "%s %s %s 2>&1",
-                      bin, script_path, tmpl);
+    /* Forward slashes, no backslash escapes: the runner writes this line into a shell script, and a
+     * Windows path with backslashes comes back to python as C:\\Users\\... -- "can't open file", which
+     * the write path then reported as "not checked". Both bash and CreateProcess accept '/'. */
+    char bin_f[1024], script_f[1024], tmpl_f[1024];
+    snprintf(bin_f, sizeof(bin_f), "%s", bin);
+    snprintf(script_f, sizeof(script_f), "%s", script_path);
+    snprintf(tmpl_f, sizeof(tmpl_f), "%s", tmpl);
+    for (char *q = bin_f; *q; q++) if (*q == '\\') *q = '/';
+    for (char *q = script_f; *q; q++) if (*q == '\\') *q = '/';
+    for (char *q = tmpl_f; *q; q++) if (*q == '\\') *q = '/';
+    int nw = snprintf(cmd, sizeof(cmd), "\"%s\" \"%s\" \"%s\" 2>&1",
+                      bin_f, script_f, tmpl_f);
     if (nw < 0 || (size_t)nw >= sizeof(cmd)) {
         unlink(script_path); unlink(tmpl);
         return build_result(false, "IOError: command too long");
     }
 
     char buf[4096] = "";
+    int rc = 1;
+#ifdef _WIN32
+    char *rj = run_command(cmd, 30);
+    if (!rj) {
+        unlink(script_path); unlink(tmpl);
+        return build_result_skipped("could not start python (no runner available)");
+    }
+    json_t *probe = json_parse(rj, NULL);
+    const char *out = probe ? json_get_str(probe, "output", "") : "";
+    snprintf(buf, sizeof(buf), "%s", out ? out : "");
+    rc = probe ? (int)json_get_num(probe, "exit_code", 1) : 1;
+    if (probe) json_free(probe);
+    free(rj);
+    unlink(script_path);
+    unlink(tmpl);
+    /* 127 / "not recognized" / "cannot find the file": the interpreter never ran. The file is not
+     * broken; we are. Say so instead of naming a syntax error that does not exist. */
+    /* Exit 0 is the answer. The script prints OK on success; requiring empty output made every valid
+     * file report "OK" as if it were the error. */
+    if (rc == 0) return build_result(true, "");
+    if (rc == 9009 || rc == 127 || strstr(buf, "not recognized") || strstr(buf, "cannot find the file") ||
+        strstr(buf, "No such file or directory"))
+        return build_result_skipped(buf[0] ? buf : "python could not be run");
+#else
     FILE *pipe = popen(cmd, "r");
     if (!pipe) { unlink(script_path); unlink(tmpl); return build_result(false, "IOError: cannot run python"); }
     size_t n = fread(buf, 1, sizeof(buf) - 1, pipe);
@@ -130,12 +240,11 @@ static char *lint_via_python(const file_lint_t *ctx, const char *mod_text,
     int status = pclose(pipe);
     unlink(script_path);
     unlink(tmpl);
-    int rc = WIFEXITED(status) ? WEXITSTATUS(status) : 1;
-
+    rc = WIFEXITED(status) ? WEXITSTATUS(status) : 1;
     if (rc == 0) return build_result(true, "");
+#endif
 
-    /* stderr (or stdout on weird failures) holds "<ErrorType>: <msg>".
-     * Collapse to the first line. */
+    /* The runner's message holds "<ErrorType>: <msg>". Collapse to the first line. */
     char *msg = buf;
     char *nl = strchr(buf, '\n');
     if (nl) *nl = '\0';

@@ -164,7 +164,10 @@ static char *run_command_win32(const char *command, int timeout_sec) {
     fclose(sf);
 
     char cmdline[MAX_PATH * 3];
-    snprintf(cmdline, sizeof(cmdline), is_bash ? "\"%s\" --login \"%s\"" : "\"%s\" /d /s /c \"%s\"",
+    /* No --login: a login bash re-creates the environment and starts in $HOME, so a command that used
+     * a relative path (a temp script beside the caller's data, e.g. the python linter) resolved it
+     * against the wrong directory. The child inherits the server's cwd, which is what callers mean. */
+    snprintf(cmdline, sizeof(cmdline), is_bash ? "\"%s\" \"%s\"" : "\"%s\" /d /s /c \"%s\"",
              shell, script);
 
     SECURITY_ATTRIBUTES sa = { sizeof(sa), NULL, TRUE };
