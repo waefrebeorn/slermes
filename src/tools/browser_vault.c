@@ -306,11 +306,21 @@ json_t *browser_vault_fill(const char *base, const char *handle, const char *pas
 
         json_t *result = result_json ? json_parse(result_json, NULL) : NULL;
         free(result_json);
-        if (result && result->type == JSON_OBJECT) {
+        const json_t *filled = result ? json_obj_get(result, "filled") : NULL;
+        double filled_n = (filled && filled->type == JSON_NUMBER) ? json_number_value(filled) : 0;
+        if (result && result->type == JSON_OBJECT && filled_n > 0) {
             json_set(out, "success", json_bool(1));
             json_set(out, "item_id", json_string(item_id ? item_id : ""));
             json_set(out, "origin", json_string(origin));
-            json_set(out, "filled", json_copy(json_obj_get(result, "filled")));
+            json_set(out, "filled", json_copy((json_t *)filled));
+        } else if (result && result->type == JSON_OBJECT) {
+            /* A fill that wrote nothing is not a success. Reporting success:true with filled:0 reads as
+             * "the login is in the page" to every caller, including a model deciding what to do next. */
+            json_set(out, "success", json_bool(0));
+            json_set(out, "filled", json_number(0));
+            json_set(out, "error", json_string(json_len(fills) == 0
+                ? "no password field was found on the page"
+                : "the page refused the fill (the control may be disabled or read-only)"));
         } else {
             json_set(out, "success", json_bool(0));
             json_set(out, "error", json_string(err ? err : (fills && json_len(fills) == 0
