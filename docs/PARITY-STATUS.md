@@ -106,6 +106,26 @@ with an email and a password input): `vl_build_inspection_js` -> classify -> `se
 password input held the value. A wrong `expected_origin` correctly refused with
 `{"refused":"origin_changed","found":"http://127.0.0.1:8899"}`.
 
+**Tool surface, measured against `toolsets.BUILTIN_TOOL_NAMES` (67 upstream builtins):**
+
+```
+registered: 65    missing: 2
+  browser_exec        needs a browser-use engine; nothing in this binary can drive a page through it
+  manage_connections  its two halves both require the hosted connector client or a connection card;
+                      registering a handler that can only answer "not available" is exactly what this
+                      file refuses to do
+```
+
+All 15 `browser_*` tools were swept against a live page in one session:
+
+```
+snapshot, get_images, click, type, press, scroll   live DOM (incl. open shadow roots), refs from snapshot
+console, vision, generate_pdf                      CDP result / real screenshot / %PDF-1.4, 43 KB
+dialog, supervisor, cdp                            real CDP answers
+back, forward                                      Page.getNavigationHistory + navigateToHistoryEntry
+vault list/fill                                    items without secrets; fill 2 fields, refuses wrong origin
+```
+
 **The browser_* cluster now drives the page instead of scraping it.**
 
 `browser_navigate`, `browser_snapshot`, `browser_click`, `browser_type`, `browser_press`,
