@@ -80,6 +80,7 @@ bool kanban_heartbeat(const char *tid);
 
 /* List all task ids on the default board. Returns a NULL-terminated array
  * (caller frees with kanban_all_task_ids_free). `limit` <= 0 => no cap. */
+json_t *kanban_show_task(const char *task_id);
 int kanban_recompute_ready(void);
 char **kanban_all_task_ids(int *limit);
 void kanban_all_task_ids_free(char **list);

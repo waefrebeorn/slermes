@@ -185,6 +185,90 @@ bool kanban_heartbeat(const char *tid)
 /* List all task ids on the default board. Returns a NULL-terminated array
  * (caller frees with kanban_all_task_ids_free). `limit` <= 0 => no cap
  * (and *limit is set to the count). */
+/* ---- kanban_show: upstream's shape -------------------------------------------------------------
+ * tools/kanban_tools.py:_handle_show returns
+ *   {task:{...}, parents:[...], unsatisfied_parents:[{id,status}], children:[...],
+ *    comments:[...], events:[last 50], runs:[...], worker_context:"..."}
+ * This port used to return the task object flat, so a caller doing result["task"]["id"] got nothing
+ * while result["id"] worked -- the answer looked right and had the wrong schema. */
+static json_t *dup_json(json_t *v) {
+    if (!v) return NULL;
+    char *s = json_serialize(v);
+    json_t *c = s ? json_parse(s, NULL) : NULL;
+    free(s);
+    return c;
+}
+
+json_t *kanban_show_task(const char *tid) {
+    json_t *detail = kanban_read_task(tid);
+    if (!detail) return NULL;
+    sqlite3 *conn = adapter_conn();
+    json_t *out = json_object();
+
+    json_set(out, "task", dup_json(detail));
+    json_set(out, "parents", dup_json(json_obj_get(detail, "parents")));
+    json_set(out, "children", dup_json(json_obj_get(detail, "children")));
+    json_set(out, "comments", dup_json(json_obj_get(detail, "comments")));
+
+    /* events: `done`/`archived` release a child; everything else is still holding it. Upstream caps
+     * the log at 50 entries here (the CLI prints the rest). */
+    json_t *events_all = json_obj_get(detail, "events");
+    json_t *events = json_array();
+    int n_ev = events_all ? json_len(events_all) : 0;
+    int from = n_ev > 50 ? n_ev - 50 : 0;
+    for (int i = from; i < n_ev; i++) {
+        json_t *copy = dup_json(json_array_get(events_all, i));
+        if (copy) json_append(events, copy);
+    }
+    json_set(out, "events", events);
+
+    json_t *unsat = json_array();
+    if (conn) {
+        int np = 0;
+        char **pids = kdb_parent_ids(conn, tid, &np);
+        for (int i = 0; i < np; i++) {
+            json_t *pt = kanban_read_task(pids[i]);
+            const char *st = pt ? json_get_str(pt, "status", "") : "";
+            if (*st && strcmp(st, "done") != 0 && strcmp(st, "archived") != 0) {
+                json_t *row = json_object();
+                json_set(row, "id", json_string(pids[i]));
+                json_set(row, "status", json_string(st));
+                json_append(unsat, row);
+            }
+            if (pt) json_free(pt);
+        }
+        if (pids) kdb_parent_ids_free(pids);
+    }
+    json_set(out, "unsatisfied_parents", unsat);
+
+    json_t *runs = json_array();
+    if (conn) {
+        int nr = 0;
+        kanban_run_t **rl = kdb_list_runs(conn, tid, 1, &nr);
+        for (int i = 0; i < nr; i++) {
+            json_t *r = json_object();
+            json_set(r, "id", json_number((double)kdb_run_id(rl[i])));
+            json_set(r, "profile", json_string(kdb_run_profile(rl[i]) ? kdb_run_profile(rl[i]) : ""));
+            json_set(r, "status", json_string(kdb_run_status(rl[i]) ? kdb_run_status(rl[i]) : ""));
+            json_set(r, "outcome", json_string(kdb_run_outcome(rl[i]) ? kdb_run_outcome(rl[i]) : ""));
+            json_set(r, "summary", json_string(kdb_run_summary(rl[i]) ? kdb_run_summary(rl[i]) : ""));
+            json_set(r, "error", json_string(kdb_run_error(rl[i]) ? kdb_run_error(rl[i]) : ""));
+            json_set(r, "started_at", json_number((double)kdb_run_started_at(rl[i])));
+            json_set(r, "ended_at", json_number((double)kdb_run_ended_at(rl[i])));
+            json_append(runs, r);
+        }
+        if (rl) kdb_run_list_free(rl);
+    }
+    json_set(out, "runs", runs);
+
+    char *wc = conn ? kdb_build_worker_context(conn, tid) : NULL;
+    json_set(out, "worker_context", json_string(wc ? wc : ""));
+    free(wc);
+
+    json_free(detail);
+    return out;
+}
+
 /* PoP: kanban_recompute_ready @ tools/kanban_tools.py:_handle_list (kb.recompute_ready(conn))
  * Upstream promotes dependencies cleared since the last dispatcher tick before listing, so an
  * orchestrator sees a task become ready immediately instead of one tick late. */

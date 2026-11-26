@@ -89,13 +89,38 @@ def main() -> int:
 
     if tid.startswith("t_"):
         shown = call("kanban_show", {"task_id": tid})
-        check("show finds the id that was just created", shown.get("id") == tid,
-              f"id={shown.get('id')!r} keys={sorted(shown)[:8]}")
+        # Upstream nests the row: {"task": {...}, "parents": [...], "unsatisfied_parents": [...],
+        # "children": [...], "comments": [...], "events": [-50:], "runs": [...], "worker_context": str}
+        task = shown.get("task") if isinstance(shown.get("task"), dict) else {}
+        check("show nests the row under task", task.get("id") == tid,
+              f"task.id={task.get('id')!r} keys={sorted(shown)[:8]}")
+        for key in ("parents", "unsatisfied_parents", "children", "comments", "events", "runs"):
+            check(f"show carries {key}", isinstance(shown.get(key), list), f"{key}={shown.get(key)!r:.40}")
+        check("show carries worker_context", isinstance(shown.get("worker_context"), str),
+              f"worker_context={shown.get('worker_context')!r:.40}")
         done = call("kanban_complete", {"task_id": tid, "result": "probe"})
         check("complete accepts the id", done.get("ok") is True, json.dumps(done)[:120])
         again = call("kanban_show", {"task_id": tid})
-        check("show reports the completed status", again.get("status") == "done",
-              f"status={again.get('status')!r}")
+        again_task = again.get("task") if isinstance(again.get("task"), dict) else {}
+        check("show reports the completed status", again_task.get("status") == "done",
+              f"status={again_task.get('status')!r}")
+
+    # unsatisfied_parents is the field that tells a worker why it is held; prove it is populated, not
+    # just present. Upstream: a parent counts until it is done or archived.
+    parent = call("kanban_create", {"title": "probe parent", "assignee": "probe"})
+    pid = str(parent.get("task_id", ""))
+    child = call("kanban_create", {"title": "probe child", "assignee": "probe", "parents": [pid]})
+    cid = str(child.get("task_id", ""))
+    if pid.startswith("t_") and cid.startswith("t_"):
+        held = call("kanban_show", {"task_id": cid})
+        blockers = [b.get("id") for b in held.get("unsatisfied_parents", []) if isinstance(b, dict)]
+        check("an open parent is reported as a blocker", pid in blockers, f"blockers={blockers}")
+        call("kanban_complete", {"task_id": pid, "result": "probe"})
+        free_now = call("kanban_show", {"task_id": cid})
+        blockers2 = [b.get("id") for b in free_now.get("unsatisfied_parents", []) if isinstance(b, dict)]
+        check("a done parent releases the child", pid not in blockers2, f"blockers={blockers2}")
+    else:
+        check("parent/child probe could create its tasks", False, f"parent={pid!r} child={cid!r}")
 
     print(f"\n{fails} failed assertion(s)")
     return fails

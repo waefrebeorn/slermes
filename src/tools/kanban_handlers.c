@@ -76,7 +76,7 @@ static char *handle_show(const char *args_json, const char *task_id) {
         json_free(args);
         return strdup("{\"error\":\"task_id is required (or set HERMES_KANBAN_TASK)\"}");
     }
-    json_t *task = kanban_read_task(tid);
+    json_t *task = kanban_show_task(tid);   /* upstream shape: {task, parents, unsatisfied_parents, ...} */
     if (!task) {
         char err[256];
         snprintf(err, sizeof(err), "{\"error\":\"task %s not found\"}", tid);
@@ -272,7 +272,17 @@ static char *handle_create(const char *args_json, const char *task_id) {
         json_free(args);
         return strdup("{\"error\":\"title and assignee are required\"}");
     }
+    /* parents: the schema advertises it, the adapter reads spec->parents_json, and nothing ever set
+     * it -- so kanban_create(parents=[...]) created an unlinked task and every later
+     * unsatisfied_parents/children answer was empty. Upstream links them at create time. */
+    char *parents_json = NULL;
+    json_t *parr = json_obj_get(args, "parents");
+    if (parr && json_len(parr) > 0) {
+        parents_json = json_serialize(parr);
+        spec.parents_json = parents_json;
+    }
     char *new_id = kanban_create_task(&spec);
+    free(parents_json);
     json_free(args);
     if (!new_id) return strdup("{\"error\":\"create failed\"}");
 
