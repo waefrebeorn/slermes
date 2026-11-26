@@ -1647,9 +1647,106 @@ static cu_action_t *win_key(void *state, const char *keys) {
 }
 
 /* ── Introspection ────────────────────────────────────────────────── */
+/* EnumWindows callback: one row per visible top-level window with a title. */
+typedef struct {
+    json_t *apps;
+    int     count;
+    int     cap;
+} win_apps_ctx;
+
+static BOOL CALLBACK win_apps_enum_proc(HWND hwnd, LPARAM lp) {
+    win_apps_ctx *ctx = (win_apps_ctx *)lp;
+    if (!ctx || ctx->count >= ctx->cap) return TRUE;
+    if (!IsWindowVisible(hwnd)) return TRUE;
+    if (GetWindowTextLengthW(hwnd) <= 0) return TRUE;
+
+    wchar_t wtitle[256];
+    if (GetWindowTextW(hwnd, wtitle, 256) <= 0) return TRUE;
+    char title[512];
+    if (WideCharToMultiByte(CP_UTF8, 0, wtitle, -1, title, sizeof(title), NULL, NULL) <= 0)
+        return TRUE;
+
+    DWORD pid = 0;
+    GetWindowThreadProcessId(hwnd, &pid);
+
+    char exe[260];
+    exe[0] = '\0';
+    HANDLE proc = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+    if (proc) {
+        wchar_t wexe[260];
+        DWORD sz = 260;
+        if (QueryFullProcessImageNameW(proc, 0, wexe, &sz))
+            WideCharToMultiByte(CP_UTF8, 0, wexe, -1, exe, sizeof(exe), NULL, NULL);
+        CloseHandle(proc);
+    }
+
+    json_t *app = json_object();
+    json_set(app, "pid", json_number((double)pid));
+    json_set(app, "title", json_string(title));
+    if (exe[0]) json_set(app, "exe", json_string(exe));
+    json_append(ctx->apps, app);
+    ctx->count++;
+    return TRUE;
+}
+
 static cu_action_t *win_list_apps(void *state) {
     (void)state;
-    return win_action_result("list_apps", true, "Use tasklist or EnumWindows");
+    win_apps_ctx ctx;
+    ctx.apps = json_array();
+    ctx.count = 0;
+    ctx.cap = 64;
+    if (!ctx.apps) return win_action_result("list_apps", false, "out of memory");
+
+    EnumWindows(win_apps_enum_proc, (LPARAM)&ctx);
+
+    json_t *payload = json_object();
+    char *apps_ser = json_serialize(ctx.apps);
+    json_free(ctx.apps);
+    if (apps_ser) {
+        json_set(payload, "apps", json_parse(apps_ser, NULL));
+        free(apps_ser);
+    }
+    json_set(payload, "count", json_number((double)ctx.count));
+
+    cu_action_t *act = win_action_result("list_apps", true, "%d visible window(s)", ctx.count);
+    if (act) {
+        act->payload_json = json_serialize(payload);
+        if (!act->payload_json) act->ok = false;
+    }
+    json_free(payload);
+    return act;
+}
+
+typedef struct {
+    const char *needle_lower;
+    HWND        found;
+} win_find_ctx;
+
+static BOOL CALLBACK win_find_enum_proc(HWND hwnd, LPARAM lp) {
+    win_find_ctx *c = (win_find_ctx *)lp;
+    if (c->found || !IsWindowVisible(hwnd)) return TRUE;
+    char title[512];
+    if (GetWindowTextA(hwnd, title, sizeof(title)) <= 0) return TRUE;
+    char lower[512];
+    size_t i = 0;
+    for (; title[i] && i + 1 < sizeof(lower); i++)
+        lower[i] = (char)tolower((unsigned char)title[i]);
+    lower[i] = '\0';
+    if (strstr(lower, c->needle_lower)) c->found = hwnd;
+    return TRUE;
+}
+
+/* First visible window whose title contains `needle` (case-insensitive), or NULL. */
+static HWND win_find_window_by_title(const char *needle) {
+    if (!needle || !*needle) return NULL;
+    char lower[512];
+    size_t i = 0;
+    for (; needle[i] && i + 1 < sizeof(lower); i++)
+        lower[i] = (char)tolower((unsigned char)needle[i]);
+    lower[i] = '\0';
+    win_find_ctx ctx = { lower, NULL };
+    EnumWindows(win_find_enum_proc, (LPARAM)&ctx);
+    return ctx.found;
 }
 
 static cu_action_t *win_focus_app(void *state, const char *app, bool raise_window) {
@@ -1657,9 +1754,10 @@ static cu_action_t *win_focus_app(void *state, const char *app, bool raise_windo
     if (!app) app = "";
     HWND hwnd = FindWindowA(NULL, app);
     if (!hwnd) {
-        /* Try finding by partial title */
-        hwnd = FindWindowA(NULL, NULL);
-        /* Simple fallback — in production use EnumWindows */
+        /* FindWindowA(NULL, NULL) returned *any* window and reported success, so focus_app("no such
+         * app") stole focus from whatever was in front. Match by title substring instead, and if
+         * nothing matches, say so. */
+        hwnd = win_find_window_by_title(app);
     }
     if (hwnd) {
         SetForegroundWindow(hwnd);
@@ -1896,6 +1994,7 @@ void cu_capture_free(cu_capture_t *cap) {
 void cu_action_free(cu_action_t *act) {
     if (!act) return;
     if (act->capture) cu_capture_free(act->capture);
+    free(act->payload_json);
     free(act);
 }
 
@@ -1955,6 +2054,24 @@ static char *make_text_response(const cu_action_t *act) {
     json_set(root, "action", json_string(act->action));
     if (act->message[0])
         json_set(root, "message", json_string(act->message));
+    /* The action result struct is the contract for every action, and it carries prose. Actions that
+     * return data (list_apps) put an object in payload_json; libjson has no key iteration, so the
+     * keys a caller can rely on are merged explicitly rather than generically. */
+    if (act->payload_json) {
+        json_t *extra = json_parse(act->payload_json, NULL);
+        if (extra && extra->type == JSON_OBJECT) {
+            json_t *apps = json_obj_get(extra, "apps");
+            if (apps) {
+                char *ser = json_serialize(apps);
+                json_t *copy = ser ? json_parse(ser, NULL) : NULL;
+                if (copy) json_set(root, "apps", copy);
+                free(ser);
+            }
+            json_t *count = json_obj_get(extra, "count");
+            if (count) json_set(root, "count", json_number(json_number_value(count)));
+        }
+        if (extra) json_free(extra);
+    }
     char *str = json_serialize(root);
     json_free(root);
     return str ? str : strdup("{\"error\":\"OOM\"}");

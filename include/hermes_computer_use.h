@@ -55,6 +55,9 @@ typedef struct {
     bool        ok;
     char        action[32];
     char        message[512];
+    /* Optional extra JSON object (malloc'd, or NULL) merged into the tool reply. Actions that
+     * produce data rather than prose -- list_apps -- need a field, not a sentence in `message`. */
+    char       *payload_json;
     /* Optional trailing capture (for capture_after). */
     cu_capture_t *capture;   /* malloc'd, or NULL */
 } cu_action_t;
