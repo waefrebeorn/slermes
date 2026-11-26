@@ -151,23 +151,29 @@ def main() -> int:
                 cups = wc_run.run_harness(out, g)
             except Exception as e:
                 continue
-            if cups == list(py_cups):
-                ok = kind
-                break
+            if cups != list(py_cups):
+                continue
+            # Matching cups are NOT enough: a function whose answer does not depend
+            # on the input matches trivially, and two such conversions (a config
+            # getter and a model-id lookup) were accepted here before this rule
+            # existed. They printed one cup for five inputs -- zero evidence.
+            if len(g["inputs"]) >= 2 and len(set(cups)) == 1:
+                continue
+            ok = kind
+            break
         if ok:
             converted.append((name, sym, ok))
             print("CONVERTED %-55s %s [%s]" % (name, sym, ok))
         else:
             (gd / "harness.c").write_text(original)  # restore the sentinel
-            failed.append((name, "no call shape matched the twin"))
+            failed.append((name, "no discriminating call shape matched the twin"))
 
     for name, why in failed:
         print("kept GAP  %-55s %s" % (name, why))
     print("\n%d converted, %d kept as gap, of %d tried"
           % (len(converted), len(failed), len(names)))
-    if not args.write:
-        print("(dry run: harness files were written during trials — rerun with the same "
-              "list to keep only verified ones; failures are restored to their sentinel)")
+    print("(a converted harness is already on disk; every failure was restored to its "
+          "sentinel, so a list can be rerun safely)")
     return 0
 
 

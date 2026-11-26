@@ -91,11 +91,19 @@ Ranked by "wrong answer, exit 0", not by crash. Probes measured in this tree:
 
 ## 5. Open legs, in the order they pay
 
-1. **GAP → PORT conversion.** 13,303 sentinels; ~3,457 name a function whose
-   symbol exists in the port (suffix match, collisions included). `scripts/convert_gap_gate.py`
-   converts one gate only when a call shape compiles/links AND its cups equal the
-   live twin. Pilot blocked: the first 9 candidates were not sentinels at all, so
-   the candidate list must be filtered by `GAP` class from the provenance audit.
+1. **GAP → PORT conversion: measured, and it is not a sweep.** 13,300 sentinels;
+   4,097 name a function whose symbol exists in the port (exact or unambiguous
+   suffix alias, `stub_shadowed` excluded). `scripts/convert_gap_gate.py` tries the
+   three call shapes that take one `const char*` (long / bool / string) and keeps a
+   conversion only when the cups equal the live twin AND they discriminate.
+   Result on the first 25: 23 never matched a shape (the port functions take
+   structs, several arguments, or no argument at all), and 2 that DID match — a
+   config getter and a model-id lookup — were constant-answer functions: one cup
+   for five inputs, i.e. zero evidence. Those two are back to their sentinels, and
+   the acceptance rule now requires `len(set(cups)) > 1`. Net yield of the
+   mechanical sweep: **0**. `libcron_next_run` is the one real conversion this turn,
+   and it took a hand-written twin plus typed fixtures — that is the shape of the
+   work: per-gate design, not a batch job.
 2. **COPY → PORT.** 41 measured (+182 UNKNOWN to triage): the harness carries its
    own implementation, so green means the transcription agrees with Python. The
    runner now prints `COPY HARNESS` so none of them can pass as ordinary evidence.
