@@ -1268,9 +1268,9 @@ static char *voice_speak_handler(const char *args_json, const char *task_id) {
     if (!args) return strdup("{\"error\": \"Invalid JSON\"}");
 
     const char *text = json_get_str(args, "text", "");
-    json_free(args);
 
     if (!text || !*text)
+    json_free(args);
         return strdup("{\"error\": \"Missing 'text' parameter\"}");
 
     voice_speak(text);
@@ -1287,9 +1287,9 @@ static char *transcribe_audio_handler(const char *args_json, const char *task_id
     const char *file_path = json_get_str(args, "file_path", NULL);
     const char *model = json_get_str(args, "model", NULL);
 
-    json_free(args);
 
     if (!file_path || !*file_path)
+    json_free(args);
         return strdup("{\"error\":\"Missing file_path\"}");
 
     char *result = transcribe_audio(file_path, model);

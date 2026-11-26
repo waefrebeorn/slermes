@@ -258,8 +258,8 @@ char *ha_list_services_handler(const char *args_json, const char *task_id) {
     if (!args) return ha_get_json("/services");
 
     const char *domain = json_get_str(args, "domain", "");
-    json_free(args);
 
+    json_free(args);
     if (!*domain) return ha_get_json("/services");
 
     /* Fetch all services, filter by domain */
@@ -389,17 +389,17 @@ char *ha_call_service_handler(const char *args_json, const char *task_id) {
 
     /* Validate domain/service names (security: prevent path traversal) */
     if (!ha_valid_name(domain)) {
-        json_free(args);
         char resp[512];
         snprintf(resp, sizeof(resp),
                  "{\"success\":false,\"error\":\"Invalid domain format: %s\"}", domain);
+        json_free(args);
         return strdup(resp);
     }
     if (!ha_valid_name(service)) {
-        json_free(args);
         char resp[512];
         snprintf(resp, sizeof(resp),
                  "{\"success\":false,\"error\":\"Invalid service format: %s\"}", service);
+        json_free(args);
         return strdup(resp);
     }
 

@@ -127,10 +127,10 @@ char *file_watch_handler(const char *args_json, const char *task_id) {
     int wd = inotify_add_watch(fd, path, watch_mask | IN_DELETE_SELF);
     if (wd < 0) {
         close(fd);
-        json_free(args);
         char errmsg[1024];
         snprintf(errmsg, sizeof(errmsg),
             "{\"error\":\"Cannot watch '%s': %s\"}", path, strerror(errno));
+        json_free(args);
         return strdup(errmsg);
     }
 

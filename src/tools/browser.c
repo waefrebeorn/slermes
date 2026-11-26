@@ -1218,10 +1218,10 @@ char *browser_click_handler(const char *args_json, const char *task_id) {
         href = find_link_by_text(g_tab.html, target);
     }
     if (!href) {
-        json_free(args);
         char result[1024];
         snprintf(result, sizeof(result),
             "{\"error\": \"No element found matching '%s'\"}", target);
+        json_free(args);
         return strdup(result);
     }
 
@@ -1366,10 +1366,10 @@ char *browser_scroll_handler(const char *args_json, const char *task_id) {
             g_tab.scroll_offset = 0;
     } else {
         free(full_text);
-        json_free(args);
         char result[256];
         snprintf(result, sizeof(result),
             "{\"error\": \"Invalid direction '%s'. Use 'up' or 'down'\"}", direction);
+        json_free(args);
         return strdup(result);
     }
 

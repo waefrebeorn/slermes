@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Find JSON argument strings that are read AFTER the object they point into is freed.
 
-The bug shape, seen three times today in unrelated modules:
+The bug shape, seen four times in unrelated modules:
 
     query = json_get_str(args, "query", NULL);   /* pointer INTO args */
     ...
@@ -11,16 +11,18 @@ The bug shape, seen three times today in unrelated modules:
 It never crashes. It returns a plausible answer -- an empty string, the previous result, or text that
 happens to still be there -- which is why it survives review and why the tests pass.
 
-This scans each function body: names bound from `json_get_str` / `json_object_get_string` / a raw
-`->str_val` on the same object, then flags any use of those names on a line after `json_free(obj)`.
+A name bound from `json_get_str` / `json_object_get_string` is tracked until the object it came from is
+`json_free`d; a *dereference* of that name after the free, before control leaves the block the free sits
+in, is reported.
+
+This is a heuristic, not a proof. It has no alias tracking and no full control flow: a free inside an
+`if` whose every path exits elsewhere can still be reported, and a pointer that was copied to a safe
+string can still be flagged. Read every hit before "fixing" it -- and run
+tests/unit/scan_json_freed_use_selftest.py after touching this file, because twice it has been quietly
+turned into a scanner that misses the real shape.
 
 Usage: python scripts/scan_json_freed_use.py [paths...]   (default: src/tools src/agent src/cli)
-Exit code 1 when findings exist, so it can gate.
-
-It is a *candidate* finder, not a proof: it has no control flow, so a free inside an `if` that exits
-elsewhere can still be reported. Every hit must be read before it is "fixed" -- three of the first six
-were real, and one "fix" of mine (a duplicate free on the success path) crashed the server until the
-duplicate was removed.
+Exit code 1 when findings exist.
 """
 from __future__ import annotations
 
@@ -31,62 +33,34 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 
 FREE_RE = re.compile(r"\bjson_free\s*\(\s*([A-Za-z_]\w*)\s*\)")
-# `x = json_get_str(obj, ...)` / `x = json_object_get_string(obj, ...)`
 BIND_RE = re.compile(
-    r"\b([A-Za-z_]\w*)\s*=\s*(?:json_get_str|json_object_get_string)\s*\(\s*([A-Za-z_]\w*)")
-# `const char *x = json_get_str(obj, ...)` or with other qualifiers
-DECL_BIND_RE = re.compile(
-    r"\b(?:const\s+)?char\s*\*\s*([A-Za-z_]\w*)\s*=\s*"
+    r"\b([A-Za-z_]\w*)\s*=\s*"
     r"(?:json_get_str|json_object_get_string)\s*\(\s*([A-Za-z_]\w*)")
-
-
-def functions(text: str):
-    """Crude but adequate: a top-level `{ ... }` block with a signature, braces balanced."""
-    i = 0
-    n = len(text)
-    while i < n:
-        brace = text.find("{", i)
-        if brace == -1:
-            return
-        # find the start of the signature (previous line boundary)
-        start = text.rfind("\n", 0, brace)
-        sig = text[max(0, start - 400):brace]
-        if ";" in sig.split(")")[-1] if ")" in sig else False:
-            pass
-        depth = 0
-        j = brace
-        while j < n:
-            if text[j] == "{":
-                depth += 1
-            elif text[j] == "}":
-                depth -= 1
-                if depth == 0:
-                    break
-            j += 1
-        body = text[brace:j + 1]
-        name = "?"
-        for m in re.finditer(r"([A-Za-z_]\w*)\s*\(", sig):
-            name = m.group(1)
-        yield name, brace, body
-        i = j + 1
+DEREF_CALLS = ("strlen", "strcmp", "strncmp", "strcpy", "strncpy", "strcat", "strdup",
+               "strstr", "strchr", "snprintf", "printf", "fprintf", "fopen", "stat",
+               "url_has_secret", "url_is_safe", "free")
 
 
 def blank_strings(line: str) -> str:
-    """Remove string-literal contents: `json_new_string("[saved to file]")` is not a use of a variable."""
+    """Blank string-literal contents: json_new_string("path") is not a use of `path`."""
     out = []
-    i = 0
     in_str = False
+    i = 0
     while i < len(line):
         c = line[i]
-        if c == '"' and (i == 0 or line[i - 1] != "\\"):
-            in_str = not in_str
-            out.append(c)
-        elif in_str:
-            out.append(" ") if c != "\\" else out.append(c)
+        if in_str:
             if c == "\\" and i + 1 < len(line):
+                out.append("  ")
+                i += 2
+                continue
+            if c == '"':
+                in_str = False
+                out.append(c)
+            else:
                 out.append(" ")
-                i += 1
         else:
+            if c == '"':
+                in_str = True
             out.append(c)
         i += 1
     return "".join(out)
@@ -98,12 +72,20 @@ def strip_comments(line: str) -> str:
     in_str = False
     while i < len(line):
         c = line[i]
-        if c == '"' and (i == 0 or line[i - 1] != "\\"):
-            in_str = not in_str
+        if in_str:
             out.append(c)
-        elif not in_str and line.startswith("//", i):
+            if c == "\\" and i + 1 < len(line):
+                out.append(line[i + 1])
+                i += 2
+                continue
+            if c == '"':
+                in_str = False
+        elif c == '"':
+            in_str = True
+            out.append(c)
+        elif line.startswith("//", i):
             break
-        elif not in_str and line.startswith("/*", i):
+        elif line.startswith("/*", i):
             end = line.find("*/", i + 2)
             if end == -1:
                 break
@@ -115,96 +97,140 @@ def strip_comments(line: str) -> str:
     return "".join(out)
 
 
+def clean(line: str) -> str:
+    return blank_strings(strip_comments(line))
+
+
+def functions(text: str):
+    i = 0
+    n = len(text)
+    while True:
+        brace = text.find("{", i)
+        if brace == -1:
+            return
+        depth = 0
+        j = brace
+        while j < n:
+            if text[j] == "{":
+                depth += 1
+            elif text[j] == "}":
+                depth -= 1
+                if depth == 0:
+                    break
+            j += 1
+        sig_start = max(0, text.rfind("\n", 0, brace) - 300)
+        sig = text[sig_start:brace]
+        name = "?"
+        for m in re.finditer(r"([A-Za-z_]\w*)\s*\(", sig):
+            name = m.group(1)
+        yield name, brace, text[brace:j + 1]
+        i = j + 1
+
+
+def depths_of(lines):
+    depths = []
+    d = 0
+    for line in lines:
+        depths.append(d)
+        code = clean(line)
+        d += code.count("{") - code.count("}")
+    return depths
+
+
+def uses(ptr: str, code: str) -> bool:
+    return bool(re.search(rf"(?<![.>\w]){re.escape(ptr)}\b", code))
+
+
+def dereferences(ptr: str, code: str) -> bool:
+    p = re.escape(ptr)
+    if re.search(rf"(?<![.>\w]){p}\s*\[", code):        # x[i]
+        return True
+    if re.search(rf"(?<![.>\w]){p}\s*->", code):        # x->field
+        return True
+    if re.search(rf"(?<![.>\w])\*{p}\b", code):         # *x
+        return True
+    if re.search(rf"\b(?:{'|'.join(DEREF_CALLS)})\s*\([^;]*\b{p}\b", code):
+        return True                                      # strlen(x), fopen(x, ...)
+    if re.search(rf"\w+\s*\([^;]*\b{p}\b", code):     # passed into any call
+        return True
+    if re.search(rf"(?<![.>\w]){p}\s*,", code):          # first of several arguments
+        return True
+    if re.search(rf",\s*{p}\s*(?:\)|,)", code):
+        return True
+    return False
+
+
+def scan_file(path: Path):
+    raw = path.read_text(encoding="utf-8", errors="replace")
+    raw = re.sub(r"/\*.*?\*/", lambda m: "\n" * m.group(0).count("\n"), raw, flags=re.S)
+
+    findings = []
+    for fname, offset, body in functions(raw):
+        lines = body.splitlines()
+        if not lines:
+            continue
+        depths = depths_of(lines)
+        base = raw[:offset].count("\n") + 1
+
+        bound = {}
+        free_sites = {}
+        for idx, line0 in enumerate(lines):
+            code = clean(line0)
+            for m in BIND_RE.finditer(code):
+                bound.setdefault(m.group(2), []).append((m.group(1), idx))
+            for m in FREE_RE.finditer(code):
+                tail = code[m.end():]
+                if any(k in tail for k in ("return", "break", "continue", "goto")):
+                    continue                      # ordinary free on the way out
+                free_sites.setdefault(m.group(1), []).append((idx, depths[idx]))
+
+        seen = set()
+        for obj, sites in free_sites.items():
+            for ptr, bind_idx in bound.get(obj, []):
+                if ptr == obj or (obj, ptr, bind_idx) in seen:
+                    continue
+                seen.add((obj, ptr, bind_idx))
+                for free_idx, free_depth in sites:
+                    if bind_idx >= free_idx:
+                        continue
+                    hit = None
+                    for use_idx in range(free_idx + 1, len(lines)):
+                        code = clean(lines[use_idx])
+                        # Leaving the block does not make the pointer valid again; only a
+                        # return/break/continue at this depth ends the flow.
+                        if uses(ptr, code):
+                            if re.search(rf"(?<![.>\w]){re.escape(ptr)}\s*=(?!=)", code):
+                                break             # rebound: no longer the freed pointer
+                            if dereferences(ptr, code):
+                                hit = use_idx
+                                break
+                        if depths[use_idx] == free_depth and re.search(
+                                r"\b(return|break|continue|goto)\b", code):
+                            break                 # flow ended at the free's own level
+                    if hit is not None:
+                        findings.append((base + hit, fname, ptr, obj, base + free_idx,
+                                         clean(lines[hit]).strip()[:120]))
+                        break
+    return findings
+
+
 def main() -> int:
     roots = [Path(a) for a in sys.argv[1:]] or [REPO / "src/tools", REPO / "src/agent", REPO / "src/cli"]
-    findings = []
+    findings = 0
     scanned = 0
-
     for root in roots:
-        for path in sorted(root.rglob("*.c")):
-            text = path.read_text(encoding="utf-8", errors="replace")
-            # Whole-file block comments first: a `*` continuation line otherwise reads as code.
-            text = re.sub(r"/\*.*?\*/", lambda m: "\n" * m.group(0).count("\n"), text, flags=re.S)
+        paths = [root] if root.is_file() else sorted(root.rglob("*.c"))
+        for path in paths:
             scanned += 1
-            file_start = 0
-            while True:
-                nb = text.find("\n", file_start)
-                if nb == -1:
-                    break
-                brace_line = text[file_start:nb]
-                file_start = nb + 1
-                break
-
-            for fname, offset, body in functions(text):
-                lines = body.splitlines()
-                base = text[:offset].count("\n") + 1
-                # object -> (pointer name -> (line index of binding))
-                bound: dict[str, list[tuple[str, int]]] = {}
-                freed: dict[str, int] = {}
-                for idx, raw in enumerate(lines):
-                    line = blank_strings(strip_comments(raw))
-                    hits = {}
-                    for m in list(DECL_BIND_RE.finditer(line)) + list(BIND_RE.finditer(line)):
-                        hits[(m.group(2), m.group(1))] = True   # dedupe declaration+plain match
-                    for (obj, ptr) in hits:
-                        bound.setdefault(obj, []).append((ptr, idx))
-                    for m in FREE_RE.finditer(line):
-                        obj_name = m.group(1)
-                        tail = line[m.end():]
-                        # A free on the way out of the function (or out of the block) is not the
-                        # dangling kind: `if (!x) { json_free(args); return ...; }`.
-                        terminal = "return" in tail or "break" in tail or "continue" in tail
-                        if not terminal:
-                            for nxt in range(idx + 1, min(idx + 7, len(lines))):
-                                nxt_code = strip_comments(lines[nxt]).strip()
-                                if not nxt_code or nxt_code.startswith(("free(", "//")):
-                                    continue          # cleanup between the free and the exit
-                                if nxt_code.startswith(("return", "break", "continue", "goto")):
-                                    terminal = True
-                                break
-                        if not terminal:
-                            freed.setdefault(obj_name, idx)
-
-                seen: set[tuple[str, str, int]] = set()
-                for obj, frees in freed.items():
-                    if obj not in bound:
-                        continue
-                    for ptr, bind_idx in bound[obj]:
-                        if (obj, ptr, bind_idx) in seen:
-                            continue
-                        seen.add((obj, ptr, bind_idx))
-                        if ptr == obj or bind_idx >= frees:
-                            continue
-                        free_idx = frees
-                        for use_idx in range(free_idx + 1, len(lines)):
-                            code = blank_strings(strip_comments(lines[use_idx]))
-                            # Not a struct field, and not a bare pointer-value test.
-                            pat = rf"(?<![.>\w]){re.escape(ptr)}\b"
-                            if not re.search(pat, code):
-                                continue
-                            bare_test = re.fullmatch(
-                                rf"\s*(?:if|while)\s*\(\s*!?\s*{re.escape(ptr)}\s*\)\s*\{{?", code) or \
-                                re.search(rf"\b{re.escape(ptr)}\s*(?:==|!=)\s*", code) or \
-                                re.search(rf"!\s*{re.escape(ptr)}\b", code)
-                            if bare_test and not re.search(rf"{re.escape(ptr)}\s*[\[\>]", code):
-                                break
-                            # assignment to it is fine; a dereference/read is not
-                            if re.search(rf"\b{re.escape(ptr)}\s*=", code) and \
-                               not re.search(rf"\b{re.escape(ptr)}\s*==", code):
-                                break   # reassigned: no longer the freed pointer
-                            findings.append((path, base + use_idx, fname, ptr, obj, base + free_idx,
-                                             code.strip()[:120]))
-                            break
-
-    for path, line, fname, ptr, obj, free_line, code in findings:
-        try:
-            rel = path.resolve().relative_to(REPO)
-        except ValueError:
-            rel = path
-        print(f"{rel}:{line}: `{ptr}` ({fname}) is used after json_free({obj}) at line {free_line}")
-        print(f"    {code}")
-
-    print(f"scanned {scanned} files, {len(findings)} use-after-free finding(s)")
+            for line, fname, ptr, obj, free_line, code in scan_file(path):
+                try:
+                    rel = path.resolve().relative_to(REPO)
+                except ValueError:
+                    rel = path
+                print(f"{rel}:{line}: `{ptr}` ({fname}) dereferenced after json_free({obj}) at line {free_line}")
+                print(f"    {code}")
+                findings += 1
+    print(f"scanned {scanned} files, {findings} candidate(s)")
     return 1 if findings else 0
 
 

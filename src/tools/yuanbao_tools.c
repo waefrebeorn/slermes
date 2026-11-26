@@ -416,9 +416,9 @@ static char *yb_query_group_info_handler(const char *args_json, const char *task
     if (!args) return strdup("{\"success\":false,\"error\":\"Failed to parse arguments\"}");
 
     const char *group_code = json_object_get_string(args, "group_code", "");
-    json_free(args);
 
     if (!group_code || !*group_code)
+    json_free(args);
         return strdup("{\"success\":false,\"error\":\"group_code required\"}");
 
     char *resp = yuanbao_query_group_info(group_code, 15);
@@ -503,9 +503,9 @@ static char *yb_get_group_member_list_handler(const char *args_json, const char 
     const char *group_code = json_object_get_string(args, "group_code", "");
     uint32_t offset = (uint32_t)json_object_get_number(args, "offset", 0);
     uint32_t limit = (uint32_t)json_object_get_number(args, "limit", 200);
-    json_free(args);
 
     if (!group_code || !*group_code)
+    json_free(args);
         return strdup("{\"success\":false,\"error\":\"group_code required\"}");
 
     char *resp = yuanbao_get_group_member_list(group_code, offset, limit, 15);

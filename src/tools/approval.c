@@ -814,9 +814,9 @@ int approval_check(const char *tool_name, const char *args_json) {
             strncpy(detail_buf, cmd, sizeof(detail_buf) - 1);
             detail_buf[sizeof(detail_buf) - 1] = '\0';
             danger_detail = detail_buf;
-            json_free(args);
             /* Denied — command not in allowlist */
             audit_log_security("allowlist", tool_name, "denied", "command not in allowlist", cmd);
+            json_free(args);
             return 0;
         }
 

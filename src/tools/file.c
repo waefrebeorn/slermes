@@ -417,9 +417,9 @@ static char *handle_diff(const char *args_json) {
     /* Read file A */
     FILE *fa = fopen(path_a, "rb");
     if (!fa) {
-        json_free(args);
         char buf[1024];
         snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", path_a, strerror(errno));
+        json_free(args);
         return strdup(buf);
     }
     fseek(fa, 0, SEEK_END);
@@ -436,9 +436,9 @@ static char *handle_diff(const char *args_json) {
     FILE *fb = fopen(path_b, "rb");
     if (!fb) {
         free(content_a);
-        json_free(args);
         char buf[1024];
         snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", path_b, strerror(errno));
+        json_free(args);
         return strdup(buf);
     }
     fseek(fb, 0, SEEK_END);
@@ -512,9 +512,9 @@ static char *handle_perms(const char *args_json) {
     /* Stat the file */
     struct stat st;
     if (stat(path, &st) != 0) {
-        json_free(args);
         char buf[512];
         snprintf(buf, sizeof(buf), "{\"error\":\"Cannot stat %s: %s\"}", path, strerror(errno));
+        json_free(args);
         return strdup(buf);
     }
 
@@ -571,9 +571,9 @@ static char *handle_hex(const char *args_json) {
 
     FILE *f = fopen(path, "rb");
     if (!f) {
-        json_free(args);
         char buf[512];
         snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", path, strerror(errno));
+        json_free(args);
         return strdup(buf);
     }
 
@@ -847,9 +847,9 @@ static char *handle_hash(const char *args_json) {
         /* Read file, hash manually */
         FILE *f = fopen(path, "rb");
         if (!f) {
-            json_free(args);
             char buf[512];
             snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", path, strerror(errno));
+            json_free(args);
             return strdup(buf);
         }
         fseek(f, 0, SEEK_END);
@@ -883,9 +883,9 @@ static char *handle_hash(const char *args_json) {
         hash_hex = hash_md5_hex(data, n);
         free(data);
     } else {
-        json_free(args);
         char buf[512];
         snprintf(buf, sizeof(buf), "{\"error\":\"Unknown algorithm: %s (use sha256, sha1, md5)\"}", algo);
+        json_free(args);
         return strdup(buf);
     }
 

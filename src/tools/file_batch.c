@@ -217,9 +217,9 @@ char *file_batch_handler(const char *args_json, const char *task_id) {
     if (strcmp(action, "copy") != 0 && strcmp(action, "move") != 0 && strcmp(action, "rename") != 0 && strcmp(action, "convert") != 0 &&
         strcmp(action, "delete") != 0 && strcmp(action, "chmod") != 0 &&
         strcmp(action, "touch") != 0 && strcmp(action, "stat") != 0 && strcmp(action, "hash") != 0) {
-        json_free(args);
         char buf[256];
         snprintf(buf, sizeof(buf), "{\"error\":\"Unknown action: %s\"}", action);
+        json_free(args);
         return strdup(buf);
     }
 

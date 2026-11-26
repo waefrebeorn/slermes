@@ -528,9 +528,9 @@ char *send_message_handler(const char *args_json, const char *task_id) {
             free(media_err);
             char *json_out = json_serialize(result);
             json_free(result);
-            json_free(args);
             free(cleaned_msg);
             if (actual_media && actual_media != media_path) free((void *)actual_media);
+            json_free(args);
             return json_out;
         }
 #endif

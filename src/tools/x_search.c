@@ -121,10 +121,10 @@ char *x_search_handler(const char *args_json, const char *task_id) {
     if (from_date) {
         /* Check YYYY-MM-DD format */
         if (strlen(from_date) != 10 || from_date[4] != '-' || from_date[7] != '-') {
-            json_free(args);
             char *e; size_t sz = 256;
             e = malloc(sz);
             snprintf(e, sz, "{\"error\":\"Invalid from_date '%s' - must be YYYY-MM-DD\"}", from_date);
+            json_free(args);
             return e;
         }
         for (int di = 0; di < 10; di++) {
@@ -151,9 +151,9 @@ char *x_search_handler(const char *args_json, const char *task_id) {
     if (to_date) {
         /* Check YYYY-MM-DD format */
         if (strlen(to_date) != 10 || to_date[4] != '-' || to_date[7] != '-') {
-            json_free(args);
             char *e = malloc(256);
             snprintf(e, 256, "{\"error\":\"Invalid to_date '%s' - must be YYYY-MM-DD\"}", to_date);
+            json_free(args);
             return e;
         }
         for (int di = 0; di < 10; di++) {

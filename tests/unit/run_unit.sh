@@ -215,6 +215,15 @@ else
     echo "   SKIPPED (no python on PATH)"
 fi
 
+echo "== scanner selftest (the freed-pointer scanner must still see the shape it was written for)"
+if command -v "$FERNET_PY" >/dev/null 2>&1; then
+    USERPROFILE='C:\Users\eman5' LOCALAPPDATA='C:\Users\eman5\AppData\Local' \
+        "$FERNET_PY" tests/unit/scan_json_freed_use_selftest.py
+    if [ $? -ne 0 ]; then echo "   SELFTEST FAIL"; fail=1; fi
+else
+    echo "   SKIPPED (no python on PATH)"
+fi
+
 echo
 [ $fail -eq 0 ] && echo "unit tests: PASS" || echo "unit tests: FAIL"
 exit $fail

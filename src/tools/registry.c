@@ -794,12 +794,27 @@ char *registry_dispatch(const char *name, const char *args_json,
         pthread_mutex_unlock(&g_registry_mutex);
     }
 
-    /* Not found after repair either — error */
+    /* Not found after repair either — error.
+     *
+     * The name used to be run through tool_error_sanitize, which is for *messages* and prefixes
+     * "[TOOL_ERROR] "; an unknown tool therefore answered `tool '[TOOL_ERROR] file_read' not found`,
+     * naming a tool that never existed. A tool name is an identifier: keep the identifier alphabet and
+     * drop everything else, so nothing needs JSON escaping either. */
+    char clean_name[97];
+    size_t cn = 0;
+    if (name) {
+        for (const char *p = name; *p && cn < sizeof(clean_name) - 1; p++) {
+            unsigned char ch = (unsigned char)*p;
+            if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') ||
+                (ch >= '0' && ch <= '9') || ch == '_' || ch == '-' || ch == '.') {
+                clean_name[cn++] = (char)ch;
+            }
+        }
+    }
+    clean_name[cn] = '\0';
     char buf[512];
-    char *sanitized = tool_error_sanitize ? tool_error_sanitize(name) : NULL;
     snprintf(buf, sizeof(buf), "{\"error\": \"tool '%s' not found\"}",
-             sanitized ? sanitized : (name ? name : "(null)"));
-    free(sanitized);
+             cn ? clean_name : "(none)");
     return strdup(buf);
 }
 

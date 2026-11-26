@@ -716,9 +716,9 @@ static char *mcp_call_handler(const char *args_json, const char *task_id) {
     }
 
     if (!srv) {
-        json_free(args);
         char buf[512];
         snprintf(buf, sizeof(buf), "{\"error\":\"Unknown MCP server: %s\"}", server_name);
+        json_free(args);
         return strdup(buf);
     }
 
@@ -1688,9 +1688,9 @@ static char *mcp_resource_read_handler(const char *args_json, const char *task_i
     }
 
     if (!srv) {
-        json_free(args);
         char buf[512];
         snprintf(buf, sizeof(buf), "{\"error\":\"Unknown MCP server: %s\"}", server_name);
+        json_free(args);
         return strdup(buf);
     }
 
@@ -1793,9 +1793,9 @@ static char *mcp_prompt_get_handler(const char *args_json, const char *task_id) 
     }
 
     if (!srv) {
-        json_free(args);
         char buf[512];
         snprintf(buf, sizeof(buf), "{\"error\":\"Unknown MCP server: %s\"}", server_name);
+        json_free(args);
         return strdup(buf);
     }
 
