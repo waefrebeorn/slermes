@@ -312,12 +312,10 @@ char *stub_shadowed_profile_read_config_model(const char *p) { (void)p; return s
 char *stub_shadowed_profile_read_profile_meta(const char *p) { (void)p; return strdup("{}"); }
 
 /* ── i18n ── */
-const char *i18n_t(const char *key) { return key ? key : ""; }
-char *i18n_t_fmt(const char *key, ...) {
-    char *buf = malloc(4096);
-    if (buf) { hermes_strlcpy(buf, key ? key : "", 4095); buf[4095] = '\0'; }
-    return buf;
-}
+/* i18n_t / i18n_t_fmt are NOT stubbed here. The real ones are src/agent/i18n.c:206/:... and return
+ * `char *` (include/hermes_i18n.h:70). The stubs returned `const char *` and echoed the key, so
+ * every translated string was the key itself -- text that looks like a label, never translated --
+ * while the real catalogue compiled into src/agent/i18n.o was dead code. */
 
 /* ── Lifecycle hooks ── */
 typedef struct { char name[128]; int (*cb)(void *); } hook_t;
