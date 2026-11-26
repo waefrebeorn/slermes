@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern int elc_cleanup(const char *snapshot_path, const char *cwd_file);
+extern int elc_cleanup();
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s elc_cleanup <input>...\n", argv[0]); return 2; }

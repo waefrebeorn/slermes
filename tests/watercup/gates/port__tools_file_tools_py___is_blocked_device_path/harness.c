@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern int file_tools_is_blocked_device_path(const char *path, const char *home);
+extern int file_tools_is_blocked_device_path(const char *a0);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s file_tools_is_blocked_device_path <input>...\n", argv[0]); return 2; }

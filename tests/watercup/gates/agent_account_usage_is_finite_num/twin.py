@@ -39,9 +39,25 @@ def _cvt(p, v):
 
 
 class _Twin(TwinBase):
-    PY_MODULE = "agent/account_usage.py"
+    PY_MODULE = "agent/account_usage_nous.py"   # not account_usage.py: the fn lives here
     PY_FN = "_is_finite_num"
     C_FN = "numeric"
+
+    def trace(self, inp, inputs, idx=0):
+        """Coerce the text the way the harness does: a number or a non-number."""
+        from watercup_twin_runtime import Cup
+        c = Cup("account_usage_is_finite_num")
+        try:
+            v = None
+            if isinstance(inp, str) and inp.strip() and inp.strip().upper() != "NULL":
+                try:
+                    v = float(inp.strip())
+                except ValueError:
+                    v = None
+            c.valstr("1" if self._fn(v) else "0")
+        except Exception as e:  # noqa: BLE001
+            c.valstr("ERROR:%s" % type(e).__name__)
+        return c.finalize()
 
     def norm(self, c, result):
         import inspect as _ic

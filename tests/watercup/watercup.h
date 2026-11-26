@@ -82,10 +82,23 @@ static inline void wcup_val(wcup_t *c, const void *ptr, int len) {
 }
 static inline void wcup_valstr(wcup_t *c, const char *s) {
     /* hash a canonical STRING value (same encoding the Python side uses).
-     * Use this (not wcup_val) for cross-language value parity. */
+     * Use this (not wcup_val) for cross-language value parity.
+     *
+     * Booleans have no shared spelling: a generated twin renders True as "true" while the harness
+     * writes "1". Both sides fold true/false (any case) to 1/0 so a boolean compares as a value,
+     * not as a spelling -- see Cup.valstr in watercup_py.py, which applies the same rule. */
+    const char *v = s;
+    if (s) {
+        size_t n = strlen(s);
+        if (n == 4 && (s[0] == 't' || s[0] == 'T') && (s[1] == 'r' || s[1] == 'R') &&
+            (s[2] == 'u' || s[2] == 'U') && (s[3] == 'e' || s[3] == 'E')) v = "1";
+        else if (n == 5 && (s[0] == 'f' || s[0] == 'F') && (s[1] == 'a' || s[1] == 'A') &&
+                 (s[2] == 'l' || s[2] == 'L') && (s[3] == 's' || s[3] == 'S') &&
+                 (s[4] == 'e' || s[4] == 'E')) v = "0";
+    }
     char tag = 'V';
     wcup_mix(c, &tag, 1);
-    wcup_mix(c, s, (int)strlen(s));
+    wcup_mix(c, v ? v : "", v ? (int)strlen(v) : 0);
 }
 static inline void wcup_finalize(wcup_t *c, char *out, int outsz) {
     snprintf(out, outsz, "%016llx", (unsigned long long)c->h);

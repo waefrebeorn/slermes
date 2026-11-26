@@ -70,7 +70,17 @@ class Cup:
 
     def valstr(self, s: str) -> None:
         """Hash a CANONICAL STRING value — the cross-language form. Use this
-        (not val) so the C WCUP_VALSTR and Python carve identical cups."""
+        (not val) so the C WCUP_VALSTR and Python carve identical cups.
+
+        true/false (any case) fold to 1/0: str(True) and a C 1 are the same boolean, and the
+        generated twins spell it "true" while the harnesses write "1". Same rule as wcup_valstr.
+        """
+        if isinstance(s, str):
+            low = s.lower()
+            if low == "true":
+                s = "1"
+            elif low == "false":
+                s = "0"
         self._mix(b"V")
         self._mix(s.encode())
 

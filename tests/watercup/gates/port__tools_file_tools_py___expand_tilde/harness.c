@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern char * file_tools_expand_tilde(const char *path, const char *home);
+extern int file_tools_expand_tilde(const char *a0);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s file_tools_expand_tilde <input>...\n", argv[0]); return 2; }

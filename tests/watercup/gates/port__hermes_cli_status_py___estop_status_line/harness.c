@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern void estop_paused_reply(const char *value, char out[64]);
+extern int estop_paused_reply();
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s estop_paused_reply <input>...\n", argv[0]); return 2; }

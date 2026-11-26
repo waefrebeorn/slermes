@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern void cfg_apply_terminal_config_to_env(const char *config_json, char *out_json, size_t out_sz);
+extern int cfg_apply_terminal_config_to_env(const char *a0);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s cfg_apply_terminal_config_to_env <input>...\n", argv[0]); return 2; }

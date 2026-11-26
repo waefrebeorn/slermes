@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern int gw_base__set_message_handler(const char *input);
+extern int gw_base__set_message_handler(const char *a0);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s gw_base__set_message_handler <input>...\n", argv[0]); return 2; }

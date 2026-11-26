@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern int gateway_systemd_notify_record_tick(double scheduled_at, double now);
+extern int gateway_systemd_notify_record_tick(const char *a0);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s gateway_systemd_notify_record_tick <input>...\n", argv[0]); return 2; }

@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern int emm_cleanup(const char *sandbox_id);
+extern int emm_cleanup();
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s emm_cleanup <input>...\n", argv[0]); return 2; }

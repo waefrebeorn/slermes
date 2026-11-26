@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern int tools_slash_confirm_register(const char *input);
+extern int tools_slash_confirm_register(const char *a0, const char *a1, const char *a2, const char *a3);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s tools_slash_confirm_register <input>...\n", argv[0]); return 2; }

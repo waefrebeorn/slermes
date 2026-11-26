@@ -427,7 +427,15 @@ def _resolve_cflags(g):
     defs = ['-DHERMES_VERSION="0.0.0-slermes"',
             '-DHERMES_RELEASE_DATE="2026.9.24"',
             '-DATADIR="/share/slermes/docs"']
-    return compat + std_inc + defs + cflags
+    # The main build points at winlibs' extra include/lib trees (build/config.mk); a port unit that
+    # reaches the HTTP layer includes <openssl/ssl.h>, which lives there. Without it the gate read as
+    # "openssl/ssl.h: No such file" -- a build failure that named the wrong subsystem.
+    extra_inc = []
+    for cand in ("C:/winlibs/extra-inc", "C:/msys64/mingw64/include"):
+        if os.path.isdir(cand):
+            extra_inc = ["-I", cand]
+            break
+    return compat + std_inc + defs + extra_inc + cflags
 
 
 def build_harness(gate_dir, g, force=False):
@@ -522,8 +530,11 @@ def build_harness(gate_dir, g, force=False):
         # archive pulls only the members the harness needs.
         _sysf = _plat_syslibs(["-lm", "-lssl", "-lcrypto", "-lz", "-lpcre2-8", "-ltre", "-lstdc++"])
         _ar = _watercup_object_archive()
-        _vl = ([_linker(), "-Wl,--allow-multiple-definition"]
-               + [objs[0]] + [_ar] + objs[1:]
+        # The archive must come AFTER the gate's own objects: ld pulls archive members only for
+        # symbols it has already seen, so a port object listed later leaves its own deps (logger.c
+        # -> util_rename_replace) unresolved. Group both so order stops mattering.
+        _vl = ([_linker(), "-Wl,--allow-multiple-definition", "-Wl,--start-group"]
+               + objs + [_ar] + ["-Wl,--end-group"]
                + ["-o", out] + _GC_LINK + _EXTRA_LIBDIR + _sysf + libs)
         _rf = _run_link(_vl)
         if _rf.returncode == 0:
@@ -998,6 +1009,18 @@ def load_live_module(py_module):
     return mod
 
 
+def _harness_cup_label(gate_dir, g):
+    """The string the harness passes to WCUP_BEGIN -- the cup's seed."""
+    path = os.path.join(gate_dir, g.get("c_src", "harness.c"))
+    try:
+        with open(path, errors="ignore") as f:
+            txt = f.read()
+    except OSError:
+        return None
+    m = re.search(r'WCUP_BEGIN\("([^"]+)"\)', txt)
+    return m.group(1) if m else None
+
+
 def load_twin(g):
     twin_path = os.path.join(GATES, g["name"], "twin.py")
     if not os.path.exists(twin_path):
@@ -1199,6 +1222,15 @@ def run_cup_gate(gd, g, verbose=False):
     out = build_harness(gd, g)
     c_cups = run_harness(out, g)
     twin = load_twin(g)
+    _label = _harness_cup_label(gd, g)
+    if _label:
+        # Generated twins bind `trace = _t.trace` on the MODULE at import, so the label has to land
+        # on the instance the bound method belongs to.
+        _inst = getattr(twin, "_t", None)
+        if _inst is not None:
+            _inst._cup_label = _label
+        else:
+            twin._cup_label = _label
 
     if _is_entry_point(g):
         # Isolated: never import this twin in-process.

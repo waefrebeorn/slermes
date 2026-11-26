@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern void profiles_warn_read_error(const char *error_msg);
+extern int profiles_warn_read_error(const char *a0, const char *a1);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s profiles_warn_read_error <input>...\n", argv[0]); return 2; }

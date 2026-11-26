@@ -124,7 +124,11 @@ class TwinBase:
         c.valstr(str(result))
 
     def trace(self, inp, inputs, idx=0):
-        c = Cup(self.C_FN)
+        # The cup seed is folded into the hash, so it MUST be the label the harness passes to
+        # WCUP_BEGIN. Generated twins carry a C_FN that often differs from it ("numeric" for a
+        # harness that begins "account_usage_is_finite_num"), and then every case mismatched no
+        # matter what the port returned. wc_run sets _cup_label from the harness source.
+        c = Cup(getattr(self, "_cup_label", self.C_FN))
         try:
             result = call_fn(self._fn, inp, inputs, idx)
             self.norm(c, result)

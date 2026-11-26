@@ -4,7 +4,7 @@
 #include <string.h>
 #include "watercup.h"
 
-extern int elc_cleanup(const char *a, const char *b);
+extern int elc_cleanup();
 
 static void trace_one(const char *a, const char *b) {
     WCUP_BEGIN("elc_cleanup");

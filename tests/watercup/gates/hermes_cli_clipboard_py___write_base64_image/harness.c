@@ -4,11 +4,11 @@
 #include <string.h>
 #include "watercup.h"
 
-extern int clipboard_write_base64_image(const char *input);
+extern int clipboard_write_base64_image(const char *a0, const char *a1);
 
-static void trace_one(const char *input) {
+static void trace_one(const char **in, int n, int idx) {
     WCUP_BEGIN("clipboard_write_base64_image");
-    int result = clipboard_write_base64_image(input);
+    int result = clipboard_write_base64_image(in[(idx + 0) % n], in[(idx + 1) % n]);
     WCUP_VALINT(result);
     char cup[32];
     WCUP_FINALIZE(cup, sizeof cup);
@@ -19,7 +19,7 @@ static void trace_one(const char *input) {
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s clipboard_write_base64_image <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        trace_one((const char **)(argv + 2), argc - 2, i - 2);
     }
     return 0;
 }

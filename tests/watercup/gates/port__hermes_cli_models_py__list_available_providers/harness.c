@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern int models_list_available_providers_json(const char *arg);
+extern int models_list_available_providers_json();
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s models_list_available_providers_json <input>...\n", argv[0]); return 2; }

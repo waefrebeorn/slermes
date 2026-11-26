@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern int cfg_save_config(const char *config_json);
+extern int cfg_save_config(const char *a0, const char *a1);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s cfg_save_config <input>...\n", argv[0]); return 2; }

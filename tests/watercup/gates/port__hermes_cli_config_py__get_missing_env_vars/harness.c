@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern void cfg_get_missing_env_vars(int required_only, char *out_json, size_t out_sz);
+extern int cfg_get_missing_env_vars(const char *a0);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s cfg_get_missing_env_vars <input>...\n", argv[0]); return 2; }
