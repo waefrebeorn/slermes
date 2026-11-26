@@ -74,6 +74,22 @@ CASES = [
     ("web_search", {"query": "slermes agent", "count": 2}),
     ("web_extract", {"url": "http://127.0.0.1:8899/"}),
     ("write_file", {"path": str(T / "sweep_write.txt"), "content": "sweep\n"}),
+    # Second wave: tools that need a required field before the work path is reachable at all.
+    ("todo", {"action": "list"}),
+    ("kanban_show", {}),                      # no task_id: must refuse by name, not return a blank row
+    ("kanban_create", {"title": "sweep case", "assignee": "sweep"}),
+    ("file_merge", {"base_path": str(T / "ok.json"), "modified_path": str(T / "bad.json"),
+                    "output_path": str(T / "merged.json")}),
+    ("text_to_speech", {"text": "sweep", "output_path": str(T / "sweep_tts.mp3")}),
+    ("image_generate", {"prompt": "a plain red square"}),   # no key here: must say so, not return a path
+    ("skill_provenance", {"name": "apple-notes"}),
+    ("skill_deps", {"action": "resolve", "name": "apple-notes"}),
+    # An action the schema does not name must be refused, not answered with {} -- that is how the
+    # first version of this case surfaced an empty object on the work path.
+    ("skill_deps", {"action": "list", "name": "apple-notes"}),
+    ("skills_guard", {"path": str(REPO / "skills")}),
+    ("patch", {"path": str(T / "patch_probe.txt"), "old_string": "alpha",
+               "new_string": "beta", "dry_run": True}),
 ]
 
 
@@ -113,10 +129,22 @@ def _empty_success(res: dict) -> bool:
     return len(data) == 0 and isinstance(res.get("message"), str) and bool(res["message"])
 
 
+
+def _validation_refusal(verdict: str) -> bool:
+    """An argument refusal is an honest answer, even when it enumerates values that read like absence.
+
+    skill_deps(action="list") answers "action must be one of: missing, resolve, validate" -- the word
+    "missing" is a VALID ACTION there, and the first version of this check scored that refusal as a
+    false absence.
+    """
+    return "must be one of" in verdict or "invalid action" in verdict or "unrecognized action" in verdict
+
+
 def ensure_fixtures() -> None:
     """Create the inputs the cases act on. A probe that cannot lay its own table reports the missing
     fixture as a lying tool: file_diff flagged a truthfully-reported absent bad.json as a suspect."""
     T.mkdir(parents=True, exist_ok=True)
+    (T / "patch_probe.txt").write_text("alpha\nbeta\n", encoding="utf-8")
     files = {
         "ok.json": '{"a": 1, "b": [1, 2, 3]}\n',
         "bad.json": '{"a": 1, "b": [1, 2, }\n',
@@ -159,6 +187,8 @@ def main() -> int:
                 verdict += " ok=false"
         if "_transport" in json.dumps(res):
             suspects.append((tool, "TRANSPORT", line))
+        elif _validation_refusal(verdict):
+            pass        # "action must be one of: missing, resolve, validate" names the contract
         elif any(w in verdict for w in ("not found", "missing", "no such file", "no skills directory")):
             suspects.append((tool, "ABSENCE", line))
         elif isinstance(res, dict) and res == {}:

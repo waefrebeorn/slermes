@@ -2220,6 +2220,14 @@ char *skills_deps_handler(const char *args_json, const char *task_id) {
             json_append(arr, json_new_string(ordered[i]));
         }
         json_set(result, "order", arr);
+    } else {
+        /* An unrecognised action used to fall through to `return json_serialize(result)` with an
+         * untouched object, i.e. `{}` -- a success-looking answer that carries nothing. The sweep
+         * caught it: skill_deps(action="list") answered {} where the schema names
+         * resolve/missing/validate. Refuse by name instead. */
+        json_set(result, "error",
+                 json_new_string("action must be one of: missing, resolve, validate"));
+        json_set(result, "action", json_new_string(action));
     }
 
     char *out = json_serialize(result);
