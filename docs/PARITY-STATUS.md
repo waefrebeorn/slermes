@@ -106,13 +106,20 @@ with an email and a password input): `vl_build_inspection_js` -> classify -> `se
 password input held the value. A wrong `expected_origin` correctly refused with
 `{"refused":"origin_changed","found":"http://127.0.0.1:8899"}`.
 
-**Unresolved, and the reason `fill` is still unregistered:** the same chain across *separate* MCP calls
-is not reliable in this target. Mutations issued in one call sometimes have no effect while a
-subsequent read shows a page that already has them, and the shadow-root walk reports five roots on a
-page with none -- i.e. some calls are not landing in the document that was just read. Whether the
-client re-attaches to a different context or this headless target recycles its renderer is
-undetermined. The next step is to log `Runtime.executionContextCreated`/`Destroyed` events and print
-the `contextId` of every `Runtime.evaluate`, which distinguishes the two cases in one run.
+**Resolved.** The "some calls land elsewhere" artifact was not CDP at all. Two defects stacked:
+`ws_io_send` called `send()` once per header and once per payload, so a 2 KB script could go out
+truncated and be silently dropped by the browser; and `src/tools/registry.c` kept a process-wide
+idempotency cache keyed on (tool name, raw args), so a repeated call with identical arguments —
+read this selector again, click it twice — was answered from the first call's result without ever
+reaching the tool. Reads froze at their first value and writes after the first did nothing.
+
+Both fixed. Identical repeated reads now return fresh values, and the fill chain is stable across
+separate calls:
+
+```
+fill 6/6 -> {"filled":1} with the value in the password input
+wrong expected_origin -> {"refused":"origin_changed","found":"http://127.0.0.1:8899"}
+```
 
 ## Standing gates
 

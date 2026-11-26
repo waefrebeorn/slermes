@@ -4,12 +4,15 @@
  * structurally broken because the harness retries blindly, turning a transient
  * failure into a DOUBLE side effect (two emails sent, two payments, ...).
  *
- * Solution: a tool call is keyed by (tool_name, idempotency_key|args). The first
- * successful execution stores its result under that key with a TTL. A retry with
- * the same key within the TTL returns the CACHED result WITHOUT re-executing the
- * handler, so a retry is safe. A caller may supply an explicit
- * "idempotency_key" in the args to control the key; otherwise the keyed material
- * is the normalized args JSON.
+ * Solution: a tool call that carries an explicit "idempotency_key" in its args is
+ * keyed by (tool_name, idempotency_key). The first successful execution stores its
+ * result under that key with a TTL; a retry with the same key inside the TTL
+ * returns the cached result WITHOUT re-executing the handler.
+ *
+ * A call WITHOUT an explicit key is keyed by nothing and is never cached: replaying
+ * on raw args is not a safe default, because a tool call that is deliberately
+ * repeated ("read this selector again", "click it twice") is indistinguishable from
+ * a retry, and answering it from cache silently freezes the caller's view.
  *
  * Storage is an omap (string key -> entry). The entry carries the stored result
  * and an expiry timestamp; lookups past expiry treat the entry as absent and

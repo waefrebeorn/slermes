@@ -1482,6 +1482,9 @@ static char *cdp_send_command(const char *method, const char *params_json) {
     }
     if (n < 0 || (size_t)n >= sizeof(msg)) return NULL;
 
+    if (getenv("HES_CDP_DEBUG"))
+        fprintf(stderr, "[cdp] sent id=%d method=%s len=%d\n", g_cdp_msg_id, method, n);
+
     /* Send */
     if (ws_send(g_cdp_ws, WS_OP_TEXT, msg, (size_t)n) < 0) {
         ws_close(g_cdp_ws); g_cdp_ws = NULL;
@@ -1516,6 +1519,9 @@ static char *cdp_send_command(const char *method, const char *params_json) {
             long long got = (idv && idv->type == JSON_NUMBER)
                                 ? (long long)json_number_value(idv) : -1;
             json_free(parsed);
+            if (getenv("HES_CDP_DEBUG"))
+                fprintf(stderr, "[cdp] recv id=%lld want=%d len=%zu %.90s\n",
+                        got, g_cdp_msg_id, strlen(text), text);
             if (got == (long long)g_cdp_msg_id) return text;   /* the answer */
             free(text);                                        /* an event, or another id */
         }

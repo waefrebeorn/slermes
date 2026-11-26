@@ -29,14 +29,55 @@
  * process. */
 #ifdef _WIN32
 #include <winsock2.h>
-#define ws_io_send(fd, buf, len) send((SOCKET)(fd), (const char *)(buf), (int)(len), 0)
-#define ws_io_recv(fd, buf, len) recv((SOCKET)(fd), (char *)(buf), (int)(len), 0)
 #define ws_io_close(fd)          closesocket((SOCKET)(fd))
 #else
-#define ws_io_send(fd, buf, len) (int)write((fd), (buf), (size_t)(len))
-#define ws_io_recv(fd, buf, len) (int)read((fd), (buf), (size_t)(len))
-#define ws_io_close(fd)          ws_io_close(fd)
+#define ws_io_close(fd)          close(fd)
 #endif
+
+/* send()/recv() move what fits in the socket buffer and no more. A websocket frame is not atomic:
+ * a 2 KB evaluate payload routinely goes out in two pieces, and treating the first short count as the
+ * whole write puts a truncated frame on the wire that the browser silently discards -- no error, no
+ * response, so the caller times out and retries and the command "sometimes does nothing". These loop
+ * until everything is transferred or the peer really is gone. */
+static int ws_io_send_all(int fd, const void *buf, size_t len) {
+    const unsigned char *p = (const unsigned char *)buf;
+    size_t sent = 0;
+    while (sent < len) {
+#ifdef _WIN32
+        int n = send((SOCKET)fd, (const char *)p + sent, (int)(len - sent), 0);
+#else
+        ssize_t n = write(fd, p + sent, len - sent);
+#endif
+        if (n <= 0) return -1;
+        sent += (size_t)n;
+    }
+    return (int)sent;
+}
+
+/* One read, whatever is available: the handshake must stop at the header terminator instead of
+ * blocking for a full buffer that will never arrive. */
+static int ws_io_recv_once(int fd, void *buf, size_t len) {
+#ifdef _WIN32
+    return recv((SOCKET)fd, (char *)buf, (int)len, 0);
+#else
+    return (int)read(fd, buf, len);
+#endif
+}
+
+static int ws_io_recv_all(int fd, void *buf, size_t len) {
+    unsigned char *p = (unsigned char *)buf;
+    size_t got = 0;
+    while (got < len) {
+#ifdef _WIN32
+        int n = recv((SOCKET)fd, (char *)p + got, (int)(len - got), 0);
+#else
+        ssize_t n = read(fd, p + got, len - got);
+#endif
+        if (n <= 0) return (int)got;   /* peer closed or error: caller sees a short read */
+        got += (size_t)n;
+    }
+    return (int)got;
+}
 
 /* ================================================================
  *  Internal
@@ -51,14 +92,22 @@ struct ws_t {
 
 /* Helper: write_raw — uses SSL_write if ssl is set, otherwise write() */
 static int write_raw(ws_t *ws, const void *buf, int len) {
-    if (ws->ssl) return SSL_write(ws->ssl, buf, len);
-    return ws_io_send(ws->fd, buf, len);
+    if (ws->ssl) {
+        int sent = 0;
+        while (sent < len) {
+            int n = SSL_write(ws->ssl, (const char *)buf + sent, len - sent);
+            if (n <= 0) return -1;
+            sent += n;
+        }
+        return sent;
+    }
+    return ws_io_send_all(ws->fd, buf, (size_t)len);
 }
 
 /* Helper: read_raw — uses SSL_read if ssl is set, otherwise read() */
 static int read_raw(ws_t *ws, void *buf, int len) {
     if (ws->ssl) return SSL_read(ws->ssl, buf, len);
-    return ws_io_recv(ws->fd, buf, len);
+    return ws_io_recv_all(ws->fd, buf, (size_t)len);
 }
 
 /* Base64 encode */
@@ -234,18 +283,30 @@ ws_t *ws_connect(const char *url, int timeout_sec) {
     /* Send upgrade request */
     if (ssl) {
         SSL_write(ssl, req, req_len);
-    } else if (ws_io_send(fd, req, req_len) != req_len) {
+    } else if (ws_io_send_all(fd, req, (size_t)req_len) != req_len) {
         ws_io_close(fd);
         return NULL;
     }
 
-    /* Read response */
+    /* Read the response headers. The 101 arrives in whatever pieces the network hands over -- reading
+     * once and hoping for the whole header block turns a routine two-segment response into a failed
+     * connect. Stop at the blank line so no frame bytes are swallowed. */
     char resp[4096];
-    int n;
-    if (ssl) {
-        n = SSL_read(ssl, resp, sizeof(resp) - 1);
-    } else {
-        n = ws_io_recv(fd, resp, sizeof(resp) - 1);
+    int n = 0;
+    while (n < (int)sizeof(resp) - 1) {
+        char chunk[512];
+        int got;
+        if (ssl) {
+            got = SSL_read(ssl, chunk, (int)sizeof(chunk));
+        } else {
+            got = ws_io_recv_once(fd, chunk, sizeof(chunk));
+        }
+        if (got <= 0) break;
+        if (n + got > (int)sizeof(resp) - 1) got = (int)sizeof(resp) - 1 - n;
+        memcpy(resp + n, chunk, (size_t)got);
+        n += got;
+        resp[n] = '\0';
+        if (strstr(resp, "\r\n\r\n")) break;
     }
     if (n <= 0) {
         if (ssl) { SSL_free(ssl); SSL_CTX_free(ctx); }
@@ -288,7 +349,7 @@ ws_t *ws_connect(const char *url, int timeout_sec) {
 int ws_send(ws_t *ws, uint8_t opcode, const void *data, size_t len) {
     if (!ws || !ws->connected) return -1;
 
-    unsigned char header[10];
+    unsigned char header[14];   /* 2 + 8 extended length + 4 mask */
     int hdr_len = 2;
     header[0] = 0x80 | opcode; /* FIN + opcode */
 

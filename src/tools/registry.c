@@ -204,6 +204,11 @@ static size_t g_aliases_count = 0;
 static tool_idem_cache_t *g_idem_cache = NULL;
 static bool g_idem_enabled = true;   /* operator kill-switch */
 
+/* Only calls that carry an explicit idempotency_key reach the cache, so an entry can only ever answer
+ * a deliberate retry. Ten minutes is long enough for any retry loop and short enough that a stale
+ * answer cannot outlive the action it describes. */
+#define IDEM_TTL_SECONDS 600
+
 static void idem_ensure(void) {
     if (g_idem_cache) return;
     g_idem_cache = tool_idem_new();
@@ -681,7 +686,7 @@ char *registry_dispatch(const char *name, const char *args_json,
              * retry is safe. (Errors are not cached — they should be retried if
              * transient; the classifier below tells the loop which.) */
             if (result && idem_key && g_idem_cache && !tool_result_is_error(result)) {
-                tool_idem_put(g_idem_cache, idem_key, result, 0);
+                tool_idem_put(g_idem_cache, idem_key, result, IDEM_TTL_SECONDS);
             }
             free(idem_key);
             pthread_mutex_unlock(&g_registry_mutex);
@@ -763,7 +768,7 @@ char *registry_dispatch(const char *name, const char *args_json,
                 free(coerced);
                 /* P1: store successful results for safe retry. */
                 if (result && idem_key && g_idem_cache && !tool_result_is_error(result)) {
-                    tool_idem_put(g_idem_cache, idem_key, result, 0);
+                    tool_idem_put(g_idem_cache, idem_key, result, IDEM_TTL_SECONDS);
                 }
                 free(idem_key);
                 pthread_mutex_unlock(&g_registry_mutex);

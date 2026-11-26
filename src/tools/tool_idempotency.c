@@ -143,11 +143,11 @@ char *tool_idem_key(const char *tool, const char *args) {
         return k;
     }
     if (root) json_free(root);
-    /* Fall back to tool + raw args. */
-    size_t n = strlen(tool) + 1 + strlen(args) + 1;
-    char *k = (char *)malloc(n);
-    if (k) snprintf(k, n, "%s|%s", tool, args);
-    return k;
+    /* NO key: do not cache. Keying on the raw args made every repeated interactive call a replay --
+     * read the same selector twice and the second answer is the first one's; click the same button
+     * twice and the second click never reaches the page. A caller that wants retry safety says so with
+     * an explicit idempotency_key; everyone else must execute. */
+    return NULL;
 }
 
 bool tool_idem_put(tool_idem_cache_t *c, const char *key,
