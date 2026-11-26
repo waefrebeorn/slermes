@@ -80,12 +80,31 @@ def brief(res: dict, limit: int = 150) -> str:
     return json.dumps(keep)[:limit]
 
 
+def ensure_fixtures() -> None:
+    """Create the inputs the cases act on. A probe that cannot lay its own table reports the missing
+    fixture as a lying tool: file_diff flagged a truthfully-reported absent bad.json as a suspect."""
+    T.mkdir(parents=True, exist_ok=True)
+    files = {
+        "ok.json": '{"a": 1, "b": [1, 2, 3]}\n',
+        "bad.json": '{"a": 1, "b": [1, 2, }\n',
+        "good.py": "def add(a, b):\n    return a + b\n",
+        "broken.py": "def add(a, b)\n    return a +\n",
+        "a.txt": "alpha\nbeta\ngamma\n",
+        "empty.bin": "",
+    }
+    for name, body in files.items():
+        path = T / name
+        if not path.exists():
+            path.write_text(body, encoding="utf-8")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default="http://127.0.0.1:9100/mcp")
     ap.add_argument("--json", default="")
     args = ap.parse_args()
 
+    ensure_fixtures()
     results, suspects = {}, []
     for tool, arguments in CASES:
         try:
@@ -96,10 +115,18 @@ def main() -> int:
         line = brief(res)
         print(f"{tool:20} {line}")
 
-        text = json.dumps(res).lower()
-        if "_transport" in text:
+        # Only the answer's own verdict counts. Scanning the whole payload flagged skill_scan for
+        # returning 232 skills -- one of them happens to have "missing" in its name.
+        verdict = ""
+        if isinstance(res, dict):
+            verdict = " ".join(str(res[k]) for k in ("error", "reason", "detail") if k in res).lower()
+            if res.get("success") is False:
+                verdict += " success=false"
+            elif res.get("ok") is False:
+                verdict += " ok=false"
+        if "_transport" in json.dumps(res):
             suspects.append((tool, "TRANSPORT", line))
-        elif any(w in text for w in ("not found", "missing", "no such file", "no skills directory")):
+        elif any(w in verdict for w in ("not found", "missing", "no such file", "no skills directory")):
             suspects.append((tool, "ABSENCE", line))
         elif isinstance(res, dict) and res == {}:
             suspects.append((tool, "EMPTY", line))
