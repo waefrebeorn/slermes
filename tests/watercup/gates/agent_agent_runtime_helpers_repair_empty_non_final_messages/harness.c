@@ -48,12 +48,19 @@ static bool c_msg_has_payload(const json_t *msg) {
     /* mirrors msg_has_payload in agent_message_payload.c — traced copy */
     if (!msg || msg->type != JSON_OBJECT) return false;
     json_t *content = json_obj_get(msg, "content");
+    /* The port ORs the content result with the structural fields
+     * (session_rules/turns.py:1439), so a string content must NOT return early here: a Codex turn
+     * keeps `content: ""` and its text in codex_message_items and still has a payload. This copy
+     * returned false for every string, which made the harness's consistency check fire against the
+     * fixed port (n=2|h=0 vs n=2|h=1 on the tool_calls input). */
     if (content && content->type == JSON_STRING) {
+        bool nonblank = false;
         for (const char *s = content->str_val; *s; s++)
-            if (*s != ' ' && *s != '\t' && *s != '\n' && *s != '\r') return true;
-        return false;
+            if (*s != ' ' && *s != '\t' && *s != '\n' && *s != '\r') { nonblank = true; break; }
+        if (nonblank) return true;
     }
     if (content && content->type == JSON_ARRAY) {
+        bool arr_payload = false;
         for (size_t i = 0; i < content->c.count; i++) {
             json_t *block = content->c.items[i];
             if (block && block->type == JSON_OBJECT) {
@@ -64,10 +71,12 @@ static bool c_msg_has_payload(const json_t *msg) {
                     if (text && text->type == JSON_STRING)
                         for (const char *s = text->str_val; *s; s++)
                             if (*s != ' ' && *s != '\t' && *s != '\n' && *s != '\r')
-                                return true;
+                                { arr_payload = true; break; }
+                    if (arr_payload) break;
                     continue;
                 }
-                return true;
+                arr_payload = true;
+                break;
             }
             /* Python truthiness per block */
             int truthy = 0;
@@ -80,10 +89,9 @@ static bool c_msg_has_payload(const json_t *msg) {
                 default: truthy = block->c.count > 0; break;
                 }
             }
-            if (truthy)
-                return true;
+            if (truthy) { arr_payload = true; break; }
         }
-        return false;
+        if (arr_payload) return true;
     }
     if (content && content->type != JSON_NULL && content->type != JSON_STRING)
         return true;

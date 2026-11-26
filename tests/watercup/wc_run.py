@@ -205,9 +205,42 @@ def _compiler():
     # (whose headers/backend the project does not build with) while winlibs
     # gcc is first on PATH as "gcc". On Linux cc and gcc are equivalent.
     cc = "gcc" if shutil.which("gcc") else "cc"
-    if shutil.which("ccache"):
+    if shutil.which("ccache") and _ccache_works(cc):
         return ["ccache", cc]
     return [cc]
+
+
+_CCACHE_OK = []
+
+
+def _ccache_works(cc):
+    """Probe `ccache <cc> -c` once before trusting it with 22.6k compiles.
+
+    ccache can be on PATH and still refuse to compile -- a cache directory it cannot write, a
+    HOME it cannot resolve -- and when it does it exits non-zero with an EMPTY stderr. The runner
+    then reported "BUILD FAIL (compile harness.c)" with nothing after the colon and the gate looked
+    like a port gap. CCACHE_DISABLE=1 made the same gate compile, which is how this was found.
+    """
+    if _CCACHE_OK:
+        return _CCACHE_OK[0]
+    ok = True
+    try:
+        tmpdir = os.path.join(BUILD, "_ccache_probe")
+        os.makedirs(tmpdir, exist_ok=True)
+        src = os.path.join(tmpdir, "probe.c")
+        with open(src, "w") as f:
+            f.write("int main(void){return 0;}\n")
+        r = subprocess.run(["ccache", cc, "-c", src, "-o", os.path.join(tmpdir, "probe.o")],
+                           capture_output=True, text=True, encoding="utf-8", errors="replace")
+        ok = r.returncode == 0
+        if not ok:
+            sys.stderr.write("watercup: ccache is on PATH but cannot compile (rc=%d: %s); "
+                             "falling back to %s\n" % (r.returncode, (r.stderr or "").strip()[:200], cc))
+    except Exception as e:  # noqa: BLE001 - a probe must never break the fleet
+        ok = False
+        sys.stderr.write("watercup: ccache probe failed (%s); falling back to %s\n" % (e, cc))
+    _CCACHE_OK.append(ok)
+    return ok
 
 
 def _linker():
@@ -416,8 +449,12 @@ def build_harness(gate_dir, g, force=False):
                 + ["-c", s, "-o", obj])
         r = subprocess.run(ccmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
         if r.returncode != 0:
-            compile_fail = "BUILD FAIL (compile %s) for %s:\n%s" % (
-                os.path.basename(s), g["name"], r.stderr)
+            compile_fail = ("BUILD FAIL (compile %s) for %s [cmd: %s]:\n%s%s" % (
+                os.path.basename(s), g["name"], " ".join(ccmd[:6]),
+                r.stderr,
+                "" if (r.stderr or "").strip() else
+                "(the compiler exited %d with no message -- a broken ccache or a missing compiler"
+                " does this; see _ccache_works)" % r.returncode))
             break
     if compile_fail:
         raise RuntimeError(compile_fail)
