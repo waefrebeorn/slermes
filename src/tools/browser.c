@@ -631,6 +631,54 @@ static char *cdp_images(void) {
     return out;
 }
 
+/* Back / forward as the browser understands them, from its own navigation history. */
+static char *cdp_history(int delta) {
+    char *raw = browser_cdp_send_raw(NULL, "Page.getNavigationHistory", "{}", NULL, 15);
+    if (!raw) return NULL;
+    json_t *root = json_parse(raw, NULL);
+    free(raw);
+    const json_t *res = root ? json_obj_get(root, "result") : NULL;
+    const json_t *cur = res ? json_obj_get(res, "currentIndex") : NULL;
+    const json_t *entries = res ? json_obj_get(res, "entries") : NULL;
+    if (!cur || cur->type != JSON_NUMBER || !entries || entries->type != JSON_ARRAY) {
+        json_free((json_t *)root);
+        return NULL;
+    }
+    long index = (long)json_number_value(cur) + delta;
+    if (index < 0 || (size_t)index >= json_len((json_t *)entries)) {
+        json_free((json_t *)root);
+        json_t *o = json_object();
+        json_set(o, "error", json_string(delta < 0 ? "No previous page in history"
+                                                   : "No next page in history"));
+        char *r = json_serialize(o);
+        json_free(o);
+        return r;
+    }
+    const json_t *entry = json_get((json_t *)entries, (size_t)index);
+    const json_t *eid = entry ? json_obj_get(entry, "id") : NULL;
+    const json_t *eurl = entry ? json_obj_get(entry, "url") : NULL;
+    if (!eid || eid->type != JSON_NUMBER) { json_free((json_t *)root); return NULL; }
+
+    json_t *params = json_object();
+    json_set(params, "entryId", json_copy((json_t *)eid));
+    char *pj = json_serialize(params);
+    json_free(params);
+    char *nav = browser_cdp_send_raw(NULL, "Page.navigateToHistoryEntry", pj, NULL, 15);
+    free(pj);
+
+    json_t *o = json_object();
+    json_set(o, "status", json_string(delta < 0 ? "back" : "forward"));
+    json_set(o, "url", json_copy((json_t *)eurl));
+    json_set(o, "index", json_number(index));
+    json_set(o, "ok", json_bool(nav != NULL));
+    if (!nav) json_set(o, "error", json_string("the browser refused the history navigation"));
+    free(nav);
+    char *r = json_serialize(o);
+    json_free(o);
+    json_free((json_t *)root);
+    return r;
+}
+
 /* ── acting on the page ──────────────────────────────────────────────────────────────────────── */
 
 /* The refs a snapshot stamped are how these address a control. Without that, click/type were writing
@@ -920,6 +968,10 @@ char *browser_snapshot_handler(const char *args_json, const char *task_id) {
 /* PoP: browser_back_handler @ hermes_cli/cli_subagent_monitor.py:back */
 char *browser_back_handler(const char *args_json, const char *task_id) {
     (void)args_json; (void)task_id;
+    if (cdp_attached()) {
+        char *live = cdp_history(-1);
+        if (live) return live;
+    }
     if (g_tab.history_pos == 0 || g_tab.history_count == 0) {
         return strdup("{\"error\": \"No previous page in history\"}");
     }
@@ -942,7 +994,13 @@ char *browser_back_handler(const char *args_json, const char *task_id) {
 /* PoP: browser_forward_handler @ tools/browser_tool.py:forward */
 char *browser_forward_handler(const char *args_json, const char *task_id) {
     (void)args_json; (void)task_id;
-    if (g_tab.history_pos >= g_tab.history_count - 1) {
+    if (cdp_attached()) {
+        char *live = cdp_history(1);
+        if (live) return live;
+    }
+    /* history_count is unsigned: with zero entries `count - 1` underflows and the check passes,
+     * which walked off the end of the array. */
+    if (g_tab.history_count == 0 || g_tab.history_pos + 1 >= g_tab.history_count) {
         return strdup("{\"error\": \"No next page in history\"}");
     }
     g_tab.history_pos++;
@@ -2023,7 +2081,9 @@ static char *cdp_generate_pdf(json_node_t *result) {
         return NULL;
     }
 
-    const char *pdf_data = json_object_get_string(pdf_json, "result.data", NULL);
+    /* A dotted path is a literal key here, not a traversal: the data lives at result -> data. */
+    const json_node_t *pdf_result = json_object_get(pdf_json, "result");
+    const char *pdf_data = pdf_result ? json_object_get_string(pdf_result, "data", NULL) : NULL;
     if (!pdf_data) {
         json_object_set(result, "pdf_error", json_new_string("No PDF data in response"));
         json_free(pdf_json);
