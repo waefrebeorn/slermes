@@ -32,10 +32,14 @@ static const char *SCHEMA = "{"
 
 /* ─── Helpers ─────────────────────────────────────────────── */
 
+static int ep_which(const char *name, char *resolved, size_t rsz);
+
+/* `command -v` is a POSIX shell builtin: run through system() on Windows it goes to cmd.exe, which has
+ * no such command, so every probe answered "absent" and the tool reported
+ * `available_binaries: []` on a machine with git, curl, node and ffmpeg installed. */
 static int cmd_exists(const char *cmd) {
-    char buf[512];
-    snprintf(buf, sizeof(buf), "command -v %s >/dev/null 2>&1", cmd);
-    return system(buf) == 0;
+    char resolved[1024];
+    return ep_which(cmd, resolved, sizeof(resolved));
 }
 
 static char *_read_file(const char *path, size_t max_len) {
@@ -316,6 +320,28 @@ static char g_cached_line[1024] = "";
  * `resolved` with the absolute path on success, 0 otherwise. */
 static int ep_which(const char *name, char *resolved, size_t rsz) {
     if (!name || !*name) return 0;
+#ifdef _WIN32
+    /* PATH here is `C:\a;C:\b`, entries are directories with backslashes, and an executable is
+     * `git.exe`, not `git`. Splitting on ':' and testing `dir/name` with access(X_OK) found nothing on
+     * this platform, so the tool reported `available_binaries: []` on a machine full of binaries.
+     * SearchPath is the OS's own shutil.which: it walks PATH and applies PATHEXT. */
+    {
+        char loc[MAX_PATH];
+        static const char *exts[] = {".exe", ".cmd", ".bat", ".com", NULL};
+        for (size_t i = 0; exts[i]; i++) {
+            if (SearchPathA(NULL, name, exts[i], sizeof(loc), loc, NULL)) {
+                snprintf(resolved, rsz, "%s", loc);
+                return 1;
+            }
+        }
+        /* bare name that is already an absolute path */
+        if ((strchr(name, '\\') || strchr(name, '/')) && access(name, 0) == 0) {
+            snprintf(resolved, rsz, "%s", name);
+            return 1;
+        }
+        return 0;
+    }
+#endif
     /* Absolute / relative path with a slash: test directly. */
     if (strchr(name, '/')) {
         if (access(name, X_OK) == 0) {
@@ -350,6 +376,98 @@ static int ep_run(const char **cmd, int cmd_count, float timeout_sec,
     if (stdout_out && stdout_size) stdout_out[0] = '\0';
     if (stderr_out && stderr_size) stderr_out[0] = '\0';
     if (!cmd || cmd_count <= 0) return -1;
+
+#ifdef _WIN32
+    /* No fork/exec here: without this branch every probe that runs a binary (`git --version`,
+     * `nvidia-smi -q`, `python -c ...`) returned -1, so the tool described an empty machine. */
+    {
+        SECURITY_ATTRIBUTES sa = { sizeof(sa), NULL, TRUE };
+        HANDLE out_rd = NULL, out_wr = NULL, err_rd = NULL, err_wr = NULL;
+        if (!CreatePipe(&out_rd, &out_wr, &sa, 0)) return -1;
+        if (!CreatePipe(&err_rd, &err_wr, &sa, 0)) {
+            CloseHandle(out_rd); CloseHandle(out_wr);
+            return -1;
+        }
+        SetHandleInformation(out_rd, HANDLE_FLAG_INHERIT, 0);
+        SetHandleInformation(err_rd, HANDLE_FLAG_INHERIT, 0);
+
+        /* CreateProcess wants one command line; quote arguments that contain spaces. */
+        char cmdline[4096];
+        size_t cl = 0;
+        cmdline[0] = '\0';
+        for (int i = 0; i < cmd_count && cl + 2 < sizeof(cmdline); i++) {
+            const char *a = cmd[i] ? cmd[i] : "";
+            bool quote = strchr(a, ' ') != NULL || strchr(a, '\t') != NULL;
+            int w = snprintf(cmdline + cl, sizeof(cmdline) - cl, "%s%s%s%s",
+                             i ? " " : "", quote ? "\"" : "", a, quote ? "\"" : "");
+            if (w < 0) break;
+            cl += (size_t)w;
+        }
+
+        STARTUPINFOA si;
+        PROCESS_INFORMATION pi;
+        memset(&si, 0, sizeof(si));
+        si.cb = sizeof(si);
+        si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+        si.wShowWindow = SW_HIDE;
+        si.hStdOutput = out_wr;
+        si.hStdError = err_wr;
+        si.hStdInput = NULL;
+
+        if (!CreateProcessA(NULL, cmdline, NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
+            CloseHandle(out_rd); CloseHandle(out_wr);
+            CloseHandle(err_rd); CloseHandle(err_wr);
+            return -1;
+        }
+        CloseHandle(out_wr);
+        CloseHandle(err_wr);
+
+        int timeout_ms = timeout_sec > 0 ? (int)(timeout_sec * 1000.0) : 3000;
+        DWORD deadline = GetTickCount() + (DWORD)timeout_ms;
+        size_t out_len = 0, err_len = 0;
+        char chunk[2048];
+        bool timed_out = false;
+
+        for (;;) {
+            DWORD avail = 0;
+            if (out_rd && PeekNamedPipe(out_rd, NULL, 0, NULL, &avail, NULL) && avail > 0) {
+                DWORD got = 0;
+                if (ReadFile(out_rd, chunk, sizeof(chunk) - 1, &got, NULL) && got) {
+                    if (stdout_out && stdout_size && out_len + got < stdout_size) {
+                        memcpy(stdout_out + out_len, chunk, got);
+                        out_len += got;
+                    }
+                }
+            }
+            if (err_rd && PeekNamedPipe(err_rd, NULL, 0, NULL, &avail, NULL) && avail > 0) {
+                DWORD got = 0;
+                if (ReadFile(err_rd, chunk, sizeof(chunk) - 1, &got, NULL) && got) {
+                    if (stderr_out && stderr_size && err_len + got < stderr_size) {
+                        memcpy(stderr_out + err_len, chunk, got);
+                        err_len += got;
+                    }
+                }
+            }
+            if (WaitForSingleObject(pi.hProcess, 20) == WAIT_OBJECT_0) break;
+            if (GetTickCount() > deadline) {
+                TerminateProcess(pi.hProcess, 124);
+                WaitForSingleObject(pi.hProcess, 1000);
+                timed_out = true;
+                break;
+            }
+        }
+
+        DWORD code = 0;
+        GetExitCodeProcess(pi.hProcess, &code);
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+        if (out_rd) CloseHandle(out_rd);
+        if (err_rd) CloseHandle(err_rd);
+        if (stdout_out && stdout_size) stdout_out[out_len < stdout_size ? out_len : stdout_size - 1] = '\0';
+        if (stderr_out && stderr_size) stderr_out[err_len < stderr_size ? err_len : stderr_size - 1] = '\0';
+        return timed_out ? -1 : (int)code;
+    }
+#endif
 
     int out_pipe[2] = {-1, -1}, err_pipe[2] = {-1, -1};
     if (pipe(out_pipe) != 0 || pipe(err_pipe) != 0) return -1;
