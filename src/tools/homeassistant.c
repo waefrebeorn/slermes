@@ -257,7 +257,10 @@ char *ha_list_services_handler(const char *args_json, const char *task_id) {
     json_t *args = json_parse(args_json, NULL);
     if (!args) return ha_get_json("/services");
 
-    const char *domain = json_get_str(args, "domain", "");
+    /* domain is used to filter the service list long after args is released. */
+    char domain_buf[128];
+    snprintf(domain_buf, sizeof(domain_buf), "%s", json_get_str(args, "domain", ""));
+    const char *domain = domain_buf;
 
     json_free(args);
     if (!*domain) return ha_get_json("/services");

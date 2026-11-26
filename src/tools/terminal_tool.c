@@ -719,6 +719,9 @@ bool terminal_ensure_task_env(const char *task_id) {
         timeout > 0 ? timeout : 180,
         effective_task_id,
         NULL);
+    char env_type_buf[64];
+    snprintf(env_type_buf, sizeof(env_type_buf), "%s", env_type ? env_type : "?");
+    env_type = env_type_buf;
     json_free(config);
     if (!env_json) {
         hermes_log(LOG_WARNING, "terminal",

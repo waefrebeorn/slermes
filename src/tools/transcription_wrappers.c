@@ -32,15 +32,16 @@ bool tsc_is_command_stt_provider_config(const char *config_json) {
         if (cfg) json_free(cfg);
         return false;
     }
+    /* This used to free cfg inside the branch AND again below it, and read `command` out of the
+     * already-freed tree in between: a double free plus an uninitialised answer to "is this provider a
+     * command provider". One free, one copy, one answer. */
     const char *ptype = json_get_str(cfg, "type", NULL);
-    if (ptype && *ptype) {
-        bool is_command = (strcasecmp(ptype, "command") == 0);
-        json_free(cfg);
-        if (!is_command) return false;
-    }
-    const char *cmd = json_get_str(cfg, "command", NULL);
+    bool is_command = !(ptype && *ptype) || strcasecmp(ptype, "command") == 0;
+    char cmd_buf[1024] = "";
+    if (is_command) snprintf(cmd_buf, sizeof(cmd_buf), "%s", json_get_str(cfg, "command", ""));
     json_free(cfg);
-    if (!cmd) return false;
+    if (!is_command) return false;
+    const char *cmd = cmd_buf;
     while (*cmd == ' ') cmd++;
     return *cmd != '\0';
 }

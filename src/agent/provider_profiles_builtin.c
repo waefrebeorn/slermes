@@ -150,8 +150,9 @@ static void pp_openrouter_kwargs(provider_profile_t *p, const char *ctx_json,
                 if (strstr(model, opt[i])) { mandatory = false; break; }
         }
         if (mandatory) {
-            const char *effort = NULL;
-            if (rc) { json_t *c = json_parse(rc, NULL); if (c) { effort = json_get_str(c, "effort", NULL); json_free(c); } }
+            char effort_buf[64] = "";
+            if (rc) { json_t *c = json_parse(rc, NULL); if (c) { snprintf(effort_buf, sizeof(effort_buf), "%s", json_get_str(c, "effort", "")); json_free(c); } }
+            const char *effort = effort_buf[0] ? effort_buf : NULL;
             bool enabled = true;
             if (rc) { json_t *c = json_parse(rc, NULL); if (c) { enabled = json_get_bool(c, "enabled", true); json_free(c); } }
             if (enabled && effort && strcasecmp(effort, "none") != 0 && strcasecmp(effort, "ultra") != 0)

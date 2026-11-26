@@ -78,7 +78,10 @@ int agent_display_u_display_url(const char *arg) {
     } else {
         v = arg;
     }
+    char v_buf[2048] = "";
+    if (v) snprintf(v_buf, sizeof(v_buf), "%s", v);
     if (j) json_free(j);
+    v = v_buf;                                    /* v may point into the tree just freed */
     if (!v) { printf("\n"); return 0; }
     while (*v == ' ') v++;
     size_t len = strlen(v);

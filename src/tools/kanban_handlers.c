@@ -265,10 +265,10 @@ static char *handle_unblock(const char *args_json, const char *task_id) {
     const char *tid = json_get_str(args, "task_id", "");
     if (!*tid) { json_free(args); return strdup("{\"error\":\"task_id is required\"}"); }
     bool ok = kanban_unblock_task( tid) ? true : false;
-    json_free(args);
-    if (!ok) { char err[256]; snprintf(err,sizeof(err),"{\"error\":\"task %s not found\"}",tid); return strdup(err); }
+    if (!ok) { char err[256]; snprintf(err,sizeof(err),"{\"error\":\"task %s not found\"}",tid); json_free(args); return strdup(err); }
     char out[256];
     snprintf(out, sizeof(out), "{\"ok\":true,\"task_id\":\"%s\",\"status\":\"ready\"}", tid);
+    json_free(args);                              /* tid points into args */
     return strdup(out);
 }
 
@@ -287,6 +287,11 @@ static char *handle_link(const char *args_json, const char *task_id) {
         json_free(args); return strdup("{\"error\":\"self-links are not allowed\"}");
     }
     bool ok = kanban_link_tasks(parent_id, child_id);
+    /* the failure branch below reads both tasks by id, so keep the strings alive until then */
+    char parent_buf[128], child_buf[128];
+    snprintf(parent_buf, sizeof(parent_buf), "%s", parent_id);
+    snprintf(child_buf, sizeof(child_buf), "%s", child_id);
+    parent_id = parent_buf; child_id = child_buf;
     json_free(args);
     if (!ok) {
         json_t *p = kanban_read_task(parent_id);

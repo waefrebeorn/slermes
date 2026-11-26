@@ -397,7 +397,9 @@ char *web_get_handler(const char *args_json, const char *task_id) {
                  use_headers ? use_headers : "");
         final_headers = cookie_headers;
     }
-    http_response_t *resp = http_request(client, method, url,
+    /* `url` pointed into args, which is freed before the request is made: the URL actually sent came
+     * out of freed memory and only worked because the bytes were still there. */
+    http_response_t *resp = http_request(client, method, url_copy ? url_copy : url,
                                           final_headers,
                                           body_copy,
                                           body_copy ? strlen(body_copy) : 0);

@@ -567,7 +567,12 @@ char *tool_search_dispatch_search(const char *query_json,
         limit = raw;
     }
 
+    /* json_free(args) used to sit here, and the catalog search below ran on the freed query text --
+     * the same shape that made skill_search answer every query with the same skills. */
+    char query_buf[512];
+    snprintf(query_buf, sizeof(query_buf), "%s", query ? query : "");
     json_free(args);
+    query = query_buf;
 
     int indices[CATALOG_MAX_ENTRIES];
     int hit_count = 0;

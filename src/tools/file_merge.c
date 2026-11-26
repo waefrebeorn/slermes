@@ -70,9 +70,9 @@ char *file_merge_handler(const char *args_json, const char *task_id) {
         /* Read modified file */
         FILE *fm = fopen(modified_path, "rb");
         if (!fm) {
-            free(content_base); json_free(args);
             char buf[1024];
             snprintf(buf, sizeof(buf), "{\"error\":\"Cannot open %s: %s\"}", modified_path, strerror(errno));
+            free(content_base); json_free(args);      /* modified_path points into args */
             return strdup(buf);
         }
         fseek(fm, 0, SEEK_END);

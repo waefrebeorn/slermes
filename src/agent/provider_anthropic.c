@@ -1940,7 +1940,9 @@ json_t *anthropic_content_parts_to_anthropic_blocks(const json_t *parts) {
         json_t *block = anthropic_convert_content_part_to_anthropic(part);
         if (!block) continue;
 
-        const char *btype = json_get_str(block, "type", "");
+        char btype_buf[32];
+        snprintf(btype_buf, sizeof(btype_buf), "%s", json_get_str(block, "type", ""));
+        const char *btype = btype_buf;            /* `block` is freed below when its text is empty */
         if (strcmp(btype, "text") == 0) {
             const char *text_val = json_get_str(block, "text", "");
             if (text_val && *text_val)

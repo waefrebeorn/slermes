@@ -764,11 +764,13 @@ char *session_crud_handler(const char *args_json, const char *task_id) {
         } else {
             session_meta_t meta;
             db_load_meta(db, session_id, &meta);
+            char prompt_buf[4096] = "";
             const char *prompt_val = "";
             {
                 json_node_t *root = json_parse(meta.meta_json[0] ? meta.meta_json : "{}", NULL);
                 if (root) {
-                    prompt_val = json_get_str(root, "system_prompt", "");
+                    snprintf(prompt_buf, sizeof(prompt_buf), "%s", json_get_str(root, "system_prompt", ""));
+                    prompt_val = prompt_buf;
                     json_free(root);
                 }
             }
@@ -810,11 +812,13 @@ char *session_crud_handler(const char *args_json, const char *task_id) {
         } else {
             session_meta_t meta;
             db_load_meta(db, session_id, &meta);
+            char topic_buf[256] = "";
             const char *topic_id = "";
             {
                 json_node_t *root = json_parse(meta.meta_json[0] ? meta.meta_json : "{}", NULL);
                 if (root) {
-                    topic_id = json_get_str(root, "telegram_topic_id", "");
+                    snprintf(topic_buf, sizeof(topic_buf), "%s", json_get_str(root, "telegram_topic_id", ""));
+                    topic_id = topic_buf;
                     json_free(root);
                 }
             }

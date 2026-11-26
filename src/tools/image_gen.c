@@ -178,7 +178,11 @@ static char *krea_image_generate(const char *prompt, const char *aspect_ratio,
     }
 
     /* Extract job_id for polling */
-    const char *job_id = json_get_str(result, "job_id", NULL);
+    /* job_id goes back to the caller (it polls with it), so it must outlive `result`. */
+    char job_id_buf[128] = "";
+    const char *job_id_raw = json_get_str(result, "job_id", NULL);
+    if (job_id_raw) snprintf(job_id_buf, sizeof(job_id_buf), "%s", job_id_raw);
+    const char *job_id = job_id_buf;
     json_free(result);
 
     if (!job_id || !*job_id) {
