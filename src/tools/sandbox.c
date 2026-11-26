@@ -16,6 +16,10 @@
 #include <fnmatch.h>
 #include <ctype.h>
 
+#ifndef SB_PATH_MAX
+#define SB_PATH_MAX 4096
+#endif
+
 
     /* ================================================================
      *  P168: File Sandbox — Allowed directories & symlink attack prevention
@@ -40,6 +44,14 @@ void sandbox_init(void) {
      * "C:\\Users\\..." paths the Windows APIs produce -- every sandboxed file operation refused. */
     const char *home = getenv("USERPROFILE");
     if (!home || !*home) home = getenv("HOME");
+    /* A stripped environment leaves both empty (see hermes_user_home): ask Windows. Without this
+     * the allowlist held nothing and every file_batch answered "Source path not allowed". */
+    static char home_buf[SB_PATH_MAX];
+    if (!home || !*home || home[0] == '/') {
+        extern void hermes_user_home(char *, size_t);
+        hermes_user_home(home_buf, sizeof(home_buf));
+        home = home_buf;
+    }
 #else
     const char *home = getenv("HOME");
 #endif
@@ -53,6 +65,12 @@ void sandbox_init(void) {
 #else
     sandbox_add_allowed_dir("/tmp");
 #endif
+    /* The working tree the agent was started in is in scope too: a batch copy of a file that sits
+     * beside the binary is not an escape attempt. */
+    {
+        char cwd_buf[SB_PATH_MAX];
+        if (getcwd(cwd_buf, sizeof(cwd_buf)) && cwd_buf[0]) sandbox_add_allowed_dir(cwd_buf);
+    }
     const char *slermes_home_env = getenv("SLERMES_HOME");
     if (slermes_home_env && *slermes_home_env) {
         sandbox_add_allowed_dir(slermes_home_env);

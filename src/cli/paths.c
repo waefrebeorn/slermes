@@ -12,6 +12,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#ifdef _WIN32
+#include <shlobj.h>
+#endif
 
 /* Active profile name (NULL means default/unset) */
 static char active_profile[64] = "";
@@ -19,6 +22,8 @@ static char active_profile[64] = "";
 /* ================================================================
  *  Internal: resolve base SLERMES_HOME directory
  * ================================================================ */
+
+void hermes_user_home(char *buf, size_t sz);  /* public: see below */
 
 static void resolve_slermes_home(char *buf, size_t sz) {
     extern const char *hc_get_hermes_home_override(void);
@@ -29,11 +34,41 @@ static void resolve_slermes_home(char *buf, size_t sz) {
         snprintf(buf, sz, "%s", env);
         return;
     }
+    hermes_user_home(buf, sz);
+    size_t n = strlen(buf);
+    snprintf(buf + n, sz > n ? sz - n : 0, "/.slermes");
+}
+
+/* Where the Windows profile actually is.
+ *
+ * getenv("HOME") is not it: launched from MSYS bash it reads /home/eman5, and from a stripped
+ * environment it is unset while USERPROFILE is empty too -- which produced
+ * 'C:\msys64\home\eman5/.slermes/config.yaml' (no config, no skills, empty tool set) while
+ * C:\Users\eman5\.slermes\config.yaml sat there. Ask Windows when the environment cannot say. */
+void hermes_user_home(char *buf, size_t sz) {
+    if (!buf || sz == 0) return;
+    buf[0] = '\0';
+
+    /* MSYS rewrites HOME to its own fake profile (C:\msys64\home\eman5), which looks like a
+     * Windows path and quietly won over the real one: the server reported "No config" while
+     * C:\Users\eman5\.slermes\config.yaml existed. Ask Windows first, and refuse an MSYS home. */
+    const char *prof = getenv("USERPROFILE");
+    if (prof && prof[0] && !strstr(prof, "\\msys64\\") && !strstr(prof, "/msys64/")) {
+        snprintf(buf, sz, "%s", prof);
+        return;
+    }
+
+#ifdef _WIN32
+    char tmp[MAX_PATH];
+    if (SHGetFolderPathA(NULL, 0x0028 /* CSIDL_PROFILE */, NULL, 0, tmp) == S_OK && tmp[0]) {
+        snprintf(buf, sz, "%s", tmp);
+        return;
+    }
+#endif
+
     const char *home = getenv("HOME");
-    if (home)
-        snprintf(buf, sz, "%s/.slermes", home);
-    else
-        snprintf(buf, sz, "/tmp/.slermes");
+    if (home && home[0] && !strstr(home, "msys64")) { snprintf(buf, sz, "%s", home); return; }
+    snprintf(buf, sz, "%s", "/tmp");
 }
 
 /* ================================================================

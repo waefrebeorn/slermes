@@ -47,17 +47,49 @@ static int             g_curator_stale_days = SKILL_CURATOR_DEFAULT_STALE_DAYS;
  *  Path utilities
  * ================================================================ */
 
-/* PoP: skills_dir @ plugins/platforms/weixin/adapter.py:_skills_dir */
-static void skills_dir(char *buf, size_t sz) {
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) home = "/tmp";
-    snprintf(buf, sz, "%s/.hermes/skills", home);
+/* PoP: skills_dir @ plugins/platforms/weixin/adapter.py:_skills_dir
+ *
+ * Exported: skill_mgmt.c carried its own copy of this (hermes_home/.hermes/skills, no Windows
+ * profile), so skills_list walked 232 skills while skill_view answered "Skill not found" for every
+ * one of them. One resolver, or the two halves disagree again. */
+void hermes_skills_dir(char *buf, size_t sz);
+void hermes_skills_dir(char *buf, size_t sz) {
     struct stat st;
-    if (stat(buf, &st) == 0 && S_ISDIR(st.st_mode))
-        return;
-    snprintf(buf, sz, "%s/skills", home);
+    const char *home = getenv("HERMES_HOME");
+    if (home && home[0]) {
+        snprintf(buf, sz, "%s/.hermes/skills", home);
+        if (stat(buf, &st) == 0 && S_ISDIR(st.st_mode)) return;
+        snprintf(buf, sz, "%s/skills", home);
+        if (stat(buf, &st) == 0 && S_ISDIR(st.st_mode)) return;
+    }
+
+    /* The Hermes profile keeps its skills at %LOCALAPPDATA%\hermes\skills, and the user profile is
+     * not getenv("HOME") on Windows. Standalone (no wrapper) the old code answered /home/eman5/
+     * skills -- a directory that does not exist -- so skills_list said 0 while 232 sat on disk. */
+#ifdef _WIN32
+    const char *lad = getenv("LOCALAPPDATA");
+    if (!lad || !lad[0]) {
+        char hb[HERMES_PATH_MAX];
+        extern void hermes_user_home(char *, size_t);
+        hermes_user_home(hb, sizeof(hb));
+        snprintf(buf, sz, "%s/AppData/Local/hermes/skills", hb);
+    } else {
+        snprintf(buf, sz, "%s/hermes/skills", lad);
+    }
+    if (stat(buf, &st) == 0 && S_ISDIR(st.st_mode)) return;
+#endif
+
+    {
+        char hb[HERMES_PATH_MAX];
+        extern void hermes_user_home(char *, size_t);
+        hermes_user_home(hb, sizeof(hb));
+        snprintf(buf, sz, "%s/.hermes/skills", hb);
+        if (stat(buf, &st) == 0 && S_ISDIR(st.st_mode)) return;
+        snprintf(buf, sz, "%s/skills", hb);
+    }
 }
+
+static void skills_dir(char *buf, size_t sz) { hermes_skills_dir(buf, sz); }
 
 static void skills_bundles_dir(char *buf, size_t sz) {
     char sd[HERMES_PATH_MAX];

@@ -70,24 +70,9 @@ static char *get_skills_dir(void) {
         }
     }
 
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) home = "/tmp";
-
-    /* Try ~/.hermes/skills first */
-    snprintf(buf, sizeof(buf), "%s/.hermes/skills", home);
-
-    struct stat st;
-    if (stat(buf, &st) == 0 && S_ISDIR(st.st_mode))
-        return buf;
-
-    /* Fallback: check direct skills dir */
-    snprintf(buf, sizeof(buf), "%s/skills", home);
-    if (stat(buf, &st) == 0 && S_ISDIR(st.st_mode))
-        return buf;
-
-    /* Default to ~/.hermes/skills even if it doesn't exist yet */
-    snprintf(buf, sizeof(buf), "%s/.hermes/skills", home);
+    /* One resolver for both halves of the skills surface (see hermes_skills_dir). */
+    extern void hermes_skills_dir(char *, size_t);
+    hermes_skills_dir(buf, sizeof(buf));
     return buf;
 }
 

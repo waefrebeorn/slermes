@@ -938,8 +938,9 @@ char *web_extract_handler(const char *args_json, const char *task_id) {
                     if (content) {
                         json_t *parsed = json_parse(content, NULL);
                         if (parsed) {
+                            /* json_set stores the pointer; entry owns it from here. Freeing it as
+                             * well corrupted the heap and killed the whole MCP server. */
                             json_set(entry, "data", parsed);
-                            json_free(parsed);
                         } else {
                             json_set(entry, "raw", json_string(content));
                         }
@@ -947,11 +948,9 @@ char *web_extract_handler(const char *args_json, const char *task_id) {
                     }
                 }
             }
-            json_append(items, entry);
-            json_free(entry);
+            json_append(items, entry);   /* items takes ownership of entry */
         }
 
-        json_free(items);
         char *result = json_serialize(results);
         json_free(results);
         json_free(args);
