@@ -72,7 +72,12 @@ def object_globals(objs: list[Path]) -> set[str]:
         batch = objs[i:i + 300]
         r = subprocess.run([str(NM), "-g", "--defined-only", *[str(o) for o in batch]],
                            capture_output=True, text=True, errors="replace")
-        out |= set(re.findall(r"^[0-9a-fA-F]+\s+[TDBRWG]\s+(\S+)$", r.stdout, re.M))
+        for name in re.findall(r"^[0-9a-fA-F]+\s+[TDBRWG]\s+(\S+)$", r.stdout, re.M):
+            # COFF gives a weak definition the name ".weak.<symbol>.<other>" and reports the plain
+            # name as an undefined w. agent_build_child_agent is defined that way on purpose (a weak
+            # hook the engine may override), and it resolves fine at link time.
+            m = re.match(r"^\.weak\.([^.]+)\.", name)
+            out.add(m.group(1) if m else name)
     return out
 
 
