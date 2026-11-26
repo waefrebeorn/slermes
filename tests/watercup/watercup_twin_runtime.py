@@ -9,6 +9,8 @@ return value. It is generator-produced code (trusted), and keeps the exact
 per-gate cup semantics the C harness mirrors.
 """
 import importlib.util as ilu
+import json
+import re
 import inspect
 import os
 import sys
@@ -78,6 +80,48 @@ def resolve_fn(mod, py_fn: str):
     return None
 
 
+def _strtol(s):
+    m = re.match(r"[+-]?[0-9]+", str(s))
+    return int(m.group()) if m else 0
+
+
+def _strtod(s):
+    m = re.match(r"[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?", str(s))
+    return float(m.group()) if m else 0.0
+
+
+def _coerce_param(p, v):
+    """Convert the walk's text to the type the live fn annotates.
+
+    call_fn handed every parameter the raw string, so a fn taking a float answered TypeError for
+    every input -- an ERROR cup that made the gate look like a port gap. The generated twins carry
+    their own _cvt for outputs; this is the same rule for arguments.
+    """
+    a = str(p.annotation) if p.annotation is not p.empty else ""
+    al = a.lower()
+    if not al or "any" in al or al.endswith("str") or al == "str":
+        return v
+    if "path" in al:
+        from pathlib import Path
+        return Path(v) if isinstance(v, str) else v
+    if "bytes" in al and "str" not in al:
+        return v.encode("utf-8", "surrogateescape") if isinstance(v, str) else v
+    if al.endswith("bool") or al == "bool":
+        if isinstance(v, str) and v.strip().lower() in ("true", "false"):
+            return v.strip().lower() == "true"
+        return _strtol(v) != 0
+    if ("int" in al and "point" not in al and "print" not in al):
+        return _strtol(v)
+    if "float" in al or "double" in al:
+        return _strtod(v)
+    if any(k in al for k in ("dict", "list", "map", "seq", "tuple", "set", "json")):
+        try:
+            return json.loads(v)
+        except Exception:
+            return None
+    return v
+
+
 def call_fn(fn, inp, inputs, idx=0):
     """Call the LIVE fn with as many inputs as its signature accepts.
 
@@ -95,10 +139,10 @@ def call_fn(fn, inp, inputs, idx=0):
         np = len(pos)
         wrap = pos and "Path" in str(pos[0].annotation)
         a0 = Path(inp) if (wrap and isinstance(inp, str)) else inp
-        if np <= 1:
-            return fn(a0) if np else fn()
         n = len(inputs)
-        return fn(a0, *[inputs[(idx + j) % n] for j in range(1, np)])
+        vals = [inp] + [inputs[(idx + j) % n] for j in range(1, np)]
+        args = [_coerce_param(pos[j], vals[j]) for j in range(np)]
+        return fn(*args)
     try:
         return fn(inp)
     except TypeError:
