@@ -1447,7 +1447,7 @@ char *browser_cdp_evaluate(const char *expression) {
     json_free(params);
     if (!params_json) return NULL;
 
-    char *resp = cdp_send_command("Runtime.evaluate", params_json);
+    char *resp = browser_cdp_send_raw(NULL, "Runtime.evaluate", params_json, NULL, 20);
     free(params_json);
     if (!resp) return NULL;
 
@@ -1463,6 +1463,70 @@ char *browser_cdp_evaluate(const char *expression) {
         json_free(root);
     }
     return out;
+}
+
+/* One-shot CDP command on a FRESH connection, used by every caller that is not the interactive
+ * browser_* tools: it returns the raw response text whose id matches the request.
+ *
+ * This exists so the tree has ONE place that decides what counts as an answer. The duplicate client in
+ * browser_cdp_tool.c accepted any frame containing "id" (so a response to an older command looked like
+ * this one's answer) and dropped every frame containing "sessionId" (so an OOPIF-targeted command
+ * silently ran against the page). Session-scoped commands are supported here instead of avoided.
+ *
+ * url: endpoint, or NULL for the configured one. session_id: an attached target session, or NULL.
+ * Caller frees. */
+char *browser_cdp_send_raw(const char *url, const char *method, const char *params_json,
+                           const char *session_id, double timeout) {
+    if (!method || !method[0]) return NULL;
+    const char *use = (url && url[0]) ? url : cdp_get_url();
+    if (!use || !use[0]) return NULL;
+
+    char ws_url[512];
+    if (strncmp(use, "ws://", 5) == 0 || strncmp(use, "wss://", 6) == 0)
+        snprintf(ws_url, sizeof(ws_url), "%s", use);
+    else
+        snprintf(ws_url, sizeof(ws_url), "ws://%s", use);
+
+    ws_t *ws = ws_connect(ws_url, (timeout > 0 && timeout < 120) ? (int)timeout : 15);
+    if (!ws) return NULL;
+
+    static long _raw_id = 0;
+    long id = ++_raw_id;
+
+    size_t cap = strlen(params_json ? params_json : "{}") + strlen(method) +
+                 (session_id ? strlen(session_id) : 0) + 96;
+    char *msg = (char *)malloc(cap);
+    if (!msg) { ws_close(ws); return NULL; }
+    int n = snprintf(msg, cap,
+                     "{\"id\":%ld,\"method\":\"%s\",\"params\":%s%s%s%s}",
+                     id, method,
+                     (params_json && params_json[0]) ? params_json : "{}",
+                     (session_id && session_id[0]) ? ",\"sessionId\":\"" : "",
+                     (session_id && session_id[0]) ? session_id : "",
+                     (session_id && session_id[0]) ? "\"" : "");
+    if (n < 0 || (size_t)n >= cap) { free(msg); ws_close(ws); return NULL; }
+
+    if (ws_send(ws, WS_OP_TEXT, msg, (size_t)n) < 0) { free(msg); ws_close(ws); return NULL; }
+    free(msg);
+
+    char *answer = NULL;
+    for (int hop = 0; hop < 64 && !answer; hop++) {
+        ws_frame_t frame;
+        int r = ws_recv(ws, &frame, (int)((timeout > 0 && timeout < 120) ? timeout : 15));
+        if (r <= 0) break;
+        char *text = (frame.opcode == WS_OP_TEXT)
+                         ? strndup((const char *)frame.payload, frame.len) : NULL;
+        ws_frame_free(&frame);
+        if (!text) continue;
+        json_t *parsed = json_parse(text, NULL);
+        const json_t *idv = parsed ? json_obj_get(parsed, "id") : NULL;
+        long long got = (idv && idv->type == JSON_NUMBER) ? (long long)json_number_value(idv) : -1;
+        json_free(parsed);
+        if (got == (long long)id) answer = text;   /* ours */
+        else free(text);                            /* an event, or another command's answer */
+    }
+    ws_close(ws);
+    return answer;
 }
 
 const char *cdp_get_url(void) {

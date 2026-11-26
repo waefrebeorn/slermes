@@ -44,6 +44,11 @@ bool check_browser_scroll_requirements(void);
 bool check_browser_back_requirements(void);
 bool check_browser_press_requirements(void);
 
+/* One-shot CDP command on a fresh connection; returns the raw response for THIS id (caller frees).
+ * session_id scopes the command to an attached target (OOPIF) or NULL. */
+char *browser_cdp_send_raw(const char *url, const char *method, const char *params_json,
+                           const char *session_id, double timeout);
+
 /* Evaluate an expression in the attached page; returns the JSON value as a string (caller frees). */
 char *browser_cdp_evaluate(const char *expression);
 

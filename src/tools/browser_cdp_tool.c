@@ -7,6 +7,7 @@
 #include "hermes_logger.h"
 #include "libwebsocket/websocket.h"
 #include "port_tools_browser_cdp_tool.h"
+#include "browser_tool_cdp.h"
 #include "tools/browser_tool_cdp.h"
 #include "tools/browser_tool_eval.h"
 #include "tools/browser_tool_install.h"
@@ -96,70 +97,23 @@ char *browser_cdp_tool__cdp_call(const char *ws_url, const char *method,
         return NULL;
     }
 
-    hermes_log(LOG_INFO, "browser_cdp", "CDP call: method=%s url=%s timeout=%.1f",
-               method, ws_url, timeout);
-
-    if (target_id && target_id[0]) {
-        hermes_log(LOG_DEBUG, "browser_cdp", "Attaching to target: %s", target_id);
-    }
-
-    /* Real CDP call: open a WebSocket to the browser's DevTools endpoint, send
-     * a CDP command frame {id, method, params}, and read the response frame. */
-    ws_t *ws = ws_connect(ws_url, (timeout > 0 && timeout < 120) ? (int)timeout : 30);
-    if (!ws) {
-        hermes_log(LOG_ERROR, "browser_cdp", "CDP connect failed: %s", ws_url);
-        return NULL;
-    }
-
-    static long _cdp_id = 0;
-    long id = ++_cdp_id;
-    char req[8192];
-    const char *p = params && params[0] ? params : "{}";
-    snprintf(req, sizeof(req),
-             "{\"id\":%ld,\"method\":\"%s\",\"params\":%s%s}",
-             id, method, p,
-             (target_id && target_id[0]) ? ",\"sessionId\":\"" : "");
-    if (target_id && target_id[0]) {
-        size_t l = strlen(req);
-        snprintf(req + l, sizeof(req) - l, "%s\"}", target_id);
-    }
-
-    if (ws_send(ws, WS_OP_TEXT, req, strlen(req)) < 0) {
-        hermes_log(LOG_ERROR, "browser_cdp", "CDP send failed");
-        ws_close(ws);
-        return NULL;
-    }
-
-    char *result = NULL;
-    ws_frame_t frame;
-    int rc;
-    while ((rc = ws_recv(ws, &frame, (int)timeout)) > 0) {
-        if (frame.opcode == WS_OP_TEXT || frame.opcode == WS_OP_BIN) {
-            /* Match the response whose "id" equals ours; ignore events. */
-            if (frame.payload && frame.len > 0) {
-                char *buf = malloc(frame.len + 1);
-                memcpy(buf, frame.payload, frame.len);
-                buf[frame.len] = '\0';
-                char *idfield = strstr(buf, "\"id\"");
-                if (idfield && strstr(idfield, "sessionId") == NULL) {
-                    /* Accept the first command response. */
-                    result = malloc(frame.len + 64);
-                    snprintf(result, frame.len + 64,
-                             "{\"success\":true,\"method\":\"%s\",\"result\":%s}", method, buf);
-                    free(buf);
-                    ws_frame_free(&frame);
-                    break;
-                }
-                free(buf);
-            }
-        }
-        ws_frame_free(&frame);
-    }
-    ws_close(ws);
-
-    if (!result) {
+    /* Delegates to the one engine that decides what counts as an answer (browser.c). This function used
+     * to own its own socket, accept any frame containing "id" (so an older command's answer could be
+     * returned as this one's) and drop every frame mentioning "sessionId" (so a target-scoped command
+     * silently ran against the page). The envelope below is what callers parse. */
+    char *raw = browser_cdp_send_raw(ws_url, method,
+                                     (params && params[0]) ? params : "{}",
+                                     target_id, timeout);
+    if (!raw) {
         hermes_log(LOG_ERROR, "browser_cdp", "CDP no response for %s", method);
+        return NULL;
     }
+
+    size_t cap = strlen(raw) + strlen(method) + 64;
+    char *result = (char *)malloc(cap);
+    if (!result) { free(raw); return NULL; }
+    snprintf(result, cap, "{\"success\":true,\"method\":\"%s\",\"result\":%s}", method, raw);
+    free(raw);
     return result;
 }
 
