@@ -693,7 +693,7 @@ static char *handle_syntax(const char *args_json) {
 
     if (strcmp(ftype, "python") == 0) {
         snprintf(cmd, sizeof(cmd),
-            "python3 -c \"compile(open('%s').read() + '\\\\n', '%s', 'exec')\" 2>&1",
+            "python3 -c \"compile(open('%s').read() + '\\n', '%s', 'exec')\" 2>&1",
             path, path);
     } else if (strcmp(ftype, "sh") == 0) {
         snprintf(cmd, sizeof(cmd), "bash -n '%s' 2>&1", path);
@@ -761,6 +761,49 @@ static char *handle_syntax(const char *args_json) {
         }
     }
     int exit_code = pclose(fp);
+
+    /* A checker that ran but could not even start -- the Windows Store python stub, a permission
+     * error, a missing executable -- prints its own complaint, which would otherwise be read as a
+     * syntax error in the user's file. */
+    {
+        static const char *broken[] = {
+            "Permission denied", "can't open file", "is not recognized",
+            "command not found", "No such file or directory\r", "System error",
+            "This app can't run", NULL,
+        };
+        for (size_t bi = 0; broken[bi]; bi++) {
+            if (output[0] && strstr(output, broken[bi])) {
+                json_node_t *result = json_new_object();
+                json_object_set(result, "path", json_new_string(path));
+                json_object_set(result, "type", json_new_string(ftype));
+                json_object_set(result, "valid", json_new_null());
+                json_object_set(result, "skipped", json_new_bool(true));
+                json_object_set(result, "reason", json_new_string(
+                    "the checker could not run (its own error, not your file's)"));
+                json_object_set(result, "checker_output", json_new_string(output));
+                json_free(args);
+                return json_serialize(result);
+            }
+        }
+    }
+
+    /* No output AND a failure means the checker itself never ran -- a native Windows process has no
+     * gcc/python3/bash on PATH. Reporting that as valid:false tells the caller their file is broken when
+     * nothing looked at it; a real syntax error always prints something. */
+    if (total == 0 && exit_code != 0) {
+        json_node_t *result = json_new_object();
+        json_object_set(result, "path", json_new_string(path));
+        json_object_set(result, "type", json_new_string(ftype));
+        json_object_set(result, "valid", json_new_null());
+        json_object_set(result, "skipped", json_new_bool(true));
+        char why[256];
+        snprintf(why, sizeof(why),
+                 "no %s checker available (the tool could not run: %s)",
+                 ftype, ftype[0] == 'c' ? "gcc" : (ftype[0] == 'p' ? "python3" : "bash"));
+        json_object_set(result, "reason", json_new_string(why));
+        json_free(args);
+        return json_serialize(result);
+    }
 
     json_node_t *result = json_new_object();
     json_object_set(result, "path", json_new_string(path));
