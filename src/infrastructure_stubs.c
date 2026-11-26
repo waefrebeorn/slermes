@@ -193,6 +193,25 @@
 #define kanban_complete_task stub_shadowed_kanban_complete_task
 #define kanban_heartbeat stub_shadowed_kanban_heartbeat
 
+/* Signature-mismatched shadows: the stub had a different prototype from the real function, so
+ * call sites compiled against the header (int clamp_effort(void) vs const char *clamp_effort(
+ * const char *, ...); char *billing_format_money(double) vs void billing_format_money(double,
+ * char *, size_t); char *fill_blueprint(void *) vs json_t *fill_blueprint(json_t *, json_t *))
+ * were calling a body that never read their arguments and never produced their return value.
+ * Renamed so reasoning_effort.c, billing_view.c, blueprint_catalog.c, web_server_wrappers.c,
+ * moa_pure_helpers.c and the models_* ports are what the link binds. */
+#define clamp_effort stub_shadowed_clamp_effort
+#define billing_format_money stub_shadowed_billing_format_money
+#define fill_blueprint stub_shadowed_fill_blueprint
+#define obj_values_array stub_shadowed_obj_values_array
+#define silent_default_for_provider stub_shadowed_silent_default_for_provider
+#define billing_masked stub_shadowed_billing_masked
+#define models_live_http_fetch stub_shadowed_models_live_http_fetch
+#define models_deepinfra_catalog_url stub_shadowed_models_deepinfra_catalog_url
+#define models_deepinfra_models_by_tag stub_shadowed_models_deepinfra_models_by_tag
+#define models_fetch_deepinfra_catalog stub_shadowed_models_fetch_deepinfra_catalog
+#define models_fireworks_pricing_from_models_dev stub_shadowed_models_fireworks_pricing_from_models_dev
+
 /* ═══════════════════════════════════════════════════════════════
  * infrastructure_stubs.c — implementations for critical primitives
  * that ports reference but had no C implementation.
