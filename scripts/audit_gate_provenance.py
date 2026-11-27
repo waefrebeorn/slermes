@@ -75,6 +75,48 @@ def _oracle_exists(rel: str) -> bool:
     return _EXISTS[rel]
 
 
+
+_AST_CACHE: dict[str, object] = {}
+
+
+def _fn_ignores_input(py_module: str, py_fn: str) -> bool | None:
+    """True when the Python function never reads its own parameter.
+
+    Such a gate cannot discriminate however good its fixtures are: the answer does
+    not depend on the input. Measured motivation: a random 40-gate PORT sample gave
+    26 NON-DISCRIMINATING, and refixturing 26 of them with a 56-input battery fixed
+    exactly 1 -- 21 were constant functions, not bad fixtures. Static here, so the
+    fleet can be qualified without running 8,000 harnesses.
+    """
+    import ast
+    rel = (py_module or "").strip()
+    if not rel.endswith(".py"):
+        return None
+    if rel not in _AST_CACHE:
+        try:
+            _AST_CACHE[rel] = ast.parse((QUARRY / rel).read_text(encoding="utf-8",
+                                                                errors="ignore"))
+        except (OSError, SyntaxError):
+            _AST_CACHE[rel] = None
+    tree = _AST_CACHE[rel]
+    if tree is None:
+        return None
+    name = (py_fn or "").strip().split(".")[-1]
+    node = None
+    for n in tree.body:
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == name:
+            node = n
+            break
+    if node is None:
+        return None
+    args = [a.arg for a in node.args.posonlyargs + node.args.args + node.args.kwonlyargs]
+    args = [a for a in args if a not in ("self", "cls")]
+    if not args:
+        return True
+    used = {n.id for n in ast.walk(node) if isinstance(n, ast.Name)}
+    return not any(a in used for a in args)
+
+
 def classify(gdir: Path, port: set[str], shim_names: set[str]) -> tuple[str, str]:
     g = json.loads((gdir / "gate.json").read_text())
     cfn = g.get("c_fn") or ""
@@ -151,8 +193,12 @@ def main() -> int:
             txt = shim.read_text(errors="ignore")
             shim_names = {m.group(1) for m in DEF_RE.finditer(txt)} - C_KEYWORDS
         cls, sym = classify(gdir, port, shim_names)
+        gj = json.loads((gdir / "gate.json").read_text())
         rows.append({"gate": gdir.name, "class": cls, "symbol": sym,
-                     "input_used": _input_used(gdir)})
+                     "input_used": _input_used(gdir),
+                     "input_independent": (_fn_ignores_input(gj.get("py_module") or "",
+                                                             gj.get("py_fn") or "")
+                                          if cls == "PORT" else None)})
 
     counts = Counter(r["class"] for r in rows)
     if args.list:
@@ -170,6 +216,11 @@ def main() -> int:
     blind = sum(1 for r in rows if not r["input_used"])
     print("\ninput ignored by the harness: %d gate(s) -- non-discriminating BY "
           "CONSTRUCTION (no fixture can fix them)" % blind)
+    indep = sum(1 for r in rows if r.get("input_independent") is True)
+    known = sum(1 for r in rows if r.get("input_independent") is not None)
+    print("PORT gates whose Python fn never reads its input: %d of %d resolvable "
+          "(%d PORT total) -- these cannot discriminate, no fixture can fix them"
+          % (indep, known, counts.get("PORT", 0)))
     print("PORT is parity evidence; COPY measures a hand transcription; "
           "SHIM measures the gate. Only COPY->PORT conversion changes what a green means.")
     return 0

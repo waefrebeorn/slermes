@@ -7,11 +7,10 @@
   "py_module": "gateway/platforms/base.py",
   "py_fn": "is_host_excluded_by_no_proxy",
   "inputs": [
-    "hello",
-    "world",
     "",
-    "test123",
-    "NULL"
+    " ",
+    "\t",
+    "a"
   ],
   "extra_src": [
     "lib/libjson/json.c"

@@ -262,3 +262,37 @@ whitespace, digits, sign, JSON, arrays, paths, URLs, emails, credential shapes,
 unicode, long input, control chars), keeps the smallest input set whose cups differ
 on BOTH sides, and refuses the gate when the C side varies but the twin does not.
 The refusals are the real remaining work: a blind twin cannot be fixed by fixtures.
+
+### Addendum 7 — three attempts to convert the GAP class, and why each failed
+
+The GAP class (13,160) is the largest and the only one that would move the evidence
+count. Three mechanisms were tried, all measured:
+
+**1. Shape screening (AST).** Of 13,937 GAP gates, 3,710 are shape-convertible in
+principle: module-level function, one argument or none, returns a value, under 60
+lines. 7,215 name something that is not module-level in the quarry file, 819 have no
+value return, 868 need two or more arguments, 777 name a file that is gone.
+
+**2. Symbol resolution for those 3,710.** `scripts/resolve_gap_symbols.py` adds a
+symbol when the Python name matches exactly ONE exported C symbol and the defining
+`.c` can be located. On a 40-gate slice: 11 unique matches, 14 ambiguous (several
+`adapter.py`-style symbols), the rest already mapped. Converting those 11:
+**0 converted.** 7 were refused because the twin returns no comparable value (the
+functions are side-effecting: `_enable_multiplex_log_routing` returns None), 4 by a
+map-key/name mismatch in the converter. A string corpus cannot observe a function
+whose only output is global state.
+
+**3. Refixturing the non-discriminating gates.** `scripts/refixture_gates.py` on the
+26 NON-DISCRIMINATING gates from the sample: **1 refixtured, 4 twin-blind, 21 kept
+because the port returns one cup for all 54 inputs.** The fixtures were not the
+problem for those 21 -- the functions are input-independent. Static confirmation
+across the fleet: **708 of the 4,295 statically resolvable PORT gates call a Python
+function that never reads its own argument** (16.5%). Those gates cannot discriminate
+no matter what fixtures they get.
+
+Net: the largest class cannot be converted, and the second-largest class is partly
+vacuous by construction. What is left is per-function work -- write the C
+implementation, write a harness that observes its real effect, and twin that effect
+in Python. The port has roughly 1,800-2,000 gates that could carry discriminating
+evidence today; everything else is either unimplemented, side-effecting, or
+input-independent.
