@@ -60,11 +60,29 @@ def stub_symbols() -> set[str]:
     return out
 
 
+def shallow_gates() -> set[str]:
+    """Gates whose twin hands the fixture raw to a Python function that needs more.
+
+    Measured by scripts/audit_shallow_twins.py: 17,083 of 22,604 gates pass the
+    fixture straight through while the oracle takes keyword-only args, a config
+    object, or several required arguments. Those calls raise or answer a different
+    question, so no cup they produce is parity evidence.
+    """
+    cache = REPO / ".testbin" / "shallow_twins.json"
+    if not cache.exists():
+        subprocess.run([sys.executable, str(REPO / "scripts" / "audit_shallow_twins.py"),
+                        "--json", str(cache)], cwd=REPO, check=True,
+                       stdout=subprocess.DEVNULL)
+    rows = json.loads(cache.read_text())
+    return {r["gate"] for r in rows if r["class"] in ("SHALLOW", "NO-TWIN")}
+
+
 def measure() -> dict:
     if not PROV.exists():
         run_audit()
     rows = json.loads(PROV.read_text())
     stubs = stub_symbols()
+    shallow = shallow_gates()
     counts: dict[str, int] = {}
     for r in rows:
         counts[r["class"]] = counts.get(r["class"], 0) + 1
@@ -72,10 +90,12 @@ def measure() -> dict:
     const = [r for r in port if r.get("input_independent") is True]
     tuple_ = [r for r in port if r.get("returns_tuple") is True]
     stub = [r for r in port if r["symbol"] in stubs]
+    shal = [r for r in port if r["gate"] in shallow]
     evidence = [r for r in port
                 if r.get("input_independent") is not True
                 and r.get("returns_tuple") is not True
-                and r["symbol"] not in stubs]
+                and r["symbol"] not in stubs
+                and r["gate"] not in shallow]
     return {
         "evidence_gates": sorted(r["gate"] for r in evidence),
         "total": len(rows),
@@ -84,6 +104,7 @@ def measure() -> dict:
         "input_independent": len(const),
         "tuple_shaped": len(tuple_),
         "stub_backed": len(stub),
+        "shallow_twin": len(shal),
         "evidence": len(evidence),
         "debt": {k: counts.get(k, 0) for k in DEBT_CLASSES},
         "stub_symbols_total": len(stubs),
@@ -109,6 +130,7 @@ def main() -> int:
     print("    - no-input-read  %6d" % m["input_independent"])
     print("    - tuple-shaped   %6d" % m["tuple_shaped"])
     print("    - stub-backed    %6d" % m["stub_backed"])
+    print("    - shallow-twin   %6d" % m["shallow_twin"])
     print("  %-18s %6d" % ("EVIDENCE (bound)", m["evidence"]))
     print("  ^ an UPPER BOUND: gates that CAN discriminate. The runtime share is")
     print("    lower -- a 40-gate random sample had 26 non-discriminating even after")

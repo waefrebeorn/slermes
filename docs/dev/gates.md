@@ -159,6 +159,16 @@ What each class means when you read a run:
   constant on every path (`scripts/_c_body_index.py`). 1,370 such functions exist;
   1,987 gates wrap them. The cup hashes the constant, so the gate cannot
   discriminate and says nothing about the port even when it reads green.
+- **SHALLOW (twin)** — the twin hands the fixture string straight to the Python
+  function while that function needs keyword-only arguments, a config object or
+  several required parameters (`scripts/audit_shallow_twins.py`). Measured: 17,083
+  of 22,604 gates. The call raises or answers a different question, so the cup is
+  not evidence no matter what the C side does. Only 5,502 gates pass a single
+  positional string, and only 1,198 of the port class survive both filters.
+
+A gate is evidence only when BOTH sides ask the same question: the port returns a
+value a caller can use, and the twin builds the arguments the oracle actually takes.
+Fixing fixtures or annotations cannot repair either half.
 - **NA** — declared, with a reason, as unable to discriminate: the Python function
   takes no arguments, or never reads the one it has. `scripts/mark_na_gates.py`
   applies the two airtight cases (664 zero-param, 44 ignore-param here). This is a
