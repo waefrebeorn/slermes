@@ -105,6 +105,14 @@ def read_c_signature(c_file, c_fn):
 
 def categorize_signature(ret_type, param_list, from_real=True):
     unhandleable = ('json', 'struct', 'callback', 'void*', 'fn', 'va_list')
+    # A pointer-to-pointer return (char **, int **, ...) is an output array we
+    # cannot trace from a C harness (e.g. cli_agent_display__split_shell_words
+    # -> char **). Treat it as not-gatable instead of letting it fall through to
+    # the scalar char-return val_code, which produces a pointer-type mismatch
+    # ('result ? result : ""' is incompatible for char **). Single-pointer and
+    # scalar returns are fine; only >=2 stars on the return is unhandleable.
+    if ret_type.count('*') >= 2:
+        return None
     # Normalize the return type: SIG_RE now captures pointer stars, so a
     # char*-returning fn arrives as "char *" not "char". Strip stars/spaces so
     # the exact-match branches below (ret_type == 'char') still fire.
@@ -210,7 +218,8 @@ def categorize_signature(ret_type, param_list, from_real=True):
     if (param_list and param_list != ['void']
             and all(_json_param_ok(p) for p in param_list)
             and any('json_t' in p or 'json_node_t' in p for p in param_list)
-            and not any(u in ret_type for u in ('json_t', 'json_node_t'))):
+            and not any(u in ret_type for u in ('json_t', 'json_node_t'))
+            and ret_type != 'void'):
         return 'json_param'
     # Scalar OUT-params: functions that write results through int*/double*/
     # bool*/size_t*/long* pointers (e.g. turn_summary_count_diff_lines,
@@ -1169,6 +1178,21 @@ def fix_all_gates(check=False, only_gates=None):
                         # always safe (it couldn't pass before).
                         if _current_builds(gd, g) and not _candidate_builds(
                                 gd, g, harness, want_extra):
+                            skipped += 1
+                            continue
+                        if (not from_real and not _candidate_builds(
+                                gd, g, harness, want_extra)):
+                            # Unverifiable signature (read_c_signature returned
+                            # None, so params/ret came from the stale pop_index
+                            # guess). A candidate that won't compile proves the
+                            # guess is wrong for this symbol. Leave an honest gap
+                            # sentinel instead of a permanently broken stub that
+                            # re-fails every regen. A from_real=True build-fail is
+                            # NOT sentineled here -- that is a genuine C defect to
+                            # fix, not a signature-guess artifact.
+                            if not check:
+                                with open(h_path, 'w') as f:
+                                    f.write(generate_gap_sentinel(d, py_fn))
                             skipped += 1
                             continue
                         if harness_changed:

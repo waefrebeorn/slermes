@@ -1,36 +1,25 @@
-/* gate: port__gateway_channel_directory_py___apply_channel_aliases — traced copy of apply_channel_aliases (json_param) */
+/* gate: port__gateway_channel_directory_py___apply_channel_aliases — GAP sentinel for _apply_channel_aliases */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
-#include "json.h"
-typedef json_t json_node_t;
-extern void json_free(json_t *);
-extern char *json_serialize(const json_t *);
-extern json_t *json_parse(const char *, char **);
 
-
-extern void apply_channel_aliases(json_t *platforms);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_apply_channel_aliases";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s apply_channel_aliases <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _apply_channel_aliases <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("apply_channel_aliases");
-    json_t *_j0 = json_parse(argv[i], NULL);
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    void result = apply_channel_aliases(_j0);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j0) json_free(_j0);
-    WCUP_VALSTR("void");
+        WCUP_BEGIN("_apply_channel_aliases");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("apply_channel_aliases");
+        WCUP_END("_apply_channel_aliases");
     }
     return 0;
 }
