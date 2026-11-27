@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "ctxc_u_automatic_compression_blocked",
   "py_module": "agent/context_compressor.py",
-  "py_fn": "_automatic_compression_blocked",
+  "py_fn": "ContextCompressor._automatic_compression_blocked",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_automatic_compression_blocked"
 }

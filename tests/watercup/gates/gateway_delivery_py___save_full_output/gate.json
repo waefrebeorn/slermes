@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cli_gateway_delivery__save_full_output",
   "py_module": "gateway/delivery.py",
-  "py_fn": "_save_full_output",
+  "py_fn": "DeliveryRouter._save_full_output",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_save_full_output"
 }

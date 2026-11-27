@@ -7,11 +7,17 @@
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_resolve_claim_ttl_seconds",
   "inputs": [
-    0,
-    1,
-    42,
-    1024,
-    -7
+    "",
+    " ",
+    "\t",
+    "a",
+    "A",
+    "0",
+    "1",
+    "-1",
+    "42",
+    "3.14",
+    "NULL"
   ],
   "extra_src": [
     "lib/libjson/json.c",

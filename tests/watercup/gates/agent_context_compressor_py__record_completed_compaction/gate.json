@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "ctxc_record_completed_compaction",
   "py_module": "agent/context_compressor.py",
-  "py_fn": "record_completed_compaction",
+  "py_fn": "ContextCompressor.record_completed_compaction",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "record_completed_compaction"
 }

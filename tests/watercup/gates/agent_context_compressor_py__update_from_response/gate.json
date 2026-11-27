@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cc_update_from_response",
   "py_module": "agent/context_compressor.py",
-  "py_fn": "update_from_response",
+  "py_fn": "ContextCompressor.update_from_response",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "update_from_response"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "nous_tool_gateway_entitled_for",
   "py_module": "hermes_cli/nous_account.py",
-  "py_fn": "tool_gateway_entitled_for",
+  "py_fn": "NousPortalAccountInfo.tool_gateway_entitled_for",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "tool_gateway_entitled_for"
 }

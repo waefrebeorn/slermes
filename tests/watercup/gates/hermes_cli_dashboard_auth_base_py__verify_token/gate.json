@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "hcli_dash_verify_token",
   "py_module": "hermes_cli/dashboard_auth/base.py",
-  "py_fn": "verify_token",
+  "py_fn": "DashboardAuthProvider.verify_token",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "verify_token"
 }

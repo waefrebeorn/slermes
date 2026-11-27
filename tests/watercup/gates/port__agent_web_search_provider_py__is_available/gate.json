@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "wsp_is_available",
   "py_module": "agent/web_search_provider.py",
-  "py_fn": "is_available",
+  "py_fn": "WebSearchProvider.is_available",
   "inputs": [
     "hello",
     "world",
@@ -31,5 +31,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "is_available"
 }

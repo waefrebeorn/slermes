@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "msgraph_resource_accepted",
   "py_module": "gateway/platforms/msgraph_webhook.py",
-  "py_fn": "_resource_accepted",
+  "py_fn": "MSGraphWebhookAdapter._resource_accepted",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_resource_accepted"
 }

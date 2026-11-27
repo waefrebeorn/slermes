@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mcpo_get_client_info",
   "py_module": "tools/mcp_oauth.py",
-  "py_fn": "get_client_info",
+  "py_fn": "HermesTokenStorage.get_client_info",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "get_client_info"
 }

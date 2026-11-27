@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cli_tools_environments_daytona__daytona_upload",
   "py_module": "tools/environments/daytona.py",
-  "py_fn": "_daytona_upload",
+  "py_fn": "DaytonaEnvironment._daytona_upload",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_daytona_upload"
 }

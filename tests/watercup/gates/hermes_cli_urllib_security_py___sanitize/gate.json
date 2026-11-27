@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "hermes_cli_urllib_security_u_sanitize",
   "py_module": "hermes_cli/urllib_security.py",
-  "py_fn": "_sanitize",
+  "py_fn": "_CrossOriginRequestSanitizer._sanitize",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_sanitize"
 }

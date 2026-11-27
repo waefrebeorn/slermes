@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gw_base__authorization_is_upstream",
   "py_module": "gateway/platforms/base.py",
-  "py_fn": "authorization_is_upstream",
+  "py_fn": "BasePlatformAdapter.authorization_is_upstream",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "authorization_is_upstream"
 }

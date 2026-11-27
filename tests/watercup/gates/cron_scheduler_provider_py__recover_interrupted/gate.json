@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cron_scheduler_provider_recover_interrupted",
   "py_module": "cron/scheduler_provider.py",
-  "py_fn": "recover_interrupted",
+  "py_fn": "CronScheduler.recover_interrupted",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "recover_interrupted"
 }

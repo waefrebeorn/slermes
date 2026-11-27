@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cpl_entry_needs_refresh",
   "py_module": "agent/credential_pool.py",
-  "py_fn": "_entry_needs_refresh",
+  "py_fn": "CredentialPool._entry_needs_refresh",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_entry_needs_refresh"
 }

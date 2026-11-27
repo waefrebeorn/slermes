@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mdv_supports_pdf",
   "py_module": "agent/models_dev.py",
-  "py_fn": "supports_pdf",
+  "py_fn": "ModelInfo.supports_pdf",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "supports_pdf"
 }

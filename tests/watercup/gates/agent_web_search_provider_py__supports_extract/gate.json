@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cli_agent_web_search_provider_supports_extract",
   "py_module": "agent/web_search_provider.py",
-  "py_fn": "supports_extract",
+  "py_fn": "WebSearchProvider.supports_extract",
   "inputs": [
     "hello",
     "world",
@@ -23,5 +23,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "supports_extract"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gateway_platforms_webhook_filt_run_route_script",
   "py_module": "gateway/platforms/webhook_filters.py",
-  "py_fn": "run_route_script",
+  "py_fn": "WebhookRouteProcessor.run_route_script",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "run_route_script"
 }

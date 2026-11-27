@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "ctxc_u_refresh_durable_guards",
   "py_module": "agent/context_compressor.py",
-  "py_fn": "_refresh_durable_guards",
+  "py_fn": "ContextCompressor._refresh_durable_guards",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_refresh_durable_guards"
 }

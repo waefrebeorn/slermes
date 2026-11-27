@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "grun_u_init_cached_agent_for_turn",
   "py_module": "gateway/run.py",
-  "py_fn": "_init_cached_agent_for_turn",
+  "py_fn": "GatewayRunner._init_cached_agent_for_turn",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_init_cached_agent_for_turn"
 }

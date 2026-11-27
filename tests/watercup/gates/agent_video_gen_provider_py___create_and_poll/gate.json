@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "agent_video_gen_provider_u_create_and_poll",
   "py_module": "agent/video_gen_provider.py",
-  "py_fn": "_create_and_poll",
+  "py_fn": "OpenAICompatibleVideoGenProvider._create_and_poll",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_create_and_poll"
 }

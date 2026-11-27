@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_daemon_pool_u_adjust_thread_count",
   "py_module": "tools/daemon_pool.py",
-  "py_fn": "_adjust_thread_count",
+  "py_fn": "DaemonThreadPoolExecutor._adjust_thread_count",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_adjust_thread_count"
 }

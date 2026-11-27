@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "relay_helper_max_message_length_for_chat",
   "py_module": "gateway/relay/adapter.py",
-  "py_fn": "max_message_length_for_chat",
+  "py_fn": "RelayAdapter.max_message_length_for_chat",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "max_message_length_for_chat"
 }

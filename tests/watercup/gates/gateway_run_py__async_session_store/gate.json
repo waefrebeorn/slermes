@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "grun_async_session_store",
   "py_module": "gateway/run.py",
-  "py_fn": "async_session_store",
+  "py_fn": "GatewayRunner.async_session_store",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "async_session_store"
 }

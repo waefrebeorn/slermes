@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "envd_u_find_reusable_container",
   "py_module": "tools/environments/docker.py",
-  "py_fn": "_find_reusable_container",
+  "py_fn": "DockerEnvironment._find_reusable_container",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_find_reusable_container"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "relay_adapter_message_len",
   "py_module": "gateway/relay/adapter.py",
-  "py_fn": "message_len_fn",
+  "py_fn": "RelayAdapter.message_len_fn",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "message_len_fn"
 }

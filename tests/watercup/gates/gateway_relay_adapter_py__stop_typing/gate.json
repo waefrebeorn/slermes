@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "rla_stop_typing",
   "py_module": "gateway/relay/adapter.py",
-  "py_fn": "stop_typing",
+  "py_fn": "RelayAdapter.stop_typing",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "stop_typing"
 }

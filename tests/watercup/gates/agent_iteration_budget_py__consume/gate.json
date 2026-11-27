@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "itb_consume",
   "py_module": "agent/iteration_budget.py",
-  "py_fn": "consume",
+  "py_fn": "IterationBudget.consume",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "consume"
 }

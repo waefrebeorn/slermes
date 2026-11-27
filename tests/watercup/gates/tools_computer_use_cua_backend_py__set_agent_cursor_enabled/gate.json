@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cua_set_agent_cursor_enabled",
   "py_module": "tools/computer_use/cua_backend.py",
-  "py_fn": "set_agent_cursor_enabled",
+  "py_fn": "CuaDriverBackend.set_agent_cursor_enabled",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "set_agent_cursor_enabled"
 }

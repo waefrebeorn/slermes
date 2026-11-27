@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_environments_modal_u_modal_bulk_download",
   "py_module": "tools/environments/modal.py",
-  "py_fn": "_modal_bulk_download",
+  "py_fn": "ModalEnvironment._modal_bulk_download",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_modal_bulk_download"
 }

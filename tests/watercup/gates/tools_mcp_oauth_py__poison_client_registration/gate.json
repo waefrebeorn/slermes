@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mcpo_poison_client_registration",
   "py_module": "tools/mcp_oauth.py",
-  "py_fn": "poison_client_registration",
+  "py_fn": "HermesTokenStorage.poison_client_registration",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "poison_client_registration"
 }

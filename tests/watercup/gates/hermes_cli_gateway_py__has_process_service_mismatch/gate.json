@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cgw_has_process_service_mismatch",
   "py_module": "hermes_cli/gateway.py",
-  "py_fn": "has_process_service_mismatch",
+  "py_fn": "GatewayRuntimeSnapshot.has_process_service_mismatch",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "has_process_service_mismatch"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "agent_account_usage_redeemed",
   "py_module": "agent/account_usage.py",
-  "py_fn": "redeemed",
+  "py_fn": "CodexResetRedeemResult.redeemed",
   "inputs": [
     "hello",
     "world",
@@ -26,5 +26,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "redeemed"
 }

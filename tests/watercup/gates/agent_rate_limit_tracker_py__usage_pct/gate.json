@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "agent_rate_limit_tracker_usage_pct",
   "py_module": "agent/rate_limit_tracker.py",
-  "py_fn": "usage_pct",
+  "py_fn": "RateLimitBucket.usage_pct",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "usage_pct"
 }

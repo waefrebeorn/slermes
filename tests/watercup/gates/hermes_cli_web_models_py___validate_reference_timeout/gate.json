@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "hermes_cli_web_models_u_validate_reference_timeout",
   "py_module": "hermes_cli/web_models.py",
-  "py_fn": "_validate_reference_timeout",
+  "py_fn": "_MoaReferenceControls._validate_reference_timeout",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_validate_reference_timeout"
 }

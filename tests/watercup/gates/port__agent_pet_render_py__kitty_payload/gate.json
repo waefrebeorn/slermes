@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "pet_kitty_payload",
   "py_module": "agent/pet/render.py",
-  "py_fn": "kitty_payload",
+  "py_fn": "PetRenderer.kitty_payload",
   "inputs": [
     "hello",
     "world",
@@ -33,5 +33,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "kitty_payload"
 }

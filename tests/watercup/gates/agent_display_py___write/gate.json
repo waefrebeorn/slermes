@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "disp_spinner_write",
   "py_module": "agent/display.py",
-  "py_fn": "_write",
+  "py_fn": "KawaiiSpinner._write",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_write"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cpl_sync_device_code_entry_to_auth_store",
   "py_module": "agent/credential_pool.py",
-  "py_fn": "_sync_device_code_entry_to_auth_store",
+  "py_fn": "CredentialPool._sync_device_code_entry_to_auth_store",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_sync_device_code_entry_to_auth_store"
 }

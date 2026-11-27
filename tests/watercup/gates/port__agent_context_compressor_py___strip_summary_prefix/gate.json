@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cli_agent_context_compressor__strip_summary_prefix",
   "py_module": "agent/context_compressor.py",
-  "py_fn": "_strip_summary_prefix",
+  "py_fn": "ContextCompressor._strip_summary_prefix",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_strip_summary_prefix"
 }

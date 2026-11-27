@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "msgraph_handle_validation",
   "py_module": "gateway/platforms/msgraph_webhook.py",
-  "py_fn": "_handle_validation",
+  "py_fn": "MSGraphWebhookAdapter._handle_validation",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_handle_validation"
 }

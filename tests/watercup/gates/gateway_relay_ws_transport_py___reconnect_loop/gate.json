@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gateway_relay_ws_transport_u_reconnect_loop",
   "py_module": "gateway/relay/ws_transport.py",
-  "py_fn": "_reconnect_loop",
+  "py_fn": "WebSocketRelayTransport._reconnect_loop",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_reconnect_loop"
 }

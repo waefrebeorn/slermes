@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_mcp_dashboard_oauth_wait_for_authorization_url",
   "py_module": "tools/mcp_dashboard_oauth.py",
-  "py_fn": "wait_for_authorization_url",
+  "py_fn": "DashboardOAuthFlow.wait_for_authorization_url",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "wait_for_authorization_url"
 }

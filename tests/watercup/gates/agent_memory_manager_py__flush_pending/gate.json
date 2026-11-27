@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mm_flush_pending",
   "py_module": "agent/memory_manager.py",
-  "py_fn": "flush_pending",
+  "py_fn": "MemoryManager.flush_pending",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "flush_pending"
 }

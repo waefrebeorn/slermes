@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "agent_credential_pool_entry_id_for_api_key",
   "py_module": "agent/credential_pool.py",
-  "py_fn": "entry_id_for_api_key",
+  "py_fn": "CredentialPool.entry_id_for_api_key",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "entry_id_for_api_key"
 }

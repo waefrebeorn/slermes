@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "metrics_record_client_active",
   "py_module": "hermes_cli/observability/shared_metrics.py",
-  "py_fn": "record_client_active",
+  "py_fn": "SharedMetricsStore.record_client_active",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "record_client_active"
 }

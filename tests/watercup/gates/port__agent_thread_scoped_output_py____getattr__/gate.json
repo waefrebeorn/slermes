@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "agent_thread_scoped_output_u__getattr__",
   "py_module": "agent/thread_scoped_output.py",
-  "py_fn": "__getattr__",
+  "py_fn": "_ThreadRoutingStream.__getattr__",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "__getattr__"
 }

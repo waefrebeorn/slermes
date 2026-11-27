@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "disp_spinner_is_patch_stdout_proxy",
   "py_module": "agent/display.py",
-  "py_fn": "_is_patch_stdout_proxy",
+  "py_fn": "KawaiiSpinner._is_patch_stdout_proxy",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_is_patch_stdout_proxy"
 }

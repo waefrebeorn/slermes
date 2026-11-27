@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gw_base__set_status_text",
   "py_module": "gateway/platforms/base.py",
-  "py_fn": "set_status_text",
+  "py_fn": "BasePlatformAdapter.set_status_text",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "set_status_text"
 }

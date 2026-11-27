@@ -6,7 +6,7 @@
   "c_fn": "gateway_authz_mixin_u_adapter_profile_for_source",
   "extra_src": [],
   "py_module": "gateway/authz_mixin.py",
-  "py_fn": "_adapter_profile_for_source",
+  "py_fn": "GatewayAuthorizationMixin._adapter_profile_for_source",
   "inputs": [
     "hello",
     "world",
@@ -14,5 +14,6 @@
     "test123",
     "NULL"
   ],
-  "notes": "Faithful traced copy of the ports_wrappers.c body (translation unit too heavy to link). Inputs avoid the LIVE registered-transport identity arm returning None while the flat C encoding would print the source profile \u2014 that arm is represented only as matched=0 with an empty source profile (\"\"==None both sides)."
+  "notes": "Faithful traced copy of the ports_wrappers.c body (translation unit too heavy to link). Inputs avoid the LIVE registered-transport identity arm returning None while the flat C encoding would print the source profile \u2014 that arm is represented only as matched=0 with an empty source profile (\"\"==None both sides).",
+  "py_fn_repaired_from": "_adapter_profile_for_source"
 }

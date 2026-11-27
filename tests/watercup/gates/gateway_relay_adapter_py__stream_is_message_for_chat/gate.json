@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "relay_adapter_stream_is_message_for_chat",
   "py_module": "gateway/relay/adapter.py",
-  "py_fn": "stream_is_message_for_chat",
+  "py_fn": "RelayAdapter.stream_is_message_for_chat",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "stream_is_message_for_chat"
 }

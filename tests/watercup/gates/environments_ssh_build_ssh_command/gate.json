@@ -6,7 +6,7 @@
   "c_fn": "cli_tools_environments_ssh__build_ssh_command",
   "extra_src": [],
   "py_module": "tools/environments/ssh.py",
-  "py_fn": "_build_ssh_command",
+  "py_fn": "SSHEnvironment._build_ssh_command",
   "inputs": [
     "hello",
     "world",
@@ -14,5 +14,6 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced copy of the port body (hermes_log stubbed out). The twin instantiates SSHEnvironment via object.__new__ because the real constructor dials SSH. Inputs pass extra_args=None on the LIVE side (the C port has no extra_args parameter); _SSH_MULTIPLEX is True on Linux so B1 agrees by construction."
+  "notes": "Traced copy of the port body (hermes_log stubbed out). The twin instantiates SSHEnvironment via object.__new__ because the real constructor dials SSH. Inputs pass extra_args=None on the LIVE side (the C port has no extra_args parameter); _SSH_MULTIPLEX is True on Linux so B1 agrees by construction.",
+  "py_fn_repaired_from": "_build_ssh_command"
 }

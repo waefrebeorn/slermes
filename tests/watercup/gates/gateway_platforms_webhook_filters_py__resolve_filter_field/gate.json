@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gateway_platforms_webhook_filt_resolve_filter_field",
   "py_module": "gateway/platforms/webhook_filters.py",
-  "py_fn": "resolve_filter_field",
+  "py_fn": "WebhookRouteProcessor.resolve_filter_field",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "resolve_filter_field"
 }

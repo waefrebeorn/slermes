@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "envb_u_embed_stdin_heredoc",
   "py_module": "tools/environments/base.py",
-  "py_fn": "_embed_stdin_heredoc",
+  "py_fn": "BaseEnvironment._embed_stdin_heredoc",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_embed_stdin_heredoc"
 }

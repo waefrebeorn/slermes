@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cbm_billing_portal_hint",
   "py_module": "hermes_cli/cli_billing_mixin.py",
-  "py_fn": "_billing_portal_hint",
+  "py_fn": "CLIBillingMixin._billing_portal_hint",
   "inputs": [
     "hello",
     "world",
@@ -32,5 +32,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_billing_portal_hint"
 }

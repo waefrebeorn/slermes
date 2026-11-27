@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "relay_media_client_is_relay_media_url",
   "py_module": "gateway/relay/media.py",
-  "py_fn": "is_relay_media_url",
+  "py_fn": "RelayMediaClient.is_relay_media_url",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "is_relay_media_url"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cpl_has_available",
   "py_module": "agent/credential_pool.py",
-  "py_fn": "has_available",
+  "py_fn": "CredentialPool.has_available",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "has_available"
 }

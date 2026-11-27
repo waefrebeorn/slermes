@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cc_has_content_to_compress",
   "py_module": "agent/context_compressor.py",
-  "py_fn": "has_content_to_compress",
+  "py_fn": "ContextCompressor.has_content_to_compress",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "has_content_to_compress"
 }

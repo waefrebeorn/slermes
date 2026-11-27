@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_image_source_init",
   "py_module": "tools/image_source.py",
-  "py_fn": "__init__",
+  "py_fn": "ImageResolutionError.__init__",
   "inputs": [
     "hello",
     "world",
@@ -35,5 +35,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "__init__"
 }

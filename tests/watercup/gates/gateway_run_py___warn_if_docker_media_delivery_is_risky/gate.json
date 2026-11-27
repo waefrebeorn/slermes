@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "grun_u_warn_if_docker_media_delivery_is_risky",
   "py_module": "gateway/run.py",
-  "py_fn": "_warn_if_docker_media_delivery_is_risky",
+  "py_fn": "GatewayRunner._warn_if_docker_media_delivery_is_risky",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_warn_if_docker_media_delivery_is_risky"
 }

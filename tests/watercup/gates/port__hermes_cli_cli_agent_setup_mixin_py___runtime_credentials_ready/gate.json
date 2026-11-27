@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "hermes_cli_cli_agent_setup_mix_u_runtime_credentials_ready",
   "py_module": "hermes_cli/cli_agent_setup_mixin.py",
-  "py_fn": "_runtime_credentials_ready",
+  "py_fn": "CLIAgentSetupMixin._runtime_credentials_ready",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_runtime_credentials_ready"
 }

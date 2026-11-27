@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_registry_get_entry",
   "py_module": "tools/registry.py",
-  "py_fn": "get_entry",
+  "py_fn": "ToolRegistry.get_entry",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "get_entry"
 }

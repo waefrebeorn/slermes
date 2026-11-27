@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mom_remove",
   "py_module": "tools/mcp_oauth_manager.py",
-  "py_fn": "remove",
+  "py_fn": "MCPOAuthManager.remove",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "remove"
 }

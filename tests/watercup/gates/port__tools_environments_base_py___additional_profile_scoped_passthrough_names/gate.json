@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "envb_additional_profile_scoped_passthrough_names",
   "py_module": "tools/environments/base.py",
-  "py_fn": "_additional_profile_scoped_passthrough_names",
+  "py_fn": "BaseEnvironment._additional_profile_scoped_passthrough_names",
   "inputs": [
     "hello",
     "world",
@@ -34,5 +34,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_additional_profile_scoped_passthrough_names"
 }

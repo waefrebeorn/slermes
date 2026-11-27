@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "agent_credential_pool_try_refresh_matching",
   "py_module": "agent/credential_pool.py",
-  "py_fn": "try_refresh_matching",
+  "py_fn": "CredentialPool.try_refresh_matching",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "try_refresh_matching"
 }

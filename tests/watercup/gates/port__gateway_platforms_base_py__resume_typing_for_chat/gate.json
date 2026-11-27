@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gw_base__resume_typing_for_chat",
   "py_module": "gateway/platforms/base.py",
-  "py_fn": "resume_typing_for_chat",
+  "py_fn": "BasePlatformAdapter.resume_typing_for_chat",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "resume_typing_for_chat"
 }

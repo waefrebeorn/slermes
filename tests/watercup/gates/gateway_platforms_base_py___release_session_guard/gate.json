@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gw_base__release_session_guard",
   "py_module": "gateway/platforms/base.py",
-  "py_fn": "_release_session_guard",
+  "py_fn": "BasePlatformAdapter._release_session_guard",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_release_session_guard"
 }

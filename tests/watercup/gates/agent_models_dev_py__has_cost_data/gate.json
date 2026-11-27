@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mdv_has_cost_data",
   "py_module": "agent/models_dev.py",
-  "py_fn": "has_cost_data",
+  "py_fn": "ModelInfo.has_cost_data",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "has_cost_data"
 }

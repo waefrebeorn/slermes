@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "lspc_handle_publish_diagnostics",
   "py_module": "agent/lsp/client.py",
-  "py_fn": "_handle_publish_diagnostics",
+  "py_fn": "LSPClient._handle_publish_diagnostics",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_handle_publish_diagnostics"
 }

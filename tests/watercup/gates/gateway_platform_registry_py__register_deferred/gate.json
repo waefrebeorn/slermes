@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gateway_platform_registry_register_deferred",
   "py_module": "gateway/platform_registry.py",
-  "py_fn": "register_deferred",
+  "py_fn": "PlatformRegistry.register_deferred",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "register_deferred"
 }

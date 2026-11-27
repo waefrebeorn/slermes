@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "sd_n_start",
   "py_module": "gateway/systemd_notify.py",
-  "py_fn": "start",
+  "py_fn": "SystemdWatchdog.start",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "start"
 }

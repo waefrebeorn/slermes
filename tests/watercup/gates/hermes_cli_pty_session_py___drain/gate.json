@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "hermes_cli_pty_session_u_drain",
   "py_module": "hermes_cli/pty_session.py",
-  "py_fn": "_drain",
+  "py_fn": "PtySession._drain",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_drain"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "pid",
   "py_module": "hermes_cli/pty_bridge.py",
-  "py_fn": "pid",
+  "py_fn": "PtyBridge.pid",
   "inputs": [
     "hello",
     "world",
@@ -33,5 +33,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "pid"
 }

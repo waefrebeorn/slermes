@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "fo_file_has_bom",
   "py_module": "tools/file_operations.py",
-  "py_fn": "_file_has_bom",
+  "py_fn": "ShellFileOperations._file_has_bom",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_file_has_bom"
 }

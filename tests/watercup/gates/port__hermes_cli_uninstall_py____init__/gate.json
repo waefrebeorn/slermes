@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "uni_init",
   "py_module": "hermes_cli/uninstall.py",
-  "py_fn": "__init__",
+  "py_fn": "_UninstallArgs.__init__",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "__init__"
 }

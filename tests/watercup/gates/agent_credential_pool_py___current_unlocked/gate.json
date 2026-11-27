@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "agent_credential_pool_u_current_unlocked",
   "py_module": "agent/credential_pool.py",
-  "py_fn": "_current_unlocked",
+  "py_fn": "CredentialPool._current_unlocked",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_current_unlocked"
 }

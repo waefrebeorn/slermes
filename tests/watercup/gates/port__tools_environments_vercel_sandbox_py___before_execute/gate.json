@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "ve_env_before_execute",
   "py_module": "tools/environments/vercel_sandbox.py",
-  "py_fn": "_before_execute",
+  "py_fn": "VercelSandboxEnvironment._before_execute",
   "inputs": [
     "hello",
     "world",
@@ -31,5 +31,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_before_execute"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mdl_cleanup",
   "py_module": "tools/environments/modal.py",
-  "py_fn": "cleanup",
+  "py_fn": "ModalEnvironment.cleanup",
   "inputs": [
     "hello",
     "world",
@@ -31,5 +31,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "cleanup"
 }

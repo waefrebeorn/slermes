@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "lspm_start",
   "py_module": "agent/lsp/manager.py",
-  "py_fn": "start",
+  "py_fn": "_BackgroundLoop.start",
   "inputs": [
     "hello",
     "world",
@@ -31,5 +31,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "start"
 }

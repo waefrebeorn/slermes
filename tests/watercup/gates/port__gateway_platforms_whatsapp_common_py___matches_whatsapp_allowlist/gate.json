@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "whatsapp_common_matches_allowlist",
   "py_module": "gateway/platforms/whatsapp_common.py",
-  "py_fn": "_matches_whatsapp_allowlist",
+  "py_fn": "WhatsAppBehaviorMixin._matches_whatsapp_allowlist",
   "inputs": [
     "hello",
     "world",
@@ -34,5 +34,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_matches_whatsapp_allowlist"
 }

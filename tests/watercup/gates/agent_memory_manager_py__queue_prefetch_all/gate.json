@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mm_queue_prefetch_all",
   "py_module": "agent/memory_manager.py",
-  "py_fn": "queue_prefetch_all",
+  "py_fn": "MemoryManager.queue_prefetch_all",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "queue_prefetch_all"
 }

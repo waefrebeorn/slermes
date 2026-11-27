@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cli_tools_environments_ssh__establish_connection",
   "py_module": "tools/environments/ssh.py",
-  "py_fn": "_establish_connection",
+  "py_fn": "SSHEnvironment._establish_connection",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_establish_connection"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "envb_snapshot_excluded_passthrough_names",
   "py_module": "tools/environments/base.py",
-  "py_fn": "_snapshot_excluded_passthrough_names",
+  "py_fn": "BaseEnvironment._snapshot_excluded_passthrough_names",
   "inputs": [
     "hello",
     "world",
@@ -34,5 +34,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_snapshot_excluded_passthrough_names"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "std_dispatch",
   "py_module": "gateway/stream_dispatch.py",
-  "py_fn": "dispatch",
+  "py_fn": "GatewayEventDispatcher.dispatch",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "dispatch"
 }

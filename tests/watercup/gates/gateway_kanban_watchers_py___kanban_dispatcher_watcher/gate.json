@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gateway_kanban_watchers_u_kanban_dispatcher_watcher",
   "py_module": "gateway/kanban_watchers.py",
-  "py_fn": "_kanban_dispatcher_watcher",
+  "py_fn": "GatewayKanbanWatchersMixin._kanban_dispatcher_watcher",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_kanban_dispatcher_watcher"
 }

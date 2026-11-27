@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "envb_u_update_cwd",
   "py_module": "tools/environments/base.py",
-  "py_fn": "_update_cwd",
+  "py_fn": "BaseEnvironment._update_cwd",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_update_cwd"
 }

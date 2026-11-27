@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "browser_supervisor_stop_all",
   "py_module": "tools/browser_supervisor.py",
-  "py_fn": "stop_all",
+  "py_fn": "_SupervisorRegistry.stop_all",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "stop_all"
 }

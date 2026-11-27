@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "file_exists",
   "py_module": "agent/pet/store.py",
-  "py_fn": "exists",
+  "py_fn": "InstalledPet.exists",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "exists"
 }

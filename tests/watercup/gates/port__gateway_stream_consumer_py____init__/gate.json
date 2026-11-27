@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gw_stream_consumer_init",
   "py_module": "gateway/stream_consumer.py",
-  "py_fn": "__init__",
+  "py_fn": "GatewayStreamConsumer.__init__",
   "inputs": [
     "hello",
     "world",
@@ -33,5 +33,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "__init__"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "wst_send",
   "py_module": "gateway/relay/ws_transport.py",
-  "py_fn": "_send",
+  "py_fn": "WebSocketRelayTransport._send",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_send"
 }

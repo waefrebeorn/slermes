@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "bsv_snapshot",
   "py_module": "tools/browser_supervisor.py",
-  "py_fn": "snapshot",
+  "py_fn": "CDPSupervisor.snapshot",
   "inputs": [
     "hello",
     "world",
@@ -33,5 +33,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "snapshot"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gw_base__cleanup_finished_session_task",
   "py_module": "gateway/platforms/base.py",
-  "py_fn": "_cleanup_finished_session_task",
+  "py_fn": "BasePlatformAdapter._cleanup_finished_session_task",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_cleanup_finished_session_task"
 }

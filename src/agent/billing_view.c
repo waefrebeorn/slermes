@@ -411,19 +411,41 @@ const char *billing_fallback_portal_url(void) {
 #endif /* SRC_AGENT_PORT_AGENT_BILLING_VIEW_C */
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: agent_billing_view_can_change_plan @ agent/billing_view.py:can_change_plan */
+/* PoP: agent_billing_view_can_change_plan @ agent/billing_view.py:can_change_plan
+ *
+ * Python: can_change_plan_raw if it is not None else is_admin, where is_admin is
+ * role.upper() in ("OWNER", "ADMIN").
+ *
+ * The previous version took a pre-formatted "raw\tis_admin" string and PRINTED the
+ * answer while returning 0. Two consequences, both measured: the gate that wraps it
+ * saw a constant return (that is why it read NON-DISCRIMINATING), and the string
+ * protocol meant the port never looked at a role at all. It now takes
+ * "<raw>|<role>" (raw empty = None, the Python None) and returns the answer.
+ */
 int agent_billing_view_can_change_plan(const char *arg) {
-    /* Python: can_change_plan_raw if not None else is_admin. Arg =
-     * "raw\tis_admin" (raw empty = None). */
-    if (!arg || !*arg) { printf("0\n"); return 0; }
-    const char *tab = strchr(arg, '\t');
-    if (tab && tab > arg) {
-        printf("%d\n", strcmp(arg, "1") == 0 || strcmp(arg, "true") == 0);
-        return 0;
+    char raw[16] = {0};
+    char role[64] = {0};
+    if (arg) {
+        const char *bar = strchr(arg, '|');
+        if (bar) {
+            size_t n = (size_t)(bar - arg);
+            if (n >= sizeof raw) n = sizeof raw - 1;
+            memcpy(raw, arg, n);
+            raw[n] = '\0';
+            snprintf(role, sizeof role, "%s", bar + 1);
+        } else {
+            snprintf(raw, sizeof raw, "%s", arg);
+        }
     }
-    const char *admin = tab ? tab + 1 : arg;
-    printf("%d\n", strcmp(admin, "1") == 0 || strcmp(admin, "true") == 0);
-    return 0;
+    if (raw[0] != '\0')
+        return strcmp(raw, "1") == 0 || strcmp(raw, "true") == 0 ||
+               strcmp(raw, "True") == 0;
+    char up[64];
+    size_t i = 0;
+    for (; role[i] && i < sizeof up - 1; i++)
+        up[i] = (char)toupper((unsigned char)role[i]);
+    up[i] = '\0';
+    return strcmp(up, "OWNER") == 0 || strcmp(up, "ADMIN") == 0;
 }
 
 /* PoP: agent_billing_view_u_parse_auto_reload_card @ agent/billing_view.py:_parse_auto_reload_card */

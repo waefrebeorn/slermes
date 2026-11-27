@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mm_commit_session_boundary_async",
   "py_module": "agent/memory_manager.py",
-  "py_fn": "commit_session_boundary_async",
+  "py_fn": "MemoryManager.commit_session_boundary_async",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "commit_session_boundary_async"
 }

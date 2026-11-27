@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "agent_memory_provider_queue_prefetch",
   "py_module": "agent/memory_provider.py",
-  "py_fn": "queue_prefetch",
+  "py_fn": "MemoryProvider.queue_prefetch",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "queue_prefetch"
 }

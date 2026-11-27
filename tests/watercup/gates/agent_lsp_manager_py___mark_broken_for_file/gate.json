@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "lspm_mark_broken_for_file",
   "py_module": "agent/lsp/manager.py",
-  "py_fn": "_mark_broken_for_file",
+  "py_fn": "LSPService._mark_broken_for_file",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_mark_broken_for_file"
 }

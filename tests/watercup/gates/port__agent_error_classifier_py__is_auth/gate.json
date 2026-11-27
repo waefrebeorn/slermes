@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cli_agent_error_classifier_is_auth",
   "py_module": "agent/error_classifier.py",
-  "py_fn": "is_auth",
+  "py_fn": "ClassifiedError.is_auth",
   "inputs": [
     "hello",
     "world",
@@ -31,5 +31,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "is_auth"
 }

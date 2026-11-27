@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_file_state_writes_since",
   "py_module": "tools/file_state.py",
-  "py_fn": "writes_since",
+  "py_fn": "FileStateRegistry.writes_since",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "writes_since"
 }

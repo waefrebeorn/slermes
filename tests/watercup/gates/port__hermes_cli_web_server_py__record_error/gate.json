@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "ws_record_error",
   "py_module": "hermes_cli/web_server.py",
-  "py_fn": "record_error",
+  "py_fn": "DashboardHealth.record_error",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "record_error"
 }

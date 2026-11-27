@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "forget_task",
   "py_module": "tools/file_state.py",
-  "py_fn": "forget_task",
+  "py_fn": "FileStateRegistry.forget_task",
   "inputs": [
     "hello",
     "world",
@@ -33,5 +33,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "forget_task"
 }

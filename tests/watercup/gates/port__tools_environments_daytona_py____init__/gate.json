@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_daytona_init",
   "py_module": "tools/environments/daytona.py",
-  "py_fn": "__init__",
+  "py_fn": "DaytonaEnvironment.__init__",
   "inputs": [
     "hello",
     "world",
@@ -35,5 +35,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "__init__"
 }

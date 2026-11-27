@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gateway_profile_routing_specificity",
   "py_module": "gateway/profile_routing.py",
-  "py_fn": "specificity",
+  "py_fn": "ProfileRoute.specificity",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "specificity"
 }

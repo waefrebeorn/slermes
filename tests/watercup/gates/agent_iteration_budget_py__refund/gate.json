@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "itb_refund",
   "py_module": "agent/iteration_budget.py",
-  "py_fn": "refund",
+  "py_fn": "IterationBudget.refund",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "refund"
 }

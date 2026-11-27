@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "agent_credential_pool_u_single_use_refresh_lock_timeout",
   "py_module": "agent/credential_pool.py",
-  "py_fn": "_single_use_refresh_lock_timeout",
+  "py_fn": "CredentialPool._single_use_refresh_lock_timeout",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_single_use_refresh_lock_timeout"
 }

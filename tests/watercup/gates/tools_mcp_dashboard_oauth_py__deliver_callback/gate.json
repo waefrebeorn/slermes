@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_mcp_dashboard_oauth_deliver_callback",
   "py_module": "tools/mcp_dashboard_oauth.py",
-  "py_fn": "deliver_callback",
+  "py_fn": "DashboardOAuthFlow.deliver_callback",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "deliver_callback"
 }

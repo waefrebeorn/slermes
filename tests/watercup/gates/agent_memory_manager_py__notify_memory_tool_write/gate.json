@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mm_notify_memory_tool_write",
   "py_module": "agent/memory_manager.py",
-  "py_fn": "notify_memory_tool_write",
+  "py_fn": "MemoryManager.notify_memory_tool_write",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "notify_memory_tool_write"
 }

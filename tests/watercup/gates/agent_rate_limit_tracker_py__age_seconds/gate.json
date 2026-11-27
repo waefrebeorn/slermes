@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "agent_rate_limit_tracker_age_seconds",
   "py_module": "agent/rate_limit_tracker.py",
-  "py_fn": "age_seconds",
+  "py_fn": "RateLimitState.age_seconds",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "age_seconds"
 }

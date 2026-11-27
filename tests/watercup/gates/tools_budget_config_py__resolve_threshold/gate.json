@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_budget_config_resolve_threshold",
   "py_module": "tools/budget_config.py",
-  "py_fn": "resolve_threshold",
+  "py_fn": "BudgetConfig.resolve_threshold",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "resolve_threshold"
 }

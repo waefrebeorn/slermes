@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "fo_not_regular_error",
   "py_module": "tools/file_operations.py",
-  "py_fn": "_not_regular_error",
+  "py_fn": "ShellFileOperations._not_regular_error",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_not_regular_error"
 }

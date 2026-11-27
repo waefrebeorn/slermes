@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "hermes_cli_cli_billing_mixin_u_show_subscription",
   "py_module": "hermes_cli/cli_billing_mixin.py",
-  "py_fn": "_show_subscription",
+  "py_fn": "CLIBillingMixin._show_subscription",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_show_subscription"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "lsp_protocol_error_init",
   "py_module": "agent/lsp/protocol.py",
-  "py_fn": "__init__",
+  "py_fn": "LSPRequestError.__init__",
   "inputs": [
     "hello",
     "world",
@@ -34,5 +34,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "__init__"
 }

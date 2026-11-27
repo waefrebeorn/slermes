@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "trb_validate_response",
   "py_module": "agent/transports/base.py",
-  "py_fn": "validate_response",
+  "py_fn": "ProviderTransport.validate_response",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "validate_response"
 }

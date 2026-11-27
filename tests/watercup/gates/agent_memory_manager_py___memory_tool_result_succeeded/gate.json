@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mm_u_memory_tool_result_succeeded",
   "py_module": "agent/memory_manager.py",
-  "py_fn": "_memory_tool_result_succeeded",
+  "py_fn": "MemoryManager._memory_tool_result_succeeded",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_memory_tool_result_succeeded"
 }

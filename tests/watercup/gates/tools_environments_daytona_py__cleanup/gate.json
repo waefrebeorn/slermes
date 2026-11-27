@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "daytona_stop_sandbox",
   "py_module": "tools/environments/daytona.py",
-  "py_fn": "cleanup",
+  "py_fn": "DaytonaEnvironment.cleanup",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "cleanup"
 }

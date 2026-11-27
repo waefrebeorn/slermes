@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "dll_flush_stream",
   "py_module": "tools/delegation_live_log.py",
-  "py_fn": "flush_stream",
+  "py_fn": "LiveTranscriptWriter.flush_stream",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "flush_stream"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_delegation_live_log_tool_start",
   "py_module": "tools/delegation_live_log.py",
-  "py_fn": "tool_start",
+  "py_fn": "LiveTranscriptWriter.tool_start",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "tool_start"
 }

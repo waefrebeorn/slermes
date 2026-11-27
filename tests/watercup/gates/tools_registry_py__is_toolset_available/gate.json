@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "is_toolset_available",
   "py_module": "tools/registry.py",
-  "py_fn": "is_toolset_available",
+  "py_fn": "ToolRegistry.is_toolset_available",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "is_toolset_available"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "grun_u_clear_session_env",
   "py_module": "gateway/run.py",
-  "py_fn": "_clear_session_env",
+  "py_fn": "GatewayRunner._clear_session_env",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_clear_session_env"
 }

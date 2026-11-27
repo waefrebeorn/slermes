@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_mcp_dashboard_oauth_mark_worker_done",
   "py_module": "tools/mcp_dashboard_oauth.py",
-  "py_fn": "mark_worker_done",
+  "py_fn": "DashboardOAuthFlow.mark_worker_done",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "mark_worker_done"
 }

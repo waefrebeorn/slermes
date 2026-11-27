@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "vmd_ensure_stream",
   "py_module": "tools/voice_mode.py",
-  "py_fn": "_ensure_stream",
+  "py_fn": "AudioRecorder._ensure_stream",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_ensure_stream"
 }

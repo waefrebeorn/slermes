@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cron_scheduler_provider_u_start_multiplex",
   "py_module": "cron/scheduler_provider.py",
-  "py_fn": "_start_multiplex",
+  "py_fn": "InProcessCronScheduler._start_multiplex",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_start_multiplex"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "mdl_stop",
   "py_module": "tools/environments/modal.py",
-  "py_fn": "stop",
+  "py_fn": "_AsyncWorker.stop",
   "inputs": [
     "hello",
     "world",
@@ -31,5 +31,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "stop"
 }

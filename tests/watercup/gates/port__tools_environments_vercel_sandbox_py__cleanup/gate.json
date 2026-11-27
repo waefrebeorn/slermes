@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "ve_env_cleanup",
   "py_module": "tools/environments/vercel_sandbox.py",
-  "py_fn": "cleanup",
+  "py_fn": "VercelSandboxEnvironment.cleanup",
   "inputs": [
     "hello",
     "world",
@@ -31,5 +31,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "cleanup"
 }

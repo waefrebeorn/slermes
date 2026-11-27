@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "whatsapp_common_free_response_chats",
   "py_module": "gateway/platforms/whatsapp_common.py",
-  "py_fn": "_whatsapp_free_response_chats",
+  "py_fn": "WhatsAppBehaviorMixin._whatsapp_free_response_chats",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_whatsapp_free_response_chats"
 }

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "gw_base__has_pending_interrupt",
   "py_module": "gateway/platforms/base.py",
-  "py_fn": "has_pending_interrupt",
+  "py_fn": "BasePlatformAdapter.has_pending_interrupt",
   "inputs": [
     "hello",
     "world",
@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "has_pending_interrupt"
 }

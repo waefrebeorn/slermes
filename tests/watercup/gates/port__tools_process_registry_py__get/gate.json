@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "get",
   "py_module": "tools/process_registry.py",
-  "py_fn": "get",
+  "py_fn": "ProcessRegistry.get",
   "inputs": [
     "hello",
     "world",
@@ -33,5 +33,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "get"
 }

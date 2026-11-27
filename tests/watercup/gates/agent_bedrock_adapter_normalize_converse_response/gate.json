@@ -17,11 +17,24 @@
   "py_module": "agent/bedrock_adapter.py",
   "py_fn": "normalize_converse_response",
   "inputs": [
-    "hello",
-    "world",
     "",
-    "test123",
-    "NULL"
+    " ",
+    "\t",
+    "a",
+    "A",
+    "0",
+    "1",
+    "-1",
+    "42",
+    "3.14",
+    "1e309",
+    "NaN",
+    "null",
+    "None",
+    "true",
+    "false",
+    "{}",
+    "{\"k\": \"v\"}"
   ],
   "notes": "Bedrock Converse -> OpenAI response normalizer. FIXED THE PORT before gating: src/agent/bedrock_adapter_ports.c::brd_normalize_converse_response was an echo stub (returned its input verbatim). Rewrote it to the full LIVE semantics \u2014 text/reasoning/toolUse block loop, '\\n'/'\\n\\n' joins with null when empty, Converse->OpenAI stop-reason mapping (+ added the missing 'content_filtered' case to the shared mapping helper), OpenAI-style cache-inclusive prompt_tokens, modelId passthrough. Also added the missing hermes_json.h include to the file. Cup = per-block branch ladder + B4 tool-calls finish fixup + VSTR of the canonical OpenAI shape."
 }

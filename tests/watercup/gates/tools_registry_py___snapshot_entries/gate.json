@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "tools_registry_u_snapshot_entries",
   "py_module": "tools/registry.py",
-  "py_fn": "_snapshot_entries",
+  "py_fn": "ToolRegistry._snapshot_entries",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_snapshot_entries"
 }

@@ -77,6 +77,7 @@ def measure() -> dict:
                 and r.get("returns_tuple") is not True
                 and r["symbol"] not in stubs]
     return {
+        "evidence_gates": sorted(r["gate"] for r in evidence),
         "total": len(rows),
         "classes": counts,
         "port": len(port),
@@ -118,8 +119,9 @@ def main() -> int:
     if args.save:
         BASELINE.parent.mkdir(parents=True, exist_ok=True)
         BASELINE.write_text(json.dumps(
-            {"evidence": m["evidence"], "debt": m["debt"],
-             "port": m["port"], "total": m["total"]}, indent=1) + "\n")
+            {"evidence": m["evidence"], "evidence_gates": m["evidence_gates"],
+             "debt": m["debt"], "port": m["port"], "total": m["total"]},
+            indent=1) + "\n")
         print("saved baseline ->", BASELINE.relative_to(REPO))
         return 0
 
@@ -130,10 +132,19 @@ def main() -> int:
 
     base = json.loads(BASELINE.read_text())
     failures = []
-    if m["evidence"] < base["evidence"]:
-        failures.append("EVIDENCE dropped %d -> %d (a gate stopped being evidence; "
-                        "fix it instead of widening the number)"
-                        % (base["evidence"], m["evidence"]))
+    # Compare SETS, not counts. A count changes when gates are honestly
+    # reclassified (an oracle that no longer exists stops being evidence); a SET
+    # difference names the exact gates that regressed, which a count hides.
+    was = set(base.get("evidence_gates") or [])
+    now = set(m["evidence_gates"])
+    lost = sorted(was - now)
+    if lost:
+        failures.append("%d gate(s) stopped being evidence, e.g. %s"
+                        % (len(lost), ", ".join(lost[:5])))
+    gained = sorted(now - was)
+    if gained:
+        print("\n%d gate(s) became evidence since the baseline: %s"
+              % (len(gained), ", ".join(gained[:5])))
     for k, v in m["debt"].items():
         was = (base.get("debt") or {}).get(k, 0)
         if v > was:

@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "grun_u_get_executor",
   "py_module": "gateway/run.py",
-  "py_fn": "_get_executor",
+  "py_fn": "GatewayRunner._get_executor",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_get_executor"
 }

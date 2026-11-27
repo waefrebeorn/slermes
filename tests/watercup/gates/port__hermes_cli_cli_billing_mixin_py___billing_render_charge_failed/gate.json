@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cbm_billing_render_charge_failed",
   "py_module": "hermes_cli/cli_billing_mixin.py",
-  "py_fn": "_billing_render_charge_failed",
+  "py_fn": "CLIBillingMixin._billing_render_charge_failed",
   "inputs": [
     "hello",
     "world",
@@ -32,5 +32,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "_billing_render_charge_failed"
 }

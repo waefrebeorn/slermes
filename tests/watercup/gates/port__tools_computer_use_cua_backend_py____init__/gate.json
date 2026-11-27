@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "cua_init",
   "py_module": "tools/computer_use/cua_backend.py",
-  "py_fn": "__init__",
+  "py_fn": "CuaDriverBackend.__init__",
   "inputs": [
     "hello",
     "world",
@@ -34,5 +34,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "py_fn_repaired_from": "__init__"
 }

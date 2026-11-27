@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "grun_u_normalize_source_for_session_key",
   "py_module": "gateway/run.py",
-  "py_fn": "_normalize_source_for_session_key",
+  "py_fn": "GatewayRunner._normalize_source_for_session_key",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "_normalize_source_for_session_key"
 }

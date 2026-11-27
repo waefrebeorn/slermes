@@ -5,7 +5,7 @@
   "c_src": "harness.c",
   "c_fn": "envd_wait_for_cleanup",
   "py_module": "tools/environments/docker.py",
-  "py_fn": "wait_for_cleanup",
+  "py_fn": "DockerEnvironment.wait_for_cleanup",
   "inputs": [
     "hello",
     "world",
@@ -25,5 +25,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "py_fn_repaired_from": "wait_for_cleanup"
 }
