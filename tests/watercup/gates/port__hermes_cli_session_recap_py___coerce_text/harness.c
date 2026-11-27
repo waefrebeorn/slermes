@@ -19,13 +19,15 @@ int main(int argc, char **argv) {
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("session_coerce_text");
     char _ob[4096]; _ob[0] = '\0';
+    json_t *_j0 = json_parse(argv[i], NULL);
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    session_coerce_text((int)strtol(argv[i], NULL, 10), _ob, sizeof(_ob));
+    session_coerce_text(_j0, _ob, sizeof(_ob));
     fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j0) json_free(_j0);
+
     WCUP_VALSTR(_ob);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

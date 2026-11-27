@@ -146,7 +146,7 @@ def categorize_signature(ret_type, param_list, from_real=True):
     if (len(param_list) == 1
             and _sc.count('*') == 2
             and 'char' in _sc.replace('*', '').strip()
-            and 'json' not in _sc):
+            and 'json' not in _sc.replace('*', ' ').split()[0]):
         return 'strlist'
     if any('**' in p for p in param_list):
         return None
@@ -531,6 +531,14 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         def _oconv(j):
             p = param_list[j]
             head = p.split('*')[0].strip()
+            if 'json_t' in head or 'json_node_t' in head:
+                # json_t* leading param: parse the argv JSON into a node and
+                # pass it; the outparam _oconv previously fell through to
+                # (int)strtol() for a `const json_t *config`, a type error
+                # ("passing argument 1 ... makes integer from pointer").
+                json_setup_lines.append('    json_t *_j%d = json_parse(%s, NULL);' % (j, _arg(j)))
+                json_free_lines.append('    if (_j%d) json_free(_j%d);' % (j, j))
+                return '_j%d' % j
             if '*' in p and head.replace('const', '').strip().replace(' ', '') in (
                     'int', 'size_t', 'bool', 'long', 'double', 'float',
                     'ssize_t', 'unsigned'):
@@ -562,17 +570,22 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
                 return '(long)strtol(%s, NULL, 10)' % _arg(j)
             return '(int)strtol(%s, NULL, 10)' % _arg(j)
         scalar_ptr_setup = []
+        json_setup_lines = []
+        json_free_lines = []
         in_args = [_oconv(j) for j in range(n_in)]
         call_args = ', '.join(in_args + ['_ob', 'sizeof(_ob)'])
-        if scalar_ptr_setup:
-            json_param_setup = '\n'.join(scalar_ptr_setup) + '\n'
+        all_setup = scalar_ptr_setup + json_setup_lines
+        if all_setup:
+            json_param_setup = '\n'.join(all_setup) + '\n'
+        if json_free_lines:
+            json_param_free = '\n'.join(json_free_lines) + '\n'
         call_line = f"    int result = {c_fn}({call_args});"
         val_code = '    WCUP_VALSTR(_ob);'
     elif category == 'strlist':
         # Single char ** param: the port indexes a NULL-terminated array of
         # tokens (argv style). Build a 1-element list from the current input so
         # each fixture is one list member, matching the Python list[str] twin.
-        json_param_setup = ('    char *_tl[2];\n'
+        json_param_setup = ('    const char *_tl[2];\n'
                             '    _tl[0] = argv[i];\n'
                             '    _tl[1] = NULL;\n')
         call_args = '_tl'
