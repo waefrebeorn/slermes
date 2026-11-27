@@ -339,3 +339,30 @@ The lesson for the other 13,000: a gate cannot prove parity for a function whose
 side is a stub, and a generator that mixes different shapes cannot prove anything at
 all. Both defects look like "mismatch" in the fleet output and neither is a
 divergence in the port.
+
+### Addendum 9 — the codex stub was not one stub: 97 of them, 61 in `*_gaps.c`
+
+`scripts/audit_stub_functions.py` walks every built source and flags definitions
+whose body never mentions a single parameter. Measured:
+
+```
+97 functions ignore every parameter
+61 of them live in files named *_gaps.c  (i.e. written to satisfy the PoP scanner)
+ 5 of them are called by a gate
+```
+
+The five gated ones are the dangerous set, because a gate around them can only
+compare a constant:
+
+- `cgw_u_launchd_unsupported_marker_exists` (gate `hermes_cli_gateway_py___launchd_unsupported_marker_exists`)
+- `hermes_cli_proxy_cli_u_print_aiohttp_missing` (gate `port__hermes_cli_proxy_cli_py___print_aiohttp_missing`)
+- `bb_check_bluebubbles_requirements` (gate `gateway_platforms_bluebubbles_py__check_bluebubbles_requirements`)
+- `qqbot_check_qq_requirements` (gate `gateway_platforms_qqbot_adapter_py__check_qq_requirements`)
+- `envd_u_get_active_profile_name` (gate `tools_environments_docker_py___get_active_profile_name`)
+
+The other 92 are behaviour-free functions: they parse an argument in the caller's
+shape (`"a\tb"` tab protocols, hand-built strings) or ignore it, and print a canned
+line. Some are legitimately argument-ignoring wrappers, so the list needs judgement,
+but `*_gaps.c` is where to look first -- those files exist to raise a count, and 61
+of the 97 stubs are in them. That is the PoP-versus-parity problem in physical form:
+the annotation is present, the function is not.
