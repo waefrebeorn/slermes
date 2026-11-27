@@ -114,6 +114,22 @@ def categorize_signature(ret_type, param_list, from_real=True):
     # string. Treating it as char* makes the harness pass one string where the
     # function indexes an array -> SIGSEGV on every input. 139 ported gates
     # take a ** param; reject them (not gatable) rather than crash.
+    # A single char ** / char *const * param is an argv-style string ARRAY
+    # (tokens, args, path segments) the port indexes as segment[i]; the Python
+    # twin takes a list[str]. The blanket ** rejection below would turn 139
+    # such gates into not-gatable GAP sentinels even though the harness CAN
+    # build that array from argv. Narrow it: only reject a NON-char ** or a
+    # nested out-param (***). Rescues e.g. cron_lifecycle_command_token_index
+    # (char *const *segment) which was left as a crashing scalar stub.
+    _sc = param_list[0].replace('const', '').strip() if len(param_list) == 1 else ''
+    # Count TOTAL stars: 'char **seg' and 'char *const *seg' both mean a
+    # pointer-to-pointer (2 stars). Plain 'char **' has adjacent stars but
+    # 'char *const *' does not (spaces), so test the count, not the substring.
+    if (len(param_list) == 1
+            and _sc.count('*') == 2
+            and 'char' in _sc.replace('*', '').strip()
+            and 'json' not in _sc):
+        return 'strlist'
     if any('**' in p for p in param_list):
         return None
     # A bare `void` parameter means NO parameters. Keeping it in the list made
@@ -507,6 +523,15 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         call_args = ', '.join(in_args + ['_ob', 'sizeof(_ob)'])
         call_line = f"    int result = {c_fn}({call_args});"
         val_code = '    WCUP_VALSTR(_ob);'
+    elif category == 'strlist':
+        # Single char ** param: the port indexes a NULL-terminated array of
+        # tokens (argv style). Build a 1-element list from the current input so
+        # each fixture is one list member, matching the Python list[str] twin.
+        json_param_setup = ('    char *_tl[2];\n'
+                            '    _tl[0] = argv[i];\n'
+                            '    _tl[1] = NULL;\n')
+        call_args = '_tl'
+        val_code = ''
     elif category.startswith('int'):
         val_code = '    char buf[32];\n    snprintf(buf, sizeof(buf), "%d", result);\n    WCUP_VALSTR(buf);'
     elif category.startswith('bool'):
@@ -570,6 +595,14 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         else:  # int
             val_code = ('    char buf[32];\n    snprintf(buf, sizeof(buf), '
                         '"%d", result);\n    WCUP_VALSTR(buf);')
+    elif category == 'strlist':
+        if ret_type == 'bool':
+            val_code = '    WCUP_VALSTR(result ? \"true\" : \"false\");'
+        elif ret_type in ('char',):
+            val_code = '    WCUP_VALSTR(result ? result : \"\");'
+        else:
+            val_code = ('    char buf[32];\n    snprintf(buf, sizeof(buf), '
+                        '\"%d\", result);\n    WCUP_VALSTR(buf);')
     elif category == 'scalar_outparam':
         # val_code already set to the out-param traces in the call branch.
         if not val_code:
