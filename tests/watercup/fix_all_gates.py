@@ -128,7 +128,7 @@ def categorize_signature(ret_type, param_list, from_real=True):
     # constant and mismatched. `out` is second-to-last, its size last.
     # Only trust this when the signature came from the REAL .c (from_real),
     # never from a stale pop_index fallback that may list a single arg.
-    if (from_real and ret_type == 'int' and len(param_list) >= 3
+    if (from_real and ret_type in ('int', 'void') and len(param_list) >= 3
             and 'char *' in param_list[-2]
             and 'size_t' in param_list[-1]):
         return 'outparam'
@@ -562,7 +562,7 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     else:
         val_code = '    char buf[64];\n    snprintf(buf, sizeof(buf), "%p", (void*)&result);\n    WCUP_VALSTR(buf);'
 
-    if category == 'void' or (category == 'scalar_outparam'
+    if category == 'void' or ((category in ('scalar_outparam', 'outparam'))
                               and ret_type == 'void'):
         call_line = f"    {c_fn}({call_args});"
     else:
