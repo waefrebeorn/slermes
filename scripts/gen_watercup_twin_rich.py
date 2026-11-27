@@ -184,7 +184,7 @@ def _conv_src():
         "    if ('int' in al and 'point' not in al and 'print' not in al",
         "            and 'interface' not in al):",
         "        return _strtol(v)",
-        "    if 'float' in al or 'double' in al:",
+        "    if 'float' in al or 'double' in al or 'decimal' in al:",
         "        return _strtod(v)",
         "    if ('dict' in al or 'list' in al or 'map' in al or 'seq' in al",
         "            or 'tuple' in al or 'set' in al or 'json' in al):",

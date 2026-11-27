@@ -14,11 +14,12 @@ int main(int argc, char **argv) {
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("model_cost_guard_format_money");
     char _ob[4096]; _ob[0] = '\0';
+    double _v0 = strtod(argv[i], NULL);
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    model_cost_guard_format_money(strtod(argv[i], NULL), _ob, sizeof(_ob));
+    model_cost_guard_format_money(strcmp(argv[i], "NULL") == 0 ? NULL : &_v0, _ob, sizeof(_ob));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR(_ob);

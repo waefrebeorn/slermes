@@ -176,7 +176,7 @@ def _coerce_param(p, v):
         # strtol semantics, which is what the C harness does with the same text: "hello" is 0, not
         # None. Answering None made one side read "$0.00" and the other "".
         return _strtol(v)
-    if "float" in al or "double" in al:
+    if "float" in al or "double" in al or "decimal" in al:
         return _strtod(v)
     if any(k in al for k in ("dict", "list", "map", "seq", "tuple", "set", "json")):
         try:

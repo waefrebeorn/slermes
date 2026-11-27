@@ -382,7 +382,7 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     # silently wrong if it weren't).
     numeric = category in ('int_int', 'bool_int', 'int_other', 'bool_other',
                            'long_simple', 'sizet_simple', 'double_simple',
-                           'scalar_multi', 'json_ret')
+                           'scalar_multi', 'json_ret', 'charptr_simple')
     # Emit the EXPRESSION for parameter j's argument. `i` is the C loop
     # variable over the INPUT range (argv[2] .. argv[argc-1]); parameters
     # beyond the first take the following walk positions, WRAPPING INSIDE the
@@ -531,6 +531,29 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         def _oconv(j):
             p = param_list[j]
             head = p.split('*')[0].strip()
+            if '*' in p and head.replace('const', '').strip().replace(' ', '') in (
+                    'int', 'size_t', 'bool', 'long', 'double', 'float',
+                    'ssize_t', 'unsigned'):
+                # Scalar POINTER input (e.g. `const double *value`): the port
+                # reads a scalar by reference. Emit a local holding the
+                # converted value and pass its address — passing bare
+                # strtod(...) where a `const double *` is expected is a
+                # compile error (incompatible type for argument).
+                ctype = head.replace('const', '').strip()
+                # value conversion by base scalar type
+                if 'double' in p or 'float' in p:
+                    cv = 'strtod(%s, NULL)' % _arg(j)
+                elif 'long' in p or 'size_t' in p or 'ssize_t' in p:
+                    cv = '(long)strtol(%s, NULL, 10)' % _arg(j)
+                else:
+                    cv = '(int)strtol(%s, NULL, 10)' % _arg(j)
+                scalar_ptr_setup.append('    %s _v%d = %s;' % (ctype, j, cv))
+                # Fixture "NULL" = null pointer (the twin coerces "NULL" -> None
+                # the same way); for a scalar-pointer input that means passing
+                # NULL, not strtod("NULL")=0.0 -- else C formats 0.0 where the
+                # Python twin (and the real port) answer the None/"unknown"
+                # path.
+                return ('strcmp(%s, "NULL") == 0 ? NULL : &_v%d' % (_arg(j), j))
             if 'char' in head:
                 return _arg(j)  # char* param: pass the argv string directly
             if 'double' in p or 'float' in p:
@@ -538,8 +561,11 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
             if 'long' in p or 'size_t' in p or 'ssize_t' in p:
                 return '(long)strtol(%s, NULL, 10)' % _arg(j)
             return '(int)strtol(%s, NULL, 10)' % _arg(j)
+        scalar_ptr_setup = []
         in_args = [_oconv(j) for j in range(n_in)]
         call_args = ', '.join(in_args + ['_ob', 'sizeof(_ob)'])
+        if scalar_ptr_setup:
+            json_param_setup = '\n'.join(scalar_ptr_setup) + '\n'
         call_line = f"    int result = {c_fn}({call_args});"
         val_code = '    WCUP_VALSTR(_ob);'
     elif category == 'strlist':
