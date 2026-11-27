@@ -34,15 +34,30 @@ shell-hook allowlist, `_path_is_public`, `is_anthropic_bedrock_model`,
 | other (parser/config side effects) | 11 |
 | missing `twin.py` / path not found / missing python dependency | 11 |
 
-The 109 are the mechanical class: the generated harness declares a one-argument
-prototype while the C implementation takes out-parameters or several inputs
-(`void fn(const char *in, char *out, size_t n)`). The symbol is present in the object
-archive in every case — the harness simply cannot call it. A harness generated from
-the real prototype would make all 109 runnable; whether they are *evidence* then
-depends on the twin asking the same question.
+The 109 are the mechanical class: the generated harness declares One argument
+(or None) while the C implementation takes out-parameters or several inputs
+(`void fn(const char *in, char *out, size_t n)`; `cli_display_response(const char *,
+size_t, const char *)`). The symbol is present in the object archive in every case —
+the harness simply cannot call it. *The failure is in the repo's own harness
+generator* (`fix_all_gates.categorize_signature`/`generate_port_harness`): it mis-
+classifies real prototypes into a no-arg category, so the emitted call has the wrong
+arity. Reconfirmed by rerunning `fix_all_gates(... only_gates=...)` in targeted mode:
+of 121 gates it "updated", a large subset still compiled with `too few arguments to
+function ...`, and at least one gate that DID have a working port (`redact_key`) was
+downgraded to a GAP sentinel. The pass was reverted; it made the fleet strictly worse.
 
-The 15 access violations are real C defects reachable from a one-string call and
-deserve individual triage — a crash is worse than a wrong answer.
+The 15 access violations are the same class, not latent C bugs: `char *const *segment`
+array-of-pointers parameters (e.g. `cron_lifecycle_command_token_index`) get called with
+a bare string, which the function dereferences as a pointer array → 0xC0000005. A few
+"crash" gates are worse — their twin imports the real Hermes package and boots real
+side effects (`gateway_command` started the actual gateway during the sweep). Those are
+unsafe differential oracles and must be excluded from the evidence set, not "fixed".
+
+So: neither bucket is a per-function C defect waiting to be found. Both are gate-shape
+failures in the tooling (wrong generated prototype) or the oracle design (boots real
+I/O). Closing them means fixing `fix_all_gates` to emit the correct harness from the
+real prototype — a bounded refactor of that one module — and excluding
+side-effect twins from the evidence set.
 
 ## What this rules out
 
