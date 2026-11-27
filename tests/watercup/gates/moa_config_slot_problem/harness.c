@@ -20,7 +20,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "../../../lib/libjson/json.h"
+#include "json.h"
 #include "watercup.h"
 
 /* Faithful traced copy of src/hermes_cli/moa_config_pure.c::moa_slot_problem */

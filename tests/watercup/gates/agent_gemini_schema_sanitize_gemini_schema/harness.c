@@ -33,7 +33,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../../../include/hermes_json.h"
+#include "hermes_json.h"
 #include "watercup.h"
 
 static const char *ALLOWED_KEYS[] = {
