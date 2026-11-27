@@ -118,12 +118,16 @@ int mmd_invalidate_cached_context_length(const char *key) {
 }
 
 /* PoP: mmd_model_name_suggests_kimi @ agent/model_metadata.py:_model_name_suggests_kimi */
+/* Python: model.lower().startswith("kimi") or "moonshot" in model.lower().
+ *
+ * The old body used strstr for both, so "notkimi-32k" and "my-kimi-alias" counted as
+ * the Kimi family -- the guard that stops a stale 32K context underreport then fired
+ * for models that are not Kimi at all. Only the PREFIX is a family marker. */
 bool mmd_model_name_suggests_kimi(const char *model) {
-    /* Python: kimi-*, moonshot-* names. */
     if (!model) return false;
     char *l = lowerdup(model);
     if (!l) return false;
-    bool r = strstr(l, "kimi") != NULL || (strstr(l, "moonshot") != NULL);
+    bool r = strncmp(l, "kimi", 4) == 0 || strstr(l, "moonshot") != NULL;
     free(l);
     return r;
 }

@@ -7,11 +7,18 @@
   "py_module": "agent/model_metadata.py",
   "py_fn": "_model_name_suggests_kimi",
   "inputs": [
-    "hello",
-    "world",
+    "kimi-k2",
+    "KIMI-K2",
+    "moonshotai/kimi-k2",
+    "moonshot-v1-128k",
+    "notkimi-32k",
+    "my-kimi-alias",
+    "kimi",
+    "kim",
+    "Kimi-Moonshot",
+    "minimax-m3",
     "",
-    "test123",
-    "NULL"
+    "   kimi"
   ],
   "extra_src": [
     "lib/libjson/json.c"
@@ -25,5 +32,7 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "hand_written": true,
+  "notes": "Family marker is the PREFIX: kimi* (case-insensitive) or any 'moonshot'. The port used strstr('kimi'), so 'notkimi-32k' and 'my-kimi-alias' counted as Kimi and the stale-32K context guard fired for non-Kimi models. Fixtures cover both directions plus the near misses."
 }

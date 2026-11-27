@@ -730,6 +730,19 @@ bool is_local_endpoint(const char *base_url) {
         }
     }
 
+    /* Unqualified hostnames (no dots) are local by definition — Docker Compose
+     * service names, /etc/hosts entries, mDNS — as is *.local. IPv6 literals have
+     * no dots either, so a ':' in the host excludes them: a global IPv6 address is
+     * not local. The port had no unqualified rule at all, so "http://ollama:11434"
+     * on a Compose network was classified as a remote endpoint. */
+    {
+        bool dotted = strchr(host, '.') != NULL;
+        bool colon = strchr(host, ':') != NULL;
+        size_t n = strlen(host);
+        if (!dotted && !colon) { result = true; goto done; }
+        if (n >= 6 && strcasecmp(host + n - 6, ".local") == 0) { result = true; goto done; }
+    }
+
     /* Check IP ranges */
     struct in_addr addr4;
     if (inet_pton(AF_INET, host, &addr4) == 1) {
@@ -1108,17 +1121,62 @@ bool grok_supports_reasoning_effort(const char *model) {
 /* ---- is_openrouter_base_url ---- */
 /* Port of Python model_metadata._is_openrouter_base_url().
  * Checks if URL contains "openrouter.ai". */
-/* PoP: is_openrouter_base_url @ agent/model_metadata.py:_is_openrouter_base_url */
+/* PoP: is_openrouter_base_url @ utils/urls.py:base_url_host_matches */
+/* True when the URL's HOST is openrouter.ai or a subdomain of it.
+ *
+ * Python's docstring names this exact bug: "Safer than `domain in base_url`
+ * (`evil.com/moonshot.ai` / `moonshot.ai.evil` must not match)." The port was
+ * strstr(base_url, "openrouter.ai"), so "https://evil.com/openrouter.ai" read as
+ * OpenRouter and "https://openrouter.ai.evil.com" did too -- an attacker-controlled
+ * host could be mistaken for the provider, and a genuine OpenRouter URL with a path
+ * mentioning the domain was fine only by luck. */
+static void pm_trim_normalize(char *dst, size_t cap, const char *src) {
+    if (!cap) return;
+    if (!src) { dst[0] = '\0'; return; }
+    while (*src == ' ' || *src == '\t' || *src == '\n' || *src == '\r') src++;
+    size_t n = strlen(src);
+    while (n && (src[n - 1] == ' ' || src[n - 1] == '\t' || src[n - 1] == '\n' ||
+                 src[n - 1] == '\r' || src[n - 1] == '/'))
+        n--;
+    if (n >= cap) n = cap - 1;
+    memcpy(dst, src, n);
+    dst[n] = '\0';
+}
+
 bool is_openrouter_base_url(const char *base_url) {
-    return base_url && strstr(base_url, "openrouter.ai") != NULL;
+    char norm[1024];
+    pm_trim_normalize(norm, sizeof norm, base_url);
+    if (!norm[0]) return false;
+    char url[1100];
+    if (strstr(norm, "://")) snprintf(url, sizeof url, "%s", norm);
+    else snprintf(url, sizeof url, "http://%s", norm);
+    char *host = url_extract_hostname(url);
+    if (!host || !*host) { free(host); return false; }
+    char *l = strdup(host);
+    free(host);
+    if (!l) return false;
+    for (char *c = l; *c; c++) *c = (char)tolower((unsigned char)*c);
+    size_t n = strlen(l);
+    while (n && l[n - 1] == '.') l[--n] = '\0';
+    bool r = strcmp(l, "openrouter.ai") == 0;
+    if (!r) {
+        const char *suffix = ".openrouter.ai";
+        size_t sn = strlen(suffix);
+        r = n > sn && strcmp(l + n - sn, suffix) == 0;
+    }
+    free(l);
+    return r;
 }
 
 /* ---- is_custom_endpoint ---- */
 /* Port of Python model_metadata._is_custom_endpoint().
- * URL is valid (non-empty) and not an OpenRouter endpoint. */
+ * normalize -> non-empty -> host is not OpenRouter. */
 /* PoP: is_custom_endpoint @ agent/model_metadata.py:_is_custom_endpoint */
 bool is_custom_endpoint(const char *base_url) {
-    return base_url && *base_url && !is_openrouter_base_url(base_url);
+    char norm[1024];
+    pm_trim_normalize(norm, sizeof norm, base_url);
+    if (!norm[0]) return false;
+    return !is_openrouter_base_url(norm);
 }
 
 /* ---- provider_is_known_base_url ---- */

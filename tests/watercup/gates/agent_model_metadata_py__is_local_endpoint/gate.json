@@ -7,11 +7,27 @@
   "py_module": "agent/model_metadata.py",
   "py_fn": "is_local_endpoint",
   "inputs": [
-    "hello",
-    "world",
+    "https://openrouter.ai/api/v1",
+    "https://OPENROUTER.AI/api",
+    "openrouter.ai",
+    "openrouter.ai/",
+    "https://api.openrouter.ai/v1",
+    "https://openrouter.ai.evil.com/v1",
+    "https://evil.com/openrouter.ai",
+    "https://api.openai.com/v1",
+    "  https://api.openai.com/v1/  ",
     "",
-    "test123",
-    "NULL"
+    "   ",
+    "https://openrouter.ai./api",
+    "https://notopenrouter.ai/v1",
+    "http://localhost:11434",
+    "http://127.0.0.1:8080",
+    "http://10.1.2.3:8080",
+    "http://[::1]:8080",
+    "http://host.docker.internal:11434",
+    "http://ollama:11434",
+    "https://api.openai.com/v1",
+    "http://192.168.1.5:11434"
   ],
   "extra_src": [
     "lib/libjson/json.c"
@@ -25,5 +41,7 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "hand_written": true,
+  "notes": "Host-based matching, not substring: an attacker host containing openrouter.ai must not match, and openrouter.ai.evil.com must not either; local endpoint covers loopback, IPv6 literal, RFC1918, container DNS and unqualified names."
 }
