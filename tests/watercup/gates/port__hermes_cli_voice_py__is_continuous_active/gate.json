@@ -41,5 +41,7 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "na_reason": "Python fn takes no arguments, so no fixture can vary the answer; the gate is one constant on both sides and cannot prove parity",
+  "na_class": "zero-params"
 }

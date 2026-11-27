@@ -33,5 +33,7 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "na_reason": "Python fn never reads its parameter, so no fixture can vary the answer; a check of its real effect (file/global/state) is a different gate",
+  "na_class": "ignores-param"
 }

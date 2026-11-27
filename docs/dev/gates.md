@@ -155,6 +155,12 @@ What each class means when you read a run:
   the transcription. Deputise it (`scripts/deput_copy_harness.py`) or the gate is
   decoration.
 - **MISSING / BROKEN** — the gate cannot link or cannot run.
+- **NA** — declared, with a reason, as unable to discriminate: the Python function
+  takes no arguments, or never reads the one it has. `scripts/mark_na_gates.py`
+  applies the two airtight cases (664 zero-param, 44 ignore-param here). This is a
+  reclassification, not a fix: the port may still be wrong, but this gate cannot be
+  what proves it. Reclassifying never changes EVIDENCE — a number that moved when
+  gates were merely relabelled would be a lie.
 
 Two scripts exist to move gates between classes, and both are evidence-gated — they
 keep a change only if the cups actually match live Python afterwards:

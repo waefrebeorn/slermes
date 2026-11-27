@@ -162,6 +162,11 @@ def classify(gdir: Path, port: set[str], shim_names: set[str]) -> tuple[str, str
     txt = re.sub(r"//[^\n]*", " ", txt)
     defined = {m.group(1) for m in DEF_RE.finditer(txt)} - C_KEYWORDS
     base = cfn.split(".")[-1]
+    # An explicit, auditable exclusion: the gate cannot discriminate or cannot be
+    # ported at all (no input to vary, or a Python-only probe). Without this the
+    # fleet counts it as a PORT and the number lies upward.
+    if (g.get("na_reason") or "").strip():
+        return "NA", base
     if "gap_sentinel" in txt:
         if not _oracle_exists((g.get("py_module") or "").strip()):
             return "STALE", base
@@ -262,6 +267,10 @@ def main() -> int:
     print("PORT gates whose Python fn returns a TUPLE: %d -- the generated twin "
           "mixes str(tuple) while the harness mixes the scalar, so these can never "
           "match until both sides are rewritten" % tup)
+    na = counts.get("NA", 0)
+    if na:
+        print("%d gate(s) declared N/A with a reason (cannot discriminate or "
+              "Python-only) -- excluded from PORT by declaration" % na)
     print("PORT is parity evidence; COPY measures a hand transcription; "
           "SHIM measures the gate. Only COPY->PORT conversion changes what a green means.")
     return 0
