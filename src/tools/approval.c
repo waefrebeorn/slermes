@@ -189,6 +189,30 @@ void approval_save_allowlist(void) {
 
 /* ---- allowlist enumeration + bulk set/merge (tools/approval.py ports) ---- */
 
+/* PoP: approve_permanent @ tools/approval.py:approve_permanent
+ *
+ * Python adds the pattern key to the permanent set under a lock and does NOT write
+ * the file (persistence is save_allowlist's job). The former port printed
+ * "permanent approval added" and returned 0 without touching any state, so
+ * "always allow" never allowed anything. */
+static void approval_cache_add(const char *tool, const char *cmd,
+                               bool approved, bool permanent);
+
+int approval_approve_permanent(const char *pattern_key) {
+    if (!pattern_key || !*pattern_key) return -1;
+    approval_cache_add("", pattern_key, true, true);
+    return 0;
+}
+
+bool approval_is_permanently_approved(const char *pattern_key) {
+    if (!pattern_key || !*pattern_key) return false;
+    for (int i = 0; i < g_approval_count; i++) {
+        if (!g_approval_cache[i].permanent) continue;
+        if (strcmp(g_approval_cache[i].command, pattern_key) == 0) return true;
+    }
+    return false;
+}
+
 /* List permanent allowlist command strings. Returns a malloc'd NULL-terminated
  * array (caller frees each entry + the array). Sets *out_n. */
 /* PoP: approval_permanent_allowlist_list @ tools/approval.py:load_permanent_allowlist */

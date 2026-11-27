@@ -13,6 +13,9 @@
 #include <unistd.h>
 #include "port_utils_ports.h"
 
+int  approval_approve_permanent(const char *pattern_key);
+bool approval_is_permanently_approved(const char *pattern_key);
+
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
     char *d = strdup(s);
@@ -219,8 +222,9 @@ bool apr_is_approved(const char *pattern_key, const char *permanent_json) {
 
 /* PoP: apr_approve_permanent @ tools/approval.py:approve_permanent */
 int apr_approve_permanent(const char *pattern_key, const char *allowlist_json) {
-    /* Python: add to set. */
-    if (!pattern_key) return -1;
-    printf("permanent approval added: %s\n", pattern_key);
-    return 0;
+    /* Delegates to the real allowlist cache (tools/approval.c). The old body
+     * printed a line and returned 0 without changing any state, so "always allow"
+     * remembered nothing. */
+    (void)allowlist_json;
+    return approval_approve_permanent(pattern_key);
 }

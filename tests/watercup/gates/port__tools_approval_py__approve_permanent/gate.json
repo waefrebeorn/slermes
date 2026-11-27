@@ -3,15 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "apr_approve_permanent",
+  "c_fn": "wc_permanent",
   "py_module": "tools/approval.py",
   "py_fn": "approve_permanent",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "approve|rm -rf /tmp/x",
+    "check|rm -rf /tmp/x",
+    "check|ls",
+    "approve|",
+    "check|",
+    "approve|npm test",
+    "check|npm test",
+    "check|rm -rf /tmp/x",
+    "approve|npm test",
+    "check|ls"
   ],
   "extra_src": [
     "lib/libjson/json.c",
@@ -33,5 +38,7 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "hand_written": true,
+  "notes": "'Always allow' behaviour: approve a pattern key, then ask whether it is remembered. The port printed 'permanent approval added' and stored nothing; now it writes the real allowlist cache and the gate compares membership against Python's _permanent_set on the same sequence."
 }
