@@ -103,14 +103,24 @@ def read_c_signature(c_file, c_fn):
     return None
 
 
+# Gates whose TRACED build heap-corrupts (STATUS_HEAP_CORRUPTION c0000374,
+# detected at a json_free called from the traced copy) on ANY input -- even the
+# sanity input "null" -- independent of the port logic, which is clean by
+# inspection. The corruption is in the water-cup traced-build / dep ABI for the
+# fn's dependency set, so the harness can never yield an honest cup. Keep them
+# as gap sentinels instead of regenerating a harness that dies on every input.
+# Do not remove a name here without first proving the traced build no longer
+# heap-corrupts. Module-scoped because fix_all_gates short-circuits these to
+# not-gatable before categorizing.
+HEAP_CORRUPT_TRACED = {
+    "port__hermes_cli_foreign_sessions_py__parse_claude_session",
+    "port__hermes_cli_foreign_sessions_py__parse_codex_session",
+}
+
+
 def categorize_signature(ret_type, param_list, from_real=True):
     unhandleable = ('json', 'struct', 'callback', 'void*', 'fn', 'va_list')
-    # A pointer-to-pointer return (char **, int **, ...) is an output array we
-    # cannot trace from a C harness (e.g. cli_agent_display__split_shell_words
-    # -> char **). Treat it as not-gatable instead of letting it fall through to
-    # the scalar char-return val_code, which produces a pointer-type mismatch
-    # ('result ? result : ""' is incompatible for char **). Single-pointer and
-    # scalar returns are fine; only >=2 stars on the return is unhandleable.
+
     if ret_type.count('*') >= 2:
         return None
     # Normalize the return type: SIG_RE now captures pointer stars, so a
@@ -1129,6 +1139,8 @@ def fix_all_gates(check=False, only_gates=None):
 
             category = categorize_signature(ret_type, param_list,
                                             from_real=from_real)
+            if category and d in HEAP_CORRUPT_TRACED:
+                category = None  # traced build heap-corrupts; not gatable
             if not category:
                 not_gatable += 1
                 # A gate previously given a real harness whose signature is
