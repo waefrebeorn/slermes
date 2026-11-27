@@ -9,6 +9,7 @@ Legacy → leave if passing
 Usage: python3 tests/watercup/fix_all_gates.py [--check]
 """
 import json
+from pathlib import Path
 import os
 import re
 import sys
@@ -295,6 +296,43 @@ def categorize_signature(ret_type, param_list, from_real=True):
                         'size_t', 'void'):
             return 'scalar_multi'
     return None
+
+
+
+def _python_returns_tuple(py_module, py_fn):
+    """Does the live Python fn return a tuple?
+
+    A tuple-returning fn gets a twin that mixes str(tuple) while the generated
+    harness mixes the C scalar, so the gate hashes two different shapes and can
+    never match -- it reads as a permanent divergence whatever the port does
+    (hermes_cli_codex_runtime_switch_py__check_codex_binary_ok was one of 142).
+    Such a gate needs a hand-written harness that mixes the same faces in the same
+    order, so refuse to regenerate it instead of minting another dead gate.
+    """
+    import ast
+    if not py_module or not py_fn:
+        return False
+    try:
+        from watercup_paths import QUARRY  # type: ignore
+        quarry = Path(QUARRY)
+    except Exception:
+        quarry = Path(os.environ.get("HERMES_QUARRY",
+                                     r"C:\Users\eman5\hermes-agent"))
+    rel = str(py_module).strip()
+    if not rel.endswith(".py"):
+        return False
+    path = quarry / rel
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+    except (OSError, SyntaxError):
+        return False
+    name = str(py_fn).strip().split(".")[-1]
+    for node in tree.body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == name:
+            vals = [r.value for r in ast.walk(node)
+                    if isinstance(r, ast.Return) and r.value is not None]
+            return bool(vals) and all(isinstance(v, ast.Tuple) for v in vals)
+    return False
 
 
 def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_type,
@@ -984,6 +1022,21 @@ def fix_all_gates(check=False, only_gates=None):
         if not py_module or not py_fn:
             # Legacy gate — skip
             skipped += 1
+            continue
+
+        if g.get("hand_written"):
+            # A hand-written harness/twin mixes faces the generator cannot infer.
+            # Regenerating it would silently replace a real gate with a dead one.
+            skipped += 1
+            continue
+
+        if _python_returns_tuple(py_module, py_fn):
+            # The generated twin and harness mix different shapes: the gate cannot
+            # match. Needs a hand-written harness (see
+            # gates/hermes_cli_codex_runtime_switch_py__check_codex_binary_ok).
+            print("not gatable %-56s Python fn returns a tuple — needs a hand-written "
+                  "harness that mixes both faces" % d)
+            not_gatable += 1
             continue
         
         key = f"{py_module}:{py_fn}"

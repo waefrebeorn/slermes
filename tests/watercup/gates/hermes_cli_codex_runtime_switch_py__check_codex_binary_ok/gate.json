@@ -28,5 +28,6 @@
     "-I",
     "src"
   ],
-  "notes": "Real parity check: the port runs '<bin> --version', parses the version, compares to 0.125.0 and reproduces the Python messages. The previous port returned 0 for every input (a stub) and the generated twin mixed the tuple while the harness mixed the int, so the gate could only ever see a constant. Fixtures are names that are not installed, so both sides answer the not-found path; the version branches are exercised by giving a real path in local runs. 'slermes.exe' is a fixture on purpose: it is present, runs, and reports 0.0.0, so the version-parse and too-old branches are compared against live Python on every run."
+  "notes": "Real parity check: the port runs '<bin> --version', parses the version, compares to 0.125.0 and reproduces the Python messages. The previous port returned 0 for every input (a stub) and the generated twin mixed the tuple while the harness mixed the int, so the gate could only ever see a constant. Fixtures are names that are not installed, so both sides answer the not-found path; the version branches are exercised by giving a real path in local runs. 'slermes.exe' is a fixture on purpose: it is present, runs, and reports 0.0.0, so the version-parse and too-old branches are compared against live Python on every run.",
+  "hand_written": true
 }
