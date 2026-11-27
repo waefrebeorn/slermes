@@ -13,6 +13,13 @@
 #include <ctype.h>
 #include <stdarg.h>
 
+/* Maximum nesting depth the recursive-descent JSON parser will accept.
+ * Without a cap, deeply nested input ([[[[...]]]]) overflows the stack
+ * (0xC00000FD / stack-overflow); exceeding the cap returns a parse error
+ * instead. A real hermes config nests no more than ~12 levels, so 256 is
+ * ample headroom while capping recursion far below any default stack. */
+#define JSON_MAX_DEPTH 256
+
 /* ================================================================
  *  Internal helpers — graceful OOM, never exit()
  * ================================================================ */
@@ -55,6 +62,7 @@ typedef struct {
     const char *end;
     const char *start;
     char *err;
+    int depth;
 } parse_ctx;
 
 static void set_error(parse_ctx *ctx, const char *fmt, ...) {
@@ -198,6 +206,7 @@ static json_t *parse_number(parse_ctx *ctx) {
 }
 
 static json_t *parse_array(parse_ctx *ctx) {
+    if (++ctx->depth > JSON_MAX_DEPTH) { set_error(ctx, "Nesting too deep (max %d)", JSON_MAX_DEPTH); ctx->depth--; return NULL; }
     json_t *arr = (json_t *)xmalloc(sizeof(json_t));
     if (!arr) return NULL;
     arr->type = JSON_ARRAY;
@@ -218,10 +227,12 @@ static json_t *parse_array(parse_ctx *ctx) {
         json_free(arr);
         return NULL;
     }
+    ctx->depth--;
     return arr;
 }
 
 static json_t *parse_object(parse_ctx *ctx) {
+    if (++ctx->depth > JSON_MAX_DEPTH) { set_error(ctx, "Nesting too deep (max %d)", JSON_MAX_DEPTH); ctx->depth--; return NULL; }
     json_t *obj = (json_t *)xmalloc(sizeof(json_t));
     if (!obj) return NULL;
     obj->type = JSON_OBJECT;
@@ -251,6 +262,7 @@ static json_t *parse_object(parse_ctx *ctx) {
         json_free(obj);
         return NULL;
     }
+    ctx->depth--;
     return obj;
 }
 
@@ -298,6 +310,7 @@ json_t *json_parse(const char *input, char **error_msg) {
     ctx.end = input + strlen(input);
     ctx.start = input;
     ctx.err = NULL;
+    ctx.depth = 0;
 
     json_t *result = parse_value(&ctx);
     skip_ws(&ctx);
