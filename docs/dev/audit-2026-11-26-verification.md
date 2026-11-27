@@ -196,3 +196,46 @@ What the probe still cannot settle, and why it matters: text mode is ACTIVE
 (3 bytes -> 4 on disk), and 474 `fopen()` calls carry no `b`. Blanket binary is
 still the wrong answer (C text mode strips `\r` on read, matching Python's
 universal newlines), so the sites need classifying one by one.
+
+### Addendum 5 — devil's advocate: what this work does not prove
+
+Written as an attack on my own numbers, in the order a reviewer would make them.
+
+**1. "PORT 8,326" is not parity.** PORT means the harness calls a symbol the port
+exports. It does not mean the port agrees with Python: a gate can call the port and
+still pass because both sides return a constant for the fixtures chosen. The only
+gate-level defence is the NON-DISCRIMINATING verdict, and until a fleet-wide sweep
+runs, the discrimination rate of the 8,326 is UNMEASURED. A 120-gate random sample
+is being measured for exactly this reason; the sample rate is the honest bound, not
+36.8%.
+
+**2. The MISSING 776 -> 116 cleanup is bookkeeping, not capability.** 634 harnesses
+that named a non-existent symbol were rewritten as GAP sentinels. That removes a
+false build failure from every fleet run; it does not make one more function work.
+Reporting it as "gaps filled" would be dishonest. The 25 de-static symbols are the
+only part that changed what can be tested, and when those 25 gates were run against
+the real port, most did not turn green: 2 still fail to link, the rest report
+mismatch, twin blind, or non-discriminating fixtures. That is the honest state: the
+symbols are now reachable, the fixtures are not yet meaningful.
+
+**3. GAP 13,937 is the largest class and the one with the least progress.** 7,215 of
+those gates name a function that is not module-level in the quarry file (methods,
+nested helpers, or a name that moved), 819 name a function with no value return, 868
+need two or more arguments, 777 name a file that does not exist at that path any
+more. That leaves **3,710 gates (26.6%) that are shape-convertible**: module-level,
+one argument or none, returns a value, under 60 lines. They are ranked in
+`.testbin/gap_candidates_ast.json`. Even those need the C side to exist and the
+fixtures to discriminate, which is where the conversion rate gets measured, not
+assumed.
+
+**4. The 41 COPY gates still measure transcriptions.** 14 of them name a symbol the
+port exports, so they can be deputised; 27 cannot without port work. Until then
+their green means "two hand-written copies agree", which is the failure mode this
+whole audit exists to catch.
+
+**5. What is actually verified this session** (and therefore the only claims worth
+repeating): the Windows-ignores-TZ bug is real, measured, and fixed with a table
+that the probe and a new gate both exercise; `ar` was silently dropping 572 objects
+from the gate archive, now full-path members with 4,929/4,929; ISO parsing no longer
+mutates TZ on any build; binary IO round-trips; `util_rename_replace` replaces.
+Everything else is still a gap with a number on it.

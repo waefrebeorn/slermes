@@ -69,6 +69,11 @@ char *datetime_from_time_t_utc(time_t ts) {
     return strdup(buf);
 }
 
+/* TZ-free UTC construction (defined with the zone table below). Declared here so
+ * ISO parsing never has to mutate TZ: on Windows the CRT does not honour it, and
+ * on every platform the mutation is a data race with any other thread's localtime. */
+static time_t wc_utc_from_fields(int y, int mo, int d, int h, int mi, int sec);
+
 time_t datetime_parse_iso8601(const char *str) {
     if (!str || !*str) return (time_t)-1;
 
@@ -98,21 +103,14 @@ time_t datetime_parse_iso8601(const char *str) {
         /* Check trailing Z for UTC; treat as local if absent */
         while (*remaining == ' ' || *remaining == '\t') remaining++;
         if (*remaining == 'Z' || *remaining == 'z') {
-            /* Parse as UTC — use timegm on systems that have it */
+            /* Parse as UTC. timegm where it exists; otherwise civil-days arithmetic,
+         * which is the same answer and needs no TZ. */
 #ifdef _GNU_SOURCE
             return timegm(&tm_buf);
 #else
-            /* Fallback: set TZ=UTC, mktime, restore */
-            char *tz = getenv("TZ");
-            setenv("TZ", "UTC", 1);
-            tzset();
-            time_t result = mktime(&tm_buf);
-            if (tz)
-                setenv("TZ", tz, 1);
-            else
-                unsetenv("TZ");
-            tzset();
-            return result;
+            return wc_utc_from_fields(tm_buf.tm_year + 1900, tm_buf.tm_mon + 1,
+                                      tm_buf.tm_mday, tm_buf.tm_hour,
+                                      tm_buf.tm_min, tm_buf.tm_sec);
 #endif
         }
 
@@ -126,15 +124,10 @@ time_t datetime_parse_iso8601(const char *str) {
 #ifdef _GNU_SOURCE
                 time_t utc = timegm(&tm_buf);
 #else
-                char *tz = getenv("TZ");
-                setenv("TZ", "UTC", 1);
-                tzset();
-                time_t utc = mktime(&tm_buf);
-                if (tz)
-                    setenv("TZ", tz, 1);
-                else
-                    unsetenv("TZ");
-                tzset();
+                time_t utc = wc_utc_from_fields(tm_buf.tm_year + 1900,
+                                                tm_buf.tm_mon + 1, tm_buf.tm_mday,
+                                                tm_buf.tm_hour, tm_buf.tm_min,
+                                                tm_buf.tm_sec);
 #endif
                 return utc - offset_secs;
             }
@@ -263,6 +256,11 @@ static long days_from_civil(int y, int m, int d) {
     return era * 146097L + (long)doe - 719468L;
 }
 
+/* Calendar fields -> epoch seconds, always UTC, no TZ involvement. */
+static time_t wc_utc_from_fields(int y, int mo, int d, int h, int mi, int sec) {
+    return (time_t)(days_from_civil(y, mo, d) * 86400L + h * 3600L + mi * 60L + sec);
+}
+
 /* 0 = Sunday. */
 static int weekday_of(int y, int m, int d) {
     long days = days_from_civil(y, m, d);
@@ -318,6 +316,13 @@ static int wc_tz_offset_utc(const tz_entry_t *e, time_t t) {
         long end   = utc_of(y, 4, nth_sunday(y, 4, 1), 3) - e->dst_off;
         return ((long)t >= start || (long)t < end) ? e->dst_off : e->std_off;
     }
+}
+
+static const tz_entry_t *wc_tz_lookup(const char *name);
+
+/* Does the port resolve this zone without the CRT's TZ machinery? */
+int datetime_zone_is_known(const char *tz_name) {
+    return wc_tz_lookup(tz_name) != NULL;
 }
 
 static const tz_entry_t *wc_tz_lookup(const char *name) {

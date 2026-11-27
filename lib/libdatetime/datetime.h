@@ -33,6 +33,9 @@ char *datetime_from_time_t_utc(time_t ts);
 /** datetime_parse_iso8601(str) — Parse ISO 8601 to time_t. Returns -1 on error. */
 time_t datetime_parse_iso8601(const char *str);
 
+/** datetime_zone_is_known(name) — 1 when the built-in zone table covers it. */
+int datetime_zone_is_known(const char *tz_name);
+
 /** datetime_parse_rfc3339(str) — Parse RFC 3339 to time_t (alias, same as iso8601). Returns -1 on error. */
 time_t datetime_parse_rfc3339(const char *str);
 

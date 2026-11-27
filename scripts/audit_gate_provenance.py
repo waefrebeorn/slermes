@@ -27,6 +27,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import json
 import re
 import subprocess
@@ -55,6 +56,25 @@ def port_symbols() -> set[str]:
     return _ps()
 
 
+QUARRY = Path(os.environ.get("HERMES_QUARRY", r"C:\Users\eman5\hermes-agent"))
+_EXISTS: dict[str, bool] = {}
+
+
+def _oracle_exists(rel: str) -> bool:
+    """Is the Python file this gate names still present in the quarry?
+
+    777 GAP gates name paths like `plugins/platforms/signal/adapter.py` that no
+    longer exist. Their oracle is gone, so no fixture work can ever close them --
+    they are STALE, not gaps, and lumping them in with the 13,937 inflates the
+    work that is actually doable.
+    """
+    if not rel or not rel.endswith(".py"):
+        return True
+    if rel not in _EXISTS:
+        _EXISTS[rel] = (QUARRY / rel).is_file()
+    return _EXISTS[rel]
+
+
 def classify(gdir: Path, port: set[str], shim_names: set[str]) -> tuple[str, str]:
     g = json.loads((gdir / "gate.json").read_text())
     cfn = g.get("c_fn") or ""
@@ -67,6 +87,8 @@ def classify(gdir: Path, port: set[str], shim_names: set[str]) -> tuple[str, str
     defined = {m.group(1) for m in DEF_RE.finditer(txt)} - C_KEYWORDS
     base = cfn.split(".")[-1]
     if "gap_sentinel" in txt:
+        if not _oracle_exists((g.get("py_module") or "").strip()):
+            return "STALE", base
         return "GAP", base
     if base and base in shim_names:
         return "SHIM", base
