@@ -3,15 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "apr2_is_approval_bypass_active_for_session",
+  "c_fn": "wc_yolo",
   "py_module": "tools/approval.py",
-  "py_fn": "is_approval_bypass_active_for_session",
+  "py_fn": "is_session_yolo_enabled",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "enable|s1",
+    "none|s1",
+    "clear|s1",
+    "none|s1",
+    "enable|s2",
+    "enable|",
+    "none|",
+    "clear|s2",
+    "none|s2",
+    "enable|s1"
   ],
   "extra_src": [
     "lib/libjson/json.c",
@@ -30,5 +35,7 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "hand_written": true,
+  "notes": "Session YOLO registry, behaviour-level: enable/clear then membership. The port used to print 'yolo probe' and return false for every key, so /yolo printed 'enabled' and the bypass never activated. Now a real registry is compared against Python's own _session_yolo on the same action sequence."
 }

@@ -101,28 +101,67 @@ bool apr2_has_blocking_approval(const char *session_key) {
     return false;
 }
 
+
+/* ---------------------------------------------------------------
+ * Session YOLO registry.
+ *
+ * Python keeps `_session_yolo: set[str]` guarded by a lock, and
+ * is_session_yolo_enabled() is a membership test. Every function in this family
+ * used to PRINT and return a constant, so in the C binary /yolo printed "bypass
+ * enabled" and the check still answered false: the bypass never existed. The
+ * registry below is the smallest faithful equivalent (single writer, fixed
+ * capacity, refuses to grow silently).
+ * ------------------------------------------------------------- */
+#define APR2_MAX_YOLO_SESSIONS 256
+static char *g_yolo_sessions[APR2_MAX_YOLO_SESSIONS];
+static int g_yolo_count;
+
+static int apr2_yolo_index(const char *key) {
+    if (!key || !*key) return -1;
+    for (int i = 0; i < g_yolo_count; i++)
+        if (g_yolo_sessions[i] && strcmp(g_yolo_sessions[i], key) == 0) return i;
+    return -1;
+}
+
+static bool apr2_yolo_add(const char *key) {
+    if (!key || !*key) return false;
+    if (apr2_yolo_index(key) >= 0) return true;
+    if (g_yolo_count >= APR2_MAX_YOLO_SESSIONS) return false;
+    g_yolo_sessions[g_yolo_count] = strdup(key);
+    if (!g_yolo_sessions[g_yolo_count]) return false;
+    g_yolo_count++;
+    return true;
+}
+
+static bool apr2_yolo_remove(const char *key) {
+    int i = apr2_yolo_index(key);
+    if (i < 0) return false;
+    free(g_yolo_sessions[i]);
+    g_yolo_sessions[i] = g_yolo_sessions[g_yolo_count - 1];
+    g_yolo_sessions[--g_yolo_count] = NULL;
+    return true;
+}
+
 /* PoP: apr2_enable_session_yolo @ tools/approval.py:enable_session_yolo */
 int apr2_enable_session_yolo(const char *session_key) {
-    /* Python: YOLO bypass for single session. */
+    /* Python: add the key to _session_yolo; False when the key is empty. */
     if (!session_key || !*session_key) return -1;
-    printf("yolo bypass enabled (%s)\n", session_key);
-    return 0;
+    return apr2_yolo_add(session_key) ? 0 : -1;
 }
 
 /* PoP: apr2_clear_session @ tools/approval.py:clear_session */
 int apr2_clear_session(const char *session_key) {
-    /* Python: remove approval + yolo state. */
+    /* Python: remove approval + yolo state for this key. */
     if (!session_key) return -1;
-    printf("session approval state cleared (%s)\n", session_key);
+    apr2_yolo_remove(session_key);
+    apr2_reset_denials(session_key);
     return 0;
 }
 
 /* PoP: apr2_is_session_yolo_enabled @ tools/approval.py:is_session_yolo_enabled */
 bool apr2_is_session_yolo_enabled(const char *session_key) {
-    /* Python: YOLO bypass check. */
-    if (!session_key || !*session_key) return false;
-    printf("yolo probe (%s)\n", session_key);
-    return false;
+    /* Python: membership test on _session_yolo, empty key is never enabled. */
+    return apr2_yolo_index(session_key) >= 0;
 }
 
 /* PoP: apr2_prompt_dangerous_approval @ tools/approval_prompt.py:prompt_dangerous_approval */
