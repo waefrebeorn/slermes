@@ -109,14 +109,65 @@ python scripts/gen_parity_walkway.py  # regenerates every PARITY:AUTO block
 Numbers inside `` sentinels are generator-owned. Never
 hand-edit them; change the generator or the scan instead.
 
-Three counting systems exist and they disagree by design:
+Four counting systems exist and they disagree by design:
 
 - the scanner (feature-level, PoP-annotated) — what `parity_truth.py` reports;
 - `tests/parity_reality.py` (body-level, stricter — a `(void)x; return 0;` body
   is a placeholder, while the scanner credits the annotation);
+- `tests/check_gate_evidence.py` (gate-level, measured — how many gates could
+  actually discriminate; see section 6);
 - any older hand-written figure in an archived document.
 
-Quote which one you mean.
+Quote which one you mean. The scanner counts annotations; only the third counts
+anything the binary did.
+
+## 6. Gate evidence — the workflow guard
+
+```bash
+python tests/check_gate_evidence.py --report   # print the classes, never fail
+python tests/check_gate_evidence.py            # ratchet check (make workflow-check)
+python tests/check_gate_evidence.py --save     # adopt current state as the baseline
+```
+
+`make workflow-check` runs it after the reality scoreboard and build health, so a
+commit that makes the fleet look better without making a gate stronger fails.
+
+The number it ratchets is **EVIDENCE**, not gate count:
+
+```
+EVIDENCE = PORT - (Python fn never reads its input)
+                - (Python fn returns a tuple the harness cannot compare)
+                - (C symbol ignores every parameter — a stub)
+```
+
+It is an upper bound on usable evidence, and it is deliberately conservative in
+both directions: it can only fall if a gate is broken or a debt class
+(COPY/SHIM/MISSING/BROKEN) grows, and it can only rise by making a gate real.
+
+What each class means when you read a run:
+
+- **PORT** — the harness calls a symbol the port exports. Necessary, not sufficient:
+  a 40-gate random sample produced 26 NON-DISCRIMINATING and 0 clean matches, so
+  never quote PORT as parity.
+- **GAP** — a sentinel: the function has no C implementation. Real work, not a test.
+- **STALE** — the gate names a quarry file that no longer exists. Unclosable.
+- **COPY** — the harness defines the port's own function locally; the cups measure
+  the transcription. Deputise it (`scripts/deput_copy_harness.py`) or the gate is
+  decoration.
+- **MISSING / BROKEN** — the gate cannot link or cannot run.
+
+Two scripts exist to move gates between classes, and both are evidence-gated — they
+keep a change only if the cups actually match live Python afterwards:
+
+```bash
+python scripts/refixture_gates.py --from-provenance --limit 40 --apply  # fixtures that move the answer
+python scripts/resolve_gap_symbols.py --gates <gate>...                  # find the C symbol for a GAP
+```
+
+Neither can rescue a side-effecting function (no comparable return value) or an
+input-independent one. Those need a hand-written harness that observes the real
+effect and a twin that observes the same effect in Python. That is the only route
+left for the bulk of the GAP class.
 
 ## Known environmental limits
 

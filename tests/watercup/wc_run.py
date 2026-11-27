@@ -1413,6 +1413,39 @@ def _no_oracle_verdict(g):
     return None
 
 
+_EVIDENCE_CACHE: dict | None = None
+
+
+def _evidence_note(gate_name: str) -> str:
+    """Static qualifier from the provenance audit: why a mismatch may not be a bug.
+
+    The audit (scripts/audit_gate_provenance.py) records per gate whether the Python
+    function reads its argument and whether it returns a tuple. A twin that mixes a
+    tuple while the harness mixes a scalar cannot match whatever the port does, and a
+    function that ignores its input cannot discriminate at all. Both read as a port
+    defect in the cup listing; name them instead.
+    """
+    global _EVIDENCE_CACHE
+    if _EVIDENCE_CACHE is None:
+        _EVIDENCE_CACHE = {}
+        try:
+            rows = json.loads(open(os.path.join(BUILD, "gate_provenance.json"),
+                                   encoding="utf-8").read())
+            _EVIDENCE_CACHE = {r["gate"]: r for r in rows}
+        except (OSError, ValueError, KeyError):
+            _EVIDENCE_CACHE = {}
+    row = _EVIDENCE_CACHE.get(gate_name) or {}
+    if row.get("returns_tuple"):
+        return ("  NOTE: the Python fn returns a TUPLE and the harness mixes a scalar, "
+                "so these cups compare different shapes -- rewrite harness and twin "
+                "before believing the mismatch.")
+    if row.get("input_independent"):
+        return ("  NOTE: the Python fn never reads its argument, so no fixture can make "
+                "this gate discriminate -- the port side may still be wrong, but this "
+                "gate cannot say.")
+    return ""
+
+
 def run_cup_gate(gd, g, verbose=False):
     """Trace-cup diff: C cups vs LIVE-twin cups over the shared input walk.
     Returns (fail_count, detail_lines)."""
@@ -1495,10 +1528,12 @@ def run_cup_gate(gd, g, verbose=False):
     # A gate whose cups do not move with the input proves nothing: both sides answer one constant
     # (junk fixtures like "hello"/"test123" never reach the branch under test). Reporting five
     # mismatches for it reads as five port defects; say what it is instead.
+    note = _evidence_note(g.get("name") or gd.name)
+
     if len(g["inputs"]) >= 2 and len(set(c_cups)) == 1 and len(set(py_cups)) == 1:
         return 1, ["  NON-DISCRIMINATING: every input produced one cup (C=%s Py=%s) -- the "
                    "fixtures do not vary the answer, so this gate cannot prove parity"
-                   % (c_cups[0], py_cups[0])]
+                   % (c_cups[0], py_cups[0])] + ([note] if note else [])
 
     # Input-blind twin: the C side moves with the input, the twin answers ONE cup
     # for every input. That is not a port bug report, it is the twin never seeing
@@ -1508,7 +1543,7 @@ def run_cup_gate(gd, g, verbose=False):
         return 1, ["  TWIN BLIND: C cups vary with the input but the twin answered one cup "
                    "(%s) for all %d inputs -- the twin never received the input "
                    "(dotted/property fn, or it needs a real receiver object)."
-                   % (py_cups[0][:12], len(g["inputs"]))]
+                   % (py_cups[0][:12], len(g["inputs"]))] + ([note] if note else [])
 
     # Typed, re-verified exclusions. "NULL" is a C null pointer; Python None is a
     # different value and a fn may legitimately RAISE on it. That divergence is real

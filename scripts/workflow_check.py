@@ -24,6 +24,10 @@ STEPS = [
      '--baseline', str(ROOT / 'docs' / 'dev' / 'dead-ports-baseline.json'),
      '--fail-on-wired-dead'],
     [sys.executable, str(ROOT / 'tests' / 'verify_build_health.py'), '--no-link'],
+    # Evidence ratchet: fails when the number of gates that CAN discriminate drops,
+    # or when a debt class (COPY/SHIM/MISSING/BROKEN) grows. Gate count is not a
+    # measure of parity; this is the closest static proxy for one.
+    [sys.executable, str(ROOT / 'tests' / 'check_gate_evidence.py')],
 ]
 
 for step in STEPS:

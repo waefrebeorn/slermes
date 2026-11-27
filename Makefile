@@ -31,7 +31,7 @@ include build/clean.mk
 
 # ── Legacy alias / backward compatibility ───────────────────────────
 
-.PHONY: help parity parity-walkway watercup-index watercup-gates
+.PHONY: help parity parity-walkway watercup-index watercup-gates gate-evidence
 
 help:
 	@echo "Slermes Build System -- modular Makefile"
@@ -101,6 +101,11 @@ help:
 # live — nothing is hand-typed. Run `make parity-full` for the full pipeline.
 parity-full:
 	@python3 scripts/run_parity_workflow.py
+
+# The evidence ratchet on its own: gate count is not parity, this counts gates
+# that can discriminate and fails when that number drops.
+gate-evidence:
+	@python3 tests/check_gate_evidence.py
 
 # Refreshes walkway docs only (assumes scan + watercup already run).
 parity-walkway: parity
