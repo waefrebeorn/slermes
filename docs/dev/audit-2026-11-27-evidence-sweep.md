@@ -89,6 +89,36 @@ gate downgraded to a GAP sentinel reads as a constant C cup vs a varying twin). 
 them is the same two remaining generator gaps (json_node_t emission; the missing
 C-symbol fallback) plus the genuine divergences.
 
+### Cause taxonomy of the 93 ERROR verdicts
+
+The remaining ERROR bucket is no longer harness-arity noise — it resolves into three
+generator gaps plus one contamination source:
+
+1. **ctype / arity mismatch (~50 gates):** the signature resolver falls back to a single
+   `(char*)` scalar prototype when it cannot resolve the real C definition, so a real
+   signature like `LLMResponse *_validate_llm_response(const char*i, const char*ctx,
+   json_t *j)` (here the harness the twin should translate, and the real C fn taking
+   `const json_t *`) compiles the fallback and fails on "expected 'int' but argument has
+   type ...". This is the **missing C-symbol fallback** gap: read_c_signature finds no
+   definition, so it emits the wrong param tail.
+2. **json_node_t in/out (22 gates):** functions whose real C signature is
+   `json_node_t * fn(json_node_t*)` (e.g. forensics_proc_summary,
+   serialize_node) cannot be emitted because the generator has no json_node_t type rule
+   ("unknown type name 'json_node_t'"). Not-gatable until the emitter learns the
+   json_node_t bytecode cup or the port exposes a string-encoding bridge.
+3. **undefined reference / missing symbol (8):** real ports whose name differs from the
+   gate's c_fn coin (forensics_signal_name, pairing_env_for_platform) or that simply do
+   not exist yet — gate name/c_fn drift, not a harness defect.
+4. **Dependency/twin contamination:** 136 log lines of "expected '<document start>'" are
+   the corrupted `tests/watercup/build/home_watercup/config.yaml` (written by twin side
+   effects) that a config-reading twin hits. Repaired by deleting that artifact;
+   config-reading twins must not assume the build-area super-account.
+
+So the honest remaining stack after the generator fixes is: ~50 ctype-mismatch +
+22 json_node_t + 8 missing-symbol + the rest oracle/twin edge cases and a handful of
+real C access violations (cron_lifecycle_guard command_token_index, setup_telemetry,
+setup_tools, goals session_waiting). The two generator gaps become the to-do list.
+
 ## What this rules out
 
 - Fixture size. 30 NON-DISC gates given a 40-input adversarial corpus (property-based
