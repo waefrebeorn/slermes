@@ -296,3 +296,46 @@ implementation, write a harness that observes its real effect, and twin that eff
 in Python. The port has roughly 1,800-2,000 gates that could carry discriminating
 evidence today; everything else is either unimplemented, side-effecting, or
 input-independent.
+
+### Addendum 8 — one gap filled end to end, and the systemic defect it exposed
+
+`hermes_cli_codex_runtime_switch_py__check_codex_binary_ok` came up in the sample as
+a mismatch. It was not a fixture problem and not a rounding difference:
+
+- **The port was a stub.** `hermes_cli_codex_runtime_switc_check_codex_binary_ok()`
+  returned 0 for every input and treated its argument as an `"ok\tversion"` string
+  it had been handed, so it checked nothing. The Python function runs
+  `<bin> --version`, parses the first `x.y.z`, and compares against `(0, 125, 0)`.
+- **The twin could never have matched.** The generated twin mixed the whole
+  `(ok, message)` tuple into the cup while the generated harness mixed only the int
+  (`WCUP_VALINT`). Two different shapes hashed to two different cups for every
+  input, forever, whatever the port did. That is a *systemic* generator defect: any
+  Python function returning a tuple whose C port returns a scalar produces a gate
+  that can only ever read as a divergence.
+
+Fixed properly: the port now resolves the binary (PATH search / existence), runs it,
+parses the version, and reproduces all five Python messages verbatim; the harness
+mixes the flag and the message in that order; the twin does the same from the live
+function.
+
+Verified against live Python on both paths, byte for byte:
+
+```
+C:  ok=1  msg=3.14.9     (python.exe --version)
+PY: (True, '3.14.9')
+C:  ok=0  msg=codex 0.0.0 is older than required 0.125.0. Run: npm i -g @openai/codex
+PY: (False, 'codex 0.0.0 is older than required 0.125.0. Run: npm i -g @openai/codex')
+```
+
+Gate: **7/7 cups MATCH**, including the too-old branch (fixture `slermes.exe`, which
+is present, runs, and reports 0.0.0). Unit tests PASS, object gate 0 drift.
+
+Two Windows details that had to be right, both measured: `popen` goes through
+`cmd.exe`, where `2>/dev/null` is an error path, and cmd strips the first and last
+quote of a command that starts with one, so `"C:\...\python.exe" --version` arrives
+mangled unless the whole command is wrapped in a second pair of quotes.
+
+The lesson for the other 13,000: a gate cannot prove parity for a function whose C
+side is a stub, and a generator that mixes different shapes cannot prove anything at
+all. Both defects look like "mismatch" in the fleet output and neither is a
+divergence in the port.
