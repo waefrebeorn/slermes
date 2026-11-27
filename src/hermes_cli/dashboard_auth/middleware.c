@@ -12,31 +12,36 @@
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: hermes_cli_dashboard_auth_midd_u_path_is_public @ hermes_cli/dashboard_auth/middleware.py:_path_is_public */
-int hermes_cli_dashboard_auth_midd_u_path_is_public(const char *arg) {
-    /* Python: exact API allowlist or prefix match. Arg =
-     * "path\tpublic_paths\tpublic_prefixes". */
-    if (!arg || !*arg) { printf("0\n"); return 0; }
-    const char *t1 = strchr(arg, '\t');
-    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
-    const char *exact = t1 ? t1 + 1 : "";
-    const char *prefixes = t2 ? t2 + 1 : "";
-    /* exact match */
-    const char *p = exact;
-    while (*p) {
-        const char *t = strchr(p, '\t');
-        size_t len = t ? (size_t)(t - p) : strlen(p);
-        if (len == strlen(arg) && strncmp(p, arg, len) == 0) { printf("1\n"); return 0; }
-        p = t ? t + 1 : p + len;
-    }
-    /* prefix match */
-    p = prefixes;
-    while (*p) {
-        const char *t = strchr(p, '\t');
-        size_t len = t ? (size_t)(t - p) : strlen(p);
-        if (len && strncmp(p, arg, len) == 0) { printf("1\n"); return 0; }
-        p = t ? t + 1 : p + len;
-    }
-    printf("0\n");
+/* Exact allowlist (PUBLIC_API_PATHS + _GATE_PUBLIC_ICONS), then prefix matches.
+ * Exact entries matter: "/api/status/extension" must NOT be public just because
+ * "/api/status" is.
+ *
+ * The old body invented a "path\tpublic_paths\tpublic_prefixes" argument and read
+ * the allowlists out of the caller, so no caller in the binary could ask the real
+ * question -- the lists were never ported at all. These are Python's lists. */
+static const char *const k_public_api_paths[] = {
+    "/api/health", "/api/status", "/api/config/defaults", "/api/config/schema",
+    "/api/model/info", "/api/dashboard/themes", "/api/dashboard/plugins",
+    "/api/cron/fire", NULL,
+};
+static const char *const k_gate_public_icons[] = { "/apple-touch-icon.png", NULL };
+static const char *const k_gate_public_prefixes[] = {
+    "/auth/login", "/auth/callback", "/auth/native/authorize", "/auth/native/token",
+    "/auth/native/refresh", "/auth/password-login", "/auth/logout", "/login",
+    "/api/auth/providers", "/api/mcp/oauth/callback/",
+    "/webapp/gateway-connections/oauth/callback",
+    "/assets/", "/dashboard-plugins/", "/favicon.ico", "/ds-assets/", "/fonts/",
+    "/fonts-terminal/", NULL,
+};
+
+int hermes_cli_dashboard_auth_midd_u_path_is_public(const char *path) {
+    if (!path || !*path) return 0;
+    for (int i = 0; k_public_api_paths[i]; i++)
+        if (strcmp(path, k_public_api_paths[i]) == 0) return 1;
+    for (int i = 0; k_gate_public_icons[i]; i++)
+        if (strcmp(path, k_gate_public_icons[i]) == 0) return 1;
+    for (int i = 0; k_gate_public_prefixes[i]; i++)
+        if (strncmp(path, k_gate_public_prefixes[i], strlen(k_gate_public_prefixes[i])) == 0) return 1;
     return 0;
 }
 

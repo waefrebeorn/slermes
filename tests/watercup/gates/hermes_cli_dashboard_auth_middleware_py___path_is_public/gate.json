@@ -3,15 +3,25 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "hermes_cli_dashboard_auth_midd_u_path_is_public",
+  "c_fn": "wc_path_public",
   "py_module": "hermes_cli/dashboard_auth/middleware.py",
   "py_fn": "_path_is_public",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "/api/health",
+    "/api/status",
+    "/api/status/extension",
+    "/api/healthz",
+    "/api/model/info",
+    "/api/config/defaults",
+    "/api/dashboard/themes",
+    "/assets/app.js",
+    "/login",
+    "/loginx",
+    "/apple-touch-icon.png",
+    "/api/mcp/oauth/callback/abc",
+    "/API/HEALTH",
+    "/sessions",
+    "/"
   ],
   "extra_src": [
     "lib/libjson/json.c"
@@ -25,5 +35,7 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "hand_written": true,
+  "notes": "Dashboard auth allowlist: exact API paths, exact icons, prefix matches. /api/status/extension must be gated even though /api/status is public; /loginx is public because Python prefix-matches /login. The port took an invented argument and printed the answer, so the lists were never used."
 }
