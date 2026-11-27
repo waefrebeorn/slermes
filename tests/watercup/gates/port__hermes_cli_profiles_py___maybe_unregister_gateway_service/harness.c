@@ -1,30 +1,25 @@
-/* gate: port__hermes_cli_profiles_py___maybe_unregister_gateway_service — traced copy of profile_maybe_unregister_gateway_service (void) */
+/* gate: port__hermes_cli_profiles_py___maybe_unregister_gateway_service — GAP sentinel for _maybe_unregister_gateway_service */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern void profile_maybe_unregister_gateway_service(const char *profile_name);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_maybe_unregister_gateway_service";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s profile_maybe_unregister_gateway_service <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _maybe_unregister_gateway_service <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("profile_maybe_unregister_gateway_service");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    profile_maybe_unregister_gateway_service();
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+        WCUP_BEGIN("_maybe_unregister_gateway_service");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("profile_maybe_unregister_gateway_service");
+        WCUP_END("_maybe_unregister_gateway_service");
     }
     return 0;
 }

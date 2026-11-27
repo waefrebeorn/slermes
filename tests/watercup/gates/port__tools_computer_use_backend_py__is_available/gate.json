@@ -18,7 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/tools/computer_use/cua_backend_helpers2.c"
+    "src\\infrastructure_stubs.c",
+    "src\\slermes_home.c"
   ],
   "cflags": [
     "-I",

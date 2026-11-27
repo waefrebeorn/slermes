@@ -1,30 +1,25 @@
-/* gate: port__hermes_cli_status_py___configured_model_label — traced copy of sta_configured_model_label (void) */
+/* gate: port__hermes_cli_status_py___configured_model_label — GAP sentinel for _configured_model_label */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern void sta_configured_model_label(char out[256]);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_configured_model_label";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s sta_configured_model_label <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _configured_model_label <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("sta_configured_model_label");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    sta_configured_model_label();
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+        WCUP_BEGIN("_configured_model_label");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("sta_configured_model_label");
+        WCUP_END("_configured_model_label");
     }
     return 0;
 }

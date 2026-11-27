@@ -1,4 +1,4 @@
-/* gate: port__agent_bedrock_adapter_py__is_stale_connection_error — traced copy of cli_agent_bedrock_adapter_is_stale_connection_error (int_str) */
+/* gate: port__agent_bedrock_adapter_py__is_stale_connection_error — traced copy of is_stale_connection_error (bool_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,26 +7,24 @@
 #include "watercup.h"
 
 
-extern int cli_agent_bedrock_adapter_is_stale_connection_error(const char *error_msg);
+extern bool is_stale_connection_error(void);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s cli_agent_bedrock_adapter_is_stale_connection_error <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s is_stale_connection_error <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("cli_agent_bedrock_adapter_is_stale_connection_error");
+        WCUP_BEGIN("is_stale_connection_error");
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = cli_agent_bedrock_adapter_is_stale_connection_error(argv[i]);
+    bool result = is_stale_connection_error();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? "true" : "false");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("cli_agent_bedrock_adapter_is_stale_connection_error");
+        WCUP_END("is_stale_connection_error");
     }
     return 0;
 }

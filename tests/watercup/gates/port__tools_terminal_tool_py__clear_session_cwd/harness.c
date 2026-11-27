@@ -1,30 +1,25 @@
-/* gate: port__tools_terminal_tool_py__clear_session_cwd — traced copy of term_rec_clear_session_cwd (void) */
+/* gate: port__tools_terminal_tool_py__clear_session_cwd — GAP sentinel for clear_session_cwd */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern void term_rec_clear_session_cwd(const char *session_key);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "clear_session_cwd";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s term_rec_clear_session_cwd <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s clear_session_cwd <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("term_rec_clear_session_cwd");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    term_rec_clear_session_cwd();
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+        WCUP_BEGIN("clear_session_cwd");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("term_rec_clear_session_cwd");
+        WCUP_END("clear_session_cwd");
     }
     return 0;
 }

@@ -14,11 +14,7 @@
     "NULL"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/dingtalk_auth_gaps3.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",

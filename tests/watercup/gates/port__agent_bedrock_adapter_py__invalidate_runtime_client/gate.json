@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cli_agent_bedrock_adapter_invalidate_runtime_client",
+  "c_fn": "invalidate_runtime_client",
   "py_module": "agent/bedrock_adapter.py",
   "py_fn": "invalidate_runtime_client",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/bedrock_adapter.c"
+    "src\\agent\\provider_bedrock.c"
   ],
   "cflags": [
     "-I",

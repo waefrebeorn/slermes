@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "profile_dir_exists",
+  "c_fn": "profile_exists",
   "py_module": "hermes_cli/profiles.py",
   "py_fn": "profile_exists",
   "inputs": [
@@ -18,7 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/profiles.c"
+    "src\\hermes_cli\\kanban_db.c",
+    "src\\hermes_cli\\lifecycle.c"
   ],
   "cflags": [
     "-I",

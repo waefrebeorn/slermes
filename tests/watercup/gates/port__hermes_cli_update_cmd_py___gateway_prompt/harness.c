@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_update_cmd_py___gateway_prompt — traced copy of uc_gateway_prompt (scalar_multi) */
+/* gate: port__hermes_cli_update_cmd_py___gateway_prompt — traced copy of main_u_gateway_prompt (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,27 +7,37 @@
 #include "watercup.h"
 
 
-extern char * uc_gateway_prompt(const char *default_home, const char *prompt_text,
-                               const char *default_answer, double timeout_sec);
+extern int main_u_gateway_prompt(const char *arg);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s uc_gateway_prompt <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s main_u_gateway_prompt <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("uc_gateway_prompt");
+        WCUP_BEGIN("main_u_gateway_prompt");
     fflush(stdout);
     int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    char * result = uc_gateway_prompt(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5], strtod(argv[2 + (i - 2 + 3) % 5], NULL));
+    FILE *_cap = tmpfile();
+    if (_cap) dup2(fileno(_cap), 1);
+    int result = main_u_gateway_prompt(argv[i]);
     fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    if (_cap) {
+        dup2(_sv, 1); close(_sv);
+        rewind(_cap);
+        char _ob[4096]; size_t _on = 0; int _ch;
+        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
+            _ob[_on++] = (char)_ch;
+        _ob[_on] = '\0';
+        /* strip the trailing newline the port emits */
+        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
+            _ob[--_on] = '\0';
+        WCUP_VALSTR(_ob);
+        fclose(_cap);
+    }
+
+
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("uc_gateway_prompt");
+        WCUP_END("main_u_gateway_prompt");
     }
     return 0;
 }

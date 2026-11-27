@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "hermes_cli_bundles_register_cli",
+  "c_fn": "register_cli",
   "py_module": "hermes_cli/bundles.py",
   "py_fn": "register_cli",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/bundles.c"
+    "src\\cli\\cli_gaps.c"
   ],
   "cflags": [
     "-I",

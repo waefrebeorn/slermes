@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cli_tools_credential_files_to_agent_visible_cache_path",
+  "c_fn": "cli_tools_credential_files_clear_credential_files",
   "py_module": "tools/credential_files.py",
   "py_fn": "to_agent_visible_cache_path",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/tools/credential_files.c"
+    "src\\tools\\credential_files.c"
   ],
   "cflags": [
     "-I",

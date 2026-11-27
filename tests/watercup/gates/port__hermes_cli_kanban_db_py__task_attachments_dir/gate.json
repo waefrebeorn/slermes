@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/kanban_db.c",
-    "src/hermes_cli/lifecycle.c"
+    "src\\hermes_cli\\kanban_db.c",
+    "src\\hermes_cli\\lifecycle.c"
   ],
   "cflags": [
     "-I",

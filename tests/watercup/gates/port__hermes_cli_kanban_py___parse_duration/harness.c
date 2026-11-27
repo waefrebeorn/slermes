@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_kanban_py___parse_duration — traced copy of kanban_parse_duration (long_simple) */
+/* gate: port__hermes_cli_kanban_py___parse_duration — traced copy of kanban_parse_duration (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern long kanban_parse_duration(const char *value);
+extern int kanban_parse_duration(const char *input);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s kanban_parse_duration <input>...\n", argv[0]); return 2; }
@@ -17,11 +17,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    long result = kanban_parse_duration(argv[i]);
+    int result = kanban_parse_duration(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     char buf[32];
-    snprintf(buf, sizeof(buf), "%ld", result);
+    snprintf(buf, sizeof(buf), "%d", result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

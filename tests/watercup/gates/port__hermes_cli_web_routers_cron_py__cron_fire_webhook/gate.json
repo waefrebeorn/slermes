@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cron_fire_webhook",
+  "c_fn": "ws_cron_fire_webhook",
   "py_module": "hermes_cli/web_routers/cron.py",
   "py_fn": "cron_fire_webhook",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/web_server.c"
+    "src\\hermes_cli\\web_routers\\cron.c"
   ],
   "cflags": [
     "-I",

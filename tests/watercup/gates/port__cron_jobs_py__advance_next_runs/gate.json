@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/cron/jobs_helpers.c",
-    "src/plugins/platforms/qqbot/shell_hooks.c"
+    "src\\cron\\jobs_helpers.c",
+    "src\\plugins\\platforms\\qqbot\\shell_hooks.c"
   ],
   "cflags": [
     "-I",

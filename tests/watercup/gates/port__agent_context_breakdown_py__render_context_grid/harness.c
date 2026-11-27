@@ -1,4 +1,4 @@
-/* gate: port__agent_context_breakdown_py__render_context_grid — traced copy of cb_render_context_grid (void) */
+/* gate: port__agent_context_breakdown_py__render_context_grid — traced copy of cb_render_context_grid (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,14 +13,15 @@ int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s cb_render_context_grid <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("cb_render_context_grid");
+    char _ob[4096]; _ob[0] = '\0';
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    cb_render_context_grid();
+    cb_render_context_grid(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5], _ob, sizeof(_ob));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+    WCUP_VALSTR(_ob);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

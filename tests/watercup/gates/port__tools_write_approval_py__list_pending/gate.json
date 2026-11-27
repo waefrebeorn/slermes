@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "list_pending",
+  "c_fn": "cli_tools_write_approval_list_pending",
   "py_module": "tools/write_approval.py",
   "py_fn": "list_pending",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/tools/write_approval.c"
+    "src\\hermes_cli\\write_approval.c"
   ],
   "cflags": [
     "-I",

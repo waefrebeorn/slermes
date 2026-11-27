@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/plugins/platforms/yuanbao/web_git.c"
+    "src\\hermes_cli\\web_git_branch.c"
   ],
   "cflags": [
     "-I",

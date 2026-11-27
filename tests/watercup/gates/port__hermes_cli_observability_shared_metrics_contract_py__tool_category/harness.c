@@ -1,26 +1,33 @@
-/* gate: port__hermes_cli_observability_shared_metrics_contract_py__tool_category — traced copy of smc_tool_category (charptr_simple) */
+/* gate: port__hermes_cli_observability_shared_metrics_contract_py__tool_category — traced copy of smc_tool_category (json_param) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include "watercup.h"
+#include "json.h"
+extern void json_free(json_t *);
+extern char *json_serialize(const json_t *);
+extern json_t *json_parse(const char *, char **);
 
 
-extern char * smc_tool_category(const char *toolset);
+extern char * smc_tool_category(json_t *kwargs);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s smc_tool_category <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("smc_tool_category");
+    json_t *_j0 = json_parse(argv[i], NULL);
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    char * result = smc_tool_category(argv[i]);
+    char * result = smc_tool_category(_j0);
     fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? result : "");
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j0) json_free(_j0);
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

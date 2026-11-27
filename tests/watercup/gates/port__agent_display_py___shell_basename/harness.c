@@ -1,4 +1,4 @@
-/* gate: port__agent_display_py___shell_basename — traced copy of agent_display_shell_basename (void) */
+/* gate: port__agent_display_py___shell_basename — traced copy of agent_display_shell_basename (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,14 +13,15 @@ int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s agent_display_shell_basename <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("agent_display_shell_basename");
+    char _ob[4096]; _ob[0] = '\0';
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    agent_display_shell_basename();
+    agent_display_shell_basename(argv[i], _ob, sizeof(_ob));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+    WCUP_VALSTR(_ob);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

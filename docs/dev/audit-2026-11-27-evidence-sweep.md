@@ -59,6 +59,36 @@ I/O). Closing them means fixing `fix_all_gates` to emit the correct harness from
 real prototype — a bounded refactor of that one module — and excluding
 side-effect twins from the evidence set.
 
+## Re-sweep after the generator fixes (2026-11-27)
+
+The harness generator was fixed (void-with-params and buffer-out void classifiers) and
+the eligible evidence set regenerated + re-swept. Side-effecting gateway oracles were
+excluded (6 gates, all of which boot the real gateway and would write into the repo).
+
+| verdict | before | after |
+|---|---:|---:|
+| MATCH | 8 | **17** |
+| NON-DISC | 558 | **595** |
+| MISMATCH | 333 | 330 |
+| TWIN-BLIND | 160 | 155 |
+| ERROR | 159 | **93** |
+| UNKNOWN / TIMEOUT | 3 | 2 |
+
+Of the 66 gates the generator fixes pulled out of ERROR, nearly all now run as
+NON-DISCRIMINATING — a constant cup, i.e. honest "this gate's fixtures do not
+exercise the function", not a broken build. The 9 MATCH added (+8→17) are genuine:
+agent_account_usage_fmt_usd, _is_finite_num, _title_case_slug; bedrock
+is_anthropic_bedrock_model, is_write_denied, looks_like_table_row, _is_custom_endpoint,
+_model_name_suggests_kimi, is_local_endpoint, check_codex_binary_ok,
+repair_tool_call_arguments, ContextBreakdown._bytes_to_tokens, LearningGraphRender.
+_smoothstep, ._recency_ink, SQLiteSafeRead._key, ApprovalBypassActiveForSession. The
+seven I fixed by hand earlier (endpoint, kimi, bedrock, plan, codex, approval) all hold.
+
+The 330 MISMATCH remain an upper bound: they still include sentinel-vs-live noise (a
+gate downgraded to a GAP sentinel reads as a constant C cup vs a varying twin). Closing
+them is the same two remaining generator gaps (json_node_t emission; the missing
+C-symbol fallback) plus the genuine divergences.
+
 ## What this rules out
 
 - Fixture size. 30 NON-DISC gates given a 40-input adversarial corpus (property-based

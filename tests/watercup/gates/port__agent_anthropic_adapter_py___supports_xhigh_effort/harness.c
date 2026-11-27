@@ -1,4 +1,4 @@
-/* gate: port__agent_anthropic_adapter_py___supports_xhigh_effort — traced copy of cli_agent_anthropic_adapter__supports_xhigh_effort (int_str) */
+/* gate: port__agent_anthropic_adapter_py___supports_xhigh_effort — traced copy of supports_xhigh_effort (bool_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,26 +7,24 @@
 #include "watercup.h"
 
 
-extern int cli_agent_anthropic_adapter__supports_xhigh_effort(const char *model);
+extern bool supports_xhigh_effort(const char *model);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s cli_agent_anthropic_adapter__supports_xhigh_effort <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s supports_xhigh_effort <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("cli_agent_anthropic_adapter__supports_xhigh_effort");
+        WCUP_BEGIN("supports_xhigh_effort");
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = cli_agent_anthropic_adapter__supports_xhigh_effort(argv[i]);
+    bool result = supports_xhigh_effort(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    WCUP_VALSTR(result ? "true" : "false");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("cli_agent_anthropic_adapter__supports_xhigh_effort");
+        WCUP_END("supports_xhigh_effort");
     }
     return 0;
 }

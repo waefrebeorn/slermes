@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern int goal_session_waiting(const char *a0, const char *a1);
+extern int goal_session_waiting(const char *input);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s goal_session_waiting <input>...\n", argv[0]); return 2; }

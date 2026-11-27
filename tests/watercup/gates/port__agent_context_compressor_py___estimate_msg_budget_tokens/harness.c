@@ -11,7 +11,7 @@ extern char *json_serialize(const json_t *);
 extern json_t *json_parse(const char *, char **);
 
 
-extern int cc_micro_compact_estimate_msg_budget_tokens(const json_t *msg);
+extern long cc_micro_compact_estimate_msg_budget_tokens(json_t *msg);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s cc_micro_compact_estimate_msg_budget_tokens <input>...\n", argv[0]); return 2; }
@@ -22,11 +22,11 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    int result = cc_micro_compact_estimate_msg_budget_tokens(_j0);
+    long result = cc_micro_compact_estimate_msg_budget_tokens(_j0);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j0) json_free(_j0);
     char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
+    snprintf(buf, sizeof(buf), "%ld", result);
     WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);

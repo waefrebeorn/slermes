@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize_path",
+  "c_fn": "projects_db_normalize_path",
   "py_module": "hermes_cli/projects_db.py",
   "py_fn": "_normalize_path",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/plugins/platforms/whatsapp_cloud/checkpoint_manager.c"
+    "src\\hermes_cli\\projects_db.c"
   ],
   "cflags": [
     "-I",

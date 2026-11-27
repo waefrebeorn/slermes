@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/models_helpers.c",
-    "src/hermes_cli/model_normalize.c"
+    "src\\hermes_cli\\models_helpers.c",
+    "src\\hermes_cli\\model_normalize.c"
   ],
   "cflags": [
     "-I",

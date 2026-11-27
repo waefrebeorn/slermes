@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_projects_db_py___normalize_path — traced copy of _normalize_path (charptr_simple) */
+/* gate: port__hermes_cli_projects_db_py___normalize_path — traced copy of projects_db_normalize_path (charptr_simple) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,24 +7,24 @@
 #include "watercup.h"
 
 
-extern char* _normalize_path(const char *path_value);
+extern char * projects_db_normalize_path(const char *path);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _normalize_path <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s projects_db_normalize_path <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_normalize_path");
+        WCUP_BEGIN("projects_db_normalize_path");
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    char* result = _normalize_path(argv[i]);
+    char * result = projects_db_normalize_path(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR(result ? result : "");
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("_normalize_path");
+        WCUP_END("projects_db_normalize_path");
     }
     return 0;
 }

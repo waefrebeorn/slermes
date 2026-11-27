@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "hermes_cli_mcp_config_info",
+  "c_fn": "tui_calculate_layout",
   "py_module": "hermes_cli/mcp_config.py",
   "py_fn": "_info",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/mcp_config.c"
+    "src\\cli\\tui_fullscreen.c"
   ],
   "cflags": [
     "-I",

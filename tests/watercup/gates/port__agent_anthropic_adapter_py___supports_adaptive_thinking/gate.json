@@ -18,9 +18,9 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/anthropic_adapter.c",
-    "src/agent/anthropic_adapter_ports.c",
-    "src/hermes_cli/auth.c"
+    "src\\hermes_cli\\anthropic_adapter.c",
+    "src\\agent\\anthropic_adapter_ports.c",
+    "src\\hermes_cli\\auth.c"
   ],
   "cflags": [
     "-I",

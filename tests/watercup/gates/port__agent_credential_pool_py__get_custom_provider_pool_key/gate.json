@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "get_custom_provider_pool_key",
+  "c_fn": "cpl_get_custom_provider_pool_key",
   "py_module": "agent/credential_pool.py",
   "py_fn": "get_custom_provider_pool_key",
   "inputs": [
@@ -18,8 +18,9 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/agent/credential_pool_custom.c",
-    "src/hermes_cli/config_py_io.c"
+    "src\\agent\\credential_pool_ports.c",
+    "src\\agent\\credential_pool_engine.c",
+    "src\\agent\\credential_pool_custom.c"
   ],
   "cflags": [
     "-I",

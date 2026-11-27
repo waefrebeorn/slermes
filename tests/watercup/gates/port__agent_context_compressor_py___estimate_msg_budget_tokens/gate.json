@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/context_compressor.c"
+    "src\\agent\\context_compressor_micro.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "find_retired_xai_refs",
+  "c_fn": "cmd_migrate",
   "py_module": "hermes_cli/xai_retirement.py",
   "py_fn": "find_retired_xai_refs",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/xai_retirement_gaps3.c"
+    "src\\hermes_cli\\migrate_gaps3.c"
   ],
   "cflags": [
     "-I",

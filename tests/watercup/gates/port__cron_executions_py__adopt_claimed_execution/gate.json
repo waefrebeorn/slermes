@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/cron/executions_gaps3.c"
+    "src\\cron\\executions_gaps3.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "stp_current_reasoning_effort",
+  "c_fn": "main_current_reasoning_effort",
   "py_module": "hermes_cli/setup.py",
   "py_fn": "_current_reasoning_effort",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/setup_ports.c"
+    "src\\hermes_cli\\main_helpers.c"
   ],
   "cflags": [
     "-I",

@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/agent/memory_manager_ports.c",
-    "src/agent/memory_provider.c"
+    "src\\agent\\memory_manager_ports.c",
+    "src\\agent\\memory_provider.c"
   ],
   "cflags": [
     "-I",

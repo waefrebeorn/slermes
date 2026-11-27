@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "slugify",
+  "c_fn": "pet_slugify",
   "py_module": "agent/pet/store.py",
   "py_fn": "slugify",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/plugins/platforms/yuanbao/web_git.c"
+    "src\\agent\\pet\\pet_store.c"
   ],
   "cflags": [
     "-I",

@@ -1,28 +1,21 @@
-/* gate: port__hermes_cli_providers_py__resolve_provider_full — traced copy of resolve_provider_full (charptr_noargs) */
+/* gate: port__hermes_cli_providers_py__resolve_provider_full — GAP sentinel for resolve_provider_full */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern char * resolve_provider_full(void);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "resolve_provider_full";
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s resolve_provider_full <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("resolve_provider_full");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    char * result = resolve_provider_full();
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%p", (void*)&result);
-    WCUP_VALSTR(buf);
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

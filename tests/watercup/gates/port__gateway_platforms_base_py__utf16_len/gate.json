@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "utf16_len",
+  "c_fn": "gw_utf16_len",
   "py_module": "gateway/platforms/base.py",
   "py_fn": "utf16_len",
   "inputs": [
@@ -18,8 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/plugins/platforms/yuanbao/base.c",
-    "src/hermes_cli/dashboard_procs.c"
+    "src\\gateway\\gateway_escape.c"
   ],
   "cflags": [
     "-I",

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cli_agent_anthropic_adapter__forbids_sampling_params",
+  "c_fn": "forbids_sampling_params",
   "py_module": "agent/anthropic_adapter.py",
   "py_fn": "_forbids_sampling_params",
   "inputs": [
@@ -18,9 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/anthropic_adapter.c",
-    "src/agent/anthropic_adapter_ports.c",
-    "src/hermes_cli/auth.c"
+    "src\\agent\\provider_anthropic.c"
   ],
   "cflags": [
     "-I",

@@ -18,7 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/tools/image_gen_path.c"
+    "src\\infrastructure_stubs.c",
+    "src\\slermes_home.c"
   ],
   "cflags": [
     "-I",

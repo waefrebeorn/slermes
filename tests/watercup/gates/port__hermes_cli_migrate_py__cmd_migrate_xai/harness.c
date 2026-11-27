@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_migrate_py__cmd_migrate_xai — traced copy of cmd_migrate_xai (charptr_noargs) */
+/* gate: port__hermes_cli_migrate_py__cmd_migrate_xai — traced copy of cmd_migrate (charptr_noargs) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,17 +7,17 @@
 #include "watercup.h"
 
 
-extern char * cmd_migrate_xai(void);
+extern char * cmd_migrate(void);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s cmd_migrate_xai <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s cmd_migrate <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("cmd_migrate_xai");
+        WCUP_BEGIN("cmd_migrate");
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    char * result = cmd_migrate_xai();
+    char * result = cmd_migrate();
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     char buf[64];
@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("cmd_migrate_xai");
+        WCUP_END("cmd_migrate");
     }
     return 0;
 }

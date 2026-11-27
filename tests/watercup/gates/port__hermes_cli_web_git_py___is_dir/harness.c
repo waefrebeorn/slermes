@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_web_git_py___is_dir — traced copy of is_dir (bool_str) */
+/* gate: port__hermes_cli_web_git_py___is_dir — traced copy of is_dir (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern bool is_dir(const char *cwd);
+extern int is_dir(const char *input);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s is_dir <input>...\n", argv[0]); return 2; }
@@ -17,10 +17,12 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    bool result = is_dir(argv[i]);
+    int result = is_dir(argv[i]);
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? "true" : "false");
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d", result);
+    WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

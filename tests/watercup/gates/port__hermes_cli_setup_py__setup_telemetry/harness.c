@@ -1,28 +1,21 @@
-/* gate: port__hermes_cli_setup_py__setup_telemetry — traced copy of setup_telemetry (int_str) */
+/* gate: port__hermes_cli_setup_py__setup_telemetry — GAP sentinel for setup_telemetry */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern int setup_telemetry(const char *config_json);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "setup_telemetry";
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s setup_telemetry <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("setup_telemetry");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = setup_telemetry(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

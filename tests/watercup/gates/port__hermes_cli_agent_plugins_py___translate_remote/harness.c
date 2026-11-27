@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_agent_plugins_py___translate_remote — traced copy of ap_translate_remote (void) */
+/* gate: port__hermes_cli_agent_plugins_py___translate_remote — traced copy of ap_translate_remote (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,14 +13,15 @@ int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s ap_translate_remote <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("ap_translate_remote");
+    char _ob[4096]; _ob[0] = '\0';
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    ap_translate_remote();
+    ap_translate_remote(argv[i], _ob, sizeof(_ob));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+    WCUP_VALSTR(_ob);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

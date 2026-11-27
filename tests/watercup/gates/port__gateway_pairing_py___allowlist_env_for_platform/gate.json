@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "pairing_allowlist_env_for_platform",
+  "c_fn": "pairing_env_for_platform",
   "py_module": "gateway/pairing.py",
   "py_fn": "_allowlist_env_for_platform",
   "inputs": [
@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/gateway/pairing.c",
-    "src/gateway/platforms/helpers.c"
+    "src\\gateway\\pairing.c",
+    "src\\gateway\\platforms\\helpers.c"
   ],
   "cflags": [
     "-I",

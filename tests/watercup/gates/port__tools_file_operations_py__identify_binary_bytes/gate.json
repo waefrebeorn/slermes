@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "fo_identify_binary_bytes",
+  "c_fn": "file_fs_ops_identify_binary_bytes",
   "py_module": "tools/file_operations.py",
   "py_fn": "identify_binary_bytes",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/tools/file_operations.c"
+    "src\\tools\\file_fs_ops.c"
   ],
   "cflags": [
     "-I",

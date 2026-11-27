@@ -18,8 +18,8 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/agent/context_breakdown_helpers.c",
-    "src/hermes_cli/prompt_size.c"
+    "src\\agent\\context_breakdown_helpers.c",
+    "src\\hermes_cli\\prompt_size.c"
   ],
   "cflags": [
     "-I",

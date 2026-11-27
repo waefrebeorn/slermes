@@ -1,4 +1,4 @@
-/* gate: port__hermes_cli_session_recap_py___coerce_text — traced copy of session_coerce_text (json_param) */
+/* gate: port__hermes_cli_session_recap_py___coerce_text — traced copy of session_coerce_text (outparam) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,15 +17,15 @@ int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s session_coerce_text <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("session_coerce_text");
-    json_t *_j0 = json_parse(argv[i], NULL);
+    char _ob[4096]; _ob[0] = '\0';
     fflush(stdout);
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    void result = session_coerce_text(_j0, argv[2 + (i - 2 + 1) % 5], (long)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10));
+    session_coerce_text(argv[i], _ob, sizeof(_ob));
     fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j0) json_free(_j0);
-    WCUP_VALSTR("void");
+    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
+    WCUP_VALSTR(_ob);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

@@ -7,7 +7,7 @@
 #include "watercup.h"
 
 
-extern char * read_git_revision_fingerprint(const char *repo_root);
+extern char * read_git_revision_fingerprint(const char *project_root);
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s read_git_revision_fingerprint <input>...\n", argv[0]); return 2; }

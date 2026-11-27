@@ -1,4 +1,4 @@
-/* gate: port__tools_skill_usage_py___non_negative_int — traced copy of skill_usage_non_negative_int (scalar_multi) */
+/* gate: port__tools_skill_usage_py___non_negative_int — traced copy of guarrd_non_negative_int (int_str) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,26 +7,37 @@
 #include "watercup.h"
 
 
-extern int skill_usage_non_negative_int(long value);
+extern int guarrd_non_negative_int(const char *arg);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s skill_usage_non_negative_int <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s guarrd_non_negative_int <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("skill_usage_non_negative_int");
+        WCUP_BEGIN("guarrd_non_negative_int");
     fflush(stdout);
     int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = skill_usage_non_negative_int((long)strtol(argv[i], NULL, 10));
+    FILE *_cap = tmpfile();
+    if (_cap) dup2(fileno(_cap), 1);
+    int result = guarrd_non_negative_int(argv[i]);
     fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+    if (_cap) {
+        dup2(_sv, 1); close(_sv);
+        rewind(_cap);
+        char _ob[4096]; size_t _on = 0; int _ch;
+        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
+            _ob[_on++] = (char)_ch;
+        _ob[_on] = '\0';
+        /* strip the trailing newline the port emits */
+        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
+            _ob[--_on] = '\0';
+        WCUP_VALSTR(_ob);
+        fclose(_cap);
+    }
+
+
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("skill_usage_non_negative_int");
+        WCUP_END("guarrd_non_negative_int");
     }
     return 0;
 }

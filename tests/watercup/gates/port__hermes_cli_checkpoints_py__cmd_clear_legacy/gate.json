@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "hermes_cli_checkpoints_cmd_clear_legacy",
+  "c_fn": "cmd_clear_legacy",
   "py_module": "hermes_cli/checkpoints.py",
   "py_fn": "cmd_clear_legacy",
   "inputs": [
@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/checkpoints.c"
+    "src\\cli\\cli_gaps.c"
   ],
   "cflags": [
     "-I",

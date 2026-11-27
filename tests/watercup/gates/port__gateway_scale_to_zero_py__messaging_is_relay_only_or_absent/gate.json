@@ -18,7 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/gateway/scale_to_zero_helpers.c"
+    "src\\gateway\\scale_to_zero_helpers.c"
   ],
   "cflags": [
     "-I",

@@ -1,30 +1,25 @@
-/* gate: port__hermes_cli_hooks_py__hooks_command — traced copy of cli_hermes_cli_hooks_hooks_command (void) */
+/* gate: port__hermes_cli_hooks_py__hooks_command — GAP sentinel for hooks_command */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern void cli_hermes_cli_hooks_hooks_command(const char *action);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "hooks_command";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s cli_hermes_cli_hooks_hooks_command <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s hooks_command <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("cli_hermes_cli_hooks_hooks_command");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    cli_hermes_cli_hooks_hooks_command();
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+        WCUP_BEGIN("hooks_command");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("cli_hermes_cli_hooks_hooks_command");
+        WCUP_END("hooks_command");
     }
     return 0;
 }

@@ -3,7 +3,7 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "cli_agent_anthropic_adapter__resolve_positive_anthropic_max_tokens",
+  "c_fn": "anthropic_resolve_positive_max_tokens",
   "py_module": "agent/anthropic_adapter.py",
   "py_fn": "_resolve_positive_anthropic_max_tokens",
   "inputs": [
@@ -18,9 +18,7 @@
     "src/agent/logger.c",
     "src/cli/paths.c",
     "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/anthropic_adapter.c",
-    "src/agent/anthropic_adapter_ports.c",
-    "src/hermes_cli/auth.c"
+    "src\\agent\\provider_anthropic.c"
   ],
   "cflags": [
     "-I",
