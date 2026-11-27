@@ -23,6 +23,183 @@
  * _DEFAULT_BLOCK_MESSAGE, and the blocking-capable event set. */
 #define SHK_BLOCK_EXIT_CODE  2
 #define SHK_STDERR_LIMIT     400
+
+/* ---- shell-hook allowlist: real JSON read-modify-write ----------------
+ *
+ * Every function below used to print a line and return a constant, so "approve this
+ * hook" wrote nothing and _is_allowlisted answered from a substring coincidence.
+ * Python keeps {"approvals": [{"event","command","approved_at",...}]} and matches an
+ * entry on (event, command); these helpers reproduce exactly that.
+ */
+char *shk_allowlist_path(const char *hermes_home);
+char *shk_load_allowlist(const char *hermes_home);
+int   shk_save_allowlist(const char *hermes_home, const char *data_json);
+
+/* bounded substring search (memmem is not portable to every mingw build) */
+static const char *shk_memmem(const char *h, size_t n, const char *needle, size_t m) {
+    if (!m || n < m) return NULL;
+    for (size_t i = 0; i + m <= n; i++)
+        if (h[i] == needle[0] && memcmp(h + i, needle, m) == 0) return h + i;
+    return NULL;
+}
+
+static const char *shk_home(void) {
+    const char *h = getenv("HERMES_HOME");
+    if (h && *h) return h;
+    const char *u = getenv("USERPROFILE");
+    if (!u || !*u) u = getenv("HOME");
+    static char buf[1024];
+    snprintf(buf, sizeof buf, "%s/.hermes", (u && *u) ? u : ".");
+    return buf;
+}
+
+/* Extract a JSON string field from one object slice. Caller frees. */
+static char *shk_field(const char *obj, size_t len, const char *field) {
+    char needle[64];
+    snprintf(needle, sizeof needle, "\"%s\"", field);
+    const char *p = obj, *end = obj + len;
+    while ((p = shk_memmem(p, (size_t)(end - p), needle, strlen(needle))) != NULL) {
+        const char *q = p + strlen(needle);
+        while (q < end && (*q == ' ' || *q == ':')) q++;
+        if (q >= end || *q != '"') { p = q; continue; }
+        q++;
+        size_t cap = 64, n = 0;
+        char *out = malloc(cap);
+        if (!out) return NULL;
+        while (q < end && *q != '"') {
+            char ch = *q++;
+            if (ch == '\\' && q < end) {
+                char esc = *q++;
+                ch = (esc == 'n') ? '\n' : (esc == 't') ? '\t' : esc;
+            }
+            if (n + 2 > cap) {
+                cap *= 2;
+                char *nb = realloc(out, cap);
+                if (!nb) { free(out); return NULL; }
+                out = nb;
+            }
+            out[n++] = ch;
+        }
+        out[n] = '\0';
+        return out;
+    }
+    return NULL;
+}
+
+/* Escape s into dst (without the surrounding quotes). */
+static void shk_esc_str(char *dst, size_t cap, const char *s) {
+    size_t n = 0;
+    for (; s && *s && n + 7 < cap; s++) {
+        unsigned char ch = (unsigned char)*s;
+        if (ch == '"' || ch == '\\') { dst[n++] = '\\'; dst[n++] = (char)ch; }
+        else if (ch == '\n') { dst[n++] = '\\'; dst[n++] = 'n'; }
+        else if (ch == '\t') { dst[n++] = '\\'; dst[n++] = 't'; }
+        else if (ch == '\r') { dst[n++] = '\\'; dst[n++] = 'r'; }
+        else if (ch < 0x20) n += (size_t)snprintf(dst + n, cap - n, "\\u%04x", ch);
+        else dst[n++] = (char)ch;
+    }
+    if (cap) dst[n < cap ? n : cap - 1] = '\0';
+}
+
+/* Append s as a JSON string literal. */
+static void shk_esc(FILE *w, const char *s) {
+    fputc('"', w);
+    for (; s && *s; s++) {
+        unsigned char ch = (unsigned char)*s;
+        if (ch == '"' || ch == '\\') { fputc('\\', w); fputc(ch, w); }
+        else if (ch == '\n') fputs("\\n", w);
+        else if (ch == '\t') fputs("\\t", w);
+        else if (ch < 0x20) fprintf(w, "\\u%04x", ch);
+        else fputc(ch, w);
+    }
+    fputc('"', w);
+}
+
+/* Walk the approvals array, calling keep() per object slice. */
+static int shk_walk_approvals(const char *json, int (*keep)(const char *obj, size_t len, void *ctx),
+                              void *ctx, FILE *out, int *kept) {
+    if (!json) return -1;
+    const char *arr = strstr(json, "\"approvals\"");
+    if (!arr) return -1;
+    const char *p = strchr(arr, '[');
+    if (!p) return -1;
+    p++;
+    int n = 0, emitted = 0;
+    while (*p && *p != ']') {
+        while (*p == ' ' || *p == ',' || *p == '\n' || *p == '\r' || *p == '\t') p++;
+        if (*p != '{') break;
+        const char *start = p;
+        int depth = 0, in_str = 0;
+        while (*p) {
+            char ch = *p;
+            if (in_str) {
+                if (ch == '\\') p++;
+                else if (ch == '"') in_str = 0;
+            } else if (ch == '"') in_str = 1;
+            else if (ch == '{') depth++;
+            else if (ch == '}') { depth--; if (depth == 0) { p++; break; } }
+            p++;
+        }
+        size_t len = (size_t)(p - start);
+        n++;
+        if (!keep || keep(start, len, ctx)) {
+            if (out) {
+                if (emitted) fputc(',', out);
+                fwrite(start, 1, len, out);
+            }
+            emitted++;
+        }
+    }
+    if (kept) *kept = emitted;
+    return n;
+}
+
+struct shk_ctx { const char *event; const char *command; };
+
+static int shk_keep_not_matching(const char *obj, size_t len, void *vctx) {
+    struct shk_ctx *c = (struct shk_ctx *)vctx;
+    char *ev = shk_field(obj, len, "event");
+    char *cmd = shk_field(obj, len, "command");
+    bool match = cmd && c->command && strcmp(cmd, c->command) == 0 &&
+                 (!c->event || (ev && strcmp(ev, c->event) == 0));
+    free(ev); free(cmd);
+    return match ? 0 : 1;
+}
+
+/* Rewrite the allowlist with the entries keep() accepts, then persist. */
+static int shk_rewrite(const char *json, const char *extra_entry,
+                       int (*keep)(const char *, size_t, void *), void *ctx, int *kept_n) {
+    char *path = shk_allowlist_path(shk_home());
+    /* Windows refuses to create the file when the directory is absent, and the old
+     * body reported success anyway: approvals vanished without a message. */
+    {
+        char dir[1024];
+        snprintf(dir, sizeof dir, "%s", path);
+        char *slash = strrchr(dir, '/');
+        if (slash) { *slash = '\0'; mkdir(dir, 0777); }
+    }
+    char *tmp = NULL;
+    asprintf(&tmp, "%s.tmp.%ld", path, (long)getpid());
+    FILE *w = fopen(tmp, "w");
+    if (!w) { free(path); free(tmp); return -1; }
+    fputs("{\"approvals\": [", w);
+    int kept = 0;
+    shk_walk_approvals(json, keep, ctx, w, &kept);
+    if (extra_entry) {
+        if (kept) fputc(',', w);
+        fputs(extra_entry, w);
+        kept++;
+    }
+    fputs("]}\n", w);
+    if (fflush(w) != 0) { fclose(w); unlink(tmp); free(tmp); free(path); return -1; }
+    fclose(w);
+    int rc = util_rename_replace(tmp, path);
+    if (rc != 0) unlink(tmp);
+    free(tmp); free(path);
+    if (kept_n) *kept_n = kept;
+    return rc == 0 ? 0 : -1;
+}
+
 #define SHK_DEFAULT_BLOCK_MESSAGE "Blocked by shell hook."
 #define SHK_PRE_TOOL_CALL_EVENT "pre_tool_call"  /* only blocking-capable event */
 
@@ -261,21 +438,15 @@ int shk_save_allowlist(const char *hermes_home, const char *data_json) {
 
 /* PoP: shk_is_allowlisted @ agent/shell_hooks.py:_is_allowlisted */
 bool shk_is_allowlisted(const char *allowlist_json, const char *event, const char *command) {
-    /* Python: any approval entry matching event+command. */
+    /* Python: any entry whose event AND command are exactly these strings.
+     * The old body matched substrings anywhere in the object, so a command that
+     * merely shared a word with an unrelated entry read as allowlisted. */
     if (!allowlist_json || !event || !command) return false;
-    /* rough but real: look for the pair inside one approval object */
-    const char *p = allowlist_json;
-    while ((p = strstr(p, "\"event\"")) != NULL) {
-        const char *ev_end = strchr(p, '}');
-        const char *seg_end = ev_end ? ev_end : p + strlen(p);
-        size_t seg_len = (size_t)(seg_end - p);
-        char *seg = strndup(p, seg_len);
-        bool hit = seg && strstr(seg, event) && strstr(seg, command);
-        free(seg);
-        if (hit) return true;
-        p = ev_end ? ev_end + 1 : p + 7;
-    }
-    return false;
+    struct shk_ctx probe = { event, command };
+    int kept = 0;
+    shk_walk_approvals(allowlist_json, shk_keep_not_matching, &probe, NULL, &kept);
+    int total = shk_walk_approvals(allowlist_json, NULL, NULL, NULL, NULL);
+    return total > kept;  /* kept < total => at least one entry matched */
 }
 
 /* PoP: shk_locked_update_approvals @ agent/shell_hooks.py:_locked_update_approvals */
@@ -294,11 +465,75 @@ bool shk_prompt_and_record(const char *event, const char *command) {
     return false;
 }
 
+
+/* Public read-back for callers and gates: the persisted approvals as a sorted,
+ * ';'-joined "event|command" list. An empty list is "". */
+struct shk_pairs { char *v[512]; int n; };
+
+static int shk_pairs_collect(const char *obj, size_t len, void *vctx) {
+    struct shk_pairs *acc = (struct shk_pairs *)vctx;
+    if (acc->n >= 512) return 0;
+    char *ev = shk_field(obj, len, "event");
+    char *cmd = shk_field(obj, len, "command");
+    if (cmd) {
+        char *pair = NULL;
+        if (asprintf(&pair, "%s|%s", ev ? ev : "", cmd) > 0) acc->v[acc->n++] = pair;
+    }
+    free(ev);
+    free(cmd);
+    return 0;   /* not "kept": we only want the callback's side effect */
+}
+
+static int shk_pair_cmp(const void *a, const void *b) {
+    return strcmp(*(char *const *)a, *(char *const *)b);
+}
+
+char *shk_allowlist_pairs(const char *json) {
+    struct shk_pairs acc;
+    memset(&acc, 0, sizeof acc);
+    shk_walk_approvals(json, shk_pairs_collect, &acc, NULL, NULL);
+    qsort(acc.v, (size_t)acc.n, sizeof acc.v[0], shk_pair_cmp);
+    size_t cap = 64;
+    for (int i = 0; i < acc.n; i++) cap += strlen(acc.v[i]) + 1;
+    char *out = malloc(cap);
+    if (out) {
+        out[0] = '\0';
+        for (int i = 0; i < acc.n; i++) {
+            if (i) strcat(out, ";");
+            strcat(out, acc.v[i]);
+        }
+    }
+    for (int i = 0; i < acc.n; i++) free(acc.v[i]);
+    return out ? out : strdup("");
+}
+
 /* PoP: shk_record_approval @ agent/shell_hooks.py:_record_approval */
 int shk_record_approval(const char *event, const char *command) {
+    /* Python: drop entries matching (event, command), append the new one, persist. */
     if (!event || !command) return -1;
-    printf("approval recorded (%s, %s)\n", event, command);
-    return 0;
+    char *json = shk_load_allowlist(shk_home());
+    char ts[64];
+    time_t t = time(NULL);
+    struct tm tm;
+    gmtime_r(&t, &tm);
+    strftime(ts, sizeof ts, "%Y-%m-%dT%H:%M:%SZ", &tm);
+
+    /* mingw's open_memstream fails at runtime, so build the entry in a bounded
+     * buffer with an explicit escaper. */
+    char entry[4096];
+    {
+        char ev[512], cmd[2048];
+        shk_esc_str(ev, sizeof ev, event);
+        shk_esc_str(cmd, sizeof cmd, command);
+        snprintf(entry, sizeof entry,
+                 "{\"event\": \"%s\", \"command\": \"%s\", \"approved_at\": \"%s\"}",
+                 ev, cmd, ts);
+    }
+    struct shk_ctx ctx = { event, command };
+    int kept = 0;
+    int rc = shk_rewrite(json, entry, shk_keep_not_matching, &ctx, &kept);
+    free(json);
+    return rc;
 }
 
 /* PoP: shk_utc_now_iso @ agent/shell_hooks.py:_utc_now_iso */
@@ -314,10 +549,18 @@ char *shk_utc_now_iso(void) {
 
 /* PoP: shk_revoke @ agent/shell_hooks.py:revoke */
 long shk_revoke(const char *command) {
-    /* Python: remove matching entries; count removed. */
+    /* Python: drop every entry for this command, return how many went away. */
     if (!command) return 0;
-    printf("allowlist entries revoked for %s\n", command);
-    return 0;
+    char *json = shk_load_allowlist(shk_home());
+    int before = shk_walk_approvals(json, NULL, NULL, NULL, NULL);
+    struct shk_ctx ctx = { NULL, command };
+    int kept = 0;
+    if (shk_rewrite(json, NULL, shk_keep_not_matching, &ctx, &kept) != 0) {
+        free(json);
+        return 0;
+    }
+    free(json);
+    return before > kept ? (long)(before - kept) : 0;
 }
 
 /* PoP: shk_command_script_path @ agent/shell_hooks.py:_command_script_path */

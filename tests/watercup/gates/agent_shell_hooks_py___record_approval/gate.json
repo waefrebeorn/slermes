@@ -3,15 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "shk_record_approval",
+  "c_fn": "wc_shellhook",
   "py_module": "agent/shell_hooks.py",
   "py_fn": "_record_approval",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "record|pre_tool|./deploy.sh",
+    "record|post_tool|./deploy.sh",
+    "record|pre_tool|/abs/audit.py --flag",
+    "revoke|./deploy.sh",
+    "revoke||./deploy.sh",
+    "record|pre_tool|./extra.sh",
+    "record|pre_tool|",
+    "record||./noevent.sh",
+    "revoke||./extra.sh",
+    "record|pre_tool|./deploy.sh"
   ],
   "extra_src": [
     "lib/libjson/json.c"
@@ -25,5 +30,7 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "hand_written": true,
+  "notes": "Allowlist persistence, observed from disk: approve two hooks, revoke one, approve another. Both sides read back the (event|command) set they persisted. The port printed 'approval recorded' and stored nothing, so every restart lost every approval; the old gate hashed that print."
 }
