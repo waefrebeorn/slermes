@@ -1,30 +1,25 @@
-/* gate: port__hermes_cli_azure_detect_py___strip_trailing_v1 — traced copy of azure_strip_trailing_v1 (void) */
+/* gate: port__hermes_cli_azure_detect_py___strip_trailing_v1 — GAP sentinel for _strip_trailing_v1 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern void azure_strip_trailing_v1(const char *url, char *out, size_t out_cap);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_strip_trailing_v1";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s azure_strip_trailing_v1 <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _strip_trailing_v1 <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("azure_strip_trailing_v1");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    azure_strip_trailing_v1();
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+        WCUP_BEGIN("_strip_trailing_v1");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("azure_strip_trailing_v1");
+        WCUP_END("_strip_trailing_v1");
     }
     return 0;
 }
