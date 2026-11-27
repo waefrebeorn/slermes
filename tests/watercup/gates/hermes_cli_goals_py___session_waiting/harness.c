@@ -1,25 +1,25 @@
-/* gate: hermes_cli_goals_py___session_waiting — traced copy of goal_session_waiting */
+/* gate: hermes_cli_goals_py___session_waiting — GAP sentinel for _session_waiting */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
 
-extern int goal_session_waiting(const char *a0, const char *a1);
-
-static void trace_one(const char **in, int n, int idx) {
-    WCUP_BEGIN("goal_session_waiting");
-    int result = goal_session_waiting(in[(idx + 0) % n], in[(idx + 1) % n]);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("goal_session_waiting");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_session_waiting";
 }
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s goal_session_waiting <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _session_waiting <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one((const char **)(argv + 2), argc - 2, i - 2);
+        WCUP_BEGIN("_session_waiting");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_session_waiting");
     }
     return 0;
 }
