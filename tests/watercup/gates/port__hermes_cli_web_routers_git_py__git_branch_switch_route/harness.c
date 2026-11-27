@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "watercup.h"
 #include "json.h"
+typedef json_t json_node_t;
 extern void json_free(json_t *);
 extern char *json_serialize(const json_t *);
 extern json_t *json_parse(const char *, char **);

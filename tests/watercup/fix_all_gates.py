@@ -649,6 +649,7 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
     # harness with a json_t* return (`json_t *f(const char*, int*)`) declares
     # `json_t *result = f(...)` and failed to compile without json.h.
     json_includes = ('#include "json.h"\n'
+                     'typedef json_t json_node_t;\n'
                      'extern void json_free(json_t *);\n'
                      'extern char *json_serialize(const json_t *);\n'
                      'extern json_t *json_parse(const char *, char **);\n'
