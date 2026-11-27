@@ -117,6 +117,40 @@ def _fn_ignores_input(py_module: str, py_fn: str) -> bool | None:
     return not any(a in used for a in args)
 
 
+def _returns_tuple(py_module: str, py_fn: str) -> bool | None:
+    """Does the Python fn return a tuple (i.e. does the shape differ from a scalar)?
+
+    The generated twin mixes str(tuple) while the generated harness mixes the C
+    return value, so such a gate hashes two different shapes and can never match --
+    it reads as a divergence no matter what the port does (see
+    hermes_cli_codex_runtime_switch_py__check_codex_binary_ok).
+    """
+    import ast
+    rel = (py_module or "").strip()
+    if not rel.endswith(".py") or rel not in _AST_CACHE:
+        if rel.endswith(".py") and rel not in _AST_CACHE:
+            try:
+                _AST_CACHE[rel] = ast.parse((QUARRY / rel).read_text(encoding="utf-8",
+                                                                    errors="ignore"))
+            except (OSError, SyntaxError):
+                _AST_CACHE[rel] = None
+        if rel not in _AST_CACHE:
+            return None
+    tree = _AST_CACHE.get(rel)
+    if tree is None:
+        return None
+    name = (py_fn or "").strip().split(".")[-1]
+    for n in tree.body:
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == name:
+            vals = [r.value for r in ast.walk(n) if isinstance(r, ast.Return) and r.value]
+            if not vals:
+                return None
+            return all(isinstance(v, ast.Tuple) or
+                       (isinstance(v, ast.Call) and getattr(v.func, "id", "") == "tuple")
+                       for v in vals)
+    return None
+
+
 def classify(gdir: Path, port: set[str], shim_names: set[str]) -> tuple[str, str]:
     g = json.loads((gdir / "gate.json").read_text())
     cfn = g.get("c_fn") or ""
@@ -198,7 +232,10 @@ def main() -> int:
                      "input_used": _input_used(gdir),
                      "input_independent": (_fn_ignores_input(gj.get("py_module") or "",
                                                              gj.get("py_fn") or "")
-                                          if cls == "PORT" else None)})
+                                          if cls == "PORT" else None),
+                     "returns_tuple": (_returns_tuple(gj.get("py_module") or "",
+                                                      gj.get("py_fn") or "")
+                                       if cls == "PORT" else None)})
 
     counts = Counter(r["class"] for r in rows)
     if args.list:
@@ -221,6 +258,10 @@ def main() -> int:
     print("PORT gates whose Python fn never reads its input: %d of %d resolvable "
           "(%d PORT total) -- these cannot discriminate, no fixture can fix them"
           % (indep, known, counts.get("PORT", 0)))
+    tup = sum(1 for r in rows if r.get("returns_tuple") is True)
+    print("PORT gates whose Python fn returns a TUPLE: %d -- the generated twin "
+          "mixes str(tuple) while the harness mixes the scalar, so these can never "
+          "match until both sides are rewritten" % tup)
     print("PORT is parity evidence; COPY measures a hand transcription; "
           "SHIM measures the gate. Only COPY->PORT conversion changes what a green means.")
     return 0
