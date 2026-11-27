@@ -155,6 +155,10 @@ What each class means when you read a run:
   the transcription. Deputise it (`scripts/deput_copy_harness.py`) or the gate is
   decoration.
 - **MISSING / BROKEN** — the gate cannot link or cannot run.
+- **PLACEHOLDER** — the C function the gate calls prints its "answer" and returns a
+  constant on every path (`scripts/_c_body_index.py`). 1,370 such functions exist;
+  1,987 gates wrap them. The cup hashes the constant, so the gate cannot
+  discriminate and says nothing about the port even when it reads green.
 - **NA** — declared, with a reason, as unable to discriminate: the Python function
   takes no arguments, or never reads the one it has. `scripts/mark_na_gates.py`
   applies the two airtight cases (664 zero-param, 44 ignore-param here). This is a

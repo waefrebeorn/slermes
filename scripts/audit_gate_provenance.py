@@ -151,6 +151,31 @@ def _returns_tuple(py_module: str, py_fn: str) -> bool | None:
     return None
 
 
+def _oracle_named_anywhere(py_module: str, py_fn: str) -> bool | None:
+    """Does the named Python function exist somewhere in the file (any depth)?
+
+    A PORT gate whose oracle is gone cannot compare anything: it either errors every
+    cup or agrees by accident. 593 PORT gates name a file that no longer exists and
+    2,494 name a function that is not in the file at all.
+    """
+    import ast
+    rel = (py_module or "").strip()
+    if not rel.endswith(".py") or not py_fn:
+        return None
+    if rel not in _AST_CACHE:
+        try:
+            _AST_CACHE[rel] = ast.parse((QUARRY / rel).read_text(encoding="utf-8",
+                                                                errors="ignore"))
+        except (OSError, SyntaxError):
+            _AST_CACHE[rel] = None
+    tree = _AST_CACHE[rel]
+    if tree is None:
+        return False
+    name = py_fn.split(".")[-1]
+    return any(isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == name
+               for n in ast.walk(tree))
+
+
 def classify(gdir: Path, port: set[str], shim_names: set[str]) -> tuple[str, str]:
     g = json.loads((gdir / "gate.json").read_text())
     cfn = g.get("c_fn") or ""
@@ -178,6 +203,21 @@ def classify(gdir: Path, port: set[str], shim_names: set[str]) -> tuple[str, str
         # transcription, whatever the port does.
         return "COPY", base
     if base and base in port:
+        # A gate whose oracle is gone is not evidence; it is STALE, exactly like a
+        # GAP sentinel whose quarry file disappeared.
+        if _oracle_named_anywhere((g.get("py_module") or "").strip(),
+                                  (g.get("py_fn") or "").strip()) is False:
+            return "STALE", base
+        # A C function that prints its "answer" and always returns a constant is a
+        # placeholder: the gate hashes the constant, so it cannot discriminate and
+        # says nothing about the port even when it reads green.
+        try:
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
+            from _c_body_index import placeholder
+            if placeholder(base):
+                return "PLACEHOLDER", base
+        except Exception:
+            pass
         return "PORT", base
     if base and re.search(r"\b%s\s*\(" % re.escape(base), txt):
         return "MISSING", base  # calls a symbol the built port does not export
@@ -271,6 +311,10 @@ def main() -> int:
     if na:
         print("%d gate(s) declared N/A with a reason (cannot discriminate or "
               "Python-only) -- excluded from PORT by declaration" % na)
+    ph = counts.get("PLACEHOLDER", 0)
+    if ph:
+        print("%d PORT gate(s) wrap a C function that prints and always returns a "
+              "constant -- a placeholder, not an implementation" % ph)
     print("PORT is parity evidence; COPY measures a hand transcription; "
           "SHIM measures the gate. Only COPY->PORT conversion changes what a green means.")
     return 0

@@ -41,7 +41,7 @@ BASELINE = REPO / "docs" / "dev" / "gate-evidence-baseline.json"
 AUDIT = REPO / "scripts" / "audit_gate_provenance.py"
 STUBS = REPO / "scripts" / "audit_stub_functions.py"
 
-DEBT_CLASSES = ("COPY", "SHIM", "MISSING", "BROKEN")
+DEBT_CLASSES = ("COPY", "SHIM", "MISSING", "BROKEN", "PLACEHOLDER")
 
 
 def run_audit() -> None:
