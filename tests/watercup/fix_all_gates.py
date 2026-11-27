@@ -245,7 +245,7 @@ def categorize_signature(ret_type, param_list, from_real=True):
             return 'bool_noargs'
         if ret_type == 'char':
             return 'charptr_noargs'
-    if ret_type == 'void':
+    if ret_type == 'void' and not param_list:
         return 'void'
     elif ret_type == 'int':
         if len(param_list) == 1 and 'char' in param_list[0]:
@@ -293,7 +293,7 @@ def categorize_signature(ret_type, param_list, from_real=True):
                     'size_t', 'pid_t', 'ssize_t'))
     if param_list and all(_is_scalar_param(p) for p in param_list):
         if ret_type in ('int', 'long', 'double', 'float', 'bool', 'char',
-                        'size_t', 'void'):
+                        'size_t'):
             return 'scalar_multi'
     return None
 
