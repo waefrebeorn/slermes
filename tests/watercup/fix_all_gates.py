@@ -488,7 +488,22 @@ def generate_port_harness(category, gate_name, c_fn, params, param_list, ret_typ
         # pass its size, and trace what the function WROTE — not the status
         # code it returned.
         n_in = len(param_list) - 2
-        in_args = [_arg(j) for j in range(n_in)]
+        # Leading params may be scalars, not just char*: convert int/long/
+        # double/size_t the same way the numeric branch does, or a
+        # `void fn(const char*, int tokens, int total, char*, size_t)` gets
+        # argv[i] passed to `int` and fails to compile. json params pass raw
+        # (json_param handles parsing separately; outparam ports take strings).
+        def _oconv(j):
+            p = param_list[j]
+            head = p.split('*')[0].strip()
+            if 'char' in head:
+                return _arg(j)  # char* param: pass the argv string directly
+            if 'double' in p or 'float' in p:
+                return 'strtod(%s, NULL)' % _arg(j)
+            if 'long' in p or 'size_t' in p or 'ssize_t' in p:
+                return '(long)strtol(%s, NULL, 10)' % _arg(j)
+            return '(int)strtol(%s, NULL, 10)' % _arg(j)
+        in_args = [_oconv(j) for j in range(n_in)]
         call_args = ', '.join(in_args + ['_ob', 'sizeof(_ob)'])
         call_line = f"    int result = {c_fn}({call_args});"
         val_code = '    WCUP_VALSTR(_ob);'

@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     int _sv = dup(1);
     FILE *_dn = fopen("/dev/null", "w");
     if (_dn) dup2(fileno(_dn), 1);
-    hermes_cli_checkpoints_fmt_age(argv[i], argv[2 + (i - 2 + 1) % 5], _ob, sizeof(_ob));
+    hermes_cli_checkpoints_fmt_age(strtod(argv[i], NULL), strtod(argv[2 + (i - 2 + 1) % 5], NULL), _ob, sizeof(_ob));
     fflush(stdout);
     if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
     WCUP_VALSTR(_ob);
