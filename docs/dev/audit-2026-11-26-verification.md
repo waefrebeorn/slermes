@@ -218,7 +218,7 @@ the real port, most did not turn green: 2 still fail to link, the rest report
 mismatch, twin blind, or non-discriminating fixtures. That is the honest state: the
 symbols are now reachable, the fixtures are not yet meaningful.
 
-**3. GAP 13,937 is the largest class and the one with the least progress.** 7,215 of
+**3. GAP 13,160 is the largest class and the one with the least progress.** (13,937 before 777 stale-oracle gates were separated out: those name a quarry file that no longer exists, so no fixture work can ever close them.) 7,215 of
 those gates name a function that is not module-level in the quarry file (methods,
 nested helpers, or a name that moved), 819 name a function with no value return, 868
 need two or more arguments, 777 name a file that does not exist at that path any
@@ -239,3 +239,26 @@ that the probe and a new gate both exercise; `ar` was silently dropping 572 obje
 from the gate archive, now full-path members with 4,929/4,929; ISO parsing no longer
 mutates TZ on any build; binary IO round-trips; `util_rename_replace` replaces.
 Everything else is still a gap with a number on it.
+
+### Addendum 6 — the PORT number measured: 0 clean matches in 40
+
+A random sample of 40 PORT-class gates was run against the current binary
+(`.testbin/port_sample40.txt`, seed 7):
+
+```
+NON-DISCRIMINATING  26   every fixture yields one cup on both sides
+TWIN BLIND           5   C cups vary, the twinned Python side is constant
+MISMATCH / other     9   placeholder fixtures ("hello", "world", "test123", "NULL")
+clean MATCH          0
+```
+
+So the honest reading of "PORT 8,327" is: **8,327 gates link the port; a random one
+has a ~0% chance of producing usable evidence today.** The 36.8% figure is a
+linkage statistic and must not be quoted as parity. What the sample does prove is
+that the fleet's weakness is systemic and mechanical -- the fixtures never move the
+answer -- so it is attackable by automation rather than by 8,000 hand edits:
+`scripts/refixture_gates.py` runs each gate over a 56-input battery (empty,
+whitespace, digits, sign, JSON, arrays, paths, URLs, emails, credential shapes,
+unicode, long input, control chars), keeps the smallest input set whose cups differ
+on BOTH sides, and refuses the gate when the C side varies but the twin does not.
+The refusals are the real remaining work: a blind twin cannot be fixed by fixtures.
