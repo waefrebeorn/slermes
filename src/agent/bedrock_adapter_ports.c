@@ -60,14 +60,33 @@ bool brd_model_supports_tool_use(const char *model) {
 }
 
 /* PoP: brd_is_anthropic_bedrock_model @ agent/bedrock_adapter.py:is_anthropic_bedrock_model */
+/* ^(?:(?:global|us|eu|apac|ap|au|jp|ca|sa|me|af)\.)?anthropic\.claude, IGNORECASE.
+ *
+ * The old body was `strstr(lower(model), "anthropic")`, which accepted
+ * "my-anthropic-model" and "anthropic-not-claude" and rejected nothing that merely
+ * mentioned anthropic anywhere. Anchoring is the whole predicate: only an optional
+ * inference-profile prefix followed by the Claude family counts. */
+static const char *const k_bedrock_profiles[] = {
+    "global", "us", "eu", "apac", "ap", "au", "jp", "ca", "sa", "me", "af", NULL,
+};
+
 bool brd_is_anthropic_bedrock_model(const char *model) {
-    if (!model) return false;
+    if (!model || !*model) return false;
     char *l = lowerdup(model);
     if (!l) return false;
-    bool r = strstr(l, "anthropic") != NULL;
+    const char *rest = l;
+    for (int i = 0; k_bedrock_profiles[i]; i++) {
+        size_t n = strlen(k_bedrock_profiles[i]);
+        if (strncmp(l, k_bedrock_profiles[i], n) == 0 && l[n] == '.') {
+            rest = l + n + 1;
+            break;
+        }
+    }
+    bool r = strncmp(rest, "anthropic.claude", 16) == 0;
     free(l);
     return r;
 }
+
 
 /* PoP: brd_convert_tools_to_converse @ agent/bedrock_adapter.py:convert_tools_to_converse */
 char *brd_convert_tools_to_converse(const char *tools_json) {

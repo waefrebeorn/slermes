@@ -7,11 +7,18 @@
   "py_module": "agent/bedrock_adapter.py",
   "py_fn": "is_anthropic_bedrock_model",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "anthropic.claude-3-5-sonnet-20241022-v2:0",
+    "us.anthropic.claude-3-5-haiku-20241022-v1:0",
+    "US.ANTHROPIC.CLAUDE-3-OPUS",
+    "global.anthropic.claude-sonnet-4-5",
+    "eu.anthropic.claude-instant-v1",
+    "in.anthropic.claude-3",
+    "my-anthropic-model",
+    "anthropic-not-claude",
+    "xanthropic.claude",
+    "claude-3-5-sonnet",
+    "ap.anthropic.claude",
+    ""
   ],
   "extra_src": [
     "lib/libjson/json.c",
@@ -26,5 +33,7 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "hand_written": true,
+  "notes": "Anchored family test: optional inference-profile prefix (global/us/eu/apac/ap/au/jp/ca/sa/me/af) then anthropic.claude, case-insensitive. The port matched the substring 'anthropic' anywhere, so 'my-anthropic-model' counted as Claude and 'in.' (not a profile) was accepted. Fixtures cover both directions plus the exact boundary."
 }
