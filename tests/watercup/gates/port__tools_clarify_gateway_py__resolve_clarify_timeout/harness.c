@@ -1,43 +1,29 @@
-/* gate: port__tools_clarify_gateway_py__resolve_clarify_timeout — traced copy of tools_clarify_gateway_resolve_clarify_timeout (int_str) */
+/* gate: clarify timeout resolution — the number, not a log line.
+ *
+ * Python: clarify.timeout if explicitly set (and not null), else
+ * agent.clarify_timeout, else 90; <=0 kept verbatim; non-numeric -> 90.
+ * The port printed the answer, returned 0, defaulted to 3600 and echoed "abc".
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern int tools_clarify_gateway_resolve_clarify_timeout(const char *arg);
+extern int tools_clarify_gateway_resolve_clarify_timeout(const char *config_json);
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s tools_clarify_gateway_resolve_clarify_timeout <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s wc_clarify_timeout <config-json>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("tools_clarify_gateway_resolve_clarify_timeout");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_cap = tmpfile();
-    if (_cap) dup2(fileno(_cap), 1);
-    int result = tools_clarify_gateway_resolve_clarify_timeout(argv[i]);
-    fflush(stdout);
-    if (_cap) {
-        dup2(_sv, 1); close(_sv);
-        rewind(_cap);
-        char _ob[4096]; size_t _on = 0; int _ch;
-        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
-            _ob[_on++] = (char)_ch;
-        _ob[_on] = '\0';
-        /* strip the trailing newline the port emits */
-        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
-            _ob[--_on] = '\0';
-        WCUP_VALSTR(_ob);
-        fclose(_cap);
-    }
-
-
+        char buf[64];
+        WCUP_BEGIN("wc_clarify_timeout");
+        WCUP_BRANCH(argv[i][0] != '\0');                 /* B1: config given */
+        int t = tools_clarify_gateway_resolve_clarify_timeout(argv[i]);
+        snprintf(buf, sizeof buf, "%d", t);
+        WCUP_VALSTR(buf);                                /* V1: the resolved seconds */
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("tools_clarify_gateway_resolve_clarify_timeout");
+        WCUP_END("wc_clarify_timeout");
     }
     return 0;
 }

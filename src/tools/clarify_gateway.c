@@ -17,6 +17,8 @@
 
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "hermes_core_types.h"
+#include "hermes_yaml.h"
 #define _POSIX_C_SOURCE 200809L
 #include <time.h>
 #include <stdio.h>
@@ -139,6 +141,8 @@ int cli_tools_clarify_gateway_has_pending(const char *session_key) {
     return 0;
 }
 
+int tools_clarify_gateway_resolve_clarify_timeout(const char *config_json);
+
 /* PoP: cli_tools_clarify_gateway_get_clarify_timeout @ tools/clarify_gateway.py:get_clarify_timeout */
 int cli_tools_clarify_gateway_get_clarify_timeout(void) {
     /*
@@ -148,8 +152,20 @@ int cli_tools_clarify_gateway_get_clarify_timeout(void) {
      * unblocks the agent thread instead of pinning the running-agent guard
      * forever. Reads agent.clarify_timeout from config.yaml.
      */
-    int timeout = 600;
-    hermes_log(LOG_DEBUG, "clarify_gateway", "get_clarify_timeout: default %d seconds", timeout);
+    /* Python: resolve_clarify_timeout(load_config()) with a 90 s default. This
+     * returned a hardcoded 600 and never read config.yaml, so an unanswered
+     * prompt held the agent thread ten minutes where Python frees it in 90 s. */
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof cfg);
+    if (!hermes_config_load(&cfg, NULL)) return 90;
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse_file(cfg.config_path, &err);
+    if (!doc) { free(err); return 90; }
+    char *all = yaml_to_json_string(doc, NULL);
+    yaml_free(doc);
+    int timeout = tools_clarify_gateway_resolve_clarify_timeout(all ? all : "{}");
+    free(all);
+    hermes_log(LOG_DEBUG, "clarify_gateway", "get_clarify_timeout: %d seconds", timeout);
     return timeout;
 }
 
@@ -364,18 +380,57 @@ int cli_tools_clarify_gateway_resolve_text_response_for_session(const char *sess
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: tools_clarify_gateway_resolve_clarify_timeout @ tools/clarify_gateway.py:resolve_clarify_timeout */
-int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) {
-    /* Python: clarify.timeout > agent.clarify_timeout > 3600. Arg =
-     * "legacy\tagent\tresult". */
-    if (!arg || !*arg) { printf("3600\n"); return 0; }
-    const char *t1 = strchr(arg, '\t');
-    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
-    const char *legacy = arg;
-    const char *agent_v = t1 ? t1 + 1 : "";
-    if (strcmp(legacy, "none") != 0) { printf("%s\n", legacy); return 0; }
-    if (agent_v[0]) { printf("%s\n", agent_v); return 0; }
-    printf("3600\n");
-    return 0;
+/* Clarify timeout in seconds, the single source of truth for every surface:
+ *   clarify.timeout (when explicitly set and not null)  ->  agent.clarify_timeout
+ *   ->  90.  ``<= 0`` is kept verbatim (unlimited); anything non-numeric is 90.
+ *
+ * The former body printed the answer and returned 0, used 3600 as the default
+ * (Python: 90) and echoed the raw string, so a config of "abc" produced a 3600 s
+ * wait instead of 90 and the caller never received the number at all. */
+static bool clarify_strict_int(const char *s, int *out) {
+    if (!s) return false;
+    const char *p = s;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    int sign = 1;
+    if (*p == '+' || *p == '-') { if (*p == '-') sign = -1; p++; }
+    if (!isdigit((unsigned char)*p)) return false;
+    long long v = 0;
+    bool last_digit = false;
+    for (; *p; p++) {
+        if (isdigit((unsigned char)*p)) { v = v * 10 + (*p - '0'); last_digit = true; }
+        else if (*p == '_' && last_digit) { last_digit = false; }   /* Python allows 1_0 */
+        else break;
+    }
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    if (*p || !last_digit) return false;
+    *out = (int)(sign * v);
+    return true;
+}
+
+int tools_clarify_gateway_resolve_clarify_timeout(const char *config_json) {
+    const int fallback = 90;
+    if (!config_json || !*config_json) return fallback;
+    json_t *cfg = json_parse(config_json, NULL);
+    if (!cfg) return fallback;
+
+    json_t *raw = NULL;
+    json_t *clar = json_obj_get(cfg, "clarify");
+    if (clar && clar->type == JSON_OBJECT) raw = json_obj_get(clar, "timeout");
+    if (!raw || raw->type == JSON_NULL) {            /* Python: `raw is None` */
+        json_t *ag = json_obj_get(cfg, "agent");
+        raw = (ag && ag->type == JSON_OBJECT) ? json_obj_get(ag, "clarify_timeout") : NULL;
+        if (!raw) { json_free(cfg); return fallback; }
+    }
+
+    int out = fallback;
+    switch (raw->type) {
+    case JSON_NUMBER: out = (int)raw->num_val; break;   /* int(3.9) == 3 */
+    case JSON_BOOL:   out = raw->bool_val ? 1 : 0; break;
+    case JSON_STRING: if (!clarify_strict_int(raw->str_val, &out)) out = fallback; break;
+    default:          out = fallback; break;            /* list/dict: TypeError -> 90 */
+    }
+    json_free(cfg);
+    return out;
 }
 
 /* C analog of tools/clarify_gateway.py wait_for_response: block (bounded poll

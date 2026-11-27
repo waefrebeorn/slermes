@@ -3,15 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "tools_clarify_gateway_resolve_clarify_timeout",
+  "c_fn": "wc_clarify_timeout",
   "py_module": "tools/clarify_gateway.py",
   "py_fn": "resolve_clarify_timeout",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{}",
+    "{\"clarify\": {\"timeout\": 30}}",
+    "{\"clarify\": {\"timeout\": null}, \"agent\": {\"clarify_timeout\": 45}}",
+    "{\"agent\": {\"clarify_timeout\": 0}}",
+    "{\"clarify\": {\"timeout\": \"abc\"}}",
+    "{\"clarify\": {\"timeout\": \"120\"}}",
+    "{\"clarify\": {\"timeout\": -5}}",
+    "{\"agent\": {\"clarify_timeout\": 12.9}}",
+    "{\"clarify\": {\"timeout\": true}}",
+    "{\"clarify\": {\"timeout\": \" 7 \"}}"
   ],
   "extra_src": [
     "lib/libjson/json.c",
@@ -30,5 +35,7 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "hand_written": true,
+  "notes": "The clarify timeout that every surface reads. Python: clarify.timeout -> agent.clarify_timeout -> 90, non-numeric -> 90, <=0 verbatim. The port printed and returned 0 with a 3600 default, so a bad config held the agent for an hour instead of 90 s, and no caller ever got the number."
 }
