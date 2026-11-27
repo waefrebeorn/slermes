@@ -264,7 +264,7 @@ static int pi_file_exists(const char *path)
 }
 
 /* PoP: pi_pid_alive_matches @hermes_cli/process_identity.py:_pid_alive_matches */
-static int pi_pid_alive_matches(long pid, int has_create, double create_time)
+ int pi_pid_alive_matches(long pid, int has_create, double create_time)
 {
     char stat_path[64];
     snprintf(stat_path, sizeof(stat_path), "/proc/%ld/stat", pid);

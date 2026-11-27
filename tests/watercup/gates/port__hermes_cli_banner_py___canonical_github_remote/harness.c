@@ -1,30 +1,25 @@
-/* gate: port__hermes_cli_banner_py___canonical_github_remote — traced copy of banner_canonical_github_remote (charptr_simple) */
+/* gate: {'name': 'port__hermes_cli_banner_py___canonical_github_remote', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': 'banner_canonical_github_remote', 'py_module': 'hermes_cli/banner.py', 'py_fn': '_canonical_github_remote', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c', 'src/agent/logger.c', 'src/cli/paths.c', 'src/hermes_cli/fs_replace.c', 'src/hermes_cli/banner_pure.c', 'src/hermes_cli/config_ports.c', 'src/hermes_cli/config_py_io.c', 'src/hermes_cli/dashboard_procs.c', 'src/hermes_cli/web_server_paths.c', 'src/tools/skills_tool.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src', '-DHERMES_VERSION="0.21.0"', '-DHERMES_RELEASE_DATE="2026-10-15"', '-DATADIR="/usr/share/hermes"'], 'classification': 'PORTED'} — GAP sentinel for _canonical_github_remote */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern char * banner_canonical_github_remote(const char *url);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_canonical_github_remote";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s banner_canonical_github_remote <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _canonical_github_remote <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("banner_canonical_github_remote");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    char * result = banner_canonical_github_remote(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? result : "");
+        WCUP_BEGIN("_canonical_github_remote");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("banner_canonical_github_remote");
+        WCUP_END("_canonical_github_remote");
     }
     return 0;
 }

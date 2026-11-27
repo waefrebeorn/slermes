@@ -1,26 +1,25 @@
-/* gate: hermes_cli_plugins_cmd_py___bundled_default_on — traced copy of _bundled_default_on */
+/* gate: {'name': 'hermes_cli_plugins_cmd_py___bundled_default_on', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_bundled_default_on', 'py_module': 'hermes_cli/plugins_cmd.py', 'py_fn': '_bundled_default_on', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _bundled_default_on */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
-extern bool _bundled_default_on(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_bundled_default_on");
-    bool result = _bundled_default_on(input);
-    WCUP_VALSTR(result ? "true" : "false");
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_bundled_default_on");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_bundled_default_on";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _bundled_default_on <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_bundled_default_on");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_bundled_default_on");
     }
     return 0;
 }

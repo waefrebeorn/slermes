@@ -1,25 +1,25 @@
-/* gate: hermes_cli_web_routers_local_models_py___probe_range_support — traced copy of _probe_range_support */
+/* gate: {'name': 'hermes_cli_web_routers_local_models_py___probe_range_support', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_probe_range_support', 'py_module': 'hermes_cli/web_routers/local_models.py', 'py_fn': '_probe_range_support', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _probe_range_support */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
 
-extern int _probe_range_support(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_probe_range_support");
-    int result = _probe_range_support(input);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_probe_range_support");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_probe_range_support";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _probe_range_support <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_probe_range_support");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_probe_range_support");
     }
     return 0;
 }

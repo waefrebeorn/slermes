@@ -1,28 +1,21 @@
-/* gate: port__hermes_cli_setup_py___prompt_telegram_bot_token — traced copy of _prompt_telegram_bot_token (int_str) */
+/* gate: {'name': 'port__hermes_cli_setup_py___prompt_telegram_bot_token', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_prompt_telegram_bot_token', 'py_module': 'hermes_cli/setup.py', 'py_fn': '_prompt_telegram_bot_token', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c', 'src/agent/logger.c', 'src/cli/paths.c', 'src/hermes_cli/fs_replace.c', 'src/hermes_cli/setup_gaps.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src'], 'classification': 'PORTED'} — GAP sentinel for _prompt_telegram_bot_token */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern int _prompt_telegram_bot_token(const char *config_json);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_prompt_telegram_bot_token";
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _prompt_telegram_bot_token <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("_prompt_telegram_bot_token");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = _prompt_telegram_bot_token(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

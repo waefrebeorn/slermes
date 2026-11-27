@@ -43,7 +43,7 @@ static char *read_file_text(const char *path)
 /*
  * Returns malloc'd JSON object: {"<platform>": {"<chat_id>":"<friendly>", ...}}. */
 /* PoP: load_channel_aliases @ gateway/channel_directory.py:_load_channel_aliases */
-static json_t *load_channel_aliases(void)
+ json_t *load_channel_aliases(void)
 {
     const char *home = credfiles_get_hermes_home();
     if (!home || !home[0]) home = "/tmp/.hermes";
@@ -63,7 +63,7 @@ static json_t *load_channel_aliases(void)
 /*
  * Overlay friendly names onto directory entries by chat_id (mutates *platforms). */
 /* PoP: apply_channel_aliases @ gateway/channel_directory.py:_apply_channel_aliases */
-static void apply_channel_aliases(json_t *platforms)
+ void apply_channel_aliases(json_t *platforms)
 {
     if (!platforms || platforms->type != JSON_OBJECT) return;
     json_t *aliases = load_channel_aliases();

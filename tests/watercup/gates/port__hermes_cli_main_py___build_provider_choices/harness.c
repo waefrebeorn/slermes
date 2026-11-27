@@ -1,33 +1,21 @@
-/* gate: port__hermes_cli_main_py___build_provider_choices — traced copy of _build_provider_choices (json_ret) */
+/* gate: {'name': 'port__hermes_cli_main_py___build_provider_choices', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_build_provider_choices', 'py_module': 'hermes_cli/main.py', 'py_fn': '_build_provider_choices', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c', 'src/agent/logger.c', 'src/cli/paths.c', 'src/hermes_cli/fs_replace.c', 'src/hermes_cli/main_helpers.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src'], 'classification': 'PORTED'} — GAP sentinel for _build_provider_choices */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
-#include "json.h"
-extern void json_free(json_t *);
-extern char *json_serialize(const json_t *);
-extern json_t *json_parse(const char *, char **);
 
-
-extern json_t* _build_provider_choices(void);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_build_provider_choices";
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _build_provider_choices <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("_build_provider_choices");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    json_t* result = _build_provider_choices();
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char *_js = result ? json_serialize(result) : NULL;
-    WCUP_VALSTR(_js ? _js : "null");
-    if (result) json_free(result);
-    if (_js) free(_js);
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

@@ -1,25 +1,25 @@
-/* gate: hermes_cli_update_cmd_py___dependency_sync_would_rewrite — traced copy of _dependency_sync_would_rewrite */
+/* gate: {'name': 'hermes_cli_update_cmd_py___dependency_sync_would_rewrite', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_dependency_sync_would_rewrite', 'py_module': 'hermes_cli/update_cmd.py', 'py_fn': '_dependency_sync_would_rewrite', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _dependency_sync_would_rewrite */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
 
-extern int _dependency_sync_would_rewrite(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_dependency_sync_would_rewrite");
-    int result = _dependency_sync_would_rewrite(input);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_dependency_sync_would_rewrite");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_dependency_sync_would_rewrite";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _dependency_sync_would_rewrite <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_dependency_sync_would_rewrite");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_dependency_sync_would_rewrite");
     }
     return 0;
 }

@@ -468,7 +468,7 @@ char *get_read_block_error(const char *path)
 }
 
 /* PoP: classify_write_denial @ agent/file_safety.py:_classify_write_denial */
-static const char *classify_write_denial(const char *resolved)
+ const char *classify_write_denial(const char *resolved)
 {
     if (!resolved || !*resolved)
         return "credential";

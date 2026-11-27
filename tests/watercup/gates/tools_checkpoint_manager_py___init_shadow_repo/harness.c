@@ -1,25 +1,25 @@
-/* gate: tools_checkpoint_manager_py___init_shadow_repo — traced copy of _init_shadow_repo */
+/* gate: {'name': 'tools_checkpoint_manager_py___init_shadow_repo', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_init_shadow_repo', 'py_module': 'agent/checkpoints/manager.py', 'py_fn': '_init_shadow_repo', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _init_shadow_repo */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
 
-extern int _init_shadow_repo(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_init_shadow_repo");
-    int result = _init_shadow_repo(input);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_init_shadow_repo");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_init_shadow_repo";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _init_shadow_repo <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_init_shadow_repo");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_init_shadow_repo");
     }
     return 0;
 }

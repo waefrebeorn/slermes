@@ -273,7 +273,7 @@ int learning_mutations_parse_memory_id(const char *node_id, char *out_source,
 
 /* PoP: lm_memory_local_index @ agent/learning_mutations.py:_memory_local_index */
 /* local index: which entry within the source's own file */
-static int lm_memory_local_index(const char *hermes_home, const char *source, int gidx)
+ int lm_memory_local_index(const char *hermes_home, const char *source, int gidx)
 {
     char *cards_json = learning_graph_memory_cards(hermes_home);
     json_t *cards = json_parse(cards_json ? cards_json : "[]", NULL);

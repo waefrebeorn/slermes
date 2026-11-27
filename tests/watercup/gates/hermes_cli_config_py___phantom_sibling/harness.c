@@ -1,25 +1,25 @@
-/* gate: hermes_cli_config_py___phantom_sibling — traced copy of _phantom_sibling */
+/* gate: {'name': 'hermes_cli_config_py___phantom_sibling', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_phantom_sibling', 'py_module': 'hermes_cli/config.py', 'py_fn': '_phantom_sibling', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _phantom_sibling */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
 
-extern int _phantom_sibling(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_phantom_sibling");
-    int result = _phantom_sibling(input);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_phantom_sibling");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_phantom_sibling";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _phantom_sibling <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_phantom_sibling");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_phantom_sibling");
     }
     return 0;
 }

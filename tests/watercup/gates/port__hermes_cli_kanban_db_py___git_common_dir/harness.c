@@ -1,26 +1,21 @@
-/* gate: port__hermes_cli_kanban_db_py___git_common_dir — traced copy of _git_common_dir (charptr_simple) */
+/* gate: {'name': 'port__hermes_cli_kanban_db_py___git_common_dir', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_git_common_dir', 'py_module': 'hermes_cli/kanban_db.py', 'py_fn': '_git_common_dir', 'inputs': ['/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_h7y9w5c1.txt', '/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_e1hozn8d.txt', '/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_ad1u2sa9.txt', '/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_u1yycazt.txt', '/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_d4z6qpri.txt'], 'extra_src': ['lib/libjson/json.c', 'src/agent/logger.c', 'src/cli/paths.c', 'src/hermes_cli/fs_replace.c', 'src/hermes_cli/kanban_db.c', 'src/hermes_cli/lifecycle.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src', '-DHERMES_VERSION="0.21.0"', '-DHERMES_RELEASE_DATE="2026-10-15"', '-DATADIR="/usr/share/hermes"'], 'classification': 'PORTED'} — GAP sentinel for _git_common_dir */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern char* _git_common_dir(const char* path);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_git_common_dir";
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _git_common_dir <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("_git_common_dir");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    char* result = _git_common_dir(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? result : "");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

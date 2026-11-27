@@ -488,7 +488,7 @@ skill_ledger_entry_t *get_entry(const char *entry_id) {
 
 /* True when path sits under root (handles ".." traversal). */
 /* PoP: is_within @ tools/skill_ledger.py:_is_within */
-static bool is_within(const char *root, const char *path) {
+ bool is_within(const char *root, const char *path) {
     char rcopy[4608], pcopy[4608];
     snprintf(rcopy, sizeof(rcopy), "%s", root);
     snprintf(pcopy, sizeof(pcopy), "%s", path);

@@ -39,7 +39,7 @@ static char *ur_strdup(const char *s)
 }
 
 /* PoP: _utc_now_iso @hermes_cli/update_receipt.py:_utc_now_iso */
-static char *ur_utc_now_iso(void)
+ char *ur_utc_now_iso(void)
 {
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);

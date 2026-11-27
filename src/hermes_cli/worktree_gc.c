@@ -314,7 +314,7 @@ char *wgc_worktree_lock_is_live(const char *repo_root,
 
 /* du -sm, best-effort. */
 /* PoP: wgc_tree_size_mb @hermes_cli/worktree_gc.py:_tree_size_mb */
-static int wgc_tree_size_mb(const char *path, int *has_size)
+ int wgc_tree_size_mb(const char *path, int *has_size)
 {
     *has_size = 0;
     char *const args[] = {"-sm", (char *)path, NULL};

@@ -64,7 +64,7 @@ char *cron_monitor_hash_output(const char *output) {
 
 /* PoP: fetch_monitor_url @ cron/monitor.py:_fetch_monitor_url */
 /* Bounded GET of a monitor URL. Returns true+body on 2xx. */
-static bool fetch_monitor_url(const char *url, char **out) {
+ bool fetch_monitor_url(const char *url, char **out) {
     if (!url) { if (out) *out = NULL; return false; }
     const char *l = strchr(url, ':');
     char scheme[16];

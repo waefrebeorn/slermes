@@ -1041,7 +1041,15 @@ def _watercup_object_archive():
         with open(rsp, "w") as f:
             f.write("\n".join(o.replace("\\", "/") for o in objs))
         ar = shutil.which("ar") or "C:/winlibs/mingw64/bin/ar.exe"
-        subprocess.run([ar, "rcs", path, "@" + rsp], capture_output=True,
+        # `P` keeps the FULL PATH as the member name. Without it ar stores the
+        # basename, and 572 of 4,929 objects collide (cron.o x4, ansi_strip.o x2,
+        # ...): the archive then silently holds ONE of each, and a gate whose port
+        # object lost the collision fails to link with "undefined reference" to
+        # symbols the port plainly defines. Rebuild from scratch so stale members
+        # from the old naming are not left behind.
+        with suppress(OSError):
+            os.remove(path)
+        subprocess.run([ar, "rcsP", path, "@" + rsp], capture_output=True,
                        stdin=subprocess.DEVNULL)
     _ARCHIVE_CACHE.append(path)
     return path

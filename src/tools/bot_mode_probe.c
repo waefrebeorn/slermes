@@ -205,7 +205,7 @@ static void bmp_profile_name(const char *home, char *out, size_t n) {
 
 /* --- _is_bot_managed ---------------------------------------------- */
 /* PoP: bmp_is_bot_managed @ tools/bot_mode_probe.py:_is_bot_managed */
-static int bmp_is_bot_managed(const char *profile_dir) {
+ int bmp_is_bot_managed(const char *profile_dir) {
     char meta[4608];
     path_join(meta, sizeof(meta), profile_dir, "profile.yaml");
     char *raw = read_text(meta);
@@ -285,7 +285,7 @@ static void bmp_roster_free(bmp_roster_entry *arr, size_t count) {
 
 /* --- _soul_has_protocol ------------------------------------------- */
 /* PoP: bmp_soul_has_protocol @ tools/bot_mode_probe.py:_soul_has_protocol */
-static int bmp_soul_has_protocol(const char *profile_dir) {
+ int bmp_soul_has_protocol(const char *profile_dir) {
     char soul[4608];
     path_join(soul, sizeof(soul), profile_dir, "SOUL.md");
     char *raw = read_text(soul);

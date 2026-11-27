@@ -167,7 +167,7 @@ static char *html_to_text(const char *html) {
  * Populates g_tab.elements[] with descriptions like "[@e1] Link: text".
  * Returns element count. */
 /* PoP: index_elements @ tools/browser_tool.py:_index_elements */
-static int index_elements(const char *html) {
+ int index_elements(const char *html) {
     g_tab.element_count = 0;
     if (!html) return 0;
 

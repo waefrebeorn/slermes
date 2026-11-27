@@ -1495,7 +1495,7 @@ char *registry_get_registered_toolset_aliases(void) {
 /* Internal unlocked: does toolset have at least one available tool?
  * Mirrors Python _toolset_has_exposable_tools. */
 /* PoP: toolset_has_exposable_tools @ tools/registry.py:_toolset_has_exposable_tools */
-static bool toolset_has_exposable_tools(const char *toolset) {
+ bool toolset_has_exposable_tools(const char *toolset) {
     for (size_t i = 0; i < g_registry.count; i++) {
         if (strcmp(g_registry.tools[i].toolset, toolset) == 0 &&
             g_registry.tools[i].available)

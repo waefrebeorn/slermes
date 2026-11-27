@@ -1,13 +1,14 @@
 """Shared instrument for the gate-audit scripts: the PORT's symbol set.
 
-Both audits used to nm `tests/watercup/build/_all_objects.a` directly. That
-archive is only rebuilt by the gate runner, so after a normal `make` it is STALE:
-symbols defined in freshly built objects are absent, and the audit then reports a
-harness as "missing"/"shadows" nothing. Measured: `backup_should_exclude` is `T`
-in src/hermes_cli/backup.o and was reported absent because the archive predated it.
+The symbol set is read from EVERY built object, not from
+`tests/watercup/build/_all_objects.a`. That archive is a convenience: GNU ar
+stores members by basename, so two objects with the same basename collapse and
+the archive silently under-reports the port. It is also stale unless the gate
+runner rebuilt it (measured: `backup_should_exclude` is `T` in backup.o and was
+reported absent).
 
-This rebuilds the archive when any member object is newer, exactly like
-wc_run._watercup_object_archive(), and caches the (mtime,size) -> symbols JSON.
+nm is run in batches over the object list and the results merged, with a cache
+keyed on (object count, newest mtime).
 """
 from __future__ import annotations
 
@@ -19,7 +20,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 BUILD = REPO / "tests" / "watercup" / "build"
-ARCHIVE = BUILD / "_all_objects.a"
+CACHE = BUILD / "_port_symbols_objs.json"
 
 
 def _members() -> list[str]:
@@ -28,37 +29,28 @@ def _members() -> list[str]:
     return [o for o in objs if os.path.basename(o) != "main.o"]
 
 
-def ensure_archive() -> Path:
-    BUILD.mkdir(parents=True, exist_ok=True)
-    objs = _members()
-    newest = max((os.path.getmtime(o) for o in objs), default=0)
-    if not (ARCHIVE.exists() and os.path.getmtime(ARCHIVE) >= newest):
-        rsp = BUILD / "_ar_members_audit.rsp"
-        rsp.write_text("\n".join(o.replace("\\", "/") for o in objs))
-        ar = os.environ.get("AR") or "ar"
-        subprocess.run([ar, "rcs", str(ARCHIVE), "@" + str(rsp)],
-                       capture_output=True, stdin=subprocess.DEVNULL)
-    return ARCHIVE
-
-
 def port_symbols() -> set[str]:
-    archive = ensure_archive()
-    cache = BUILD / "_port_symbols_audit.json"
-    key = [os.path.getmtime(archive), os.path.getsize(archive)]
+    objs = _members()
+    if not objs:
+        return set()
+    key = [len(objs), max(os.path.getmtime(o) for o in objs)]
     try:
-        blob = json.loads(cache.read_text())
+        blob = json.loads(CACHE.read_text())
         if blob.get("key") == key:
             return set(blob["syms"])
     except (OSError, ValueError, KeyError):
         pass
     nm = os.environ.get("NM") or "nm"
-    r = subprocess.run([nm, "-g", "--defined-only", str(archive)],
-                       capture_output=True, text=True, errors="replace")
-    syms = set()
-    for line in r.stdout.splitlines():
-        p = line.split()
-        if len(p) >= 3:
-            syms.add(p[2])
+    syms: set[str] = set()
+    for i in range(0, len(objs), 200):
+        chunk = objs[i:i + 200]
+        r = subprocess.run([nm, "-g", "--defined-only"] + chunk,
+                           capture_output=True, text=True, errors="replace")
+        for line in r.stdout.splitlines():
+            parts = line.split()
+            if len(parts) >= 3:
+                syms.add(parts[2])
     if syms:
-        cache.write_text(json.dumps({"key": key, "syms": sorted(syms)}))
+        BUILD.mkdir(parents=True, exist_ok=True)
+        CACHE.write_text(json.dumps({"key": key, "syms": sorted(syms)}))
     return syms

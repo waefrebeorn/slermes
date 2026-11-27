@@ -166,7 +166,7 @@ char *loops_state_to_json(const loop_state_t *s) {
 }
 
 /* PoP: loops_meta_key @ hermes_cli/loops.py:_meta_key */
-static char *loops_meta_key(const char *session_id) {
+ char *loops_meta_key(const char *session_id) {
     if (!session_id) return NULL;
     size_t n = strlen(session_id) + 8;
     char *k = malloc(n);

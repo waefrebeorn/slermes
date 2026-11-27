@@ -197,6 +197,139 @@ char *datetime_format_utc(time_t ts, const char *fmt) {
 
 /* ─── Timezone ─────────────────────────────────────────── */
 
+
+/* ================================================================
+ *  Named-zone offsets that do not depend on the CRT's TZ support
+ * ================================================================
+ *
+ * Measured on Windows 11 / mingw64 / msvcrt (tests/win_semantics/probe.c):
+ *   TZ=America/New_York  -> offset -3600  (EDT is -14400)
+ *   TZ=UTC               -> local hour 9  (UTC hour was 14)
+ * i.e. _tzset() ignores the TZ variable here ENTIRELY, so every
+ * setenv("TZ",name)+tzset()+localtime()/mktime() sequence silently uses the
+ * machine zone. datetime_tz_offset()/datetime_format_tz() were built on exactly
+ * that idiom, so a named zone rendered the machine's wall clock.
+ *
+ * The table below carries the standard offset plus one of four DST rules. It is
+ * deliberately small: it covers the zones this program offers (the cron timezone
+ * list and the common aliases). An unknown zone still falls back to the old TZ
+ * path, which is correct on POSIX and no worse than before on Windows.
+ */
+typedef enum { TZR_NONE = 0, TZR_US, TZR_EU, TZR_AU } tz_rule_t;
+
+typedef struct {
+    const char *name;
+    int std_off;   /* seconds east of UTC */
+    int dst_off;
+    tz_rule_t rule;
+} tz_entry_t;
+
+static const tz_entry_t WC_TZ[] = {
+    {"UTC", 0, 0, TZR_NONE},
+    {"Etc/UTC", 0, 0, TZR_NONE},
+    {"GMT", 0, 0, TZR_NONE},
+    {"America/New_York", -18000, -14400, TZR_US},
+    {"US/Eastern", -18000, -14400, TZR_US},
+    {"America/Chicago", -21600, -18000, TZR_US},
+    {"US/Central", -21600, -18000, TZR_US},
+    {"America/Denver", -25200, -21600, TZR_US},
+    {"US/Mountain", -25200, -21600, TZR_US},
+    {"America/Los_Angeles", -28800, -25200, TZR_US},
+    {"US/Pacific", -28800, -25200, TZR_US},
+    {"America/Phoenix", -25200, -25200, TZR_NONE},
+    {"Europe/London", 0, 3600, TZR_EU},
+    {"Europe/Berlin", 3600, 7200, TZR_EU},
+    {"Europe/Paris", 3600, 7200, TZR_EU},
+    {"Europe/Madrid", 3600, 7200, TZR_EU},
+    {"Europe/Rome", 3600, 7200, TZR_EU},
+    {"Asia/Kolkata", 19800, 19800, TZR_NONE},
+    {"Asia/Hong_Kong", 28800, 28800, TZR_NONE},
+    {"Asia/Shanghai", 28800, 28800, TZR_NONE},
+    {"Asia/Singapore", 28800, 28800, TZR_NONE},
+    {"Asia/Tokyo", 32400, 32400, TZR_NONE},
+    {"Asia/Dubai", 14400, 14400, TZR_NONE},
+    {"Australia/Sydney", 36000, 39600, TZR_AU},
+    {"Australia/Melbourne", 36000, 39600, TZR_AU},
+    {"America/Sao_Paulo", -10800, -10800, TZR_NONE},
+};
+
+/* Days since 1970-01-01 for a civil date (Howard Hinnant's algorithm). */
+static long days_from_civil(int y, int m, int d) {
+    y -= m <= 2;
+    long era = (y >= 0 ? y : y - 399) / 400;
+    unsigned yoe = (unsigned)(y - era * 400);
+    unsigned doy = (unsigned)((153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1);
+    unsigned doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    return era * 146097L + (long)doe - 719468L;
+}
+
+/* 0 = Sunday. */
+static int weekday_of(int y, int m, int d) {
+    long days = days_from_civil(y, m, d);
+    return (int)((days % 7 + 11) % 7);  /* 1970-01-01 was a Thursday */
+}
+
+/* Day-of-month of the nth (1-based) Sunday, or the LAST Sunday when nth == 0. */
+static int nth_sunday(int y, int m, int nth) {
+    int first_wd = weekday_of(y, m, 1);      /* 0 = Sun */
+    int first_sun = 1 + ((7 - first_wd) % 7);
+    if (nth == 0) {
+        static const int mdays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int last = mdays[m - 1];
+        if (m == 2 && ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)) last = 29;
+        while (first_sun + 7 <= last) first_sun += 7;
+        return first_sun;
+    }
+    return first_sun + 7 * (nth - 1);
+}
+
+static long utc_of(int y, int m, int d, int hh) {
+    return days_from_civil(y, m, d) * 86400L + hh * 3600L;
+}
+
+/* UTC instant -> seconds east of UTC for this zone, DST included. */
+static int wc_tz_offset_utc(const tz_entry_t *e, time_t t) {
+    if (e->rule == TZR_NONE || e->std_off == e->dst_off)
+        return e->std_off;
+
+    /* Civil year of the instant in standard time decides the rule's dates. */
+    time_t std_local = t + e->std_off;
+    struct tm lt;
+    if (!gmtime_r(&std_local, &lt))
+        return e->std_off;
+    int y = lt.tm_year + 1900;
+
+    if (e->rule == TZR_US) {
+        /* 2nd Sunday March 02:00 std -> 1st Sunday November 02:00 dst (both local). */
+        long start = utc_of(y, 3, nth_sunday(y, 3, 2), 2) - e->std_off;
+        long end   = utc_of(y, 11, nth_sunday(y, 11, 1), 2) - e->dst_off;
+        return ((long)t >= start && (long)t < end) ? e->dst_off : e->std_off;
+    }
+    if (e->rule == TZR_EU) {
+        /* Last Sunday March/October at 01:00 UTC. */
+        long start = utc_of(y, 3, nth_sunday(y, 3, 0), 1);
+        long end   = utc_of(y, 10, nth_sunday(y, 10, 0), 1);
+        return ((long)t >= start && (long)t < end) ? e->dst_off : e->std_off;
+    }
+    /* TZR_AU: first Sunday October 02:00 std -> first Sunday April 03:00 dst,
+     * i.e. the DST window wraps the new year. */
+    {
+        long start = utc_of(y, 10, nth_sunday(y, 10, 1), 2) - e->std_off;
+        long end   = utc_of(y, 4, nth_sunday(y, 4, 1), 3) - e->dst_off;
+        return ((long)t >= start || (long)t < end) ? e->dst_off : e->std_off;
+    }
+}
+
+static const tz_entry_t *wc_tz_lookup(const char *name) {
+    if (!name || !*name)
+        return NULL;
+    for (size_t i = 0; i < sizeof(WC_TZ) / sizeof(WC_TZ[0]); i++) {
+        if (strcmp(WC_TZ[i].name, name) == 0)
+            return &WC_TZ[i];
+    }
+    return NULL;
+}
+
 int datetime_localtime_offset(void) {
     time_t now = time(NULL);
     struct tm tm_utc;
@@ -208,6 +341,13 @@ int datetime_localtime_offset(void) {
 
 int datetime_tz_offset(const char *tz_name) {
     if (!tz_name) return 0;
+
+    /* Named zones are resolved from the table first: on Windows the CRT ignores
+     * TZ, so the old path returned the machine offset for every zone. */
+    const tz_entry_t *e = wc_tz_lookup(tz_name);
+    if (e)
+        return wc_tz_offset_utc(e, time(NULL));
+
     time_t now = time(NULL);
     struct tm tm_utc;
     if (!gmtime_r(&now, &tm_utc)) return 0;
@@ -226,6 +366,21 @@ int datetime_tz_offset(const char *tz_name) {
 
 char *datetime_format_tz(time_t ts, const char *tz_name, const char *fmt) {
     if (!tz_name || !fmt) return NULL;
+
+    /* Table path: shift the instant and format as UTC. Independent of the CRT's
+     * TZ support, which is broken on Windows (measured: TZ=UTC ignored). */
+    const tz_entry_t *e = wc_tz_lookup(tz_name);
+    if (e) {
+        int off = wc_tz_offset_utc(e, ts);
+        time_t shifted = ts + off;
+        struct tm result;
+        char buf[256];
+        if (!gmtime_r(&shifted, &result)) return NULL;
+        result.tm_isdst = (off != e->std_off);
+        if (strftime(buf, sizeof(buf), fmt, &result) == 0) return NULL;
+        return strdup(buf);
+    }
+
     char *saved_tz = getenv("TZ");
     char *saved_copy = saved_tz ? strdup(saved_tz) : NULL;
     setenv("TZ", tz_name, 1);

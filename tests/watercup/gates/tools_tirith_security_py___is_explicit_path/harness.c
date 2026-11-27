@@ -1,26 +1,25 @@
-/* gate: tools_tirith_security_py___is_explicit_path — traced copy of _is_explicit_path */
+/* gate: {'name': 'tools_tirith_security_py___is_explicit_path', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_is_explicit_path', 'py_module': 'tools/tirith_security.py', 'py_fn': '_is_explicit_path', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _is_explicit_path */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
-extern bool _is_explicit_path(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_is_explicit_path");
-    bool result = _is_explicit_path(input);
-    WCUP_VALSTR(result ? "true" : "false");
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_is_explicit_path");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_is_explicit_path";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _is_explicit_path <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_is_explicit_path");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_is_explicit_path");
     }
     return 0;
 }

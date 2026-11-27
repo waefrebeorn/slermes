@@ -1,26 +1,25 @@
-/* gate: gateway_session_py____getattr__ — traced copy of _session_dunder_getattr */
+/* gate: {'name': 'gateway_session_py____getattr__', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_session_dunder_getattr', 'py_module': 'gateway/session.py', 'py_fn': '__getattr__', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for __getattr__ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
-extern bool _session_dunder_getattr(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_session_dunder_getattr");
-    bool result = _session_dunder_getattr(input);
-    WCUP_VALSTR(result ? "true" : "false");
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_session_dunder_getattr");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "__getattr__";
 }
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _session_dunder_getattr <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s __getattr__ <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("__getattr__");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("__getattr__");
     }
     return 0;
 }

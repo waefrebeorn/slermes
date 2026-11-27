@@ -425,7 +425,7 @@ static void read_extract_sheet_part(const char *target, char *out, size_t outsz)
 }
 
 /* PoP: read_extract_col_index @ tools/read_extract.py:_col_index */
-static int read_extract_col_index(const char *ref)
+ int read_extract_col_index(const char *ref)
 {
     int idx = 0;
     for (const char *c = ref; *c; c++) {

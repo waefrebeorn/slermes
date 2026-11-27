@@ -87,7 +87,7 @@ static bool str_has(const char *s, const char *needle) {
 
 /* PoP: _mask_simple_quotes @ tools/shell_heredoc.py:_mask_simple_quotes */
 /* ---- _mask_simple_quotes ---- */
-static char *mask_simple_quotes(const char *command) {
+ char *mask_simple_quotes(const char *command) {
     size_t n = strlen(command);
     /* worst-case expansion: result never longer than 2*n + small */
     char *result = malloc(n * 2 + 1);
@@ -174,7 +174,7 @@ typedef struct {
 /* ---- _parse_heredoc_operator ----
  * Returns true and fills *out_end, *out_delimiter (heap), *out_strip_tabs,
  * *out_quoted on success; false when not a well-formed opener. */
-static bool parse_heredoc_operator(const char *command, size_t index,
+ bool parse_heredoc_operator(const char *command, size_t index,
                                     size_t *out_end, char **out_delimiter,
                                     bool *out_strip_tabs, bool *out_quoted) {
     size_t n = strlen(command);

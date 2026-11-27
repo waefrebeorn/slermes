@@ -100,7 +100,7 @@ static const char *global_env_prefixes[] = {
 };
 
 /* PoP: secret_scope_is_global_env @ agent/secret_scope.py:_is_global_env */
-static bool secret_scope_is_global_env(const char *name)
+ bool secret_scope_is_global_env(const char *name)
 {
     if (!name) return false;
 

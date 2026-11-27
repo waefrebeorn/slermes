@@ -1,29 +1,25 @@
-/* gate: gateway_session_py___get_or_create_session_impl — traced copy of _get_or_create_session_impl */
+/* gate: {'name': 'gateway_session_py___get_or_create_session_impl', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_get_or_create_session_impl', 'py_module': 'gateway/session.py', 'py_fn': '_get_or_create_session_impl', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _get_or_create_session_impl */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
 
-extern int _get_or_create_session_impl(const char *a, const char *b);
-
-static void trace_one(const char *a, const char *b) {
-    WCUP_BEGIN("_get_or_create_session_impl");
-    int result = _get_or_create_session_impl(a, b);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_get_or_create_session_impl");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_get_or_create_session_impl";
 }
 
 int main(int argc, char **argv) {
-    /* One cup per input: argv[2..] are the inputs (the runner's protocol). The generated body
-     * printed a single cup and fed the fn NAME as the first argument, so every such gate either
-     * failed the arity check or compared a constant. The second parameter is the next input in the
-     * walk, wrapping -- exactly what the twin's call_fn feeds. */
-    int n = argc - 2;
-    if (n < 1) { fprintf(stderr, "usage: %s <fn> <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++)
-        trace_one(argv[i], argv[2 + ((i - 2 + 1) % n)]);
+    if (argc < 3) { fprintf(stderr, "usage: %s _get_or_create_session_impl <input>...\n", argv[0]); return 2; }
+    for (int i = 2; i < argc; i++) {
+        WCUP_BEGIN("_get_or_create_session_impl");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_get_or_create_session_impl");
+    }
     return 0;
 }

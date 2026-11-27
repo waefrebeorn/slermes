@@ -1,26 +1,25 @@
-/* gate: hermes_cli_models_py___ai_gateway_model_is_free — traced copy of _ai_gateway_model_is_free */
+/* gate: {'name': 'hermes_cli_models_py___ai_gateway_model_is_free', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_ai_gateway_model_is_free', 'py_module': 'hermes_cli/models.py', 'py_fn': '_ai_gateway_model_is_free', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _ai_gateway_model_is_free */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
-extern bool _ai_gateway_model_is_free(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_ai_gateway_model_is_free");
-    bool result = _ai_gateway_model_is_free(input);
-    WCUP_VALSTR(result ? "true" : "false");
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_ai_gateway_model_is_free");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_ai_gateway_model_is_free";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _ai_gateway_model_is_free <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_ai_gateway_model_is_free");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_ai_gateway_model_is_free");
     }
     return 0;
 }

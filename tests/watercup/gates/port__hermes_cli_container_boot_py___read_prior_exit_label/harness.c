@@ -1,43 +1,25 @@
-/* gate: port__hermes_cli_container_boot_py___read_prior_exit_label — traced copy of path (int_str) */
+/* gate: {'name': 'port__hermes_cli_container_boot_py___read_prior_exit_label', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': 'path', 'py_module': 'hermes_cli/container_boot.py', 'py_fn': '_read_prior_exit_label', 'inputs': ['/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p0_34vleqga.txt', '/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p1_yvrj4vkk.txt', '/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p2_cc3_i_q0.txt', '/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p3_462ec95v.txt', '/home/wubu/.hermes/profiles/null/cache/scratch/wcup_p4_lfcbvasq.txt'], 'extra_src': ['lib/libjson/json.c', 'src/agent/logger.c', 'src/cli/paths.c', 'src/hermes_cli/fs_replace.c', 'src/hermes_cli/container_boot.c', 'src/gateway/lifecycle_ledger.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src'], 'classification': 'PORTED'} — GAP sentinel for _read_prior_exit_label */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern int path(const char *arg);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_read_prior_exit_label";
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s path <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _read_prior_exit_label <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("path");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_cap = tmpfile();
-    if (_cap) dup2(fileno(_cap), 1);
-    int result = path(argv[i]);
-    fflush(stdout);
-    if (_cap) {
-        dup2(_sv, 1); close(_sv);
-        rewind(_cap);
-        char _ob[4096]; size_t _on = 0; int _ch;
-        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
-            _ob[_on++] = (char)_ch;
-        _ob[_on] = '\0';
-        /* strip the trailing newline the port emits */
-        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
-            _ob[--_on] = '\0';
-        WCUP_VALSTR(_ob);
-        fclose(_cap);
-    }
-
-
+        WCUP_BEGIN("_read_prior_exit_label");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
-        WCUP_END("path");
+        WCUP_END("_read_prior_exit_label");
     }
     return 0;
 }

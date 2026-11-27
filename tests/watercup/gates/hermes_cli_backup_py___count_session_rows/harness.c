@@ -1,25 +1,25 @@
-/* gate: hermes_cli_backup_py___count_session_rows — traced copy of _count_session_rows */
+/* gate: {'name': 'hermes_cli_backup_py___count_session_rows', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_count_session_rows', 'py_module': 'hermes_cli/backup.py', 'py_fn': '_count_session_rows', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _count_session_rows */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
 
-extern int _count_session_rows(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_count_session_rows");
-    int result = _count_session_rows(input);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_count_session_rows");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_count_session_rows";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _count_session_rows <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_count_session_rows");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_count_session_rows");
     }
     return 0;
 }

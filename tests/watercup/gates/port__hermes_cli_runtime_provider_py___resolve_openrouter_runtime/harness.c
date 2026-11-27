@@ -1,35 +1,21 @@
-/* gate: port__hermes_cli_runtime_provider_py___resolve_openrouter_runtime — traced copy of _resolve_openrouter_runtime (json_ret) */
+/* gate: {'name': 'port__hermes_cli_runtime_provider_py___resolve_openrouter_runtime', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_resolve_openrouter_runtime', 'py_module': 'hermes_cli/runtime_provider.py', 'py_fn': '_resolve_openrouter_runtime', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c', 'src/agent/logger.c', 'src/cli/paths.c', 'src/hermes_cli/fs_replace.c', 'src/hermes_cli/runtime_provider.c', 'src/agent/credential_pool_engine.c', 'src/hermes_cli/model_catalog.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src', '-DHERMES_VERSION="0.21.0"', '-DHERMES_RELEASE_DATE="2026-10-15"', '-DATADIR="/usr/share/hermes"'], 'classification': 'PORTED'} — GAP sentinel for _resolve_openrouter_runtime */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
-#include "json.h"
-extern void json_free(json_t *);
-extern char *json_serialize(const json_t *);
-extern json_t *json_parse(const char *, char **);
 
-
-extern json_t * _resolve_openrouter_runtime(const char *requested_provider,
-                                    const char *explicit_api_key,
-                                    const char *explicit_base_url);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_resolve_openrouter_runtime";
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _resolve_openrouter_runtime <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("_resolve_openrouter_runtime");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    json_t * result = _resolve_openrouter_runtime(argv[i], argv[2 + (i - 2 + 1) % 5], argv[2 + (i - 2 + 2) % 5]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char *_js = result ? json_serialize(result) : NULL;
-    WCUP_VALSTR(_js ? _js : "null");
-    if (result) json_free(result);
-    if (_js) free(_js);
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

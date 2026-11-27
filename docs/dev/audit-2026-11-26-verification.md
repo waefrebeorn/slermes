@@ -123,3 +123,76 @@ own venv `site-packages` on `sys.path`), inputs are `expr|from_epoch` probes
 expression), and the twin emits the harness's three `WCUP_BRANCH` points itself
 because `TwinBase.branch()` can only emit one. Result: **5/5 cups match live
 croniter** — the port's `cron_next` now has real evidence behind it, not a sentinel.
+
+### Addendum 2 — the largest gap, measured, and what can actually be filled
+
+**GAP (13,300) is where the volume is, and it is not mechanically closable.**
+8,451 of those gates name a (module, function) that a `PoP:` annotation in `src/`
+claims to implement; 7,342 point at a symbol the built port exports; 3,247 even
+have a signature the converter can bind (one `const char*`, or an out-buffer),
+after dropping symbols that serve several gates at once (`cmd_mcp` is claimed by 16
+gates — a dispatcher, not the function).
+
+Automated conversion over a filtered batch of 80 of the best-looking candidates:
+**0 converted.** The reason is uniform and structural: the live twin returns no
+comparable value. `port__hermes_cli_banner_py___format_update_notice` and friends
+take dictionaries, config objects or no argument at all, so `twin.call(input)` raises
+for every probe. Their harness can feed a string; the Python function cannot accept
+one. That is the same wall `libcron_next_run` climbed by hand: a twin that builds the
+receiver and typed fixtures, plus a C side that emits the harness's branch ladder.
+Any claim that these 13k gates can be swept is false; the work is per-gate design.
+
+**MISSING (776) was two different defects and is now triaged (measured):**
+
+- **634 harnesses name a symbol no source defines** — not a failing test, a
+  placeholder. All rewritten as GAP sentinels, so they read as gaps instead of
+  build failures in every fleet run (`scripts/triage_missing_symbols.py --apply-gap`).
+- **100 call a function the port implements but declares `static`** — real code
+  with no evidence, because a gate cannot link to it. 25 were de-static'd where the
+  file's own `PoP:` annotation names the gate's (module, function) and the C symbol
+  matches the Python name. The other 75 are `str_in_list`-style annotations on a
+  generic helper, i.e. the gate's PoP is wrong, not the port.
+- **42 are defined in a source the binary does not build** — `src/plugins/platforms/qqbot/main.c`
+  and `infrastructure_stubs.c`. Those gates can never link; they need the plugin
+  object or their own copy of the semantics.
+
+### Addendum 3 — the gate archive was losing 572 objects
+
+`_watercup_object_archive()` ran `ar rcs` over the object list. GNU ar stores a
+member by BASENAME, and 233 basenames collide in this tree (`cron.o` x4,
+`ansi_strip.o` x2, ...): 4,929 objects became 4,357 members, so the archive held
+one object per name and any gate whose port object lost the collision failed to
+link with "undefined reference" to symbols the port plainly defines. Measured on
+25 gates after a rebuild: 13 BUILD FAIL from this cause, 2 after switching to
+`ar rcsP` (full-path member names). The archive now carries 4,929 members and
+35,720 symbols, matching the union of the objects; symbol audits read the objects
+directly rather than the archive for the same reason.
+
+### Addendum 4 — the Windows TZ trap was live in the port
+
+`tests/win_semantics/probe.c` measures the traps against the real port objects.
+First run, Windows 11 + mingw64 + msvcrt:
+
+```
+PASS binary round trip             256/256 bytes identical
+INFO text mode translation active   wrote 3 bytes in text mode, on disk 4
+PASS rename replaces existing      target holds 'new'      (util_rename_replace)
+INFO unlink of open file           denied, errno=13 -- the POSIX idiom has no equivalent
+PASS errno on missing parent       errno=2, GetLastError=3
+INFO IANA TZ ignored               TZ=America/New_York -> offset -3600 (EDT is -14400)
+INFO TZ=UTC ignored                TZ=UTC -> local hour 9 (UTC hour was 14)
+INFO clock quantised to the tick   QPC 1ms-sleep delta max=16138us
+```
+
+TZ=UTC being ignored means every `setenv("TZ","UTC"); tzset(); mktime()` idiom in
+the tree is the machine zone wearing a UTC label. `datetime_tz_offset()` and
+`datetime_format_tz()` were built on exactly that idiom, so a named zone rendered
+the machine wall clock. Both now resolve through a table (26 zones, US/EU/AU DST
+rules computed from the date, plus fixed offsets) and never touch TZ. Verified by
+the probe: 6/6 zone cases exact, including both DST directions and the southern
+hemisphere, and `Asia/Kolkata` at +19800.
+
+What the probe still cannot settle, and why it matters: text mode is ACTIVE
+(3 bytes -> 4 on disk), and 474 `fopen()` calls carry no `b`. Blanket binary is
+still the wrong answer (C text mode strips `\r` on read, matching Python's
+universal newlines), so the sites need classifying one by one.

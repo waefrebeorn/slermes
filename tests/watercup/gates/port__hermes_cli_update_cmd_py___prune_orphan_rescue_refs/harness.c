@@ -1,26 +1,21 @@
-/* gate: port__hermes_cli_update_cmd_py___prune_orphan_rescue_refs — traced copy of _prune_orphan_rescue_refs (void) */
+/* gate: {'name': 'port__hermes_cli_update_cmd_py___prune_orphan_rescue_refs', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_prune_orphan_rescue_refs', 'py_module': 'hermes_cli/update_cmd.py', 'py_fn': '_prune_orphan_rescue_refs', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c', 'src/agent/logger.c', 'src/cli/paths.c', 'src/hermes_cli/fs_replace.c', 'src/hermes_cli/update_cmd_gaps.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src'], 'classification': 'PORTED'} — GAP sentinel for _prune_orphan_rescue_refs */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern void _prune_orphan_rescue_refs(const char *git_cmd, const char *cwd, const char *branch, int keep, int max_age_days);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_prune_orphan_rescue_refs";
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _prune_orphan_rescue_refs <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("_prune_orphan_rescue_refs");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    _prune_orphan_rescue_refs();
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR("void");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

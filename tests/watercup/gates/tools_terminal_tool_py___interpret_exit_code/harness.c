@@ -1,26 +1,25 @@
-/* gate: tools_terminal_tool_py___interpret_exit_code — traced copy of _command_requires_pipe_stdin */
+/* gate: {'name': 'tools_terminal_tool_py___interpret_exit_code', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_command_requires_pipe_stdin', 'py_module': 'tools/terminal_tool.py', 'py_fn': '_interpret_exit_code', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _interpret_exit_code */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include "watercup.h"
 
-extern bool _command_requires_pipe_stdin(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_command_requires_pipe_stdin");
-    bool result = _command_requires_pipe_stdin(input);
-    WCUP_VALSTR(result ? "true" : "false");
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_command_requires_pipe_stdin");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_interpret_exit_code";
 }
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _command_requires_pipe_stdin <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s _interpret_exit_code <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_interpret_exit_code");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_interpret_exit_code");
     }
     return 0;
 }

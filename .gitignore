@@ -259,3 +259,4 @@ tests/watercup/unresolved_paths.json
 /NULL
 /world/
 /test123
+tests/win_semantics/probe.exe

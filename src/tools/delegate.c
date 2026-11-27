@@ -1164,7 +1164,7 @@ static bool delegate_acp_binary_available(void)
 
 /* PoP: delegate_model_background_value @ tools/delegate_tool.py:_model_background_value */
 /* Background flag for the model-facing dispatch path. */
-static bool delegate_model_background_value(int delegate_depth)
+ bool delegate_model_background_value(int delegate_depth)
 {
     return delegate_depth <= 0;
 }

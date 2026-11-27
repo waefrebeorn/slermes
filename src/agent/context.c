@@ -15,7 +15,7 @@
  * ================================================================ */
 
 /* PoP: estimate_tokens @ hermes_cli/context_switch_guard.py:_estimate_tokens */
-static int estimate_tokens(const char *text) {
+ int estimate_tokens(const char *text) {
     if (!text) return 0;
     size_t len = strlen(text);
     return (int)(len / 4) + 1; /* rough estimate */

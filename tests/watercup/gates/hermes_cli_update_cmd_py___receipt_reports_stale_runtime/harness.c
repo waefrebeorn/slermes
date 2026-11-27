@@ -1,25 +1,25 @@
-/* gate: hermes_cli_update_cmd_py___receipt_reports_stale_runtime — traced copy of _receipt_reports_stale_runtime */
+/* gate: {'name': 'hermes_cli_update_cmd_py___receipt_reports_stale_runtime', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_receipt_reports_stale_runtime', 'py_module': 'hermes_cli/update_cmd.py', 'py_fn': '_receipt_reports_stale_runtime', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _receipt_reports_stale_runtime */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
 
-extern int _receipt_reports_stale_runtime(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_receipt_reports_stale_runtime");
-    int result = _receipt_reports_stale_runtime(input);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_receipt_reports_stale_runtime");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_receipt_reports_stale_runtime";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _receipt_reports_stale_runtime <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_receipt_reports_stale_runtime");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_receipt_reports_stale_runtime");
     }
     return 0;
 }

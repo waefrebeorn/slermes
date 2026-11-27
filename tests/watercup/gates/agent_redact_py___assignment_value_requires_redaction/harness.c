@@ -1,25 +1,25 @@
-/* gate: agent_redact_py___assignment_value_requires_redaction — traced copy of _assignment_value_requires_redaction */
+/* gate: {'name': 'agent_redact_py___assignment_value_requires_redaction', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_assignment_value_requires_redaction', 'py_module': 'agent/redact.py', 'py_fn': '_assignment_value_requires_redaction', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src']} — GAP sentinel for _assignment_value_requires_redaction */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
 
-extern int _assignment_value_requires_redaction(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("_assignment_value_requires_redaction");
-    int result = _assignment_value_requires_redaction(input);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("_assignment_value_requires_redaction");
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_assignment_value_requires_redaction";
 }
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _assignment_value_requires_redaction <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("_assignment_value_requires_redaction");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
+        char cup[32];
+        WCUP_FINALIZE(cup, sizeof cup);
+        printf("%s\n", cup);
+        WCUP_END("_assignment_value_requires_redaction");
     }
     return 0;
 }

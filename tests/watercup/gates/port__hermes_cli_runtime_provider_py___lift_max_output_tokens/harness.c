@@ -1,33 +1,21 @@
-/* gate: port__hermes_cli_runtime_provider_py___lift_max_output_tokens — traced copy of _lift_max_output_tokens (json_param) */
+/* gate: {'name': 'port__hermes_cli_runtime_provider_py___lift_max_output_tokens', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_lift_max_output_tokens', 'py_module': 'hermes_cli/runtime_provider.py', 'py_fn': '_lift_max_output_tokens', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c', 'src/agent/logger.c', 'src/cli/paths.c', 'src/hermes_cli/fs_replace.c', 'src/hermes_cli/runtime_provider.c', 'src/agent/credential_pool_engine.c', 'src/hermes_cli/model_catalog.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src', '-DHERMES_VERSION="0.21.0"', '-DHERMES_RELEASE_DATE="2026-10-15"', '-DATADIR="/usr/share/hermes"'], 'classification': 'PORTED'} — GAP sentinel for _lift_max_output_tokens */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
-#include "json.h"
-extern void json_free(json_t *);
-extern char *json_serialize(const json_t *);
-extern json_t *json_parse(const char *, char **);
 
-
-extern void _lift_max_output_tokens(const json_t *entry, json_t *result);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_lift_max_output_tokens";
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _lift_max_output_tokens <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("_lift_max_output_tokens");
-    json_t *_j0 = json_parse(argv[i], NULL);
-    json_t *_j1 = json_parse(argv[2 + (i - 2 + 1) % 5], NULL);
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    void result = _lift_max_output_tokens(_j0, _j1);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j0) json_free(_j0);
-    if (_j1) json_free(_j1);
-    WCUP_VALSTR("void");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

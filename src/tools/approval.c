@@ -412,7 +412,7 @@ static const char *UNSAFE_CLASS_PATTERNS[] = {
 };
 
 /* PoP: is_unsafe_root_binary @ hermes_cli/approvals_suggest.py:_unsafe_root_binary */
-static bool is_unsafe_root_binary(const char *token) {
+ bool is_unsafe_root_binary(const char *token) {
     if (!token) return false;
     /* tok = token.lower().rsplit("/", 1)[-1] */
     char lower[256];

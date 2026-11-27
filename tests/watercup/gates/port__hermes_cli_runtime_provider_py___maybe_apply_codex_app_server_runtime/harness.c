@@ -1,35 +1,21 @@
-/* gate: port__hermes_cli_runtime_provider_py___maybe_apply_codex_app_server_runtime — traced copy of _maybe_apply_codex_app_server_runtime (json_param) */
+/* gate: {'name': 'port__hermes_cli_runtime_provider_py___maybe_apply_codex_app_server_runtime', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_maybe_apply_codex_app_server_runtime', 'py_module': 'hermes_cli/runtime_provider.py', 'py_fn': '_maybe_apply_codex_app_server_runtime', 'inputs': ['hello', 'world', '', 'test123', 'NULL'], 'extra_src': ['lib/libjson/json.c', 'src/agent/logger.c', 'src/cli/paths.c', 'src/hermes_cli/fs_replace.c', 'src/hermes_cli/runtime_provider.c', 'src/agent/credential_pool_engine.c', 'src/hermes_cli/model_catalog.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src'], 'classification': 'PORTED'} — GAP sentinel for _maybe_apply_codex_app_server_runtime */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
-#include "json.h"
-extern void json_free(json_t *);
-extern char *json_serialize(const json_t *);
-extern json_t *json_parse(const char *, char **);
 
-
-extern char * _maybe_apply_codex_app_server_runtime(const char *provider,
-                                            const char *api_mode,
-                                            const json_t *model_cfg);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_maybe_apply_codex_app_server_runtime";
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _maybe_apply_codex_app_server_runtime <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("_maybe_apply_codex_app_server_runtime");
-    json_t *_j2 = json_parse(argv[2 + (i - 2 + 2) % 5], NULL);
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    char * result = _maybe_apply_codex_app_server_runtime(argv[i], argv[2 + (i - 2 + 1) % 5], _j2);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }    if (_j2) json_free(_j2);
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

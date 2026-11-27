@@ -1,26 +1,21 @@
-/* gate: port__hermes_cli_update_cmd_py___filter_non_gateway_concurrent_instances — traced copy of _filter_non_gateway_concurrent_instances (charptr_simple) */
+/* gate: {'name': 'port__hermes_cli_update_cmd_py___filter_non_gateway_concurrent_instances', 'subsystem': 'auto', 'kind': 'cup', 'c_src': 'harness.c', 'c_fn': '_filter_non_gateway_concurrent_instances', 'py_module': 'hermes_cli/update_cmd.py', 'py_fn': '_filter_non_gateway_concurrent_instances', 'inputs': [0, 1, 42, 1024, -7], 'extra_src': ['lib/libjson/json.c', 'src/agent/logger.c', 'src/cli/paths.c', 'src/hermes_cli/fs_replace.c', 'src/hermes_cli/update_cmd_gaps.c'], 'cflags': ['-I', 'include', '-I', 'lib', '-I', 'lib/libjson', '-I', 'src', '-DHERMES_VERSION="0.21.0"', '-DHERMES_RELEASE_DATE="2026-10-15"', '-DATADIR="/usr/share/hermes"'], 'classification': 'PORTED'} — GAP sentinel for _filter_non_gateway_concurrent_instances */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
 
-
-extern char * _filter_non_gateway_concurrent_instances(const char *matches);
+/* No C port exists — this is a REAL_GAP function */
+static const char *gap_sentinel(const char *input) {
+    (void)input;
+    return "_filter_non_gateway_concurrent_instances";
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s _filter_non_gateway_concurrent_instances <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("_filter_non_gateway_concurrent_instances");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    char * result = _filter_non_gateway_concurrent_instances(argv[i]);
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    WCUP_VALSTR(result ? result : "");
+        const char *result = gap_sentinel(argv[i]);
+        WCUP_VALSTR(result);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);

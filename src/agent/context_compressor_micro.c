@@ -106,7 +106,7 @@ static long cc_micro_compact_align_boundary_backward(json_t *messages, long idx)
 static long cc_micro_compact_find_tail_cut_by_tokens(cc_micro_compact_state_t *st,
                                                       json_t *messages,
                                                       long head_end, long token_budget);
-static long cc_micro_compact_estimate_msg_budget_tokens(json_t *msg);
+ long cc_micro_compact_estimate_msg_budget_tokens(json_t *msg);
 static long cc_micro_compact_find_last_user_message_idx(json_t *messages, long end_idx);
 static long cc_micro_compact_find_last_assistant_message_idx(json_t *messages, long end_idx);
 static long cc_micro_compact_find_turn_pair_end(json_t *messages, long user_idx);
@@ -1044,7 +1044,7 @@ static long cc_micro_compact_find_tail_cut_by_tokens(cc_micro_compact_state_t *s
 
 /* ── _estimate_msg_budget_tokens (micro-compaction version) ──────────── */
 /* PoP: cc_micro_compact_estimate_msg_budget_tokens @ agent/context_compressor.py:_estimate_msg_budget_tokens */
-static long cc_micro_compact_estimate_msg_budget_tokens(json_t *msg) {
+ long cc_micro_compact_estimate_msg_budget_tokens(json_t *msg) {
     if (!msg || msg->type != JSON_OBJECT) return 10;
     /* content length + full tool_call envelope */
     json_t *content = json_obj_get(msg, "content");

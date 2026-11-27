@@ -897,7 +897,7 @@ static void migrate_split_pairing_dirs(pairing_store_t *st) {
  * ──────────────────────────────────────────────────────────────── */
 
 /* PoP: platform_uses_whatsapp_identity @ gateway/pairing.py:_platform_uses_whatsapp_identity */
-static bool platform_uses_whatsapp_identity(const char *platform) {
+ bool platform_uses_whatsapp_identity(const char *platform) {
     return platform && (strcmp(platform, "whatsapp") == 0 ||
                         strcmp(platform, "whatsapp_cloud") == 0);
 }
