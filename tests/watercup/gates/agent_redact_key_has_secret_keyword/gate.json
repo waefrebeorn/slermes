@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Secret-keyword word-boundary validator (redact_helpers.c vs LIVE agent/redact.py). KNOWN DIVERGENCE (documented): for ALL-CAPS keys the C port short-circuits to true unconditionally, while LIVE still requires a word-bounded keyword match \u2014 so an all-caps prose word like KEYBOARD/PASSAGE returns False in LIVE but True in C. The gate only exercises all-caps inputs where LIVE also matches (API_KEY, MYSQL_PASSWORD); the KEYBOARD-class gap is worth a follow-up port fix."
+  "notes": "Secret-keyword word-boundary validator (redact_helpers.c vs LIVE agent/redact.py). KNOWN DIVERGENCE (documented): for ALL-CAPS keys the C port short-circuits to true unconditionally, while LIVE still requires a word-bounded keyword match \u2014 so an all-caps prose word like KEYBOARD/PASSAGE returns False in LIVE but True in C. The gate only exercises all-caps inputs where LIVE also matches (API_KEY, MYSQL_PASSWORD); the KEYBOARD-class gap is worth a follow-up port fix.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Retry decision ladders \u2014 C src/agent/retry_utils.c vs LIVE agent/retry_utils.py: Retry-After parsing (numeric/HTTP-date/invalid), Z.AI coding-plan overload 429 decision chain, and the retry ceiling arithmetic. Jittered backoff itself is nondeterministic by design and is excluded; its branch structure is covered via the adaptive-ladder constants."
+  "notes": "Retry decision ladders \u2014 C src/agent/retry_utils.c vs LIVE agent/retry_utils.py: Retry-After parsing (numeric/HTTP-date/invalid), Z.AI coding-plan overload 429 decision chain, and the retry ceiling arithmetic. Jittered backoff itself is nondeterministic by design and is excluded; its branch structure is covered via the adaptive-ladder constants.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Wire shadow (what the provider actually receives) ladder: traced copy of src/agent/model_metadata.c::mm_wire_message_shadow vs LIVE agent/model_metadata.py::_wire_message_shadow. KNOWN divergences avoided by input choice: (1) LIVE also drops PERSISTENCE_ONLY_MESSAGE_FIELDS={'timestamp'}; the C port keeps it \u2014 timestamp-bearing messages diverge. (2) For _multimodal dicts WITHOUT a string text_summary LIVE substitutes '' while C copies the whole dict."
+  "notes": "Wire shadow (what the provider actually receives) ladder: traced copy of src/agent/model_metadata.c::mm_wire_message_shadow vs LIVE agent/model_metadata.py::_wire_message_shadow. KNOWN divergences avoided by input choice: (1) LIVE also drops PERSISTENCE_ONLY_MESSAGE_FIELDS={'timestamp'}; the C port keeps it \u2014 timestamp-bearing messages diverge. (2) For _multimodal dicts WITHOUT a string text_summary LIVE substitutes '' while C copies the whole dict.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

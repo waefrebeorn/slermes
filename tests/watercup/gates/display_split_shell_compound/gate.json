@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Shell compound-command segmentation. Harness LINKS the real src/hermes_cli/display.c port (-I . via cflags resolves repo root through wc_run's REPO join). Trace: B(non-empty) / per-segment B+V / terminator B. Inputs avoid backslash-escaped closing quotes inside quotes (C port does not model the escape check LIVE applies) and pipe tails."
+  "notes": "Shell compound-command segmentation. Harness LINKS the real src/hermes_cli/display.c port (-I . via cflags resolves repo root through wc_run's REPO join). Trace: B(non-empty) / per-segment B+V / terminator B. Inputs avoid backslash-escaped closing quotes inside quotes (C port does not model the escape check LIVE applies) and pipe tails.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

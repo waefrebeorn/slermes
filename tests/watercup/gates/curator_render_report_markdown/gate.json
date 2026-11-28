@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Report-to-markdown renderer (curator_ports.c vs LIVE agent/curator.py). Rungs only on the SHARED surface (B1 dict / B2 llm_error / B3 auto_transitions-dict); the C port is a REDUCED render \u2014 it omits the LLM-pass sections, list sections, and reads a `final_summary` key LIVE never uses, and formats duration as '%dm %ds' unconditionally. Inputs restricted to empty list sections, non-empty model/provider strings (LIVE falls back to '(not resolved)' on EMPTY STRINGS, C does not \u2014 excluded), and integer durations >= 0."
+  "notes": "Report-to-markdown renderer (curator_ports.c vs LIVE agent/curator.py). Rungs only on the SHARED surface (B1 dict / B2 llm_error / B3 auto_transitions-dict); the C port is a REDUCED render \u2014 it omits the LLM-pass sections, list sections, and reads a `final_summary` key LIVE never uses, and formats duration as '%dm %ds' unconditionally. Inputs restricted to empty list sections, non-empty model/provider strings (LIVE falls back to '(not resolved)' on EMPTY STRINGS, C does not \u2014 excluded), and integer durations >= 0.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

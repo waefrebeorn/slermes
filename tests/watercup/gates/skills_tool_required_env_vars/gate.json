@@ -15,5 +15,8 @@
   ],
   "notes": [
     "C port (skills_tool.c::skills_tool_required_env_vars) is a minimal strstr-based name extractor; LIVE adds _ENV_VAR_NAME_RE validation, prompt/help normalization, required_for/optional flags and dedupe. Gate pins the agreed subset (plain valid names, no duplicates, list-or-dict entry forms, missing key handled by caller contract); richer entries are a documented divergence."
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

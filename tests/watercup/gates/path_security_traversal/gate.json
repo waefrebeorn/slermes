@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Path traversal component detector \u2014 C char-scan (src/tools/path_security.c::cli_tools_path_security_has_traversal_component) vs LIVE tools/path_security.py::has_traversal_component (Path.parts membership). Rung contract: one B per component compared against '..'."
+  "notes": "Path traversal component detector \u2014 C char-scan (src/tools/path_security.c::cli_tools_path_security_has_traversal_component) vs LIVE tools/path_security.py::has_traversal_component (Path.parts membership). Rung contract: one B per component compared against '..'.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

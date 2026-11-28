@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Links the REAL port (learning_graph_render.o::learning_graph_render_build_chart_buckets). Harness traces B1(nodes empty)/B2(untimed) then summarizes each bucket as label|ts|skills|memories|rec|node-ids; twin drives LIVE _build_chart_buckets identically. Inputs restricted to the agreed region: untimed inputs keep rec values non-decreasing in node order (LIVE sorts by rec, C iterates unsorted \u2014 stable sort makes them agree); timestamps numeric only (C lg_ts uses strtod on strings, a documented narrowing); max_rows always positive (LIVE returns [] for <=0 in the untimed path while C clamps to 1 bin \u2014 divergence avoided)."
+  "notes": "Links the REAL port (learning_graph_render.o::learning_graph_render_build_chart_buckets). Harness traces B1(nodes empty)/B2(untimed) then summarizes each bucket as label|ts|skills|memories|rec|node-ids; twin drives LIVE _build_chart_buckets identically. Inputs restricted to the agreed region: untimed inputs keep rec values non-decreasing in node order (LIVE sorts by rec, C iterates unsorted \u2014 stable sort makes them agree); timestamps numeric only (C lg_ts uses strtod on strings, a documented narrowing); max_rows always positive (LIVE returns [] for <=0 in the untimed path while C clamps to 1 bin \u2014 divergence avoided).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

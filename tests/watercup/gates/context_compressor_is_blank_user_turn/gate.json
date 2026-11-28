@@ -15,5 +15,8 @@
   ],
   "notes": [
     "Traced copy of context_compressor_pure.c::cc_is_blank_user_turn vs LIVE ContextCompressor._is_blank_user_turn over 13 message shapes (null/string/array content, empty strings, text blocks, image/unknown blocks, summary metadata, non-user role). DOCUMENTED DIVERGENCE: C tests string emptiness with strlen==0 while LIVE uses .strip(), so whitespace-only text is blank in LIVE but non-blank in C \u2014 such inputs excluded. Content-based summary-content detection (_is_context_summary_content) is outside the traced surface."
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Slash-command confirmation decision ladder \u2014 C lib/libslashconfirm/slash_confirm.c (resolve + clear_if_stale) vs LIVE tools/slash_confirm.py. Clock skew is eliminated by injecting created_at on both sides (age = now - created_at). Rungs: entry found / confirm_id match / within timeout / handler present; stale: found / stale."
+  "notes": "Slash-command confirmation decision ladder \u2014 C lib/libslashconfirm/slash_confirm.c (resolve + clear_if_stale) vs LIVE tools/slash_confirm.py. Clock skew is eliminated by injecting created_at on both sides (age = now - created_at). Rungs: entry found / confirm_id match / within timeout / handler present; stale: found / stale.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

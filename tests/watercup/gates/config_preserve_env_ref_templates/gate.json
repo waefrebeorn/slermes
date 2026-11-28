@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Env-ref template preservation on config save. Harness traces a faithful C copy of src/hermes_cli/config_py_pure.c::config_py_preserve_env_ref_templates (real file unlinked; no cup instrumentation). All refs use guaranteed-unset var names so expansion is env-independent; ${VAR:-def} inputs excluded because LIVE's legacy arm keeps the literal while C honors the default (documented divergence). Name-matched array path not exercised (inputs avoid arrays of named objects)."
+  "notes": "Env-ref template preservation on config save. Harness traces a faithful C copy of src/hermes_cli/config_py_pure.c::config_py_preserve_env_ref_templates (real file unlinked; no cup instrumentation). All refs use guaranteed-unset var names so expansion is env-independent; ${VAR:-def} inputs excluded because LIVE's legacy arm keeps the literal while C honors the default (documented divergence). Name-matched array path not exercised (inputs avoid arrays of named objects).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

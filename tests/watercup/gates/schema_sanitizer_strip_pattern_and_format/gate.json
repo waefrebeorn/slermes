@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Reactive llama.cpp grammar-recovery sanitizer: strips pattern/format keywords from tool schemas (sibling-of-type nodes only, so literal properties named 'pattern' survive). Traced copy of src/tools/schema_sanitizer.c::cli_tools_schema_sanitizer__strip_pattern_and_format + static strip_pf_walk vs LIVE tools/schema_sanitizer.py::strip_pattern_and_format. Cup hashes the full branch ladder (top dispatch fn-params/tool-params + recursive walk with schema-marker detection) plus the total stripped-count V event; twin also asserts the traced count equals the LIVE function's real return. Empty-tools rung (LIVE 'if not tools') is unreachable via argv JSON strings and is excluded from inputs."
+  "notes": "Reactive llama.cpp grammar-recovery sanitizer: strips pattern/format keywords from tool schemas (sibling-of-type nodes only, so literal properties named 'pattern' survive). Traced copy of src/tools/schema_sanitizer.c::cli_tools_schema_sanitizer__strip_pattern_and_format + static strip_pf_walk vs LIVE tools/schema_sanitizer.py::strip_pattern_and_format. Cup hashes the full branch ladder (top dispatch fn-params/tool-params + recursive walk with schema-marker detection) plus the total stripped-count V event; twin also asserts the traced count equals the LIVE function's real return. Empty-tools rung (LIVE 'if not tools') is unreachable via argv JSON strings and is excluded from inputs.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -32,5 +32,8 @@
     "src"
   ],
   "hand_written": true,
-  "notes": "Allowlist persistence, observed from disk: approve two hooks, revoke one, approve another. Both sides read back the (event|command) set they persisted. The port printed 'approval recorded' and stored nothing, so every restart lost every approval; the old gate hashed that print."
+  "notes": "Allowlist persistence, observed from disk: approve two hooks, revoke one, approve another. Both sides read back the (event|command) set they persisted. The port printed 'approval recorded' and stored nothing, so every restart lost every approval; the old gate hashed that print.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "public_url normaliser (dashboard_auth_prefix.c vs LIVE prefix.py). Inputs avoid three documented cosmetic divergences outside this class: (1) LIVE strips BOTH ends before the reject-char scan while the port only lstrips (trailing-space inputs diverge); (2) urlparse lowercases the scheme so HTTP:// passes LIVE but not the port; (3) LIVE requires a non-empty netloc so https:///path is rejected by LIVE but accepted by the port."
+  "notes": "public_url normaliser (dashboard_auth_prefix.c vs LIVE prefix.py). Inputs avoid three documented cosmetic divergences outside this class: (1) LIVE strips BOTH ends before the reject-char scan while the port only lstrips (trailing-space inputs diverge); (2) urlparse lowercases the scheme so HTTP:// passes LIVE but not the port; (3) LIVE requires a non-empty netloc so https:///path is rejected by LIVE but accepted by the port.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

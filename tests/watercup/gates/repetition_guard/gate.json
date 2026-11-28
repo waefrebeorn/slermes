@@ -18,5 +18,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Repetition-loop guard (issue #86581): fail-open on empty, short-input rejection, line-repeat fast path, window-repeat general path, clean text. Harness links the REAL src/agent/repetition_guard.c so the cup traces shipped code. Probes are files under the gate dir; '-' is the empty probe."
+  "notes": "Repetition-loop guard (issue #86581): fail-open on empty, short-input rejection, line-repeat fast path, window-repeat general path, clean text. Harness links the REAL src/agent/repetition_guard.c so the cup traces shipped code. Probes are files under the gate dir; '-' is the empty probe.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "harness is still the generated gap_sentinel() and c_fn is absent from src: no C port behind this gate."
 }

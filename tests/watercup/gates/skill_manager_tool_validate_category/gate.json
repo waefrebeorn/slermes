@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Category validation ladder (null/slash/len/chars/ok). C port skill_manager_val.c::skill_val_validate_category traced as faithful copy; twin calls LIVE _validate_category and traces same rung order with class-code value events. DOCUMENTED DIVERGENCES (inputs excluded): (1) LIVE strips whitespace + treats empty as valid; C has no strip so '' / ' x ' -> chars-error. (2) LIVE VALID_NAME_RE anchors first char [a-z0-9]; C valid_name_chars accepts leading '-'/'.', e.g. '-abc' ok in C, rejected by LIVE. (3) Message TEXT differs (C omits category name). Branch-ladder parity holds on the exercised clean-input class."
+  "notes": "Category validation ladder (null/slash/len/chars/ok). C port skill_manager_val.c::skill_val_validate_category traced as faithful copy; twin calls LIVE _validate_category and traces same rung order with class-code value events. DOCUMENTED DIVERGENCES (inputs excluded): (1) LIVE strips whitespace + treats empty as valid; C has no strip so '' / ' x ' -> chars-error. (2) LIVE VALID_NAME_RE anchors first char [a-z0-9]; C valid_name_chars accepts leading '-'/'.', e.g. '-abc' ok in C, rejected by LIVE. (3) Message TEXT differs (C omits category name). Branch-ladder parity holds on the exercised clean-input class.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

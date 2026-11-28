@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Compression threshold + automatic-compaction guard ladder: below-threshold no-compress, summary-LLM cooldown block, anti-thrash ineffective block (ineffective>=2 OR fallback streak>=2), and clear-to-fire. Cooldown passed as remaining seconds so both sides build an equivalent monotonic deadline."
+  "notes": "Compression threshold + automatic-compaction guard ladder: below-threshold no-compress, summary-LLM cooldown block, anti-thrash ineffective block (ineffective>=2 OR fallback streak>=2), and clear-to-fire. Cooldown passed as remaining seconds so both sides build an equivalent monotonic deadline.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

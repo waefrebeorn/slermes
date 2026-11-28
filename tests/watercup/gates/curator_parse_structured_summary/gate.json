@@ -26,5 +26,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Structured-summary YAML extraction. Harness LINKS the real src/agent/curator_ports.c::cur_parse_structured_summary with real libyaml (lib/libyaml/yaml.o) and traces a derived-shape ladder over its JSON output; twin calls LIVE _parse_structured_summary (PyYAML path). KNOWN divergences avoided by input choice: LIVE regex accepts ```YAML case-insensitively while C's fallback lowercases only for the exact ```yaml/```yml probes; malformed-YAML handling differs in which bodies parse."
+  "notes": "Structured-summary YAML extraction. Harness LINKS the real src/agent/curator_ports.c::cur_parse_structured_summary with real libyaml (lib/libyaml/yaml.o) and traces a derived-shape ladder over its JSON output; twin calls LIVE _parse_structured_summary (PyYAML path). KNOWN divergences avoided by input choice: LIVE regex accepts ```YAML case-insensitively while C's fallback lowercases only for the exact ```yaml/```yml probes; malformed-YAML handling differs in which bodies parse.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Host-header DNS-rebinding gate (web_server_auth.c::ws_is_accepted_host vs LIVE hermes_cli/web_server.py::_is_accepted_host). Traced copy of the real C port (function is static in its TU; body copied verbatim). Covers: port suffix stripping, IPv6 brackets, wildcard binds, loopback alias acceptance, case-insensitive exact match, trailing-whitespace trim. EXCLUDED inputs (documented divergence): empty host_header (C lacks the falsy guard LIVE has \u2014 extra V events), unclosed bracket '[::1' (C's fallback copies strlen-2 chars, dropping the last char; LIVE strips '[]' chars and keeps '::1'). Leading-whitespace inputs excluded: LIVE .strip() trims both ends, C trims only trailing."
+  "notes": "Host-header DNS-rebinding gate (web_server_auth.c::ws_is_accepted_host vs LIVE hermes_cli/web_server.py::_is_accepted_host). Traced copy of the real C port (function is static in its TU; body copied verbatim). Covers: port suffix stripping, IPv6 brackets, wildcard binds, loopback alias acceptance, case-insensitive exact match, trailing-whitespace trim. EXCLUDED inputs (documented divergence): empty host_header (C lacks the falsy guard LIVE has \u2014 extra V events), unclosed bracket '[::1' (C's fallback copies strlen-2 chars, dropping the last char; LIVE strips '[]' chars and keeps '::1'). Leading-whitespace inputs excluded: LIVE .strip() trims both ends, C trims only trailing.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

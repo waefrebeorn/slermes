@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "note": "I/O abstracted to a shared in-memory tree so the cup reflects the decision structure (hidden-filter, isDirectory flag, sort key) of fs_list. Language-agnostic; proves the cup applies to I/O-adjacent logic."
+  "note": "I/O abstracted to a shared in-memory tree so the cup reflects the decision structure (hidden-filter, isDirectory flag, sort key) of fs_list. Language-agnostic; proves the cup applies to I/O-adjacent logic.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

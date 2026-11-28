@@ -37,5 +37,8 @@
     "src"
   ],
   "hand_written": true,
-  "notes": "Dashboard auth allowlist: exact API paths, exact icons, prefix matches. /api/status/extension must be gated even though /api/status is public; /loginx is public because Python prefix-matches /login. The port took an invented argument and printed the answer, so the lists were never used."
+  "notes": "Dashboard auth allowlist: exact API paths, exact icons, prefix matches. /api/status/extension must be gated even though /api/status is public; /loginx is public because Python prefix-matches /login. The port took an invented argument and printed the answer, so the lists were never used.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

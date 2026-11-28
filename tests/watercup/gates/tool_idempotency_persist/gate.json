@@ -13,5 +13,8 @@
     "lib/libomap"
   ],
   "extra_src": [],
-  "notes": "Restart-survival: tool_idem_put flushes to <HERMES_HOME>/idempotency_cache.json; a fresh cache attaching the same file recovers prior (non-expired) entries. Proves safe-retry survives process restart, not just in-process. Harness creates its own mkdtemp dir (no argv)."
+  "notes": "Restart-survival: tool_idem_put flushes to <HERMES_HOME>/idempotency_cache.json; a fresh cache attaching the same file recovers prior (non-expired) entries. Proves safe-retry survives process restart, not just in-process. Harness creates its own mkdtemp dir (no argv).",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "relabel_note": "py_module missing from the gate record (or absent from the payload); cannot be validated against python."
 }

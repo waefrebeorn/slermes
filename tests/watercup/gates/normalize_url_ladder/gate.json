@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "URL normalization scheme/host ladder: empty passthrough, non-http(s) passthrough, hostname presence, IDNA/punycode host rewrite, percent-encoding of path/query/fragment. Harness mirrors the shipped cli_tools_url_safety_normalize_url_for_request ladder (minus hermes_log)."
+  "notes": "URL normalization scheme/host ladder: empty passthrough, non-http(s) passthrough, hostname presence, IDNA/punycode host rewrite, percent-encoding of path/query/fragment. Harness mirrors the shipped cli_tools_url_safety_normalize_url_for_request ladder (minus hermes_log).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

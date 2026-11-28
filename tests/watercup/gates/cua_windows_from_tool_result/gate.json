@@ -28,5 +28,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "cua-driver list_windows result-shape ladder. Harness LINKS the real src/tools/computer_use/cua_backend_methods.c::cua_windows_from_tool_result (+ lib/libjson) and re-derives the same decision ladder around it for tracing; V carries the returned window count from each side."
+  "notes": "cua-driver list_windows result-shape ladder. Harness LINKS the real src/tools/computer_use/cua_backend_methods.c::cua_windows_from_tool_result (+ lib/libjson) and re-derives the same decision ladder around it for tracing; V carries the returned window count from each side.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Free-tier model detection. Harness links the REAL C port (credits_tracker.o::cli_agent_credits_tracker_is_free_tier_model); twin imports LIVE agent/credits_tracker.py::is_free_tier_model and traces the identical branch ladder (empty-model / :free suffix / stealth/ prefix / base_url gate / boolean result). PORT FIX APPLIED: credits_tracker.c previously omitted the stealth/-prefix signal (LIVE docstring point 2), returning False on e.g. 'stealth/ox-alpha'; added the strncmp prefix check and rebuilt credits_tracker.o. Pricing-cache branch (non-empty base_url): both sides yield False here \u2014 LIVE's in-process _pricing_cache is empty in this environment (cache-miss fail-closed) and C omits the CLI-only cache entirely; documented contract narrowing, not exercised deeper."
+  "notes": "Free-tier model detection. Harness links the REAL C port (credits_tracker.o::cli_agent_credits_tracker_is_free_tier_model); twin imports LIVE agent/credits_tracker.py::is_free_tier_model and traces the identical branch ladder (empty-model / :free suffix / stealth/ prefix / base_url gate / boolean result). PORT FIX APPLIED: credits_tracker.c previously omitted the stealth/-prefix signal (LIVE docstring point 2), returning False on e.g. 'stealth/ox-alpha'; added the strncmp prefix check and rebuilt credits_tracker.o. Pricing-cache branch (non-empty base_url): both sides yield False here \u2014 LIVE's in-process _pricing_cache is empty in this environment (cache-miss fail-closed) and C omits the CLI-only cache entirely; documented contract narrowing, not exercised deeper.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

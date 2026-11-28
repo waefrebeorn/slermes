@@ -15,5 +15,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Exchange-finder splice cursor (context_compressor.c::cc_find_one_exchange vs LIVE agent/context_compressor.py::_find_one_exchange). Harness is a rung-for-rung traced copy of the REAL C port (incl. cc_is_assistant_with_output / summary-marker helpers); the twin drives the LIVE ContextCompressor._is_context_summary_message classmethod for marker detection. Inputs encode messages as ROLE|content-nonempty|tool_calls-nonempty|summary tokens. KNOWN DIVERGENCE (excluded from walk): LIVE's first walk breaks on assistant role alone, while the C port requires non-empty content/tool_calls (cc_is_assistant_with_output) \u2014 an empty-content assistant message in the walk region starts the exchange in LIVE but is skipped by C. Also excluded: non-dict messages and boundary roles other than user/system."
+  "notes": "Exchange-finder splice cursor (context_compressor.c::cc_find_one_exchange vs LIVE agent/context_compressor.py::_find_one_exchange). Harness is a rung-for-rung traced copy of the REAL C port (incl. cc_is_assistant_with_output / summary-marker helpers); the twin drives the LIVE ContextCompressor._is_context_summary_message classmethod for marker detection. Inputs encode messages as ROLE|content-nonempty|tool_calls-nonempty|summary tokens. KNOWN DIVERGENCE (excluded from walk): LIVE's first walk breaks on assistant role alone, while the C port requires non-empty content/tool_calls (cc_is_assistant_with_output) \u2014 an empty-content assistant message in the walk region starts the exchange in LIVE but is skipped by C. Also excluded: non-dict messages and boundary roles other than user/system.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

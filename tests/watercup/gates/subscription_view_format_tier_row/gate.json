@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "note": "Faithful port of Python format_tier_row. Tab-separated name<TAB>dollars<TAB>credits. Traces whole-vs-fractional dollar branch + credits>0 suffix. GREEN proves the ported grouping logic matches LIVE."
+  "note": "Faithful port of Python format_tier_row. Tab-separated name<TAB>dollars<TAB>credits. Traces whole-vs-fractional dollar branch + credits>0 suffix. GREEN proves the ported grouping logic matches LIVE.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

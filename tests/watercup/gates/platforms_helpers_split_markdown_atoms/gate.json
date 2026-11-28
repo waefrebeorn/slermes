@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Markdown atom splitting: drives the REAL src/gateway/platforms/platforms_helpers_md.c::helpers_md_split_markdown_atoms (linked via extra_src) against LIVE gateway/platforms/helpers.py::split_markdown_atoms. Per-line ladder: in-fence / fence close / fence open / table row / prev-table flush / blank / plain-after-table. Newlines are literal '\\n' escapes on argv; atoms joined with U+001F in the V event."
+  "notes": "Markdown atom splitting: drives the REAL src/gateway/platforms/platforms_helpers_md.c::helpers_md_split_markdown_atoms (linked via extra_src) against LIVE gateway/platforms/helpers.py::split_markdown_atoms. Per-line ladder: in-fence / fence close / fence open / table row / prev-table flush / blank / plain-after-table. Newlines are literal '\\n' escapes on argv; atoms joined with U+001F in the V event.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

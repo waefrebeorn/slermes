@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Error-preview detector (delegate.c vs LIVE delegate_tool.py). Inputs avoid three documented divergences outside this class: LIVE checks truthiness of parsed[\"error\"] while the port only rejects JSON-null (an empty-string error diverges); LIVE lowercases+strips status values while the port compares exactly (uppercase statuses diverge); LIVE requires \"traceback \" with trailing space while the port prefix-matches bare \"traceback\"."
+  "notes": "Error-preview detector (delegate.c vs LIVE delegate_tool.py). Inputs avoid three documented divergences outside this class: LIVE checks truthiness of parsed[\"error\"] while the port only rejects JSON-null (an empty-string error diverges); LIVE lowercases+strips status values while the port compares exactly (uppercase statuses diverge); LIVE requires \"traceback \" with trailing space while the port prefix-matches bare \"traceback\".",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

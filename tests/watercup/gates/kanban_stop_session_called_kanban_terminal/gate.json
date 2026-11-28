@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Terminal kanban-tool scan traced over lib/libjson against the LIVE frozenset scan. Covers: empty/null messages, non-array JSON, plain user turns, function/name tool-call shapes, tool-role hits and misses, non-dict items, multi-call arrays."
+  "notes": "Terminal kanban-tool scan traced over lib/libjson against the LIVE frozenset scan. Covers: empty/null messages, non-array JSON, plain user turns, function/name tool-call shapes, tool-role hits and misses, non-dict items, multi-call arrays.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

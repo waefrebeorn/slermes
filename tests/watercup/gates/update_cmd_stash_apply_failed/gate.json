@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Git stash-apply failure classifier (update_cmd.c vs LIVE update_cmd.py). Inputs avoid leading-whitespace lines because the C port checks warning:/hint: as a raw-line prefix while LIVE strips each line first \u2014 a documented cosmetic divergence outside this input class."
+  "notes": "Git stash-apply failure classifier (update_cmd.c vs LIVE update_cmd.py). Inputs avoid leading-whitespace lines because the C port checks warning:/hint: as a raw-line prefix while LIVE strips each line first \u2014 a documented cosmetic divergence outside this input class.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

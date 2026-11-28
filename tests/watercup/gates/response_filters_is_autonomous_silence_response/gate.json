@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced copy of response_filters.c::cli_gateway_response_filters_is_autonomous_silence_response vs LIVE gateway/response_filters.py::is_autonomous_silence_response. Canonicalization V-events emitted for line tokens only (whole-response canonical forms diverge on embedded newlines: C canonicalizer handles space/tab only)."
+  "notes": "Traced copy of response_filters.c::cli_gateway_response_filters_is_autonomous_silence_response vs LIVE gateway/response_filters.py::is_autonomous_silence_response. Canonicalization V-events emitted for line tokens only (whole-response canonical forms diverge on embedded newlines: C canonicalizer handles space/tab only).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

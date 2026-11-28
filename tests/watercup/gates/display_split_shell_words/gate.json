@@ -15,5 +15,8 @@
   ],
   "notes": [
     "Traced copy of display.c::_cli_split_shell_words vs LIVE _split_shell_words over 12 segments (quotes, empty quotes, mid-word quotes, runs of spaces, tabs). DOCUMENTED DIVERGENCE: LIVE keeps a quote open after a backslash-escaped quote and treats \\x0b/\\x0c as space \u2014 C does neither; such inputs excluded."
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

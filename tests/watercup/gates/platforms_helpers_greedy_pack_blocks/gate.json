@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Greedy chunk packing. C port platforms_helpers_md.c::helpers_md_greedy_pack_blocks traced as faithful copy; twin drives LIVE greedy_pack_blocks and asserts exact packing equality plus identical branch/loop rung order. Input encoding 'maxlen|sep-escaped|blocks...' keeps argv safe; empty blocks covered by input 6. All cups match LIVE."
+  "notes": "Greedy chunk packing. C port platforms_helpers_md.c::helpers_md_greedy_pack_blocks traced as faithful copy; twin drives LIVE greedy_pack_blocks and asserts exact packing equality plus identical branch/loop rung order. Input encoding 'maxlen|sep-escaped|blocks...' keeps argv safe; empty blocks covered by input 6. All cups match LIVE.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

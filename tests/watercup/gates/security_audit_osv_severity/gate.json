@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "OSV severity tier extraction: drives the REAL src/hermes_cli/security_audit.c::security_osv_severity_from_record (linked via extra_src with lib/libjson) against LIVE hermes_cli/security_audit.py::_osv_severity_from_record. Coarse rung ladder traced identically; result tier hashed as a V event. KNOWN DIVERGENCE (documented, inputs dropped): on structurally-malformed records (non-dict database_specific string, non-dict affected entries) LIVE raises AttributeError while C fails closed to UNKNOWN \u2014 such inputs are excluded from the agreed sub-contract."
+  "notes": "OSV severity tier extraction: drives the REAL src/hermes_cli/security_audit.c::security_osv_severity_from_record (linked via extra_src with lib/libjson) against LIVE hermes_cli/security_audit.py::_osv_severity_from_record. Coarse rung ladder traced identically; result tier hashed as a V event. KNOWN DIVERGENCE (documented, inputs dropped): on structurally-malformed records (non-dict database_specific string, non-dict affected entries) LIVE raises AttributeError while C fails closed to UNKNOWN \u2014 such inputs are excluded from the agreed sub-contract.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "ANSI strip state machine (lib/libansi/ansi_strip.c vs LIVE tools/ansi_strip.py): fast-path detection, CSI (params/intermediates/private-mode), OSC BEL+ST, DCS, nF/Fp/Fe single-byte, unterminated sequences, passthrough of tabs/newlines."
+  "notes": "ANSI strip state machine (lib/libansi/ansi_strip.c vs LIVE tools/ansi_strip.py): fast-path detection, CSI (params/intermediates/private-mode), OSC BEL+ST, DCS, nF/Fp/Fe single-byte, unterminated sequences, passthrough of tabs/newlines.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

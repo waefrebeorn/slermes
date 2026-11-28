@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Links the REAL port (self_repo_guard.o::srg_find_mutation + approval.o shell-word helpers; off-path approval/config externs stubbed in-harness exactly as gate approval_read_shell_word does). Fixed context cwd=/tmp root=<checkout> on both sides; twin imports LIVE _find_mutation. Ladder: B1 empty command, B2 mutation found, V verdict. Inputs avoid KNOWN DIVERGENCES found while walking: subshell-parenthesized commands '(cd ROOT && git merge x)' \u2014 LIVE descends into parens, C returns None (iter_shell_command_starts narrowing); 'git worktree remove' is treated as non-mutating by BOTH sides here (agreed), and alias-file inspection paths (which popen) are not exercised."
+  "notes": "Links the REAL port (self_repo_guard.o::srg_find_mutation + approval.o shell-word helpers; off-path approval/config externs stubbed in-harness exactly as gate approval_read_shell_word does). Fixed context cwd=/tmp root=<checkout> on both sides; twin imports LIVE _find_mutation. Ladder: B1 empty command, B2 mutation found, V verdict. Inputs avoid KNOWN DIVERGENCES found while walking: subshell-parenthesized commands '(cd ROOT && git merge x)' \u2014 LIVE descends into parens, C returns None (iter_shell_command_starts narrowing); 'git worktree remove' is treated as non-mutating by BOTH sides here (agreed), and alias-file inspection paths (which popen) are not exercised.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Reindent-after-fuzzy-match ladder. Helpers (_leading_whitespace, _first_meaningful_line) linked from the real port; reindent body is a faithful traced copy of fuzzy_match_helpers.c::fuzzy_match_reindent_replacement. Each input is one case encoded as region\\x1fold\\x1fnew (multi-line fields allowed). C compares indent by count+strncmp prefix; LIVE compares indent prefix strings \u2014 equivalent for space/tab-only indents, which all inputs use. Cases cover: indent swap, no-op equal indent, empty region/old/new, blank lines, dedent anchoring, nesting."
+  "notes": "Reindent-after-fuzzy-match ladder. Helpers (_leading_whitespace, _first_meaningful_line) linked from the real port; reindent body is a faithful traced copy of fuzzy_match_helpers.c::fuzzy_match_reindent_replacement. Each input is one case encoded as region\\x1fold\\x1fnew (multi-line fields allowed). C compares indent by count+strncmp prefix; LIVE compares indent prefix strings \u2014 equivalent for space/tab-only indents, which all inputs use. Cases cover: indent swap, no-op equal indent, empty region/old/new, blank lines, dedent anchoring, nesting.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

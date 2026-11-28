@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced copy of moonshot_schema_ports.c msc_repair_schema/_msc_repair_node vs LIVE agent/moonshot_schema.py:_repair_schema. Missing-type inference runs AFTER sub-schema recursion in the harness (C port does it before) \u2014 semantics identical because inference only writes node['type'] and recursion never reads it. Inputs avoid LIVE-only repairs with no C counterpart (anyOf null-collapse, nullable strip, required injection) and 'properties' maps (C recurses the map as a schema while LIVE walks its values \u2014 real port gap worth a follow-up fix). Enum-first-value type inference (LIVE) vs blanket 'string' (C) also diverges; enum inputs excluded."
+  "notes": "Traced copy of moonshot_schema_ports.c msc_repair_schema/_msc_repair_node vs LIVE agent/moonshot_schema.py:_repair_schema. Missing-type inference runs AFTER sub-schema recursion in the harness (C port does it before) \u2014 semantics identical because inference only writes node['type'] and recursion never reads it. Inputs avoid LIVE-only repairs with no C counterpart (anyOf null-collapse, nullable strip, required injection) and 'properties' maps (C recurses the map as a schema while LIVE walks its values \u2014 real port gap worth a follow-up fix). Enum-first-value type inference (LIVE) vs blanket 'string' (C) also diverges; enum inputs excluded.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

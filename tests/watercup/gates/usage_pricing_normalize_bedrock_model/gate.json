@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Bedrock cross-region model id normalization (strip region prefix, dots->dashes, drop :N / -vN / -DATE). C port (usage_pricing.c::usage_pricing_normalize_bedrock_model) traced + LIVE Python twin (_normalize_bedrock_model_name). 9 cups match. REAL FIX this session: C previously stripped only 5 prefixes (us./global./eu./ap./jp.) and did NOT strip trailing :N/-vN/-DATE components; LIVE strips 11 prefixes (incl apac./au./ca./sa./me./af.) AND the trailing components. apac.*/au.* Bedrock ids therefore priced as unknown in C. Extended the prefix list to 11 and added the trailing-strip pass to match LIVE exactly."
+  "notes": "Bedrock cross-region model id normalization (strip region prefix, dots->dashes, drop :N / -vN / -DATE). C port (usage_pricing.c::usage_pricing_normalize_bedrock_model) traced + LIVE Python twin (_normalize_bedrock_model_name). 9 cups match. REAL FIX this session: C previously stripped only 5 prefixes (us./global./eu./ap./jp.) and did NOT strip trailing :N/-vN/-DATE components; LIVE strips 11 prefixes (incl apac./au./ca./sa./me./af.) AND the trailing components. apac.*/au.* Bedrock ids therefore priced as unknown in C. Extended the prefix list to 11 and added the trailing-strip pass to match LIVE exactly.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Channel skill binding resolution: drives the REAL src/gateway/platforms/platforms_base_helpers.c::gw_base__resolve_channel_skills (linked via extra_src; http/config symbols stubbed \u2014 off the traced path) against LIVE gateway/platforms/base.py::resolve_channel_skills. Coarse ladder: bindings-list guard, id-set guard, per-entry dict/id-match/skill-shape walk, name freshness walk. KNOWN DIVERGENCES (documented): LIVE strips/dedupes skill names and coerces non-string ids via str(); C does neither. An EMPTY skills list also diverges (LIVE folds [] to falsy -> returns None; C returns an empty list) \u2014 that input was dropped from the agreed sub-contract. Input '-' sentinel = absent channel/parent."
+  "notes": "Channel skill binding resolution: drives the REAL src/gateway/platforms/platforms_base_helpers.c::gw_base__resolve_channel_skills (linked via extra_src; http/config symbols stubbed \u2014 off the traced path) against LIVE gateway/platforms/base.py::resolve_channel_skills. Coarse ladder: bindings-list guard, id-set guard, per-entry dict/id-match/skill-shape walk, name freshness walk. KNOWN DIVERGENCES (documented): LIVE strips/dedupes skill names and coerces non-string ids via str(); C does neither. An EMPTY skills list also diverges (LIVE folds [] to falsy -> returns None; C returns an empty list) \u2014 that input was dropped from the agreed sub-contract. Input '-' sentinel = absent channel/parent.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

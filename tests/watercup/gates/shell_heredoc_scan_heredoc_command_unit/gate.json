@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Single-command-unit heredoc scan (start=0): traced copy of src/tools/shell_heredoc.c::scan_heredoc_command_unit + parse_heredoc_operator vs LIVE tools/shell_heredoc.py::_scan_heredoc_command_unit (with _parse_heredoc_operator driving the B10 rung). Ladder covers comment mode, quote contexts ('/\"/` with backslash escapes), line-continuation escapes, '#' comment detection, here-string skip, unparseable openers, strip-tabs/quoted delimiters and list operators. V event encodes the REAL LIVE fn result canonically (end|specs|unknown|has_list). Inputs are single-line argv-safe; multi-line probes use literal \\n escapes only inside quoted JSON."
+  "notes": "Single-command-unit heredoc scan (start=0): traced copy of src/tools/shell_heredoc.c::scan_heredoc_command_unit + parse_heredoc_operator vs LIVE tools/shell_heredoc.py::_scan_heredoc_command_unit (with _parse_heredoc_operator driving the B10 rung). Ladder covers comment mode, quote contexts ('/\"/` with backslash escapes), line-continuation escapes, '#' comment detection, here-string skip, unparseable openers, strip-tabs/quoted delimiters and list operators. V event encodes the REAL LIVE fn result canonically (end|specs|unknown|has_list). Inputs are single-line argv-safe; multi-line probes use literal \\n escapes only inside quoted JSON.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

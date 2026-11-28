@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Type-inference ladder traced on the agreed sub-contract. KNOWN DIVERGENCES (documented, excluded from the walk): type-list nodes (LIVE picks first concrete, C keeps node unchanged), \"type\":null/\"\" nodes (LIVE re-infers, C treats as typed), enum samples of non-string runtime type (LIVE infers boolean/integer/number, C always answers string), and extra-field preservation (LIVE spreads the node, C emits a canned object) \u2014 the gate hashes only control rungs + the inferred type."
+  "notes": "Type-inference ladder traced on the agreed sub-contract. KNOWN DIVERGENCES (documented, excluded from the walk): type-list nodes (LIVE picks first concrete, C keeps node unchanged), \"type\":null/\"\" nodes (LIVE re-infers, C treats as typed), enum samples of non-string runtime type (LIVE infers boolean/integer/number, C always answers string), and extra-field preservation (LIVE spreads the node, C emits a canned object) \u2014 the gate hashes only control rungs + the inferred type.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

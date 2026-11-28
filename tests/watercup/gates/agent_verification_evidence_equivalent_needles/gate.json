@@ -19,5 +19,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Equivalent command spellings for evidence matching. Harness traces the REAL port ladder (src/agent/verification_evidence.c::verify_equivalent_needles linked via extra_src and called per input; db_* stubs satisfy linking without sqlite3). Value event hashes the LIVE candidate list serialization. NOTE: a second partial C copy exists in src/agent/real_gaps.c (missing the '/'-script and pytest branches) \u2014 the full port in verification_evidence.c is gated here; real_gaps.c's copy is drift worth cleanup."
+  "notes": "Equivalent command spellings for evidence matching. Harness traces the REAL port ladder (src/agent/verification_evidence.c::verify_equivalent_needles linked via extra_src and called per input; db_* stubs satisfy linking without sqlite3). Value event hashes the LIVE candidate list serialization. NOTE: a second partial C copy exists in src/agent/real_gaps.c (missing the '/'-script and pytest branches) \u2014 the full port in verification_evidence.c is gated here; real_gaps.c's copy is drift worth cleanup.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

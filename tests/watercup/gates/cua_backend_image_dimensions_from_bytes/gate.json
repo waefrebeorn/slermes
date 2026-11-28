@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "PNG/JPEG dimension sniffing from raw bytes (cua_backend_helpers.c::cua_backend_image_dimensions_from_bytes vs LIVE tools/computer_use/cua_backend.py::_image_dimensions_from_bytes). Inputs are hex-encoded byte strings (argv-safe), decoded identically on both sides. Covers: empty input, short/oversized-buffer PNG magic, valid PNG IHDR, zero-width PNG, direct-SOF JPEG, COM-segment-before-SOF JPEG, RST-marker walk, truncated JPEG, non-image text, SOF with seg_len<7, and the !=0xFF skip path."
+  "notes": "PNG/JPEG dimension sniffing from raw bytes (cua_backend_helpers.c::cua_backend_image_dimensions_from_bytes vs LIVE tools/computer_use/cua_backend.py::_image_dimensions_from_bytes). Inputs are hex-encoded byte strings (argv-safe), decoded identically on both sides. Covers: empty input, short/oversized-buffer PNG magic, valid PNG IHDR, zero-width PNG, direct-SOF JPEG, COM-segment-before-SOF JPEG, RST-marker walk, truncated JPEG, non-image text, SOF with seg_len<7, and the !=0xFF skip path.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

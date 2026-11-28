@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced C copy of approval_wrappers.c::appr_u_interpreter_family vs LIVE tools/approval.py::_interpreter_family regex ladder (11 inputs, all families + miss). KNOWN DIVERGENCE (avoided here): C matches by case-sensitive prefix/strcmp while LIVE fullmatches a regex on basename.lower(), so uppercase basenames ('Python3') and over-broad prefixes ('py2', 'python4', 'pythonx') would classify differently \u2014 real normalization gap worth a follow-up port fix."
+  "notes": "Traced C copy of approval_wrappers.c::appr_u_interpreter_family vs LIVE tools/approval.py::_interpreter_family regex ladder (11 inputs, all families + miss). KNOWN DIVERGENCE (avoided here): C matches by case-sensitive prefix/strcmp while LIVE fullmatches a regex on basename.lower(), so uppercase basenames ('Python3') and over-broad prefixes ('py2', 'python4', 'pythonx') would classify differently \u2014 real normalization gap worth a follow-up port fix.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

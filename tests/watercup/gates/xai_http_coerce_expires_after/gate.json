@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "xAI storage TTL coercion. C port xai_http.c::cli_tools_xai_http__coerce_expires_after traced as faithful copy; twin calls LIVE _coerce_expires_after and mirrors the keyword/int/clamp ladder with exact value parity (None='null', unparseable=SAFE 172800). argv inputs exercise the string rung of the LIVE Any-type ladder; the int/float-object rungs are unreachable from argv and not traced."
+  "notes": "xAI storage TTL coercion. C port xai_http.c::cli_tools_xai_http__coerce_expires_after traced as faithful copy; twin calls LIVE _coerce_expires_after and mirrors the keyword/int/clamp ladder with exact value parity (None='null', unparseable=SAFE 172800). argv inputs exercise the string rung of the LIVE Any-type ladder; the int/float-object rungs are unreachable from argv and not traced.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

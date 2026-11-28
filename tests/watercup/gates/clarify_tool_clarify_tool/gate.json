@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Deterministic callback=None validation ladder of clarify_tool (batch normalize / question presence / choices flatten-trim / no-UI error). Harness traces the exact cb==NULL rung order of the REAL linked src/tools/clarify_tool.c and emits V on the fixed result-JSON literal; twin drives LIVE tools/clarify_tool.py helpers (_normalize_questions/_flatten_choice/MAX_CHOICES/tool_error)."
+  "notes": "Deterministic callback=None validation ladder of clarify_tool (batch normalize / question presence / choices flatten-trim / no-UI error). Harness traces the exact cb==NULL rung order of the REAL linked src/tools/clarify_tool.c and emits V on the fixed result-JSON literal; twin drives LIVE tools/clarify_tool.py helpers (_normalize_questions/_flatten_choice/MAX_CHOICES/tool_error).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "harness is still the generated gap_sentinel() and c_fn is absent from src: no C port behind this gate."
 }

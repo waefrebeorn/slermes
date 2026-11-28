@@ -15,5 +15,8 @@
   ],
   "notes": [
     "PORT FIX (this batch): context_compressor_pure.c::cc_content_text_for_contains previously concatenated parts raw and required type==\"text\" on dict items; now joins non-empty parts with '\\n' and accepts any dict with a str \"text\" like LIVE. Traced copy vs LIVE over 10 shapes. DOCUMENTED DIVERGENCE: LIVE str(value)s other scalars while C returns \"\" \u2014 scalar-number inputs excluded."
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "402 disambiguation ladder (billing vs transient usage-limit) \u2014 C lib/liberrorclassifier/error_classifier.c::classify_402 vs LIVE agent/error_classifier.py::_classify_402. Inputs are pre-lowercased because LIVE lowercases error_msg upstream of this helper."
+  "notes": "402 disambiguation ladder (billing vs transient usage-limit) \u2014 C lib/liberrorclassifier/error_classifier.c::classify_402 vs LIVE agent/error_classifier.py::_classify_402. Inputs are pre-lowercased because LIVE lowercases error_msg upstream of this helper.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Paragraph-boundary splitter (src/gateway/platforms/platforms_helpers_md.c vs LIVE gateway/platforms/helpers.py::split_at_paragraph_boundary, len_fn=None path). Traces the fit/blank-line/sentence-newline/last-newline/force-split ladder plus head+tail values. Inputs encoded <max_chars>|<text>. REAL PARITY GAP FOUND & FIXED during gating: the C port's last-newline fallback dropped the trailing \\n from head (head+tail!=text); fixed to memcpy pos+1 bytes matching LIVE text[:pos+1]. Pathological inputs where the first byte is a newline are excluded (LIVE requires pos>0 there)."
+  "notes": "Paragraph-boundary splitter (src/gateway/platforms/platforms_helpers_md.c vs LIVE gateway/platforms/helpers.py::split_at_paragraph_boundary, len_fn=None path). Traces the fit/blank-line/sentence-newline/last-newline/force-split ladder plus head+tail values. Inputs encoded <max_chars>|<text>. REAL PARITY GAP FOUND & FIXED during gating: the C port's last-newline fallback dropped the trailing \\n from head (head+tail!=text); fixed to memcpy pos+1 bytes matching LIVE text[:pos+1]. Pathological inputs where the first byte is a newline are excluded (LIVE requires pos>0 there).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "FIXED THE PORT as a parity win: src/hermes_cli/anthropic_adapter.c::cli_agent_anthropic_adapter__sanitize_replay_block was an identity-copy stub that leaked output-only fields (parsed_output/citations-null/caller) back into requests. Rewrote as the LIVE per-type whitelist (blank-text drop #69512, citations only when non-empty list, signature kept when non-empty, redacted_thinking requires data, tool_use id via antr_sanitize_tool_id, image requires dict source, unknown types dropped); return code 2 now signals LIVE's None/drop. Harness links the REAL port files and cross-checks the traced ladder against the linked fn's result."
+  "notes": "FIXED THE PORT as a parity win: src/hermes_cli/anthropic_adapter.c::cli_agent_anthropic_adapter__sanitize_replay_block was an identity-copy stub that leaked output-only fields (parsed_output/citations-null/caller) back into requests. Rewrote as the LIVE per-type whitelist (blank-text drop #69512, citations only when non-empty list, signature kept when non-empty, redacted_thinking requires data, tool_use id via antr_sanitize_tool_id, image requires dict source, unknown types dropped); return code 2 now signals LIVE's None/drop. Harness links the REAL port files and cross-checks the traced ladder against the linked fn's result.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

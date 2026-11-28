@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Cron workdir normaliser (jobs.c vs LIVE cron/jobs.py). Error MESSAGE text differs between sides by design (LIVE raises ValueError with prose; the port sets a shorter err); the cup traces the outcome ladder only. Path values resolved with realpath/Path.resolve against the live filesystem under the same $HOME."
+  "notes": "Cron workdir normaliser (jobs.c vs LIVE cron/jobs.py). Error MESSAGE text differs between sides by design (LIVE raises ValueError with prose; the port sets a shorter err); the cup traces the outcome ladder only. Path values resolved with realpath/Path.resolve against the live filesystem under the same $HOME.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

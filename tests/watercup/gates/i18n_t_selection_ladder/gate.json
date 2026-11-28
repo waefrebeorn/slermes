@@ -21,5 +21,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "i18n message-selection ladder (src/agent/i18n.c vs LIVE agent/i18n.py): normalize_lang (alias + region strip) -> target catalog hit -> English fallback -> bare-key last resort -> {placeholder} formatting. Probes 'key|lang|kwargs(k=v,...)'."
+  "notes": "i18n message-selection ladder (src/agent/i18n.c vs LIVE agent/i18n.py): normalize_lang (alias + region strip) -> target catalog hit -> English fallback -> bare-key last resort -> {placeholder} formatting. Probes 'key|lang|kwargs(k=v,...)'.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

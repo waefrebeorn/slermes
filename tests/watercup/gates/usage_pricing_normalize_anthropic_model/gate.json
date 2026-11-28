@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Anthropic model name normalization (strip 'anthropic/' prefix, dots->dashes in version numbers). C port (usage_pricing.c::usage_pricing_normalize_anthropic_model) traced + LIVE Python twin (_normalize_anthropic_model_name). Cup-parity across 8 variants. NOTE: LIVE does NOT strip trailing -vN/-DATE (anthropic ids don't carry them); the C port matches that (only bedrock strips those), so the two agree."
+  "notes": "Anthropic model name normalization (strip 'anthropic/' prefix, dots->dashes in version numbers). C port (usage_pricing.c::usage_pricing_normalize_anthropic_model) traced + LIVE Python twin (_normalize_anthropic_model_name). Cup-parity across 8 variants. NOTE: LIVE does NOT strip trailing -vN/-DATE (anthropic ids don't carry them); the C port matches that (only bedrock strips those), so the two agree.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Harness is a traced copy of src/agent/shell_hooks_ports.c::shk_evaluate_result; twin drives LIVE agent/shell_hooks.py::_evaluate_result via a real ShellHookSpec and asserts outcome labels. Inputs restricted to semantics shared by C and LIVE (block/decision-block/context directives); the C port's parse_response does not implement 'modify'/'pre_verify' translation, so those shapes are deliberately not exercised (documented divergence, not faked). Cup hashes branch ladder + coarse outcome, not message strings (C timeout reason uses elapsed seconds vs LIVE spec.timeout)."
+  "notes": "Harness is a traced copy of src/agent/shell_hooks_ports.c::shk_evaluate_result; twin drives LIVE agent/shell_hooks.py::_evaluate_result via a real ShellHookSpec and asserts outcome labels. Inputs restricted to semantics shared by C and LIVE (block/decision-block/context directives); the C port's parse_response does not implement 'modify'/'pre_verify' translation, so those shapes are deliberately not exercised (documented divergence, not faked). Cup hashes branch ladder + coarse outcome, not message strings (C timeout reason uses elapsed seconds vs LIVE spec.timeout).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

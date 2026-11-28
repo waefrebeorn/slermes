@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced copy of fuzzy_match_helpers.c::fuzzy_match_strategy_trimmed_boundary vs LIVE tools/fuzzy_match.py::_strategy_trimmed_boundary, scoped to SINGLE-LINE patterns. REAL PARITY GAP (documented, not gated): the C port strips EVERY line of the pattern and each candidate block, while LIVE strips only the first and last lines \u2014 on multi-line patterns the two find different match sets (e.g. a middle line's indentation is preserved by LIVE but trimmed by C). The gate pins the np==1 slice where trimming-all equals trimming-first, so the traced rungs agree; twin cross-asserts its computed matches against the LIVE call per input."
+  "notes": "Traced copy of fuzzy_match_helpers.c::fuzzy_match_strategy_trimmed_boundary vs LIVE tools/fuzzy_match.py::_strategy_trimmed_boundary, scoped to SINGLE-LINE patterns. REAL PARITY GAP (documented, not gated): the C port strips EVERY line of the pattern and each candidate block, while LIVE strips only the first and last lines \u2014 on multi-line patterns the two find different match sets (e.g. a middle line's indentation is preserved by LIVE but trimmed by C). The gate pins the np==1 slice where trimming-all equals trimming-first, so the traced rungs agree; twin cross-asserts its computed matches against the LIVE call per input.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -16,5 +16,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Last usable transcript timestamp (src/gateway/run.c::gw_last_transcript_timestamp vs LIVE gateway/run.py::_last_transcript_timestamp). Ladder: empty-history / per-row-from-end (usable-role check, meta/system skip, timestamp hit, legacy row without ts) / exhausted; -1.0 encodes LIVE None. Rows whose CONTENT text contains 'role'/'timestamp' substrings would confuse the port's raw strstr scan \u2014 such probes are excluded from the agreed sub-contract (documented C approximation). Non-dict JSON rows map to the no-usable-role rung on both sides."
+  "notes": "Last usable transcript timestamp (src/gateway/run.c::gw_last_transcript_timestamp vs LIVE gateway/run.py::_last_transcript_timestamp). Ladder: empty-history / per-row-from-end (usable-role check, meta/system skip, timestamp hit, legacy row without ts) / exhausted; -1.0 encodes LIVE None. Rows whose CONTENT text contains 'role'/'timestamp' substrings would confuse the port's raw strstr scan \u2014 such probes are excluded from the agreed sub-contract (documented C approximation). Non-dict JSON rows map to the no-usable-role rung on both sides.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

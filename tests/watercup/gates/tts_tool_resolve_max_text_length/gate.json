@@ -15,5 +15,8 @@
   ],
   "notes": [
     "C port (tts_tool_ports.c::tts_resolve_max_text_length) implements only the override->FALLBACK rungs of LIVE's six-rung resolution (ElevenLabs model table, PROVIDER_MAX_TEXT_LENGTH table and command-provider lookup are unported). Gate walks providers OUTSIDE those tables so the shared rungs pin parity; table-backed providers are a documented divergence."
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

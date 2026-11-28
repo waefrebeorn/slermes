@@ -24,5 +24,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Block-anchor fuzzy-match strategy. Harness links the REAL C port (fuzzy_match_helpers.c::fuzzy_match_strategy_block_anchor compiled fresh, which internally uses its own seq_ratio port of difflib.SequenceMatcher.ratio); twin imports LIVE tools/fuzzy_match.py::_strategy_block_anchor (source-extracted fallback). Input encoding '<pattern>\\t<content>' with literal backslash-n decoding to newlines. Coarse rung ladder per the channel_directory precedent: too-few-pattern-lines gate, per-offset anchor branches, unique-vs-multi threshold selection, <=2-line fast path, plus the match-list V value. Middle-similarity inputs are deliberately exact-duplicate (ratio 1.0) or fully disjoint (well under threshold) so the C seq_ratio port cannot drift from difflib at threshold edges."
+  "notes": "Block-anchor fuzzy-match strategy. Harness links the REAL C port (fuzzy_match_helpers.c::fuzzy_match_strategy_block_anchor compiled fresh, which internally uses its own seq_ratio port of difflib.SequenceMatcher.ratio); twin imports LIVE tools/fuzzy_match.py::_strategy_block_anchor (source-extracted fallback). Input encoding '<pattern>\\t<content>' with literal backslash-n decoding to newlines. Coarse rung ladder per the channel_directory precedent: too-few-pattern-lines gate, per-offset anchor branches, unique-vs-multi threshold selection, <=2-line fast path, plus the match-list V value. Middle-similarity inputs are deliberately exact-duplicate (ratio 1.0) or fully disjoint (well under threshold) so the C seq_ratio port cannot drift from difflib at threshold edges.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

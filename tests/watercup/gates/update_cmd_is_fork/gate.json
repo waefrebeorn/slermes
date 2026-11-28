@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Fork detection vs OFFICIAL_REPO_URLS with .git// normalization. LIVE stores a set \u2014 both sides trace the URL list in SORTED order so cups are hash-seed stable. Empty-string input hits C's !*origin_url branch; LIVE treats '' as falsy identically (both False)."
+  "notes": "Fork detection vs OFFICIAL_REPO_URLS with .git// normalization. LIVE stores a set \u2014 both sides trace the URL list in SORTED order so cups are hash-seed stable. Empty-string input hits C's !*origin_url branch; LIVE treats '' as falsy identically (both False).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

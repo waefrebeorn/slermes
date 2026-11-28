@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "API error summarization ladder \u2014 C src/agent/api_error_summary.c::summarize_api_error vs LIVE run_agent.py::AIAgent._summarize_api_error. Fixed three real gaps in C: missing network/DNS offline branch, Ray-ID extraction not skipping Cloudflare <strong>, and JSON-body semantics ([code] type: msg vs LIVE error.message/top-level message) plus 500-char fallback truncation. Cup hashes the branch ladder + outcome label, not the formatted string (LIVE joins with em-dashes)."
+  "notes": "API error summarization ladder \u2014 C src/agent/api_error_summary.c::summarize_api_error vs LIVE run_agent.py::AIAgent._summarize_api_error. Fixed three real gaps in C: missing network/DNS offline branch, Ray-ID extraction not skipping Cloudflare <strong>, and JSON-body semantics ([code] type: msg vs LIVE error.message/top-level message) plus 500-char fallback truncation. Cup hashes the branch ladder + outcome label, not the formatted string (LIVE joins with em-dashes).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

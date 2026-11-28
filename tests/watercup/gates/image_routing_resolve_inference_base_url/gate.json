@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Agreed sub-contract: inputs where at most ONE providers entry matches. LIVE iterates candidate_names as a Python set (hash order, nondeterministic across runs) while the C port walks an ordered candidate list \u2014 multi-match inputs would be order-dependent and are excluded rather than faked. The runtime-override rung is traced as a single FALSE branch (fresh process carries no live runtime context on both sides)."
+  "notes": "Agreed sub-contract: inputs where at most ONE providers entry matches. LIVE iterates candidate_names as a Python set (hash order, nondeterministic across runs) while the C port walks an ordered candidate list \u2014 multi-match inputs would be order-dependent and are excluded rather than faked. The runtime-override rung is traced as a single FALSE branch (fresh process carries no live runtime context on both sides).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

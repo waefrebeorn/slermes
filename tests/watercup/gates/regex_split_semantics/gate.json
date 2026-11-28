@@ -6,8 +6,13 @@
   "c_fn": "regex_split_semantics",
   "py_module": null,
   "py_fn": "re.split",
-  "cflags": ["-I", "lib"],
-  "extra_src": ["lib/libregex/hermes_regex.c"],
+  "cflags": [
+    "-I",
+    "lib"
+  ],
+  "extra_src": [
+    "lib/libregex/hermes_regex.c"
+  ],
   "inputs": [
     "-1|[0-9]+|a12b34c",
     "2|[ ]+|a b  c d",
@@ -20,5 +25,8 @@
     "-1|(a)|(b)|zabz",
     "-1|[ ]*|  lead"
   ],
-  "notes": "Python re.split semantics: maxsplit limit (S1), no-match remainder (S2), zero-width consume-one-char incl. end-of-string trailing empty field (S3), and captured-group splicing incl. named groups (?P<...>). Harness links the REAL lib/libregex/hermes_regex.c; V event pins the joined field list from the shipped regex_split."
+  "notes": "Python re.split semantics: maxsplit limit (S1), no-match remainder (S2), zero-width consume-one-char incl. end-of-string trailing empty field (S3), and captured-group splicing incl. named groups (?P<...>). Harness links the REAL lib/libregex/hermes_regex.c; V event pins the joined field list from the shipped regex_split.",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "relabel_note": "py_module missing from the gate record (or absent from the payload); cannot be validated against python."
 }

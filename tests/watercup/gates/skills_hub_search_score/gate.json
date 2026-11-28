@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Input encoding is pipe-delimited 'query|identifier|name|description' (argv-safe). PARITY WIN: the previous sh_search_score port was a 3-line strstr stub (3/2/1 scoring) that diverged from LIVE on every nontrivial input; replaced in src/tools/skills_hub_ports.c with a full port of SkillsHub._search_score (strip/lower query, _query_terms split on [^a-z0-9]+, 11-tier ladder + per-term bonus loop, NULL fields as ''). Harness is a traced copy of the fixed port; twin drives the LIVE ClawHubSource._search_score."
+  "notes": "Input encoding is pipe-delimited 'query|identifier|name|description' (argv-safe). PARITY WIN: the previous sh_search_score port was a 3-line strstr stub (3/2/1 scoring) that diverged from LIVE on every nontrivial input; replaced in src/tools/skills_hub_ports.c with a full port of SkillsHub._search_score (strip/lower query, _query_terms split on [^a-z0-9]+, 11-tier ladder + per-term bonus loop, NULL fields as ''). Harness is a traced copy of the fixed port; twin drives the LIVE ClawHubSource._search_score.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -15,5 +15,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced copy of src/tools/clarify_tool.c::clarify_mark_recommended; LIVE twin tools/clarify_tool.py::mark_recommended. Choices are '\\u001f'-joined in one argv element (argv-safe; choices containing the separator excluded). C uses ASCII strcasecmp for the already-labeled check, LIVE uses casefold \u2014 equivalent for the ASCII inputs walked here."
+  "notes": "Traced copy of src/tools/clarify_tool.c::clarify_mark_recommended; LIVE twin tools/clarify_tool.py::mark_recommended. Choices are '\\u001f'-joined in one argv element (argv-safe; choices containing the separator excluded). C uses ASCII strcasecmp for the already-labeled check, LIVE uses casefold \u2014 equivalent for the ASCII inputs walked here.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

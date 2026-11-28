@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Content append/prepend helper (context_compressor_ports.c::cc_append_text_to_content vs LIVE agent/context_compressor.py::_append_text_to_content). Inputs are tab-separated <content_json>\\t<text>\\t<prepend>. EXCLUDED DIVERGENCES: JSON \"[]\" and \"\\\"\\\"\" hit the C port's empty-sentinel branch (B1) but take LIVE's list/string branches, so those encodings of empty containers are not exercised; non-JSON-scalars (e.g. int content encoded without quotes) return unchanged in C but str()+concat in LIVE."
+  "notes": "Content append/prepend helper (context_compressor_ports.c::cc_append_text_to_content vs LIVE agent/context_compressor.py::_append_text_to_content). Inputs are tab-separated <content_json>\\t<text>\\t<prepend>. EXCLUDED DIVERGENCES: JSON \"[]\" and \"\\\"\\\"\" hit the C port's empty-sentinel branch (B1) but take LIVE's list/string branches, so those encodings of empty containers are not exercised; non-JSON-scalars (e.g. int content encoded without quotes) return unchanged in C but str()+concat in LIVE.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

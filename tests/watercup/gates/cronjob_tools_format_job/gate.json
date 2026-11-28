@@ -15,5 +15,8 @@
   ],
   "notes": [
     "Traced copy of cronjob_tools.c::cronjob_format_job vs LIVE _format_job over the display-name fallback chain (name -> prompt[:50] -> skill -> job_id/'cron job'), prompt_preview truncation (>100 '...') and schedule default '?'. Fields outside this surface (repeat/model/state/monitor flags) are outside the traced rungs; jobs restricted to string fields."
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Agreed sub-contract excludes watch_patterns inputs: C port JSON-serializes the value ('[\"Build done\"]') while LIVE Python interpolates the raw object repr ('['Build done']') \u2014 a genuine serialization divergence worth a follow-up normalization. Also excludes >120-char command/output strings: LIVE appends an ellipsis truncation marker the C port lacks. Input grammar: '-' = empty list; entries joined by '|'; fields as key=value pairs joined by ';' (argv-safe)."
+  "notes": "Agreed sub-contract excludes watch_patterns inputs: C port JSON-serializes the value ('[\"Build done\"]') while LIVE Python interpolates the raw object repr ('['Build done']') \u2014 a genuine serialization divergence worth a follow-up normalization. Also excludes >120-char command/output strings: LIVE appends an ellipsis truncation marker the C port lacks. Input grammar: '-' = empty list; entries joined by '|'; fields as key=value pairs joined by ';' (argv-safe).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

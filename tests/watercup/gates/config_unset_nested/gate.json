@@ -52,5 +52,8 @@
     "-lssl",
     "-lcrypto",
     "-lm"
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

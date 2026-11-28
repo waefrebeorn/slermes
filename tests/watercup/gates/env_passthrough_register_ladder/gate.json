@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Env passthrough allowlist ladder (lib/libenvpassthrough vs LIVE tools/env_passthrough.py): empty -> provider-credential blocklist (static + dynamic AUXILIARY_*_API_KEY/BASE_URL and GATEWAY_RELAY_*_SECRET/KEY/TOKEN) -> already-registered -> registered. Probe order matters (allowlist accumulates identically on both sides)."
+  "notes": "Env passthrough allowlist ladder (lib/libenvpassthrough vs LIVE tools/env_passthrough.py): empty -> provider-credential blocklist (static + dynamic AUXILIARY_*_API_KEY/BASE_URL and GATEWAY_RELAY_*_SECRET/KEY/TOKEN) -> already-registered -> registered. Probe order matters (allowlist accumulates identically on both sides).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

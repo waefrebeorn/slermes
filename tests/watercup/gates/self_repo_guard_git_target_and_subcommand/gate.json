@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Agreed sub-contract restricts inputs to paths that exist on disk: LIVE Path.resolve() normalizes nonexistent paths while C realpath() fails open and returns the unresolved join. Alias keys are lowercase in all inputs (both sides lowercase; inputs avoid the case path). Input grammar: cwd|envspec|argspec, '-' = empty, '+' joins args, ';' joins env pairs."
+  "notes": "Agreed sub-contract restricts inputs to paths that exist on disk: LIVE Path.resolve() normalizes nonexistent paths while C realpath() fails open and returns the unresolved join. Alias keys are lowercase in all inputs (both sides lowercase; inputs avoid the case path). Input grammar: cwd|envspec|argspec, '-' = empty, '+' joins args, ';' joins env pairs.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

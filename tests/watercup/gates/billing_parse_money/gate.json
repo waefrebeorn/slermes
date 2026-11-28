@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Parse server money strings ($/space stripped). C port (billing_view.c::billing_parse_money) traced + LIVE Python twin (agent/billing_view.py::parse_money). Cup-parity on VALID inputs (10). KNOWN DIVERGENCE (documented, not a logic bug): on NULL/invalid input C returns 0.0 (fail-closed), LIVE returns None (fail-open Optional[Decimal]). The gate exercises the agreed valid-input path; the None-vs-0.0 gap is a real contract difference worth a follow-up normalization."
+  "notes": "Parse server money strings ($/space stripped). C port (billing_view.c::billing_parse_money) traced + LIVE Python twin (agent/billing_view.py::parse_money). Cup-parity on VALID inputs (10). KNOWN DIVERGENCE (documented, not a logic bug): on NULL/invalid input C returns 0.0 (fail-closed), LIVE returns None (fail-open Optional[Decimal]). The gate exercises the agreed valid-input path; the None-vs-0.0 gap is a real contract difference worth a follow-up normalization.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

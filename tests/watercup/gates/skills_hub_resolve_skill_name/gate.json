@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Skill-name resolver (skills_hub.c vs LIVE skills_hub.py GitHubSource._resolve_skill_name). Input encodes the frontmatter name before '|' ('-' = absent). Validity via LIVE _is_valid_skill_name; result via the shared ladder. FM names avoid non-space whitespace where the port's strip differs from Python str.strip()."
+  "notes": "Skill-name resolver (skills_hub.c vs LIVE skills_hub.py GitHubSource._resolve_skill_name). Input encodes the frontmatter name before '|' ('-' = absent). Validity via LIVE _is_valid_skill_name; result via the shared ladder. FM names avoid non-space whitespace where the port's strip differs from Python str.strip().",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -21,5 +21,8 @@
     "NULL"
   ],
   "notes": "Harness links the REAL src/agent/context_compressor_pure.c::cc_strip_context_summary_handoff_message (plus libjson/libregex/context.c deps) and traces at the call boundary; LIVE twin agent/context_compressor.py::ContextCompressor._strip_context_summary_handoff_message hashes its real result content at the same rungs. Agreed subset: STRING-content messages only (C falls back to a copy for LIST content where LIVE unwraps blocks \u2014 subset gap). DOCUMENTED DIVERGENCE (excluded from walk): when a summary message has nothing salvageable (empty prior / no remainder / metadata-only), LIVE returns None (drop the message) while the C port returns a copy of the message \u2014 fail-open vs fail-drop contract gap worth a follow-up port fix.",
-  "pin_golden": true
+  "pin_golden": true,
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

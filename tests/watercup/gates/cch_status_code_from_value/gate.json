@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Parse an HTTP status code from an int (100-599) or a string (optional 'HTTP_STATUS/' prefix + regex \\b[1-5]\\d\\d\\b, case-insensitive). Returns the code, or -1 for None (LIVE returns Optional[int]). C port (src/agent/chat_completion_helpers_ports.c::cch_status_code_from_value) traced + LIVE Python twin (_status_code_from_value). Closes a REAL_GAP flagged by the fresh parity battleground (DA-1:no-c-equivalent, HIGH). 16 cups match."
+  "notes": "Parse an HTTP status code from an int (100-599) or a string (optional 'HTTP_STATUS/' prefix + regex \\b[1-5]\\d\\d\\b, case-insensitive). Returns the code, or -1 for None (LIVE returns Optional[int]). C port (src/agent/chat_completion_helpers_ports.c::cch_status_code_from_value) traced + LIVE Python twin (_status_code_from_value). Closes a REAL_GAP flagged by the fresh parity battleground (DA-1:no-c-equivalent, HIGH). 16 cups match.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

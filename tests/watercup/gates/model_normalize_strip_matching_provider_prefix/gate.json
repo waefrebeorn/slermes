@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Strip provider/ only when its normalized alias equals the normalized target provider. Harness links the REAL C port (model_normalize.o::model_normalize_strip_match_prefix); the on-path dependency model_normalize_provider() is embedded verbatim from src/hermes_cli/model_catalog.c (linking catalog.o drags an SSL/HTTP dep chain). Twin imports LIVE model_normalize and cross-asserts each input against _strip_matching_provider_prefix. KNOWN DIVERGENCE (inputs excluded): LIVE special-cases normalized target 'custom' (only a literal custom/ prefix strips; ollama/ is kept because it resolves to custom via aliases), while the C port has no custom special-case and would strip ollama/x for target custom. Also excluded: whitespace-padded names/remainders (LIVE .strip()s them, C does not)."
+  "notes": "Strip provider/ only when its normalized alias equals the normalized target provider. Harness links the REAL C port (model_normalize.o::model_normalize_strip_match_prefix); the on-path dependency model_normalize_provider() is embedded verbatim from src/hermes_cli/model_catalog.c (linking catalog.o drags an SSL/HTTP dep chain). Twin imports LIVE model_normalize and cross-asserts each input against _strip_matching_provider_prefix. KNOWN DIVERGENCE (inputs excluded): LIVE special-cases normalized target 'custom' (only a literal custom/ prefix strips; ollama/ is kept because it resolves to custom via aliases), while the C port has no custom special-case and would strip ollama/x for target custom. Also excluded: whitespace-padded names/remainders (LIVE .strip()s them, C does not).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

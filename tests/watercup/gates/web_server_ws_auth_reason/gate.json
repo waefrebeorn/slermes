@@ -18,5 +18,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "WS-upgrade credential gate (_ws_auth_reason). Harness links the REAL web_server_ws_auth.c port; the out-of-path ticket store + accepted-host externals are stubbed with deterministic rules (only 'goodticket'/'goodinternal' validate) that the twin mirrors by monkeypatching LIVE hermes_cli.dashboard_auth.ws_tickets the same way. _SESSION_TOKEN pinned to 's3cret' both sides. DOCUMENTED DIVERGENCE avoided: LIVE has a WS-subprotocol ticket arm (_gateway_ws_ticket_from_subprotocol -> 'ticket-subprotocol') with no C counterpart \u2014 no subprotocol inputs are fed (query-param tickets only); REAL GAP worth a follow-up fix."
+  "notes": "WS-upgrade credential gate (_ws_auth_reason). Harness links the REAL web_server_ws_auth.c port; the out-of-path ticket store + accepted-host externals are stubbed with deterministic rules (only 'goodticket'/'goodinternal' validate) that the twin mirrors by monkeypatching LIVE hermes_cli.dashboard_auth.ws_tickets the same way. _SESSION_TOKEN pinned to 's3cret' both sides. DOCUMENTED DIVERGENCE avoided: LIVE has a WS-subprotocol ticket arm (_gateway_ws_ticket_from_subprotocol -> 'ticket-subprotocol') with no C counterpart \u2014 no subprotocol inputs are fed (query-param tickets only); REAL GAP worth a follow-up fix.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

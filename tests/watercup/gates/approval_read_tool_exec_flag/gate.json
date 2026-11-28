@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Read-only-tool program-execution flag finder. Harness traces a faithful copy of src/tools/approval_wrappers.c::appr_u_read_tool_exec_flag (the real shim prints to stdout, which would pollute the cup stream). Twin calls the LIVE tools/approval.py::_read_tool_exec_flag for the authoritative result and asserts its mirror ladder agrees on every input. Inputs restricted to the agreed contract; the shim does not model LIVE's long-options-with-arg skip or short-bundle ownership (documented gap), so inputs exercising those paths are excluded."
+  "notes": "Read-only-tool program-execution flag finder. Harness traces a faithful copy of src/tools/approval_wrappers.c::appr_u_read_tool_exec_flag (the real shim prints to stdout, which would pollute the cup stream). Twin calls the LIVE tools/approval.py::_read_tool_exec_flag for the authoritative result and asserts its mirror ladder agrees on every input. Inputs restricted to the agreed contract; the shim does not model LIVE's long-options-with-arg skip or short-bundle ownership (documented gap), so inputs exercising those paths are excluded.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

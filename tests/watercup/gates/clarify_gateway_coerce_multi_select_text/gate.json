@@ -15,5 +15,8 @@
   ],
   "notes": [
     "Traced copy of cli_tools_clarify_gateway__coerce_multi_select_text vs LIVE _coerce_multi_select_text over 11 replies (numeric, label, case-insensitive, space-separated numeric, out-of-range, unknown, empty). C does not dedupe repeated labels while LIVE does \u2014 duplicate-selection inputs excluded (documented divergence). LIVE's strip_recommended '(Recommended)' suffix handling unported; plain-label inputs only."
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

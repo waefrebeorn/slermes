@@ -15,5 +15,8 @@
   ],
   "notes": [
     "Traced copy of session_recap.c::session_coerce_text vs LIVE _coerce_text over 10 shapes (null/string/empty/array of str+dict blocks). DOCUMENTED DIVERGENCE: LIVE does str(value) for non-str/non-list scalars while C prints a type word \u2014 scalar-number inputs excluded."
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

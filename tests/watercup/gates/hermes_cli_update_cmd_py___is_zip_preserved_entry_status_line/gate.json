@@ -25,5 +25,8 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "real-looking harness but c_fn is not defined in src (link stub): the port was never written."
 }

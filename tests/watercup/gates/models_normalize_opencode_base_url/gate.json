@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced copy of models_py_helpers.c::models_normalize_opencode_base_url vs LIVE hermes_cli/models.py::normalize_opencode_base_url. Documented REAL DIVERGENCE (FAP-worthy, not exercised here): LIVE appends /v1 for any *.opencode.ai subdomain host, but the C port suffix check strcmp(host + hlen - 11, \".opencode.ai\") uses 11 for a 12-char suffix, so subdomain hosts (api.opencode.ai, foo.opencode.ai) never match and no /v1 is appended (fix: hlen - 12). Also avoided: LIVE opencode_provider_family returns 'opencode-free' but the C port only matches opencode-zen/opencode-go."
+  "notes": "Traced copy of models_py_helpers.c::models_normalize_opencode_base_url vs LIVE hermes_cli/models.py::normalize_opencode_base_url. Documented REAL DIVERGENCE (FAP-worthy, not exercised here): LIVE appends /v1 for any *.opencode.ai subdomain host, but the C port suffix check strcmp(host + hlen - 11, \".opencode.ai\") uses 11 for a 12-char suffix, so subdomain hosts (api.opencode.ai, foo.opencode.ai) never match and no /v1 is appended (fix: hlen - 12). Also avoided: LIVE opencode_provider_family returns 'opencode-free' but the C port only matches opencode-zen/opencode-go.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Per-chunk SSE size estimator (framing floor 40 + delta payload lengths). The C wrapper prints its own result so the harness carries a faithful traced copy of src/agent/chat_completion_helpers_ports.c::cch_estimate_chunk_bytes (same arithmetic contract) into the cup; the twin builds a REAL chunk object (SimpleNamespace delta with content/reasoning/tool_calls) and calls the LIVE Python fn. Shared ladder pins payload lens + floor-vs-payload branch + final size."
+  "notes": "Per-chunk SSE size estimator (framing floor 40 + delta payload lengths). The C wrapper prints its own result so the harness carries a faithful traced copy of src/agent/chat_completion_helpers_ports.c::cch_estimate_chunk_bytes (same arithmetic contract) into the cup; the twin builds a REAL chunk object (SimpleNamespace delta with content/reasoning/tool_calls) and calls the LIVE Python fn. Shared ladder pins payload lens + floor-vs-payload branch + final size.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

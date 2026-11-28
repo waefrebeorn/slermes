@@ -23,5 +23,8 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "harness is still the generated gap_sentinel() and c_fn is absent from src: no C port behind this gate."
 }

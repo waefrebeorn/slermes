@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Vendor detection from bare model names (exact first-token lookup, then startswith ladder, vendor/ prefix short-circuit). Harness is a traced copy of model_normalize.c::model_normalize_detect_vendor (the real port drags model_catalog link deps) and traces the same rung ladder; twin imports LIVE hermes_cli/model_normalize.py::detect_vendor and cross-asserts the traced result against the LIVE call each input. Inputs exclude whitespace-padded names: LIVE does model_name.strip(), the C port omits the strip \u2014 a documented contract narrowing. Empty name encodes None as \"\"."
+  "notes": "Vendor detection from bare model names (exact first-token lookup, then startswith ladder, vendor/ prefix short-circuit). Harness is a traced copy of model_normalize.c::model_normalize_detect_vendor (the real port drags model_catalog link deps) and traces the same rung ladder; twin imports LIVE hermes_cli/model_normalize.py::detect_vendor and cross-asserts the traced result against the LIVE call each input. Inputs exclude whitespace-padded names: LIVE does model_name.strip(), the C port omits the strip \u2014 a documented contract narrowing. Empty name encodes None as \"\".",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

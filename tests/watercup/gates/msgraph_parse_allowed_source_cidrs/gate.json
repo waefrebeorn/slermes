@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Webhook source CIDR allowlist parser (msgraph_webhook_security.c vs LIVE msgraph_webhook.py). Count ladder traced; validity via LIVE ipaddress.ip_network(chunk, strict=False). Inputs avoid out-of-range prefixes (/33+) where the port accepts the mask but ipaddress rejects \u2014 a documented divergence outside this class."
+  "notes": "Webhook source CIDR allowlist parser (msgraph_webhook_security.c vs LIVE msgraph_webhook.py). Count ladder traced; validity via LIVE ipaddress.ip_network(chunk, strict=False). Inputs avoid out-of-range prefixes (/33+) where the port accepts the mask but ipaddress rejects \u2014 a documented divergence outside this class.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

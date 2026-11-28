@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Parsed-schedule dict rendered back to a human string. Traced copy of src/cron/blueprints.c::cli_tools_blueprints__schedule_to_string vs LIVE tools/blueprints.py::_schedule_to_string. KNOWN DIVERGENCES (avoided in inputs): (1) LIVE treats an empty-string cron expr as falsy and falls through to the daily fallback while the C port prints it whenever non-NULL; (2) an unknown kind with an expr set prints the expr in C but hits the fallback LIVE. Also excluded: plain-string schedules (C port only sees parsed dict fields)."
+  "notes": "Parsed-schedule dict rendered back to a human string. Traced copy of src/cron/blueprints.c::cli_tools_blueprints__schedule_to_string vs LIVE tools/blueprints.py::_schedule_to_string. KNOWN DIVERGENCES (avoided in inputs): (1) LIVE treats an empty-string cron expr as falsy and falls through to the daily fallback while the C port prints it whenever non-NULL; (2) an unknown kind with an expr set prints the expr in C but hits the fallback LIVE. Also excluded: plain-string schedules (C port only sees parsed dict fields).",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

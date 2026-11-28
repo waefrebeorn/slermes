@@ -18,5 +18,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "resolve_toolset includes-expansion ladder with include_registry=False (static view). Rungs: all-alias, visited diamond/cycle, not-found, direct tools, includes recursion. Harness links the REAL src/tools/toolsets.c for table lookups; registry stubs keep the gate pure."
+  "notes": "resolve_toolset includes-expansion ladder with include_registry=False (static view). Rungs: all-alias, visited diamond/cycle, not-found, direct tools, includes recursion. Harness links the REAL src/tools/toolsets.c for table lookups; registry stubs keep the gate pure.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

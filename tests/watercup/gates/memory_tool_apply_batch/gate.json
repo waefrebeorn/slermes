@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Scenario encoding per input: 'target|limit|e1;;e2||action~content~old_text||...'. Harness is a traced copy of memory_store_apply_batch with scanner=NULL (the port's documented fail-open); twin calls the LIVE strict-scope _scan_memory_content, so B2 is data-driven on the LIVE side and clean on both. Contents chosen to pass the strict scan so no divergence from the NULL-scanner harness."
+  "notes": "Scenario encoding per input: 'target|limit|e1;;e2||action~content~old_text||...'. Harness is a traced copy of memory_store_apply_batch with scanner=NULL (the port's documented fail-open); twin calls the LIVE strict-scope _scan_memory_content, so B2 is data-driven on the LIVE side and clean on both. Contents chosen to pass the strict scan so no divergence from the NULL-scanner harness.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

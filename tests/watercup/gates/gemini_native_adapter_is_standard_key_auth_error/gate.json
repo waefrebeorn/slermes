@@ -13,5 +13,8 @@
     1024,
     -7
   ],
-  "notes": "Substitute for batch candidate translate_stream_event (its C port is a printf stub, not gateable). This sibling pure predicate in the same module has a faithful C port (gna_is_standard_key_auth_error); the twin also asserts ladder result == LIVE result per input."
+  "notes": "Substitute for batch candidate translate_stream_event (its C port is a printf stub, not gateable). This sibling pure predicate in the same module has a faithful C port (gna_is_standard_key_auth_error); the twin also asserts ladder result == LIVE result per input.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "PARITY WIN: the previous ports_wrappers.c entry was an echo wrapper over precomputed 'state\\tresult\\tskipped' argv; replaced with a REAL port of _translate_one_server (stdio/http transports, args/env/cwd/headers promotion, sse skip hint, timeout coercion to tool_timeout_sec/startup_timeout_sec, enabled:false passthrough, dropped/unknown key warnings) returning {\"entry\":..., \"skipped\":[...]} JSON. Trace surface: branch ladder + one V per skipped reason; numeric coercion values are intentionally NOT V-traced (float repr differs across languages). Twin uses LIVE _KNOWN_HERMES_KEYS/_KEYS_DROPPED_WITH_WARNING."
+  "notes": "PARITY WIN: the previous ports_wrappers.c entry was an echo wrapper over precomputed 'state\\tresult\\tskipped' argv; replaced with a REAL port of _translate_one_server (stdio/http transports, args/env/cwd/headers promotion, sse skip hint, timeout coercion to tool_timeout_sec/startup_timeout_sec, enabled:false passthrough, dropped/unknown key warnings) returning {\"entry\":..., \"skipped\":[...]} JSON. Trace surface: branch ladder + one V per skipped reason; numeric coercion values are intentionally NOT V-traced (float repr differs across languages). Twin uses LIVE _KNOWN_HERMES_KEYS/_KEYS_DROPPED_WITH_WARNING.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

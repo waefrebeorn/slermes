@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced copy of scheduler_prompt.c::scheduler_build_job_prompt restricted to the pure I/O-free path: prerun script result always caller-supplied, no context_from, no skills. The downstream assembled-prompt injection scanner is treated as opaque on both sides (benign prompts pass through unchanged). CRON_HINT verified byte-identical between C port and LIVE."
+  "notes": "Traced copy of scheduler_prompt.c::scheduler_build_job_prompt restricted to the pure I/O-free path: prerun script result always caller-supplied, no context_from, no skills. The downstream assembled-prompt injection scanner is treated as opaque on both sides (benign prompts pass through unchanged). CRON_HINT verified byte-identical between C port and LIVE.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }

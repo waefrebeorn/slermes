@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Env-var derivation from base-URL host (registrable label). Harness traces a faithful C copy of provider_registry.c::provider_host_derived_api_key incl. its own base_url_hostname PoP. KNOWN DIVERGENCE (excluded from walk): LIVE rejects when ANY digit appears in the last label, C only when the last label STARTS with a digit \u2014 hosts with mid-label digits avoided. Vendor env names are read via getenv on both sides over the same process env, so cups match whether or not a var is set."
+  "notes": "Env-var derivation from base-URL host (registrable label). Harness traces a faithful C copy of provider_registry.c::provider_host_derived_api_key incl. its own base_url_hostname PoP. KNOWN DIVERGENCE (excluded from walk): LIVE rejects when ANY digit appears in the last label, C only when the last label STARTS with a digit \u2014 hosts with mid-label digits avoided. Vendor env names are read via getenv on both sides over the same process env, so cups match whether or not a var is set.",
+  "previous_classification": null,
+  "classification": "REAL_GAP",
+  "relabel_note": "C symbol exists but the harness is still gap_sentinel(), so the gate never calls it: the gate is fake, not the port."
 }
