@@ -3,28 +3,31 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_has_top_level_alternation",
+  "c_fn": "agent_redact_pattern_shape_u_has_top_level_alternation",
   "py_module": "agent/redact.py",
   "py_fn": "_has_top_level_alternation",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "a|b",
+    "(a|b)",
+    "a(b|c)d",
+    "a\\|b",
+    "[a|b]",
+    "(?:x)+",
+    "((a*)*)",
+    "a*b+",
+    "(ab|cd)",
+    "[()]",
+    "x(y(z))",
+    "(a{2,})+",
+    "a{2,}",
+    "(a|aa)+",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "(|)",
+    "a(b(c|d))",
+    "\\(a|b\\)",
+    "[(|)]",
+    "(a+)+",
+    "(a{2})+"
+  ]
 }

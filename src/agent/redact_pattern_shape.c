@@ -80,3 +80,63 @@ struct json_t *w13_redactpatt_316808_pattern_structure(const char *pattern) {
     json_append(out, json_bool(nested ? true : false));
     return out;
 }
+
+/* PoP: agent_redact_pattern_shape_u_has_top_level_alternation
+ * @ agent/redact_pattern_shape.py:_has_top_level_alternation
+ * PoP: agent_redact_pattern_shape_u_has_nested_unbounded_repeat
+ * @ agent/redact_pattern_shape.py:_has_nested_unbounded_repeat
+ * One scan over the pattern yields (has_top_level_alternation,
+ * has_nested_unbounded_repeat); each accessor returns one half. Structural only. */
+static int _rps_skip_class(const char *p, int n, int i) {
+    i += (i+1 < n && p[i+1] == ']') ? 2 : 1;      /* a leading "]" is literal */
+    while (i < n && p[i] != ']') i += (p[i] == '\\') ? 2 : 1;
+    return i;
+}
+static int _rps_unbounded_follows(const char *p, int n, int j) {
+    if (j >= n) return 0;
+    if (p[j] == '*' || p[j] == '+') return 1;
+    if (p[j] == '{') {
+        int k = -1;
+        for (int t = j; t < n; t++) if (p[t] == '}') { k = t; break; }
+        if (k < 0) return 0;
+        /* body = p[j+1:k]; open-ended iff body[:-1] is all digits and body ends "," */
+        int bl = k - (j + 1);
+        if (bl < 1) return 0;
+        if (p[k-1] != ',') return 0;
+        for (int t = j + 1; t < k - 1; t++) if (!(p[t] >= '0' && p[t] <= '9')) return 0;
+        return 1;
+    }
+    return 0;
+}
+static void _rps_scan(const char *p, int n, int *top, int *nested) {
+    int stack[256]; int sp = 0; stack[sp++] = 0;
+    *top = 0; *nested = 0;
+    int i = 0;
+    while (i < n) {
+        char ch = p[i];
+        if (ch == '\\') { i += 2; continue; }
+        if (ch == '[') { i = _rps_skip_class(p, n, i); }
+        else if (ch == '(') { if (sp < 256) stack[sp++] = 0; }
+        else if (ch == ')') {
+            int inner = (sp > 1) ? stack[--sp] : 0;
+            if (inner && _rps_unbounded_follows(p, n, i + 1)) *nested = 1;
+            if (sp > 0) stack[sp-1] = stack[sp-1] || inner;
+        }
+        else if (ch == '|' && sp == 1) { *top = 1; }
+        else if (_rps_unbounded_follows(p, n, i)) {
+            if (sp > 0) stack[sp-1] = 1;
+            if (ch == '{') { int k = -1; for (int t = i; t < n; t++) if (p[t] == '}') { k = t; break; } if (k >= 0) i = k; }
+        }
+        i += 1;
+    }
+}
+int agent_redact_pattern_shape_u_has_top_level_alternation(const char *arg) {
+    const char *p = arg ? arg : ""; int top = 0, nested = 0;
+    _rps_scan(p, (int)strlen(p), &top, &nested);
+    return top;
+}
+int agent_redact_pattern_shape_u_has_nested_unbounded_repeat(const char *arg) {
+    const char *p = arg ? arg : ""; int top = 0, nested = 0;
+    _rps_scan(p, (int)strlen(p), &top, &nested);
+    return nested;
+}
