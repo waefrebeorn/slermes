@@ -383,9 +383,29 @@ long aps_resolve_max_concurrent_runs(const char *config_json) {
 
 /* PoP: aps_origin_allowed @ gateway/platforms/api_server.py:_origin_allowed */
 bool aps_origin_allowed(const char *origin, const char *allowed_origins_json) {
-    if (!origin) return false;
-    if (!allowed_origins_json) return true;
-    return strstr(allowed_origins_json, origin) != NULL;
+    /* Mirror python exactly:
+     *   return not origin or "*" in self._cors_origins or origin in self._cors_origins
+     * allowed_origins_json is the JSON array of configured CORS origins (see
+     * apisg_adapter_origin_allowed). The old strstr() was a SUBSTRING match on the
+     * raw JSON text -- origin "a" matched ["https://a.com"], a CORS bypass -- and
+     * it had no "*" wildcard handling. Use exact element membership instead. */
+    if (!origin || origin[0] == '\0') return true;   /* `not origin` (None or "") */
+    if (!allowed_origins_json) return false;          /* no configured list */
+    json_node_t *arr = json_parse(allowed_origins_json, NULL);
+    if (!arr) return false;
+    bool ok = false;
+    if (json_is_array(arr)) {
+        size_t n = json_array_size(arr);
+        for (size_t i = 0; i < n; i++) {
+            json_node_t *el = json_array_get(arr, i);
+            if (el && json_is_string(el)) {
+                const char *s = json_string_value(el);
+                if (s && (strcmp(s, "*") == 0 || strcmp(s, origin) == 0)) { ok = true; break; }
+            }
+        }
+    }
+    json_free(arr);
+    return ok;
 }
 
 /* PoP: aps_resolve_request_profile @ gateway/platforms/api_server.py:_resolve_request_profile */
