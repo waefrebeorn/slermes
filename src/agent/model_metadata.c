@@ -1239,3 +1239,40 @@ char *agent_model_metadata_u_strip_stale_thinking_for_estimate(const char *arg) 
     json_free(arr);
     return out;
 }
+
+/* PoP: agent_model_metadata_u_estimate_tokens_rough @ agent/model_metadata.py:estimate_tokens_rough */
+/* CJK/Hangul/Kana codepoints ~1 token each; everything else ceil(utf8 bytes/4).
+ * INPUT IS HEX of the UTF-8 text so non-ASCII fixtures can cross argv. */
+static int _etr_dense(unsigned cp) {
+    return (cp >= 0x1100 && cp <= 0x11ff) || (cp >= 0x2e80 && cp <= 0x9fff) ||
+           (cp >= 0xa960 && cp <= 0xa97f) || (cp >= 0xac00 && cp <= 0xd7af) ||
+           (cp >= 0xf900 && cp <= 0xfaff) || (cp >= 0xff00 && cp <= 0xffef);
+}
+long agent_model_metadata_u_estimate_tokens_rough(const char *arg) {
+    const char *h = arg ? arg : "";
+    char *buf = malloc(strlen(h) / 2 + 2); size_t n = 0;
+    for (const char *p = h; p[0] && p[1]; p += 2) {
+        int hi = (p[0] >= '0' && p[0] <= '9') ? p[0]-'0' : (p[0]>='a'&&p[0]<='f') ? p[0]-'a'+10 : (p[0]>='A'&&p[0]<='F') ? p[0]-'A'+10 : -1;
+        int lo = (p[1] >= '0' && p[1] <= '9') ? p[1]-'0' : (p[1]>='a'&&p[1]<='f') ? p[1]-'a'+10 : (p[1]>='A'&&p[1]<='F') ? p[1]-'A'+10 : -1;
+        if (hi < 0 || lo < 0) break;
+        buf[n++] = (char)(hi * 16 + lo);
+    }
+    buf[n] = 0;
+    if (n == 0) { free(buf); return 0; }
+    long dense = 0, bytes = 0, cps = 0;
+    for (size_t i = 0; i < n; ) {
+        unsigned char c = (unsigned char)buf[i];
+        unsigned cp = 0; int len = 1;
+        if (c < 0x80) { cp = c; len = 1; }
+        else if ((c & 0xe0) == 0xc0) { cp = c & 0x1f; len = 2; }
+        else if ((c & 0xf0) == 0xe0) { cp = c & 0x0f; len = 3; }
+        else if ((c & 0xf8) == 0xf0) { cp = c & 0x07; len = 4; }
+        else { cp = c; len = 1; }
+        if (len > 1) { for (int k = 1; k < len && i + (size_t)k < n; k++) cp = (cp << 6) | ((unsigned char)buf[i+k] & 0x3f); }
+        cps++; (void)cps;
+        if (_etr_dense(cp)) dense++; else bytes += len;
+        i += (size_t)len;
+    }
+    free(buf);
+    return dense + ((bytes + 3) / 4);
+}

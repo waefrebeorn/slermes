@@ -3,19 +3,24 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "estimate_tokens_rough",
+  "c_fn": "agent_model_metadata_u_estimate_tokens_rough",
   "py_module": "agent/model_metadata.py",
   "py_fn": "estimate_tokens_rough",
   "inputs": [
-    "hello",
-    "world",
     "",
-    "test123",
-    "NULL"
+    "61",
+    "61626364",
+    "6162636465",
+    "6162636465666768",
+    "e4bda0",
+    "e4bda0e5a5bd",
+    "61e4bda062",
+    "d09fd180d0b8d0b2d0b5d182",
+    "636166c3a9",
+    "68656c6c6f20776f726c64207468697320697320612074657374",
+    "ed959ceab5adec96b4"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +31,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
