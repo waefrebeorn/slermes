@@ -1,0 +1,22 @@
+{
+  "name": "real__agent_model_metadata_py__codex_oauth_token_fingerprint",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "agent_model_metadata_u_codex_oauth_token_fingerprint",
+  "py_module": "agent/model_metadata.py",
+  "py_fn": "_codex_oauth_token_fingerprint",
+  "extra_src": [
+    "lib/libjson/json.c",
+    "lib/libcrypto/crypto.c"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "{\"access_token\": \"tok123\", \"base_url\": \"\"}",
+    "{\"access_token\": \"tok123\", \"base_url\": \"https://chatgpt.com/\"}",
+    "{\"access_token\": \"tok123\", \"base_url\": \"  https://chatgpt.com//  \"}",
+    "{\"access_token\": \"tok123\", \"base_url\": \"https://api.openai.com\"}",
+    "{\"access_token\": \"\", \"base_url\": \"\"}",
+    "{\"access_token\": \"tok123\"}"
+  ]
+}

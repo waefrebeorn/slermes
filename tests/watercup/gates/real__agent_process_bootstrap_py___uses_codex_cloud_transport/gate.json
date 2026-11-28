@@ -3,28 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_uses_codex_cloud_transport",
+  "c_fn": "hermes_agent_process_bootstrap_uses_codex_cloud_transport",
   "py_module": "agent/process_bootstrap.py",
   "py_fn": "_uses_codex_cloud_transport",
+  "extra_src": [],
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "https://chatgpt.com/backend-api/codex",
+    "https://chatgpt.com/x",
+    "http://CHATGPT.COM/backend-api/codex",
+    "https://api.openai.com/backend-api/codex",
+    "chatgpt.com/backend-api/codex",
+    "https://user:pw@chatgpt.com:443/backend-api/codex",
+    "https://chatgpt.com.evil.com/backend-api/codex",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "https://proxy.test/chatgpt.com/backend-api/codex",
+    "https://chatgpt.com/Backend-Api/Codex"
+  ]
 }

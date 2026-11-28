@@ -925,15 +925,36 @@ int agent_model_metadata_u_query_local_context_length_uncached(const char *arg) 
 }
 
 /* PoP: agent_model_metadata_u_codex_oauth_token_fingerprint @ agent/model_metadata.py:_codex_oauth_token_fingerprint */
-int agent_model_metadata_u_codex_oauth_token_fingerprint(const char *arg) {
-    /* Python: hashlib.sha256(access_token.encode()).hexdigest()[:16] — a
-     * non-secret cache key for a Codex OAuth access token. */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    char *hex = hash_sha256_hex((const unsigned char *)arg, strlen(arg));
-    if (!hex) { printf("\n"); return 0; }
-    printf("%.16s\n", hex);
-    free(hex);
-    return 0;
+/* sha256(f"{access_token}\n{(base_url or '').strip().rstrip('/')}").hexdigest()[:16].
+ * The old body hashed the TOKEN ALONE, with no newline and no base_url, and printed
+ * instead of returning -- a different value and a constant cup. Input JSON
+ * {"access_token":..,"base_url":..}. */
+#include "crypto.h"
+static void _cfx_hex2(const unsigned char *d, char *out, int n) {
+    static const char *H = "0123456789abcdef";
+    for (int i = 0; i < n; i++) { out[2*i] = H[(d[i]>>4)&15]; out[2*i+1] = H[d[i]&15]; }
+    out[2*n] = 0;
+}
+char *agent_model_metadata_u_codex_oauth_token_fingerprint(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    const char *tok = "", *base = "";
+    if (o && json_is_object(o)) {
+        json_t *tv = json_obj_get(o, "access_token"), *bv = json_obj_get(o, "base_url");
+        if (tv && json_is_string(tv) && tv->str_val) tok = tv->str_val;
+        if (bv && json_is_string(bv) && bv->str_val) base = bv->str_val;
+    }
+    size_t a = 0, b = strlen(base);
+    while (a < b && (base[a]==' '||base[a]=='\t'||base[a]=='\n'||base[a]=='\r')) a++;
+    while (b > a && (base[b-1]==' '||base[b-1]=='\t'||base[b-1]=='\n'||base[b-1]=='\r')) b--;
+    while (b > a && base[b-1] == '/') b--;
+    size_t need = strlen(tok) + (b-a) + 2;
+    char *seed = malloc(need);
+    snprintf(seed, need, "%s\n%.*s", tok, (int)(b-a), base + a);
+    unsigned char d[32]; crypto_sha256((const unsigned char *)seed, strlen(seed), d);
+    char hex[33]; _cfx_hex2(d, hex, 32);
+    char *out = malloc(17); snprintf(out, 17, "%.16s", hex);
+    free(seed); if (o) json_free(o);
+    return out;
 }
 
 /* PoP: agent_model_metadata_u_extract_chatgpt_account_id @ agent/model_metadata.py:_extract_chatgpt_account_id */

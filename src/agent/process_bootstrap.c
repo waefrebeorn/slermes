@@ -197,7 +197,25 @@ struct http_t *build_keepalive_http_client(const char *base_url,
 
 /* PoP: _uses_codex_cloud_transport @ agent/process_bootstrap.py:_uses_codex_cloud_transport */
 int hermes_agent_process_bootstrap_uses_codex_cloud_transport(const char *base_url) {
-    /* Python: return base_url_hostname(base_url).lower() == "chatgpt.com" and "/backend-api/codex" in str(base_url).lower() */
-    if (!base_url) return 0;
-    return strcasestr(base_url, "chatgpt.com") != NULL && strcasestr(base_url, "/backend-api/codex") != NULL;
+    /* base_url_hostname(base_url).lower() == "chatgpt.com" AND "/backend-api/codex" in
+     * str(base_url).lower(). The old body was a strcasestr() SUBSTRING test, which is
+     * exactly what python's docstring warns against: https://chatgpt.com.evil.com and
+     * https://proxy.test/chatgpt.com/... both passed. The host comparison is EXACT. */
+    const char *u = base_url ? base_url : "";
+    size_t n = strlen(u);
+    char *low = malloc(n + 1);
+    for (size_t i = 0; i < n; i++) { char c = u[i]; low[i] = (c>='A'&&c<='Z') ? (char)(c+32) : c; }
+    low[n] = 0;
+    const char *auth = low;
+    const char *sep = strstr(low, "://");
+    if (sep) auth = sep + 3;
+    size_t alen = strcspn(auth, "/?#");
+    const char *at = NULL;
+    for (size_t i = 0; i < alen; i++) if (auth[i] == '@') at = auth + i;
+    if (at) { alen -= (size_t)(at - auth) + 1; auth = at + 1; }
+    for (size_t i = 0; i < alen; i++) if (auth[i] == ':') { alen = i; break; }
+    int host_ok = (alen == 11 && strncmp(auth, "chatgpt.com", 11) == 0);
+    int path_ok = (strstr(low, "/backend-api/codex") != NULL);
+    free(low);
+    return (host_ok && path_ok) ? 1 : 0;
 }
