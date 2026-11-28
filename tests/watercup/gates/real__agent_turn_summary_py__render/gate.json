@@ -26,5 +26,6 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "relabel_note": "TurnSummaryCollector method operating on live collector state (self._tally verbs, per-turn begin/record bookkeeping); not expressible as a pure argv call."
 }

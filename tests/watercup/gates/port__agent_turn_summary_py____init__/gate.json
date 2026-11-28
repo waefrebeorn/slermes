@@ -27,5 +27,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "TurnSummaryCollector method operating on live collector state (self._tally verbs, per-turn begin/record bookkeeping); not expressible as a pure argv call."
 }

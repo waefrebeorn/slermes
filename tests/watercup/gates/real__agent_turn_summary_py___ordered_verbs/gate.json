@@ -26,5 +26,6 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "relabel_note": "python agent/turn_summary defines no such function (only TurnSummaryCollector methods, module helpers and TurnTally); the gate named a symbol that does not exist, so it could never pass."
 }
