@@ -1,3 +1,4 @@
+#include "hermes_json.h"
 /*
  * runner.c - C11 port of upstream agent/verify/runner.py
  * (gate w26_runner_fdd9a0).
@@ -355,4 +356,21 @@ json_t *w26_runner_fdd9a0_constants(void) {
     json_set(o, "tail_chars", json_number(W26_RUNNER_FDD9A0_TAIL_CHARS));
     json_set(o, "phase_order", order);
     return o;
+}
+
+/* PoP: agent_verify_runner_u_ok @ agent/verify/runner.py:PhaseResult.ok */
+/* exit_code == 0 and not timed_out. Input JSON {"exit_code":N|null,"timed_out":b}. */
+int agent_verify_runner_u_ok(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return 0; }
+    json_t *ec = json_obj_get(o, "exit_code");
+    int zero = (ec && json_is_number(ec) && ec->num_val == 0.0) ? 1 : 0;
+    json_t *to = json_obj_get(o, "timed_out");
+    int timed = 0;
+    if (to) {
+        if (json_is_bool(to)) timed = to->bool_val ? 1 : 0;
+        else if (json_is_number(to)) timed = (to->num_val != 0.0);
+    }
+    json_free(o);
+    return (zero && !timed) ? 1 : 0;
 }
