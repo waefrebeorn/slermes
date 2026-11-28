@@ -3,28 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_truthy_env",
+  "c_fn": "hermes_cli_gateway_u_truthy_env",
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_truthy_env",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "1",
+    "true",
+    " TRUE ",
+    "yes",
+    "on",
+    "0",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "y",
+    "tru",
+    "2",
+    "On"
+  ]
 }

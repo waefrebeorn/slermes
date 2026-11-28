@@ -3,28 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_global_fast_version_argv",
+  "c_fn": "hermes_cli__startup_fast_u_is_global_fast_version_argv",
   "py_module": "hermes_cli/_startup_fast.py",
   "py_fn": "is_global_fast_version_argv",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "[\"--version\"]",
+    "[\"-V\"]",
+    "[\"-v\"]",
+    "[\"--version\",\"x\"]",
+    "[]",
+    "[\"--versionx\"]",
+    "[\"-V\",\"-V\"]",
+    "[1]"
   ],
   "extra_src": [
     "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  ]
 }

@@ -1,25 +1,12 @@
-/* gate: real__hermes_cli_gateway_py___truthy_env — GAP sentinel for _truthy_env */
+/* gate: _truthy_env -> real port. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_truthy_env";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _truthy_env <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_truthy_env");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_truthy_env");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern int hermes_cli_gateway_u_truthy_env(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_truthy_env");
+  int r=hermes_cli_gateway_u_truthy_env(argv[i]); WCUP_VALSTR(r ? "1" : "0");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_truthy_env"); } return 0;}

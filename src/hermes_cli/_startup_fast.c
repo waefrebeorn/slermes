@@ -187,3 +187,18 @@ json_t *w10_startupfa_f8d1b3_read_install_method(const char *text) {
     free(s);
     return out;
 }
+
+/* PoP: hermes_cli__startup_fast_u_is_global_fast_version_argv
+ * @ hermes_cli/_startup_fast.py:is_global_fast_version_argv */
+/* argv in (["--version"], ["-V"]) -- exactly one element, exact match. */
+int hermes_cli__startup_fast_u_is_global_fast_version_argv(const char *arg) {
+    json_t *a = arg ? json_parse(arg, NULL) : NULL;
+    int hit = 0;
+    if (a && json_is_array(a) && a->c.count == 1) {
+        json_t *v = a->c.items[0];
+        if (v && json_is_string(v) && v->str_val)
+            hit = (strcmp(v->str_val,"--version")==0 || strcmp(v->str_val,"-V")==0);
+    }
+    if (a) json_free(a);
+    return hit;
+}

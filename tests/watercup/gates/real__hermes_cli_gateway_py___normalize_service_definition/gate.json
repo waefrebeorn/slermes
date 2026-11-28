@@ -3,28 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize_service_definition",
+  "c_fn": "hermes_cli_gateway_u_normalize_service_definition",
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_normalize_service_definition",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "  a  \n b\t\n\n c  ",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "   ",
+    "a\r\nb",
+    "a\rb",
+    "x\n",
+    "\n\n",
+    "a\n\nb",
+    "no-breaks",
+    "\ttab\tindent\n"
+  ]
 }

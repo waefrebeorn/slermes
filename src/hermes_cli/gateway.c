@@ -1054,3 +1054,93 @@ int gateway_command(int (*inner)(void *ctx, int argc, char **argv),
     }
     return rc;
 }
+
+/* PoP: hermes_cli_gateway_u_truthy_env @ hermes_cli/gateway.py:_truthy_env */
+/* str(value or "").strip().lower() in {"1","true","yes","on"}. */
+int hermes_cli_gateway_u_truthy_env(const char *arg) {
+    const char *s = arg ? arg : "";
+    size_t a = 0, b = strlen(s);
+    while (a < b && (s[a]==' '||s[a]=='\t'||s[a]=='\n'||s[a]=='\r'||s[a]=='\f'||s[a]=='\v')) a++;
+    while (b > a && (s[b-1]==' '||s[b-1]=='\t'||s[b-1]=='\n'||s[b-1]=='\r'||s[b-1]=='\f'||s[b-1]=='\v')) b--;
+    char *low = malloc(b-a+1); size_t w = 0;
+    for (size_t i = a; i < b; i++) { char c = s[i]; low[w++] = (c>='A'&&c<='Z') ? (char)(c+32) : c; }
+    low[w] = 0;
+    int hit = (strcmp(low,"1")==0 || strcmp(low,"true")==0 || strcmp(low,"yes")==0 || strcmp(low,"on")==0);
+    free(low);
+    return hit;
+}
+
+/* PoP: hermes_cli_gateway_u_normalize_service_definition @ hermes_cli/gateway.py:_normalize_service_definition */
+/* "\n".join(line.rstrip() for line in text.strip().splitlines()): strip the whole
+ * text, split on python's line boundaries, rstrip each line, join with a newline.
+ * Leading indentation is preserved (only the right side is trimmed). */
+static int _nsd_ws(unsigned c) {
+    return (c>=0x9&&c<=0xD)||(c>=0x1C&&c<=0x20)||c==0x85||c==0xA0||c==0x1680||
+           (c>=0x2000&&c<=0x200A)||c==0x2028||c==0x2029||c==0x202F||c==0x205F||c==0x3000;
+}
+static int _nsd_break(unsigned c) {
+    return c==0x0A||c==0x0B||c==0x0C||c==0x0D||c==0x1C||c==0x1D||c==0x1E||c==0x85||c==0x2028||c==0x2029;
+}
+static unsigned _nsd_dec(const char *s, size_t n, size_t i, int *len) {
+    unsigned char b = (unsigned char)s[i];
+    if (b < 0x80) { *len = 1; return b; }
+    if ((b & 0xe0) == 0xc0 && i+1 < n) { *len = 2; return ((b&0x1f)<<6)|((unsigned char)s[i+1]&0x3f); }
+    if ((b & 0xf0) == 0xe0 && i+2 < n) { *len = 3; return ((b&0x0f)<<12)|(((unsigned char)s[i+1]&0x3f)<<6)|((unsigned char)s[i+2]&0x3f); }
+    if ((b & 0xf8) == 0xf0 && i+3 < n) { *len = 4; return ((b&0x07)<<18)|(((unsigned char)s[i+1]&0x3f)<<12)|(((unsigned char)s[i+2]&0x3f)<<6)|((unsigned char)s[i+3]&0x3f); }
+    *len = 1; return b;
+}
+char *hermes_cli_gateway_u_normalize_service_definition(const char *arg) {
+    const char *s = arg ? arg : "";
+    size_t n = strlen(s), a = 0, b = n;
+    while (a < b) { int l; unsigned c = _nsd_dec(s,n,a,&l); if (!_nsd_ws(c)) break; a += (size_t)l; }
+    while (b > a) { size_t k = b-1; while (k > a && ((unsigned char)s[k]&0xC0)==0x80) k--;
+        int l; unsigned c = _nsd_dec(s,n,k,&l); if (k+(size_t)l!=b || !_nsd_ws(c)) break; b = k; }
+    size_t cap = (b-a)+16, w = 0; char *out = malloc(cap); out[0]=0;
+    size_t i = a; int first = 1;
+    while (i < b) {
+        /* one line up to the next line break */
+        size_t ls = i, le = i;
+        while (i < b) {
+            int l; unsigned c = _nsd_dec(s,n,i,&l);
+            if (_nsd_break(c)) {
+                i += (size_t)l;
+                if (c == 0x0D && i < b) { int l2; unsigned c2 = _nsd_dec(s,n,i,&l2); if (c2 == 0x0A) i += (size_t)l2; }
+                break;
+            }
+            i += (size_t)l; le = i;
+        }
+        /* rstrip the line */
+        while (le > ls) { size_t k = le-1; while (k > ls && ((unsigned char)s[k]&0xC0)==0x80) k--;
+            int l; unsigned c = _nsd_dec(s,n,k,&l); if (k+(size_t)l!=le || !_nsd_ws(c)) break; le = k; }
+        size_t need = w + (le-ls) + 2;
+        if (need > cap) { cap = need*2; out = realloc(out,cap); }
+        if (!first) out[w++] = '\n';
+        memcpy(out+w, s+ls, le-ls); w += (le-ls); out[w] = 0;
+        first = 0;
+    }
+    if (first) out[0] = 0;
+    return out;
+}
+
+/* PoP: hermes_cli_gateway_u_systemd_unit_is_start_limited @ hermes_cli/gateway.py:_systemd_unit_is_start_limited */
+/* "start-limit-hit" in (props.get("Result","").lower(), props.get("SubState","").lower())
+ * -- an exact member test of a 2-tuple, NOT a substring scan. */
+int hermes_cli_gateway_u_systemd_unit_is_start_limited(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return 0; }
+    const char *keys[2] = {"Result","SubState"};
+    int hit = 0;
+    for (int i = 0; i < 2 && !hit; i++) {
+        json_t *v = json_obj_get(o, keys[i]);
+        if (!v || !json_is_string(v) || !v->str_val) continue;
+        const char *p = v->str_val;
+        size_t w = strlen(p);
+        char *low = malloc(w+1);
+        for (size_t k = 0; k < w; k++) { char c = p[k]; low[k] = (c>='A'&&c<='Z') ? (char)(c+32) : c; }
+        low[w] = 0;
+        if (strcmp(low, "start-limit-hit") == 0) hit = 1;
+        free(low);
+    }
+    json_free(o);
+    return hit;
+}
