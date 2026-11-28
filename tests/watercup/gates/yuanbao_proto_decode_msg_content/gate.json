@@ -22,5 +22,9 @@
     "test123",
     "NULL"
   ],
-  "notes": "Yuanbao protobuf MsgContent decoding: drives the REAL src/plugins/platforms/yuanbao/yuanbao_proto_helpers.c::yuanbao_proto_decode_msg_content (linked via extra_src with lib/libjson) against LIVE gateway/platforms/yuanbao_proto.py::_decode_msg_content. Inputs are hex-encoded protobuf probes (empty, string fields, varints incl. zero-varint skips, field-999 ext_map). Ladder: nonempty guard + canonical sorted-key content V event. KNOWN PARITY GAP (documented; image/sound inputs DROPPED): the C port does not decode repeated field 8 (image_info_array) nor string field 7 (sound); LIVE returns {'image_info_array':[...]} where C returns {}. Those probes were excluded from this gate; the missing image/sound handling is a real port gap worth a follow-up fix in yuanbao_proto_helpers.c."
+  "notes": "Yuanbao protobuf MsgContent decoding: drives the REAL src/plugins/platforms/yuanbao/yuanbao_proto_helpers.c::yuanbao_proto_decode_msg_content (linked via extra_src with lib/libjson) against LIVE gateway/platforms/yuanbao_proto.py::_decode_msg_content. Inputs are hex-encoded protobuf probes (empty, string fields, varints incl. zero-varint skips, field-999 ext_map). Ladder: nonempty guard + canonical sorted-key content V event. KNOWN PARITY GAP (documented; image/sound inputs DROPPED): the C port does not decode repeated field 8 (image_info_array) nor string field 7 (sound); LIVE returns {'image_info_array':[...]} where C returns {}. Those probes were excluded from this gate; the missing image/sound handling is a real port gap worth a follow-up fix in yuanbao_proto_helpers.c.",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "gateway/platforms/yuanbao_proto.py",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

@@ -30,5 +30,8 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "DEAD_PATH",
+  "previous_classification": "PORTED",
+  "dead_python_path": "gateway/platforms/whatsapp_cloud.py",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

@@ -25,5 +25,9 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "hermes_cli/subcommands/sync.py",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

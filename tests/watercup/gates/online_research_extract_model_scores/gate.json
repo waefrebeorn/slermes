@@ -22,5 +22,9 @@
     "test123",
     "NULL"
   ],
-  "notes": "Model benchmark signal extraction from research snippets. Harness traces a faithful C copy of src/tools/research_helpers.c::research_extract_model_scores. Inputs restricted to well-formed percentages: documented divergences excluded \u2014 (a) context containing ONLY out-of-range pcts (e.g. '200%') yields no entry in LIVE Python but a 0.5 default boost in C; (b) malformed tokens like '5..%' parse differently via atof vs float()."
+  "notes": "Model benchmark signal extraction from research snippets. Harness traces a faithful C copy of src/tools/research_helpers.c::research_extract_model_scores. Inputs restricted to well-formed percentages: documented divergences excluded \u2014 (a) context containing ONLY out-of-range pcts (e.g. '200%') yields no entry in LIVE Python but a 0.5 default boost in C; (b) malformed tokens like '5..%' parse differently via atof vs float().",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "tools/online_research.py",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

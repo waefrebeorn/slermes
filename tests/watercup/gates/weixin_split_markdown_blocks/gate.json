@@ -13,5 +13,9 @@
     "test123",
     "NULL"
   ],
-  "notes": "Markdown block splitting for WeChat delivery (code fences, paragraph breaks, empty-block filtering). Traced copy of src/plugins/platforms/weixin/weixin.c::weixin_split_markdown_blocks vs LIVE gateway/platforms/weixin.py::_split_markdown_blocks. Cup value encodes block count + \\x1f-joined blocks so content is parity-checked too. Inputs avoid two documented C/LIVE edge divergences: (1) LIVE rstrips each line while C only strips CR, so mid-block trailing whitespace differs; (2) a fence-like line containing an embedded backtick after ``` matches C's strncmp prefix test but fails LIVE's ^```[^`]*$ regex."
+  "notes": "Markdown block splitting for WeChat delivery (code fences, paragraph breaks, empty-block filtering). Traced copy of src/plugins/platforms/weixin/weixin.c::weixin_split_markdown_blocks vs LIVE gateway/platforms/weixin.py::_split_markdown_blocks. Cup value encodes block count + \\x1f-joined blocks so content is parity-checked too. Inputs avoid two documented C/LIVE edge divergences: (1) LIVE rstrips each line while C only strips CR, so mid-block trailing whitespace differs; (2) a fence-like line containing an embedded backtick after ``` matches C's strncmp prefix test but fails LIVE's ^```[^`]*$ regex.",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "gateway/platforms/weixin.py",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

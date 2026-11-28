@@ -14,5 +14,9 @@
     "NULL"
   ],
   "notes": "Traced copy of yuanbao_md_sanitize_markdown_table vs LIVE MarkdownProcessor/YuanbaoPlatform.sanitize_markdown_table. Known avoided divergences: pure-punct/empty rows ('||', '| |', '|-|') classify as separator rows in C but are skipped by LIVE's elif; separator rows with an EMPTY MIDDLE cell keep the space cell in LIVE but drop it via strtok in C. Inputs avoid those shapes.",
-  "twin_authors": "twin.py co-authored by sibling batch agent"
+  "twin_authors": "twin.py co-authored by sibling batch agent",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "gateway/platforms/yuanbao.py",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

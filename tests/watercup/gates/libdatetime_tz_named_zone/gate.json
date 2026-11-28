@@ -21,5 +21,9 @@
     "Asia/Tokyo|1720000000",
     "UTC|1720000000"
   ],
-  "notes": "Named-zone formatting (lib/libdatetime/datetime.c datetime_format_tz) vs LIVE zoneinfo. Two DST directions (America/New_York in July and January), the southern hemisphere (Australia/Sydney both ways), a half-hour offset (Asia/Kolkata), a fixed zone (Asia/Tokyo) and UTC. Regression guard for the measured Windows bug: the CRT ignores TZ, so the old setenv(TZ)+tzset() path rendered the machine clock for every named zone. NOT covered on purpose: zones outside the built-in table (Pacific/Chatham) still fall back to TZ and are wrong on Windows; that boundary is recorded in docs/dev/audit-2026-11-26-verification.md rather than kept as a permanently red cup. The 12 zones src/cron/jobs_time.c offers are all table-covered."
+  "notes": "Named-zone formatting (lib/libdatetime/datetime.c datetime_format_tz) vs LIVE zoneinfo. Two DST directions (America/New_York in July and January), the southern hemisphere (Australia/Sydney both ways), a half-hour offset (Asia/Kolkata), a fixed zone (Asia/Tokyo) and UTC. Regression guard for the measured Windows bug: the CRT ignores TZ, so the old setenv(TZ)+tzset() path rendered the machine clock for every named zone. NOT covered on purpose: zones outside the built-in table (Pacific/Chatham) still fall back to TZ and are wrong on Windows; that boundary is recorded in docs/dev/audit-2026-11-26-verification.md rather than kept as a permanently red cup. The 12 zones src/cron/jobs_time.c offers are all table-covered.",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "zoneinfo",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

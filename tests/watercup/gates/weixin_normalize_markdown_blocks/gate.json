@@ -13,5 +13,9 @@
     "test123",
     "NULL"
   ],
-  "notes": "WeChat copy-friendly markdown collapse: fence toggle, code-block passthrough, blank-run squash, final strip. PARITY FIX applied to src/plugins/platforms/weixin/weixin.c during gating: the final join strip only trimmed trailing newlines, missing Python .strip()'s leading-whitespace/other-WS removal. Fence regex approximated as prefix ``` match (inputs avoid backticks inside fence markers). Inputs avoid \\r-only / vertical-tab splitlines divergences."
+  "notes": "WeChat copy-friendly markdown collapse: fence toggle, code-block passthrough, blank-run squash, final strip. PARITY FIX applied to src/plugins/platforms/weixin/weixin.c during gating: the final join strip only trimmed trailing newlines, missing Python .strip()'s leading-whitespace/other-WS removal. Fence regex approximated as prefix ``` match (inputs avoid backticks inside fence markers). Inputs avoid \\r-only / vertical-tab splitlines divergences.",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "gateway/platforms/weixin.py",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

@@ -13,5 +13,9 @@
     "test123",
     "NULL"
   ],
-  "notes": "WebP dimension parse traced on hex-encoded buffers. Agreed sub-contract: >=30-byte buffers only. KNOWN DIVERGENCES (documented, excluded): buffers of 16..29 bytes (LIVE parses VP8L at >=25 and VP8 with markers, C requires >=30); VP8X chunks (LIVE parses extended format, C has no branch); malformed VP8 marker bytes (LIVE validates the 0x9D01002A frame tag, C does not)."
+  "notes": "WebP dimension parse traced on hex-encoded buffers. Agreed sub-contract: >=30-byte buffers only. KNOWN DIVERGENCES (documented, excluded): buffers of 16..29 bytes (LIVE parses VP8L at >=25 and VP8 with markers, C requires >=30); VP8X chunks (LIVE parses extended format, C has no branch); malformed VP8 marker bytes (LIVE validates the 0x9D01002A frame tag, C does not).",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "gateway/platforms/yuanbao_media.py",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

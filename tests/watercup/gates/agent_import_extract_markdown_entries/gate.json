@@ -13,5 +13,9 @@
     "test123",
     "NULL"
   ],
-  "notes": "Markdown memory-entry extraction (traced copy of src/hermes_cli/agent_import.c::ai_extract_markdown_entries vs LIVE hermes_cli/agent_import.py::extract_markdown_entries). Covers headings/bullets/tables/code fences, banned-heading filtering, heading-stack pops, paragraph joining, and normalize_text dedup. KNOWN divergences avoided by input choice: marker-only bullets like '-   ' make C skip silently while Python flushes the pending paragraph there; Python strips/lowercases via regex classes identically otherwise."
+  "notes": "Markdown memory-entry extraction (traced copy of src/hermes_cli/agent_import.c::ai_extract_markdown_entries vs LIVE hermes_cli/agent_import.py::extract_markdown_entries). Covers headings/bullets/tables/code fences, banned-heading filtering, heading-stack pops, paragraph joining, and normalize_text dedup. KNOWN divergences avoided by input choice: marker-only bullets like '-   ' make C skip silently while Python flushes the pending paragraph there; Python strips/lowercases via regex classes identically otherwise.",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "hermes_cli/agent_import.py",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

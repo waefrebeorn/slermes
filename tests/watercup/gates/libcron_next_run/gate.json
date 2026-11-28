@@ -20,5 +20,9 @@
     "0 0 30 2 *|1700000000",
     "not a cron|1700000000"
   ],
-  "notes": "Next-run computation (lib/libcron/cron.c vs LIVE croniter engine used by hermes_cli/cron.py). Probes 'expr|from_epoch' (UTC): steps, lists, ranges, month/dow names, @specials, Feb 29, impossible dates, out-of-range fields. Fixtures are expr|from_epoch probes (generic placeholders made the gate non-discriminating)."
+  "notes": "Next-run computation (lib/libcron/cron.c vs LIVE croniter engine used by hermes_cli/cron.py). Probes 'expr|from_epoch' (UTC): steps, lists, ranges, month/dow names, @specials, Feb 29, impossible dates, out-of-range fields. Fixtures are expr|from_epoch probes (generic placeholders made the gate non-discriminating).",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "croniter",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }

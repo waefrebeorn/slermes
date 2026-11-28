@@ -18,5 +18,9 @@
     "test123",
     "NULL"
   ],
-  "notes": "browser.extension_control.enabled feature-flag probe. Harness traces the config-dict ladder and calls the REAL linked port (browser_control_broker.c + libjson/libyaml/libcrypto; hermes_get_home stubbed to a nonexistent home so the config=None live-read branch can never succeed \u2014 that branch is out of scope, inputs always pass a dict). Twin asserts the traced verdict equals the LIVE fn result per input. enabled=1 (int) correctly False on both sides (exact-bool check)."
+  "notes": "browser.extension_control.enabled feature-flag probe. Harness traces the config-dict ladder and calls the REAL linked port (browser_control_broker.c + libjson/libyaml/libcrypto; hermes_get_home stubbed to a nonexistent home so the config=None live-read branch can never succeed \u2014 that branch is out of scope, inputs always pass a dict). Twin asserts the traced verdict equals the LIVE fn result per input. enabled=1 (int) correctly False on both sides (exact-bool check).",
+  "previous_classification": null,
+  "classification": "DEAD_PATH",
+  "dead_python_path": "gateway/browser_control_broker.py",
+  "relabel_note": "py_module does not exist in the Python payload (verified by filesystem check and by the runner raising FileNotFoundError). The feature was removed or moved out of the package, so there is no Python left to match: this gate cannot pass and must not be counted as ported."
 }
