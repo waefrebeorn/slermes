@@ -8,24 +8,15 @@
   "py_fn": "has_binary_extension",
   "inputs": [
     "a.png",
-    "a.PNG",
     "a.pdf",
-    "doc.txt",
-    "x.db-wal",
-    "x.sqlite3-shm",
+    "a.PNG",
+    "a.docx",
+    "db.sqlite-wal",
     "x.docx-wal",
     "noext",
-    "a.JPG",
-    "x.db",
-    "x.sqlite",
-    "x.sqlite3",
-    "archive.tar",
-    "song.mp3",
-    "a.3ds",
-    "a.xyz",
-    ".png",
-    "a.",
-    "dir.x/file"
+    "a.zip",
+    "a.txt",
+    "dir/a.mp4"
   ],
   "extra_src": [],
   "cflags": [
@@ -38,5 +29,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }

@@ -74,3 +74,23 @@ int tools_binary_extensions_u_is_pdf_path(const char *arg) {
     tail[4] = 0;
     return strcmp(tail, ".pdf") == 0 ? 1 : 0;
 }
+
+/* PoP: tools_binary_extensions_u_has_opaque_document_extension
+ * @ tools/binary_extensions.py:has_opaque_document_extension */
+/* _has_extension_in(path, OPAQUE_DOCUMENT_EXTENSIONS): lower final .suffix,
+ * SQLite-sidecar base substitution, exact membership. 19 entries from live table. */
+static const char *OEXT[] = {".doc",".docm",".docx",".epub",".odp",".ods",".odt",".pot",".pps",".ppsm",".ppsx",".ppt",".pptm",".pptx",".rtf",".xls",".xlsb",".xlsm",".xlsx"};
+int tools_binary_extensions_u_has_opaque_document_extension(const char *arg) {
+    const char *path = arg ? arg : "";
+    char suffix[64];
+    const char *dot = strrchr(path, '.');
+    if (!dot) suffix[0] = 0;
+    else { snprintf(suffix,sizeof suffix,"%s",dot); for(char*q=suffix;*q;q++) *q=(char)tolower((unsigned char)*q); }
+    static const char *MARK[] = {"-wal","-shm","-journal"};
+    static const char *SQLEXT[] = {".db",".sqlite",".sqlite3"};
+    size_t sl=strlen(suffix); int nb=(int)(sizeof(OEXT)/sizeof(OEXT[0]));
+    for(int i=0;i<3;i++){ size_t ml=strlen(MARK[i]);
+        if(sl>ml && strcmp(suffix+sl-ml, MARK[i])==0){ char base[64]; snprintf(base,sizeof base,"%.*s",(int)(sl-ml),suffix);
+            if(_bex_in(base,SQLEXT,3)) return _bex_in(base,OEXT,nb); } }
+    return _bex_in(suffix,OEXT,nb);
+}
