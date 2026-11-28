@@ -90,35 +90,10 @@ static char *forensics_read_proc_field(pid_t pid, const char *key) {
  *  Port of Python _read_proc_cmdline()
  * ================================================================ */
 
-/* PoP: forensics_read_proc_cmdline @ gateway/shutdown_forensics.py:_read_proc_cmdline */
-
-static char *forensics_read_proc_cmdline(pid_t pid) {
-    char path[128];
-    snprintf(path, sizeof(path), "/proc/%d/cmdline", (int)pid);
-
-    FILE *f = fopen(path, "rb");
-    if (!f) return NULL;
-
-    /* Read up to 4KB */
-    char raw[4096];
-    size_t n = fread(raw, 1, sizeof(raw) - 1, f);
-    fclose(f);
-    if (n == 0) return NULL;
-
-    raw[n] = '\0';
-    /* Replace NUL separators with spaces */
-    for (size_t i = 0; i < n; i++) {
-        if (raw[i] == '\0') raw[i] = ' ';
-    }
-
-    char *result = strdup(raw);
-    /* Trim trailing spaces */
-    if (result) {
-        size_t len = strlen(result);
-        while (len > 0 && result[len-1] == ' ') result[--len] = '\0';
-    }
-    return result;
-}
+/* YAGNI note: the reference _proc_summary() deliberately does NOT read
+ * /proc/<pid>/cmdline (those bytes are unsafe to persist -- tokens, URIs,
+ * `-e KEY=` overlays). The C port's earlier forensics_read_proc_cmdline()
+ * helper was removed for parity; see PoP for _proc_summary. */
 
 /* ================================================================
  *  Internal: compact /proc/<pid> snapshot
@@ -160,15 +135,6 @@ static json_node_t *forensics_proc_summary(pid_t pid) {
         if (space) *space = '\0';
         json_object_set(summary, "uid", json_new_string(uid));
         free(uid);
-    }
-
-    char *cmdline = forensics_read_proc_cmdline(pid);
-    if (cmdline) {
-        /* Truncate to 300 chars */
-        size_t len = strlen(cmdline);
-        if (len > 300) cmdline[300] = '\0';
-        json_object_set(summary, "cmdline", json_new_string(cmdline));
-        free(cmdline);
     }
 
     return summary;
