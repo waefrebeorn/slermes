@@ -66,8 +66,11 @@ char *kanban_normalize_reasoning_effort(const char *effort) {
 /* --- ttl/grace/cooldown resolvers (env modeled as explicit arg) ---  */
 /* PoP: kanban_resolve_claim_ttl_seconds @ hermes_cli/kanban_db.py:_resolve_claim_ttl_seconds */
 
-int kanban_resolve_claim_ttl_seconds(int ttl_seconds) {
-    if (ttl_seconds > 0) return ttl_seconds;
+int kanban_resolve_claim_ttl_seconds(int given, int ttl_seconds) {
+    /* python: explicit ttl -> max(1, int(ttl)); unset -> env/_env_int(minimum=1).
+     * The env read is impure and stays with the caller; an explicit 0 or negative
+     * is NOT the same as unset -- python clamps it to 1. */
+    if (given) return ttl_seconds > 1 ? ttl_seconds : 1;
     return KANBAN_DEFAULT_CLAIM_TTL_SECONDS;
 }/* PoP: kanban_resolve_crash_grace_seconds @ hermes_cli/kanban_db.py:_resolve_crash_grace_seconds */
 

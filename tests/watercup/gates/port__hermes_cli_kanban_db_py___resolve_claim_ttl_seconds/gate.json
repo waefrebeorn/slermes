@@ -6,35 +6,17 @@
   "c_fn": "kanban_resolve_claim_ttl_seconds",
   "py_module": "hermes_cli/kanban_db.py",
   "py_fn": "_resolve_claim_ttl_seconds",
-  "inputs": [
-    "",
-    " ",
-    "\t",
-    "a",
-    "A",
-    "0",
-    "1",
-    "-1",
-    "42",
-    "3.14",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/kanban_db_pure.c"
+    "lib/libjson/json.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"ttl\": 600}",
+    "{\"ttl\": 1}",
+    "{\"ttl\": 0}",
+    "{\"ttl\": -5}",
+    "{\"ttl\": 7200}",
+    "{\"ttl\": 2}",
+    "{\"ttl\": null}"
+  ]
 }

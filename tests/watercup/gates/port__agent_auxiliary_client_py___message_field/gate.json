@@ -3,22 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_message_field",
+  "c_fn": "acf_message_field",
   "py_module": "agent/auxiliary_client.py",
   "py_fn": "_message_field",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"msg\": {\"content\": \"hi\"}, \"name\": \"content\"}",
+    "{\"msg\": {\"content\": \"hi\"}, \"name\": \"refusal\"}",
+    "{\"msg\": {\"content\": \"hi\"}, \"name\": \"\"}",
+    "{\"msg\": \"not_a_dict\", \"name\": \"content\"}",
+    "{\"msg\": null, \"name\": \"content\"}",
+    "{\"msg\": {}, \"name\": \"content\"}",
+    "{\"msg\": {\"a\": \"\"}, \"name\": \"a\"}"
   ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src/agent/auxiliary_client_gaps.c"
+    "src/agent/auxiliary_client_flow.c"
   ],
   "cflags": [
     "-I",
@@ -33,6 +32,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "REAL_GAP",
+  "classification": "PORTED",
   "relabel_note": "harness was still gap_sentinel(); PORTED was false"
 }

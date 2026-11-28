@@ -1,32 +1,17 @@
-/* gate: port__hermes_cli_kanban_db_py___resolve_claim_ttl_seconds — traced copy of kanban_resolve_claim_ttl_seconds (int_int) */
+/* gate: _resolve_claim_ttl_seconds -> explicit-ttl clamp. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
-
-
-extern int kanban_resolve_claim_ttl_seconds(int ttl_seconds);
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s kanban_resolve_claim_ttl_seconds <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("kanban_resolve_claim_ttl_seconds");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = kanban_resolve_claim_ttl_seconds((int)strtol(argv[i], NULL, 10));
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("kanban_resolve_claim_ttl_seconds");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern int kanban_resolve_claim_ttl_seconds(int given, int ttl_seconds);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_resolve_claim_ttl_seconds");
+  json_t *in=json_parse(argv[i],NULL);
+  json_t *tt=json_obj_get(in,"ttl");
+  int given=!(tt==NULL || json_is_null(tt));
+  int v= json_is_number(tt) ? (int)tt->num_val : 0;
+  int r=kanban_resolve_claim_ttl_seconds(given,v);
+  char b[32]; snprintf(b,sizeof b,"%d",r); WCUP_VALSTR(b);
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_resolve_claim_ttl_seconds"); if(in) json_free(in);} return 0;}
