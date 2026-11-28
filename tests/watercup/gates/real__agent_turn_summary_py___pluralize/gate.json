@@ -3,19 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_pluralize",
+  "c_fn": "agent_turn_summary_u_pluralize",
   "py_module": "agent/turn_summary.py",
   "py_fn": "_pluralize",
   "inputs": [
-    0,
-    1,
-    42,
-    1024,
-    -7
+    "1\tfiles",
+    "3\tfiles",
+    "1\tentries",
+    "2\tentries",
+    "1\tclasses",
+    "1\tboxes",
+    "0\tfiles",
+    "1\tpeople",
+    "1\ts",
+    "1\tstories"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +29,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }

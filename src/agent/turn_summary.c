@@ -387,3 +387,38 @@ const turn_tally_t *turn_summary_collector_tally(const turn_summary_collector_t 
 char *turn_summary_collector_render(const turn_summary_collector_t *c, double elapsed_seconds) {
     return turn_summary_format(elapsed_seconds, c->tally, TURN_SUMMARY_MAX_SEGMENTS);
 }
+
+/* PoP: agent_turn_summary_u_format_elapsed @ agent/turn_summary.py:format_elapsed */
+/* "<s:.1f>s" when <60 else "<m>m<ss:02d>s" with round()=rint() (half-even). */
+char *agent_turn_summary_u_format_elapsed(const char *arg) {
+    double d = strtod(arg ? arg : "", NULL);
+    if (d < 0.0) d = 0.0;
+    char buf[64];
+    if (d < 60.0) { snprintf(buf, sizeof buf, "%.1fs", d); return strdup(buf); }
+    long r = (long)rint(d);
+    long m = r / 60, rest = r % 60;
+    snprintf(buf, sizeof buf, "%ldm%02lds", m, rest); return strdup(buf);
+}
+/* PoP: agent_turn_summary_u_pluralize @ agent/turn_summary.py:_pluralize */
+/* "1 file"/"3 files". Suffix rules in order: ies->y, ses->s, s->"". */
+char *agent_turn_summary_u_pluralize(const char *arg) {
+    const char *a = arg ? arg : "";
+    const char *tab = strchr(a, '\t');
+    char cntbuf[32]; size_t cl = tab ? (size_t)(tab - a) : strlen(a);
+    if (cl >= sizeof cntbuf) cl = sizeof cntbuf - 1;
+    memcpy(cntbuf, a, cl); cntbuf[cl] = 0;
+    long count = strtol(cntbuf, NULL, 10);
+    const char *noun = tab ? tab + 1 : "";
+    size_t nl = strlen(noun);
+    char out[512];
+    if (count != 1) { snprintf(out, sizeof out, "%ld %s", count, noun); return strdup(out); }
+    static const char *SUF[] = {"ies", "ses", "s"};
+    static const char *TAIL[] = {"y", "s", ""};
+    for (int i = 0; i < 3; i++) {
+        size_t sl = strlen(SUF[i]);
+        if (nl >= sl && strcmp(noun + nl - sl, SUF[i]) == 0) {
+            snprintf(out, sizeof out, "1 %.*s%s", (int)(nl - sl), noun, TAIL[i]); return strdup(out);
+        }
+    }
+    snprintf(out, sizeof out, "1 %s", noun); return strdup(out);
+}

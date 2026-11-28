@@ -3,19 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "format_elapsed",
+  "c_fn": "agent_turn_summary_u_format_elapsed",
   "py_module": "agent/turn_summary.py",
   "py_fn": "format_elapsed",
   "inputs": [
-    0.0,
-    1.5,
-    3.14159,
-    1024.0,
-    -2.5
+    "12.4",
+    "0",
+    "-5",
+    "59.94",
+    "60",
+    "59.96",
+    "125.5",
+    "125.4",
+    "3661",
+    "0.05"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +29,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
