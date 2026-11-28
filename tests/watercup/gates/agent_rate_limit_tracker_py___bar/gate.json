@@ -7,15 +7,17 @@
   "py_module": "agent/rate_limit_tracker.py",
   "py_fn": "_bar",
   "inputs": [
-    0.0,
-    1.5,
-    3.14159,
-    1024.0,
-    -2.5
+    "[0, 10]",
+    "[40, 20]",
+    "[100, 5]",
+    "[50, 0]",
+    "[150, 10]",
+    "[-5, 10]",
+    "[33.3, 10]",
+    "[40, 1]",
+    "[33.3, 3]"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

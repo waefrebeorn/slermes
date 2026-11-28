@@ -128,23 +128,30 @@ int agent_rate_limit_tracker_u_fmt_seconds(const char *arg) {
 }
 
 /* PoP: agent_rate_limit_tracker_u_bar @ agent/rate_limit_tracker.py:_bar */
-int agent_rate_limit_tracker_u_bar(const char *arg) {
-    /* Python: [███░░░] — filled = clamp(pct/100*width), empty = rest.
-     * Arg = "pct\twidth". */
-    if (!arg || !*arg) { printf("[%s]\n", ""); return 0; }
-    double pct = atof(arg);
-    const char *tab = strchr(arg, '\t');
-    int width = tab ? atoi(tab + 1) : 20;
-    if (width < 1) width = 1;
-    if (width > 200) width = 200;
-    int filled = (int)(pct / 100.0 * width);
+/* PoP: agent_rate_limit_tracker_u_bar @ agent/rate_limit_tracker.py:_bar */
+/* Faithful: filled=max(0,min(width,int(pct/100*width))); "[█*filled + ░*(width-filled)]".
+ * INPUT is JSON [pct, width]. Was: "pct\twidth", clamped width<1 to 1 (python
+ * allows 0 -> "[]"), printed and returned 0. Returns owned UTF-8 string. */
+char *agent_rate_limit_tracker_u_bar(const char *arg) {
+    double pct = 0.0; int width = 20;
+    json_t *j = arg ? json_parse(arg, NULL) : NULL;
+    if (j && json_is_array(j)) {
+        if (j->c.count > 0 && json_is_number(j->c.items[0])) pct = j->c.items[0]->num_val;
+        if (j->c.count > 1 && json_is_number(j->c.items[1])) width = (int)j->c.items[1]->num_val;
+    }
+    if (j) json_free(j);
+    if (width < 0) width = 0;
+    if (width > 1000) width = 1000;
+    int filled = (int)(pct / 100.0 * (double)width);
     if (filled < 0) filled = 0;
     if (filled > width) filled = width;
-    printf("[");
-    for (int i = 0; i < filled; i++) fputs("\xE2\x96\x88", stdout);
-    for (int i = filled; i < width; i++) fputs("\xE2\x96\x91", stdout);
-    printf("]\n");
-    return 0;
+    size_t cap = (size_t)width * 3 + 4;
+    char *out = malloc(cap); size_t w = 0;
+    out[w++] = '[';
+    for (int i = 0; i < filled; i++) { out[w++]=(char)0xE2; out[w++]=(char)0x96; out[w++]=(char)0x88; } /* block */
+    for (int i = filled; i < width; i++) { out[w++]=(char)0xE2; out[w++]=(char)0x96; out[w++]=(char)0x91; } /* light shade */
+    out[w++] = ']'; out[w] = '\0';
+    return out;
 }
 
 /* PoP: agent_rate_limit_tracker_u_bucket_line @ agent/rate_limit_tracker.py:_bucket_line */
