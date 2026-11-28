@@ -7,15 +7,25 @@
   "py_module": "agent/verification_evidence.py",
   "py_fn": "_strip_command_prefix",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "[]",
+    "[\"pytest\", \"-q\"]",
+    "[\"env\", \"A=1\", \"pytest\"]",
+    "[\"sudo\", \"pytest\"]",
+    "[\"nice\", \"-n\", \"5\", \"pytest\"]",
+    "[\"timeout\", \"30\", \"pytest\"]",
+    "[\"timeout\", \"5m\", \"cmd\", \"arg\"]",
+    "[\"command\", \"time\", \"noglob\", \"pytest\"]",
+    "[\"A=1\", \"B=2\", \"pytest\"]",
+    "[\"stdbuf\", \"-oL\", \"pytest\"]",
+    "[\"timeout\", \"--signal=KILL\", \"10\", \"pytest\"]",
+    "[\"nohup\", \"pytest\"]",
+    "[\"time\", \"pytest\"]",
+    "[\"timeout\", \"abc\", \"pytest\"]",
+    "[\"nice\", \"--\", \"pytest\"]",
+    "[\"env\"]",
+    "[\"a b\", \"c\"]"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

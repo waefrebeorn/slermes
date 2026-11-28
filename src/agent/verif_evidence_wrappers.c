@@ -163,35 +163,82 @@ int vev_u_canonical_tokens(const char *arg) {
 }
 
 /* PoP: vev_u_strip_command_prefix @ agent/verification_evidence.py:_strip_command_prefix */
-/* Python: drop leading "env", VAR=value assignments, "command"/"time"/"noglob".
- * Real C: token-stream filter preserving remaining tokens. */
-int vev_u_strip_command_prefix(const char *arg) {
-    if (!arg) { printf("\n"); return 0; }
-    char buf[2048];
-    size_t n = strlen(arg);
-    if (n > sizeof(buf) - 1) n = sizeof(buf) - 1;
-    memcpy(buf, arg, n);
-    buf[n] = '\0';
-    char *p = buf;
-    int first = 1;
-    char *tokens[256]; int ntok = 0;
-    while (*p && ntok < 256) {
-        while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
-        if (!*p) break;
-        tokens[ntok++] = p;
-        while (*p && !(*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')) p++;
-        if (*p) { *p++ = '\0'; }
-    }
-    int i = 0;
-    /* drop "env" */
-    if (i < ntok && strcmp(tokens[i], "env") == 0) i++;
-    /* drop VAR=value (contains '=' and doesn't start with '-') */
-    while (i < ntok && strchr(tokens[i], '=') && tokens[i][0] != '-') i++;
-    /* drop command/time/noglob */
-    while (i < ntok && (strcmp(tokens[i], "command") == 0 || strcmp(tokens[i], "time") == 0 || strcmp(tokens[i], "noglob") == 0)) i++;
-    for (; i < ntok; i++) { if (!first) printf("\n"); printf("%s", tokens[i]); first = 0; }
-    printf("\n");
+/* Faithful 1:1 port. Input/return are JSON arrays of token strings (python takes
+ * a token LIST; whitespace-splitting would be wrong for tokens with spaces). */
+static int _wu_in(const char *t, const char *const *set, int n) {
+    for (int k = 0; k < n; k++) if (strcmp(t, set[k]) == 0) return 1;
     return 0;
+}
+static int _wu_starts(const char *t, const char *p) { return strncmp(t, p, strlen(p)) == 0; }
+static int _wu_width(const char *tok, const char *const *flags, int nf, const char *const *valued, int nv) {
+    if (_wu_in(tok, flags, nf)) return 1;
+    if (_wu_in(tok, valued, nv)) return 2;
+    for (int k = 0; k < nv; k++) {
+        const char *v = valued[k];
+        if (v[0]=='-' && v[1]=='-') { char buf[64]; snprintf(buf,sizeof buf,"%s=",v); if (_wu_starts(tok,buf)) return 1; }
+        else if (_wu_starts(tok, v)) return 1;
+    }
+    return 0;
+}
+static int _wu_dur_ok(const char *t) { /* ^\d+(\.\d+)?[smhd]?$ */
+    if (!*t) return 0;
+    const char *p = t; int digits = 0;
+    while (*p >= '0' && *p <= '9') { p++; digits++; }
+    if (!digits) return 0;
+    if (*p == '.') { p++; int d2=0; while (*p>='0'&&*p<='9'){p++;d2++;} if(!d2) return 0; }
+    if (*p=='s'||*p=='m'||*p=='h'||*p=='d') p++;
+    return *p == '\0';
+}
+static int _wu_skip_wrapper(char **tok, int ntok, int i) {
+    const char *name = tok[i];
+    static const char *TF[] = {"-p","--preserve-status","-f","--foreground","-v","--verbose"};
+    static const char *TV[] = {"-s","--signal","-k","--kill-after"};
+    static const char *NC[] = {}; static const char *NV[] = {"-n","--adjustment"};
+    static const char *SC[] = {}; static const char *SV[] = {"-i","-o","-e","--input","--output","--error"};
+    const char *const *fl = NULL, *const *va = NULL; int nf = 0, nv = 0;
+    if (strcmp(name, "timeout") == 0) { fl=TF; nf=6; va=TV; nv=4; }
+    else if (strcmp(name, "nice") == 0) { fl=NC; nf=0; va=NV; nv=2; }
+    else if (strcmp(name, "nohup") == 0) { fl=NC; nf=0; va=NC; nv=0; }
+    else if (strcmp(name, "stdbuf") == 0) { fl=SC; nf=0; va=SV; nv=6; }
+    else return -1;
+    int timeout = strcmp(name, "timeout") == 0;
+    i++;
+    while (i < ntok && tok[i][0] == '-' && strcmp(tok[i], "--") != 0) {
+        int w = _wu_width(tok[i], fl, nf, va, nv);
+        if (!w) return -1;
+        i += w;
+    }
+    if (i < ntok && strcmp(tok[i], "--") == 0) i++;
+    if (timeout) {
+        if (i >= ntok || !_wu_dur_ok(tok[i])) return -1;
+        i++;
+    }
+    return i;
+}
+char *vev_u_strip_command_prefix(const char *tokens_json) {
+    json_t *arr = tokens_json ? json_parse(tokens_json, NULL) : NULL;
+    if (!arr || !json_is_array(arr)) { if (arr) json_free(arr); return strdup("[]"); }
+    int ntok = (int)arr->c.count;
+    char **tok = calloc((size_t)ntok + 1, sizeof(char *));
+    for (int k = 0; k < ntok; k++) {
+        json_t *el = arr->c.items[k];
+        tok[k] = (char *)((el && json_is_string(el)) ? json_string_value(el) : "");
+    }
+    int i = (ntok > 0 && strcmp(tok[0], "env") == 0) ? 1 : 0;
+    while (i < ntok && strchr(tok[i], '=') && tok[i][0] != '-') i++;
+    while (i < ntok) {
+        if (strcmp(tok[i],"command")==0 || strcmp(tok[i],"time")==0 || strcmp(tok[i],"noglob")==0) { i++; continue; }
+        if (strcmp(tok[i],"timeout")==0 || strcmp(tok[i],"nice")==0 || strcmp(tok[i],"nohup")==0 || strcmp(tok[i],"stdbuf")==0) {
+            int child = _wu_skip_wrapper(tok, ntok, i);
+            if (child >= 0) { i = child; continue; }
+        }
+        break;
+    }
+    json_t *out = json_array();
+    for (; i < ntok; i++) json_append(out, json_string(tok[i]));
+    char *s = json_serialize(out);
+    json_free(out); json_free(arr); free(tok);
+    return s ? s : strdup("[]");
 }
 
 /* PoP: needle @ agent/verification_evidence.py:_equivalent_needles */
