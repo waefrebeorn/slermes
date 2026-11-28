@@ -791,3 +791,15 @@ char *cli_agent_tool_guardrails__sha256(const char *value)
     return result;
 }
 
+
+/* PoP: agent_tool_guardrails_u_is_idempotent @ agent/tool_guardrails.py:_is_idempotent */
+/* tool_name in self.config.idempotent_tools; config defaults to
+ * IDEMPOTENT_TOOL_NAMES. Returns int 1/0. */
+static const char *GR_IDEM[] = {"read_file","search_files","web_search","web_extract","session_search",
+    "skill_view","skills_list","browser_snapshot","browser_console","browser_get_images"};
+int agent_tool_guardrails_u_is_idempotent(const char *arg) {
+    if (!arg) return 0;
+    int n = (int)(sizeof(GR_IDEM)/sizeof(GR_IDEM[0]));
+    for (int i = 0; i < n; i++) if (strcmp(arg, GR_IDEM[i]) == 0) return 1;
+    return 0;
+}

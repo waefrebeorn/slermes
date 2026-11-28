@@ -1,25 +1,11 @@
-/* gate: real__agent_tool_guardrails_py___is_idempotent — GAP sentinel for _is_idempotent */
+/* gate: _is_idempotent -> real port (int 1/0). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_is_idempotent";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _is_idempotent <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_is_idempotent");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_is_idempotent");
-    }
-    return 0;
-}
+extern int agent_tool_guardrails_u_is_idempotent(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_is_idempotent");
+  int r=agent_tool_guardrails_u_is_idempotent(argv[i]); WCUP_VALINT(r);
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_is_idempotent");} return 0;}
