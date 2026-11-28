@@ -27,5 +27,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "python reads the mcp_servers block from config.yaml; the C symbol hermes_cli_mcp_catalog_is_installed is a STUB that ignores its argument and always returns 0, so it must not be trusted by any caller. Needs a config-backed membership test."
 }

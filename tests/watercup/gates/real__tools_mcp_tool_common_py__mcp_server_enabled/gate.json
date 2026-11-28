@@ -1,0 +1,45 @@
+{
+  "name": "real__tools_mcp_tool_common_py__mcp_server_enabled",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "w8_mcptoolcom_f3c09b_mcp_server_enabled",
+  "py_module": "tools/mcp_tool_common.py",
+  "py_fn": "mcp_server_enabled",
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/tools/mcp_tool_common.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "{}",
+    "{\"enabled\": true}",
+    "{\"enabled\": false}",
+    "{\"enabled\": \"false\"}",
+    "{\"enabled\": \"0\"}",
+    "{\"enabled\": 0}",
+    "{\"enabled\": null}",
+    "{\"enabled\": \"bogus\"}",
+    "{\"enabled\": {}}",
+    "{\"enabled\": 2}",
+    "{\"enabled\": true, \"disabled\": \"true\"}",
+    "{\"enabled\": true, \"disabled\": false}",
+    "{\"disabled\": \"yes\"}",
+    "{\"disabled\": 1}",
+    "{\"enabled\": \"on\", \"disabled\": \"off\"}",
+    "{\"enabled\": \"FALSE\"}",
+    "{\"enabled\": \"  no  \"}",
+    "{\"enabled\": [1]}",
+    "{\"disabled\": \"bogus\"}"
+  ]
+}

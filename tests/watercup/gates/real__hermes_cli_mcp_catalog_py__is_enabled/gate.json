@@ -26,5 +26,6 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "relabel_note": "installed_servers() from config.yaml plus server_enabled(cfg); the pure half (mcp_server_enabled) is now gated separately as real__tools_mcp_tool_common_py__mcp_server_enabled."
 }
