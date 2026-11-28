@@ -1,17 +1,10 @@
-"""twin for agent/model_metadata.py:_is_cjk_token_dense_char (thin: shared runtime, cross-OS)."""
+"""twin: _is_cjk_token_dense_char(ch) -> bool. Input is HEX of the UTF-8 text."""
 from watercup_twin_runtime import TwinBase
-
-
-
 class _Twin(TwinBase):
-    PY_MODULE = "agent/model_metadata.py"
-    PY_FN = "_is_cjk_token_dense_char"
+    PY_MODULE = "agent/model_metadata.py"; PY_FN = "_is_cjk_token_dense_char"
     C_FN = "agent_model_metadata_u_is_cjk_token_dense_char"
-
+    def call(self, inp, inputs, idx=0):
+        return self._fn(bytes.fromhex(str(inp)).decode("utf-8"))
     def norm(self, c, result):
-        c.valstr(str(int(result)) if isinstance(result, (int, bool)) and not isinstance(result, str) else ("0" if result is None else str(result)))
-
-
-_t = _Twin()
-trace = _t.trace
-run = _t.run
+        c.valstr("1" if result else "0")
+_t = _Twin(); trace = _t.trace; run = _t.run

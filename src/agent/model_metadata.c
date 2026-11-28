@@ -972,16 +972,40 @@ int agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce(const char *
     return 0;
 }
 
+static int _etr_dense(unsigned cp);
 /* PoP: agent_model_metadata_u_is_cjk_token_dense_char @ agent/model_metadata.py:_is_cjk_token_dense_char */
+/* _CJK_DENSE_RE.fullmatch(ch) -- FULLMATCH: exactly ONE codepoint inside the dense
+ * ranges. INPUT IS HEX OF THE UTF-8 TEXT (was: a bare codepoint via strtol, printed
+ * and returned 0). */
 int agent_model_metadata_u_is_cjk_token_dense_char(const char *arg) {
-    /* Python: codepoint ranges. Arg = "codepoint". */
-    if (!arg || !*arg) { printf("0\n"); return 0; }
-    long code = strtol(arg, NULL, 0);
-    if ((code >= 0x1100 && code <= 0x11FF) || (code >= 0x2E80 && code <= 0x9FFF) ||
-        (code >= 0xA960 && code <= 0xA97F) || (code >= 0xAC00 && code <= 0xD7AF) ||
-        (code >= 0xF900 && code <= 0xFAFF) || (code >= 0xFF00 && code <= 0xFFEF)) { printf("1\n"); return 0; }
-    printf("0\n");
-    return 0;
+    const char *h = arg ? arg : "";
+    unsigned cps[8]; int n = 0;
+    for (const char *p = h; p[0] && p[1]; p += 2) {
+        int hi = (p[0]>='0'&&p[0]<='9')?p[0]-'0':(p[0]>='a'&&p[0]<='f')?p[0]-'a'+10:(p[0]>='A'&&p[0]<='F')?p[0]-'A'+10:-1;
+        int lo = (p[1]>='0'&&p[1]<='9')?p[1]-'0':(p[1]>='a'&&p[1]<='f')?p[1]-'a'+10:(p[1]>='A'&&p[1]<='F')?p[1]-'A'+10:-1;
+        if (hi < 0 || lo < 0) break;
+        unsigned char b = (unsigned char)(hi*16+lo);
+        if (b < 0x80) { if (n<8) cps[n++] = b; }
+        else {
+            unsigned cp; int len;
+            if ((b & 0xe0) == 0xc0) { cp = b & 0x1f; len = 2; }
+            else if ((b & 0xf0) == 0xe0) { cp = b & 0x0f; len = 3; }
+            else if ((b & 0xf8) == 0xf0) { cp = b & 0x07; len = 4; }
+            else { cp = b; len = 1; }
+            for (int k = 1; k < len; k++) {
+                const char *q = p + k*2;
+                if (!q[0] || !q[1]) { cp = 0xFFFFFFFFu; break; }
+                int h2 = (q[0]>='0'&&q[0]<='9')?q[0]-'0':(q[0]>='a'&&q[0]<='f')?q[0]-'a'+10:(q[0]>='A'&&q[0]<='F')?q[0]-'A'+10:-1;
+                int l2 = (q[1]>='0'&&q[1]<='9')?q[1]-'0':(q[1]>='a'&&q[1]<='f')?q[1]-'a'+10:(q[1]>='A'&&q[1]<='F')?q[1]-'A'+10:-1;
+                if (h2 < 0 || l2 < 0) { cp = 0xFFFFFFFFu; break; }
+                cp = (cp << 6) | ((unsigned char)(h2*16+l2) & 0x3f);
+            }
+            if (n<8) cps[n++] = cp;
+            p += (size_t)(len-1)*2;
+        }
+    }
+    if (n != 1) return 0;
+    return _etr_dense(cps[0]) ? 1 : 0;
 }
 
 /* PoP: agent_model_metadata_u_estimate_message_tokens_without_images @ agent/model_metadata.py:_estimate_message_tokens_without_images */
