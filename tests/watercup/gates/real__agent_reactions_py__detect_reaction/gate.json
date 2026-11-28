@@ -3,19 +3,37 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "detect_reaction",
+  "c_fn": "agent_reactions_u_detect_reaction",
   "py_module": "agent/reactions.py",
   "py_fn": "detect_reaction",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "676f6f6420626f74",
+    "676f6f64626f74",
+    "476f6f6420426f74",
+    "676f6f64206279657320626f74",
+    "69206c6f766520796f75",
+    "49206c6f76652075",
+    "6c6f7665207961",
+    "696c79",
+    "696c79736d",
+    "7468616e6b73",
+    "7468616e6b20796f75",
+    "7468616e6b207521",
+    "7479",
+    "747970696e67",
+    "74686973206973206772656174",
+    "3c33",
+    "3c3333",
+    "3c2f33",
+    "e29da4",
+    "f09fa5b0",
+    "e29da4efb88f",
+    "7468616e6b73676976696e67",
+    "6869207468657265",
+    "676f6f64202020626f74",
+    "494c4f5645594f55"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +44,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
