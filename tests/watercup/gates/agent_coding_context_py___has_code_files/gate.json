@@ -26,7 +26,7 @@
     "-I",
     "src"
   ],
-  "previous_classification": "STUB_GATE",
+  "previous_classification": "REAL_GAP",
   "classification": "REAL_GAP",
-  "relabel_note": "python side is not gate-able from argv: it touches Path(,os., so there is no pure argument-shaped value to compare and the placeholder fixtures never exercised it. Left as REAL_GAP with the dependency named rather than counted as ported."
+  "relabel_note": "impure: _has_code_files walks the filesystem (Path.rglob over the root). Not argument-shaped; duplicate of real__agent_coding_context_py___has_code_files, which carries the same verdict."
 }

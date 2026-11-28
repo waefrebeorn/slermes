@@ -1,42 +1,46 @@
 {
   "name": "coding_context_coding_mode",
-  "subsystem": "agent",
+  "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
   "c_fn": "coding_ctx_mode",
+  "py_module": "agent/coding_context.py",
+  "py_fn": "_coding_mode",
+  "extra_src": [
+    "src/agent/coding_context.c"
+  ],
   "cflags": [
     "-I",
     "include",
     "-I",
-    "lib/libjson",
+    "lib",
     "-I",
-    "lib/libyaml",
-    "-I",
-    "lib/libdatetime",
-    "-I",
-    "lib/libhash",
-    "-Ilib/libregex",
-    "-Ilib/libhive",
-    "-Isrc",
-    "-Isrc/agent"
+    "src"
   ],
-  "extra_src": [],
-  "py_module": "agent/coding_context.py",
-  "py_fn": "_coding_mode",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"agent\":{\"coding_context\":\"focus\"}}",
+    "{\"agent\":{\"coding_context\":\"FOCUS\"}}",
+    "{\"agent\":{\"coding_context\":\" on \"}}",
+    "{\"agent\":{\"coding_context\":\"off\"}}",
+    "{\"agent\":{\"coding_context\":\"auto\"}}",
+    "{\"agent\":{\"coding_context\":\"bogus\"}}",
+    "{\"agent\":{\"coding_context\":\"strict\"}}",
+    "{\"agent\":{\"coding_context\":\"lean\"}}",
+    "{\"agent\":{\"coding_context\":\"never\"}}",
+    "{\"agent\":{\"coding_context\":\"0\"}}",
+    "{\"agent\":{\"coding_context\":\"  ON  \"}}",
+    "{\"agent\":{\"coding_context\":\"Always\"}}",
+    "{\"agent\":{\"coding_context\":1}}",
+    "{\"agent\":{\"coding_context\":0}}",
+    "{\"agent\":{\"coding_context\":true}}",
+    "{\"agent\":{\"coding_context\":false}}",
+    "{\"agent\":{\"coding_context\":[\"x\"]}}",
+    "{\"agent\":{}}",
+    "{}",
+    "{\"agent\":{\"coding_context\":\"1\"}}",
+    "{\"agent\":{\"coding_context\":\"yes\"}}",
+    "{\"agent\":{\"coding_context\":\"no\"}}"
   ],
-  "notes": "PORT FIX APPLIED: coding_ctx_mode previously read a top-level 'coding_mode' key and returned 'default'; it now reads agent.coding_context (LIVE nesting), strip()s and lowercases the raw value, and normalizes through LIVE's focus/on/off ladders. config==NULL maps to the empty-config path ('auto') since the readonly config load is not harnessable.",
-  "ldflags": [
-    "-lcrypto",
-    "-lssl",
-    "-lm"
-  ],
-  "previous_classification": null,
-  "classification": "STUB_GATE",
-  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
+  "relabel_note": "duplicate of real__agent_coding_context_py__coding_ctx_mode: three gate dirs covered _coding_mode with different harnesses, so the same function read green in one and red in another. Consolidated on the gate that matches live python."
 }

@@ -1,25 +1,18 @@
-/* gate: real__agent_coding_context_py___coding_mode — GAP sentinel for _coding_mode */
+/* gate: _coding_mode(config) -> auto|focus|on|off. Fixture is the config JSON. */
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_coding_mode";
-}
-
+#include "hermes_json.h"
+const char *coding_ctx_mode(json_t *config);
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _coding_mode <input>...\n", argv[0]); return 2; }
+    if (argc < 3) return 2;
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("_coding_mode");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
+        json_t *cfg = json_parse(argv[i], NULL);
+        WCUP_VALSTR(coding_ctx_mode(cfg));
+        char cup[32]; WCUP_FINALIZE(cup, sizeof cup); printf("%s\n", cup);
         WCUP_END("_coding_mode");
+        if (cfg) json_free(cfg);
     }
     return 0;
 }
