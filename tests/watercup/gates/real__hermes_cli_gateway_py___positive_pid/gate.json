@@ -1,0 +1,24 @@
+{
+  "name": "real__hermes_cli_gateway_py___positive_pid",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hermes_cli_gateway_u_positive_pid",
+  "py_module": "hermes_cli/gateway.py",
+  "py_fn": "_positive_pid",
+  "extra_src": [
+    "lib/libjson/json.c"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "0",
+    "123",
+    "  42 ",
+    "-1",
+    "abc",
+    "",
+    "1.9",
+    "0x10",
+    "+7"
+  ]
+}

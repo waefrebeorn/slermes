@@ -1,25 +1,12 @@
-/* gate: real__hermes_cli_gateway_py___systemd_main_pid_from_props — GAP sentinel for _systemd_main_pid_from_props */
+/* gate: _systemd_main_pid_from_props -> real port (str/JSON in, str out; "" == None). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_systemd_main_pid_from_props";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _systemd_main_pid_from_props <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_systemd_main_pid_from_props");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_systemd_main_pid_from_props");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern char *hermes_cli_gateway_u_systemd_main_pid_from_props(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_systemd_main_pid_from_props");
+  char *r=hermes_cli_gateway_u_systemd_main_pid_from_props(argv[i]); WCUP_VALSTR(r?r:"");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_systemd_main_pid_from_props"); if (r) free(r);} return 0;}

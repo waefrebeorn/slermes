@@ -1144,3 +1144,41 @@ int hermes_cli_gateway_u_systemd_unit_is_start_limited(const char *arg) {
     json_free(o);
     return hit;
 }
+
+/* PoP: hermes_cli_gateway_u_positive_pid @ hermes_cli/gateway.py:_positive_pid */
+/* PoP: hermes_cli_gateway_u_systemd_main_pid_from_props @ hermes_cli/gateway.py:_systemd_main_pid_from_props */
+/* int(value or 0) when it parses and is > 0, else None. C returns "" for None. */
+static char *_pp_pid(const char *v) {
+    const char *s = (v && v[0]) ? v : "0";
+    while (*s==' '||*s=='\t'||*s=='\n'||*s=='\r'||*s=='\f'||*s=='\v') s++;
+    const char *q = s;
+    if (*q=='+'||*q=='-') q++;
+    if (!(*q>='0'&&*q<='9')) return strdup("");
+    char *end = NULL;
+    long long pid = strtoll(s, &end, 10);
+    if (end == s) return strdup("");
+    while (*end==' '||*end=='\t'||*end=='\n'||*end=='\r'||*end=='\f'||*end=='\v') end++;
+    if (*end) return strdup("");            /* "1.9", "abc", "0x10" */
+    if (pid <= 0) return strdup("");
+    char b[32]; snprintf(b, sizeof b, "%lld", pid);
+    return strdup(b);
+}
+char *hermes_cli_gateway_u_positive_pid(const char *arg) {
+    return _pp_pid(arg);
+}
+char *hermes_cli_gateway_u_systemd_main_pid_from_props(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    const char *v = NULL; char num[32];
+    if (o && json_is_object(o)) {
+        json_t *pv = json_obj_get(o, "MainPID");
+        if (pv && json_is_string(pv)) v = (pv->str_val && pv->str_val[0]) ? pv->str_val : "0";
+        else if (pv && json_is_number(pv)) {
+            double d = pv->num_val;
+            if (d == (double)(long long)d) { snprintf(num, sizeof num, "%lld", (long long)d); v = num; }
+            else v = "0";
+        } else v = "0";
+    } else v = "0";
+    char *r = _pp_pid(v);
+    if (o) json_free(o);
+    return r;
+}
