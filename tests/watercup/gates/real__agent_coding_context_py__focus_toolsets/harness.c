@@ -1,0 +1,31 @@
+/* gate: coding_context_focus_toolsets. Fixture is the config JSON; result rendered as a comma list or "None". */
+#include <stdio.h>
+#include <stdlib.h>
+#include "watercup.h"
+#include "hermes_json.h"
+json_t *coding_context_focus_toolsets(const json_t *config);
+int main(int argc, char **argv) {
+    if (argc < 3) return 2;
+    for (int i = 2; i < argc; i++) {
+        WCUP_BEGIN("gate");
+        json_t *cfg = json_parse(argv[i], NULL);
+        json_t *r = coding_context_focus_toolsets(cfg);
+        char joined[2048] = ""; size_t used = 0;
+        if (!r || r->type == JSON_NULL) {
+            snprintf(joined, sizeof joined, "None");
+        } else {
+            size_t n = json_array_count(r);
+            for (size_t k = 0; k < n; k++) {
+                const json_t *e = json_array_get(r, k);
+                const char *s = (e && e->type == JSON_STRING) ? e->str_val : "";
+                used += (size_t)snprintf(joined + used, sizeof joined - used, "%s%s", k ? "," : "", s ? s : "");
+            }
+        }
+        WCUP_VALSTR(joined);
+        char cup[32]; WCUP_FINALIZE(cup, sizeof cup); printf("%s\n", cup);
+        WCUP_END("gate");
+        if (r) json_free(r);
+        if (cfg) json_free(cfg);
+    }
+    return 0;
+}

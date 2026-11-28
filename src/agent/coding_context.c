@@ -52,6 +52,8 @@
 /* Forward declaration of runtime mode struct (defined at line ~526) */
 typedef struct coding_runtime_mode_s coding_runtime_mode_t;
 
+/* Defined near the end of this file (config mode resolution). */
+const char *coding_ctx_mode(json_t *config);
 /* Forward declaration of coding_context_coding_instructions (defined later) */
 char *coding_context_coding_instructions(const hermes_config_t *config);
 /* Forward declaration of coding_context_build_workspace_block (defined later) */
@@ -1187,6 +1189,31 @@ json_t *coding_context_mcp_names_json(const json_t *config) {
     for (size_t i = 0; i < k; i++) json_append(out, json_string(names[i]));
     free((void *)names);
     return out;
+}
+
+/* PoP: coding_context_posture_toolsets @ agent/coding_context.py:_posture_toolsets
+ * python: [CODING_TOOLSET, *_enabled_mcp_servers(config)] -- the coding toolset first, then the
+ * enabled MCP names in sorted order (see coding_context_mcp_names_json). */
+json_t *coding_context_posture_toolsets(const json_t *config) {
+    json_t *out = json_array();
+    if (!out) return NULL;
+    json_append(out, json_string(CODING_TOOLSET));
+    json_t *names = coding_context_mcp_names_json(config);
+    if (names) {
+        size_t n = json_array_count(names);
+        for (size_t i = 0; i < n; i++) json_append(out, json_copy(json_array_get(names, i)));
+        json_free(names);
+    }
+    return out;
+}
+
+/* PoP: coding_context_focus_toolsets @ agent/coding_context.py:focus_toolsets
+ * python: _posture_toolsets(config) if _coding_mode(config) == "focus" else None.
+ * So the list is returned only in focus mode; otherwise JSON null (keep the platform default). */
+json_t *coding_context_focus_toolsets(const json_t *config) {
+    const char *mode = coding_ctx_mode((json_t *)config);
+    if (!mode || strcmp(mode, "focus") != 0) return json_null();
+    return coding_context_posture_toolsets(config);
 }
 
 char **coding_context_enabled_mcp_servers(const hermes_config_t *config)
