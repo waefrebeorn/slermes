@@ -1,3 +1,5 @@
+#include <math.h>
+#include "json.h"
 /*
  * codex_responses_adapter.c — Faithful C11 port of Python
  * agent/codex_responses_adapter.py. See codex_responses_adapter.h for the
@@ -1233,4 +1235,46 @@ json_node_t *normalize_codex_response(const json_node_t *response,
     json_free(content_parts);
     json_free(reasoning_parts);
     return result;
+}
+
+/* PoP: agent_codex_responses_u_format_responses_error
+ * @ agent/codex_responses_adapter.py:_format_responses_error */
+/* "<code>: <message>" else whichever, else status default. Input JSON
+ * {"error":..., "status":...}. field() strips whitespace and treats non-string
+ * truthy values as str(value). */
+static int _cre_truthy(json_t *v){ if(!v) return 0;
+    if(v->type==JSON_BOOL) return v->bool_val;
+    if(v->type==JSON_NUMBER) return v->num_val!=0.0;
+    if(v->type==JSON_STRING) return v->str_val&&v->str_val[0];
+    if(v->type==JSON_ARRAY) return v->c.count>0;
+    if(v->type==JSON_OBJECT) return v->c.count>0;
+    return 0; }
+static void _cre_strip(char *s){ char *q=s; while(*q==' '||*q=='\t'||*q=='\n'||*q=='\r'||*q=='\v'||*q=='\f') q++;
+    if(q!=s) memmove(s,q,strlen(q)+1);
+    size_t n=strlen(s); while(n>0){char c=s[n-1]; if(c==' '||c=='\t'||c=='\n'||c=='\r'||c=='\v'||c=='\f') s[--n]='\0'; else break;} }
+static char *_cre_field(json_t *err, const char *name){
+    if(!err||!json_is_object(err)) return strdup("");
+    json_t *v=json_obj_get(err,name);
+    if(!v) return strdup("");
+    char buf[512];
+    if(v->type==JSON_STRING){ snprintf(buf,sizeof buf,"%s",v->str_val?v->str_val:""); }
+    else if(v->type==JSON_BOOL){ snprintf(buf,sizeof buf,"%s",v->bool_val?"True":"False"); }
+    else if(v->type==JSON_NUMBER){ double d=v->num_val; if(d==(double)(long long)d&&fabs(d)<1e15) snprintf(buf,sizeof buf,"%lld",(long long)d); else snprintf(buf,sizeof buf,"%g",d); }
+    else if(_cre_truthy(v)){ snprintf(buf,sizeof buf,"%s",v->type==JSON_ARRAY?"[]":"{}"); }
+    else return strdup("");
+    _cre_strip(buf); return strdup(buf);
+}
+char *agent_codex_responses_u_format_responses_error(const char *arg){
+    json_t *o = arg ? json_parse(arg,NULL) : NULL;
+    json_t *err = (o&&json_is_object(o)) ? json_obj_get(o,"error") : NULL;
+    const char *status = "";
+    if(o&&json_is_object(o)){ json_t*st=json_obj_get(o,"status"); if(st&&json_is_string(st)&&st->str_val) status=st->str_val; }
+    char *code=_cre_field(err,"code"), *msg=_cre_field(err,"message");
+    char *out;
+    if(*code && *msg){ size_t n=strlen(code)+strlen(msg)+3; out=malloc(n); snprintf(out,n,"%s: %s",code,msg); }
+    else if(*msg) out=strdup(msg);
+    else if(*code) out=strdup(code);
+    else if(_cre_truthy(err)){ out=malloc(600); snprintf(out,600,"%s", arg?arg:""); }
+    else { size_t n=strlen(status)+40; out=malloc(n); snprintf(out,n,"Responses API returned status '%s'",status); }
+    free(code); free(msg); if(o) json_free(o); return out;
 }

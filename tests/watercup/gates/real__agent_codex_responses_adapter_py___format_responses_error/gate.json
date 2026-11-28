@@ -3,15 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_format_responses_error",
+  "c_fn": "agent_codex_responses_u_format_responses_error",
   "py_module": "agent/codex_responses_adapter.py",
   "py_fn": "_format_responses_error",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"error\": {\"code\": \"invalid_request\", \"message\": \"Bad thing\"}, \"status\": \"400\"}",
+    "{\"error\": {\"message\": \"Only message\"}, \"status\": \"500\"}",
+    "{\"error\": {\"code\": \"only_code\"}, \"status\": \"500\"}",
+    "{\"error\": {}, \"status\": \"418\"}",
+    "{\"error\": null, \"status\": \"503\"}",
+    "{\"error\": {\"code\": \"c\", \"message\": \"\"}, \"status\": \"400\"}",
+    "{\"error\": {\"code\": 123, \"message\": \"m\"}, \"status\": \"x\"}",
+    "{\"error\": {\"code\": \"  pad  \", \"message\": \"  msg  \"}, \"status\": \"400\"}",
+    "{\"error\": {\"message\": \"m\"}, \"status\": \"200\"}",
+    "{\"status\": \"429\"}"
   ],
   "extra_src": [
     "lib/libjson/json.c"
@@ -26,5 +31,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
