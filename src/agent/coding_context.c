@@ -1307,6 +1307,69 @@ bool has_code_files(const char *root)
  * Standing operator instructions for the coding posture, read from
  * `agent.coding_instructions` in config.yaml (string or list of strings).
  * Returns malloc'd string (caller frees), empty "" when unset. */
+/* PoP: coding_context_join_instructions @ agent/coding_context.py:resolve_runtime_mode (instructions block)
+ * python:
+ *   items = raw if isinstance(raw, (list, tuple)) else [raw or ""]
+ *   "\n".join(str(item).strip() for item in items if str(item).strip())
+ * So a bare string becomes one line, a list becomes many, every item is str()-ed and
+ * stripped, and empty results are dropped. str() of a MAPPING or LIST item yields python's
+ * repr -- that shape is not reproduced here (documented gap); scalars are exact.
+ * Returns a malloc'd string (never NULL). */
+static void cc_append_str(const char *src, size_t n, char **buf, size_t *len, size_t *cap, int *first) {
+    size_t need = *len + n + 2;
+    if (need > *cap) {
+        size_t ncap = need * 2;
+        char *nb = (char *)realloc(*buf, ncap);
+        if (!nb) return;
+        *buf = nb; *cap = ncap;
+    }
+    if (!*first) (*buf)[(*len)++] = '\n';
+    memcpy(*buf + *len, src, n); *len += n;
+    (*buf)[*len] = '\0';
+    *first = 0;
+}
+char *coding_context_join_instructions(const json_t *raw) {
+    char *out = (char *)calloc(1, 1);
+    size_t len = 0, cap = 1; int first = 1;
+    if (!out) return NULL;
+    /* raw None -> items = [None or ""] = [""] -> dropped. Note json_parse("null") yields a
+     * JSON_NULL NODE, not a NULL pointer, so the type check is what makes this work. */
+    if (!raw || raw->type == JSON_NULL) return out;
+    size_t n = (raw->type == JSON_ARRAY) ? json_array_count(raw) : 1;
+    for (size_t i = 0; i < n; i++) {
+        const json_t *item = (raw->type == JSON_ARRAY) ? json_array_get(raw, i) : raw;
+        char scal[512];
+        const char *text = NULL;
+        if (!item) {
+            continue;
+        } else if (item->type == JSON_NULL) {
+            /* inside a list python does str(None) == "None" and KEEPS it; only a top-level
+             * null becomes "" and disappears (handled by the early return above). */
+            text = "None";
+        } else if (item->type == JSON_STRING) {
+            text = json_string_value(item);
+        } else if (item->type == JSON_BOOL) {
+            text = json_bool_value(item) ? "True" : "False";
+        } else if (item->type == JSON_NUMBER) {
+            double d = json_number_value(item);
+            if (d == (double)(long long)d && d > -1e15 && d < 1e15)
+                snprintf(scal, sizeof scal, "%lld", (long long)d);
+            else
+                snprintf(scal, sizeof scal, "%g", d);
+            text = scal;
+        } else {
+            text = "";                           /* repr'd mappings/lists: documented gap */
+        }
+        if (!text) continue;
+        const char *b = text; while (*b == ' ' || *b == '\t' || *b == '\n' || *b == '\r') b++;
+        const char *e = b + strlen(b);
+        while (e > b && (e[-1] == ' ' || e[-1] == '\t' || e[-1] == '\n' || e[-1] == '\r')) e--;
+        if (e == b) continue;
+        cc_append_str(b, (size_t)(e - b), &out, &len, &cap, &first);
+    }
+    return out;
+}
+
 char *coding_context_coding_instructions(const hermes_config_t *config)
 {
     char yaml_path[HERMES_PATH_MAX];

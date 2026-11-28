@@ -1,0 +1,35 @@
+{
+  "name": "real__agent_coding_context_py__join_instructions",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "coding_context_join_instructions",
+  "py_module": "agent/coding_context.py",
+  "py_fn": "resolve_runtime_mode",
+  "extra_src": [
+    "src/agent/coding_context.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "null",
+    "\"  x  \"",
+    "[\"a\",\" b \",\"\",null]",
+    "[]",
+    "5",
+    "true",
+    "[\"x\",\"\"]",
+    "\"a\\nb\"",
+    "\" x \"",
+    "[\"  \",\"\\t\"]",
+    "\"only\"",
+    "[\"\",\"\"]"
+  ]
+}
