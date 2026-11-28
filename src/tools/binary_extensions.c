@@ -21,29 +21,36 @@
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: tools_binary_extensions_has_binary_extension @ tools/binary_extensions.py:has_binary_extension */
-int tools_binary_extensions_has_binary_extension(const char *arg) {
-    /* Python: path[dot:].lower() in BINARY_EXTENSIONS (no I/O).
-     * Arg = file path. */
-    if (!arg || !*arg) { printf("0\n"); return 0; }
-    const char *dot = strrchr(arg, '.');
-    if (!dot) { printf("0\n"); return 0; }
-    static const char *exts[] = {
-        ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".ico", ".tiff",
-        ".mp4", ".mov", ".avi", ".mkv", ".webm", ".mp3", ".wav", ".ogg",
-        ".flac", ".m4a", ".pdf", ".zip", ".gz", ".tar", ".7z", ".rar",
-        ".exe", ".dll", ".so", ".dylib", ".bin", ".dat", ".class", ".pyc"
-    };
-    size_t n = strlen(dot);
-    char buf[16];
-    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
-    memcpy(buf, dot, n); buf[n] = '\0';
-    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
-    int hit = 0;
-    for (size_t i = 0; i < sizeof(exts) / sizeof(exts[0]); i++) {
-        if (strcmp(buf, exts[i]) == 0) { hit = 1; break; }
-    }
-    printf("%d\n", hit);
+/* PoP: tools_binary_extensions_has_binary_extension @ tools/binary_extensions.py:has_binary_extension */
+/* Faithful: _has_extension_in(path, BINARY_EXTENSIONS) — lower final .suffix,
+ * SQLite-sidecar base substitution, exact membership. Was: a stale 33-entry
+ * table that MDIWRONGLY included ".pdf" (python deliberately EXCLUDES it) and
+ * omitted most extensions + all sidecar handling. Table generated from the live
+ * BINARY_EXTENSIONS (93 entries). */
+static const char *BEXTS[] = {".3ds", ".7z", ".a", ".aac", ".ai", ".aiff", ".app", ".avi", ".bin", ".blend", ".bmp", ".bz2", ".class", ".dat", ".data", ".db", ".deb", ".dll", ".doc", ".docx", ".dylib", ".ear", ".eot", ".eps", ".exe", ".fig", ".fla", ".flac", ".flv", ".gif", ".gz", ".ico", ".idx", ".iso", ".jar", ".jpeg", ".jpg", ".lib", ".lockb", ".m4a", ".m4v", ".max", ".mdb", ".mkv", ".mov", ".mp3", ".mp4", ".mpeg", ".mpg", ".msi", ".node", ".o", ".obj", ".odp", ".ods", ".odt", ".ogg", ".opus", ".otf", ".png", ".ppt", ".pptx", ".psd", ".pyc", ".pyo", ".rar", ".rlib", ".rpm", ".sketch", ".so", ".sqlite", ".sqlite3", ".swf", ".tar", ".tgz", ".tif", ".tiff", ".ttf", ".war", ".wasm", ".wav", ".webm", ".webp", ".wma", ".wmv", ".woff", ".woff2", ".xd", ".xls", ".xlsx", ".xz", ".z", ".zip"};
+static int _bex_in(const char *s, const char *const *set, int n) {
+    for (int i = 0; i < n; i++) if (strcmp(s, set[i]) == 0) return 1;
     return 0;
+}
+int tools_binary_extensions_has_binary_extension(const char *arg) {
+    const char *path = arg ? arg : "";
+    char suffix[64];
+    const char *dot = strrchr(path, '.');
+    if (!dot) suffix[0] = '\0';
+    else { snprintf(suffix, sizeof suffix, "%s", dot); for (char *q = suffix; *q; q++) *q = (char)tolower((unsigned char)*q); }
+    static const char *MARK[] = {"-wal", "-shm", "-journal"};
+    static const char *SQLEXT[] = {".db", ".sqlite", ".sqlite3"};
+    size_t sl = strlen(suffix);
+    int nb = (int)(sizeof(BEXTS)/sizeof(BEXTS[0]));
+    for (int i = 0; i < 3; i++) {
+        size_t ml = strlen(MARK[i]);
+        if (sl > ml && strcmp(suffix + sl - ml, MARK[i]) == 0) {
+            char base[64];
+            snprintf(base, sizeof base, "%.*s", (int)(sl - ml), suffix);
+            if (_bex_in(base, SQLEXT, 3)) return _bex_in(base, BEXTS, nb);
+        }
+    }
+    return _bex_in(suffix, BEXTS, nb);
 }
 
 /* PoP: is_pdf_path @ tools/binary_extensions.py:is_pdf_path */
