@@ -98,9 +98,10 @@ int hcsstuck_still_stuck(const char *rec_json, const char *fp_json,
 
 static int shlex_safe(unsigned char c) {
     if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) return 1;
+    /* python's _find_unsafe is compiled with re.ASCII, so a non-ascii char IS unsafe:
+     * shlex.quote("café") returns 'café' quoted. Do not widen this to >= 0x80. */
     return c && strchr("_@%+=:,./-", (int)c) != NULL;
 }
-
 char *hcsstuck_shlex_quote(const char *s) {
     if (!s || !*s) {
         char *q = (char *)malloc(3);

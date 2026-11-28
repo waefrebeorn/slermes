@@ -1,0 +1,43 @@
+{
+  "name": "real__hermes_constants_scratch_stuck_py__shlex_quote",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "hcsstuck_shlex_quote",
+  "py_module": "hermes_constants_scratch_stuck.py",
+  "py_fn": "shlex_quote",
+  "extra_src": [
+    "src/hermes_constants_scratch_stuck.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "",
+    "abc",
+    "a b",
+    "it's",
+    "a'b'c",
+    "$(id)",
+    "a\nb",
+    "a\tb",
+    "a\\b",
+    "~",
+    "-n",
+    "a;b",
+    "/*",
+    "a&b",
+    "a|b",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "a@b.com",
+    "x=1",
+    "a,b:c",
+    "<<CAFE>>"
+  ]
+}
