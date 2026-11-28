@@ -3,18 +3,11 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_model_family",
+  "c_fn": "coding_context_model_family",
   "py_module": "agent/coding_context.py",
   "py_fn": "_model_family",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "src/agent/coding_context.c"
   ],
   "cflags": [
     "-I",
@@ -22,9 +15,32 @@
     "-I",
     "lib",
     "-I",
-    "lib/libjson",
-    "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "gpt-5",
+    "GPT-5",
+    "codex-mini",
+    "claude-3-opus",
+    "gpt-claude",
+    "codex-sonnet",
+    "sonnet",
+    "hermes-3",
+    "",
+    "unknown-model",
+    "gemma-2",
+    "kimi-k2",
+    "mistral-large",
+    "DeepSeek-V3",
+    "qwen2.5",
+    "opus-4",
+    "haiku",
+    "llama-3",
+    "glm-4",
+    "grok-2",
+    "minimax-01",
+    "devstral",
+    "Codex"
+  ]
 }

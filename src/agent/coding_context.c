@@ -1710,32 +1710,16 @@ static char *xstrdup(const char *s) {
 /* ── _model_family (L190) ── */
 /* PoP: coding_ctx_model_family_port @ agent/coding_context.py:_model_family */
 const char *coding_ctx_model_family_port(const char *model) {
-    if (!model) return NULL;
-    char lowered[256];
-    size_t len = strlen(model);
-    if (len >= sizeof(lowered)) len = sizeof(lowered) - 1;
-    for (size_t i = 0; i < len; i++)
-        lowered[i] = tolower((unsigned char)model[i]);
-    lowered[len] = '\0';
-    
-    if (strstr(lowered, "claude")) return "claude";
-    if (strstr(lowered, "gpt")) return "gpt";
-    if (strstr(lowered, "gemini")) return "gemini";
-    if (strstr(lowered, "llama")) return "llama";
-    if (strstr(lowered, "mistral")) return "mistral";
-    if (strstr(lowered, "deepseek")) return "deepseek";
-    if (strstr(lowered, "qwen")) return "qwen";
-    return NULL;
+    /* Was a second, divergent classifier: it returned the vendor name ("claude", "gpt") with
+     * "claude" checked first, while python's _model_family returns the edit-format FAMILY
+     * ("patch"/"replace") with gpt/codex winning. One implementation, one answer. */
+    return coding_context_model_family(model);
 }
 
 /* ── _edit_format_line (L206) ── */
 /* PoP: coding_ctx_edit_format_line @ agent/coding_context.py:_edit_format_line */
 const char *coding_ctx_edit_format_line(const char *model) {
-    const char *family = coding_ctx_model_family_port(model);
-    if (!family) return "";
-    if (strcmp(family, "claude") == 0) return "Use the Edit tool for file modifications.";
-    if (strcmp(family, "gpt") == 0) return "Use the file_editor tool for modifications.";
-    return "";
+    return coding_context_edit_format_line(model);
 }
 
 /* ── _coding_mode (L336) ── */
@@ -1749,8 +1733,22 @@ const char *coding_ctx_mode(json_t *config) {
         json_t *agent = json_obj_get(config, "agent");
         if (agent && agent->type == JSON_OBJECT) {
             json_t *cc = json_obj_get(agent, "coding_context");
-            if (cc && cc->type == JSON_STRING && json_string_value(cc))
+            /* python does str(raw).strip().lower(), so a bool or an int in config.yaml
+             * ("coding_context: 1") reaches the alias table as "1"/"true" and selects a mode.
+             * Only strings were read here, so every non-string value silently became auto. */
+            static char numbuf[64];
+            if (cc && cc->type == JSON_STRING && json_string_value(cc)) {
                 raw = json_string_value(cc);
+            } else if (cc && cc->type == JSON_BOOL) {
+                raw = json_bool_value(cc) ? "true" : "false";
+            } else if (cc && cc->type == JSON_NUMBER) {
+                double d = json_number_value(cc);
+                if (d == (double)(long long)d && d > -1e15 && d < 1e15)
+                    snprintf(numbuf, sizeof numbuf, "%lld", (long long)d);
+                else
+                    snprintf(numbuf, sizeof numbuf, "%g", d);
+                raw = numbuf;
+            }
         }
     }
     static char mode[64];
@@ -1759,8 +1757,10 @@ const char *coding_ctx_mode(json_t *config) {
         mode[i] = (char)tolower((unsigned char)raw[i]);
     /* strip leading/trailing whitespace, LIVE str(raw).strip() */
     char *s = mode; size_t len = i;
-    while (len > 0 && (s[0] == ' ' || s[0] == '\t' || s[0] == '\n')) { s++; len--; }
-    while (len > 0 && (s[len-1] == ' ' || s[len-1] == '\t' || s[len-1] == '\n')) len--;
+    /* python str.strip() takes all ascii whitespace, not just space/tab/newline */
+    #define CC_WS(c) ((c) == ' ' || (c) == '\t' || (c) == '\n' || (c) == '\r' || (c) == '\f' || (c) == '\v')
+    while (len > 0 && CC_WS(s[0])) { s++; len--; }
+    while (len > 0 && CC_WS(s[len-1])) len--;
     s[len] = '\0';
 
     if (strcmp(s, "focus") == 0 || strcmp(s, "strict") == 0 || strcmp(s, "lean") == 0)
@@ -1771,6 +1771,7 @@ const char *coding_ctx_mode(json_t *config) {
     if (strcmp(s, "off") == 0 || strcmp(s, "false") == 0 || strcmp(s, "no") == 0 ||
         strcmp(s, "0") == 0 || strcmp(s, "never") == 0)
         return "off";
+    #undef CC_WS
     return "auto";
 }
 
