@@ -910,9 +910,12 @@ static char **pairing_split_allowlist(const char *raw, int *out_n) {
     char *tok = strtok(buf, ",");
     char *parts[512]; int cnt = 0;
     while (tok && cnt < 512) {
-        char *s = tok; while (*s == ' ' || *s == '\t') s++;
+        /* python is uid.strip(): all ascii whitespace, not just space/tab */
+        char *s = tok;
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r' || *s == '\f' || *s == '\v') s++;
         size_t L = strlen(s);
-        while (L > 0 && (s[L-1] == ' ' || s[L-1] == '\t')) s[--L] = '\0';
+        while (L > 0 && (s[L-1] == ' ' || s[L-1] == '\t' || s[L-1] == '\n' ||
+                         s[L-1] == '\r' || s[L-1] == '\f' || s[L-1] == '\v')) s[--L] = '\0';
         if (*s) parts[cnt++] = s;
         tok = strtok(NULL, ",");
     }
@@ -921,6 +924,23 @@ static char **pairing_split_allowlist(const char *raw, int *out_n) {
     *out_n = cnt;
     free(buf);
     return out;
+}
+
+/* PoP: pairing_split_allowlist_json @ gateway/pairing.py:_split_allowlist
+ * Public JSON face of the static splitter: comma-separated allowlist -> array of
+ * stripped, non-empty ids (order preserved). */
+char *pairing_split_allowlist_json(const char *raw) {
+    int n = 0;
+    char **parts = pairing_split_allowlist(raw, &n);
+    json_t *arr = json_array();
+    for (int i = 0; i < n; i++) {
+        json_append(arr, json_string(parts[i]));
+        free(parts[i]);
+    }
+    if (parts) free(parts);
+    char *js = json_serialize(arr);
+    json_free(arr);
+    return js ? js : strdup("[]");
 }
 
 /* PoP: pairing_allowlist_env_for_platform @ gateway/pairing.py:_allowlist_env_for_platform */

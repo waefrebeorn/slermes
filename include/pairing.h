@@ -90,3 +90,4 @@ void pairing_free_result(pairing_result_t *r);
 #endif
 
 #endif /* PAIRING_H */
+char *pairing_split_allowlist_json(const char *raw);
