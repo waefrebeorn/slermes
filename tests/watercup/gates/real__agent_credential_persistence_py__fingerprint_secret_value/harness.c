@@ -1,25 +1,12 @@
-/* gate: real__agent_credential_persistence_py__fingerprint_secret_value — GAP sentinel for fingerprint_secret_value */
+/* gate: fingerprint_secret_value -> real port. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "fingerprint_secret_value";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s fingerprint_secret_value <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("fingerprint_secret_value");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("fingerprint_secret_value");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern char *agent_credential_persistence_u_fingerprint_secret_value(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("fingerprint_secret_value");
+  char *r=agent_credential_persistence_u_fingerprint_secret_value(argv[i]); WCUP_VALSTR(r?r:"");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("fingerprint_secret_value"); if (r) free(r);} return 0;}

@@ -185,3 +185,24 @@ char *credential_secret_fingerprint(const json_t *payload) {
 
     return NULL;
 }
+
+/* PoP: agent_credential_persistence_u_fingerprint_secret_value
+ * @ agent/credential_persistence.py:fingerprint_secret_value */
+/* None when the text is empty, else "sha256:<hexdigest()[:16]>". */
+#include "crypto.h"
+
+static void _hx2(const unsigned char *d, char *out, int n) {
+    static const char *H = "0123456789abcdef";
+    for (int i = 0; i < n; i++) { out[2*i] = H[(d[i] >> 4) & 15]; out[2*i+1] = H[d[i] & 15]; }
+    out[2*n] = 0;
+}
+char *agent_credential_persistence_u_fingerprint_secret_value(const char *arg) {
+    const char *t = arg ? arg : "";
+    if (!t[0]) return strdup("");
+    unsigned char d[32]; crypto_sha256((const unsigned char *)t, strlen(t), d);
+    char hex[33]; _hx2(d, hex, 32);
+    char *out = malloc(24);
+    /* "sha256:" + first 16 hex chars */
+    snprintf(out, 24, "sha256:%.16s", hex);
+    return out;
+}
