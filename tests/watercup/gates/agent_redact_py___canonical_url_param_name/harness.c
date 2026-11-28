@@ -1,25 +1,19 @@
-/* gate: agent_redact_py___canonical_url_param_name — traced copy of agent_redact_u_canonical_url_param_name */
+/* gate: agent_redact_py___canonical_url_param_name -> real canonical_url_param_name (owned string). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-extern int agent_redact_u_canonical_url_param_name(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("agent_redact_u_canonical_url_param_name");
-    int result = agent_redact_u_canonical_url_param_name(input);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("agent_redact_u_canonical_url_param_name");
-}
-
+extern char *agent_redact_u_canonical_url_param_name(const char *name);
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s agent_redact_u_canonical_url_param_name <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s <name>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
+        WCUP_BEGIN("agent_redact_u_canonical_url_param_name");
+        fflush(stdout);
+        char *r = agent_redact_u_canonical_url_param_name(argv[i]);
+        WCUP_VALSTR(r ? r : "");
+        char cup[32]; WCUP_FINALIZE(cup, sizeof cup); printf("%s\n", cup);
+        WCUP_END("agent_redact_u_canonical_url_param_name");
+        free(r);
     }
     return 0;
 }

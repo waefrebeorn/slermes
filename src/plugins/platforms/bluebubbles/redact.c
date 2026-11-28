@@ -785,36 +785,41 @@ char *hermes_redact_code_file(const char *input) {
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: agent_redact_u_canonical_url_param_name @ plugins/platforms/bluebubbles/adapter.py:_canonical_url_param_name */
-int agent_redact_u_canonical_url_param_name(const char *arg) {
-    /* Python: unquote_plus x3 (stop when stable), casefold, - -> _. Arg =
-     * name. */
-    if (!arg || !*arg) { printf("\n"); return 0; }
+char *agent_redact_u_canonical_url_param_name(const char *arg) {
+    /* Faithful: _decode_url_param_name (unquote_plus x3, stop when stable),
+     * casefold, then `folded if folded in _SENSITIVE_QUERY_PARAMS else
+     * folded.replace("-","_")`. Was: ALWAYS replaced '-'->'_', dropping the
+     * membership check, so "x-amz-signature"/"x-goog-signature" became
+     * "x_amz_signature" instead of staying hyphenated (a real bug). */
+    const char *a = arg ? arg : "";
     char buf[512];
-    size_t n = strlen(arg);
+    size_t n = strlen(a);
     if (n >= sizeof(buf)) n = sizeof(buf) - 1;
-    memcpy(buf, arg, n); buf[n] = '\0';
+    memcpy(buf, a, n); buf[n] = '\0';
     for (int iter = 0; iter < 3; iter++) {
-        char dec[512];
-        size_t w = 0;
+        char dec[512]; size_t w = 0;
         for (size_t i = 0; buf[i] && w < sizeof(dec) - 1; i++) {
-            if (buf[i] == '+' ) dec[w++] = ' ';
+            if (buf[i] == '+') dec[w++] = ' ';
             else if (buf[i] == '%' && buf[i+1] && buf[i+2] &&
                      isxdigit((unsigned char)buf[i+1]) && isxdigit((unsigned char)buf[i+2])) {
                 int hi = isdigit((unsigned char)buf[i+1]) ? buf[i+1]-'0' : tolower((unsigned char)buf[i+1])-'a'+10;
                 int lo = isdigit((unsigned char)buf[i+2]) ? buf[i+2]-'0' : tolower((unsigned char)buf[i+2])-'a'+10;
-                dec[w++] = (char)((hi << 4) | lo);
-                i += 2;
+                dec[w++] = (char)((hi << 4) | lo); i += 2;
             } else dec[w++] = buf[i];
         }
         dec[w] = '\0';
         if (strcmp(dec, buf) == 0) break;
-        strncpy(buf, dec, sizeof(buf) - 1);
-        buf[sizeof(buf) - 1] = '\0';
+        strncpy(buf, dec, sizeof(buf) - 1); buf[sizeof(buf)-1] = '\0';
     }
-    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
-    for (char *p = buf; *p; p++) if (*p == '-') *p = '_';
-    printf("%s\n", buf);
-    return 0;
+    for (char *q = buf; *q; q++) *q = (char)tolower((unsigned char)*q);
+    static const char *SENS[] = {
+        "access_token","refresh_token","id_token","token","api_key","apikey",
+        "client_secret","password","auth","jwt","session","secret","key",
+        "code","signature","x-amz-signature","x-goog-signature","sig","usertoken"};
+    for (size_t i = 0; i < sizeof(SENS)/sizeof(SENS[0]); i++)
+        if (strcmp(buf, SENS[i]) == 0) return strdup(buf);   /* preserve hyphens */
+    for (char *q = buf; *q; q++) if (*q == '-') *q = '_';
+    return strdup(buf);
 }
 
 /* PoP: agent_redact_u_redact_strict_url_credentials @ plugins/platforms/bluebubbles/adapter.py:_redact_strict_url_credentials */
