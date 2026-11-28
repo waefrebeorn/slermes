@@ -7,15 +7,24 @@
   "py_module": "hermes_cli/skills_hub.py",
   "py_fn": "_is_valid_installed_skill_name",
   "inputs": [
-    "hello",
-    "world",
+    "abc",
+    "ABC",
+    "a_b-c9",
+    "1abc",
+    "-abc",
+    "_x",
+    "skill",
+    "README",
     "",
-    "test123",
-    "NULL"
+    "  abc  ",
+    "abc def",
+    "abc!",
+    "Index",
+    "a",
+    "9",
+    "ab9_-"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

@@ -93,28 +93,30 @@ int hermes_cli_skills_hub_u_derive_category_from_install_path(const char *arg) {
 }
 
 /* PoP: hermes_cli_skills_hub_u_is_valid_installed_skill_name @ hermes_cli/skills_hub.py:_is_valid_installed_skill_name */
-int hermes_cli_skills_hub_u_is_valid_installed_skill_name(const char *arg) {
-    /* Python: identifier-shaped, not empty/sentinel. Arg = name. */
-    if (!arg || !*arg) { printf("0\n"); return 0; }
-    const char *p = arg;
-    while (*p == ' ' || *p == '\t') p++;
+/* PoP: hermes_cli_skills_hub_u_is_valid_installed_skill_name @ hermes_cli/skills_hub.py:_is_valid_installed_skill_name */
+/* Faithful: candidate = name.strip().lower(); valid iff candidate not in the
+ * sentinel set AND candidate matches ^[a-z][a-z0-9_-]*$. Was: accepted a leading
+ * digit / '-' / '_' (only required every char be alnum/-/_) -- so "1abc" and
+ * "_x" wrongly passed, and only space/tab were stripped. Returns 1/0. */
+int hermes_cli_skills_hub_u_is_valid_installed_skill_name(const char *name) {
+    const char *p = name ? name : "";
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
     size_t n = strlen(p);
-    while (n > 0 && (p[n-1] == ' ' || p[n-1] == '\t')) n--;
-    if (!n) { printf("0\n"); return 0; }
-    char low[256];
-    if (n >= sizeof(low)) { printf("0\n"); return 0; }
+    while (n > 0 && (p[n-1]==' '||p[n-1]=='\t'||p[n-1]=='\n'||p[n-1]=='\r')) n--;
+    if (!n) return 0;
+    char low[1024];
+    if (n >= sizeof(low)) n = sizeof(low) - 1;
     for (size_t i = 0; i < n; i++) low[i] = (char)tolower((unsigned char)p[i]);
     low[n] = '\0';
-    static const char *sent[] = {"skill", "readme", "index", "unnamed-skill"};
-    for (size_t i = 0; i < sizeof(sent) / sizeof(sent[0]); i++) {
-        if (strcmp(low, sent[i]) == 0) { printf("0\n"); return 0; }
-    }
-    for (size_t i = 0; i < n; i++) {
+    static const char *sent[] = {"", "skill", "readme", "index", "unnamed-skill"};
+    for (size_t i = 0; i < sizeof(sent) / sizeof(sent[0]); i++)
+        if (strcmp(low, sent[i]) == 0) return 0;
+    if (!(low[0] >= 'a' && low[0] <= 'z')) return 0;   /* must start with a letter */
+    for (size_t i = 1; i < n; i++) {
         char c = low[i];
-        if (!(isalnum((unsigned char)c) || c == '-' || c == '_')) { printf("0\n"); return 0; }
+        if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-' || c == '_')) return 0;
     }
-    printf("1\n");
-    return 0;
+    return 1;
 }
 
 /* PoP: hermes_cli_skills_hub_u_existing_categories @ hermes_cli/skills_hub.py:_existing_categories */
