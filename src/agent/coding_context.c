@@ -52,6 +52,8 @@
 /* Forward declaration of runtime mode struct (defined at line ~526) */
 typedef struct coding_runtime_mode_s coding_runtime_mode_t;
 
+/* Toolset builders defined further down. */
+json_t *coding_context_posture_toolsets(const json_t *config);
 /* Defined with the other prompt builders, further down. */
 char *coding_context_build_brief(const char *model, int has_todo);
 /* Defined near the end of this file (config mode resolution). */
@@ -1226,6 +1228,17 @@ char *coding_context_build_brief(const char *model, int has_todo) {
         if (grown) { snprintf(grown + l, cap - l, "\n%s", edit_line); out = grown; }
     }
     return out;
+}
+
+/* PoP: coding_context_toolset_selection @ agent/coding_context.py:RuntimeMode.toolset_selection
+ * python: None if config_mode != "focus" or profile.toolset is None; else _posture_toolsets(config).
+ * `None` means "keep the platform default", which is why the distinction from an empty list matters.
+ * profile_name selects the toolset: "coding" -> "coding", anything else -> no toolset. */
+json_t *coding_context_toolset_selection(const char *profile_name, const char *config_mode,
+                                         const json_t *config) {
+    int is_coding = profile_name && strcmp(profile_name, "coding") == 0;
+    if (!is_coding || !config_mode || strcmp(config_mode, "focus") != 0) return json_null();
+    return coding_context_posture_toolsets(config);
 }
 
 /* PoP: coding_context_compact_categories @ agent/coding_context.py:RuntimeMode.compact_skill_categories

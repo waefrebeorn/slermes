@@ -3,18 +3,11 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "toolset_selection",
+  "c_fn": "coding_context_toolset_selection",
   "py_module": "agent/coding_context.py",
   "py_fn": "toolset_selection",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "src/agent/coding_context.c"
   ],
   "cflags": [
     "-I",
@@ -22,9 +15,19 @@
     "-I",
     "lib",
     "-I",
-    "lib/libjson",
-    "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "coding|focus|{}",
+    "coding|auto|{}",
+    "coding|off|{}",
+    "general|focus|{}",
+    "general|auto|{}",
+    "coding|focus|{\"mcp_servers\":{\"a\":{},\"b\":{\"enabled\":false}}}",
+    "coding|auto|{\"mcp_servers\":{\"a\":{}}}",
+    "general|focus|{\"mcp_servers\":{\"a\":{}}}",
+    "coding|focus|{\"mcp_servers\":null}",
+    "coding|on|{\"mcp_servers\":{\"a\":{}}}"
+  ]
 }
