@@ -1180,3 +1180,62 @@ bool has_codex_context_variant(const char *model_bare) {
     return is_codex_900k_base(model_bare);
 }
 
+
+/* PoP: agent_model_metadata_u_strip_stale_thinking_for_estimate
+ * @ agent/model_metadata.py:_strip_stale_thinking_for_estimate */
+/* Newest assistant keeps its reasoning keys; older assistant messages that have a
+ * truthy reasoning key get it removed. CUP projection: per message
+ * "<role>[<sorted keys,>]" joined by "|" so the cup is structural. */
+static int _sst_truthy(json_t *v) {
+    if (!v) return 0;
+    switch (v->type) {
+        case JSON_NULL: return 0;
+        case JSON_BOOL: return v->bool_val ? 1 : 0;
+        case JSON_NUMBER: return v->num_val != 0.0;
+        case JSON_STRING: return (v->str_val && v->str_val[0]) ? 1 : 0;
+        case JSON_ARRAY: return v->c.count > 0;
+        case JSON_OBJECT: return v->c.count > 0;
+    }
+    return 0;
+}
+static int _sst_cmp(const void *a, const void *b) { return strcmp(*(const char *const *)a, *(const char *const *)b); }
+char *agent_model_metadata_u_strip_stale_thinking_for_estimate(const char *arg) {
+    static const char *KEYS[] = {"reasoning", "reasoning_content"};
+    json_t *arr = arg ? json_parse(arg, NULL) : NULL;
+    if (!arr || !json_is_array(arr)) { if (arr) json_free(arr); return strdup(""); }
+    size_t n = arr->c.count;
+    long newest = -1;
+    for (long i = (long)n - 1; i >= 0; i--) {
+        json_t *m = arr->c.items[i];
+        if (m && json_is_object(m)) { json_t *r = json_obj_get(m, "role");
+            if (r && json_is_string(r) && r->str_val && strcmp(r->str_val, "assistant") == 0) { newest = i; break; } }
+    }
+    size_t cap = 64; for (size_t i = 0; i < n; i++) cap += (arr->c.items[i] ? arr->c.items[i]->c.count : 0) * 24 + 32;
+    char *out = malloc(cap); out[0] = 0; size_t w = 0;
+    for (size_t i = 0; i < n; i++) {
+        json_t *m = arr->c.items[i];
+        if (i) { out[w++] = '|'; out[w] = 0; }
+        if (!m || !json_is_object(m)) { w += (size_t)snprintf(out + w, cap - w, "?"); continue; }
+        json_t *r = json_obj_get(m, "role");
+        const char *role = (r && json_is_string(r) && r->str_val) ? r->str_val : "None";
+        int is_asst = strcmp(role, "assistant") == 0;
+        int strip = 0;
+        if (((long)i != newest) && is_asst) {
+            for (int k = 0; k < 2; k++) { json_t *v = json_obj_get(m, KEYS[k]); if (!v) continue;
+                if (_sst_truthy(v)) { strip = 1; break; } }
+        }
+        const char **ks = malloc(sizeof(char *) * (m->c.count ? m->c.count : 1)); size_t kn = 0;
+        for (size_t k = 0; k < m->c.count; k++) {
+            const char *key = m->c.keys[k];
+            if (strip && (strcmp(key,"reasoning")==0 || strcmp(key,"reasoning_content")==0)) continue;
+            ks[kn++] = key;
+        }
+        qsort(ks, kn, sizeof(char *), _sst_cmp);
+        w += (size_t)snprintf(out + w, cap - w, "%s[", role);
+        for (size_t k = 0; k < kn; k++) w += (size_t)snprintf(out + w, cap - w, "%s%s", k ? "," : "", ks[k]);
+        w += (size_t)snprintf(out + w, cap - w, "]");
+        free(ks);
+    }
+    json_free(arr);
+    return out;
+}
