@@ -7,15 +7,14 @@
   "py_module": "agent/system_prompt.py",
   "py_fn": "_tui_embedded_pane_clarifier",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "hello|||0",
+    "hello|||1",
+    "|||0",
+    "|||1",
+    "a b c|||1",
+    "xyz|||0"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -25,5 +24,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "classification": "str_2arg_env"
 }

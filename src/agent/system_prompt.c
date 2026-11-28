@@ -747,14 +747,24 @@ void resolve_platform_hint(const char *platform_key, const char *default_hint,
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: agent_system_prompt_u_tui_embedded_pane_clarifier @ agent/system_prompt.py:_tui_embedded_pane_clarifier */
-int agent_system_prompt_u_tui_embedded_pane_clarifier(const char *arg) {
-    /* Python: desktop terminal clarifier append. Arg =
-     * "hint\tdesktop_terminal\tresult". */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    const char *t1 = strchr(arg, '\t');
-    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
-    int desktop = t1 && t1[1] == '1';
-    if (!desktop) { printf("%s\n", arg); return 0; }
-    printf("%s\n", t2 ? t2 + 1 : arg);
-    return 0;
+/* Faithful port of the python string fn (dead stub before: it echoed a precomputed
+ * `result` field and always returned 0). Python:
+ *   if not hint or CLARIFIER in hint or not is_truthy(HERMES_DESKTOP_TERMINAL):
+ *       return hint
+ *   return hint + CLARIFIER
+ * Returned string is owned by the caller (free()). */
+#define TUI_EMBEDDED_PANE_CLARIFIER \
+    " You're in its embedded terminal pane, beside the GUI chat \xE2\x80\x94 the user can " \
+    "select your output (Option-drag on macOS, Shift-drag elsewhere) and press " \
+    "Cmd/Ctrl+L to send it to the chat composer."
+
+char *agent_system_prompt_u_tui_embedded_pane_clarifier(const char *hint, int desktop_terminal) {
+    if (!hint || !*hint) return strdup(hint ? hint : "");
+    if (strstr(hint, TUI_EMBEDDED_PANE_CLARIFIER)) return strdup(hint);  /* idempotent */
+    if (!desktop_terminal) return strdup(hint);
+    size_t n = strlen(hint) + strlen(TUI_EMBEDDED_PANE_CLARIFIER) + 1;
+    char *out = malloc(n);
+    if (!out) return strdup(hint);
+    snprintf(out, n, "%s%s", hint, TUI_EMBEDDED_PANE_CLARIFIER);
+    return out;
 }
