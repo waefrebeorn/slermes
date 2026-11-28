@@ -72,3 +72,27 @@ int cli_tools_tool_output_limits_get_max_line_length(void)
     return tool_output_get_max_line_length();
 }
 
+
+/* PoP: tools_tool_output_limits_u_coerce_positive_int
+ * @ tools/tool_output_limits.py:_coerce_positive_int */
+/* _coerce_int(value, default, 1): int(value) (python int() on a STRING -- strict,
+ * no decimal/exponent) or default; then default if iv < 1. Input "value\tdefault". */
+char *tools_tool_output_limits_u_coerce_positive_int(const char *arg) {
+    const char *a = arg ? arg : "";
+    const char *tab = strchr(a, '\t');
+    char val[64]; size_t vlen = tab ? (size_t)(tab - a) : strlen(a);
+    if (vlen >= sizeof val) vlen = sizeof val - 1;
+    memcpy(val, a, vlen); val[vlen] = 0;
+    long def = (tab && *(tab+1)) ? strtol(tab + 1, NULL, 10) : 0;
+    char *p = val;
+    while (*p==' '||*p=='\t'||*p=='\n'||*p=='\r'||*p=='\v'||*p=='\f') p++;
+    char *end = p; int ok = 0, neg = 0;
+    if (*end=='+'||*end=='-') { neg = (*end=='-'); end++; }
+    const char *digits = end;
+    while (*end>='0' && *end<='9') { end++; ok = 1; }
+    if (ok) { char *q = end; while (*q==' '||*q=='\t'||*q=='\n'||*q=='\r'||*q=='\v'||*q=='\f') q++; if (*q) ok = 0; }
+    long iv = 0;
+    if (ok && digits != end) { char tmp[64]; size_t n = (size_t)(end - p); if (n >= sizeof tmp) n = sizeof tmp - 1; memcpy(tmp, p, n); tmp[n]=0; iv = strtol(tmp, NULL, 10); }
+    long res = (!ok || iv < 1) ? def : iv;
+    char buf[64]; snprintf(buf, sizeof buf, "%ld", res); return strdup(buf);
+}

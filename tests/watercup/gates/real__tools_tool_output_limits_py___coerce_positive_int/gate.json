@@ -3,19 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_coerce_positive_int",
+  "c_fn": "tools_tool_output_limits_u_coerce_positive_int",
   "py_module": "tools/tool_output_limits.py",
   "py_fn": "_coerce_positive_int",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "12\t7",
+    " 12 \t7",
+    "3.9\t7",
+    "abc\t7",
+    "0\t7",
+    "-5\t7",
+    "1\t7",
+    "+8\t7",
+    "1000000\t50000",
+    "\t7"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +29,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
