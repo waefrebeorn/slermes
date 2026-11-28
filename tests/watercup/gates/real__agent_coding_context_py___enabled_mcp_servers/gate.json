@@ -3,18 +3,11 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_enabled_mcp_servers",
+  "c_fn": "coding_context_mcp_names_json",
   "py_module": "agent/coding_context.py",
   "py_fn": "_enabled_mcp_servers",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "src/agent/coding_context.c"
   ],
   "cflags": [
     "-I",
@@ -22,9 +15,25 @@
     "-I",
     "lib",
     "-I",
-    "lib/libjson",
-    "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "{}",
+    "{\"mcp_servers\":null}",
+    "{\"mcp_servers\":[]}",
+    "{\"mcp_servers\":\"x\"}",
+    "{\"mcp_servers\":{\"a\":{\"enabled\":true}}}",
+    "{\"mcp_servers\":{\"a\":{\"enabled\":false}}}",
+    "{\"mcp_servers\":{\"a\":{}}}",
+    "{\"mcp_servers\":{\"a\":true}}",
+    "{\"mcp_servers\":{\"a\":{\"disabled\":true}}}",
+    "{\"mcp_servers\":{\"a\":{\"enabled\":true,\"disabled\":true}}}",
+    "{\"mcp_servers\":{\"a\":{\"disabled\":\"true\"}}}",
+    "{\"mcp_servers\":{\"a\":{\"enabled\":\"false\"}}}",
+    "{\"mcp_servers\":{\"z\":{},\"a\":{},\"m\":{}}}",
+    "{\"mcp_servers\":{\"z\":{\"enabled\":0},\"a\":{\"enabled\":1}}}",
+    "{\"mcp_servers\":{\"b\":{\"enabled\":true},\"a\":{\"enabled\":false},\"c\":{\"disabled\":false}}}",
+    "{\"mcp_servers\":{\"a\":{\"nested\":{\"x\":1}}}}"
+  ]
 }

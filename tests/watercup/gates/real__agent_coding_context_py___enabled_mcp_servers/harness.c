@@ -1,25 +1,28 @@
-/* gate: real__agent_coding_context_py___enabled_mcp_servers — GAP sentinel for _enabled_mcp_servers */
+/* gate: _enabled_mcp_servers(config) -> sorted enabled MCP server names.
+ * Fixture is the config JSON; the array is rendered comma-joined so order is under test. */
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_enabled_mcp_servers";
-}
-
+#include "hermes_json.h"
+json_t *coding_context_mcp_names_json(const json_t *config);
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _enabled_mcp_servers <input>...\n", argv[0]); return 2; }
+    if (argc < 3) return 2;
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("_enabled_mcp_servers");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
+        json_t *cfg = json_parse(argv[i], NULL);
+        json_t *arr = coding_context_mcp_names_json(cfg);
+        char joined[2048] = ""; size_t used = 0;
+        size_t n = arr ? json_array_count(arr) : 0;
+        for (size_t k = 0; k < n; k++) {
+            const json_t *e = json_array_get(arr, k);
+            const char *s = (e && e->type == JSON_STRING) ? e->str_val : "";
+            used += (size_t)snprintf(joined + used, sizeof joined - used, "%s%s", k ? "," : "", s ? s : "");
+        }
+        WCUP_VALSTR(joined);
+        char cup[32]; WCUP_FINALIZE(cup, sizeof cup); printf("%s\n", cup);
         WCUP_END("_enabled_mcp_servers");
+        if (arr) json_free(arr);
+        if (cfg) json_free(cfg);
     }
     return 0;
 }

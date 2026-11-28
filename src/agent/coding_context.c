@@ -1157,6 +1157,38 @@ const char **coding_context_coding_compact_skill_categories(const char *platform
  * from config.yaml's `mcp_servers` map (a server is enabled unless it sets
  * enabled:false). Caller frees each string and the array. NULL on none/err.
  * Mirrors Python read_raw_config()["mcp_servers"] + _parse_enabled_flag. */
+/* PoP: coding_context_mcp_names_json @ hermes_cli/tools_config.py:enabled_mcp_server_names
+ * The pure half: names whose entry is a MAPPING and passes mcp_server_enabled (which is what
+ * makes `disabled: true` win over `enabled: true`, and makes a scalar entry like `a: true`
+ * count as absent). python returns a set and _enabled_mcp_servers() sorts it; that sort is
+ * done here so callers get a stable order. The portable/plugin union is not part of this
+ * function -- it needs the plugin registry. */
+int w8_mcptoolcom_f3c09b_mcp_server_enabled(const struct json_t *cfg);
+static int cc_strcmp_qsort(const void *a, const void *b) {
+    return strcmp(*(const char *const *)a, *(const char *const *)b);
+}
+json_t *coding_context_mcp_names_json(const json_t *config) {
+    json_t *out = json_array();
+    const json_t *ms = (config && config->type == JSON_OBJECT) ? json_obj_get(config, "mcp_servers") : NULL;
+    if (!ms || ms->type != JSON_OBJECT) return out;
+    size_t n = json_object_size(ms);
+    if (!n) return out;
+    const char **names = (const char **)calloc(n + 1, sizeof(char *));
+    if (!names) return out;
+    size_t k = 0;
+    for (size_t i = 0; i < n; i++) {
+        const char *key = json_object_get_key_at(ms, i);
+        const json_t *val = json_object_get_at(ms, i);
+        if (!key || !val || val->type != JSON_OBJECT) continue;   /* isinstance(server_cfg, dict) */
+        if (!w8_mcptoolcom_f3c09b_mcp_server_enabled(val)) continue;
+        names[k++] = key;
+    }
+    qsort((void *)names, k, sizeof(char *), cc_strcmp_qsort);
+    for (size_t i = 0; i < k; i++) json_append(out, json_string(names[i]));
+    free((void *)names);
+    return out;
+}
+
 char **coding_context_enabled_mcp_servers(const hermes_config_t *config)
 {
     if (!config) return NULL;
@@ -1182,9 +1214,19 @@ char **coding_context_enabled_mcp_servers(const hermes_config_t *config)
     char **out = calloc(nkeys + 1, sizeof(char *));
     size_t n = 0;
     for (size_t i = 0; i < nkeys; i++) {
-        char enkey[512];
+        char prefix[512], enkey[600], diskey[600];
+        snprintf(prefix, sizeof(prefix), "mcp_servers.%s", keys[i]);
         snprintf(enkey, sizeof(enkey), "mcp_servers.%s.enabled", keys[i]);
-        if (yaml_get_bool(doc, enkey, true)) {
+        snprintf(diskey, sizeof(diskey), "mcp_servers.%s.disabled", keys[i]);
+        /* python only counts entries that are mappings, and mcp_server_enabled lets
+         * `disabled: true` override `enabled: true`. Reading `.enabled` alone both
+         * included scalar entries and ignored the override. */
+        size_t sub = 0;
+        char **subkeys = yaml_map_keys(doc, prefix, &sub);
+        if (subkeys) for (size_t q = 0; q < sub; q++) free(subkeys[q]);
+        if (subkeys) free(subkeys);
+        int is_mapping = (sub > 0);
+        if (is_mapping && yaml_get_bool(doc, enkey, true) && !yaml_get_bool(doc, diskey, false)) {
             out[n++] = strdup(keys[i]);
         }
         free(keys[i]);
