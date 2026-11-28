@@ -103,22 +103,23 @@ int tools_tool_backend_helpers_normalize_browser_cloud_provider(const char *arg)
 }
 
 /* PoP: tools_tool_backend_helpers_coerce_modal_mode @ tools/tool_backend_helpers.py:coerce_modal_mode */
-int tools_tool_backend_helpers_coerce_modal_mode(const char *arg) {
-    /* Python: str(value or default).strip().lower(); default unless valid. */
-    const char *v = (arg && *arg) ? arg : "";
+/* PoP: tools_tool_backend_helpers_coerce_modal_mode @ tools/tool_backend_helpers.py:coerce_modal_mode */
+/* Faithful: str(value or "auto").strip().lower(); return it iff in
+ * {"auto","direct","managed"} else "auto". Was: a STALE table --
+ * {interactive,background,headless,observatory} with default "interactive" --
+ * completely wrong vs the current python. Also no strip; printed and returned 0. */
+char *tools_tool_backend_helpers_coerce_modal_mode(const char *value) {
+    const char *v = (value && *value) ? value : "auto";
     char buf[64];
-    size_t n = strlen(v);
-    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
-    memcpy(buf, v, n); buf[n] = '\0';
-    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
-    /* valid modal modes: interactive, background, headless, observatory */
-    if (strcmp(buf, "interactive") == 0 || strcmp(buf, "background") == 0 ||
-        strcmp(buf, "headless") == 0 || strcmp(buf, "observatory") == 0) {
-        printf("%s\n", buf);
-        return 0;
-    }
-    printf("interactive\n");
-    return 0;
+    snprintf(buf, sizeof(buf), "%s", v);
+    char *q = buf;
+    while (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r') q++;
+    size_t n = strlen(q);
+    while (n > 0 && (q[n-1]==' '||q[n-1]=='\t'||q[n-1]=='\n'||q[n-1]=='\r')) q[--n] = '\0';
+    for (char *p = q; *p; p++) *p = (char)tolower((unsigned char)*p);
+    if (strcmp(q, "auto") == 0 || strcmp(q, "direct") == 0 || strcmp(q, "managed") == 0)
+        return strdup(q);
+    return strdup("auto");
 }
 
 /* PoP: tools_tool_backend_helpers_normalize_modal_mode @ tools/tool_backend_helpers.py:normalize_modal_mode */

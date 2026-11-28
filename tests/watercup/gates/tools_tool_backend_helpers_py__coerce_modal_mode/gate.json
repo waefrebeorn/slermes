@@ -7,15 +7,21 @@
   "py_module": "tools/tool_backend_helpers.py",
   "py_fn": "coerce_modal_mode",
   "inputs": [
-    "hello",
-    "world",
+    "auto",
+    "direct",
+    "managed",
+    "DIRECT",
+    "  managed  ",
+    "interactive",
+    "background",
     "",
-    "test123",
-    "NULL"
+    "   ",
+    "headless",
+    "AUTO",
+    "bogus",
+    "Direct "
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
