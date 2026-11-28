@@ -3,28 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_is_untrusted_tool",
+  "c_fn": "agent_tool_dispatch_helpers_u_is_untrusted_tool",
   "py_module": "agent/tool_dispatch_helpers.py",
   "py_fn": "_is_untrusted_tool",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "web_search",
+    "web_extract",
+    "browser_navigate",
+    "mcp_call",
+    "terminal",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "WEB_SEARCH",
+    "browser",
+    "mcp_",
+    "web_searchx"
+  ]
 }

@@ -3,28 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_classify_op_error",
+  "c_fn": "agent_secret_sources_onepassword_u_classify_op_error",
   "py_module": "agent/secret_sources/onepassword.py",
   "py_fn": "_classify_op_error",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "Request timed out",
+    "not found on path",
+    "not signed in",
+    "empty value returned",
+    "resolve host failed",
+    "download failed",
+    "resolve failed",
+    "403 forbidden",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "session expired",
+    "not an executable"
+  ]
 }

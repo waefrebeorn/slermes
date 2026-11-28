@@ -433,7 +433,14 @@ int agent_tool_dispatch_helpers_make_tool_result_message(const char *arg) {
 
 /* PoP: agent_tool_dispatch_helpers_u_is_untrusted_tool @ agent/tool_dispatch_helpers.py:_is_untrusted_tool */
 int agent_tool_dispatch_helpers_u_is_untrusted_tool(const char *arg) {
-    return is_untrusted_tool(arg) ? 1 : 0;
+    /* bool(name) and (name in _UNTRUSTED_TOOL_NAMES or name.startswith(prefixes));
+     * names {web_extract, web_search}, prefixes (browser_, mcp_) -- case-SENSITIVE.
+     * (The old body delegated to is_untrusted_tool(), which is defined NOWHERE.) */
+    const char *n = arg ? arg : "";
+    if (!n[0]) return 0;
+    if (strcmp(n, "web_extract") == 0 || strcmp(n, "web_search") == 0) return 1;
+    if (strncmp(n, "browser_", 8) == 0 || strncmp(n, "mcp_", 4) == 0) return 1;
+    return 0;
 }
 
 /* PoP: agent_tool_dispatch_helpers_u_tool_output_risk_metadata @ agent/tool_dispatch_helpers.py:_tool_output_risk_metadata */

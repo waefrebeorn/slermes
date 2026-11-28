@@ -21,3 +21,26 @@ char *agent_secret_sources_bitwarden_u_cache_key_str(const char *arg) {
     json_free(a);
     return out;
 }
+
+/* PoP: agent_secret_sources_bitwarden_u_classify_bws_error
+ * @ agent/secret_sources/bitwarden.py:_classify_bws_error
+ * classify_cli_error(message, _BWS_ERROR_RULES): lowercase, FIRST rule having any
+ * token as a substring wins; no match -> ErrorKind.INTERNAL "internal". */
+typedef struct { const char *kind; const char *tok[8]; int nt; } _bws_rule;
+static const _bws_rule BWS_RULES[] = {
+  {"timeout", {"timed out"}, 1},
+  {"binary_missing", {"binary not available","failed to invoke"}, 2},
+  {"auth_failed", {"unauthorized","invalid token","access token","401","403","invalid_client","invalid_grant"}, 7},
+  {"network", {"network","connection","resolve","download","dns"}, 5},
+};
+char *agent_secret_sources_bitwarden_u_classify_bws_error(const char *arg) {
+    const char *m = arg ? arg : "";
+    char *low = malloc(strlen(m) + 1); size_t w = 0;
+    for (const char *p = m; *p; p++) { char c = *p; low[w++] = (c>='A'&&c<='Z') ? (char)(c+32) : c; }
+    low[w] = 0;
+    for (int i = 0; i < (int)(sizeof(BWS_RULES)/sizeof(BWS_RULES[0])); i++)
+        for (int k = 0; k < BWS_RULES[i].nt; k++)
+            if (strstr(low, BWS_RULES[i].tok[k])) { free(low); return strdup(BWS_RULES[i].kind); }
+    free(low);
+    return strdup("internal");
+}

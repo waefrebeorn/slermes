@@ -3,28 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_classify_bws_error",
+  "c_fn": "agent_secret_sources_bitwarden_u_classify_bws_error",
   "py_module": "agent/secret_sources/bitwarden.py",
   "py_fn": "_classify_bws_error",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "Request timed out",
+    "failed to invoke bws",
+    "401 Unauthorized",
+    "Unauthorized access",
+    "dns resolution failed",
+    "download failed",
+    "this is fine",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "BINARY NOT AVAILABLE",
+    "invalid_grant",
+    "connection refused",
+    "resolve failed"
+  ]
 }

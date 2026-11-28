@@ -3,28 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_script_runner",
+  "c_fn": "agent_verify_recipes_u_script_runner",
   "py_module": "agent/verify/recipes.py",
   "py_fn": "_script_runner",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"package_manager\":\"pnpm\",\"entry\":\"build\"}",
+    "{\"package_manager\":\"bun\",\"entry\":\"test\"}",
+    "{\"package_manager\":\"yarn\",\"entry\":\"lint\"}",
+    "{\"package_manager\":\"npm\",\"entry\":\"start\"}",
+    "{\"package_manager\":null,\"entry\":\"dev\"}",
+    "{\"entry\":\"x\"}",
+    "{\"package_manager\":\"PNPM\",\"entry\":\"build\"}",
+    "{\"package_manager\":\"pnpm\",\"entry\":\"\"}"
   ],
   "extra_src": [
     "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  ]
 }
