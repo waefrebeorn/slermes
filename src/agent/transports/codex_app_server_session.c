@@ -1187,3 +1187,56 @@ bool codex_xai_prefers_native_web_search(void)
     return true;
 }
 
+
+/* PoP: agent_codex_app_server_session_u_summarize_file_changes
+ * @ agent/transports/codex_app_server_session.py:_summarize_file_changes */
+/* "<n> add, <m> update: a.py, b.py, +k more" -- kinds counted and sorted by name,
+ * path preview capped at 3, empty input -> "1 change pending". */
+typedef struct { char name[64]; int n; } _sfc_kind;
+char *agent_codex_app_server_session_u_summarize_file_changes(const char *arg) {
+    const char *empty = "1 change pending";
+    json_t *arr = arg ? json_parse(arg, NULL) : NULL;
+    int falsy = (!arr || json_is_null(arr) || (json_is_array(arr) && arr->c.count == 0));
+    if (falsy) { if (arr) json_free(arr); return strdup(empty); }
+    _sfc_kind kinds[64]; int nk = 0;
+    char **paths = NULL; size_t np = 0;
+    if (json_is_array(arr)) {
+        paths = malloc(sizeof(char *) * (arr->c.count ? arr->c.count : 1));
+        for (size_t i = 0; i < arr->c.count; i++) {
+            json_t *ch = arr->c.items[i];
+            if (!ch || !json_is_object(ch)) continue;
+            const char *kind = "update";
+            json_t *k = json_obj_get(ch, "kind");
+            if (k && json_is_object(k)) { json_t *t = json_obj_get(k, "type"); if (t && json_is_string(t) && t->str_val) kind = t->str_val; }
+            int found = 0;
+            for (int j = 0; j < nk; j++) if (strcmp(kinds[j].name, kind) == 0) { kinds[j].n++; found = 1; break; }
+            if (!found && nk < 64) { snprintf(kinds[nk].name, sizeof kinds[nk].name, "%s", kind); kinds[nk].n = 1; nk++; }
+            json_t *pv = json_obj_get(ch, "path");
+            if (pv && json_is_string(pv) && pv->str_val && pv->str_val[0]) paths[np++] = pv->str_val;
+        }
+    }
+    for (int a = 0; a < nk; a++) for (int b = a + 1; b < nk; b++)
+        if (strcmp(kinds[a].name, kinds[b].name) > 0) { _sfc_kind t = kinds[a]; kinds[a] = kinds[b]; kinds[b] = t; }
+    size_t cap = 512; char *counts = malloc(cap); size_t w = 0; counts[0] = 0;
+    for (int a = 0; a < nk; a++) {
+        int need = snprintf(NULL, 0, "%s%d %s", a ? ", " : "", kinds[a].n, kinds[a].name);
+        if (w + (size_t)need + 1 > cap) { cap = (w + need + 1) * 2; counts = realloc(counts, cap); }
+        w += (size_t)snprintf(counts + w, cap - w, "%s%d %s", a ? ", " : "", kinds[a].n, kinds[a].name);
+    }
+    size_t pc = 1024; char *preview = malloc(pc); size_t v = 0; preview[0] = 0;
+    for (size_t i = 0; i < np && i < 3; i++) {
+        int need = snprintf(NULL, 0, "%s%s", i ? ", " : "", paths[i]);
+        if (v + (size_t)need + 1 > pc) { pc = (v + need + 1) * 2; preview = realloc(preview, pc); }
+        v += (size_t)snprintf(preview + v, pc - v, "%s%s", i ? ", " : "", paths[i]);
+    }
+    if (np > 3) {
+        int need = snprintf(NULL, 0, ", +%d more", (int)(np - 3));
+        if (v + (size_t)need + 1 > pc) { pc = (v + need + 1) * 2; preview = realloc(preview, pc); }
+        v += (size_t)snprintf(preview + v, pc - v, ", +%d more", (int)(np - 3));
+    }
+    char *res;
+    if (v) { size_t need = w + v + 3; res = malloc(need); snprintf(res, need, "%s: %s", counts, preview); }
+    else res = strdup(counts);
+    free(counts); free(preview); free(paths); if (arr) json_free(arr);
+    return res;
+}
