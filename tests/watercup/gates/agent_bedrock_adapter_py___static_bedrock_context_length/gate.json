@@ -5,17 +5,19 @@
   "c_src": "harness.c",
   "c_fn": "agent_bedrock_adapter_u_static_bedrock_context_length",
   "py_module": "agent/bedrock_adapter.py",
-  "py_fn": "_static_bedrock_context_length",
+  "py_fn": "bedrock_static_context_length",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "anthropic.claude-opus-4",
+    "amazon.nova-pro",
+    "meta.llama4-maverick",
+    "xai.grok-4.6",
+    "anthropic.claude-sonnet-4-5",
+    "amazon.nova-micro",
+    "ANTHROPIC.CLAUDE-OPUS-4",
+    "zai.glm-5",
+    "openai.gpt-6.1-sol"
   ],
-  "extra_src": [
-    "src/agent/bedrock_adapter.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

@@ -53,17 +53,21 @@ char *agent_bedrock_adapter_u_safe_text(const char *arg) {
     return strdup(t);
 }
 
-/* PoP: agent_bedrock_adapter_u_static_bedrock_context_length @ agent/bedrock_adapter.py:_static_bedrock_context_length */
-int agent_bedrock_adapter_u_static_bedrock_context_length(const char *arg) {
-    /* Python: longest substring key match. Arg = "model\ttable_json". */
-    if (!arg || !*arg) { printf("200000\n"); return 0; }
-    const char *tab = strchr(arg, '\t');
-    const char *model = arg;
-    json_t *tbl = json_parse(tab ? tab + 1 : "", NULL);
+/* PoP: agent_bedrock_adapter_u_static_bedrock_context_length @ agent/bedrock_adapter.py:bedrock_static_context_length */
+/* Faithful port of the table path of bedrock_static_context_length(model):
+ *   lowered = model.lower()
+ *   matches = [k for k in BEDROCK_CONTEXT_LENGTHS if k in lowered]
+ *   return BEDROCK_CONTEXT_LENGTHS[max(matches, key=len)]  (longest key wins)
+ * Returns -1 when nothing matches (python's None / family-fallback miss). The
+ * table is passed in (table_json) so the harness can supply the real table.
+ * Was: printed 200000/val and returned 0, so no caller could observe it. */
+long agent_bedrock_adapter_u_static_bedrock_context_length(const char *model, const char *table_json) {
+    if (!model) return -1;
+    json_t *tbl = json_parse(table_json ? table_json : "", NULL);
     char low[512];
     snprintf(low, sizeof(low), "%s", model);
     for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
-    long best_val = 200000;
+    long best_val = -1;
     size_t best_len = 0;
     if (tbl && json_is_object(tbl)) {
         for (size_t i = 0; i < tbl->c.count; i++) {
@@ -76,8 +80,7 @@ int agent_bedrock_adapter_u_static_bedrock_context_length(const char *arg) {
         }
     }
     if (tbl) json_free(tbl);
-    printf("%ld\n", best_val);
-    return 0;
+    return best_val;
 }
 
 /* PoP: agent_bedrock_adapter_probe_bedrock_context_length @ agent/bedrock_adapter.py:probe_bedrock_context_length */
