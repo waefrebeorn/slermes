@@ -6,15 +6,9 @@
   "c_fn": "sanitize_borrowed_credential_payload",
   "py_module": "agent/credential_persistence.py",
   "py_fn": "sanitize_borrowed_credential_payload",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/credential_persistence.c"
   ],
   "cflags": [
     "-I",
@@ -24,8 +18,17 @@
     "-I",
     "lib/libjson",
     "-I",
-    "src"
+    "src",
+    "-I",
+    "lib/libcrypto"
   ],
-  "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"source\": \"device_code\", \"provider\": \"openai\", \"api_key\": \"sk-1\", \"agent_key\": \"ak-9\", \"expires_at\": 1, \"secret_fingerprint\": \"sha256:old\", \"secret_source\": \"pool\", \"agent_key_id\": \"kid\", \"tokens\": {\"a\": 1}}",
+    "{\"source\": \"device_code\", \"provider\": \"nous\", \"api_key\": \"sk-1\", \"token\": \"t\"}",
+    "{\"source\": \"manual\", \"provider\": \"openai\", \"api_key\": \"sk-1\"}",
+    "{\"source\": \"device_code\", \"provider\": \"openai\", \"expires_at\": 5, \"last_status\": \"ok\"}",
+    "{\"api_key\": \"sk-1\"}",
+    "{\"source\": \"env\", \"provider\": \"nous\", \"password\": \"pw\", \"user_token\": \"ut\"}"
+  ]
 }

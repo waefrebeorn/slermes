@@ -26,5 +26,6 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "relabel_note": "python credential_persistence has NO _fingerprint_value; the real fn is fingerprint_secret_value. This gate named a function that does not exist, so it could never pass."
 }

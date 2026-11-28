@@ -1,56 +1,11 @@
-"""twin for agent/credential_persistence.py:sanitize_borrowed_credential_payload (thin: shared runtime, cross-OS)."""
+"""twin: sanitize_borrowed_credential_payload(payload, provider_id)."""
+import json as _j
 from watercup_twin_runtime import TwinBase
-def _strtol(s):
-    m = __import__('re').match('[+-]?[0-9]+', str(s))
-    return int(m.group()) if m else 0
-
-
-def _strtod(s):
-    m = __import__('re').match(
-        '[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?',
-        str(s))
-    return float(m.group()) if m else 0.0
-
-
-def _cvt(p, v):
-    a = str(p.annotation) if p.annotation is not p.empty else ''
-    al = a.lower()
-    if 'path' in al:
-        from pathlib import Path
-        return Path(v) if isinstance(v, str) else v
-    if 'bytes' in al and 'str' not in al:
-        return (v.encode('utf-8', 'surrogateescape')
-                if isinstance(v, str) else v)
-    if 'bool' in al and 'str' not in al:
-        return _strtol(v) != 0
-    if ('int' in al and 'point' not in al and 'print' not in al
-            and 'interface' not in al):
-        return _strtol(v)
-    if 'float' in al or 'double' in al:
-        return _strtod(v)
-    if ('dict' in al or 'list' in al or 'map' in al or 'seq' in al
-            or 'tuple' in al or 'set' in al or 'json' in al):
-        try:
-            import json as _j
-            return _j.loads(v)
-        except Exception:
-            return None
-    return v
-
-
 class _Twin(TwinBase):
-    PY_MODULE = "agent/credential_persistence.py"
-    PY_FN = "sanitize_borrowed_credential_payload"
+    PY_MODULE = "agent/credential_persistence.py"; PY_FN = "sanitize_borrowed_credential_payload"
     C_FN = "sanitize_borrowed_credential_payload"
-
+    def call(self, inp, inputs, idx=0):
+        d=_j.loads(inp); return self._fn(d, d.get("provider"))
     def norm(self, c, result):
-        import inspect as _ic
-        if _ic.iscoroutine(result):
-            import asyncio as _aio
-            result = _aio.run(result)
-        c.valstr(_j.dumps(result, sort_keys=True, separators=(",", ":")) if result is not None else "null")
-
-
-_t = _Twin()
-trace = _t.trace
-run = _t.run
+        c.valstr(_j.dumps(result, sort_keys=True, separators=(",", ":")))
+_t=_Twin(); trace=_t.trace; run=_t.run

@@ -1,25 +1,14 @@
-/* gate: real__agent_credential_persistence_py__is_borrowed_credential_source — GAP sentinel for is_borrowed_credential_source */
+/* gate: is_borrowed_credential_source(source, provider_id) -> bool. */
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "is_borrowed_credential_source";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s is_borrowed_credential_source <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("is_borrowed_credential_source");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("is_borrowed_credential_source");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+#include <stdbool.h>
+bool is_borrowed_credential_source(const char *source, const char *provider_id);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("is_borrowed_credential_source");
+  json_t *in=json_parse(argv[i],NULL);
+  const char *s=json_get_str(in,"source",""), *p=json_get_str(in,"provider","");
+  WCUP_VALSTR(is_borrowed_credential_source(s,p)?"True":"False");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("is_borrowed_credential_source"); if(in) json_free(in);} return 0;}

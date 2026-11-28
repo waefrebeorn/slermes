@@ -1,11 +1,9 @@
-"""twin: fingerprint_secret_value."""
-import json as _j
+"""twin: fingerprint_secret_value (@@ARGS@@)."""
 from watercup_twin_runtime import TwinBase
 class _Twin(TwinBase):
-    PY_MODULE = "agent/credential_persistence.py"; PY_FN = "fingerprint_secret_value"
-    C_FN = "agent_credential_persistence_u_fingerprint_secret_value"
+    PY_MODULE = "agent/credential_persistence.py"; PY_FN = "fingerprint_secret_value"; C_FN = "@@CF@@"
     def call(self, inp, inputs, idx=0):
-        return self._fn(str(inp))
+        return self._fn(inp)
     def norm(self, c, result):
-        c.valstr("" if result is None else str(result))
-_t = _Twin(); trace = _t.trace; run = _t.run
+        c.valstr("" if result is None else (("True" if result else "False") if isinstance(result,bool) else result))
+_t=_Twin(); trace=_t.trace; run=_t.run

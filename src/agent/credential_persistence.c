@@ -73,9 +73,11 @@ void credential_normalize_key(const char *key, char *out, size_t out_sz) {
     if (!key || !out || out_sz == 0) return;
     /* Python: str(key).strip(), then lower/hyphen/dot only. Internal spaces
      * are preserved; only leading/trailing whitespace is removed. */
-    while (*key == ' ' || *key == '\t') key++;
+    for (;; key++) { char w = *key;
+        if (w==' '||w=='\t'||w=='\n'||w=='\r'||w=='\f'||w=='\v') continue; break; }
     size_t len = strlen(key);
-    while (len > 0 && (key[len - 1] == ' ' || key[len - 1] == '\t')) len--;
+    while (len > 0) { char w = key[len-1];
+        if (w==' '||w=='\t'||w=='\n'||w=='\r'||w=='\f'||w=='\v') { len--; continue; } break; }
     size_t j = 0;
     int prev_lower = 0;
     for (size_t i = 0; i < len && j < out_sz - 1; i++) {
@@ -105,7 +107,7 @@ bool is_secret_payload_key(const char *key) {
     for (int i = 0; SECRET_VALUE_SUFFIXES[i]; i++) {
         size_t nlen = strlen(normalized);
         size_t slen = strlen(SECRET_VALUE_SUFFIXES[i]);
-        if (nlen > slen &&
+        if (nlen >= slen &&
             strcmp(normalized + nlen - slen, SECRET_VALUE_SUFFIXES[i]) == 0)
             return true;
     }
@@ -205,4 +207,129 @@ char *agent_credential_persistence_u_fingerprint_secret_value(const char *arg) {
     /* "sha256:" + first 16 hex chars */
     snprintf(out, 24, "sha256:%.16s", hex);
     return out;
+}
+
+/* =============================================================== *
+ *  is_borrowed_credential_source / sanitize_borrowed_credential_payload
+ *  Ports of agent/credential_persistence.py. A "borrowed" row is a
+ *  reference to someone else's secret: it may be listed on disk, but
+ *  the raw secret must never be written there.
+ * =============================================================== */
+
+/* _PERSISTABLE_PROVIDER_SOURCES — (provider, source) pairs that own their secret. */
+static const char *const CRED_PERSISTABLE[][2] = {
+    { "xai-oauth",     "device_code" },
+    { "anthropic",     "hermes_pkce" },
+    { "openai-codex",  "device_code" },
+    { "nous",          "device_code" },
+    { "minimax-oauth", "oauth" },
+};
+#define CRED_PERSISTABLE_N ((int)(sizeof CRED_PERSISTABLE / sizeof CRED_PERSISTABLE[0]))
+
+static void cred_strip_lower(const char *in, char *out, size_t cap) {
+    if (!in) in = "";
+    for (;; in++) {
+        char w = *in;
+        if (w==' '||w=='\t'||w=='\n'||w=='\r'||w=='\f'||w=='\v') continue;
+        break;
+    }
+    size_t n = strlen(in);
+    while (n > 0) {
+        char w = in[n-1];
+        if (w==' '||w=='\t'||w=='\n'||w=='\r'||w=='\f'||w=='\v') { n--; continue; }
+        break;
+    }
+    size_t o = 0;
+    for (size_t i = 0; i < n && o + 1 < cap; i++)
+        out[o++] = (char)tolower((unsigned char)in[i]);
+    out[o] = 0;
+}
+
+/* PoP: is_borrowed_credential_source @ agent/credential_persistence.py:is_borrowed_credential_source */
+bool is_borrowed_credential_source(const char *source, const char *provider_id) {
+    char src[256], prov[256];
+    cred_strip_lower(source, src, sizeof src);
+    if (!src[0] || strcmp(src, "manual") == 0 || strncmp(src, "manual:", 7) == 0)
+        return false;
+    cred_strip_lower(provider_id, prov, sizeof prov);
+    for (int i = 0; i < CRED_PERSISTABLE_N; i++)
+        if (strcmp(prov, CRED_PERSISTABLE[i][0]) == 0 &&
+            strcmp(src,  CRED_PERSISTABLE[i][1]) == 0)
+            return false;
+    return true;
+}
+
+static int cred_cmp_key(const void *a, const void *b) {
+    const char *const *x = a, *const *y = b;
+    return strcmp(*x, *y);
+}
+
+/* PoP: sanitize_borrowed_credential_payload @ agent/credential_persistence.py:sanitize_borrowed_credential_payload
+ * Owned sources pass through unchanged; borrowed ones keep metadata + a
+ * fingerprint and lose every raw secret field. Returns a JSON object with
+ * keys sorted (so the cup is order-stable); caller frees. */
+char *sanitize_borrowed_credential_payload(const json_t *payload, const char *provider_id) {
+    if (!payload || payload->type != JSON_OBJECT) return strdup("{}");
+    const json_t *src = json_obj_get(payload, "source");
+    const char *source = (src && src->type == JSON_STRING && src->str_val) ? src->str_val : "";
+    int borrowed = is_borrowed_credential_source(source, provider_id);
+
+    char *fingerprint = borrowed ? credential_secret_fingerprint(payload) : NULL;
+
+    size_t cap = payload->c.count + 1;
+    const char **keys = calloc(cap, sizeof *keys);
+    const json_t **vals = calloc(cap, sizeof *vals);
+    size_t n = 0;
+    for (size_t i = 0; i < payload->c.count; i++) {
+        const char *k = payload->c.keys[i];
+        if (!k) continue;
+        if (borrowed && is_secret_payload_key(k)) continue;
+        if (borrowed && fingerprint && strcmp(k, "secret_fingerprint") == 0) continue;
+        keys[n] = k; vals[n] = payload->c.items[i]; n++;
+    }
+    if (borrowed && fingerprint && *fingerprint) { keys[n] = "secret_fingerprint"; n++; }
+
+    /* sort keys (and ride values along) */
+    for (size_t i = 0; i + 1 < n; i++)
+        for (size_t j = 0; j + 1 < n - i; j++)
+            if (strcmp(keys[j], keys[j+1]) > 0) {
+                const char *tk = keys[j]; keys[j] = keys[j+1]; keys[j+1] = tk;
+                const json_t *tv = vals[j]; vals[j] = vals[j+1]; vals[j+1] = tv;
+            }
+
+    /* Serialise by hand: the values belong to `payload`, so they must not be
+     * adopted into a second container (json_free of both would double-free). */
+    char *js = malloc(2 + payload->c.count * 64 + (fingerprint ? strlen(fingerprint) + 24 : 0));
+    size_t cap_out = js ? (2 + payload->c.count * 64 + (fingerprint ? strlen(fingerprint) + 24 : 0)) : 0;
+    size_t used = 0;
+    if (!js) { free(keys); free(vals); if (fingerprint) free(fingerprint); return strdup("{}"); }
+    js[used++] = '{';
+    for (size_t i = 0; i < n; i++) {
+        const json_t *v = NULL;
+        char *fpv = NULL;
+        if (borrowed && fingerprint && strcmp(keys[i], "secret_fingerprint") == 0)
+            fpv = json_serialize(json_string(fingerprint));
+        else
+            fpv = json_serialize((json_t *)vals[i]);
+        const char *repr = fpv ? fpv : "null";
+        size_t kl = strlen(keys[i]), vl = strlen(repr);
+        size_t need = used + kl + vl + 8;
+        if (need > cap_out) {
+            cap_out = need * 2;
+            char *nb = realloc(js, cap_out);
+            if (!nb) { free(fpv); break; }
+            js = nb;
+        }
+        if (i) js[used++] = ',';
+        js[used++] = '"'; memcpy(js + used, keys[i], kl); used += kl; js[used++] = '"';
+        js[used++] = ':';
+        memcpy(js + used, repr, vl); used += vl;
+        if (fpv) free(fpv);
+        (void)v;
+    }
+    js[used++] = '}';
+    js[used] = 0;
+    free(keys); free(vals);
+    if (fingerprint) free(fingerprint);
+    return js;
 }

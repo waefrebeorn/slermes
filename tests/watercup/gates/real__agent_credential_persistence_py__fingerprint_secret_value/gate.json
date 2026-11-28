@@ -3,19 +3,31 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "agent_credential_persistence_u_fingerprint_secret_value",
+  "c_fn": "fingerprint_secret_value",
   "py_module": "agent/credential_persistence.py",
   "py_fn": "fingerprint_secret_value",
   "extra_src": [
     "lib/libjson/json.c",
-    "lib/libcrypto/crypto.c"
+    "src/agent/credential_persistence.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src",
+    "-I",
+    "lib/libcrypto"
   ],
   "classification": "PORTED",
   "inputs": [
-    "s3cret",
+    "abc",
     "",
-    "x",
-    "a longer secret value here",
-    "MIXED_case-123"
+    "sk-live-123",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "  spaced  "
   ]
 }

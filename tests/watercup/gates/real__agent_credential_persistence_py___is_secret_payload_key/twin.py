@@ -1,17 +1,9 @@
-"""twin for agent/credential_persistence.py:_is_secret_payload_key (thin: shared runtime, cross-OS)."""
+"""twin: _is_secret_payload_key (@@ARGS@@)."""
 from watercup_twin_runtime import TwinBase
-
-
-
 class _Twin(TwinBase):
-    PY_MODULE = "agent/credential_persistence.py"
-    PY_FN = "_is_secret_payload_key"
-    C_FN = "is_secret_payload_key"
-
+    PY_MODULE = "agent/credential_persistence.py"; PY_FN = "_is_secret_payload_key"; C_FN = "@@CF@@"
+    def call(self, inp, inputs, idx=0):
+        return self._fn(inp)
     def norm(self, c, result):
-        c.valstr("true" if result else "false")
-
-
-_t = _Twin()
-trace = _t.trace
-run = _t.run
+        c.valstr("" if result is None else (("True" if result else "False") if isinstance(result,bool) else result))
+_t=_Twin(); trace=_t.trace; run=_t.run

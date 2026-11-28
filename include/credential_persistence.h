@@ -13,6 +13,7 @@
 #define SLERMES_CREDENTIAL_PERSISTENCE_H
 
 #include <stddef.h>
+#include "hermes_json.h"
 #include <stdbool.h>
 
 /* Forward decl — libjson's json_t. We avoid pulling json.h into this slim
@@ -44,3 +45,7 @@ char *fingerprint_secret_value(const void *value);
 char *credential_secret_fingerprint(const struct json_t *payload);
 
 #endif /* SLERMES_CREDENTIAL_PERSISTENCE_H */
+
+char *sanitize_borrowed_credential_payload(const json_t *payload, const char *provider_id);
+bool is_borrowed_credential_source(const char *source, const char *provider_id);
+
