@@ -7,15 +7,22 @@
   "py_module": "tools/computer_use/tool.py",
   "py_fn": "_canon_key_combo",
   "inputs": [
-    "hello",
-    "world",
+    "ctrl+alt+delete",
+    "Ctrl + Alt + Del",
+    "command+c",
+    "control+shift+t",
+    "alt+f4",
+    "windows+d",
+    "super+x",
+    "meta+q",
+    "ctrl-alt-delete",
+    "shift",
     "",
-    "test123",
-    "NULL"
+    " + ",
+    "CTRL+CTRL+alt",
+    "cmd+cmd"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

@@ -12,38 +12,49 @@
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: tools_computer_use_tool_u_canon_key_combo @ tools/computer_use/tool.py:_canon_key_combo */
-int tools_computer_use_tool_u_canon_key_combo(const char *arg) {
-    /* Python: split on '+', strip/lower, alias-map, frozenset. Arg = keys
-     * (space-joined canon parts echo, "ctrl+alt+DEL" style). */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    char buf[1024];
-    size_t n = strlen(arg);
-    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
-    memcpy(buf, arg, n); buf[n] = '\0';
-    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
-    /* alias map: ctl->ctrl, cmd->super, meta->super, esc->escape, del->delete */
-    const char *p = buf;
-    int first = 1;
-    while (*p) {
-        while (*p == '+' || *p == ' ') p++;
-        const char *e = p;
-        while (*e && *e != '+') e++;
-        size_t len = (size_t)(e - p);
-        while (len > 0 && (p[len-1] == ' ')) len--;
-        if (len) {
-            if (!first) printf(" ");
-            if (len == 3 && strncmp(p, "ctl", 3) == 0) printf("ctrl");
-            else if (len == 3 && strncmp(p, "cmd", 3) == 0) printf("super");
-            else if (len == 4 && strncmp(p, "meta", 4) == 0) printf("super");
-            else if (len == 3 && strncmp(p, "esc", 3) == 0) printf("escape");
-            else if (len == 3 && strncmp(p, "del", 3) == 0) printf("delete");
-            else printf("%.*s", (int)len, p);
-            first = 0;
+/* PoP: tools_computer_use_tool_u_canon_key_combo @ tools/computer_use/tool.py:_canon_key_combo */
+/* Faithful: split on \s*[+\-]\s*, strip+lower each part, apply _KEY_ALIASES,
+ * frozenset (dedupe). Returns a sorted JSON array. Was: WRONG alias table
+ * (cmd->super, ctl->ctrl, esc->escape...) vs python (command->cmd, control->ctrl,
+ * alt->option, windows/super/meta->win), split only on '+', and no dedupe. */
+static const char *_ck_alias(const char *p) {
+    if (strcmp(p,"command")==0) return "cmd";
+    if (strcmp(p,"control")==0) return "ctrl";
+    if (strcmp(p,"alt")==0) return "option";
+    if (strcmp(p,"windows")==0) return "win";
+    if (strcmp(p,"super")==0) return "win";
+    if (strcmp(p,"meta")==0) return "win";
+    return p;
+}
+static int _ck_cmp(const void *a,const void *b){ return strcmp(*(char*const*)a,*(char*const*)b); }
+char *tools_computer_use_tool_u_canon_key_combo(const char *keys) {
+    const char *s = keys ? keys : "";
+    char **items=NULL; int n=0,cap=0;
+    const char *p=s;
+    while (1) {
+        const char *e=p;
+        while (*e && *e!='+' && *e!='-') e++;
+        char *seg=strndup(p,(size_t)(e-p));
+        char *q=seg; while(*q==' '||*q=='\t'||*q=='\n'||*q=='\r') q++;
+        size_t L=strlen(q); while(L>0&&(q[L-1]==' '||q[L-1]=='\t'||q[L-1]=='\n'||q[L-1]=='\r')) q[--L]=0;
+        if(*q){ for(char*c=q;*c;c++) *c=(char)tolower((unsigned char)*c); }
+        if(*q){
+            const char *al=_ck_alias(q);
+            char *d=strdup(al);
+            if(n==cap){cap=cap?cap*2:8;items=realloc(items,(size_t)cap*sizeof(char*));}
+            items[n++]=d;
         }
-        p = e;
+        free(seg);
+        if(!*e) break;
+        p=e+1;
     }
-    printf("\n");
-    return 0;
+    if(n>1) qsort(items,(size_t)n,sizeof(char*),_ck_cmp);
+    json_t *out=json_array();
+    for(int i=0;i<n;i++){ if(i==0||strcmp(items[i],items[i-1])!=0) json_append(out,json_string(items[i])); }
+    for(int i=0;i<n;i++) free(items[i]);
+    free(items);
+    char *r=json_serialize(out); json_free(out);
+    return r?r:strdup("[]");
 }
 
 /* PoP: tools_computer_use_tool_reset_backend_for_tests @ tools/computer_use/tool.py:reset_backend_for_tests */
