@@ -1,5 +1,6 @@
 """twin for gateway/shutdown_forensics.py:_proc_summary (thin: shared runtime, cross-OS)."""
 from watercup_twin_runtime import TwinBase
+import json as _j
 def _strtol(s):
     m = __import__('re').match('[+-]?[0-9]+', str(s))
     return int(m.group()) if m else 0
