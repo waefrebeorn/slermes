@@ -67,27 +67,29 @@ void truncate_preview(const char *text, int max_len, char *out, size_t out_sz) {
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: agent_display_u_display_url @ agent/display.py:_display_url */
-int agent_display_u_display_url(const char *arg) {
-    /* Python: dict url/href or str strip, else "". Arg = "json_or_raw". */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    json_t *j = json_parse(arg, NULL);
-    const char *v = NULL;
+/* PoP: agent_display_u_display_url @ agent/display.py:_display_url */
+/* Faithful: (value.get("url") or value.get("href")) when dict; return
+ * value.strip() if str else "". Was: printed and returned 0; stripped only
+ * space/nl/cr (python .strip() = \t\v\f too). Returns owned string. */
+char *agent_display_u_display_url(const char *arg) {
+    json_t *j = arg ? json_parse(arg, NULL) : NULL;
+    char *out = NULL;
     if (j && json_is_object(j)) {
-        v = json_get_str(j, "url", "");
-        if (!v[0]) v = json_get_str(j, "href", "");
-    } else {
-        v = arg;
+        json_t *u = json_obj_get(j, "url");
+        if (!u || (json_is_string(u) && !u->str_val[0]) || !json_is_string(u))
+            u = json_obj_get(j, "href");
+        if (u && json_is_string(u)) out = strdup(u->str_val);
+    } else if (j && json_is_string(j)) {
+        out = strdup(j->str_val);
     }
-    char v_buf[2048] = "";
-    if (v) snprintf(v_buf, sizeof(v_buf), "%s", v);
     if (j) json_free(j);
-    v = v_buf;                                    /* v may point into the tree just freed */
-    if (!v) { printf("\n"); return 0; }
-    while (*v == ' ') v++;
-    size_t len = strlen(v);
-    while (len > 0 && (v[len-1] == ' ' || v[len-1] == '\n' || v[len-1] == '\r')) len--;
-    printf("%.*s\n", (int)len, v);
-    return 0;
+    if (!out) out = strdup("");
+    char *q = out;
+    while (*q==' '||*q=='\t'||*q=='\n'||*q=='\r'||*q=='\v'||*q=='\f') q++;
+    if (q != out) memmove(out, q, strlen(q)+1);
+    size_t n = strlen(out);
+    while (n>0){char c=out[n-1]; if(c==' '||c=='\t'||c=='\n'||c=='\r'||c=='\v'||c=='\f') out[--n]='\0'; else break;}
+    return out;
 }
 
 /* PoP: agent_display_build_status_phrase @ agent/display.py:build_status_phrase */

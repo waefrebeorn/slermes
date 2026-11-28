@@ -12,30 +12,31 @@
 #include "hermes_json.h"
 
 /* PoP: nsub_u_uses_gateway @ hermes_cli/nous_subscription.py:_uses_gateway */
+/* unused */
 int nsub_u_uses_gateway(const char *arg) {
-    /* Python: bool(section dict) and is_truthy_value(section.use_gateway,
-     * default False). Arg = JSON section. */
-    if (!arg || !*arg) { printf("0\n"); return 0; }
-    json_t *sec = json_parse(arg, NULL);
-    if (!sec || !json_is_object(sec)) {
-        if (sec) json_free(sec);
-        printf("0\n");
-        return 0;
-    }
+    /* Faithful: isinstance(dict) and is_truthy_value(section.use_gateway,
+     * default False); is_truthy_value(str) == strip().lower() in {"1","true",
+     * "yes","on"}; numbers -> bool(n); bool -> itself. Was: treated ANY string
+     * not in {"0","false","no"} as truthy ("maybe"/"off" -> 1) -- a real bug. */
+    json_t *sec = arg ? json_parse(arg, NULL) : NULL;
+    if (!sec || !json_is_object(sec)) { if (sec) json_free(sec); return 0; }
     json_t *ug = json_obj_get(sec, "use_gateway");
-    int truthy = 0;
-    if (ug && ug->type == JSON_BOOL) truthy = ug->bool_val;
-    else if (ug && ug->type == JSON_STRING) {
-        const char *s = ug->str_val;
-        if (s) {
-            while (*s == ' ' || *s == '\t') s++;
-            truthy = (*s && strcmp(s, "0") != 0 &&
-                     strcasecmp(s, "false") != 0 && strcasecmp(s, "no") != 0);
+    int t = 0;
+    if (ug) {
+        if (ug->type == JSON_BOOL) t = ug->bool_val ? 1 : 0;
+        else if (ug->type == JSON_NUMBER) t = (ug->num_val != 0.0);
+        else if (ug->type == JSON_STRING) {
+            const char *v = ug->str_val ? ug->str_val : "";
+            while (*v==' '||*v=='\t'||*v=='\n'||*v=='\r'||*v=='\v'||*v=='\f') v++;
+            char b[64]; snprintf(b,sizeof b,"%s",v);
+            size_t n=strlen(b);
+            while(n>0){char c=b[n-1]; if(c==' '||c=='\t'||c=='\n'||c=='\r'||c=='\v'||c=='\f') b[--n]='\0'; else break;}
+            for(char*q=b;*q;q++) *q=(char)tolower((unsigned char)*q);
+            t = (strcmp(b,"1")==0||strcmp(b,"true")==0||strcmp(b,"yes")==0||strcmp(b,"on")==0);
         }
-    } else if (ug && ug->type == JSON_NUMBER) truthy = (ug->num_val != 0);
-    printf("%d\n", truthy);
+    }
     json_free(sec);
-    return 0;
+    return t;
 }
 
 /* PoP: nsub_image_gen @ hermes_cli/nous_subscription.py:image_gen */

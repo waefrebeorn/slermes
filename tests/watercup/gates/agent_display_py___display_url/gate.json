@@ -7,15 +7,17 @@
   "py_module": "agent/display.py",
   "py_fn": "_display_url",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "\"https://x\"",
+    "{\"url\": \"https://a\"}",
+    "{\"href\": \"https://b\"}",
+    "{\"url\": \"\", \"href\": \"https://c\"}",
+    "{}",
+    "42",
+    "\"  padded  \"",
+    "{\"url\": \"  sp  \"}",
+    "null"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

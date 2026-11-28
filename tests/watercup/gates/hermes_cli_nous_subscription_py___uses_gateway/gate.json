@@ -7,15 +7,22 @@
   "py_module": "hermes_cli/nous_subscription.py",
   "py_fn": "_uses_gateway",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"use_gateway\": true}",
+    "{\"use_gateway\": false}",
+    "{\"use_gateway\": \"true\"}",
+    "{\"use_gateway\": \"yes\"}",
+    "{\"use_gateway\": \"1\"}",
+    "{\"use_gateway\": \"on\"}",
+    "{\"use_gateway\": \"maybe\"}",
+    "{\"use_gateway\": \"off\"}",
+    "{\"use_gateway\": 0}",
+    "{\"use_gateway\": 1}",
+    "{}",
+    "{\"use_gateway\": \"  TRUE  \"}",
+    "[]",
+    "\"str\""
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
