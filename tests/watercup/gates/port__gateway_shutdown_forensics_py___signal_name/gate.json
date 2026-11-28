@@ -7,19 +7,15 @@
   "py_module": "gateway/shutdown_forensics.py",
   "py_fn": "_signal_name",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "15",
+    "2",
+    "1",
+    "9",
+    "14",
+    "999",
+    "0"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src\\gateway\\shutdown_forensics.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -33,5 +29,5 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "str_out_de_static"
 }

@@ -1,28 +1,47 @@
-/* gate: port__gateway_shutdown_forensics_py___signal_name — traced copy of forensics_signal_name (scalar_multi) */
+/* gate: port__gateway_shutdown_forensics_py___signal_name
+ * forensics_signal_name is `static const char *` in shutdown_forensics.c, so a
+ * cross-TU extern can't reach it. It is a pure sig->name switch (only snprintf).
+ * Verbatim copy of the body + string-valued cups. Mirror of
+ * gateway/shutdown_forensics.py:_signal_name(sig). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <signal.h>
 #include "watercup.h"
 
-
-extern char * forensics_signal_name(int sig, char *buf, size_t buf_size);
+static const char *local_signal_name(int sig, char *buf, size_t buf_size) {
+    switch (sig) {
+        case SIGTERM: return "SIGTERM";
+        case SIGINT:  return "SIGINT";
+        case SIGHUP:  return "SIGHUP";
+#ifdef SIGQUIT
+        case SIGQUIT: return "SIGQUIT";
+#endif
+#ifdef SIGUSR1
+        case SIGUSR1: return "SIGUSR1";
+#endif
+#ifdef SIGUSR2
+        case SIGUSR2: return "SIGUSR2";
+#endif
+        default:
+            snprintf(buf, buf_size, "signal#%d", sig);
+            return buf;
+    }
+}
 
 int main(int argc, char **argv) {
     if (argc < 3) { fprintf(stderr, "usage: %s forensics_signal_name <input>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("forensics_signal_name");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    char * result = forensics_signal_name((int)strtol(argv[i], NULL, 10), argv[2 + (i - 2 + 1) % 5], (long)strtol(argv[2 + (i - 2 + 2) % 5], NULL, 10));
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        fflush(stdout);
+        char scratch[32];
+        const char * result = local_signal_name((int)strtol(argv[i], NULL, 10), scratch, sizeof(scratch));
+        char buf[64];
+        snprintf(buf, sizeof(buf), "%.120s", result ? result : "");
+        fflush(stdout);
+        WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
