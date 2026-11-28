@@ -1,0 +1,30 @@
+{
+  "name": "real__agent_reasoning_effort_py__clamp_effort",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "clamp_effort",
+  "py_module": "agent/reasoning_effort.py",
+  "py_fn": "clamp_effort",
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/reasoning_effort.c"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "{\"effort\": \"minimal\", \"supported\": [\"low\", \"medium\", \"high\"], \"overrides\": null}",
+    "{\"effort\": \"low\", \"supported\": [\"low\", \"medium\", \"high\"], \"overrides\": null}",
+    "{\"effort\": \"max\", \"supported\": [\"low\", \"high\"], \"overrides\": null}",
+    "{\"effort\": \"none\", \"supported\": [\"low\", \"medium\", \"high\"], \"overrides\": null}",
+    "{\"effort\": \"bogus\", \"supported\": [\"low\", \"high\"], \"overrides\": null}",
+    "{\"effort\": \"HIGH\", \"supported\": [\"low\", \"high\"], \"overrides\": null}",
+    "{\"effort\": null, \"supported\": [\"low\"], \"overrides\": null}",
+    "{\"effort\": \"medium\", \"supported\": [\"low\", \"high\"], \"overrides\": {\"medium\": \"high\"}}",
+    "{\"effort\": \"xhigh\", \"supported\": [\"low\", \"high\", \"max\"], \"overrides\": {\"xhigh\": \"max\"}}",
+    "{\"effort\": \"medium\", \"supported\": [], \"overrides\": null}",
+    "{\"effort\": \"medium\", \"supported\": [\"none\"], \"overrides\": null}",
+    "{\"effort\": \"ultra\", \"supported\": [\"none\", \"low\", \"medium\"], \"overrides\": null}",
+    "{\"effort\": \"high\", \"supported\": [\"LOW\", \" Medium \"], \"overrides\": null}",
+    "{\"effort\": \"medium\", \"supported\": [\"low\", \"custom\"], \"overrides\": null}"
+  ]
+}

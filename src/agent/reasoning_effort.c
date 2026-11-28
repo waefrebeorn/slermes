@@ -27,6 +27,11 @@ const char *const RE_OPENAI_COMPAT_WIRE_EFFORTS[] = {
 const size_t RE_OPENAI_COMPAT_WIRE_EFFORTS_N = 7;
 
 /* OpenAI/Codex Responses backend — per-model vocabulary, live-verified. */
+/* Astra / gpt-6.2: no "none" — the tier cannot disable reasoning. */
+const char *const RE_CODEX_ASTRA_EFFORTS[] = {
+    "low", "medium", "high", "xhigh", "max",
+};
+const size_t RE_CODEX_ASTRA_EFFORTS_N = 5;
 const char *const RE_CODEX_GPT56_EFFORTS[] = {
     "none", "low", "medium", "high", "xhigh", "max",
 };
@@ -114,13 +119,15 @@ static int ladder_index(const char *level)
 static char *strip_lower(const char *s, char *out, size_t cap)
 {
     if (!s) return NULL;
-    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r' ||
+           *s == '\f' || *s == '\v') s++;
     size_t o = 0;
     for (; *s && o + 1 < cap; s++)
         out[o++] = (char)tolower((unsigned char)*s);
-    /* right-strip */
+    /* right-strip (python str.strip includes \f and \v) */
     while (o > 0 && (out[o-1] == ' ' || out[o-1] == '\t' ||
-                     out[o-1] == '\n' || out[o-1] == '\r'))
+                     out[o-1] == '\n' || out[o-1] == '\r' ||
+                     out[o-1] == '\f' || out[o-1] == '\v'))
         o--;
     out[o] = '\0';
     if (!o) return NULL;
@@ -151,15 +158,44 @@ static int kimi_k3_slug_match(const char *m)
 
 /* ── public API ─────────────────────────────────────────────────────────── */
 
-/* PoP: codex_supported_efforts @ agent/reasoning_effort.py:codex_supported_efforts */
+/* PoP: codex_supported_efforts @ agent/reasoning_effort.py:codex_supported_efforts
+ *
+ * python chain, in order:
+ *   bare = (model or "").strip().lower().rsplit("/",1)[-1]
+ *   astra set | gpt-6.2 ids | startswith("gpt-6.1-sol")        -> ASTRA  (no "none")
+ *   "gpt-5.6" contained | startswith gpt-6-sol / gpt-6-luna |
+ *       daybreak ids                                           -> GPT56
+ *   else                                                       -> LEGACY
+ */
 const char *const *codex_supported_efforts(const char *model, size_t *out_n)
 {
-    const char *lo = model ? model : "";
-    if (strstr(lo, "gpt-5.6") || strstr(lo, "GPT-5.6")) {
-        /* Python lowercases first; do the same case-insensitive containment. */
+    char lo[512];
+    const char *bare = "";
+    if (model && strip_lower(model, lo, sizeof lo)) {
+        bare = strrchr(lo, '/');
+        bare = bare ? bare + 1 : lo;
     }
-    char buf[256];
-    if (model && strip_lower(model, buf, sizeof buf) && strstr(buf, "gpt-5.6")) {
+    static const char *const ASTRA_IDS[] = { "gpt-6-astra", "gpt-6-astra-900k" };
+    static const char *const GPT62_IDS[] = { "gpt-6.2-sol", "gpt-6.2-astra" };
+    static const char *const DAYBREAK_IDS[] = {
+        "gpt-daybreak-blue-latest", "gpt-daybreak-blue-latest-900k",
+    };
+    int is_astra = 0;
+    for (size_t i = 0; i < sizeof ASTRA_IDS / sizeof *ASTRA_IDS; i++)
+        if (strcmp(bare, ASTRA_IDS[i]) == 0) is_astra = 1;
+    for (size_t i = 0; i < sizeof GPT62_IDS / sizeof *GPT62_IDS; i++)
+        if (strcmp(bare, GPT62_IDS[i]) == 0) is_astra = 1;
+    if (strncmp(bare, "gpt-6.1-sol", 11) == 0) is_astra = 1;
+    if (is_astra) {
+        if (out_n) *out_n = RE_CODEX_ASTRA_EFFORTS_N;
+        return RE_CODEX_ASTRA_EFFORTS;
+    }
+    int gpt56 = strstr(bare, "gpt-5.6") != NULL
+             || strncmp(bare, "gpt-6-sol", 9) == 0
+             || strncmp(bare, "gpt-6-luna", 10) == 0;
+    for (size_t i = 0; i < sizeof DAYBREAK_IDS / sizeof *DAYBREAK_IDS; i++)
+        if (strcmp(bare, DAYBREAK_IDS[i]) == 0) gpt56 = 1;
+    if (gpt56) {
         if (out_n) *out_n = RE_CODEX_GPT56_EFFORTS_N;
         return RE_CODEX_GPT56_EFFORTS;
     }

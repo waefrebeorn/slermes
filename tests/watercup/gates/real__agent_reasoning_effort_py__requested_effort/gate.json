@@ -6,25 +6,19 @@
   "c_fn": "requested_effort",
   "py_module": "agent/reasoning_effort.py",
   "py_fn": "requested_effort",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/reasoning_effort.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "{}",
+    "{\"enabled\": false, \"effort\": \"high\"}",
+    "{\"enabled\": true, \"effort\": \"HIGH\"}",
+    "{\"enabled\": true, \"effort\": \"\"}",
+    "{\"effort\": \" medium \"}",
+    "{\"enabled\": null, \"effort\": \"low\"}",
+    "{\"effort\": null}",
+    "{\"enabled\": true}"
+  ]
 }

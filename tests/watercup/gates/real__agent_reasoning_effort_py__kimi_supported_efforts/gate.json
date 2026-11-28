@@ -6,25 +6,22 @@
   "c_fn": "kimi_supported_efforts",
   "py_module": "agent/reasoning_effort.py",
   "py_fn": "kimi_supported_efforts",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/reasoning_effort.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "k3",
+    "k3-256k",
+    "kimi-k3",
+    "kimi-k3-max",
+    "vendor/k3",
+    "kimi-k2.6",
+    "k2",
+    "k3x",
+    "",
+    "Moonshot/k3",
+    "kimi-k33"
+  ]
 }

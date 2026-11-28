@@ -1,17 +1,11 @@
-"""twin for agent/reasoning_effort.py:kimi_supported_efforts (thin: shared runtime, cross-OS)."""
+"""twin: kimi_supported_efforts(model) -> tuple[str,...]."""
+import json as _j
 from watercup_twin_runtime import TwinBase
-
-
-
 class _Twin(TwinBase):
-    PY_MODULE = "agent/reasoning_effort.py"
-    PY_FN = "kimi_supported_efforts"
+    PY_MODULE = "agent/reasoning_effort.py"; PY_FN = "kimi_supported_efforts"
     C_FN = "kimi_supported_efforts"
-
+    def call(self, inp, inputs, idx=0):
+        return self._fn(str(inp))
     def norm(self, c, result):
-        c.valstr(str(result))
-
-
-_t = _Twin()
-trace = _t.trace
-run = _t.run
+        c.valstr(_j.dumps(list(result), separators=(",", ":")))
+_t=_Twin(); trace=_t.trace; run=_t.run

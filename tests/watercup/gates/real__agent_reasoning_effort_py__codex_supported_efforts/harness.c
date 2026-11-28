@@ -1,25 +1,14 @@
-/* gate: real__agent_reasoning_effort_py__codex_supported_efforts — GAP sentinel for codex_supported_efforts */
+/* gate: codex_supported_efforts -> table rendered as a JSON array. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "codex_supported_efforts";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s codex_supported_efforts <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("codex_supported_efforts");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("codex_supported_efforts");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+#include "reasoning_effort.h"
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("codex_supported_efforts");
+  size_t n=0; const char *const *tb=codex_supported_efforts(argv[i],&n);
+  json_t *a=json_array(); for(size_t k=0;k<n;k++) json_append(a,json_string(tb[k]));
+  char *js=json_serialize(a); WCUP_VALSTR(js?js:"[]");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("codex_supported_efforts"); if(js) free(js); json_free(a);} return 0;}

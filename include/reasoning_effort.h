@@ -19,6 +19,8 @@ extern const size_t RE_EFFORT_LADDER_N;
 /* Named wire vocabularies (each declared as data, mirroring the Python tuples). */
 extern const char *const RE_OPENAI_COMPAT_WIRE_EFFORTS[];   /* OPENAI_COMPAT_WIRE_EFFORTS */
 extern const size_t RE_OPENAI_COMPAT_WIRE_EFFORTS_N;
+extern const char *const RE_CODEX_ASTRA_EFFORTS[];          /* CODEX_ASTRA_EFFORTS */
+extern const size_t RE_CODEX_ASTRA_EFFORTS_N;
 extern const char *const RE_CODEX_GPT56_EFFORTS[];          /* CODEX_GPT56_EFFORTS */
 extern const size_t RE_CODEX_GPT56_EFFORTS_N;
 extern const char *const RE_CODEX_LEGACY_EFFORTS[];         /* CODEX_LEGACY_EFFORTS */
