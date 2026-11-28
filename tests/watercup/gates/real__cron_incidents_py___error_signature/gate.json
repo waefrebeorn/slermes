@@ -3,28 +3,23 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_error_signature",
+  "c_fn": "cron_incidents_u_error_signature",
   "py_module": "cron/incidents.py",
   "py_fn": "_error_signature",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "lib/libcrypto/crypto.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"job_id\": \"job1\", \"error\": \"failed after 1.5s\"}",
+    "{\"job_id\": \"job1\", \"error\": \"waited 30 seconds then died\"}",
+    "{\"job_id\": \"job1\", \"error\": \"FAILED   After   2 Minutes\"}",
+    "{\"job_id\": \"job2\", \"error\": \"500ms timeout\"}",
+    "{\"job_id\": \"job1\", \"error\": \"3 hours\"}",
+    "{\"job_id\": \"job1\", \"error\": \"just 5 x\"}",
+    "{\"job_id\": \"job1\", \"error\": \"no durations here\"}",
+    "{\"job_id\": \"\", \"error\": \"12s\"}",
+    "{\"job_id\": \"j\", \"error\": \"1.5 s ok\"}"
+  ]
 }

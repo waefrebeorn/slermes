@@ -359,8 +359,16 @@ void split_responses_tool_id(const char *raw_id, char **out_call_id,
 /* ── _derive_responses_function_call_id ─────────────────────────────────── */
 char *derive_responses_function_call_id(const char *call_id,
                                              const char *response_item_id) {
-    if (response_item_id && strncmp(response_item_id, "fc_", 3) == 0)
-        return strdup(response_item_id);
+    /* python: response_item_id.strip().startswith("fc_") -> returns the STRIPPED id. */
+    if (response_item_id) {
+        const char *a = response_item_id;
+        while (*a && isspace((unsigned char)*a)) a++;
+        size_t n2 = strlen(a);                       /* length AFTER the left trim */
+        while (n2 > 0 && isspace((unsigned char)a[n2-1])) n2--;
+        if (n2 >= 3 && strncmp(a, "fc_", 3) == 0) {
+            char *r = malloc(n2 + 1); memcpy(r, a, n2); r[n2] = 0; return r;
+        }
+    }
     char src[2048];
     snprintf(src, sizeof(src), "%s", call_id ? call_id : "");
     /* trim */
@@ -384,15 +392,21 @@ char *derive_responses_function_call_id(const char *call_id,
         return out;
     }
     if (*san) {
-        char *out = malloc(strlen(san) + 3);
-        snprintf(out, strlen(san) + 3, "fc_%.48s", san);
+        /* "fc_" + up to 48 chars needs strlen(san)-capped + 4 bytes: the old +3
+         * under-allocated by one and truncated every id ("abc" -> "fc_ab"). */
+        size_t keep = strlen(san) > 48 ? 48 : strlen(san);
+        char *out = malloc(keep + 4);
+        snprintf(out, keep + 4, "fc_%.48s", san);
         return out;
     }
-    const char *seed = call_id ? call_id : (response_item_id ? response_item_id : "");
-    unsigned char raw[CRYPTO_SHA256_LEN];
-    crypto_sha256((const unsigned char *)seed, strlen(seed), raw);
-    char hex[CRYPTO_SHA256_LEN * 2 + 1];
-    to_hex(raw, CRYPTO_SHA256_LEN, hex);
+    /* python hashes this fallback with sha1 (have_sha1), NOT sha256.
+     * seed = source or str(response_item_id or "") or uuid4().hex -- source is the
+     * TRIMMED call_id, so an all-whitespace/empty one falls through to the item id. */
+    const char *seed = s[0] ? s : (response_item_id ? response_item_id : "");
+    unsigned char raw[CRYPTO_SHA1_LEN];
+    crypto_sha1((const unsigned char *)seed, strlen(seed), raw);
+    char hex[CRYPTO_SHA1_LEN * 2 + 1];
+    to_hex(raw, CRYPTO_SHA1_LEN, hex);
     char *out = malloc(64);
     snprintf(out, 64, "fc_%.24s", hex);
     return out;
@@ -1277,4 +1291,20 @@ char *agent_codex_responses_u_format_responses_error(const char *arg){
     else if(_cre_truthy(err)){ out=malloc(600); snprintf(out,600,"%s", arg?arg:""); }
     else { size_t n=strlen(status)+40; out=malloc(n); snprintf(out,n,"Responses API returned status '%s'",status); }
     free(code); free(msg); if(o) json_free(o); return out;
+}
+
+/* PoP: agent_codex_responses_adapter_u_derive_responses_function_call_id
+ * @ agent/codex_responses_adapter.py:_derive_responses_function_call_id */
+/* JSON wrapper over derive_responses_function_call_id() for the gate. */
+char *agent_codex_responses_adapter_u_derive_responses_function_call_id(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    const char *c = NULL, *r = NULL;
+    if (o && json_is_object(o)) {
+        json_t *cv = json_obj_get(o, "call_id"), *rv = json_obj_get(o, "response_item_id");
+        if (cv && json_is_string(cv)) c = cv->str_val;
+        if (rv && json_is_string(rv)) r = rv->str_val;
+    }
+    char *out = derive_responses_function_call_id(c, r);
+    if (o) json_free(o);
+    return out ? out : strdup("");
 }

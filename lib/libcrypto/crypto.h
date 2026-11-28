@@ -44,6 +44,10 @@ extern "C" {
 /* === SHA-256 === */
 void crypto_sha256(const unsigned char *data, size_t len, unsigned char out[CRYPTO_SHA256_LEN]);
 
+#define CRYPTO_SHA1_LEN 20
+/* SHA-1, for callers that must match an upstream sha1 (python hashlib.sha1). */
+void crypto_sha1(const unsigned char *data, size_t len, unsigned char out[CRYPTO_SHA1_LEN]);
+
 /* === HMAC-SHA256 === */
 void crypto_hmac_sha256(const unsigned char *key, size_t key_len,
                         const unsigned char *data, size_t data_len,

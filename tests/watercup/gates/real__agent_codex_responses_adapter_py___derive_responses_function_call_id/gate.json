@@ -3,28 +3,23 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_derive_responses_function_call_id",
+  "c_fn": "agent_codex_responses_adapter_u_derive_responses_function_call_id",
   "py_module": "agent/codex_responses_adapter.py",
   "py_fn": "_derive_responses_function_call_id",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "lib/libcrypto/crypto.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"call_id\": \"abc\", \"response_item_id\": null}",
+    "{\"call_id\": \"abc\", \"response_item_id\": \"  fc_xyz  \"}",
+    "{\"call_id\": \"fc_direct\", \"response_item_id\": null}",
+    "{\"call_id\": \"call_12345\", \"response_item_id\": null}",
+    "{\"call_id\": \"call_\", \"response_item_id\": null}",
+    "{\"call_id\": \"a b/\\u00e7!\", \"response_item_id\": null}",
+    "{\"call_id\": \"!!!\", \"response_item_id\": null}",
+    "{\"call_id\": \"\", \"response_item_id\": \"seed\"}",
+    "{\"call_id\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\", \"response_item_id\": null}"
+  ]
 }

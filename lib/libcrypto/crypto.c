@@ -30,6 +30,21 @@ void crypto_sha256(const unsigned char *data, size_t len,
 }
 
 /* ================================================================
+ *  SHA-1  (only for callers that must match an upstream hashlib.sha1)
+ * ================================================================ */
+
+void crypto_sha1(const unsigned char *data, size_t len,
+                 unsigned char out[CRYPTO_SHA1_LEN])
+{
+    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+    if (!ctx) return;
+    EVP_DigestInit_ex(ctx, EVP_sha1(), NULL);
+    EVP_DigestUpdate(ctx, data, len);
+    EVP_DigestFinal_ex(ctx, out, NULL);
+    EVP_MD_CTX_free(ctx);
+}
+
+/* ================================================================
  *  HMAC-SHA256
  * ================================================================ */
 
