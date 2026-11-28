@@ -3,22 +3,27 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "quoted_rm_command",
+  "c_fn": "cli_tools_environments_file_sync_quoted_rm_command",
   "py_module": "tools/environments/file_sync.py",
   "py_fn": "quoted_rm_command",
   "inputs": [
     "hello",
-    "world",
+    "a b",
+    "it's",
     "",
-    "test123",
-    "NULL"
+    "a$(id)",
+    "x\ny",
+    "~/dir",
+    "a;b",
+    "/tmp/my dir",
+    "safe/path",
+    "a b|it's|plain",
+    "back\\slash",
+    "--flag",
+    "a&b|c d"
   ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src/tools/environments/vercel_sandbox_helpers.c"
+    "lib/libjson/json.c"
   ],
   "cflags": [
     "-I",
@@ -28,10 +33,7 @@
     "-I",
     "lib/libjson",
     "-I",
-    "src",
-    "-DHERMES_VERSION=\"0.21.0\"",
-    "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
-    "-DATADIR=\"/usr/share/hermes\""
+    "src"
   ],
   "classification": "PORTED"
 }

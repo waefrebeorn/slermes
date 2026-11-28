@@ -1,25 +1,34 @@
-/* gate: port__tools_environments_file_sync_py__quoted_mkdir_command — GAP sentinel for quoted_mkdir_command */
+/* gate: quoted_mkdir_command(dirs) -> "mkdir -p " + shlex-quoted dirs.
+ * Each input is one fixture; "|" inside it separates directories, matching the
+ * twin, so one fixture can cover a multi-directory batch. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "quoted_mkdir_command";
-}
-
+char* cli_tools_environments_file_sync_quoted_mkdir_command(const char **dirs, int dir_count,
+                                                            char *buf, size_t bufsz);
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s quoted_mkdir_command <input>...\n", argv[0]); return 2; }
+    if (argc < 3) return 2;   /* argv[1] is the c_fn dispatch name */
+    char buf[8192];
     for (int i = 2; i < argc; i++) {
+        char *work = strdup(argv[i] ? argv[i] : "");
+        char *dirs[64]; int n = 0;
+        char *tok = work; 
+        /* split on '|' keeping empty fields: an empty fixture is one empty dir */
+        for (;;) {
+            char *bar = strchr(tok, '|');
+            if (bar) *bar = '\0';
+            if (n < 64) dirs[n++] = tok;
+            if (!bar) break;
+            tok = bar + 1;
+        }
         WCUP_BEGIN("quoted_mkdir_command");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
+        char *r = cli_tools_environments_file_sync_quoted_mkdir_command((const char **)dirs, n, buf, sizeof buf);
+        WCUP_VALSTR(r ? r : "");
+        char cup[32]; WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
         WCUP_END("quoted_mkdir_command");
+        free(work);
     }
     return 0;
 }

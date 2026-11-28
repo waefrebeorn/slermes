@@ -8,10 +8,19 @@
   "py_fn": "quoted_mkdir_command",
   "inputs": [
     "hello",
-    "world",
+    "a b",
+    "it's",
     "",
-    "test123",
-    "NULL"
+    "a$(id)",
+    "x\ny",
+    "~/dir",
+    "a;b",
+    "/tmp/my dir",
+    "safe/path",
+    "a b|it's|plain",
+    "back\\slash",
+    "--flag",
+    "a&b|c d"
   ],
   "extra_src": [
     "lib/libjson/json.c"
@@ -26,6 +35,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "classification": "PORTED"
 }

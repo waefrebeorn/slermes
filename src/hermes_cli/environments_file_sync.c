@@ -28,7 +28,53 @@ extern json_node_t *cli_tools_credential_files_get_credential_file_mounts(void);
 static const int SYNC_INTERVAL_SECONDS = 5;
 static const int SYNC_BACK_MAX_RETRIES = 3;
 static const int SYNC_BACK_BACKOFF[] = {2, 4, 8};
-static const long SYNC_BACK_MAX_BYTES = 2L * 1024 * 1024 * 1024;
+/* 2 GiB. 'long' is 32-bit on Windows, so 2L * 1024 * 1024 * 1024 overflowed to
+ * -2147483648 and every size comparison against it was inverted. */
+static const long long SYNC_BACK_MAX_BYTES = 2LL * 1024 * 1024 * 1024;
+
+/* PoP: cli_tools_environments_file_sync_sync_back_max_bytes_resolve @ tools/environments/file_sync.py:_sync_back_max_bytes
+ * Pure half of the config override: config.yaml terminal.sync_back_max_bytes
+ * replaces the 2 GiB cap. python does int(raw) and falls back to the default on
+ * TypeError/ValueError -- so a float truncates, a numeric string converts
+ * (underscores and surrounding whitespace included), a bool becomes 0/1, and a
+ * list/object/dict/non-numeric string keeps the default. */
+long long cli_tools_environments_file_sync_sync_back_max_bytes_resolve(const json_t *raw) {
+    if (!raw) return SYNC_BACK_MAX_BYTES;
+    switch (json_type(raw)) {
+    case JSON_NUMBER: {
+        double d = json_number_value(raw);
+        if (d >= 9.2e18 || d <= -9.2e18) return SYNC_BACK_MAX_BYTES;  /* python is unbounded; int64 cannot hold it */
+        return (long long)d;                       /* int(3.9) == 3: truncates toward zero */
+    }
+    case JSON_BOOL:
+        return json_bool_value(raw) ? 1 : 0;          /* int(True) == 1 */
+    case JSON_STRING: {
+        const char *t = json_string_value(raw);
+        while (*t == ' ' || *t == '\t' || *t == '\n' || *t == '\r' || *t == '\f' || *t == '\v') t++;
+        int neg = 0;
+        if (*t == '+' || *t == '-') { neg = (*t == '-'); t++; }
+        if (!((*t >= '0' && *t <= '9'))) return SYNC_BACK_MAX_BYTES;
+        long long acc = 0; int any = 0, prev_digit = 0;
+        for (; *t; t++) {
+            if (*t >= '0' && *t <= '9') {
+                if (acc > (9223372036854775807LL - (*t - '0')) / 10) return SYNC_BACK_MAX_BYTES;
+                acc = acc * 10 + (*t - '0'); any = 1; prev_digit = 1;
+            } else if (*t == '_' && prev_digit) {
+                prev_digit = 0;                    /* python allows 1_000, not 1__0 or _1 */
+            } else if (*t == ' ' || *t == '\t' || *t == '\n' || *t == '\r' || *t == '\f' || *t == '\v') {
+                while (*t == ' ' || *t == '\t' || *t == '\n' || *t == '\r' || *t == '\f' || *t == '\v') t++;
+                return (*t == '\0' && any && prev_digit) ? (neg ? -acc : acc) : SYNC_BACK_MAX_BYTES;
+            } else {
+                return SYNC_BACK_MAX_BYTES;
+            }
+        }
+        if (!any || !prev_digit) return SYNC_BACK_MAX_BYTES;   /* trailing underscore is not an int */
+        return neg ? -acc : acc;
+    }
+    default:
+        return SYNC_BACK_MAX_BYTES;                /* int([...]) / int({...}) -> TypeError -> default */
+    }
+}
 
 /* PoP: cli_tools_environments_file_sync__sha256_file @ tools/environments/file_sync.py:iter_sync_files */
 json_node_t* cli_tools_environments_file_sync_iter_sync_files(const char *container_base) {
@@ -46,35 +92,63 @@ json_node_t* cli_tools_environments_file_sync_iter_sync_files(const char *contai
 }
 
 /* PoP: cli_tools_environments_file_sync__sha256_file @ tools/environments/file_sync.py:quoted_rm_command */
+/* Python shlex.quote: safe chars pass through, everything else is single-quoted
+ * with each internal ' spelled '"'"'. Empty string becomes ''. */
+static int fs_shlex_safe(const char *s) {
+    if (!*s) return 0;                       /* '' -> quoted empty string */
+    for (const unsigned char *c = (const unsigned char *)s; *c; c++) {
+        if ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z') || (*c >= '0' && *c <= '9')) continue;
+        if (strchr("_@%+=:,./-", *c)) continue;
+        return 0;
+    }
+    return 1;
+}
+
+/* Append one shlex-quoted word at *pos. Mirrors python's shlex.quote:
+ * safe characters pass through, an empty string becomes '', and anything else
+ * is wrapped in single quotes with each internal ' spelled '"'"'. */
+static void fs_shlex_append(char *buf, size_t bufsz, size_t *pos, const char *s) {
+    if (!s) return;
+    if (fs_shlex_safe(s)) {
+        size_t L = strlen(s);
+        if (*pos + L >= bufsz) return;
+        memcpy(buf + *pos, s, L); *pos += L;
+        return;
+    }
+    if (*pos + 1 >= bufsz) return;
+    buf[(*pos)++] = '\'';
+    for (const char *c = s; *c; c++) {
+        if (*c == '\'') {
+            if (*pos + 5 >= bufsz) return;
+            memcpy(buf + *pos, "'\"'\"'", 5); *pos += 5;
+        } else {
+            if (*pos + 1 >= bufsz) return;
+            buf[(*pos)++] = *c;
+        }
+    }
+    if (*pos + 1 >= bufsz) return;
+    buf[(*pos)++] = '\'';
+}
+
 char* cli_tools_environments_file_sync_quoted_rm_command(const char **paths, int path_count,
                                                            char *buf, size_t bufsz) {
     /*
      * Build a shell rm -f command for a batch of remote paths.
-     * Each path is shell-quoted and joined with spaces.
+     * shlex-quoted exactly as python does; the previous version wrapped EVERY
+     * path in quotes and escaped an internal ' as '\' (three chars), which is
+     * not the shell's quote-escape idiom -- it terminated and reopened the
+     * string, so a path containing a quote split into extra shell words.
      */
     if (!paths || path_count <= 0 || !buf || bufsz == 0) return NULL;
-    buf[0] = '\0';
-    int pos = 0;
-    int i;
-    for (i = 0; i < path_count && pos < (int)bufsz - 1; i++) {
+    static const char prefix[] = "rm -f";
+    size_t pos = sizeof prefix - 1;
+    if (pos >= bufsz) { buf[0] = '\0'; return buf; }
+    memcpy(buf, prefix, pos);
+    for (int i = 0; i < path_count; i++) {
         if (!paths[i]) continue;
-        /* Simple shell quoting: wrap in single quotes, escape internal ' */
-        int len = strlen(paths[i]);
-        if (pos < (int)bufsz - 1) buf[pos++] = '\'';
-        int j;
-        for (j = 0; j < len && pos < (int)bufsz - 2; j++) {
-            if (paths[i][j] == '\'') {
-                if (pos < (int)bufsz - 3) {
-                    buf[pos++] = '\'';
-                    buf[pos++] = '\\';
-                    buf[pos++] = '\'';
-                }
-            } else {
-                buf[pos++] = paths[i][j];
-            }
-        }
-        if (pos < (int)bufsz - 1) buf[pos++] = '\'';
-        if (i < path_count - 1 && pos < (int)bufsz - 1) buf[pos++] = ' ';
+        if (pos + 1 >= bufsz) break;
+        buf[pos++] = ' ';
+        fs_shlex_append(buf, bufsz, &pos, paths[i]);
     }
     buf[pos] = '\0';
     hermes_log(LOG_DEBUG, "file_sync", "quoted_rm_command: %d path(s)", path_count);
@@ -86,15 +160,21 @@ char* cli_tools_environments_file_sync_quoted_mkdir_command(const char **dirs, i
                                                               char *buf, size_t bufsz) {
     /*
      * Build a shell mkdir -p command for a batch of directories.
+     * Every directory is shlex-quoted exactly as python does: an unquoted
+     * "dir; rm -rf ~" would otherwise be executed by the remote shell.
      */
     if (!dirs || dir_count <= 0 || !buf || bufsz == 0) return NULL;
-    int pos = 0;
-    pos += snprintf(buf + pos, bufsz - pos, "mkdir -p");
-    int i;
-    for (i = 0; i < dir_count && pos < (int)bufsz - 1; i++) {
+    static const char prefix[] = "mkdir -p";
+    size_t pos = sizeof prefix - 1;
+    if (pos >= bufsz) { buf[0] = '\0'; return buf; }
+    memcpy(buf, prefix, pos);
+    for (int i = 0; i < dir_count; i++) {
         if (!dirs[i]) continue;
-        pos += snprintf(buf + pos, bufsz - pos, " %s", dirs[i]);
+        if (pos + 1 >= bufsz) break;
+        buf[pos++] = ' ';
+        fs_shlex_append(buf, bufsz, &pos, dirs[i]);
     }
+    buf[pos] = '\0';
     hermes_log(LOG_DEBUG, "file_sync", "quoted_mkdir_command: %d dir(s)", dir_count);
     return buf;
 }
