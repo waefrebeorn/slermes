@@ -260,3 +260,10 @@ tests/watercup/unresolved_paths.json
 /world/
 /test123
 tests/win_semantics/probe.exe
+
+# Scratch: gate-run artefacts, audit dumps and the empty-named file the water-cup
+# fixtures drop in the repo root. None of it belongs in history.
+/.testbin/
+/.testbin_*
+/None
+/cache/
