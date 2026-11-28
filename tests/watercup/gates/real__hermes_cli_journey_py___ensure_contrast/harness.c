@@ -1,25 +1,11 @@
-/* gate: real__hermes_cli_journey_py___ensure_contrast — GAP sentinel for _ensure_contrast */
+/* gate: ensure_contrast -> real port. Input "fg;bg;min". */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_ensure_contrast";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _ensure_contrast <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_ensure_contrast");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_ensure_contrast");
-    }
-    return 0;
-}
+extern char *hermes_cli_journey_u_ensure_contrast(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_ensure_contrast");
+  char*r=hermes_cli_journey_u_ensure_contrast(argv[i]); WCUP_VALSTR(r?r:"");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_ensure_contrast"); free(r);} return 0;}

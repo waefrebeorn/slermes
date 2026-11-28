@@ -236,3 +236,38 @@ char *hermes_cli_journey_u_contrast_ratio(const char *arg){
     double hi=l1>l2?l1:l2, lo=l1>l2?l2:l1;
     char buf[64]; snprintf(buf,sizeof buf,"%.17g",(hi+0.05)/(lo+0.05)); return strdup(buf);
 }
+
+/* PoP: hermes_cli_journey_u_ensure_contrast @ hermes_cli/journey.py:_ensure_contrast */
+/* Lift a foreground toward the readable pole until contrast >= minimum.
+ * Inlines learning_graph_render hex_to_rgb/rgb_to_hex/mix_rgb(_lerp,_clamp) and
+ * journey _relative_luminance/_contrast_ratio. round()==rint() (half-even).
+ * Input "fg;bg;min". Returns "" for None (falsy color). */
+static double _ec_clamp(double v,double lo,double hi){ return v<lo?lo:(v>hi?hi:v); }
+static int _ec_hexval(int c){ if(c>='0'&&c<='9')return c-'0'; if(c>='a'&&c<='f')return c-'a'+10; if(c>='A'&&c<='F')return c-'A'+10; return -1; }
+static void _ec_hex_to_rgb(const char *in,int out[3]){
+    char buf[64]; snprintf(buf,sizeof buf,"%s",in?in:"");
+    char *p=buf; while(*p==' '||*p=='\t'||*p=='\n'||*p=='\r') p++;
+    size_t L=strlen(p); while(L>0&&(p[L-1]==' '||p[L-1]=='\t'||p[L-1]=='\n'||p[L-1]=='\r')) p[--L]='\0';
+    while(*p=='#') p++;
+    if(strlen(p)==3){ char t[8]; t[0]=p[0];t[1]=p[0];t[2]=p[1];t[3]=p[1];t[4]=p[2];t[5]=p[2];t[6]=0; strcpy(buf,t); p=buf; }
+    if(strlen(p)<6){ out[0]=255;out[1]=215;out[2]=0; return; }
+    for(int i=0;i<3;i++){ int h=_ec_hexval(p[i*2]), l=_ec_hexval(p[i*2+1]); if(h<0||l<0){ out[0]=255;out[1]=215;out[2]=0; return;} out[i]=h*16+l; }
+}
+static double _ec_lum(const int c[3]){ return 0.2126*_jny_chan(c[0])+0.7152*_jny_chan(c[1])+0.0722*_jny_chan(c[2]); }
+static double _ec_ratio(const int a[3],const int b[3]){ double l1=_ec_lum(a),l2=_ec_lum(b); double hi=l1>l2?l1:l2, lo=l1>l2?l2:l1; return (hi+0.05)/(lo+0.05); }
+static void _ec_mix(const int a[3],const int b[3],double t,int out[3]){ double tc=_ec_clamp(t,0.0,1.0);
+    for(int i=0;i<3;i++){ double v=a[i]+((double)b[i]-a[i])*tc; out[i]=(int)rint(v); } }
+static void _ec_to_hex(const int c[3],char *buf,size_t n){ snprintf(buf,n,"#%02X%02X%02X",(int)_ec_clamp(c[0],0,255),(int)_ec_clamp(c[1],0,255),(int)_ec_clamp(c[2],0,255)); }
+char *hermes_cli_journey_u_ensure_contrast(const char *arg){
+    char buf[256]; snprintf(buf,sizeof buf,"%s",arg?arg:"");
+    char *p1=strchr(buf,';'); if(!p1) return strdup(""); *p1=0;
+    char *p2=strchr(p1+1,';'); if(!p2) return strdup(""); *p2=0;
+    const char *fg_s=buf, *bg_s=p1+1; double minimum=atof(p2+1);
+    if(!*fg_s) return strdup("");                 /* not color -> None */
+    int fg[3],bg[3]; _ec_hex_to_rgb(fg_s,fg); _ec_hex_to_rgb(bg_s,bg);
+    if(_ec_ratio(fg,bg)>=minimum) return strdup(fg_s);
+    int pole[3]; if(_ec_lum(bg)>0.5){ pole[0]=0;pole[1]=0;pole[2]=0; } else { pole[0]=255;pole[1]=255;pole[2]=255; }
+    for(int step=1; step<=20; step++){ int cand[3]; _ec_mix(fg,pole,step*0.05,cand);
+        if(_ec_ratio(cand,bg)>=minimum){ char o[8]; _ec_to_hex(cand,o,sizeof o); return strdup(o); } }
+    char o[8]; _ec_to_hex(pole,o,sizeof o); return strdup(o);
+}

@@ -3,19 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_ensure_contrast",
+  "c_fn": "hermes_cli_journey_u_ensure_contrast",
   "py_module": "hermes_cli/journey.py",
   "py_fn": "_ensure_contrast",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    ";#000000;4.5",
+    "#FFFFFF;#000000;4.5",
+    "#101010;#000000;4.5",
+    "#888888;#FFFFFF;4.5",
+    "#000000;#FFFFFF;4.5",
+    "#777777;#666666;3.0",
+    "#abc;#000;4.5",
+    "#GGGGGG;#000000;4.5",
+    "#404040;#101010;7.0",
+    "#EEEEEE;#FFFFFF;3.0"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +29,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
