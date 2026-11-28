@@ -1058,3 +1058,13 @@ json_t *w28_manager_87eef2_p3_exceeds_size_cap(const json_t *req) {
     if (!jnumber(json_obj_get(req, "size"), &size)) return json_bool(false);
     return json_bool(size > cap ? true : false);
 }
+
+/* PoP: agent_checkpoints_manager_u_ref_name @ agent/checkpoints/manager.py:_ref_name */
+/* f"{_REFS_PREFIX}/{dir_hash}" with _REFS_PREFIX == "refs/hermes". */
+char *agent_checkpoints_manager_u_ref_name(const char *arg) {
+    const char *h = arg ? arg : "";
+    size_t need = strlen("refs/hermes/") + strlen(h) + 1;
+    char *r = malloc(need);
+    snprintf(r, need, "refs/hermes/%s", h);
+    return r;
+}

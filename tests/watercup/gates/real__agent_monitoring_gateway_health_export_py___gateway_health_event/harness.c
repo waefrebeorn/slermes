@@ -1,25 +1,12 @@
-/* gate: real__agent_monitoring_gateway_health_export_py___gateway_health_event — GAP sentinel for _gateway_health_event */
+/* gate: _gateway_health_event -> real port (JSON in, int out). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_gateway_health_event";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _gateway_health_event <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_gateway_health_event");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_gateway_health_event");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern int agent_monitoring_gateway_health_export_u_gateway_health_event(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_gateway_health_event");
+  int r=agent_monitoring_gateway_health_export_u_gateway_health_event(argv[i]); WCUP_VALSTR(r ? "1" : "0");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_gateway_health_event");} return 0;}

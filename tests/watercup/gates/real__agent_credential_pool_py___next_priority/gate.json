@@ -3,28 +3,19 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_next_priority",
+  "c_fn": "agent_credential_pool_u_next_priority",
   "py_module": "agent/credential_pool.py",
   "py_fn": "_next_priority",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "[{\"priority\":3},{\"priority\":7}]",
+    "[]",
+    "[{\"priority\":-2}]",
+    "[{\"priority\":0}]",
+    "[5,2]",
+    "[{\"priority\":9},{\"priority\":9}]"
   ],
   "extra_src": [
     "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  ]
 }

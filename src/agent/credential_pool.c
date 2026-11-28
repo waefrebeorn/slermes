@@ -139,3 +139,22 @@ int agent_credential_pool_try_refresh_matching(const char *arg) {
     printf("refresh result: %s\n", tab ? tab + 1 : "");
     return 0;
 }
+
+/* PoP: agent_credential_pool_u_next_priority @ agent/credential_pool.py:_next_priority */
+/* max((entry.priority for entry in entries), default=-1) + 1.
+ * Input JSON: array of {"priority": n} objects (or bare numbers). */
+long agent_credential_pool_u_next_priority(const char *arg) {
+    json_t *arr = arg ? json_parse(arg, NULL) : NULL;
+    long best = -1; int seen = 0;
+    if (arr && json_is_array(arr)) {
+        for (size_t i = 0; i < arr->c.count; i++) {
+            json_t *e = arr->c.items[i];
+            json_t *pv = NULL;
+            if (e && json_is_object(e)) pv = json_obj_get(e, "priority");
+            else if (e && json_is_number(e)) pv = e;
+            if (pv && json_is_number(pv)) { long v = (long)pv->num_val; if (!seen || v > best) { best = v; seen = 1; } }
+        }
+    }
+    if (arr) json_free(arr);
+    return best + 1;
+}

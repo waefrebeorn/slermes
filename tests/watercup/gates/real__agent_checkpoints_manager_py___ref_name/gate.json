@@ -1,30 +1,18 @@
 {
-  "name": "real__tools_checkpoint_manager_py___ref_name",
+  "name": "real__agent_checkpoints_manager_py___ref_name",
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_ref_name",
+  "c_fn": "agent_checkpoints_manager_u_ref_name",
   "py_module": "agent/checkpoints/manager.py",
   "py_fn": "_ref_name",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "abc123",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "a/b",
+    "9f2e",
+    "HERMES",
+    "x_y-z"
+  ]
 }

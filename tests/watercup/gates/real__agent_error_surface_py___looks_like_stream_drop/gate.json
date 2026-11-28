@@ -3,28 +3,24 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_looks_like_stream_drop",
+  "c_fn": "agent_error_surface_u_looks_like_stream_drop",
   "py_module": "agent/error_surface.py",
   "py_fn": "_looks_like_stream_drop",
+  "classification": "PORTED",
   "inputs": [
+    "the stream connection was closed",
+    "SSE timeout",
     "hello",
-    "world",
+    "PEER CLOSED CONNECTION",
     "",
-    "test123",
-    "NULL"
+    "mid-stream reset",
+    "incomplete chunked read while reading",
+    "connection broken by peer",
+    "stream",
+    "sse",
+    "x sse x"
   ],
   "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "src/agent/error_surface_ports.c"
+  ]
 }
