@@ -27,5 +27,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "DeadTargetRegistry instance method over live in-memory state (self._dead dict guarded by a threading lock) plus JSON persistence under the hermes home; not expressible as a pure argv call."
 }

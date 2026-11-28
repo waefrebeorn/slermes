@@ -60,6 +60,15 @@ static void dead_target_normalize(const char *platform, const char *chat_id,
     snprintf(out, bufsz, "%s:%s", p, c);
 }
 
+/* PoP: dead_target_normalize_key @ gateway/dead_targets.py:_normalize
+ * Public face of the static normaliser: the canonical "<platform>:<chat_id>" key
+ * every dead-target lookup uses. Platform is stripped+lowercased, chat_id is only
+ * stripped (python keeps case in the id). */
+void dead_target_normalize_key(const char *platform, const char *chat_id,
+                               char *out, size_t cap) {
+    dead_target_normalize(platform, chat_id, out, cap);
+}
+
 /* PoP: dead_target_registry_load @ gateway/dead_targets.py:_load */
 static void dead_target_registry_load(dead_target_registry_t *r) {
     FILE *f = fopen(r->path, "rb");

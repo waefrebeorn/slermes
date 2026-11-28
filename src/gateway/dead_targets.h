@@ -15,6 +15,8 @@
 #include "hermes_json.h"
 #include <stdbool.h>
 
+void dead_target_normalize_key(const char *platform, const char *chat_id, char *out, size_t cap);
+
 #ifdef __cplusplus
 extern "C" {
 #endif

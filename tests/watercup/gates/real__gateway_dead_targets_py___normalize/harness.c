@@ -1,25 +1,13 @@
-/* gate: real__gateway_dead_targets_py___normalize — GAP sentinel for _normalize */
+/* gate: _normalize(platform, chat_id) -> "platform:chat". */
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_normalize";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _normalize <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_normalize");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_normalize");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+void dead_target_normalize_key(const char *platform, const char *chat_id, char *out, size_t cap);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_normalize");
+  json_t *in=json_parse(argv[i],NULL);
+  const char *p=json_get_str(in,"platform",""), *c=json_get_str(in,"chat_id","");
+  char buf[600]; dead_target_normalize_key(p,c,buf,sizeof buf); WCUP_VALSTR(buf);
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_normalize"); if(in) json_free(in);} return 0;}

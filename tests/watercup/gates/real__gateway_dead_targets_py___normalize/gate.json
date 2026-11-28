@@ -3,18 +3,12 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize",
+  "c_fn": "dead_target_normalize_key",
   "py_module": "gateway/dead_targets.py",
   "py_fn": "_normalize",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/gateway/dead_targets.c"
   ],
   "cflags": [
     "-I",
@@ -26,5 +20,15 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"platform\": \"Telegram\", \"chat_id\": \"123\"}",
+    "{\"platform\": \" Telegram \", \"chat_id\": \" 123 \"}",
+    "{\"platform\": \"DISCORD\", \"chat_id\": \"ABC\"}",
+    "{\"platform\": \"\", \"chat_id\": \"\"}",
+    "{\"platform\": \"Telegram\", \"chat_id\": \"-100123\"}",
+    "{\"platform\": \"tele gram\", \"chat_id\": \" x \"}",
+    "{\"platform\": \"\\tSlack\\n\", \"chat_id\": \"\\u000bC1\\f\"}",
+    "{\"platform\": \"Telegram\", \"chat_id\": \"AbC\"}"
+  ]
 }
