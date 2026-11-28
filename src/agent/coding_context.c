@@ -800,7 +800,10 @@ int coding_context_run_git(const char *cwd, char *out, size_t out_size,
  * Caller frees the returned string (NULL on empty input). */
 char *coding_context_parse_git_status(const char *porcelain)
 {
-    if (!porcelain || !*porcelain) return NULL;
+    /* python returns ({}, zeroed counts) for empty input, and only the branch keys it
+     * actually saw -- emitting head/upstream/ahead/behind unconditionally invented fields
+     * that the live function omits, so every caller compared against a different shape. */
+    if (!porcelain) porcelain = "";
     char *branch_head = NULL, *branch_upstream = NULL, *ahead = NULL, *behind = NULL;
     int staged = 0, modified = 0, untracked = 0, conflicts = 0;
 
@@ -849,10 +852,10 @@ char *coding_context_parse_git_status(const char *porcelain)
     }
 
     json_t *b = json_object();
-    json_set(b, "head", json_string(branch_head ? branch_head : ""));
-    json_set(b, "upstream", json_string(branch_upstream ? branch_upstream : ""));
-    json_set(b, "ahead", json_string(ahead ? ahead : "0"));
-    json_set(b, "behind", json_string(behind ? behind : "0"));
+    if (branch_head) json_set(b, "head", json_string(branch_head));
+    if (branch_upstream) json_set(b, "upstream", json_string(branch_upstream));
+    if (ahead) json_set(b, "ahead", json_string(ahead));
+    if (behind) json_set(b, "behind", json_string(behind));
     json_t *c = json_object();
     json_set(c, "staged", json_number((double)staged));
     json_set(c, "modified", json_number((double)modified));

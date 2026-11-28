@@ -26,5 +26,7 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "previous_classification": "REAL_GAP",
+  "relabel_note": "python side is not gate-able from argv: it touches Path(,exists(,resolve(), so there is no pure argument-shaped value to compare and the placeholder fixtures never exercised it. Left as REAL_GAP with the dependency named rather than counted as ported."
 }

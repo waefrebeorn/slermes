@@ -26,5 +26,7 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "previous_classification": "REAL_GAP",
+  "relabel_note": "gate names py_fn='compact_skill_categories', which is a member of RuntimeMode (line 365). Needs py_fn='RuntimeMode.compact_skill_categories' plus a receiver built from resolve_runtime_mode(platform, cwd, config) -- the plain name resolves to None, so the twin never ran the live code."
 }

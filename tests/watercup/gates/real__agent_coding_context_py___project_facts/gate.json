@@ -26,5 +26,7 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "previous_classification": "REAL_GAP",
+  "relabel_note": "phantom: py_fn='_project_facts' does not exist in agent/coding_context.py; it lives in agent/verification_evidence.py, so this gate points at the wrong module (the module's own facts entry points are detect_project_facts / project_facts_for). The gate cannot resolve a live function, so it was measuring nothing; relabelled rather than counted as ported."
 }

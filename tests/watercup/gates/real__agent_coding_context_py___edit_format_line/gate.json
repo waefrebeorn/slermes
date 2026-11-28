@@ -26,5 +26,7 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "previous_classification": "REAL_GAP",
+  "relabel_note": "phantom: py_fn='_edit_format_line' does not exist anywhere in the payload. The gate cannot resolve a live function, so it was measuring nothing; relabelled rather than counted as ported."
 }

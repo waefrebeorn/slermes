@@ -27,5 +27,6 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "phantom: py_fn='get_profile' does not exist in agent/coding_context.py (only as a self-bound plugin method under plugins/memory/retaindb). The gate cannot resolve a live function, so it was measuring nothing; relabelled rather than counted as ported.",
+  "previous_classification": "REAL_GAP"
 }

@@ -26,5 +26,7 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "previous_classification": "REAL_GAP",
+  "relabel_note": "phantom: py_fn='_coding_instructions' does not exist; the module reads config key 'coding_instructions' inside its prompt builder and re-exports agent.coding_instructions as a module. The gate cannot resolve a live function, so it was measuring nothing; relabelled rather than counted as ported."
 }

@@ -26,7 +26,7 @@
     "-I",
     "src"
   ],
-  "previous_classification": null,
-  "classification": "STUB_GATE",
-  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
+  "previous_classification": "STUB_GATE",
+  "classification": "REAL_GAP",
+  "relabel_note": "python side is not gate-able from argv: it touches Path(,os., so there is no pure argument-shaped value to compare and the placeholder fixtures never exercised it. Left as REAL_GAP with the dependency named rather than counted as ported."
 }

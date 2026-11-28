@@ -3,18 +3,11 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_status",
+  "c_fn": "coding_context_parse_git_status",
   "py_module": "agent/coding_context.py",
   "py_fn": "_parse_status",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "src/agent/coding_context.c"
   ],
   "cflags": [
     "-I",
@@ -22,9 +15,21 @@
     "-I",
     "lib",
     "-I",
-    "lib/libjson",
-    "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "",
+    "# branch.head main",
+    "# branch.head main\n# branch.upstream origin/main",
+    "# branch.ab +3 -2",
+    "# branch.head feat/x\n# branch.upstream origin/feat/x\n# branch.ab +0 -7",
+    "1 M. file\n1 .M dir/f",
+    "1 MM a\n2 R. b\tc",
+    "u UU conflict\n? untracked.txt",
+    "1 M. f\n? u\n? v\n# branch.ab +1 -1",
+    "? only",
+    "1 .. unchanged",
+    "# branch.head main\n1 A. added\n2 R. renamed\n? new\n# branch.ab +12 -34"
+  ]
 }

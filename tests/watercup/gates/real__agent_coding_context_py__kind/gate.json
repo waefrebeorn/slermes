@@ -26,5 +26,7 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "previous_classification": "REAL_GAP",
+  "relabel_note": "gate names py_fn='kind', which is a member of the frozen dataclass RuntimeMode (agent/coding_context.py:321), not a module function. Needs py_fn='RuntimeMode.kind' plus a receiver built from resolve_runtime_mode(platform, cwd, config) -- the plain name resolves to None, so the twin never ran the live code."
 }
