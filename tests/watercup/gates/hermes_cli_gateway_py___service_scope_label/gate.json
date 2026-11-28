@@ -7,12 +7,16 @@
   "py_module": "hermes_cli/gateway.py",
   "py_fn": "_service_scope_label",
   "inputs": [
-    true,
-    false
+    "0",
+    "1",
+    "true",
+    "false",
+    "TRUE",
+    "",
+    "1",
+    "0"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

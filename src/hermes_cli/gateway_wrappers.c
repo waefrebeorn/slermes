@@ -704,12 +704,11 @@ int cgw_u_run_systemctl(const char *arg) {
 }
 
 /* PoP: cgw_u_service_scope_label @ hermes_cli/gateway.py:_service_scope_label */
-int cgw_u_service_scope_label(const char *arg) {
-    /* Python: "system" if system else "user". */
-    if (arg && strcmp(arg, "1") == 0) { printf("system\n"); return 0; }
-    if (arg && (strcmp(arg, "true") == 0 || strcmp(arg, "system") == 0)) { printf("system\n"); return 0; }
-    printf("user\n");
-    return 0;
+/* PoP: cgw_u_service_scope_label @ hermes_cli/gateway.py:_service_scope_label */
+/* "system" if system (bool) else "user". Returns owned string; was print/0. */
+char *cgw_u_service_scope_label(const char *arg) {
+    int sys = (arg && (strcmp(arg, "1") == 0 || strcasecmp(arg, "true") == 0));
+    return strdup(sys ? "system" : "user");
 }
 
 /* PoP: cgw_get_installed_systemd_scopes @ hermes_cli/gateway.py:get_installed_systemd_scopes */
