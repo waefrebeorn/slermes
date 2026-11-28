@@ -39,14 +39,18 @@ int agent_bedrock_adapter_u_model_supports_prompt_cache(const char *arg) {
 }
 
 /* PoP: agent_bedrock_adapter_u_safe_text @ agent/bedrock_adapter.py:_safe_text */
-int agent_bedrock_adapter_u_safe_text(const char *arg) {
-    /* Python: non-whitespace text else placeholder. Arg = text. */
-    if (!arg || !*arg) { printf("[empty text]\n"); return 0; }
-    const char *p = arg;
+/* Faithful port: python
+ *   text = "" if text is None else str(text)
+ *   return text if text.strip() else _EMPTY_TEXT_PLACEHOLDER   # "(empty)"
+ * Was: printed "[empty text]" (WRONG placeholder) and returned 0, so no caller
+ * could observe the value. Now returns an owned string (free() by caller). No
+ * other caller exists, so the signature change is safe. */
+char *agent_bedrock_adapter_u_safe_text(const char *arg) {
+    const char *t = arg ? arg : "";
+    const char *p = t;
     while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
-    if (!*p) { printf("[empty text]\n"); return 0; }
-    printf("%s\n", arg);
-    return 0;
+    if (!*p) return strdup("(empty)");
+    return strdup(t);
 }
 
 /* PoP: agent_bedrock_adapter_u_static_bedrock_context_length @ agent/bedrock_adapter.py:_static_bedrock_context_length */

@@ -10,13 +10,13 @@
     "hello",
     "world",
     "",
+    "   ",
+    "  x  ",
     "test123",
-    "NULL"
+    "a\tb",
+    "a b"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/bedrock_adapter.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +26,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "classification": "str_return"
 }
