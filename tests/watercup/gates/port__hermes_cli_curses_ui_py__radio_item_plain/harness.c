@@ -1,43 +1,20 @@
-/* gate: port__hermes_cli_curses_ui_py__radio_item_plain — traced copy of hermes_cli_curses_ui_radio_item_plain (int_str) */
+/* gate: port__hermes_cli_curses_ui_py__radio_item_plain -> real radio_item_plain (JSON string or array of [text,style]). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
-
-
-extern int hermes_cli_curses_ui_radio_item_plain(const char *arg);
-
+#include "json.h"
+extern char *hermes_cli_curses_ui_radio_item_plain(const char *item_json);
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s hermes_cli_curses_ui_radio_item_plain <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s <json>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("hermes_cli_curses_ui_radio_item_plain");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_cap = tmpfile();
-    if (_cap) dup2(fileno(_cap), 1);
-    int result = hermes_cli_curses_ui_radio_item_plain(argv[i]);
-    fflush(stdout);
-    if (_cap) {
-        dup2(_sv, 1); close(_sv);
-        rewind(_cap);
-        char _ob[4096]; size_t _on = 0; int _ch;
-        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
-            _ob[_on++] = (char)_ch;
-        _ob[_on] = '\0';
-        /* strip the trailing newline the port emits */
-        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
-            _ob[--_on] = '\0';
-        WCUP_VALSTR(_ob);
-        fclose(_cap);
-    }
-
-
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
+        fflush(stdout);
+        char *r = hermes_cli_curses_ui_radio_item_plain(argv[i]);
+        WCUP_VALSTR(r ? r : "");
+        char cup[32]; WCUP_FINALIZE(cup, sizeof cup); printf("%s\n", cup);
         WCUP_END("hermes_cli_curses_ui_radio_item_plain");
+        free(r);
     }
     return 0;
 }

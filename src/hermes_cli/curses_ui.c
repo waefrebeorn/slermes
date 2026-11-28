@@ -231,26 +231,32 @@ void curses_reconcile_cursor(json_t *filtered, int cursor, int *out_cursor, int 
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: hermes_cli_curses_ui_radio_item_plain @ hermes_cli/curses_ui.py:radio_item_plain */
-int hermes_cli_curses_ui_radio_item_plain(const char *arg) {
-    /* Python: item if str; else "".join(text for text, _style in item).
-     * Arg = item (string, or "(text,style),(text,style)" tuples). */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    if (arg[0] == '(') {
-        /* tuple form: strip "(...)" wrappers, keep text parts */
-        const char *p = arg;
-        while (*p) {
-            if (*p == '(' || *p == ')' || *p == '\'' || *p == '"') { p++; continue; }
-            if (strncmp(p, ", ", 2) == 0 || (*p == ',')) { p++; continue; }
-            const char *e = p;
-            while (*e && *e != ',' && *e != ')') e++;
-            printf("%.*s", (int)(e - p), p);
-            p = e;
+/* PoP: hermes_cli_curses_ui_radio_item_plain @ hermes_cli/curses_ui.py:radio_item_plain */
+/* Faithful: item if str else "".join(text for text,_style in item). JSON input:
+ * a JSON string, or a JSON array of ["text","style"] pairs. Was: a bespoke
+ * "(text,style),(text,style)" string parser that printed and returned 0. */
+char *hermes_cli_curses_ui_radio_item_plain(const char *item_json) {
+    json_t *j = item_json ? json_parse(item_json, NULL) : NULL;
+    if (!j) return strdup("");
+    char *out = NULL;
+    if (json_is_string(j)) out = strdup(json_string_value(j));
+    else if (json_is_array(j)) {
+        size_t cap = 1;
+        for (size_t i = 0; i < j->c.count; i++) {
+            json_t *pair = j->c.items[i];
+            json_t *tx = (pair && json_is_array(pair) && pair->c.count > 0) ? pair->c.items[0] : NULL;
+            if (tx && json_is_string(tx)) cap += strlen(json_string_value(tx));
         }
-        printf("\n");
-        return 0;
+        out = malloc(cap); out[0] = '\0';
+        for (size_t i = 0; i < j->c.count; i++) {
+            json_t *pair = j->c.items[i];
+            json_t *tx = (pair && json_is_array(pair) && pair->c.count > 0) ? pair->c.items[0] : NULL;
+            if (tx && json_is_string(tx)) strcat(out, json_string_value(tx));
+        }
     }
-    printf("%s\n", arg);
-    return 0;
+    if (!out) out = strdup("");
+    json_free(j);
+    return out;
 }
 
 /* PoP: hermes_cli_curses_ui_u_curses_style_attr @ hermes_cli/curses_ui.py:_curses_style_attr */
