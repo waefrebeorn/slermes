@@ -3,19 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_is_compaction_summary",
+  "c_fn": "tools_session_search_tool_u_is_compaction_summary",
   "py_module": "tools/session_search_tool.py",
   "py_fn": "_is_compaction_summary",
   "inputs": [
+    "[CONTEXT COMPACTION x",
+    "[CONTEXT SUMMARY]: y",
+    "  [CONTEXT COMPACTION",
+    "[context compaction",
+    "CONTEXT COMPACTION",
+    "[CONTEXT COMPRESSION",
     "hello",
-    "world",
     "",
-    "test123",
-    "NULL"
+    "\t[CONTEXT SUMMARY]:",
+    "[COMPACTION"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

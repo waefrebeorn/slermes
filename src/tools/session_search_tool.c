@@ -1576,21 +1576,21 @@ char *cli_tools_session_search_tool__session_link(const char *session_id,
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: tools_session_search_tool_u_is_compaction_summary @ tools/session_search_tool.py:_is_compaction_summary */
-int tools_session_search_tool_u_is_compaction_summary(const char *arg) {
-    /* Python: stripped content starts with any _COMPACTION_PREFIXES. Arg =
-     * content. */
-    if (!arg || !*arg) { printf("0\n"); return 0; }
-    while (*arg == ' ' || *arg == '\t' || *arg == '\n' || *arg == '\r') arg++;
-    static const char *prefixes[] = {
-        "[CONTEXT COMPACTION", "[CONTEXT COMPRESSION", "CONTEXT COMPACTION",
-        "COMPACTION SUMMARY", "[COMPACTION"
-    };
-    int hit = 0;
-    for (size_t i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); i++) {
-        size_t n = strlen(prefixes[i]);
-        if (strncasecmp(arg, prefixes[i], n) == 0) { hit = 1; break; }
+/* PoP: tools_session_search_tool_u_is_compaction_summary @ tools/session_search_tool.py:_is_compaction_summary */
+/* Faithful: bool(content) and content.lstrip().startswith(_COMPACTION_PREFIXES)
+ * where _COMPACTION_PREFIXES == ("[CONTEXT COMPACTION", "[CONTEXT SUMMARY]:").
+ * Was: an INVENTED 5-prefix table (added [CONTEXT COMPRESSION / CONTEXT
+ * COMPACTION / COMPACTION SUMMARY / [COMPACTION, and MISSED the real
+ * "[CONTEXT SUMMARY]:"), matched CASE-INSENSITIVELY (python startswith is
+ * case-sensitive), and lstrip missed \v\f. Returns 1/0. */
+int tools_session_search_tool_u_is_compaction_summary(const char *content) {
+    const char *s = content ? content : "";
+    while (*s==' '||*s=='\t'||*s=='\n'||*s=='\r'||*s=='\v'||*s=='\f') s++;
+    static const char *prefixes[] = {"[CONTEXT COMPACTION", "[CONTEXT SUMMARY]:"};
+    if (!*s) return 0;
+    for (size_t i = 0; i < sizeof(prefixes)/sizeof(prefixes[0]); i++) {
+        if (strncmp(s, prefixes[i], strlen(prefixes[i])) == 0) return 1;
     }
-    printf("%d\n", hit);
     return 0;
 }
 
