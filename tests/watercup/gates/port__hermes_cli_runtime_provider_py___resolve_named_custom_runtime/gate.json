@@ -35,5 +35,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "REAL_GAP",
+  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
 }

@@ -31,5 +31,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "REAL_GAP",
+  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
 }
