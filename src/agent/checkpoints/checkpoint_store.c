@@ -75,16 +75,86 @@
 }
 
 
-/* PoP: git_env @ agent/checkpoints/manager.py:_git_env */
-static void git_env(void) {
-    setenv("GIT_DIR", ".", 1);
-    setenv("GIT_WORK_TREE", ".", 1);
+/* PoP: git_env_json @ agent/checkpoints/manager.py:_git_env
+ * python RETURNS an env dict; it never touches os.environ. The previous C mutated the
+ * process environment with GIT_DIR="." / GIT_WORK_TREE=".", so every later popen in the
+ * process (unrelated git calls included) was redirected at the wrong repository, and the
+ * values were wrong even for this use: git must point at the shared STORE with the real
+ * worktree, plus config isolation so a user's commit.gpgsign never fires mid-session.
+ * Pure: given the three inputs, produce the assignments. */
+json_t *git_env_json(const char *store, const char *working_dir, const char *index_file) {
+    json_t *o = json_object();
+    if (!o) return NULL;
+    json_set(o, "GIT_DIR", json_string(store ? store : "."));
+    json_set(o, "GIT_WORK_TREE", json_string(working_dir && *working_dir ? working_dir : "."));
+    json_set(o, "GIT_CONFIG_NOSYSTEM", json_string("1"));
+    json_set(o, "GIT_CONFIG_GLOBAL", json_string("/dev/null"));
+    json_set(o, "GIT_CONFIG_SYSTEM", json_string("/dev/null"));
+    if (index_file && *index_file) json_set(o, "GIT_INDEX_FILE", json_string(index_file));
+    return o;
+}
+
+/* PoP: git_env_value @ agent/checkpoints/manager.py:_git_env
+ * Single-key view of the same mapping, so the three values python owns can be
+ * compared one at a time (python also carries config-isolation vars sourced from
+ * build_subprocess_env, which are added here unconditionally). */
+const char *git_env_value(const char *key, const char *store, const char *working_dir,
+                          const char *index_file) {
+    static char buf[4096];
+    json_t *o = git_env_json(store, working_dir, index_file);
+    if (!o || !key) { if (o) json_free(o); return NULL; }
+    const json_t *v = json_obj_get(o, key);
+    if (!v || v->type != JSON_STRING) { json_free(o); return NULL; }
+    snprintf(buf, sizeof buf, "%s", v->str_val ? v->str_val : "");
+    json_free(o);
+    return buf;
+}
+
+/* shlex.quote, exactly as python's shlex does it (ASCII word chars only). */
+static void cps_shquote(const char *in, char *out, size_t outsz) {
+    size_t p = 0;
+    int safe = (in && *in);
+    for (const unsigned char *c = (const unsigned char *)(in ? in : ""); *c && safe; c++) {
+        if ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z') || (*c >= '0' && *c <= '9')) continue;
+        if (strchr("_@%+=:,./-", *c)) continue;
+        safe = 0;
+    }
+    if (safe) { snprintf(out, outsz, "%s", in); return; }
+    if (p + 1 < outsz) out[p++] = '\'';
+    for (const char *c = in ? in : ""; *c && p + 6 < outsz; c++) {
+        if (*c == '\'') { memcpy(out + p, "'\"'\"'", 5); p += 5; }
+        else out[p++] = *c;
+    }
+    if (p + 1 < outsz) out[p++] = '\'';
+    out[p < outsz ? p : outsz - 1] = '\0';
+}
+
+/* PoP: git_env_shell @ agent/checkpoints/manager.py:_git_env (shell face)
+ * Renders git_env_json as leading VAR=value assignments for a popen command line. */
+void git_env_shell(const char *store, const char *working_dir, const char *index_file,
+                   char *out, size_t outsz) {
+    static const char *keys[] = {"GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE",
+                                 "GIT_CONFIG_NOSYSTEM", "GIT_CONFIG_GLOBAL", "GIT_CONFIG_SYSTEM"};
+    json_t *o = git_env_json(store, working_dir, index_file);
+    size_t p = 0; out[0] = '\0';
+    for (int i = 0; o && i < 6; i++) {
+        const json_t *v = json_obj_get(o, keys[i]);
+        if (!v || v->type != JSON_STRING) continue;
+        char q[2048];
+        cps_shquote(v->str_val, q, sizeof q);
+        int n = snprintf(out + p, p < outsz ? outsz - p : 0, "%s%s=%s",
+                         i ? " " : "", keys[i], q);
+        if (n > 0) p += (size_t)n;
+    }
+    if (o) json_free(o);
 }
 
 
 /* PoP: run_git @ agent/checkpoints/manager.py:_run_git */ bool run_git(const char *repo_path, const char *cmd, char *out, size_t out_len) {
     char full_cmd[MAX_PATH * 2];
-    snprintf(full_cmd, sizeof(full_cmd), "cd '%s' && git %s 2>&1", repo_path, cmd);
+    char qrepo[MAX_PATH * 2];
+    cps_shquote(repo_path ? repo_path : ".", qrepo, sizeof qrepo);
+    snprintf(full_cmd, sizeof(full_cmd), "git -C %s %s 2>&1", qrepo, cmd ? cmd : "");
     FILE *fp = popen(full_cmd, "r");
     if (!fp) return false;
     if (out && out_len > 0) {
@@ -100,15 +170,10 @@ static void git_env(void) {
  * index. Returns true if popen succeeded. */ bool run_git_idx(const char *shadow_repo, const char *working_dir,
                           const char *index_file, const char *cmd,
                           char *out, size_t out_len) {
-    char full_cmd[MAX_PATH * 3];
+    char full_cmd[MAX_PATH * 4];
     char env[MAX_PATH * 3];
-    snprintf(env, sizeof(env), "GIT_DIR='%s' GIT_WORK_TREE='%s'",
-             shadow_repo, working_dir ? working_dir : ".");
-    if (index_file && index_file[0]) {
-        size_t l = strlen(env);
-        snprintf(env + l, sizeof(env) - l, " GIT_INDEX_FILE='%s'", index_file);
-    }
-    snprintf(full_cmd, sizeof(full_cmd), "%s git %s 2>&1", env, cmd);
+    git_env_shell(shadow_repo, working_dir, index_file, env, sizeof env);
+    snprintf(full_cmd, sizeof(full_cmd), "%s git %s 2>&1", env, cmd ? cmd : "");
     FILE *fp = popen(full_cmd, "r");
     if (!fp) return false;
     if (out && out_len > 0) {
