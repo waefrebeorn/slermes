@@ -8,14 +8,17 @@
   "py_fn": "_clean_string",
   "inputs": [
     "hello",
-    "world",
+    "  hello  ",
+    "   ",
     "",
-    "test123",
-    "NULL"
+    "a b",
+    " x ",
+    "a\tb",
+    "  ",
+    "zzz",
+    "y"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

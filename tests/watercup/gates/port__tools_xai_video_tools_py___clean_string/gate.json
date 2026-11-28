@@ -8,18 +8,17 @@
   "py_fn": "_clean_string",
   "inputs": [
     "hello",
-    "world",
+    "  hello  ",
+    "   ",
     "",
-    "test123",
-    "NULL"
+    "a b",
+    " x ",
+    "a\tb",
+    "  ",
+    "zzz",
+    "y"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src/tools/xai_video_tools.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

@@ -43,16 +43,18 @@ int tools_xai_video_tools_u_check_xai_video_requirements(const char *arg) {
 }
 
 /* PoP: tools_xai_video_tools_u_clean_string @ tools/xai_video_tools.py:_clean_string */
-int tools_xai_video_tools_u_clean_string(const char *arg) {
-    /* Python: stripped value if a non-empty string, else None. */
-    if (!arg || !*arg) { printf("null\n"); return 0; }
-    const char *s = arg;
-    while (*s == ' ' || *s == '\t') s++;
-    size_t n = strlen(s);
-    while (n > 0 && (s[n-1] == ' ' || s[n-1] == '\t')) n--;
-    if (n == 0) { printf("null\n"); return 0; }
-    printf("%.*s\n", (int)n, s);
-    return 0;
+/* PoP: tools_xai_video_tools_u_clean_string @ tools/xai_video_tools.py:_clean_string */
+/* Faithful: value.strip() if isinstance str and non-empty after strip else None.
+ * Was: stripped only space/tab (python .strip() removes \n\r\f\v too) and
+ * printed "null"/value with return 0. Returns owned string or NULL. */
+char *tools_xai_video_tools_u_clean_string(const char *value) {
+    const char *s = value ? value : "";
+    while (*s==' '||*s=='\t'||*s=='\n'||*s=='\r'||*s=='\f'||*s=='\v') s++;
+    char *d = strdup(s);
+    size_t n = strlen(d);
+    while (n > 0) { char c=d[n-1]; if (c==' '||c=='\t'||c=='\n'||c=='\r'||c=='\f'||c=='\v') d[--n]='\0'; else break; }
+    if (n == 0) { free(d); return NULL; }
+    return d;
 }
 
 /* PoP: tools_xai_video_tools_u_provider_not_configured_error @ tools/xai_video_tools.py:_provider_not_configured_error */
