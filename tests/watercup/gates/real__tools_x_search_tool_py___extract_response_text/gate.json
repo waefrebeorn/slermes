@@ -3,15 +3,23 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_extract_response_text",
+  "c_fn": "agent_x_search_tool_u_extract_response_text",
   "py_module": "tools/x_search_tool.py",
   "py_fn": "_extract_response_text",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"output_text\": \"  hi  \"}",
+    "{\"output_text\": \"\", \"output\": [{\"type\": \"message\", \"content\": [{\"type\": \"output_text\", \"text\": \" A \"}, {\"type\": \"text\", \"text\": \"B\"}]}]}",
+    "{\"output\": [{\"type\": \"message\", \"content\": [{\"type\": \"output_text\", \"text\": \"A\"}, {\"type\": \"tool_call\", \"text\": \"ignored\"}, {\"type\": \"text\", \"text\": \"B\"}]}]}",
+    "{}",
+    "{\"output_text\": 123}",
+    "{\"output\": [{\"type\": \"other\", \"content\": [{\"type\": \"text\", \"text\": \"no\"}]}]}",
+    "{\"output\": [{\"type\": \"message\", \"content\": [{\"type\": \"text\", \"text\": \"   \"}]}]}",
+    "{\"output_text\": \"x\", \"output\": [{\"type\": \"message\", \"content\": [{\"type\": \"text\", \"text\": \"y\"}]}]}",
+    "{\"output\": [{\"type\": \"message\", \"content\": [{\"type\": \"text\", \"text\": \"one\"}]}, {\"type\": \"message\", \"content\": [{\"type\": \"text\", \"text\": \"two\"}]}]}",
+    "{\"output\": null}",
+    "{\"output\": [{\"type\": \"message\", \"content\": null}]}",
+    "{\"output_text\": \"   \"}",
+    "{\"output\": [{\"type\": \"message\", \"content\": [{\"type\": \"text\", \"text\": \"  a  \"}, {\"type\": \"text\", \"text\": \"  b  \"}]}]}"
   ],
   "extra_src": [
     "lib/libjson/json.c"
@@ -26,5 +34,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }

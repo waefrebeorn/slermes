@@ -1,25 +1,12 @@
-/* gate: real__tools_x_search_tool_py___extract_response_text — GAP sentinel for _extract_response_text */
+/* gate: _extract_response_text -> real port (JSON payload in, text out). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_extract_response_text";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _extract_response_text <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_extract_response_text");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_extract_response_text");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern char *agent_x_search_tool_u_extract_response_text(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_extract_response_text");
+  char*r=agent_x_search_tool_u_extract_response_text(argv[i]); WCUP_VALSTR(r?r:"");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_extract_response_text"); free(r);} return 0;}

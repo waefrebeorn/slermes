@@ -245,3 +245,99 @@ int tools_x_search_tool_u_handle_x_search(const char *arg) {
     if (j) json_free(j);
     return 0;
 }
+
+/* PoP: agent_x_search_tool_u_extract_response_text @ tools/x_search_tool.py:_extract_response_text */
+/* output_text (str(value or "").strip()) if non-empty, else the "\n\n"-join of
+ * stripped text from output[].content[] entries whose type is output_text|text. */
+static int _xs_ws(unsigned c) {
+    return (c>=0x9&&c<=0xD)||(c>=0x1C&&c<=0x20)||c==0x85||c==0xA0||c==0x1680||
+           (c>=0x2000&&c<=0x200A)||c==0x2028||c==0x2029||c==0x202F||c==0x205F||c==0x3000;
+}
+static int _xs_dec(const char *s, size_t n, size_t i, unsigned *cp, int *len) {
+    unsigned char b = (unsigned char)s[i];
+    if (b < 0x80) { *cp = b; *len = 1; return 1; }
+    if ((b & 0xe0) == 0xc0 && i+1 < n) { *cp = ((b&0x1f)<<6)|((unsigned char)s[i+1]&0x3f); *len=2; return 1; }
+    if ((b & 0xf0) == 0xe0 && i+2 < n) { *cp = ((b&0x0f)<<12)|(((unsigned char)s[i+1]&0x3f)<<6)|((unsigned char)s[i+2]&0x3f); *len=3; return 1; }
+    if ((b & 0xf8) == 0xf0 && i+3 < n) { *cp = ((b&0x07)<<18)|(((unsigned char)s[i+1]&0x3f)<<12)|(((unsigned char)s[i+2]&0x3f)<<6)|((unsigned char)s[i+3]&0x3f); *len=4; return 1; }
+    *cp = b; *len = 1; return 1;
+}
+/* python str.strip() over the true unicode whitespace set; returns malloc'd copy */
+static char *_xs_strip(const char *s) {
+    size_t n = strlen(s), a = 0, b = n;
+    while (a < b) { unsigned cp; int len; _xs_dec(s, n, a, &cp, &len);
+        if (!_xs_ws(cp)) break; a += (size_t)len; }
+    while (b > a) { size_t k = b - 1; while (k > a && ((unsigned char)s[k] & 0xC0) == 0x80) k--;
+        unsigned cp; int len; _xs_dec(s, n, k, &cp, &len);
+        if (k + (size_t)len != b || !_xs_ws(cp)) break; b = k; }
+    char *r = malloc(b - a + 1); memcpy(r, s + a, b - a); r[b-a] = 0; return r;
+}
+static const char *_xs_text_of(json_t *c, char *buf, size_t cap) {
+    json_t *t = json_obj_get(c, "text");
+    buf[0] = 0;
+    if (!t || json_is_null(t)) return buf;
+    if (json_is_string(t)) { snprintf(buf, cap, "%s", t->str_val ? t->str_val : ""); return buf; }
+    if (json_is_number(t)) {
+        double d = t->num_val;
+        if (d == (double)(long)d) snprintf(buf, cap, "%ld", (long)d); else snprintf(buf, cap, "%g", d);
+        return buf;
+    }
+    if (json_is_bool(t)) { snprintf(buf, cap, "%s", t->bool_val ? "True" : "False"); return buf; }
+    return buf;
+}
+/* str(value or "") for the scalar JSON types. */
+static char *_xs_strval(json_t *v) {
+    char b[64];
+    if (!v || json_is_null(v)) return strdup("");
+    if (json_is_string(v)) return strdup(v->str_val ? v->str_val : "");
+    if (json_is_bool(v)) return strdup(v->bool_val ? "True" : "False");
+    if (json_is_number(v)) {
+        double d = v->num_val;
+        if (d == (double)(long)d) snprintf(b, sizeof b, "%ld", (long)d); else snprintf(b, sizeof b, "%g", d);
+        return strdup(b);
+    }
+    return strdup("");
+}
+char *agent_x_search_tool_u_extract_response_text(const char *arg) {
+    json_t *p = arg ? json_parse(arg, NULL) : NULL;
+    if (!p || !json_is_object(p)) { if (p) json_free(p); return strdup(""); }
+    json_t *ot = json_obj_get(p, "output_text");
+    if (ot && !json_is_null(ot)) {
+        char *rendered = _xs_strval(ot);
+        char *st = _xs_strip(rendered ? rendered : "");
+        free(rendered);
+        if (st[0]) { json_free(p); return st; }
+        free(st);
+    }
+    size_t cap = 256, w = 0;
+    char *acc = malloc(cap); acc[0] = 0;
+    json_t *arr = json_obj_get(p, "output");
+    if (arr && json_is_array(arr)) {
+        for (size_t i = 0; i < arr->c.count; i++) {
+            json_t *item = arr->c.items[i];
+            if (!item || !json_is_object(item)) continue;
+            json_t *ty = json_obj_get(item, "type");
+            if (!ty || !json_is_string(ty) || !ty->str_val || strcmp(ty->str_val, "message") != 0) continue;
+            json_t *content = json_obj_get(item, "content");
+            if (!content || !json_is_array(content)) continue;
+            for (size_t k = 0; k < content->c.count; k++) {
+                json_t *c = content->c.items[k];
+                if (!c || !json_is_object(c)) continue;
+                json_t *ct = json_obj_get(c, "type");
+                if (!ct || !json_is_string(ct) || !ct->str_val) continue;
+                if (strcmp(ct->str_val, "output_text") != 0 && strcmp(ct->str_val, "text") != 0) continue;
+                char nb[8192]; const char *raw = _xs_text_of(c, nb, sizeof nb);
+                char *st = _xs_strip(raw);
+                if (st[0]) {
+                    size_t need = w + strlen(st) + 3;
+                    if (need > cap) { cap = need * 2; acc = realloc(acc, cap); }
+                    if (w) { memcpy(acc + w, "\n\n", 2); w += 2; }
+                    memcpy(acc + w, st, strlen(st)); w += strlen(st); acc[w] = 0;
+                }
+                free(st);
+            }
+        }
+    }
+    json_free(p);
+    char *fin = _xs_strip(acc); free(acc);
+    return fin;
+}
