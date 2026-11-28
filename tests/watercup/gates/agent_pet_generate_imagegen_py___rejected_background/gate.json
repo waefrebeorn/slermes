@@ -7,15 +7,17 @@
   "py_module": "agent/pet/generate/imagegen.py",
   "py_fn": "_rejected_background",
   "inputs": [
-    "hello",
-    "world",
+    "background not supported",
+    "Background transparent",
+    "background",
+    "transparent",
+    "not supported",
     "",
-    "test123",
-    "NULL"
+    "TRANSPARENT BACKGROUND",
+    "the background is transparent",
+    "foreground"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

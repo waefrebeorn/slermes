@@ -90,13 +90,12 @@ int agent_pet_generate_imagegen_u_save_local(const char *arg) {
 }
 
 /* PoP: agent_pet_generate_imagegen_u_rejected_background @ agent/pet/generate/imagegen.py:_rejected_background */
+/* PoP: agent_pet_generate_imagegen_u_rejected_background @ agent/pet/generate/imagegen.py:_rejected_background */
+/* Logic was correct but printed and returned 0; returns int 1/0 now. */
 int agent_pet_generate_imagegen_u_rejected_background(const char *arg) {
-    /* Python: "background" + "not supported"/"transparent". Arg = error. */
-    if (!arg || !*arg) { printf("0\n"); return 0; }
+    if (!arg) return 0;
     char low[1200];
     snprintf(low, sizeof(low), "%s", arg);
-    for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
-    if (strstr(low, "background") && (strstr(low, "not supported") || strstr(low, "transparent"))) { printf("1\n"); return 0; }
-    printf("0\n");
-    return 0;
+    for (char *q = low; *q; q++) *q = (char)tolower((unsigned char)*q);
+    return (strstr(low, "background") && (strstr(low, "not supported") || strstr(low, "transparent"))) ? 1 : 0;
 }
