@@ -7,19 +7,18 @@
   "py_module": "agent/rate_limit_tracker.py",
   "py_fn": "_fmt_seconds",
   "inputs": [
-    0.0,
-    1.5,
-    3.14159,
-    1024.0,
-    -2.5
+    "58",
+    "134",
+    "120",
+    "3537",
+    "3600",
+    "3720",
+    "0",
+    "-5",
+    "59.9",
+    "123456"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src/agent/rate_limit_tracker.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

@@ -106,33 +106,30 @@ int agent_rate_limit_tracker_parse_rate_limit_headers(const char *arg) {
 }
 
 /* PoP: agent_rate_limit_tracker_u_fmt_count @ agent/rate_limit_tracker.py:_fmt_count */
-int agent_rate_limit_tracker_u_fmt_count(const char *arg) {
-    /* Python: n>=1e6 -> "%.1fM"; n>=1e3 -> "%.1fK"; else str(n). Arg = n. */
-    if (!arg || !*arg) { printf("0\n"); return 0; }
-    double n = strtod(arg, NULL);
-    if (n >= 1000000.0) printf("%.1fM\n", n / 1000000.0);
-    else if (n >= 1000.0) printf("%.1fK\n", n / 1000.0);
-    else printf("%s\n", arg);
-    return 0;
+/* PoP: agent_rate_limit_tracker_u_fmt_count @ agent/rate_limit_tracker.py:_fmt_count */
+/* Faithful: n>=1e6 -> "%.1fM"; n>=1e3 -> "%.1fK"; else str(int(n)). Was: echoed
+ * the raw arg text for <1000 and printed/returned 0. Returns owned string. */
+char *agent_rate_limit_tracker_u_fmt_count(const char *arg) {
+    double n = strtod(arg ? arg : "", NULL);
+    char buf[64];
+    if (n >= 1000000.0) snprintf(buf, sizeof buf, "%.1fM", n / 1000000.0);
+    else if (n >= 1000.0) snprintf(buf, sizeof buf, "%.1fK", n / 1000.0);
+    else snprintf(buf, sizeof buf, "%ld", (long)n);
+    return strdup(buf);
 }
 
 /* PoP: agent_rate_limit_tracker_u_fmt_seconds @ agent/rate_limit_tracker.py:_fmt_seconds */
-int agent_rate_limit_tracker_u_fmt_seconds(const char *arg) {
-    /* Python: 58s / 2m 14s / 58m 57s / 1h 2m. Arg = seconds. */
-    if (!arg || !*arg) { printf("0s\n"); return 0; }
-    long s = (long)strtod(arg, NULL);
-    if (s < 0) s = 0;
-    if (s < 60) { printf("%lds\n", s); return 0; }
-    if (s < 3600) {
-        long m = s / 60, sec = s % 60;
-        if (sec) printf("%ldm %lds\n", m, sec);
-        else printf("%ldm\n", m);
-        return 0;
-    }
-    long h = s / 3600, m = (s % 3600) / 60;
-    if (m) printf("%ldh %ldm\n", h, m);
-    else printf("%ldh\n", h);
-    return 0;
+/* PoP: agent_rate_limit_tracker_u_fmt_seconds @ agent/rate_limit_tracker.py:_fmt_seconds */
+/* Faithful: s=max(0,int(seconds)); <60 "{s}s"; <3600 "{m}m {sec}s"|"{m}m";
+ * else "{h}h {m}m"|"{h}h". Logic was correct but printed/returned 0. Returns string. */
+char *agent_rate_limit_tracker_u_fmt_seconds(const char *arg) {
+    long sec = (long)strtod(arg ? arg : "", NULL);
+    if (sec < 0) sec = 0;
+    char buf[64];
+    if (sec < 60) snprintf(buf, sizeof buf, "%lds", sec);
+    else if (sec < 3600) { long m = sec / 60, r = sec % 60; if (r) snprintf(buf,sizeof buf,"%ldm %lds",m,r); else snprintf(buf,sizeof buf,"%ldm",m); }
+    else { long h = sec / 3600, m = (sec % 3600) / 60; if (m) snprintf(buf,sizeof buf,"%ldh %ldm",h,m); else snprintf(buf,sizeof buf,"%ldh",h); }
+    return strdup(buf);
 }
 
 /* PoP: agent_rate_limit_tracker_u_bar @ agent/rate_limit_tracker.py:_bar */
