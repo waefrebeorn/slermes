@@ -266,17 +266,25 @@ int cli_tools_write_approval_write_approval_enabled(const char *subsystem)
 /* PoP: cli_tools_write_approval__normalize_enabled @ tools/write_approval.py:_normalize_enabled */
 int cli_tools_write_approval__normalize_enabled(const json_node_t *raw)
 {
-    /* Accepts a JSON bool or a truthy/falsey string; default (NULL/unknown) → 0. */
+    /* Faithful: python _normalize_enabled -- bool passes through; string is
+     * strip().lower() and tested for EXACT membership in _TRUTHY_STRINGS
+     * {"on","true","yes","1","approve","enabled"}; anything else -> 0.
+     * Was: strstr() substring match (so "online"->1 via "on", "1x"->1 via "1")
+     * and no strip -- a real bug. */
     if (!raw) return 0;
     if (json_is_bool(raw)) return json_node_get_bool(raw) ? 1 : 0;
     if (json_is_string(raw)) {
         const char *s = json_node_get_string(raw);
         if (!s) return 0;
-        char tmp[64];
+        char tmp[256];
         snprintf(tmp, sizeof(tmp), "%s", s);
-        for (char *p = tmp; *p; p++) *p = (char)tolower((unsigned char)*p);
-        return (strstr(tmp, "on") || strstr(tmp, "true") || strstr(tmp, "yes") ||
-                strstr(tmp, "1") || strstr(tmp, "approve") || strstr(tmp, "enabled")) ? 1 : 0;
+        char *q = tmp;
+        while (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r') q++;
+        size_t n = strlen(q);
+        while (n > 0 && (q[n-1]==' '||q[n-1]=='\t'||q[n-1]=='\n'||q[n-1]=='\r')) q[--n] = '\0';
+        for (char *p = q; *p; p++) *p = (char)tolower((unsigned char)*p);
+        return (strcmp(q, "on") == 0 || strcmp(q, "true") == 0 || strcmp(q, "yes") == 0 ||
+                strcmp(q, "1") == 0 || strcmp(q, "approve") == 0 || strcmp(q, "enabled") == 0) ? 1 : 0;
     }
     return 0;
 }

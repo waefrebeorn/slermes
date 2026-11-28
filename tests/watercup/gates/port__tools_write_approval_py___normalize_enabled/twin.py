@@ -1,5 +1,6 @@
 """twin for tools/write_approval.py:_normalize_enabled (thin: shared runtime, cross-OS)."""
 from watercup_twin_runtime import TwinBase
+import json as _j
 def _strtol(s):
     m = __import__('re').match('[+-]?[0-9]+', str(s))
     return int(m.group()) if m else 0
@@ -42,6 +43,13 @@ class _Twin(TwinBase):
     PY_MODULE = "tools/write_approval.py"
     PY_FN = "_normalize_enabled"
     C_FN = "cli_tools_write_approval__normalize_enabled"
+
+    def call(self, inp, inputs, idx=0):
+        try:
+            v = _j.loads(inp)
+        except Exception:
+            v = inp
+        return self._fn(v)
 
     def norm(self, c, result):
         c.valstr(str(int(result)) if isinstance(result, (int, bool)) and not isinstance(result, str) else ("0" if result is None else str(result)))

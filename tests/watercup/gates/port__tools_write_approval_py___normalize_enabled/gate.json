@@ -7,11 +7,21 @@
   "py_module": "tools/write_approval.py",
   "py_fn": "_normalize_enabled",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "true",
+    "false",
+    "\"on\"",
+    "\"no\"",
+    "\"1x\"",
+    "\"yes please\"",
+    "\"  TRUE  \"",
+    "\"approve\"",
+    "\"enabled\"",
+    "\"off\"",
+    "\"\"",
+    "1",
+    "0",
+    "null",
+    "\"Online\""
   ],
   "extra_src": [
     "lib/libjson/json.c",
