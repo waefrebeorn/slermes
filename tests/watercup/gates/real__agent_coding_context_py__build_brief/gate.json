@@ -1,0 +1,33 @@
+{
+  "name": "real__agent_coding_context_py__build_brief",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "coding_context_build_brief",
+  "py_module": "agent/coding_context.py",
+  "py_fn": "system_prompt_parts",
+  "extra_src": [
+    "src/agent/coding_context.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "gpt-5|-1",
+    "gpt-5|0",
+    "gpt-5|1",
+    "claude-3-opus|0",
+    "claude-3-opus|1",
+    "unknown-model|0",
+    "None|0",
+    "None|-1",
+    "codex-mini|0",
+    "sonnet|1"
+  ]
+}

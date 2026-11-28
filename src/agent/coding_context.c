@@ -52,6 +52,8 @@
 /* Forward declaration of runtime mode struct (defined at line ~526) */
 typedef struct coding_runtime_mode_s coding_runtime_mode_t;
 
+/* Defined with the other prompt builders, further down. */
+char *coding_context_build_brief(const char *model, int has_todo);
 /* Defined near the end of this file (config mode resolution). */
 const char *coding_ctx_mode(json_t *config);
 /* Forward declaration of coding_context_coding_instructions (defined later) */
@@ -639,20 +641,16 @@ char **coding_runtime_mode_system_blocks(
 
     int count = 0;
 
-    /* Prefix: operating brief with optional edit-format guidance */
+    /* Prefix: operating brief with optional edit-format guidance.
+     * WIRING GAP, stated rather than hidden: python drops the `todo_list` sentence when the
+     * session did not load that tool. This builder has no tool-list argument (the mode struct
+     * carries only profile/cwd/config/mode/model), so it cannot apply that swap. The correct
+     * behaviour lives in coding_context_build_brief(model, has_todo), gated 10/10 against live
+     * python; callers that know the tool list should use it. This path still emits the brief
+     * verbatim. */
     if (mode->profile->guidance && mode->profile->guidance[0]) {
-        const char *edit_line = coding_context_edit_format_line(mode->model);
-        if (edit_line && edit_line[0]) {
-            size_t brief_len = strlen(mode->profile->guidance) + strlen(edit_line) + 2;
-            blocks[count] = malloc(brief_len);
-            if (blocks[count]) {
-                snprintf(blocks[count], brief_len, "%s\n%s", mode->profile->guidance, edit_line);
-                count++;
-            }
-        } else {
-            blocks[count] = strdup(mode->profile->guidance);
-            if (blocks[count]) count++;
-        }
+        blocks[count] = coding_context_build_brief(mode->model, -1);
+        if (blocks[count]) count++;
     }
 
     /* Workspace block */
@@ -1188,6 +1186,45 @@ json_t *coding_context_mcp_names_json(const json_t *config) {
     qsort((void *)names, k, sizeof(char *), cc_strcmp_qsort);
     for (size_t i = 0; i < k; i++) json_append(out, json_string(names[i]));
     free((void *)names);
+    return out;
+}
+
+/* PoP: coding_context_build_brief @ agent/coding_context.py:system_prompt_parts (prefix block)
+ * python builds the prefix brief as:
+ *   brief = profile.guidance
+ *   if valid_tool_names is not None and "todo_list" not in valid_tool_names:
+ *       brief = brief.replace(_TODO_SENTENCE, _NO_TODO_SENTENCE)
+ *   family = _model_family(model); if family: brief += "\n" + guidance line
+ * has_todo: -1 == valid_tool_names is None (no swap), 0 == list without todo_list (swap),
+ * 1 == list containing todo_list (no swap). The old inline builder never applied the swap, so a
+ * session that had not loaded todo_list was still told to track work with it.
+ * Returns malloc'd text (never NULL). */
+#define CC_TODO_SENTENCE \
+    "- Track multi-step work with `todo_list`. Reference code as `path:line` instead of pasting whole files."
+#define CC_NO_TODO_SENTENCE \
+    "- Reference code as `path:line` instead of pasting whole files."
+char *coding_context_build_brief(const char *model, int has_todo) {
+    const char *brief = CODING_PROFILE.guidance;
+    const char *edit_line = coding_context_edit_format_line(model);
+    const char *use = brief;
+    /* the swap is a substring replacement; do it by splitting around the sentence */
+    const char *hit = (has_todo == 0) ? strstr(brief, CC_TODO_SENTENCE) : NULL;
+    size_t need = strlen(brief) + strlen(edit_line ? edit_line : "") + 2;
+    char *out = (char *)malloc(need);
+    if (!out) return NULL;
+    if (hit) {
+        size_t head = (size_t)(hit - brief);
+        snprintf(out, need, "%.*s%s%s", (int)head, brief, CC_NO_TODO_SENTENCE,
+                 hit + strlen(CC_TODO_SENTENCE));
+    } else {
+        snprintf(out, need, "%s", brief);
+    }
+    if (edit_line && edit_line[0]) {
+        size_t l = strlen(out);
+        size_t cap = l + strlen(edit_line) + 2;
+        char *grown = (char *)realloc(out, cap);
+        if (grown) { snprintf(grown + l, cap - l, "\n%s", edit_line); out = grown; }
+    }
     return out;
 }
 
