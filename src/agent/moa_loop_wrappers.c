@@ -79,26 +79,31 @@ int moa_u_redact_trace_accounting(const char *arg) {
 }
 
 /* PoP: moa_u_slot_label @ agent/moa_loop.py:_slot_label */
-int moa_u_slot_label(const char *arg) {
-    /* Python: f"{provider.strip()}:{model.strip()}" + [reasoning=effort]
-     * when effort. Arg = JSON slot. */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    json_t *slot = json_parse(arg, NULL);
-    if (!slot || !json_is_object(slot)) {
-        if (slot) json_free(slot);
-        printf("%s\n", arg);
-        return 0;
-    }
-    const char *provider = json_get_str(slot, "provider", "");
-    const char *model = json_get_str(slot, "model", "");
-    const char *effort = json_get_str(slot, "reasoning_effort", "");
-    while (*provider == ' ' || *provider == '\t') provider++;
-    while (*model == ' ' || *model == '\t') model++;
-    while (*effort == ' ' || *effort == '\t') effort++;
-    if (*effort) printf("%s:%s[reasoning=%s]\n", provider, model, effort);
-    else printf("%s:%s\n", provider, model);
-    json_free(slot);
-    return 0;
+/* PoP: moa_u_slot_label @ agent/moa_loop.py:_slot_label */
+/* Faithful: f"{(provider or '').strip()}:{(model or '').strip()}" + "[reasoning=<effort>]"
+ * when str(effort or "").strip(). Was: stripped only LEADING space/tab (python
+ * .strip() trims both ends, all whitespace) -> trailing spaces leaked into the
+ * label; printed + returned 0. Returns owned string. */
+static char *_sl_str(const json_t *slot, const char *k) {
+    json_t *v = json_obj_get((json_t *)slot, k);
+    return (v && json_is_string(v)) ? strdup(v->str_val) : strdup("");
+}
+static void _sl_trim(char *s) {
+    char *q = s; while (*q==' '||*q=='\t'||*q=='\n'||*q=='\r'||*q=='\v'||*q=='\f') q++;
+    if (q != s) memmove(s, q, strlen(q)+1);
+    size_t n = strlen(s);
+    while (n>0){char c=s[n-1]; if(c==' '||c=='\t'||c=='\n'||c=='\r'||c=='\v'||c=='\f') s[--n]='\0'; else break;}
+}
+char *moa_u_slot_label(const char *arg) {
+    json_t *slot = arg ? json_parse(arg, NULL) : NULL;
+    if (!slot || !json_is_object(slot)) { if (slot) json_free(slot); return strdup(arg ? arg : ""); }
+    char *prov = _sl_str(slot, "provider"), *model = _sl_str(slot, "model"), *eff = _sl_str(slot, "reasoning_effort");
+    _sl_trim(prov); _sl_trim(model); _sl_trim(eff);
+    char *out = NULL;
+    if (*eff) { size_t n = strlen(prov)+strlen(model)+strlen(eff)+32; out = malloc(n); snprintf(out,n,"%s:%s[reasoning=%s]",prov,model,eff); }
+    else { size_t n = strlen(prov)+strlen(model)+2; out = malloc(n); snprintf(out,n,"%s:%s",prov,model); }
+    free(prov); free(model); free(eff); json_free(slot);
+    return out ? out : strdup("");
 }
 
 /* PoP: moa_u_slot_reasoning_config @ agent/moa_loop.py:_slot_reasoning_config */
@@ -370,27 +375,30 @@ int moa_u_failed_reference_labels(const char *arg) {
 }
 
 /* PoP: moa_u_degraded_notice @ agent/moa_loop.py:_degraded_notice */
-int moa_u_degraded_notice(const char *arg) {
-    /* Python (failed_labels, policy): empty when no labels or policy is
-     * "silent"; else "[Reference models unavailable: <labels>]".
-     * Arg = "labels\tpolicy". */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    const char *tab = strchr(arg, '\t');
-    const char *labels = arg;
-    size_t llen = tab ? (size_t)(tab - arg) : strlen(arg);
-    const char *policy = tab ? tab + 1 : "ask";
-    const char *ls = labels;
-    while (ls < labels + llen && isspace((unsigned char)*ls)) ls++;
-    size_t ln = (size_t)(labels + llen - ls);
-    while (ln > 0 && isspace((unsigned char)ls[ln - 1])) ln--;
-    if (ln == 0) { printf("\n"); return 0; }
-    const char *p = policy;
-    while (*p && isspace((unsigned char)*p)) p++;
-    if (strncasecmp(p, "silent", 6) == 0 && (p[6] == '\0' || isspace((unsigned char)p[6]))) {
-        printf("\n"); return 0;
+/* PoP: moa_u_degraded_notice @ agent/moa_loop.py:_degraded_notice */
+/* Faithful: "" when not failed_labels or policy.strip().lower()=="silent";
+ * else "[Reference models unavailable: <labels joined ', '>]". INPUT is JSON:
+ * labels array + policy string. Was: raw "labels\tpolicy" (labels not a list)
+ * and matched "silent x" as silent (python needs EXACT "silent"). */
+char *moa_u_degraded_notice(const char *labels_json, const char *policy) {
+    json_t *arr = labels_json ? json_parse(labels_json, NULL) : NULL;
+    size_t cnt = (arr && json_is_array(arr)) ? arr->c.count : 0;
+    const char *p = policy ? policy : "";
+    while (*p==' '||*p=='\t'||*p=='\n'||*p=='\r'||*p=='\v'||*p=='\f') p++;
+    char pol[64]; snprintf(pol,sizeof pol,"%s",p);
+    size_t pn=strlen(pol);
+    while(pn>0){char c=pol[pn-1]; if(c==' '||c=='\t'||c=='\n'||c=='\r'||c=='\v'||c=='\f') pol[--pn]='\0'; else break;}
+    for(char*q=pol;*q;q++) *q=(char)tolower((unsigned char)*q);
+    char *out;
+    if (cnt == 0 || strcmp(pol, "silent") == 0) { out = strdup(""); }
+    else {
+        size_t cap = 40; for (size_t i=0;i<cnt;i++){ json_t*e=arr->c.items[i]; if(e&&json_is_string(e)) cap+=strlen(e->str_val)+2; }
+        out = malloc(cap); strcpy(out, "[Reference models unavailable: ");
+        for (size_t i=0;i<cnt;i++){ json_t*e=arr->c.items[i]; if(e&&json_is_string(e)){ if(i) strcat(out,", "); strcat(out,e->str_val);} }
+        strcat(out, "]");
     }
-    printf("[Reference models unavailable: %.*s]\n", (int)ln, ls);
-    return 0;
+    if (arr) json_free(arr);
+    return out;
 }
 
 /* PoP: moa_aggregate_moa_context @ agent/moa_loop.py:aggregate_moa_context */

@@ -7,15 +7,15 @@
   "py_module": "agent/moa_loop.py",
   "py_fn": "_slot_label",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"provider\": \"openai\", \"model\": \"gpt-4\"}",
+    "{\"provider\": \"  openai  \", \"model\": \"  gpt-4  \"}",
+    "{\"provider\": \"x\", \"model\": \"y\", \"reasoning_effort\": \"high\"}",
+    "{\"provider\": \"x\", \"model\": \"y\", \"reasoning_effort\": \"  \"}",
+    "{\"provider\": null, \"model\": \"y\"}",
+    "{}",
+    "{\"provider\": \"p\", \"model\": \"m\", \"reasoning_effort\": \"  low \"}"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

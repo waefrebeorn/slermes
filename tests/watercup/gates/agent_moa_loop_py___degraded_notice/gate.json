@@ -7,15 +7,15 @@
   "py_module": "agent/moa_loop.py",
   "py_fn": "_degraded_notice",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "[\"a\", \"b\"]|||ask",
+    "[]|||ask",
+    "[\"x\"]|||silent",
+    "[\"x\"]||| SILENT ",
+    "[\"x\"]|||silent x",
+    "[\"a\", \"b\", \"c\"]|||warn",
+    "[\"p\"]|||"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

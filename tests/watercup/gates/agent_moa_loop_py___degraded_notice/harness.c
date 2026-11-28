@@ -1,25 +1,15 @@
-/* gate: agent_moa_loop_py___degraded_notice — traced copy of moa_u_degraded_notice */
+/* gate: agent_moa_loop_py___degraded_notice -> real _degraded_notice(labels, policy). Input "labelsJSON|||policy". */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-extern int moa_u_degraded_notice(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("moa_u_degraded_notice");
-    int result = moa_u_degraded_notice(input);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("moa_u_degraded_notice");
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s moa_u_degraded_notice <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
-    }
-    return 0;
-}
+#include "json.h"
+extern char *moa_u_degraded_notice(const char *labels_json, const char *policy);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ char buf[4096]; snprintf(buf,sizeof buf,"%s",argv[i]);
+  char *sep=strstr(buf,"|||"); const char *lj=buf, *pol="";
+  if(sep){*sep=0; pol=sep+3;}
+  WCUP_BEGIN("moa_u_degraded_notice"); fflush(stdout);
+  char*r=moa_u_degraded_notice(lj,pol); WCUP_VALSTR(r?r:"");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("moa_u_degraded_notice"); free(r);} return 0;}
