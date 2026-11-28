@@ -3,19 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_pdf_path",
+  "c_fn": "tools_binary_extensions_u_is_pdf_path",
   "py_module": "tools/binary_extensions.py",
   "py_fn": "is_pdf_path",
   "inputs": [
-    "hello",
-    "world",
+    "a.pdf",
+    "A.PDF",
+    "a.txt",
     "",
-    "test123",
-    "NULL"
+    "pdf",
+    ".pdf",
+    "x.pdf.txt",
+    "  a.pdf",
+    "dir/a.Pdf",
+    "report.Pdf"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +29,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }

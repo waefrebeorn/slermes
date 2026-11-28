@@ -63,3 +63,14 @@ int tools_binary_extensions_is_pdf_path(const char *path) {
     return (ext[0] == '.' && (ext[1] == 'p' || ext[1] == 'P') &&
             (ext[2] == 'd' || ext[2] == 'D') && (ext[3] == 'f' || ext[3] == 'F'));
 }
+
+/* PoP: tools_binary_extensions_u_is_pdf_path @ tools/binary_extensions.py:is_pdf_path */
+/* path.lower().endswith(".pdf"). Returns int 1/0. */
+int tools_binary_extensions_u_is_pdf_path(const char *arg) {
+    if (!arg) return 0;
+    size_t n = strlen(arg);
+    if (n < 4) return 0;
+    char tail[5]; for (int i = 0; i < 4; i++) tail[i] = (char)tolower((unsigned char)arg[n - 4 + i]);
+    tail[4] = 0;
+    return strcmp(tail, ".pdf") == 0 ? 1 : 0;
+}
