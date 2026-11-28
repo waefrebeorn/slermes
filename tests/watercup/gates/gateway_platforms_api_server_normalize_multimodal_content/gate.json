@@ -14,11 +14,23 @@
   "py_module": "gateway/platforms/api_server.py",
   "py_fn": "_normalize_multimodal_content",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "null",
+    "\"hello\"",
+    "\"\"",
+    "\"a  b  c\"",
+    "[\"x\",\"y\"]",
+    "[{\"type\":\"text\",\"text\":\"hi\"}]",
+    "[{\"type\":\"text\",\"text\":\"hi\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://x/y.png\"}}]",
+    "[{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://x/y.png\",\"detail\":\"high\"}}]",
+    "[{\"type\":\"input_image\",\"image_url\":{\"url\":\"data:image/png;base64,AAA\"}}]",
+    "[{\"type\":\"file\",\"file\":{}}]",
+    "[{\"type\":\"bogus\"}]",
+    "[{\"type\":\"image_url\",\"image_url\":{\"url\":\"\"}}]",
+    "[{\"type\":\"image_url\",\"image_url\":{\"url\":\"ftp://x/y\"}}]",
+    "[{\"type\":\"image_url\",\"image_url\":{\"url\":\"data:text/plain,abc\"}}]",
+    "[]",
+    "[42]"
   ],
-  "notes": "FIXED REAL PORT STUB: src/gateway/platforms/api_server_ports.c::aps_normalize_multimodal_content was a passthrough printf stub; replaced with a real implementation of gateway/platforms/api_server.py::_normalize_multimodal_content (+ _normalize_chat_content scalar/nested fallback): None->\"\", str truncation at 65536, text-part normalization, image URL validation (http(s)/data:image/), detail validation, file/unknown rejection via {'error': 'code:message'} (LIVE raises ValueError with the same 'code:message' string). Harness links the REAL port via extra_src and calls it per input; branch ladder is traced off the input in identical rung order on both sides; value event is a canonical encoding derived from the port's JSON output / LIVE result so libjson serialization formatting cannot red-flag diffs. Truncation-at-65536 branch is not exercised by inputs (would require a >64KB argv entry); all other branches covered."
+  "notes": "FIXED REAL PORT STUB: src/gateway/platforms/api_server_ports.c::aps_normalize_multimodal_content was a passthrough printf stub; replaced with a real implementation of gateway/platforms/api_server.py::_normalize_multimodal_content (+ _normalize_chat_content scalar/nested fallback): None->\"\", str truncation at 65536, text-part normalization, image URL validation (http(s)/data:image/), detail validation, file/unknown rejection via {'error': 'code:message'} (LIVE raises ValueError with the same 'code:message' string). Harness links the REAL port via extra_src and calls it per input; branch ladder is traced off the input in identical rung order on both sides; value event is a canonical encoding derived from the port's JSON output / LIVE result so libjson serialization formatting cannot red-flag diffs. Truncation-at-65536 branch is not exercised by inputs (would require a >64KB argv entry); all other branches covered.",
+  "classification": "canon_multimodal"
 }
