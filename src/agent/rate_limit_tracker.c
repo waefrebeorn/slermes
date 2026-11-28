@@ -206,3 +206,22 @@ int agent_rate_limit_tracker_format_rate_limit_compact(const char *arg) {
     printf("%s\n", t1 ? t1 + 1 : arg);
     return 0;
 }
+
+/* PoP: agent_rate_limit_tracker_u_safe_int @ agent/rate_limit_tracker.py:_safe_int */
+/* Faithful: int(float(value)) except (TypeError,ValueError) -> default.
+ * Input "value\tdefault"(default 0). Returns python str(int) or the default text. */
+char *agent_rate_limit_tracker_u_safe_int(const char *arg) {
+    const char *a = arg ? arg : "";
+    const char *tab = strchr(a, '\t');
+    char val[128];
+    size_t vlen = tab ? (size_t)(tab - a) : strlen(a);
+    if (vlen >= sizeof val) vlen = sizeof val - 1;
+    memcpy(val, a, vlen); val[vlen] = '\0';
+    const char *def = tab ? tab + 1 : "0";
+    char *end = NULL;
+    double d = strtod(val, &end);
+    if (end == val || (*end != '\0' && *end != ' ' && *end != '\t' && *end != '\n' && *end != '\r'))
+        return strdup(def);
+    char buf[64]; snprintf(buf, sizeof buf, "%ld", (long)d);
+    return strdup(buf);
+}

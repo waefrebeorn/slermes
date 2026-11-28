@@ -3,19 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_safe_int",
+  "c_fn": "agent_rate_limit_tracker_u_safe_int",
   "py_module": "agent/rate_limit_tracker.py",
   "py_fn": "_safe_int",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "3.9\t0",
+    "-3.9\t0",
+    "1e3\t0",
+    "12\t0",
+    "hello\t0",
+    "abc\t7",
+    "\t5",
+    " 42 \t0",
+    "NULL\t0",
+    "0\t0"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +29,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
