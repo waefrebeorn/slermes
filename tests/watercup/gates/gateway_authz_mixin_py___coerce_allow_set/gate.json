@@ -7,15 +7,22 @@
   "py_module": "gateway/authz_mixin.py",
   "py_fn": "_coerce_allow_set",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "\"[\\\"a\\\",\\\"b\\\"]\"",
+    "\"a,b\"",
+    "\" a , b \"",
+    "\"x\"",
+    "\"\"",
+    "\"[\\\"b\\\",\\\"a\\\",\\\"b\\\"]\"",
+    "\"  [\\\"x\\\"]  \"",
+    "\"A,B,a\"",
+    "\"[\\\"1\\\",2]\"",
+    "\"no,[]\"",
+    "\"[bad json\"",
+    "\" , , \"",
+    "\"[\\\"a b\\\"]\"",
+    "\"x,,y\""
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

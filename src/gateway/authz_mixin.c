@@ -355,49 +355,56 @@ int gateway_authz_mixin_u_platform_gate_env(const char *arg) {
 }
 
 /* PoP: gateway_authz_mixin_u_coerce_allow_set @ gateway/authz_mixin.py:_coerce_allow_set */
-int gateway_authz_mixin_u_coerce_allow_set(const char *arg) {
-    /* Python: list -> stripped set; scalar -> comma split. Arg = "raw_json
-     * or scalar". */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    json_t *j = json_parse(arg, NULL);
-    if (j && json_is_array(j)) {
-        size_t n = json_array_size(j);
-        int first = 1;
-        for (size_t i = 0; i < n; i++) {
-            json_t *it = json_array_get(j, i);
-            const char *s = it && json_is_string(it) ? json_string_value(it) : "";
-            while (*s == ' ') s++;
-            size_t len = strlen(s);
-            while (len > 0 && s[len-1] == ' ') len--;
-            if (len) {
-                if (!first) printf("\n");
-                printf("%.*s", (int)len, s);
-                first = 0;
-            }
+/* Faithful: decode_json_list_literal(raw) -> list -> {str(p).strip()...}; else
+ * str(raw).split(",") stripped. Returns a sorted, de-duplicated JSON array
+ * (python returns a SET, so order is normalized by sorting on both sides).
+ * Was: printed newline-joined, no dedupe/sort, only space-strip, dropped
+ * non-string parts, and missed the JSON-list-literal decode for string inputs. */
+static void _ac_strip(char *s) {
+    char *q = s;
+    while (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r') q++;
+    if (q != s) memmove(s, q, strlen(q) + 1);
+    size_t n = strlen(s);
+    while (n > 0 && (s[n-1]==' '||s[n-1]=='\t'||s[n-1]=='\n'||s[n-1]=='\r')) s[--n] = '\0';
+}
+static int _ac_cmp(const void *a, const void *b) { return strcmp(*(char *const *)a, *(char *const *)b); }
+char *gateway_authz_mixin_u_coerce_allow_set(const char *raw_text) {
+    char **items = NULL; int n = 0, cap = 0;
+    #define AC_ADD(sv) do { char *_d = strdup(sv); _ac_strip(_d);         if (*_d) { if (n == cap) { cap = cap ? cap*2 : 8; items = realloc(items, (size_t)cap * sizeof(char*)); }                    items[n++] = _d; } else free(_d); } while (0)
+    const char *p = raw_text ? raw_text : "";
+    const char *q = p;
+    while (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r') q++;
+    json_t *j = NULL;
+    if (*q == '[') { json_t *t = json_parse(raw_text, NULL); if (t && json_is_array(t)) j = t; else if (t) json_free(t); }
+    if (j) {
+        for (size_t i = 0; i < j->c.count; i++) {
+            json_t *el = j->c.items[i];
+            if (el && json_is_string(el)) AC_ADD(json_string_value(el));
+            else if (el && json_is_number(el)) { char b[64]; snprintf(b,sizeof b,"%ld",(long)el->num_val); AC_ADD(b); }
+            else if (el && json_is_bool(el)) AC_ADD(el->bool_val ? "True" : "False");
         }
-        printf("\n");
         json_free(j);
-        return 0;
-    }
-    if (j) json_free(j);
-    /* comma split */
-    const char *p = arg;
-    int first = 1;
-    while (*p) {
-        const char *comma = strchr(p, ',');
-        size_t len = comma ? (size_t)(comma - p) : strlen(p);
-        const char *t = p;
-        while (len > 0 && (*t == ' ')) { t++; len--; }
-        while (len > 0 && t[len-1] == ' ') len--;
-        if (len) {
-            if (!first) printf("\n");
-            printf("%.*s", (int)len, t);
-            first = 0;
+    } else {
+        const char *r = raw_text ? raw_text : "";
+        while (1) {
+            const char *comma = strchr(r, ',');
+            size_t len = comma ? (size_t)(comma - r) : strlen(r);
+            char *seg = strndup(r, len);
+            AC_ADD(seg); free(seg);
+            if (!comma) break;
+            r = comma + 1;
         }
-        p = comma ? comma + 1 : p + len;
     }
-    printf("\n");
-    return 0;
+    /* de-dupe + sort */
+    if (n > 1) qsort(items, (size_t)n, sizeof(char*), _ac_cmp);
+    json_t *out = json_array();
+    for (int i = 0; i < n; i++) { if (i == 0 || strcmp(items[i], items[i-1]) != 0) json_append(out, json_string(items[i])); }
+    for (int i = 0; i < n; i++) free(items[i]);
+    free(items);
+    char *s = json_serialize(out);
+    json_free(out);
+    return s ? s : strdup("[]");
+    #undef AC_ADD
 }
 
 /* PoP: gateway_authz_mixin_u_registered_transport_adapter @ gateway/authz_mixin.py:_registered_transport_adapter */

@@ -1,43 +1,20 @@
-/* gate: port__gateway_authz_mixin_py___coerce_allow_set — traced copy of gateway_authz_mixin_u_coerce_allow_set (int_str) */
+/* gate: port__gateway_authz_mixin_py___coerce_allow_set -> real vev-style JSON-array port. Input = raw config text. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
-
-
-extern int gateway_authz_mixin_u_coerce_allow_set(const char *arg);
-
+#include "json.h"
+extern char *gateway_authz_mixin_u_coerce_allow_set(const char *raw_text);
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s gateway_authz_mixin_u_coerce_allow_set <input>...\n", argv[0]); return 2; }
+    if (argc < 3) { fprintf(stderr, "usage: %s <raw>...\n", argv[0]); return 2; }
     for (int i = 2; i < argc; i++) {
         WCUP_BEGIN("gateway_authz_mixin_u_coerce_allow_set");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_cap = tmpfile();
-    if (_cap) dup2(fileno(_cap), 1);
-    int result = gateway_authz_mixin_u_coerce_allow_set(argv[i]);
-    fflush(stdout);
-    if (_cap) {
-        dup2(_sv, 1); close(_sv);
-        rewind(_cap);
-        char _ob[4096]; size_t _on = 0; int _ch;
-        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
-            _ob[_on++] = (char)_ch;
-        _ob[_on] = '\0';
-        /* strip the trailing newline the port emits */
-        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
-            _ob[--_on] = '\0';
-        WCUP_VALSTR(_ob);
-        fclose(_cap);
-    }
-
-
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
+        fflush(stdout);
+        char *r = gateway_authz_mixin_u_coerce_allow_set(argv[i]);
+        WCUP_VALSTR(r ? r : "[]");
+        char cup[32]; WCUP_FINALIZE(cup, sizeof cup); printf("%s\n", cup);
         WCUP_END("gateway_authz_mixin_u_coerce_allow_set");
+        free(r);
     }
     return 0;
 }
