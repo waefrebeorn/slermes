@@ -374,3 +374,40 @@ int agent_verify_runner_u_ok(const char *arg) {
     json_free(o);
     return (zero && !timed) ? 1 : 0;
 }
+
+/* PoP: agent_verify_runner_u_tail @ agent/verify/runner.py:_tail */
+/* text[-limit:] if len(text) > limit else text -- CODEPOINT semantics, and
+ * limit == 0 answers the WHOLE text (python -0 == 0). */
+static int _tl_cps(const char *s, size_t n, int *out, int max) {
+    int k = 0;
+    for (size_t i = 0; i < n; ) {
+        unsigned char b = (unsigned char)s[i]; int len = 1;
+        if (b >= 0xF0) len = 4; else if (b >= 0xE0) len = 3; else if (b >= 0xC0) len = 2;
+        if (k < max) out[k] = (int)i;
+        k++; i += (size_t)len;
+    }
+    return k;
+}
+char *agent_verify_runner_u_tail(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return strdup(""); }
+    json_t *tv = json_obj_get(o, "text"), *lv = json_obj_get(o, "limit");
+    const char *text = (tv && json_is_string(tv)) ? tv->str_val : "";
+    if (!text) text = "";
+    long limit = (lv && json_is_number(lv)) ? (long)lv->num_val : 2000;
+    size_t n = strlen(text);
+    int idx[4096]; int cps = _tl_cps(text, n, idx, 4096);
+    char *r;
+    if (limit == 0 || cps <= limit) {
+        r = strdup(text);
+    } else {
+        long start;
+        if (limit > 0) start = cps - limit; else start = -limit;
+        if (start < 0) start = 0;
+        if (start > cps) start = cps;
+        size_t byte = (start < cps) ? (size_t)idx[start] : n;
+        r = strdup(text + byte);
+    }
+    json_free(o);
+    return r;
+}

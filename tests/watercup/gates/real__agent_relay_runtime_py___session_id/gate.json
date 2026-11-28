@@ -3,28 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_session_id",
+  "c_fn": "agent_relay_runtime_u_session_id",
   "py_module": "agent/relay_runtime.py",
   "py_fn": "_session_id",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
     "lib/libjson/json.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"session_id\": \"abc\"}",
+    "{}",
+    "{\"session_id\": 123}",
+    "{\"session_id\": true}",
+    "{\"session_id\": null}",
+    "{\"session_id\": \"\"}",
+    "{\"session_id\": \"x y\"}"
+  ]
 }

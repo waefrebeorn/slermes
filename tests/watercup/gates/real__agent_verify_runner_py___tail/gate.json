@@ -3,28 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_tail",
+  "c_fn": "agent_verify_runner_u_tail",
   "py_module": "agent/verify/runner.py",
   "py_fn": "_tail",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
     "lib/libjson/json.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"text\": \"abcdefghij\", \"limit\": 4}",
+    "{\"text\": \"abc\", \"limit\": 5}",
+    "{\"text\": \"abc\", \"limit\": 0}",
+    "{\"text\": \"\", \"limit\": 3}",
+    "{\"text\": \"abcdefghij\", \"limit\": 10}",
+    "{\"text\": \"abcdefghij\", \"limit\": -3}",
+    "{\"text\": \"abcdefghij\", \"limit\": 1}"
+  ]
 }

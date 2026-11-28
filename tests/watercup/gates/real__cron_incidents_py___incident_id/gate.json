@@ -3,28 +3,18 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_incident_id",
+  "c_fn": "cron_incidents_u_incident_id",
   "py_module": "cron/incidents.py",
   "py_fn": "_incident_id",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
     "lib/libjson/json.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"job_id\": \"abcdefgh\", \"error_sig\": \"boom\"}",
+    "{\"job_id\": \"ab\", \"error_sig\": \"x\"}",
+    "{\"job_id\": \"\", \"error_sig\": \"\"}",
+    "{\"job_id\": \"abcdef\", \"error_sig\": \"\"}",
+    "{\"job_id\": \"1234567890\", \"error_sig\": \"e\"}"
+  ]
 }

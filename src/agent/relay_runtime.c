@@ -1,3 +1,4 @@
+#include "hermes_json.h"
 /*
  * port_agent_relay_runtime.c — C11 port of agent/relay_runtime.py.
  *
@@ -2881,4 +2882,23 @@ void relay_coordinator_notify_session_compacted(relay_coordinator_t *co,
     pthread_mutex_lock(&session->lock);
     session->rotate_pending = true;
     pthread_mutex_unlock(&session->lock);
+}
+
+/* PoP: agent_relay_runtime_u_session_id @ agent/relay_runtime.py:_session_id */
+/* str(event.get("session_id") or "") for the scalar JSON types. */
+char *agent_relay_runtime_u_session_id(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return strdup(""); }
+    json_t *v = json_obj_get(o, "session_id");
+    char *r;
+    if (!v || json_is_null(v)) r = strdup("");
+    else if (json_is_string(v)) r = strdup(v->str_val ? v->str_val : "");
+    else if (json_is_bool(v)) r = strdup(v->bool_val ? "True" : "False");
+    else if (json_is_number(v)) {
+        char b[64]; double d = v->num_val;
+        if (d == (double)(long)d) snprintf(b, sizeof b, "%ld", (long)d); else snprintf(b, sizeof b, "%g", d);
+        r = strdup(b);
+    } else r = strdup("");
+    json_free(o);
+    return r;
 }
