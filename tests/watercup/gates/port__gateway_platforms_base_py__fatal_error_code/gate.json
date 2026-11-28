@@ -33,5 +33,6 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "REAL_GAP",
+  "relabel_note": "python attr is a @property on the adapter class, not a module-level function; getattr(module,'fatal_error_code') raises AttributeError, so this gate can never pass"
 }

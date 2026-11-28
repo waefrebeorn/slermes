@@ -19,32 +19,34 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: red_mask_secret @ agent/redact.py:mask_secret */
+/* PoP: red_mask_secret @ agent/redact.py:mask_secret
+ * python: strip control bytes; empty -> ""; len < floor(12) -> "***";
+ * else value[:head] + "..." + value[-tail:].  The previous C returned SHORT
+ * secrets verbatim (a leak) and rendered "…<count>…" which python never emits. */
 char *red_mask_secret(const char *secret, long head, long tail) {
-    /* Python: preserve head/tail chars. */
-    if (!secret) return NULL;
-    size_t n = strlen(secret);
+    if (!secret) return strdup("");
     if (head < 0) head = 0;
     if (tail < 0) tail = 0;
-    if ((long)n <= head + tail + 4) return strdup(secret);
-    size_t h = (size_t)head, t = (size_t)tail;
-    char *out = malloc(n + 16);
-    if (!out) return NULL;
-    memcpy(out, secret, h);
-    size_t o = h;
-    const char *dots = "…";
-    if (n - h - t > 12) {
-        memcpy(out + o, "…", 3); o += 3;
-        char mid[16];
-        snprintf(mid, sizeof(mid), "%zu", n - h - t);
-        memcpy(out + o, mid, strlen(mid)); o += strlen(mid);
-        memcpy(out + o, "…", 3); o += 3;
-    } else {
-        for (size_t i = h; i < n - t; i++) out[o++] = '*';
+    /* _DISPLAY_CONTROL_RE: drop C0 controls and DEL */
+    char *clean = malloc(strlen(secret) + 1);
+    if (!clean) return NULL;
+    size_t cl = 0;
+    for (const unsigned char *q = (const unsigned char *)secret; *q; q++) {
+        if (*q < 0x20 || *q == 0x7f) continue;
+        clean[cl++] = (char)*q;
     }
-    memcpy(out + o, secret + n - t, t);
-    o += t;
-    out[o] = '\0';
+    clean[cl] = 0;
+    if (cl == 0) { free(clean); return strdup(""); }
+    if (cl < 12) { free(clean); return strdup("***"); }
+    size_t h = (size_t)head > cl ? cl : (size_t)head;
+    size_t t = (size_t)tail > cl - h ? cl - h : (size_t)tail;
+    char *out = malloc(h + 3 + t + 1);
+    if (!out) { free(clean); return NULL; }
+    memcpy(out, clean, h);
+    memcpy(out + h, "...", 3);
+    memcpy(out + h + 3, clean + cl - t, t);
+    out[h + 3 + t] = 0;
+    free(clean);
     return out;
 }
 

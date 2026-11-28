@@ -3,35 +3,23 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "dmp_redact",
+  "c_fn": "red_mask_secret",
   "py_module": "hermes_cli/dump.py",
   "py_fn": "_redact",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src\\hermes_cli\\dump_ports.c"
+    "lib/libjson/json.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src",
-    "-DHERMES_VERSION=\"0.21.0\"",
-    "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
-    "-DATADIR=\"/usr/share/hermes\""
-  ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "inputs": [
+    "",
+    "abc",
+    "abcdefghij",
+    "abcdefghijk",
+    "abcdefghijkl",
+    "sk-1234567890abcdef",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "  ",
+    "abcdefghijklm",
+    "0123456789ab"
+  ]
 }
