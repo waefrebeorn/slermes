@@ -257,3 +257,35 @@ json_t *collect_memory_status(const char *home, double now_epoch_s)
     }
     return status;
 }
+
+/* PoP: gw_memstat_mb_text @ gateway/memory_status.py:_mb
+ * python: `None if _nonneg_int(kib) is None else kib // 1024`, where
+ * _nonneg_int accepts only real ints >= 0 and REJECTS bools and floats.
+ * The C json node stores every number as a double, so 3 and 3.0 are
+ * indistinguishable there; this entry point therefore takes the raw config
+ * token, which is the only place python's int-vs-float distinction survives.
+ * Returns a static "None" or a decimal string.
+ */
+const char *gw_memstat_mb_text(const char *token) {
+    static char out[32];
+    if (!token) return "None";
+    const char *t = token;
+    while (*t == ' ' || *t == '\t' || *t == '\n' || *t == '\r') t++;
+    const char *end = t + strlen(t);
+    while (end > t && (end[-1] == ' ' || end[-1] == '\t' || end[-1] == '\n' || end[-1] == '\r')) end--;
+    if (t == end) return "None";
+    /* python int tokens: optional sign then digits, nothing else */
+    const char *d = t;
+    if (*d == '-' || *d == '+') d++;
+    if (d == end) return "None";
+    int neg = (t[0] == '-');
+    long long acc = 0;
+    for (const char *c = d; c < end; c++) {
+        if (*c < '0' || *c > '9') return "None";   /* 3.0, 1e3, "2048", true, [], {} */
+        if (acc > (9223372036854775807LL - (*c - '0')) / 10) return "None";
+        acc = acc * 10 + (*c - '0');
+    }
+    if (neg) return "None";                        /* _nonneg_int rejects negatives */
+    snprintf(out, sizeof out, "%lld", acc / 1024); /* int // 1024, floor for >= 0 */
+    return out;
+}

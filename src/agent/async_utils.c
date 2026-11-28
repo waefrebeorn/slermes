@@ -4,7 +4,7 @@
  *
  * Python API → C implementation mapping:
  *   safe_schedule_threadsafe()  → async_schedule_threadsafe() (async_utils.h)
- *   run_with_timeout()          → run_with_timeout() in this file
+ *   run_with_timeout()          -> NO python counterpart; C-only helper
  *   is_subprocess_running()     → is_subprocess_running() in this file
  *   terminate_subprocess()      → terminate_subprocess() in this file
  *   bootstrap_process_runner()  → bootstrap_process_runner() in this file
@@ -29,16 +29,42 @@ bool safe_schedule_threadsafe(async_coro_t *coro, async_loop_t *loop) {
     return async_schedule_threadsafe(coro, loop);
 }
 
-/* Port of Python: async_utils.run_with_timeout(cmd, timeout_sec).
- * Run a shell command with a hard timeout; returns stdout (malloc'd) or NULL.
- * Faithful to subprocess.run(..., timeout=...) + capture_output. */
+/* C-only helper: NOT a port. agent/async_utils.py has no run_with_timeout (the
+ * earlier PoP annotation claiming one was phantom -- nothing in the payload
+ * defines it, and it has no callers here either). Kept because process-runner
+ * helpers reference it, but the command is now shlex-quoted: interpolating it
+ * raw into "sh -c %s" split multi-word commands at the first space and let any
+ * shell metacharacter inside the command run as a separate command.
+ * Run a shell command with a hard timeout; returns stdout (malloc'd) or NULL. */
+static void aut_shell_quote(const char *in, char *out, size_t outsz) {
+    size_t p = 0;
+    int safe = 1;
+    if (!in || !*in) safe = 0;
+    for (const unsigned char *c = (const unsigned char *)(in ? in : ""); *c && safe; c++) {
+        if ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z') || (*c >= '0' && *c <= '9')) continue;
+        if (strchr("_@%+=:,./-", *c)) continue;
+        safe = 0;
+    }
+    if (safe && in) {
+        snprintf(out, outsz, "%s", in);
+        return;
+    }
+    if (p + 1 < outsz) out[p++] = '\'';
+    for (const char *c = in ? in : ""; *c && p + 6 < outsz; c++) {
+        if (*c == '\'') { memcpy(out + p, "'\"'\"'", 5); p += 5; }
+        else out[p++] = *c;
+    }
+    if (p + 1 < outsz) out[p++] = '\'';
+    out[p < outsz ? p : outsz - 1] = '\0';
+}
 char *run_with_timeout(const char *command, int timeout_sec) {
     if (!command || !command[0]) return NULL;
     if (timeout_sec <= 0) timeout_sec = 300;
 
     char cmd[32768];
-    int n = snprintf(cmd, sizeof(cmd), "timeout %d sh -c %s", timeout_sec,
-                     command);
+    char quoted[24576];
+    aut_shell_quote(command, quoted, sizeof quoted);
+    int n = snprintf(cmd, sizeof(cmd), "timeout %d sh -c %s", timeout_sec, quoted);
     if (n < 0 || (size_t)n >= sizeof(cmd)) return NULL;
 
     FILE *fp = popen(cmd, "r");
