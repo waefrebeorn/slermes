@@ -1,3 +1,4 @@
+#include "hermes_json.h"
 /* port_turn_summary.c — C11 port of agent/turn_summary.py
  *
  * See port_turn_summary.h for the faithful-port contract.
@@ -421,4 +422,43 @@ char *agent_turn_summary_u_pluralize(const char *arg) {
         }
     }
     snprintf(out, sizeof out, "1 %s", noun); return strdup(out);
+}
+
+/* PoP: agent_turn_summary_u_extract_line_deltas @ agent/turn_summary.py:_extract_line_deltas */
+/* (added, removed) from a "patch" result's diff, else None(""). Input "tool\tresult".
+ * Excludes +++/--- headers; unknown (no +/- lines) -> None. */
+char *agent_turn_summary_u_extract_line_deltas(const char *arg) {
+    const char *a = arg ? arg : "";
+    const char *tab = strchr(a, '\t');
+    char tool[64]; size_t tl = tab ? (size_t)(tab - a) : strlen(a);
+    if (tl >= sizeof tool) tl = sizeof tool - 1;
+    memcpy(tool, a, tl); tool[tl] = 0;
+    if (strcmp(tool, "patch") != 0) return strdup("");
+    const char *res = tab ? tab + 1 : "";
+    while (*res==' '||*res=='\t'||*res=='\n'||*res=='\r') res++;
+    if (*res != '{') return strdup("");
+    json_t *o = json_parse(res, NULL);
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return strdup(""); }
+    json_t *d = json_obj_get(o, "diff");
+    if (!d || !json_is_string(d) || !d->str_val) { json_free(o); return strdup(""); }
+    const char *diff = d->str_val;
+    const char *q = diff; while (*q==' '||*q=='\t'||*q=='\n'||*q=='\r') q++;
+    if (!*q) { json_free(o); return strdup(""); }
+    long added = 0, removed = 0;
+    const char *p = diff;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t len = nl ? (size_t)(nl - p) : strlen(p);
+        if (len > 0 && p[len-1]=='\r') len--;
+        int is_hdr = (len>=3 && (memcmp(p,"+++",3)==0 || memcmp(p,"---",3)==0));
+        if (!is_hdr) {
+            if (len >= 1 && p[0]=='+') added++;
+            else if (len >= 1 && p[0]=='-') removed++;
+        }
+        if (!nl) break;
+        p = nl + 1;
+    }
+    json_free(o);
+    if (added == 0 && removed == 0) return strdup("");
+    char buf[64]; snprintf(buf, sizeof buf, "(%ld, %ld)", added, removed); return strdup(buf);
 }

@@ -3,15 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_extract_line_deltas",
+  "c_fn": "agent_turn_summary_u_extract_line_deltas",
   "py_module": "agent/turn_summary.py",
   "py_fn": "_extract_line_deltas",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "patch\t{\"diff\":\"+a\\n+b\\n-c\\n\"}",
+    "read\t{\"diff\":\"+a\"}",
+    "patch\tnotjson",
+    "patch\t{\"diff\":\"\"}",
+    "patch\t{\"diff\":\"+++ a\\n--- b\\n+x\\n\"}",
+    "patch\t{\"diff\":\"context only\"}",
+    "patch\t{\"other\":1}",
+    "patch\t{\"diff\":\"-a\\n-b\\n\"}",
+    "patch\t{\"diff\":\"+a\\n-a\"}",
+    "patch\t[]"
   ],
   "extra_src": [
     "lib/libjson/json.c"
@@ -26,5 +31,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
