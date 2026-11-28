@@ -1,3 +1,4 @@
+#include "hermes_json.h"
 /*
  * port_otlp_exporter.c — pure helpers from agent/monitoring/otlp_exporter.py.
  *
@@ -570,4 +571,39 @@ otlp_streamer_t *otlp_exporter_start_streaming(const char *config_json) {
               "available in this native build; install 'hermes-agent[otlp]' "
               "on the Python side. Export disabled.");
     return NULL;
+}
+
+/* PoP: agent_monitoring_otlp_exporter_u_otlp_config @ agent/monitoring/otlp_exporter.py:_otlp_config */
+/* _monitoring_section(config, "export", "otlp"). */
+static int _mon_truthy(json_t *v) {
+    if (!v || json_is_null(v)) return 0;
+    switch (v->type) {
+        case JSON_BOOL: return v->bool_val ? 1 : 0;
+        case JSON_NUMBER: return v->num_val != 0.0;
+        case JSON_STRING: return (v->str_val && v->str_val[0]) ? 1 : 0;
+        case JSON_ARRAY: return v->c.count > 0;
+        case JSON_OBJECT: return v->c.count > 0;
+        default: return 0;
+    }
+}
+static char *_mon_section(const char *arg, const char *const *path, int n) {
+    json_t *cfg = arg ? json_parse(arg, NULL) : NULL;
+    json_t *node = NULL;
+    if (cfg && json_is_object(cfg)) {
+        json_t *mon = json_obj_get(cfg, "monitoring");
+        if (_mon_truthy(mon)) node = mon; else node = NULL;
+    }
+    for (int i = 0; i < n; i++) {
+        json_t *next = NULL;
+        if (node && json_is_object(node)) next = json_obj_get(node, path[i]);
+        node = _mon_truthy(next) ? next : NULL;
+    }
+    char *r = node ? json_serialize(node) : strdup("{}");
+    if (!r) r = strdup("{}");
+    if (cfg) json_free(cfg);
+    return r;
+}
+char *agent_monitoring_otlp_exporter_u_otlp_config(const char *arg) {
+    static const char *P[] = {"export", "otlp"};
+    return _mon_section(arg, P, 2);
 }

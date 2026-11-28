@@ -338,3 +338,22 @@ bool nous_is_genuine_rate_limit(const char *response_headers) {
     json_free(buckets);
     return exhausted;
 }
+
+/* PoP: agent_nous_rate_guard_u_has_exhausted_bucket @ agent/nous_rate_guard.py:_has_exhausted_bucket */
+/* any(_is_exhausted(remaining, reset) for remaining, reset in buckets.values());
+ * _is_exhausted: remaining <= 0 AND reset >= 60.0, neither None. */
+int agent_nous_rate_guard_u_has_exhausted_bucket(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return 0; }
+    int hit = 0;
+    for (size_t i = 0; i < o->c.count && !hit; i++) {
+        json_t *v = o->c.items[i];
+        if (!v || !json_is_array(v) || v->c.count != 2) continue;
+        json_t *rem = v->c.items[0], *rst = v->c.items[1];
+        if (!rem || !json_is_number(rem)) continue;
+        if (!rst || !json_is_number(rst)) continue;
+        if (rem->num_val <= 0.0 && rst->num_val >= 60.0) hit = 1;
+    }
+    json_free(o);
+    return hit;
+}

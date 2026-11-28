@@ -3,28 +3,23 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_has_exhausted_bucket",
+  "c_fn": "agent_nous_rate_guard_u_has_exhausted_bucket",
   "py_module": "agent/nous_rate_guard.py",
   "py_fn": "_has_exhausted_bucket",
+  "classification": "PORTED",
   "inputs": [
-    0,
-    1,
-    42,
-    1024,
-    -7
+    "{\"a\":[0,120]}",
+    "{\"a\":[0,30]}",
+    "{\"a\":[5,120]}",
+    "{}",
+    "{\"a\":[0,null]}",
+    "{\"a\":[null,120]}",
+    "{\"a\":[0,60]}",
+    "{\"a\":[-1,999],\"b\":[0,0]}",
+    "{\"a\":[0,120],\"b\":[1,1]}",
+    "{\"a\":[0,59.9]}"
   ],
   "extra_src": [
     "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  ]
 }

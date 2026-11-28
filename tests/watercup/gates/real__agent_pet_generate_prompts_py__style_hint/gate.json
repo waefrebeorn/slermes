@@ -3,28 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "style_hint",
+  "c_fn": "agent_pet_generate_prompts_u_style_hint",
   "py_module": "agent/pet/generate/prompts.py",
   "py_fn": "style_hint",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "auto",
+    "pixel",
+    " PLUSH ",
+    "PIXEL",
+    "unknown",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "flat-vector",
+    "3d-toy",
+    "clay",
+    "sticker",
+    "painterly",
+    "Auto"
+  ]
 }

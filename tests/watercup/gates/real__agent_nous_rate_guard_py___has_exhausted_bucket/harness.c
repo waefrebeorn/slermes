@@ -1,25 +1,12 @@
-/* gate: real__agent_nous_rate_guard_py___has_exhausted_bucket — GAP sentinel for _has_exhausted_bucket */
+/* gate: _has_exhausted_bucket -> real port. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_has_exhausted_bucket";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _has_exhausted_bucket <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_has_exhausted_bucket");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_has_exhausted_bucket");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern int agent_nous_rate_guard_u_has_exhausted_bucket(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_has_exhausted_bucket");
+  int r=agent_nous_rate_guard_u_has_exhausted_bucket(argv[i]); WCUP_VALSTR(r ? "1" : "0");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_has_exhausted_bucket"); } return 0;}

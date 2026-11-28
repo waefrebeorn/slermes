@@ -298,3 +298,31 @@ char *w20_prompts_c0fcfd_build_row_prompt(const char *state, double frame_count,
     /* the concept is deliberately not echoed in a row strip (upstream strips it and drops it) */
     return pr20_dup(sb.buf);
 }
+
+/* PoP: agent_pet_generate_prompts_u_style_hint @ agent/pet/generate/prompts.py:style_hint */
+/* _STYLE_HINTS.get((style or "auto").strip().lower(), "") -- 9 entries. */
+typedef struct { const char *k, *v; } _sh_row;
+static const _sh_row SH_ROWS[] = {
+ {"auto"," Style: crisp 16-bit PIXEL-ART game sprite \u2014 visible square pixels, a small limited palette, clean dark outline, flat cel shading, chunky chibi proportions, like a classic SNES/JRPG party member or a petdex.dev mascot. Absolutely NOT 3D-rendered, NOT a smooth painted or vector illustration, NOT photorealistic \u2014 no soft gradients, no realistic lighting, no figurine look."},
+ {"pixel"," Render in clean 16-bit pixel-art style with visible square pixels and a limited palette."},
+ {"plush"," Render as a soft plush toy."},
+ {"clay"," Render as a claymation / soft 3D clay figure."},
+ {"sticker"," Render as a glossy die-cut sticker."},
+ {"flat-vector"," Render in flat vector mascot style."},
+ {"3d-toy"," Render as a glossy 3D toy."},
+ {"painterly"," Render in a soft painterly style."},
+};
+char *agent_pet_generate_prompts_u_style_hint(const char *arg) {
+    const char *s = (arg && arg[0]) ? arg : "auto";
+    size_t a = 0, b = strlen(s);
+    while (a < b && (s[a]==' '||s[a]=='\t'||s[a]=='\n'||s[a]=='\r'||s[a]=='\f'||s[a]=='\v')) a++;
+    while (b > a && (s[b-1]==' '||s[b-1]=='\t'||s[b-1]=='\n'||s[b-1]=='\r'||s[b-1]=='\f'||s[b-1]=='\v')) b--;
+    char *low = malloc(b-a+1); size_t w = 0;
+    for (size_t i = a; i < b; i++) { char c = s[i]; low[w++] = (c>='A'&&c<='Z') ? (char)(c+32) : c; }
+    low[w] = 0;
+    const char *hit = "";
+    for (int i = 0; i < (int)(sizeof(SH_ROWS)/sizeof(SH_ROWS[0])); i++)
+        if (strcmp(low, SH_ROWS[i].k) == 0) { hit = SH_ROWS[i].v; break; }
+    free(low);
+    return strdup(hit);
+}
