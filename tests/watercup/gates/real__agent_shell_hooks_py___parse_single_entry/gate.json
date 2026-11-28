@@ -3,28 +3,32 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_parse_single_entry",
+  "c_fn": "agent_shell_hooks_u_parse_single_entry",
   "py_module": "agent/shell_hooks.py",
   "py_fn": "_parse_single_entry",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
     "lib/libjson/json.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"echo hi\"}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": \"nope\"}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"   \"}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"  ls  \"}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"matcher\": \"^bash\"}}",
+    "{\"event\": \"post_tool_call\", \"raw\": {\"command\": \"x\", \"matcher\": \"^bash\"}}",
+    "{\"event\": \"session_start\", \"raw\": {\"command\": \"x\", \"matcher\": \"^bash\"}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"matcher\": 123}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"timeout\": 0}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"timeout\": -5}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"timeout\": 1000}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"timeout\": \"45\"}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"timeout\": \"abc\"}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"timeout\": 45.9}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"fail_closed\": true}}",
+    "{\"event\": \"post_tool_call\", \"raw\": {\"command\": \"x\", \"fail_closed\": true}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"failClosed\": true}}",
+    "{\"event\": \"pre_tool_call\", \"raw\": {\"command\": \"x\", \"fail_closed\": \"true\"}}"
+  ]
 }

@@ -1,3 +1,4 @@
+#include "hermes_json.h"
 /*
  * port_shell_hooks_remaining.c — Port of agent/shell_hooks.py surface.
  * Hook spec parsing, subprocess spawning, payload serialization, response
@@ -773,3 +774,68 @@ char *shk_evaluate_result(const char *event, bool fail_closed,
     return result;
 }
 
+
+/* PoP: agent_shell_hooks_u_parse_single_entry @ agent/shell_hooks.py:_parse_single_entry */
+/* Validates one hooks: entry. Input JSON {"event":"...","raw":<any>}.
+ * Cup projection: "None" | "event|command|matcher(-=None)|timeout|fail_closed".
+ * raw must be a mapping with a non-empty str command; matcher kept only if a str AND
+ * event in {pre_tool_call,post_tool_call}; timeout int() then <1 -> 60, >300 -> 300,
+ * bad -> 60; fail_closed must be a bool and only survives for pre_tool_call. */
+static int _sh_is_tool_event(const char *e) {
+    return strcmp(e, "pre_tool_call") == 0 || strcmp(e, "post_tool_call") == 0;
+}
+static char *_sh_trim(const char *s) {
+    size_t n = strlen(s), a = 0, b = n;
+    while (a < b && (s[a]==' '||s[a]=='\t'||s[a]=='\n'||s[a]=='\r'||s[a]=='\f'||s[a]=='\v')) a++;
+    while (b > a && (s[b-1]==' '||s[b-1]=='\t'||s[b-1]=='\n'||s[b-1]=='\r'||s[b-1]=='\f'||s[b-1]=='\v')) b--;
+    char *r = malloc(b - a + 1); memcpy(r, s + a, b - a); r[b-a] = 0; return r;
+}
+static int _sh_int(json_t *v, long *out) {
+    if (!v || json_is_null(v)) return 0;
+    if (json_is_bool(v)) { *out = v->bool_val ? 1 : 0; return 1; }
+    if (json_is_number(v)) { *out = (long)v->num_val; return 1; }
+    if (json_is_string(v) && v->str_val) {
+        const char *p = v->str_val; while (*p==' '||*p=='\t'||*p=='\n'||*p=='\r') p++;
+        if (!*p) return 0;
+        char *end = NULL; long got = strtol(p, &end, 10);
+        if (end == p) return 0;
+        while (*end==' '||*end=='\t'||*end=='\n'||*end=='\r') end++;
+        if (*end) return 0;
+        *out = got; return 1;
+    }
+    return 0;
+}
+char *agent_shell_hooks_u_parse_single_entry(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return strdup("None"); }
+    json_t *ev = json_obj_get(o, "event");
+    const char *event = (ev && json_is_string(ev) && ev->str_val) ? ev->str_val : "";
+    json_t *raw = json_obj_get(o, "raw");
+    if (!raw || !json_is_object(raw)) { json_free(o); return strdup("None"); }
+    json_t *cm = json_obj_get(raw, "command");
+    if (!cm || !json_is_string(cm) || !cm->str_val) { json_free(o); return strdup("None"); }
+    char *cmd = _sh_trim(cm->str_val);
+    if (!cmd[0]) { free(cmd); json_free(o); return strdup("None"); }
+    const char *matcher = NULL;
+    json_t *mt = json_obj_get(raw, "matcher");
+    if (mt && !json_is_null(mt)) {
+        if (!json_is_string(mt)) matcher = NULL;
+        else if (!_sh_is_tool_event(event)) matcher = NULL;
+        else matcher = mt->str_val;
+    }
+    long timeout = 60;
+    json_t *tv = json_obj_get(raw, "timeout");
+    if (tv) { long got; if (_sh_int(tv, &got)) timeout = got; }
+    if (timeout < 1) timeout = 60;
+    else if (timeout > 300) timeout = 300;
+    int fail_closed = 0;
+    json_t *fc = json_obj_get(raw, "fail_closed");
+    if (!fc) fc = json_obj_get(raw, "failClosed");
+    if (fc && json_is_bool(fc)) fail_closed = fc->bool_val ? 1 : 0;
+    if (fail_closed && strcmp(event, "pre_tool_call") != 0) fail_closed = 0;
+    size_t need = strlen(event) + strlen(cmd) + (matcher ? strlen(matcher) : 1) + 64;
+    char *res = malloc(need);
+    snprintf(res, need, "%s|%s|%s|%ld|%d", event, cmd, matcher ? matcher : "-", timeout, fail_closed);
+    free(cmd); json_free(o);
+    return res;
+}
