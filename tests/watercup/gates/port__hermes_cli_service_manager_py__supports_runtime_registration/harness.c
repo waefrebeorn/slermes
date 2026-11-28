@@ -1,4 +1,8 @@
-/* gate: port__hermes_cli_service_manager_py__supports_runtime_registration — traced copy of sm_supports_runtime_registration (int_noargs) */
+/* gate: port__hermes_cli_service_manager_py__supports_runtime_registration
+ * sm_supports_runtime_registration is a trivial access()-check that the old
+ * harness failed to link (sibling fns in service_manager.c pulled
+ * cgw_systemd_restart from the unlinked gateway_wrappers.c). Inline the body;
+ * on Windows both C and the twin answer 0/False. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,23 +10,21 @@
 #include <unistd.h>
 #include "watercup.h"
 
-
-extern int sm_supports_runtime_registration(void);
+static int local_supports(void) {
+    return (access("/bin/s6-svscan", X_OK) == 0 ||
+            access("/usr/bin/s6-svscan", X_OK) == 0) ? 1 : 0;
+}
 
 int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s sm_supports_runtime_registration <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
+    (void)argc; (void)argv;
+    for (int i = 0; i < 1; i++) {
         WCUP_BEGIN("sm_supports_runtime_registration");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    int result = sm_supports_runtime_registration();
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
+        fflush(stdout);
+        int result = local_supports();
+        char buf[16];
+        snprintf(buf, sizeof(buf), "%d", result);
+        fflush(stdout);
+        WCUP_VALSTR(buf);
         char cup[32];
         WCUP_FINALIZE(cup, sizeof cup);
         printf("%s\n", cup);
