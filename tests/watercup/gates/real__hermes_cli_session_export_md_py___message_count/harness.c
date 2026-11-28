@@ -1,25 +1,12 @@
-/* gate: real__hermes_cli_session_export_md_py___message_count — GAP sentinel for _message_count */
+/* gate: real__hermes_cli_session_export_md_py___message_count -> real _message_count (session JSON -> long). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_message_count";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _message_count <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_message_count");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_message_count");
-    }
-    return 0;
-}
+#include "json.h"
+extern long sexmd_u_message_count(const char *session_json);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("sexmd_u_message_count"); fflush(stdout);
+  long r=sexmd_u_message_count(argv[i]); char b[32]; snprintf(b,sizeof b,"%ld",r);
+  WCUP_VALSTR(b); char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("sexmd_u_message_count"); } return 0; }

@@ -1158,30 +1158,42 @@ int hermes_cli_model_catalog_get_curated_nous_models(const char *arg) {
 }
 
 /* PoP: hermes_cli_model_catalog_u_default_model_from_block @ hermes_cli/model_catalog.py:_default_model_from_block */
-int hermes_cli_model_catalog_u_default_model_from_block(const char *arg) {
-    /* Python: id of first model with default:true, else None. Arg = block
-     * JSON. */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    json_t *block = json_parse(arg, NULL);
-    if (!block || !json_is_object(block)) {
-        if (block) json_free(block);
-        printf("\n");
-        return 0;
-    }
-    json_t *models = json_obj_get(block, "models");
+/* PoP: hermes_cli_model_catalog_u_default_model_from_block @ hermes_cli/model_catalog.py:_default_model_from_block */
+/* Faithful: next((mid for mid,m in _block_ids(block) if m.get("default")), None);
+ * _block_ids uses str(m.get("id") or "").strip() and requires non-empty. Was:
+ * no strip (returned " a " verbatim), bool-only default truthiness, printed and
+ * returned 0. Returns owned string or NULL. */
+char *hermes_cli_model_catalog_u_default_model_from_block(const char *block_json) {
+    json_t *block = block_json ? json_parse(block_json, NULL) : NULL;
+    json_t *models = (block && json_is_object(block)) ? json_obj_get(block, "models") : NULL;
+    char *out = NULL;
     if (models && json_is_array(models)) {
-        size_t n = json_array_size(models);
-        for (size_t i = 0; i < n; i++) {
-            json_t *m = json_array_get(models, i);
-            if (m && json_is_object(m) && json_get_bool(m, "default", 0)) {
-                const char *mid = json_get_str(m, "id", "");
-                if (mid && *mid) { printf("%s\n", mid); json_free(block); return 0; }
+        for (size_t i = 0; i < models->c.count && !out; i++) {
+            json_t *m = models->c.items[i];
+            if (!m || !json_is_object(m)) continue;
+            json_t *id = json_obj_get(m, "id");
+            char mid[512] = "";
+            if (id && json_is_string(id)) snprintf(mid, sizeof mid, "%s", id->str_val);
+            else if (id && json_is_number(id)) snprintf(mid, sizeof mid, "%ld", (long)id->num_val);
+            char *q = mid;
+            while (*q==' '||*q=='\t'||*q=='\n'||*q=='\r') q++;
+            if (q != mid) memmove(mid, q, strlen(q)+1);
+            size_t L = strlen(mid);
+            while (L>0){char c=mid[L-1]; if(c==' '||c=='\t'||c=='\n'||c=='\r') mid[--L]='\0'; else break;}
+            if (!mid[0]) continue;                 /* empty id skipped */
+            json_t *d = json_obj_get(m, "default");
+            int t = 0;
+            if (d) {
+                if (d->type == JSON_BOOL) t = d->bool_val ? 1 : 0;
+                else if (d->type == JSON_NUMBER) t = (d->num_val != 0.0);
+                else if (d->type == JSON_STRING) t = (d->str_val && d->str_val[0]);
+                else t = (d->c.count > 0);
             }
+            if (t) out = strdup(mid);
         }
     }
-    printf("\n");
-    json_free(block);
-    return 0;
+    if (block) json_free(block);
+    return out;
 }
 
 /* PoP: hermes_cli_model_catalog_get_default_model_from_cache @ hermes_cli/model_catalog.py:get_default_model_from_cache */

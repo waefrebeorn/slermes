@@ -171,22 +171,29 @@ int sexmd_u_segments(const char *arg) {
 }
 
 /* PoP: sexmd_u_message_count @ hermes_cli/session_export_md.py:_message_count */
-int sexmd_u_message_count(const char *arg) {
-    /* Python: sum(len(seg.get("messages") or []) for seg in _segments(...)).
-     * Arg = JSON array of segments with "messages" arrays. */
-    long long total = 0;
-    if (!arg || !*arg) { printf("0\n"); return 0; }
-    json_t *segs = json_parse(arg, NULL);
-    if (segs && segs->type == JSON_ARRAY) {
-        for (size_t i = 0; i < json_len(segs); i++) {
-            json_t *seg = json_get(segs, i);
-            json_t *msgs = seg ? json_obj_get(seg, "messages") : NULL;
-            if (msgs && msgs->type == JSON_ARRAY) total += (long long)json_len(msgs);
+/* PoP: sexmd_u_message_count @ hermes_cli/session_export_md.py:_message_count */
+/* Faithful: sum(len(seg.get("messages") or []) for seg in _segments(session));
+ * _segments = [dict s in session["segments"]] if that is a non-empty list else
+ * [session]. Was: took a bare segments ARRAY and printed/returned 0. */
+long sexmd_u_message_count(const char *session_json) {
+    json_t *sess = session_json ? json_parse(session_json, NULL) : NULL;
+    if (!sess || !json_is_object(sess)) { if (sess) json_free(sess); return 0; }
+    json_t *segs = json_obj_get(sess, "segments");
+    long total = 0;
+    if (segs && json_is_array(segs) && segs->c.count > 0) {
+        for (size_t i = 0; i < segs->c.count; i++) {
+            json_t *seg = segs->c.items[i];
+            if (seg && json_is_object(seg)) {
+                json_t *m = json_obj_get(seg, "messages");
+                if (m && json_is_array(m)) total += (long)m->c.count;
+            }
         }
+    } else {
+        json_t *m = json_obj_get(sess, "messages");
+        if (m && json_is_array(m)) total += (long)m->c.count;
     }
-    json_free(segs);
-    printf("%lld\n", total);
-    return 0;
+    json_free(sess);
+    return total;
 }
 
 /* PoP: sexmd_u_render_messages @ hermes_cli/session_export_md.py:_render_messages */

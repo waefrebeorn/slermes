@@ -7,15 +7,16 @@
   "py_module": "hermes_cli/session_export_md.py",
   "py_fn": "_message_count",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"messages\": [1, 2, 3]}",
+    "{\"segments\": [{\"messages\": [1, 2]}, {\"messages\": [3]}]}",
+    "{\"segments\": []}",
+    "{\"segments\": [{\"messages\": [1]}, {\"x\": 1}, {\"messages\": [2]}]}",
+    "{}",
+    "{\"segments\": null}",
+    "{\"segments\": [{\"messages\": []}]}",
+    "{\"messages\": []}"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

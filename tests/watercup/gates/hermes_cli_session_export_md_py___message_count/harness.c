@@ -1,25 +1,12 @@
-/* gate: hermes_cli_session_export_md_py___message_count — traced copy of sexmd_u_message_count */
+/* gate: hermes_cli_session_export_md_py___message_count -> real _message_count (session JSON -> long). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-extern int sexmd_u_message_count(const char *input);
-
-static void trace_one(const char *input) {
-    WCUP_BEGIN("sexmd_u_message_count");
-    int result = sexmd_u_message_count(input);
-    WCUP_VALINT(result);
-    char cup[32];
-    WCUP_FINALIZE(cup, sizeof cup);
-    printf("%s\n", cup);
-    WCUP_END("sexmd_u_message_count");
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s sexmd_u_message_count <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        trace_one(argv[i]);
-    }
-    return 0;
-}
+#include "json.h"
+extern long sexmd_u_message_count(const char *session_json);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("sexmd_u_message_count"); fflush(stdout);
+  long r=sexmd_u_message_count(argv[i]); char b[32]; snprintf(b,sizeof b,"%ld",r);
+  WCUP_VALSTR(b); char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("sexmd_u_message_count"); } return 0; }
