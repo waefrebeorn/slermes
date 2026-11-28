@@ -3,28 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_normalize_base_url",
+  "c_fn": "agent_model_metadata_u_normalize_base_url",
   "py_module": "agent/model_metadata.py",
   "py_fn": "_normalize_base_url",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "https://api.x.com/",
+    "https://api.x.com",
+    "  https://a.b//  ",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "///",
+    "https://",
+    "x/y/",
+    "\t https://z \n",
+    "//",
+    "a/",
+    "\u3000https://q/\u3000"
+  ]
 }

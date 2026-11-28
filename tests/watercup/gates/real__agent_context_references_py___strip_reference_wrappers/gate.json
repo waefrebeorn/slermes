@@ -3,28 +3,21 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_strip_reference_wrappers",
+  "c_fn": "agent_context_references_u_strip_reference_wrappers",
   "py_module": "agent/context_references.py",
   "py_fn": "_strip_reference_wrappers",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
+    "`foo`",
+    "\"bar\"",
+    "'x'",
+    "`x\"",
+    "x",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "`",
+    "``",
+    "\\a\\",
+    "''",
+    "\"\""
+  ]
 }

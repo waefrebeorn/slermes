@@ -1300,3 +1300,28 @@ long agent_model_metadata_u_estimate_tokens_rough(const char *arg) {
     free(buf);
     return dense + ((bytes + 3) / 4);
 }
+
+/* PoP: agent_model_metadata_u_normalize_base_url @ agent/model_metadata.py:_normalize_base_url */
+/* (base_url or "").strip().rstrip("/") -- unicode strip, then all trailing slashes. */
+static int _mm_ws(unsigned c) {
+    return (c>=0x9&&c<=0xD)||(c>=0x1C&&c<=0x20)||c==0x85||c==0xA0||c==0x1680||
+           (c>=0x2000&&c<=0x200A)||c==0x2028||c==0x2029||c==0x202F||c==0x205F||c==0x3000;
+}
+static int _mm_dec(const char *s, size_t n, size_t i, unsigned *cp, int *len) {
+    unsigned char b=(unsigned char)s[i];
+    if (b<0x80){*cp=b;*len=1;return 1;}
+    if ((b&0xe0)==0xc0&&i+1<n){*cp=((b&0x1f)<<6)|((unsigned char)s[i+1]&0x3f);*len=2;return 1;}
+    if ((b&0xf0)==0xe0&&i+2<n){*cp=((b&0x0f)<<12)|(((unsigned char)s[i+1]&0x3f)<<6)|((unsigned char)s[i+2]&0x3f);*len=3;return 1;}
+    if ((b&0xf8)==0xf0&&i+3<n){*cp=((b&0x07)<<18)|(((unsigned char)s[i+1]&0x3f)<<12)|(((unsigned char)s[i+2]&0x3f)<<6)|((unsigned char)s[i+3]&0x3f);*len=4;return 1;}
+    *cp=b;*len=1;return 1;
+}
+char *agent_model_metadata_u_normalize_base_url(const char *arg) {
+    const char *s = arg ? arg : "";
+    size_t n = strlen(s), a = 0, b = n;
+    while (a < b) { unsigned cp; int len; _mm_dec(s,n,a,&cp,&len); if (!_mm_ws(cp)) break; a += (size_t)len; }
+    while (b > a) { size_t k=b-1; while (k>a && ((unsigned char)s[k]&0xC0)==0x80) k--;
+        unsigned cp; int len; _mm_dec(s,n,k,&cp,&len);
+        if (k+(size_t)len!=b || !_mm_ws(cp)) break; b=k; }
+    while (b > a && s[b-1] == '/') b--;
+    char *r = malloc(b-a+1); memcpy(r,s+a,b-a); r[b-a]=0; return r;
+}

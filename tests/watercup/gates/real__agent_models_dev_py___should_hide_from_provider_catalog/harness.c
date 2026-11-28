@@ -1,25 +1,12 @@
-/* gate: real__agent_models_dev_py___should_hide_from_provider_catalog — GAP sentinel for _should_hide_from_provider_catalog */
+/* gate: _should_hide_from_provider_catalog -> real port (JSON in, int out). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_should_hide_from_provider_catalog";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _should_hide_from_provider_catalog <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_should_hide_from_provider_catalog");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_should_hide_from_provider_catalog");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern int agent_models_dev_u_should_hide_from_provider_catalog(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_should_hide_from_provider_catalog");
+  int r=agent_models_dev_u_should_hide_from_provider_catalog(argv[i]); WCUP_VALSTR(r ? "1" : "0");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_should_hide_from_provider_catalog");} return 0;}

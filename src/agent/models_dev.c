@@ -859,3 +859,37 @@ int agent_models_dev_u_supports_pdf(const char *arg){
     json_t *o=_md_obj(arg); if(!o) return 0; int r=_md_has(o,"input_modalities","pdf"); json_free(o); return r; }
 int agent_models_dev_u_supports_audio_input(const char *arg){
     json_t *o=_md_obj(arg); if(!o) return 0; int r=_md_has(o,"input_modalities","audio"); json_free(o); return r; }
+
+/* PoP: agent_models_dev_u_should_hide_from_provider_catalog
+ * @ agent/models_dev.py:_should_hide_from_provider_catalog */
+/* (provider or "").strip().lower() in {"gemini","google"} AND
+ * (model_id or "").strip().lower() in _GOOGLE_HIDDEN_MODELS (18 ids).
+ * Input JSON {"provider":..., "model_id":...}. */
+static const char *MD_GOOGLE_HIDDEN[] = {
+    "gemini-1.5-flash","gemini-1.5-flash-8b","gemini-1.5-pro","gemini-2.0-flash",
+    "gemini-2.0-flash-lite","gemma-3-12b","gemma-3-12b-it","gemma-3-1b","gemma-3-1b-it",
+    "gemma-3-27b","gemma-3-27b-it","gemma-3-2b","gemma-3-2b-it","gemma-3-4b","gemma-3-4b-it",
+    "gemma-4-26b-a4b-it","gemma-4-26b-it","gemma-4-31b-it"};
+static char *_md_norm(const char *s) {
+    if (!s) return strdup("");
+    size_t n = strlen(s), a = 0, b = n;
+    while (a < b && (s[a]==' '||s[a]=='\t'||s[a]=='\n'||s[a]=='\r'||s[a]=='\f'||s[a]=='\v')) a++;
+    while (b > a && (s[b-1]==' '||s[b-1]=='\t'||s[b-1]=='\n'||s[b-1]=='\r'||s[b-1]=='\f'||s[b-1]=='\v')) b--;
+    char *r = malloc(b-a+1); size_t w=0;
+    for (size_t i=a;i<b;i++) { char c=s[i]; r[w++] = (c>='A'&&c<='Z') ? (char)(c+32) : c; }
+    r[w]=0; return r;
+}
+int agent_models_dev_u_should_hide_from_provider_catalog(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return 0; }
+    json_t *pv = json_obj_get(o, "provider"), *mv = json_obj_get(o, "model_id");
+    const char *p = (pv && json_is_string(pv)) ? pv->str_val : "";
+    const char *m = (mv && json_is_string(mv)) ? mv->str_val : "";
+    char *np = _md_norm(p), *nm = _md_norm(m);
+    int prov_ok = (strcmp(np,"gemini")==0 || strcmp(np,"google")==0);
+    int model_ok = 0;
+    for (int i = 0; i < (int)(sizeof(MD_GOOGLE_HIDDEN)/sizeof(MD_GOOGLE_HIDDEN[0])); i++)
+        if (strcmp(nm, MD_GOOGLE_HIDDEN[i]) == 0) { model_ok = 1; break; }
+    free(np); free(nm); json_free(o);
+    return (prov_ok && model_ok) ? 1 : 0;
+}

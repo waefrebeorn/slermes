@@ -1137,3 +1137,36 @@ json_t *hermes_agent_context_references_get_context_reference_providers(void) {
     /* Python: return dict(_context_reference_providers) */
     return json_new_object();
 }
+
+/* PoP: agent_context_references_u_strip_reference_wrappers
+ * @ agent/context_references.py:_strip_reference_wrappers */
+/* value[1:-1] when len(value) >= 2 (CODEPOINTS) and first == last and that char is
+ * one of ` " \\ '. */
+char *agent_context_references_u_strip_reference_wrappers(const char *arg) {
+    const char *s = arg ? arg : "";
+    size_t n = strlen(s);
+    /* decode first codepoint */
+    unsigned c0; int l0;
+    if (n == 0) return strdup("");
+    unsigned char b0 = (unsigned char)s[0];
+    if (b0 < 0x80) { c0 = b0; l0 = 1; }
+    else if ((b0&0xe0)==0xc0) { c0 = ((b0&0x1f)<<6)|((unsigned char)s[1]&0x3f); l0=2; }
+    else if ((b0&0xf0)==0xe0) { c0 = ((b0&0x0f)<<12)|(((unsigned char)s[1]&0x3f)<<6)|((unsigned char)s[2]&0x3f); l0=3; }
+    else { c0 = 0; l0=4; }
+    /* decode last codepoint */
+    size_t k = n - 1; while (k > 0 && ((unsigned char)s[k]&0xC0)==0x80) k--;
+    unsigned c1; int l1;
+    unsigned char b1 = (unsigned char)s[k];
+    if (b1 < 0x80) { c1 = b1; l1 = 1; }
+    else if ((b1&0xe0)==0xc0) { c1 = ((b1&0x1f)<<6)|((unsigned char)s[k+1]&0x3f); l1=2; }
+    else if ((b1&0xf0)==0xe0) { c1 = ((b1&0x0f)<<12)|(((unsigned char)s[k+1]&0x3f)<<6)|((unsigned char)s[k+2]&0x3f); l1=3; }
+    else { c1 = 0; l1=4; }
+    (void)l1;
+    size_t cps = 0;
+    for (size_t i = 0; i < n; i++) if (((unsigned char)s[i]&0xC0) != 0x80) cps++;
+    if (cps < 2 || c0 != c1) return strdup(s);
+    if (!(c0=='`'||c0=='"'||c0=='\'')) return strdup(s);
+    size_t a = (size_t)l0, b = k;
+    if (b <= a) return strdup("");
+    char *r = malloc(b-a+1); memcpy(r, s+a, b-a); r[b-a]=0; return r;
+}
