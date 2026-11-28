@@ -170,21 +170,25 @@ int agent_agent_init_u_context_route_mismatch(const char *arg) {
 }
 
 /* PoP: agent_agent_init_u_normalize_custom_provider_name @ agent/agent_init.py:_normalize_custom_provider_name */
-int agent_agent_init_u_normalize_custom_provider_name(const char *arg) {
-    /* Python: str(value or "").strip().lower().replace(" ", "-"). */
-    if (!arg) { printf("\n"); return 0; }
-    const char *s = arg;
-    while (*s == ' ' || *s == '\t') s++;
+/* PoP: agent_agent_init_u_normalize_custom_provider_name @ agent/agent_init.py:_normalize_custom_provider_name */
+/* Faithful: str(value or "").strip().lower().replace(" ", "-")
+ * Was: stripped only space/tab (python .strip() removes \n\r\f\v too) and
+ * returned 0 with the value on stdout. Returns an owned string now. */
+char *agent_agent_init_u_normalize_custom_provider_name(const char *value) {
+    const char *s = value ? value : "";
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r' || *s == '\f' || *s == '\v') s++;
     char *out = strdup(s);
     size_t n = strlen(out);
-    while (n > 0 && (out[n-1] == ' ' || out[n-1] == '\t')) out[--n] = '\0';
+    while (n > 0) {
+        char c = out[n-1];
+        if (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v') out[--n] = '\0';
+        else break;
+    }
     for (char *p = out; *p; p++) {
         if (*p >= 'A' && *p <= 'Z') *p = (char)(*p + 32);
         if (*p == ' ') *p = '-';
     }
-    printf("%s\n", out);
-    free(out);
-    return 0;
+    return out;
 }
 
 /* PoP: agent_agent_init_u_custom_provider_runtime_ids @ agent/agent_init.py:_custom_provider_runtime_ids */

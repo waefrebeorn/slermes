@@ -7,18 +7,16 @@
   "py_module": "agent/agent_init.py",
   "py_fn": "_normalize_custom_provider_name",
   "inputs": [
-    "0",
-    "hello",
+    "  My Provider  ",
+    "A B",
+    "already-hyphen",
+    "UPPER",
     "",
-    "1.5",
-    "NULL"
+    "  x  y  ",
+    "my\ttab",
+    "Mixed Case Name"
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/agent_init.c",
-    "src/agent/logger.c",
-    "src/hermes_cli/fs_replace.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -28,5 +26,6 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "classification": "str_return"
 }
