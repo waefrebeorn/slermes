@@ -7,20 +7,16 @@
   "py_module": "gateway/pairing.py",
   "py_fn": "_allowlist_env_for_platform",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "telegram",
+    "discord",
+    "WhatsApp",
+    "slack ",
+    "with space",
+    "Matrix",
+    "nope",
+    ""
   ],
-  "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src\\gateway\\pairing.c",
-    "src\\gateway\\platforms\\helpers.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -34,5 +30,5 @@
     "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
     "-DATADIR=\"/usr/share/hermes\""
   ],
-  "classification": "PORTED"
+  "classification": "char_out_de_static"
 }
