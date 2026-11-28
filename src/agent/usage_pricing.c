@@ -924,3 +924,32 @@ void usage_pricing_format_cost_label(double amount, char *buf, size_t bufsz)
     }
     snprintf(buf, bufsz, "~$%.2f", amount);
 }
+
+/* PoP: agent_usage_pricing_u_total_tokens @ agent/usage_pricing.py:CanonicalUsage.total_tokens */
+/* prompt_tokens + output_tokens; prompt = input + cache_read + cache_write. */
+long agent_usage_pricing_u_total_tokens(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return 0; }
+    double in = 0, out_t = 0, cr = 0, cw = 0;
+    json_t *v;
+    if ((v = json_obj_get(o, "input_tokens")) && json_is_number(v)) in = v->num_val;
+    if ((v = json_obj_get(o, "output_tokens")) && json_is_number(v)) out_t = v->num_val;
+    if ((v = json_obj_get(o, "cache_read_tokens")) && json_is_number(v)) cr = v->num_val;
+    if ((v = json_obj_get(o, "cache_write_tokens")) && json_is_number(v)) cw = v->num_val;
+    json_free(o);
+    return (long)(in + cr + cw) + (long)out_t;
+}
+/* PoP: agent_usage_pricing_u_format_cost_label @ agent/usage_pricing.py:format_cost_label */
+/* 0 -> "$0.00"; <0.01 -> "~$X.XXXX" or "~$<0.0001" when it renders all-zero; else
+ * "~$X.XX". Decimal arithmetic approximated with double (avoid exact-half fixtures). */
+char *agent_usage_pricing_u_format_cost_label(const char *arg) {
+    double d = strtod(arg ? arg : "", NULL);
+    char buf[64];
+    if (d == 0.0) return strdup("$0.00");
+    if (d < 0.01) {
+        snprintf(buf, sizeof buf, "~$%.4f", d);
+        return strdup(strcmp(buf, "~$0.0000") == 0 ? "~$<0.0001" : buf);
+    }
+    snprintf(buf, sizeof buf, "~$%.2f", d);
+    return strdup(buf);
+}

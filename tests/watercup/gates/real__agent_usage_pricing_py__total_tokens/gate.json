@@ -3,15 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "total_tokens",
+  "c_fn": "agent_usage_pricing_u_total_tokens",
   "py_module": "agent/usage_pricing.py",
   "py_fn": "total_tokens",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"input_tokens\":10,\"output_tokens\":5}",
+    "{\"input_tokens\":0,\"output_tokens\":0}",
+    "{\"input_tokens\":100,\"cache_read_tokens\":20,\"cache_write_tokens\":3,\"output_tokens\":7}",
+    "{}",
+    "{\"output_tokens\":42}",
+    "{\"cache_read_tokens\":1000,\"cache_write_tokens\":500,\"input_tokens\":2,\"output_tokens\":9}",
+    "{\"input_tokens\":1,\"output_tokens\":1,\"cache_read_tokens\":1,\"cache_write_tokens\":1}",
+    "{\"input_tokens\":0,\"output_tokens\":1,\"cache_read_tokens\":0,\"cache_write_tokens\":0}",
+    "{\"input_tokens\":500,\"cache_read_tokens\":250,\"output_tokens\":250}",
+    "{\"cache_write_tokens\":77}"
   ],
   "extra_src": [
     "lib/libjson/json.c"
@@ -26,5 +31,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
