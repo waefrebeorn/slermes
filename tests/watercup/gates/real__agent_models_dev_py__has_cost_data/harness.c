@@ -1,25 +1,12 @@
-/* gate: real__agent_models_dev_py__has_cost_data — GAP sentinel for has_cost_data */
+/* gate: models_dev has_cost_data -> real port (int 1/0). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "has_cost_data";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s has_cost_data <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("has_cost_data");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("has_cost_data");
-    }
-    return 0;
-}
+#include "json.h"
+extern int agent_models_dev_u_has_cost_data(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("has_cost_data");
+  int r=agent_models_dev_u_has_cost_data(argv[i]); WCUP_VALINT(r);
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("has_cost_data");} return 0;}

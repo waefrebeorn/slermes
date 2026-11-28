@@ -1,56 +1,16 @@
-"""twin for agent/models_dev.py:supports_audio_input (thin: shared runtime, cross-OS)."""
+"""twin for agent/models_dev.py capability predicates (self-only). Input = JSON."""
+import json as _j, types
 from watercup_twin_runtime import TwinBase
-def _strtol(s):
-    m = __import__('re').match('[+-]?[0-9]+', str(s))
-    return int(m.group()) if m else 0
-
-
-def _strtod(s):
-    m = __import__('re').match(
-        '[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?',
-        str(s))
-    return float(m.group()) if m else 0.0
-
-
-def _cvt(p, v):
-    a = str(p.annotation) if p.annotation is not p.empty else ''
-    al = a.lower()
-    if 'path' in al:
-        from pathlib import Path
-        return Path(v) if isinstance(v, str) else v
-    if 'bytes' in al and 'str' not in al:
-        return (v.encode('utf-8', 'surrogateescape')
-                if isinstance(v, str) else v)
-    if 'bool' in al and 'str' not in al:
-        return _strtol(v) != 0
-    if ('int' in al and 'point' not in al and 'print' not in al
-            and 'interface' not in al):
-        return _strtol(v)
-    if 'float' in al or 'double' in al:
-        return _strtod(v)
-    if ('dict' in al or 'list' in al or 'map' in al or 'seq' in al
-            or 'tuple' in al or 'set' in al or 'json' in al):
-        try:
-            import json as _j
-            return _j.loads(v)
-        except Exception:
-            return None
-    return v
-
-
 class _Twin(TwinBase):
     PY_MODULE = "agent/models_dev.py"
-    PY_FN = "supports_audio_input"
-    C_FN = "supports_audio_input"
-
+    PY_FN = "ModelInfo.supports_audio_input"
+    C_FN = "agent_models_dev_u_supports_audio_input"
+    def call(self, inp, inputs, idx=0):
+        d = _j.loads(inp)
+        obj = types.SimpleNamespace(
+            cost_input=d.get("cost_input", 0.0), cost_output=d.get("cost_output", 0.0),
+            attachment=d.get("attachment", False), input_modalities=d.get("input_modalities", []))
+        return self._fn(obj)
     def norm(self, c, result):
-        import inspect as _ic
-        if _ic.iscoroutine(result):
-            import asyncio as _aio
-            result = _aio.run(result)
-        c.valstr("true" if result else "false")
-
-
-_t = _Twin()
-trace = _t.trace
-run = _t.run
+        c.valstr("1" if result else "0")
+_t = _Twin(); trace = _t.trace; run = _t.run

@@ -1,3 +1,4 @@
+#include "json.h"
 /*
  * models_dev.c -- Model development metadata: disk caching, network fetch,
  * provider-model listing, capability queries.
@@ -827,3 +828,34 @@ void md_get_all_models(char *out_json, size_t out_sz) {
     snprintf(out_json, out_sz, "[]");
 }
 
+
+/* PoP: agent_models_dev_u_{has_cost_data,supports_vision,supports_pdf,supports_audio_input}
+ * @ agent/models_dev.py. Input = JSON object with cost_input/cost_output/
+ * attachment/input_modalities. Return int 1/0. */
+static json_t *_md_obj(const char *arg){ json_t *o = arg ? json_parse(arg, NULL) : NULL; return (o && json_is_object(o)) ? o : (o ? (json_free(o), NULL) : NULL); }
+static int _md_truthy(json_t *v){ if(!v) return 0;
+    if (v->type==JSON_BOOL) return v->bool_val;
+    if (v->type==JSON_NUMBER) return v->num_val != 0.0;
+    if (v->type==JSON_STRING) return v->str_val && v->str_val[0];
+    if (v->type==JSON_ARRAY) return v->c.count>0;
+    if (v->type==JSON_OBJECT) return 1;
+    return 0; }
+static int _md_has(json_t *o, const char *key, const char *needle){
+    json_t *arr = json_obj_get(o, key);
+    if (!arr || !json_is_array(arr)) return 0;
+    for (size_t i=0;i<arr->c.count;i++){ json_t*e=arr->c.items[i];
+        if (e && json_is_string(e) && e->str_val && strcmp(e->str_val, needle)==0) return 1; }
+    return 0; }
+int agent_models_dev_u_has_cost_data(const char *arg){
+    json_t *o=_md_obj(arg); if(!o) return 0; int r=0;
+    json_t *ci=json_obj_get(o,"cost_input"), *co=json_obj_get(o,"cost_output");
+    if ((ci&&ci->type==JSON_NUMBER&&ci->num_val>0.0) || (co&&co->type==JSON_NUMBER&&co->num_val>0.0)) r=1;
+    json_free(o); return r; }
+int agent_models_dev_u_supports_vision(const char *arg){
+    json_t *o=_md_obj(arg); if(!o) return 0;
+    int r = _md_truthy(json_obj_get(o,"attachment")) || _md_has(o,"input_modalities","image");
+    json_free(o); return r; }
+int agent_models_dev_u_supports_pdf(const char *arg){
+    json_t *o=_md_obj(arg); if(!o) return 0; int r=_md_has(o,"input_modalities","pdf"); json_free(o); return r; }
+int agent_models_dev_u_supports_audio_input(const char *arg){
+    json_t *o=_md_obj(arg); if(!o) return 0; int r=_md_has(o,"input_modalities","audio"); json_free(o); return r; }

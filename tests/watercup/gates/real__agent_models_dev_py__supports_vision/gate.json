@@ -3,15 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "supports_vision",
+  "c_fn": "agent_models_dev_u_supports_vision",
   "py_module": "agent/models_dev.py",
   "py_fn": "supports_vision",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"cost_input\": 0, \"cost_output\": 0, \"attachment\": false, \"input_modalities\": []}",
+    "{\"cost_input\": 1.5, \"cost_output\": 0, \"attachment\": false, \"input_modalities\": []}",
+    "{\"cost_input\": 0, \"cost_output\": 2, \"attachment\": false, \"input_modalities\": []}",
+    "{\"cost_input\": 0, \"cost_output\": 0, \"attachment\": true, \"input_modalities\": []}",
+    "{\"cost_input\": 0, \"cost_output\": 0, \"attachment\": \"\", \"input_modalities\": [\"image\"]}",
+    "{\"cost_input\": 0, \"cost_output\": 0, \"attachment\": false, \"input_modalities\": [\"pdf\", \"text\"]}",
+    "{\"cost_input\": 0, \"cost_output\": 0, \"attachment\": false, \"input_modalities\": [\"audio\"]}",
+    "{\"cost_input\": 0, \"cost_output\": 0, \"attachment\": false, \"input_modalities\": [\"image\", \"pdf\", \"audio\"]}",
+    "{\"cost_input\": 0, \"cost_output\": 0, \"attachment\": \"yes\", \"input_modalities\": []}",
+    "{\"cost_input\": -1, \"cost_output\": 0, \"attachment\": false, \"input_modalities\": [\"text\"]}"
   ],
   "extra_src": [
     "lib/libjson/json.c"
@@ -26,5 +31,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }

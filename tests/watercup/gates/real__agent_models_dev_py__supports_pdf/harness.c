@@ -1,25 +1,12 @@
-/* gate: real__agent_models_dev_py__supports_pdf — GAP sentinel for supports_pdf */
+/* gate: models_dev supports_pdf -> real port (int 1/0). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "supports_pdf";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s supports_pdf <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("supports_pdf");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("supports_pdf");
-    }
-    return 0;
-}
+#include "json.h"
+extern int agent_models_dev_u_supports_pdf(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("supports_pdf");
+  int r=agent_models_dev_u_supports_pdf(argv[i]); WCUP_VALINT(r);
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("supports_pdf");} return 0;}
