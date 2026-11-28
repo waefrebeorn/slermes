@@ -26,5 +26,6 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "relabel_note": "stream I/O: reads the child's stderr pipe line by line and writes timestamped lines to fd 2; the observable is an OS stream, not a value."
 }

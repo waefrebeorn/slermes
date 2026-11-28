@@ -27,5 +27,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "writes to stdout/stderr via print(); return value is None. The cup protocol shares stdout, so the byte stream is not observable as a return value."
 }

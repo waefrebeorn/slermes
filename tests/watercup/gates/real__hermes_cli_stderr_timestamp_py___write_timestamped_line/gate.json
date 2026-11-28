@@ -26,5 +26,6 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "relabel_note": "writes to stderr with a buffered writer and flush policy."
 }

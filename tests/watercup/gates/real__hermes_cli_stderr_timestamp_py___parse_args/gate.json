@@ -26,5 +26,6 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "relabel_note": "argparse over sys.argv (SystemExit on bad input) plus locale-driven help text."
 }

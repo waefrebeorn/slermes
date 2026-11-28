@@ -26,5 +26,6 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "relabel_note": "installs OS signal handlers (signal.signal) and keeps the previous map in module state."
 }

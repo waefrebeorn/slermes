@@ -26,5 +26,6 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "relabel_note": "process entry point: parses argv, spawns the child, installs signal forwarders, proxies stderr."
 }

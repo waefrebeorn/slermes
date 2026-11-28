@@ -30,5 +30,5 @@
     "-DATADIR=\"/usr/share/hermes\""
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "reads stdin (and swaps to prompt_toolkit on a real TTY); returns the user's keystrokes."
 }

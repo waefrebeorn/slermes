@@ -1,0 +1,34 @@
+{
+  "name": "real__hermes_cli_stderr_timestamp_py___prepare_child_command",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "stderr_ts_prepare_child_command",
+  "py_module": "hermes_cli/stderr_timestamp.py",
+  "py_fn": "_prepare_child_command",
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/hermes_cli/stderr_timestamp_pure.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "{\"argv\": [\"hermes\", \"gateway\", \"run\"], \"xpc\": \"com.x.hermes\"}",
+    "{\"argv\": [\"hermes\", \"gateway\", \"run\"], \"xpc\": \"0\"}",
+    "{\"argv\": [\"hermes\", \"gateway\", \"run\"], \"xpc\": \"\"}",
+    "{\"argv\": [\"other\", \"binary\"], \"xpc\": \"label\"}",
+    "{\"argv\": [\"hermes\", \"gateway\", \"run\", \"--external-supervisor\"], \"xpc\": \"label\"}",
+    "{\"argv\": [\"hermes\", \"--profile\", \"x\", \"gateway\", \"run\"], \"xpc\": \"  label  \"}",
+    "{\"argv\": [], \"xpc\": \"label\"}",
+    "{\"argv\": [\"hermes\", \"gateway\", \"status\"], \"xpc\": \"label\"}"
+  ]
+}

@@ -31,5 +31,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "reads stdin through input(); blocking interactive read."
 }
