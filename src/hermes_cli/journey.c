@@ -1,3 +1,4 @@
+#include <math.h>
 /*
  * journey.c — canonical C11 port of hermes_cli/journey.py.
  */
@@ -215,4 +216,23 @@ int hermes_cli_journey_cmd_journey(const char *arg) {
     else
         printf("journey timeline (scope: %s)\n", scope);
     return 0;
+}
+
+/* PoP: hermes_cli_journey_u_relative_luminance @ hermes_cli/journey.py:_relative_luminance */
+/* Faithful sRGB relative luminance. Input "r,g,b" -> "%.17g" (twin formats '.17g'). */
+static double _jny_chan(int v){ double n=v/255.0; return n<=0.03928 ? n/12.92 : pow((n+0.055)/1.055,2.4); }
+char *hermes_cli_journey_u_relative_luminance(const char *arg){
+    int r=0,g=0,b=0; if(arg) sscanf(arg,"%d,%d,%d",&r,&g,&b);
+    double lum=0.2126*_jny_chan(r)+0.7152*_jny_chan(g)+0.0722*_jny_chan(b);
+    char buf[64]; snprintf(buf,sizeof buf,"%.17g",lum); return strdup(buf);
+}
+/* PoP: hermes_cli_journey_u_contrast_ratio @ hermes_cli/journey.py:_contrast_ratio */
+/* (hi+0.05)/(lo+0.05) of the two luminances. Input "r,g,b;r,g,b". */
+char *hermes_cli_journey_u_contrast_ratio(const char *arg){
+    int r1=0,g1=0,b1=0,r2=0,g2=0,b2=0;
+    if(arg) sscanf(arg,"%d,%d,%d;%d,%d,%d",&r1,&g1,&b1,&r2,&g2,&b2);
+    double l1=0.2126*_jny_chan(r1)+0.7152*_jny_chan(g1)+0.0722*_jny_chan(b1);
+    double l2=0.2126*_jny_chan(r2)+0.7152*_jny_chan(g2)+0.0722*_jny_chan(b2);
+    double hi=l1>l2?l1:l2, lo=l1>l2?l2:l1;
+    char buf[64]; snprintf(buf,sizeof buf,"%.17g",(hi+0.05)/(lo+0.05)); return strdup(buf);
 }

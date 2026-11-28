@@ -3,19 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_relative_luminance",
+  "c_fn": "hermes_cli_journey_u_relative_luminance",
   "py_module": "hermes_cli/journey.py",
   "py_fn": "_relative_luminance",
   "inputs": [
-    0,
-    1,
-    42,
-    1024,
-    -7
+    "0,0,0",
+    "255,255,255",
+    "255,0,0",
+    "0,255,0",
+    "0,0,255",
+    "128,128,128",
+    "10,20,30",
+    "3,3,3"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +27,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
