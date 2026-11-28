@@ -1,0 +1,39 @@
+{
+  "name": "real__tools_tts_command_provider_py__shell_quote_context",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "w14_ttscommand_bd97e2_shell_quote_context",
+  "py_module": "tools/tts_command_provider.py",
+  "py_fn": "shell_quote_context",
+  "extra_src": [
+    "src/tools/tts_command_provider.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "0|abc",
+    "3|abc",
+    "2|\"x\\\"y\"",
+    "6|\"x\\\"y\"",
+    "2|'a\\'b'",
+    "1|a\\\"b",
+    "2|\"\\\\\"",
+    "3|\"\\\\\"",
+    "3|x'y\"z",
+    "5|x'y\"z",
+    "2|a\\'b",
+    "3|'unterminated",
+    "1|a\\",
+    "2|a\\",
+    "-1|abc"
+  ],
+  "relabel_note": "Known divergence outside the gated range: python raises IndexError when position exceeds len(template); the C walks to NUL and returns None. Callers pass an in-string position, so fixtures stay in range; recorded rather than papered over."
+}
