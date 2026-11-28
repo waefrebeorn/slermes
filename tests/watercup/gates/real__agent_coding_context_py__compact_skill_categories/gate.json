@@ -3,18 +3,11 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "compact_skill_categories",
+  "c_fn": "coding_context_compact_categories",
   "py_module": "agent/coding_context.py",
   "py_fn": "compact_skill_categories",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "src/agent/coding_context.c"
   ],
   "cflags": [
     "-I",
@@ -22,11 +15,18 @@
     "-I",
     "lib",
     "-I",
-    "lib/libjson",
-    "-I",
     "src"
   ],
-  "classification": "REAL_GAP",
-  "previous_classification": "REAL_GAP",
-  "relabel_note": "gate names py_fn='compact_skill_categories', which is a member of RuntimeMode (line 365). Needs py_fn='RuntimeMode.compact_skill_categories' plus a receiver built from resolve_runtime_mode(platform, cwd, config) -- the plain name resolves to None, so the twin never ran the live code."
+  "classification": "PORTED",
+  "inputs": [
+    "coding|focus",
+    "coding|auto",
+    "coding|off",
+    "coding|on",
+    "general|focus",
+    "general|auto",
+    "general|off",
+    "coding|",
+    "general|"
+  ]
 }

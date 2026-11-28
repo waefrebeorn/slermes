@@ -1191,6 +1191,20 @@ json_t *coding_context_mcp_names_json(const json_t *config) {
     return out;
 }
 
+/* PoP: coding_context_compact_categories @ agent/coding_context.py:RuntimeMode.compact_skill_categories
+ * python: empty when the profile is not coding OR the resolved mode is not "focus"; otherwise the
+ * profile's demote set. Takes the two inputs the decision actually depends on, so it is testable
+ * without a filesystem probe; an empty answer is an EMPTY SET in python, not None. */
+json_t *coding_context_compact_categories(const char *profile_name, const char *config_mode) {
+    json_t *out = json_array();
+    if (!out) return NULL;
+    int is_coding = profile_name && strcmp(profile_name, "coding") == 0;
+    if (!is_coding || !config_mode || strcmp(config_mode, "focus") != 0) return out;
+    for (int i = 0; NON_CODING_SKILL_CATEGORIES[i]; i++)
+        json_append(out, json_string(NON_CODING_SKILL_CATEGORIES[i]));
+    return out;
+}
+
 /* PoP: coding_context_posture_toolsets @ agent/coding_context.py:_posture_toolsets
  * python: [CODING_TOOLSET, *_enabled_mcp_servers(config)] -- the coding toolset first, then the
  * enabled MCP names in sorted order (see coding_context_mcp_names_json). */
