@@ -7,15 +7,15 @@
   "py_module": "hermes_cli/session_export.py",
   "py_fn": "_messages",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"messages\": [{\"a\": 1}, {\"b\": 2}]}",
+    "{\"messages\": [{\"a\": 1}, \"str\", {\"b\": 2}]}",
+    "{\"messages\": []}",
+    "{}",
+    "{\"messages\": null}",
+    "{\"messages\": \"abc\"}",
+    "{\"messages\": [{\"a\": 1}, {\"a\": 1}]}"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

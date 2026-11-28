@@ -1,25 +1,12 @@
-/* gate: real__hermes_cli_session_export_py___messages — GAP sentinel for _messages */
+/* gate: real__hermes_cli_session_export_py___messages -> real _messages (session JSON -> filtered JSON array string). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_messages";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _messages <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_messages");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_messages");
-    }
-    return 0;
-}
+#include "json.h"
+extern char *sexp_u_messages(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("sexp_u_messages"); fflush(stdout);
+  char*r=sexp_u_messages(argv[i]); WCUP_VALSTR(r?r:"[]");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("sexp_u_messages"); free(r);} return 0;}
