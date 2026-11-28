@@ -3,18 +3,12 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_strip_orphan_close_tags",
+  "c_fn": "ths_strip_orphan",
   "py_module": "agent/think_scrubber.py",
-  "py_fn": "_strip_orphan_close_tags",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
+  "py_fn": "StreamingThinkScrubber._strip_orphan_close_tags",
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/think_scrubber_tags.c"
   ],
   "cflags": [
     "-I",
@@ -26,5 +20,17 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "a</thinking>b",
+    "a</thinking>  \n b",
+    "A</THINKING>b",
+    "</thought>\n\nZ",
+    "no tags",
+    "x</reasoning>y",
+    "</thinking></thought>",
+    "a</mm:think> b",
+    "a</nope>b",
+    ""
+  ]
 }
