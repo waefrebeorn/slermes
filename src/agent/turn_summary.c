@@ -462,3 +462,25 @@ char *agent_turn_summary_u_extract_line_deltas(const char *arg) {
     if (added == 0 && removed == 0) return strdup("");
     char buf[64]; snprintf(buf, sizeof buf, "(%ld, %ld)", added, removed); return strdup(buf);
 }
+
+/* PoP: agent_turn_summary_u_format_token_flow @ agent/turn_summary.py:format_token_flow */
+/* "<arrow> N tok" / "<arrow> X.Yk tok" / "<arrow> X.YM tok"; "" for non-int or
+ * count<=0. Python int() is strict on strings. arrow defaults to U+2193 (UTF-8). */
+char *agent_turn_summary_u_format_token_flow(const char *arg) {
+    const char *a = arg ? arg : "";
+    char *p = (char *)a;
+    while (*p==' '||*p=='\t'||*p=='\n'||*p=='\r'||*p=='\v'||*p=='\f') p++;
+    char *end = p; int ok = 0;
+    if (*end=='+'||*end=='-') end++;
+    const char *digits = end;
+    while (*end>='0' && *end<='9') { end++; ok = 1; }
+    if (ok) { char *q = end; while (*q==' '||*q=='\t'||*q=='\n'||*q=='\r'||*q=='\v'||*q=='\f') q++; if (*q) ok = 0; }
+    if (!ok || digits == end) return strdup("");
+    long count = strtol(p, NULL, 10);
+    if (count <= 0) return strdup("");
+    char buf[96];
+    if (count < 1000) snprintf(buf, sizeof buf, "\xE2\x86\x93 %ld tok", count);
+    else if (count < 1000000) snprintf(buf, sizeof buf, "\xE2\x86\x93 %.1fk tok", count / 1000.0);
+    else snprintf(buf, sizeof buf, "\xE2\x86\x93 %.1fM tok", count / 1000000.0);
+    return strdup(buf);
+}

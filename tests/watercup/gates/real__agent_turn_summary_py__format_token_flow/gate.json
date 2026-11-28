@@ -3,19 +3,23 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "format_token_flow",
+  "c_fn": "agent_turn_summary_u_format_token_flow",
   "py_module": "agent/turn_summary.py",
   "py_fn": "format_token_flow",
   "inputs": [
-    "hello",
-    "world",
+    "0",
+    "-5",
+    "999",
+    "1000",
+    "1500",
+    "abc",
+    "1000000",
+    "59999",
+    "1",
     "",
-    "test123",
-    "NULL"
+    " 42 "
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +30,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }
