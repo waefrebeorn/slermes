@@ -3,6 +3,7 @@
  */
 
 #include "hermes_json.h"
+#include <limits.h>
 #include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -104,28 +105,40 @@ int hermes_cli_auth_commands_u_display_source(const char *arg) {
 }
 
 /* PoP: hermes_cli_auth_commands_u_classify_exhausted_status @ hermes_cli/auth_commands.py:_classify_exhausted_status */
-int hermes_cli_auth_commands_u_classify_exhausted_status(const char *arg) {
-    /* Python: 429/401/403 classification. Arg = "code\treason\tmessage\tresult\texhausted". */
-    if (!arg || !*arg) { printf("exhausted\t1\n"); return 0; }
-    const char *t1 = strchr(arg, '\t');
-    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
-    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
-    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
-    long code = strtol(arg, NULL, 10);
-    const char *reason = t1 ? t1 + 1 : "";
-    const char *message = t2 ? t2 + 1 : "";
-    if (code == 429 || strstr(reason, "rate_limit") || strstr(reason, "usage_limit") || strstr(reason, "quota") || strstr(reason, "exhausted") ||
-        strstr(message, "rate limit") || strstr(message, "usage limit") || strstr(message, "quota") || strstr(message, "too many requests")) {
-        printf("rate-limited\t1\n");
-        return 0;
+/* PoP: hermes_cli_auth_commands_u_classify_exhausted_status @ hermes_cli/auth_commands.py:_classify_exhausted_status */
+/* Faithful: python lowercases+strips reason/message before substring token match;
+ * the old body strstr'd them RAW (case/whitespace sensitive -- a real bug). Also
+ * `code in {429}` is an int membership. Returns "label|1" / "label|0"
+ * (python returns (label, retry_window_bool)). */
+static void _ac_norm(char *s) {
+    for (char *p = s; *p; p++) if (*p >= 'A' && *p <= 'Z') *p = (char)(*p + 32);
+}
+static char *_ac_trimdup(const char *s) {
+    if (!s) s = "";
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    char *d = strdup(s);
+    size_t n = strlen(d);
+    while (n > 0 && (d[n-1]==' '||d[n-1]=='\t'||d[n-1]=='\n'||d[n-1]=='\r')) d[--n] = '\0';
+    _ac_norm(d);
+    return d;
+}
+char *hermes_cli_auth_commands_u_classify_exhausted_status(const char *code_s, const char *reason_s, const char *message_s) {
+    char *reason = _ac_trimdup(reason_s);
+    char *message = _ac_trimdup(message_s);
+    long code = (code_s && *code_s) ? strtol(code_s, NULL, 10) : LONG_MIN;  /* LONG_MIN = None */
+    const char *out = "exhausted|1";
+    int rl = (code == 429) ||
+             strstr(reason, "rate_limit") || strstr(reason, "usage_limit") || strstr(reason, "quota") || strstr(reason, "exhausted") ||
+             strstr(message, "rate limit") || strstr(message, "usage limit") || strstr(message, "quota") || strstr(message, "too many requests");
+    if (rl) { out = "rate-limited|1"; }
+    else {
+        int af = (code == 401 || code == 403) ||
+                 strstr(reason, "invalid_token") || strstr(reason, "invalid_grant") || strstr(reason, "unauthorized") || strstr(reason, "forbidden") || strstr(reason, "auth") ||
+                 strstr(message, "unauthorized") || strstr(message, "forbidden") || strstr(message, "expired") || strstr(message, "revoked") || strstr(message, "invalid token") || strstr(message, "authentication");
+        if (af) out = "auth failed|0";
     }
-    if (code == 401 || code == 403 || strstr(reason, "invalid_token") || strstr(reason, "invalid_grant") || strstr(reason, "unauthorized") || strstr(reason, "forbidden") || strstr(reason, "auth") ||
-        strstr(message, "unauthorized") || strstr(message, "forbidden") || strstr(message, "expired") || strstr(message, "revoked") || strstr(message, "invalid token") || strstr(message, "authentication")) {
-        printf("auth failed\t0\n");
-        return 0;
-    }
-    printf("exhausted\t1\n");
-    return 0;
+    free(reason); free(message);
+    return strdup(out);
 }
 
 /* PoP: hermes_cli_auth_commands_u_format_exhausted_status @ hermes_cli/auth_commands.py:_format_exhausted_status */
