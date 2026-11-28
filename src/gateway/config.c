@@ -1442,20 +1442,15 @@ int gateway_config_coerce_systemd_watchdog_seconds(const char *arg) {
 }
 
 /* PoP: gateway_config_u_coerce_dict @ gateway/config.py:_coerce_dict */
-int gateway_config_u_coerce_dict(const char *arg) {
-    /* Python: value if isinstance(value, dict) else {}. Arg = JSON value. */
-    if (!arg || !*arg) { printf("{}\n"); return 0; }
-    json_t *v = json_parse(arg, NULL);
-    if (v && json_is_object(v)) {
-        char *s = json_serialize(v);
-        printf("%s\n", s ? s : "{}");
-        free(s);
-        json_free(v);
-        return 0;
-    }
+/* value if isinstance(value, dict) else {} -- compact JSON out (was: printed and
+ * returned 0, so the gate cupped a constant). No callers, so the return type is free. */
+char *gateway_config_u_coerce_dict(const char *arg) {
+    json_t *v = arg ? json_parse(arg, NULL) : NULL;
+    char *r;
+    if (v && json_is_object(v)) { char *ser = json_serialize(v); r = ser ? ser : strdup("{}"); }
+    else r = strdup("{}");
     if (v) json_free(v);
-    printf("{}\n");
-    return 0;
+    return r;
 }
 
 /* PoP: gateway_config_u_getenv_str @ gateway/config.py:_getenv_str */

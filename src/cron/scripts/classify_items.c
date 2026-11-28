@@ -1,3 +1,4 @@
+#include "hermes_json.h"
 /*
  * port_classify_items.c — pure helpers ported from
  * cron/scripts/classify_items.py. Self-contained; uses libjson for parsing.
@@ -183,3 +184,48 @@ void cron_classify_free_scores(classify_score_t *scores, int count)
     free(scores);
 }
 
+
+/* PoP: cron_scripts_classify_items_u_item_id @ cron/scripts/classify_items.py:_item_id */
+/* next((str(item[key]) for key in _ID_KEYS if item.get(key)), f"item-{index}")
+ * with _ID_KEYS = ("id","guid","message_id","url","link"). Input JSON
+ * {"item": {...}, "index": n}. */
+static const char *IID_KEYS[] = {"id","guid","message_id","url","link"};
+static char *_iid_str(json_t *v) {
+    char b[64];
+    if (!v) return strdup("");
+    if (json_is_string(v)) return strdup(v->str_val ? v->str_val : "");
+    if (json_is_bool(v)) return strdup(v->bool_val ? "True" : "False");
+    if (json_is_number(v)) {
+        double d = v->num_val;
+        if (d == (double)(long)d) snprintf(b, sizeof b, "%ld", (long)d); else snprintf(b, sizeof b, "%g", d);
+        return strdup(b);
+    }
+    return strdup("");
+}
+static int _iid_truthy(json_t *v) {
+    if (!v || json_is_null(v)) return 0;
+    switch (v->type) {
+        case JSON_BOOL: return v->bool_val ? 1 : 0;
+        case JSON_NUMBER: return v->num_val != 0.0;
+        case JSON_STRING: return (v->str_val && v->str_val[0]) ? 1 : 0;
+        case JSON_ARRAY: return v->c.count > 0;
+        case JSON_OBJECT: return v->c.count > 0;
+        default: return 0;
+    }
+}
+char *cron_scripts_classify_items_u_item_id(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    json_t *item = (o && json_is_object(o)) ? json_obj_get(o, "item") : NULL;
+    json_t *iv = (o && json_is_object(o)) ? json_obj_get(o, "index") : NULL;
+    long index = (iv && json_is_number(iv)) ? (long)iv->num_val : 0;
+    char *res = NULL;
+    if (item && json_is_object(item)) {
+        for (int i = 0; i < 5; i++) {
+            json_t *v = json_obj_get(item, IID_KEYS[i]);
+            if (_iid_truthy(v)) { res = _iid_str(v); break; }
+        }
+    }
+    if (!res) { char b[64]; snprintf(b, sizeof b, "item-%ld", index); res = strdup(b); }
+    if (o) json_free(o);
+    return res;
+}

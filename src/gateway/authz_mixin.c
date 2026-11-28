@@ -449,3 +449,28 @@ int gateway_authz_mixin_u_pairing_store_for(const char *arg) {
     else printf("global pairing store (fallback)\n");
     return 0;
 }
+
+/* PoP: gateway_authz_mixin_u_bech32_hrp_expand @ gateway/authz_mixin.py:_bech32_hrp_expand */
+/* [ord(c) >> 5 for c in hrp] + [0] + [ord(c) & 31 for c in hrp] as compact JSON.
+ * ord() is a CODEPOINT. */
+char *gateway_authz_mixin_u_bech32_hrp_expand(const char *arg) {
+    const char *s = arg ? arg : "";
+    size_t n = strlen(s);
+    unsigned cps[512]; int k = 0;
+    for (size_t i = 0; i < n && k < 512; ) {
+        unsigned char b = (unsigned char)s[i]; unsigned cp; int len = 1;
+        if (b < 0x80) cp = b;
+        else if ((b & 0xe0) == 0xc0) { cp = b & 0x1f; len = 2; }
+        else if ((b & 0xf0) == 0xe0) { cp = b & 0x0f; len = 3; }
+        else { cp = b & 0x07; len = 4; }
+        for (int j = 1; j < len && i + (size_t)j < n; j++) cp = (cp << 6) | ((unsigned char)s[i+j] & 0x3f);
+        cps[k++] = cp; i += (size_t)len;
+    }
+    size_t cap = (size_t)k * 24 + 32, w = 0;
+    char *out = malloc(cap); out[w++] = '[';
+    for (int i = 0; i < k; i++) w += (size_t)snprintf(out + w, cap - w, "%s%u", i ? "," : "", cps[i] >> 5);
+    w += (size_t)snprintf(out + w, cap - w, "%s0", k ? "," : "");
+    for (int i = 0; i < k; i++) w += (size_t)snprintf(out + w, cap - w, ",%u", cps[i] & 31);
+    w += (size_t)snprintf(out + w, cap - w, "]");
+    return out;
+}

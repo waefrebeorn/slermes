@@ -3,28 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_item_id",
+  "c_fn": "cron_scripts_classify_items_u_item_id",
   "py_module": "cron/scripts/classify_items.py",
   "py_fn": "_item_id",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"item\":{\"id\":\"abc\"},\"index\":0}",
+    "{\"item\":{\"name\":\"n\"},\"index\":2}",
+    "{\"item\":{},\"index\":5}",
+    "{\"item\":{\"id\":\"\"},\"guid\":\"g\"}",
+    "{\"item\":{\"guid\":\"g\"},\"index\":1}",
+    "{\"item\":{\"message_id\":7},\"index\":0}",
+    "{\"item\":{\"url\":\"u\"},\"index\":0}",
+    "{\"item\":{\"link\":\"l\"},\"index\":0}",
+    "{\"item\":{\"id\":0,\"link\":\"l\"},\"index\":3}"
   ],
   "extra_src": [
     "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  ]
 }

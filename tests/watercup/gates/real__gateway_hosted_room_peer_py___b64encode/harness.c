@@ -1,25 +1,12 @@
-/* gate: real__gateway_hosted_room_peer_py___b64encode — GAP sentinel for _b64encode */
+/* gate: _b64encode -> real port. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_b64encode";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _b64encode <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_b64encode");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_b64encode");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern char * gateway_hosted_room_peer_u_b64encode(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_b64encode");
+  char * r=gateway_hosted_room_peer_u_b64encode(argv[i]); WCUP_VALSTR(r?r:"");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_b64encode"); if (r) free(r);} return 0;}

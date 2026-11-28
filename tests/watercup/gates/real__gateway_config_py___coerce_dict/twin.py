@@ -1,17 +1,11 @@
-"""twin for gateway/config.py:_coerce_dict (thin: shared runtime, cross-OS)."""
+"""twin: _coerce_dict."""
+import json as _j
 from watercup_twin_runtime import TwinBase
-
-
-
 class _Twin(TwinBase):
-    PY_MODULE = "gateway/config.py"
-    PY_FN = "_coerce_dict"
+    PY_MODULE = "gateway/config.py"; PY_FN = "_coerce_dict"
     C_FN = "gateway_config_u_coerce_dict"
-
+    def call(self, inp, inputs, idx=0):
+        return self._fn(_j.loads(inp))
     def norm(self, c, result):
-        c.valstr(str(int(result)) if isinstance(result, (int, bool)) and not isinstance(result, str) else ("0" if result is None else str(result)))
-
-
-_t = _Twin()
-trace = _t.trace
-run = _t.run
+        c.valstr(_j.dumps(result, separators=(",",":")))
+_t = _Twin(); trace = _t.trace; run = _t.run
