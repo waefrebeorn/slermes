@@ -6,26 +6,19 @@
   "c_fn": "fuzzy_match_strategy_indentation_flexible",
   "py_module": "tools/fuzzy_match.py",
   "py_fn": "_strategy_indentation_flexible",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/tools/fuzzy_match_helpers.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"content\": \"  hello\\n  world\\n\", \"pattern\": \"hello\\nworld\"}",
+    "{\"content\": \"a\\nb\\n\", \"pattern\": \"zzz\"}",
+    "{\"content\": \"x\\n  y\\n\", \"pattern\": \" x\\n y\"}",
+    "{\"content\": \"l1\\nl2\\nl3\\n\", \"pattern\": \"l2\\nl3\"}",
+    "{\"content\": \"a\\n\\tb\\n\", \"pattern\": \"\\tb\"}",
+    "{\"content\": \"same\\ntext\\n\", \"pattern\": \"same\\ntext\"}",
+    "{\"content\": \"\", \"pattern\": \"x\"}",
+    "{\"content\": \"only\\n\", \"pattern\": \"\"}"
+  ]
 }

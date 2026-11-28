@@ -30,5 +30,6 @@
     "-I",
     "src"
   ],
-  "classification": "PORTED"
+  "classification": "REAL_GAP",
+  "relabel_note": "C splits on '/' but python uses os.sep; python also reads os.getcwd()/expanduser internally while the C takes cwd/home as params. Cross-platform gating needs an os.sep port first."
 }

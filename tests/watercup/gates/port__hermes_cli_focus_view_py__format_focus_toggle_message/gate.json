@@ -6,29 +6,22 @@
   "c_fn": "fv_format_focus_toggle_message",
   "py_module": "hermes_cli/focus_view.py",
   "py_fn": "format_focus_toggle_message",
-  "inputs": [
-    true,
-    false
-  ],
   "extra_src": [
     "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
     "src/hermes_cli/focus_view.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src",
-    "-DHERMES_VERSION=\"0.21.0\"",
-    "-DHERMES_RELEASE_DATE=\"2026-10-15\"",
-    "-DATADIR=\"/usr/share/hermes\""
-  ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"enabled\": true, \"mode\": \"all\"}",
+    "{\"enabled\": false, \"mode\": \"all\"}",
+    "{\"enabled\": false, \"mode\": \"new\"}",
+    "{\"enabled\": false, \"mode\": \"off\"}",
+    "{\"enabled\": false, \"mode\": \"bogus\"}",
+    "{\"enabled\": false, \"mode\": null}",
+    "{\"enabled\": false, \"mode\": false}",
+    "{\"enabled\": false, \"mode\": true}",
+    "{\"enabled\": false, \"mode\": \"log\"}",
+    "{\"enabled\": false, \"mode\": \"  NEW  \"}",
+    "{\"enabled\": true, \"mode\": null}"
+  ]
 }

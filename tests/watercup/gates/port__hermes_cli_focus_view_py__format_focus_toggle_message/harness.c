@@ -1,35 +1,20 @@
-/* gate: port__hermes_cli_focus_view_py__format_focus_toggle_message — traced copy of fv_format_focus_toggle_message (scalar_multi) */
+/* gate: format_focus_toggle_message(enabled, mode) -> real C port. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
-
-
-extern char * fv_format_focus_toggle_message(bool enabled,
-                                      const char *configured_mode_str,
-                                      bool mode_is_bool,
-                                      bool mode_bool_val);
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s fv_format_focus_toggle_message <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("fv_format_focus_toggle_message");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_dn = fopen("/dev/null", "w");
-    if (_dn) dup2(fileno(_dn), 1);
-    char * result = fv_format_focus_toggle_message((int)strtol(argv[i], NULL, 10), argv[2 + (i - 2 + 1) % 2], (int)strtol(argv[2 + (i - 2 + 2) % 2], NULL, 10), (int)strtol(argv[2 + (i - 2 + 3) % 2], NULL, 10));
-    fflush(stdout);
-    if (_dn) { dup2(_sv, 1); fclose(_dn); close(_sv); }
-    char buf[32];
-    snprintf(buf, sizeof(buf), "%d", result);
-    WCUP_VALSTR(buf);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("fv_format_focus_toggle_message");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern char *fv_format_focus_toggle_message(int enabled, const char *mode, int mode_is_bool, int mode_bool_val);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("format_focus_toggle_message");
+  json_t *in=json_parse(argv[i],NULL);
+  json_t *en=json_obj_get(in,"enabled");
+  int enabled=json_is_bool(en)?(en->bool_val?1:0):(json_is_number(en)?(en->num_val!=0):0);
+  json_t *md=json_obj_get(in,"mode");
+  const char *ms=""; int isb=0, bv=0;
+  if(json_is_bool(md)){isb=1;bv=md->bool_val?1:0;}
+  else if(json_is_string(md)) ms=(md->str_val?md->str_val:"");
+  else if(json_is_number(md)){ static char nb[32]; snprintf(nb,sizeof nb,"%g",md->num_val); ms=nb; }
+  char *r=fv_format_focus_toggle_message(enabled,ms,isb,bv); WCUP_VALSTR(r?r:"");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("format_focus_toggle_message"); if(r) free(r); if(in) json_free(in);} return 0;}

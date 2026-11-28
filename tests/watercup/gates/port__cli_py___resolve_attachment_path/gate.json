@@ -27,5 +27,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "returns None unless the path exists AND is a file (os-level); not gateable from argv without a fixed filesystem."
 }

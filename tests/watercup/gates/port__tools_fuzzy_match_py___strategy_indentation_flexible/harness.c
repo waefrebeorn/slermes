@@ -1,25 +1,22 @@
-/* gate: port__tools_fuzzy_match_py___strategy_indentation_flexible — GAP sentinel for _strategy_indentation_flexible */
+/* gate: _strategy_indentation_flexible(content, pattern) -> spans as [[s,e],...]. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_strategy_indentation_flexible";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _strategy_indentation_flexible <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_strategy_indentation_flexible");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_strategy_indentation_flexible");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern void fuzzy_match_strategy_indentation_flexible(const char *content, const char *pattern,
+                                                     long **matches, size_t *nmatch);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_strategy_indentation_flexible");
+  json_t *in=json_parse(argv[i],NULL);
+  const char *c=json_get_str(in,"content",""), *p=json_get_str(in,"pattern","");
+  long *m=NULL; size_t n=0;
+  fuzzy_match_strategy_indentation_flexible(c,p,&m,&n);
+  json_t *arr=json_array();
+  for(size_t k=0;k<n;k++){ json_t *pr=json_array();
+      json_append(pr,json_number((double)m[2*k])); json_append(pr,json_number((double)m[2*k+1]));
+      json_append(arr,pr); }
+  char *js=json_serialize(arr); WCUP_VALSTR(js?js:"[]");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_strategy_indentation_flexible");
+  if(js) free(js); json_free(arr); if(m) free(m); if(in) json_free(in);} return 0;}
