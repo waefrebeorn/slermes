@@ -1,25 +1,12 @@
-/* gate: real__agent_tool_guardrails_py___coerce_args — GAP sentinel for _coerce_args */
+/* gate: _coerce_args -> real port. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "_coerce_args";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s _coerce_args <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("_coerce_args");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("_coerce_args");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern char * agent_tool_guardrails_u_coerce_args(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_coerce_args");
+  char * r=agent_tool_guardrails_u_coerce_args(argv[i]); WCUP_VALSTR(r?r:"");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_coerce_args"); if (r) free(r);} return 0;}

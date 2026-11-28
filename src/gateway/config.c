@@ -1525,3 +1525,36 @@ int gateway_config_u_has_usable_api_server_key(const char *arg) {
     printf("%d\n", len >= 16 ? 1 : 0);
     return 0;
 }
+
+/* PoP: gateway_config_u_coerce_int @ gateway/config.py:_coerce_int */
+/* _coerce_num(int, value, default): default when value is None or int() raises
+ * (TypeError/ValueError/OverflowError). python int() truncates floats, accepts
+ * surrounding whitespace, rejects "1.5". Input JSON {"value":..., "default":n}. */
+char *gateway_config_u_coerce_int(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    long def = 0; json_t *v = NULL;
+    if (o && json_is_object(o)) {
+        json_t *dv = json_obj_get(o, "default");
+        if (dv && json_is_number(dv)) def = (long)dv->num_val;
+        v = json_obj_get(o, "value");
+    }
+    long res = def; int ok = 0;
+    if (v && !json_is_null(v)) {
+        if (json_is_bool(v)) { res = v->bool_val ? 1 : 0; ok = 1; }
+        else if (json_is_number(v)) { res = (long)v->num_val; ok = 1; }
+        else if (json_is_string(v) && v->str_val) {
+            const char *p = v->str_val;
+            while (*p==' '||*p=='\t'||*p=='\n'||*p=='\r'||*p=='\f'||*p=='\v') p++;
+            if (*p) {
+                char *end = NULL; long got = strtol(p, &end, 10);
+                if (end != p) {
+                    while (*end==' '||*end=='\t'||*end=='\n'||*end=='\r'||*end=='\f'||*end=='\v') end++;
+                    if (!*end) { res = got; ok = 1; }
+                }
+            }
+        }
+    }
+    char b[64]; snprintf(b, sizeof b, "%ld", ok ? res : def);
+    if (o) json_free(o);
+    return strdup(b);
+}

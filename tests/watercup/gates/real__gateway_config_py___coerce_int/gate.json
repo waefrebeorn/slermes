@@ -3,28 +3,23 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_coerce_int",
+  "c_fn": "gateway_config_u_coerce_int",
   "py_module": "gateway/config.py",
   "py_fn": "_coerce_int",
+  "classification": "PORTED",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "{\"value\":\" 12 \",\"default\":9}",
+    "{\"value\":\"1.5\",\"default\":9}",
+    "{\"value\":null,\"default\":9}",
+    "{\"value\":true,\"default\":9}",
+    "{\"value\":\"-3\",\"default\":9}",
+    "{\"value\":\"\",\"default\":9}",
+    "{\"value\":12.7,\"default\":9}",
+    "{\"value\":\"12abc\",\"default\":9}",
+    "{\"default\":5}",
+    "{\"value\":\"0\",\"default\":7}"
   ],
   "extra_src": [
     "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+  ]
 }

@@ -325,3 +325,23 @@ monitor_outcome_t cron_monitor_check(const char *job_id,
     out.first_run = first_run;
     return out;
 }
+
+/* PoP: cron_monitor_u_job_has_monitor @ cron/monitor.py:job_has_monitor */
+/* bool((job["monitor_script"] or "").strip() or (job["monitor_url"] or "").strip()) */
+static const char *_jm_trim(const char *s) {
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r' || *s == '\f' || *s == '\v') s++;
+    return s;
+}
+static int _jm_nonempty(json_t *v) {
+    if (!v || json_is_null(v)) return 0;
+    if (!json_is_string(v)) return 0;   /* python .strip() raises on non-str; mirrors "not a monitor" */
+    const char *p = _jm_trim(v->str_val ? v->str_val : "");
+    return p[0] ? 1 : 0;
+}
+int cron_monitor_u_job_has_monitor(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return 0; }
+    int hit = _jm_nonempty(json_obj_get(o, "monitor_script")) || _jm_nonempty(json_obj_get(o, "monitor_url"));
+    json_free(o);
+    return hit;
+}

@@ -44,3 +44,24 @@ char *agent_secret_sources_bitwarden_u_classify_bws_error(const char *arg) {
     free(low);
     return strdup("internal");
 }
+
+/* PoP: agent_secret_sources_bitwarden_u_b64e @ agent/secret_sources/bitwarden.py:_b64e */
+/* base64.b64encode(raw).decode("ascii") -- standard alphabet WITH padding. */
+char *agent_secret_sources_bitwarden_u_b64e(const char *arg) {
+    static const char *T = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    const unsigned char *p = (const unsigned char *)(arg ? arg : "");
+    size_t n = strlen((const char *)p);
+    size_t cap = ((n + 2) / 3) * 4 + 8;
+    char *out = malloc(cap); size_t w = 0;
+    for (size_t i = 0; i < n; i += 3) {
+        unsigned v = (unsigned)p[i] << 16; int have = 1;
+        if (i + 1 < n) { v |= (unsigned)p[i+1] << 8; have = 2; }
+        if (i + 2 < n) { v |= (unsigned)p[i+2]; have = 3; }
+        out[w++] = T[(v >> 18) & 63];
+        out[w++] = T[(v >> 12) & 63];
+        out[w++] = (have > 1) ? T[(v >> 6) & 63] : '=';
+        out[w++] = (have > 2) ? T[v & 63] : '=';
+    }
+    out[w] = 0;
+    return out;
+}

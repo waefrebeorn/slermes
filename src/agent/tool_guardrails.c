@@ -1,3 +1,4 @@
+#include "hermes_json.h"
 /* ================================================================
  * tool_guardrails.c — Per-turn tool call loop detection.
  * Port of Python agent/tool_guardrails.py (475 lines).
@@ -802,4 +803,15 @@ int agent_tool_guardrails_u_is_idempotent(const char *arg) {
     int n = (int)(sizeof(GR_IDEM)/sizeof(GR_IDEM[0]));
     for (int i = 0; i < n; i++) if (strcmp(arg, GR_IDEM[i]) == 0) return 1;
     return 0;
+}
+
+/* PoP: agent_tool_guardrails_u_coerce_args @ agent/tool_guardrails.py:_coerce_args */
+/* args if isinstance(args, Mapping) else {} -- compact JSON out. */
+char *agent_tool_guardrails_u_coerce_args(const char *arg) {
+    json_t *v = arg ? json_parse(arg, NULL) : NULL;
+    char *r;
+    if (v && json_is_object(v)) { char *s = json_serialize(v); r = s ? s : strdup("{}"); }
+    else r = strdup("{}");
+    if (v) json_free(v);
+    return r;
 }
