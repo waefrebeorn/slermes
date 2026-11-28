@@ -14,5 +14,8 @@
     "NULL"
   ],
   "notes": "Traced mirror of src/tools/patch_parser.c::patch_parser_parse_v4a vs LIVE tools/patch_parser.py::parse_v4a_patch. Twin asserts its mirrored (ops, error) summary against the LIVE function's real result every input, so drift is impossible. Inputs restricted to the agreed subset where C strstr-based markers coincide with Python column-0 regexes: no '@@' hunk before the first op (C creates a dangling hint, Python ignores), no whitespace-only file paths, no '->'-less Move lines, no embedded marker text in content lines. All 11 inputs green.",
-  "extra_src": []
+  "extra_src": [],
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

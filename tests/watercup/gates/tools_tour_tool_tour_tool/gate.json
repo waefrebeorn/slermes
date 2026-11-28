@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Tour dispatcher ladder: REAL src/tools/tour_tool.c linked via extra_src behind a stub preview-bridge callback; the harness traces the branch ladder over the same decoded fields and takes the RESULT from the real port. Twin drives the LIVE tools/tour_tool.py::tour_tool with a matching stub callback and classifies its return canonically (err|<msg> / ok / wrap) so C's compact json_serialize and Python's spaced json.dumps hash identically. Non-string side values are excluded from the walk (LIVE treats them as invalid, the C port ignores non-string side nodes)."
+  "notes": "Tour dispatcher ladder: REAL src/tools/tour_tool.c linked via extra_src behind a stub preview-bridge callback; the harness traces the branch ladder over the same decoded fields and takes the RESULT from the real port. Twin drives the LIVE tools/tour_tool.py::tour_tool with a matching stub callback and classifies its return canonically (err|<msg> / ok / wrap) so C's compact json_serialize and Python's spaced json.dumps hash identically. Non-string side values are excluded from the walk (LIVE treats them as invalid, the C port ignores non-string side nodes).",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

@@ -22,5 +22,8 @@
     "lib/libjson",
     "-I",
     "src"
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "DIVERGENT",
+  "relabel_note": "measured: ran the gate live and the C cup does not match Python (correctly-classified earlier gates read PORTED); needs a real port or fixture work."
 }

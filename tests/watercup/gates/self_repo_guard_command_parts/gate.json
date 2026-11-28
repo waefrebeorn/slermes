@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Shell command decomposition for repo-guard (traced copy of src/tools/self_repo_guard.c::srg_command_parts + static helpers vs LIVE tools/self_repo_guard.py::_command_parts). Covers assignments, sudo/env option-with-arg consumption, command -v short-circuit, wrapper set, path/.exe/lowercase executable normalization, non-assignment with '=' rejected ('BAD-NAME=x' treated as executable). PARITY FIX APPLIED TO PORT: srg_str_in(NULL-list) dereferenced NULL via srg_consume_options(...,NULL) on the 'command' wrapper path (e.g. 'command -f ls') \u2014 segfault where LIVE returns normally; null-guard added, verified. consume_options internals untraced on both sides."
+  "notes": "Shell command decomposition for repo-guard (traced copy of src/tools/self_repo_guard.c::srg_command_parts + static helpers vs LIVE tools/self_repo_guard.py::_command_parts). Covers assignments, sudo/env option-with-arg consumption, command -v short-circuit, wrapper set, path/.exe/lowercase executable normalization, non-assignment with '=' rejected ('BAD-NAME=x' treated as executable). PARITY FIX APPLIED TO PORT: srg_str_in(NULL-list) dereferenced NULL via srg_consume_options(...,NULL) on the 'command' wrapper path (e.g. 'command -f ls') \u2014 segfault where LIVE returns normally; null-guard added, verified. consume_options internals untraced on both sides.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Plugin-identifier -> git-URL resolver (src/hermes_cli/plugins_cmd_wrappers.c::pcmd_resolve_git_url vs LIVE hermes_cli/plugins_cmd.py::_resolve_git_url). FIXED THE PORT before gating: the old C was a two-line stub (pass URLs through, prefix everything else with https://github.com/<id>.git) with NO subdirectory support, no GitHub browser-tree handling, no #fragment or .git/ boundary. Rewritten to the full LIVE ladder including out_subdir; invalid identifiers return NULL mirroring LIVE's ValueError. Cup = branch ladder + VSTR('url|subdir')."
+  "notes": "Plugin-identifier -> git-URL resolver (src/hermes_cli/plugins_cmd_wrappers.c::pcmd_resolve_git_url vs LIVE hermes_cli/plugins_cmd.py::_resolve_git_url). FIXED THE PORT before gating: the old C was a two-line stub (pass URLs through, prefix everything else with https://github.com/<id>.git) with NO subdirectory support, no GitHub browser-tree handling, no #fragment or .git/ boundary. Rewritten to the full LIVE ladder including out_subdir; invalid identifiers return NULL mirroring LIVE's ValueError. Cup = branch ladder + VSTR('url|subdir').",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

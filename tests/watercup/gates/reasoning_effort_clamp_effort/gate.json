@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Reasoning-effort clamping policy. Harness traces a faithful C copy of src/agent/reasoning_effort.c::clamp_effort (real file not linked; it carries no cup instrumentation). Input token = JSON [effort, supported, overrides]. Twin transcribes the LIVE body with the same rung ladder, including the override iteration shape so dict-lookup and array-scan carve identical events."
+  "notes": "Reasoning-effort clamping policy. Harness traces a faithful C copy of src/agent/reasoning_effort.c::clamp_effort (real file not linked; it carries no cup instrumentation). Input token = JSON [effort, supported, overrides]. Twin transcribes the LIVE body with the same rung ladder, including the override iteration shape so dict-lookup and array-scan carve identical events.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

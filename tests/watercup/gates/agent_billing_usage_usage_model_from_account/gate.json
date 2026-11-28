@@ -23,5 +23,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Usage-model builder from NousPortal account info (src/agent/billing_usage.c::usage_model_from_account vs LIVE agent/billing_usage.py::usage_model_from_account). Links the REAL port via extra_src; the harness mirrors the branch ladder (not-logged-in / paid-is-false / free / low / plan-bar / topup-bar) and hashes a canonical field summary of the returned model. Covers depleted, free, low (<$5), healthy, negative-balance clamping, server-total preference over summed parts, and the paid-is-false (identity) vs null distinction."
+  "notes": "Usage-model builder from NousPortal account info (src/agent/billing_usage.c::usage_model_from_account vs LIVE agent/billing_usage.py::usage_model_from_account). Links the REAL port via extra_src; the harness mirrors the branch ladder (not-logged-in / paid-is-false / free / low / plan-bar / topup-bar) and hashes a canonical field summary of the returned model. Covers depleted, free, low (<$5), healthy, negative-balance clamping, server-total preference over summed parts, and the paid-is-false (identity) vs null distinction.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

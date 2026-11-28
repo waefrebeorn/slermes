@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "xAI grammar-recovery enum stripper. Harness links the REAL src/tools/schema_sanitizer.c port and traces the per-tool dispatch ladder + the authoritative stripped count; twin imports LIVE tools/schema_sanitizer.py::strip_slash_enum for its count over the same structure. Walk-order parity of strip_se_walk vs the Python _walk holds on all inputs (C recurses into remaining values after popping enum, matching Python's post-pop values() walk)."
+  "notes": "xAI grammar-recovery enum stripper. Harness links the REAL src/tools/schema_sanitizer.c port and traces the per-tool dispatch ladder + the authoritative stripped count; twin imports LIVE tools/schema_sanitizer.py::strip_slash_enum for its count over the same structure. Walk-order parity of strip_se_walk vs the Python _walk holds on all inputs (C recurses into remaining values after popping enum, matching Python's post-pop values() walk).",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

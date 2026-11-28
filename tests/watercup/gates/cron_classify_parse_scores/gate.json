@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Tolerant classifier-output parser (traced copy mirrors src/cron/scripts/classify_items.c::cron_classify_parse_scores which links libjson; twin imports LIVE cron/scripts/classify_items.py::_parse_scores). Covers fences, last-ditch [...] salvage, non-array payloads, out-of-range/negative/float/missing indexes, mixed arrays, whitespace. Value event folds accepted entries canonically (index=score=reason;). Known benign encoding difference not traced: LIVE accepts bool indexes (bool is int in Python) while C rejects them via its integer guard \u2014 no bool-index inputs."
+  "notes": "Tolerant classifier-output parser (traced copy mirrors src/cron/scripts/classify_items.c::cron_classify_parse_scores which links libjson; twin imports LIVE cron/scripts/classify_items.py::_parse_scores). Covers fences, last-ditch [...] salvage, non-array payloads, out-of-range/negative/float/missing indexes, mixed arrays, whitespace. Value event folds accepted entries canonically (index=score=reason;). Known benign encoding difference not traced: LIVE accepts bool indexes (bool is int in Python) while C rejects them via its integer guard \u2014 no bool-index inputs.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

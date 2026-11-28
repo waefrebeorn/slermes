@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "GitHub remote canonicalization (host/owner/repo lowercased, .git and trailing / stripped). Dropped inputs (documented divergence, not gated): bare 'https://host' with no path \u2014 LIVE urlparse leaves the value untouched (netloc set, path empty) while the C urlparse replication rewrites it to just 'host'."
+  "notes": "GitHub remote canonicalization (host/owner/repo lowercased, .git and trailing / stripped). Dropped inputs (documented divergence, not gated): bare 'https://host' with no path \u2014 LIVE urlparse leaves the value untouched (netloc set, path empty) while the C urlparse replication rewrites it to just 'host'.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

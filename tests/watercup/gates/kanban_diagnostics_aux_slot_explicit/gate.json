@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Harness links the REAL ports_wrappers.c wrapper (captures its stdout verdict as VSTR) and traces its branch ladder. Inputs avoid documented divergences: LIVE strips/lowercases the provider string while the C port compares verbatim via strcasecmp (only affects whitespace/case-padded 'auto' spellings), and LIVE str()-coerces non-string values while json_get_str defaults to empty."
+  "notes": "Harness links the REAL ports_wrappers.c wrapper (captures its stdout verdict as VSTR) and traces its branch ladder. Inputs avoid documented divergences: LIVE strips/lowercases the provider string while the C port compares verbatim via strcasecmp (only affects whitespace/case-padded 'auto' spellings), and LIVE str()-coerces non-string values while json_get_str defaults to empty.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

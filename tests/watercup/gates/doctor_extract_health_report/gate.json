@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "MCP health_report extraction ladder. REAL src/tools/computer_use/cua_doctor.c::cua_doctor_extract_health_report linked via extra_src against LIVE tools/computer_use/doctor.py::_extract_health_report_from_result. Rungs: isError denial (with human-text preference), structuredContent direct hit, legacy JSON-in-text-block parse, unavailable-vs-protocol-error fallback. '-' encodes a non-object response (protocol error)."
+  "notes": "MCP health_report extraction ladder. REAL src/tools/computer_use/cua_doctor.c::cua_doctor_extract_health_report linked via extra_src against LIVE tools/computer_use/doctor.py::_extract_health_report_from_result. Rungs: isError denial (with human-text preference), structuredContent direct hit, legacy JSON-in-text-block parse, unavailable-vs-protocol-error fallback. '-' encodes a non-object response (protocol error).",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

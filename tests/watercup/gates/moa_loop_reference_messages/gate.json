@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced copy of moa_loop_wrappers.c::moa_u_reference_messages vs LIVE agent/moa_loop.py::_reference_messages. Inputs encode <scenario>\\t<state>\\t<result>; the twin maps the scenario to a synthetic conversation and derives both flags from LIVE behavior (asserting consistency, so an encoded flag that disagrees with LIVE fails loudly). The C wrapper models only two summary decisions (conversation present; trailing synthetic user appended) \u2014 its full advisory text is a fixed rendering and the per-message flattening ladder lives in the LIVE call."
+  "notes": "Traced copy of moa_loop_wrappers.c::moa_u_reference_messages vs LIVE agent/moa_loop.py::_reference_messages. Inputs encode <scenario>\\t<state>\\t<result>; the twin maps the scenario to a synthetic conversation and derives both flags from LIVE behavior (asserting consistency, so an encoded flag that disagrees with LIVE fails loudly). The C wrapper models only two summary decisions (conversation present; trailing synthetic user appended) \u2014 its full advisory text is a fixed rendering and the per-message flattening ladder lives in the LIVE call.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

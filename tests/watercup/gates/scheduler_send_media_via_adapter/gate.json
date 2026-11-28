@@ -14,5 +14,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Per-file MEDIA routing decision (voice/video/image/document) from _send_media_via_adapter; harness carries a VERBATIM traced copy of the REAL scheduler_route_media port (its TU drags ~18 out-of-path externals, so linking is unclean); twin drives the routing through LIVE should_send_media_as_audio + LIVE _VIDEO_EXTS/_IMAGE_EXTS. Adapter delivery (network send) is out of path. DOCUMENTED DIVERGENCES avoided: (1) C port does not lowercase the extension while LIVE does Path(...).suffix.lower(), so uppercase-extension inputs diverge \u2014 REAL GAP worth a follow-up fix; (2) LIVE _AUDIO_EXTS includes '.m2a' but the C audio table omits it \u2014 REAL GAP; (3) a hidden dotfile like '.ogg' has Path.suffix == '' in LIVE but strrchr finds the leading dot in C \u2014 avoided."
+  "notes": "Per-file MEDIA routing decision (voice/video/image/document) from _send_media_via_adapter; harness carries a VERBATIM traced copy of the REAL scheduler_route_media port (its TU drags ~18 out-of-path externals, so linking is unclean); twin drives the routing through LIVE should_send_media_as_audio + LIVE _VIDEO_EXTS/_IMAGE_EXTS. Adapter delivery (network send) is out of path. DOCUMENTED DIVERGENCES avoided: (1) C port does not lowercase the extension while LIVE does Path(...).suffix.lower(), so uppercase-extension inputs diverge \u2014 REAL GAP worth a follow-up fix; (2) LIVE _AUDIO_EXTS includes '.m2a' but the C audio table omits it \u2014 REAL GAP; (3) a hidden dotfile like '.ogg' has Path.suffix == '' in LIVE but strrchr finds the leading dot in C \u2014 avoided.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Theme YAML normaliser. REAL src/hermes_cli/web_server_themes.c::ws_theme_normalise_definition linked via extra_src (with link shims for yaml/events helpers and slermes_home.c) against LIVE _normalise_theme_definition. V event hashes the C json_serialize canonical form; the twin replicates that serializer byte-for-byte (compact separators, %.0f for int-valued floats, %.17g otherwise, JSON escapes, raw non-ASCII). Rung ladder B1-B11 mirrors the branch skeleton on both sides."
+  "notes": "Theme YAML normaliser. REAL src/hermes_cli/web_server_themes.c::ws_theme_normalise_definition linked via extra_src (with link shims for yaml/events helpers and slermes_home.c) against LIVE _normalise_theme_definition. V event hashes the C json_serialize canonical form; the twin replicates that serializer byte-for-byte (compact separators, %.0f for int-valued floats, %.17g otherwise, JSON escapes, raw non-ASCII). Rung ladder B1-B11 mirrors the branch skeleton on both sides.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

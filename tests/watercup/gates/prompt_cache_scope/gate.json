@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Rotation-stable cache scope (issue #79017): empty sid, memo hit on repeat, lineage root found, no-lineage fallback, persist_disabled memoization, unmemoized failed walk. Probes are 'sid|lineage_json|persist_disabled|repeat'. Links the REAL src/agent/prompt_cache_scope.c."
+  "notes": "Rotation-stable cache scope (issue #79017): empty sid, memo hit on repeat, lineage root found, no-lineage fallback, persist_disabled memoization, unmemoized failed walk. Probes are 'sid|lineage_json|persist_disabled|repeat'. Links the REAL src/agent/prompt_cache_scope.c.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

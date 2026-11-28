@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Links the REAL port. Inputs avoid documented divergences: LIVE strip()s output_summary before use and rstrips the 1200-char truncation slice while the port copies verbatim (inputs carry no leading/trailing whitespace); LIVE's falsy-empty canonical_command falls through to command only when command exists (covered), and a missing status key defaults to 'unverified' on both sides."
+  "notes": "Links the REAL port. Inputs avoid documented divergences: LIVE strip()s output_summary before use and rstrips the 1200-char truncation slice while the port copies verbatim (inputs carry no leading/trailing whitespace); LIVE's falsy-empty canonical_command falls through to command only when command exists (covered), and a missing status key defaults to 'unverified' on both sides.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

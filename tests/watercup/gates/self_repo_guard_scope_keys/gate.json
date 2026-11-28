@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Shell-context scope tracking over command prefixes (LIVE tools/self_repo_guard.py::_scope_keys vs traced copy of src/tools/self_repo_guard.c::srg_scope_keys). Input encoding '<start_csv>|<command>'; starts sorted+deduped like the callers. Exercises squote/dquote contexts, $(), backticks (open/close), parens, escapes, multi-start walks, unclosed quotes."
+  "notes": "Shell-context scope tracking over command prefixes (LIVE tools/self_repo_guard.py::_scope_keys vs traced copy of src/tools/self_repo_guard.c::srg_scope_keys). Input encoding '<start_csv>|<command>'; starts sorted+deduped like the callers. Exercises squote/dquote contexts, $(), backticks (open/close), parens, escapes, multi-start walks, unclosed quotes.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

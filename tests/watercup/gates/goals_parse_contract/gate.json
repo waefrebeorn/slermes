@@ -15,5 +15,8 @@
   ],
   "notes": [
     "Traced copy of goals_data.c::parse_contract vs LIVE parse_contract over 10 goal texts (headline-only, incidental colon, aliases incl multi-word/stop-when variants, blank lines, repeated fields joined by space, unknown prefix staying in headline, whitespace trimming). Output V event packs headline + 5 contract fields."
-  ]
+  ],
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "FIXED THE PORT as a parity win: src/agent/hermes_state_gaps.c::hs_classify_persistence_error previously returned wrong buckets ('disk_full'/'malformed'/'busy'), skipped lowercase normalization, and lacked the turn_lease/compression_closed/compression/corrupt rungs entirely (so gateway/run_gaps2.c's corrupt-broadcast check could never fire). Rewrote to the LIVE ladder; applied the same fix to the duplicate port src/persistence/sqlite/_state/hermes_state_gaps.c::hermes_state_classify_persistence_error. Harness is a traced copy of the fixed C logic (self-contained). Typed-exception isinstance rungs are constant-false for argv string inputs on both sides."
+  "notes": "FIXED THE PORT as a parity win: src/agent/hermes_state_gaps.c::hs_classify_persistence_error previously returned wrong buckets ('disk_full'/'malformed'/'busy'), skipped lowercase normalization, and lacked the turn_lease/compression_closed/compression/corrupt rungs entirely (so gateway/run_gaps2.c's corrupt-broadcast check could never fire). Rewrote to the LIVE ladder; applied the same fix to the duplicate port src/persistence/sqlite/_state/hermes_state_gaps.c::hermes_state_classify_persistence_error. Harness is a traced copy of the fixed C logic (self-contained). Typed-exception isinstance rungs are constant-false for argv string inputs on both sides.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

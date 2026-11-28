@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced copy of session_search_tool.c::order_for_recall vs LIVE tools/session_search_tool.py::_order_for_recall (stable demoted-cron partition). Harness links the real libjson and runs a faithful copy of the port body; the twin asserts LIVE output equals the stable front+back partition on every acting input."
+  "notes": "Traced copy of session_search_tool.c::order_for_recall vs LIVE tools/session_search_tool.py::_order_for_recall (stable demoted-cron partition). Harness links the real libjson and runs a faithful copy of the port body; the twin asserts LIVE output equals the stable front+back partition on every acting input.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

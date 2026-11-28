@@ -14,5 +14,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "PORT FIX APPLIED: src/hermes_cli/main_wrappers.c::main_u_format_aux_current previously printed the custom/auto labels and the model on separate lines (dropping the ' \u00b7 ' join); it now renders exactly the LIVE single-line string. Harness carries the fixed body inline because the wrapper translation unit pulls config/curator deps. Inputs avoid LIVE-vs-C whitespace-strip differences (LIVE strips fields, the port does not)."
+  "notes": "PORT FIX APPLIED: src/hermes_cli/main_wrappers.c::main_u_format_aux_current previously printed the custom/auto labels and the model on separate lines (dropping the ' \u00b7 ' join); it now renders exactly the LIVE single-line string. Harness carries the fixed body inline because the wrapper translation unit pulls config/curator deps. Inputs avoid LIVE-vs-C whitespace-strip differences (LIVE strips fields, the port does not).",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

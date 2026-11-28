@@ -17,5 +17,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Quote-masking for heredoc scoping. mask_simple_quotes is static in src/tools/shell_heredoc.c, so the harness #includes the REAL shipped source directly and the actual C function computes every V value; twin imports LIVE tools/shell_heredoc.py::_mask_simple_quotes. Ladder pins quote-class presence; output parity across terminated/unterminated/escaped/executable-substitution spans enforces deep agreement."
+  "notes": "Quote-masking for heredoc scoping. mask_simple_quotes is static in src/tools/shell_heredoc.c, so the harness #includes the REAL shipped source directly and the actual C function computes every V value; twin imports LIVE tools/shell_heredoc.py::_mask_simple_quotes. Ladder pins quote-class presence; output parity across terminated/unterminated/escaped/executable-substitution spans enforces deep agreement.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

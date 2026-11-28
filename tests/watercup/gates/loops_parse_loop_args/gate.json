@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "/loop argument parser \u2014 the richest branch ladder in loops.py (empty/--times/--until/every-sugar/interval-token/missing-prompt). C port (hermes_cli/loops_pure.c::loops_parse_loop_args) vs LIVE hermes_cli/loops.py::parse_loop_args. Cup compares the branch ladder; the twin also asserts the returned result dict matches the LIVE module semantics."
+  "notes": "/loop argument parser \u2014 the richest branch ladder in loops.py (empty/--times/--until/every-sugar/interval-token/missing-prompt). C port (hermes_cli/loops_pure.c::loops_parse_loop_args) vs LIVE hermes_cli/loops.py::parse_loop_args. Cup compares the branch ladder; the twin also asserts the returned result dict matches the LIVE module semantics.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

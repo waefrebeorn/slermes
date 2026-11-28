@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Log-safe URL redaction (userinfo strip, path collapse, truncation). Traced C copy of src/plugins/platforms/yuanbao/base.c::safe_url_for_log vs LIVE twin; V carries each side's OWN result so output divergence fails the cup too. Inputs exclude query strings/fragments: LIVE urlsplit strips them while the C port keeps them (documented divergence worth a follow-up normalization)."
+  "notes": "Log-safe URL redaction (userinfo strip, path collapse, truncation). Traced C copy of src/plugins/platforms/yuanbao/base.c::safe_url_for_log vs LIVE twin; V carries each side's OWN result so output divergence fails the cup too. Inputs exclude query strings/fragments: LIVE urlsplit strips them while the C port keeps them (documented divergence worth a follow-up normalization).",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

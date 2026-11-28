@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Canonical-model spelling-variant generator (src/gateway/hermes_constants_reasoning.c::reasoning_canonical_model_variants vs LIVE hermes_constants.py::_canonical_model_variants). Traced copy of the port; cup = branch ladder (bare-strip / aggregator-strip) + VSTR per final variant + count. Empty input: LIVE returns [] while C returns NULL \u2014 harness prints a count of 0 with no variants, matching the empty stream; verified green."
+  "notes": "Canonical-model spelling-variant generator (src/gateway/hermes_constants_reasoning.c::reasoning_canonical_model_variants vs LIVE hermes_constants.py::_canonical_model_variants). Traced copy of the port; cup = branch ladder (bare-strip / aggregator-strip) + VSTR per final variant + count. Empty input: LIVE returns [] while C returns NULL \u2014 harness prints a count of 0 with no variants, matching the empty stream; verified green.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

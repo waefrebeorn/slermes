@@ -14,5 +14,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Faithful traced copy of the ports_wrappers.c body (translation unit too heavy to link). Set output is rendered sorted ('|'-joined) on both sides so frozenset vs insertion-order never leaks into the cup. Inputs avoid whitespace other than spaces/tabs (the port strips only those while LIVE str.strip() removes all whitespace)."
+  "notes": "Faithful traced copy of the ports_wrappers.c body (translation unit too heavy to link). Set output is rendered sorted ('|'-joined) on both sides so frozenset vs insertion-order never leaks into the cup. Inputs avoid whitespace other than spaces/tabs (the port strips only those while LIVE str.strip() removes all whitespace).",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

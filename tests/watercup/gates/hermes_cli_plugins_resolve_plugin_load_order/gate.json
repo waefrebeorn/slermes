@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Plugin dependency-resolving load order. REAL src/hermes_cli/plugins_core.c::plugins_resolve_plugin_load_order linked via extra_src against LIVE hermes_cli/plugins.py::resolve_plugin_load_order (duck-typed manifests with requires_plugins [{'id': d}]). Covers: no deps, exact-key vs by-display-name resolution, missing dep (warn+skip), self-dep ignore, cycle fallback to alphabetical, first-key-wins name claiming, batched Kahn ordering. KNOWN EDGE DIVERGENCE (input dropped): empty manifest set \u2014 LIVE returns [] while the C port returns NULL (fail-closed); real callers never pass an empty manifest map."
+  "notes": "Plugin dependency-resolving load order. REAL src/hermes_cli/plugins_core.c::plugins_resolve_plugin_load_order linked via extra_src against LIVE hermes_cli/plugins.py::resolve_plugin_load_order (duck-typed manifests with requires_plugins [{'id': d}]). Covers: no deps, exact-key vs by-display-name resolution, missing dep (warn+skip), self-dep ignore, cycle fallback to alphabetical, first-key-wins name claiming, batched Kahn ordering. KNOWN EDGE DIVERGENCE (input dropped): empty manifest set \u2014 LIVE returns [] while the C port returns NULL (fail-closed); real callers never pass an empty manifest map.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

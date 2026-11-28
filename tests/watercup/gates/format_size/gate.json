@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Human-readable byte sizes (B/KB/MB/GB/TB, one decimal). C port (tools/curator_backup.c::format_size) extended to TB to match LIVE hermes_cli/sizefmt.py::format_bytes (previously capped at GB \u2014 real parity gap fixed). Cup-parity across 12 sizes."
+  "notes": "Human-readable byte sizes (B/KB/MB/GB/TB, one decimal). C port (tools/curator_backup.c::format_size) extended to TB to match LIVE hermes_cli/sizefmt.py::format_bytes (previously capped at GB \u2014 real parity gap fixed). Cup-parity across 12 sizes.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

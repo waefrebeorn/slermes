@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Shell quote-context state machine (tts). C port (tools/tts_tool_ports.c::tts_shell_quote_context) was DIVERGENT (two independent toggle vars, global backslash escape) \u2014 fixed to the LIVE single-state machine; real parity win. 13 inputs cover bare/single/double/escape/close/unclosed/overrun/empty."
+  "notes": "Shell quote-context state machine (tts). C port (tools/tts_tool_ports.c::tts_shell_quote_context) was DIVERGENT (two independent toggle vars, global backslash escape) \u2014 fixed to the LIVE single-state machine; real parity win. 13 inputs cover bare/single/double/escape/close/unclosed/overrun/empty.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

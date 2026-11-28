@@ -20,5 +20,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Links the REAL port. Branch rungs are the LIVE candidate slots evaluated in candidate order on both sides (data-driven, fixed-length ladder); the winning-slot semantics are carried by the VSTR result so any first-hit divergence still fails the cup."
+  "notes": "Links the REAL port. Branch rungs are the LIVE candidate slots evaluated in candidate order on both sides (data-driven, fixed-length ladder); the winning-slot semantics are carried by the VSTR result so any first-hit divergence still fails the cup.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

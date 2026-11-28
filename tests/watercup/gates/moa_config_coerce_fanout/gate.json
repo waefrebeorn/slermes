@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Fan-out cadence normalization. PORT FIX: src/hermes_cli/moa_config_pure.c::moa_coerce_fanout was a stub that collapsed every non-canonical value to per_iteration \u2014 reimplemented to match LIVE hermes_cli/moa_config.py::_coerce_fanout (canonical set, every_n:N ladder with _coerce_int fallback, user_turn default). Gate covers the STRING form; the {mode: every_n, n} dict mapping form is normalized by callers and not representable via argv strings. Twin asserts its traced result equals the LIVE fn on every input."
+  "notes": "Fan-out cadence normalization. PORT FIX: src/hermes_cli/moa_config_pure.c::moa_coerce_fanout was a stub that collapsed every non-canonical value to per_iteration \u2014 reimplemented to match LIVE hermes_cli/moa_config.py::_coerce_fanout (canonical set, every_n:N ladder with _coerce_int fallback, user_turn default). Gate covers the STRING form; the {mode: every_n, n} dict mapping form is normalized by callers and not representable via argv strings. Twin asserts its traced result equals the LIVE fn on every input.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

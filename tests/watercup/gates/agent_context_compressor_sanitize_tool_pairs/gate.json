@@ -24,5 +24,8 @@
     "NULL"
   ],
   "notes": "FIXED REAL PORT STUB: src/agent/context_compressor_ports.c::cc_sanitize_tool_pairs was an identity passthrough; replaced with a real implementation of agent/context_compressor.py::_sanitize_tool_pairs (quiet_mode path): surviving assistant tool_call ids (call_id||id), tool-result id collection, orphaned-result removal, missing-result call stripping with trailing in-flight protection (walk back over trailing tool results) and '(tool call removed)' content blanking. Harness links the REAL port via extra_src (three unrelated helper symbols from context_compressor_pure.c stubbed in harness); branch ladder traced off the input in identical rung order on both sides; value event = canonical n/drop/strip + per-output-role encoding computed from input vs sanitized output. Known untested edge (input-shape avoided): non-string non-empty content on a fully-stripped assistant message \u2014 LIVE keeps it, C port's json_get_str-based blank check would replace it.",
-  "py_fn_repaired_from": "_sanitize_tool_pairs"
+  "py_fn_repaired_from": "_sanitize_tool_pairs",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

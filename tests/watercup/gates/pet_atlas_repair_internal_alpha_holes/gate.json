@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Swiss-cheese alpha repair for generated sprites. REAL src/pet/atlas.c::pet_repair_internal_alpha_holes linked via extra_src against LIVE _repair_internal_alpha_holes (PIL-backed). PORT FIX APPLIED: the C border-seed loops used `y += (h-1)`, which spins forever when h==1 or w==1 \u2014 replaced with explicit two-row/col iteration mirroring LIVE. AGREED SUB-CONTRACT: inputs keep the opaque surroundings uniform so the hole-fill colour average is exact \u2014 C truncates the integer mean while LIVE uses round() (banker's), so fractional averages would diverge. B1 guards malformed/dimension-mismatched input; B2 fires when at least one transparent pixel became an opaque fill."
+  "notes": "Swiss-cheese alpha repair for generated sprites. REAL src/pet/atlas.c::pet_repair_internal_alpha_holes linked via extra_src against LIVE _repair_internal_alpha_holes (PIL-backed). PORT FIX APPLIED: the C border-seed loops used `y += (h-1)`, which spins forever when h==1 or w==1 \u2014 replaced with explicit two-row/col iteration mirroring LIVE. AGREED SUB-CONTRACT: inputs keep the opaque surroundings uniform so the hole-fill colour average is exact \u2014 C truncates the integer mean while LIVE uses round() (banker's), so fractional averages would diverge. B1 guards malformed/dimension-mismatched input; B2 fires when at least one transparent pixel became an opaque fill.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

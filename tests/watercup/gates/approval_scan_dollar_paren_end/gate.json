@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Balanced $(...) scanner (src/tools/approval.c::scan_dollar_paren_end vs LIVE tools/approval.py::_scan_dollar_paren_end). REAL PARITY GAP FOUND & FIXED during gating: the C port counted BARE '(' toward depth and handled escapes differently, returning wrong end offsets for inputs like \"$(deep($(x)))\" or \"$(a(b)\"; port rewritten to mirror LIVE exactly (depth=1 seeded at '$(', depth++ only on nested '$(', quote-aware with double-quote backslash escapes). Traces the shared rungs: unmatched-branch + normalized end-offset value. Inputs carry trailing context because the C sentinel for unmatched equals buffer end."
+  "notes": "Balanced $(...) scanner (src/tools/approval.c::scan_dollar_paren_end vs LIVE tools/approval.py::_scan_dollar_paren_end). REAL PARITY GAP FOUND & FIXED during gating: the C port counted BARE '(' toward depth and handled escapes differently, returning wrong end offsets for inputs like \"$(deep($(x)))\" or \"$(a(b)\"; port rewritten to mirror LIVE exactly (depth=1 seeded at '$(', depth++ only on nested '$(', quote-aware with double-quote backslash escapes). Traces the shared rungs: unmatched-branch + normalized end-offset value. Inputs carry trailing context because the C sentinel for unmatched equals buffer end.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

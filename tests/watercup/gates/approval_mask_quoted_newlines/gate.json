@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Quote-aware newline masking for shell commands. C port (src/tools/approval_helpers2.c::apr2_mask_quoted_newlines) traced + LIVE Python twin (tools/approval.py::_mask_quoted_newlines); twin also asserts its traced output equals the LIVE fn result on every input. 12 inputs covering: no-newline fast path, single/double-quoted newlines, double-quote backslash escape, unquoted backslash-newline continuation, unclosed quote, trailing newline, mixed quoting."
+  "notes": "Quote-aware newline masking for shell commands. C port (src/tools/approval_helpers2.c::apr2_mask_quoted_newlines) traced + LIVE Python twin (tools/approval.py::_mask_quoted_newlines); twin also asserts its traced output equals the LIVE fn result on every input. 12 inputs covering: no-newline fast path, single/double-quoted newlines, double-quote backslash escape, unquoted backslash-newline continuation, unclosed quote, trailing newline, mixed quoting.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

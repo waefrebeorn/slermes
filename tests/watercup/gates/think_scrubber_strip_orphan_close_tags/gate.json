@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Orphan close-tag stripping (src/agent/think_scrubber.c::strip_orphan vs LIVE agent/think_scrubber.py::StreamingThinkScrubber._strip_orphan_close_tags). Covers all 5 close tags, case-mangling, adjacency, trailing-whitespace swallow, non-tags kept. Documented non-traced divergence: LIVE has a '</' not-in-text fast-path return; C lacks it \u2014 outputs identical either way, twin asserts traced result == LIVE result on every input."
+  "notes": "Orphan close-tag stripping (src/agent/think_scrubber.c::strip_orphan vs LIVE agent/think_scrubber.py::StreamingThinkScrubber._strip_orphan_close_tags). Covers all 5 close tags, case-mangling, adjacency, trailing-whitespace swallow, non-tags kept. Documented non-traced divergence: LIVE has a '</' not-in-text fast-path return; C lacks it \u2014 outputs identical either way, twin asserts traced result == LIVE result on every input.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Slash-command access-policy ladder (src/gateway/slash_access.c vs LIVE gateway/slash_access.py): disabled->admin->empty-cmd->always-allowed{help,whoami}->user allowlist. Probes 'enabled|admins|allowed|user|cmd'. Twin imports the LIVE module."
+  "notes": "Slash-command access-policy ladder (src/gateway/slash_access.c vs LIVE gateway/slash_access.py): disabled->admin->empty-cmd->always-allowed{help,whoami}->user allowlist. Probes 'enabled|admins|allowed|user|cmd'. Twin imports the LIVE module.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

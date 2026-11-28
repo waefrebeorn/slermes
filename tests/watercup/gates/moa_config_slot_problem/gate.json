@@ -16,5 +16,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "MoA preset slot validation ladder (src/hermes_cli/moa_config_pure.c::moa_slot_problem vs LIVE hermes_cli/moa_config.py::_slot_problem). Input encoding: '!' = non-object slot, else 'provider|model'. Ladder: not-object / both-empty / provider-empty / model-empty / moa-case-insensitive. Non-string JSON provider/model values (C treats as '', LIVE str()s them) are excluded from the agreed sub-contract."
+  "notes": "MoA preset slot validation ladder (src/hermes_cli/moa_config_pure.c::moa_slot_problem vs LIVE hermes_cli/moa_config.py::_slot_problem). Input encoding: '!' = non-object slot, else 'provider|model'. Ladder: not-object / both-empty / provider-empty / model-empty / moa-case-insensitive. Non-string JSON provider/model values (C treats as '', LIVE str()s them) are excluded from the agreed sub-contract.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

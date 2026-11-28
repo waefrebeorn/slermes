@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Pre-update backup mode resolution (CLI flags > config > default quick). PORT FIX: src/hermes_cli/update_cmd.c::uc_resolve_pre_update_backup_mode compared the raw config string without Python's str(raw).strip().lower() \u2014 values like 'QUICK ' fell through to the unknown-default path with wrong events; added trim+lower to match LIVE hermes_cli/update_cmd.py::_resolve_pre_update_backup_mode. Config load itself is outside the traced path (raw value injected; '-' encodes absent key). Twin asserts its traced result equals the LIVE fn on every input via a stubbed hermes_cli.config.load_config."
+  "notes": "Pre-update backup mode resolution (CLI flags > config > default quick). PORT FIX: src/hermes_cli/update_cmd.c::uc_resolve_pre_update_backup_mode compared the raw config string without Python's str(raw).strip().lower() \u2014 values like 'QUICK ' fell through to the unknown-default path with wrong events; added trim+lower to match LIVE hermes_cli/update_cmd.py::_resolve_pre_update_backup_mode. Config load itself is outside the traced path (raw value injected; '-' encodes absent key). Twin asserts its traced result equals the LIVE fn on every input via a stubbed hermes_cli.config.load_config.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

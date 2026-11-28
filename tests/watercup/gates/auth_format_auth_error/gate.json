@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Auth error -> user guidance ladder. REAL PARITY BUG FIXED in src/hermes_cli/auth.c: is_rate_limited_auth_error compared code to literal \"429\" while LIVE uses CODEX_RATE_LIMITED_CODE='codex_rate_limited' \u2014 rate-limited errors were misrouted to the 'run hermes model' remediation; macro now matches LIVE. Documented sub-contract: nous-provider entitlement inputs are excluded (LIVE takes a portal/network path via _format_nous_entitlement_auth_error; C returns a static hint) and the LIVE-only {subscription_expired,no_usable_credits,account_missing,member_spend_cap_exceeded} group is traced on neither side (no-op for non-nous providers on both)."
+  "notes": "Auth error -> user guidance ladder. REAL PARITY BUG FIXED in src/hermes_cli/auth.c: is_rate_limited_auth_error compared code to literal \"429\" while LIVE uses CODEX_RATE_LIMITED_CODE='codex_rate_limited' \u2014 rate-limited errors were misrouted to the 'run hermes model' remediation; macro now matches LIVE. Documented sub-contract: nous-provider entitlement inputs are excluded (LIVE takes a portal/network path via _format_nous_entitlement_auth_error; C returns a static hint) and the LIVE-only {subscription_expired,no_usable_credits,account_missing,member_spend_cap_exceeded} group is traced on neither side (no-op for non-nous providers on both).",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

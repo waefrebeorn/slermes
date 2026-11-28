@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Judge-reply parser (traced copy of src/hermes_cli/goals_manager.c::goal_judge_parse_response + goal_judge_extract_json_object + extract_json vs LIVE hermes_cli/goals.py::_parse_judge_response). Cup hashes the branch ladder + final verdict label + wait-directive key (session_id/pid/seconds/none), NOT the formatted reason string: LIVE repr()/truncates the raw reply in 'judge reply was not JSON: ...' while C embeds it verbatim, a cosmetic divergence. Inputs avoid: whitespace-padded verdict values (' WAIT ' \u2014 C lowercases but does not strip), non-string non-bool 'verdict' fields (C json_get_str returns NULL -> legacy path; Python bool()s it -> done), fractional pid strings (atol truncates, int() raises). Inputs use literal \\n escapes decoded by both sides."
+  "notes": "Judge-reply parser (traced copy of src/hermes_cli/goals_manager.c::goal_judge_parse_response + goal_judge_extract_json_object + extract_json vs LIVE hermes_cli/goals.py::_parse_judge_response). Cup hashes the branch ladder + final verdict label + wait-directive key (session_id/pid/seconds/none), NOT the formatted reason string: LIVE repr()/truncates the raw reply in 'judge reply was not JSON: ...' while C embeds it verbatim, a cosmetic divergence. Inputs avoid: whitespace-padded verdict values (' WAIT ' \u2014 C lowercases but does not strip), non-string non-bool 'verdict' fields (C json_get_str returns NULL -> legacy path; Python bool()s it -> done), fractional pid strings (atol truncates, int() raises). Inputs use literal \\n escapes decoded by both sides.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

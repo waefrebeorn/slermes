@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced C copy of base_ext2.c::gw_extract_media vs LIVE gateway/platforms/base.py::extract_media (media-list rung). KNOWN DIVERGENCES documented in harness.c header: LIVE dedupes expanded paths, masks protected spans (code blocks / JSON strings) before scanning, and gates is_voice on audio extensions \u2014 the simplified C port does none of these. Inputs are curated to the agreeing subset: distinct unmasked media-extension paths; [[audio_as_voice]] inputs contain exactly one audio entry. Duplicate-path, code-wrapped, and voice+non-audio inputs are excluded because C/LIVE provably diverge there."
+  "notes": "Traced C copy of base_ext2.c::gw_extract_media vs LIVE gateway/platforms/base.py::extract_media (media-list rung). KNOWN DIVERGENCES documented in harness.c header: LIVE dedupes expanded paths, masks protected spans (code blocks / JSON strings) before scanning, and gates is_voice on audio extensions \u2014 the simplified C port does none of these. Inputs are curated to the agreeing subset: distinct unmasked media-extension paths; [[audio_as_voice]] inputs contain exactly one audio entry. Duplicate-path, code-wrapped, and voice+non-audio inputs are excluded because C/LIVE provably diverge there.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

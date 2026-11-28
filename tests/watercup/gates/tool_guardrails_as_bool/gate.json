@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced copy of tool_guardrails_ports.c::tg_as_bool vs LIVE agent/tool_guardrails.py::_as_bool (string-rung subset, default=True). Inputs avoid documented divergences: C does not strip whitespace before matching, and LIVE also accepts 'enabled'/'disabled' which the C port omits; LIVE additionally accepts real bool/int values (not reachable over argv)."
+  "notes": "Traced copy of tool_guardrails_ports.c::tg_as_bool vs LIVE agent/tool_guardrails.py::_as_bool (string-rung subset, default=True). Inputs avoid documented divergences: C does not strip whitespace before matching, and LIVE also accepts 'enabled'/'disabled' which the C port omits; LIVE additionally accepts real bool/int values (not reachable over argv).",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

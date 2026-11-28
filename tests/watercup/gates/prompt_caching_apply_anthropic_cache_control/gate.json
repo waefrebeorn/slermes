@@ -26,5 +26,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Anthropic cache-marker placement ladder. pc_* helpers are verbatim copies of the real port's file-statics in prompt_caching_plan.c (direct linking is not clean: unrelated externs); the apply body is a faithful traced copy. Inputs are <native>|<prefix or '->'|<messages-json>. KNOWN DIVERGENCE (documented, inputs avoid it): LIVE strips pre-existing cache_control markers idempotently before placing new ones; the C apply body has no strip pre-pass \u2014 pre-marked inputs would diverge. Also LIVE's string-content user path consults find_stable_prefix (empty registry in a fresh process, so both take the plain path)."
+  "notes": "Anthropic cache-marker placement ladder. pc_* helpers are verbatim copies of the real port's file-statics in prompt_caching_plan.c (direct linking is not clean: unrelated externs); the apply body is a faithful traced copy. Inputs are <native>|<prefix or '->'|<messages-json>. KNOWN DIVERGENCE (documented, inputs avoid it): LIVE strips pre-existing cache_control markers idempotently before placing new ones; the C apply body has no strip pre-pass \u2014 pre-marked inputs would diverge. Also LIVE's string-content user path consults find_stable_prefix (empty registry in a fresh process, so both take the plain path).",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

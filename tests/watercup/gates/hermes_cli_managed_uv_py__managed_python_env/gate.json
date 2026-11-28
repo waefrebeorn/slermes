@@ -27,5 +27,8 @@
     "src"
   ],
   "na_reason": "Python fn never reads its parameter, so no fixture can vary the answer; a check of its real effect (file/global/state) is a different gate",
-  "na_class": "ignores-param"
+  "na_class": "ignores-param",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

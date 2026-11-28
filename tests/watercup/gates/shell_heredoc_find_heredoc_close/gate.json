@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Heredoc terminator scan: line extraction, \\r trim, <<- tab-strip, exact-match, unterminated->None. Inputs tab-encoded cmd\\tstart\\tdelim\\tflag. C port src/tools/shell_heredoc.c::find_heredoc_close traced as a faithful copy (SIZE_MAX encodes Python None)."
+  "notes": "Heredoc terminator scan: line extraction, \\r trim, <<- tab-strip, exact-match, unterminated->None. Inputs tab-encoded cmd\\tstart\\tdelim\\tflag. C port src/tools/shell_heredoc.c::find_heredoc_close traced as a faithful copy (SIZE_MAX encodes Python None).",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

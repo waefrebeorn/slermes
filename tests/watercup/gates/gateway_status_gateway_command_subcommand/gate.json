@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Gateway lifecycle subcommand extraction (traced copy of src/gateway/status.c::gateway_command_subcommand vs LIVE gateway/status.py::_gateway_command_subcommand). Ladder: empty guard, token split/normalize (lower+backslash->slash), dedicated-entrypoint short-circuit (gateway/run.py, hermes-gateway[.exe]), has_gateway_entry check, profile-selector stripping (--profile/-p/--profile=/-p=), first 'gateway' token -> next token or bare='run'. Inputs avoid shlex-vs-C tokenizer edge divergences (unbalanced quotes etc.) which are a known benign encoding difference."
+  "notes": "Gateway lifecycle subcommand extraction (traced copy of src/gateway/status.c::gateway_command_subcommand vs LIVE gateway/status.py::_gateway_command_subcommand). Ladder: empty guard, token split/normalize (lower+backslash->slash), dedicated-entrypoint short-circuit (gateway/run.py, hermes-gateway[.exe]), has_gateway_entry check, profile-selector stripping (--profile/-p/--profile=/-p=), first 'gateway' token -> next token or bare='run'. Inputs avoid shlex-vs-C tokenizer edge divergences (unbalanced quotes etc.) which are a known benign encoding difference.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Display-setting normaliser (YAML quirk handling). Harness links the REAL src/gateway/display_config.c::normalise_display_value and traces the dispatch ladder + result; twin imports LIVE gateway/display_config.py::_normalise. Inputs restricted to the agreed string-input contract where C/LIVE agree byte-for-byte. KNOWN DIVERGENCES (documented, not hidden): (1) tool_progress 'false'/'true'/'bogus' \u2014 LIVE maps to off/all via YAML-1.1 bool coercion, C lowercases verbatim; (2) live_status tri-state has no C port branch; (3) long_running_notifications 'generic' special-case absent in C. Each would be a real follow-up normalization."
+  "notes": "Display-setting normaliser (YAML quirk handling). Harness links the REAL src/gateway/display_config.c::normalise_display_value and traces the dispatch ladder + result; twin imports LIVE gateway/display_config.py::_normalise. Inputs restricted to the agreed string-input contract where C/LIVE agree byte-for-byte. KNOWN DIVERGENCES (documented, not hidden): (1) tool_progress 'false'/'true'/'bogus' \u2014 LIVE maps to off/all via YAML-1.1 bool coercion, C lowercases verbatim; (2) live_status tri-state has no C port branch; (3) long_running_notifications 'generic' special-case absent in C. Each would be a real follow-up normalization.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

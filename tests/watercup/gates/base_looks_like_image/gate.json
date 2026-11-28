@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Traced C copy of base.c::pb_looks_like_image vs LIVE gateway/platforms/base.py::_looks_like_image magic-byte ladder. Inputs are argv-safe hex-encoded byte strings decoded identically on both sides (12 inputs: empty, short, truncated-magic, full PNG/JPEG/GIF87a/GIF89a/BMP/WEBP hits, RIFF-without-WEBP, non-image). All branches exercised; full parity."
+  "notes": "Traced C copy of base.c::pb_looks_like_image vs LIVE gateway/platforms/base.py::_looks_like_image magic-byte ladder. Inputs are argv-safe hex-encoded byte strings decoded identically on both sides (12 inputs: empty, short, truncated-magic, full PNG/JPEG/GIF87a/GIF89a/BMP/WEBP hits, RIFF-without-WEBP, non-image). All branches exercised; full parity.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

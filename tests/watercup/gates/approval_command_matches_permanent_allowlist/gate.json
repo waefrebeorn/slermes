@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Permanent allowlist matching (src/tools/approval_ports.c::apr_command_matches_permanent_allowlist vs LIVE tools/approval.py::_command_matches_permanent_allowlist). Twin seeds LIVE _permanent_approved per input; V carries the LIVE boolean so verdict divergence fails the cup even when ladders align. Sub-contract documented in harness header: no shell operators, single-'*' globs only."
+  "notes": "Permanent allowlist matching (src/tools/approval_ports.c::apr_command_matches_permanent_allowlist vs LIVE tools/approval.py::_command_matches_permanent_allowlist). Twin seeds LIVE _permanent_approved per input; V carries the LIVE boolean so verdict divergence fails the cup even when ladders align. Sub-contract documented in harness header: no shell operators, single-'*' globs only.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

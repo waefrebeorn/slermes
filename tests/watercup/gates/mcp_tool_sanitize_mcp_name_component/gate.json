@@ -13,5 +13,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "MCP tool-name component sanitizer (mcp_tool.c::mcp_tool_sanitize_mcp_name_component vs LIVE tools/mcp_tool.py::sanitize_mcp_name_component). DOCUMENTED DIVERGENCE (excluded): LIVE maps '-' to '_' but the C port preserves hyphens, so hyphen-bearing inputs are not exercised; also the C port loops over UTF-8 bytes where LIVE iterates codepoints, so non-ASCII inputs are excluded too."
+  "notes": "MCP tool-name component sanitizer (mcp_tool.c::mcp_tool_sanitize_mcp_name_component vs LIVE tools/mcp_tool.py::sanitize_mcp_name_component). DOCUMENTED DIVERGENCE (excluded): LIVE maps '-' to '_' but the C port preserves hyphens, so hyphen-bearing inputs are not exercised; also the C port loops over UTF-8 bytes where LIVE iterates codepoints, so non-ASCII inputs are excluded too.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }

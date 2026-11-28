@@ -22,5 +22,8 @@
     "test123",
     "NULL"
   ],
-  "notes": "Wire-payload emptiness check. Harness traces a faithful C copy of src/agent/agent_message_payload.c::msg_has_payload + content_list_has_payload (the real file is linked for json support and its repair sibling; hermes_log stubbed locally since the traced path never logs). Twin transcribes the LIVE Python body verbatim with interleaved Cup events. KNOWN DIVERGENCE (documented): {'content': []} returns False in C (empty-array fast path) but True in LIVE Python (empty list falls through to `content not in (None, \"\")`); that input is excluded from the walk."
+  "notes": "Wire-payload emptiness check. Harness traces a faithful C copy of src/agent/agent_message_payload.c::msg_has_payload + content_list_has_payload (the real file is linked for json support and its repair sibling; hermes_log stubbed locally since the traced path never logs). Twin transcribes the LIVE Python body verbatim with interleaved Cup events. KNOWN DIVERGENCE (documented): {'content': []} returns False in C (empty-array fast path) but True in LIVE Python (empty list falls through to `content not in (None, \"\")`); that input is excluded from the walk.",
+  "previous_classification": null,
+  "classification": "STUB_GATE",
+  "relabel_note": "auto-generated gate: fixtures are the generator's placeholders (hello/world/''/test123/NULL). The harness may contain a real port, but this gate cannot prove parity because every input is noise. Needs tailored fixtures before it can be counted either way."
 }
