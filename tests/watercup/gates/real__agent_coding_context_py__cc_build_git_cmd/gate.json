@@ -1,0 +1,37 @@
+{
+  "name": "real__agent_coding_context_py__cc_build_git_cmd",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "cc_build_git_cmd",
+  "py_module": "agent/coding_context.py",
+  "py_fn": "_git",
+  "extra_src": [
+    "src/agent/coding_context.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "/tmp/repo|--pretty=%H",
+    "/tmp/my repo|--pretty=%H",
+    "/tmp/it's|--pretty=%H",
+    "|--pretty=%H",
+    ".|--pretty=%H",
+    "/a;rm -rf b|--pretty=%H",
+    "/a$(id)|--pretty=%H",
+    "/a\"b|--pretty=%H",
+    "/a b|--pretty=%H",
+    "plain|--pretty=%H",
+    "/x/y-z_1.2|--pretty=%H",
+    "/tmp/repo|log --oneline",
+    "/tmp/my repo|log --oneline",
+    "/tmp/it's|log --oneline"
+  ]
+}

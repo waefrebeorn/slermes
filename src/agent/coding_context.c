@@ -711,6 +711,41 @@ coding_runtime_mode_t *coding_context_resolve_runtime_mode(
     return coding_runtime_mode_create(platform, cwd, config, model);
 }
 
+/* ── shell-command builders ───────────────────────────────────────────────
+ * python drives these through subprocess with an argv list (no shell), so the
+ * reference for "safe" here is shlex.quote. The C used to interpolate the cwd
+ * raw into "cd %s && git ..." / "find %s ...", so any path containing a space
+ * or a metacharacter either broke the command or injected one. */
+static void cc_shquote(const char *in, char *out, size_t outsz) {
+    size_t p = 0;
+    int safe = (in && *in);
+    for (const unsigned char *c = (const unsigned char *)(in ? in : ""); *c && safe; c++) {
+        if ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z') || (*c >= '0' && *c <= '9')) continue;
+        if (strchr("_@%+=:,./-", *c)) continue;
+        safe = 0;
+    }
+    if (safe) { snprintf(out, outsz, "%s", in); return; }
+    if (p + 1 < outsz) out[p++] = '\'';
+    for (const char *c = in ? in : ""; *c && p + 6 < outsz; c++) {
+        if (*c == '\'') { memcpy(out + p, "'\"'\"'", 5); p += 5; }
+        else out[p++] = *c;
+    }
+    if (p + 1 < outsz) out[p++] = '\'';
+    out[p < outsz ? p : outsz - 1] = '\0';
+}
+
+/* PoP: cc_build_git_cmd @ agent/coding_context.py:_git (argv list; quoting is the shell equivalent) */
+void cc_build_git_cmd(const char *cwd, const char *args, char *out, size_t outsz) {
+    char q[1024]; cc_shquote(cwd, q, sizeof q);
+    snprintf(out, outsz, "git -C %s %s", q, args ? args : "");
+}
+
+/* PoP: cc_build_git_root_cmd @ agent/coding_context.py:_git_root (argv list; quoting is the shell equivalent) */
+void cc_build_git_root_cmd(const char *cwd, char *out, size_t outsz) {
+    char q[1024]; cc_shquote(cwd, q, sizeof q);
+    snprintf(out, outsz, "git -C %s rev-parse --show-toplevel", q);
+}
+
 /* ================================================================== */
 /*  Git / workspace probe (Port of Python _git / _parse_status /      */
 /*  _read_small / _project_facts / build_coding_workspace_block)     */
@@ -739,7 +774,7 @@ int coding_context_run_git(const char *cwd, char *out, size_t out_size,
     /* vsnprintf consumes %h/%s as float/str from varargs → use literal "git" binary
      * and pass args via shell so git receives the exact --pretty= format string. */
     char cmd[2048];
-    snprintf(cmd, sizeof(cmd), "git -C %s %s", cwd, args);
+    cc_build_git_cmd(cwd, args, cmd, sizeof cmd);
 
     /* timeout guard */
     void (*old)(int) = signal(SIGALRM, SIG_DFL);
@@ -1751,7 +1786,8 @@ bool coding_ctx_has_code_files(const char *root) {
     const char *exts[] = {".py", ".js", ".ts", ".c", ".h", ".cpp", ".java", ".go", ".rs", NULL};
     for (int i = 0; exts[i]; i++) {
         char cmd[4096];
-        snprintf(cmd, sizeof(cmd), "find %s -maxdepth 2 -name '*%s' -print -quit 2>/dev/null", root, exts[i]);
+        char qroot[1024]; cc_shquote(root, qroot, sizeof qroot);
+        snprintf(cmd, sizeof(cmd), "find %s -maxdepth 2 -name '*%s' -print -quit 2>/dev/null", qroot, exts[i]);
         FILE *fp = popen(cmd, "r");
         if (fp) {
             char buf[256];
@@ -1779,7 +1815,7 @@ char *coding_ctx_resolve_cwd(const char *cwd) {
 char *coding_ctx_git_root(const char *cwd) {
     if (!cwd) return NULL;
     char cmd[4096];
-    snprintf(cmd, sizeof(cmd), "cd %s 2>/dev/null && git rev-parse --show-toplevel 2>/dev/null", cwd);
+    cc_build_git_root_cmd(cwd, cmd, sizeof cmd);
     FILE *fp = popen(cmd, "r");
     if (!fp) return NULL;
     char buf[4096];
