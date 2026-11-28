@@ -7,11 +7,17 @@
   "py_module": "agent/account_usage.py",
   "py_fn": "_codex_backend_urls",
   "inputs": [
-    "hello",
-    "world",
+    "https://chatgpt.com/backend-api/codex",
+    "https://chatgpt.com/backend-api",
+    "https://chatgpt.com",
+    "https://api.openai.com/v1",
     "",
-    "test123",
-    "NULL"
+    "/",
+    "https://x/  ",
+    "  https://a/backend-api/codex/  ",
+    "https://chatgpt.com/backend-api//codex",
+    "https://a/codex",
+    "codex"
   ],
   "extra_src": [
     "lib/libjson/json.c",

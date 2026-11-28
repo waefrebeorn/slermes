@@ -10,21 +10,33 @@
 
 
 /* === dissolved from ports_wrappers.c === */
-/* PoP: agent_account_usage_u_codex_backend_urls @ agent/account_usage.py:_codex_backend_urls */
-int agent_account_usage_u_codex_backend_urls(const char *arg) {
-    /* Python: wham vs api/codex split. Arg = "base_url\tstyle". */
-    if (!arg || !*arg) {
-        printf("https://chatgpt.com/backend-api/codex/wham/usage\n");
-        return 0;
-    }
-    const char *tab = strchr(arg, '\t');
-    const char *style = tab ? tab + 1 : "";
-    if (strcmp(style, "wham") == 0) {
-        printf("%s/wham/usage\n%s/wham/rate-limit-reset-credits\n%s/wham/rate-limit-reset-credits/consume\n", arg, arg, arg);
-        return 0;
-    }
-    printf("%s/api/codex/usage\n%s/api/codex/rate-limit-reset-credits\n%s/api/codex/rate-limit-reset-credits/consume\n", arg, arg, arg);
-    return 0;
+/* PoP: agent_account_usage_u_codex_backend_urls @ agent/account_usage.py:_codex_backend_urls
+ * (usage, reset-credits, consume) endpoints. PathStyle split: "/backend-api" bases use
+ * the ChatGPT /wham/ paths; everything else /api/codex/. Normalisation order matters:
+ * strip -> rstrip("/") -> default when empty -> removesuffix("/codex") -> pick suffix. */
+char *agent_account_usage_u_codex_backend_urls(const char *base_url) {
+    char *s = strdup(base_url ? base_url : "");
+    char *q = s;
+    while (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r' || *q == '\f' || *q == '\v') q++;
+    size_t n = strlen(q);
+    while (n && (q[n-1]==' '||q[n-1]=='\t'||q[n-1]=='\n'||q[n-1]=='\r'||q[n-1]=='\f'||q[n-1]=='\v')) q[--n] = 0;
+    if (q != s) memmove(s, q, n + 1);
+    n = strlen(s);
+    while (n && s[n-1] == '/') s[--n] = 0;
+    if (!s[0]) { free(s); s = strdup("https://chatgpt.com/backend-api/codex"); }
+    n = strlen(s);
+    if (n >= 6 && strcmp(s + n - 6, "/codex") == 0) s[n-6] = 0;
+    const char *suffix = strstr(s, "/backend-api") ? "/wham" : "/api/codex";
+    char pre[2048];
+    snprintf(pre, sizeof pre, "%s%s", s, suffix);
+    json_t *arr = json_array();
+    char u[2200];
+    snprintf(u, sizeof u, "%s/usage", pre); json_append(arr, json_string(u));
+    snprintf(u, sizeof u, "%s/rate-limit-reset-credits", pre); json_append(arr, json_string(u));
+    snprintf(u, sizeof u, "%s/rate-limit-reset-credits/consume", pre); json_append(arr, json_string(u));
+    char *out = json_serialize(arr);
+    json_free(arr); free(s);
+    return out;
 }
 
 /* PoP: agent_account_usage_u_resolve_codex_usage_credentials @ agent/account_usage.py:_resolve_codex_usage_credentials */

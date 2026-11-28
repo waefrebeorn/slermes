@@ -6,29 +6,21 @@
   "c_fn": "agent_trace_upload_u_content_to_blocks",
   "py_module": "agent/trace_upload.py",
   "py_fn": "_content_to_blocks",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src/agent/trace_upload.c"
+    "lib/libjson/json.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "inputs": [
+    "{\"content\": \"hello\", \"redact\": false}",
+    "{\"content\": \"\", \"redact\": false}",
+    "{\"content\": null, \"redact\": false}",
+    "{\"content\": [\"plain\", \"another\"], \"redact\": false}",
+    "{\"content\": [{\"type\": \"text\", \"text\": \"hi\"}, {\"type\": \"image_url\", \"image_url\": {\"url\": \"x\"}}], \"redact\": false}",
+    "{\"content\": {\"type\": \"text\", \"text\": \"hello\"}, \"redact\": false}",
+    "{\"content\": {\"type\": \"tool_use\", \"id\": \"abc\"}, \"redact\": false}",
+    "{\"content\": [{\"type\": \"image\", \"source\": \"s\"}], \"redact\": false}",
+    "{\"content\": [\"x\"], \"redact\": true}",
+    "{\"content\": [{\"type\": \"text\", \"text\": \"y\"}], \"redact\": true}",
+    "{}"
+  ]
 }

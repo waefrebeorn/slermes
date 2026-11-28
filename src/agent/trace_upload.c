@@ -1,3 +1,4 @@
+#include "hermes_redact.h"
 #define _POSIX_C_SOURCE 200809L
 /*
  * trace_upload.c — canonical C11 port of agent/trace_upload.py.
@@ -28,15 +29,113 @@ int agent_trace_upload_u_now_iso(const char *arg) {
     return 0;
 }
 
-/* PoP: agent_trace_upload_u_content_to_blocks @ agent/trace_upload.py:_content_to_blocks */
-int agent_trace_upload_u_content_to_blocks(const char *arg) {
-    /* Python: content -> blocks. Arg = "state\tresult". */
-    if (!arg || !*arg) { printf("[]\n"); return 0; }
-    const char *tab = strchr(arg, '\t');
-    int state = arg[0] == '1';
-    if (!state) { printf("[]\n"); return 0; }
-    printf("%s\n", tab ? tab + 1 : "[]");
-    return 0;
+/* PoP: agent_trace_upload_u_content_to_blocks @ agent/trace_upload.py:_content_to_blocks
+ * content -> Anthropic blocks: list -> per-part, None -> [], str -> [text],
+ * anything else -> [text json.dumps(content)]. _redact delegates to
+ * hermes_redact_force when enabled, else identity. */
+static char *_tu_redactable(const char *text, int enabled) {
+    if (!enabled || !text || !text[0]) return strdup(text ? text : "");
+    char *r = hermes_redact_force(text);
+    return r ? r : strdup(text);
+}
+/* {"type": "text", "text": <t>} with python's default ", " / ": " separators. */
+static char *_tu_text_block(const char *text, int enabled) {
+    char *t = _tu_redactable(text, enabled);
+    json_t *o = json_object();
+    json_set(o, "type", json_string("text"));
+    json_set(o, "text", json_string(t));
+    char *js = json_serialize(o);
+    json_free(o); free(t);
+    size_t n = strlen(js), cap = n * 2 + 16, k = 0;
+    char *out = malloc(cap);
+    for (size_t i = 0; i < n; i++) {
+        if (k + 8 >= cap) { cap *= 2; out = realloc(out, cap); }
+        if ((js[i] == ':' || js[i] == ',') && i + 1 < n && js[i+1] != ' ') {
+            out[k++] = js[i]; out[k++] = ' ';
+        } else out[k++] = js[i];
+    }
+    out[k] = 0; free(js);
+    return out;
+}
+/* Python-style spaced rendering for objects whose values are ALL strings. */
+static char *_tu_dump_obj_strings(const json_t *o) {
+    size_t cap = 64, k = 0;
+    char *out = malloc(cap); out[0] = 0;
+#define _PUSH(str) do { size_t _L = strlen(str); while (k + _L + 2 > cap) { cap *= 2; out = realloc(out, cap); } memcpy(out + k, str, _L); k += _L; out[k] = 0; } while (0)
+    _PUSH("{");
+    size_t cnt = json_object_size(o);
+    for (size_t i = 0; i < cnt; i++) {
+        const char *key = json_object_get_key_at(o, i);
+        const json_t *v = json_object_get_at(o, i);
+        if (!key || !json_is_string(v)) { free(out); return NULL; }
+        if (i) _PUSH(", ");
+        _PUSH("\"");
+        _PUSH(key);
+        _PUSH("\": \"");
+        _PUSH(v->str_val ? v->str_val : "");
+        _PUSH("\"");
+    }
+    _PUSH("}");
+#undef _PUSH
+    return out;
+}
+static char *_tu_part_block(const json_t *part, int enabled) {
+    if (!json_is_object(part)) {
+        /* python str(part): a string part keeps its raw text (no JSON quotes). */
+        const char *pv; char *tmp = NULL;
+        if (json_is_string(part) && part->str_val) pv = part->str_val;
+        else { tmp = part ? json_serialize(part) : NULL; pv = tmp ? tmp : ""; }
+        char *out = _tu_text_block(pv, enabled);
+        if (tmp) free(tmp);
+        return out;
+    }
+    const json_t *t = json_obj_get(part, "type");
+    const char *ty = json_is_string(t) && t->str_val ? t->str_val : "";
+    if (strcmp(ty, "text") == 0) {
+        const json_t *txt = json_obj_get(part, "text");
+        const char *v = json_is_string(txt) && txt->str_val ? txt->str_val : "";
+        return _tu_text_block(v, enabled);
+    }
+    if (strcmp(ty, "image_url") == 0 || strcmp(ty, "image") == 0)
+        return _tu_text_block("[image omitted]", enabled);
+    char *d = _tu_dump_obj_strings(part);
+    if (d) { char *out = _tu_text_block(d, enabled); free(d); return out; }
+    char *pj = json_serialize(part);                    /* non-string values: not proven */
+    char *out = _tu_text_block(pj ? pj : "", enabled);
+    if (pj) free(pj);
+    return out;
+}
+char *agent_trace_upload_u_content_to_blocks(const char *arg) {
+    json_t *root = arg ? json_parse(arg, NULL) : NULL;
+    const json_t *content = root ? json_obj_get(root, "content") : NULL;
+    const json_t *rd = root ? json_obj_get(root, "redact") : NULL;
+    int enabled = 0;
+    if (json_is_bool(rd)) enabled = rd->bool_val;
+    else if (json_is_number(rd)) enabled = rd->num_val != 0;
+    json_t *arr = json_array();
+    if (json_is_array(content)) {
+        size_t cnt = json_len(content);
+        for (size_t i = 0; i < cnt; i++) {
+            char *blk = _tu_part_block(json_get(content, i), enabled);
+            json_t *node = blk ? json_parse(blk, NULL) : NULL;
+            if (node) json_append(arr, node);
+            if (blk) free(blk);
+        }
+    } else if (content && !json_is_null(content)) {
+        char *tmp = NULL;
+        const char *txt;
+        if (json_is_string(content) && content->str_val) txt = content->str_val;
+        else { tmp = json_serialize(content); txt = tmp ? tmp : ""; }
+        char *blk = _tu_text_block(txt, enabled);
+        json_t *node = blk ? json_parse(blk, NULL) : NULL;
+        if (node) json_append(arr, node);
+        if (blk) free(blk);
+        if (tmp) free(tmp);
+    }
+    char *out = json_serialize(arr);
+    json_free(arr);
+    if (root) json_free(root);
+    return out;
 }
 
 /* PoP: agent_trace_upload_u_tool_calls_to_blocks @ agent/trace_upload.py:_tool_calls_to_blocks */

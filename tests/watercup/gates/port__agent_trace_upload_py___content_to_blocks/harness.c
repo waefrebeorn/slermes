@@ -1,43 +1,12 @@
-/* gate: port__agent_trace_upload_py___content_to_blocks — traced copy of agent_trace_upload_u_content_to_blocks (int_str) */
+/* gate: _content_to_blocks -> real port (JSON {content,redact} in, JSON array out). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
 #include "watercup.h"
-
-
-extern int agent_trace_upload_u_content_to_blocks(const char *arg);
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s agent_trace_upload_u_content_to_blocks <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("agent_trace_upload_u_content_to_blocks");
-    fflush(stdout);
-    int _sv = dup(1);
-    FILE *_cap = tmpfile();
-    if (_cap) dup2(fileno(_cap), 1);
-    int result = agent_trace_upload_u_content_to_blocks(argv[i]);
-    fflush(stdout);
-    if (_cap) {
-        dup2(_sv, 1); close(_sv);
-        rewind(_cap);
-        char _ob[4096]; size_t _on = 0; int _ch;
-        while ((_ch = fgetc(_cap)) != EOF && _on < sizeof(_ob) - 1)
-            _ob[_on++] = (char)_ch;
-        _ob[_on] = '\0';
-        /* strip the trailing newline the port emits */
-        while (_on && (_ob[_on-1] == '\n' || _ob[_on-1] == '\r'))
-            _ob[--_on] = '\0';
-        WCUP_VALSTR(_ob);
-        fclose(_cap);
-    }
-
-
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("agent_trace_upload_u_content_to_blocks");
-    }
-    return 0;
-}
+#include "hermes_json.h"
+extern char *agent_trace_upload_u_content_to_blocks(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("_content_to_blocks");
+  char *r=agent_trace_upload_u_content_to_blocks(argv[i]); WCUP_VALSTR(r?r:"[]");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("_content_to_blocks"); if(r) free(r);} return 0;}
