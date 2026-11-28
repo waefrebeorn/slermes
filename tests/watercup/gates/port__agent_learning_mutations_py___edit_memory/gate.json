@@ -27,5 +27,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "filesystem-bound after validation: valid ids route to _mutate_memory (locked read-modify-write). The only pure branch is the ValueError for bad ids, already covered by learning_mutations_parse_memory_id."
 }

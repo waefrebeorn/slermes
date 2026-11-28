@@ -27,5 +27,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "filesystem/store-bound: mutates memory files through MemoryStore._mutate (cross-process lock, re-read under lock, .bak drift guard) or reads/writes skill files; no pure argv contract."
 }

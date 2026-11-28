@@ -1,0 +1,36 @@
+{
+  "name": "real__agent_learning_mutations_py__parse_node_kind",
+  "subsystem": "auto",
+  "kind": "cup",
+  "c_src": "harness.c",
+  "c_fn": "learning_mutations_parse_node_kind",
+  "py_module": "agent/learning_mutations.py",
+  "py_fn": "parse_node_kind",
+  "extra_src": [
+    "lib/libjson/json.c",
+    "src/agent/learning_mutations.c"
+  ],
+  "cflags": [
+    "-I",
+    "include",
+    "-I",
+    "lib",
+    "-I",
+    "lib/libjson",
+    "-I",
+    "src"
+  ],
+  "classification": "PORTED",
+  "inputs": [
+    "memory:abc",
+    "skill:x",
+    "",
+    "memory",
+    "Memory:1",
+    "memory:memory:0",
+    "profile:0",
+    "memory:",
+    "xmemory:1",
+    "memoryx:1"
+  ]
+}

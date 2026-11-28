@@ -27,5 +27,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "returns the agent's memories directory from the live profile/XDG environment; pure only once env is injected."
 }

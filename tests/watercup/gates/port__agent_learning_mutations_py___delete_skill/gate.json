@@ -27,5 +27,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "filesystem-bound: reads tools.skill_usage records and rewrites the skill's SKILL.md; not a pure argv call."
 }

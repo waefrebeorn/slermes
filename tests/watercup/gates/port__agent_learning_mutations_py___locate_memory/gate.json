@@ -27,5 +27,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "resolves a node id against the on-disk memory graph (reads MEMORY.md / USER.md and their local index); no pure argv contract."
 }
