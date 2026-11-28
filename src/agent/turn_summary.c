@@ -484,3 +484,28 @@ char *agent_turn_summary_u_format_token_flow(const char *arg) {
     else snprintf(buf, sizeof buf, "\xE2\x86\x93 %.1fM tok", count / 1000000.0);
     return strdup(buf);
 }
+
+/* PoP: agent_turn_summary_u_total_tools @ agent/turn_summary.py:TurnTally.total_tools */
+/* sum(sum(nouns.values()) for nouns in verbs.values()) + other_tools.
+ * Input JSON {"verbs": {verb: {noun: n}}, "other_tools": N}. */
+long agent_turn_summary_u_total_tools(const char *arg) {
+    json_t *o = arg ? json_parse(arg, NULL) : NULL;
+    if (!o || !json_is_object(o)) { if (o) json_free(o); return 0; }
+    long total = 0;
+    json_t *verbs = json_obj_get(o, "verbs");
+    if (verbs && json_is_object(verbs)) {
+        for (size_t i = 0; i < verbs->c.count; i++) {
+            json_t *nouns = verbs->c.items[i];
+            if (nouns && json_is_object(nouns)) {
+                for (size_t k = 0; k < nouns->c.count; k++) {
+                    json_t *n = nouns->c.items[k];
+                    if (n && json_is_number(n)) total += (long)n->num_val;
+                }
+            }
+        }
+    }
+    json_t *other = json_obj_get(o, "other_tools");
+    if (other && json_is_number(other)) total += (long)other->num_val;
+    json_free(o);
+    return total;
+}
