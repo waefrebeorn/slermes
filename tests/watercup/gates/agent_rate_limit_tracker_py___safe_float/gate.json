@@ -7,15 +7,18 @@
   "py_module": "agent/rate_limit_tracker.py",
   "py_fn": "_safe_float",
   "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
+    "1.5\t0.0",
+    "abc\t0.0",
+    "100\t0.0",
+    " 2.5 \t0.0",
+    "1e3\t0.0",
+    "\t9.9",
+    "3.14\t0.0",
+    "nan\t0.0",
+    "-7\t0.0",
+    "1.5abc\t0.0"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",

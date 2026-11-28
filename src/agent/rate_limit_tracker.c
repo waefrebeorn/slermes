@@ -1,3 +1,4 @@
+#include <math.h>
 /*
  * rate_limit_tracker.c — canonical C11 port of agent/rate_limit_tracker.py.
  */
@@ -70,20 +71,27 @@ int agent_rate_limit_tracker_age_seconds(const char *arg) {
 }
 
 /* PoP: agent_rate_limit_tracker_u_safe_float @ agent/rate_limit_tracker.py:_safe_float */
-int agent_rate_limit_tracker_u_safe_float(const char *arg) {
-    /* Python: float(value) or default. Arg = "value\tdefault". */
-    if (!arg || !*arg) { printf("0\n"); return 0; }
-    const char *tab = strchr(arg, '\t');
+/* PoP: agent_rate_limit_tracker_u_safe_float @ agent/rate_limit_tracker.py:_safe_float */
+/* Faithful: try float(value) except -> default. Input "value\tdefault". Parse-ok
+ * -> "%.17g" (the twin formats with '.17g' too, so ints/0.0 agree); else the
+ * default text. Was: printed %g (0 for 0.0), returned 0, early-returned "" -> "0". */
+char *agent_rate_limit_tracker_u_safe_float(const char *arg) {
+    const char *a = arg ? arg : "";
+    const char *tab = strchr(a, '\t');
     char val[128];
-    size_t vlen = tab ? (size_t)(tab - arg) : strlen(arg);
-    if (vlen >= sizeof(val)) vlen = sizeof(val) - 1;
-    memcpy(val, arg, vlen); val[vlen] = '\0';
-    const char *def = tab ? tab + 1 : "0";
+    size_t vlen = tab ? (size_t)(tab - a) : strlen(a);
+    if (vlen >= sizeof val) vlen = sizeof val - 1;
+    memcpy(val, a, vlen); val[vlen] = '\0';
+    const char *def = tab ? tab + 1 : "0.0";
     char *end = NULL;
     double d = strtod(val, &end);
-    if (end == val || (*end != '\0' && *end != ' ')) { printf("%s\n", def); return 0; }
-    printf("%g\n", d);
-    return 0;
+    if (end == val || (*end != '\0' && *end != ' ' && *end != '\t' && *end != '\n' && *end != '\r'))
+        return strdup(def);
+    char buf[64];
+    if (!isfinite(d)) snprintf(buf, sizeof buf, "%s", (d != d) ? "nan" : (d < 0 ? "-inf" : "inf"));
+    else if (d == (double)(long long)d && fabs(d) < 1e16) snprintf(buf, sizeof buf, "%lld.0", (long long)d);
+    else { snprintf(buf, sizeof buf, "%.15g", d); if (!strpbrk(buf, ".eEnN")) strncat(buf, ".0", sizeof buf - strlen(buf) - 1); }
+    return strdup(buf);
 }
 
 /* PoP: agent_rate_limit_tracker_parse_rate_limit_headers @ agent/rate_limit_tracker.py:parse_rate_limit_headers */
