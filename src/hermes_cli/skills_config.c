@@ -143,45 +143,47 @@ char *cli_hermes_cli_skills_config__select_platform(const char *args)
 
 /* === dissolved from ports_wrappers.c === */
 /* PoP: hermes_cli_skills_config_u_normalize_skill_names @ hermes_cli/skills_config.py:_normalize_skill_names */
-int hermes_cli_skills_config_u_normalize_skill_names(const char *arg) {
-    /* Python: None -> empty; str -> single; set of stripped. Arg =
-     * "values_json". */
-    if (!arg || !*arg) { printf("\n"); return 0; }
-    json_t *j = json_parse(arg, NULL);
-    if (!j || json_is_null(j)) {
-        if (j) json_free(j);
-        printf("\n");
-        return 0;
+char *hermes_cli_skills_config_u_normalize_skill_names(const char *arg) {
+    /* None -> empty set; str -> single item; else iterate, strip, drop blanks,
+     * dedupe. Returns a SORTED JSON array so the set has a stable rendering. */
+    json_t *j = (arg && *arg) ? json_parse(arg, NULL) : NULL;
+    char **items = NULL; size_t n = 0, cap = 0;
+    if (j && !json_is_null(j) && !json_is_string(j) && !json_is_array(j)) {
+        /* python raises TypeError iterating a non-iterable -> empty set */
+        json_free(j); j = NULL;
+        return strdup("[]");
     }
-    if (json_is_string(j)) {
-        const char *s = json_string_value(j);
-        while (*s == ' ') s++;
-        if (*s) printf("%s\n", s);
-        else printf("\n");
-        json_free(j);
-        return 0;
-    }
-    if (json_is_array(j)) {
-        size_t n = json_array_size(j);
-        int first = 1;
-        for (size_t i = 0; i < n; i++) {
-            json_t *it = json_array_get(j, i);
-            if (!it) continue;
-            const char *s = json_is_string(it) ? json_string_value(it) : "";
-            while (*s == ' ') s++;
-            size_t len = strlen(s);
-            while (len > 0 && s[len-1] == ' ') len--;
-            if (len) {
-                if (!first) printf("\n");
-                printf("%.*s", (int)len, s);
-                first = 0;
-            }
+    if (j && json_is_string(j)) {
+        const char *v = j->str_val ? j->str_val : "";
+        const char *b = v; while (*b==' '||*b=='\t'||*b=='\n'||*b=='\r'||*b=='\f'||*b=='\v') b++;
+        size_t L = strlen(b);
+        while (L && (b[L-1]==' '||b[L-1]=='\t'||b[L-1]=='\n'||b[L-1]=='\r'||b[L-1]=='\f'||b[L-1]=='\v')) L--;
+        if (L) { cap = 4; items = malloc(cap * sizeof *items); items[n++] = strndup(b, L); }
+    } else if (j && json_is_array(j)) {
+        size_t cnt = json_len(j);
+        for (size_t i = 0; i < cnt; i++) {
+            json_t *it = json_get(j, i);
+            if (!json_is_string(it)) continue;          /* str(v) of non-str: not proven */
+            const char *v = it->str_val ? it->str_val : "";
+            const char *b = v; while (*b==' '||*b=='\t'||*b=='\n'||*b=='\r'||*b=='\f'||*b=='\v') b++;
+            size_t L = strlen(b);
+            while (L && (b[L-1]==' '||b[L-1]=='\t'||b[L-1]=='\n'||b[L-1]=='\r'||b[L-1]=='\f'||b[L-1]=='\v')) L--;
+            if (!L) continue;
+            int dup = 0;
+            for (size_t k = 0; k < n; k++) if (strlen(items[k]) == L && !memcmp(items[k], b, L)) { dup = 1; break; }
+            if (dup) continue;
+            if (n == cap) { cap = cap ? cap * 2 : 4; items = realloc(items, cap * sizeof *items); }
+            items[n++] = strndup(b, L);
         }
-        printf("\n");
-        json_free(j);
-        return 0;
     }
     if (j) json_free(j);
-    printf("\n");
-    return 0;
+    for (size_t i = 0; i + 1 < n; i++)
+        for (size_t k = i + 1; k < n; k++)
+            if (strcmp(items[i], items[k]) > 0) { char *tmp = items[i]; items[i] = items[k]; items[k] = tmp; }
+    json_t *arr = json_array();
+    for (size_t i = 0; i < n; i++) { json_append(arr, json_string(items[i])); free(items[i]); }
+    if (items) free(items);
+    char *out = json_serialize(arr);
+    json_free(arr);
+    return out;
 }

@@ -6,29 +6,22 @@
   "c_fn": "hermes_cli_skills_config_u_normalize_skill_names",
   "py_module": "hermes_cli/skills_config.py",
   "py_fn": "_normalize_skill_names",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c",
-    "src/agent/logger.c",
-    "src/cli/paths.c",
-    "src/hermes_cli/fs_replace.c",
-    "src/hermes_cli/skills_config.c"
+    "lib/libjson/json.c"
   ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "PORTED"
+  "classification": "PORTED",
+  "inputs": [
+    "null",
+    "\"alpha\"",
+    "\"  beta  \"",
+    "\"\"",
+    "[\"a\", \" b \", \"a\", \"\", \"  \"]",
+    "[]",
+    "\"dup\"",
+    "\"dup\"",
+    "[\"z\", \"a\", \"m\"]",
+    "[\"  \", \"   \"]",
+    "5",
+    "{}"
+  ]
 }

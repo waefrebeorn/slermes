@@ -229,9 +229,9 @@ int profiles_should_redact_export_file(const char *filename) {
 char *profiles_format_profile_label(const char *name, const char *display_name)
 {
     const char *dn = display_name ? display_name : "";
-    while (*dn == ' ' || *dn == '\t' || *dn == '\n' || *dn == '\r') dn++;
+    while (*dn == ' ' || *dn == '\t' || *dn == '\n' || *dn == '\r' || *dn == '\f' || *dn == '\v') dn++;
     size_t L = strlen(dn);
-    while (L > 0 && (dn[L-1]==' '||dn[L-1]=='\t'||dn[L-1]=='\n'||dn[L-1]=='\r')) L--;
+    while (L > 0 && (dn[L-1]==' '||dn[L-1]=='\t'||dn[L-1]=='\n'||dn[L-1]=='\r'||dn[L-1]=='\f'||dn[L-1]=='\v')) L--;
     if (!name) name = "";
     if (L == 0 || (strlen(name) == L && strncmp(name, dn, L) == 0))
         return strdup(name);
