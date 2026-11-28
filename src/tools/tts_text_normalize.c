@@ -948,3 +948,94 @@ char *tts_prepare_spoken_text(const char *text, int max_chars, size_t *out_len)
     if (out_len) *out_len = slen;
     return spoken;
 }
+
+/* PoP: agent_tts_text_normalize_u_flatten_newlines_for_payload
+ * @ tools/tts_text_normalize.py:flatten_newlines_for_payload */
+/* Sequential regex passes, in Python's order:
+ *   \n{2,}->". "  (?<=[.!?;:,])\n->" "  \n->". "  \.\s*\.->"."
+ *   [ \t]{2,}->" "  ([^0-9])(?:[:;]\s*)+$ -> "\1."   then .strip()
+ * Working buffer is a codepoint array so \s is the true str.isspace() set.
+ * INPUT IS HEX OF THE UTF-8 TEXT. */
+static int _tts_ws(unsigned c) {
+    return (c>=0x9&&c<=0xD)||(c>=0x1C&&c<=0x20)||c==0x85||c==0xA0||c==0x1680||
+           (c>=0x2000&&c<=0x200A)||c==0x2028||c==0x2029||c==0x202F||c==0x205F||c==0x3000;
+}
+static int _tts_punct(unsigned c) { return c=='.'||c=='!'||c=='?'||c==';'||c==':'||c==','; }
+char *agent_tts_text_normalize_u_flatten_newlines_for_payload(const char *arg) {
+    const char *h = arg ? arg : "";
+    size_t cap = strlen(h)/2 + 8;
+    unsigned *cp = malloc(sizeof(unsigned) * cap * 4);
+    int n = 0;
+    for (const char *p = h; p[0] && p[1]; p += 2) {
+        int hi=(p[0]>='0'&&p[0]<='9')?p[0]-'0':(p[0]>='a'&&p[0]<='f')?p[0]-'a'+10:(p[0]>='A'&&p[0]<='F')?p[0]-'A'+10:-1;
+        int lo=(p[1]>='0'&&p[1]<='9')?p[1]-'0':(p[1]>='a'&&p[1]<='f')?p[1]-'a'+10:(p[1]>='A'&&p[1]<='F')?p[1]-'A'+10:-1;
+        if (hi<0||lo<0) break;
+        unsigned char b=(unsigned char)(hi*16+lo);
+        if (b < 0x80) cp[n++]=(unsigned)b;
+        else {
+            unsigned c; int len;
+            if ((b&0xe0)==0xc0){c=b&0x1f;len=2;} else if ((b&0xf0)==0xe0){c=b&0x0f;len=3;}
+            else if ((b&0xf8)==0xf0){c=b&0x07;len=4;} else {c=b;len=1;}
+            for (int k=1;k<len;k++){ const char*q=p+k*2;
+                if(!q[0]||!q[1]){c=0xFFFFFFFFu;break;}
+                int h2=(q[0]>='0'&&q[0]<='9')?q[0]-'0':(q[0]>='a'&&q[0]<='f')?q[0]-'a'+10:(q[0]>='A'&&q[0]<='F')?q[0]-'A'+10:-1;
+                int l2=(q[1]>='0'&&q[1]<='9')?q[1]-'0':(q[1]>='a'&&q[1]<='f')?q[1]-'a'+10:(q[1]>='A'&&q[1]<='F')?q[1]-'A'+10:-1;
+                if(h2<0||l2<0){c=0xFFFFFFFFu;break;}
+                c=(c<<6)|((unsigned char)(h2*16+l2)&0x3f);}
+            cp[n++]=c; p+=(size_t)(len-1)*2;
+        }
+    }
+    unsigned *o = malloc(sizeof(unsigned) * (cap*8 + 16));
+    int m;
+    /* pass 1+2+3: newline collapsing (2+ -> ". ", single after punct -> " ", else ". ") */
+    m = 0;
+    for (int i = 0; i < n; ) {
+        if (cp[i] == '\n') {
+            int j = i; while (j < n && cp[j] == '\n') j++;
+            int run = j - i;
+            if (run >= 2) { o[m++]='.'; o[m++]=' '; }
+            else if (i > 0 && _tts_punct(cp[i-1])) { o[m++]=' '; }
+            else { o[m++]='.'; o[m++]=' '; }
+            i = j;
+        } else o[m++] = cp[i++];
+    }
+    memcpy(cp, o, sizeof(unsigned)*m); n = m;
+    /* pass 4: "\.\s*\." -> "." (leftmost, non-overlapping, continue after match) */
+    m = 0;
+    for (int i = 0; i < n; ) {
+        if (cp[i] == '.') {
+            int j = i + 1; while (j < n && _tts_ws(cp[j])) j++;
+            if (j < n && cp[j] == '.') { o[m++] = '.'; i = j + 1; continue; }
+        }
+        o[m++] = cp[i++];
+    }
+    memcpy(cp, o, sizeof(unsigned)*m); n = m;
+    /* pass 5: [ \t]{2,} -> " " */
+    m = 0;
+    for (int i = 0; i < n; ) {
+        if (cp[i]==' '||cp[i]=='\t') { int j=i; while (j<n&&(cp[j]==' '||cp[j]=='\t')) j++;
+            o[m++]=' '; i=j; }
+        else o[m++]=cp[i++];
+    }
+    memcpy(cp, o, sizeof(unsigned)*m); n = m;
+    /* pass 6: ([^0-9])(?:[:;]\s*)+$ -> \1.  (leftmost match anchored at end) */
+    for (int i = 0; i < n; i++) {
+        if (cp[i] >= '0' && cp[i] <= '9') continue;
+        int j = i + 1, ok = 0;
+        while (j < n && (cp[j]==':'||cp[j]==';')) { ok = 1; j++; while (j<n && _tts_ws(cp[j])) j++; }
+        if (ok && j == n) { n = i + 1; cp[n++] = '.'; break; }
+    }
+    /* strip() */
+    int a = 0, b = n; while (a < b && _tts_ws(cp[a])) a++; while (b > a && _tts_ws(cp[b-1])) b--;
+    /* encode back to UTF-8 */
+    char *res = malloc((size_t)(b - a) * 4 + 8); size_t w = 0;
+    for (int i = a; i < b; i++) {
+        unsigned c = cp[i];
+        if (c < 0x80) res[w++] = (char)c;
+        else if (c < 0x800) { res[w++]=(char)(0xC0|(c>>6)); res[w++]=(char)(0x80|(c&0x3F)); }
+        else if (c < 0x10000) { res[w++]=(char)(0xE0|(c>>12)); res[w++]=(char)(0x80|((c>>6)&0x3F)); res[w++]=(char)(0x80|(c&0x3F)); }
+        else { res[w++]=(char)(0xF0|(c>>18)); res[w++]=(char)(0x80|((c>>12)&0x3F)); res[w++]=(char)(0x80|((c>>6)&0x3F)); res[w++]=(char)(0x80|(c&0x3F)); }
+    }
+    res[w] = 0; free(cp); free(o);
+    return res;
+}
