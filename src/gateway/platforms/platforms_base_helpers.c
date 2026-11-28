@@ -76,7 +76,11 @@ static void gw_base_init(void) {
 }
 
 /* forward declarations */
-static int gw_base__flush_text_debounce_now(const char *session_key);
+/* Non-static: this is a PoP-ported entry point (gw_base__flush_text_debounce_now)
+ * that water-cup gates link against across TUs. A `static` forward decl here
+ * forced the definition at ~line 983 to internal linkage, so the harness's
+ * extern could never resolve. */
+int gw_base__flush_text_debounce_now(const char *session_key);
 
 /* ================================================================
  *  Pure / oracle-able helpers

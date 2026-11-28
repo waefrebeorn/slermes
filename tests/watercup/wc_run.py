@@ -309,6 +309,16 @@ def _run_link(args):
 # every harness link needs them for -lssl/-lcrypto/-lpcre2-8/-ltre.
 _EXTRA_LIBDIR = (["-L", "C:/winlibs/extra-libs"]
                  if os.path.isdir("C:/winlibs/extra-libs") else [])
+# ncursesw (for TUI objects the base-tier full-tree link pulls in) only exists
+# under the msys64 tree. Link its import lib by ABSOLUTE PATH -- adding
+# -L C:/msys64/mingw64/lib made ld pick msys64's mingw runtime (libmingwex/
+# libmingw32) and every link died on crt2.o's _gnu_exception_handler symbols.
+_CURSES_LIB = ("C:/msys64/mingw64/lib/libncursesw.dll.a"
+               if os.path.isfile("C:/msys64/mingw64/lib/libncursesw.dll.a") else "")
+_PANEL_LIB = ("C:/msys64/mingw64/lib/libpanelw.dll.a"
+              if os.path.isfile("C:/msys64/mingw64/lib/libpanelw.dll.a") else "")
+_MENU_LIB = ("C:/msys64/mingw64/lib/libmenuw.dll.a"
+             if os.path.isfile("C:/msys64/mingw64/lib/libmenuw.dll.a") else "")
 
 
 def _plat_syslibs(libs):
@@ -316,9 +326,13 @@ def _plat_syslibs(libs):
     http/crypto objects need there."""
     if os.name == "nt":
         drop = {"-ldl", "-lpthread", "-lasound"}
+        extra = ([_CURSES_LIB] if _CURSES_LIB else []) + \
+                ([_PANEL_LIB] if _PANEL_LIB else []) + \
+                ([_MENU_LIB] if _MENU_LIB else []) + \
+                ["-lcomctl32", "-lSDL2", "-lSDL2_ttf", "-lSDL2main", "-lopengl32"]
         return [l for l in libs if l not in drop] + [
             "-lws2_32", "-lgdi32", "-lcrypt32", "-ladvapi32", "-luser32",
-            "-lshell32", "-lole32", "-luuid"]
+            "-lshell32", "-lole32", "-luuid"] + extra
     return libs
 
 
@@ -768,7 +782,7 @@ def build_harness(gate_dir, g, force=False):
         # browser_supervisor_*, ... deep closures) timed out mid-rounds and
         # never linked. Tier first; rounds become the fallback.
         _syslibs0 = _plat_syslibs(["-lm", "-lssl", "-lcrypto", "-ldl", "-lpthread",
-                     "-lz", "-lpcre2-8", "-lasound"])
+                     "-lz", "-lpcre2-8", "-ltre", "-lasound"])
         import glob as _glob0
         _main_objs0 = sorted(
             _glob0.glob(os.path.join(REPO, "src", "**", "*.o"),
@@ -913,7 +927,7 @@ def build_harness(gate_dir, g, force=False):
             # entry points, plus the ssl/dl/pthread/m set the vendored libs
             # need.
             syslibs = _plat_syslibs(["-lm", "-lssl", "-lcrypto", "-ldl", "-lpthread",
-                       "-lz", "-lpcre2-8", "-lasound"])
+                       "-lz", "-lpcre2-8", "-ltre", "-lasound"])
             if main_objs:
                 tier_objs = list(objs) + added_objs
                 for _pass in range(6):
