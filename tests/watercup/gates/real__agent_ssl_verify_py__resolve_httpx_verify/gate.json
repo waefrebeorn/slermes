@@ -26,5 +26,6 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "REAL_GAP",
+  "relabel_note": "not gateable as a value: calls install_truststore(), stats Path(ca_bundle).is_file(), reads os.environ SSL_CERT_FILE/SSL_CERT_DIR and returns bool | ssl.SSLContext. The C variant also drops the SSL_CERT_FILE/SSL_CERT_DIR branch entirely, which is tracked as the remaining REAL_GAP."
 }

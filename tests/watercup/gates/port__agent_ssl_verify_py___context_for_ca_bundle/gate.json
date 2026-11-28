@@ -31,5 +31,5 @@
     "src"
   ],
   "classification": "REAL_GAP",
-  "relabel_note": "harness was still gap_sentinel(); PORTED was false"
+  "relabel_note": "agent.ssl_verify has NO _context_for_ca_bundle; the real helper is _shared_context(ca_path), which builds and caches a live ssl.SSLContext. No such function exists, so this gate could never pass."
 }

@@ -14,8 +14,13 @@ static bool is_falsey_string(const char *s)
 {
     if (!s) return false;
     char buf[32]; size_t n = 0;
+    /* python does s.strip().lower(); str.strip() takes all ascii whitespace */
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r' ||
+           *s == '\f' || *s == '\v') s++;
     for (size_t i = 0; s[i] && n < sizeof(buf) - 1; i++)
-        if (s[i] != ' ' && s[i] != '\t') buf[n++] = (char)tolower((unsigned char)s[i]);
+        buf[n++] = (char)tolower((unsigned char)s[i]);
+    while (n > 0 && (buf[n-1] == ' ' || buf[n-1] == '\t' || buf[n-1] == '\n' ||
+                     buf[n-1] == '\r' || buf[n-1] == '\f' || buf[n-1] == '\v')) n--;
     buf[n] = '\0';
     return strcmp(buf, "false") == 0 || strcmp(buf, "0") == 0 ||
            strcmp(buf, "no") == 0 || strcmp(buf, "off") == 0;

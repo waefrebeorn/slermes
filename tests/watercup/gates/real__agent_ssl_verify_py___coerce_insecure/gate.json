@@ -3,18 +3,12 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_coerce_insecure",
+  "c_fn": "agent_ssl_verify_coerce_insecure",
   "py_module": "agent/ssl_verify.py",
   "py_fn": "_coerce_insecure",
-  "inputs": [
-    "hello",
-    "world",
-    "",
-    "test123",
-    "NULL"
-  ],
   "extra_src": [
-    "lib/libjson/json.c"
+    "lib/libjson/json.c",
+    "src/agent/ssl_verify.c"
   ],
   "cflags": [
     "-I",
@@ -22,9 +16,27 @@
     "-I",
     "lib",
     "-I",
-    "lib/libjson",
-    "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED",
+  "inputs": [
+    "1",
+    "0",
+    "true",
+    "yes",
+    "no",
+    "off",
+    "on",
+    "",
+    "2",
+    "TRUE",
+    " FALSE ",
+    "\tno\n",
+    "Off",
+    "fAlSe",
+    "\f0\u000b",
+    "none",
+    "False ",
+    "01"
+  ]
 }
