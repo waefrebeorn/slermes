@@ -996,3 +996,19 @@ char *hermes_agent_skill_utils_project_scan_cache_dir(void) {
 void hermes_agent_skill_utils_project_quarantine_cache_clear(void) {
     /* Python: _PROJECT_QUARANTINE_CACHE.clear() */
 }
+
+/* PoP: agent_skill_utils_u_is_valid_namespace @ agent/skill_utils.py:is_valid_namespace */
+/* bool(candidate) and re.match(r"^[a-zA-Z0-9_-]+$", candidate). NOTE python "$"
+ * also matches just before a SINGLE trailing newline, so "abc\n" is valid and
+ * "abc\n\n" is not. Returns int 1/0. */
+int agent_skill_utils_u_is_valid_namespace(const char *arg) {
+    if (!arg || !*arg) return 0;
+    const char *p = arg; size_t n = 0;
+    while (*p) {
+        unsigned char c = (unsigned char)*p;
+        if (c=='\n' && p[1]==0) { if (n >= 1) return 1; return 0; }  /* $-before-final-newline */
+        if (!((c>='a'&&c<='z')||(c>='A'&&c<='Z')||(c>='0'&&c<='9')||c=='_'||c=='-')) return 0;
+        n++; p++;
+    }
+    return n >= 1 ? 1 : 0;
+}

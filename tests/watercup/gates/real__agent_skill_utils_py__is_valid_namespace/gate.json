@@ -3,19 +3,22 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "is_valid_namespace",
+  "c_fn": "agent_skill_utils_u_is_valid_namespace",
   "py_module": "agent/skill_utils.py",
   "py_fn": "is_valid_namespace",
   "inputs": [
-    "hello",
-    "world",
+    "abc",
+    "a-b_c",
     "",
-    "test123",
-    "NULL"
+    "a b",
+    "a.b",
+    "abc\n",
+    "abc\n\n",
+    "-",
+    "_",
+    "abc!"
   ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
+  "extra_src": [],
   "cflags": [
     "-I",
     "include",
@@ -26,5 +29,5 @@
     "-I",
     "src"
   ],
-  "classification": "REAL_GAP"
+  "classification": "PORTED"
 }

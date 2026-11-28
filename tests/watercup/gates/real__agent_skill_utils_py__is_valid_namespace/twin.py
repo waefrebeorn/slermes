@@ -1,17 +1,8 @@
-"""twin for agent/skill_utils.py:is_valid_namespace (thin: shared runtime, cross-OS)."""
+"""twin: is_valid_namespace(candidate) -> bool."""
 from watercup_twin_runtime import TwinBase
-
-
-
 class _Twin(TwinBase):
-    PY_MODULE = "agent/skill_utils.py"
-    PY_FN = "is_valid_namespace"
-    C_FN = "sku_is_valid_namespace"
-
+    PY_MODULE = "agent/skill_utils.py"; PY_FN = "is_valid_namespace"
+    C_FN = "agent_skill_utils_u_is_valid_namespace"
     def norm(self, c, result):
-        c.valstr(str(int(result)) if isinstance(result, (int, bool)) and not isinstance(result, str) else ("0" if result is None else str(result)))
-
-
-_t = _Twin()
-trace = _t.trace
-run = _t.run
+        c.valstr("1" if result else "0")
+_t = _Twin(); trace = _t.trace; run = _t.run
