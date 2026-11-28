@@ -1,25 +1,11 @@
-/* gate: real__cron_monitor_py__hash_monitor_output — GAP sentinel for hash_monitor_output */
+/* gate: hash_monitor_output -> real port (str in, hex str out). */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "watercup.h"
-
-/* No C port exists — this is a REAL_GAP function */
-static const char *gap_sentinel(const char *input) {
-    (void)input;
-    return "hash_monitor_output";
-}
-
-int main(int argc, char **argv) {
-    if (argc < 3) { fprintf(stderr, "usage: %s hash_monitor_output <input>...\n", argv[0]); return 2; }
-    for (int i = 2; i < argc; i++) {
-        WCUP_BEGIN("hash_monitor_output");
-        const char *result = gap_sentinel(argv[i]);
-        WCUP_VALSTR(result);
-        char cup[32];
-        WCUP_FINALIZE(cup, sizeof cup);
-        printf("%s\n", cup);
-        WCUP_END("hash_monitor_output");
-    }
-    return 0;
-}
+extern char *cron_monitor_u_hash_monitor_output(const char *arg);
+int main(int argc,char**argv){ if(argc<3)return 2;
+ for(int i=2;i<argc;i++){ WCUP_BEGIN("hash_monitor_output");
+  char *r=cron_monitor_u_hash_monitor_output(argv[i]); WCUP_VALSTR(r?r:"");
+  char cup[32]; WCUP_FINALIZE(cup,sizeof cup); printf("%s\n",cup);
+  WCUP_END("hash_monitor_output"); if (r) free(r);} return 0;}

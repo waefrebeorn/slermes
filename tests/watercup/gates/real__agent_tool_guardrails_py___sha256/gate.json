@@ -3,28 +3,20 @@
   "subsystem": "auto",
   "kind": "cup",
   "c_src": "harness.c",
-  "c_fn": "_sha256",
+  "c_fn": "agent_tool_guardrails_u_sha256",
   "py_module": "agent/tool_guardrails.py",
   "py_fn": "_sha256",
+  "extra_src": [
+    "lib/libcrypto/crypto.c"
+  ],
+  "classification": "PORTED",
   "inputs": [
     "hello",
-    "world",
     "",
-    "test123",
-    "NULL"
-  ],
-  "extra_src": [
-    "lib/libjson/json.c"
-  ],
-  "cflags": [
-    "-I",
-    "include",
-    "-I",
-    "lib",
-    "-I",
-    "lib/libjson",
-    "-I",
-    "src"
-  ],
-  "classification": "REAL_GAP"
+    "abc",
+    "a",
+    "The quick brown fox jumps over the lazy dog",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "Mixed CASE 123 !@#"
+  ]
 }

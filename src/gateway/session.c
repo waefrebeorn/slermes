@@ -489,3 +489,21 @@ int session_drain_spooled_drops(const char *session_id) {
     return replayed;
 }
 
+
+/* PoP: gateway_session_u_hash_id @ gateway/session.py:_hash_id */
+/* hashlib.sha256(value.encode("utf-8")).hexdigest()[:12]. */
+#include "crypto.h"
+
+/* lowercase hex of a 32-byte digest; n = number of BYTES to emit (16 or 12 or 32). */
+static void _hx_hex(const unsigned char *d, char *out, int n) {
+    static const char *H = "0123456789abcdef";
+    for (int i = 0; i < n; i++) { out[2*i] = H[(d[i] >> 4) & 15]; out[2*i+1] = H[d[i] & 15]; }
+    out[2*n] = 0;
+}
+char *gateway_session_u_hash_id(const char *arg) {
+    const char *s = arg ? arg : "";
+    unsigned char d[32]; char *out = malloc(13);
+    crypto_sha256((const unsigned char *)s, strlen(s), d);
+    _hx_hex(d, out, 6);
+    return out;
+}

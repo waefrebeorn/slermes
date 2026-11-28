@@ -345,3 +345,22 @@ int cron_monitor_u_job_has_monitor(const char *arg) {
     json_free(o);
     return hit;
 }
+
+/* PoP: cron_monitor_u_hash_monitor_output @ cron/monitor.py:hash_monitor_output */
+/* hashlib.sha256(output.encode("utf-8", errors="replace")).hexdigest() -- exact
+ * UTF-8 bytes, no normalization. */
+#include "crypto.h"
+
+/* lowercase hex of a 32-byte digest; n = number of BYTES to emit (16 or 12 or 32). */
+static void _hx_hex(const unsigned char *d, char *out, int n) {
+    static const char *H = "0123456789abcdef";
+    for (int i = 0; i < n; i++) { out[2*i] = H[(d[i] >> 4) & 15]; out[2*i+1] = H[d[i] & 15]; }
+    out[2*n] = 0;
+}
+char *cron_monitor_u_hash_monitor_output(const char *arg) {
+    const char *s = arg ? arg : "";
+    unsigned char d[32]; char *out = malloc(65);
+    crypto_sha256((const unsigned char *)s, strlen(s), d);
+    _hx_hex(d, out, 32);
+    return out;
+}
